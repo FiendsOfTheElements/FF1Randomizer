@@ -892,7 +892,7 @@ namespace FF1Lib.Procgen
 	    SCCoords point = new SCCoords(0, 0);
 	    bool found = false;
 	    if (feature.MountainCave) {
-		maxweight = 15;
+		maxweight = 16;
 	    }
 	    for (int tryweight = 0; !found && tryweight <= maxweight; tryweight++) {
 		foreach (var p in points) {
@@ -1053,32 +1053,39 @@ namespace FF1Lib.Procgen
 
 		if (flags.MapGenRandomizedAccessReqs) {
 
-		    var features = new List<OwFeature> {
+		    var earlyRewardLocations = new List<OwFeature> {
 			OverworldTiles.TEMPLE_OF_FIENDS,
-			OverworldTiles.GAIA_TOWN,
-			OverworldTiles.ORDEALS_CASTLE,
 			OverworldTiles.SARDAS_CAVE_FEATURE,
-			OverworldTiles.EARTH_CAVE_FEATURE,
-			OverworldTiles.OASIS2,
 			OverworldTiles.DWARF_CAVE_FEATURE,
-			OverworldTiles.ELFLAND_TOWN_CASTLE,
-			OverworldTiles.ASTOS_CASTLE,
-			OverworldTiles.MELMOND_TOWN,
+			OverworldTiles.MATOYAS_CAVE_FEATURE,
 			OverworldTiles.CRESCENT_LAKE_CITY,
+			OverworldTiles.CONERIA_CASTLE,
+			OverworldTiles.CARDIA_2_FEATURE,
+			OverworldTiles.CARDIA_4_FEATURE,
+			OverworldTiles.CARDIA_6_FEATURE,
+		    };
+
+		    var otherFeatures = new List<OwFeature> {
+			OverworldTiles.GAIA_TOWN,
+			OverworldTiles.OASIS2,
+			OverworldTiles.ELFLAND_TOWN,
+			OverworldTiles.ELFLAND_CASTLE,
+			OverworldTiles.MELMOND_TOWN,
 			OverworldTiles.LEFEIN_CITY,
 			OverworldTiles.BAHAMUTS_CAVE_FEATURE,
 			OverworldTiles.CARDIA_1_FEATURE,
-			OverworldTiles.CARDIA_2_FEATURE,
-			OverworldTiles.CARDIA_3_FEATURE,
-			OverworldTiles.CARDIA_4_FEATURE,
 			OverworldTiles.CARDIA_5_FEATURE,
+			OverworldTiles.ASTOS_CASTLE,
+		    };
+
+		    var unsafeFeatures = new List<OwFeature> {
+			OverworldTiles.ORDEALS_CASTLE,
 			OverworldTiles.ICE_CAVE_FEATURE,
+			OverworldTiles.EARTH_CAVE_FEATURE,
 			OverworldTiles.DRY_VOLCANO,
 		    };
 
-		    steps.Add(new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}));
-		    steps.Add(new GenerationStep("PlaceBridge", new object[]{false}));
-		    steps.Add(new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}));
+		    var features = new List<OwFeature>();
 
 		    Action<string, int, int, object[]> AddPlacements = (string op, int min, int max, object[] addl) => {
 			int count = rng.Between(min, max);
@@ -1093,10 +1100,26 @@ namespace FF1Lib.Procgen
 			}
 		    };
 
+		    steps.Add(new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}));
+		    steps.Add(new GenerationStep("PlaceBridge", new object[]{true}));
+		    steps.Add(new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}));
+
+		    features.AddRange(earlyRewardLocations);
+
+		    if (flags.MapGenUnsafeStart) {
+			features.AddRange(unsafeFeatures);
+			unsafeFeatures.Clear();
+		    }
+
 		    AddPlacements("PlaceIsolated", 1, 2, new object[]{true});
+
 		    features.Add(OverworldTiles.TITANS_TUNNEL_EAST);
 
 		    AddPlacements("PlaceInStartingArea", 1, 3, null);
+
+		    features.AddRange(otherFeatures);
+		    features.AddRange(unsafeFeatures);
+
 		    AddPlacements("PlaceInBridgedRegion", 1, 3, null);
 		    AddPlacements("PlaceRequiringCanoe", 1, 2, null);
 		    AddPlacements("PlaceInTitanWestRegion", 1, 3, null);
@@ -1122,7 +1145,7 @@ namespace FF1Lib.Procgen
 		} else {
 		    steps.AddRange(new GenerationStep[] {
 			    new GenerationStep("BridgeAlternatives", new object[]{}),
-			    new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}),
+			    new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY_CASTLE}),
 			    new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.TEMPLE_OF_FIENDS}),
 			    new GenerationStep("PlaceBridge", new object[]{true}),
 			    new GenerationStep("PlacePravoka", new object[]{}),
@@ -1177,11 +1200,11 @@ namespace FF1Lib.Procgen
 									    false, true, true, true}),
 			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_2_FEATURE, null,
 									    false, true, true, true}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_3_FEATURE, null,
-									    false, true, true, true}),
 			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_4_FEATURE, null,
 									    false, true, true, true}),
 			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_5_FEATURE, null,
+									    false, true, true, true}),
+			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_6_FEATURE, null,
 									    false, true, true, true}),
 
 			    new GenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}),
@@ -1192,13 +1215,15 @@ namespace FF1Lib.Procgen
 		}
 
 		steps.AddRange(new GenerationStep[] {
+			new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains1, true}),
+			new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains2, true}),
+
 			new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1, false}),
 			new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2, false}),
 			new GenerationStep("ApplyFilter", new object[]{mt.apply_shores3, false}),
 			new GenerationStep("ApplyFilter", new object[]{mt.apply_shores4, false}),
 
 			new GenerationStep("ApplyFilter", new object[]{mt.prune_forests, true}),
-			new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains, true}),
 
 			new GenerationStep("ApplyFilter", new object[]{mt.mountain_borders, false}),
 			new GenerationStep("ApplyFilter", new object[]{mt.river_borders, false}),

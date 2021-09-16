@@ -107,9 +107,9 @@ namespace FF1Lib.Procgen
 	public const byte VOLCANO_TOP_W = 0x64;
 	public const byte VOLCANO_TOP_E = 0x65;
 	public const byte CARDIA_2 = 0x66;
-	public const byte CARDIA_3 = 0x67;
-	public const byte CARDIA_4 = 0x68;
-	public const byte CARDIA_5 = 0x69;
+	public const byte CARDIA_4 = 0x67;
+	public const byte CARDIA_5 = 0x68;
+	public const byte CARDIA_6 = 0x69;
 	public const byte CARDIA_1 = 0x6A;
 	public const byte CITY_WALL_W5 = 0x6B;
 	public const byte BAHAMUTS_CAVE = 0x6C;
@@ -195,7 +195,8 @@ namespace FF1Lib.Procgen
 	public OwTileFilter apply_shores4;
 
 	public OwTileFilter prune_forests;
-	public OwTileFilter polish_mountains;
+	public OwTileFilter polish_mountains1;
+	public OwTileFilter polish_mountains2;
 
 	public OwTileFilter mountain_borders;
 	public OwTileFilter river_borders;
@@ -204,7 +205,7 @@ namespace FF1Lib.Procgen
 	public OwTileFilter grass_borders;
 	public OwTileFilter forest_borders;
 
-	public static OwFeature CONERIA_CITY = new OwFeature(new byte[,] {
+	public static OwFeature CONERIA_CITY_CASTLE = new OwFeature(new byte[,] {
 	    {None, None, None,                 None,                None,  None, None, None},
 	    {None, None, None, CONERIA_CASTLE_TOP_W, CONERIA_CASTLE_TOP_E, None, None, None},
 	    {None, None, CITY_WALL_NW, CONERIA_CASTLE_MID_W, CONERIA_CASTLE_MID_E, CITY_WALL_NE, None, None},
@@ -218,6 +219,32 @@ namespace FF1Lib.Procgen
 		{ "Coneria", new SCCoords(2, 4) },
 		{ "ConeriaCastle1", new SCCoords(3, 3) },
 		{ "StartingLocation", new SCCoords(3, 5) }
+	    });
+
+	public static OwFeature CONERIA_CITY = new OwFeature(new byte[,] {
+	    {None, None, None,                 None,                None,  None, None, None},
+	    {None, None, CITY_WALL_NW, CITY_WALL_N, CITY_WALL_N, CITY_WALL_NE, None, None},
+	    {None, CITY_WALL_W1, CITY_WALL_W2, CITY_PAVED, CITY_PAVED,   CITY_WALL_E2, CITY_WALL_E1, None},
+	    {None, CITY_WALL_W3, CONERIA, CITY_PAVED, CITY_PAVED, CONERIA, CITY_WALL_E3, None},
+	    {None, CITY_WALL_W4, CONERIA, CITY_PAVED, CITY_PAVED, CONERIA, CITY_WALL_E4, None},
+	    {None, CITY_WALL_W5, CONERIA, CITY_PAVED, CITY_PAVED, CONERIA, CITY_WALL_E5, None},
+	    {None, CITY_WALL_SW2, CITY_WALL_GATE_W, CITY_PAVED, CITY_PAVED, CITY_WALL_GATE_E, CITY_WALL_SE2, None},
+	    {None, None, LAND,                 LAND,                LAND,  LAND, None, None},
+	    }, new Dictionary<string, SCCoords> {
+		{ "Coneria", new SCCoords(2, 4) },
+		{ "StartingLocation", new SCCoords(3, 5) }
+	    });
+
+	public static OwFeature CONERIA_CASTLE = new OwFeature(new byte[,] {
+	    {None, None, None,                 None,                None,  None, None, None},
+	    {None, None, None, CONERIA_CASTLE_TOP_W, CONERIA_CASTLE_TOP_E, None, None, None},
+	    {None, None, CITY_WALL_NW, CONERIA_CASTLE_MID_W, CONERIA_CASTLE_MID_E, CITY_WALL_NE, None, None},
+	    {None, CITY_WALL_W1, CITY_WALL_W2, CONERIA_CASTLE_ENTRANCE_W, CONERIA_CASTLE_ENTRANCE_E, CITY_WALL_E2, CITY_WALL_E1, None},
+	    {None, CITY_WALL_W3, CITY_PAVED, CITY_PAVED, CITY_PAVED, CITY_PAVED, CITY_WALL_E3, None},
+	    {None, CITY_WALL_SW1, CITY_WALL_GATE_W, CITY_PAVED, CITY_PAVED, CITY_WALL_GATE_E, CITY_WALL_SE1, None},
+	    {None, None, LAND,                 LAND,                LAND,  LAND, None, None},
+	    }, new Dictionary<string, SCCoords> {
+		{ "ConeriaCastle1", new SCCoords(3, 3) }
 	    });
 
 	public static OwFeature TEMPLE_OF_FIENDS = new OwFeature(new byte[,] {
@@ -260,11 +287,14 @@ namespace FF1Lib.Procgen
 		{ "Bridge", new SCCoords(5, 1) },
 	    });
 
-
-	public static byte[,] ELFLAND_CASTLE = new byte[,] {
-	    {SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_W},
-	    {ELFLAND_CASTLE_W, ELFLAND_CASTLE_E},
-	};
+	public static OwFeature ELFLAND_CASTLE = new OwFeature(new byte[,] {
+	    	    {None,               None,               None, None},
+		    {None, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_W, None},
+		    {None, ELFLAND_CASTLE_W, ELFLAND_CASTLE_E, None},
+	    	    {None,               None,               None, None},
+	}, new Dictionary<string, SCCoords> {
+	    { "ElflandCastle", new SCCoords(2, 2) }
+	    });
 
 	public static OwFeature ASTOS_CASTLE = new OwFeature(new byte[,] {
 	    {None, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_W, None},
@@ -282,10 +312,15 @@ namespace FF1Lib.Procgen
 		{ "CastleOrdeals1", new SCCoords(1, 1) }
 	    });
 
-	public static byte[,] ELFLAND_TOWN = new byte[,] {
-	    {ELFLAND, None, None, ELFLAND},
-	    {ELFLAND, None, None, ELFLAND},
-	};
+	public static OwFeature ELFLAND_TOWN = new OwFeature(new byte[,] {
+	    {None,    None, None, None,    None, None},
+	    {None, ELFLAND, None, None, ELFLAND, None},
+	    {None, ELFLAND, None, None, ELFLAND, None},
+	    {None,    None, None, None,    None, None},
+	    },
+	    new Dictionary<string, SCCoords> {
+		{ "Elfland", new SCCoords(1, 1) },
+	    });
 
 	public static OwFeature ELFLAND_TOWN_CASTLE = new OwFeature(new byte[,] {
 	    {None, LAND, LAND, LAND, LAND, None},
@@ -368,10 +403,10 @@ namespace FF1Lib.Procgen
 	    });
 
 	public static OwFeature DRY_VOLCANO = new OwFeature(new byte[,] {
-	    {None,   None,              None, None},
-	    {None, VOLCANO_TOP_W,   VOLCANO_TOP_E, None},
-	    {None, VOLCANO_BASE_W, VOLCANO_BASE_E, None},
-	    {None,  None,               None, None},
+	    {None,   LAND,              LAND, None},
+	    {LAND, VOLCANO_TOP_W,   VOLCANO_TOP_E, LAND},
+	    {LAND, VOLCANO_BASE_W, VOLCANO_BASE_E, LAND},
+	    {None,   LAND,               LAND, None},
 	}, new Dictionary<string, SCCoords> {
 		{ "GurguVolcano1", new SCCoords(3, 2) },
 	    });
@@ -488,9 +523,9 @@ namespace FF1Lib.Procgen
 	public static OwFeature BAHAMUTS_CAVE_FEATURE = new OwFeature(BAHAMUTS_CAVE, "BahamutCave1", false);
 	public static OwFeature CARDIA_1_FEATURE = new OwFeature(CARDIA_1, "Cardia1", false);
 	public static OwFeature CARDIA_2_FEATURE = new OwFeature(CARDIA_2, "Cardia2", false);
-	public static OwFeature CARDIA_3_FEATURE = new OwFeature(CARDIA_3, "Cardia4", false);
-	public static OwFeature CARDIA_4_FEATURE = new OwFeature(CARDIA_4, "Cardia5", false);
-	public static OwFeature CARDIA_5_FEATURE = new OwFeature(CARDIA_5, "Cardia6", false);
+	public static OwFeature CARDIA_4_FEATURE = new OwFeature(CARDIA_4, "Cardia4", false);
+	public static OwFeature CARDIA_5_FEATURE = new OwFeature(CARDIA_5, "Cardia5", false);
+	public static OwFeature CARDIA_6_FEATURE = new OwFeature(CARDIA_6, "Cardia6", false);
 
 	public static OwFeature WATERFALL_FEATURE = new OwFeature(WATERFALL, "Waterfall", false);
 
@@ -728,9 +763,9 @@ namespace FF1Lib.Procgen
 	pit_caves.Add(BAHAMUTS_CAVE);
 	pit_caves.Add(CARDIA_1);
 	pit_caves.Add(CARDIA_2);
-	pit_caves.Add(CARDIA_3);
 	pit_caves.Add(CARDIA_4);
 	pit_caves.Add(CARDIA_5);
+	pit_caves.Add(CARDIA_6);
 
         this.apply_shores1 = new OwTileFilter(
             new Rule[] {
@@ -1221,7 +1256,55 @@ namespace FF1Lib.Procgen
 
 	    }, allTiles, null, null);
 
-	this.polish_mountains = new OwTileFilter(
+	this.polish_mountains1 = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
+		    {STAR, STAR,     STAR},
+		    {STAR, MOUNTAIN, _},
+		    {STAR,        _,  STAR}},
+		    MOUNTAIN),
+		new Rule(new byte[3,3] {
+		    {STAR,   STAR,    STAR},
+		    {_,      MOUNTAIN,  STAR},
+		    {STAR,          _,  STAR}},
+		    MOUNTAIN),
+		new Rule(new byte[3,3] {
+		    {STAR,          _, STAR},
+		    {_,      MOUNTAIN, STAR},
+		    {STAR,    STAR,  STAR}},
+		    MOUNTAIN),
+		new Rule(new byte[3,3] {
+		    {STAR,        _,   STAR},
+		    {STAR, MOUNTAIN,      _},
+		    {STAR,     STAR,  STAR}},
+		    MOUNTAIN),
+
+		new Rule(new byte[3,3] {
+		    {STAR,   STAR,   STAR},
+		    {OCEAN, MOUNTAIN, STAR},
+		    {STAR,   STAR,   STAR}},
+		     OCEAN),
+
+		new Rule(new byte[3,3] {
+		    {STAR,   OCEAN,   STAR},
+		    {STAR, MOUNTAIN, STAR},
+		    {STAR,   STAR,   STAR}},
+		     OCEAN),
+
+		new Rule(new byte[3,3] {
+		    {STAR,   STAR,   STAR},
+		    {STAR, MOUNTAIN, OCEAN},
+		    {STAR,   STAR,   STAR}},
+		     OCEAN),
+
+		new Rule(new byte[3,3] {
+		    {STAR,   STAR,   STAR},
+		    {STAR, MOUNTAIN, STAR},
+		    {STAR,   OCEAN,   STAR}},
+		     OCEAN),
+	    }, allTiles, mountain_tiles, null);
+
+	this.polish_mountains2 = new OwTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR, STAR,     STAR},

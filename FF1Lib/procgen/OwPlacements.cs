@@ -191,6 +191,9 @@ namespace FF1Lib.Procgen
 	}
 
 	public Result PlaceInBridgedRegion(OwFeature feature) {
+	    if (this.bridgedRegion == -1) {
+		return this.NextStep();
+	    }
 	    for (int i = 0; i < 8; i++) {
 		var v = this.PlaceFeature(this.Traversable_regionmap, this.Traversable_regionlist[this.bridgedRegion], feature, i);
 		if (v.Item1) {
@@ -679,6 +682,7 @@ namespace FF1Lib.Procgen
 	    foreach (var w in this.Traversable_regionlist) {
 		if (w.RegionType == OverworldTiles.LAND_REGION &&
 		    !this.Reachable_regions.Contains(w.RegionId) &&
+		    !this.Exclude_docks.Contains(w.RegionId) &&
 		    w.Adjacent.Contains(OverworldTiles.MainOceanRegionId))
 		{
 		    tasks.Add(() => new OverworldState(this).CanalPlacement(w));

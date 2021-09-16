@@ -4483,6 +4483,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool MapGenUnsafeStart
+		{
+			get => Flags.MapGenUnsafeStart;
+			set
+			{
+				Flags.MapGenUnsafeStart = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public ExtConsumableSet ExtConsumableSet
 		{
 			get => Flags.ExtConsumableSet;
