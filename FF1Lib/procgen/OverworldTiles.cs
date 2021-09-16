@@ -314,8 +314,8 @@ namespace FF1Lib.Procgen
 
 	public static OwFeature ELFLAND_TOWN = new OwFeature(new byte[,] {
 	    {None,    None, None, None,    None, None},
-	    {None, ELFLAND, None, None, ELFLAND, None},
-	    {None, ELFLAND, None, None, ELFLAND, None},
+	    {None, ELFLAND, LAND, LAND, ELFLAND, None},
+	    {None, ELFLAND, LAND, LAND, ELFLAND, None},
 	    {None,    None, None, None,    None, None},
 	    },
 	    new Dictionary<string, SCCoords> {
