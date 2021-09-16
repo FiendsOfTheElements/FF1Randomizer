@@ -23,7 +23,7 @@
 		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnClearSeed">Clear</a>
 		<br>
 		<br>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="mapgenRNGAccessReqsCheckBox" IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld && Flags.Treasures)" @bind-Value="Flags.MapGenRandomizedAccessReqs">Randomize Access Requirements</CheckBox>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="mapgenRNGAccessReqsCheckBox" IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld)" @bind-Value="Flags.MapGenRandomizedAccessReqs">Randomize Access Requirements</CheckBox>
 		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="mapgenUnsafeStartCheckBox" IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld && Flags.MapGenRandomizedAccessReqs)" @bind-Value="Flags.MapGenUnsafeStart">Unsafe start</CheckBox>
 
 		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>

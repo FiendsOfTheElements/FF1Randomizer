@@ -1988,7 +1988,7 @@
                 "Id": "mapgenRNGAccessReqsCheckBox",
                 "title": "Randomized Access Requirements",
                 "screenshot": "",
-                "description": "Randomize which locations have which access requirements, i.e. whether the ship, canoe, or airship is required to access a certain location.  For example, with this enabled, it could produce a map where you need to go through Titan's tunnel to access the Temple of Fiends, or Elfland appears in the mountains requiring the canoe.  Also splits up Coneria and Elfland, placing the towns and castles separately.  Requires treasure shuffle to be enabled."
+                "description": "Randomize which locations have which access requirements, i.e. whether the ship, canoe, or airship is required to access a certain location.  For example, with this enabled, it could produce a map where you need to go through Titan's tunnel to access the Temple of Fiends, or Elfland appears in the mountains requiring the canoe.  Also splits up Coneria and Elfland, placing the towns and castles separately.  Requires key item shuffle and/or loose items to be enabled."
         },
         {
                 "Id": "mapgenUnsafeStartCheckBox",
