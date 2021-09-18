@@ -298,6 +298,10 @@ namespace FF1Lib.Procgen
 	    this.shouldPlaceBridge = copy.shouldPlaceBridge;
         }
 
+	public void SetSteps(List<GenerationStep> steps) {
+	    this.StepQueue = new Queue<GenerationStep>(steps);
+	}
+
         void OwnBasemap() {
             if (this.ownBasemap) {
                 return;
@@ -1020,15 +1024,41 @@ namespace FF1Lib.Procgen
 
     public static class NewOverworld {
 
+	public static OverworldState RunSteps(OverworldState startingState) {
+	    Stack<GenerationTask> workStack = new Stack<GenerationTask>();
+
+	    System.GC.Collect();
+
+	    workStack.Push(startingState.NextStep);
+
+	    OverworldState finalState = null;
+	    int maxTasksCount = 300;
+	    int taskCount = 0;
+	    while (workStack.Count > 0 && taskCount < maxTasksCount) {
+		taskCount += 1;
+		var p = workStack.Pop();
+		var r = p();
+		if (r.final != null) {
+		    finalState = r.final;
+		    break;
+		}
+		if (r.additionalTasks != null) {
+		    foreach (var v in r.additionalTasks) {
+			workStack.Push(v);
+		    }
+		}
+	    }
+	    return finalState;
+	}
+
 	public static OwMapExchangeData GenerateNewOverworld(MT19337 rng, Flags flags) {
 	    var mt = new OverworldTiles();
 
 	    int maxtries = 1;
 	    int tries = maxtries;
-	    int maxTasksCount = 1000;
 	    while (tries > 0) {
 		tries--;
-		var steps = new List<GenerationStep> {
+		var worldGenSteps = new List<GenerationStep> {
 		    new GenerationStep("CreateInitialMap", new object[]{}),
 		    new GenerationStep("MakeValleys", new object[] {6}),
 		    new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains, false}),
@@ -1051,213 +1081,214 @@ namespace FF1Lib.Procgen
 		    new GenerationStep("SmallSeasBecomeLakes", new object[]{}),
 		};
 
-		if (flags.MapGenRandomizedAccessReqs) {
+		var blankState = new OverworldState(rng, worldGenSteps, mt);
+		var worldState = RunSteps(blankState);
 
-		    var earlyRewardLocations = new List<OwFeature> {
-			OverworldTiles.TEMPLE_OF_FIENDS,
-			OverworldTiles.SARDAS_CAVE_FEATURE,
-			OverworldTiles.DWARF_CAVE_FEATURE,
-			OverworldTiles.MATOYAS_CAVE_FEATURE,
-			OverworldTiles.CRESCENT_LAKE_CITY,
-			OverworldTiles.CONERIA_CASTLE,
-			OverworldTiles.CARDIA_2_FEATURE,
-			OverworldTiles.CARDIA_4_FEATURE,
-			OverworldTiles.CARDIA_6_FEATURE,
-		    };
+		var maxPlacementTries = 8;
+		var placementTries = maxPlacementTries;
 
-		    var otherFeatures = new List<OwFeature> {
-			OverworldTiles.GAIA_TOWN,
-			OverworldTiles.OASIS2,
-			OverworldTiles.ELFLAND_TOWN,
-			OverworldTiles.ELFLAND_CASTLE,
-			OverworldTiles.MELMOND_TOWN,
-			OverworldTiles.LEFEIN_CITY,
-			OverworldTiles.BAHAMUTS_CAVE_FEATURE,
-			OverworldTiles.CARDIA_1_FEATURE,
-			OverworldTiles.CARDIA_5_FEATURE,
-			OverworldTiles.ASTOS_CASTLE,
-		    };
+		OverworldState postPlacementState = null;
+		while(placementTries > 0 && postPlacementState == null) {
+		    placementTries--;
 
-		    var unsafeFeatures = new List<OwFeature> {
-			OverworldTiles.ORDEALS_CASTLE,
-			OverworldTiles.ICE_CAVE_FEATURE,
-			OverworldTiles.EARTH_CAVE_FEATURE,
-			OverworldTiles.DRY_VOLCANO,
-		    };
+		    List<GenerationStep> placementSteps = new List<GenerationStep>();
+		    if (flags.MapGenRandomizedAccessReqs) {
 
-		    var features = new List<OwFeature>();
+			var earlyRewardLocations = new List<OwFeature> {
+			    OverworldTiles.TEMPLE_OF_FIENDS,
+			    OverworldTiles.SARDAS_CAVE_FEATURE,
+			    OverworldTiles.DWARF_CAVE_FEATURE,
+			    OverworldTiles.MATOYAS_CAVE_FEATURE,
+			    OverworldTiles.CRESCENT_LAKE_CITY,
+			    OverworldTiles.CONERIA_CASTLE,
+			    OverworldTiles.CARDIA_2_FEATURE,
+			    OverworldTiles.CARDIA_4_FEATURE,
+			    OverworldTiles.CARDIA_6_FEATURE,
+			};
 
-		    Action<string, int, int, object[]> AddPlacements = (string op, int min, int max, object[] addl) => {
-			int count = rng.Between(min, max);
-			for (int i = 0; i < count && features.Count > 0; i++) {
-			    var f = features.SpliceRandom(rng);
-			    var parm = new List<object>();
-			    parm.Add(f);
-			    if (addl != null) {
-				parm.AddRange(addl);
+			var otherFeatures = new List<OwFeature> {
+			    OverworldTiles.GAIA_TOWN,
+			    OverworldTiles.OASIS2,
+			    OverworldTiles.ELFLAND_TOWN,
+			    OverworldTiles.ELFLAND_CASTLE,
+			    OverworldTiles.MELMOND_TOWN,
+			    OverworldTiles.LEFEIN_CITY,
+			    OverworldTiles.BAHAMUTS_CAVE_FEATURE,
+			    OverworldTiles.CARDIA_1_FEATURE,
+			    OverworldTiles.CARDIA_5_FEATURE,
+			    OverworldTiles.ASTOS_CASTLE,
+			};
+
+			var unsafeFeatures = new List<OwFeature> {
+			    OverworldTiles.ORDEALS_CASTLE,
+			    OverworldTiles.ICE_CAVE_FEATURE,
+			    OverworldTiles.EARTH_CAVE_FEATURE,
+			    OverworldTiles.DRY_VOLCANO,
+			};
+
+			var features = new List<OwFeature>();
+
+			Action<string, int, int, object[]> AddPlacements = (string op, int min, int max, object[] addl) => {
+			    int count = rng.Between(min, max);
+			    for (int i = 0; i < count && features.Count > 0; i++) {
+				var f = features.SpliceRandom(rng);
+				var parm = new List<object>();
+				parm.Add(f);
+				if (addl != null) {
+				    parm.AddRange(addl);
+				}
+				placementSteps.Add(new GenerationStep(op, parm.ToArray()));
 			    }
-			    steps.Add(new GenerationStep(op, parm.ToArray()));
+			};
+
+			placementSteps.Add(new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}));
+			placementSteps.Add(new GenerationStep("PlaceBridge", new object[]{true}));
+			placementSteps.Add(new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}));
+
+			features.AddRange(earlyRewardLocations);
+
+			if (flags.MapGenUnsafeStart) {
+			    features.AddRange(unsafeFeatures);
+			    unsafeFeatures.Clear();
 			}
-		    };
 
-		    steps.Add(new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}));
-		    steps.Add(new GenerationStep("PlaceBridge", new object[]{true}));
-		    steps.Add(new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}));
+			AddPlacements("PlaceIsolated", 1, 2, new object[]{true});
 
-		    features.AddRange(earlyRewardLocations);
+			features.Add(OverworldTiles.TITANS_TUNNEL_EAST);
 
-		    if (flags.MapGenUnsafeStart) {
+			AddPlacements("PlaceInStartingArea", 1, 3, null);
+
+			features.AddRange(otherFeatures);
 			features.AddRange(unsafeFeatures);
-			unsafeFeatures.Clear();
+
+			AddPlacements("PlaceInBridgedRegion", 1, 3, null);
+			AddPlacements("PlaceRequiringCanoe", 1, 2, null);
+			AddPlacements("PlaceInTitanWestRegion", 1, 3, null);
+
+			placementSteps.Add(new GenerationStep("PlaceCanal", new object[]{}));
+			AddPlacements("PlaceInCanalRegion", 1, 3, null);
+			AddPlacements("PlaceInMountains", 2, 5, null);
+			placementSteps.Add(new GenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}));
+			placementSteps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
+											   new int[]{OverworldTiles.DESERT_REGION},
+											   false, true, true, false}));
+			placementSteps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
+											   new int[]{OverworldTiles.DESERT_REGION},
+											   false, true, false, false}));
+			placementSteps.Add(new GenerationStep("PlaceOnCoast", new object[]{OverworldTiles.ONRAC_TOWN, true}));
+			placementSteps.Add(new GenerationStep("PlaceOnCoast", new object[]{OverworldTiles.PRAVOKA_CITY, false}));
+			placementSteps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
+											   new int[]{OverworldTiles.MARSH_REGION},
+											   true, true, true, false}));
+			AddPlacements("PlaceInBiome", 4, 8, new object[] { null, true, false, false, false });
+			AddPlacements("PlaceInBiome", 3, 6, new object[] { null, false, true, true, true });
+			AddPlacements("PlaceInBiome", features.Count, features.Count, new object[] { null, false, true, true, false });
+		    } else {
+			placementSteps.AddRange(new GenerationStep[] {
+				new GenerationStep("BridgeAlternatives", new object[]{}),
+				new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY_CASTLE}),
+				new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.TEMPLE_OF_FIENDS}),
+				new GenerationStep("PlaceBridge", new object[]{true}),
+				new GenerationStep("PlacePravoka", new object[]{}),
+				new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.GAIA_TOWN, true}),
+				new GenerationStep("PlaceRequiringCanoe", new object[]{OverworldTiles.ORDEALS_CASTLE}),
+				new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}),
+				new GenerationStep("PlaceInTitanWestRegion", new object[]{OverworldTiles.SARDAS_CAVE_FEATURE}),
+				new GenerationStep("PlaceCanal", new object[]{}),
+				new GenerationStep("PlaceInCanalRegion", new object[]{OverworldTiles.EARTH_CAVE_FEATURE}),
+
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
+										new int[]{OverworldTiles.DESERT_REGION},
+										false, true, true, false}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
+										new int[]{OverworldTiles.DESERT_REGION},
+										false, true, false, false}),
+
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.OASIS,
+										new int[]{OverworldTiles.DESERT_REGION},
+										false, true, true, false}),
+				new GenerationStep("PlaceOnCoast", new object[]{OverworldTiles.ONRAC_TOWN, true}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.TITANS_TUNNEL_EAST, null,
+										true, false, false, false}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MATOYAS_CAVE_FEATURE, null,
+										true, false, false, false}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.DWARF_CAVE_FEATURE, null,
+										true, false, false, false}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.ELFLAND_TOWN_CASTLE,
+										new int[]{OverworldTiles.LAND_REGION,
+										    OverworldTiles.GRASS_REGION,
+										    OverworldTiles.FOREST_REGION},
+										true, false, false, false}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
+										new int[]{OverworldTiles.MARSH_REGION},
+										true, false, false, false}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.ASTOS_CASTLE, null,
+										true, false, false, false}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MELMOND_TOWN, null,
+										true, false, false, false}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CRESCENT_LAKE_CITY,
+										new int[]{OverworldTiles.LAND_REGION,
+										    OverworldTiles.GRASS_REGION,
+										    OverworldTiles.FOREST_REGION,
+										    OverworldTiles.MARSH_REGION},
+										true, false, false, false}),
+
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.LEFEIN_CITY, null,
+										false, true, true, false}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.BAHAMUTS_CAVE_FEATURE, null,
+										false, true, true, true}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_1_FEATURE, null,
+										false, true, true, true}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_2_FEATURE, null,
+										false, true, true, true}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_4_FEATURE, null,
+										false, true, true, true}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_5_FEATURE, null,
+										false, true, true, true}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_6_FEATURE, null,
+										false, true, true, true}),
+
+				new GenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}),
+
+				new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.ICE_CAVE_FEATURE}),
+				new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.VOLCANO}),
+			    });
 		    }
 
-		    AddPlacements("PlaceIsolated", 1, 2, new object[]{true});
-
-		    features.Add(OverworldTiles.TITANS_TUNNEL_EAST);
-
-		    AddPlacements("PlaceInStartingArea", 1, 3, null);
-
-		    features.AddRange(otherFeatures);
-		    features.AddRange(unsafeFeatures);
-
-		    AddPlacements("PlaceInBridgedRegion", 1, 3, null);
-		    AddPlacements("PlaceRequiringCanoe", 1, 2, null);
-		    AddPlacements("PlaceInTitanWestRegion", 1, 3, null);
-
-		    steps.Add(new GenerationStep("PlaceCanal", new object[]{}));
-		    AddPlacements("PlaceInCanalRegion", 1, 3, null);
-		    AddPlacements("PlaceInMountains", 2, 5, null);
-		    steps.Add(new GenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}));
-		    steps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
-									      new int[]{OverworldTiles.DESERT_REGION},
-									      false, true, true, false}));
-		    steps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
-									      new int[]{OverworldTiles.DESERT_REGION},
-									      false, true, false, false}));
-		    steps.Add(new GenerationStep("PlaceOnCoast", new object[]{OverworldTiles.ONRAC_TOWN, true}));
-		    steps.Add(new GenerationStep("PlaceOnCoast", new object[]{OverworldTiles.PRAVOKA_CITY, false}));
-		    steps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
-									      new int[]{OverworldTiles.MARSH_REGION},
-									      true, true, true, false}));
-		    AddPlacements("PlaceInBiome", 4, 8, new object[] { null, true, false, false, false });
-		    AddPlacements("PlaceInBiome", 3, 6, new object[] { null, false, true, true, true });
-		    AddPlacements("PlaceInBiome", features.Count, features.Count, new object[] { null, false, true, true, false });
-		} else {
-		    steps.AddRange(new GenerationStep[] {
-			    new GenerationStep("BridgeAlternatives", new object[]{}),
-			    new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY_CASTLE}),
-			    new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.TEMPLE_OF_FIENDS}),
-			    new GenerationStep("PlaceBridge", new object[]{true}),
-			    new GenerationStep("PlacePravoka", new object[]{}),
-			    new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.GAIA_TOWN, true}),
-			    new GenerationStep("PlaceRequiringCanoe", new object[]{OverworldTiles.ORDEALS_CASTLE}),
-			    new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}),
-			    new GenerationStep("PlaceInTitanWestRegion", new object[]{OverworldTiles.SARDAS_CAVE_FEATURE}),
-			    new GenerationStep("PlaceCanal", new object[]{}),
-			    new GenerationStep("PlaceInCanalRegion", new object[]{OverworldTiles.EARTH_CAVE_FEATURE}),
-
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
-									    new int[]{OverworldTiles.DESERT_REGION},
-									    false, true, true, false}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
-									    new int[]{OverworldTiles.DESERT_REGION},
-									    false, true, false, false}),
-
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.OASIS,
-									    new int[]{OverworldTiles.DESERT_REGION},
-									    false, true, true, false}),
-			    new GenerationStep("PlaceOnCoast", new object[]{OverworldTiles.ONRAC_TOWN, true}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.TITANS_TUNNEL_EAST, null,
-									    true, false, false, false}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MATOYAS_CAVE_FEATURE, null,
-									    true, false, false, false}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.DWARF_CAVE_FEATURE, null,
-									    true, false, false, false}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.ELFLAND_TOWN_CASTLE,
-									    new int[]{OverworldTiles.LAND_REGION,
-										      OverworldTiles.GRASS_REGION,
-										      OverworldTiles.FOREST_REGION},
-									    true, false, false, false}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
-									    new int[]{OverworldTiles.MARSH_REGION},
-									    true, false, false, false}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.ASTOS_CASTLE, null,
-									    true, false, false, false}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MELMOND_TOWN, null,
-									    true, false, false, false}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CRESCENT_LAKE_CITY,
-									    new int[]{OverworldTiles.LAND_REGION,
-										      OverworldTiles.GRASS_REGION,
-										      OverworldTiles.FOREST_REGION,
-										      OverworldTiles.MARSH_REGION},
-									    true, false, false, false}),
-
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.LEFEIN_CITY, null,
-									    false, true, true, false}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.BAHAMUTS_CAVE_FEATURE, null,
-									    false, true, true, true}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_1_FEATURE, null,
-									    false, true, true, true}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_2_FEATURE, null,
-									    false, true, true, true}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_4_FEATURE, null,
-									    false, true, true, true}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_5_FEATURE, null,
-									    false, true, true, true}),
-			    new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_6_FEATURE, null,
-									    false, true, true, true}),
-
-			    new GenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}),
-
-			    new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.ICE_CAVE_FEATURE}),
-			    new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.VOLCANO}),
-			});
+		    var prePlacementState = new OverworldState(worldState);
+		    prePlacementState.SetSteps(placementSteps);
+		    postPlacementState = RunSteps(prePlacementState);
 		}
 
-		steps.AddRange(new GenerationStep[] {
-			new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains1, true}),
-			new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains2, true}),
-
-			new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1, false}),
-			new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2, false}),
-			new GenerationStep("ApplyFilter", new object[]{mt.apply_shores3, false}),
-			new GenerationStep("ApplyFilter", new object[]{mt.apply_shores4, false}),
-
-			new GenerationStep("ApplyFilter", new object[]{mt.prune_forests, true}),
-
-			new GenerationStep("ApplyFilter", new object[]{mt.mountain_borders, false}),
-			new GenerationStep("ApplyFilter", new object[]{mt.river_borders, false}),
-			new GenerationStep("ApplyFilter", new object[]{mt.desert_borders, false}),
-			new GenerationStep("ApplyFilter", new object[]{mt.marsh_borders, false}),
-			new GenerationStep("ApplyFilter", new object[]{mt.grass_borders, false}),
-			new GenerationStep("ApplyFilter", new object[]{mt.forest_borders, false}),
-			new GenerationStep("CheckBridgeShores", new object[]{}),
-		    });
-
-		Stack<GenerationTask> workStack = new Stack<GenerationTask>();
-
-		System.GC.Collect();
-
-		workStack.Push(new OverworldState(rng, steps, mt).NextStep);
-
-		OverworldState final = null;
-		int taskCount = 0;
-		while (workStack.Count > 0 && taskCount < maxTasksCount) {
-		    taskCount += 1;
-		    var p = workStack.Pop();
-		    var r = p();
-		    if (r.final != null) {
-			final = r.final;
-			break;
-		    }
-		    if (r.additionalTasks != null) {
-			foreach (var v in r.additionalTasks) {
-			    workStack.Push(v);
-			}
-		    }
+		if (postPlacementState == null) {
+		    continue;
 		}
-		if (final != null) {
-		    return ReplacementMap(final, mt);
+
+		var polishSteps = new List<GenerationStep> {
+		    new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains1, true}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains2, true}),
+
+		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1, false}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2, false}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores3, false}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores4, false}),
+
+		    new GenerationStep("ApplyFilter", new object[]{mt.prune_forests, true}),
+
+		    new GenerationStep("ApplyFilter", new object[]{mt.mountain_borders, false}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.river_borders, false}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.desert_borders, false}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.marsh_borders, false}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.grass_borders, false}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.forest_borders, false}),
+		    new GenerationStep("CheckBridgeShores", new object[]{}),
+		};
+
+		postPlacementState.SetSteps(polishSteps);
+		var finalState = RunSteps(postPlacementState);
+
+		if (finalState != null) {
+		    return ReplacementMap(finalState, mt);
 		}
 	    }
 	    throw new Exception($"Couldn't generate a map with this seed, try a different seed");
