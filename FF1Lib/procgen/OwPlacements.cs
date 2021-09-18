@@ -700,7 +700,7 @@ namespace FF1Lib.Procgen
 		var ep = p.OwRight;
 		if (this.Traversable_regionmap[ep.Y, ep.X] == OverworldTiles.MainOceanRegionId) {
 		    var r = this.PlaceFeatureAt(this.Traversable_regionmap, region,
-					new SCCoords(p.X-5, p.Y-2), OverworldTiles.E_CANAL_STRUCTURE);
+					new SCCoords(p.X-5, p.Y-2), OverworldTiles.E_CANAL_STRUCTURE, true);
 		    if (r.Item1) {
 			placed = true;
 			break;
@@ -710,7 +710,7 @@ namespace FF1Lib.Procgen
 		var wp = p.OwLeft;
 		if (this.Traversable_regionmap[wp.Y, wp.X] == OverworldTiles.MainOceanRegionId) {
 		    var r = this.PlaceFeatureAt(this.Traversable_regionmap, region,
-					new SCCoords(p.X, p.Y-2), OverworldTiles.W_CANAL_STRUCTURE);
+					new SCCoords(p.X, p.Y-2), OverworldTiles.W_CANAL_STRUCTURE, true);
 		    if (r.Item1) {
 			placed = true;
 			break;

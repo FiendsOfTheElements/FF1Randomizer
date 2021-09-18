@@ -1023,9 +1023,9 @@ namespace FF1Lib.Procgen
 	public static OwMapExchangeData GenerateNewOverworld(MT19337 rng, Flags flags) {
 	    var mt = new OverworldTiles();
 
-	    int maxtries = 10;
+	    int maxtries = 1;
 	    int tries = maxtries;
-	    int maxTasksCount = 1200;
+	    int maxTasksCount = 1000;
 	    while (tries > 0) {
 		tries--;
 		var steps = new List<GenerationStep> {
@@ -1260,7 +1260,7 @@ namespace FF1Lib.Procgen
 		    return ReplacementMap(final, mt);
 		}
 	    }
-	    throw new Exception($"Couldn't generate a map after {maxtries} tries");
+	    throw new Exception($"Couldn't generate a map with this seed, try a different seed");
 	}
 
 	public static OwMapExchangeData ReplacementMap(OverworldState st, OverworldTiles mt) {
