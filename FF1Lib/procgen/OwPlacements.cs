@@ -755,7 +755,6 @@ namespace FF1Lib.Procgen
 	    this.OwnTilemap();
 	    foreach (var er in Exclude_airship) {
 		var region = this.Traversable_regionlist[er];
-		Console.WriteLine($"Prevent airship at {er} {region.Points[0]}");
 		foreach (var p in region.Points) {
 		    bool adjMarsh = false;
 		    bool adjDesert = false;
