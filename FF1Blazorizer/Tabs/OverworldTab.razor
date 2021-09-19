@@ -10,8 +10,10 @@
 		{
 	<div class="col1">
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld map to use:</EnumDropDown>
+		<p>@StatusMessage</p>
 		<br>
 
+		<h4>Map generation parameters</h4>
 		Map generation seed:
 		<br>
 		<input type="text" style="width: calc(100% - 160px);" class="nes-input @(_mapgenSeedInputClass)" id="mapgenSeedInput"
@@ -21,16 +23,15 @@
 		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnClearSeed">Clear</a>
 		<br>
 		<br>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="mapgenRNGAccessReqsCheckBox" IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld)" @bind-Value="Flags.MapGenRandomizedAccessReqs">Randomize Access Requirements</CheckBox>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="mapgenUnsafeStartCheckBox" IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld && Flags.MapGenRandomizedAccessReqs)" @bind-Value="Flags.MapGenUnsafeStart">Unsafe start</CheckBox>
+
 		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>
 		<a class='styled-button @(Flags.ReplacementMap != null && Flags.ReplacementMap.DecompressedMapRows != null ? "" : "disabled-button")' @onclick="@OnExportMap">Export Map</a>
 		<br>
 		<br>
-		Import Map:
-		<br>
+		<h4>Import Custom Map</h4>
 		<input type="file" id="importMapInput" accept="*/*" @onchange="@OnImportMap" />
-		<br>
-		<br>
-		<p>@StatusMessage</p>
 	</div>
 
 	<div class="col2">
@@ -40,14 +41,14 @@
 		@bind-Value="Flags.MapOpenProgression">Early Open Progression</TriStateCheckBox>
 
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDwavesNWCheckBox"
-		IsEnabled="@Flags.MapOpenProgression" Indent @bind-Value="Flags.MapDwarvesNorthwest">Extended Open Progression</TriStateCheckBox>
+		IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" Indent @bind-Value="Flags.MapDwarvesNorthwest">Extended Open Progression</TriStateCheckBox>
 
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDocksCheckBox"
 		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 		@bind-Value="Flags.MapOpenProgressionDocks">Northern Docks</TriStateCheckBox>
 
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionFloaterDockCheckBox"
-		IsEnabled="@Flags.MapOpenProgression" @bind-Value="Flags.MapAirshipDock">Ryukahn Desert Dock</TriStateCheckBox>
+		IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" @bind-Value="Flags.MapAirshipDock">Ryukahn Desert Dock</TriStateCheckBox>
 
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bahamutCardiaDockCheckBox"
 		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
@@ -119,7 +120,7 @@
 			try {
 				if (Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld)
 				{
-					Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng);
+					Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, Flags.Flags);
 				}
 				else if (Flags.OwMapExchange == OwMapExchanges.Desert)
 				{
@@ -167,6 +168,7 @@
 		  try {
                     Flags.OwMapExchange = OwMapExchanges.ImportCustomMap;
 		    var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importMapInput");
+		    if (content == null || content == "") { return; }
                     var fileData = Convert.FromBase64String(content);
 		    Flags.ReplacementMap = JsonConvert.DeserializeObject<OwMapExchangeData>(System.Text.Encoding.UTF8.GetString(fileData));
 		    Flags.MapGenSeed = Flags.ReplacementMap.Seed;

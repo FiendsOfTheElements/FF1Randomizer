@@ -23,30 +23,30 @@
                 "screenshot": "blindseed.png",
                 "description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the hidden flags selected). Make sure to save your flagset before you use this flag."
         },
-		{
-				"Id": "disableMinimap",
-				"title": "Disable Minimap",
-				"screenshot": null,
-				"description": "Disables the minimap."
-		},
-		{
-				"Id": "quickMinimapLoad",
-				"title": "Quick Minimap Load",
-				"screenshot": "quickminimapload.gif",
-				"description": "Speeds up loading of the minimap."
-		},
-		{
-				"Id": "enableSoftInBattle",
-				"title": "Enable Soft in Battle",
-				"screenshot": null,
-				"description": "Makes the SOFT spell and the SOFT potion work in battle."
-		},
-		{
-				"Id": "enableLifeInBattle",
-				"title": "Enable Life in Battle",
-				"screenshot": null,
-				"description": "Makes the LIFE spell, the LIF2 spell and the PHNIX potion work in battle."
-		},
+                {
+                                "Id": "disableMinimap",
+                                "title": "Disable Minimap",
+                                "screenshot": null,
+                                "description": "Disables the minimap."
+                },
+                {
+                                "Id": "quickMinimapLoad",
+                                "title": "Quick Minimap Load",
+                                "screenshot": "quickminimapload.gif",
+                                "description": "Speeds up loading of the minimap."
+                },
+                {
+                                "Id": "enableSoftInBattle",
+                                "title": "Enable Soft in Battle",
+                                "screenshot": null,
+                                "description": "Makes the SOFT spell and the SOFT potion work in battle."
+                },
+                {
+                                "Id": "enableLifeInBattle",
+                                "title": "Enable Life in Battle",
+                                "screenshot": null,
+                                "description": "Makes the LIFE spell, the LIF2 spell and the PHNIX potion work in battle."
+                },
         {
                 "Id": "noItemMagicCheckBox",
                 "title": "No Item Magic",
@@ -162,24 +162,24 @@
                 "screenshot": "shopInfoIconsCheckBox.png",
                 "description": "When using Shop Information, elements and statuses are shown as icons, allowing for more information to be displayed."
         },
-		{
-				"Id": "renounceAutosortCheckBox",
-				"title": "Renounce Autosort",
-				"screenshot": "renounceAutosortCheckBox.png",
-				"description": "Forgo the \"Autosort Inventory\" flag (found under the Conveniences tab) if it is enabled. This will revert the game to it's standard item menu behavior (Key Items up top, potions at the bottom) no matter what flags are selected."
-		},
-		{
-				"Id": "renounceChestInfoCheckBox",
-				"title": "Renounce Chest Info",
-				"screenshot": "incentivizeOpalCheckBox.png",
-				"description": "Forgo the \"Chest Information\" subflag (found under Shop Information) if it is enabled. This will revert to showing only the item name when opening chests."
+                {
+                                "Id": "renounceAutosortCheckBox",
+                                "title": "Renounce Autosort",
+                                "screenshot": "renounceAutosortCheckBox.png",
+                                "description": "Forgo the \"Autosort Inventory\" flag (found under the Conveniences tab) if it is enabled. This will revert the game to it's standard item menu behavior (Key Items up top, potions at the bottom) no matter what flags are selected."
+                },
+                {
+                                "Id": "renounceChestInfoCheckBox",
+                                "title": "Renounce Chest Info",
+                                "screenshot": "incentivizeOpalCheckBox.png",
+                                "description": "Forgo the \"Chest Information\" subflag (found under Shop Information) if it is enabled. This will revert to showing only the item name when opening chests."
         },
-		{
-			"Id": "renounceCantHoldRed",
-			"title": "Renounce Cant Hold Red",
-			"screenshot": null,
-			"description": "When enabled, displays \"Can't Hold\" screens in default menu color even when \"Chest Information\" subflag is enabled."
-		},
+                {
+                        "Id": "renounceCantHoldRed",
+                        "title": "Renounce Cant Hold Red",
+                        "screenshot": null,
+                        "description": "When enabled, displays \"Can't Hold\" screens in default menu color even when \"Chest Information\" subflag is enabled."
+                },
         {
                 "Id": "cropScreen",
                 "title": "Crop Friendly Screen",
@@ -1633,12 +1633,12 @@
                 "description": "Tents, Cabins, and Houses become ethers. Instead of restoring HP and saving on the overworld, they restore MP and can be used anywhere.\nEthers (ETHR) restore a charge for L1-L2. Dry Ethers (DRY) restore a charge for L1-L4. X Ethers (XETH) restore a charge for L1-L8.\nIncompatible with the \"House MP Restoration\" bug fix flag."
         },
 
-		{
-			"Id": "enableExtConsumables",
-			"title": "New Consumables",
-			"screenshot": "newConsumables.png",
-			"description": "Enables new Consumables\n[grid][r]{i}Item|{i}Effect[r]FCure|Full cure[r]Phnix|Raise dead light warrior (usable in battle!)[r]Smoke|Automatic run from battle[r]Blast|Cast FIR3[r]RFRSH|Cast HEL3[r]FLARE|Cast NUCLEAR[r]BLACK|Cast BANE with lower accuracy(can be used outside of battle)[r]GUARD|Cast FOG2[r]QUICK|Cast FAST[r]HIGH|HiPotion[r]WIZRD|Cast CONF[r]CLOAK|Cast RUSE\nNote: Smoke will allow you to run from any fight, including bosses. However, in boss fights you will be set back one-step before the boss tile (or just in front of the boss) and will still have to fight them."
-		},
+                {
+                        "Id": "enableExtConsumables",
+                        "title": "New Consumables",
+                        "screenshot": "newConsumables.png",
+                        "description": "Enables new Consumables\n[grid][r]{i}Item|{i}Effect[r]FCure|Full cure[r]Phnix|Raise dead light warrior (usable in battle!)[r]Smoke|Automatic run from battle[r]Blast|Cast FIR3[r]RFRSH|Cast HEL3[r]FLARE|Cast NUCLEAR[r]BLACK|Cast BANE with lower accuracy(can be used outside of battle)[r]GUARD|Cast FOG2[r]QUICK|Cast FAST[r]HIGH|HiPotion[r]WIZRD|Cast CONF[r]CLOAK|Cast RUSE\nNote: Smoke will allow you to run from any fight, including bosses. However, in boss fights you will be set back one-step before the boss tile (or just in front of the boss) and will still have to fight them."
+                },
         {
                 "Id": "extStartingItemSet",
                 "title": "New Consumables Starting Inventory",
@@ -1911,7 +1911,7 @@
                 "Id": "owMapExchange",
                 "title": "Overworld Map",
                 "screenshot": "owMapExchange.png",
-                "description": "Alternative Overworld Maps that can be used in place of the Vanilla overworld.\n\nMelmond Start: Coneria Castle, Coneria, and the Temple of Fiends are on the Melmond continent and a river links it to the Dwarf's Cave region.\n\nElfland Start: Coneria Castle, Coneria, and the Temple of Fiends are at Elfland's location and the Dwarf's Cave is cut off from the Coneria region.\n\nCrescent Start: Coneria Castle, Coneria, the Temple of Fiends, and the Marsh Cave are at Crescent Lake's location.\n\nNo Overworld: Removes the Overworld completely and connects all locations in a single dungeon.\n\nChanel #125/Epic Quest/Archipelago - pre-generated, procedurally generated alternate maps\n\nRandom: Selects at random one of the alternative start maps (excludes No Overworld)."
+                "description": "Alternative Overworld Maps that can be used in place of the standard (vanilla) overworld.\n\nGenerate New Overworld - creates a completely new overworld (resource intensive, may take 30-60 seconds during which time your browser may be unresponsive).\n\nRandom pregenerated 512 - Choose a random map from a set of maps that were pre-generated using the same code as 'Generate New Overworld'.\n\nDesert of Death - Deadly desert.\n\nNo Overworld - Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps.\n\nImport custom map - Import a map using the 'Import map' button."
         },
 
         {
@@ -1983,5 +1983,17 @@
                 "title": "Use Armor Crafter",
                 "screenshot": "armorCrafter.png",
                 "description": "Generate random armor. Names are assigned based on casting, elemental resists, or quality. Use 'select' button on the equip or shop screen to view exact stats. For chest armor, gauntlet, and helm, class permissions depend on the armor class, otherwise class permissions depend on the armor type.  There will also always be a set of superior armor that is only usable by the knight.\n[grid][r]Armor class|Names[r]Inferior|Velvet, Silk, Burlap, Brass, Tin[r]Light|Leathr, Copper, Bronze[r]Medium|Silver, Chain, Mithrl[r]Heavy|Iron, Steel, Gold[r]Superior|Opal, Dragon, Diamnd\n\n[grid]Armor class  or type|Class permissions[r]Inferior|all classes[r]Light|Fighter, Thief, Black Belt, Red Mage[r]Medium|Fighter, Ninja, Red Mage[r]Heavy|Fighter, Ninja[r]Superior|Knight[r]Bracelet|all classes[r]Ring (ends with 'R')|all classes[r]Cape (ends with 'C')|Fighter, Thief, Red Mage, White Mage, Black Mage[r]Shirt|Red Wizard, White Wizard, Black Wizard"
+        },
+        {
+                "Id": "mapgenRNGAccessReqsCheckBox",
+                "title": "Randomized Access Requirements",
+                "screenshot": "",
+                "description": "Randomize which locations have which access requirements, i.e. whether the ship, canoe, or airship is required to access a certain location.  For example, with this enabled, it could produce a map where you need to go through Titan's tunnel to access the Temple of Fiends, or Elfland appears in the mountains requiring the canoe.  Also splits up Coneria and Elfland, placing the towns and castles separately.  Requires key item shuffle and/or loose items to be enabled."
+        },
+        {
+                "Id": "mapgenUnsafeStartCheckBox",
+                "title": "Randomized Access Requirements Unsafe Start",
+                "screenshot": "",
+                "description": "If enabled, mid-game dungeons (Earth, Volcano, Ice and Ordeals) are added to the pool of possible starting area entrances that may be required for early progression."
         }
 ]

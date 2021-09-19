@@ -106,6 +106,9 @@ namespace FF1Lib
 		[IntegerFlag(0, Int32.MaxValue-1)]
 		public int MapGenSeed { get; set; } = 0;
 
+		public bool MapGenRandomizedAccessReqs { get; set; } = false;
+		public bool MapGenUnsafeStart { get; set; } = false;
+
 		public OwMapExchangeData ReplacementMap { get; set; } = null;
 
 		public bool? NoItemMagic { get; set; } = false;

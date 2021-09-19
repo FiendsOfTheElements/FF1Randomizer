@@ -290,7 +290,7 @@ namespace FF1Lib
 				  if (flags.ReplacementMap != null) {
 					  exdata = flags.ReplacementMap;
 				  } else {
-					  exdata = NewOverworld.GenerateNewOverworld(maprng);
+				      exdata = NewOverworld.GenerateNewOverworld(maprng, flags);
 				  }
 				  return new OwMapExchange(_rom, _overworldMap, exdata);
 			    case OwMapExchanges.ImportCustomMap:
