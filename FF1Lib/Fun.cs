@@ -92,7 +92,7 @@ namespace FF1Lib
 		public const int PaletteSize = 4;
 		public const int PaletteCount = 64;
 
-		public void FunEnemyNames(bool teamSteak)
+	    public void FunEnemyNames(bool teamSteak, MT19337 rng)
 		{
 			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 
@@ -100,7 +100,14 @@ namespace FF1Lib
 			enemyText[2] = "RURURU"; // +2
 			enemyText[3] = "GrrrWOLF"; // +2
 			enemyText[28] = "GeORGE";
-			enemyText[29] = "GROVER";
+
+			// "WzOGRE"
+			if (rng.Between(1, 10) >= 5) {
+			    enemyText[29] = "DIRGE"; // -1
+			} else {
+			    enemyText[29] = "GROVER"; // +0
+			}
+
 			enemyText[30] = "R.SNEK"; // +3
 			enemyText[31] = "GrSNEK"; // +1
 			enemyText[32] = "SeaSNEK"; // -1
@@ -124,10 +131,10 @@ namespace FF1Lib
 			enemyText[112] = "OKAYMAN";
 			enemyText[119] = "BUMP";
 			enemyText[120] = "BUMP";
-			enemyText[121] = "KELLY";
-			enemyText[122] = "KELLY";
+			enemyText[121] = "KELLY"; // +1
+			enemyText[122] = "KELLY"; // +1
 
-			// Moving IMP and GrIMP gives me another 10 bytes, for a total of 19 extra bytes, of which I'm using 16.
+			// Moving IMP and GrIMP gives me another 10 bytes, for a total of 19 extra bytes, of which I'm using 18.
 			var enemyTextPart1 = enemyText.Take(2).ToArray();
 			var enemyTextPart2 = enemyText.Skip(2).ToArray();
 			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);

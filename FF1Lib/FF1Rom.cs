@@ -937,7 +937,7 @@ namespace FF1Lib
 
 			if (preferences.FunEnemyNames && !flags.EnemizerEnabled)
 			{
-				FunEnemyNames(preferences.TeamSteak);
+			    FunEnemyNames(preferences.TeamSteak, rng);
 			}
 
 			if (ItemsText[(int)Item.Ribbon].Length > 7
