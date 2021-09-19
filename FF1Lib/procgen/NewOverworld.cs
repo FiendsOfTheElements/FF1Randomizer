@@ -224,6 +224,7 @@ namespace FF1Lib.Procgen
         public Dictionary<string, SCCoords> FeatureCoordinates;
         List<int> Reachable_regions;
         List<int> Exclude_docks;
+	List<int> Exclude_airship;
         private bool ownBasemap;
         private bool ownTilemap;
         private bool ownRegions;
@@ -258,6 +259,7 @@ namespace FF1Lib.Procgen
             this.FeatureCoordinates = new Dictionary<string, SCCoords>();
             this.Reachable_regions = new List<int>();
             this.Exclude_docks = new List<int>();
+            this.Exclude_airship = new List<int>();
             this.StepQueue = new Queue<GenerationStep>(steps);
 	    this.DockPlacements = new List<ValueTuple<short, SCCoords>>();
             this.overworldTiles = overworldTiles;
@@ -286,6 +288,7 @@ namespace FF1Lib.Procgen
             this.FeatureCoordinates = copy.FeatureCoordinates;
             this.Reachable_regions = copy.Reachable_regions;
             this.Exclude_docks = copy.Exclude_docks;
+            this.Exclude_airship = copy.Exclude_airship;
             this.rng = copy.rng;
             this.StepQueue = copy.StepQueue;
 	    this.DockPlacements = copy.DockPlacements;
@@ -353,6 +356,7 @@ namespace FF1Lib.Procgen
             this.FeatureCoordinates = new Dictionary<string, SCCoords>(this.FeatureCoordinates);
             this.Reachable_regions = new List<int>(this.Reachable_regions);
             this.Exclude_docks = new List<int>(this.Exclude_docks);
+            this.Exclude_airship = new List<int>(this.Exclude_airship);
 	    this.DockPlacements = new List<ValueTuple<short, SCCoords>>(this.DockPlacements);
             this.ownPlacements = true;
         }
@@ -1274,6 +1278,7 @@ namespace FF1Lib.Procgen
 		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores4, false}),
 
 		    new GenerationStep("ApplyFilter", new object[]{mt.prune_forests, true}),
+		    new GenerationStep("PreventAirshipLanding", new object[]{}),
 
 		    new GenerationStep("ApplyFilter", new object[]{mt.mountain_borders, false}),
 		    new GenerationStep("ApplyFilter", new object[]{mt.river_borders, false}),

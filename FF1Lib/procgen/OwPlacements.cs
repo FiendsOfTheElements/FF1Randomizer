@@ -377,7 +377,7 @@ namespace FF1Lib.Procgen
 		    var r = this.CheckIndirectAirshipAccess(w);
 		    if (r.Item1 || !requireAirshipAccess) {
 			if (!this.CheckReachableByRiver(w, false)) {
-			    tasks.Add(() => new OverworldState(this).IsolatedPlacement(feature, w));
+			    tasks.Add(() => new OverworldState(this).IsolatedPlacement(feature, w, requireAirshipAccess));
 			}
 		    }
 		}
@@ -386,7 +386,7 @@ namespace FF1Lib.Procgen
 	    return new Result(tasks);
 	}
 
-	public Result IsolatedPlacement(OwFeature feature, OwRegion region) {
+	public Result IsolatedPlacement(OwFeature feature, OwRegion region, bool requireAirshipAccess) {
 	    var v = this.PlaceFeature(this.Traversable_regionmap, region, feature);
 	    if (v.Item1) {
 		this.OwnPlacements();
@@ -395,6 +395,11 @@ namespace FF1Lib.Procgen
 		foreach (var e in exclude) {
 		    if (!this.Exclude_docks.Contains(e)) {
 			this.Exclude_docks.Add(e);
+		    }
+		}
+		if (!requireAirshipAccess) {
+		    if (!this.Exclude_airship.Contains(region.RegionId)) {
+			this.Exclude_airship.Add(region.RegionId);
 		    }
 		}
 		return this.NextStep();
@@ -426,6 +431,9 @@ namespace FF1Lib.Procgen
 		var exclude = new List<int>();
 		if (!this.Exclude_docks.Contains(region.RegionId)) {
 		    this.Exclude_docks.Add(region.RegionId);
+		}
+		if (!this.Exclude_airship.Contains(region.RegionId)) {
+		    this.Exclude_airship.Add(region.RegionId);
 		}
 		return this.NextStep();
 	    } else {
@@ -741,6 +749,49 @@ namespace FF1Lib.Procgen
 		}
 	    }
 	    return new Result(false);
+	}
+
+	public Result PreventAirshipLanding() {
+	    this.OwnTilemap();
+	    foreach (var er in Exclude_airship) {
+		var region = this.Traversable_regionlist[er];
+		Console.WriteLine($"Prevent airship at {er} {region.Points[0]}");
+		foreach (var p in region.Points) {
+		    bool adjMarsh = false;
+		    bool adjDesert = false;
+		    bool adjRiver = false;
+		    var adjCoors = new SCCoords[] {
+			p, p.OwUp, p.OwRight, p.OwDown, p.OwLeft
+		    };
+		    foreach (var adj in adjCoors) {
+			if (this.Tilemap[adj.Y, adj.X] == OverworldTiles.MARSH) {
+			    adjMarsh = true;
+			}
+			if (this.Tilemap[adj.Y, adj.X] == OverworldTiles.DESERT) {
+			    adjDesert = true;
+			}
+			if (this.Tilemap[adj.Y, adj.X] == OverworldTiles.RIVER) {
+			    adjRiver = true;
+			}
+		    }
+		    foreach (var adj in adjCoors) {
+			if (this.Tilemap[adj.Y, adj.X] == OverworldTiles.LAND ||
+			    this.Tilemap[adj.Y, adj.X] == OverworldTiles.GRASS)
+			{
+			    if (adjMarsh) {
+				this.Tilemap[adj.Y, adj.X] = OverworldTiles.MARSH;
+			    } else if (adjDesert) {
+				this.Tilemap[adj.Y, adj.X] = OverworldTiles.DESERT;
+			    } else if (adjRiver) {
+				this.Tilemap[adj.Y, adj.X] = OverworldTiles.RIVER;
+			    } else {
+				this.Tilemap[adj.Y, adj.X] = OverworldTiles.MARSH;
+			    }
+			}
+		    }
+		}
+	    }
+	    return this.NextStep();
 	}
     }
 }

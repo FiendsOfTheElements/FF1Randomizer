@@ -685,6 +685,7 @@ namespace FF1Lib.Procgen
         non_water_tiles.Remove(DOCK_S);
         non_water_tiles.Remove(DOCK_SW);
         non_water_tiles.Remove(DOCK_SQ);
+        non_water_tiles.Remove(WATERFALL);
 
         var non_shore_tiles = new HashSet<byte>(allTiles);
         non_shore_tiles.Remove(OCEAN);
