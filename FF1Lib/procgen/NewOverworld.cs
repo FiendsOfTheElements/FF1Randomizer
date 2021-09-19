@@ -1411,8 +1411,8 @@ namespace FF1Lib.Procgen
 	    // to coordinates on the 8x8 source grid of encounter
 	    // zones.
 	    var source_encounter_domains = new Dictionary<string, (int, double)>{
-		{"Coneria",         (Convert.ToInt32("44", 8), 1)},
-		{"ConeriaCastle1",  (Convert.ToInt32("44", 8), 1)},
+		{"Coneria",         (Convert.ToInt32("44", 8), 3)},
+		{"ConeriaCastle1",  (Convert.ToInt32("44", 8), 3)},
 		{"TempleOfFiends1", (Convert.ToInt32("34", 8), 1)},
 		{"Pravoka",         (Convert.ToInt32("46", 8), 1)},
 		{"Gaia",            (Convert.ToInt32("06", 8), .75)},
