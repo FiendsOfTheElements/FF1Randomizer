@@ -3853,6 +3853,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassNoCasting"));
 			}
 		}
+		public bool? RandomizeClassIncludeNaturalResist
+		{
+			get => Flags.RandomizeClassIncludeNaturalResist;
+			set
+			{
+				Flags.RandomizeClassIncludeNaturalResist = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassIncludeNaturalResist"));
+			}
+		}
 		public int RandomizeClassMaxBonus
 		{
 			get => Flags.RandomizeClassMaxBonus;
