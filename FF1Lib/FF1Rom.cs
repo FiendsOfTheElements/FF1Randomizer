@@ -983,6 +983,7 @@ namespace FF1Lib
 
 			SetProgressiveScaleMode(flags);
 
+			MoveLoadPlayerIBStats();
 			if ((bool)flags.RandomizeClass)
 			{
 				RandomizeClass(rng, flags, oldItemNames);

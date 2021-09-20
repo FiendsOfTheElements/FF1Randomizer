@@ -51,7 +51,8 @@ namespace FF1Lib
 			SpcMax = 29,
 			PowerRW = 30,
 			NoPromoMagic = 31,
-			LockpickingLevel = 32
+			LockpickingLevel = 32,
+			InnateResist = 33
 		}
 		public enum AuthClass
 		{
@@ -161,6 +162,7 @@ namespace FF1Lib
 			public byte MaxSpC { get; set;  }
 			public List<string> MagicRanks { get; set; }
 			public List<Rank> Ranks { get; set; }
+			public byte InnateResist { get; set; }
 			public ClassData()
 			{
 				Promoted = false;
@@ -192,6 +194,7 @@ namespace FF1Lib
 				wpPermissions = new List<Item>();
 				MagicRanks = new List<string> { "- ", "- ", "- " };
 				Ranks = Enumerable.Repeat((Rank)0, Enum.GetNames(typeof(RankedType)).Length).ToList();
+				InnateResist = 0;
 			}
 
 			public byte[] StartingStatsArray()
@@ -320,6 +323,7 @@ namespace FF1Lib
 	    List<ushort> equipmentPermissionBit = new List<ushort> { 0x800, 0x400, 0x200, 0x100, 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
 	    const int lut_LvlUpHitRateBonus = 0x6CA59;
 	    const int lut_LvlUpMagDefBonus = 0x6CA65;
+		const int lut_InnateResist = 0x6D400;
 	    const int lut_MaxMP = 0x6C902;
 
 	    public List<ClassData> ReadClassData() {
@@ -396,7 +400,9 @@ namespace FF1Lib
 
 			// Inset spell permissions
 			Put(MagicPermissionsOffset, classData.SelectMany(x => x.MagicPermissions()).ToArray());
-	    }
+
+			Put(lut_InnateResist, classData.Select(x => x.InnateResist).ToArray());
+		}
 
 		public void RandomizeClass(MT19337 rng, Flags flags, string[] itemnames)
 		{
@@ -757,6 +763,15 @@ namespace FF1Lib
 				bonusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "-10 Lp Lv", mod: -10, authclass: new List<AuthClass> { AuthClass.Thief }));
 			}
 
+			if((bool)flags.RandomizeClassIncludeNaturalResist)
+			{
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res All", mod: 0xFF, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.RedMage, AuthClass.BlackMage, AuthClass.WhiteMage }));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res PEDTS", mod: (int)(Element.POISON | Element.EARTH | Element.DEATH | Element.TIME | Element.STATUS), authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.RedMage, AuthClass.BlackMage, AuthClass.WhiteMage }));
+
+				bonusNormal.Add(CreateRandomResistBonusMalus(rng));
+				bonusNormal.Add(CreateRandomResistBonusMalus(rng));
+			}
+
 			var assignedBonusMalus = new List<List<BonusMalus>> { new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>() };
 
 			// Shuffle bonuses and maluses
@@ -985,6 +1000,10 @@ namespace FF1Lib
 								newLockPickingLevel = Math.Min(50, newLockPickingLevel);
 								SetLockpickingLevel(newLockPickingLevel);
 							}
+							break;
+						case BonusMalusAction.InnateResist:
+							classData[i].InnateResist = (byte)bonusmalus.StatMod;
+							classData[i + 6].InnateResist = (byte)bonusmalus.StatMod;
 							break;
 					}
 				}
@@ -1479,7 +1498,50 @@ namespace FF1Lib
 			classData[7].wpPermissions.Add(Item.Katana);
 			classData[10].arPermissions.Add(Item.WhiteShirt);
 			classData[11].arPermissions.Add(Item.BlackShirt);
+		}
 
+		public BonusMalus CreateRandomResistBonusMalus(MT19337 rng)
+		{
+			byte innateResistValue = 0x00;
+			string description = "Res ";
+			List<Element> elements = Enum.GetValues(typeof(Element)).Cast<Element>().ToList();
+			//3 picks but can get a none
+			for (int picks = 0; picks < 3; picks++)
+			{
+
+				Element pickedElement = elements.SpliceRandom(rng);
+				switch (pickedElement)
+				{
+					case Element.STATUS:
+						description += "S";
+						break;
+					case Element.POISON:
+						description += "P";
+						break;
+					case Element.TIME:
+						description += "T";
+						break;
+					case Element.DEATH:
+						description += "D";
+						break;
+					case Element.FIRE:
+						description += "F";
+						break;
+					case Element.ICE:
+						description += "I";
+						break;
+					case Element.LIGHTNING:
+						description += "L";
+						break;
+					case Element.EARTH:
+						description += "E";
+						break;
+				}
+
+				innateResistValue |= (byte)pickedElement;
+			}
+
+			return new BonusMalus(BonusMalusAction.InnateResist, description, mod: innateResistValue);
 		}
 	}
 }
