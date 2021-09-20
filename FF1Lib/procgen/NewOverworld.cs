@@ -1088,6 +1088,10 @@ namespace FF1Lib.Procgen
 		var blankState = new OverworldState(rng, worldGenSteps, mt);
 		var worldState = RunSteps(blankState);
 
+		if (worldState == null) {
+		    throw new Exception($"Couldn't generate a map with this seed, try a different seed");
+		}
+
 		var maxPlacementTries = 8;
 		var placementTries = maxPlacementTries;
 
