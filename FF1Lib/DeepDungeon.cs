@@ -722,7 +722,14 @@ namespace FF1Lib
 				Put(0x2CC00 + i, Blob.FromHex("08"));
 
 				// Pick a tileset with unused exit tiles.
-				tilesetmappings[i] = tilesetspinner.PickRandom(rng);
+				if (flags.DDProgressiveTilesets)
+				{
+					tilesetmappings[i] = tilesetspinner[0];
+				}
+				else
+				{
+					tilesetmappings[i] = tilesetspinner.PickRandom(rng);
+				}
 				if (townfloors[nexttown] == i)
 				{
 					// If it's a town branch floor we need at least two exits available.
