@@ -4616,12 +4616,12 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? LampMatters
+		public bool? IncreaseDarkPenalty
 		{
-			get => Flags.LampMatters;
+			get => Flags.IncreaseDarkPenalty;
 			set
 			{
-				Flags.LampMatters = value;
+				Flags.IncreaseDarkPenalty = value;
 				RaisePropertyChanged();
 			}
 		}

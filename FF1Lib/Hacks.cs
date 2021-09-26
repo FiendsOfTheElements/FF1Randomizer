@@ -2100,23 +2100,15 @@ namespace FF1Lib
 			PutInBank(0x1B, 0x9400, Blob.FromHex("00000000000000000000000048B182AA68A88A918060A000A901200C94A001A902200C94A00AA903200C94A00BA904200C94A021A905200C94A025A906200C94A023A907200C94A022A908200C94A020A909200C94A000B182AAA024B1821D0094A00A9180A9AD48A92B48A90C4C03FE"));
 		}
 
-		public void EnableLampMatters()
+		public void IncreaseDarkPenalty()
 		{
-			/* for testing, Kraken1 only casts Ink
-			EnemyScriptInfo krakenAI = new EnemyScriptInfo();
-			krakenAI.decompressData(Get(ScriptOffset + (0x26 * ScriptSize), ScriptSize));
-			krakenAI.skill_chance = 0x80; // 128 / 128 chance
-			Put(ScriptOffset + (0x26 * ScriptSize), krakenAI.compressData()); */
-
-			/* original									lampMatters
-			 *       LDA math_hitchance					      LDA #0
-			 *       SEC								      STA math_hitchance
-			 *       SBC #40							      STA math_critchance
-			 *       STA math_hitchance					      INC A
+			/* :: Original::                        :: Modified ::
+			 * LDA math_hitchance                   LDA #0
+			 * SEC                                  STA math_hitchance
+			 * SBC #40                              STA math_critchance
+			 * STA math_hitchance                   INC A
 			 * 
-			 * 0x326A7: AD 56 68 38 E9 28 8D 56 68		0x326A7: A9 00 8D 56 68 8D 62 68 1A
-			 *                         ^
-			 *                         hitchance - 40
+			 * 0x326A7: AD 56 68 38 E9 28 8D 56 68  0x326A7: A9 00 8D 56 68 8D 62 68 1A
 			 */
 
 			// replace asm, set hitchance and critchance to 0
