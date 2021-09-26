@@ -2102,35 +2102,25 @@ namespace FF1Lib
 
 		public void EnableLampMatters()
 		{
-			// for testing, Kraken1 only casts Ink
+			/* for testing, Kraken1 only casts Ink
 			EnemyScriptInfo krakenAI = new EnemyScriptInfo();
 			krakenAI.decompressData(Get(ScriptOffset + (0x26 * ScriptSize), ScriptSize));
 			krakenAI.skill_chance = 0x80; // 128 / 128 chance
-			Put(ScriptOffset + (0x26 * ScriptSize), krakenAI.compressData());
+			Put(ScriptOffset + (0x26 * ScriptSize), krakenAI.compressData()); */
 
 			/* original									lampMatters
-			 *       LDA math_hitchance					      LDA $6856
-			 *       SEC								      SEC
-			 *       SBC #40							      SBC #168
-			 *       STA math_hitchance					      STA $6856
+			 *       LDA math_hitchance					      LDA #0
+			 *       SEC								      STA math_hitchance
+			 *       SBC #40							      STA math_critchance
+			 *       STA math_hitchance					      INC A
 			 * 
-			 * 0x326A7: AD 56 68 38 E9 28 8D 56 68		0x326A7: AD 56 68 38 E9 A8 8D 56 68
-			 *                         ^                                        ^
-			 *                         hitchance - 40                           hitchance - 168
+			 * 0x326A7: AD 56 68 38 E9 28 8D 56 68		0x326A7: A9 00 8D 56 68 8D 62 68 1A
+			 *                         ^
+			 *                         hitchance - 40
 			 */
 
-			// replace asm, substract 168 from base hitchance
-			Put(0x326A7, Blob.FromHex("AD566838E9A88D5668"));
-
-			// replace asm, try skipping to @Miss block
-			// Put(0x326A7, Blob.FromHex("4C1B28"));
-
-			// LDA math_hitchance
-			// CMP #255
-			// BCC @MISS
-
-			// AD 56 68 C9 FF 90 DF
-
+			// replace asm, set hitchance and critchance to 0
+			Put(0x326A7, Blob.FromHex("A9008D56688D62681A"));
 		}
 	}
 }
