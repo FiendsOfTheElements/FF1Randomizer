@@ -4616,6 +4616,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? LampMatters
+		{
+			get => Flags.LampMatters;
+			set
+			{
+				Flags.LampMatters = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public int LockpickingLevelRequirement
 		{
 			get => Flags.LockpickingLevelRequirement;

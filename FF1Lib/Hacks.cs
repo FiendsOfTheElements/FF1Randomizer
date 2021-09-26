@@ -2099,5 +2099,38 @@ namespace FF1Lib
 
 			PutInBank(0x1B, 0x9400, Blob.FromHex("00000000000000000000000048B182AA68A88A918060A000A901200C94A001A902200C94A00AA903200C94A00BA904200C94A021A905200C94A025A906200C94A023A907200C94A022A908200C94A020A909200C94A000B182AAA024B1821D0094A00A9180A9AD48A92B48A90C4C03FE"));
 		}
+
+		public void EnableLampMatters()
+		{
+			// for testing, Kraken1 only casts Ink
+			EnemyScriptInfo krakenAI = new EnemyScriptInfo();
+			krakenAI.decompressData(Get(ScriptOffset + (0x26 * ScriptSize), ScriptSize));
+			krakenAI.skill_chance = 0x80; // 128 / 128 chance
+			Put(ScriptOffset + (0x26 * ScriptSize), krakenAI.compressData());
+
+			/* original									lampMatters
+			 *       LDA math_hitchance					      LDA $6856
+			 *       SEC								      SEC
+			 *       SBC #40							      SBC #168
+			 *       STA math_hitchance					      STA $6856
+			 * 
+			 * 0x326A7: AD 56 68 38 E9 28 8D 56 68		0x326A7: AD 56 68 38 E9 A8 8D 56 68
+			 *                         ^                                        ^
+			 *                         hitchance - 40                           hitchance - 168
+			 */
+
+			// replace asm, substract 168 from base hitchance
+			Put(0x326A7, Blob.FromHex("AD566838E9A88D5668"));
+
+			// replace asm, try skipping to @Miss block
+			// Put(0x326A7, Blob.FromHex("4C1B28"));
+
+			// LDA math_hitchance
+			// CMP #255
+			// BCC @MISS
+
+			// AD 56 68 C9 FF 90 DF
+
+		}
 	}
 }

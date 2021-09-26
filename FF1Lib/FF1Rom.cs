@@ -887,6 +887,11 @@ namespace FF1Lib
 				FixHitChanceCap();
 			}
 
+			if ((bool)flags.LampMatters)
+			{
+				EnableLampMatters();
+			}
+
 			if (flags.EnemyElementalResistancesBug)
 			{
 				FixEnemyElementalResistances();
