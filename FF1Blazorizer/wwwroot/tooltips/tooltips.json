@@ -2000,5 +2000,11 @@
                 "title": "Randomized Access Requirements Unsafe Start",
                 "screenshot": "",
                 "description": "If enabled, mid-game dungeons (Earth, Volcano, Ice and Ordeals) are added to the pool of possible starting area entrances that may be required for early progression."
+        },
+        {
+                "Id": "increaseDarkPenaltyCheckBox",
+                "title": "Increase Dark Penalty",
+                "screenshot": "increaseDarkPenaltyCheckBox.png",
+                "description": "If enabled, \"Dark\" status severely decreases an attacker's chance to hit or crit an enemy.\nAffects both players and enemies inflicted with \"Dark\" status."
         }
 ]

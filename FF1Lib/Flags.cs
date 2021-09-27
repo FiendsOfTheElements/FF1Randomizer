@@ -638,6 +638,8 @@ namespace FF1Lib
 
 		public bool? AllowUnsafeStartArea { get; set; } = false;
 
+		public bool? IncreaseDarkPenalty { get; set; } = false;
+
 		public bool? Lockpicking { get; set; } = false;
 
 		[IntegerFlag(1, 50)]

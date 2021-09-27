@@ -887,6 +887,11 @@ namespace FF1Lib
 				FixHitChanceCap();
 			}
 
+			if ((bool)flags.IncreaseDarkPenalty)
+			{
+				IncreaseDarkPenalty();
+			}
+
 			if (flags.EnemyElementalResistancesBug)
 			{
 				FixEnemyElementalResistances();
