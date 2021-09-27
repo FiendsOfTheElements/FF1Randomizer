@@ -645,13 +645,33 @@ namespace FF1Lib
 			var newRubySubjectVerbAgreement = newRubyContent[2];
 			var newRubyTastes = newRubyContent[3];
 			var newRubyOnomatopoeia = newRubyContent[4];
+			var newRubyArticle = ""; // newRubySubjectVerbAgreement;
+			if (newRubySubjectVerbAgreement == "ARE")
+			{
+				if (newRuby[0] == 'A' || newRuby[0] == 'E' || newRuby[0] == 'I' || newRuby[0] == 'O' || newRuby[0] == 'U')
+				{
+					newRubyArticle = "an ";
+				}
+				else
+				{
+					newRubyArticle = "a ";
+				}
+			}
 
 			// handle extra dialogues that might contain the RUBY if the NPChints flag is enabled
 			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("RUBY", newRuby, dialogs);
 
 			// begin substitute phrase parts
+			var titanDeepDungeon = dialogs[0x29].Split(new string[] { "a RUBY" }, System.StringSplitOptions.RemoveEmptyEntries);
 			var titanDialogue = dialogs[0x2A].Split(new string[] { "RUBY", "Crunch, crunch, crunch,", "sweet", "Rubies are" }, System.StringSplitOptions.RemoveEmptyEntries);
 			var melmondManDialogue = dialogs[0x7B].Split(new string[] { "eats gems.", "RUBIES" }, System.StringSplitOptions.RemoveEmptyEntries);
+
+			// Bring me a {newRuby} if you
+			// wish to skip to floor 22.
+			if (titanDeepDungeon.Length > 1)
+			{
+				dialogsUpdate.Add(0x29, titanDeepDungeon[0] + newRubyArticle + newRuby + titanDeepDungeon[1]);
+			}
 
 			// If you want pass, give
 			// me the {newRuby}..

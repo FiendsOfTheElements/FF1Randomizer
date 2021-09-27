@@ -707,13 +707,17 @@ namespace FF1Lib
 			// The "ordeals man" will be in front of 1, explaining what's going on and then vanishing
 			// The "tnt dwarf" will guard the entrance for 8
 			// The "titan" will be in front of the entrance for 22
-			// The "dark elf" will be in front of the entrance for 36
+			// The "submarine girl" will be in front of the entrance for 36
 			SetNpc((MapId)60, 0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
 			SetNpc((MapId)60, 1, ObjectId.Nerrick, 0x20, 0x26, false, true);
 			SetNpc((MapId)60, 2, ObjectId.Titan, 0x1A, 0x20, false, true);
-			SetNpc((MapId)60, 3, ObjectId.Astos, 0x26, 0x20, false, true);
+			SetNpc((MapId)60, 3, ObjectId.SubEngineer, 0x26, 0x20, false, true);
+			//SetNpc((MapId)60, 3, ObjectId.Astos, 0x26, 0x20, false, true);
 			InsertDialogs(0x2D, "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nBring these other folks\nthe items they need to\nskip ahead. GOOD LUCK!");
-			InsertDialogs(0x11, "Astos double crossed us.\nRetrieve the CROWN.\nThen, bring it\ndirectly back to me!");
+			InsertDialogs(0x13, "Bring me TNT if you wish\nto skip to floor 8.");
+			InsertDialogs(0x29, "Bring me a RUBY if\nyou wish to skip to\nfloor 22.");
+			InsertDialogs(0x25, "Bring me OXYALE if you\nwish to skip to floor 36.");
+			//InsertDialogs(0x11, "Astos double crossed us.\nRetrieve the CROWN.\nThen, bring it\ndirectly back to me!");
 
 			// Generate the map layouts.
 			for (int i = 8; i < 60; i++)
@@ -1484,7 +1488,7 @@ namespace FF1Lib
 			var tailfloor = RollDice(rng, 4, 6) + 6 + 7;
 			var tntfloor = 8 + 7;
 			var rubyfloor = 22 + 7;
-			var crownfloor = 36 + 7;
+			var oxyfloor = 36 + 7;
 			var chestindex = 0;
 			Map m = maps[bahamutfloor];
 			Tileset t = tilesets[tilesetmappings[bahamutfloor]];
@@ -1515,10 +1519,10 @@ namespace FF1Lib
 			while (chestsonfloor[rubyfloor] - chestsonfloor[rubyfloor - 1] == 0) rubyfloor++;
 			chestindex = RollDice(rng, 1, chestsonfloor[rubyfloor] - chestsonfloor[rubyfloor - 1]) + chestsonfloor[rubyfloor - 1];
 			Put(0x3100 + chestindex, Blob.FromHex("09")); // 09 is the RUBY item index
-			// Place CROWN
-			while (chestsonfloor[crownfloor] - chestsonfloor[crownfloor - 1] == 0) crownfloor++;
-			chestindex = RollDice(rng, 1, chestsonfloor[crownfloor] - chestsonfloor[crownfloor - 1]) + chestsonfloor[crownfloor - 1];
-			Put(0x3100 + chestindex, Blob.FromHex("02")); // 02 is the CROWN item index
+			// Place OXYALE
+			while (chestsonfloor[oxyfloor] - chestsonfloor[oxyfloor - 1] == 0) oxyfloor++;
+			chestindex = RollDice(rng, 1, chestsonfloor[oxyfloor] - chestsonfloor[oxyfloor - 1]) + chestsonfloor[oxyfloor - 1];
+			Put(0x3100 + chestindex, Blob.FromHex("10")); // 10 is the OXYALE item index
 			// Place TAIL
 			while (chestsonfloor[tailfloor] - chestsonfloor[tailfloor - 1] == 0 || tailfloor == rubyfloor) tailfloor++;
 			chestindex = RollDice(rng, 1, chestsonfloor[tailfloor] - chestsonfloor[tailfloor - 1]) + chestsonfloor[tailfloor - 1];
