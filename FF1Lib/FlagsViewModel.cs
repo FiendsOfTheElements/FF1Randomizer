@@ -4625,6 +4625,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? IncreaseDarkPenalty
+		{
+			get => Flags.IncreaseDarkPenalty;
+			set
+			{
+				Flags.IncreaseDarkPenalty = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public int LockpickingLevelRequirement
 		{
 			get => Flags.LockpickingLevelRequirement;

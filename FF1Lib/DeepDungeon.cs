@@ -201,18 +201,18 @@ namespace FF1Lib
 			tilesets[1].doortile = 0x36;
 			tilesets[1].closedoortile = 0x3A;
 			tilesets[1].obstacletile = 0x38;
-			tilesets[1].warpgraphic.topleft = 0x28;
-			tilesets[1].warpgraphic.topright = 0x29;
-			tilesets[1].warpgraphic.botleft = 0x38;
-			tilesets[1].warpgraphic.botright = 0x39;
-			tilesets[1].teleportgraphic.topleft = 0x26;
-			tilesets[1].teleportgraphic.topright = 0x27;
-			tilesets[1].teleportgraphic.botleft = 0x36;
-			tilesets[1].teleportgraphic.botright = 0x37;
-			tilesets[1].laddergraphic.topleft = 0x10;
+			tilesets[1].warpgraphic.topleft = 0x26;
+			tilesets[1].warpgraphic.topright = 0x27;
+			tilesets[1].warpgraphic.botleft = 0x36;
+			tilesets[1].warpgraphic.botright = 0x37;
+			tilesets[1].teleportgraphic.topleft = 0x28;
+			tilesets[1].teleportgraphic.topright = 0x29;
+			tilesets[1].teleportgraphic.botleft = 0x38;
+			tilesets[1].teleportgraphic.botright = 0x39;
+			tilesets[1].laddergraphic.topleft = 0x2E;
 			tilesets[1].laddergraphic.topright = 0x2F;
-			tilesets[1].laddergraphic.botleft = 0x10;
-			tilesets[1].laddergraphic.botright = 0x2F;
+			tilesets[1].laddergraphic.botleft = 0x3E;
+			tilesets[1].laddergraphic.botright = 0x3F;
 			tilesets[1].teleportdeck = new List<byte>();
 			tilesets[1].teleportdeck.Add(0x44);
 			tilesets[1].teleportdeck.Add(0x45);
@@ -254,18 +254,18 @@ namespace FF1Lib
 			tilesets[2].doortile = 0x36;
 			tilesets[2].closedoortile = 0x3A;
 			tilesets[2].obstacletile = 0x3E;
-			tilesets[2].warpgraphic.topleft = 0x28;
-			tilesets[2].warpgraphic.topright = 0x29;
-			tilesets[2].warpgraphic.botleft = 0x38;
-			tilesets[2].warpgraphic.botright = 0x39;
-			tilesets[2].teleportgraphic.topleft = 0x26;
-			tilesets[2].teleportgraphic.topright = 0x27;
-			tilesets[2].teleportgraphic.botleft = 0x36;
-			tilesets[2].teleportgraphic.botright = 0x37;
-			tilesets[2].laddergraphic.topleft = 0x10;
-			tilesets[2].laddergraphic.topright = 0x6A;
-			tilesets[2].laddergraphic.botleft = 0x10;
-			tilesets[2].laddergraphic.botright = 0x6A;
+			tilesets[2].warpgraphic.topleft = 0x26;
+			tilesets[2].warpgraphic.topright = 0x27;
+			tilesets[2].warpgraphic.botleft = 0x36;
+			tilesets[2].warpgraphic.botright = 0x37;
+			tilesets[2].teleportgraphic.topleft = 0x28;
+			tilesets[2].teleportgraphic.topright = 0x29;
+			tilesets[2].teleportgraphic.botleft = 0x38;
+			tilesets[2].teleportgraphic.botright = 0x39;
+			tilesets[2].laddergraphic.topleft = 0x2E;
+			tilesets[2].laddergraphic.topright = 0x2F;
+			tilesets[2].laddergraphic.botleft = 0x3E;
+			tilesets[2].laddergraphic.botright = 0x3F;
 			tilesets[2].teleportdeck = new List<byte>();
 			tilesets[2].teleportdeck.Add(0x15);
 			tilesets[2].teleportdeck.Add(0x16);
@@ -309,18 +309,18 @@ namespace FF1Lib
 			tilesets[3].doortile = 0x36;
 			tilesets[3].closedoortile = 0x3A;
 			tilesets[3].obstacletile = 0x3D;
-			tilesets[3].warpgraphic.topleft = 0x28;
-			tilesets[3].warpgraphic.topright = 0x29;
-			tilesets[3].warpgraphic.botleft = 0x38;
-			tilesets[3].warpgraphic.botright = 0x39;
-			tilesets[3].teleportgraphic.topleft = 0x26;
-			tilesets[3].teleportgraphic.topright = 0x27;
-			tilesets[3].teleportgraphic.botleft = 0x36;
-			tilesets[3].teleportgraphic.botright = 0x37;
-			tilesets[3].laddergraphic.topleft = 0x4C;
-			tilesets[3].laddergraphic.topright = 0x4D;
-			tilesets[3].laddergraphic.botleft = 0x5C;
-			tilesets[3].laddergraphic.botright = 0x5D;
+			tilesets[3].warpgraphic.topleft = 0x26;
+			tilesets[3].warpgraphic.topright = 0x27;
+			tilesets[3].warpgraphic.botleft = 0x36;
+			tilesets[3].warpgraphic.botright = 0x37;
+			tilesets[3].teleportgraphic.topleft = 0x28;
+			tilesets[3].teleportgraphic.topright = 0x29;
+			tilesets[3].teleportgraphic.botleft = 0x38;
+			tilesets[3].teleportgraphic.botright = 0x39;
+			tilesets[3].laddergraphic.topleft = 0x2E;
+			tilesets[3].laddergraphic.topright = 0x2F;
+			tilesets[3].laddergraphic.botleft = 0x3E;
+			tilesets[3].laddergraphic.botright = 0x3F;
 			tilesets[3].teleportdeck = new List<byte>();
 			tilesets[3].teleportdeck.Add(0x19);
 			tilesets[3].teleportdeck.Add(0x1A);
@@ -358,18 +358,18 @@ namespace FF1Lib
 			tilesets[4].doortile = 0x36;
 			tilesets[4].closedoortile = 0x3A;
 			tilesets[4].obstacletile = 0x39;
-			tilesets[4].warpgraphic.topleft = 0x28;
-			tilesets[4].warpgraphic.topright = 0x29;
-			tilesets[4].warpgraphic.botleft = 0x38;
-			tilesets[4].warpgraphic.botright = 0x39;
-			tilesets[4].teleportgraphic.topleft = 0x26;
-			tilesets[4].teleportgraphic.topright = 0x27;
-			tilesets[4].teleportgraphic.botleft = 0x36;
-			tilesets[4].teleportgraphic.botright = 0x37;
-			tilesets[4].laddergraphic.topleft = 0x10;
-			tilesets[4].laddergraphic.topright = 0x61;
-			tilesets[4].laddergraphic.botleft = 0x10;
-			tilesets[4].laddergraphic.botright = 0x61;
+			tilesets[4].warpgraphic.topleft = 0x26;
+			tilesets[4].warpgraphic.topright = 0x27;
+			tilesets[4].warpgraphic.botleft = 0x36;
+			tilesets[4].warpgraphic.botright = 0x37;
+			tilesets[4].teleportgraphic.topleft = 0x28;
+			tilesets[4].teleportgraphic.topright = 0x29;
+			tilesets[4].teleportgraphic.botleft = 0x38;
+			tilesets[4].teleportgraphic.botright = 0x39;
+			tilesets[4].laddergraphic.topleft = 0x2E;
+			tilesets[4].laddergraphic.topright = 0x2F;
+			tilesets[4].laddergraphic.botleft = 0x3E;
+			tilesets[4].laddergraphic.botright = 0x3F;
 			tilesets[4].teleportdeck = new List<byte>();
 			tilesets[4].teleportdeck.Add(0x20);
 			tilesets[4].teleportdeck.Add(0x22);
@@ -403,18 +403,18 @@ namespace FF1Lib
 			tilesets[5].doortile = 0x36;
 			tilesets[5].closedoortile = 0x3A;
 			tilesets[5].obstacletile = 0x38;
-			tilesets[5].warpgraphic.topleft = 0x28;
-			tilesets[5].warpgraphic.topright = 0x29;
-			tilesets[5].warpgraphic.botleft = 0x38;
-			tilesets[5].warpgraphic.botright = 0x39;
-			tilesets[5].teleportgraphic.topleft = 0x26;
-			tilesets[5].teleportgraphic.topright = 0x27;
-			tilesets[5].teleportgraphic.botleft = 0x36;
-			tilesets[5].teleportgraphic.botright = 0x37;
-			tilesets[5].laddergraphic.topleft = 0x44;
-			tilesets[5].laddergraphic.topright = 0x45;
-			tilesets[5].laddergraphic.botleft = 0x54;
-			tilesets[5].laddergraphic.botright = 0x55;
+			tilesets[5].warpgraphic.topleft = 0x26;
+			tilesets[5].warpgraphic.topright = 0x27;
+			tilesets[5].warpgraphic.botleft = 0x36;
+			tilesets[5].warpgraphic.botright = 0x37;
+			tilesets[5].teleportgraphic.topleft = 0x28;
+			tilesets[5].teleportgraphic.topright = 0x29;
+			tilesets[5].teleportgraphic.botleft = 0x38;
+			tilesets[5].teleportgraphic.botright = 0x39;
+			tilesets[5].laddergraphic.topleft = 0x2E;
+			tilesets[5].laddergraphic.topright = 0x2F;
+			tilesets[5].laddergraphic.botleft = 0x3E;
+			tilesets[5].laddergraphic.botright = 0x3F;
 			tilesets[5].teleportdeck = new List<byte>();
 			tilesets[5].teleportdeck.Add(0x43);
 			tilesets[5].teleportdeck.Add(0x44);
@@ -453,18 +453,18 @@ namespace FF1Lib
 			tilesets[6].doortile = 0x36;
 			tilesets[6].closedoortile = 0x3A;
 			tilesets[6].obstacletile = 0x39;
-			tilesets[6].warpgraphic.topleft = 0x62;
-			tilesets[6].warpgraphic.topright = 0x63;
-			tilesets[6].warpgraphic.botleft = 0x72;
-			tilesets[6].warpgraphic.botright = 0x73;
-			tilesets[6].teleportgraphic.topleft = 0x26;
-			tilesets[6].teleportgraphic.topright = 0x27;
-			tilesets[6].teleportgraphic.botleft = 0x36;
-			tilesets[6].teleportgraphic.botright = 0x37;
-			tilesets[6].laddergraphic.topleft = 0x28;
-			tilesets[6].laddergraphic.topright = 0x29;
-			tilesets[6].laddergraphic.botleft = 0x38;
-			tilesets[6].laddergraphic.botright = 0x39;
+			tilesets[6].warpgraphic.topleft = 0x26;
+			tilesets[6].warpgraphic.topright = 0x27;
+			tilesets[6].warpgraphic.botleft = 0x36;
+			tilesets[6].warpgraphic.botright = 0x37;
+			tilesets[6].teleportgraphic.topleft = 0x62;
+			tilesets[6].teleportgraphic.topright = 0x63;
+			tilesets[6].teleportgraphic.botleft = 0x72;
+			tilesets[6].teleportgraphic.botright = 0x73;
+			tilesets[6].laddergraphic.topleft = 0x64;
+			tilesets[6].laddergraphic.topright = 0x65;
+			tilesets[6].laddergraphic.botleft = 0x74;
+			tilesets[6].laddergraphic.botright = 0x75;
 			tilesets[6].teleportdeck = new List<byte>();
 			tilesets[6].teleportdeck.Add(0x41);
 			tilesets[6].teleportdeck.Add(0x42);
@@ -498,18 +498,18 @@ namespace FF1Lib
 			tilesets[7].doortile = 0x36;
 			tilesets[7].closedoortile = 0x3A;
 			tilesets[7].obstacletile = 0x38;
-			tilesets[7].warpgraphic.topleft = 0x28;
-			tilesets[7].warpgraphic.topright = 0x29;
-			tilesets[7].warpgraphic.botleft = 0x38;
-			tilesets[7].warpgraphic.botright = 0x39;
-			tilesets[7].teleportgraphic.topleft = 0x26;
-			tilesets[7].teleportgraphic.topright = 0x27;
-			tilesets[7].teleportgraphic.botleft = 0x36;
-			tilesets[7].teleportgraphic.botright = 0x37;
-			tilesets[7].laddergraphic.topleft = 0x10;
-			tilesets[7].laddergraphic.topright = 0x6E;
-			tilesets[7].laddergraphic.botleft = 0x10;
-			tilesets[7].laddergraphic.botright = 0x6E;
+			tilesets[7].warpgraphic.topleft = 0x26;
+			tilesets[7].warpgraphic.topright = 0x27;
+			tilesets[7].warpgraphic.botleft = 0x36;
+			tilesets[7].warpgraphic.botright = 0x37;
+			tilesets[7].teleportgraphic.topleft = 0x28;
+			tilesets[7].teleportgraphic.topright = 0x29;
+			tilesets[7].teleportgraphic.botleft = 0x38;
+			tilesets[7].teleportgraphic.botright = 0x39;
+			tilesets[7].laddergraphic.topleft = 0x2E;
+			tilesets[7].laddergraphic.topright = 0x2F;
+			tilesets[7].laddergraphic.botleft = 0x3E;
+			tilesets[7].laddergraphic.botright = 0x3F;
 			tilesets[7].teleportdeck = new List<byte>();
 			tilesets[7].teleportdeck.Add(0x42);
 			tilesets[7].teleportdeck.Add(0x43);
@@ -532,8 +532,8 @@ namespace FF1Lib
 			// Read which maps have which tilesets
 			tilesetmappings = Get(0x2CC0, 61).ToBytes();
 
-			// Correct the tile graphics so that "back" stairs look like they go down and
-			// "forward" stairs look like they go up.
+			// Correct the tile graphics so that "back" stairs look like they go up and
+			// "forward" stairs look like they go down.
 			for (int i = 1; i < 8; i++)
 			{
 				Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x000, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.topleft })));
@@ -707,16 +707,31 @@ namespace FF1Lib
 			// The "ordeals man" will be in front of 1, explaining what's going on and then vanishing
 			// The "tnt dwarf" will guard the entrance for 8
 			// The "titan" will be in front of the entrance for 22
-			// The "dark elf" will be in front of the entrance for 36
+			// The "submarine girl" will be in front of the entrance for 36
 			SetNpc((MapId)60, 0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
 			SetNpc((MapId)60, 1, ObjectId.Nerrick, 0x20, 0x26, false, true);
 			SetNpc((MapId)60, 2, ObjectId.Titan, 0x1A, 0x20, false, true);
-			SetNpc((MapId)60, 3, ObjectId.Astos, 0x26, 0x20, false, true);
+			SetNpc((MapId)60, 3, ObjectId.SubEngineer, 0x26, 0x20, false, true);
+			//SetNpc((MapId)60, 3, ObjectId.Astos, 0x26, 0x20, false, true);
 			InsertDialogs(0x2D, "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nBring these other folks\nthe items they need to\nskip ahead. GOOD LUCK!");
-			InsertDialogs(0x11, "Astos double crossed us.\nRetrieve the CROWN.\nThen, bring it\ndirectly back to me!");
+			InsertDialogs(0x13, "Bring me TNT if you wish\nto skip to floor 8.");
+			InsertDialogs(0x29, "Bring me a RUBY if\nyou wish to skip to\nfloor 22.");
+			InsertDialogs(0x25, "Bring me OXYALE if you\nwish to skip to floor 36.");
+			//InsertDialogs(0x11, "Astos double crossed us.\nRetrieve the CROWN.\nThen, bring it\ndirectly back to me!");
+
+			// Construct the Chaos floor
+			const string deepdungeonchaosfloor = "3F3F3F3F3F3F3F3F3F3F3F3F3F34303030353F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F34303031313131313030353F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F34303031313131333132313131313030353F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3430313131313330303031303030323131313130353F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F34313131333030303138313131383130303032313131353F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F343131333030313131383131313131383131313030323131353F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F323133303131313131383138313831383131313131303231333F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3431313331313131313831313841383131383131313131323131353F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3231333031313131313831383838383831383131313131303231333F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3231313131313131313131313131313131313131313131313131333F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F34313133313131313138313838383838383831383131313131323131353F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F32313330313131313831313800010101023831313831313131303231333F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F32313331313131313831380012131313140238313831313131313231333F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F343131333131313138313138032D0404042F053831313831313131323131353F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F323133303131313138313800040410041104040238313831313131303231333F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F323133313131313131313803040404150404040538313131313131313231333F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F323133313131313831383103040410041104040531383138313131313231333F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F323133313131383131313806042C1204142E040838313131383131313231333F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F323131353138313138313138030412041404053831313831313831343131333F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F303231333138313831383138060412041404083831383138313831323133303F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F32313338313138313831313806070707083831313831383131383231333F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F32313135313838383838313838303630383831383838383831343131333F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F30323131313131313131313131313A31313131313131313131313133303F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3231333838383838383138383838383838313838383838383231333F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3231313531313131313131313131313131313131313131343131333F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3032313331313131313131313131313131313131313131323133303F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F323131353131313131313131313131313131313131343131333F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F303231313035313131313131313131313131313430313133303F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F30323131313030353131313131313134303031313133303F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3030323131313130303031303030313131313330303F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F30303032313131313131313131333030303F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F30303032313131333030303F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F30303030303F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F";
+			maps[59] = new Map(Blob.FromHex(deepdungeonchaosfloor).ToBytes());
+			maps[59][0x07, 0x0F] = tilesets[7].warptile;
+			// Place Chaos
+			SetNpc((MapId)59, 0, (ObjectId)0x18, 0x0F, 0x13, true, true);
+			SetNpc((MapId)59, 1, (ObjectId)0x19, 0x0F, 0x12, true, true);
+			SetNpc((MapId)59, 2, (ObjectId)0x1A, 0x0F, 0x11, true, true);
+			// No encounters
+			Put(0x2CC00 + 59, Blob.FromHex("00"));
 
 			// Generate the map layouts.
-			for (int i = 8; i < 60; i++)
+			for (int i = 8; i < 59; i++)
 			{
 				// Set the encounter rate.
 				Put(0x2CC00 + i, Blob.FromHex("08"));
@@ -765,7 +780,7 @@ namespace FF1Lib
 				Beautify(maps[i], tilesets[tilesetmappings[i]]);
 
 				// Connect it to the next map.
-				if (i < 59)
+				if (i < 58)
 				{
 					Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(i - 4) })));
 					Put(0x3F000 + i - 4, Blob.FromHex("20"));
@@ -782,7 +797,11 @@ namespace FF1Lib
 				}
 				else
 				{
-					PlaceChaos(rng, maps[i], tilesets[tilesetmappings[i]]);
+					Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(i - 4) })));
+					Put(0x3F000 + i - 4, Blob.FromHex("0F"));
+					Put(0x3F100 + i - 4, Blob.FromHex("87"));
+					Put(0x3F200 + i - 4, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(i + 1) })));
+					//PlaceChaos(rng, maps[i], tilesets[tilesetmappings[i]]);
 				}
 
 				// If all its exits are now used, remove the tileset from the list of available ones.
@@ -1491,7 +1510,7 @@ namespace FF1Lib
 			var tailfloor = RollDice(rng, 4, 6) + 6 + 7;
 			var tntfloor = 8 + 7;
 			var rubyfloor = 22 + 7;
-			var crownfloor = 36 + 7;
+			var oxyfloor = 36 + 7;
 			var chestindex = 0;
 			Map m = maps[bahamutfloor];
 			Tileset t = tilesets[tilesetmappings[bahamutfloor]];
@@ -1522,10 +1541,10 @@ namespace FF1Lib
 			while (chestsonfloor[rubyfloor] - chestsonfloor[rubyfloor - 1] == 0) rubyfloor++;
 			chestindex = RollDice(rng, 1, chestsonfloor[rubyfloor] - chestsonfloor[rubyfloor - 1]) + chestsonfloor[rubyfloor - 1];
 			Put(0x3100 + chestindex, Blob.FromHex("09")); // 09 is the RUBY item index
-			// Place CROWN
-			while (chestsonfloor[crownfloor] - chestsonfloor[crownfloor - 1] == 0) crownfloor++;
-			chestindex = RollDice(rng, 1, chestsonfloor[crownfloor] - chestsonfloor[crownfloor - 1]) + chestsonfloor[crownfloor - 1];
-			Put(0x3100 + chestindex, Blob.FromHex("02")); // 02 is the CROWN item index
+			// Place OXYALE
+			while (chestsonfloor[oxyfloor] - chestsonfloor[oxyfloor - 1] == 0) oxyfloor++;
+			chestindex = RollDice(rng, 1, chestsonfloor[oxyfloor] - chestsonfloor[oxyfloor - 1]) + chestsonfloor[oxyfloor - 1];
+			Put(0x3100 + chestindex, Blob.FromHex("10")); // 10 is the OXYALE item index
 			// Place TAIL
 			while (chestsonfloor[tailfloor] - chestsonfloor[tailfloor - 1] == 0 || tailfloor == rubyfloor) tailfloor++;
 			chestindex = RollDice(rng, 1, chestsonfloor[tailfloor] - chestsonfloor[tailfloor - 1]) + chestsonfloor[tailfloor - 1];

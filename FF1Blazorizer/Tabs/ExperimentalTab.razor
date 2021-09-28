@@ -44,6 +44,10 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="Lockpicking" @bind-Value="Flags.Lockpicking">Thief Lockpicking</TriStateCheckBox>
 			<IntSlider Indent Min="1" Max="50" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.Lockpicking" Id="LockpickingLevelRequirement" @bind-Value="@Flags.LockpickingLevelRequirement">Lockpicking Level Requirement:</IntSlider>
 
+			<div class="checkbox-cell"></div>
+			<h4>Ailments</h4>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseDarkPenaltyCheckBox" @bind-Value="Flags.IncreaseDarkPenalty">Increase Dark Penalty</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
 		</div>
 
 		<div class="col1 full">
