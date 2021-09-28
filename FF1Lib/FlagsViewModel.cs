@@ -1937,6 +1937,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DDEvenTreasureDistribution"));
 			}
 		}
+		public bool DDProgressiveTilesets
+		{
+			get => Flags.DDProgressiveTilesets;
+			set
+			{
+				Flags.DDProgressiveTilesets = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DDProgressiveTilesets"));
+			}
+		}
 		public bool StartingGold
 		{
 			get => Flags.StartingGold;

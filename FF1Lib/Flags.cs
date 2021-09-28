@@ -391,6 +391,7 @@ namespace FF1Lib
 		public bool? MelmondClinic { get; set; } = false;
         public bool DeepDungeon { get; set; } = false;
 		public bool DDEvenTreasureDistribution { get; set; } = false;
+		public bool DDProgressiveTilesets { get; set; } = false;
 		public bool StartingGold { get; set; } = false;
 		public bool WrapStatOverflow { get; set; } = false;
 		public bool WrapPriceOverflow { get; set; } = false;
