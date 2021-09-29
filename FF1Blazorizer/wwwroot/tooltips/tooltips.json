@@ -1974,7 +1974,12 @@
 		"screenshot": "deepdungeon.png",
 		"description": "Instead of each floor having a random tileset, the first few floors are Castle, the next few floors are Earth/Volcano tileset, and so on, with the final few floors being TOFR tileset. This allows you to have some vague indication of how far into the dungeon you are."
 	},
-
+	{
+		"Id": "DDFiendOrbs",
+		"title": "Fiend Orbs",
+		"screenshot": "deepDungeonFiendOrbsCheckBox.png",
+		"description": "Instead of the usual NPCs blocking the usual three shortcuts into the dungeon, the fiends guard shortcuts to floors 10, 20, 30, and 40."
+	},
 	{
 		"Id": "Lockpicking",
 		"title": "Thief Lockpicking",
