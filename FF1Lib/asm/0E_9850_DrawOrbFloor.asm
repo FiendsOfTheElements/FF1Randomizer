@@ -67,9 +67,9 @@ PrintText:               ; "/52" + End of line
   JMP DrawMenuComplexString
   
 lut_TownFirstLetter: 
- .BYTE $8C, $99, $8E, $96, $8C, $98, $90, $95
+ .BYTE $8C, $99, $8E, $96, $8C, $90, $98, $95
 lut_TownSecondLetter:
- .BYTE $B2, $B5, $AF, $A8, $B5, $B1, $A4, $A8
+ .BYTE $B2, $B5, $AF, $A8, $B5, $A4, $B1, $A8
 
  .ORG $BAA2
    
