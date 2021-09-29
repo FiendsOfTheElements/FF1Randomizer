@@ -1946,6 +1946,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DDProgressiveTilesets"));
 			}
 		}
+		public bool DDFiendOrbs
+		{
+			get => Flags.DDFiendOrbs;
+			set
+			{
+				Flags.DDFiendOrbs = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DDFiendOrbs"));
+			}
+		}
 		public bool StartingGold
 		{
 			get => Flags.StartingGold;
