@@ -243,6 +243,7 @@ namespace FF1Lib
 			if (flags.DeepDungeon)
 			{
 				DeepDungeon(rng, overworldMap, maps, flags);
+				DeepDungeonFloorIndicator();
 				UnusedGoldItems = new List<int> { };
 			}
 
