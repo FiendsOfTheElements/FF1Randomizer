@@ -644,12 +644,10 @@ namespace FF1Lib
 			CreateDomains(rng, maps);
 
 			// Gaia and Onrac should really be encountered in the other order.
-			var temp = maps[5];
-			maps[5] = maps[6];
-			maps[6] = temp;
+			byte[] dungeontowns = { 1, 2, 3, 4, 6, 5, 7 };
 
 			// Speaking of Onrac, let's get rid of the submarine, as that breaks things horribly too.
-			maps[5][0x1E, 0x2E] = 0x27;
+			maps[6][0x1E, 0x2E] = 0x27;
 
 			// Pre-determine what floors will have town branches
 			int[] townfloors = new int[7];
@@ -791,7 +789,7 @@ namespace FF1Lib
 						Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(nexttown + 57) })));
 						Put(0x3F000 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)towndestinations[nexttown].x })));
 						Put(0x3F100 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(towndestinations[nexttown].y + 0x80) })));
-						Put(0x3F200 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(nexttown + 1) })));
+						Put(0x3F200 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { dungeontowns[nexttown] })));
 						if (nexttown < 6) nexttown++;
 					}
 				}
