@@ -1099,7 +1099,7 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x8650, Blob.FromHex("00") + sizebyte + pool);
 
 			// Starting party composition
-			PutInBank(0x1E, 0x84AA, pool.SubBlob(0, 1));
+			PutInBank(0x1E, 0x84AA, pool.SubBlob(0, 1) + Blob.FromHex("80"));
 			PutInBank(0x1E, 0x84BA, Blob.FromHex("FF"));
 			PutInBank(0x1E, 0x84CA, Blob.FromHex("FF"));
 			PutInBank(0x1E, 0x84DA, Blob.FromHex("FF"));
