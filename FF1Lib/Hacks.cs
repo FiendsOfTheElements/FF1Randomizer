@@ -1789,7 +1789,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void FightBahamut(TalkRoutines talkroutines, NPCdata npcdata, bool removeTail, bool swoleBahamut, EvadeCapValues evadeClampFlag, MT19337 rng)
+		public void FightBahamut(TalkRoutines talkroutines, NPCdata npcdata, bool removeTail, bool swoleBahamut, bool deepDungeon, EvadeCapValues evadeClampFlag, MT19337 rng)
 		{
 			const byte offsetAtoB = 0x80; // diff between A side and B side
 
@@ -1889,8 +1889,11 @@ namespace FF1Lib
 			InsertDialogs(dialogs);
 
 			// Change Bahamut Dragon NPCs to the "Onrac Dragon" so they will change what they say post promotion
-			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.OnracDragon, 19, 7, inRoom: true, stationary: true);
-			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.OnracDragon, 23, 7, inRoom: true, stationary: true);
+			if (!deepDungeon)
+            {
+				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.OnracDragon, 19, 7, inRoom: true, stationary: true);
+				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.OnracDragon, 23, 7, inRoom: true, stationary: true);
+			}
 
 			// Scale Difficulty Up, approx 700hp (normal) or 950hp (buffed)
 			ScaleSingleEnemyStats(78, 120, 120, wrapOverflow: false, includeMorale: false, rng: null, separateHPScale: true, lowPercentHp: 200, highPercentHp: 200, GetEvadeIntFromFlag(evadeClampFlag));
