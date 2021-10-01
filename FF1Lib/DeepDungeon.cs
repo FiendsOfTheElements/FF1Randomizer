@@ -564,7 +564,7 @@ namespace FF1Lib
 				tilesetspinner.Add((byte)i);
 			}
 		}
-		public void CreateDomains(MT19337 rng, List<Map> maps) 
+		public void CreateDomains(MT19337 rng, List<Map> maps)
 		{
 			// It's 0x72 because we want to exclude the "boss battles".
 			FormationLevel[] formationlevels = new FormationLevel[0x72 * 2];
@@ -709,7 +709,7 @@ namespace FF1Lib
 				Put(0x3F000 + 4, Blob.FromHex("20"));
 				Put(0x3F100 + 4, Blob.FromHex("A0"));
 				Put(0x3F200 + 4, Blob.FromHex("2F")); // Floor 40
-				// Put the fiend orbs as guards in front of the other entrances
+													  // Put the fiend orbs as guards in front of the other entrances
 				SetNpc((MapId)60, 0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
 				SetNpc((MapId)60, 1, (ObjectId)0x1B, 0x19, 0x1D, false, true);
 				SetNpc((MapId)60, 2, (ObjectId)0x1C, 0x27, 0x1D, false, true);
@@ -749,11 +749,11 @@ namespace FF1Lib
 				Put(0x3F000 + 3, Blob.FromHex("20"));
 				Put(0x3F100 + 3, Blob.FromHex("A0"));
 				Put(0x3F200 + 3, Blob.FromHex("2B")); // Floor 36
-				// Put some guards in front of the other entrances
-				// The "ordeals man" will be in front of 1, explaining what's going on and then vanishing
-				// The "tnt dwarf" will guard the entrance for 8
-				// The "titan" will be in front of the entrance for 22
-				// The "submarine girl" will be in front of the entrance for 36
+													  // Put some guards in front of the other entrances
+													  // The "ordeals man" will be in front of 1, explaining what's going on and then vanishing
+													  // The "tnt dwarf" will guard the entrance for 8
+													  // The "titan" will be in front of the entrance for 22
+													  // The "submarine girl" will be in front of the entrance for 36
 				SetNpc((MapId)60, 0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
 				SetNpc((MapId)60, 1, ObjectId.Nerrick, 0x20, 0x26, false, true);
 				SetNpc((MapId)60, 2, ObjectId.Titan, 0x1A, 0x20, false, true);
@@ -812,9 +812,14 @@ namespace FF1Lib
 				//                path that may branch.
 				//  I have other ideas for styles to implement but I want to get something
 				//  working out the door first and then gradually improve it later. Baby steps.
-				switch (RollDice(rng, 1, 3))
+				switch (RollDice(rng, 1, 10))
 				{
 					case 1:
+						GenerateMapGridStyle(rng, maps[i], tilesets[tilesetmappings[i]]);
+						break;
+					case 2:
+					case 3:
+					case 4:
 						GenerateMapSnakeStyle(rng, maps[i], tilesets[tilesetmappings[i]]);
 						break;
 					default:
@@ -884,7 +889,7 @@ namespace FF1Lib
 			overworldMap.ApplyMapEdits();
 		}
 
-		public void SpinPalettes(MT19337 rng, List<Map> maps) 
+		public void SpinPalettes(MT19337 rng, List<Map> maps)
 		{
 			// Assigns the inner map with the given index a random palette.
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
@@ -990,7 +995,7 @@ namespace FF1Lib
 			{
 				Item.Heal, Item.Pure, Item.Soft
 			};
-			List<Item> potionspinner1 = new List<Item>() 
+			List<Item> potionspinner1 = new List<Item>()
 			{
 				Item.Heal, Item.Heal, Item.Heal, Item.Heal,
 				Item.Pure, Item.Pure, Item.Pure,
@@ -1213,34 +1218,50 @@ namespace FF1Lib
 					}
 					else if (m[j, i] == t.abysstile)
 					{
-						if (j > 0)
+						if (m[(64 + j - 1) % 64, i] == t.floortile || m[(64 + j - 1) % 64, i] == t.closedoortile || m[(64 + j - 1) % 64, i] == t.warptile)
 						{
-							if (m[j - 1, i] == t.floortile || m[j - 1, i] == t.closedoortile)
-							{
-								m[j, i] = t.obstacletile;
-							}
+							m[j, i] = t.obstacletile;
 						}
-						if (j < 63)
+						if (m[(64 + j + 1) % 64, i] == t.floortile || m[(64 + j + 1) % 64, i] == t.closedoortile || m[(64 + j + 1) % 64, i] == t.warptile)
 						{
-							if (m[j + 1, i] == t.floortile || m[j + 1, i] == t.closedoortile)
-							{
-								m[j, i] = t.obstacletile;
-							}
+							m[j, i] = t.obstacletile;
 						}
-						if (i > 0)
+						if (m[j, (64 + i - 1) % 64] == t.floortile || m[j, (64 + i - 1) % 64] == t.closedoortile || m[j, (64 + i - 1) % 64] == t.warptile)
 						{
-							if (m[j, i - 1] == t.floortile || m[j, i - 1] == t.closedoortile)
-							{
-								m[j, i] = t.obstacletile;
-							}
+							m[j, i] = t.obstacletile;
 						}
-						if (i < 63)
+						if (m[j, (64 + i + 1) % 64] == t.floortile || m[j, (64 + i + 1) % 64] == t.closedoortile || m[j, (64 + i + 1) % 64] == t.warptile)
 						{
-							if (m[j, i + 1] == t.floortile || m[j, i + 1] == t.closedoortile)
-							{
-								m[j, i] = t.obstacletile;
-							}
+							m[j, i] = t.obstacletile;
 						}
+						//if (j > 0)
+						//{
+						//	if (m[j - 1, i] == t.floortile || m[j - 1, i] == t.closedoortile)
+						//	{
+						//		m[j, i] = t.obstacletile;
+						//	}
+						//}
+						//if (j < 63)
+						//{
+						//	if (m[j + 1, i] == t.floortile || m[j + 1, i] == t.closedoortile)
+						//	{
+						//		m[j, i] = t.obstacletile;
+						//	}
+						//}
+						//if (i > 0)
+						//{
+						//	if (m[j, i - 1] == t.floortile || m[j, i - 1] == t.closedoortile)
+						//	{
+						//		m[j, i] = t.obstacletile;
+						//	}
+						//}
+						//if (i < 63)
+						//{
+						//	if (m[j, i + 1] == t.floortile || m[j, i + 1] == t.closedoortile)
+						//	{
+						//		m[j, i] = t.obstacletile;
+						//	}
+						//}
 					}
 					else if (m[j, i] == t.roomtile)
 					{
@@ -1478,15 +1499,18 @@ namespace FF1Lib
 						if (m[j, i] == t.floortile) candidates.Add(new Candidate(i, j));
 					}
 				}
-				c = candidates.SpliceRandom(rng);
-				w = RollDice(rng, 3, 4);
-				h = RollDice(rng, 3, 4) + 1;
-				x = c.x - RollDice(rng, 1, w - 2);
-				y = c.y - h;
-				if (CarveRoom(m, t, x, y, w, h))
+				if (candidates.Count > 0)
 				{
-					m[c.y - 1, c.x] = t.doortile;
-					m[c.y, c.x] = t.closedoortile;
+					c = candidates.SpliceRandom(rng);
+					w = RollDice(rng, 3, 4);
+					h = RollDice(rng, 3, 4) + 1;
+					x = c.x - RollDice(rng, 1, w - 2);
+					y = c.y - h;
+					if (CarveRoom(m, t, x, y, w, h))
+					{
+						m[c.y - 1, c.x] = t.doortile;
+						m[c.y, c.x] = t.closedoortile;
+					}
 				}
 			}
 		}
@@ -1723,6 +1747,118 @@ namespace FF1Lib
 			m[0x20, 0x20] = t.warptile;
 			GenerateRooms(rng, m, t);
 		}
+		private void GenerateMapGridStyle(MT19337 rng, Map m, Tileset t)
+		{
+			var cellsize = RollDice(rng, 1, 9) + 7; // The size of each "cell" in the grid
+			bool canwrap = (cellsize == 8 || cellsize == 16);
+			int gridsize = (int)Math.Floor((double)64 / cellsize);
+			int totalactivecells = 1;
+			double targetcells = (gridsize * gridsize * 1) / 4;
+			int centercell = (int)Math.Floor((double)0x20 / cellsize);
+			bool[,] active = new bool[gridsize, gridsize];
+			int celltype;
+			bool maderoom = false;
+			var boxtile = t.obstacletile;
+			// Sky looks weird with the usual obstacle tile
+			if (t.Equals(tilesets[6])) boxtile = t.walltile;
 
+			// The floor is divided into evenly sized "cells".
+			// Each cell can be "active" or "inactive".
+			// All the cells start inactive except for the one containing the warp tile.
+			for (int i = 0; i < gridsize; i++)
+			{
+				for (int j = 0; j < gridsize; j++)
+				{
+					active[i, j] = false;
+				}
+			}
+			active[centercell, centercell] = true;
+
+			// Then we expand the floor by randomly activating cells adjacent to the
+			// current active area. We do this until we reach a certain percentage of
+			// the floor is active.
+			while (totalactivecells < targetcells)
+			{
+				var cx = RollDice(rng, 1, gridsize) - 1;
+				var cy = RollDice(rng, 1, gridsize) - 1;
+				bool valid = false;
+				if (!active[cx, cy])
+				{
+					if (cx > 0) if (active[cx - 1, cy]) valid = true;
+					if (cx < gridsize - 1) if (active[cx + 1, cy]) valid = true;
+					if (cy > 0) if (active[cx, cy - 1]) valid = true;
+					if (cy < gridsize - 1) if (active[cx, cy + 1]) valid = true;
+					if (cx == 0 && canwrap) if (active[gridsize - 1, cy]) valid = true;
+					if (cx == gridsize - 1 && canwrap) if (active[0, cy]) valid = true;
+					if (cy == 0 && canwrap) if (active[cx, gridsize - 1]) valid = true;
+					if (cy == gridsize - 1 && canwrap) if (active[cx, 0]) valid = true;
+				}
+				if (valid)
+				{
+					active[cx, cy] = true;
+					totalactivecells++;
+				}
+			}
+
+			// Then for each active cell, we fill it with floor and possibly some features.
+			for (int i = 0; i < gridsize; i++)
+			{
+				for (int j = 0; j < gridsize; j++)
+				{
+					if (active[i, j])
+					{
+						// We count back down the number of active cells so that we can
+						// try to guarantee at least one room.
+						totalactivecells--;
+						m.Fill((cellsize * i, cellsize * j), (cellsize, cellsize), t.floortile);
+						if (i == centercell && j == centercell)
+						{
+							// The cell containing the warp tile can't have features
+							// in case they clash with the warp tile.
+							celltype = 1;
+						}
+						else
+						{
+							celltype = RollDice(rng, 1, 6);
+							if (totalactivecells == 0 && !maderoom)
+							{
+								// If we are on the last active cell and still haven't
+								// create a room, let's create one just in case the exit
+								// dropper tries to place an in-room exit tile.
+								celltype = 6;
+							}
+						}
+						switch (celltype)
+						{
+							case 1:
+								// Blank floor
+								break;
+							case 2:
+								// A pattern of obstacle tiles
+								m.Fill((cellsize * i + 1, cellsize * j + 1), (cellsize - 2, 1), boxtile);
+								m.Fill((cellsize * i + 1, cellsize * j + cellsize - 2), (cellsize - 2, 1), boxtile);
+								m.Fill((cellsize * i + 1, cellsize * j + 3), (1, cellsize - 6), boxtile);
+								m.Fill((cellsize * i + cellsize - 2, cellsize * j + 3), (1, cellsize - 6), boxtile);
+								break;
+							case 3:
+								// A hollow square
+								m.Fill((cellsize * i + 1, cellsize * j + 1), (cellsize - 2, cellsize - 2), boxtile);
+								m.Fill((cellsize * i + 2, cellsize * j + 2), (cellsize - 4, cellsize - 4), t.abysstile);
+								break;
+							default:
+								// A room
+								if (CarveRoom(m, t, cellsize * i + 1, cellsize * j + 1, cellsize - 2, cellsize - 2))
+								{
+									m[cellsize * j + cellsize - 2, cellsize * i + cellsize / 2] = t.doortile;
+									m[cellsize * j + cellsize - 1, cellsize * i + cellsize / 2] = t.closedoortile;
+									maderoom = true;
+								}
+								break;
+						}
+					}
+				}
+			}
+			m[0x20, 0x20] = t.warptile;
+		}
 	}
 }
