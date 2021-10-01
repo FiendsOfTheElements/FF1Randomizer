@@ -240,12 +240,7 @@ namespace FF1Lib
 				DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
 			}
 
-			if (flags.DeepDungeon)
-			{
-				DeepDungeon(rng, overworldMap, maps, flags);
-				DeepDungeonFloorIndicator();
-				UnusedGoldItems = new List<int> { };
-			}
+			// Original placement of DeepDungeon routine
 
 			if (preferences.ModernBattlefield)
 			{
@@ -348,17 +343,17 @@ namespace FF1Lib
 				CraftRuseItem();
 			}
 
-			if ((bool)flags.ShortToFR && !flags.DeepDungeon)
+			if ((bool)flags.ShortToFR)
 			{
 				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, rng);
 			}
 
-			if ((bool)flags.ChaosFloorEncounters && !flags.DeepDungeon)
+			if ((bool)flags.ChaosFloorEncounters)
 			{
 				EnableChaosFloorEncounters(maps);
 			}
 
-			if ((bool)flags.ExitToFR && !flags.DeepDungeon)
+			if ((bool)flags.ExitToFR)
 			{
 				EnableToFRExit(maps);
 			}
@@ -928,6 +923,13 @@ namespace FF1Lib
 					SetDungeonNPC(flippedMaps, rng);
 
 				NPCHints(rng, npcdata, flags, overworldMap);
+			}
+
+			if (flags.DeepDungeon)
+			{
+				DeepDungeon(rng, overworldMap, maps, flags);
+				DeepDungeonFloorIndicator();
+				UnusedGoldItems = new List<int> { };
 			}
 
 			ExpGoldBoost(flags);
