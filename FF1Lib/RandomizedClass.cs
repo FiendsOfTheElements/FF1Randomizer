@@ -404,7 +404,7 @@ namespace FF1Lib
 			Put(lut_InnateResist, classData.Select(x => x.InnateResist).ToArray());
 		}
 
-		public void RandomizeClass(MT19337 rng, Flags flags, string[] itemnames)
+		public void RandomizeClass(MT19337 rng, Flags flags, List<string> itemnames)
 		{
 
 			// New equipement permissions list
@@ -606,7 +606,7 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x8950 + 24, new byte[] { (byte)(noneAddress % 0x100), (byte)(noneAddress / 0x100) });
 		}
 
-		public List<string> DoRandomizeClassNormalMode(ref List<ClassData> classData, MT19337 rng, string[] itemnames, Flags flags)
+		public List<string> DoRandomizeClassNormalMode(ref List<ClassData> classData, MT19337 rng, List<string> itemnames, Flags flags)
 		{
 			// Equipment lists
 			var equipFighterArmor = classData[(int)AuthClass.Fighter].arPermissions;

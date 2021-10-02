@@ -521,7 +521,6 @@ namespace FF1Lib
 				"VUVUZLA", "OCARINA", "PANFLUT", "SITAR", "HRMNICA", "UKULELE", "THREMIN", "DITTY", "JINGLE", "LIMRICK", "POEM", "HAIKU", "OCTBASS", "HRPSCRD", "FLUBA", "AEOLUS",
 				"TESLA", "STLDRUM", "DGDRIDO", "WNDCHIM" };
 
-			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
 
 			var newLute = newInstruments.PickRandom(rng);
@@ -539,8 +538,7 @@ namespace FF1Lib
 			if (dialogsUpdate.Count > 0)
 				InsertDialogs(dialogsUpdate);
 
-			itemnames[(int)Item.Lute] = newLute;
-			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
+			ItemsText[(int)Item.Lute] = newLute;
 		}
 
 		public void HurrayDwarfFate(Fate fate, NPCdata npcdata, MT19337 rng)
@@ -619,7 +617,6 @@ namespace FF1Lib
 					return;
 			}
 
-			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
 
 			var randomRuby = snackOptions.PickRandom(rng);
@@ -701,8 +698,7 @@ namespace FF1Lib
 				InsertDialogs(dialogsUpdate);
 
 			// substitute key item
-			itemnames[(int)Item.Ruby] = newRuby;
-			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
+			ItemsText[(int)Item.Ruby] = newRuby;
 		}
 
 		private Dictionary <int,String> SubstituteKeyItemInExtraNPCDialogues(string original, string replacement, string[] dialogs)
