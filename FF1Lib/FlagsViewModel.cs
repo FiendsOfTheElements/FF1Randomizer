@@ -1955,6 +1955,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DDFiendOrbs"));
 			}
 		}
+		public TailBahamutMode TailBahamutMode
+		{
+			get => Flags.TailBahamutMode;
+			set
+			{
+				Flags.TailBahamutMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TailBahamutMode"));
+			}
+		}
+
 		public bool StartingGold
 		{
 			get => Flags.StartingGold;
