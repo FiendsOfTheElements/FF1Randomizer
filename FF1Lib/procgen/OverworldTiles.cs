@@ -358,7 +358,7 @@ namespace FF1Lib.Procgen
 	    {None, CITY_WALL_SW1, CITY_WALL_GATE_W, CITY_PAVED, CITY_WALL_GATE_E, CITY_WALL_SE1, None},
 	    {None,          None,             None,       None,             None,          None, None},
 	}, new Dictionary<string, SCCoords> {
-		{ "Lefein", new SCCoords(3, 2) },
+		{ "Lefein", new SCCoords(3, 3) },
 	    });
 
 	public static OwFeature CRESCENT_LAKE_CITY = new OwFeature(new byte[,] {
