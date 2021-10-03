@@ -1,10 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using RomUtilities;
 
 namespace FF1Lib
 {
+	public enum TailBahamutMode
+	{
+		[Description("Random")]
+		Random = 0,
+		[Description("Tail First")]
+		TailFirst,
+		[Description("Bahamut First")]
+		BahamutFirst,
+		[Description("Same Floor")]
+		SameFloor
+	}
+
 	public partial class FF1Rom
 	{
 		private const byte northdir = 0;
@@ -1589,6 +1602,28 @@ namespace FF1Lib
 			var rubyfloor = 22 + 7;
 			var oxyfloor = 36 + 7;
 			var chestindex = 0;
+			switch (flags.TailBahamutMode)
+			{
+				case TailBahamutMode.TailFirst:
+					if (bahamutfloor < tailfloor)
+					{
+						var temp = tailfloor;
+						tailfloor = bahamutfloor;
+						bahamutfloor = temp;
+					}
+					break;
+				case TailBahamutMode.BahamutFirst:
+					if (tailfloor < bahamutfloor)
+					{
+						var temp = tailfloor;
+						tailfloor = bahamutfloor;
+						bahamutfloor = temp;
+					}
+					break;
+				case TailBahamutMode.SameFloor:
+					tailfloor = bahamutfloor;
+					break;
+			}
 			Map m = maps[bahamutfloor];
 			Tileset t = tilesets[tilesetmappings[bahamutfloor]];
 			for (int i = 1; i < 63; i++)

@@ -1981,6 +1981,12 @@
 		"description": "Instead of the usual NPCs blocking the usual three shortcuts into the dungeon, the fiends guard shortcuts to floors 10, 20, 30, and 40."
 	},
 	{
+		"Id": "TailBahamutDropDown",
+		"title": "Bahamut and Tail Floors",
+		"screenshot": "tailbahamut.png",
+		"description": "Determines how Bahamut and the TAIL are placed in the dungeon relative to each other:\nRANDOM: (Default) They could be placed in either order.\nTAIL FIRST: Always places the TAIL on or before Bahamut's floor.\nBAHAMUT FIRST: Always places the TAIL on or after Bahamut's floor.\nSAME FLOOR: Always places the TAIL and Bahamut on the same floor as each other."
+	},
+	{
 		"Id": "Lockpicking",
 		"title": "Thief Lockpicking",
 		"screenshot": "Lockpicking.png",
