@@ -64,15 +64,6 @@ namespace FF1Lib
 
 			Put(pointerOffset, Blob.FromUShorts(pointers));
 	    }
-
-		public void UpdateItemName(Item targetitem, string newname)
-		{
-			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
-
-			itemnames[(int)targetitem] = newname;
-
-			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
-		}
 	    public Blob ReadUntil(int offset, byte delimiter)
 	    {
 			var bytes = new List<byte>();

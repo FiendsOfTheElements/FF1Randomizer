@@ -1009,10 +1009,8 @@ namespace FF1Lib
 			// Change class names to spoil to what they randomly promote
 			if (flags.RandomPromotionsSpoilers ?? false)
 			{
-				var itemNames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
 				for (int i = 0; i < 12; i++)
-					itemNames[0xF0 + i] = className[i] + " - " + className[promotions[i]];
-				WriteText(itemNames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
+					ItemsText[0xF0 + i] = className[i] + " - " + className[promotions[i]];
 			}
 
 			// Modify DoClassChange, see 1B_910F_ResetMP.asm
@@ -1998,30 +1996,26 @@ namespace FF1Lib
 				a.writeArmorMemory(this);
 			}
 
-			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
-
 			if (!(flags.Weaponizer ?? false))
 			{
-				itemnames[(int)Item.BaneSword] = "Lame  @S";
-				itemnames[(int)Item.HealRod] = "Eel   @F";
-				itemnames[(int)Item.MageRod] = "Age   @F";
-				itemnames[(int)Item.WizardRod] = "Lizard@F";
-				itemnames[(int)Item.LightAxe] = "Slight@X";
+				ItemsText[(int)Item.BaneSword] = "Lame  @S";
+				ItemsText[(int)Item.HealRod] = "Eel   @F";
+				ItemsText[(int)Item.MageRod] = "Age   @F";
+				ItemsText[(int)Item.WizardRod] = "Lizard@F";
+				ItemsText[(int)Item.LightAxe] = "Slight@X";
 			}
 
 			if (!(flags.ArmorCrafter ?? false)) {
-			    itemnames[(int)Item.HealHelm] = "Deal  @h";
-			    itemnames[(int)Item.ZeusGauntlets] = "Moose @G";
+				ItemsText[(int)Item.HealHelm] = "Deal  @h";
+				ItemsText[(int)Item.ZeusGauntlets] = "Moose @G";
 			}
 
 			//possible incentive items
-			itemnames[(int)Item.Defense] = "Dunce @S";
-			itemnames[(int)Item.ThorHammer] = "Bore  @H";
-			itemnames[(int)Item.PowerGauntlets] = "Sour  @G";
-			itemnames[(int)Item.WhiteShirt] = "Right @T";
-			itemnames[(int)Item.BlackShirt] = "Whack @T";
-
-			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
+			ItemsText[(int)Item.Defense] = "Dunce @S";
+			ItemsText[(int)Item.ThorHammer] = "Bore  @H";
+			ItemsText[(int)Item.PowerGauntlets] = "Sour  @G";
+			ItemsText[(int)Item.WhiteShirt] = "Right @T";
+			ItemsText[(int)Item.BlackShirt] = "Whack @T";
 		}
 
 		public byte findEmptyTile(List<List<byte>> decompressedMap) {

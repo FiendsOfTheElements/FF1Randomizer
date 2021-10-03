@@ -14,7 +14,7 @@ namespace FF1Lib
 		public Translator(FF1Rom _rom)
 		{
 			rom = _rom;
-			itemnames = rom.ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+			itemnames = rom.ItemsText.ToList().ToArray();
 		}
 
 		public string TranslateItem(Item item)
