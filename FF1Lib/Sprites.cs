@@ -187,6 +187,47 @@ namespace FF1Lib
 		return true;
 	    }
 
+
+	    bool makeMapPalette(List<Rgba32> colors, Rgba32[] NESpalette,
+			     out List<byte> pal,
+			     out Dictionary<Rgba32,byte> toIndex) {
+		var paltmp = new List<byte>();
+		var toIndexTmp = new Dictionary<Rgba32,byte>();
+
+		for (int i = 0; i < colors.Count; i++) {
+		    byte selected = selectColor(colors[i], NESpalette);
+		    int idx = paltmp.IndexOf(selected);
+		    if (idx == -1) {
+			idx = paltmp.Count;
+			paltmp.Add(selected);
+		    }
+		    toIndexTmp[colors[i]] = (byte)idx;
+		}
+
+		if (paltmp.Count > 4) {
+		    pal = paltmp;
+		    toIndex = toIndexTmp;
+		    return false;
+		}
+		while (paltmp.Count < 4) {
+		    paltmp.Add(0x0F);
+		}
+
+		toIndex = new Dictionary<Rgba32,byte>();
+		pal = new List<byte>(paltmp);
+
+		// Need to sort the palette & update the mapping so
+		// that tiles that need to share palettes all
+		// have the colors in the same order.
+		pal.Sort();
+
+		foreach (var kv in toIndexTmp) {
+		    toIndex[kv.Key] = (byte)pal.IndexOf(paltmp[kv.Value]);
+		}
+
+		return true;
+	    }
+
 	    byte[] makeTile(Image<Rgba32> image, int top, int left, Dictionary<Rgba32,byte> toIndex) {
 		var newtile = new byte[64];
 		int px = 0;
@@ -365,79 +406,80 @@ namespace FF1Lib
 		return usepal;
 	    }
 
+	    Rgba32[] NESpalette = new Rgba32[]{
+		new Rgba32(0x7f, 0x7f, 0x7f),
+		new Rgba32(0x00, 0x00, 0xff),
+		new Rgba32(0x00, 0x00, 0xbf),
+		new Rgba32(0x47, 0x2b, 0xbf),
+		new Rgba32(0x97, 0x00, 0x87),
+		new Rgba32(0xab, 0x00, 0x23),
+		new Rgba32(0xab, 0x13, 0x00),
+		new Rgba32(0x8b, 0x17, 0x00),
+		new Rgba32(0x53, 0x30, 0x00),
+		new Rgba32(0x00, 0x78, 0x00),
+		new Rgba32(0x00, 0x6b, 0x00),
+		new Rgba32(0x00, 0x5b, 0x00),
+		new Rgba32(0x00, 0x43, 0x58),
+		new Rgba32(0x00, 0x00, 0x00),
+		new Rgba32(0x00, 0x00, 0x00),
+		new Rgba32(0x00, 0x00, 0x00),
+
+		new Rgba32(0xbf, 0xbf, 0xbf),
+		new Rgba32(0x00, 0x78, 0xf8),
+		new Rgba32(0x00, 0x58, 0xf8),
+		new Rgba32(0x6b, 0x47, 0xff),
+		new Rgba32(0xdb, 0x00, 0xcd),
+		new Rgba32(0xe7, 0x00, 0x5b),
+		new Rgba32(0xf8, 0x38, 0x00),
+		new Rgba32(0xe7, 0x5f, 0x13),
+		new Rgba32(0xaf, 0x7f, 0x00),
+		new Rgba32(0x00, 0xb8, 0x00),
+		new Rgba32(0x00, 0xab, 0x00),
+		new Rgba32(0x00, 0xab, 0x47),
+		new Rgba32(0x00, 0x8b, 0x8b),
+		new Rgba32(0x00, 0x00, 0x00),
+		new Rgba32(0x00, 0x00, 0x00),
+		new Rgba32(0x00, 0x00, 0x00),
+
+		new Rgba32(0xf8, 0xf8, 0xf8),
+		new Rgba32(0x3f, 0xbf, 0xff),
+		new Rgba32(0x6b, 0x88, 0xff),
+		new Rgba32(0x98, 0x78, 0xf8),
+		new Rgba32(0xf8, 0x78, 0xf8),
+		new Rgba32(0xf8, 0x58, 0x98),
+		new Rgba32(0xf8, 0x78, 0x58),
+		new Rgba32(0xff, 0xa3, 0x47),
+		new Rgba32(0xf8, 0xb8, 0x00),
+		new Rgba32(0xb8, 0xf8, 0x18),
+		new Rgba32(0x5b, 0xdb, 0x57),
+		new Rgba32(0x58, 0xf8, 0x98),
+		new Rgba32(0x00, 0xeb, 0xdb),
+		new Rgba32(0x78, 0x78, 0x78),
+		new Rgba32(0x00, 0x00, 0x00),
+		new Rgba32(0x00, 0x00, 0x00),
+
+		new Rgba32(0xff, 0xff, 0xff),
+		new Rgba32(0xa7, 0xe7, 0xff),
+		new Rgba32(0xb8, 0xb8, 0xf8),
+		new Rgba32(0xd8, 0xb8, 0xf8),
+		new Rgba32(0xf8, 0xb8, 0xf8),
+		new Rgba32(0xfb, 0xa7, 0xc3),
+		new Rgba32(0xf0, 0xd0, 0xb0),
+		new Rgba32(0xff, 0xe3, 0xab),
+		new Rgba32(0xfb, 0xdb, 0x7b),
+		new Rgba32(0xd8, 0xf8, 0x78),
+		new Rgba32(0xb8, 0xf8, 0xb8),
+		new Rgba32(0xb8, 0xf8, 0xd8),
+		new Rgba32(0x00, 0xff, 0xff),
+		new Rgba32(0xf8, 0xd8, 0xf8),
+		new Rgba32(0x00, 0x00, 0x00),
+		new Rgba32(0x00, 0x00, 0x00)
+	    };
+
 	    public void SetCustomPlayerSprites(Stream readStream, bool threePalettes) {
 		IImageFormat format;
 		Image<Rgba32> image = Image.Load<Rgba32>(readStream, out format);
 
-		var NESpalette = new Rgba32[]{
-		    new Rgba32(0x7f, 0x7f, 0x7f),
-		    new Rgba32(0x00, 0x00, 0xff),
-		    new Rgba32(0x00, 0x00, 0xbf),
-		    new Rgba32(0x47, 0x2b, 0xbf),
-		    new Rgba32(0x97, 0x00, 0x87),
-		    new Rgba32(0xab, 0x00, 0x23),
-		    new Rgba32(0xab, 0x13, 0x00),
-		    new Rgba32(0x8b, 0x17, 0x00),
-		    new Rgba32(0x53, 0x30, 0x00),
-		    new Rgba32(0x00, 0x78, 0x00),
-		    new Rgba32(0x00, 0x6b, 0x00),
-		    new Rgba32(0x00, 0x5b, 0x00),
-		    new Rgba32(0x00, 0x43, 0x58),
-		    new Rgba32(0x00, 0x00, 0x00),
-		    new Rgba32(0x00, 0x00, 0x00),
-		    new Rgba32(0x00, 0x00, 0x00),
-
-		    new Rgba32(0xbf, 0xbf, 0xbf),
-		    new Rgba32(0x00, 0x78, 0xf8),
-		    new Rgba32(0x00, 0x58, 0xf8),
-		    new Rgba32(0x6b, 0x47, 0xff),
-		    new Rgba32(0xdb, 0x00, 0xcd),
-		    new Rgba32(0xe7, 0x00, 0x5b),
-		    new Rgba32(0xf8, 0x38, 0x00),
-		    new Rgba32(0xe7, 0x5f, 0x13),
-		    new Rgba32(0xaf, 0x7f, 0x00),
-		    new Rgba32(0x00, 0xb8, 0x00),
-		    new Rgba32(0x00, 0xab, 0x00),
-		    new Rgba32(0x00, 0xab, 0x47),
-		    new Rgba32(0x00, 0x8b, 0x8b),
-		    new Rgba32(0x00, 0x00, 0x00),
-		    new Rgba32(0x00, 0x00, 0x00),
-		    new Rgba32(0x00, 0x00, 0x00),
-
-		    new Rgba32(0xf8, 0xf8, 0xf8),
-		    new Rgba32(0x3f, 0xbf, 0xff),
-		    new Rgba32(0x6b, 0x88, 0xff),
-		    new Rgba32(0x98, 0x78, 0xf8),
-		    new Rgba32(0xf8, 0x78, 0xf8),
-		    new Rgba32(0xf8, 0x58, 0x98),
-		    new Rgba32(0xf8, 0x78, 0x58),
-		    new Rgba32(0xff, 0xa3, 0x47),
-		    new Rgba32(0xf8, 0xb8, 0x00),
-		    new Rgba32(0xb8, 0xf8, 0x18),
-		    new Rgba32(0x5b, 0xdb, 0x57),
-		    new Rgba32(0x58, 0xf8, 0x98),
-		    new Rgba32(0x00, 0xeb, 0xdb),
-		    new Rgba32(0x78, 0x78, 0x78),
-		    new Rgba32(0x00, 0x00, 0x00),
-		    new Rgba32(0x00, 0x00, 0x00),
-
-		    new Rgba32(0xff, 0xff, 0xff),
-		    new Rgba32(0xa7, 0xe7, 0xff),
-		    new Rgba32(0xb8, 0xb8, 0xf8),
-		    new Rgba32(0xd8, 0xb8, 0xf8),
-		    new Rgba32(0xf8, 0xb8, 0xf8),
-		    new Rgba32(0xfb, 0xa7, 0xc3),
-		    new Rgba32(0xf0, 0xd0, 0xb0),
-		    new Rgba32(0xff, 0xe3, 0xab),
-		    new Rgba32(0xfb, 0xdb, 0x7b),
-		    new Rgba32(0xd8, 0xf8, 0x78),
-		    new Rgba32(0xb8, 0xf8, 0xb8),
-		    new Rgba32(0xb8, 0xf8, 0xd8),
-		    new Rgba32(0x00, 0xff, 0xff),
-		    new Rgba32(0xf8, 0xd8, 0xf8),
-		    new Rgba32(0x00, 0x00, 0x00),
-		    new Rgba32(0x00, 0x00, 0x00)
-		};
 
 		var battlePals = new List<List<byte>>();
 		battlePals.Add(new List<byte>());
@@ -478,6 +520,127 @@ namespace FF1Lib
 		// two complete 4 color palettes.
 		PutInBank(0x1F, 0xD8B6, Blob.FromHex("A90F2003FE4CC081EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 		PutInBank(0x0F, 0x81C0, Blob.FromHex("AD0061C9FFD002A90D0A0A0A6908AAA008BD508199D003CA8810F660"));
+	    }
+
+	    byte chrIndex(byte[] tile, List<byte[]> chrEntries) {
+		byte b;
+		for (b = 0; b < chrEntries.Count; b++) {
+		    if (Enumerable.SequenceEqual(tile, chrEntries[b])) {
+			return b;
+		    }
+		}
+		if (b < 255) {
+		    chrEntries.Add(tile);
+		    return (byte)(chrEntries.Count-1);
+		}
+		return 0xff;
+	    }
+
+	    public void SetCustomOwGraphics(Stream readStream) {
+		IImageFormat format;
+		Image<Rgba32> image = Image.Load<Rgba32>(readStream, out format);
+
+		const int OVERWORLDPALETTE_OFFSET =				0x380;
+		const int OVERWORLDPALETTE_ASSIGNMENT =			0x300;
+		const int OVERWORLDPATTERNTABLE_OFFSET =		0x8000;
+		const int OVERWORLDPATTERNTABLE_ASSIGNMENT =	0x100;
+
+
+		// palette for each terrain tile stored 0-127, each value is 0-3
+		// starting from OVERWORLDPALETTE_ASSIGNMENT
+
+		// usepalette = (cart->ROM[OVERWORLDPALETTE_ASSIGNMENT + imagecount] & 3) << 2;
+
+		// each terrain tile consists of 4 actual pattern table tiles
+		// OVERWORLDPATTERNTABLE_ASSIGNMENT is four sequential tables 128 bytes long
+		// giving the patterntable entry for:
+		// upper left, upper right, lower left, lower right
+
+		// offset = OVERWORLDPATTERNTABLE_ASSIGNMENT + imagecount;
+
+		// DrawTile(&mDC,0,0,cart,OVERWORLDPATTERNTABLE_OFFSET + (cart->ROM[offset] << 4),&palette[0][usepalette],cart->dat.TintTiles[0][imagecount]);
+		// DrawTile(&mDC,8,0,cart,OVERWORLDPATTERNTABLE_OFFSET + (cart->ROM[offset + 128] << 4),&palette[0][usepalette],cart->dat.TintTiles[0][imagecount]);
+		// DrawTile(&mDC,0,8,cart,OVERWORLDPATTERNTABLE_OFFSET + (cart->ROM[offset + 256] << 4),&palette[0][usepalette],cart->dat.TintTiles[0][imagecount]);
+		// DrawTile(&mDC,8,8,cart,OVERWORLDPATTERNTABLE_OFFSET + (cart->ROM[offset + 384] << 4),&palette[0][usepalette],cart->dat.TintTiles[0][imagecount]);
+
+		List<List<byte>> mapPals = new List<List<byte>> {
+		    new List<byte>(),
+		    new List<byte>(),
+		    new List<byte>(),
+		    new List<byte>()
+		};
+		List<byte[]> chrEntries = new List<byte[]>();
+
+		for(int imagecount = 0; imagecount < 128; imagecount += 1) {
+		    int top = (imagecount / 16) * 16;
+		    int left = (imagecount % 16) * 16;
+
+		    var firstUnique = new Dictionary<Rgba32, int>();
+		    var colors = new List<Rgba32>();
+		    for (int y = top; y < (top+16); y++) {
+			for (int x = left; x < (left+16); x++) {
+			    if (!colors.Contains(image[x,y])) {
+				firstUnique[image[x,y]] = (x<<16 | y);
+				colors.Add(image[x,y]);
+			    }
+			}
+		    }
+		    List<byte> pal;
+		    Dictionary<Rgba32,byte> index;
+		    if (!makeMapPalette(colors, NESpalette, out pal, out index)) {
+			Console.WriteLine($"Failed importing overworld tile at {left}, {top}, too many unique colors (limit 4 unique colors):");
+			for (int i = 0; i < pal.Count; i++) {
+			    Console.WriteLine($"NES palette {i}: ${pal[i],2:X}");
+			}
+			foreach (var i in index) {
+			    int c = firstUnique[i.Key];
+			    Console.WriteLine($"RGB to index {i.Key}: {i.Value}  first appears at {c>>16}, {c & 0xFFFF}");
+			}
+			return;
+		    }
+
+		    byte usepal = 0;
+		    byte b;
+		    for (b = 0; b < mapPals.Count; b++) {
+			if (mapPals[b].Count == 0) {
+			    for (int j = 0; j < 4; j++) { mapPals[b].Add(pal[j]); }
+			    usepal = b;
+			    break;
+			} else if (Enumerable.SequenceEqual(pal, mapPals[b])) {
+			    usepal = b;
+			    break;
+			}
+		    }
+
+		    if (b >= mapPals.Count) {
+			Console.WriteLine($"Error importing overworld tile at {left}, {top}, has a different palette from other tiles");
+			usepal = 0; // whatever
+		    }
+
+		    Put(OVERWORLDPALETTE_ASSIGNMENT + imagecount, new byte[] {(byte)((usepal << 6) + (usepal << 4) + (usepal << 2) + (usepal))});
+
+		    foreach (var loadchr in new ValueTuple<int, int, int>[] {
+			    (0, 0, 0),
+				(8, 0, 128),
+				(0, 8, 256),
+				(8, 8, 384)})
+		    {
+			byte idx = chrIndex(makeTile(image, top+loadchr.Item2, left+loadchr.Item1, index), chrEntries);
+			if (idx == 0xff) {
+			    Console.WriteLine($"Error importing CHR at {left+loadchr.Item1}, {top+loadchr.Item2}, in map tile {imagecount} too many unique CHR");
+			    idx = 0;
+			}
+			Put(OVERWORLDPATTERNTABLE_ASSIGNMENT + loadchr.Item3 + imagecount, new byte[]{idx});
+		    }
+		}
+
+		for (int i = 0; i < mapPals.Count; i++) {
+		    Put(OVERWORLDPALETTE_OFFSET + i*4, mapPals[i].ToArray());
+		}
+
+		for (int i = 0; i < chrEntries.Count; i++) {
+		    Put(OVERWORLDPATTERNTABLE_OFFSET + (i * 16), EncodeForPPU(chrEntries[i]));
+		}
 	    }
 	}
 }

@@ -32,6 +32,10 @@
 		<br>
 		<h4>Import Custom Map</h4>
 		<input type="file" id="importMapInput" accept="*/*" @onchange="@OnImportMap" />
+		<br>
+		<br>
+		<h4>Import Map Graphics</h4>
+		<input type="file" id="importMapGraphicsInput" accept="*/*" @onchange="@OnImportMapGraphics" />
 	</div>
 
 	<div class="col2">
@@ -180,6 +184,21 @@
 		    }
 
 		    StatusMessage = $"Successfully imported map, checksum {Flags.ReplacementMap.Checksum}";
+		  } catch (Exception x) {
+			   StatusMessage = x.Message;
+			   Console.WriteLine(x.ToString());
+		  }
+		  StateHasChanged();
+		}
+
+		async Task OnImportMapGraphics(ChangeEventArgs e) {
+		  try {
+		    var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importMapGraphicsInput");
+		    if (content == null || content == "") { return; }
+		    if (Flags.ReplacementMap == null) {
+		      Flags.ReplacementMap = new OwMapExchangeData();
+		    }
+		    Flags.ReplacementMap.ReplacementGraphics = content;
 		  } catch (Exception x) {
 			   StatusMessage = x.Message;
 			   Console.WriteLine(x.ToString());

@@ -133,8 +133,6 @@ namespace FF1Lib
 			UpdateDialogs(npcdata, flags);
 			AddElementIcons();
 
-
-
 			if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 
 			flags = Flags.ConvertAllTriState(flags, rng);
@@ -1106,6 +1104,13 @@ namespace FF1Lib
 			    using (var stream = new MemoryStream(Convert.FromBase64String(preferences.SpriteSheet)))
 			    {
 				SetCustomPlayerSprites(stream, preferences.ThirdBattlePalette);
+			    }
+			}
+
+			if (flags.ReplacementMap != null && flags.ReplacementMap.ReplacementGraphics != null) {
+			    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ReplacementMap.ReplacementGraphics)))
+			    {
+				SetCustomOwGraphics(stream);
 			    }
 			}
 
