@@ -187,47 +187,6 @@ namespace FF1Lib
 		return true;
 	    }
 
-
-	    bool makeMapPalette(List<Rgba32> colors, Rgba32[] NESpalette,
-			     out List<byte> pal,
-			     out Dictionary<Rgba32,byte> toIndex) {
-		var paltmp = new List<byte>();
-		var toIndexTmp = new Dictionary<Rgba32,byte>();
-
-		for (int i = 0; i < colors.Count; i++) {
-		    byte selected = selectColor(colors[i], NESpalette);
-		    int idx = paltmp.IndexOf(selected);
-		    if (idx == -1) {
-			idx = paltmp.Count;
-			paltmp.Add(selected);
-		    }
-		    toIndexTmp[colors[i]] = (byte)idx;
-		}
-
-		if (paltmp.Count > 4) {
-		    pal = paltmp;
-		    toIndex = toIndexTmp;
-		    return false;
-		}
-		while (paltmp.Count < 4) {
-		    paltmp.Add(0x0F);
-		}
-
-		toIndex = new Dictionary<Rgba32,byte>();
-		pal = new List<byte>(paltmp);
-
-		// Need to sort the palette & update the mapping so
-		// that tiles that need to share palettes all
-		// have the colors in the same order.
-		pal.Sort();
-
-		foreach (var kv in toIndexTmp) {
-		    toIndex[kv.Key] = (byte)pal.IndexOf(paltmp[kv.Value]);
-		}
-
-		return true;
-	    }
-
 	    byte[] makeTile(Image<Rgba32> image, int top, int left, Dictionary<Rgba32,byte> toIndex) {
 		var newtile = new byte[64];
 		int px = 0;
@@ -536,6 +495,97 @@ namespace FF1Lib
 		return 0xff;
 	    }
 
+	    bool makeMapPalette(List<Rgba32> colors, Rgba32[] NESpalette,
+				out List<byte> pal, Dictionary<Rgba32, byte> toNEScolor) {
+		pal = new List<byte>();
+
+		// always have black at 0
+		pal.Add(0x0f);
+
+		for (int i = 0; i < colors.Count; i++) {
+		    byte selected = selectColor(colors[i], NESpalette);
+		    toNEScolor[colors[i]] = selected;
+		    int idx = pal.IndexOf(selected);
+		    if (idx == -1) {
+			idx = pal.Count;
+			pal.Add(selected);
+		    }
+		}
+
+		if (pal.Count > 4) {
+		    return false;
+		}
+
+		return true;
+	    }
+
+	    public bool isSubsetPalette(List<byte> outer, List<byte> inner) {
+		foreach (var i in inner) {
+		    var j = outer.IndexOf(i);
+		    if (j == -1) {
+			return false;
+		    }
+		}
+		return true;
+	    }
+
+	    public int findPalette(List<List<byte>> haystack, List<byte> needle) {
+		for (int i = 0; i < haystack.Count; i++) {
+		    if (isSubsetPalette(haystack[i], needle)) {
+			return i;
+		    }
+		}
+		return -1;
+	    }
+
+	    public void colorToPaletteIndex(List<byte> palette, Dictionary<Rgba32, byte> toNEScolor, out Dictionary<Rgba32, byte> toNESindex) {
+		toNESindex = new Dictionary<Rgba32, byte>();
+		for (int i = 0; i < palette.Count; i++) {
+		    foreach (var kv in toNEScolor) {
+			if (kv.Value == palette[i]) {
+			    toNESindex[kv.Key] = (byte)i;
+			}
+		    }
+		}
+	    }
+
+	    public bool mergePalettes(List<List<byte>> inPalettes, List<List<byte>> merged) {
+		for (int i = 0; i < inPalettes.Count; i++) {
+		    if (inPalettes[i].Count == 4) {
+			if (findPalette(merged, inPalettes[i]) == -1) {
+			    if (merged.Count == 4) {
+				return false;
+			    }
+			    merged.Add(inPalettes[i]);
+			}
+		    }
+		}
+		if (merged.Count == 4) {
+		    return true;
+		}
+		var minimize = new List<List<byte>>();
+		for (int i = 0; i < inPalettes.Count; i++) {
+		    if (inPalettes[i].Count <= 3) {
+			if (findPalette(merged, inPalettes[i]) == -1) {
+			    minimize.Add(inPalettes[i]);
+			}
+		    }
+		}
+		for (int i = 0; i < minimize.Count; i++) {
+		    for (int j = 0; j < minimize.Count; j++) {
+ 			if (i == j) {
+			    continue;
+			}
+			if (isSubsetPalette(minimize[i], minimize[j])) {
+			    minimize.RemoveAt(j);
+			    j--;
+			}
+		    }
+		}
+		merged.AddRange(minimize);
+		return true;
+	    }
+
 	    public void SetCustomOwGraphics(Stream readStream) {
 		IImageFormat format;
 		Image<Rgba32> image = Image.Load<Rgba32>(readStream, out format);
@@ -563,13 +613,10 @@ namespace FF1Lib
 		// DrawTile(&mDC,0,8,cart,OVERWORLDPATTERNTABLE_OFFSET + (cart->ROM[offset + 256] << 4),&palette[0][usepalette],cart->dat.TintTiles[0][imagecount]);
 		// DrawTile(&mDC,8,8,cart,OVERWORLDPATTERNTABLE_OFFSET + (cart->ROM[offset + 384] << 4),&palette[0][usepalette],cart->dat.TintTiles[0][imagecount]);
 
-		List<List<byte>> mapPals = new List<List<byte>> {
-		    new List<byte>(),
-		    new List<byte>(),
-		    new List<byte>(),
-		    new List<byte>()
-		};
 		List<byte[]> chrEntries = new List<byte[]>();
+
+		List<List<byte>> candidateMapPals = new List<List<byte>>();
+		var toNEScolor = new Dictionary<Rgba32, byte>();
 
 		for(int imagecount = 0; imagecount < 128; imagecount += 1) {
 		    int top = (imagecount / 16) * 16;
@@ -586,36 +633,39 @@ namespace FF1Lib
 			}
 		    }
 		    List<byte> pal;
-		    Dictionary<Rgba32,byte> index;
-		    if (!makeMapPalette(colors, NESpalette, out pal, out index)) {
+		    if (!makeMapPalette(colors, NESpalette, out pal, toNEScolor)) {
 			Console.WriteLine($"Failed importing overworld tile at {left}, {top}, too many unique colors (limit 4 unique colors):");
 			for (int i = 0; i < pal.Count; i++) {
 			    Console.WriteLine($"NES palette {i}: ${pal[i],2:X}");
 			}
-			foreach (var i in index) {
+			/*foreach (var i in index) {
 			    int c = firstUnique[i.Key];
 			    Console.WriteLine($"RGB to index {i.Key}: {i.Value}  first appears at {c>>16}, {c & 0xFFFF}");
-			}
+			    }*/
 			return;
 		    }
+		    candidateMapPals.Add(pal);
+		}
 
-		    byte usepal = 0;
-		    byte b;
-		    for (b = 0; b < mapPals.Count; b++) {
-			if (mapPals[b].Count == 0) {
-			    for (int j = 0; j < 4; j++) { mapPals[b].Add(pal[j]); }
-			    usepal = b;
-			    break;
-			} else if (Enumerable.SequenceEqual(pal, mapPals[b])) {
-			    usepal = b;
-			    break;
-			}
-		    }
+		var mapPals = new List<List<byte>>();
+		if (!mergePalettes(candidateMapPals, mapPals)) {
+		    Console.WriteLine($"Too many unique 4-color palettes");
+		}
 
-		    if (b >= mapPals.Count) {
-			Console.WriteLine($"Error importing overworld tile at {left}, {top}, has a different palette from other tiles");
-			usepal = 0; // whatever
+		Console.WriteLine($"mapPals {mapPals.Count}");
+
+		for(int imagecount = 0; imagecount < 128; imagecount += 1) {
+		    int top = (imagecount / 16) * 16;
+		    int left = (imagecount % 16) * 16;
+
+		    int palidx = findPalette(mapPals, candidateMapPals[imagecount]);
+		    if  (palidx == -1) {
+			palidx = 0;
 		    }
+		    var usepal = (byte)palidx;
+
+		    Dictionary<Rgba32, byte> index;
+		    colorToPaletteIndex(mapPals[usepal], toNEScolor, out index);
 
 		    Put(OVERWORLDPALETTE_ASSIGNMENT + imagecount, new byte[] {(byte)((usepal << 6) + (usepal << 4) + (usepal << 2) + (usepal))});
 
