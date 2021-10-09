@@ -495,7 +495,7 @@ namespace FF1Lib
 		return 0xff;
 	    }
 
-	    bool makeMapPalette(List<Rgba32> colors, Rgba32[] NESpalette,
+	    bool makeNTPalette(List<Rgba32> colors, Rgba32[] NESpalette,
 				out List<byte> pal, Dictionary<Rgba32, byte> toNEScolor) {
 		pal = new List<byte>();
 
@@ -549,18 +549,18 @@ namespace FF1Lib
 		}
 	    }
 
-	    public bool mergePalettes(List<List<byte>> inPalettes, List<List<byte>> merged) {
+	    public bool mergePalettes(List<List<byte>> inPalettes, List<List<byte>> merged, int maxPals) {
 		for (int i = 0; i < inPalettes.Count; i++) {
 		    if (inPalettes[i].Count == 4) {
 			if (findPalette(merged, inPalettes[i]) == -1) {
-			    if (merged.Count == 4) {
+			    if (merged.Count == maxPals) {
 				return false;
 			    }
 			    merged.Add(inPalettes[i]);
 			}
 		    }
 		}
-		if (merged.Count == 4) {
+		if (merged.Count == maxPals) {
 		    return true;
 		}
 		var minimize = new List<List<byte>>();
@@ -633,7 +633,7 @@ namespace FF1Lib
 			}
 		    }
 		    List<byte> pal;
-		    if (!makeMapPalette(colors, NESpalette, out pal, toNEScolor)) {
+		    if (!makeNTPalette(colors, NESpalette, out pal, toNEScolor)) {
 			Console.WriteLine($"Failed importing overworld tile at {left}, {top}, too many unique colors (limit 4 unique colors):");
 			for (int i = 0; i < pal.Count; i++) {
 			    Console.WriteLine($"NES palette {i}: ${pal[i],2:X}");
@@ -648,7 +648,7 @@ namespace FF1Lib
 		}
 
 		var mapPals = new List<List<byte>>();
-		if (!mergePalettes(candidateMapPals, mapPals)) {
+		if (!mergePalettes(candidateMapPals, mapPals, 4)) {
 		    Console.WriteLine($"Too many unique 4-color palettes");
 		}
 
@@ -691,6 +691,184 @@ namespace FF1Lib
 		for (int i = 0; i < chrEntries.Count; i++) {
 		    Put(OVERWORLDPATTERNTABLE_OFFSET + (i * 16), EncodeForPPU(chrEntries[i]));
 		}
+	    }
+
+	    public void FiendImport(Stream readStream, int sizeX, int sizeY,
+				    int imageOffsetX, List<byte[]> chrEntries,
+				    int nametableDest, int paletteDest1, int paletteDest2) {
+		IImageFormat format;
+		Image<Rgba32> image = Image.Load<Rgba32>(readStream, out format);
+
+		List<List<byte>> candidatePals = new List<List<byte>>();
+		var toNEScolor = new Dictionary<Rgba32, byte>();
+
+		for(int areasY = 0; areas < sizeY/2; areasY += 1) {
+		    for(int areasX = 0; areas < sizeX/2; areasX += 1) {
+			int top = areasY * 16;
+			int left = imageOffsetX + areasX * 16;
+
+			var firstUnique = new Dictionary<Rgba32, int>();
+			var colors = new List<Rgba32>();
+			for (int y = top; y < (top+16); y++) {
+			    for (int x = left; x < (left+16); x++) {
+				if (!colors.Contains(image[x,y])) {
+				    firstUnique[image[x,y]] = (x<<16 | y);
+				    colors.Add(image[x,y]);
+				}
+			    }
+			}
+			List<byte> pal;
+			if (!makeNTPalette(colors, NESpalette, out pal, toNEScolor)) {
+			    Console.WriteLine($"Failed importing fiend at {left}, {top}, too many unique colors (limit 4 unique colors):");
+			    for (int i = 0; i < pal.Count; i++) {
+				Console.WriteLine($"NES palette {i}: ${pal[i],2:X}");
+			    }
+			    return;
+			}
+			candidatePals.Add(pal);
+		    }
+		}
+
+		var fiendPals = new List<List<byte>>();
+		if (!mergePalettes(candidatePals, fiendPals, 2)) {
+		    Console.WriteLine($"Too many unique 4-color palettes");
+		}
+
+		byte attributeTable[16];
+		byte[] nametable = new byte[sizeX*sizeY];
+		for(int areasY = 0; areas < sizeY/2; areasY += 1) {
+		    for(int areasX = 0; areas < sizeX/2; areasX += 1) {
+			var srcPalIdx = areasY * (sizeX/2) + areasX;
+
+			int palidx = findPalette(fiendPals, candidatePals[srcPalIdx]);
+			if  (palidx == -1) {
+			    palidx = 0;
+			}
+			var usepal = (byte)palidx;
+
+			Dictionary<Rgba32, byte> index;
+			colorToPaletteIndex(fiendPals[usepal], toNEScolor, out index);
+
+			int ax = areasX;
+			if (sizeX == 8) {
+			    aX += 1;
+			}
+
+			byte v = 0;
+			if (areasY % 2 == 0 && aX % 2 == 0) {
+			    v |= usepal;
+			}
+			if (areasY % 2 == 0 && aX % 2 == 1) {
+			    v |= usepal << 2;
+			}
+			if (areasY % 2 == 1 && aX % 2 == 0) {
+			    v |= usepal << 4;
+			}
+			if (areasY % 2 == 1 && aX % 2 == 1) {
+			    v |= usepal << 6;
+			}
+			attributeTable[(areasY/2 * 4) + aX/2] |= v;
+
+			// put the attribute table
+			for(int tilesY = areasY*2; tilesY < (areasY+2)*2; tilesY += 1) {
+			    for(int tilesX = areasX*2; tilesX < (areasX+2)*2; tilesX += 1) {
+				int top = tilesY * 8;
+				int left = tilesX * 8;
+				byte idx = chrIndex(makeTile(image, top, left, index), chrEntries);
+				if (idx == 0xff) {
+				    Console.WriteLine($"Error importing CHR at {left+loadchr.Item1}, {top+loadchr.Item2}, in map tile {imagecount} too many unique CHR");
+				    idx = 0;
+				}
+				// put the NT
+				nametable[tilesY*sizeX + tilesX] = idx;
+			    }
+			}
+		    }
+		}
+		Put(nametableDest, nametable);
+		Put(nametableDest+nametable.Length, attributetable);
+		Put(paletteDest1, fiendPals[0].ToArray());
+		Put(paletteDest2, fiendPals[1].ToArray());
+	    }
+
+	    public void SetCustomFiendGraphics(Stream lichKary, Stream krakenTiamat, Stream chaos) {
+		// 0B_92E0
+		//    $50 bytes of TSA for all 4 fiend graphics (resulting in $140 bytes of data total)
+		//      $40 bytes of NT TSA (8x8 image)
+		//      $10 bytes of attributes  (4x4)
+
+		// 0B_9420
+		//    $C0 bytes of TSA for chaos
+		//     $A8 bytes of NT TSA (14x12 image)
+		//     $10 bytes of attributes  (4x4x)
+
+		// the attributes presumably fill the whole field
+		// (128x128)
+		// when rendered, fiends are shifted over by 2 tiles (16 pixels)
+		// chaos fills the whole field
+
+		// graphic = cart->ROM[co] & 0x0F;
+		// dlg.patterntable = graphic;
+
+
+		const int BATTLEPATTERNTABLE_OFFSET =			0x1C000;
+		// nametables
+		const int FIENDDRAW_TABLE =						0x2D2E0;
+		const int CHAOSDRAW_TABLE =						0x2D420;
+
+		// attribute tables (4x4)
+		//const int FIENDPALETTE_TABLE =					0x2D320;
+
+		// patterntable assigned to enemy (4 bits)
+		// (patterntable << 11) + BATTLEPATTERNTABLE_OFFSET
+
+		// FIENDPALETTE_TABLE + ((view - 1) * FIENDDRAW_SHIFT);
+
+
+		// const int FIENDDRAW_SHIFT =						0x50;
+
+		// nametable (14x12)
+
+
+		// attributes 4x4
+		//const int CHAOSPALETTE_TABLE =					0x2D4C8;
+
+		// 1 byte for each 32x32 area, encodes palette assignment for each 16x16 area
+		// value = (bottomright << 6) | (bottomleft << 4) | (topright << 2) | (topleft << 0)
+
+		// 	temp = BATTLEPALETTE_OFFSET + (palvalues[0] << 2) - 4;
+		// for(co = 4; co < 8; co++) cart->ROM[temp + co] = palette[co];
+		// temp = BATTLEPALETTE_OFFSET + (palvalues[1] << 2) - 8;
+		// for(co = 8; co < 12; co++) cart->ROM[temp + co] = palette[co];
+
+		// fiends / chaos patterntable format:
+		// - first tile is blank
+		// - next 16 tiles are "environment"
+		// - another blank tile (unused?)
+		// - starts at 18
+		// - leaves 110 tiles for graphics, shared between 2 fiends
+		// - chaos gets his own pattern table, also starts at 18
+
+		var formations = LoadFormations();
+
+		// fiend formations
+		/*const int LICH2 = 0x73;
+		const int KARY2= 0x74;
+		const int KRAKEN2 = 0x75;
+		const int TIAMAT2 = 0x76;*/
+
+		const int TIAMAT1 = 0x77;
+		const int KRAKEN1 = 0x78;
+		const int KARY1 = 0x79;
+		const int LICH1 = 0x7A;
+		const int CHAOS = 0x7B;
+
+		List<byte[]> lichKaryCHR;
+		List<byte[]> krakenTiamatCHR;
+		List<byte[]> chaosCHR;
+
+		fiendImport();
+
 	    }
 	}
 }
