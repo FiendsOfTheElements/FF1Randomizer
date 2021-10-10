@@ -693,17 +693,15 @@ namespace FF1Lib
 		}
 	    }
 
-	    public void FiendImport(Stream readStream, int sizeX, int sizeY,
+	    public void FiendImport(Image<Rgba32> image, int sizeX, int sizeY,
 				    int imageOffsetX, List<byte[]> chrEntries,
 				    int nametableDest, int paletteDest1, int paletteDest2) {
-		IImageFormat format;
-		Image<Rgba32> image = Image.Load<Rgba32>(readStream, out format);
 
 		List<List<byte>> candidatePals = new List<List<byte>>();
 		var toNEScolor = new Dictionary<Rgba32, byte>();
 
-		for(int areasY = 0; areas < sizeY/2; areasY += 1) {
-		    for(int areasX = 0; areas < sizeX/2; areasX += 1) {
+		for(int areasY = 0; areasY < sizeY/2; areasY += 1) {
+		    for(int areasX = 0; areasX < sizeX/2; areasX += 1) {
 			int top = areasY * 16;
 			int left = imageOffsetX + areasX * 16;
 
@@ -734,10 +732,10 @@ namespace FF1Lib
 		    Console.WriteLine($"Too many unique 4-color palettes");
 		}
 
-		byte attributeTable[16];
+		byte[] attributeTable = new byte[16];
 		byte[] nametable = new byte[sizeX*sizeY];
-		for(int areasY = 0; areas < sizeY/2; areasY += 1) {
-		    for(int areasX = 0; areas < sizeX/2; areasX += 1) {
+		for(int areasY = 0; areasY < sizeY/2; areasY += 1) {
+		    for(int areasX = 0; areasX < sizeX/2; areasX += 1) {
 			var srcPalIdx = areasY * (sizeX/2) + areasX;
 
 			int palidx = findPalette(fiendPals, candidatePals[srcPalIdx]);
@@ -749,7 +747,7 @@ namespace FF1Lib
 			Dictionary<Rgba32, byte> index;
 			colorToPaletteIndex(fiendPals[usepal], toNEScolor, out index);
 
-			int ax = areasX;
+			int aX = areasX;
 			if (sizeX == 8) {
 			    aX += 1;
 			}
@@ -759,13 +757,13 @@ namespace FF1Lib
 			    v |= usepal;
 			}
 			if (areasY % 2 == 0 && aX % 2 == 1) {
-			    v |= usepal << 2;
+			    v |= (byte)(usepal << 2);
 			}
 			if (areasY % 2 == 1 && aX % 2 == 0) {
-			    v |= usepal << 4;
+			    v |= (byte)(usepal << 4);
 			}
 			if (areasY % 2 == 1 && aX % 2 == 1) {
-			    v |= usepal << 6;
+			    v |= (byte)(usepal << 6);
 			}
 			attributeTable[(areasY/2 * 4) + aX/2] |= v;
 
@@ -776,7 +774,7 @@ namespace FF1Lib
 				int left = tilesX * 8;
 				byte idx = chrIndex(makeTile(image, top, left, index), chrEntries);
 				if (idx == 0xff) {
-				    Console.WriteLine($"Error importing CHR at {left+loadchr.Item1}, {top+loadchr.Item2}, in map tile {imagecount} too many unique CHR");
+				    Console.WriteLine($"Error importing CHR at {left}, {top}, too many unique CHR");
 				    idx = 0;
 				}
 				// put the NT
@@ -786,7 +784,7 @@ namespace FF1Lib
 		    }
 		}
 		Put(nametableDest, nametable);
-		Put(nametableDest+nametable.Length, attributetable);
+		Put(nametableDest+nametable.Length, attributeTable);
 		Put(paletteDest1, fiendPals[0].ToArray());
 		Put(paletteDest2, fiendPals[1].ToArray());
 	    }
@@ -814,7 +812,8 @@ namespace FF1Lib
 		const int BATTLEPATTERNTABLE_OFFSET =			0x1C000;
 		// nametables
 		const int FIENDDRAW_TABLE =						0x2D2E0;
-		const int CHAOSDRAW_TABLE =						0x2D420;
+		//const int CHAOSDRAW_TABLE =						0x2D420;
+		const int BATTLEPALETTE_OFFSET =				0x30F20;
 
 		// attribute tables (4x4)
 		//const int FIENDPALETTE_TABLE =					0x2D320;
@@ -857,17 +856,64 @@ namespace FF1Lib
 		const int KRAKEN2 = 0x75;
 		const int TIAMAT2 = 0x76;*/
 
-		const int TIAMAT1 = 0x77;
-		const int KRAKEN1 = 0x78;
+		//const int TIAMAT1 = 0x77;
+		//const int KRAKEN1 = 0x78;
 		const int KARY1 = 0x79;
 		const int LICH1 = 0x7A;
-		const int CHAOS = 0x7B;
+		//const int CHAOS = 0x7B;
 
-		List<byte[]> lichKaryCHR;
-		List<byte[]> krakenTiamatCHR;
-		List<byte[]> chaosCHR;
+		IImageFormat format;
 
-		fiendImport();
+		if (lichKary != null) {
+		    List<byte[]> CHR = new List<byte[]>();
+		    Image<Rgba32> image = Image.Load<Rgba32>(lichKary, out format);
+		    FiendImport(image, 8, 8,  0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1<<2)-4, BATTLEPALETTE_OFFSET+(formations[LICH1].pal1<<2)-8);
+		    FiendImport(image, 8, 8, 64, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[KARY1].pal2<<2)-4, BATTLEPALETTE_OFFSET+(formations[KARY1].pal2<<2)-8);
+		    if (CHR.Count < 110) {
+			int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (18 * 16);
+			for (int i = 0; i < CHR.Count; i++) {
+			    Put(offset + (i*16), CHR[i]);
+			}
+		    } else {
+			Console.WriteLine($"Error importing Lich and Kary, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles");
+		    }
+		}
+		/*
+		if (krakenTiamat != null) {
+		    List<byte[]> CHR = new List<byte[]>();
+		    Image<Rgba32> image = Image.Load<Rgba32>(krakenTiamat, out format);
+		    fiendImport(image, 8, 8, 0, CHR, FIENDDRAW_TABLE + (0x50 * 2), 0, 0);
+		    fiendImport(image, 8, 8, 64, CHR, FIENDDRAW_TABLE + (0x50 * 3), 0, 0);
+		    if (CHR.Count < 110) {
+		    } else {
+			Console.WriteLine($"Error importing Kraken and Tiamat, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles");
+		    }
+		    if (CHR.Count < 110) {
+			int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (18 * 16);
+			for (int i = 0; i < CHR.Count; i++) {
+			    Put(offset + (i*16), CHR[i]);
+			}
+		    } else {
+			Console.WriteLine($"Error importing Lich and Kary, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles");
+		    }
+		}
+		if (chaos != null) {
+		    List<byte[]> CHR = new List<byte[]>();
+		    Image<Rgba32> image = Image.Load<Rgba32>(chaos, out format);
+		    fiendImport(image, 14, 12, 0, CHR, CHAOSDRAW_TABLE, 0, 0);
+		    if (CHR.Count > 110) {
+		    } else {
+			Console.WriteLine($"Error importing Chaos, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles");
+		    }
+		    if (CHR.Count < 110) {
+			int offset = BATTLEPATTERNTABLE_OFFSET + (formations[CHAOS].tileset * 2048) + (18 * 16);
+			for (int i = 0; i < CHR.Count; i++) {
+			    Put(offset + (i*16), CHR[i]);
+			}
+		    } else {
+			Console.WriteLine($"Error importing Lich and Kary, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles");
+		    }
+		    }*/
 
 	    }
 	}
