@@ -700,10 +700,12 @@ namespace FF1Lib
 		List<List<byte>> candidatePals = new List<List<byte>>();
 		var toNEScolor = new Dictionary<Rgba32, byte>();
 
-		for(int areasY = 0; areasY < sizeY/2; areasY += 1) {
-		    for(int areasX = 0; areasX < sizeX/2; areasX += 1) {
-			int top = areasY * 16;
-			int left = imageOffsetX + areasX * 16;
+		for(int areaY = 0; areaY < sizeY/2; areaY += 1) {
+		    for(int areaX = 0; areaX < sizeX/2; areaX += 1) {
+			int top = areaY * 16;
+			int left = imageOffsetX + areaX * 16;
+
+			Console.WriteLine($"area {areaX} {areaY}    pixel {left} {top}   candpal {candidatePals.Count}");
 
 			var firstUnique = new Dictionary<Rgba32, int>();
 			var colors = new List<Rgba32>();
@@ -734,9 +736,21 @@ namespace FF1Lib
 
 		byte[] attributeTable = new byte[16];
 		byte[] nametable = new byte[sizeX*sizeY];
-		for(int areasY = 0; areasY < sizeY/2; areasY += 1) {
-		    for(int areasX = 0; areasX < sizeX/2; areasX += 1) {
-			var srcPalIdx = areasY * (sizeX/2) + areasX;
+
+		attributeTable[0] = (byte)((3 << 4) | 3);
+		attributeTable[4] = (byte)((3 << 4) | 3);
+		attributeTable[8] = (byte)((3 << 4) | 3);
+		attributeTable[12] = (byte)((3 << 6) | (3 << 4) | 3);
+		attributeTable[13] = (byte)((3 << 6) | (3 << 4));
+		attributeTable[14] = (byte)((3 << 6) | (3 << 4));
+		attributeTable[15] = (byte)((3 << 6) | (3 << 4));
+
+		// iterate on 16x16 "areas"
+		for(int areaY = 0; areaY < sizeY/2; areaY += 1) {
+		    for(int areaX = 0; areaX < sizeX/2; areaX += 1) {
+			var srcPalIdx = areaY * (sizeX/2) + areaX;
+
+			Console.WriteLine($"area {areaX} {areaY}       candpal {srcPalIdx}");
 
 			int palidx = findPalette(fiendPals, candidatePals[srcPalIdx]);
 			if  (palidx == -1) {
@@ -747,38 +761,47 @@ namespace FF1Lib
 			Dictionary<Rgba32, byte> index;
 			colorToPaletteIndex(fiendPals[usepal], toNEScolor, out index);
 
-			int aX = areasX;
-			if (sizeX == 8) {
-			    aX += 1;
+			Console.WriteLine($"fiendPals[{usepal}]");
+			foreach (var i in fiendPals[usepal]) {
+			    Console.WriteLine($"${i,2:X}");
 			}
+			Console.WriteLine($"index");
+			foreach (var i in index) {
+			    Console.WriteLine($"{i.Key}: {i.Value}");
+			}
+
+			int aX = areaX + 2;
+			int aY = areaY + 2;
+			// boss palettes are 2nd and 3rd
+			usepal += 1;
 
 			byte v = 0;
-			if (areasY % 2 == 0 && aX % 2 == 0) {
+			if (aY % 2 == 0 && aX % 2 == 0) {
 			    v |= usepal;
 			}
-			if (areasY % 2 == 0 && aX % 2 == 1) {
+			if (aY % 2 == 0 && aX % 2 == 1) {
 			    v |= (byte)(usepal << 2);
 			}
-			if (areasY % 2 == 1 && aX % 2 == 0) {
+			if (aY % 2 == 1 && aX % 2 == 0) {
 			    v |= (byte)(usepal << 4);
 			}
-			if (areasY % 2 == 1 && aX % 2 == 1) {
+			if (aY % 2 == 1 && aX % 2 == 1) {
 			    v |= (byte)(usepal << 6);
 			}
-			attributeTable[(areasY/2 * 4) + aX/2] |= v;
+			attributeTable[(aY/2 * 4) + aX/2] |= v;
 
 			// put the attribute table
-			for(int tilesY = areasY*2; tilesY < (areasY+2)*2; tilesY += 1) {
-			    for(int tilesX = areasX*2; tilesX < (areasX+2)*2; tilesX += 1) {
+			for(int tilesY = areaY*2; tilesY < (areaY+1)*2; tilesY += 1) {
+			    for(int tilesX = areaX*2; tilesX < (areaX+1)*2; tilesX += 1) {
 				int top = tilesY * 8;
-				int left = tilesX * 8;
+				int left = imageOffsetX + tilesX * 8;
 				byte idx = chrIndex(makeTile(image, top, left, index), chrEntries);
 				if (idx == 0xff) {
 				    Console.WriteLine($"Error importing CHR at {left}, {top}, too many unique CHR");
 				    idx = 0;
 				}
 				// put the NT
-				nametable[tilesY*sizeX + tilesX] = idx;
+				nametable[tilesY*sizeX + tilesX] = (byte)(18 + idx);
 			    }
 			}
 		    }
@@ -867,12 +890,12 @@ namespace FF1Lib
 		if (lichKary != null) {
 		    List<byte[]> CHR = new List<byte[]>();
 		    Image<Rgba32> image = Image.Load<Rgba32>(lichKary, out format);
-		    FiendImport(image, 8, 8,  0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1<<2)-4, BATTLEPALETTE_OFFSET+(formations[LICH1].pal1<<2)-8);
-		    FiendImport(image, 8, 8, 64, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[KARY1].pal2<<2)-4, BATTLEPALETTE_OFFSET+(formations[KARY1].pal2<<2)-8);
+		    FiendImport(image, 8, 8,  0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[LICH1].pal2 * 4));
+		    FiendImport(image, 8, 8, 64, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET+(formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KARY1].pal2 * 4));
 		    if (CHR.Count < 110) {
 			int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (18 * 16);
 			for (int i = 0; i < CHR.Count; i++) {
-			    Put(offset + (i*16), CHR[i]);
+			    Put(offset + (i*16), EncodeForPPU(CHR[i]));
 			}
 		    } else {
 			Console.WriteLine($"Error importing Lich and Kary, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles");

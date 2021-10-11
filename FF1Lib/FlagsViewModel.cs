@@ -4520,6 +4520,16 @@ namespace FF1Lib
 			}
 		}
 
+		public string LichKaryGfx
+		{
+			get => Flags.LichKaryGfx;
+			set
+			{
+				Flags.LichKaryGfx = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public ExtConsumableSet ExtConsumableSet
 		{
 			get => Flags.ExtConsumableSet;

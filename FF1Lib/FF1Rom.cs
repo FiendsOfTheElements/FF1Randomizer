@@ -1114,6 +1114,13 @@ namespace FF1Lib
 			    }
 			}
 
+			if (flags.LichKaryGfx != null) {
+			    using (var stream = new MemoryStream(Convert.FromBase64String(flags.LichKaryGfx)))
+			    {
+				SetCustomFiendGraphics(stream, null, null);
+			    }
+			}
+
 			if (flags.SanityCheckerV2)
 			{
 				if ((bool)flags.IsAirshipFree)
