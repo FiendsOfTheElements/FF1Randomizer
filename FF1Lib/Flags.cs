@@ -111,7 +111,8 @@ namespace FF1Lib
 
 		public OwMapExchangeData ReplacementMap { get; set; } = null;
 
-		public string LichKaryGfx { get; set; } = null;
+		public string FiendGfx { get; set; } = null;
+		public string ChaosGfx { get; set; } = null;
 
 		public bool? NoItemMagic { get; set; } = false;
 

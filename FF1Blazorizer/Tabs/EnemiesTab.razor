@@ -54,6 +54,7 @@
 			<div class="checkbox-cell"></div>
 
 		<input type="file" id="importFiendGraphicsInput" accept="image/*" @onchange="@OnImportFiendGraphics" />
+		<input type="file" id="importChaosGraphicsInput" accept="image/*" @onchange="@OnImportChaosGraphics" />
 
 		<div class="checkbox-cell"></div>
 		<h4>Enemizer</h4>
@@ -82,7 +83,18 @@
 		  try {
 		    var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importFiendGraphicsInput");
 		    if (content == null || content == "") { return; }
-		    Flags.LichKaryGfx = content;
+		    Flags.FiendGfx = content;
+		  } catch (Exception x) {
+			   Console.WriteLine(x.ToString());
+		  }
+		  StateHasChanged();
+		}
+
+		async Task OnImportChaosGraphics(ChangeEventArgs e) {
+		  try {
+		    var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importChaosGraphicsInput");
+		    if (content == null || content == "") { return; }
+		    Flags.ChaosGfx = content;
 		  } catch (Exception x) {
 			   Console.WriteLine(x.ToString());
 		  }

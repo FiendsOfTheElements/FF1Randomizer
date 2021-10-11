@@ -1114,12 +1114,19 @@ namespace FF1Lib
 			    }
 			}
 
-			if (flags.LichKaryGfx != null) {
-			    using (var stream = new MemoryStream(Convert.FromBase64String(flags.LichKaryGfx)))
+			if (flags.FiendGfx != null) {
+			    using (var stream = new MemoryStream(Convert.FromBase64String(flags.FiendGfx)))
 			    {
-				SetCustomFiendGraphics(stream, null, null);
+				SetCustomFiendGraphics(stream, null);
 			    }
 			}
+			if (flags.ChaosGfx != null) {
+			    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ChaosGfx)))
+			    {
+				SetCustomFiendGraphics(null, stream);
+			    }
+			}
+
 
 			if (flags.SanityCheckerV2)
 			{

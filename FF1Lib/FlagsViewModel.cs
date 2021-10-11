@@ -4520,12 +4520,22 @@ namespace FF1Lib
 			}
 		}
 
-		public string LichKaryGfx
+		public string FiendGfx
 		{
-			get => Flags.LichKaryGfx;
+			get => Flags.FiendGfx;
 			set
 			{
-				Flags.LichKaryGfx = value;
+				Flags.FiendGfx = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public string ChaosGfx
+		{
+			get => Flags.ChaosGfx;
+			set
+			{
+				Flags.ChaosGfx = value;
 				RaisePropertyChanged();
 			}
 		}
