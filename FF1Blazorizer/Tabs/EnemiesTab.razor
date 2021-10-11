@@ -53,7 +53,9 @@
 			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDontCheckOrbsCheckbox" IsEnabled="@Flags.SpoilerBatsDontCheckOrbsEnabled" @bind-Value="Flags.SpoilerBatsDontCheckOrbs">Early Spoilers</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 
+			<h4>Custom Fiend Graphics</h4>
 		<input type="file" id="importFiendGraphicsInput" accept="image/*" @onchange="@OnImportFiendGraphics" />
+		<h4>Custom Chaos Graphic</h4>
 		<input type="file" id="importChaosGraphicsInput" accept="image/*" @onchange="@OnImportChaosGraphics" />
 
 		<div class="checkbox-cell"></div>
