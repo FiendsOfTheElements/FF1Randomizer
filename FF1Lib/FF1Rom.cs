@@ -1048,6 +1048,13 @@ namespace FF1Lib
 
 			ObfuscateEnemies(rng, flags);
 
+			if (flags.ResourcePack != null) {
+			    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack))) {
+				LoadResourcePack(stream);
+				preferences.ThirdBattlePalette = true;
+			    }
+			}
+
 			// We have to do "fun" stuff last because it alters the RNG state.
 			// Back up Rng so that fun flags are uniform when different ones are selected
 			uint funRngSeed = rng.Next();
@@ -1106,27 +1113,6 @@ namespace FF1Lib
 				SetCustomPlayerSprites(stream, preferences.ThirdBattlePalette);
 			    }
 			}
-
-			if (flags.ReplacementMap != null && flags.ReplacementMap.ReplacementGraphics != null) {
-			    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ReplacementMap.ReplacementGraphics)))
-			    {
-				SetCustomOwGraphics(stream);
-			    }
-			}
-
-			if (flags.FiendGfx != null) {
-			    using (var stream = new MemoryStream(Convert.FromBase64String(flags.FiendGfx)))
-			    {
-				SetCustomFiendGraphics(stream, null);
-			    }
-			}
-			if (flags.ChaosGfx != null) {
-			    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ChaosGfx)))
-			    {
-				SetCustomFiendGraphics(null, stream);
-			    }
-			}
-
 
 			if (flags.SanityCheckerV2)
 			{

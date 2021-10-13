@@ -32,10 +32,6 @@
 		<br>
 		<h4>Import Custom Map</h4>
 		<input type="file" id="importMapInput" accept=".json" @onchange="@OnImportMap" />
-		<br>
-		<br>
-		<h4>Import Map Graphics</h4>
-		<input type="file" id="importMapGraphicsInput" accept="image/*" @onchange="@OnImportMapGraphics" />
 	</div>
 
 	<div class="col2">
@@ -191,20 +187,6 @@
 		  StateHasChanged();
 		}
 
-		async Task OnImportMapGraphics(ChangeEventArgs e) {
-		  try {
-		    var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importMapGraphicsInput");
-		    if (content == null || content == "") { return; }
-		    if (Flags.ReplacementMap == null) {
-		      Flags.ReplacementMap = new OwMapExchangeData();
-		    }
-		    Flags.ReplacementMap.ReplacementGraphics = content;
-		  } catch (Exception x) {
-			   StatusMessage = x.Message;
-			   Console.WriteLine(x.ToString());
-		  }
-		  StateHasChanged();
-		}
 
 		async Task OnExportMap(MouseEventArgs e) {
 		     if (Flags.ReplacementMap == null || Flags.ReplacementMap.DecompressedMapRows == null) {

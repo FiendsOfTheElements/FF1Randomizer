@@ -18,6 +18,13 @@ namespace FF1Lib
 
 	    const int MAPMANGRAPHIC_OFFSET =			0x9000;
 
+	    const int BATTLEPATTERNTABLE_OFFSET =			0x1C000;
+
+	    // nametables
+	    const int FIENDDRAW_TABLE =						0x2D2E0;
+	    const int CHAOSDRAW_TABLE =						0x2D420;
+	    const int BATTLEPALETTE_OFFSET =				0x30F20;
+
 	    const int MAPMAN_DOWN = 0;
 	    const int MAPMAN_UP = 1;
 	    const int MAPMAN_SIDE1 = 1;
@@ -529,6 +536,24 @@ namespace FF1Lib
 		return true;
 	    }
 
+	    public List<byte> MergePalette(List<byte> outer, List<byte> inner) {
+		var unique = new List<byte>();
+		foreach (var i in inner) {
+		    if (!unique.Contains(i)) {
+			unique.Add(i);
+		    }
+		}
+		foreach (var i in outer) {
+		    if (!unique.Contains(i)) {
+			unique.Add(i);
+		    }
+		}
+		if (unique.Count <= 4) {
+		    return unique;
+		}
+		return null;
+	    }
+
 	    public int findPalette(List<List<byte>> haystack, List<byte> needle) {
 		for (int i = 0; i < haystack.Count; i++) {
 		    if (isSubsetPalette(haystack[i], needle)) {
@@ -579,11 +604,26 @@ namespace FF1Lib
 			if (isSubsetPalette(minimize[i], minimize[j])) {
 			    minimize.RemoveAt(j);
 			    j--;
+			} else {
+			    var newpal = MergePalette(minimize[i], minimize[j]);
+			    if (newpal != null) {
+				minimize[i] = newpal;
+				minimize.RemoveAt(j);
+				j--;
+			    }
 			}
 		    }
 		}
+		for (int i = 0; i < minimize.Count; i++) {
+		    while (minimize[i].Count < 4) {
+			minimize[i].Add(0xF);
+		    }
+		}
 		merged.AddRange(minimize);
-		return true;
+		if (merged.Count > maxPals) {
+		    return false;
+		}
+		return false;
 	    }
 
 	    public void SetCustomOwGraphics(Stream readStream) {
@@ -819,10 +859,12 @@ namespace FF1Lib
 		Put(nametableDest, nametable);
 		Put(nametableDest+nametable.Length, attributeTable);
 		Put(paletteDest1, fiendPals[0].ToArray());
-		Put(paletteDest2, fiendPals[1].ToArray());
+		if (fiendPals.Count == 2) {
+		    Put(paletteDest2, fiendPals[1].ToArray());
+		}
 	    }
 
-	    public void SetCustomFiendGraphics(Stream fiends, Stream chaos) {
+	    public void SetCustomFiendGraphics(Stream fiends) {
 		// 0B_92E0
 		//    $50 bytes of TSA for all 4 fiend graphics (resulting in $140 bytes of data total)
 		//      $40 bytes of NT TSA (8x8 image)
@@ -833,116 +875,59 @@ namespace FF1Lib
 		//     $A8 bytes of NT TSA (14x12 image)
 		//     $10 bytes of attributes  (4x4x)
 
-		// the attributes presumably fill the whole field
-		// (128x128)
-		// when rendered, fiends are shifted over by 2 tiles (16 pixels)
-		// chaos fills the whole field
-
-		// graphic = cart->ROM[co] & 0x0F;
-		// dlg.patterntable = graphic;
-
-
-		const int BATTLEPATTERNTABLE_OFFSET =			0x1C000;
-		// nametables
-		const int FIENDDRAW_TABLE =						0x2D2E0;
-		const int CHAOSDRAW_TABLE =						0x2D420;
-		const int BATTLEPALETTE_OFFSET =				0x30F20;
-
-		// attribute tables (4x4)
-		//const int FIENDPALETTE_TABLE =					0x2D320;
-
-		// patterntable assigned to enemy (4 bits)
-		// (patterntable << 11) + BATTLEPATTERNTABLE_OFFSET
-
-		// FIENDPALETTE_TABLE + ((view - 1) * FIENDDRAW_SHIFT);
-
-
-		// const int FIENDDRAW_SHIFT =						0x50;
-
-		// nametable (14x12)
-
-
-		// attributes 4x4
-		//const int CHAOSPALETTE_TABLE =					0x2D4C8;
-
-		// 1 byte for each 32x32 area, encodes palette assignment for each 16x16 area
-		// value = (bottomright << 6) | (bottomleft << 4) | (topright << 2) | (topleft << 0)
-
-		// 	temp = BATTLEPALETTE_OFFSET + (palvalues[0] << 2) - 4;
-		// for(co = 4; co < 8; co++) cart->ROM[temp + co] = palette[co];
-		// temp = BATTLEPALETTE_OFFSET + (palvalues[1] << 2) - 8;
-		// for(co = 8; co < 12; co++) cart->ROM[temp + co] = palette[co];
-
-		// fiends / chaos patterntable format:
-		// - first tile is blank
-		// - next 16 tiles are "environment"
-		// - another blank tile (unused?)
-		// - starts at 18
-		// - leaves 110 tiles for graphics, shared between 2 fiends
-		// - chaos gets his own pattern table, also starts at 18
-
 		var formations = LoadFormations();
-
-		// fiend formations
-		/*const int LICH2 = 0x73;
-		const int KARY2= 0x74;
-		const int KRAKEN2 = 0x75;
-		const int TIAMAT2 = 0x76;*/
 
 		const int TIAMAT1 = 0x77;
 		const int KRAKEN1 = 0x78;
 		const int KARY1 = 0x79;
 		const int LICH1 = 0x7A;
-		const int CHAOS = 0x7B;
 
 		IImageFormat format;
 
-		if (fiends != null) {
-		    Image<Rgba32> image = Image.Load<Rgba32>(fiends, out format);
-		    {
-			List<byte[]> CHR = new List<byte[]>();
-			FiendImport(image, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[LICH1].pal2 * 4));
-			FiendImport(image, 8, 8, 64, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET+(formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KARY1].pal2 * 4));
-			if (CHR.Count < 110) {
-			    int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (18 * 16);
-			    for (int i = 0; i < CHR.Count; i++) {
-				Put(offset + (i*16), EncodeForPPU(CHR[i]));
-			    }
-			} else {
-			    Console.WriteLine($"Error importing Lich and Kary, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles between both fiends");
+		Image<Rgba32> image = Image.Load<Rgba32>(fiends, out format);
+		{
+		    List<byte[]> CHR = new List<byte[]>();
+		    FiendImport(image, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[LICH1].pal2 * 4));
+		    FiendImport(image, 8, 8, 64, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET+(formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KARY1].pal2 * 4));
+		    if (CHR.Count < 110) {
+			int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (18 * 16);
+			for (int i = 0; i < CHR.Count; i++) {
+			    Put(offset + (i*16), EncodeForPPU(CHR[i]));
 			}
-		    }
-		    {
-			List<byte[]> CHR = new List<byte[]>();
-			FiendImport(image, 8, 8,  0, 64, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal2 * 4));
-			FiendImport(image, 8, 8, 64, 64, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal2 * 4));
-			if (CHR.Count < 110) {
-			    int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (18 * 16);
-			    for (int i = 0; i < CHR.Count; i++) {
-				Put(offset + (i*16), EncodeForPPU(CHR[i]));
-			    }
-			} else {
-			    Console.WriteLine($"Error importing Kraken and Tiamat, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles between both fiends");
-			}
+		    } else {
+			Console.WriteLine($"Error importing Lich and Kary, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles between both fiends");
 		    }
 		}
-
-		if (chaos != null) {
-		    Image<Rgba32> image = Image.Load<Rgba32>(chaos, out format);
-		    {
-			List<byte[]> CHR = new List<byte[]>();
-			FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
-			if (CHR.Count < 110) {
-			    int offset = BATTLEPATTERNTABLE_OFFSET + (formations[CHAOS].tileset * 2048) + (18 * 16);
-			    for (int i = 0; i < CHR.Count; i++) {
-				Put(offset + (i*16), EncodeForPPU(CHR[i]));
-			    }
-			} else {
-			    Console.WriteLine($"Error importing Chaos, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles");
+		{
+		    List<byte[]> CHR = new List<byte[]>();
+		    FiendImport(image, 8, 8,  0, 64, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal2 * 4));
+		    FiendImport(image, 8, 8, 64, 64, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal2 * 4));
+		    if (CHR.Count < 110) {
+			int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (18 * 16);
+			for (int i = 0; i < CHR.Count; i++) {
+			    Put(offset + (i*16), EncodeForPPU(CHR[i]));
 			}
+		    } else {
+			Console.WriteLine($"Error importing Kraken and Tiamat, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles between both fiends");
 		    }
 		}
+	    }
 
+	    public void SetCustomChaosGraphics(Stream chaos) {
+		var formations = LoadFormations();
+		IImageFormat format;
+		const int CHAOS = 0x7B;
+		Image<Rgba32> image = Image.Load<Rgba32>(chaos, out format);
+		List<byte[]> CHR = new List<byte[]>();
+		FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
+		if (CHR.Count < 110) {
+		    int offset = BATTLEPATTERNTABLE_OFFSET + (formations[CHAOS].tileset * 2048) + (18 * 16);
+		    for (int i = 0; i < CHR.Count; i++) {
+			Put(offset + (i*16), EncodeForPPU(CHR[i]));
+		    }
+		} else {
+		    Console.WriteLine($"Error importing Chaos, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles");
+		}
 	    }
 	}
 }

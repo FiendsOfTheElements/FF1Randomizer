@@ -2747,6 +2747,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpriteSheet"));
 			}
 		}
+		public string ResourcePack
+		{
+			get => Flags.ResourcePack;
+			set
+			{
+				Flags.ResourcePack = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ResourcePack"));
+			}
+		}
 
 		public bool? RecruitmentMode
 		{
@@ -4516,26 +4525,6 @@ namespace FF1Lib
 			set
 			{
 				Flags.MapGenUnsafeStart = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public string FiendGfx
-		{
-			get => Flags.FiendGfx;
-			set
-			{
-				Flags.FiendGfx = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public string ChaosGfx
-		{
-			get => Flags.ChaosGfx;
-			set
-			{
-				Flags.ChaosGfx = value;
 				RaisePropertyChanged();
 			}
 		}

@@ -72,9 +72,6 @@ namespace FF1Lib
 	    [JsonProperty(Order = -1)]
 	        public int Seed { get; set; }
 
-	    [JsonProperty(Order = 12)]
-	        public string ReplacementGraphics { get; set; }
-
 	        public string ComputeChecksum() {
 		    var copy = new OwMapExchangeData(this);
 		    copy.FFRVersion = "";
