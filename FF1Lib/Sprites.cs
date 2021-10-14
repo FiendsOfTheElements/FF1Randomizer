@@ -495,7 +495,7 @@ namespace FF1Lib
 			return b;
 		    }
 		}
-		if (b < 255) {
+		if (b < 128) {
 		    chrEntries.Add(tile);
 		    return (byte)(chrEntries.Count-1);
 		}
@@ -689,7 +689,6 @@ namespace FF1Lib
 
 		var mapPals = new List<List<byte>>();
 		if (!mergePalettes(candidateMapPals, mapPals, 4)) {
-		    Console.WriteLine($"Too many unique 4-color palettes");
 		}
 
 		Console.WriteLine($"mapPals {mapPals.Count}");
@@ -724,11 +723,18 @@ namespace FF1Lib
 		    }
 		}
 
-		for (int i = 0; i < mapPals.Count; i++) {
+		if (mapPals.Count > 4) {
+		    Console.WriteLine($"!!! More than 4 unique 4-color palettes ({mapPals.Count})");
+		}
+		if (chrEntries.Count > 128) {
+		    Console.WriteLine($"!!! More than 128 unique 8x8 tiles ({chrEntries.Count})");
+		}
+
+		for (int i = 0; i < Math.Min(4, mapPals.Count); i++) {
 		    Put(OVERWORLDPALETTE_OFFSET + i*4, mapPals[i].ToArray());
 		}
 
-		for (int i = 0; i < chrEntries.Count; i++) {
+		for (int i = 0; i < Math.Min(128, chrEntries.Count); i++) {
 		    Put(OVERWORLDPATTERNTABLE_OFFSET + (i * 16), EncodeForPPU(chrEntries[i]));
 		}
 	    }
@@ -790,7 +796,7 @@ namespace FF1Lib
 		    for(int areaX = 0; areaX < sizeX/2; areaX += 1) {
 			var srcPalIdx = areaY * (sizeX/2) + areaX;
 
-			Console.WriteLine($"area {areaX} {areaY}       candpal {srcPalIdx}");
+			//Console.WriteLine($"area {areaX} {areaY}       candpal {srcPalIdx}");
 
 			int palidx = findPalette(fiendPals, candidatePals[srcPalIdx]);
 			if  (palidx == -1) {
@@ -801,14 +807,14 @@ namespace FF1Lib
 			Dictionary<Rgba32, byte> index;
 			colorToPaletteIndex(fiendPals[usepal], toNEScolor, out index);
 
-			Console.WriteLine($"fiendPals[{usepal}]");
-			foreach (var i in fiendPals[usepal]) {
-			    Console.WriteLine($"${i,2:X}");
-			}
-			Console.WriteLine($"index");
-			foreach (var i in index) {
-			    Console.WriteLine($"{i.Key}: {i.Value}");
-			}
+			// Console.WriteLine($"fiendPals[{usepal}]");
+			// foreach (var i in fiendPals[usepal]) {
+			//     Console.WriteLine($"${i,2:X}");
+			// }
+			// Console.WriteLine($"index");
+			// foreach (var i in index) {
+			//     Console.WriteLine($"{i.Key}: {i.Value}");
+			// }
 
 			int aX, aY;
 			if (sizeX == 8) {
@@ -847,7 +853,7 @@ namespace FF1Lib
 				int left = imageOffsetX + tilesX * 8;
 				byte idx = chrIndex(makeTile(image, top, left, index), chrEntries);
 				if (idx == 0xff) {
-				    Console.WriteLine($"Error importing CHR at {left}, {top}, too many unique CHR");
+				    Console.WriteLine($"Error importing CHR at {left}, {top}, too many unique CHR ");
 				    idx = 0;
 				}
 				// put the NT
