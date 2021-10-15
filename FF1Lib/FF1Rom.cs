@@ -890,6 +890,11 @@ namespace FF1Lib
 				IncreaseDarkPenalty();
 			}
 
+			if((bool)flags.WhiteMageHarmEveryone)
+			{
+				WhiteMageHarmEveryone();
+			}
+
 			if (flags.EnemyElementalResistancesBug)
 			{
 				FixEnemyElementalResistances();
