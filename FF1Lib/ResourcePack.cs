@@ -38,6 +38,13 @@ namespace FF1Lib
 		}
 	    }
 
+	    var backdrop = archive.GetEntry("battle_backdrops.png");
+	    if (backdrop != null) {
+		using (var s = backdrop.Open()) {
+		    SetCustomBattleBackdrop(s);
+		}
+	    }
+
 	    var dialogue = archive.GetEntry("dialogue.txt");
 	    if (dialogue != null) {
 		using (var s = dialogue.Open()) {

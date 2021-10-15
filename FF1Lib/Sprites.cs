@@ -938,5 +938,54 @@ namespace FF1Lib
 		    Console.WriteLine($"Error importing Chaos, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles");
 		}
 	    }
+
+	    public void SetCustomBattleBackdrop(Stream backdrop) {
+		//const int BATTLEBACKDROPASSIGNMENT_OFFSET =		0x3310;
+		const int BATTLEBACKDROPPALETTE_OFFSET =		0x3200;
+
+		IImageFormat format;
+		Image<Rgba32> image = Image.Load<Rgba32>(backdrop, out format);
+		var toNEScolor = new Dictionary<Rgba32, byte>();
+
+		for (int count = 0; count < 16; count++) {
+		    Console.WriteLine($"Importing backdrop {count}");
+		    int top = count*32;
+		    int left = 0;
+
+		    var firstUnique = new Dictionary<Rgba32, int>();
+		    var colors = new List<Rgba32>();
+		    for (int y = top; y < (top+32); y++) {
+			for (int x = left; x < (left+32); x++) {
+			    if (!colors.Contains(image[x,y])) {
+				firstUnique[image[x,y]] = (x<<16 | y);
+				colors.Add(image[x,y]);
+			    }
+			}
+		    }
+		    List<byte> pal;
+		    if (!makeNTPalette(colors, NESpalette, out pal, toNEScolor)) {
+			Console.WriteLine($"Failed importing battle backdrop at {left}, {top}, too many unique colors (limit 4 unique colors):");
+			for (int i = 0; i < pal.Count; i++) {
+			    Console.WriteLine($"NES palette {i}: ${pal[i],2:X}");
+			}
+			continue;
+		    }
+
+		    Dictionary<Rgba32, byte> index;
+		    colorToPaletteIndex(pal, toNEScolor, out index);
+
+		    Put(BATTLEBACKDROPPALETTE_OFFSET + (count * 4), pal.ToArray());
+
+		    int n = 1;
+		    for (int y = top; y < (top+32); y += 8) {
+			for (int x = left; x < (left+32); x += 8) {
+			    var tile = makeTile(image, y, x, index);
+			    Put(BATTLEPATTERNTABLE_OFFSET + (count * 2048) + (n*16), EncodeForPPU(tile));
+			    n++;
+			}
+		    }
+
+		}
+	    }
 	}
 }
