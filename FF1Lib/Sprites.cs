@@ -488,14 +488,14 @@ namespace FF1Lib
 		PutInBank(0x0F, 0x81C0, Blob.FromHex("AD0061C9FFD002A90D0A0A0A6908AAA008BD508199D003CA8810F660"));
 	    }
 
-	    byte chrIndex(byte[] tile, List<byte[]> chrEntries) {
+	    byte chrIndex(byte[] tile, List<byte[]> chrEntries, int maxEntries) {
 		byte b;
 		for (b = 0; b < chrEntries.Count; b++) {
 		    if (Enumerable.SequenceEqual(tile, chrEntries[b])) {
 			return b;
 		    }
 		}
-		if (b < 128) {
+		if (b < maxEntries) {
 		    chrEntries.Add(tile);
 		    return (byte)(chrEntries.Count-1);
 		}
@@ -691,6 +691,8 @@ namespace FF1Lib
 		if (!mergePalettes(candidateMapPals, mapPals, 4)) {
 		}
 
+		int maxCHR = 245;
+		int excessCHR = 0;
 		Console.WriteLine($"mapPals {mapPals.Count}");
 
 		for(int imagecount = 0; imagecount < 128; imagecount += 1) {
@@ -714,10 +716,11 @@ namespace FF1Lib
 				(0, 8, 256),
 				(8, 8, 384)})
 		    {
-			byte idx = chrIndex(makeTile(image, top+loadchr.Item2, left+loadchr.Item1, index), chrEntries);
+			byte idx = chrIndex(makeTile(image, top+loadchr.Item2, left+loadchr.Item1, index), chrEntries, maxCHR);
 			if (idx == 0xff) {
 			    Console.WriteLine($"Error importing CHR at {left+loadchr.Item1}, {top+loadchr.Item2}, in map tile {imagecount} too many unique CHR");
 			    idx = 0;
+			    excessCHR++;
 			}
 			Put(OVERWORLDPATTERNTABLE_ASSIGNMENT + loadchr.Item3 + imagecount, new byte[]{idx});
 		    }
@@ -726,15 +729,15 @@ namespace FF1Lib
 		if (mapPals.Count > 4) {
 		    Console.WriteLine($"!!! More than 4 unique 4-color palettes ({mapPals.Count})");
 		}
-		if (chrEntries.Count > 128) {
-		    Console.WriteLine($"!!! More than 128 unique 8x8 tiles ({chrEntries.Count})");
+		if (excessCHR > 0) {
+		    Console.WriteLine($"!!! More than {maxCHR} unique 8x8 tiles, must eliminate {excessCHR} excess tiles");
 		}
 
 		for (int i = 0; i < Math.Min(4, mapPals.Count); i++) {
 		    Put(OVERWORLDPALETTE_OFFSET + i*4, mapPals[i].ToArray());
 		}
 
-		for (int i = 0; i < Math.Min(128, chrEntries.Count); i++) {
+		for (int i = 0; i < chrEntries.Count; i++) {
 		    Put(OVERWORLDPATTERNTABLE_OFFSET + (i * 16), EncodeForPPU(chrEntries[i]));
 		}
 	    }
@@ -851,7 +854,7 @@ namespace FF1Lib
 			    for(int tilesX = areaX*2; tilesX < (areaX+1)*2; tilesX += 1) {
 				int top = imageOffsetY + tilesY * 8;
 				int left = imageOffsetX + tilesX * 8;
-				byte idx = chrIndex(makeTile(image, top, left, index), chrEntries);
+				byte idx = chrIndex(makeTile(image, top, left, index), chrEntries, 110);
 				if (idx == 0xff) {
 				    Console.WriteLine($"Error importing CHR at {left}, {top}, too many unique CHR ");
 				    idx = 0;
