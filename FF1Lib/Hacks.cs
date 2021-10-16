@@ -2117,12 +2117,31 @@ namespace FF1Lib
 			 * SEC                                  STA math_hitchance
 			 * SBC #40                              STA math_critchance
 			 * STA math_hitchance                   INC A
-			 * 
+			 *
 			 * 0x326A7: AD 56 68 38 E9 28 8D 56 68  0x326A7: A9 00 8D 56 68 8D 62 68 1A
 			 */
 
 			// replace asm, set hitchance and critchance to 0
 			Put(0x326A7, Blob.FromHex("A9008D56688D62681A"));
+		}
+
+		public void DraculasCurse(TalkRoutines talkroutines, NPCdata npcdata, MT19337 rng, Flags flags) {
+		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		    var enemyTextPart1 = enemyText.Take(2).ToArray();
+		    var enemyTextPart2 = enemyText.Skip(2).ToArray();
+		    enemyText[119] = "FRANKEN"; // +3
+		    enemyText[120] = "FRANKEN"; // +3
+		    enemyText[121] = "CARMILA"; // +3
+		    enemyText[122] = "CARMILA"; // +3
+		    enemyText[123] = "Twin D";  //  +0
+		    enemyText[124] = "Twin D";  //  +0
+		    enemyText[125] = "GRIM";    //  -2
+		    enemyText[126] = "GRIM";    //  -2
+		    enemyText[127] = "VLAD";    //  -1
+
+		    // Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes, of which I'm using 7.
+		    WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
+		    WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
 		}
 	}
 }

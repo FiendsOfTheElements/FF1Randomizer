@@ -1037,6 +1037,11 @@ namespace FF1Lib
 				Spooky(talkroutines, npcdata, rng, flags);
 			}
 
+			if (flags.DraculasFlag)
+			{
+				DraculasCurse(talkroutines, npcdata, rng, flags);
+			}
+
 			if (flags.InventoryAutosort && !(preferences.RenounceAutosort))
 			{
 				EnableInventoryAutosort();
@@ -1050,9 +1055,9 @@ namespace FF1Lib
 
 			if (flags.ResourcePack != null) {
 			    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack))) {
-				LoadResourcePack(stream);
-				preferences.ThirdBattlePalette = true;
+				this.LoadResourcePack(stream);
 			    }
+			    preferences.ThirdBattlePalette = true;
 			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.

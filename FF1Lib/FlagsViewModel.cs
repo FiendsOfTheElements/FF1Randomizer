@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.IO;
 using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
@@ -1196,6 +1197,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpookyFlag"));
 			}
 		}
+		public bool DraculasFlag
+		{
+		    get => Flags.DraculasFlag;
+			set
+			{
+				Flags.DraculasFlag = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DraculasFlag"));
+			}
+		}
+
 		public bool? AllowUnsafeMelmond
 		{
 			get => Flags.AllowUnsafeMelmond;
@@ -4986,6 +4997,11 @@ namespace FF1Lib
 				Flags.DisableMinimap = value;
 				RaisePropertyChanged();
 			}
+		}
+
+		public void LoadResourcePackFlags(Stream stream) {
+		    Flags.LoadResourcePackFlags(stream);
+		    RaisePropertyChanged();
 		}
 	}
 }

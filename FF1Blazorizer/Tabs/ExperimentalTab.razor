@@ -1,4 +1,5 @@
 @using FF1Lib;
+@using System.IO;
 @inject IJSRuntime JSRuntime
 
 <div id="Beta" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
@@ -108,6 +109,9 @@
 		  try {
 		    var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importResourcePackInput");
 		    if (content == null || content == "") { return; }
+	            using (var stream = new MemoryStream(Convert.FromBase64String(content))) {
+		       Flags.LoadResourcePackFlags(stream);
+		    }
 		    Flags.ResourcePack = content;
 		  } catch (Exception x) {
 			   Console.WriteLine(x.ToString());
