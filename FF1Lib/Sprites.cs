@@ -754,7 +754,7 @@ namespace FF1Lib
 			int top = imageOffsetY + areaY * 16;
 			int left = imageOffsetX + areaX * 16;
 
-			Console.WriteLine($"area {areaX} {areaY}    pixel {left} {top}   candpal {candidatePals.Count}");
+			//Console.WriteLine($"area {areaX} {areaY}    pixel {left} {top}   candpal {candidatePals.Count}");
 
 			var firstUnique = new Dictionary<Rgba32, int>();
 			var colors = new List<Rgba32>();
