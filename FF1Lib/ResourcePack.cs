@@ -47,6 +47,13 @@ namespace FF1Lib
 		}
 	    }
 
+	    var weapons = resourcePackArchive.GetEntry("weapons.png");
+	    if (weapons != null) {
+		using (var s = weapons.Open()) {
+		    SetCustomWeaponGraphics(s);
+		}
+	    }
+
 	    var dialogue = resourcePackArchive.GetEntry("dialogue.txt");
 	    if (dialogue != null) {
 		using (var s = dialogue.Open()) {

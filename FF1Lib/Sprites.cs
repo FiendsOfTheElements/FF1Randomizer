@@ -228,7 +228,7 @@ namespace FF1Lib
 		Dictionary<Rgba32,byte> headIndex;
 		if (!makeMapmanPalette(headColors, NESpalette, out headPal, out headIndex)) {
 		    Console.WriteLine($"Failed importing top half of mapman for {ClassNames[cur_class]}, too many unique colors (limit 3 unique colors + magenta for transparent):");
-		    for (int i = 0; i < headPal.Count; i++) {
+		    for (int i = 1; i < headPal.Count; i++) {
 			Console.WriteLine($"NES palette {i}: ${headPal[i],2:X}");
 		    }
 		    foreach (var i in headIndex) {
@@ -252,7 +252,7 @@ namespace FF1Lib
 		Dictionary<Rgba32,byte> bodyIndex;
 		if (!makeMapmanPalette(bodyColors, NESpalette, out bodyPal, out bodyIndex)) {
 		    Console.WriteLine($"Failed importing bottom half of mapman for {ClassNames[cur_class]}, too many unique colors (limit 3 unique colors + magenta for transparent):");
-		    for (int i = 0; i < bodyPal.Count; i++) {
+		    for (int i = 1; i < bodyPal.Count; i++) {
 			Console.WriteLine($"NES palette {i}: ${bodyPal[i],2:X}");
 		    }
 		    foreach (var i in bodyIndex) {
@@ -985,6 +985,31 @@ namespace FF1Lib
 			}
 		    }
 
+		}
+	    }
+
+	    public void SetCustomWeaponGraphics(Stream stream) {
+		IImageFormat format;
+		Image<Rgba32> image = Image.Load<Rgba32>(stream, out format);
+
+		const int WEAPONMAGICGRAPHIC_OFFSET =			0x26800;
+
+		Dictionary<Rgba32, byte> index = new Dictionary<Rgba32, byte> {
+		    { new Rgba32(0x00, 0x00, 0x00), 0 },
+		    { new Rgba32(0x7b, 0x7b, 0x7b), 1 },
+		    { new Rgba32(0xbd, 0xbd, 0xbd), 2 },
+		    { new Rgba32(0xff, 0xff, 0xff), 3 }
+		};
+
+		int n = 0;
+		for (int w = 0; w < 12; w++) {
+		    for (int y = 0; y < 16; y += 8) {
+			for (int x = (w*16); x < (w+1)*16; x += 8) {
+			    var tile = makeTile(image, y, x, index);
+			    Put(WEAPONMAGICGRAPHIC_OFFSET + (n*16), EncodeForPPU(tile));
+			    n++;
+			}
+		    }
 		}
 	    }
 	}
