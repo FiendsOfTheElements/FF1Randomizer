@@ -30,6 +30,17 @@ namespace FF1Lib
 	    const int MAPMAN_SIDE1 = 1;
 	    const int MAPMAN_SIDE2 = 2;
 
+	    const int OVERWORLDPALETTE_OFFSET =				0x380;
+	    const int OVERWORLDPALETTE_ASSIGNMENT =			0x300;
+	    const int OVERWORLDPATTERNTABLE_OFFSET =		0x8000;
+	    const int OVERWORLDPATTERNTABLE_ASSIGNMENT =	0x100;
+
+	    const int TILESETPATTERNTABLE_OFFSET =			0xC000;
+	    const int TILESETPATTERNTABLE_ASSIGNMENT =		0x1000;
+	    const int TILESETPALETTE_ASSIGNMENT =			0x400;
+	    const int TILESET_TILEDATA =					0x800;
+	    const int MAPPALETTE_OFFSET =					0x2000;
+
 	    public byte[] EncodeForPPU(byte[] tile) {
 		// Take an array of 64 bytes with a ordinary linear
 		// encoding (left to right, top to bottom, one byte
@@ -626,15 +637,16 @@ namespace FF1Lib
 		return false;
 	    }
 
-	    public void SetCustomOwGraphics(Stream readStream) {
+	    public void SetCustomMapGraphics(Stream readStream,
+					     int maxCHR,
+					     int maxPal,
+					     int[] PALETTE_OFFSET,
+					     int PALETTE_ASSIGNMENT,
+					     int PATTERNTABLE_OFFSET,
+					     int PATTERNTABLE_ASSIGNMENT)
+	    {
 		IImageFormat format;
 		Image<Rgba32> image = Image.Load<Rgba32>(readStream, out format);
-
-		const int OVERWORLDPALETTE_OFFSET =				0x380;
-		const int OVERWORLDPALETTE_ASSIGNMENT =			0x300;
-		const int OVERWORLDPATTERNTABLE_OFFSET =		0x8000;
-		const int OVERWORLDPATTERNTABLE_ASSIGNMENT =	0x100;
-
 
 		// palette for each terrain tile stored 0-127, each value is 0-3
 		// starting from OVERWORLDPALETTE_ASSIGNMENT
@@ -688,10 +700,10 @@ namespace FF1Lib
 		}
 
 		var mapPals = new List<List<byte>>();
-		if (!mergePalettes(candidateMapPals, mapPals, 4)) {
+		if (!mergePalettes(candidateMapPals, mapPals, maxPal)) {
 		}
 
-		int maxCHR = 245;
+		//int maxCHR = 245;
 		int excessCHR = 0;
 		Console.WriteLine($"mapPals {mapPals.Count}");
 
@@ -708,7 +720,7 @@ namespace FF1Lib
 		    Dictionary<Rgba32, byte> index;
 		    colorToPaletteIndex(mapPals[usepal], toNEScolor, out index);
 
-		    Put(OVERWORLDPALETTE_ASSIGNMENT + imagecount, new byte[] {(byte)((usepal << 6) + (usepal << 4) + (usepal << 2) + (usepal))});
+		    Put(PALETTE_ASSIGNMENT + imagecount, new byte[] {(byte)((usepal << 6) + (usepal << 4) + (usepal << 2) + (usepal))});
 
 		    foreach (var loadchr in new ValueTuple<int, int, int>[] {
 			    (0, 0, 0),
@@ -722,7 +734,7 @@ namespace FF1Lib
 			    idx = 0;
 			    excessCHR++;
 			}
-			Put(OVERWORLDPATTERNTABLE_ASSIGNMENT + loadchr.Item3 + imagecount, new byte[]{idx});
+			Put(PATTERNTABLE_ASSIGNMENT + loadchr.Item3 + imagecount, new byte[]{idx});
 		    }
 		}
 
@@ -734,11 +746,13 @@ namespace FF1Lib
 		}
 
 		for (int i = 0; i < Math.Min(4, mapPals.Count); i++) {
-		    Put(OVERWORLDPALETTE_OFFSET + i*4, mapPals[i].ToArray());
+		    foreach (var j in PALETTE_OFFSET) {
+			Put(j + i*4, mapPals[i].ToArray());
+		    }
 		}
 
 		for (int i = 0; i < chrEntries.Count; i++) {
-		    Put(OVERWORLDPATTERNTABLE_OFFSET + (i * 16), EncodeForPPU(chrEntries[i]));
+		    Put(PATTERNTABLE_OFFSET + (i * 16), EncodeForPPU(chrEntries[i]));
 		}
 	    }
 

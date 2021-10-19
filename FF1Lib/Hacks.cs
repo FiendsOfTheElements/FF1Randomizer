@@ -2127,17 +2127,17 @@ namespace FF1Lib
 
 		public void DraculasCurse(TalkRoutines talkroutines, NPCdata npcdata, MT19337 rng, Flags flags) {
 		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
-		    enemyText[119] = "FRANKEN"; // +3
-		    enemyText[120] = "FRANKEN"; // +3
-		    enemyText[121] = "CARMILA"; // +3
-		    enemyText[122] = "CARMILA"; // +3
-		    enemyText[123] = "Twin D";  //  +0
-		    enemyText[124] = "Twin D";  //  +0
-		    enemyText[125] = "GRIM";    //  -2
-		    enemyText[126] = "GRIM";    //  -2
-		    enemyText[127] = "VLAD";    //  -1
+		    enemyText[119] = "Twin D";  //  +2
+		    enemyText[120] = "Twin D";  //  +2
+		    enemyText[121] = "CARMILLA"; // +4
+		    enemyText[122] = "CARMILLA"; // +4
+		    enemyText[123] = "GrREAPER"; // +2
+		    enemyText[124] = "GrREAPER"; // +2
+		    enemyText[125] = "FRANKEN";  // +1
+		    enemyText[126] = "FRANKEN";  // +1
+		    enemyText[127] = "VLAD";     // -1
 
-		    // Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes, of which I'm using 7.
+		    // Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes, of which I'm using 17.
 		    var enemyTextPart1 = enemyText.Take(2).ToArray();
 		    var enemyTextPart2 = enemyText.Skip(2).ToArray();
 		    WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
