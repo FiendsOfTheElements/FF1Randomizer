@@ -110,6 +110,7 @@ namespace FF1Lib
 
 		public bool MapGenRandomizedAccessReqs { get; set; } = false;
 		public bool MapGenUnsafeStart { get; set; } = false;
+		public bool MapGenLostWoods { get; set; } = false;
 
 		public OwMapExchangeData ReplacementMap { get; set; } = null;
 

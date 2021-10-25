@@ -1453,7 +1453,7 @@ namespace FF1Lib
 			}
 
 			if (outputOffset > 0x4000)
-				throw new InvalidOperationException("Modified map was too large to recompress and fit into a single bank.");
+				throw new InvalidOperationException($"Modified map was too large by {outputOffset - 0x4000} bytes to recompress and fit into a single {0x4000} bank.");
 		}
 
 		public void ShuffleObjectiveNPCs(MT19337 rng)

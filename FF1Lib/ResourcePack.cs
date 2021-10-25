@@ -85,6 +85,14 @@ namespace FF1Lib
 		    LoadDialogue(s);
 		}
 	    }
+
+	    var intro = resourcePackArchive.GetEntry("intro.txt");
+	    if (intro != null) {
+		using (var s = intro.Open()) {
+		    LoadIntro(s);
+		}
+	    }
+
 	}
 
 	public void LoadDialogue(Stream stream) {
@@ -114,6 +122,27 @@ namespace FF1Lib
 		dialogsdict[dlg] = speech.Trim();
 	    }
 	    InsertDialogs(dialogsdict);
+	}
+
+	public void LoadIntro(Stream stream) {
+	    var introText = new List<string>();
+
+	    using (StreamReader reader = new StreamReader(stream)) {
+		while (true) {
+		    var line = reader.ReadLine();
+		    if (line == null) {
+			break;
+		    }
+		    introText.Add(line.TrimEnd());
+		}
+	    }
+
+	    Blob intro = FF1Text.TextToStory(introText.ToArray());
+
+	    Console.WriteLine(intro.Length);
+	    System.Diagnostics.Debug.Assert(intro.Length <= 208);
+	    Put(0x37F20, intro);
+
 	}
     }
 }
