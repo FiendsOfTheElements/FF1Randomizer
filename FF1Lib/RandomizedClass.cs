@@ -609,13 +609,10 @@ namespace FF1Lib
 		public List<string> DoRandomizeClassNormalMode(ref List<ClassData> classData, MT19337 rng, List<string> itemnames, Flags flags)
 		{
 			// Equipment lists
-			var equipFighterArmor = classData[(int)AuthClass.Fighter].arPermissions;
-
-			var equipRedMageArmor = classData[(int)AuthClass.RedMage].arPermissions;
-
-			var equipFighterWeapon = classData[(int)AuthClass.Fighter].wpPermissions;
-
-			var equipThiefWeapon = classData[(int)AuthClass.Thief].wpPermissions;
+			List<Item> equipFighterArmor = classData[(int)AuthClass.Fighter].arPermissions.ToList();
+			List<Item> equipRedMageArmor = classData[(int)AuthClass.RedMage].arPermissions.ToList();
+			List<Item> equipFighterWeapon = classData[(int)AuthClass.Fighter].wpPermissions.ToList();
+			List<Item> equipThiefWeapon = classData[(int)AuthClass.Thief].wpPermissions.ToList();
 
 			// Create exceptions for hit bonus
 			var hitBonusClass = new List<AuthClass>();
@@ -920,8 +917,10 @@ namespace FF1Lib
 							classData[i+6].wpPermissions = classData[i+6].wpPermissions.Except(bonusmalus.Equipment).ToList();
 							break;
 						case BonusMalusAction.WeaponReplace:
-							classData[i].wpPermissions = bonusmalus.Equipment;
-							classData[i+6].wpPermissions = bonusmalus.Equipment;
+							classData[i].wpPermissions.Clear();
+							classData[i + 6].wpPermissions.Clear();
+							classData[i].wpPermissions.AddRange(bonusmalus.Equipment);
+							classData[i + 6].wpPermissions.AddRange(bonusmalus.Equipment);
 							break;
 						case BonusMalusAction.ArmorAdd:
 							classData[i].arPermissions.AddRange(bonusmalus.Equipment);
@@ -932,8 +931,10 @@ namespace FF1Lib
 							classData[i+6].arPermissions = classData[i+6].arPermissions.Except(bonusmalus.Equipment).ToList();
 							break;
 						case BonusMalusAction.ArmorReplace:
-							classData[i].arPermissions = bonusmalus.Equipment;
-							classData[i+6].arPermissions = bonusmalus.Equipment;
+							classData[i].arPermissions.Clear();
+							classData[i+6].arPermissions.Clear();
+							classData[i].arPermissions.AddRange(bonusmalus.Equipment);
+							classData[i+6].arPermissions.AddRange(bonusmalus.Equipment);
 							break;
 						case BonusMalusAction.SpcMod:
 							classData[i].SpCStarting = (byte)Math.Max(classData[i].SpCStarting + bonusmalus.StatMod, 0);
