@@ -1356,7 +1356,7 @@ namespace FF1Lib.Procgen
 										false, true, true, false}),
 				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
 										new int[]{OverworldTiles.DESERT_REGION},
-										false, true, true, false}),
+										false, true, false, false}),
 				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
 										new int[]{OverworldTiles.DESERT_REGION},
 										false, true, true, false}),
