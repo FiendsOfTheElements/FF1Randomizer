@@ -297,7 +297,7 @@ namespace FF1Lib.Procgen
 	    });
 
 	public static OwFeature ASTOS_CASTLE = new OwFeature(new byte[,] {
-	    {None, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_W, None},
+	    {None, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_E, None},
 	    {None, ASTOS_CASTLE_W, ASTOS_CASTLE_E, None},
 	    {None, None, None, None},
 	}, new Dictionary<string, SCCoords> {
@@ -305,7 +305,7 @@ namespace FF1Lib.Procgen
 	    });
 
 	public static OwFeature ORDEALS_CASTLE = new OwFeature(new byte[,] {
-	    {None, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_W, None},
+	    {None, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_E, None},
 	    {None, ORDEALS_CASTLE_W, ORDEALS_CASTLE_E, None},
 	    {None, None, None, None},
 	}, new Dictionary<string, SCCoords> {
@@ -324,7 +324,7 @@ namespace FF1Lib.Procgen
 
 	public static OwFeature ELFLAND_TOWN_CASTLE = new OwFeature(new byte[,] {
 	    {None, LAND, LAND, LAND, LAND, None},
-	    {LAND, LAND, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_W, LAND, LAND},
+	    {LAND, LAND, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_E, LAND, LAND},
 	    {LAND, ELFLAND, ELFLAND_CASTLE_W, ELFLAND_CASTLE_E, ELFLAND, LAND},
 	    {LAND, ELFLAND, LAND, LAND, ELFLAND, LAND},
 	    {LAND, LAND, LAND, LAND, LAND, LAND},
