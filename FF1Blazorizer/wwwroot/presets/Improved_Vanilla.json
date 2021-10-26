@@ -120,6 +120,7 @@
     "BuyTen": true,
     "IdentifyTreasures": true,
     "ShopInfo": true,
+    "ChestInfo": true,
     "WaitWhenUnrunnable": true,
     "HouseMPRestoration": true,
     "WeaponStats": true,
@@ -298,6 +299,7 @@
     "EarlierRuby": false,
     "GuaranteedRuseItem": false,
 	"DisableStunTouch": false,
-	"ThiefAgilityBuff": 0
+	"ThiefAgilityBuff": 0,
+	"QuickMinimapLoad": true
   }
 }
