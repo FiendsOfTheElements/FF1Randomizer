@@ -79,6 +79,13 @@ namespace FF1Lib
 		}
 	    }
 
+	    var gear = resourcePackArchive.GetEntry("gear_icons.png");
+	    if (gear != null) {
+		using (var s = gear.Open()) {
+		    SetCustomGearIcons(s);
+		}
+	    }
+
 	    var dialogue = resourcePackArchive.GetEntry("dialogue.txt");
 	    if (dialogue != null) {
 		using (var s = dialogue.Open()) {

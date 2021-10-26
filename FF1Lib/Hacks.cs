@@ -2152,6 +2152,36 @@ namespace FF1Lib
 			PutInBank(0x0D, 0xB700, Blob.FromHex("00000000070F0F0FFFFFFFF8F7EFEFEE0000000080C0C080FFFFFF7F3F9F1F3F0F06060200000000ECF4F0F8FCFFFFFF00000000000000007FFFFFFFFFFFFFFF"));
 			// Unlit Orbs
 			PutInBank(0x0D, 0xB760, Blob.FromHex("0003010000061F3FFCFBFDFCF8E6DFBF0080F0F8000000C07F8FF7FB071F3F9F3F7F7F3F3F1F0000BF7F7FBFBFD0E0FFE0F0F0F0E0C000008FC7C787070103FF"));
+
+			var tileprop = new TilePropTable(this, 0xff);
+			tileprop.LoadData();
+
+			tileprop[0x01] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.TempleOfFiends + 1);
+			tileprop[0x02] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.TempleOfFiends + 1);
+
+			tileprop[0x57] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.CastleOrdeals1F + 1);
+			tileprop[0x58] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.CastleOrdeals1F + 1);
+
+			tileprop[0x38] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.ConeriaCastle1F + 1);
+			tileprop[0x39] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.ConeriaCastle1F + 1);
+
+			tileprop.StoreData();
+
+			var teledata = new ExitTeleData(this);
+			teledata.LoadData();
+
+			var tpsReport = new TeleportShuffle(flags.ReplacementMap);
+
+			var tofCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.TempleOfFiends1];
+			var tofLoc = new TeleData { X = tofCoord.X, Y = tofCoord.Y, Map = (MapId)0xFF };
+			var ordealsLoc = teledata[3];
+			var coneriaLoc = teledata[4];
+
+			teledata[3] = tofLoc; // ordeals exit to ToF location
+			teledata[4] = ordealsLoc; // coneria exit to ordeal location
+
+			teledata.StoreData();
+
 		}
 	}
 }

@@ -1026,5 +1026,30 @@ namespace FF1Lib
 		    }
 		}
 	    }
+
+	    public void SetCustomGearIcons(Stream stream) {
+		IImageFormat format;
+		Image<Rgba32> image = Image.Load<Rgba32>(stream, out format);
+
+		// 0 = black
+		// 1 = grey
+		// 2 = blue
+		// 3 = white
+
+		Dictionary<Rgba32, byte> index = new Dictionary<Rgba32, byte> {
+		    { new Rgba32(0x00, 0x00, 0x00), 0 },
+		    { new Rgba32(0x7f, 0x7f, 0x7f), 1 },
+		    { new Rgba32(116, 116, 116), 1 },
+		    { new Rgba32(0x00, 0x00, 0xff), 2 },
+		    { new Rgba32(36, 24, 140), 2 },
+		    { new Rgba32(0xff, 0xff, 0xff), 3 },
+		    { new Rgba32(252, 252, 252), 3 }
+		};
+
+		for (int w = 0; w < 11; w++) {
+		    var tile = makeTile(image, 0, (w*8), index);
+		    PutInBank(0x09, 0x8D40 + (w*16), EncodeForPPU(tile));
+		}
+	    }
 	}
 }
