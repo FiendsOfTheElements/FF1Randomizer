@@ -289,7 +289,7 @@ namespace FF1Lib.Procgen
 
 	public static OwFeature ELFLAND_CASTLE = new OwFeature(new byte[,] {
 	    	    {None,               None,               None, None},
-		    {None, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_W, None},
+		    {None, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_E, None},
 		    {None, ELFLAND_CASTLE_W, ELFLAND_CASTLE_E, None},
 	    	    {None,               None,               None, None},
 	}, new Dictionary<string, SCCoords> {

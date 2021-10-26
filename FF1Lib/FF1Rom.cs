@@ -1047,10 +1047,6 @@ namespace FF1Lib
 				EnableInventoryAutosort();
 			}
 
-			if (flags.SkyWarriorSpoilerBats != SpoilerBatHints.Vanilla) {
-			    SkyWarriorSpoilerBats(rng, flags, npcdata);
-			}
-
 			ObfuscateEnemies(rng, flags);
 
 			if (flags.ResourcePack != null) {
@@ -1058,6 +1054,10 @@ namespace FF1Lib
 				this.LoadResourcePack(stream);
 			    }
 			    preferences.ThirdBattlePalette = true;
+			}
+
+			if (flags.SkyWarriorSpoilerBats != SpoilerBatHints.Vanilla) {
+			    SkyWarriorSpoilerBats(rng, flags, npcdata);
 			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.
