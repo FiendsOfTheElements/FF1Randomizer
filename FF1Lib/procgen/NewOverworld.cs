@@ -1399,6 +1399,8 @@ namespace FF1Lib.Procgen
 										false, false, true, false}),
 				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.E_CANAL_STRUCTURE, null,
 										false, false, true, false}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.DWARF_CAVE_FEATURE, null,
+										false, false, true, false}),
 
 				new GenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}),
 
