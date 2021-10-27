@@ -1996,7 +1996,7 @@
 		"Id": "WhiteMageHarmEveryoneCheckBox",
 		"title": "White Mage Harm Everyone",
 		"screenshot": null,
-		"description": "HARM spells, when cast by a white mage/wizard, will deal damage to any target. On non undead targets, the spell will not crit (will not deal double damage except on a 3/256)."
+		"description": "HARM spells, when cast by a white mage/wizard, will deal damage to any target. On non undead targets, the spell will not crit (will not deal double damage except on a 3/256). \n\nThis includes HARM spells cast by item magic such as the light axe."
 	},
 	{
 		"Id": "extendedHintsCheckBox",
