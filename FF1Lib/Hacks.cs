@@ -2156,14 +2156,27 @@ namespace FF1Lib
 			var tileprop = new TilePropTable(this, 0xff);
 			tileprop.LoadData();
 
+			// Coneria castle entrance goes to ToF
 			tileprop[0x01] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.TempleOfFiends + 1);
 			tileprop[0x02] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.TempleOfFiends + 1);
 
+			// ToF entrance goes to Ordeals
 			tileprop[0x57] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.CastleOrdeals1F + 1);
 			tileprop[0x58] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.CastleOrdeals1F + 1);
 
+			// Ordeals entrance goes to Coneria castle
 			tileprop[0x38] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.ConeriaCastle1F + 1);
 			tileprop[0x39] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.ConeriaCastle1F + 1);
+
+			// Volcano entrance (evil tree) goes to Mirage
+			tileprop[0x64] = new TileProp((byte)TilePropFunc.TP_NOMOVE, 0);
+			tileprop[0x65] = new TileProp((byte)TilePropFunc.TP_NOMOVE, 0);
+			tileprop[0x74] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.MirageTower1F + 1);
+			tileprop[0x75] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.MirageTower1F + 1);
+
+			// Mirage entrance (Desert mountain) goes to Volcano (still requires Chime)
+			tileprop[0x1D] = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
+			tileprop[0x1E] = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
 
 			tileprop.StoreData();
 
@@ -2173,12 +2186,14 @@ namespace FF1Lib
 			var tpsReport = new TeleportShuffle(flags.ReplacementMap);
 
 			var tofCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.TempleOfFiends1];
-			var tofLoc = new TeleData { X = tofCoord.X, Y = tofCoord.Y, Map = (MapId)0xFF };
-			var ordealsLoc = teledata[3];
-			var coneriaLoc = teledata[4];
+			var mirageCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.MirageTower1];
+			var volcanoCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.GurguVolcano1];
+			var ordealCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.CastleOrdeals1];
 
-			teledata[3] = tofLoc; // ordeals exit to ToF location
-			teledata[4] = ordealsLoc; // coneria exit to ordeal location
+			teledata[(byte)ExitTeleportIndex.ExitCastleOrdeals] = new TeleData { X = tofCoord.X, Y = tofCoord.Y, Map = (MapId)0xFF }; // ordeals exit to ToF location
+			teledata[(byte)ExitTeleportIndex.ExitCastleConeria] = new TeleData { X = ordealCoord.X, Y = ordealCoord.Y, Map = (MapId)0xFF }; // coneria exit to ordeal location
+			teledata[(byte)ExitTeleportIndex.ExitGurguVolcano] = new TeleData { X = mirageCoord.X, Y = mirageCoord.Y, Map = (MapId)0xFF }; // volcano exit to mirage location
+			teledata[(byte)ExitTeleportIndex.ExitSkyPalace] = new TeleData { X = volcanoCoord.X, Y = volcanoCoord.Y, Map = (MapId)0xFF }; // mirage exit to volcano location
 
 			teledata.StoreData();
 
