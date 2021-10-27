@@ -121,7 +121,7 @@ namespace FF1Lib
 			var chrDic = CHRData.Select((k, i) => (k, i)).ToDictionary(x => x.k, x => x.i, new CHRComparer());
 
 			NTData = new byte[30 * 32];
-			for (int i = 0; i < NTData.Length; i++) NTData[i] = (byte)chrDic[new byte[16]]; //find an empty chr
+			ClearNT(chrDic);
 
 			for (int i = 0; i < 256; i++)
 			{
@@ -131,6 +131,48 @@ namespace FF1Lib
 
 				NTData[ntindex] = tile;
 			}
+		}
+
+		private void ClearNT(Dictionary<byte[], int> chrDic)
+		{
+			byte emptyCHR;
+			if (chrDic.TryGetValue(new byte[16], out var idx))
+			{
+				emptyCHR = (byte)idx;
+			}
+			else if (chrDic.Count < 256)
+			{
+				//We did not encounter an empty CHR, but there is space for one
+				//so we create an empty CHR
+
+				CHRData.Add(new byte[16]);
+				chrDic.Add(new byte[16], CHRData.Count - 1);
+				emptyCHR = (byte)(CHRData.Count - 1);
+			}
+			else
+			{
+				//We don't have space for an empty CHR, so there will also be no decor
+				//We change the attribute table and set all tiles outside the map to the second palette
+				//Then we set the second palette to all blue
+
+				emptyCHR = 0;
+
+				ATData = new byte[] { 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+									  0x55, 0x55, 0x05, 0x05, 0x05, 0x05, 0x55, 0x55,
+									  0x55, 0x55, 0x00, 0x00, 0x00, 0x00, 0x55, 0x55,
+									  0x55, 0x55, 0x00, 0x00, 0x00, 0x00, 0x55, 0x55,
+									  0x55, 0x55, 0x00, 0x00, 0x00, 0x00, 0x55, 0x55,
+									  0x55, 0x55, 0x50, 0x50, 0x50, 0x50, 0x55, 0x55,
+									  0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+									  0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55 };
+
+				lut_MinimapBGPal[4] = 0x02;
+				lut_MinimapBGPal[5] = 0x02;
+				lut_MinimapBGPal[6] = 0x02;
+				lut_MinimapBGPal[7] = 0x02;
+			}
+
+			for (int i = 0; i < NTData.Length; i++) NTData[i] = emptyCHR;
 		}
 
 		private void BuildEntranceData()
