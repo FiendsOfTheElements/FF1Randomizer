@@ -2037,23 +2037,6 @@ namespace FF1Lib
 		    return 0;
 		}
 
-		public void EnableQuickMinimap()
-		{
-			//Blank PPU
-			PutInBank(0x09, 0xBED6, Blob.FromHex("A900"));
-			PutInBank(0x09, 0xBEDB, Blob.FromHex("A900"));
-
-			//Remove WaitForVBlanks
-			PutInBank(0x09, 0xBB0A, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBC5F, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBD97, Blob.FromHex("EAEAEA"));
-
-			//Don't play stupid sounds
-			PutInBank(0x09, 0xBB45, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBC9A, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBDBE, Blob.FromHex("EAEAEA"));
-		}
-
 		public void DisableMinimap()
 		{
 			PutInBank(0x1F, 0xC1A6, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));

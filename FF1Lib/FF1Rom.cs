@@ -738,11 +738,6 @@ namespace FF1Lib
 				EnableSpeedHacks(preferences);
 			}
 
-			if (flags.QuickMinimapLoad)
-			{
-				EnableQuickMinimap();
-			}
-
 			if (flags.DisableMinimap)
 			{
 				DisableMinimap();
