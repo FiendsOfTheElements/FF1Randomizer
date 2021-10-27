@@ -1992,7 +1992,12 @@
 		"screenshot": "Lockpicking.png",
 		"description": "Having a thief in the party, when they reach the required level, allows players to open all locked doors. (Selecting level 1 will allow the thief to always unlock doors.)\n\n Enabling this flag also adds a -10 level requirement bonus and a +10 level requirement malus to blursed classes."
 	},
-
+	{
+		"Id": "WhiteMageHarmEveryoneCheckBox",
+		"title": "White Mage Harm Everyone",
+		"screenshot": null,
+		"description": "HARM spells, when cast by a white mage/wizard, will deal damage to any target. On non undead targets, the spell will not crit (will not deal double damage except on a 3/256). \n\nThis includes HARM spells cast by item magic such as the light axe."
+	},
 	{
 		"Id": "extendedHintsCheckBox",
 		"title": "Extensive Hints",

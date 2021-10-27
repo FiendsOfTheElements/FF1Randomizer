@@ -742,11 +742,6 @@ namespace FF1Lib
 				EnableSpeedHacks(preferences);
 			}
 
-			if (flags.QuickMinimapLoad)
-			{
-				EnableQuickMinimap();
-			}
-
 			if (flags.DisableMinimap)
 			{
 				DisableMinimap();
@@ -892,6 +887,11 @@ namespace FF1Lib
 			if ((bool)flags.IncreaseDarkPenalty)
 			{
 				IncreaseDarkPenalty();
+			}
+
+			if((bool)flags.WhiteMageHarmEveryone)
+			{
+				WhiteMageHarmEveryone();
 			}
 
 			if (flags.EnemyElementalResistancesBug)
@@ -1136,13 +1136,9 @@ namespace FF1Lib
 			owMapExchange?.ExecuteStep2();
 
 
-			if(flags.QuickMinimapLoad)
+			if(flags.QuickMinimapLoad || owMapExchange != null)
 			{
 				new QuickMiniMap(this, overworldMap).EnableQuickMinimap();
-			}
-			else if (owMapExchange != null)
-			{
-			    HackMinimap(overworldMap);
 			}
 
 			new ExpChests(this, flags, rng).BuildExpChests();

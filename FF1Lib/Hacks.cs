@@ -2037,61 +2037,6 @@ namespace FF1Lib
 		    return 0;
 		}
 
-		public void HackMinimap(OverworldMap map) {
-		    // Correctly render arbitrary replacement maps.
-
-		    // The original vanilla minimap has a Final
-		    // Fantasy logo and dragon-sword-crest thing,
-		    // which are crammed into the tiles that are
-		    // normally empty ocean on the vanilla map.  It's
-		    // very clever.
-
-		    // It's way too much work to try and re-pack that
-		    // data (and not guaranteed to work because we
-		    // want to support arbitrary replacement maps) so
-		    // instead get rid of the clever bits, don't
-		    // render the logos and provide a replacement
-		    // nametable that only contains the plain map
-		    // tiles.
-
-		    // NOP out the calls to draw the logo and the
-		    // dragon crest things
-		    PutInBank(0x09, 0xBC45, Blob.FromHex("EAEAEAEAEAEA"));
-
-		    // Need to find 1 empty ocean square for the
-		    // background.
-		    byte emptyTile = findEmptyTile(map.DecompressMapRows(map.GetCompressedMapRows()));
-
-		    var nametable = new byte[960];
-		    for (int i = 0; i < 960; i++) {
-			nametable[i] = emptyTile;
-		    }
-		    for (int i = 0; i < 16; i++) {
-			for (int j = 0; j < 16; j++) {
-			    nametable[(i+6)*32 + (j+8)] = (byte)(i*16 + j);
-			}
-		    }
-
-		    PutInBank(0x09, 0xB000, nametable);
-		}
-
-		public void EnableQuickMinimap()
-		{
-			//Blank PPU
-			PutInBank(0x09, 0xBED6, Blob.FromHex("A900"));
-			PutInBank(0x09, 0xBEDB, Blob.FromHex("A900"));
-
-			//Remove WaitForVBlanks
-			PutInBank(0x09, 0xBB0A, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBC5F, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBD97, Blob.FromHex("EAEAEA"));
-
-			//Don't play stupid sounds
-			PutInBank(0x09, 0xBB45, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBC9A, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBDBE, Blob.FromHex("EAEAEA"));
-		}
-
 		public void DisableMinimap()
 		{
 			PutInBank(0x1F, 0xC1A6, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
@@ -2118,6 +2063,7 @@ namespace FF1Lib
 			// replace asm, set hitchance and critchance to 0
 			Put(0x326A7, Blob.FromHex("A9008D56688D62681A"));
 		}
+
 
 		public void DraculasCurse(TalkRoutines talkroutines, NPCdata npcdata, MT19337 rng, Flags flags) {
 		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
@@ -2191,6 +2137,11 @@ namespace FF1Lib
 
 			teledata.StoreData();
 
+
+		public void WhiteMageHarmEveryone()
+		{
+			PutInBank(0x0C, 0xB905, Blob.FromHex("2073B820F9B8202DB8A9A248A90348A91C4C03FEEAEAEAEAEAEAEAEAEA60"));
+			PutInBank(0x1C, 0xA200, Blob.FromHex("004080C0AD86682908D030A9008D56688D5768AD896C297FAABD00A2A8B90061C904F017C90AF013A9008D58688D5968A9B948A92148A90C4C03FEA9B948A92248A90C4C03FE"));
 		}
 	}
 }

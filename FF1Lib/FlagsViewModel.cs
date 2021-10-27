@@ -4684,6 +4684,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool WhiteMageHarmEveryone
+		{
+			get => Flags.WhiteMageHarmEveryone;
+			set
+			{
+				Flags.WhiteMageHarmEveryone = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public bool CropScreen
 		{
 			get => Preferences.CropScreen;
