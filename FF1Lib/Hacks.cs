@@ -2137,6 +2137,7 @@ namespace FF1Lib
 
 			teledata.StoreData();
 
+		}
 
 		public void WhiteMageHarmEveryone()
 		{
