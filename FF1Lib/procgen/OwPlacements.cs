@@ -257,10 +257,14 @@ namespace FF1Lib.Procgen
 		    this.Tilemap[p.Y, p.X] == OverworldTiles.GRASS)
 		{
 		    var count = 0;
-		    if (this.Tilemap[p.Y-1, p.X] == OverworldTiles.OCEAN) count++;
-		    if (this.Tilemap[p.Y, p.X+1] == OverworldTiles.OCEAN) count++;
-		    if (this.Tilemap[p.Y+1, p.X] == OverworldTiles.OCEAN) count++;
-		    if (this.Tilemap[p.Y, p.X-1] == OverworldTiles.OCEAN) count++;
+		    var up = p.OwUp;
+		    var right = p.OwRight;
+		    var down = p.OwDown;
+		    var left = p.OwLeft;
+		    if (this.Tilemap[up.Y, up.X] == OverworldTiles.OCEAN) count++;
+		    if (this.Tilemap[right.Y, right.X] == OverworldTiles.OCEAN) count++;
+		    if (this.Tilemap[down.Y, down.X] == OverworldTiles.OCEAN) count++;
+		    if (this.Tilemap[left.Y, left.X] == OverworldTiles.OCEAN) count++;
 
 		    // Don't consider tiles that are bordered on two
 		    // or more sides by water, there is a possibility

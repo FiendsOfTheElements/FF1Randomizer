@@ -1,4 +1,5 @@
 @using FF1Lib;
+@using System.IO;
 @inject IJSRuntime JSRuntime
 
 <div id="Beta" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
@@ -29,6 +30,10 @@
 			<h4>Armor randomization</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="armorCrafterCheckBox" @bind-Value="Flags.ArmorCrafter">Use Armor Crafter</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
+			<h4>Import Resource Pack</h4>
+			<input type="file" id="importResourcePackInput" accept=".zip" @onchange="@OnImportResourcePack" />
+			<div class="checkbox-cell"></div>
+
 		</div>
 		<div class="col2">
 			<h4>Deep Dungeon</h4>
@@ -100,5 +105,19 @@
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
+
+		async Task OnImportResourcePack(ChangeEventArgs e) {
+		  try {
+		    var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importResourcePackInput");
+		    if (content == null || content == "") { return; }
+	            using (var stream = new MemoryStream(Convert.FromBase64String(content))) {
+		       Flags.LoadResourcePackFlags(stream);
+		    }
+		    Flags.ResourcePack = content;
+		  } catch (Exception x) {
+			   Console.WriteLine(x.ToString());
+		  }
+		  StateHasChanged();
+		}
 
 }

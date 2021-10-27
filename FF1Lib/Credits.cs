@@ -142,7 +142,7 @@ namespace FF1Lib
 
 		// Story pages. The first set is before the credits.
 		// The second set is the ending cinematic with counters.
-		private static readonly List<string[]> BridgeStory = new List<string[]>
+		private static readonly List<string[]> DefaultStory = new List<string[]>
 		{
 			new []
 			{
@@ -155,6 +155,8 @@ namespace FF1Lib
 				"     " + FFRVersion.Version
 			},
 		};
+
+		private static List<string[]> BridgeStory = DefaultStory;
 
 		private static readonly List<string[]> ThankYous = new List<string[]>
 		{
@@ -256,7 +258,10 @@ namespace FF1Lib
 			},
 		};
 
-
+		public void SetBridgeStory(List<string[]> story)
+		{
+			BridgeStory = story;
+		}
 		public void RollCredits(MT19337 rng)
 		{
 			SetupStoryPages(rng);
@@ -332,7 +337,8 @@ namespace FF1Lib
 			ThankYous.ForEach(page => pages.Add(FF1Text.TextToStory(page)));
 
 			Blob storyText = PackageTextBlob(pages, 0xA800);
-			System.Diagnostics.Debug.Assert(storyText.Length <= 0x0500, "Story text too large!");
+			System.Console.WriteLine($"Credits Saved. 0x{storyText.Length:X2}B of 0x500B used.");
+			System.Diagnostics.Debug.Assert(storyText.Length <= 0x0500, $"Story text {storyText.Length:X2} too large!");
 
 			Put(0x36800, storyText);
 			Data[0x36E00] = (byte)(BridgeStory.Count);

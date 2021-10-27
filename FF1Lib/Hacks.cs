@@ -2056,12 +2056,87 @@ namespace FF1Lib
 			 * SEC                                  STA math_hitchance
 			 * SBC #40                              STA math_critchance
 			 * STA math_hitchance                   INC A
-			 * 
+			 *
 			 * 0x326A7: AD 56 68 38 E9 28 8D 56 68  0x326A7: A9 00 8D 56 68 8D 62 68 1A
 			 */
 
 			// replace asm, set hitchance and critchance to 0
 			Put(0x326A7, Blob.FromHex("A9008D56688D62681A"));
+		}
+
+
+		public void DraculasCurse(TalkRoutines talkroutines, NPCdata npcdata, MT19337 rng, Flags flags) {
+		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		    enemyText[119] = "Twin D";  //  +2
+		    enemyText[120] = "Twin D";  //  +2
+		    enemyText[121] = "CARMILLA"; // +4
+		    enemyText[122] = "CARMILLA"; // +4
+		    enemyText[123] = "GrREAPER"; // +2
+		    enemyText[124] = "GrREAPER"; // +2
+		    enemyText[125] = "FRANKEN";  // +1
+		    enemyText[126] = "FRANKEN";  // +1
+		    enemyText[127] = "VLAD";     // -1
+
+		    // Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes, of which I'm using 17.
+		    var enemyTextPart1 = enemyText.Take(2).ToArray();
+		    var enemyTextPart2 = enemyText.Skip(2).ToArray();
+		    WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
+		    WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+
+			// Change Orbs to Dracula's relics
+			PutInBank(0x0E, 0xAD78, Blob.FromHex("0F050130")); // Update Orbs palette
+			// Lit Orbs
+			PutInBank(0x0D, 0xB640, Blob.FromHex("0003030303020303F8FBFAFAFAFAFAFA00808080800080803FBF3F3F3F3F3F3F0302030301010000FAFAFAFBFDFDFEFF80008080808080003F3F3F3F3FBFBF3F"));
+			PutInBank(0x0D, 0xB680, Blob.FromHex("0000000201030307FFFFF9F8FCF8FBF20000008080C0E0E0FFFF3F3F3F1F0F0F0F0F0F0700000000E4E0E3F0F8FFFFFFE0E0C080000000000F8F1F3F7FFFFFFF"));
+			PutInBank(0x0D, 0xB6C0, Blob.FromHex("00000000070F1F1FFFFFFFF8F7E9D4D0000000000080C0C0FFFFFFFF7FBFDFDF1F0F070000000000D9EFF7F8FFFFFFFFC080000000000000DFBF7FFFFFFFFFFF"));
+			PutInBank(0x0D, 0xB700, Blob.FromHex("00000000070F0F0FFFFFFFF8F7EFEFEE0000000080C0C080FFFFFF7F3F9F1F3F0F06060200000000ECF4F0F8FCFFFFFF00000000000000007FFFFFFFFFFFFFFF"));
+			// Unlit Orbs
+			PutInBank(0x0D, 0xB760, Blob.FromHex("0003010000061F3FFCFBFDFCF8E6DFBF0080F0F8000000C07F8FF7FB071F3F9F3F7F7F3F3F1F0000BF7F7FBFBFD0E0FFE0F0F0F0E0C000008FC7C787070103FF"));
+
+			var tileprop = new TilePropTable(this, 0xff);
+			tileprop.LoadData();
+
+			// Coneria castle entrance goes to ToF
+			tileprop[0x01] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.TempleOfFiends + 1);
+			tileprop[0x02] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.TempleOfFiends + 1);
+
+			// ToF entrance goes to Ordeals
+			tileprop[0x57] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.CastleOrdeals1F + 1);
+			tileprop[0x58] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.CastleOrdeals1F + 1);
+
+			// Ordeals entrance goes to Coneria castle
+			tileprop[0x38] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.ConeriaCastle1F + 1);
+			tileprop[0x39] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.ConeriaCastle1F + 1);
+
+			// Volcano entrance (evil tree) goes to Mirage
+			tileprop[0x64] = new TileProp((byte)TilePropFunc.TP_NOMOVE, 0);
+			tileprop[0x65] = new TileProp((byte)TilePropFunc.TP_NOMOVE, 0);
+			tileprop[0x74] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.MirageTower1F + 1);
+			tileprop[0x75] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.MirageTower1F + 1);
+
+			// Mirage entrance (Desert mountain) goes to Volcano (still requires Chime)
+			tileprop[0x1D] = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
+			tileprop[0x1E] = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
+
+			tileprop.StoreData();
+
+			var teledata = new ExitTeleData(this);
+			teledata.LoadData();
+
+			var tpsReport = new TeleportShuffle(flags.ReplacementMap);
+
+			var tofCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.TempleOfFiends1];
+			var mirageCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.MirageTower1];
+			var volcanoCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.GurguVolcano1];
+			var ordealCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.CastleOrdeals1];
+
+			teledata[(byte)ExitTeleportIndex.ExitCastleOrdeals] = new TeleData { X = tofCoord.X, Y = tofCoord.Y, Map = (MapId)0xFF }; // ordeals exit to ToF location
+			teledata[(byte)ExitTeleportIndex.ExitCastleConeria] = new TeleData { X = ordealCoord.X, Y = ordealCoord.Y, Map = (MapId)0xFF }; // coneria exit to ordeal location
+			teledata[(byte)ExitTeleportIndex.ExitGurguVolcano] = new TeleData { X = mirageCoord.X, Y = mirageCoord.Y, Map = (MapId)0xFF }; // volcano exit to mirage location
+			teledata[(byte)ExitTeleportIndex.ExitSkyPalace] = new TeleData { X = volcanoCoord.X, Y = volcanoCoord.Y, Map = (MapId)0xFF }; // mirage exit to volcano location
+
+			teledata.StoreData();
+
 		}
 
 		public void WhiteMageHarmEveryone()

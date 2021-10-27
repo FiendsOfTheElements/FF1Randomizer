@@ -135,8 +135,6 @@ namespace FF1Lib
 			UpdateDialogs(npcdata, flags);
 			AddElementIcons();
 
-			
-
 			if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 
 			flags = Flags.ConvertAllTriState(flags, rng);
@@ -466,6 +464,12 @@ namespace FF1Lib
 			if (flags.NoOverworld)
 			{
 				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
+			}
+
+			if (flags.DraculasFlag)
+			{
+			    // Needs to happen before item placement because it swaps some entrances around.
+				DraculasCurse(talkroutines, npcdata, rng, flags);
 			}
 
 			var maxRetries = 8;
@@ -1043,11 +1047,19 @@ namespace FF1Lib
 				EnableInventoryAutosort();
 			}
 
-			if (flags.SkyWarriorSpoilerBats != SpoilerBatHints.Vanilla) {
-			    SkyWarriorSpoilerBats(rng, flags, npcdata);
+			ObfuscateEnemies(rng, flags);
+
+			if (flags.ResourcePack != null) {
+			    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack))) {
+				this.LoadResourcePack(stream);
+			    }
+			    preferences.ThirdBattlePalette = true;
 			}
 
-			ObfuscateEnemies(rng, flags);
+			if (flags.SkyWarriorSpoilerBats != SpoilerBatHints.Vanilla) {
+			    // Update after dialogue is loaded
+			    SkyWarriorSpoilerBats(rng, flags, npcdata);
+			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.
 			// Back up Rng so that fun flags are uniform when different ones are selected

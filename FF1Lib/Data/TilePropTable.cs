@@ -12,9 +12,14 @@ namespace FF1Lib
 
 		public TileProp[] Data { get; private set; } = new TileProp[128];
 
-		public TilePropTable(FF1Rom _rom, byte idx)
+	    public TilePropTable(FF1Rom _rom, byte idx)
 		{
+		    if (idx == 0xff) {
+			// overworld
+			TileProperties = new MemTable<byte>(_rom, 0, 256);
+		    } else {
 			TileProperties = new MemTable<byte>(_rom, 0x800 + 0x100 * idx, 256);
+		    }
 		}
 
 		public void LoadData()

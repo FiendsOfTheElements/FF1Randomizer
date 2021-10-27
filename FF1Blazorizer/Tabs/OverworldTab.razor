@@ -31,7 +31,7 @@
 		<br>
 		<br>
 		<h4>Import Custom Map</h4>
-		<input type="file" id="importMapInput" accept="*/*" @onchange="@OnImportMap" />
+		<input type="file" id="importMapInput" accept=".json" @onchange="@OnImportMap" />
 	</div>
 
 	<div class="col2">
@@ -186,6 +186,7 @@
 		  }
 		  StateHasChanged();
 		}
+
 
 		async Task OnExportMap(MouseEventArgs e) {
 		     if (Flags.ReplacementMap == null || Flags.ReplacementMap.DecompressedMapRows == null) {
