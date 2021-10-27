@@ -41,9 +41,10 @@
 			<p>While it should work with most flags, such as scaling and Blursed items, map edits and Floor shuffle will either fail to generate a ROM, or create an unpleasant experience.</p>
 			<p>Please try it out and provide feedback!</p>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDEvenTreasureDistribution" @bind-Value="Flags.DDEvenTreasureDistribution">Distribute treasure evenly</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDProgressiveTilesets" @bind-Value="Flags.DDProgressiveTilesets">Progressive Tilesets</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDFiendOrbs" @bind-Value="Flags.DDFiendOrbs">Fiend Orbs</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDEvenTreasureDistribution" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.DDEvenTreasureDistribution">Distribute treasure evenly</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDProgressiveTilesets" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.DDProgressiveTilesets">Progressive Tilesets</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDFiendOrbs" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.DDFiendOrbs">Fiend Orbs</CheckBox>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="TailBahamutDropDown" TItem="TailBahamutMode" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.TailBahamutMode">Bahamut and TAIL floors:</EnumDropDown>
 
 			<div class="checkbox-cell"></div>
 			<h4>Classes</h4>

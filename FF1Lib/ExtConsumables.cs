@@ -342,7 +342,7 @@ namespace FF1Lib
 
 		private void ChangeItemNames()
 		{
-			var itemnames = rom.ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+			var itemnames = rom.ItemsText;
 
 			if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
 			{
@@ -372,8 +372,6 @@ namespace FF1Lib
 			{
 				itemnames[(int)Item.Soft] = "SOFT@p"; // the original name contains trailing spaces
 			}
-
-			rom.WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
 		}
 
 		private void ChangeMenuTexts()

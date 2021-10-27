@@ -1655,8 +1655,6 @@ namespace FF1Lib
 				}
 			}
 
-			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
-
 			// write all spell data to the ROM
 			for (int i = 0; i < MagicCount; ++i)
 			{
@@ -1664,11 +1662,9 @@ namespace FF1Lib
 				while (spellNames[i].Length < 4)
 					spellNames[i] += " ";
 
-				itemnames[176 + i] = spellNames[i];
+				ItemsText[176 + i] = spellNames[i];
 				spell[i].calc_Enemy_SpellTier();
 			}
-
-			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
 
 			if (!keepPermissions)
 				Put(MagicPermissionsOffset, spellPermissions); // write the permissions as one giant chunk

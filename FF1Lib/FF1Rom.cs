@@ -28,6 +28,7 @@ namespace FF1Lib
 		public const int GoldItemOffset = 108; // 108 items before gold chests
 		public const int GoldItemCount = 68;
 		public static List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
+		public ItemNames ItemsText;
 
 		public void PutInBank(int bank, int address, Blob data)
 		{
@@ -128,6 +129,7 @@ namespace FF1Lib
 			ExpandNormalTeleporters();
 			SeparateUnrunnables();
 			DrawCanoeUnderBridge();
+			ItemsText = new ItemNames(this);
 			var talkroutines = new TalkRoutines();
 			var npcdata = new NPCdata(this);
 			UpdateDialogs(npcdata, flags);
@@ -150,7 +152,7 @@ namespace FF1Lib
 
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
-			var oldItemNames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
+			var oldItemNames = ItemsText.ToList();
 
 			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems)
 			{
@@ -902,19 +904,18 @@ namespace FF1Lib
 				FunEnemyNames(preferences.TeamSteak);
 			}
 
-			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			if (itemText[(int)Item.Ribbon].Length > 7
-			    && itemText[(int)Item.Ribbon][7] == ' ')
+			if (ItemsText[(int)Item.Ribbon].Length > 7
+			    && ItemsText[(int)Item.Ribbon][7] == ' ')
 			    {
-				itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
+				ItemsText[(int)Item.Ribbon] = ItemsText[(int)Item.Ribbon].Remove(7);
 			    }
 
 			if (flags.Etherizer)
 			{
 				Etherizer();
-				itemText[(int)Item.Tent] = "ETHR@p";
-				itemText[(int)Item.Cabin] = "DRY@p ";
-				itemText[(int)Item.House] = "XETH@p";
+				ItemsText[(int)Item.Tent] = "ETHR@p";
+				ItemsText[(int)Item.Cabin] = "DRY@p ";
+				ItemsText[(int)Item.House] = "XETH@p";
 			}
 
 			if (flags.ExtensiveHints_Enable)
@@ -937,12 +938,10 @@ namespace FF1Lib
 			}
 
 			ExpGoldBoost(flags);
-			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
+			ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 			WriteMaps(maps);
-
-			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
 
 			extConsumables.AddExtConsumables();
 
@@ -1146,12 +1145,12 @@ namespace FF1Lib
 			    HackMinimap(overworldMap);
 			}
 
+			new ExpChests(this, flags, rng).BuildExpChests();
 
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
-
-			new ExpChests(this, flags, rng).BuildExpChests();
+			ItemsText.Write(this, UnusedGoldItems);
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 

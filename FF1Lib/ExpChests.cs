@@ -19,7 +19,7 @@ namespace FF1Lib
 
 		TreasureData treasureData;
 		ItemPrices itemPrices;
-		string[] itemNames;
+		ItemNames itemNames;
 
 		public ExpChests(FF1Rom _rom, Flags _flags, MT19337 _rng)
 		{
@@ -135,14 +135,13 @@ namespace FF1Lib
 		{
 			itemPrices.LoadTable();
 			treasureData.LoadTable();
-			itemNames = rom.ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
+			itemNames = rom.ItemsText;
 		}
 
 		private void StoreData()
 		{
 			itemPrices.StoreTable();
 			treasureData.StoreTable();
-			rom.WriteText(itemNames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
 		}
 	}
 }
