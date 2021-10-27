@@ -464,6 +464,12 @@ namespace FF1Lib
 				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
 			}
 
+			if (flags.DraculasFlag)
+			{
+			    // Needs to happen before item placement because it swaps some entrances around.
+				DraculasCurse(talkroutines, npcdata, rng, flags);
+			}
+
 			var maxRetries = 8;
 			for (var i = 0; i < maxRetries; i++)
 			{
@@ -1037,11 +1043,6 @@ namespace FF1Lib
 				Spooky(talkroutines, npcdata, rng, flags);
 			}
 
-			if (flags.DraculasFlag)
-			{
-				DraculasCurse(talkroutines, npcdata, rng, flags);
-			}
-
 			if (flags.InventoryAutosort && !(preferences.RenounceAutosort))
 			{
 				EnableInventoryAutosort();
@@ -1057,6 +1058,7 @@ namespace FF1Lib
 			}
 
 			if (flags.SkyWarriorSpoilerBats != SpoilerBatHints.Vanilla) {
+			    // Update after dialogue is loaded
 			    SkyWarriorSpoilerBats(rng, flags, npcdata);
 			}
 
