@@ -648,6 +648,8 @@ namespace FF1Lib
 		[IntegerFlag(1, 50)]
 		public int LockpickingLevelRequirement { get; set; } = 10;
 
+		public bool WhiteMageHarmEveryone { get; set; } = false;
+
 		public bool? EarlierRuby { get; set; } = false;
 		public bool? GuaranteedRuseItem { get; set; } = false;
 		public bool? DisableStunTouch { get; set; } = false;
