@@ -1049,6 +1049,7 @@ namespace FF1Lib
 		for (int w = 0; w < 11; w++) {
 		    var tile = makeTile(image, 0, (w*8), index);
 		    PutInBank(0x09, 0x8D40 + (w*16), EncodeForPPU(tile));
+		    PutInBank(0x12, 0x8D40 + (w*16), EncodeForPPU(tile));
 		}
 	    }
 	}
