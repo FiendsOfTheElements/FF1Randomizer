@@ -410,7 +410,7 @@ namespace FF1Lib
 		}
 		public List<string> ToList()
 		{
-			return _itemsTexts;
+			return new List<string>(_itemsTexts);
 		}
 		public void Write(FF1Rom rom, List<int> unusedGoldItems)
 		{
