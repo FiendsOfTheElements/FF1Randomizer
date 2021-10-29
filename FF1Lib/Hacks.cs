@@ -2109,16 +2109,32 @@ namespace FF1Lib
 			tileprop[0x39] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.ConeriaCastle1F + 1);
 
 			// Volcano entrance (evil tree) goes to Mirage
-			tileprop[0x64] = new TileProp((byte)TilePropFunc.TP_NOMOVE, 0);
-			tileprop[0x65] = new TileProp((byte)TilePropFunc.TP_NOMOVE, 0);
+			tileprop[0x64] = new TileProp((byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN, 0);
+			tileprop[0x65] = new TileProp((byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN, 0);
 			tileprop[0x74] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.MirageTower1F + 1);
 			tileprop[0x75] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.MirageTower1F + 1);
 
 			// Mirage entrance (Desert mountain) goes to Volcano (still requires Chime)
-			tileprop[0x1D] = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
-			tileprop[0x1E] = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
+			tileprop[0x1D] = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME | (byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN,
+						      (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
+			tileprop[0x1E] = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME | (byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN,
+						      (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
 
 			tileprop.StoreData();
+
+			const int BATTLEBACKDROPASSIGNMENT_OFFSET =		0x3300;
+
+			// fix up battle backdrop on tof
+			Put(BATTLEBACKDROPASSIGNMENT_OFFSET + 0x01, new byte[] { 9, 9});
+
+			// fix up battle backdrop on ordeals
+			Put(BATTLEBACKDROPASSIGNMENT_OFFSET + 0x57, new byte[] { 5, 5});
+
+			// fix up battle backdrop on mirage tiles
+			Put(BATTLEBACKDROPASSIGNMENT_OFFSET + 0x74, new byte[] { 11, 11});
+
+			// fix up battle backdrop on volcano tiles
+			Put(BATTLEBACKDROPASSIGNMENT_OFFSET + 0x1D, new byte[] { 14, 14});
 
 			var teledata = new ExitTeleData(this);
 			teledata.LoadData();
@@ -2136,7 +2152,6 @@ namespace FF1Lib
 			teledata[(byte)ExitTeleportIndex.ExitSkyPalace] = new TeleData { X = volcanoCoord.X, Y = volcanoCoord.Y, Map = (MapId)0xFF }; // mirage exit to volcano location
 
 			teledata.StoreData();
-
 		}
 
 		public void WhiteMageHarmEveryone()
