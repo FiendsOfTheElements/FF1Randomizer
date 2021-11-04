@@ -138,8 +138,7 @@ namespace FF1Lib
 			string shardName = ShardNames.PickRandom(rng);
 
 			// Replace unused CANOE string and EarthOrb pointer with whatever we're calling the scavenged item.
-			Put(0x2B981, FF1Text.TextToBytes($"{shardName}  ", false, FF1Text.Delimiter.Null));
-			Data[0x2B72A] = 0x81;
+			ItemsText[(int)Item.Shard] = shardName;
 
 			// Replace the upper two tiles of the unlit orb with an empty and found shard.
 			// These are at tile address $76 and $77 respectively.
