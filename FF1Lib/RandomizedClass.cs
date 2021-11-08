@@ -52,7 +52,8 @@ namespace FF1Lib
 			PowerRW = 30,
 			NoPromoMagic = 31,
 			LockpickingLevel = 32,
-			InnateResist = 33
+			InnateResist = 33,
+			BonusXp = 34
 		}
 		public enum AuthClass
 		{
@@ -163,6 +164,7 @@ namespace FF1Lib
 			public List<string> MagicRanks { get; set; }
 			public List<Rank> Ranks { get; set; }
 			public byte InnateResist { get; set; }
+
 			public ClassData()
 			{
 				Promoted = false;
@@ -326,7 +328,8 @@ namespace FF1Lib
 		const int lut_InnateResist = 0x6D400;
 	    const int lut_MaxMP = 0x6C902;
 
-	    public List<ClassData> ReadClassData() {
+
+		public List<ClassData> ReadClassData() {
 			var classData = new List<ClassData> {
 				new ClassData(), new ClassData(), new ClassData(), new ClassData(), new ClassData(), new ClassData(),
 				new ClassData(), new ClassData(), new ClassData(), new ClassData(), new ClassData(), new ClassData()
@@ -769,6 +772,15 @@ namespace FF1Lib
 				bonusNormal.Add(CreateRandomResistBonusMalus(rng));
 			}
 
+			if((bool)flags.RandomizeClassIncludeXpBonus)
+			{
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.BonusXp, "+50% XP", mod: 150, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.BlackBelt }));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.BonusXp, "+100% XP", mod: 200, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.RedMage, AuthClass.BlackMage, AuthClass.WhiteMage }));
+
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.BonusXp, "+50% XP", mod: 150, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.RedMage, AuthClass.BlackMage, AuthClass.WhiteMage }));
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.BonusXp, "+50% XP", mod: 150, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.RedMage, AuthClass.BlackMage, AuthClass.WhiteMage }));
+			}
+
 			var assignedBonusMalus = new List<List<BonusMalus>> { new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>() };
 
 			// Shuffle bonuses and maluses
@@ -777,7 +789,15 @@ namespace FF1Lib
 			malusNormal.Shuffle(rng);
 
 			// Select one incentivized class that will received a strong bonus
-			var luckyDude = Rng.Between(rng, 0, 5);
+			int luckyDude = Rng.Between(rng, 0, 5);
+
+			//Hand out the strong bonus first
+			while (!bonusStrong.First().ClassList.Contains((AuthClass)luckyDude))
+				bonusStrong.Shuffle(rng);
+
+			var selectedStrongBonusMalus = bonusStrong.First();
+			assignedBonusMalus[luckyDude].Add(selectedStrongBonusMalus);
+			bonusStrong.RemoveRange(0, 1);
 
 			var descriptionList = new List<string>();
 
@@ -787,37 +807,17 @@ namespace FF1Lib
 			for (int i = 5; i >= 0; i--)
 			{
 				var tempstring = new List<(int, string)>();
+				if (i == luckyDude) tempstring.Add((0, assignedBonusMalus[luckyDude][0].Description));
 
-				if (i == luckyDude && maxbonus > 0)
+				while(assignedBonusMalus[i].Count < maxbonus)
 				{
-					while (!bonusStrong.First().ClassList.Contains((AuthClass)i))
-						bonusStrong.Shuffle(rng);
+					while (!bonusNormal.First().ClassList.Contains((AuthClass)i) || assignedBonusMalus[i].Where(x => x.Action == bonusNormal.First().Action).Any())
+						bonusNormal.Shuffle(rng);
 
-					assignedBonusMalus[i].Add(bonusStrong.First());
-					tempstring.Add((0, bonusStrong.First().Description));
-					bonusStrong.RemoveRange(0, 1);
-
-					for (int j = 1; j < maxbonus; j++)
-					{
-						while (!bonusNormal.First().ClassList.Contains((AuthClass)i) || assignedBonusMalus[i].Where(x => x.Action == bonusNormal.First().Action).Any())
-							bonusNormal.Shuffle(rng);
-
-						assignedBonusMalus[i].Add(bonusNormal.First());
-						tempstring.Add((0, bonusNormal.First().Description));
-						bonusNormal.RemoveRange(0, 1);
-					}
-				}
-				else
-				{
-					for (int j = 0; j < maxbonus; j++)
-					{
-						while (!bonusNormal.First().ClassList.Contains((AuthClass)i) || assignedBonusMalus[i].Where(x => x.Action == bonusNormal.First().Action).Any())
-							bonusNormal.Shuffle(rng);
-
-						assignedBonusMalus[i].Add(bonusNormal.First());
-						tempstring.Add((0, bonusNormal.First().Description));
-						bonusNormal.RemoveRange(0, 1);
-					}
+					var selectedNormalBonusMalus = bonusNormal.First();
+					assignedBonusMalus[i].Add(selectedNormalBonusMalus);
+					tempstring.Add((0, selectedNormalBonusMalus.Description));
+					bonusNormal.RemoveRange(0, 1);
 				}
 
 				for (int j = 0; j < maxmalus; j++)
@@ -840,6 +840,7 @@ namespace FF1Lib
 			// Reverse description list so it's not backward
 			descriptionList.Reverse();
 			// Apply bonuses and maluses to stats
+
 			for (int i = 0; i < 6; i++)
 			{
 				// Reverse the list so that maluses are applied first and don't cancel out bonuses
@@ -1006,9 +1007,13 @@ namespace FF1Lib
 							classData[i].InnateResist = (byte)bonusmalus.StatMod;
 							classData[i + 6].InnateResist = (byte)bonusmalus.StatMod;
 							break;
+						case BonusMalusAction.BonusXp:
+							double scale = bonusmalus.StatMod / 100.0;
+							ScaleAltExp(scale, (FF1Class)i);
+							break;
 					}
 				}
-			}		
+			}
 
 			return descriptionList;
 		}

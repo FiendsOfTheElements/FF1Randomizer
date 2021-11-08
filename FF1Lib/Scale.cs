@@ -73,6 +73,12 @@ namespace FF1Lib
 		public const int OverworldThreatLevelOffset = 0x7C4FE;
 		public const int OceanThreatLevelOffset = 0x7C506;
 
+		public const int LevelRequirementsOffsetThief = 0x6D535;
+		public const int LevelRequirementsOffsetBlackBelt = 0x6D5C8;
+		public const int LevelRequirementsOffsetRedMage = 0x6D65B;
+		public const int LevelRequirementsOffsetWhiteMage = 0x6D6EE;
+		public const int LevelRequirementsOffsetBlackMage = 0x6D781;
+
 		// Scale is the geometric scale factor used with RNG.  Multiplier is where we make everything cheaper
 		// instead of enemies giving more gold, so we don't overflow.
 		public void ScalePrices(IScaleFlags flags, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation)
@@ -468,16 +474,58 @@ namespace FF1Lib
 			var levelRequirementsBytes = levelRequirementsBlob.Chunk(3).Select(threeBytes => new byte[] { threeBytes[0], threeBytes[1], threeBytes[2], 0 }).ToList();
 			for (int i = 0; i < LevelRequirementsCount; i++)
 			{
-				uint levelRequirement = (uint)(BitConverter.ToUInt32(levelRequirementsBytes[i], 0) / flags.ExpMultiplier);
+				uint levelRequirement = (uint)(Math.Max(BitConverter.ToUInt32(levelRequirementsBytes[i], 0) / flags.ExpMultiplier, 1));
 				levelRequirementsBytes[i] = BitConverter.GetBytes(levelRequirement);
 			}
 
 			Put(LevelRequirementsOffset, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
+			Put(LevelRequirementsOffsetThief, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
+			Put(LevelRequirementsOffsetBlackBelt, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
+			Put(LevelRequirementsOffsetRedMage, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
+			Put(LevelRequirementsOffsetWhiteMage, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
+			Put(LevelRequirementsOffsetBlackMage, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
 
 			// A dirty, ugly, evil piece of code that sets the level requirement for level 2, even though that's already defined in the above table.
 			byte firstLevelRequirement = Data[0x7C04B];
 			firstLevelRequirement = (byte)(firstLevelRequirement / flags.ExpMultiplier);
 			Data[0x7C04B] = firstLevelRequirement;
+		}
+
+		public void ScaleAltExp(double scale, FF1Class characterClass)
+		{
+			int offset = LevelRequirementsOffset;
+
+			switch(characterClass)
+			{
+				case FF1Class.Fighter:
+					offset = LevelRequirementsOffset;
+					break;
+				case FF1Class.Thief:
+					offset = LevelRequirementsOffsetThief;
+					break;
+				case FF1Class.BlackBelt:
+					offset = LevelRequirementsOffsetBlackBelt;
+					break;
+				case FF1Class.RedMage:
+					offset = LevelRequirementsOffsetRedMage;
+					break;
+				case FF1Class.WhiteMage:
+					offset = LevelRequirementsOffsetWhiteMage;
+					break;
+				case FF1Class.BlackMage:
+					offset = LevelRequirementsOffsetBlackMage;
+					break;
+			}
+
+			var altLevelRequirementsBlob = Get(offset, LevelRequirementsSize * LevelRequirementsCount);
+			var altLevelRequirementsBytes = altLevelRequirementsBlob.Chunk(3).Select(threeBytes => new byte[] { threeBytes[0], threeBytes[1], threeBytes[2], 0 }).ToList();
+			for (int i = 0; i < LevelRequirementsCount; i++)
+			{
+				uint levelRequirement = (uint)(Math.Max(BitConverter.ToUInt32(altLevelRequirementsBytes[i], 0) / scale, 1));
+				altLevelRequirementsBytes[i] = BitConverter.GetBytes(levelRequirement);
+			}
+
+			Put(offset, Blob.Concat(altLevelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
 		}
 
 		public void EnableSwolePirates()
