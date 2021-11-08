@@ -262,9 +262,10 @@ namespace FF1Lib
                 EnableMelmondClinic(maps);
             }
 
+			MapId attackedTown = MapId.Melmond;
 			if ((bool)flags.RandomVampAttack)
 			{
-				RandomVampireAttack(maps, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
+				attackedTown = RandomVampireAttack(maps, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
 			}
 
 			if ((bool)flags.GaiaShortcut)
@@ -964,7 +965,7 @@ namespace FF1Lib
 
 			if (((bool)flags.RecruitmentMode))
 			{
-				PubReplaceClinic(rng, flags);
+				PubReplaceClinic(rng, attackedTown, flags);
 			}
 
 			if ((bool)flags.ChangeMaxMP)
