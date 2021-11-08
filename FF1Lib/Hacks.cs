@@ -219,7 +219,7 @@ namespace FF1Lib
 			EnableTwelveClasses();
 		}
 
-		public void PubReplaceClinic(MT19337 rng, Flags flags)
+		public void PubReplaceClinic(MT19337 rng, MapId attackedTown, Flags flags)
 		{
 			// Copy some CHR data to make the Tavern look more like one.
 			const int ShopTileDataOffet = 0x24000;
@@ -251,9 +251,13 @@ namespace FF1Lib
 				options.Shuffle(rng);
 				pub_lut.AddRange(options);
 			}
-			if (!(bool)flags.MelmondClinic)
+			if (!(bool)flags.MelmondClinic && !(bool)flags.RandomVampAttack)
 			{
 				pub_lut.Insert(3, (byte)0xFF);
+			}
+			else if ((bool)flags.RandomVampAttack)
+			{
+				pub_lut.Insert((int)attackedTown, (byte)0xFF);
 			}
 
 			Put(0x38066, Blob.FromHex("9D8A9F8E9B97")); // Replaces "CLINIC" with "TAVERN"

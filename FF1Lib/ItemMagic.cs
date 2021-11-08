@@ -73,21 +73,14 @@ namespace FF1Lib
 			var offset = WeaponOffset + 0x8 * Math.Min((byte)item - WeaponStart, ArmorStart - WeaponStart) + 0x4 * Math.Max(0, (byte)item - ArmorStart) + MagicBitOffset;
 			Data[offset] = (byte)(Spell.Index + 1);
 
-			// Setup the text of the item's name to include the spell name.
-			offset = GearTextOffset + ((byte)item > (byte)Item.Ribbon ? 1 : 0) + GearTextSize * ((byte)item - WeaponStart);
-			if (Get(offset, 1)[0] > 200)
+			if (ItemsText[(int)item].Contains("@"))
 			{
-				offset++; // If the first byte is in the icon range, bump the pointer to overwrite after it.
+				ItemsText[(int)item] = ItemsText[(int)item].Remove(0, 6).Insert(0, Spell.Name.PadRight(6));
 			}
-			else if (Get(offset + 6, 1)[0] <= 200)
+			else
 			{
-				Data[offset + 6] = 0xFF; // Erase final non-icon characters from name.
+				ItemsText[(int)item] = Spell.Name.PadRight(7);
 			}
-
-			// Fix up the name of the spell so it works as part of an item name.
-			var fixedSpellName = FF1Text.TextToBytes(Spell.Name.PadRight(6), false, FF1Text.Delimiter.Empty);
-			Debug.Assert(fixedSpellName.Length == 6);
-			Put(offset, fixedSpellName);
 		}
 
 		public void CastableItemTargeting()
