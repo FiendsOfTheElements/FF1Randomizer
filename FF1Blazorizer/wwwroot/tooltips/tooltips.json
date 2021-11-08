@@ -1486,6 +1486,18 @@
 		"description": "Adds a set of bonuses that can give classes natural resistances to spell types. S = Status, P = Poison, T = Time, D = Death, F = Fire, I = Ice, L = Lightning, E = Earth."
 	},
 	{
+		"Id": "RandomizeClassIncludeXpBonuxCheckBox",
+		"title": "Blursed Classes - XP Bonus",
+		"screenshot": null,
+		"description": "Adds a set of bonuses that can give classes more xp gain than others. This bonus is multiplicative with the flaget's exp multiplier."
+	},
+	{
+		"Id": "ClassXpBonus",
+		"title": "Class Xp Bonus",
+		"screenshot": null,
+		"description": "Gives the selected class a multiplier to exp. This bonus is multiplicative with the flaget's exp multiplier.\n\ne.g. A Flagset bonus XP of 2.0x and a class bonus of 1.5x will have a total of 3.0x for that class."
+	},
+	{
 		"Id": "EnableRandomPromotions",
 		"title": "Random Promotions",
 		"screenshot": "EnableRandomPromotions.gif",
