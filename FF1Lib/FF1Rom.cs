@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
 using System.Text.RegularExpressions;
+using FF1Lib.Sanity;
 
 namespace FF1Lib
 {
@@ -29,6 +30,8 @@ namespace FF1Lib
 		public const int GoldItemCount = 68;
 		public static List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
 		public ItemNames ItemsText;
+
+		private SanityCheckerV2 sanityChecker = null;
 
 		public void PutInBank(int bank, int address, Blob data)
 		{
@@ -496,8 +499,7 @@ namespace FF1Lib
 					}
 
 
-					ISanityChecker checker = new SanityCheckerV1();
-					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
+					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, new SanityCheckerV1());
 
 					if (((bool)flags.Shops))
 					{
@@ -526,18 +528,18 @@ namespace FF1Lib
 
 						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth, overworldMap.ConeriaTownEntranceItemShopIndex);
 
-						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
+						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, new SanityCheckerV1());
 					}
 
 					if ((bool)flags.Treasures && !flags.DeepDungeon)
 					{
-						if(flags.SanityCheckerV2) checker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
-						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker);
+						sanityChecker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
+						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, sanityChecker);
 					}
 					else if (owMapExchange != null && !flags.DeepDungeon)
 					{
-						checker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
-						if (!checker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags).Complete) throw new InsaneException("Not Completable");
+						sanityChecker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
+						if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags).Complete) throw new InsaneException("Not Completable");
 					}
 
 					break;
@@ -1147,6 +1149,37 @@ namespace FF1Lib
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
 			ItemsText.Write(this, UnusedGoldItems);
+
+
+			if (flags.Archipelago)
+			{
+				ArchipelagoExporter exporter = new ArchipelagoExporter(this, generatedPlacement, sanityChecker, flags, preferences);
+				Utilities.SpoilerCache = exporter.Work();
+
+
+				ItemsText[(int)Item.Lute] = "AP Item";
+				ItemsText[(int)Item.Crown] = "AP Item";
+				ItemsText[(int)Item.Crystal] = "AP Item";
+				ItemsText[(int)Item.Herb] = "AP Item";
+				ItemsText[(int)Item.Key] = "AP Item";
+				ItemsText[(int)Item.Tnt] = "AP Item";
+				ItemsText[(int)Item.Adamant] = "AP Item";
+				ItemsText[(int)Item.Ruby] = "AP Item";
+				ItemsText[(int)Item.Rod] = "AP Item";
+				ItemsText[(int)Item.Floater] = "AP Item";
+				ItemsText[(int)Item.Chime] = "AP Item";
+				ItemsText[(int)Item.Tail] = "AP Item";
+				ItemsText[(int)Item.Bottle] = "AP Item";
+				ItemsText[(int)Item.Oxyale] = "AP Item";
+				ItemsText[(int)Item.Ship] = "AP Item";
+				ItemsText[(int)Item.Bridge] = "AP Item";
+				ItemsText[(int)Item.Canal] = "AP Item";
+				ItemsText[(int)Item.Canoe] = "AP Item";
+				ItemsText[(int)Item.Cube] = "AP Item";
+				ItemsText[(int)Item.Slab] = "AP Item";
+
+				ItemsText.Write(this, UnusedGoldItems);
+			}
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 

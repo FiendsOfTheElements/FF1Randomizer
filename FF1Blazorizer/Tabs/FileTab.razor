@@ -86,7 +86,7 @@
 
 			var romfile = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "file");
 			if (romfile != null) {
-			    LoadLastROM(romfile);
+				LoadLastROM(romfile);
 			}
 		}
 
@@ -110,8 +110,8 @@
 			if (RememberROM)
 			{
 				await JSRuntime.InvokeVoidAsync("setFFRPreferences",
-		                          "file",
-		                          encoded);
+								  "file",
+								  encoded);
 			}
 		}
 
@@ -290,11 +290,17 @@
 
 				await JSRuntime.InvokeAsync<object>("downloadFile", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
 
-				if (Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
+				if (Flags.Archipelago)
+				{
+					var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.SpoilerCache));
+					await JSRuntime.InvokeVoidAsync("downloadFile", $"{Flags.PlayerName}_{_seed}_{Flags.Encoded}.yaml", encodedSpoiler);
+				}
+				else if(Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
 				{
 					var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.SpoilerCache));
 					await JSRuntime.InvokeVoidAsync("downloadFile", $"Spoiler_{_seed}_{Flags.Encoded}.txt", encodedSpoiler);
 				}
+
 			}
 			catch (Exception e)
 			{

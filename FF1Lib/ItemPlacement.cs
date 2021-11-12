@@ -348,155 +348,13 @@ namespace FF1Lib
 		}
 	}
 
-	public class RandomItemPlacement : ItemPlacement
-	{
-		protected override ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx)
-		{
-			var itemLocationPool = _incentivesData.AllValidItemLocations.ToList();
-			var incentiveLocationPool = _incentivesData.IncentiveLocations.ToList();
-			var keyLocations = _incentivesData.KeyLocations.ToList();
-			var canoeLocations = _incentivesData.CanoeLocations.ToList();
-			var bridgeLocations = _incentivesData.BridgeLocations.ToList();
-			var shipLocations = _incentivesData.ShipLocations.ToList();
-
-			var canoeObsoletesBridge = (bool)_flags.MapCanalBridge && (bool)_flags.MapConeriaDwarves;
-			var canoeObsoletesShip = (bool)_flags.MapCanalBridge ? ((bool)_flags.MapConeriaDwarves || (bool)_flags.MapVolcanoIceRiver) : ((bool)_flags.MapConeriaDwarves && (bool)_flags.MapVolcanoIceRiver);
-
-			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = _overworldMap.FullLocationRequirements;
-			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = _overworldMap.OverriddenOverworldLocations;
-
-			var startingPotentialAccess = _overworldMap.StartingPotentialAccess;
-			var startingMapLocations = _checker.AccessibleMapLocations(startingPotentialAccess, MapChange.None, fullLocationRequirements);
-			var earlyMapLocations = _checker.AccessibleMapLocations(startingPotentialAccess | AccessRequirement.Crystal, MapChange.Bridge, fullLocationRequirements);
-
-			List<IRewardSource> placedItems = null;
-			List<Item> treasurePool = null;
-			var itemShopItem = Item.Bottle;
-
-			_sanityCounter = 0;
-
-			do
-			{
-				_sanityCounter++;
-				if (_sanityCounter > 20) throw new InsaneException("RandomItemPlacement Failure!");
-				// 1. (Re)Initialize lists inside of loop
-				placedItems = ctx.Forced.ToList();
-				var incentives = ctx.Incentivized.ToList();
-				var nonincentives = ctx.Unincentivized.ToList();
-				treasurePool = ctx.AllTreasures.ToList();
-				incentives.Shuffle(rng);
-				nonincentives.Shuffle(rng);
-
-				if ((bool)_flags.NPCItems)
-				{
-					// 2. Place caravan item first because among incentive locations it has the smallest set of possible items
-					itemShopItem = SelectVendorItem(incentives, nonincentives, treasurePool, incentiveLocationPool, rng);
-					placedItems.Add(new ItemShopSlot(_caravanItemLocation, itemShopItem));
-
-					// 3. Place key and canoe next because among incentive locations these have the greatest initial impact
-					if (incentives.Remove(Item.Key) || nonincentives.Remove(Item.Key))
-					{
-						placedItems.Add(NewItemPlacement(keyLocations.PickRandom(rng), Item.Key));
-					}
-					if (incentives.Remove(Item.Canoe) || nonincentives.Remove(Item.Canoe))
-					{
-						placedItems.Add(NewItemPlacement(canoeLocations.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList().PickRandom(rng), Item.Canoe));
-					}
-
-					var startingCanoeAvailable =
-						placedItems.Any(x => x.Item == Item.Canoe && startingMapLocations.Contains(x.MapLocation) &&
-							startingMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
-					var earlyCanoeAvailable =
-						placedItems.Any(x => x.Item == Item.Canoe && earlyMapLocations.Contains(x.MapLocation) &&
-							earlyMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
-					var earlyKeyAvailable =
-						placedItems.Any(x => x.Item == Item.Key && earlyMapLocations.Contains(x.MapLocation) &&
-							earlyMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
-
-					// 4. Place Bridge and Ship next since the valid location lists are so small, unless canoe is available and map edits are applied
-					if (!earlyCanoeAvailable || !canoeObsoletesShip)
-					{
-						var remainingShipLocations =
-							shipLocations
-								.Where(x => !placedItems.Any(y => y.Address == x.Address) &&
-										(earlyKeyAvailable || !x.AccessRequirement.HasFlag(AccessRequirement.Key)))
-								.ToList();
-						if (!remainingShipLocations.Any()) continue;
-						if (incentives.Remove(Item.Ship) && remainingShipLocations.Any(x => incentiveLocationPool.Any(y => y.Address == x.Address)))
-						{
-							remainingShipLocations =
-								remainingShipLocations
-									.Where(x => incentiveLocationPool.Any(y => y.Address == x.Address))
-									.ToList();
-						}
-						nonincentives.Remove(Item.Ship);
-						placedItems.Add(NewItemPlacement(remainingShipLocations.PickRandom(rng), Item.Ship));
-					}
-
-					var startingShipAvailable =
-						placedItems.Any(x => x.Item == Item.Ship && startingMapLocations.Contains(x.MapLocation) &&
-							startingMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
-
-					if (!(startingCanoeAvailable && canoeObsoletesBridge) && !startingShipAvailable && !((bool)_flags.IsBridgeFree))
-					{
-						var startingKeyAvailable =
-							earlyKeyAvailable && placedItems.Any(x => x.Item == Item.Key && startingMapLocations.Contains(x.MapLocation) &&
-								startingMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation));
-
-						var remainingBridgeLocations =
-							bridgeLocations
-								.Where(x => !placedItems.Any(y => y.Address == x.Address) &&
-										(startingKeyAvailable || !x.AccessRequirement.HasFlag(AccessRequirement.Key)))
-								.ToList();
-						if (!remainingBridgeLocations.Any()) continue;
-						if (incentives.Remove(Item.Bridge) && remainingBridgeLocations.Any(x => incentiveLocationPool.Any(y => y.Address == x.Address)))
-						{
-							remainingBridgeLocations =
-								remainingBridgeLocations
-									.Where(x => incentiveLocationPool.Any(y => y.Address == x.Address))
-									.ToList();
-						}
-						nonincentives.Remove(Item.Bridge);
-						placedItems.Add(NewItemPlacement(remainingBridgeLocations.PickRandom(rng), Item.Bridge));
-					}
-				}
-
-				// 5. Then place all incentive locations that don't have special logic
-				var incentiveLocations = incentiveLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address) && x.Address != ItemLocations.CaravanItemShop1.Address).ToList();
-				incentiveLocations.Shuffle(rng);
-				foreach (var incentiveLocation in incentiveLocations)
-				{
-					if (!incentives.Any()) break;
-					placedItems.Add(NewItemPlacement(incentiveLocation, incentives.SpliceRandom(rng)));
-				}
-
-				// 6. Then place remanining incentive items and unincentivized quest items in any other chest before ToFR
-				var leftoverItems = incentives.Concat(nonincentives).ToList();
-				leftoverItems.Shuffle(rng);
-				var leftoverItemLocations =
-					itemLocationPool
-						 .Where(x => !ItemLocations.ToFR.Any(y => y.Address == x.Address) &&
-								!x.IsUnused && !placedItems.Any(y => y.Address == x.Address))
-						 .ToList();
-				foreach (var leftoverItem in leftoverItems)
-				{
-					placedItems.Add(NewItemPlacement(leftoverItemLocations.SpliceRandom(rng), leftoverItem));
-				}
-
-				// 7. Check sanity and loop if needed
-			} while (!_checker.CheckSanity(placedItems, fullLocationRequirements, _flags).Complete);
-
-			return new ItemPlacementResult { PlacedItems = placedItems, RemainingTreasures = treasurePool };
-		}
-	}
-
 	public class GuidedItemPlacement : ItemPlacement
 	{
 		protected override ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx)
 		{
 			_sanityCounter = 0;
-			var incentiveLocationPool = _incentivesData.IncentiveLocations.ToList();
-			var preBlackOrbLocationPool = _incentivesData.AllValidPreBlackOrbItemLocations.ToList();
+			var incentiveLocationPool = _incentivesData.IncentiveLocations.Where(l => !(l is ItemShopSlot)).ToList();
+			var preBlackOrbLocationPool = _incentivesData.AllValidPreBlackOrbItemLocations.Where(l => !(l is ItemShopSlot)).ToList();
 			var preBlackOrbUnincentivizedLocationPool = preBlackOrbLocationPool.Where(x => !incentiveLocationPool.Any(y => y.Address == x.Address)).ToList();
 			if ((bool)_flags.LooseExcludePlacedDungeons)
 				preBlackOrbUnincentivizedLocationPool = IncentivizedDungeons(preBlackOrbUnincentivizedLocationPool);
@@ -535,7 +393,9 @@ namespace FF1Lib
 				if (((bool)_flags.NPCItems) || ((bool)_flags.NPCFetchItems))
 				{
 					// Identify but don't place caravan item first because among incentive locations it has the smallest set of possible items
-					itemShopItem = SelectVendorItem(incentives, nonincentives, treasurePool, incentiveLocationPool, rng);
+					itemShopItem = Item.None; // SelectVendorItem(incentives, nonincentives, treasurePool, incentiveLocationPool, rng);
+					placedItems.Add(new ItemShopSlot(_caravanItemLocation, Item.Heal));
+					treasurePool.Remove(Item.Heal);
 
 					// unrestricted items can get placed anywhere in the game. Everything else will only be placed where we can reach at this point.
 					List<Item> unrestricted = new List<Item> { Item.Key, Item.Canoe, Item.Floater };

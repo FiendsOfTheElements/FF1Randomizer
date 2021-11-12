@@ -56,6 +56,8 @@ namespace FF1Lib
 
 		#endregion
 
+		public bool Archipelago { get; set; } = true;
+
 		public bool DisableMinimap { get; set; } = false;
 
 		public bool QuickMinimapLoad { get; set; } = false;

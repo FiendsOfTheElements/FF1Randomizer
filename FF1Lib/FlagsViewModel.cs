@@ -5019,6 +5019,26 @@ namespace FF1Lib
 			}
 		}
 
+		public bool Archipelago
+		{
+			get => Flags.Archipelago;
+			set
+			{
+				Flags.Archipelago = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public string PlayerName
+		{
+			get => Preferences.PlayerName;
+			set
+			{
+				Preferences.PlayerName = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public void LoadResourcePackFlags(Stream stream) {
 		    Flags.LoadResourcePackFlags(stream);
 		    RaisePropertyChanged();

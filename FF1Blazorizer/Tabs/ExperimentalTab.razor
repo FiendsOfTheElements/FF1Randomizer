@@ -8,6 +8,14 @@
 	{
 		<p>Test out features from 2000 years in the future - at your own risk!</p>
 		<div class="col1">
+			<h4>Archipelago</h4>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="enableArchipelago" @bind-Value="Flags.Archipelago">Enable</CheckBox>
+			<p>
+				Player Name:
+				<br>
+				<input type="text" style="width: calc(100% - 80px);" class="nes-input" id="seedInput" @onchange="@OnPlayerNameChanged" value="@(Flags.PlayerName)" />
+			</p>
+			<div class="checkbox-cell"></div>
 			<h4>Maps</h4>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="spreadLoose" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.LooseItemsSpreadPlacement">Spread Loose Placement</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="forwardLoose" IsEnabled="@(Flags.SanityCheckerV2 & Flags.LooseItemsSpreadPlacement)" @bind-Value="Flags.LooseItemsForwardPlacement">Forward Loose Placement</CheckBox>
@@ -106,18 +114,28 @@
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
 
-		async Task OnImportResourcePack(ChangeEventArgs e) {
-		  try {
-		    var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importResourcePackInput");
-		    if (content == null || content == "") { return; }
-	            using (var stream = new MemoryStream(Convert.FromBase64String(content))) {
-		       Flags.LoadResourcePackFlags(stream);
-		    }
-		    Flags.ResourcePack = content;
-		  } catch (Exception x) {
-			   Console.WriteLine(x.ToString());
-		  }
-		  StateHasChanged();
+	void OnPlayerNameChanged(ChangeEventArgs e)
+	{
+		Flags.PlayerName = e.Value as string;
+	}
+
+	async Task OnImportResourcePack(ChangeEventArgs e)
+	{
+		try
+		{
+			var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importResourcePackInput");
+			if (content == null || content == "") { return; }
+			using (var stream = new MemoryStream(Convert.FromBase64String(content)))
+			{
+				Flags.LoadResourcePackFlags(stream);
+			}
+			Flags.ResourcePack = content;
 		}
+		catch (Exception x)
+		{
+			Console.WriteLine(x.ToString());
+		}
+		StateHasChanged();
+	}
 
 }

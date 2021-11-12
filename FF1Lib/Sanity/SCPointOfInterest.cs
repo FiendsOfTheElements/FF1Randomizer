@@ -61,6 +61,14 @@ namespace FF1Lib.Sanity
 		{
 			return Type.ToString() + " " + Coords.ToString() + " - " + (BitFlagSet?.ToString() ?? "") + (Done ? " - Done" : "");
 		}
+
+		public SCRequirementsSet Requirements
+		{
+			get
+			{
+				return new SCRequirementsSet(BitFlagSet.Select(f => (SCRequirements)((ushort)f & 0x1FFF)));
+			}
+		}
 	}
 
 	public class SCPointOfInterestEqualityComparer : IEqualityComparer<SCPointOfInterest>
