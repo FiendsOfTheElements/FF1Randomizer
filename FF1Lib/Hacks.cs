@@ -219,7 +219,7 @@ namespace FF1Lib
 			EnableTwelveClasses();
 		}
 
-		public void PubReplaceClinic(MT19337 rng, Flags flags)
+		public void PubReplaceClinic(MT19337 rng, MapId attackedTown, Flags flags)
 		{
 			// Copy some CHR data to make the Tavern look more like one.
 			const int ShopTileDataOffet = 0x24000;
@@ -251,9 +251,13 @@ namespace FF1Lib
 				options.Shuffle(rng);
 				pub_lut.AddRange(options);
 			}
-			if (!(bool)flags.MelmondClinic)
+			if (!(bool)flags.MelmondClinic && !(bool)flags.RandomVampAttack)
 			{
 				pub_lut.Insert(3, (byte)0xFF);
+			}
+			else if ((bool)flags.RandomVampAttack)
+			{
+				pub_lut.Insert((int)attackedTown, (byte)0xFF);
 			}
 
 			Put(0x38066, Blob.FromHex("9D8A9F8E9B97")); // Replaces "CLINIC" with "TAVERN"
@@ -2158,6 +2162,16 @@ namespace FF1Lib
 		{
 			PutInBank(0x0C, 0xB905, Blob.FromHex("2073B820F9B8202DB8A9A248A90348A91C4C03FEEAEAEAEAEAEAEAEAEA60"));
 			PutInBank(0x1C, 0xA200, Blob.FromHex("004080C0AD86682908D030A9008D56688D5768AD896C297FAABD00A2A8B90061C904F017C90AF013A9008D58688D5968A9B948A92148A90C4C03FEA9B948A92248A90C4C03FE"));
+		}
+
+		//doesn't change any XP until it actually happens in blessed/cursed classes, just lays the groundwork in the asm
+		public void SetupClassAltXp()
+		{
+			PutInBank(0x1B, 0x886E, Blob.FromHex("20189560"));
+			//lut for class xp table pointers
+			PutInBank(0x1B, 0x9500, Blob.FromHex("818C3595C8955B96EE968197818C3595C8955B96EE968197"));
+			//actual new level up function
+			PutInBank(0x1B, 0x9518, Blob.FromHex("A000B1860AAAA026B1860A187186187D00958582E8A9007D0095858360"));
 		}
 	}
 }

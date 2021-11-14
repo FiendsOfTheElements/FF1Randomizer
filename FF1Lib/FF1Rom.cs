@@ -265,9 +265,10 @@ namespace FF1Lib
                 EnableMelmondClinic(maps);
             }
 
+			MapId attackedTown = MapId.Melmond;
 			if ((bool)flags.RandomVampAttack)
 			{
-				RandomVampireAttack(maps, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
+				attackedTown = RandomVampireAttack(maps, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
 			}
 
 			if ((bool)flags.GaiaShortcut)
@@ -940,6 +941,37 @@ namespace FF1Lib
 			}
 
 			ExpGoldBoost(flags);
+
+			if(flags.ExpMultiplierFighter > 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierFighter, FF1Class.Fighter);
+			}
+
+			if (flags.ExpMultiplierThief > 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierThief, FF1Class.Thief);
+			}
+
+			if (flags.ExpMultiplierBlackBelt > 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierBlackBelt, FF1Class.BlackBelt);
+			}
+
+			if (flags.ExpMultiplierRedMage > 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierRedMage, FF1Class.RedMage);
+			}
+
+			if (flags.ExpMultiplierWhiteMage > 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierWhiteMage, FF1Class.WhiteMage);
+			}
+
+			if (flags.ExpMultiplierBlackMage > 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
+			}
+
 			ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
@@ -966,7 +998,7 @@ namespace FF1Lib
 
 			if (((bool)flags.RecruitmentMode))
 			{
-				PubReplaceClinic(rng, flags);
+				PubReplaceClinic(rng, attackedTown, flags);
 			}
 
 			if ((bool)flags.ChangeMaxMP)
@@ -997,6 +1029,7 @@ namespace FF1Lib
 			SetProgressiveScaleMode(flags);
 
 			MoveLoadPlayerIBStats();
+			SetupClassAltXp();
 			if ((bool)flags.RandomizeClass)
 			{
 				RandomizeClass(rng, flags, oldItemNames);

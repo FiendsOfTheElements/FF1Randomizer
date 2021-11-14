@@ -2603,6 +2603,60 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpBonus"));
 			}
 		}
+		public double ExpMultiplierFighter
+		{
+			get => Flags.ExpMultiplierFighter * 10.0;
+			set
+			{
+				Flags.ExpMultiplierFighter = value * 0.1;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplierFighter"));
+			}
+		}
+		public double ExpMultiplierThief
+		{
+			get => Flags.ExpMultiplierThief * 10.0;
+			set
+			{
+				Flags.ExpMultiplierThief = value * 0.1;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplierThief"));
+			}
+		}
+		public double ExpMultiplierBlackBelt
+		{
+			get => Flags.ExpMultiplierBlackBelt * 10.0;
+			set
+			{
+				Flags.ExpMultiplierBlackBelt = value * 0.1;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplierBlackBelt"));
+			}
+		}
+		public double ExpMultiplierRedMage
+		{
+			get => Flags.ExpMultiplierRedMage * 10.0;
+			set
+			{
+				Flags.ExpMultiplierRedMage = value * 0.1;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplierRedMage"));
+			}
+		}
+		public double ExpMultiplierWhiteMage
+		{
+			get => Flags.ExpMultiplierWhiteMage * 10.0;
+			set
+			{
+				Flags.ExpMultiplierWhiteMage = value * 0.1;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplierWhiteMage"));
+			}
+		}
+		public double ExpMultiplierBlackMage
+		{
+			get => Flags.ExpMultiplierBlackMage * 10.0;
+			set
+			{
+				Flags.ExpMultiplierBlackMage = value * 0.1;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplierBlackMage"));
+			}
+		}
 		/*public int ForcedPartyMembers
 		{
 			get => Flags.ForcedPartyMembers;
@@ -3908,6 +3962,15 @@ namespace FF1Lib
 			{
 				Flags.RandomizeClassIncludeNaturalResist = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassIncludeNaturalResist"));
+			}
+		}
+		public bool? RandomizeClassIncludeXpBonus
+		{
+			get => Flags.RandomizeClassIncludeXpBonus;
+			set
+			{
+				Flags.RandomizeClassIncludeXpBonus = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassIncludeXpBonus"));
 			}
 		}
 		public int RandomizeClassMaxBonus

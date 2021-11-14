@@ -462,6 +462,24 @@ namespace FF1Lib
 		[IntegerFlag(0, 500, 10)]
 		public int ExpBonus { get; set; } = 0;
 
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierFighter { get; set; } = 1.0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierThief { get; set; } = 1.0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierBlackBelt { get; set; } = 1.0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierRedMage { get; set; } = 1.0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierWhiteMage { get; set; } = 1.0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierBlackMage { get; set; } = 1.0;
+
 		[DoubleFlag(0, 45)]
 		public double EncounterRate { get; set; } = 0;
 
@@ -600,6 +618,7 @@ namespace FF1Lib
 		public bool? RandomizeClassNoCasting { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
 		public bool? RandomizeClassIncludeNaturalResist { get; set; } = false;
+		public bool? RandomizeClassIncludeXpBonus { get; set; } = false;
 		public bool? AlternateFiends { get; set; } = false;
 		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 
