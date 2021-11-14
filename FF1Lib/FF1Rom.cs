@@ -1156,7 +1156,7 @@ namespace FF1Lib
 				ArchipelagoExporter exporter = new ArchipelagoExporter(this, generatedPlacement, sanityChecker, flags, preferences);
 				Utilities.SpoilerCache = exporter.Work();
 
-
+				/*
 				ItemsText[(int)Item.Lute] = "AP Item";
 				ItemsText[(int)Item.Crown] = "AP Item";
 				ItemsText[(int)Item.Crystal] = "AP Item";
@@ -1177,8 +1177,11 @@ namespace FF1Lib
 				ItemsText[(int)Item.Canoe] = "AP Item";
 				ItemsText[(int)Item.Cube] = "AP Item";
 				ItemsText[(int)Item.Slab] = "AP Item";
+				*/
 
 				ItemsText.Write(this, UnusedGoldItems);
+
+				Put(0x3109, new byte[] { 236 });
 			}
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
