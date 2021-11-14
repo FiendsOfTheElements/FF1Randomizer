@@ -1188,33 +1188,6 @@ namespace FF1Lib
 			{
 				ArchipelagoExporter exporter = new ArchipelagoExporter(this, generatedPlacement, sanityChecker, flags, preferences);
 				Utilities.SpoilerCache = exporter.Work();
-
-				/*
-				ItemsText[(int)Item.Lute] = "AP Item";
-				ItemsText[(int)Item.Crown] = "AP Item";
-				ItemsText[(int)Item.Crystal] = "AP Item";
-				ItemsText[(int)Item.Herb] = "AP Item";
-				ItemsText[(int)Item.Key] = "AP Item";
-				ItemsText[(int)Item.Tnt] = "AP Item";
-				ItemsText[(int)Item.Adamant] = "AP Item";
-				ItemsText[(int)Item.Ruby] = "AP Item";
-				ItemsText[(int)Item.Rod] = "AP Item";
-				ItemsText[(int)Item.Floater] = "AP Item";
-				ItemsText[(int)Item.Chime] = "AP Item";
-				ItemsText[(int)Item.Tail] = "AP Item";
-				ItemsText[(int)Item.Bottle] = "AP Item";
-				ItemsText[(int)Item.Oxyale] = "AP Item";
-				ItemsText[(int)Item.Ship] = "AP Item";
-				ItemsText[(int)Item.Bridge] = "AP Item";
-				ItemsText[(int)Item.Canal] = "AP Item";
-				ItemsText[(int)Item.Canoe] = "AP Item";
-				ItemsText[(int)Item.Cube] = "AP Item";
-				ItemsText[(int)Item.Slab] = "AP Item";
-				*/
-
-				ItemsText.Write(this, UnusedGoldItems);
-
-				Put(0x3109, new byte[] { 236 });
 			}
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
