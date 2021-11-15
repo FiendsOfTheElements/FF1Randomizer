@@ -1185,12 +1185,12 @@ namespace FF1Lib
 
 			if (flags.Archipelago)
 			{
+				shipLocations.SetShipLocation(255);
+
 				ArchipelagoExporter exporter = new ArchipelagoExporter(this, generatedPlacement, sanityChecker, flags, preferences);
 				Utilities.SpoilerCache = exporter.Work();
 
 				ItemsText[(int)Item.FireOrb] = "AP Item";
-
-				shipLocations.SetShipLocation(255);
 
 				//Put(0x3109, new byte[] { (byte)Item.Herb });
 			}
