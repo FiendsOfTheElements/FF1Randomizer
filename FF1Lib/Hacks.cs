@@ -477,6 +477,11 @@ namespace FF1Lib
 			Put(0x39E99, Blob.FromHex("a90e205baaa5620a0a0a186916aabd00038d0c0320b9ecae0a03a9008d0b038d0e038d0f0318ad0b0365108d0b03ad0e0365118d0e03ad0f0369008d0f03b005caf00dd0e1a9ff8d0b038d0e038d0f03ad0f038512ad0e038511ad0b03851020429f2032aa60"));
 			Put(0x39EFF, Blob.FromHex("ad1e60cd0f03f0049016b016ad1d60cd0e03f004900ab00aad1c60cd0b03b00238601860ad1c6038ed0b038d1c60ad1d60ed0e038d1d60ad1e60ed0f038d1e604cefa74c8e8e"));
 			Put(0x3A494, Blob.FromHex("201b9eb0e820999e20c2a8b0e0a562d0dc20ff9e9008a910205baa4c81a420089e9008a90c205baa4c81a420239fa913205baa4c81a4eaeaea"));
+
+			//Replace NewCheckforSpace with patch in 0E_9700_ItemShopCheckForSpace.asm
+			PutInBank(0x0E, 0x9E08, Enumerable.Repeat((byte)0xEA, 19).ToArray());
+			PutInBank(0x0E, 0xA4B2, Blob.FromHex("200097"));
+			PutInBank(0x0E, 0x9700, Blob.FromHex("AD0C03186920AAC90CD008A9009D00604C2897C936900CBD0060186D0A03C964901260A9019D0060A2FFBD006209029D006218609D00601860"));
 		}
 
 		public void EnableSaveOnDeath(Flags flags, OwMapExchange owMapExchange)

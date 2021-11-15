@@ -760,7 +760,7 @@ namespace FF1Lib
 				EnableDash(flags.SpeedBoat, preferences.OptOutSpeedHackDash);
 			}
 
-			if (flags.BuyTen)
+			if (flags.BuyTen || flags.Archipelago)
 			{
 				EnableBuyQuantity();
 			}
@@ -1181,14 +1181,21 @@ namespace FF1Lib
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
-			ItemsText.Write(this, UnusedGoldItems);
 
 
 			if (flags.Archipelago)
 			{
 				ArchipelagoExporter exporter = new ArchipelagoExporter(this, generatedPlacement, sanityChecker, flags, preferences);
 				Utilities.SpoilerCache = exporter.Work();
+
+				ItemsText[(int)Item.FireOrb] = "AP Item";
+
+				shipLocations.SetShipLocation(255);
+
+				//Put(0x3109, new byte[] { (byte)Item.Herb });
 			}
+
+			ItemsText.Write(this, UnusedGoldItems);
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 

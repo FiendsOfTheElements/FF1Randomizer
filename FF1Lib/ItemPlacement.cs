@@ -393,9 +393,7 @@ namespace FF1Lib
 				if (((bool)_flags.NPCItems) || ((bool)_flags.NPCFetchItems))
 				{
 					// Identify but don't place caravan item first because among incentive locations it has the smallest set of possible items
-					itemShopItem = Item.None; // SelectVendorItem(incentives, nonincentives, treasurePool, incentiveLocationPool, rng);
-					placedItems.Add(new ItemShopSlot(_caravanItemLocation, Item.Heal));
-					treasurePool.Remove(Item.Heal);
+					SelectVendorItem(incentives, nonincentives, treasurePool, incentiveLocationPool, rng);
 
 					// unrestricted items can get placed anywhere in the game. Everything else will only be placed where we can reach at this point.
 					List<Item> unrestricted = new List<Item> { Item.Key, Item.Canoe, Item.Floater };
