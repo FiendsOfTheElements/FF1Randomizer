@@ -762,7 +762,7 @@ namespace FF1Lib
 
 			if (flags.BuyTen || flags.Archipelago)
 			{
-				EnableBuyQuantity();
+				EnableBuyQuantity(flags);
 			}
 
 			if (flags.WaitWhenUnrunnable)
