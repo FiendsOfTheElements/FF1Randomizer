@@ -4737,6 +4737,26 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? EverythingHasDeathTouch
+		{
+			get => Flags.EverythingHasDeathTouch;
+			set
+			{
+				Flags.EverythingHasDeathTouch = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? EverythingHasDeathTouchExcludeFiends
+		{
+			get => Flags.EverythingHasDeathTouchExcludeFiends;
+			set
+			{
+				Flags.EverythingHasDeathTouchExcludeFiends = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public int LockpickingLevelRequirement
 		{
 			get => Flags.LockpickingLevelRequirement;

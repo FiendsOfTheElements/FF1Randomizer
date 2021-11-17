@@ -668,6 +668,11 @@ namespace FF1Lib
 				}
 			}
 
+			if ((bool)flags.EverythingHasDeathTouch)
+			{
+				EverythingHasDeathTouch((bool)flags.AllowUnsafePirates, (bool)flags.EverythingHasDeathTouchExcludeFiends);
+			}
+
 			if (flags.Runnability == Runnability.Random)
 				flags.Runnability = (Runnability)Rng.Between(rng, 0, 3);
 
