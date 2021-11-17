@@ -353,8 +353,8 @@ namespace FF1Lib
 		protected override ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx)
 		{
 			_sanityCounter = 0;
-			var incentiveLocationPool = _incentivesData.IncentiveLocations.Where(l => !(l is ItemShopSlot)).ToList();
-			var preBlackOrbLocationPool = _incentivesData.AllValidPreBlackOrbItemLocations.Where(l => !(l is ItemShopSlot)).ToList();
+			var incentiveLocationPool = _incentivesData.IncentiveLocations.ToList();
+			var preBlackOrbLocationPool = _incentivesData.AllValidPreBlackOrbItemLocations.ToList();
 			var preBlackOrbUnincentivizedLocationPool = preBlackOrbLocationPool.Where(x => !incentiveLocationPool.Any(y => y.Address == x.Address)).ToList();
 			if ((bool)_flags.LooseExcludePlacedDungeons)
 				preBlackOrbUnincentivizedLocationPool = IncentivizedDungeons(preBlackOrbUnincentivizedLocationPool);
@@ -393,13 +393,23 @@ namespace FF1Lib
 				if (((bool)_flags.NPCItems) || ((bool)_flags.NPCFetchItems))
 				{
 					// Identify but don't place caravan item first because among incentive locations it has the smallest set of possible items
-					SelectVendorItem(incentives, nonincentives, treasurePool, incentiveLocationPool, rng);
+					itemShopItem = SelectVendorItem(incentives, nonincentives, treasurePool, incentiveLocationPool, rng);
 
 					// unrestricted items can get placed anywhere in the game. Everything else will only be placed where we can reach at this point.
 					List<Item> unrestricted = new List<Item> { Item.Key, Item.Canoe, Item.Floater };
 
 					// We will place these items in this very order so that we can ensure the bridge is early, and we don't need the floater to find the ship.
-					List<Item> fixedPlacements = new List<Item> { Item.Key, Item.Bridge, Item.Canoe };
+					List<Item> fixedPlacements;
+
+					if (_flags.Archipelago)
+					{
+						fixedPlacements = new List<Item> { Item.Bridge, Item.Key, Item.Canoe };
+					}
+					else
+					{
+						fixedPlacements = new List<Item> { Item.Key, Item.Bridge, Item.Canoe };
+					}
+
 					List<Item> nextPlacements = new List<Item> { Item.Ship, Item.Canal };
 					List<Item> lastPlacements = new List<Item> { Item.Floater, Item.Lute, Item.Crown, Item.Crystal, Item.Herb, Item.Tnt, Item.Adamant,
 						Item.Slab, Item.Ruby, Item.Rod, Item.Chime, Item.Tail, Item.Cube, Item.Bottle, Item.Oxyale };

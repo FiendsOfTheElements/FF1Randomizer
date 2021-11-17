@@ -96,7 +96,15 @@ namespace FF1Lib.Sanity
 		public SCRequirementsSet Ease(SCRequirements requirements)
 		{
 			var and = 0xFFFFFFFF - (int)requirements;
-			return new SCRequirementsSet(this.Select(f => (SCRequirements)((int)f & and)));
+
+			var result = new SCRequirementsSet();
+
+			foreach (var req in this)
+			{
+				result.Merge((SCRequirements)((int)req & and));
+			}
+
+			return result;
 		}
 
 		public static SCRequirementsSet NoRequirements { get; } = new SCRequirementsSet(SCRequirements.None);

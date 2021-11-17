@@ -1188,11 +1188,7 @@ namespace FF1Lib
 				shipLocations.SetShipLocation(255);
 
 				ArchipelagoExporter exporter = new ArchipelagoExporter(this, generatedPlacement, sanityChecker, flags, preferences);
-				Utilities.SpoilerCache = exporter.Work();
-
-				ItemsText[(int)Item.FireOrb] = "AP Item";
-
-				//Put(0x3109, new byte[] { (byte)Item.Herb });
+				Utilities.SpoilerCache = exporter.Work();	
 			}
 
 			ItemsText.Write(this, UnusedGoldItems);

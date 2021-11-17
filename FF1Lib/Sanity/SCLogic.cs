@@ -13,6 +13,7 @@ namespace FF1Lib.Sanity
 		List<IRewardSource> itemPlacement;
 		OwLocationData locations;
 		IVictoryConditionFlags victoryConditions;
+		bool excludeBridge;
 
 		Dictionary<short, SCLogicArea> processedAreas = new Dictionary<short, SCLogicArea>();
 
@@ -26,12 +27,13 @@ namespace FF1Lib.Sanity
 
 		Dictionary<int, SCLogicRewardSource> rewardSourceDic = new Dictionary<int, SCLogicRewardSource>();
 
-		public SCLogic(FF1Rom _rom, SCMain _main, List<IRewardSource> _itemPlacement, IVictoryConditionFlags _victoryConditions)
+		public SCLogic(FF1Rom _rom, SCMain _main, List<IRewardSource> _itemPlacement, IVictoryConditionFlags _victoryConditions, bool _excludeBridge)
 		{
 			rom = _rom;
 			main = _main;
 			itemPlacement = _itemPlacement;
 			victoryConditions = _victoryConditions;
+			excludeBridge = _excludeBridge;
 
 			locations = new OwLocationData(rom);
 			locations.LoadData();
@@ -487,7 +489,7 @@ namespace FF1Lib.Sanity
 			{
 				requirements |= SCRequirements.Lute;
 			}
-			if (victoryConditions.IsBridgeFree ?? false)
+			if ((victoryConditions.IsBridgeFree ?? false) || excludeBridge)
 			{
 				requirements |= SCRequirements.Bridge;
 			}

@@ -4,7 +4,7 @@
 	public static class FFRVersion
 	{
 		public static readonly string Version = "4.2.4";
-		public static readonly string Sha = "SHA";
+		public static readonly string Sha = "de29ccaf31fda6e185e91f37d4961d05f3249151";
 		public static readonly string Branch = "BRANCH";
 		public static readonly string MasterBranch = "master";
 	}

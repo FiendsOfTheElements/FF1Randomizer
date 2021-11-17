@@ -14,24 +14,30 @@ namespace FF1Lib.Sanity
 		public const int NpcOffset = 0x200;
 		public const int ShopSlot = 0x2FF;
 
+		FF1Rom rom;
 		SCLogic logic;
 		IVictoryConditionFlags flags;
 		Preferences preferences;
 
 		public string Json { get; private set; }
 
-		public ArchipelagoExporter(FF1Rom rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, IVictoryConditionFlags _flags, Preferences _preferences)
+		public ArchipelagoExporter(FF1Rom _rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, IVictoryConditionFlags _flags, Preferences _preferences)
 		{
+			rom = _rom;
 			flags = _flags;
 			preferences = _preferences;
 
-			var kiPlacement = generatedPlacement.Where(r => ItemLists.AllQuestItems.Contains(r.Item)).ToList();
+			var kiPlacement = generatedPlacement.Where(r => ItemLists.AllQuestItems.Contains(r.Item) && r.Item != Item.Bridge).ToList();
 
-			logic = new SCLogic(rom, checker.Main, kiPlacement, flags);
+			logic = new SCLogic(rom, checker.Main, kiPlacement, flags, true);
 		}
 
 		public string Work()
 		{
+			rom.ItemsText[(int)Item.FireOrb] = "AP Item";
+
+			foreach (var rewardSource in logic.RewardSources) rom.Put(rewardSource.RewardSource.Address, new byte[] { 18 });
+
 			var data = new ArchipelagoOptions
 			{
 				game = "Final Fantasy",
