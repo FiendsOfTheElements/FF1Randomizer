@@ -2034,5 +2034,24 @@
 		"title": "Randomized Access Requirements Unsafe Start",
 		"screenshot": "",
 		"description": "If enabled, mid-game dungeons (Earth, Volcano, Ice and Ordeals) are added to the pool of possible starting area entrances that may be required for early progression."
+	},
+	{
+		"Id": "everythingHasDeathTouch",
+		"title": "Everything has Death Touch",
+		"screenshot": "everythingHasDeathTouchCheckBox.png",
+		"description": "Adds death touch status attack to every enemy in the game.\nNote: Pirates in Pravoka will not have death touch if they are \"Safe\" Pirates."
+	},
+	{
+		"Id": "everythingHasDeathTouchExcludeFiends",
+		"title": "Everything has Death Touch - Exclude Fiends",
+		"screenshot": "everythingHasDeathTouchExcludeFiendsCheckbox.png",
+		"description": "When adding death touch status attack to every enemy in the game, the four Fiends, their refights, and Chaos are skipped.\nNote: These bosses may still receive death touch when status attacks are shuffled."
+	},
+	{
+		"Id": "increaseDarkPenaltyCheckBox",
+		"title": "Increase Dark Penalty",
+		"screenshot": "increaseDarkPenaltyCheckBox.png",
+		"description": "If enabled, \"Dark\" status severely decreases an attacker's chance to hit or crit an enemy.\nAffects both players and enemies inflicted with \"Dark\" status."
 	}
+
 ]
