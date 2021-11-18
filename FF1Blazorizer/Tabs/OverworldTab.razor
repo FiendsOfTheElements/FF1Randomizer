@@ -1,6 +1,8 @@
 ﻿@using FF1Lib;
 @using RomUtilities;
 @using FF1Lib.Procgen;
+@inject IJSRuntime JSRuntime
+@using Newtonsoft.Json;
 
 	<div id="Overworld" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
 		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Overworld</a></h3>
@@ -8,21 +10,28 @@
 		{
 	<div class="col1">
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld map to use:</EnumDropDown>
+		<p>@StatusMessage</p>
 		<br>
 
+		<h4>Map generation parameters</h4>
 		Map generation seed:
 		<br>
 		<input type="text" style="width: calc(100% - 160px);" class="nes-input @(_mapgenSeedInputClass)" id="mapgenSeedInput"
 		@onchange="@OnSeedInputChanged" value="@(_mapgenSeed)"
 		disabled="@(Flags.OwMapExchange != OwMapExchanges.Desert && Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld)" />
-		<a class='styled-button @(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ? "" : "disabled-button")' @onclick="@OnNewSeed">New</a>
-		<a class='styled-button @(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ? "" : "disabled-button")' @onclick="@OnClearSeed">Clear</a>
+		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnNewSeed">New</a>
+		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnClearSeed">Clear</a>
 		<br>
 		<br>
-		<a class='styled-button @(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="mapgenRNGAccessReqsCheckBox" IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld)" @bind-Value="Flags.MapGenRandomizedAccessReqs">Randomize Access Requirements</CheckBox>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="mapgenUnsafeStartCheckBox" IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld && Flags.MapGenRandomizedAccessReqs)" @bind-Value="Flags.MapGenUnsafeStart">Unsafe start</CheckBox>
+
+		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>
+		<a class='styled-button @(Flags.ReplacementMap != null && Flags.ReplacementMap.DecompressedMapRows != null ? "" : "disabled-button")' @onclick="@OnExportMap">Export Map</a>
 		<br>
 		<br>
-		<p>@StatusMessage</p>
+		<h4>Import Custom Map</h4>
+		<input type="file" id="importMapInput" accept=".json" @onchange="@OnImportMap" />
 	</div>
 
 	<div class="col2">
@@ -32,14 +41,14 @@
 		@bind-Value="Flags.MapOpenProgression">Early Open Progression</TriStateCheckBox>
 
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDwavesNWCheckBox"
-		IsEnabled="@Flags.MapOpenProgression" Indent @bind-Value="Flags.MapDwarvesNorthwest">Extended Open Progression</TriStateCheckBox>
+		IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" Indent @bind-Value="Flags.MapDwarvesNorthwest">Extended Open Progression</TriStateCheckBox>
 
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDocksCheckBox"
 		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 		@bind-Value="Flags.MapOpenProgressionDocks">Northern Docks</TriStateCheckBox>
 
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionFloaterDockCheckBox"
-		IsEnabled="@Flags.MapOpenProgression" @bind-Value="Flags.MapAirshipDock">Ryukahn Desert Dock</TriStateCheckBox>
+		IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" @bind-Value="Flags.MapAirshipDock">Ryukahn Desert Dock</TriStateCheckBox>
 
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bahamutCardiaDockCheckBox"
 		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
@@ -77,18 +86,18 @@
 
 		void OnNewSeed(MouseEventArgs e)
 		{
-		if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld) {
-		return;
-		}
+			if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld && Flags.OwMapExchange != OwMapExchanges.Desert) {
+				return;
+			}
 			ValidateSeed(Blob.Random(4).ToHex());
 			StateHasChanged();
 		}
 
 		void OnClearSeed(MouseEventArgs e)
 		{
-		if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld) {
-		return;
-		}
+			if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld && Flags.OwMapExchange != OwMapExchanges.Desert) {
+				return;
+			}
 			ValidateSeed("00000000");
 			StateHasChanged();
 		}
@@ -99,22 +108,30 @@
 		}
 
 		void OnGenerateMap(MouseEventArgs e) {
-		if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld) {
-		return;
-		}
+			if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld && Flags.OwMapExchange != OwMapExchanges.Desert) {
+				return;
+			}
 			if (Flags.MapGenSeed == 0) {
-			  ValidateSeed(Blob.Random(4).ToHex());
+				ValidateSeed(Blob.Random(4).ToHex());
 			}
 			StatusMessage = "Generating new map, this may take some time...";
 			StateHasChanged();
 			var maprng = new MT19337((uint)Flags.MapGenSeed);
 			try {
-			  Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng);
-			  StatusMessage = "Success!";
+				if (Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld)
+				{
+					Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, Flags.Flags);
+				}
+				else if (Flags.OwMapExchange == OwMapExchanges.Desert)
+				{
+					Flags.ReplacementMap = DesertOfDeath.GenerateDesert(maprng);
+				}
+
+				StatusMessage = "Success!";
 			} catch (Exception x)
 			{
-			   StatusMessage = x.Message;
-			   Console.WriteLine(x.ToString());
+				StatusMessage = x.Message;
+				Console.WriteLine(x.ToString());
 			}
 			StateHasChanged();
 		}
@@ -147,4 +164,41 @@
 			}
 		}
 
+		async Task OnImportMap(ChangeEventArgs e) {
+		  try {
+                    Flags.OwMapExchange = OwMapExchanges.ImportCustomMap;
+		    var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importMapInput");
+		    if (content == null || content == "") { return; }
+                    var fileData = Convert.FromBase64String(content);
+		    Flags.ReplacementMap = JsonConvert.DeserializeObject<OwMapExchangeData>(System.Text.Encoding.UTF8.GetString(fileData));
+		    Flags.MapGenSeed = Flags.ReplacementMap.Seed;
+		    _mapgenSeed = $"{Flags.MapGenSeed,8:X8}";
+
+		    var checksum = Flags.ReplacementMap.ComputeChecksum();
+		    if (checksum != Flags.ReplacementMap.Checksum) {
+		      throw new Exception("Checksum did not match");
+		    }
+
+		    StatusMessage = $"Successfully imported map, checksum {Flags.ReplacementMap.Checksum}";
+		  } catch (Exception x) {
+			   StatusMessage = x.Message;
+			   Console.WriteLine(x.ToString());
+		  }
+		  StateHasChanged();
+		}
+
+
+		async Task OnExportMap(MouseEventArgs e) {
+		     if (Flags.ReplacementMap == null || Flags.ReplacementMap.DecompressedMapRows == null) {
+		       return;
+		     }
+
+		     Flags.ReplacementMap.Checksum = Flags.ReplacementMap.ComputeChecksum();
+		     Flags.ReplacementMap.Seed = Flags.MapGenSeed;
+		     Flags.ReplacementMap.FFRVersion = FF1Lib.FFRVersion.Version;
+
+		     var content = JsonConvert.SerializeObject(Flags.ReplacementMap, Formatting.Indented);
+                     var fileData = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(content));
+		     await JSRuntime.InvokeVoidAsync("downloadFile", $"FFR_map_{Flags.ReplacementMap.Checksum}.json", fileData);
+		}
 	}

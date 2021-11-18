@@ -21,15 +21,18 @@ namespace FF1Lib
 
     [Description("Generate New Overworld")]
 		GenerateNewOverworld,
-    
+
     [Description("Random Pregenerated 512")]
 		RandomPregenerated,
-        
+
     [Description("Desert of Death")]
 		Desert,
 
 		[Description("No Overworld")]
 		NoOverworld,
+
+		[Description("Import Custom Map")]
+		ImportCustomMap,
 	}
 
 	public class OwMapExchange
@@ -67,14 +70,14 @@ namespace FF1Lib
 		}
 
 		public OwMapExchange(FF1Rom _rom, OverworldMap _overworldMap, MT19337 rng)
-		{	
+		{
  			rom = _rom;
 			overworldMap = _overworldMap;
 
 			exit = new ExitTeleData(rom);
 			locations = new OwLocationData(rom);
 			domains = new DomainData(rom);
-			
+
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith("pregenerated.zip"));
 
@@ -86,7 +89,7 @@ namespace FF1Lib
 
 			var map = maplist.PickRandom(rng);
 
-			
+
 			data = LoadJson(archive.GetEntry(map + ".json").Open());
 
 			ShipLocations = new ShipLocations(locations, data.ShipLocations);
@@ -142,6 +145,53 @@ namespace FF1Lib
 			exit.StoreData();
 
 			ShipLocations.SetShipLocation(255);
+
+			if (data.HorizontalBridge) {
+			    // Rotate bridge sprite
+			    // tiles $14 - $17
+			    // CHR for map tiles is bank $02 at $9C00
+
+			    // 0 1  \ \
+			    // 2 3  / /
+
+			    var tile0 = new byte[8*8] {
+				0, 0, 0, 0, 1, 1, 1, 1,
+				0, 0, 1, 1, 2, 2, 2, 2,
+				1, 1, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 1, 1, 1, 1, 1,
+				2, 1, 1, 2, 2, 2, 2, 2,
+				1, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 2, 2, 2, 2,
+			    };
+
+			    var tile1 = new byte[8*8] {
+				2, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 1, 1, 1, 1,
+				2, 2, 1, 1, 2, 2, 2, 2,
+				1, 1, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 1, 1, 1, 1, 1,
+				1, 1, 1, 0, 0, 0, 0, 0
+			    };
+
+			    var tile2 = new byte[8*8];
+			    var tile3 = new byte[8*8];
+
+			    for (int j = 0; j < 8; j++) {
+				for (int i = 0; i < 8; i++) {
+				    // mirror tiles
+				    tile2[j*8 + i] = tile0[j*8 + (7-i)];
+				    tile3[j*8 + i] = tile1[j*8 + (7-i)];
+				}
+			    }
+
+			    rom.PutInBank(0x2, 0x9C00 + 0x04*16, rom.EncodeForPPU(tile0));
+			    rom.PutInBank(0x2, 0x9C00 + 0x05*16, rom.EncodeForPPU(tile2));
+			    rom.PutInBank(0x2, 0x9C00 + 0x06*16, rom.EncodeForPPU(tile1));
+			    rom.PutInBank(0x2, 0x9C00 + 0x07*16, rom.EncodeForPPU(tile3));
+			}
 		}
 
 		public void RefreshData()
@@ -202,6 +252,20 @@ namespace FF1Lib
 		{
 			if (!flags.SanityCheckerV2) return null;
 
+			int seed;
+
+			if (flags.MapGenSeed != 0)
+			{
+				seed = flags.MapGenSeed;
+			}
+			else
+			{
+				seed = (int)rng.Next();
+			}
+
+			MT19337 maprng = new MT19337((uint)seed);
+			OwMapExchangeData exdata;
+
 			var mx = flags.OwMapExchange;
 
 			switch (mx)
@@ -209,26 +273,31 @@ namespace FF1Lib
 				case OwMapExchanges.None:
 					return null;
 				case OwMapExchanges.Desert:
-					return new OwMapExchange(_rom, _overworldMap, "desert");
+					if (flags.ReplacementMap != null)
+					{
+						exdata = flags.ReplacementMap;
+					}
+					else
+					{
+						exdata = DesertOfDeath.GenerateDesert(maprng);
+					}
+					return new OwMapExchange(_rom, _overworldMap, exdata);
 				case OwMapExchanges.NoOverworld:
 					return new OwMapExchange(_rom, _overworldMap, "nooverworld");
 				case OwMapExchanges.RandomPregenerated:
 					return new OwMapExchange(_rom, _overworldMap, rng);
 				case OwMapExchanges.GenerateNewOverworld:
-				  OwMapExchangeData exdata = null;
 				  if (flags.ReplacementMap != null) {
 					  exdata = flags.ReplacementMap;
 				  } else {
-					  int seed;
-					  if (flags.MapGenSeed != 0) {
-					    seed = flags.MapGenSeed;
-					  } else {
-					    seed = (int)rng.Next();
-					  }
-					  var maprng = new MT19337((uint)seed);
-					  exdata = NewOverworld.GenerateNewOverworld(maprng);
+				      exdata = NewOverworld.GenerateNewOverworld(maprng, flags);
 				  }
 				  return new OwMapExchange(_rom, _overworldMap, exdata);
+			    case OwMapExchanges.ImportCustomMap:
+				if (flags.ReplacementMap == null) {
+				    throw new Exception("No replacement map was supplied");
+				}
+				return new OwMapExchange(_rom, _overworldMap, flags.ReplacementMap);
 			}
 
 			throw new Exception("oops");

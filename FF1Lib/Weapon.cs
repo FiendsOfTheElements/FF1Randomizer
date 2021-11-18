@@ -280,7 +280,7 @@ namespace FF1Lib
 			{ WeaponIcon.KNIFE,  EquipPermission.Knight|EquipPermission.Ninja|EquipPermission.RedWizard|EquipPermission.BlackWizard },
 			{ WeaponIcon.CHUCK,  EquipPermission.Ninja|EquipPermission.Master },
 			{ WeaponIcon.HAMMER, EquipPermission.Knight|EquipPermission.WhiteWizard|EquipPermission.Ninja },
-			{ WeaponIcon.STAFF,  EquipPermission.RedWizard|EquipPermission.BlackWizard|EquipPermission.Ninja },
+			{ WeaponIcon.STAFF,  EquipPermission.RedWizard|EquipPermission.WhiteWizard|EquipPermission.BlackWizard|EquipPermission.Ninja },
 		    };
 
 		    var weaponSprites = new WeaponSprite[][] {
@@ -712,9 +712,7 @@ namespace FF1Lib
 			//get name stuff
 			Icon = WeaponIcon.NONE;
 
-			var itemnames = rom.ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
-
-			Name = itemnames[(int)Item.WoodenNunchucks + WeaponIndex];
+			Name = rom.ItemsText[(int)Item.WoodenNunchucks + WeaponIndex];
 
 			foreach (var kv in IconCodes)
 			{
@@ -767,7 +765,7 @@ namespace FF1Lib
 			ushort convertedClassPermissions = (ushort)(ClassUsability ^ 0xFFF);
 			rom.Put(weaponUsabilityOffset, BitConverter.GetBytes(convertedClassPermissions));
 
-			rom.UpdateItemName((Item)((int)Item.WoodenNunchucks + WeaponIndex), Name);
+			rom.ItemsText[(int)Item.WoodenNunchucks + WeaponIndex] = Name;
 		}
 
 		private WeaponIcon getWeaponIconFromByte(byte icon)

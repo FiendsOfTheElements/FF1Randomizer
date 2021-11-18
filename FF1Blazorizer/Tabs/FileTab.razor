@@ -217,6 +217,12 @@
 				return;
 			}
 
+			if (Flags.OwMapExchange == OwMapExchanges.ImportCustomMap && Flags.ReplacementMap == null) {
+				SetStatusMessage("Generate Failed: Must import a map or choose a different overworld option");
+				StateHasChanged();
+				return;
+			}
+
 			using (var stream = new MemoryStream(_fileData))
 			{
 				_rom = new FF1Rom(stream);

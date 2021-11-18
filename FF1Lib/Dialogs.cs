@@ -332,12 +332,11 @@ namespace FF1Lib
 		}
 		public bool RedMageHasLife()
 		{
-			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			var magicPermissions = Get(MagicPermissionsOffset, 8 * 12).Chunk(8);
 			var magicArray = new List<byte> { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
 
-			var firstLifeIndex = itemnames.ToList().FindIndex(x => x.ToLower().Contains("lif")) - MagicNamesIndexInItemText;
-			var secondLifeIndex = itemnames.ToList().FindIndex(firstLifeIndex + MagicNamesIndexInItemText + 1, x => x.ToLower().Contains("lif")) - MagicNamesIndexInItemText;
+			var firstLifeIndex = ItemsText.ToList().FindIndex(x => x.ToLower().Contains("lif")) - MagicNamesIndexInItemText;
+			var secondLifeIndex = ItemsText.ToList().FindIndex(firstLifeIndex + MagicNamesIndexInItemText + 1, x => x.ToLower().Contains("lif")) - MagicNamesIndexInItemText;
 
 			var firstlife = firstLifeIndex >= 0 ? (((~magicPermissions[3][firstLifeIndex / 8] & magicArray[firstLifeIndex % 8]) > 0) ? true : false) : false;
 			var secondlife = secondLifeIndex >= 0 ? (((~magicPermissions[3][secondLifeIndex / 8] & magicArray[secondLifeIndex % 8]) > 0) ? true : false) : false;
@@ -556,8 +555,7 @@ namespace FF1Lib
 		// Remove trailing spaces and return the right item for some generated text
 		public string FormattedItemName(Item item, bool specialItem = true)
 		{
-			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
-			var formatted = itemnames[(byte)item].TrimEnd(' ');
+			var formatted = ItemsText[(byte)item].TrimEnd(' ');
 
 			if(specialItem)
 			{
@@ -1262,7 +1260,6 @@ namespace FF1Lib
 		public void NPCHints(MT19337 rng, NPCdata npcdata, Flags flags, OverworldMap overworldmap)
 		{
 			// Het all game dialogs, get all item names, set dialog templates
-			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			var hintschests = new List<string>() { "The $ is #.", "The $? It's # I believe.", "Did you know that the $ is #?", "My grandpa used to say 'The $ is #'.", "Did you hear? The $ is #!", "Wanna hear a secret? The $ is #!", "I've read somewhere that the $ is #.", "I used to have the $. I lost it #!", "I've hidden the $ #, can you find it?", "Interesting! This book says the $ is #!", "Duh, everyone knows that the $ is #!", "I saw the $ while I was #." };
 			var hintsnpc = new List<string>() { "& has the $.", "The $? Did you try asking &?", "The $? & will never part with it!", "& stole the $ from ME! I swear!", "& told me not to reveal they have the $.", "& is hiding something. I bet it's the $!" };
 			var hintsvendormed = new List<string>() { "The $ is for sale #.", "I used to have the $. I sold it #!", "There's a fire sale for the $ #.", "I almost bought the $ for sale #." };
@@ -1398,7 +1395,7 @@ namespace FF1Lib
 					else if (tempItem.Equals(Item.Bridge)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 16, 6));
 					else if (tempItem.Equals(Item.Canal)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 24, 5));
 					else if (tempItem.Equals(Item.Canoe)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 36, 5));
-					else tempName = itemnames[(int)tempItem].Replace(" ", "");
+					else tempName = ItemsText[(int)tempItem].Replace(" ", "");
 
 					if (generatedPlacement.Find(x => x.Item == tempItem).GetType().Equals(typeof(TreasureChest)))
 					{

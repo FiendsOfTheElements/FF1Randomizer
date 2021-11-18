@@ -219,7 +219,7 @@ namespace FF1Lib
 			EnableTwelveClasses();
 		}
 
-		public void PubReplaceClinic(MT19337 rng, Flags flags)
+		public void PubReplaceClinic(MT19337 rng, MapId attackedTown, Flags flags)
 		{
 			// Copy some CHR data to make the Tavern look more like one.
 			const int ShopTileDataOffet = 0x24000;
@@ -251,9 +251,13 @@ namespace FF1Lib
 				options.Shuffle(rng);
 				pub_lut.AddRange(options);
 			}
-			if (!(bool)flags.MelmondClinic)
+			if (!(bool)flags.MelmondClinic && !(bool)flags.RandomVampAttack)
 			{
 				pub_lut.Insert(3, (byte)0xFF);
+			}
+			else if ((bool)flags.RandomVampAttack)
+			{
+				pub_lut.Insert((int)attackedTown, (byte)0xFF);
 			}
 
 			Put(0x38066, Blob.FromHex("9D8A9F8E9B97")); // Replaces "CLINIC" with "TAVERN"
@@ -523,7 +527,14 @@ namespace FF1Lib
 
 			PutInBank(0x1B, 0x8FF5, Blob.FromHex(saveondeath));
 		}
-
+		public void DeepDungeonFloorIndicator()
+		{
+			// Add Current Floor indicator above orbs, see 0E_9850_DrawOrbFloor.asm
+			PutInBank(0x0E, 0xB83D, Blob.FromHex("205098"));
+			PutInBank(0x0E, 0x9850, Blob.FromHex("2078B8A548C93CB018C908900638E9074C7398A8B9A698855AB9AE98855B4C8398A900851020668EA000B13E855AC8B13E855BA97A855CA985855DA982855EA900855FA95A853EA900853FA902853BA904853A4C44B98C998E968C909895B2B5AFA8B5A4B1A8"));
+			// Extend Orb Box
+			PutInBank(0x0E, 0xBAA2, Blob.FromHex("02010809"));
+		}
 		public void ShuffleAstos(Flags flags, NPCdata npcdata, TalkRoutines talkroutines, MT19337 rng)
 		{
 			// NPC pool to swap Astos with
@@ -1002,10 +1013,8 @@ namespace FF1Lib
 			// Change class names to spoil to what they randomly promote
 			if (flags.RandomPromotionsSpoilers ?? false)
 			{
-				var itemNames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
 				for (int i = 0; i < 12; i++)
-					itemNames[0xF0 + i] = className[i] + " - " + className[promotions[i]];
-				WriteText(itemNames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
+					ItemsText[0xF0 + i] = className[i] + " - " + className[promotions[i]];
 			}
 
 			// Modify DoClassChange, see 1B_910F_ResetMP.asm
@@ -1092,7 +1101,7 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x8650, Blob.FromHex("00") + sizebyte + pool);
 
 			// Starting party composition
-			PutInBank(0x1E, 0x84AA, pool.SubBlob(0, 1));
+			PutInBank(0x1E, 0x84AA, pool.SubBlob(0, 1) + Blob.FromHex("80"));
 			PutInBank(0x1E, 0x84BA, Blob.FromHex("FF"));
 			PutInBank(0x1E, 0x84CA, Blob.FromHex("FF"));
 			PutInBank(0x1E, 0x84DA, Blob.FromHex("FF"));
@@ -1782,7 +1791,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void FightBahamut(TalkRoutines talkroutines, NPCdata npcdata, bool removeTail, bool swoleBahamut, EvadeCapValues evadeClampFlag, MT19337 rng)
+		public void FightBahamut(TalkRoutines talkroutines, NPCdata npcdata, bool removeTail, bool swoleBahamut, bool deepDungeon, EvadeCapValues evadeClampFlag, MT19337 rng)
 		{
 			const byte offsetAtoB = 0x80; // diff between A side and B side
 
@@ -1882,8 +1891,11 @@ namespace FF1Lib
 			InsertDialogs(dialogs);
 
 			// Change Bahamut Dragon NPCs to the "Onrac Dragon" so they will change what they say post promotion
-			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.OnracDragon, 19, 7, inRoom: true, stationary: true);
-			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.OnracDragon, 23, 7, inRoom: true, stationary: true);
+			if (!deepDungeon)
+            {
+				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.OnracDragon, 19, 7, inRoom: true, stationary: true);
+				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.OnracDragon, 23, 7, inRoom: true, stationary: true);
+			}
 
 			// Scale Difficulty Up, approx 700hp (normal) or 950hp (buffed)
 			ScaleSingleEnemyStats(78, 120, 120, wrapOverflow: false, includeMorale: false, rng: null, separateHPScale: true, lowPercentHp: 200, highPercentHp: 200, GetEvadeIntFromFlag(evadeClampFlag));
@@ -1988,30 +2000,26 @@ namespace FF1Lib
 				a.writeArmorMemory(this);
 			}
 
-			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
-
 			if (!(flags.Weaponizer ?? false))
 			{
-				itemnames[(int)Item.BaneSword] = "Lame  @S";
-				itemnames[(int)Item.HealRod] = "Eel   @F";
-				itemnames[(int)Item.MageRod] = "Age   @F";
-				itemnames[(int)Item.WizardRod] = "Lizard@F";
-				itemnames[(int)Item.LightAxe] = "Slight@X";
+				ItemsText[(int)Item.BaneSword] = "Lame  @S";
+				ItemsText[(int)Item.HealRod] = "Eel   @F";
+				ItemsText[(int)Item.MageRod] = "Age   @F";
+				ItemsText[(int)Item.WizardRod] = "Lizard@F";
+				ItemsText[(int)Item.LightAxe] = "Slight@X";
 			}
 
 			if (!(flags.ArmorCrafter ?? false)) {
-			    itemnames[(int)Item.HealHelm] = "Deal  @h";
-			    itemnames[(int)Item.ZeusGauntlets] = "Moose @G";
+				ItemsText[(int)Item.HealHelm] = "Deal  @h";
+				ItemsText[(int)Item.ZeusGauntlets] = "Moose @G";
 			}
 
 			//possible incentive items
-			itemnames[(int)Item.Defense] = "Dunce @S";
-			itemnames[(int)Item.ThorHammer] = "Bore  @H";
-			itemnames[(int)Item.PowerGauntlets] = "Sour  @G";
-			itemnames[(int)Item.WhiteShirt] = "Right @T";
-			itemnames[(int)Item.BlackShirt] = "Whack @T";
-
-			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
+			ItemsText[(int)Item.Defense] = "Dunce @S";
+			ItemsText[(int)Item.ThorHammer] = "Bore  @H";
+			ItemsText[(int)Item.PowerGauntlets] = "Sour  @G";
+			ItemsText[(int)Item.WhiteShirt] = "Right @T";
+			ItemsText[(int)Item.BlackShirt] = "Whack @T";
 		}
 
 		public byte findEmptyTile(List<List<byte>> decompressedMap) {
@@ -2033,64 +2041,137 @@ namespace FF1Lib
 		    return 0;
 		}
 
-		public void HackMinimap(OverworldMap map) {
-		    // Correctly render arbitrary replacement maps.
-
-		    // The original vanilla minimap has a Final
-		    // Fantasy logo and dragon-sword-crest thing,
-		    // which are crammed into the tiles that are
-		    // normally empty ocean on the vanilla map.  It's
-		    // very clever.
-
-		    // It's way too much work to try and re-pack that
-		    // data (and not guaranteed to work because we
-		    // want to support arbitrary replacement maps) so
-		    // instead get rid of the clever bits, don't
-		    // render the logos and provide a replacement
-		    // nametable that only contains the plain map
-		    // tiles.
-
-		    // NOP out the calls to draw the logo and the
-		    // dragon crest things
-		    PutInBank(0x09, 0xBC45, Blob.FromHex("EAEAEAEAEAEA"));
-
-		    // Need to find 1 empty ocean square for the
-		    // background.
-		    byte emptyTile = findEmptyTile(map.DecompressMapRows(map.GetCompressedMapRows()));
-
-		    var nametable = new byte[960];
-		    for (int i = 0; i < 960; i++) {
-			nametable[i] = emptyTile;
-		    }
-		    for (int i = 0; i < 16; i++) {
-			for (int j = 0; j < 16; j++) {
-			    nametable[(i+6)*32 + (j+8)] = (byte)(i*16 + j);
-			}
-		    }
-
-		    PutInBank(0x09, 0xB000, nametable);
-		}
-
-		public void EnableQuickMinimap()
-		{
-			//Blank PPU
-			PutInBank(0x09, 0xBED6, Blob.FromHex("A900"));
-			PutInBank(0x09, 0xBEDB, Blob.FromHex("A900"));
-
-			//Remove WaitForVBlanks
-			PutInBank(0x09, 0xBB0A, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBC5F, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBD97, Blob.FromHex("EAEAEA"));
-
-			//Don't play stupid sounds
-			PutInBank(0x09, 0xBB45, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBC9A, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBDBE, Blob.FromHex("EAEAEA"));
-		}
-
 		public void DisableMinimap()
 		{
 			PutInBank(0x1F, 0xC1A6, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+		}
+
+		public void MoveLoadPlayerIBStats()
+		{
+			PutInBank(0x0C, 0xAD21, Blob.FromHex("A99448A91548A91B4C03FEEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+
+			PutInBank(0x1B, 0x9400, Blob.FromHex("00000000000000000000000048B182AA68A88A918060A000A901200C94A001A902200C94A00AA903200C94A00BA904200C94A021A905200C94A025A906200C94A023A907200C94A022A908200C94A020A909200C94A000B182AAA024B1821D0094A00A9180A9AD48A92B48A90C4C03FE"));
+		}
+
+		public void IncreaseDarkPenalty()
+		{
+			/* :: Original::                        :: Modified ::
+			 * LDA math_hitchance                   LDA #0
+			 * SEC                                  STA math_hitchance
+			 * SBC #40                              STA math_critchance
+			 * STA math_hitchance                   INC A
+			 *
+			 * 0x326A7: AD 56 68 38 E9 28 8D 56 68  0x326A7: A9 00 8D 56 68 8D 62 68 1A
+			 */
+
+			// replace asm, set hitchance and critchance to 0
+			Put(0x326A7, Blob.FromHex("A9008D56688D62681A"));
+		}
+
+
+		public void DraculasCurse(TalkRoutines talkroutines, NPCdata npcdata, MT19337 rng, Flags flags) {
+		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		    enemyText[119] = "Twin D";  //  +2
+		    enemyText[120] = "Twin D";  //  +2
+		    enemyText[121] = "CARMILLA"; // +4
+		    enemyText[122] = "CARMILLA"; // +4
+		    enemyText[123] = "GrREAPER"; // +2
+		    enemyText[124] = "GrREAPER"; // +2
+		    enemyText[125] = "FRANKEN";  // +1
+		    enemyText[126] = "FRANKEN";  // +1
+		    enemyText[127] = "VLAD";     // -1
+
+		    // Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes, of which I'm using 17.
+		    var enemyTextPart1 = enemyText.Take(2).ToArray();
+		    var enemyTextPart2 = enemyText.Skip(2).ToArray();
+		    WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
+		    WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+
+			// Change Orbs to Dracula's relics
+			PutInBank(0x0E, 0xAD78, Blob.FromHex("0F050130")); // Update Orbs palette
+			// Lit Orbs
+			PutInBank(0x0D, 0xB640, Blob.FromHex("0003030303020303F8FBFAFAFAFAFAFA00808080800080803FBF3F3F3F3F3F3F0302030301010000FAFAFAFBFDFDFEFF80008080808080003F3F3F3F3FBFBF3F"));
+			PutInBank(0x0D, 0xB680, Blob.FromHex("0000000201030307FFFFF9F8FCF8FBF20000008080C0E0E0FFFF3F3F3F1F0F0F0F0F0F0700000000E4E0E3F0F8FFFFFFE0E0C080000000000F8F1F3F7FFFFFFF"));
+			PutInBank(0x0D, 0xB6C0, Blob.FromHex("00000000070F1F1FFFFFFFF8F7E9D4D0000000000080C0C0FFFFFFFF7FBFDFDF1F0F070000000000D9EFF7F8FFFFFFFFC080000000000000DFBF7FFFFFFFFFFF"));
+			PutInBank(0x0D, 0xB700, Blob.FromHex("00000000070F0F0FFFFFFFF8F7EFEFEE0000000080C0C080FFFFFF7F3F9F1F3F0F06060200000000ECF4F0F8FCFFFFFF00000000000000007FFFFFFFFFFFFFFF"));
+			// Unlit Orbs
+			PutInBank(0x0D, 0xB760, Blob.FromHex("0003010000061F3FFCFBFDFCF8E6DFBF0080F0F8000000C07F8FF7FB071F3F9F3F7F7F3F3F1F0000BF7F7FBFBFD0E0FFE0F0F0F0E0C000008FC7C787070103FF"));
+
+			var tileprop = new TilePropTable(this, 0xff);
+			tileprop.LoadData();
+
+			// Coneria castle entrance goes to ToF
+			tileprop[0x01] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.TempleOfFiends + 1);
+			tileprop[0x02] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.TempleOfFiends + 1);
+
+			// ToF entrance goes to Ordeals
+			tileprop[0x57] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.CastleOrdeals1F + 1);
+			tileprop[0x58] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.CastleOrdeals1F + 1);
+
+			// Ordeals entrance goes to Coneria castle
+			tileprop[0x38] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.ConeriaCastle1F + 1);
+			tileprop[0x39] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.ConeriaCastle1F + 1);
+
+			// Volcano entrance (evil tree) goes to Mirage
+			tileprop[0x64] = new TileProp((byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN, 0);
+			tileprop[0x65] = new TileProp((byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN, 0);
+			tileprop[0x74] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.MirageTower1F + 1);
+			tileprop[0x75] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.MirageTower1F + 1);
+
+			// Mirage entrance (Desert mountain) goes to Volcano (still requires Chime)
+			tileprop[0x1D] = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME | (byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN,
+						      (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
+			tileprop[0x1E] = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME | (byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN,
+						      (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
+
+			tileprop.StoreData();
+
+			const int BATTLEBACKDROPASSIGNMENT_OFFSET =		0x3300;
+
+			// fix up battle backdrop on tof
+			Put(BATTLEBACKDROPASSIGNMENT_OFFSET + 0x01, new byte[] { 9, 9});
+
+			// fix up battle backdrop on ordeals
+			Put(BATTLEBACKDROPASSIGNMENT_OFFSET + 0x57, new byte[] { 5, 5});
+
+			// fix up battle backdrop on mirage tiles
+			Put(BATTLEBACKDROPASSIGNMENT_OFFSET + 0x74, new byte[] { 11, 11});
+
+			// fix up battle backdrop on volcano tiles
+			Put(BATTLEBACKDROPASSIGNMENT_OFFSET + 0x1D, new byte[] { 14, 14});
+
+			var teledata = new ExitTeleData(this);
+			teledata.LoadData();
+
+			var tpsReport = new TeleportShuffle(flags.ReplacementMap);
+
+			var tofCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.TempleOfFiends1];
+			var mirageCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.MirageTower1];
+			var volcanoCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.GurguVolcano1];
+			var ordealCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.CastleOrdeals1];
+
+			teledata[(byte)ExitTeleportIndex.ExitCastleOrdeals] = new TeleData { X = tofCoord.X, Y = tofCoord.Y, Map = (MapId)0xFF }; // ordeals exit to ToF location
+			teledata[(byte)ExitTeleportIndex.ExitCastleConeria] = new TeleData { X = ordealCoord.X, Y = ordealCoord.Y, Map = (MapId)0xFF }; // coneria exit to ordeal location
+			teledata[(byte)ExitTeleportIndex.ExitGurguVolcano] = new TeleData { X = mirageCoord.X, Y = mirageCoord.Y, Map = (MapId)0xFF }; // volcano exit to mirage location
+			teledata[(byte)ExitTeleportIndex.ExitSkyPalace] = new TeleData { X = volcanoCoord.X, Y = volcanoCoord.Y, Map = (MapId)0xFF }; // mirage exit to volcano location
+
+			teledata.StoreData();
+		}
+
+		public void WhiteMageHarmEveryone()
+		{
+			PutInBank(0x0C, 0xB905, Blob.FromHex("2073B820F9B8202DB8A9A248A90348A91C4C03FEEAEAEAEAEAEAEAEAEA60"));
+			PutInBank(0x1C, 0xA200, Blob.FromHex("004080C0AD86682908D030A9008D56688D5768AD896C297FAABD00A2A8B90061C904F017C90AF013A9008D58688D5968A9B948A92148A90C4C03FEA9B948A92248A90C4C03FE"));
+		}
+
+		//doesn't change any XP until it actually happens in blessed/cursed classes, just lays the groundwork in the asm
+		public void SetupClassAltXp()
+		{
+			PutInBank(0x1B, 0x886E, Blob.FromHex("20189560"));
+			//lut for class xp table pointers
+			PutInBank(0x1B, 0x9500, Blob.FromHex("818C3595C8955B96EE968197818C3595C8955B96EE968197"));
+			//actual new level up function
+			PutInBank(0x1B, 0x9518, Blob.FromHex("A000B1860AAAA026B1860A187186187D00958582E8A9007D0095858360"));
 		}
 	}
 }

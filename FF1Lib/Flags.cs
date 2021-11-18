@@ -5,9 +5,11 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Text;
+using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
 using RomUtilities;
+using System.IO.Compression;
 using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
@@ -109,7 +111,13 @@ namespace FF1Lib
 		[IntegerFlag(0, Int32.MaxValue-1)]
 		public int MapGenSeed { get; set; } = 0;
 
+		public bool MapGenRandomizedAccessReqs { get; set; } = false;
+		public bool MapGenUnsafeStart { get; set; } = false;
+		public bool MapGenLostWoods { get; set; } = false;
+
 		public OwMapExchangeData ReplacementMap { get; set; } = null;
+
+		public string ResourcePack { get; set; } = null;
 
 		public bool? NoItemMagic { get; set; } = false;
 
@@ -263,6 +271,7 @@ namespace FF1Lib
 		public bool? MoveGaiaItemShop { get; set; } = false;
 		public bool? FlipDungeons { get; set; } = false;
 		public bool SpookyFlag { get; set; } = false;
+		public bool DraculasFlag { get; set; } = false;
 		public bool? MapOpenProgression { get; set; } = false;
 		public bool? MapOpenProgressionDocks { get; set; } = false;
 		public bool? Entrances { get; set; } = false;
@@ -391,6 +400,9 @@ namespace FF1Lib
 		public bool? MelmondClinic { get; set; } = false;
         public bool DeepDungeon { get; set; } = false;
 		public bool DDEvenTreasureDistribution { get; set; } = false;
+		public bool DDProgressiveTilesets { get; set; } = false;
+		public bool DDFiendOrbs { get; set; } = false;
+		public TailBahamutMode TailBahamutMode { get; set; } = TailBahamutMode.Random;
 		public bool StartingGold { get; set; } = false;
 		public bool WrapStatOverflow { get; set; } = false;
 		public bool WrapPriceOverflow { get; set; } = false;
@@ -450,6 +462,24 @@ namespace FF1Lib
 
 		[IntegerFlag(0, 500, 10)]
 		public int ExpBonus { get; set; } = 0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierFighter { get; set; } = 1.0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierThief { get; set; } = 1.0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierBlackBelt { get; set; } = 1.0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierRedMage { get; set; } = 1.0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierWhiteMage { get; set; } = 1.0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierBlackMage { get; set; } = 1.0;
 
 		[DoubleFlag(0, 45)]
 		public double EncounterRate { get; set; } = 0;
@@ -588,6 +618,8 @@ namespace FF1Lib
 		public bool? RandomizeClass { get; set; } = false;
 		public bool? RandomizeClassNoCasting { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
+		public bool? RandomizeClassIncludeNaturalResist { get; set; } = false;
+		public bool? RandomizeClassIncludeXpBonus { get; set; } = false;
 		public bool? AlternateFiends { get; set; } = false;
 		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 
@@ -637,10 +669,17 @@ namespace FF1Lib
 
 		public bool? AllowUnsafeStartArea { get; set; } = false;
 
+		public bool? IncreaseDarkPenalty { get; set; } = false;
+
+		public bool? EverythingHasDeathTouch { get; set; } = false;
+		public bool? EverythingHasDeathTouchExcludeFiends { get; set; } = false;
+
 		public bool? Lockpicking { get; set; } = false;
 
 		[IntegerFlag(1, 50)]
 		public int LockpickingLevelRequirement { get; set; } = 10;
+
+		public bool WhiteMageHarmEveryone { get; set; } = false;
 
 		public bool? EarlierRuby { get; set; } = false;
 		public bool? GuaranteedRuseItem { get; set; } = false;
@@ -1071,25 +1110,30 @@ namespace FF1Lib
 
 		public static (string name, Flags flags, IEnumerable<string> log) FromJson(string json)
 		{
+		    var flags = new Flags();
+		    string name;
+		    IEnumerable<string> log;
+		    (name, log) = flags.LoadFromJson(json);
+		    return (name, flags, log);
+		}
+
+		public  (string name, IEnumerable<string> log) LoadFromJson(string json) {
 			var w = new System.Diagnostics.Stopwatch();
 			w.Restart();
 
 			var preset = JsonConvert.DeserializeObject<Preset2>(json);
 			var preset_dic = preset.Flags.ToDictionary(kv => kv.Key.ToLower());
 
-
 			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
 			var flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).Reverse().ToList();
 
 			List<string> warnings = new List<string>();
 
-			Flags flags = new Flags();
-
 			foreach (var pi in flagproperties)
 			{
 				if (preset_dic.TryGetValue(pi.Name.ToLower(), out var obj))
 				{
-					var result = SetValue(pi, flags, obj.Value);
+					var result = SetValue(pi, this, obj.Value);
 
 					if (result != null) warnings.Add(result);
 
@@ -1109,8 +1153,30 @@ namespace FF1Lib
 			warnings.Sort();
 
 			w.Stop();
-			return (preset.Name, flags, warnings);
+			return (preset.Name, warnings);
 		}
+
+		public void LoadResourcePackFlags(Stream stream) {
+		    var archive = new ZipArchive(stream);
+
+		    var fj = archive.GetEntry("flags.json");
+		    if (fj != null) {
+			using (var s = fj.Open()) {
+			    using (StreamReader rd = new StreamReader(s)) {
+				this.LoadFromJson(rd.ReadToEnd());
+			    }
+			}
+		    }
+		    var overworld = archive.GetEntry("overworld.json");
+		    if (overworld != null) {
+			using (var s = overworld.Open()) {
+			    using (StreamReader rd = new StreamReader(s)) {
+				this.ReplacementMap = JsonConvert.DeserializeObject<OwMapExchangeData>(rd.ReadToEnd());
+			    }
+			}
+		    }
+		}
+
 
 		private static string SetValue(PropertyInfo p, Flags flags, object obj)
 		{
