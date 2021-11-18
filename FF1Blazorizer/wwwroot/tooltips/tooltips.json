@@ -57,13 +57,13 @@
 		"Id": "kiPlacementMode",
 		"title": "Key Item Placement",
 		"screenshot": null,
-		"description": "Vanilla: Semi random Placement order.\n\nPredictive: More powerful placement algorithm that allows for more variety and handles difficult placement situations better.\n\nPredictive Unsafe: Removes Safety Checks that prevent the Predictive Algorithm from forcing you into high level dungeons early."
+		"description": "Guided: This algorithm uses a semifixed placement order that will always open up the seed with an early ship and canal.\n\nPredictive: More powerful algorithm that does not rely on a fixed item order. This allowes for more flexibility like allowing early fetch quests or opening a seed up with the canoe instead of the ship. It can better handle alternate overworlds and Floor Entrance seeds.\n\nPredictive Unsafe: Removes Safety Checks that prevent the Predictive Algorithm from forcing you into high level dungeons early."
 	},
 	{
 		"Id": "loosePlacementMode",
 		"title": "Loose Placement",
 		"screenshot": null,
-		"description": "Vanilla: Random Chests and NPCs.\n\nSpread: Tries to spread out the loose items into different dungeons and gatings. With F/E it tries to spread out the items to different entrances/gatings.\n\nForward: Additionally tries to place loose items into newly opened up areas. It creates key item chains where one key item leads to the next, drives items out into the last corners of the world and can create some really nice fetch quest chains."
+		"description": "Chaotic: Random Chests and NPCs. Tends to put more key items into larger dungeons.\n\nSpread: Tries to spread out the loose items into different dungeons and gatings. With F/E it tries to spread out the items to different entrances/gatings.\n\nForward: Additionally tries to place loose items into newly opened up areas. It creates key item chains where one key item leads to the next, drives items out into the last corners of the world and can create some really nice fetch quest chains."
 	},
 	{
 		"Id": "looseNpcBalance",

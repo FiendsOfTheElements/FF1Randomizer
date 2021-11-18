@@ -363,7 +363,7 @@ namespace FF1Lib
 
 	public enum KeyItemPlacementMode
 	{
-		[Description("Vanilla")]
+		[Description("Guided")]
 		Vanilla,
 
 		[Description("Predictive")]
@@ -375,7 +375,7 @@ namespace FF1Lib
 
 	public enum LoosePlacementMode
 	{
-		[Description("Vanilla")]
+		[Description("Chaotic")]
 		Vanilla,
 
 		[Description("Spread")]
