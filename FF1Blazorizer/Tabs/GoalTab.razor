@@ -29,6 +29,14 @@
 	     <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="ShardCount" @bind-Value="Flags.ShardCount">Goal:</EnumDropDown>
 
 	     <div class="checkbox-cell"></div>
+	     <h4>Deep Dungeon</h4>
+	     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
+	     <CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDEvenTreasureDistribution" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.DDEvenTreasureDistribution">Distribute treasure evenly</CheckBox>
+	     <CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDProgressiveTilesets" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.DDProgressiveTilesets">Progressive Tilesets</CheckBox>
+	     <CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDFiendOrbs" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.DDFiendOrbs">Fiend Orbs</CheckBox>
+	     <EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="TailBahamutDropDown" TItem="TailBahamutMode" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.TailBahamutMode">Bahamut and TAIL floors:</EnumDropDown>
+
+	     <div class="checkbox-cell"></div>
 	     <h4>Events</h4>
 	     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="lichRevengeCheckBox" IsEnabled="@(Flags.RandomizeFormationEnemizer != true)" @bind-Value="Flags.SpookyFlag">Lich's Revenge</CheckBox>
 	     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="draculaCurseCheckBox" @bind-Value="Flags.DraculasFlag">Dracula's Curse</CheckBox>

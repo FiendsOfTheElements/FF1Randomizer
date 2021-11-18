@@ -2,6 +2,7 @@
 @inject IJSRuntime JSRuntime
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @using FF1Lib;
+@using System.IO;
 
 <div id="presets" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
 	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Start a Game</a></h3>
@@ -56,6 +57,10 @@
 			Load from JSON:
 			<input type="file" id="presetInput" @onchange="OnPresetChanged" />
 		</p>
+
+			<h4>Import Resource Pack</h4>
+			<input type="file" id="importResourcePackInput" accept=".zip" @onchange="@OnImportResourcePack" />
+
 		<div class="clear-it"></div>
 	}
 </div>
@@ -199,4 +204,19 @@
 		}
 		StateHasChanged();
 	}
+
+		async Task OnImportResourcePack(ChangeEventArgs e) {
+		  try {
+		    var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importResourcePackInput");
+		    if (content == null || content == "") { return; }
+	            using (var stream = new MemoryStream(Convert.FromBase64String(content))) {
+		       Flags.LoadResourcePackFlags(stream);
+		    }
+		    Flags.ResourcePack = content;
+		  } catch (Exception x) {
+			   Console.WriteLine(x.ToString());
+		  }
+		  StateHasChanged();
+		}
+
 }

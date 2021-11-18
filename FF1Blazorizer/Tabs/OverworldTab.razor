@@ -63,6 +63,10 @@
 		@bind-Value="Flags.MapGaiaMountainPass">Gaia Mountain Pass</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
 
+		<h4>Other map changes</h4>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="OWDamageTilesCheckBox" @bind-Value="Flags.OWDamageTiles">Marsh and Desert Tiles Deal Damage</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="DamageTilesKillCheckBox" @bind-Value="Flags.DamageTilesKill">Damage Tiles Kill</TriStateCheckBox>
+
 		<div class="clear-it"></div>
 		</div>
 		}
