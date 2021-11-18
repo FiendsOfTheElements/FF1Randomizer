@@ -360,4 +360,28 @@ namespace FF1Lib
 			return preBlackOrbUnincentivizedLocationPool.Where(x => !placedDungeons.Contains(x)).ToList();
 		}
 	}
+
+	public enum KeyItemPlacementMode
+	{
+		[Description("Vanilla")]
+		Vanilla,
+
+		[Description("Predictive")]
+		Predictive,
+
+		[Description("Predictive Unsafe")]
+		PredictiveUnsafe
+	}
+
+	public enum LoosePlacementMode
+	{
+		[Description("Vanilla")]
+		Vanilla,
+
+		[Description("Spread")]
+		Spread,
+
+		[Description("Forward")]
+		Forward
+	}
 }
