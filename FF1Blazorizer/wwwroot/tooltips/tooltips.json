@@ -54,20 +54,20 @@
 		"description": "Enabling this, removes the magic from weapons and armor."
 	},
 	{
-		"Id": "spreadLoose",
-		"title": "Spread Loose Placement",
+		"Id": "kiPlacementMode",
+		"title": "Key Item Placement",
 		"screenshot": null,
-		"description": "Tries to spread out the loose items into different dungeons and gatings. With F/E it tries to spread out the items to different entrances/gatings."
+		"description": "Vanilla: Semi random Placement order.\n\nPredictive: More powerful placement algorithm that allows for more variety and handles difficult placement situations better.\n\nPredictive Unsafe: Removes Safety Checks that prevent the Predictive Algorithm from forcing you into high level dungeons early."
 	},
 	{
-		"Id": "forwardLoose",
-		"title": "Forward Loose Placement",
+		"Id": "loosePlacementMode",
+		"title": "Loose Placement",
 		"screenshot": null,
-		"description": "Tries to place loose items into newly opened up areas. It creates key item chains where one key item leads to the next, drives items out into the last corners of the world and can create some really nice fetch quest chains."
+		"description": "Vanilla: Random Chests and NPCs.\n\nSpread: Tries to spread out the loose items into different dungeons and gatings. With F/E it tries to spread out the items to different entrances/gatings.\n\nForward: Additionally tries to place loose items into newly opened up areas. It creates key item chains where one key item leads to the next, drives items out into the last corners of the world and can create some really nice fetch quest chains."
 	},
 	{
 		"Id": "looseNpcBalance",
-		"title": "Loose NPC Balance",
+		"title": "Favor NPCs",
 		"screenshot": null,
 		"description": "Makes it more likely loose items land on NPCs."
 	},
