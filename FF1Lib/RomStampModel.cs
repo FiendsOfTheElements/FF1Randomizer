@@ -8,22 +8,92 @@ namespace FF1Lib
 {
 	public class RomStampModel
 	{
-		private byte[] seed = new byte[64];
-		private byte[] flags = new byte[19];
-		private byte[] commitSha = new byte[40];
-		private byte[] inputRomSha = new byte[40];
+		private String seed;
+		private const int seedSize = 64;
+		private String flag;
+		private const int flagSize= 19;
+		private String commitSha;
+		private const int commitShaSize = 40;
+		private String inputRomSha;
+		private const int inputRomShaSize = 40;
+		private String romStamp;
+		private const int romStampSize = seedSize + flagSize + commitShaSize + inputRomShaSize;
 
 		public RomStampModel (String _seed, String _flags, String _commitSha, String _inputRomSha)
 		{
-			seed = byteArrayFormatter(_seed, seed.Length);
-			flags = byteArrayFormatter(_flags, flags.Length);
-			commitSha = byteArrayFormatter(_commitSha, commitSha.Length);
-			inputRomSha = byteArrayFormatter(_inputRomSha, inputRomSha.Length);
+			seed = stringPadder(_seed, seedSize);
+			flag = stringPadder(_flags, flagSize);
+			commitSha = stringPadder(_commitSha, commitShaSize);
+			inputRomSha = stringPadder(_inputRomSha, inputRomShaSize);
+			romStamp = buildRomStamp();
+		}
+		public RomStampModel(String _romStamp)
+		{
+			romStamp = _romStamp;
+			deconstructRomStamp();
 		}
 
-		private byte[] byteArrayFormatter(String _inputString, int _maxLenth)
+		private String buildRomStamp()
 		{
-			return Encoding.ASCII.GetBytes(_inputString.PadLeft(_maxLenth, ' '));
+			StringBuilder sb = new StringBuilder();
+			sb.Append(seed);
+			sb.Append(flag);
+			sb.Append(commitSha);
+			sb.Append(inputRomSha);
+			if (!(sb.Length == romStampSize))
+			{
+				throw new Exception("Rom stamp is incorrect size");
+			}
+			return sb.ToString();
+		}
+
+		private void deconstructRomStamp()
+		{
+			int romStampIndex = 0;
+			seed = romStamp.Substring(romStampIndex, seedSize);
+			romStampIndex += seedSize;
+			flag = romStamp.Substring(romStampIndex, flagSize);
+			romStampIndex += flagSize;
+			commitSha = romStamp.Substring(romStampIndex, commitShaSize);
+			romStampIndex += commitShaSize;
+			inputRomSha = romStamp.Substring(romStampIndex);
+		}
+
+		private String stringPadder(String _inputString, int _maxLenth)
+		{
+			if (_inputString.Length <= _maxLenth)
+			{
+				return _inputString.PadLeft(_maxLenth, ' ');
+			}
+			else
+			{
+				throw new Exception("rom stamp part has an invalid size");
+			}
+		}
+
+		public String getRomStamp()
+		{
+			return romStamp;
+		}
+
+		public String getSeed()
+		{
+			return seed;
+		}
+
+		public String getEncodedFlagString()
+		{
+			return flag;
+		}
+
+		public String getCommitSha()
+		{
+			return commitSha;
+		}
+
+		public String getInputRomSha()
+		{
+			return inputRomSha;
 		}
 	}
 }
