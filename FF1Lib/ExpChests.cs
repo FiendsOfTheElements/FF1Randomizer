@@ -12,7 +12,8 @@ namespace FF1Lib
 	public class ExpChests
 	{
 		public const int BaseExp = 4000;
-		
+
+		public Item FirstExpItem { get; private set; } = (Item)0xB0;
 
 		public enum ChestXPType
 		{
@@ -86,7 +87,7 @@ namespace FF1Lib
 				itemNames[(int)e] = exp.ToString() + " EXP";
 			}
 
-
+			FirstExpItem = firstExpItem;
 			if (flags.Archipelago)
 			{
 				rom.PutInBank(0x11, 0xB442, new byte[] { (byte)firstExpItem });
@@ -195,6 +196,7 @@ namespace FF1Lib
 				rom.PutInBank(0x11, 0xB900 + currentChestIndex, new byte[] { (byte)expChests.Last().Item2 });
 			}
 
+			FirstExpItem = firstExpItem;
 			if (flags.Archipelago)
 			{
 				rom.PutInBank(0x11, 0xB442, new byte[] { (byte)firstExpItem });

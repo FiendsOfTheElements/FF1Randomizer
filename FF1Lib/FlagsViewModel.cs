@@ -5092,6 +5092,39 @@ namespace FF1Lib
 			}
 		}
 
+		public bool ArchipelagoConsumables
+		{
+			get => Flags.ArchipelagoConsumables;
+			set
+			{
+				Flags.ArchipelagoConsumables = value;
+				RaisePropertyChanged();
+			}
+		}
+
+
+		public bool ArchipelagoGold
+		{
+			get => Flags.ArchipelagoGold;
+			set
+			{
+				Flags.ArchipelagoGold = value;
+				RaisePropertyChanged();
+			}
+		}
+
+
+		public bool ArchipelagoShards
+		{
+			get => Flags.ArchipelagoShards;
+			set
+			{
+				Flags.ArchipelagoShards = value;
+				RaisePropertyChanged();
+			}
+		}
+
+
 		public string PlayerName
 		{
 			get => Preferences.PlayerName;

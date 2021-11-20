@@ -1,13 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿using FF1Lib.Sanity;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FF1Lib.Sanity
+namespace FF1Lib
 {
-	public class ArchipelagoExporter
+	public class Archipelago
 	{
 		public const int ItemOffset = 0x100;
 		public const int ChestOffset = 0x100;
@@ -16,18 +17,42 @@ namespace FF1Lib.Sanity
 
 		FF1Rom rom;
 		SCLogic logic;
-		IVictoryConditionFlags flags;
+		Flags flags;
 		Preferences preferences;
+		private ExpChests expChests;
 
 		public string Json { get; private set; }
 
-		public ArchipelagoExporter(FF1Rom _rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, IVictoryConditionFlags _flags, Preferences _preferences)
+		public Archipelago(FF1Rom _rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, ExpChests _expChests, Flags _flags, Preferences _preferences)
 		{
 			rom = _rom;
+			expChests = _expChests;
 			flags = _flags;
 			preferences = _preferences;
 
 			var kiPlacement = generatedPlacement.Where(r => ItemLists.AllQuestItems.Contains(r.Item) && r.Item != Item.Bridge).ToList();
+
+			if (flags.ArchipelagoConsumables)
+			{
+				if (flags.ExtConsumablesEnabled)
+				{
+					kiPlacement.AddRange(generatedPlacement.Where(r => r.Item >= Item.Tent && r.Item <= Item.Rapier));
+				}
+				else
+				{
+					kiPlacement.AddRange(generatedPlacement.Where(r => r.Item >= Item.Tent && r.Item <= Item.Soft));
+				}
+			}
+
+			if (flags.ArchipelagoShards)
+			{
+				kiPlacement.AddRange(generatedPlacement.Where(r => r.Item == Item.Shard));
+			}
+
+			if (flags.ArchipelagoGold)
+			{
+				kiPlacement.AddRange(generatedPlacement.Where(r => r.Item >= Item.Gold10 && r.Item < expChests.FirstExpItem));
+			}
 
 			logic = new SCLogic(rom, checker.Main, kiPlacement, flags, true);
 		}
@@ -45,7 +70,7 @@ namespace FF1Lib.Sanity
 				name = preferences.PlayerName,
 				options = new ArchipelagoFFROptions
 				{
-					items = logic.RewardSources.GroupBy(r => (int)r.RewardSource.Item + ItemOffset).ToDictionary(r => r.First().RewardSource.Item.ToString(), r => new ArchipelagoItem { id = r.Key, count = r.Count() }),
+					items = logic.RewardSources.GroupBy(r => GetItemId(r.RewardSource.Item)).ToDictionary(r => GetItemName(r.First().RewardSource.Item), r => new ArchipelagoItem { id = r.Key, count = r.Count() }),
 					locations = logic.RewardSources.ToDictionary(r => r.RewardSource.Name, r => GetLocationId(r)),
 					rules = logic.RewardSources.ToDictionary(r => r.RewardSource.Name, r => GetRule(r))
 				}
@@ -66,7 +91,7 @@ namespace FF1Lib.Sanity
 			{
 				return (int)npc.ObjectId + NpcOffset;
 			}
-			else if(r.RewardSource is ItemShopSlot shop)
+			else if (r.RewardSource is ItemShopSlot shop)
 			{
 				return 0x2FF;
 			}
@@ -105,6 +130,78 @@ namespace FF1Lib.Sanity
 
 			return list;
 		}
+
+		private string GetItemName(Item item)
+		{
+			if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
+			{
+				switch (item)
+				{
+					case Item.WoodenNunchucks: return "FullCure";
+					case Item.SmallKnife: return "Phoenix";
+					case Item.WoodenRod: return "Blast";
+					case Item.Rapier: return "Smoke";
+				}
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
+			{
+				switch (item)
+				{
+					case Item.WoodenNunchucks: return "Refresh";
+					case Item.SmallKnife: return "Flare";
+					case Item.WoodenRod: return "Black";
+					case Item.Rapier: return "Guard";
+				}
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetC)
+			{
+				switch (item)
+				{
+					case Item.WoodenNunchucks: return "Quick";
+					case Item.SmallKnife: return "HighPotion";
+					case Item.WoodenRod: return "Wizard";
+					case Item.Rapier: return "Cloak";
+				}
+			}
+
+			return item.ToString();
+		}
+
+		private int GetItemId(Item item)
+		{
+			if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
+			{
+				switch (item)
+				{
+					case Item.WoodenNunchucks: return 176 + ItemOffset;
+					case Item.SmallKnife: return 177 + ItemOffset;
+					case Item.WoodenRod: return 178 + ItemOffset;
+					case Item.Rapier: return 179 + ItemOffset;
+				}
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
+			{
+				switch (item)
+				{
+					case Item.WoodenNunchucks: return 180 + ItemOffset;
+					case Item.SmallKnife: return 181 + ItemOffset;
+					case Item.WoodenRod: return 182 + ItemOffset;
+					case Item.Rapier: return 183 + ItemOffset;
+				}
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetC)
+			{
+				switch (item)
+				{
+					case Item.WoodenNunchucks: return 184 + ItemOffset;
+					case Item.SmallKnife: return 185 + ItemOffset;
+					case Item.WoodenRod: return 186 + ItemOffset;
+					case Item.Rapier: return 187 + ItemOffset;
+				}
+			}
+
+			return (int)item + ItemOffset;
+		}
 	}
 
 	public class ArchipelagoOptions
@@ -134,3 +231,4 @@ namespace FF1Lib.Sanity
 		public int count { get; set; }
 	}
 }
+

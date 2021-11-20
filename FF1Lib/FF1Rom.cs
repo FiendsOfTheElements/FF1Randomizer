@@ -1176,7 +1176,8 @@ namespace FF1Lib
 				new QuickMiniMap(this, overworldMap).EnableQuickMinimap();
 			}
 
-			new ExpChests(this, flags, rng).BuildExpChests();
+			var expChests = new ExpChests(this, flags, rng);
+			expChests.BuildExpChests();
 
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
@@ -1187,7 +1188,7 @@ namespace FF1Lib
 			{
 				shipLocations.SetShipLocation(255);
 
-				ArchipelagoExporter exporter = new ArchipelagoExporter(this, generatedPlacement, sanityChecker, flags, preferences);
+				Archipelago exporter = new Archipelago(this, generatedPlacement, sanityChecker, expChests, flags, preferences);
 				Utilities.SpoilerCache = exporter.Work();	
 			}
 
