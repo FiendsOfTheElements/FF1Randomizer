@@ -21,19 +21,19 @@ namespace FF1Lib
 
 		public RomStampModel (String _seed, String _flags, String _commitSha, String _inputRomSha)
 		{
-			seed = stringPadder(_seed, seedSize);
-			flag = stringPadder(_flags, flagSize);
-			commitSha = stringPadder(_commitSha, commitShaSize);
-			inputRomSha = stringPadder(_inputRomSha, inputRomShaSize);
-			romStamp = buildRomStamp();
+			seed = StringPadder(_seed, seedSize);
+			flag = StringPadder(_flags, flagSize);
+			commitSha = StringPadder(_commitSha, commitShaSize);
+			inputRomSha = StringPadder(_inputRomSha, inputRomShaSize);
+			romStamp = BuildRomStamp();
 		}
 		public RomStampModel(String _romStamp)
 		{
 			romStamp = _romStamp;
-			deconstructRomStamp();
+			DeconstructRomStamp();
 		}
 
-		private String buildRomStamp()
+		private String BuildRomStamp()
 		{
 			StringBuilder sb = new StringBuilder();
 			sb.Append(seed);
@@ -47,7 +47,7 @@ namespace FF1Lib
 			return sb.ToString();
 		}
 
-		private void deconstructRomStamp()
+		private void DeconstructRomStamp()
 		{
 			int romStampIndex = 0;
 			seed = romStamp.Substring(romStampIndex, seedSize);
@@ -59,7 +59,7 @@ namespace FF1Lib
 			inputRomSha = romStamp.Substring(romStampIndex);
 		}
 
-		private String stringPadder(String _inputString, int _maxLenth)
+		private String StringPadder(String _inputString, int _maxLenth)
 		{
 			if (_inputString.Length <= _maxLenth)
 			{
@@ -71,27 +71,27 @@ namespace FF1Lib
 			}
 		}
 
-		public String getRomStamp()
+		public String GetRomStamp()
 		{
 			return romStamp;
 		}
 
-		public String getSeed()
+		public String GetSeed()
 		{
 			return seed;
 		}
 
-		public String getEncodedFlagString()
+		public String GetEncodedFlagString()
 		{
 			return flag;
 		}
 
-		public String getCommitSha()
+		public String GetCommitSha()
 		{
 			return commitSha;
 		}
 
-		public String getInputRomSha()
+		public String GetInputRomSha()
 		{
 			return inputRomSha;
 		}
