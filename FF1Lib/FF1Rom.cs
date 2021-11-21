@@ -103,7 +103,23 @@ namespace FF1Lib
 
 			return rom;
 		}
+		public class RandomizerDigest
+		{
+			//This JSON gets embeded into the rom, so the property values have been
+			//shortened to save space
+			public String s { get; set; } //Randomizer Seed
+			public String f { get; set; } // Encoded flag string
+			public String g { get; set; } // Git SHA used to generate this seed
+			public String r { get; set; } // SHA-1 of the input rom
 
+			public RandomizerDigest(String _seed, String _flags, String _gitSha, String _romSha)
+			{
+				s = _seed;
+				f = _flags;
+				g = _gitSha;
+				r = _romSha;
+			}
+		}
 		public void Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
 			MT19337 rng;
@@ -1190,7 +1206,10 @@ namespace FF1Lib
 			String seedHex = seed.ToHex();
 			String encodedFlagText = Flags.EncodeFlagsText(flags);
 			WriteSeedAndFlags(seedHex, encodedFlagText);
-			StampRom(seedHex, encodedFlagText, FFRVersion.Sha,inputRomHash);
+
+			Blob romStampPayload = Encoding.ASCII.GetBytes(System.Text.Json.JsonSerializer.Serialize(new RandomizerDigest(seedHex, encodedFlagText, FFRVersion.Sha, inputRomHash)));
+			PutInBank(0x1B, 0xA000, romStampPayload);
+
 			ExtraTrackingAndInitCode(flags, preferences);
 		}
 
@@ -1512,20 +1531,6 @@ namespace FF1Lib
 			battleRng.Shuffle(rng);
 
 			Put(BattleRngOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());
-		}
-
-		private void StampRom(String _seed, String _encodedFlagString, String _commitSha, String _inputRomSha){
-			RomStampModel stamp = new RomStampModel();
-			stamp.s = _seed;
-			stamp.f = _encodedFlagString;
-			stamp.g = _commitSha;
-			stamp.r = _inputRomSha;
-			System.Text.Json.JsonSerializerOptions options = new System.Text.Json.JsonSerializerOptions();
-			options.IgnoreReadOnlyProperties = false;
-			options.WriteIndented = false;
-			Blob romStampPayload = Encoding.ASCII.GetBytes(System.Text.Json.JsonSerializer.Serialize(stamp, options));
-
-			PutInBank(0x1B, 0xA000, romStampPayload);
 		}
 	}
 }
