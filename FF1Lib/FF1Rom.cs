@@ -29,6 +29,7 @@ namespace FF1Lib
 		public const int GoldItemCount = 68;
 		public static List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
 		public ItemNames ItemsText;
+		private String inputRomHash;
 
 		public void PutInBank(int bank, int address, Blob data)
 		{
@@ -114,7 +115,7 @@ namespace FF1Lib
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
 			}
 			if (flags.TournamentSafe) AssureSafe();
-
+			GetInputRomHash();
 			UpgradeToMMC3();
 			MakeSpace();
 			Bank1E();
@@ -1183,7 +1184,10 @@ namespace FF1Lib
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
-			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
+			String seedHex = seed.ToHex();
+			String encodedFlagText = Flags.EncodeFlagsText(flags);
+			WriteSeedAndFlags(seedHex, encodedFlagText);
+			StampRom(seedHex, encodedFlagText, FFRVersion.Sha,inputRomHash);
 			ExtraTrackingAndInitCode(flags, preferences);
 		}
 
@@ -1200,6 +1204,13 @@ namespace FF1Lib
 			npcdata.SetRoutine(ObjectId.RodPlate, newTalkRoutines.Talk_norm);
 		}
 
+		private void GetInputRomHash()
+		{
+			using(SHA1 hasher = SHA1.Create())
+			{
+				inputRomHash = ByteArrayToString(hasher.ComputeHash(Data.ToBytes()));
+			}
+		}
 		public void AssureSafe()
 		{
 			using (SHA256 hasher = SHA256.Create())
@@ -1507,5 +1518,10 @@ namespace FF1Lib
 			Put(BattleRngOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());
 		}
 
+		private void StampRom(String _seed, String _encodedFlagString, String _commitSha, String _inputRomSha){
+			RomStampModel stamp = new RomStampModel(_seed, _encodedFlagString, _commitSha, _inputRomSha);
+			Blob romStampPayload = Blob.FromHex(stamp.GetRomStamp());
+			PutInBank(0x1B, 0xA000, romStampPayload);
+		}
 	}
 }
