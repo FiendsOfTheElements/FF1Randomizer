@@ -115,7 +115,10 @@ namespace FF1Lib
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
 			}
 			if (flags.TournamentSafe) AssureSafe();
-			GenerateInputRomHash();
+			// Create a SHA-1 String of the original input rom (used in Rom Stamping process later)
+			using (SHA1 hasher = SHA1.Create()){
+				inputRomHash = ByteArrayToString(hasher.ComputeHash(Data.ToBytes()));
+			}
 			UpgradeToMMC3();
 			MakeSpace();
 			Bank1E();
@@ -1204,13 +1207,6 @@ namespace FF1Lib
 			npcdata.SetRoutine(ObjectId.RodPlate, newTalkRoutines.Talk_norm);
 		}
 
-		private void GenerateInputRomHash()
-		{
-			using(SHA1 hasher = SHA1.Create())
-			{
-				inputRomHash = ByteArrayToString(hasher.ComputeHash(Data.ToBytes()));
-			}
-		}
 		public void AssureSafe()
 		{
 			using (SHA256 hasher = SHA256.Create())
