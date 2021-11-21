@@ -32,6 +32,7 @@ namespace FF1Lib
 		public ItemNames ItemsText;
 
 		private SanityCheckerV2 sanityChecker = null;
+		private IncentiveData incentivesData = null;
 
 		public void PutInBank(int bank, int address, Blob data)
 		{
@@ -500,7 +501,7 @@ namespace FF1Lib
 					}
 
 
-					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, new SanityCheckerV1());
+					incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, new SanityCheckerV1());
 
 					if (((bool)flags.Shops))
 					{
@@ -1188,7 +1189,7 @@ namespace FF1Lib
 			{
 				shipLocations.SetShipLocation(255);
 
-				Archipelago exporter = new Archipelago(this, generatedPlacement, sanityChecker, expChests, flags, preferences);
+				Archipelago exporter = new Archipelago(this, generatedPlacement, sanityChecker, expChests, incentivesData, flags, preferences);
 				Utilities.SpoilerCache = exporter.Work();	
 			}
 

@@ -57,9 +57,10 @@ namespace FF1Lib
 		#endregion
 
 		public bool Archipelago { get; set; } = true;
-		public bool ArchipelagoGold { get; set; } = true;
-		public bool ArchipelagoConsumables { get; set; } = true;
-		public bool ArchipelagoShards { get; set; } = true;
+		public bool ArchipelagoGold { get; set; } = false;
+		public bool ArchipelagoConsumables { get; set; } = false;
+		public bool ArchipelagoShards { get; set; } = false;
+		public ArchipelagoEquipment ArchipelagoEquipment { get; set; } = ArchipelagoEquipment.None;
 
 		public bool DisableMinimap { get; set; } = false;
 

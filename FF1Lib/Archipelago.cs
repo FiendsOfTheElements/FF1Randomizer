@@ -2,6 +2,8 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,14 +21,16 @@ namespace FF1Lib
 		SCLogic logic;
 		Flags flags;
 		Preferences preferences;
-		private ExpChests expChests;
+		ExpChests expChests;
+		IncentiveData incentivesData;
 
 		public string Json { get; private set; }
 
-		public Archipelago(FF1Rom _rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, ExpChests _expChests, Flags _flags, Preferences _preferences)
+		public Archipelago(FF1Rom _rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, ExpChests _expChests, IncentiveData _incentivesData, Flags _flags, Preferences _preferences)
 		{
 			rom = _rom;
 			expChests = _expChests;
+			incentivesData = _incentivesData;
 			flags = _flags;
 			preferences = _preferences;
 
@@ -54,7 +58,85 @@ namespace FF1Lib
 				kiPlacement.AddRange(generatedPlacement.Where(r => r.Item >= Item.Gold10 && r.Item < expChests.FirstExpItem));
 			}
 
+			switch (flags.ArchipelagoEquipment)
+			{
+				case ArchipelagoEquipment.Common:
+					AddCommonEquipment(kiPlacement, generatedPlacement);
+					AddRareEquipment(kiPlacement, generatedPlacement);
+					AddLegendaryEquipment(kiPlacement, generatedPlacement);
+					AddCasterEquipment(kiPlacement, generatedPlacement);
+					break;
+				case ArchipelagoEquipment.Rare:
+					AddRareEquipment(kiPlacement, generatedPlacement);
+					AddLegendaryEquipment(kiPlacement, generatedPlacement);
+					AddCasterEquipment(kiPlacement, generatedPlacement);
+					break;
+				case ArchipelagoEquipment.Legendary:
+					AddLegendaryEquipment(kiPlacement, generatedPlacement);
+					AddCasterEquipment(kiPlacement, generatedPlacement);
+					break;
+				case ArchipelagoEquipment.CasterItems:
+					AddCasterEquipment(kiPlacement, generatedPlacement);
+					break;
+				case ArchipelagoEquipment.Incentivized:
+					AddIncentivizedEquipment(kiPlacement, generatedPlacement);
+					break;
+			}
+
+			//Remove ToFr and distinct by address to remove duplicates
+			kiPlacement = kiPlacement.Where(r => !ItemLocations.ToFR.Any(l => l.Address == r.Address)).GroupBy(r => r.Address).Select(g => g.First()).ToList();
+
 			logic = new SCLogic(rom, checker.Main, kiPlacement, flags, true);
+		}
+
+		private void AddCommonEquipment(List<IRewardSource> kiPlacement, List<IRewardSource> generatedPlacement)
+		{
+			HashSet<Item> items = new HashSet<Item>(ItemLists.CommonWeaponTier.Concat(ItemLists.CommonArmorTier));
+
+			if (flags.ExtConsumablesEnabled)
+			{
+				items.Remove(Item.WoodenNunchucks);
+				items.Remove(Item.SmallKnife);
+				items.Remove(Item.WoodenRod);
+				items.Remove(Item.Rapier);
+			}
+
+			kiPlacement.AddRange(generatedPlacement.Where(r => items.Contains(r.Item)));
+		}
+
+		private void AddRareEquipment(List<IRewardSource> kiPlacement, List<IRewardSource> generatedPlacement)
+		{
+			HashSet<Item> items = new HashSet<Item>(ItemLists.RareArmorTier.Concat(ItemLists.RareArmorTier));
+			kiPlacement.AddRange(generatedPlacement.Where(r => items.Contains(r.Item)));
+		}
+
+		private void AddLegendaryEquipment(List<IRewardSource> kiPlacement, List<IRewardSource> generatedPlacement)
+		{
+			HashSet<Item> items = new HashSet<Item>(ItemLists.LegendaryWeaponTier.Concat(ItemLists.LegendaryArmorTier).Concat(ItemLists.UberTier));
+			kiPlacement.AddRange(generatedPlacement.Where(r => items.Contains(r.Item)));
+		}
+
+		private void AddCasterEquipment(List<IRewardSource> kiPlacement, List<IRewardSource> generatedPlacement)
+		{
+			var weapons = Weapon.LoadAllWeapons(rom, flags).Where(w => w.Spell != Spell.None).ToList();
+			var armors = Armor.LoadAllArmors(rom, flags).Where(a => a.Spell != Spell.None).ToList();
+
+			HashSet<Item> items = new HashSet<Item>(weapons.Select(w => w.Id).Concat(armors.Select(a => a.Id)));
+			kiPlacement.AddRange(generatedPlacement.Where(r => items.Contains(r.Item)));
+		}
+
+		private void AddIncentivizedEquipment(List<IRewardSource> kiPlacement, List<IRewardSource> generatedPlacement)
+		{
+			HashSet<Item> items = new HashSet<Item>(incentivesData.IncentiveItems.Where(i => !ItemLists.AllQuestItems.Any(k => k == i)));
+
+			var incentivizedGearInIncentivizedLocations = generatedPlacement.Where(r => items.Contains(r.Item) && incentivesData.IncentiveLocations.Any(l => l.Address == r.Address)).ToList();
+
+			items.RemoveWhere(i => incentivizedGearInIncentivizedLocations.Any(r => r.Item == i));
+
+			var oneInstanceOfEachOfTheRemainingItems = generatedPlacement.Where(r => items.Contains(r.Item)).GroupBy(r => r.Item).Select(g => g.First()).ToList();
+
+			kiPlacement.AddRange(incentivizedGearInIncentivizedLocations);
+			kiPlacement.AddRange(oneInstanceOfEachOfTheRemainingItems);
 		}
 
 		public string Work()
@@ -78,8 +160,24 @@ namespace FF1Lib
 
 			Json = JsonConvert.SerializeObject(data, Formatting.Indented);
 
+			//Write PlayerName into Rom
+			var playerName = LimitByteLength(preferences.PlayerName, 0x40);
+			byte[] buffer = Encoding.UTF8.GetBytes(playerName);
+			Debug.Assert(buffer.Length <= 0x40, "PlayerName wasn'T shortened correctly.");
+
+			rom.PutInBank(0x1E, 0xBCC0, buffer);
+
 			return Json;
 		}
+
+		public static string LimitByteLength(string input, int maxLength)
+		{
+			return new string(input
+				.TakeWhile((c, i) =>
+					Encoding.UTF8.GetByteCount(input.Substring(0, i + 1)) <= maxLength)
+				.ToArray());
+		}
+
 
 		private int GetLocationId(SCLogicRewardSource r)
 		{
@@ -229,6 +327,27 @@ namespace FF1Lib
 		public int id { get; set; }
 
 		public int count { get; set; }
+	}
+
+	public enum ArchipelagoEquipment
+	{
+		[Description("None")]
+		None,
+
+		[Description("All Equipment")]
+		Common,
+
+		[Description("Rare, Legendary and Caster Items")]
+		Rare,
+
+		[Description("Legendary and Caster Items")]
+		Legendary,
+
+		[Description("Caster Items")]
+		CasterItems,
+
+		[Description("Incentivized Equipment")]
+		Incentivized
 	}
 }
 

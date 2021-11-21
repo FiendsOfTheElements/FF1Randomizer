@@ -5102,7 +5102,6 @@ namespace FF1Lib
 			}
 		}
 
-
 		public bool ArchipelagoGold
 		{
 			get => Flags.ArchipelagoGold;
@@ -5113,13 +5112,22 @@ namespace FF1Lib
 			}
 		}
 
-
 		public bool ArchipelagoShards
 		{
 			get => Flags.ArchipelagoShards;
 			set
 			{
 				Flags.ArchipelagoShards = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public ArchipelagoEquipment ArchipelagoEquipment
+		{
+			get => Flags.ArchipelagoEquipment;
+			set
+			{
+				Flags.ArchipelagoEquipment = value;
 				RaisePropertyChanged();
 			}
 		}
