@@ -132,9 +132,7 @@ namespace FF1Lib
 			}
 			if (flags.TournamentSafe) AssureSafe();
 			// Create a SHA-1 String of the original input rom (used in Rom Stamping process later)
-			using (SHA1 hasher = SHA1.Create()){
-				inputRomHash = ByteArrayToString(hasher.ComputeHash(Data.ToBytes()));
-			}
+			inputRomHash = Encoding.UTF8.GetString(SHA1.Create().ComputeHash(Data.ToBytes()));
 			UpgradeToMMC3();
 			MakeSpace();
 			Bank1E();

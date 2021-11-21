@@ -29,7 +29,7 @@ namespace FF1R.Commands
 			FF1Rom rom = new FF1Rom(RomPath);
 			offset = startingOffset;
 
-			while (!(Encoding.ASCII.GetString(rom.GetFromBank(bank, offset,bufferSize)).Equals("}")))
+			while (!(Encoding.UTF8.GetString(rom.GetFromBank(bank, offset,bufferSize)).Equals("}")))
 			{
 				offset += bufferSize;
 				length++;
