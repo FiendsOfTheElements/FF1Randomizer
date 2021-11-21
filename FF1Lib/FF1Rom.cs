@@ -1515,10 +1515,17 @@ namespace FF1Lib
 		}
 
 		private void StampRom(String _seed, String _encodedFlagString, String _commitSha, String _inputRomSha){
-			RomStampModel stamp = new RomStampModel(_seed, _encodedFlagString, _commitSha, _inputRomSha);
-			Blob romStampPayload = Blob.FromHex(stamp.GetRomStampHex());
+			RomStampModel stamp = new RomStampModel();
+			stamp.s = _seed;
+			stamp.f = _encodedFlagString;
+			stamp.g = _commitSha;
+			stamp.r = _inputRomSha;
+			System.Text.Json.JsonSerializerOptions options = new System.Text.Json.JsonSerializerOptions();
+			options.IgnoreReadOnlyProperties = false;
+			options.WriteIndented = false;
+			Blob romStampPayload = Encoding.ASCII.GetBytes(System.Text.Json.JsonSerializer.Serialize(stamp, options));
 
-			PutInBank(RomStampModel.romStampBank, RomStampModel.romStampOffset, romStampPayload);
+			PutInBank(0x1B, 0xA000, romStampPayload);
 		}
 	}
 }
