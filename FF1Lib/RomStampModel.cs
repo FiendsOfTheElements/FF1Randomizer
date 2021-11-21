@@ -8,6 +8,7 @@ namespace FF1Lib
 {
 	public class RomStampModel
 	{
+		public const String romStampLocation = "a";
 		private String seed;
 		private const int seedSize = 64;
 		private String flag;
@@ -16,8 +17,11 @@ namespace FF1Lib
 		private const int commitShaSize = 40;
 		private String inputRomSha;
 		private const int inputRomShaSize = 40;
+		// This filler is blank space reserved for the ROM stamp.
+		private String filler;
+		private const int fillerSize = 37;
 		private String romStamp;
-		private const int romStampSize = seedSize + flagSize + commitShaSize + inputRomShaSize;
+		private const int romStampSize = seedSize + flagSize + commitShaSize + inputRomShaSize + fillerSize;
 
 		public RomStampModel (String _seed, String _flags, String _commitSha, String _inputRomSha)
 		{
@@ -25,6 +29,7 @@ namespace FF1Lib
 			flag = StringPadder(_flags, flagSize);
 			commitSha = StringPadder(_commitSha, commitShaSize);
 			inputRomSha = StringPadder(_inputRomSha, inputRomShaSize);
+			filler = StringPadder("", fillerSize);
 			romStamp = BuildRomStamp();
 		}
 		public RomStampModel(String _romStamp)
@@ -40,6 +45,7 @@ namespace FF1Lib
 			sb.Append(flag);
 			sb.Append(commitSha);
 			sb.Append(inputRomSha);
+			sb.Append(filler);
 			if (!(sb.Length == romStampSize))
 			{
 				throw new Exception("Rom stamp is incorrect size");
@@ -56,7 +62,8 @@ namespace FF1Lib
 			romStampIndex += flagSize;
 			commitSha = romStamp.Substring(romStampIndex, commitShaSize);
 			romStampIndex += commitShaSize;
-			inputRomSha = romStamp.Substring(romStampIndex);
+			inputRomSha = romStamp.Substring(romStampIndex, inputRomShaSize);
+			//No need to extract the filler as it is just blank space.
 		}
 
 		private String StringPadder(String _inputString, int _maxLenth)
