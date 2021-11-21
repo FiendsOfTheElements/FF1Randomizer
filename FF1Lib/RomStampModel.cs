@@ -56,13 +56,13 @@ namespace FF1Lib
 		private void DeconstructRomStamp()
 		{
 			int romStampIndex = 0;
-			seed = romStamp.Substring(romStampIndex, seedSize);
+			seed = romStamp.Substring(romStampIndex, seedSize).Trim();
 			romStampIndex += seedSize;
-			flag = romStamp.Substring(romStampIndex, flagSize);
+			flag = romStamp.Substring(romStampIndex, flagSize).Trim();
 			romStampIndex += flagSize;
-			commitSha = romStamp.Substring(romStampIndex, commitShaSize);
+			commitSha = romStamp.Substring(romStampIndex, commitShaSize).Trim();
 			romStampIndex += commitShaSize;
-			inputRomSha = romStamp.Substring(romStampIndex, inputRomShaSize);
+			inputRomSha = romStamp.Substring(romStampIndex, inputRomShaSize).Trim();
 			//No need to extract the filler as it is just blank space.
 		}
 
