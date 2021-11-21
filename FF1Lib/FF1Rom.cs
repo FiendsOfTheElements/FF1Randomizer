@@ -1520,8 +1520,9 @@ namespace FF1Lib
 
 		private void StampRom(String _seed, String _encodedFlagString, String _commitSha, String _inputRomSha){
 			RomStampModel stamp = new RomStampModel(_seed, _encodedFlagString, _commitSha, _inputRomSha);
-			Blob romStampPayload = Blob.FromHex(stamp.GetRomStamp());
-			PutInBank(0x1B, 0xA000, romStampPayload);
+			Blob romStampPayload = Blob.FromHex(stamp.GetRomStampHex());
+
+			PutInBank(RomStampModel.romStampBank, RomStampModel.romStampOffset, romStampPayload);
 		}
 	}
 }
