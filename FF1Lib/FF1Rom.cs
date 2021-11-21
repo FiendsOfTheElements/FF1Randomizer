@@ -115,7 +115,7 @@ namespace FF1Lib
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
 			}
 			if (flags.TournamentSafe) AssureSafe();
-			GetInputRomHash();
+			GenerateInputRomHash();
 			UpgradeToMMC3();
 			MakeSpace();
 			Bank1E();
@@ -1204,7 +1204,7 @@ namespace FF1Lib
 			npcdata.SetRoutine(ObjectId.RodPlate, newTalkRoutines.Talk_norm);
 		}
 
-		private void GetInputRomHash()
+		private void GenerateInputRomHash()
 		{
 			using(SHA1 hasher = SHA1.Create())
 			{
