@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "FF1R": {
-      "commandName": "Project",
-      "commandLineArgs": "generate c:\\Users\\Saggy\\Downloads\\ff.nes"
-    }
-  }
-}
