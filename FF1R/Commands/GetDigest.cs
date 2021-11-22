@@ -36,10 +36,10 @@ namespace FF1R.Commands
 			}
 			FF1Lib.FF1Rom.RandomizerDigest digest = JsonConvert.DeserializeObject<FF1Lib.FF1Rom.RandomizerDigest>(Encoding.ASCII.GetString(rom.GetFromBank(bank, startingOffset, length + 1)));
 
-			Console.WriteLine("Seed: " + digest.s);
-			Console.WriteLine("Flags: " + digest.f);
-			Console.WriteLine("Commit: " + digest.g);
-			Console.WriteLine("ROM Hash: " + digest.r);
+			Console.WriteLine("Seed: " + digest.seed);
+			Console.WriteLine("Flags: " + digest.encodedFlagString);
+			Console.WriteLine("Commit: " + digest.commitSha);
+			Console.WriteLine("ROM Hash: " + digest.inputRomSha1);
 			return 0;
 		}
 	}
