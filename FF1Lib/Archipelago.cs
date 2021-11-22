@@ -167,6 +167,10 @@ namespace FF1Lib
 
 			rom.PutInBank(0x1E, 0xBCC0, buffer);
 
+			//Clear false Initialization of Archipelago Counters
+			rom.PutInBank(0x00, 0xB00B, new byte[] { 0 });
+			rom.PutInBank(0x00, 0xB00F, new byte[] { 0 });
+
 			return Json;
 		}
 
