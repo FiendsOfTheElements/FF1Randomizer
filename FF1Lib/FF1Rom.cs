@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace FF1Lib
 {
@@ -107,17 +108,22 @@ namespace FF1Lib
 		{
 			//This JSON gets embeded into the rom, so the property values have been
 			//shortened to save space
-			public String s { get; set; } //Randomizer Seed
-			public String f { get; set; } // Encoded flag string
-			public String g { get; set; } // Git SHA used to generate this seed
-			public String r { get; set; } // SHA-1 of the input rom
+			[JsonProperty("s")]
+			public String seed { get; set; }
+			[JsonProperty("f")]
+			public String encodedFlagString { get; set; }
+			[JsonProperty("g")]
+			public String commitSha { get; set; }
+			[JsonProperty("r")]
+			public String inputRomSha1 { get; set; } 
 
 			public RandomizerDigest(String _seed, String _flags, String _gitSha, String _romSha)
 			{
-				s = _seed;
-				f = _flags;
-				g = _gitSha;
-				r = _romSha;
+				
+				seed = _seed;
+				encodedFlagString = _flags;
+				commitSha = _gitSha;
+				inputRomSha1 = _romSha;
 			}
 		}
 		public void Randomize(Blob seed, Flags flags, Preferences preferences)
