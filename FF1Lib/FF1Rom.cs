@@ -1209,7 +1209,11 @@ namespace FF1Lib
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
-			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flagsForRng));
+			var flagstext = Flags.EncodeFlagsText(flagsForRng);
+			if (flags.ReplacementMap != null) {
+			    flagstext += "_" + flags.ReplacementMap.ComputeChecksum();
+			}
+			WriteSeedAndFlags(seed.ToHex(), flagstext);
 			ExtraTrackingAndInitCode(flags, preferences);
 		}
 
