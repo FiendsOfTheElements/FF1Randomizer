@@ -105,10 +105,31 @@ namespace FF1Lib
 
 		public void Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
+		    Flags flagsForRng = flags;
+		    if (flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ||
+			flags.OwMapExchange == OwMapExchanges.GenerateNewOverworldShuffledAccess ||
+			flags.OwMapExchange == OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe ||
+			flags.OwMapExchange == OwMapExchanges.LostWoods)
+		    {
+			// Procgen maps can be either
+			// generated or imported.  All else
+			// being equal, we want the user who
+			// generated the map
+			// (OwMapExchange == GenerateNewOverworld)
+			// and the user who imported the map
+			// (OwMapExchange == ImportCustomMap)
+			// to get the same ROM, so for the
+			// purposes of initializing the RNG
+			// consider them all to be
+			// "ImportCustomMap".
+			flagsForRng = flags.ShallowCopy();
+			flagsForRng.OwMapExchange = OwMapExchanges.ImportCustomMap;
+		    }
+
 			MT19337 rng;
 			using (SHA256 hasher = SHA256.Create())
 			{
-				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flags));
+				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flagsForRng));
 				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed });
 				Blob hash = hasher.ComputeHash(SeedAndFlags);
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
@@ -466,7 +487,7 @@ namespace FF1Lib
 			{
 				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
 			}
-			
+
 			if (flags.DraculasFlag)
 			{
 			    // Needs to happen before item placement because it swaps some entrances around.
@@ -1188,7 +1209,7 @@ namespace FF1Lib
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
-			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
+			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flagsForRng));
 			ExtraTrackingAndInitCode(flags, preferences);
 		}
 

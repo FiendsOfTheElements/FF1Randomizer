@@ -22,14 +22,23 @@ namespace FF1Lib
     [Description("Generate New Overworld")]
 		GenerateNewOverworld,
 
-    [Description("Random Pregenerated 512")]
-		RandomPregenerated,
+    [Description("Generate New Overworld (shuffled access)")]
+		GenerateNewOverworldShuffledAccess,
+
+    [Description("Generate New Overworld (unsafe start)")]
+		GenerateNewOverworldShuffledAccessUnsafe,
+
+    [Description("Lost Woods")]
+		LostWoods,
 
     [Description("Desert of Death")]
 		Desert,
 
 		[Description("No Overworld")]
 		NoOverworld,
+
+    [Description("Random Pregenerated 512")]
+		RandomPregenerated,
 
 		[Description("Import Custom Map")]
 		ImportCustomMap,
@@ -287,10 +296,13 @@ namespace FF1Lib
 				case OwMapExchanges.RandomPregenerated:
 					return new OwMapExchange(_rom, _overworldMap, rng);
 				case OwMapExchanges.GenerateNewOverworld:
+				case OwMapExchanges.GenerateNewOverworldShuffledAccess:
+				case OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe:
+				case OwMapExchanges.LostWoods:
 				  if (flags.ReplacementMap != null) {
 					  exdata = flags.ReplacementMap;
 				  } else {
-				      exdata = NewOverworld.GenerateNewOverworld(maprng, flags);
+				      exdata = NewOverworld.GenerateNewOverworld(maprng, mx);
 				  }
 				  return new OwMapExchange(_rom, _overworldMap, exdata);
 			    case OwMapExchanges.ImportCustomMap:
