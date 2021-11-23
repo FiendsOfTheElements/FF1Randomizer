@@ -893,10 +893,31 @@ namespace FF1Lib.Procgen
                 }
                 sz -= 1;
 
-                pending.Add(p.OwUp);
-                pending.Add(p.OwRight);
-                pending.Add(p.OwDown);
-                pending.Add(p.OwLeft);
+		var up = p.OwUp;
+		var right = p.OwRight;
+		var down = p.OwDown;
+		var left = p.OwLeft;
+
+                if (this.Tilemap[up.Y,up.X] == OverworldTiles.LAND ||
+                    this.Tilemap[up.Y,up.X] == OverworldTiles.RIVER)
+		{
+		    pending.Add(up);
+		}
+                if (this.Tilemap[right.Y,right.X] == OverworldTiles.LAND ||
+                    this.Tilemap[right.Y,right.X] == OverworldTiles.RIVER)
+		{
+		    pending.Add(right);
+		}
+                if (this.Tilemap[down.Y,down.X] == OverworldTiles.LAND ||
+                    this.Tilemap[down.Y,down.X] == OverworldTiles.RIVER)
+		{
+		    pending.Add(down);
+		}
+                if (this.Tilemap[left.Y,left.X] == OverworldTiles.LAND ||
+                    this.Tilemap[left.Y,left.X] == OverworldTiles.RIVER)
+		{
+		    pending.Add(left);
+		}
             }
         }
 

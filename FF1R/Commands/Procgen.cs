@@ -19,26 +19,24 @@ namespace FF1R.Commands
     class Procgen
     {
 	[Argument(0, Description = "The seed")]
-	public int Seed { get; }
+	public int Seed { get; } = 0;
 
-	[Option("-f")]
-	public string Flagsfile { get; }
+	[Option("-t")]
+	public string Subtype { get; } = "GenerateNewOverworld";
 
 	[Option("-r")]
 	public bool DoRender { get; }
 
 	int OnExecute(IConsole console)
 	{
-	    var rng = new MT19337((uint)this.Seed);
-
-	    Flags flags;
-	    if (this.Flagsfile != null) {
-		(_, flags, _) = Flags.FromJson(System.IO.File.ReadAllText(this.Flagsfile));
-	    } else {
-		flags = new Flags();
+	    if (Seed == 0) {
+		Console.WriteLine("Missing seed");
+		return 1;
 	    }
 
-	    var replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, flags);
+	    var rng = new MT19337((uint)this.Seed);
+
+	    var replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, Enum.Parse<OwMapExchanges>(Subtype));
 	    replacementMap.Checksum = replacementMap.ComputeChecksum();
 	    replacementMap.Seed = this.Seed;
 	    replacementMap.FFRVersion = FF1Lib.FFRVersion.Version;

@@ -1928,7 +1928,7 @@
 		"Id": "owMapExchange",
 		"title": "Overworld Map",
 		"screenshot": "owMapExchange.png",
-		"description": "Alternative Overworld Maps that can be used in place of the standard (vanilla) overworld.\n\nGenerate New Overworld - creates a completely new overworld (resource intensive, may take 30-60 seconds during which time your browser may be unresponsive).\n\nRandom pregenerated 512 - Choose a random map from a set of maps that were pre-generated using the same code as 'Generate New Overworld'.\n\nDesert of Death - Deadly desert.\n\nNo Overworld - Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps.\n\nImport custom map - Import a map using the 'Import map' button."
+		"description": "Options to generate a new random overworld map. Note: map generation is resource intensive, may take 30-60 seconds during which time your browser may be unresponsive.  If a seed fails to generate a map, try a different one.\nGenerate New Overworld - Creates a completely new overworld, vanilla access requirements (game is beatable even vanilla progression/no treasure shuffle).\nShuffled access - Locations placed with random item requirements (e.g. could need canoe to reach Elfland, or airship to reach Matoya).\nShuffled access, unsafe start - May place late-game dungeons in starting area.\nLost Woods - Endless forest.\nDesert of Death - Deadly desert.\nNo Overworld - Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps.\nRandom pregenerated 512 - Choose a random map from a set of maps that were pre-generated using the same code as 'Generate New Overworld'.\nImport custom map - Import a map using the 'Import map' button."
 	},
 
 	{
