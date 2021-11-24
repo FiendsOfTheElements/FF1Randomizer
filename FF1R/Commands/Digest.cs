@@ -5,8 +5,6 @@ namespace FF1R.Commands
 	using McMaster.Extensions.CommandLineUtils;
 	using RomUtilities;
 	using Newtonsoft.Json;
-	using Newtonsoft.Json.Schema;
-
 	using FF1Lib;
 	using FFR.Common;
 
@@ -29,17 +27,17 @@ namespace FF1R.Commands
 			FF1Rom rom = new FF1Rom(RomPath);
 			offset = startingOffset;
 
-			while (!(Encoding.ASCII.GetString(rom.GetFromBank(bank, offset,bufferSize)).Equals("}")))
+			while (!((rom.GetFromBank(bank, offset,bufferSize)).Equals(Blob.FromHex("00"))))
 			{
 				offset += bufferSize;
 				length++;
 			}
 			FF1Lib.FF1Rom.RandomizerDigest digest = JsonConvert.DeserializeObject<FF1Lib.FF1Rom.RandomizerDigest>(Encoding.ASCII.GetString(rom.GetFromBank(bank, startingOffset, length + 1)));
 
-			Console.WriteLine("Seed: " + digest.s);
-			Console.WriteLine("Flags: " + digest.f);
-			Console.WriteLine("Commit: " + digest.g);
-			Console.WriteLine("ROM Hash: " + digest.r);
+			Console.WriteLine("Seed: " + digest.seed);
+			Console.WriteLine("Flags: " + digest.encodedFlagString);
+			Console.WriteLine("Commit: " + digest.commitSha);
+			Console.WriteLine("ROM Hash: " + digest.inputRomSha1);
 			return 0;
 		}
 	}

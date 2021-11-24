@@ -9,6 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
 using System.Text.RegularExpressions;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+
 
 namespace FF1Lib
 {
@@ -107,18 +110,14 @@ namespace FF1Lib
 		{
 			//This JSON gets embeded into the rom, so the property values have been
 			//shortened to save space
-			public String s { get; set; } //Randomizer Seed
-			public String f { get; set; } // Encoded flag string
-			public String g { get; set; } // Git SHA used to generate this seed
-			public String r { get; set; } // SHA-1 of the input rom
-
-			public RandomizerDigest(String _seed, String _flags, String _gitSha, String _romSha)
-			{
-				s = _seed;
-				f = _flags;
-				g = _gitSha;
-				r = _romSha;
-			}
+			[JsonProperty("s")]
+			public String seed { get; set; } 
+			[JsonProperty("f")]
+			public String encodedFlagString { get; set; } 
+			[JsonProperty("g")]
+			public String commitSha { get; set; } 
+			[JsonProperty("r")]
+			public String inputRomSha1 { get; set; } 
 		}
 		public void Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
@@ -1207,9 +1206,16 @@ namespace FF1Lib
 			String encodedFlagText = Flags.EncodeFlagsText(flags);
 			WriteSeedAndFlags(seedHex, encodedFlagText);
 
-			Blob romStampPayload = Encoding.ASCII.GetBytes(System.Text.Json.JsonSerializer.Serialize(new RandomizerDigest(seedHex, encodedFlagText, FFRVersion.Sha, inputRomHash)));
-			PutInBank(0x1B, 0xA000, romStampPayload);
-
+			Blob digestJson = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(new RandomizerDigest
+			{
+				seed = seedHex, 
+				encodedFlagString = encodedFlagText, 
+				commitSha = FFRVersion.Sha, 
+				inputRomSha1 = inputRomHash
+			}));
+			PutInBank(0x1B, 0xA000, digestJson);
+			//It's a little wont, but I couldn't get the blob size. So I made it a string and got the length of that
+			PutInBank(0x1B, (0xA000 + digestJson.ToHex().Length), Blob.FromHex("00")); // put a null at the end end of the digest JSON. (used for extraction)
 			ExtraTrackingAndInitCode(flags, preferences);
 		}
 
