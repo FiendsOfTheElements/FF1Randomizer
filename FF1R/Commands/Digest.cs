@@ -10,8 +10,8 @@ namespace FF1R.Commands
 	using FF1Lib;
 	using FFR.Common;
 
-	[Command("getdigest", Description = "Retrieve the randomizer digest for a given ROM")]
-	class GetDigest
+	[Command("digest", Description = "Retrieve the randomizer digest for a given ROM")]
+	class Digest
 	{
 		[Argument(0, Description = "Randomizer Generated ROM")]
 		[FileExists]

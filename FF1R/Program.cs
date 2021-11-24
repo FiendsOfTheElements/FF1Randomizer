@@ -10,7 +10,7 @@
 	 Subcommand("generate", typeof(Commands.Generate)),
 	 Subcommand("procgen", typeof(Commands.Procgen)),
 	 Subcommand("render", typeof(Commands.MapRender)),
-	 Subcommand("getdigest", typeof(Commands.GetDigest))]
+	 Subcommand("digest", typeof(Commands.Digest))]
 
 	class Program
 	{
