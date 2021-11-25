@@ -4,7 +4,7 @@
 
 shop_quantity = $030A
 
-.org $9700
+.org $9C80
 
 NewCheckForSpace: ; we need a slightly more complex formula for 
 	LDA shop_curitem
