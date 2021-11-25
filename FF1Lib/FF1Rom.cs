@@ -9,6 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
 using System.Text.RegularExpressions;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+
 
 namespace FF1Lib
 {
@@ -29,6 +32,7 @@ namespace FF1Lib
 		public const int GoldItemCount = 68;
 		public static List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
 		public ItemNames ItemsText;
+		private String inputRomHash;
 
 		public void PutInBank(int bank, int address, Blob data)
 		{
@@ -102,7 +106,19 @@ namespace FF1Lib
 
 			return rom;
 		}
-
+		public class RandomizerDigest
+		{
+			//This JSON gets embeded into the rom, so the property values have been
+			//shortened to save space
+			[JsonProperty("s")]
+			public String seed { get; set; } 
+			[JsonProperty("f")]
+			public String encodedFlagString { get; set; } 
+			[JsonProperty("g")]
+			public String commitSha { get; set; } 
+			[JsonProperty("r")]
+			public String inputRomSha1 { get; set; } 
+		}
 		public void Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
 			MT19337 rng;
@@ -114,7 +130,10 @@ namespace FF1Lib
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
 			}
 			if (flags.TournamentSafe) AssureSafe();
-
+			// Create a SHA-1 String of the original input rom (used in Rom Stamping process later)
+			using (SHA1 hasher = SHA1.Create()){
+				inputRomHash = ByteArrayToString(hasher.ComputeHash(Data.ToBytes()));
+			}
 			UpgradeToMMC3();
 			MakeSpace();
 			Bank1E();
@@ -1188,7 +1207,20 @@ namespace FF1Lib
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
-			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
+			String seedHex = seed.ToHex();
+			String encodedFlagText = Flags.EncodeFlagsText(flags);
+			WriteSeedAndFlags(seedHex, encodedFlagText);
+
+			Blob digestJson = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(new RandomizerDigest
+			{
+				seed = seedHex, 
+				encodedFlagString = encodedFlagText, 
+				commitSha = FFRVersion.Sha, 
+				inputRomSha1 = inputRomHash
+			}));
+			PutInBank(0x1B, 0xA000, digestJson);
+			//It's a little wont, but I couldn't get the blob size. So I made it a string and got the length of that
+			PutInBank(0x1B, (0xA000 + digestJson.ToHex().Length), Blob.FromHex("00")); // put a null at the end end of the digest JSON. (used for extraction)
 			ExtraTrackingAndInitCode(flags, preferences);
 		}
 
@@ -1511,6 +1543,5 @@ namespace FF1Lib
 
 			Put(BattleRngOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());
 		}
-
 	}
 }
