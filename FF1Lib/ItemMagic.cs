@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RomUtilities;
 using System.Diagnostics;
+using FF1Lib.Helpers;
 
 namespace FF1Lib
 {
@@ -20,51 +21,192 @@ namespace FF1Lib
 		private int WeaponStart = (byte)ItemLists.AllWeapons.ElementAt(0);
 		private int ArmorStart = (byte)ItemLists.AllArmor.ElementAt(0);
 
-		public void ShuffleItemMagic(MT19337 rng, bool balancedShuffle)
+		public void ShuffleItemMagic(MT19337 rng, Flags flags)
+		{
+			var magicWeapons = Weapon.LoadAllWeapons(this, flags).Where(w => w.Spell >= Spell.CURE).Select(w => w.Id);
+			var magicArmor = Armor.LoadAllArmors(this, flags).Where(w => w.Spell >= Spell.CURE).Select(w => w.Id);
+			var magicItems = magicWeapons.Concat(magicArmor).ToList();
+
+			List<MagicSpell> Spells;
+
+			if (flags.ItemMagicPool == ItemMagicPool.Balanced)
+			{
+				Spells = GetBalancedSpells(rng);
+			}
+			else if (flags.ItemMagicPool == ItemMagicPool.Low)
+			{
+				Spells = GetLowSpells(rng);
+			}
+			else if (flags.ItemMagicPool == ItemMagicPool.Support)
+			{
+				Spells = GetSupportSpells(rng);
+			}
+			else
+			{
+				Spells = GetAllSpells(rng);
+			}
+
+			foreach (var item in Spells.Zip(magicItems, (s, i) => new { Spell = s, Item = i }))
+			{
+				WriteItemSpellData(item.Spell, item.Item);
+			}
+		}
+
+		private List<MagicSpell> GetAllSpells(MT19337 rng)
 		{
 			var Spells = GetSpells();
 
 			// Remove out of battle only spells (spells where the effect is 0)
 			Spells.RemoveAll(spell => spell.Data[4] == 0);
-			if (balancedShuffle)
-			{
-				// if balanced shuffle is on, remove spells which are too strong or too weak
-				// remove any spell which boosts attack power that isn't self-casting
-				Spells.RemoveAll(spell => spell.Data[4] == 0x0D && spell.Data[3] != 0x04);
-				// remove any spell that doubles hit rate
-				Spells.RemoveAll(spell => spell.Data[4] == 0x0C);
-				// remove any non-elemental damage spell with >55 effectivity
-				Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] > 55 && spell.Data[2] == 0b0000000);
-				// remove any multitarget elemental damage spell with > 70 effectivity
-				Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] > 70 && spell.Data[3] == 0x01);
-				// remove any singletarget elemental damage spell with > 100 effectivity
-				Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] > 100);
-				// remove any damage spell with <20 effectivity
-				Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] < 20);
-				// remove status recovery spells which don't heal paralysis or mute
-				Spells.RemoveAll(spell => spell.Data[4] == 0x08 && (spell.Data[1] & 0b01010000) == 0);
-				// remove HP Max
-				Spells.RemoveAll(spell => spell.Data[4] == 0x0F);
-				// remove HARM spells with > 120 effectivity
-				Spells.RemoveAll(spell => spell.Data[4] == 0x02 && spell.Data[1] > 120);
-				// remove non-elemental power word kill
-				Spells.RemoveAll(spell => spell.Data[4] == 0x12 && (spell.Data[1] & 0b00000011) != 0 && spell.Data[2] == 0b00000000);
-				// remove status spells which only cast darkness, sleep, or poison
-				Spells.RemoveAll(spell => spell.Data[4] == 0x03 && (spell.Data[1] & 0b11010011) == 0);
-				Spells.RemoveAll(spell => spell.Data[4] == 0x12 && (spell.Data[1] & 0b11010011) == 0);
-				// remove evasion up spells with effects greater than 80
-				Spells.RemoveAll(spell => spell.Data[4] == 0x10 && spell.Data[1] > 80);
-				// remove armor up spells with effects greater than 32
-				Spells.RemoveAll(spell => spell.Data[4] == 0x09 && spell.Data[1] > 32);
-				// remove spells which resist all elements
-				Spells.RemoveAll(spell => spell.Data[4] == 0x0A && spell.Data[1] == 0xFF);
-			}
-			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
 
-			foreach (var item in Spells.Zip(ItemLists.AllMagicItem, (s, i) => new { Spell = s, Item = i }))
+			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
+			return Spells;
+		}
+
+		private List<MagicSpell> GetBalancedSpells(MT19337 rng)
+		{
+			var Spells = GetSpells();
+
+			// Remove out of battle only spells (spells where the effect is 0)
+			Spells.RemoveAll(spell => spell.Data[4] == 0);
+			
+			// if balanced shuffle is on, remove spells which are too strong or too weak
+			// remove any spell which boosts attack power that isn't self-casting
+			Spells.RemoveAll(spell => spell.Data[4] == 0x0D && spell.Data[3] != 0x04);
+			// remove any spell that doubles hit rate
+			Spells.RemoveAll(spell => spell.Data[4] == 0x0C);
+			// remove any non-elemental damage spell with >55 effectivity
+			Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] > 55 && spell.Data[2] == 0b0000000);
+			// remove any multitarget elemental damage spell with > 70 effectivity
+			Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] > 70 && spell.Data[3] == 0x01);
+			// remove any singletarget elemental damage spell with > 100 effectivity
+			Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] > 100);
+			// remove any damage spell with <20 effectivity
+			Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] < 20);
+			// remove status recovery spells which don't heal paralysis or mute
+			Spells.RemoveAll(spell => spell.Data[4] == 0x08 && (spell.Data[1] & 0b01010000) == 0);
+			// remove HP Max
+			Spells.RemoveAll(spell => spell.Data[4] == 0x0F);
+			// remove HARM spells with > 120 effectivity
+			Spells.RemoveAll(spell => spell.Data[4] == 0x02 && spell.Data[1] > 120);
+			// remove non-elemental power word kill
+			Spells.RemoveAll(spell => spell.Data[4] == 0x12 && (spell.Data[1] & 0b00000011) != 0 && spell.Data[2] == 0b00000000);
+			// remove status spells which only cast darkness, sleep, or poison
+			Spells.RemoveAll(spell => spell.Data[4] == 0x03 && (spell.Data[1] & 0b11010011) == 0);
+			Spells.RemoveAll(spell => spell.Data[4] == 0x12 && (spell.Data[1] & 0b11010011) == 0);
+			// remove evasion up spells with effects greater than 80
+			Spells.RemoveAll(spell => spell.Data[4] == 0x10 && spell.Data[1] > 80);
+			// remove armor up spells with effects greater than 32
+			Spells.RemoveAll(spell => spell.Data[4] == 0x09 && spell.Data[1] > 32);
+			// remove spells which resist all elements
+			Spells.RemoveAll(spell => spell.Data[4] == 0x0A && spell.Data[1] == 0xFF);
+
+			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
+			return Spells;
+		}
+
+		private List<MagicSpell> GetLowSpells(MT19337 rng)
+		{
+			var Spells = GetSpells();
+
+			SpellHelper spellHelper = new SpellHelper(this);
+			List<(Spell Id, SpellInfo Info)> foundSpells = GetLowSpells(spellHelper);
+
+			var Spells2 = new List<MagicSpell>();
+			foreach (var spl in foundSpells)
 			{
-				WriteItemSpellData(item.Spell, item.Item);
+				var idx = (int)spl.Id - 0xB0;
+				Spells2.Add(Spells[idx]);
 			}
+
+			Spells2.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
+			return Spells2;
+		}
+
+		private List<(Spell Id, SpellInfo Info)> GetLowSpells(SpellHelper spellHelper)
+		{
+			List<(Spell Id, SpellInfo Info)> foundSpells = new List<(Spell Id, SpellInfo Info)>();
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.Self));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.OneCharacters));
+
+			//Remove Life and Smoke
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.CureAilment, SpellTargeting.Any).Where(s => s.Info.effect != 0x00 && s.Info.effect != 0x81 && s.Info.effect != 0x01));
+
+			//up to Ice2
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.Any).Where(s => s.Info.effect <= 40));
+
+			//Up to Hrm3
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.DamageUndead, SpellTargeting.Any).Where(s => s.Info.effect <= 60));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Self));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.OneCharacters));
+
+			//up to Cur3, Hel2
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.OneCharacters).Where(s => s.Info.effect <= 40));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect <= 25));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Status));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.Any));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.PowerWord, SpellTargeting.OneEnemy));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Self));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Self));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Smoke, SpellTargeting.Any));
+
+			return foundSpells;
+		}
+
+		private List<MagicSpell> GetSupportSpells(MT19337 rng)
+		{
+			var Spells = GetSpells();
+
+			SpellHelper spellHelper = new SpellHelper(this);
+			List<(Spell Id, SpellInfo Info)> foundSpells = GetSupportSpells(spellHelper);
+
+			var Spells2 = new List<MagicSpell>();
+			foreach (var spl in foundSpells)
+			{
+				var idx = (int)spl.Id - 0xB0;
+				Spells2.Add(Spells[idx]);
+			}
+
+			Spells2.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
+			return Spells2;
+		}
+
+		private List<(Spell Id, SpellInfo Info)> GetSupportSpells(SpellHelper spellHelper)
+		{
+			List<(Spell Id, SpellInfo Info)> foundSpells = new List<(Spell Id, SpellInfo Info)>();
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.Self));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.OneCharacters));
+
+			//Remove Life and Smoke
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.CureAilment, SpellTargeting.Any).Where(s => s.Info.effect != 0x00 && s.Info.effect != 0x81 && s.Info.effect != 0x01));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Self));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.OneCharacters));
+
+			//up to Cur3, Hel2
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.OneCharacters).Where(s => s.Info.effect <= 40));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect <= 25));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Status));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.Any));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Self));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Self));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Smoke, SpellTargeting.Any));
+
+			return foundSpells;
 		}
 
 		private void WriteItemSpellData(MagicSpell Spell, Item item)
@@ -117,5 +259,13 @@ namespace FF1Lib
 		}
 
 
+	}
+
+	public enum ItemMagicPool
+	{
+		All,
+		Balanced,
+		Low,
+		Support
 	}
 }

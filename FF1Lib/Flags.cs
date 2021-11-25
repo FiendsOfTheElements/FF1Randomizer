@@ -56,6 +56,8 @@ namespace FF1Lib
 
 		#endregion
 
+		public ItemMagicPool ItemMagicPool { get; set; } = ItemMagicPool.All;
+
 		public bool DisableMinimap { get; set; } = false;
 
 		public bool QuickMinimapLoad { get; set; } = false;
@@ -604,7 +606,6 @@ namespace FF1Lib
 
 		[IntegerFlag(-9, 9)]
 		public int RandomArmorBonusHigh { get; set; } = 5;
-		public bool? BalancedItemMagicShuffle { get; set; } = false;
 		public bool? SeparateBossHPScaling { get; set; } = false;
 		public bool? SeparateEnemyHPScaling { get; set; } = false;
 		public bool? ClampBossHPScaling { get; set; } = false;

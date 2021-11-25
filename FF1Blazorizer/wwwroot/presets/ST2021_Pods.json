@@ -331,7 +331,6 @@
 		"RandomWeaponBonusHigh": 5,
 		"RandomArmorBonusLow": -3,
 		"RandomArmorBonusHigh": 4,
-		"BalancedItemMagicShuffle": false,
 		"SeparateBossHPScaling": true,
 		"SeparateEnemyHPScaling": false,
 		"ClampBossHPScaling": false,

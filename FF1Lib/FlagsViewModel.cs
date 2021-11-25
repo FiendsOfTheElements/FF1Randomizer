@@ -3754,13 +3754,13 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? BalancedItemMagicShuffle
+		public ItemMagicPool ItemMagicPool
 		{
-			get => Flags.BalancedItemMagicShuffle;
+			get => Flags.ItemMagicPool;
 			set
 			{
-				Flags.BalancedItemMagicShuffle = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BalancedItemMagicShuffle"));
+				Flags.ItemMagicPool = value;
+				RaisePropertyChanged();
 			}
 		}
 

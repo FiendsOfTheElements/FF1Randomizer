@@ -336,7 +336,7 @@ namespace FF1Lib
 
 			if ((bool)flags.ItemMagic && !(flags.NoItemMagic ?? false))
 			{
-				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle && !(flags.NoItemMagic ?? false));
+				ShuffleItemMagic(rng, flags);
 			}
 
 			if ((bool)flags.GuaranteedRuseItem && !(flags.NoItemMagic ?? false))
@@ -1190,6 +1190,13 @@ namespace FF1Lib
 
 			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode(flags, preferences);
+
+			Utilities.WriteSpoilerLine("");
+			Utilities.WriteSpoilerLine("");
+			foreach (var item in ItemsText.ToList())
+			{
+				Utilities.WriteSpoilerLine(item);
+			}
 		}
 
 		private void EnableNPCSwatter(NPCdata npcdata)

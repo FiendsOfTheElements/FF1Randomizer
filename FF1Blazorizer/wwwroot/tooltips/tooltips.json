@@ -30,6 +30,12 @@
 		"description": "Disables the minimap."
 	},
 	{
+		"Id": "itemMagicPool",
+		"title": "Item Magic Pool",
+		"screenshot": null,
+		"description": "Sets the pool of Spells for item magic suffling.\n\nAll Magic... all valid spells.\n\nBalanced... removes too weak and too strong spells.\n\nLow... removes too strong spells.\n\nSupport... removes too strong spells and all damage spells."
+	},
+	{
 		"Id": "quickMinimapLoad",
 		"title": "Quick Minimap Load",
 		"screenshot": "quickminimapload.gif",
