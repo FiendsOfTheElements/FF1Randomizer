@@ -1190,7 +1190,7 @@ namespace FF1Lib
 				shipLocations.SetShipLocation(255);
 
 				Archipelago exporter = new Archipelago(this, generatedPlacement, sanityChecker, expChests, incentivesData, flags, preferences);
-				Utilities.SpoilerCache = exporter.Work();	
+				Utilities.ArchipelagoCache = exporter.Work();	
 			}
 
 			ItemsText.Write(this, UnusedGoldItems);

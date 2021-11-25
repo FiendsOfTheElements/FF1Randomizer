@@ -478,12 +478,12 @@ namespace FF1Lib
 			Put(0x39EFF, Blob.FromHex("ad1e60cd0f03f0049016b016ad1d60cd0e03f004900ab00aad1c60cd0b03b00238601860ad1c6038ed0b038d1c60ad1d60ed0e038d1d60ad1e60ed0f038d1e604cefa74c8e8e"));
 			Put(0x3A494, Blob.FromHex("201b9eb0e820999e20c2a8b0e0a562d0dc20ff9e9008a910205baa4c81a420089e9008a90c205baa4c81a420239fa913205baa4c81a4eaeaea"));
 
-			//Replace NewCheckforSpace with patch in 0E_9C80_ItemShopCheckForSpace.asm
-			PutInBank(0x0E, 0x9E08, Enumerable.Repeat((byte)0xEA, 19).ToArray());
-			PutInBank(0x0E, 0xA4B2, Blob.FromHex("20809C"));
-
 			if (flags.Archipelago)
 			{
+				//Replace NewCheckforSpace with patch in 0E_9C80_ItemShopCheckForSpace.asm
+				PutInBank(0x0E, 0x9E08, Enumerable.Repeat((byte)0xEA, 19).ToArray());
+				PutInBank(0x0E, 0xA4B2, Blob.FromHex("20809C"));
+
 				PutInBank(0x0E, 0x9C80, Blob.FromHex("AD0C03186920AAC90CD008A9009D00604CA89CC936900CBD0060186D0A03C964901260A9019D0060A2FFBD006209029D006218609D00601860"));
 			}
 		}
