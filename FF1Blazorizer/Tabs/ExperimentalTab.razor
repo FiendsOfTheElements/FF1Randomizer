@@ -21,10 +21,6 @@
 			</p>
 			<div class="checkbox-cell"></div>
 			<h4>Maps</h4>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="spreadLoose" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.LooseItemsSpreadPlacement">Spread Loose Placement</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="forwardLoose" IsEnabled="@(Flags.SanityCheckerV2 & Flags.LooseItemsSpreadPlacement)" @bind-Value="Flags.LooseItemsForwardPlacement">Forward Loose Placement</CheckBox>
-			<div class="checkbox-cell"></div>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="looseNpcBalance" @bind-Value="Flags.LooseItemsNpcBalance">Loose Npc Balance</CheckBox>
 			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth1" @bind-Value="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth2" @bind-Value="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
@@ -64,8 +60,10 @@
 			<IntSlider Indent Min="1" Max="50" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.Lockpicking" Id="LockpickingLevelRequirement" @bind-Value="@Flags.LockpickingLevelRequirement">Lockpicking Level Requirement:</IntSlider>
 
 			<div class="checkbox-cell"></div>
-			<h4>Ailments</h4>
+			<h4>Added Difficulty</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseDarkPenaltyCheckBox" @bind-Value="Flags.IncreaseDarkPenalty">Increase Dark Penalty</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="everythingHasDeathTouch" @bind-Value="Flags.EverythingHasDeathTouch">Everything has Death Touch</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="everythingHasDeathTouchExcludeFiends" @bind-Value="Flags.EverythingHasDeathTouchExcludeFiends" IsEnabled="@(Flags.EverythingHasDeathTouch != false)">Exclude Fiends</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 		</div>
 

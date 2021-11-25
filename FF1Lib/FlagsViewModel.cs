@@ -4737,6 +4737,26 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? EverythingHasDeathTouch
+		{
+			get => Flags.EverythingHasDeathTouch;
+			set
+			{
+				Flags.EverythingHasDeathTouch = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? EverythingHasDeathTouchExcludeFiends
+		{
+			get => Flags.EverythingHasDeathTouchExcludeFiends;
+			set
+			{
+				Flags.EverythingHasDeathTouchExcludeFiends = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public int LockpickingLevelRequirement
 		{
 			get => Flags.LockpickingLevelRequirement;
@@ -4803,28 +4823,6 @@ namespace FF1Lib
 			set
 			{
 				Flags.ExpChestMaxReward = value;
-				RaisePropertyChanged();
-			}
-		}
-
-
-		public bool LooseItemsForwardPlacement
-		{
-			get => Flags.LooseItemsForwardPlacement;
-			set
-			{
-				Flags.LooseItemsForwardPlacement = value;
-				RaisePropertyChanged();
-			}
-		}
-
-
-		public bool LooseItemsSpreadPlacement
-		{
-			get => Flags.LooseItemsSpreadPlacement;
-			set
-			{
-				Flags.LooseItemsSpreadPlacement = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -5147,5 +5145,65 @@ namespace FF1Lib
 		    Flags.LoadResourcePackFlags(stream);
 		    RaisePropertyChanged();
 		}
-	}
+
+		public KeyItemPlacementMode KeyItemPlacementMode
+		{
+			get
+			{
+				if (Flags.PredictivePlacement == false) return KeyItemPlacementMode.Vanilla;
+				if (Flags.PredictivePlacement == true && Flags.AllowUnsafePlacement == false) return KeyItemPlacementMode.Predictive;
+				return KeyItemPlacementMode.PredictiveUnsafe;
+			}
+			set
+			{
+				switch (value)
+				{
+					case KeyItemPlacementMode.Vanilla:
+						Flags.PredictivePlacement = false;
+						Flags.AllowUnsafePlacement = false;
+						break;
+					case KeyItemPlacementMode.Predictive:
+						Flags.PredictivePlacement = true;
+						Flags.AllowUnsafePlacement = false;
+						break;
+					case KeyItemPlacementMode.PredictiveUnsafe:
+						Flags.PredictivePlacement = true;
+						Flags.AllowUnsafePlacement = true;
+						break;
+				}
+
+				RaisePropertyChanged();
+			}
+		}
+
+		public LoosePlacementMode LoosePlacementMode
+		{
+			get
+			{
+				if (Flags.LooseItemsSpreadPlacement == false) return LoosePlacementMode.Vanilla;
+				if (Flags.LooseItemsSpreadPlacement == true && Flags.LooseItemsForwardPlacement == false) return LoosePlacementMode.Spread;
+				return LoosePlacementMode.Forward;
+			}
+			set
+			{
+				switch (value)
+				{
+					case LoosePlacementMode.Vanilla:
+						Flags.LooseItemsSpreadPlacement = false;
+						Flags.LooseItemsForwardPlacement = false;
+						break;
+					case LoosePlacementMode.Spread:
+						Flags.LooseItemsSpreadPlacement = true;
+						Flags.LooseItemsForwardPlacement = false;
+						break;
+					case LoosePlacementMode.Forward:
+						Flags.LooseItemsSpreadPlacement = true;
+						Flags.LooseItemsForwardPlacement = true;
+						break;
+				}
+
+				RaisePropertyChanged();
+			}
+		}
+	}	
 }

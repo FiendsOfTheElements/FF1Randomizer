@@ -73,6 +73,9 @@ namespace FF1Lib
 		public bool LooseItemsNpcBalance { get; set; } = false;
 
 
+		public bool PredictivePlacement { get; set; } = false;
+		public bool AllowUnsafePlacement { get; set; } = false;
+
 		[IntegerFlag(0, 100, 10)]
 		public int ExpChestConversionMin { get; set; } = 0;
 
@@ -673,6 +676,9 @@ namespace FF1Lib
 		public bool? AllowUnsafeStartArea { get; set; } = false;
 
 		public bool? IncreaseDarkPenalty { get; set; } = false;
+
+		public bool? EverythingHasDeathTouch { get; set; } = false;
+		public bool? EverythingHasDeathTouchExcludeFiends { get; set; } = false;
 
 		public bool? Lockpicking { get; set; } = false;
 

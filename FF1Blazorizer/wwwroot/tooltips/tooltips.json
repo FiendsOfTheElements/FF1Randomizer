@@ -54,20 +54,20 @@
 		"description": "Enabling this, removes the magic from weapons and armor."
 	},
 	{
-		"Id": "spreadLoose",
-		"title": "Spread Loose Placement",
+		"Id": "kiPlacementMode",
+		"title": "Key Item Placement",
 		"screenshot": null,
-		"description": "Tries to spread out the loose items into different dungeons and gatings. With F/E it tries to spread out the items to different entrances/gatings."
+		"description": "Guided: This algorithm uses a semifixed placement order that will always open up the seed with an early ship and canal.\n\nPredictive: More powerful algorithm that does not rely on a fixed item order. This allowes for more flexibility like allowing early fetch quests or opening a seed up with the canoe instead of the ship. It can better handle alternate overworlds and Floor Entrance seeds.\n\nPredictive Unsafe: Removes Safety Checks that prevent the Predictive Algorithm from forcing you into high level dungeons early."
 	},
 	{
-		"Id": "forwardLoose",
-		"title": "Forward Loose Placement",
+		"Id": "loosePlacementMode",
+		"title": "Loose Placement",
 		"screenshot": null,
-		"description": "Tries to place loose items into newly opened up areas. It creates key item chains where one key item leads to the next, drives items out into the last corners of the world and can create some really nice fetch quest chains."
+		"description": "Chaotic: Random Chests and NPCs. Tends to put more key items into larger dungeons.\n\nSpread: Tries to spread out the loose items into different dungeons and gatings. With F/E it tries to spread out the items to different entrances/gatings.\n\nForward: Additionally tries to place loose items into newly opened up areas. It creates key item chains where one key item leads to the next, drives items out into the last corners of the world and can create some really nice fetch quest chains."
 	},
 	{
 		"Id": "looseNpcBalance",
-		"title": "Loose NPC Balance",
+		"title": "Favor NPCs",
 		"screenshot": null,
 		"description": "Makes it more likely loose items land on NPCs."
 	},
@@ -2034,5 +2034,24 @@
 		"title": "Randomized Access Requirements Unsafe Start",
 		"screenshot": "",
 		"description": "If enabled, mid-game dungeons (Earth, Volcano, Ice and Ordeals) are added to the pool of possible starting area entrances that may be required for early progression."
+	},
+	{
+		"Id": "everythingHasDeathTouch",
+		"title": "Everything has Death Touch",
+		"screenshot": "everythingHasDeathTouchCheckBox.png",
+		"description": "Adds death touch status attack to every enemy in the game.\nNote: Pirates in Pravoka will not have death touch if they are \"Safe\" Pirates."
+	},
+	{
+		"Id": "everythingHasDeathTouchExcludeFiends",
+		"title": "Everything has Death Touch - Exclude Fiends",
+		"screenshot": "everythingHasDeathTouchExcludeFiendsCheckbox.png",
+		"description": "When adding death touch status attack to every enemy in the game, the four Fiends, their refights, and Chaos are skipped.\nNote: These bosses may still receive death touch when status attacks are shuffled."
+	},
+	{
+		"Id": "increaseDarkPenaltyCheckBox",
+		"title": "Increase Dark Penalty",
+		"screenshot": "increaseDarkPenaltyCheckBox.png",
+		"description": "If enabled, \"Dark\" status severely decreases an attacker's chance to hit or crit an enemy.\nAffects both players and enemies inflicted with \"Dark\" status."
 	}
+
 ]

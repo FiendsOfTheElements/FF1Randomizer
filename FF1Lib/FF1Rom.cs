@@ -470,14 +470,14 @@ namespace FF1Lib
 			{
 				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
 			}
-
+			
 			if (flags.DraculasFlag)
 			{
 			    // Needs to happen before item placement because it swaps some entrances around.
 				DraculasCurse(talkroutines, npcdata, rng, flags);
 			}
 
-			var maxRetries = 8;
+			var maxRetries = 3;
 			for (var i = 0; i < maxRetries; i++)
 			{
 				try
@@ -669,6 +669,11 @@ namespace FF1Lib
 				{
 					ShuffleEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates);
 				}
+			}
+
+			if ((bool)flags.EverythingHasDeathTouch)
+			{
+				EverythingHasDeathTouch((bool)flags.AllowUnsafePirates, (bool)flags.EverythingHasDeathTouchExcludeFiends);
 			}
 
 			if (flags.Runnability == Runnability.Random)

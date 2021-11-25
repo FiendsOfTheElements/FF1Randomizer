@@ -120,6 +120,8 @@
 		bool? Entrances { get; }
 		OwMapExchanges OwMapExchange { get; }
 		bool Archipelago { get; }
+		bool PredictivePlacement { get;}
+		bool AllowUnsafePlacement { get; }
 	}
 	public interface IItemShuffleFlags
 	{

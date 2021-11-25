@@ -423,6 +423,33 @@ namespace FF1Lib
 			Put(EnemyOffset, enemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
+		public void EverythingHasDeathTouch(bool AllowUnsafePirates, bool ExcludeFiends)
+		{
+			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+
+			(byte touch, byte element) deathElement = (0x01, 0x08); //Death Touch = Death Element
+
+			int numEnemies = EnemyCount;
+			if (ExcludeFiends)
+			{
+				numEnemies = EnemyCount - 9; // Fiends, Fiend Refights, and Chaos
+			}
+
+			for (int i = 0; i < numEnemies; i++)
+			{
+				if (i == 15 && !AllowUnsafePirates) // don't give Death Touch to Pirates
+				{
+					continue;
+				}
+
+				var (touch, element) = deathElement;
+				enemies[i][15] = touch;
+				enemies[i][14] = element;
+			}
+
+			Put(EnemyOffset, enemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
+		}
+
 		public enum EnemySkills : byte
 		{
 			Frost = 0x00,
