@@ -1,5 +1,6 @@
 ﻿using FF1Lib.Sanity;
 using Newtonsoft.Json;
+using RomUtilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -170,6 +171,10 @@ namespace FF1Lib
 			//Clear false Initialization of Archipelago Counters
 			rom.PutInBank(0x00, 0xB00B, new byte[] { 0 });
 			rom.PutInBank(0x00, 0xB00F, new byte[] { 0 });
+
+			//ChaosDeath Breakout
+			rom.PutInBank(0x0B, 0x9ADF, Blob.FromHex("20409B"));
+			rom.PutInBank(0x0B, 0x9B40, Blob.FromHex("A0FEB9006209029900624C52A0"));
 
 			return Json;
 		}

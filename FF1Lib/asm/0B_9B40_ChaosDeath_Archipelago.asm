@@ -1,10 +1,14 @@
-﻿
-.org $B803
+.include "Constants.inc"
+.include "variables.inc"
+
+
+ChaosDeath = $A052
+
+.org $9ADF
 
 	JSR SetArchipelagoEndingBit
-	NOP
 
-.org $B5E0
+.org $9B40
 
 SetArchipelagoEndingBit:
 	LDY #$FE
@@ -12,13 +16,4 @@ SetArchipelagoEndingBit:
 	ORA #GMFLG_EVENT    ; set the event bit
 	STA game_flags, Y   ; and write back
 
-	LDA #$43
-	STA music_track           ; start music track $43 (epilogue music)
-	RTS
-
-
-A0FE
-B90062
-0902
-990062
-A943854B60
+	JMP ChaosDeath
