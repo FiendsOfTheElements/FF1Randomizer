@@ -1185,14 +1185,6 @@ namespace FF1Lib
 
 			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode(flags, preferences);
-
-
-			Utilities.WriteSpoilerLine("");
-			Utilities.WriteSpoilerLine("");
-			foreach (var item in ItemsText.ToList())
-			{
-				Utilities.WriteSpoilerLine(item);
-			}
 		}
 
 		private void EnableNPCSwatter(NPCdata npcdata)
