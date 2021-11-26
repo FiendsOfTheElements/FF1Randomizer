@@ -322,24 +322,19 @@ namespace FF1Lib
 			}
 
 			if ((bool)flags.Weaponizer) {
-			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers,  flags.NoItemMagic ?? false);
+			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers, flags.ItemMagicMode == ItemMagicMode.None);
 			}
 
 			if ((bool)flags.ArmorCrafter) {
-			    ArmorCrafter(rng, flags.NoItemMagic ?? false);
+			    ArmorCrafter(rng, flags.ItemMagicMode == ItemMagicMode.None);
 			}
 
-			if ((bool)flags.MagisizeWeapons && !(flags.NoItemMagic ?? false))
-			{
-				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
-			}
-
-			if ((bool)flags.ItemMagic && !(flags.NoItemMagic ?? false))
+			if (flags.ItemMagicMode != ItemMagicMode.None)
 			{
 				ShuffleItemMagic(rng, flags);
 			}
 
-			if ((bool)flags.GuaranteedRuseItem && !(flags.NoItemMagic ?? false))
+			if ((bool)flags.GuaranteedRuseItem && !(flags.ItemMagicMode == ItemMagicMode.None))
 			{
 				CraftRuseItem();
 			}
@@ -511,7 +506,7 @@ namespace FF1Lib
 						if (!((bool)flags.RandomWaresIncludesSpecialGear))
 						{
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
-							if ((bool)flags.GuaranteedRuseItem && !(flags.NoItemMagic ?? false))
+							if ((bool)flags.GuaranteedRuseItem && !(flags.ItemMagicMode == ItemMagicMode.None))
 								excludeItemsFromRandomShops.Add(Item.PowerRod);
 						}
 
@@ -1058,7 +1053,7 @@ namespace FF1Lib
 				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
 			}
 
-			if (flags.NoItemMagic ?? false)
+			if (flags.ItemMagicMode == ItemMagicMode.None)
 			{
 				NoItemMagic(flags);
 			}
@@ -1190,6 +1185,14 @@ namespace FF1Lib
 
 			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
 			ExtraTrackingAndInitCode(flags, preferences);
+
+
+			Utilities.WriteSpoilerLine("");
+			Utilities.WriteSpoilerLine("");
+			foreach (var item in ItemsText.ToList())
+			{
+				Utilities.WriteSpoilerLine(item);
+			}
 		}
 
 		private void EnableNPCSwatter(NPCdata npcdata)

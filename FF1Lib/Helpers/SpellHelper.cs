@@ -100,6 +100,7 @@ namespace FF1Lib.Helpers
 				foundSpells = SpellInfos.Where(s =>
 					(s.routine == (byte)routine) &&
 					(s.targeting == (byte)targeting || targeting == SpellTargeting.Any) &&
+					(s.elem == (byte)element || element == SpellElement.Any) &&
 					(s.effect == (byte)status || status == SpellStatus.Any));
 			}
 			else

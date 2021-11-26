@@ -113,7 +113,7 @@
 		ExtConsumableSet ExtConsumableSet { get; }
 		ExtConsumableChestSet ExtConsumableChests { get; }
 		bool IncentiveChestItemsFanfare { get; }
-		bool? NoItemMagic { get; }
+		ItemMagicMode ItemMagicMode { get; }
 		bool LooseItemsForwardPlacement { get; }
 		bool LooseItemsSpreadPlacement { get; }
 		bool LooseItemsNpcBalance { get; }

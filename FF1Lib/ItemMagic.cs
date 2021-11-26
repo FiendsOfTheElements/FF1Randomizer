@@ -23,7 +23,23 @@ namespace FF1Lib
 
 		public void ShuffleItemMagic(MT19337 rng, Flags flags)
 		{
-			var magicWeapons = Weapon.LoadAllWeapons(this, flags).Where(w => w.Spell >= Spell.CURE).Select(w => w.Id);
+			IEnumerable<Item> magicWeapons;
+
+			if ((flags.MagisizeWeapons ?? false) && flags.ItemMagicPool == ItemMagicPool.Balanced)
+			{
+				//this case needs to be done with the original magisize code, because it has a different behavior.
+				MagisizeWeaponsBalanced(rng);
+				magicWeapons = Weapon.LoadAllWeapons(this, flags).Where(w => w.Spell >= Spell.CURE).Select(w => w.Id);
+			}
+			else if (flags.MagisizeWeapons ?? false)
+			{
+				magicWeapons = Weapon.LoadAllWeapons(this, flags).Select(w => w.Id);
+			}
+			else
+			{
+				magicWeapons = Weapon.LoadAllWeapons(this, flags).Where(w => w.Spell >= Spell.CURE).Select(w => w.Id);
+			}
+
 			var magicArmor = Armor.LoadAllArmors(this, flags).Where(w => w.Spell >= Spell.CURE).Select(w => w.Id);
 			var magicItems = magicWeapons.Concat(magicArmor).ToList();
 
@@ -49,6 +65,56 @@ namespace FF1Lib
 			foreach (var item in Spells.Zip(magicItems, (s, i) => new { Spell = s, Item = i }))
 			{
 				WriteItemSpellData(item.Spell, item.Item);
+			}
+		}
+
+		public void MagisizeWeaponsBalanced(MT19337 rng)
+		{
+			var Spells = GetSpells();
+
+			var tieredSpells = new List<List<MagicSpell>> { Spells.GetRange(0, 16), Spells.GetRange(16, 16), Spells.GetRange(32, 16), Spells.GetRange(48, 16) };
+
+			var commonOdds = new List<int> { 0, 0, 0, 0, 1, 1, 1, 1, 2, 2 };
+			var rareOdds = new List<int> { 0, 1, 1, 1, 2, 2, 2, 3, 3, 3 };
+			var legendaryOdds = new List<int> { 1, 2, 2, 2, 3, 3, 3, 3, 3, 3 };
+
+			for (int i = 0; i < 4; i++)
+				tieredSpells[i].RemoveAll(spell => spell.Data[4] == 0);
+
+			foreach (Item weapon in ItemLists.CommonWeaponTier)
+			{
+				var selectedTier = commonOdds.PickRandom(rng);
+				while (tieredSpells[selectedTier].Count == 0)
+					selectedTier = commonOdds.PickRandom(rng);
+
+				WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
+			}
+
+			foreach (Item weapon in ItemLists.RareWeaponTier.Except(ItemLists.AllMagicItem).ToList())
+			{
+				var selectedTier = rareOdds.PickRandom(rng);
+				while (tieredSpells[selectedTier].Count == 0)
+					selectedTier = rareOdds.PickRandom(rng);
+
+				WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
+			}
+
+			foreach (Item weapon in ItemLists.LegendaryWeaponTier)
+			{
+				var selectedTier = legendaryOdds.PickRandom(rng);
+				while (tieredSpells[selectedTier].Count == 0)
+					selectedTier = legendaryOdds.PickRandom(rng);
+
+				WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
+			}
+
+			foreach (Item weapon in ItemLists.UberTier)
+			{
+				var selectedTier = Rng.Between(rng, 0, 3);
+				while (tieredSpells[selectedTier].Count == 0)
+					selectedTier = Rng.Between(rng, 0, 3);
+
+				WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
 			}
 		}
 
@@ -146,7 +212,9 @@ namespace FF1Lib
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.OneCharacters).Where(s => s.Info.effect <= 40));
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect <= 25));
 
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Status));
+			//Allow single target insta and multi target status
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.AllEnemies, SpellElement.Status));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.OneEnemy));
 
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.Any));
 
@@ -158,7 +226,7 @@ namespace FF1Lib
 
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Smoke, SpellTargeting.Any));
 
-			return foundSpells;
+			return foundSpells.Concat(foundSpells).ToList();
 		}
 
 		private List<MagicSpell> GetSupportSpells(MT19337 rng)
@@ -183,14 +251,12 @@ namespace FF1Lib
 		{
 			List<(Spell Id, SpellInfo Info)> foundSpells = new List<(Spell Id, SpellInfo Info)>();
 
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.Self));
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.OneCharacters));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.Any));
 
 			//Remove Life and Smoke
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.CureAilment, SpellTargeting.Any).Where(s => s.Info.effect != 0x00 && s.Info.effect != 0x81 && s.Info.effect != 0x01));
 
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Self));
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.OneCharacters));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any));
 
 			//up to Cur3, Hel2
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.OneCharacters).Where(s => s.Info.effect <= 40));
@@ -200,13 +266,13 @@ namespace FF1Lib
 
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.Any));
 
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Self));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any));
 
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Self));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Any));
 
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Smoke, SpellTargeting.Any));
 
-			return foundSpells;
+			return foundSpells.Concat(foundSpells).ToList();
 		}
 
 		private void WriteItemSpellData(MagicSpell Spell, Item item)
@@ -261,11 +327,20 @@ namespace FF1Lib
 
 	}
 
+	public enum ItemMagicMode
+	{
+		Vanilla = 0,
+		Shuffled = 1,
+		None = 2,
+		Random = 3
+	}
+
 	public enum ItemMagicPool
 	{
-		All,
-		Balanced,
-		Low,
-		Support
+		All = 0,
+		Balanced = 1,
+		Low = 2,
+		Support = 3,
+		Random = 4
 	}
 }

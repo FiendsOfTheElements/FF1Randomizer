@@ -1717,12 +1717,6 @@
 		"screenshot": "magisizeWeapons.png",
 		"description": "All weapons can cast randomly assigned spells. Excludes standard casting weapons which, naturally, continue to cast their normally assigned spells."
 	},
-	{
-		"Id": "magisizeWeaponsBalancedCheckBox",
-		"title": "Balanced Spells",
-		"screenshot": "magisizeWeaponsBalancedCheckBox.gif",
-		"description": "When all weapons can cast magic, spells are assigned based on the strength of the spell and the relative rarity of the weapons. The rarer a weapon is, the stronger the spell assigned to it will be."
-	},
 
 	{
 		"Id": "weaponizerCheckBox",

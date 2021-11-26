@@ -56,7 +56,9 @@ namespace FF1Lib
 
 		#endregion
 
+		public ItemMagicMode ItemMagicMode { get; set; } = ItemMagicMode.Vanilla;
 		public ItemMagicPool ItemMagicPool { get; set; } = ItemMagicPool.All;
+		public bool? MagisizeWeapons { get; set; } = false;
 
 		public bool DisableMinimap { get; set; } = false;
 
@@ -120,8 +122,6 @@ namespace FF1Lib
 		public OwMapExchangeData ReplacementMap { get; set; } = null;
 
 		public string ResourcePack { get; set; } = null;
-
-		public bool? NoItemMagic { get; set; } = false;
 
 		#region ShopKiller
 
@@ -212,9 +212,6 @@ namespace FF1Lib
 		public bool? MagicShopLocationPairs { get; set; } = false;
 		public bool? MagicLevels { get; set; } = false;
 		public bool? MagicPermissions { get; set; } = false;
-		public bool? ItemMagic { get; set; } = false;
-		public bool? MagisizeWeapons { get; set; } = false;
-		public bool? MagisizeWeaponsBalanced { get; set; } = false;
 		public bool? Weaponizer { get; set; } = false;
 		public bool? WeaponizerNamesUseQualityOnly { get; set; } = false;
 		public bool? WeaponizerCommonWeaponsHavePowers { get; set; } = false;
@@ -917,6 +914,10 @@ namespace FF1Lib
 					property.SetValue(newflags, newvalue);
 				}
 			}
+
+			if (flags.ItemMagicMode == ItemMagicMode.Random) newflags.ItemMagicMode = (ItemMagicMode)rng.Between(0, 2);
+			if (flags.ItemMagicPool == ItemMagicPool.Random) newflags.ItemMagicPool = (ItemMagicPool)rng.Between(0, 3);
+
 			return newflags;
 		}
 
