@@ -1368,6 +1368,9 @@ namespace FF1Lib.Procgen
 				new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}),
 				new GenerationStep("PlaceInTitanWestRegion", new object[]{OverworldTiles.CONERIA_CASTLE}),
 				new GenerationStep("PlaceInTitanWestRegion", new object[]{OverworldTiles.MELMOND_TOWN}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
+										new int[]{OverworldTiles.DESERT_REGION},
+										false, true, false, false}),
 				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
 										new int[]{OverworldTiles.MARSH_REGION},
 										false, true, false, false}),
@@ -1377,9 +1380,6 @@ namespace FF1Lib.Procgen
 										false, false, true, false}),
 				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.PRAVOKA_CITY_MOAT,
 										new int[]{OverworldTiles.MARSH_REGION},
-										false, true, false, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
-										new int[]{OverworldTiles.DESERT_REGION},
 										false, true, false, false}),
 				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
 										new int[]{OverworldTiles.DESERT_REGION},
@@ -1613,11 +1613,23 @@ namespace FF1Lib.Procgen
 
 	    var tiles = new List<string>();
 	    var onerow = new byte[OverworldState.MAPSIZE];
+	    List<List<byte>> decompressedRows = new List<List<byte>>();
 	    for (int y = 0; y < OverworldState.MAPSIZE; y++) {
+		decompressedRows.Add(new List<byte>(256));
 		for (int x = 0; x < OverworldState.MAPSIZE; x++) {
 		    onerow[x] = st.Tilemap[y,x];
+		    decompressedRows[y].Add(st.Tilemap[y,x]);
 		}
 		tiles.Add(Convert.ToBase64String(onerow));
+	    }
+	    var compressedMap = OverworldMap.CompressMapRows(decompressedRows);
+	    var compressedSize = 0;
+	    for (int y = 0; y < OverworldState.MAPSIZE; y++) {
+		compressedSize += compressedMap[y].Count;
+	    }
+
+	    if (compressedSize > OverworldMap.MaximumMapDataSize) {
+		throw new Exception($"Generated map is too large to fit in the ROM by {compressedSize - OverworldMap.MaximumMapDataSize} bytes, try a different seed.");
 	    }
 
 	    ExchangeData.DecompressedMapRows = tiles;
