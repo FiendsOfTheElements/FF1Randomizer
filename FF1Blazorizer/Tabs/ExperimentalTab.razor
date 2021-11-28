@@ -1,4 +1,5 @@
 @using FF1Lib;
+@using static FF1Lib.FF1Rom;
 @using System.IO;
 @inject IJSRuntime JSRuntime
 
@@ -8,8 +9,11 @@
 	{
 		<p>Test out features from 2000 years in the future - at your own risk!</p>
 		<div class="col1">
-			<h4>Maps</h4>
+			<h4>Goal</h4>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="orbsRequiredDropDown" IsEnabled="@Flags.OrbsRequiredEnabled" TItem="OrbsRequired" @bind-Value="Flags.OrbsRequired">Orbs Required:</EnumDropDown>
+
 			<div class="checkbox-cell"></div>
+			<h4>Maps</h4>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth1" @bind-Value="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth2" @bind-Value="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
 			<div class="checkbox-cell"></div>
@@ -104,18 +108,23 @@
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
 
-		async Task OnImportResourcePack(ChangeEventArgs e) {
-		  try {
-		    var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importResourcePackInput");
-		    if (content == null || content == "") { return; }
-	            using (var stream = new MemoryStream(Convert.FromBase64String(content))) {
-		       Flags.LoadResourcePackFlags(stream);
-		    }
-		    Flags.ResourcePack = content;
-		  } catch (Exception x) {
-			   Console.WriteLine(x.ToString());
-		  }
-		  StateHasChanged();
+	async Task OnImportResourcePack(ChangeEventArgs e)
+	{
+		try
+		{
+			var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importResourcePackInput");
+			if (content == null || content == "") { return; }
+			using (var stream = new MemoryStream(Convert.FromBase64String(content)))
+			{
+				Flags.LoadResourcePackFlags(stream);
+			}
+			Flags.ResourcePack = content;
 		}
+		catch (Exception x)
+		{
+			Console.WriteLine(x.ToString());
+		}
+		StateHasChanged();
+	}
 
 }

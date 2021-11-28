@@ -534,6 +534,18 @@ namespace FF1Lib
 
 		public bool ExtraShardsEnabled => ShardHunt && !FreeOrbs;
 
+		public OrbsRequired OrbsRequired
+		{
+			get => Flags.OrbsRequired;
+			set
+			{
+				Flags.OrbsRequired = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OrbsRequired"));
+			}
+		}
+
+		public bool OrbsRequiredEnabled => !ShardHunt && !FreeOrbs && !DeepDungeon;
+
 		public FinalFormation TransformFinalFormation
 		{
 			get => Flags.TransformFinalFormation;
