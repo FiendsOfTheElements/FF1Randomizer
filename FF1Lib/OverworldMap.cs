@@ -1452,8 +1452,8 @@ namespace FF1Lib
 				outputOffset += outputRow.Count;
 			}
 
-			if (outputOffset > 0x4000)
-				throw new InvalidOperationException($"Modified map was too large by {outputOffset - 0x4000} bytes to recompress and fit into a single {0x4000} bank.");
+			if (outputOffset > 0x3E00)
+				throw new InvalidOperationException($"Modified map was too large by {outputOffset - 0x3E00} bytes to recompress and fit into a single {0x4000} bank.");
 		}
 
 		public void ShuffleObjectiveNPCs(MT19337 rng)
