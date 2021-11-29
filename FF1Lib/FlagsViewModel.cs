@@ -644,15 +644,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicPermissions"));
 			}
 		}
-		public bool? ItemMagic
+		public ItemMagicMode ItemMagicMode
 		{
-			get => Flags.ItemMagic;
+			get => Flags.ItemMagicMode;
 			set
 			{
-				Flags.ItemMagic = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ItemMagic"));
+				Flags.ItemMagicMode = value;
+				RaisePropertyChanged();
 			}
 		}
+
 		public bool? MagisizeWeapons
 		{
 			get => Flags.MagisizeWeapons;
@@ -662,15 +663,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagisizeWeapons"));
 			}
 		}
-		public bool? MagisizeWeaponsBalanced
-		{
-			get => Flags.MagisizeWeaponsBalanced;
-			set
-			{
-				Flags.MagisizeWeaponsBalanced = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagisizeWeaponsBalanced"));
-			}
-		}
+
 		public bool? Weaponizer
 		{
 			get => Flags.Weaponizer;
@@ -3754,13 +3747,13 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? BalancedItemMagicShuffle
+		public ItemMagicPool ItemMagicPool
 		{
-			get => Flags.BalancedItemMagicShuffle;
+			get => Flags.ItemMagicPool;
 			set
 			{
-				Flags.BalancedItemMagicShuffle = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BalancedItemMagicShuffle"));
+				Flags.ItemMagicPool = value;
+				RaisePropertyChanged();
 			}
 		}
 
@@ -5046,16 +5039,6 @@ namespace FF1Lib
 			set
 			{
 				Preferences.OptOutSpeedHackDash = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public bool? NoItemMagic
-		{
-			get => Flags.NoItemMagic;
-			set
-			{
-				Flags.NoItemMagic = value;
 				RaisePropertyChanged();
 			}
 		}
