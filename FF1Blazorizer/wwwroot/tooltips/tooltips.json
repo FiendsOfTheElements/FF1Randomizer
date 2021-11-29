@@ -2057,7 +2057,13 @@
 		"Id": "orbsRequiredDropDown",
 		"title": "Orbs Required",
 		"screenshot": "orbsRequiredDropDown.png",
-		"description": "Changes the number of ORBS needed to enter the Temple of Fiends Revisited.\n[grid][r]{i}Option|{i}Explained[r]{l}All 4|{l}Vanilla behavior: All ORBs are required[r]{l}Any 3|{l}Ex: Earth, Fire, Water[r]{l}Any 2|{l}Ex: Water, Air[r]{l}Any 1|{l}Ex: Fire[r]{l}Random 3|{l}3 specific unknown ORBs[r]{l}Random 2|{l}2 specific unknown ORBs[r]{l}Random 1|{l}A single specific unknown ORB[r]{l}Random 1-3|{l}Any of Random 1, Random 2, or Random 3\n\nNote: Going above the minimum ORB requirement will still grant access to ToFR.\nThis option is ignored if Shard Hunt, Deep Dungeon, and/or Free Orbs is enabled."
+		"description": "Changes the number of ORBS needed to enter the Temple of Fiends Revisited.\n[grid][r]{i}Option|{i}Explained[r]{l}All 4|{l}Vanilla behavior: All ORBS are required[r]{l}Any 3|{l}Ex: Earth, Fire, Water[r]{l}Any 2|{l}Ex: Water, Air[r]{l}Any 1|{l}Ex: Fire[r]{l}Random 3|{l}3 specific unknown ORBS[r]{l}Random 2|{l}2 specific unknown ORBS[r]{l}Random 1|{l}A single specific unknown ORB[r]{l}Random 1 - 3|{l}Any of Random 1, Random 2, or Random 3\n\nNote: Going above the minimum ORB requirement will still grant access to ToFR.\nThis option is ignored if Shard Hunt, Deep Dungeon, and/or Free Orbs is enabled."
+	},
+	{
+		"Id": "orbsRequiredSpoilersCheckbox",
+		"title": "Orbs Required - Orb Spoilers",
+		"screenshot": "orbsRequiredSpoilersCheckBox.png",
+		"description": "When enabled, the Black Orb will explain its requirements."
 	}
 
 

@@ -231,7 +231,7 @@ namespace FF1Lib
 			RandomRange1to3,
 		}
 
-		public void SetOrbRequirement(MT19337 rng, TalkRoutines talkroutines, OrbsRequired orbRequirements)
+		public void SetOrbRequirement(MT19337 rng, TalkRoutines talkroutines, OrbsRequired orbRequirements, bool spoilersEnabled)
 		{
 			int goal = -1;
 			switch (orbRequirements)
@@ -261,22 +261,74 @@ namespace FF1Lib
 					break;
 			}
 
+			Dictionary<int, String> updatedBlackOrbDialogue = new Dictionary<int, String>();
+			String orbIntro = "The ORBS now cover";
+			if (Math.Abs(goal) == 1)
+			{
+				orbIntro = "The ORB now covers";
+			}
+			updatedBlackOrbDialogue.Add(0x21, $"{orbIntro}\nthe black ORB..\nTo take a step forward\nis to go back 2000 years\nin time.");
+
 			if (goal > 0)
 			{
 				// Orb Requirement is Any 3, Any 2, or Any 1
 
-				// Modify "shift earth orb down code" that normally assigns shard values 2 for earth / fire, and 4 for water / air
+				// Modify "shift earth orb down code" that normally assigns shard values 2 for earth / fire, and 4 for water / wind
 				// (now assigns shard value of 1 for all orbs; AKA modded 0F_CE12_OrbRewards.asm)
 				Put(0x7CE12, Blob.FromHex("A201A000F010A201A001D00AA201A002D004A201A003B93160D00FA901993160188A6D35608D3560E66C1860"));
 
 				// Adjust Black Orb Behavior to check $6035 for goal "shards" (in this case, the orb count)
 				BlackOrbChecksShardsCountFor(goal, talkroutines);
+
+				if (spoilersEnabled)
+				{
+					String total = "";
+					switch (goal)
+					{
+						case 1: total = "ONE";
+							break;
+						case 2: total = "TWO";
+							break;
+						case 3: total = "THREE";
+							break;
+					}
+					updatedBlackOrbDialogue.Add(0x22, $"The black ORB\nwhispers ominously..\nBring me {total}.");
+				}
 			} else {
 				// Orb Requirement is Random 3, Random 2, or Random 1
 
 				goal = Math.Abs(goal); // was negative to differentiate Any# vs Random#
-				BlackOrbRequiresSpecificOrbs(rng, goal, talkroutines);
+				List<String> orbsNeeded = BlackOrbRequiresSpecificOrbs(rng, goal, talkroutines);
+
+				if (spoilersEnabled)
+				{
+					String hintLine1 = "";
+					String hintLine2 = "";
+
+					if (orbsNeeded.Count > 1)
+					{
+						hintLine1 = "swirls colors of";
+						for (int i = 0; i < orbsNeeded.Count; i++)
+						{
+							if (i < orbsNeeded.Count - 1)
+							{
+								hintLine2 += orbsNeeded[i].ToUpper();
+								if (orbsNeeded.Count == 3) { hintLine2 += ", "; } else { hintLine2 += " "; };
+							} else
+							{
+								hintLine2 += "and " + orbsNeeded[i].ToUpper() + ".";
+							}
+						}
+					} else {
+						hintLine1 = "swirls with the";
+						hintLine2 = "color of " + orbsNeeded[0].ToUpper() + ".";
+					}
+					updatedBlackOrbDialogue.Add(0x22, $"The black ORB\n{hintLine1}\n{hintLine2}");
+				}
 			}
+
+			InsertDialogs(updatedBlackOrbDialogue);
+
 		}
 
 
@@ -290,9 +342,9 @@ namespace FF1Lib
 			Remove4OrbRequirementForToFRPortal();
 		}
 
-		private void BlackOrbRequiresSpecificOrbs(MT19337 rng, int goal, TalkRoutines talkroutines)
+		private List<String> BlackOrbRequiresSpecificOrbs(MT19337 rng, int goal, TalkRoutines talkroutines)
 		{
-			List<String> availableOrbs = new List<String> {	"earth", "fire", "water", "air"	};
+			List<String> availableOrbs = new List<String> {	"earth", "fire", "water", "wind" };
 			List<String> requiredOrbs = new List<String>();
 
 			// choose X random orbs for goal
@@ -306,10 +358,12 @@ namespace FF1Lib
 				availableOrbs.RemoveAt(orb);
 			}
 
+			List<String> requiredOrbsClone = new List<String>(requiredOrbs); // must send copy back for spoiler text
+
 			// change Black Orb requirement for specific orbs
 
 			// Talk_BlackOrb:                     AD 3260 2D 3360 2D 3460 2D 3160 F00CA0CA209690E67DE67DA57160A57260
-			//                                      ^fire && watr && air! && erth^
+			//                                      ^fire && watr && wind && erth^
 			//
 			// Example that needs just water orb: AD 3360 2D 3360 2D 3360 2D 3360 F00CA0CA209690E67DE67DA57160A57260
 			//                                      ^watr && watr && watr && watr^
@@ -330,7 +384,7 @@ namespace FF1Lib
 					case "water":
 						asm.Append("33602D"); // 6033 AND
 						break;
-					case "air":
+					case "wind":
 						asm.Append("34602D"); // 6034 AND
 						break;
 				}
@@ -345,6 +399,8 @@ namespace FF1Lib
 
 			// make portal under Black Orb walkable
 			Remove4OrbRequirementForToFRPortal();
+
+			return requiredOrbsClone;
 		}
 
 		private void Remove4OrbRequirementForToFRPortal()

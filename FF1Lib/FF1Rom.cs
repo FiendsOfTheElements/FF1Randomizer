@@ -366,7 +366,7 @@ namespace FF1Lib
 
 			if (!flags.FreeOrbs && !flags.ShardHunt && !flags.DeepDungeon)
 			{
-				SetOrbRequirement(rng, talkroutines, flags.OrbsRequired);
+				SetOrbRequirement(rng, talkroutines, flags.OrbsRequired, (bool)flags.OrbsRequiredSpoilers);
 			}
 
 			if (flags.TransformFinalFormation != FinalFormation.None && !flags.SpookyFlag)

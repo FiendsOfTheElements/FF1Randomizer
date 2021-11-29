@@ -546,6 +546,18 @@ namespace FF1Lib
 
 		public bool OrbsRequiredEnabled => !ShardHunt && !FreeOrbs && !DeepDungeon;
 
+		public bool? OrbsRequiredSpoilers
+		{
+			get => Flags.OrbsRequiredSpoilers;
+			set
+			{
+				Flags.OrbsRequiredSpoilers = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OrbsRequiredSpoilers"));
+			}
+		}
+
+		public bool OrbsSpoilersEnabled => (Flags.OrbsRequired != OrbsRequired.Count4);
+
 		public FinalFormation TransformFinalFormation
 		{
 			get => Flags.TransformFinalFormation;

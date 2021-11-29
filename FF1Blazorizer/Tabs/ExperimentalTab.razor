@@ -11,6 +11,7 @@
 		<div class="col1">
 			<h4>Goal</h4>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="orbsRequiredDropDown" IsEnabled="@Flags.OrbsRequiredEnabled" TItem="OrbsRequired" @bind-Value="Flags.OrbsRequired">Orbs Required:</EnumDropDown>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="orbsRequiredSpoilersCheckbox" IsEnabled="@(Flags.OrbsSpoilersEnabled)" @bind-Value="Flags.OrbsRequiredSpoilers">Orb Spoilers</TriStateCheckBox>
 
 			<div class="checkbox-cell"></div>
 			<h4>Maps</h4>

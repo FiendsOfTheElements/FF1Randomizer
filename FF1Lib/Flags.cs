@@ -198,6 +198,7 @@ namespace FF1Lib
 		public bool ShardHunt { get; set; } = false;
 		public ShardCount ShardCount { get; set; } = ShardCount.Count16;
 		public OrbsRequired OrbsRequired { get; set; } = OrbsRequired.Count4;
+		public bool? OrbsRequiredSpoilers { get; set; } = false;
 		public FinalFormation TransformFinalFormation { get; set; } = FinalFormation.None;
 		public bool? ChaosRush { get; set; } = false;
 		public bool? ShortToFR { get; set; } = false;
