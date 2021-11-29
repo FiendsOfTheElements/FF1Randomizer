@@ -12,7 +12,8 @@ namespace FF1Lib
 	public class ExpChests
 	{
 		public const int BaseExp = 4000;
-		
+
+		public Item FirstExpItem { get; private set; } = (Item)0xB0;
 
 		public enum ChestXPType
 		{
@@ -86,7 +87,15 @@ namespace FF1Lib
 				itemNames[(int)e] = exp.ToString() + " EXP";
 			}
 
-			rom.PutInBank(0x11, 0xB447, new byte[] { (byte)firstExpItem });
+			FirstExpItem = firstExpItem;
+			if (flags.Archipelago)
+			{
+				rom.PutInBank(0x11, 0xB442, new byte[] { (byte)firstExpItem });
+			}
+			else
+			{
+				rom.PutInBank(0x11, 0xB447, new byte[] { (byte)firstExpItem });
+			}
 
 
 			var result = treasureData.Data.Where(x => x > Item.Gold10).OrderBy(x => x).Select(x => itemNames[(int)x]).ToList();
@@ -187,7 +196,16 @@ namespace FF1Lib
 				rom.PutInBank(0x11, 0xB900 + currentChestIndex, new byte[] { (byte)expChests.Last().Item2 });
 			}
 
-			rom.PutInBank(0x11, 0xB447, new byte[] { (byte)firstExpItem });
+			FirstExpItem = firstExpItem;
+			if (flags.Archipelago)
+			{
+				rom.PutInBank(0x11, 0xB442, new byte[] { (byte)firstExpItem });
+			}
+			else
+			{
+				rom.PutInBank(0x11, 0xB447, new byte[] { (byte)firstExpItem });
+			}
+
 			//put the comparision in the chest counter
 			rom.PutInBank(0x11, 0xB536, new byte[] { (byte)firstExpItem });
 
