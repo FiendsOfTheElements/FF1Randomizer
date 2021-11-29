@@ -30,6 +30,18 @@
 		"description": "Disables the minimap."
 	},
 	{
+		"Id": "itemMagicMode",
+		"title": "Item Magic Shuffling",
+		"screenshot": null,
+		"description": "Vanilla: vanilla item magic or weaponizer/armorcrafter behavior.\n\nShuffle: shuffle item magic.\n\nNone: no item magic.\n\nRandom: any of the above."
+	},
+	{
+		"Id": "itemMagicPool",
+		"title": "Item Magic Pool",
+		"screenshot": null,
+		"description": "Sets the pool of Spells for item magic suffling.\n\nAll Magic: all valid spells.\n\nBalanced: removes too weak and too strong spells.\n\nLow: removes too strong spells.\n\nSupport: removes too strong spells and all damage spells.\n\nRandom: any of the above."
+	},
+	{
 		"Id": "quickMinimapLoad",
 		"title": "Quick Minimap Load",
 		"screenshot": "quickminimapload.gif",
@@ -1710,12 +1722,6 @@
 		"title": "All Weapons Cast Spells",
 		"screenshot": "magisizeWeapons.png",
 		"description": "All weapons can cast randomly assigned spells. Excludes standard casting weapons which, naturally, continue to cast their normally assigned spells."
-	},
-	{
-		"Id": "magisizeWeaponsBalancedCheckBox",
-		"title": "Balanced Spells",
-		"screenshot": "magisizeWeaponsBalancedCheckBox.gif",
-		"description": "When all weapons can cast magic, spells are assigned based on the strength of the spell and the relative rarity of the weapons. The rarer a weapon is, the stronger the spell assigned to it will be."
 	},
 
 	{

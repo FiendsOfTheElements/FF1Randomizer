@@ -56,6 +56,16 @@ namespace FF1Lib
 
 		#endregion
 
+	public bool Archipelago { get; set; } = false;
+		public bool ArchipelagoGold { get; set; } = false;
+		public bool ArchipelagoConsumables { get; set; } = false;
+		public bool ArchipelagoShards { get; set; } = false;
+		public ArchipelagoEquipment ArchipelagoEquipment { get; set; } = ArchipelagoEquipment.None;
+
+		public ItemMagicMode ItemMagicMode { get; set; } = ItemMagicMode.Vanilla;
+		public ItemMagicPool ItemMagicPool { get; set; } = ItemMagicPool.All;
+		public bool? MagisizeWeapons { get; set; } = false;
+
 		public bool DisableMinimap { get; set; } = false;
 
 		public bool QuickMinimapLoad { get; set; } = false;
@@ -118,8 +128,6 @@ namespace FF1Lib
 		public OwMapExchangeData ReplacementMap { get; set; } = null;
 
 		public string ResourcePack { get; set; } = null;
-
-		public bool? NoItemMagic { get; set; } = false;
 
 		#region ShopKiller
 
@@ -215,9 +223,6 @@ namespace FF1Lib
 		public bool? MagicShopLocationPairs { get; set; } = false;
 		public bool? MagicLevels { get; set; } = false;
 		public bool? MagicPermissions { get; set; } = false;
-		public bool? ItemMagic { get; set; } = false;
-		public bool? MagisizeWeapons { get; set; } = false;
-		public bool? MagisizeWeaponsBalanced { get; set; } = false;
 		public bool? Weaponizer { get; set; } = false;
 		public bool? WeaponizerNamesUseQualityOnly { get; set; } = false;
 		public bool? WeaponizerCommonWeaponsHavePowers { get; set; } = false;
@@ -609,7 +614,6 @@ namespace FF1Lib
 
 		[IntegerFlag(-9, 9)]
 		public int RandomArmorBonusHigh { get; set; } = 5;
-		public bool? BalancedItemMagicShuffle { get; set; } = false;
 		public bool? SeparateBossHPScaling { get; set; } = false;
 		public bool? SeparateEnemyHPScaling { get; set; } = false;
 		public bool? ClampBossHPScaling { get; set; } = false;
@@ -921,6 +925,10 @@ namespace FF1Lib
 					property.SetValue(newflags, newvalue);
 				}
 			}
+
+			if (flags.ItemMagicMode == ItemMagicMode.Random) newflags.ItemMagicMode = (ItemMagicMode)rng.Between(0, 2);
+			if (flags.ItemMagicPool == ItemMagicPool.Random) newflags.ItemMagicPool = (ItemMagicPool)rng.Between(0, 3);
+
 			return newflags;
 		}
 

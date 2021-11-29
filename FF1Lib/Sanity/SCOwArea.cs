@@ -37,5 +37,19 @@ namespace FF1Lib.Sanity
 			area.Links.Add(Index);
 			Links.Add(area.Index);
 		}
+
+		public SCRequirements Requirements
+		{
+			get
+			{
+				var req = SCRequirements.None;
+
+				if (Tile.HasFlag(SCBitFlags.River)) req |= SCRequirements.Canoe;
+				if (Tile.HasFlag(SCBitFlags.Ocean)) req |= SCRequirements.Ship;
+				if (Tile.HasFlag(SCBitFlags.Chime)) req |= SCRequirements.Chime;
+
+				return req;
+			}
+		}
 	}
 }

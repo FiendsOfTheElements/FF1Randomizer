@@ -15,6 +15,16 @@ namespace FF1Lib.Sanity
 
 		public SCBitFlagSet(IEnumerable<SCBitFlags> values) : base(values) { }
 
+		public SCBitFlagSet Restrict(SCBitFlags flags)
+		{
+			return new SCBitFlagSet(this.Select(f => f | flags));
+		}
+
+		public SCBitFlagSet Restrict(SCBitFlagSet flags)
+		{
+			return new SCBitFlagSet(this.Select(f1 => flags.Select(f2 => f1 | f2)).SelectMany(x => x));
+		}
+
 		public bool Merge(SCBitFlags requirements)
 		{
 			if (this.Where(req => req.IsSubsetOf(requirements)).Any()) return false;
