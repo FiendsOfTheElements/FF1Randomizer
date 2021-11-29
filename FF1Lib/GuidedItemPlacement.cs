@@ -58,7 +58,16 @@ namespace FF1Lib
 					List<Item> unrestricted = new List<Item> { Item.Key, Item.Canoe, Item.Floater };
 
 					// We will place these items in this very order so that we can ensure the bridge is early, and we don't need the floater to find the ship.
-					List<Item> fixedPlacements = new List<Item> { Item.Key, Item.Bridge, Item.Canoe };
+					List<Item> fixedPlacements;
+					if (_flags.Archipelago)
+					{
+						fixedPlacements = new List<Item> { Item.Bridge, Item.Key, Item.Canoe };
+					}
+					else
+					{
+						fixedPlacements = new List<Item> { Item.Key, Item.Bridge, Item.Canoe };
+					}
+
 					List<Item> nextPlacements = new List<Item> { Item.Ship, Item.Canal };
 					List<Item> lastPlacements = new List<Item> { Item.Floater, Item.Lute, Item.Crown, Item.Crystal, Item.Herb, Item.Tnt, Item.Adamant,
 						Item.Slab, Item.Ruby, Item.Rod, Item.Chime, Item.Tail, Item.Cube, Item.Bottle, Item.Oxyale };

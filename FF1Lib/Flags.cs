@@ -56,6 +56,12 @@ namespace FF1Lib
 
 		#endregion
 
+	public bool Archipelago { get; set; } = false;
+		public bool ArchipelagoGold { get; set; } = false;
+		public bool ArchipelagoConsumables { get; set; } = false;
+		public bool ArchipelagoShards { get; set; } = false;
+		public ArchipelagoEquipment ArchipelagoEquipment { get; set; } = ArchipelagoEquipment.None;
+
 		public ItemMagicMode ItemMagicMode { get; set; } = ItemMagicMode.Vanilla;
 		public ItemMagicPool ItemMagicPool { get; set; } = ItemMagicPool.All;
 		public bool? MagisizeWeapons { get; set; } = false;

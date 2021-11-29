@@ -5063,6 +5063,67 @@ namespace FF1Lib
 			}
 		}
 
+		public bool Archipelago
+		{
+			get => Flags.Archipelago;
+			set
+			{
+				Flags.Archipelago = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ArchipelagoConsumables
+		{
+			get => Flags.ArchipelagoConsumables;
+			set
+			{
+				Flags.ArchipelagoConsumables = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ArchipelagoGold
+		{
+			get => Flags.ArchipelagoGold;
+			set
+			{
+				Flags.ArchipelagoGold = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ArchipelagoShards
+		{
+			get => Flags.ArchipelagoShards;
+			set
+			{
+				Flags.ArchipelagoShards = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public ArchipelagoEquipment ArchipelagoEquipment
+		{
+			get => Flags.ArchipelagoEquipment;
+			set
+			{
+				Flags.ArchipelagoEquipment = value;
+				RaisePropertyChanged();
+			}
+		}
+
+
+		public string PlayerName
+		{
+			get => Preferences.PlayerName;
+			set
+			{
+				Preferences.PlayerName = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public void LoadResourcePackFlags(Stream stream) {
 		    Flags.LoadResourcePackFlags(stream);
 		    RaisePropertyChanged();
