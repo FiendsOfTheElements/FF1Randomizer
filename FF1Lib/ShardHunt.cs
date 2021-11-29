@@ -221,28 +221,19 @@ namespace FF1Lib
 
 		public void SetOrbRequirement(MT19337 rng, TalkRoutines talkroutines, int orbsRequiredCount, OrbsRequiredMode mode, bool spoilersEnabled)
 		{
-			int goal = -1;
+			int goal = 0;
 			switch (orbsRequiredCount)
 			{
-				case 4: // all 4
-					return; // do nothing
-				case 3: // any 3
-					goal = 3;
-					break;
-				case 2: // any 2
-					goal = 2;
-					break;
-				case 1: // any 1
-					goal = 1;
-					break;
-				case 5: // random
-					goal = rng.Between(1, 3);
-					break;
+				case 4: return; // do nothing
+				case 3: goal = 3; break;
+				case 2: goal = 2; break;
+				case 1: goal = 1; break;
+				case 5: goal = rng.Between(1, 3); break;
 			}
 
 			Dictionary<int, String> updatedBlackOrbDialogue = new Dictionary<int, String>();
 			String orbIntro = "The ORBS now cover";
-			if (Math.Abs(goal) == 1)
+			if (goal == 1)
 			{
 				orbIntro = "The ORB now covers";
 			}
@@ -264,19 +255,15 @@ namespace FF1Lib
 					String total = "";
 					switch (goal)
 					{
-						case 1: total = "ONE";
-							break;
-						case 2: total = "TWO";
-							break;
-						case 3: total = "THREE";
-							break;
+						case 1: total = "ONE"; break;
+						case 2: total = "TWO"; break;
+						case 3: total = "THREE"; break;
 					}
 					updatedBlackOrbDialogue.Add(0x22, $"The black ORB\nwhispers ominously..\nBring me {total}.");
 				}
 			} else {
 				// Orb Requirement is Random 3, Random 2, or Random 1
 
-				goal = Math.Abs(goal); // was negative to differentiate Any# vs Random#
 				List<String> orbsNeeded = BlackOrbRequiresSpecificOrbs(rng, goal, talkroutines);
 
 				if (spoilersEnabled)
@@ -305,11 +292,8 @@ namespace FF1Lib
 					updatedBlackOrbDialogue.Add(0x22, $"The black ORB\n{hintLine1}\n{hintLine2}");
 				}
 			}
-
 			InsertDialogs(updatedBlackOrbDialogue);
-
 		}
-
 
 		private void BlackOrbChecksShardsCountFor(int goal, TalkRoutines talkroutines)
 		{
