@@ -534,17 +534,26 @@ namespace FF1Lib
 
 		public bool ExtraShardsEnabled => ShardHunt && !FreeOrbs;
 
-		public OrbsRequired OrbsRequired
+		public int OrbsRequiredCount
 		{
-			get => Flags.OrbsRequired;
+			get => Flags.OrbsRequiredCount;
 			set
 			{
-				Flags.OrbsRequired = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OrbsRequired"));
+				Flags.OrbsRequiredCount = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OrbsRequiredCount"));
 			}
 		}
 
-		public bool OrbsRequiredEnabled => !ShardHunt && !FreeOrbs && !DeepDungeon;
+		public OrbsRequiredMode OrbsRequiredMode
+		{
+			get => Flags.OrbsRequiredMode;
+			set
+			{
+				Flags.OrbsRequiredMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OrbsRequiredMode"));
+			}
+		}
+
 
 		public bool? OrbsRequiredSpoilers
 		{
@@ -556,7 +565,8 @@ namespace FF1Lib
 			}
 		}
 
-		public bool OrbsSpoilersEnabled => (Flags.OrbsRequired != OrbsRequired.Count4);
+		public bool OrbsRequiredEnabled => !ShardHunt && !FreeOrbs && !DeepDungeon;
+		public bool OrbsRequiredOptionsEnabled => OrbsRequiredEnabled && (Flags.OrbsRequiredCount != 4);
 
 		public FinalFormation TransformFinalFormation
 		{

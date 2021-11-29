@@ -211,53 +211,32 @@ namespace FF1Lib
 			Put(0x0B430, Blob.FromHex("0006060000000000"));
 		}
 
-		public enum OrbsRequired
+		public enum OrbsRequiredMode
 		{
-			[Description("All 4")]
-			Count4,
-			[Description("Any 3")]
-			Count3,
-			[Description("Any 2")]
-			Count2,
-			[Description("Any 1")]
-			Count1,
-			[Description("Random 3")]
-			Random3,
-			[Description("Random 2")]
-			Random2,
-			[Description("Random 1")]
-			Random1,
-			[Description("Random 1 - 3")]
-			RandomRange1to3,
+			[Description("Any")]
+			Any,
+			[Description("Specific")]
+			Random,
 		}
 
-		public void SetOrbRequirement(MT19337 rng, TalkRoutines talkroutines, OrbsRequired orbRequirements, bool spoilersEnabled)
+		public void SetOrbRequirement(MT19337 rng, TalkRoutines talkroutines, int orbsRequiredCount, OrbsRequiredMode mode, bool spoilersEnabled)
 		{
 			int goal = -1;
-			switch (orbRequirements)
+			switch (orbsRequiredCount)
 			{
-				case OrbsRequired.Count4: // all 4
+				case 4: // all 4
 					return; // do nothing
-				case OrbsRequired.Count3: // any 3
+				case 3: // any 3
 					goal = 3;
 					break;
-				case OrbsRequired.Count2: // any 2
+				case 2: // any 2
 					goal = 2;
 					break;
-				case OrbsRequired.Count1: // any 1
+				case 1: // any 1
 					goal = 1;
 					break;
-				case OrbsRequired.Random3: // random 3
-					goal = -3;
-					break;
-				case OrbsRequired.Random2: // random 2
-					goal = -2;
-					break;
-				case OrbsRequired.Random1: // random 1
-					goal = -1;
-					break;
-				case OrbsRequired.RandomRange1to3: // random 1 - 3
-					goal = rng.Between(-3, -1);
+				case 5: // random
+					goal = rng.Between(1, 3);
 					break;
 			}
 
@@ -269,7 +248,7 @@ namespace FF1Lib
 			}
 			updatedBlackOrbDialogue.Add(0x21, $"{orbIntro}\nthe black ORB..\nTo take a step forward\nis to go back 2000 years\nin time.");
 
-			if (goal > 0)
+			if (mode.Equals(OrbsRequiredMode.Any))
 			{
 				// Orb Requirement is Any 3, Any 2, or Any 1
 
