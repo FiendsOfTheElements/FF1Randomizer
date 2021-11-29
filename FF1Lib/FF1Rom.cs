@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using FF1Lib.Assembly;
 using System.Text.RegularExpressions;
 using FF1Lib.Sanity;
+using System.Diagnostics;
 
 namespace FF1Lib
 {
@@ -33,6 +34,12 @@ namespace FF1Lib
 
 		private SanityCheckerV2 sanityChecker = null;
 		private IncentiveData incentivesData = null;
+
+		public new void Put(int index, Blob data)
+		{
+			//Debug.Assert(index <= 0x4000 * 0x0E + 0x9F48 - 0x8000 && (index + data.Length) > 0x4000 * 0x0E + 0x9F48 - 0x8000);
+			base.Put(index, data);
+		}
 
 		public void PutInBank(int bank, int address, Blob data)
 		{

@@ -480,11 +480,9 @@ namespace FF1Lib
 
 			if (flags.Archipelago)
 			{
-				//Replace NewCheckforSpace with patch in 0E_9C80_ItemShopCheckForSpace.asm
-				PutInBank(0x0E, 0x9E08, Enumerable.Repeat((byte)0xEA, 19).ToArray());
-				PutInBank(0x0E, 0xA4B2, Blob.FromHex("20809C"));
-
-				PutInBank(0x0E, 0x9C80, Blob.FromHex("AD0C03186920AAC90CD008A9009D00604CA89CC936900CBD0060186D0A03C964901260A9019D0060A2FFBD006209029D006218609D00601860"));
+				//Replace NewCheckforSpace with patch in 0E_9F48_ItemShopCheckForSpace.asm
+				PutInBank(0x0E, 0xA4B2, Blob.FromHex("20489F"));
+				PutInBank(0x0E, 0x9F48, Blob.FromHex("AE0C03E016900CBD2060186D0A03C964900D60A2FFBD006209029D006218609D20601860"));
 			}
 		}
 
