@@ -2058,6 +2058,19 @@
 		"title": "Increase Dark Penalty",
 		"screenshot": "increaseDarkPenaltyCheckBox.png",
 		"description": "If enabled, \"Dark\" status severely decreases an attacker's chance to hit or crit an enemy.\nAffects both players and enemies inflicted with \"Dark\" status."
+	},
+	{
+		"Id": "OrbsRequiredModeDropDown",
+		"title": "Total Orbs Required",
+		"screenshot": "orbsRequiredDropDown.png",
+		"description": "Changes the total number of ORBS needed to enter the Temple of Fiends Revisited.\n[grid][r]{i}Option|{i}Explained[r]{l}4|{l}(Vanilla Behavior) All 4 ORBS are required[r]{l}Any 3|{l}Any combination of 3 ORBS are accepted[r]{l}Any 2|{l}Any combination of 2 ORBS are accepted[r]{l}Any 1|{l}Any single ORB is accepted[r]{l}Specific 3|{l}3 Randomly selected ORBS are required[r]{l}Specific 2|{l}2 Randomly selected ORBS are required[r]{l}Specific 1|{l}1 Randomly selected ORB is required\n\n\"Total Orbs Required: Random\" will pick a number 1 - 3.\n\nGoing above the minimum ORB requirement will still grant access to ToFR.\nThis option is ignored if Shard Hunt, Deep Dungeon, and/or Free Orbs is enabled."
+	},
+	{
+		"Id": "orbsRequiredSpoilersCheckbox",
+		"title": "Orbs Required - Orb Spoilers",
+		"screenshot": "orbsRequiredSpoilersCheckBox.png",
+		"description": "When enabled, the Black Orb will explain its requirements."
 	}
+
 
 ]

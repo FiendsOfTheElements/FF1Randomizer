@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 
 namespace FF1Lib
 {
@@ -151,8 +152,7 @@ namespace FF1Lib
 			Put(0x3B87D, Blob.FromHex($"A9{ppu & 0xFF:X2}8511A9{(ppu & 0xFF00) >> 8:X2}8512A977A00048AD0220A5128D0620A51118692085118D0620900DAD0220E612A5128D0620A5118D062068A200CC3560D002A976C0{goal:X2}D001608D0720C8E8E006D0EB1890C1"));
 
 			// Black Orb Override to check for shards rather than ORBs.
-			talkroutines.Replace(newTalkRoutines.Talk_BlackOrb, Blob.FromHex($"AD3560C9{goal:X2}300CA0CA209690E67DE67DA57160A57260"));
-			Put(0x7CDB3, Blob.FromHex("08CE"));
+			BlackOrbChecksShardsCountFor(goal,talkroutines);
 
 			// A little narrative overhaul.
 			Blob intro = FF1Text.TextToStory(new string[]
@@ -209,6 +209,166 @@ namespace FF1Lib
 			Put(0x0B410, Blob.FromHex("0000006080A0E0C0"));
 			Put(0x0B420, Blob.FromHex("0000006060000000"));
 			Put(0x0B430, Blob.FromHex("0006060000000000"));
+		}
+
+		public enum OrbsRequiredMode
+		{
+			[Description("Any")]
+			Any,
+			[Description("Specific")]
+			Random,
+		}
+
+		public void SetOrbRequirement(MT19337 rng, TalkRoutines talkroutines, int orbsRequiredCount, OrbsRequiredMode mode, bool spoilersEnabled)
+		{
+			int goal = 0;
+			switch (orbsRequiredCount)
+			{
+				case 4: return; // do nothing
+				case 3: goal = 3; break;
+				case 2: goal = 2; break;
+				case 1: goal = 1; break;
+				case 5: goal = rng.Between(1, 3); break;
+			}
+
+			Dictionary<int, String> updatedBlackOrbDialogue = new Dictionary<int, String>();
+			String orbIntro = "The ORBS now cover";
+			if (goal == 1)
+			{
+				orbIntro = "The ORB now covers";
+			}
+			updatedBlackOrbDialogue.Add(0x21, $"{orbIntro}\nthe black ORB..\nTo take a step forward\nis to go back 2000 years\nin time.");
+
+			if (mode.Equals(OrbsRequiredMode.Any))
+			{
+				// Orb Requirement is Any 3, Any 2, or Any 1
+
+				// Modify "shift earth orb down code" that normally assigns shard values 2 for earth / fire, and 4 for water / wind
+				// (now assigns shard value of 1 for all orbs; AKA modded 0F_CE12_OrbRewards.asm)
+				Put(0x7CE12, Blob.FromHex("A201A000F010A201A001D00AA201A002D004A201A003B93160D00FA901993160188A6D35608D3560E66C1860"));
+
+				// Adjust Black Orb Behavior to check $6035 for goal "shards" (in this case, the orb count)
+				BlackOrbChecksShardsCountFor(goal, talkroutines);
+
+				if (spoilersEnabled)
+				{
+					String total = "";
+					switch (goal)
+					{
+						case 1: total = "ONE"; break;
+						case 2: total = "TWO"; break;
+						case 3: total = "THREE"; break;
+					}
+					updatedBlackOrbDialogue.Add(0x22, $"The black ORB\nwhispers ominously..\nBring me {total}.");
+				}
+			} else {
+				// Orb Requirement is Random 3, Random 2, or Random 1
+
+				List<String> orbsNeeded = BlackOrbRequiresSpecificOrbs(rng, goal, talkroutines);
+
+				if (spoilersEnabled)
+				{
+					String hintLine1 = "";
+					String hintLine2 = "";
+
+					if (orbsNeeded.Count > 1)
+					{
+						hintLine1 = "swirls colors of";
+						for (int i = 0; i < orbsNeeded.Count; i++)
+						{
+							if (i < orbsNeeded.Count - 1)
+							{
+								hintLine2 += orbsNeeded[i].ToUpper();
+								if (orbsNeeded.Count == 3) { hintLine2 += ", "; } else { hintLine2 += " "; };
+							} else
+							{
+								hintLine2 += "and " + orbsNeeded[i].ToUpper() + ".";
+							}
+						}
+					} else {
+						hintLine1 = "swirls with the";
+						hintLine2 = "color of " + orbsNeeded[0].ToUpper() + ".";
+					}
+					updatedBlackOrbDialogue.Add(0x22, $"The black ORB\n{hintLine1}\n{hintLine2}");
+				}
+			}
+			InsertDialogs(updatedBlackOrbDialogue);
+		}
+
+		private void BlackOrbChecksShardsCountFor(int goal, TalkRoutines talkroutines)
+		{
+			// black orb typically checks for earth($6031) fire($6032) water ($6033) wind ($6034)
+			// ShiftEarthOrbDown() creates a count at $6035, and this NPC talkroutine compares the $6035 value to goal
+			talkroutines.Replace(newTalkRoutines.Talk_BlackOrb, Blob.FromHex($"AD3560C9{goal:X2}300CA0CA209690E67DE67DA57160A57260"));
+
+			// make portal under Black Orb walkable
+			Remove4OrbRequirementForToFRPortal();
+		}
+
+		private List<String> BlackOrbRequiresSpecificOrbs(MT19337 rng, int goal, TalkRoutines talkroutines)
+		{
+			List<String> availableOrbs = new List<String> {	"earth", "fire", "water", "wind" };
+			List<String> requiredOrbs = new List<String>();
+
+			// choose X random orbs for goal
+			for (int i = 0; i < goal; i++)
+			{
+				// choose random orb from available
+				int orb = rng.Between(0, availableOrbs.Count - 1);
+
+				// add to required ; remove from available
+				requiredOrbs.Add(availableOrbs[orb]);
+				availableOrbs.RemoveAt(orb);
+			}
+
+			List<String> requiredOrbsClone = new List<String>(requiredOrbs); // must send copy back for spoiler text
+
+			// change Black Orb requirement for specific orbs
+
+			// Talk_BlackOrb:                     AD 3260 2D 3360 2D 3460 2D 3160 F00CA0CA209690E67DE67DA57160A57260
+			//                                      ^fire && watr && wind && erth^
+			//
+			// Example that needs just water orb: AD 3360 2D 3360 2D 3360 2D 3360 F00CA0CA209690E67DE67DA57160A57260
+			//                                      ^watr && watr && watr && watr^
+
+			StringBuilder asm = new StringBuilder();
+			asm.Append("AD");
+			for (int i = 0; i < 4; i++) // substituting 4 comparisons
+			{
+				string orbName = requiredOrbs[0];
+				switch(orbName)
+				{
+					case "earth":
+						asm.Append("31602D"); // 6031 AND
+						break;
+					case "fire":
+						asm.Append("32602D"); // 6032 AND
+						break;
+					case "water":
+						asm.Append("33602D"); // 6033 AND
+						break;
+					case "wind":
+						asm.Append("34602D"); // 6034 AND
+						break;
+				}
+				if (requiredOrbs.Count > 1)
+				{
+					requiredOrbs.RemoveAt(0);
+				}
+			}
+			asm.Remove(23, 2); // removes unneeded trailing "2D" from appends above
+			asm.Append("F00CA0CA209690E67DE67DA57160A57260"); // trailing asm from original talkroutine
+			talkroutines.Replace(newTalkRoutines.Talk_BlackOrb, Blob.FromHex(asm.ToString()));
+
+			// make portal under Black Orb walkable
+			Remove4OrbRequirementForToFRPortal();
+
+			return requiredOrbsClone;
+		}
+
+		private void Remove4OrbRequirementForToFRPortal()
+		{
+			Put(0x7CDB3, Blob.FromHex("08CE"));
 		}
 	}
 }

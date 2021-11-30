@@ -56,12 +56,12 @@
 		<div class="col1 full">
 			<div class="checkbox-cell"></div>
 			<h4>Equipment Blursing</h4>
-			<DoubleSlider ShowPositiveSign DisableTooltip DoubleCol Id="RandomWeaponBonusSlider" IsEnabled="Flags.RandomWeaponBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomWeaponBonusHigh" @bind-ValueLow="Flags.RandomWeaponBonusLow">
+			<DoubleSlider ShowPositiveSign DisableTooltip DoubleCol Id="RandomWeaponBonusSlider" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomWeaponBonusHigh" @bind-ValueLow="Flags.RandomWeaponBonusLow">
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonus" @bind-Value="Flags.RandomWeaponBonus">Blursed Weapons:</TriStateCheckBox>
 			</DoubleSlider>
 			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.RandomWeaponBonus" Id="RandomWeaponBonusExcludeMasa" @bind-Value="Flags.RandomWeaponBonusExcludeMasa">Exclude Masmune</TriStateCheckBox>
 			<div class="row-seperator"></div>
-			<DoubleSlider ShowPositiveSign DisableTooltip DoubleCol Id="RandomArmorBonusSlider" IsEnabled="Flags.RandomArmorBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomArmorBonusHigh" @bind-ValueLow="Flags.RandomArmorBonusLow">
+			<DoubleSlider ShowPositiveSign DisableTooltip DoubleCol Id="RandomArmorBonusSlider" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomArmorBonusHigh" @bind-ValueLow="Flags.RandomArmorBonusLow">
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomArmorBonus" @bind-Value="Flags.RandomArmorBonus">Blursed Armor:</TriStateCheckBox>
 			</DoubleSlider>
 		<div class="checkbox-cell"></div>

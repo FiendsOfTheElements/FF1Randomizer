@@ -370,6 +370,11 @@ namespace FF1Lib
 				EnableShardHunt(rng, talkroutines, flags.ShardCount);
 			}
 
+			if (!flags.FreeOrbs && !flags.ShardHunt && !flags.DeepDungeon)
+			{
+				SetOrbRequirement(rng, talkroutines, flags.OrbsRequiredCount, flags.OrbsRequiredMode, (bool)flags.OrbsRequiredSpoilers);
+			}
+
 			if (flags.TransformFinalFormation != FinalFormation.None && !flags.SpookyFlag)
 			{
 				TransformFinalFormation(flags.TransformFinalFormation, flags.EvadeCap, rng);
