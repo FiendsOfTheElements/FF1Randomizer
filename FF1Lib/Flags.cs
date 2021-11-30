@@ -121,10 +121,6 @@ namespace FF1Lib
 		[IntegerFlag(0, Int32.MaxValue-1)]
 		public int MapGenSeed { get; set; } = 0;
 
-		public bool MapGenRandomizedAccessReqs { get; set; } = false;
-		public bool MapGenUnsafeStart { get; set; } = false;
-		public bool MapGenLostWoods { get; set; } = false;
-
 		public OwMapExchangeData ReplacementMap { get; set; } = null;
 
 		public string ResourcePack { get; set; } = null;
@@ -932,7 +928,7 @@ namespace FF1Lib
 			return newflags;
 		}
 
-		private Flags ShallowCopy()
+		public Flags ShallowCopy()
 		{
 			return (Flags)this.MemberwiseClone();
 		}

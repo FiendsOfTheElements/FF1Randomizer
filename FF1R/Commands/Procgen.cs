@@ -18,29 +18,43 @@ namespace FF1R.Commands
     [Command("procgen", Description = "Create a procedurally generated map")]
     class Procgen
     {
-	[Argument(0, Description = "The seed")]
-	public int Seed { get; }
+	[Option("-s")]
+	public int Seed { get; } = 0;
 
-	[Option("-f")]
-	public string Flagsfile { get; }
+	[Option("-t")]
+	public string Subtype { get; } = "GenerateNewOverworld";
 
 	[Option("-r")]
 	public bool DoRender { get; }
 
+	[Option("-y")]
+	public bool Retry { get; }
+
 	int OnExecute(IConsole console)
 	{
-	    var rng = new MT19337((uint)this.Seed);
-
-	    Flags flags;
-	    if (this.Flagsfile != null) {
-		(_, flags, _) = Flags.FromJson(System.IO.File.ReadAllText(this.Flagsfile));
-	    } else {
-		flags = new Flags();
+	    if (Seed == 0) {
+		Console.WriteLine("Missing seed");
+		return 1;
 	    }
 
-	    var replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, flags);
+	    int effectiveSeed = this.Seed;
+	    var rng = new MT19337((uint)effectiveSeed);
+
+	    OwMapExchangeData replacementMap = null;
+	    do {
+		try {
+		    replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, Enum.Parse<OwMapExchanges>(Subtype));
+		} catch (Exception) {
+		    if (!this.Retry) {
+			throw;
+		    }
+		    effectiveSeed = (int)rng.Next();
+		    rng = new MT19337((uint)effectiveSeed);
+		}
+	    } while (replacementMap == null);
+
 	    replacementMap.Checksum = replacementMap.ComputeChecksum();
-	    replacementMap.Seed = this.Seed;
+	    replacementMap.Seed = effectiveSeed;
 	    replacementMap.FFRVersion = FF1Lib.FFRVersion.Version;
 
 	    var fn = $"FFR_map_{replacementMap.Checksum}.json";

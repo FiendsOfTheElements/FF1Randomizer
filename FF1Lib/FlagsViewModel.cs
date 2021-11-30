@@ -4620,26 +4620,6 @@ namespace FF1Lib
 			}
 		}
 
-		public bool MapGenRandomizedAccessReqs
-		{
-			get => Flags.MapGenRandomizedAccessReqs;
-			set
-			{
-				Flags.MapGenRandomizedAccessReqs = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public bool MapGenUnsafeStart
-		{
-			get => Flags.MapGenUnsafeStart;
-			set
-			{
-				Flags.MapGenUnsafeStart = value;
-				RaisePropertyChanged();
-			}
-		}
-
 		public ExtConsumableSet ExtConsumableSet
 		{
 			get => Flags.ExtConsumableSet;
@@ -5222,5 +5202,5 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-	}	
+	}
 }

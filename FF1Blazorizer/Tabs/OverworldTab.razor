@@ -18,15 +18,12 @@
 		<br>
 		<input type="text" style="width: calc(100% - 160px);" class="nes-input @(_mapgenSeedInputClass)" id="mapgenSeedInput"
 		@onchange="@OnSeedInputChanged" value="@(_mapgenSeed)"
-		disabled="@(Flags.OwMapExchange != OwMapExchanges.Desert && Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld)" />
-		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnNewSeed">New</a>
-		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnClearSeed">Clear</a>
+		disabled="@(!IsGenerateMap(Flags.OwMapExchange))" />
+		<a class='styled-button @(IsGenerateMap(Flags.OwMapExchange) ? "" : "disabled-button")' @onclick="@OnNewSeed">New</a>
+		<a class='styled-button @(IsGenerateMap(Flags.OwMapExchange) ? "" : "disabled-button")' @onclick="@OnClearSeed">Clear</a>
 		<br>
 		<br>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="mapgenRNGAccessReqsCheckBox" IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld)" @bind-Value="Flags.MapGenRandomizedAccessReqs">Randomize Access Requirements</CheckBox>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="mapgenUnsafeStartCheckBox" IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld && Flags.MapGenRandomizedAccessReqs)" @bind-Value="Flags.MapGenUnsafeStart">Unsafe start</CheckBox>
-
-		<a class='styled-button @((Flags.OwMapExchange == OwMapExchanges.Desert || Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld) ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>
+		<a class='styled-button @(IsGenerateMap(Flags.OwMapExchange) ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>
 		<a class='styled-button @(Flags.ReplacementMap != null && Flags.ReplacementMap.DecompressedMapRows != null ? "" : "disabled-button")' @onclick="@OnExportMap">Export Map</a>
 		<br>
 		<br>
@@ -84,9 +81,17 @@
 			_mapgenSeed = $"{Flags.MapGenSeed,8:X8}";
 		}
 
+		bool IsGenerateMap(OwMapExchanges ex) {
+		     return (ex == OwMapExchanges.GenerateNewOverworld ||
+		     ex == OwMapExchanges.GenerateNewOverworldShuffledAccess ||
+		     ex == OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe ||
+		     ex == OwMapExchanges.LostWoods ||
+		     ex == OwMapExchanges.Desert);
+		}
+
 		void OnNewSeed(MouseEventArgs e)
 		{
-			if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld && Flags.OwMapExchange != OwMapExchanges.Desert) {
+			if (!IsGenerateMap(Flags.OwMapExchange)) {
 				return;
 			}
 			ValidateSeed(Blob.Random(4).ToHex());
@@ -95,7 +100,7 @@
 
 		void OnClearSeed(MouseEventArgs e)
 		{
-			if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld && Flags.OwMapExchange != OwMapExchanges.Desert) {
+			if (!IsGenerateMap(Flags.OwMapExchange)) {
 				return;
 			}
 			ValidateSeed("00000000");
@@ -108,7 +113,7 @@
 		}
 
 		void OnGenerateMap(MouseEventArgs e) {
-			if (Flags.OwMapExchange != OwMapExchanges.GenerateNewOverworld && Flags.OwMapExchange != OwMapExchanges.Desert) {
+			if (!IsGenerateMap(Flags.OwMapExchange)) {
 				return;
 			}
 			if (Flags.MapGenSeed == 0) {
@@ -118,16 +123,19 @@
 			StateHasChanged();
 			var maprng = new MT19337((uint)Flags.MapGenSeed);
 			try {
-				if (Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld)
-				{
-					Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, Flags.Flags);
-				}
-				else if (Flags.OwMapExchange == OwMapExchanges.Desert)
-				{
+			        switch (Flags.OwMapExchange) {
+				case OwMapExchanges.GenerateNewOverworld:
+				case OwMapExchanges.GenerateNewOverworldShuffledAccess:
+				case OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe:
+				case OwMapExchanges.LostWoods:
+					Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, Flags.OwMapExchange);
+					break;
+				case OwMapExchanges.Desert:
 					Flags.ReplacementMap = DesertOfDeath.GenerateDesert(maprng);
+					break;
 				}
 
-				StatusMessage = "Success!";
+				StatusMessage = $"Success! checksum {Flags.ReplacementMap.ComputeChecksum()}";
 			} catch (Exception x)
 			{
 				StatusMessage = x.Message;

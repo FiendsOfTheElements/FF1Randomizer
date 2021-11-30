@@ -893,10 +893,31 @@ namespace FF1Lib.Procgen
                 }
                 sz -= 1;
 
-                pending.Add(p.OwUp);
-                pending.Add(p.OwRight);
-                pending.Add(p.OwDown);
-                pending.Add(p.OwLeft);
+		var up = p.OwUp;
+		var right = p.OwRight;
+		var down = p.OwDown;
+		var left = p.OwLeft;
+
+                if (this.Tilemap[up.Y,up.X] == OverworldTiles.LAND ||
+                    this.Tilemap[up.Y,up.X] == OverworldTiles.RIVER)
+		{
+		    pending.Add(up);
+		}
+                if (this.Tilemap[right.Y,right.X] == OverworldTiles.LAND ||
+                    this.Tilemap[right.Y,right.X] == OverworldTiles.RIVER)
+		{
+		    pending.Add(right);
+		}
+                if (this.Tilemap[down.Y,down.X] == OverworldTiles.LAND ||
+                    this.Tilemap[down.Y,down.X] == OverworldTiles.RIVER)
+		{
+		    pending.Add(down);
+		}
+                if (this.Tilemap[left.Y,left.X] == OverworldTiles.LAND ||
+                    this.Tilemap[left.Y,left.X] == OverworldTiles.RIVER)
+		{
+		    pending.Add(left);
+		}
             }
         }
 
@@ -1183,7 +1204,7 @@ namespace FF1Lib.Procgen
 	    return finalState;
 	}
 
-	public static OwMapExchangeData GenerateNewOverworld(MT19337 rng, Flags flags) {
+	public static OwMapExchangeData GenerateNewOverworld(MT19337 rng, OwMapExchanges mode) {
 	    var mt = new OverworldTiles();
 
 	    int maxtries = 1;
@@ -1192,7 +1213,7 @@ namespace FF1Lib.Procgen
 		tries--;
 		List<GenerationStep> worldGenSteps;
 
-		if (flags.MapGenLostWoods) {
+		if (mode == OwMapExchanges.LostWoods) {
 		    worldGenSteps = new List<GenerationStep> {
 			new GenerationStep("CreateLostWoodsMap", new object[]{}),
 			new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains, false}),
@@ -1249,7 +1270,8 @@ namespace FF1Lib.Procgen
 		    placementTries--;
 
 		    List<GenerationStep> placementSteps = new List<GenerationStep>();
-		    if (flags.MapGenRandomizedAccessReqs) {
+		    if (mode == OwMapExchanges.GenerateNewOverworldShuffledAccess ||
+			mode == OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe) {
 
 			var earlyRewardLocations = new List<OwFeature> {
 			    OverworldTiles.TEMPLE_OF_FIENDS,
@@ -1304,7 +1326,7 @@ namespace FF1Lib.Procgen
 
 			features.AddRange(earlyRewardLocations);
 
-			if (flags.MapGenUnsafeStart) {
+			if (mode == OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe) {
 			    features.AddRange(unsafeFeatures);
 			    unsafeFeatures.Clear();
 			}
@@ -1340,12 +1362,15 @@ namespace FF1Lib.Procgen
 			AddPlacements("PlaceInBiome", 4, 8, new object[] { null, true, false, false, false });
 			AddPlacements("PlaceInBiome", 3, 6, new object[] { null, false, true, true, true });
 			AddPlacements("PlaceInBiome", features.Count, features.Count, new object[] { null, false, true, true, false });
-		    } else if (flags.MapGenLostWoods) {
+		    } else if (mode == OwMapExchanges.LostWoods) {
 			placementSteps.AddRange(new GenerationStep[] {
 				new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}),
 				new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}),
 				new GenerationStep("PlaceInTitanWestRegion", new object[]{OverworldTiles.CONERIA_CASTLE}),
 				new GenerationStep("PlaceInTitanWestRegion", new object[]{OverworldTiles.MELMOND_TOWN}),
+				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
+										new int[]{OverworldTiles.DESERT_REGION},
+										false, true, false, false}),
 				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
 										new int[]{OverworldTiles.MARSH_REGION},
 										false, true, false, false}),
@@ -1355,9 +1380,6 @@ namespace FF1Lib.Procgen
 										false, false, true, false}),
 				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.PRAVOKA_CITY_MOAT,
 										new int[]{OverworldTiles.MARSH_REGION},
-										false, true, false, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
-										new int[]{OverworldTiles.DESERT_REGION},
 										false, true, false, false}),
 				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
 										new int[]{OverworldTiles.DESERT_REGION},
@@ -1409,7 +1431,7 @@ namespace FF1Lib.Procgen
 				new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.ONRAC_TOWN}),
 				new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.ASTOS_CASTLE}),
 			    });
-		    } else {
+		    } else if (mode == OwMapExchanges.GenerateNewOverworld) {
 			placementSteps.AddRange(new GenerationStep[] {
 				new GenerationStep("BridgeAlternatives", new object[]{}),
 				new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY_CASTLE}),
@@ -1479,6 +1501,8 @@ namespace FF1Lib.Procgen
 				new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.ICE_CAVE_FEATURE}),
 				new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.VOLCANO}),
 			    });
+		    } else {
+			throw new Exception($"Unknown mode {mode}");
 		    }
 
 		    var prePlacementState = new OverworldState(worldState);
@@ -1589,11 +1613,23 @@ namespace FF1Lib.Procgen
 
 	    var tiles = new List<string>();
 	    var onerow = new byte[OverworldState.MAPSIZE];
+	    List<List<byte>> decompressedRows = new List<List<byte>>();
 	    for (int y = 0; y < OverworldState.MAPSIZE; y++) {
+		decompressedRows.Add(new List<byte>(256));
 		for (int x = 0; x < OverworldState.MAPSIZE; x++) {
 		    onerow[x] = st.Tilemap[y,x];
+		    decompressedRows[y].Add(st.Tilemap[y,x]);
 		}
 		tiles.Add(Convert.ToBase64String(onerow));
+	    }
+	    var compressedMap = OverworldMap.CompressMapRows(decompressedRows);
+	    var compressedSize = 0;
+	    for (int y = 0; y < OverworldState.MAPSIZE; y++) {
+		compressedSize += compressedMap[y].Count;
+	    }
+
+	    if (compressedSize > OverworldMap.MaximumMapDataSize) {
+		throw new Exception($"Generated map is too large to fit in the ROM by {compressedSize - OverworldMap.MaximumMapDataSize} bytes, try a different seed.");
 	    }
 
 	    ExchangeData.DecompressedMapRows = tiles;
