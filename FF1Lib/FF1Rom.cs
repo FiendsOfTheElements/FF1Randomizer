@@ -340,7 +340,7 @@ namespace FF1Lib
 			    ArmorCrafter(rng, flags.ItemMagicMode == ItemMagicMode.None);
 			}
 
-			if (flags.ItemMagicMode != ItemMagicMode.None)
+			if (flags.ItemMagicMode != ItemMagicMode.None && flags.ItemMagicMode != ItemMagicMode.Vanilla)
 			{
 				ShuffleItemMagic(rng, flags);
 			}
