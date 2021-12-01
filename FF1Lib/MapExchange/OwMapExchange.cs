@@ -19,26 +19,32 @@ namespace FF1Lib
 		[Description("Vanilla (Default)")]
 		None,
 
-    [Description("Generate New Overworld")]
+		[Description("Generate New Overworld")]
 		GenerateNewOverworld,
 
-    [Description("Generate New Overworld (shuffled access)")]
+		[Description("Generate New Overworld (shuffled access)")]
 		GenerateNewOverworldShuffledAccess,
 
-    [Description("Generate New Overworld (unsafe start)")]
+		[Description("Generate New Overworld (unsafe start)")]
 		GenerateNewOverworldShuffledAccessUnsafe,
 
-    [Description("Lost Woods")]
+		[Description("Lost Woods")]
 		LostWoods,
 
-    [Description("Desert of Death")]
+		[Description("Desert of Death")]
 		Desert,
 
 		[Description("No Overworld")]
 		NoOverworld,
 
-    [Description("Random Pregenerated 512")]
+		[Description("Random Pregenerated 256")]
 		RandomPregenerated,
+
+		[Description("Random Pregenerated 256 (shuffled access)")]
+		RandomPregeneratedShuffled,
+
+		[Description("Random Pregenerated 256 (unsafe start)")]
+		RandomPregeneratedUnsafe,
 
 		[Description("Import Custom Map")]
 		ImportCustomMap,
@@ -54,8 +60,6 @@ namespace FF1Lib
 		ExitTeleData exit;
 		OwLocationData locations;
 		DomainData domains;
-
-		Stream mapStream;
 
 		public OwMapExchangeData Data => data;
 
@@ -78,38 +82,47 @@ namespace FF1Lib
 			ShipLocations = new ShipLocations(locations, data.ShipLocations);
 		}
 
-		public OwMapExchange(FF1Rom _rom, OverworldMap _overworldMap, MT19337 rng)
+		public OwMapExchange(FF1Rom _rom, Flags flags, OverworldMap _overworldMap, MT19337 rng)
 		{
- 			rom = _rom;
+			rom = _rom;
 			overworldMap = _overworldMap;
 
 			exit = new ExitTeleData(rom);
 			locations = new OwLocationData(rom);
 			domains = new DomainData(rom);
 
+			string name;
+
+			if (flags.OwMapExchange == OwMapExchanges.RandomPregenerated)
+			{
+				name = "normal256.zip";
+			}
+			else if (flags.OwMapExchange == OwMapExchanges.RandomPregenerated)
+			{
+				name = "shuffled256.zip";
+			}
+			else
+			{
+				name = "unsafe256.zip";
+			}
+
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith("pregenerated.zip"));
+			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith(name));
 
 			using Stream stream = assembly.GetManifestResourceStream(resourcePath);
 
 			var archive = new ZipArchive(stream);
 
-			var maplist = archive.Entries.Where(e => e.Name.EndsWith(".ffm")).Select(e => e.Name.Replace(".ffm", "")).ToList();
+			var maplist = archive.Entries.Where(e => e.Name.EndsWith(".json")).Select(e => e.Name).ToList();
 
 			var map = maplist.PickRandom(rng);
 
-
-			data = LoadJson(archive.GetEntry(map + ".json").Open());
+			data = LoadJson(archive.GetEntry(map).Open());
 
 			ShipLocations = new ShipLocations(locations, data.ShipLocations);
+		}
 
-			using var stream2 = archive.GetEntry(map + ".ffm").Open();
-			using var rd = new BinaryReader(stream2);
-			byte[] mapData = rd.ReadBytes(65536);
-			mapStream = new MemoryStream(mapData);
-    }
-
-    public OwMapExchange(FF1Rom _rom, OverworldMap _overworldMap, OwMapExchangeData replacement)
+		public OwMapExchange(FF1Rom _rom, OverworldMap _overworldMap, OwMapExchangeData replacement)
 		{
 
 			rom = _rom;
@@ -119,21 +132,18 @@ namespace FF1Lib
 			locations = new OwLocationData(rom);
 			domains = new DomainData(rom);
 
-      data = replacement;
+			data = replacement;
 
 			ShipLocations = new ShipLocations(locations, data.ShipLocations);
 		}
 
 		public void ExecuteStep1()
 		{
-			if (mapStream != null)
+
+			if (Data.DecompressedMapRows != null)
 			{
-				overworldMap.SwapMap(mapStream);
+				overworldMap.SwapMap(Data.DecompressedMapRows);
 			}
-      else if (Data.DecompressedMapRows != null)
-      {
-        overworldMap.SwapMap(Data.DecompressedMapRows);
-      }
 			else
 			{
 				overworldMap.SwapMap(name + ".ffm");
@@ -155,15 +165,16 @@ namespace FF1Lib
 
 			ShipLocations.SetShipLocation(255);
 
-			if (data.HorizontalBridge) {
-			    // Rotate bridge sprite
-			    // tiles $14 - $17
-			    // CHR for map tiles is bank $02 at $9C00
+			if (data.HorizontalBridge)
+			{
+				// Rotate bridge sprite
+				// tiles $14 - $17
+				// CHR for map tiles is bank $02 at $9C00
 
-			    // 0 1  \ \
-			    // 2 3  / /
+				// 0 1  \ \
+				// 2 3  / /
 
-			    var tile0 = new byte[8*8] {
+				var tile0 = new byte[8 * 8] {
 				0, 0, 0, 0, 1, 1, 1, 1,
 				0, 0, 1, 1, 2, 2, 2, 2,
 				1, 1, 2, 2, 2, 2, 2, 2,
@@ -172,9 +183,9 @@ namespace FF1Lib
 				1, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2,
-			    };
+				};
 
-			    var tile1 = new byte[8*8] {
+				var tile1 = new byte[8 * 8] {
 				2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2,
@@ -183,23 +194,25 @@ namespace FF1Lib
 				1, 1, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 1, 1, 1, 1, 1,
 				1, 1, 1, 0, 0, 0, 0, 0
-			    };
+				};
 
-			    var tile2 = new byte[8*8];
-			    var tile3 = new byte[8*8];
+				var tile2 = new byte[8 * 8];
+				var tile3 = new byte[8 * 8];
 
-			    for (int j = 0; j < 8; j++) {
-				for (int i = 0; i < 8; i++) {
-				    // mirror tiles
-				    tile2[j*8 + i] = tile0[j*8 + (7-i)];
-				    tile3[j*8 + i] = tile1[j*8 + (7-i)];
+				for (int j = 0; j < 8; j++)
+				{
+					for (int i = 0; i < 8; i++)
+					{
+						// mirror tiles
+						tile2[j * 8 + i] = tile0[j * 8 + (7 - i)];
+						tile3[j * 8 + i] = tile1[j * 8 + (7 - i)];
+					}
 				}
-			    }
 
-			    rom.PutInBank(0x2, 0x9C00 + 0x04*16, rom.EncodeForPPU(tile0));
-			    rom.PutInBank(0x2, 0x9C00 + 0x05*16, rom.EncodeForPPU(tile2));
-			    rom.PutInBank(0x2, 0x9C00 + 0x06*16, rom.EncodeForPPU(tile1));
-			    rom.PutInBank(0x2, 0x9C00 + 0x07*16, rom.EncodeForPPU(tile3));
+				rom.PutInBank(0x2, 0x9C00 + 0x04 * 16, rom.EncodeForPPU(tile0));
+				rom.PutInBank(0x2, 0x9C00 + 0x05 * 16, rom.EncodeForPPU(tile2));
+				rom.PutInBank(0x2, 0x9C00 + 0x06 * 16, rom.EncodeForPPU(tile1));
+				rom.PutInBank(0x2, 0x9C00 + 0x07 * 16, rom.EncodeForPPU(tile3));
 			}
 		}
 
@@ -226,7 +239,7 @@ namespace FF1Lib
 
 		public void ExecuteStep2()
 		{
-		    DomainData originalDomains = new DomainData(rom);
+			DomainData originalDomains = new DomainData(rom);
 			originalDomains.LoadTable();
 			domains.LoadTable();
 
@@ -289,20 +302,24 @@ namespace FF1Lib
 				case OwMapExchanges.NoOverworld:
 					return new OwMapExchange(_rom, _overworldMap, "nooverworld");
 				case OwMapExchanges.RandomPregenerated:
-					return new OwMapExchange(_rom, _overworldMap, rng);
+				case OwMapExchanges.RandomPregeneratedShuffled:
+				case OwMapExchanges.RandomPregeneratedUnsafe:
+					return new OwMapExchange(_rom, flags, _overworldMap, rng);
 				case OwMapExchanges.GenerateNewOverworld:
 				case OwMapExchanges.GenerateNewOverworldShuffledAccess:
 				case OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe:
 				case OwMapExchanges.LostWoods:
-				  if (flags.ReplacementMap == null) {
-				      flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, mx);
-				  }
-				  return new OwMapExchange(_rom, _overworldMap, flags.ReplacementMap);
-			    case OwMapExchanges.ImportCustomMap:
-				if (flags.ReplacementMap == null) {
-				    throw new Exception("No replacement map was supplied");
-				}
-				return new OwMapExchange(_rom, _overworldMap, flags.ReplacementMap);
+					if (flags.ReplacementMap == null)
+					{
+						flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, mx);
+					}
+					return new OwMapExchange(_rom, _overworldMap, flags.ReplacementMap);
+				case OwMapExchanges.ImportCustomMap:
+					if (flags.ReplacementMap == null)
+					{
+						throw new Exception("No replacement map was supplied");
+					}
+					return new OwMapExchange(_rom, _overworldMap, flags.ReplacementMap);
 			}
 
 			throw new Exception("oops");
