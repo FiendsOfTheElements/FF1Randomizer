@@ -33,13 +33,13 @@
 		"Id": "itemMagicMode",
 		"title": "Item Magic Shuffling",
 		"screenshot": null,
-		"description": "Vanilla: vanilla item magic or weaponizer/armorcrafter behavior.\n\nShuffle: shuffle item magic.\n\nNone: no item magic.\n\nRandom: any of the above."
+		"description": "Vanilla: Vanilla item magic or weaponizer/armorcrafter behavior.\n\nShuffle: Shuffle item magic.\n\nNone: No item magic.\n\nRandom: Any of the above."
 	},
 	{
 		"Id": "itemMagicPool",
 		"title": "Item Magic Pool",
 		"screenshot": null,
-		"description": "Sets the pool of Spells for item magic suffling.\n\nAll Magic: all valid spells.\n\nBalanced: removes too weak and too strong spells.\n\nLow: removes too strong spells.\n\nSupport: removes too strong spells and all damage spells.\n\nRandom: any of the above."
+		"description": "Sets the pool of Spells for item magic suffling.\n\nAll Magic: All valid spells.\n\nBalanced: Removes too weak and too strong spells.\n\nLow: Removes too strong spells.\n\nSupport: Removes too strong spells and all damage spells.\n\nRandom: Any of the above."
 	},
 	{
 		"Id": "quickMinimapLoad",
@@ -69,7 +69,7 @@
 		"Id": "kiPlacementMode",
 		"title": "Key Item Placement",
 		"screenshot": null,
-		"description": "Guided: This algorithm uses a semifixed placement order that will always open up the seed with an early ship and canal.\n\nPredictive: More powerful algorithm that does not rely on a fixed item order. This allowes for more flexibility like allowing early fetch quests or opening a seed up with the canoe instead of the ship. It can better handle alternate overworlds and Floor Entrance seeds.\n\nPredictive Unsafe: Removes Safety Checks that prevent the Predictive Algorithm from forcing you into high level dungeons early."
+		"description": "Guided: This algorithm uses a semifixed placement order that will always open up the seed with an early SHIP and CANAL.\n\nPredictive: More powerful algorithm that does not rely on a fixed item order. This allows for more flexibility like allowing early fetch quests or opening a seed up with the CANOE instead of the SHIP. It can better handle alternate overworlds and Floor Entrance seeds.\n\nPredictive Unsafe: Removes Safety Checks that prevent the Predictive Algorithm from forcing you into high level dungeons early."
 	},
 	{
 		"Id": "loosePlacementMode",
@@ -81,7 +81,7 @@
 		"Id": "looseNpcBalance",
 		"title": "Favor NPCs",
 		"screenshot": null,
-		"description": "Makes it more likely loose items land on NPCs."
+		"description": "Makes it more likely for any loose items to land on NPCs."
 	},
 
 	{
@@ -106,7 +106,7 @@
 		"Id": "titanSnack",
 		"title": "Titan's Favorite Snack",
 		"screenshot": "titanSnack.png",
-		"description": "Randomly change Titan's Ruby to another snack from 100 different, community-contributed options.\n[grid][r]{l}{i}Ruby|{l}Default / Vanilla[r]{l}{i}Other Minerals|{l}Rocks or similar Titan cuisine[r]{l}{i}Junk Food|{l}Human food to eat in moderation[r]{l}{i}Healthy Food|{l}Human food of a healthier variety[r]{l}{i}Beverages|{l}Drinks[r]{l}{i}All|{l}All of the above except Ruby\n"
+		"description": "Randomly change Titan's RUBY to another snack from 100 different, community-contributed options.\n[grid][r]{l}{i}Ruby|{l}Default / Vanilla[r]{l}{i}Other Minerals|{l}Rocks or similar Titan cuisine[r]{l}{i}Junk Food|{l}Human food to eat in moderation[r]{l}{i}Healthy Food|{l}Human food of a healthier variety[r]{l}{i}Beverages|{l}Drinks[r]{l}{i}All|{l}All of the above except Ruby\n"
 	},
 	{
 		"Id": "hurrayDwarfFate",
@@ -327,28 +327,28 @@
 	},
 	{
 		"Id": "cheapVendorItemCheckBox",
-		"title": "Cheap Vendor Item",
+		"title": "Exclude Gold from Scaling - Cheap Vendor Item",
 		"screenshot": "cheapVendorItemCheckBox.png",
-		"description": "Makes the vendor item roll to 20000 ±10%"
+		"description": "Guarantees a less expensive vendor item when excluding gold from scaling"
 	},
 	{
 		"Id": "applyExpBoostToGoldCheckBox",
-		"title": "Apply flat Gold Boost to Enemies",
+		"title": "Exclude Gold from Scaling - Apply flat Gold Boost to Enemies",
 		"screenshot": "applyExpBoostToGoldCheckBox.png",
-		"description": "Applies the flat gold boost from \"Exp. & Gold Boost\" to enemy rewards. This, ideally, makes early gold grinds more satisfying."
+		"description": "Applies the flat gold boost from \"Exp. & Gold Boost\" to enemy rewards even though the multiplier will not be.\nThis, ideally, makes early gold grinds more satisfying."
 	},
 
 	{
 		"Id": "separateEnemyHPScalingCheckBox",
 		"title": "Separate Enemy HP Scaling",
 		"screenshot": "separateEnemyHPScalingCheckBox.png",
-		"description": "Uses a second scaling for enemy HP independant of the other scaled stats."
+		"description": "Uses a second scaling for enemy HP independent of the other scaled stats."
 	},
 	{
 		"Id": "separateBossHPScalingCheckBox",
 		"title": "Separate Boss HP Scaling",
 		"screenshot": "separateBossHPScalingCheckBox.png",
-		"description": "Uses a second scaling for boss HP independant of the other scaled stats."
+		"description": "Uses a second scaling for boss HP independent of the other scaled stats."
 	},
 	{
 		"Id": "evadeCapDropDown",
@@ -360,7 +360,7 @@
 		"Id": "wrapStatOverflowCheckBox",
 		"title": "Wrap Overflowing Scaled Stats",
 		"screenshot": "wrapStatOverflowCheckBox.png",
-		"description": "Stats that roll above the maxium value in the randomizer will normally remain at the meximum. This flag allows the stats to \"wrap\" back around to 1 and progress from there.\nWhen disabled, a stat which was scaled to 260 would be 255 where as, when enabled, the stat would be 5."
+		"description": "Stats that roll above the maximum value in the randomizer will normally remain at the maximum. This flag allows the stats to \"wrap\" back around to 1 and progress from there.\nWhen disabled, a stat which was scaled to 260 would be 255 where as, when enabled, the stat would be 5."
 	},
 	{
 		"Id": "includeMoraleCheckBox",
@@ -494,7 +494,7 @@
 		"Id": "LooseExcludePlacedDungeonsCheckBox",
 		"title": "No Loose Items in Incentivized Dungeons",
 		"screenshot": "LooseExcludePlacedDungeons.png",
-		"description": "If a dungeon is incentivized, other loose items and unincentivized key items won't be placed inside."
+		"description": "If a dungeon is incentivized, additional loose items and/or unincentivized key items won't be placed inside of it.\nThis means that once you find the incentivized item, you can opt to leave the incentive area knowing that any remaining loose items will be somewhere else."
 	},
 
 	{
@@ -602,13 +602,13 @@
 
 	{
 		"Id": "hintsVillage",
-		"title": "Hints from villagers",
+		"title": "Hints Givers in Villages",
 		"screenshot": "hintsVillage.gif",
 		"description": "In each town, a villager reveals the location of an item:\n- The old men in Coneria, Pravoka, Melmond, and Onrac\n- An Elf scholar in Elfland\n- Lukahn in Crescent Lake\n- The Witch in Gaia\n- The villager on the left side of Lefein (no SLAB translation required)"
 	},
 	{
 		"Id": "hintsDungeon",
-		"title": "Hints from dungeon explorers",
+		"title": "Hints Givers in Dungeons",
 		"screenshot": "hintsDungeon.gif",
 		"description": "Five NPCs in dungeons each reveal the location of an item. The locations of the NPCs are:\n- Down the dead end of Marsh Cave B1\n- Lich's floor in Earth Cave\n- The hallway of Gurgu Volcano B3\n- One of the mermaids in Sea Shrine\n- The south room of Sky Palace 3F"
 	},
@@ -661,7 +661,7 @@
 		"Id": "includeConeriaCheckBox",
 		"title": "Include Coneria",
 		"screenshot": "includeConeriaCheckBox.png",
-		"description": "This will include Coneria in Town Shuffle. This will make for a potentially more difficult start to the seed.\nUnless \"Allow Unsafe Start\" is enabled, the Coneria entrance will always lead to a town.\nNote: only certain towns (those with Clinics and Item Shops) can appear at the Coneria location; this means only Pravoka, Elfland, Crescent Lake, Onrac, and Gaia. The flag does not take into account Melmondish or Lefeinish Hospitality flags.\nDo note that if you turn on \"Vampire Attacks Random Town\" there's a chance the new town at the Coneria location could be vampire-attacked and, thus, not have a working Item Shop or Clinic."
+		"description": "This will include Coneria in Town Shuffle. This will make for a potentially more difficult start to the seed.\nUnless \"Allow Unsafe Start\" is enabled, the Coneria entrance will always lead to a town.\nNote: Only certain towns (those with Clinics and Item Shops) can appear at the Coneria location; this means only Pravoka, Elfland, Crescent Lake, Onrac, and Gaia. The flag does not take into account Melmondish or Lefeinish Hospitality flags.\nDo note that if you turn on \"Vampire Attacks Random Town\" there's a chance the new town at the Coneria location could be vampire-attacked and, thus, not have a working Item Shop or Clinic."
 	},
 	{
 		"Id": "mixEntrancesCheckBox",
@@ -680,7 +680,7 @@
 		"Id": "skyCastle4FMazeModeDropDown",
 		"title": "Sky Castle 4F",
 		"screenshot": "skyCastle4FMazeModeDropDown.gif",
-		"description": "Changes the configuration of the teleporters in Sky Castle's 4th Floor.\nNormal: Uses the standard placement of the two teleporters as seen in the vanilla game.\nTeleporters: Moves the location of the teleporters to potentially new places on the floor.\nMaze: Introduces walls so the party must find a way through the maze to the other teleporter, although the teleporter could be anywhere in the maze and not necesarily at the \"end\"."
+		"description": "Changes the configuration of the teleporters in Sky Castle's 4th Floor.\nNormal: Uses the standard placement of the two teleporters as seen in the vanilla game.\nTeleporters: Moves the location of the teleporters to potentially new places on the floor.\nMaze: Introduces walls so the party must find a way through the maze to the other teleporter, although the teleporter could be anywhere in the maze and not necessarily at the \"end\"."
 	},
 	{
 		"Id": "ordealsPillarsCheckBox",
@@ -698,7 +698,7 @@
 		"Id": "dragonsHoardCheckBox",
 		"title": "Dragon's Hoard",
 		"screenshot": "dragonsHoard.png",
-		"description": "Places all the Cardia chests in Bahamut's room.\n\nNote: this does not remove the Cardia chests at the other locations. Looting the Dragon's Hoard chests means the linked chests at the other Cardia locations will be empty, and vice versa."
+		"description": "Places all the Cardia chests in Bahamut's room.\n\nNote: This does not remove the Cardia chests at the other locations. Looting the Dragon's Hoard chests means the linked chests at the other Cardia locations will be empty, and vice versa."
 	},
 	{
 		"Id": "hallOfDragonsCheckBox",
@@ -797,7 +797,7 @@
 		"Id": "melmondClinicCheckBox",
 		"title": "Melmondish Hospitality",
 		"screenshot": "melmondClinicCheckBox.png",
-		"description": "Adds a clinic to Melmond.\nIf \"Tavern Recruitment Mode\" is enabled, Melmond's Clinic will be a Pub instead (based on Crecent Lake's Pub).\nThis flag works independant of \"Vampire Attacks Random Town\" such that a new clinic will not be added to other vampire-attacked towns. Meanwhile, if Melmond is \"restored\" because the vampire went elsewhere, there will only be one clinic, not two."
+		"description": "Adds a clinic to Melmond.\nIf \"Tavern Recruitment Mode\" is enabled, Melmond's Clinic will be a Pub instead (based on Crecent Lake's Pub).\nThis flag works independent of \"Vampire Attacks Random Town\" such that a new clinic will not be added to other vampire-attacked towns. Meanwhile, if Melmond is \"restored\" because the vampire went elsewhere, there will only be one clinic, not two."
 	},
 	{
 		"Id": "confusedOldMenCheckBox",
@@ -870,7 +870,7 @@
 		"Id": "earlierRubyCheckBox",
 		"title": "Earlier Ruby",
 		"screenshot": "earlierRubyCheckBox.png",
-		"description": "Adjust the Ruby's placement to earlier in the seed to increase the likelihood that negotiating the Titan's Tunnel is required for progression."
+		"description": "Adjust the RUBY's placement to earlier in the seed to increase the likelihood that negotiating the Titan's Tunnel is required for progression."
 	},
 	{
 		"Id": "npcItemsCheckBox",
@@ -901,7 +901,7 @@
 		"Id": "tcChestCountSlider",
 		"title": "Trapped Chests Count",
 		"screenshot": "tcChestsPool.png",
-		"description": "Set the number of chests that will have traps (monsters) in them. Setting the slider to the rightmost position will select a random number of trapped chests.\n\nIn game count may slightly differ for some flags combinations.\nFor best results, use in combination with the sub-flags included in this section."
+		"description": "Sets the number of chests that will have traps (monsters) in them. Setting the slider to the rightmost position will select a random number of trapped chests.\n\nIn game count may slightly differ for some flags combinations.\nFor best results, use in combination with the sub-flags included in this section."
 	},
 	{
 		"Id": "tcBetterTreasuresDropDown",
@@ -1177,7 +1177,7 @@
 		"Id": "shopReductionTable",
 		"title": "Shop Reduction",
 		"screenshot": "shopReductionTable.png",
-		"description": "Reduces the number of Items/Magic sold in Shops, or removes Shops entirely.\nModes:\nNone - do not remove anything\nWhole Shops - removes the specified amount of shops as a whole\nAll Items of a Kind - selects the specified amount of distinct Items and removes all instances of them (e.g. all Heals)\nSpread - applies the reduction for each shop individually (e.g. each shop gets a 40% reduction)\nUnequal - removes the amount from all entries (e.g. some shops will be full, some might be half full, some might be removed)"
+		"description": "Reduces the number of Items/Magic sold in Shops, or removes Shops entirely.\nModes:\nNone - Do not remove anything\nWhole Shops - Removes the specified amount of shops as a whole\nAll Items of a Kind - Selects the specified amount of distinct Items and removes all instances of them (e.g. all Heals)\nSpread - Applies the reduction for each shop individually (e.g. each shop gets a 40% reduction)\nUnequal - Removes the amount from all entries (e.g. some shops will be full, some might be half full, some might be removed)"
 	},
 
 
@@ -1620,7 +1620,7 @@
 
 	{
 		"Id": "doubleWeaponCritCheckBox",
-		"title": "Double Weapon Crit Rates",
+		"title": "Double Weapon Crit Rate",
 		"screenshot": "doubleWeaponCritCheckBox.png",
 		"description": "Doubles the crit rate of all weapons, making them more effective and balancing weapon wielders in comparison to Black Belts and their unarmed attacks."
 	},
@@ -1732,7 +1732,7 @@
 	},
 	{
 		"Id": "weaponizerPowersCheckBox",
-		"title": "Common weapons can have powers",
+		"title": "Common Weapons Can Have Powers",
 		"screenshot": "weaponizerCommonPower.png",
 		"description": "Common (shop) weapons can have spells or bonuses vs monster types or elemental weaknesses."
 	},
@@ -1847,8 +1847,8 @@
 	{
 		"Id": "speedHacksCheckBox",
 		"title": "Speed Hacks",
-		"screenshot": "speedHacksCheckBox.png",
-		"description": "If enabled, many game processes, such as opening the menu and battles, are significantly faster."
+		"screenshot": "speedHacksCheckBox.gif",
+		"description": "If enabled, many game processes such as area transitions, opening the menu, and battle animations are significantly faster."
 	},
 	{
 		"Id": "speedboatCheckBox",
@@ -1952,13 +1952,13 @@
 	{
 		"Id": "OWDamageTilesCheckBox",
 		"title": "Marsh and Desert Tiles Deal Damage",
-		"screenshot": "",
+		"screenshot": "marshAndDesertDealDamageCheckBox.gif",
 		"description": "Marsh and Desert tiles on the overworld deal damage to the party like Lava and Ice tiles in dungeons."
 	},
 	{
 		"Id": "DamageTilesKillCheckBox",
 		"title": "Damage Tiles Kill",
-		"screenshot": "",
+		"screenshot": "damageTilesKillCheckBox.gif",
 		"description": "If a character is at 1 HP, stepping on damage tiles will kill them. If all characters are dead, game over will be triggered."
 	},
 	{
@@ -2025,13 +2025,13 @@
 	{
 		"Id": "mapgenRNGAccessReqsCheckBox",
 		"title": "Randomized Access Requirements",
-		"screenshot": "",
-		"description": "Randomize which locations have which access requirements, i.e. whether the ship, canoe, or airship is required to access a certain location.  For example, with this enabled, it could produce a map where you need to go through Titan's tunnel to access the Temple of Fiends, or Elfland appears in the mountains requiring the canoe.  Also splits up Coneria and Elfland, placing the towns and castles separately.  Requires key item shuffle and/or loose items to be enabled."
+		"screenshot": "randomizeAccessRequirementsCheckBox.png",
+		"description": "Randomize which locations have which access requirements, i.e. whether the SHIP, CANOE, or AIRSHIP is required to access a certain location. Also splits up Coneria and Elfland, placing the towns and castles separately.\nFor example, with this enabled, it could produce a map where you need to go through Titan's tunnel to access the Temple of Fiends, or accessing Elfland requires the CANOE.\nRequires key item shuffle and/or loose items to be enabled."
 	},
 	{
 		"Id": "mapgenUnsafeStartCheckBox",
-		"title": "Randomized Access Requirements Unsafe Start",
-		"screenshot": "",
+		"title": "Randomized Access Requirements - Unsafe Start",
+		"screenshot": "randomizeAccessRequirementsUnsafe.gif",
 		"description": "If enabled, mid-game dungeons (Earth, Volcano, Ice and Ordeals) are added to the pool of possible starting area entrances that may be required for early progression."
 	},
 	{
