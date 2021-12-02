@@ -72,46 +72,6 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="everythingHasDeathTouchExcludeFiends" @bind-Value="Flags.EverythingHasDeathTouchExcludeFiends" IsEnabled="@(Flags.EverythingHasDeathTouch != false)">Exclude Fiends</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 		</div>
-
-		<div class="col1 full">
-			<h4>Hints</h4>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="extendedHintsCheckBox" @bind-Value="Flags.ExtensiveHints_Enable">Enable Extensive Hints</CheckBox>
-			<div class="row">
-				<div class="col-lg-3 tighter noleftpadding">Loose on Floor:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemFloorCoverage" /></div>
-				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemFloorPlacement" /></div>
-			</div>
-			<div class="checkbox-cell"></div>
-			<div class="row">
-				<div class="col-lg-3 tighter noleftpadding">Loose Name in Location:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemNameCoverage" /></div>
-				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemNamePlacement" /></div>
-			</div>
-			<div class="checkbox-cell"></div>
-			<div class="row">
-				<div class="col-lg-3 tighter noleftpadding">Incentivized Name in Location:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_IncentiveItemNameCoverage" /></div>
-				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_IncentiveItemNamePlacement" /></div>
-			</div>
-			<div class="checkbox-cell"></div>
-			<div class="row">
-				<div class="col-lg-3 tighter noleftpadding">Floor Hints:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_FloorHintCoverage" /></div>
-				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_FloorHintPlacement" /></div>
-			</div>
-			<div class="checkbox-cell"></div>
-			<div class="row">
-				<div class="col-lg-3 tighter noleftpadding">Equipment on Floor:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentFloorCoverage" /></div>
-				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentFloorPlacement" /></div>
-			</div>
-			<div class="checkbox-cell"></div>
-			<div class="row">
-				<div class="col-lg-3 tighter noleftpadding">Equipment Name in Location:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentNameCoverage" /></div>
-				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentNamePlacement" /></div>
-			</div>
-		</div>
 		<div class="clear-it"></div>
 	}
 </div>

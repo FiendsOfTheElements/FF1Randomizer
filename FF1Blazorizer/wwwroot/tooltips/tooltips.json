@@ -2017,13 +2017,6 @@
 		"description": "HARM spells, when cast by a white mage/wizard, will deal damage to any target. On non undead targets, the spell will not crit (will not deal double damage except on a 3/256). \n\nThis includes HARM spells cast by item magic such as the light axe."
 	},
 	{
-		"Id": "extendedHintsCheckBox",
-		"title": "Extensive Hints",
-		"screenshot": "extendedHintsCheckBox.png",
-		"description": "Replace NPCs' dialogues with hints. There a 6 Hint Categories:\nLoose Floor - Provides the floor where a loose item is located\nLoose Name - Provides the name of the loose item and the dungeon\nIncentivized Name - Provides the name of the incentivized item and the dungeon, NPC, or town\nFloor Hints - Wow: Quest or legendary; Meh: Rare equipment; Sparkle: More than 5k gold treasure; Dud: None of the above\nEquipment Floor - States on what floor legendary items are located\nEquipment Name - Gives the name of the equipment and the dungeon name\nThe hint categories are placed in the order specified. If there are no valid places left, remaining hints are not placed anymore."
-	},
-
-	{
 		"Id": "armorCrafterCheckBox",
 		"title": "Use Armor Crafter",
 		"screenshot": "armorCrafter.png",
