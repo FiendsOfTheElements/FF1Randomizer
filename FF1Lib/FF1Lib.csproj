@@ -28,7 +28,10 @@
     <None Remove="maps\melmond_start.json" />
     <None Remove="maps\nooverworld.ffm" />
     <None Remove="maps\nooverworld.json" />
+    <None Remove="maps\normal256.zip" />
     <None Remove="maps\pregenerated.zip" />
+    <None Remove="maps\shuffled256.zip" />
+    <None Remove="maps\unsafe256.zip" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,13 +48,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="maps\nooverworld.ffm" />
     <EmbeddedResource Include="maps\nooverworld.json" />
-    <EmbeddedResource Include="maps\pregenerated.zip" />
     <EmbeddedResource Include="maps\procgen1.ffm" />
     <EmbeddedResource Include="maps\procgen1.json" />
     <EmbeddedResource Include="maps\procgen2.ffm" />
     <EmbeddedResource Include="maps\procgen2.json" />
     <EmbeddedResource Include="maps\procgen3.ffm" />
     <EmbeddedResource Include="maps\procgen3.json" />
+    <EmbeddedResource Include="maps\shuffled256.zip" />
+    <EmbeddedResource Include="maps\unsafe256.zip" />
   </ItemGroup>
 
   <ItemGroup>
@@ -64,6 +68,7 @@
 
   <ItemGroup>
     <Resource Include="maps\crescent_start.ffm" />
+    <EmbeddedResource Include="maps\normal256.zip" />
   </ItemGroup>
 
   <ItemGroup>
