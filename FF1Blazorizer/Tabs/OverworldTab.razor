@@ -8,63 +8,64 @@
 		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Overworld</a></h3>
 		@if (IsOpen)
 		{
-	<div class="col1">
-		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld map to use:</EnumDropDown>
+	<div class="col1 full">
+		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
 		<p>@StatusMessage</p>
 		<br>
-
-		<h4>Map generation parameters</h4>
-		Map generation seed:
-		<br>
-		<input type="text" style="width: calc(100% - 160px);" class="nes-input @(_mapgenSeedInputClass)" id="mapgenSeedInput"
-		@onchange="@OnSeedInputChanged" value="@(_mapgenSeed)"
-		disabled="@(!IsGenerateMap(Flags.OwMapExchange))" />
-		<a class='styled-button @(IsGenerateMap(Flags.OwMapExchange) ? "" : "disabled-button")' @onclick="@OnNewSeed">New</a>
-		<a class='styled-button @(IsGenerateMap(Flags.OwMapExchange) ? "" : "disabled-button")' @onclick="@OnClearSeed">Clear</a>
-		<br>
-		<br>
-		<a class='styled-button @(IsGenerateMap(Flags.OwMapExchange) ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>
-		<a class='styled-button @(Flags.ReplacementMap != null && Flags.ReplacementMap.DecompressedMapRows != null ? "" : "disabled-button")' @onclick="@OnExportMap">Export Map</a>
-		<br>
-		<br>
-		<h4>Import Custom Map</h4>
-		<input type="file" id="importMapInput" accept=".json" @onchange="@OnImportMap" />
 	</div>
+	<div class="col1">
+			<h4>Map generation parameters</h4>
+			Map generation seed:
+			<br>
+			<input type="text" style="width: calc(100% - 160px);" class="nes-input @(_mapgenSeedInputClass)" id="mapgenSeedInput"
+				   @onchange="@OnSeedInputChanged" value="@(_mapgenSeed)"
+				   disabled="@(!IsGenerateMap(Flags.OwMapExchange))" />
+			<a class='styled-button @(IsGenerateMap(Flags.OwMapExchange) ? "" : "disabled-button")' @onclick="@OnNewSeed">New</a>
+			<a class='styled-button @(IsGenerateMap(Flags.OwMapExchange) ? "" : "disabled-button")' @onclick="@OnClearSeed">Clear</a>
+			<br>
+			<br>
+			<a class='styled-button @(IsGenerateMap(Flags.OwMapExchange) ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>
+			<a class='styled-button @(Flags.ReplacementMap != null && Flags.ReplacementMap.DecompressedMapRows != null ? "" : "disabled-button")' @onclick="@OnExportMap">Export Map</a>
+			<br>
+			<br>
+			<h4>Import Custom Map</h4>
+			<input type="file" id="importMapInput" accept=".json" @onchange="@OnImportMap" />
+		</div>
 
-	<div class="col2">
-		<h4>Vanilla overworld edits</h4>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionCheckBox"
-		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
-		@bind-Value="Flags.MapOpenProgression">Early Open Progression</TriStateCheckBox>
+		<div class="col2">
+			<h4>Vanilla overworld edits</h4>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionCheckBox"
+							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+							  @bind-Value="Flags.MapOpenProgression">Early Open Progression</TriStateCheckBox>
 
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDwavesNWCheckBox"
-		IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" Indent @bind-Value="Flags.MapDwarvesNorthwest">Extended Open Progression</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDwavesNWCheckBox"
+							  IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" Indent @bind-Value="Flags.MapDwarvesNorthwest">Extended Open Progression</TriStateCheckBox>
 
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDocksCheckBox"
-		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
-		@bind-Value="Flags.MapOpenProgressionDocks">Northern Docks</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDocksCheckBox"
+							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+							  @bind-Value="Flags.MapOpenProgressionDocks">Northern Docks</TriStateCheckBox>
 
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionFloaterDockCheckBox"
-		IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" @bind-Value="Flags.MapAirshipDock">Ryukahn Desert Dock</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionFloaterDockCheckBox"
+							  IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" @bind-Value="Flags.MapAirshipDock">Ryukahn Desert Dock</TriStateCheckBox>
 
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bahamutCardiaDockCheckBox"
-		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
-		@bind-Value="Flags.MapBahamutCardiaDock">Bahamut Cardia Dock</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bahamutCardiaDockCheckBox"
+							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+							  @bind-Value="Flags.MapBahamutCardiaDock">Bahamut Cardia Dock</TriStateCheckBox>
 
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinRiverDockCheckBox"
-		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
-		@bind-Value="Flags.MapLefeinRiver">Lefein River Dock</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinRiverDockCheckBox"
+							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+							  @bind-Value="Flags.MapLefeinRiver">Lefein River Dock</TriStateCheckBox>
 
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaMountainPassCheckBox"
-		IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
-		@bind-Value="Flags.MapGaiaMountainPass">Gaia Mountain Pass</TriStateCheckBox>
-		<div class="checkbox-cell"></div>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaMountainPassCheckBox"
+							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+							  @bind-Value="Flags.MapGaiaMountainPass">Gaia Mountain Pass</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
 
-		<h4>Other map changes</h4>
+			<h4>Other map changes</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="OWDamageTilesCheckBox" @bind-Value="Flags.OWDamageTiles">Marsh and Desert Tiles Deal Damage</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="DamageTilesKillCheckBox" @bind-Value="Flags.DamageTilesKill">Lethal Damage Tiles</TriStateCheckBox>
 
-		<div class="clear-it"></div>
+			<div class="clear-it"></div>
 		</div>
 		}
 	</div>
