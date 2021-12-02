@@ -25,6 +25,8 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttacksCheckBox" @bind-Value="Flags.EnemyStatusAttacks">Shuffle Status Attacks</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyStatusAttacks" Id="enemyRandomAttacksCheckBox" @bind-Value="Flags.RandomStatusAttacks">Randomize Status Attacks</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="disableStunTouchCheckBox" IsEnabled="@Flags.RandomStatusAttacks" @bind-Value="Flags.DisableStunTouch">Remove Stun Touch</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="everythingHasDeathTouch" @bind-Value="Flags.EverythingHasDeathTouch">Everything has Death Touch</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="everythingHasDeathTouchExcludeFiends" @bind-Value="Flags.EverythingHasDeathTouchExcludeFiends" IsEnabled="@(Flags.EverythingHasDeathTouch != false)">Exclude Fiends</TriStateCheckBox>
 
 			<div class="checkbox-cell"></div>
 			<h4>Trap Tiles</h4>
@@ -51,7 +53,6 @@
 			<div class="checkbox-cell"></div>
 		     	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDropDown" TItem="SpoilerBatHints" @bind-Value="Flags.SkyWarriorSpoilerBats">Temple of Fiends bats give boss hints:</EnumDropDown>
 			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDontCheckOrbsCheckbox" IsEnabled="@Flags.SpoilerBatsDontCheckOrbsEnabled" @bind-Value="Flags.SpoilerBatsDontCheckOrbs">Early Spoilers</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
 
 		<div class="checkbox-cell"></div>
 		<h4>Enemizer</h4>

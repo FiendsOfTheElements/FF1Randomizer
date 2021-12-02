@@ -12,7 +12,10 @@
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="thiefAgilityBuffDropDown" TItem="ThiefAGI" @bind-Value="Flags.ThiefAgilityBuff">Better Thief &amp; Ninja Agility</EnumDropDown>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixHitChanceCapCheckBox" @bind-Value="Flags.FixHitChanceCap">Raise Hit % Cap</CheckBox>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="MDefModeDropDown" TItem="MDEFGrowthMode" @bind-Value="Flags.MDefMode">MDEF Growth:</EnumDropDown>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="WhiteMageHarmEveryoneCheckBox" @bind-Value="Flags.WhiteMageHarmEveryone">White Mage Harm Everyone</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="WhiteMageHarmEveryoneCheckBox" @bind-Value="Flags.WhiteMageHarmEveryone">White Mage HARM damages all enemies</CheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="Lockpicking" @bind-Value="Flags.Lockpicking">Thief Lockpicking</TriStateCheckBox>
+			<IntSlider Indent Min="1" Max="50" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.Lockpicking" Id="LockpickingLevelRequirement" @bind-Value="@Flags.LockpickingLevelRequirement">Lockpicking Level Requirement:</IntSlider>
+
 	<div class="checkbox-cell"></div>
 
 	<h4>Class blursing</h4>
@@ -30,6 +33,12 @@
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnableRandomPromotions" @bind-Value="Flags.EnableRandomPromotions">Random Classes at Class Change</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPIncludeBaseClasses" @bind-Value="Flags.IncludeBaseClasses">Include Base Classes</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPSpoilers" @bind-Value="Flags.RandomPromotionsSpoilers">Spoil Promotions</TriStateCheckBox>
+
+	<div class="checkbox-cell"></div>
+			<h4>Levels</h4>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingLevelDropDown" TItem="StartingLevel" @bind-Value="Flags.StartingLevel">Starting Level:</EnumDropDown>
+			<DoubleSlider UpdateToolTip="@UpdateToolTipID" DoubleCol Id="MaximumLevelDoubleSilder" MinValue="1" MaxValue="50" Step="1" @bind-ValueHigh="Flags.MaxLevelHigh" @bind-ValueLow="Flags.MaxLevelLow">Max Level:</DoubleSlider>
+
 </div>
 <div class="col2">
 	<h4>Magic Charges</h4>
@@ -47,7 +56,7 @@
 		<h4>Class Xp Bonus</h4>
 		<ToolTipBox id="ClassXpBonus" UpdateToolTip="@UpdateToolTipID"></ToolTipBox>
 	</div>
-	
+
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-4 noleftpadding">Fighter:</div>
