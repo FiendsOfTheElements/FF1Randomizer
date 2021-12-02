@@ -1957,7 +1957,7 @@
 	},
 	{
 		"Id": "DamageTilesKillCheckBox",
-		"title": "Damage Tiles Kill",
+		"title": "Lethal Damage Tiles",
 		"screenshot": "damageTilesKillCheckBox.gif",
 		"description": "If a character is at 1 HP, stepping on damage tiles will kill them. If all characters are dead, game over will be triggered."
 	},
