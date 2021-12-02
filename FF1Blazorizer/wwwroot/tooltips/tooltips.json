@@ -1480,10 +1480,10 @@
 		"description": "\"Blursed\" Classes (as in classes with \"blessings\" and \"curses\") give bonuses and maluses at random to each of the selectable classes in the game.\nPress Select at the Party Selection screen (and A at Status Screen) to reveal the modifiers applied to a given class."
 	},
 	{
-		"Id": "RandomizeClassNoCastingCheckBox",
-		"title": "Exclude Spellcasting Bonuses",
-		"screenshot": "RandomizeClassNoCasting.png",
-		"description": "Exclude bonuses granting spellcasting abilities normally given to other classes. For example, with this flag on, Black Belts will not be able to gain any blessings that give them magic casting abilities."
+		"Id": "RandomizeClassCastingCheckBox",
+		"title": "Add Spellcasting Bonuses",
+		"screenshot": "RandomizeClassCasting.png",
+		"description": "Add bonuses granting spellcasting abilities."
 	},
 	{
 		"Id": "RandomizeClassChaosCheckBox",

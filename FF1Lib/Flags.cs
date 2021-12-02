@@ -591,7 +591,7 @@ namespace FF1Lib
 		public bool? IncludeBaseClasses { get; set; } = false;
 		public bool? RandomPromotionsSpoilers { get; set; } = false;
 		public bool? RandomizeClass { get; set; } = false;
-		public bool? RandomizeClassNoCasting { get; set; } = false;
+		public bool? RandomizeClassCasting { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
 		public bool? RandomizeClassIncludeNaturalResist { get; set; } = false;
 		public bool? RandomizeClassIncludeXpBonus { get; set; } = false;

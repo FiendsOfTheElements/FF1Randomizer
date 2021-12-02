@@ -707,16 +707,6 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.BlackSpellcaster, "Black W. Sp", binarylist: bwBlackSpells, authclass: new List<AuthClass> { AuthClass.BlackMage }),
 			};
 
-			if (!(bool)flags.RandomizeClassNoCasting)
-			{
-				bonusNormal.Add(new BonusMalus(BonusMalusAction.WhiteSpellcaster, "L1 White Sp", mod: 2, mod2: 0, binarylist: lv1WhiteSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.RedMage, AuthClass.BlackMage }));
-				bonusNormal.Add(new BonusMalus(BonusMalusAction.BlackSpellcaster, "L1 Black Sp", mod: 2, mod2: 0, binarylist: lv1BlackSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }));
-				bonusNormal.Add(new BonusMalus(BonusMalusAction.WhiteSpellcaster, "Knight Sp", mod: 2, mod2: classData[6].MaxSpC, binarylist: lv3WhiteSpells, bytelist: exKnightMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.BlackMage }));
-				bonusNormal.Add(new BonusMalus(BonusMalusAction.BlackSpellcaster, "Ninja Sp", mod: 2, mod2: classData[7].MaxSpC, binarylist: lv4BlackSpells, bytelist: exNinjaMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }));
-				bonusStrong.Add(new BonusMalus(BonusMalusAction.WhiteSpellcaster, "White M. Sp", mod: 2, mod2: classData[4].MaxSpC, binarylist: wmWhiteSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.RedMage, AuthClass.BlackMage }));
-				bonusStrong.Add(new BonusMalus(BonusMalusAction.BlackSpellcaster, "Black M. Sp", mod: 2, mod2: classData[5].MaxSpC, binarylist: bmBlackSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }));
-			}
-
 			// Maluses List
 			var malusNormal = new List<BonusMalus> {
 				new BonusMalus(BonusMalusAction.StrMod, "-10 Str.", mod: -10),
@@ -753,7 +743,19 @@ namespace FF1Lib
 			if(Rng.Between(rng, 0, 10) == 0)
 				malusNormal.Add(new BonusMalus(BonusMalusAction.IntMod, "+80 Int.", mod: 80));
 
-			if((bool)flags.Lockpicking && flags.LockpickingLevelRequirement < 50)
+			// Add Spellcasting Bonuses
+			if ((bool)flags.RandomizeClassCasting)
+			{
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.WhiteSpellcaster, "L1 White Sp", mod: 2, mod2: 0, binarylist: lv1WhiteSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.RedMage, AuthClass.BlackMage }));
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.BlackSpellcaster, "L1 Black Sp", mod: 2, mod2: 0, binarylist: lv1BlackSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }));
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.WhiteSpellcaster, "Knight Sp", mod: 2, mod2: classData[6].MaxSpC, binarylist: lv3WhiteSpells, bytelist: exKnightMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.BlackMage }));
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.BlackSpellcaster, "Ninja Sp", mod: 2, mod2: classData[7].MaxSpC, binarylist: lv4BlackSpells, bytelist: exNinjaMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.WhiteSpellcaster, "White M. Sp", mod: 2, mod2: classData[4].MaxSpC, binarylist: wmWhiteSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.RedMage, AuthClass.BlackMage }));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.BlackSpellcaster, "Black M. Sp", mod: 2, mod2: classData[5].MaxSpC, binarylist: bmBlackSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }));
+			}
+
+			// Add Lockpicking Bonus/Malus
+			if ((bool)flags.Lockpicking && flags.LockpickingLevelRequirement < 50)
 			{
 				malusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "+10 Lp Lv", mod: 10, authclass: new List<AuthClass> {AuthClass.Thief}));
 			}
@@ -763,7 +765,8 @@ namespace FF1Lib
 				bonusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "-10 Lp Lv", mod: -10, authclass: new List<AuthClass> { AuthClass.Thief }));
 			}
 
-			if((bool)flags.RandomizeClassIncludeNaturalResist)
+			// Add Natural Resist Bonuses
+			if ((bool)flags.RandomizeClassIncludeNaturalResist)
 			{
 				bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res All", mod: 0xFF, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.RedMage, AuthClass.BlackMage, AuthClass.WhiteMage }));
 				bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res PEDTS", mod: (int)(Element.POISON | Element.EARTH | Element.DEATH | Element.TIME | Element.STATUS), authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.RedMage, AuthClass.BlackMage, AuthClass.WhiteMage }));
