@@ -82,11 +82,11 @@
 		}
 
 		bool IsGenerateMap(OwMapExchanges ex) {
-		     return (ex == OwMapExchanges.GenerateNewOverworld ||
-		     ex == OwMapExchanges.GenerateNewOverworldShuffledAccess ||
-		     ex == OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe ||
-		     ex == OwMapExchanges.LostWoods ||
-		     ex == OwMapExchanges.Desert);
+			return (ex == OwMapExchanges.GenerateNewOverworld ||
+			ex == OwMapExchanges.GenerateNewOverworldShuffledAccess ||
+			ex == OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe ||
+			ex == OwMapExchanges.LostWoods ||
+			ex == OwMapExchanges.Desert);
 		}
 
 		void OnNewSeed(MouseEventArgs e)
@@ -112,36 +112,46 @@
 			ValidateSeed((string)e.Value);
 		}
 
-		void OnGenerateMap(MouseEventArgs e) {
+		void GenerateMap()
+		{
+			var maprng = new MT19337((uint)Flags.MapGenSeed);
+			try
+			{
+				switch (Flags.OwMapExchange)
+				{
+					case OwMapExchanges.GenerateNewOverworld:
+					case OwMapExchanges.GenerateNewOverworldShuffledAccess:
+					case OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe:
+					case OwMapExchanges.LostWoods:
+						Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, Flags.OwMapExchange);
+						break;
+					case OwMapExchanges.Desert:
+						Flags.ReplacementMap = DesertOfDeath.GenerateDesert(maprng);
+						break;
+				}
+
+				StatusMessage = $"Success! checksum {Flags.ReplacementMap.ComputeChecksum()}";
+			}
+			catch (Exception x)
+			{
+				StatusMessage = x.Message;
+				Console.WriteLine(x.ToString());
+			}
+			StateHasChanged();
+		}
+
+		async Task OnGenerateMap(MouseEventArgs e) {
 			if (!IsGenerateMap(Flags.OwMapExchange)) {
 				return;
 			}
 			if (Flags.MapGenSeed == 0) {
 				ValidateSeed(Blob.Random(4).ToHex());
 			}
+
 			StatusMessage = "Generating new map, this may take some time...";
 			StateHasChanged();
-			var maprng = new MT19337((uint)Flags.MapGenSeed);
-			try {
-			        switch (Flags.OwMapExchange) {
-				case OwMapExchanges.GenerateNewOverworld:
-				case OwMapExchanges.GenerateNewOverworldShuffledAccess:
-				case OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe:
-				case OwMapExchanges.LostWoods:
-					Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, Flags.OwMapExchange);
-					break;
-				case OwMapExchanges.Desert:
-					Flags.ReplacementMap = DesertOfDeath.GenerateDesert(maprng);
-					break;
-				}
 
-				StatusMessage = $"Success! checksum {Flags.ReplacementMap.ComputeChecksum()}";
-			} catch (Exception x)
-			{
-				StatusMessage = x.Message;
-				Console.WriteLine(x.ToString());
-			}
-			StateHasChanged();
+			await Task.Run(GenerateMap);
 		}
 
 		void ValidateSeed(string seed)
@@ -173,40 +183,40 @@
 		}
 
 		async Task OnImportMap(ChangeEventArgs e) {
-		  try {
-                    Flags.OwMapExchange = OwMapExchanges.ImportCustomMap;
-		    var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importMapInput");
-		    if (content == null || content == "") { return; }
-                    var fileData = Convert.FromBase64String(content);
-		    Flags.ReplacementMap = JsonConvert.DeserializeObject<OwMapExchangeData>(System.Text.Encoding.UTF8.GetString(fileData));
-		    Flags.MapGenSeed = Flags.ReplacementMap.Seed;
-		    _mapgenSeed = $"{Flags.MapGenSeed,8:X8}";
+			try {
+				Flags.OwMapExchange = OwMapExchanges.ImportCustomMap;
+				var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importMapInput");
+				if (content == null || content == "") { return; }
+				var fileData = Convert.FromBase64String(content);
+				Flags.ReplacementMap = JsonConvert.DeserializeObject<OwMapExchangeData>(System.Text.Encoding.UTF8.GetString(fileData));
+				Flags.MapGenSeed = Flags.ReplacementMap.Seed;
+				_mapgenSeed = $"{Flags.MapGenSeed,8:X8}";
 
-		    var checksum = Flags.ReplacementMap.ComputeChecksum();
-		    if (checksum != Flags.ReplacementMap.Checksum) {
-		      throw new Exception("Checksum did not match");
-		    }
+				var checksum = Flags.ReplacementMap.ComputeChecksum();
+				if (checksum != Flags.ReplacementMap.Checksum) {
+					throw new Exception("Checksum did not match");
+				}
 
-		    StatusMessage = $"Successfully imported map, checksum {Flags.ReplacementMap.Checksum}";
-		  } catch (Exception x) {
-			   StatusMessage = x.Message;
-			   Console.WriteLine(x.ToString());
-		  }
-		  StateHasChanged();
+				StatusMessage = $"Successfully imported map, checksum {Flags.ReplacementMap.Checksum}";
+			} catch (Exception x) {
+				StatusMessage = x.Message;
+				Console.WriteLine(x.ToString());
+			}
+			StateHasChanged();
 		}
 
 
 		async Task OnExportMap(MouseEventArgs e) {
-		     if (Flags.ReplacementMap == null || Flags.ReplacementMap.DecompressedMapRows == null) {
-		       return;
-		     }
+			if (Flags.ReplacementMap == null || Flags.ReplacementMap.DecompressedMapRows == null) {
+				return;
+			}
 
-		     Flags.ReplacementMap.Checksum = Flags.ReplacementMap.ComputeChecksum();
-		     Flags.ReplacementMap.Seed = Flags.MapGenSeed;
-		     Flags.ReplacementMap.FFRVersion = FF1Lib.FFRVersion.Version;
+			Flags.ReplacementMap.Checksum = Flags.ReplacementMap.ComputeChecksum();
+			Flags.ReplacementMap.Seed = Flags.MapGenSeed;
+			Flags.ReplacementMap.FFRVersion = FF1Lib.FFRVersion.Version;
 
-		     var content = JsonConvert.SerializeObject(Flags.ReplacementMap, Formatting.Indented);
-                     var fileData = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(content));
-		     await JSRuntime.InvokeVoidAsync("downloadFile", $"FFR_map_{Flags.ReplacementMap.Checksum}.json", fileData);
+			var content = JsonConvert.SerializeObject(Flags.ReplacementMap, Formatting.Indented);
+			var fileData = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(content));
+			await JSRuntime.InvokeVoidAsync("downloadFile", $"FFR_map_{Flags.ReplacementMap.Checksum}.json", fileData);
 		}
 	}
