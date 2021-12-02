@@ -22,14 +22,23 @@ namespace FF1Lib
     [Description("Generate New Overworld")]
 		GenerateNewOverworld,
 
-    [Description("Random Pregenerated 512")]
-		RandomPregenerated,
+    [Description("Generate New Overworld (shuffled access)")]
+		GenerateNewOverworldShuffledAccess,
+
+    [Description("Generate New Overworld (unsafe start)")]
+		GenerateNewOverworldShuffledAccessUnsafe,
+
+    [Description("Lost Woods")]
+		LostWoods,
 
     [Description("Desert of Death")]
 		Desert,
 
 		[Description("No Overworld")]
 		NoOverworld,
+
+    [Description("Random Pregenerated 512")]
+		RandomPregenerated,
 
 		[Description("Import Custom Map")]
 		ImportCustomMap,
@@ -264,7 +273,6 @@ namespace FF1Lib
 			}
 
 			MT19337 maprng = new MT19337((uint)seed);
-			OwMapExchangeData exdata;
 
 			var mx = flags.OwMapExchange;
 
@@ -273,26 +281,23 @@ namespace FF1Lib
 				case OwMapExchanges.None:
 					return null;
 				case OwMapExchanges.Desert:
-					if (flags.ReplacementMap != null)
+					if (flags.ReplacementMap == null)
 					{
-						exdata = flags.ReplacementMap;
+						flags.ReplacementMap = DesertOfDeath.GenerateDesert(maprng);
 					}
-					else
-					{
-						exdata = DesertOfDeath.GenerateDesert(maprng);
-					}
-					return new OwMapExchange(_rom, _overworldMap, exdata);
+					return new OwMapExchange(_rom, _overworldMap, flags.ReplacementMap);
 				case OwMapExchanges.NoOverworld:
 					return new OwMapExchange(_rom, _overworldMap, "nooverworld");
 				case OwMapExchanges.RandomPregenerated:
 					return new OwMapExchange(_rom, _overworldMap, rng);
 				case OwMapExchanges.GenerateNewOverworld:
-				  if (flags.ReplacementMap != null) {
-					  exdata = flags.ReplacementMap;
-				  } else {
-				      exdata = NewOverworld.GenerateNewOverworld(maprng, flags);
+				case OwMapExchanges.GenerateNewOverworldShuffledAccess:
+				case OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe:
+				case OwMapExchanges.LostWoods:
+				  if (flags.ReplacementMap == null) {
+				      flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, mx);
 				  }
-				  return new OwMapExchange(_rom, _overworldMap, exdata);
+				  return new OwMapExchange(_rom, _overworldMap, flags.ReplacementMap);
 			    case OwMapExchanges.ImportCustomMap:
 				if (flags.ReplacementMap == null) {
 				    throw new Exception("No replacement map was supplied");

@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
 using System.Text.RegularExpressions;
+using FF1Lib.Sanity;
+using System.Diagnostics;
 
 namespace FF1Lib
 {
@@ -29,6 +31,15 @@ namespace FF1Lib
 		public const int GoldItemCount = 68;
 		public static List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
 		public ItemNames ItemsText;
+
+		private SanityCheckerV2 sanityChecker = null;
+		private IncentiveData incentivesData = null;
+
+		public new void Put(int index, Blob data)
+		{
+			//Debug.Assert(index <= 0x4000 * 0x0E + 0x9F48 - 0x8000 && (index + data.Length) > 0x4000 * 0x0E + 0x9F48 - 0x8000);
+			base.Put(index, data);
+		}
 
 		public void PutInBank(int bank, int address, Blob data)
 		{
@@ -105,10 +116,31 @@ namespace FF1Lib
 
 		public void Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
+		    Flags flagsForRng = flags;
+		    if (flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ||
+			flags.OwMapExchange == OwMapExchanges.GenerateNewOverworldShuffledAccess ||
+			flags.OwMapExchange == OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe ||
+			flags.OwMapExchange == OwMapExchanges.LostWoods)
+		    {
+			// Procgen maps can be either
+			// generated or imported.  All else
+			// being equal, we want the user who
+			// generated the map
+			// (OwMapExchange == GenerateNewOverworld)
+			// and the user who imported the map
+			// (OwMapExchange == ImportCustomMap)
+			// to get the same ROM, so for the
+			// purposes of initializing the RNG
+			// consider them all to be
+			// "ImportCustomMap".
+			flagsForRng = flags.ShallowCopy();
+			flagsForRng.OwMapExchange = OwMapExchanges.ImportCustomMap;
+		    }
+
 			MT19337 rng;
 			using (SHA256 hasher = SHA256.Create())
 			{
-				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flags));
+				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flagsForRng));
 				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed });
 				Blob hash = hasher.ComputeHash(SeedAndFlags);
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
@@ -322,24 +354,19 @@ namespace FF1Lib
 			}
 
 			if ((bool)flags.Weaponizer) {
-			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers,  flags.NoItemMagic ?? false);
+			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers, flags.ItemMagicMode == ItemMagicMode.None);
 			}
 
 			if ((bool)flags.ArmorCrafter) {
-			    ArmorCrafter(rng, flags.NoItemMagic ?? false);
+			    ArmorCrafter(rng, flags.ItemMagicMode == ItemMagicMode.None);
 			}
 
-			if ((bool)flags.MagisizeWeapons && !(flags.NoItemMagic ?? false))
+			if (flags.ItemMagicMode != ItemMagicMode.None && flags.ItemMagicMode != ItemMagicMode.Vanilla)
 			{
-				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
+				ShuffleItemMagic(rng, flags);
 			}
 
-			if ((bool)flags.ItemMagic && !(flags.NoItemMagic ?? false))
-			{
-				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle && !(flags.NoItemMagic ?? false));
-			}
-
-			if ((bool)flags.GuaranteedRuseItem && !(flags.NoItemMagic ?? false))
+			if ((bool)flags.GuaranteedRuseItem && !(flags.ItemMagicMode == ItemMagicMode.None))
 			{
 				CraftRuseItem();
 			}
@@ -362,6 +389,11 @@ namespace FF1Lib
 			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs && !flags.DeepDungeon)
 			{
 				EnableShardHunt(rng, talkroutines, flags.ShardCount);
+			}
+
+			if (!flags.FreeOrbs && !flags.ShardHunt && !flags.DeepDungeon)
+			{
+				SetOrbRequirement(rng, talkroutines, flags.OrbsRequiredCount, flags.OrbsRequiredMode, (bool)flags.OrbsRequiredSpoilers);
 			}
 
 			if (flags.TransformFinalFormation != FinalFormation.None && !flags.SpookyFlag)
@@ -466,7 +498,7 @@ namespace FF1Lib
 			{
 				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
 			}
-			
+
 			if (flags.DraculasFlag)
 			{
 			    // Needs to happen before item placement because it swaps some entrances around.
@@ -497,8 +529,7 @@ namespace FF1Lib
 					}
 
 
-					ISanityChecker checker = new SanityCheckerV1();
-					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
+					incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, new SanityCheckerV1());
 
 					if (((bool)flags.Shops))
 					{
@@ -511,7 +542,7 @@ namespace FF1Lib
 						if (!((bool)flags.RandomWaresIncludesSpecialGear))
 						{
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
-							if ((bool)flags.GuaranteedRuseItem && !(flags.NoItemMagic ?? false))
+							if ((bool)flags.GuaranteedRuseItem && !(flags.ItemMagicMode == ItemMagicMode.None))
 								excludeItemsFromRandomShops.Add(Item.PowerRod);
 						}
 
@@ -527,18 +558,18 @@ namespace FF1Lib
 
 						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth, overworldMap.ConeriaTownEntranceItemShopIndex);
 
-						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
+						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, new SanityCheckerV1());
 					}
 
 					if ((bool)flags.Treasures && !flags.DeepDungeon)
 					{
-						if(flags.SanityCheckerV2) checker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
-						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker);
+						sanityChecker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
+						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, sanityChecker);
 					}
 					else if (owMapExchange != null && !flags.DeepDungeon)
 					{
-						checker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
-						if (!checker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags).Complete) throw new InsaneException("Not Completable");
+						sanityChecker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
+						if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags).Complete) throw new InsaneException("Not Completable");
 					}
 
 					break;
@@ -763,9 +794,9 @@ namespace FF1Lib
 				EnableDash(flags.SpeedBoat, preferences.OptOutSpeedHackDash);
 			}
 
-			if (flags.BuyTen)
+			if (flags.BuyTen || flags.Archipelago)
 			{
-				EnableBuyQuantity();
+				EnableBuyQuantity(flags);
 			}
 
 			if (flags.WaitWhenUnrunnable)
@@ -1058,7 +1089,7 @@ namespace FF1Lib
 				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
 			}
 
-			if (flags.NoItemMagic ?? false)
+			if (flags.ItemMagicMode == ItemMagicMode.None)
 			{
 				NoItemMagic(flags);
 			}
@@ -1179,16 +1210,31 @@ namespace FF1Lib
 				new QuickMiniMap(this, overworldMap).EnableQuickMinimap();
 			}
 
-			new ExpChests(this, flags, rng).BuildExpChests();
+			var expChests = new ExpChests(this, flags, rng);
+			expChests.BuildExpChests();
 
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
+
+
+			if (flags.Archipelago)
+			{
+				shipLocations.SetShipLocation(255);
+
+				Archipelago exporter = new Archipelago(this, generatedPlacement, sanityChecker, expChests, incentivesData, flags, preferences);
+				Utilities.ArchipelagoCache = exporter.Work();	
+			}
+
 			ItemsText.Write(this, UnusedGoldItems);
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
-			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
+			var flagstext = Flags.EncodeFlagsText(flagsForRng);
+			if (flags.ReplacementMap != null) {
+			    flagstext += "_" + flags.ReplacementMap.ComputeChecksum();
+			}
+			WriteSeedAndFlags(seed.ToHex(), flagstext);
 			ExtraTrackingAndInitCode(flags, preferences);
 		}
 

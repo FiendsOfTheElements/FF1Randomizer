@@ -534,6 +534,40 @@ namespace FF1Lib
 
 		public bool ExtraShardsEnabled => ShardHunt && !FreeOrbs;
 
+		public int OrbsRequiredCount
+		{
+			get => Flags.OrbsRequiredCount;
+			set
+			{
+				Flags.OrbsRequiredCount = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OrbsRequiredCount"));
+			}
+		}
+
+		public OrbsRequiredMode OrbsRequiredMode
+		{
+			get => Flags.OrbsRequiredMode;
+			set
+			{
+				Flags.OrbsRequiredMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OrbsRequiredMode"));
+			}
+		}
+
+
+		public bool? OrbsRequiredSpoilers
+		{
+			get => Flags.OrbsRequiredSpoilers;
+			set
+			{
+				Flags.OrbsRequiredSpoilers = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OrbsRequiredSpoilers"));
+			}
+		}
+
+		public bool OrbsRequiredEnabled => !ShardHunt && !FreeOrbs && !DeepDungeon;
+		public bool OrbsRequiredOptionsEnabled => OrbsRequiredEnabled && (Flags.OrbsRequiredCount != 4);
+
 		public FinalFormation TransformFinalFormation
 		{
 			get => Flags.TransformFinalFormation;
@@ -644,15 +678,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicPermissions"));
 			}
 		}
-		public bool? ItemMagic
+		public ItemMagicMode ItemMagicMode
 		{
-			get => Flags.ItemMagic;
+			get => Flags.ItemMagicMode;
 			set
 			{
-				Flags.ItemMagic = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ItemMagic"));
+				Flags.ItemMagicMode = value;
+				RaisePropertyChanged();
 			}
 		}
+
 		public bool? MagisizeWeapons
 		{
 			get => Flags.MagisizeWeapons;
@@ -662,15 +697,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagisizeWeapons"));
 			}
 		}
-		public bool? MagisizeWeaponsBalanced
-		{
-			get => Flags.MagisizeWeaponsBalanced;
-			set
-			{
-				Flags.MagisizeWeaponsBalanced = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagisizeWeaponsBalanced"));
-			}
-		}
+
 		public bool? Weaponizer
 		{
 			get => Flags.Weaponizer;
@@ -3754,13 +3781,13 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? BalancedItemMagicShuffle
+		public ItemMagicPool ItemMagicPool
 		{
-			get => Flags.BalancedItemMagicShuffle;
+			get => Flags.ItemMagicPool;
 			set
 			{
-				Flags.BalancedItemMagicShuffle = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BalancedItemMagicShuffle"));
+				Flags.ItemMagicPool = value;
+				RaisePropertyChanged();
 			}
 		}
 
@@ -4593,26 +4620,6 @@ namespace FF1Lib
 			}
 		}
 
-		public bool MapGenRandomizedAccessReqs
-		{
-			get => Flags.MapGenRandomizedAccessReqs;
-			set
-			{
-				Flags.MapGenRandomizedAccessReqs = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public bool MapGenUnsafeStart
-		{
-			get => Flags.MapGenUnsafeStart;
-			set
-			{
-				Flags.MapGenUnsafeStart = value;
-				RaisePropertyChanged();
-			}
-		}
-
 		public ExtConsumableSet ExtConsumableSet
 		{
 			get => Flags.ExtConsumableSet;
@@ -5050,16 +5057,6 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? NoItemMagic
-		{
-			get => Flags.NoItemMagic;
-			set
-			{
-				Flags.NoItemMagic = value;
-				RaisePropertyChanged();
-			}
-		}
-
 		public bool QuickMinimapLoad
 		{
 			get => Flags.QuickMinimapLoad;
@@ -5076,6 +5073,67 @@ namespace FF1Lib
 			set
 			{
 				Flags.DisableMinimap = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool Archipelago
+		{
+			get => Flags.Archipelago;
+			set
+			{
+				Flags.Archipelago = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ArchipelagoConsumables
+		{
+			get => Flags.ArchipelagoConsumables;
+			set
+			{
+				Flags.ArchipelagoConsumables = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ArchipelagoGold
+		{
+			get => Flags.ArchipelagoGold;
+			set
+			{
+				Flags.ArchipelagoGold = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ArchipelagoShards
+		{
+			get => Flags.ArchipelagoShards;
+			set
+			{
+				Flags.ArchipelagoShards = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public ArchipelagoEquipment ArchipelagoEquipment
+		{
+			get => Flags.ArchipelagoEquipment;
+			set
+			{
+				Flags.ArchipelagoEquipment = value;
+				RaisePropertyChanged();
+			}
+		}
+
+
+		public string PlayerName
+		{
+			get => Preferences.PlayerName;
+			set
+			{
+				Preferences.PlayerName = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -5144,5 +5202,5 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-	}	
+	}
 }

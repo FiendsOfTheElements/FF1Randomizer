@@ -1403,7 +1403,7 @@ namespace FF1Lib
 			return decompressedRows;
 		}
 
-		public List<List<byte>> CompressMapRows(List<List<byte>> decompressedRows)
+		public static List<List<byte>> CompressMapRows(List<List<byte>> decompressedRows)
 		{
 			var outputMap = new List<List<byte>>();
 			foreach (var row in decompressedRows)
@@ -1439,6 +1439,8 @@ namespace FF1Lib
 			return outputMap;
 		}
 
+	    public const int MaximumMapDataSize = 0x3E00;
+
 		public void PutCompressedMapRows(List<List<byte>> compressedRows)
 		{
 			var pointerBase = 0x4000;
@@ -1452,8 +1454,8 @@ namespace FF1Lib
 				outputOffset += outputRow.Count;
 			}
 
-			if (outputOffset > 0x4000)
-				throw new InvalidOperationException($"Modified map was too large by {outputOffset - 0x4000} bytes to recompress and fit into a single {0x4000} bank.");
+			if (outputOffset > MaximumMapDataSize)
+				throw new InvalidOperationException($"Modified map was too large by {outputOffset - MaximumMapDataSize} bytes to recompress and fit into {MaximumMapDataSize} bytes of available space.");
 		}
 
 		public void ShuffleObjectiveNPCs(MT19337 rng)

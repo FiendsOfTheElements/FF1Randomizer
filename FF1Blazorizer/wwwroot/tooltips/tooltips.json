@@ -30,6 +30,18 @@
 		"description": "Disables the minimap."
 	},
 	{
+		"Id": "itemMagicMode",
+		"title": "Item Magic Shuffling",
+		"screenshot": null,
+		"description": "Vanilla: vanilla item magic or weaponizer/armorcrafter behavior.\n\nShuffle: shuffle item magic.\n\nNone: no item magic.\n\nRandom: any of the above."
+	},
+	{
+		"Id": "itemMagicPool",
+		"title": "Item Magic Pool",
+		"screenshot": null,
+		"description": "Sets the pool of Spells for item magic suffling.\n\nAll Magic: all valid spells.\n\nBalanced: removes too weak and too strong spells.\n\nLow: removes too strong spells.\n\nSupport: removes too strong spells and all damage spells.\n\nRandom: any of the above."
+	},
+	{
 		"Id": "quickMinimapLoad",
 		"title": "Quick Minimap Load",
 		"screenshot": "quickminimapload.gif",
@@ -1711,12 +1723,6 @@
 		"screenshot": "magisizeWeapons.png",
 		"description": "All weapons can cast randomly assigned spells. Excludes standard casting weapons which, naturally, continue to cast their normally assigned spells."
 	},
-	{
-		"Id": "magisizeWeaponsBalancedCheckBox",
-		"title": "Balanced Spells",
-		"screenshot": "magisizeWeaponsBalancedCheckBox.gif",
-		"description": "When all weapons can cast magic, spells are assigned based on the strength of the spell and the relative rarity of the weapons. The rarer a weapon is, the stronger the spell assigned to it will be."
-	},
 
 	{
 		"Id": "weaponizerCheckBox",
@@ -1928,7 +1934,7 @@
 		"Id": "owMapExchange",
 		"title": "Overworld Map",
 		"screenshot": "owMapExchange.png",
-		"description": "Alternative Overworld Maps that can be used in place of the standard (vanilla) overworld.\n\nGenerate New Overworld - creates a completely new overworld (resource intensive, may take 30-60 seconds during which time your browser may be unresponsive).\n\nRandom pregenerated 512 - Choose a random map from a set of maps that were pre-generated using the same code as 'Generate New Overworld'.\n\nDesert of Death - Deadly desert.\n\nNo Overworld - Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps.\n\nImport custom map - Import a map using the 'Import map' button."
+		"description": "Options to generate a new random overworld map. Note: map generation is resource intensive, may take 30-60 seconds during which time your browser may be unresponsive.  If a seed fails to generate a map, try a different one.\nGenerate New Overworld - Creates a completely new overworld, vanilla access requirements (game is beatable even vanilla progression/no treasure shuffle).\nShuffled access - Locations placed with random item requirements (e.g. could need canoe to reach Elfland, or airship to reach Matoya).\nShuffled access, unsafe start - May place late-game dungeons in starting area.\nLost Woods - Endless forest.\nDesert of Death - Deadly desert.\nNo Overworld - Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps.\nRandom pregenerated 512 - Choose a random map from a set of maps that were pre-generated using the same code as 'Generate New Overworld'.\nImport custom map - Import a map using the 'Import map' button."
 	},
 
 	{
@@ -2052,6 +2058,19 @@
 		"title": "Increase Dark Penalty",
 		"screenshot": "increaseDarkPenaltyCheckBox.png",
 		"description": "If enabled, \"Dark\" status severely decreases an attacker's chance to hit or crit an enemy.\nAffects both players and enemies inflicted with \"Dark\" status."
+	},
+	{
+		"Id": "OrbsRequiredModeDropDown",
+		"title": "Total Orbs Required",
+		"screenshot": "orbsRequiredDropDown.png",
+		"description": "Changes the total number of ORBS needed to enter the Temple of Fiends Revisited.\n[grid][r]{i}Option|{i}Explained[r]{l}4|{l}(Vanilla Behavior) All 4 ORBS are required[r]{l}Any 3|{l}Any combination of 3 ORBS are accepted[r]{l}Any 2|{l}Any combination of 2 ORBS are accepted[r]{l}Any 1|{l}Any single ORB is accepted[r]{l}Specific 3|{l}3 Randomly selected ORBS are required[r]{l}Specific 2|{l}2 Randomly selected ORBS are required[r]{l}Specific 1|{l}1 Randomly selected ORB is required\n\n\"Total Orbs Required: Random\" will pick a number 1 - 3.\n\nGoing above the minimum ORB requirement will still grant access to ToFR.\nThis option is ignored if Shard Hunt, Deep Dungeon, and/or Free Orbs is enabled."
+	},
+	{
+		"Id": "orbsRequiredSpoilersCheckbox",
+		"title": "Orbs Required - Orb Spoilers",
+		"screenshot": "orbsRequiredSpoilersCheckBox.png",
+		"description": "When enabled, the Black Orb will explain its requirements."
 	}
+
 
 ]
