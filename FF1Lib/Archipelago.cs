@@ -107,7 +107,7 @@ namespace FF1Lib
 
 		private void AddRareEquipment(List<IRewardSource> kiPlacement, List<IRewardSource> generatedPlacement)
 		{
-			HashSet<Item> items = new HashSet<Item>(ItemLists.RareArmorTier.Concat(ItemLists.RareArmorTier));
+			HashSet<Item> items = new HashSet<Item>(ItemLists.RareWeaponTier.Concat(ItemLists.RareArmorTier));
 			kiPlacement.AddRange(generatedPlacement.Where(r => items.Contains(r.Item)));
 		}
 
