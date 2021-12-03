@@ -612,8 +612,9 @@ namespace FF1Lib
 		public List<string> DoRandomizeClassNormalMode(ref List<ClassData> classData, MT19337 rng, List<string> itemnames, Flags flags)
 		{
 			// Equipment lists
-			List<Item> equipFighterArmor = classData[(int)AuthClass.Fighter].arPermissions.ToList();
-			List<Item> equipRedMageArmor = classData[(int)AuthClass.RedMage].arPermissions.ToList();
+			List<Item> bannableArmor = new List<Item> { Item.ProRing, Item.Ribbon, Item.Opal, Item.Gold, Item.Silver, Item.Copper };
+			List<Item> equipFighterArmor = classData[(int)AuthClass.Fighter].arPermissions.ToList().Where(x => !bannableArmor.Contains(x)).ToList();
+			List<Item> equipRedMageArmor = classData[(int)AuthClass.RedMage].arPermissions.ToList().Where(x => !bannableArmor.Contains(x)).ToList(); ;
 			List<Item> equipFighterWeapon = classData[(int)AuthClass.Fighter].wpPermissions.ToList();
 			List<Item> equipThiefWeapon = classData[(int)AuthClass.Thief].wpPermissions.ToList();
 
