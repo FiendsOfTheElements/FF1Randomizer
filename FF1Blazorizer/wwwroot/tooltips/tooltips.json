@@ -26,20 +26,20 @@
 	{
 		"Id": "disableMinimap",
 		"title": "Disable Minimap",
-		"screenshot": null,
+		"screenshot": "disableMinimapCheckBox.png",
 		"description": "Disables the minimap."
 	},
 	{
 		"Id": "itemMagicMode",
 		"title": "Item Magic Shuffling",
-		"screenshot": null,
+		"screenshot": "itemMagicModeDropDown.png",
 		"description": "Vanilla: Vanilla item magic or weaponizer/armorcrafter behavior.\n\nShuffle: Shuffle item magic.\n\nNone: No item magic.\n\nRandom: Any of the above."
 	},
 	{
 		"Id": "itemMagicPool",
 		"title": "Item Magic Pool",
-		"screenshot": null,
-		"description": "Sets the pool of Spells for item magic suffling.\n\nAll Magic: All valid spells.\n\nBalanced: Removes too weak and too strong spells.\n\nLow: Removes too strong spells.\n\nSupport: Removes too strong spells and all damage spells.\n\nRandom: Any of the above."
+		"screenshot": "itemMagicPoolDropDown.png",
+		"description": "Sets the pool of Spells for item magic shuffling.\n\nAll Magic: All valid spells.\n\nBalanced: Removes too weak and too strong spells.\n\nLow: Removes too strong spells.\n\nSupport: Removes too strong spells and all damage spells.\n\nRandom: Any of the above."
 	},
 	{
 		"Id": "quickMinimapLoad",
@@ -50,13 +50,13 @@
 	{
 		"Id": "enableSoftInBattle",
 		"title": "Enable Soft in Battle",
-		"screenshot": null,
+		"screenshot": "enableSoftInBattleCheckBox.gif",
 		"description": "Makes the SOFT spell and the SOFT potion work in battle."
 	},
 	{
 		"Id": "enableLifeInBattle",
 		"title": "Enable Life in Battle",
-		"screenshot": null,
+		"screenshot": "enableLifeInBattleCheckBox.gif",
 		"description": "Makes the LIFE spell, the LIF2 spell and the PHNIX potion work in battle."
 	},
 	{
@@ -80,7 +80,7 @@
 	{
 		"Id": "looseNpcBalance",
 		"title": "Favor NPCs",
-		"screenshot": null,
+		"screenshot": "looseNpcBalanceCheckBox.png",
 		"description": "Makes it more likely for any loose items to land on NPCs."
 	},
 
@@ -1494,20 +1494,20 @@
 	{
 		"Id": "RandomizeClassIncludeNaturalResistCheckBox",
 		"title": "Blursed Classes - Natural Resists",
-		"screenshot": null,
+		"screenshot": "randomizeClassIncludeNaturalResistCheckBox.gif",
 		"description": "Adds a set of bonuses that can give classes natural resistances to spell types. S = Status, P = Poison, T = Time, D = Death, F = Fire, I = Ice, L = Lightning, E = Earth."
 	},
 	{
 		"Id": "RandomizeClassIncludeXpBonuxCheckBox",
 		"title": "Blursed Classes - XP Bonus",
-		"screenshot": null,
-		"description": "Adds a set of bonuses that can give classes more xp gain than others. This bonus is multiplicative with the flaget's exp multiplier."
+		"screenshot": "randomizeClassIncludeXpBonuxCheckBox.png",
+		"description": "Adds a set of bonuses that can give classes more xp gain than others. This bonus is multiplicative with the flagset's exp multiplier."
 	},
 	{
 		"Id": "ClassXpBonus",
 		"title": "Class Xp Bonus",
-		"screenshot": null,
-		"description": "Gives the selected class a multiplier to exp. This bonus is multiplicative with the flaget's exp multiplier.\n\ne.g. A Flagset bonus XP of 2.0x and a class bonus of 1.5x will have a total of 3.0x for that class."
+		"screenshot": "classXPBonus.png",
+		"description": "Gives the selected class a multiplier to exp. This bonus is multiplicative with the flagset's exp multiplier.\n\ne.g. A Flagset bonus XP of 2.0x and a class bonus of 1.5x will have a total of 3.0x for that class."
 	},
 	{
 		"Id": "EnableRandomPromotions",
@@ -2012,8 +2012,8 @@
 	},
 	{
 		"Id": "WhiteMageHarmEveryoneCheckBox",
-		"title": "White Mage Harm Everyone",
-		"screenshot": null,
+		"title": "White Mage Harm Damages All Enemies",
+		"screenshot": "whiteMageHarmEveryoneCheckBox.gif",
 		"description": "HARM spells, when cast by a white mage/wizard, will deal damage to any target. On non undead targets, the spell will not crit (will not deal double damage except on a 3/256). \n\nThis includes HARM spells cast by item magic such as the light axe."
 	},
 	{
