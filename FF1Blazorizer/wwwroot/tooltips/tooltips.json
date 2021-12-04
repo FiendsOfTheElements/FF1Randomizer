@@ -1936,7 +1936,36 @@
 		"screenshot": "owMapExchange.png",
 		"description": "Options to generate a new random overworld map. Note: map generation is resource intensive, may take 30-60 seconds during which time your browser may be unresponsive.  If a seed fails to generate a map, try a different one.\nGenerate New Overworld - Creates a completely new overworld, vanilla access requirements (game is beatable even vanilla progression/no treasure shuffle).\nShuffled access - Locations placed with random item requirements (e.g. could need canoe to reach Elfland, or airship to reach Matoya).\nShuffled access, unsafe start - May place late-game dungeons in starting area.\nLost Woods - Endless forest.\nDesert of Death - Deadly desert.\nNo Overworld - Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps.\nRandom pregenerated 256 - Choose a random map from a set of maps that were pre-generated using the same code as 'Generate New Overworld'.\nRandom pregenerated 256 (shuffle access) - Choose a random map from a set of maps that were pre-generated using the same code as 'Generate New Overworld (shuffle access)'. They have been tested with KeyItemPlacement=Predictive.\nRandom pregenerated 256 (unsafe start) - Choose a random map from a set of maps that were pre-generated using the same code as 'Generate New Overworld (unsafe start)'. They have been tested with KeyItemPlacement=PredictiveUnsafe and 3 loose Items.\nImport custom map - Import a map using the 'Import map' button."
 	},
-
+	{
+		"Id": "enableArchipelago",
+		"title": "Enable Archipelago Support",
+		"screenshot": "archipelagoEnable.png",
+		"description": "Create a game that's compatible with Archipelago Multi-Worlds, allowing different games to share the same treasure pool. By default, only Key Items are included in the common treasure pool. Require Archipelago's client."
+	},
+	{
+		"Id": "enableArchipelagoShards",
+		"title": "Add Shards",
+		"screenshot": "archipelagoShards.png",
+		"description": "Add Shards to the common treasure pool."
+	},
+	{
+		"Id": "enableArchipelagoGold",
+		"title": "Add Gold",
+		"screenshot": "archipelagoGP.png",
+		"description": "Add GP treasures to the common treasure pool."
+	},
+	{
+		"Id": "enableArchipelagoConsumables",
+		"title": "Add Consumables",
+		"screenshot": "archipelagoConsumables.png",
+		"description": "Add consumables to the common treasure pool."
+	},
+	{
+		"Id": "enableArchipelagoEquipment",
+		"title": "Add Equipment",
+		"screenshot": "archipelagoEquipment.png",
+		"description": "Add equipment to the common treasure pool."
+	},
 	{
 		"Id": "procGenEarth1",
 		"title": "Generated Earth Cave B1",
