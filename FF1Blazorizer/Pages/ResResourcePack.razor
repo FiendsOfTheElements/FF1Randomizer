@@ -1,0 +1,137 @@
+@page "/ResResourcePack"
+<div class="content px-4 tinted">
+	<div class="nes-container is-dark col-xs-12">
+		<h1>FFR Resource Packs</h1>
+
+		<p>Starting in version 4.3, FFR supports loading
+		<i>resource packs</i>.  These are loaded with the
+		"Import Resource Pack" button on the <b>Presets</b>
+		tab.</p>
+
+		<p> A resource pack is a zip file containing various
+		assets that will be loading into the randomizer.  The
+		currently supported assets are listed here.  Every
+		file is optional.</p>
+
+		<p>A fully worked example resource pack is "Dracula's
+		Curse" used in the <a href="https://www.youtube.com/watch?v=ULM83NeLBFM">2021 Halloween exhibition race</a>: <a
+		href="/images/draculas_curse_ffr_resource_pack.zip">draculas_curse_ffr_resource_pack.zip</a>.</p>
+
+		<p>Note: graphics must be compatible with the
+		technical capabilities of the NES hardware.  Each
+		section will summarize the restrictions each specific kind of graphic
+		import.  For detailed information you can
+		read about <a
+		href="https://wiki.nesdev.org/w/index.php?title=PPU_pattern_tables">Pattern
+		tables</a>, <a
+		href="https://wiki.nesdev.org/w/index.php?title=PPU_nametables">Nametables</a>,
+		<a
+		href="https://wiki.nesdev.org/w/index.php?title=PPU_attribute_tables">Attribute
+		tables</a> and <a
+		href="https://wiki.nesdev.org/w/index.php?title=PPU_palettes">Palettes</a>.</p>
+
+		<p>When discussing graphics, "tiles" are squares on a
+		8x8 grid. "metatiles" are squares on a 16x16 grid.  A
+		"palette" is 3 colors + black.</p>
+
+		<h2>battle_backdrops.png</h2>
+
+		<p>The location
+		Backgrounds displayed in battle.  There are 16
+		locations.  The order of the locations is: Grass,
+		Marsh Cave, Cave, Water, Forest, ToF, Desert, Marsh,
+		Earth Cave, Castle, River, Tower, Sea Shrine, Ice
+		Cave, Volcano, Waterfall.</p>
+
+		<p>Each backdrop is 32x32 and they must be stacked
+		vertically.  When rendered in game, backdrops should
+		be thought of as more like two 16x32 columns, which
+		are repeated across the top in a 1221 pattern.  Each
+		backdrop has its own palette, but is limited to one
+		palette.</p>
+
+		<h2>bridge.txt</h2>
+
+		<p>The text displayed when crossing the bridge for the
+		first time.  Monospace ASCII text.  Each page is 8
+		lines of 20 characters.  Total text size must be no
+		greater than 300 bytes.</p>
+
+		<h2>chaos.png</h2>
+
+		<p>Chaos battle graphic.  Size is 112x96.  Chaos gets
+		two palettes, however you can only use one palette
+		within any given metatile.  At least 58 of the tiles
+		must be empty (all black).</p>
+
+		<h2>dialogue.txt</h2>
+
+		<p>NPC dialogue.  Monospace ASCII text.  There are 256
+		dialog entries.  Format is dialog id in hexadecimal,
+		followed by a dashed separator on the same line,
+		followed by up to six lines of text with a maximum
+		width of 24 characters.  Example: <br>
+
+		<pre>
+1B ----------------
+I am a scholar. I wish
+to studied ancient
+tablets. Bring me a
+SLAB and I will tell
+you its meaning.
+</pre>
+</p>
+
+		<h2>fiends.png</h2>
+
+		<p>Fiends battle graphics.  All four fiends together laid out left to
+		right, top to bottom: Lich, Kary, Kraken, Tiamat.
+		Each fiend is 64x64.  Each fiend gets two palettes,
+		however you can only use one palette within any given
+		metatile.  Between Lich and Kary, at least 58 of the
+		tiles must be empty (all black) (they share a pattern
+		table).  The same applies Kraken and Tiamat.</p>
+
+		<h2>flags.json</h2>
+		<p>Flags to be loaded at the same time that the resource pack is loaded.</p>
+
+		<h2>gear_icons.png</h2>
+		<p>Gear icons (the ones displayed next to the name).  8x8 images lined up horizontally.</p>
+
+		<h2>heroes.png</h2>
+		<p>Character battle and mapmap graphics.  See "Load custom player sprites" tooltip for details.</p>
+
+		<h2>intro.txt</h2>
+		<p>Opening blue screen text.  Monospace ASCII text.  22 lines, width 32.</p>
+
+		<h2>maptiles.png</h2>
+
+		<p>Tiles graphics for the overworld.  256x128.  Each
+		map tile is a 16x16 metatile.  Each map tile has its
+		own palette, but there can only be a total of four
+		distinct palettes among all map tiles.  An additional
+		limitation, there can only be 245 distinct 8x8 tiles.
+		Since each map tile consists of four 8x8 tiles, this
+		means the some 8x8 tiles must be reused within map
+		tiles.</p>
+
+		<h2>overworld.json</h2>
+		<p>Overworld map (produced by procgen and "export map").</p>
+
+		<h2>towntiles.png</h2>
+
+		<p>Tile graphics for towns.  Same restrictions apply
+		as for maptiles.png, except the further limitation
+		that the town graphics can only have 128 distinct 8x8
+		tiles.</p>
+
+		<h2>weapons.png</h2> <p>In-battle graphics when the
+		character swings a weapon.  Each weapon is a single
+		16x16 image lined up horizontally.  Weapons can only
+		be two colors, a lighter grey and darker grey.</p>
+
+		<ul>
+			<li>Back to <a href="/Resources">Resources</a></li>
+		</ul>
+	</div>
+</div>
