@@ -356,7 +356,7 @@ namespace FF1Lib
 					requiredOrbs.RemoveAt(0);
 				}
 			}
-			asm.Remove(23, 2); // removes unneeded trailing "2D" from appends above
+			asm.Remove(24, 2); // removes unneeded trailing "2D" from appends above
 			asm.Append("F00CA0CA209690E67DE67DA57160A57260"); // trailing asm from original talkroutine
 			talkroutines.Replace(newTalkRoutines.Talk_BlackOrb, Blob.FromHex(asm.ToString()));
 
