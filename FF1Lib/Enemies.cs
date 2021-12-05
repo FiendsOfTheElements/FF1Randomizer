@@ -399,12 +399,15 @@ namespace FF1Lib
 				{
 					//Death Touch
 					var (touch, element) = deathElement;
-
+					enemies[i][15] = touch;
+					enemies[i][14] = element;
 				}
 				else if (roll < 2) //1 vanilla stone toucher
 				{
 					//Stone Touch
 					var (touch, element) = stoneElement;
+					enemies[i][15] = touch;
+					enemies[i][14] = element;
 				}
 				else if (roll < 37) //35 enemies with other assorted status touches
 				{
