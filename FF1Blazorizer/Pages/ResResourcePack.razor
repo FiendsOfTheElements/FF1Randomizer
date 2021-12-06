@@ -53,7 +53,7 @@
 
 		<p>The text displayed when crossing the bridge for the
 		first time.  Monospace ASCII text.  Each page is 8
-		lines of 16 characters.  Total text size must be no
+		lines of 16 characters.  Total text size should be no
 		greater than 300 bytes.</p>
 
 		<h2>chaos.png</h2>
@@ -70,17 +70,30 @@
 		dialog entries.  Format is dialog id in hexadecimal,
 		followed by a dashed separator on the same line,
 		followed by up to six lines of text with a maximum
-		width of 24 characters.  Example: <br>
+		width of 24 characters.  The total size of this file
+		should be less than 1385 bytes.  Example of Bikke's
+		dialogue:</p>
 
-<pre class="tabcontent">
-1B ----------------
-I am a scholar. I wish
-to studied ancient
-tablets. Bring me a
-SLAB and I will tell
-you its meaning.
+<pre style="color: white">
+9 ----------------
+Okay, you got me.
+Take my SHIP.
 </pre>
-</p>
+
+<p>However, since this is a randomizer, he's probably going to give you
+something else.  For quest NPCs, replace the item name with "#"
+(maximum name length is 8 characters, be sure to leave enough room):</p>
+
+<pre style="color: white">
+9 ----------------
+Okay, you got me.
+Take this.
+
+Received #
+</pre>
+
+<a href="/images/resource_pack_reference_images/dialogue.txt">Reference dialogue.</a><br>
+<br>
 
 		<h2>fiends.png</h2>
 
