@@ -277,7 +277,7 @@
     "IncludeBaseClasses": false,
     "RandomPromotionsSpoilers": false,
     "RandomizeClass": false,
-    "RandomizeClassNoCasting": false,
+    "RandomizeClassCasting": false,
     "RandomizeClassChaos": false,
     "RandomizeClassMaxBonus": 2,
     "RandomizeClassMaxMalus": 1,

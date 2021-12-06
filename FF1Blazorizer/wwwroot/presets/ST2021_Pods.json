@@ -327,7 +327,7 @@
 		"IncludeBaseClasses": false,
 		"RandomPromotionsSpoilers": false,
 		"RandomizeClass": true,
-		"RandomizeClassNoCasting": false,
+		"RandomizeClassCasting": true,
 		"RandomizeClassChaos": false,
 		"AlternateFiends": false,
 		"NoBossSkillScriptShuffle": false,
