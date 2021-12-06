@@ -24,6 +24,12 @@
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the hidden flags selected). Make sure to save your flagset before you use this flag."
 	},
 	{
+		"Id": "importResourcePack",
+		"title": "Import Resource Pack",
+		"screenshot": "importResourcePack.png",
+		"description": "Imports into the game various custom assets like sprites, gamescript and worldmap grouped in a single zip package. See Resources for more info."
+	},
+	{
 		"Id": "disableMinimap",
 		"title": "Disable Minimap",
 		"screenshot": "disableMinimapCheckBox.png",
@@ -60,21 +66,15 @@
 		"description": "Makes the LIFE spell, the LIF2 spell and the PHNIX potion work in battle."
 	},
 	{
-		"Id": "noItemMagicCheckBox",
-		"title": "No Item Magic",
-		"screenshot": null,
-		"description": "Enabling this, removes the magic from weapons and armor."
-	},
-	{
 		"Id": "kiPlacementMode",
 		"title": "Key Item Placement",
-		"screenshot": null,
+		"screenshot": "kiPlacementMode.png",
 		"description": "Guided: This algorithm uses a semifixed placement order that will always open up the seed with an early SHIP and CANAL.\n\nPredictive: More powerful algorithm that does not rely on a fixed item order. This allows for more flexibility like allowing early fetch quests or opening a seed up with the CANOE instead of the SHIP. It can better handle alternate overworlds and Floor Entrance seeds.\n\nPredictive Unsafe: Removes Safety Checks that prevent the Predictive Algorithm from forcing you into high level dungeons early."
 	},
 	{
 		"Id": "loosePlacementMode",
 		"title": "Loose Placement",
-		"screenshot": null,
+		"screenshot": "loosePlacementMode.png",
 		"description": "Chaotic: Random Chests and NPCs. Tends to put more key items into larger dungeons.\n\nSpread: Tries to spread out the loose items into different dungeons and gatings. With F/E it tries to spread out the items to different entrances/gatings.\n\nForward: Additionally tries to place loose items into newly opened up areas. It creates key item chains where one key item leads to the next, drives items out into the last corners of the world and can create some really nice fetch quest chains."
 	},
 	{
@@ -2012,7 +2012,7 @@
 	{
 		"Id": "DDEvenTreasureDistribution",
 		"title": "Distribute Treasure Evenly",
-		"screenshot": "DDEvenTreasureDistribution.png",
+		"screenshot": "ddDistributeEvenly.gif",
 		"description": "Instead of the value of treasure chest contents increasing as you progress deeper into the dungeon, each box has the same chance of having any kind of content regardless of where in the dungeon you encounter it."
 	},
 	{
