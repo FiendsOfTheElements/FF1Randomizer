@@ -137,11 +137,21 @@ namespace FF1Lib
 			flagsForRng.OwMapExchange = OwMapExchanges.ImportCustomMap;
 		    }
 
+			Blob resourcesPack = Blob.FromHex("00");
+
+			if (flags.TournamentSafe && flags.ResourcePack != null)
+			{
+				using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack)))
+				{
+					resourcesPack = stream.ToArray();
+				}
+			}
+
 			MT19337 rng;
 			using (SHA256 hasher = SHA256.Create())
 			{
 				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flagsForRng));
-				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed });
+				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed, resourcesPack });
 				Blob hash = hasher.ComputeHash(SeedAndFlags);
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
 			}
