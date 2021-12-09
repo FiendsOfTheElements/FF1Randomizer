@@ -19,7 +19,7 @@ namespace FF1Lib.Sanity
 
 		Queue<SCLogicAreaQueueEntry> todoset = new Queue<SCLogicAreaQueueEntry>(256);
 
-		SCOwArea shipArea;
+		SCOwArea shipDockArea;
 
 		Dictionary<short, List<SCLogicAreaQueueEntry>> tunnels = new Dictionary<short, List<SCLogicAreaQueueEntry>>();
 
@@ -38,8 +38,7 @@ namespace FF1Lib.Sanity
 			locations = new OwLocationData(rom);
 			locations.LoadData();
 
-			short areaIndex = main.Overworld.Tiles[locations.ShipLocation.X, locations.ShipLocation.Y].Area;
-			shipArea = main.Overworld.Areas[areaIndex];
+			GetShipDockArea();
 
 			BuildTunnels();
 
@@ -58,6 +57,21 @@ namespace FF1Lib.Sanity
 			RewardSources = rewardSourceDic.Values.ToList();
 
 			ProcessFreebies();
+		}
+
+		private void GetShipDockArea()
+		{
+			var coords = locations.ShipLocation;
+
+			SetShipDock(coords.OwLeft);
+			SetShipDock(coords.OwRight);
+			SetShipDock(coords.OwUp);
+			SetShipDock(coords.OwDown);
+		}
+
+		private void SetShipDock(SCCoords coords)
+		{
+			if ((main.Overworld.Tiles[coords.X, coords.Y].Tile & SCBitFlags.ShipDock) > 0) shipDockArea = main.Overworld.Areas[main.Overworld.Tiles[coords.X, coords.Y].Area];
 		}
 
 		private void BuildTunnels()
@@ -157,7 +171,7 @@ namespace FF1Lib.Sanity
 		{
 			var area = main.Overworld.Areas[areaId];
 
-			if ((area.Tile & SCBitFlags.Ocean) > 0 && (currentArea.Tile & SCBitFlags.Ocean) == 0 && area != shipArea) return;
+			if ((area.Tile & SCBitFlags.Ocean) > 0 && (currentArea.Tile & SCBitFlags.Ocean) == 0 && currentArea != shipDockArea) return;
 
 			if (tunnels.TryGetValue(areaId, out var tlist))
 			{
