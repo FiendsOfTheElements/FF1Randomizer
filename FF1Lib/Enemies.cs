@@ -182,7 +182,7 @@ namespace FF1Lib
 			Put(ZoneFormationsOffset, newFormations.ToArray());
 		}
 
-		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool doBosses, bool excludeImps, bool scaryImps)
+		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool doBosses, bool excludeImps, bool scaryImps, bool allEnemiesHaveAScript)
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
@@ -196,9 +196,20 @@ namespace FF1Lib
 				if (excludeImps) normalOldEnemies.Insert(Enemy.Imp, oldEnemies[Enemy.Imp]);
 				if (!AllowUnsafePirates) normalOldEnemies.Insert(Enemy.Pirate, oldEnemies[Enemy.Pirate]);
 
+				var allScripts = normalOldEnemies.Select(e => e[EnemyStat.Scripts]).Distinct().ToList();
+				allScripts.Remove(0xFF);
+
 				for (int i = 0; i < EnemyCount - 10; i++)
 				{
-					newEnemies[i][EnemyStat.Scripts] = normalOldEnemies[i][EnemyStat.Scripts];
+					if (allEnemiesHaveAScript)
+					{
+						newEnemies[i][EnemyStat.Scripts] = allScripts.PickRandom(rng);
+					}
+					else
+					{
+						newEnemies[i][EnemyStat.Scripts] = normalOldEnemies[i][EnemyStat.Scripts];
+					}
+
 				}
 			}
 
@@ -366,7 +377,7 @@ namespace FF1Lib
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool DisableStunTouch)
+		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool DisableStunTouch, bool allEnemiesHaveATouch)
 		{
 			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
@@ -384,6 +395,8 @@ namespace FF1Lib
 			(byte touch, byte element) deathElement = (0x01, 0x08); //Death Touch = Death Element
 			(byte touch, byte element) stoneElement = (0x02, 0x02); //Stone Touch = Poison
 
+			var weightedStatusElements = statusElements.Concat(statusElements).Concat(statusElements).Concat(statusElements).Append(deathElement).Append(stoneElement).ToList();
+
 			for (int i = 0; i < EnemyCount; i++)
 			{
 				if (!AllowUnsafePirates)
@@ -394,32 +407,41 @@ namespace FF1Lib
 					}
 				}
 
-				int roll = rng.Between(0, 128);
-				if (roll < 1) //1 vanilla death toucher
+				if (allEnemiesHaveATouch && i < EnemyCount - 10)//no bosses
 				{
-					//Death Touch
-					var (touch, element) = deathElement;
-					enemies[i][15] = touch;
-					enemies[i][14] = element;
-				}
-				else if (roll < 2) //1 vanilla stone toucher
-				{
-					//Stone Touch
-					var (touch, element) = stoneElement;
-					enemies[i][15] = touch;
-					enemies[i][14] = element;
-				}
-				else if (roll < 37) //35 enemies with other assorted status touches
-				{
-					var (touch, element) = statusElements.PickRandom(rng);
+					var (touch, element) = weightedStatusElements.PickRandom(rng);
 					enemies[i][15] = touch;
 					enemies[i][14] = element;
 				}
 				else
 				{
-					//Otherwise, the enemy has no touch or associated element.
-					enemies[i][14] = 0x00;
-					enemies[i][15] = 0x00;
+					int roll = rng.Between(0, 128);
+					if (roll < 1) //1 vanilla death toucher
+					{
+						//Death Touch
+						var (touch, element) = deathElement;
+						enemies[i][15] = touch;
+						enemies[i][14] = element;
+					}
+					else if (roll < 2) //1 vanilla stone toucher
+					{
+						//Stone Touch
+						var (touch, element) = stoneElement;
+						enemies[i][15] = touch;
+						enemies[i][14] = element;
+					}
+					else if (roll < 37) //35 enemies with other assorted status touches
+					{
+						var (touch, element) = statusElements.PickRandom(rng);
+						enemies[i][15] = touch;
+						enemies[i][14] = element;
+					}
+					else
+					{
+						//Otherwise, the enemy has no touch or associated element.
+						enemies[i][14] = 0x00;
+						enemies[i][15] = 0x00;
+					}
 				}
 			}
 

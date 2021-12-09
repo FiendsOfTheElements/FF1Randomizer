@@ -4898,6 +4898,26 @@ namespace FF1Lib
 
 		#endregion
 
+		public bool? AllEnemiesHaveAScript
+		{
+			get => Flags.AllEnemiesHaveAScript;
+			set
+			{
+				Flags.AllEnemiesHaveAScript = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? AllEnemiesHaveATouch
+		{
+			get => Flags.AllEnemiesHaveATouch;
+			set
+			{
+				Flags.AllEnemiesHaveATouch = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public bool OptOutSpeedHackWipes
 		{
 			get => Preferences.OptOutSpeedHackWipes;

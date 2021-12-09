@@ -24,6 +24,18 @@
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the hidden flags selected). Make sure to save your flagset before you use this flag."
 	},
 	{
+		"Id": "allEnemiesHaveAScript",
+		"title": "Everything has a Script",
+		"screenshot": null,
+		"description": "Assigns a random non-boss script to every non-boss enemy."
+	},
+	{
+		"Id": "allEnemiesHaveATouch",
+		"title": "Everything has a Touch",
+		"screenshot": null,
+		"description": "Assigns a random touch effect to every non-boss enemy."
+	},
+	{
 		"Id": "importResourcePack",
 		"title": "Import Resource Pack",
 		"screenshot": "importResourcePack.png",

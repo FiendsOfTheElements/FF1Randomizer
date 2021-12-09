@@ -56,7 +56,10 @@ namespace FF1Lib
 
 		#endregion
 
-	public bool Archipelago { get; set; } = false;
+		public bool? AllEnemiesHaveAScript { get; set; } = false;
+		public bool? AllEnemiesHaveATouch{ get; set; } = false;
+
+		public bool Archipelago { get; set; } = false;
 		public bool ArchipelagoGold { get; set; } = false;
 		public bool ArchipelagoConsumables { get; set; } = false;
 		public bool ArchipelagoShards { get; set; } = false;
