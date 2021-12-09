@@ -168,6 +168,18 @@ namespace FF1Lib
 					allPlacements.Remove(itemShopItem);
 					allKeyItems.Remove(itemShopItem);
 
+					if (_flags.Archipelago && allKeyItems.Contains(Item.Bridge))
+					{
+						var (_, mapLocations, requirements) = _checker.CheckSanity(placedItems, null, _flags);
+						var accessibleSources = GetAllAccessibleRewardSources(preBlackOrbUnincentivizedLocationPool, placedItems);
+
+						var rewardSource = balancedPicker.Pick(accessibleSources, _flags.LooseItemsForwardPlacement, _flags.LooseItemsSpreadPlacement, false, rng);
+						placedItems.Add(NewItemPlacement(rewardSource, Item.Bridge));
+
+						allPlacements.Remove(Item.Bridge);
+						allKeyItems.Remove(Item.Bridge);
+					}
+
 					//Since it can waste cycles, this number needs to be high enough to be able to place all incentives and all nonincentives and still have some leeway
 					//When it's done it breaks anyway
 					//When it reached enough cycles so no cycle based restricitons apply and can place neither an incentive nor a nonincentive it also breaks
