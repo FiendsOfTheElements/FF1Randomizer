@@ -137,21 +137,18 @@ namespace FF1Lib
 			flagsForRng.OwMapExchange = OwMapExchanges.ImportCustomMap;
 		    }
 
-			Blob resourcesPack = Blob.FromHex("00");
-
-			if (flags.TournamentSafe && flags.ResourcePack != null)
-			{
-				using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack)))
-				{
-					resourcesPack = stream.ToArray();
-				}
-			}
+			Blob resourcesPackHash = new byte[1];
 
 			MT19337 rng;
 			using (SHA256 hasher = SHA256.Create())
 			{
+				if (flags.TournamentSafe && flags.ResourcePack != null)
+				{
+					resourcesPackHash = hasher.ComputeHash(new MemoryStream(Convert.FromBase64String(flags.ResourcePack)).ToArray());
+				}
+
 				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flagsForRng));
-				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed, resourcesPack });
+				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed, resourcesPackHash });
 				Blob hash = hasher.ComputeHash(SeedAndFlags);
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
 			}
@@ -1240,7 +1237,7 @@ namespace FF1Lib
 			if (flags.ReplacementMap != null) {
 			    flagstext += "_" + flags.ReplacementMap.ComputeChecksum();
 			}
-			WriteSeedAndFlags(seed.ToHex(), flagstext);
+			WriteSeedAndFlags(seed.ToHex(), flagstext, resourcesPackHash.ToHex());
 			ExtraTrackingAndInitCode(flags, preferences);
 		}
 
@@ -1508,7 +1505,7 @@ namespace FF1Lib
 			Data[0x7FE97] = 0x03;
 		}
 
-		public void WriteSeedAndFlags(string seed, string flags)
+		public void WriteSeedAndFlags(string seed, string flags, string resourcesPackHash)
 		{
 			// Replace most of the old copyright string printing with a JSR to a LongJump
 			Put(0x38486, Blob.FromHex("20B9FF60"));
@@ -1518,7 +1515,7 @@ namespace FF1Lib
 
 			Blob hash;
 			var hasher = SHA256.Create();
-			hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{FFRVersion.Sha}"));
+			hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{resourcesPackHash}_{FFRVersion.Sha}"));
 
 			var hashpart = BitConverter.ToUInt64(hash, 0);
 			hash = Blob.FromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
