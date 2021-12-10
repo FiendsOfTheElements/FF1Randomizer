@@ -26,14 +26,14 @@
 	{
 		"Id": "allEnemiesHaveAScript",
 		"title": "Everything has a Script",
-		"screenshot": null,
-		"description": "Assigns a random non-boss script to every non-boss enemy."
+		"screenshot": "enemyScriptsCheckBox.png",
+		"description": "Assigns a random non-boss script to every non-boss enemy.\n\nPirates are safe unless declared unsafe."
 	},
 	{
 		"Id": "allEnemiesHaveATouch",
 		"title": "Everything has a Touch",
-		"screenshot": null,
-		"description": "Assigns a random touch effect to every non-boss enemy."
+		"screenshot": "enemyStatusAttacksCheckBox.png",
+		"description": "Assigns a random touch effect to every non-boss enemy. Death Touch and Stone Poison are less common.\n\nPirates are safe unless declared unsafe."
 	},
 	{
 		"Id": "importResourcePack",
