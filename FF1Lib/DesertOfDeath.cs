@@ -833,6 +833,20 @@ namespace FF1Lib
 			EntrancesCoords[titanWestIndex] = (MapLocation.TitansTunnelWest, (byte)(EntrancesCoords[titanWestIndex].Item2 + EntrancesCoords[sardaIndex].Item2 - 2), (byte)(EntrancesCoords[titanWestIndex].Item3 + EntrancesCoords[sardaIndex].Item3 - 2));
 			ShipCoords[titanWestIndex] = (MapLocation.TitansTunnelWest, (byte)ShipCoords[sardaIndex].Item2, (byte)ShipCoords[sardaIndex].Item3);
 
+			// Update Coneria & Elfland coords
+			var coneriaIndex = EntrancesCoords.FindIndex(z => z.Item1 == MapLocation.Coneria);
+			var coneriaCastleIndex = EntrancesCoords.FindIndex(z => z.Item1 == MapLocation.ConeriaCastle1);
+
+			EntrancesCoords[coneriaIndex] = (MapLocation.Coneria, (byte)(EntrancesCoords[coneriaIndex].Item2 + EntrancesCoords[coneriaCastleIndex].Item2 - 2), (byte)(EntrancesCoords[coneriaIndex].Item3 + EntrancesCoords[coneriaCastleIndex].Item3 - 2));
+			ShipCoords[coneriaIndex] = (MapLocation.Coneria, (byte)ShipCoords[coneriaCastleIndex].Item2, (byte)ShipCoords[coneriaCastleIndex].Item3);
+
+
+			var elflandIndex = EntrancesCoords.FindIndex(z => z.Item1 == MapLocation.Elfland);
+			var elflandCastleIndex = EntrancesCoords.FindIndex(z => z.Item1 == MapLocation.ElflandCastle);
+
+			EntrancesCoords[elflandIndex] = (MapLocation.Elfland, (byte)(EntrancesCoords[elflandIndex].Item2 + EntrancesCoords[elflandCastleIndex].Item2 - 2), (byte)(EntrancesCoords[elflandIndex].Item3 + EntrancesCoords[elflandCastleIndex].Item3 - 2));
+			ShipCoords[elflandIndex] = (MapLocation.Elfland, (byte)ShipCoords[elflandCastleIndex].Item2, (byte)ShipCoords[elflandCastleIndex].Item3);
+
 			// Update Teleporters and Locations
 			List<MapLocation> exitToUpdate = new() { MapLocation.TitansTunnelEast, MapLocation.TitansTunnelWest, MapLocation.IceCave1, MapLocation.CastleOrdeals1, MapLocation.ConeriaCastle1, MapLocation.EarthCave1, MapLocation.GurguVolcano1, MapLocation.Onrac, MapLocation.MirageTower1 };
 

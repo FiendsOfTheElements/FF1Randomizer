@@ -511,8 +511,8 @@ namespace FF1Lib
 				airship_x = owMapExchange.StartingLocation.X;
 				airship_y = owMapExchange.StartingLocation.Y;
 
-				ship_x = owMapExchange.ShipLocations.GetShipLocation((int)OverworldTeleportIndex.ConeriaCastle1).X;
-				ship_y = owMapExchange.ShipLocations.GetShipLocation((int)OverworldTeleportIndex.ConeriaCastle1).Y;
+				ship_x = owMapExchange.ShipLocations.GetShipLocation((int)OverworldTeleportIndex.Coneria).X;
+				ship_y = owMapExchange.ShipLocations.GetShipLocation((int)OverworldTeleportIndex.Coneria).Y;
 			}
 
 			// write new routine to save data at game over (the game will save when you clear the final textbox and not before), see 1B_8FF5_GameOverAndRestart.asm
