@@ -1237,7 +1237,10 @@ namespace FF1Lib
 			if (flags.ReplacementMap != null) {
 			    flagstext += "_" + flags.ReplacementMap.ComputeChecksum();
 			}
-			WriteSeedAndFlags(seed.ToHex(), flagstext, resourcesPackHash.ToHex());
+
+			flagstext += "_" + resourcesPackHash.ToHex();
+
+			WriteSeedAndFlags(seed.ToHex(), flagstext);
 			ExtraTrackingAndInitCode(flags, preferences);
 		}
 
@@ -1505,7 +1508,7 @@ namespace FF1Lib
 			Data[0x7FE97] = 0x03;
 		}
 
-		public void WriteSeedAndFlags(string seed, string flags, string resourcesPackHash)
+		public void WriteSeedAndFlags(string seed, string flags)
 		{
 			// Replace most of the old copyright string printing with a JSR to a LongJump
 			Put(0x38486, Blob.FromHex("20B9FF60"));
@@ -1515,7 +1518,7 @@ namespace FF1Lib
 
 			Blob hash;
 			var hasher = SHA256.Create();
-			hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{resourcesPackHash}_{FFRVersion.Sha}"));
+			hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{FFRVersion.Sha}"));
 
 			var hashpart = BitConverter.ToUInt64(hash, 0);
 			hash = Blob.FromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
