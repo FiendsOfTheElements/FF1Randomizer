@@ -206,6 +206,22 @@ namespace FF1Lib.Procgen
 	    }
 	}
 
+	public OwFeature NoneToMarsh() {
+	    if (this.MountainCave) {
+		return this;
+	    }
+	    var newtiles = new byte[this.Tiles.GetLength(0),this.Tiles.GetLength(1)];
+	    for (int j = 0; j < this.Tiles.GetLength(0); j++) {
+		for (int i = 0; i < this.Tiles.GetLength(1); i++) {
+		    if (this.Tiles[j,i] == OverworldTiles.None) {
+			newtiles[j,i] = OverworldTiles.MARSH;
+		    } else {
+			newtiles[j,i] = this.Tiles[j,i];
+		    }
+		}
+	    }
+	    return new OwFeature(newtiles, this.Entrances);
+	}
     }
 
     // This is the class that does most of the work.  It holds the
