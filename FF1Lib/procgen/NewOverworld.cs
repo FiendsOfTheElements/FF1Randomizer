@@ -1814,7 +1814,7 @@ namespace FF1Lib.Procgen
 		    locations.Add(new ShipLocation(closestDock.X,
 						   closestDock.Y,
 						   (byte)EntranceToOWTeleporterIndex[c.Key]));
-		    if (c.Key == "ConeriaCastle1") {
+		    if (c.Key == "Coneria") {
 			coneriaDock = closestDock;
 		    }
 		    if (c.Key == "Pravoka") {
