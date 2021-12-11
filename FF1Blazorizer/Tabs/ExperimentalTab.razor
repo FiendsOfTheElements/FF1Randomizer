@@ -11,10 +11,10 @@
 		<div class="col1">
 			<h4>Archipelago</h4>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enableArchipelago" @bind-Value="Flags.Archipelago">Enable</CheckBox>
-			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="enableArchipelagoShards" @bind-Value="Flags.ArchipelagoShards">Shards</CheckBox>
-			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="enableArchipelagoGold" @bind-Value="Flags.ArchipelagoGold">Gold</CheckBox>
-			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="enableArchipelagoConsumables" @bind-Value="Flags.ArchipelagoConsumables">Consumables</CheckBox>
-			<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" Id="enableArchipelagoEquipment" TItem="ArchipelagoEquipment" @bind-Value="Flags.ArchipelagoEquipment">Equipment:</EnumDropDown>
+			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoShards" @bind-Value="Flags.ArchipelagoShards">Shards</CheckBox>
+			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoGold" @bind-Value="Flags.ArchipelagoGold">Gold</CheckBox>
+			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoConsumables" @bind-Value="Flags.ArchipelagoConsumables">Consumables</CheckBox>
+			<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoEquipment" TItem="ArchipelagoEquipment" @bind-Value="Flags.ArchipelagoEquipment">Equipment:</EnumDropDown>
 			<p>
 				Player Name:
 				<br>
@@ -37,7 +37,7 @@
 			<p>Deep Dungeon should be considered extremely experimental at this time. The rest of the flags and tooltips are not properly adjusted to play nicely with it yet.</p>
 			<p>While it should work with most flags, such as scaling and Blursed items, map edits and Floor shuffle will either fail to generate a ROM, or create an unpleasant experience.</p>
 			<p>Please try it out and provide feedback!</p>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.Archipelago)" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDEvenTreasureDistribution" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.DDEvenTreasureDistribution">Distribute treasure evenly</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDProgressiveTilesets" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.DDProgressiveTilesets">Progressive Tilesets</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDFiendOrbs" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.DDFiendOrbs">Fiend Orbs</CheckBox>
