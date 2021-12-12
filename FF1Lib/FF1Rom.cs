@@ -962,7 +962,7 @@ namespace FF1Lib
 				ItemsText[(int)Item.House] = "XETH@p";
 			}
 
-			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
+			if (((bool)flags.HintsVillage || (bool)flags.HintsDungeon) && !flags.DeepDungeon)
 			{
 				if ((bool)flags.HintsDungeon)
 					SetDungeonNPC(flippedMaps, rng);
