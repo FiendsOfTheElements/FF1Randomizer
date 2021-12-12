@@ -40,10 +40,11 @@ namespace FF1R.Commands
 	    int effectiveSeed = this.Seed;
 	    var rng = new MT19337((uint)effectiveSeed);
 
+	    OwMapExchanges subtype = Enum.Parse<OwMapExchanges>(Subtype);
 	    OwMapExchangeData replacementMap = null;
 	    do {
 		try {
-		    replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, Enum.Parse<OwMapExchanges>(Subtype));
+		    replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, subtype);
 		} catch (Exception) {
 		    if (!this.Retry) {
 			throw;
