@@ -30,6 +30,9 @@ namespace FF1R.Commands
 	[Option("-y")]
 	public bool Retry { get; }
 
+	[Option("-p")]
+	public int Pack { get; } = 1;
+
 	int OnExecute(IConsole console)
 	{
 	    if (Seed == 0) {
@@ -41,34 +44,45 @@ namespace FF1R.Commands
 	    var rng = new MT19337((uint)effectiveSeed);
 
 	    OwMapExchanges subtype = Enum.Parse<OwMapExchanges>(Subtype);
-	    OwMapExchangeData replacementMap = null;
-	    do {
-		try {
-		    replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, subtype);
-		} catch (Exception) {
-		    if (!this.Retry) {
-			throw;
+
+	    for (int i = 0; i < this.Pack; i++) {
+		OwMapExchangeData replacementMap = null;
+		do {
+		    try {
+			replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, subtype);
+		    } catch (Exception) {
+			if (!this.Retry) {
+			    throw;
+			}
+			effectiveSeed = (int)rng.Next();
+			rng = new MT19337((uint)effectiveSeed);
 		    }
-		    effectiveSeed = (int)rng.Next();
-		    rng = new MT19337((uint)effectiveSeed);
+		} while (replacementMap == null);
+
+		replacementMap.Checksum = replacementMap.ComputeChecksum();
+		replacementMap.Seed = effectiveSeed;
+		replacementMap.FFRVersion = FF1Lib.FFRVersion.Version;
+
+		string fn;
+		if (this.Pack == 1) {
+		    fn = $"FFR_map_{replacementMap.Checksum}.json";
+		} else {
+		    fn = $"{replacementMap.Seed,8:X8}.json";
 		}
-	    } while (replacementMap == null);
+		using (StreamWriter file = File.CreateText(fn)) {
+		    JsonSerializer serializer = new JsonSerializer();
+		    if (this.Pack == 1) {
+			serializer.Formatting = Formatting.Indented;
+		    }
+		    serializer.Serialize(file, replacementMap);
+		}
+		Console.WriteLine(fn);
 
-	    replacementMap.Checksum = replacementMap.ComputeChecksum();
-	    replacementMap.Seed = effectiveSeed;
-	    replacementMap.FFRVersion = FF1Lib.FFRVersion.Version;
-
-	    var fn = $"FFR_map_{replacementMap.Checksum}.json";
-	    using (StreamWriter file = File.CreateText(fn)) {
-		JsonSerializer serializer = new JsonSerializer();
-		serializer.Formatting = Formatting.Indented;
-		serializer.Serialize(file, replacementMap);
+		if (this.DoRender) {
+		    MapRender.RenderMap(fn);
+		}
 	    }
-	    Console.WriteLine(fn);
 
-	    if (this.DoRender) {
-		MapRender.RenderMap(fn);
-	    }
 	    return 0;
 	}
     }
