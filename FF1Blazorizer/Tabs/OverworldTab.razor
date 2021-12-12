@@ -83,7 +83,14 @@
 
 		protected override void OnInitialized()
 		{
+			Flags.PropertyChanged += (sender, args) => SyncDisplayMapgenSeed();
+			SyncDisplayMapgenSeed();
+		}
+
+		void SyncDisplayMapgenSeed()
+		{
 			_mapgenSeed = $"{Flags.MapGenSeed,8:X8}";
+			StateHasChanged();
 		}
 
 		bool IsGenerateMap(OwMapExchanges ex) {
