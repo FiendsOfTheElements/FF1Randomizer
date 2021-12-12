@@ -672,10 +672,12 @@ namespace FF1Lib.Procgen
 		} else {
 		    feature = OverworldTiles.FOREST_MOUNTAIN_CAVE_FEATURE;
 		}
+	    } else {
+		feature = feature.NoneToMarsh();
 	    }
 	    int w = feature.Tiles.GetLength(1);
 	    int h = feature.Tiles.GetLength(0);
-	    feature = feature.NoneToMarsh();
+
 	    foreach (var p in points) {
 		if (this.Traversable_regionmap[p.Y+h, p.X+(w/2)] == riverRegion.RegionId) {
 		    var v = this.PlaceFeatureAt(this.Traversable_regionmap, mtnRegion, p, feature, true);

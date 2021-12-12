@@ -392,12 +392,12 @@ namespace FF1Lib.Procgen
 	    });
 
 	public static OwFeature VOLCANO = new OwFeature(new byte[,] {
-	    {None,  RIVER, RIVER,                   RIVER, RIVER, None},
+	    {MOUNTAIN,  RIVER, RIVER,                   RIVER, RIVER, MOUNTAIN},
 	    {RIVER, RIVER, LAND,                     LAND, RIVER, RIVER},
 	    {RIVER, LAND,  VOLCANO_TOP_W,   VOLCANO_TOP_E, LAND,  RIVER},
 	    {RIVER, LAND,  VOLCANO_BASE_W, VOLCANO_BASE_E, LAND,  RIVER},
 	    {RIVER, RIVER, LAND,                     LAND, RIVER, RIVER},
-	    {None,  RIVER, RIVER,                   RIVER, RIVER, None},
+	    {MOUNTAIN,  RIVER, RIVER,                   RIVER, RIVER, MOUNTAIN},
 	}, new Dictionary<string, SCCoords> {
 		{ "GurguVolcano1", new SCCoords(3, 2) },
 	    });
