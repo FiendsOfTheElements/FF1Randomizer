@@ -584,14 +584,13 @@ namespace FF1Lib
 
 		public List<MagicSpell> GetSpells() {
 			var spells = Get(MagicOffset, MagicSize * MagicCount).Chunk(MagicSize);
-			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
 			var pointers = Get(MagicTextPointersOffset, MagicCount);
 
 			return spells.Select((spell, i) => new MagicSpell
 			{
 				Index = (byte)i,
 				Data = spell,
-				Name = itemnames[176 + i],
+				Name = ItemsText[176 + i],
 				TextPointer = pointers[i]
 			})
 			.ToList();
@@ -599,14 +598,11 @@ namespace FF1Lib
 
 		public void PutSpellNames(List<MagicSpell> spells)
 		{
-			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
 
 			for(int i = 0; i < spells.Count; i++)
 			{
-				itemnames[176 + i] = spells[i].Name;
+				ItemsText[176 + i] = spells[i].Name;
 			}
-
-			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
 		}
 
 		public void AccessibleSpellNames(Flags flags)
@@ -689,34 +685,74 @@ namespace FF1Lib
 		{
 			if (mode == SpellNameMadness.MixedUp)
 			{
-				var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
-
 				string[] spellnames = new string[64];
-				Array.Copy(itemnames, 176, spellnames, 0, 64);
+				Array.Copy(ItemsText.ToList().ToArray(), 176, spellnames, 0, 64);
 
 				var spellnamelist = new List<string>(spellnames);
 				spellnamelist.Shuffle(rng);
 
 				for (int i = 0; i < spellnamelist.Count; i++)
 				{
-					itemnames[176 + i] = spellnamelist[i];
+					ItemsText[176 + i] = spellnamelist[i];
 				}
-
-				WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
 			}
 			else if (mode == SpellNameMadness.Madness)
 			{
 				List<string> alphabet = new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
 				List<string> numbers = new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" };
 
-				var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
-
 				for (int i = 176; i < 176 + 64; i++)
 				{
-					itemnames[i] = alphabet.PickRandom(rng) + alphabet.PickRandom(rng) + numbers.PickRandom(rng) + alphabet.PickRandom(rng);
+					ItemsText[i] = alphabet.PickRandom(rng) + alphabet.PickRandom(rng) + numbers.PickRandom(rng) + alphabet.PickRandom(rng);
 				}
+			}
+		}
 
-				WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
+		public void EnableSoftInBattle()
+		{
+			var spellInfos = LoadSpells().ToList();
+			var spells = GetSpells().ToDictionary(s => s.Name.ToLowerInvariant());
+
+
+			foreach (var spl in spells.Where(s => s.Key.StartsWith("soft") || s.Key.StartsWith("sft")).Select(s => s.Value))
+			{
+				SpellInfo spell = new SpellInfo
+				{
+					routine = 0x08, //cure ailment
+					effect = 0x02, //earth element
+					targeting = 0x10, //single target
+					accuracy = 00,
+					elem = 0,
+					gfx = 184,
+					palette = 40
+				};
+
+				Put(MagicOffset + spl.Index * MagicSize, spell.compressData());
+			}
+		}
+
+
+
+		public void EnableLifeInBattle()
+		{
+			var spellInfos = LoadSpells().ToList();
+			var spells = GetSpells().ToDictionary(s => s.Name.ToLowerInvariant());
+
+
+			foreach (var spl in spells.Where(s => s.Key.StartsWith("life") || s.Key.StartsWith("lif")).Select(s => s.Value))
+			{
+				SpellInfo spell = new SpellInfo
+				{
+					routine = 0x08, //cure ailment
+					effect = spl.Name == "LIF2" ? (byte)0x81 : (byte)0x01, //death element
+					targeting = 0x10, //single target
+					accuracy = 00,
+					elem = 0,
+					gfx = 224,
+					palette = spl.Name == "LIF2" ? (byte)44 : (byte)43,
+				};
+
+				Put(MagicOffset + spl.Index * MagicSize, spell.compressData());
 			}
 		}
 	}

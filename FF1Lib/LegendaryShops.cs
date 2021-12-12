@@ -259,7 +259,7 @@ namespace FF1Lib
 		{
 			var items = new List<Item> { Item.Cabin, Item.House, Item.Heal, Item.Pure, Item.Soft };
 
-			if (flags.EnableExtConsumables && (flags.LegendaryShopHasExtConsumables ?? false))
+			if (flags.ExtConsumableSet != ExtConsumableSet.None && (flags.LegendaryShopHasExtConsumables ?? false))
 			{
 				items.Add(Item.WoodenNunchucks);
 				items.Add(Item.SmallKnife);
@@ -276,7 +276,7 @@ namespace FF1Lib
 				slots--;
 			}
 
-			if (slots > 0 && flags.EnableExtConsumables && (flags.LegendaryShopHasExtConsumables ?? false))
+			if (slots > 0 && flags.ExtConsumableSet != ExtConsumableSet.None && (flags.LegendaryShopHasExtConsumables ?? false))
 			{
 				Item ext = (Item)rng.Between((int)Item.WoodenNunchucks, (int)Item.Rapier);
 				result.Add(ext);

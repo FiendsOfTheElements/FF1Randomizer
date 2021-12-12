@@ -13,6 +13,7 @@ MenuSelection_Drink = $9C06
 BtlMag_Effect_CureAilment_Return = $B9D6-1
 BtlMag_Effect_CureAilment_Return2 = $B9D9-1
 BtlMag_Effect_RecoverHP = $B999-1
+BtlMag_Effect_FullRecoverHP = $B9C6-1
 BtlMag_Effect_Smoke_Return = $A424-1
 
 lut_drinkbox_order = $F930
@@ -170,9 +171,13 @@ BtlMag_Effect_CureAilment:
     STA btlmag_defender_ailments
     
 	LDA btlmag_effectivity          ; Check for Life Spell
-	LSR
+	CMP #$01
 	BEQ BtlMag_Effect_Life
-	
+
+	LDA btlmag_effectivity          ; Check for Life Spell
+	CMP #$81
+	BEQ BtlMag_Effect_Life2
+
 	LDA #>BtlMag_Effect_CureAilment_Return
 	PHA
 	LDA #<BtlMag_Effect_CureAilment_Return
@@ -219,6 +224,13 @@ BtlMag_Effect_Life:
 	PHA
 	LDA #$0C
 	JMP SwapPRG
+BtlMag_Effect_Life2:
+	LDA #>BtlMag_Effect_FullRecoverHP
+	PHA
+	LDA #<BtlMag_Effect_FullRecoverHP
+	PHA
+	LDA #$0C
+	JMP SwapPRG
 BtlMag_Effect_Smoke_Fiend2:
 	LDA facing           ; check which direction we're facing
     LSR A                ; shift until we find the appropriate direction, and branch to it
@@ -253,4 +265,3 @@ BtlMag_Effect_Smoke_Fiend2:
 
 
 
-	

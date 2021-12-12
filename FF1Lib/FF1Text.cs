@@ -191,6 +191,22 @@ namespace FF1Lib
 			{ "@T", 0xDF },
 			{ "%", 0xE0 },
 			{ "@p", 0xE1 },
+			{ "€s", 0xE2 },
+			{ "€p", 0xE3 },
+			{ "€T", 0xE4 },
+			{ "€d", 0xE5 },
+			{ "€f", 0xE6 },
+			{ "€i", 0xE7 },
+			{ "€t", 0xE8 },
+			{ "€e", 0xE9 },
+			{ "§d", 0xEA },
+			{ "§s", 0xEB },
+			{ "§p", 0xEC },
+			{ "§b", 0xED },
+			{ "§P", 0xEE },
+			{ "§Z", 0xEF },
+			{ "§M", 0xF0 },
+			{ "§C", 0xF1 },
 			{ " ", 0xFF }
 		};
 
@@ -223,7 +239,7 @@ namespace FF1Lib
 			while (i < text.Length - 1)
 			{
 				var twoChars = text.Substring(i, 2);
-				if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@'))
+				if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@' || twoChars[0] == '€' || twoChars[0] == '§'))
 				{
 					bytes[j++] = BytesByText[twoChars];
 					i += 2;
@@ -257,7 +273,7 @@ namespace FF1Lib
 				if (twoChars[0] == '¤') // Control Code 0x14 for second words table
 				{
 					bytes[j++] = 0x14;
-					bytes[j++] = Blob.FromHex(text.Substring(i+1,2))[0];
+					bytes[j++] = Blob.FromHex(text.Substring(i + 1, 2))[0];
 					i += 3;
 				}
 				else if (twoChars[0] == '$') // Control code 0x02 for itemnames table
@@ -266,7 +282,7 @@ namespace FF1Lib
 					bytes[j++] = Blob.FromHex(text.Substring(i + 1, 2))[0];
 					i += 3;
 				}
-				else if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@'))
+				else if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@' || twoChars[0] == '€' || twoChars[0] == '§'))
 				{
 					bytes[j++] = BytesByText[twoChars];
 					i += 2;
@@ -352,6 +368,93 @@ namespace FF1Lib
 			var flagRight = new string(' ', (int)Math.Floor((32 - text.Length) / 2.0));
 
 			return TextToBytes(flagLeft + text + flagRight, false, Delimiter.Empty);
+		}
+	}
+
+	public class ItemNames
+	{
+		public const int ItemTextPointerOffset = 0x2B700;
+		public const int ItemTextPointerCount = 256;
+		public const int ItemTextPointerBase = 0x20000;
+		public const int ItemTextOffset = 0x2B900;
+
+		private List<string> _itemsTexts = new();
+		private List<ushort> _itemsPointers = new();
+
+		private Blob ReadUntil(FF1Rom rom, int offset, byte delimiter)
+		{
+			var bytes = new List<byte>();
+			while (rom[offset] != delimiter && offset < 0x40000)
+			{
+				bytes.Add(rom[offset++]);
+			}
+			bytes.Add(delimiter);
+
+			return bytes.ToArray();
+		}
+
+		public ItemNames(FF1Rom rom)
+		{
+			_itemsPointers = rom.Get(ItemTextPointerOffset, 2 * ItemTextPointerCount).ToUShorts().ToList();
+
+			for (int i = 0; i < _itemsPointers.Count; i++)
+			{
+				_itemsTexts.Add(FF1Text.BytesToText(ReadUntil(rom, ItemTextPointerBase + _itemsPointers[i], 0x00)));
+			}
+		}
+
+		public string this[int textid]
+		{
+			get => _itemsTexts[textid];
+			set => _itemsTexts[textid] = value;
+		}
+		public List<string> ToList()
+		{
+			return new List<string>(_itemsTexts);
+		}
+		public void Write(FF1Rom rom, List<int> unusedGoldItems)
+		{
+			foreach (var golditem in unusedGoldItems)
+			{
+				_itemsTexts[golditem] = "";
+			}
+
+			var duplicates = _itemsTexts.GroupBy(x => x)
+			  .Where(g => g.Count() > 1)
+			  .Select(y => y.Key)
+			  .ToList();
+
+			List<(string, int)> duplicateIndex = new();
+
+			foreach (var item in duplicates)
+			{
+				duplicateIndex.Add((item, _itemsTexts.FindIndex(x => x == item)));
+			}
+
+			int offset = ItemTextOffset;
+
+			for (int i = 0; i < ItemTextPointerCount; i++)
+			{
+				var duplicateFound = duplicateIndex.Where(x => x.Item1 == _itemsTexts[i]).ToList();
+
+				if (duplicateFound.Any() && i != duplicateFound[0].Item2)
+				{
+					_itemsPointers[i] = _itemsPointers[duplicateFound[0].Item2];
+				}
+				else
+				{
+					var blob = FF1Text.TextToBytes(_itemsTexts[i], useDTE: false);
+					rom.Put(offset, blob);
+					_itemsPointers[i] = (ushort)(offset - ItemTextPointerBase);
+					offset += blob.Length;
+				}
+			}
+
+			if (offset >= 0x2C000)
+			{
+				throw new Exception("Items Text is too large to fit within available space.");
+			}
+			rom.Put(ItemTextPointerOffset, Blob.FromUShorts(_itemsPointers.ToArray()));
 		}
 	}
 }

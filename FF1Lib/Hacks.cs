@@ -20,17 +20,6 @@ namespace FF1Lib
 		Size8,
 	}
 
-	public enum spellDataBytes
-	{
-		Accuracy,
-		Effect,
-		Element,
-		Target,
-		Routine,
-		GFX,
-		Palette,
-		Null
-	}
 	public partial class FF1Rom : NesRom
 	{
 		public const int Nop = 0xEA;
@@ -230,7 +219,7 @@ namespace FF1Lib
 			EnableTwelveClasses();
 		}
 
-		public void PubReplaceClinic(MT19337 rng, Flags flags)
+		public void PubReplaceClinic(MT19337 rng, MapId attackedTown, Flags flags)
 		{
 			// Copy some CHR data to make the Tavern look more like one.
 			const int ShopTileDataOffet = 0x24000;
@@ -262,9 +251,13 @@ namespace FF1Lib
 				options.Shuffle(rng);
 				pub_lut.AddRange(options);
 			}
-			if (!(bool)flags.MelmondClinic)
+			if (!(bool)flags.MelmondClinic && !(bool)flags.RandomVampAttack)
 			{
 				pub_lut.Insert(3, (byte)0xFF);
+			}
+			else if ((bool)flags.RandomVampAttack)
+			{
+				pub_lut.Insert((int)attackedTown, (byte)0xFF);
 			}
 
 			Put(0x38066, Blob.FromHex("9D8A9F8E9B97")); // Replaces "CLINIC" with "TAVERN"
@@ -478,30 +471,53 @@ namespace FF1Lib
 			Put(0x3AACB, Blob.FromHex("18A202B5106A95109D0D03CA10F5"));
 		}
 
-		public void EnableBuyQuantity()
+		public void EnableBuyQuantity(Flags flags)
 		{
 			Put(0x39E00, Blob.FromHex("ad0a0385104c668eae0c03bd2060186d0a03c9649001609d206060a903203baaa9018d0a03a520290f856120009e2032aa2043a7a525d056a524d05aa520290fc561f0ed8561c900f0e7c904f02fc908f01ac901f00ace0a03d0d0ee0a03d0cbee0a03c964d0c4ce0a03d0bfad0a0318690a8d0a03c96490b2a96310f5ad0a0338e90af0021002a9018d0a03109d38a90085248525601890f6"));
 			Put(0x39E99, Blob.FromHex("a90e205baaa5620a0a0a186916aabd00038d0c0320b9ecae0a03a9008d0b038d0e038d0f0318ad0b0365108d0b03ad0e0365118d0e03ad0f0369008d0f03b005caf00dd0e1a9ff8d0b038d0e038d0f03ad0f038512ad0e038511ad0b03851020429f2032aa60"));
 			Put(0x39EFF, Blob.FromHex("ad1e60cd0f03f0049016b016ad1d60cd0e03f004900ab00aad1c60cd0b03b00238601860ad1c6038ed0b038d1c60ad1d60ed0e038d1d60ad1e60ed0f038d1e604cefa74c8e8e"));
 			Put(0x3A494, Blob.FromHex("201b9eb0e820999e20c2a8b0e0a562d0dc20ff9e9008a910205baa4c81a420089e9008a90c205baa4c81a420239fa913205baa4c81a4eaeaea"));
+
+			if (flags.Archipelago)
+			{
+				//Replace NewCheckforSpace with patch in 0E_9F48_ItemShopCheckForSpace.asm
+				PutInBank(0x0E, 0xA4B2, Blob.FromHex("20489F"));
+				PutInBank(0x0E, 0x9F48, Blob.FromHex("AE0C03E016900CBD2060186D0A03C964900D60A2FFBD006209029D006218609D20601860"));
+			}
 		}
 
-		public void EnableSaveOnDeath(Flags flags)
+		public void EnableSaveOnDeath(Flags flags, OwMapExchange owMapExchange)
 		{
 			// rewrite rando's GameOver routine to jump to a new section that will save the game data
 			PutInBank(0x1B, 0x801A, Blob.FromHex("4CF58F"));
 
 			byte coneria_x = 0x92;
 			byte coneria_y = 0x9E;
+			byte airship_x = 0x99;
+			byte airship_y = 0xA5;
+			byte ship_x = 0x98;
+			byte ship_y = 0xA9;
 
 			if (flags.DeepDungeon)
 			{
 				coneria_y = 0x9B;
 			}
 
+			if (owMapExchange != null && flags.OwMapExchange != OwMapExchanges.NoOverworld)
+			{
+				coneria_x = (byte)(owMapExchange.StartingLocation.X - 0x07);
+				coneria_y = (byte)(owMapExchange.StartingLocation.Y - 0x07);
+
+				airship_x = owMapExchange.StartingLocation.X;
+				airship_y = owMapExchange.StartingLocation.Y;
+
+				ship_x = owMapExchange.ShipLocations.GetShipLocation((int)OverworldTeleportIndex.Coneria).X;
+				ship_y = owMapExchange.ShipLocations.GetShipLocation((int)OverworldTeleportIndex.Coneria).Y;
+			}
+
 			// write new routine to save data at game over (the game will save when you clear the final textbox and not before), see 1B_8FF5_GameOverAndRestart.asm
-			var saveondeath_standardmid = "AD0460D02EAD0060F04FAD0160CD0164D008AD0260CD0264F03FAD016038E9078D1060AD026038E9078D1160A9048D1460D026AD056038E9078D1060AD066038E9078D1160A9018D1460AD0060F00AA9988D0160A9A98D0260";
-			var saveondeath_dwmodemid = $"AD0460F00AA9998D0560A9A58D0660AD0060F00AA9988D0160A9A98D0260A9{coneria_x:X2}8D1060A9{coneria_y:X2}8D11604E1E606E1D606E1C60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
+			var saveondeath_standardmid = $"AD0460D02EAD0060F04FAD0160CD0164D008AD0260CD0264F03FAD016038E9078D1060AD026038E9078D1160A9048D1460D026AD056038E9078D1060AD066038E9078D1160A9018D1460AD0060F00AA9{ship_x:X2}8D0160A9{ship_y:X2}8D0260";
+			var saveondeath_dwmodemid = $"AD0460F00AA9{airship_x:X2}8D0560A9{airship_y:X2}8D0660AD0060F00AA9{ship_x:X2}8D0160A9{ship_y:X2}8D0260A9{coneria_x:X2}8D1060A9{coneria_y:X2}8D11604E1E606E1D606E1C60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
 			var saveondeath_part1 = "20E38BA200BD0061C9FFF041BD0C619D0A61BD0D619D0B61BD28639D2063BD29639D2163BD2A639D2263BD2B639D2363BD2C639D2463BD2D639D2563BD2E639D2663BD2F639D2763A9009D01618A186940AAD0B1";
 			var saveondeath_part2 = "A200BD00609D0064BD00619D0065BD00629D0066BD00639D0067E8D0E5A9558DFE64A9AA8DFF64A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD644C1D80";
 
@@ -518,7 +534,14 @@ namespace FF1Lib
 
 			PutInBank(0x1B, 0x8FF5, Blob.FromHex(saveondeath));
 		}
-
+		public void DeepDungeonFloorIndicator()
+		{
+			// Add Current Floor indicator above orbs, see 0E_9850_DrawOrbFloor.asm
+			PutInBank(0x0E, 0xB83D, Blob.FromHex("205098"));
+			PutInBank(0x0E, 0x9850, Blob.FromHex("2078B8A548C93CB018C908900638E9074C7398A8B9A698855AB9AE98855B4C8398A900851020668EA000B13E855AC8B13E855BA97A855CA985855DA982855EA900855FA95A853EA900853FA902853BA904853A4C44B98C998E968C909895B2B5AFA8B5A4B1A8"));
+			// Extend Orb Box
+			PutInBank(0x0E, 0xBAA2, Blob.FromHex("02010809"));
+		}
 		public void ShuffleAstos(Flags flags, NPCdata npcdata, TalkRoutines talkroutines, MT19337 rng)
 		{
 			// NPC pool to swap Astos with
@@ -997,10 +1020,8 @@ namespace FF1Lib
 			// Change class names to spoil to what they randomly promote
 			if (flags.RandomPromotionsSpoilers ?? false)
 			{
-				var itemNames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
 				for (int i = 0; i < 12; i++)
-					itemNames[0xF0 + i] = className[i] + " - " + className[promotions[i]];
-				WriteText(itemNames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset);
+					ItemsText[0xF0 + i] = className[i] + " - " + className[promotions[i]];
 			}
 
 			// Modify DoClassChange, see 1B_910F_ResetMP.asm
@@ -1310,561 +1331,6 @@ namespace FF1Lib
 			}
 
 			InsertDialogs(newDialogs);
-		}
-		public enum shopInfoWordsIndex
-		{
-			wpAtk = 0,
-			wpHit,
-			wpCrt,
-			arDef,
-			arEva,
-			targetAllEnemies,
-			targetSingleEnemy,
-			targetCaster,
-			targetAllAllies,
-			targetOneAlly,
-			elementNone,
-			elementNoneShort,
-			elementStatus,
-			elementStatusShort,
-			elementPoison,
-			elementPoisonShort,
-			elementTime,
-			elementTimeShort,
-			elementDeath,
-			elementDeathShort,
-			elementFire,
-			elementFireShort,
-			elementIce,
-			elementIceShort,
-			elementLit,
-			elementLitShort,
-			elementEarth,
-			elementEarthShort,
-			statusDead,
-			statusDeadShort,
-			statusStone,
-			statusStoneShort,
-			statusPoison,
-			statusPoisonShort,
-			statusBlind,
-			statusBlindShort,
-			statusStun,
-			statusStunShort,
-			statusSleep,
-			statusSleepShort,
-			statusMute,
-			statusMuteShort,
-			statusConfuse,
-			statusConfuseShort,
-			routineNull,
-			routineDamage,
-			routineDmgUndead,
-			routineStats,
-			routineSlow,
-			routineFear,
-			routineCure,
-			routineHealStats,
-			routineDefense,
-			routineResistElement,
-			routineFast,
-			routineRaiseAttack,
-			routineReduceEvade,
-			routineFullCure,
-			routineRaiseEvade,
-			routineVoidResist,
-			routinePowerWord,
-			routineHealPoison,
-			routineRevive,
-			routineFullRevive,
-			routineWarp,
-			routineHealStone,
-			routineTeleport,
-			hurtSpecial,
-			hurtDragon,
-			hurtGiant,
-			hurtUndead,
-			hurtWere,
-			hurtWater,
-			hurtMage,
-			hurtRegen
-		}
-
-		public static List<string> shopInfoWordsList = new List<string> {
-			" ATK +", " HIT +", " CRT +", " DEF +", " EVA -", "All Enemies", "Single Enemy", "Caster",
-			"All Allies", "One Ally", "None", "None", "Status", "Stat", "Poison", "Pois", "Time", "Time", "Death", "Deat", "Fire", "Fire",
-			"Ice", "Ice", "Lightng", "Lit.", "Earth", "Eart", "Dead", "Dead", "Petrified", "Ptr.", "Poisoned", "Pois", "Blind", "Blnd",
-			"Paralyzed", "Para", "Asleep", "Slep", "Silenced", "Mute", "Confused", "Conf", "Null", "Damage", "Dmg Undead", "Inflict Stat",
-			"Halve Hits", "Reduce Moral", "Recover HP", "Heal Stat", "Raise Def.", "Resist Elem.", "Double Hits", "Raise Attack", "Reduce Evade",
-			"Full Recover", "Raise Evade", "Void Resist.", "PW Status", "Heal Poison", "Revive", "Full Revive", "Go one floor\n back",
-			"Heal Stoned", "Teleport out\n of dungeons", "Magical", "Dragon", "Giant", "Undead", "Were", "Water", "Mage", "Regen"
-		};
-		public void ShopUpgrade(Flags flags, bool renounceChestInfo)
-		{
-
-
-			// Modify DrawShopPartySprites to use new DrawOBSprite routines, see 0E_9500_ShopUpgrade.asm
-			PutInBank(0x0E, 0xAA04, Blob.FromHex("205795"));
-			PutInBank(0x0E, 0xAA0D, Blob.FromHex("205795"));
-			PutInBank(0x0E, 0xAA16, Blob.FromHex("205795"));
-			PutInBank(0x0E, 0xAA23, Blob.FromHex("4C5795"));
-
-			// Extra routines for Shops, plus equip and magic info, see 0E_9500_ShopUpgrade.asm
-			// Insert new routines in Common Shop Loop
-			PutInBank(0x0E, 0xA931, Blob.FromHex("200095"));
-			PutInBank(0x0E, 0x9500, Blob.FromHex("A564C928F038A566C904B035C902B017A20020D495A24020D495A28020D495A2C020D4954C4195A200208B95A240208B95A280208B95A2C0208B954C41952047952027A74C2696A9008DD66A8DDA6A8DDE6A8DE26A6060AA4A8510BD0061A8B9A4EC8511BD0161F011C901F0E9C903F004A9038511A9144C8395A5104A4A4AAABDD66A18651085104C24EC8A8515BD00610AAABD00AD8510BD01AD8511A662BD000338E9B0851229078513A5124A4A4AA8B1108514A613BD38AC2514F005A9004CC595A90E8510A5154A4A4A4AAAA5109DD66A608A8515BD00610AAABDB9BC8512BDBABC8513A662BD000338C944B01638E91C0AAABD50BF25128510BD51BF251305104C1896E9440AAABDA0BF25128510BDA1BF25130510C9019005A9004CC595A90E4CC595A522F033A564C928F02DA662BD00038514205E962027A7A520C561F0F7A9008522204D964C46E1A9018538A9128539A90E853CA90A853D60204D96A90E85572063E0A53E8512A53F8513A514380AAAB00DBD0093853EBD0193853F4C8E96BD0094853EBD0194853FA9118557A90E85582036DEA512853EA513853FA900852260"));
-
-			if (flags.ChestInfo && !renounceChestInfo)
-			{
-				// Shorten TreasureChest Dialog
-				InsertDialogs(320, "You found.. #");
-				InsertDialogs(321, "Can't hold.. #");
-
-				// Insert TreasureChest Info
-				PutInBank(0x1F, 0xD536, Blob.FromHex("682064DB4CD0DD"));
-				PutInBank(0x1F, 0xDDD0, Blob.FromHex("A9B648A9FF48A9114C03FE8A20DA8760"));
-				PutInBank(0x11,0xB700,Blob.FromHex("A9118557A545D00160A561C91CB00160C96C900160482089C6A9008561A639E88AC91E9002E91E8539A9068D0080A91C8D0180680AAAB00DBD0093853EBD0193853F4C4FB7BD0094853EBD0194853FA9068D0080A9228D0180A200A003B13EC8C902F05AC914F00B9D006BE8C900D0ED4CF6B7A53E48A53F489848B13E0AA8B00DB9009A853EB9019A853F4C98B7B9009B853EB9019B853FA000B13EC8C900F0079D006BE84C9AB7A9068D0080A9228D018068A8C868853F68853E4C5DB7A53E48A53F489848B13E0AA8A9068D0080A9158D0180B010B90097853EB9019738E920853F4C98B7B90098853EB9019838E920853F4C98B7A900853EA96B853F4C8ADB"));
-				if (flags.EnableExtConsumables) PutInBank(0x11, 0xB70C, Blob.FromHex("20"));
-			}
-
-			// Patch in the equip menu loop to add gear info
-			PutInBank(0x0E, 0xBB8F, Blob.FromHex("4CE090EA"));
-			// Patch in the magic menu loop to add spell info
-			PutInBank(0x0E, 0xAECD, Blob.FromHex("4C2691EA"));
-			// the UpgradedEquipMenu and UpgradedMagicMenu code that the above patches jump to
-			PutInBank(0x0E, 0x90E0, Blob.FromHex("A525D007A522D0044C93BB60A662BD0003F030297FA466C018D005691A4C029169428514203CC4205E9620F9BCA520C561F0F7A9008D0120853720F3BD2083B720DAEC4C93BBA525D007A522D0044CD1AE60A9018537A5664A6A6A0562AA0A2938187D00631869AF8514205E962080B72025B6A9008D01208537857F20029CA56248206DBA688562A90720EFB8A9292059B92080B74CD1AE"));
-
-			// Modify DrawComplexString, this sets control code 14-19 to use a new words table in bank 11
-			//  could be used to move some stuff in items name table and make some space
-			//  see 1F_DEBC_DrawComplexString.asm
-			PutInBank(0x1F, 0xDEBC, Blob.FromHex("C910B005A2204C83DEC914B07B")); // Change branching to enable CC14
-			PutInBank(0x1F, 0xDF44, Blob.FromHex("4CCEDF")); // Jump to routine because we're too far, put in unused char weapons CC
-			PutInBank(0x1F, 0xDFCE, Blob.FromHex("A91185572003FE4CA099")); // Routine, put in unused char weapons routine
-
-			// Routine to load the right word from the new words table
-			PutInBank(0x11, 0x99A0, Blob.FromHex("A91185578558B13EE63ED002E63F203EE00AAAB00BBD009A853EBD019A4CC899BD009B853EBD019B853F2045DEA90E85584C4EE0"));
-
-			const int weaponOffset = 0x1C; // $28 entries
-			const int armorOffset = 0x44; // $28 entries
-			const int spellOffset = 0xB0; // $40 entries
-
-			var weaponsData = new List<Weapon>();
-			var armorsData = new List<Armor>();
-
-			for (int i = 0; i < WeaponCount; i++)
-				weaponsData.Add(new Weapon(i, this));
-
-			for (int i = 0; i < ArmorCount; i++)
-				armorsData.Add(new Armor(i, this));
-
-			var spellsData = GetSpells();
-
-			// 12 char per row, 5 rows
-			var descriptionsList = new List<string>();
-
-			for (int i = 0; i < weaponOffset; i++)
-				descriptionsList.Add("");
-
-			// Insert the new words table
-			int offsetWordsPointers = 0x9A00;
-			int offsetWords = 0x9B00;
-			var pointersWords = new ushort[shopInfoWordsList.Count()];
-			Blob generatedWords = Blob.FromHex("");
-
-			for (int i = 0; i < shopInfoWordsList.Count(); i++)
-			{
-				var blob = FF1Text.TextToBytes(shopInfoWordsList[i], useDTE: true);
-
-				generatedWords += blob;
-
-				pointersWords[i] = (ushort)(offsetWords);
-				offsetWords += blob.Length;
-			}
-
-			PutInBank(0x11, 0x9B00, generatedWords);
-			PutInBank(0x11, offsetWordsPointers, Blob.FromUShorts(pointersWords));
-
-
-			// Build the info boxes
-			for (int i = weaponOffset; i < armorOffset; i++)
-				descriptionsList.Add("\n" + GenerateWeaponDescription(i - weaponOffset));
-
-			for (int i = armorOffset; i < (armorOffset + 0x28); i++)
-				descriptionsList.Add("\n" + GenerateArmorDescription(i - armorOffset));
-
-			for (int i = (armorOffset + 0x28); i < spellOffset; i++)
-				descriptionsList.Add("");
-
-			for (int i = spellOffset; i < spellOffset + 0x40; i++)
-				descriptionsList.Add(" " + GenerateSpellDescription(i, spellsData[i - spellOffset].Data));
-
-			// Convert all dialogues to bytes
-			int offset = 0xA000;
-			var pointers = new ushort[descriptionsList.Count()];
-			Blob generatedText = Blob.FromHex("");
-
-			for (int i = 0; i < descriptionsList.Count(); i++)
-			{
-				var blob = new byte[] { 0x02, (byte)i } + FF1Text.TextToBytesInfo(descriptionsList[i], useDTE: true);
-				if (blob.Length <= 3)
-					blob = new byte[0];
-
-				generatedText += blob;
-
-				pointers[i] = (ushort)(offset);
-				offset += blob.Length;
-			}
-
-			// Check if dialogs are too long
-			if (generatedText.Length > 0x1400)
-				throw new Exception("ShopInfo text size maximum exceeded.");
-
-			// Insert dialogs
-			PutInBank(0x11, 0xA000, generatedText);
-			PutInBank(0x0E, 0x9300, Blob.FromUShorts(pointers));
-
-		}
-
-		ushort[] InfoClassEquipPerms = new ushort[] {
-		    (ushort)EquipPermission.Fighter,
-		    (ushort)EquipPermission.Knight,
-		    (ushort)EquipPermission.Thief,
-		    (ushort)EquipPermission.Ninja,
-		    (ushort)EquipPermission.BlackBelt,
-		    (ushort)EquipPermission.Master,
-		    (ushort)EquipPermission.RedMage,
-		    (ushort)EquipPermission.RedWizard,
-		    (ushort)EquipPermission.WhiteMage,
-		    (ushort)EquipPermission.WhiteWizard,
-		    (ushort)EquipPermission.BlackMage,
-		    (ushort)EquipPermission.BlackWizard,
-		};
-		string[] InfoClassAbbrev = new string[] {
-		    "Fi",
-		    "Kn",
-		    "Th",
-		    "Ni",
-		    "Bb",
-		    "Ma",
-		    "Rm",
-		    "Rw",
-		    "Wm",
-		    "Ww",
-		    "Bm",
-		    "Bw"
-		};
-
-		public string GenerateEquipPermission(int classUsability) {
-		    var description = "";
-		    for (int i = 0; i < 6; i++) {
-			if ((classUsability & InfoClassEquipPerms[i*2]) != 0)  {
-			    description += " " + InfoClassAbbrev[i*2];
-			} else if ((classUsability & InfoClassEquipPerms[i*2+1]) != 0) {
-			    description += " " + InfoClassAbbrev[i*2+1];
-			}
-		    }
-		    description = description.Trim();
-		    if (description.Length > 12) {
-			description = description.Replace(" ", "");
-		    }
-		    if (description == "FiThBbRmWmBm") {
-			description =  "all classes";
-		    }
-		    return description;
-		}
-
-		public string GenerateWeaponDescription(int weaponid)
-		{
-			const int spellOffset = 0xB0; // $40 entries
-
-			var element = new List<(int, string, string)> {
-			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")),
-			    (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")),
-			    (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")),
-			    (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")),
-			    (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")),
-			    (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")),
-			    (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")),
-			    (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")),
-			    (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2"))
-			};
-			var hurt = new List<(int, string)> {
-			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2")),
-			    (0x01, "¤" + ((int)shopInfoWordsIndex.hurtSpecial).ToString("X2")),
-			    (0x02, "¤" + ((int)shopInfoWordsIndex.hurtDragon).ToString("X2")),
-			    (0x04, "¤" + ((int)shopInfoWordsIndex.hurtGiant).ToString("X2")),
-			    (0x08, "¤" + ((int)shopInfoWordsIndex.hurtUndead).ToString("X2")),
-			    (0x10, "¤" + ((int)shopInfoWordsIndex.hurtWere).ToString("X2")),
-			    (0x20, "¤" + ((int)shopInfoWordsIndex.hurtWater).ToString("X2")),
-			    (0x40, "¤" + ((int)shopInfoWordsIndex.hurtMage).ToString("X2")),
-			    (0x80, "¤" + ((int)shopInfoWordsIndex.hurtRegen).ToString("X2")) };
-			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
-
-			var weapondata = new Weapon(weaponid, this);
-
-			var description = "¤" + ((int)shopInfoWordsIndex.wpAtk).ToString("X2") + weapondata.Damage + "\n¤" + ((int)shopInfoWordsIndex.wpHit).ToString("X2") + weapondata.HitBonus + "\n¤" + ((int)shopInfoWordsIndex.wpCrt).ToString("X2") + weapondata.Crit;
-
-			var activeElement = new List<(int, string, string)>();
-			var activeHurt = new List<(int, string)>();
-
-			foreach ((int, string, string) effect in element)
-				if ((effect.Item1 & weapondata.ElementalWeakness) > 0)
-					activeElement.Add(effect);
-
-			foreach ((int, string) effect in hurt)
-				if ((effect.Item1 & weapondata.TypeWeakness) > 0)
-					activeHurt.Add(effect);
-
-			bool showElement = (weapondata.SpellIndex == 0x00) || (activeHurt.Count == 0);
-
-			description += "\n";
-			description += GenerateEquipPermission(weapondata.ClassUsability);
-
-			if (activeHurt.Count >= 1 && activeHurt.Count <= 7)
-				description += "\nHurt " + activeHurt.First().Item2;
-			else if (activeHurt.Count == 8)
-				description += "\nHurt All";
-
-			if (activeElement.Count == 0)
-				description += "";
-			else if (activeElement.Count >= 1 && activeElement.Count <= 7 && showElement == true)
-				description += "\n" + activeElement.First().Item3 + " Element";
-			else if (activeElement.Count == 8 && showElement == true)
-				description += "\nAll Elements";
-
-			if (weapondata.SpellIndex != 0x00)
-				description += "\n" + "Cast $" + ((int)weapondata.SpellIndex + spellOffset - 1).ToString("X2");
-
-			return description;
-		}
-		public string GenerateArmorDescription(int armorid)
-		{
-			const int spellOffset = 0xB0; // $40 entries
-
-			var element = new List<(int, string, string)> {
-			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")),
-			    (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")),
-			    (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")),
-			    (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")),
-			    (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")),
-			    (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")),
-			    (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")),
-			    (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")),
-			    (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2"))
-			};
-			var status = new List<(int, string, string)> {
-			    (0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")),
-			    (0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")),
-			    (0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")),
-			    (0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")),
-			    (0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")),
-			    (0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")),
-			    (0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")),
-			    (0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2"))
-			};
-			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
-
-			var armordata = new Armor(armorid, this);
-
-			var description = "¤" + ((int)shopInfoWordsIndex.arDef).ToString("X2") + armordata.Absorb + "\n¤" + ((int)shopInfoWordsIndex.arEva).ToString("X2") + armordata.Weight;
-
-			description += "\n";
-			description += GenerateEquipPermission(armordata.ClassUsability);
-
-			var activeElementStatus = new List<(int, string, string)>();
-
-			foreach ((int, string, string) effect in element)
-				if ((effect.Item1 & armordata.ElementalResist) > 0)
-					activeElementStatus.Add(effect);
-
-			if (activeElementStatus.Count == 0) {
-			}
-			else if (activeElementStatus.Count == 1)
-			{
-				description += "\nResistance\n " + activeElementStatus[0].Item2;
-			}
-			else if (activeElementStatus.Count <= 3)
-			{
-				description += "\nResist " + activeElementStatus[0].Item3;
-
-				for (int i = 1; i < activeElementStatus.Count; i++)
-					description += shortDelimiter[i - 1] + activeElementStatus[i].Item3;
-			}
-			else if (activeElementStatus.Count <= 6)
-			{
-				description += "\nResist " + activeElementStatus[0].Item3 + "\n " + activeElementStatus[1].Item3 + "and " + (activeElementStatus.Count - 2) + "+";
-			}
-			else if (activeElementStatus.Count == 7)
-			{
-				description += "\nResist all\n except ";
-				foreach ((int, string, string) effect in status)
-					description += (effect.Item1 & armordata.ElementalResist) == 0 ? (effect.Item3) : "";
-			}
-			else {
-			    description += "\nResist all";
-			}
-
-			if (armordata.SpellIndex != 0x00)
-				description += "\n" + "Cast $" + ((int)armordata.SpellIndex + spellOffset - 1).ToString("X2");
-
-			return description;
-		}
-		public string GenerateSpellDescription(int spellid, Blob spelldata)
-		{
-			var target = new List<(int, string)> {
-			    (0x01, "¤" + ((int)shopInfoWordsIndex.targetAllEnemies).ToString("X2")),
-			    (0x02, "¤" + ((int)shopInfoWordsIndex.targetSingleEnemy).ToString("X2")),
-			    (0x04, "¤" + ((int)shopInfoWordsIndex.targetCaster).ToString("X2")),
-			    (0x08, "¤" + ((int)shopInfoWordsIndex.targetAllAllies).ToString("X2")),
-			    (0x10, "¤" + ((int)shopInfoWordsIndex.targetOneAlly).ToString("X2"))
-			};
-			var element = new List<(int, string, string)> {
-			    (0x00, "¤" + ((int)shopInfoWordsIndex.elementNone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementNoneShort).ToString("X2")),
-			    (0x01, "¤" + ((int)shopInfoWordsIndex.elementStatus).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementStatusShort).ToString("X2")),
-			    (0x02, "¤" + ((int)shopInfoWordsIndex.elementPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementPoisonShort).ToString("X2")),
-			    (0x04, "¤" + ((int)shopInfoWordsIndex.elementTime).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementTimeShort).ToString("X2")),
-			    (0x08, "¤" + ((int)shopInfoWordsIndex.elementDeath).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementDeathShort).ToString("X2")),
-			    (0x10, "¤" + ((int)shopInfoWordsIndex.elementFire).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementFireShort).ToString("X2")),
-			    (0x20, "¤" + ((int)shopInfoWordsIndex.elementIce).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementIceShort).ToString("X2")),
-			    (0x40, "¤" + ((int)shopInfoWordsIndex.elementLit).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementLitShort).ToString("X2")),
-			    (0x80, "¤" + ((int)shopInfoWordsIndex.elementEarth).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.elementEarthShort).ToString("X2"))
-			};
-			var status = new List<(int, string, string)> {
-			    (0x01, "¤" + ((int)shopInfoWordsIndex.statusDead).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusDeadShort).ToString("X2")),
-			    (0x02, "¤" + ((int)shopInfoWordsIndex.statusStone).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStoneShort).ToString("X2")),
-			    (0x04, "¤" + ((int)shopInfoWordsIndex.statusPoison).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusPoisonShort).ToString("X2")),
-			    (0x08, "¤" + ((int)shopInfoWordsIndex.statusBlind).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusBlindShort).ToString("X2")),
-			    (0x10, "¤" + ((int)shopInfoWordsIndex.statusStun).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusStunShort).ToString("X2")),
-			    (0x20, "¤" + ((int)shopInfoWordsIndex.statusSleep).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusSleepShort).ToString("X2")),
-			    (0x40, "¤" + ((int)shopInfoWordsIndex.statusMute).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusMuteShort).ToString("X2")),
-			    (0x80, "¤" + ((int)shopInfoWordsIndex.statusConfuse).ToString("X2"), "¤" + ((int)shopInfoWordsIndex.statusConfuseShort).ToString("X2"))
-			};
-			var routine = new List<(int, string)> {
-			    (0x00, "¤" + ((int)shopInfoWordsIndex.routineNull).ToString("X2")),
-			    (0x01, "¤" + ((int)shopInfoWordsIndex.routineDamage).ToString("X2")),
-			    (0x02, "¤" + ((int)shopInfoWordsIndex.routineDmgUndead).ToString("X2")),
-			    (0x03, "¤" + ((int)shopInfoWordsIndex.routineStats).ToString("X2")),
-			    (0x04, "¤" + ((int)shopInfoWordsIndex.routineSlow).ToString("X2")),
-			    (0x05, "¤" + ((int)shopInfoWordsIndex.routineFear).ToString("X2")),
-			    (0x06, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
-			    (0x07, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
-			    (0x08, "¤" + ((int)shopInfoWordsIndex.routineHealStats).ToString("X2")),
-			    (0x09, "¤" + ((int)shopInfoWordsIndex.routineDefense).ToString("X2")),
-			    (0x0A, "¤" + ((int)shopInfoWordsIndex.routineResistElement).ToString("X2")),
-			    (0x0C, "¤" + ((int)shopInfoWordsIndex.routineFast).ToString("X2")),
-			    (0x0D, "¤" + ((int)shopInfoWordsIndex.routineRaiseAttack).ToString("X2")),
-			    (0x0E, "¤" + ((int)shopInfoWordsIndex.routineReduceEvade).ToString("X2")),
-			    (0x0F, "¤" + ((int)shopInfoWordsIndex.routineFullCure).ToString("X2")),
-			    (0x10, "¤" + ((int)shopInfoWordsIndex.routineRaiseEvade).ToString("X2")),
-			    (0x11, "¤" + ((int)shopInfoWordsIndex.routineVoidResist).ToString("X2")),
-			    (0x12, "¤" + ((int)shopInfoWordsIndex.routinePowerWord).ToString("X2"))
-			};
-			var oobroutine = new List<(int, string)> {
-			    (0x00, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
-			    (0x01, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
-			    (0x02, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
-			    (0x03, "¤" + ((int)shopInfoWordsIndex.routineFullCure).ToString("X2")),
-			    (0x04, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
-			    (0x05, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
-			    (0x06, "¤" + ((int)shopInfoWordsIndex.routineCure).ToString("X2")),
-			    (0x07, "¤" + ((int)shopInfoWordsIndex.routineHealPoison).ToString("X2")),
-			    (0x08, "¤" + ((int)shopInfoWordsIndex.routineRevive).ToString("X2")),
-			    (0x09, "¤" + ((int)shopInfoWordsIndex.routineFullRevive).ToString("X2")),
-			    (0x0A, "¤" + ((int)shopInfoWordsIndex.routineWarp).ToString("X2")),
-			    (0x0B, "¤" + ((int)shopInfoWordsIndex.routineHealStone).ToString("X2")),
-			    (0x0C, "¤" + ((int)shopInfoWordsIndex.routineTeleport).ToString("X2"))
-			};
-			var shortDelimiter = new List<string> { "\n ", ", ", "\n ", ", ", "\n ", ", " };
-			var oobSpells = new List<int>();
-
-			for (int i = 0; i < oobroutine.Count; i++)
-				oobSpells.Add(Get(MagicOutOfBattleOffset + MagicOutOfBattleSize * i, 1)[0]);
-
-			var routineDesc = "";
-			var activeElementStatus = new List<(int, string, string)>();
-
-			switch ((int)spelldata[(int)spellDataBytes.Routine])
-			{
-				case 0:
-					routineDesc = oobroutine.Find(x => x.Item1 == oobSpells.FindIndex(x => x == spellid)).Item2;
-					break;
-				case int n when (n >= 0x01 && n <= 0x02):
-					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n " + spelldata[(int)spellDataBytes.Effect] * 2 + "-" + spelldata[(int)spellDataBytes.Effect] * 4 + " DMG\nResist  " + spelldata[(int)spellDataBytes.Effect] + "\nWeak    " + spelldata[(int)spellDataBytes.Effect] * 1.5 * 4;
-					break;
-				case int n when (n == 0x03 || n == 0x08 || n == 0x12):
-					var tempStatus = "";
-
-					foreach ((int, string, string) effect in status)
-						if ((effect.Item1 & spelldata[(int)spellDataBytes.Effect]) > 0)
-							activeElementStatus.Add(effect);
-
-					if (activeElementStatus.Count == 0)
-						tempStatus = "\n None";
-					else if (activeElementStatus.Count <= 3)
-						tempStatus = string.Join(string.Empty, activeElementStatus.SelectMany(x => "\n " + x.Item2));
-					else if (activeElementStatus.Count <= 6)
-					{
-						for (int i = 0; i < activeElementStatus.Count; i++)
-							tempStatus += shortDelimiter[i] + activeElementStatus[i].Item3;
-					}
-					else if (activeElementStatus.Count == 7)
-					{
-						tempStatus = "\n All, except";
-						foreach ((int, string, string) effect in status)
-							tempStatus += (effect.Item1 & spelldata[(int)spellDataBytes.Effect]) == 0 ? ("\n " + effect.Item2) : "";
-					}
-					else
-						tempStatus = "\n All";
-
-					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + tempStatus;
-					break;
-				case int n when (n == 0x04 || n == 0x0C || n == 0x0F || n == 0x11):
-					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2;
-					break;
-				case int n when (n == 0x05 || n == 0x0E):
-					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n -" + spelldata[(int)spellDataBytes.Effect] + " pts";
-					break;
-				case int n when (n >= 0x06 && n <= 0x07):
-					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n " + spelldata[(int)spellDataBytes.Effect] + "-" + spelldata[(int)spellDataBytes.Effect] * 2 + " HP";
-					break;
-				case int n when (n == 0x09 || n == 0x10):
-					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n +" + spelldata[(int)spellDataBytes.Effect] + " pts";
-					break;
-				case int n when (n == 0x0A):
-					var temp = "";
-
-					foreach ((int, string, string) elem in element)
-						if ((elem.Item1 & spelldata[(int)spellDataBytes.Effect]) > 0)
-							activeElementStatus.Add(elem);
-
-					if (activeElementStatus.Count == 0)
-						temp = "\n None";
-					else if (activeElementStatus.Count <= 3)
-						temp = string.Join(string.Empty, activeElementStatus.SelectMany(x => "\n " + x.Item2));
-					else if (activeElementStatus.Count <= 6)
-					{
-						for (int i = 0; i < activeElementStatus.Count; i++)
-							temp += shortDelimiter[i] + activeElementStatus[i].Item3;
-					}
-					else if (activeElementStatus.Count == 7)
-					{
-						temp = "\n All, except";
-						foreach ((int, string, string) elem in element)
-							temp += (elem.Item1 & spelldata[(int)spellDataBytes.Effect]) == 0 ? ("\n " + elem.Item2) : "";
-					}
-					else
-						temp = "\n All";
-
-					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + temp;
-					break;
-				case int n when (n == 0x0D):
-					routineDesc = routine.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Routine]).Item2 + "\n +" + spelldata[(int)spellDataBytes.Effect] + " ATK\n +" + spelldata[(int)spellDataBytes.Accuracy] + " HIT";
-					break;
-			}
-
-			var elementString = (spelldata[(int)spellDataBytes.Element] == 0x40 ? "" : " ") + element.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Element]).Item2;
-			var spellstring = elementString + "\n" + target.Find(x => x.Item1 == spelldata[(int)spellDataBytes.Target]).Item2 + "\n\n" + routineDesc;
-			return spellstring;
 		}
 
 		public void Spooky(TalkRoutines talkroutines, NPCdata npcdata, MT19337 rng, Flags flags)
@@ -2332,7 +1798,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void FightBahamut(TalkRoutines talkroutines, NPCdata npcdata, bool removeTail, bool swoleBahamut, EvadeCapValues evadeClampFlag, MT19337 rng)
+		public void FightBahamut(TalkRoutines talkroutines, NPCdata npcdata, bool removeTail, bool swoleBahamut, bool deepDungeon, EvadeCapValues evadeClampFlag, MT19337 rng)
 		{
 			const byte offsetAtoB = 0x80; // diff between A side and B side
 
@@ -2432,8 +1898,11 @@ namespace FF1Lib
 			InsertDialogs(dialogs);
 
 			// Change Bahamut Dragon NPCs to the "Onrac Dragon" so they will change what they say post promotion
-			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.OnracDragon, 19, 7, inRoom: true, stationary: true);
-			SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.OnracDragon, 23, 7, inRoom: true, stationary: true);
+			if (!deepDungeon)
+            {
+				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.OnracDragon, 19, 7, inRoom: true, stationary: true);
+				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.OnracDragon, 23, 7, inRoom: true, stationary: true);
+			}
 
 			// Scale Difficulty Up, approx 700hp (normal) or 950hp (buffed)
 			ScaleSingleEnemyStats(78, 120, 120, wrapOverflow: false, includeMorale: false, rng: null, separateHPScale: true, lowPercentHp: 200, highPercentHp: 200, GetEvadeIntFromFlag(evadeClampFlag));
@@ -2509,6 +1978,7 @@ namespace FF1Lib
 			maxLevel = maxLevel - 1;
 			//new level up check is at 0x6C46F
 			Put(0x6C46F, new byte[] { (byte)maxLevel });
+			PutInBank(0x1B, 0x87E8, new byte[] { (byte)maxLevel });
 		}
 
 		public void ActivateCropScreen()
@@ -2537,30 +2007,26 @@ namespace FF1Lib
 				a.writeArmorMemory(this);
 			}
 
-			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
-
 			if (!(flags.Weaponizer ?? false))
 			{
-				itemnames[(int)Item.BaneSword] = "Lame  @S";
-				itemnames[(int)Item.HealRod] = "Eel   @F";
-				itemnames[(int)Item.MageRod] = "Age   @F";
-				itemnames[(int)Item.WizardRod] = "Lizard@F";
-				itemnames[(int)Item.LightAxe] = "Slight@X";
+				ItemsText[(int)Item.BaneSword] = "Lame  @S";
+				ItemsText[(int)Item.HealRod] = "Eel   @F";
+				ItemsText[(int)Item.MageRod] = "Age   @F";
+				ItemsText[(int)Item.WizardRod] = "Lizard@F";
+				ItemsText[(int)Item.LightAxe] = "Slight@X";
 			}
 
 			if (!(flags.ArmorCrafter ?? false)) {
-			    itemnames[(int)Item.HealHelm] = "Deal  @h";
-			    itemnames[(int)Item.ZeusGauntlets] = "Moose @G";
+				ItemsText[(int)Item.HealHelm] = "Deal  @h";
+				ItemsText[(int)Item.ZeusGauntlets] = "Moose @G";
 			}
 
 			//possible incentive items
-			itemnames[(int)Item.Defense] = "Dunce @S";
-			itemnames[(int)Item.ThorHammer] = "Bore  @H";
-			itemnames[(int)Item.PowerGauntlets] = "Sour  @G";
-			itemnames[(int)Item.WhiteShirt] = "Right @T";
-			itemnames[(int)Item.BlackShirt] = "Whack @T";
-
-			WriteText(itemnames, FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextOffset, FF1Rom.UnusedGoldItems);
+			ItemsText[(int)Item.Defense] = "Dunce @S";
+			ItemsText[(int)Item.ThorHammer] = "Bore  @H";
+			ItemsText[(int)Item.PowerGauntlets] = "Sour  @G";
+			ItemsText[(int)Item.WhiteShirt] = "Right @T";
+			ItemsText[(int)Item.BlackShirt] = "Whack @T";
 		}
 
 		public byte findEmptyTile(List<List<byte>> decompressedMap) {
@@ -2582,59 +2048,137 @@ namespace FF1Lib
 		    return 0;
 		}
 
-		public void HackMinimap(OverworldMap map) {
-		    // Correctly render arbitrary replacement maps.
-
-		    // The original vanilla minimap has a Final
-		    // Fantasy logo and dragon-sword-crest thing,
-		    // which are crammed into the tiles that are
-		    // normally empty ocean on the vanilla map.  It's
-		    // very clever.
-
-		    // It's way too much work to try and re-pack that
-		    // data (and not guaranteed to work because we
-		    // want to support arbitrary replacement maps) so
-		    // instead get rid of the clever bits, don't
-		    // render the logos and provide a replacement
-		    // nametable that only contains the plain map
-		    // tiles.
-
-		    // NOP out the calls to draw the logo and the
-		    // dragon crest things
-		    PutInBank(0x09, 0xBC45, Blob.FromHex("EAEAEAEAEAEA"));
-
-		    // Need to find 1 empty ocean square for the
-		    // background.
-		    byte emptyTile = findEmptyTile(map.DecompressMapRows(map.GetCompressedMapRows()));
-
-		    var nametable = new byte[960];
-		    for (int i = 0; i < 960; i++) {
-			nametable[i] = emptyTile;
-		    }
-		    for (int i = 0; i < 16; i++) {
-			for (int j = 0; j < 16; j++) {
-			    nametable[(i+6)*32 + (j+8)] = (byte)(i*16 + j);
-			}
-		    }
-
-		    PutInBank(0x09, 0xB000, nametable);
+		public void DisableMinimap()
+		{
+			PutInBank(0x1F, 0xC1A6, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 		}
 
-		public void EnableQuickMinimap()
+		public void MoveLoadPlayerIBStats()
 		{
-			//Blank PPU
-			PutInBank(0x09, 0xBED6, Blob.FromHex("A900"));
-			PutInBank(0x09, 0xBEDB, Blob.FromHex("A900"));
+			PutInBank(0x0C, 0xAD21, Blob.FromHex("A99448A91548A91B4C03FEEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 
-			//Remove WaitForVBlanks
-			PutInBank(0x09, 0xBB0A, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBC5F, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBD97, Blob.FromHex("EAEAEA"));
+			PutInBank(0x1B, 0x9400, Blob.FromHex("00000000000000000000000048B182AA68A88A918060A000A901200C94A001A902200C94A00AA903200C94A00BA904200C94A021A905200C94A025A906200C94A023A907200C94A022A908200C94A020A909200C94A000B182AAA024B1821D0094A00A9180A9AD48A92B48A90C4C03FE"));
+		}
 
-			//Don't play stupid sounds
-			PutInBank(0x09, 0xBB45, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBC9A, Blob.FromHex("EAEAEA"));
-			PutInBank(0x09, 0xBDBE, Blob.FromHex("EAEAEA"));
+		public void IncreaseDarkPenalty()
+		{
+			/* :: Original::                        :: Modified ::
+			 * LDA math_hitchance                   LDA #0
+			 * SEC                                  STA math_hitchance
+			 * SBC #40                              STA math_critchance
+			 * STA math_hitchance                   INC A
+			 *
+			 * 0x326A7: AD 56 68 38 E9 28 8D 56 68  0x326A7: A9 00 8D 56 68 8D 62 68 1A
+			 */
+
+			// replace asm, set hitchance and critchance to 0
+			Put(0x326A7, Blob.FromHex("A9008D56688D62681A"));
+		}
+
+
+		public void DraculasCurse(TalkRoutines talkroutines, NPCdata npcdata, MT19337 rng, Flags flags) {
+		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		    enemyText[119] = "Twin D";  //  +2
+		    enemyText[120] = "Twin D";  //  +2
+		    enemyText[121] = "CARMILLA"; // +4
+		    enemyText[122] = "CARMILLA"; // +4
+		    enemyText[123] = "GrREAPER"; // +2
+		    enemyText[124] = "GrREAPER"; // +2
+		    enemyText[125] = "FRANKEN";  // +1
+		    enemyText[126] = "FRANKEN";  // +1
+		    enemyText[127] = "VLAD";     // -1
+
+		    // Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes, of which I'm using 17.
+		    var enemyTextPart1 = enemyText.Take(2).ToArray();
+		    var enemyTextPart2 = enemyText.Skip(2).ToArray();
+		    WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
+		    WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+
+			// Change Orbs to Dracula's relics
+			PutInBank(0x0E, 0xAD78, Blob.FromHex("0F050130")); // Update Orbs palette
+			// Lit Orbs
+			PutInBank(0x0D, 0xB640, Blob.FromHex("0003030303020303F8FBFAFAFAFAFAFA00808080800080803FBF3F3F3F3F3F3F0302030301010000FAFAFAFBFDFDFEFF80008080808080003F3F3F3F3FBFBF3F"));
+			PutInBank(0x0D, 0xB680, Blob.FromHex("0000000201030307FFFFF9F8FCF8FBF20000008080C0E0E0FFFF3F3F3F1F0F0F0F0F0F0700000000E4E0E3F0F8FFFFFFE0E0C080000000000F8F1F3F7FFFFFFF"));
+			PutInBank(0x0D, 0xB6C0, Blob.FromHex("00000000070F1F1FFFFFFFF8F7E9D4D0000000000080C0C0FFFFFFFF7FBFDFDF1F0F070000000000D9EFF7F8FFFFFFFFC080000000000000DFBF7FFFFFFFFFFF"));
+			PutInBank(0x0D, 0xB700, Blob.FromHex("00000000070F0F0FFFFFFFF8F7EFEFEE0000000080C0C080FFFFFF7F3F9F1F3F0F06060200000000ECF4F0F8FCFFFFFF00000000000000007FFFFFFFFFFFFFFF"));
+			// Unlit Orbs
+			PutInBank(0x0D, 0xB760, Blob.FromHex("0003010000061F3FFCFBFDFCF8E6DFBF0080F0F8000000C07F8FF7FB071F3F9F3F7F7F3F3F1F0000BF7F7FBFBFD0E0FFE0F0F0F0E0C000008FC7C787070103FF"));
+
+			var tileprop = new TilePropTable(this, 0xff);
+			tileprop.LoadData();
+
+			// Coneria castle entrance goes to ToF
+			tileprop[0x01] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.TempleOfFiends + 1);
+			tileprop[0x02] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.TempleOfFiends + 1);
+
+			// ToF entrance goes to Ordeals
+			tileprop[0x57] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.CastleOrdeals1F + 1);
+			tileprop[0x58] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.CastleOrdeals1F + 1);
+
+			// Ordeals entrance goes to Coneria castle
+			tileprop[0x38] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.ConeriaCastle1F + 1);
+			tileprop[0x39] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.ConeriaCastle1F + 1);
+
+			// Volcano entrance (evil tree) goes to Mirage
+			tileprop[0x64] = new TileProp((byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN, 0);
+			tileprop[0x65] = new TileProp((byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN, 0);
+			tileprop[0x74] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.MirageTower1F + 1);
+			tileprop[0x75] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.MirageTower1F + 1);
+
+			// Mirage entrance (Desert mountain) goes to Volcano (still requires Chime)
+			tileprop[0x1D] = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME | (byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN,
+						      (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
+			tileprop[0x1E] = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME | (byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN,
+						      (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
+
+			tileprop.StoreData();
+
+			const int BATTLEBACKDROPASSIGNMENT_OFFSET =		0x3300;
+
+			// fix up battle backdrop on tof
+			Put(BATTLEBACKDROPASSIGNMENT_OFFSET + 0x01, new byte[] { 9, 9});
+
+			// fix up battle backdrop on ordeals
+			Put(BATTLEBACKDROPASSIGNMENT_OFFSET + 0x57, new byte[] { 5, 5});
+
+			// fix up battle backdrop on mirage tiles
+			Put(BATTLEBACKDROPASSIGNMENT_OFFSET + 0x74, new byte[] { 11, 11});
+
+			// fix up battle backdrop on volcano tiles
+			Put(BATTLEBACKDROPASSIGNMENT_OFFSET + 0x1D, new byte[] { 14, 14});
+
+			var teledata = new ExitTeleData(this);
+			teledata.LoadData();
+
+			var tpsReport = new TeleportShuffle(flags.ReplacementMap);
+
+			var tofCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.TempleOfFiends1];
+			var mirageCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.MirageTower1];
+			var volcanoCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.GurguVolcano1];
+			var ordealCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.CastleOrdeals1];
+
+			teledata[(byte)ExitTeleportIndex.ExitCastleOrdeals] = new TeleData { X = tofCoord.X, Y = tofCoord.Y, Map = (MapId)0xFF }; // ordeals exit to ToF location
+			teledata[(byte)ExitTeleportIndex.ExitCastleConeria] = new TeleData { X = ordealCoord.X, Y = ordealCoord.Y, Map = (MapId)0xFF }; // coneria exit to ordeal location
+			teledata[(byte)ExitTeleportIndex.ExitGurguVolcano] = new TeleData { X = mirageCoord.X, Y = mirageCoord.Y, Map = (MapId)0xFF }; // volcano exit to mirage location
+			teledata[(byte)ExitTeleportIndex.ExitSkyPalace] = new TeleData { X = volcanoCoord.X, Y = volcanoCoord.Y, Map = (MapId)0xFF }; // mirage exit to volcano location
+
+			teledata.StoreData();
+		}
+
+		public void WhiteMageHarmEveryone()
+		{
+			PutInBank(0x0C, 0xB905, Blob.FromHex("2073B820F9B8202DB8A9A248A90348A91C4C03FEEAEAEAEAEAEAEAEAEA60"));
+			PutInBank(0x1C, 0xA200, Blob.FromHex("004080C0AD86682908D030A9008D56688D5768AD896C297FAABD00A2A8B90061C904F017C90AF013A9008D58688D5968A9B948A92148A90C4C03FEA9B948A92248A90C4C03FE"));
+		}
+
+		//doesn't change any XP until it actually happens in blessed/cursed classes, just lays the groundwork in the asm
+		public void SetupClassAltXp()
+		{
+			PutInBank(0x1B, 0x886E, Blob.FromHex("20189560"));
+			//lut for class xp table pointers
+			PutInBank(0x1B, 0x9500, Blob.FromHex("818C3595C8955B96EE968197818C3595C8955B96EE968197"));
+			//actual new level up function
+			PutInBank(0x1B, 0x9518, Blob.FromHex("A000B1860AAAA026B1860A187186187D00958582E8A9007D0095858360"));
 		}
 	}
 }

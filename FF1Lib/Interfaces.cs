@@ -90,7 +90,7 @@
 		bool? GaiaShortcut { get; }
 		bool? MoveGaiaItemShop { get; }
 		bool DisableOWMapModifications { get; }
-		OwMapExchanges OwMapExchange { get; }
+		//OwMapExchanges OwMapExchange { get; }
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
@@ -110,14 +110,18 @@
 		bool? NoXcalber { get; }
 		WorldWealthMode WorldWealth { get; }
 		ConsumableChestSet MoreConsumableChests { get; }
-		bool EnableExtConsumables { get; }
+		ExtConsumableSet ExtConsumableSet { get; }
 		ExtConsumableChestSet ExtConsumableChests { get; }
 		bool IncentiveChestItemsFanfare { get; }
-		bool? NoItemMagic { get; }
+		ItemMagicMode ItemMagicMode { get; }
 		bool LooseItemsForwardPlacement { get; }
 		bool LooseItemsSpreadPlacement { get; }
 		bool LooseItemsNpcBalance { get; }
 		bool? Entrances { get; }
+		OwMapExchanges OwMapExchange { get; }
+		bool Archipelago { get; }
+		bool PredictivePlacement { get;}
+		bool AllowUnsafePlacement { get; }
 	}
 	public interface IItemShuffleFlags
 	{
@@ -140,7 +144,7 @@
 		int PriceScaleFactorHigh { get; }
 		bool? ExcludeGoldFromScaling { get; }
 		bool CheapVendorItem { get; }
-		bool EnableExtConsumables { get; }
+		ExtConsumableSet ExtConsumableSet { get; }
 	}
 	public interface IFloorShuffleFlags
 	{
@@ -165,7 +169,7 @@
 		bool OnlyRequireGameIsBeatable { get; }
 		bool ShardHunt { get; }
 		bool? ShortToFR { get; }
-		bool? FreeBridge { get; }
+		bool? IsBridgeFree { get; }
 		bool? IsAirshipFree { get; }
 		bool? IsShipFree { get; }
 		bool? IsCanalFree { get; }

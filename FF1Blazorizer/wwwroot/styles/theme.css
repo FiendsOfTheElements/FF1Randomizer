@@ -157,7 +157,14 @@ a.styled-button {
     text-decoration: none;
     cursor: pointer;
 }
-
+a.disabled-button {
+background-color: #3d3d3d;
+border: 1px solid #ffffff;
+border-radius: 2px;
+color: #ffffff;
+padding: 3px;
+text-decoration: none;
+}
 a.styled-button.announcement {
     background-color: #0081db;
     border: 1px solid #ffffff;
@@ -172,6 +179,9 @@ a.styled-button.announcement {
 
 a.styled-button:hover{
 background-color: #005896;
+}
+a.disabled-button:hover{
+background-color: #3d3d3d;
 }
 
 a.styled-button.clicked {

@@ -21,9 +21,8 @@
 		"MagicShopLocs": false,
 		"MagicLevels": true,
 		"MagicPermissions": false,
-		"ItemMagic": true,
+		"ItemMagicMode": 1,
 		"MagisizeWeapons": false,
-		"MagisizeWeaponsBalanced": false,
 		"MagicLevelsTiered": false,
 		"MagicLevelsMixed": false,
 		"MagicAutohitThreshold": 0,
@@ -116,6 +115,7 @@
 		"BuyTen": true,
 		"IdentifyTreasures": true,
 		"ShopInfo": true,
+		"ChestInfo": true,
 		"WaitWhenUnrunnable": true,
 		"HouseMPRestoration": true,
 		"WeaponStats": true,
@@ -258,7 +258,6 @@
 		"RandomWeaponBonusHigh": 5,
 		"RandomArmorBonusLow": -5,
 		"RandomArmorBonusHigh": 5,
-		"BalancedItemMagicShuffle": false,
 		"SeparateBossHPScaling": false,
 		"SeparateEnemyHPScaling": false,
 		"ClampBossHPScaling": false,
@@ -288,6 +287,7 @@
 		"EarlierRuby": false,
 		"GuaranteedRuseItem": true,
 		"DisableStunTouch": false,
-		"ThiefAgilityBuff": 0
+		"ThiefAgilityBuff": 0,
+		"QuickMinimapLoad": true
 	}
 }

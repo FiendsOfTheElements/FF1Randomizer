@@ -14,6 +14,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <PropertyGroup>
+   <ServerGarbageCollection>false</ServerGarbageCollection>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="maps\crescent_start.ffm" />
     <None Remove="maps\crescent_start.json" />
@@ -24,6 +28,10 @@
     <None Remove="maps\melmond_start.json" />
     <None Remove="maps\nooverworld.ffm" />
     <None Remove="maps\nooverworld.json" />
+    <None Remove="maps\normal256.zip" />
+    <None Remove="maps\pregenerated.zip" />
+    <None Remove="maps\shuffled256.zip" />
+    <None Remove="maps\unsafe256.zip" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,6 +54,8 @@
     <EmbeddedResource Include="maps\procgen2.json" />
     <EmbeddedResource Include="maps\procgen3.ffm" />
     <EmbeddedResource Include="maps\procgen3.json" />
+    <EmbeddedResource Include="maps\shuffled256.zip" />
+    <EmbeddedResource Include="maps\unsafe256.zip" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,10 +63,12 @@
     <PackageReference Include="Patcher6502" Version="0.3.0" />
     <PackageReference Include="RomUtilities" Version="3.1.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
+    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="maps\crescent_start.ffm" />
+    <EmbeddedResource Include="maps\normal256.zip" />
   </ItemGroup>
 
   <ItemGroup>

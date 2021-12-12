@@ -143,65 +143,6 @@ namespace FF1Lib
 			flameChucks.writeWeaponMemory(this);
 		}
 
-		public void MagisizeWeapons(MT19337 rng, bool balanced)
-		{
-			var Spells = GetSpells();
-
-			if (!balanced)
-			{
-				Spells.RemoveAll(spell => spell.Data[4] == 0);
-				foreach (Item weapon in ItemLists.AllWeapons.Except(ItemLists.AllMagicItem).ToList())
-					WriteItemSpellData(Spells.SpliceRandom(rng), weapon);
-			}
-			else
-			{
-				var tieredSpells = new List<List<MagicSpell>> { Spells.GetRange(0, 16), Spells.GetRange(16, 16), Spells.GetRange(32, 16), Spells.GetRange(48, 16) };
-
-				var commonOdds = new List<int> { 0, 0, 0, 0, 1, 1, 1, 1, 2, 2 };
-				var rareOdds = new List<int> { 0, 1, 1, 1, 2, 2, 2, 3, 3, 3 };
-				var legendaryOdds = new List<int> { 1, 2, 2, 2, 3, 3, 3, 3, 3, 3 };
-
-				for (int i = 0; i < 4; i++)
-					tieredSpells[i].RemoveAll(spell => spell.Data[4] == 0);
-
-				foreach (Item weapon in ItemLists.CommonWeaponTier)
-				{
-					var selectedTier = commonOdds.PickRandom(rng);
-					while (tieredSpells[selectedTier].Count == 0)
-						selectedTier = commonOdds.PickRandom(rng);
-
-					WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
-				}
-
-				foreach (Item weapon in ItemLists.RareWeaponTier.Except(ItemLists.AllMagicItem).ToList())
-				{
-					var selectedTier = rareOdds.PickRandom(rng);
-					while (tieredSpells[selectedTier].Count == 0)
-						selectedTier = rareOdds.PickRandom(rng);
-
-					WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
-				}
-
-				foreach (Item weapon in ItemLists.LegendaryWeaponTier)
-				{
-					var selectedTier = legendaryOdds.PickRandom(rng);
-					while (tieredSpells[selectedTier].Count == 0)
-						selectedTier = legendaryOdds.PickRandom(rng);
-
-					WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
-				}
-
-				foreach (Item weapon in ItemLists.UberTier)
-				{
-					var selectedTier = Rng.Between(rng, 0, 3);
-					while (tieredSpells[selectedTier].Count == 0)
-						selectedTier = Rng.Between(rng, 0, 3);
-
-					WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
-				}
-			}
-		}
-
 		public void Weaponizer(MT19337 rng, bool useQualityNamesOnly, bool commonWeaponsHavePowers, bool noItemMagic) {
 		    var tierList = new List<IReadOnlyList<Item>> { ItemLists.CommonWeaponTier, ItemLists.RareWeaponTier,
 							  ItemLists.LegendaryWeaponTier, ItemLists.UberTier};
@@ -280,7 +221,7 @@ namespace FF1Lib
 			{ WeaponIcon.KNIFE,  EquipPermission.Knight|EquipPermission.Ninja|EquipPermission.RedWizard|EquipPermission.BlackWizard },
 			{ WeaponIcon.CHUCK,  EquipPermission.Ninja|EquipPermission.Master },
 			{ WeaponIcon.HAMMER, EquipPermission.Knight|EquipPermission.WhiteWizard|EquipPermission.Ninja },
-			{ WeaponIcon.STAFF,  EquipPermission.RedWizard|EquipPermission.BlackWizard|EquipPermission.Ninja },
+			{ WeaponIcon.STAFF,  EquipPermission.RedWizard|EquipPermission.WhiteWizard|EquipPermission.BlackWizard|EquipPermission.Ninja },
 		    };
 
 		    var weaponSprites = new WeaponSprite[][] {
@@ -712,9 +653,7 @@ namespace FF1Lib
 			//get name stuff
 			Icon = WeaponIcon.NONE;
 
-			var itemnames = rom.ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
-
-			Name = itemnames[(int)Item.WoodenNunchucks + WeaponIndex];
+			Name = rom.ItemsText[(int)Item.WoodenNunchucks + WeaponIndex];
 
 			foreach (var kv in IconCodes)
 			{
@@ -744,7 +683,7 @@ namespace FF1Lib
 
 		public static IEnumerable<Weapon> LoadAllWeapons(FF1Rom rom, Flags flags)
 		{
-			int i = flags.EnableExtConsumables ? 4 : 0;
+			int i = flags.ExtConsumableSet != ExtConsumableSet.None ? 4 : 0;
 			for (; i < 40; i++)
 			{
 				yield return new Weapon(i, rom);
@@ -767,7 +706,7 @@ namespace FF1Lib
 			ushort convertedClassPermissions = (ushort)(ClassUsability ^ 0xFFF);
 			rom.Put(weaponUsabilityOffset, BitConverter.GetBytes(convertedClassPermissions));
 
-			rom.UpdateItemName((Item)((int)Item.WoodenNunchucks + WeaponIndex), Name);
+			rom.ItemsText[(int)Item.WoodenNunchucks + WeaponIndex] = Name;
 		}
 
 		private WeaponIcon getWeaponIconFromByte(byte icon)

@@ -22,9 +22,7 @@
     "MagicShopLocs": false,
     "MagicLevels": true,
     "MagicPermissions": false,
-    "ItemMagic": false,
     "MagisizeWeapons": false,
-    "MagisizeWeaponsBalanced": false,
     "MagicLevelsTiered": false,
     "MagicLevelsMixed": false,
     "MagicAutohitThreshold": 0,
@@ -120,6 +118,7 @@
     "BuyTen": true,
     "IdentifyTreasures": true,
     "ShopInfo": true,
+    "ChestInfo": true,
     "WaitWhenUnrunnable": true,
     "HouseMPRestoration": true,
     "WeaponStats": true,
@@ -267,7 +266,6 @@
     "RandomWeaponBonusHigh": 5,
     "RandomArmorBonusLow": -5,
     "RandomArmorBonusHigh": 5,
-    "BalancedItemMagicShuffle": false,
     "SeparateBossHPScaling": false,
     "SeparateEnemyHPScaling": false,
     "ClampBossHPScaling": false,
@@ -279,7 +277,7 @@
     "IncludeBaseClasses": false,
     "RandomPromotionsSpoilers": false,
     "RandomizeClass": false,
-    "RandomizeClassNoCasting": false,
+    "RandomizeClassCasting": false,
     "RandomizeClassChaos": false,
     "RandomizeClassMaxBonus": 2,
     "RandomizeClassMaxMalus": 1,
@@ -296,8 +294,10 @@
     "EvadeCap": 3,
     "AllowUnsafeStartArea": false,
     "EarlierRuby": false,
-    "GuaranteedRuseItem": false,
+	"GuaranteedRuseItem": false,
+	"SpeedBoat": true,
 	"DisableStunTouch": false,
-	"ThiefAgilityBuff": 0
+	"ThiefAgilityBuff": 0,
+	"QuickMinimapLoad": true
   }
 }

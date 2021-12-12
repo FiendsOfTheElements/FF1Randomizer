@@ -86,7 +86,7 @@
 
 			var romfile = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "file");
 			if (romfile != null) {
-			    LoadLastROM(romfile);
+				LoadLastROM(romfile);
 			}
 		}
 
@@ -110,8 +110,8 @@
 			if (RememberROM)
 			{
 				await JSRuntime.InvokeVoidAsync("setFFRPreferences",
-		                          "file",
-		                          encoded);
+								  "file",
+								  encoded);
 			}
 		}
 
@@ -217,6 +217,12 @@
 				return;
 			}
 
+			if (Flags.OwMapExchange == OwMapExchanges.ImportCustomMap && Flags.ReplacementMap == null) {
+				SetStatusMessage("Generate Failed: Must import a map or choose a different overworld option");
+				StateHasChanged();
+				return;
+			}
+
 			using (var stream = new MemoryStream(_fileData))
 			{
 				_rom = new FF1Rom(stream);
@@ -284,11 +290,19 @@
 
 				await JSRuntime.InvokeAsync<object>("downloadFile", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
 
-				if (Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
+
+				if(Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
 				{
 					var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.SpoilerCache));
 					await JSRuntime.InvokeVoidAsync("downloadFile", $"Spoiler_{_seed}_{Flags.Encoded}.txt", encodedSpoiler);
 				}
+
+				if (Flags.Archipelago)
+				{
+					var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.ArchipelagoCache));
+					await JSRuntime.InvokeVoidAsync("downloadFile", $"{Flags.PlayerName}_{_seed}_{Flags.Encoded}.yaml", encodedSpoiler);
+				}
+
 			}
 			catch (Exception e)
 			{

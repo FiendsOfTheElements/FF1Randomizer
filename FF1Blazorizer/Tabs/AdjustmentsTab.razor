@@ -20,6 +20,7 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyElementalResistancesCheckBox" @bind-Value="Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySpellsTargetingAlliesCheckBox" @bind-Value="Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="improveTurnOrderRandomizationCheckBox" @bind-Value="Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseDarkPenaltyCheckBox" @bind-Value="Flags.IncreaseDarkPenalty">Increase Dark Penalty</TriStateCheckBox>
 
 	<div class="checkbox-cell"></div>
 	<h4>RNG</h4>
@@ -38,7 +39,8 @@
 	<h4>Conveniences</h4>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" @bind-Value="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" @bind-Value="Flags.SpeedHacks">Speed Hacks</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="quickMinimapLoad" @bind-Value="Flags.QuickMinimapLoad">Quick Minimap Load</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableMinimap" @bind-Value="Flags.DisableMinimap">Disable Minimap</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="quickMinimapLoad" @bind-Value="Flags.QuickMinimapLoad" IsEnabled="@(!Flags.DisableMinimap && Flags.OwMapExchange == OwMapExchanges.None)">Quick Minimap Load</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedboatCheckBox" @bind-Value="Flags.SpeedBoat">Faster Ship</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" @bind-Value="Flags.IdentifyTreasures">Identify Treasures</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" @bind-Value="Flags.Dash">Enable Dash</CheckBox>

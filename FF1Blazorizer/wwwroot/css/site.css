@@ -503,3 +503,7 @@ tr.bottom-borderd {
     color: #ffffff;
     cursor: default;
 }
+
+.image-center {
+    text-align:center;
+}

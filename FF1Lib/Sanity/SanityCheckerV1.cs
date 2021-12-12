@@ -36,7 +36,7 @@ namespace FF1Lib
 			}
 
 			var currentMapChanges = MapChange.None;
-			if (victoryConditions.FreeBridge ?? false)
+			if (victoryConditions.IsBridgeFree ?? false)
 			{
 				currentMapChanges |= MapChange.Bridge;
 			}
