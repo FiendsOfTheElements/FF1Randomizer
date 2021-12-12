@@ -12,6 +12,7 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FF1R.Commands
 {
@@ -40,13 +41,13 @@ namespace FF1R.Commands
 		return 1;
 	    }
 
-	    int effectiveSeed = this.Seed;
-	    var rng = new MT19337((uint)effectiveSeed);
-
 	    OwMapExchanges subtype = Enum.Parse<OwMapExchanges>(Subtype);
 
-	    for (int i = 0; i < this.Pack; i++) {
+	    Parallel.For(0, this.Pack, i =>
+	    {
 		OwMapExchangeData replacementMap = null;
+		int effectiveSeed = this.Seed + i;
+		var rng = new MT19337((uint)effectiveSeed);
 		do {
 		    try {
 			replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, subtype);
@@ -81,7 +82,7 @@ namespace FF1R.Commands
 		if (this.DoRender) {
 		    MapRender.RenderMap(fn);
 		}
-	    }
+	    });
 
 	    return 0;
 	}
