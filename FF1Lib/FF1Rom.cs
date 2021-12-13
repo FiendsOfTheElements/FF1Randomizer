@@ -198,7 +198,7 @@ namespace FF1Lib
 				NPCShuffleDialogs();
 			}
 
-			if (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert)
+			if (flags.OwMapExchange == OwMapExchanges.Desert)
 			{
 				DesertOfDeath.ApplyDesertModifications(this, owMapExchange, npcdata);
 			}
@@ -258,7 +258,7 @@ namespace FF1Lib
 				}
 			}
 
-			if((bool)flags.OWDamageTiles || (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert))
+			if((bool)flags.OWDamageTiles || (flags.OwMapExchange == OwMapExchanges.Desert))
 			{
 				EnableDamageTile();
 			}
@@ -521,7 +521,7 @@ namespace FF1Lib
 					overworldMap.Teleporters = teleporters;
 
 					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon
-						&& !(flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.NoOverworld))
+						&& !(flags.OwMapExchange == OwMapExchanges.NoOverworld))
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 					}
@@ -1192,17 +1192,14 @@ namespace FF1Lib
 			    }
 			}
 
-			if (flags.SanityCheckerV2)
+			if ((bool)flags.IsAirshipFree)
 			{
-				if ((bool)flags.IsAirshipFree)
-				{
-					owMapExchange?.SetAirshipLocation(owMapExchange.StartingLocation);
-				}
+				owMapExchange?.SetAirshipLocation(owMapExchange.StartingLocation);
+			}
 
-				if ((bool)flags.IsShipFree)
-				{
-					shipLocations.SetShipLocation(255);
-				}
+			if ((bool)flags.IsShipFree)
+			{
+				shipLocations.SetShipLocation(255);
 			}
 
 			owMapExchange?.ExecuteStep2();

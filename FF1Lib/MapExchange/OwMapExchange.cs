@@ -272,8 +272,6 @@ namespace FF1Lib
 
 		public static OwMapExchange FromFlags(FF1Rom _rom, OverworldMap _overworldMap, Flags flags, MT19337 rng)
 		{
-			if (!flags.SanityCheckerV2) return null;
-
 			int seed;
 
 			if (flags.MapGenSeed != 0)
