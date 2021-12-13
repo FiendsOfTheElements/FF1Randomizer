@@ -620,19 +620,11 @@ namespace FF1Lib
 				{
 					braceletList.Add((Item)i);
 				}
-				else if(ItemsText[i].Last() == 'R')
-				{
-					ringList.Add((Item)i);
-				}
 			}
 
 			List<Item> bannableArmor = new List<Item> { Item.Ribbon };
 			bannableArmor.AddRange(braceletList);
-			if ((bool)flags.ArmorCrafter)
-			{
-				bannableArmor.AddRange(ringList);
-			}
-			else
+			if (!(bool)flags.ArmorCrafter)
 			{
 				bannableArmor.Add(Item.ProRing);
 			}
@@ -763,11 +755,7 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief }),
 			};
 
-			if ((bool)flags.ArmorCrafter)
-			{
-				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorRemove, "No Rings", equipment: ringList));
-			}
-			else
+			if (!(bool)flags.ArmorCrafter)
 			{
 				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorRemove, "-" + itemnames[(int)Item.ProRing], equipment: new List<Item> { Item.ProRing }));
 			}
@@ -826,14 +814,21 @@ namespace FF1Lib
 			// Select one incentivized class that will received a strong bonus
 			int luckyDude = Rng.Between(rng, 0, 5);
 
+
 			//Hand out the strong bonus first
-			while (!bonusStrong.First().ClassList.Contains((AuthClass)luckyDude))
-				bonusStrong.Shuffle(rng);
+			BonusMalus selectedStrongBonusMalus;
 
-			var selectedStrongBonusMalus = bonusStrong.First();
-			assignedBonusMalus[luckyDude].Add(selectedStrongBonusMalus);
-			bonusStrong.RemoveRange(0, 1);
+			if (flags.RandomizeClassMaxBonus > 0)
+			{ 
+				while (!bonusStrong.First().ClassList.Contains((AuthClass)luckyDude))
+				{ 
+					bonusStrong.Shuffle(rng);
+				}
 
+				selectedStrongBonusMalus = bonusStrong.First();
+				assignedBonusMalus[luckyDude].Add(selectedStrongBonusMalus);
+				bonusStrong.RemoveRange(0, 1);
+			}
 			var descriptionList = new List<string>();
 
 			// Distribute bonuses and maluses, we go backward (from BM to Fi) so we have enough malus for BM
@@ -842,7 +837,7 @@ namespace FF1Lib
 			for (int i = 5; i >= 0; i--)
 			{
 				var tempstring = new List<(int, string)>();
-				if (i == luckyDude) tempstring.Add((0, assignedBonusMalus[luckyDude][0].Description));
+				if (i == luckyDude && assignedBonusMalus[luckyDude].Any()) tempstring.Add((0, assignedBonusMalus[luckyDude][0].Description));
 
 				while(assignedBonusMalus[i].Count < maxbonus)
 				{
