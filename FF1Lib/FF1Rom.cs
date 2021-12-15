@@ -839,16 +839,6 @@ namespace FF1Lib
 				SetMaxLevel(flags, rng);
 			}
 
-			if ((bool)flags.TrappedChestsEnabled)
-			{
-				MonsterInABox(rng, flags);
-
-				if((bool)flags.TrappedChaos)
-				{
-					SetChaosForMIAB(npcdata);
-				}
-			}
-
 			if (!flags.Etherizer && (flags.HouseMPRestoration || flags.HousesFillHp))
 			{
 				FixHouse(flags.HouseMPRestoration, flags.HousesFillHp);
@@ -975,6 +965,16 @@ namespace FF1Lib
 				DeepDungeon(rng, overworldMap, maps, flags);
 				DeepDungeonFloorIndicator();
 				UnusedGoldItems = new List<int> { };
+			}
+
+			if ((bool)flags.TrappedChestsEnabled)
+			{
+				MonsterInABox(rng, flags);
+
+				if ((bool)flags.TrappedChaos)
+				{
+					SetChaosForMIAB(npcdata);
+				}
 			}
 
 			ExpGoldBoost(flags);
