@@ -5,6 +5,7 @@
 @using Newtonsoft.Json;
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 
 <div id="main-content">
 	<ToolTip @ref="ToolTipElement" ToolTipId="@ToolTipId" />
@@ -20,7 +21,7 @@
 
 		@if (FunEnabled)
 		{
-			<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" SetSpriteMessage="@SetSpriteMessage" SpriteMessage="@SpriteSheetMessage"/>
+			<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" SetSpriteMessage="@SetSpriteMessage" SpriteMessage="@SpriteSheetMessage" />
 		}
 		else
 		{
@@ -39,7 +40,7 @@
 		}
 		else if (noTabLayout)
 		{
-			<PresetsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName" />
+			<PresetsTab Flags="@Flags" DefaultFlags="@DefaultFlags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName" />
 			<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<IncentivesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
@@ -53,6 +54,7 @@
 			<ItemEquipmentTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<AdjustmentsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<OverviewTab Flags="@Flags" DefaultFlags="@DefaultFlags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ExpandArrow noTabLayout="@noTabLayout" SetTabLayout="@SetTabLayout" />
 		}
 		else
@@ -63,7 +65,7 @@
 						<BSTab>
 							<BSTabLabel>Presets</BSTabLabel>
 							<BSTabContent>
-								<PresetsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName" />
+								<PresetsTab Flags="@Flags" DefaultFlags="@DefaultFlags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
@@ -145,6 +147,12 @@
 								<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
+						<BSTab>
+							<BSTabLabel>Overview</BSTabLabel>
+							<BSTabContent>
+								<OverviewTab Flags="@Flags" DefaultFlags="@DefaultFlags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+							</BSTabContent>
+						</BSTab>
 					</BSTabList>
 				</div>
 				<BSTabSelectedContent />
@@ -169,6 +177,7 @@
 
 
 	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
+	private FlagsViewModel DefaultFlags { get; set; } = new FlagsViewModel();
 	private string ToolTipId = "unupdated";
 	private ToolTip ToolTipElement;
 	private string StatusMessage = "";
@@ -188,7 +197,6 @@
 		//	orbsOrder += ((orbsToMatch[i] < 4) ? "turn off " + (orbsToMatch[i] + 1).ToString() : "turn on " + (orbsToMatch[i] - 3).ToString()) + "\n";
 		//}
 		//Console.WriteLine(orbsOrder);
-
 
 		noTabLayout = await LocalStorage.GetItemAsync<bool>("tablayout");
 

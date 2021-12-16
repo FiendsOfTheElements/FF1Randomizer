@@ -1,0 +1,143 @@
+@using FF1Lib;
+@using System.ComponentModel;
+@using System.Reflection;
+
+@implements IDisposable
+
+@if ((visible || ShowAlways) && (IsEnabled ?? true))
+{
+	<div class="checkbox-cell">
+		<div class="btn-group-toggle @IndentClass @ValueClass @DisabledClass" data-toggle="buttons">
+			<input type="radio" name="@Name" value="2" checked="@checked2" hidden>
+			<input type="radio" name="@Name" value="1" checked="@checked1" hidden>
+			<input type="radio" name="@Name" value="0" checked="@checked0" hidden>
+			<input type="image" src="@image" id="@Id" class="tri-state" disabled="@(!IsEnabled)" @oncontextmenu="@onContext" @oncontextmenu:preventDefault /> <label for="@Id" @oncontextmenu:preventDefault hidden="@(ChildContent is null)">@ChildContent</label>
+			@if (!DisableTooltip)
+			{
+				<input type="image" src="/images/help.png" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
+			}
+		</div>
+	</div>
+}
+
+@code
+{
+	[Parameter] public FlagsViewModel Flags { get; set; }
+	[Parameter] public FlagsViewModel DefaultFlags { get; set; }
+	[Parameter] public string Property { get; set; }
+	[Parameter] public bool ShowAlways { get; set; } = false;
+
+	private MethodInfo methodInfo;
+	private bool visible = false;
+
+	private bool? Value { get; set; } = false;
+	private string ValueClass => checked0 ? "tri-yes" : (checked1 ? "tri-no" : "tri-maybe");
+
+	private bool checked0 => Value ?? false;
+	private bool checked1 => !Value ?? false;
+	private bool checked2 => Value == null;
+
+	private string image => checked0 ? "/images/true.png" : (checked1 ? "/images/false.png" : "/images/random.gif");
+
+	bool initialized = false;
+
+	[Parameter]
+	public bool Name { get; set; }
+
+	protected override void OnParametersSet()
+	{
+		if (!initialized && Flags != null && DefaultFlags != null)
+		{
+			methodInfo = typeof(FlagsViewModel).GetProperty(Property).GetGetMethod();
+
+			Flags.PropertyChanged += new PropertyChangedEventHandler(UpdateControl);
+			DefaultFlags.PropertyChanged += new PropertyChangedEventHandler(UpdateControl);
+			initialized = true;
+		}
+
+		if(initialized) UpdateControl();
+	}
+
+	public void Dispose()
+	{
+		if (initialized)
+		{
+			Flags.PropertyChanged -= new PropertyChangedEventHandler(UpdateControl);
+			DefaultFlags.PropertyChanged -= new PropertyChangedEventHandler(UpdateControl);
+		}
+	}
+
+	void UpdateControl(object sender, PropertyChangedEventArgs args)
+	{
+		if (args.PropertyName == Property || args.PropertyName == "Flags")
+		{
+			UpdateControl();
+		}
+	}
+
+	void UpdateControl()
+	{
+
+		var valueObj = methodInfo.Invoke(Flags, null);
+		var defaultValueObj = methodInfo.Invoke(DefaultFlags, null);
+
+		bool? value;
+		bool? defaultValue;
+
+		if (valueObj == null || defaultValueObj == null)
+		{
+			value = (bool?)valueObj;
+			defaultValue = (bool?)defaultValueObj;
+		}
+		else
+		{
+			value = (bool)valueObj;
+			defaultValue = (bool)defaultValueObj;
+		}
+
+		visible = value != defaultValue;
+		Value = value;
+
+		StateHasChanged();
+	}
+
+	// For some reason, using just `@oncontextmenu:preventDefault` or just handling `oncontextmenu` events did nothing to prevent the context menu from appearing!
+	// I needed both `preventDefault` AND this handler to prevent the context menu from showing up. Ugh...
+	Task onContext()
+	{
+		return Task.CompletedTask;
+	}
+
+	private void ShowToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke(Id, e);
+	}
+
+	private void HideToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke("", e);
+	}
+
+
+	[Parameter]
+	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
+
+	[Parameter]
+	public bool Indent { get; set; }
+	private string IndentClass => Indent ? "indent" : "";
+
+	[Parameter]
+	public bool? IsEnabled { get; set; } = true;
+	private bool Disabled => !(IsEnabled ?? true);
+	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
+
+	[Parameter]
+	public string Id { get; set; }
+
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+
+	[Parameter]
+	public bool DisableTooltip { get; set; }
+
+}

@@ -68,7 +68,9 @@
 </div>
 
 
-@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public FF1Lib.FlagsViewModel DefaultFlags { get; set; }
 	[Parameter] public Action<string> SetStatusMessage { get; set; }
 	[Parameter] public Action SetDefaultLoaded { get; set; }
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
@@ -84,6 +86,8 @@
 
 	protected override async void OnInitialized()
 	{
+		await LoadDefaultPreset();
+
 		if (loadDefault)
 		{
 			var uri = new Uri(NavigationManager.Uri);
@@ -91,6 +95,7 @@
 			{
 				await LoadStandardPreset("default");
 			}
+
 			SetDefaultLoaded();
 		}
 	}
@@ -110,6 +115,13 @@
 		selectedPresetId = name;
 		var json = await JSRuntime.InvokeAsync<string>("computePreset", name);
 		LoadFromJson(json);
+	}
+
+	async Task LoadDefaultPreset()
+	{
+		var json = await JSRuntime.InvokeAsync<string>("computePreset", "default");
+		var preset = Flags.FromJson(json);
+		DefaultFlags.Flags = preset.flags;
 	}
 
 	async Task LoadLocalPreset(string name)
@@ -208,18 +220,18 @@
 		StateHasChanged();
 	}
 
-		async Task OnImportResourcePack(ChangeEventArgs e) {
-		  try {
-		    var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importResourcePackInput");
-		    if (content == null || content == "") { return; }
-	            using (var stream = new MemoryStream(Convert.FromBase64String(content))) {
-		       Flags.LoadResourcePackFlags(stream);
-		    }
-		    Flags.ResourcePack = content;
-		  } catch (Exception x) {
-			   Console.WriteLine(x.ToString());
-		  }
-		  StateHasChanged();
+	async Task OnImportResourcePack(ChangeEventArgs e) {
+		try {
+			var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importResourcePackInput");
+			if (content == null || content == "") { return; }
+			using (var stream = new MemoryStream(Convert.FromBase64String(content))) {
+				Flags.LoadResourcePackFlags(stream);
+			}
+			Flags.ResourcePack = content;
+		} catch (Exception x) {
+			Console.WriteLine(x.ToString());
 		}
+		StateHasChanged();
+	}
 
 }

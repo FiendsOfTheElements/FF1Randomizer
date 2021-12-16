@@ -1,0 +1,144 @@
+﻿@using FF1Lib;
+@using System.ComponentModel;
+@using System.Reflection;
+
+@implements IDisposable
+
+@if ((visible || ShowAlways) && (IsEnabled ?? true))
+{
+	<div class="checkbox-cell dropdown-cell @DisabledClass">
+
+		<span id="@Id" class="@IndentClass @DisabledClass">@ChildContent</span>
+		<span>@Value</span>&nbsp;
+
+		@if (!DisableTooltip)
+		{
+			<input type="image" src="/images/help.png" class="btn-group-help" style="vertical-align: middle" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
+		}
+	</div>
+}
+
+@code
+{
+	[Parameter] public FlagsViewModel Flags { get; set; }
+	[Parameter] public FlagsViewModel DefaultFlags { get; set; }
+	[Parameter] public string PropertyLow { get; set; }
+	[Parameter] public string PropertyHigh { get; set; }
+	[Parameter] public bool ShowAlways { get; set; } = false;
+	[Parameter] public string Unit { get; set; } = "";
+	[Parameter] public double Scale { get; set; } = 10;
+
+	private MethodInfo methodInfoLow;
+	private MethodInfo methodInfoHigh;
+	private bool visible = false;
+	private bool initialized = false;
+
+	private string ValueLow { get; set; }
+	private string ValueHigh { get; set; }
+
+	private string Value { get; set; }
+
+	protected override void OnParametersSet()
+	{
+		if (!initialized && Flags != null && DefaultFlags != null)
+		{
+			methodInfoLow = typeof(FlagsViewModel).GetProperty(PropertyLow).GetGetMethod();
+			methodInfoHigh = typeof(FlagsViewModel).GetProperty(PropertyHigh).GetGetMethod();
+
+			Flags.PropertyChanged += new PropertyChangedEventHandler(UpdateControl);
+			DefaultFlags.PropertyChanged += new PropertyChangedEventHandler(UpdateControl);
+			initialized = true;
+		}
+
+		if (initialized) UpdateControl();
+	}
+
+	public void Dispose()
+	{
+		if (initialized)
+		{
+			Flags.PropertyChanged -= new PropertyChangedEventHandler(UpdateControl);
+			DefaultFlags.PropertyChanged -= new PropertyChangedEventHandler(UpdateControl);
+		}
+	}
+
+	void UpdateControl(object sender, PropertyChangedEventArgs args)
+	{
+		if (args.PropertyName == PropertyLow || args.PropertyName == PropertyHigh || args.PropertyName == "Flags")
+		{
+			UpdateControl();
+		}
+	}
+
+	void UpdateControl()
+	{
+		var valueLowObj = methodInfoLow.Invoke(Flags, null);
+		var defaultValueLowObj = methodInfoLow.Invoke(DefaultFlags, null);
+
+		var valueHighObj = methodInfoHigh.Invoke(Flags, null);
+		var defaultValueHighObj = methodInfoHigh.Invoke(DefaultFlags, null);
+
+		double valueLow;
+		double defaultValueLow;
+		double valueHigh;
+		double defaultValueHigh;
+
+		if (valueLowObj is double)
+		{
+			valueLow = (double)valueLowObj;
+			defaultValueLow = (double)defaultValueLowObj;
+
+			valueHigh = (double)valueHighObj;
+			defaultValueHigh = (double)defaultValueHighObj;
+			ValueLow = (valueLow / Scale).ToString("F1");
+			ValueHigh = (valueHigh / Scale).ToString("F1");
+		}
+		else
+		{
+			valueLow = (int)valueLowObj;
+			defaultValueLow = (int)defaultValueLowObj;
+
+			valueHigh = (int)valueHighObj;
+			defaultValueHigh = (int)defaultValueHighObj;
+			ValueLow = valueLow.ToString("F0");
+			ValueHigh = valueHigh.ToString("F0");
+		}
+
+		visible = valueLow != defaultValueLow || valueHigh != defaultValueHigh;
+		Value = ValueLow + Unit + " - " + ValueHigh + Unit;
+
+		StateHasChanged();
+	}
+
+	private void ShowToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke(Id, e);
+	}
+
+	private void HideToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke("", e);
+	}
+
+	[Parameter]
+	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
+
+
+	[Parameter]
+	public bool Indent { get; set; }
+	private string IndentClass => Indent ? "indent" : "";
+
+	[Parameter]
+	public bool? IsEnabled { get; set; } = true;
+	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
+
+	[Parameter]
+	public string Id { get; set; }
+
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+
+	[Parameter]
+	public bool DisableTooltip { get; set; }
+
+}

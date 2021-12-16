@@ -1,0 +1,128 @@
+﻿@using FF1Lib;
+@using System.ComponentModel;
+@using System.Reflection;
+
+@implements IDisposable
+
+@if ((visible || ShowAlways) && (IsEnabled ?? true))
+{
+	<div class="checkbox-cell dropdown-cell @DisabledClass">
+
+		<span id="@Id" class="@IndentClass @DisabledClass">@ChildContent</span>
+		<span>@Value</span>&nbsp;
+
+		@if (!DisableTooltip)
+		{
+			<input type="image" src="/images/help.png" class="btn-group-help" style="vertical-align: middle" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
+		}
+	</div>
+}
+
+@code
+{
+	[Parameter] public FlagsViewModel Flags { get; set; }
+	[Parameter] public FlagsViewModel DefaultFlags { get; set; }
+	[Parameter] public string Property { get; set; }
+	[Parameter] public bool ShowAlways { get; set; } = false;
+	[Parameter] public string Unit { get; set; } = "";
+	[Parameter] public double Scale { get; set; } = 10;
+
+	private MethodInfo methodInfo;
+	private bool visible = false;
+	private bool initialized = false;
+
+	private string Value { get; set; }
+
+	protected override void OnParametersSet()
+	{
+		if (!initialized && Flags != null && DefaultFlags != null)
+		{
+			methodInfo = typeof(FlagsViewModel).GetProperty(Property).GetGetMethod();
+
+			Flags.PropertyChanged += new PropertyChangedEventHandler(UpdateControl);
+			DefaultFlags.PropertyChanged += new PropertyChangedEventHandler(UpdateControl);
+			initialized = true;
+		}
+
+		if (initialized) UpdateControl();
+	}
+
+	public void Dispose()
+	{
+		if (initialized)
+		{
+			Flags.PropertyChanged -= new PropertyChangedEventHandler(UpdateControl);
+			DefaultFlags.PropertyChanged -= new PropertyChangedEventHandler(UpdateControl);
+		}
+	}
+
+	void UpdateControl(object sender, PropertyChangedEventArgs args)
+	{
+		if (args.PropertyName == Property || args.PropertyName == "Flags")
+		{
+			UpdateControl();
+		}
+	}
+
+	void UpdateControl()
+	{
+		var valueObj = methodInfo.Invoke(Flags, null);
+		var defaultValueObj = methodInfo.Invoke(DefaultFlags, null);
+
+
+		double value;
+		double defaultValue;
+
+		if (valueObj is double)
+		{
+			value = (double)valueObj;
+			defaultValue = (double)defaultValueObj;
+
+			Value = (value / Scale).ToString("F1");
+		}
+		else
+		{
+			value = (int)valueObj;
+			defaultValue = (int)defaultValueObj;
+
+			Value = value.ToString("F0");
+		}
+
+		visible = value != defaultValue;
+		Value = Value + Unit;
+
+		StateHasChanged();
+	}
+
+	private void ShowToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke(Id, e);
+	}
+
+	private void HideToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke("", e);
+	}
+
+	[Parameter]
+	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
+
+
+	[Parameter]
+	public bool Indent { get; set; }
+	private string IndentClass => Indent ? "indent" : "";
+
+	[Parameter]
+	public bool? IsEnabled { get; set; } = true;
+	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
+
+	[Parameter]
+	public string Id { get; set; }
+
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+
+	[Parameter]
+	public bool DisableTooltip { get; set; }
+
+}

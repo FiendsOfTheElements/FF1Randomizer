@@ -1,0 +1,383 @@
+﻿@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@using FF1Lib;
+@using System.IO;
+@using System.ComponentModel;
+@using static FF1Lib.FF1Rom;
+
+<div id="Overview" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+	@if (IsOpen)
+	{
+	<div class="col1">
+		<h4>Goal</h4>
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="freeOrbsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" IsEnabled="@Flags.FreeOrbsEnabled" Property="FreeOrbs">Free Orbs</TriStateOverview>
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="trappedChaosCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="TrappedChaos">Hidden Chaos</TriStateOverview>
+		<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="transformFinalFormationCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" TItem="FinalFormation" IsEnabled="@(Flags.SpookyFlag != true)" Property="TransformFinalFormation">Alternate Final Boss:</EnumOverview>
+
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ChaosRush">Unlocked ToFR</TriStateOverview>
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="shortToFRCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ShortToFR">Shorten ToFR</TriStateOverview>
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="preserveFiendRefightsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" IsEnabled="@Flags.ShortToFR" Property="PreserveFiendRefights">Include Fiend Tiles</TriStateOverview>
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="preserveAllFiendRefightsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" IsEnabled="@Flags.CanPreserveAllFiendRefights" Property="PreserveAllFiendRefights">Refight All Fiends</TriStateOverview>
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="exitToFRCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ExitToFR">Add ToFR Exit</TriStateOverview>
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="chaosFloorEncountersCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ChaosFloorEncounters">Add Chaos Floor Encounters</TriStateOverview>
+
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" IsEnabled="@Flags.ShardHuntEnabled" Property="ShardHunt">Treasure Hunt</TriStateOverview>
+		<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" Flags="@Flags" DefaultFlags="@DefaultFlags" TItem="ShardCount" Property="ShardCount">Goal:</EnumOverview>
+
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="lichRevengeCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" IsEnabled="@(Flags.RandomizeFormationEnemizer != true)" Property="SpookyFlag">Lich's Revenge</TriStateOverview>
+		<div class="checkbox-cell"></div>
+	</div>
+	<div class="col1">
+		<h4>Scale</h4>
+		<DoubleValueOverview ShowAlways Unit="%" Id="clampMinimumPriceScaleLable" UpdateToolTip="@UpdateToolTipID" Flags="@Flags" DefaultFlags="@DefaultFlags" PropertyHigh="PriceScaleFactorHigh" PropertyLow="PriceScaleFactorLow">Prices:</DoubleValueOverview>
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="wrapPriceOverflowCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="WrapPriceOverflow">Wrap Overflowing Prices</TriStateOverview>
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="startingGoldCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingGold">Scale Starting Gold</TriStateOverview>
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="excludeGoldFromScalingCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ExcludeGoldFromScaling">Exclude Gold from scaling</TriStateOverview>
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="cheapVendorItemCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="CheapVendorItem" IsEnabled="Flags.ExcludeGoldFromScaling">Cheap Vendor Item</TriStateOverview>
+
+		<DoubleValueOverview ShowAlways Unit="%" Id="enemyStatsDoubleValueOverview" Flags="@Flags" DefaultFlags="@DefaultFlags" PropertyHigh="EnemyScaleStatsHigh" PropertyLow="EnemyScaleStatsLow">Enemy Stats:</DoubleValueOverview>
+		<DoubleValueOverview ShowAlways Unit="%" Id="enemyHpDoubleValueOverview" Flags="@Flags" DefaultFlags="@DefaultFlags" IsEnabled="Flags.SeparateEnemyHPScaling" PropertyHigh="EnemyScaleHpHigh" PropertyLow="EnemyScaleHpLow">Enemy Hp:</DoubleValueOverview>
+
+		<DoubleValueOverview Unit="%" ShowAlways Id="bossStatsDoubleValueOverview" Flags="@Flags" DefaultFlags="@DefaultFlags" PropertyHigh="BossScaleStatsHigh" PropertyLow="BossScaleStatsLow">Boss Stats:</DoubleValueOverview>
+		<DoubleValueOverview Unit="%" ShowAlways Id="bossHpDoubleValueOverview" Flags="@Flags" DefaultFlags="@DefaultFlags" IsEnabled="Flags.SeparateBossHPScaling" PropertyHigh="BossScaleHpHigh" PropertyLow="BossScaleHpLow">Boss Hp:</DoubleValueOverview>
+		<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="evadeCapDropDown" Flags="@Flags" DefaultFlags="@DefaultFlags" TItem="EvadeCapValues" Property="EvadeCap">Evade Cap Value:</EnumOverview>
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="wrapStatOverflowCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="WrapStatOverflow">Wrap Overflowing Scaled Stats</TriStateOverview>
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="includeMoraleCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="IncludeMorale">Scaled Stats Includes Morale</TriStateOverview>
+
+		<SingleValueOverview DisableTooltip Unit="x" ShowAlways Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EncounterRate">Overworld Encounter Rate:</SingleValueOverview>
+		<SingleValueOverview DisableTooltip Unit="x" ShowAlways Flags="@Flags" DefaultFlags="@DefaultFlags" Property="DungeonEncounterRate">Dungeon Encounter Rate:</SingleValueOverview>
+		<SingleValueOverview DisableTooltip Unit="x" ShowAlways Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ExpMultiplier">Experience Multiplier:</SingleValueOverview>
+		<SingleValueOverview Scale="1" DisableTooltip ShowAlways Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ExpBonus">Experience Bonus:</SingleValueOverview>
+
+		<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="progressiveScaleModeDropDown" TItem="ProgressiveScaleMode" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ProgressiveScaleMode">Exp. &amp; Gold Progressive Scaling:</EnumOverview>
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="nonesGainXPcheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="NonesGainXP">Nones Gain XP</TriStateOverview>
+		<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="deadsGainXPcheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="DeadsGainXP">Deads Gain XP</TriStateOverview>
+
+		<DoubleValueOverview Unit="%" UpdateToolTip="@UpdateToolTipID" Id="expChestConversion" Flags="@Flags" DefaultFlags="@DefaultFlags" PropertyHigh="ExpChestConversionMax" PropertyLow="ExpChestConversionMin">Exp Chest Conversion:</DoubleValueOverview>
+		<DoubleValueOverview ShowAlways UpdateToolTip="@UpdateToolTipID" Id="expChestReward" IsEnabled="@(Flags.ExpChestConversionMax > 0)" Flags="@Flags" DefaultFlags="@DefaultFlags" PropertyHigh="ExpChestMaxReward" PropertyLow="ExpChestMinReward">Exp Chest Reward:</DoubleValueOverview>
+		<div class="checkbox-cell"></div>
+	</div>
+
+		<div class="col1">
+			<h4>Overworld</h4>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" Flags="@Flags" DefaultFlags="@DefaultFlags" TItem="OwMapExchanges" Property="OwMapExchange">Overworld Map:</EnumOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionCheckBox" IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MapOpenProgression">Early Open Progression</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDwavesNWCheckBox" IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MapDwarvesNorthwest">Extended Open Progression</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDocksCheckBox" IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MapOpenProgressionDocks">Northern Docks</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionFloaterDockCheckBox" IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MapAirshipDock">Ryukahn Desert Dock</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="bahamutCardiaDockCheckBox" IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MapBahamutCardiaDock">Bahamut Cardia Dock</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="lefeinRiverDockCheckBox" IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MapLefeinRiver">Lefein River Dock</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="gaiaMountainPassCheckBox" IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MapGaiaMountainPass">Gaia Mountain Pass</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="OWDamageTilesCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="OWDamageTiles">Marsh and Desert Tiles Deal Damage</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="DamageTilesKillCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="DamageTilesKill">Lethal Damage Tiles</TriStateOverview>
+			<div class="checkbox-cell"></div>
+		</div>
+
+		<div class="col1">
+			<h4>Maps</h4>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="entrancesCheckBox" IsEnabled="@(Flags.Treasures & Flags.NPCItems)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="Entrances">Entrances</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="allowUnsafeStartAreaCheckBox" IsEnabled="@(Flags.Entrances & !(Flags.SanityCheckerV2 & Flags.OwMapExchange == OwMapExchanges.NoOverworld))" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="AllowUnsafeStartArea">Allow Unsafe Start</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="deadEndsCheckBox" IsEnabled="@(Flags.Entrances & !(Flags.SanityCheckerV2 & Flags.OwMapExchange == OwMapExchanges.NoOverworld))" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EntrancesIncludesDeadEnds">Include Dead Ends</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="floorsCheckBox" IsEnabled="@(Flags.Entrances)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="Floors">Floors</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="allowDeepCastlesCheckBox" IsEnabled="@(Flags.DeepCastlesPossible)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="AllowDeepCastles">Deep ToFR</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="townsCheckBox" IsEnabled="@(Flags.Treasures & Flags.NPCItems)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="Towns">Towns</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="includeConeriaCheckBox" IsEnabled="@(Flags.Towns)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="IncludeConeria">Include Coneria</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="mixEntrancesCheckBox" IsEnabled="@(Flags.Towns & Flags.Entrances)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EntrancesMixedWithTowns">Mix All Entrances Together</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="deepTownsCheckBox" IsEnabled="@(Flags.DeepTownsPossible & !(Flags.SanityCheckerV2 & Flags.OwMapExchange == OwMapExchanges.NoOverworld))" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="AllowDeepTowns">Deep Towns</TriStateOverview>
+
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="skyCastle4FMazeModeDropDown" TItem="SkyCastle4FMazeMode" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="SkyCastle4FMazeMode">Sky Castle 4F: </EnumOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="ordealsPillarsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="OrdealsPillars">Castle Ordeals Pillars</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="titansTroveCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="TitansTrove">Titan's Trove</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="dragonsHoardCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MapDragonsHoard">Dragon's Hoard</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="hallOfDragonsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MapHallOfDragons">Hall of Dragons</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="procGenWaterfall" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EFGWaterfall">Generated Waterfall Cave</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="flipDungeonsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="FlipDungeons">Flip Dungeons Horizontally</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="earlyKingCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EarlyKing">Early King Item</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="earlySardaCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EarlySarda">Early Sarda Item</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="earlySageCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EarlySage">Early Sage Item</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="earlyOrdealsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EarlyOrdeals">Early Ordeals</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="zozoMelmondCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="AllowUnsafeMelmond">Zozo Melmond</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="melmondClinicCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MelmondClinic">Melmondish Hospitality</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="confusedOldMenCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ConfusedOldMen">Confused Old Men</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="gaiaShortcutCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="GaiaShortcut">Add Gaia Shortcut</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="moveGaiaItemShopCheckBox" IsEnabled="@(Flags.GaiaShortcut != false)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MoveGaiaItemShop">Move Gaia Item Shop</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="lefeinShopsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="LefeinShops">Lefeinish Hospitality</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="lefeinSuperStoreCheckBox" IsEnabled="@Flags.LefeinSuperStoreEnabled" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="LefeinSuperStore">Add Lefein SuperStore</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="randomVampAttackCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomVampAttack">Vampire Attacks Random Town</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="randomVampAttackIncludesConeriaCheckBox" IsEnabled="@(Flags.RandomVampAttack != false)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomVampAttackIncludesConeria">Include Coneria</TriStateOverview>
+			<div class="checkbox-cell"></div>
+		</div>
+
+		<div class="col1">
+			<h4>Treasures</h4>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="treasuresCheckBox" IsEnabled="@(!Flags.DeepDungeon)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="Treasures">Treasures</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="randomLootCheckBox" IsEnabled="@Flags.Treasures" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomLoot">Randomize Treasures</TriStateOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="worldWealthDropDown" TItem="WorldWealthMode" IsEnabled="@Flags.Treasures" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="WorldWealth">Random Wealth:</EnumOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="betterTrapTreasureCheckBox" IsEnabled="@Flags.Treasures" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="BetterTrapTreasure">Better Trap Treasure</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="earlierRubyCheckBox" IsEnabled="@Flags.Treasures" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EarlierRuby">Earlier Ruby</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="npcItemsCheckBox" IsEnabled="@Flags.Treasures" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="NPCItems">Main NPC Items</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="npcFetchItemsCheckBox" IsEnabled="@Flags.Treasures" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="NPCFetchItems">Fetch Quest Rewards</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@Flags.Treasures" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ShuffleObjectiveNPCs">Objective NPCs</TriStateOverview>
+
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="tcFormationPoolDropDown" TItem="FormationPool" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="TCFormations">Formations:</EnumOverview>
+			<SingleValueOverview UpdateToolTip="@UpdateToolTipID" Id="tcChestCountSlider" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="TCChestCount">Trapped Chests:</SingleValueOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="tcBetterTreasuresDropDown" TItem="TCOptions" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="TCBetterTreasure">Rare Treasures:</EnumOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="tcKeyItemsDropDown" TItem="TCOptions" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="TCKeyItems">Key Items:</EnumOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="tcShardsDropDown" TItem="TCOptions" IsEnabled="@Flags.ShardHunt" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="TCShards">Shards:</EnumOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="tcExcludeCommonCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="TCExcludeCommons">Exclude Common Treasures</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="tcProtectIncentivesCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="TCProtectIncentives">Exclude Incentivized Items</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="trappedMarkCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="TCIndicator">Trapped Chests are Marked</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="freeShipCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="FreeShip">Free Ship</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="freeAirshipCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="FreeAirship">Free Airship</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="freeBridgeCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="FreeBridge">Free Bridge</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="freeCanalCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="FreeCanal">Free Canal</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="freeCanoeCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="FreeCanoe">Free Canoe</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="FreeLute" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="FreeLute">Free Lute</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="FreeTail" IsEnabled="@(Flags.NoTail != true)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="FreeTail">Free Tail</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.FreeTail)" Id="NoTailCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="NoTail">Remove Tail</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="NoMasamuneCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="NoMasamune">Remove Masamune</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="NoXcalberCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="NoXcalber">Remove Xcalber</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="noFloaterCheckBox" IsEnabled="@(Flags.MapOpenProgressionDocks == true)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="NoFloater">Remove Floater</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="GuaranteedMasamuneCheckBox" IsEnabled="@(Flags.NoMasamune != true)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="GuaranteedMasamune">Guaranteed Endgame Masamune</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="SendMasamuneHomeCheckBox" IsEnabled="@((Flags.NoMasamune != true) && Flags.GuaranteedMasamune != false && Flags.IncentivizeMasamune == false)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="SendMasamuneHome">Send Masamune Home</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="masaGuardianCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="TCMasaGuardian">WarMech, Guardian of Masamune</TriStateOverview>
+
+			<div class="checkbox-cell"></div>
+		</div>
+		<div class="col1">
+			<h4>Shops &amp; Magic</h4>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="shopsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="Shops">Shop Shuffle</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Shops" Id="randomWaresCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomWares">Random Weapons and Armor</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@((Flags.Shops ?? true) && (Flags.RandomWares ?? true))" Id="randomWaresIncludesCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomWaresIncludesSpecialGear">Include Caster &amp; Elite Gear</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="magicShopsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MagicShops">Magic Shops</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="magicShopLocsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MagicShopLocs">Magic Shop Locations</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.MagicShopLocs" Id="magicShopLocationPairsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MagicShopLocationPairs">Paired Shuffle</TriStateOverview>
+
+			<TriStateOverview DisableTooltip Id="legendaryWeaponShopCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="LegendaryWeaponShop">Legendary Weapon Shop</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="exlegendaryWeaponShopCheckBox" IsEnabled="Flags.LegendaryWeaponShop" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ExclusiveLegendaryWeaponShop">Exclusive</TriStateOverview>
+			<TriStateOverview DisableTooltip Id="legendaryArmorShopCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="LegendaryArmorShop">Legendary Armor Shop</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="exlegendaryArmorShopCheckBox" IsEnabled="Flags.LegendaryArmorShop" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ExclusiveLegendaryArmorShop">Exclusive</TriStateOverview>
+			<TriStateOverview DisableTooltip Id="legendaryBlackShopCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="LegendaryBlackShop">Legendary Black Shop</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="exlegendaryBlackShopCheckBox" IsEnabled="Flags.LegendaryBlackShop" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ExclusiveLegendaryBlackShop">Exclusive</TriStateOverview>
+			<TriStateOverview DisableTooltip Id="legendaryWhiteShopCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="LegendaryWhiteShop">Legendary White Shop</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="exlegendaryWhiteShopCheckBox" IsEnabled="Flags.LegendaryWhiteShop" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ExclusiveLegendaryWhiteShop">Exclusive</TriStateOverview>
+			<TriStateOverview DisableTooltip Id="legendaryItemShopCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="LegendaryItemShop">Legendary Item Shop</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="exlegendaryItemShopCheckBox" IsEnabled="Flags.LegendaryItemShop" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ExclusiveLegendaryItemShop">Exclusive</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="magicLevelsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MagicLevels">Shuffle Magic Levels</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.MagicLevels" Id="magicLevelsTieredCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MagicLevelsTiered">Tiered Shuffle</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.MagicLevels" Id="magicLevelsMixed" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MagicLevelsMixed">Mix Spellbooks</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.MagicLevels" Id="magicPermissionsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MagicPermissions">Keep Permissions</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="cureHealBuffCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="BuffHealingSpells">Improve CURE, HEAL, LAMP, and AMUT spells</TriStateOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="LockMode" TItem="LockHitMode" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="LockMode">LOCK and LOK2 Mode:</EnumOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="magicAutohitThresholdDropDown" TItem="AutohitThreshold" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MagicAutohitThreshold">Power Word Threshold:</EnumOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="enableSoftInBattle" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EnableSoftInBattle">Enable Soft in Battle</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="enableLifeInBattle" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EnableLifeInBattle">Enable Life in Battle</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="generateNewSpellbook" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="GenerateNewSpellbook">Generate New Spellbooks</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="spellcrafterRetainPermissions" IsEnabled="@Flags.GenerateNewSpellbook" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="SpellcrafterRetainPermissions">Retain Old Permissions</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="spellcrafterMixSpells" IsEnabled="@Flags.GenerateNewSpellbook" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="SpellcrafterMixSpells">Mix Spellbooks</TriStateOverview>
+
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="spellNameMadness" TItem="SpellNameMadness" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="SpellNameMadness">Spell Name Obfuscation:</EnumOverview>
+
+			<div class="checkbox-cell"></div>
+		</div>
+		<div class="col1">
+			<h4>Enemies</h4>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="formationShuffleModeDropDown" TItem="FormationShuffleMode" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="FormationShuffleMode">Rarity:</EnumOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="runnabilityDropDown" TItem="Runnability" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="Runnability">Unrunnable Formations:</EnumOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="unrunnablesStrikeFirstAndSurpriseCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="UnrunnablesStrikeFirstAndSurprise">Unrunnable First Strike &amp; Surprise</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsSurpriseCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EnemyFormationsSurprise">Shuffle Surprise Bonus</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EnemyScripts">Shuffle Scripts</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.EnemyScripts" Id="allowUnsafePiratesCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="AllowUnsafePirates">Allow Unsafe Pirates</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.EnemyScripts" Id="onlyShuffleBossScriptsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="BossScriptsOnly">Only Shuffle Bosses</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="noBossSkillScriptShuffleCheckBox" IsEnabled="@(Flags.EnemyScripts != false || Flags.EnemySkillsSpells != false)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="NoBossSkillScriptShuffle">Don't Shuffle Bosses' Scripts, Skills & Spells</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.EnemyScripts" Id="scaryImpsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ScaryImps">Scary Imps</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="enemySkillsSpellsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EnemySkillsSpells">Shuffle Skills &amp; Spells</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.EnemySkillsSpells" Id="onlyShuffleBossSkillsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="BossSkillsOnly">Only Shuffle Bosses</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.EnemySkillsSpells" Id="enemySkillsSpellsTieredCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EnemySkillsSpellsTiered">Generate Balanced Scripts</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttacksCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EnemyStatusAttacks">Shuffle Status Attacks</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.EnemyStatusAttacks" Id="enemyRandomAttacksCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomStatusAttacks">Randomize Status Attacks</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="disableStunTouchCheckBox" IsEnabled="@Flags.RandomStatusAttacks" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="DisableStunTouch">Remove Stun Touch</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="everythingHasDeathTouch" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EverythingHasDeathTouch">Everything has Death Touch</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="everythingHasDeathTouchExcludeFiends" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EverythingHasDeathTouchExcludeFiends" IsEnabled="@(Flags.EverythingHasDeathTouch != false)">Exclude Fiends</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="removeTrapTilesCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RemoveTrapTiles">Remove Trap Tiles</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="enemyTrapTilesCheckBox" IsEnabled="@Flags.CanShuffleTrapTiles" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EnemyTrapTiles">Shuffle Trap Tiles</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="randomTrapFormationsCheckBox" IsEnabled="@Flags.EnemyTrapTiles" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomTrapFormations">Use Alternate Formations</TriStateOverview>
+
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="WarMECHModeDropDown" TItem="WarMECHMode" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="WarMECHMode">WarMECH Mode: </EnumOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="swolePiratesCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="SwolePirates">Buffed Pirates</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="shuffleAstosCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ShuffleAstos">Shuffle Astos</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="fiendShuffleCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="FiendShuffle">Shuffle the Original Fiends</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="pacifistModeCheckBox" IsEnabled="@(!Flags.SpookyFlag)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="PacifistMode">Pacifist Bosses</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="AlternateFiends">Alternate Fiends</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="fightBahamutCheckBox" IsEnabled="@(Flags.SpookyFlag != true && Flags.RandomizeFormationEnemizer != true)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="FightBahamut">Fight Bahamut</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="swoleBahamutCheckBox" IsEnabled="@(Flags.FightBahamut != false)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="SwoleBahamut">Buffed Bahamut</TriStateOverview>
+
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDropDown" TItem="SpoilerBatHints" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="SkyWarriorSpoilerBats">Temple of Fiends bats give boss hints:</EnumOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDontCheckOrbsCheckbox" IsEnabled="@Flags.SpoilerBatsDontCheckOrbsEnabled" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="SpoilerBatsDontCheckOrbs">Early Spoilers</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomizeFormationEnemizer">Generate new formations</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" IsEnabled="@Flags.RandomizeFormationEnemizer" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomizeEnemizer">Generate new enemies</TriStateOverview>
+
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="enemyObfuscation" TItem="EnemyObfuscation" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EnemyObfuscation">Enemy Obfuscation:</EnumOverview>
+			<div class="checkbox-cell"></div>
+		</div>
+		<div class="col1">
+			<h4>Classes</h4>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="doubleBBCritCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="BBCritRate">Halve BB Crit Rate</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="thiefHitCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ThiefHitRate">Double Thief &amp; Ninja Hit% growth</TriStateOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="thiefAgilityBuffDropDown" TItem="ThiefAGI" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ThiefAgilityBuff">Better Thief &amp; Ninja Agility</EnumOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="fixHitChanceCapCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="FixHitChanceCap">Raise Hit % Cap</TriStateOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="MDefModeDropDown" TItem="MDEFGrowthMode" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MDefMode">MDEF Growth:</EnumOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="WhiteMageHarmEveryoneCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="WhiteMageHarmEveryone">White Mage HARM damages all enemies</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="Lockpicking" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="Lockpicking">Thief Lockpicking</TriStateOverview>
+			<SingleValueOverview DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.Lockpicking" Id="LockpickingLevelRequirement" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="LockpickingLevelRequirement">Lockpicking Level Requirement:</SingleValueOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="RandomizeClassCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomizeClass">Blursed Classes</TriStateOverview>
+			<SingleValueOverview DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassMaxBonusSlider" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomizeClassMaxBonus">Bonuses:</SingleValueOverview>
+			<SingleValueOverview DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassMaxMalusSlider" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomizeClassMaxMalus">Maluses:</SingleValueOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassCastingCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomizeClassCasting">Add Spellcasting Bonuses</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassIncludeNaturalResistCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomizeClassIncludeNaturalResist">Add Natural Resist Bonuses</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassIncludeXpBonuxCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomizeClassIncludeXpBonus">Add XP Bonuses</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.RandomizeClass" Id="RandomizeClassChaosCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomizeClassChaos">Chaos Mode</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="EnableRandomPromotions" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EnableRandomPromotions">Random Classes at Class Change</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.EnableRandomPromotions" Id="RPIncludeBaseClasses" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="IncludeBaseClasses">Include Base Classes</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.EnableRandomPromotions" Id="RPSpoilers" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomPromotionsSpoilers">Spoil Promotions</TriStateOverview>
+
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="startingLevelDropDown" TItem="StartingLevel" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingLevel">Starting Level:</EnumOverview>
+			<DoubleValueOverview UpdateToolTip="@UpdateToolTipID" Id="MaximumLevelDoubleSilder" Flags="@Flags" DefaultFlags="@DefaultFlags" PropertyHigh="MaxLevelHigh" PropertyLow="MaxLevelLow">Max Level:</DoubleValueOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="ChangeMaxMP" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ChangeMaxMP">Max MP</TriStateOverview>
+			<SingleValueOverview DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="RedMageMaxMP" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RedMageMaxMP">Red Mage Max MP:</SingleValueOverview>
+			<SingleValueOverview DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="WhiteMageMaxMP" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="WhiteMageMaxMP">White Mage Max MP:</SingleValueOverview>
+			<SingleValueOverview DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="BlackMageMaxMP" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="BlackMageMaxMP">Black Mage Max MP:</SingleValueOverview>
+			<SingleValueOverview DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="KnightMaxMP" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="KnightMaxMP">Knight Max MP:</SingleValueOverview>
+			<SingleValueOverview DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="NinjaMaxMP" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="NinjaMaxMP">Ninja Max MP:</SingleValueOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="AllSpellLevelsForKnightNinja" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="AllSpellLevelsForKnightNinja">Knight and Ninja Gain Charges in All Levels</TriStateOverview>
+			<div class="checkbox-cell"></div>
+		</div>
+		<div class="col1">
+			<h4>Gear &amp; Items</h4>
+			<TriStateOverview DisableTooltip="true" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentMasamune">Masamune</TriStateOverview>
+			<TriStateOverview DisableTooltip="true" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentKatana">Katana</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentHealStaff" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentHealStaff">Heal Staff</TriStateOverview>
+			<TriStateOverview DisableTooltip="true" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentZeusGauntlet">Zeus Gauntlet</TriStateOverview>
+			<TriStateOverview DisableTooltip="true" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentWhiteShirt">White Shirt</TriStateOverview>
+			<TriStateOverview DisableTooltip="true" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentRibbon">Ribbon</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentDragonslayer" IsEnabled="!Flags.Weaponizer" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentDragonslayer">Dragonslayer</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentLegendKit" IsEnabled="!Flags.Weaponizer" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentLegendKit">Legendary Kit</TriStateOverview>
+			<TriStateOverview DisableTooltip="true" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentRandomEndgameWeapon">Random Endgame Weapon</TriStateOverview>
+			<TriStateOverview DisableTooltip="true" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentRandomAoe">Random Aoe Caster Item</TriStateOverview>
+			<TriStateOverview DisableTooltip="true" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentRandomCasterItem">Random Caster Item</TriStateOverview>
+			<TriStateOverview DisableTooltip="true" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentOneItem">One Helpful Item</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRandomTypeWeapon" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentRandomTypeWeapon">Random Typed Weapon</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentGrandpasSecretStash" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentGrandpasSecretStash">Grandpa's Secret Stash</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRandomCommons" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentRandomCrap">Random Commons</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentStarterPack" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentStarterPack">Starter Pack</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentNoDuplicates" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentNoDuplicates">No Legendary Duplicates</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRemoveFromPool" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingEquipmentRemoveFromPool">Remove Items from Treasure Chests</TriStateOverview>
+
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="startingItemsDropDown" TItem="StartingItemSet" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="StartingItemSet">Starting Inventory:</EnumOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="consumableTreasureStackSizeDropDown" TItem="TreasureStackSize" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ConsumableTreasureStackSize">Treasure Chest Stacks:</EnumOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="consumableChestSetDropDown" TItem="ConsumableChestSet" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MoreConsumableChests">Consumable Chests:</EnumOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" IsEnabled="!Flags.Etherizer" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="HousesFillHP">House Full HP Restoration</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" IsEnabled="!Flags.HousesFillHP" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="Etherizer">Turn Shelters into Ethers</TriStateOverview>
+
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="enableExtConsumables" TItem="ExtConsumableSet" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ExtConsumableSet">Consumables:</EnumOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="extStartingItemSet" IsEnabled="Flags.ExtConsumablesEnabled" TItem="ExtStartingItemSet" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ExtStartingItemSet">Starting Inventory:</EnumOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="extConsumableChests" IsEnabled="Flags.ExtConsumablesEnabled" TItem="ExtConsumableChestSet" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ExtConsumableChests">Chests:</EnumOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="extConsumableTreasureStackSize" IsEnabled="Flags.ExtConsumablesEnabled" TItem="TreasureStackSize" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ExtConsumableTreasureStackSize">Chest Stacks:</EnumOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="normalShopsHaveExtConsumables" IsEnabled="Flags.ExtConsumablesEnabled" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="NormalShopsHaveExtConsumables">Normal Shops</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="legendaryShopHasExtConsumables" IsEnabled="Flags.ExtConsumablesEnabled" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="LegendaryShopHasExtConsumables">Legendary Shops</TriStateOverview>
+
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="itemMagicMode" TItem="ItemMagicMode" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ItemMagicMode">Item Magic:</EnumOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.Vanilla && Flags.ItemMagicMode != ItemMagicMode.None)" Id="itemMagicPool" TItem="ItemMagicPool" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ItemMagicPool">Item Magic Pool:</EnumOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsCheckBox" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.Vanilla && Flags.ItemMagicMode != ItemMagicMode.None)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="MagisizeWeapons">All Weapons Cast Spells</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="ruseItemCheckBox" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.None)" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="GuaranteedRuseItem">Insert Ruse Item</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonus" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomWeaponBonus">Blursed Weapons:</TriStateOverview>
+			<DoubleValueOverview ShowAlways DisableTooltip Id="RandomWeaponBonusSlider" Flags="@Flags" DefaultFlags="@DefaultFlags" IsEnabled="@Flags.RandomWeaponBonus" PropertyHigh="RandomWeaponBonusHigh" PropertyLow="RandomWeaponBonusLow">Blursed Weapons Bonus:</DoubleValueOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.RandomWeaponBonus" Id="RandomWeaponBonusExcludeMasa" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomWeaponBonusExcludeMasa">Exclude Masmune</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="RandomArmorBonus" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="RandomArmorBonus">Blursed Armor:</TriStateOverview>
+			<DoubleValueOverview ShowAlways DisableTooltip Id="RandomArmorBonusSlider" Flags="@Flags" DefaultFlags="@DefaultFlags" IsEnabled="@Flags.RandomArmorBonus" PropertyHigh="RandomArmorBonusHigh" PropertyLow="RandomArmorBonusLow">Blursed Armor Bonus:</DoubleValueOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="doubleWeaponCritCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="WeaponCritRate">Double Weapon Crit Rate</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="increaseWepBonusesCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="WeaponBonuses">Increase Weapon Elemental and Type Bonuses</TriStateOverview>
+			<SingleValueOverview DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.WeaponBonuses" Id="WeaponTypeBonusValue" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="WeaponTypeBonusValue">Weapon Elemental/Type Damage Bonus:</SingleValueOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="weaponizerCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="Weaponizer">Use Weaponizer</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="weaponizerPowersCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="WeaponizerCommonWeaponsHavePowers">Common weapons can have powers</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="weaponizerNamingCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="WeaponizerNamesUseQualityOnly">Name for casting and quality only</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="armorCrafterCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ArmorCrafter">Use Armor Crafter</TriStateOverview>
+			<div class="checkbox-cell"></div>
+		</div>
+		<div class="col1">
+			<h4>Adjustments</h4>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="houseMPRestorationCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="HouseMPRestoration">House MP Restoration</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="weaponStatsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="WeaponStats">Weapon Stats</TriStateOverview>
+			<EnumOverview UpdateToolTip="@UpdateToolTipID" Id="chanceToRunDropDown" TItem="ChanceToRunMode" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ChanceToRun">Chance to Run:</EnumOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="spellBugsCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="SpellBugs">Spell Fixes</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttackBugCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EnemyStatusAttackBug">Enemy Status Attacks</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="blackBeltAbsorbCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="BlackBeltAbsorb">Bl. Belt & Master Absorb Calculation</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="enemyElementalResistancesCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EnemyElementalResistancesBug">Enemy Elemental Resistances</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="enemySpellsTargetingAlliesCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="improveTurnOrderRandomizationCheckBox" Property="ImproveTurnOrderRandomization">Improve Turn Order Randomization</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="increaseDarkPenaltyCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="IncreaseDarkPenalty">Increase Dark Penalty</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="rngCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="Rng">RNG Tables</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</TriStateOverview>
+
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="NoPartyShuffle">No Party Shuffle</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="SpeedHacks">Speed Hacks</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="disableMinimap" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="DisableMinimap">Disable Minimap</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="quickMinimapLoad" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="QuickMinimapLoad" IsEnabled="@(!Flags.DisableMinimap && Flags.OwMapExchange == OwMapExchanges.None)">Quick Minimap Load</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="speedboatCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="SpeedBoat">Faster Ship</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="IdentifyTreasures">Identify Treasures</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="Dash">Enable Dash</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="buyTenCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="BuyTen">Buy Quantity</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="waitWhenUnrunnableCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.SpeedHacks" Flags="@Flags" DefaultFlags="@DefaultFlags" Id="enableCritNumberDisplayCheckBox" Property="EnableCritNumberDisplay">Critical Hit Count Display</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="battleMagicMenuWrapAroundCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="BattleMagicMenuWrapAround">Battle Magic Menu Wrap Around</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="NPCSwatter">NPC Guillotine</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="InventoryAutosort">Autosort Inventory</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="shopInfoCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="ShopInfo">Shop Information</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="chestInfoCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" IsEnabled="Flags.ShopInfo" Property="ChestInfo">Chest Information</TriStateOverview>
+			<TriStateOverview UpdateToolTip="@UpdateToolTipID" Id="incentiveChestItemsFanfareCheckBox" Flags="@Flags" DefaultFlags="@DefaultFlags" Property="IncentiveChestItemsFanfare">All Incentive Chest Items Fanfare</TriStateOverview>
+
+			<div class="checkbox-cell"></div>
+		</div>
+	}
+</div>
+
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public FF1Lib.FlagsViewModel DefaultFlags { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public bool noTabLayout { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+}
