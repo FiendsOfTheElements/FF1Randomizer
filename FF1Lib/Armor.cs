@@ -548,9 +548,7 @@ namespace FF1Lib
 			//get name stuff
 			Icon = ArmorIcon.NONE;
 
-			var itemnames = rom.ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, FF1Rom.ItemTextPointerCount);
-
-			Name = itemnames[(int)Item.Cloth + ArmorIndex];
+			Name = rom.ItemsText[(int)Item.Cloth + ArmorIndex];
 
 			foreach (var kv in IconCodes)
 			{
@@ -587,7 +585,7 @@ namespace FF1Lib
 			rom.Put(armorPermissionOffset, BitConverter.GetBytes(convertedClassPermissions));
 			rom.Put(FF1Rom.ArmorTypeOffset+ArmorIndex, new byte[]{(byte)Type});
 
-			rom.UpdateItemName((Item)((int)Item.Cloth + ArmorIndex), Name);
+			rom.ItemsText[(int)Item.Cloth + ArmorIndex] = Name;
 		}
 
 		private ArmorIcon getArmorIconFromByte(byte icon)

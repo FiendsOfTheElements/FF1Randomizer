@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using FF1Lib.Assembly;
 using System.Text.RegularExpressions;
+using FF1Lib.Sanity;
+using System.Diagnostics;
 
 namespace FF1Lib
 {
@@ -28,6 +30,16 @@ namespace FF1Lib
 		public const int GoldItemOffset = 108; // 108 items before gold chests
 		public const int GoldItemCount = 68;
 		public static List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
+		public ItemNames ItemsText;
+
+		private SanityCheckerV2 sanityChecker = null;
+		private IncentiveData incentivesData = null;
+
+		public new void Put(int index, Blob data)
+		{
+			//Debug.Assert(index <= 0x4000 * 0x0E + 0x9F48 - 0x8000 && (index + data.Length) > 0x4000 * 0x0E + 0x9F48 - 0x8000);
+			base.Put(index, data);
+		}
 
 		public void PutInBank(int bank, int address, Blob data)
 		{
@@ -55,7 +67,7 @@ namespace FF1Lib
 		{
 			if (bank == 0x1F)
 			{
-				if ((address - 0xC000) + length >= 0x4000)
+				if ((address - 0xC000) + length > 0x4000)
 				{
 					throw new Exception("Data is too large to fit within one bank.");
 				}
@@ -64,7 +76,7 @@ namespace FF1Lib
 			}
 			else
 			{
-				if ((address - 0x8000) + length >= 0x4000)
+				if ((address - 0x8000) + length > 0x4000)
 				{
 					throw new Exception("Data is too large to fit within one bank.");
 				}
@@ -104,11 +116,39 @@ namespace FF1Lib
 
 		public void Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
+		    Flags flagsForRng = flags;
+		    if (flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ||
+			flags.OwMapExchange == OwMapExchanges.GenerateNewOverworldShuffledAccess ||
+			flags.OwMapExchange == OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe ||
+			flags.OwMapExchange == OwMapExchanges.LostWoods)
+		    {
+			// Procgen maps can be either
+			// generated or imported.  All else
+			// being equal, we want the user who
+			// generated the map
+			// (OwMapExchange == GenerateNewOverworld)
+			// and the user who imported the map
+			// (OwMapExchange == ImportCustomMap)
+			// to get the same ROM, so for the
+			// purposes of initializing the RNG
+			// consider them all to be
+			// "ImportCustomMap".
+			flagsForRng = flags.ShallowCopy();
+			flagsForRng.OwMapExchange = OwMapExchanges.ImportCustomMap;
+		    }
+
+			Blob resourcesPackHash = new byte[1];
+
 			MT19337 rng;
 			using (SHA256 hasher = SHA256.Create())
 			{
-				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flags));
-				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed });
+				if (flags.TournamentSafe && flags.ResourcePack != null)
+				{
+					resourcesPackHash = hasher.ComputeHash(new MemoryStream(Convert.FromBase64String(flags.ResourcePack)).ToArray());
+				}
+
+				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flagsForRng));
+				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed, resourcesPackHash });
 				Blob hash = hasher.ComputeHash(SeedAndFlags);
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
 			}
@@ -128,12 +168,11 @@ namespace FF1Lib
 			ExpandNormalTeleporters();
 			SeparateUnrunnables();
 			DrawCanoeUnderBridge();
+			ItemsText = new ItemNames(this);
 			var talkroutines = new TalkRoutines();
 			var npcdata = new NPCdata(this);
 			UpdateDialogs(npcdata, flags);
 			AddElementIcons();
-
-
 
 			if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 
@@ -152,19 +191,16 @@ namespace FF1Lib
 
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
-			var oldItemNames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			
+			var oldItemNames = ItemsText.ToList();
+
 			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems)
 			{
 				NPCShuffleDialogs();
 			}
 
-			if (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert)
+			if (flags.OwMapExchange == OwMapExchanges.Desert)
 			{
-				GenerateDesert(overworldMap, owMapExchange, npcdata, rng);
-				teleporters = new TeleportShuffle(owMapExchange?.Data);
-				overworldMap.Teleporters = teleporters;
-				shipLocations = owMapExchange.ShipLocations;
+				DesertOfDeath.ApplyDesertModifications(this, owMapExchange, npcdata);
 			}
 
 			if (flags.EFGWaterfall || flags.EFGEarth1 || flags.EFGEarth2)
@@ -222,9 +258,13 @@ namespace FF1Lib
 				}
 			}
 
-			if((bool)flags.OWDamageTiles || (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert))
+			if((bool)flags.OWDamageTiles || (flags.OwMapExchange == OwMapExchanges.Desert))
 			{
 				EnableDamageTile();
+			}
+			if ((bool)flags.DamageTilesKill)
+			{
+				DamageTilesKill(flags.SaveGameWhenGameOver);
 			}
 
 			var flippedMaps = new List<MapId>();
@@ -239,11 +279,7 @@ namespace FF1Lib
 				DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
 			}
 
-			if (flags.DeepDungeon)
-			{
-				DeepDungeon(rng, overworldMap, maps, flags);
-				UnusedGoldItems = new List<int> { };
-			}
+			// Original placement of DeepDungeon routine
 
 			if (preferences.ModernBattlefield)
 			{
@@ -265,9 +301,10 @@ namespace FF1Lib
                 EnableMelmondClinic(maps);
             }
 
+			MapId attackedTown = MapId.Melmond;
 			if ((bool)flags.RandomVampAttack)
 			{
-				RandomVampireAttack(maps, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
+				attackedTown = RandomVampireAttack(maps, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
 			}
 
 			if ((bool)flags.GaiaShortcut)
@@ -324,39 +361,34 @@ namespace FF1Lib
 			}
 
 			if ((bool)flags.Weaponizer) {
-			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers,  flags.NoItemMagic ?? false);
+			    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers, flags.ItemMagicMode == ItemMagicMode.None);
 			}
 
 			if ((bool)flags.ArmorCrafter) {
-			    ArmorCrafter(rng, flags.NoItemMagic ?? false);
+			    ArmorCrafter(rng, flags.ItemMagicMode == ItemMagicMode.None);
 			}
 
-			if ((bool)flags.MagisizeWeapons && !(flags.NoItemMagic ?? false))
+			if (flags.ItemMagicMode != ItemMagicMode.None && flags.ItemMagicMode != ItemMagicMode.Vanilla)
 			{
-				MagisizeWeapons(rng, (bool)flags.MagisizeWeaponsBalanced);
+				ShuffleItemMagic(rng, flags);
 			}
 
-			if ((bool)flags.ItemMagic && !(flags.NoItemMagic ?? false))
-			{
-				ShuffleItemMagic(rng, (bool)flags.BalancedItemMagicShuffle && !(flags.NoItemMagic ?? false));
-			}
-
-			if ((bool)flags.GuaranteedRuseItem && !(flags.NoItemMagic ?? false))
+			if ((bool)flags.GuaranteedRuseItem && !(flags.ItemMagicMode == ItemMagicMode.None))
 			{
 				CraftRuseItem();
 			}
 
-			if ((bool)flags.ShortToFR && !flags.DeepDungeon)
+			if ((bool)flags.ShortToFR)
 			{
 				ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, rng);
 			}
 
-			if ((bool)flags.ChaosFloorEncounters && !flags.DeepDungeon)
+			if ((bool)flags.ChaosFloorEncounters)
 			{
 				EnableChaosFloorEncounters(maps);
 			}
 
-			if ((bool)flags.ExitToFR && !flags.DeepDungeon)
+			if ((bool)flags.ExitToFR)
 			{
 				EnableToFRExit(maps);
 			}
@@ -364,6 +396,11 @@ namespace FF1Lib
 			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs && !flags.DeepDungeon)
 			{
 				EnableShardHunt(rng, talkroutines, flags.ShardCount);
+			}
+
+			if (!flags.FreeOrbs && !flags.ShardHunt && !flags.DeepDungeon)
+			{
+				SetOrbRequirement(rng, talkroutines, flags.OrbsRequiredCount, flags.OrbsRequiredMode, (bool)flags.OrbsRequiredSpoilers);
 			}
 
 			if (flags.TransformFinalFormation != FinalFormation.None && !flags.SpookyFlag)
@@ -410,7 +447,7 @@ namespace FF1Lib
 				EnableChaosRush();
 			}
 
-			if ((bool)flags.FreeBridge && (flags.OwMapExchange != OwMapExchanges.Desert))
+			if ((bool)flags.IsBridgeFree && (flags.OwMapExchange != OwMapExchanges.Desert))
 			{
 				EnableFreeBridge();
 			}
@@ -469,7 +506,13 @@ namespace FF1Lib
 				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
 			}
 
-			var maxRetries = 8;
+			if (flags.DraculasFlag)
+			{
+			    // Needs to happen before item placement because it swaps some entrances around.
+				DraculasCurse(talkroutines, npcdata, rng, flags);
+			}
+
+			var maxRetries = 3;
 			for (var i = 0; i < maxRetries; i++)
 			{
 				try
@@ -478,13 +521,13 @@ namespace FF1Lib
 					overworldMap.Teleporters = teleporters;
 
 					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon
-						&& !(flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.NoOverworld))
+						&& !(flags.OwMapExchange == OwMapExchanges.NoOverworld))
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 					}
 
 					// Disable the Princess Warp back to Castle Coneria
-					if ((bool)flags.Entrances || (bool)flags.Floors)
+					if ((bool)flags.Entrances || (bool)flags.Floors || flags.OwMapExchange != OwMapExchanges.None)
 						talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
 
 					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && !flags.DeepDungeon)
@@ -493,8 +536,7 @@ namespace FF1Lib
 					}
 
 
-					ISanityChecker checker = new SanityCheckerV1();
-					IncentiveData incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
+					incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, new SanityCheckerV1());
 
 					if (((bool)flags.Shops))
 					{
@@ -507,7 +549,7 @@ namespace FF1Lib
 						if (!((bool)flags.RandomWaresIncludesSpecialGear))
 						{
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
-							if ((bool)flags.GuaranteedRuseItem && !(flags.NoItemMagic ?? false))
+							if ((bool)flags.GuaranteedRuseItem && !(flags.ItemMagicMode == ItemMagicMode.None))
 								excludeItemsFromRandomShops.Add(Item.PowerRod);
 						}
 
@@ -523,13 +565,18 @@ namespace FF1Lib
 
 						shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth, overworldMap.ConeriaTownEntranceItemShopIndex);
 
-						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, checker);
+						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, new SanityCheckerV1());
 					}
 
 					if ((bool)flags.Treasures && !flags.DeepDungeon)
 					{
-						if(flags.SanityCheckerV2) checker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
-						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, checker);
+						sanityChecker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
+						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, sanityChecker);
+					}
+					else if (owMapExchange != null && !flags.DeepDungeon)
+					{
+						sanityChecker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
+						if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags).Complete) throw new InsaneException("Not Completable");
 					}
 
 					break;
@@ -591,6 +638,16 @@ namespace FF1Lib
 				MixUpSpellNames(flags.SpellNameMadness, rng);
 			}
 
+			if (flags.EnableSoftInBattle)
+			{
+				EnableSoftInBattle();
+			}
+
+			if (flags.EnableLifeInBattle)
+			{
+				EnableLifeInBattle();
+			}
+
 			/*
 			if (flags.WeaponPermissions)
 			{
@@ -605,7 +662,7 @@ namespace FF1Lib
 
 			if (flags.SaveGameWhenGameOver)
 			{
-				EnableSaveOnDeath(flags);
+				EnableSaveOnDeath(flags, owMapExchange);
 			}
 
 			// Ordered before RNG shuffle. In the event that both flags are on, RNG shuffle depends on this.
@@ -647,6 +704,11 @@ namespace FF1Lib
 				{
 					ShuffleEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates);
 				}
+			}
+
+			if ((bool)flags.EverythingHasDeathTouch)
+			{
+				EverythingHasDeathTouch((bool)flags.AllowUnsafePirates, (bool)flags.EverythingHasDeathTouchExcludeFiends);
 			}
 
 			if (flags.Runnability == Runnability.Random)
@@ -724,11 +786,10 @@ namespace FF1Lib
 				EnableSpeedHacks(preferences);
 			}
 
-			if (flags.QuickMinimapLoad)
+			if (flags.DisableMinimap)
 			{
-				EnableQuickMinimap();
+				DisableMinimap();
 			}
-
 
 			if (flags.IdentifyTreasures)
 			{
@@ -740,9 +801,9 @@ namespace FF1Lib
 				EnableDash(flags.SpeedBoat, preferences.OptOutSpeedHackDash);
 			}
 
-			if (flags.BuyTen)
+			if (flags.BuyTen || flags.Archipelago)
 			{
-				EnableBuyQuantity();
+				EnableBuyQuantity(flags);
 			}
 
 			if (flags.WaitWhenUnrunnable)
@@ -776,16 +837,6 @@ namespace FF1Lib
 			if (flags.MaxLevelLow < 50)
 			{
 				SetMaxLevel(flags, rng);
-			}
-
-			if ((bool)flags.TrappedChestsEnabled)
-			{
-				MonsterInABox(rng, flags);
-
-				if((bool)flags.TrappedChaos)
-				{
-					SetChaosForMIAB(npcdata);
-				}
 			}
 
 			if (!flags.Etherizer && (flags.HouseMPRestoration || flags.HousesFillHp))
@@ -867,6 +918,16 @@ namespace FF1Lib
 				FixHitChanceCap();
 			}
 
+			if ((bool)flags.IncreaseDarkPenalty)
+			{
+				IncreaseDarkPenalty();
+			}
+
+			if((bool)flags.WhiteMageHarmEveryone)
+			{
+				WhiteMageHarmEveryone();
+			}
+
 			if (flags.EnemyElementalResistancesBug)
 			{
 				FixEnemyElementalResistances();
@@ -877,26 +938,21 @@ namespace FF1Lib
 				FunEnemyNames(preferences.TeamSteak);
 			}
 
-			var itemText = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
-			if (itemText[(int)Item.Ribbon].Length > 7
-			    && itemText[(int)Item.Ribbon][7] == ' ')
+			if (ItemsText[(int)Item.Ribbon].Length > 7
+			    && ItemsText[(int)Item.Ribbon][7] == ' ')
 			    {
-				itemText[(int)Item.Ribbon] = itemText[(int)Item.Ribbon].Remove(7);
+				ItemsText[(int)Item.Ribbon] = ItemsText[(int)Item.Ribbon].Remove(7);
 			    }
 
 			if (flags.Etherizer)
 			{
 				Etherizer();
-				itemText[(int)Item.Tent] = "ETHR@p";
-				itemText[(int)Item.Cabin] = "DRY@p ";
-				itemText[(int)Item.House] = "XETH@p";
+				ItemsText[(int)Item.Tent] = "ETHR@p";
+				ItemsText[(int)Item.Cabin] = "DRY@p ";
+				ItemsText[(int)Item.House] = "XETH@p";
 			}
 
-			if (flags.ExtensiveHints_Enable)
-			{
-				new ExtensiveHints(rng, npcdata, flags, overworldMap, this).Generate();
-			}
-			else if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
+			if (((bool)flags.HintsVillage || (bool)flags.HintsDungeon) && !flags.DeepDungeon)
 			{
 				if ((bool)flags.HintsDungeon)
 					SetDungeonNPC(flippedMaps, rng);
@@ -904,13 +960,59 @@ namespace FF1Lib
 				NPCHints(rng, npcdata, flags, overworldMap);
 			}
 
+			if (flags.DeepDungeon)
+			{
+				DeepDungeon(rng, overworldMap, maps, flags);
+				DeepDungeonFloorIndicator();
+				UnusedGoldItems = new List<int> { };
+			}
+
+			if ((bool)flags.TrappedChestsEnabled)
+			{
+				MonsterInABox(rng, flags);
+
+				if ((bool)flags.TrappedChaos)
+				{
+					SetChaosForMIAB(npcdata);
+				}
+			}
+
 			ExpGoldBoost(flags);
-			ScalePrices(flags, itemText, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
+
+			if(flags.ExpMultiplierFighter > 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierFighter, FF1Class.Fighter);
+			}
+
+			if (flags.ExpMultiplierThief > 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierThief, FF1Class.Thief);
+			}
+
+			if (flags.ExpMultiplierBlackBelt > 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierBlackBelt, FF1Class.BlackBelt);
+			}
+
+			if (flags.ExpMultiplierRedMage > 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierRedMage, FF1Class.RedMage);
+			}
+
+			if (flags.ExpMultiplierWhiteMage > 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierWhiteMage, FF1Class.WhiteMage);
+			}
+
+			if (flags.ExpMultiplierBlackMage > 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
+			}
+
+			ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 			WriteMaps(maps);
-
-			WriteText(itemText, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset, UnusedGoldItems);
 
 			extConsumables.AddExtConsumables();
 
@@ -933,7 +1035,7 @@ namespace FF1Lib
 
 			if (((bool)flags.RecruitmentMode))
 			{
-				PubReplaceClinic(rng, flags);
+				PubReplaceClinic(rng, attackedTown, flags);
 			}
 
 			if ((bool)flags.ChangeMaxMP)
@@ -963,6 +1065,8 @@ namespace FF1Lib
 
 			SetProgressiveScaleMode(flags);
 
+			MoveLoadPlayerIBStats();
+			SetupClassAltXp();
 			if ((bool)flags.RandomizeClass)
 			{
 				RandomizeClass(rng, flags, oldItemNames);
@@ -988,7 +1092,7 @@ namespace FF1Lib
 				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
 			}
 
-			if (flags.NoItemMagic ?? false)
+			if (flags.ItemMagicMode == ItemMagicMode.None)
 			{
 				NoItemMagic(flags);
 			}
@@ -1002,7 +1106,7 @@ namespace FF1Lib
 
 			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
-				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, (bool)flags.SwoleBahamut, flags.EvadeCap, rng);
+				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, (bool)flags.SwoleBahamut, flags.DeepDungeon, flags.EvadeCap, rng);
 			}
 
 			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
@@ -1015,11 +1119,19 @@ namespace FF1Lib
 				EnableInventoryAutosort();
 			}
 
-			if (flags.SkyWarriorSpoilerBats != SpoilerBatHints.Vanilla) {
-			    SkyWarriorSpoilerBats(rng, flags, npcdata);
+			ObfuscateEnemies(rng, flags);
+
+			if (flags.ResourcePack != null) {
+			    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack))) {
+				this.LoadResourcePack(stream);
+			    }
+			    preferences.ThirdBattlePalette = true;
 			}
 
-			ObfuscateEnemies(rng, flags);
+			if (flags.SkyWarriorSpoilerBats != SpoilerBatHints.Vanilla) {
+			    // Update after dialogue is loaded
+			    SkyWarriorSpoilerBats(rng, flags, npcdata);
+			}
 
 			// We have to do "fun" stuff last because it alters the RNG state.
 			// Back up Rng so that fun flags are uniform when different ones are selected
@@ -1080,34 +1192,52 @@ namespace FF1Lib
 			    }
 			}
 
-			if (flags.SanityCheckerV2)
+			if ((bool)flags.IsAirshipFree)
 			{
-				if ((bool)flags.IsAirshipFree)
-				{
-					owMapExchange?.SetAirshipLocation(owMapExchange.StartingLocation);
-				}
+				owMapExchange?.SetAirshipLocation(owMapExchange.StartingLocation);
+			}
 
-				if ((bool)flags.IsShipFree)
-				{
-					shipLocations.SetShipLocation(255);
-				}
+			if ((bool)flags.IsShipFree)
+			{
+				shipLocations.SetShipLocation(255);
 			}
 
 			owMapExchange?.ExecuteStep2();
 
-			if (owMapExchange != null) {
-			    HackMinimap(overworldMap);
+
+			if(flags.QuickMinimapLoad || owMapExchange != null)
+			{
+				new QuickMiniMap(this, overworldMap).EnableQuickMinimap();
 			}
+
+			var expChests = new ExpChests(this, flags, rng);
+			expChests.BuildExpChests();
 
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
 
-			new ExpChests(this, flags, rng).BuildExpChests();
+
+			if (flags.Archipelago)
+			{
+				shipLocations.SetShipLocation(255);
+
+				Archipelago exporter = new Archipelago(this, generatedPlacement, sanityChecker, expChests, incentivesData, flags, preferences);
+				Utilities.ArchipelagoCache = exporter.Work();	
+			}
+
+			ItemsText.Write(this, UnusedGoldItems);
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
-			WriteSeedAndFlags(seed.ToHex(), Flags.EncodeFlagsText(flags));
+			var flagstext = Flags.EncodeFlagsText(flagsForRng);
+			if (flags.ReplacementMap != null) {
+			    flagstext += "_" + flags.ReplacementMap.ComputeChecksum();
+			}
+
+			flagstext += "_" + resourcesPackHash.ToHex();
+
+			WriteSeedAndFlags(seed.ToHex(), flagstext);
 			ExtraTrackingAndInitCode(flags, preferences);
 		}
 

@@ -1,21 +1,25 @@
 .include "Constants.inc"
 .include "variables.inc"
 
+WaitForVBlank = $FE00
 SwapPRG = $FE03
 CallMusicPlay = $C689
 LvlUp_AwardAndUpdateExp = $87DA
 DrawDialogueString = $DB64
 DrawDialogueString_PtrLoaded = $DB8A
-
+SetSMScroll = $CCA1
 
 lut_itemDescriptions = $9300 ;bank 0E
 lut_ShopInfoWordsPtrTbl = $9A00 ;bank 11
 lut_ItemNamePtrTbl2 = $B700 - $2000 ;bank 0A mapped into the wrong half
 
+MenuColor = $60FB
+
 text_buffer = $6B00 ; shares memory with btl_unfmtcbtbox_buffer
 
-;.org $XXXX	
+;.org $XXXX
 	PLA
+	PHA
 	JSR DrawDialogueString
 	JMP DrawDialogueItemInfo_L
 
@@ -45,7 +49,16 @@ LvlUp_AwardAndUpdateExp_L2:
 DrawDialogueItemInfo:
 	LDA #$11
 	STA cur_bank
-	
+
+	PLA					;pull dialog id from stack
+	CMP #DLGID_CANTCARRY
+	BNE :+
+		LDA #$05
+		BNE InfoSetBgColor
+  : LDA MenuColor     
+InfoSetBgColor:
+	JSR SetDialogBgColor
+
 	LDA tileprop+1		; prevents from overwriting NPC texts
 	BNE :+
 		RTS	
@@ -210,10 +223,18 @@ TextPrepared:
 
 	JMP DrawDialogueString_PtrLoaded
 
-	
-	
-	
-	
-	
-	
-	
+
+SetDialogBgColor:
+	LDX #$3F        ; set PPU Address to $3F0E (Dialog Bg Color)
+    STX $2006	
+    LDX #$0E
+	STX $2006
+	STA $2007
+	LDX #$3F        ; set PPU Address to $3F00 (start of palette)
+    STX $2006	
+	LDX #$00
+	STX $2006
+	STX $2006
+	STX $2006
+	JSR SetSMScroll
+	RTS

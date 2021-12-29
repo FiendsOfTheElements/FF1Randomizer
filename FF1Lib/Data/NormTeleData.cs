@@ -9,6 +9,11 @@ namespace FF1Lib
 {
 	public struct TeleData
 	{
+	    public TeleData(MapId m, byte x, byte y) {
+		Map = m;
+		X = x;
+		Y = y;
+	    }
 		public MapId Map;
 		public byte X;
 		public byte Y;

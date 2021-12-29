@@ -47,7 +47,7 @@ namespace FF1Lib.Helpers
 		Death =	0b00001000,
 		Time = 0b00000100,
 		Poison = 0b00000010,
-		Elem01 = 0b00000001,
+		Status = 0b00000001,
 		All = 0xFF
 	}
 
@@ -100,6 +100,7 @@ namespace FF1Lib.Helpers
 				foundSpells = SpellInfos.Where(s =>
 					(s.routine == (byte)routine) &&
 					(s.targeting == (byte)targeting || targeting == SpellTargeting.Any) &&
+					(s.elem == (byte)element || element == SpellElement.Any) &&
 					(s.effect == (byte)status || status == SpellStatus.Any));
 			}
 			else

@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.ComponentModel;
 using RomUtilities;
+using System.IO.Compression;
+using FF1Lib.Procgen;
 
 namespace FF1Lib
 {
@@ -17,14 +19,17 @@ namespace FF1Lib
 		[Description("Vanilla (Default)")]
 		None,
 
-		[Description("Melmond Start")]
-		MelmondStart,
+		[Description("Generate New Overworld")]
+		GenerateNewOverworld,
 
-		[Description("Elfland Start")]
-		ElflandStart,
+		[Description("Generate New Overworld (shuffled access)")]
+		GenerateNewOverworldShuffledAccess,
 
-		[Description("Crescent Start")]
-		CrecsentStart,
+		[Description("Generate New Overworld (unsafe start)")]
+		GenerateNewOverworldShuffledAccessUnsafe,
+
+		[Description("Lost Woods")]
+		LostWoods,
 
 		[Description("Desert of Death")]
 		Desert,
@@ -32,17 +37,17 @@ namespace FF1Lib
 		[Description("No Overworld")]
 		NoOverworld,
 
-		[Description("Chanel #125")]
-		ProcGen1,
+		[Description("Random Pregenerated 256")]
+		RandomPregenerated,
 
-		[Description("Epic Quest")]
-		ProcGen2,
+		[Description("Random Pregenerated 256 (shuffled access)")]
+		RandomPregeneratedShuffled,
 
-		[Description("Archipelago")]
-		ProcGen3,
+		[Description("Random Pregenerated 256 (unsafe start)")]
+		RandomPregeneratedUnsafe,
 
-		[Description("Random")]
-		Random
+		[Description("Import Custom Map")]
+		ImportCustomMap,
 	}
 
 	public class OwMapExchange
@@ -77,9 +82,72 @@ namespace FF1Lib
 			ShipLocations = new ShipLocations(locations, data.ShipLocations);
 		}
 
+		public OwMapExchange(FF1Rom _rom, Flags flags, OverworldMap _overworldMap, MT19337 rng)
+		{
+			rom = _rom;
+			overworldMap = _overworldMap;
+
+			exit = new ExitTeleData(rom);
+			locations = new OwLocationData(rom);
+			domains = new DomainData(rom);
+
+			string name;
+
+			if (flags.OwMapExchange == OwMapExchanges.RandomPregenerated)
+			{
+				name = "normal256.zip";
+			}
+			else if (flags.OwMapExchange == OwMapExchanges.RandomPregenerated)
+			{
+				name = "shuffled256.zip";
+			}
+			else
+			{
+				name = "unsafe256.zip";
+			}
+
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith(name));
+
+			using Stream stream = assembly.GetManifestResourceStream(resourcePath);
+
+			var archive = new ZipArchive(stream);
+
+			var maplist = archive.Entries.Where(e => e.Name.EndsWith(".json")).Select(e => e.Name).ToList();
+
+			var map = maplist.PickRandom(rng);
+
+			data = LoadJson(archive.GetEntry(map).Open());
+
+			ShipLocations = new ShipLocations(locations, data.ShipLocations);
+		}
+
+		public OwMapExchange(FF1Rom _rom, OverworldMap _overworldMap, OwMapExchangeData replacement)
+		{
+
+			rom = _rom;
+			overworldMap = _overworldMap;
+
+			exit = new ExitTeleData(rom);
+			locations = new OwLocationData(rom);
+			domains = new DomainData(rom);
+
+			data = replacement;
+
+			ShipLocations = new ShipLocations(locations, data.ShipLocations);
+		}
+
 		public void ExecuteStep1()
 		{
-			overworldMap.SwapMap(name + ".ffm");
+
+			if (Data.DecompressedMapRows != null)
+			{
+				overworldMap.SwapMap(Data.DecompressedMapRows);
+			}
+			else
+			{
+				overworldMap.SwapMap(name + ".ffm");
+			}
 
 			//load default locations first, doh
 			locations.LoadData();
@@ -96,6 +164,56 @@ namespace FF1Lib
 			exit.StoreData();
 
 			ShipLocations.SetShipLocation(255);
+
+			if (data.HorizontalBridge)
+			{
+				// Rotate bridge sprite
+				// tiles $14 - $17
+				// CHR for map tiles is bank $02 at $9C00
+
+				// 0 1  \ \
+				// 2 3  / /
+
+				var tile0 = new byte[8 * 8] {
+				0, 0, 0, 0, 1, 1, 1, 1,
+				0, 0, 1, 1, 2, 2, 2, 2,
+				1, 1, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 1, 1, 1, 1, 1,
+				2, 1, 1, 2, 2, 2, 2, 2,
+				1, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 2, 2, 2, 2,
+				};
+
+				var tile1 = new byte[8 * 8] {
+				2, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 1, 1, 1, 1,
+				2, 2, 1, 1, 2, 2, 2, 2,
+				1, 1, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 1, 1, 1, 1, 1,
+				1, 1, 1, 0, 0, 0, 0, 0
+				};
+
+				var tile2 = new byte[8 * 8];
+				var tile3 = new byte[8 * 8];
+
+				for (int j = 0; j < 8; j++)
+				{
+					for (int i = 0; i < 8; i++)
+					{
+						// mirror tiles
+						tile2[j * 8 + i] = tile0[j * 8 + (7 - i)];
+						tile3[j * 8 + i] = tile1[j * 8 + (7 - i)];
+					}
+				}
+
+				rom.PutInBank(0x2, 0x9C00 + 0x04 * 16, rom.EncodeForPPU(tile0));
+				rom.PutInBank(0x2, 0x9C00 + 0x05 * 16, rom.EncodeForPPU(tile2));
+				rom.PutInBank(0x2, 0x9C00 + 0x06 * 16, rom.EncodeForPPU(tile1));
+				rom.PutInBank(0x2, 0x9C00 + 0x07 * 16, rom.EncodeForPPU(tile3));
+			}
 		}
 
 		public void RefreshData()
@@ -121,12 +239,12 @@ namespace FF1Lib
 
 		public void ExecuteStep2()
 		{
-		    DomainData originalDomains = new DomainData(rom);
+			DomainData originalDomains = new DomainData(rom);
 			originalDomains.LoadTable();
 			domains.LoadTable();
 
-			foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
-			foreach (var df in data.DomainUpdates) domains.Data[df.To] = originalDomains.Data[df.From];
+			if (data.DomainFixups != null) foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
+			if (data.DomainUpdates != null) foreach (var df in data.DomainUpdates) domains.Data[df.To] = originalDomains.Data[df.From];
 
 			domains.StoreTable();
 			locations.StoreData();
@@ -144,33 +262,62 @@ namespace FF1Lib
 			}
 		}
 
+		private OwMapExchangeData LoadJson(Stream stream)
+		{
+			using (StreamReader rd = new StreamReader(stream))
+			{
+				return JsonConvert.DeserializeObject<OwMapExchangeData>(rd.ReadToEnd());
+			}
+		}
+
 		public static OwMapExchange FromFlags(FF1Rom _rom, OverworldMap _overworldMap, Flags flags, MT19337 rng)
 		{
-			if (!flags.SanityCheckerV2) return null;
+			int seed;
+
+			if (flags.MapGenSeed != 0)
+			{
+				seed = flags.MapGenSeed;
+			}
+			else
+			{
+				seed = (int)rng.Next();
+			}
+
+			MT19337 maprng = new MT19337((uint)seed);
 
 			var mx = flags.OwMapExchange;
-			if (mx == OwMapExchanges.Random) mx = (OwMapExchanges)rng.Between(0, 3);
 
 			switch (mx)
 			{
 				case OwMapExchanges.None:
 					return null;
-				case OwMapExchanges.MelmondStart:
-					return new OwMapExchange(_rom, _overworldMap, "melmond_start");
-				case OwMapExchanges.ElflandStart:
-					return new OwMapExchange(_rom, _overworldMap, "elfland_start");
-				case OwMapExchanges.CrecsentStart:
-					return new OwMapExchange(_rom, _overworldMap, "crescent_start");
 				case OwMapExchanges.Desert:
-					return new OwMapExchange(_rom, _overworldMap, "desert");
+					if (flags.ReplacementMap == null)
+					{
+						flags.ReplacementMap = DesertOfDeath.GenerateDesert(maprng);
+					}
+					return new OwMapExchange(_rom, _overworldMap, flags.ReplacementMap);
 				case OwMapExchanges.NoOverworld:
 					return new OwMapExchange(_rom, _overworldMap, "nooverworld");
-				case OwMapExchanges.ProcGen1:
-					return new OwMapExchange(_rom, _overworldMap, "procgen1");
-				case OwMapExchanges.ProcGen2:
-					return new OwMapExchange(_rom, _overworldMap, "procgen2");
-				case OwMapExchanges.ProcGen3:
-					return new OwMapExchange(_rom, _overworldMap, "procgen3");
+				case OwMapExchanges.RandomPregenerated:
+				case OwMapExchanges.RandomPregeneratedShuffled:
+				case OwMapExchanges.RandomPregeneratedUnsafe:
+					return new OwMapExchange(_rom, flags, _overworldMap, rng);
+				case OwMapExchanges.GenerateNewOverworld:
+				case OwMapExchanges.GenerateNewOverworldShuffledAccess:
+				case OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe:
+				case OwMapExchanges.LostWoods:
+					if (flags.ReplacementMap == null)
+					{
+						flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, mx);
+					}
+					return new OwMapExchange(_rom, _overworldMap, flags.ReplacementMap);
+				case OwMapExchanges.ImportCustomMap:
+					if (flags.ReplacementMap == null)
+					{
+						throw new Exception("No replacement map was supplied");
+					}
+					return new OwMapExchange(_rom, _overworldMap, flags.ReplacementMap);
 			}
 
 			throw new Exception("oops");

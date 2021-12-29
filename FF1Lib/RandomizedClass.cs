@@ -51,7 +51,9 @@ namespace FF1Lib
 			SpcMax = 29,
 			PowerRW = 30,
 			NoPromoMagic = 31,
-			LockpickingLevel = 32
+			LockpickingLevel = 32,
+			InnateResist = 33,
+			BonusXp = 34
 		}
 		public enum AuthClass
 		{
@@ -161,6 +163,8 @@ namespace FF1Lib
 			public byte MaxSpC { get; set;  }
 			public List<string> MagicRanks { get; set; }
 			public List<Rank> Ranks { get; set; }
+			public byte InnateResist { get; set; }
+
 			public ClassData()
 			{
 				Promoted = false;
@@ -192,6 +196,7 @@ namespace FF1Lib
 				wpPermissions = new List<Item>();
 				MagicRanks = new List<string> { "- ", "- ", "- " };
 				Ranks = Enumerable.Repeat((Rank)0, Enum.GetNames(typeof(RankedType)).Length).ToList();
+				InnateResist = 0;
 			}
 
 			public byte[] StartingStatsArray()
@@ -320,9 +325,11 @@ namespace FF1Lib
 	    List<ushort> equipmentPermissionBit = new List<ushort> { 0x800, 0x400, 0x200, 0x100, 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
 	    const int lut_LvlUpHitRateBonus = 0x6CA59;
 	    const int lut_LvlUpMagDefBonus = 0x6CA65;
+		const int lut_InnateResist = 0x6D400;
 	    const int lut_MaxMP = 0x6C902;
 
-	    public List<ClassData> ReadClassData() {
+
+		public List<ClassData> ReadClassData() {
 			var classData = new List<ClassData> {
 				new ClassData(), new ClassData(), new ClassData(), new ClassData(), new ClassData(), new ClassData(),
 				new ClassData(), new ClassData(), new ClassData(), new ClassData(), new ClassData(), new ClassData()
@@ -396,9 +403,11 @@ namespace FF1Lib
 
 			// Inset spell permissions
 			Put(MagicPermissionsOffset, classData.SelectMany(x => x.MagicPermissions()).ToArray());
-	    }
 
-		public void RandomizeClass(MT19337 rng, Flags flags, string[] itemnames)
+			Put(lut_InnateResist, classData.Select(x => x.InnateResist).ToArray());
+		}
+
+		public void RandomizeClass(MT19337 rng, Flags flags, List<string> itemnames)
 		{
 
 			// New equipement permissions list
@@ -600,16 +609,29 @@ namespace FF1Lib
 			PutInBank(0x1E, 0x8950 + 24, new byte[] { (byte)(noneAddress % 0x100), (byte)(noneAddress / 0x100) });
 		}
 
-		public List<string> DoRandomizeClassNormalMode(ref List<ClassData> classData, MT19337 rng, string[] itemnames, Flags flags)
+		public List<string> DoRandomizeClassNormalMode(ref List<ClassData> classData, MT19337 rng, List<string> itemnames, Flags flags)
 		{
 			// Equipment lists
-			var equipFighterArmor = classData[(int)AuthClass.Fighter].arPermissions;
+			List<Item> braceletList = new();
+			List<Item> ringList = new();
+			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			{
+				if(ItemsText[i].Contains("@B"))
+				{
+					braceletList.Add((Item)i);
+				}
+			}
 
-			var equipRedMageArmor = classData[(int)AuthClass.RedMage].arPermissions;
-
-			var equipFighterWeapon = classData[(int)AuthClass.Fighter].wpPermissions;
-
-			var equipThiefWeapon = classData[(int)AuthClass.Thief].wpPermissions;
+			List<Item> bannableArmor = new List<Item> { Item.Ribbon };
+			bannableArmor.AddRange(braceletList);
+			if (!(bool)flags.ArmorCrafter)
+			{
+				bannableArmor.Add(Item.ProRing);
+			}
+			List<Item> equipFighterArmor = classData[(int)AuthClass.Fighter].arPermissions.ToList().Where(x => !bannableArmor.Contains(x)).ToList();
+			List<Item> equipRedMageArmor = classData[(int)AuthClass.RedMage].arPermissions.ToList().Where(x => !bannableArmor.Contains(x)).ToList(); ;
+			List<Item> equipFighterWeapon = classData[(int)AuthClass.Fighter].wpPermissions.ToList();
+			List<Item> equipThiefWeapon = classData[(int)AuthClass.Thief].wpPermissions.ToList();
 
 			// Create exceptions for hit bonus
 			var hitBonusClass = new List<AuthClass>();
@@ -701,16 +723,6 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.BlackSpellcaster, "Black W. Sp", binarylist: bwBlackSpells, authclass: new List<AuthClass> { AuthClass.BlackMage }),
 			};
 
-			if (!(bool)flags.RandomizeClassNoCasting)
-			{
-				bonusNormal.Add(new BonusMalus(BonusMalusAction.WhiteSpellcaster, "L1 White Sp", mod: 2, mod2: 0, binarylist: lv1WhiteSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.RedMage, AuthClass.BlackMage }));
-				bonusNormal.Add(new BonusMalus(BonusMalusAction.BlackSpellcaster, "L1 Black Sp", mod: 2, mod2: 0, binarylist: lv1BlackSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }));
-				bonusNormal.Add(new BonusMalus(BonusMalusAction.WhiteSpellcaster, "Knight Sp", mod: 2, mod2: classData[6].MaxSpC, binarylist: lv3WhiteSpells, bytelist: exKnightMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.BlackMage }));
-				bonusNormal.Add(new BonusMalus(BonusMalusAction.BlackSpellcaster, "Ninja Sp", mod: 2, mod2: classData[7].MaxSpC, binarylist: lv4BlackSpells, bytelist: exNinjaMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }));
-				bonusStrong.Add(new BonusMalus(BonusMalusAction.WhiteSpellcaster, "White M. Sp", mod: 2, mod2: classData[4].MaxSpC, binarylist: wmWhiteSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.RedMage, AuthClass.BlackMage }));
-				bonusStrong.Add(new BonusMalus(BonusMalusAction.BlackSpellcaster, "Black M. Sp", mod: 2, mod2: classData[5].MaxSpC, binarylist: bmBlackSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }));
-			}
-
 			// Maluses List
 			var malusNormal = new List<BonusMalus> {
 				new BonusMalus(BonusMalusAction.StrMod, "-10 Str.", mod: -10),
@@ -737,17 +749,33 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.HitGrowth, "-1 Hit%/Lv", mod: -1),
 				new BonusMalus(BonusMalusAction.MDefGrowth, "-1 MDef/Lv", mod: -1),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "-" + itemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }),
-				new BonusMalus(BonusMalusAction.ArmorRemove, "-" + itemnames[(int)Item.ProRing], equipment: new List<Item> { Item.ProRing }),
-				new BonusMalus(BonusMalusAction.ArmorRemove, "No @B", equipment: new List<Item> { Item.Gold, Item.Opal, Item.Silver, Item.Copper }),
+				new BonusMalus(BonusMalusAction.ArmorRemove, "No @B", equipment: braceletList),
 				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief @S", equipment: equipThiefWeapon, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcMax, "-4 Max MP", mod: -4, authclass: new List<AuthClass> {  AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
 				new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief }),
 			};
 
+			if (!(bool)flags.ArmorCrafter)
+			{
+				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorRemove, "-" + itemnames[(int)Item.ProRing], equipment: new List<Item> { Item.ProRing }));
+			}
+
 			if(Rng.Between(rng, 0, 10) == 0)
 				malusNormal.Add(new BonusMalus(BonusMalusAction.IntMod, "+80 Int.", mod: 80));
 
-			if((bool)flags.Lockpicking && flags.LockpickingLevelRequirement < 50)
+			// Add Spellcasting Bonuses
+			if ((bool)flags.RandomizeClassCasting)
+			{
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.WhiteSpellcaster, "L1 White Sp", mod: 2, mod2: 0, binarylist: lv1WhiteSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.RedMage, AuthClass.BlackMage }));
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.BlackSpellcaster, "L1 Black Sp", mod: 2, mod2: 0, binarylist: lv1BlackSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }));
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.WhiteSpellcaster, "Knight Sp", mod: 2, mod2: classData[6].MaxSpC, binarylist: lv3WhiteSpells, bytelist: exKnightMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.BlackMage }));
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.BlackSpellcaster, "Ninja Sp", mod: 2, mod2: classData[7].MaxSpC, binarylist: lv4BlackSpells, bytelist: exNinjaMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.WhiteSpellcaster, "White M. Sp", mod: 2, mod2: classData[4].MaxSpC, binarylist: wmWhiteSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.RedMage, AuthClass.BlackMage }));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.BlackSpellcaster, "Black M. Sp", mod: 2, mod2: classData[5].MaxSpC, binarylist: bmBlackSpells, bytelist: rmMPlist, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.BlackBelt, AuthClass.WhiteMage }));
+			}
+
+			// Add Lockpicking Bonus/Malus
+			if ((bool)flags.Lockpicking && flags.LockpickingLevelRequirement < 50)
 			{
 				malusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "+10 Lp Lv", mod: 10, authclass: new List<AuthClass> {AuthClass.Thief}));
 			}
@@ -755,6 +783,25 @@ namespace FF1Lib
 			if ((bool)flags.Lockpicking && flags.LockpickingLevelRequirement > 1)
 			{
 				bonusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "-10 Lp Lv", mod: -10, authclass: new List<AuthClass> { AuthClass.Thief }));
+			}
+
+			// Add Natural Resist Bonuses
+			if ((bool)flags.RandomizeClassIncludeNaturalResist)
+			{
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res All", mod: 0xFF, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.RedMage, AuthClass.BlackMage, AuthClass.WhiteMage }));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res PEDTS", mod: (int)(Element.POISON | Element.EARTH | Element.DEATH | Element.TIME | Element.STATUS), authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief, AuthClass.RedMage, AuthClass.BlackMage, AuthClass.WhiteMage }));
+
+				bonusNormal.Add(CreateRandomResistBonusMalus(rng));
+				bonusNormal.Add(CreateRandomResistBonusMalus(rng));
+			}
+
+			if((bool)flags.RandomizeClassIncludeXpBonus)
+			{
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.BonusXp, "+50% XP", mod: 150, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.BlackBelt }));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.BonusXp, "+100% XP", mod: 200, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.RedMage, AuthClass.BlackMage, AuthClass.WhiteMage }));
+
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.BonusXp, "+50% XP", mod: 150, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.RedMage, AuthClass.BlackMage, AuthClass.WhiteMage }));
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.BonusXp, "+50% XP", mod: 150, authclass: new List<AuthClass> { AuthClass.Thief, AuthClass.RedMage, AuthClass.BlackMage, AuthClass.WhiteMage }));
 			}
 
 			var assignedBonusMalus = new List<List<BonusMalus>> { new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>() };
@@ -765,8 +812,23 @@ namespace FF1Lib
 			malusNormal.Shuffle(rng);
 
 			// Select one incentivized class that will received a strong bonus
-			var luckyDude = Rng.Between(rng, 0, 5);
+			int luckyDude = Rng.Between(rng, 0, 5);
 
+
+			//Hand out the strong bonus first
+			BonusMalus selectedStrongBonusMalus;
+
+			if (flags.RandomizeClassMaxBonus > 0)
+			{ 
+				while (!bonusStrong.First().ClassList.Contains((AuthClass)luckyDude))
+				{ 
+					bonusStrong.Shuffle(rng);
+				}
+
+				selectedStrongBonusMalus = bonusStrong.First();
+				assignedBonusMalus[luckyDude].Add(selectedStrongBonusMalus);
+				bonusStrong.RemoveRange(0, 1);
+			}
 			var descriptionList = new List<string>();
 
 			// Distribute bonuses and maluses, we go backward (from BM to Fi) so we have enough malus for BM
@@ -775,37 +837,17 @@ namespace FF1Lib
 			for (int i = 5; i >= 0; i--)
 			{
 				var tempstring = new List<(int, string)>();
+				if (i == luckyDude && assignedBonusMalus[luckyDude].Any()) tempstring.Add((0, assignedBonusMalus[luckyDude][0].Description));
 
-				if (i == luckyDude && maxbonus > 0)
+				while(assignedBonusMalus[i].Count < maxbonus)
 				{
-					while (!bonusStrong.First().ClassList.Contains((AuthClass)i))
-						bonusStrong.Shuffle(rng);
+					while (!bonusNormal.First().ClassList.Contains((AuthClass)i) || assignedBonusMalus[i].Where(x => x.Action == bonusNormal.First().Action).Any())
+						bonusNormal.Shuffle(rng);
 
-					assignedBonusMalus[i].Add(bonusStrong.First());
-					tempstring.Add((0, bonusStrong.First().Description));
-					bonusStrong.RemoveRange(0, 1);
-
-					for (int j = 1; j < maxbonus; j++)
-					{
-						while (!bonusNormal.First().ClassList.Contains((AuthClass)i) || assignedBonusMalus[i].Where(x => x.Action == bonusNormal.First().Action).Any())
-							bonusNormal.Shuffle(rng);
-
-						assignedBonusMalus[i].Add(bonusNormal.First());
-						tempstring.Add((0, bonusNormal.First().Description));
-						bonusNormal.RemoveRange(0, 1);
-					}
-				}
-				else
-				{
-					for (int j = 0; j < maxbonus; j++)
-					{
-						while (!bonusNormal.First().ClassList.Contains((AuthClass)i) || assignedBonusMalus[i].Where(x => x.Action == bonusNormal.First().Action).Any())
-							bonusNormal.Shuffle(rng);
-
-						assignedBonusMalus[i].Add(bonusNormal.First());
-						tempstring.Add((0, bonusNormal.First().Description));
-						bonusNormal.RemoveRange(0, 1);
-					}
+					var selectedNormalBonusMalus = bonusNormal.First();
+					assignedBonusMalus[i].Add(selectedNormalBonusMalus);
+					tempstring.Add((0, selectedNormalBonusMalus.Description));
+					bonusNormal.RemoveRange(0, 1);
 				}
 
 				for (int j = 0; j < maxmalus; j++)
@@ -828,6 +870,7 @@ namespace FF1Lib
 			// Reverse description list so it's not backward
 			descriptionList.Reverse();
 			// Apply bonuses and maluses to stats
+
 			for (int i = 0; i < 6; i++)
 			{
 				// Reverse the list so that maluses are applied first and don't cancel out bonuses
@@ -905,8 +948,10 @@ namespace FF1Lib
 							classData[i+6].wpPermissions = classData[i+6].wpPermissions.Except(bonusmalus.Equipment).ToList();
 							break;
 						case BonusMalusAction.WeaponReplace:
-							classData[i].wpPermissions = bonusmalus.Equipment;
-							classData[i+6].wpPermissions = bonusmalus.Equipment;
+							classData[i].wpPermissions.Clear();
+							classData[i + 6].wpPermissions.Clear();
+							classData[i].wpPermissions.AddRange(bonusmalus.Equipment);
+							classData[i + 6].wpPermissions.AddRange(bonusmalus.Equipment);
 							break;
 						case BonusMalusAction.ArmorAdd:
 							classData[i].arPermissions.AddRange(bonusmalus.Equipment);
@@ -917,8 +962,10 @@ namespace FF1Lib
 							classData[i+6].arPermissions = classData[i+6].arPermissions.Except(bonusmalus.Equipment).ToList();
 							break;
 						case BonusMalusAction.ArmorReplace:
-							classData[i].arPermissions = bonusmalus.Equipment;
-							classData[i+6].arPermissions = bonusmalus.Equipment;
+							classData[i].arPermissions.Clear();
+							classData[i+6].arPermissions.Clear();
+							classData[i].arPermissions.AddRange(bonusmalus.Equipment);
+							classData[i+6].arPermissions.AddRange(bonusmalus.Equipment);
 							break;
 						case BonusMalusAction.SpcMod:
 							classData[i].SpCStarting = (byte)Math.Max(classData[i].SpCStarting + bonusmalus.StatMod, 0);
@@ -986,9 +1033,17 @@ namespace FF1Lib
 								SetLockpickingLevel(newLockPickingLevel);
 							}
 							break;
+						case BonusMalusAction.InnateResist:
+							classData[i].InnateResist = (byte)bonusmalus.StatMod;
+							classData[i + 6].InnateResist = (byte)bonusmalus.StatMod;
+							break;
+						case BonusMalusAction.BonusXp:
+							double scale = bonusmalus.StatMod / 100.0;
+							ScaleAltExp(scale, (FF1Class)i);
+							break;
 					}
 				}
-			}		
+			}
 
 			return descriptionList;
 		}
@@ -1479,7 +1534,50 @@ namespace FF1Lib
 			classData[7].wpPermissions.Add(Item.Katana);
 			classData[10].arPermissions.Add(Item.WhiteShirt);
 			classData[11].arPermissions.Add(Item.BlackShirt);
+		}
 
+		public BonusMalus CreateRandomResistBonusMalus(MT19337 rng)
+		{
+			byte innateResistValue = 0x00;
+			string description = "Res ";
+			List<Element> elements = Enum.GetValues(typeof(Element)).Cast<Element>().ToList();
+			//3 picks but can get a none
+			for (int picks = 0; picks < 3; picks++)
+			{
+
+				Element pickedElement = elements.SpliceRandom(rng);
+				switch (pickedElement)
+				{
+					case Element.STATUS:
+						description += "S";
+						break;
+					case Element.POISON:
+						description += "P";
+						break;
+					case Element.TIME:
+						description += "T";
+						break;
+					case Element.DEATH:
+						description += "D";
+						break;
+					case Element.FIRE:
+						description += "F";
+						break;
+					case Element.ICE:
+						description += "I";
+						break;
+					case Element.LIGHTNING:
+						description += "L";
+						break;
+					case Element.EARTH:
+						description += "E";
+						break;
+				}
+
+				innateResistValue |= (byte)pickedElement;
+			}
+
+			return new BonusMalus(BonusMalusAction.InnateResist, description, mod: innateResistValue);
 		}
 	}
 }

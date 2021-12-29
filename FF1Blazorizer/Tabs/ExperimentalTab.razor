@@ -1,4 +1,6 @@
 @using FF1Lib;
+@using static FF1Lib.FF1Rom;
+@using System.IO;
 @inject IJSRuntime JSRuntime
 
 <div id="Beta" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
@@ -7,85 +9,42 @@
 	{
 		<p>Test out features from 2000 years in the future - at your own risk!</p>
 		<div class="col1">
+			<h4>Archipelago</h4>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enableArchipelago" @bind-Value="Flags.Archipelago">Enable</CheckBox>
+			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoShards" @bind-Value="Flags.ArchipelagoShards">Shards</CheckBox>
+			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoGold" @bind-Value="Flags.ArchipelagoGold">Gold</CheckBox>
+			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoConsumables" @bind-Value="Flags.ArchipelagoConsumables">Consumables</CheckBox>
+			<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoEquipment" TItem="ArchipelagoEquipment" @bind-Value="Flags.ArchipelagoEquipment">Equipment:</EnumDropDown>
+			<p>
+				Player Name:
+				<br>
+				<input type="text" style="width: calc(100% - 80px);" class="nes-input" id="seedInput" @onchange="@OnPlayerNameChanged" value="@(Flags.PlayerName)" />
+			</p>
+
+			<h4>Goal</h4>
+			<IntSliderRng DisableTooltip="true" Min="1" Max="5" Step="1" UpdateToolTip="@UpdateToolTipID" Id="OrbsRequiredCount" @bind-Value="@Flags.OrbsRequiredCount">Total Orbs Required:</IntSliderRng>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="OrbsRequiredModeDropDown" IsEnabled="@(Flags.OrbsRequiredOptionsEnabled)" TItem="OrbsRequiredMode" @bind-Value="Flags.OrbsRequiredMode">Mode:</EnumDropDown>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="orbsRequiredSpoilersCheckbox" IsEnabled="@(Flags.OrbsRequiredOptionsEnabled)" @bind-Value="Flags.OrbsRequiredSpoilers">Orb Spoilers</TriStateCheckBox>
+
+			<div class="checkbox-cell"></div>
+
 			<h4>Maps</h4>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="sanityCheckerV2" @bind-Value="Flags.SanityCheckerV2">Use SanityChecker V2</CheckBox>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="spreadLoose" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.LooseItemsSpreadPlacement">Spread Loose Placement</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="forwardLoose" IsEnabled="@(Flags.SanityCheckerV2 & Flags.LooseItemsSpreadPlacement)" @bind-Value="Flags.LooseItemsForwardPlacement">Forward Loose Placement</CheckBox>
-			<div class="checkbox-cell"></div>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="looseNpcBalance" @bind-Value="Flags.LooseItemsNpcBalance">Loose Npc Balance</CheckBox>
-			<div class="checkbox-cell"></div>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth1" @bind-Value="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth2" @bind-Value="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
-			<div class="checkbox-cell"></div>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="OWDamageTilesCheckBox" @bind-Value="Flags.OWDamageTiles">Marsh and Desert Tiles Deal Damage</TriStateCheckBox>
-
-			<div class="checkbox-cell"></div>
-			<h4>Levels</h4>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingLevelDropDown" TItem="StartingLevel" @bind-Value="Flags.StartingLevel">Starting Level:</EnumDropDown>
-			<DoubleSlider UpdateToolTip="@UpdateToolTipID" DoubleCol Id="MaximumLevelDoubleSilder" MinValue="1" MaxValue="50" Step="1" @bind-ValueHigh="Flags.MaxLevelHigh" @bind-ValueLow="Flags.MaxLevelLow">Max Level:</DoubleSlider>
-
-			<div class="checkbox-cell"></div>
-
-			<h4>Armor randomization</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="armorCrafterCheckBox" @bind-Value="Flags.ArmorCrafter">Use Armor Crafter</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
 		</div>
 		<div class="col2">
 			<h4>Deep Dungeon</h4>
 			<p>Deep Dungeon should be considered extremely experimental at this time. The rest of the flags and tooltips are not properly adjusted to play nicely with it yet.</p>
-			<p>While it should work with many flags, such as scaling and Blursed items, map edits and Floor shuffle will either fail to generate a ROM, or create an unpleasant experience.</p>
+			<p>While it should work with most flags, such as scaling and Blursed items, map edits and Floor shuffle will either fail to generate a ROM, or create an unpleasant experience.</p>
 			<p>Please try it out and provide feedback!</p>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDEvenTreasureDistribution" @bind-Value="Flags.DDEvenTreasureDistribution">Distribute treasure evenly</CheckBox>
-
-			<div class="checkbox-cell"></div>
-			<h4>Classes</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="Lockpicking" @bind-Value="Flags.Lockpicking">Thief Lockpicking</TriStateCheckBox>
-			<IntSlider Indent Min="1" Max="50" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.Lockpicking" Id="LockpickingLevelRequirement" @bind-Value="@Flags.LockpickingLevelRequirement">Lockpicking Level Requirement:</IntSlider>
-
+			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.Archipelago)" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDEvenTreasureDistribution" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.DDEvenTreasureDistribution">Distribute treasure evenly</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDProgressiveTilesets" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.DDProgressiveTilesets">Progressive Tilesets</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDFiendOrbs" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.DDFiendOrbs">Fiend Orbs</CheckBox>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="TailBahamutDropDown" TItem="TailBahamutMode" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.TailBahamutMode">Bahamut and TAIL floors:</EnumDropDown>
 		</div>
 
-		<div class="col1 full">
-			<h4>Hints</h4>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="extendedHintsCheckBox" @bind-Value="Flags.ExtensiveHints_Enable">Enable Extensive Hints</CheckBox>
-			<div class="row">
-				<div class="col-lg-3 tighter noleftpadding">Loose on Floor:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemFloorCoverage" /></div>
-				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemFloorPlacement" /></div>
-			</div>
-			<div class="checkbox-cell"></div>
-			<div class="row">
-				<div class="col-lg-3 tighter noleftpadding">Loose Name in Location:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_LooseItemNameCoverage" /></div>
-				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_LooseItemNamePlacement" /></div>
-			</div>
-			<div class="checkbox-cell"></div>
-			<div class="row">
-				<div class="col-lg-3 tighter noleftpadding">Incentivized Name in Location:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_IncentiveItemNameCoverage" /></div>
-				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_IncentiveItemNamePlacement" /></div>
-			</div>
-			<div class="checkbox-cell"></div>
-			<div class="row">
-				<div class="col-lg-3 tighter noleftpadding">Floor Hints:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_FloorHintCoverage" /></div>
-				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_FloorHintPlacement" /></div>
-			</div>
-			<div class="checkbox-cell"></div>
-			<div class="row">
-				<div class="col-lg-3 tighter noleftpadding">Equipment on Floor:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentFloorCoverage" /></div>
-				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentFloorPlacement" /></div>
-			</div>
-			<div class="checkbox-cell"></div>
-			<div class="row">
-				<div class="col-lg-3 tighter noleftpadding">Equipment Name in Location:</div>
-				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="HintCategoryCoverage" @bind-Value="Flags.ExtensiveHints_EquipmentNameCoverage" /></div>
-				<div class="col-lg-5 tighter"><EnumDropDown DisableTooltip TItem="HintPlacementStrategy" @bind-Value="Flags.ExtensiveHints_EquipmentNamePlacement" /></div>
-			</div>
-		</div>
-		<div class="clear-it"></div>
+  	<div class="clear-it"></div>
 	}
 </div>
 
@@ -94,5 +53,29 @@
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
+
+	void OnPlayerNameChanged(ChangeEventArgs e)
+	{
+		Flags.PlayerName = e.Value as string;
+	}
+
+	async Task OnImportResourcePack(ChangeEventArgs e)
+	{
+		try
+		{
+			var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importResourcePackInput");
+			if (content == null || content == "") { return; }
+			using (var stream = new MemoryStream(Convert.FromBase64String(content)))
+			{
+				Flags.LoadResourcePackFlags(stream);
+			}
+			Flags.ResourcePack = content;
+		}
+		catch (Exception x)
+		{
+			Console.WriteLine(x.ToString());
+		}
+		StateHasChanged();
+	}
 
 }

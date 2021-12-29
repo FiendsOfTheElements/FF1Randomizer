@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.IO;
 using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
@@ -533,6 +534,40 @@ namespace FF1Lib
 
 		public bool ExtraShardsEnabled => ShardHunt && !FreeOrbs;
 
+		public int OrbsRequiredCount
+		{
+			get => Flags.OrbsRequiredCount;
+			set
+			{
+				Flags.OrbsRequiredCount = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OrbsRequiredCount"));
+			}
+		}
+
+		public OrbsRequiredMode OrbsRequiredMode
+		{
+			get => Flags.OrbsRequiredMode;
+			set
+			{
+				Flags.OrbsRequiredMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OrbsRequiredMode"));
+			}
+		}
+
+
+		public bool? OrbsRequiredSpoilers
+		{
+			get => Flags.OrbsRequiredSpoilers;
+			set
+			{
+				Flags.OrbsRequiredSpoilers = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OrbsRequiredSpoilers"));
+			}
+		}
+
+		public bool OrbsRequiredEnabled => !ShardHunt && !FreeOrbs && !DeepDungeon;
+		public bool OrbsRequiredOptionsEnabled => OrbsRequiredEnabled && (Flags.OrbsRequiredCount != 4);
+
 		public FinalFormation TransformFinalFormation
 		{
 			get => Flags.TransformFinalFormation;
@@ -643,15 +678,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicPermissions"));
 			}
 		}
-		public bool? ItemMagic
+		public ItemMagicMode ItemMagicMode
 		{
-			get => Flags.ItemMagic;
+			get => Flags.ItemMagicMode;
 			set
 			{
-				Flags.ItemMagic = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ItemMagic"));
+				Flags.ItemMagicMode = value;
+				RaisePropertyChanged();
 			}
 		}
+
 		public bool? MagisizeWeapons
 		{
 			get => Flags.MagisizeWeapons;
@@ -661,15 +697,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagisizeWeapons"));
 			}
 		}
-		public bool? MagisizeWeaponsBalanced
-		{
-			get => Flags.MagisizeWeaponsBalanced;
-			set
-			{
-				Flags.MagisizeWeaponsBalanced = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagisizeWeaponsBalanced"));
-			}
-		}
+
 		public bool? Weaponizer
 		{
 			get => Flags.Weaponizer;
@@ -1160,6 +1188,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OWDamageTiles"));
 			}
 		}
+		public bool? DamageTilesKill
+		{
+			get => Flags.DamageTilesKill;
+			set
+			{
+				Flags.DamageTilesKill = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DamageTilesKill"));
+			}
+		}
 		public bool? MoveGaiaItemShop
 		{
 			get => Flags.MoveGaiaItemShop;
@@ -1187,6 +1224,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpookyFlag"));
 			}
 		}
+		public bool DraculasFlag
+		{
+		    get => Flags.DraculasFlag;
+			set
+			{
+				Flags.DraculasFlag = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DraculasFlag"));
+			}
+		}
+
 		public bool? AllowUnsafeMelmond
 		{
 			get => Flags.AllowUnsafeMelmond;
@@ -1928,6 +1975,34 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DDEvenTreasureDistribution"));
 			}
 		}
+		public bool DDProgressiveTilesets
+		{
+			get => Flags.DDProgressiveTilesets;
+			set
+			{
+				Flags.DDProgressiveTilesets = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DDProgressiveTilesets"));
+			}
+		}
+		public bool DDFiendOrbs
+		{
+			get => Flags.DDFiendOrbs;
+			set
+			{
+				Flags.DDFiendOrbs = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DDFiendOrbs"));
+			}
+		}
+		public TailBahamutMode TailBahamutMode
+		{
+			get => Flags.TailBahamutMode;
+			set
+			{
+				Flags.TailBahamutMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TailBahamutMode"));
+			}
+		}
+
 		public bool StartingGold
 		{
 			get => Flags.StartingGold;
@@ -1981,6 +2056,15 @@ namespace FF1Lib
 			{
 				Preferences.RenounceChestInfo = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RenounceChestInfo"));
+			}
+		}
+		public bool RenounceCantHoldRed
+		{
+			get => Preferences.RenounceCantHoldRed;
+			set
+			{
+				Preferences.RenounceCantHoldRed = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RenounceCantHoldRed"));
 			}
 		}
 		public bool NoPartyShuffle
@@ -2546,6 +2630,60 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpBonus"));
 			}
 		}
+		public double ExpMultiplierFighter
+		{
+			get => Flags.ExpMultiplierFighter * 10.0;
+			set
+			{
+				Flags.ExpMultiplierFighter = value * 0.1;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplierFighter"));
+			}
+		}
+		public double ExpMultiplierThief
+		{
+			get => Flags.ExpMultiplierThief * 10.0;
+			set
+			{
+				Flags.ExpMultiplierThief = value * 0.1;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplierThief"));
+			}
+		}
+		public double ExpMultiplierBlackBelt
+		{
+			get => Flags.ExpMultiplierBlackBelt * 10.0;
+			set
+			{
+				Flags.ExpMultiplierBlackBelt = value * 0.1;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplierBlackBelt"));
+			}
+		}
+		public double ExpMultiplierRedMage
+		{
+			get => Flags.ExpMultiplierRedMage * 10.0;
+			set
+			{
+				Flags.ExpMultiplierRedMage = value * 0.1;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplierRedMage"));
+			}
+		}
+		public double ExpMultiplierWhiteMage
+		{
+			get => Flags.ExpMultiplierWhiteMage * 10.0;
+			set
+			{
+				Flags.ExpMultiplierWhiteMage = value * 0.1;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplierWhiteMage"));
+			}
+		}
+		public double ExpMultiplierBlackMage
+		{
+			get => Flags.ExpMultiplierBlackMage * 10.0;
+			set
+			{
+				Flags.ExpMultiplierBlackMage = value * 0.1;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExpMultiplierBlackMage"));
+			}
+		}
 		/*public int ForcedPartyMembers
 		{
 			get => Flags.ForcedPartyMembers;
@@ -2709,6 +2847,15 @@ namespace FF1Lib
 			{
 				Preferences.SpriteSheet = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpriteSheet"));
+			}
+		}
+		public string ResourcePack
+		{
+			get => Flags.ResourcePack;
+			set
+			{
+				Flags.ResourcePack = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ResourcePack"));
 			}
 		}
 
@@ -3634,13 +3781,13 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? BalancedItemMagicShuffle
+		public ItemMagicPool ItemMagicPool
 		{
-			get => Flags.BalancedItemMagicShuffle;
+			get => Flags.ItemMagicPool;
 			set
 			{
-				Flags.BalancedItemMagicShuffle = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BalancedItemMagicShuffle"));
+				Flags.ItemMagicPool = value;
+				RaisePropertyChanged();
 			}
 		}
 
@@ -3826,13 +3973,31 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassChaos"));
 			}
 		}
-		public bool? RandomizeClassNoCasting
+		public bool? RandomizeClassCasting
 		{
-			get => Flags.RandomizeClassNoCasting;
+			get => Flags.RandomizeClassCasting;
 			set
 			{
-				Flags.RandomizeClassNoCasting = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassNoCasting"));
+				Flags.RandomizeClassCasting = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassCasting"));
+			}
+		}
+		public bool? RandomizeClassIncludeNaturalResist
+		{
+			get => Flags.RandomizeClassIncludeNaturalResist;
+			set
+			{
+				Flags.RandomizeClassIncludeNaturalResist = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassIncludeNaturalResist"));
+			}
+		}
+		public bool? RandomizeClassIncludeXpBonus
+		{
+			get => Flags.RandomizeClassIncludeXpBonus;
+			set
+			{
+				Flags.RandomizeClassIncludeXpBonus = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassIncludeXpBonus"));
 			}
 		}
 		public int RandomizeClassMaxBonus
@@ -4055,136 +4220,6 @@ namespace FF1Lib
 			set
 			{
 				Flags.ShopKillExcludeConeria_White = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public bool ExtensiveHints_Enable
-		{
-			get => Flags.ExtensiveHints_Enable;
-			set
-			{
-				Flags.ExtensiveHints_Enable = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public HintPlacementStrategy ExtensiveHints_LooseItemFloorPlacement
-		{
-			get => Flags.ExtensiveHints_LooseItemFloorPlacement;
-			set
-			{
-				Flags.ExtensiveHints_LooseItemFloorPlacement = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public HintPlacementStrategy ExtensiveHints_LooseItemNamePlacement
-		{
-			get => Flags.ExtensiveHints_LooseItemNamePlacement;
-			set
-			{
-				Flags.ExtensiveHints_LooseItemNamePlacement = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public HintPlacementStrategy ExtensiveHints_IncentiveItemNamePlacement
-		{
-			get => Flags.ExtensiveHints_IncentiveItemNamePlacement;
-			set
-			{
-				Flags.ExtensiveHints_IncentiveItemNamePlacement = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public HintPlacementStrategy ExtensiveHints_FloorHintPlacement
-		{
-			get => Flags.ExtensiveHints_FloorHintPlacement;
-			set
-			{
-				Flags.ExtensiveHints_FloorHintPlacement = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public HintPlacementStrategy ExtensiveHints_EquipmentFloorPlacement
-		{
-			get => Flags.ExtensiveHints_EquipmentFloorPlacement;
-			set
-			{
-				Flags.ExtensiveHints_EquipmentFloorPlacement = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public HintPlacementStrategy ExtensiveHints_EquipmentNamePlacement
-		{
-			get => Flags.ExtensiveHints_EquipmentNamePlacement;
-			set
-			{
-				Flags.ExtensiveHints_EquipmentNamePlacement = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public HintCategoryCoverage ExtensiveHints_LooseItemFloorCoverage
-		{
-			get => Flags.ExtensiveHints_LooseItemFloorCoverage;
-			set
-			{
-				Flags.ExtensiveHints_LooseItemFloorCoverage = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public HintCategoryCoverage ExtensiveHints_LooseItemNameCoverage
-		{
-			get => Flags.ExtensiveHints_LooseItemNameCoverage;
-			set
-			{
-				Flags.ExtensiveHints_LooseItemNameCoverage = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public HintCategoryCoverage ExtensiveHints_IncentiveItemNameCoverage
-		{
-			get => Flags.ExtensiveHints_IncentiveItemNameCoverage;
-			set
-			{
-				Flags.ExtensiveHints_IncentiveItemNameCoverage = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public HintCategoryCoverage ExtensiveHints_FloorHintCoverage
-		{
-			get => Flags.ExtensiveHints_FloorHintCoverage;
-			set
-			{
-				Flags.ExtensiveHints_FloorHintCoverage = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public HintCategoryCoverage ExtensiveHints_EquipmentFloorCoverage
-		{
-			get => Flags.ExtensiveHints_EquipmentFloorCoverage;
-			set
-			{
-				Flags.ExtensiveHints_EquipmentFloorCoverage = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public HintCategoryCoverage ExtensiveHints_EquipmentNameCoverage
-		{
-			get => Flags.ExtensiveHints_EquipmentNameCoverage;
-			set
-			{
-				Flags.ExtensiveHints_EquipmentNameCoverage = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -4435,12 +4470,55 @@ namespace FF1Lib
 			}
 		}
 
-		public bool EnableExtConsumables
+		public int MapGenSeed
 		{
-			get => Flags.EnableExtConsumables;
+			get => Flags.MapGenSeed;
 			set
 			{
-				Flags.EnableExtConsumables = value;
+				Flags.MapGenSeed = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public OwMapExchangeData ReplacementMap
+		{
+			get => Flags.ReplacementMap;
+			set
+			{
+				Flags.ReplacementMap = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public ExtConsumableSet ExtConsumableSet
+		{
+			get => Flags.ExtConsumableSet;
+			set
+			{
+				Flags.ExtConsumableSet = value;
+				RaisePropertyChanged();
+				RaisePropertyChanged(nameof(ExtConsumablesEnabled));
+			}
+		}
+
+		public bool ExtConsumablesEnabled => Flags.ExtConsumablesEnabled;
+
+		public bool EnableLifeInBattle
+		{
+			get => Flags.EnableLifeInBattle;
+			set
+			{
+				Flags.EnableLifeInBattle = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool EnableSoftInBattle
+		{
+			get => Flags.EnableSoftInBattle;
+			set
+			{
+				Flags.EnableSoftInBattle = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -4526,12 +4604,52 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? IncreaseDarkPenalty
+		{
+			get => Flags.IncreaseDarkPenalty;
+			set
+			{
+				Flags.IncreaseDarkPenalty = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? EverythingHasDeathTouch
+		{
+			get => Flags.EverythingHasDeathTouch;
+			set
+			{
+				Flags.EverythingHasDeathTouch = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? EverythingHasDeathTouchExcludeFiends
+		{
+			get => Flags.EverythingHasDeathTouchExcludeFiends;
+			set
+			{
+				Flags.EverythingHasDeathTouchExcludeFiends = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public int LockpickingLevelRequirement
 		{
 			get => Flags.LockpickingLevelRequirement;
 			set
 			{
 				Flags.LockpickingLevelRequirement = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool WhiteMageHarmEveryone
+		{
+			get => Flags.WhiteMageHarmEveryone;
+			set
+			{
+				Flags.WhiteMageHarmEveryone = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -4582,28 +4700,6 @@ namespace FF1Lib
 			set
 			{
 				Flags.ExpChestMaxReward = value;
-				RaisePropertyChanged();
-			}
-		}
-
-
-		public bool LooseItemsForwardPlacement
-		{
-			get => Flags.LooseItemsForwardPlacement;
-			set
-			{
-				Flags.LooseItemsForwardPlacement = value;
-				RaisePropertyChanged();
-			}
-		}
-
-
-		public bool LooseItemsSpreadPlacement
-		{
-			get => Flags.LooseItemsSpreadPlacement;
-			set
-			{
-				Flags.LooseItemsSpreadPlacement = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -4831,22 +4927,148 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? NoItemMagic
-		{
-			get => Flags.NoItemMagic;
-			set
-			{
-				Flags.NoItemMagic = value;
-				RaisePropertyChanged();
-			}
-		}
-
 		public bool QuickMinimapLoad
 		{
 			get => Flags.QuickMinimapLoad;
 			set
 			{
 				Flags.QuickMinimapLoad = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool DisableMinimap
+		{
+			get => Flags.DisableMinimap;
+			set
+			{
+				Flags.DisableMinimap = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool Archipelago
+		{
+			get => Flags.Archipelago;
+			set
+			{
+				Flags.Archipelago = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ArchipelagoConsumables
+		{
+			get => Flags.ArchipelagoConsumables;
+			set
+			{
+				Flags.ArchipelagoConsumables = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ArchipelagoGold
+		{
+			get => Flags.ArchipelagoGold;
+			set
+			{
+				Flags.ArchipelagoGold = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool ArchipelagoShards
+		{
+			get => Flags.ArchipelagoShards;
+			set
+			{
+				Flags.ArchipelagoShards = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public ArchipelagoEquipment ArchipelagoEquipment
+		{
+			get => Flags.ArchipelagoEquipment;
+			set
+			{
+				Flags.ArchipelagoEquipment = value;
+				RaisePropertyChanged();
+			}
+		}
+
+
+		public string PlayerName
+		{
+			get => Preferences.PlayerName;
+			set
+			{
+				Preferences.PlayerName = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public void LoadResourcePackFlags(Stream stream) {
+		    Flags.LoadResourcePackFlags(stream);
+		    RaisePropertyChanged();
+		}
+
+		public KeyItemPlacementMode KeyItemPlacementMode
+		{
+			get
+			{
+				if (Flags.PredictivePlacement == false) return KeyItemPlacementMode.Vanilla;
+				if (Flags.PredictivePlacement == true && Flags.AllowUnsafePlacement == false) return KeyItemPlacementMode.Predictive;
+				return KeyItemPlacementMode.PredictiveUnsafe;
+			}
+			set
+			{
+				switch (value)
+				{
+					case KeyItemPlacementMode.Vanilla:
+						Flags.PredictivePlacement = false;
+						Flags.AllowUnsafePlacement = false;
+						break;
+					case KeyItemPlacementMode.Predictive:
+						Flags.PredictivePlacement = true;
+						Flags.AllowUnsafePlacement = false;
+						break;
+					case KeyItemPlacementMode.PredictiveUnsafe:
+						Flags.PredictivePlacement = true;
+						Flags.AllowUnsafePlacement = true;
+						break;
+				}
+
+				RaisePropertyChanged();
+			}
+		}
+
+		public LoosePlacementMode LoosePlacementMode
+		{
+			get
+			{
+				if (Flags.LooseItemsSpreadPlacement == false) return LoosePlacementMode.Vanilla;
+				if (Flags.LooseItemsSpreadPlacement == true && Flags.LooseItemsForwardPlacement == false) return LoosePlacementMode.Spread;
+				return LoosePlacementMode.Forward;
+			}
+			set
+			{
+				switch (value)
+				{
+					case LoosePlacementMode.Vanilla:
+						Flags.LooseItemsSpreadPlacement = false;
+						Flags.LooseItemsForwardPlacement = false;
+						break;
+					case LoosePlacementMode.Spread:
+						Flags.LooseItemsSpreadPlacement = true;
+						Flags.LooseItemsForwardPlacement = false;
+						break;
+					case LoosePlacementMode.Forward:
+						Flags.LooseItemsSpreadPlacement = true;
+						Flags.LooseItemsForwardPlacement = true;
+						break;
+				}
+
 				RaisePropertyChanged();
 			}
 		}

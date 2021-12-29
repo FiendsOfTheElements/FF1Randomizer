@@ -14,8 +14,8 @@
 			"Y": 164
 		}
 	],
-	"TeleporterFixups": [		
-	],
-	"DomainFixups": [
-	]
+	"TeleporterFixups": [],
+	"DomainFixups": [],
+	"DomainUpdates": [],
+	"OverworldCoordinates": { }
 }

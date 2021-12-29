@@ -77,10 +77,7 @@ namespace FF1Lib
 				{ CanoeableRegion.OnracRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.Onrac, OverworldTeleportIndex.Waterfall} }
 			};
 
-			if (flags.OwMapExchange == OwMapExchanges.None ||
-			    flags.OwMapExchange == OwMapExchanges.MelmondStart ||
-			    flags.OwMapExchange == OwMapExchanges.ElflandStart ||
-			    flags.OwMapExchange == OwMapExchanges.CrecsentStart) {
+			if (flags.OwMapExchange == OwMapExchanges.None) {
 			    // Can only apply map edits to vanilla-ish maps
 
 			if ((bool)flags.MapOnracDock)
@@ -1350,10 +1347,22 @@ namespace FF1Lib
 					decompressedRows.Add(new List<byte>(row));
 				}
 			}
+			SwapMap(decompressedRows);
+		}
 
+	    public void SwapMap(List<List<byte>> decompressedRows) {
 			var recompressedMap = CompressMapRows(decompressedRows);
 			PutCompressedMapRows(recompressedMap);
-		}
+	    }
+
+	    public void SwapMap(List<string> decompressedRows) {
+		var rows = new List<List<byte>>();
+			foreach (var c in decompressedRows) {
+			    rows.Add(new List<byte>(Convert.FromBase64String(c)));
+			}
+			var recompressedMap = CompressMapRows(rows);
+			PutCompressedMapRows(recompressedMap);
+	    }
 
 		public void ApplyMapEdits()
 		{
@@ -1377,7 +1386,7 @@ namespace FF1Lib
 			return decompressedRows;
 		}
 
-		public List<List<byte>> CompressMapRows(List<List<byte>> decompressedRows)
+		public static List<List<byte>> CompressMapRows(List<List<byte>> decompressedRows)
 		{
 			var outputMap = new List<List<byte>>();
 			foreach (var row in decompressedRows)
@@ -1413,6 +1422,8 @@ namespace FF1Lib
 			return outputMap;
 		}
 
+	    public const int MaximumMapDataSize = 0x3E00;
+
 		public void PutCompressedMapRows(List<List<byte>> compressedRows)
 		{
 			var pointerBase = 0x4000;
@@ -1426,8 +1437,8 @@ namespace FF1Lib
 				outputOffset += outputRow.Count;
 			}
 
-			if (outputOffset > 0x4000)
-				throw new InvalidOperationException("Modified map was too large to recompress and fit into a single bank.");
+			if (outputOffset > MaximumMapDataSize)
+				throw new InvalidOperationException($"Modified map was too large by {outputOffset - MaximumMapDataSize} bytes to recompress and fit into {MaximumMapDataSize} bytes of available space.");
 		}
 
 		public void ShuffleObjectiveNPCs(MT19337 rng)

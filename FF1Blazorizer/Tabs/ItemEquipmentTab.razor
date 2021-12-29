@@ -29,42 +29,39 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRemoveFromPool" @bind-Value="Flags.StartingEquipmentRemoveFromPool">Remove Items from Treasure Chests</CheckBox>
 </div>
 
-		<div class="col2">
-			<h4>Consumable Items</h4>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingItemsDropDown" TItem="StartingItemSet" @bind-Value="Flags.StartingItemSet">Starting Inventory:</EnumDropDown>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="consumableTreasureStackSizeDropDown" TItem="TreasureStackSize" @bind-Value="Flags.ConsumableTreasureStackSize">Treasure Chest Stacks:</EnumDropDown>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="consumableChestSetDropDown" TItem="ConsumableChestSet" @bind-Value="Flags.MoreConsumableChests">Consumable Chests:</EnumDropDown>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" IsEnabled="!Flags.Etherizer" @bind-Value="Flags.HousesFillHP">House Full HP Restoration</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" IsEnabled="!Flags.HousesFillHP" @bind-Value="Flags.Etherizer">Turn Shelters into Ethers</CheckBox>
+<div class="col2">
+	<h4>Consumable Items</h4>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingItemsDropDown" TItem="StartingItemSet" @bind-Value="Flags.StartingItemSet">Starting Inventory:</EnumDropDown>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="consumableTreasureStackSizeDropDown" TItem="TreasureStackSize" @bind-Value="Flags.ConsumableTreasureStackSize">Treasure Chest Stacks:</EnumDropDown>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="consumableChestSetDropDown" TItem="ConsumableChestSet" @bind-Value="Flags.MoreConsumableChests">Consumable Chests:</EnumDropDown>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" IsEnabled="!Flags.Etherizer" @bind-Value="Flags.HousesFillHP">House Full HP Restoration</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" IsEnabled="!Flags.HousesFillHP" @bind-Value="Flags.Etherizer">Turn Shelters into Ethers</CheckBox>
 
-			<div class="checkbox-cell"></div>			<h4>New Consumables</h4>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enableExtConsumables" @bind-Value="Flags.EnableExtConsumables">Enable</CheckBox>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extStartingItemSet" IsEnabled="Flags.EnableExtConsumables" TItem="ExtStartingItemSet" @bind-Value="Flags.ExtStartingItemSet">Starting Inventory:</EnumDropDown>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extConsumableChests" IsEnabled="Flags.EnableExtConsumables" TItem="ExtConsumableChestSet" @bind-Value="Flags.ExtConsumableChests">Chests:</EnumDropDown>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extConsumableTreasureStackSize" IsEnabled="Flags.EnableExtConsumables" TItem="TreasureStackSize" @bind-Value="Flags.ExtConsumableTreasureStackSize">Chest Stacks:</EnumDropDown>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="normalShopsHaveExtConsumables" IsEnabled="Flags.EnableExtConsumables" @bind-Value="Flags.NormalShopsHaveExtConsumables">Normal Shops</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopHasExtConsumables" IsEnabled="Flags.EnableExtConsumables" @bind-Value="Flags.LegendaryShopHasExtConsumables">Legendary Shops</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
-			<h4>Spellcasting Gear</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ruseItemCheckBox" IsEnabled="@(!Flags.NoItemMagic)" @bind-Value="Flags.GuaranteedRuseItem">Insert Ruse Item</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="itemMagicCheckBox" IsEnabled="@(!Flags.NoItemMagic)" @bind-Value="Flags.ItemMagic">Item Magic</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ItemMagic & !Flags.NoItemMagic)" Id="balancedItemMagicCheckBox" @bind-Value="Flags.BalancedItemMagicShuffle">Balanced Shuffle</TriStateCheckBox>
+	<div class="checkbox-cell"></div>			<h4>New Consumables</h4>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="enableExtConsumables" TItem="ExtConsumableSet" @bind-Value="Flags.ExtConsumableSet">Consumables:</EnumDropDown>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extStartingItemSet" IsEnabled="Flags.ExtConsumablesEnabled" TItem="ExtStartingItemSet" @bind-Value="Flags.ExtStartingItemSet">Starting Inventory:</EnumDropDown>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extConsumableChests" IsEnabled="Flags.ExtConsumablesEnabled" TItem="ExtConsumableChestSet" @bind-Value="Flags.ExtConsumableChests">Chests:</EnumDropDown>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extConsumableTreasureStackSize" IsEnabled="Flags.ExtConsumablesEnabled" TItem="TreasureStackSize" @bind-Value="Flags.ExtConsumableTreasureStackSize">Chest Stacks:</EnumDropDown>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="normalShopsHaveExtConsumables" IsEnabled="Flags.ExtConsumablesEnabled" @bind-Value="Flags.NormalShopsHaveExtConsumables">Normal Shops</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopHasExtConsumables" IsEnabled="Flags.ExtConsumablesEnabled" @bind-Value="Flags.LegendaryShopHasExtConsumables">Legendary Shops</TriStateCheckBox>
+	<div class="checkbox-cell"></div>
+	<h4>Spellcasting Gear</h4>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="itemMagicMode" TItem="ItemMagicMode" @bind-Value="Flags.ItemMagicMode">Item Magic:</EnumDropDown>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.Vanilla && Flags.ItemMagicMode != ItemMagicMode.None)" Id="itemMagicPool" TItem="ItemMagicPool" @bind-Value="Flags.ItemMagicPool">Item Magic Pool:</EnumDropDown>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsCheckBox" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.Vanilla && Flags.ItemMagicMode != ItemMagicMode.None)" @bind-Value="Flags.MagisizeWeapons">All Weapons Cast Spells</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ruseItemCheckBox" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.None)" @bind-Value="Flags.GuaranteedRuseItem">Insert Ruse Item</TriStateCheckBox>
 
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsCheckBox" IsEnabled="@(!Flags.NoItemMagic)" @bind-Value="Flags.MagisizeWeapons">All Weapons Cast Spells</TriStateCheckBox>
-			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsBalancedCheckBox" IsEnabled="@(Flags.MagisizeWeapons & !Flags.NoItemMagic)" @bind-Value="Flags.MagisizeWeaponsBalanced">Balanced Spells</TriStateCheckBox>
-		
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noItemMagicCheckBox" @bind-Value="Flags.NoItemMagic">No Item Magic</TriStateCheckBox>
-		</div>
+</div>
 
 		<div class="col1 full">
 			<div class="checkbox-cell"></div>
 			<h4>Equipment Blursing</h4>
-			<DoubleSlider ShowPositiveSign DisableTooltip DoubleCol Id="RandomWeaponBonusSlider" IsEnabled="Flags.RandomWeaponBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomWeaponBonusHigh" @bind-ValueLow="Flags.RandomWeaponBonusLow">
+			<DoubleSlider ShowPositiveSign DisableTooltip DoubleCol Id="RandomWeaponBonusSlider" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomWeaponBonusHigh" @bind-ValueLow="Flags.RandomWeaponBonusLow">
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomWeaponBonus" @bind-Value="Flags.RandomWeaponBonus">Blursed Weapons:</TriStateCheckBox>
 			</DoubleSlider>
 			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.RandomWeaponBonus" Id="RandomWeaponBonusExcludeMasa" @bind-Value="Flags.RandomWeaponBonusExcludeMasa">Exclude Masmune</TriStateCheckBox>
 			<div class="row-seperator"></div>
-			<DoubleSlider ShowPositiveSign DisableTooltip DoubleCol Id="RandomArmorBonusSlider" IsEnabled="Flags.RandomArmorBonus" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomArmorBonusHigh" @bind-ValueLow="Flags.RandomArmorBonusLow">
+			<DoubleSlider ShowPositiveSign DisableTooltip DoubleCol Id="RandomArmorBonusSlider" MinValue="-9" MaxValue="9" Step="1" @bind-ValueHigh="Flags.RandomArmorBonusHigh" @bind-ValueLow="Flags.RandomArmorBonusLow">
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomArmorBonus" @bind-Value="Flags.RandomArmorBonus">Blursed Armor:</TriStateCheckBox>
 			</DoubleSlider>
 		<div class="checkbox-cell"></div>
@@ -81,7 +78,12 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="weaponizerCheckBox" @bind-Value="Flags.Weaponizer">Use Weaponizer</TriStateCheckBox>
 			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="weaponizerPowersCheckBox" @bind-Value="Flags.WeaponizerCommonWeaponsHavePowers">Common weapons can have powers</TriStateCheckBox>
 			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="weaponizerNamingCheckBox" @bind-Value="Flags.WeaponizerNamesUseQualityOnly">Name for casting and quality only</TriStateCheckBox>
+			<div class="checkbox-cell"></div>
+			<h4>Armor randomization</h4>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="armorCrafterCheckBox" @bind-Value="Flags.ArmorCrafter">Use Armor Crafter</TriStateCheckBox>
 		</div>
+
+
 
 		<div class="clear-it"></div>
 	}

@@ -21,6 +21,7 @@ namespace FF1Lib
 		public Fate HurrayDwarfFate { get; set; } = Fate.Spare;
 		public bool RenounceAutosort { get; set; } = false;
 		public bool RenounceChestInfo { get; set; } = false;
+		public bool RenounceCantHoldRed { get; set; } = false;
 		public bool AccessibleSpellNames { get; set; } = false;
 		public bool ShopInfoIcons { get; set; } = false;
 		public bool NoTabLayout { get; set; } = false;
@@ -29,5 +30,7 @@ namespace FF1Lib
 		public bool OptOutSpeedHackWipes { get; set; } = false;
 		public bool OptOutSpeedHackMessages { get; set; } = false;
 		public bool OptOutSpeedHackDash { get; set; } = false;
+
+		public string PlayerName { get; set; } = "Player 01";
 	}
 }

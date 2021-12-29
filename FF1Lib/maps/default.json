@@ -52,15 +52,16 @@
 		},
 		{
 			"TeleporterIndex": 5,
-			"X": 246,
-			"Y": 208
+			"X": 141,
+			"Y": 211
 		},
 		{
 			"TeleporterIndex": 15,
-			"X": 246,
-			"Y": 208
+			"X": 141,
+			"Y": 211
 		}
 	],
+	"DomainUpdates": [],
 	"OverworldCoordinates": {
 		"Coneria": {
 			"X": 152,

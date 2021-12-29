@@ -5,9 +5,11 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Text;
+using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
 using RomUtilities;
+using System.IO.Compression;
 using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
@@ -54,6 +56,18 @@ namespace FF1Lib
 
 		#endregion
 
+	public bool Archipelago { get; set; } = false;
+		public bool ArchipelagoGold { get; set; } = false;
+		public bool ArchipelagoConsumables { get; set; } = false;
+		public bool ArchipelagoShards { get; set; } = false;
+		public ArchipelagoEquipment ArchipelagoEquipment { get; set; } = ArchipelagoEquipment.None;
+
+		public ItemMagicMode ItemMagicMode { get; set; } = ItemMagicMode.Vanilla;
+		public ItemMagicPool ItemMagicPool { get; set; } = ItemMagicPool.All;
+		public bool? MagisizeWeapons { get; set; } = false;
+
+		public bool DisableMinimap { get; set; } = false;
+
 		public bool QuickMinimapLoad { get; set; } = false;
 
 		public bool LooseItemsForwardPlacement { get; set; } = false;
@@ -62,6 +76,9 @@ namespace FF1Lib
 
 		public bool LooseItemsNpcBalance { get; set; } = false;
 
+
+		public bool PredictivePlacement { get; set; } = false;
+		public bool AllowUnsafePlacement { get; set; } = false;
 
 		[IntegerFlag(0, 100, 10)]
 		public int ExpChestConversionMin { get; set; } = 0;
@@ -79,7 +96,13 @@ namespace FF1Lib
 
 		public EnemyObfuscation EnemyObfuscation { get; set; } = EnemyObfuscation.None;
 
-		public bool EnableExtConsumables { get; set; } = false;
+		public ExtConsumableSet ExtConsumableSet { get; set; } = ExtConsumableSet.None;
+
+		public bool ExtConsumablesEnabled => ExtConsumableSet != ExtConsumableSet.None;
+
+		public bool EnableSoftInBattle { get; set; } = false;
+
+		public bool EnableLifeInBattle { get; set; } = false;
 
 		public bool? NormalShopsHaveExtConsumables { get; set; } = false;
 
@@ -91,11 +114,16 @@ namespace FF1Lib
 
 		public ExtConsumableChestSet ExtConsumableChests { get; set; } = ExtConsumableChestSet.None;
 
-		public bool SanityCheckerV2 { get; set; } = false;
+		public bool SanityCheckerV2 { get; set; } = true;
 
 		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.None;
 
-		public bool? NoItemMagic { get; set; } = false;
+		[IntegerFlag(0, Int32.MaxValue-1)]
+		public int MapGenSeed { get; set; } = 0;
+
+		public OwMapExchangeData ReplacementMap { get; set; } = null;
+
+		public string ResourcePack { get; set; } = null;
 
 		#region ShopKiller
 
@@ -116,36 +144,6 @@ namespace FF1Lib
 		public bool ShopKillExcludeConeria_Item { get; set; } = false;
 		public bool ShopKillExcludeConeria_Black { get; set; } = false;
 		public bool ShopKillExcludeConeria_White { get; set; } = false;
-
-		#endregion
-
-		#region ExtensiveHints
-
-		public bool ExtensiveHints_Enable { get; set; } = false;
-
-		public HintCategoryCoverage ExtensiveHints_LooseItemFloorCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoveragePrioritized;
-
-		public HintCategoryCoverage ExtensiveHints_LooseItemNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverageNone;
-
-		public HintCategoryCoverage ExtensiveHints_IncentiveItemNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage80;
-
-		public HintCategoryCoverage ExtensiveHints_FloorHintCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverageFill;
-
-		public HintCategoryCoverage ExtensiveHints_EquipmentFloorCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverage80;
-
-		public HintCategoryCoverage ExtensiveHints_EquipmentNameCoverage { get; set; } = HintCategoryCoverage.HintCategoryCoverageNone;
-
-		public HintPlacementStrategy ExtensiveHints_LooseItemFloorPlacement { get; set; } = HintPlacementStrategy.InnerSeaTownsAndDwarfCave;
-
-		public HintPlacementStrategy ExtensiveHints_LooseItemNamePlacement { get; set; } = HintPlacementStrategy.ElflandToCrescent;
-
-		public HintPlacementStrategy ExtensiveHints_IncentiveItemNamePlacement { get; set; } = HintPlacementStrategy.InnerSeaTownsAndDwarfCave;
-
-		public HintPlacementStrategy ExtensiveHints_FloorHintPlacement { get; set; } = HintPlacementStrategy.Everywhere;
-
-		public HintPlacementStrategy ExtensiveHints_EquipmentFloorPlacement { get; set; } = HintPlacementStrategy.ConeriaToCrescent;
-
-		public HintPlacementStrategy ExtensiveHints_EquipmentNamePlacement { get; set; } = HintPlacementStrategy.ConeriaToCrescent;
 
 		#endregion
 
@@ -173,6 +171,11 @@ namespace FF1Lib
 
 		public bool ShardHunt { get; set; } = false;
 		public ShardCount ShardCount { get; set; } = ShardCount.Count16;
+
+		[IntegerFlag(1, 4)]
+		public int OrbsRequiredCount { get; set; } = 4;
+		public OrbsRequiredMode OrbsRequiredMode { get; set; } = OrbsRequiredMode.Any;
+		public bool? OrbsRequiredSpoilers { get; set; } = false;
 		public FinalFormation TransformFinalFormation { get; set; } = FinalFormation.None;
 		public bool? ChaosRush { get; set; } = false;
 		public bool? ShortToFR { get; set; } = false;
@@ -186,9 +189,6 @@ namespace FF1Lib
 		public bool? MagicShopLocationPairs { get; set; } = false;
 		public bool? MagicLevels { get; set; } = false;
 		public bool? MagicPermissions { get; set; } = false;
-		public bool? ItemMagic { get; set; } = false;
-		public bool? MagisizeWeapons { get; set; } = false;
-		public bool? MagisizeWeaponsBalanced { get; set; } = false;
 		public bool? Weaponizer { get; set; } = false;
 		public bool? WeaponizerNamesUseQualityOnly { get; set; } = false;
 		public bool? WeaponizerCommonWeaponsHavePowers { get; set; } = false;
@@ -243,9 +243,11 @@ namespace FF1Lib
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
 		public bool? OWDamageTiles { get; set; } = false;
+		public bool? DamageTilesKill { get; set; } = false;
 		public bool? MoveGaiaItemShop { get; set; } = false;
 		public bool? FlipDungeons { get; set; } = false;
 		public bool SpookyFlag { get; set; } = false;
+		public bool DraculasFlag { get; set; } = false;
 		public bool? MapOpenProgression { get; set; } = false;
 		public bool? MapOpenProgressionDocks { get; set; } = false;
 		public bool? Entrances { get; set; } = false;
@@ -374,6 +376,9 @@ namespace FF1Lib
 		public bool? MelmondClinic { get; set; } = false;
         public bool DeepDungeon { get; set; } = false;
 		public bool DDEvenTreasureDistribution { get; set; } = false;
+		public bool DDProgressiveTilesets { get; set; } = false;
+		public bool DDFiendOrbs { get; set; } = false;
+		public TailBahamutMode TailBahamutMode { get; set; } = TailBahamutMode.Random;
 		public bool StartingGold { get; set; } = false;
 		public bool WrapStatOverflow { get; set; } = false;
 		public bool WrapPriceOverflow { get; set; } = false;
@@ -433,6 +438,24 @@ namespace FF1Lib
 
 		[IntegerFlag(0, 500, 10)]
 		public int ExpBonus { get; set; } = 0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierFighter { get; set; } = 1.0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierThief { get; set; } = 1.0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierBlackBelt { get; set; } = 1.0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierRedMage { get; set; } = 1.0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierWhiteMage { get; set; } = 1.0;
+
+		[DoubleFlag(1.0, 3.0, 0.1)]
+		public double ExpMultiplierBlackMage { get; set; } = 1.0;
 
 		[DoubleFlag(0, 45)]
 		public double EncounterRate { get; set; } = 0;
@@ -557,7 +580,6 @@ namespace FF1Lib
 
 		[IntegerFlag(-9, 9)]
 		public int RandomArmorBonusHigh { get; set; } = 5;
-		public bool? BalancedItemMagicShuffle { get; set; } = false;
 		public bool? SeparateBossHPScaling { get; set; } = false;
 		public bool? SeparateEnemyHPScaling { get; set; } = false;
 		public bool? ClampBossHPScaling { get; set; } = false;
@@ -569,8 +591,10 @@ namespace FF1Lib
 		public bool? IncludeBaseClasses { get; set; } = false;
 		public bool? RandomPromotionsSpoilers { get; set; } = false;
 		public bool? RandomizeClass { get; set; } = false;
-		public bool? RandomizeClassNoCasting { get; set; } = false;
+		public bool? RandomizeClassCasting { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
+		public bool? RandomizeClassIncludeNaturalResist { get; set; } = false;
+		public bool? RandomizeClassIncludeXpBonus { get; set; } = false;
 		public bool? AlternateFiends { get; set; } = false;
 		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 
@@ -620,16 +644,23 @@ namespace FF1Lib
 
 		public bool? AllowUnsafeStartArea { get; set; } = false;
 
+		public bool? IncreaseDarkPenalty { get; set; } = false;
+
+		public bool? EverythingHasDeathTouch { get; set; } = false;
+		public bool? EverythingHasDeathTouchExcludeFiends { get; set; } = false;
+
 		public bool? Lockpicking { get; set; } = false;
 
 		[IntegerFlag(1, 50)]
 		public int LockpickingLevelRequirement { get; set; } = 10;
 
+		public bool WhiteMageHarmEveryone { get; set; } = false;
+
 		public bool? EarlierRuby { get; set; } = false;
 		public bool? GuaranteedRuseItem { get; set; } = false;
 		public bool? DisableStunTouch { get; set; } = false;
 		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (OwMapExchange != OwMapExchanges.Desert);
-		public bool DisableOWMapModifications => SanityCheckerV2 & (OwMapExchange != OwMapExchanges.None | OwMapExchange != OwMapExchanges.CrecsentStart | OwMapExchange != OwMapExchanges.ElflandStart | OwMapExchange != OwMapExchanges.MelmondStart | OwMapExchange != OwMapExchanges.Random);
+		public bool DisableOWMapModifications => SanityCheckerV2 & (OwMapExchange != OwMapExchanges.None);
 		public bool? MapOnracDock => MapOpenProgressionDocks & !DisableOWMapModifications;
 		public bool? MapMirageDock => MapOpenProgressionDocks & !DisableOWMapModifications;
 		public bool? MapConeriaDwarves => MapOpenProgression & !DisableOWMapModifications;
@@ -661,6 +692,7 @@ namespace FF1Lib
 		public bool NoOverworld => (SanityCheckerV2 & OwMapExchange == OwMapExchanges.NoOverworld);
 		public bool? IsShipFree => FreeShip | NoOverworld;
 		public bool? IsAirshipFree => FreeAirship & !NoOverworld & !(OwMapExchange == OwMapExchanges.Desert);
+		public bool? IsBridgeFree => FreeBridge | NoOverworld;
 		public bool? IsCanalFree => (FreeCanal & !NoOverworld) | (OwMapExchange == OwMapExchanges.Desert);
 		public bool? IsFloaterRemoved => ((NoFloater|IsAirshipFree) & !NoOverworld) | (OwMapExchange == OwMapExchanges.Desert);
 		public bool IncentivizeBridge => false;
@@ -859,10 +891,14 @@ namespace FF1Lib
 					property.SetValue(newflags, newvalue);
 				}
 			}
+
+			if (flags.ItemMagicMode == ItemMagicMode.Random) newflags.ItemMagicMode = (ItemMagicMode)rng.Between(0, 2);
+			if (flags.ItemMagicPool == ItemMagicPool.Random) newflags.ItemMagicPool = (ItemMagicPool)rng.Between(0, 3);
+
 			return newflags;
 		}
 
-		private Flags ShallowCopy()
+		public Flags ShallowCopy()
 		{
 			return (Flags)this.MemberwiseClone();
 		}
@@ -1053,25 +1089,30 @@ namespace FF1Lib
 
 		public static (string name, Flags flags, IEnumerable<string> log) FromJson(string json)
 		{
+		    var flags = new Flags();
+		    string name;
+		    IEnumerable<string> log;
+		    (name, log) = flags.LoadFromJson(json);
+		    return (name, flags, log);
+		}
+
+		public  (string name, IEnumerable<string> log) LoadFromJson(string json) {
 			var w = new System.Diagnostics.Stopwatch();
 			w.Restart();
 
 			var preset = JsonConvert.DeserializeObject<Preset2>(json);
 			var preset_dic = preset.Flags.ToDictionary(kv => kv.Key.ToLower());
 
-
 			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
 			var flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).Reverse().ToList();
 
 			List<string> warnings = new List<string>();
 
-			Flags flags = new Flags();
-
 			foreach (var pi in flagproperties)
 			{
 				if (preset_dic.TryGetValue(pi.Name.ToLower(), out var obj))
 				{
-					var result = SetValue(pi, flags, obj.Value);
+					var result = SetValue(pi, this, obj.Value);
 
 					if (result != null) warnings.Add(result);
 
@@ -1091,8 +1132,30 @@ namespace FF1Lib
 			warnings.Sort();
 
 			w.Stop();
-			return (preset.Name, flags, warnings);
+			return (preset.Name, warnings);
 		}
+
+		public void LoadResourcePackFlags(Stream stream) {
+		    var archive = new ZipArchive(stream);
+
+		    var fj = archive.GetEntry("flags.json");
+		    if (fj != null) {
+			using (var s = fj.Open()) {
+			    using (StreamReader rd = new StreamReader(s)) {
+				this.LoadFromJson(rd.ReadToEnd());
+			    }
+			}
+		    }
+		    var overworld = archive.GetEntry("overworld.json");
+		    if (overworld != null) {
+			using (var s = overworld.Open()) {
+			    using (StreamReader rd = new StreamReader(s)) {
+				this.ReplacementMap = JsonConvert.DeserializeObject<OwMapExchangeData>(rd.ReadToEnd());
+			    }
+			}
+		    }
+		}
+
 
 		private static string SetValue(PropertyInfo p, Flags flags, object obj)
 		{
