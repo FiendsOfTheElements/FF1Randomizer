@@ -612,7 +612,22 @@ namespace FF1Lib
 		public List<string> DoRandomizeClassNormalMode(ref List<ClassData> classData, MT19337 rng, List<string> itemnames, Flags flags)
 		{
 			// Equipment lists
-			List<Item> bannableArmor = new List<Item> { Item.ProRing, Item.Ribbon, Item.Opal, Item.Gold, Item.Silver, Item.Copper };
+			List<Item> braceletList = new();
+			List<Item> ringList = new();
+			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			{
+				if(ItemsText[i].Contains("@B"))
+				{
+					braceletList.Add((Item)i);
+				}
+			}
+
+			List<Item> bannableArmor = new List<Item> { Item.Ribbon };
+			bannableArmor.AddRange(braceletList);
+			if (!(bool)flags.ArmorCrafter)
+			{
+				bannableArmor.Add(Item.ProRing);
+			}
 			List<Item> equipFighterArmor = classData[(int)AuthClass.Fighter].arPermissions.ToList().Where(x => !bannableArmor.Contains(x)).ToList();
 			List<Item> equipRedMageArmor = classData[(int)AuthClass.RedMage].arPermissions.ToList().Where(x => !bannableArmor.Contains(x)).ToList(); ;
 			List<Item> equipFighterWeapon = classData[(int)AuthClass.Fighter].wpPermissions.ToList();
@@ -734,12 +749,16 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.HitGrowth, "-1 Hit%/Lv", mod: -1),
 				new BonusMalus(BonusMalusAction.MDefGrowth, "-1 MDef/Lv", mod: -1),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "-" + itemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }),
-				new BonusMalus(BonusMalusAction.ArmorRemove, "-" + itemnames[(int)Item.ProRing], equipment: new List<Item> { Item.ProRing }),
-				new BonusMalus(BonusMalusAction.ArmorRemove, "No @B", equipment: new List<Item> { Item.Gold, Item.Opal, Item.Silver, Item.Copper }),
+				new BonusMalus(BonusMalusAction.ArmorRemove, "No @B", equipment: braceletList),
 				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief @S", equipment: equipThiefWeapon, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcMax, "-4 Max MP", mod: -4, authclass: new List<AuthClass> {  AuthClass.RedMage, AuthClass.WhiteMage, AuthClass.BlackMage }),
 				new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, authclass: new List<AuthClass> { AuthClass.Fighter, AuthClass.Thief }),
 			};
+
+			if (!(bool)flags.ArmorCrafter)
+			{
+				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorRemove, "-" + itemnames[(int)Item.ProRing], equipment: new List<Item> { Item.ProRing }));
+			}
 
 			if(Rng.Between(rng, 0, 10) == 0)
 				malusNormal.Add(new BonusMalus(BonusMalusAction.IntMod, "+80 Int.", mod: 80));
@@ -795,14 +814,21 @@ namespace FF1Lib
 			// Select one incentivized class that will received a strong bonus
 			int luckyDude = Rng.Between(rng, 0, 5);
 
+
 			//Hand out the strong bonus first
-			while (!bonusStrong.First().ClassList.Contains((AuthClass)luckyDude))
-				bonusStrong.Shuffle(rng);
+			BonusMalus selectedStrongBonusMalus;
 
-			var selectedStrongBonusMalus = bonusStrong.First();
-			assignedBonusMalus[luckyDude].Add(selectedStrongBonusMalus);
-			bonusStrong.RemoveRange(0, 1);
+			if (flags.RandomizeClassMaxBonus > 0)
+			{ 
+				while (!bonusStrong.First().ClassList.Contains((AuthClass)luckyDude))
+				{ 
+					bonusStrong.Shuffle(rng);
+				}
 
+				selectedStrongBonusMalus = bonusStrong.First();
+				assignedBonusMalus[luckyDude].Add(selectedStrongBonusMalus);
+				bonusStrong.RemoveRange(0, 1);
+			}
 			var descriptionList = new List<string>();
 
 			// Distribute bonuses and maluses, we go backward (from BM to Fi) so we have enough malus for BM
@@ -811,7 +837,7 @@ namespace FF1Lib
 			for (int i = 5; i >= 0; i--)
 			{
 				var tempstring = new List<(int, string)>();
-				if (i == luckyDude) tempstring.Add((0, assignedBonusMalus[luckyDude][0].Description));
+				if (i == luckyDude && assignedBonusMalus[luckyDude].Any()) tempstring.Add((0, assignedBonusMalus[luckyDude][0].Description));
 
 				while(assignedBonusMalus[i].Count < maxbonus)
 				{

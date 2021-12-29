@@ -198,7 +198,7 @@ namespace FF1Lib
 				NPCShuffleDialogs();
 			}
 
-			if (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert)
+			if (flags.OwMapExchange == OwMapExchanges.Desert)
 			{
 				DesertOfDeath.ApplyDesertModifications(this, owMapExchange, npcdata);
 			}
@@ -258,7 +258,7 @@ namespace FF1Lib
 				}
 			}
 
-			if((bool)flags.OWDamageTiles || (flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.Desert))
+			if((bool)flags.OWDamageTiles || (flags.OwMapExchange == OwMapExchanges.Desert))
 			{
 				EnableDamageTile();
 			}
@@ -521,7 +521,7 @@ namespace FF1Lib
 					overworldMap.Teleporters = teleporters;
 
 					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon
-						&& !(flags.SanityCheckerV2 && flags.OwMapExchange == OwMapExchanges.NoOverworld))
+						&& !(flags.OwMapExchange == OwMapExchanges.NoOverworld))
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 					}
@@ -839,16 +839,6 @@ namespace FF1Lib
 				SetMaxLevel(flags, rng);
 			}
 
-			if ((bool)flags.TrappedChestsEnabled)
-			{
-				MonsterInABox(rng, flags);
-
-				if((bool)flags.TrappedChaos)
-				{
-					SetChaosForMIAB(npcdata);
-				}
-			}
-
 			if (!flags.Etherizer && (flags.HouseMPRestoration || flags.HousesFillHp))
 			{
 				FixHouse(flags.HouseMPRestoration, flags.HousesFillHp);
@@ -962,7 +952,7 @@ namespace FF1Lib
 				ItemsText[(int)Item.House] = "XETH@p";
 			}
 
-			if ((bool)flags.HintsVillage || (bool)flags.HintsDungeon)
+			if (((bool)flags.HintsVillage || (bool)flags.HintsDungeon) && !flags.DeepDungeon)
 			{
 				if ((bool)flags.HintsDungeon)
 					SetDungeonNPC(flippedMaps, rng);
@@ -975,6 +965,16 @@ namespace FF1Lib
 				DeepDungeon(rng, overworldMap, maps, flags);
 				DeepDungeonFloorIndicator();
 				UnusedGoldItems = new List<int> { };
+			}
+
+			if ((bool)flags.TrappedChestsEnabled)
+			{
+				MonsterInABox(rng, flags);
+
+				if ((bool)flags.TrappedChaos)
+				{
+					SetChaosForMIAB(npcdata);
+				}
 			}
 
 			ExpGoldBoost(flags);
@@ -1192,17 +1192,14 @@ namespace FF1Lib
 			    }
 			}
 
-			if (flags.SanityCheckerV2)
+			if ((bool)flags.IsAirshipFree)
 			{
-				if ((bool)flags.IsAirshipFree)
-				{
-					owMapExchange?.SetAirshipLocation(owMapExchange.StartingLocation);
-				}
+				owMapExchange?.SetAirshipLocation(owMapExchange.StartingLocation);
+			}
 
-				if ((bool)flags.IsShipFree)
-				{
-					shipLocations.SetShipLocation(255);
-				}
+			if ((bool)flags.IsShipFree)
+			{
+				shipLocations.SetShipLocation(255);
 			}
 
 			owMapExchange?.ExecuteStep2();

@@ -148,8 +148,8 @@
 
 			<div class="checkbox-cell"></div>
 			<h4>Hints</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="hintsVillage" @bind-Value="Flags.HintsVillage">Hint givers in villages</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="hintsDungeon" @bind-Value="Flags.HintsDungeon">Hint givers in dungeons</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Treasures != false && !Flags.DeepDungeon)" Id="hintsVillage" @bind-Value="Flags.HintsVillage">Hint givers in villages</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Treasures != false && !Flags.DeepDungeon)" Id="hintsDungeon" @bind-Value="Flags.HintsDungeon">Hint givers in dungeons</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.HintsVillage != false || Flags.HintsDungeon != false)" Id="hintsUselessCheckBox" @bind-Value="Flags.HintsUseless">Useless Hints</TriStateCheckBox>
 		</div>
 		<div class="clear-it"></div>
