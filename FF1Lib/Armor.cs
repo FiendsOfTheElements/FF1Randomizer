@@ -191,9 +191,12 @@ namespace FF1Lib
 								     Concat(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any)).
 								     Select(s => s.Id));
 		    // cast INV2, FOG2, or WALL
-		    var whiteShirtSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.AllCharacters).
-								Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
-								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any, SpellElement.All)).
+		    var whiteShirtSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.AllCharacters).
+
+								Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
+
+								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any, SpellElement.All)).
+
 								Select(s => s.Id));
 		    // Any elemental AOE damage, excludes NUKE/FADE
 		    var blackShirtSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).
@@ -468,10 +471,7 @@ namespace FF1Lib
 			    if (resistName != "") {
 				resistName = "resist:" + resistName;
 			    }
-
-			    var logLine = $"{(int)itemId-(int)Item.Cloth,2}: [{tier+1}]  {name,8}  {absorb,2}  {-weight,3}% {goldvalue,5}g ({score,6}) |{GenerateEquipPermission(permissions),12}| {resistName} {casting} *{type}";
-			    Utilities.WriteSpoilerLine(logLine);
-
+							   
 			    var armor = new Armor(itemId-Item.Cloth, name, ArmorIcon.NONE, weight, absorb,
 						  elementalResist, (byte)(spellIndex == 0xFF ? 0 : spellIndex+1), type);
 			    armor.setClassUsability(permissions);
