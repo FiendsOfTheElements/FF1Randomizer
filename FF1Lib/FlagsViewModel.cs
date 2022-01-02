@@ -4898,22 +4898,22 @@ namespace FF1Lib
 
 		#endregion
 
-		public bool? AllEnemiesHaveAScript
+		public ScriptTouchMultiplier ScriptMultiplier
 		{
-			get => Flags.AllEnemiesHaveAScript;
+			get => Flags.ScriptMultiplier;
 			set
 			{
-				Flags.AllEnemiesHaveAScript = value;
+				Flags.ScriptMultiplier = value;
 				RaisePropertyChanged();
 			}
 		}
 
-		public bool? AllEnemiesHaveATouch
+		public ScriptTouchMultiplier TouchMultiplier
 		{
-			get => Flags.AllEnemiesHaveATouch;
+			get => Flags.TouchMultiplier;
 			set
 			{
-				Flags.AllEnemiesHaveATouch = value;
+				Flags.TouchMultiplier = value;
 				RaisePropertyChanged();
 			}
 		}

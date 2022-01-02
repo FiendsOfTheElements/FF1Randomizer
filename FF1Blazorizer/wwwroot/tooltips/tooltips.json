@@ -24,16 +24,16 @@
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the hidden flags selected). Make sure to save your flagset before you use this flag."
 	},
 	{
-		"Id": "allEnemiesHaveAScript",
+		"Id": "scriptMultiplier",
 		"title": "Everything has a Script",
 		"screenshot": "enemyScriptsCheckBox.png",
-		"description": "Assigns a random non-boss script to every non-boss enemy.\n\nPirates are safe unless declared unsafe."
+		"description": "Controls how many non-boss enemies will have a script. Vanilla just shuffles the scripts, all other settings assign them randomly.\n\nPirates are safe unless declared unsafe."
 	},
 	{
-		"Id": "allEnemiesHaveATouch",
+		"Id": "touchMultiplier",
 		"title": "Everything has a Touch",
 		"screenshot": "enemyStatusAttacksCheckBox.png",
-		"description": "Assigns a random touch effect to every non-boss enemy. Death Touch and Stone Poison are less common.\n\nPirates are safe unless declared unsafe."
+		"description": "Controls how many non-boss enemies will have a touch effect.\n\nPirates are safe unless declared unsafe."
 	},
 	{
 		"Id": "importResourcePack",

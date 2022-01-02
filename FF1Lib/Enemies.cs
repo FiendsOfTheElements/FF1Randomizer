@@ -182,12 +182,12 @@ namespace FF1Lib
 			Put(ZoneFormationsOffset, newFormations.ToArray());
 		}
 
-		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool doBosses, bool excludeImps, bool scaryImps, bool allEnemiesHaveAScript)
+		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool doBosses, bool excludeImps, bool scaryImps, ScriptTouchMultiplier scriptMultiplier)
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
-			if(doNormals)
+			if (doNormals)
 			{
 				var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
 				if (!AllowUnsafePirates) normalOldEnemies.RemoveAt(Enemy.Pirate);
@@ -199,17 +199,52 @@ namespace FF1Lib
 				var allScripts = normalOldEnemies.Select(e => e[EnemyStat.Scripts]).Distinct().ToList();
 				allScripts.Remove(0xFF);
 
-				for (int i = 0; i < EnemyCount - 10; i++)
+				if (scriptMultiplier == ScriptTouchMultiplier.Vanilla)
 				{
-					if (allEnemiesHaveAScript)
-					{
-						newEnemies[i][EnemyStat.Scripts] = allScripts.PickRandom(rng);
-					}
-					else
+					for (int i = 0; i < EnemyCount - 10; i++)
 					{
 						newEnemies[i][EnemyStat.Scripts] = normalOldEnemies[i][EnemyStat.Scripts];
 					}
+				}
+				else
+				{
+					var count = 0;
+					switch (scriptMultiplier)
+					{
+						case ScriptTouchMultiplier.None:
+							count = 0;
+							break;
+						case ScriptTouchMultiplier.Vanilla:
+							count = 36;//should never happen
+							break;
+						case ScriptTouchMultiplier.OneAndHalf:
+							count = 54;
+							break;
+						case ScriptTouchMultiplier.Double:
+							count = 72;
+							break;
+						case ScriptTouchMultiplier.All:
+							count = EnemyCount - 10;
+							break;
+						case ScriptTouchMultiplier.Random:
+							count = rng.Between(18, 90);
+							break;
+					}
 
+					List<int> indices = new List<int>();
+					for (int i = 0; i < EnemyCount - 10; i++)
+					{
+						newEnemies[i][EnemyStat.Scripts] = 0xFF;
+						indices.Add(i);
+					}
+
+					indices.Shuffle(rng);
+
+					foreach (var i in indices.Take(count))
+					{
+						if (i == 15 && !AllowUnsafePirates) continue;
+						newEnemies[i][EnemyStat.Scripts] = allScripts.PickRandom(rng);
+					}
 				}
 			}
 
@@ -377,7 +412,7 @@ namespace FF1Lib
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool DisableStunTouch, bool allEnemiesHaveATouch)
+		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool DisableStunTouch, ScriptTouchMultiplier touchMultiplier)
 		{
 			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
@@ -397,24 +432,18 @@ namespace FF1Lib
 
 			var weightedStatusElements = statusElements.Concat(statusElements).Concat(statusElements).Concat(statusElements).Append(deathElement).Append(stoneElement).ToList();
 
-			for (int i = 0; i < EnemyCount; i++)
+			if (touchMultiplier == ScriptTouchMultiplier.Vanilla)
 			{
-				if (!AllowUnsafePirates)
+				for (int i = 0; i < EnemyCount; i++)
 				{
-					if (i == 15) //pirates
+					if (!AllowUnsafePirates)
 					{
-						continue;
+						if (i == 15) //pirates
+						{
+							continue;
+						}
 					}
-				}
 
-				if (allEnemiesHaveATouch && i < EnemyCount - 10)//no bosses
-				{
-					var (touch, element) = weightedStatusElements.PickRandom(rng);
-					enemies[i][15] = touch;
-					enemies[i][14] = element;
-				}
-				else
-				{
 					int roll = rng.Between(0, 128);
 					if (roll < 1) //1 vanilla death toucher
 					{
@@ -442,6 +471,50 @@ namespace FF1Lib
 						enemies[i][14] = 0x00;
 						enemies[i][15] = 0x00;
 					}
+				}
+			}
+			else
+			{
+				var count = 0;
+				switch (touchMultiplier)
+				{
+					case ScriptTouchMultiplier.None:
+						count = 0;
+						break;
+					case ScriptTouchMultiplier.Vanilla:
+						count = 36;//should never happen
+						break;
+					case ScriptTouchMultiplier.OneAndHalf:
+						count = 54;
+						break;
+					case ScriptTouchMultiplier.Double:
+						count = 72;
+						break;
+					case ScriptTouchMultiplier.All:
+						count = EnemyCount - 10;
+						break;
+					case ScriptTouchMultiplier.Random:
+						count = rng.Between(18, 90);
+						break;
+				}
+
+				List<int> indices = new List<int>();
+				for (int i = 0; i < EnemyCount - 10; i++)
+				{
+					enemies[i][14] = 0x00;
+					enemies[i][15] = 0x00;
+
+					indices.Add(i);
+				}
+
+				indices.Shuffle(rng);
+
+				foreach (var i in indices.Take(count))
+				{
+					if (i == 15 && !AllowUnsafePirates) continue;
+					var (touch, element) = weightedStatusElements.PickRandom(rng);
+					enemies[i][15] = touch;
+					enemies[i][14] = element;
 				}
 			}
 
@@ -1081,5 +1154,26 @@ namespace FF1Lib
 			}
 			Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
+	}
+
+	public enum ScriptTouchMultiplier
+	{
+		[Description("None")]
+		None,
+
+		[Description("Vanilla")]
+		Vanilla,
+
+		[Description("Increased")]
+		OneAndHalf,
+
+		[Description("Double")]
+		Double,
+
+		[Description("All")]
+		All,
+
+		[Description("Random")]
+		Random,
 	}
 }
