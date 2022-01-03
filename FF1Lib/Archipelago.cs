@@ -154,7 +154,8 @@ namespace FF1Lib
 				options = new ArchipelagoFFROptions
 				{
 					items = logic.RewardSources.GroupBy(r => GetItemId(r.RewardSource.Item)).ToDictionary(r => GetItemName(r.First().RewardSource.Item), r => new ArchipelagoItem { id = r.Key, count = r.Count(), incentive = incentivesData.IncentiveItems.Contains(r.First().RewardSource.Item) }),
-					locations = logic.RewardSources.ToDictionary(r => r.RewardSource.Name, r => new ArchipelagoLocation { id = GetLocationId(r), incentive = IsLocationIncentivized(r) }),
+					locations = logic.RewardSources.ToDictionary(r => r.RewardSource.Name, r => GetLocationId(r)),
+					locations2 = logic.RewardSources.ToDictionary(r => r.RewardSource.Name, r => new ArchipelagoLocation { id = GetLocationId(r), incentive = IsLocationIncentivized(r) }),
 					rules = logic.RewardSources.ToDictionary(r => r.RewardSource.Name, r => GetRule(r))
 				}
 			};
@@ -336,7 +337,9 @@ namespace FF1Lib
 	{
 		public Dictionary<string, ArchipelagoItem> items { get; set; }
 
-		public Dictionary<string, ArchipelagoLocation> locations { get; set; }
+		public Dictionary<string, int> locations { get; set; }
+
+		public Dictionary<string, ArchipelagoLocation> locations2 { get; set; }
 
 		public Dictionary<string, List<List<string>>> rules { get; set; }
 	}
