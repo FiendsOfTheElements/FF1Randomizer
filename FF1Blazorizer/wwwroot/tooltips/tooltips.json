@@ -24,6 +24,18 @@
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the hidden flags selected). Make sure to save your flagset before you use this flag."
 	},
 	{
+		"Id": "scriptMultiplier",
+		"title": "Everything has a Script",
+		"screenshot": "enemyScriptsCheckBox.png",
+		"description": "Controls how many non-boss enemies will have a script. Vanilla just shuffles the scripts, all other settings assign them randomly.\n\nPirates are safe unless declared unsafe."
+	},
+	{
+		"Id": "touchMultiplier",
+		"title": "Everything has a Touch",
+		"screenshot": "enemyStatusAttacksCheckBox.png",
+		"description": "Controls how many non-boss enemies will have a touch effect.\n\nPirates are safe unless declared unsafe."
+	},
+	{
 		"Id": "importResourcePack",
 		"title": "Import Resource Pack",
 		"screenshot": "importResourcePack.png",

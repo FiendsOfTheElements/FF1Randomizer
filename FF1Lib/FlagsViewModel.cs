@@ -4898,6 +4898,26 @@ namespace FF1Lib
 
 		#endregion
 
+		public ScriptTouchMultiplier ScriptMultiplier
+		{
+			get => Flags.ScriptMultiplier;
+			set
+			{
+				Flags.ScriptMultiplier = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public ScriptTouchMultiplier TouchMultiplier
+		{
+			get => Flags.TouchMultiplier;
+			set
+			{
+				Flags.TouchMultiplier = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public bool OptOutSpeedHackWipes
 		{
 			get => Preferences.OptOutSpeedHackWipes;

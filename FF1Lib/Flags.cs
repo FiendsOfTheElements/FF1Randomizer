@@ -56,7 +56,10 @@ namespace FF1Lib
 
 		#endregion
 
-	public bool Archipelago { get; set; } = false;
+		public ScriptTouchMultiplier ScriptMultiplier { get; set; } = ScriptTouchMultiplier.Vanilla;
+		public ScriptTouchMultiplier TouchMultiplier { get; set; } = ScriptTouchMultiplier.Vanilla;
+
+		public bool Archipelago { get; set; } = false;
 		public bool ArchipelagoGold { get; set; } = false;
 		public bool ArchipelagoConsumables { get; set; } = false;
 		public bool ArchipelagoShards { get; set; } = false;
