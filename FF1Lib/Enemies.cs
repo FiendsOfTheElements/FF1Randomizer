@@ -182,12 +182,12 @@ namespace FF1Lib
 			Put(ZoneFormationsOffset, newFormations.ToArray());
 		}
 
-		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool doBosses, bool excludeImps, bool scaryImps)
+		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool doBosses, bool excludeImps, bool scaryImps, ScriptTouchMultiplier scriptMultiplier)
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
-			if(doNormals)
+			if (doNormals)
 			{
 				var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
 				if (!AllowUnsafePirates) normalOldEnemies.RemoveAt(Enemy.Pirate);
@@ -196,9 +196,55 @@ namespace FF1Lib
 				if (excludeImps) normalOldEnemies.Insert(Enemy.Imp, oldEnemies[Enemy.Imp]);
 				if (!AllowUnsafePirates) normalOldEnemies.Insert(Enemy.Pirate, oldEnemies[Enemy.Pirate]);
 
-				for (int i = 0; i < EnemyCount - 10; i++)
+				var allScripts = normalOldEnemies.Select(e => e[EnemyStat.Scripts]).Distinct().ToList();
+				allScripts.Remove(0xFF);
+
+				if (scriptMultiplier == ScriptTouchMultiplier.Vanilla)
 				{
-					newEnemies[i][EnemyStat.Scripts] = normalOldEnemies[i][EnemyStat.Scripts];
+					for (int i = 0; i < EnemyCount - 10; i++)
+					{
+						newEnemies[i][EnemyStat.Scripts] = normalOldEnemies[i][EnemyStat.Scripts];
+					}
+				}
+				else
+				{
+					var count = 0;
+					switch (scriptMultiplier)
+					{
+						case ScriptTouchMultiplier.None:
+							count = 0;
+							break;
+						case ScriptTouchMultiplier.Vanilla:
+							count = 36;//should never happen
+							break;
+						case ScriptTouchMultiplier.OneAndHalf:
+							count = 54;
+							break;
+						case ScriptTouchMultiplier.Double:
+							count = 72;
+							break;
+						case ScriptTouchMultiplier.All:
+							count = EnemyCount - 10;
+							break;
+						case ScriptTouchMultiplier.Random:
+							count = rng.Between(18, 90);
+							break;
+					}
+
+					List<int> indices = new List<int>();
+					for (int i = 0; i < EnemyCount - 10; i++)
+					{
+						newEnemies[i][EnemyStat.Scripts] = 0xFF;
+						indices.Add(i);
+					}
+
+					indices.Shuffle(rng);
+
+					foreach (var i in indices.Take(count))
+					{
+						if (i == 15 && !AllowUnsafePirates) continue;
+						newEnemies[i][EnemyStat.Scripts] = allScripts.PickRandom(rng);
+					}
 				}
 			}
 
@@ -366,7 +412,7 @@ namespace FF1Lib
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool DisableStunTouch)
+		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool DisableStunTouch, ScriptTouchMultiplier touchMultiplier)
 		{
 			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
@@ -384,42 +430,91 @@ namespace FF1Lib
 			(byte touch, byte element) deathElement = (0x01, 0x08); //Death Touch = Death Element
 			(byte touch, byte element) stoneElement = (0x02, 0x02); //Stone Touch = Poison
 
-			for (int i = 0; i < EnemyCount; i++)
+			var weightedStatusElements = statusElements.Concat(statusElements).Concat(statusElements).Concat(statusElements).Append(deathElement).Append(stoneElement).ToList();
+
+			if (touchMultiplier == ScriptTouchMultiplier.Vanilla)
 			{
-				if (!AllowUnsafePirates)
+				for (int i = 0; i < EnemyCount; i++)
 				{
-					if (i == 15) //pirates
+					if (!AllowUnsafePirates)
 					{
-						continue;
+						if (i == 15) //pirates
+						{
+							continue;
+						}
+					}
+
+					int roll = rng.Between(0, 128);
+					if (roll < 1) //1 vanilla death toucher
+					{
+						//Death Touch
+						var (touch, element) = deathElement;
+						enemies[i][15] = touch;
+						enemies[i][14] = element;
+					}
+					else if (roll < 2) //1 vanilla stone toucher
+					{
+						//Stone Touch
+						var (touch, element) = stoneElement;
+						enemies[i][15] = touch;
+						enemies[i][14] = element;
+					}
+					else if (roll < 37) //35 enemies with other assorted status touches
+					{
+						var (touch, element) = statusElements.PickRandom(rng);
+						enemies[i][15] = touch;
+						enemies[i][14] = element;
+					}
+					else
+					{
+						//Otherwise, the enemy has no touch or associated element.
+						enemies[i][14] = 0x00;
+						enemies[i][15] = 0x00;
 					}
 				}
+			}
+			else
+			{
+				var count = 0;
+				switch (touchMultiplier)
+				{
+					case ScriptTouchMultiplier.None:
+						count = 0;
+						break;
+					case ScriptTouchMultiplier.Vanilla:
+						count = 36;//should never happen
+						break;
+					case ScriptTouchMultiplier.OneAndHalf:
+						count = 54;
+						break;
+					case ScriptTouchMultiplier.Double:
+						count = 72;
+						break;
+					case ScriptTouchMultiplier.All:
+						count = EnemyCount - 10;
+						break;
+					case ScriptTouchMultiplier.Random:
+						count = rng.Between(18, 90);
+						break;
+				}
 
-				int roll = rng.Between(0, 128);
-				if (roll < 1) //1 vanilla death toucher
+				List<int> indices = new List<int>();
+				for (int i = 0; i < EnemyCount - 10; i++)
 				{
-					//Death Touch
-					var (touch, element) = deathElement;
-					enemies[i][15] = touch;
-					enemies[i][14] = element;
-				}
-				else if (roll < 2) //1 vanilla stone toucher
-				{
-					//Stone Touch
-					var (touch, element) = stoneElement;
-					enemies[i][15] = touch;
-					enemies[i][14] = element;
-				}
-				else if (roll < 37) //35 enemies with other assorted status touches
-				{
-					var (touch, element) = statusElements.PickRandom(rng);
-					enemies[i][15] = touch;
-					enemies[i][14] = element;
-				}
-				else
-				{
-					//Otherwise, the enemy has no touch or associated element.
 					enemies[i][14] = 0x00;
 					enemies[i][15] = 0x00;
+
+					indices.Add(i);
+				}
+
+				indices.Shuffle(rng);
+
+				foreach (var i in indices.Take(count))
+				{
+					if (i == 15 && !AllowUnsafePirates) continue;
+					var (touch, element) = weightedStatusElements.PickRandom(rng);
+					enemies[i][15] = touch;
+					enemies[i][14] = element;
 				}
 			}
 
@@ -1059,5 +1154,26 @@ namespace FF1Lib
 			}
 			Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
+	}
+
+	public enum ScriptTouchMultiplier
+	{
+		[Description("None")]
+		None,
+
+		[Description("Vanilla")]
+		Vanilla,
+
+		[Description("Increased")]
+		OneAndHalf,
+
+		[Description("Double")]
+		Double,
+
+		[Description("All")]
+		All,
+
+		[Description("Random")]
+		Random,
 	}
 }
