@@ -338,7 +338,7 @@ namespace FF1Lib.Sanity
 					{
 						if (allNpcs.TryGetValue(poi.Npc.ObjectId, out var requirements))
 						{
-							requirements.Merge(poi.Requirements);
+							requirements.Merge(logicArea.Requirements.Restrict(poi.Requirements));
 						}
 						else
 						{
