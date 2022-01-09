@@ -33,21 +33,23 @@ GiveReward:                    ; (8 bytes)
     BCS @NotItem               ; B028
   @Item:                       ; (5 + 15 + 7 bytes)
     TAX                        ; put item ID in X AA
-  : CMP #$36                   ; CMP ItemId with Tent C936
-    BCC @WasCanal              ; < Tent normal Add One routine 9011
-		SBC #$36               ; Subtract TentOffset E936
-		TAY                    ; Punt Index into Y A8
-        LDA unsram, X          ; load inventory count BD0060
-        CMP #$63               ; Compare with 99 C963
-        BCS @TooFull           ; don't pick it up if consumable >= 99 B03D
-        ADC lut_ConsStack, Y   ; add ConsumableStackSize (actual StackSize minus 1)	 7900B0	
-        STA unsram, X          ; MadMartin: store into inventory 9D0060
-		TXA					   ; Restore ItemId into A 8A
-	INC unsram, X  
-	JMP @NormalItem			   ; otherwise give them one of this item FE0060
-@WasCanal:
-	LDA #18
-	STA dlg_itemid
+	CMP #$08				   ; CMP Bridge
+	BEQ @Bridge	
+	CMP #$32				   ; CMP AP Item
+	BEQ @NormalItem
+	CMP #$35				   ; CMP Shard
+	BEQ @Shard
+	SBC #$36               	   ; Subtract TentOffset E936
+	TAY                    	   ; Punt Index into Y A8
+    LDA unsram, X       	   ; load inventory count BD0060
+    CMP #$63            	   ; Compare with 99 C963
+    BCS @TooFull        	   ; don't pick it up if consumable >= 99 B03D
+    ADC lut_ConsStack, Y	   ; add ConsumableStackSize (actual StackSize minus 1)	 7900B0	
+    STA unsram, X       	   ; MadMartin: store into inventory 9D0060
+	TXA						   ; Restore ItemId into A 8A
+@Bridge:
+@Shard:
+	INC unsram, X
 @NormalItem:
     CMP #$31                   ; if >= item_canoe (shard) then play regular jingle C931
     BCS @ClearChest            ; B02A
