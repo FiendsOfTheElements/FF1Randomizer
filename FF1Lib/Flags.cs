@@ -912,7 +912,7 @@ namespace FF1Lib
 		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
 		public bool EnemizerDontMakeNewScripts => (bool)EnemySkillsSpells & !((bool)BossSkillsOnly | (bool)EnemySkillsSpellsTiered);
 
-		public bool? TrappedChestsEnabled => (bool)TrappedChaos | (bool)TCMasaGuardian | (TCBetterTreasure == TCOptions.All | TCKeyItems == TCOptions.All | TCShards == TCOptions.All) | ((TCBetterTreasure == TCOptions.Pooled | TCKeyItems == TCOptions.Pooled | TCShards == TCOptions.Pooled) & TCChestCount > 0);
+		public bool? TrappedChestsEnabled => (bool)TrappedChaos | (bool)TCMasaGuardian | (TCBetterTreasure == TCOptions.All | TCKeyItems == TCOptions.All | TCShards == TCOptions.All) | ((TCBetterTreasure == TCOptions.Pooled | TCKeyItems == TCOptions.Pooled | TCShards == TCOptions.Pooled) & TCChestCount > 0) | (TCChestCount > 0);
 
 		public static string EncodeFlagsText(Flags flags)
 		{
