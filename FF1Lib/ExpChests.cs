@@ -90,7 +90,7 @@ namespace FF1Lib
 			FirstExpItem = firstExpItem;
 			if (flags.Archipelago)
 			{
-				rom.PutInBank(0x11, 0xB442, new byte[] { (byte)firstExpItem });
+				rom.PutInBank(0x11, 0xB446, new byte[] { (byte)firstExpItem });
 			}
 			else
 			{
@@ -199,7 +199,7 @@ namespace FF1Lib
 			FirstExpItem = firstExpItem;
 			if (flags.Archipelago)
 			{
-				rom.PutInBank(0x11, 0xB442, new byte[] { (byte)firstExpItem });
+				rom.PutInBank(0x11, 0xB446, new byte[] { (byte)firstExpItem });
 			}
 			else
 			{
