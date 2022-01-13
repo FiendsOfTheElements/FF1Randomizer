@@ -169,37 +169,7 @@ namespace FF1Lib
 						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { 0x01 });
 					}
 				}
-			}
-
-			if (_flags.Spoilers || Debugger.IsAttached)
-			{
-				// Output to the console only.
-				Utilities.WriteSpoilerLine($"ItemPlacement::PlaceSaneItems required {_sanityCounter} iterations.", true);
-
-				// Start of the item spoiler log output.
-				Utilities.WriteSpoilerLine("Item     Entrance  ->  Floor  ->  Source                             Requirements");
-				Utilities.WriteSpoilerLine("----------------------------------------------------------------------------------------------------");
-
-				var sorted = placedItems.Where(item => item.Item != Item.Shard).ToList();
-				sorted.Sort((IRewardSource lhs, IRewardSource rhs) => lhs.Item.ToString().CompareTo(rhs.Item.ToString()));
-				sorted.ForEach(item =>
-				{
-					if (_overworldMap.FullLocationRequirements.TryGetValue(item.MapLocation, out var flr))
-					{
-						var overworldLocation = item.MapLocation.ToString();
-						if (_overworldMap.OverriddenOverworldLocations != null && _overworldMap.OverriddenOverworldLocations.TryGetValue(item.MapLocation, out var overriden))
-						{
-							overworldLocation = overriden.ToString();
-						}
-
-						var itemStr = item.Item.ToString().PadRight(9);
-						var locStr = $"{overworldLocation} -> {item.MapLocation} -> {item.Name} ".PadRight(60);
-						var changes = $"({String.Join(" OR ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())})";
-						var reqs = flr.Item2.ToString().CompareTo("None") == 0 ? "" : $" AND {flr.Item2.ToString()}";
-						Utilities.WriteSpoilerLine($"{itemStr}{locStr}{changes}{reqs}");
-					}
-				});
-			}
+			}			
 
 			// 8. Place all remaining unincentivized treasures or incentivized non-quest items that weren't placed
 			var itemLocationPool = _incentivesData.AllValidItemLocations.ToList();
