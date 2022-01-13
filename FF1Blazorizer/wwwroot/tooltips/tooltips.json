@@ -24,6 +24,12 @@
 		"description": "Hides all flags to create a mystery flagset that can then be distributed. Useful for tournament and challenge race settings.\n This flag cannot be disabled once clicked; you will need to hit the Reset button to restore functionality to the site (and this will, in turn, wipe the hidden flags selected). Make sure to save your flagset before you use this flag."
 	},
 	{
+		"Id": "ribbonMode",
+		"title": "Ribbon",
+		"screenshot": "enemyScriptsCheckBox.png",
+		"description": "Shattered spreads the resistances across many amror pieces. Each Element occurs multiple times. It tries to ensure that every class can attain full protection."
+	},
+	{
 		"Id": "scriptMultiplier",
 		"title": "Everything has a Script",
 		"screenshot": "enemyScriptsCheckBox.png",

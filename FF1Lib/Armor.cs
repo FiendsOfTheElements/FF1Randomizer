@@ -93,7 +93,7 @@ namespace FF1Lib
 			platinumBracelet.writeArmorMemory(this);
 		}
 
-		public void ArmorCrafter(MT19337 rng, bool noItemMagic) {
+		public void ArmorCrafter(MT19337 rng, bool noItemMagic, bool noResists) {
 		    var commonArmor = new List<Item>(ItemLists.CommonArmorTier);
 		    var rareArmor = new List<Item>(ItemLists.RareArmorTier);
 		    var legendaryArmor = new List<Item>(ItemLists.LegendaryArmorTier);
@@ -360,23 +360,33 @@ namespace FF1Lib
 			    }
 
 			    var chooseResist = new List<byte>(resists);
-			    if (itemId == Item.Ribbon) {
-				elementalResist |= 0xFF;
-				name = "Ribbon";
-				chooseResist.Clear();
-			    } else if (tier == 2 && (armorType == ARMOR || armorType == SHIRT)) {
-				elementalResist |= chooseResist.SpliceRandom(rng);
-				name = resistNames[elementalResist];
-				elementalResist |= chooseResist.SpliceRandom(rng);
-				elementalResist |= chooseResist.SpliceRandom(rng);
-			    } else if (tier == 1 && (armorType == SHIRT)) {
-				elementalResist |= chooseResist.SpliceRandom(rng);
-				name = resistNames[elementalResist];
-				elementalResist |= chooseResist.SpliceRandom(rng);
-			    } else if (tier >= 1 && (armorType != BRACELET) && spellIndex == 0xFF) {
-				elementalResist |= chooseResist.SpliceRandom(rng);
-				name = resistNames[elementalResist];
-			    }
+				if (!noResists)
+				{
+					if (itemId == Item.Ribbon)
+					{
+						elementalResist |= 0xFF;
+						name = "Ribbon";
+						chooseResist.Clear();
+					}
+					else if (tier == 2 && (armorType == ARMOR || armorType == SHIRT))
+					{
+						elementalResist |= chooseResist.SpliceRandom(rng);
+						name = resistNames[elementalResist];
+						elementalResist |= chooseResist.SpliceRandom(rng);
+						elementalResist |= chooseResist.SpliceRandom(rng);
+					}
+					else if (tier == 1 && (armorType == SHIRT))
+					{
+						elementalResist |= chooseResist.SpliceRandom(rng);
+						name = resistNames[elementalResist];
+						elementalResist |= chooseResist.SpliceRandom(rng);
+					}
+					else if (tier >= 1 && (armorType != BRACELET) && spellIndex == 0xFF)
+					{
+						elementalResist |= chooseResist.SpliceRandom(rng);
+						name = resistNames[elementalResist];
+					}
+				}
 
 			    switch (armorType) {
 				case ARMOR:
