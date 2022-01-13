@@ -365,7 +365,7 @@ namespace FF1Lib
 			}
 
 			if ((bool)flags.ArmorCrafter) {
-			    ArmorCrafter(rng, flags.ItemMagicMode == ItemMagicMode.None);
+			    ArmorCrafter(rng, flags.ItemMagicMode == ItemMagicMode.None, flags.RibbonMode == RibbonMode.Split);
 			}
 
 			if (flags.ItemMagicMode != ItemMagicMode.None && flags.ItemMagicMode != ItemMagicMode.Vanilla)
@@ -377,6 +377,8 @@ namespace FF1Lib
 			{
 				CraftRuseItem();
 			}
+
+			new RibbonShuffle(this, rng, flags, ItemsText).Work();
 
 			if ((bool)flags.ShortToFR)
 			{

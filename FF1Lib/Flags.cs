@@ -59,6 +59,8 @@ namespace FF1Lib
 		public ScriptTouchMultiplier ScriptMultiplier { get; set; } = ScriptTouchMultiplier.Vanilla;
 		public ScriptTouchMultiplier TouchMultiplier { get; set; } = ScriptTouchMultiplier.Vanilla;
 
+		public RibbonMode RibbonMode { get; set; } = RibbonMode.Vanilla;
+
 		public bool Archipelago { get; set; } = false;
 		public bool ArchipelagoGold { get; set; } = false;
 		public bool ArchipelagoConsumables { get; set; } = false;
