@@ -2115,6 +2115,6 @@
 		"Id": "noConsecutiveNukesCheckBox",
 		"title": "Prevent consecutive NUKE or NUCLEAR",
 		"screenshot": "",
-		"description": "When shuffling spell and skill scripts, prevent consecutive casts of NUKE or NUCLEAR without at least one other spell or skill in between.  Also prevents having the starting slots for spells and skills filled by both NUKE and NUCLEAR at the same time."
+		"description": "When shuffling spell and skill scripts, prevent consecutive casts of NUKE or NUCLEAR without at least one other spell or skill in between.  Also prevents having the starting spell and skill slots filled by both NUKE and NUCLEAR at the same time."
 	}
 ]

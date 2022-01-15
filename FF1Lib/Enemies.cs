@@ -329,9 +329,15 @@ namespace FF1Lib
 			List<List<byte>> spellBuckets;
 			List<List<byte>> skillBuckets;
 
-			// Spellcrafter compatability, find nuke-like spells (AoE non-elemental damage with an effectivity of more than 80).
+			// Spellcrafter compatability, search for
+			// nuke/nuclear-equivalent spells (AoE
+			// non-elemental damage with a base damage of
+			// 80 or greater).  In the normal game this
+			// matches NUKE and FADE -- in the normal
+			// game, no monsters cast FADE, but with spell
+			// crafter, anything can happen.
 			var nukes = new SpellHelper(this).FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies, SpellElement.None, SpellStatus.Any).Where(
-			    spell => spell.Item2.effect > 80).Select(n => ((byte)n.Item1-(byte)Spell.CURE)).ToList();
+			    spell => spell.Item2.effect >= 80).Select(n => ((byte)n.Item1-(byte)Spell.CURE)).ToList();
 
 			var reroll = false;
 			do {
@@ -356,19 +362,24 @@ namespace FF1Lib
 				    script[j] = 0xFF;
 				}
 
-				// Check for a few bad scripts to
-				// re-roll: two consecutive casts of
-				// NUKE, two consecutive casts of
-				// NUCLEAR, or having both a NUKE and
-				// a NUCLEAR in the starting slots.
+				// Check for a few cases of bad
+				// scripts to re-roll: two consecutive
+				// casts of NUKE, two consecutive
+				// casts of NUCLEAR, or having both a
+				// NUKE and a NUCLEAR in the starting
+				// slots.
 				//
 				// Because non-elemental damage can't
 				// be resisted, the player is always
 				// in for a bad time when one of these
 				// spells comes out.  The goal is to
-				// increase the chance they get at
-				// least one turn to heal before the
-				// next NUKE/NUCLEAR comes around.
+				// greatly decrease (although doesn't
+				// totally eliminate) the chance of
+				// slot machine party wipe situations
+				// where the player is hit twice in a
+				// row with the most powerful spells
+				// in the game with no chance to heal
+				// up or counter attack in between.
 
 				bool startingNuke = false;
 				bool startingNuclear = false;
