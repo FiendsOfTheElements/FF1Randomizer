@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RomUtilities;
+using FF1Lib.Helpers;
 
 namespace FF1Lib
 {
@@ -288,7 +289,7 @@ namespace FF1Lib
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void ShuffleEnemySkillsSpells(MT19337 rng, bool doNormals, bool doBosses)
+		public void ShuffleEnemySkillsSpells(MT19337 rng, bool doNormals, bool doBosses, bool noConsecutiveNukes)
 		{
 			var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
 
@@ -305,18 +306,18 @@ namespace FF1Lib
 			var bigBossIndices = new List<int> { 32, 35, 37, 39, 41, 42 };
 
 			if(doNormals)
-				ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, rng);
+			    ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, noConsecutiveNukes, rng);
 
 			if(doBosses)
 			{
-				ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, rng);
-				ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, rng);
+			    ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, noConsecutiveNukes, rng);
+			    ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, noConsecutiveNukes, rng);
 			}
 
 			Put(ScriptOffset, scriptBytes.SelectMany(script => script.ToBytes()).ToArray());
 		}
 
-		private void ShuffleIndexedSkillsSpells(List<Blob> scriptBytes, List<int> indices, MT19337 rng)
+		private void ShuffleIndexedSkillsSpells(List<Blob> scriptBytes, List<int> indices, bool noConsecutiveNukes, MT19337 rng)
 		{
 			var scripts = indices.Select(i => scriptBytes[i]).ToList();
 
@@ -325,42 +326,100 @@ namespace FF1Lib
 			spellBytes.Shuffle(rng);
 			skillBytes.Shuffle(rng);
 
-			var spellBuckets = Bucketize(spellBytes, scripts.Count(script => script[0] != 0), 8, rng);
-			var skillBuckets = Bucketize(skillBytes, scripts.Count(script => script[1] != 0), 4, rng);
+			List<List<byte>> spellBuckets;
+			List<List<byte>> skillBuckets;
 
-			var spellChances = scripts.Select(script => script[0]).ToList();
-			var skillChances = scripts.Select(script => script[1]).ToList();
-			spellChances.Shuffle(rng);
-			skillChances.Shuffle(rng);
+			// Spellcrafter compatability, find nuke-like spells (AoE non-elemental damage with an effectivity of more than 80).
+			var nukes = new SpellHelper(this).FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies, SpellElement.None, SpellStatus.Any).Where(
+			    spell => spell.Item2.effect > 80).Select(n => ((byte)n.Item1-(byte)Spell.CURE)).ToList();
 
-			int spellBucketIndex = 0, skillBucketIndex = 0;
-			for (int i = 0; i < scripts.Count; i++)
-			{
+			var reroll = false;
+			do {
+			    reroll = false;
+			    spellBuckets = Bucketize(spellBytes, scripts.Count(script => script[0] != 0), 8, rng);
+			    skillBuckets = Bucketize(skillBytes, scripts.Count(script => script[1] != 0), 4, rng);
+
+			    var spellChances = scripts.Select(script => script[0]).ToList();
+			    var skillChances = scripts.Select(script => script[1]).ToList();
+			    spellChances.Shuffle(rng);
+			    skillChances.Shuffle(rng);
+
+			    int spellBucketIndex = 0, skillBucketIndex = 0;
+			    for (int i = 0; i < scripts.Count; i++)
+			    {
 				var script = scriptBytes[indices[i]];
 				script[0] = spellChances[i];
 				script[1] = skillChances[i];
 
 				for (int j = 2; j < 16; j++)
 				{
-					script[j] = 0xFF;
+				    script[j] = 0xFF;
 				}
+
+				// Check for a few bad scripts to
+				// re-roll: two consecutive casts of
+				// NUKE, two consecutive casts of
+				// NUCLEAR, or having both a NUKE and
+				// a NUCLEAR in the starting slots.
+				//
+				// Because non-elemental damage can't
+				// be resisted, the player is always
+				// in for a bad time when one of these
+				// spells comes out.  The goal is to
+				// increase the chance they get at
+				// least one turn to heal before the
+				// next NUKE/NUCLEAR comes around.
+
+				bool startingNuke = false;
+				bool startingNuclear = false;
 				if (spellChances[i] != 0)
 				{
-					for (int j = 0; j < spellBuckets[spellBucketIndex].Count; j++)
-					{
-						script[j + 2] = spellBuckets[spellBucketIndex][j];
+				    startingNuke = nukes.Contains(spellBuckets[spellBucketIndex][0]);
+				    bool previousWasNuke = false;
+				    for (int j = 0; j < spellBuckets[spellBucketIndex].Count; j++)
+				    {
+					Console.WriteLine($"spell {j} is {spellBuckets[spellBucketIndex][j]:X}");
+					if (nukes.Contains(spellBuckets[spellBucketIndex][j])) {
+					    if (previousWasNuke) {
+						Console.WriteLine("Found consecutive NUKE, reroll");
+						reroll = true;
+					    } else {
+						previousWasNuke = true;
+					    }
+					} else {
+					    previousWasNuke = false;
 					}
-					spellBucketIndex++;
+					script[j + 2] = spellBuckets[spellBucketIndex][j];
+				    }
+				    spellBucketIndex++;
 				}
 				if (skillChances[i] != 0)
 				{
-					for (int j = 0; j < skillBuckets[skillBucketIndex].Count; j++)
-					{
-						script[j + 11] = skillBuckets[skillBucketIndex][j];
+				    startingNuclear = (skillBuckets[skillBucketIndex][0] == (byte)EnemySkills.Nuclear);
+				    bool previousWasNuclear = false;
+				    for (int j = 0; j < skillBuckets[skillBucketIndex].Count; j++)
+				    {
+					Console.WriteLine($"skill {j} is {skillBuckets[skillBucketIndex][j]:X}");
+					if (skillBuckets[skillBucketIndex][j] == (byte)EnemySkills.Nuclear) {
+					    if (previousWasNuclear) {
+						Console.WriteLine("Found consecutive NUCLEAR, reroll");
+						reroll = true;
+					    } else {
+						previousWasNuclear = true;
+					    }
+					} else {
+					    previousWasNuclear = false;
 					}
-					skillBucketIndex++;
+					script[j + 11] = skillBuckets[skillBucketIndex][j];
+				    }
+				    skillBucketIndex++;
 				}
-			}
+				if (startingNuke && startingNuclear) {
+				    Console.WriteLine("Found starting NUKE & NUCLEAR, reroll");
+				    reroll = true;
+				}
+			    }
+			} while (noConsecutiveNukes && reroll);
 		}
 
 		private List<List<byte>> Bucketize(List<byte> bytes, int bucketCount, int bucketSize, MT19337 rng)

@@ -1215,7 +1215,7 @@ namespace FF1Lib
 		    }
 		    wrapped += st.Substring(start, end-start);
 		}
-		
+
 		wrapped = wrapped.Substring(0, 1).ToUpper() + wrapped.Substring(1);
 
 			return wrapped;
@@ -1494,7 +1494,8 @@ namespace FF1Lib
 				     new { index = Enemy.Kary2, dialog=0x4E },
 				     new { index = Enemy.Kraken2, dialog=0x4F },
 				     new { index = Enemy.Tiamat2, dialog=0xDB },
-				     new { index = Enemy.Chaos, dialog=0x51 },
+				     //new { index = Enemy.Chaos, dialog=0x51 },
+				     new { index = Enemy.WarMech, dialog=0x51 },
 		};
 
 		var skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount);
@@ -1626,7 +1627,7 @@ namespace FF1Lib
 		    }
 
 		    string dialogtext = "";
-		    if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.FullStats) {
+		    if (true) { //flags.SkyWarriorSpoilerBats == SpoilerBatHints.FullStats) {
 			string spellscript = "";
 			foreach (var s in spells) {
 			    var spellname = spellList[s].Name;
@@ -1653,8 +1654,10 @@ namespace FF1Lib
 			    $"Defense {enemy[EnemyStat.Evade],3     }% -{enemy[EnemyStat.Defense],3}\n"+
 			    $"{spellscript}\n"+
 			    $"{skillscript}";
+			Console.WriteLine(dialogtext);
 		    }
-		    else if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Hints) {
+		    dialogtext = "";
+		    if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Hints) {
 
 			var chooseIntro = rng.Between(0, intros.Count-1);
 
