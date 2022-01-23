@@ -231,6 +231,23 @@ namespace FF1Lib
 			_classes[(int)Classes.Thief].EvaStarting = (byte)Math.Min(_classes[(int)Classes.Thief].AgiStarting + 48, 255);
 		}
 
+		public void SetMPMax(Flags flags)
+		{
+			if (!(bool)flags.ChangeMaxMP)
+			{
+				return;
+			}
+
+			_classes[(int)Classes.RedMage].MaxSpC = (byte)flags.RedMageMaxMP;
+			_classes[(int)Classes.RedWizard].MaxSpC = (byte)flags.RedMageMaxMP;
+			_classes[(int)Classes.WhiteMage].MaxSpC = (byte)flags.WhiteMageMaxMP;
+			_classes[(int)Classes.WhiteWizard].MaxSpC = (byte)flags.WhiteMageMaxMP;
+			_classes[(int)Classes.BlackMage].MaxSpC = (byte)flags.BlackMageMaxMP;
+			_classes[(int)Classes.BlackWizard].MaxSpC = (byte)flags.BlackMageMaxMP;
+			_classes[(int)Classes.Knight].MaxSpC = (byte)flags.KnightMaxMP;
+			_classes[(int)Classes.Ninja].MaxSpC = (byte)flags.NinjaMaxMP;
+		}
+
 		public void Randomize(Flags flags, MT19337 rng, List<string> olditemnames, ItemNames itemnames, FF1Rom rom)
 		{
 			if (!(bool)flags.RandomizeClass)

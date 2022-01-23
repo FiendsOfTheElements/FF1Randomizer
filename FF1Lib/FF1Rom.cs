@@ -1041,11 +1041,6 @@ namespace FF1Lib
 				PubReplaceClinic(rng, attackedTown, flags);
 			}
 
-			if ((bool)flags.ChangeMaxMP)
-			{
-				SetMPMax(flags.RedMageMaxMP, flags.WhiteMageMaxMP, flags.BlackMageMaxMP, flags.KnightMaxMP, flags.NinjaMaxMP);
-			}
-
 			if ((bool)flags.ShuffleAstos)
 			{
 				ShuffleAstos(flags, npcdata, talkroutines, rng);
@@ -1071,6 +1066,7 @@ namespace FF1Lib
 			MoveLoadPlayerIBStats();
 			SetupClassAltXp();
 
+			ClassData.SetMPMax(flags);
 			ClassData.RaiseThiefHitRate(flags);
 			ClassData.BuffThiefAGI(flags);
 			ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);

@@ -487,14 +487,6 @@ namespace FF1Lib
 			Put(ConfusedSpellIndexOffset, new[] { (byte)newFireSpellIndex });
 		}
 
-		public void SetMPMax(int redMageMaxMP, int whiteMageMaxMP, int blackMageMaxMP, int knightMaxMP, int ninjaMaxMP)
-		{
-			const int lut_MaxMP = 0x6C902;
-
-			Put(lut_MaxMP, new List<byte> { 0x00, 0x00, 0x00, (byte)redMageMaxMP, (byte)whiteMageMaxMP, (byte)blackMageMaxMP,
-				(byte)knightMaxMP, (byte)ninjaMaxMP, 0x00, (byte)redMageMaxMP, (byte)whiteMageMaxMP, (byte)blackMageMaxMP }.ToArray());
-		}
-
 		public void ChangeLockMode(LockHitMode lockHitMode)
 		{
 			if (lockHitMode == LockHitMode.Accuracy107)
