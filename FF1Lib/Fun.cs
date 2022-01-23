@@ -96,45 +96,50 @@ namespace FF1Lib
 		{
 			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 
-			enemyText[1] = "GrUMP";
-			enemyText[2] = "RURURU"; // +2
-			enemyText[3] = "GrrrWOLF"; // +2
-			enemyText[28] = "GeORGE";
+			enemyText[1] = "GrUMP";    // +0  GrIMP
+			enemyText[2] = "RURURU";   // +2  WOLF
+			enemyText[3] = "GrrrWOLF"; // +2  GrWOLF
+			enemyText[28] = "GeORGE";  // +0  GrOGRE
 
 			// "WzOGRE"
 			if (rng.Between(1, 10) >= 5) {
-			    enemyText[29] = "DIRGE"; // -1
+			    enemyText[29] = "DIRGE";  // -1
 			} else {
 			    enemyText[29] = "GROVER"; // +0
 			}
 
-			enemyText[30] = "R.SNEK"; // +3
-			enemyText[31] = "GrSNEK"; // +1
-			enemyText[32] = "SeaSNEK"; // -1
-			enemyText[40] = "iMAGE";
-			enemyText[56] = "EXPEDE"; // +2
-			enemyText[61] = "Edward";
-			enemyText[63] = "ARGYLE";
-			enemyText[66] = "White D";
-			enemyText[72] = "MtlSLIME"; // +3
-			enemyText[77] = "FunPOLIC";
-			enemyText[80] = "MOMMY";
-			enemyText[83] = "Y BURN";
+			enemyText[30] = "R.SNEK";     // +3  ASP
+			enemyText[31] = "GrSNEK";     // +1  COBRA
+			enemyText[32] = "SeaSNEK";    // -1  SeaSNAKE
+			enemyText[40] = "iMAGE";      // +0  IMAGE
+			enemyText[48] = "SANDWICH";   // +2  Sand W
+			enemyText[56] = "EXPEDE";     // +2  PEDE
+			enemyText[61] = "EDWARD";     // +0  WzVAMP
+			enemyText[63] = "ARGYLE";     // -1  R.GOYLE
+			enemyText[66] = "White D";    // +0  Frost D
+			enemyText[72] = "MtlSLIME";   // +3  SLIME
+			enemyText[77] = "FnPOLICE";   // +0  R.ANKYLO
+			enemyText[80] = "MOMMY";      // -2  WzMUMMY
+			enemyText[81] = "BIRB";       // -4  COCTRICE
+			enemyText[82] = "R.BIRB";     // -2  PERILISK
+			enemyText[83] = "Y BURN";     // +0  WYVERN
 			if (teamSteak)
 			{
-				enemyText[85] = "STEAK"; // +1
-				enemyText[86] = "T.BONE"; // +1
+				enemyText[85] = "STEAK";  // +1  TYRO
+				enemyText[86] = "T.BONE"; // +1  T REX
 			}
-			enemyText[92] = "NACHO"; // -1
-			enemyText[106] = "Green D"; // +2
-			enemyText[111] = "BATMAN";
-			enemyText[112] = "OKAYMAN";
-			enemyText[119] = "BUMP";
-			enemyText[120] = "BUMP";
-			enemyText[121] = "KELLY"; // +1
-			enemyText[122] = "KELLY"; // +1
+			enemyText[92] = "NACHO";      // -1  NAOCHO
+			enemyText[94] = "HYDRANT";    // +0  R.HYDRA
+			enemyText[106] = "Green D";   // +2  Gas D
+			enemyText[111] = "BATMAN";    // +0  BADMAN
+			enemyText[112] = "OKAYMAN";   // +0  EVILMAN
+			enemyText[119] = "SpdBUMP";   // +3  LICH
+			enemyText[120] = "SpdBUMP";   // +3  LICH
+			enemyText[121] = "KELLY";     // +1  KARY
+			enemyText[122] = "KELLY";     // +1  KARY
 
-			// Moving IMP and GrIMP gives me another 10 bytes, for a total of 19 extra bytes, of which I'm using 18.
+			// Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes
+			// We're adding (up to) a net of 16 bytes to enemyTextPart2.
 			var enemyTextPart1 = enemyText.Take(2).ToArray();
 			var enemyTextPart2 = enemyText.Skip(2).ToArray();
 			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
