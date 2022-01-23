@@ -28,16 +28,18 @@ namespace FF1Lib
 		Flags flags;
 		FF1Rom rom;
 		ItemNames itemsText;
+		GearPermissions armorPermissions;
 
 		HashSet<Item> rareArmors;
 		List<SpellElement> allElements;
 
-		public RibbonShuffle(FF1Rom _rom, MT19337 _rng, Flags _flags, ItemNames _itemsText)
+		public RibbonShuffle(FF1Rom _rom, MT19337 _rng, Flags _flags, ItemNames _itemsText, GearPermissions _armorPermissions)
 		{
 			rom = _rom;
 			rng = _rng;
 			flags = _flags;
 			itemsText = _itemsText;
+			armorPermissions = _armorPermissions;
 
 		}
 
@@ -101,12 +103,12 @@ namespace FF1Lib
 
 			foreach (var a in armors.Where(a => a.Absorb <= 25 && a.Spell == Spell.None))
 			{
-				if ((a.ClassUsability & (ushort)EquipPermission.Knight) > 0) armorsPerClass[EquipPermission.Knight].Add(a);
-				if ((a.ClassUsability & (ushort)EquipPermission.Ninja) > 0) armorsPerClass[EquipPermission.Ninja].Add(a);
-				if ((a.ClassUsability & (ushort)EquipPermission.Master) > 0) armorsPerClass[EquipPermission.Master].Add(a);
-				if ((a.ClassUsability & (ushort)EquipPermission.RedWizard) > 0) armorsPerClass[EquipPermission.RedWizard].Add(a);
-				if ((a.ClassUsability & (ushort)EquipPermission.WhiteWizard) > 0) armorsPerClass[EquipPermission.WhiteWizard].Add(a);
-				if ((a.ClassUsability & (ushort)EquipPermission.BlackWizard) > 0) armorsPerClass[EquipPermission.BlackWizard].Add(a);
+				if ((armorPermissions[a.Id] & (ushort)EquipPermission.Knight) > 0) armorsPerClass[EquipPermission.Knight].Add(a);
+				if ((armorPermissions[a.Id] & (ushort)EquipPermission.Ninja) > 0) armorsPerClass[EquipPermission.Ninja].Add(a);
+				if ((armorPermissions[a.Id] & (ushort)EquipPermission.Master) > 0) armorsPerClass[EquipPermission.Master].Add(a);
+				if ((armorPermissions[a.Id] & (ushort)EquipPermission.RedWizard) > 0) armorsPerClass[EquipPermission.RedWizard].Add(a);
+				if ((armorPermissions[a.Id] & (ushort)EquipPermission.WhiteWizard) > 0) armorsPerClass[EquipPermission.WhiteWizard].Add(a);
+				if ((armorPermissions[a.Id] & (ushort)EquipPermission.BlackWizard) > 0) armorsPerClass[EquipPermission.BlackWizard].Add(a);
 			}
 
 			foreach (var cls in armorsPerClass.OrderBy(c => c.Value.Count))

@@ -30,7 +30,12 @@ namespace FF1Lib
 		public const int GoldItemOffset = 108; // 108 items before gold chests
 		public const int GoldItemCount = 68;
 		public static List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
+
 		public ItemNames ItemsText;
+		public GearPermissions ArmorPermissions;
+		public GearPermissions WeaponPermissions;
+		public SpellPermissions SpellPermissions;
+		public GameClasses ClassData;
 
 		private SanityCheckerV2 sanityChecker = null;
 		private IncentiveData incentivesData = null;
@@ -85,7 +90,7 @@ namespace FF1Lib
 			}
 		}
 
-		private Blob CreateLongJumpTableEntry(byte bank, ushort addr)
+		public Blob CreateLongJumpTableEntry(byte bank, ushort addr)
 		{
 			List<byte> tmp = new List<byte> { 0x20, 0xC8, 0xD7 }; // JSR $D7C8, beginning of each table entry
 
@@ -168,7 +173,13 @@ namespace FF1Lib
 			ExpandNormalTeleporters();
 			SeparateUnrunnables();
 			DrawCanoeUnderBridge();
+
 			ItemsText = new ItemNames(this);
+			ArmorPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, this);
+			WeaponPermissions = new GearPermissions(0x3BF50, (int)Item.WoodenNunchucks, this);
+			SpellPermissions = new SpellPermissions(this);
+			ClassData = new GameClasses(WeaponPermissions, ArmorPermissions, SpellPermissions, this);
+
 			var talkroutines = new TalkRoutines();
 			var npcdata = new NPCdata(this);
 			UpdateDialogs(npcdata, flags);
@@ -378,7 +389,7 @@ namespace FF1Lib
 				CraftRuseItem();
 			}
 
-			new RibbonShuffle(this, rng, flags, ItemsText).Work();
+			new RibbonShuffle(this, rng, flags, ItemsText, ArmorPermissions).Work();
 
 			if ((bool)flags.ShortToFR)
 			{
@@ -894,16 +905,6 @@ namespace FF1Lib
 				MDefChanges(flags.MDefMode);
 			}
 
-			if (flags.ThiefHitRate)
-			{
-				ThiefHitRate();
-			}
-
-			if (flags.ThiefAgilityBuff != ThiefAGI.Vanilla)
-			{
-			        BuffThiefAGI(flags.ThiefAgilityBuff);
-			}
-
 			if ((bool)flags.Lockpicking)
 			{
 				EnableLockpicking();
@@ -1040,11 +1041,6 @@ namespace FF1Lib
 				PubReplaceClinic(rng, attackedTown, flags);
 			}
 
-			if ((bool)flags.ChangeMaxMP)
-			{
-				SetMPMax(flags.RedMageMaxMP, flags.WhiteMageMaxMP, flags.BlackMageMaxMP, flags.KnightMaxMP, flags.NinjaMaxMP);
-			}
-
 			if ((bool)flags.ShuffleAstos)
 			{
 				ShuffleAstos(flags, npcdata, talkroutines, rng);
@@ -1069,10 +1065,11 @@ namespace FF1Lib
 
 			MoveLoadPlayerIBStats();
 			SetupClassAltXp();
-			if ((bool)flags.RandomizeClass)
-			{
-				RandomizeClass(rng, flags, oldItemNames);
-			}
+
+			ClassData.SetMPMax(flags);
+			ClassData.RaiseThiefHitRate(flags);
+			ClassData.BuffThiefAGI(flags);
+			ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);
 
 			if ((bool)flags.EnableRandomPromotions)
 			{
@@ -1218,6 +1215,10 @@ namespace FF1Lib
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
+			ArmorPermissions.Write(this);
+			WeaponPermissions.Write(this);
+			SpellPermissions.Write(this);
+			ClassData.Write(this);
 
 
 			if (flags.Archipelago)
@@ -1230,7 +1231,7 @@ namespace FF1Lib
 
 			ItemsText.Write(this, UnusedGoldItems);
 
-			if (flags.Spoilers) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, generatedPlacement, overworldMap, incentivesData, flags).WriteSpoiler();
+			if (flags.Spoilers) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, generatedPlacement, overworldMap, incentivesData, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 

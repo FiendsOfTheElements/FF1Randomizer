@@ -139,7 +139,7 @@ namespace FF1Lib
 		public void ExpandWeapon()
 		{
 			Weapon flameChucks = new Weapon(0, "Flame@N", WeaponIcon.CHUCK, 20, 26, 10, 0, (byte)Element.FIRE, 0, WeaponSprite.CHUCK, 0x25);
-			flameChucks.setClassUsability((ushort)(EquipPermission.BlackBelt | EquipPermission.Master | EquipPermission.Ninja));
+			WeaponPermissions[flameChucks.Id] = (ushort)(EquipPermission.BlackBelt | EquipPermission.Master | EquipPermission.Ninja);
 			flameChucks.writeWeaponMemory(this);
 		}
 
@@ -579,7 +579,7 @@ namespace FF1Lib
 			   var newWeapon = new Weapon(weaponIndex, nameWithIcon, icon, hitBonus, damage, crit,
 						       (byte)(spellIndex == 0xFF ? 0 : spellIndex+1), elementalWeakness,
 						       typeWeakeness, weaponTypeSprite, weaponSpritePaletteColor);
-			    newWeapon.setClassUsability((ushort)permissions);
+				WeaponPermissions[newWeapon.Id] = (ushort)permissions;
 			    newWeapon.writeWeaponMemory(this);
 
 			    Put(PriceOffset + (PriceSize*(int)weaponItemId), Blob.FromUShorts(new ushort[] {(ushort)goldvalue}));
@@ -618,9 +618,6 @@ namespace FF1Lib
 		public WeaponSprite WeaponTypeSprite;
 		public byte WeaponSpritePaletteColor;
 
-		//written to class permission area
-		public ushort ClassUsability;
-
 		public Weapon(int weaponIndex, FF1Rom rom)
 		{
 
@@ -636,16 +633,6 @@ namespace FF1Lib
 			byte weaponSpriteTypeHolder = rom.Get(weaponBaseOffset + 6, 1).ToBytes()[0];
 			WeaponTypeSprite = getWeaponSpriteFromByte(weaponSpriteTypeHolder);
 			WeaponSpritePaletteColor = rom.Get(weaponBaseOffset + 7, 1).ToBytes()[0];
-
-			//read permissions
-			int weaponUsabilityOffset = FF1Rom.WeaponPermissionsOffset + (WeaponIndex * FF1Rom.PermissionsSize);
-
-			byte highByte = rom.Get(weaponUsabilityOffset, 1).ToBytes()[0];
-			byte lowByte = rom.Get(weaponUsabilityOffset + 1, 1).ToBytes()[0];
-
-			ushort assembledUShort = BitConverter.ToUInt16(new byte[2] { highByte, lowByte }, 0);
-			ushort convertedClassPermissions = (ushort)(assembledUShort ^ 0xFFF);
-			ClassUsability = convertedClassPermissions;
 
 			//get name stuff
 			Icon = WeaponIcon.NONE;
@@ -687,21 +674,11 @@ namespace FF1Lib
 			}
 		}
 
-		public void setClassUsability(ushort classUsability)
-		{
-			ClassUsability = classUsability;
-		}
-
 		public void writeWeaponMemory(FF1Rom rom)
 		{
 			//weapon stats
 			int weaponBaseOffset = FF1Rom.WeaponOffset + (WeaponIndex * FF1Rom.WeaponSize);
 			rom.Put(weaponBaseOffset, new byte[] { HitBonus, Damage, Crit, SpellIndex, ElementalWeakness, TypeWeakness, (byte)WeaponTypeSprite, WeaponSpritePaletteColor });
-
-			//weapon usability
-			int weaponUsabilityOffset = FF1Rom.WeaponPermissionsOffset + (WeaponIndex * FF1Rom.PermissionsSize);
-			ushort convertedClassPermissions = (ushort)(ClassUsability ^ 0xFFF);
-			rom.Put(weaponUsabilityOffset, BitConverter.GetBytes(convertedClassPermissions));
 
 			rom.ItemsText[(int)Item.WoodenNunchucks + WeaponIndex] = Name;
 		}

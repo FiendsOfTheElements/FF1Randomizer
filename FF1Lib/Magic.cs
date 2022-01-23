@@ -423,20 +423,7 @@ namespace FF1Lib
 				// Shuffle the permissions the same way the spells were shuffled.
 				for (int c = 0; c < MagicPermissionsCount; c++)
 				{
-					var oldPermissions = Get(MagicPermissionsOffset + c * MagicPermissionsSize, MagicPermissionsSize);
-
-					var newPermissions = new byte[MagicPermissionsSize];
-					for (int i = 0; i < 8; i++)
-					{
-						for (int j = 0; j < 8; j++)
-						{
-							var oldIndex = shuffledSpells[8 * i + j].Index;
-							var oldPermission = (oldPermissions[oldIndex / 8] & (0x80 >> oldIndex % 8)) >> (7 - oldIndex % 8);
-							newPermissions[i] |= (byte)(oldPermission << (7 - j));
-						}
-					}
-
-					Put(MagicPermissionsOffset + c * MagicPermissionsSize, newPermissions);
+					SpellPermissions[(Classes)c] = SpellPermissions[(Classes)c].Select(x => (SpellSlots)shuffledSpells.FindIndex(y => y.Index == (int)x)).ToList();
 				}
 			}
 
@@ -498,44 +485,6 @@ namespace FF1Lib
 			// Confused enemies are supposed to cast FIRE, so figure out where FIRE ended up.
 			var newFireSpellIndex = shuffledSpells.FindIndex(spell => spell.Data == magicSpells[FireSpellIndex].Data);
 			Put(ConfusedSpellIndexOffset, new[] { (byte)newFireSpellIndex });
-		}
-
-		public void SetMPMax(int redMageMaxMP, int whiteMageMaxMP, int blackMageMaxMP, int knightMaxMP, int ninjaMaxMP)
-		{
-			const int lut_MaxMP = 0x6C902;
-
-			Put(lut_MaxMP, new List<byte> { 0x00, 0x00, 0x00, (byte)redMageMaxMP, (byte)whiteMageMaxMP, (byte)blackMageMaxMP,
-				(byte)knightMaxMP, (byte)ninjaMaxMP, 0x00, (byte)redMageMaxMP, (byte)whiteMageMaxMP, (byte)blackMageMaxMP }.ToArray());
-		}
-
-		public void SetClassMaxMp(int classIndex, int maxMp)
-		{
-			//49 levels per class, 2 bytes
-			//spell data is packed into a byte, bit index = spell level gained that level
-			//0 0 0 0 1 0 0 0 would mean gaining a level 4 spell slot that level
-
-			//brute force way... count the number of spells and rewrite it to not gain any more after the max
-			List<int> spellCount = new List<int> { 2, 0, 0, 0, 0, 0, 0, 0 };
-			for (int i = 0; i < 49; i++)
-			{
-				int currentOffset = NewLevelUpDataOffset + (49 * classIndex * 2) + (i * 2) + 1;
-				byte currentSpellData = Get(currentOffset, 1)[0];
-
-				for (int bitTest = 0; bitTest < 8; bitTest++)
-				{
-					if ((currentSpellData & (1 << bitTest)) != 0)
-					{
-						spellCount[bitTest]++;
-					}
-
-					if (spellCount[bitTest] > maxMp)
-					{
-						currentSpellData = (byte)(currentSpellData & ~(1 << bitTest));
-					}
-				}
-
-				Put(currentOffset, new byte[] { currentSpellData });
-			}
 		}
 
 		public void ChangeLockMode(LockHitMode lockHitMode)

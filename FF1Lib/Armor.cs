@@ -77,7 +77,7 @@ namespace FF1Lib
 		public void ExpandArmor()
 		{
 		    Armor platinumBracelet = new Armor(12, "Plat@B", ArmorIcon.BRACELET, 1, 42, 0, 0, ArmorType.ARMOR);
-			platinumBracelet.setClassUsability((ushort)(
+			ArmorPermissions[platinumBracelet.Id] = (ushort)(
 				EquipPermission.BlackBelt |
 				EquipPermission.BlackMage |
 				EquipPermission.BlackWizard |
@@ -89,7 +89,7 @@ namespace FF1Lib
 				EquipPermission.RedWizard |
 				EquipPermission.Thief |
 				EquipPermission.WhiteMage |
-				EquipPermission.WhiteWizard));
+				EquipPermission.WhiteWizard);
 			platinumBracelet.writeArmorMemory(this);
 		}
 
@@ -481,10 +481,10 @@ namespace FF1Lib
 			    if (resistName != "") {
 				resistName = "resist:" + resistName;
 			    }
-							   
+
 			    var armor = new Armor(itemId-Item.Cloth, name, ArmorIcon.NONE, weight, absorb,
 						  elementalResist, (byte)(spellIndex == 0xFF ? 0 : spellIndex+1), type);
-			    armor.setClassUsability(permissions);
+				ArmorPermissions[armor.Id] = permissions;
 			    armor.writeArmorMemory(this);
 			    Put(PriceOffset + (PriceSize*(int)itemId), Blob.FromUShorts(new ushort[] {(ushort)goldvalue}));
 
@@ -516,10 +516,7 @@ namespace FF1Lib
 		public byte Absorb;
 		public byte ElementalResist;
 		public byte SpellIndex;
-	        public ArmorType Type;
-
-		//written to armor permission area
-		public ushort ClassUsability;
+        public ArmorType Type;
 
 	    public Armor(int armorIndex, string name, ArmorIcon icon, byte weight, byte absorb, byte elementalResist, byte spellIndex, ArmorType type)
 		{
@@ -545,16 +542,6 @@ namespace FF1Lib
 			SpellIndex = rom.Get(armorBaseOffset + 3, 1).ToBytes()[0];
 			Type = (ArmorType)rom.Get(FF1Rom.ArmorTypeOffset+ArmorIndex, 1).ToBytes()[0];
 
-			//read permissions
-			int armorPermissionOffset = FF1Rom.ArmorPermissionsOffset + (ArmorIndex * FF1Rom.PermissionsSize);
-
-			byte highByte = rom.Get(armorPermissionOffset, 1).ToBytes()[0];
-			byte lowByte = rom.Get(armorPermissionOffset + 1, 1).ToBytes()[0];
-
-			ushort assembledUShort = BitConverter.ToUInt16(new byte[2] { highByte, lowByte }, 0);
-			ushort convertedClassPermissions = (ushort)(assembledUShort ^ 0xFFF);
-			ClassUsability = convertedClassPermissions;
-
 			//get name stuff
 			Icon = ArmorIcon.NONE;
 
@@ -578,22 +565,11 @@ namespace FF1Lib
 			}
 		}
 
-		public void setClassUsability(ushort classUsability)
-		{
-			ClassUsability = classUsability;
-		}
-
 		public void writeArmorMemory(FF1Rom rom)
 		{
 			//armor stats
 			int armorBaseOffset = FF1Rom.ArmorOffset + (ArmorIndex * FF1Rom.ArmorSize);
 			rom.Put(armorBaseOffset, new byte[] { Weight, Absorb, ElementalResist, SpellIndex });
-
-			//armor permissions
-			int armorPermissionOffset = FF1Rom.ArmorPermissionsOffset + (ArmorIndex * FF1Rom.PermissionsSize);
-			ushort convertedClassPermissions = (ushort)(ClassUsability ^ 0xFFF);
-			rom.Put(armorPermissionOffset, BitConverter.GetBytes(convertedClassPermissions));
-			rom.Put(FF1Rom.ArmorTypeOffset+ArmorIndex, new byte[]{(byte)Type});
 
 			rom.ItemsText[(int)Item.Cloth + ArmorIndex] = Name;
 		}
