@@ -857,6 +857,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemySkillsSpells"));
 			}
 		}
+		public bool? NoConsecutiveNukes
+		{
+			get => Flags.NoConsecutiveNukes;
+			set
+			{
+				Flags.NoConsecutiveNukes = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoConsecutiveNukes"));
+			}
+		}
 		public bool? BossSkillsOnly
 		{
 			get => Flags.BossSkillsOnly;

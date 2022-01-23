@@ -1215,7 +1215,7 @@ namespace FF1Lib
 		    }
 		    wrapped += st.Substring(start, end-start);
 		}
-		
+
 		wrapped = wrapped.Substring(0, 1).ToUpper() + wrapped.Substring(1);
 
 			return wrapped;

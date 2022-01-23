@@ -2110,7 +2110,11 @@
 		"title": "Orbs Required - Orb Spoilers",
 		"screenshot": "orbsRequiredSpoilersCheckBox.png",
 		"description": "When enabled, the Black Orb will explain its requirements."
+	},
+	{
+		"Id": "noConsecutiveNukesCheckBox",
+		"title": "Prevent consecutive NUKE or NUCLEAR",
+		"screenshot": "",
+		"description": "When shuffling spell and skill scripts, prevent consecutive casts of NUKE or NUCLEAR without at least one other spell or skill in between.  Also prevents having the starting spell and skill slots filled by both NUKE and NUCLEAR at the same time."
 	}
-
-
 ]

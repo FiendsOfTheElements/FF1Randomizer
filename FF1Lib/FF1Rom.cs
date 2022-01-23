@@ -688,11 +688,11 @@ namespace FF1Lib
 				if ((bool)flags.EnemySkillsSpellsTiered && (bool)!flags.BossSkillsOnly)
 				{
 					GenerateBalancedEnemyScripts(rng, (bool)flags.SwolePirates);
-					ShuffleEnemySkillsSpells(rng, false, (bool)!flags.NoBossSkillScriptShuffle);
+					ShuffleEnemySkillsSpells(rng, false, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.NoConsecutiveNukes);
 				}
 				else
 				{
-					ShuffleEnemySkillsSpells(rng, (bool)!flags.BossSkillsOnly, (bool)!flags.NoBossSkillScriptShuffle);
+				    ShuffleEnemySkillsSpells(rng, (bool)!flags.BossSkillsOnly, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.NoConsecutiveNukes);
 				}
 			}
 
@@ -1225,7 +1225,7 @@ namespace FF1Lib
 				shipLocations.SetShipLocation(255);
 
 				Archipelago exporter = new Archipelago(this, generatedPlacement, sanityChecker, expChests, incentivesData, flags, preferences);
-				Utilities.ArchipelagoCache = exporter.Work();	
+				Utilities.ArchipelagoCache = exporter.Work();
 			}
 
 			ItemsText.Write(this, UnusedGoldItems);
