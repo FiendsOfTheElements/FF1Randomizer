@@ -1494,7 +1494,7 @@ namespace FF1Lib
 				     new { index = Enemy.Kary2, dialog=0x4E },
 				     new { index = Enemy.Kraken2, dialog=0x4F },
 				     new { index = Enemy.Tiamat2, dialog=0xDB },
-				     new { index = Enemy.Chaos, dialog=0x51 }
+				     new { index = Enemy.Chaos, dialog=0x51 },
 		};
 
 		var skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount);
@@ -1655,6 +1655,7 @@ namespace FF1Lib
 			    $"{skillscript}";
 		    }
 		    else if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Hints) {
+
 			var chooseIntro = rng.Between(0, intros.Count-1);
 
 			var lines = new List<string>();

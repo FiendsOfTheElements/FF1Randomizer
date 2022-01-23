@@ -389,10 +389,8 @@ namespace FF1Lib
 				    bool previousWasNuke = false;
 				    for (int j = 0; j < spellBuckets[spellBucketIndex].Count; j++)
 				    {
-					Console.WriteLine($"spell {j} is {spellBuckets[spellBucketIndex][j]:X}");
 					if (nukes.Contains(spellBuckets[spellBucketIndex][j])) {
 					    if (previousWasNuke) {
-						Console.WriteLine("Found consecutive NUKE, reroll");
 						reroll = true;
 					    } else {
 						previousWasNuke = true;
@@ -410,10 +408,8 @@ namespace FF1Lib
 				    bool previousWasNuclear = false;
 				    for (int j = 0; j < skillBuckets[skillBucketIndex].Count; j++)
 				    {
-					Console.WriteLine($"skill {j} is {skillBuckets[skillBucketIndex][j]:X}");
 					if (skillBuckets[skillBucketIndex][j] == (byte)EnemySkills.Nuclear) {
 					    if (previousWasNuclear) {
-						Console.WriteLine("Found consecutive NUCLEAR, reroll");
 						reroll = true;
 					    } else {
 						previousWasNuclear = true;
@@ -426,7 +422,6 @@ namespace FF1Lib
 				    skillBucketIndex++;
 				}
 				if (startingNuke && startingNuclear) {
-				    Console.WriteLine("Found starting NUKE & NUCLEAR, reroll");
 				    reroll = true;
 				}
 			    }
