@@ -389,7 +389,7 @@ namespace FF1Lib
 				CraftRuseItem();
 			}
 
-			new RibbonShuffle(this, rng, flags, ItemsText).Work();
+			new RibbonShuffle(this, rng, flags, ItemsText, ArmorPermissions).Work();
 
 			if ((bool)flags.ShortToFR)
 			{
