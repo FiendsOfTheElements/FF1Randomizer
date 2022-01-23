@@ -2151,5 +2151,42 @@
 		"title": "Prevent consecutive NUKE or NUCLEAR",
 		"screenshot": "",
 		"description": "When shuffling spell and skill scripts, prevent consecutive casts of NUKE or NUCLEAR without at least one other spell or skill in between.  Also prevents having the starting spell and skill slots filled by both NUKE and NUCLEAR at the same time."
+	},
+
+	{
+		"Id": "beginnerPresetToolTipBox",
+		"title": "Beginner preset",
+		"screenshot": "",
+		"description": "Introduction to the randomizer, and the basis for most of the other presets."
+	},
+	{
+		"Id": "improvedVanillaPresetToolTipBox",
+		"title": "Improved Vanilla preset",
+		"screenshot": "",
+		"description": "Applies the bugfixes and quality-of-life improvements to the base game, but does not randomize anything."
+	},
+	{
+		"Id": "deepDungeonPresetToolTipBox",
+		"title": "Deep Dungeon preset",
+		"screenshot": "",
+		"description": ""
+	},
+	{
+		"Id": "overRandomizerToolTipBox",
+		"title": "Over Randomizer preset",
+		"screenshot": "",
+		"description": ""
+	},
+	{
+		"Id": "chaosRushToolTipBox",
+		"title": "Chaos Rush preset",
+		"screenshot": "",
+		"description": ""
+	},
+	{
+		"Id": "hiddenChaosToolTipBox",
+		"title": "Hidden Chaos preset",
+		"screenshot": "",
+		"description": ""
 	}
 ]

@@ -11,27 +11,39 @@
 		<p>These presets allow you to get into the game and start playing instantly.</p>
 
 		<h4>Standard Presets</h4>
+		<div class="col1">
+
 		<a class="preset-button styled-button @((selectedPresetId == "Beginner") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Beginner"))">Select</a>
-		<p class="preset-paragraph"><strong>Beginner:</strong> Good for first-time players as it crafts an easy-to-understand run for those looking to get into randomizers.</p>
+		<p class="preset-paragraph">
+		<ToolTipBox id="beginnerPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Beginner</strong></ToolTipBox></p>
+
+		<a class="preset-button styled-button @((selectedPresetId == "Deep_Dungeon") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Deep_Dungeon"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="deepDungeonPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Deep Dungeon</strong></ToolTipBox></p>
+
+		<a class="preset-button styled-button @((selectedPresetId == "Over_Randomizer") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Over_Randomizer"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="overRandomizerToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Over Randomizer</strong></ToolTipBox></p>
+
+		</div>
+
+		<div class="col2">
 
 		<a class="preset-button styled-button @((selectedPresetId == "Improved_Vanilla") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Improved_Vanilla"))">Select</a>
-		<p class="preset-paragraph"><strong>Improved Vanilla:</strong> Puts in bug fixes to the original game but maintains the overall basic FF experience.</p>
-
-		<a class="preset-button styled-button @((selectedPresetId == "Entrance_Floor_Shuffle") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Entrance_Floor_Shuffle"))">Select</a>
-		<p class="preset-paragraph"><strong>Floor and Entrance Shuffle:</strong> Mixes things up by shuffling all entrances and floors.</p>
-
-		<a class="preset-button styled-button @((selectedPresetId == "Shard_Hunt") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Shard_Hunt"))">Select</a>
-		<p class="preset-paragraph"><strong>Shard Hunt:</strong> Instead of lighting the fours orbs, seek out and collect shards hidden in random treasure chests to remove the Black Orb.</p>
+		<p class="preset-paragraph">
+		<ToolTipBox id="improvedVanillaPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Improved Vanilla</strong></ToolTipBox></p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "Chaos_Rush") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Chaos_Rush"))">Select</a>
-		<p class="preset-paragraph"><strong>Chaos Rush:</strong> Gives you free orbs, removes the requirement for Key and Lute, and tasks you with simply getting to Chaos, and killing them, as fast as possible.</p>
+		<p class="preset-paragraph">
+		<ToolTipBox id="chaosRushToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Chaos Rush</strong></ToolTipBox></p>
 
-		<a class="preset-button styled-button @((selectedPresetId == "Chaos_Rampage") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Chaos_Rampage"))">Select</a>
-		<p class="preset-paragraph"><strong>Chaos Rampage:</strong> Similar to Chaos Rush, but all four fiends need to be defeated.</p>
+		<a class="preset-button styled-button @((selectedPresetId == "Hidden_Chaos") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Hidden_Chaos"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="hiddenChaosToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Hidden Chaos</strong></ToolTipBox></p>
 
-		<a class="preset-button styled-button @((selectedPresetId == "ST2021_Pods") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("ST2021_Pods"))">Select</a>
-		<p class="preset-paragraph"><strong>Spring Tournament 2021 Pods:</strong> With a free canoe and randomized key locations inside dungeons, this flagset was the foundation of Spring Tournament 2021.</p>
+		</div>
 
+		<div class="col1 full">
 		<h4>User Presets</h4>
 		<p>
 			@foreach (var preset in localPresets)
@@ -62,6 +74,8 @@
 
 		<ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="importResourcePack"><h4>Import Resource Pack</h4></ToolTipBox>
 		<input type="file" id="importResourcePackInput" accept=".zip" @onchange="@OnImportResourcePack" />
+
+		</div>
 
 		<div class="clear-it"></div>
 	}
