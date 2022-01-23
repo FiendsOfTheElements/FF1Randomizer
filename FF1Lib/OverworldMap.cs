@@ -719,12 +719,6 @@ namespace FF1Lib
 				default: ConeriaTownEntranceItemShopIndex = 0; break;
 			}
 
-			if (flags.Spoilers || Debugger.IsAttached)
-			{
-				// Only output to the console
-				Utilities.WriteSpoilerLine($"OverworldMap::ShuffleEntrancesAndFloors() required {sanity} iterations.", true);
-			}
-
 			// Pretty print map data
 			foreach (var map in shuffled.OrderBy(x => x.Key))
 			{

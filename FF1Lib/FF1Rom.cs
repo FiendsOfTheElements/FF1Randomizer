@@ -376,7 +376,7 @@ namespace FF1Lib
 			}
 
 			if ((bool)flags.ArmorCrafter) {
-			    ArmorCrafter(rng, flags.ItemMagicMode == ItemMagicMode.None);
+			    ArmorCrafter(rng, flags.ItemMagicMode == ItemMagicMode.None, flags.RibbonMode == RibbonMode.Split);
 			}
 
 			if (flags.ItemMagicMode != ItemMagicMode.None && flags.ItemMagicMode != ItemMagicMode.Vanilla)
@@ -388,6 +388,8 @@ namespace FF1Lib
 			{
 				CraftRuseItem();
 			}
+
+			new RibbonShuffle(this, rng, flags, ItemsText).Work();
 
 			if ((bool)flags.ShortToFR)
 			{
@@ -1139,7 +1141,7 @@ namespace FF1Lib
 			uint funRngSeed = rng.Next();
 
 			RollCredits(rng);
-
+			
 			if (preferences.DisableDamageTileFlicker || flags.TournamentSafe)
 			{
 				DisableDamageTileFlicker();
@@ -1232,6 +1234,8 @@ namespace FF1Lib
 			}
 
 			ItemsText.Write(this, UnusedGoldItems);
+
+			if (flags.Spoilers) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, generatedPlacement, overworldMap, incentivesData, flags).WriteSpoiler();
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 

@@ -93,7 +93,7 @@ namespace FF1Lib
 			platinumBracelet.writeArmorMemory(this);
 		}
 
-		public void ArmorCrafter(MT19337 rng, bool noItemMagic) {
+		public void ArmorCrafter(MT19337 rng, bool noItemMagic, bool noResists) {
 		    var commonArmor = new List<Item>(ItemLists.CommonArmorTier);
 		    var rareArmor = new List<Item>(ItemLists.RareArmorTier);
 		    var legendaryArmor = new List<Item>(ItemLists.LegendaryArmorTier);
@@ -191,9 +191,12 @@ namespace FF1Lib
 								     Concat(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any)).
 								     Select(s => s.Id));
 		    // cast INV2, FOG2, or WALL
-		    var whiteShirtSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.AllCharacters).
-								Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
-								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any, SpellElement.All)).
+		    var whiteShirtSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.AllCharacters).
+
+								Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
+
+								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any, SpellElement.All)).
+
 								Select(s => s.Id));
 		    // Any elemental AOE damage, excludes NUKE/FADE
 		    var blackShirtSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).
@@ -357,23 +360,33 @@ namespace FF1Lib
 			    }
 
 			    var chooseResist = new List<byte>(resists);
-			    if (itemId == Item.Ribbon) {
-				elementalResist |= 0xFF;
-				name = "Ribbon";
-				chooseResist.Clear();
-			    } else if (tier == 2 && (armorType == ARMOR || armorType == SHIRT)) {
-				elementalResist |= chooseResist.SpliceRandom(rng);
-				name = resistNames[elementalResist];
-				elementalResist |= chooseResist.SpliceRandom(rng);
-				elementalResist |= chooseResist.SpliceRandom(rng);
-			    } else if (tier == 1 && (armorType == SHIRT)) {
-				elementalResist |= chooseResist.SpliceRandom(rng);
-				name = resistNames[elementalResist];
-				elementalResist |= chooseResist.SpliceRandom(rng);
-			    } else if (tier >= 1 && (armorType != BRACELET) && spellIndex == 0xFF) {
-				elementalResist |= chooseResist.SpliceRandom(rng);
-				name = resistNames[elementalResist];
-			    }
+				if (!noResists)
+				{
+					if (itemId == Item.Ribbon)
+					{
+						elementalResist |= 0xFF;
+						name = "Ribbon";
+						chooseResist.Clear();
+					}
+					else if (tier == 2 && (armorType == ARMOR || armorType == SHIRT))
+					{
+						elementalResist |= chooseResist.SpliceRandom(rng);
+						name = resistNames[elementalResist];
+						elementalResist |= chooseResist.SpliceRandom(rng);
+						elementalResist |= chooseResist.SpliceRandom(rng);
+					}
+					else if (tier == 1 && (armorType == SHIRT))
+					{
+						elementalResist |= chooseResist.SpliceRandom(rng);
+						name = resistNames[elementalResist];
+						elementalResist |= chooseResist.SpliceRandom(rng);
+					}
+					else if (tier >= 1 && (armorType != BRACELET) && spellIndex == 0xFF)
+					{
+						elementalResist |= chooseResist.SpliceRandom(rng);
+						name = resistNames[elementalResist];
+					}
+				}
 
 			    switch (armorType) {
 				case ARMOR:
@@ -468,9 +481,6 @@ namespace FF1Lib
 			    if (resistName != "") {
 				resistName = "resist:" + resistName;
 			    }
-
-			    var logLine = $"{(int)itemId-(int)Item.Cloth,2}: [{tier+1}]  {name,8}  {absorb,2}  {-weight,3}% {goldvalue,5}g ({score,6}) |{GenerateEquipPermission(permissions),12}| {resistName} {casting} *{type}";
-			    Utilities.WriteSpoilerLine(logLine);
 
 			    var armor = new Armor(itemId-Item.Cloth, name, ArmorIcon.NONE, weight, absorb,
 						  elementalResist, (byte)(spellIndex == 0xFF ? 0 : spellIndex+1), type);

@@ -576,9 +576,7 @@ namespace FF1Lib
 				casting = "casting: " + Spells[spellIndex].Name;
 			    }
 
-			    Utilities.WriteSpoilerLine($"{weaponIndex,-2}: [{tier}]  {nameWithIcon,8}  +{damage,2} {crit,2}% {hitBonus,2}% {goldvalue,5}g ({score,6}) |{GenerateEquipPermission((int)permissions),12}| {casting} gfx {weaponSpritePaletteColor:X} {weaponTypeSprite}");
-
-			    var newWeapon = new Weapon(weaponIndex, nameWithIcon, icon, hitBonus, damage, crit,
+			   var newWeapon = new Weapon(weaponIndex, nameWithIcon, icon, hitBonus, damage, crit,
 						       (byte)(spellIndex == 0xFF ? 0 : spellIndex+1), elementalWeakness,
 						       typeWeakeness, weaponTypeSprite, weaponSpritePaletteColor);
 				WeaponPermissions[newWeapon.Id] = (ushort)permissions;
@@ -594,7 +592,6 @@ namespace FF1Lib
 			    count++;
 			}
 		    }
-		    Utilities.WriteSpoilerLine("\n");
 		}
 
 	}

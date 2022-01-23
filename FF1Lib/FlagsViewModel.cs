@@ -5028,6 +5028,17 @@ namespace FF1Lib
 			}
 		}
 
+		public RibbonMode RibbonMode
+		{
+			get => Flags.RibbonMode;
+			set
+			{
+				Flags.RibbonMode = value;
+				RaisePropertyChanged();
+			}
+		}
+
+
 		public void LoadResourcePackFlags(Stream stream) {
 		    Flags.LoadResourcePackFlags(stream);
 		    RaisePropertyChanged();
