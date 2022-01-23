@@ -17,13 +17,17 @@
 		<p class="preset-paragraph">
 		<ToolTipBox id="beginnerPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Beginner</strong></ToolTipBox></p>
 
-		<a class="preset-button styled-button @((selectedPresetId == "Deep_Dungeon") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Deep_Dungeon"))">Select</a>
-		<p class="preset-paragraph">
-		<ToolTipBox id="deepDungeonPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Deep Dungeon</strong></ToolTipBox></p>
-
 		<a class="preset-button styled-button @((selectedPresetId == "Over_Randomizer") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Over_Randomizer"))">Select</a>
 		<p class="preset-paragraph">
 		<ToolTipBox id="overRandomizerToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Over Randomizer</strong></ToolTipBox></p>
+
+		<a class="preset-button styled-button @((selectedPresetId == "Chaos_Rush") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Chaos_Rush"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="chaosRushToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Chaos Rush</strong></ToolTipBox></p>
+
+		<a class="preset-button styled-button @((selectedPresetId == "Hidden_Chaos") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Hidden_Chaos"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="hiddenChaosToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Hidden Chaos</strong></ToolTipBox></p>
 
 		</div>
 
@@ -33,13 +37,17 @@
 		<p class="preset-paragraph">
 		<ToolTipBox id="improvedVanillaPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Improved Vanilla</strong></ToolTipBox></p>
 
-		<a class="preset-button styled-button @((selectedPresetId == "Chaos_Rush") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Chaos_Rush"))">Select</a>
+		<a class="preset-button styled-button @((selectedPresetId == "Entrance_Floor_Shuffle") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Entrance_Floor_Shuffle"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="chaosRushToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Chaos Rush</strong></ToolTipBox></p>
+		<ToolTipBox id="entranceFloorShufflePresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Entrance and Floor Shuffle</strong></ToolTipBox></p>
 
-		<a class="preset-button styled-button @((selectedPresetId == "Hidden_Chaos") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Hidden_Chaos"))">Select</a>
+		<a class="preset-button styled-button @((selectedPresetId == "NOverworld") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("NOverworld"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="hiddenChaosToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Hidden Chaos</strong></ToolTipBox></p>
+		<ToolTipBox id="noverworldShufflePresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>NOverworld</strong></ToolTipBox></p>
+
+		<a class="preset-button styled-button @((selectedPresetId == "Deep_Dungeon") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Deep_Dungeon"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="deepDungeonPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Deep Dungeon</strong></ToolTipBox></p>
 
 		</div>
 

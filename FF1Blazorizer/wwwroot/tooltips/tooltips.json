@@ -2169,24 +2169,36 @@
 		"Id": "deepDungeonPresetToolTipBox",
 		"title": "Deep Dungeon preset",
 		"screenshot": "",
-		"description": ""
+		"description": "Turns Coneria Castle into a 52-floor completely procedurally generated dungeon.\nAs you go deeper, the treasures get better and the monster encounters get stronger. Every so often there will be a branch to the next town, but dying or restoring a save will return you to the overworld."
 	},
 	{
 		"Id": "overRandomizerToolTipBox",
 		"title": "Over Randomizer preset",
 		"screenshot": "",
-		"description": ""
+		"description": "The randomizer will generate entirely new weapons, armor, spells, and enemies."
 	},
 	{
 		"Id": "chaosRushToolTipBox",
 		"title": "Chaos Rush preset",
 		"screenshot": "",
-		"description": ""
+		"description": "The Temple of Fiends is open to you, how fast can you kill Chaos?"
 	},
 	{
 		"Id": "hiddenChaosToolTipBox",
 		"title": "Hidden Chaos preset",
 		"screenshot": "",
-		"description": ""
+		"description": "Chaos is hidden in a random chest and must be found to be defeated. Once you've killed Chaos the game ends. If you find Chaos and then lose, fear not -- the fiend will not move and can be tracked down to the same treasure chest to be fought again."
+	},
+	{
+		"Id": "entranceFloorShufflePresetToolTipBox",
+		"title": "Entrance and Floor Shuffle preset",
+		"screenshot": "",
+		"description": "Overworld entrances (except for towns) are shuffled together, and shuffles cave and dungeon floors.  For example, the entrance to Waterfall could lead to Earth B1, which may lead to Volcano B3, which leads to Matoya's Cave, etc."
+	},
+	{
+		"Id": "noverworldShufflePresetToolTipBox",
+		"title": "NOverworld preset",
+		"screenshot": "",
+		"description": "Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps."
 	}
 ]

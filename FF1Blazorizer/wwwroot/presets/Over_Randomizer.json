@@ -134,7 +134,7 @@
     "EnemyScripts": true,
     "BossScriptsOnly": false,
     "EnemySkillsSpells": true,
-    "NoConsecutiveNukes": false,
+    "NoConsecutiveNukes": true,
     "BossSkillsOnly": false,
     "EnemySkillsSpellsTiered": false,
     "EnemyStatusAttacks": true,
