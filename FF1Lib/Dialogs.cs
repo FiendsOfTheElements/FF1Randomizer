@@ -1627,7 +1627,7 @@ namespace FF1Lib
 		    }
 
 		    string dialogtext = "";
-		    if (true) { //flags.SkyWarriorSpoilerBats == SpoilerBatHints.FullStats) {
+		    if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.FullStats) {
 			string spellscript = "";
 			foreach (var s in spells) {
 			    var spellname = spellList[s].Name;
@@ -1654,11 +1654,8 @@ namespace FF1Lib
 			    $"Defense {enemy[EnemyStat.Evade],3     }% -{enemy[EnemyStat.Defense],3}\n"+
 			    $"{spellscript}\n"+
 			    $"{skillscript}";
-			Console.WriteLine(dialogtext);
 		    }
-		    dialogtext = "";
-		    if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Hints) {
-
+		    else if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Hints) {
 			var chooseIntro = rng.Between(0, intros.Count-1);
 
 			var lines = new List<string>();
