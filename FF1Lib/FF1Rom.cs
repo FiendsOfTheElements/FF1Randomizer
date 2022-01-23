@@ -1235,7 +1235,7 @@ namespace FF1Lib
 
 			ItemsText.Write(this, UnusedGoldItems);
 
-			if (flags.Spoilers) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, generatedPlacement, overworldMap, incentivesData, flags).WriteSpoiler();
+			if (flags.Spoilers) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, generatedPlacement, overworldMap, incentivesData, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 

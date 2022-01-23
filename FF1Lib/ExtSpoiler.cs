@@ -20,6 +20,8 @@ namespace FF1Lib
 		private List<IRewardSource> itemPlacement;
 		private OverworldMap overworldMap;
 		private IncentiveData incentivesData;
+		private GearPermissions weaponPermissions;
+		private GearPermissions armorPermissions;
 		private Flags flags;
 
 		private SCLogic logic;
@@ -27,7 +29,7 @@ namespace FF1Lib
 		private List<Armor> armors;
 		private List<MagicSpell> magicSpells;
 
-		public ExtSpoiler(FF1Rom _rom, SanityCheckerV2 _checker, ShopData _shopData, ItemNames _itemsText, List<IRewardSource> _itemPlacement, OverworldMap _overworldMap, IncentiveData _incentivesData, Flags _flags)
+		public ExtSpoiler(FF1Rom _rom, SanityCheckerV2 _checker, ShopData _shopData, ItemNames _itemsText, List<IRewardSource> _itemPlacement, OverworldMap _overworldMap, IncentiveData _incentivesData, GearPermissions _weaponPermissions, GearPermissions _armorPermissions, Flags _flags)
 		{
 			rom = _rom;
 			checker = _checker;
@@ -36,6 +38,8 @@ namespace FF1Lib
 			itemPlacement = _itemPlacement;
 			overworldMap = _overworldMap;
 			incentivesData = _incentivesData;
+			weaponPermissions = _weaponPermissions;
+			armorPermissions = _armorPermissions;
 			flags = _flags;
 
 			logic = new SCLogic(rom, checker.Main, itemPlacement, flags, false);
@@ -63,7 +67,7 @@ namespace FF1Lib
 				var casting = "";
 				if(weapon.SpellIndex != 0) casting = "casting: " + magicSpells[weapon.SpellIndex - 1].Name;
 
-				Utilities.WriteSpoilerLine($"{weapon.Name.PadRight(8)}  +{weapon.Damage,2}      +{weapon.Crit,2}%    +{weapon.HitBonus,2}%    {rom.GenerateEquipPermission(weapon.ClassUsability),12}  {casting}");
+				Utilities.WriteSpoilerLine($"{weapon.Name.PadRight(8)}  +{weapon.Damage,2}      +{weapon.Crit,2}%    +{weapon.HitBonus,2}%    {rom.GenerateEquipPermission(weaponPermissions[weapon.Id]),12}  {casting}");
 			}
 
 			Utilities.WriteSpoilerLine("");
@@ -80,7 +84,7 @@ namespace FF1Lib
 				var casting = "";
 				if (armor.SpellIndex != 0) casting = "casting: " + magicSpells[armor.SpellIndex - 1].Name;
 				
-				Utilities.WriteSpoilerLine($"{armor.Name.PadRight(8)}  {armor.Type.ToString().PadRight(10)}  +{armor.Absorb,2}     -{armor.Weight,3}%   {rom.GenerateEquipPermission(armor.ClassUsability),12}  {casting.PadRight(16)}{GetElementalResist((SpellElement)armor.ElementalResist)}");
+				Utilities.WriteSpoilerLine($"{armor.Name.PadRight(8)}  {armor.Type.ToString().PadRight(10)}  +{armor.Absorb,2}     -{armor.Weight,3}%   {rom.GenerateEquipPermission(armorPermissions[armor.Id]),12}  {casting.PadRight(16)}{GetElementalResist((SpellElement)armor.ElementalResist)}");
 			}
 
 			Utilities.WriteSpoilerLine("");
