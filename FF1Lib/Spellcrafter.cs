@@ -1667,7 +1667,11 @@ namespace FF1Lib
 			}
 
 			if (!keepPermissions)
-				Put(MagicPermissionsOffset, spellPermissions); // write the permissions as one giant chunk
+			{
+				// write the permissions as one giant chunk
+				SpellPermissions.ImportRawPermissions(spellPermissions);
+			}
+
 			Put(MagicTextPointersOffset, spellMessages); // write the spell messages as one giant chunk
 
 			// modify spellcasting items
