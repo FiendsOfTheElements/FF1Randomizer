@@ -114,6 +114,7 @@ namespace FF1Lib
 			enemyText[32] = "SeaSNEK";    // -1  SeaSNAKE
 			enemyText[40] = "iMAGE";      // +0  IMAGE
 			enemyText[48] = "SANDWICH";   // +2  Sand W
+			enemyText[53] = "SNEKLADY";   // +0  GrMEDUSA
 			enemyText[56] = "EXPEDE";     // +2  PEDE
 			enemyText[61] = "EDWARD";     // +0  WzVAMP
 			enemyText[63] = "ARGYLE";     // -1  R.GOYLE
@@ -131,11 +132,12 @@ namespace FF1Lib
 			}
 			enemyText[92] = "NACHO";      // -1  NAOCHO
 			enemyText[94] = "HYDRANT";    // +0  R.HYDRA
+			enemyText[100] = "LadySNEK";  // +2  GrNAGA
 			enemyText[106] = "Green D";   // +2  Gas D
 			enemyText[111] = "BATMAN";    // +0  BADMAN
 			enemyText[112] = "OKAYMAN";   // +0  EVILMAN
-			enemyText[119] = "SpdBUMP";   // +3  LICH
-			enemyText[120] = "SpdBUMP";   // +3  LICH
+			enemyText[119] = "S.BUMP";    // +2  LICH
+			enemyText[120] = "S.BUMP";    // +2  LICH
 			enemyText[121] = "KELLY";     // +1  KARY
 			enemyText[122] = "KELLY";     // +1  KARY
 
