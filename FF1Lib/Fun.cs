@@ -99,6 +99,7 @@ namespace FF1Lib
 			enemyText[1] = "GrUMP";    // +0  GrIMP
 			enemyText[2] = "RURURU";   // +2  WOLF
 			enemyText[3] = "GrrrWOLF"; // +2  GrWOLF
+			enemyText[5] = "BrrrWOLF"; // +2  FrWOLF
 			enemyText[28] = "GeORGE";  // +0  GrOGRE
 
 			// "WzOGRE"
@@ -139,7 +140,7 @@ namespace FF1Lib
 			enemyText[122] = "KELLY";     // +1  KARY
 
 			// Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes
-			// We're adding (up to) a net of 16 bytes to enemyTextPart2.
+			// We're adding (up to) a net of 18 bytes to enemyTextPart2.
 			var enemyTextPart1 = enemyText.Take(2).ToArray();
 			var enemyTextPart2 = enemyText.Skip(2).ToArray();
 			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
