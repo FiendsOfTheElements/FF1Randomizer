@@ -875,6 +875,8 @@ namespace FF1Lib
 				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Titan)
 				{
 					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_Titan);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = 0x29;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)Item.Ruby;
 				}
 				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Unne)
 				{
