@@ -285,7 +285,7 @@
 		"EvadeCap": 3,
 		"AllowUnsafeStartArea": false,
 		"EarlierRuby": false,
-		"GuaranteedRuseItem": true,
+		"GuaranteedDefenseItem": 3,
 		"DisableStunTouch": false,
 		"ThiefAgilityBuff": 0,
 		"QuickMinimapLoad": true

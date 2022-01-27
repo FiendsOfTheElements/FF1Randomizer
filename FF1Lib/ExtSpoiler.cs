@@ -113,6 +113,8 @@ namespace FF1Lib
 		private void WriteItemPlacementSpoiler()
 		{
 			HashSet<Item> items = new HashSet<Item>(incentivesData.IncentiveItems.Concat(ItemLists.AllQuestItems).Concat(ItemLists.AllOrbs));
+			if (flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(flags.ItemMagicMode == ItemMagicMode.None)) items.Add(Item.PowerRod);
+			if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None)) items.Add(Item.PowerGauntlets);
 
 			var sorted = logic.RewardSources.Where(r => items.Contains(r.RewardSource.Item)).ToList();
 			sorted.Sort((SCLogicRewardSource lhs, SCLogicRewardSource rhs) => lhs.RewardSource.Item.ToString().CompareTo(rhs.RewardSource.Item.ToString()));
