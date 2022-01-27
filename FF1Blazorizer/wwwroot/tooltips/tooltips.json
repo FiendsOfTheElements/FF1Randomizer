@@ -1413,7 +1413,18 @@
 		"screenshot": "PoolSizeDropDown.gif",
 		"description": "Allows you to set the total number of characters in the Party Draft pool."
 	},
-
+	{
+		"Id": "poolParty2Melee",
+		"title": "Guarantee 2 Melee Classes",
+		"screenshot": "EnablePoolParty.gif",
+		"description": "Guarantee 2 distinct melee classes in the pool."
+	},
+	{
+		"Id": "poolParty2Mages",
+		"title": "Guarantee 2 Mage Classes",
+		"screenshot": "EnablePoolParty.gif",
+		"description": "Guarantee 2 distinct mage classes in the pool."
+	},
 	{
 		"Id": "tavernMode",
 		"title": "Tavern Recruitment Mode",

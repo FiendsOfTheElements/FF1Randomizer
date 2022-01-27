@@ -1101,6 +1101,27 @@ namespace FF1Lib
 			if (mainClassList.Count == 0) mainClassList = new List<FF1Class> { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt, FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
 
 			Blob pool = Blob.FromHex("");
+
+			if (flags.PoolParty2DifferentMelee)
+			{
+				var meleeList = mainClassList.Where(c => c == FF1Class.Fighter || c == FF1Class.Thief || c == FF1Class.BlackBelt || c == FF1Class.Knight || c == FF1Class.Ninja || c == FF1Class.Master).ToList();
+				if (meleeList.Count < 2) meleeList = new List<FF1Class> { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt };
+
+				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)meleeList.SpliceRandom(rng) }.ToArray());
+				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)meleeList.SpliceRandom(rng) }.ToArray());
+				size -= 2;
+			}
+
+			if (flags.PoolParty2DifferentMages)
+			{
+				var mageList = mainClassList.Where(c => c == FF1Class.RedMage || c == FF1Class.WhiteMage || c == FF1Class.BlackMage || c == FF1Class.RedWiz || c == FF1Class.WhiteWiz || c == FF1Class.BlackWiz).ToList();
+				if (mageList.Count < 2) mageList = new List<FF1Class> { FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
+
+				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)mageList.SpliceRandom(rng) }.ToArray());
+				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)mageList.SpliceRandom(rng) }.ToArray());
+				size -= 2;
+			}
+
 			for (int i = 0; i < size; i++)
 				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)mainClassList.PickRandom(rng) }.ToArray());
 
