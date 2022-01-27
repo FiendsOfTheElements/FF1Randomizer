@@ -598,6 +598,8 @@ namespace FF1Lib
 		public bool? ClampEnemyHpScaling { get; set; } = false;
 		public PoolSize PoolSize { get; set; } = PoolSize.Size6;
 		public bool? EnablePoolParty { get; set; } = false;
+		public bool PoolParty2DifferentMelee { get; set; } = false;
+		public bool PoolParty2DifferentMages { get; set; } = false;
 		public bool? IncludePromClasses { get; set; } = false;
 		public bool? EnableRandomPromotions { get; set; } = false;
 		public bool? IncludeBaseClasses { get; set; } = false;

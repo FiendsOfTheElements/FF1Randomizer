@@ -3945,6 +3945,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnablePoolParty"));
 			}
 		}
+		public bool PoolParty2DifferentMelee
+		{
+			get => Flags.PoolParty2DifferentMelee;
+			set
+			{
+				Flags.PoolParty2DifferentMelee = value;
+				RaisePropertyChanged();
+			}
+		}
+		public bool PoolParty2DifferentMages
+		{
+			get => Flags.PoolParty2DifferentMages;
+			set
+			{
+				Flags.PoolParty2DifferentMages = value;
+				RaisePropertyChanged();
+			}
+		}
 		public bool? IncludePromClasses
 		{
 			get => Flags.IncludePromClasses;
