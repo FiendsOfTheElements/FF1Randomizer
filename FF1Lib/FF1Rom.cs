@@ -1365,8 +1365,8 @@ namespace FF1Lib
 			// Pedometer + chests opened
 			PutInBank(0x0F, 0x8100, Blob.FromHex("18A532D027A52D2901F006A550D01DF00398D018ADA06069018DA060ADA16069008DA160ADA26069008DA260A52F8530A9FF8518A200A000BD00622904F001C8E8D0F5988DB7606060"));
 			Put(0x7D023, Blob.FromHex("A90F2003FE200081"));
-			// Count number of battles
-			PutInBank(0x0F, 0x8400, Blob.FromHex("18ADA76069018DA7609003EEA86020A8FE60"));
+			// Count number of battles + track battle screen
+			PutInBank(0x0F, 0x8400, Blob.FromHex("18ADA76069018DA7609003EEA860A90885F220A8FE60"));
 			PutInBank(0x1F, 0xD800, CreateLongJumpTableEntry(0x0F, 0x8400));
 			PutInBank(0x1F, 0xF28D, Blob.FromHex("2000D8"));
 			// Ambushes / Strike First
@@ -1467,8 +1467,66 @@ namespace FF1Lib
 			// Enable 3 palettes in battle
 			PutInBank(0x1F, 0xFDF1, CreateLongJumpTableEntry(0x0F, 0x9380));
 			PutInBank(0x0F, 0x9380, Blob.FromHex("ADD16A2910F00BA020B9336D99866B88D0F7ADD16A290F8DD16A20A1F4AD0220A9028D1440A93F8D0620A9008D0620A000B9876B8D0720C8C020D0F5A93F8D0620A9008D06208D06208D062060"));
+
+			GameScreenTracking();
 		}
 
+		public void GameScreenTracking()
+		{
+			/*
+			 * Track the various screen at $F2 on the zeropage for easy reference.
+			 * Intro Story  : $00
+			 * Title Screen : $01
+			 * Party Gen    : $02
+			 * Overworld    : $03
+			 * Standard Map : $04 / Read $48 for current map
+			 * Shop         : $05 / Read $66 for shop type
+			 * Main Menu	: $06
+			 * Lineup Menu	: $07
+			 * Battle       : $08
+			 * Bridge Scene : $09
+			 * Ending Scence: $0A
+			 */
+
+			// Track Title Screen
+			PutInBank(0x15, 0xB180, GetFromBank(0x0E, 0xA159, 0x0E) + Blob.FromHex("A90185F2") + Blob.FromHex("A9A148A96648A90E4C03FE"));
+			PutInBank(0x0E, 0xA159, Blob.FromHex("A9B148A97F48A9154C03FE"));
+
+			// Track Party Gen
+			// Included with party gen screen in Bank1E()
+
+			// Track overworld
+			PutInBank(0x15, 0xB000, GetFromBank(0x1F, 0xC6FD, 0x21) + Blob.FromHex("A90385F260"));
+			PutInBank(0x1F, 0xC6FD, Blob.FromHex("A9152003FE2000B04C1EC7"));
+
+			// Track standard map
+			PutInBank(0x15, 0xB030, GetFromBank(0x1F, 0xCF55, 0x1B) + Blob.FromHex("A90485F260"));
+			PutInBank(0x1F, 0xCF55, Blob.FromHex("A9152003FE2030B04C70CF"));
+
+			// Track Battle
+			// Inluded with battle count tracking in ExtraTrackingAndInitCode()
+
+			// Track shop, the subtype can be read from $66
+			PutInBank(0x15, 0xB060, GetFromBank(0x0E, 0xA330, 0x0C) + Blob.FromHex("A90585F2") + Blob.FromHex("A9A348A93B48A90E4C03FE"));
+			PutInBank(0x0E, 0xA330, Blob.FromHex("A9B048A95F48A9154C03FE"));
+
+			// Track Main menu
+			PutInBank(0x15, 0xB090, GetFromBank(0x0E, 0xADB3, 0x0C) + Blob.FromHex("A90685F2") + Blob.FromHex("A9AD48A9BE48A90E4C03FE"));
+			PutInBank(0x0E, 0xADB3, Blob.FromHex("A9B048A98F48A9154C03FE"));
+
+			// Track Lineup menu
+			PutInBank(0x15, 0xB0C0, GetFromBank(0x0E, 0x9915, 0x0C) + Blob.FromHex("A90785F2") + Blob.FromHex("A99948A92048A90E4C03FE"));
+			PutInBank(0x0E, 0x9915, Blob.FromHex("A9B048A9BF48A9154C03FE"));
+
+			// Track Ending Scene
+			PutInBank(0x15, 0xB0F0, GetFromBank(0x0D, 0xB803, 0x04) + GetFromBank(0x0D, 0xB80D, 0x09) + Blob.FromHex("A90A85F2") + Blob.FromHex("A9B848A91548A90D4C03FE"));
+			PutInBank(0x0D, 0xB803, GetFromBank(0x0D, 0xB807, 0x06));
+			PutInBank(0x0D, 0xB809, Blob.FromHex("A9B048A9EF48A9154C03FE"));
+
+			// Track Bridge Scene - Jump to ending scene because of a lack of space
+			PutInBank(0x15, 0xB120, GetFromBank(0x0D, 0xB84D, 0x0A) + Blob.FromHex("A90985F2") + Blob.FromHex("A9B848A95648A90D4C03FE"));
+			PutInBank(0x0D, 0xB84D, Blob.FromHex("A9B148A91F484C0FB8"));
+		}
 		public void MakeSpace()
 		{
 			// 54 bytes starting at 0xC265 in bank 1F, ROM offset: 7C275. FULL
