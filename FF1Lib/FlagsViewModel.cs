@@ -929,13 +929,22 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlierRuby"));
 			}
 		}
-		public bool? GuaranteedRuseItem
+		public GuaranteedDefenseItem GuaranteedDefenseItem
 		{
-			get => Flags.GuaranteedRuseItem;
+			get => Flags.GuaranteedDefenseItem;
 			set
 			{
-				Flags.GuaranteedRuseItem = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GuaranteedRuseItem"));
+				Flags.GuaranteedDefenseItem = value;
+				RaisePropertyChanged();
+			}
+		}
+		public GuaranteedPowerItem GuaranteedPowerItem
+		{
+			get => Flags.GuaranteedPowerItem;
+			set
+			{
+				Flags.GuaranteedPowerItem = value;
+				RaisePropertyChanged();
 			}
 		}
 		public bool? DisableStunTouch
@@ -1804,6 +1813,15 @@ namespace FF1Lib
 			{
 				Flags.IncentivizeOtherCastArmor = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeOtherCastArmor"));
+			}
+		}
+		public bool? IncentivizePowerRod
+		{
+			get => Flags.IncentivizePowerRod;
+			set
+			{
+				Flags.IncentivizePowerRod = value;
+				RaisePropertyChanged();
 			}
 		}
 		public bool? IncentivizeDefCastWeapon

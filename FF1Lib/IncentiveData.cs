@@ -187,6 +187,10 @@ namespace FF1Lib
 			{
 				incentivePool.Add(Item.PowerGauntlets);
 			}
+			if (flags.IncentivizePowerRod ?? false)
+			{
+				incentivePool.Add(Item.PowerRod);
+			}
 			if (flags.IncentivizeDefCastWeapon ?? false)
 			{
 				incentivePool.Add(Item.Defense);

@@ -294,7 +294,6 @@
     "EvadeCap": 3,
     "AllowUnsafeStartArea": false,
     "EarlierRuby": false,
-	"GuaranteedRuseItem": false,
 	"SpeedBoat": true,
 	"DisableStunTouch": false,
 	"ThiefAgilityBuff": 0,

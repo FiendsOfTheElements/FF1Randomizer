@@ -351,7 +351,6 @@
 		"EvadeCap": 3,
 		"AllowUnsafeStartArea": false,
 		"EarlierRuby": false,
-		"GuaranteedRuseItem": false,
 		"DisableStunTouch": false
 	}
 }

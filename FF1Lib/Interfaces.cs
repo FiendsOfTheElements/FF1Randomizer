@@ -66,6 +66,7 @@
 		bool? IncentivizeCanoe { get; }
 		bool IncentivizeRibbon2 { get; }
 		bool? IncentivizeOtherCastArmor { get; }
+		bool? IncentivizePowerRod { get; }
 		bool? IncentivizeDefCastArmor { get; }
 		bool? IncentivizeOffCastArmor { get; }
 		bool? IncentivizeDefCastWeapon { get; }
@@ -103,7 +104,8 @@
 		bool? RandomLoot { get; }
 		bool? BetterTrapChests { get; }
 		bool? EarlierRuby { get; }
-		bool? GuaranteedRuseItem { get; }
+		GuaranteedDefenseItem GuaranteedDefenseItem { get; }
+		GuaranteedPowerItem GuaranteedPowerItem { get; }
 		bool? GuaranteedMasamune { get; }
 		bool? SendMasamuneHome { get; }
 		bool? NoMasamune { get; }

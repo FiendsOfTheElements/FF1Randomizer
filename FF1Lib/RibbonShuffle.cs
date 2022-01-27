@@ -307,6 +307,8 @@ namespace FF1Lib
 
 			var list = elements.Where(e => elementSet.Contains(e)).ToList();
 
+			if (list.Count == 0) return;
+
 			var e = list.PickRandom(rng);
 			a.ElementalResist |= (byte)e;
 			elements.Remove(e);

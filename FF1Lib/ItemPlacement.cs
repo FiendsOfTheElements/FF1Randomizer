@@ -92,10 +92,16 @@ namespace FF1Lib
 
 			var treasurePool = _allTreasures.ToList();
 
-			if ((bool)_flags.GuaranteedRuseItem && !(_flags.ItemMagicMode == ItemMagicMode.None))
+			if (_flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(_flags.ItemMagicMode == ItemMagicMode.None) && !incentivePool.Contains(Item.PowerRod))
 			{
 				unincentivizedQuestItems.Add(Item.PowerRod);
 			}
+
+			if (_flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(_flags.ItemMagicMode == ItemMagicMode.None) && !incentivePool.Contains(Item.PowerGauntlets))
+			{
+				unincentivizedQuestItems.Add(Item.PowerGauntlets);
+			}
+
 			foreach (var incentive in incentivePool)
 			{
 				treasurePool.Remove(incentive);
@@ -164,7 +170,8 @@ namespace FF1Lib
 				{
 					//dont make shards jingle that'd be annoying
 					//dont make free items that get replaced, aka cabins, jingle
-					if (placedItem is TreasureChest && placedItem.Item != Item.Shard && placedItem.Item != ReplacementItem && !((bool)_flags.GuaranteedRuseItem && placedItem.Item == Item.PowerRod && !(_flags.ItemMagicMode == ItemMagicMode.None)))
+					if (placedItem is TreasureChest && placedItem.Item != Item.Shard &&
+						placedItem.Item != ReplacementItem)
 					{
 						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { 0x01 });
 					}

@@ -323,8 +323,69 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xC265, CreateLongJumpTableEntry(0x0F, 0x8AD0));
 			PutInBank(0x0F, 0x8AD0, Blob.FromHex("85808681C0FFD008A9D68580A9968581A91060"));
 		}
+	}
 
+	public partial class FF1Rom
+	{
+		public void CraftDefenseItem(Flags flags)
+		{
+			var newspell = GetSpells();
 
+			var ruse = newspell.Select((s, i) => (s, i)).Where(x => x.s.Data[4] == 0x10 && x.s.Data[3] == 0x04).Select(s => (int?)s.i).FirstOrDefault();
+			var inv = newspell.Select((s, i) => (s, i)).Where(x => x.s.Data[4] == 0x10 && x.s.Data[3] == 0x10).Select(s => (int?)s.i).FirstOrDefault();
+			var inv2 = newspell.Select((s, i) => (s, i)).Where(x => x.s.Data[4] == 0x10 && x.s.Data[3] == 0x08).Select(s => (int?)s.i).FirstOrDefault();
+
+			//no spell was found
+			if (ruse == null && inv == null && inv2 == null) return;
+
+			//backup spells
+			ruse = ruse.HasValue ? ruse : (inv2.HasValue ? inv2 : inv);
+			inv = inv.HasValue ? inv : (inv2.HasValue ? inv2 : ruse);
+			inv2 = inv2.HasValue ? inv2 : (ruse.HasValue ? ruse : inv);
+
+			switch (flags.GuaranteedDefenseItem)
+			{
+				case GuaranteedDefenseItem.RUSE:
+					WriteItemSpellData(newspell[ruse.Value], Item.PowerRod);
+					break;
+				case GuaranteedDefenseItem.INV:
+					WriteItemSpellData(newspell[inv.Value], Item.PowerRod);
+					break;
+				case GuaranteedDefenseItem.INV2:
+					WriteItemSpellData(newspell[inv2.Value], Item.PowerRod);
+					break;
+			}
+		}
+
+		public void CraftPowerItem(Flags flags)
+		{
+			var newspell = GetSpells();
+
+			var sabr = newspell.Select((s, i) => (s, i)).Where(x => x.s.Data[4] == 0x0D && x.s.Data[3] == 0x04).Select(s => (int?)s.i).FirstOrDefault();
+			var tmpr = newspell.Select((s, i) => (s, i)).Where(x => x.s.Data[4] == 0x0D && x.s.Data[3] == 0x10).Select(s => (int?)s.i).FirstOrDefault();
+			var fast = newspell.Select((s, i) => (s, i)).Where(x => x.s.Data[4] == 0x0C).Select(s => (int?)s.i).FirstOrDefault();
+
+			//no spell was found
+			if (sabr == null && tmpr == null && fast == null) return;
+
+			//backup spells
+			sabr = sabr.HasValue ? sabr : (tmpr.HasValue ? tmpr : fast);
+			tmpr = tmpr.HasValue ? tmpr : (sabr.HasValue ? sabr : fast);
+			fast = fast.HasValue ? fast : (sabr.HasValue ? sabr : tmpr);
+
+			switch (flags.GuaranteedPowerItem)
+			{
+				case GuaranteedPowerItem.SABR:
+					WriteItemSpellData(newspell[sabr.Value], Item.PowerGauntlets);
+					break;
+				case GuaranteedPowerItem.TMPR:
+					WriteItemSpellData(newspell[tmpr.Value], Item.PowerGauntlets);
+					break;
+				case GuaranteedPowerItem.FAST:
+					WriteItemSpellData(newspell[fast.Value], Item.PowerGauntlets);
+					break;
+			}
+		}
 	}
 
 	public enum ItemMagicMode
@@ -342,5 +403,25 @@ namespace FF1Lib
 		Low = 2,
 		Support = 3,
 		Random = 4
+	}
+
+	public enum GuaranteedDefenseItem
+	{
+		None = 0,
+		INV = 1,
+		INV2 = 2,
+		RUSE = 3,
+		Any = 4,
+		Random = 5
+	}
+
+	public enum GuaranteedPowerItem
+	{
+		None = 0,
+		TMPR = 1,
+		SABR = 2,
+		FAST = 3,
+		Any = 4,
+		Random = 5
 	}
 }

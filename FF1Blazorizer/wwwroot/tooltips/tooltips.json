@@ -600,6 +600,12 @@
 		"description": "Adds the Power Gauntlet to the incentive pool to be distributed in the selected incentive locations."
 	},
 	{
+		"Id": "incentivizePowerRodCheckBox",
+		"title": "Power Rod",
+		"screenshot": null,
+		"description": "Adds the Power Rod to the incentive pool to be distributed in the selected incentive locations."
+	},
+	{
 		"Id": "incentivizeDefCastArmorCheckBox",
 		"title": "White Shirt",
 		"screenshot": "incentivizeDefCastArmorCheckBox.png",
@@ -1718,10 +1724,16 @@
 	},
 
 	{
-		"Id": "ruseItemCheckBox",
-		"title": "Guaranteed Ruse Item",
+		"Id": "guaranteedDefenseItem",
+		"title": "Guaranteed Defense Item",
 		"screenshot": "ruseItemCheckBox.png",
-		"description": "Turn the Power Staff into a RUSE casting item. Also ensures that the \"Item Magic\" and \"Randomize Treasures\" flags do not alter or remove this RUSE item from the seed, and prevents the item from being placed in the Temple of Fiends Revisited.\nNote: With this flag turned on you could end up with two different RUSE-casting items, such as a Defense Sword and a RUSE cane. This is expected, but not guaranteed, behavior."
+		"description": "Guarantees that the Power Rod has RUSE/INV/INV2 depending on the setting. The item will be treated as a Key Item during placement."
+	},
+	{
+		"Id": "guaranteedPowerItem",
+		"title": "Guaranteed Power Item",
+		"screenshot": null,
+		"description": "Guarantees that the Power Gauntlet has SABR/TMPR/FAST depending on the setting. The item will be treated as a Key Item during placement."
 	},
 	{
 		"Id": "itemMagicCheckBox",

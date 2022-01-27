@@ -384,9 +384,14 @@ namespace FF1Lib
 				ShuffleItemMagic(rng, flags);
 			}
 
-			if ((bool)flags.GuaranteedRuseItem && !(flags.ItemMagicMode == ItemMagicMode.None))
+			if (flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
 			{
-				CraftRuseItem();
+				CraftDefenseItem(flags);
+			}
+
+			if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
+			{
+				CraftPowerItem(flags);
 			}
 
 			new RibbonShuffle(this, rng, flags, ItemsText, ArmorPermissions).Work();
@@ -562,8 +567,12 @@ namespace FF1Lib
 						if (!((bool)flags.RandomWaresIncludesSpecialGear))
 						{
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
-							if ((bool)flags.GuaranteedRuseItem && !(flags.ItemMagicMode == ItemMagicMode.None))
+
+							if (flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
 								excludeItemsFromRandomShops.Add(Item.PowerRod);
+
+							if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
+								excludeItemsFromRandomShops.Add(Item.PowerGauntlets);
 						}
 
 						if ((bool)flags.NoMasamune)

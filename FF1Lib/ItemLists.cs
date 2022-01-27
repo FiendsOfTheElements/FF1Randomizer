@@ -169,6 +169,7 @@ namespace FF1Lib
 			if (flags.IncentivizeOffCastWeapon ?? false) incentivePool.Add(Item.ThorHammer);
 			if (flags.IncentivizeOpal ?? false) incentivePool.Add(Item.Opal);
 			if (flags.IncentivizeOtherCastArmor ?? false) incentivePool.Add(Item.PowerGauntlets);
+			if (flags.IncentivizePowerRod ?? false) incentivePool.Add(Item.PowerRod);
 			if (flags.IncentivizeDefCastArmor ?? false) incentivePool.Add(Item.WhiteShirt);
 			if (flags.IncentivizeOffCastArmor ?? false) incentivePool.Add(Item.BlackShirt);
 			if (flags.IncentivizeRibbon ?? false) incentivePool.Add(Item.Ribbon);

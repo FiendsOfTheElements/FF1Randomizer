@@ -56,6 +56,11 @@ namespace FF1Lib
 
 		#endregion
 
+
+		public GuaranteedDefenseItem GuaranteedDefenseItem { get; set; } = GuaranteedDefenseItem.None;
+
+		public GuaranteedPowerItem GuaranteedPowerItem { get; set; } = GuaranteedPowerItem.None;
+
 		public ScriptTouchMultiplier ScriptMultiplier { get; set; } = ScriptTouchMultiplier.Vanilla;
 		public ScriptTouchMultiplier TouchMultiplier { get; set; } = ScriptTouchMultiplier.Vanilla;
 
@@ -320,6 +325,7 @@ namespace FF1Lib
 		public bool? IncentivizeDefCastArmor { get; set; } = false;
 		public bool? IncentivizeOffCastArmor { get; set; } = false;
 		public bool? IncentivizeOtherCastArmor { get; set; } = false;
+		public bool? IncentivizePowerRod { get; set; } = false;
 		public bool? IncentivizeDefCastWeapon { get; set; } = false;
 		public bool? IncentivizeOffCastWeapon { get; set; } = false;
 		public bool IncentivizeOtherCastWeapon { get; set; } = false;
@@ -663,7 +669,6 @@ namespace FF1Lib
 		public bool WhiteMageHarmEveryone { get; set; } = false;
 
 		public bool? EarlierRuby { get; set; } = false;
-		public bool? GuaranteedRuseItem { get; set; } = false;
 		public bool? DisableStunTouch { get; set; } = false;
 		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (OwMapExchange != OwMapExchanges.Desert);
 		public bool DisableOWMapModifications => SanityCheckerV2 & (OwMapExchange != OwMapExchanges.None);
@@ -729,6 +734,7 @@ namespace FF1Lib
 			+ ((IncentivizeDefCastArmor ?? false) ? 1 : 0)
 			+ ((IncentivizeOffCastArmor ?? false) ? 1 : 0)
 			+ ((IncentivizeOtherCastArmor ?? false) ? 1 : 0)
+			+ ((IncentivizePowerRod ?? false) ? 1 : 0)
 			+ ((IncentivizeDefCastWeapon ?? false) ? 1 : 0)
 			+ ((IncentivizeOffCastWeapon ?? false) ? 1 : 0)
 			+ (IncentivizeOtherCastWeapon ? 1 : 0)
@@ -763,6 +769,7 @@ namespace FF1Lib
 			+ ((IncentivizeDefCastArmor ?? true) ? 1 : 0)
 			+ ((IncentivizeOffCastArmor ?? true) ? 1 : 0)
 			+ ((IncentivizeOtherCastArmor ?? true) ? 1 : 0)
+			+ ((IncentivizePowerRod ?? true) ? 1 : 0)
 			+ ((IncentivizeDefCastWeapon ?? true) ? 1 : 0)
 			+ ((IncentivizeOffCastWeapon ?? true) ? 1 : 0)
 			+ (IncentivizeOtherCastWeapon ? 1 : 0)
@@ -818,6 +825,7 @@ namespace FF1Lib
 			+ ((IncentivizeOffCastWeapon != null) ? (IncentivizeOffCastWeapon ?? false ? "Thor\U0001F528 " : "") : ("Thor?\U0001F528 "))
 			+ ((IncentivizeOpal != null) ? (IncentivizeOpal ?? false ? "Opal\U0001F48D " : "") : ("Opal?\U0001F48D "))
 			+ ((IncentivizeOtherCastArmor != null) ? (IncentivizeOtherCastArmor ?? false ? "Power\U0001F94A " : "") : ("Power?\U0001F94A "))
+			+ ((IncentivizePowerRod != null) ? (IncentivizePowerRod ?? false ? "PowerRod " : "") : ("PowerRod? "))
 			+ ((IncentivizeOffCastArmor != null) ? (IncentivizeOffCastArmor ?? false ? "Black\U0001F9E5 " : "") : ("Black?\U0001F9E5 "))
 			+ ((IncentivizeDefCastArmor != null) ? (IncentivizeDefCastArmor ?? false ? "White\U0001F455 " : "") : ("White?\U0001F455 "))
 			+ ((IncentivizeRibbon != null) ? (IncentivizeRibbon ?? false ? "Ribbon\U0001F380 " : "") : ("Ribbon?\U0001F380 "))
@@ -900,6 +908,12 @@ namespace FF1Lib
 
 			if (flags.ItemMagicMode == ItemMagicMode.Random) newflags.ItemMagicMode = (ItemMagicMode)rng.Between(0, 2);
 			if (flags.ItemMagicPool == ItemMagicPool.Random) newflags.ItemMagicPool = (ItemMagicPool)rng.Between(0, 3);
+
+			if (flags.GuaranteedDefenseItem == GuaranteedDefenseItem.Random) newflags.GuaranteedDefenseItem = rng.Between(0, 1) > 0 ? GuaranteedDefenseItem.Any : GuaranteedDefenseItem.None;
+			if (flags.GuaranteedPowerItem == GuaranteedPowerItem.Random) newflags.GuaranteedPowerItem = rng.Between(0, 1) > 0 ? GuaranteedPowerItem.Any : GuaranteedPowerItem.None;
+
+			if (newflags.GuaranteedDefenseItem == GuaranteedDefenseItem.Any) newflags.GuaranteedDefenseItem = (GuaranteedDefenseItem)rng.Between(1, 3);
+			if (newflags.GuaranteedPowerItem == GuaranteedPowerItem.Any) newflags.GuaranteedPowerItem = (GuaranteedPowerItem)rng.Between(1, 3);
 
 			return newflags;
 		}
