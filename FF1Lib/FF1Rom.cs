@@ -1488,44 +1488,44 @@ namespace FF1Lib
 			 * Ending Scence: $0A
 			 */
 
-			// Track Title Screen
-			PutInBank(0x15, 0xB180, GetFromBank(0x0E, 0xA159, 0x0E) + Blob.FromHex("A90185F2") + Blob.FromHex("A9A148A96648A90E4C03FE"));
-			PutInBank(0x0E, 0xA159, Blob.FromHex("A9B148A97F48A9154C03FE"));
-
 			// Track Party Gen
 			// Included with party gen screen in Bank1E()
 
 			// Track overworld
-			PutInBank(0x15, 0xB000, GetFromBank(0x1F, 0xC6FD, 0x21) + Blob.FromHex("A90385F260"));
-			PutInBank(0x1F, 0xC6FD, Blob.FromHex("A9152003FE2000B04C1EC7"));
+			PutInBank(0x1E, 0xBC00, GetFromBank(0x1F, 0xC6FD, 0x21) + Blob.FromHex("A90385F260"));
+			PutInBank(0x1F, 0xC6FD, Blob.FromHex("A91E2003FE2000BC4C1EC7"));
 
 			// Track standard map
-			PutInBank(0x15, 0xB030, GetFromBank(0x1F, 0xCF55, 0x1B) + Blob.FromHex("A90485F260"));
-			PutInBank(0x1F, 0xCF55, Blob.FromHex("A9152003FE2030B04C70CF"));
+			PutInBank(0x1E, 0xBC30, GetFromBank(0x1F, 0xCF55, 0x1B) + Blob.FromHex("A90485F260"));
+			PutInBank(0x1F, 0xCF55, Blob.FromHex("A91E2003FE2030BC4C70CF"));
 
 			// Track Battle
 			// Inluded with battle count tracking in ExtraTrackingAndInitCode()
 
 			// Track shop, the subtype can be read from $66
-			PutInBank(0x15, 0xB060, GetFromBank(0x0E, 0xA330, 0x0C) + Blob.FromHex("A90585F2") + Blob.FromHex("A9A348A93B48A90E4C03FE"));
-			PutInBank(0x0E, 0xA330, Blob.FromHex("A9B048A95F48A9154C03FE"));
+			PutInBank(0x1E, 0xBC50, GetFromBank(0x0E, 0xA330, 0x0C) + Blob.FromHex("A90585F2") + Blob.FromHex("A9A348A93B48A90E4C03FE"));
+			PutInBank(0x0E, 0xA330, Blob.FromHex("A9BC48A94F48A91E4C03FE"));
 
 			// Track Main menu
-			PutInBank(0x15, 0xB090, GetFromBank(0x0E, 0xADB3, 0x0C) + Blob.FromHex("A90685F2") + Blob.FromHex("A9AD48A9BE48A90E4C03FE"));
-			PutInBank(0x0E, 0xADB3, Blob.FromHex("A9B048A98F48A9154C03FE"));
+			PutInBank(0x1E, 0xBC70, GetFromBank(0x0E, 0xADB3, 0x0C) + Blob.FromHex("A90685F2") + Blob.FromHex("A9AD48A9BE48A90E4C03FE"));
+			PutInBank(0x0E, 0xADB3, Blob.FromHex("A9BC48A96F48A91E4C03FE"));
 
 			// Track Lineup menu
-			PutInBank(0x15, 0xB0C0, GetFromBank(0x0E, 0x9915, 0x0C) + Blob.FromHex("A90785F2") + Blob.FromHex("A99948A92048A90E4C03FE"));
-			PutInBank(0x0E, 0x9915, Blob.FromHex("A9B048A9BF48A9154C03FE"));
+			PutInBank(0x1E, 0xBC90, GetFromBank(0x0E, 0x9915, 0x0C) + Blob.FromHex("A90785F2") + Blob.FromHex("A99948A92048A90E4C03FE"));
+			PutInBank(0x0E, 0x9915, Blob.FromHex("A9BC48A98F48A91E4C03FE"));
 
 			// Track Ending Scene
-			PutInBank(0x15, 0xB0F0, GetFromBank(0x0D, 0xB803, 0x04) + GetFromBank(0x0D, 0xB80D, 0x09) + Blob.FromHex("A90A85F2") + Blob.FromHex("A9B848A91548A90D4C03FE"));
+			PutInBank(0x1E, 0xBCB0, GetFromBank(0x0D, 0xB803, 0x04) + GetFromBank(0x0D, 0xB80D, 0x09) + Blob.FromHex("A90A85F2") + Blob.FromHex("A9B848A91548A90D4C03FE"));
 			PutInBank(0x0D, 0xB803, GetFromBank(0x0D, 0xB807, 0x06));
-			PutInBank(0x0D, 0xB809, Blob.FromHex("A9B048A9EF48A9154C03FE"));
+			PutInBank(0x0D, 0xB809, Blob.FromHex("A9BC48A9AF48A91E4C03FE"));
 
 			// Track Bridge Scene - Jump to ending scene because of a lack of space
-			PutInBank(0x15, 0xB120, GetFromBank(0x0D, 0xB84D, 0x0A) + Blob.FromHex("A90985F2") + Blob.FromHex("A9B848A95648A90D4C03FE"));
-			PutInBank(0x0D, 0xB84D, Blob.FromHex("A9B148A91F484C0FB8"));
+			PutInBank(0x1E, 0xBCD0, GetFromBank(0x0D, 0xB84D, 0x0A) + Blob.FromHex("A90985F2") + Blob.FromHex("A9B848A95648A90D4C03FE"));
+			PutInBank(0x0D, 0xB84D, Blob.FromHex("A9BC48A9CF484C0FB8"));
+
+			// Track Title Screen
+			PutInBank(0x1E, 0xBCF0, GetFromBank(0x0E, 0xA159, 0x0E) + Blob.FromHex("A90185F2") + Blob.FromHex("A9A148A96648A90E4C03FE"));
+			PutInBank(0x0E, 0xA159, Blob.FromHex("A9BC48A9EF48A91E4C03FE"));
 		}
 		public void MakeSpace()
 		{
