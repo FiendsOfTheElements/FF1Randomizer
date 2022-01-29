@@ -1,5 +1,5 @@
 {
-  "Name": "NOverworld",
+  "Name": "Noverworld",
   "Flags": {
     "StartingEquipmentMasamune": false,
     "StartingEquipmentKatana": false,
@@ -35,7 +35,7 @@
     "LooseItemsForwardPlacement": false,
     "LooseItemsSpreadPlacement": false,
     "LooseItemsNpcBalance": false,
-    "PredictivePlacement": true,
+    "PredictivePlacement": false,
     "AllowUnsafePlacement": false,
     "ExpChestConversionMin": 20,
     "ExpChestConversionMax": 20,
@@ -236,7 +236,7 @@
     "FreeCanal": false,
     "FreeCanoe": false,
     "EasyMode": false,
-    "HousesFillHp": true,
+    "HousesFillHp": false,
     "SpeedHacks": true,
     "NoPartyShuffle": true,
     "Dash": true,
@@ -247,7 +247,7 @@
     "ChestInfo": true,
     "IncentiveChestItemsFanfare": true,
     "WaitWhenUnrunnable": true,
-    "Etherizer": false,
+    "Etherizer": true,
     "HouseMPRestoration": true,
     "WeaponStats": true,
     "BBCritRate": false,

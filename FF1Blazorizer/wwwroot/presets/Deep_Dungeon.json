@@ -245,7 +245,7 @@
     "IdentifyTreasures": true,
     "ShopInfo": true,
     "ChestInfo": true,
-    "IncentiveChestItemsFanfare": true,
+    "IncentiveChestItemsFanfare": false,
     "WaitWhenUnrunnable": true,
     "Etherizer": true,
     "HouseMPRestoration": true,
