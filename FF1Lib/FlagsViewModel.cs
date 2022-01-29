@@ -3963,6 +3963,15 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+		public bool SafePoolParty
+		{
+			get => Flags.SafePoolParty;
+			set
+			{
+				Flags.SafePoolParty = value;
+				RaisePropertyChanged();
+			}
+		}
 		public bool? IncludePromClasses
 		{
 			get => Flags.IncludePromClasses;
@@ -5062,6 +5071,15 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? MermaidPrison
+		{
+			get => Flags.MermaidPrison;
+			set
+			{
+				Flags.MermaidPrison = value;
+				RaisePropertyChanged();
+			}
+		}
 
 		public string PlayerName
 		{

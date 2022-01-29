@@ -30,6 +30,12 @@
 		"description": "Shattered spreads the resistances across many amror pieces. Each Element occurs multiple times. It tries to ensure that every class can attain full protection."
 	},
 	{
+		"Id": "mermaidPrison",
+		"title": "Mermaid Prison",
+		"screenshot": null,
+		"description": "Locks all doors on the Mermaid Floor in Sea Shrine."
+	},
+	{
 		"Id": "scriptMultiplier",
 		"title": "Everything has a Script",
 		"screenshot": "enemyScriptsCheckBox.png",
@@ -1412,6 +1418,12 @@
 		"title": "Pool Size",
 		"screenshot": "PoolSizeDropDown.gif",
 		"description": "Allows you to set the total number of characters in the Party Draft pool."
+	},
+	{
+		"Id": "safePoolParty",
+		"title": "Safe Party Draft",
+		"screenshot": "EnablePoolParty.gif",
+		"description": "Guarantee 1 melee class and 2 distinct mage classes in the pool."
 	},
 	{
 		"Id": "poolParty2Melee",

@@ -87,6 +87,8 @@ namespace FF1Lib
 			SeaShrine20, SeaShrine21, SeaShrine22, SeaShrine23, SeaShrine24,
 			SeaShrine25, SeaShrine26, SeaShrine27, SeaShrine28, SeaShrine29,
 			SeaShrine30, SeaShrine31, SeaShrineMajor };
+		public static readonly IReadOnlyCollection<IRewardSource> SeaShrineMermaids =
+			new List<IRewardSource> { SeaShrine20, SeaShrine21, SeaShrine22, SeaShrine23, SeaShrine24, SeaShrine25, SeaShrine26, SeaShrine27, SeaShrine28, SeaShrine29, SeaShrine30, SeaShrine31 };
 		public static readonly IReadOnlyCollection<IRewardSource> Waterfall =
 			new List<IRewardSource> { Waterfall1, Waterfall2, Waterfall3, Waterfall4,
 			Waterfall5, Waterfall6 };
