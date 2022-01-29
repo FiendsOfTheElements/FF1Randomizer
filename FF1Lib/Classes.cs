@@ -261,9 +261,12 @@ namespace FF1Lib
 
 			// Starting Stats awards MP to allow any class to start with spell charges
 			rom.PutInBank(0x1F, 0xC7CA, Blob.FromHex("B94BB09D20639D286360"));
-			rom.PutInBank(0x00, 0xB07B, Blob.FromHex("02"));
-			rom.PutInBank(0x00, 0xB08B, Blob.FromHex("02"));
-			rom.PutInBank(0x00, 0xB09B, Blob.FromHex("02"));
+			_classes[(int)Classes.RedMage].SpCStarting = 2;
+			_classes[(int)Classes.WhiteMage].SpCStarting = 2;
+			_classes[(int)Classes.BlackMage].SpCStarting = 2;
+			_classes[(int)Classes.RedWizard].SpCStarting = 2;
+			_classes[(int)Classes.WhiteWizard].SpCStarting = 2;
+			_classes[(int)Classes.BlackWizard].SpCStarting = 2;
 
 			// Status jump to new menu wait, switch banks, see 0E_A0E0_MenuWaitForBtn_SFX_Status.asm
 			rom.PutInBank(0x0E, 0xB50D, Blob.FromHex("4CE0A0"));
