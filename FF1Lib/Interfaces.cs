@@ -38,6 +38,7 @@
 		IncentivePlacementType CorneriaIncentivePlacementType { get; }
 		IncentivePlacementType MarshLockedIncentivePlacementType { get; }
 		IncentivePlacementType CardiaIncentivePlacementType { get; }
+		bool? MermaidPrison { get; }
 
 		bool? IncentivizeXcalber { get; }
 		bool? IncentivizeMasamune { get; }

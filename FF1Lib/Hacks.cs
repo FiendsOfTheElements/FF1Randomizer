@@ -1111,8 +1111,16 @@ namespace FF1Lib
 				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)meleeList.SpliceRandom(rng) }.ToArray());
 				size -= 2;
 			}
+			else if (flags.SafePoolParty)
+			{
+				var meleeList = mainClassList.Where(c => c == FF1Class.Fighter || c == FF1Class.Thief || c == FF1Class.BlackBelt || c == FF1Class.Knight || c == FF1Class.Ninja || c == FF1Class.Master).ToList();
+				if (meleeList.Count < 2) meleeList = new List<FF1Class> { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt };
 
-			if (flags.PoolParty2DifferentMages)
+				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)meleeList.SpliceRandom(rng) }.ToArray());
+				size -= 1;
+			}
+
+			if (flags.PoolParty2DifferentMages || flags.SafePoolParty)
 			{
 				var mageList = mainClassList.Where(c => c == FF1Class.RedMage || c == FF1Class.WhiteMage || c == FF1Class.BlackMage || c == FF1Class.RedWiz || c == FF1Class.WhiteWiz || c == FF1Class.BlackWiz).ToList();
 				if (mageList.Count < 2) mageList = new List<FF1Class> { FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };

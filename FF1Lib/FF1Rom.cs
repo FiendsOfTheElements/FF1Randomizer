@@ -511,6 +511,8 @@ namespace FF1Lib
 
 			DragonsHoard(maps, (bool)flags.MapDragonsHoard);
 
+			MermaidPrision(maps, (bool)flags.MermaidPrison);
+
 			var shopData = new ShopData(this);
 			shopData.LoadData();
 

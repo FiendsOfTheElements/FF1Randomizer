@@ -331,7 +331,14 @@ namespace FF1Lib
 				}
 				else if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomBehindGating)
 				{
-					incentiveLocationPool.Add(ItemLocations.SeaShrineLocked);
+					if ((bool)flags.MermaidPrison)
+					{
+						incentiveLocationPool.Add(ItemLocations.SeaShrineMermaids.Append(ItemLocations.SeaShrineLocked).ToList().SpliceRandom(rng));
+					}
+					else
+					{
+						incentiveLocationPool.Add(ItemLocations.SeaShrineLocked);
+					}
 				}
 				else if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomNoGating)
 				{
