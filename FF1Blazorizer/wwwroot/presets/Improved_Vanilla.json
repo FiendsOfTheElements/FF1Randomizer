@@ -240,7 +240,7 @@
     "SpeedHacks": true,
     "NoPartyShuffle": true,
     "Dash": true,
-    "SpeedBoat": true,
+    "SpeedBoat": false,
     "BuyTen": true,
     "IdentifyTreasures": true,
     "ShopInfo": true,
