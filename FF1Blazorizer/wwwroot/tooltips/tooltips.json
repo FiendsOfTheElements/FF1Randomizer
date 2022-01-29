@@ -2169,7 +2169,7 @@
 		"Id": "deepDungeonPresetToolTipBox",
 		"title": "Deep Dungeon preset",
 		"screenshot": "",
-		"description": "Turns Coneria Castle into a 52-floor completely procedurally generated dungeon.\nAs you go deeper, the treasures get better and the monster encounters get stronger. Every so often there will be a branch to the next town, but dying or restoring a save will return you to the overworld."
+		"description": "Turns Coneria Castle into a 52-floor completely procedurally generated dungeon, leading to Chaos.\nAs you go deeper, the monster encounters get stronger. Every so often there will be a branch to the next town, but dying or restoring a save will return you to the overworld."
 	},
 	{
 		"Id": "overRandomizerToolTipBox",
@@ -2181,7 +2181,7 @@
 		"Id": "chaosRushToolTipBox",
 		"title": "Chaos Rush preset",
 		"screenshot": "",
-		"description": "The Temple of Fiends is open to you, how fast can you kill Chaos?"
+		"description": "The Temple of Fiends is open to you, how fast can become strong enough to kill Chaos?"
 	},
 	{
 		"Id": "hiddenChaosToolTipBox",
@@ -2200,5 +2200,35 @@
 		"title": "NOverworld preset",
 		"screenshot": "",
 		"description": "Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps."
+	},
+	{
+		"Id": "shardHuntPresetToolTipBox",
+		"title": "",
+		"screenshot": "",
+		"description": "The orbs have been shattered and spread across the world.  Find 28 shards to unlock the Temple of Fiends.  Defeating Lich and Kary award 2 shards, Kraken and Tiamat award 4 shards."
+	},
+	{
+		"Id": "oopsAllLooseToolTipBox",
+		"title": "Oops, All Loose!",
+		"screenshot": "",
+		"description": "All key items are loose, which means they can be found in any chest.  There may be multiple key items in a dungeon, or none at all."
+	},
+	{
+		"Id": "procgenOWPresetToolTipBox",
+		"title": "Procedurally Generated Overworld",
+		"screenshot": "",
+		"description": "Explore a completely new, randomly generated overworld.  Be aware you will likely need to find the bridge, it will be found in an early game chest."
+	},
+	{
+		"Id": "floaterlessPresetToolTipBox",
+		"title": "Floaterless",
+		"screenshot": "",
+		"description": "Sail the high seas!  The floater has been removed from the game, so you can't get the airship, but new docks, rivers and mountain passes have been added to ensure you can still get everywhere you need to go."
+	},
+	{
+		"Id": "freeEnterpriseToolTipBox",
+		"title": "Free Enterprise",
+		"screenshot": "",
+		"description": "Start the game with your trusty airship, the Enterprise.  The world seems peaceful, but monsters still hide in the darkest corners."
 	}
 ]
