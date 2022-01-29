@@ -20,7 +20,7 @@
     "StartingEquipmentRemoveFromPool": false,
     "StartingEquipmentNoDuplicates": false,
     "MermaidPrison": false,
-    "GuaranteedDefenseItem": 3,
+    "GuaranteedDefenseItem": 0,
     "GuaranteedPowerItem": 0,
     "ScriptMultiplier": 1,
     "TouchMultiplier": 1,
