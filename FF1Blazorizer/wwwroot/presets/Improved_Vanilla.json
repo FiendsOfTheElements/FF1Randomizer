@@ -19,6 +19,9 @@
     "StartingEquipmentRandomTypeWeapon": false,
     "StartingEquipmentRemoveFromPool": false,
     "StartingEquipmentNoDuplicates": false,
+    "MermaidPrison": false,
+    "GuaranteedDefenseItem": 0,
+    "GuaranteedPowerItem": 0,
     "ScriptMultiplier": 1,
     "TouchMultiplier": 1,
     "RibbonMode": 0,
@@ -217,6 +220,7 @@
     "IncentivizeDefCastArmor": false,
     "IncentivizeOffCastArmor": false,
     "IncentivizeOtherCastArmor": false,
+    "IncentivizePowerRod": false,
     "IncentivizeDefCastWeapon": false,
     "IncentivizeOffCastWeapon": false,
     "IncentivizeOtherCastWeapon": false,
@@ -420,6 +424,9 @@
     "ClampEnemyHpScaling": false,
     "PoolSize": 2,
     "EnablePoolParty": false,
+    "SafePoolParty": false,
+    "PoolParty2DifferentMelee": false,
+    "PoolParty2DifferentMages": false,
     "IncludePromClasses": false,
     "EnableRandomPromotions": false,
     "IncludeBaseClasses": false,
@@ -462,7 +469,6 @@
     "LockpickingLevelRequirement": 15,
     "WhiteMageHarmEveryone": false,
     "EarlierRuby": false,
-    "GuaranteedRuseItem": false,
     "DisableStunTouch": false
   }
 }
