@@ -2175,13 +2175,13 @@
 		"Id": "overRandomizerToolTipBox",
 		"title": "Over Randomizer preset",
 		"screenshot": "",
-		"description": "The randomizer will generate entirely new weapons, armor, spells, and enemies."
+		"description": "The randomizer will give you entirely new weapons, armor, spells, enemies, and bosses."
 	},
 	{
 		"Id": "chaosRushToolTipBox",
 		"title": "Chaos Rush preset",
 		"screenshot": "",
-		"description": "The Temple of Fiends is open to you, how fast can become strong enough to kill Chaos?"
+		"description": "You are given a forced party of 3 Light Warriors, the CANOE and the LUTE.  You can enter the Temple of Fiends any time, how fast can become strong enough to kill Chaos?"
 	},
 	{
 		"Id": "hiddenChaosToolTipBox",
