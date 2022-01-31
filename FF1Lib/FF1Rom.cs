@@ -1360,8 +1360,8 @@ namespace FF1Lib
 
 
 			// Put LongJump routine 6 bytes after UpdateJoy used to be
-			PutInBank(0x1F, 0xD7C8, Blob.FromHex("85E99885EA6885EB6885ECA001B1EB85EDC8B1EB85EEC8ADFC6085E8B1EB2003FEA9D748A9F548A5E9A4EA6CED0085E9A5E82003FEA5E960"));
-			// LongJump entries can start at 0xD800 and must stop before 0xD850 (at which point additional space will need to be freed to make room)
+			PutInBank(0x1F, 0xD7C8, Blob.FromHex("85E99885EA6885EB6885ECA001B1EB85EDC8B1EB85EEC8ADFC6085E8B1EB2003FEA9D748A9F548A5E9A4EA6CED000885E9A5E82003FEA5E92860"));
+			// LongJump entries can start at 0xD806 and must stop before 0xD850 (at which point additional space will need to be freed to make room)
 
 			// Patches for various tracking variables follow:
 			// Pedometer + chests opened
@@ -1369,8 +1369,8 @@ namespace FF1Lib
 			Put(0x7D023, Blob.FromHex("A90F2003FE200081"));
 			// Count number of battles + track battle screen
 			PutInBank(0x0F, 0x8400, Blob.FromHex("18ADA76069018DA7609003EEA860A90885F220A8FE60"));
-			PutInBank(0x1F, 0xD800, CreateLongJumpTableEntry(0x0F, 0x8400));
-			PutInBank(0x1F, 0xF28D, Blob.FromHex("2000D8"));
+			PutInBank(0x1F, 0xD80C, CreateLongJumpTableEntry(0x0F, 0x8400));
+			PutInBank(0x1F, 0xF28D, Blob.FromHex("200CD8"));
 			// Ambushes / Strike First
 			PutInBank(0x0F, 0x8420, Blob.FromHex("AD5668C90B9015C95A901F18ADAB6069018DAB609014EEAC6018900E18ADA96069018DA9609003EEAA60AC5668AE576860"));
 			PutInBank(0x1F, 0xD806, CreateLongJumpTableEntry(0x0F, 0x8420));
@@ -1394,7 +1394,7 @@ namespace FF1Lib
 			// "Nothing Here"s
 			PutInBank(0x0F, 0x8600, Blob.FromHex("A54429C2D005A545F00360A900EEB66060"));
 			PutInBank(0x1F, 0xD834, CreateLongJumpTableEntry(0x0F, 0x8600));
-			PutInBank(0x1F, 0xCBF3, Blob.FromHex("4C34D8"));
+			PutInBank(0x1F, 0xCBED, Blob.FromHex("4C34D860"));
 
 			// Add select button handler on game start menu to change color
 			PutInBank(0x0F, 0x8620, Blob.FromHex("203CC4A662A9488540ADFB60D003EEFB60A522F022EEFB60ADFB60C90D300EF007A9018DFB60D005A90F8DFB60A90085222029EBA90060A90160"));
