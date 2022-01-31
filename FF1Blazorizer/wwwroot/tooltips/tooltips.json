@@ -2181,7 +2181,7 @@
 		"Id": "chaosRushToolTipBox",
 		"title": "Chaos Rush preset",
 		"screenshot": "",
-		"description": "You are given a forced party of 3 Light Warriors, the CANOE and the LUTE.  You can enter the Temple of Fiends any time, how fast can become strong enough to kill Chaos?"
+		"description": "You can challenge Chaos immediately at the start of the game.  How fast can you become strong enough to defeat Chaos?  Your 4 Light Warriors are chosen for you.  You start with SHIP, CANAL, CANOE, TAIL, LUTE, and all 4 Orbs are lit.  You can dock on the northern continent."
 	},
 	{
 		"Id": "hiddenChaosToolTipBox",
