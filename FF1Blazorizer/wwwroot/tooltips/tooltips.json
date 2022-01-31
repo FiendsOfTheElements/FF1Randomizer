@@ -2181,7 +2181,7 @@
 		"Id": "chaosRushToolTipBox",
 		"title": "Chaos Rush preset",
 		"screenshot": "",
-		"description": "You can challenge Chaos immediately at the start of the game.  How fast can you become strong enough to defeat Chaos?  Your 4 Light Warriors are chosen for you.  You start with SHIP, CANAL, CANOE, TAIL, LUTE, and all 4 Orbs are lit.  You can dock on the northern continent."
+		"description": "You can challenge Chaos immediately at the start of the game.  How fast can you become strong enough to defeat Chaos?  Your 4 Light Warriors are chosen for you.  You start with the airship, TAIL, LUTE, and all 4 Orbs are lit."
 	},
 	{
 		"Id": "hiddenChaosToolTipBox",
