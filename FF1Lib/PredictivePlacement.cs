@@ -152,7 +152,7 @@ namespace FF1Lib
 				if (((bool)_flags.NPCItems) || ((bool)_flags.NPCFetchItems))
 				{
 					HashSet<Item> allPlacements = new HashSet<Item>(nonincentives.Concat(incentives));
-					HashSet<Item> allKeyItems = new HashSet<Item>(MapChangeItems.Concat(FetchQuestItems).Concat(GatingItems));
+					HashSet<Item> allKeyItems = new HashSet<Item>(MapChangeItems.Concat(FetchQuestItems).Concat(GatingItems).Intersect(allPlacements));
 
 					if ((bool)_flags.IsFloaterRemoved)
 					{
@@ -449,7 +449,7 @@ namespace FF1Lib
 						}
 						else
 						{
-							var rewardSources = accessibleSources.Where(s => !incentiveLocationPool.Contains(s)).ToList();
+							var rewardSources = accessibleSources.Where(s => unincentivizedLocationPool.Contains(s)).ToList();
 							if (rewardSources.Count == 0) continue;
 
 							var rewardSource = balancedPicker.Pick(rewardSources, _flags.LooseItemsForwardPlacement, _flags.LooseItemsSpreadPlacement, false, rng);
