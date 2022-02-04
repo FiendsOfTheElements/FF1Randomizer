@@ -571,6 +571,8 @@ namespace FF1Lib
 			int armorBaseOffset = FF1Rom.ArmorOffset + (ArmorIndex * FF1Rom.ArmorSize);
 			rom.Put(armorBaseOffset, new byte[] { Weight, Absorb, ElementalResist, SpellIndex });
 
+			rom.Put(FF1Rom.ArmorTypeOffset + ArmorIndex, new byte[] { (byte)Type });
+
 			rom.ItemsText[(int)Item.Cloth + ArmorIndex] = Name;
 		}
 
