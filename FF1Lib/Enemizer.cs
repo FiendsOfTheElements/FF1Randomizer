@@ -363,7 +363,11 @@ namespace FF1Lib
 				}
 				if(routine == 0x08) // neutralize status
 				{
-					if (targeting == 0x08)
+					if ((effect & 0b0000_0001) != 0)
+					{
+						tier = 0; // if Life In Battle is enabled, 
+					}
+					else if (targeting == 0x08)
 					{
 						if ((effect & 0b11010000) != 0)
 							tier = 2; // removing confuse, mute, or stun on the party is a tier 2
