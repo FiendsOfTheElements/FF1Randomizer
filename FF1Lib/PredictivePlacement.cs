@@ -1,4 +1,5 @@
-﻿using RomUtilities;
+﻿using FF1Lib.Sanity;
+using RomUtilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,7 +31,15 @@ namespace FF1Lib
 			{ Item.Floater, 0.25f },
 			{ Item.Chime, 0.25f },
 			{ Item.Cube, 0.25f },
-			{ Item.Oxyale, 0.25f }
+			{ Item.Oxyale, 0.25f },
+			{ Item.Lute, 0.25f },
+			{ Item.Adamant, 0.75f },
+			{ Item.Herb, 0.75f },
+			{ Item.Crown, 0.75f },
+			{ Item.Crystal, 0.75f },
+			{ Item.Bottle, 0.75f },
+			{ Item.Slab, 0.75f },
+			{ Item.Tnt, 0.75f }
 		};
 
 		//Each cycle the algorithm tries to place an item. It randomly(as long as it works) decides each cycle to place either an incentive or a nonincetive item.
@@ -66,9 +75,16 @@ namespace FF1Lib
 			{ Item.Key, 0.25f },
 			{ Item.Canoe, 0.75f },
 			{ Item.Floater, 0.25f },
-			{ Item.Chime, 0.5f },
-			{ Item.Cube, 0.5f },
-			{ Item.Oxyale, 0.5f }
+			{ Item.Lute, 0.25f },
+			{ Item.Oxyale, 1.25f },
+			{ Item.Chime, 1.25f },
+			{ Item.Adamant, 0.75f },
+			{ Item.Herb, 0.75f },
+			{ Item.Crown, 0.75f },
+			{ Item.Crystal, 0.75f },
+			{ Item.Bottle, 0.75f },
+			{ Item.Slab, 0.75f },
+			{ Item.Tnt, 0.75f }
 		};
 
 		Dictionary<Item, int> UnsafeExceptioMinCycles = new Dictionary<Item, int>
@@ -77,9 +93,7 @@ namespace FF1Lib
 			{ Item.Ship, 2 },
 			{ Item.Canoe, 3 },
 			{ Item.Floater, 10 },
-			{ Item.Chime, 3 },
-			{ Item.Cube, 3 },
-			{ Item.Oxyale, 3 }
+			{ Item.Lute, 10 }
 		};
 
 		Dictionary<Item, int> UnsafeMinAccessibility = new Dictionary<Item, int>
@@ -109,6 +123,10 @@ namespace FF1Lib
 		Dictionary<Item, int> exceptionMinCycles;
 		Dictionary<Item, int> minAccessibility;
 
+		SCLogic logic;
+		Dictionary<int, SCLogicRewardSource> logicSources;
+		SCRequirements freeRequirements;
+
 		protected override ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx)
 		{
 			exceptionWeights = _flags.AllowUnsafePlacement || (_flags.Entrances ?? false) ? UnsafeExceptionWeights : SafeExceptionWeights;
@@ -124,19 +142,27 @@ namespace FF1Lib
 
 			var unincentivizedLocationPool = new HashSet<IRewardSource>(preBlackOrbUnincentivizedLocationPool, new RewardSourceEqualityComparer());
 
+			var allRewardSources = preBlackOrbLocationPool.Append(new ItemShopSlot(_caravanItemLocation, Item.None)).ToList();
+
 			List<IRewardSource> placedItems = null;
 			List<Item> treasurePool = null;
+
+			freeRequirements = BuildFreeRequirements();
 
 			bool placementFailed;
 			do
 			{
+				((SanityCheckerV2)_checker).Shiplocations.SetShipLocation(255);
+
+				BuildLogic(allRewardSources);
+
 				placementFailed = false;
 
 				var balancedPicker = new RewardSourcePicker(0.5, _flags.LooseItemsNpcBalance ? 7.0 : 1.0, _checker);
 
 				_sanityCounter++;
 				if (_sanityCounter > 2) throw new InsaneException("Item Placement could not meet incentivization requirements!");
-				
+
 				placedItems = ctx.Forced.ToList();
 				var incentives = new HashSet<Item>(ctx.Incentivized);
 				var nonincentives = ctx.Unincentivized.ToList();
@@ -170,7 +196,6 @@ namespace FF1Lib
 
 					if (_flags.Archipelago && allKeyItems.Contains(Item.Bridge))
 					{
-						var (_, mapLocations, requirements) = _checker.CheckSanity(placedItems, null, _flags);
 						var accessibleSources = GetAllAccessibleRewardSources(preBlackOrbUnincentivizedLocationPool, placedItems);
 
 						var rewardSource = balancedPicker.Pick(accessibleSources, _flags.LooseItemsForwardPlacement, _flags.LooseItemsSpreadPlacement, false, rng);
@@ -185,31 +210,18 @@ namespace FF1Lib
 					//When it reached enough cycles so no cycle based restricitons apply and can place neither an incentive nor a nonincentive it also breaks
 					for (int cycle = 1; cycle <= 100; cycle++)
 					{
-						var (_, mapLocations, requirements) = _checker.CheckSanity(placedItems, null, _flags);
 						var accessibleSources = GetAllAccessibleRewardSources(preBlackOrbLocationPool, placedItems);
 
 						//look how many rewardsources of each type are available
 						var incSourceCount = accessibleSources.Where(s => incentiveLocationPool.Contains(s)).Count();
 						var nonSourceCount = accessibleSources.Count - incSourceCount;
 
-						//get an accessible rewardsource to give the sanity checker the next item for prediction
-						var testSource = accessibleSources.FirstOrDefault();
-						if (testSource == null)
-						{
-							placementFailed = true;
-							break;
-						}
-
 						List<(Item item, int incCount, int nonCount)> candidates = new List<(Item item, int incCount, int nonCount)>();
 
 						//go through each KI, place it in the testRewardSource, run the sanity checker and see how many RewardSources are available afterwards.
 						foreach (var item in allKeyItems)
 						{
-							placedItems.Add(NewItemPlacement(testSource, item));
-							_ = _checker.CheckSanity(placedItems, null, _flags);
-							placedItems.RemoveAt(placedItems.Count - 1);
-
-							var accessibleSources2 = GetAllAccessibleRewardSources(preBlackOrbLocationPool, placedItems);
+							var accessibleSources2 = GetAllAccessibleRewardSources(preBlackOrbLocationPool, placedItems, item);
 
 							var incCount = accessibleSources2.Where(s => incentiveLocationPool.Contains(s)).Count();
 							var nonCount = accessibleSources2.Count - incCount - nonSourceCount;
@@ -217,7 +229,7 @@ namespace FF1Lib
 
 							//if the placed item is an incentive, it will take up an incentive location when it will be placed
 							//and vice versa
-							if (incentives.Contains(item)) incCount--; 
+							if (incentives.Contains(item)) incCount--;
 							if (!incentives.Contains(item)) nonCount--;
 
 							candidates.Add((item, incCount, nonCount));
@@ -228,20 +240,7 @@ namespace FF1Lib
 						//it grabs another Rewardsource, places Ship and Canal, runs the SanityChecker and calculates the results
 						if (allKeyItems.Contains(Item.Ship) && allKeyItems.Contains(Item.Canal))
 						{
-							var testSource2 = accessibleSources.LastOrDefault();
-							if (testSource2 == null || testSource.Address == testSource2.Address)
-							{
-								placementFailed = true;
-								break;
-							}
-
-							placedItems.Add(NewItemPlacement(testSource, Item.Ship));
-							placedItems.Add(NewItemPlacement(testSource2, Item.Canal));
-							_ = _checker.CheckSanity(placedItems, null, _flags);
-							placedItems.RemoveAt(placedItems.Count - 1);
-							placedItems.RemoveAt(placedItems.Count - 1);
-
-							var accessibleSources2 = GetAllAccessibleRewardSources(preBlackOrbLocationPool, placedItems);
+							var accessibleSources2 = GetAllAccessibleRewardSources(preBlackOrbLocationPool, placedItems, Item.Ship, Item.Canal);
 
 							var incCount = accessibleSources2.Where(s => incentiveLocationPool.Contains(s)).Count();
 							var nonCount = accessibleSources2.Count - incCount - nonSourceCount;
@@ -293,13 +292,13 @@ namespace FF1Lib
 						//the chance is based on the number of incentive and nonincentive items
 						//If however it couldn't place an incentive item in the last cycle, it'll always try a nonincentive this time
 						//and vice versa
-						if (state == PlacementState.Incentive || state == PlacementState.Normal && rng.Between(1, allPlacements.Count) <= incItemCount)
+						if (state == PlacementState.Incentive || state == PlacementState.Normal && rng.Between(1, allPlacements.Count) <= incItemCount || _flags.LaterLoose && state == PlacementState.Normal && cycle <= 5)
 						{
 							//Filter out nonincentive items
 							candidates = candidates.Where(c => incentives.Contains(c.item)).ToList();
 							var nonKeyCandidates = allPlacements.Where(i => !allKeyItems.Contains(i) && incentives.Contains(i));
 
-							if (incSourceCount <= CriticalIncentiveSourceCount)
+							if (incSourceCount <= 1 || incSourceCount <= CriticalIncentiveSourceCount && allKeyItems.Contains(Item.Ship) && allKeyItems.Contains(Item.Canal))
 							{
 								//we are in incentive critical mode
 								//the function takes weights for different categories of items(depending of how they're expected they change the amount of incentive locations available)
@@ -460,6 +459,8 @@ namespace FF1Lib
 						allPlacements.Remove(nextPlacment);
 						allKeyItems.Remove(nextPlacment);
 
+						if (nextPlacment == Item.Ship) BuildLogic(allRewardSources);
+
 						//we placed an item so we should randomly select incentive/nonincentive next cycle
 						state = PlacementState.Normal;
 
@@ -491,18 +492,79 @@ namespace FF1Lib
 					}
 				}
 
-			//finally check the placement(if we arrive here, it's safe, but let's do it anyway in case something goes wrong)
+				//finally check the placement(if we arrive here, it's safe, but let's do it anyway in case something goes wrong)
 			} while (placementFailed || !_checker.CheckSanity(placedItems, null, _flags).Complete);
 
 			return new ItemPlacementResult { PlacedItems = placedItems, RemainingTreasures = treasurePool };
 		}
 
-		//retrieve all accessible RewardSources(with no item in them) from the SanityChecker
-		private List<IRewardSource> GetAllAccessibleRewardSources(IEnumerable<IRewardSource> preBlackOrbLocationPool, List<IRewardSource> placedItems)
+		private SCRequirements BuildFreeRequirements()
 		{
-			return preBlackOrbLocationPool.Where(x => !placedItems.Any(y => y.Address == x.Address)
-							&&  _checker.IsRewardSourceAccessible(x, AccessRequirement.None , null))
-							.ToList();
+			var requirements = SCRequirements.None;
+			if ((bool)_flags.FreeLute)
+			{
+				requirements |= SCRequirements.Lute;
+			}
+			if (_flags.IsBridgeFree ?? false)
+			{
+				requirements |= SCRequirements.Bridge;
+			}
+			if (_flags.IsShipFree ?? false)
+			{
+				requirements |= SCRequirements.Ship;
+			}
+			if (_flags.IsAirshipFree ?? false)
+			{
+				requirements |= SCRequirements.Floater;
+			}
+			if (_flags.IsCanalFree ?? false)
+			{
+				requirements |= SCRequirements.Canal;
+			}
+			if (_flags.FreeCanoe ?? false)
+			{
+				requirements |= SCRequirements.Canoe;
+			}
+
+			return requirements;
+		}
+
+		private void BuildLogic(List<IRewardSource> preBlackOrbLocationPool)
+		{
+			logic = new SCLogic(base._rom, ((SanityCheckerV2)base._checker).Main, preBlackOrbLocationPool, base._flags, false);
+			logicSources = logic.RewardSources.ToDictionary(r => r.RewardSource.Address);
+		}
+
+		//retrieve all accessible RewardSources(with no item in them) from the SanityChecker
+		private List<IRewardSource> GetAllAccessibleRewardSources(IEnumerable<IRewardSource> preBlackOrbLocationPool, List<IRewardSource> placedItems, Item item1 = Item.None, Item item2 = Item.None)
+		{
+			var placedItems2 = placedItems.Select(i => logicSources.TryGetValue(i.Address, out var l) ? new SCLogicRewardSource { Requirements = l.Requirements, RewardSource = i } : null).Where(l => l != null).ToList();
+
+			SCRequirements requirements = freeRequirements;
+
+			if (item1 != Item.None) requirements = requirements.AddItem(item1);
+			if (item2 != Item.None) requirements = requirements.AddItem(item2);
+
+			List<SCLogicRewardSource> toRemove = new List<SCLogicRewardSource>(placedItems2.Count);
+
+			var maxCount = placedItems2.Count;
+			for (int i = 0; i < maxCount; i++)
+			{
+				foreach (var r in placedItems2.Where(l => l.Requirements.IsAccessible(requirements)))
+				{
+					toRemove.Add(r);
+					requirements = requirements.AddItem(r.RewardSource.Item);
+				}
+
+				foreach (var r in toRemove) placedItems2.Remove(r);
+
+				if (toRemove.Count == 0) break;
+				if (placedItems2.Count == 0) break;
+
+				toRemove.Clear();
+			}
+
+			return preBlackOrbLocationPool.Where(i => logicSources.TryGetValue(i.Address, out var l) && l.Requirements.IsAccessible(requirements)).Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
 		}
 
 		//Assign weights to all candidates based on the state of the seed, the restrictions and the bin weights

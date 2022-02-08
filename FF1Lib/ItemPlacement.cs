@@ -74,11 +74,14 @@ namespace FF1Lib
 		protected ItemShopSlot _caravanItemLocation;
 		protected OverworldMap _overworldMap;
 		protected ISanityChecker _checker;
+		protected FF1Rom _rom;
 
 		protected abstract ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx);
 
 		public List<IRewardSource> PlaceSaneItems(MT19337 rng, FF1Rom rom)
 		{
+			_rom = rom;
+
 			var incentivePool = _incentivesData.IncentiveItems.Where(x => _allTreasures.Contains(x)).ToList();
 			var forcedItems = _incentivesData.ForcedItemPlacements.ToList();
 

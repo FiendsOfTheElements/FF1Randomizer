@@ -24,6 +24,7 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="noBossSkillScriptShuffleCheckBox" IsEnabled="@((Flags.EnemyScripts != false || Flags.EnemySkillsSpells != false) && Flags.BossSkillsOnly != true)" @bind-Value="Flags.NoBossSkillScriptShuffle">Don't Shuffle Bosses</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemySkillsSpells" Id="enemySkillsSpellsTieredCheckBox" @bind-Value="Flags.EnemySkillsSpellsTiered">Generate Balanced Scripts</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemySkillsSpells" Id="noConsecutiveNukesCheckBox" @bind-Value="Flags.NoConsecutiveNukes">Prevent consecutive NUKE or NUCLEAR</TriStateCheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemySkillsSpells" Id="noEmptyScripts" @bind-Value="Flags.NoEmptyScripts">No empty Scripts</CheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttacksCheckBox" @bind-Value="Flags.EnemyStatusAttacks">Shuffle Status Attacks</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyStatusAttacks" Id="enemyRandomAttacksCheckBox" @bind-Value="Flags.RandomStatusAttacks">Randomize Status Attacks</TriStateCheckBox>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.EnemyStatusAttacks != false && Flags.RandomStatusAttacks != false)" Id="touchMultiplier" TItem="ScriptTouchMultiplier" @bind-Value="Flags.TouchMultiplier">Touch Attack Count:</EnumDropDown>

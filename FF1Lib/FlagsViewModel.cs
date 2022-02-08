@@ -2867,6 +2867,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableSpellCastFlash"));
 			}
 		}
+		public bool NoEmptyScripts
+		{
+			get => Flags.NoEmptyScripts;
+			set
+			{
+				Flags.NoEmptyScripts = value;
+				RaisePropertyChanged();
+			}
+		}
 		public string SpriteSheet
 		{
 			get => Preferences.SpriteSheet;
@@ -4397,7 +4406,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Etherizer"));
 			}
 		}
-
+		public bool LaterLoose
+		{
+			get => Flags.LaterLoose;
+			set
+			{
+				Flags.LaterLoose = value;
+				RaisePropertyChanged();
+			}
+		}
 		public TreasureStackSize ConsumableTreasureStackSize
 		{
 			get => Flags.ConsumableTreasureStackSize;

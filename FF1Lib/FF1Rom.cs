@@ -710,11 +710,11 @@ namespace FF1Lib
 				if ((bool)flags.EnemySkillsSpellsTiered && (bool)!flags.BossSkillsOnly)
 				{
 					GenerateBalancedEnemyScripts(rng, (bool)flags.SwolePirates);
-					ShuffleEnemySkillsSpells(rng, false, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.NoConsecutiveNukes);
+					ShuffleEnemySkillsSpells(rng, false, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.NoConsecutiveNukes, (bool)flags.NoEmptyScripts);
 				}
 				else
 				{
-				    ShuffleEnemySkillsSpells(rng, (bool)!flags.BossSkillsOnly, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.NoConsecutiveNukes);
+				    ShuffleEnemySkillsSpells(rng, (bool)!flags.BossSkillsOnly, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.NoConsecutiveNukes, (bool)flags.NoEmptyScripts);
 				}
 			}
 
@@ -1242,6 +1242,7 @@ namespace FF1Lib
 
 			ItemsText.Write(this, UnusedGoldItems);
 
+			
 			if (flags.Spoilers) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, generatedPlacement, overworldMap, incentivesData, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();

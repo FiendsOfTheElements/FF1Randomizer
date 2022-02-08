@@ -26,14 +26,26 @@
 	{
 		"Id": "ribbonMode",
 		"title": "Ribbon",
-		"screenshot": "enemyScriptsCheckBox.png",
+		"screenshot": null,
 		"description": "Shattered spreads the resistances across many amror pieces. Each Element occurs multiple times. It tries to ensure that every class can attain full protection."
+	},
+	{
+		"Id": "noEmptyScripts",
+		"title": "No Empty Scripts",
+		"screenshot": "enemyScriptsCheckBox.png",
+		"description": "Prevents non boss scripts to be empty."
 	},
 	{
 		"Id": "mermaidPrison",
 		"title": "Mermaid Prison",
 		"screenshot": null,
 		"description": "Locks all doors on the Mermaid Floor in Sea Shrine."
+	},
+	{
+		"Id": "laterLoose",
+		"title": "Later Loose",
+		"screenshot": null,
+		"description": "Makes later placement of loose items more likely."
 	},
 	{
 		"Id": "scriptMultiplier",
