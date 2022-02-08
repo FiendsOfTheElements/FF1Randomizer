@@ -96,6 +96,7 @@
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
+		bool LaterLoose { get; }
 		bool Spoilers { get; }
 		bool? MapCanalBridge { get; }
 		bool? MapConeriaDwarves { get; }

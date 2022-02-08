@@ -289,7 +289,7 @@ namespace FF1Lib
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void ShuffleEnemySkillsSpells(MT19337 rng, bool doNormals, bool doBosses, bool noConsecutiveNukes)
+		public void ShuffleEnemySkillsSpells(MT19337 rng, bool doNormals, bool doBosses, bool noConsecutiveNukes, bool nonEmpty)
 		{
 			var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
 
@@ -306,18 +306,18 @@ namespace FF1Lib
 			var bigBossIndices = new List<int> { 32, 35, 37, 39, 41, 42 };
 
 			if(doNormals)
-			    ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, noConsecutiveNukes, rng);
+			    ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, noConsecutiveNukes, nonEmpty, rng);
 
 			if(doBosses)
 			{
-			    ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, noConsecutiveNukes, rng);
-			    ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, noConsecutiveNukes, rng);
+			    ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, noConsecutiveNukes, false, rng);
+			    ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, noConsecutiveNukes, false, rng);
 			}
 
 			Put(ScriptOffset, scriptBytes.SelectMany(script => script.ToBytes()).ToArray());
 		}
 
-		private void ShuffleIndexedSkillsSpells(List<Blob> scriptBytes, List<int> indices, bool noConsecutiveNukes, MT19337 rng)
+		private void ShuffleIndexedSkillsSpells(List<Blob> scriptBytes, List<int> indices, bool noConsecutiveNukes, bool nonEmpty, MT19337 rng)
 		{
 			var scripts = indices.Select(i => scriptBytes[i]).ToList();
 
@@ -342,13 +342,36 @@ namespace FF1Lib
 			var reroll = false;
 			do {
 			    reroll = false;
-			    spellBuckets = Bucketize(spellBytes, scripts.Count(script => script[0] != 0), 8, rng);
-			    skillBuckets = Bucketize(skillBytes, scripts.Count(script => script[1] != 0), 4, rng);
+			    spellBuckets = Bucketize(spellBytes, scripts.Count(script => script[0] != 0), 8, nonEmpty, rng);
+			    skillBuckets = Bucketize(skillBytes, scripts.Count(script => script[1] != 0), 4, false, rng);
 
-			    var spellChances = scripts.Select(script => script[0]).ToList();
-			    var skillChances = scripts.Select(script => script[1]).ToList();
-			    spellChances.Shuffle(rng);
-			    skillChances.Shuffle(rng);
+				var spellChances = scripts.Select(script => script[0]).ToList();
+				var skillChances = scripts.Select(script => script[1]).ToList();
+
+				if (nonEmpty)
+				{
+					var spellChancesZero = spellChances.Where(c => c == 0);
+					var skillChancesZero = skillChances.Where(c => c == 0);
+					var spellChancesNonZero = spellChances.Where(c => c != 0).ToList();
+					var skillChancesNonZero = skillChances.Where(c => c != 0).ToList();
+
+					spellChancesNonZero.Shuffle(rng);
+					spellChances = spellChancesZero.Concat(spellChancesNonZero).ToList();
+
+					skillChancesNonZero.Shuffle(rng);
+					skillChances = skillChancesNonZero.Concat(skillChancesZero).ToList();
+
+					var combinedChances = spellChances.Select((c, i) => (spell: c, skill: skillChances[i])).ToList();
+					combinedChances.Shuffle(rng);
+
+					spellChances = combinedChances.Select(c => c.spell).ToList();
+					skillChances = combinedChances.Select(c => c.skill).ToList();
+				}
+				else
+				{
+					spellChances.Shuffle(rng);
+					skillChances.Shuffle(rng);
+				}
 
 			    int spellBucketIndex = 0, skillBucketIndex = 0;
 			    for (int i = 0; i < scripts.Count; i++)
@@ -428,7 +451,7 @@ namespace FF1Lib
 			} while (noConsecutiveNukes && reroll);
 		}
 
-		private List<List<byte>> Bucketize(List<byte> bytes, int bucketCount, int bucketSize, MT19337 rng)
+		private List<List<byte>> Bucketize(List<byte> bytes, int bucketCount, int bucketSize, bool min2, MT19337 rng)
 		{
 			var buckets = new List<List<byte>>();
 			for (int i = 0; i < bucketCount; i++)
@@ -441,6 +464,15 @@ namespace FF1Lib
 			{
 				buckets[index].Add(bytes[index++]);
 			}
+
+			if (min2)
+			{
+				while (index < 2 * bucketCount)
+				{
+					buckets[index - bucketCount].Add(bytes[index++]);
+				}
+			}
+
 			while (index < bytes.Count)
 			{
 				var bucket = rng.Between(0, buckets.Count - 1);

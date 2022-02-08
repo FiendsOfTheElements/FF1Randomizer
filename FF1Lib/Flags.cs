@@ -56,6 +56,8 @@ namespace FF1Lib
 
 		#endregion
 
+		public bool NoEmptyScripts { get; set; } = false;
+		public bool LaterLoose { get; set; } = false;
 		public bool? MermaidPrison { get; set; } = false;
 
 		public GuaranteedDefenseItem GuaranteedDefenseItem { get; set; } = GuaranteedDefenseItem.None;
