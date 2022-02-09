@@ -9,7 +9,8 @@
 	@if (IsOpen)
 	{
 		<h4>Starter Presets</h4>
-		<p>These presets showcase some of the major game variations, while also designed to be accessible to newer players.  When you're ready for more challenge, try the Intermediate presets, or browse the tabs to start customizing your own game.  Questions?  Join the <a href="https://discord.gg/95gbpFd">FFR Community Discord</a>.</p>
+		<p>These presets showcase some of the major game variations, while also designed to be accessible to newer players.  When you are ready for more challenge, try the Intermediate presets, or browse the tabs to start customizing your own game.<br>
+		Questions?  Join the <a href="https://discord.gg/95gbpFd">FFR Community Discord</a>.</p>
 
 		<div class="col1">
 
@@ -18,22 +19,22 @@
 		<ToolTipBox id="beginnerPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Beginner</strong></ToolTipBox>
 		Introduction to the randomizer, and the basis for most of the other presets.</p>
 
-		<a class="preset-button styled-button @((selectedPresetId == "Shard_Hunt") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Shard_Hunt"))">Select</a>
-		<p class="preset-paragraph">
-		<ToolTipBox id="shardHuntPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Shard Hunt</strong></ToolTipBox>
-		Instead of lighting 4 Orbs, you must find 28 shards to unlock the Temple of Fiends.
-		</p>
-
 		<a class="preset-button styled-button @((selectedPresetId == "Oops_All_Loose") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Oops_All_Loose"))">Select</a>
 		<p class="preset-paragraph">
 		<ToolTipBox id="oopsAllLooseToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Oops, All Loose!</strong></ToolTipBox>
 		All key items are loose, which means they can be found in any chest.
 		</p>
 
-		<a class="preset-button styled-button @((selectedPresetId == "Entrance_Floor_Shuffle") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Entrance_Floor_Shuffle"))">Select</a>
+		<a class="preset-button styled-button @((selectedPresetId == "Shard_Hunt") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Shard_Hunt"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="entranceFloorShufflePresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Entrance and Floor Shuffle</strong></ToolTipBox>
-		Overworld entrances (except for towns) are shuffled together, and shuffles cave and dungeon floors.
+		<ToolTipBox id="shardHuntPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Shard Hunt</strong></ToolTipBox>
+		Instead of lighting 4 Orbs, you must find 28 shards to unlock the Temple of Fiends.
+		</p>
+
+		<a class="preset-button styled-button @((selectedPresetId == "Floaterless") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Floaterless"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="floaterlessPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Floaterless</strong></ToolTipBox>
+		Removes the floater from the game, so you can't get the airship, but adds new docks so you can get everywhere you need to go.
 		</p>
 
 		</div>
@@ -46,10 +47,10 @@
 		Applies the bugfixes and quality-of-life improvements to the base game, but does not randomize anything.
 		</p>
 
-		<a class="preset-button styled-button @((selectedPresetId == "Floaterless") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Floaterless"))">Select</a>
+		<a class="preset-button styled-button @((selectedPresetId == "Entrance_Floor_Shuffle") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Entrance_Floor_Shuffle"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="floaterlessPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Floaterless</strong></ToolTipBox>
-		Removes the floater from the game, so you can't get the airship, but adds new docks so you can get everywhere you need to go.
+		<ToolTipBox id="entranceFloorShufflePresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Entrance and Floor Shuffle</strong></ToolTipBox>
+		Overworld entrances (except for towns) are shuffled together, and shuffles cave and dungeon floors.
 		</p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "Procgen_Overworld") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Procgen_Overworld"))">Select</a>
@@ -67,12 +68,6 @@
 
 		<div class="col1">
 
-		<a class="preset-button styled-button @((selectedPresetId == "Hidden_Chaos") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Hidden_Chaos"))">Select</a>
-		<p class="preset-paragraph">
-		<ToolTipBox id="hiddenChaosToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Hidden Chaos</strong></ToolTipBox>
-		Chaos is hidden in a random chest and must be found to be defeated.
-		</p>
-
 		<a class="preset-button styled-button @((selectedPresetId == "Chaos_Rush") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Chaos_Rush"))">Select</a>
 		<p class="preset-paragraph">
 		<ToolTipBox id="chaosRushToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Chaos Rush</strong></ToolTipBox>
@@ -81,16 +76,25 @@
 
 		<a class="preset-button styled-button @((selectedPresetId == "Free_Enterprise") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Free_Enterprise"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="freeEnterpriseToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Free Enterprise</strong></ToolTipBox></p>
+		<ToolTipBox id="freeEnterpriseToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Free Enterprise</strong>
+		</ToolTipBox>
+		Modeled after the open world gameplay style of <a href="http://ff4fe.com/">FF4: Free Enterprise</a>
+		</p>
+
+		<a class="preset-button styled-button @((selectedPresetId == "Hidden_Chaos") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Hidden_Chaos"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="hiddenChaosToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Hidden Chaos</strong></ToolTipBox>
+		Chaos is hidden in a random chest and must be found to be defeated.
+		</p>
+
+		<a class="preset-button styled-button @((selectedPresetId == "NOverworld") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("NOverworld"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="noverworldShufflePresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>NOverworld</strong></ToolTipBox>
+		Removes the overworld from the game, towns and dungeons are connected directly by stairs and warps.
+		</p>
 
 		</div>
 		<div class="col2">
-
-		<a class="preset-button styled-button @((selectedPresetId == "Over_Randomizer") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Over_Randomizer"))">Select</a>
-		<p class="preset-paragraph">
-		<ToolTipBox id="overRandomizerToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Over Randomizer</strong></ToolTipBox>
-		The randomizer will give you entirely new weapons, armor, spells, enemies, and bosses.
-		</p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "Deep_Dungeon") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Deep_Dungeon"))">Select</a>
 		<p class="preset-paragraph">
@@ -98,10 +102,16 @@
 		Turn Coneria Castle into a 52-floor completely procedurally generated dungeon, leading to Chaos.
 		</p>
 
-		<a class="preset-button styled-button @((selectedPresetId == "NOverworld") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("NOverworld"))">Select</a>
+		<a class="preset-button styled-button @((selectedPresetId == "Over_Randomizer") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Over_Randomizer"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="noverworldShufflePresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>NOverworld</strong></ToolTipBox>
-		Removes the overworld from the game, towns and dungeons are connected directly by stairs and warps.
+		<ToolTipBox id="overRandomizerToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Over Randomizer</strong></ToolTipBox>
+		The randomizer will give you entirely new weapons, armor, spells, enemies, and bosses.
+		</p>
+
+		<a class="preset-button styled-button @((selectedPresetId == "Maximum_Troll") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Maximum_Troll"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="maximumTrollShufflePresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Maximum Troll</strong></ToolTipBox>
+		A celebration of the surprising and the unexpected.
 		</p>
 
 		</div>
