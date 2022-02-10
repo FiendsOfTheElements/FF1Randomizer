@@ -2223,7 +2223,7 @@
 		"Id": "procgenOWPresetToolTipBox",
 		"title": "Procedurally Generated Overworld",
 		"screenshot": "",
-		"description": "Explore a completely new, randomly generated overworld.\nBe aware you will likely need to find the bridge, which will be found in an early game chest.  The CANAL is required to access a dock that lets you reach the Earth cave.  The Airship can be found in a desert with a distinctive area surrounded by mountains and entered from the south.  The overworld encounter rate is has been reduced."
+		"description": "Explore a completely new, randomly generated overworld.\n- Be aware you will likely need to find the bridge, which will be found in an early game chest.\n- The CANAL is required to access a dock that lets you reach the Earth cave.\n- The Airship can be found in a distinctive area of desert surrounded by mountains and entered from the south.\n- The overworld encounter rate is reduced to assist exploring."
 	},
 	{
 		"Id": "floaterlessPresetToolTipBox",
@@ -2235,7 +2235,7 @@
 		"Id": "freeEnterpriseToolTipBox",
 		"title": "Free Enterprise",
 		"screenshot": "",
-		"description": "Start the game with your trusty airship, the Enterprise.  The world may seem peaceful, but monsters still hide in the darkest corners.\n- No encounters, the only way to gain XP is by finding XP chests and fighting monsters on spike tiles\n- Free airship and canoe\n- Every incentive location will have a KI or legendary treasure\n- Starting party is two forced, two none.  You will have the opportunity to recruit additional party members after completing quests and defeating fiends.\n- Enemizer formations, creates combinations of enemies that don't appear in the regular game."
+		"description": "All bosses rush modeled after the open world gameplay style of FF4: Free Enterprise.  Go anywhere in your trusty airship, the Enterprise.  The LUTE, KEY and lighting the four orbs are still required to access the final dungeon.\n- Free airship and canoe\n- Starting party is two forced, two none.  You will have the opportunity to recruit additional party members by completing quests and defeating fiends.\n- No random encounters, gain XP is by finding XP chests, taking spike tile fights, and defeating bosses.\n- Every incentive location is in play, with a key item or legendary treasure\n- Randomized treasure, high wealth, rare and legendary gear in shops\n- Start with a random item that casts offensive area-of-effect magic\n- Free TAIL, fight buff Bahamut\n- Buffed, unsafe pirates\n- Required WarMECH\n- Alternate fiends and final boss\n- Short ToFR"
 	},
 	{
 		"Id": "maximumTrollShufflePresetToolTipBox",
