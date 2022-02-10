@@ -408,8 +408,6 @@
     "BuffHealingSpells": false,
     "FreeTail": false,
     "HintsVillage": false,
-    "HintsDungeon": false,
-    "HintsUseless": false,
     "SpellcrafterRetainPermissions": false,
     "RandomWeaponBonus": false,
     "RandomArmorBonus": false,
