@@ -232,7 +232,6 @@ namespace FF1Lib
 		public bool? TrappedChaos { get; set; } = false;
 		public bool? TCIndicator { get; set; } = false;
 		public bool? SwolePirates { get; set; } = false;
-		public bool? ScaryImps { get; set; } = false;
 		public bool? EnemyScripts { get; set; } = false;
 		public bool? BossScriptsOnly { get; set; } = false;
 		public bool? EnemySkillsSpells { get; set; } = false;
@@ -566,7 +565,6 @@ namespace FF1Lib
 		public bool DisableInnSaving { get; set; } = false;
 		public bool SaveGameWhenGameOver { get; set; } = false;
 		public bool SaveGameDWMode { get; set; } = false;
-		public bool PacifistMode { get; set; } = false;
 		public bool? ShuffleAstos { get; set; } = false;
 		public bool? RandomizeEnemizer { get; set; } = false;
 		public bool? RandomizeFormationEnemizer { get; set; } = false;
@@ -577,8 +575,6 @@ namespace FF1Lib
 		public bool BuffHealingSpells { get; set; } = false;
 		public bool? FreeTail { get; set; } = false;
 		public bool? HintsVillage { get; set; } = false;
-		public bool? HintsDungeon { get; set; } = false;
-		public bool? HintsUseless { get; set; } = false;
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
 		public bool? RandomWeaponBonus { get; set; } = false;
 		public bool? RandomArmorBonus { get; set; } = false;

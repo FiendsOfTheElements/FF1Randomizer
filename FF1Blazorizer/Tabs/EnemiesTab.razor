@@ -18,7 +18,6 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="allowUnsafePiratesCheckBox" @bind-Value="Flags.AllowUnsafePirates">Allow Unsafe Pirates</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="onlyShuffleBossScriptsCheckBox" @bind-Value="Flags.BossScriptsOnly">Only Shuffle Bosses</TriStateCheckBox>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.EnemyScripts != false && Flags.BossScriptsOnly != true)" Id="scriptMultiplier" TItem="ScriptTouchMultiplier" @bind-Value="Flags.ScriptMultiplier">Script Count:</EnumDropDown>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnemyScripts" Id="scaryImpsCheckBox" @bind-Value="Flags.ScaryImps">Scary Imps</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySkillsSpellsCheckBox" @bind-Value="Flags.EnemySkillsSpells">Shuffle Skills &amp; Spells</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.EnemySkillsSpells != false && Flags.NoBossSkillScriptShuffle != true)" Id="onlyShuffleBossSkillsCheckBox" @bind-Value="Flags.BossSkillsOnly">Only Shuffle Bosses</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="noBossSkillScriptShuffleCheckBox" IsEnabled="@((Flags.EnemyScripts != false || Flags.EnemySkillsSpells != false) && Flags.BossSkillsOnly != true)" @bind-Value="Flags.NoBossSkillScriptShuffle">Don't Shuffle Bosses</TriStateCheckBox>
@@ -47,7 +46,6 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="swolePiratesCheckBox" @bind-Value="Flags.SwolePirates">Buffed Pirates</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleAstosCheckBox" @bind-Value="Flags.ShuffleAstos">Shuffle Astos</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fiendShuffleCheckBox" @bind-Value="Flags.FiendShuffle">Shuffle the Original Fiends</TriStateCheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="pacifistModeCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.PacifistMode">Pacifist Bosses</CheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.AlternateFiends">Alternate Fiends</TriStateCheckBox>
 
 			<div class="checkbox-cell"></div>
