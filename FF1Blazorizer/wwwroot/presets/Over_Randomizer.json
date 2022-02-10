@@ -397,7 +397,6 @@
     "DisableInnSaving": false,
     "SaveGameWhenGameOver": false,
     "SaveGameDWMode": false,
-    "PacifistMode": false,
     "ShuffleAstos": false,
     "RandomizeEnemizer": true,
     "RandomizeFormationEnemizer": true,
