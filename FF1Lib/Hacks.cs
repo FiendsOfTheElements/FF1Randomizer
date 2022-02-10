@@ -1617,9 +1617,6 @@ namespace FF1Lib
 			if (flags.HintsVillage ?? false)
 				invalidZombie.AddRange(new List<ObjectId> { ObjectId.ConeriaOldMan, ObjectId.PravokaOldMan, ObjectId.ElflandScholar1, ObjectId.MelmondOldMan2, ObjectId.CrescentSage11, ObjectId.OnracOldMan2, ObjectId.GaiaWitch, ObjectId.LefeinMan12 });
 
-			if (flags.HintsDungeon ?? false)
-				invalidZombie.AddRange(new List<ObjectId> { ObjectId.OnracPunk2, ObjectId.DwarfcaveDwarf4, ObjectId.CardiaDragon2, ObjectId.SkyRobot, ObjectId.Mermaid3 });
-
 			// Change base NPCs' scripts to Talk_fight
 			for (int i = 0; i < 0xD0; i++)
 			{

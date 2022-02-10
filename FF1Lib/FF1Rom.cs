@@ -702,7 +702,7 @@ namespace FF1Lib
 
 			if (((bool)flags.EnemyScripts))
 			{
-				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates, (bool)!flags.BossScriptsOnly, (bool)!flags.NoBossSkillScriptShuffle, ((bool)flags.EnemySkillsSpellsTiered || (bool)flags.ScaryImps), (bool)flags.ScaryImps, flags.ScriptMultiplier);
+				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates, (bool)!flags.BossScriptsOnly, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.EnemySkillsSpellsTiered, flags.ScriptMultiplier);
 			}
 
 			if (((bool)flags.EnemySkillsSpells))
@@ -966,11 +966,8 @@ namespace FF1Lib
 				ItemsText[(int)Item.House] = "XETH@p";
 			}
 
-			if (((bool)flags.HintsVillage || (bool)flags.HintsDungeon) && !flags.DeepDungeon)
+			if ((bool)flags.HintsVillage && !flags.DeepDungeon)
 			{
-				if ((bool)flags.HintsDungeon)
-					SetDungeonNPC(flippedMaps, rng);
-
 				NPCHints(rng, npcdata, flags, overworldMap);
 			}
 
@@ -1095,11 +1092,6 @@ namespace FF1Lib
 			if (flags.DisableInnSaving)
 			{
 				CannotSaveAtInns();
-			}
-
-			if (flags.PacifistMode && !flags.SpookyFlag)
-			{
-				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
 			}
 
 			if (flags.ItemMagicMode == ItemMagicMode.None)

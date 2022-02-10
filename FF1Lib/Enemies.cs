@@ -183,7 +183,7 @@ namespace FF1Lib
 			Put(ZoneFormationsOffset, newFormations.ToArray());
 		}
 
-		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool doBosses, bool excludeImps, bool scaryImps, ScriptTouchMultiplier scriptMultiplier)
+		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool doBosses, bool excludeImps, ScriptTouchMultiplier scriptMultiplier)
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
@@ -274,7 +274,6 @@ namespace FF1Lib
 					oldEnemies[Enemy.Tiamat2],
 					oldEnemies[Enemy.Chaos]
 				};
-				if (scaryImps) oldBigBosses.Add(oldEnemies[Enemy.Imp]);
 				oldBigBosses.Shuffle(rng);
 
 				newEnemies[Enemy.WarMech][EnemyStat.Scripts] = oldBigBosses[0][EnemyStat.Scripts];
@@ -283,7 +282,6 @@ namespace FF1Lib
 				newEnemies[Enemy.Kraken2][EnemyStat.Scripts] = oldBigBosses[3][EnemyStat.Scripts];
 				newEnemies[Enemy.Tiamat2][EnemyStat.Scripts] = oldBigBosses[4][EnemyStat.Scripts];
 				newEnemies[Enemy.Chaos][EnemyStat.Scripts] = oldBigBosses[5][EnemyStat.Scripts];
-				if (scaryImps) newEnemies[Enemy.Imp][EnemyStat.Scripts] = oldBigBosses[6][EnemyStat.Scripts];
 			}
 
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
