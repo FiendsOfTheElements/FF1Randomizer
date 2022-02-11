@@ -1688,7 +1688,7 @@
 		"Id": "startingItemsDropDown",
 		"title": "Starting Inventory",
 		"screenshot": "startinginventory.png",
-		"description": "Starts the game with a set of consumable items.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}SafetyBit|1||||1|1[r]{l}Beggar's Choice|5|||20|2|1[r]{l}Just Tents|10|||||[r]{l}Explorer Starting Pack|10|||50|4|2[r]{l}Real Estate|15|3|1|||[r]{l}Warrior's Standard|15|3|1|50|6|3[r]{l}Royal Packmule|50|15|5|99|10|5[r]{l}Duckling Boon|99|99|99|99|99|99[r]{l}R. Beggar's Choice|0-5|||0-20|0-2|0-1[r]{l}R. Explorer Starting Pack|1-10|||0-50|0-4|0-2[r]{l}R. Warrior's Standard|3-15|0-3|0-1|20-50|2-6|1-3[r]{l}R. Royal Packmule|10-50|5-15|1-5|30-99|5-10|2-5[r]{l}R. High Rolling|35-99|10-25|5-10|30-99|10-20|5-10[r]{l}Randomized|0-99|0-99|0-99|0-99|0-20|0-10\n"
+		"description": "Starts the game with a set of consumable items.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}SafetyBit|1||||1|1[r]{l}Beggar's Choice|5|||20|2|1[r]{l}Just Tents|10|||||[r]{l}Explorer Starting Pack|10|||50|4|2[r]{l}Real Estate|15|3|1|||[r]{l}Warrior's Standard|15|3|1|50|6|3[r]{l}Royal Packmule|50|15|5|99|10|5[r]{l}Duckling Boon|99|99|99|99|99|99[r]{l}R. Beggar's Choice|1-5|||0-20|0-2|0-1[r]{l}R. Explorer Starting Pack|1-10|||0-50|0-4|0-2[r]{l}R. Warrior's Standard|3-15|0-3|0-1|20-50|2-6|1-3[r]{l}R. Royal Packmule|10-50|5-15|1-5|30-99|5-10|2-5[r]{l}R. High Rolling|35-99|10-25|5-10|30-99|10-20|5-10[r]{l}Randomized|0-99|0-99|0-99|0-99|0-20|0-10\n"
 	},
 	{
 		"Id": "consumableTreasureStackSizeDropDown",
