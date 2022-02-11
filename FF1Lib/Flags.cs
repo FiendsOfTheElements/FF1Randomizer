@@ -56,6 +56,7 @@ namespace FF1Lib
 
 		#endregion
 
+		public bool BuffTier1DamageSpells { get; set; } = false;
 		public bool NoEmptyScripts { get; set; } = false;
 		public bool LaterLoose { get; set; } = false;
 		public bool? MermaidPrison { get; set; } = false;
@@ -598,8 +599,6 @@ namespace FF1Lib
 		public PoolSize PoolSize { get; set; } = PoolSize.Size6;
 		public bool? EnablePoolParty { get; set; } = false;
 		public bool SafePoolParty { get; set; } = false;
-		public bool PoolParty2DifferentMelee { get; set; } = false;
-		public bool PoolParty2DifferentMages { get; set; } = false;
 		public bool? IncludePromClasses { get; set; } = false;
 		public bool? EnableRandomPromotions { get; set; } = false;
 		public bool? IncludeBaseClasses { get; set; } = false;
@@ -909,7 +908,7 @@ namespace FF1Lib
 			}
 
 			if (flags.ItemMagicMode == ItemMagicMode.Random) newflags.ItemMagicMode = (ItemMagicMode)rng.Between(0, 2);
-			if (flags.ItemMagicPool == ItemMagicPool.Random) newflags.ItemMagicPool = (ItemMagicPool)rng.Between(0, 3);
+			if (flags.ItemMagicPool == ItemMagicPool.Random) newflags.ItemMagicPool = (ItemMagicPool)rng.Between(0, 4);
 
 			if (flags.GuaranteedDefenseItem == GuaranteedDefenseItem.Random) newflags.GuaranteedDefenseItem = rng.Between(0, 1) > 0 ? GuaranteedDefenseItem.Any : GuaranteedDefenseItem.None;
 			if (flags.GuaranteedPowerItem == GuaranteedPowerItem.Random) newflags.GuaranteedPowerItem = rng.Between(0, 1) > 0 ? GuaranteedPowerItem.Any : GuaranteedPowerItem.None;

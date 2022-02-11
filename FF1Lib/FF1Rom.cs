@@ -359,6 +359,11 @@ namespace FF1Lib
 				AlternativeFiends(rng);
 			}
 
+			if (flags.BuffTier1DamageSpells)
+			{
+				BuffTier1DamageSpells();
+			}
+
 			if (flags.BuffHealingSpells)
 			{
 				BuffHealingSpells();

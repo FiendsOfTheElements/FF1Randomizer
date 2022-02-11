@@ -84,6 +84,13 @@ namespace FF1Lib
 		public const int ArmorSize = 4;
 		public const int ArmorCount = 40;
 
+		public void BuffTier1DamageSpells()
+		{
+			Put(MagicOffset + MagicSize * 4 + 1, new byte[] { 60 }); // replace FIRE effectivity
+			Put(MagicOffset + MagicSize * 7 + 1, new byte[] { 70 }); // replace LIT effectivity
+			Put(MagicOffset + MagicSize * 12 + 1, new byte[] { 80 }); // replace ICE effectivity
+			Put(MagicOffset + MagicSize * 1 + 1, new byte[] { 80 }); // replace HARM effectivity
+		}
 
 		public void BuffHealingSpells()
 		{
