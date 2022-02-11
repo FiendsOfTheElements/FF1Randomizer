@@ -248,7 +248,7 @@ namespace FF1Lib
 			},
 			{ StartingItemSet.RandomizedBeggarsChoice, new StartingItem[]
 				{
-					new StartingItem { Item = Item.Tent, Min = 0, Max = 5, RMin = -1, RMax = 6 },
+					new StartingItem { Item = Item.Tent, Min = 1, Max = 5, RMin = 0, RMax = 6 },
 					new StartingItem { Item = Item.Heal, Min = 0, Max = 20 },
 					new StartingItem { Item = Item.Pure, Min = 0, Max = 2 },
 					new StartingItem { Item = Item.Soft, Min = 0, Max = 1 },
