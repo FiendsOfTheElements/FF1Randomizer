@@ -56,6 +56,7 @@ namespace FF1Lib
 
 		#endregion
 
+		public bool BuffTier1DamageSpells { get; set; } = false;
 		public bool NoEmptyScripts { get; set; } = false;
 		public bool LaterLoose { get; set; } = false;
 		public bool? MermaidPrison { get; set; } = false;
@@ -598,8 +599,6 @@ namespace FF1Lib
 		public PoolSize PoolSize { get; set; } = PoolSize.Size6;
 		public bool? EnablePoolParty { get; set; } = false;
 		public bool SafePoolParty { get; set; } = false;
-		public bool PoolParty2DifferentMelee { get; set; } = false;
-		public bool PoolParty2DifferentMages { get; set; } = false;
 		public bool? IncludePromClasses { get; set; } = false;
 		public bool? EnableRandomPromotions { get; set; } = false;
 		public bool? IncludeBaseClasses { get; set; } = false;

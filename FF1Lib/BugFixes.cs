@@ -21,16 +21,22 @@ namespace FF1Lib
 	public enum ThiefAGI
 	{
 	    [Description("Vanilla")]
-	    Vanilla,
+	    Vanilla = 0,
+
+		[Description("30")]
+		Agi30 = 4,
+
+		[Description("50")]
+		Agi50 = 5,
 
 	    [Description("80")]
-	    Agi80,
+	    Agi80 = 1,
 
 	    [Description("100")]
-	    Agi100,
+	    Agi100 = 2,
 
 	    [Description("120")]
-	    Agi120
+	    Agi120 = 3
 	}
 
 	public partial class FF1Rom
