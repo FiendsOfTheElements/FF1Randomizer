@@ -421,8 +421,6 @@
     "PoolSize": 2,
     "EnablePoolParty": false,
     "SafePoolParty": false,
-    "PoolParty2DifferentMelee": false,
-    "PoolParty2DifferentMages": false,
     "IncludePromClasses": false,
     "EnableRandomPromotions": false,
     "IncludeBaseClasses": false,
