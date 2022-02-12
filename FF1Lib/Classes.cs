@@ -214,6 +214,12 @@ namespace FF1Lib
 
 			switch (flags.ThiefAgilityBuff)
 			{
+				case ThiefAGI.Agi30:
+					_classes[(int)Classes.Thief].AgiStarting = 30;
+					break;
+				case ThiefAGI.Agi50:
+					_classes[(int)Classes.Thief].AgiStarting = 50;
+					break;
 				case ThiefAGI.Agi80:
 					_classes[(int)Classes.Thief].AgiStarting = 80;
 					break;
