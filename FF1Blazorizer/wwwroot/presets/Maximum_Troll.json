@@ -21,7 +21,7 @@
     "StartingEquipmentNoDuplicates": false,
     "NoEmptyScripts": false,
     "LaterLoose": false,
-    "MermaidPrison": false,
+    "MermaidPrison": true,
     "GuaranteedDefenseItem": 3,
     "GuaranteedPowerItem": 0,
     "ScriptMultiplier": 1,
