@@ -240,7 +240,7 @@ namespace FF1Lib
 			var Spells = GetSpells();
 
 			SpellHelper spellHelper = new SpellHelper(this);
-			List<(Spell Id, SpellInfo Info)> foundSpells = GetTournamentSpells(spellHelper);
+			List<(Spell Id, SpellInfo Info)> foundSpells = GetTournamentSpells(spellHelper, rng);
 
 			var Spells2 = new List<MagicSpell>();
 			foreach (var spl in foundSpells)
@@ -253,29 +253,27 @@ namespace FF1Lib
 			return Spells2;
 		}
 
-		private List<(Spell Id, SpellInfo Info)> GetTournamentSpells(SpellHelper spellHelper)
+		private List<(Spell Id, SpellInfo Info)> GetTournamentSpells(SpellHelper spellHelper, MT19337 rng)
 		{
 			List<(Spell Id, SpellInfo Info)> foundSpells = new List<(Spell Id, SpellInfo Info)>();
 
 			//up to Ice2
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).Where(s => s.Info.effect <= 40));
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.OneEnemy).Where(s => s.Info.effect >= 40 && s.Info.effect <= 120));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.OneCharacters).Where(s => s.Info.effect >= 40 && s.Info.effect <= 64));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect >= 20 && s.Info.effect <= 32));
 
-			//Up to Hrm3
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.DamageUndead, SpellTargeting.AllEnemies).Where(s => s.Info.effect <= 60));
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.DamageUndead, SpellTargeting.OneEnemy).Where(s => s.Info.effect >= 60 && s.Info.effect <= 120));
+			//double chance
+			foundSpells.AddRange(foundSpells.ToList());
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.DamageUndead, SpellTargeting.AllEnemies).Where(s => s.Info.effect >= 40 && s.Info.effect <= 60));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.DamageUndead, SpellTargeting.OneEnemy).Where(s => s.Info.effect >= 80 && s.Info.effect <= 120));
 
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Self));
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.OneCharacters));
 
-			//up to Cur3, Hel2 twice
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.OneCharacters).Where(s => s.Info.effect >= 40 && s.Info.effect <= 64));
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect >= 20 && s.Info.effect <= 32));
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.OneCharacters).Where(s => s.Info.effect >= 40 && s.Info.effect <= 64));
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect >= 20 && s.Info.effect <= 32));
-
-			//Allow single target insta and multi target status
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any).Where(s => s.Info.effect == (byte)SpellStatus.Death));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any).Where(s => s.Info.effect == (byte)SpellStatus.Stone));
 
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.Any));
 
@@ -287,9 +285,14 @@ namespace FF1Lib
 
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.OneCharacters));
 
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Smoke, SpellTargeting.Any));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Confuse));
 
-			return foundSpells.Concat(foundSpells).ToList();
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Stun));
+
+			foundSpells.Shuffle(rng);
+			var selection = foundSpells.Take(22).Distinct();
+
+			return selection.Concat(selection).ToList();
 		}
 
 		private List<MagicSpell> GetSupportSpells(MT19337 rng)
