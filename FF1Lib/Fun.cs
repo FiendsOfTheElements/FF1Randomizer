@@ -92,7 +92,7 @@ namespace FF1Lib
 		public const int PaletteSize = 4;
 		public const int PaletteCount = 64;
 
-	    public void FunEnemyNames(bool teamSteak, MT19337 rng)
+	    public void FunEnemyNames(bool teamSteak, bool altFiends, MT19337 rng)
 		{
 			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 
@@ -136,10 +136,12 @@ namespace FF1Lib
 			enemyText[106] = "Green D";   // +2  Gas D
 			enemyText[111] = "BATMAN";    // +0  BADMAN
 			enemyText[112] = "OKAYMAN";   // +0  EVILMAN
-			enemyText[119] = "S.BUMP";    // +2  LICH
-			enemyText[120] = "S.BUMP";    // +2  LICH
-			enemyText[121] = "KELLY";     // +1  KARY
-			enemyText[122] = "KELLY";     // +1  KARY
+			if (!altFiends) {
+			    enemyText[119] = "S.BUMP";    // +2  LICH
+			    enemyText[120] = "S.BUMP";    // +2  LICH
+			    enemyText[121] = "KELLY";     // +1  KARY
+			    enemyText[122] = "KELLY";     // +1  KARY
+			}
 
 			// Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes
 			// We're adding (up to) a net of 18 bytes to enemyTextPart2.

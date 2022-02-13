@@ -552,7 +552,7 @@ namespace FF1Lib
 					}
 
 					// Disable the Princess Warp back to Castle Coneria
-					if ((bool)flags.Entrances || (bool)flags.Floors || flags.OwMapExchange != OwMapExchanges.None)
+					if ((bool)flags.Entrances || (bool)flags.Floors || flags.OwMapExchange != OwMapExchanges.None || (bool)flags.FreeOrbs)
 						talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
 
 					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && !flags.DeepDungeon)
@@ -954,7 +954,7 @@ namespace FF1Lib
 
 			if (preferences.FunEnemyNames && !flags.EnemizerEnabled)
 			{
-			    FunEnemyNames(preferences.TeamSteak, rng);
+			    FunEnemyNames(preferences.TeamSteak, (bool)flags.AlternateFiends, rng);
 			}
 
 			if (ItemsText[(int)Item.Ribbon].Length > 7
@@ -1145,7 +1145,7 @@ namespace FF1Lib
 			uint funRngSeed = rng.Next();
 
 			RollCredits(rng);
-			
+
 			if (preferences.DisableDamageTileFlicker || flags.TournamentSafe)
 			{
 				DisableDamageTileFlicker();
@@ -1239,7 +1239,7 @@ namespace FF1Lib
 
 			ItemsText.Write(this, UnusedGoldItems);
 
-			
+
 			if (flags.Spoilers) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, generatedPlacement, overworldMap, incentivesData, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
