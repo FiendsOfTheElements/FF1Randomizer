@@ -1209,7 +1209,6 @@ namespace FF1Lib
 			// Replace the 4 fiends and their 2nd version at the same time
 			for (int i = 0; i < 4; i++)
 			{
-			    Console.WriteLine(alternateFiendsList[i].Name);
 				fiends[(i * 2)].monster_type = (byte)alternateFiendsList[i].MonsterType;
 				fiends[(i * 2) + 1].monster_type = (byte)alternateFiendsList[i].MonsterType;
 				fiends[(i * 2)].elem_weakness = (byte)alternateFiendsList[i].ElementalWeakness;
