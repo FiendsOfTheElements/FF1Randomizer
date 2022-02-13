@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 using RomUtilities;
 using FF1Lib.Helpers;
+using System.IO;
 
 namespace FF1Lib
 {
@@ -1162,12 +1164,52 @@ namespace FF1Lib
 				fiendsScript[i].decompressData(Get(ScriptOffset + (FiendsScriptIndex + i) * ScriptSize, ScriptSize));
 			}
 
-			// Shuffle alternate
-			alternateFiendsList.Shuffle(rng);
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+
+			while (true) {
+			    // Shuffle alternate
+			    alternateFiendsList.Shuffle(rng);
+
+			    while (alternateFiendsList.Count >= 4) {
+				var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[0].Name + ".png"));
+				var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[1].Name + ".png"));
+				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1)) {
+				    using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2)) {
+					if (SetLichKaryGraphics(stream1, stream2)) {
+					    break;
+					}
+					// The graphics didn't fit, throw out the first element and try the next pair
+					alternateFiendsList.RemoveAt(0);
+				    }
+				}
+			    }
+			    if (alternateFiendsList.Count < 4) {
+				// Couldn't find a pair where the graphics fit, reshuffle
+				continue;
+			    }
+
+			    while (alternateFiendsList.Count >= 4) {
+				var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[2].Name + ".png"));
+				var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[3].Name + ".png"));
+				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1)) {
+				    using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2)) {
+					if (SetKrakenTiamatGraphics(stream1, stream2)) {
+					    break;
+					}
+					alternateFiendsList.RemoveAt(2);
+				    }
+				}
+			    }
+			    if (alternateFiendsList.Count < 4) {
+				continue;
+			    }
+			    break;
+			}
 
 			// Replace the 4 fiends and their 2nd version at the same time
 			for (int i = 0; i < 4; i++)
 			{
+			    Console.WriteLine(alternateFiendsList[i].Name);
 				fiends[(i * 2)].monster_type = (byte)alternateFiendsList[i].MonsterType;
 				fiends[(i * 2) + 1].monster_type = (byte)alternateFiendsList[i].MonsterType;
 				fiends[(i * 2)].elem_weakness = (byte)alternateFiendsList[i].ElementalWeakness;
@@ -1193,6 +1235,7 @@ namespace FF1Lib
 				fiendsScript[(i * 2)].spell_list = alternateFiendsList[i].Spells1.ToArray();
 				fiendsScript[(i * 2) + 1].spell_list = alternateFiendsList[i].Spells2.ToArray();
 
+				/*
 				encountersData.formations[fiendsFormationOrder[(i * 2)]].pattern = alternateFiendsList[i].FormationPattern;
 				encountersData.formations[fiendsFormationOrder[(i * 2)]].spriteSheet = alternateFiendsList[i].SpriteSheet;
 				encountersData.formations[fiendsFormationOrder[(i * 2)]].gfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
@@ -1204,6 +1247,7 @@ namespace FF1Lib
 				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].gfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
 				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].palette1 = alternateFiendsList[i].Palette1;
 				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].palette2 = alternateFiendsList[i].Palette2;
+				*/
 			}
 
 			encountersData.Write(this);
