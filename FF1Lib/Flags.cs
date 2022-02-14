@@ -254,6 +254,7 @@ namespace FF1Lib
 		public bool? RandomVampAttackIncludesConeria { get; set; } = false;
 		public bool? FightBahamut { get; set; } = false;
 		public bool? SwoleBahamut { get; set; } = false;
+		public bool? SwoleAstos { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
 		public bool? OWDamageTiles { get; set; } = false;

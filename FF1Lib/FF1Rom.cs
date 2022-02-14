@@ -1037,6 +1037,11 @@ namespace FF1Lib
 				EnableSwolePirates();
 			}
 
+			if ((bool)flags.SwoleAstos)
+			{
+				EnableSwoleAstos();
+			}
+
 			if (flags.EnemyScaleStatsHigh != 100 || flags.EnemyScaleStatsLow != 100 || ((bool)flags.SeparateEnemyHPScaling && (flags.EnemyScaleHpLow != 100 || flags.EnemyScaleHpHigh != 100)))
 			{
 				ScaleEnemyStats(rng, flags);

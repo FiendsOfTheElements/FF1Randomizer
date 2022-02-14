@@ -545,6 +545,39 @@ namespace FF1Lib
 			Put(EnemyOffset + EnemySize * Enemy.Pirate, newPirate.compressData());
 		}
 
+		public void EnableSwoleAstos()
+		{
+			EnemyInfo newAstos = new EnemyInfo();
+			newAstos.decompressData(Get(EnemyOffset + EnemySize * Enemy.Astos, EnemySize));
+
+			newAstos.exp = 4250;
+			newAstos.gp = 4000;
+			newAstos.hp = 672;
+			newAstos.num_hits = 2;
+			newAstos.damage = 45;
+			newAstos.absorb = 120;
+			newAstos.mdef = 180;
+			newAstos.accuracy = 42;
+			newAstos.critrate = 1;
+			newAstos.agility = 78;
+			newAstos.elem_weakness = (byte)Element.STATUS | (byte)Element.TIME | (byte)Element.POISON | (byte)Element.DEATH | (byte)Element.EARTH;
+			if (newAstos.AIscript == 0xFF) {
+			    var i = searchForNoSpellNoAbilityEnemyScript();
+			    if (i == -1) { return; }
+			    newAstos.AIscript = (byte)i;
+			}
+			Put(EnemyOffset + EnemySize * Enemy.Astos, newAstos.compressData());
+
+			var astosScript = new EnemyScriptInfo();
+			astosScript.decompressData(Get(ScriptOffset + newAstos.AIscript * ScriptSize, ScriptSize));
+			astosScript.spell_chance = 96;
+			astosScript.skill_chance = 96;
+			astosScript.spell_list = new byte[] { (byte)SpellByte.ZAP, (byte)SpellByte.STOP, (byte)SpellByte.QAKE, (byte)SpellByte.SLOW,
+			    (byte)SpellByte.BRAK, (byte)SpellByte.XFER, (byte)SpellByte.BANE, (byte)SpellByte.SLEP };
+			astosScript.skill_list = new byte[] { (byte)EnemySkills.Glance, (byte)EnemySkills.Toxic, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Crack };
+			Put(ScriptOffset + newAstos.AIscript * ScriptSize, astosScript.compressData());
+		}
+
 		public void BoostEnemyMorale(byte index)
 		{
 			EnemyInfo enemy = new EnemyInfo();

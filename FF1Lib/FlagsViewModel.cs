@@ -4074,6 +4074,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwolePirates"));
 			}
 		}
+		public bool? SwoleAstos
+		{
+			get => Flags.SwoleAstos;
+			set
+			{
+				Flags.SwoleAstos = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwoleAstos"));
+			}
+		}
 
 		public EvadeCapValues EvadeCap
 		{
