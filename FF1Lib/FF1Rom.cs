@@ -359,6 +359,11 @@ namespace FF1Lib
 				AlternativeFiends(rng);
 			}
 
+			if (flags.BuffTier1DamageSpells)
+			{
+				BuffTier1DamageSpells();
+			}
+
 			if (flags.BuffHealingSpells)
 			{
 				BuffHealingSpells();
@@ -547,7 +552,7 @@ namespace FF1Lib
 					}
 
 					// Disable the Princess Warp back to Castle Coneria
-					if ((bool)flags.Entrances || (bool)flags.Floors || flags.OwMapExchange != OwMapExchanges.None)
+					if ((bool)flags.Entrances || (bool)flags.Floors || flags.OwMapExchange != OwMapExchanges.None || (bool)flags.FreeOrbs)
 						talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
 
 					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && !flags.DeepDungeon)
@@ -702,7 +707,7 @@ namespace FF1Lib
 
 			if (((bool)flags.EnemyScripts))
 			{
-				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates, (bool)!flags.BossScriptsOnly, (bool)!flags.NoBossSkillScriptShuffle, ((bool)flags.EnemySkillsSpellsTiered || (bool)flags.ScaryImps), (bool)flags.ScaryImps, flags.ScriptMultiplier);
+				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates, (bool)!flags.BossScriptsOnly, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.EnemySkillsSpellsTiered, flags.ScriptMultiplier);
 			}
 
 			if (((bool)flags.EnemySkillsSpells))
@@ -949,7 +954,7 @@ namespace FF1Lib
 
 			if (preferences.FunEnemyNames && !flags.EnemizerEnabled)
 			{
-			    FunEnemyNames(preferences.TeamSteak, rng);
+			    FunEnemyNames(preferences.TeamSteak, (bool)flags.AlternateFiends, rng);
 			}
 
 			if (ItemsText[(int)Item.Ribbon].Length > 7
@@ -966,11 +971,8 @@ namespace FF1Lib
 				ItemsText[(int)Item.House] = "XETH@p";
 			}
 
-			if (((bool)flags.HintsVillage || (bool)flags.HintsDungeon) && !flags.DeepDungeon)
+			if ((bool)flags.HintsVillage && !flags.DeepDungeon)
 			{
-				if ((bool)flags.HintsDungeon)
-					SetDungeonNPC(flippedMaps, rng);
-
 				NPCHints(rng, npcdata, flags, overworldMap);
 			}
 
@@ -1095,11 +1097,6 @@ namespace FF1Lib
 			if (flags.DisableInnSaving)
 			{
 				CannotSaveAtInns();
-			}
-
-			if (flags.PacifistMode && !flags.SpookyFlag)
-			{
-				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
 			}
 
 			if (flags.ItemMagicMode == ItemMagicMode.None)
@@ -1243,7 +1240,7 @@ namespace FF1Lib
 
 			ItemsText.Write(this, UnusedGoldItems);
 
-			
+
 			if (flags.Spoilers) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, generatedPlacement, overworldMap, incentivesData, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();

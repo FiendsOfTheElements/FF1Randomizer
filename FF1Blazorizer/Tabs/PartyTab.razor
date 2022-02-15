@@ -122,8 +122,6 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnablePoolParty" @bind-Value="Flags.EnablePoolParty">Party Draft</TriStateCheckBox>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="PoolSizeDropDown" TItem="PoolSize" @bind-Value="Flags.PoolSize">Pool Size:</EnumDropDown>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="safePoolParty" @bind-Value="Flags.SafePoolParty">Safe Party Draft</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="poolParty2Melee" @bind-Value="Flags.PoolParty2DifferentMelee">Guarantee 2 different melee</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnablePoolParty" Id="poolParty2Mages" @bind-Value="Flags.PoolParty2DifferentMages">Guarantee 2 different mages</CheckBox>
 			<br />
 
 			<div class="col1">

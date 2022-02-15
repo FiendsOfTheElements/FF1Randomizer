@@ -3622,15 +3622,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SaveGameDWMode"));
 			}
 		}
-		public bool PacifistMode
-		{
-			get => Flags.PacifistMode;
-			set
-			{
-				Flags.PacifistMode = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PacifistMode"));
-			}
-		}
+
 		public bool? ShuffleAstos
 		{
 			get => Flags.ShuffleAstos;
@@ -3703,6 +3695,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BuffHealingSpells"));
 			}
 		}
+		public bool BuffTier1DamageSpells
+		{
+			get => Flags.BuffTier1DamageSpells;
+			set
+			{
+				Flags.BuffTier1DamageSpells = value;
+				RaisePropertyChanged();
+			}
+		}
 		public bool? FreeTail
 		{
 			get => Flags.FreeTail;
@@ -3721,24 +3722,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HintsVillage"));
 			}
 		}
-		public bool? HintsDungeon
-		{
-			get => Flags.HintsDungeon;
-			set
-			{
-				Flags.HintsDungeon = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HintsDungeon"));
-			}
-		}
-		public bool? HintsUseless
-		{
-			get => Flags.HintsUseless;
-			set
-			{
-				Flags.HintsUseless = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HintsUseless"));
-			}
-		}
+
 		public bool? SpellcrafterRetainPermissions
 		{
 			get => Flags.SpellcrafterRetainPermissions;
@@ -3954,24 +3938,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnablePoolParty"));
 			}
 		}
-		public bool PoolParty2DifferentMelee
-		{
-			get => Flags.PoolParty2DifferentMelee;
-			set
-			{
-				Flags.PoolParty2DifferentMelee = value;
-				RaisePropertyChanged();
-			}
-		}
-		public bool PoolParty2DifferentMages
-		{
-			get => Flags.PoolParty2DifferentMages;
-			set
-			{
-				Flags.PoolParty2DifferentMages = value;
-				RaisePropertyChanged();
-			}
-		}
 		public bool SafePoolParty
 		{
 			get => Flags.SafePoolParty;
@@ -4108,15 +4074,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwolePirates"));
 			}
 		}
-		public bool? ScaryImps
-		{
-			get => Flags.ScaryImps;
-			set
-			{
-				Flags.ScaryImps = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ScaryImps"));
-			}
-		}
+
 		public EvadeCapValues EvadeCap
 		{
 			get => Flags.EvadeCap;

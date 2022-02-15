@@ -57,6 +57,10 @@ namespace FF1Lib
 			{
 				Spells = GetSupportSpells(rng);
 			}
+			else if (flags.ItemMagicPool == ItemMagicPool.Tournament)
+			{
+				Spells = GetTournamentSpells(rng);
+			}
 			else
 			{
 				Spells = GetAllSpells(rng);
@@ -220,13 +224,75 @@ namespace FF1Lib
 
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.PowerWord, SpellTargeting.OneEnemy));
 
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Self));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any).Where(s => s.Info.effect <= 50));
 
-			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Self));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Self).Where(s => s.Info.effect <= 15));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.OneCharacters));
 
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Smoke, SpellTargeting.Any));
 
 			return foundSpells.Concat(foundSpells).ToList();
+		}
+
+		private List<MagicSpell> GetTournamentSpells(MT19337 rng)
+		{
+			var Spells = GetSpells();
+
+			SpellHelper spellHelper = new SpellHelper(this);
+			List<(Spell Id, SpellInfo Info)> foundSpells = GetTournamentSpells(spellHelper, rng);
+
+			var Spells2 = new List<MagicSpell>();
+			foreach (var spl in foundSpells)
+			{
+				var idx = (int)spl.Id - 0xB0;
+				Spells2.Add(Spells[idx]);
+			}
+
+			Spells2.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
+			return Spells2;
+		}
+
+		private List<(Spell Id, SpellInfo Info)> GetTournamentSpells(SpellHelper spellHelper, MT19337 rng)
+		{
+			List<(Spell Id, SpellInfo Info)> foundSpells = new List<(Spell Id, SpellInfo Info)>();
+
+			//up to Ice2
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).Where(s => s.Info.effect <= 40));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.OneEnemy).Where(s => s.Info.effect >= 40 && s.Info.effect <= 120));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.OneCharacters).Where(s => s.Info.effect >= 40 && s.Info.effect <= 64));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect >= 20 && s.Info.effect <= 32));
+
+			//double chance
+			foundSpells.AddRange(foundSpells.ToList());
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.DamageUndead, SpellTargeting.AllEnemies).Where(s => s.Info.effect >= 40 && s.Info.effect <= 60));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.DamageUndead, SpellTargeting.OneEnemy).Where(s => s.Info.effect >= 80 && s.Info.effect <= 120));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Self));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.OneCharacters));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any).Where(s => s.Info.effect == (byte)SpellStatus.Death));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any).Where(s => s.Info.effect == (byte)SpellStatus.Stone));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.Any));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.PowerWord, SpellTargeting.OneEnemy).Where(s => s.Info.effect == (byte)SpellStatus.Death));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any).Where(s => s.Info.effect <= 50));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Self).Where(s => s.Info.effect <= 15));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.OneCharacters));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Confuse));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Stun));
+
+			foundSpells.Shuffle(rng);
+			var selection = foundSpells.Take(22).Distinct();
+
+			return selection.Concat(selection).ToList();
 		}
 
 		private List<MagicSpell> GetSupportSpells(MT19337 rng)
@@ -402,7 +468,8 @@ namespace FF1Lib
 		Balanced = 1,
 		Low = 2,
 		Support = 3,
-		Random = 4
+		Tournament = 4,
+		Random = 5
 	}
 
 	public enum GuaranteedDefenseItem
