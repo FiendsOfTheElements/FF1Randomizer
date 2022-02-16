@@ -2244,9 +2244,9 @@
 		"description": "Give Astos more HP, armor, evade and nasty spells and skills."
 	},
 	{
-		"Id": "safeAstosCheckBox",
-		"title": "Safe Astos",
+		"Id": "unsafeAstosCheckBox",
+		"title": "Unsafe Astos",
 		"screenshot": "",
-		"description": "Shuffle Astos will not place Astos on the King or Princess of Coneria Castle.  This prevents a nasty surprise that can block early game progression."
+		"description": "Shuffle Astos may place Astos on the King or Princess of Coneria Castle, which can create a nasty surprise that blocks early game progression."
 	}
 ]

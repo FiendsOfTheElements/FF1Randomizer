@@ -3632,13 +3632,13 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleAstos"));
 			}
 		}
-		public bool SafeAstos
+		public bool UnsafeAstos
 		{
-			get => Flags.SafeAstos;
+			get => Flags.UnsafeAstos;
 			set
 			{
-				Flags.SafeAstos = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SafeAstos"));
+				Flags.UnsafeAstos = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnsafeAstos"));
 			}
 		}
 
