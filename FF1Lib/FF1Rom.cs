@@ -157,6 +157,11 @@ namespace FF1Lib
 				Blob hash = hasher.ComputeHash(SeedAndFlags);
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
 			}
+
+			// We have to do "fun" stuff last because it alters the RNG state.
+			// Back up Rng so that fun flags are uniform when different ones are selected
+			uint funRngSeed = rng.Next();
+
 			if (flags.TournamentSafe) AssureSafe();
 
 			UpgradeToMMC3();
@@ -954,7 +959,7 @@ namespace FF1Lib
 
 			if (preferences.FunEnemyNames && !flags.EnemizerEnabled)
 			{
-			    FunEnemyNames(preferences.TeamSteak, (bool)flags.AlternateFiends, rng);
+			    FunEnemyNames(preferences.TeamSteak, (bool)flags.AlternateFiends, new MT19337(funRngSeed));
 			}
 
 			if (ItemsText[(int)Item.Ribbon].Length > 7
@@ -1140,10 +1145,6 @@ namespace FF1Lib
 			    SkyWarriorSpoilerBats(rng, flags, npcdata);
 			}
 
-			// We have to do "fun" stuff last because it alters the RNG state.
-			// Back up Rng so that fun flags are uniform when different ones are selected
-			uint funRngSeed = rng.Next();
-
 			RollCredits(rng);
 			StatsTrackingScreen();
 
@@ -1159,8 +1160,7 @@ namespace FF1Lib
 
 			if (preferences.PaletteSwap && !flags.EnemizerEnabled && flags.EnemyObfuscation == EnemyObfuscation.None)
 			{
-				rng = new MT19337(funRngSeed);
-				PaletteSwap(rng);
+				PaletteSwap(new MT19337(funRngSeed));
 			}
 
 			if (preferences.TeamSteak && !(bool)flags.RandomizeEnemizer && flags.EnemyObfuscation == EnemyObfuscation.None)
@@ -1170,22 +1170,17 @@ namespace FF1Lib
 
 			if (preferences.ChangeLute)
 			{
-				rng = new MT19337(funRngSeed);
-				ChangeLute(rng);
+				ChangeLute(new MT19337(funRngSeed));
 			}
 
-			rng = new MT19337(funRngSeed);
 
-			TitanSnack(preferences.TitanSnack, npcdata, rng);
+			TitanSnack(preferences.TitanSnack, npcdata, new MT19337(funRngSeed));
 
-			rng = new MT19337(funRngSeed);
-
-			HurrayDwarfFate(preferences.HurrayDwarfFate, npcdata, rng);
+			HurrayDwarfFate(preferences.HurrayDwarfFate, npcdata, new MT19337(funRngSeed));
 
 			if (preferences.Music != MusicShuffle.None)
 			{
-				rng = new MT19337(funRngSeed);
-				ShuffleMusic(preferences.Music, rng);
+				ShuffleMusic(preferences.Music, new MT19337(funRngSeed));
 			}
 
 			if (preferences.DisableSpellCastFlash || flags.TournamentSafe)
@@ -1229,7 +1224,6 @@ namespace FF1Lib
 			SpellPermissions.Write(this);
 			ClassData.Write(this);
 
-
 			if (flags.Archipelago)
 			{
 				shipLocations.SetShipLocation(255);
@@ -1252,7 +1246,8 @@ namespace FF1Lib
 
 			flagstext += "_" + resourcesPackHash.ToHex();
 
-			WriteSeedAndFlags(seed.ToHex(), flagstext);
+			uint last_rng_value = rng.Next();
+			WriteSeedAndFlags(seed.ToHex(), flagstext, last_rng_value);
 			ExtraTrackingAndInitCode(flags, preferences);
 		}
 
@@ -1593,7 +1588,7 @@ namespace FF1Lib
 			Data[0x7FE97] = 0x03;
 		}
 
-		public void WriteSeedAndFlags(string seed, string flags)
+		public void WriteSeedAndFlags(string seed, string flags, uint last_rng_value)
 		{
 			// Replace most of the old copyright string printing with a JSR to a LongJump
 			Put(0x38486, Blob.FromHex("20B9FF60"));
@@ -1603,7 +1598,7 @@ namespace FF1Lib
 
 			Blob hash;
 			var hasher = SHA256.Create();
-			hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{FFRVersion.Sha}"));
+			hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{FFRVersion.Sha}_{last_rng_value}"));
 
 			var hashpart = BitConverter.ToUInt64(hash, 0);
 			hash = Blob.FromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
