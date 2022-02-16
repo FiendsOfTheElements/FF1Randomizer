@@ -554,6 +554,12 @@ namespace FF1Lib
 				npcpool.Remove(ObjectId.Bahamut);
 			}
 
+			if ((bool)flags.SafeAstos)
+			{
+				npcpool.Remove(ObjectId.King);
+				npcpool.Remove(ObjectId.Princess2);
+			}
+
 			// Select random npc
 			ObjectId newastos = npcpool.PickRandom(rng);
 

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RomUtilities;
 using static System.Math;
+using FF1Lib.Helpers;
 
 namespace FF1Lib
 {
@@ -545,22 +546,23 @@ namespace FF1Lib
 			Put(EnemyOffset + EnemySize * Enemy.Pirate, newPirate.compressData());
 		}
 
-		public void EnableSwoleAstos()
+		public void EnableSwoleAstos(MT19337 rng)
 		{
 			EnemyInfo newAstos = new EnemyInfo();
 			newAstos.decompressData(Get(EnemyOffset + EnemySize * Enemy.Astos, EnemySize));
 
-			newAstos.exp = 4250;
-			newAstos.gp = 4000;
-			newAstos.hp = 672;
+			newAstos.exp = 12800;
+			newAstos.gp = 8000;
+			newAstos.hp = 850;
 			newAstos.num_hits = 2;
 			newAstos.damage = 45;
-			newAstos.absorb = 120;
+			newAstos.absorb = 60;
 			newAstos.mdef = 180;
 			newAstos.accuracy = 42;
 			newAstos.critrate = 1;
-			newAstos.agility = 78;
-			newAstos.elem_weakness = (byte)Element.STATUS | (byte)Element.TIME | (byte)Element.POISON | (byte)Element.DEATH | (byte)Element.EARTH;
+			newAstos.agility = 250;
+			newAstos.elem_weakness = (byte)Element.STATUS | (byte)Element.DEATH;
+			newAstos.elem_resist = (byte)Element.NONE;
 			if (newAstos.AIscript == 0xFF) {
 			    var i = searchForNoSpellNoAbilityEnemyScript();
 			    if (i == -1) { return; }
@@ -572,9 +574,23 @@ namespace FF1Lib
 			astosScript.decompressData(Get(ScriptOffset + newAstos.AIscript * ScriptSize, ScriptSize));
 			astosScript.spell_chance = 96;
 			astosScript.skill_chance = 96;
-			astosScript.spell_list = new byte[] { (byte)SpellByte.ZAP, (byte)SpellByte.STOP, (byte)SpellByte.QAKE, (byte)SpellByte.SLOW,
-			    (byte)SpellByte.BRAK, (byte)SpellByte.XFER, (byte)SpellByte.BANE, (byte)SpellByte.SLEP };
-			astosScript.skill_list = new byte[] { (byte)EnemySkills.Glance, (byte)EnemySkills.Toxic, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Crack };
+
+			// use "find spell by effect" to be compatible with spell shuffle and spell crafter.
+			var helper = new SpellHelper(this);
+			var spells = helper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Mute).ToList();
+			spells.AddRange(helper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Stun));
+			spells.AddRange(helper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Sleep));
+			spells.AddRange(helper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Stone));
+			spells.AddRange(helper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Death));
+
+			spells.Shuffle(rng);
+
+			astosScript.spell_list = new byte[8];
+			for (int i = 0; i < 8; i++) {
+			    astosScript.spell_list[i] = (byte)(spells[i % spells.Count].Id - Spell.CURE);
+			}
+
+			astosScript.skill_list = new byte[] { (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Crack, (byte)EnemySkills.Glance, (byte)EnemySkills.Toxic };
 			Put(ScriptOffset + newAstos.AIscript * ScriptSize, astosScript.compressData());
 		}
 

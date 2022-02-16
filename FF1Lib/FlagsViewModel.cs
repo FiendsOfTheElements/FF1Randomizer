@@ -3632,6 +3632,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleAstos"));
 			}
 		}
+		public bool SafeAstos
+		{
+			get => Flags.SafeAstos;
+			set
+			{
+				Flags.SafeAstos = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SafeAstos"));
+			}
+		}
+
 		public bool? RandomizeEnemizer
 		{
 			get => Flags.RandomizeEnemizer;

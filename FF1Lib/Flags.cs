@@ -568,6 +568,7 @@ namespace FF1Lib
 		public bool SaveGameWhenGameOver { get; set; } = false;
 		public bool SaveGameDWMode { get; set; } = false;
 		public bool? ShuffleAstos { get; set; } = false;
+		public bool SafeAstos { get; set; } = false;
 		public bool? RandomizeEnemizer { get; set; } = false;
 		public bool? RandomizeFormationEnemizer { get; set; } = false;
 		public bool? GenerateNewSpellbook { get; set; } = false;

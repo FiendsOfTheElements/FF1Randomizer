@@ -2236,5 +2236,17 @@
 		"title": "Free Enterprise",
 		"screenshot": "",
 		"description": "Start the game with your trusty airship, the Enterprise.  The world seems peaceful, but monsters still hide in the darkest corners."
+	},
+	{
+		"Id": "swoleAstosCheckBox",
+		"title": "Buffed Astos",
+		"screenshot": "",
+		"description": "Give Astos more HP, armor, evade and nasty spells and skills."
+	},
+	{
+		"Id": "safeAstosCheckBox",
+		"title": "Safe Astos",
+		"screenshot": "",
+		"description": "Shuffle Astos will not place Astos on the King or Princess of Coneria Castle.  This prevents a nasty surprise that can block early game progression."
 	}
 ]

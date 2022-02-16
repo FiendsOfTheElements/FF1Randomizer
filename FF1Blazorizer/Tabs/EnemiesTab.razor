@@ -44,8 +44,9 @@
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="WarMECHModeDropDown" TItem="WarMECHMode" @bind-Value="Flags.WarMECHMode">WarMECH Mode: </EnumDropDown>
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="swolePiratesCheckBox" @bind-Value="Flags.SwolePirates">Buffed Pirates</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleAstosCheckBox" @bind-Value="Flags.ShuffleAstos">Shuffle Astos</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="swoleAstosCheckBox" @bind-Value="Flags.SwoleAstos">Buffed Astos</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleAstosCheckBox" @bind-Value="Flags.ShuffleAstos">Shuffle Astos</TriStateCheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="safeAstosCheckBox" IsEnabled="@Flags.ShuffleAstos" @bind-Value="Flags.SafeAstos">Safe Astos</CheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fiendShuffleCheckBox" @bind-Value="Flags.FiendShuffle">Shuffle the Original Fiends</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.AlternateFiends">Alternate Fiends</TriStateCheckBox>
 

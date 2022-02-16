@@ -1039,7 +1039,7 @@ namespace FF1Lib
 
 			if ((bool)flags.SwoleAstos)
 			{
-				EnableSwoleAstos();
+				EnableSwoleAstos(rng);
 			}
 
 			if (flags.EnemyScaleStatsHigh != 100 || flags.EnemyScaleStatsLow != 100 || ((bool)flags.SeparateEnemyHPScaling && (flags.EnemyScaleHpLow != 100 || flags.EnemyScaleHpHigh != 100)))
@@ -1061,7 +1061,7 @@ namespace FF1Lib
 
 			if ((bool)flags.ShuffleAstos)
 			{
-				ShuffleAstos(flags, npcdata, talkroutines, rng);
+			    ShuffleAstos(flags, npcdata, talkroutines, rng);
 			}
 
 			if ((bool)flags.EnablePoolParty)
