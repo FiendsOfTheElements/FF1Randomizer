@@ -590,7 +590,9 @@ namespace FF1Lib
 			    astosScript.spell_list[i] = (byte)(spells[i % spells.Count].Id - Spell.CURE);
 			}
 
-			astosScript.skill_list = new byte[] { (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Crack, (byte)EnemySkills.Glance, (byte)EnemySkills.Toxic };
+			var skills = new List<byte> { (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Crack, (byte)EnemySkills.Trance, (byte)EnemySkills.Toxic };
+			skills.Shuffle(rng);
+			astosScript.skill_list = skills.ToArray();
 			Put(ScriptOffset + newAstos.AIscript * ScriptSize, astosScript.compressData());
 		}
 

@@ -1356,8 +1356,8 @@
 	{
 		"Id": "shuffleAstosCheckBox",
 		"title": "Shuffle Astos",
-		"screenshot": "",
-		"description": "Astos disguises himself as another NPC: Bahamut, Canoe Sage, CubeBot, Elf Doctor, Elf Prince, Fairy, King, Lefein, Matoya, Nerrick, Princess Sara, Sarda, Smith, Titan, Unne or the kindly old king from Northwest Castle."
+		"screenshot": "shuffleAstosCheckBox.png",
+		"description": "Astos is disguised as a quest NPC: Bahamut, Canoe Sage, CubeBot, Elf Doctor, Elf Prince, Fairy, Lefein, Matoya, Nerrick, Sarda, Smith, Titan, Unne or the kindly old king from Northwest Castle.\nUnless he is picked by Astos shuffle, the kindly old king in the Northwest Castle will not fight you."
 	},
 	{
 		"Id": "fiendShuffleCheckBox",
@@ -2240,13 +2240,13 @@
 	{
 		"Id": "swoleAstosCheckBox",
 		"title": "Buffed Astos",
-		"screenshot": "",
-		"description": "Give Astos more HP, armor, evade and nasty spells and skills."
+		"screenshot": "buffedAstosCheckBox.png",
+		"description": "Give Astos more HP, armor, evade and nasty spells and skills.  Hint: Astos likes status effects, and death.  He can dish it out, but he can't take it."
 	},
 	{
 		"Id": "unsafeAstosCheckBox",
 		"title": "Unsafe Astos",
-		"screenshot": "shuffleAstosCheckBox.png",
-		"description": "Shuffle Astos may place Astos on the King or Princess of Coneria Castle, which can create a nasty surprise that blocks early game progression."
+		"screenshot": "unsafeAstosCheckBox.png",
+		"description": "Shuffle Astos may place Astos on the King or Princess of Coneria Castle.  This may result in challenging early game progression."
 	}
 ]
