@@ -334,6 +334,12 @@
 		"screenshot": "LichRevenge.png",
 		"description": "Lich is having their revenge, unleashing a zombie apocalypse upon the world!\n- All NPCs are zombies\n- Key NPCs will attack you when giving you their item\n- Buffed undead enemies\n- Lich is the End Boss"
 	},
+	{
+		"Id": "lichRevengePresetCheckBox",
+		"title": "Lich's Revenge - Halloween Special 2020",
+		"screenshot": "LichRevenge.png",
+		"description": "Lich is having their revenge, unleashing a zombie apocalypse upon the world!\n- All NPCs are zombies\n- Key NPCs will attack you when giving you their item\n- Buffed undead enemies\n- Lich is the End Boss"
+	},
 
 
 
@@ -2236,12 +2242,6 @@
 		"title": "Free Enterprise",
 		"screenshot": "",
 		"description": "All bosses rush modeled after the open world gameplay style of FF4: Free Enterprise.  Go anywhere in your trusty airship, the Enterprise.  The LUTE, KEY and lighting the four orbs are still required to access the final dungeon.\n- Free airship and canoe\n- Starting party is two forced, two none.  You will have the opportunity to recruit additional party members by completing quests and defeating fiends.\n- No random encounters, gain XP is by finding XP chests, taking spike tile fights, and defeating bosses.\n- Every incentive location is in play, with a key item or legendary treasure\n- Randomized treasure, high wealth, rare and legendary gear in shops\n- Start with a random item that casts offensive area-of-effect magic\n- Free TAIL, fight buff Bahamut\n- Buffed, unsafe pirates\n- Required WarMECH\n- Alternate fiends and final boss\n- Short ToFR"
-	},
-	{
-		"Id": "maximumTrollShufflePresetToolTipBox",
-		"title": "Maximum Troll",
-		"screenshot": "",
-		"description": "A flagset dedicated to trying to vex and confuse you."
 	},
 	{
 		"Id": "swoleAstosCheckBox",
