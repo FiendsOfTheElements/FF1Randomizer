@@ -2187,7 +2187,7 @@
 		"Id": "overRandomizerToolTipBox",
 		"title": "Over Randomizer preset",
 		"screenshot": "",
-		"description": "The randomizer will give you entirely new weapons, armor, spells, enemies, and bosses.\nKey flags\nWeaponizer - see tooltip on the 'Gear & Items'\nArmor Crafter - see tooltip on the Gear & Items for details\nSpell Crafter - See 'Spellcrafter FAQ' on the Resources page\nEnemizer - See 'Enemizer FAQ' on the Resources page\nAlternate fiends - See See 'Alternate Fiends Guide' on the Resources page\nAlternate Final Boss - See tooltip on the 'Goal' tab\nShort ToFR"
+		"description": "The randomizer will give you entirely new weapons, armor, spells, and enemies.\nKey flags\nWeaponizer - see tooltip on the 'Gear & Items'\nArmor Crafter - see tooltip on the Gear & Items for details\nSpell Crafter - See 'Spellcrafter FAQ' on the Resources page\nEnemizer - See 'Enemizer FAQ' on the Resources page"
 	},
 	{
 		"Id": "chaosRushToolTipBox",
@@ -2241,7 +2241,7 @@
 		"Id": "freeEnterpriseToolTipBox",
 		"title": "Free Enterprise",
 		"screenshot": "",
-		"description": "All bosses rush modeled after the open world gameplay style of FF4: Free Enterprise.  Go anywhere in your trusty airship, the Enterprise.  The LUTE, KEY and lighting the four orbs are still required to access the final dungeon.\n- Free airship and canoe\n- Starting party is two forced, two none.  You will have the opportunity to recruit additional party members by completing quests and defeating fiends.\n- No random encounters, gain XP is by finding XP chests, taking spike tile fights, and defeating bosses.\n- Every incentive location is in play, with a key item or legendary treasure\n- Randomized treasure, high wealth, rare and legendary gear in shops\n- Start with a random item that casts offensive area-of-effect magic\n- Free TAIL, fight buff Bahamut\n- Buffed, unsafe pirates\n- Required WarMECH\n- Alternate fiends and final boss\n- Short ToFR"
+		"description": "All bosses rush modeled after the open world gameplay style of FF4: Free Enterprise.  Go anywhere in your trusty airship, the Enterprise.  The LUTE, KEY and lighting the four orbs are still required to access the final dungeon.\n- Free airship and canoe\n- Starting party is two forced, two none.  You will have the opportunity to recruit additional party members by completing quests and defeating fiends.\n- No random encounters, gain XP is by finding XP chests, taking spike tile fights, and defeating bosses.\n- Every incentive location is in play, with a key item or legendary treasure\n- Randomized treasure, high wealth, rare and legendary gear in shops\n- Start with a random item that casts offensive area-of-effect magic\n- Free TAIL, fight buff Bahamut\n- Buffed, unsafe pirates\n- Buffed Astos\n- Required WarMECH\n- Alternate fiends and final boss\n- Short ToFR"
 	},
 	{
 		"Id": "swoleAstosCheckBox",
