@@ -546,12 +546,18 @@ namespace FF1Lib
 		{
 			// NPC pool to swap Astos with
 			List<ObjectId> npcpool = new List<ObjectId> { ObjectId.Astos, ObjectId.Bahamut, ObjectId.CanoeSage, ObjectId.CubeBot, ObjectId.ElfDoc,
-			ObjectId.Fairy, ObjectId.King, ObjectId.Matoya, ObjectId.Nerrick, ObjectId.Princess2, ObjectId.Smith,
+			ObjectId.Fairy, ObjectId.Matoya, ObjectId.Nerrick, ObjectId.Smith,
 			ObjectId.Titan, ObjectId.Unne, ObjectId.Sarda, ObjectId.ElfPrince, ObjectId.Lefein };
 
 			if ((bool)flags.FightBahamut)
 			{
 				npcpool.Remove(ObjectId.Bahamut);
+			}
+
+			if ((bool)flags.UnsafeAstos)
+			{
+				npcpool.Add(ObjectId.King);
+				npcpool.Add(ObjectId.Princess2);
 			}
 
 			// Select random npc

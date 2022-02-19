@@ -3632,6 +3632,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleAstos"));
 			}
 		}
+		public bool UnsafeAstos
+		{
+			get => Flags.UnsafeAstos;
+			set
+			{
+				Flags.UnsafeAstos = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnsafeAstos"));
+			}
+		}
+
 		public bool? RandomizeEnemizer
 		{
 			get => Flags.RandomizeEnemizer;
@@ -4072,6 +4082,15 @@ namespace FF1Lib
 			{
 				Flags.SwolePirates = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwolePirates"));
+			}
+		}
+		public bool? SwoleAstos
+		{
+			get => Flags.SwoleAstos;
+			set
+			{
+				Flags.SwoleAstos = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwoleAstos"));
 			}
 		}
 
