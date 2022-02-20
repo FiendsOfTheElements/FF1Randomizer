@@ -1842,7 +1842,7 @@ namespace FF1Lib
 			bahamutInfo.decompressData(Get(EnemyOffset + (idAnkylo * EnemySize), EnemySize));
 			bahamutInfo.morale = 255; // always prevent running away, whether swole or not
 			bahamutInfo.monster_type = (byte)MonsterType.DRAGON;
-			bahamutInfo.exp = 8000;
+			bahamutInfo.exp = 3000;
 			bahamutInfo.gp = 1;
 			bahamutInfo.hp = 525;      // subject to additional boss HP scaling
 			bahamutInfo.num_hits = 1;
@@ -1879,6 +1879,9 @@ namespace FF1Lib
 
 					// pick skills from this list
 					List<byte> potentialSkills = new List<byte> {
+					    (byte)EnemySkills.Snorting,
+					    (byte)EnemySkills.Stinger,
+					    (byte)EnemySkills.Cremate,
 					    (byte)EnemySkills.Blizzard,
 					    (byte)EnemySkills.Blaze,
 					    (byte)EnemySkills.Inferno,
