@@ -226,6 +226,10 @@ namespace FF1Lib
 			int highHp = (bool)flags.ClampBossHPScaling ? Math.Max(100, flags.BossScaleHpHigh) : flags.BossScaleHpHigh;
 			Bosses.ForEach(index => ScaleSingleEnemyStats(index, minStats, highStats, flags.WrapStatOverflow, flags.IncludeMorale, rng,
 				(bool)flags.SeparateBossHPScaling, minHp, highHp, GetEvadeIntFromFlag(flags.EvadeCap)));
+			if ((bool)flags.FightBahamut) {
+			    ScaleSingleEnemyStats(Enemy.Ankylo, minStats, highStats, flags.WrapStatOverflow, flags.IncludeMorale, rng,
+						  (bool)flags.SeparateBossHPScaling, minHp, highHp, GetEvadeIntFromFlag(flags.EvadeCap));
+			}
 		}
 
 		public abstract class EnemyStat
@@ -551,6 +555,8 @@ namespace FF1Lib
 			EnemyInfo newAstos = new EnemyInfo();
 			newAstos.decompressData(Get(EnemyOffset + EnemySize * Enemy.Astos, EnemySize));
 
+			newAstos.morale = 255;
+			newAstos.monster_type = (byte)MonsterType.MAGE;
 			newAstos.exp = 12800;
 			newAstos.gp = 8000;
 			newAstos.hp = 850;
@@ -563,6 +569,7 @@ namespace FF1Lib
 			newAstos.agility = 250;
 			newAstos.elem_weakness = (byte)Element.STATUS | (byte)Element.DEATH;
 			newAstos.elem_resist = (byte)Element.NONE;
+
 			if (newAstos.AIscript == 0xFF) {
 			    var i = searchForNoSpellNoAbilityEnemyScript();
 			    if (i == -1) { return; }

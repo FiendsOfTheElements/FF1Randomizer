@@ -1047,6 +1047,11 @@ namespace FF1Lib
 				EnableSwoleAstos(rng);
 			}
 
+			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
+			{
+				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, (bool)flags.SwoleBahamut, flags.DeepDungeon, flags.EvadeCap, rng);
+			}
+
 			if (flags.EnemyScaleStatsHigh != 100 || flags.EnemyScaleStatsLow != 100 || ((bool)flags.SeparateEnemyHPScaling && (flags.EnemyScaleHpLow != 100 || flags.EnemyScaleHpHigh != 100)))
 			{
 				ScaleEnemyStats(rng, flags);
@@ -1120,11 +1125,6 @@ namespace FF1Lib
 			}
 
 			Fix3DigitStats();
-
-			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
-			{
-				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, (bool)flags.SwoleBahamut, flags.DeepDungeon, flags.EvadeCap, rng);
-			}
 
 			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
@@ -1539,7 +1539,7 @@ namespace FF1Lib
 			PutInBank(0x0E, 0xB665, Blob.FromHex("209AE1A9008522EAEAEAEAEAEA")); // Change MenuFrame to reset Select button
 			PutInBank(0x0E, 0xADF4, Blob.FromHex("2046D8D015B007EA"));           // Change MainMenuLoop to check for SelectButton
 
-			// PutInBank(0x0D, 0xB83E, Blob.FromHex("2012D8")); 
+			// PutInBank(0x0D, 0xB83E, Blob.FromHex("2012D8"));
 			// PutInBank(0x1F, 0xD812, CreateLongJumpTableEntry(0x1E, 0xB100)); // LongJump from Ending Credits
 			// PutInBank(0x1E, 0xB100, Blob.FromHex("A900852485252000FEA91E85572089C620C2D7A5240525F0034C1FB14C06B1A9008D01202006E9A20BA90085372040B0203CC420D5B02000FEA91E85572089C64C36B1"));
 		}

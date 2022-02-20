@@ -1842,12 +1842,32 @@ namespace FF1Lib
 			bahamutInfo.decompressData(Get(EnemyOffset + (idAnkylo * EnemySize), EnemySize));
 			bahamutInfo.morale = 255; // always prevent running away, whether swole or not
 			bahamutInfo.monster_type = (byte)MonsterType.DRAGON;
+			bahamutInfo.exp = 3000;
+			bahamutInfo.gp = 1;
+			bahamutInfo.hp = 525;      // subject to additional boss HP scaling
+			bahamutInfo.num_hits = 1;
+
+			// These stats are based on the ankylo base stats increased to about 120%
+			// stats will be further scaled based on boss stat scaling
+			bahamutInfo.damage = 118;
+			bahamutInfo.absorb = 58;
+			bahamutInfo.mdef = 188;
+			bahamutInfo.accuracy = 106;
+			bahamutInfo.critrate = 1;
+			bahamutInfo.agility = 58;
+			bahamutInfo.elem_weakness = (byte)Element.NONE;
+
 			if (swoleBahamut)
 			{
-				int availableScript = searchForNoSpellNoAbilityEnemyScript();
 				bahamutInfo.exp = 16000; // increase exp for swole bahamut, either mode
-				bahamutInfo.hp = 475; // increase HP (note: this will increase by 2x below)
-				bahamutInfo.elem_resist = (byte)Element.POISON; // no longer susceptible to BANE
+				bahamutInfo.hp = 700; // subject to additional boss HP scaling
+				bahamutInfo.elem_resist = (byte)Element.POISON; // no longer susceptible to BANE or BRAK
+
+				int availableScript = bahamutInfo.AIscript;
+				if (availableScript == 0xFF) {
+				    availableScript = searchForNoSpellNoAbilityEnemyScript();
+				}
+
 				if (availableScript >= 0 && Rng.Between(rng, 0, 3) > 0) // because spells and skills shuffle is common, allow RNG to also make physical bahamut (1 in 4)
 				{
 					// spells and skills were shuffled in a way that a script exists with NONES for all magic and skills
@@ -1858,24 +1878,38 @@ namespace FF1Lib
 					setAIScriptToNoneForEnemiesUsing(availableScript);
 
 					// pick skills from this list
-					List<byte> potentialSkills = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Scorch, (byte)EnemySkills.Glare, (byte)EnemySkills.Blaze, (byte)EnemySkills.Inferno, (byte)EnemySkills.Cremate, (byte)EnemySkills.Snorting, (byte)EnemySkills.Trance, (byte)EnemySkills.Nuclear };
+					List<byte> potentialSkills = new List<byte> {
+					    (byte)EnemySkills.Snorting,
+					    (byte)EnemySkills.Stinger,
+					    (byte)EnemySkills.Cremate,
+					    (byte)EnemySkills.Blizzard,
+					    (byte)EnemySkills.Blaze,
+					    (byte)EnemySkills.Inferno,
+					    (byte)EnemySkills.Poison_Damage,
+					    (byte)EnemySkills.Thunder,
+					    (byte)EnemySkills.Tornado,
+					    (byte)EnemySkills.Nuclear,
+					    (byte)EnemySkills.Swirl,
+					};
 					potentialSkills.Shuffle(rng);
 
 					// create and assign script
 					defineNewAI(availableScript,
 						spellChance: 0x00,
 						skillChance: 0x40,
-						spells: new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+						spells: new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE,
+							(byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
 						skills: new List<byte> { potentialSkills[0], potentialSkills[1], potentialSkills[2], potentialSkills[3] }
 						);
 					bahamutInfo.AIscript = (byte)availableScript;
-					bahamutInfo.mdef = 0xB4; // swole magical bahamut has increased MDEF
+					bahamutInfo.mdef = 215; // swole magical bahamut has increased MDEF
 				} else
 				{
 					// no script is available: spells and skills aren't shuffled or we got unlucky
 					// (physical bahamut mode)
 					bahamutInfo.critrate = 20;
 					bahamutInfo.num_hits = 2;
+					bahamutInfo.AIscript = 0xFF;
 				}
 			}
 			Put(EnemyOffset + (idAnkylo * EnemySize), bahamutInfo.compressData());
@@ -1919,13 +1953,10 @@ namespace FF1Lib
 
 			// Change Bahamut Dragon NPCs to the "Onrac Dragon" so they will change what they say post promotion
 			if (!deepDungeon)
-            {
+			{
 				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.OnracDragon, 19, 7, inRoom: true, stationary: true);
 				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.OnracDragon, 23, 7, inRoom: true, stationary: true);
 			}
-
-			// Scale Difficulty Up, approx 700hp (normal) or 950hp (buffed)
-			ScaleSingleEnemyStats(78, 120, 120, wrapOverflow: false, includeMorale: false, rng: null, separateHPScale: true, lowPercentHp: 200, highPercentHp: 200, GetEvadeIntFromFlag(evadeClampFlag));
 		}
 
 		private void defineNewAI(int availableScript, byte spellChance, byte skillChance, List<byte> spells, List<byte> skills)
