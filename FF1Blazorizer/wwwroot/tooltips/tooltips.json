@@ -1624,7 +1624,7 @@
 		"Id": "startingEquipmentGrandpasSecretStash",
 		"title": "Starting Equipment - Grandpa's Secret Stash",
 		"screenshot": "startingEquipmentGrandpasSecretStash.png",
-		"description": "Plays three (3) Good Items and five (5) Common Ones into the party's starting inventory."
+		"description": "Adds three legendary tier items and five common tier tiems to the party's starting inventory."
 	},
 	{
 		"Id": "startingEquipmentRandomCommons",
@@ -1999,7 +1999,7 @@
 		"Id": "owMapExchange",
 		"title": "Overworld Map",
 		"screenshot": "owMapExchange.png",
-		"description": "Options to generate a new random overworld map. Note: map generation is resource intensive, may take 30-60 seconds during which time your browser may be unresponsive.  If a seed fails to generate a map, try a different seed, or choose 'random pregenerated' to get a random map from a set of maps that were pre-generated using the same code as 'Generate New Overworld'.\nGenerate New Overworld - Creates a completely new overworld, vanilla access requirements (game is beatable even vanilla progression/no treasure shuffle).\nShuffled access - Locations placed with random item requirements (e.g. could need canoe to reach Elfland, or airship to reach Matoya).\nShuffled access, unsafe start - May place late-game dungeons in starting area.\nLost Woods - Randomly generated endless forest map.\nDesert of Death - Randomly generated deadly desert map.\nNo Overworld - Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps.\nImport custom map - Import a map using the 'Import map' button."
+		"description": "Options to generate a new random overworld map. Note: map generation is resource intensive, may take 30-60 seconds during which time your browser may be unresponsive.  If a seed fails to generate a map, try a different seed, or choose 'random pregenerated' to get a random map from a set of maps that were pre-generated using the same code as 'Generate New Overworld'.\nGenerate New Overworld - Creates a completely new overworld, vanilla access requirements (game is beatable even vanilla progression/no treasure shuffle).\nShuffled access - Locations placed with random item requirements (e.g. could need canoe to reach Elfland, or airship to reach Matoya).\nShuffled access, unsafe start - May place late-game dungeons in starting area.\nLost Woods - Randomly generated endless forest map.\nDesert of Death - Randomly generated deadly desert map.\nNo Overworld - Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps. The FLOATER and the CANOE are replaced respectively by the SIGIL and Lukahn's MARK.'\nImport custom map - Import a map using the 'Import map' button."
 	},
 	{
 		"Id": "enableArchipelago",
