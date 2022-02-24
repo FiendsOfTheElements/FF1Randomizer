@@ -766,6 +766,7 @@ namespace FF1Lib.Procgen
 		    bool adjMarsh = false;
 		    bool adjDesert = false;
 		    bool adjRiver = false;
+		    bool adjEntrance = false;
 		    var adjCoors = new SCCoords[] {
 			p, p.OwUp, p.OwRight, p.OwDown, p.OwLeft
 		    };
@@ -779,6 +780,9 @@ namespace FF1Lib.Procgen
 			if (this.Tilemap[adj.Y, adj.X] == OverworldTiles.RIVER) {
 			    adjRiver = true;
 			}
+			if (OverworldTiles.Entrances.Contains(this.Tilemap[adj.Y, adj.X])) {
+			    adjEntrance = true;
+			}
 		    }
 		    foreach (var adj in adjCoors) {
 			if (this.Tilemap[adj.Y, adj.X] == OverworldTiles.LAND ||
@@ -788,7 +792,7 @@ namespace FF1Lib.Procgen
 				this.Tilemap[adj.Y, adj.X] = OverworldTiles.MARSH;
 			    } else if (adjDesert) {
 				this.Tilemap[adj.Y, adj.X] = OverworldTiles.DESERT;
-			    } else if (adjRiver) {
+			    } else if (adjRiver && !adjEntrance) {
 				this.Tilemap[adj.Y, adj.X] = OverworldTiles.RIVER;
 			    } else {
 				this.Tilemap[adj.Y, adj.X] = OverworldTiles.MARSH;

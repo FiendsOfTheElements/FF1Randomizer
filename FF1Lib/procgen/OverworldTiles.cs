@@ -184,6 +184,24 @@ namespace FF1Lib.Procgen
 	};
 	public Dictionary<byte, int> TraversableRegionTypeMap;
 
+	public static List<byte> Entrances = new List<byte>{
+	    CONERIA_CASTLE_ENTRANCE_W,
+	    CONERIA_CASTLE_ENTRANCE_E,
+	    EARTH_CAVE,
+	    ELFLAND_CASTLE_W, ELFLAND_CASTLE_E,
+	    MIRAGE_BOTTOM,
+	    ASTOS_CASTLE_W, ASTOS_CASTLE_E,
+	    ICE_CAVE, DWARF_CAVE, MATOYAS_CAVE,
+	    TITAN_CAVE_E, TITAN_CAVE_W,
+	    CARAVAN_DESERT, ORDEALS_CASTLE_W, ORDEALS_CASTLE_E,
+	    SARDAS_CAVE, WATERFALL, CONERIA, PRAVOKA,
+	    PRAVOKA, ELFLAND, MELMOND, CRESCENT_LAKE,
+	    TOF_ENTRANCE_W, TOF_ENTRANCE_E,
+	    GAIA, ONRAC, VOLCANO_TOP_W, VOLCANO_TOP_E,
+	    CARDIA_2, CARDIA_4, CARDIA_5, CARDIA_6, CARDIA_1,
+	    BAHAMUTS_CAVE, LEFEIN, MARSH_CAVE
+	};
+
 	public OwTileFilter expand_mountains;
 	public OwTileFilter expand_oceans;
 	public OwTileFilter connect_diagonals;
