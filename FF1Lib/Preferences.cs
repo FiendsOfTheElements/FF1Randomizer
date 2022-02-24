@@ -30,6 +30,7 @@ namespace FF1Lib
 		public bool OptOutSpeedHackWipes { get; set; } = false;
 		public bool OptOutSpeedHackMessages { get; set; } = false;
 		public bool OptOutSpeedHackDash { get; set; } = false;
+		public bool QuickJoy2Reset { get; set; } = false;
 
 		public string PlayerName { get; set; } = "Player 01";
 	}

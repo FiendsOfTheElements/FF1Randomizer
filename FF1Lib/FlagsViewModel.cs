@@ -5003,7 +5003,15 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-
+		public bool QuickJoy2Reset
+		{
+			get => Preferences.QuickJoy2Reset;
+			set
+			{
+				Preferences.QuickJoy2Reset = value;
+				RaisePropertyChanged();
+			}
+		}
 		public bool QuickMinimapLoad
 		{
 			get => Flags.QuickMinimapLoad;
