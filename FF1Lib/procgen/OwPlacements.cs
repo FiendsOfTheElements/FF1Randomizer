@@ -207,7 +207,9 @@ namespace FF1Lib.Procgen
 	    var tasks = new List<GenerationTask>();
 	    foreach (var w in this.Traversable_regionlist) {
 		if (w.RegionType == OverworldTiles.LAND) {
-		    if (w.Adjacent.Contains(OverworldTiles.MainOceanRegionId)) {
+		    if (w.Adjacent.Contains(OverworldTiles.MainOceanRegionId) &&
+			(this.CheckReachableByRiver(w, false) || CheckIndirectAirshipAccess(w).Item1))
+		    {
 			tasks.Add(() => new OverworldState(this).CoastalPlacement(feature, w, false, eastOnly));
 		    }
 		}
