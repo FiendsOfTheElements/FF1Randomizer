@@ -838,7 +838,7 @@ namespace FF1Lib
 							_spellPermissions[(Classes)(i + 6)] = wwWhiteSpells.Concat(bwBlackSpells).ToList();
 							break;
 						case BonusMalusAction.NoPromoMagic:
-							_spellPermissions.ClearPermissions((Classes)i);
+							_spellPermissions.ClearPermissions((Classes)i + 6);
 							_classes[i + 6].MaxSpC = 0;
 							_classes[i + 6].SpCStarting = 0;
 							break;
