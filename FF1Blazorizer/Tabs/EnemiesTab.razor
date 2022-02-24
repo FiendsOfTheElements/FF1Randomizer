@@ -30,7 +30,6 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="disableStunTouchCheckBox" IsEnabled="@Flags.RandomStatusAttacks" @bind-Value="Flags.DisableStunTouch">Remove Stun Touch</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="everythingHasDeathTouch" @bind-Value="Flags.EverythingHasDeathTouch">Everything has Death Touch</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="everythingHasDeathTouchExcludeFiends" @bind-Value="Flags.EverythingHasDeathTouchExcludeFiends" IsEnabled="@(Flags.EverythingHasDeathTouch != false)">Exclude Fiends</TriStateCheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tranceHasStatusElement" @bind-Value="Flags.TranceHasStatusElement">TRANCE is status element</CheckBox>
 
 			<div class="checkbox-cell"></div>
 			<h4>Trap Tiles</h4>
