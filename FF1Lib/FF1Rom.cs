@@ -682,6 +682,11 @@ namespace FF1Lib
 				EnableLifeInBattle();
 			}
 
+			if (flags.TranceHasStatusElement)
+			{
+				TranceHasStatusElement();
+			}
+
 			/*
 			if (flags.WeaponPermissions)
 			{

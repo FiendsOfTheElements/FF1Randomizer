@@ -866,6 +866,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoConsecutiveNukes"));
 			}
 		}
+		public bool TranceHasStatusElement
+		{
+			get => Flags.TranceHasStatusElement;
+			set
+			{
+				Flags.TranceHasStatusElement = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TranceHasStatusElement"));
+			}
+		}
 		public bool? BossSkillsOnly
 		{
 			get => Flags.BossSkillsOnly;

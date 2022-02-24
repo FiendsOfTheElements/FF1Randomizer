@@ -1293,6 +1293,21 @@ namespace FF1Lib
 			}
 			Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
+
+		public void TranceHasStatusElement() {
+		    // TRANCE is slot 81, give is "status" element so
+		    // it can be resisted with a ribbon, ARUB, or
+		    // armor crafter gear.
+		    var es = new EnemySkillInfo();
+		    es.decompressData(Get(MagicOffset + MagicSize * 81, EnemySkillSize));
+		    System.Diagnostics.Debug.Assert(es.accuracy == 0);
+		    System.Diagnostics.Debug.Assert(es.effect == (byte)SpellStatus.Stun);
+		    System.Diagnostics.Debug.Assert(es.elem == (byte)SpellElement.None);
+		    System.Diagnostics.Debug.Assert(es.targeting == (byte)SpellTargeting.AllEnemies);
+		    System.Diagnostics.Debug.Assert(es.routine == (byte)SpellRoutine.InflictStatus);
+		    es.elem = (byte)SpellElement.Status;
+		    Put(MagicOffset + MagicSize * 81, es.compressData());
+		}
 	}
 
 	public enum ScriptTouchMultiplier

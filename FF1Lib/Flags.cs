@@ -237,6 +237,7 @@ namespace FF1Lib
 		public bool? BossScriptsOnly { get; set; } = false;
 		public bool? EnemySkillsSpells { get; set; } = false;
 		public bool? NoConsecutiveNukes { get; set; } = false;
+		public bool TranceHasStatusElement { get; set; } = false;
 		public bool? BossSkillsOnly { get; set; } = false;
 		public bool? EnemySkillsSpellsTiered { get; set; } = false;
 		public bool? EnemyStatusAttacks { get; set; } = false;
