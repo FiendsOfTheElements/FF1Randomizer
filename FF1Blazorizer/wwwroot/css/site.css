@@ -507,3 +507,20 @@ tr.bottom-borderd {
 .image-center {
     text-align:center;
 }
+
+.ua-bg-top {
+    background-color: #0057b7;
+    position: fixed;
+    top: 30%;
+    bottom: 50%;
+    width: 100vw;
+    z-index: -1;
+}
+.ua-bg-bottom {
+    background-color: #ffd700;
+    position: fixed;
+    top: 50%;
+    bottom: 30%;
+    width: 100vw;
+    z-index: -1;
+}
