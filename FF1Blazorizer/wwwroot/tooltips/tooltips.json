@@ -30,6 +30,12 @@
 		"description": "Shattered spreads the resistances across many amror pieces. Each Element occurs multiple times. It tries to ensure that every class can attain full protection."
 	},
 	{
+		"Id": "reversedFloors",
+		"title": "Reversed Dungeons",
+		"screenshot": null,
+		"description": "Where meaningful possible it swaps entrance and exit stairs otherwise it modifies the location of entrance stairs. Some floors are also slightly modified to allow for meaningful relocation of stairs."
+	},
+	{
 		"Id": "noEmptyScripts",
 		"title": "No Empty Scripts",
 		"screenshot": "enemyScriptsCheckBox.png",

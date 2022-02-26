@@ -278,6 +278,8 @@ namespace FF1Lib
 				DamageTilesKill(flags.SaveGameWhenGameOver);
 			}
 
+			if ((bool)flags.ReversedFloors) new ReversedFloors(this, maps, rng).Work();
+
 			var flippedMaps = new List<MapId>();
 
 			if ((bool)flags.FlipDungeons)
