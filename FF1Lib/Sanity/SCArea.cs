@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,8 @@ namespace FF1Lib.Sanity
 			ChildAreas = new List<SCArea>();
 
 			ComposeArea();
+
+			Debug.Assert(Map.MapId == MapId.Coneria || Entrances.Count > 0);
 		}
 
 		private void ComposeArea()

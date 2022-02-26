@@ -26,6 +26,8 @@ namespace FF1Lib
 		MemTable<byte> TeleY;
 		MemTable<MapId> TeleMap;
 
+		public int Count => 256;
+
 		public NormTeleData(FF1Rom _rom)
 		{
 			rom = _rom;
