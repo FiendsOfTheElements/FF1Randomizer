@@ -2164,7 +2164,7 @@ namespace FF1Lib
 			var teledata = new ExitTeleData(this);
 			teledata.LoadData();
 
-			var tpsReport = new TeleportShuffle(flags.ReplacementMap);
+			var tpsReport = new TeleportShuffle(this, flags.ReplacementMap);
 
 			var tofCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.TempleOfFiends1];
 			var mirageCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.MirageTower1];
