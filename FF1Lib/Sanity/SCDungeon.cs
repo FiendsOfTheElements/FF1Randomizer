@@ -41,21 +41,30 @@ namespace FF1Lib.Sanity
 
 			if (entrances.Contains(teleport)) entrances.Add(teleport);
 
-			AddTele(teleport, SCBitFlagSet.NoRequirements, true);
+			AddTele(null, teleport, SCBitFlagSet.NoRequirements, true);
 		}
 
-		private void AddTele(SCTeleport teleport, SCBitFlagSet bitFlagSet, bool topfloor)
+		private void AddTele(SCArea currentArea, SCTeleport teleport, SCBitFlagSet bitFlagSet, bool topfloor)
 		{
 			var map = scmaps[teleport.TargetMap];
 			var entrance = map.Entrances.FirstOrDefault(e => e.Coords == teleport.TargetCoords);
 			var area = map.Areas.FirstOrDefault(area => area.Entrances.Contains(entrance));
 
-			if (!Areas.Contains(area)) Areas.Add(area);
+			if (!Areas.Contains(area))
+			{
+				Areas.Add(area);
 
-			AddEntrance(entrance, bitFlagSet, topfloor);
+				if (currentArea != null)
+				{
+					currentArea.ChildAreas.Add(area);
+					area.IsRoot = false;
+				}
+			}
+
+			AddEntrance(area, entrance, bitFlagSet, topfloor);
 		}
 
-		private void AddEntrance(SCEntrance entrance, SCBitFlagSet requirements, bool topfloor)
+		private void AddEntrance(SCArea currentArea, SCEntrance entrance, SCBitFlagSet requirements, bool topfloor)
 		{
 			foreach (var poi in entrance.PointsOfInterest.Where(p => p.BitFlagSet.Count > 0))
 			{
@@ -74,7 +83,7 @@ namespace FF1Lib.Sanity
 				{
 					if (dungeonpoi.Type == SCPointOfInterestType.Tele)
 					{
-						AddTele(dungeonpoi.Teleport, dungeonpoi.BitFlagSet, false);
+						AddTele(currentArea, dungeonpoi.Teleport, dungeonpoi.BitFlagSet, false);
 					}
 					else if (dungeonpoi.Type == SCPointOfInterestType.Exit)
 					{

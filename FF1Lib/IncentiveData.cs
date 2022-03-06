@@ -187,6 +187,10 @@ namespace FF1Lib
 			{
 				incentivePool.Add(Item.PowerGauntlets);
 			}
+			if (flags.IncentivizePowerRod ?? false)
+			{
+				incentivePool.Add(Item.PowerRod);
+			}
 			if (flags.IncentivizeDefCastWeapon ?? false)
 			{
 				incentivePool.Add(Item.Defense);
@@ -327,7 +331,14 @@ namespace FF1Lib
 				}
 				else if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomBehindGating)
 				{
-					incentiveLocationPool.Add(ItemLocations.SeaShrineLocked);
+					if ((bool)flags.MermaidPrison)
+					{
+						incentiveLocationPool.Add(ItemLocations.SeaShrineMermaids.Append(ItemLocations.SeaShrineLocked).ToList().SpliceRandom(rng));
+					}
+					else
+					{
+						incentiveLocationPool.Add(ItemLocations.SeaShrineLocked);
+					}
 				}
 				else if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomNoGating)
 				{

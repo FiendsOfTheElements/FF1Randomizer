@@ -107,6 +107,16 @@ namespace FF1Lib.Sanity
 			return result;
 		}
 
+		public bool IsAccessible(SCRequirements requirements)
+		{
+			foreach (var req in this)
+			{
+				if (req.IsSubsetOf(requirements)) return true;
+			}
+
+			return false;
+		}
+
 		public static SCRequirementsSet NoRequirements { get; } = new SCRequirementsSet(SCRequirements.None);
 	}
 
@@ -141,6 +151,33 @@ namespace FF1Lib.Sanity
 		public static bool IsEqual(this SCRequirements left, SCRequirements right)
 		{
 			return left == right;
+		}
+
+		public static SCRequirements AddItem(this SCRequirements left, Item right)
+		{
+			switch (right)
+			{
+				case Item.Adamant: return left | SCRequirements.Adamant;
+				case Item.Bottle: return left | SCRequirements.Bottle;
+				case Item.Bridge: return left | SCRequirements.Bridge;
+				case Item.Canal: return left | SCRequirements.Canal;
+				case Item.Canoe: return left | SCRequirements.Canoe;
+				case Item.Chime: return left | SCRequirements.Chime;
+				case Item.Crown: return left | SCRequirements.Crown;
+				case Item.Crystal: return left | SCRequirements.Crystal;
+				case Item.Cube: return left | SCRequirements.Cube;
+				case Item.Floater: return left | SCRequirements.Floater;
+				case Item.Herb: return left | SCRequirements.Herb;
+				case Item.Key: return left | SCRequirements.Key;
+				case Item.Lute: return left | SCRequirements.Lute;
+				case Item.Oxyale: return left | SCRequirements.Oxyale;
+				case Item.Rod: return left | SCRequirements.Rod;
+				case Item.Ruby: return left | SCRequirements.Ruby;
+				case Item.Ship: return left | SCRequirements.Ship;
+				case Item.Slab: return left | SCRequirements.Slab;
+				case Item.Tnt: return left | SCRequirements.Tnt;
+				default: return left;
+			}
 		}
 	}
 }

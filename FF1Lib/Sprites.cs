@@ -887,6 +887,47 @@ namespace FF1Lib
 		}
 	    }
 
+	    const int TIAMAT1 = 0x77;
+	    const int KRAKEN1 = 0x78;
+	    const int KARY1 = 0x79;
+	    const int LICH1 = 0x7A;
+
+	    public bool SetLichKaryGraphics(Stream lich, Stream kary) {
+		var formations = LoadFormations();
+		IImageFormat format;
+		Image<Rgba32> lichImage = Image.Load<Rgba32>(lich, out format);
+		Image<Rgba32> karyImage = Image.Load<Rgba32>(kary, out format);
+		List<byte[]> CHR = new List<byte[]>();
+		FiendImport(lichImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[LICH1].pal2 * 4));
+		FiendImport(karyImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET+(formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KARY1].pal2 * 4));
+		if (CHR.Count < 110) {
+		    int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (18 * 16);
+		    for (int i = 0; i < CHR.Count; i++) {
+			Put(offset + (i*16), EncodeForPPU(CHR[i]));
+		    }
+		    return true;
+		} else return false;
+	    }
+
+	    public bool SetKrakenTiamatGraphics(Stream kraken, Stream tiamat) {
+		var formations = LoadFormations();
+		IImageFormat format;
+		Image<Rgba32> krakenImage = Image.Load<Rgba32>(kraken, out format);
+		Image<Rgba32> tiamatImage = Image.Load<Rgba32>(tiamat, out format);
+		List<byte[]> CHR = new List<byte[]>();
+		FiendImport(krakenImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal2 * 4));
+		FiendImport(tiamatImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal2 * 4));
+		if (CHR.Count < 110) {
+		    int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (18 * 16);
+		    for (int i = 0; i < CHR.Count; i++) {
+			Put(offset + (i*16), EncodeForPPU(CHR[i]));
+		    }
+		    return true;
+		} else {
+		    return false;
+		}
+	    }
+
 	    public void SetCustomFiendGraphics(Stream fiends) {
 		// 0B_92E0
 		//    $50 bytes of TSA for all 4 fiend graphics (resulting in $140 bytes of data total)
@@ -899,11 +940,6 @@ namespace FF1Lib
 		//     $10 bytes of attributes  (4x4x)
 
 		var formations = LoadFormations();
-
-		const int TIAMAT1 = 0x77;
-		const int KRAKEN1 = 0x78;
-		const int KARY1 = 0x79;
-		const int LICH1 = 0x7A;
 
 		IImageFormat format;
 

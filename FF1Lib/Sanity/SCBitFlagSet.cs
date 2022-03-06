@@ -45,9 +45,29 @@ namespace FF1Lib.Sanity
 
 		public override string ToString()
 		{
-			if (Count == 1) return this[0].ToString("X");
-			if (Count > 1) return this[0].ToString("X") + ":" + Count.ToString();
-			return "Nope";
+			if (Count == 0) return "Nope";
+
+			return string.Join(" OR ", this.Select(b => GetInnerRule(b)));
+		}
+
+		private string GetInnerRule(SCBitFlags b)
+		{
+			var list = new List<string>();
+
+			if (b.HasFlag(SCBitFlags.Key)) list.Add(Item.Key.ToString());
+			if (b.HasFlag(SCBitFlags.Rod)) list.Add(Item.Rod.ToString());
+			if (b.HasFlag(SCBitFlags.Oxyale)) list.Add(Item.Oxyale.ToString());
+			if (b.HasFlag(SCBitFlags.Cube)) list.Add(Item.Cube.ToString());
+			if (b.HasFlag(SCBitFlags.Lute)) list.Add(Item.Lute.ToString());
+			if (b.HasFlag(SCBitFlags.Crown)) list.Add(Item.Crown.ToString());
+			if (b.HasFlag(SCBitFlags.Ruby)) list.Add(Item.Ruby.ToString());
+			if (b.HasFlag(SCBitFlags.Orbs)) list.Add("BlackOrb");
+			if (b.HasFlag(SCBitFlags.Tnt)) list.Add(Item.Tnt.ToString());
+			if (b.HasFlag(SCBitFlags.Chime)) list.Add(Item.Chime.ToString());
+			if (b.HasFlag(SCBitFlags.Canoe)) list.Add(Item.Canoe.ToString());
+			if (b.HasFlag(SCBitFlags.Floater)) list.Add(Item.Floater.ToString());
+
+			return "(" + string.Join(" AND ", list) + ")";
 		}
 
 		public bool Merge(SCBitFlagSet bitFlagSet)

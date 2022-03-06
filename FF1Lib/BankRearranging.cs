@@ -49,6 +49,7 @@ namespace FF1Lib
 
 			// NewGamePartyGeneration
 			PutInBank(0x1E, 0x8000, Get(0x39C54, 0xC1));
+			PutInBank(0x1E, 0x8005, Blob.FromHex("A90285F2EA")); // Tracking code
 			PutInBank(0x1E, 0x8021, Blob.FromHex("AA84"));
 			PutInBank(0x1E, 0x8032, DoPartyGen_OnCharacter);
 			PutInBank(0x1E, 0x803B, DoPartyGen_OnCharacter);

@@ -8,30 +8,125 @@
 	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Start a Game</a></h3>
 	@if (IsOpen)
 	{
-		<p>These presets allow you to get into the game and start playing instantly.</p>
+		<h4>Starter Presets</h4>
+		<p>These presets showcase some of the major game variations, while also designed to be accessible to newer players.  When you are ready for more challenge, try the Intermediate presets, or browse the tabs to start customizing your own game.<br>
+		Questions?  Join the <a href="https://discord.gg/95gbpFd">FFR Community Discord</a>.</p>
 
-		<h4>Standard Presets</h4>
+		<div class="col1">
+
 		<a class="preset-button styled-button @((selectedPresetId == "Beginner") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Beginner"))">Select</a>
-		<p class="preset-paragraph"><strong>Beginner:</strong> Good for first-time players as it crafts an easy-to-understand run for those looking to get into randomizers.</p>
+		<p class="preset-paragraph">
+		<ToolTipBox id="beginnerPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Beginner</strong></ToolTipBox>
+		Introduction to the randomizer, and the basis for most of the other presets.</p>
 
-		<a class="preset-button styled-button @((selectedPresetId == "Improved_Vanilla") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Improved_Vanilla"))">Select</a>
-		<p class="preset-paragraph"><strong>Improved Vanilla:</strong> Puts in bug fixes to the original game but maintains the overall basic FF experience.</p>
-
-		<a class="preset-button styled-button @((selectedPresetId == "Entrance_Floor_Shuffle") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Entrance_Floor_Shuffle"))">Select</a>
-		<p class="preset-paragraph"><strong>Floor and Entrance Shuffle:</strong> Mixes things up by shuffling all entrances and floors.</p>
+		<a class="preset-button styled-button @((selectedPresetId == "Oops_All_Loose") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Oops_All_Loose"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="oopsAllLooseToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Oops, All Loose!</strong></ToolTipBox>
+		All key items are loose, which means they can be found in any chest.
+		</p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "Shard_Hunt") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Shard_Hunt"))">Select</a>
-		<p class="preset-paragraph"><strong>Shard Hunt:</strong> Instead of lighting the fours orbs, seek out and collect shards hidden in random treasure chests to remove the Black Orb.</p>
+		<p class="preset-paragraph">
+		<ToolTipBox id="shardHuntPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Shard Hunt</strong></ToolTipBox>
+		Instead of lighting 4 Orbs, you must find 28 shards to unlock the Temple of Fiends.
+		</p>
+
+		<a class="preset-button styled-button @((selectedPresetId == "Floaterless") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Floaterless"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="floaterlessPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Floaterless</strong></ToolTipBox>
+		Removes the floater from the game, so you can't get the airship, but adds new docks so you can get everywhere you need to go.
+		</p>
+
+		</div>
+
+		<div class="col2">
+
+		<a class="preset-button styled-button @((selectedPresetId == "Improved_Vanilla") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Improved_Vanilla"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="improvedVanillaPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Improved Vanilla</strong></ToolTipBox>
+		Applies the bugfixes and quality-of-life improvements to the base game, but does not randomize anything.
+		</p>
+
+		<a class="preset-button styled-button @((selectedPresetId == "Entrance_Floor_Shuffle") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Entrance_Floor_Shuffle"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="entranceFloorShufflePresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Entrance and Floor Shuffle</strong></ToolTipBox>
+		Overworld entrances (except for towns) are shuffled together, and shuffles cave and dungeon floors.
+		</p>
+
+		<a class="preset-button styled-button @((selectedPresetId == "Procgen_Overworld") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Procgen_Overworld"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="procgenOWPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Procedurally Generated Overworld</strong></ToolTipBox>
+		Explore a completely new, randomly generated overworld.
+		</p>
+
+		</div>
+
+		<div class="col1 full">
+		<h4>Intermediate Presets</h4>
+		<p>For players looking for more challenge.</p>
+		</div>
+
+		<div class="col1">
 
 		<a class="preset-button styled-button @((selectedPresetId == "Chaos_Rush") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Chaos_Rush"))">Select</a>
-		<p class="preset-paragraph"><strong>Chaos Rush:</strong> Gives you free orbs, removes the requirement for Key and Lute, and tasks you with simply getting to Chaos, and killing them, as fast as possible.</p>
+		<p class="preset-paragraph">
+		<ToolTipBox id="chaosRushToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Chaos Rush</strong></ToolTipBox>
+		You can enter the final dungeon immediately at the start of the game.
+		</p>
 
-		<a class="preset-button styled-button @((selectedPresetId == "Chaos_Rampage") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Chaos_Rampage"))">Select</a>
-		<p class="preset-paragraph"><strong>Chaos Rampage:</strong> Similar to Chaos Rush, but all four fiends need to be defeated.</p>
+		<a class="preset-button styled-button @((selectedPresetId == "Free_Enterprise") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Free_Enterprise"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="freeEnterpriseToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Free Enterprise</strong>
+		</ToolTipBox>
+		All bosses rush modeled after the open world gameplay style of <a href="http://ff4fe.com/">FF4: Free Enterprise</a>
+		</p>
 
-		<a class="preset-button styled-button @((selectedPresetId == "ST2021_Pods") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("ST2021_Pods"))">Select</a>
-		<p class="preset-paragraph"><strong>Spring Tournament 2021 Pods:</strong> With a free canoe and randomized key locations inside dungeons, this flagset was the foundation of Spring Tournament 2021.</p>
+		<a class="preset-button styled-button @((selectedPresetId == "Hidden_Chaos") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Hidden_Chaos"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="hiddenChaosToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Hidden Chaos</strong></ToolTipBox>
+		Chaos is hidden in a random chest and must be found to be defeated.
+		</p>
 
+		<a class="preset-button styled-button @((selectedPresetId == "NOverworld") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("NOverworld"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="noverworldShufflePresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>NOverworld</strong></ToolTipBox>
+		Removes the overworld from the game, towns and dungeons are connected directly by stairs and warps.
+		</p>
+
+		</div>
+		<div class="col2">
+
+		<a class="preset-button styled-button @((selectedPresetId == "Deep_Dungeon") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Deep_Dungeon"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="deepDungeonPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Deep Dungeon</strong></ToolTipBox>
+		Turn Coneria Castle into a 52-floor completely procedurally generated dungeon, leading to Chaos.
+		</p>
+
+		<a class="preset-button styled-button @((selectedPresetId == "Over_Randomizer") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Over_Randomizer"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="overRandomizerToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Over Randomizer</strong></ToolTipBox>
+		The randomizer will give you entirely new weapons, armor, spells, enemies, and bosses.
+		</p>
+
+		<a class="preset-button styled-button @((selectedPresetId == "Lichs_Revenge") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Lichs_Revenge"))">Select</a>
+		<p class="preset-paragraph">
+		<ToolTipBox id="lichRevengePresetCheckBox" UpdateToolTip="@UpdateToolTipID"><strong>Lich's Revenge</strong></ToolTipBox>
+		Lich is having his revenge, unleashing his undead hordes upon the world!
+		</p>
+
+		</div>
+
+        
+		<div class="col1 full">
+		<h4>Tournament Presets</h4>
+        <a class="preset-button styled-button @((selectedPresetId == "ST2022") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("ST2022"))">Select</a>
+		<p class="preset-paragraph">
+		<label><strong>Spring Tournament 2022</strong></label><br>
+        Official flags for use in the Final Fantasy Randomizer Spring Tournament 2022.
+		</p>
+        </div>
+
+		<div class="col1 full">
 		<h4>User Presets</h4>
 		<p>
 			@foreach (var preset in localPresets)
@@ -62,6 +157,8 @@
 
 		<ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="importResourcePack"><h4>Import Resource Pack</h4></ToolTipBox>
 		<input type="file" id="importResourcePackInput" accept=".zip" @onchange="@OnImportResourcePack" />
+
+		</div>
 
 		<div class="clear-it"></div>
 	}

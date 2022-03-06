@@ -34,25 +34,45 @@ namespace FF1R.Commands
 	[Option("-p")]
 	public int Pack { get; } = 1;
 
+	[Option("-S")]
+	public string SeedFile { get; } = null;
+
 	int OnExecute(IConsole console)
 	{
-	    if (Seed == 0) {
+	    if (Seed == 0 && this.SeedFile == null) {
 		Console.WriteLine("Missing seed");
 		return 1;
 	    }
 
 	    OwMapExchanges subtype = Enum.Parse<OwMapExchanges>(Subtype);
 
-	    Parallel.For(0, this.Pack, i =>
+	    var numberOfMapsToGenerate = this.Pack;
+	    List<int> seeds = null;
+	    if (this.SeedFile != null) {
+		seeds = new List<int>();
+		foreach (string line in System.IO.File.ReadLines(this.SeedFile))
+		{
+		    seeds.Add(Int32.Parse(line));
+		}
+		numberOfMapsToGenerate = seeds.Count;
+	    }
+
+	    Parallel.For(0, numberOfMapsToGenerate, i =>
 	    {
 		OwMapExchangeData replacementMap = null;
-		int effectiveSeed = this.Seed + i;
+		int effectiveSeed;
+		if (seeds == null) {
+		    effectiveSeed = this.Seed + i;
+		} else {
+		    effectiveSeed = seeds[i];
+		}
 		var rng = new MT19337((uint)effectiveSeed);
 		do {
 		    try {
 			replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, subtype);
 		    } catch (Exception) {
 			if (!this.Retry) {
+			    Console.WriteLine($"Failed to generate seed {effectiveSeed}");
 			    throw;
 			}
 			effectiveSeed = (int)rng.Next();
@@ -65,7 +85,7 @@ namespace FF1R.Commands
 		replacementMap.FFRVersion = FF1Lib.FFRVersion.Version;
 
 		string fn;
-		if (this.Pack == 1) {
+		if (numberOfMapsToGenerate == 1) {
 		    fn = $"FFR_map_{replacementMap.Checksum}.json";
 		} else {
 		    fn = $"{replacementMap.Seed,8:X8}.json";

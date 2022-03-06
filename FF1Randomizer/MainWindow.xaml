@@ -157,6 +157,7 @@
 						<CheckBox x:Name="IncentivizeOffCastWeaponCheckBox" IsChecked="{Binding Flags.IncentivizeOffCastWeapon}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Thor Hammer" ToolTip="Thor Hammer"/>
 						<CheckBox x:Name="IncentivizeOpalCheckBox" IsChecked="{Binding Flags.IncentivizeOpal}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Opal Bracelet" ToolTip="Opal Bracelet"/>
 						<CheckBox x:Name="IncentivizeOtherCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeOtherCastArmor}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Power Gauntlet" ToolTip="Power Gauntlet"/>
+						<CheckBox x:Name="IncentivizePowerRodCheckBox" IsChecked="{Binding Flags.IncentivizePowerRod}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Power Rod" ToolTip="Power Rod"/>
 						<CheckBox x:Name="IncentivizeDefCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeDefCastArmor}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="White Shirt" ToolTip=">White Shirt"/>
 						<CheckBox x:Name="IncentivizeOffCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeOffCastArmor}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Black Shirt" ToolTip="Black Shirt"/>
 						<CheckBox x:Name="IncentivizeRibbonCheckBox" IsChecked="{Binding Flags.IncentivizeRibbon}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Ribbon" ToolTip="Ribbon"/>

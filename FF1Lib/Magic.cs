@@ -84,6 +84,13 @@ namespace FF1Lib
 		public const int ArmorSize = 4;
 		public const int ArmorCount = 40;
 
+		public void BuffTier1DamageSpells()
+		{
+			Put(MagicOffset + MagicSize * 4 + 1, new byte[] { 60 }); // replace FIRE effectivity
+			Put(MagicOffset + MagicSize * 7 + 1, new byte[] { 70 }); // replace LIT effectivity
+			Put(MagicOffset + MagicSize * 12 + 1, new byte[] { 80 }); // replace ICE effectivity
+			Put(MagicOffset + MagicSize * 1 + 1, new byte[] { 80 }); // replace HARM effectivity
+		}
 
 		public void BuffHealingSpells()
 		{
@@ -105,7 +112,7 @@ namespace FF1Lib
 			Put(MagicOffset + MagicSize * 35 + 1, new byte[] { 0x20 }); // replace HEL2 effectivity with 32 (was 24)
 			Put(0x3AFE8, Blob.FromHex("1F")); // changing the oob code for HEL2 to reflect the above effect
 			// HEL3
-			Put(MagicOffset + MagicSize * 51 + 1, new byte[] { 0x40 }); // replace HEL2 effectivity with 64 (was 48)
+			Put(MagicOffset + MagicSize * 51 + 1, new byte[] { 0x40 }); // replace HEL3 effectivity with 64 (was 48)
 			Put(0x3AFF1, Blob.FromHex("3F")); // changing the oob code for HEL3 to reflect the above effect
 			// LAMP
 			Put(MagicOffset + MagicSize * 8 + 1, new byte[] { 0x18 }); // LAMP heals paralysis as well as darkness
@@ -423,20 +430,7 @@ namespace FF1Lib
 				// Shuffle the permissions the same way the spells were shuffled.
 				for (int c = 0; c < MagicPermissionsCount; c++)
 				{
-					var oldPermissions = Get(MagicPermissionsOffset + c * MagicPermissionsSize, MagicPermissionsSize);
-
-					var newPermissions = new byte[MagicPermissionsSize];
-					for (int i = 0; i < 8; i++)
-					{
-						for (int j = 0; j < 8; j++)
-						{
-							var oldIndex = shuffledSpells[8 * i + j].Index;
-							var oldPermission = (oldPermissions[oldIndex / 8] & (0x80 >> oldIndex % 8)) >> (7 - oldIndex % 8);
-							newPermissions[i] |= (byte)(oldPermission << (7 - j));
-						}
-					}
-
-					Put(MagicPermissionsOffset + c * MagicPermissionsSize, newPermissions);
+					SpellPermissions[(Classes)c] = SpellPermissions[(Classes)c].Select(x => (SpellSlots)shuffledSpells.FindIndex(y => y.Index == (int)x)).ToList();
 				}
 			}
 
@@ -498,44 +492,6 @@ namespace FF1Lib
 			// Confused enemies are supposed to cast FIRE, so figure out where FIRE ended up.
 			var newFireSpellIndex = shuffledSpells.FindIndex(spell => spell.Data == magicSpells[FireSpellIndex].Data);
 			Put(ConfusedSpellIndexOffset, new[] { (byte)newFireSpellIndex });
-		}
-
-		public void SetMPMax(int redMageMaxMP, int whiteMageMaxMP, int blackMageMaxMP, int knightMaxMP, int ninjaMaxMP)
-		{
-			const int lut_MaxMP = 0x6C902;
-
-			Put(lut_MaxMP, new List<byte> { 0x00, 0x00, 0x00, (byte)redMageMaxMP, (byte)whiteMageMaxMP, (byte)blackMageMaxMP,
-				(byte)knightMaxMP, (byte)ninjaMaxMP, 0x00, (byte)redMageMaxMP, (byte)whiteMageMaxMP, (byte)blackMageMaxMP }.ToArray());
-		}
-
-		public void SetClassMaxMp(int classIndex, int maxMp)
-		{
-			//49 levels per class, 2 bytes
-			//spell data is packed into a byte, bit index = spell level gained that level
-			//0 0 0 0 1 0 0 0 would mean gaining a level 4 spell slot that level
-
-			//brute force way... count the number of spells and rewrite it to not gain any more after the max
-			List<int> spellCount = new List<int> { 2, 0, 0, 0, 0, 0, 0, 0 };
-			for (int i = 0; i < 49; i++)
-			{
-				int currentOffset = NewLevelUpDataOffset + (49 * classIndex * 2) + (i * 2) + 1;
-				byte currentSpellData = Get(currentOffset, 1)[0];
-
-				for (int bitTest = 0; bitTest < 8; bitTest++)
-				{
-					if ((currentSpellData & (1 << bitTest)) != 0)
-					{
-						spellCount[bitTest]++;
-					}
-
-					if (spellCount[bitTest] > maxMp)
-					{
-						currentSpellData = (byte)(currentSpellData & ~(1 << bitTest));
-					}
-				}
-
-				Put(currentOffset, new byte[] { currentSpellData });
-			}
 		}
 
 		public void ChangeLockMode(LockHitMode lockHitMode)
