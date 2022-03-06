@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 using RomUtilities;
+using FF1Lib.Helpers;
+using System.IO;
 
 namespace FF1Lib
 {
@@ -49,6 +52,7 @@ namespace FF1Lib
 			public const int Phantom = 51;
 			public const int Mancat = 55;
 			public const int Vampire = 60;
+		        public const int Ankylo = 78;
 			public const int Coctrice = 81;
 			public const int Sorceror = 104;
 			public const int Garland = 105;
@@ -182,12 +186,12 @@ namespace FF1Lib
 			Put(ZoneFormationsOffset, newFormations.ToArray());
 		}
 
-		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool doBosses, bool excludeImps, bool scaryImps)
+		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool doBosses, bool excludeImps, ScriptTouchMultiplier scriptMultiplier)
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
-			if(doNormals)
+			if (doNormals)
 			{
 				var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
 				if (!AllowUnsafePirates) normalOldEnemies.RemoveAt(Enemy.Pirate);
@@ -196,9 +200,55 @@ namespace FF1Lib
 				if (excludeImps) normalOldEnemies.Insert(Enemy.Imp, oldEnemies[Enemy.Imp]);
 				if (!AllowUnsafePirates) normalOldEnemies.Insert(Enemy.Pirate, oldEnemies[Enemy.Pirate]);
 
-				for (int i = 0; i < EnemyCount - 10; i++)
+				var allScripts = normalOldEnemies.Select(e => e[EnemyStat.Scripts]).Distinct().ToList();
+				allScripts.Remove(0xFF);
+
+				if (scriptMultiplier == ScriptTouchMultiplier.Vanilla)
 				{
-					newEnemies[i][EnemyStat.Scripts] = normalOldEnemies[i][EnemyStat.Scripts];
+					for (int i = 0; i < EnemyCount - 10; i++)
+					{
+						newEnemies[i][EnemyStat.Scripts] = normalOldEnemies[i][EnemyStat.Scripts];
+					}
+				}
+				else
+				{
+					var count = 0;
+					switch (scriptMultiplier)
+					{
+						case ScriptTouchMultiplier.None:
+							count = 0;
+							break;
+						case ScriptTouchMultiplier.Vanilla:
+							count = 36;//should never happen
+							break;
+						case ScriptTouchMultiplier.OneAndHalf:
+							count = 54;
+							break;
+						case ScriptTouchMultiplier.Double:
+							count = 72;
+							break;
+						case ScriptTouchMultiplier.All:
+							count = EnemyCount - 10;
+							break;
+						case ScriptTouchMultiplier.Random:
+							count = rng.Between(18, 90);
+							break;
+					}
+
+					List<int> indices = new List<int>();
+					for (int i = 0; i < EnemyCount - 10; i++)
+					{
+						newEnemies[i][EnemyStat.Scripts] = 0xFF;
+						indices.Add(i);
+					}
+
+					indices.Shuffle(rng);
+
+					foreach (var i in indices.Take(count))
+					{
+						if (i == 15 && !AllowUnsafePirates) continue;
+						newEnemies[i][EnemyStat.Scripts] = allScripts.PickRandom(rng);
+					}
 				}
 			}
 
@@ -227,7 +277,6 @@ namespace FF1Lib
 					oldEnemies[Enemy.Tiamat2],
 					oldEnemies[Enemy.Chaos]
 				};
-				if (scaryImps) oldBigBosses.Add(oldEnemies[Enemy.Imp]);
 				oldBigBosses.Shuffle(rng);
 
 				newEnemies[Enemy.WarMech][EnemyStat.Scripts] = oldBigBosses[0][EnemyStat.Scripts];
@@ -236,13 +285,12 @@ namespace FF1Lib
 				newEnemies[Enemy.Kraken2][EnemyStat.Scripts] = oldBigBosses[3][EnemyStat.Scripts];
 				newEnemies[Enemy.Tiamat2][EnemyStat.Scripts] = oldBigBosses[4][EnemyStat.Scripts];
 				newEnemies[Enemy.Chaos][EnemyStat.Scripts] = oldBigBosses[5][EnemyStat.Scripts];
-				if (scaryImps) newEnemies[Enemy.Imp][EnemyStat.Scripts] = oldBigBosses[6][EnemyStat.Scripts];
 			}
 
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void ShuffleEnemySkillsSpells(MT19337 rng, bool doNormals, bool doBosses)
+		public void ShuffleEnemySkillsSpells(MT19337 rng, bool doNormals, bool doBosses, bool noConsecutiveNukes, bool nonEmpty)
 		{
 			var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
 
@@ -259,18 +307,18 @@ namespace FF1Lib
 			var bigBossIndices = new List<int> { 32, 35, 37, 39, 41, 42 };
 
 			if(doNormals)
-				ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, rng);
+			    ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, noConsecutiveNukes, nonEmpty, rng);
 
 			if(doBosses)
 			{
-				ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, rng);
-				ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, rng);
+			    ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, noConsecutiveNukes, false, rng);
+			    ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, noConsecutiveNukes, false, rng);
 			}
 
 			Put(ScriptOffset, scriptBytes.SelectMany(script => script.ToBytes()).ToArray());
 		}
 
-		private void ShuffleIndexedSkillsSpells(List<Blob> scriptBytes, List<int> indices, MT19337 rng)
+		private void ShuffleIndexedSkillsSpells(List<Blob> scriptBytes, List<int> indices, bool noConsecutiveNukes, bool nonEmpty, MT19337 rng)
 		{
 			var scripts = indices.Select(i => scriptBytes[i]).ToList();
 
@@ -279,45 +327,132 @@ namespace FF1Lib
 			spellBytes.Shuffle(rng);
 			skillBytes.Shuffle(rng);
 
-			var spellBuckets = Bucketize(spellBytes, scripts.Count(script => script[0] != 0), 8, rng);
-			var skillBuckets = Bucketize(skillBytes, scripts.Count(script => script[1] != 0), 4, rng);
+			List<List<byte>> spellBuckets;
+			List<List<byte>> skillBuckets;
 
-			var spellChances = scripts.Select(script => script[0]).ToList();
-			var skillChances = scripts.Select(script => script[1]).ToList();
-			spellChances.Shuffle(rng);
-			skillChances.Shuffle(rng);
+			// Spellcrafter compatability, search for
+			// nuke/nuclear-equivalent spells (AoE
+			// non-elemental damage with a base damage of
+			// 80 or greater).  In the normal game this
+			// matches NUKE and FADE -- in the normal
+			// game, no monsters cast FADE, but with spell
+			// crafter, anything can happen.
+			var nukes = new SpellHelper(this).FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies, SpellElement.None, SpellStatus.Any).Where(
+			    spell => spell.Item2.effect >= 80).Select(n => ((byte)n.Item1-(byte)Spell.CURE)).ToList();
 
-			int spellBucketIndex = 0, skillBucketIndex = 0;
-			for (int i = 0; i < scripts.Count; i++)
-			{
+			var reroll = false;
+			do {
+			    reroll = false;
+			    spellBuckets = Bucketize(spellBytes, scripts.Count(script => script[0] != 0), 8, nonEmpty, rng);
+			    skillBuckets = Bucketize(skillBytes, scripts.Count(script => script[1] != 0), 4, false, rng);
+
+				var spellChances = scripts.Select(script => script[0]).ToList();
+				var skillChances = scripts.Select(script => script[1]).ToList();
+
+				if (nonEmpty)
+				{
+					var spellChancesZero = spellChances.Where(c => c == 0);
+					var skillChancesZero = skillChances.Where(c => c == 0);
+					var spellChancesNonZero = spellChances.Where(c => c != 0).ToList();
+					var skillChancesNonZero = skillChances.Where(c => c != 0).ToList();
+
+					spellChancesNonZero.Shuffle(rng);
+					spellChances = spellChancesZero.Concat(spellChancesNonZero).ToList();
+
+					skillChancesNonZero.Shuffle(rng);
+					skillChances = skillChancesNonZero.Concat(skillChancesZero).ToList();
+
+					var combinedChances = spellChances.Select((c, i) => (spell: c, skill: skillChances[i])).ToList();
+					combinedChances.Shuffle(rng);
+
+					spellChances = combinedChances.Select(c => c.spell).ToList();
+					skillChances = combinedChances.Select(c => c.skill).ToList();
+				}
+				else
+				{
+					spellChances.Shuffle(rng);
+					skillChances.Shuffle(rng);
+				}
+
+			    int spellBucketIndex = 0, skillBucketIndex = 0;
+			    for (int i = 0; i < scripts.Count; i++)
+			    {
 				var script = scriptBytes[indices[i]];
 				script[0] = spellChances[i];
 				script[1] = skillChances[i];
 
 				for (int j = 2; j < 16; j++)
 				{
-					script[j] = 0xFF;
+				    script[j] = 0xFF;
 				}
+
+				// Check for a few cases of bad
+				// scripts to re-roll: two consecutive
+				// casts of NUKE, two consecutive
+				// casts of NUCLEAR, or having both a
+				// NUKE and a NUCLEAR in the starting
+				// slots.
+				//
+				// Because non-elemental damage can't
+				// be resisted, the player is always
+				// in for a bad time when one of these
+				// spells comes out.  The goal is to
+				// greatly decrease (although doesn't
+				// totally eliminate) the chance of
+				// slot machine party wipe situations
+				// where the player is hit twice in a
+				// row with the most powerful spells
+				// in the game with no chance to heal
+				// up or counter attack in between.
+
+				bool startingNuke = false;
+				bool startingNuclear = false;
 				if (spellChances[i] != 0)
 				{
-					for (int j = 0; j < spellBuckets[spellBucketIndex].Count; j++)
-					{
-						script[j + 2] = spellBuckets[spellBucketIndex][j];
+				    startingNuke = nukes.Contains(spellBuckets[spellBucketIndex][0]);
+				    bool previousWasNuke = false;
+				    for (int j = 0; j < spellBuckets[spellBucketIndex].Count; j++)
+				    {
+					if (nukes.Contains(spellBuckets[spellBucketIndex][j])) {
+					    if (previousWasNuke) {
+						reroll = true;
+					    } else {
+						previousWasNuke = true;
+					    }
+					} else {
+					    previousWasNuke = false;
 					}
-					spellBucketIndex++;
+					script[j + 2] = spellBuckets[spellBucketIndex][j];
+				    }
+				    spellBucketIndex++;
 				}
 				if (skillChances[i] != 0)
 				{
-					for (int j = 0; j < skillBuckets[skillBucketIndex].Count; j++)
-					{
-						script[j + 11] = skillBuckets[skillBucketIndex][j];
+				    startingNuclear = (skillBuckets[skillBucketIndex][0] == (byte)EnemySkills.Nuclear);
+				    bool previousWasNuclear = false;
+				    for (int j = 0; j < skillBuckets[skillBucketIndex].Count; j++)
+				    {
+					if (skillBuckets[skillBucketIndex][j] == (byte)EnemySkills.Nuclear) {
+					    if (previousWasNuclear) {
+						reroll = true;
+					    } else {
+						previousWasNuclear = true;
+					    }
+					} else {
+					    previousWasNuclear = false;
 					}
-					skillBucketIndex++;
+					script[j + 11] = skillBuckets[skillBucketIndex][j];
+				    }
+				    skillBucketIndex++;
 				}
-			}
+				if (startingNuke && startingNuclear) {
+				    reroll = true;
+				}
+			    }
+			} while (noConsecutiveNukes && reroll);
 		}
 
-		private List<List<byte>> Bucketize(List<byte> bytes, int bucketCount, int bucketSize, MT19337 rng)
+		private List<List<byte>> Bucketize(List<byte> bytes, int bucketCount, int bucketSize, bool min2, MT19337 rng)
 		{
 			var buckets = new List<List<byte>>();
 			for (int i = 0; i < bucketCount; i++)
@@ -330,6 +465,15 @@ namespace FF1Lib
 			{
 				buckets[index].Add(bytes[index++]);
 			}
+
+			if (min2)
+			{
+				while (index < 2 * bucketCount)
+				{
+					buckets[index - bucketCount].Add(bytes[index++]);
+				}
+			}
+
 			while (index < bytes.Count)
 			{
 				var bucket = rng.Between(0, buckets.Count - 1);
@@ -366,7 +510,7 @@ namespace FF1Lib
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool DisableStunTouch)
+		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool DisableStunTouch, ScriptTouchMultiplier touchMultiplier)
 		{
 			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
@@ -384,42 +528,91 @@ namespace FF1Lib
 			(byte touch, byte element) deathElement = (0x01, 0x08); //Death Touch = Death Element
 			(byte touch, byte element) stoneElement = (0x02, 0x02); //Stone Touch = Poison
 
-			for (int i = 0; i < EnemyCount; i++)
+			var weightedStatusElements = statusElements.Concat(statusElements).Concat(statusElements).Concat(statusElements).Append(deathElement).Append(stoneElement).ToList();
+
+			if (touchMultiplier == ScriptTouchMultiplier.Vanilla)
 			{
-				if (!AllowUnsafePirates)
+				for (int i = 0; i < EnemyCount; i++)
 				{
-					if (i == 15) //pirates
+					if (!AllowUnsafePirates)
 					{
-						continue;
+						if (i == 15) //pirates
+						{
+							continue;
+						}
+					}
+
+					int roll = rng.Between(0, 128);
+					if (roll < 1) //1 vanilla death toucher
+					{
+						//Death Touch
+						var (touch, element) = deathElement;
+						enemies[i][15] = touch;
+						enemies[i][14] = element;
+					}
+					else if (roll < 2) //1 vanilla stone toucher
+					{
+						//Stone Touch
+						var (touch, element) = stoneElement;
+						enemies[i][15] = touch;
+						enemies[i][14] = element;
+					}
+					else if (roll < 37) //35 enemies with other assorted status touches
+					{
+						var (touch, element) = statusElements.PickRandom(rng);
+						enemies[i][15] = touch;
+						enemies[i][14] = element;
+					}
+					else
+					{
+						//Otherwise, the enemy has no touch or associated element.
+						enemies[i][14] = 0x00;
+						enemies[i][15] = 0x00;
 					}
 				}
+			}
+			else
+			{
+				var count = 0;
+				switch (touchMultiplier)
+				{
+					case ScriptTouchMultiplier.None:
+						count = 0;
+						break;
+					case ScriptTouchMultiplier.Vanilla:
+						count = 36;//should never happen
+						break;
+					case ScriptTouchMultiplier.OneAndHalf:
+						count = 54;
+						break;
+					case ScriptTouchMultiplier.Double:
+						count = 72;
+						break;
+					case ScriptTouchMultiplier.All:
+						count = EnemyCount - 10;
+						break;
+					case ScriptTouchMultiplier.Random:
+						count = rng.Between(18, 90);
+						break;
+				}
 
-				int roll = rng.Between(0, 128);
-				if (roll < 1) //1 vanilla death toucher
+				List<int> indices = new List<int>();
+				for (int i = 0; i < EnemyCount - 10; i++)
 				{
-					//Death Touch
-					var (touch, element) = deathElement;
-					enemies[i][15] = touch;
-					enemies[i][14] = element;
-				}
-				else if (roll < 2) //1 vanilla stone toucher
-				{
-					//Stone Touch
-					var (touch, element) = stoneElement;
-					enemies[i][15] = touch;
-					enemies[i][14] = element;
-				}
-				else if (roll < 37) //35 enemies with other assorted status touches
-				{
-					var (touch, element) = statusElements.PickRandom(rng);
-					enemies[i][15] = touch;
-					enemies[i][14] = element;
-				}
-				else
-				{
-					//Otherwise, the enemy has no touch or associated element.
 					enemies[i][14] = 0x00;
 					enemies[i][15] = 0x00;
+
+					indices.Add(i);
+				}
+
+				indices.Shuffle(rng);
+
+				foreach (var i in indices.Take(count))
+				{
+					if (i == 15 && !AllowUnsafePirates) continue;
+					var (touch, element) = weightedStatusElements.PickRandom(rng);
+					enemies[i][15] = touch;
+					enemies[i][14] = element;
 				}
 			}
 
@@ -972,8 +1165,47 @@ namespace FF1Lib
 				fiendsScript[i].decompressData(Get(ScriptOffset + (FiendsScriptIndex + i) * ScriptSize, ScriptSize));
 			}
 
-			// Shuffle alternate
-			alternateFiendsList.Shuffle(rng);
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+
+			while (true) {
+			    // Shuffle alternate
+			    alternateFiendsList.Shuffle(rng);
+
+			    while (alternateFiendsList.Count >= 4) {
+				var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[0].Name + ".png"));
+				var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[1].Name + ".png"));
+				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1)) {
+				    using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2)) {
+					if (SetLichKaryGraphics(stream1, stream2)) {
+					    break;
+					}
+					// The graphics didn't fit, throw out the first element and try the next pair
+					alternateFiendsList.RemoveAt(0);
+				    }
+				}
+			    }
+			    if (alternateFiendsList.Count < 4) {
+				// Couldn't find a pair where the graphics fit, reshuffle
+				continue;
+			    }
+
+			    while (alternateFiendsList.Count >= 4) {
+				var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[2].Name + ".png"));
+				var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[3].Name + ".png"));
+				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1)) {
+				    using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2)) {
+					if (SetKrakenTiamatGraphics(stream1, stream2)) {
+					    break;
+					}
+					alternateFiendsList.RemoveAt(2);
+				    }
+				}
+			    }
+			    if (alternateFiendsList.Count < 4) {
+				continue;
+			    }
+			    break;
+			}
 
 			// Replace the 4 fiends and their 2nd version at the same time
 			for (int i = 0; i < 4; i++)
@@ -1003,6 +1235,7 @@ namespace FF1Lib
 				fiendsScript[(i * 2)].spell_list = alternateFiendsList[i].Spells1.ToArray();
 				fiendsScript[(i * 2) + 1].spell_list = alternateFiendsList[i].Spells2.ToArray();
 
+				/*
 				encountersData.formations[fiendsFormationOrder[(i * 2)]].pattern = alternateFiendsList[i].FormationPattern;
 				encountersData.formations[fiendsFormationOrder[(i * 2)]].spriteSheet = alternateFiendsList[i].SpriteSheet;
 				encountersData.formations[fiendsFormationOrder[(i * 2)]].gfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
@@ -1014,6 +1247,7 @@ namespace FF1Lib
 				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].gfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
 				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].palette1 = alternateFiendsList[i].Palette1;
 				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].palette2 = alternateFiendsList[i].Palette2;
+				*/
 			}
 
 			encountersData.Write(this);
@@ -1059,5 +1293,41 @@ namespace FF1Lib
 			}
 			Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
+
+		public void TranceHasStatusElement() {
+		    // TRANCE is slot 81, give is "status" element so
+		    // it can be resisted with a ribbon, ARUB, or
+		    // armor crafter gear.
+		    var es = new EnemySkillInfo();
+		    es.decompressData(Get(MagicOffset + MagicSize * 81, EnemySkillSize));
+		    System.Diagnostics.Debug.Assert(es.accuracy == 0);
+		    System.Diagnostics.Debug.Assert(es.effect == (byte)SpellStatus.Stun);
+		    System.Diagnostics.Debug.Assert(es.elem == (byte)SpellElement.None);
+		    System.Diagnostics.Debug.Assert(es.targeting == (byte)SpellTargeting.AllEnemies);
+		    System.Diagnostics.Debug.Assert(es.routine == (byte)SpellRoutine.InflictStatus);
+		    es.elem = (byte)SpellElement.Status;
+		    Put(MagicOffset + MagicSize * 81, es.compressData());
+		}
+	}
+
+	public enum ScriptTouchMultiplier
+	{
+		[Description("None")]
+		None,
+
+		[Description("Vanilla")]
+		Vanilla,
+
+		[Description("Increased")]
+		OneAndHalf,
+
+		[Description("Double")]
+		Double,
+
+		[Description("All")]
+		All,
+
+		[Description("Random")]
+		Random,
 	}
 }

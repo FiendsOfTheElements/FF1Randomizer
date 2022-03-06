@@ -92,32 +92,59 @@ namespace FF1Lib
 		public const int PaletteSize = 4;
 		public const int PaletteCount = 64;
 
-		public void FunEnemyNames(bool teamSteak)
+	    public void FunEnemyNames(bool teamSteak, bool altFiends, MT19337 rng)
 		{
 			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 
-			enemyText[1] = "GrUMP";
-			enemyText[2] = "RURURU"; // +2
-			enemyText[3] = "GrrrWOLF"; // +2
-			enemyText[28] = "GeORGE";
-			enemyText[30] = "R.SNEK"; // +3
-			enemyText[31] = "GrSNEK"; // +1
-			enemyText[32] = "SeaSNEK"; // -1
-			enemyText[40] = "iMAGE";
-			enemyText[56] = "EXPEDE"; // +2
-			enemyText[66] = "White D";
-			enemyText[72] = "MtlSLIME"; // +3
-			enemyText[83] = "Y BURN";
+			enemyText[1] = "GrUMP";    // +0  GrIMP
+			enemyText[2] = "RURURU";   // +2  WOLF
+			enemyText[3] = "GrrrWOLF"; // +2  GrWOLF
+			enemyText[5] = "BrrrWOLF"; // +2  FrWOLF
+			enemyText[28] = "GeORGE";  // +0  GrOGRE
+
+			// "WzOGRE"
+			if (rng.Between(1, 10) >= 5) {
+			    enemyText[29] = "DIRGE";  // -1
+			} else {
+			    enemyText[29] = "GROVER"; // +0
+			}
+
+			enemyText[30] = "R.SNEK";     // +3  ASP
+			enemyText[31] = "GrSNEK";     // +1  COBRA
+			enemyText[32] = "SeaSNEK";    // -1  SeaSNAKE
+			enemyText[40] = "iMAGE";      // +0  IMAGE
+			enemyText[48] = "SANDWICH";   // +2  Sand W
+			enemyText[53] = "SNEKLADY";   // +0  GrMEDUSA
+			enemyText[56] = "EXPEDE";     // +2  PEDE
+			enemyText[61] = "EDWARD";     // +0  WzVAMP
+			enemyText[63] = "ARGYLE";     // -1  R.GOYLE
+			enemyText[66] = "White D";    // +0  Frost D
+			enemyText[72] = "MtlSLIME";   // +3  SLIME
+			enemyText[77] = "FnPOLICE";   // +0  R.ANKYLO
+			enemyText[80] = "MOMMY";      // -2  WzMUMMY
+			enemyText[81] = "BIRB";       // -4  COCTRICE
+			enemyText[82] = "R.BIRB";     // -2  PERILISK
+			enemyText[83] = "Y BURN";     // +0  WYVERN
 			if (teamSteak)
 			{
-				enemyText[85] = "STEAK"; // +1
-				enemyText[86] = "T.BONE"; // +1
+				enemyText[85] = "STEAK";  // +1  TYRO
+				enemyText[86] = "T.BONE"; // +1  T REX
 			}
-			enemyText[92] = "NACHO"; // -1
-			enemyText[106] = "Green D"; // +2
-			enemyText[111] = "OKAYMAN"; // +1
+			enemyText[92] = "NACHO";      // -1  NAOCHO
+			enemyText[94] = "HYDRANT";    // +0  R.HYDRA
+			enemyText[100] = "LadySNEK";  // +2  GrNAGA
+			enemyText[106] = "Green D";   // +2  Gas D
+			enemyText[111] = "BATMAN";    // +0  BADMAN
+			enemyText[112] = "OKAYMAN";   // +0  EVILMAN
+			if (!altFiends) {
+			    enemyText[119] = "S.BUMP";    // +2  LICH
+			    enemyText[120] = "S.BUMP";    // +2  LICH
+			    enemyText[121] = "KELLY";     // +1  KARY
+			    enemyText[122] = "KELLY";     // +1  KARY
+			}
 
-			// Moving IMP and GrIMP gives me another 10 bytes, for a total of 19 extra bytes, of which I'm using 16.
+			// Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes
+			// We're adding (up to) a net of 18 bytes to enemyTextPart2.
 			var enemyTextPart1 = enemyText.Take(2).ToArray();
 			var enemyTextPart2 = enemyText.Skip(2).ToArray();
 			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
@@ -528,7 +555,7 @@ namespace FF1Lib
 			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("LUTE", newLute, dialogs); ;
 			var princessDialogue = dialogs[0x06].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
 			var monkDialogue = dialogs[0x35].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
-			
+
 			if (princessDialogue.Length > 1)
 				dialogsUpdate.Add(0x06, princessDialogue[0] + newLute + princessDialogue[1]);
 

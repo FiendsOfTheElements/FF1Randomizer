@@ -364,7 +364,7 @@ namespace FF1Lib
 			bool showElement = (weapondata.SpellIndex == 0x00) || (activeHurt.Count == 0);
 
 			description += "\n";
-			description += GenerateEquipPermission(weapondata.ClassUsability);
+			description += GenerateEquipPermission(WeaponPermissions[weapondata.Id]);
 
 			if (activeHurt.Count > 0)
 			{
@@ -428,7 +428,7 @@ namespace FF1Lib
 			var description = "¤" + ((int)shopInfoWordsIndex.arDef).ToString("X2") + armordata.Absorb + "\n¤" + ((int)shopInfoWordsIndex.arEva).ToString("X2") + armordata.Weight;
 
 			description += "\n";
-			description += GenerateEquipPermission(armordata.ClassUsability);
+			description += GenerateEquipPermission(ArmorPermissions[armordata.Id]);
 
 			var activeElement = element.Where(x => (x.Item1 & armordata.ElementalResist) > 0).ToList();
 
@@ -455,7 +455,7 @@ namespace FF1Lib
 					}
 					else if (activeElement.Count <= 7)
 					{
-						description += "\nResist " + activeElement[0].Item3 + "\n " + activeElement[1].Item3 + "and " + (activeElement.Count - 2) + "+";
+						description += "\nResist " + activeElement[0].Item3 + "\n " + activeElement[1].Item3 + " and " + (activeElement.Count - 2) + "+";
 					}
 					else
 					{

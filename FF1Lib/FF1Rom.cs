@@ -30,7 +30,12 @@ namespace FF1Lib
 		public const int GoldItemOffset = 108; // 108 items before gold chests
 		public const int GoldItemCount = 68;
 		public static List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
+
 		public ItemNames ItemsText;
+		public GearPermissions ArmorPermissions;
+		public GearPermissions WeaponPermissions;
+		public SpellPermissions SpellPermissions;
+		public GameClasses ClassData;
 
 		private SanityCheckerV2 sanityChecker = null;
 		private IncentiveData incentivesData = null;
@@ -85,7 +90,7 @@ namespace FF1Lib
 			}
 		}
 
-		private Blob CreateLongJumpTableEntry(byte bank, ushort addr)
+		public Blob CreateLongJumpTableEntry(byte bank, ushort addr)
 		{
 			List<byte> tmp = new List<byte> { 0x20, 0xC8, 0xD7 }; // JSR $D7C8, beginning of each table entry
 
@@ -152,6 +157,11 @@ namespace FF1Lib
 				Blob hash = hasher.ComputeHash(SeedAndFlags);
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));
 			}
+
+			// We have to do "fun" stuff last because it alters the RNG state.
+			// Back up Rng so that fun flags are uniform when different ones are selected
+			uint funRngSeed = rng.Next();
+
 			if (flags.TournamentSafe) AssureSafe();
 
 			UpgradeToMMC3();
@@ -168,7 +178,13 @@ namespace FF1Lib
 			ExpandNormalTeleporters();
 			SeparateUnrunnables();
 			DrawCanoeUnderBridge();
+
 			ItemsText = new ItemNames(this);
+			ArmorPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, this);
+			WeaponPermissions = new GearPermissions(0x3BF50, (int)Item.WoodenNunchucks, this);
+			SpellPermissions = new SpellPermissions(this);
+			ClassData = new GameClasses(WeaponPermissions, ArmorPermissions, SpellPermissions, this);
+
 			var talkroutines = new TalkRoutines();
 			var npcdata = new NPCdata(this);
 			UpdateDialogs(npcdata, flags);
@@ -348,6 +364,11 @@ namespace FF1Lib
 				AlternativeFiends(rng);
 			}
 
+			if (flags.BuffTier1DamageSpells)
+			{
+				BuffTier1DamageSpells();
+			}
+
 			if (flags.BuffHealingSpells)
 			{
 				BuffHealingSpells();
@@ -365,7 +386,7 @@ namespace FF1Lib
 			}
 
 			if ((bool)flags.ArmorCrafter) {
-			    ArmorCrafter(rng, flags.ItemMagicMode == ItemMagicMode.None);
+			    ArmorCrafter(rng, flags.ItemMagicMode == ItemMagicMode.None, flags.RibbonMode == RibbonMode.Split);
 			}
 
 			if (flags.ItemMagicMode != ItemMagicMode.None && flags.ItemMagicMode != ItemMagicMode.Vanilla)
@@ -373,10 +394,17 @@ namespace FF1Lib
 				ShuffleItemMagic(rng, flags);
 			}
 
-			if ((bool)flags.GuaranteedRuseItem && !(flags.ItemMagicMode == ItemMagicMode.None))
+			if (flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
 			{
-				CraftRuseItem();
+				CraftDefenseItem(flags);
 			}
+
+			if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
+			{
+				CraftPowerItem(flags);
+			}
+
+			new RibbonShuffle(this, rng, flags, ItemsText, ArmorPermissions).Work();
 
 			if ((bool)flags.ShortToFR)
 			{
@@ -493,6 +521,8 @@ namespace FF1Lib
 
 			DragonsHoard(maps, (bool)flags.MapDragonsHoard);
 
+			MermaidPrison(maps, (bool)flags.MermaidPrison);
+
 			var shopData = new ShopData(this);
 			shopData.LoadData();
 
@@ -527,7 +557,7 @@ namespace FF1Lib
 					}
 
 					// Disable the Princess Warp back to Castle Coneria
-					if ((bool)flags.Entrances || (bool)flags.Floors || flags.OwMapExchange != OwMapExchanges.None)
+					if ((bool)flags.Entrances || (bool)flags.Floors || flags.OwMapExchange != OwMapExchanges.None || (bool)flags.FreeOrbs)
 						talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
 
 					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && !flags.DeepDungeon)
@@ -549,8 +579,12 @@ namespace FF1Lib
 						if (!((bool)flags.RandomWaresIncludesSpecialGear))
 						{
 							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
-							if ((bool)flags.GuaranteedRuseItem && !(flags.ItemMagicMode == ItemMagicMode.None))
+
+							if (flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
 								excludeItemsFromRandomShops.Add(Item.PowerRod);
+
+							if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
+								excludeItemsFromRandomShops.Add(Item.PowerGauntlets);
 						}
 
 						if ((bool)flags.NoMasamune)
@@ -648,6 +682,11 @@ namespace FF1Lib
 				EnableLifeInBattle();
 			}
 
+			if (flags.TranceHasStatusElement)
+			{
+				TranceHasStatusElement();
+			}
+
 			/*
 			if (flags.WeaponPermissions)
 			{
@@ -678,7 +717,7 @@ namespace FF1Lib
 
 			if (((bool)flags.EnemyScripts))
 			{
-				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates, (bool)!flags.BossScriptsOnly, (bool)!flags.NoBossSkillScriptShuffle, ((bool)flags.EnemySkillsSpellsTiered || (bool)flags.ScaryImps), (bool)flags.ScaryImps);
+				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates, (bool)!flags.BossScriptsOnly, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.EnemySkillsSpellsTiered, flags.ScriptMultiplier);
 			}
 
 			if (((bool)flags.EnemySkillsSpells))
@@ -686,11 +725,11 @@ namespace FF1Lib
 				if ((bool)flags.EnemySkillsSpellsTiered && (bool)!flags.BossSkillsOnly)
 				{
 					GenerateBalancedEnemyScripts(rng, (bool)flags.SwolePirates);
-					ShuffleEnemySkillsSpells(rng, false, (bool)!flags.NoBossSkillScriptShuffle);
+					ShuffleEnemySkillsSpells(rng, false, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.NoConsecutiveNukes, (bool)flags.NoEmptyScripts);
 				}
 				else
 				{
-					ShuffleEnemySkillsSpells(rng, (bool)!flags.BossSkillsOnly, (bool)!flags.NoBossSkillScriptShuffle);
+				    ShuffleEnemySkillsSpells(rng, (bool)!flags.BossSkillsOnly, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.NoConsecutiveNukes, (bool)flags.NoEmptyScripts);
 				}
 			}
 
@@ -698,7 +737,7 @@ namespace FF1Lib
 			{
 				if (((bool)flags.RandomStatusAttacks))
 				{
-					RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates, (bool)flags.DisableStunTouch);
+					RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates, (bool)flags.DisableStunTouch, flags.TouchMultiplier);
 				}
 				else
 				{
@@ -892,16 +931,6 @@ namespace FF1Lib
 				MDefChanges(flags.MDefMode);
 			}
 
-			if (flags.ThiefHitRate)
-			{
-				ThiefHitRate();
-			}
-
-			if (flags.ThiefAgilityBuff != ThiefAGI.Vanilla)
-			{
-			        BuffThiefAGI(flags.ThiefAgilityBuff);
-			}
-
 			if ((bool)flags.Lockpicking)
 			{
 				EnableLockpicking();
@@ -935,7 +964,7 @@ namespace FF1Lib
 
 			if (preferences.FunEnemyNames && !flags.EnemizerEnabled)
 			{
-				FunEnemyNames(preferences.TeamSteak);
+			    FunEnemyNames(preferences.TeamSteak, (bool)flags.AlternateFiends, new MT19337(funRngSeed));
 			}
 
 			if (ItemsText[(int)Item.Ribbon].Length > 7
@@ -952,11 +981,8 @@ namespace FF1Lib
 				ItemsText[(int)Item.House] = "XETH@p";
 			}
 
-			if (((bool)flags.HintsVillage || (bool)flags.HintsDungeon) && !flags.DeepDungeon)
+			if ((bool)flags.HintsVillage && !flags.DeepDungeon)
 			{
-				if ((bool)flags.HintsDungeon)
-					SetDungeonNPC(flippedMaps, rng);
-
 				NPCHints(rng, npcdata, flags, overworldMap);
 			}
 
@@ -1021,6 +1047,16 @@ namespace FF1Lib
 				EnableSwolePirates();
 			}
 
+			if ((bool)flags.SwoleAstos)
+			{
+				EnableSwoleAstos(rng);
+			}
+
+			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
+			{
+				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, (bool)flags.SwoleBahamut, flags.DeepDungeon, flags.EvadeCap, rng);
+			}
+
 			if (flags.EnemyScaleStatsHigh != 100 || flags.EnemyScaleStatsLow != 100 || ((bool)flags.SeparateEnemyHPScaling && (flags.EnemyScaleHpLow != 100 || flags.EnemyScaleHpHigh != 100)))
 			{
 				ScaleEnemyStats(rng, flags);
@@ -1038,14 +1074,9 @@ namespace FF1Lib
 				PubReplaceClinic(rng, attackedTown, flags);
 			}
 
-			if ((bool)flags.ChangeMaxMP)
-			{
-				SetMPMax(flags.RedMageMaxMP, flags.WhiteMageMaxMP, flags.BlackMageMaxMP, flags.KnightMaxMP, flags.NinjaMaxMP);
-			}
-
 			if ((bool)flags.ShuffleAstos)
 			{
-				ShuffleAstos(flags, npcdata, talkroutines, rng);
+			    ShuffleAstos(flags, npcdata, talkroutines, rng);
 			}
 
 			if ((bool)flags.EnablePoolParty)
@@ -1067,10 +1098,11 @@ namespace FF1Lib
 
 			MoveLoadPlayerIBStats();
 			SetupClassAltXp();
-			if ((bool)flags.RandomizeClass)
-			{
-				RandomizeClass(rng, flags, oldItemNames);
-			}
+
+			ClassData.SetMPMax(flags);
+			ClassData.RaiseThiefHitRate(flags);
+			ClassData.BuffThiefAGI(flags);
+			ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);
 
 			if ((bool)flags.EnableRandomPromotions)
 			{
@@ -1087,11 +1119,6 @@ namespace FF1Lib
 				CannotSaveAtInns();
 			}
 
-			if (flags.PacifistMode && !flags.SpookyFlag)
-			{
-				PacifistEnd(talkroutines, npcdata, (bool)flags.EnemyTrapTiles || flags.EnemizerEnabled);
-			}
-
 			if (flags.ItemMagicMode == ItemMagicMode.None)
 			{
 				NoItemMagic(flags);
@@ -1103,11 +1130,6 @@ namespace FF1Lib
 			}
 
 			Fix3DigitStats();
-
-			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
-			{
-				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, (bool)flags.SwoleBahamut, flags.DeepDungeon, flags.EvadeCap, rng);
-			}
 
 			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
@@ -1133,11 +1155,8 @@ namespace FF1Lib
 			    SkyWarriorSpoilerBats(rng, flags, npcdata);
 			}
 
-			// We have to do "fun" stuff last because it alters the RNG state.
-			// Back up Rng so that fun flags are uniform when different ones are selected
-			uint funRngSeed = rng.Next();
-
 			RollCredits(rng);
+			StatsTrackingScreen();
 
 			if (preferences.DisableDamageTileFlicker || flags.TournamentSafe)
 			{
@@ -1151,8 +1170,7 @@ namespace FF1Lib
 
 			if (preferences.PaletteSwap && !flags.EnemizerEnabled && flags.EnemyObfuscation == EnemyObfuscation.None)
 			{
-				rng = new MT19337(funRngSeed);
-				PaletteSwap(rng);
+				PaletteSwap(new MT19337(funRngSeed));
 			}
 
 			if (preferences.TeamSteak && !(bool)flags.RandomizeEnemizer && flags.EnemyObfuscation == EnemyObfuscation.None)
@@ -1162,22 +1180,17 @@ namespace FF1Lib
 
 			if (preferences.ChangeLute)
 			{
-				rng = new MT19337(funRngSeed);
-				ChangeLute(rng);
+				ChangeLute(new MT19337(funRngSeed));
 			}
 
-			rng = new MT19337(funRngSeed);
 
-			TitanSnack(preferences.TitanSnack, npcdata, rng);
+			TitanSnack(preferences.TitanSnack, npcdata, new MT19337(funRngSeed));
 
-			rng = new MT19337(funRngSeed);
-
-			HurrayDwarfFate(preferences.HurrayDwarfFate, npcdata, rng);
+			HurrayDwarfFate(preferences.HurrayDwarfFate, npcdata, new MT19337(funRngSeed));
 
 			if (preferences.Music != MusicShuffle.None)
 			{
-				rng = new MT19337(funRngSeed);
-				ShuffleMusic(preferences.Music, rng);
+				ShuffleMusic(preferences.Music, new MT19337(funRngSeed));
 			}
 
 			if (preferences.DisableSpellCastFlash || flags.TournamentSafe)
@@ -1216,17 +1229,23 @@ namespace FF1Lib
 			npcdata.WriteNPCdata(this);
 			talkroutines.WriteRoutines(this);
 			talkroutines.UpdateNPCRoutines(this, npcdata);
-
+			ArmorPermissions.Write(this);
+			WeaponPermissions.Write(this);
+			SpellPermissions.Write(this);
+			ClassData.Write(this);
 
 			if (flags.Archipelago)
 			{
 				shipLocations.SetShipLocation(255);
 
 				Archipelago exporter = new Archipelago(this, generatedPlacement, sanityChecker, expChests, incentivesData, flags, preferences);
-				Utilities.ArchipelagoCache = exporter.Work();	
+				Utilities.ArchipelagoCache = exporter.Work();
 			}
 
 			ItemsText.Write(this, UnusedGoldItems);
+
+
+			if (flags.Spoilers) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, generatedPlacement, overworldMap, incentivesData, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
 
 			if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
@@ -1237,7 +1256,8 @@ namespace FF1Lib
 
 			flagstext += "_" + resourcesPackHash.ToHex();
 
-			WriteSeedAndFlags(seed.ToHex(), flagstext);
+			uint last_rng_value = rng.Next();
+			WriteSeedAndFlags(seed.ToHex(), flagstext, last_rng_value);
 			ExtraTrackingAndInitCode(flags, preferences);
 		}
 
@@ -1328,33 +1348,35 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x8000, Blob.FromHex("A9008D00208D012085FEA90885FF85FDA51BC901D00160A901851BA94DC5F9F008A9FF85F585F685F7182088C8B049A94DC5F918F013ADA36469018DA364ADA46469008DA464189010ADA56469018DA564ADA66469008DA664A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD64189010A2A0A9009D00609D0064E8D0F7EEFB64ADFB648DFB6060"));
 			Put(0x7C012, Blob.FromHex("A90F2003FE200080EAEAEAEAEAEAEAEA"));
 
+			int hardresetbutton = preferences.QuickJoy2Reset ? 0x80 : 0x88;
+			int softresetbutton = preferences.QuickJoy2Reset ? 0x40 : 0x48;
 
 			// Move controller handling out of bank 1F
 			// This bit of code is also altered to allow a hard reset using Up+A on controller 2
 			PutInBank(0x0F, 0x8200, Blob.FromHex("20108220008360"));
-			PutInBank(0x0F, 0x8210, Blob.FromHex("A9018D1640A9008D1640A208AD16402903C9012620AD17402903C901261ECAD0EBA51EC988F008C948F001604C2EFE20A8FE20A8FE20A8FEA2FF9AA900851E9500CAD0FBA6004C12C0"));
+			PutInBank(0x0F, 0x8210, Blob.FromHex($"A9018D1640A9008D1640A208AD16402903C9012620AD17402903C901261ECAD0EBA51EC9{hardresetbutton:X2}F008C9{softresetbutton:X2}F001604C2EFE20A8FE20A8FE20A8FEA2FF9AA900851E9500CAD0FBA6004C12C0"));
 			PutInBank(0x0F, 0x8300, Blob.FromHex("A5202903F002A2038611A520290CF0058A090C8511A52045212511452185214520AA2910F00EA5202910F002E623A521491085218A2920F00EA5202920F002E622A521492085218A2940F00EA5202940F002E625A521494085218A2980F00EA5202980F002E624A5214980852160"));
 			PutInBank(0x1F, 0xD7C2, CreateLongJumpTableEntry(0x0F, 0x8200));
 
 			// Battles use 2 separate and independent controller handlers for a total of 3 (because why not), so we patch these to respond to Up+A also
-			PutInBank(0x0F, 0x8580, Blob.FromHex("A0018C1640888C1640A008AD16404AB0014A6EB368AD17402903C901261E88D0EAA51EC988F00BC948F004ADB368604C2EFE20A8FE20A8FE20A8FEA2FF9AA900851E9500CAD0FBA6004C12C0"));
+			PutInBank(0x0F, 0x8580, Blob.FromHex($"A0018C1640888C1640A008AD16404AB0014A6EB368AD17402903C901261E88D0EAA51EC9{hardresetbutton:X2}F00BC9{softresetbutton:X2}F004ADB368604C2EFE20A8FE20A8FE20A8FEA2FF9AA900851E9500CAD0FBA6004C12C0"));
 			PutInBank(0x1F, 0xD828, CreateLongJumpTableEntry(0x0F, 0x8580));
 			// PutInBank(0x0B, 0x9A06, Blob.FromHex("4C28D8")); Included in bank 1B changes
 			PutInBank(0x0C, 0x97C7, Blob.FromHex("2027F22028D82029ABADB36860"));
 
 
 			// Put LongJump routine 6 bytes after UpdateJoy used to be
-			PutInBank(0x1F, 0xD7C8, Blob.FromHex("85E99885EA6885EB6885ECA001B1EB85EDC8B1EB85EEC8ADFC6085E8B1EB2003FEA9D748A9F548A5E9A4EA6CED0085E9A5E82003FEA5E960"));
-			// LongJump entries can start at 0xD800 and must stop before 0xD850 (at which point additional space will need to be freed to make room)
+			PutInBank(0x1F, 0xD7C8, Blob.FromHex("85E99885EA6885EB6885ECA001B1EB85EDC8B1EB85EEC8ADFC6085E8B1EB2003FEA9D748A9F548A5E9A4EA6CED000885E9A5E82003FEA5E92860"));
+			// LongJump entries can start at 0xD806 and must stop before 0xD850 (at which point additional space will need to be freed to make room)
 
 			// Patches for various tracking variables follow:
 			// Pedometer + chests opened
 			PutInBank(0x0F, 0x8100, Blob.FromHex("18A532D027A52D2901F006A550D01DF00398D018ADA06069018DA060ADA16069008DA160ADA26069008DA260A52F8530A9FF8518A200A000BD00622904F001C8E8D0F5988DB7606060"));
 			Put(0x7D023, Blob.FromHex("A90F2003FE200081"));
-			// Count number of battles
-			PutInBank(0x0F, 0x8400, Blob.FromHex("18ADA76069018DA7609003EEA86020A8FE60"));
-			PutInBank(0x1F, 0xD800, CreateLongJumpTableEntry(0x0F, 0x8400));
-			PutInBank(0x1F, 0xF28D, Blob.FromHex("2000D8"));
+			// Count number of battles + track battle screen
+			PutInBank(0x0F, 0x8400, Blob.FromHex("18ADA76069018DA7609003EEA860A90885F220A8FE60"));
+			PutInBank(0x1F, 0xD80C, CreateLongJumpTableEntry(0x0F, 0x8400));
+			PutInBank(0x1F, 0xF28D, Blob.FromHex("200CD8"));
 			// Ambushes / Strike First
 			PutInBank(0x0F, 0x8420, Blob.FromHex("AD5668C90B9015C95A901F18ADAB6069018DAB609014EEAC6018900E18ADA96069018DA9609003EEAA60AC5668AE576860"));
 			PutInBank(0x1F, 0xD806, CreateLongJumpTableEntry(0x0F, 0x8420));
@@ -1378,7 +1400,7 @@ namespace FF1Lib
 			// "Nothing Here"s
 			PutInBank(0x0F, 0x8600, Blob.FromHex("A54429C2D005A545F00360A900EEB66060"));
 			PutInBank(0x1F, 0xD834, CreateLongJumpTableEntry(0x0F, 0x8600));
-			PutInBank(0x1F, 0xCBF3, Blob.FromHex("4C34D8"));
+			PutInBank(0x1F, 0xCBED, Blob.FromHex("4C34D860"));
 
 			// Add select button handler on game start menu to change color
 			PutInBank(0x0F, 0x8620, Blob.FromHex("203CC4A662A9488540ADFB60D003EEFB60A522F022EEFB60ADFB60C90D300EF007A9018DFB60D005A90F8DFB60A90085222029EBA90060A90160"));
@@ -1453,8 +1475,81 @@ namespace FF1Lib
 			// Enable 3 palettes in battle
 			PutInBank(0x1F, 0xFDF1, CreateLongJumpTableEntry(0x0F, 0x9380));
 			PutInBank(0x0F, 0x9380, Blob.FromHex("ADD16A2910F00BA020B9336D99866B88D0F7ADD16A290F8DD16A20A1F4AD0220A9028D1440A93F8D0620A9008D0620A000B9876B8D0720C8C020D0F5A93F8D0620A9008D06208D06208D062060"));
+
+			GameScreenTracking();
 		}
 
+		public void GameScreenTracking()
+		{
+			/*
+			 * Track the various screen at $F2 on the zeropage for easy reference.
+			 * Intro Story  : $00
+			 * Title Screen : $01
+			 * Party Gen    : $02
+			 * Overworld    : $03
+			 * Standard Map : $04 / Read $48 for current map
+			 * Shop         : $05 / Read $66 for shop type
+			 * Main Menu	: $06
+			 * Lineup Menu	: $07
+			 * Battle       : $08
+			 * Bridge Scene : $09
+			 * Ending Scence: $0A
+			 */
+
+			// Track Party Gen
+			// Included with party gen screen in Bank1E()
+
+			// Track overworld
+			PutInBank(0x1E, 0xBB00, GetFromBank(0x1F, 0xC6FD, 0x21) + Blob.FromHex("A90385F260"));
+			PutInBank(0x1F, 0xC6FD, Blob.FromHex("A91E2003FE2000BB4C1EC7"));
+
+			// Track standard map
+			PutInBank(0x1E, 0xBB30, GetFromBank(0x1F, 0xCF55, 0x1B) + Blob.FromHex("A90485F260"));
+			PutInBank(0x1F, 0xCF55, Blob.FromHex("A91E2003FE2030BB4C70CF"));
+
+			// Track Battle
+			// Inluded with battle count tracking in ExtraTrackingAndInitCode()
+
+			// Track shop, the subtype can be read from $66
+			PutInBank(0x1E, 0xBB50, GetFromBank(0x0E, 0xA330, 0x0C) + Blob.FromHex("A90585F2") + Blob.FromHex("A9A348A93B48A90E4C03FE"));
+			PutInBank(0x0E, 0xA330, Blob.FromHex("A9BB48A94F48A91E4C03FE"));
+
+			// Track Main menu
+			PutInBank(0x1E, 0xBB70, GetFromBank(0x0E, 0xADB3, 0x0C) + Blob.FromHex("A90685F2") + Blob.FromHex("A9AD48A9BE48A90E4C03FE"));
+			PutInBank(0x0E, 0xADB3, Blob.FromHex("A9BB48A96F48A91E4C03FE"));
+
+			// Track Lineup menu
+			PutInBank(0x1E, 0xBB90, GetFromBank(0x0E, 0x9915, 0x0C) + Blob.FromHex("A90785F2") + Blob.FromHex("A99948A92048A90E4C03FE"));
+			PutInBank(0x0E, 0x9915, Blob.FromHex("A9BB48A98F48A91E4C03FE"));
+
+			// Track Ending Scene
+			PutInBank(0x1E, 0xBBB0, GetFromBank(0x0D, 0xB803, 0x04) + GetFromBank(0x0D, 0xB80D, 0x09) + Blob.FromHex("A90A85F2") + Blob.FromHex("A9B848A91548A90D4C03FE"));
+			PutInBank(0x0D, 0xB803, GetFromBank(0x0D, 0xB807, 0x06));
+			PutInBank(0x0D, 0xB809, Blob.FromHex("A9BB48A9AF48A91E4C03FE"));
+
+			// Track Bridge Scene - Jump to ending scene because of a lack of space
+			PutInBank(0x1E, 0xBBD0, GetFromBank(0x0D, 0xB84D, 0x0A) + Blob.FromHex("A90985F2") + Blob.FromHex("A9B848A95648A90D4C03FE"));
+			PutInBank(0x0D, 0xB84D, Blob.FromHex("A9BB48A9CF484C0FB8"));
+
+			// Track Title Screen
+			PutInBank(0x1E, 0xBBF0, GetFromBank(0x0E, 0xA159, 0x0E) + Blob.FromHex("A90185F2") + Blob.FromHex("A9A148A96648A90E4C03FE"));
+			PutInBank(0x0E, 0xA159, Blob.FromHex("A9BB48A9EF48A91E4C03FE"));
+		}
+		public void StatsTrackingScreen()
+		{
+			// Give access to the tracked game stats from the main menu, by pressing Select; see 1E_BA00_StatsMenu.asm
+			PutInBank(0x1E, 0xBA00, Blob.FromHex("000000000000010B0C11020D15A522F0034C27BAA524F003A90160A525F004A9003860A90018602040BA203CC420D5BA201A856868A9AD48A9CC48A90E4C03FEA9008D0120A900853720C1BAAD1C608D006EAD1D608D016EAD1E608D026EA9018538A91E853CA902853AA2008614BC06BA8439843BBD07BA853D2063E0A614E8E8E00490E7A2008614BD00BA853EBD01BA853F8A4AAABC0ABA843BA91E8558A90D85572036DEA614E8E8E00690D9AD006E8D1C60AD016E8D1D60AD026E8D1E6060A91E48A9FE48A90648A99C48A90148A90E4C03FEA91E48A9FE48A90648A9B748A97F48A90E4C03FE"));
+
+			PutInBank(0x1F, 0xD846, CreateLongJumpTableEntry(0x1E, 0xBA0D)); // Longjump from MainMenuLoop
+
+			PutInBank(0x1E, 0xBA00, GetFromBank(0x0D, 0xA804, 0x06));
+			PutInBank(0x0E, 0xB665, Blob.FromHex("209AE1A9008522EAEAEAEAEAEA")); // Change MenuFrame to reset Select button
+			PutInBank(0x0E, 0xADF4, Blob.FromHex("2046D8D015B007EA"));           // Change MainMenuLoop to check for SelectButton
+
+			// PutInBank(0x0D, 0xB83E, Blob.FromHex("2012D8"));
+			// PutInBank(0x1F, 0xD812, CreateLongJumpTableEntry(0x1E, 0xB100)); // LongJump from Ending Credits
+			// PutInBank(0x1E, 0xB100, Blob.FromHex("A900852485252000FEA91E85572089C620C2D7A5240525F0034C1FB14C06B1A9008D01202006E9A20BA90085372040B0203CC420D5B02000FEA91E85572089C64C36B1"));
+		}
 		public void MakeSpace()
 		{
 			// 54 bytes starting at 0xC265 in bank 1F, ROM offset: 7C275. FULL
@@ -1505,7 +1600,7 @@ namespace FF1Lib
 			Data[0x7FE97] = 0x03;
 		}
 
-		public void WriteSeedAndFlags(string seed, string flags)
+		public void WriteSeedAndFlags(string seed, string flags, uint last_rng_value)
 		{
 			// Replace most of the old copyright string printing with a JSR to a LongJump
 			Put(0x38486, Blob.FromHex("20B9FF60"));
@@ -1515,7 +1610,7 @@ namespace FF1Lib
 
 			Blob hash;
 			var hasher = SHA256.Create();
-			hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{FFRVersion.Sha}"));
+			hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{FFRVersion.Sha}_{last_rng_value}"));
 
 			var hashpart = BitConverter.ToUInt64(hash, 0);
 			hash = Blob.FromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");

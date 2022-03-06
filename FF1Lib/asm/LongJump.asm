@@ -44,9 +44,11 @@ LongJump:
 	LDY tmp_Y
 	JMP ($00ED)         ; actual function jump
 	; <----------  post-jump address mentioned above
+	PHP
 	STA tmp_A
 	LDA tmp_oldbank     ; get bank to jump back to
 	JSR $FE03           ; SwapPRG_L
 	LDA tmp_A
+	PLP
 	RTS
 	; total size: 56 bytes

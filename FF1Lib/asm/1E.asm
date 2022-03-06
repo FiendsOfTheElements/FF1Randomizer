@@ -14,7 +14,7 @@ BANK_THIS = $1E
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  NewGamePartyGeneration  [$8000 :: 0x78010] [called from outside]
-;;  identical to original
+;;  modified
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .org $8000
@@ -22,8 +22,9 @@ BANK_THIS = $1E
 NewGamePartyGeneration:
     LDA #$00                ; turn off the PPU
     STA $2001
-    LDA #$0F                ; turn ON the audio (it should already be on, though
-    STA $4015               ;  so this is kind of pointless)
+    LDA #$02                ; replace useless audio activation
+    STA $F2                 ;  for tracking which screen we're at
+    NOP
 
     JSR LoadNewGameCHRPal   ; Load up all the CHR and palettes necessary for the New Game menus
 

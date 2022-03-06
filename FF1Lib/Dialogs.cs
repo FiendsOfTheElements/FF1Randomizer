@@ -875,6 +875,8 @@ namespace FF1Lib
 				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Titan)
 				{
 					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_Titan);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = 0x29;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)Item.Ruby;
 				}
 				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Unne)
 				{
@@ -1215,7 +1217,7 @@ namespace FF1Lib
 		    }
 		    wrapped += st.Substring(start, end-start);
 		}
-		
+
 		wrapped = wrapped.Substring(0, 1).ToUpper() + wrapped.Substring(1);
 
 			return wrapped;
@@ -1340,12 +1342,6 @@ namespace FF1Lib
 				MoveNpc(MapId.Lefein, 0x0C, 0x0E, 0x15, false, true);
 			}
 
-			if (flags.HintsDungeon ?? false)
-			{
-				npcSelected.AddRange(new List<ObjectId> { ObjectId.OnracPunk2, ObjectId.DwarfcaveDwarf4, ObjectId.CardiaDragon2, ObjectId.SkyRobot, ObjectId.Mermaid3 });
-				dialogueID.AddRange(new List<byte> { 0x9D, 0x70, 0xE3, 0xE1, 0xB6 });
-			}
-
 			var incentivizedChests = new List<string>();
 
 			if (flags.IncentivizeEarth ?? false) incentivizedChests.Add(ItemLocations.EarthCaveMajor.Name);
@@ -1426,16 +1422,10 @@ namespace FF1Lib
 						tempHint = "I am error.";
 				}
 
-				if (flags.HintsUseless != false)
-				{
-					uselesshints.Shuffle(rng);
-					hintsList.Reverse();
-					var uselessHintsCount = hintsList.Count() / 2;
-					hintsList.RemoveRange(0, uselessHintsCount);
+				hintsList.Reverse();
+				hintsList.RemoveRange(0, 1);
+				hintsList.Add(uselesshints.PickRandom(rng));
 
-					for (int i = 0; i < uselessHintsCount; i++)
-						hintsList.Add(uselesshints[i]);
-				}
 				//var hintsList = hints.ToList();
 				hintsList.Shuffle(rng);
 

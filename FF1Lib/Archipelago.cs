@@ -153,8 +153,9 @@ namespace FF1Lib
 				name = preferences.PlayerName,
 				options = new ArchipelagoFFROptions
 				{
-					items = logic.RewardSources.GroupBy(r => GetItemId(r.RewardSource.Item)).ToDictionary(r => GetItemName(r.First().RewardSource.Item), r => new ArchipelagoItem { id = r.Key, count = r.Count() }),
+					items = logic.RewardSources.GroupBy(r => GetItemId(r.RewardSource.Item)).ToDictionary(r => GetItemName(r.First().RewardSource.Item), r => new ArchipelagoItem { id = r.Key, count = r.Count(), incentive = incentivesData.IncentiveItems.Contains(r.First().RewardSource.Item) }),
 					locations = logic.RewardSources.ToDictionary(r => r.RewardSource.Name, r => GetLocationId(r)),
+					locations2 = logic.RewardSources.ToDictionary(r => r.RewardSource.Name, r => new ArchipelagoLocation { id = GetLocationId(r), incentive = IsLocationIncentivized(r) }),
 					rules = logic.RewardSources.ToDictionary(r => r.RewardSource.Name, r => GetRule(r))
 				}
 			};
@@ -181,6 +182,12 @@ namespace FF1Lib
 			rom.PutInBank(0x0E, 0xBDC8, Blob.FromHex("A666A000B900039D0061E8C88A2903D0F38A18693CAA90ECC918F006A5FC8D0B6060A5FC8D076060"));
 
 			return Json;
+		}
+
+		private bool IsLocationIncentivized(SCLogicRewardSource r)
+		{
+			if (r.RewardSource is ItemShopSlot && incentivesData.IncentiveLocations.Contains(ItemLocations.CaravanItemShop1)) return true;
+			return incentivesData.IncentiveLocations.Any(i => i.Address == r.RewardSource.Address);
 		}
 
 		public static string LimitByteLength(string input, int maxLength)
@@ -332,7 +339,16 @@ namespace FF1Lib
 
 		public Dictionary<string, int> locations { get; set; }
 
+		public Dictionary<string, ArchipelagoLocation> locations2 { get; set; }
+
 		public Dictionary<string, List<List<string>>> rules { get; set; }
+	}
+
+	public class ArchipelagoLocation
+	{
+		public int id { get; set; }
+
+		public bool incentive { get; set; }
 	}
 
 	public class ArchipelagoItem
@@ -340,6 +356,8 @@ namespace FF1Lib
 		public int id { get; set; }
 
 		public int count { get; set; }
+
+		public bool incentive { get; set; }
 	}
 
 	public enum ArchipelagoEquipment

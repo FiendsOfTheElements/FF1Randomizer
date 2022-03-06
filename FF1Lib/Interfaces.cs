@@ -38,6 +38,7 @@
 		IncentivePlacementType CorneriaIncentivePlacementType { get; }
 		IncentivePlacementType MarshLockedIncentivePlacementType { get; }
 		IncentivePlacementType CardiaIncentivePlacementType { get; }
+		bool? MermaidPrison { get; }
 
 		bool? IncentivizeXcalber { get; }
 		bool? IncentivizeMasamune { get; }
@@ -66,6 +67,7 @@
 		bool? IncentivizeCanoe { get; }
 		bool IncentivizeRibbon2 { get; }
 		bool? IncentivizeOtherCastArmor { get; }
+		bool? IncentivizePowerRod { get; }
 		bool? IncentivizeDefCastArmor { get; }
 		bool? IncentivizeOffCastArmor { get; }
 		bool? IncentivizeDefCastWeapon { get; }
@@ -94,6 +96,7 @@
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
+		bool LaterLoose { get; }
 		bool Spoilers { get; }
 		bool? MapCanalBridge { get; }
 		bool? MapConeriaDwarves { get; }
@@ -103,7 +106,8 @@
 		bool? RandomLoot { get; }
 		bool? BetterTrapChests { get; }
 		bool? EarlierRuby { get; }
-		bool? GuaranteedRuseItem { get; }
+		GuaranteedDefenseItem GuaranteedDefenseItem { get; }
+		GuaranteedPowerItem GuaranteedPowerItem { get; }
 		bool? GuaranteedMasamune { get; }
 		bool? SendMasamuneHome { get; }
 		bool? NoMasamune { get; }

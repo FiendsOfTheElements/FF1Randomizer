@@ -546,12 +546,18 @@ namespace FF1Lib
 		{
 			// NPC pool to swap Astos with
 			List<ObjectId> npcpool = new List<ObjectId> { ObjectId.Astos, ObjectId.Bahamut, ObjectId.CanoeSage, ObjectId.CubeBot, ObjectId.ElfDoc,
-			ObjectId.Fairy, ObjectId.King, ObjectId.Matoya, ObjectId.Nerrick, ObjectId.Princess2, ObjectId.Smith,
+			ObjectId.Fairy, ObjectId.Matoya, ObjectId.Nerrick, ObjectId.Smith,
 			ObjectId.Titan, ObjectId.Unne, ObjectId.Sarda, ObjectId.ElfPrince, ObjectId.Lefein };
 
 			if ((bool)flags.FightBahamut)
 			{
 				npcpool.Remove(ObjectId.Bahamut);
+			}
+
+			if ((bool)flags.UnsafeAstos)
+			{
+				npcpool.Add(ObjectId.King);
+				npcpool.Add(ObjectId.Princess2);
 			}
 
 			// Select random npc
@@ -1101,6 +1107,23 @@ namespace FF1Lib
 			if (mainClassList.Count == 0) mainClassList = new List<FF1Class> { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt, FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
 
 			Blob pool = Blob.FromHex("");
+
+			if (flags.SafePoolParty)
+			{
+				var meleeList = mainClassList.Where(c => c == FF1Class.Fighter || c == FF1Class.Thief || c == FF1Class.BlackBelt || c == FF1Class.Knight || c == FF1Class.Ninja || c == FF1Class.Master).ToList();
+				if (meleeList.Count < 2) meleeList = new List<FF1Class> { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt };
+
+				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)meleeList.SpliceRandom(rng) }.ToArray());
+				size -= 1;
+
+				var mageList = mainClassList.Where(c => c == FF1Class.RedMage || c == FF1Class.WhiteMage || c == FF1Class.BlackMage || c == FF1Class.RedWiz || c == FF1Class.WhiteWiz || c == FF1Class.BlackWiz).ToList();
+				if (mageList.Count < 2) mageList = new List<FF1Class> { FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
+
+				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)mageList.SpliceRandom(rng) }.ToArray());
+				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)mageList.SpliceRandom(rng) }.ToArray());
+				size -= 2;
+			}
+
 			for (int i = 0; i < size; i++)
 				pool += Blob.FromSBytes(new List<sbyte> { (sbyte)mainClassList.PickRandom(rng) }.ToArray());
 
@@ -1193,7 +1216,7 @@ namespace FF1Lib
 			var talk_class = talkroutines.Add(Blob.FromHex("A470F005207990903DA571203D9620A49FC000D02BA5739D0061A9009D26619D01619D0B619D0D6120649F20509FA00E207990900320C59520879FA4762073922018964C4396A57260"));
 
 			// Routines to switch the class (clear stats, equipment, new stats, levelup)
-			PutInBank(newTalkRoutinesBank, 0x9F50, Blob.FromHex("A91148A9FE48A90648A9C748A98248A9004C03FEA0188610A9618511B110297F9110C8C020D0F5A000A9638511A9009110C8C02FD0F960A91148A9FE48A90648A98748A9A9488A4A4A4A4A4A4A8510A91B4C03FEA91148A9FE48A90648A99948A91048A9008565A90E4C03FE"));
+			PutInBank(newTalkRoutinesBank, 0x9F50, Blob.FromHex("A91148A9FE48A90648A9C748A98248A9004C03FEA0188610A9618511B110297F9110C8C020D0F5A000A9638511A9009110C8C030D0F960A91148A9FE48A90648A98748A9A9488A4A4A4A4A4A4A8510A91B4C03FEA91148A9FE48A90648A99948A91048A9008565A90E4C03FE"));
 
 			var totalKeyNPC = (bool)flags.ClassAsNpcKeyNPC ? Math.Min(flags.ClassAsNpcCount, 12) : 0;
 			var totalAllNPC = ((bool)flags.ClassAsNpcFiends ? 4 : 0) + totalKeyNPC;
@@ -1588,9 +1611,6 @@ namespace FF1Lib
 			if (flags.HintsVillage ?? false)
 				invalidZombie.AddRange(new List<ObjectId> { ObjectId.ConeriaOldMan, ObjectId.PravokaOldMan, ObjectId.ElflandScholar1, ObjectId.MelmondOldMan2, ObjectId.CrescentSage11, ObjectId.OnracOldMan2, ObjectId.GaiaWitch, ObjectId.LefeinMan12 });
 
-			if (flags.HintsDungeon ?? false)
-				invalidZombie.AddRange(new List<ObjectId> { ObjectId.OnracPunk2, ObjectId.DwarfcaveDwarf4, ObjectId.CardiaDragon2, ObjectId.SkyRobot, ObjectId.Mermaid3 });
-
 			// Change base NPCs' scripts to Talk_fight
 			for (int i = 0; i < 0xD0; i++)
 			{
@@ -1822,12 +1842,32 @@ namespace FF1Lib
 			bahamutInfo.decompressData(Get(EnemyOffset + (idAnkylo * EnemySize), EnemySize));
 			bahamutInfo.morale = 255; // always prevent running away, whether swole or not
 			bahamutInfo.monster_type = (byte)MonsterType.DRAGON;
+			bahamutInfo.exp = 3000;
+			bahamutInfo.gp = 1;
+			bahamutInfo.hp = 525;      // subject to additional boss HP scaling
+			bahamutInfo.num_hits = 1;
+
+			// These stats are based on the ankylo base stats increased to about 120%
+			// stats will be further scaled based on boss stat scaling
+			bahamutInfo.damage = 118;
+			bahamutInfo.absorb = 58;
+			bahamutInfo.mdef = 188;
+			bahamutInfo.accuracy = 106;
+			bahamutInfo.critrate = 1;
+			bahamutInfo.agility = 58;
+			bahamutInfo.elem_weakness = (byte)Element.NONE;
+
 			if (swoleBahamut)
 			{
-				int availableScript = searchForNoSpellNoAbilityEnemyScript();
 				bahamutInfo.exp = 16000; // increase exp for swole bahamut, either mode
-				bahamutInfo.hp = 475; // increase HP (note: this will increase by 2x below)
-				bahamutInfo.elem_resist = (byte)Element.POISON; // no longer susceptible to BANE
+				bahamutInfo.hp = 700; // subject to additional boss HP scaling
+				bahamutInfo.elem_resist = (byte)Element.POISON; // no longer susceptible to BANE or BRAK
+
+				int availableScript = bahamutInfo.AIscript;
+				if (availableScript == 0xFF) {
+				    availableScript = searchForNoSpellNoAbilityEnemyScript();
+				}
+
 				if (availableScript >= 0 && Rng.Between(rng, 0, 3) > 0) // because spells and skills shuffle is common, allow RNG to also make physical bahamut (1 in 4)
 				{
 					// spells and skills were shuffled in a way that a script exists with NONES for all magic and skills
@@ -1838,24 +1878,38 @@ namespace FF1Lib
 					setAIScriptToNoneForEnemiesUsing(availableScript);
 
 					// pick skills from this list
-					List<byte> potentialSkills = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Scorch, (byte)EnemySkills.Glare, (byte)EnemySkills.Blaze, (byte)EnemySkills.Inferno, (byte)EnemySkills.Cremate, (byte)EnemySkills.Snorting, (byte)EnemySkills.Trance, (byte)EnemySkills.Nuclear };
+					List<byte> potentialSkills = new List<byte> {
+					    (byte)EnemySkills.Snorting,
+					    (byte)EnemySkills.Stinger,
+					    (byte)EnemySkills.Cremate,
+					    (byte)EnemySkills.Blizzard,
+					    (byte)EnemySkills.Blaze,
+					    (byte)EnemySkills.Inferno,
+					    (byte)EnemySkills.Poison_Damage,
+					    (byte)EnemySkills.Thunder,
+					    (byte)EnemySkills.Tornado,
+					    (byte)EnemySkills.Nuclear,
+					    (byte)EnemySkills.Swirl,
+					};
 					potentialSkills.Shuffle(rng);
 
 					// create and assign script
 					defineNewAI(availableScript,
 						spellChance: 0x00,
 						skillChance: 0x40,
-						spells: new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+						spells: new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE,
+							(byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
 						skills: new List<byte> { potentialSkills[0], potentialSkills[1], potentialSkills[2], potentialSkills[3] }
 						);
 					bahamutInfo.AIscript = (byte)availableScript;
-					bahamutInfo.mdef = 0xB4; // swole magical bahamut has increased MDEF
+					bahamutInfo.mdef = 215; // swole magical bahamut has increased MDEF
 				} else
 				{
 					// no script is available: spells and skills aren't shuffled or we got unlucky
 					// (physical bahamut mode)
 					bahamutInfo.critrate = 20;
 					bahamutInfo.num_hits = 2;
+					bahamutInfo.AIscript = 0xFF;
 				}
 			}
 			Put(EnemyOffset + (idAnkylo * EnemySize), bahamutInfo.compressData());
@@ -1899,13 +1953,10 @@ namespace FF1Lib
 
 			// Change Bahamut Dragon NPCs to the "Onrac Dragon" so they will change what they say post promotion
 			if (!deepDungeon)
-            {
+			{
 				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.OnracDragon, 19, 7, inRoom: true, stationary: true);
 				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.OnracDragon, 23, 7, inRoom: true, stationary: true);
 			}
-
-			// Scale Difficulty Up, approx 700hp (normal) or 950hp (buffed)
-			ScaleSingleEnemyStats(78, 120, 120, wrapOverflow: false, includeMorale: false, rng: null, separateHPScale: true, lowPercentHp: 200, highPercentHp: 200, GetEvadeIntFromFlag(evadeClampFlag));
 		}
 
 		private void defineNewAI(int availableScript, byte spellChance, byte skillChance, List<byte> spells, List<byte> skills)

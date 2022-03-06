@@ -56,7 +56,21 @@ namespace FF1Lib
 
 		#endregion
 
-	public bool Archipelago { get; set; } = false;
+		public bool BuffTier1DamageSpells { get; set; } = false;
+		public bool NoEmptyScripts { get; set; } = false;
+		public bool LaterLoose { get; set; } = false;
+		public bool? MermaidPrison { get; set; } = false;
+
+		public GuaranteedDefenseItem GuaranteedDefenseItem { get; set; } = GuaranteedDefenseItem.None;
+
+		public GuaranteedPowerItem GuaranteedPowerItem { get; set; } = GuaranteedPowerItem.None;
+
+		public ScriptTouchMultiplier ScriptMultiplier { get; set; } = ScriptTouchMultiplier.Vanilla;
+		public ScriptTouchMultiplier TouchMultiplier { get; set; } = ScriptTouchMultiplier.Vanilla;
+
+		public RibbonMode RibbonMode { get; set; } = RibbonMode.Vanilla;
+
+		public bool Archipelago { get; set; } = false;
 		public bool ArchipelagoGold { get; set; } = false;
 		public bool ArchipelagoConsumables { get; set; } = false;
 		public bool ArchipelagoShards { get; set; } = false;
@@ -219,10 +233,11 @@ namespace FF1Lib
 		public bool? TrappedChaos { get; set; } = false;
 		public bool? TCIndicator { get; set; } = false;
 		public bool? SwolePirates { get; set; } = false;
-		public bool? ScaryImps { get; set; } = false;
 		public bool? EnemyScripts { get; set; } = false;
 		public bool? BossScriptsOnly { get; set; } = false;
 		public bool? EnemySkillsSpells { get; set; } = false;
+		public bool? NoConsecutiveNukes { get; set; } = false;
+		public bool TranceHasStatusElement { get; set; } = false;
 		public bool? BossSkillsOnly { get; set; } = false;
 		public bool? EnemySkillsSpellsTiered { get; set; } = false;
 		public bool? EnemyStatusAttacks { get; set; } = false;
@@ -240,6 +255,7 @@ namespace FF1Lib
 		public bool? RandomVampAttackIncludesConeria { get; set; } = false;
 		public bool? FightBahamut { get; set; } = false;
 		public bool? SwoleBahamut { get; set; } = false;
+		public bool? SwoleAstos { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
 		public bool? OWDamageTiles { get; set; } = false;
@@ -314,6 +330,7 @@ namespace FF1Lib
 		public bool? IncentivizeDefCastArmor { get; set; } = false;
 		public bool? IncentivizeOffCastArmor { get; set; } = false;
 		public bool? IncentivizeOtherCastArmor { get; set; } = false;
+		public bool? IncentivizePowerRod { get; set; } = false;
 		public bool? IncentivizeDefCastWeapon { get; set; } = false;
 		public bool? IncentivizeOffCastWeapon { get; set; } = false;
 		public bool IncentivizeOtherCastWeapon { get; set; } = false;
@@ -551,8 +568,8 @@ namespace FF1Lib
 		public bool DisableInnSaving { get; set; } = false;
 		public bool SaveGameWhenGameOver { get; set; } = false;
 		public bool SaveGameDWMode { get; set; } = false;
-		public bool PacifistMode { get; set; } = false;
 		public bool? ShuffleAstos { get; set; } = false;
+		public bool UnsafeAstos { get; set; } = false;
 		public bool? RandomizeEnemizer { get; set; } = false;
 		public bool? RandomizeFormationEnemizer { get; set; } = false;
 		public bool? GenerateNewSpellbook { get; set; } = false;
@@ -562,8 +579,6 @@ namespace FF1Lib
 		public bool BuffHealingSpells { get; set; } = false;
 		public bool? FreeTail { get; set; } = false;
 		public bool? HintsVillage { get; set; } = false;
-		public bool? HintsDungeon { get; set; } = false;
-		public bool? HintsUseless { get; set; } = false;
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
 		public bool? RandomWeaponBonus { get; set; } = false;
 		public bool? RandomArmorBonus { get; set; } = false;
@@ -586,6 +601,7 @@ namespace FF1Lib
 		public bool? ClampEnemyHpScaling { get; set; } = false;
 		public PoolSize PoolSize { get; set; } = PoolSize.Size6;
 		public bool? EnablePoolParty { get; set; } = false;
+		public bool SafePoolParty { get; set; } = false;
 		public bool? IncludePromClasses { get; set; } = false;
 		public bool? EnableRandomPromotions { get; set; } = false;
 		public bool? IncludeBaseClasses { get; set; } = false;
@@ -657,7 +673,6 @@ namespace FF1Lib
 		public bool WhiteMageHarmEveryone { get; set; } = false;
 
 		public bool? EarlierRuby { get; set; } = false;
-		public bool? GuaranteedRuseItem { get; set; } = false;
 		public bool? DisableStunTouch { get; set; } = false;
 		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (OwMapExchange != OwMapExchanges.Desert);
 		public bool DisableOWMapModifications => SanityCheckerV2 & (OwMapExchange != OwMapExchanges.None);
@@ -723,6 +738,7 @@ namespace FF1Lib
 			+ ((IncentivizeDefCastArmor ?? false) ? 1 : 0)
 			+ ((IncentivizeOffCastArmor ?? false) ? 1 : 0)
 			+ ((IncentivizeOtherCastArmor ?? false) ? 1 : 0)
+			+ ((IncentivizePowerRod ?? false) ? 1 : 0)
 			+ ((IncentivizeDefCastWeapon ?? false) ? 1 : 0)
 			+ ((IncentivizeOffCastWeapon ?? false) ? 1 : 0)
 			+ (IncentivizeOtherCastWeapon ? 1 : 0)
@@ -757,6 +773,7 @@ namespace FF1Lib
 			+ ((IncentivizeDefCastArmor ?? true) ? 1 : 0)
 			+ ((IncentivizeOffCastArmor ?? true) ? 1 : 0)
 			+ ((IncentivizeOtherCastArmor ?? true) ? 1 : 0)
+			+ ((IncentivizePowerRod ?? true) ? 1 : 0)
 			+ ((IncentivizeDefCastWeapon ?? true) ? 1 : 0)
 			+ ((IncentivizeOffCastWeapon ?? true) ? 1 : 0)
 			+ (IncentivizeOtherCastWeapon ? 1 : 0)
@@ -812,6 +829,7 @@ namespace FF1Lib
 			+ ((IncentivizeOffCastWeapon != null) ? (IncentivizeOffCastWeapon ?? false ? "Thor\U0001F528 " : "") : ("Thor?\U0001F528 "))
 			+ ((IncentivizeOpal != null) ? (IncentivizeOpal ?? false ? "Opal\U0001F48D " : "") : ("Opal?\U0001F48D "))
 			+ ((IncentivizeOtherCastArmor != null) ? (IncentivizeOtherCastArmor ?? false ? "Power\U0001F94A " : "") : ("Power?\U0001F94A "))
+			+ ((IncentivizePowerRod != null) ? (IncentivizePowerRod ?? false ? "PowerRod " : "") : ("PowerRod? "))
 			+ ((IncentivizeOffCastArmor != null) ? (IncentivizeOffCastArmor ?? false ? "Black\U0001F9E5 " : "") : ("Black?\U0001F9E5 "))
 			+ ((IncentivizeDefCastArmor != null) ? (IncentivizeDefCastArmor ?? false ? "White\U0001F455 " : "") : ("White?\U0001F455 "))
 			+ ((IncentivizeRibbon != null) ? (IncentivizeRibbon ?? false ? "Ribbon\U0001F380 " : "") : ("Ribbon?\U0001F380 "))
@@ -893,7 +911,13 @@ namespace FF1Lib
 			}
 
 			if (flags.ItemMagicMode == ItemMagicMode.Random) newflags.ItemMagicMode = (ItemMagicMode)rng.Between(0, 2);
-			if (flags.ItemMagicPool == ItemMagicPool.Random) newflags.ItemMagicPool = (ItemMagicPool)rng.Between(0, 3);
+			if (flags.ItemMagicPool == ItemMagicPool.Random) newflags.ItemMagicPool = (ItemMagicPool)rng.Between(0, 4);
+
+			if (flags.GuaranteedDefenseItem == GuaranteedDefenseItem.Random) newflags.GuaranteedDefenseItem = rng.Between(0, 1) > 0 ? GuaranteedDefenseItem.Any : GuaranteedDefenseItem.None;
+			if (flags.GuaranteedPowerItem == GuaranteedPowerItem.Random) newflags.GuaranteedPowerItem = rng.Between(0, 1) > 0 ? GuaranteedPowerItem.Any : GuaranteedPowerItem.None;
+
+			if (newflags.GuaranteedDefenseItem == GuaranteedDefenseItem.Any) newflags.GuaranteedDefenseItem = (GuaranteedDefenseItem)rng.Between(1, 3);
+			if (newflags.GuaranteedPowerItem == GuaranteedPowerItem.Any) newflags.GuaranteedPowerItem = (GuaranteedPowerItem)rng.Between(1, 3);
 
 			return newflags;
 		}
@@ -909,7 +933,7 @@ namespace FF1Lib
 		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
 		public bool EnemizerDontMakeNewScripts => (bool)EnemySkillsSpells & !((bool)BossSkillsOnly | (bool)EnemySkillsSpellsTiered);
 
-		public bool? TrappedChestsEnabled => (bool)TrappedChaos | (bool)TCMasaGuardian | (TCBetterTreasure == TCOptions.All | TCKeyItems == TCOptions.All | TCShards == TCOptions.All) | ((TCBetterTreasure == TCOptions.Pooled | TCKeyItems == TCOptions.Pooled | TCShards == TCOptions.Pooled) & TCChestCount > 0);
+		public bool? TrappedChestsEnabled => (bool)TrappedChaos | (bool)TCMasaGuardian | (TCBetterTreasure == TCOptions.All | TCKeyItems == TCOptions.All | TCShards == TCOptions.All) | ((TCBetterTreasure == TCOptions.Pooled | TCKeyItems == TCOptions.Pooled | TCShards == TCOptions.Pooled) & TCChestCount > 0) | (TCChestCount > 0);
 
 		public static string EncodeFlagsText(Flags flags)
 		{

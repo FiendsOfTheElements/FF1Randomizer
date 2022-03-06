@@ -74,11 +74,14 @@ namespace FF1Lib
 		protected ItemShopSlot _caravanItemLocation;
 		protected OverworldMap _overworldMap;
 		protected ISanityChecker _checker;
+		protected FF1Rom _rom;
 
 		protected abstract ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx);
 
 		public List<IRewardSource> PlaceSaneItems(MT19337 rng, FF1Rom rom)
 		{
+			_rom = rom;
+
 			var incentivePool = _incentivesData.IncentiveItems.Where(x => _allTreasures.Contains(x)).ToList();
 			var forcedItems = _incentivesData.ForcedItemPlacements.ToList();
 
@@ -92,10 +95,16 @@ namespace FF1Lib
 
 			var treasurePool = _allTreasures.ToList();
 
-			if ((bool)_flags.GuaranteedRuseItem && !(_flags.ItemMagicMode == ItemMagicMode.None))
+			if (_flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(_flags.ItemMagicMode == ItemMagicMode.None) && !incentivePool.Contains(Item.PowerRod))
 			{
 				unincentivizedQuestItems.Add(Item.PowerRod);
 			}
+
+			if (_flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(_flags.ItemMagicMode == ItemMagicMode.None) && !incentivePool.Contains(Item.PowerGauntlets))
+			{
+				unincentivizedQuestItems.Add(Item.PowerGauntlets);
+			}
+
 			foreach (var incentive in incentivePool)
 			{
 				treasurePool.Remove(incentive);
@@ -164,42 +173,13 @@ namespace FF1Lib
 				{
 					//dont make shards jingle that'd be annoying
 					//dont make free items that get replaced, aka cabins, jingle
-					if (placedItem is TreasureChest && placedItem.Item != Item.Shard && placedItem.Item != ReplacementItem && !((bool)_flags.GuaranteedRuseItem && placedItem.Item == Item.PowerRod && !(_flags.ItemMagicMode == ItemMagicMode.None)))
+					if (placedItem is TreasureChest && placedItem.Item != Item.Shard &&
+						placedItem.Item != ReplacementItem)
 					{
 						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { 0x01 });
 					}
 				}
-			}
-
-			if (_flags.Spoilers || Debugger.IsAttached)
-			{
-				// Output to the console only.
-				Utilities.WriteSpoilerLine($"ItemPlacement::PlaceSaneItems required {_sanityCounter} iterations.", true);
-
-				// Start of the item spoiler log output.
-				Utilities.WriteSpoilerLine("Item     Entrance  ->  Floor  ->  Source                             Requirements");
-				Utilities.WriteSpoilerLine("----------------------------------------------------------------------------------------------------");
-
-				var sorted = placedItems.Where(item => item.Item != Item.Shard).ToList();
-				sorted.Sort((IRewardSource lhs, IRewardSource rhs) => lhs.Item.ToString().CompareTo(rhs.Item.ToString()));
-				sorted.ForEach(item =>
-				{
-					if (_overworldMap.FullLocationRequirements.TryGetValue(item.MapLocation, out var flr))
-					{
-						var overworldLocation = item.MapLocation.ToString();
-						if (_overworldMap.OverriddenOverworldLocations != null && _overworldMap.OverriddenOverworldLocations.TryGetValue(item.MapLocation, out var overriden))
-						{
-							overworldLocation = overriden.ToString();
-						}
-
-						var itemStr = item.Item.ToString().PadRight(9);
-						var locStr = $"{overworldLocation} -> {item.MapLocation} -> {item.Name} ".PadRight(60);
-						var changes = $"({String.Join(" OR ", flr.Item1.Select(mapChange => mapChange.ToString()).ToArray())})";
-						var reqs = flr.Item2.ToString().CompareTo("None") == 0 ? "" : $" AND {flr.Item2.ToString()}";
-						Utilities.WriteSpoilerLine($"{itemStr}{locStr}{changes}{reqs}");
-					}
-				});
-			}
+			}			
 
 			// 8. Place all remaining unincentivized treasures or incentivized non-quest items that weren't placed
 			var itemLocationPool = _incentivesData.AllValidItemLocations.ToList();

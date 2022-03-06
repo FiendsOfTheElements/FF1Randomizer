@@ -16,10 +16,15 @@ namespace FF1Lib.Sanity
 
 		public List<SCEntrance> Entrances { get; private set; }
 
+		public List<SCArea> ChildAreas { get; private set; }
+
+		public bool IsRoot { get; set; } = true;
+
 		public SCArea(SCMap _map, List<SCEntrance> _entrances)
 		{
 			Map = _map;
 			Entrances = _entrances;
+			ChildAreas = new List<SCArea>();
 
 			ComposeArea();
 		}

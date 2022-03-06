@@ -45,7 +45,7 @@ namespace FF1Lib
 		ItemShopSlot declaredShopSlot;
 
 		OwLocationData locations;
-		ShipLocations shiplocations;
+		public ShipLocations Shiplocations { get; private set; }
 
 		int maxqueue = 0;
 
@@ -61,7 +61,7 @@ namespace FF1Lib
 			locations = new OwLocationData(rom);
 			locations.LoadData();
 
-			shiplocations = _shiplocations;
+			Shiplocations = _shiplocations;
 
 			allTreasures = ItemLocations.AllTreasures.Select(r => r as TreasureChest).Where(r => r != null).ToDictionary(r => (byte)(r.Address - 0x3100));
 			allQuestNpcs = ItemLocations.AllNPCItemLocations.Select(r => r as MapObject).Where(r => r != null).ToDictionary(r => r.ObjectId);
@@ -433,7 +433,7 @@ namespace FF1Lib
 
 		private void SetShipDock(byte dungeonIndex)
 		{
-			var coords = shiplocations.SetShipLocation(dungeonIndex);
+			var coords = Shiplocations.SetShipLocation(dungeonIndex);
 
 			SetShipDock(coords.OwLeft);
 			SetShipDock(coords.OwRight);
