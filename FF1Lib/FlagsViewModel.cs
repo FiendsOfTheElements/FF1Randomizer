@@ -4383,6 +4383,15 @@ namespace FF1Lib
 			}
 		}
 
+		public bool FreeClinic
+		{
+			get => Flags.FreeClinic;
+			set
+			{
+				Flags.FreeClinic = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeClinic"));
+			}
+		}
 		public bool Etherizer
 		{
 			get => Flags.Etherizer;

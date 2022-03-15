@@ -1720,6 +1720,12 @@
 		"description": "Houses completely restore the party's HP. Unchecked, using a HOUSE restores 120HP to each Light Warrior (the vanilla behavior)."
 	},
 	{
+		"Id": "freeClinicCheckBox",
+		"title": "Clinics don't cost money",
+		"screenshot": "free-clinic.png",
+		"description": "All clinics revive your characters for free."
+	},
+	{
 		"Id": "etherizerCheckBox",
 		"title": "Turn Shelters into Ethers",
 		"screenshot": "etherizerCheckBox.png",

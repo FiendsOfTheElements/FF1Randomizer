@@ -973,6 +973,18 @@ namespace FF1Lib
 				ItemsText[(int)Item.Ribbon] = ItemsText[(int)Item.Ribbon].Remove(7);
 			    }
 
+			if (flags.FreeClinic)
+			{
+				var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
+				for (int i = (int)ShopType.Clinic; i < (int)ShopType.Inn + ShopSectionSize; i++)
+				{
+					if (pointers[i] != ShopNullPointer)
+					{
+						Put(ShopPointerBase + pointers[i], Blob.FromHex("0000"));
+					}
+				}
+			}
+
 			if (flags.Etherizer)
 			{
 				Etherizer();
