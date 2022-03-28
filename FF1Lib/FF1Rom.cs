@@ -1198,9 +1198,9 @@ namespace FF1Lib
 				DisableSpellCastScreenFlash();
 			}
 
-			if (preferences.DisableRespondRate)
+			if (preferences.LockRespondRate)
 			{
-				DisableRespondRate();
+				LockRespondRate();
 			}
 
 			if (preferences.SpriteSheet != null) {

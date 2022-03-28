@@ -178,7 +178,7 @@ namespace FF1Lib
 			Put(0x32051, Blob.FromHex("AD446D"));
 		}
 
-		public void DisableRespondRate()
+		public void LockRespondRate()
 		{
 			// original title screen behavior
 			/*

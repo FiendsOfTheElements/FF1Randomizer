@@ -2877,13 +2877,13 @@ namespace FF1Lib
 			}
 		}
 
-		public bool DisableRespondRate
+		public bool LockRespondRate
 		{
-			get => Preferences.DisableRespondRate;
+			get => Preferences.LockRespondRate;
 			set
 			{
-				Preferences.DisableRespondRate = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableRespondRate"));
+				Preferences.LockRespondRate = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LockRespondRate"));
 			}
 		}
 
