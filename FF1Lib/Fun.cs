@@ -178,6 +178,39 @@ namespace FF1Lib
 			Put(0x32051, Blob.FromHex("AD446D"));
 		}
 
+		public void DisableRespondRate()
+		{
+			// original title screen behavior
+			/*
+			C9 01     CMP #RIGHT              ; did they press Right?
+            D0 04     BNE @Left               ;  if not, they must've pressed Left
+            A9 01     LDA #1                  ; add +1 to rate if right
+            D0        BNE :+
+            02        @Left:
+            A9 FF     LDA #-1                 ; or -1 if left
+            18    :   CLC
+            65 FA     ADC respondrate         ; add/subtract 1 from respond rate
+            29 07     AND #7                  ; mask to wrap it from 0<->7
+            85 FA     STA respondrate
+			 */
+
+			// MODIFIED behavior
+			/*
+			C9 01     CMP #RIGHT              ; did they press Right?
+            D0 04     BNE @Left               ;  if not, they must've pressed Left
+            A9 00     LDA #0                  ; MODIFIED (adds nothing instead of 1)
+            D0        BNE :+
+            02        @Left:
+            A9 00     LDA #0                  ; MODIFIED (adds nothing instead of -1)
+            18    :   CLC
+            65 FA     ADC respondrate         ; add/subtract 1 from respond rate
+            29 07     AND #7                  ; mask to wrap it from 0<->7
+            85 FA     STA respondrate
+			 */
+
+			Put(0x3A1FD, Blob.FromHex("C901D004A900D002A9001865FA290785FA"));
+		}
+
 		public void ShuffleLeader(MT19337 rng)
 		{
 			byte leader = (byte)(rng.Between(0, 3) << 6);

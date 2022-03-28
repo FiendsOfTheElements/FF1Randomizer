@@ -2876,6 +2876,17 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableSpellCastFlash"));
 			}
 		}
+
+		public bool DisableRespondRate
+		{
+			get => Preferences.DisableRespondRate;
+			set
+			{
+				Preferences.DisableRespondRate = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableRespondRate"));
+			}
+		}
+
 		public bool NoEmptyScripts
 		{
 			get => Flags.NoEmptyScripts;
