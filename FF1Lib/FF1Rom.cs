@@ -1198,6 +1198,11 @@ namespace FF1Lib
 				DisableSpellCastScreenFlash();
 			}
 
+			if (preferences.LockRespondRate)
+			{
+				LockRespondRate();
+			}
+
 			if (preferences.SpriteSheet != null) {
 			    using (var stream = new MemoryStream(Convert.FromBase64String(preferences.SpriteSheet)))
 			    {
