@@ -648,6 +648,8 @@ namespace FF1Lib
 		[IntegerFlag(0, 9)]
 		public int NinjaMaxMP { get; set; } = 4;
 
+		public MpGainOnMaxGain MpGainOnMaxGainMode { get; set; } = MpGainOnMaxGain.None;
+
 		public LockHitMode LockMode { get; set; } = LockHitMode.Vanilla;
 
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;

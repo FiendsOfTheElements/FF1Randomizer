@@ -1100,6 +1100,7 @@ namespace FF1Lib
 			SetupClassAltXp();
 
 			ClassData.SetMPMax(flags);
+			ClassData.SetMpGainOnMaxGain(flags, this);
 			ClassData.RaiseThiefHitRate(flags);
 			ClassData.BuffThiefAGI(flags);
 			ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);

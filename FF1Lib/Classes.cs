@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.CompilerServices;
+using System.ComponentModel;
 
 namespace FF1Lib
 {
@@ -44,6 +45,19 @@ namespace FF1Lib
 		Black = 19,
 		Charges = 20,
 	}
+
+	public enum MpGainOnMaxGain
+	{
+		[Description("None")]
+		None = 0,
+		[Description("Promoted Classes Only")]
+		Promoted,
+		[Description("All Classes")]
+		All,
+		[Description("Blessed Classes Only")]
+		Blursed
+	}
+
 	public class GameClasses
 	{
 		private List<ClassData> _classes;
@@ -55,6 +69,7 @@ namespace FF1Lib
 		const int lut_LvlUpMagDefBonus = 0x6CA65;
 		const int lut_InnateResist = 0x6D400;
 		const int lut_MaxMP = 0x6C902;
+		const int lut_MpGainOnMaxMpGainClasses = 0x6D830;
 		const int StartingStatsOffset = 0x3040;
 		const int NewLevelUpDataOffset = 0x6CDA9;
 
@@ -92,8 +107,10 @@ namespace FF1Lib
 			NoPromoMagic = 31,
 			LockpickingLevel = 32,
 			InnateResist = 33,
-			BonusXp = 34
+			BonusXp = 34,
+			MpGainOnMaxMpGain = 35
 		}
+
 		public class BonusMalus
 		{
 			public List<Item> Equipment { get; set; }
@@ -252,6 +269,27 @@ namespace FF1Lib
 			_classes[(int)Classes.BlackWizard].MaxSpC = (byte)flags.BlackMageMaxMP;
 			_classes[(int)Classes.Knight].MaxSpC = (byte)flags.KnightMaxMP;
 			_classes[(int)Classes.Ninja].MaxSpC = (byte)flags.NinjaMaxMP;
+		}
+
+		public void SetMpGainOnMaxGain(Flags flags, FF1Rom rom)
+		{
+			if(flags.MpGainOnMaxGainMode != MpGainOnMaxGain.None)
+			{
+				//jump from old mp up routine to new one at 1B:983C
+				rom.PutInBank(0x1B, 0x88D7, Blob.FromHex("4C3C98"));
+				
+				string classMpUpTable = "000000000000000000000000";
+				if (flags.MpGainOnMaxGainMode == MpGainOnMaxGain.Promoted)
+				{
+					classMpUpTable = "000000000000010101010101";
+				} else if(flags.MpGainOnMaxGainMode == MpGainOnMaxGain.All)
+				{
+					classMpUpTable = "010101010101010101010101";
+				}
+
+				//blursed will get handled by blursed classes.
+				rom.PutInBank(0x1B, 0x9830, Blob.FromHex(classMpUpTable+ "AE8E68A001B182A02848B184DD02899005684A4C7398684A901D48B1841869019184BD3098F00F984838E908A8B184186901918468A868C8C030D0CD4C1C89"));
+			}
 		}
 
 		public void Randomize(Flags flags, MT19337 rng, List<string> olditemnames, ItemNames itemnames, FF1Rom rom)
@@ -629,6 +667,11 @@ namespace FF1Lib
 				bonusNormal.Add(new BonusMalus(BonusMalusAction.BonusXp, "+50% XP", mod: 150, Classes: new List<Classes> { Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
 			}
 
+			if (flags.MpGainOnMaxGainMode == MpGainOnMaxGain.Blursed)
+			{
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.MpGainOnMaxMpGain, "Max+Mp+", Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
+			}
+
 			var assignedBonusMalus = new List<List<BonusMalus>> { new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>() };
 
 			// Shuffle bonuses and maluses
@@ -859,6 +902,10 @@ namespace FF1Lib
 						case BonusMalusAction.BonusXp:
 							double scale = bonusmalus.StatMod / 100.0;
 							rom.ScaleAltExp(scale, (FF1Rom.FF1Class)i);
+							break;
+						case BonusMalusAction.MpGainOnMaxMpGain:
+							rom.Put(lut_MpGainOnMaxMpGainClasses + i, Blob.FromHex("01"));
+							rom.Put(lut_MpGainOnMaxMpGainClasses + i + 6, Blob.FromHex("01"));
 							break;
 					}
 				}
