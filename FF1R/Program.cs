@@ -9,7 +9,8 @@
 	Subcommand("presets", typeof(Commands.Presets)),
 	 Subcommand("generate", typeof(Commands.Generate)),
 	 Subcommand("procgen", typeof(Commands.Procgen)),
-	 Subcommand("render", typeof(Commands.MapRender))]
+	 Subcommand("render", typeof(Commands.MapRender)),
+	 Subcommand("dump", typeof(Commands.DumpStats))]
 
 	class Program
 	{

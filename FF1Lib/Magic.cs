@@ -4,6 +4,8 @@ using RomUtilities;
 using System.ComponentModel;
 using System;
 using System.Reflection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace FF1Lib
 {
@@ -41,17 +43,191 @@ namespace FF1Lib
 		Any,
 	}
 
-	public struct MagicSpell
+	public enum SpellRoutine : byte
 	{
-		public byte Index;
-		public Blob Data;
-		public string Name;
-		public byte TextPointer;
+		Damage = 0x01,
+		DamageUndead = 0x02,
+		Heal = 0x07,
+		CureAilment = 0x08,
+		FullHeal = 0x0F,
+		ArmorUp = 0x09,
+		DefElement = 0x0A,
+		Fast = 0x0C,
+		Sabr = 0x0D,
+		Lock = 0x0E,
+		Ruse = 0x10,
+		PowerWord = 0x12,
+		InflictStatus = 0x03,
+		Life = 0xF0,
+		Smoke = 0xF1
+	}
 
-		public override string ToString()
-		{
-			return Index.ToString() + ": " + Name;
+	public enum SpellTargeting : byte
+	{
+		Any = 0xFF,
+		AllEnemies = 0x01,
+		OneEnemy = 0x02,
+		Self = 0x04,
+		AllCharacters = 0x08,
+		OneCharacters = 0x10
+	}
+
+	public enum SpellElement : byte
+	{
+		Any = 0b10101010,
+		None = 0x00,
+		Earth = 0b10000000,
+		Lightning = 0b01000000,
+		Ice = 0b00100000,
+		Fire = 0b00010000,
+		Death =	0b00001000,
+		Time = 0b00000100,
+		Poison = 0b00000010,
+		Status = 0b00000001,
+		All = 0xFF
+	}
+
+	public enum SpellStatus : byte
+	{
+		Any = 0xFF,
+		Confuse = 0b10000000,
+		Mute = 0b01000000,
+		Dark = 0b00001000,
+		Stun = 0b00010000,
+		Sleep = 0b00100000,
+		Stone = 0b00000010,
+		Death = 0b00000001,
+		Poison = 0b00000100
+	}
+
+	[JsonObject(MemberSerialization.OptIn)]
+	public class MagicSpell
+	{
+	    [JsonProperty]
+	    public byte Index;
+
+	    public Blob Data;
+
+	    [JsonProperty]
+	    public string Name;
+
+	    public byte TextPointer;
+
+	    [JsonProperty]
+	    public byte accuracy = 0;
+
+	    [JsonProperty]
+	    [JsonConverter(typeof(StringEnumConverter))]
+	    public SpellElement elem = 0;
+
+	    [JsonProperty]
+	    [JsonConverter(typeof(StringEnumConverter))]
+	    public SpellTargeting targeting = 0;
+
+	    [JsonProperty]
+	    [JsonConverter(typeof(StringEnumConverter))]
+	    public SpellRoutine routine = 0;
+
+	    [JsonProperty]
+	    public byte effect = 0;
+
+	    public bool ShouldSerializeeffect() {
+		return routine == SpellRoutine.Damage || routine == SpellRoutine.DamageUndead || routine == SpellRoutine.Heal ||
+		    routine == SpellRoutine.ArmorUp || routine == SpellRoutine.Sabr || routine == SpellRoutine.Ruse;
+	    }
+
+	    [JsonProperty]
+	    [JsonConverter(typeof(StringEnumConverter))]
+	    public SpellStatus status {
+		get { return (SpellStatus)effect; }
+		set { effect = (byte)value; }
+	    }
+	    public bool ShouldSerializestatus() {
+		return routine == SpellRoutine.CureAilment || routine == SpellRoutine.InflictStatus;
+	    }
+
+	    [JsonProperty]
+	    public string defelement {
+		get {
+		    var sp = new Dictionary<SpellElement, string> {
+			{SpellElement.Earth, "Earth"},
+			{SpellElement.Lightning, "Lightning"},
+			{SpellElement.Ice, "Ice"},
+			{SpellElement.Fire, "Fire"},
+			{SpellElement.Death, "Death"},
+			{SpellElement.Time, "Time"},
+			{SpellElement.Poison, "Poison"},
+			{SpellElement.Status, "Status"}
+		    };
+		    string ret = "";
+		    foreach (var kv in sp) {
+			if ((effect & (byte)kv.Key) != 0) {
+			    if (ret.Length > 0) {
+				ret += ",";
+			    }
+			    ret += kv.Value;
+			}
+		    }
+		    return ret;
 		}
+	    }
+	    public bool ShouldSerializedefelement() {
+		return routine == SpellRoutine.DefElement;
+	    }
+
+	    [JsonProperty]
+	    public byte gfx = 0;
+
+	    [JsonProperty]
+	    public byte palette = 0;
+
+	    public MagicSpell(byte _Index,
+			      Blob _Data,
+			      string _Name,
+			      byte _TextPointer)
+	    {
+		Index = _Index;
+		Data = _Data;
+		Name = _Name;
+		TextPointer = _TextPointer;
+		this.decompressData(Data);
+	    }
+
+	    public byte[] compressData()
+	    {
+		Data[0] = accuracy;
+		Data[1] = effect;
+		Data[2] = (byte)elem;
+		Data[3] = (byte)targeting;
+		Data[4] = (byte)routine;
+		Data[5] = gfx;
+		Data[6] = palette;
+		Data[7] = 0x00; // last byte is always 00
+		return Data;
+	    }
+
+	    public void writeData(FF1Rom rom) {
+		compressData();
+		rom.Put(FF1Rom.MagicOffset + FF1Rom.MagicSize * Index, Data);
+		rom.ItemsText[176 + Index] = Name;
+	    }
+
+	    public void decompressData(byte[] data)
+	    {
+		accuracy = data[0];
+		effect = data[1];
+		elem = (SpellElement)data[2];
+		targeting = (SpellTargeting)data[3];
+		routine = (SpellRoutine)data[4];
+		gfx = data[5];
+		palette = data[6];
+	    }
+
+
+	    public override string ToString()
+	    {
+		return Index.ToString() + ": " + Name;
+	    }
 	}
 
 	public partial class FF1Rom : NesRom
@@ -543,14 +719,7 @@ namespace FF1Lib
 			var spells = Get(MagicOffset, MagicSize * MagicCount).Chunk(MagicSize);
 			var pointers = Get(MagicTextPointersOffset, MagicCount);
 
-			return spells.Select((spell, i) => new MagicSpell
-			{
-				Index = (byte)i,
-				Data = spell,
-				Name = ItemsText[176 + i],
-				TextPointer = pointers[i]
-			})
-			.ToList();
+			return spells.Select((spell, i) => new MagicSpell((byte)i, spell, ItemsText[176 + i], pointers[i])).ToList();
 		}
 
 		public void PutSpellNames(List<MagicSpell> spells)
