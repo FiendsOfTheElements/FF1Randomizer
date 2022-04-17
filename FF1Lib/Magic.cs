@@ -100,10 +100,26 @@ namespace FF1Lib
 		Poison = 0b00000100
 	}
 
+	public enum OOBSpellRoutine : byte {
+	    CURE = 0,
+	    CUR2 = 1,
+	    CUR3 = 2,
+	    CUR4 = 3,
+	    HEAL = 4,
+	    HEL3 = 5,
+	    HEL2 = 6,
+	    PURE = 7,
+	    LIFE = 8,
+	    LIF2 = 9,
+	    WARP = 10,
+	    SOFT = 11,
+	    EXIT = 12,
+	    None = 255
+	}
+
 	[JsonObject(MemberSerialization.OptIn)]
 	public class MagicSpell
 	{
-	    [JsonProperty]
 	    public byte Index;
 
 	    public Blob Data;
@@ -111,7 +127,11 @@ namespace FF1Lib
 	    [JsonProperty]
 	    public string Name;
 
+	    [JsonProperty]
 	    public byte TextPointer;
+
+	    [JsonProperty]
+	    public string Message;
 
 	    [JsonProperty]
 	    public byte accuracy = 0;
@@ -181,15 +201,79 @@ namespace FF1Lib
 	    [JsonProperty]
 	    public byte palette = 0;
 
+	    void updateMagicIndex(byte level, byte slot, string type) {
+		this.Index = (byte)((level-1) * 8 + (slot-1));
+		if (type == "black") {
+		    this.Index += 4;
+		}
+	    }
+
+	    [JsonProperty]
+	    public byte Level {
+		get {
+		    return (byte)((Index / 8)+1);
+		}
+		set {
+		    this.updateMagicIndex(value, Slot, MagicType);
+		}
+	    }
+
+	    [JsonProperty]
+	    public byte Slot {
+		get {
+		    return (byte)((Index % 4) + 1);
+		}
+		set {
+		    this.updateMagicIndex(Level, value, MagicType);
+		}
+	    }
+
+	    [JsonProperty]
+	    public string MagicType {
+		get {
+		    if (Index % 8 < 4) {
+			return "white";
+		    }
+		    return "black";
+		}
+		set {
+		    this.updateMagicIndex(Level, Slot, value);
+		}
+	    }
+
+	    [JsonProperty]
+	    [JsonConverter(typeof(StringEnumConverter))]
+	    public OOBSpellRoutine oobSpellRoutine = OOBSpellRoutine.None;
+
+	    List<Classes> _permissions = new();
+
+	    [JsonProperty]
+	    public string permissions {
+		get {
+		    string ret = "";
+		    foreach (var c in _permissions) {
+			if (ret != "") {
+			    ret += ",";
+			}
+			ret += Enum.GetName(c);
+		    }
+		    return ret;
+		}
+	    }
+
 	    public MagicSpell(byte _Index,
 			      Blob _Data,
 			      string _Name,
-			      byte _TextPointer)
+			      byte _TextPointer,
+			      string _Message,
+			      List<Classes> __permissions)
 	    {
 		Index = _Index;
 		Data = _Data;
 		Name = _Name;
 		TextPointer = _TextPointer;
+		Message = _Message;
+		_permissions = __permissions;
 		this.decompressData(Data);
 	    }
 
@@ -222,7 +306,6 @@ namespace FF1Lib
 		gfx = data[5];
 		palette = data[6];
 	    }
-
 
 	    public override string ToString()
 	    {
@@ -719,7 +802,79 @@ namespace FF1Lib
 			var spells = Get(MagicOffset, MagicSize * MagicCount).Chunk(MagicSize);
 			var pointers = Get(MagicTextPointersOffset, MagicCount);
 
-			return spells.Select((spell, i) => new MagicSpell((byte)i, spell, ItemsText[176 + i], pointers[i])).ToList();
+			var battleMessages = new BattleMessages(this);
+
+			var spellsList = spells.Select((spell, i) => new MagicSpell((byte)i, spell, ItemsText[176 + i], pointers[i],
+										    pointers[i] > 0 ? battleMessages[pointers[i]-1] : "",
+										    SpellPermissions.PermissionsFor((SpellSlots)i))
+			).ToList();
+
+			for (int i = 0; i < MagicOutOfBattleCount; i++) {
+			    var spellIndex = Data[MagicOutOfBattleOffset  + i*MagicOutOfBattleSize] - 0xB0;
+			    spellsList[spellIndex].oobSpellRoutine = (OOBSpellRoutine)i;
+			}
+			return spellsList;
+		}
+
+		void PutSpells(FF1Rom rom, List<MagicSpell> spellsList) {
+		    foreach (var sp in spellsList) {
+			sp.writeData(rom);
+
+			if (sp.oobSpellRoutine != OOBSpellRoutine.None) {
+			    continue;
+			}
+
+			// update the out of battle magic code, it's a simple hardcoded table
+			// that compares the spell index and jumps to the desired routine
+			Data[MagicOutOfBattleOffset + (MagicOutOfBattleSize * (int)sp.oobSpellRoutine)] = (byte)(sp.Index + 0xB0);
+
+			// update the effectivity of healing spells
+			byte mask = 1;
+			while (sp.effect >= mask) {
+			    mask = (byte)(mask << 1);
+			}
+			mask = (byte)(mask >> 1);
+			mask = (byte)(mask - 1);
+
+			switch (sp.oobSpellRoutine) {
+			    case OOBSpellRoutine.CURE:
+				// AND #mask
+				// ADC #effect
+				Put(0x3AF5E, new byte[] { 0x29, mask, 0x69, sp.effect }); // changing the oob code for CURE to reflect new values
+				break;
+			    case OOBSpellRoutine.CUR2:
+				Put(0x3AF66, new byte[] { 0x29, mask, 0x69, sp.effect }); // changing the oob code for CUR2 to reflect new values
+				break;
+			    case OOBSpellRoutine.CUR3:
+				Put(0x3AF6E, new byte[] { 0x29, mask, 0x69, sp.effect }); // changing the oob code for CUR3 to reflect new values
+				break;
+
+			    case OOBSpellRoutine.HEAL:
+				// AND #mask
+				// CLC
+				// ADC #effect
+				Put(0x3AFDB, new byte[] { 0x29, mask, 0x18, 0x69, sp.effect }); // changing the oob code for HEAL to reflect the above effect
+				break;
+			    case OOBSpellRoutine.HEL2:
+				Put(0x3AFE4, new byte[] { 0x29, mask, 0x18, 0x69, sp.effect }); // changing the oob code for HEL2 to reflect the above effect
+				break;
+			    case OOBSpellRoutine.HEL3:
+				Put(0x3AFED, new byte[] { 0x29, mask, 0x18, 0x69, sp.effect }); // changing the oob code for HEL3 to reflect the above effect
+				break;
+			    default:
+				break;
+			}
+		    }
+
+		    // Fix enemy spell pointers to point to where the spells are now.
+		    // ???
+
+		    // Fix weapon and armor spell pointers to point to where the spells are now.
+		    // ???
+
+		    // Confused enemies are supposed to cast FIRE, so figure out where FIRE ended up.
+		    //var newFireSpellIndex = shuffledSpells.FindIndex(spell => spell.Data == magicSpells[FireSpellIndex].Data);
+		    //Put(ConfusedSpellIndexOffset, new[] { (byte)newFireSpellIndex });
 		}
 
 		public void PutSpellNames(List<MagicSpell> spells)
