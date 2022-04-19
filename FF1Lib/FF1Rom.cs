@@ -1661,5 +1661,40 @@ namespace FF1Lib
 			Put(BattleRngOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());
 		}
 
+		public string SpoilBlursings()
+		{
+			string blursetext = "";
+			List<string> classlist = new() { "Fighter", "Thief", "Black Belt", "Red Mage", "White Mage", "Black Mage" };
+			for (int i = 0; i < 6; i++)
+			{
+				var pointer = GetFromBank(0x1E, 0x8950 + (i * 2), 2).ToUShorts();
+				var endpointer = GetFromBank(0x1E, 0x8950 + ((i+1) * 2), 2).ToUShorts();
+
+				var temptext = FF1Text.BytesToText(GetFromBank(0x1E, pointer[0], endpointer[0] - pointer[0])).Split("\n").ToList();
+
+				temptext.RemoveAll(x => x == "");
+
+				for (int j = 0; j < temptext.Count; j++)
+				{
+					temptext[j] = temptext[j].Replace("\n", "");
+					temptext[j] = temptext[j].Replace("@S", "Sword");
+					temptext[j] = temptext[j].Replace("@H", "Hammer");
+					temptext[j] = temptext[j].Replace("@K", "Knife");
+					temptext[j] = temptext[j].Replace("@X", "Axe");
+					temptext[j] = temptext[j].Replace("@F", "Staff");
+					temptext[j] = temptext[j].Replace("@N", "Nunchuks");
+					temptext[j] = temptext[j].Replace("@A", "Armor");
+					temptext[j] = temptext[j].Replace("@s", "Shield");
+					temptext[j] = temptext[j].Replace("@h", "Helmet");
+					temptext[j] = temptext[j].Replace("@G", "Gauntlet");
+					temptext[j] = temptext[j].Replace("@B", "Bracelet");
+					temptext[j] = temptext[j].Replace("@T", "Shirt");
+				}
+				
+				blursetext += classlist[i] + "\n" + "BONUS" + "\n" + String.Join("\n", temptext.ToArray()) + "\n\n";
+			}
+
+			return blursetext;
+		}
 	}
 }
