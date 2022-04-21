@@ -22,7 +22,17 @@ namespace FF1R.Commands
 		    rom.LoadSharedDataTables();
 		    var allSpells = rom.GetSpells();
 		    Console.WriteLine(JsonConvert.SerializeObject(allSpells, Formatting.Indented));
+
+		    var allEnemies = rom.GetEnemies();
+		    Console.WriteLine(JsonConvert.SerializeObject(allEnemies, Formatting.Indented));
+
+		    //var allSkills = rom.GetEnemySkills();
+		    //Console.WriteLine(JsonConvert.SerializeObject(allSkills, Formatting.Indented));
+
+		    //var allScripts = rom.GetEnemyScripts();
+		    //Console.WriteLine(JsonConvert.SerializeObject(allScripts, Formatting.Indented));
 		    return 0;
+
 		}
 	}
 }

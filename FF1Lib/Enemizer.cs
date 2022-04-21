@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RomUtilities;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace FF1Lib
 {
@@ -596,47 +598,131 @@ namespace FF1Lib
 
 		public class EnemyInfo
 		{
+		        public string name;
 			public int exp;
 			public int gp;
 			public int hp;
 			public int morale;
+
+		    [JsonIgnoreAttribute]
 			public byte AIscript;
+
+
+		    public EnemyScriptInfo spellSkillScript {
+			get {
+			    if (AIscript == 0xff) {
+				return null;
+			    }
+			    return allAIScripts[AIscript];
+			}
+		    }
 			public int agility;
 			public int absorb;
 			public int num_hits;
 			public int accuracy;
 			public int damage;
 			public int critrate;
+
+		    [JsonIgnoreAttribute]
 			public byte atk_elem;
+
+		    [JsonConverter(typeof(StringEnumConverter))]
+		    public SpellElement AttackElement {
+			get {
+			    return (SpellElement)atk_elem;
+			}
+		    }
+
+		    [JsonIgnoreAttribute]
 			public byte atk_ailment;
+
+
+		    [JsonConverter(typeof(StringEnumConverter))]
+		    public SpellStatus AttackAilment {
+			get {
+			    return (SpellStatus)atk_ailment;
+			}
+		    }
+
+		    [JsonIgnoreAttribute]
 			public byte monster_type;
+
+		    [JsonConverter(typeof(StringEnumConverter))]
+		    public MonsterType MonsterType {
+			get {
+			    return (MonsterType)monster_type;
+			}
+		    }
+
 			public int mdef;
+
+		    [JsonIgnoreAttribute]
 			public byte elem_weakness;
+
+		    string SpellElementFlags(byte se) {
+			var each = new SpellElement[] { SpellElement.Status, SpellElement.Poison, SpellElement.Time, SpellElement.Death, SpellElement.Fire, SpellElement.Ice, SpellElement.Lightning, SpellElement.Earth};
+			var ret = "";
+			foreach (var e in each) {
+			    if (((int)e & (int)se) != 0) {
+				if (ret != "") {
+				    ret += ",";
+				}
+				ret += Enum.GetName(e);
+			    }
+			}
+			return ret;
+		    }
+
+		    public string ElementalWeakness {
+			get {
+			    return SpellElementFlags(elem_weakness);
+			}
+		    }
+
+		    [JsonIgnoreAttribute]
 			public byte elem_resist;
+
+		    public string ElementalResist {
+			get {
+			    return SpellElementFlags(elem_resist);
+			}
+		    }
+
+		    [JsonIgnoreAttribute]
 			public int tier; // enemy's tier rating, used by Enemizer to determine stats and Formation Generator to enforce certain placement rules
+		    [JsonIgnoreAttribute]
 			public int skilltier = 0;
+		    [JsonIgnoreAttribute]
 			public byte image; // the image used by this image, of the 52 unique monster images available to normal enemies (does not include fiends or chaos).
+		    [JsonIgnoreAttribute]
 			public byte pal; // the palette normally used by this enemy.  this and the enemy's image are not stored in game data directly, rather they are implied by data in the formations
 
+		    [JsonIgnoreAttribute]
 			public byte tileset
 			{
 				get => (byte)((image >> 2) & 0b00001111);
 			}
 
+		    [JsonIgnoreAttribute]
 			public byte pic
 			{
 				get => (byte)(image & 0b00000011);
 			}
 
+		    [JsonIgnoreAttribute]
 			public bool Large
 			{
 				get => (image & 1) == 1;
 			}
 
+		    [JsonIgnoreAttribute]
 			public bool Small
 			{
 				get => (image & 1) == 0;
 			}
+
+		    [JsonIgnoreAttribute]
+		    public List<EnemyScriptInfo> allAIScripts;
 
 			public byte[] compressData() // compresses the information of the enemy into an array of bytes to be placed in the game code
 			{
@@ -688,12 +774,41 @@ namespace FF1Lib
 			}
 		}
 
+		[JsonObject(MemberSerialization.OptIn)]
 		public class EnemyScriptInfo
 		{
+		        [JsonProperty]
+			public byte index;
+
+		        [JsonProperty]
 			public byte spell_chance;
+
+		        [JsonProperty]
 			public byte skill_chance;
-			public byte[] spell_list = new byte[8];
+
+   		        public byte[] spell_list = new byte[8];
 			public byte[] skill_list = new byte[4];
+
+		        public List<MagicSpell> allGameSpells;
+		        public List<MagicSpell> allEnemySkills;
+
+		        [JsonProperty]
+			List<string> SpellList {
+			    get {
+				return spell_list.Select(s => s == 0xff ? "" : this.allGameSpells[s].Name).ToList();
+			    }
+			    set {
+			    }
+			}
+
+		        [JsonProperty]
+			List<string> SkillList {
+			    get {
+				return skill_list.Select(s => s == 0xff ? "" : this.allEnemySkills[s].Name).ToList();
+			    }
+			    set {
+			    }
+			}
 
 			public byte[] compressData()
 			{

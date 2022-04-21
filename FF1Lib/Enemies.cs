@@ -1343,6 +1343,44 @@ namespace FF1Lib
 		    es.elem = (byte)SpellElement.Status;
 		    Put(MagicOffset + MagicSize * 81, es.compressData());
 		}
+
+		public List<EnemyInfo> GetEnemies() {
+		    var enm = new List<EnemyInfo>();
+		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		    var scripts = GetEnemyScripts();
+		    for (int i = 0; i < EnemyCount; ++i)
+		    {
+			var enemy = new EnemyInfo();
+			enemy.decompressData(Get(EnemyOffset + i * EnemySize, EnemySize));
+			enemy.allAIScripts = scripts;
+			enemy.name = enemyText[i];
+			enm.Add(enemy);
+		    }
+		    return enm;
+		}
+
+
+		public List<EnemyScriptInfo> GetEnemyScripts() {
+		    var spells = this.GetSpells();
+		    var skills = this.GetEnemySkills();
+		    var scripts = new List<EnemyScriptInfo>();
+		    for (int i = 0; i < ScriptCount; ++i)
+		    {
+			var script = new EnemyScriptInfo();
+			script.index = (byte)i;
+			script.allGameSpells = spells;
+			script.allEnemySkills = skills;
+			script.decompressData(Get(ScriptOffset + i * ScriptSize, ScriptSize));
+			scripts.Add(script);
+		    }
+		    return scripts;
+		}
+
+		public List<MagicSpell> GetEnemySkills() {
+		    var skills = Get(EnemySkillOffset, MagicSize * EnemySkillCount).Chunk(MagicSize);
+		    var skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount);
+		    return skills.Select((spell, i) => new MagicSpell((byte)i, spell, skillNames[i], false)).ToList();
+		}
 	}
 
 	public enum ScriptTouchMultiplier
@@ -1368,4 +1406,5 @@ namespace FF1Lib
 		[Description("Random")]
 		Random,
 	}
+
 }
