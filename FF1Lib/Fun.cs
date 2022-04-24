@@ -211,6 +211,17 @@ namespace FF1Lib
 			Put(0x3A1FD, Blob.FromHex("C901D004A900D002A9001865FA290785FA"));
 		}
 
+		public void UninterruptedMusic()
+		{
+			// Full commented Assembly code can be seen in "UninterruptedMusic-QoLFlag.asm"
+			// These 3 replace existing code for processing the old Treasure Chest sound chime, jumping out to the new code
+			PutInBank(0x1F, 0xD62B, Blob.FromHex("A90F2003FE2065A0EAEA"));
+			PutInBank(0x1F, 0xD675, Blob.FromHex("A90F2003FE2073A04C88D6A90F2003FE4C00A0EA"));
+			PutInBank(0x1F, 0xD6C4, Blob.FromHex("4C80D6"));
+			// New code generating a new sound that no longer interrupts the music but otherwise works the same (plays for 27 frames)
+			PutInBank(0x0F, 0xA000, Blob.FromHex("A57DC90A905CC67DC963904CC97DB017C96A903FC96F9036C974902DC978F01FC97890204C3AA0A91B857EA97F8D0440A97F8D0540A9098D0740A91C4C5FA0A9088D0740A9E14C5FA0A9C94C5FA0A98E4C5FA0A9704C5FA0A932857D4C09C08D06404C09C0A57DC901F005A97E857D60A254864B60A57DC932F014A54BC981F00AA90F855720A1D64C75A0A57C854BA900857D60"));
+		}
+
 		public void ShuffleLeader(MT19337 rng)
 		{
 			byte leader = (byte)(rng.Between(0, 3) << 6);

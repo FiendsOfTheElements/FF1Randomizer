@@ -1203,6 +1203,11 @@ namespace FF1Lib
 				LockRespondRate();
 			}
 
+			if (preferences.UninterruptedMusic)
+			{
+				UninterruptedMusic();
+			}
+
 			if (preferences.SpriteSheet != null) {
 			    using (var stream = new MemoryStream(Convert.FromBase64String(preferences.SpriteSheet)))
 			    {

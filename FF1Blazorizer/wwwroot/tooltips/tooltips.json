@@ -2256,5 +2256,10 @@
 		"title": "Lock Respond Rate",
 		"screenshot": "lockRespondRateCheckBox.png",
 		"description": "Pressing LEFT or RIGHT on the Title Screen will not change the Respond Rate from its preferred value of 8.\nThis prevents accidental changes to the text speed during gameplay."
+	},
+	{
+		"Id": "uninterruptedMusicCheckBox",
+		"title": "Uninterrupted Music",
+		"description": "Modifies the chime that plays when opening standard treasure chests so music keeps playing instead of restarting after every chest. (Incentivized items playing the longer fanfare tune remain unchanged.)"
 	}
 ]

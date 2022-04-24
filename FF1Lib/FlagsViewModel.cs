@@ -2887,6 +2887,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool UninterruptedMusic
+		{
+			get => Preferences.UninterruptedMusic;
+			set
+			{
+				Preferences.UninterruptedMusic = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UninterruptedMusic"));
+			}
+		}
+
 		public bool NoEmptyScripts
 		{
 			get => Flags.NoEmptyScripts;
