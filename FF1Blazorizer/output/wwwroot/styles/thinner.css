@@ -1,0 +1,34 @@
+/* Main Content */
+
+#left-column{
+width: 25%;
+}
+
+.col1, .col2{
+float: none;
+width: 100%;
+min-width: 100%;
+margin-left: 0;
+}
+
+#right-column{
+max-width: 1280px;
+margin-left: 26%;
+}
+
+.ffr-tooltip {
+    width: 600px !important;
+}
+
+a.nav-link.nav-item.fun {
+    border-right: 4px solid #ffffff;
+    width: 125px;
+    display: inline-block;
+    margin-bottom: 7px;
+    border-bottom: inset;
+}
+
+a.nav-link.nav-item.fun.active {
+    border-image: url(../images/site-border-large.png) 4;
+    width: 125px;
+}

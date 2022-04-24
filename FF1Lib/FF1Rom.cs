@@ -973,18 +973,6 @@ namespace FF1Lib
 				ItemsText[(int)Item.Ribbon] = ItemsText[(int)Item.Ribbon].Remove(7);
 			    }
 
-			if (flags.FreeClinic)
-			{
-				var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
-				for (int i = (int)ShopType.Clinic; i < (int)ShopType.Inn + ShopSectionSize; i++)
-				{
-					if (pointers[i] != ShopNullPointer)
-					{
-						Put(ShopPointerBase + pointers[i], Blob.FromHex("0000"));
-					}
-				}
-			}
-
 			if (flags.Etherizer)
 			{
 				Etherizer();
@@ -1047,7 +1035,7 @@ namespace FF1Lib
 				ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
 			}
 
-			ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
+			ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.FreeClinic);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 			WriteMaps(maps);

@@ -82,7 +82,7 @@ namespace FF1Lib
 
 		// Scale is the geometric scale factor used with RNG.  Multiplier is where we make everything cheaper
 		// instead of enemies giving more gold, so we don't overflow.
-		public void ScalePrices(IScaleFlags flags, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation)
+		public void ScalePrices(IScaleFlags flags, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation, bool FreeClinic = false)
 		{
 			IEnumerable<Item> tmpExcludedItems = Array.Empty<Item>() ;
 			if (flags.ExcludeGoldFromScaling ?? false) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllGoldTreasure);
@@ -153,6 +153,7 @@ namespace FF1Lib
 					var priceValue = BitConverter.ToUInt16(priceBytes, 0);
 
 					priceValue = (ushort)RangeScale(priceValue / multiplier, scaleLow, scaleHigh, 1, rng);
+					if (FreeClinic && i < (int)ShopType.Clinic + ShopSectionSize) priceValue = 0;
 					priceBytes = BitConverter.GetBytes(priceValue);
 					Put(ShopPointerBase + pointers[i], priceBytes);
 				}
