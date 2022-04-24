@@ -889,11 +889,11 @@ namespace FF1Lib
 			return spellsList;
 		}
 
-		void PutSpells(FF1Rom rom, List<MagicSpell> spellsList) {
+		public void PutSpells(List<MagicSpell> spellsList) {
 		    foreach (var sp in spellsList) {
-			sp.writeData(rom);
+			sp.writeData(this);
 
-			if (sp.oobSpellRoutine != OOBSpellRoutine.None) {
+			if (sp.oobSpellRoutine == OOBSpellRoutine.None) {
 			    continue;
 			}
 
@@ -902,37 +902,37 @@ namespace FF1Lib
 			Data[MagicOutOfBattleOffset + (MagicOutOfBattleSize * (int)sp.oobSpellRoutine)] = (byte)(sp.Index + 0xB0);
 
 			// update the effectivity of healing spells
-			byte mask = 1;
+			int mask = 1;
 			while (sp.effect >= mask) {
-			    mask = (byte)(mask << 1);
+			    mask = mask << 1;
 			}
-			mask = (byte)(mask >> 1);
-			mask = (byte)(mask - 1);
+			mask = mask >> 1;
+			mask = mask - 1;
 
 			switch (sp.oobSpellRoutine) {
 			    case OOBSpellRoutine.CURE:
 				// AND #mask
 				// ADC #effect
-				Put(0x3AF5E, new byte[] { 0x29, mask, 0x69, sp.effect }); // changing the oob code for CURE to reflect new values
+				Put(0x3AF5E, new byte[] { 0x29, (byte)mask, 0x69, sp.effect }); // changing the oob code for CURE to reflect new values
 				break;
 			    case OOBSpellRoutine.CUR2:
-				Put(0x3AF66, new byte[] { 0x29, mask, 0x69, sp.effect }); // changing the oob code for CUR2 to reflect new values
+				Put(0x3AF66, new byte[] { 0x29, (byte)mask, 0x69, sp.effect }); // changing the oob code for CUR2 to reflect new values
 				break;
 			    case OOBSpellRoutine.CUR3:
-				Put(0x3AF6E, new byte[] { 0x29, mask, 0x69, sp.effect }); // changing the oob code for CUR3 to reflect new values
+				Put(0x3AF6E, new byte[] { 0x29, (byte)mask, 0x69, sp.effect }); // changing the oob code for CUR3 to reflect new values
 				break;
 
 			    case OOBSpellRoutine.HEAL:
 				// AND #mask
 				// CLC
 				// ADC #effect
-				Put(0x3AFDB, new byte[] { 0x29, mask, 0x18, 0x69, sp.effect }); // changing the oob code for HEAL to reflect the above effect
+				Put(0x3AFDB, new byte[] { 0x29, (byte)mask, 0x18, 0x69, sp.effect }); // changing the oob code for HEAL to reflect the above effect
 				break;
 			    case OOBSpellRoutine.HEL2:
-				Put(0x3AFE4, new byte[] { 0x29, mask, 0x18, 0x69, sp.effect }); // changing the oob code for HEL2 to reflect the above effect
+				Put(0x3AFE4, new byte[] { 0x29, (byte)mask, 0x18, 0x69, sp.effect }); // changing the oob code for HEL2 to reflect the above effect
 				break;
 			    case OOBSpellRoutine.HEL3:
-				Put(0x3AFED, new byte[] { 0x29, mask, 0x18, 0x69, sp.effect }); // changing the oob code for HEL3 to reflect the above effect
+				Put(0x3AFED, new byte[] { 0x29, (byte)mask, 0x18, 0x69, sp.effect }); // changing the oob code for HEL3 to reflect the above effect
 				break;
 			    default:
 				break;

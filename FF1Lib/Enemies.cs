@@ -1354,6 +1354,7 @@ namespace FF1Lib
 			enemy.decompressData(Get(EnemyOffset + i * EnemySize, EnemySize));
 			enemy.allAIScripts = scripts;
 			enemy.name = enemyText[i];
+			enemy.index = i;
 			enm.Add(enemy);
 		    }
 		    return enm;

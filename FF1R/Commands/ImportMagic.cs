@@ -33,9 +33,8 @@ namespace FF1R.Commands
 		    List<MagicSpell> allSpells;
 		    allSpells = JsonConvert.DeserializeObject<List<MagicSpell>>(File.ReadAllText(MagicJson));
 
-		    foreach (var sp in allSpells) {
-		    	sp.writeData(rom);
-		    }
+		    rom.PutSpells(allSpells);
+		    rom.ItemsText.Write(rom, FF1Rom.UnusedGoldItems);
 
 		    allSpells = rom.GetSpells();
 		    Console.WriteLine(JsonConvert.SerializeObject(allSpells, Formatting.Indented));

@@ -598,6 +598,7 @@ namespace FF1Lib
 
 		public class EnemyInfo
 		{
+		    public int index;
 		        public string name;
 			public int exp;
 			public int gp;
@@ -760,6 +761,12 @@ namespace FF1Lib
 				elem_weakness = data[18];
 				elem_resist = data[19];
 			}
+
+		    public void writeData(FF1Rom rom) {
+			var d = compressData();
+			rom.Put(EnemyOffset + index * EnemySize, d);
+		    }
+
 		}
 
 		[JsonObject(MemberSerialization.OptIn)]
