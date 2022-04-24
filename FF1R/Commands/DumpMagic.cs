@@ -9,8 +9,8 @@ namespace FF1R.Commands
 	using FF1Lib;
 	using FFR.Common;
 
-	[Command("dump", Description = "Dump enemy, weapon, armor and magic tables from ROM")]
-	class DumpStats
+	[Command("dumpmagic", Description = "Dump magic tables from ROM")]
+	class DumpMagicStats
 	{
 		[Argument(0, Description = "Final Fantasy Randomized ROM")]
 		[FileExists]
@@ -23,14 +23,6 @@ namespace FF1R.Commands
 		    var allSpells = rom.GetSpells();
 		    Console.WriteLine(JsonConvert.SerializeObject(allSpells, Formatting.Indented));
 
-		    var allEnemies = rom.GetEnemies();
-		    Console.WriteLine(JsonConvert.SerializeObject(allEnemies, Formatting.Indented));
-
-		    //var allSkills = rom.GetEnemySkills();
-		    //Console.WriteLine(JsonConvert.SerializeObject(allSkills, Formatting.Indented));
-
-		    //var allScripts = rom.GetEnemyScripts();
-		    //Console.WriteLine(JsonConvert.SerializeObject(allScripts, Formatting.Indented));
 		    return 0;
 
 		}

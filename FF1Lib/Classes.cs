@@ -327,7 +327,7 @@ namespace FF1Lib
 			{
 				//jump from old mp up routine to new one at 1B:983C
 				rom.PutInBank(0x1B, 0x88D7, Blob.FromHex("4C3C98"));
-				
+
 				string classMpUpTable = "000000000000000000000000";
 				if (flags.MpGainOnMaxGainMode == MpGainOnMaxGain.Promoted)
 				{
@@ -396,7 +396,7 @@ namespace FF1Lib
 				DoRandomizeClassChaosMode(((bool)flags.MagicLevelsMixed && (bool)flags.MagicPermissions) || ((bool)flags.SpellcrafterMixSpells && !(bool)flags.SpellcrafterRetainPermissions), (flags.ThiefAgilityBuff != ThiefAGI.Vanilla), rng, rom);
 			}
 			else
-			{ 
+			{
 				bonusmalusDescription = DoRandomizeClassNormalMode(rng, olditemnames, itemnames, flags, rom);
 			}
 
@@ -674,7 +674,7 @@ namespace FF1Lib
 			}
 
 			if (Rng.Between(rng, 0, 10) == 0)
-			{ 
+			{
 				malusNormal.Add(new BonusMalus(BonusMalusAction.IntMod, "+80 Int.", mod: 80));
 			}
 
@@ -707,11 +707,10 @@ namespace FF1Lib
 
 			// Add Natural Resist Bonuses
 			bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res All", mod: 0xFF, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
-			bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res PEDTS", mod: (int)(Element.POISON | Element.EARTH | Element.DEATH | Element.TIME | Element.STATUS), Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
+			bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res PEDTS", mod: (int)(SpellElement.Poison | SpellElement.Earth | SpellElement.Death | SpellElement.Time | SpellElement.Status), Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
+			bonusNormal.Add(CreateRandomResistBonusMalus(rng));
+			bonusNormal.Add(CreateRandomResistBonusMalus(rng));
 
-			bonusNormal.Add(CreateRandomResistBonusMalus(rng));
-			bonusNormal.Add(CreateRandomResistBonusMalus(rng));
-			
 			// Add XP Bonuses
 			if ((bool)flags.RandomizeClassIncludeXpBonus)
 			{
@@ -825,7 +824,7 @@ namespace FF1Lib
 				List<BonusMalusAction> priorityAction = new() { BonusMalusAction.SpcMax, BonusMalusAction.CantLearnSpell };
 
 				assignedBonusMalus[i].Reverse();
-				
+
 				assignedBonusMalus[i] = assignedBonusMalus[i]
 					.Where(x => !priorityAction.Contains(x.Action))
 					.ToList()
@@ -1546,36 +1545,40 @@ namespace FF1Lib
 		{
 			byte innateResistValue = 0x00;
 			string description = "Res ";
-			List<Element> elements = Enum.GetValues(typeof(Element)).Cast<Element>().ToList();
+			List<SpellElement> elements = Enum.GetValues(typeof(SpellElement)).Cast<SpellElement>().ToList();
 			//3 picks but can get a none
 			for (int picks = 0; picks < 3; picks++)
 			{
 
-				Element pickedElement = elements.SpliceRandom(rng);
+				SpellElement pickedElement = elements.SpliceRandom(rng);
 				switch (pickedElement)
 				{
-					case Element.STATUS:
+					case SpellElement.Any:
+					case SpellElement.None:
+					case SpellElement.All:
+					    break;
+					case SpellElement.Status:
 						description += "S";
 						break;
-					case Element.POISON:
+					case SpellElement.Poison:
 						description += "P";
 						break;
-					case Element.TIME:
+					case SpellElement.Time:
 						description += "T";
 						break;
-					case Element.DEATH:
+					case SpellElement.Death:
 						description += "D";
 						break;
-					case Element.FIRE:
+					case SpellElement.Fire:
 						description += "F";
 						break;
-					case Element.ICE:
+					case SpellElement.Ice:
 						description += "I";
 						break;
-					case Element.LIGHTNING:
+					case SpellElement.Lightning:
 						description += "L";
 						break;
-					case Element.EARTH:
+					case SpellElement.Earth:
 						description += "E";
 						break;
 				}
@@ -1678,7 +1681,7 @@ namespace FF1Lib
 					}
 
 					if (validClasses.Any())
-					{ 
+					{
 						spellBlursings.Add(new BonusMalus(BonusMalusAction.CantLearnSpell, "No " + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: validClasses));
 					}
 				}
@@ -1972,7 +1975,7 @@ namespace FF1Lib
 				DmgStarting = (byte)Math.Min(StrStarting / 2, 255);
 				EvaStarting = (byte)Math.Min(AgiStarting + 48, 255);
 		}
-		
+
 	}
 	partial class FF1Rom
 	{

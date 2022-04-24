@@ -659,32 +659,20 @@ namespace FF1Lib
 		    [JsonIgnoreAttribute]
 			public byte elem_weakness;
 
-		    string SpellElementFlags(byte se) {
-			var each = new SpellElement[] { SpellElement.Status, SpellElement.Poison, SpellElement.Time, SpellElement.Death, SpellElement.Fire, SpellElement.Ice, SpellElement.Lightning, SpellElement.Earth};
-			var ret = "";
-			foreach (var e in each) {
-			    if (((int)e & (int)se) != 0) {
-				if (ret != "") {
-				    ret += ",";
-				}
-				ret += Enum.GetName(e);
-			    }
-			}
-			return ret;
-		    }
-
-		    public string ElementalWeakness {
+		    [JsonConverter(typeof(StringEnumConverter))]
+		    public SpellElement ElementalWeakness {
 			get {
-			    return SpellElementFlags(elem_weakness);
+			    return (SpellElement)elem_weakness;
 			}
-		    }
+			}
 
 		    [JsonIgnoreAttribute]
 			public byte elem_resist;
 
-		    public string ElementalResist {
+		    [JsonConverter(typeof(StringEnumConverter))]
+		    public SpellElement ElementalResist {
 			get {
-			    return SpellElementFlags(elem_resist);
+			    return (SpellElement)elem_resist;
 			}
 		    }
 
@@ -795,7 +783,7 @@ namespace FF1Lib
 		        [JsonProperty]
 			List<string> SpellList {
 			    get {
-				return spell_list.Select(s => s == 0xff ? "" : this.allGameSpells[s].Name).ToList();
+				return spell_list.Where(s => s != 0xff).Select(s => this.allGameSpells[s].Name).ToList();
 			    }
 			    set {
 			    }
@@ -804,7 +792,7 @@ namespace FF1Lib
 		        [JsonProperty]
 			List<string> SkillList {
 			    get {
-				return skill_list.Select(s => s == 0xff ? "" : this.allEnemySkills[s].Name).ToList();
+				return skill_list.Where(s => s != 0xff).Select(s => this.allEnemySkills[s].Name).ToList();
 			    }
 			    set {
 			    }

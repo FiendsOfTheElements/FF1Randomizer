@@ -35,19 +35,7 @@ namespace FF1Lib
 		CHUCK = 0xA8
 	}
 
-	public enum Element : byte
-	{
-		NONE = 0x00,
-		STATUS = 0x01,
-		POISON = 0x02,
-		TIME = 0x04,
-		DEATH = 0x08,
-		FIRE = 0x10,
-		ICE = 0x20,
-		LIGHTNING = 0x40,
-		EARTH = 0x80
-	}
-
+	[Flags]
 	public enum MonsterType : byte
 	{
 		NONE = 0x00,
@@ -61,6 +49,7 @@ namespace FF1Lib
 		REGENERATIVE = 0x80
 	}
 
+	[Flags]
 	public enum EquipPermission : ushort
 	{
 		Fighter = 0x800,
@@ -138,7 +127,7 @@ namespace FF1Lib
 		//sample function for creating new weapons
 		public void ExpandWeapon()
 		{
-			Weapon flameChucks = new Weapon(0, "Flame@N", WeaponIcon.CHUCK, 20, 26, 10, 0, (byte)Element.FIRE, 0, WeaponSprite.CHUCK, 0x25);
+			Weapon flameChucks = new Weapon(0, "Flame@N", WeaponIcon.CHUCK, 20, 26, 10, 0, (byte)SpellElement.Fire, 0, WeaponSprite.CHUCK, 0x25);
 			WeaponPermissions[flameChucks.Id] = (ushort)(EquipPermission.BlackBelt | EquipPermission.Master | EquipPermission.Ninja);
 			flameChucks.writeWeaponMemory(this);
 		}
@@ -161,10 +150,10 @@ namespace FF1Lib
 		    };
 
 		    var powers = new int[] {
-			(int)Element.POISON,
-			(int)Element.FIRE | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.REGENERATIVE<<8),
-			(int)Element.ICE,
-			(int)Element.LIGHTNING,
+			(int)SpellElement.Poison,
+			(int)SpellElement.Fire | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.REGENERATIVE<<8),
+			(int)SpellElement.Ice,
+			(int)SpellElement.Lightning,
 			(int)(MonsterType.MAGICAL|MonsterType.MAGE)<<8,
 			(int)MonsterType.DRAGON<<8,
 			(int)MonsterType.GIANT<<8,
@@ -172,10 +161,10 @@ namespace FF1Lib
 			//(int)MonsterType.WERE<<8,
 			(int)MonsterType.AQUATIC<<8,
 			//(int)MonsterType.MAGE<<8,
-			(int)Element.FIRE | (int)Element.ICE,
+			(int)SpellElement.Fire | (int)SpellElement.Ice,
 			(int)MonsterType.MAGICAL<<8|(int)MonsterType.DRAGON<<8|(int)MonsterType.GIANT<<8|(int)MonsterType.UNDEAD<<8
 			    |(int)MonsterType.WERE<<8|(int)MonsterType.AQUATIC<<8|(int)MonsterType.MAGE<<8,
-			(int)Element.POISON | (int)Element.FIRE | (int)Element.ICE | (int)Element.LIGHTNING,
+			(int)SpellElement.Poison | (int)SpellElement.Fire | (int)SpellElement.Ice | (int)SpellElement.Lightning,
 		    };
 
 		    var powerNames = new string[][] {
@@ -442,7 +431,7 @@ namespace FF1Lib
 				name = nameWithIcon =  "Defense";
 			    } else if (weaponItemId == Item.ThorHammer && !noItemMagic) {
 				name = nameWithIcon = "Thor  @H";
-				elementalWeakness = (byte)(Element.ICE|Element.FIRE|Element.LIGHTNING);
+				elementalWeakness = (byte)(SpellElement.Ice|SpellElement.Fire|SpellElement.Lightning);
 			    } else {
 				if (spellIndex != 0xFF) {
 				    name = Spells[spellIndex].Name;
@@ -477,16 +466,16 @@ namespace FF1Lib
 				// Weapons casting elemental magic also
 				// get elemental bonus
 				if ((spellInfo.elem & (byte)SpellElement.Ice) != 0) {
-				    elementalWeakness = (byte)Element.ICE;
+				    elementalWeakness = (byte)SpellElement.Ice;
 				}
 				if ((spellInfo.elem & (byte)SpellElement.Fire) != 0) {
-				    elementalWeakness = (byte)Element.FIRE;
+				    elementalWeakness = (byte)SpellElement.Fire;
 				}
 				if ((spellInfo.elem & (byte)SpellElement.Lightning) != 0) {
-				    elementalWeakness = (byte)Element.LIGHTNING;
+				    elementalWeakness = (byte)SpellElement.Lightning;
 				}
 				if ((spellInfo.elem & (byte)SpellElement.Poison) != 0) {
-				    elementalWeakness = (byte)Element.POISON;
+				    elementalWeakness = (byte)SpellElement.Poison;
 				}
 				if (spellInfo.routine == (byte)SpellRoutine.DamageUndead) {
 				    typeWeakeness = (byte)MonsterType.UNDEAD;

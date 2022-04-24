@@ -60,7 +60,10 @@ namespace FF1Lib
 		PowerWord = 0x12,
 		InflictStatus = 0x03,
 		Life = 0xF0,
-		Smoke = 0xF1
+		Smoke = 0xF1,
+		Slow = 0x04,
+		Fear = 0x05,
+		Xfer = 0x11,
 	}
 
 	public enum SpellTargeting : byte
@@ -74,21 +77,23 @@ namespace FF1Lib
 		OneCharacter = 0x10
 	}
 
+	[Flags]
 	public enum SpellElement : byte
 	{
-		Any = 0b10101010,
-		None = 0x00,
-		Earth = 0b10000000,
+		Any       = 0b10101010,
+		None      = 0x00,
+		Earth     = 0b10000000,
 		Lightning = 0b01000000,
-		Ice = 0b00100000,
-		Fire = 0b00010000,
-		Death =	0b00001000,
-		Time = 0b00000100,
-		Poison = 0b00000010,
-		Status = 0b00000001,
-		All = 0xFF
+		Ice       = 0b00100000,
+		Fire      = 0b00010000,
+		Death     = 0b00001000,
+		Time      = 0b00000100,
+		Poison    = 0b00000010,
+		Status    = 0b00000001,
+		All       = 0xFF
 	}
 
+	[Flags]
 	public enum SpellStatus : byte
 	{
 	        None = 0,
@@ -168,8 +173,14 @@ namespace FF1Lib
 	    public byte effect = 0;
 
 	    public bool ShouldSerializeeffect() {
-		return routine == SpellRoutine.Damage || routine == SpellRoutine.DamageUndead || routine == SpellRoutine.Heal ||
-		    routine == SpellRoutine.ArmorUp || routine == SpellRoutine.Sabr || routine == SpellRoutine.Ruse;
+		return routine != SpellRoutine.CureAilment &&
+		    routine != SpellRoutine.InflictStatus &&
+		    routine != SpellRoutine.DefElement &&
+		    routine != SpellRoutine.Slow &&
+		    routine != SpellRoutine.None &&
+		    routine != SpellRoutine.FullHeal &&
+		    routine != SpellRoutine.Xfer;
+
 	    }
 
 	    [JsonProperty]
@@ -183,28 +194,13 @@ namespace FF1Lib
 	    }
 
 	    [JsonProperty]
-	    public string defelement {
+	    [JsonConverter(typeof(StringEnumConverter))]
+	    public SpellElement defelement {
 		get {
-		    var sp = new Dictionary<SpellElement, string> {
-			{SpellElement.Earth, "Earth"},
-			{SpellElement.Lightning, "Lightning"},
-			{SpellElement.Ice, "Ice"},
-			{SpellElement.Fire, "Fire"},
-			{SpellElement.Death, "Death"},
-			{SpellElement.Time, "Time"},
-			{SpellElement.Poison, "Poison"},
-			{SpellElement.Status, "Status"}
-		    };
-		    string ret = "";
-		    foreach (var kv in sp) {
-			if ((effect & (byte)kv.Key) != 0) {
-			    if (ret.Length > 0) {
-				ret += ",";
-			    }
-			    ret += kv.Value;
-			}
-		    }
-		    return ret;
+		    return (SpellElement)effect;
+		}
+		set {
+		    effect = (byte)value;
 		}
 	    }
 	    public bool ShouldSerializedefelement() {
@@ -296,11 +292,18 @@ namespace FF1Lib
 		    string ret = "";
 		    foreach (var c in _permissions) {
 			if (ret != "") {
-			    ret += ",";
+			    ret += ", ";
 			}
 			ret += Enum.GetName(c);
 		    }
 		    return ret;
+		}
+		set {
+		    _permissions.Clear();
+		    var sp = value.Split(",");
+		    foreach (var cl in sp) {
+			_permissions.Add(Enum.Parse<Classes>(cl));
+		    }
 		}
 	    }
 
@@ -337,6 +340,12 @@ namespace FF1Lib
 		Name = _Name;
 		isRegularSpell = _isRegularSpell;
 		this.decompressData(Data);
+	    }
+
+	    public MagicSpell()
+	    {
+		Data = (Blob)new byte[8];
+		isRegularSpell = true;
 	    }
 
 	    public byte[] compressData()

@@ -1855,13 +1855,13 @@ namespace FF1Lib
 			bahamutInfo.accuracy = 106;
 			bahamutInfo.critrate = 1;
 			bahamutInfo.agility = 58;
-			bahamutInfo.elem_weakness = (byte)Element.NONE;
+			bahamutInfo.elem_weakness = (byte)SpellElement.None;
 
 			if (swoleBahamut)
 			{
 				bahamutInfo.exp = 16000; // increase exp for swole bahamut, either mode
 				bahamutInfo.hp = 700; // subject to additional boss HP scaling
-				bahamutInfo.elem_resist = (byte)Element.POISON; // no longer susceptible to BANE or BRAK
+				bahamutInfo.elem_resist = (byte)SpellElement.Poison; // no longer susceptible to BANE or BRAK
 
 				int availableScript = bahamutInfo.AIscript;
 				if (availableScript == 0xFF) {

@@ -10,7 +10,9 @@
 	 Subcommand("generate", typeof(Commands.Generate)),
 	 Subcommand("procgen", typeof(Commands.Procgen)),
 	 Subcommand("render", typeof(Commands.MapRender)),
-	 Subcommand("dump", typeof(Commands.DumpStats))]
+	 Subcommand("dumpmagic", typeof(Commands.DumpMagicStats)),
+	 Subcommand("dumpenemies", typeof(Commands.DumpEnemyStats)),
+	Subcommand("importmagic", typeof(Commands.ImportMagicStats))]
 
 	class Program
 	{
