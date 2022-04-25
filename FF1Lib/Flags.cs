@@ -56,7 +56,7 @@ namespace FF1Lib
 
 		#endregion
 
-		public bool? ReversedFloors { get; set; } = false;
+		public bool ReversedFloors { get; set; } = false;
 		public bool BuffTier1DamageSpells { get; set; } = false;
 		public bool NoEmptyScripts { get; set; } = false;
 		public bool LaterLoose { get; set; } = false;

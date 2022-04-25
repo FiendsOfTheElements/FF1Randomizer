@@ -289,7 +289,7 @@ namespace FF1Lib
 
 			if ((bool)flags.FlipDungeons)
 			{
-				flippedMaps = HorizontalFlipDungeons(rng, maps, this, overworldMap);
+				flippedMaps = HorizontalFlipDungeons(rng, maps, teleporters, overworldMap);
 			}
 
 			if ((bool)flags.RandomizeFormationEnemizer)
