@@ -11,58 +11,64 @@ namespace FF1Lib.Helpers
 
 	public class SpellHelper
 	{
-		FF1Rom rom;
-
-		List<SpellInfo> SpellInfos;
+		List<MagicSpell> SpellInfos;
 
 		public SpellHelper(FF1Rom _rom)
 		{
-			rom = _rom;
-
-			SpellInfos = rom.LoadSpells().ToList();
+			SpellInfos = _rom.GetSpells();
 		}
 
-		public IEnumerable<(Spell Id, SpellInfo Info)> FindSpells(SpellRoutine routine, SpellTargeting targeting, SpellElement element = SpellElement.Any, SpellStatus status = SpellStatus.Any)
+		public SpellHelper(List<MagicSpell> _spellInfos)
 		{
-			IEnumerable<SpellInfo> foundSpells;
+		    SpellInfos = _spellInfos;
+		}
+
+		public IEnumerable<(Spell Id, MagicSpell Info)> FindSpells(SpellRoutine routine, SpellTargeting targeting,
+									   SpellElement element = SpellElement.Any,
+									   SpellStatus status = SpellStatus.Any,
+									   OOBSpellRoutine oobSpell = OOBSpellRoutine.None
+		)
+		{
+			IEnumerable<MagicSpell> foundSpells;
 
 			if (routine == SpellRoutine.Life)
 			{
 				foundSpells = SpellInfos.Where(s =>
-					(s.routine == (byte)SpellRoutine.CureAilment) &&
-					(s.targeting == (byte)targeting || targeting == SpellTargeting.Any) &&
-					(s.effect == (byte)SpellStatus.Death));
+					(s.routine == SpellRoutine.CureAilment) &&
+					(s.targeting == targeting || targeting == SpellTargeting.Any) &&
+							       (s.effect == (byte)SpellStatus.Death));
 			}
 			else if (routine == SpellRoutine.Smoke)
 			{
 				foundSpells = SpellInfos.Where(s =>
-					(s.routine == (byte)SpellRoutine.CureAilment) &&
-					(s.targeting == (byte)targeting || targeting == SpellTargeting.Any) &&
+					(s.routine == SpellRoutine.CureAilment) &&
+					(s.targeting == targeting || targeting == SpellTargeting.Any) &&
 					(s.effect == 0));
 			}
 			else if (routine == SpellRoutine.InflictStatus || routine == SpellRoutine.PowerWord || routine == SpellRoutine.CureAilment)
 			{
 				foundSpells = SpellInfos.Where(s =>
-					(s.routine == (byte)routine) &&
-					(s.targeting == (byte)targeting || targeting == SpellTargeting.Any) &&
-					(s.elem == (byte)element || element == SpellElement.Any) &&
-					(s.effect == (byte)status || status == SpellStatus.Any));
+					(s.routine == routine) &&
+					(s.targeting == targeting || targeting == SpellTargeting.Any) &&
+					(s.elem == element || element == SpellElement.Any) &&
+							       (s.effect == (byte)status || status == SpellStatus.Any));
 			}
 			else
 			{
 				foundSpells = SpellInfos.Where(s =>
-					(s.routine == (byte)routine) &&
-					(s.targeting == (byte)targeting || targeting == SpellTargeting.Any) &&
-					(s.elem == (byte)element || element == SpellElement.Any));
+					(s.routine == routine) &&
+					(s.targeting == targeting || targeting == SpellTargeting.Any) &&
+					(s.elem == element || element == SpellElement.Any) &&
+                                        (s.oobSpellRoutine == oobSpell || oobSpell == OOBSpellRoutine.None));
 			}
 
-			return foundSpells.Select(s => ((Spell)Convert.ToByte((int)Spell.CURE + SpellInfos.IndexOf(s)), s)).ToList();
+			return foundSpells.Select(s => ((Spell)Convert.ToByte((int)Spell.CURE + s.Index), s)).ToList();
 		}
 
-		public IEnumerable<(Spell Id, SpellInfo Info)> GetAllSpells()
+		public IEnumerable<(Spell Id, MagicSpell Info)> GetAllSpells()
 		{
 			//yeah stupid way of doing it, but i don't care
-			return SpellInfos.Select(s => ((Spell)Convert.ToByte((int)Spell.CURE + SpellInfos.IndexOf(s)), s)).ToList();
+			return SpellInfos.Select(s => ((Spell)Convert.ToByte((int)Spell.CURE + s.Index), s)).ToList();
 		}
 	}
 }

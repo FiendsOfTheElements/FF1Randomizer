@@ -180,7 +180,7 @@ namespace FF1Lib
 			var Spells = GetSpells();
 
 			SpellHelper spellHelper = new SpellHelper(this);
-			List<(Spell Id, SpellInfo Info)> foundSpells = GetLowSpells(spellHelper);
+			List<(Spell Id, MagicSpell Info)> foundSpells = GetLowSpells(spellHelper);
 
 			var Spells2 = new List<MagicSpell>();
 			foreach (var spl in foundSpells)
@@ -193,9 +193,9 @@ namespace FF1Lib
 			return Spells2;
 		}
 
-		private List<(Spell Id, SpellInfo Info)> GetLowSpells(SpellHelper spellHelper)
+		private List<(Spell Id, MagicSpell Info)> GetLowSpells(SpellHelper spellHelper)
 		{
-			List<(Spell Id, SpellInfo Info)> foundSpells = new List<(Spell Id, SpellInfo Info)>();
+			List<(Spell Id, MagicSpell Info)> foundSpells = new List<(Spell Id, MagicSpell Info)>();
 
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.Self));
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.OneCharacter));
@@ -240,7 +240,7 @@ namespace FF1Lib
 			var Spells = GetSpells();
 
 			SpellHelper spellHelper = new SpellHelper(this);
-			List<(Spell Id, SpellInfo Info)> foundSpells = GetTournamentSpells(spellHelper, rng);
+			List<(Spell Id, MagicSpell Info)> foundSpells = GetTournamentSpells(spellHelper, rng);
 
 			var Spells2 = new List<MagicSpell>();
 			foreach (var spl in foundSpells)
@@ -253,9 +253,9 @@ namespace FF1Lib
 			return Spells2;
 		}
 
-		private List<(Spell Id, SpellInfo Info)> GetTournamentSpells(SpellHelper spellHelper, MT19337 rng)
+		private List<(Spell Id, MagicSpell Info)> GetTournamentSpells(SpellHelper spellHelper, MT19337 rng)
 		{
-			List<(Spell Id, SpellInfo Info)> foundSpells = new List<(Spell Id, SpellInfo Info)>();
+			List<(Spell Id, MagicSpell Info)> foundSpells = new List<(Spell Id, MagicSpell Info)>();
 
 			//up to Ice2
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).Where(s => s.Info.effect <= 40));
@@ -300,7 +300,7 @@ namespace FF1Lib
 			var Spells = GetSpells();
 
 			SpellHelper spellHelper = new SpellHelper(this);
-			List<(Spell Id, SpellInfo Info)> foundSpells = GetSupportSpells(spellHelper);
+			List<(Spell Id, MagicSpell Info)> foundSpells = GetSupportSpells(spellHelper);
 
 			var Spells2 = new List<MagicSpell>();
 			foreach (var spl in foundSpells)
@@ -313,9 +313,9 @@ namespace FF1Lib
 			return Spells2;
 		}
 
-		private List<(Spell Id, SpellInfo Info)> GetSupportSpells(SpellHelper spellHelper)
+		private List<(Spell Id, MagicSpell Info)> GetSupportSpells(SpellHelper spellHelper)
 		{
-			List<(Spell Id, SpellInfo Info)> foundSpells = new List<(Spell Id, SpellInfo Info)>();
+			List<(Spell Id, MagicSpell Info)> foundSpells = new List<(Spell Id, MagicSpell Info)>();
 
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.Any));
 

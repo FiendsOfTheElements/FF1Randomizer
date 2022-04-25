@@ -275,7 +275,6 @@ namespace FF1Lib
 
 		    var spellHelper = new SpellHelper(this);
 		    var Spells = GetSpells();
-		    var allSpells = LoadSpells();
 
 		    var defenseSwordSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any).
 								Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
@@ -462,22 +461,22 @@ namespace FF1Lib
 			    }
 
 			    if (spellIndex != 0xFF) {
-				var spellInfo = allSpells[spellIndex];
+				var spellInfo = Spells[spellIndex];
 				// Weapons casting elemental magic also
 				// get elemental bonus
-				if ((spellInfo.elem & (byte)SpellElement.Ice) != 0) {
+				if ((spellInfo.elem & SpellElement.Ice) != 0) {
 				    elementalWeakness = (byte)SpellElement.Ice;
 				}
-				if ((spellInfo.elem & (byte)SpellElement.Fire) != 0) {
+				if ((spellInfo.elem & SpellElement.Fire) != 0) {
 				    elementalWeakness = (byte)SpellElement.Fire;
 				}
-				if ((spellInfo.elem & (byte)SpellElement.Lightning) != 0) {
+				if ((spellInfo.elem & SpellElement.Lightning) != 0) {
 				    elementalWeakness = (byte)SpellElement.Lightning;
 				}
-				if ((spellInfo.elem & (byte)SpellElement.Poison) != 0) {
+				if ((spellInfo.elem & SpellElement.Poison) != 0) {
 				    elementalWeakness = (byte)SpellElement.Poison;
 				}
-				if (spellInfo.routine == (byte)SpellRoutine.DamageUndead) {
+				if (spellInfo.routine == SpellRoutine.DamageUndead) {
 				    typeWeakeness = (byte)MonsterType.UNDEAD;
 				}
 			    }
@@ -588,7 +587,7 @@ namespace FF1Lib
 	public class Weapon
 	{
 		public Item Id => (Item)(WeaponIndex + (int)Item.WoodenNunchucks);
-		public Spell Spell => SpellIndex == 0xFF ? 0 : (Spell)(SpellIndex - 1 + (int)Spell.CURE);
+	        public Spell Spell => SpellIndex == 0xFF ? 0 : (Spell)(SpellIndex - 1 + (int)Spell.CURE);
 
 		//index
 		public int WeaponIndex;
@@ -656,7 +655,7 @@ namespace FF1Lib
 
 		public static IEnumerable<Weapon> LoadAllWeapons(FF1Rom rom, Flags flags)
 		{
-			int i = flags.ExtConsumableSet != ExtConsumableSet.None ? 4 : 0;
+			int i = flags != null && flags.ExtConsumableSet != ExtConsumableSet.None ? 4 : 0;
 			for (; i < 40; i++)
 			{
 				yield return new Weapon(i, rom);

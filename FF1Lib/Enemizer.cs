@@ -827,6 +827,11 @@ namespace FF1Lib
 				return scriptData;
 			}
 
+		    public void writeData(FF1Rom rom) {
+			var d = compressData();
+			rom.Put(ScriptOffset + index * ScriptSize, d);
+		    }
+
 			public void decompressData(byte[] data)
 			{
 				if (data.Length != ScriptSize)

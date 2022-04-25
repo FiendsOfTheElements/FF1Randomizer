@@ -6,6 +6,7 @@ using System;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using FF1Lib.Helpers;
 
 namespace FF1Lib
 {
@@ -890,6 +891,11 @@ namespace FF1Lib
 		}
 
 		public void PutSpells(List<MagicSpell> spellsList) {
+
+		    spellsList.Sort(delegate(MagicSpell a, MagicSpell b) { return a.Index.CompareTo(b.Index); });
+
+		    var oldSpells = GetSpells();
+
 		    foreach (var sp in spellsList) {
 			sp.writeData(this);
 
@@ -908,6 +914,7 @@ namespace FF1Lib
 			}
 			mask = mask >> 1;
 			mask = mask - 1;
+
 
 			switch (sp.oobSpellRoutine) {
 			    case OOBSpellRoutine.CURE:
@@ -939,15 +946,126 @@ namespace FF1Lib
 			}
 		    }
 
+		    var sh = new SpellHelper(spellsList);
+
+		    Dictionary<Spell, Spell> oldToNew = new();
+
+		    for (int i = 0; i < oldSpells.Count; i++) {
+			var sp = oldSpells[i];
+			IEnumerable<(Spell Id, MagicSpell Info)> result;
+
+			result = sh.FindSpells(sp.routine, sp.targeting, sp.elem, sp.status, sp.oobSpellRoutine);
+
+			if (!result.Any()) {
+			    // Relax element
+			    result = sh.FindSpells(sp.routine, sp.targeting, SpellElement.Any, sp.status, sp.oobSpellRoutine);
+			}
+
+			if (!result.Any() && sp.routine != SpellRoutine.None) {
+			    // Relax OOB spell routine
+			    result = sh.FindSpells(sp.routine, sp.targeting, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+			}
+
+			if (!result.Any()) {
+			    // Relax targeting
+			    if (sp.targeting == SpellTargeting.AllEnemies) {
+				result = sh.FindSpells(sp.routine, SpellTargeting.OneEnemy, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+			    } else if (sp.targeting == SpellTargeting.Self) {
+				result = sh.FindSpells(sp.routine, SpellTargeting.OneCharacter, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+				if (!result.Any()) {
+				    result = sh.FindSpells(sp.routine, SpellTargeting.AllCharacters, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+				}
+			    } else if (sp.targeting == SpellTargeting.OneCharacter) {
+				result = sh.FindSpells(sp.routine, SpellTargeting.AllCharacters, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+				if (!result.Any()) {
+				    result = sh.FindSpells(sp.routine, SpellTargeting.Self, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+				}
+			    } else if (sp.targeting == SpellTargeting.AllCharacters) {
+				result = sh.FindSpells(sp.routine, SpellTargeting.OneCharacter, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+				if (!result.Any()) {
+				    result = sh.FindSpells(sp.routine, SpellTargeting.Self, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+				}
+			    }
+			}
+
+			if (!result.Any()) {
+			    throw new Exception($"Cannot find replacement spell for {sp.Name} with {sp.routine} {sp.status}");
+			}
+
+			if (result.Count() == 1) {
+			    oldToNew[(Spell)((int)Spell.CURE + i)] = result.First().Item1;
+			    continue;
+			}
+
+			if (sp.routine == SpellRoutine.Damage || sp.routine == SpellRoutine.DamageUndead ||
+			    sp.routine == SpellRoutine.Heal || sp.routine == SpellRoutine.ArmorUp ||
+			    sp.routine == SpellRoutine.Sabr || sp.routine == SpellRoutine.Lock ||
+			    sp.routine == SpellRoutine.Ruse || sp.routine == SpellRoutine.Fear)
+			{
+			    // Find the new spell that's closest to the old spell
+			    // based on effectivity
+			    int minimum = 256;
+			    foreach (var candidate in result) {
+				int diff = Math.Abs(candidate.Item2.effect - sp.effect);
+				if (diff < minimum) {
+				    minimum = diff;
+				    oldToNew[(Spell)((int)Spell.CURE + i)] = candidate.Item1;
+				}
+			    }
+			} else {
+			    int minimum = 256;
+			    // Find the new spell that's closest to the old spell
+			    // based on accuracy
+			    foreach (var candidate in result) {
+				var diff = Math.Abs(candidate.Item2.accuracy - sp.accuracy);
+				if (diff < minimum) {
+				    minimum = diff;
+				    oldToNew[(Spell)((int)Spell.CURE + i)] = candidate.Item1;
+				}
+			    }
+			}
+		    }
+
+		    /*
+		    foreach (var kv in oldToNew) {
+			Console.WriteLine($"{(int)kv.Key - (int)Spell.CURE} -> {(int)kv.Value - (int)Spell.CURE}");
+			Console.WriteLine($"{oldSpells[(int)kv.Key - (int)Spell.CURE]} -> {spellsList[(int)kv.Value - (int)Spell.CURE]}");
+		    }
+		    */
+
 		    // Fix enemy spell pointers to point to where the spells are now.
-		    // ???
+		    var scripts = GetEnemyScripts();
+		    foreach (var sc in scripts) {
+			for (int i = 0; i < 8; i++) {
+			    if (sc.spell_list[i] != 0xff) {
+				sc.spell_list[i] = (byte)((byte)oldToNew[(Spell)(sc.spell_list[i]+(byte)Spell.CURE)] - (byte)Spell.CURE);
+			    }
+			}
+			sc.writeData(this);
+		    }
 
 		    // Fix weapon and armor spell pointers to point to where the spells are now.
-		    // ???
+		    foreach (var wep in Weapon.LoadAllWeapons(this, null)) {
+			if (wep.Spell != Spell.None) {
+			    wep.SpellIndex = (byte)((int)oldToNew[wep.Spell] - (int)Spell.CURE + 1);
+			}
+			wep.writeWeaponMemory(this);
+		    }
 
-		    // Confused enemies are supposed to cast FIRE, so figure out where FIRE ended up.
-		    //var newFireSpellIndex = shuffledSpells.FindIndex(spell => spell.Data == magicSpells[FireSpellIndex].Data);
-		    //Put(ConfusedSpellIndexOffset, new[] { (byte)newFireSpellIndex });
+		    foreach (var arm in Armor.LoadAllArmors(this, null)) {
+			if (arm.Spell != Spell.None) {
+			    arm.SpellIndex = (byte)((int)oldToNew[arm.Spell] - (int)Spell.CURE + 1);
+			}
+			arm.writeArmorMemory(this);
+		    }
+
+		    // Confused enemies are supposed to cast FIRE, so
+		    // pick a single-target damage spell.
+		    var confSpell = sh.FindSpells(SpellRoutine.Damage, SpellTargeting.OneEnemy);
+		    if (!confSpell.Any()) {
+			throw new Exception("Missing a single-target damage spell to use for confused status");
+		    }
+		    Put(ConfusedSpellIndexOffset, new[] { (byte)confSpell.First().Item2.Index });
 		}
 
 		public void PutSpellNames(List<MagicSpell> spells)
