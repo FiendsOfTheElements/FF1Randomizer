@@ -92,7 +92,7 @@ namespace FF1Lib
 		public const int PaletteSize = 4;
 		public const int PaletteCount = 64;
 
-	    public void FunEnemyNames(bool teamSteak, MT19337 rng)
+	    public void FunEnemyNames(bool teamSteak, bool altFiends, MT19337 rng)
 		{
 			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 
@@ -136,10 +136,12 @@ namespace FF1Lib
 			enemyText[106] = "Green D";   // +2  Gas D
 			enemyText[111] = "BATMAN";    // +0  BADMAN
 			enemyText[112] = "OKAYMAN";   // +0  EVILMAN
-			enemyText[119] = "S.BUMP";    // +2  LICH
-			enemyText[120] = "S.BUMP";    // +2  LICH
-			enemyText[121] = "KELLY";     // +1  KARY
-			enemyText[122] = "KELLY";     // +1  KARY
+			if (!altFiends) {
+			    enemyText[119] = "S.BUMP";    // +2  LICH
+			    enemyText[120] = "S.BUMP";    // +2  LICH
+			    enemyText[121] = "KELLY";     // +1  KARY
+			    enemyText[122] = "KELLY";     // +1  KARY
+			}
 
 			// Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes
 			// We're adding (up to) a net of 18 bytes to enemyTextPart2.
@@ -174,6 +176,39 @@ namespace FF1Lib
 		{
 			//just load the original battleground background in place of the flash color, it will still use the same number of frames
 			Put(0x32051, Blob.FromHex("AD446D"));
+		}
+
+		public void LockRespondRate()
+		{
+			// original title screen behavior
+			/*
+			C9 01     CMP #RIGHT              ; did they press Right?
+            D0 04     BNE @Left               ;  if not, they must've pressed Left
+            A9 01     LDA #1                  ; add +1 to rate if right
+            D0        BNE :+
+            02        @Left:
+            A9 FF     LDA #-1                 ; or -1 if left
+            18    :   CLC
+            65 FA     ADC respondrate         ; add/subtract 1 from respond rate
+            29 07     AND #7                  ; mask to wrap it from 0<->7
+            85 FA     STA respondrate
+			 */
+
+			// MODIFIED behavior
+			/*
+			C9 01     CMP #RIGHT              ; did they press Right?
+            D0 04     BNE @Left               ;  if not, they must've pressed Left
+            A9 00     LDA #0                  ; MODIFIED (adds nothing instead of 1)
+            D0        BNE :+
+            02        @Left:
+            A9 00     LDA #0                  ; MODIFIED (adds nothing instead of -1)
+            18    :   CLC
+            65 FA     ADC respondrate         ; add/subtract 1 from respond rate
+            29 07     AND #7                  ; mask to wrap it from 0<->7
+            85 FA     STA respondrate
+			 */
+
+			Put(0x3A1FD, Blob.FromHex("C901D004A900D002A9001865FA290785FA"));
 		}
 
 		public void ShuffleLeader(MT19337 rng)

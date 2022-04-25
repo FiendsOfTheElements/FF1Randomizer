@@ -16,6 +16,7 @@ namespace FF1Lib
 		public MenuColor MenuColor { get; set; } = MenuColor.Blue;
 		public MapmanSlot MapmanSlot { get; set; } = MapmanSlot.Leader;
 		public bool DisableSpellCastFlash { get; set; } = true;
+		public bool LockRespondRate { get; set; } = true;
 		public bool ChangeLute { get; set; } = false;
 		public TitanSnack TitanSnack { get; set; } = TitanSnack.Ruby;
 		public Fate HurrayDwarfFate { get; set; } = Fate.Spare;
@@ -30,6 +31,7 @@ namespace FF1Lib
 		public bool OptOutSpeedHackWipes { get; set; } = false;
 		public bool OptOutSpeedHackMessages { get; set; } = false;
 		public bool OptOutSpeedHackDash { get; set; } = false;
+		public bool QuickJoy2Reset { get; set; } = false;
 
 		public string PlayerName { get; set; } = "Player 01";
 	}

@@ -866,6 +866,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoConsecutiveNukes"));
 			}
 		}
+		public bool TranceHasStatusElement
+		{
+			get => Flags.TranceHasStatusElement;
+			set
+			{
+				Flags.TranceHasStatusElement = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TranceHasStatusElement"));
+			}
+		}
 		public bool? BossSkillsOnly
 		{
 			get => Flags.BossSkillsOnly;
@@ -2867,6 +2876,17 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableSpellCastFlash"));
 			}
 		}
+
+		public bool LockRespondRate
+		{
+			get => Preferences.LockRespondRate;
+			set
+			{
+				Preferences.LockRespondRate = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LockRespondRate"));
+			}
+		}
+
 		public bool NoEmptyScripts
 		{
 			get => Flags.NoEmptyScripts;
@@ -3632,6 +3652,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleAstos"));
 			}
 		}
+		public bool UnsafeAstos
+		{
+			get => Flags.UnsafeAstos;
+			set
+			{
+				Flags.UnsafeAstos = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnsafeAstos"));
+			}
+		}
+
 		public bool? RandomizeEnemizer
 		{
 			get => Flags.RandomizeEnemizer;
@@ -4072,6 +4102,15 @@ namespace FF1Lib
 			{
 				Flags.SwolePirates = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwolePirates"));
+			}
+		}
+		public bool? SwoleAstos
+		{
+			get => Flags.SwoleAstos;
+			set
+			{
+				Flags.SwoleAstos = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SwoleAstos"));
 			}
 		}
 
@@ -4975,7 +5014,15 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-
+		public bool QuickJoy2Reset
+		{
+			get => Preferences.QuickJoy2Reset;
+			set
+			{
+				Preferences.QuickJoy2Reset = value;
+				RaisePropertyChanged();
+			}
+		}
 		public bool QuickMinimapLoad
 		{
 			get => Flags.QuickMinimapLoad;

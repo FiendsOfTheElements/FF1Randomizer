@@ -259,6 +259,11 @@
 		"description": "Opt out of the Convenience flag that speeds up characters on maps, both on the overworld and in dungeons. Reverts movement speed back to a near-vanilla, slow speed, although players can still dash if they hold down the B button."
 	},
 	{
+		"Id": "quickJoy2Reset",
+		"title": "Quick Controller 2 Reset",
+		"description": "Instead of holding Up+A and Up+B on controller 2 for a hard reset and a soft reset, only holding A and B, respectively, is required."
+	},
+	{
 		"Id": "spriteSheetToolTipBox",
 		"title": "Custom Player Sprites",
 		"screenshot": "customHeroSprites.png",
@@ -336,6 +341,12 @@
 	},
 	{
 		"Id": "lichRevengeCheckBox",
+		"title": "Lich's Revenge - Halloween Special 2020",
+		"screenshot": "LichRevenge.png",
+		"description": "Lich is having their revenge, unleashing a zombie apocalypse upon the world!\n- All NPCs are zombies\n- Key NPCs will attack you when giving you their item\n- Buffed undead enemies\n- Lich is the End Boss"
+	},
+	{
+		"Id": "lichRevengePresetCheckBox",
 		"title": "Lich's Revenge - Halloween Special 2020",
 		"screenshot": "LichRevenge.png",
 		"description": "Lich is having their revenge, unleashing a zombie apocalypse upon the world!\n- All NPCs are zombies\n- Key NPCs will attack you when giving you their item\n- Buffed undead enemies\n- Lich is the End Boss"
@@ -621,13 +632,13 @@
 		"Id": "incentivizeOtherCastArmorCheckBox",
 		"title": "Power Gauntlet",
 		"screenshot": "incentivizeOtherCastArmorCheckBox.png",
-		"description": "Adds the Power Gauntlet to the incentive pool to be distributed in the selected incentive locations."
+		"description": "Adds the Power Gauntlet to the incentive pool to be distributed in the selected incentive locations. The Power Gauntlet is the Guaranteed Power Item when that flag is enabled"
 	},
 	{
 		"Id": "incentivizePowerRodCheckBox",
-		"title": "Power Rod",
+		"title": "Power Staff",
 		"screenshot": null,
-		"description": "Adds the Power Rod to the incentive pool to be distributed in the selected incentive locations."
+		"description": "Adds the Power Staff to the incentive pool to be distributed in the selected incentive locations. The Power Staff is the Guaranteed Defense Item when that flag is enabled."
 	},
 	{
 		"Id": "incentivizeDefCastArmorCheckBox",
@@ -1363,7 +1374,7 @@
 		"Id": "shuffleAstosCheckBox",
 		"title": "Shuffle Astos",
 		"screenshot": "shuffleAstosCheckBox.png",
-		"description": "Astos disguises himself as another NPC: Bahamut, Canoe Sage, CubeBot, Elf Doctor, Elf Prince, Fairy, King, Lefein, Matoya, Nerrick, Princess Sara, Sarda, Smith, Titan, Unne or the kindly old king from Northwest Castle."
+		"description": "Astos is disguised as a quest NPC: Bahamut, Canoe Sage, CubeBot, Elf Doctor, Elf Prince, Fairy, Lefein, Matoya, Nerrick, Sarda, Smith, Titan, Unne or the kindly old king from Northwest Castle.\nUnless he is picked by Astos shuffle, the kindly old king in the Northwest Castle will not fight you."
 	},
 	{
 		"Id": "fiendShuffleCheckBox",
@@ -1624,7 +1635,7 @@
 		"Id": "startingEquipmentGrandpasSecretStash",
 		"title": "Starting Equipment - Grandpa's Secret Stash",
 		"screenshot": "startingEquipmentGrandpasSecretStash.png",
-		"description": "Plays three (3) Good Items and five (5) Common Ones into the party's starting inventory."
+		"description": "Adds three legendary tier items and five common tier tiems to the party's starting inventory."
 	},
 	{
 		"Id": "startingEquipmentRandomCommons",
@@ -1762,7 +1773,7 @@
 		"Id": "guaranteedDefenseItem",
 		"title": "Guaranteed Defense Item",
 		"screenshot": "ruseItemCheckBox.png",
-		"description": "Guarantees that the Power Rod has RUSE/INV/INV2 depending on the setting. The item will be treated as a Key Item during placement."
+		"description": "Guarantees that the Power Staff has RUSE/INV/INV2 depending on the setting. The item will be treated as a Key Item during placement."
 	},
 	{
 		"Id": "guaranteedPowerItem",
@@ -1999,7 +2010,7 @@
 		"Id": "owMapExchange",
 		"title": "Overworld Map",
 		"screenshot": "owMapExchange.png",
-		"description": "Options to generate a new random overworld map. Note: map generation is resource intensive, may take 30-60 seconds during which time your browser may be unresponsive.  If a seed fails to generate a map, try a different seed, or choose 'random pregenerated' to get a random map from a set of maps that were pre-generated using the same code as 'Generate New Overworld'.\nGenerate New Overworld - Creates a completely new overworld, vanilla access requirements (game is beatable even vanilla progression/no treasure shuffle).\nShuffled access - Locations placed with random item requirements (e.g. could need canoe to reach Elfland, or airship to reach Matoya).\nShuffled access, unsafe start - May place late-game dungeons in starting area.\nLost Woods - Randomly generated endless forest map.\nDesert of Death - Randomly generated deadly desert map.\nNo Overworld - Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps.\nImport custom map - Import a map using the 'Import map' button."
+		"description": "Options to generate a new random overworld map. Note: map generation is resource intensive, may take 30-60 seconds during which time your browser may be unresponsive.  If a seed fails to generate a map, try a different seed, or choose 'random pregenerated' to get a random map from a set of maps that were pre-generated using the same code as 'Generate New Overworld'.\nGenerate New Overworld - Creates a completely new overworld, vanilla access requirements (game is beatable even vanilla progression/no treasure shuffle).\nShuffled access - Locations placed with random item requirements (e.g. could need canoe to reach Elfland, or airship to reach Matoya).\nShuffled access, unsafe start - May place late-game dungeons in starting area.\nLost Woods - Randomly generated endless forest map.\nDesert of Death - Randomly generated deadly desert map.\nNo Overworld - Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps. The FLOATER and the CANOE are replaced respectively by the SIGIL and Lukahn's MARK.'\nImport custom map - Import a map using the 'Import map' button."
 	},
 	{
 		"Id": "enableArchipelago",
@@ -2106,9 +2117,9 @@
 	},
 	{
 		"Id": "WhiteMageHarmEveryoneCheckBox",
-		"title": "White Mage Harm Damages All Enemies",
+		"title": "Improved HARM for White Mage",
 		"screenshot": "whiteMageHarmEveryoneCheckBox.gif",
-		"description": "HARM spells, when cast by a white mage/wizard, will deal damage to any target. On non undead targets, the spell will not crit (will not deal double damage except on a 3/256). \n\nThis includes HARM spells cast by item magic such as the light axe."
+		"description": "HARM spells (including via item magic) will deal damage to any target if CAST or USED by a White Mage/White Wizard. On non undead targets, the spell will not crit (will not deal double damage except on a 3/256)."
 	},
 	{
 		"Id": "armorCrafterCheckBox",
@@ -2161,86 +2172,95 @@
 	{
 		"Id": "noConsecutiveNukesCheckBox",
 		"title": "Prevent consecutive NUKE or NUCLEAR",
-		"screenshot": "",
 		"description": "When shuffling spell and skill scripts, prevent consecutive casts of NUKE or NUCLEAR without at least one other spell or skill in between.  Also prevents having the starting spell and skill slots filled by both NUKE and NUCLEAR at the same time."
 	},
 
 	{
 		"Id": "beginnerPresetToolTipBox",
 		"title": "Beginner preset",
-		"screenshot": "",
 		"description": "Introduction to the randomizer, and the basis for most of the other presets."
 	},
 	{
 		"Id": "improvedVanillaPresetToolTipBox",
 		"title": "Improved Vanilla preset",
-		"screenshot": "",
 		"description": "Applies the bugfixes and quality-of-life improvements to the base game, but does not randomize anything."
 	},
 	{
 		"Id": "deepDungeonPresetToolTipBox",
 		"title": "Deep Dungeon preset",
-		"screenshot": "",
-		"description": "Turns Coneria Castle into a 52-floor completely procedurally generated dungeon, leading to Chaos.\nAs you go deeper, the monster encounters get stronger. Every so often there will be a branch to the next town, but dying or restoring a save will return you to the overworld."
+		"description": "Turns Coneria Castle into a 52-floor completely procedurally generated dungeon, leading to Chaos.\nAs you go deeper, the monster encounters get stronger. Every so often there will be a branch to the next town, but dying or restoring a save will send you back to start.\nKey flags\n- Save on game over\n- Save items replaced by ethers that restore magic charges\n- The Tail can be found between floors 10 and 30, before Bahamut.\n[grid][r]Towns|Level[r]Pravoka|between 2 and 6[r]Elfland|between 9 and 13[r]Melmond|between 16 and 20[r]Crescent Lake|between 23 and 27[r]Onrac|between 30 and 34[r]Gaia|between 37 and 41[r]Lefein|between 44 and 48"
 	},
 	{
 		"Id": "overRandomizerToolTipBox",
 		"title": "Over Randomizer preset",
-		"screenshot": "",
-		"description": "The randomizer will give you entirely new weapons, armor, spells, enemies, and bosses."
+		"description": "The randomizer will give you entirely new weapons, armor, spells, and enemies.\nKey flags\nWeaponizer - see tooltip on the 'Gear & Items'\nArmor Crafter - see tooltip on the Gear & Items for details\nSpell Crafter - See 'Spellcrafter FAQ' on the Resources page\nEnemizer - See 'Enemizer FAQ' on the Resources page"
 	},
 	{
 		"Id": "chaosRushToolTipBox",
 		"title": "Chaos Rush preset",
-		"screenshot": "",
-		"description": "You can challenge Chaos immediately at the start of the game.  How fast can you become strong enough to defeat Chaos?  Your 4 Light Warriors are chosen for you.  You start with the airship, TAIL, LUTE, and all 4 Orbs are lit."
+		"description": "You can challenge Chaos immediately at the start of the game.  How fast can you become strong enough to defeat Chaos?\nKey flags\n- All 4 Orbs are lit, ToFR is unlocked, and you start with the LUTE\n- Your 4 Light Warriors are chosen for you\n- Free Ship, Canoe and Airship\n- Free TAIL\n- High XP and gold scaling\n- Low encounter rate\n- Short ToFR"
 	},
 	{
 		"Id": "hiddenChaosToolTipBox",
 		"title": "Hidden Chaos preset",
-		"screenshot": "",
-		"description": "Chaos is hidden in a random chest and must be found to be defeated. Once you've killed Chaos the game ends. If you find Chaos and then lose, fear not -- the fiend will not move and can be tracked down to the same treasure chest to be fought again."
+		"description": "Chaos is hidden in a random chest and must be found to be defeated. Once you've killed Chaos the game ends. If you find Chaos and then lose, fear not -- the fiend will not move and can be tracked down to the same treasure chest to be fought again.\nKey flags\n- Randomized treasure, high wealth\n- Rare and legendary gear in shops\n- All 4 Orbs are lit, ToFR is unlocked, and you start with the LUTE, but is anyone home?"
 	},
 	{
 		"Id": "entranceFloorShufflePresetToolTipBox",
 		"title": "Entrance and Floor Shuffle preset",
-		"screenshot": "",
-		"description": "Overworld entrances (except for towns) are shuffled together, and shuffles cave and dungeon floors.  For example, the entrance to Waterfall could lead to Earth B1, which may lead to Volcano B3, which leads to Matoya's Cave, etc."
+		"description": "Overworld entrances (except for towns) are shuffled together, and shuffles cave and dungeon floors.  For example, the entrance to Waterfall could lead to Earth B1, which may lead to Volcano B3, which leads to Matoya's Cave, etc.\nKey flags\n- Dungeon encounter rate is slightly lower than Beginner flagset"
 	},
 	{
 		"Id": "noverworldShufflePresetToolTipBox",
 		"title": "NOverworld preset",
-		"screenshot": "",
-		"description": "Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps."
+		"description": "Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps.  Introduces two new items, the SIGIL and the MARK, which you must find to unlock progression.\nKey flags\n- Save on death\n- Save items replaced with ethers, which restore magic charges\n- Start with a random item that casts offensive area-of-effect magic"
 	},
 	{
 		"Id": "shardHuntPresetToolTipBox",
-		"title": "",
-		"screenshot": "",
-		"description": "The orbs have been shattered and spread across the world.  Find 28 shards to unlock the Temple of Fiends.  Defeating Lich and Kary award 2 shards, Kraken and Tiamat award 4 shards."
+		"title": "Shard Hunt",
+		"description": "The orbs have been shattered and spread across the world.  Find 28 shards to unlock the Temple of Fiends.  Defeating Lich and Kary award 2 shards, Kraken and Tiamat award 4 shards.\nKey flags\n- Dungeon encounter rate is slightly lower than Beginner flagset"
 	},
 	{
 		"Id": "oopsAllLooseToolTipBox",
 		"title": "Oops, All Loose!",
-		"screenshot": "",
-		"description": "All key items are loose, which means they can be found in any chest.  There may be multiple key items in a dungeon, or none at all."
+		"description": "All key items are loose, which means they can be found in any chest.  There may be multiple key items in a dungeon, or none at all.\nKey flags\n- Dungeon encounter rate is slightly lower than Beginner flagset"
 	},
 	{
 		"Id": "procgenOWPresetToolTipBox",
 		"title": "Procedurally Generated Overworld",
-		"screenshot": "",
-		"description": "Explore a completely new, randomly generated overworld.  Be aware you will likely need to find the bridge, it will be found in an early game chest."
+		"description": "Explore a completely new, randomly generated overworld.\n- Be aware you will likely need to find the bridge, which will be found in an early game chest.\n- The CANAL is required to access a dock that lets you reach the Earth cave.\n- The Airship can be found in a distinctive area of desert surrounded by mountains and entered from the south.\n- The overworld encounter rate is reduced to assist exploring."
 	},
 	{
 		"Id": "floaterlessPresetToolTipBox",
 		"title": "Floaterless",
-		"screenshot": "",
-		"description": "Sail the high seas!  The floater has been removed from the game, so you can't get the airship, but new docks, rivers and mountain passes have been added to ensure you can still get everywhere you need to go."
+		"description": "Sail the high seas!  The floater has been removed from the game, so you can't get the airship, but new docks, rivers and mountain passes have been added to ensure you can still get everywhere you need to go.\nKey flags\n- Northern docks let you access the Onrac continent, Bahamut's island, and the Mirage desert.\n- A new river dock grants access to the Lefein region, and a mountain pass provides access to Gaia.\n- Overworld encounter rate is reduced"
 	},
 	{
 		"Id": "freeEnterpriseToolTipBox",
 		"title": "Free Enterprise",
-		"screenshot": "",
-		"description": "Start the game with your trusty airship, the Enterprise.  The world seems peaceful, but monsters still hide in the darkest corners."
+		"description": "All bosses rush modeled after the open world gameplay style of FF4: Free Enterprise.  Go anywhere in your trusty airship, the Enterprise.  The LUTE, KEY and lighting the four orbs are still required to access the final dungeon.\n- Free airship and canoe\n- Starting party is two forced, two none.  You will have the opportunity to recruit additional party members by completing quests and defeating fiends.\n- No random encounters, gain XP is by finding XP chests, taking spike tile fights, and defeating bosses.\n- Every incentive location is in play, with a key item or legendary treasure\n- Randomized treasure, high wealth, rare and legendary gear in shops\n- Start with a random item that casts offensive area-of-effect magic\n- Free TAIL, fight buff Bahamut\n- Buffed, unsafe pirates\n- Buffed Astos\n- Required WarMECH\n- Alternate fiends and final boss\n- Short ToFR"
+	},
+	{
+		"Id": "swoleAstosCheckBox",
+		"title": "Buffed Astos",
+		"screenshot": "buffedAstosCheckBox.png",
+		"description": "Give Astos more HP, armor, evade and nasty spells and skills.  Hint: Astos likes status effects, and death.  He can dish it out, but he can't take it."
+	},
+	{
+		"Id": "unsafeAstosCheckBox",
+		"title": "Unsafe Astos",
+		"screenshot": "unsafeAstosCheckBox.png",
+		"description": "Shuffle Astos may place Astos on the King or Princess of Coneria Castle.  This may result in challenging early game progression."
+	},
+	{
+		"Id": "tranceHasStatusElement",
+		"title": "TRANCE is status element",
+		"description": "Adjust enemy skill TRANCE to have 'status' element, so it can be resisted by wearing a Ribbon, casting ARUB, or with other status-protecting spells and gear that may be generated by other flags."
+	},
+	{
+		"Id": "lockRespondRateCheckBox",
+		"title": "Lock Respond Rate",
+		"screenshot": "lockRespondRateCheckBox.png",
+		"description": "Pressing LEFT or RIGHT on the Title Screen will not change the Respond Rate from its preferred value of 8.\nThis prevents accidental changes to the text speed during gameplay."
 	}
 ]

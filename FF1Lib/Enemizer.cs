@@ -28,7 +28,7 @@ namespace FF1Lib
 			PERK_LOWRESIST, // adds a low resist (fire/ice/lit/earth), +4% XP
 			PERK_HIGHRESIST, // adds a high resist (status/poison/time/death), +3% XP
 			PERK_LOWWEAKNESS, // adds a low weakness, -5% XP
-			PERK_HIGHWEAKNESS, // adds a high weakness, -3% XP 
+			PERK_HIGHWEAKNESS, // adds a high weakness, -3% XP
 			PERK_PLUSONEHIT, // adds an extra hit, +5% XP for 2hitter, +3% for 3hitter, +2% for 4hitter and +1% for any hits beyond that
 			PERK_POISONTOUCH, // adds poisontouch if no status ailment already exists
 			PERK_STUNSLEEPTOUCH, // adds stun or sleep touch, +3% XP if stun touch is selected
@@ -365,7 +365,7 @@ namespace FF1Lib
 				{
 					if ((effect & 0b0000_0001) != 0)
 					{
-						tier = 0; // if Life In Battle is enabled, 
+						tier = 0; // if Life In Battle is enabled,
 					}
 					else if (targeting == 0x08)
 					{
@@ -544,7 +544,7 @@ namespace FF1Lib
 						if (elem == 0) // we only care about the element, it can target whatever it likes as long as it isn't a friendly
 							tier = 4;
 						else
-							tier = 3; 
+							tier = 3;
 					}
 				}
 			}
@@ -825,7 +825,7 @@ namespace FF1Lib
 
 		public class Enemizer_Zone
 		{
-			public int min; // minimum count for this zone 
+			public int min; // minimum count for this zone
 			public int max; // maximum count for this zone
 			public List<byte> forms; // list of which formations belong to this zone
 			public int minXP; // minimum XP yield for this zone
@@ -843,7 +843,7 @@ namespace FF1Lib
 		}
 
 		public class EnemizerTrackingInfo
-		{		
+		{
 			public List<byte>[] enemiesInTileset = new List<byte>[GenericTilesetsCount];
 			public List<byte>[] palettesInTileset = new List<byte>[GenericTilesetsCount];
 			public List<int>[] enemyZones = new List<int>[EnemyCount];
@@ -2222,7 +2222,7 @@ namespace FF1Lib
 				int large2offset = 0x800 * (largeImages[i * 2 + 1] / 4) + (largeImages[i * 2 + 1] % 4 == 1 ? 0x320 : 0x560);
 				newEnemyImageLUT[i * 4] = smallImages[i * 2];
 				for(int j = 0; j < 0x100; ++j)
-				{ 
+				{
 					newPatternTableData[i * 0x800 + 0x120 + j] = patterntabledata[small1offset + j];
 				}
 				newEnemyImageLUT[i * 4 + 2] = smallImages[i * 2 + 1];
@@ -2340,7 +2340,7 @@ namespace FF1Lib
 				if(acceptablepalettes.Count == 0)
 					acceptablepalettes = en.palettesInTileset[enemy[i].tileset].ToList();
 				enemy[i].pal = acceptablepalettes.PickRandom(rng);
-				enemyImagePalettes[enemy[i].image].Add(enemy[i].pal);				
+				enemyImagePalettes[enemy[i].image].Add(enemy[i].pal);
 				// generate the stats for each monster
 				if (enemy[i].tier == -1)
 				{
@@ -3452,7 +3452,7 @@ namespace FF1Lib
 			SpellInfo[] spell = LoadSpells(); // list of spells and their appropriate tiers
 			EnemySkillInfo[] skill = new EnemySkillInfo[EnemySkillCount]; // list of enemy skills and their appropriate tiers
 			EnemyScriptInfo[] script = new EnemyScriptInfo[ScriptCount]; // list of enemy scripts
-			
+
 			// load vanilla values from ROM into the enemizer
 			byte[] skilltiers_enemy = new byte[]
 			{
@@ -3468,7 +3468,7 @@ namespace FF1Lib
 			{
 				script[i] = new EnemyScriptInfo();
 				script[i].decompressData(Get(ScriptOffset + i * ScriptSize, ScriptSize));
-			}	
+			}
 			EnemyInfo[] enemy = new EnemyInfo[EnemyCount]; // list of enemies, including information that is either inferred from formation inspection or tier lists that I have just made up
 			EnemizerTrackingInfo en = new EnemizerTrackingInfo(); // structure that contains many lists and other information that is helpful for managing formation generation efficiently
 			// set enemy default tier list.  these listings are based on a combination of where the enemy is placed in the game, its xp yield, its rough difficulty, whether it has a script or not, and gut feels
@@ -3486,7 +3486,7 @@ namespace FF1Lib
 				enemy[i] = new EnemyInfo();
 				enemy[i].decompressData(Get(EnemyOffset + i * EnemySize, EnemySize));
 				enemy[i].tier = enemyTierList[i];
-			}		
+			}
 			string[] enemyNames = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount); // load all the enemy names into the array for use by enemizer
 			string[] skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount); // load all the names of enemy skills
 			for (int i = 0; i < FormationCount; ++i) // we need to scour the formations list for enemy information, and to give the enemizer tracking info construct information it can work with
@@ -3537,7 +3537,7 @@ namespace FF1Lib
 					DoEnemizer_EnemyPatternTablesOnly(rng, patterntabledata, enemy, en); // rewrite the pattern tables and enemy palette assignments
 					Put(EnemyPatternTablesOffset, patterntabledata); // write the new pattern tables as a chunk
 				}
-					
+
 				if(!DoEnemizer_Formations(rng, enemy, en))
 				{
 					Console.WriteLine("Fission Mailed - Abort Formation Shuffle");
@@ -3613,7 +3613,7 @@ namespace FF1Lib
 				int[] tierchance = new int[5];
 				int[] skilltierchance = new int[4];
 				tierchance[0] = 0; tierchance[1] = 0; tierchance[2] = 0; tierchance[3] = 0; tierchance[4] = 0;
-				skilltierchance[0] = 0; skilltierchance[1] = 0; skilltierchance[2] = 0; skilltierchance[3] = 0; 
+				skilltierchance[0] = 0; skilltierchance[1] = 0; skilltierchance[2] = 0; skilltierchance[3] = 0;
 				switch (enemy[i].tier)
 				{
 					case 0:

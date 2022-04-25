@@ -1234,7 +1234,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void MermaidPrision(List<Map> maps, bool enable)
+		public void MermaidPrison(List<Map> maps, bool enable)
 		{
 			if (enable)
 			{
@@ -1243,6 +1243,9 @@ namespace FF1Lib
 					{
 						if (maps[(byte)MapId.SeaShrineB1][x, y] == (byte)Tile.Door) maps[(byte)MapId.SeaShrineB1][x, y] = (byte)Tile.DoorLocked;
 					}
+
+				// Have locked rooms draw inside NPCs, instead of outside NPCs
+				PutInBank(0x1F, 0xCEDE, new byte[] { 0x81 });
 			}
 		}
 	}

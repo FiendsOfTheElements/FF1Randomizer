@@ -238,6 +238,7 @@ namespace FF1Lib
 		public bool? BossScriptsOnly { get; set; } = false;
 		public bool? EnemySkillsSpells { get; set; } = false;
 		public bool? NoConsecutiveNukes { get; set; } = false;
+		public bool TranceHasStatusElement { get; set; } = false;
 		public bool? BossSkillsOnly { get; set; } = false;
 		public bool? EnemySkillsSpellsTiered { get; set; } = false;
 		public bool? EnemyStatusAttacks { get; set; } = false;
@@ -255,6 +256,7 @@ namespace FF1Lib
 		public bool? RandomVampAttackIncludesConeria { get; set; } = false;
 		public bool? FightBahamut { get; set; } = false;
 		public bool? SwoleBahamut { get; set; } = false;
+		public bool? SwoleAstos { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
 		public bool? OWDamageTiles { get; set; } = false;
@@ -568,6 +570,7 @@ namespace FF1Lib
 		public bool SaveGameWhenGameOver { get; set; } = false;
 		public bool SaveGameDWMode { get; set; } = false;
 		public bool? ShuffleAstos { get; set; } = false;
+		public bool UnsafeAstos { get; set; } = false;
 		public bool? RandomizeEnemizer { get; set; } = false;
 		public bool? RandomizeFormationEnemizer { get; set; } = false;
 		public bool? GenerateNewSpellbook { get; set; } = false;
