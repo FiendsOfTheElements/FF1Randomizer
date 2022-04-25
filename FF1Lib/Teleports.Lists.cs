@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace FF1Lib
 {
 	public class TeleportShuffle
 	{
-		public TeleportShuffle(OwMapExchangeData data)
-		{		
+		FF1Rom rom;
+
+		public TeleportShuffle(FF1Rom _rom, OwMapExchangeData data)
+		{
+			rom = _rom;
+
 			if (data?.OverworldCoordinates != null)
 			{
 				OverworldCoordinates = data.OverworldCoordinates.Select(kv => (Enum.Parse<OverworldTeleportIndex>(kv.Key), new Coordinate(kv.Value.X, kv.Value.Y, CoordinateLocale.Overworld))).ToDictionary(kv => kv.Item1, kv => kv.Item2);
@@ -17,6 +22,113 @@ namespace FF1Lib
 				OverworldCoordinates = VanillaOverworldCoordinates;
 			}
 		}
+
+		public void LoadData()
+		{
+			var enter = new EnterTeleData(rom);
+			var tele = new NormTeleData(rom);
+
+			enter.LoadData();
+			tele.LoadData();
+
+			foreach (var e in EnterMapping)
+			{
+				var x = Get(e.Value);
+				x.SetEntrance(new Coordinate(enter[(int)e.Key].X, enter[(int)e.Key].Y, CoordinateLocale.Standard));
+				Set(e.Value, x);
+			}
+
+			foreach (var t in TeleMapping)
+			{
+				var x = Get(t.Value);
+				x.SetEntrance(new Coordinate((byte)(tele[(int)t.Key].X | (x.CoordinateX & 0x80)), tele[(int)t.Key].Y, CoordinateLocale.Standard));
+				Set(t.Value, x);
+			}
+		}
+
+		private TeleportDestination Get(string name)
+		{
+			return (TeleportDestination)typeof(TeleportShuffle).GetField(name).GetValue(this);
+		}
+
+		private void Set(string name, TeleportDestination tele)
+		{
+			typeof(TeleportShuffle).GetField(name).SetValue(this, tele);
+		}
+
+		private Dictionary<OverworldTeleportIndex, string> EnterMapping => new Dictionary<OverworldTeleportIndex, string>
+		{
+			{OverworldTeleportIndex.Coneria, "Coneria"},
+			{OverworldTeleportIndex.Pravoka, "Pravoka"},
+			{OverworldTeleportIndex.Elfland, "Elfland"},
+			{OverworldTeleportIndex.Melmond, "Melmond"},
+			{OverworldTeleportIndex.CrescentLake, "CrescentLake"},
+			{OverworldTeleportIndex.Gaia, "Gaia"},
+			{OverworldTeleportIndex.Onrac, "Onrac"},
+			{OverworldTeleportIndex.Lefein, "Lefein"},
+			{OverworldTeleportIndex.ConeriaCastle1, "ConeriaCastle1"},
+			{OverworldTeleportIndex.ElflandCastle, "ElflandCastle"},
+			{OverworldTeleportIndex.NorthwestCastle, "NorthwestCastle"},
+			{OverworldTeleportIndex.CastleOrdeals1, "CastleOrdeals1"},
+			{OverworldTeleportIndex.TempleOfFiends1, "TempleOfFiends"},
+			{OverworldTeleportIndex.DwarfCave, "DwarfCave"},
+			{OverworldTeleportIndex.MatoyasCave, "MatoyasCave"},
+			{OverworldTeleportIndex.SardasCave, "SardasCave"},
+			{OverworldTeleportIndex.Cardia1, "Cardia1"},
+			{OverworldTeleportIndex.Cardia2, "Cardia2"},
+			{OverworldTeleportIndex.BahamutCave1, "BahamutCave1"},
+			{OverworldTeleportIndex.Cardia4, "Cardia4"},
+			{OverworldTeleportIndex.Cardia5, "Cardia5"},
+			{OverworldTeleportIndex.Cardia6, "Cardia6"},
+			{OverworldTeleportIndex.IceCave1, "IceCave1"},
+			{OverworldTeleportIndex.Waterfall, "Waterfall"},
+			{OverworldTeleportIndex.TitansTunnelEast, "TitansTunnelEast"},
+			{OverworldTeleportIndex.TitansTunnelWest, "TitansTunnelWest"},
+			{OverworldTeleportIndex.EarthCave1, "EarthCave1"},
+			{OverworldTeleportIndex.GurguVolcano1, "GurguVolcano1"},
+			{OverworldTeleportIndex.MarshCave1, "MarshCave1"},
+			{OverworldTeleportIndex.MirageTower1, "MirageTower1"}
+		};
+
+		private Dictionary<TeleportIndex, string> TeleMapping => new Dictionary<TeleportIndex, string>
+		{
+			{TeleportIndex.ConeriaCastle2, "ConeriaCastle2"},
+			{TeleportIndex.CastleOrdealsMaze, "CastleOrdealsMaze"},
+			{TeleportIndex.CastleOrdealsTop, "CastleOrdealsTop"},
+			{TeleportIndex.BahamutsRoom, "BahamutsRoom"},
+			{TeleportIndex.IceCave2, "IceCave2"},
+			{TeleportIndex.IceCave3, "IceCave3"},
+			{TeleportIndex.IceCavePitRoom, "IceCavePitRoom"},
+			{TeleportIndex.EarthCave2, "EarthCave2"},
+			{TeleportIndex.EarthCaveVampire, "EarthCaveVampire"},
+			{TeleportIndex.EarthCave4, "EarthCave4"},
+			{TeleportIndex.EarthCaveLich, "EarthCaveLich"},
+			{TeleportIndex.GurguVolcano2, "GurguVolcano2"},
+			{TeleportIndex.GurguVolcano3, "GurguVolcano3"},
+			{TeleportIndex.GurguVolcano4, "GurguVolcano4"},
+			{TeleportIndex.GurguVolcano5, "GurguVolcano5"},
+			{TeleportIndex.GurguVolcano6, "GurguVolcano6"},
+			{TeleportIndex.GurguVolcanoKary, "GurguVolcanoKary"},
+			{TeleportIndex.MarshCaveTop, "MarshCaveTop"},
+			{TeleportIndex.MarshCave3, "MarshCave3"},
+			{TeleportIndex.MarshCaveBottom, "MarshCaveBottom"},
+			{TeleportIndex.MirageTower2, "MirageTower2"},
+			{TeleportIndex.MirageTower3, "MirageTower3"},
+			{TeleportIndex.SeaShrineMermaids, "SeaShrineMermaids"},
+			{TeleportIndex.SeaShrine2, "SeaShrine2"},
+			{TeleportIndex.SeaShrine1, "SeaShrine1"},
+			{TeleportIndex.SeaShrine4, "SeaShrine4"},
+			{TeleportIndex.SeaShrine5, "SeaShrine5"},
+			{TeleportIndex.SeaShrine6, "SeaShrine6"},
+			{TeleportIndex.SeaShrine7, "SeaShrine7"},
+			{TeleportIndex.SeaShrine8, "SeaShrine8"},
+			{TeleportIndex.SeaShrineKraken, "SeaShrineKraken"},
+			{TeleportIndex.SkyPalace1, "SkyPalace1"},
+			{TeleportIndex.SkyPalace2, "SkyPalace2"},
+			{TeleportIndex.SkyPalace3, "SkyPalace3"},
+			{TeleportIndex.SkyPalaceMaze, "SkyPalaceMaze"},
+			{TeleportIndex.SkyPalaceTiamat, "SkyPalaceTiamat"}
+		};
 
 		public TeleportDestination Coneria = new TeleportDestination(MapLocation.Coneria, MapIndex.ConeriaTown, new Coordinate(16, 23, CoordinateLocale.Standard));
 		public TeleportDestination Pravoka = new TeleportDestination(MapLocation.Pravoka, MapIndex.Pravoka, new Coordinate(19, 32, CoordinateLocale.Standard));

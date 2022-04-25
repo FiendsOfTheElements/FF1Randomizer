@@ -200,7 +200,7 @@ namespace FF1Lib
 			var owMapExchange = OwMapExchange.FromFlags(this, overworldMap, flags, rng);
 			owMapExchange?.ExecuteStep1();
 
-			TeleportShuffle teleporters = new TeleportShuffle(owMapExchange?.Data);
+			TeleportShuffle teleporters = new TeleportShuffle(this, owMapExchange?.Data);
 			overworldMap.Teleporters = teleporters;
 
 			var shipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(this);
@@ -282,6 +282,8 @@ namespace FF1Lib
 			{
 				DamageTilesKill(flags.SaveGameWhenGameOver);
 			}
+
+			if ((bool)flags.ReversedFloors) new ReversedFloors(this, maps, rng).Work();
 
 			var flippedMaps = new List<MapId>();
 

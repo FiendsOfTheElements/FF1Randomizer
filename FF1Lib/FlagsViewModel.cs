@@ -5103,6 +5103,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? ReversedFloors
+		{
+			get => Flags.ReversedFloors;
+			set
+			{
+				Flags.ReversedFloors = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public string PlayerName
 		{
 			get => Preferences.PlayerName;
