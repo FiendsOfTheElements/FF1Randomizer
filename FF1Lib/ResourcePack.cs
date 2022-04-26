@@ -10,6 +10,13 @@ namespace FF1Lib
 	public partial class FF1Rom : NesRom
 	{
 
+	    bool ResourcePackHasGameplayChanges(Stream stream) {
+	        var resourcePackArchive = new ZipArchive(stream);
+                if (resourcePackArchive.GetEntry("spellbook.json") != null) return true;
+                if (resourcePackArchive.GetEntry("overworld.json") != null) return true;
+		return false;
+	    }
+
 		void LoadResourcePack(Stream stream)
 		{
 			var resourcePackArchive = new ZipArchive(stream);

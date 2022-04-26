@@ -155,10 +155,13 @@ namespace FF1Lib
 			MT19337 rng;
 			using (SHA256 hasher = SHA256.Create())
 			{
-				if (flags.TournamentSafe && flags.ResourcePack != null)
-				{
-					resourcesPackHash = hasher.ComputeHash(new MemoryStream(Convert.FromBase64String(flags.ResourcePack)).ToArray());
+			    if (flags.ResourcePack != null) {
+				var rp = new MemoryStream(Convert.FromBase64String(flags.ResourcePack));
+                                if (flags.TournamentSafe || ResourcePackHasGameplayChanges(rp)) {
+				    rp.Seek(0, SeekOrigin.Begin);
+				    resourcesPackHash = hasher.ComputeHash(rp).ToArray();
 				}
+			    }
 
 				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flagsForRng));
 				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed, resourcesPackHash });
