@@ -126,6 +126,18 @@ namespace FF1Lib
 	    None = 255
 	}
 
+	public enum MagicGraphic : byte  {
+	    None = 0,
+	    BarOfLight = 176,
+	    FourSparkles = 184,
+	    Stars = 192,
+	    EnergyBeam = 200,
+	    EnergyFlare = 208,
+	    GlowingBall = 216,
+	    LargeSparkle = 224,
+	    SparklingHand = 232
+	}
+
 	[JsonObject(MemberSerialization.OptIn)]
 	public class MagicSpell
 	{
@@ -208,8 +220,18 @@ namespace FF1Lib
 		return routine == SpellRoutine.DefElement;
 	    }
 
-	    [JsonProperty]
 	    public byte gfx = 0;
+
+	    [JsonProperty]
+	    [JsonConverter(typeof(StringEnumConverter))]
+	    public MagicGraphic MagicGraphic {
+		get {
+		    return (MagicGraphic)gfx;
+		}
+		set {
+		    gfx = (byte)value;
+		}
+	    }
 
 	    public bool ShouldSerializegfx() {
 		return isRegularSpell;

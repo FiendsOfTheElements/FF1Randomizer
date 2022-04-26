@@ -130,6 +130,18 @@ namespace FF1Lib
 					LoadBridgeStory(s);
 				}
 			}
+
+			var spellbook = resourcePackArchive.GetEntry("spellbook.json");
+			if (spellbook != null)
+			{
+				using (var s = spellbook.Open())
+				{
+				    using (StreamReader reader = new StreamReader(stream)) {
+					var allSpells = JsonConvert.DeserializeObject<List<MagicSpell>>(reader.ReadToEnd());
+					this.PutSpells(allSpells);
+				    }
+				}
+			}
 		}
 
 		public void LoadDialogue(Stream stream)
