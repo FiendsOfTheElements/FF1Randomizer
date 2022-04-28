@@ -287,6 +287,8 @@ namespace FF1Lib
 
 			var flippedMaps = new List<MapId>();
 
+			teleporters.LoadData();
+
 			if ((bool)flags.FlipDungeons)
 			{
 				flippedMaps = HorizontalFlipDungeons(rng, maps, teleporters, overworldMap);
@@ -544,11 +546,20 @@ namespace FF1Lib
 				DraculasCurse(talkroutines, npcdata, rng, flags);
 			}
 
+			EnterTeleData enterBackup = new EnterTeleData(this);
+			NormTeleData normBackup = new NormTeleData(this);
+
+			enterBackup.LoadData();
+			normBackup.LoadData();
+
 			var maxRetries = 3;
 			for (var i = 0; i < maxRetries; i++)
 			{
 				try
 				{
+					enterBackup.StoreData();
+					normBackup.StoreData();
+
 					overworldMap = new OverworldMap(this, flags, palettes);
 					overworldMap.Teleporters = teleporters;
 
