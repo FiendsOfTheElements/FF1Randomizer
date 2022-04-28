@@ -8,6 +8,20 @@ branch=$(echo "$config" | jq -r ".branch")
 netlifyID=$(echo "$config" | jq -r ".netlifyID")
 deployPreview=$(echo "$config" | jq -r ".deployPreview")
 
+curl --location --request GET 'https://api.netlify.com/api/v1/dns_zones/finalfantasyrandomizer_com/dns_records' \
+    		      --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
+    		      --header 'Content-Type: application/json'
+
+# curl --location --request POST 'https://api.netlify.com/api/v1/dns_zones/finalfantasyrandomizer_com/dns_records' \
+#     		      --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
+#     		      --header 'Content-Type: application/json'
+#                       --data-binary '{"type":"A", "hostname": "wiki.finalfantasyrandomizer.com", "value": "207.246.91.234"}'
+
+# curl --location --request GET 'https://api.netlify.com/api/v1/dns_zones/finalfantasyrandomizer_com/dns_records' \
+#     		      --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
+#     		      --header 'Content-Type: application/json'
+
+exit 1
 
 if "$deployPreview"; then
     deploy_response=$(netlify deploy --json --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --site="$netlifyID")
