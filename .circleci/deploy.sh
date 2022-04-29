@@ -8,6 +8,18 @@ branch=$(echo "$config" | jq -r ".branch")
 netlifyID=$(echo "$config" | jq -r ".netlifyID")
 deployPreview=$(echo "$config" | jq -r ".deployPreview")
 
+# How to create the DNS entry for the wiki.
+#
+# Don't know if we can update it this way
+#
+# https://open-api.netlify.com/?_ga=2.12914164.25821680.1650985378-627951885.1650985378#operation/createDnsRecord
+#
+# The DNS record id is 626a081a0c4b884a22af9eb6
+#
+#curl --location --request POST 'https://api.netlify.com/api/v1/dns_zones/finalfantasyrandomizer_com/dns_records' \
+#    		      --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
+#    		      --header 'Content-Type: application/json' \
+#                      --data-binary '{"type":"A", "hostname": "wiki.finalfantasyrandomizer.com", "value": "207.246.91.234"}'
 
 if "$deployPreview"; then
     deploy_response=$(netlify deploy --json --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --site="$netlifyID")
