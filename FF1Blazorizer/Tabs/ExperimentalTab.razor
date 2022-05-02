@@ -44,7 +44,8 @@
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="TailBahamutDropDown" TItem="TailBahamutMode" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.TailBahamutMode">Bahamut and TAIL floors:</EnumDropDown>
 			<h4>Other</h4>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.RecruitmentMode)" Id="improvedClinicCheckBox" @bind-Value="Flags.ImprovedClinic">Clinics heal all statuses</CheckBox>
-		</div>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeClinicCheckBox" @bind-Value="Flags.FreeClinic">Clinics don't cost money</CheckBox>
+	</div>
 
   	<div class="clear-it"></div>
 	}

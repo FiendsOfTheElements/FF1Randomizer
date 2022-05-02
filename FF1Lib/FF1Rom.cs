@@ -1053,7 +1053,7 @@ namespace FF1Lib
 				ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
 			}
 
-			ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
+			ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.FreeClinic);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 			WriteMaps(maps);

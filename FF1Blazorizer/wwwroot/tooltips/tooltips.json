@@ -1732,6 +1732,12 @@
 		"description": "In addition to reviving dead characters at 1 HP, all clinics now heal Poison and Stone statuses (without affecting your HP)."
 	},
 	{
+		"Id": "freeClinicCheckBox",
+		"title": "Clinics don't cost money",
+		"screenshot": "free-clinic.png",
+		"description": "All clinics revive your characters for free."
+	},
+	{
 		"Id": "etherizerCheckBox",
 		"title": "Turn Shelters into Ethers",
 		"screenshot": "etherizerCheckBox.png",
