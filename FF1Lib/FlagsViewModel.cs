@@ -4394,6 +4394,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool ImprovedClinic
+		{
+			get => Flags.ImprovedClinic;
+			set
+			{
+				Flags.ImprovedClinic = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ImprovedClinic"));
+			}
+		}
+
 		public bool Etherizer
 		{
 			get => Flags.Etherizer;

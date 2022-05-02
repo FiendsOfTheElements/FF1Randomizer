@@ -986,6 +986,11 @@ namespace FF1Lib
 				ItemsText[(int)Item.Ribbon] = ItemsText[(int)Item.Ribbon].Remove(7);
 			    }
 
+			if (flags.ImprovedClinic && !(bool)flags.RecruitmentMode)
+			{
+				ImprovedClinic();
+			}
+
 			if (flags.Etherizer)
 			{
 				Etherizer();

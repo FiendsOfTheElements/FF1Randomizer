@@ -1726,6 +1726,12 @@
 		"description": "Houses completely restore the party's HP. Unchecked, using a HOUSE restores 120HP to each Light Warrior (the vanilla behavior)."
 	},
 	{
+		"Id": "improvedClinicCheckBox",
+		"title": "Clinics Heal All Statuses",
+		"screenshot": "improved-clinic.png",
+		"description": "In addition to reviving dead characters at 1 HP, all clinics now heal Poison and Stone statuses (without affecting your HP)."
+	},
+	{
 		"Id": "etherizerCheckBox",
 		"title": "Turn Shelters into Ethers",
 		"screenshot": "etherizerCheckBox.png",
