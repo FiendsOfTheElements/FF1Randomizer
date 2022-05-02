@@ -1597,7 +1597,12 @@
 		"screenshot": "RPSpoilers.png",
 		"description": "The names of the various classes with be changed to show what classes they will become after promotions.\nFormat: Current Class - Promotion Class"
 	},
-
+	{
+		"Id": "MpGainOnMaxGainModeDropDown",
+		"title": "Gain Spell Charges With Max MP Gain",
+		"screenshot": null,
+		"description": "When a character gains Max MP, they also gain a current MP in that spell slot. \n\nThis can be enabled for all classes, only for classes once they promote, or only for classes that receive the 'Max+MP+' class blessing (which will only show up when this option is set to blessed classes)."
+	},
 	{
 		"Id": "ChangeMaxMP",
 		"title": "Change Spellcaster Max MP",
@@ -1610,9 +1615,6 @@
 		"screenshot": "AllSpellLevelsForKnightNinja.png",
 		"description": "Sets the Knight and Ninja magic charge growth to give a charge in all levels whenever those classes gain a charge in any level, giving Knight and Ninja tier 4-8 charges. This alleviates an issue with \"Keep Permissions\" where the Knight and Ninja could never cast spells they could learn, but is useless otherwise."
 	},
-
-
-
 	{
 		"Id": "startingEquipmentHealStaff",
 		"title": "Starting Equipment - Heal Staff",

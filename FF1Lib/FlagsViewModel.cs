@@ -3940,6 +3940,16 @@ namespace FF1Lib
 			}
 		}
 
+		public MpGainOnMaxGain MpGainOnMaxGainMode
+		{
+			get => Flags.MpGainOnMaxGainMode;
+			set
+			{
+				Flags.MpGainOnMaxGainMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MpGainOnMaxGainMode"));
+			}
+		}
+
 		public LockHitMode LockMode
 		{
 			get => Flags.LockMode;
