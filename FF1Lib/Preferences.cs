@@ -17,7 +17,7 @@ namespace FF1Lib
 		public MapmanSlot MapmanSlot { get; set; } = MapmanSlot.Leader;
 		public bool DisableSpellCastFlash { get; set; } = true;
 		public bool LockRespondRate { get; set; } = true;
-		public bool UninterruptedMusic { get; set; } = true;
+		public bool UninterruptedMusic { get; set; } = false;
 		public bool ChangeLute { get; set; } = false;
 		public TitanSnack TitanSnack { get; set; } = TitanSnack.Ruby;
 		public Fate HurrayDwarfFate { get; set; } = Fate.Spare;
