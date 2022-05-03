@@ -1,21 +1,32 @@
 ﻿using RomUtilities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using static System.Math;
 
 namespace FF1Lib
 {
 	public enum WorldWealthMode
 	{
+		[Description("High Wealth")]
 		High,
-		Normal,
-		Low,
-		Impoverished,
+		[Description("Standard Wealth")]
+		Standard,
+		[Description("Melmond Wealth")]
 		Melmond,
+		[Description("Deep Dungeon")]
+		DeepDungeon,
+		[Description("Deep Dungeon Progressive")]
+		DeepDungeonProgressive,
 	}
-
-	public class ItemGenerator
+	public interface IItemGenerator
+	{
+		public Item GetItem(MT19337 rng);
+		public Item SpliceItem(MT19337 rng);
+	}
+	public class ItemGenerator : IItemGenerator
 	{
 		// Type:          Vanilla Count:
 		// Unique (Masa)       1
@@ -37,6 +48,14 @@ namespace FF1Lib
 			new List<int> {  0,  2,  8, 12, 12, 25, 35, 36, 100 },
 		};
 
+		private static readonly List<int>[] RelativeRatios = {
+			new List<int> {  1,  3, 9, 7, 8, -4, -5, -13, -6 },
+			new List<int> {  0,  0, 0, 0, 0,  0,  0,   0,  0 },
+			//new List<int> {  0,  -1, -2, -3, -3, 4, 5, 0,  0 },
+			//new List<int> {  0,  -1, -3, -5, -4, 6, 7, 0,  0 },
+			new List<int> {  -1, -2, -4, -5, -4, 14, 14, 0, -12 },
+		};
+
 		private enum Tier
 		{
 			Unique,
@@ -52,7 +71,7 @@ namespace FF1Lib
 
 		private List<List<Item>> _pool;
 
-		public ItemGenerator(List<Item> seedPool, WorldWealthMode wealth)
+		public ItemGenerator(List<Item> seedPool, List<int> unusedGoldItems, List<Item> removedItems, WorldWealthMode wealth)
 		{
 			// Make a copy
 			var treasurePool = seedPool.ToList();
@@ -60,22 +79,47 @@ namespace FF1Lib
 			// Make sure we copy all the input lists so we don't modify anything static.
 			List<List<Item>> tiers = new List<List<Item>>
 			{
-				ItemLists.UberTier.Where(item => treasurePool.Remove(item)).ToList(),
-				ItemLists.LegendaryWeaponTier.Where(item => treasurePool.Remove(item)).ToList(),
-				ItemLists.LegendaryArmorTier.Where(item => treasurePool.Remove(item)).ToList(),
-				ItemLists.RareWeaponTier.Where(item => treasurePool.Remove(item)).ToList(),
-				ItemLists.RareArmorTier.Where(item => treasurePool.Remove(item)).ToList(),
-				ItemLists.CommonWeaponTier.Where(item => treasurePool.Remove(item)).ToList(),
-				ItemLists.CommonArmorTier.Where(item => treasurePool.Remove(item)).ToList(),
-				ItemLists.AllConsumables.Where(item => treasurePool.Remove(item)).ToList(),
-				treasurePool.Where(x => x >= Item.Gold10 && x <= Item.Gold65000).ToList(),
+				ItemLists.UberTier.Where(x => !removedItems.Contains(x)).ToList(),
+				ItemLists.LegendaryWeaponTier.Where(x => !removedItems.Contains(x)).ToList(),
+				ItemLists.LegendaryArmorTier.ToList(),
+				ItemLists.RareWeaponTier.ToList(),
+				ItemLists.RareArmorTier.ToList(),
+				ItemLists.CommonWeaponTier.ToList(),
+				ItemLists.CommonArmorTier.ToList(),
+				ItemLists.AllConsumables.ToList(),
+				ItemLists.AllGoldTreasure.Where(x => !unusedGoldItems.Contains((int)x)).ToList(),
 			};
 
-			List<int> ratios = Ratios[(int)wealth];
+			List<int> ratios = RelativeRatios[(int)wealth].ToList();
 			System.Diagnostics.Debug.Assert(tiers.Count == ratios.Count);
-			System.Diagnostics.Debug.Assert(Enum.GetValues(typeof(WorldWealthMode)).Length == Ratios.Length);
+			System.Diagnostics.Debug.Assert(Enum.GetValues(typeof(WorldWealthMode)).Length == RelativeRatios.Length);
 
-			// Now populate the comined pool with a weighted average of all those above lists.
+			ratios[0] += treasurePool.Where(x => ItemLists.UberTier.Contains(x)).Count();
+			ratios[1] += treasurePool.Where(x => ItemLists.LegendaryWeaponTier.Contains(x)).Count();
+			ratios[2] += treasurePool.Where(x => ItemLists.LegendaryArmorTier.Contains(x)).Count();
+			ratios[3] += treasurePool.Where(x => ItemLists.RareWeaponTier.Contains(x)).Count();
+			ratios[4] += treasurePool.Where(x => ItemLists.RareArmorTier.Contains(x)).Count();
+			ratios[5] += treasurePool.Where(x => ItemLists.CommonWeaponTier.Contains(x)).Count();
+			ratios[6] += treasurePool.Where(x => ItemLists.CommonArmorTier.Contains(x)).Count();
+			ratios[7] += treasurePool.Where(x => ItemLists.AllConsumables.Contains(x)).Count();
+			ratios[8] += treasurePool.Where(x => ItemLists.AllGoldTreasure.Contains(x)).Count();
+
+			if (!tiers[0].Any())
+			{
+				ratios[1] += ratios[0];
+				ratios[0] = 0;
+			}
+
+			for (int i = 0; i < ratios.Count - 1; i++)
+			{
+				if (ratios[i] < 0)
+				{
+					ratios[8] += ratios[i];
+					ratios[i] = 0;
+				}
+			}
+
+			// Now populate the combined pool with a weighted average of all those above lists.
 			_pool = new List<List<Item>>();
 			for (int i = 0; i < ratios.Count(); ++i)
 			{
@@ -86,11 +130,12 @@ namespace FF1Lib
 				}
 			}
 
+			System.Diagnostics.Debug.Assert(treasurePool.Count == _pool.Count);
 		}
 
 		public Item GetItem(MT19337 rng)
 		{
-			return _pool.PickRandom(rng).PickRandom(rng);
+			return _pool.SpliceRandom(rng).PickRandom(rng);
 		}
 
 		public Item SpliceItem(MT19337 rng)
@@ -100,6 +145,5 @@ namespace FF1Lib
 			_pool.RemoveAll(pool => !pool.Any());
 			return item;
 		}
-
 	}
 }

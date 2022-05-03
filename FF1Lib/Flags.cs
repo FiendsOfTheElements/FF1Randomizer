@@ -392,7 +392,6 @@ namespace FF1Lib
 
 		public bool? MelmondClinic { get; set; } = false;
         public bool DeepDungeon { get; set; } = false;
-		public bool DDEvenTreasureDistribution { get; set; } = false;
 		public bool DDProgressiveTilesets { get; set; } = false;
 		public bool DDFiendOrbs { get; set; } = false;
 		public TailBahamutMode TailBahamutMode { get; set; } = TailBahamutMode.Random;
@@ -654,7 +653,7 @@ namespace FF1Lib
 
 		public FormationShuffleMode FormationShuffleMode { get; set; } = FormationShuffleMode.None;
 
-		public WorldWealthMode WorldWealth { get; set; } = WorldWealthMode.Normal;
+		public WorldWealthMode WorldWealth { get; set; } = WorldWealthMode.Standard;
 
 		public EvadeCapValues EvadeCap { get; set; } = EvadeCapValues.medium;
 
@@ -706,8 +705,9 @@ namespace FF1Lib
 		public bool? IncentivizeBottle => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool NoOverworld => (SanityCheckerV2 & OwMapExchange == OwMapExchanges.NoOverworld);
 		public bool? IsShipFree => FreeShip | NoOverworld;
+		public bool? IsCanoeFree => FreeCanoe | (OwMapExchange == OwMapExchanges.Desert);
 		public bool? IsAirshipFree => FreeAirship & !NoOverworld & !(OwMapExchange == OwMapExchanges.Desert);
-		public bool? IsBridgeFree => FreeBridge | NoOverworld;
+		public bool? IsBridgeFree => FreeBridge | NoOverworld | (OwMapExchange == OwMapExchanges.Desert);
 		public bool? IsCanalFree => (FreeCanal & !NoOverworld) | (OwMapExchange == OwMapExchanges.Desert);
 		public bool? IsFloaterRemoved => ((NoFloater|IsAirshipFree) & !NoOverworld) | (OwMapExchange == OwMapExchanges.Desert);
 		public bool IncentivizeBridge => false;

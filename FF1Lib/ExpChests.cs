@@ -59,7 +59,7 @@ namespace FF1Lib
 
 			LoadData();
 
-			var unusedGoldDic = new HashSet<int>(FF1Rom.UnusedGoldItems.Cast<int>());
+			var unusedGoldDic = new HashSet<int>(rom.UnusedGoldItems.Cast<int>());
 
 			// construct a dictionary and get a shuffled index into it.
 			var goldItems = ItemLists.AllGoldTreasure.Select(g => (item: g, price: itemPrices[g], name: itemNames[(int)g])).ToList();
@@ -119,7 +119,7 @@ namespace FF1Lib
 
 			LoadData();
 
-			var unusedGoldDic = new HashSet<int>(FF1Rom.UnusedGoldItems.Cast<int>());
+			var unusedGoldDic = new HashSet<int>(rom.UnusedGoldItems.Cast<int>());
 
 			// construct a dictionary and get a shuffled index into it.
 			var goldItems = ItemLists.AllGoldTreasure.Select(g => (item: g, price: itemPrices[g], name: itemNames[(int)g])).ToList();

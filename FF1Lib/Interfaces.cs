@@ -78,6 +78,8 @@
 		bool IncentivizeBad { get; }
 		bool? NoMasamune { get; }
 		bool? NoXcalber { get; }
+		bool? IsFloaterRemoved { get;  }
+		bool? NoTail { get; }
 	}
 	public interface IMapEditFlags : IItemPlacementFlags
 	{
@@ -126,6 +128,8 @@
 		bool Archipelago { get; }
 		bool PredictivePlacement { get;}
 		bool AllowUnsafePlacement { get; }
+		bool DeepDungeon { get; }
+		bool Etherizer { get; }
 	}
 	public interface IItemShuffleFlags
 	{
