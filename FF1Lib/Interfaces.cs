@@ -80,6 +80,14 @@
 		bool? NoXcalber { get; }
 		bool? IsFloaterRemoved { get;  }
 		bool? NoTail { get; }
+		bool? IsCanoeFree { get; }
+		bool? FreeLute { get; }
+		bool? FreeTail { get; }
+		bool? IsBridgeFree { get; }
+		bool? IsCanalFree { get; }
+		bool? IsShipFree { get; }
+		bool? GuaranteedMasamune { get; }
+
 	}
 	public interface IMapEditFlags : IItemPlacementFlags
 	{

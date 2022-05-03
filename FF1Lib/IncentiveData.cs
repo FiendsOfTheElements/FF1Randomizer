@@ -32,8 +32,7 @@ namespace FF1Lib
 
 		ISanityChecker _checker;
 
-		//public IncentiveData(MT19337 rng, IIncentiveFlags flags, OverworldMap map, ItemShopSlot shopSlot, ISanityChecker checker)
-		public IncentiveData(MT19337 rng, Flags flags, OverworldMap map, ItemShopSlot shopSlot, ISanityChecker checker)
+		public IncentiveData(MT19337 rng, IIncentiveFlags flags, OverworldMap map, ItemShopSlot shopSlot, ISanityChecker checker)
 		{
 			OverworldMap = map;
 			_checker = checker;
