@@ -2878,6 +2878,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool UninterruptedMusic
+		{
+			get => Preferences.UninterruptedMusic;
+			set
+			{
+				Preferences.UninterruptedMusic = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UninterruptedMusic"));
+			}
+		}
+
 		public bool NoEmptyScripts
 		{
 			get => Flags.NoEmptyScripts;
@@ -3931,6 +3941,16 @@ namespace FF1Lib
 			}
 		}
 
+		public MpGainOnMaxGain MpGainOnMaxGainMode
+		{
+			get => Flags.MpGainOnMaxGainMode;
+			set
+			{
+				Flags.MpGainOnMaxGainMode = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MpGainOnMaxGainMode"));
+			}
+		}
+
 		public LockHitMode LockMode
 		{
 			get => Flags.LockMode;
@@ -4382,6 +4402,26 @@ namespace FF1Lib
 			{
 				Flags.NonesGainXP = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NonesGainXP"));
+			}
+		}
+
+		public bool ImprovedClinic
+		{
+			get => Flags.ImprovedClinic;
+			set
+			{
+				Flags.ImprovedClinic = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ImprovedClinic"));
+			}
+		}
+
+		public bool FreeClinic
+		{
+			get => Flags.FreeClinic;
+			set
+			{
+				Flags.FreeClinic = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeClinic"));
 			}
 		}
 
@@ -5090,6 +5130,16 @@ namespace FF1Lib
 			set
 			{
 				Flags.MermaidPrison = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? ReversedFloors
+		{
+			get => Flags.ReversedFloors;
+			set
+			{
+				Flags.ReversedFloors = value;
 				RaisePropertyChanged();
 			}
 		}

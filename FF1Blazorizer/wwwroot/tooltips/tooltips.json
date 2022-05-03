@@ -30,6 +30,12 @@
 		"description": "Shattered spreads the resistances across many amror pieces. Each Element occurs multiple times. It tries to ensure that every class can attain full protection."
 	},
 	{
+		"Id": "reversedFloors",
+		"title": "Reversed Dungeons",
+		"screenshot": null,
+		"description": "Where meaningful possible it swaps entrance and exit stairs otherwise it modifies the location of entrance stairs. Some floors are also slightly modified to allow for meaningful relocation of stairs."
+	},
+	{
 		"Id": "noEmptyScripts",
 		"title": "No Empty Scripts",
 		"screenshot": "enemyScriptsCheckBox.png",
@@ -1591,7 +1597,12 @@
 		"screenshot": "RPSpoilers.png",
 		"description": "The names of the various classes with be changed to show what classes they will become after promotions.\nFormat: Current Class - Promotion Class"
 	},
-
+	{
+		"Id": "MpGainOnMaxGainModeDropDown",
+		"title": "Gain Spell Charges With Max MP Gain",
+		"screenshot": null,
+		"description": "When a character gains Max MP, they also gain a current MP in that spell slot. \n\nThis can be enabled for all classes, only for classes once they promote, or only for classes that receive the 'Max+MP+' class blessing (which will only show up when this option is set to blessed classes)."
+	},
 	{
 		"Id": "ChangeMaxMP",
 		"title": "Change Spellcaster Max MP",
@@ -1604,9 +1615,6 @@
 		"screenshot": "AllSpellLevelsForKnightNinja.png",
 		"description": "Sets the Knight and Ninja magic charge growth to give a charge in all levels whenever those classes gain a charge in any level, giving Knight and Ninja tier 4-8 charges. This alleviates an issue with \"Keep Permissions\" where the Knight and Ninja could never cast spells they could learn, but is useless otherwise."
 	},
-
-
-
 	{
 		"Id": "startingEquipmentHealStaff",
 		"title": "Starting Equipment - Heal Staff",
@@ -1718,6 +1726,18 @@
 		"title": "House Full HP Restoration",
 		"screenshot": "housesFillHpCheckBox.gif",
 		"description": "Houses completely restore the party's HP. Unchecked, using a HOUSE restores 120HP to each Light Warrior (the vanilla behavior)."
+	},
+	{
+		"Id": "improvedClinicCheckBox",
+		"title": "Clinics Heal All Statuses",
+		"screenshot": "improved-clinic.png",
+		"description": "In addition to reviving dead characters at 1 HP, all clinics now heal Poison and Stone statuses (without affecting your HP)."
+	},
+	{
+		"Id": "freeClinicCheckBox",
+		"title": "Clinics don't cost money",
+		"screenshot": "free-clinic.png",
+		"description": "All clinics revive your characters for free."
 	},
 	{
 		"Id": "etherizerCheckBox",
@@ -2256,5 +2276,10 @@
 		"title": "Lock Respond Rate",
 		"screenshot": "lockRespondRateCheckBox.png",
 		"description": "Pressing LEFT or RIGHT on the Title Screen will not change the Respond Rate from its preferred value of 8.\nThis prevents accidental changes to the text speed during gameplay."
+	},
+	{
+		"Id": "uninterruptedMusicCheckBox",
+		"title": "Uninterrupted Music",
+		"description": "Modifies the chime that plays when opening standard treasure chests so music keeps playing instead of restarting after every chest. (Incentivized items playing the longer fanfare tune remain unchanged.)"
 	}
 ]

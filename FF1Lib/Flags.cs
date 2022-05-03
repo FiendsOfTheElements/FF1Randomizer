@@ -56,6 +56,7 @@ namespace FF1Lib
 
 		#endregion
 
+		public bool? ReversedFloors { get; set; } = false;
 		public bool BuffTier1DamageSpells { get; set; } = false;
 		public bool NoEmptyScripts { get; set; } = false;
 		public bool LaterLoose { get; set; } = false;
@@ -364,6 +365,8 @@ namespace FF1Lib
 		public bool ChestInfo { get; set; } = false;
 		public bool IncentiveChestItemsFanfare { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;
+		public bool ImprovedClinic { get; set; } = false;
+		public bool FreeClinic { get; set; } = false;
 		public bool Etherizer { get; set; } = false;
 		public bool HouseMPRestoration { get; set; } = false;
 		public bool WeaponStats { get; set; } = false;
@@ -646,6 +649,8 @@ namespace FF1Lib
 
 		[IntegerFlag(0, 9)]
 		public int NinjaMaxMP { get; set; } = 4;
+
+		public MpGainOnMaxGain MpGainOnMaxGainMode { get; set; } = MpGainOnMaxGain.None;
 
 		public LockHitMode LockMode { get; set; } = LockHitMode.Vanilla;
 

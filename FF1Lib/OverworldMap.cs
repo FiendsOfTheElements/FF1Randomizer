@@ -480,6 +480,8 @@ namespace FF1Lib
 
 		public void ShuffleEntrancesAndFloors(MT19337 rng, IFloorShuffleFlags flags)
 		{
+			_teleporters.LoadData();
+
 			OverriddenOverworldLocations = new Dictionary<MapLocation, OverworldTeleportIndex>
 			{
 				[MapLocation.StartingLocation] = OverworldTeleportIndex.Coneria,

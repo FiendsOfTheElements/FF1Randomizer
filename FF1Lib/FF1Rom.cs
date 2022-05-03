@@ -203,7 +203,7 @@ namespace FF1Lib
 			var owMapExchange = OwMapExchange.FromFlags(this, overworldMap, flags, rng);
 			owMapExchange?.ExecuteStep1();
 
-			TeleportShuffle teleporters = new TeleportShuffle(owMapExchange?.Data);
+			TeleportShuffle teleporters = new TeleportShuffle(this, owMapExchange?.Data);
 			overworldMap.Teleporters = teleporters;
 
 			var shipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(this);
@@ -286,7 +286,11 @@ namespace FF1Lib
 				DamageTilesKill(flags.SaveGameWhenGameOver);
 			}
 
+			if ((bool)flags.ReversedFloors) new ReversedFloors(this, maps, rng).Work();
+
 			var flippedMaps = new List<MapId>();
+
+			teleporters.LoadData();
 
 			if ((bool)flags.FlipDungeons)
 			{
@@ -551,11 +555,20 @@ namespace FF1Lib
 				DraculasCurse(talkroutines, npcdata, rng, flags);
 			}
 
+			EnterTeleData enterBackup = new EnterTeleData(this);
+			NormTeleData normBackup = new NormTeleData(this);
+
+			enterBackup.LoadData();
+			normBackup.LoadData();
+
 			var maxRetries = 3;
 			for (var i = 0; i < maxRetries; i++)
 			{
 				try
 				{
+					enterBackup.StoreData();
+					normBackup.StoreData();
+
 					overworldMap = new OverworldMap(this, flags, palettes);
 					overworldMap.Teleporters = teleporters;
 
@@ -987,6 +1000,11 @@ namespace FF1Lib
 				ItemsText[(int)Item.Ribbon] = ItemsText[(int)Item.Ribbon].Remove(7);
 			    }
 
+			if (flags.ImprovedClinic && !(bool)flags.RecruitmentMode)
+			{
+				ImprovedClinic();
+			}
+
 			if (flags.Etherizer)
 			{
 				Etherizer();
@@ -1042,7 +1060,7 @@ namespace FF1Lib
 				ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
 			}
 
-			ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
+			ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.FreeClinic);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 			WriteMaps(maps);
@@ -1107,6 +1125,7 @@ namespace FF1Lib
 			SetupClassAltXp();
 
 			ClassData.SetMPMax(flags);
+			ClassData.SetMpGainOnMaxGain(flags, this);
 			ClassData.RaiseThiefHitRate(flags);
 			ClassData.BuffThiefAGI(flags);
 			ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);
@@ -1208,6 +1227,11 @@ namespace FF1Lib
 			if (preferences.LockRespondRate)
 			{
 				LockRespondRate();
+			}
+
+			if (preferences.UninterruptedMusic)
+			{
+				UninterruptedMusic();
 			}
 
 			if (preferences.SpriteSheet != null) {
