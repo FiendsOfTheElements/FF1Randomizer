@@ -25,7 +25,7 @@ namespace FF1Lib
 	{
 		private List<IRewardSource> _chestList;
 		private List<IRewardSource> _placedItems;
-		private List<(MapId, int)> _floorsWeight;
+		private Dictionary<MapLocation, int> _floorsWeight;
 		private List<Treasure> treasures = new List<Treasure>();
 		private FF1Rom _rom;
 		private int _currentChest;
@@ -88,63 +88,106 @@ namespace FF1Lib
 
 			if (deepDungeonEnabled)
 			{
-				_floorsWeight = Enumerable.Range(0, chestList.Select(x => ItemLocations.MapLocationToMapId[x.MapLocation]).Distinct().Count()).Select(x => ((MapId)x, x)).ToList();
+				_floorsWeight = Enumerable.Range(0, (int)chestList.OrderByDescending(x => x.MapLocation).First().MapLocation + 1).Select(x => ((MapLocation)x, x)).ToDictionary(x => x.Item1, x => x.Item2);
 			}
 			else
 			{
 				_floorsWeight = new()
 				{
-					(MapId.TempleOfFiends, 9),
-					(MapId.ConeriaCastle2F, 10),
-					(MapId.MatoyasCave, 11),
-					(MapId.Pravoka, 12),
-					(MapId.MarshCaveB1, 13),
-					(MapId.MarshCaveB2, 14),
-					(MapId.MarshCaveB3, 15),
-					(MapId.ElflandCastle, 16),
-					(MapId.NorthwestCastle, 11),
-					(MapId.ConeriaCastle1F, 18),
-					(MapId.DwarfCave, 19),
-					(MapId.TitansTunnel, 20),
-					(MapId.EarthCaveB1, 21),
-					(MapId.EarthCaveB2, 22),
-					(MapId.EarthCaveB3, 23),
-					(MapId.EarthCaveB4, 24),
-					(MapId.GurguVolcanoB1, 25),
-					(MapId.GurguVolcanoB2, 26),
-					(MapId.GurguVolcanoB3, 27),
-					(MapId.GurguVolcanoB4, 28),
-					(MapId.GurguVolcanoB5, 29),
-					(MapId.IceCaveB1, 30),
-					(MapId.IceCaveB2, 31),
-					(MapId.IceCaveB3, 32),
-					(MapId.CastleOfOrdeals2F, 33),
-					(MapId.CastleOfOrdeals3F, 34),
-					(MapId.Cardia, 35),
-					(MapId.Waterfall, 36),
-					(MapId.SeaShrineB3, 37),
-					(MapId.SeaShrineB2, 38),
-					(MapId.SeaShrineB1, 39),
-					(MapId.SeaShrineB4, 40),
-					(MapId.SeaShrineB5, 41),
-					(MapId.Gaia, 42),
-					(MapId.Lefein, 43),
-					(MapId.MirageTower1F, 44),
-					(MapId.MirageTower2F, 45),
-					(MapId.MirageTower3F, 46),
-					(MapId.SkyPalace1F, 50),
-					(MapId.SkyPalace2F, 51),
-					(MapId.SkyPalace3F, 52),
-					(MapId.SkyPalace4F, 53),
-					(MapId.SkyPalace5F, 54),
-					(MapId.TempleOfFiendsRevisited1F, 55),
-					(MapId.TempleOfFiendsRevisited2F, 56),
-					(MapId.TempleOfFiendsRevisited3F, 57),
-					(MapId.TempleOfFiendsRevisitedEarth, 59),
-					(MapId.TempleOfFiendsRevisitedFire, 59),
-					(MapId.TempleOfFiendsRevisitedWater, 59),
-					(MapId.TempleOfFiendsRevisitedAir, 59),
-					(MapId.TempleOfFiendsRevisitedChaos, 59),
+					{ MapLocation.StartingLocation, 0 },
+					{ MapLocation.AirshipLocation, 0 },
+					{ MapLocation.Coneria, 0 },
+					{ MapLocation.Pravoka, 11 },
+					{ MapLocation.Elfland, 18 },
+					{ MapLocation.Melmond, 25 },
+					{ MapLocation.CrescentLake, 32 },
+					{ MapLocation.Gaia, 39 },
+					{ MapLocation.Onrac, 46 },
+					{ MapLocation.Lefein, 53 },
+					{ MapLocation.ConeriaCastle1, 0 },
+					{ MapLocation.ConeriaCastle2, 2 },
+					{ MapLocation.ConeriaCastleRoom1, 20 },
+					{ MapLocation.ConeriaCastleRoom2, 20 },
+					{ MapLocation.ElflandCastle, 20 },
+					{ MapLocation.ElflandCastleRoom1, 20 },
+					{ MapLocation.NorthwestCastle, 20 },
+					{ MapLocation.NorthwestCastleRoom2, 20 },
+					{ MapLocation.CastleOrdeals1, 35 },
+					{ MapLocation.CastleOrdealsMaze, 35 },
+					{ MapLocation.CastleOrdealsTop, 35 },
+					{ MapLocation.TempleOfFiends1, 5 },
+					{ MapLocation.TempleOfFiends1Room1, 5 },
+					{ MapLocation.TempleOfFiends1Room2, 5 },
+					{ MapLocation.TempleOfFiends1Room3, 20 },
+					{ MapLocation.TempleOfFiends1Room4, 20 },
+					{ MapLocation.TempleOfFiends2, 55 },
+					{ MapLocation.TempleOfFiends3, 56 },
+					{ MapLocation.TempleOfFiendsChaos, 61 },
+					{ MapLocation.TempleOfFiendsAir, 60 },
+					{ MapLocation.TempleOfFiendsEarth, 55 },
+					{ MapLocation.TempleOfFiendsFire, 58 },
+					{ MapLocation.TempleOfFiendsWater, 59 },
+					{ MapLocation.TempleOfFiendsPhantom, 57 },
+					{ MapLocation.EarthCave1, 28 },
+					{ MapLocation.EarthCave2, 28 },
+					{ MapLocation.EarthCaveVampire, 28 },
+					{ MapLocation.EarthCave4, 28 },
+					{ MapLocation.EarthCaveLich, 28 },
+					{ MapLocation.GurguVolcano1, 34 },
+					{ MapLocation.GurguVolcano2, 34 },
+					{ MapLocation.GurguVolcano3, 34 },
+					{ MapLocation.GurguVolcano4, 34 },
+					{ MapLocation.GurguVolcano5, 34 },
+					{ MapLocation.GurguVolcano6, 34 },
+					{ MapLocation.GurguVolcanoKary, 34 },
+					{ MapLocation.IceCave1, 36 },
+					{ MapLocation.IceCave2, 36 },
+					{ MapLocation.IceCave3, 36 },
+					{ MapLocation.IceCave5, 36 },
+					{ MapLocation.IceCaveBackExit, 36 },
+					{ MapLocation.IceCaveFloater, 36 },
+					{ MapLocation.IceCavePitRoom, 36 },
+					{ MapLocation.SeaShrine1, 48 },
+					{ MapLocation.SeaShrine2, 48 },
+					{ MapLocation.SeaShrine2Room2, 48 },
+					{ MapLocation.SeaShrine4, 48 },
+					{ MapLocation.SeaShrine5, 48 },
+					{ MapLocation.SeaShrine6, 48 },
+					{ MapLocation.SeaShrine7, 48 },
+					{ MapLocation.SeaShrine8, 48 },
+					{ MapLocation.SeaShrineKraken, 48 },
+					{ MapLocation.SeaShrineMermaids, 48 },
+					{ MapLocation.Cardia1, 40 },
+					{ MapLocation.Cardia2, 40 },
+					{ MapLocation.BahamutCave1, 40 },
+					{ MapLocation.BahamutCave2, 40 },
+					{ MapLocation.Cardia4, 40 },
+					{ MapLocation.Cardia5, 40 },
+					{ MapLocation.Cardia6, 40 },
+					{ MapLocation.Waterfall, 46 },
+					{ MapLocation.DwarfCave, 12 },
+					{ MapLocation.DwarfCaveRoom3, 20 },
+					{ MapLocation.MatoyasCave, 8 },
+					{ MapLocation.SardasCave, 28 },
+					{ MapLocation.MarshCave1, 18 },
+					{ MapLocation.MarshCave3, 18 },
+					{ MapLocation.MarshCaveBottom, 18 },
+					{ MapLocation.MarshCaveBottomRoom13, 24 },
+					{ MapLocation.MarshCaveBottomRoom14, 24 },
+					{ MapLocation.MarshCaveBottomRoom16, 24 },
+					{ MapLocation.MarshCaveTop, 18 },
+					{ MapLocation.MirageTower1, 50 },
+					{ MapLocation.MirageTower2, 50 },
+					{ MapLocation.MirageTower3, 50 },
+					{ MapLocation.SkyPalace1, 52 },
+					{ MapLocation.SkyPalace2, 52 },
+					{ MapLocation.SkyPalace3, 52 },
+					{ MapLocation.SkyPalaceMaze, 52 },
+					{ MapLocation.SkyPalaceTiamat, 52 },
+					{ MapLocation.TitansTunnelEast, 28 },
+					{ MapLocation.TitansTunnelWest, 28 },
+					{ MapLocation.TitansTunnelRoom, 28 },
+					{ MapLocation.Caravan, 0 },
 				};
 			}
 
@@ -204,7 +247,7 @@ namespace FF1Lib
 			int lowest = 0;
 			if (RollDice(rng, 1, 5) == 1)
 			{
-				switch (((int)ItemLocations.MapLocationToMapId[_chestList[_currentChest].MapLocation] - 8) / 13)
+				switch ((_floorsWeight[_chestList[_currentChest].MapLocation] - 8) / 13)
 				{
 				case 0:
 					spunitem = (byte)potionspinner1.PickRandom(rng);
@@ -219,7 +262,7 @@ namespace FF1Lib
 			}
 			else
 			{
-				lowest = Math.Min(GetLowestIndex((int)ItemLocations.MapLocationToMapId[_chestList[_currentChest].MapLocation]), treasures.Count() - treasurediesize - 1);
+				lowest = Math.Min(GetLowestIndex(_floorsWeight[_chestList[_currentChest].MapLocation]), treasures.Count() - treasurediesize - 1);
 				Treasure picked = treasures[RollDice(rng, 1, treasurediesize) + (int)lowest];
 				spunitem = picked.index;
 			}

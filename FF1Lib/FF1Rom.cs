@@ -302,14 +302,6 @@ namespace FF1Lib
 				DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
 			}
 
-			// Original placement of DeepDungeon routine
-			if (flags.DeepDungeon)
-			{
-				DeepDungeon.Generate(rng, overworldMap, maps, flags);
-				DeepDungeonFloorIndicator();
-				UnusedGoldItems = new List<int> { };
-			}
-
 			if (preferences.ModernBattlefield)
 			{
 				EnableModernBattlefield();
@@ -318,6 +310,14 @@ namespace FF1Lib
 			if ((bool)flags.TitansTrove)
 			{
 				EnableTitansTrove(maps);
+			}
+
+			// Original placement of DeepDungeon routine
+			if (flags.DeepDungeon)
+			{
+				DeepDungeon.Generate(rng, overworldMap, maps, flags);
+				DeepDungeonFloorIndicator();
+				UnusedGoldItems = new List<int> { };
 			}
 
 			if ((bool)flags.LefeinShops)
