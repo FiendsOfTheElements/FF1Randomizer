@@ -26,7 +26,7 @@ namespace FF1Lib
 	{
 		[Description("All")]
 		All = 0,
-		[Description("Remove Stun Status")]
+		[Description("All except Stun Status")]
 		RemoveStun,
 		[Description("Only Death Status")]
 		OnlyDeath,

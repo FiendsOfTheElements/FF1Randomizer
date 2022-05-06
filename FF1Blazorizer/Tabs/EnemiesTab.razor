@@ -15,19 +15,16 @@
 			<div class="checkbox-cell"></div>
 			<h4>Enemies</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" @bind-Value="Flags.ShuffleScriptsEnemies">Shuffle Scripts</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" @bind-Value="Flags.ShuffleSkillsSpellsEnemies">Shuffle Skills & Spells</TriStateCheckBox>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleScriptsEnemies != false)" Id="scriptMultiplier" TItem="ScriptTouchMultiplier" @bind-Value="Flags.ScriptMultiplier">Script Count:</EnumDropDown>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySkillsSpellsCheckBox" @bind-Value="Flags.ShuffleSkillsSpellsEnemies">Shuffle Skills & Spells</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsEnemies != false)" Id="enemySkillsSpellsTieredCheckBox" @bind-Value="Flags.EnemySkillsSpellsTiered">Generate Balanced Scripts</TriStateCheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsEnemies != false)" Id="noEmptyScripts" @bind-Value="Flags.NoEmptyScripts">No empty Scripts</CheckBox>
 
 			<div class="checkbox-cell"></div>
 			<h4>Bosses</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" @bind-Value="Flags.ShuffleScriptsBosses">Shuffle Scripts</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" @bind-Value="Flags.ShuffleSkillsSpellsBosses">Shuffle Skills & Spells</TriStateCheckBox>
-
-			<div class="checkbox-cell"></div>
-			<h4>Scripts Balance</h4>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleScriptsEnemies != false)" Id="scriptMultiplier" TItem="ScriptTouchMultiplier" @bind-Value="Flags.ScriptMultiplier">Script Count:</EnumDropDown>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsEnemies != false)" Id="enemySkillsSpellsTieredCheckBox" @bind-Value="Flags.EnemySkillsSpellsTiered">Generate Balanced Scripts</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsEnemies != false || Flags.ShuffleSkillsSpellsBosses != false)" Id="noConsecutiveNukesCheckBox" @bind-Value="Flags.NoConsecutiveNukes">Prevent consecutive NUKE or NUCLEAR</TriStateCheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsEnemies != false)" Id="noEmptyScripts" @bind-Value="Flags.NoEmptyScripts">No empty Scripts</CheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossScriptsCheckBox" @bind-Value="Flags.ShuffleScriptsBosses">Shuffle Scripts</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossSkillsSpellsCheckBox" @bind-Value="Flags.ShuffleSkillsSpellsBosses">Shuffle Skills & Spells</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsBosses != false)" Id="noConsecutiveNukesCheckBox" @bind-Value="Flags.NoConsecutiveNukes">Prevent consecutive NUKE or NUCLEAR</TriStateCheckBox>
 
 			<div class="checkbox-cell"></div>
 			<h4>Status Attacks</h4>
@@ -55,13 +52,13 @@
 
 			<h4>Astos</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="swoleAstosCheckBox" @bind-Value="Flags.SwoleAstos">Buffed</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleAstosCheckBox" @bind-Value="Flags.ShuffleAstos">Shuffle Astos</TriStateCheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="unsafeAstosCheckBox" IsEnabled="@Flags.ShuffleAstos" @bind-Value="Flags.UnsafeAstos">Unsafe Astos</CheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffleAstosCheckBox" @bind-Value="Flags.ShuffleAstos">Shuffle</TriStateCheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="unsafeAstosCheckBox" IsEnabled="@Flags.ShuffleAstos" @bind-Value="Flags.UnsafeAstos">Unsafe</CheckBox>
 			<div class="checkbox-cell"></div>
 
 			<h4>Fiends</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fiendShuffleCheckBox" @bind-Value="Flags.FiendShuffle">Shuffle</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.AlternateFiends">Alternate Fiends</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.AlternateFiends">Alternate</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 
 			<h4>Bahamut</h4>
@@ -76,10 +73,6 @@
 		<h4>Enemizer</h4>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" @bind-Value="Flags.RandomizeFormationEnemizer">Generate new formations</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" Indent IsEnabled="@Flags.RandomizeFormationEnemizer" @bind-Value="Flags.RandomizeEnemizer">Generate new enemies</TriStateCheckBox>
-
-		<div class="checkbox-cell"></div>
-		<h4>Obfuscation</h4>
-		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="enemyObfuscation" TItem="EnemyObfuscation" @bind-Value="Flags.EnemyObfuscation">Enemy Obfuscation:</EnumDropDown>
 
 		</div>
 		</div>
