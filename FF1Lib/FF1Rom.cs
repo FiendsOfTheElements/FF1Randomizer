@@ -728,40 +728,11 @@ namespace FF1Lib
 				ShuffleRng(rng);
 			}
 
-			if (((bool)flags.EnemyScripts))
-			{
-				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates, (bool)!flags.BossScriptsOnly, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.EnemySkillsSpellsTiered, flags.ScriptMultiplier);
-			}
+			ShuffleEnemyScripts(rng, flags);
 
-			if (((bool)flags.EnemySkillsSpells))
-			{
-				if ((bool)flags.EnemySkillsSpellsTiered && (bool)!flags.BossSkillsOnly)
-				{
-					GenerateBalancedEnemyScripts(rng, (bool)flags.SwolePirates);
-					ShuffleEnemySkillsSpells(rng, false, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.NoConsecutiveNukes, (bool)flags.NoEmptyScripts);
-				}
-				else
-				{
-				    ShuffleEnemySkillsSpells(rng, (bool)!flags.BossSkillsOnly, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.NoConsecutiveNukes, (bool)flags.NoEmptyScripts);
-				}
-			}
+			ShuffleEnemySkillsSpells(rng, flags);
 
-			if (((bool)flags.EnemyStatusAttacks))
-			{
-				if (((bool)flags.RandomStatusAttacks))
-				{
-					RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates, (bool)flags.DisableStunTouch, flags.TouchMultiplier);
-				}
-				else
-				{
-					ShuffleEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates);
-				}
-			}
-
-			if ((bool)flags.EverythingHasDeathTouch)
-			{
-				EverythingHasDeathTouch((bool)flags.AllowUnsafePirates, (bool)flags.EverythingHasDeathTouchExcludeFiends);
-			}
+			StatusAttacks(flags, rng);
 
 			if (flags.Runnability == Runnability.Random)
 				flags.Runnability = (Runnability)Rng.Between(rng, 0, 3);
