@@ -229,11 +229,6 @@ namespace FF1Lib
 				treasures.RemoveAll(x => x.index == (int)removeitem);
 			}
 			treasures.Sort((x, y) => x.value.CompareTo(y.value));
-
-			foreach (var treasure in treasures)
-			{
-				Console.WriteLine((Item)treasure.index + " - " + treasure.value);
-			}
 		}
 		public int GetLowestIndex(int floorid)
 		{
