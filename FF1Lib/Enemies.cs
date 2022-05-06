@@ -557,7 +557,7 @@ namespace FF1Lib
 			}
 			else if (flags.TouchMode == TouchMode.Randomize)
 			{
-				RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates, (bool)flags.TouchExcludeFiends, flags.TouchPool, flags.ScriptMultiplier);
+				RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates, (bool)flags.TouchIncludeBosses, flags.TouchPool, flags.ScriptMultiplier);
 			}
 
 		}
@@ -585,7 +585,7 @@ namespace FF1Lib
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool excludeFiends, TouchPool touchPool, ScriptTouchMultiplier touchMultiplier)
+		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool incudeBosses, TouchPool touchPool, ScriptTouchMultiplier touchMultiplier)
 		{
 			if (touchPool == TouchPool.Random)
 			{
@@ -654,7 +654,7 @@ namespace FF1Lib
 			}
 
 			List<int> indices = new List<int>();
-			for (int i = 0; i < (excludeFiends ? (EnemyCount - 9) : EnemyCount); i++)
+			for (int i = 0; i < (incudeBosses ? EnemyCount : (EnemyCount - 10)); i++)
 			{
 				enemies[i][14] = 0x00;
 				enemies[i][15] = 0x00;

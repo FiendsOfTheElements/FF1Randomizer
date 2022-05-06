@@ -110,8 +110,6 @@ namespace FF1Lib
 
 		public SpellNameMadness SpellNameMadness { get; set; } = SpellNameMadness.None;
 
-		public EnemyObfuscation EnemyObfuscation { get; set; } = EnemyObfuscation.None;
-
 		public ExtConsumableSet ExtConsumableSet { get; set; } = ExtConsumableSet.None;
 
 		public bool ExtConsumablesEnabled => ExtConsumableSet != ExtConsumableSet.None;
@@ -666,7 +664,7 @@ namespace FF1Lib
 
 		public bool? IncreaseDarkPenalty { get; set; } = false;
 
-		public bool? TouchExcludeFiends { get; set; } = false;
+		public bool? TouchIncludeBosses { get; set; } = false;
 
 		public bool? Lockpicking { get; set; } = false;
 

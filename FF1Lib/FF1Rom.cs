@@ -1158,12 +1158,12 @@ namespace FF1Lib
 				UseVariablePaletteForCursorAndStone();
 			}
 
-			if (preferences.PaletteSwap && !flags.EnemizerEnabled && flags.EnemyObfuscation == EnemyObfuscation.None)
+			if (preferences.PaletteSwap && !flags.EnemizerEnabled)
 			{
 				PaletteSwap(new MT19337(funRngSeed));
 			}
 
-			if (preferences.TeamSteak && !(bool)flags.RandomizeEnemizer && flags.EnemyObfuscation == EnemyObfuscation.None)
+			if (preferences.TeamSteak && !(bool)flags.RandomizeEnemizer)
 			{
 				TeamSteak();
 			}

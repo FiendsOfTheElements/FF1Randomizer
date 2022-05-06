@@ -4658,16 +4658,6 @@ namespace FF1Lib
 			}
 		}
 
-		public EnemyObfuscation EnemyObfuscation
-		{
-			get => Flags.EnemyObfuscation;
-			set
-			{
-				Flags.EnemyObfuscation = value;
-				RaisePropertyChanged();
-			}
-		}
-
 		public bool? Lockpicking
 		{
 			get => Flags.Lockpicking;
@@ -4688,12 +4678,12 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? TouchExcludeFiends
+		public bool? TouchIncludeBosses
 		{
-			get => Flags.TouchExcludeFiends;
+			get => Flags.TouchIncludeBosses;
 			set
 			{
-				Flags.TouchExcludeFiends = value;
+				Flags.TouchIncludeBosses = value;
 				RaisePropertyChanged();
 			}
 		}

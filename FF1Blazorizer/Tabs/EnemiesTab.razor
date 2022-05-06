@@ -31,7 +31,7 @@
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="touchMode" TItem="TouchMode" @bind-Value="Flags.TouchMode">Mode:</EnumDropDown>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.TouchMode != TouchMode.Standard && Flags.TouchMode != TouchMode.Shuffle)" Id="touchMultiplier" TItem="ScriptTouchMultiplier" @bind-Value="Flags.TouchMultiplier">Count:</EnumDropDown>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.TouchMode != TouchMode.Standard && Flags.TouchMode != TouchMode.Shuffle)" Id="touchPool" TItem="TouchPool" @bind-Value="Flags.TouchPool">Pool:</EnumDropDown>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.TouchMode != TouchMode.Standard && Flags.TouchMode != TouchMode.Shuffle)" Id="touchExcludeFiends" @bind-Value="Flags.TouchExcludeFiends">Exclude Fiends</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.TouchMode != TouchMode.Standard && Flags.TouchMode != TouchMode.Shuffle)" Id="touchIncludeBosses" @bind-Value="Flags.TouchIncludeBosses">Include Bosses</TriStateCheckBox>
 
 			<div class="checkbox-cell"></div>
 			<h4>Trap Tiles</h4>
