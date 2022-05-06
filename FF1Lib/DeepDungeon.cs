@@ -267,7 +267,19 @@ namespace FF1Lib
 				spunitem = picked.index;
 			}
 
-			_placedItems.Add(new TreasureChest(_chestList[_currentChest], (Item)spunitem));
+			if (_chestList[_currentChest] is MapObject)
+			{
+				_placedItems.Add(new MapObject((MapObject)_chestList[_currentChest], (Item)spunitem));
+			}
+			else if (_chestList[_currentChest] is ItemShopSlot)
+			{
+				_placedItems.Add(new ItemShopSlot((ItemShopSlot)_chestList[_currentChest], (Item)spunitem));
+			}
+			else
+			{
+				_placedItems.Add(new TreasureChest(_chestList[_currentChest], (Item)spunitem));
+			}
+
 
 			if (_currentChest < _chestList.Count)
 			{
