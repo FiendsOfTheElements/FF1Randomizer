@@ -58,6 +58,31 @@ namespace FF1Lib
 		insane,
 	}
 
+	public enum StartingGold
+	{ 
+		[Description("0 gp")]
+		None,
+		[Description("100 gp")]
+		Gp100,
+		[Description("200 gp")]
+		Gp200,
+		[Description("400 gp")]
+		Gp400,
+		[Description("800 gp")]
+		Gp800,
+		[Description("2500 gp")]
+		Gp2500,
+		[Description("9,999 gp")]
+		Gp9999,
+		[Description("65,535 gp")]
+		Gp65535,
+		[Description("Random (0-800 gp)")]
+		RandomLow,
+		[Description("Random (0-65,535 gp)")]
+		RandomHigh,
+	}
+
+
 	public partial class FF1Rom : NesRom
 	{
 		public static readonly List<int> Bosses = new List<int> { Enemy.Garland, Enemy.Astos, Enemy.Pirate, Enemy.WarMech,
@@ -158,15 +183,22 @@ namespace FF1Lib
 					Put(ShopPointerBase + pointers[i], priceBytes);
 				}
 			}
-			if (flags.StartingGold)
+
+			List<(StartingGold, ushort)> startingGold = new()
 			{
-				var startingGold = BitConverter.ToUInt16(Get(StartingGoldOffset, 2), 0);
+				(StartingGold.None, 0),
+				(StartingGold.Gp100, 100),
+				(StartingGold.Gp200, 200),
+				(StartingGold.Gp400, 400),
+				(StartingGold.Gp800, 800),
+				(StartingGold.Gp2500, 2500),
+				(StartingGold.Gp9999, 9999),
+				(StartingGold.Gp65535, 65535),
+				(StartingGold.RandomLow, (ushort)rng.Between(0, 800)),
+				(StartingGold.RandomHigh, (ushort)rng.Between(0, 65535)),
+			};
 
-				startingGold = (ushort)Min(RangeScale(startingGold / multiplier, scaleLow, scaleHigh, 1, rng), 0xFFFF);
-
-				Put(StartingGoldOffset, BitConverter.GetBytes(startingGold));
-			}
-
+			Put(StartingGoldOffset, BitConverter.GetBytes(startingGold[(int)flags.StartingGold].Item2));
 		}
 
 		public int GetEvadeIntFromFlag(EvadeCapValues evadeCapFlag)

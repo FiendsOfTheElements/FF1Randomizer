@@ -2039,7 +2039,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool StartingGold
+		public StartingGold StartingGold
 		{
 			get => Flags.StartingGold;
 			set

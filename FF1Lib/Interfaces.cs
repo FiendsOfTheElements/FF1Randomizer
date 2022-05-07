@@ -140,8 +140,7 @@
 	}
 	public interface IScaleFlags
 	{
-		bool StartingGold { get; }
-
+		StartingGold StartingGold { get; }
 		double ExpMultiplier { get; }
 		int PriceScaleFactorLow { get; }
 		int PriceScaleFactorHigh { get; }
