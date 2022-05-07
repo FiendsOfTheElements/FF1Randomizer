@@ -400,8 +400,6 @@ namespace FF1Lib
 		public bool DDFiendOrbs { get; set; } = false;
 		public TailBahamutMode TailBahamutMode { get; set; } = TailBahamutMode.Random;
 		public bool StartingGold { get; set; } = false;
-		public bool WrapStatOverflow { get; set; } = false;
-		public bool WrapPriceOverflow { get; set; } = false;
 		public bool IncludeMorale { get; set; } = false;
 		public bool DeadsGainXP { get; set; } = false;
 		public bool NonesGainXP { get; set; } = false;

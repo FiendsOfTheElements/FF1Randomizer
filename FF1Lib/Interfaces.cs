@@ -141,8 +141,7 @@
 	public interface IScaleFlags
 	{
 		bool StartingGold { get; }
-		bool WrapPriceOverflow { get; }
-		bool WrapStatOverflow { get; }
+
 		double ExpMultiplier { get; }
 		int PriceScaleFactorLow { get; }
 		int PriceScaleFactorHigh { get; }

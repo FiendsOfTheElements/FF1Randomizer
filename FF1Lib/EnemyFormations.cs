@@ -209,8 +209,8 @@ namespace FF1Lib
 					finalBattle[PaletteAsignmentOffset] = 0x41; // Palette Assignment in top nibble, 1 in bottom for unrunnable.
 
 					// Scale up the Fundead enemies if we end up with them. They're too weak otherwise.
-					ScaleSingleEnemyStats(Enemy.Lich2, 140, 140, false, false, null, false, 100, 100, GetEvadeIntFromFlag(evadeClampFlag));
-					ScaleSingleEnemyStats(Enemy.Phantom, 120, 120, false, false, null, false, 100, 100, GetEvadeIntFromFlag(evadeClampFlag));
+					ScaleSingleEnemyStats(Enemy.Lich2, 140, 140, false, null, false, 100, 100, GetEvadeIntFromFlag(evadeClampFlag));
+					ScaleSingleEnemyStats(Enemy.Phantom, 120, 120, false, null, false, 100, 100, GetEvadeIntFromFlag(evadeClampFlag));
 					break;
 				case FinalFormation.TimeLoop:
 					finalBattle[TypeOffset] = 0x0B;         // 9Small + Garland pattern
