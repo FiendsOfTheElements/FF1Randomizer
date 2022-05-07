@@ -12,6 +12,13 @@
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="runnabilityDropDown" TItem="Runnability" @bind-Value="Flags.Runnability">Unrunnable Formations:</EnumDropDown>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="unrunnablesStrikeFirstAndSurpriseCheckBox" @bind-Value="Flags.UnrunnablesStrikeFirstAndSurprise">Unrunnable First Strike &amp; Surprise</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsSurpriseCheckBox" @bind-Value="Flags.EnemyFormationsSurprise">Shuffle Surprise Bonus</TriStateCheckBox>
+
+			<div class="checkbox-cell"></div>
+			<h4>Bosses</h4>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossScriptsCheckBox" @bind-Value="Flags.ShuffleScriptsBosses">Shuffle Scripts</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossSkillsSpellsCheckBox" @bind-Value="Flags.ShuffleSkillsSpellsBosses">Shuffle Skills & Spells</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsBosses != false)" Id="noConsecutiveNukesCheckBox" @bind-Value="Flags.NoConsecutiveNukes">Prevent consecutive NUKE or NUCLEAR</TriStateCheckBox>
+
 			<div class="checkbox-cell"></div>
 			<h4>Enemies</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" @bind-Value="Flags.ShuffleScriptsEnemies">Shuffle Scripts</TriStateCheckBox>
@@ -19,12 +26,6 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySkillsSpellsCheckBox" @bind-Value="Flags.ShuffleSkillsSpellsEnemies">Shuffle Skills & Spells</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsEnemies != false)" Id="enemySkillsSpellsTieredCheckBox" @bind-Value="Flags.EnemySkillsSpellsTiered">Generate Balanced Scripts</TriStateCheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsEnemies != false)" Id="noEmptyScripts" @bind-Value="Flags.NoEmptyScripts">No empty Scripts</CheckBox>
-
-			<div class="checkbox-cell"></div>
-			<h4>Bosses</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossScriptsCheckBox" @bind-Value="Flags.ShuffleScriptsBosses">Shuffle Scripts</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossSkillsSpellsCheckBox" @bind-Value="Flags.ShuffleSkillsSpellsBosses">Shuffle Skills & Spells</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsBosses != false)" Id="noConsecutiveNukesCheckBox" @bind-Value="Flags.NoConsecutiveNukes">Prevent consecutive NUKE or NUCLEAR</TriStateCheckBox>
 
 			<div class="checkbox-cell"></div>
 			<h4>Status Attacks</h4>
@@ -47,7 +48,7 @@
 
 			<h4>Pirates</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="swolePiratesCheckBox" @bind-Value="Flags.SwolePirates">Buffed</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ShuffleScriptsEnemies != false)" Id="allowUnsafePiratesCheckBox" @bind-Value="Flags.AllowUnsafePirates">Unsafe</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="allowUnsafePiratesCheckBox" @bind-Value="Flags.AllowUnsafePirates">Unsafe</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 
 			<h4>Astos</h4>
