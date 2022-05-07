@@ -1131,8 +1131,6 @@ namespace FF1Lib
 				EnableInventoryAutosort();
 			}
 
-			ObfuscateEnemies(rng, flags);
-
 			if (flags.ResourcePack != null) {
 			    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack))) {
 				this.LoadResourcePack(stream);
