@@ -3755,8 +3755,9 @@ namespace FF1Lib
 
 		public void ObfuscateEnemies(MT19337 rng, Flags flags)
 		{
+			var flagsValue = EnemyObfuscation.None;
 
-			if (flags.EnemyObfuscation == EnemyObfuscation.Imp || flags.EnemyObfuscation == EnemyObfuscation.ImpAll)
+			if (flagsValue == EnemyObfuscation.Imp || flagsValue == EnemyObfuscation.ImpAll)
 			{
 				List<FormationInfo> formations = LoadFormations();
 				string[] enemyNames = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
@@ -3772,7 +3773,7 @@ namespace FF1Lib
 					variants.Add((name, (byte)rng.Between(0, 128)));
 				}
 
-				int limit = flags.EnemyObfuscation == EnemyObfuscation.ImpAll ? 128 : 119;
+				int limit = flagsValue == EnemyObfuscation.ImpAll ? 128 : 119;
 
 				for (int i = 0; i < limit; i++) enemyNames[i] = variants[i].name;
 
@@ -3786,7 +3787,7 @@ namespace FF1Lib
 					formations[i].pal1 = variants[formations[i].id[0]].pal;
 					formations[i].pal1 = variants[formations[i].id[1]].pal;
 
-					if(flags.EnemyObfuscation == EnemyObfuscation.ImpAll && (flags.TrappedChaos ?? false) && formations[i].id.Any(id => id == 127))
+					if(flagsValue == EnemyObfuscation.ImpAll && (flags.TrappedChaos ?? false) && formations[i].id.Any(id => id == 127))
 					{
 						formations[i].unrunnable_a = false;
 						formations[i].unrunnable_b = false;

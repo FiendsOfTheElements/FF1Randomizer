@@ -830,31 +830,32 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? EnemyScripts
+		public bool? ShuffleScriptsEnemies
 		{
-			get => Flags.EnemyScripts;
+			get => Flags.ShuffleScriptsEnemies;
 			set
 			{
-				Flags.EnemyScripts = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyScripts"));
+				Flags.ShuffleScriptsEnemies = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleScriptsEnemies"));
 			}
 		}
-		public bool? BossScriptsOnly
+		
+		public bool? ShuffleSkillsSpellsEnemies
 		{
-			get => Flags.BossScriptsOnly;
+			get => Flags.ShuffleSkillsSpellsEnemies;
 			set
 			{
-				Flags.BossScriptsOnly = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossScripsOnly"));
+				Flags.ShuffleSkillsSpellsEnemies = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleSkillsSpellsEnemies"));
 			}
 		}
-		public bool? EnemySkillsSpells
+		public bool? ShuffleSkillsSpellsBosses
 		{
-			get => Flags.EnemySkillsSpells;
+			get => Flags.ShuffleSkillsSpellsBosses;
 			set
 			{
-				Flags.EnemySkillsSpells = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemySkillsSpells"));
+				Flags.ShuffleSkillsSpellsBosses = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleSkillsSpellsBosses"));
 			}
 		}
 		public bool? NoConsecutiveNukes
@@ -875,15 +876,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TranceHasStatusElement"));
 			}
 		}
-		public bool? BossSkillsOnly
-		{
-			get => Flags.BossSkillsOnly;
-			set
-			{
-				Flags.BossSkillsOnly = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossSkillsOnly"));
-			}
-		}
 		public bool? EnemySkillsSpellsTiered
 		{
 			get => Flags.EnemySkillsSpellsTiered;
@@ -893,24 +885,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemySkillsSpellsTiered"));
 			}
 		}
-		public bool? EnemyStatusAttacks
-		{
-			get => Flags.EnemyStatusAttacks;
-			set
-			{
-				Flags.EnemyStatusAttacks = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyStatusAttacks"));
-			}
-		}
-		public bool? RandomStatusAttacks
-		{
-			get => Flags.RandomStatusAttacks;
-			set
-			{
-				Flags.RandomStatusAttacks = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomStatusAttacks"));
-			}
-		}
+
 		public bool? AllowUnsafePirates
 		{
 			get => Flags.AllowUnsafePirates;
@@ -954,15 +929,6 @@ namespace FF1Lib
 			{
 				Flags.GuaranteedPowerItem = value;
 				RaisePropertyChanged();
-			}
-		}
-		public bool? DisableStunTouch
-		{
-			get => Flags.DisableStunTouch;
-			set
-			{
-				Flags.DisableStunTouch = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableStunTouch"));
 			}
 		}
 		public bool CanShuffleTrapTiles => !((Flags.RandomizeEnemizer ?? false) || (Flags.RemoveTrapTiles ?? false));
@@ -4106,13 +4072,13 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlternateFiends"));
 			}
 		}
-		public bool? NoBossSkillScriptShuffle
+		public bool? ShuffleScriptsBosses
 		{
-			get => Flags.NoBossSkillScriptShuffle;
+			get => Flags.ShuffleScriptsBosses;
 			set
 			{
-				Flags.NoBossSkillScriptShuffle = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoBossSkillScriptShuffle"));
+				Flags.ShuffleScriptsBosses = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleScriptsBosses"));
 			}
 		}
 		public bool? SwolePirates
@@ -4692,16 +4658,6 @@ namespace FF1Lib
 			}
 		}
 
-		public EnemyObfuscation EnemyObfuscation
-		{
-			get => Flags.EnemyObfuscation;
-			set
-			{
-				Flags.EnemyObfuscation = value;
-				RaisePropertyChanged();
-			}
-		}
-
 		public bool? Lockpicking
 		{
 			get => Flags.Lockpicking;
@@ -4722,22 +4678,12 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? EverythingHasDeathTouch
+		public bool? TouchIncludeBosses
 		{
-			get => Flags.EverythingHasDeathTouch;
+			get => Flags.TouchIncludeBosses;
 			set
 			{
-				Flags.EverythingHasDeathTouch = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public bool? EverythingHasDeathTouchExcludeFiends
-		{
-			get => Flags.EverythingHasDeathTouchExcludeFiends;
-			set
-			{
-				Flags.EverythingHasDeathTouchExcludeFiends = value;
+				Flags.TouchIncludeBosses = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -5022,6 +4968,24 @@ namespace FF1Lib
 			set
 			{
 				Flags.TouchMultiplier = value;
+				RaisePropertyChanged();
+			}
+		}
+		public TouchPool TouchPool
+		{
+			get => Flags.TouchPool;
+			set
+			{
+				Flags.TouchPool = value;
+				RaisePropertyChanged();
+			}
+		}
+		public TouchMode TouchMode
+		{
+			get => Flags.TouchMode;
+			set
+			{
+				Flags.TouchMode = value;
 				RaisePropertyChanged();
 			}
 		}

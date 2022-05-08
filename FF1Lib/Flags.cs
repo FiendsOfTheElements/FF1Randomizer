@@ -68,7 +68,8 @@ namespace FF1Lib
 
 		public ScriptTouchMultiplier ScriptMultiplier { get; set; } = ScriptTouchMultiplier.Vanilla;
 		public ScriptTouchMultiplier TouchMultiplier { get; set; } = ScriptTouchMultiplier.Vanilla;
-
+		public TouchPool TouchPool { get; set; } = TouchPool.All;
+		public TouchMode TouchMode { get; set; } = TouchMode.Standard;
 		public RibbonMode RibbonMode { get; set; } = RibbonMode.Vanilla;
 
 		public bool Archipelago { get; set; } = false;
@@ -108,8 +109,6 @@ namespace FF1Lib
 		public int ExpChestMaxReward { get; set; } = 8000;
 
 		public SpellNameMadness SpellNameMadness { get; set; } = SpellNameMadness.None;
-
-		public EnemyObfuscation EnemyObfuscation { get; set; } = EnemyObfuscation.None;
 
 		public ExtConsumableSet ExtConsumableSet { get; set; } = ExtConsumableSet.None;
 
@@ -234,15 +233,13 @@ namespace FF1Lib
 		public bool? TrappedChaos { get; set; } = false;
 		public bool? TCIndicator { get; set; } = false;
 		public bool? SwolePirates { get; set; } = false;
-		public bool? EnemyScripts { get; set; } = false;
-		public bool? BossScriptsOnly { get; set; } = false;
-		public bool? EnemySkillsSpells { get; set; } = false;
+		public bool? ShuffleScriptsEnemies { get; set; } = false;
+		public bool? ShuffleScriptsBosses { get; set; } = false;
+		public bool? ShuffleSkillsSpellsEnemies { get; set; } = false;
+		public bool? ShuffleSkillsSpellsBosses { get; set; } = false;
 		public bool? NoConsecutiveNukes { get; set; } = false;
 		public bool TranceHasStatusElement { get; set; } = false;
-		public bool? BossSkillsOnly { get; set; } = false;
 		public bool? EnemySkillsSpellsTiered { get; set; } = false;
-		public bool? EnemyStatusAttacks { get; set; } = false;
-		public bool? RandomStatusAttacks { get; set; } = false;
 		public bool? AllowUnsafePirates { get; set; } = false;
 		public bool? AllowUnsafeMelmond { get; set; } = false;
 
@@ -667,8 +664,7 @@ namespace FF1Lib
 
 		public bool? IncreaseDarkPenalty { get; set; } = false;
 
-		public bool? EverythingHasDeathTouch { get; set; } = false;
-		public bool? EverythingHasDeathTouchExcludeFiends { get; set; } = false;
+		public bool? TouchIncludeBosses { get; set; } = false;
 
 		public bool? Lockpicking { get; set; } = false;
 
@@ -678,7 +674,6 @@ namespace FF1Lib
 		public bool WhiteMageHarmEveryone { get; set; } = false;
 
 		public bool? EarlierRuby { get; set; } = false;
-		public bool? DisableStunTouch { get; set; } = false;
 		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (OwMapExchange != OwMapExchanges.Desert);
 		public bool DisableOWMapModifications => SanityCheckerV2 & (OwMapExchange != OwMapExchanges.None);
 		public bool? MapOnracDock => MapOpenProgressionDocks & !DisableOWMapModifications;
@@ -932,11 +927,11 @@ namespace FF1Lib
 			return (Flags)this.MemberwiseClone();
 		}
 
-		public bool? ImmediatePureAndSoftRequired => EnemyStatusAttacks | Entrances | MapOpenProgression | RandomizeFormationEnemizer | RandomizeEnemizer;
+		public bool? ImmediatePureAndSoftRequired => (TouchMode != TouchMode.Standard) | Entrances | MapOpenProgression | RandomizeFormationEnemizer | RandomizeEnemizer;
 		public bool? DeepCastlesPossible => Entrances & Floors;
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
 		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
-		public bool EnemizerDontMakeNewScripts => (bool)EnemySkillsSpells & !((bool)BossSkillsOnly | (bool)EnemySkillsSpellsTiered);
+		public bool EnemizerDontMakeNewScripts => (bool)ShuffleSkillsSpellsEnemies & !((bool)EnemySkillsSpellsTiered);
 
 		public bool? TrappedChestsEnabled => (bool)TrappedChaos | (bool)TCMasaGuardian | (TCBetterTreasure == TCOptions.All | TCKeyItems == TCOptions.All | TCShards == TCOptions.All) | ((TCBetterTreasure == TCOptions.Pooled | TCKeyItems == TCOptions.Pooled | TCShards == TCOptions.Pooled) & TCChestCount > 0) | (TCChestCount > 0);
 

@@ -1271,6 +1271,18 @@
 		"screenshot": "enemyFormationsSurpriseCheckBox.png",
 		"description": "Shuffles the surprise bonus for enemy formations, changing which groups will (almost) always ambush you."
 	},
+	{
+		"Id": "bossScriptsCheckBox",
+		"title": "Boss Scripts",
+		"screenshot": "shuffleBossesScripts.png",
+		"description": "Shuffles the spells and skills (if any) each bosses uses. The original Fiends are shuffled between themselves, then the second Fiends, WarMech and Chaos."
+	},
+	{
+		"Id": "bossSkillsSpellsCheckBox",
+		"title": "Boss Skills/Spells",
+		"screenshot": "onlyShuffleBossSkillsCheckBox.png",
+		"description": "Shuffles bosses' skills and spells so they can appear in any script. The original Fiends are shuffled between themselves, then the second Fiends, WarMech and Chaos."
+	},
 
 	{
 		"Id": "enemyScriptsCheckBox",
@@ -1279,40 +1291,10 @@
 		"description": "Shuffles the spells and skills (if any) each monster uses, allowing any enemy to have any other's combat logic."
 	},
 	{
-		"Id": "allowUnsafePiratesCheckBox",
-		"title": "Unsafe Pirates",
-		"screenshot": "allowUnsafePiratesCheckBox.png",
-		"description": "Allows Pirates to use shuffled skills and spells. Left unchecked, Pirates will always have a script that directs them to only attack."
-	},
-	{
-		"Id": "onlyShuffleBossScriptsCheckBox",
-		"title": "Only Shuffle Boss Scripts",
-		"screenshot": "onlyShuffleBossScriptsCheckBox.gif",
-		"description": "Only include the scripts of the Fiends when shuffling scripts. Normal enemies will retain their original scripts. This alone does not mean, however, that spells on those scripts cannot be shuffled."
-	},
-	{
-		"Id": "noBossSkillScriptShuffleCheckBox",
-		"title": "Don't Shuffle Bosses' Scripts, Skills & Spells",
-		"screenshot": "NoBossScriptSkillShuffle.png",
-		"description": "When shuffling enemies' scripts or spells/skills, exclude the four Fiends, WarMech, and Chaos."
-	},
-	{
-		"Id": "scaryImpsCheckBox",
-		"title": "Scary Imps",
-		"screenshot": "enemyScriptsCheckBox.png",
-		"description": "When shuffling scripts, add Imps to the same pool as ToFR Fiends, WarMech, and Chaos."
-	},
-	{
 		"Id": "enemySkillsSpellsCheckBox",
 		"title": "Enemy Skills/Spells",
 		"screenshot": "enemySkillsSpellsCheckBox.png",
-		"description": "Shuffles enemy skills and spells so they can appear in any script. There are three groups of enemies: \n(1) All random encounters \n(2) The first Fiend fights \n(3) The second Fiend fights, WarMech, and Chaos."
-	},
-	{
-		"Id": "onlyShuffleBossSkillsCheckBox",
-		"title": "Only Shuffle Boss Spells and Skills",
-		"screenshot": "onlyShuffleBossSkillsCheckBox.png",
-		"description": "Only include the spells and skills of the Fiends when shuffling spells. Normal enemies will retain their original spells and skills. This alone does not mean however that scripts cannot be shuffled."
+		"description": "Shuffles enemy skills and spells so they can appear in any script. This include only all random encounters."
 	},
 	{
 		"Id": "enemySkillsSpellsTieredCheckBox",
@@ -1321,25 +1303,24 @@
 		"description": "Balances skill shuffles among the enemies so that earlier enemies will only have potential access to earlier skills while later enemies are more likely to get the later, more dangerous, skills."
 	},
 	{
-		"Id": "enemyStatusAttacksCheckBox",
-		"title": "Enemy Status Attacks",
+		"Id": "touchMode",
+		"title": "Status Attacks Mode",
 		"screenshot": "enemyStatusAttacksCheckBox.png",
-		"description": "Shuffles the status ailments each enemy can inflict when they use physical attacks."
+		"description": "Sets the status ailments each enemy can inflict when they use physical attacks.\nStandard: Enemies keep their standard touch attack.\nShuffle: Shuffle the existing touch attacks amongst all enemies.\nRandomize: Assign randomly selected touch attacks to enemies.\nRandom: Select one of the previous options at random."
 	},
 	{
-		"Id": "enemyRandomAttacksCheckBox",
-		"title": "Random Enemy Status Attacks",
-		"screenshot": "enemyRandomAttacksCheckBox.png",
-		"description": "The status ailments enemies inflict on melee attack are randomly determined, and can include multiple death attacks or silencing attacks."
-	},
-	{
-		"Id": "disableStunTouchCheckBox",
-		"title": "Remove Stun Touch",
+		"Id": "touchPool",
+		"title": "Status Attacks Pool",
 		"screenshot": "disableStunTouchCheckBox.png",
-		"description": "Removes stun touch from possible status attacks when \"Randomize Status Attacks\" is enabled."
+		"description": "Sets what status ailment can be infliected when randomizing status attacks.\nAll: All possible status, including silence, death and stone.\nAll except Stun Status: All possible status, except stun ailment.\nOnly Death Status: Only the Death ailment can be assigned.\nRandom: Select one of the previous options at random."
 	},
-
 	{
+		"Id": "touchIncludeBosses",
+		"title": "Include Bosses",
+		"screenshot": "everythingHasDeathTouchExcludeFiendsCheckbox.png",
+		"description": "Bosses are included when shuffling/randomizing status attacks. Bosses are the Fiends, WarMech and Chaos."
+	},
+		{
 		"Id": "removeTrapTilesCheckBox",
 		"title": "Remove Trap Tiles",
 		"screenshot": "removeTrapTilesCheckBox.gif",
@@ -1371,6 +1352,12 @@
 		"description": "Increases the stats of Bikke's pirates considerably, roughly to the equivalent of a level 6 Fighter with a cheap but decent sword and iron armor, and increases the XP and gold yield from them by a factor of 20. This is done before stat scaling, and also increases the level of scripts they can carry when using the \"Generate Balanced Scripts\" flag if \"Allow Unsafe Pirates\" is on."
 	},
 	{
+		"Id": "allowUnsafePiratesCheckBox",
+		"title": "Unsafe Pirates",
+		"screenshot": "allowUnsafePiratesCheckBox.png",
+		"description": "Allows Pirates to use shuffled skills and spells and received a status attack. Left unchecked, Pirates will always have a script that directs them to only attack and will never cause a status ailment on attack."
+	},
+	{
 		"Id": "shuffleAstosCheckBox",
 		"title": "Shuffle Astos",
 		"screenshot": "shuffleAstosCheckBox.png",
@@ -1381,12 +1368,6 @@
 		"title": "Shuffle the Original Fiend Fights",
 		"screenshot": "fiendShuffleCheckBox.gif",
 		"description": "Shuffles which Fiend is guarding which orb in the present day. For example, the Fiend at the bottom of Earth Cave could be Tiamat."
-	},
-	{
-		"Id": "pacifistModeCheckBox",
-		"title": "Pacifist Bosses",
-		"screenshot": "pacifistModeCheckBox.gif",
-		"description": "Skip all boss fights, including Chaos."
 	},
 	{
 		"Id": "alternateFiendsCheckBox",
@@ -1433,13 +1414,6 @@
 		"screenshot": "randomizeEnemizer.png",
 		"description": "When enabled, this flag will generate an entirely new set of enemies to populate the entire world. Although the basic sprites will remain the same (as the game has to use the original assets), and they will (generally) retain something of their original names, these will be new enemies with all their appropriate stats scaled to the zone you're exploring. \nAs an example, you could leave Coneria and find level 1 MECHs waiting for you in the forest, G.CRABs lurking on the ocean, or BEASTs out on the plains."
 	},
-	{
-		"Id": "enemyObfuscation",
-		"title": "Enemy Obfuscation",
-		"screenshot": "enemyObfuscation.png",
-		"description": "Obfuscates enemies' identity.\n\nImp: Disguises all enemies as various IMPs.\n\nImp (inc. Fiends and Chaos): Disguises all enemies, including the Fiends and Chaos, as IMPs."
-	},
-
 
 
 	{
