@@ -590,6 +590,7 @@ namespace FF1Lib
 				{MapLocation.TitansTunnelEast,MapId.TitansTunnel},
 				{MapLocation.TitansTunnelWest,MapId.TitansTunnel},
 				{MapLocation.TitansTunnelRoom,MapId.TitansTunnel},
+				{MapLocation.Caravan, (MapId)61},
 	};
 
 		public static Dictionary<MapLocation, OverworldTeleportIndex> MapLocationToStandardOverworldLocations =
@@ -783,6 +784,6 @@ namespace FF1Lib
 				{MapLocation.TitansTunnelEast,OverworldTeleportIndex.TitansTunnelEast},
 				{MapLocation.TitansTunnelWest,OverworldTeleportIndex.TitansTunnelWest},
 				{MapLocation.TitansTunnelRoom,OverworldTeleportIndex.TitansTunnelWest},
-	};
+		};
 	}
 }

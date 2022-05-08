@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using RomUtilities;
+using FF1Lib.Sanity;
+using static FF1Lib.FF1Rom;
+using static System.Math;
 
 namespace FF1Lib
 {
@@ -18,7 +21,281 @@ namespace FF1Lib
 		SameFloor
 	}
 
-	public partial class FF1Rom
+	public class DeepDungeonItemGenerator : IItemGenerator
+	{
+		private List<IRewardSource> _chestList;
+		private List<IRewardSource> _placedItems;
+		private Dictionary<MapLocation, int> _floorsWeight;
+		private List<Treasure> treasures = new List<Treasure>();
+		private FF1Rom _rom;
+		private int _currentChest;
+		private List<Item> potionspinner0 = new List<Item>()
+			{
+				Item.Heal, Item.Pure, Item.Soft
+			};
+		private List<Item> potionspinner1 = new List<Item>()
+			{
+				Item.Heal, Item.Heal, Item.Heal, Item.Heal,
+				Item.Pure, Item.Pure, Item.Pure,
+				Item.Soft
+			};
+		private List<Item> potionspinner2 = new List<Item>()
+			{
+				Item.Pure, Item.Pure, Item.Pure, Item.Pure,
+				Item.Heal, Item.Heal, Item.Heal,
+				Item.Soft
+			};
+		private List<Item> potionspinner3 = new List<Item>()
+			{
+				Item.Soft, Item.Soft, Item.Soft, Item.Soft,
+				Item.Pure, Item.Pure, Item.Pure,
+				Item.Heal
+			};
+
+		private struct Treasure
+		{
+			public int value;
+			public byte index;
+
+			public Treasure(int v, byte id)
+			{
+				value = v;
+				index = id;
+				if (index == (byte)Item.WhiteShirt || index == (byte)Item.BlackShirt || index == (byte)Item.Ribbon)
+				{
+					value = 50000;
+				}
+			}
+		}
+
+		public int RollDice(MT19337 rng, int dice, int sides)
+		{
+			// Roll a number of dice and add up their results.
+			int result = 0;
+			for (int i = 0; i < dice; i++)
+			{
+				result += rng.Between(1, sides);
+			}
+			return result;
+		}
+
+		public DeepDungeonItemGenerator(List<IRewardSource> chestList, List<int> unusedGoldItems, List<Item> removedItems, List<IRewardSource> placedItems, bool deepDungeonEnabled, bool etherizerEnabled, FF1Rom rom)
+		{
+			_placedItems = placedItems;
+			_chestList = chestList;
+			_rom = rom;
+			_currentChest = 0;
+
+			if (deepDungeonEnabled)
+			{
+				_floorsWeight = Enumerable.Range(0, (int)chestList.OrderByDescending(x => x.MapLocation).First().MapLocation + 1).Select(x => ((MapLocation)x, x)).ToDictionary(x => x.Item1, x => x.Item2);
+			}
+			else
+			{
+				_floorsWeight = new()
+				{
+					{ MapLocation.StartingLocation, 0 },
+					{ MapLocation.AirshipLocation, 0 },
+					{ MapLocation.Coneria, 0 },
+					{ MapLocation.Pravoka, 11 },
+					{ MapLocation.Elfland, 18 },
+					{ MapLocation.Melmond, 25 },
+					{ MapLocation.CrescentLake, 32 },
+					{ MapLocation.Gaia, 39 },
+					{ MapLocation.Onrac, 46 },
+					{ MapLocation.Lefein, 53 },
+					{ MapLocation.ConeriaCastle1, 0 },
+					{ MapLocation.ConeriaCastle2, 9 },
+					{ MapLocation.ConeriaCastleRoom1, 10 },
+					{ MapLocation.ConeriaCastleRoom2, 10 },
+					{ MapLocation.ElflandCastle, 13 },
+					{ MapLocation.ElflandCastleRoom1, 13 },
+					{ MapLocation.NorthwestCastle, 13 },
+					{ MapLocation.NorthwestCastleRoom2, 23 },
+					{ MapLocation.CastleOrdeals1, 26 },
+					{ MapLocation.CastleOrdealsMaze, 26 },
+					{ MapLocation.CastleOrdealsTop, 26 },
+					{ MapLocation.TempleOfFiends1, 0 },
+					{ MapLocation.TempleOfFiends1Room1, 0 },
+					{ MapLocation.TempleOfFiends1Room2, 0 },
+					{ MapLocation.TempleOfFiends1Room3, 16 },
+					{ MapLocation.TempleOfFiends1Room4, 16 },
+					{ MapLocation.TempleOfFiends2, 50 },
+					{ MapLocation.TempleOfFiends3, 50 },
+					{ MapLocation.TempleOfFiendsChaos, 50 },
+					{ MapLocation.TempleOfFiendsAir, 50 },
+					{ MapLocation.TempleOfFiendsEarth, 50 },
+					{ MapLocation.TempleOfFiendsFire, 50 },
+					{ MapLocation.TempleOfFiendsWater, 50 },
+					{ MapLocation.TempleOfFiendsPhantom, 50 },
+					{ MapLocation.EarthCave1, 18 },
+					{ MapLocation.EarthCave2, 18 },
+					{ MapLocation.EarthCaveVampire, 18 },
+					{ MapLocation.EarthCave4, 18 },
+					{ MapLocation.EarthCaveLich, 18 },
+					{ MapLocation.GurguVolcano1, 32 },
+					{ MapLocation.GurguVolcano2, 32 },
+					{ MapLocation.GurguVolcano3, 32 },
+					{ MapLocation.GurguVolcano4, 32 },
+					{ MapLocation.GurguVolcano5, 32 },
+					{ MapLocation.GurguVolcano6, 32 },
+					{ MapLocation.GurguVolcanoKary, 32 },
+					{ MapLocation.IceCave1, 32 },
+					{ MapLocation.IceCave2, 32 },
+					{ MapLocation.IceCave3, 32 },
+					{ MapLocation.IceCave5, 32 },
+					{ MapLocation.IceCaveBackExit, 32 },
+					{ MapLocation.IceCaveFloater, 32 },
+					{ MapLocation.IceCavePitRoom, 32 },
+					{ MapLocation.SeaShrine1, 38 },
+					{ MapLocation.SeaShrine2, 38 },
+					{ MapLocation.SeaShrine2Room2, 38 },
+					{ MapLocation.SeaShrine4, 38 },
+					{ MapLocation.SeaShrine5, 38 },
+					{ MapLocation.SeaShrine6, 38 },
+					{ MapLocation.SeaShrine7, 38 },
+					{ MapLocation.SeaShrine8, 38 },
+					{ MapLocation.SeaShrineKraken, 38 },
+					{ MapLocation.SeaShrineMermaids, 38 },
+					{ MapLocation.Cardia1, 19 },
+					{ MapLocation.Cardia2, 19 },
+					{ MapLocation.BahamutCave1, 19 },
+					{ MapLocation.BahamutCave2, 19 },
+					{ MapLocation.Cardia4, 19 },
+					{ MapLocation.Cardia5, 19 },
+					{ MapLocation.Cardia6, 19 },
+					{ MapLocation.Waterfall, 36 },
+					{ MapLocation.DwarfCave, 9 },
+					{ MapLocation.DwarfCaveRoom3, 18 },
+					{ MapLocation.MatoyasCave, 0 },
+					{ MapLocation.SardasCave, 13 },
+					{ MapLocation.MarshCave1, 10 },
+					{ MapLocation.MarshCave3, 10 },
+					{ MapLocation.MarshCaveBottom, 10 },
+					{ MapLocation.MarshCaveBottomRoom13, 15 },
+					{ MapLocation.MarshCaveBottomRoom14, 15 },
+					{ MapLocation.MarshCaveBottomRoom16, 15 },
+					{ MapLocation.MarshCaveTop, 10 },
+					{ MapLocation.MirageTower1, 39 },
+					{ MapLocation.MirageTower2, 39 },
+					{ MapLocation.MirageTower3, 39 },
+					{ MapLocation.SkyPalace1, 40 },
+					{ MapLocation.SkyPalace2, 40 },
+					{ MapLocation.SkyPalace3, 40 },
+					{ MapLocation.SkyPalaceMaze, 40 },
+					{ MapLocation.SkyPalaceTiamat, 40 },
+					{ MapLocation.TitansTunnelEast, 13 },
+					{ MapLocation.TitansTunnelWest, 13 },
+					{ MapLocation.TitansTunnelRoom, 13 },
+					{ MapLocation.Caravan, 0 },
+				};
+			}
+
+			// The shelters are placeholders for ethers.
+			// It will only include those if the ether flag is checked.
+			if (etherizerEnabled)
+			{
+				potionspinner0.Add(Item.Tent);
+				potionspinner0.Add(Item.Cabin);
+				potionspinner0.Add(Item.House);
+				potionspinner1.Add(Item.Tent);
+				potionspinner1.Add(Item.Tent);
+				potionspinner2.Add(Item.Cabin);
+				potionspinner2.Add(Item.Cabin);
+				potionspinner3.Add(Item.House);
+				potionspinner3.Add(Item.House);
+			}
+
+			// For the non-potion items, we read all the potential treasure contents and sort them
+			// by price. The "Treasure" constructor looks at the index to determine if something is
+			// an end game item with an absurdly low price and adjust accordingly. That way you can
+			// set the price scaling to whatever you want without having to worry about if you made
+			// something cost 2 GP and thus end up in late game chests the way the standalone
+			// executable version does.
+			var v = _rom.Get(0x37C00, 0x200).Chunk(2);
+			// People have been getting some kind of blank key item in chests on or near the final
+			// floor. I suspect there's an off-by-one error somewhere, hopefully this was it?
+			//for (int i = 0x1C; i < 0xAF; i++)
+			for (int i = 0x1C; i < 0xAE; i++)
+			{
+				treasures.Add(new Treasure(v[i][0] + v[i][1] * 0x100, (byte)i));
+			}
+			foreach (var golditem in unusedGoldItems)
+			{
+				treasures.RemoveAll(x => x.index == golditem);
+			}
+			foreach (var removeitem in removedItems)
+			{
+				treasures.RemoveAll(x => x.index == (int)removeitem);
+			}
+			treasures.Sort((x, y) => x.value.CompareTo(y.value));
+		}
+		public int GetLowestIndex(int floorid)
+		{
+			int calculatedLowest = Min(Max(0, floorid - 8), 9 - 8) * 10 +
+					Min(Max(0, floorid - 9), 12 - 9) * 5 +
+					Min(Max(0, floorid - 12), 16 - 12) * 4 +
+					Min(Max(0, floorid - 16), 21 - 16) * 3 +
+					Max(0, floorid - 21) * 2;
+
+			return calculatedLowest;
+		}
+		public Item GetItem(MT19337 rng)
+		{
+			byte spunitem = 0;
+			int treasurediesize = 30;
+			int lowest = 0;
+			if (RollDice(rng, 1, 5) == 1)
+			{
+				switch ((_floorsWeight[_chestList[_currentChest].MapLocation] - 8) / 13)
+				{
+				case 0:
+					spunitem = (byte)potionspinner1.PickRandom(rng);
+					break;
+				case 1:
+					spunitem = (byte)potionspinner2.PickRandom(rng);
+					break;
+				default:
+					spunitem = (byte)potionspinner3.PickRandom(rng);
+					break;
+				}
+			}
+			else
+			{
+				lowest = Math.Min(GetLowestIndex(_floorsWeight[_chestList[_currentChest].MapLocation]), treasures.Count() - treasurediesize - 1);
+				Treasure picked = treasures[RollDice(rng, 1, treasurediesize) + (int)lowest];
+				spunitem = picked.index;
+			}
+
+			if (_chestList[_currentChest] is MapObject)
+			{
+				_placedItems.Add(new MapObject((MapObject)_chestList[_currentChest], (Item)spunitem));
+			}
+			else if (_chestList[_currentChest] is ItemShopSlot)
+			{
+				_placedItems.Add(new ItemShopSlot((ItemShopSlot)_chestList[_currentChest], (Item)spunitem));
+			}
+			else
+			{
+				_placedItems.Add(new TreasureChest(_chestList[_currentChest], (Item)spunitem));
+			}
+
+
+			if (_currentChest < _chestList.Count)
+			{
+				_currentChest++;
+			}
+
+			return (Item)spunitem;
+		}
+		public Item SpliceItem(MT19337 rng)
+		{
+			return (Item)treasures.SpliceRandom(rng).index;
+		}
+	}
+
+
+	public class DeepDungeon
 	{
 		private const byte northdir = 0;
 		private const byte southdir = 1;
@@ -31,6 +308,10 @@ namespace FF1Lib
 		private List<byte> tilesetspinner = new List<byte>();
 		private byte[] chestsonfloor = new byte[61];
 		private List<Treasure> treasures = new List<Treasure>();
+		private List<IRewardSource> chests = new();
+		private int bahamutfloor = 0;
+		private int tailfloor = 0;
+		private FF1Rom _rom;
 
 		private struct Treasure
 		{
@@ -176,6 +457,11 @@ namespace FF1Lib
 			public long level;
 			public Encounters.FormationData formation;
 
+		}
+
+		public DeepDungeon(FF1Rom rom)
+		{
+			_rom = rom;
 		}
 		private long MonsterLevel(EnemyInfo monster)
 		{
@@ -543,31 +829,31 @@ namespace FF1Lib
 			}
 
 			// Read which maps have which tilesets
-			tilesetmappings = Get(0x2CC0, 61).ToBytes();
+			tilesetmappings = _rom.Get(0x2CC0, 61).ToBytes();
 
 			// Correct the tile graphics so that "back" stairs look like they go up and
 			// "forward" stairs look like they go down.
 			for (int i = 1; i < 8; i++)
 			{
-				Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x000, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.topleft })));
-				Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x080, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.topright })));
-				Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x100, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.botleft })));
-				Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x180, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.botright })));
+				_rom.Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x000, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.topleft })));
+				_rom.Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x080, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.topright })));
+				_rom.Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x100, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.botleft })));
+				_rom.Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x180, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.botright })));
 				for (int j = 0; j < tilesets[i].teleportdeck.Count(); j++)
 				{
 					if (tilesets[i].teleportdeck[j] >= 0x80)
 					{
-						Put(0x1000 + i * 0x200 + 0x000 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.topleft })));
-						Put(0x1000 + i * 0x200 + 0x080 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.topright })));
-						Put(0x1000 + i * 0x200 + 0x100 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.botleft })));
-						Put(0x1000 + i * 0x200 + 0x180 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.botright })));
+						_rom.Put(0x1000 + i * 0x200 + 0x000 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.topleft })));
+						_rom.Put(0x1000 + i * 0x200 + 0x080 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.topright })));
+						_rom.Put(0x1000 + i * 0x200 + 0x100 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.botleft })));
+						_rom.Put(0x1000 + i * 0x200 + 0x180 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.botright })));
 					}
 					else
 					{
-						Put(0x1000 + i * 0x200 + 0x000 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topleft })));
-						Put(0x1000 + i * 0x200 + 0x080 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topright })));
-						Put(0x1000 + i * 0x200 + 0x100 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botleft })));
-						Put(0x1000 + i * 0x200 + 0x180 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botright })));
+						_rom.Put(0x1000 + i * 0x200 + 0x000 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topleft })));
+						_rom.Put(0x1000 + i * 0x200 + 0x080 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topright })));
+						_rom.Put(0x1000 + i * 0x200 + 0x100 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botleft })));
+						_rom.Put(0x1000 + i * 0x200 + 0x180 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botright })));
 					}
 				}
 			}
@@ -582,8 +868,8 @@ namespace FF1Lib
 			// It's 0x72 because we want to exclude the "boss battles".
 			FormationLevel[] formationlevels = new FormationLevel[0x72 * 2];
 			EnemyInfo[] monsters = new EnemyInfo[EnemyCount];
-			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
-			var formations = Get(FormationDataOffset, FormationDataSize * 0x72).Chunk(FormationDataSize);
+			var enemies = _rom.Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+			var formations = _rom.Get(FormationDataOffset, FormationDataSize * 0x72).Chunk(FormationDataSize);
 
 			// Get the data for all the individual monsters so we can examine their rewards.
 			for (int i = 0; i < EnemyCount; i++)
@@ -623,13 +909,19 @@ namespace FF1Lib
 				Array.Copy(formationlevels, lowest, spinner, 0, 12);
 				for (int j = 0; j < 8; j++)
 				{
-					Put(0x2C200 + i * 8 + j, Blob.FromHex(Convert.ToHexString(new byte[] { spinner.PickRandom(rng).index })));
+					_rom.Put(0x2C200 + i * 8 + j, Blob.FromHex(Convert.ToHexString(new byte[] { spinner.PickRandom(rng).index })));
 				}
 			}
 
 		}
-		public void DeepDungeon(MT19337 rng, OverworldMap overworldMap, List<Map> maps, Flags flags)
+		public void Generate(MT19337 rng, OverworldMap overworldMap, List<Map> maps, Flags flags)
 		{
+
+			if (!(bool)flags.Treasures)
+			{
+				throw new Exception("Treasures Shuffle must be enabled with Deep Dungeon.");
+			}
+
 			InitializeTilesets();
 
 			// Close the city wall around Coneria to prevent exploring the world normally, as that
@@ -643,7 +935,7 @@ namespace FF1Lib
 			});
 
 			// Move the player's starting location up so that they're within the city wall.
-			Put(0x3011, Blob.FromHex("9B"));
+			_rom.Put(0x3011, Blob.FromHex("9B"));
 
 			// Change the destination for Coneria Castle overworld teleporter so it puts us on the
 			// "back" stairs for floor 1 of the Deep Dungeon.
@@ -701,34 +993,34 @@ namespace FF1Lib
 				maps[60][0x1C, 0x27] = skipentrance2;
 				maps[60][0x24, 0x19] = skipentrance3;
 				maps[60][0x24, 0x27] = skipentrance4;
-				Put(0x2CC0 + 60, Blob.FromHex("01"));
-				Put(0x800 + 0x100 + 2 * mainentrance, Blob.FromHex("8000"));
-				Put(0x800 + 0x100 + 2 * skipentrance1, Blob.FromHex("8001"));
-				Put(0x800 + 0x100 + 2 * skipentrance2, Blob.FromHex("8002"));
-				Put(0x800 + 0x100 + 2 * skipentrance3, Blob.FromHex("8003"));
-				Put(0x800 + 0x100 + 2 * skipentrance4, Blob.FromHex("8004"));
-				Put(0x3F000 + 0, Blob.FromHex("20"));
-				Put(0x3F100 + 0, Blob.FromHex("A0"));
-				Put(0x3F200 + 0, Blob.FromHex("08")); // Floor 1
-				Put(0x3F000 + 1, Blob.FromHex("20"));
-				Put(0x3F100 + 1, Blob.FromHex("A0"));
-				Put(0x3F200 + 1, Blob.FromHex("11")); // Floor 10
-				Put(0x3F000 + 2, Blob.FromHex("20"));
-				Put(0x3F100 + 2, Blob.FromHex("A0"));
-				Put(0x3F200 + 2, Blob.FromHex("1B")); // Floor 20
-				Put(0x3F000 + 3, Blob.FromHex("20"));
-				Put(0x3F100 + 3, Blob.FromHex("A0"));
-				Put(0x3F200 + 3, Blob.FromHex("25")); // Floor 30
-				Put(0x3F000 + 4, Blob.FromHex("20"));
-				Put(0x3F100 + 4, Blob.FromHex("A0"));
-				Put(0x3F200 + 4, Blob.FromHex("2F")); // Floor 40
-													  // Put the fiend orbs as guards in front of the other entrances
-				SetNpc((MapId)60, 0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
-				SetNpc((MapId)60, 1, (ObjectId)0x1B, 0x19, 0x1D, false, true);
-				SetNpc((MapId)60, 2, (ObjectId)0x1C, 0x27, 0x1D, false, true);
-				SetNpc((MapId)60, 3, (ObjectId)0x1D, 0x19, 0x23, false, true);
-				SetNpc((MapId)60, 4, (ObjectId)0x1E, 0x27, 0x23, false, true);
-				InsertDialogs(0x2D, "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nIf you can defeat the\nfiends, you can skip\nahead. GOOD LUCK!");
+				_rom.Put(0x2CC0 + 60, Blob.FromHex("01"));
+				_rom.Put(0x800 + 0x100 + 2 * mainentrance, Blob.FromHex("8000"));
+				_rom.Put(0x800 + 0x100 + 2 * skipentrance1, Blob.FromHex("8001"));
+				_rom.Put(0x800 + 0x100 + 2 * skipentrance2, Blob.FromHex("8002"));
+				_rom.Put(0x800 + 0x100 + 2 * skipentrance3, Blob.FromHex("8003"));
+				_rom.Put(0x800 + 0x100 + 2 * skipentrance4, Blob.FromHex("8004"));
+				_rom.Put(0x3F000 + 0, Blob.FromHex("20"));
+				_rom.Put(0x3F100 + 0, Blob.FromHex("A0"));
+				_rom.Put(0x3F200 + 0, Blob.FromHex("08")); // Floor 1
+				_rom.Put(0x3F000 + 1, Blob.FromHex("20"));
+				_rom.Put(0x3F100 + 1, Blob.FromHex("A0"));
+				_rom.Put(0x3F200 + 1, Blob.FromHex("11")); // Floor 10
+				_rom.Put(0x3F000 + 2, Blob.FromHex("20"));
+				_rom.Put(0x3F100 + 2, Blob.FromHex("A0"));
+				_rom.Put(0x3F200 + 2, Blob.FromHex("1B")); // Floor 20
+				_rom.Put(0x3F000 + 3, Blob.FromHex("20"));
+				_rom.Put(0x3F100 + 3, Blob.FromHex("A0"));
+				_rom.Put(0x3F200 + 3, Blob.FromHex("25")); // Floor 30
+				_rom.Put(0x3F000 + 4, Blob.FromHex("20"));
+				_rom.Put(0x3F100 + 4, Blob.FromHex("A0"));
+				_rom.Put(0x3F200 + 4, Blob.FromHex("2F")); // Floor 40
+														   // Put the fiend orbs as guards in front of the other entrances
+				_rom.SetNpc((MapId)60, 0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
+				_rom.SetNpc((MapId)60, 1, (ObjectId)0x1B, 0x19, 0x1D, false, true);
+				_rom.SetNpc((MapId)60, 2, (ObjectId)0x1C, 0x27, 0x1D, false, true);
+				_rom.SetNpc((MapId)60, 3, (ObjectId)0x1D, 0x19, 0x23, false, true);
+				_rom.SetNpc((MapId)60, 4, (ObjectId)0x1E, 0x27, 0x23, false, true);
+				_rom.InsertDialogs(0x2D, "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nIf you can defeat the\nfiends, you can skip\nahead. GOOD LUCK!");
 				//InsertDialogs(0x13, "Bring me TNT if you wish\nto skip to floor 8.");
 				//InsertDialogs(0x29, "Bring me a RUBY if\nyou wish to skip to\nfloor 22.");
 				//InsertDialogs(0x25, "Bring me OXYALE if you\nwish to skip to floor 36.");
@@ -745,36 +1037,36 @@ namespace FF1Lib
 				maps[60][0x27, 0x20] = skipentrance1;
 				maps[60][0x20, 0x19] = skipentrance2;
 				maps[60][0x20, 0x27] = skipentrance3;
-				Put(0x2CC0 + 60, Blob.FromHex("01"));
-				Put(0x800 + 0x100 + 2 * mainentrance, Blob.FromHex("8000"));
-				Put(0x800 + 0x100 + 2 * skipentrance1, Blob.FromHex("8001"));
-				Put(0x800 + 0x100 + 2 * skipentrance2, Blob.FromHex("8002"));
-				Put(0x800 + 0x100 + 2 * skipentrance3, Blob.FromHex("8003"));
-				Put(0x3F000 + 0, Blob.FromHex("20"));
-				Put(0x3F100 + 0, Blob.FromHex("A0"));
-				Put(0x3F200 + 0, Blob.FromHex("08")); // Floor 1
-				Put(0x3F000 + 1, Blob.FromHex("20"));
-				Put(0x3F100 + 1, Blob.FromHex("A0"));
-				Put(0x3F200 + 1, Blob.FromHex("0F")); // Floor 8
-				Put(0x3F000 + 2, Blob.FromHex("20"));
-				Put(0x3F100 + 2, Blob.FromHex("A0"));
-				Put(0x3F200 + 2, Blob.FromHex("1D")); // Floor 22
-				Put(0x3F000 + 3, Blob.FromHex("20"));
-				Put(0x3F100 + 3, Blob.FromHex("A0"));
-				Put(0x3F200 + 3, Blob.FromHex("2B")); // Floor 36
-													  // Put some guards in front of the other entrances
-													  // The "ordeals man" will be in front of 1, explaining what's going on and then vanishing
-													  // The "tnt dwarf" will guard the entrance for 8
-													  // The "titan" will be in front of the entrance for 22
-													  // The "submarine girl" will be in front of the entrance for 36
-				SetNpc((MapId)60, 0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
-				SetNpc((MapId)60, 1, ObjectId.Nerrick, 0x20, 0x26, false, true);
-				SetNpc((MapId)60, 2, ObjectId.Titan, 0x1A, 0x20, false, true);
-				SetNpc((MapId)60, 3, ObjectId.SubEngineer, 0x26, 0x20, false, true);
-				InsertDialogs(0x2D, "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nBring these other folks\nthe items they need to\nskip ahead. GOOD LUCK!");
-				InsertDialogs(0x13, "Bring me TNT if you wish\nto skip to floor 8.");
-				InsertDialogs(0x29, "Bring me a RUBY if\nyou wish to skip to\nfloor 22.");
-				InsertDialogs(0x25, "Bring me OXYALE if you\nwish to skip to floor 36.");
+				_rom.Put(0x2CC0 + 60, Blob.FromHex("01"));
+				_rom.Put(0x800 + 0x100 + 2 * mainentrance, Blob.FromHex("8000"));
+				_rom.Put(0x800 + 0x100 + 2 * skipentrance1, Blob.FromHex("8001"));
+				_rom.Put(0x800 + 0x100 + 2 * skipentrance2, Blob.FromHex("8002"));
+				_rom.Put(0x800 + 0x100 + 2 * skipentrance3, Blob.FromHex("8003"));
+				_rom.Put(0x3F000 + 0, Blob.FromHex("20"));
+				_rom.Put(0x3F100 + 0, Blob.FromHex("A0"));
+				_rom.Put(0x3F200 + 0, Blob.FromHex("08")); // Floor 1
+				_rom.Put(0x3F000 + 1, Blob.FromHex("20"));
+				_rom.Put(0x3F100 + 1, Blob.FromHex("A0"));
+				_rom.Put(0x3F200 + 1, Blob.FromHex("0F")); // Floor 8
+				_rom.Put(0x3F000 + 2, Blob.FromHex("20"));
+				_rom.Put(0x3F100 + 2, Blob.FromHex("A0"));
+				_rom.Put(0x3F200 + 2, Blob.FromHex("1D")); // Floor 22
+				_rom.Put(0x3F000 + 3, Blob.FromHex("20"));
+				_rom.Put(0x3F100 + 3, Blob.FromHex("A0"));
+				_rom.Put(0x3F200 + 3, Blob.FromHex("2B")); // Floor 36
+														   // Put some guards in front of the other entrances
+														   // The "ordeals man" will be in front of 1, explaining what's going on and then vanishing
+														   // The "tnt dwarf" will guard the entrance for 8
+														   // The "titan" will be in front of the entrance for 22
+														   // The "submarine girl" will be in front of the entrance for 36
+				_rom.SetNpc((MapId)60, 0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
+				_rom.SetNpc((MapId)60, 1, ObjectId.Nerrick, 0x20, 0x26, false, true);
+				_rom.SetNpc((MapId)60, 2, ObjectId.Titan, 0x1A, 0x20, false, true);
+				_rom.SetNpc((MapId)60, 3, ObjectId.SubEngineer, 0x26, 0x20, false, true);
+				_rom.InsertDialogs(0x2D, "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nBring these other folks\nthe items they need to\nskip ahead. GOOD LUCK!");
+				_rom.InsertDialogs(0x13, "Bring me TNT if you wish\nto skip to floor 8.");
+				_rom.InsertDialogs(0x29, "Bring me a RUBY if\nyou wish to skip to\nfloor 22.");
+				_rom.InsertDialogs(0x25, "Bring me OXYALE if you\nwish to skip to floor 36.");
 			}
 
 
@@ -783,17 +1075,17 @@ namespace FF1Lib
 			//maps[59] = new Map(Blob.FromHex(deepdungeonchaosfloor).ToBytes());
 			//maps[59][0x07, 0x0F] = tilesets[7].warptile;
 			// Place Chaos
-			SetNpc((MapId)59, 0, (ObjectId)0x18, 0x0F, 0x13, true, true);
-			SetNpc((MapId)59, 1, (ObjectId)0x19, 0x0F, 0x12, true, true);
-			SetNpc((MapId)59, 2, (ObjectId)0x1A, 0x0F, 0x11, true, true);
+			_rom.SetNpc((MapId)59, 0, (ObjectId)0x18, 0x0F, 0x13, true, true);
+			_rom.SetNpc((MapId)59, 1, (ObjectId)0x19, 0x0F, 0x12, true, true);
+			_rom.SetNpc((MapId)59, 2, (ObjectId)0x1A, 0x0F, 0x11, true, true);
 			// No encounters
-			Put(0x2CC00 + 59, Blob.FromHex("00"));
+			_rom.Put(0x2CC00 + 59, Blob.FromHex("00"));
 
 			// Generate the map layouts.
 			for (int i = 8; i < 59; i++)
 			{
 				// Set the encounter rate.
-				Put(0x2CC00 + i, Blob.FromHex("08"));
+				_rom.Put(0x2CC00 + i, Blob.FromHex("08"));
 
 				// Pick a tileset with unused exit tiles.
 				if (flags.DDProgressiveTilesets)
@@ -813,7 +1105,7 @@ namespace FF1Lib
 						townfloors[nexttown]++;
 					}
 				}
-				Put(0x2CC0 + i, Blob.FromHex(Convert.ToHexString(new byte[] { tilesetmappings[i] })));
+				_rom.Put(0x2CC0 + i, Blob.FromHex(Convert.ToHexString(new byte[] { tilesetmappings[i] })));
 
 				// Start from a clean slate.
 				WipeMap(maps[i], tilesets[tilesetmappings[i]]);
@@ -846,32 +1138,32 @@ namespace FF1Lib
 				// Connect it to the next map.
 				if (i < 58)
 				{
-					Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(i - 3) })));
-					Put(0x3F000 + i - 3, Blob.FromHex("20"));
-					Put(0x3F100 + i - 3, Blob.FromHex("A0"));
-					Put(0x3F200 + i - 3, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(i + 1) })));
+					_rom.Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(i - 3) })));
+					_rom.Put(0x3F000 + i - 3, Blob.FromHex("20"));
+					_rom.Put(0x3F100 + i - 3, Blob.FromHex("A0"));
+					_rom.Put(0x3F200 + i - 3, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(i + 1) })));
 					if (townfloors[nexttown] == i)
 					{
-						Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(nexttown + 57) })));
-						Put(0x3F000 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)towndestinations[nexttown].x })));
-						Put(0x3F100 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(towndestinations[nexttown].y + 0x80) })));
-						Put(0x3F200 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { dungeontowns[nexttown] })));
+						_rom.Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(nexttown + 57) })));
+						_rom.Put(0x3F000 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)towndestinations[nexttown].x })));
+						_rom.Put(0x3F100 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(towndestinations[nexttown].y + 0x80) })));
+						_rom.Put(0x3F200 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { dungeontowns[nexttown] })));
 						if (nexttown < 6) nexttown++;
 					}
 				}
 				else
 				{
-					Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(i - 3) })));
-					Put(0x3F000 + i - 3, Blob.FromHex("0F"));
-					Put(0x3F100 + i - 3, Blob.FromHex("87"));
+					_rom.Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(i - 3) })));
+					_rom.Put(0x3F000 + i - 3, Blob.FromHex("0F"));
+					_rom.Put(0x3F100 + i - 3, Blob.FromHex("87"));
 					if ((bool)flags.ShortToFR)
 					{
-						Put(0x3F100 + i - 3, Blob.FromHex("89"));
+						_rom.Put(0x3F100 + i - 3, Blob.FromHex("89"));
 						maps[59][0x07, 0x0F] = tilesets[7].doortile;
 						maps[59][0x09, 0x0F] = tilesets[7].warptile;
 						maps[59][0x04, 0x0F] = tilesets[7].roomtile;
 					}
-					Put(0x3F200 + i - 3, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(i + 1) })));
+					_rom.Put(0x3F200 + i - 3, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(i + 1) })));
 					//PlaceChaos(rng, maps[i], tilesets[tilesetmappings[i]]);
 				}
 
@@ -882,11 +1174,10 @@ namespace FF1Lib
 				}
 			}
 
-			// Distribute chests and put treasure in them.
+			// Distribute chests, but don't put treasure in them.
 			DistributeTreasure(rng, maps, flags);
 
 			// Put Bahamut and a TAIL somewhere in the dungeon.
-			// Also places the other key items
 			PlaceBahamut(rng, maps, flags);
 
 			// Assign random palettes to the maps.
@@ -900,31 +1191,31 @@ namespace FF1Lib
 
 			// Commit the overworld edits.
 			overworldMap.ApplyMapEdits();
+
 		}
 
 		public void SpinPalettes(MT19337 rng, List<Map> maps)
 		{
 			// Assigns the inner map with the given index a random palette.
-			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
+			var palettes = OverworldMap.GeneratePalettes(_rom.Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
 			for (int i = 8; i < 61; i++)
 			{
 				var pal = palettes[(OverworldMap.Palette)rng.Between(1, palettes.Count() - 1)];
 				if (tilesetmappings[i] == 1)
 				{
-					Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + 8, pal.SubBlob(8, 8));
-					Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + 40, pal.SubBlob(40, 8));
+					_rom.Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + 8, pal.SubBlob(8, 8));
+					_rom.Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + 40, pal.SubBlob(40, 8));
 				}
 				else
 				{
 					var paletteIndex = 32;
-					Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + paletteIndex, pal.SubBlob(paletteIndex, 48 - paletteIndex));
-					Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize, pal.SubBlob(0, 16));
+					_rom.Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + paletteIndex, pal.SubBlob(paletteIndex, 48 - paletteIndex));
+					_rom.Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize, pal.SubBlob(0, 16));
 				}
 				// Make NPC palette look right
-				Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + 24, Blob.FromHex("0F0F27360F0F1436"));
+				_rom.Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + 24, Blob.FromHex("0F0F27360F0F1436"));
 			}
 		}
-
 		public void DistributeTreasure(MT19337 rng, List<Map> maps, Flags flags)
 		{
 			List<byte> mapspinner;
@@ -932,6 +1223,8 @@ namespace FF1Lib
 			List<byte> currentdeck;
 			Candidate c;
 			List<byte> accessibleroomtiles;
+			int chestAddress = 0x3101;
+			int chestCount = 0;
 
 			// First we distribute the actual treasure box tiles, not caring what's in them.
 			// The boxes are organized by tileset, so we deal with them one tileset at a time.
@@ -997,167 +1290,137 @@ namespace FF1Lib
 					{
 						c = candidates.SpliceRandom(rng);
 						maps[currentmap][c.y, c.x] = currentdeck.SpliceRandom(rng);
+						chests.Add(new TreasureChest(chestAddress + chestCount, "DeepDungeon" + chestCount, (MapLocation)currentmap, Item.None));
+						_rom.Put(0x800 + tilesetmappings[currentmap] * 0x100 + maps[currentmap][c.y, c.x] * 2, Blob.FromHex("09" + Convert.ToHexString(new byte[] { (byte)(chestCount + 1) })));
+						chestCount++;
 					}
 				}
 			}
-			// Next we put treasures in the boxes.
-			// Each box could contain a potion or something else.
-			// The potions are done in three tiers, giving a greater chance of heals in the early game,
-			// pures in the mid game, and softs in the late game.
-			List<Item> potionspinner0 = new List<Item>()
+		}
+		public List<IRewardSource> ShuffleTreasures(Flags flags, IncentiveData incentiveData, MT19337 rng)
+		{
+			var tntfloor = 8 + 7;
+			var rubyfloor = 22 + 7;
+			var oxyfloor = 36 + 7;
+
+			List<IRewardSource> placedItems = new();
+
+			var treasureBlob = _rom.Get(TreasureOffset, TreasureSize * TreasureCount);
+			var treasurePool = UsedTreasureIndices.Select(x => (Item)treasureBlob[x])
+							.Concat(ItemLists.AllNonTreasureChestItems).Where(x => !ItemLists.AllQuestItems.Contains(x)).ToList();
+
+			int shardsAdded = 0;
+
+			if (flags.ShardHunt)
 			{
-				Item.Heal, Item.Pure, Item.Soft
-			};
-			List<Item> potionspinner1 = new List<Item>()
-			{
-				Item.Heal, Item.Heal, Item.Heal, Item.Heal,
-				Item.Pure, Item.Pure, Item.Pure,
-				Item.Soft
-			};
-			List<Item> potionspinner2 = new List<Item>()
-			{
-				Item.Pure, Item.Pure, Item.Pure, Item.Pure,
-				Item.Heal, Item.Heal, Item.Heal,
-				Item.Soft
-			};
-			List<Item> potionspinner3 = new List<Item>()
-			{
-				Item.Soft, Item.Soft, Item.Soft, Item.Soft,
-				Item.Pure, Item.Pure, Item.Pure,
-				Item.Heal
-			};
-			// The shelters are placeholders for ethers.
-			// It will only include those if the ether flag is checked.
-			if (flags.Etherizer)
-			{
-				potionspinner0.Add(Item.Tent);
-				potionspinner0.Add(Item.Cabin);
-				potionspinner0.Add(Item.House);
-				potionspinner1.Add(Item.Tent);
-				potionspinner1.Add(Item.Tent);
-				potionspinner2.Add(Item.Cabin);
-				potionspinner2.Add(Item.Cabin);
-				potionspinner3.Add(Item.House);
-				potionspinner3.Add(Item.House);
+				treasurePool = treasurePool.Select(_rom.ShardHuntTreasureSelector).ToList();
+				shardsAdded = treasurePool.Count(item => item == Item.Shard);
 			}
-			// For the non-potion items, we read all the potential treasure contents and sort them
-			// by price. The "Treasure" constructor looks at the index to determine if something is
-			// an end game item with an absurdly low price and adjust accordingly. That way you can
-			// set the price scaling to whatever you want without having to worry about if you made
-			// something cost 2 GP and thus end up in late game chests the way the standalone
-			// executable version does.
-			var v = Get(0x37C00, 0x200).Chunk(2);
-			// People have been getting some kind of blank key item in chests on or near the final
-			// floor. I suspect there's an off-by-one error somewhere, hopefully this was it?
-			//for (int i = 0x1C; i < 0xAF; i++)
-			for (int i = 0x1C; i < 0xAE; i++)
+
+			if (!flags.DDFiendOrbs)
 			{
-				treasures.Add(new Treasure(v[i][0] + v[i][1] * 0x100, (byte)i));
+				// Place TNT
+				var postTNTchests = chests.Where(x => (int)x.MapLocation >= tntfloor && !placedItems.Any(y => y.Address == x.Address)).ToList();
+				postTNTchests.Shuffle(rng);
+				placedItems.Add(new TreasureChest(postTNTchests.OrderBy(x => x.MapLocation).First(), Item.Tnt));
+
+				// Place Ruby
+				var postRubyChests = chests.Where(x => (int)x.MapLocation >= rubyfloor && !placedItems.Any(y => y.Address == x.Address)).ToList();
+				postRubyChests.Shuffle(rng);
+				placedItems.Add(new TreasureChest(postRubyChests.OrderBy(x => x.MapLocation).First(), Item.Ruby));
+
+				// Place Oxyale
+				var postOxyaleChests = chests.Where(x => (int)x.MapLocation >= oxyfloor && !placedItems.Any(y => y.Address == x.Address)).ToList();
+				postOxyaleChests.Shuffle(rng);
+				placedItems.Add(new TreasureChest(postOxyaleChests.OrderBy(x => x.MapLocation).First(), Item.Oxyale));
 			}
-			treasures.Sort((x, y) => x.value.CompareTo(y.value));
-			// For each floor, we determine a "lowest" index in the sorted treasure contents list
-			// that could appear on that floor. This index increases faster in the beginning to get
-			// past the chaff and then tapers off in the later floors.
-			var treasurediesize = 30;
-			var chestsdropped = 0;
-			double lowest = 0;
-			for (int i = 8; i < 61; i++)
-			{
-				switch (i)
-				{
-					case 8:
-						lowest += 0;
-						break;
-					case 9:
-						lowest += 10;
-						break;
-					case 10:
-					case 11:
-					case 12:
-						lowest += 5;
-						break;
-					case 13:
-					case 14:
-					case 15:
-					case 16:
-						lowest += 4;
-						break;
-					case 17:
-					case 18:
-					case 19:
-					case 20:
-					case 21:
-						lowest += 3;
-						break;
-					default:
-						lowest += 2;
-						break;
-				}
-				lowest = Math.Min(lowest, treasures.Count() - treasurediesize - 1);
-				if (flags.DDEvenTreasureDistribution)
-				{
-					lowest = 0;
-					treasurediesize = treasures.Count() - 1;
-				}
-				for (int j = 0; j < 64; j++)
-				{
-					for (int k = 0; k < 64; k++)
-					{
-						if (tilesets[tilesetmappings[i]].treasuredeck.Contains(maps[i][k, j]))
-						{
-							// There's a 20% chance per chest that chest will contain a potion;
-							// otherwise it will contain something from the main treasure table.
-							// If it's a potion, we spin the appropriate spinner to the tier of
-							// the dungeon we're on (early, mid, or late).
-							// If it's not, we roll 1d30 and add the "lowest" index and put the
-							// corresponding treasure in the box.
-							byte spunitem = 0;
-							chestsdropped++;
-							Put(0x800 + tilesetmappings[i] * 0x100 + maps[i][k, j] * 2, Blob.FromHex("09" + Convert.ToHexString(new byte[] { (byte)chestsdropped })));
-							if (RollDice(rng, 1, 5) == 1)
-							{
-								if (flags.DDEvenTreasureDistribution)
-								{
-									spunitem = (byte)potionspinner0.PickRandom(rng);
-								}
-								else
-								{
-									switch ((i - 8) / 13)
-									{
-										case 0:
-											spunitem = (byte)potionspinner1.PickRandom(rng);
-											break;
-										case 1:
-											spunitem = (byte)potionspinner2.PickRandom(rng);
-											break;
-										default:
-											spunitem = (byte)potionspinner3.PickRandom(rng);
-											break;
-									}
-								}
-							}
-							else
-							{
-								Treasure picked = treasures[RollDice(rng, 1, treasurediesize) + (int)lowest];
-								spunitem = picked.index;
-							}
-							Put(0x3100 + chestsdropped, Blob.FromHex(Convert.ToHexString(new byte[] { spunitem })));
-						}
-					}
-				}
-				// Tracking the cumulative number of chests "as of" each floor is important for other
-				// things later.
-				chestsonfloor[i] = (byte)chestsdropped;
-			}
+
+			// Place Tail
+			var postTailChests = chests.Where(x => (int)x.MapLocation >= tailfloor && !placedItems.Any(y => y.Address == x.Address)).ToList();
+			postTailChests.Shuffle(rng);
+			placedItems.Add(new TreasureChest(postTailChests.OrderBy(x => x.MapLocation).First(), Item.Tail));
+
 			// Three chests in three disjoint parts of the dungeon are replaced with Ribbon.
 			for (int i = 1; i <= 3; i++)
 			{
 				var ribbonfloor = RollDice(rng, 1, 8) + 8 + i * 8;
-				while (chestsonfloor[ribbonfloor] - chestsonfloor[ribbonfloor - 1] == 0) ribbonfloor++;
-				var chestindex = RollDice(rng, 1, chestsonfloor[ribbonfloor] - chestsonfloor[ribbonfloor - 1]) + chestsonfloor[ribbonfloor - 1];
-				Put(0x3100 + chestindex, Blob.FromHex("63")); // 0x63 is the Ribbon item index
+				var postRibbonChests = chests.Where(x => (int)x.MapLocation >= ribbonfloor && !placedItems.Any(y => y.Address == x.Address)).ToList();
+				postRibbonChests.Shuffle(rng);
+				placedItems.Add(new TreasureChest(postRibbonChests.OrderBy(x => x.MapLocation).First(), Item.Ribbon));
+				treasurePool.Remove(Item.Ribbon);
 			}
 
+			// Place guaranteed casting items
+			if (flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
+			{
+				var postGuaranttedChests = chests.Where(x => (int)x.MapLocation >= 33 && !placedItems.Any(y => y.Address == x.Address)).ToList();
+				placedItems.Add(new TreasureChest(postGuaranttedChests.PickRandom(rng), Item.PowerRod));
+			}
+
+			if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
+			{
+				var postGuaranttedChests = chests.Where(x => (int)x.MapLocation >= 33 && !placedItems.Any(y => y.Address == x.Address)).ToList();
+				placedItems.Add(new TreasureChest(postGuaranttedChests.PickRandom(rng), Item.PowerGauntlets));
+			}
+
+			// Place Shards
+			for (int i = 0; i < shardsAdded; i++)
+			{
+				var validShardsLocations = chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+				treasurePool.Remove(Item.Shard);
+				placedItems.Add(new TreasureChest(validShardsLocations.PickRandom(rng), Item.Shard));
+			}
+
+			// Fill pool with cabins to account for removed items
+			var locationCount = chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).Count();
+
+			if (locationCount > treasurePool.Count)
+			{
+				treasurePool.AddRange(Enumerable.Repeat(Item.Heal, locationCount - treasurePool.Count()));
+			}
+
+			List<IRewardSource> normalTreasures = new();
+
+			if ((bool)flags.RandomLoot)
+			{
+				IItemGenerator generator;
+				// We want to leave out anything incentivized (and thus already placed), but
+				// add all the other stuff that you can't find in vanilla.
+				if (flags.WorldWealth == WorldWealthMode.DeepDungeon || flags.WorldWealth == WorldWealthMode.DeepDungeonProgressive)
+				{
+					generator = new DeepDungeonItemGenerator(chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList(), _rom.UnusedGoldItems, incentiveData.RemovedItems.ToList(), normalTreasures, flags.DeepDungeon, flags.Etherizer, _rom);
+				}
+				else
+				{
+					generator = new ItemGenerator(treasurePool.ToList(), _rom.UnusedGoldItems, incentiveData.RemovedItems.ToList(), flags.WorldWealth);
+				}
+
+				treasurePool = treasurePool.Select(treasure => generator.GetItem(rng)).ToList();
+			}
+
+			// Place treasures
+			if ((bool)flags.RandomLoot && flags.WorldWealth == WorldWealthMode.DeepDungeonProgressive)
+			{
+				placedItems.AddRange(normalTreasures);
+			}
+			else
+			{
+				var itemLocationPool = chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+				itemLocationPool.Shuffle(rng);
+				treasurePool.Shuffle(rng);
+
+				var leftovers = treasurePool.Zip(itemLocationPool, (treasure, location) => new TreasureChest(location, treasure));
+				placedItems.AddRange(leftovers);
+			}
+
+			// Output the results to the ROM
+			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && (x is TreasureChest)))
+			{
+				//Debug.WriteLine(item.SpoilerText);
+				item.Put(_rom);
+			}
+
+			return placedItems;
 		}
 
 		public int RollDice(MT19337 rng, int dice, int sides)
@@ -1183,7 +1446,7 @@ namespace FF1Lib
 			{
 				for (int j = 0; j < 16; j++)
 				{
-					SetNpc((MapId)i, j, 0, 0, 0, false, true);
+					_rom.SetNpc((MapId)i, j, 0, 0, 0, false, true);
 				}
 			}
 		}
@@ -1584,9 +1847,9 @@ namespace FF1Lib
 				}
 			}
 			c = candidates.SpliceRandom(rng);
-			SetNpc((MapId)59, 0, (ObjectId)0x18, c.x, c.y, true, true);
-			SetNpc((MapId)59, 1, (ObjectId)0x19, c.x, c.y, true, true);
-			SetNpc((MapId)59, 2, (ObjectId)0x1A, c.x, c.y, true, true);
+			_rom.SetNpc((MapId)59, 0, (ObjectId)0x18, c.x, c.y, true, true);
+			_rom.SetNpc((MapId)59, 1, (ObjectId)0x19, c.x, c.y, true, true);
+			_rom.SetNpc((MapId)59, 2, (ObjectId)0x1A, c.x, c.y, true, true);
 		}
 		private void PlaceBahamut(MT19337 rng, List<Map> maps, Flags flags)
 		{
@@ -1596,12 +1859,8 @@ namespace FF1Lib
 			// weighting towards floor 20.
 			List<Candidate> candidates = new List<Candidate>();
 			Candidate c;
-			var bahamutfloor = RollDice(rng, 4, 6) + 6 + 7;
-			var tailfloor = RollDice(rng, 4, 6) + 6 + 7;
-			var tntfloor = 8 + 7;
-			var rubyfloor = 22 + 7;
-			var oxyfloor = 36 + 7;
-			var chestindex = 0;
+			bahamutfloor = RollDice(rng, 4, 6) + 6 + 7;
+			tailfloor = RollDice(rng, 4, 6) + 6 + 7;
 			switch (flags.TailBahamutMode)
 			{
 				case TailBahamutMode.TailFirst:
@@ -1644,26 +1903,7 @@ namespace FF1Lib
 				}
 			}
 			c = candidates.SpliceRandom(rng);
-			SetNpc((MapId)bahamutfloor, 0, ObjectId.Bahamut, c.x, c.y, true, true);
-			if (!flags.DDFiendOrbs)
-			{
-				// Place TNT
-				while (chestsonfloor[tntfloor] - chestsonfloor[tntfloor - 1] == 0) tntfloor++;
-				chestindex = RollDice(rng, 1, chestsonfloor[tntfloor] - chestsonfloor[tntfloor - 1]) + chestsonfloor[tntfloor - 1];
-				Put(0x3100 + chestindex, Blob.FromHex("06")); // 06 is the TNT item index
-															  // Place RUBY
-				while (chestsonfloor[rubyfloor] - chestsonfloor[rubyfloor - 1] == 0) rubyfloor++;
-				chestindex = RollDice(rng, 1, chestsonfloor[rubyfloor] - chestsonfloor[rubyfloor - 1]) + chestsonfloor[rubyfloor - 1];
-				Put(0x3100 + chestindex, Blob.FromHex("09")); // 09 is the RUBY item index
-															  // Place OXYALE
-				while (chestsonfloor[oxyfloor] - chestsonfloor[oxyfloor - 1] == 0) oxyfloor++;
-				chestindex = RollDice(rng, 1, chestsonfloor[oxyfloor] - chestsonfloor[oxyfloor - 1]) + chestsonfloor[oxyfloor - 1];
-				Put(0x3100 + chestindex, Blob.FromHex("10")); // 10 is the OXYALE item index
-			}
-			// Place TAIL
-			while (chestsonfloor[tailfloor] - chestsonfloor[tailfloor - 1] == 0 || tailfloor == rubyfloor) tailfloor++;
-			chestindex = RollDice(rng, 1, chestsonfloor[tailfloor] - chestsonfloor[tailfloor - 1]) + chestsonfloor[tailfloor - 1];
-			Put(0x3100 + chestindex, Blob.FromHex("0D")); // 0D is the TAIL item index
+			_rom.SetNpc((MapId)bahamutfloor, 0, ObjectId.Bahamut, c.x, c.y, true, true);
 		}
 		private void GenerateMapBoxStyle(MT19337 rng, Map m, Tileset t)
 		{
@@ -1895,5 +2135,6 @@ namespace FF1Lib
 			}
 			m[0x20, 0x20] = t.warptile;
 		}
+
 	}
 }

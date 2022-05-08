@@ -29,13 +29,15 @@ namespace FF1Lib
 
 		public const int GoldItemOffset = 108; // 108 items before gold chests
 		public const int GoldItemCount = 68;
-		public static List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
+		public List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
 
 		public ItemNames ItemsText;
 		public GearPermissions ArmorPermissions;
 		public GearPermissions WeaponPermissions;
 		public SpellPermissions SpellPermissions;
 		public GameClasses ClassData;
+
+		public DeepDungeon DeepDungeon;
 
 		private SanityCheckerV2 sanityChecker = null;
 		private IncentiveData incentivesData = null;
@@ -184,6 +186,7 @@ namespace FF1Lib
 			WeaponPermissions = new GearPermissions(0x3BF50, (int)Item.WoodenNunchucks, this);
 			SpellPermissions = new SpellPermissions(this);
 			ClassData = new GameClasses(WeaponPermissions, ArmorPermissions, SpellPermissions, this);
+			DeepDungeon = new DeepDungeon(this);
 
 			var talkroutines = new TalkRoutines();
 			var npcdata = new NPCdata(this);
@@ -299,8 +302,6 @@ namespace FF1Lib
 				DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
 			}
 
-			// Original placement of DeepDungeon routine
-
 			if (preferences.ModernBattlefield)
 			{
 				EnableModernBattlefield();
@@ -309,6 +310,14 @@ namespace FF1Lib
 			if ((bool)flags.TitansTrove)
 			{
 				EnableTitansTrove(maps);
+			}
+
+			// Original placement of DeepDungeon routine
+			if (flags.DeepDungeon)
+			{
+				DeepDungeon.Generate(rng, overworldMap, maps, flags);
+				DeepDungeonFloorIndicator();
+				UnusedGoldItems = new List<int> { };
 			}
 
 			if ((bool)flags.LefeinShops)
@@ -615,12 +624,17 @@ namespace FF1Lib
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, new SanityCheckerV1());
 					}
 
-					if ((bool)flags.Treasures && !flags.DeepDungeon)
+					if (flags.DeepDungeon)
+					{
+						sanityChecker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
+						generatedPlacement = DeepDungeon.ShuffleTreasures(flags, incentivesData, rng);
+					}
+					else if ((bool)flags.Treasures)
 					{
 						sanityChecker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
 						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, sanityChecker);
 					}
-					else if (owMapExchange != null && !flags.DeepDungeon)
+					else if (owMapExchange != null)
 					{
 						sanityChecker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
 						if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags).Complete) throw new InsaneException("Not Completable");
@@ -973,13 +987,6 @@ namespace FF1Lib
 			if ((bool)flags.HintsVillage && !flags.DeepDungeon)
 			{
 				NPCHints(rng, npcdata, flags, overworldMap);
-			}
-
-			if (flags.DeepDungeon)
-			{
-				DeepDungeon(rng, overworldMap, maps, flags);
-				DeepDungeonFloorIndicator();
-				UnusedGoldItems = new List<int> { };
 			}
 
 			if ((bool)flags.TrappedChestsEnabled)

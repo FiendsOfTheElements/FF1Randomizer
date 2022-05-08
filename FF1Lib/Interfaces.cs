@@ -78,6 +78,16 @@
 		bool IncentivizeBad { get; }
 		bool? NoMasamune { get; }
 		bool? NoXcalber { get; }
+		bool? IsFloaterRemoved { get;  }
+		bool? NoTail { get; }
+		bool? IsCanoeFree { get; }
+		bool? FreeLute { get; }
+		bool? FreeTail { get; }
+		bool? IsBridgeFree { get; }
+		bool? IsCanalFree { get; }
+		bool? IsShipFree { get; }
+		bool? GuaranteedMasamune { get; }
+
 	}
 	public interface IMapEditFlags : IItemPlacementFlags
 	{
@@ -126,6 +136,8 @@
 		bool Archipelago { get; }
 		bool PredictivePlacement { get;}
 		bool AllowUnsafePlacement { get; }
+		bool DeepDungeon { get; }
+		bool Etherizer { get; }
 	}
 	public interface IItemShuffleFlags
 	{
