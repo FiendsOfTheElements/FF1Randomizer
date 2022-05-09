@@ -211,6 +211,8 @@ namespace FF1Lib.Procgen
 	public OwTileFilter apply_shores2;
 	public OwTileFilter apply_shores3;
 	public OwTileFilter apply_shores4;
+	public OwTileFilter apply_shores5;
+	public OwTileFilter apply_shores6;
 
 	public OwTileFilter prune_forests;
 	public OwTileFilter polish_mountains1;
@@ -786,18 +788,27 @@ namespace FF1Lib.Procgen
 	pit_caves.Add(CARDIA_5);
 	pit_caves.Add(CARDIA_6);
 
+        var airship_landable = new HashSet<byte>();
+	airship_landable.Add(LAND);
+	airship_landable.Add(GRASS);
+	airship_landable.Add(GRASS_NW);
+	airship_landable.Add(GRASS_NE);
+	airship_landable.Add(GRASS_SW);
+	airship_landable.Add(GRASS_SE);
+	airship_landable.Add(LAND_NO_FIGHT);
+
         this.apply_shores1 = new OwTileFilter(
             new Rule[] {
 		new Rule(new byte[3,3] {
-		    { STAR, STAR,   STAR},
-		    {  STAR, OCEAN, _ },
-		    { STAR, _,  MOUNTAIN}},
+		    { STAR,   STAR,     STAR},
+		    {  STAR, OCEAN,       _ },
+		    { STAR,      _, MOUNTAIN}},
 		    OCEAN),
 
 		new Rule(new byte[3,3] {
-		    { STAR, STAR,    STAR },
-		    {_, OCEAN, STAR },
-		    { MOUNTAIN, _,   STAR}},
+		    { STAR,      STAR, STAR},
+		    {_,         OCEAN, STAR},
+		    { MOUNTAIN,     _, STAR}},
 		    OCEAN),
 
 		new Rule(new byte[3,3] {
@@ -940,6 +951,54 @@ namespace FF1Lib.Procgen
 	this.apply_shores3 = new OwTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
+		    {STAR, OCEAN,   STAR},
+		    {OCEAN,    _,      _},
+		    {STAR,  STAR,   STAR}},
+		    SHORE_NW),
+		new Rule(new byte[3,3] {
+		    {STAR, OCEAN,   STAR},
+		    {OCEAN,    _,   STAR},
+		    {STAR,     _,   STAR}},
+		    SHORE_NW),
+
+		new Rule(new byte[3,3] {
+		    {STAR, OCEAN,   STAR},
+		    {   _,     _,   OCEAN},
+		    {STAR,  STAR,   STAR}},
+		    SHORE_NE),
+		new Rule(new byte[3,3] {
+		    {STAR, OCEAN,   STAR},
+		    {STAR,     _,   OCEAN},
+		    {STAR,     _,   STAR}},
+		    SHORE_NE),
+
+		new Rule(new byte[3,3] {
+		    {STAR,  STAR,   STAR},
+		    {   _,     _,   OCEAN},
+		    {STAR, OCEAN,   STAR}},
+		    SHORE_SE),
+		new Rule(new byte[3,3] {
+		    {STAR,     _,   STAR},
+		    {STAR,     _,   OCEAN},
+		    {STAR, OCEAN,   STAR}},
+		    SHORE_SE),
+
+		new Rule(new byte[3,3] {
+		    {STAR,   STAR,   STAR},
+		    {OCEAN,     _,      _},
+		    {STAR,  OCEAN,   STAR}},
+		    SHORE_SW),
+		new Rule(new byte[3,3] {
+		    {STAR,      _,   STAR},
+		    {OCEAN,     _,   STAR},
+		    {STAR,  OCEAN,   STAR}},
+		    SHORE_SW),
+	    }, allTiles, airship_landable, null);
+
+
+	this.apply_shores4 = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
 		    {STAR, STAR,   STAR},
 		    {STAR, OCEAN, _},
 		    {STAR, STAR,   STAR}},
@@ -961,7 +1020,7 @@ namespace FF1Lib.Procgen
 		    SHORE_S),
 	    }, allTiles, non_shore_tiles, null);
 
-	this.apply_shores4 = new OwTileFilter(
+	this.apply_shores5 = new OwTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR, STAR,   STAR},
@@ -983,6 +1042,20 @@ namespace FF1Lib.Procgen
 		    {DOCK_W, OCEAN, STAR},
 		    {STAR,  STAR,   STAR}},
 		    SHORE_E),
+	    }, allTiles, non_shore_tiles, null);
+
+	this.apply_shores6 = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
+		    {STAR,     STAR, STAR},
+		    {STAR, SHORE_SE, STAR},
+		    {STAR,     STAR, SHORE_NW}},
+		    SHORE_S),
+		new Rule(new byte[3,3] {
+		    {STAR,         STAR, STAR},
+		    {STAR,     SHORE_SW, STAR},
+		    {SHORE_NE,     STAR, STAR}},
+		    SHORE_S),
 	    }, allTiles, non_shore_tiles, null);
 
 	this.mountain_borders = new OwTileFilter(

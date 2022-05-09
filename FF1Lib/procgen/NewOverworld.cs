@@ -1538,6 +1538,8 @@ namespace FF1Lib.Procgen
 		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2, false}),
 		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores3, false}),
 		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores4, false}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores5, false}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores6, false}),
 
 		    new GenerationStep("ApplyFilter", new object[]{mt.prune_forests, true}),
 		    new GenerationStep("PreventAirshipLanding", new object[]{}),

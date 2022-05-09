@@ -179,6 +179,7 @@
 		bool? IsFloaterRemoved { get; }
 	        bool? IsAirshipFree { get; }
 		bool? MapBahamutCardiaDock { get; }
+	        OwMapExchanges OwMapExchange { get; }
 	}
 	public interface IVictoryConditionFlags
 	{
