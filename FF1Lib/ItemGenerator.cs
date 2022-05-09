@@ -56,6 +56,7 @@ namespace FF1Lib
 			new List<int> {  -1, -2, -4, -5, -4, 14, 14, 0, -12 },
 		};
 
+		private List<Item> shopPool;
 		private enum Tier
 		{
 			Unique,
@@ -75,6 +76,7 @@ namespace FF1Lib
 		{
 			// Make a copy
 			var treasurePool = seedPool.ToList();
+			shopPool = treasurePool.Distinct().Where(x => !removedItems.Contains(x)).ToList();
 
 			// Make sure we copy all the input lists so we don't modify anything static.
 			List<List<Item>> tiers = new List<List<Item>>
@@ -92,7 +94,6 @@ namespace FF1Lib
 
 			List<int> ratios = RelativeRatios[(int)wealth].ToList();
 			System.Diagnostics.Debug.Assert(tiers.Count == ratios.Count);
-			System.Diagnostics.Debug.Assert(Enum.GetValues(typeof(WorldWealthMode)).Length == RelativeRatios.Length);
 
 			ratios[0] += treasurePool.Where(x => ItemLists.UberTier.Contains(x)).Count();
 			ratios[1] += treasurePool.Where(x => ItemLists.LegendaryWeaponTier.Contains(x)).Count();
@@ -140,9 +141,7 @@ namespace FF1Lib
 
 		public Item SpliceItem(MT19337 rng)
 		{
-			Item item = GetItem(rng);
-			_pool.ForEach(pool => pool.RemoveAll(i => i == item));
-			_pool.RemoveAll(pool => !pool.Any());
+			Item item = shopPool.SpliceRandom(rng);
 			return item;
 		}
 	}
