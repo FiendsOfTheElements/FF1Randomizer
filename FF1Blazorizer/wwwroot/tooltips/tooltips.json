@@ -1687,7 +1687,7 @@
 		"Id": "consumableTreasureStackSizeDropDown",
 		"title": "Consumable Treasure Stack Size",
 		"screenshot": "consumableTreasureStackSizeDropDown.png",
-		"description": "Consumable rewards from chests and NPCs may give you more than one item.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}Stingy|2|||5||[r]{l}Adequate|3|2||10|2|2[r]{l}Generous|5|3|2|20|3|2[r]{l}Ridiculous|10|5|3|50|5|5\n"
+		"description": "Consumable rewards from chests and NPCs may give you more than one item.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}Stingy|2|||5||[r]{l}Adequate|3|2||10|2|2[r]{l}Generous|5|3|2|20|3|2[r]{l}Ridiculous|10|5|3|50|5|5\n\nNote: In-game text only shows a single consumable no matter how many you gained."
 	},
 	{
 		"Id": "consumableChestSetDropDown",
