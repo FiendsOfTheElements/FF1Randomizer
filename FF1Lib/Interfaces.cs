@@ -122,7 +122,9 @@
 		bool? SendMasamuneHome { get; }
 		bool? NoMasamune { get; }
 		bool? NoXcalber { get; }
+		RandomizeTreasureMode RandomizeTreasure { get; }
 		WorldWealthMode WorldWealth { get; }
+		DeepDungeonGeneratorMode DeepDungeonGenerator { get; }
 		ConsumableChestSet MoreConsumableChests { get; }
 		ExtConsumableSet ExtConsumableSet { get; }
 		ExtConsumableChestSet ExtConsumableChests { get; }

@@ -16,15 +16,21 @@ namespace FF1Lib
 		Standard,
 		[Description("Melmond Wealth")]
 		Melmond,
+	}
+	public enum RandomizeTreasureMode
+	{
+		[Description("None")]
+		None,
+		[Description("World Wealth")]
+		RandomizeTreasure,
 		[Description("Deep Dungeon")]
 		DeepDungeon,
-		[Description("Deep Dungeon Progressive")]
-		DeepDungeonProgressive,
+		[Description("Random")]
+		Random,
 	}
 	public interface IItemGenerator
 	{
 		public Item GetItem(MT19337 rng);
-		public Item SpliceItem(MT19337 rng);
 	}
 	public class ItemGenerator : IItemGenerator
 	{
@@ -40,13 +46,6 @@ namespace FF1Lib
 		// Armor           51 / 234        22
 		// Consumable      36 / 234        15
 		// Gold           112 / 234        48
-		private static readonly List<int>[] Ratios = {
-			new List<int> {  1,  6, 18, 20, 20,  8, 15, 20,  90 },
-			new List<int> {  1,  4, 12, 17, 16, 13, 23, 36, 112 },
-			new List<int> {  1,  3, 10, 14, 13, 17, 28, 36, 112 },
-			new List<int> {  1,  3,  9, 12, 12, 19, 30, 36, 112 },
-			new List<int> {  0,  2,  8, 12, 12, 25, 35, 36, 100 },
-		};
 
 		private static readonly List<int>[] RelativeRatios = {
 			new List<int> {  1,  3, 9, 7, 8, -4, -5, -13, -6 },
@@ -56,27 +55,12 @@ namespace FF1Lib
 			new List<int> {  -1, -2, -4, -5, -4, 14, 14, 0, -12 },
 		};
 
-		private List<Item> shopPool;
-		private enum Tier
-		{
-			Unique,
-			LegendaryWeapon,
-			LegendaryArmor,
-			RareWeapon,
-			RareArmor,
-			CommonWeapon,
-			CommonArmor,
-			Consumable,
-			Gold
-		}
-
 		private List<List<Item>> _pool;
 
 		public ItemGenerator(List<Item> seedPool, List<int> unusedGoldItems, List<Item> removedItems, WorldWealthMode wealth)
 		{
 			// Make a copy
 			var treasurePool = seedPool.ToList();
-			shopPool = treasurePool.Distinct().Where(x => !removedItems.Contains(x)).ToList();
 
 			// Make sure we copy all the input lists so we don't modify anything static.
 			List<List<Item>> tiers = new List<List<Item>>
@@ -138,10 +122,53 @@ namespace FF1Lib
 		{
 			return _pool.SpliceRandom(rng).PickRandom(rng);
 		}
+	}
 
-		public Item SpliceItem(MT19337 rng)
+	public class ShopItemGenerator : IItemGenerator
+	{
+		private static readonly List<int> Ratios = new() { 1, 4, 12, 17, 16, 13, 23, 36, 112 };
+
+		private List<List<Item>> _pool;
+
+		public ShopItemGenerator(List<Item> seedPool, List<int> unusedGoldItems, List<Item> removedItems)
 		{
-			Item item = shopPool.SpliceRandom(rng);
+			// Make a copy
+			var treasurePool = seedPool.Where(x => !removedItems.Contains(x)).ToList();
+
+			// Make sure we copy all the input lists so we don't modify anything static.
+			List<List<Item>> tiers = new List<List<Item>>
+			{
+				ItemLists.UberTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.LegendaryWeaponTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.LegendaryArmorTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.RareWeaponTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.RareArmorTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.CommonWeaponTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.CommonArmorTier.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.AllConsumables.Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.AllGoldTreasure.Where(x => !unusedGoldItems.Contains((int)x)).Where(item => treasurePool.Remove(item)).ToList(),
+			};
+
+			List<int> ratios = Ratios;
+			System.Diagnostics.Debug.Assert(tiers.Count == ratios.Count);
+
+			// Now populate the comined pool with a weighted average of all those above lists.
+			_pool = new List<List<Item>>();
+			for (int i = 0; i < ratios.Count(); ++i)
+			{
+				for (int j = 0; j < ratios[i]; ++j)
+				{
+					if (tiers[i].Any())
+						_pool.Add(tiers[i]);
+				}
+			}
+		}
+
+		public Item GetItem(MT19337 rng)
+		{
+			Item item = _pool.PickRandom(rng).PickRandom(rng);
+			_pool.ForEach(pool => pool.RemoveAll(i => i == item));
+			_pool.RemoveAll(pool => !pool.Any());
 			return item;
 		}
 	}

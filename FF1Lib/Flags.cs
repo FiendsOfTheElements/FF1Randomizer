@@ -655,8 +655,9 @@ namespace FF1Lib
 
 		public FormationShuffleMode FormationShuffleMode { get; set; } = FormationShuffleMode.None;
 
+		public RandomizeTreasureMode RandomizeTreasure { get; set; } = RandomizeTreasureMode.None;
 		public WorldWealthMode WorldWealth { get; set; } = WorldWealthMode.Standard;
-
+		public DeepDungeonGeneratorMode DeepDungeonGenerator { get; set; } = DeepDungeonGeneratorMode.Progressive;
 		public EvadeCapValues EvadeCap { get; set; } = EvadeCapValues.medium;
 
 		public bool? AllowUnsafeStartArea { get; set; } = false;
