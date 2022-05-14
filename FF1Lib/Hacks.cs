@@ -1562,26 +1562,26 @@ namespace FF1Lib
 			Put(EnemyTextPointerOffset + 120 * 2, lich2name);
 
 			// Scale Undeads
-			ScaleSingleEnemyStats(0x15, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Bone
-			ScaleSingleEnemyStats(0x16, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // R.Bone
-			ScaleSingleEnemyStats(0x24, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // ZomBull
-			ScaleSingleEnemyStats(0x27, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Shadow
-			ScaleSingleEnemyStats(0x28, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Image
-			ScaleSingleEnemyStats(0x29, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Wraith
-			ScaleSingleEnemyStats(0x2A, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Ghost
-			ScaleSingleEnemyStats(0x2B, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Zombie
-			ScaleSingleEnemyStats(0x2C, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Ghoul
-			ScaleSingleEnemyStats(0x2D, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Geist
-			ScaleSingleEnemyStats(0x2E, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Specter
-			ScaleSingleEnemyStats(0x33, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Phantom
-			ScaleSingleEnemyStats(0x3C, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Vampire
-			ScaleSingleEnemyStats(0x3D, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // WzVampire
-			ScaleSingleEnemyStats(0x44, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Zombie D
-			ScaleSingleEnemyStats(0x4F, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Mummy
-			ScaleSingleEnemyStats(0x50, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // WzMummy
-			ScaleSingleEnemyStats(0x77, 120, 120, false, false, null, false, 120, 120, GetEvadeIntFromFlag(flags.EvadeCap)); // Lich1
-			ScaleSingleEnemyStats(0x78, 120, 120, false, false, null, false, 120, 120, GetEvadeIntFromFlag(flags.EvadeCap)); // Lich2
-			ScaleSingleEnemyStats(0x7F, 110, 110, false, false, null, false, 110, 110, GetEvadeIntFromFlag(flags.EvadeCap)); // Chaos
+			ScaleSingleEnemyStats(0x15, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Bone
+			ScaleSingleEnemyStats(0x16, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // R.Bone
+			ScaleSingleEnemyStats(0x24, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // ZomBull
+			ScaleSingleEnemyStats(0x27, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Shadow
+			ScaleSingleEnemyStats(0x28, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Image
+			ScaleSingleEnemyStats(0x29, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Wraith
+			ScaleSingleEnemyStats(0x2A, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Ghost
+			ScaleSingleEnemyStats(0x2B, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Zombie
+			ScaleSingleEnemyStats(0x2C, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Ghoul
+			ScaleSingleEnemyStats(0x2D, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Geist
+			ScaleSingleEnemyStats(0x2E, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Specter
+			ScaleSingleEnemyStats(0x33, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Phantom
+			ScaleSingleEnemyStats(0x3C, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Vampire
+			ScaleSingleEnemyStats(0x3D, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // WzVampire
+			ScaleSingleEnemyStats(0x44, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Zombie D
+			ScaleSingleEnemyStats(0x4F, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Mummy
+			ScaleSingleEnemyStats(0x50, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // WzMummy
+			ScaleSingleEnemyStats(0x77, 120, 120, false, null, false, 120, 120, GetEvadeIntFromFlag(flags.EvadeCap)); // Lich1
+			ScaleSingleEnemyStats(0x78, 120, 120, false, null, false, 120, 120, GetEvadeIntFromFlag(flags.EvadeCap)); // Lich2
+			ScaleSingleEnemyStats(0x7F, 110, 110, false, null, false, 110, 110, GetEvadeIntFromFlag(flags.EvadeCap)); // Chaos
 
 			// Intro
 			Blob intro = FF1Text.TextToStory(new string[]

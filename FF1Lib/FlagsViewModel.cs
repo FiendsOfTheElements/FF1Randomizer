@@ -2014,7 +2014,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool StartingGold
+		public StartingGold StartingGold
 		{
 			get => Flags.StartingGold;
 			set
@@ -2421,24 +2421,6 @@ namespace FF1Lib
 			}
 		}
 
-		public bool WrapPriceOverflow
-		{
-			get => Flags.WrapPriceOverflow;
-			set
-			{
-				Flags.WrapPriceOverflow = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WrapPriceOverflow"));
-			}
-		}
-		public bool WrapStatOverflow
-		{
-			get => Flags.WrapStatOverflow;
-			set
-			{
-				Flags.WrapStatOverflow = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WrapStatOverflow"));
-			}
-		}
 		public bool IncludeMorale
 		{
 			get => Flags.IncludeMorale;
@@ -4481,16 +4463,6 @@ namespace FF1Lib
 			set
 			{
 				Flags.CheapVendorItem = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public bool ApplyExpBoostToGold
-		{
-			get => Flags.ApplyExpBoostToGold;
-			set
-			{
-				Flags.ApplyExpBoostToGold = value;
 				RaisePropertyChanged();
 			}
 		}

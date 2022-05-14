@@ -367,10 +367,10 @@
 		"description": "If items scale such that their cost is higher than 65,535G (the maximum price an item could have in the vanilla game), this flag will allow those prices to \"wrap\" back to 1G and continue from there.\nFor example, when disabled, an item that should cost 67,000G would cost 65,535G. When enabled, that item would cost 1,465G."
 	},
 	{
-		"Id": "startingGoldCheckBox",
-		"title": "Scale Starting Gold",
+		"Id": "startingGoldDropDown",
+		"title": "Starting Gold",
 		"screenshot": "startingGoldCheckBox.png",
-		"description": "Scales the starting gold according to the Exp & Gold scaling selected."
+		"description": "Set the starting gold."
 	},
 	{
 		"Id": "excludeGoldFromScalingCheckBox",

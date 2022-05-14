@@ -58,6 +58,31 @@ namespace FF1Lib
 		insane,
 	}
 
+	public enum StartingGold
+	{ 
+		[Description("0 gp")]
+		None,
+		[Description("100 gp")]
+		Gp100,
+		[Description("200 gp")]
+		Gp200,
+		[Description("400 gp")]
+		Gp400,
+		[Description("800 gp")]
+		Gp800,
+		[Description("2500 gp")]
+		Gp2500,
+		[Description("9,999 gp")]
+		Gp9999,
+		[Description("65,535 gp")]
+		Gp65535,
+		[Description("Random (0-800 gp)")]
+		RandomLow,
+		[Description("Random (0-65,535 gp)")]
+		RandomHigh,
+	}
+
+
 	public partial class FF1Rom : NesRom
 	{
 		public static readonly List<int> Bosses = new List<int> { Enemy.Garland, Enemy.Astos, Enemy.Pirate, Enemy.WarMech,
@@ -114,7 +139,7 @@ namespace FF1Lib
 				{
 					var price = ExtConsumables.ExtConsumablePriceFix((Item)i, prices[i], flags);
 					var newPrice = RangeScaleWithZero(price / multiplier, scaleLow, scaleHigh, 1e-5 * multiplier, 1, rng);
-					prices[i] = (ushort)(flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
+					prices[i] = (ushort)Min(newPrice, 0xFFFF);
 				}
 			}
 			var questItemPrice = prices[(int)Item.Bottle];
@@ -158,15 +183,22 @@ namespace FF1Lib
 					Put(ShopPointerBase + pointers[i], priceBytes);
 				}
 			}
-			if (flags.StartingGold)
+
+			List<(StartingGold, ushort)> startingGold = new()
 			{
-				var startingGold = BitConverter.ToUInt16(Get(StartingGoldOffset, 2), 0);
+				(StartingGold.None, 0),
+				(StartingGold.Gp100, 100),
+				(StartingGold.Gp200, 200),
+				(StartingGold.Gp400, 400),
+				(StartingGold.Gp800, 800),
+				(StartingGold.Gp2500, 2500),
+				(StartingGold.Gp9999, 9999),
+				(StartingGold.Gp65535, 65535),
+				(StartingGold.RandomLow, (ushort)rng.Between(0, 800)),
+				(StartingGold.RandomHigh, (ushort)rng.Between(0, 65535)),
+			};
 
-				startingGold = (ushort)Min(RangeScale(startingGold / multiplier, scaleLow, scaleHigh, 1, rng), 0xFFFF);
-
-				Put(StartingGoldOffset, BitConverter.GetBytes(startingGold));
-			}
-
+			Put(StartingGoldOffset, BitConverter.GetBytes(startingGold[(int)flags.StartingGold].Item2));
 		}
 
 		public int GetEvadeIntFromFlag(EvadeCapValues evadeCapFlag)
@@ -214,7 +246,7 @@ namespace FF1Lib
 			int minHp = (bool)flags.ClampEnemyHpScaling ? 100 : flags.EnemyScaleHpLow;
 			int highHp = (bool)flags.ClampEnemyHpScaling ? Math.Max(100, flags.EnemyScaleHpHigh) : flags.EnemyScaleHpHigh;
 
-			NonBossEnemies.ForEach(index => ScaleSingleEnemyStats(index, minStats, highStats, flags.WrapStatOverflow, flags.IncludeMorale, rng,
+			NonBossEnemies.ForEach(index => ScaleSingleEnemyStats(index, minStats, highStats, flags.IncludeMorale, rng,
 				(bool)flags.SeparateEnemyHPScaling, minHp, highHp, GetEvadeIntFromFlag(flags.EvadeCap)));
 		}
 
@@ -225,10 +257,10 @@ namespace FF1Lib
 			int highStats = (bool)flags.ClampMinimumBossStatScale ? Math.Max(100, flags.BossScaleStatsHigh) : flags.BossScaleStatsHigh;
 			int minHp = (bool)flags.ClampBossHPScaling ? 100 : flags.BossScaleHpLow;
 			int highHp = (bool)flags.ClampBossHPScaling ? Math.Max(100, flags.BossScaleHpHigh) : flags.BossScaleHpHigh;
-			Bosses.ForEach(index => ScaleSingleEnemyStats(index, minStats, highStats, flags.WrapStatOverflow, flags.IncludeMorale, rng,
+			Bosses.ForEach(index => ScaleSingleEnemyStats(index, minStats, highStats, flags.IncludeMorale, rng,
 				(bool)flags.SeparateBossHPScaling, minHp, highHp, GetEvadeIntFromFlag(flags.EvadeCap)));
 			if ((bool)flags.FightBahamut) {
-			    ScaleSingleEnemyStats(Enemy.Ankylo, minStats, highStats, flags.WrapStatOverflow, flags.IncludeMorale, rng,
+			    ScaleSingleEnemyStats(Enemy.Ankylo, minStats, highStats, flags.IncludeMorale, rng,
 						  (bool)flags.SeparateBossHPScaling, minHp, highHp, GetEvadeIntFromFlag(flags.EvadeCap));
 			}
 		}
@@ -246,7 +278,7 @@ namespace FF1Lib
 		    public const int CriticalPercent = 13;
 		}
 
-		public void ScaleSingleEnemyStats(int index, int lowPercentStats, int highPercentStats, bool wrapOverflow, bool includeMorale, MT19337 rng,
+		public void ScaleSingleEnemyStats(int index, int lowPercentStats, int highPercentStats, bool includeMorale, MT19337 rng,
 			bool separateHPScale, int lowPercentHp, int highPercentHp, int evadeClamp)
 		{
 			double lowDecimalStats = (double)lowPercentStats / 100.0;
@@ -274,15 +306,7 @@ namespace FF1Lib
 			var newHitPercent = RangeScale(enemy[EnemyStat.HitPercent], lowDecimalStats, highDecimalStats, 1.0, rng);
 			var newStrength = RangeScale(enemy[EnemyStat.Strength], lowDecimalStats, highDecimalStats, 0.25, rng);
 			var newCrit = RangeScale(enemy[EnemyStat.CriticalPercent], lowDecimalStats, highDecimalStats, 0.5, rng);
-			if (wrapOverflow)
-			{
-				newEvade = ((newEvade - 1) % 0xFF) + 1;
-				newDefense = ((newDefense - 1) % 0xFF) + 1;
-				newHits = ((newHits - 1) % 0xFF) + 1;
-				newHitPercent = ((newHitPercent - 1) % 0xFF) + 1;
-				newStrength = ((newStrength - 1) % 0xFF) + 1;
-				newCrit = ((newCrit - 1) % 0xFF) + 1;
-			}
+
 			enemy[EnemyStat.Morale] = (byte)Min(newMorale, 0xFF); // morale
 			enemy[EnemyStat.Evade] = (byte)Min(newEvade, evadeClamp); // evade
 			enemy[EnemyStat.Defense] = (byte)Min(newDefense, 0xFF); // defense
@@ -453,16 +477,11 @@ namespace FF1Lib
 				var exp = BitConverter.ToUInt16(enemy, 0);
 				var gold = BitConverter.ToUInt16(enemy, 2);
 
-				exp += (ushort)(flags.ExpBonus / flags.ExpMultiplier);
-
+				exp += (ushort)flags.ExpBonus;
 
 				if (!(flags.ExcludeGoldFromScaling ?? false))
 				{
-					gold += (ushort)(flags.ExpBonus / flags.ExpMultiplier);
-				}
-				else if (flags.ApplyExpBoostToGold)
-				{
-					gold += (ushort)(flags.ExpBonus);
+					gold += (ushort)flags.ExpBonus;
 				}
 
 				var expBytes = BitConverter.GetBytes(exp);
