@@ -78,6 +78,16 @@
 		bool IncentivizeBad { get; }
 		bool? NoMasamune { get; }
 		bool? NoXcalber { get; }
+		bool? IsFloaterRemoved { get;  }
+		bool? NoTail { get; }
+		bool? IsCanoeFree { get; }
+		bool? FreeLute { get; }
+		bool? FreeTail { get; }
+		bool? IsBridgeFree { get; }
+		bool? IsCanalFree { get; }
+		bool? IsShipFree { get; }
+		bool? GuaranteedMasamune { get; }
+
 	}
 	public interface IMapEditFlags : IItemPlacementFlags
 	{
@@ -112,7 +122,9 @@
 		bool? SendMasamuneHome { get; }
 		bool? NoMasamune { get; }
 		bool? NoXcalber { get; }
+		RandomizeTreasureMode RandomizeTreasure { get; }
 		WorldWealthMode WorldWealth { get; }
+		DeepDungeonGeneratorMode DeepDungeonGenerator { get; }
 		ConsumableChestSet MoreConsumableChests { get; }
 		ExtConsumableSet ExtConsumableSet { get; }
 		ExtConsumableChestSet ExtConsumableChests { get; }
@@ -126,6 +138,8 @@
 		bool Archipelago { get; }
 		bool PredictivePlacement { get;}
 		bool AllowUnsafePlacement { get; }
+		bool DeepDungeon { get; }
+		bool Etherizer { get; }
 	}
 	public interface IItemShuffleFlags
 	{
@@ -165,6 +179,7 @@
 		bool? IsFloaterRemoved { get; }
 	        bool? IsAirshipFree { get; }
 		bool? MapBahamutCardiaDock { get; }
+	        OwMapExchanges OwMapExchange { get; }
 	}
 	public interface IVictoryConditionFlags
 	{

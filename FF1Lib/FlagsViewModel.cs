@@ -500,6 +500,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormationShuffleMode"));
 			}
 		}
+		public RandomizeTreasureMode RandomizeTreasure
+		{
+			get => Flags.RandomizeTreasure;
+			set
+			{
+				Flags.RandomizeTreasure = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeTreasure"));
+			}
+		}
 		public WorldWealthMode WorldWealth
 		{
 			get => Flags.WorldWealth;
@@ -507,6 +516,15 @@ namespace FF1Lib
 			{
 				Flags.WorldWealth = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WorldWealthMode"));
+			}
+		}
+		public DeepDungeonGeneratorMode DeepDungeonGenerator
+		{
+			get => Flags.DeepDungeonGenerator;
+			set
+			{
+				Flags.DeepDungeonGenerator = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeepDungeonGenerator"));
 			}
 		}
 
@@ -1966,15 +1984,6 @@ namespace FF1Lib
 			{
 				Flags.DeepDungeon = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeepDungeon"));
-			}
-		}
-		public bool DDEvenTreasureDistribution
-		{
-			get => Flags.DDEvenTreasureDistribution;
-			set
-			{
-				Flags.DDEvenTreasureDistribution = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DDEvenTreasureDistribution"));
 			}
 		}
 		public bool DDProgressiveTilesets
@@ -3473,24 +3482,7 @@ namespace FF1Lib
 			{
 			}
 		}
-		public bool? RandomTreasure
-		{
-			get => Flags.RandomLoot;
-			set
-			{
-				Flags.RandomLoot = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomTreasure"));
-			}
-		}
-		public WorldWealthMode WorldWealthEnum
-		{
-			get => Flags.WorldWealth;
-			set
-			{
-				Flags.WorldWealth = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WorldWealthEnum"));
-			}
-		}
+
 		public bool? ClampPrices
 		{
 			get => Flags.ClampMinimumPriceScale;

@@ -489,8 +489,7 @@ namespace FF1Lib
 				[MapLocation.Caravan] = OverworldTeleportIndex.Onrac
 			};
 
-			// Disable the Princess Warp back to Castle Coneria
-			//if ((bool)flags.Entrances || (bool)flags.Floors) _rom.PutInBank(0x11, 0x9370 + 0x0F, Blob.FromHex("EAEAEA"));
+			// Disabling the Princess Warp back to Castle Coneria moved to FF1Rom
 
 			// Since we're going to move all the entrances around, we're going to change the requirements
 			// for just about everything. Most interestingly the Titan's Tunnel is going to connect totally
@@ -548,6 +547,12 @@ namespace FF1Lib
 
 				    defaultRequirements[MapLocation.SardasCave] = new LocationRequirement(new List<MapChange> { MapChange.TitanFed });
 				    defaultRequirements[MapLocation.TitansTunnelWest] = new LocationRequirement(new List<MapChange> { MapChange.TitanFed });
+				}
+
+				if (flags.OwMapExchange != OwMapExchanges.None) {
+				    // Don't move Titan's tunnel on custom/procgen maps
+				    keepers.Add(OverworldTeleportIndex.TitansTunnelEast);
+				    keepers.Add(OverworldTeleportIndex.TitansTunnelWest);
 				}
 
 				placedMaps = placedMaps .Where(x => keepers.Contains(x.Key)) .ToDictionary(x => x.Key, x => x.Value);

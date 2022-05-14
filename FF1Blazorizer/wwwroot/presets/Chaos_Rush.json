@@ -280,7 +280,6 @@
     "FixHitChanceCap": true,
     "MelmondClinic": false,
     "DeepDungeon": false,
-    "DDEvenTreasureDistribution": false,
     "DDProgressiveTilesets": false,
     "DDFiendOrbs": false,
     "TailBahamutMode": 0,
