@@ -163,7 +163,6 @@ namespace FF1Lib
 
 		public bool? ExcludeGoldFromScaling { get; set; } = false;
 		public bool CheapVendorItem { get; set; } = false;
-		public bool ApplyExpBoostToGold { get; set; } = false;
 
 		public StartingLevel StartingLevel { get; set; }
 
@@ -450,7 +449,7 @@ namespace FF1Lib
 		[DoubleFlag(1.0, 5.0, 0.1)]
 		public double ExpMultiplier { get; set; } = 0;
 
-		[IntegerFlag(0, 500, 10)]
+		[IntegerFlag(0, 250, 25)]
 		public int ExpBonus { get; set; } = 0;
 
 		[DoubleFlag(1.0, 3.0, 0.1)]

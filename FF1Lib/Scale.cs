@@ -477,16 +477,11 @@ namespace FF1Lib
 				var exp = BitConverter.ToUInt16(enemy, 0);
 				var gold = BitConverter.ToUInt16(enemy, 2);
 
-				exp += (ushort)(flags.ExpBonus / flags.ExpMultiplier);
-
+				exp += (ushort)flags.ExpBonus;
 
 				if (!(flags.ExcludeGoldFromScaling ?? false))
 				{
-					gold += (ushort)(flags.ExpBonus / flags.ExpMultiplier);
-				}
-				else if (flags.ApplyExpBoostToGold)
-				{
-					gold += (ushort)(flags.ExpBonus);
+					gold += (ushort)flags.ExpBonus;
 				}
 
 				var expBytes = BitConverter.GetBytes(exp);

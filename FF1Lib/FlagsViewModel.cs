@@ -4467,16 +4467,6 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ApplyExpBoostToGold
-		{
-			get => Flags.ApplyExpBoostToGold;
-			set
-			{
-				Flags.ApplyExpBoostToGold = value;
-				RaisePropertyChanged();
-			}
-		}
-
 		public OwMapExchanges OwMapExchange
 		{
 			get => Flags.OwMapExchange;
