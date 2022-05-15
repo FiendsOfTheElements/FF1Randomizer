@@ -2,6 +2,7 @@
 using System.Linq;
 using RomUtilities;
 using System.ComponentModel;
+using System;
 
 namespace FF1Lib
 {
@@ -43,8 +44,13 @@ namespace FF1Lib
 	{
 		public byte Index;
 		public Blob Data;
-		public Blob Name;
+		public string Name;
 		public byte TextPointer;
+
+		public override string ToString()
+		{
+			return Index.ToString() + ": " + Name;
+		}
 	}
 
 	public partial class FF1Rom : NesRom
@@ -78,6 +84,13 @@ namespace FF1Lib
 		public const int ArmorSize = 4;
 		public const int ArmorCount = 40;
 
+		public void BuffTier1DamageSpells()
+		{
+			Put(MagicOffset + MagicSize * 4 + 1, new byte[] { 60 }); // replace FIRE effectivity
+			Put(MagicOffset + MagicSize * 7 + 1, new byte[] { 70 }); // replace LIT effectivity
+			Put(MagicOffset + MagicSize * 12 + 1, new byte[] { 80 }); // replace ICE effectivity
+			Put(MagicOffset + MagicSize * 1 + 1, new byte[] { 80 }); // replace HARM effectivity
+		}
 
 		public void BuffHealingSpells()
 		{
@@ -99,7 +112,7 @@ namespace FF1Lib
 			Put(MagicOffset + MagicSize * 35 + 1, new byte[] { 0x20 }); // replace HEL2 effectivity with 32 (was 24)
 			Put(0x3AFE8, Blob.FromHex("1F")); // changing the oob code for HEL2 to reflect the above effect
 			// HEL3
-			Put(MagicOffset + MagicSize * 51 + 1, new byte[] { 0x40 }); // replace HEL2 effectivity with 64 (was 48)
+			Put(MagicOffset + MagicSize * 51 + 1, new byte[] { 0x40 }); // replace HEL3 effectivity with 64 (was 48)
 			Put(0x3AFF1, Blob.FromHex("3F")); // changing the oob code for HEL3 to reflect the above effect
 			// LAMP
 			Put(MagicOffset + MagicSize * 8 + 1, new byte[] { 0x18 }); // LAMP heals paralysis as well as darkness
@@ -356,7 +369,7 @@ namespace FF1Lib
 							blackSpellFinalList[0].Add(spell);
 						}
 					}
-				}		
+				}
 				// shuffle each of the final lists
 				foreach(List<MagicSpell> spellList in whiteSpellFinalList)
 				{
@@ -409,7 +422,7 @@ namespace FF1Lib
 			}
 
 			Put(MagicOffset, shuffledSpells.Select(spell => spell.Data).Aggregate((seed, next) => seed + next));
-			Put(MagicNamesOffset, shuffledSpells.Select(spell => spell.Name).Aggregate((seed, next) => seed + next));
+			PutSpellNames(shuffledSpells);
 			Put(MagicTextPointersOffset, shuffledSpells.Select(spell => spell.TextPointer).ToArray());
 
 			if (keepPermissions)
@@ -417,20 +430,7 @@ namespace FF1Lib
 				// Shuffle the permissions the same way the spells were shuffled.
 				for (int c = 0; c < MagicPermissionsCount; c++)
 				{
-					var oldPermissions = Get(MagicPermissionsOffset + c * MagicPermissionsSize, MagicPermissionsSize);
-
-					var newPermissions = new byte[MagicPermissionsSize];
-					for (int i = 0; i < 8; i++)
-					{
-						for (int j = 0; j < 8; j++)
-						{
-							var oldIndex = shuffledSpells[8 * i + j].Index;
-							var oldPermission = (oldPermissions[oldIndex / 8] & (0x80 >> oldIndex % 8)) >> (7 - oldIndex % 8);
-							newPermissions[i] |= (byte)(oldPermission << (7 - j));
-						}
-					}
-
-					Put(MagicPermissionsOffset + c * MagicPermissionsSize, newPermissions);
+					SpellPermissions[(Classes)c] = SpellPermissions[(Classes)c].Select(x => (SpellSlots)shuffledSpells.FindIndex(y => y.Index == (int)x)).ToList();
 				}
 			}
 
@@ -494,44 +494,6 @@ namespace FF1Lib
 			Put(ConfusedSpellIndexOffset, new[] { (byte)newFireSpellIndex });
 		}
 
-		public void SetMPMax(int redMageMaxMP, int whiteMageMaxMP, int blackMageMaxMP, int knightMaxMP, int ninjaMaxMP)
-		{
-			const int lut_MaxMP = 0x6C902;
-
-			Put(lut_MaxMP, new List<byte> { 0x00, 0x00, 0x00, (byte)redMageMaxMP, (byte)whiteMageMaxMP, (byte)blackMageMaxMP,
-				(byte)knightMaxMP, (byte)ninjaMaxMP, 0x00, (byte)redMageMaxMP, (byte)whiteMageMaxMP, (byte)blackMageMaxMP }.ToArray());
-		}
-
-		public void SetClassMaxMp(int classIndex, int maxMp)
-		{
-			//49 levels per class, 2 bytes
-			//spell data is packed into a byte, bit index = spell level gained that level
-			//0 0 0 0 1 0 0 0 would mean gaining a level 4 spell slot that level
-
-			//brute force way... count the number of spells and rewrite it to not gain any more after the max
-			List<int> spellCount = new List<int> { 2, 0, 0, 0, 0, 0, 0, 0 };
-			for (int i = 0; i < 49; i++)
-			{
-				int currentOffset = NewLevelUpDataOffset + (49 * classIndex * 2) + (i * 2) + 1;
-				byte currentSpellData = Get(currentOffset, 1)[0];
-
-				for (int bitTest = 0; bitTest < 8; bitTest++)
-				{
-					if ((currentSpellData & (1 << bitTest)) != 0)
-					{
-						spellCount[bitTest]++;
-					}
-
-					if (spellCount[bitTest] > maxMp)
-					{
-						currentSpellData = (byte)(currentSpellData & ~(1 << bitTest));
-					}
-				}
-
-				Put(currentOffset, new byte[] { currentSpellData });
-			}
-		}
-
 		public void ChangeLockMode(LockHitMode lockHitMode)
 		{
 			if (lockHitMode == LockHitMode.Accuracy107)
@@ -578,17 +540,188 @@ namespace FF1Lib
 
 		public List<MagicSpell> GetSpells() {
 			var spells = Get(MagicOffset, MagicSize * MagicCount).Chunk(MagicSize);
-			var names = Get(MagicNamesOffset, MagicNameSize * MagicCount).Chunk(MagicNameSize);
 			var pointers = Get(MagicTextPointersOffset, MagicCount);
 
 			return spells.Select((spell, i) => new MagicSpell
 			{
 				Index = (byte)i,
 				Data = spell,
-				Name = names[i],
+				Name = ItemsText[176 + i],
 				TextPointer = pointers[i]
 			})
 			.ToList();
 		}
+
+		public void PutSpellNames(List<MagicSpell> spells)
+		{
+
+			for(int i = 0; i < spells.Count; i++)
+			{
+				ItemsText[176 + i] = spells[i].Name;
+			}
+		}
+
+		public void AccessibleSpellNames(Flags flags)
+		{
+			// If Spellcrafter mode is on, abort. We need a check here as the setting on the site can be in a random state.
+			if ((bool)flags.GenerateNewSpellbook)
+			{
+				return;
+			}
+
+			var magicSpells = GetSpells();
+
+			// Since this can be performed independent of the magic shuffling, we can't assume the location of spell names.
+			// We will loop through the spell list and replace the appropriate names as we find them.
+			for (int i = 0; i < magicSpells.Count; i++)
+			{
+				MagicSpell newSpell = magicSpells[i];
+				string spellName = magicSpells[i].Name;
+
+				switch (spellName)
+				{
+					// Note that 3 letter spell names actually have a trailing space
+					case "LIT ":
+						newSpell.Name = "THUN";
+						break;
+					case "LIT2":
+						newSpell.Name = "THN2";
+						break;
+					case "LIT3":
+						newSpell.Name = "THN3";
+						break;
+					case "FAST":
+						newSpell.Name = "HAST";
+						break;
+					case "SLEP":
+						newSpell.Name = "DOZE";
+						break;
+					case "SLP2":
+						newSpell.Name = "DOZ2";
+						break;
+
+					case "HARM":
+						newSpell.Name = "DIA ";
+						break;
+					case "HRM2":
+						newSpell.Name = "DIA2";
+						break;
+					case "HRM3":
+						newSpell.Name = "DIA3";
+						break;
+					case "HRM4":
+						newSpell.Name = "DIA4";
+						break;
+					case "ALIT":
+						newSpell.Name = "ATHN";
+						break;
+					case "AMUT":
+						newSpell.Name = "VOX ";
+						break;
+					case "FOG ":
+						newSpell.Name = "PROT";
+						break;
+					case "FOG2":
+						newSpell.Name = "PRO2";
+						break;
+					case "FADE":
+						newSpell.Name = "HOLY";
+						break;
+				}
+
+				// Update the entry in the list
+				magicSpells[i] = newSpell;
+			}
+
+			// Now update the spell names!
+			PutSpellNames(magicSpells);
+		}
+
+		public void MixUpSpellNames(SpellNameMadness mode, MT19337 rng)
+		{
+			if (mode == SpellNameMadness.MixedUp)
+			{
+				string[] spellnames = new string[64];
+				Array.Copy(ItemsText.ToList().ToArray(), 176, spellnames, 0, 64);
+
+				var spellnamelist = new List<string>(spellnames);
+				spellnamelist.Shuffle(rng);
+
+				for (int i = 0; i < spellnamelist.Count; i++)
+				{
+					ItemsText[176 + i] = spellnamelist[i];
+				}
+			}
+			else if (mode == SpellNameMadness.Madness)
+			{
+				List<string> alphabet = new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+				List<string> numbers = new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" };
+
+				for (int i = 176; i < 176 + 64; i++)
+				{
+					ItemsText[i] = alphabet.PickRandom(rng) + alphabet.PickRandom(rng) + numbers.PickRandom(rng) + alphabet.PickRandom(rng);
+				}
+			}
+		}
+
+		public void EnableSoftInBattle()
+		{
+			var spellInfos = LoadSpells().ToList();
+			var spells = GetSpells().ToDictionary(s => s.Name.ToLowerInvariant());
+
+
+			foreach (var spl in spells.Where(s => s.Key.StartsWith("soft") || s.Key.StartsWith("sft")).Select(s => s.Value))
+			{
+				SpellInfo spell = new SpellInfo
+				{
+					routine = 0x08, //cure ailment
+					effect = 0x02, //earth element
+					targeting = 0x10, //single target
+					accuracy = 00,
+					elem = 0,
+					gfx = 184,
+					palette = 40
+				};
+
+				Put(MagicOffset + spl.Index * MagicSize, spell.compressData());
+			}
+		}
+
+
+
+		public void EnableLifeInBattle()
+		{
+			var spellInfos = LoadSpells().ToList();
+			var spells = GetSpells().ToDictionary(s => s.Name.ToLowerInvariant());
+
+
+			foreach (var spl in spells.Where(s => s.Key.StartsWith("life") || s.Key.StartsWith("lif")).Select(s => s.Value))
+			{
+				SpellInfo spell = new SpellInfo
+				{
+					routine = 0x08, //cure ailment
+					effect = spl.Name == "LIF2" ? (byte)0x81 : (byte)0x01, //death element
+					targeting = 0x10, //single target
+					accuracy = 00,
+					elem = 0,
+					gfx = 224,
+					palette = spl.Name == "LIF2" ? (byte)44 : (byte)43,
+				};
+
+				Put(MagicOffset + spl.Index * MagicSize, spell.compressData());
+			}
+		}
+	}
+
+	public enum SpellNameMadness
+	{
+		[Description("None")]
+		None,
+
+		[Description("MixedUp")]
+		MixedUp,
+
+		[Description("Madness")]
+		Madness
 	}
 }

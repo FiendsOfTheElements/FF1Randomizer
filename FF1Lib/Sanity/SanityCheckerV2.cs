@@ -15,7 +15,6 @@ namespace FF1Lib
 		List<Map> maps;
 		OverworldMap overworldMap;
 
-		SCMain main;
 		NPCdata npcdata;
 
 		short shipDockAreaIndex;
@@ -46,9 +45,12 @@ namespace FF1Lib
 		ItemShopSlot declaredShopSlot;
 
 		OwLocationData locations;
-		ShipLocations shiplocations;
+		public ShipLocations Shiplocations { get; private set; }
 
 		int maxqueue = 0;
+
+		public SCMain Main { get; private set; }
+
 		public SanityCheckerV2(List<Map> _maps, OverworldMap _overworldMap, NPCdata _npcdata, FF1Rom _rom, ItemShopSlot _declaredShopSlot, ShipLocations _shiplocations)
 		{
 			rom = _rom;
@@ -57,7 +59,9 @@ namespace FF1Lib
 			npcdata = _npcdata;
 
 			locations = new OwLocationData(rom);
-			shiplocations = _shiplocations;
+			locations.LoadData();
+
+			Shiplocations = _shiplocations;
 
 			allTreasures = ItemLocations.AllTreasures.Select(r => r as TreasureChest).Where(r => r != null).ToDictionary(r => (byte)(r.Address - 0x3100));
 			allQuestNpcs = ItemLocations.AllNPCItemLocations.Select(r => r as MapObject).Where(r => r != null).ToDictionary(r => r.ObjectId);
@@ -65,7 +69,7 @@ namespace FF1Lib
 
 			UpdateNpcRequirements();
 
-			main = new SCMain(_maps, _overworldMap, _npcdata, _rom);
+			Main = new SCMain(_maps, _overworldMap, _npcdata, locations, _rom);
 		}
 
 		private void UpdateNpcRequirements()
@@ -104,8 +108,6 @@ namespace FF1Lib
 
 		public (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> _treasurePlacements, Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements, IVictoryConditionFlags victoryConditions)
 		{
-			locations.LoadData();
-
 			treasurePlacements = _treasurePlacements;
 
 			//kids, don't try this at home. Calculating an index from an address is usually not the way to go.
@@ -122,7 +124,7 @@ namespace FF1Lib
 
 		public bool IsRewardSourceAccessible(IRewardSource source, AccessRequirement currentAccess, List<MapLocation> locations)
 		{
-			if (currentAccess != requirements) throw new InvalidOperationException("no can do");
+			//if (currentAccess != requirements) throw new InvalidOperationException("no can do");
 
 			return rewardSources.Contains(source);
 		}
@@ -149,8 +151,8 @@ namespace FF1Lib
 
 			SetAirShipPoi();
 
-			short areaIndex = main.Overworld.Tiles[locations.StartingLocation.X, locations.StartingLocation.Y].Area;
-			SCOwArea area = main.Overworld.Areas[areaIndex];
+			short areaIndex = Main.Overworld.Tiles[locations.StartingLocation.X, locations.StartingLocation.Y].Area;
+			SCOwArea area = Main.Overworld.Areas[areaIndex];
 
 			CrawlOwArea(area);
 
@@ -166,7 +168,15 @@ namespace FF1Lib
 
 			w.Stop();
 
-			bool complete = changes == MapChange.All && requirements == AccessRequirement.All;
+			var requiredAccess = AccessRequirement.All;
+			var requiredMapChanges = MapChange.All;
+
+			if ((bool)victoryConditions.IsFloaterRemoved)
+			{
+				requiredMapChanges &= ~MapChange.Airship;
+			}
+
+			bool complete = changes.HasFlag(requiredMapChanges) && requirements.HasFlag(requiredAccess);
 
 			return (complete, rewardSources, requirements, changes);
 		}
@@ -196,7 +206,7 @@ namespace FF1Lib
 			{
 				var poi = deferredPointOfInterests.Dequeue();
 
-				if (poi.Requirements.IsAccessible(requirements))
+				if (poi.BitFlagSet.IsAccessible(requirements, changes))
 				{
 					ProcessSmPointOfInterest(poi, (byte)poi.DungeonIndex);
 				}
@@ -214,7 +224,7 @@ namespace FF1Lib
 			//remove already processed area, does an unneccesary while spin, but it's the easiest
 			if (processedAreas.Contains(e.Target)) return true;
 
-			var area = main.Overworld.Areas[e.Source];
+			var area = Main.Overworld.Areas[e.Source];
 			return CheckLink(area, e.Target);
 		}
 
@@ -229,7 +239,7 @@ namespace FF1Lib
 
 				if (!processedAreas.Contains(entry))
 				{
-					SCOwArea nextArea = main.Overworld.Areas[entry];
+					SCOwArea nextArea = Main.Overworld.Areas[entry];
 					CrawlOwArea(nextArea);
 				}
 			}
@@ -264,7 +274,7 @@ namespace FF1Lib
 		private void LiftOff()
 		{
 			airShipLiftOff = true;
-			foreach (var area in main.Overworld.Areas.Values)
+			foreach (var area in Main.Overworld.Areas.Values)
 			{
 				if (!processedAreas.Contains(area.Index) && (area.Tile & SCBitFlags.AirDock) > 0) immediateAreas.Add(area.Index);
 			}
@@ -274,7 +284,7 @@ namespace FF1Lib
 		{
 			if (processedAreas.Contains(link)) return true;
 
-			SCOwArea linked = main.Overworld.Areas[link];
+			SCOwArea linked = Main.Overworld.Areas[link];
 
 			if (linked.Tile == SCBitFlags.Bridge)
 			{
@@ -311,12 +321,12 @@ namespace FF1Lib
 			if (processedDungeons.Contains(poi.Teleport.OverworldTeleport)) return;
 			processedDungeons.Add(poi.Teleport.OverworldTeleport);
 
-			var dungeon = main.Dungeons.First(d => d.OverworldTeleport == poi.Teleport.OverworldTeleport);
+			var dungeon = Main.Dungeons.First(d => d.OverworldTeleport == poi.Teleport.OverworldTeleport);
 			dungeon.Done = true;
 
 			foreach (var dpoi in dungeon.PointsOfInterest)
 			{
-				if (dpoi.Requirements.IsAccessible(requirements))
+				if (dpoi.BitFlagSet.IsAccessible(requirements, changes))
 				{
 					ProcessSmPointOfInterest(dpoi, (byte)poi.Teleport.OverworldTeleport);
 				}
@@ -353,7 +363,7 @@ namespace FF1Lib
 			}
 			else if (poi.Type == SCPointOfInterestType.Exit)
 			{
-				var area = main.Overworld.Tiles[poi.Teleport.TargetCoords.X, poi.Teleport.TargetCoords.Y].Area;
+				var area = Main.Overworld.Tiles[poi.Teleport.TargetCoords.X, poi.Teleport.TargetCoords.Y].Area;
 				if (!processedAreas.Contains(area)) immediateAreas.Add(area);
 			}
 		}
@@ -364,7 +374,7 @@ namespace FF1Lib
 			{
 				foreach (var nextLink in linked.Links)
 				{
-					var nextArea = main.Overworld.Areas[nextLink];
+					var nextArea = Main.Overworld.Areas[nextLink];
 					if (nextArea.Index != area.Index && (nextArea.Tile & SCBitFlags.Ocean) > 0)
 					{
 						if (!processedAreas.Contains(nextArea.Index)) immediateAreas.Add(nextArea.Index);
@@ -376,7 +386,7 @@ namespace FF1Lib
 			{
 				foreach (var nextLink in linked.Links)
 				{
-					var nextArea = main.Overworld.Areas[nextLink];
+					var nextArea = Main.Overworld.Areas[nextLink];
 					if (nextArea.Index != area.Index && (nextArea.Tile & SCBitFlags.Land) > 0)
 					{
 						if (!processedAreas.Contains(nextArea.Index)) immediateAreas.Add(nextArea.Index);
@@ -416,14 +426,14 @@ namespace FF1Lib
 
 		private void SetAirShipPoi()
 		{
-			var areaIndex = main.Overworld.Tiles[locations.AirShipLocation.X, locations.AirShipLocation.Y].Area;
-			var area = main.Overworld.Areas[areaIndex];
+			var areaIndex = Main.Overworld.Tiles[locations.AirShipLocation.X, locations.AirShipLocation.Y].Area;
+			var area = Main.Overworld.Areas[areaIndex];
 			area.PointsOfInterest.Add(new SCPointOfInterest { Coords = locations.AirShipLocation, Type = SCPointOfInterestType.AirShip });
 		}
 
 		private void SetShipDock(byte dungeonIndex)
 		{
-			var coords = shiplocations.SetShipLocation(dungeonIndex);
+			var coords = Shiplocations.SetShipLocation(dungeonIndex);
 
 			SetShipDock(coords.OwLeft);
 			SetShipDock(coords.OwRight);
@@ -433,7 +443,7 @@ namespace FF1Lib
 			//if dock area already processed, try to reenter the ocean
 			if (processedAreas.Contains(shipDockAreaIndex))
 			{
-				var area = main.Overworld.Areas[shipDockAreaIndex];
+				var area = Main.Overworld.Areas[shipDockAreaIndex];
 				foreach (var link in area.Links)
 				{
 					CheckLink(area, link);
@@ -443,7 +453,7 @@ namespace FF1Lib
 
 		private void SetShipDock(SCCoords coords)
 		{
-			if ((main.Overworld.Tiles[coords.X, coords.Y].Tile & SCBitFlags.ShipDock) > 0) shipDockAreaIndex = main.Overworld.Tiles[coords.X, coords.Y].Area;
+			if ((Main.Overworld.Tiles[coords.X, coords.Y].Tile & SCBitFlags.ShipDock) > 0) shipDockAreaIndex = Main.Overworld.Tiles[coords.X, coords.Y].Area;
 		}
 
 		private void ProcessShop(SCPointOfInterest poi, byte dungeonIndex)
@@ -739,20 +749,20 @@ namespace FF1Lib
 			}
 
 			changes = MapChange.None;
-			if (victoryConditions.FreeBridge ?? false)
+			if (victoryConditions.IsBridgeFree ?? false)
 			{
 				changes |= MapChange.Bridge;
 			}
-			if (victoryConditions.FreeShip ?? false)
+			if (victoryConditions.IsShipFree ?? false)
 			{
 				changes |= MapChange.Ship;
 			}
-			if (victoryConditions.FreeAirship ?? false)
+			if (victoryConditions.IsAirshipFree ?? false)
 			{
 				changes |= MapChange.Airship;
 				airShipLocationAccessible = true;
 			}
-			if (victoryConditions.FreeCanal ?? false)
+			if (victoryConditions.IsCanalFree ?? false)
 			{
 				changes |= MapChange.Canal;
 			}
@@ -760,6 +770,30 @@ namespace FF1Lib
 			{
 				changes |= MapChange.Canoe;
 			}
+		}
+
+		public IEnumerable<IRewardSource> GetNearRewardSources(IEnumerable<IRewardSource> sources, IRewardSource current)
+		{
+			if (current is TreasureChest c)
+			{
+				var chests = sources.Select(r => r as TreasureChest).Where(r => r != null).ToDictionary(r => (byte)(r.Address - 0x3100));
+				var chest = (byte)(c.Address - 0x3100);
+
+				foreach (var dungeon in Main.Dungeons)
+				{
+					var poi = dungeon.PointsOfInterest.Where(p => p.Type == SCPointOfInterestType.Treasure).FirstOrDefault(p => p.TreasureId == chest);
+
+					if (poi != null)
+					{
+						return dungeon.PointsOfInterest.Where(p => p.Type == SCPointOfInterestType.Treasure)
+							.Where(p => p.BitFlagSet.ToString() == poi.BitFlagSet.ToString())
+							.Where(p=> chests.ContainsKey(p.TreasureId))
+							.Select(p => chests[p.TreasureId]).ToList();
+					}
+				}
+			}
+
+			return Array.Empty<IRewardSource>();
 		}
 	}
 }

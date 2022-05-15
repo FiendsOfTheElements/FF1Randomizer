@@ -196,6 +196,7 @@ namespace FF1Lib
 
 	public enum Spell : byte
 	{
+		None = 175,
 		CURE = 0xB0 + 0x00,
 		HARM = 0xB0 + 0x01,
 		FOG = 0xB0 + 0x02,
@@ -552,6 +553,7 @@ public static class UnsramIndex
 				case Item.Slab: return AccessRequirement.Slab;
 				case Item.Ruby: return AccessRequirement.Ruby;
 				case Item.Bottle: return AccessRequirement.Bottle;
+				case Item.EarthOrb: return AccessRequirement.EarthOrb;
 				default: return AccessRequirement.None;
 			}
 		}

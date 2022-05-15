@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -7,6 +8,17 @@ using RomUtilities;
 
 namespace FF1Lib
 {
+    public enum SpoilerBatHints {
+	[Description("Vanilla")]
+	Vanilla = 0,
+	[Description("Hints")]
+	Hints,
+	[Description("Stars")]
+	Stars,
+	[Description("Full Stats")]
+	FullStats,
+    };
+
 	public partial class FF1Rom
 	{
 		public const int dialogsOffset = 0x402A0;
@@ -100,8 +112,13 @@ namespace FF1Lib
 			Talk_GiveItemOnItem,
 			Talk_Astos,
 			Talk_kill,
-			Talk_Chaos
+			Talk_Chaos,
+			NoOW_Floater,
+			NoOW_Chime,
+			NoOW_Canoe,
+			NoOW_Nerrick
 		}
+
 		public class TalkRoutines
 		{
 			private List<Blob> _talkroutines = new List<Blob>();
@@ -124,21 +141,27 @@ namespace FF1Lib
 				_talkroutines.Add(Blob.FromHex("AD3160F008AD3260D003A57160A57260"));
 				_talkroutines.Add(Blob.FromHex("A476209690A47320A490A57160"));
 				_talkroutines.Add(Blob.FromHex("A476209690A57160"));
-				_talkroutines.Add(Blob.FromHex("A571203D96A575200096A476207F902073922018964C439660"));
+				_talkroutines.Add(Blob.FromHex("A571203D96A5752020B1A476207F902073922018964C439660"));
 				_talkroutines.Add(Blob.FromHex("AD32602D33602D34602D3160F00CA0CA209690E67DE67DA57160A57260"));
 				_talkroutines.Add(Blob.FromHex("A476207F90209690A01220A490A93F20CC90A57160"));
 				_talkroutines.Add(Blob.FromHex("AD3060D003A57160A476209690A57260"));
 				_talkroutines.Add(Blob.FromHex("AD2960D003A57160CE2960A476209690A572E67D60"));
-				_talkroutines.Add(Blob.FromHex("A03F209190B01FA571203D96A575200096A03F20A490A04020A490A04120A4902018964C4396A476207990B012A573F00E1820109FB00AA476207F90A57260A57060")); // Talk_Bikke
+				_talkroutines.Add(Blob.FromHex("A03F209190B01FA571203D96A5752020B1A03F20A490A04020A490A04120A4902018964C4396A476207990B012A573F00E1820109FB00AA476207F90A57260A57060")); // Talk_Bikke
 				_talkroutines.Add(Blob.FromHex("AD2660F018A573F0141820109FB010CE2660A476207F90207392A57260A57060")); // Talk_Nerrick
 				_talkroutines.Add(Blob.FromHex("A00E2079909003A57360AD2D60D003A57160CE2D60207F9020AE95E67DA57260"));
 				_talkroutines.Add(Blob.FromHex("A476207990B012A674BD2060F00EDE2060207F90E67DA57260A57160A57060"));
 				_talkroutines.Add(Blob.FromHex("A476207990B01BA474F0052079909015A573F0111820109FB00DA476207F90A57260A57160A57060"));
 				_talkroutines.Add(Blob.FromHex("A476207990B01EA674BD2060F01AA573F0161820109FB012A674DE2060A476207F90A57260A57160A57060"));
 				_talkroutines.Add(Blob.FromHex("A476207990B01BA674F005BD2060F015A573F0111820109FB00DA476207F90A57260A57160A57060"));
-				_talkroutines.Add(Blob.FromHex("A674F005BD2060F029A5738561202096F022E67DA572203D96A575200096A476207F90207392A5611820109F2018964C4396A57060")); // Talk_Astos
+				_talkroutines.Add(Blob.FromHex("A674F005BD2060F029A57385612080B1F022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060")); // Talk_Astos
 				_talkroutines.Add(Blob.FromHex("A000209690A57160")); // Talk_Kill
 				_talkroutines.Add(Blob.FromHex("A57520C590A57160")); // Talk_Chaos
+
+				// NoOverworld Routines
+				_talkroutines.Add(Blob.FromHex("AD2B60D003A57160A476207392A57260"));
+				_talkroutines.Add(Blob.FromHex("AD2C60D003A57160A476207392A57260"));
+				_talkroutines.Add(Blob.FromHex("AD1260D003A57160A476207392A57260"));
+				_talkroutines.Add(Blob.FromHex("AD2660F018A573F0141820109FB010CE2660A476207F90207392A57260A57060")); // NoOW_Nerrick
 			}
 			public Blob this[int talkid]
 			{
@@ -309,12 +332,11 @@ namespace FF1Lib
 		}
 		public bool RedMageHasLife()
 		{
-			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			var magicPermissions = Get(MagicPermissionsOffset, 8 * 12).Chunk(8);
 			var magicArray = new List<byte> { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
 
-			var firstLifeIndex = itemnames.ToList().FindIndex(x => x.ToLower().Contains("lif")) - 176;
-			var secondLifeIndex = itemnames.ToList().FindIndex(firstLifeIndex + 177, x => x.ToLower().Contains("lif")) - 176;
+			var firstLifeIndex = ItemsText.ToList().FindIndex(x => x.ToLower().Contains("lif")) - MagicNamesIndexInItemText;
+			var secondLifeIndex = ItemsText.ToList().FindIndex(firstLifeIndex + MagicNamesIndexInItemText + 1, x => x.ToLower().Contains("lif")) - MagicNamesIndexInItemText;
 
 			var firstlife = firstLifeIndex >= 0 ? (((~magicPermissions[3][firstLifeIndex / 8] & magicArray[firstLifeIndex % 8]) > 0) ? true : false) : false;
 			var secondlife = secondLifeIndex >= 0 ? (((~magicPermissions[3][secondLifeIndex / 8] & magicArray[secondLifeIndex % 8]) > 0) ? true : false) : false;
@@ -336,9 +358,9 @@ namespace FF1Lib
 			//  new chars must be added to the BytesByText list in FF1Text.cs
 			var newChars = new List<(byte, string)>
 			{
-				(0x7B, "000008083E080800") // + sign
+				(0x7B, "000008083E080800FFFFFFFFFFFFFFFF"), // + sign
+				(0x7C, "FFFFFF7F3DFFFFFFFFFF99C2E6C299FE")  // Trapped chest (standard)
 			};
-
 
 			foreach (var newchar in newChars)
 			{
@@ -359,6 +381,10 @@ namespace FF1Lib
 					Put(battleTilesetOffset + battleTilesetSize * i + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
 				}
 			}
+
+			// Hack this one in, because chests in sky have different graphics from other chests
+			var trappedChestSky = "FFFFFF7F3DFFFF7FFF6699C2E64299EE";
+			Put(tilesetOffset + tilesetSize * (int)TileSets.SkyCastle + 0x7C * 0x10, Blob.FromHex(trappedChestSky));
 		}
 
 		public void TransferDialogs()
@@ -412,7 +438,7 @@ namespace FF1Lib
 			dialogs[0xF8] = "";
 			dialogs[0x149] = dialogs[0xF9]; // See the world
 			dialogs[0xF9] = "";
-			dialogs[0xDB] = dialogs[0x50];
+			dialogs[0xDB] = dialogs[0x50]; // One of the sky warriors (ToF bat)
 			dialogs[0x50] = dialogs[0];    // Nothing here
 
 			// Reinsert updated dialogs with updated pointers
@@ -436,11 +462,11 @@ namespace FF1Lib
 			// Insert dialogs
 			Put(dialogsPointerOffset, Blob.FromUShorts(pointers) + generatedText);
 		}
-		public void TransferTalkRoutines()
+		public void TransferTalkRoutines(Flags flags)
 		{
 			// Get Talk Routines from Bank E and put them in bank 11
 			PutInBank(newTalkRoutinesBank, 0x902B, Get(0x3902B, 0x8EA));
-			
+
 			// Backup npc manpulation routines and showMapObject as various other routines use them
 			var npcManipulationRoutines = GetFromBank(0x0E, 0x9079, 0x60);
 			var hideMapObject = GetFromBank(0x0E, 0x9273, 0x30);
@@ -462,8 +488,22 @@ namespace FF1Lib
 			PutInBank(newTalkRoutinesBank, 0x901B, Blob.FromHex("BD006F8576A00084150A26151865769002E6150A261569008514A9BA651585158612A900AAA8B1149570C8E8E006D0F6A612A5760AA8900DB900818516B9018185176C1600B900808516B9018085176C1600"));
 			Data[0x7C9F7] = 0x1B;
 
+			// TalkInBattle, compatible with ext items
+			PutInBank(newTalkRoutinesBank, 0xB120, Blob.FromHex("856A20CDD8A9008D01208D1540A002204A96A001204A96A903CD866BD00820189668684C439660"));
+
 			// LoadPrice fix
-			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C06B0"));
+			PutInBank(newTalkRoutinesBank, 0x9F10, Blob.FromHex("A9118558A5734C10B4"));
+
+			//CheckCanTake
+			if (flags.ExtConsumableSet != ExtConsumableSet.None)
+			{
+				//C920 instead of C916
+				PutInBank(newTalkRoutinesBank, 0xB180, Blob.FromHex("C9169027C920900BC9449012C96C90164CABB1AABD2060C963B0114CABB12034DDB0094CABB12046DDB00118A9F160"));
+			}
+			else
+			{
+				PutInBank(newTalkRoutinesBank, 0xB180, Blob.FromHex("C9169027C91C900BC9449012C96C90164CABB1AABD2060C963B0114CABB12034DDB0094CABB12046DDB00118A9F160"));
+			}
 
 			// Update bank
 			Data[0x7C9F2] = newTalkRoutinesBank;
@@ -490,7 +530,7 @@ namespace FF1Lib
 			temp = Data[ItemLocations.Lefein.Address];
 			Data[ItemLocations.Lefein.Address] = Data[ItemLocations.Lefein.Address - 1];
 			Data[ItemLocations.Lefein.Address - 1] = temp;
-			
+
 			// And do the same swap in the vanilla routines so those still work if needed
 			Data[0x392A7] = 0x12;
 			Data[0x392AA] = 0x13;
@@ -515,11 +555,10 @@ namespace FF1Lib
 		// Remove trailing spaces and return the right item for some generated text
 		public string FormattedItemName(Item item, bool specialItem = true)
 		{
-			var itemnames = ReadText(FF1Rom.ItemTextPointerOffset, FF1Rom.ItemTextPointerBase, 256);
-			var formatted = itemnames[(byte)item].TrimEnd(' ');
+			var formatted = ItemsText[(byte)item].TrimEnd(' ');
 
 			if(specialItem)
-			{ 
+			{
 				switch (item)
 				{
 					case Item.Ship:
@@ -621,13 +660,13 @@ namespace FF1Lib
 
 			InsertDialogs(NPCShuffleDialogs);
 		}
-		public void UpdateDialogs(NPCdata npcdata)
+		public void UpdateDialogs(NPCdata npcdata, Flags flags)
 		{
 			Dictionary<int, string> newDialogs = new Dictionary<int, string>();
 
 			//CleanupNPCRoutines(); - Deprecated 2020-12-12
 			TransferDialogs();
-			TransferTalkRoutines();
+			TransferTalkRoutines(flags);
 			AddNewChars();
 
 			// Update all NPC's dialogs script, default behaviours are maintained
@@ -836,6 +875,8 @@ namespace FF1Lib
 				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Titan)
 				{
 					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_Titan);
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_1] = 0x29;
+					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.requirement_id] = (byte)Item.Ruby;
 				}
 				else if (npcdata.GetOldRoutine((ObjectId)i) == originalTalk.Talk_Unne)
 				{
@@ -1042,7 +1083,7 @@ namespace FF1Lib
 
 			// Check if floor shuffle is on
 			if (overworldmap.OverriddenOverworldLocations != null && overworldmap.OverriddenOverworldLocations.Where(x => x.Key == location).Any())
-			{ 
+			{
 				var parentlocation = parentfloor.Find(x => x.Item1 == location).Item2;
 				var validlocation = location;
 
@@ -1149,35 +1190,39 @@ namespace FF1Lib
 			{ItemLocations.Sarda.Name, "Sarda the Sage"},
 			{ItemLocations.Smith.Name, "the Blacksmith"},
 		};
-		public string FormatText(string text)
-		{
-			var tempstring = text.Split(' ');
-			var tempchars = tempstring[0].ToArray();
-			tempchars[0] = char.ToUpper(tempchars[0]);
-			tempstring[0] = new String(tempchars);
+	    string FormatText(string st, int width=25, int maxlines=6) {
+		// Word wrap text
+		string wrapped = "";
+		int start = 0;
+		int end = 0;
+		int lineno = 0;
+		while (end < st.Length) {
+		    lineno++;
+		    if (lineno > maxlines) {
+			break;
+		    }
 
-			string[] templines = new string[7];
-			int linenumber = 0;
-			templines[0] = tempstring[0];
+		    start = end;
+		    while (st[start] == ' ') {
+			start++;
+		    }
 
-			for (int j = 1; j < tempstring.Length; j++)
-			{
-				if (templines[linenumber].Length + tempstring[j].Length > 23)
-				{
-					templines[linenumber] += "\n";
-					linenumber++;
-					templines[linenumber] += tempstring[j];
-				}
-				else
-				{ templines[linenumber] += " " + tempstring[j]; }
+		    end = Math.Min(end+width, st.Length);
+		    while (end != st.Length && st[end] != ' ') {
+			end--;
+		    }
 
-				if (linenumber > 5) break;
-			}
-
-			text = string.Concat(templines);
-
-			return text;
+		    if (start > 0) {
+			wrapped += "\n";
+		    }
+		    wrapped += st.Substring(start, end-start);
 		}
+
+		wrapped = wrapped.Substring(0, 1).ToUpper() + wrapped.Substring(1);
+
+			return wrapped;
+	    }
+
 		public void SetDungeonNPC(List<MapId> flippedmaps, MT19337 rng)
 		{
 			// Check if maps are flipped
@@ -1217,7 +1262,6 @@ namespace FF1Lib
 		public void NPCHints(MT19337 rng, NPCdata npcdata, Flags flags, OverworldMap overworldmap)
 		{
 			// Het all game dialogs, get all item names, set dialog templates
-			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			var hintschests = new List<string>() { "The $ is #.", "The $? It's # I believe.", "Did you know that the $ is #?", "My grandpa used to say 'The $ is #'.", "Did you hear? The $ is #!", "Wanna hear a secret? The $ is #!", "I've read somewhere that the $ is #.", "I used to have the $. I lost it #!", "I've hidden the $ #, can you find it?", "Interesting! This book says the $ is #!", "Duh, everyone knows that the $ is #!", "I saw the $ while I was #." };
 			var hintsnpc = new List<string>() { "& has the $.", "The $? Did you try asking &?", "The $? & will never part with it!", "& stole the $ from ME! I swear!", "& told me not to reveal they have the $.", "& is hiding something. I bet it's the $!" };
 			var hintsvendormed = new List<string>() { "The $ is for sale #.", "I used to have the $. I sold it #!", "There's a fire sale for the $ #.", "I almost bought the $ for sale #." };
@@ -1269,17 +1313,20 @@ namespace FF1Lib
 				incentivePool.Add(Item.Canal);
 				incentivePool.Add(Item.Herb);
 				incentivePool.Add(Item.Chime);
-				incentivePool.Add(Item.Xcalber);
+				if(flags.NoXcalber ?? false)
+				{
+					incentivePool.Add(Item.Xcalber);
+				}
 			}
 
-			if (flags.FreeAirship ?? false) incentivePool.Remove(Item.Floater);
+			if (flags.IsFloaterRemoved ?? false) incentivePool.Remove(Item.Floater);
 			if (flags.FreeCanoe ?? false) incentivePool.Remove(Item.Canoe);
-			if (flags.FreeBridge ?? false) incentivePool.Remove(Item.Bridge);
-			if (flags.FreeCanal ?? false) incentivePool.Remove(Item.Canal);
+			if (flags.IsBridgeFree ?? false) incentivePool.Remove(Item.Bridge);
+			if (flags.IsCanalFree ?? false) incentivePool.Remove(Item.Canal);
 			if (flags.FreeLute ?? false) incentivePool.Remove(Item.Lute);
-			if (flags.FreeShip ?? false) incentivePool.Remove(Item.Ship);
+			if (flags.IsShipFree ?? false) incentivePool.Remove(Item.Ship);
 			if ((flags.FreeTail ?? false) || (flags.NoTail ?? false)) incentivePool.Remove(Item.Tail);
-			
+
 			if (incentivePool.Count == 0)
 				incentivePool.Add(Item.Cabin);
 
@@ -1293,12 +1340,6 @@ namespace FF1Lib
 				npcSelected.AddRange(new List<ObjectId> { ObjectId.ConeriaOldMan, ObjectId.PravokaOldMan, ObjectId.ElflandScholar1, ObjectId.MelmondOldMan2, ObjectId.CrescentSage11, ObjectId.OnracOldMan2, ObjectId.GaiaWitch, ObjectId.LefeinMan12 });
 				dialogueID.AddRange(new List<byte> { 0x45, 0x53, 0x69, 0x82, 0xA0, 0xAA, 0xCB, 0xDC });
 				MoveNpc(MapId.Lefein, 0x0C, 0x0E, 0x15, false, true);
-			}
-
-			if (flags.HintsDungeon ?? false)
-			{
-				npcSelected.AddRange(new List<ObjectId> { ObjectId.OnracPunk2, ObjectId.DwarfcaveDwarf4, ObjectId.CardiaDragon2, ObjectId.SkyRobot, ObjectId.Mermaid3 });
-				dialogueID.AddRange(new List<byte> { 0x9D, 0x70, 0xE3, 0xE1, 0xB6 });
 			}
 
 			var incentivizedChests = new List<string>();
@@ -1350,7 +1391,7 @@ namespace FF1Lib
 					else if (tempItem.Equals(Item.Bridge)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 16, 6));
 					else if (tempItem.Equals(Item.Canal)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 24, 5));
 					else if (tempItem.Equals(Item.Canoe)) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 36, 5));
-					else tempName = itemnames[(int)tempItem].Replace(" ", "");
+					else tempName = ItemsText[(int)tempItem].Replace(" ", "");
 
 					if (generatedPlacement.Find(x => x.Item == tempItem).GetType().Equals(typeof(TreasureChest)))
 					{
@@ -1381,16 +1422,10 @@ namespace FF1Lib
 						tempHint = "I am error.";
 				}
 
-				if (flags.HintsUseless != false)
-				{
-					uselesshints.Shuffle(rng);
-					hintsList.Reverse();
-					var uselessHintsCount = hintsList.Count() / 2;
-					hintsList.RemoveRange(0, uselessHintsCount);
+				hintsList.Reverse();
+				hintsList.RemoveRange(0, 1);
+				hintsList.Add(uselesshints.PickRandom(rng));
 
-					for (int i = 0; i < uselessHintsCount; i++)
-						hintsList.Add(uselesshints[i]);
-				}
 				//var hintsList = hints.ToList();
 				hintsList.Shuffle(rng);
 
@@ -1420,5 +1455,299 @@ namespace FF1Lib
 			}
 			throw new Exception("Couldn't generate hints in 50 tries.");
 		}
+
+	    int ThreatRating(List<int> ranges, int value) {
+		int i = 0;
+		for (; i < ranges.Count; i++) {
+		    if (value < ranges[i]) {
+			return i > 0 ? i-1 : 0;
+		    }
+		}
+		return i > 0 ? i-1 : 0;
+	    }
+
+	    string ChooseDescription(List<int> ranges, List<string> descriptions, int value) {
+		var tr = ThreatRating(ranges, value);
+		if (tr >= descriptions.Count) {
+		    tr = descriptions.Count-1;
+		    Console.WriteLine($"WARNING value {value} doesn't have a corresponding description, using {descriptions[tr]}");
+		}
+		return descriptions[tr];
+	    }
+
+	    public void SkyWarriorSpoilerBats(MT19337 rng, Flags flags, NPCdata npcdata) {
+		List<MagicSpell> spellList = GetSpells();
+		var enemies = GetAllEnemyStats();
+		var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
+		var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		var bosses = new[] { new { index = Enemy.Lich2, dialog=0x4D },
+				     new { index = Enemy.Kary2, dialog=0x4E },
+				     new { index = Enemy.Kraken2, dialog=0x4F },
+				     new { index = Enemy.Tiamat2, dialog=0xDB },
+				     new { index = Enemy.Chaos, dialog=0x51 },
+		};
+
+		var skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount);
+
+		var hpRanges = new List<int> {0, 600, 900, 1200, 1500, 2000, 2500, 3000, 3500, 4000};
+		var hpDescriptions = new List<string> {
+		    "is a speed bump",           // 0-599
+		    "is not very tough",     // 600-899
+		    "",                   // 900-1199
+		    "is pretty tough",       // 1200-1499
+		    "is extra tough",        // 1500-1999
+		    "is very tough",         // 2000-2499
+		    "is super tough",        // 2500-2999
+		    "is incredibly tough",   // 3000-3499
+		    "is insanely tough",     // 3500-3999
+		    "is like a brick wall",  // 4000+
+		};
+		var dmgRanges = new List<int> {0, 50, 75, 100, 125, 150, 175, 200, 250};
+		var dmgDescriptions = new List<string> {
+		    "has a pathetic attack",     // 0-49
+		    "has a weak attack",     // 50-74
+		    "",                      // 75-99
+		    "has a pretty powerful attack",   // 100-124
+		    "has an extra powerful attack",    // 125-149
+		    "has a very powerful attack",     // 150-174
+		    "has an incredibly powerful attack",         // 175-199
+		    "has a insanely powerful attack",           // 200-249
+		    "can destroy you with one finger", // 250+
+		};
+		var hitCountRanges = new List<int> {0, 6, 7, 10, 15};
+		var hitCountDescriptions = new List<string> {
+		    "", // 1-5
+		    "can hit you half a dozen times", // 6
+		    "can hit you an incredible number of times", // 7-9
+		    "can hit you an insane number of times", // 10-14
+		    "will punch you until you are dead, then punch you some more", // 15+
+		};
+		var evadeRanges = new List<int> {0, 50, 75, 125, 150, 175, 200, 220, 240};
+		var evadeDescriptions = new List<string> {
+		    "is a sitting duck",         // 0-49
+		    "is easy to hit",            // 50-74
+		    "",                          // 75-124,
+		    "is extra hard to hit",      // 125-149
+		    "is very hard to hit",       // 150-174
+		    "is super hard to hit",      // 175-199
+		    "is incredibly hard to hit", // 200-219
+		    "is insanely hard to hit",   // 220-239
+		    "is nearly impossible to hit", // 240+
+		};
+		var defRanges = new List<int> {0, 40, 70, 100, 125, 150, 175, 200, 225};
+		var defDescriptions = new List<string> {
+		    "has pathetic armor",           // 0-39
+		    "has weak armor",               // 40-69
+		    "",                             // 70-99
+		    "has pretty thick armor",       // 100-124
+		    "has extra thick armor",        // 125-149
+		    "has very thick armor",         // 150-174
+		    "has incredibly thick armor",   // 175-199
+		    "has insanely thick armor",     // 200-224
+		    "can't be hurt with your puny weapons", // 225+
+		};
+
+		var intros = new List<string> {
+		    "Legend has it that",
+		    "The Sages say that",
+		    "The inscriptions say that",
+		    "Uncle Caleb says that",
+		    "The ancient scrolls say that",
+		    "Analyzing the ROM, I discovered that",
+		    "Kee.. Kee..",
+		    "In Sky Warrior school, I learned that",
+		    "Time 4 Lern!",
+		    "Listen up!",
+		    "Dude,",
+		    "I overhead Garland saying that",
+		    "Captain, sensors indicate that",
+		    "Hear this, Light Warrior!",
+		    "Tetron wants you to know that",
+		    "Good news, everyone!"
+		};
+
+
+
+		foreach (var b in bosses) {
+		    int hp = (int)BitConverter.ToUInt16(enemies[b.index], EnemyStat.HP);
+		    var enemy = enemies[b.index];
+		    var scriptIndex = enemy[EnemyStat.Scripts];
+		    var spells = scriptBytes[scriptIndex].SubBlob(2, 8).ToBytes().Where(b => b != 0xFF).ToList();
+		    var skills = scriptBytes[scriptIndex].SubBlob(11, 4).ToBytes().Where(b => b != 0xFF).ToList();
+		    string enemyName;
+		    if (b.index == Enemy.Chaos) {
+			enemyName = enemyText[b.index];
+		    } else {
+			// alt fiends puts the name in the fiend1 spot
+			// but does not duplicate it in the fiend2
+			// spot.
+			enemyName = enemyText[b.index-1];
+		    }
+
+		    var bossStats = new[] {
+			new { name="HP", ranges=hpRanges, descriptions=hpDescriptions, bossvalue=hp },
+			new { name="Attack", ranges=dmgRanges, descriptions=dmgDescriptions, bossvalue=(int)enemy[EnemyStat.Strength] },
+			new { name="Hits", ranges=hitCountRanges, descriptions=hitCountDescriptions, bossvalue=(int)enemy[EnemyStat.Hits] },
+			new { name="Evade",ranges=evadeRanges, descriptions=evadeDescriptions, bossvalue=(int)enemy[EnemyStat.Evade] },
+			new { name="Defense",ranges=defRanges, descriptions=defDescriptions, bossvalue=(int)enemy[EnemyStat.Defense] },
+		    };
+
+		    bool hasEarlyNukeOrNuclear = false;
+		    bool hasCUR4 = false;
+		    bool hasCRACK = false;
+		    for (int i = 0; i < spells.Count; i++) {
+			var s = spells[i];
+			var spellname = spellList[s].Name;
+			if (spellname == "NUKE" && i<4) {
+			    hasEarlyNukeOrNuclear = true;
+			}
+			if (spellname == "CUR4") {
+			    hasCUR4 = true;
+			}
+		    }
+		    for (int i = 0; i < skills.Count; i++) {
+			var s = skills[i];
+			if (skillNames[s] == "NUCLEAR" && i<2) {
+			    hasEarlyNukeOrNuclear = true;
+			}
+			if (skillNames[s] == "CRACK") {
+			    hasCRACK = true;
+			}
+		    }
+
+		    string dialogtext = "";
+		    if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.FullStats) {
+			string spellscript = "";
+			foreach (var s in spells) {
+			    var spellname = spellList[s].Name;
+			    if (spellscript != "") {
+				if (spellscript.Length+spellname.Length > 23 && spellscript.IndexOf("\n") == -1) {
+				    spellscript += "\n";
+				}
+				spellscript += "-";
+			    }
+			    spellscript += spellname;
+			}
+			string skillscript = "";
+			foreach (var s in skills) {
+			    if (skillscript != "") {
+				if (skillscript.Length+skillNames[s].Length > 23 && skillscript.IndexOf("\n") == -1) {
+				    skillscript += "\n";
+				}
+				skillscript += "-";
+			    }
+			    skillscript += skillNames[s];
+			}
+			dialogtext = $"{enemyName} {hp,4} HP\n"+
+			    $"Attack  {enemy[EnemyStat.HitPercent],3}% +{enemy[EnemyStat.Strength],3} x{enemy[EnemyStat.Hits],2}\n"+
+			    $"Defense {enemy[EnemyStat.Evade],3     }% -{enemy[EnemyStat.Defense],3}\n"+
+			    $"{spellscript}\n"+
+			    $"{skillscript}";
+		    }
+		    else if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Hints) {
+
+			var chooseIntro = rng.Between(0, intros.Count-1);
+
+			var lines = new List<string>();
+
+			for (int i = 0; i < bossStats.Length; i++) {
+			    var bs = bossStats[i];
+			    string desc;
+			    if (i == 0 && b.index == Enemy.Chaos) {
+				// Chaos has a lot more HP than the
+				// other fiends adjust it down a bit
+				// so the hints make more sense.
+				desc = ChooseDescription(bs.ranges, bs.descriptions, bs.bossvalue-1000);
+			    }
+			    else {
+				desc = ChooseDescription(bs.ranges, bs.descriptions, bs.bossvalue);
+			    }
+			    if (desc != "") {
+				lines.Add(desc);
+			    }
+			}
+
+			if (hasEarlyNukeOrNuclear) {
+			    lines.Add("will probably nuke you");
+			}
+			if (hasCRACK) {
+			    lines.Add("can crack you like an egg");
+			}
+			if (hasCUR4) {
+			    lines.Add("can heal");
+			}
+			if (spells.Count == 0 && skills.Count == 0) {
+			    lines.Add("doesn't like to use magic");
+			}
+
+			int countlines = 0;
+			do {
+			    if (countlines > 0) {
+				// Hints don't fit in the dialog
+				// box, delete a hint at random.
+				dialogtext = "";
+				lines.RemoveAt(rng.Between(0, lines.Count-1));
+			    }
+
+			    if (lines.Count == 0) {
+				dialogtext = "pretty boring";
+			    } else if (lines.Count == 1) {
+				dialogtext = lines[0];
+			    } else {
+				for (int n = 0; n < lines.Count-1; n++) {
+				    dialogtext += $"{lines[n]}, ";
+				}
+				dialogtext += $"and {lines[lines.Count-1]}";
+			    }
+			    dialogtext = $"{intros[chooseIntro]} {enemyName} {dialogtext}.";
+			    dialogtext = FormatText(dialogtext, 24, 99);
+			    countlines = dialogtext.Count(f => f == '\n');
+			} while(countlines > 6);
+
+			intros.RemoveAt(chooseIntro); // so each bat will get a different intro.
+		    }
+		    else if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Stars) {
+			dialogtext = $"Scouting report, {enemyName}";
+			for (int i = 0; i < bossStats.Length; i++) {
+			    var bs = bossStats[i];
+			    int threat;
+			    if (i == 0 && b.index == Enemy.Chaos) {
+				// Chaos has a lot more HP than the
+				// other fiends adjust it down a bit
+				// so the hints make more sense.
+				threat = ThreatRating(bs.ranges, bs.bossvalue-1000);
+			    }
+			    else {
+				threat = ThreatRating(bs.ranges, bs.bossvalue);
+			    }
+			    var normalized = (float)(threat+1)/(float)bs.ranges.Count;
+			    string stars = new String('+', (int)Math.Max(Math.Round(normalized*10), 1));
+			    dialogtext += $"\n{bs.name,7} {stars}";
+			}
+
+			dialogtext += $"\nMagic";
+			if (hasEarlyNukeOrNuclear) {
+			    dialogtext += " NUKE";
+			}
+			if (hasCRACK) {
+			    dialogtext += " CRACK";
+			}
+			if (hasCUR4) {
+			    dialogtext += " CUR4";
+			}
+		    }
+
+		    InsertDialogs(b.dialog, dialogtext);
+		}
+
+		if ((bool)flags.SpoilerBatsDontCheckOrbs) {
+		    // Tweak the bat's dialog script
+		    npcdata.SetRoutine(ObjectId.SkyWarrior1, newTalkRoutines.Talk_norm);
+		    npcdata.SetRoutine(ObjectId.SkyWarrior2, newTalkRoutines.Talk_norm);
+		    npcdata.SetRoutine(ObjectId.SkyWarrior3, newTalkRoutines.Talk_norm);
+		    npcdata.SetRoutine(ObjectId.SkyWarrior4, newTalkRoutines.Talk_norm);
+		    npcdata.SetRoutine(ObjectId.SkyWarrior5, newTalkRoutines.Talk_norm);
+		}
+	    }
 	}
 }

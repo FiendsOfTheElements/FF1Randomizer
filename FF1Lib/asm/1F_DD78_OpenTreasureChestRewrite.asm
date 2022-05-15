@@ -10,7 +10,7 @@
 	
 	TYA						; Put ItemId into A 98
 	
-    JSR GiveReward            ; Jump to new sub routine 2006B0
+    JSR GiveReward            ; Jump to new sub routine 2010B4
     BCS :+                   ; if 'C' is set jump ahead, otherwise mark the chest as open B00A
       LDY tileprop+1           ; get the ID of this chest A445
       LDA game_flags, Y        ; flip on the TCOPEN flag to mark this TC as open B90062

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RomUtilities;
 using static System.Math;
+using FF1Lib.Helpers;
 
 namespace FF1Lib
 {
@@ -57,6 +58,31 @@ namespace FF1Lib
 		insane,
 	}
 
+	public enum StartingGold
+	{ 
+		[Description("0 gp")]
+		None,
+		[Description("100 gp")]
+		Gp100,
+		[Description("200 gp")]
+		Gp200,
+		[Description("400 gp")]
+		Gp400,
+		[Description("800 gp")]
+		Gp800,
+		[Description("2500 gp")]
+		Gp2500,
+		[Description("9,999 gp")]
+		Gp9999,
+		[Description("65,535 gp")]
+		Gp65535,
+		[Description("Random (0-800 gp)")]
+		RandomLow,
+		[Description("Random (0-65,535 gp)")]
+		RandomHigh,
+	}
+
+
 	public partial class FF1Rom : NesRom
 	{
 		public static readonly List<int> Bosses = new List<int> { Enemy.Garland, Enemy.Astos, Enemy.Pirate, Enemy.WarMech,
@@ -73,9 +99,15 @@ namespace FF1Lib
 		public const int OverworldThreatLevelOffset = 0x7C4FE;
 		public const int OceanThreatLevelOffset = 0x7C506;
 
+		public const int LevelRequirementsOffsetThief = 0x6D535;
+		public const int LevelRequirementsOffsetBlackBelt = 0x6D5C8;
+		public const int LevelRequirementsOffsetRedMage = 0x6D65B;
+		public const int LevelRequirementsOffsetWhiteMage = 0x6D6EE;
+		public const int LevelRequirementsOffsetBlackMage = 0x6D781;
+
 		// Scale is the geometric scale factor used with RNG.  Multiplier is where we make everything cheaper
 		// instead of enemies giving more gold, so we don't overflow.
-		public void ScalePrices(IScaleFlags flags, string[] text, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation)
+		public void ScalePrices(IScaleFlags flags, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation, bool FreeClinic = false)
 		{
 			IEnumerable<Item> tmpExcludedItems = Array.Empty<Item>() ;
 			if (flags.ExcludeGoldFromScaling ?? false) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllGoldTreasure);
@@ -105,8 +137,9 @@ namespace FF1Lib
 				}
 				else
 				{
-					var newPrice = RangeScaleWithZero(prices[i] / multiplier, scaleLow, scaleHigh, 1e-5 * multiplier, 1, rng);
-					prices[i] = (ushort)(flags.WrapPriceOverflow ? ((newPrice - 1) % 0xFFFF) + 1 : Min(newPrice, 0xFFFF));
+					var price = ExtConsumables.ExtConsumablePriceFix((Item)i, prices[i], flags);
+					var newPrice = RangeScaleWithZero(price / multiplier, scaleLow, scaleHigh, 1e-5 * multiplier, 1, rng);
+					prices[i] = (ushort)Min(newPrice, 0xFFFF);
 				}
 			}
 			var questItemPrice = prices[(int)Item.Bottle];
@@ -131,7 +164,7 @@ namespace FF1Lib
 
 			for (int i = GoldItemOffset; i < GoldItemOffset + GoldItemCount; i++)
 			{
-				text[i] = prices[i].ToString() + " G";
+				ItemsText[i] = prices[i].ToString() + " G";
 			}
 
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
@@ -145,19 +178,27 @@ namespace FF1Lib
 					var priceValue = BitConverter.ToUInt16(priceBytes, 0);
 
 					priceValue = (ushort)RangeScale(priceValue / multiplier, scaleLow, scaleHigh, 1, rng);
+					if (FreeClinic && i < (int)ShopType.Clinic + ShopSectionSize) priceValue = 0;
 					priceBytes = BitConverter.GetBytes(priceValue);
 					Put(ShopPointerBase + pointers[i], priceBytes);
 				}
 			}
-			if (flags.StartingGold)
+
+			List<(StartingGold, ushort)> startingGold = new()
 			{
-				var startingGold = BitConverter.ToUInt16(Get(StartingGoldOffset, 2), 0);
+				(StartingGold.None, 0),
+				(StartingGold.Gp100, 100),
+				(StartingGold.Gp200, 200),
+				(StartingGold.Gp400, 400),
+				(StartingGold.Gp800, 800),
+				(StartingGold.Gp2500, 2500),
+				(StartingGold.Gp9999, 9999),
+				(StartingGold.Gp65535, 65535),
+				(StartingGold.RandomLow, (ushort)rng.Between(0, 800)),
+				(StartingGold.RandomHigh, (ushort)rng.Between(0, 65535)),
+			};
 
-				startingGold = (ushort)Min(RangeScale(startingGold / multiplier, scaleLow, scaleHigh, 1, rng), 0xFFFF);
-
-				Put(StartingGoldOffset, BitConverter.GetBytes(startingGold));
-			}
-
+			Put(StartingGoldOffset, BitConverter.GetBytes(startingGold[(int)flags.StartingGold].Item2));
 		}
 
 		public int GetEvadeIntFromFlag(EvadeCapValues evadeCapFlag)
@@ -205,7 +246,7 @@ namespace FF1Lib
 			int minHp = (bool)flags.ClampEnemyHpScaling ? 100 : flags.EnemyScaleHpLow;
 			int highHp = (bool)flags.ClampEnemyHpScaling ? Math.Max(100, flags.EnemyScaleHpHigh) : flags.EnemyScaleHpHigh;
 
-			NonBossEnemies.ForEach(index => ScaleSingleEnemyStats(index, minStats, highStats, flags.WrapStatOverflow, flags.IncludeMorale, rng,
+			NonBossEnemies.ForEach(index => ScaleSingleEnemyStats(index, minStats, highStats, flags.IncludeMorale, rng,
 				(bool)flags.SeparateEnemyHPScaling, minHp, highHp, GetEvadeIntFromFlag(flags.EvadeCap)));
 		}
 
@@ -216,11 +257,28 @@ namespace FF1Lib
 			int highStats = (bool)flags.ClampMinimumBossStatScale ? Math.Max(100, flags.BossScaleStatsHigh) : flags.BossScaleStatsHigh;
 			int minHp = (bool)flags.ClampBossHPScaling ? 100 : flags.BossScaleHpLow;
 			int highHp = (bool)flags.ClampBossHPScaling ? Math.Max(100, flags.BossScaleHpHigh) : flags.BossScaleHpHigh;
-			Bosses.ForEach(index => ScaleSingleEnemyStats(index, minStats, highStats, flags.WrapStatOverflow, flags.IncludeMorale, rng,
+			Bosses.ForEach(index => ScaleSingleEnemyStats(index, minStats, highStats, flags.IncludeMorale, rng,
 				(bool)flags.SeparateBossHPScaling, minHp, highHp, GetEvadeIntFromFlag(flags.EvadeCap)));
+			if ((bool)flags.FightBahamut) {
+			    ScaleSingleEnemyStats(Enemy.Ankylo, minStats, highStats, flags.IncludeMorale, rng,
+						  (bool)flags.SeparateBossHPScaling, minHp, highHp, GetEvadeIntFromFlag(flags.EvadeCap));
+			}
 		}
 
-		public void ScaleSingleEnemyStats(int index, int lowPercentStats, int highPercentStats, bool wrapOverflow, bool includeMorale, MT19337 rng,
+		public abstract class EnemyStat
+		{
+		    public const int HP = 4;
+		    public const int Morale = 6;
+		    public const int Scripts = 7;
+		    public const int Evade = 8;
+		    public const int Defense = 9;
+		    public const int Hits = 10;
+		    public const int HitPercent = 11;
+		    public const int Strength = 12;
+		    public const int CriticalPercent = 13;
+		}
+
+		public void ScaleSingleEnemyStats(int index, int lowPercentStats, int highPercentStats, bool includeMorale, MT19337 rng,
 			bool separateHPScale, int lowPercentHp, int highPercentHp, int evadeClamp)
 		{
 			double lowDecimalStats = (double)lowPercentStats / 100.0;
@@ -230,7 +288,7 @@ namespace FF1Lib
 
 			var enemy = Get(EnemyOffset + index * EnemySize, EnemySize);
 
-			var hp = BitConverter.ToUInt16(enemy, 4);
+			var hp = BitConverter.ToUInt16(enemy, EnemyStat.HP);
 			if(separateHPScale)
 			{
 				hp = (ushort)Min(RangeScale(hp, lowDecimalHp, highDecimalHp, 1.0, rng), 0x7FFF);
@@ -239,31 +297,23 @@ namespace FF1Lib
 				hp = (ushort)Min(RangeScale(hp, lowDecimalStats, highDecimalStats, 1.0, rng), 0x7FFF);
 			}
 			var hpBytes = BitConverter.GetBytes(hp);
-			Array.Copy(hpBytes, 0, enemy, 4, 2);
+			Array.Copy(hpBytes, 0, enemy, EnemyStat.HP, 2);
 
-			var newMorale = includeMorale ? RangeScale(enemy[6], lowDecimalStats, highDecimalStats, 0.25, rng) : enemy[6];
-			var newEvade = RangeScale(enemy[8], lowDecimalStats, highDecimalStats, 1.0, rng);
-			var newDefense = RangeScale(enemy[9], lowDecimalStats, highDecimalStats, 0.5, rng);
-			var newHits = RangeScale(enemy[10], lowDecimalStats, highDecimalStats, 0.5, rng);
-			var newHitPercent = RangeScale(enemy[11], lowDecimalStats, highDecimalStats, 1.0, rng);
-			var newStrength = RangeScale(enemy[12], lowDecimalStats, highDecimalStats, 0.25, rng);
-			var newCrit = RangeScale(enemy[13], lowDecimalStats, highDecimalStats, 0.5, rng);
-			if (wrapOverflow)
-			{
-				newEvade = ((newEvade - 1) % 0xFF) + 1;
-				newDefense = ((newDefense - 1) % 0xFF) + 1;
-				newHits = ((newHits - 1) % 0xFF) + 1;
-				newHitPercent = ((newHitPercent - 1) % 0xFF) + 1;
-				newStrength = ((newStrength - 1) % 0xFF) + 1;
-				newCrit = ((newCrit - 1) % 0xFF) + 1;
-			}
-			enemy[6] = (byte)Min(newMorale, 0xFF); // morale
-			enemy[8] = (byte)Min(newEvade, evadeClamp); // evade
-			enemy[9] = (byte)Min(newDefense, 0xFF); // defense
-			enemy[10] = (byte)Max(Min(newHits, 0xFF), 1); // hits
-			enemy[11] = (byte)Min(newHitPercent, 0xFF); // hit%
-			enemy[12] = (byte)Min(newStrength, 0xFF); // strength
-			enemy[13] = (byte)Min(newCrit, 0xFF); // critical%
+			var newMorale = includeMorale ? RangeScale(enemy[EnemyStat.Morale], lowDecimalStats, highDecimalStats, 0.25, rng) : enemy[6];
+			var newEvade = RangeScale(enemy[EnemyStat.Evade], lowDecimalStats, highDecimalStats, 1.0, rng);
+			var newDefense = RangeScale(enemy[EnemyStat.Defense], lowDecimalStats, highDecimalStats, 0.5, rng);
+			var newHits = RangeScale(enemy[EnemyStat.Hits], lowDecimalStats, highDecimalStats, 0.5, rng);
+			var newHitPercent = RangeScale(enemy[EnemyStat.HitPercent], lowDecimalStats, highDecimalStats, 1.0, rng);
+			var newStrength = RangeScale(enemy[EnemyStat.Strength], lowDecimalStats, highDecimalStats, 0.25, rng);
+			var newCrit = RangeScale(enemy[EnemyStat.CriticalPercent], lowDecimalStats, highDecimalStats, 0.5, rng);
+
+			enemy[EnemyStat.Morale] = (byte)Min(newMorale, 0xFF); // morale
+			enemy[EnemyStat.Evade] = (byte)Min(newEvade, evadeClamp); // evade
+			enemy[EnemyStat.Defense] = (byte)Min(newDefense, 0xFF); // defense
+			enemy[EnemyStat.Hits] = (byte)Max(Min(newHits, 0xFF), 1); // hits
+			enemy[EnemyStat.HitPercent] = (byte)Min(newHitPercent, 0xFF); // hit%
+			enemy[EnemyStat.Strength] = (byte)Min(newStrength, 0xFF); // strength
+			enemy[EnemyStat.CriticalPercent] = (byte)Min(newCrit, 0xFF); // critical%
 
 			Put(EnemyOffset + index * EnemySize, enemy);
 		}
@@ -303,13 +353,13 @@ namespace FF1Lib
 			return (int)Round(value * adjustedScale);
 		}
 
-		private int RangeScale(double value, double lowPercent, double highPercent, double adjustment, MT19337 rng)
+		public static int RangeScale(double value, double lowPercent, double highPercent, double adjustment, MT19337 rng)
 		{
 			double exponent = (rng != null) ? (double)rng.Next() / uint.MaxValue : 1.0; // A number from 0 - 1
 			double logLowPercent = Log(lowPercent);
 			double logDifference = Log(highPercent) - logLowPercent;
 			exponent = exponent * logDifference + logLowPercent; // For example for 50-200% a number from -0.69 to 0.69, for 200-400% a number from 0.69 to 1.38
-	
+
 			double scaleValue = Exp(exponent); // A number from 0.5 to 2, or 2 to 4
 			double adjustedScale = scaleValue > 1 ? (scaleValue - 1) * adjustment + 1 : 1 - ((1 - scaleValue) * adjustment); // Tightens the scale so some stats are not changed by as much. For example for strength (adjustment of 0.25) this becomes 0.875 to 1.25, 1.25 to 1.75 while for hp (adjustment of 1) this stays 0.5 to 2, 2 to 4
 			return (int)Round(value * adjustedScale);
@@ -427,16 +477,11 @@ namespace FF1Lib
 				var exp = BitConverter.ToUInt16(enemy, 0);
 				var gold = BitConverter.ToUInt16(enemy, 2);
 
-				exp += (ushort)(flags.ExpBonus / flags.ExpMultiplier);
-
+				exp += (ushort)flags.ExpBonus;
 
 				if (!(flags.ExcludeGoldFromScaling ?? false))
 				{
-					gold += (ushort)(flags.ExpBonus / flags.ExpMultiplier);
-				}
-				else if (flags.ApplyExpBoostToGold)
-				{
-					gold += (ushort)(flags.ExpBonus);
+					gold += (ushort)flags.ExpBonus;
 				}
 
 				var expBytes = BitConverter.GetBytes(exp);
@@ -454,16 +499,58 @@ namespace FF1Lib
 			var levelRequirementsBytes = levelRequirementsBlob.Chunk(3).Select(threeBytes => new byte[] { threeBytes[0], threeBytes[1], threeBytes[2], 0 }).ToList();
 			for (int i = 0; i < LevelRequirementsCount; i++)
 			{
-				uint levelRequirement = (uint)(BitConverter.ToUInt32(levelRequirementsBytes[i], 0) / flags.ExpMultiplier);
+				uint levelRequirement = (uint)(Math.Max(BitConverter.ToUInt32(levelRequirementsBytes[i], 0) / flags.ExpMultiplier, 1));
 				levelRequirementsBytes[i] = BitConverter.GetBytes(levelRequirement);
 			}
 
 			Put(LevelRequirementsOffset, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
+			Put(LevelRequirementsOffsetThief, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
+			Put(LevelRequirementsOffsetBlackBelt, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
+			Put(LevelRequirementsOffsetRedMage, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
+			Put(LevelRequirementsOffsetWhiteMage, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
+			Put(LevelRequirementsOffsetBlackMage, Blob.Concat(levelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
 
 			// A dirty, ugly, evil piece of code that sets the level requirement for level 2, even though that's already defined in the above table.
 			byte firstLevelRequirement = Data[0x7C04B];
 			firstLevelRequirement = (byte)(firstLevelRequirement / flags.ExpMultiplier);
 			Data[0x7C04B] = firstLevelRequirement;
+		}
+
+		public void ScaleAltExp(double scale, FF1Class characterClass)
+		{
+			int offset = LevelRequirementsOffset;
+
+			switch(characterClass)
+			{
+				case FF1Class.Fighter:
+					offset = LevelRequirementsOffset;
+					break;
+				case FF1Class.Thief:
+					offset = LevelRequirementsOffsetThief;
+					break;
+				case FF1Class.BlackBelt:
+					offset = LevelRequirementsOffsetBlackBelt;
+					break;
+				case FF1Class.RedMage:
+					offset = LevelRequirementsOffsetRedMage;
+					break;
+				case FF1Class.WhiteMage:
+					offset = LevelRequirementsOffsetWhiteMage;
+					break;
+				case FF1Class.BlackMage:
+					offset = LevelRequirementsOffsetBlackMage;
+					break;
+			}
+
+			var altLevelRequirementsBlob = Get(offset, LevelRequirementsSize * LevelRequirementsCount);
+			var altLevelRequirementsBytes = altLevelRequirementsBlob.Chunk(3).Select(threeBytes => new byte[] { threeBytes[0], threeBytes[1], threeBytes[2], 0 }).ToList();
+			for (int i = 0; i < LevelRequirementsCount; i++)
+			{
+				uint levelRequirement = (uint)(Math.Max(BitConverter.ToUInt32(altLevelRequirementsBytes[i], 0) / scale, 1));
+				altLevelRequirementsBytes[i] = BitConverter.GetBytes(levelRequirement);
+			}
+
+			Put(offset, Blob.Concat(altLevelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
 		}
 
 		public void EnableSwolePirates()
@@ -481,6 +568,71 @@ namespace FF1Lib
 			newPirate.critrate = 5;
 			newPirate.agility = 24;
 			Put(EnemyOffset + EnemySize * Enemy.Pirate, newPirate.compressData());
+		}
+
+		public void EnableSwoleAstos(MT19337 rng)
+		{
+			EnemyInfo newAstos = new EnemyInfo();
+			newAstos.decompressData(Get(EnemyOffset + EnemySize * Enemy.Astos, EnemySize));
+
+			newAstos.morale = 255;
+			newAstos.monster_type = (byte)MonsterType.MAGE;
+			newAstos.exp = 12800;
+			newAstos.gp = 8000;
+			newAstos.hp = 850;
+			newAstos.num_hits = 2;
+			newAstos.damage = 45;
+			newAstos.absorb = 60;
+			newAstos.mdef = 180;
+			newAstos.accuracy = 42;
+			newAstos.critrate = 1;
+			newAstos.agility = 250;
+			newAstos.elem_weakness = (byte)Element.STATUS | (byte)Element.DEATH;
+			newAstos.elem_resist = (byte)Element.NONE;
+
+			if (newAstos.AIscript == 0xFF) {
+			    var i = searchForNoSpellNoAbilityEnemyScript();
+			    if (i == -1) { return; }
+			    newAstos.AIscript = (byte)i;
+			}
+			Put(EnemyOffset + EnemySize * Enemy.Astos, newAstos.compressData());
+
+			var astosScript = new EnemyScriptInfo();
+			astosScript.decompressData(Get(ScriptOffset + newAstos.AIscript * ScriptSize, ScriptSize));
+			astosScript.spell_chance = 96;
+			astosScript.skill_chance = 96;
+
+			// use "find spell by effect" to be compatible with spell shuffle and spell crafter.
+			var helper = new SpellHelper(this);
+			var spells = helper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Mute).ToList();
+			spells.AddRange(helper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Stun));
+			spells.AddRange(helper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Sleep));
+			spells.AddRange(helper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Stone));
+			spells.AddRange(helper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Death));
+
+			spells.Shuffle(rng);
+
+			astosScript.spell_list = new byte[8];
+			for (int i = 0; i < 8; i++) {
+			    astosScript.spell_list[i] = (byte)(spells[i % spells.Count].Id - Spell.CURE);
+			}
+
+			var skills = new List<byte> { (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Crack, (byte)EnemySkills.Trance, (byte)EnemySkills.Toxic };
+			skills.Shuffle(rng);
+			astosScript.skill_list = skills.ToArray();
+			Put(ScriptOffset + newAstos.AIscript * ScriptSize, astosScript.compressData());
+		}
+
+		public void BoostEnemyMorale(byte index)
+		{
+			EnemyInfo enemy = new EnemyInfo();
+			enemy.decompressData(Get(EnemyOffset + EnemySize * index, EnemySize));
+			enemy.morale = 255;
+			Put(EnemyOffset + EnemySize * index, enemy.compressData());
+		}
+
+		public List<Blob> GetAllEnemyStats() {
+		    return Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 		}
 	}
 }

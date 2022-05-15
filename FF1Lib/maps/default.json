@@ -3,7 +3,7 @@
 		{
 			"TeleporterIndex": 255,
 			"X": 152,
-			"Y": 197
+			"Y": 169
 		},
 		{
 			"TeleporterIndex": 20,
@@ -52,13 +52,136 @@
 		},
 		{
 			"TeleporterIndex": 5,
-			"X": 246,
-			"Y": 208
+			"X": 141,
+			"Y": 211
 		},
 		{
 			"TeleporterIndex": 15,
-			"X": 246,
-			"Y": 208
+			"X": 141,
+			"Y": 211
 		}
-	]
+	],
+	"DomainUpdates": [],
+	"OverworldCoordinates": {
+		"Coneria": {
+			"X": 152,
+			"Y": 162
+		},
+		"Pravoka": {
+			"X": 210,
+			"Y": 150
+		},
+		"Elfland": {
+			"X": 136,
+			"Y": 222
+		},
+		"Melmond": {
+			"X": 81,
+			"Y": 160
+		},
+		"CrescentLake": {
+			"X": 219,
+			"Y": 218
+		},
+		"Gaia": {
+			"X": 221,
+			"Y": 28
+		},
+		"Onrac": {
+			"X": 62,
+			"Y": 56
+		},
+		"Lefein": {
+			"X": 235,
+			"Y": 99
+		},
+		"ConeriaCastle1": {
+			"X": 153,
+			"Y": 159
+		},
+		"ElflandCastle": {
+			"X": 136,
+			"Y": 221
+		},
+		"NorthwestCastle": {
+			"X": 103,
+			"Y": 186
+		},
+		"CastleOrdeals1": {
+			"X": 130,
+			"Y": 45
+		},
+		"TempleOfFiends1": {
+			"X": 130,
+			"Y": 123
+		},
+		"EarthCave1": {
+			"X": 65,
+			"Y": 187
+		},
+		"GurguVolcano1": {
+			"X": 188,
+			"Y": 205
+		},
+		"IceCave1": {
+			"X": 197,
+			"Y": 183
+		},
+		"Cardia1": {
+			"X": 92,
+			"Y": 48
+		},
+		"Cardia2": {
+			"X": 79,
+			"Y": 49
+		},
+		"BahamutCave1": {
+			"X": 96,
+			"Y": 51
+		},
+		"Cardia4": {
+			"X": 93,
+			"Y": 58
+		},
+		"Cardia5": {
+			"X": 105,
+			"Y": 59
+		},
+		"Cardia6": {
+			"X": 116,
+			"Y": 66
+		},
+		"Waterfall": {
+			"X": 54,
+			"Y": 29
+		},
+		"DwarfCave": {
+			"X": 100,
+			"Y": 155
+		},
+		"MatoyasCave": {
+			"X": 168,
+			"Y": 117
+		},
+		"SardasCave": {
+			"X": 30,
+			"Y": 190
+		},
+		"MarshCave1": {
+			"X": 102,
+			"Y": 236
+		},
+		"MirageTower1": {
+			"X": 194,
+			"Y": 59
+		},
+		"TitansTunnelEast": {
+			"X": 42,
+			"Y": 174
+		},
+		"TitansTunnelWest": {
+			"X": 30,
+			"Y": 175
+		}
+	}
 }

@@ -18,32 +18,32 @@ namespace FF1Lib
 			Item.Slab, Item.Chime, Item.Bottle, Item.Ruby
 		};
 
-		public static readonly IReadOnlyCollection<Item> UberTier =
+		public static readonly IReadOnlyList<Item> UberTier =
 		new List<Item> {
 			Item.Masamune,
 		};
 
-		public static readonly IReadOnlyCollection<Item> LegendaryWeaponTier =
+		public static readonly IReadOnlyList<Item> LegendaryWeaponTier =
 		new List<Item> {
 			Item.Vorpal, Item.Katana, Item.Xcalber,
 		};
 
-		public static readonly IReadOnlyCollection<Item> LegendaryArmorTier =
+		public static readonly IReadOnlyList<Item> LegendaryArmorTier =
 		new List<Item> {
 			Item.OpalArmor, Item.DragonArmor, Item.Opal, Item.OpalShield,
 			Item.OpalShield, Item.AegisShield, Item.OpalHelm, Item.Ribbon,
 			Item.Ribbon, Item.Ribbon, Item.OpalGauntlets, Item.OpalGauntlets,
 		};
 
-		public static readonly IReadOnlyCollection<Item> RareWeaponTier =
+		public static readonly IReadOnlyList<Item> RareWeaponTier =
 		new List<Item> {
 			Item.FlameSword, Item.IceSword, Item.DragonSword, Item.GiantSword,
 			Item.SunSword, Item.CoralSword, Item.WereSword, Item.RuneSword,
-			Item.LightAxe, Item.HealRod, Item.MageRod, Item.Defense, 
+			Item.LightAxe, Item.HealRod, Item.MageRod, Item.Defense,
 			Item.WizardRod, Item.CatClaw, Item.ThorHammer, Item.BaneSword,
 		};
 
-		public static readonly IReadOnlyCollection<Item> RareArmorTier =
+		public static readonly IReadOnlyList<Item> RareArmorTier =
 		new List<Item> {
 			Item.SteelArmor, Item.FlameArmor, Item.IceArmor, Item.Gold,
 			Item.WhiteShirt, Item.BlackShirt, Item.FlameShield, Item.IceShield,
@@ -51,7 +51,7 @@ namespace FF1Lib
 			Item.ZeusGauntlets, Item.PowerGauntlets, Item.ProRing, Item.ProRing,
 		};
 
-		public static readonly IReadOnlyCollection<Item> CommonWeaponTier =
+		public static readonly IReadOnlyList<Item> CommonWeaponTier =
 		new List<Item>
 		{
 			Item.WoodenNunchucks, Item.SmallKnife, Item.WoodenRod,
@@ -61,7 +61,7 @@ namespace FF1Lib
 			Item.SilverSword, Item.SilverHammer, Item.SilverAxe, Item.PowerRod,
 		};
 
-		public static readonly IReadOnlyCollection<Item> CommonArmorTier =
+		public static readonly IReadOnlyList<Item> CommonArmorTier =
 		new List<Item>
 		{
 			Item.Cloth, Item.WoodenArmor, Item.ChainArmor, Item.IronArmor, Item.SilverArmor,
@@ -169,6 +169,7 @@ namespace FF1Lib
 			if (flags.IncentivizeOffCastWeapon ?? false) incentivePool.Add(Item.ThorHammer);
 			if (flags.IncentivizeOpal ?? false) incentivePool.Add(Item.Opal);
 			if (flags.IncentivizeOtherCastArmor ?? false) incentivePool.Add(Item.PowerGauntlets);
+			if (flags.IncentivizePowerRod ?? false) incentivePool.Add(Item.PowerRod);
 			if (flags.IncentivizeDefCastArmor ?? false) incentivePool.Add(Item.WhiteShirt);
 			if (flags.IncentivizeOffCastArmor ?? false) incentivePool.Add(Item.BlackShirt);
 			if (flags.IncentivizeRibbon ?? false) incentivePool.Add(Item.Ribbon);

@@ -5,13 +5,17 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup>
+   <ServerGarbageCollection>false</ServerGarbageCollection>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +26,12 @@
     <None Remove="maps\elfland_start.json" />
     <None Remove="maps\melmond_start.ffm" />
     <None Remove="maps\melmond_start.json" />
+    <None Remove="maps\nooverworld.ffm" />
+    <None Remove="maps\nooverworld.json" />
+    <None Remove="maps\normal256.zip" />
+    <None Remove="maps\pregenerated.zip" />
+    <None Remove="maps\shuffled256.zip" />
+    <None Remove="maps\unsafe256.zip" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,16 +46,51 @@
     <EmbeddedResource Include="maps\melmond_start.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="maps\nooverworld.ffm" />
+    <EmbeddedResource Include="maps\nooverworld.json" />
+    <EmbeddedResource Include="maps\procgen1.ffm" />
+    <EmbeddedResource Include="maps\procgen1.json" />
+    <EmbeddedResource Include="maps\procgen2.ffm" />
+    <EmbeddedResource Include="maps\procgen2.json" />
+    <EmbeddedResource Include="maps\procgen3.ffm" />
+    <EmbeddedResource Include="maps\procgen3.json" />
+    <EmbeddedResource Include="maps\shuffled256.zip" />
+    <EmbeddedResource Include="maps\unsafe256.zip" />
+
+    <EmbeddedResource Include="bosses\ASTAROTH.png" />
+    <EmbeddedResource Include="bosses\ASURA.png" />
+    <EmbeddedResource Include="bosses\BARBRICA.png" />
+    <EmbeddedResource Include="bosses\BEHEMOTH.png" />
+    <EmbeddedResource Include="bosses\BELZEBUB.png" />
+    <EmbeddedResource Include="bosses\B.KNIGHT.png" />
+    <EmbeddedResource Include="bosses\CAGNAZZO.png" />
+    <EmbeddedResource Include="bosses\CARBUNCL.png" />
+    <EmbeddedResource Include="bosses\DJINN.png" />
+    <EmbeddedResource Include="bosses\ECHIDNA.png" />
+    <EmbeddedResource Include="bosses\GILGAMSH.png" />
+    <EmbeddedResource Include="bosses\IFRIT.png" />
+    <EmbeddedResource Include="bosses\LEVIATHN.png" />
+    <EmbeddedResource Include="bosses\MEDUSAE.png" />
+    <EmbeddedResource Include="bosses\ODIN.png" />
+    <EmbeddedResource Include="bosses\RUBICANT.png" />
+    <EmbeddedResource Include="bosses\SALAMAND.png" />
+    <EmbeddedResource Include="bosses\SCARMLIO.png" />
+    <EmbeddedResource Include="bosses\SCYLLA.png" />
+    <EmbeddedResource Include="bosses\SHIVA.png" />
+    <EmbeddedResource Include="bosses\TITAN.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Patcher6502" Version="0.3.0" />
     <PackageReference Include="RomUtilities" Version="3.1.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
+    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="maps\crescent_start.ffm" />
+    <EmbeddedResource Include="maps\normal256.zip" />
   </ItemGroup>
 
   <ItemGroup>

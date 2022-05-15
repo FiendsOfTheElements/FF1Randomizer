@@ -35,17 +35,38 @@ namespace FF1Lib
 		Random
 	}
 
+	public enum ExtConsumableChestSet
+	{
+		[Description("None")]
+		None,
+
+		[Description("Low")]
+		All1,
+
+		[Description("Medium")]
+		All3,
+
+		[Description("High")]
+		All5,
+
+		[Description("Extreme")]
+		All10,
+
+		[Description("Random Low")]
+		RandomLow,
+
+		[Description("Random")]
+		Random
+	}
+
 	public static class MoreConsumableChests
 	{
 		public static void Work(IItemPlacementFlags flags, List<Item> treasurePool, MT19337 rng)
 		{
-			//var x = treasurePool.GroupBy(i => i).Select(g => (g.Key, g.Count())).OrderBy(g => (int)g.Key).ToList();
-
-			if (flags.MoreConsumableChests == ConsumableChestSet.Vanilla) return;
-
 			int count = treasurePool.Count;
 
 			var consumableChestSet = ConsumableChestSets[flags.MoreConsumableChests];
+			var extConsumableChestSet = flags.ExtConsumableSet != ExtConsumableSet.None ? ExtConsumableChestSets[flags.ExtConsumableChests] : ExtConsumableChestSets[ExtConsumableChestSet.None];
 
 			if (flags.MoreConsumableChests == ConsumableChestSet.Random || flags.MoreConsumableChests == ConsumableChestSet.RandomLow)
 			{
@@ -60,12 +81,31 @@ namespace FF1Lib
 				);
 			}
 
-			int requestedchests = consumableChestSet.Tents + consumableChestSet.Cabins + consumableChestSet.Houses + consumableChestSet.Heals + consumableChestSet.Pures + consumableChestSet.Softs;
+			if (flags.ExtConsumableSet != ExtConsumableSet.None && (flags.ExtConsumableChests == ExtConsumableChestSet.Random || flags.ExtConsumableChests == ExtConsumableChestSet.RandomLow))
+			{
+				extConsumableChestSet =
+				(
+					WoodenNunchucks: rng.Between(0, extConsumableChestSet.WoodenNunchucks),
+					SmallKnives: rng.Between(0, extConsumableChestSet.SmallKnives),
+					WoodenRods: rng.Between(0, extConsumableChestSet.WoodenRods),
+					Rapiers: rng.Between(0, extConsumableChestSet.Rapiers)
+				);
+			}
+
+			int requestedchests = consumableChestSet.Tents + consumableChestSet.Cabins + consumableChestSet.Houses + consumableChestSet.Heals + consumableChestSet.Pures + consumableChestSet.Softs + extConsumableChestSet.WoodenNunchucks + extConsumableChestSet.SmallKnives + extConsumableChestSet.WoodenRods + extConsumableChestSet.Rapiers;
 
 			int removedchests = 0;
 
-			RemoveConsumableChests(treasurePool, ref removedchests);
+			RemoveConsumableChests(flags, treasurePool, ref removedchests);
 			RemoveGoldChests(treasurePool, requestedchests, ref removedchests);
+
+			if (flags.ExtConsumableSet != ExtConsumableSet.None)
+			{
+				AddConsumableChests(treasurePool, extConsumableChestSet.WoodenNunchucks, Item.WoodenNunchucks, ref removedchests);
+				AddConsumableChests(treasurePool, extConsumableChestSet.SmallKnives, Item.SmallKnife, ref removedchests);
+				AddConsumableChests(treasurePool, extConsumableChestSet.WoodenRods, Item.WoodenRod, ref removedchests);
+				AddConsumableChests(treasurePool, extConsumableChestSet.Rapiers, Item.Rapier, ref removedchests);
+			}
 
 			AddConsumableChests(treasurePool, consumableChestSet.Tents, Item.Tent, ref removedchests);
 			AddConsumableChests(treasurePool, consumableChestSet.Cabins, Item.Cabin, ref removedchests);
@@ -93,9 +133,17 @@ namespace FF1Lib
 			}
 		}
 
-		private static void RemoveConsumableChests(List<Item> treasurePool, ref int removedchests)
+		private static void RemoveConsumableChests(IItemPlacementFlags flags, List<Item> treasurePool, ref int removedchests)
 		{
 			var consumableChests = treasurePool.Where(i => i == Item.Tent || i == Item.Cabin || i == Item.House || i == Item.Heal || i == Item.Pure || i == Item.Soft).ToList();
+
+			if (flags.ExtConsumableSet != ExtConsumableSet.None)
+			{
+				consumableChests.Add(Item.WoodenNunchucks);
+				consumableChests.Add(Item.SmallKnife);
+				consumableChests.Add(Item.WoodenRod);
+				consumableChests.Add(Item.Rapier);
+			}
 
 			foreach (var item in consumableChests)
 			{
@@ -125,6 +173,17 @@ namespace FF1Lib
 			{ConsumableChestSet.AllPureSoft, (0, 0, 0, 0, 99, 99) },
 			{ConsumableChestSet.RandomLow, (10, 10, 10, 30, 30, 30) },
 			{ConsumableChestSet.Random, (33, 33, 33, 99, 99, 99) },
+		};
+
+		private static Dictionary<ExtConsumableChestSet, (int WoodenNunchucks, int SmallKnives, int WoodenRods, int Rapiers)> ExtConsumableChestSets = new Dictionary<ExtConsumableChestSet, (int WoodenNunchucks, int SmallKnives, int WoodenRods, int Rapiers)>
+		{
+			{ExtConsumableChestSet.None, (0, 0, 0, 0) },
+			{ExtConsumableChestSet.All1, (1, 1, 1, 1) },
+			{ExtConsumableChestSet.All3, (3, 3, 3, 3) },
+			{ExtConsumableChestSet.All5, (5, 5, 5, 5) },
+			{ExtConsumableChestSet.All10, (10, 10, 10, 10) },
+			{ExtConsumableChestSet.RandomLow, (5, 5, 5, 5) },
+			{ExtConsumableChestSet.Random, (15, 15, 15, 15) },
 		};
 
 		private static Item[] ChestReductionList = new Item[]

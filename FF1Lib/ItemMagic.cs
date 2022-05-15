@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RomUtilities;
 using System.Diagnostics;
+using FF1Lib.Helpers;
 
 namespace FF1Lib
 {
@@ -20,51 +21,324 @@ namespace FF1Lib
 		private int WeaponStart = (byte)ItemLists.AllWeapons.ElementAt(0);
 		private int ArmorStart = (byte)ItemLists.AllArmor.ElementAt(0);
 
-		public void ShuffleItemMagic(MT19337 rng, bool balancedShuffle)
+		public void ShuffleItemMagic(MT19337 rng, Flags flags)
+		{
+			IEnumerable<Item> magicWeapons;
+
+			if ((flags.MagisizeWeapons ?? false) && flags.ItemMagicPool == ItemMagicPool.Balanced)
+			{
+				//this case needs to be done with the original magisize code, because it has a different behavior.
+				MagisizeWeaponsBalanced(rng);
+				magicWeapons = Weapon.LoadAllWeapons(this, flags).Where(w => w.Spell >= Spell.CURE).Select(w => w.Id);
+			}
+			else if (flags.MagisizeWeapons ?? false)
+			{
+				magicWeapons = Weapon.LoadAllWeapons(this, flags).Select(w => w.Id);
+			}
+			else
+			{
+				magicWeapons = Weapon.LoadAllWeapons(this, flags).Where(w => w.Spell >= Spell.CURE).Select(w => w.Id);
+			}
+
+			var magicArmor = Armor.LoadAllArmors(this, flags).Where(w => w.Spell >= Spell.CURE).Select(w => w.Id);
+			var magicItems = magicWeapons.Concat(magicArmor).ToList();
+
+			List<MagicSpell> Spells;
+
+			if (flags.ItemMagicPool == ItemMagicPool.Balanced)
+			{
+				Spells = GetBalancedSpells(rng);
+			}
+			else if (flags.ItemMagicPool == ItemMagicPool.Low)
+			{
+				Spells = GetLowSpells(rng);
+			}
+			else if (flags.ItemMagicPool == ItemMagicPool.Support)
+			{
+				Spells = GetSupportSpells(rng);
+			}
+			else if (flags.ItemMagicPool == ItemMagicPool.Tournament)
+			{
+				Spells = GetTournamentSpells(rng);
+			}
+			else
+			{
+				Spells = GetAllSpells(rng);
+			}
+
+			foreach (var item in Spells.Zip(magicItems, (s, i) => new { Spell = s, Item = i }))
+			{
+				WriteItemSpellData(item.Spell, item.Item);
+			}
+		}
+
+		public void MagisizeWeaponsBalanced(MT19337 rng)
+		{
+			var Spells = GetSpells();
+
+			var tieredSpells = new List<List<MagicSpell>> { Spells.GetRange(0, 16), Spells.GetRange(16, 16), Spells.GetRange(32, 16), Spells.GetRange(48, 16) };
+
+			var commonOdds = new List<int> { 0, 0, 0, 0, 1, 1, 1, 1, 2, 2 };
+			var rareOdds = new List<int> { 0, 1, 1, 1, 2, 2, 2, 3, 3, 3 };
+			var legendaryOdds = new List<int> { 1, 2, 2, 2, 3, 3, 3, 3, 3, 3 };
+
+			for (int i = 0; i < 4; i++)
+				tieredSpells[i].RemoveAll(spell => spell.Data[4] == 0);
+
+			foreach (Item weapon in ItemLists.CommonWeaponTier)
+			{
+				var selectedTier = commonOdds.PickRandom(rng);
+				while (tieredSpells[selectedTier].Count == 0)
+					selectedTier = commonOdds.PickRandom(rng);
+
+				WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
+			}
+
+			foreach (Item weapon in ItemLists.RareWeaponTier.Except(ItemLists.AllMagicItem).ToList())
+			{
+				var selectedTier = rareOdds.PickRandom(rng);
+				while (tieredSpells[selectedTier].Count == 0)
+					selectedTier = rareOdds.PickRandom(rng);
+
+				WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
+			}
+
+			foreach (Item weapon in ItemLists.LegendaryWeaponTier)
+			{
+				var selectedTier = legendaryOdds.PickRandom(rng);
+				while (tieredSpells[selectedTier].Count == 0)
+					selectedTier = legendaryOdds.PickRandom(rng);
+
+				WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
+			}
+
+			foreach (Item weapon in ItemLists.UberTier)
+			{
+				var selectedTier = Rng.Between(rng, 0, 3);
+				while (tieredSpells[selectedTier].Count == 0)
+					selectedTier = Rng.Between(rng, 0, 3);
+
+				WriteItemSpellData(tieredSpells[selectedTier].SpliceRandom(rng), weapon);
+			}
+		}
+
+		private List<MagicSpell> GetAllSpells(MT19337 rng)
 		{
 			var Spells = GetSpells();
 
 			// Remove out of battle only spells (spells where the effect is 0)
 			Spells.RemoveAll(spell => spell.Data[4] == 0);
-			if (balancedShuffle)
-			{
-				// if balanced shuffle is on, remove spells which are too strong or too weak
-				// remove any spell which boosts attack power that isn't self-casting
-				Spells.RemoveAll(spell => spell.Data[4] == 0x0D && spell.Data[3] != 0x04);
-				// remove any spell that doubles hit rate
-				Spells.RemoveAll(spell => spell.Data[4] == 0x0C);
-				// remove any non-elemental damage spell with >55 effectivity
-				Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] > 55 && spell.Data[2] == 0b0000000);
-				// remove any multitarget elemental damage spell with > 70 effectivity
-				Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] > 70 && spell.Data[3] == 0x01);
-				// remove any singletarget elemental damage spell with > 100 effectivity
-				Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] > 100);
-				// remove any damage spell with <20 effectivity
-				Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] < 20);
-				// remove status recovery spells which don't heal paralysis or mute
-				Spells.RemoveAll(spell => spell.Data[4] == 0x08 && (spell.Data[1] & 0b01010000) == 0);
-				// remove HP Max
-				Spells.RemoveAll(spell => spell.Data[4] == 0x0F);
-				// remove HARM spells with > 120 effectivity
-				Spells.RemoveAll(spell => spell.Data[4] == 0x02 && spell.Data[1] > 120);
-				// remove non-elemental power word kill
-				Spells.RemoveAll(spell => spell.Data[4] == 0x12 && (spell.Data[1] & 0b00000011) != 0 && spell.Data[2] == 0b00000000);
-				// remove status spells which only cast darkness, sleep, or poison
-				Spells.RemoveAll(spell => spell.Data[4] == 0x03 && (spell.Data[1] & 0b11010011) == 0);
-				Spells.RemoveAll(spell => spell.Data[4] == 0x12 && (spell.Data[1] & 0b11010011) == 0);
-				// remove evasion up spells with effects greater than 80
-				Spells.RemoveAll(spell => spell.Data[4] == 0x10 && spell.Data[1] > 80);
-				// remove armor up spells with effects greater than 32
-				Spells.RemoveAll(spell => spell.Data[4] == 0x09 && spell.Data[1] > 32);
-				// remove spells which resist all elements
-				Spells.RemoveAll(spell => spell.Data[4] == 0x0A && spell.Data[1] == 0xFF);
-			}
-			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
 
-			foreach (var item in Spells.Zip(ItemLists.AllMagicItem, (s, i) => new { Spell = s, Item = i }))
+			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
+			return Spells;
+		}
+
+		private List<MagicSpell> GetBalancedSpells(MT19337 rng)
+		{
+			var Spells = GetSpells();
+
+			// Remove out of battle only spells (spells where the effect is 0)
+			Spells.RemoveAll(spell => spell.Data[4] == 0);
+			
+			// if balanced shuffle is on, remove spells which are too strong or too weak
+			// remove any spell which boosts attack power that isn't self-casting
+			Spells.RemoveAll(spell => spell.Data[4] == 0x0D && spell.Data[3] != 0x04);
+			// remove any spell that doubles hit rate
+			Spells.RemoveAll(spell => spell.Data[4] == 0x0C);
+			// remove any non-elemental damage spell with >55 effectivity
+			Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] > 55 && spell.Data[2] == 0b0000000);
+			// remove any multitarget elemental damage spell with > 70 effectivity
+			Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] > 70 && spell.Data[3] == 0x01);
+			// remove any singletarget elemental damage spell with > 100 effectivity
+			Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] > 100);
+			// remove any damage spell with <20 effectivity
+			Spells.RemoveAll(spell => spell.Data[4] == 0x01 && spell.Data[1] < 20);
+			// remove status recovery spells which don't heal paralysis or mute
+			Spells.RemoveAll(spell => spell.Data[4] == 0x08 && (spell.Data[1] & 0b01010000) == 0);
+			// remove HP Max
+			Spells.RemoveAll(spell => spell.Data[4] == 0x0F);
+			// remove HARM spells with > 120 effectivity
+			Spells.RemoveAll(spell => spell.Data[4] == 0x02 && spell.Data[1] > 120);
+			// remove non-elemental power word kill
+			Spells.RemoveAll(spell => spell.Data[4] == 0x12 && (spell.Data[1] & 0b00000011) != 0 && spell.Data[2] == 0b00000000);
+			// remove status spells which only cast darkness, sleep, or poison
+			Spells.RemoveAll(spell => spell.Data[4] == 0x03 && (spell.Data[1] & 0b11010011) == 0);
+			Spells.RemoveAll(spell => spell.Data[4] == 0x12 && (spell.Data[1] & 0b11010011) == 0);
+			// remove evasion up spells with effects greater than 80
+			Spells.RemoveAll(spell => spell.Data[4] == 0x10 && spell.Data[1] > 80);
+			// remove armor up spells with effects greater than 32
+			Spells.RemoveAll(spell => spell.Data[4] == 0x09 && spell.Data[1] > 32);
+			// remove spells which resist all elements
+			Spells.RemoveAll(spell => spell.Data[4] == 0x0A && spell.Data[1] == 0xFF);
+
+			Spells.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
+			return Spells;
+		}
+
+		private List<MagicSpell> GetLowSpells(MT19337 rng)
+		{
+			var Spells = GetSpells();
+
+			SpellHelper spellHelper = new SpellHelper(this);
+			List<(Spell Id, SpellInfo Info)> foundSpells = GetLowSpells(spellHelper);
+
+			var Spells2 = new List<MagicSpell>();
+			foreach (var spl in foundSpells)
 			{
-				WriteItemSpellData(item.Spell, item.Item);
+				var idx = (int)spl.Id - 0xB0;
+				Spells2.Add(Spells[idx]);
 			}
+
+			Spells2.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
+			return Spells2;
+		}
+
+		private List<(Spell Id, SpellInfo Info)> GetLowSpells(SpellHelper spellHelper)
+		{
+			List<(Spell Id, SpellInfo Info)> foundSpells = new List<(Spell Id, SpellInfo Info)>();
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.Self));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.OneCharacters));
+
+			//Remove Life and Smoke
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.CureAilment, SpellTargeting.Any).Where(s => s.Info.effect != 0x00 && s.Info.effect != 0x81 && s.Info.effect != 0x01));
+
+			//up to Ice2
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.Any).Where(s => s.Info.effect <= 40));
+
+			//Up to Hrm3
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.DamageUndead, SpellTargeting.Any).Where(s => s.Info.effect <= 60));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Self));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.OneCharacters));
+
+			//up to Cur3, Hel2
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.OneCharacters).Where(s => s.Info.effect <= 40));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect <= 25));
+
+			//Allow single target insta and multi target status
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.AllEnemies, SpellElement.Status));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.OneEnemy));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.Any));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.PowerWord, SpellTargeting.OneEnemy));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any).Where(s => s.Info.effect <= 50));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Self).Where(s => s.Info.effect <= 15));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.OneCharacters));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Smoke, SpellTargeting.Any));
+
+			return foundSpells.Concat(foundSpells).ToList();
+		}
+
+		private List<MagicSpell> GetTournamentSpells(MT19337 rng)
+		{
+			var Spells = GetSpells();
+
+			SpellHelper spellHelper = new SpellHelper(this);
+			List<(Spell Id, SpellInfo Info)> foundSpells = GetTournamentSpells(spellHelper, rng);
+
+			var Spells2 = new List<MagicSpell>();
+			foreach (var spl in foundSpells)
+			{
+				var idx = (int)spl.Id - 0xB0;
+				Spells2.Add(Spells[idx]);
+			}
+
+			Spells2.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
+			return Spells2;
+		}
+
+		private List<(Spell Id, SpellInfo Info)> GetTournamentSpells(SpellHelper spellHelper, MT19337 rng)
+		{
+			List<(Spell Id, SpellInfo Info)> foundSpells = new List<(Spell Id, SpellInfo Info)>();
+
+			//up to Ice2
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).Where(s => s.Info.effect <= 40));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.OneEnemy).Where(s => s.Info.effect >= 40 && s.Info.effect <= 120));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.OneCharacters).Where(s => s.Info.effect >= 40 && s.Info.effect <= 64));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect >= 20 && s.Info.effect <= 32));
+
+			//double chance
+			foundSpells.AddRange(foundSpells.ToList());
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.DamageUndead, SpellTargeting.AllEnemies).Where(s => s.Info.effect >= 40 && s.Info.effect <= 60));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.DamageUndead, SpellTargeting.OneEnemy).Where(s => s.Info.effect >= 80 && s.Info.effect <= 120));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Self));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.OneCharacters));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any).Where(s => s.Info.effect == (byte)SpellStatus.Death));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any).Where(s => s.Info.effect == (byte)SpellStatus.Stone));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.Any));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.PowerWord, SpellTargeting.OneEnemy).Where(s => s.Info.effect == (byte)SpellStatus.Death));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any).Where(s => s.Info.effect <= 50));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Self).Where(s => s.Info.effect <= 15));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.OneCharacters));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Confuse));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Stun));
+
+			foundSpells.Shuffle(rng);
+			var selection = foundSpells.Take(22).Distinct();
+
+			return selection.Concat(selection).ToList();
+		}
+
+		private List<MagicSpell> GetSupportSpells(MT19337 rng)
+		{
+			var Spells = GetSpells();
+
+			SpellHelper spellHelper = new SpellHelper(this);
+			List<(Spell Id, SpellInfo Info)> foundSpells = GetSupportSpells(spellHelper);
+
+			var Spells2 = new List<MagicSpell>();
+			foreach (var spl in foundSpells)
+			{
+				var idx = (int)spl.Id - 0xB0;
+				Spells2.Add(Spells[idx]);
+			}
+
+			Spells2.Shuffle(rng); // Shuffle all spells remaining, then assign to each item that can cast a spell
+			return Spells2;
+		}
+
+		private List<(Spell Id, SpellInfo Info)> GetSupportSpells(SpellHelper spellHelper)
+		{
+			List<(Spell Id, SpellInfo Info)> foundSpells = new List<(Spell Id, SpellInfo Info)>();
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.Any));
+
+			//Remove Life and Smoke
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.CureAilment, SpellTargeting.Any).Where(s => s.Info.effect != 0x00 && s.Info.effect != 0x81 && s.Info.effect != 0x01));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any));
+
+			//up to Cur3, Hel2
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.OneCharacters).Where(s => s.Info.effect <= 40));
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect <= 25));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Status));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.Any));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Any));
+
+			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.Smoke, SpellTargeting.Any));
+
+			return foundSpells.Concat(foundSpells).ToList();
 		}
 
 		private void WriteItemSpellData(MagicSpell Spell, Item item)
@@ -73,21 +347,14 @@ namespace FF1Lib
 			var offset = WeaponOffset + 0x8 * Math.Min((byte)item - WeaponStart, ArmorStart - WeaponStart) + 0x4 * Math.Max(0, (byte)item - ArmorStart) + MagicBitOffset;
 			Data[offset] = (byte)(Spell.Index + 1);
 
-			// Setup the text of the item's name to include the spell name.
-			offset = GearTextOffset + ((byte)item > (byte)Item.Ribbon ? 1 : 0) + GearTextSize * ((byte)item - WeaponStart);
-			if (Get(offset, 1)[0] > 200)
+			if (ItemsText[(int)item].Contains("@"))
 			{
-				offset++; // If the first byte is in the icon range, bump the pointer to overwrite after it.
+				ItemsText[(int)item] = ItemsText[(int)item].Remove(0, 6).Insert(0, Spell.Name.PadRight(6));
 			}
-			else if (Get(offset + 6, 1)[0] <= 200)
+			else
 			{
-				Data[offset + 6] = 0xFF; // Erase final non-icon characters from name.
+				ItemsText[(int)item] = Spell.Name.PadRight(7);
 			}
-
-			// Fix up the name of the spell so it works as part of an item name.
-			var fixedSpellName = FF1Text.TextToBytes(FF1Text.BytesToText(Spell.Name).PadRight(6), false, FF1Text.Delimiter.Empty);
-			Debug.Assert(fixedSpellName.Length == 6);
-			Put(offset, fixedSpellName);
 		}
 
 		public void CastableItemTargeting()
@@ -122,7 +389,106 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xC265, CreateLongJumpTableEntry(0x0F, 0x8AD0));
 			PutInBank(0x0F, 0x8AD0, Blob.FromHex("85808681C0FFD008A9D68580A9968581A91060"));
 		}
+	}
 
+	public partial class FF1Rom
+	{
+		public void CraftDefenseItem(Flags flags)
+		{
+			var newspell = GetSpells();
 
+			var ruse = newspell.Select((s, i) => (s, i)).Where(x => x.s.Data[4] == 0x10 && x.s.Data[3] == 0x04).Select(s => (int?)s.i).FirstOrDefault();
+			var inv = newspell.Select((s, i) => (s, i)).Where(x => x.s.Data[4] == 0x10 && x.s.Data[3] == 0x10).Select(s => (int?)s.i).FirstOrDefault();
+			var inv2 = newspell.Select((s, i) => (s, i)).Where(x => x.s.Data[4] == 0x10 && x.s.Data[3] == 0x08).Select(s => (int?)s.i).FirstOrDefault();
+
+			//no spell was found
+			if (ruse == null && inv == null && inv2 == null) return;
+
+			//backup spells
+			ruse = ruse.HasValue ? ruse : (inv2.HasValue ? inv2 : inv);
+			inv = inv.HasValue ? inv : (inv2.HasValue ? inv2 : ruse);
+			inv2 = inv2.HasValue ? inv2 : (ruse.HasValue ? ruse : inv);
+
+			switch (flags.GuaranteedDefenseItem)
+			{
+				case GuaranteedDefenseItem.RUSE:
+					WriteItemSpellData(newspell[ruse.Value], Item.PowerRod);
+					break;
+				case GuaranteedDefenseItem.INV:
+					WriteItemSpellData(newspell[inv.Value], Item.PowerRod);
+					break;
+				case GuaranteedDefenseItem.INV2:
+					WriteItemSpellData(newspell[inv2.Value], Item.PowerRod);
+					break;
+			}
+		}
+
+		public void CraftPowerItem(Flags flags)
+		{
+			var newspell = GetSpells();
+
+			var sabr = newspell.Select((s, i) => (s, i)).Where(x => x.s.Data[4] == 0x0D && x.s.Data[3] == 0x04).Select(s => (int?)s.i).FirstOrDefault();
+			var tmpr = newspell.Select((s, i) => (s, i)).Where(x => x.s.Data[4] == 0x0D && x.s.Data[3] == 0x10).Select(s => (int?)s.i).FirstOrDefault();
+			var fast = newspell.Select((s, i) => (s, i)).Where(x => x.s.Data[4] == 0x0C).Select(s => (int?)s.i).FirstOrDefault();
+
+			//no spell was found
+			if (sabr == null && tmpr == null && fast == null) return;
+
+			//backup spells
+			sabr = sabr.HasValue ? sabr : (tmpr.HasValue ? tmpr : fast);
+			tmpr = tmpr.HasValue ? tmpr : (sabr.HasValue ? sabr : fast);
+			fast = fast.HasValue ? fast : (sabr.HasValue ? sabr : tmpr);
+
+			switch (flags.GuaranteedPowerItem)
+			{
+				case GuaranteedPowerItem.SABR:
+					WriteItemSpellData(newspell[sabr.Value], Item.PowerGauntlets);
+					break;
+				case GuaranteedPowerItem.TMPR:
+					WriteItemSpellData(newspell[tmpr.Value], Item.PowerGauntlets);
+					break;
+				case GuaranteedPowerItem.FAST:
+					WriteItemSpellData(newspell[fast.Value], Item.PowerGauntlets);
+					break;
+			}
+		}
+	}
+
+	public enum ItemMagicMode
+	{
+		Vanilla = 0,
+		Shuffled = 1,
+		None = 2,
+		Random = 3
+	}
+
+	public enum ItemMagicPool
+	{
+		All = 0,
+		Balanced = 1,
+		Low = 2,
+		Support = 3,
+		Tournament = 4,
+		Random = 5
+	}
+
+	public enum GuaranteedDefenseItem
+	{
+		None = 0,
+		INV = 1,
+		INV2 = 2,
+		RUSE = 3,
+		Any = 4,
+		Random = 5
+	}
+
+	public enum GuaranteedPowerItem
+	{
+		None = 0,
+		TMPR = 1,
+		SABR = 2,
+		FAST = 3,
+		Any = 4,
+		Random = 5
 	}
 }

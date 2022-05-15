@@ -484,6 +484,115 @@ namespace FF1Lib
 				.ToDictionary(g => g.Key, g => g.ToList());
 		}
 
+		public static Dictionary<int, MapLocation> GetTreasuresMapLocation()
+		{
+			const int lut_TreasureOffset = 0x3100;
+			var fields = typeof(ItemLocations).GetFields(BindingFlags.Public | BindingFlags.Static);
+			return fields.Where(f => f.FieldType == typeof(TreasureChest))
+				.Select(f => f.GetValue(null) as TreasureChest)
+				.Where(t => t != null)
+				.ToDictionary(g => (g.Address - lut_TreasureOffset), g => g.MapLocation);
+		}
+
+		public static Dictionary<MapLocation, MapId> MapLocationToMapId =
+	new Dictionary<MapLocation, MapId>
+	{
+				{MapLocation.StartingLocation, MapId.Coneria},
+				{MapLocation.AirshipLocation, MapId.Coneria},
+				{MapLocation.Coneria, MapId.Coneria},
+				{MapLocation.Pravoka, MapId.Pravoka},
+				{MapLocation.Elfland, MapId.Elfland},
+				{MapLocation.Melmond, MapId.Melmond},
+				{MapLocation.CrescentLake, MapId.CrescentLake},
+				{MapLocation.Gaia,MapId.Gaia},
+				{MapLocation.Onrac,MapId.Onrac},
+				{MapLocation.Lefein,MapId.Lefein},
+				{MapLocation.ConeriaCastle1,MapId.ConeriaCastle1F},
+				{MapLocation.ConeriaCastle2,MapId.ConeriaCastle2F},
+				{MapLocation.ConeriaCastleRoom1,MapId.ConeriaCastle1F},
+				{MapLocation.ConeriaCastleRoom2,MapId.ConeriaCastle1F},
+				{MapLocation.ElflandCastle,MapId.ElflandCastle},
+				{MapLocation.ElflandCastleRoom1,MapId.ElflandCastle},
+				{MapLocation.NorthwestCastle,MapId.NorthwestCastle},
+				{MapLocation.NorthwestCastleRoom2,MapId.NorthwestCastle},
+				{MapLocation.CastleOrdeals1,MapId.CastleOfOrdeals1F},
+				{MapLocation.CastleOrdealsMaze,MapId.CastleOfOrdeals2F},
+				{MapLocation.CastleOrdealsTop,MapId.CastleOfOrdeals3F},
+				{MapLocation.TempleOfFiends1,MapId.TempleOfFiends},
+				{MapLocation.TempleOfFiends1Room1,MapId.TempleOfFiends},
+				{MapLocation.TempleOfFiends1Room2,MapId.TempleOfFiends},
+				{MapLocation.TempleOfFiends1Room3,MapId.TempleOfFiends},
+				{MapLocation.TempleOfFiends1Room4,MapId.TempleOfFiends},
+				{MapLocation.TempleOfFiends2,MapId.TempleOfFiendsRevisited1F},
+				{MapLocation.TempleOfFiends3,MapId.TempleOfFiendsRevisited3F},
+				{MapLocation.TempleOfFiendsChaos,MapId.TempleOfFiendsRevisitedChaos},
+				{MapLocation.TempleOfFiendsAir,MapId.TempleOfFiendsRevisitedAir},
+				{MapLocation.TempleOfFiendsEarth,MapId.TempleOfFiendsRevisitedEarth},
+				{MapLocation.TempleOfFiendsFire,MapId.TempleOfFiendsRevisitedFire},
+				{MapLocation.TempleOfFiendsWater,MapId.TempleOfFiendsRevisitedWater},
+				{MapLocation.TempleOfFiendsPhantom,MapId.TempleOfFiendsRevisited2F},
+				{MapLocation.EarthCave1,MapId.EarthCaveB1},
+				{MapLocation.EarthCave2,MapId.EarthCaveB2},
+				{MapLocation.EarthCaveVampire,MapId.EarthCaveB3},
+				{MapLocation.EarthCave4,MapId.EarthCaveB4},
+				{MapLocation.EarthCaveLich,MapId.EarthCaveB5},
+				{MapLocation.GurguVolcano1,MapId.GurguVolcanoB1},
+				{MapLocation.GurguVolcano2,MapId.GurguVolcanoB2},
+				{MapLocation.GurguVolcano3,MapId.GurguVolcanoB3},
+				{MapLocation.GurguVolcano4,MapId.GurguVolcanoB4},
+				{MapLocation.GurguVolcano5,MapId.GurguVolcanoB3},
+				{MapLocation.GurguVolcano6,MapId.GurguVolcanoB4},
+				{MapLocation.GurguVolcanoKary,MapId.GurguVolcanoB5},
+				{MapLocation.IceCave1,MapId.IceCaveB1},
+				{MapLocation.IceCave2,MapId.IceCaveB2},
+				{MapLocation.IceCave3,MapId.IceCaveB3},
+				{MapLocation.IceCave5,MapId.IceCaveB3},
+				{MapLocation.IceCaveBackExit,MapId.IceCaveB1},
+				{MapLocation.IceCaveFloater,MapId.IceCaveB2},
+				{MapLocation.IceCavePitRoom,MapId.IceCaveB2},
+				{MapLocation.SeaShrine1, MapId.SeaShrineB3 },
+				{MapLocation.SeaShrine2, MapId.SeaShrineB2 },
+				{MapLocation.SeaShrine2Room2, MapId.SeaShrineB2 },
+				{MapLocation.SeaShrine4, MapId.SeaShrineB4 },
+				{MapLocation.SeaShrine5, MapId.SeaShrineB3 },
+				{MapLocation.SeaShrine6, MapId.SeaShrineB2 },
+				{MapLocation.SeaShrine7, MapId.SeaShrineB3 },
+				{MapLocation.SeaShrine8, MapId.SeaShrineB4 },
+				{MapLocation.SeaShrineKraken, MapId.SeaShrineB5 },
+				{MapLocation.SeaShrineMermaids, MapId.SeaShrineB1 },
+				{MapLocation.Cardia1,MapId.Cardia},
+				{MapLocation.Cardia2,MapId.Cardia},
+				{MapLocation.BahamutCave1,MapId.BahamutsRoomB1},
+				{MapLocation.BahamutCave2,MapId.BahamutsRoomB1},
+				{MapLocation.Cardia4,MapId.Cardia},
+				{MapLocation.Cardia5,MapId.Cardia},
+				{MapLocation.Cardia6,MapId.Cardia},
+				{MapLocation.Waterfall,MapId.Waterfall},
+				{MapLocation.DwarfCave,MapId.DwarfCave},
+				{MapLocation.DwarfCaveRoom3,MapId.DwarfCave},
+				{MapLocation.MatoyasCave,MapId.MatoyasCave},
+				{MapLocation.SardasCave,MapId.SardasCave},
+				{MapLocation.MarshCave1,MapId.MarshCaveB1},
+				{MapLocation.MarshCave3,MapId.MarshCaveB2},
+				{MapLocation.MarshCaveBottom,MapId.MarshCaveB3},
+				{MapLocation.MarshCaveBottomRoom13,MapId.MarshCaveB3},
+				{MapLocation.MarshCaveBottomRoom14,MapId.MarshCaveB3},
+				{MapLocation.MarshCaveBottomRoom16,MapId.MarshCaveB3},
+				{MapLocation.MarshCaveTop,MapId.MarshCaveB2},
+				{MapLocation.MirageTower1,MapId.MirageTower1F},
+				{MapLocation.MirageTower2,MapId.MirageTower2F},
+				{MapLocation.MirageTower3,MapId.MirageTower3F},
+				{MapLocation.SkyPalace1,MapId.SkyPalace1F},
+				{MapLocation.SkyPalace2,MapId.SkyPalace2F},
+				{MapLocation.SkyPalace3,MapId.SkyPalace3F},
+				{MapLocation.SkyPalaceMaze,MapId.SkyPalace4F},
+				{MapLocation.SkyPalaceTiamat,MapId.SkyPalace5F},
+				{MapLocation.TitansTunnelEast,MapId.TitansTunnel},
+				{MapLocation.TitansTunnelWest,MapId.TitansTunnel},
+				{MapLocation.TitansTunnelRoom,MapId.TitansTunnel},
+				{MapLocation.Caravan, (MapId)61},
+	};
+
 		public static Dictionary<MapLocation, OverworldTeleportIndex> MapLocationToStandardOverworldLocations =
 			new Dictionary<MapLocation, OverworldTeleportIndex>
 			{
@@ -675,6 +784,6 @@ namespace FF1Lib
 				{MapLocation.TitansTunnelEast,OverworldTeleportIndex.TitansTunnelEast},
 				{MapLocation.TitansTunnelWest,OverworldTeleportIndex.TitansTunnelWest},
 				{MapLocation.TitansTunnelRoom,OverworldTeleportIndex.TitansTunnelWest},
-	};
+		};
 	}
 }

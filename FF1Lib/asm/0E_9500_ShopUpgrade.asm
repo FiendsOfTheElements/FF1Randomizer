@@ -440,21 +440,26 @@ UpgradedMagicMenu:
 	RTS
 
 @select_Pressed:
-    LDA #0
-    STA $2001                      ; turn off PPU
-    STA menustall                  ; clear menustall
+	LDA #$01
+	STA menustall		; turn on menustall to avoid flicker
+
+; Out of battle, spell data is stored stupidly so valid values are only 00-08, where 01 to 08 are actual spells
+;   and 00 is 'empty'.  Each spell is conceptually in a "slot" that belongs to each spell level.  Therefore,
+;   both CURE and LAMP are stored as '01' because they're both the first spell in their level, but because
+;   they're in a different level slot, the game distinguishes them.
 
     LDA submenu_targ       ; get character ID
-    LSR A
-    ROR A
-    ROR A                  ; shift to get usable character index
+    LSR A		   ; shift right (shifts bit 0->C and zero->bit 7)
+    ROR A		   ; rotate right (shifts C->bit 7 and bit 0->C)
+    ROR A                  ; rotate right again, now we have the character index
     ORA cursor             ; ORA with cursor to get index to spell
     TAX                    ; and put in X for indexing
 
     ASL A                  ; double A and mask out the level bits
     AND #$38               ;  this effectively makes A the spell level * 8
+    CLC                    ; clear carry (necessary because characters 3 and 4 will have bit 7 shifted into carry)
 
-    ORA ch_spells, X       ; then ORA with the selected spell on this level
+    ADC ch_spells, X       ; then add the selected spell on this level
     CLC                    ; and add the spell start constant - 1 (-1 because 0 is not a spell)
     ADC #MG_START-1        ;  A is now the ID number of the selected spell
     STA tmp+4

@@ -36,8 +36,6 @@ namespace FF1Lib.Sanity
 
 		public SCBitFlagSet BitFlagSet { get;  set; }
 
-		public List<AccessRequirement> Requirements { get; set; }
-
 		public bool Done { get; set; }
 
 		public byte DungeonIndex { get; set; }
@@ -62,6 +60,14 @@ namespace FF1Lib.Sanity
 		public override string ToString()
 		{
 			return Type.ToString() + " " + Coords.ToString() + " - " + (BitFlagSet?.ToString() ?? "") + (Done ? " - Done" : "");
+		}
+
+		public SCRequirementsSet Requirements
+		{
+			get
+			{
+				return new SCRequirementsSet(BitFlagSet.Select(f => (SCRequirements)((ushort)f & 0x1FFF)));
+			}
 		}
 	}
 

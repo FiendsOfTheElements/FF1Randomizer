@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 using RomUtilities;
+using FF1Lib.Helpers;
+using System.IO;
 
 namespace FF1Lib
 {
@@ -18,6 +21,28 @@ namespace FF1Lib
 		InterZone,
 		[Description("Totally Random")]
 		Randomize
+	}
+	public enum TouchPool
+	{
+		[Description("All")]
+		All = 0,
+		[Description("All except Stun Status")]
+		RemoveStun,
+		[Description("Only Death Status")]
+		OnlyDeath,
+		[Description("Random")]
+		Random
+	}
+	public enum TouchMode
+	{
+		[Description("Standard")]
+		Standard = 0,
+		[Description("Shuffle")]
+		Shuffle,
+		[Description("Randomize")]
+		Randomize,
+		[Description("Random")]
+		Random
 	}
 	public partial class FF1Rom : NesRom
 	{
@@ -40,14 +65,20 @@ namespace FF1Lib
 		public abstract class Enemy
 		{
 			public const int Imp = 0;
+			public const int RSahag = 13;
+			public const int WzSahag = 14;
 			public const int Pirate = 15;
 			public const int Crawl = 24;
+			public const int Asp = 30;
+			public const int Cobra = 31;
 			public const int Phantom = 51;
 			public const int Mancat = 55;
 			public const int Vampire = 60;
+		        public const int Ankylo = 78;
 			public const int Coctrice = 81;
 			public const int Sorceror = 104;
 			public const int Garland = 105;
+			public const int Evilman = 112;
 			public const int Astos = 113;
 			public const int Nitemare = 117;
 			public const int WarMech = 118;
@@ -177,28 +208,86 @@ namespace FF1Lib
 			Put(ZoneFormationsOffset, newFormations.ToArray());
 		}
 
-		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool doBosses, bool excludeImps, bool scaryImps)
+		public void ShuffleEnemyScripts(MT19337 rng, Flags flags)
 		{
+			
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
-			
-			if(doNormals)
+
+			bool shuffleNormalEnemies = (bool)flags.ShuffleScriptsEnemies;
+			bool shuffleBosses = (bool)flags.ShuffleScriptsBosses;
+			bool allowUnsafePirates = (bool)flags.AllowUnsafePirates;
+			bool excludeImps = (bool)flags.EnemySkillsSpellsTiered;
+			ScriptTouchMultiplier scriptMultiplier = flags.ScriptMultiplier;
+
+			if (!shuffleNormalEnemies && !shuffleBosses)
+			{
+				return;
+			}
+
+			if (shuffleNormalEnemies)
 			{
 				var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
-				if (!AllowUnsafePirates) normalOldEnemies.RemoveAt(Enemy.Pirate);
+				if (!allowUnsafePirates) normalOldEnemies.RemoveAt(Enemy.Pirate);
 				if (excludeImps) normalOldEnemies.RemoveAt(Enemy.Imp);
 				normalOldEnemies.Shuffle(rng);
 				if (excludeImps) normalOldEnemies.Insert(Enemy.Imp, oldEnemies[Enemy.Imp]);
-				if (!AllowUnsafePirates) normalOldEnemies.Insert(Enemy.Pirate, oldEnemies[Enemy.Pirate]);
+				if (!allowUnsafePirates) normalOldEnemies.Insert(Enemy.Pirate, oldEnemies[Enemy.Pirate]);
 
-				for (int i = 0; i < EnemyCount - 10; i++)
+				var allScripts = normalOldEnemies.Select(e => e[EnemyStat.Scripts]).Distinct().ToList();
+				allScripts.Remove(0xFF);
+
+				if (scriptMultiplier == ScriptTouchMultiplier.Vanilla)
 				{
-					newEnemies[i][7] = normalOldEnemies[i][7];
+					for (int i = 0; i < EnemyCount - 10; i++)
+					{
+						newEnemies[i][EnemyStat.Scripts] = normalOldEnemies[i][EnemyStat.Scripts];
+					}
+				}
+				else
+				{
+					var count = 0;
+					switch (scriptMultiplier)
+					{
+						case ScriptTouchMultiplier.None:
+							count = 0;
+							break;
+						case ScriptTouchMultiplier.Vanilla:
+							count = 36;//should never happen
+							break;
+						case ScriptTouchMultiplier.OneAndHalf:
+							count = 54;
+							break;
+						case ScriptTouchMultiplier.Double:
+							count = 72;
+							break;
+						case ScriptTouchMultiplier.All:
+							count = EnemyCount - 10;
+							break;
+						case ScriptTouchMultiplier.Random:
+							count = rng.Between(18, 90);
+							break;
+					}
+
+					List<int> indices = new List<int>();
+					for (int i = 0; i < EnemyCount - 10; i++)
+					{
+						newEnemies[i][EnemyStat.Scripts] = 0xFF;
+						indices.Add(i);
+					}
+
+					indices.Shuffle(rng);
+
+					foreach (var i in indices.Take(count))
+					{
+						if (i == 15 && !allowUnsafePirates) continue;
+						newEnemies[i][EnemyStat.Scripts] = allScripts.PickRandom(rng);
+					}
 				}
 			}
 
-			if(doBosses)
-			{ 
+			if(shuffleBosses)
+			{
 				var oldBosses = new List<Blob>
 				{
 					oldEnemies[Enemy.Lich],
@@ -208,10 +297,10 @@ namespace FF1Lib
 				};
 				oldBosses.Shuffle(rng);
 
-				newEnemies[Enemy.Lich][7] = oldBosses[0][7];
-				newEnemies[Enemy.Kary][7] = oldBosses[1][7];
-				newEnemies[Enemy.Kraken][7] = oldBosses[2][7];
-				newEnemies[Enemy.Tiamat][7] = oldBosses[3][7];
+				newEnemies[Enemy.Lich][EnemyStat.Scripts] = oldBosses[0][EnemyStat.Scripts];
+				newEnemies[Enemy.Kary][EnemyStat.Scripts] = oldBosses[1][EnemyStat.Scripts];
+				newEnemies[Enemy.Kraken][EnemyStat.Scripts] = oldBosses[2][EnemyStat.Scripts];
+				newEnemies[Enemy.Tiamat][EnemyStat.Scripts] = oldBosses[3][EnemyStat.Scripts];
 
 				var oldBigBosses = new List<Blob>
 				{
@@ -222,23 +311,38 @@ namespace FF1Lib
 					oldEnemies[Enemy.Tiamat2],
 					oldEnemies[Enemy.Chaos]
 				};
-				if (scaryImps) oldBigBosses.Add(oldEnemies[Enemy.Imp]);
 				oldBigBosses.Shuffle(rng);
 
-				newEnemies[Enemy.WarMech][7] = oldBigBosses[0][7];
-				newEnemies[Enemy.Lich2][7] = oldBigBosses[1][7];
-				newEnemies[Enemy.Kary2][7] = oldBigBosses[2][7];
-				newEnemies[Enemy.Kraken2][7] = oldBigBosses[3][7];
-				newEnemies[Enemy.Tiamat2][7] = oldBigBosses[4][7];
-				newEnemies[Enemy.Chaos][7] = oldBigBosses[5][7];
-				if (scaryImps) newEnemies[Enemy.Imp][7] = oldBigBosses[6][7];
+				newEnemies[Enemy.WarMech][EnemyStat.Scripts] = oldBigBosses[0][EnemyStat.Scripts];
+				newEnemies[Enemy.Lich2][EnemyStat.Scripts] = oldBigBosses[1][EnemyStat.Scripts];
+				newEnemies[Enemy.Kary2][EnemyStat.Scripts] = oldBigBosses[2][EnemyStat.Scripts];
+				newEnemies[Enemy.Kraken2][EnemyStat.Scripts] = oldBigBosses[3][EnemyStat.Scripts];
+				newEnemies[Enemy.Tiamat2][EnemyStat.Scripts] = oldBigBosses[4][EnemyStat.Scripts];
+				newEnemies[Enemy.Chaos][EnemyStat.Scripts] = oldBigBosses[5][EnemyStat.Scripts];
 			}
 
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void ShuffleEnemySkillsSpells(MT19337 rng, bool doNormals, bool doBosses)
+		public void ShuffleEnemySkillsSpells(MT19337 rng, Flags flags)
 		{
+			bool shuffleNormalEnemies = (bool)flags.ShuffleSkillsSpellsEnemies;
+			bool shuffleBosses = (bool)flags.ShuffleSkillsSpellsBosses;
+			bool noConsecutiveNukes = (bool)flags.NoConsecutiveNukes;
+			bool nonEmpty = (bool)flags.NoEmptyScripts;
+			bool buffedPirates = (bool)flags.SwolePirates;
+			bool generateBalancedscript = (bool)flags.EnemySkillsSpellsTiered && shuffleNormalEnemies;
+
+			if (!shuffleBosses && !shuffleNormalEnemies)
+			{
+				return;
+			}
+
+			if (generateBalancedscript)
+			{
+				GenerateBalancedEnemyScripts(rng, buffedPirates);
+			}
+
 			var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
 
 			// Remove two instances each of CRACK and TOXIC since they're likely to get spread out to several enemies.
@@ -253,19 +357,21 @@ namespace FF1Lib
 			var bossIndices = new List<int> { 34, 36, 38, 40 };
 			var bigBossIndices = new List<int> { 32, 35, 37, 39, 41, 42 };
 
-			if(doNormals)
-				ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, rng);
-
-			if(doBosses)
+			if (shuffleNormalEnemies)
 			{ 
-				ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, rng);
-				ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, rng);
+			    ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, noConsecutiveNukes, nonEmpty, rng);
+			}
+
+			if (shuffleBosses)
+			{
+			    ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, noConsecutiveNukes, false, rng);
+			    ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, noConsecutiveNukes, false, rng);
 			}
 
 			Put(ScriptOffset, scriptBytes.SelectMany(script => script.ToBytes()).ToArray());
 		}
 
-		private void ShuffleIndexedSkillsSpells(List<Blob> scriptBytes, List<int> indices, MT19337 rng)
+		private void ShuffleIndexedSkillsSpells(List<Blob> scriptBytes, List<int> indices, bool noConsecutiveNukes, bool nonEmpty, MT19337 rng)
 		{
 			var scripts = indices.Select(i => scriptBytes[i]).ToList();
 
@@ -274,45 +380,132 @@ namespace FF1Lib
 			spellBytes.Shuffle(rng);
 			skillBytes.Shuffle(rng);
 
-			var spellBuckets = Bucketize(spellBytes, scripts.Count(script => script[0] != 0), 8, rng);
-			var skillBuckets = Bucketize(skillBytes, scripts.Count(script => script[1] != 0), 4, rng);
+			List<List<byte>> spellBuckets;
+			List<List<byte>> skillBuckets;
 
-			var spellChances = scripts.Select(script => script[0]).ToList();
-			var skillChances = scripts.Select(script => script[1]).ToList();
-			spellChances.Shuffle(rng);
-			skillChances.Shuffle(rng);
+			// Spellcrafter compatability, search for
+			// nuke/nuclear-equivalent spells (AoE
+			// non-elemental damage with a base damage of
+			// 80 or greater).  In the normal game this
+			// matches NUKE and FADE -- in the normal
+			// game, no monsters cast FADE, but with spell
+			// crafter, anything can happen.
+			var nukes = new SpellHelper(this).FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies, SpellElement.None, SpellStatus.Any).Where(
+			    spell => spell.Item2.effect >= 80).Select(n => ((byte)n.Item1-(byte)Spell.CURE)).ToList();
 
-			int spellBucketIndex = 0, skillBucketIndex = 0;
-			for (int i = 0; i < scripts.Count; i++)
-			{
+			var reroll = false;
+			do {
+			    reroll = false;
+			    spellBuckets = Bucketize(spellBytes, scripts.Count(script => script[0] != 0), 8, nonEmpty, rng);
+			    skillBuckets = Bucketize(skillBytes, scripts.Count(script => script[1] != 0), 4, false, rng);
+
+				var spellChances = scripts.Select(script => script[0]).ToList();
+				var skillChances = scripts.Select(script => script[1]).ToList();
+
+				if (nonEmpty)
+				{
+					var spellChancesZero = spellChances.Where(c => c == 0);
+					var skillChancesZero = skillChances.Where(c => c == 0);
+					var spellChancesNonZero = spellChances.Where(c => c != 0).ToList();
+					var skillChancesNonZero = skillChances.Where(c => c != 0).ToList();
+
+					spellChancesNonZero.Shuffle(rng);
+					spellChances = spellChancesZero.Concat(spellChancesNonZero).ToList();
+
+					skillChancesNonZero.Shuffle(rng);
+					skillChances = skillChancesNonZero.Concat(skillChancesZero).ToList();
+
+					var combinedChances = spellChances.Select((c, i) => (spell: c, skill: skillChances[i])).ToList();
+					combinedChances.Shuffle(rng);
+
+					spellChances = combinedChances.Select(c => c.spell).ToList();
+					skillChances = combinedChances.Select(c => c.skill).ToList();
+				}
+				else
+				{
+					spellChances.Shuffle(rng);
+					skillChances.Shuffle(rng);
+				}
+
+			    int spellBucketIndex = 0, skillBucketIndex = 0;
+			    for (int i = 0; i < scripts.Count; i++)
+			    {
 				var script = scriptBytes[indices[i]];
 				script[0] = spellChances[i];
 				script[1] = skillChances[i];
 
 				for (int j = 2; j < 16; j++)
 				{
-					script[j] = 0xFF;
+				    script[j] = 0xFF;
 				}
+
+				// Check for a few cases of bad
+				// scripts to re-roll: two consecutive
+				// casts of NUKE, two consecutive
+				// casts of NUCLEAR, or having both a
+				// NUKE and a NUCLEAR in the starting
+				// slots.
+				//
+				// Because non-elemental damage can't
+				// be resisted, the player is always
+				// in for a bad time when one of these
+				// spells comes out.  The goal is to
+				// greatly decrease (although doesn't
+				// totally eliminate) the chance of
+				// slot machine party wipe situations
+				// where the player is hit twice in a
+				// row with the most powerful spells
+				// in the game with no chance to heal
+				// up or counter attack in between.
+
+				bool startingNuke = false;
+				bool startingNuclear = false;
 				if (spellChances[i] != 0)
 				{
-					for (int j = 0; j < spellBuckets[spellBucketIndex].Count; j++)
-					{
-						script[j + 2] = spellBuckets[spellBucketIndex][j];
+				    startingNuke = nukes.Contains(spellBuckets[spellBucketIndex][0]);
+				    bool previousWasNuke = false;
+				    for (int j = 0; j < spellBuckets[spellBucketIndex].Count; j++)
+				    {
+					if (nukes.Contains(spellBuckets[spellBucketIndex][j])) {
+					    if (previousWasNuke) {
+						reroll = true;
+					    } else {
+						previousWasNuke = true;
+					    }
+					} else {
+					    previousWasNuke = false;
 					}
-					spellBucketIndex++;
+					script[j + 2] = spellBuckets[spellBucketIndex][j];
+				    }
+				    spellBucketIndex++;
 				}
 				if (skillChances[i] != 0)
 				{
-					for (int j = 0; j < skillBuckets[skillBucketIndex].Count; j++)
-					{
-						script[j + 11] = skillBuckets[skillBucketIndex][j];
+				    startingNuclear = (skillBuckets[skillBucketIndex][0] == (byte)EnemySkills.Nuclear);
+				    bool previousWasNuclear = false;
+				    for (int j = 0; j < skillBuckets[skillBucketIndex].Count; j++)
+				    {
+					if (skillBuckets[skillBucketIndex][j] == (byte)EnemySkills.Nuclear) {
+					    if (previousWasNuclear) {
+						reroll = true;
+					    } else {
+						previousWasNuclear = true;
+					    }
+					} else {
+					    previousWasNuclear = false;
 					}
-					skillBucketIndex++;
+					script[j + 11] = skillBuckets[skillBucketIndex][j];
+				    }
+				    skillBucketIndex++;
 				}
-			}
+				if (startingNuke && startingNuclear) {
+				    reroll = true;
+				}
+			    }
+			} while (noConsecutiveNukes && reroll);
 		}
 
-		private List<List<byte>> Bucketize(List<byte> bytes, int bucketCount, int bucketSize, MT19337 rng)
+		private List<List<byte>> Bucketize(List<byte> bytes, int bucketCount, int bucketSize, bool min2, MT19337 rng)
 		{
 			var buckets = new List<List<byte>>();
 			for (int i = 0; i < bucketCount; i++)
@@ -325,6 +518,15 @@ namespace FF1Lib
 			{
 				buckets[index].Add(bytes[index++]);
 			}
+
+			if (min2)
+			{
+				while (index < 2 * bucketCount)
+				{
+					buckets[index - bucketCount].Add(bytes[index++]);
+				}
+			}
+
 			while (index < bytes.Count)
 			{
 				var bucket = rng.Between(0, buckets.Count - 1);
@@ -336,7 +538,29 @@ namespace FF1Lib
 
 			return buckets;
 		}
+		public void StatusAttacks(Flags flags, MT19337 rng)
+		{
+			if (flags.TouchMode == TouchMode.Random)
+			{
+				var selectedMode = rng.Between(0, Enum.GetNames(typeof(TouchMode)).Length - 1);
 
+				flags.TouchMode = (TouchMode)selectedMode;
+			}
+
+			if (flags.TouchMode == TouchMode.Standard)
+			{
+				return;
+			}
+			else if (flags.TouchMode == TouchMode.Shuffle)
+			{
+				ShuffleEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates);
+			}
+			else if (flags.TouchMode == TouchMode.Randomize)
+			{
+				RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates, (bool)flags.TouchIncludeBosses, flags.TouchPool, flags.ScriptMultiplier);
+			}
+
+		}
 		public void ShuffleEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates)
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
@@ -361,8 +585,15 @@ namespace FF1Lib
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool DisableStunTouch)
+		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool incudeBosses, TouchPool touchPool, ScriptTouchMultiplier touchMultiplier)
 		{
+			if (touchPool == TouchPool.Random)
+			{
+				int selectedPool = rng.Between(0, Enum.GetNames(typeof(TouchPool)).Length - 1);
+
+				touchPool = (TouchPool)selectedPool;
+			}
+
 			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
 			List<(byte touch, byte element)> statusElements = new List<(byte touch, byte element)>()
@@ -374,45 +605,71 @@ namespace FF1Lib
 				(0x40, 0x01), //Mute Touch = Status
 			};
 
-			if (DisableStunTouch) statusElements.Remove((0x10, 0x01));
+			if (touchPool == TouchPool.RemoveStun)
+			{
+				statusElements.Remove((0x10, 0x01));
+			}
 
 			(byte touch, byte element) deathElement = (0x01, 0x08); //Death Touch = Death Element
 			(byte touch, byte element) stoneElement = (0x02, 0x02); //Stone Touch = Poison
 
-			for (int i = 0; i < EnemyCount; i++)
+			List<(byte touch, byte element)> weightedStatusElements = new();
+
+			if (touchPool == TouchPool.OnlyDeath)
 			{
-				if (!AllowUnsafePirates)
+				weightedStatusElements.Add(deathElement);
+			}
+			else
+			{
+				while (weightedStatusElements.Count < 20)
 				{
-					if (i == 15) //pirates
-					{
-						continue;
-					}
+					weightedStatusElements.AddRange(statusElements);
 				}
 
-				int roll = rng.Between(0, 128);
-				if (roll < 1) //1 vanilla death toucher
-				{
-					//Death Touch
-					var (touch, element) = deathElement;
-					
-				}
-				else if (roll < 2) //1 vanilla stone toucher
-				{
-					//Stone Touch
-					var (touch, element) = stoneElement;
-				}
-				else if (roll < 37) //35 enemies with other assorted status touches
-				{
-					var (touch, element) = statusElements.PickRandom(rng);
-					enemies[i][15] = touch;
-					enemies[i][14] = element;
-				}
-				else
-				{
-					//Otherwise, the enemy has no touch or associated element.
-					enemies[i][14] = 0x00;
-					enemies[i][15] = 0x00;
-				}
+				weightedStatusElements.Append(deathElement);
+				weightedStatusElements.Append(stoneElement);
+			}
+
+			var count = 0;
+			switch (touchMultiplier)
+			{
+				case ScriptTouchMultiplier.None:
+					count = 0;
+					break;
+				case ScriptTouchMultiplier.Vanilla:
+					count = 36; //should never happen / now it does!
+					break;
+				case ScriptTouchMultiplier.OneAndHalf:
+					count = 54;
+					break;
+				case ScriptTouchMultiplier.Double:
+					count = 72;
+					break;
+				case ScriptTouchMultiplier.All:
+					count = EnemyCount - 10;
+					break;
+				case ScriptTouchMultiplier.Random:
+					count = rng.Between(18, 90);
+					break;
+			}
+
+			List<int> indices = new List<int>();
+			for (int i = 0; i < (incudeBosses ? EnemyCount : (EnemyCount - 10)); i++)
+			{
+				enemies[i][14] = 0x00;
+				enemies[i][15] = 0x00;
+
+				indices.Add(i);
+			}
+
+			indices.Shuffle(rng);
+
+			foreach (var i in indices.Take(count))
+			{
+				if (i == 15 && !AllowUnsafePirates) continue;
+				var (touch, element) = weightedStatusElements.PickRandom(rng);
+				enemies[i][15] = touch;
+				enemies[i][14] = element;
 			}
 
 			Put(EnemyOffset, enemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
@@ -554,7 +811,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.FIRE,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.BRAK, (byte)SpellByte.FIRE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.BRAK, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.BRAK, (byte)SpellByte.FIRE },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Heat, (byte)EnemySkills.Heat, (byte)EnemySkills.Poison_Stone },
 					SpellChance2 = 0x40,
@@ -572,7 +829,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.NONE,
 					MonsterType = MonsterType.REGENERATIVE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.CUR2, (byte)SpellByte.CUR3, (byte)SpellByte.CUR3, (byte)SpellByte.FAST, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.CUR2, (byte)SpellByte.CUR3, (byte)SpellByte.CUR3, (byte)SpellByte.FAST, (byte)SpellByte.CUR2, (byte)SpellByte.CUR3, (byte)SpellByte.CUR3, (byte)SpellByte.FAST },
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
@@ -590,7 +847,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.EARTH,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.DARK, (byte)SpellByte.SLOW, (byte)SpellByte.LIT2, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.DARK, (byte)SpellByte.SLOW, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.DARK, (byte)SpellByte.SLOW, (byte)SpellByte.LIT2 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Flash, (byte)EnemySkills.Gaze, (byte)EnemySkills.Heat },
 					SpellChance2 = 0x40,
@@ -626,7 +883,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.ICE,
 					MonsterType = MonsterType.UNDEAD,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.FAST, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.FAST, (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.FAST },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Snorting, (byte)EnemySkills.Snorting, (byte)EnemySkills.Snorting, (byte)EnemySkills.Snorting },
 					SpellChance2 = 0x40,
@@ -644,7 +901,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.POISON,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.SLOW, (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.SLOW, (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.FAST, (byte)SpellByte.SLOW, (byte)SpellByte.STUN, (byte)SpellByte.STOP },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Flash, (byte)EnemySkills.Flash, (byte)EnemySkills.Flash, (byte)EnemySkills.Dazzle },
 					SpellChance2 = 0x40,
@@ -662,7 +919,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.LIGHTNING,
 					MonsterType = MonsterType.AQUATIC,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.STUN, (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.STUN, (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.STUN, (byte)SpellByte.ICE, (byte)SpellByte.ICE2 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Flash, (byte)EnemySkills.Frost, (byte)EnemySkills.Flash },
 					SpellChance2 = 0x40,
@@ -680,7 +937,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.NONE,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.CURE, (byte)SpellByte.FAST, (byte)SpellByte.CURE, (byte)SpellByte.SLOW, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.CURE, (byte)SpellByte.FAST, (byte)SpellByte.CURE, (byte)SpellByte.SLOW, (byte)SpellByte.CURE, (byte)SpellByte.FAST, (byte)SpellByte.CURE, (byte)SpellByte.SLOW },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Stinger, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Gaze, (byte)EnemySkills.Dazzle },
 					SpellChance2 = 0x40,
@@ -698,7 +955,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.ICE,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FAST, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FAST, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FAST },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Scorch, (byte)EnemySkills.Heat, (byte)EnemySkills.Scorch, (byte)EnemySkills.Gaze },
 					SpellChance2 = 0x40,
@@ -716,7 +973,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.FIRE,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.STUN, (byte)SpellByte.SLOW, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.STUN, (byte)SpellByte.SLOW, (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.STUN, (byte)SpellByte.SLOW },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Dazzle, (byte)EnemySkills.Ink, (byte)EnemySkills.Ink, (byte)EnemySkills.Crack },
 					SpellChance2 = 0x40,
@@ -734,7 +991,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.TIME,
 					MonsterType = MonsterType.NONE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.XFER, (byte)SpellByte.SLOW, (byte)SpellByte.WALL, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.XFER, (byte)SpellByte.SLOW, (byte)SpellByte.WALL, (byte)SpellByte.FAST, (byte)SpellByte.XFER, (byte)SpellByte.SLOW, (byte)SpellByte.WALL },
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
@@ -752,7 +1009,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.ICE,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.STUN, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.STUN, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.FIRE, (byte)SpellByte.STUN, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Scorch, (byte)EnemySkills.Heat, (byte)EnemySkills.Flash },
 					SpellChance2 = 0x40,
@@ -770,7 +1027,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.LIGHTNING,
 					MonsterType = MonsterType.GIANT,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.STOP, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.STOP, (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.STOP },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Stinger, (byte)EnemySkills.Flash },
 					SpellChance2 = 0x40,
@@ -788,11 +1045,11 @@ namespace FF1Lib
 					ElementalWeakness = Element.POISON,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.STUN, (byte)SpellByte.BRAK, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.STUN, (byte)SpellByte.BRAK, (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.STUN, (byte)SpellByte.BRAK },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Gaze, (byte)EnemySkills.Glance, (byte)EnemySkills.Gaze, (byte)EnemySkills.Glare },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.XXXX, (byte)SpellByte.BRAK, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells2 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.XXXX, (byte)SpellByte.BRAK, (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.XXXX, (byte)SpellByte.BRAK },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Glare, (byte)EnemySkills.Glance, (byte)EnemySkills.Glare, (byte)EnemySkills.Poison_Stone },
 				},
@@ -806,7 +1063,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.LIGHTNING,
 					MonsterType = MonsterType.GIANT,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.CUR2, (byte)SpellByte.FAST, (byte)SpellByte.SLOW, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.CUR2, (byte)SpellByte.FAST, (byte)SpellByte.SLOW, (byte)SpellByte.STUN, (byte)SpellByte.CUR2, (byte)SpellByte.FAST, (byte)SpellByte.SLOW },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Gaze, (byte)EnemySkills.Flash, (byte)EnemySkills.Flash, (byte)EnemySkills.Crack },
 					SpellChance2 = 0x40,
@@ -824,7 +1081,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.ICE,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Scorch, (byte)EnemySkills.Flash, (byte)EnemySkills.Dazzle },
 					SpellChance2 = 0x40,
@@ -842,7 +1099,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.ICE,
 					MonsterType = MonsterType.DRAGON,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.DARK, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.DARK, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.FIRE, (byte)SpellByte.DARK, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Flash, (byte)EnemySkills.Heat, (byte)EnemySkills.Flash, (byte)EnemySkills.Heat },
 					SpellChance2 = 0x40,
@@ -878,7 +1135,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.ICE,
 					MonsterType = MonsterType.AQUATIC,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.LIT2 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Dazzle, (byte)EnemySkills.Flash, (byte)EnemySkills.Glance, (byte)EnemySkills.Flash },
 					SpellChance2 = 0x40,
@@ -896,7 +1153,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.ICE,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE2 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Flash, (byte)EnemySkills.Gaze, (byte)EnemySkills.Snorting },
 					SpellChance2 = 0x40,
@@ -914,7 +1171,7 @@ namespace FF1Lib
 					ElementalWeakness = Element.LIGHTNING,
 					MonsterType = MonsterType.GIANT,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Dazzle, (byte)EnemySkills.Gaze, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Flash },
 					SpellChance2 = 0x40,
@@ -937,8 +1194,47 @@ namespace FF1Lib
 				fiendsScript[i].decompressData(Get(ScriptOffset + (FiendsScriptIndex + i) * ScriptSize, ScriptSize));
 			}
 
-			// Shuffle alternate
-			alternateFiendsList.Shuffle(rng);
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+
+			while (true) {
+			    // Shuffle alternate
+			    alternateFiendsList.Shuffle(rng);
+
+			    while (alternateFiendsList.Count >= 4) {
+				var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[0].Name + ".png"));
+				var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[1].Name + ".png"));
+				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1)) {
+				    using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2)) {
+					if (SetLichKaryGraphics(stream1, stream2)) {
+					    break;
+					}
+					// The graphics didn't fit, throw out the first element and try the next pair
+					alternateFiendsList.RemoveAt(0);
+				    }
+				}
+			    }
+			    if (alternateFiendsList.Count < 4) {
+				// Couldn't find a pair where the graphics fit, reshuffle
+				continue;
+			    }
+
+			    while (alternateFiendsList.Count >= 4) {
+				var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[2].Name + ".png"));
+				var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[3].Name + ".png"));
+				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1)) {
+				    using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2)) {
+					if (SetKrakenTiamatGraphics(stream1, stream2)) {
+					    break;
+					}
+					alternateFiendsList.RemoveAt(2);
+				    }
+				}
+			    }
+			    if (alternateFiendsList.Count < 4) {
+				continue;
+			    }
+			    break;
+			}
 
 			// Replace the 4 fiends and their 2nd version at the same time
 			for (int i = 0; i < 4; i++)
@@ -968,6 +1264,7 @@ namespace FF1Lib
 				fiendsScript[(i * 2)].spell_list = alternateFiendsList[i].Spells1.ToArray();
 				fiendsScript[(i * 2) + 1].spell_list = alternateFiendsList[i].Spells2.ToArray();
 
+				/*
 				encountersData.formations[fiendsFormationOrder[(i * 2)]].pattern = alternateFiendsList[i].FormationPattern;
 				encountersData.formations[fiendsFormationOrder[(i * 2)]].spriteSheet = alternateFiendsList[i].SpriteSheet;
 				encountersData.formations[fiendsFormationOrder[(i * 2)]].gfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
@@ -979,6 +1276,7 @@ namespace FF1Lib
 				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].gfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
 				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].palette1 = alternateFiendsList[i].Palette1;
 				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].palette2 = alternateFiendsList[i].Palette2;
+				*/
 			}
 
 			encountersData.Write(this);
@@ -1024,5 +1322,41 @@ namespace FF1Lib
 			}
 			Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
+
+		public void TranceHasStatusElement() {
+		    // TRANCE is slot 81, give is "status" element so
+		    // it can be resisted with a ribbon, ARUB, or
+		    // armor crafter gear.
+		    var es = new EnemySkillInfo();
+		    es.decompressData(Get(MagicOffset + MagicSize * 81, EnemySkillSize));
+		    System.Diagnostics.Debug.Assert(es.accuracy == 0);
+		    System.Diagnostics.Debug.Assert(es.effect == (byte)SpellStatus.Stun);
+		    System.Diagnostics.Debug.Assert(es.elem == (byte)SpellElement.None);
+		    System.Diagnostics.Debug.Assert(es.targeting == (byte)SpellTargeting.AllEnemies);
+		    System.Diagnostics.Debug.Assert(es.routine == (byte)SpellRoutine.InflictStatus);
+		    es.elem = (byte)SpellElement.Status;
+		    Put(MagicOffset + MagicSize * 81, es.compressData());
+		}
+	}
+
+	public enum ScriptTouchMultiplier
+	{
+		[Description("None")]
+		None,
+
+		[Description("Vanilla")]
+		Vanilla,
+
+		[Description("Increased")]
+		OneAndHalf,
+
+		[Description("Double")]
+		Double,
+
+		[Description("All")]
+		All,
+
+		[Description("Random")]
+		Random,
 	}
 }

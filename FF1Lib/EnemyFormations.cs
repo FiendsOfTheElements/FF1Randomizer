@@ -25,6 +25,8 @@ namespace FF1Lib
 		{
 			[Description("None")]
 			None,
+			[Description("Random")]
+			Random,
 			[Description("WarMech and Friends")]
 			WarMECHsAndFriends,
 			[Description("Double Dragons")]
@@ -33,8 +35,10 @@ namespace FF1Lib
 			TheFundead,
 			[Description("Whack-a-Garland")]
 			TimeLoop,
-			[Description("Random")]
-			Random,
+			[Description("The Sahagin Wagon")]
+			KrakensAndSahags,
+			[Description("Snake Pit")]
+			SnakePit,
 		};
 
 		private const int FormationsOffset = 0x2C400;
@@ -164,7 +168,7 @@ namespace FF1Lib
 			Blob finalBattle = Get(FormationsOffset + ChaosFormationIndex * FormationSize, FormationSize);
 			if (formation == FinalFormation.Random)
 			{
-				formation = (FinalFormation)rng.Between(1, Enum.GetValues(typeof(FinalFormation)).Length - 2); // First is None, last is Random
+				formation = (FinalFormation)rng.Between(2, Enum.GetValues(typeof(FinalFormation)).Length - 1); // First two are None and Random
 				System.Diagnostics.Debug.Assert(formation != FinalFormation.None);
 				System.Diagnostics.Debug.Assert(formation != FinalFormation.Random);
 			}
@@ -174,8 +178,8 @@ namespace FF1Lib
 				case FinalFormation.WarMECHsAndFriends:
 					finalBattle[TypeOffset] = 0x2C;         // Big/Small Enemy mix, and the Astos/Madpony/Badman/WarMECH patterns
 					finalBattle[GFXOffset] = 0x03;          // WarMECH Badman N/A N/A
-					finalBattle[IDsOffset + 0] = 0x76;      // WarMECH (battle stats, etc)
-					finalBattle[IDsOffset + 1] = 0x70;      // EvilMan
+					finalBattle[IDsOffset + 0] = Enemy.WarMech;
+					finalBattle[IDsOffset + 1] = Enemy.Evilman;
 					finalBattle[QuantityOffset + 0] = 0x22;
 					finalBattle[QuantityOffset + 1] = 0x66;
 					finalBattle[PalettesOffset + 0] = 0x2F;
@@ -185,8 +189,8 @@ namespace FF1Lib
 				case FinalFormation.KaryAndTiamat:
 					finalBattle[TypeOffset] = 0x2B;         // Big/Small Enemy mix, and the Dragon2 pattern
 					finalBattle[GFXOffset] = 0x05;          // Dragon Dragon N/A N/A
-					finalBattle[IDsOffset + 0] = 0x7A;      // Kary2
-					finalBattle[IDsOffset + 1] = 0x7E;      // Tiamat2
+					finalBattle[IDsOffset + 0] = Enemy.Kary2;
+					finalBattle[IDsOffset + 1] = Enemy.Tiamat2;
 					finalBattle[QuantityOffset + 0] = 0x11;
 					finalBattle[QuantityOffset + 1] = 0x11;
 					finalBattle[PalettesOffset + 0] = 0x08;
@@ -196,8 +200,8 @@ namespace FF1Lib
 				case FinalFormation.TheFundead:
 					finalBattle[TypeOffset] = 0x24;         // Eye pattern
 					finalBattle[GFXOffset] = 0x0B;          // Eye / Geist
-					finalBattle[IDsOffset + 0] = 0x78;      // Lich2
-					finalBattle[IDsOffset + 1] = 0x33;      // Phantom
+					finalBattle[IDsOffset + 0] = Enemy.Lich2;
+					finalBattle[IDsOffset + 1] = Enemy.Phantom;
 					finalBattle[QuantityOffset + 0] = 0x22;
 					finalBattle[QuantityOffset + 1] = 0x44;
 					finalBattle[PalettesOffset + 0] = 0x03;
@@ -205,21 +209,54 @@ namespace FF1Lib
 					finalBattle[PaletteAsignmentOffset] = 0x41; // Palette Assignment in top nibble, 1 in bottom for unrunnable.
 
 					// Scale up the Fundead enemies if we end up with them. They're too weak otherwise.
-					ScaleSingleEnemyStats(0x78, 140, 140, false, false, null, false, 100, 100, GetEvadeIntFromFlag(evadeClampFlag));
-					ScaleSingleEnemyStats(0x33, 120, 120, false, false, null, false, 100, 100, GetEvadeIntFromFlag(evadeClampFlag));
+					ScaleSingleEnemyStats(Enemy.Lich2, 140, 140, false, null, false, 100, 100, GetEvadeIntFromFlag(evadeClampFlag));
+					ScaleSingleEnemyStats(Enemy.Phantom, 120, 120, false, null, false, 100, 100, GetEvadeIntFromFlag(evadeClampFlag));
 					break;
 				case FinalFormation.TimeLoop:
 					finalBattle[TypeOffset] = 0x0B;         // 9Small + Garland pattern
 					finalBattle[GFXOffset] = 0x2A;          // Garland Garland Garland N/A
-					finalBattle[IDsOffset + 0] = 0x69;      // Garland
-					finalBattle[IDsOffset + 1] = 0x7F;      // Chaos
-					finalBattle[IDsOffset + 2] = 0x69;      // Garland
+					finalBattle[IDsOffset + 0] = Enemy.Garland;
+					finalBattle[IDsOffset + 1] = Enemy.Chaos;
+					finalBattle[IDsOffset + 2] = Enemy.Garland;
 					finalBattle[QuantityOffset + 0] = 0x08;
 					finalBattle[QuantityOffset + 1] = 0x11;
 					finalBattle[QuantityOffset + 2] = 0x88;
 					finalBattle[PalettesOffset + 0] = 0x00;
 					finalBattle[PalettesOffset + 1] = 0x00;
 					finalBattle[PaletteAsignmentOffset] = 0x01; // Palette Assignment in top nibble, 1 in bottom for unrunnable.
+					break;
+				case FinalFormation.KrakensAndSahags:
+					finalBattle[TypeOffset] = 0x21;         // 2/4 + Sahag Pattern
+					finalBattle[GFXOffset] = 0x0F;          // BigEye BigEye Sahag Sahag
+					finalBattle[IDsOffset + 0] = Enemy.Kraken;
+					finalBattle[IDsOffset + 1] = Enemy.Kraken2;
+					finalBattle[IDsOffset + 2] = Enemy.RSahag;
+					finalBattle[IDsOffset + 3] = Enemy.WzSahag;
+					finalBattle[QuantityOffset + 0] = 0x11;
+					finalBattle[QuantityOffset + 1] = 0x11;
+					finalBattle[QuantityOffset + 2] = 0x24;
+					finalBattle[QuantityOffset + 3] = 0x44;
+					finalBattle[PalettesOffset + 0] = 0x08;
+					finalBattle[PalettesOffset + 1] = 0x0B;
+					finalBattle[PaletteAsignmentOffset] = 0x51; // Palette Assignment in top nibble, 1 in bottom for unrunnable.
+					BoostEnemyMorale(Enemy.RSahag);
+					BoostEnemyMorale(Enemy.WzSahag);
+					break;
+				case FinalFormation.SnakePit:
+					finalBattle[TypeOffset] = 0x03;         // 9 Small + Asp pattern
+					finalBattle[GFXOffset] = 0x00;          // Asp Asp Asp Asp
+					finalBattle[IDsOffset + 0] = Enemy.Asp;
+					finalBattle[IDsOffset + 1] = Enemy.Tiamat;
+					finalBattle[IDsOffset + 2] = Enemy.Tiamat2;
+					finalBattle[IDsOffset + 3] = Enemy.Cobra;
+					finalBattle[QuantityOffset + 0] = 0x16;
+					finalBattle[QuantityOffset + 1] = 0x11;
+					finalBattle[QuantityOffset + 2] = 0x11;
+					finalBattle[QuantityOffset + 3] = 0x66;
+					finalBattle[PalettesOffset + 0] = 0x3C;
+					finalBattle[PaletteAsignmentOffset] = 0x01; // Palette Assignment in top nibble, 1 in bottom for unrunnable.
+					BoostEnemyMorale(Enemy.Asp);
+					BoostEnemyMorale(Enemy.Cobra);
 					break;
 			}
 
@@ -244,7 +281,7 @@ namespace FF1Lib
 			npcdata.SetRoutine((ObjectId)0x1A, (newTalkRoutines)Talk_Ending);
 
 			//Update Fiends, Garland, Vampire, Astos and Bikke
-			var battleJump = Blob.FromHex("200096");
+			var battleJump = Blob.FromHex("2020B1");
 			var mapreload = Blob.FromHex("201896");
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_fight, battleJump, Blob.FromHex("EAEAEA"));
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_fight, mapreload, Blob.FromHex("EAEAEA"));

@@ -92,31 +92,59 @@ namespace FF1Lib
 		public const int PaletteSize = 4;
 		public const int PaletteCount = 64;
 
-		public void FunEnemyNames(bool teamSteak)
+	    public void FunEnemyNames(bool teamSteak, bool altFiends, MT19337 rng)
 		{
 			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 
-			enemyText[1] = "GrUMP";
-			enemyText[2] = "RURURU"; // +2
-			enemyText[3] = "GrrrWOLF"; // +2
-			enemyText[28] = "GeORGE";
-			enemyText[30] = "R.SNEK"; // +3
-			enemyText[31] = "GrSNEK"; // +1
-			enemyText[32] = "SeaSNEK"; // -1
-			enemyText[40] = "iMAGE";
-			enemyText[56] = "EXPEDE"; // +2
-			enemyText[66] = "White D";
-			enemyText[72] = "MtlSLIME"; // +3
+			enemyText[1] = "GrUMP";    // +0  GrIMP
+			enemyText[2] = "RURURU";   // +2  WOLF
+			enemyText[3] = "GrrrWOLF"; // +2  GrWOLF
+			enemyText[5] = "BrrrWOLF"; // +2  FrWOLF
+			enemyText[28] = "GeORGE";  // +0  GrOGRE
+
+			// "WzOGRE"
+			if (rng.Between(1, 10) >= 5) {
+			    enemyText[29] = "DIRGE";  // -1
+			} else {
+			    enemyText[29] = "GROVER"; // +0
+			}
+
+			enemyText[30] = "R.SNEK";     // +3  ASP
+			enemyText[31] = "GrSNEK";     // +1  COBRA
+			enemyText[32] = "SeaSNEK";    // -1  SeaSNAKE
+			enemyText[40] = "iMAGE";      // +0  IMAGE
+			enemyText[48] = "SANDWICH";   // +2  Sand W
+			enemyText[53] = "SNEKLADY";   // +0  GrMEDUSA
+			enemyText[56] = "EXPEDE";     // +2  PEDE
+			enemyText[61] = "EDWARD";     // +0  WzVAMP
+			enemyText[63] = "ARGYLE";     // -1  R.GOYLE
+			enemyText[66] = "White D";    // +0  Frost D
+			enemyText[72] = "MtlSLIME";   // +3  SLIME
+			enemyText[77] = "FnPOLICE";   // +0  R.ANKYLO
+			enemyText[80] = "MOMMY";      // -2  WzMUMMY
+			enemyText[81] = "BIRB";       // -4  COCTRICE
+			enemyText[82] = "R.BIRB";     // -2  PERILISK
+			enemyText[83] = "Y BURN";     // +0  WYVERN
 			if (teamSteak)
 			{
-				enemyText[85] = "STEAK"; // +1
-				enemyText[86] = "T.BONE"; // +1
+				enemyText[85] = "STEAK";  // +1  TYRO
+				enemyText[86] = "T.BONE"; // +1  T REX
 			}
-			enemyText[92] = "NACHO"; // -1
-			enemyText[106] = "Green D"; // +2
-			enemyText[111] = "OKAYMAN"; // +1
+			enemyText[92] = "NACHO";      // -1  NAOCHO
+			enemyText[94] = "HYDRANT";    // +0  R.HYDRA
+			enemyText[100] = "LadySNEK";  // +2  GrNAGA
+			enemyText[106] = "Green D";   // +2  Gas D
+			enemyText[111] = "BATMAN";    // +0  BADMAN
+			enemyText[112] = "OKAYMAN";   // +0  EVILMAN
+			if (!altFiends) {
+			    enemyText[119] = "S.BUMP";    // +2  LICH
+			    enemyText[120] = "S.BUMP";    // +2  LICH
+			    enemyText[121] = "KELLY";     // +1  KARY
+			    enemyText[122] = "KELLY";     // +1  KARY
+			}
 
-			// Moving IMP and GrIMP gives me another 10 bytes, for a total of 19 extra bytes, of which I'm using 16.
+			// Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes
+			// We're adding (up to) a net of 18 bytes to enemyTextPart2.
 			var enemyTextPart1 = enemyText.Take(2).ToArray();
 			var enemyTextPart2 = enemyText.Skip(2).ToArray();
 			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
@@ -148,6 +176,50 @@ namespace FF1Lib
 		{
 			//just load the original battleground background in place of the flash color, it will still use the same number of frames
 			Put(0x32051, Blob.FromHex("AD446D"));
+		}
+
+		public void LockRespondRate()
+		{
+			// original title screen behavior
+			/*
+			C9 01     CMP #RIGHT              ; did they press Right?
+            D0 04     BNE @Left               ;  if not, they must've pressed Left
+            A9 01     LDA #1                  ; add +1 to rate if right
+            D0        BNE :+
+            02        @Left:
+            A9 FF     LDA #-1                 ; or -1 if left
+            18    :   CLC
+            65 FA     ADC respondrate         ; add/subtract 1 from respond rate
+            29 07     AND #7                  ; mask to wrap it from 0<->7
+            85 FA     STA respondrate
+			 */
+
+			// MODIFIED behavior
+			/*
+			C9 01     CMP #RIGHT              ; did they press Right?
+            D0 04     BNE @Left               ;  if not, they must've pressed Left
+            A9 00     LDA #0                  ; MODIFIED (adds nothing instead of 1)
+            D0        BNE :+
+            02        @Left:
+            A9 00     LDA #0                  ; MODIFIED (adds nothing instead of -1)
+            18    :   CLC
+            65 FA     ADC respondrate         ; add/subtract 1 from respond rate
+            29 07     AND #7                  ; mask to wrap it from 0<->7
+            85 FA     STA respondrate
+			 */
+
+			Put(0x3A1FD, Blob.FromHex("C901D004A900D002A9001865FA290785FA"));
+		}
+
+		public void UninterruptedMusic()
+		{
+			// Full commented Assembly code can be seen in "UninterruptedMusic-QoLFlag.asm"
+			// These 3 replace existing code for processing the old Treasure Chest sound chime, jumping out to the new code
+			PutInBank(0x1F, 0xD62B, Blob.FromHex("A90F2003FE2065A0EAEA"));
+			PutInBank(0x1F, 0xD675, Blob.FromHex("A90F2003FE2073A04C88D6A90F2003FE4C00A0EA"));
+			PutInBank(0x1F, 0xD6C4, Blob.FromHex("4C80D6"));
+			// New code generating a new sound that no longer interrupts the music but otherwise works the same (plays for 27 frames)
+			PutInBank(0x0F, 0xA000, Blob.FromHex("A57DC90A905CC67DC963904CC97DB017C96A903FC96F9036C974902DC978F01FC97890204C3AA0A91B857EA97F8D0440A97F8D0540A9098D0740A91C4C5FA0A9088D0740A9E14C5FA0A9C94C5FA0A98E4C5FA0A9704C5FA0A932857D4C09C08D06404C09C0A57DC901F005A97E857D60A254864B60A57DC932F014A54BC981F00AA90F855720A1D64C75A0A57C854BA900857D60"));
 		}
 
 		public void ShuffleLeader(MT19337 rng)
@@ -520,7 +592,6 @@ namespace FF1Lib
 				"VUVUZLA", "OCARINA", "PANFLUT", "SITAR", "HRMNICA", "UKULELE", "THREMIN", "DITTY", "JINGLE", "LIMRICK", "POEM", "HAIKU", "OCTBASS", "HRPSCRD", "FLUBA", "AEOLUS",
 				"TESLA", "STLDRUM", "DGDRIDO", "WNDCHIM" };
 
-			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
 
 			var newLute = newInstruments.PickRandom(rng);
@@ -528,7 +599,7 @@ namespace FF1Lib
 			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("LUTE", newLute, dialogs); ;
 			var princessDialogue = dialogs[0x06].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
 			var monkDialogue = dialogs[0x35].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
-			
+
 			if (princessDialogue.Length > 1)
 				dialogsUpdate.Add(0x06, princessDialogue[0] + newLute + princessDialogue[1]);
 
@@ -538,8 +609,7 @@ namespace FF1Lib
 			if (dialogsUpdate.Count > 0)
 				InsertDialogs(dialogsUpdate);
 
-			itemnames[(int)Item.Lute] = newLute;
-			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
+			ItemsText[(int)Item.Lute] = newLute;
 		}
 
 		public void HurrayDwarfFate(Fate fate, NPCdata npcdata, MT19337 rng)
@@ -618,7 +688,6 @@ namespace FF1Lib
 					return;
 			}
 
-			var itemnames = ReadText(ItemTextPointerOffset, ItemTextPointerBase, ItemTextPointerCount);
 			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
 
 			var randomRuby = snackOptions.PickRandom(rng);
@@ -644,13 +713,33 @@ namespace FF1Lib
 			var newRubySubjectVerbAgreement = newRubyContent[2];
 			var newRubyTastes = newRubyContent[3];
 			var newRubyOnomatopoeia = newRubyContent[4];
+			var newRubyArticle = ""; // newRubySubjectVerbAgreement;
+			if (newRubySubjectVerbAgreement == "ARE")
+			{
+				if (newRuby[0] == 'A' || newRuby[0] == 'E' || newRuby[0] == 'I' || newRuby[0] == 'O' || newRuby[0] == 'U')
+				{
+					newRubyArticle = "an ";
+				}
+				else
+				{
+					newRubyArticle = "a ";
+				}
+			}
 
 			// handle extra dialogues that might contain the RUBY if the NPChints flag is enabled
 			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("RUBY", newRuby, dialogs);
 
 			// begin substitute phrase parts
+			var titanDeepDungeon = dialogs[0x29].Split(new string[] { "a RUBY" }, System.StringSplitOptions.RemoveEmptyEntries);
 			var titanDialogue = dialogs[0x2A].Split(new string[] { "RUBY", "Crunch, crunch, crunch,", "sweet", "Rubies are" }, System.StringSplitOptions.RemoveEmptyEntries);
 			var melmondManDialogue = dialogs[0x7B].Split(new string[] { "eats gems.", "RUBIES" }, System.StringSplitOptions.RemoveEmptyEntries);
+
+			// Bring me a {newRuby} if you
+			// wish to skip to floor 22.
+			if (titanDeepDungeon.Length > 1)
+			{
+				dialogsUpdate.Add(0x29, titanDeepDungeon[0] + newRubyArticle + newRuby + titanDeepDungeon[1]);
+			}
 
 			// If you want pass, give
 			// me the {newRuby}..
@@ -680,8 +769,7 @@ namespace FF1Lib
 				InsertDialogs(dialogsUpdate);
 
 			// substitute key item
-			itemnames[(int)Item.Ruby] = newRuby;
-			WriteText(itemnames, ItemTextPointerOffset, ItemTextPointerBase, ItemTextOffset);
+			ItemsText[(int)Item.Ruby] = newRuby;
 		}
 
 		private Dictionary <int,String> SubstituteKeyItemInExtraNPCDialogues(string original, string replacement, string[] dialogs)

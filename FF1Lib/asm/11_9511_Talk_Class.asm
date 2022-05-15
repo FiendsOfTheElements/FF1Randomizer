@@ -1,4 +1,4 @@
-;; Last Update : 2021-01-22
+;; Last Update : 2022-01-25 - Fix MP reset bug
 
 unsram 		= $6000
 ch_stats        = unsram + $0100  ; MUST be on page bound.  Each character allowed $40 bytes, so use 00,40,80,C0 to index ch_stats
@@ -119,7 +119,7 @@ UnequipLoop:
 MagicLoop:                    ; Zero out all spell values and MPs
   STA (tmp), Y
   INY
-  CPY #$2F
+  CPY #$30
   BNE MagicLoop
   RTS  
  
@@ -219,4 +219,3 @@ DoneExit:
   PLA                       ;  we exit the Lineup menu completely)
 NoButton:
   RTS
-    

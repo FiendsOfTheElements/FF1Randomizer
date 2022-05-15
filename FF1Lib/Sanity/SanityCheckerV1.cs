@@ -36,19 +36,19 @@ namespace FF1Lib
 			}
 
 			var currentMapChanges = MapChange.None;
-			if (victoryConditions.FreeBridge ?? false)
+			if (victoryConditions.IsBridgeFree ?? false)
 			{
 				currentMapChanges |= MapChange.Bridge;
 			}
-			if (victoryConditions.FreeShip ?? false)
+			if (victoryConditions.IsShipFree ?? false)
 			{
 				currentMapChanges |= MapChange.Ship;
 			}
-			if (victoryConditions.FreeAirship ?? false)
+			if (victoryConditions.IsAirshipFree ?? false)
 			{
 				currentMapChanges |= MapChange.Airship;
 			}
-			if (victoryConditions.FreeCanal ?? false)
+			if (victoryConditions.IsCanalFree ?? false)
 			{
 				currentMapChanges |= MapChange.Canal;
 			}
@@ -72,11 +72,15 @@ namespace FF1Lib
 			}
 
 			var requiredAccess = AccessRequirement.All;
-			var requiredMapChanges = new List<MapChange> { MapChange.All };
+			var requiredMapChanges = MapChange.All;
+
+			if ((bool)victoryConditions.IsFloaterRemoved) {
+			    requiredMapChanges &= ~MapChange.Airship;
+			}
 
 			var accessibleLocationCount = 0;
 			while (!currentAccess.HasFlag(requiredAccess) ||
-				   !requiredMapChanges.Any(x => currentMapChanges.HasFlag(x)))
+				   !currentMapChanges.HasFlag(requiredMapChanges))
 			{
 				if (currentIteration > maxIterations)
 				{
@@ -172,6 +176,11 @@ namespace FF1Lib
 			}
 
 			return (true, currentMapLocations().ToList(), currentAccess);
+		}
+
+		public IEnumerable<IRewardSource> GetNearRewardSources(IEnumerable<IRewardSource> sources, IRewardSource source)
+		{
+			return Array.Empty<IRewardSource>();
 		}
 	}
 }

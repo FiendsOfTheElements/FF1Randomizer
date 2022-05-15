@@ -31,7 +31,7 @@ namespace FF1Lib.Sanity
 
 		public SCOwMap Overworld { get; private set; }
 
-		public SCMain(List<Map> _maps, OverworldMap _overworldMap, NPCdata _npcdata, FF1Rom _rom)
+		public SCMain(List<Map> _maps, OverworldMap _overworldMap, NPCdata _npcdata, OwLocationData locations, FF1Rom _rom)
 		{
 			maps = _maps;
 			overworldMap = _overworldMap;
@@ -54,7 +54,7 @@ namespace FF1Lib.Sanity
 
 			Stopwatch w = Stopwatch.StartNew();
 
-			ConcurrentBag<SCMap> tmpscmaps = new ConcurrentBag<SCMap>();
+			List<SCMap> tmpscmaps = new List<SCMap>();
 			//Parallel.ForEach(Enum.GetValues<MapId>(), mapid => ProcessMap(mapid, tmpscmaps));
 
 			foreach(var mapid in Enum.GetValues<MapId>()) ProcessMap(mapid, tmpscmaps);
@@ -63,14 +63,14 @@ namespace FF1Lib.Sanity
 
 			ComposeDungeons();
 
-			SCCoords bridge = new SCCoords(0x98, 0x98);
-			SCCoords canal = new SCCoords(0x66, 0xA4);
-			Overworld = new SCOwMap(overworldMap, SCMapCheckFlags.None, _rom, owtileset, enter, exit, bridge, canal);
+			//SCCoords bridge = new SCCoords(0x98, 0x98);
+			//SCCoords canal = new SCCoords(0x66, 0xA4);
+			Overworld = new SCOwMap(overworldMap, SCMapCheckFlags.None, _rom, owtileset, enter, exit, locations.BridgeLocation, locations.CanalLocation);
 
 			w.Stop();
 		}
 
-		private void ProcessMap(MapId mapid, ConcurrentBag<SCMap> tmpscmaps)
+		private void ProcessMap(MapId mapid, List<SCMap> tmpscmaps)
 		{
 			var e1 = maps[(int)mapid];
 			var ts = tileSets[mapTileSets[mapid]];

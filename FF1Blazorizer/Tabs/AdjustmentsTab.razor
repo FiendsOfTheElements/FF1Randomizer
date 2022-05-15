@@ -1,0 +1,68 @@
+﻿@using BlazorStrap
+@using Microsoft.AspNetCore.Components.Web
+@using FF1Lib
+
+<div id="Adjustments" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+
+	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Game Adjustments</a></h3>
+
+	@if (IsOpen)
+	{
+
+<div class="col1">
+	<h4>Bug Fixes</h4>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="houseMPRestorationCheckBox" @bind-Value="Flags.HouseMPRestoration">House MP Restoration</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="weaponStatsCheckBox" @bind-Value="Flags.WeaponStats">Weapon Stats</CheckBox>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="chanceToRunDropDown" TItem="ChanceToRunMode" @bind-Value="Flags.ChanceToRun">Chance to Run:</EnumDropDown>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spellBugsCheckBox" @bind-Value="Flags.SpellBugs">Spell Fixes</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttackBugCheckBox" @bind-Value="Flags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="blackBeltAbsorbCheckBox" @bind-Value="Flags.BlackBeltAbsorb">Bl. Belt & Master Absorb Calculation</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyElementalResistancesCheckBox" @bind-Value="Flags.EnemyElementalResistancesBug">Enemy Elemental Resistances</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySpellsTargetingAlliesCheckBox" @bind-Value="Flags.EnemySpellsTargetingAllies">Enemy Spells Targeting Allies</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="improveTurnOrderRandomizationCheckBox" @bind-Value="Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseDarkPenaltyCheckBox" @bind-Value="Flags.IncreaseDarkPenalty">Increase Dark Penalty</TriStateCheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tranceHasStatusElement" @bind-Value="Flags.TranceHasStatusElement">TRANCE Is Status Element</CheckBox>
+
+	<div class="checkbox-cell"></div>
+	<h4>RNG</h4>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="rngCheckBox" @bind-Value="Flags.Rng">RNG Tables</TriStateCheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" @bind-Value="Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
+
+	<div class="checkbox-cell"></div>
+	<h4>Saving</h4>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableTentSaving" @bind-Value="Flags.DisableTentSaving">Disable Tent/Cabin/House Saving on Overworld</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" @bind-Value="Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" @bind-Value="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="saveGameDWModeCheckBox" IsEnabled="@Flags.SaveGameWhenGameOver" @bind-Value="Flags.SaveGameDWMode">Dragon Warrior Mode</CheckBox>
+</div>
+
+<div class="col2">
+	<h4>Conveniences</h4>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" @bind-Value="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" @bind-Value="Flags.SpeedHacks">Speed Hacks</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableMinimap" @bind-Value="Flags.DisableMinimap">Disable Minimap</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="quickMinimapLoad" @bind-Value="Flags.QuickMinimapLoad" IsEnabled="@(!Flags.DisableMinimap && Flags.OwMapExchange == OwMapExchanges.None)">Quick Minimap Load</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedboatCheckBox" @bind-Value="Flags.SpeedBoat">Faster Ship</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" @bind-Value="Flags.IdentifyTreasures">Identify Treasures</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" @bind-Value="Flags.Dash">Enable Dash</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="buyTenCheckBox" @bind-Value="Flags.BuyTen">Buy Quantity</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="waitWhenUnrunnableCheckBox" @bind-Value="Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.SpeedHacks" Id="enableCritNumberDisplayCheckBox" @bind-Value="Flags.EnableCritNumberDisplay">Critical Hit Count Display</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="battleMagicMenuWrapAroundCheckBox" @bind-Value="Flags.BattleMagicMenuWrapAround">Battle Magic Menu Wrap Around</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" @bind-Value="Flags.NPCSwatter">NPC Guillotine</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" @bind-Value="Flags.InventoryAutosort">Autosort Inventory</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shopInfoCheckBox" @bind-Value="Flags.ShopInfo">Shop Information</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chestInfoCheckBox" Indent IsEnabled="Flags.ShopInfo" @bind-Value="Flags.ChestInfo">Chest Information</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="incentiveChestItemsFanfareCheckBox" @bind-Value="Flags.IncentiveChestItemsFanfare">All Incentive Chest Items Fanfare</CheckBox>
+</div>
+		<div class="clear-it"></div>
+	}
+</div>
+
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public bool noTabLayout { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+}

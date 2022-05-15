@@ -244,7 +244,7 @@ _Pvt_Extensions
 *.nes
 
 # Archives
-*.zip
+
 *.tar.gz
 
 # IDEA files (Rider IDE, Pycharm, etc)

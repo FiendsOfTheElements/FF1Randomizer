@@ -18,6 +18,27 @@ namespace FF1Lib
 		Invert
 	}
 
+	public enum ThiefAGI
+	{
+	    [Description("Vanilla")]
+	    Vanilla = 0,
+
+		[Description("30")]
+		Agi30 = 4,
+
+		[Description("50")]
+		Agi50 = 5,
+
+	    [Description("80")]
+	    Agi80 = 1,
+
+	    [Description("100")]
+	    Agi100 = 2,
+
+	    [Description("120")]
+	    Agi120 = 3
+	}
+
 	public partial class FF1Rom
 	{
 		public void FixHouse(bool MPfix, bool HPfix)
@@ -166,28 +187,6 @@ namespace FF1Lib
 			}
 		}
 
-		public void ThiefHitRate()
-		{
-		    //Thief & Ninja growth rates are separate
-		    var classData = ReadClassData();
-		    classData[(int)AuthClass.Thief].HitGrowth = 4;
-		    classData[(int)AuthClass.Ninja].HitGrowth = 4;
-		    WriteClassData(classData);
-		}
-
-	    public void BuffThiefAGI() {
-		    // Increase thief starting agility, agility
-		    // growth, and starting evade to make it more
-		    // viable as a first-slot character.
-		    // See git commit message for details.
-		    var classData = ReadClassData();
-		    classData[(int)AuthClass.Thief].AgiStarting = 120;
-		    classData[(int)AuthClass.Thief].AgiGrowth = Enumerable.Repeat(true, 49).ToList();
-		    classData[(int)AuthClass.Thief].EvaStarting = (byte)Math.Min(classData[(int)AuthClass.Thief].AgiStarting + 48, 255);
-		    WriteClassData(classData);
-		}
-
-
 		public void KnightNinjaChargesForAllLevels()
 		{
 			for(int cur_pointer = NewLevelUpDataOffset; cur_pointer < NewLevelUpDataOffset + 196; cur_pointer += 2) // we need to cycle through the 49 levelups for Fighter and the 49 levelups for Thief, each are two bytes
@@ -200,19 +199,15 @@ namespace FF1Lib
 		public void RemakeStyleMasterMDEF()
 		{
 		    //Black Belt & Master growth rates are separate
-		    var classData = ReadClassData();
-		    classData[(int)AuthClass.BlackBelt].MDefGrowth = 3;
-		    classData[(int)AuthClass.Master].MDefGrowth = 4;
-		    WriteClassData(classData);
+		    ClassData[Classes.BlackBelt].MDefGrowth = 3;
+			ClassData[Classes.Master].MDefGrowth = 4;
 		}
 
 		public void InvertedMDEF()
 		{
-		    var classData = ReadClassData();
 		    for (int i = 0; i < 12; i++) {
-			classData[i].MDefGrowth = (byte)(5 - classData[i].MDefGrowth);
+			ClassData[(Classes)i].MDefGrowth = (byte)(5 - ClassData[(Classes)i].MDefGrowth);
 		    }
-		    WriteClassData(classData);
 		}
 
 		public void FixHitChanceCap()

@@ -1,0 +1,21 @@
+{
+	"StartingLocation": {
+		"X": 104,
+		"Y": 160
+	},
+	"AirShipLocation": {
+		"X": 113,
+		"Y": 164
+	},
+	"ShipLocations": [
+		{
+			"TeleporterIndex": 255,
+			"X": 106,
+			"Y": 164
+		}
+	],
+	"TeleporterFixups": [],
+	"DomainFixups": [],
+	"DomainUpdates": [],
+	"OverworldCoordinates": { }
+}

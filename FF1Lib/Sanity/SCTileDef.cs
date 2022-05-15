@@ -110,7 +110,7 @@ namespace FF1Lib.Sanity
 			}
 
 			if ((TileProp.TilePropFunc & TilePropFunc.OWTP_DOCKAIRSHIP) == 0) OWBitFlags |= SCBitFlags.AirDock;
-			if ((TileProp.TilePropFunc & TilePropFunc.OWTP_DOCKSHIP) != 0) OWBitFlags |= SCBitFlags.ShipDock;
+			if ((TileProp.TilePropFunc & TilePropFunc.OWTP_EXT_MASK) == TilePropFunc.OWTP_DOCKSHIP) OWBitFlags |= SCBitFlags.ShipDock;
 			if ((TileProp.TilePropFunc & TilePropFunc.OWTP_SPEC_MASK) ==  TilePropFunc.OWTP_SPEC_CHIME) OWBitFlags |= SCBitFlags.Chime;
 			if ((TileProp.TilePropFunc & TilePropFunc.OWTP_SPEC_MASK) == TilePropFunc.OWTP_SPEC_CARAVAN) OWBitFlags |= SCBitFlags.Caravan;
 			if (TileProp.Byte2 >= (byte)0x80) OWBitFlags |= SCBitFlags.Enter;

@@ -15,6 +15,16 @@ namespace FF1Lib.Sanity
 
 		public SCBitFlagSet(IEnumerable<SCBitFlags> values) : base(values) { }
 
+		public SCBitFlagSet Restrict(SCBitFlags flags)
+		{
+			return new SCBitFlagSet(this.Select(f => f | flags));
+		}
+
+		public SCBitFlagSet Restrict(SCBitFlagSet flags)
+		{
+			return new SCBitFlagSet(this.Select(f1 => flags.Select(f2 => f1 | f2)).SelectMany(x => x));
+		}
+
 		public bool Merge(SCBitFlags requirements)
 		{
 			if (this.Where(req => req.IsSubsetOf(requirements)).Any()) return false;
@@ -35,9 +45,29 @@ namespace FF1Lib.Sanity
 
 		public override string ToString()
 		{
-			if (Count == 1) return this[0].ToString("X");
-			if (Count > 1) return this[0].ToString("X") + ":" + Count.ToString();
-			return "Nope";
+			if (Count == 0) return "Nope";
+
+			return string.Join(" OR ", this.Select(b => GetInnerRule(b)));
+		}
+
+		private string GetInnerRule(SCBitFlags b)
+		{
+			var list = new List<string>();
+
+			if (b.HasFlag(SCBitFlags.Key)) list.Add(Item.Key.ToString());
+			if (b.HasFlag(SCBitFlags.Rod)) list.Add(Item.Rod.ToString());
+			if (b.HasFlag(SCBitFlags.Oxyale)) list.Add(Item.Oxyale.ToString());
+			if (b.HasFlag(SCBitFlags.Cube)) list.Add(Item.Cube.ToString());
+			if (b.HasFlag(SCBitFlags.Lute)) list.Add(Item.Lute.ToString());
+			if (b.HasFlag(SCBitFlags.Crown)) list.Add(Item.Crown.ToString());
+			if (b.HasFlag(SCBitFlags.Ruby)) list.Add(Item.Ruby.ToString());
+			if (b.HasFlag(SCBitFlags.Orbs)) list.Add("BlackOrb");
+			if (b.HasFlag(SCBitFlags.Tnt)) list.Add(Item.Tnt.ToString());
+			if (b.HasFlag(SCBitFlags.Chime)) list.Add(Item.Chime.ToString());
+			if (b.HasFlag(SCBitFlags.Canoe)) list.Add(Item.Canoe.ToString());
+			if (b.HasFlag(SCBitFlags.Floater)) list.Add(Item.Floater.ToString());
+
+			return "(" + string.Join(" AND ", list) + ")";
 		}
 
 		public bool Merge(SCBitFlagSet bitFlagSet)
@@ -63,16 +93,29 @@ namespace FF1Lib.Sanity
 			return result;
 		}
 
-		public List<AccessRequirement> ToRequirements()
+		public bool IsAccessible(AccessRequirement req, MapChange chg)
 		{
-			List<AccessRequirement> flags = new List<AccessRequirement>();
+			SCBitFlags v2req = SCBitFlags.None;
+			if (req.HasFlag(AccessRequirement.Key)) v2req |= SCBitFlags.Key;
+			if (req.HasFlag(AccessRequirement.Rod)) v2req |= SCBitFlags.Rod;
+			if (req.HasFlag(AccessRequirement.Oxyale)) v2req |= SCBitFlags.Oxyale;
+			if (req.HasFlag(AccessRequirement.Cube)) v2req |= SCBitFlags.Cube;
+			if (req.HasFlag(AccessRequirement.Lute)) v2req |= SCBitFlags.Lute;
+			if (req.HasFlag(AccessRequirement.Crown)) v2req |= SCBitFlags.Crown;
+			if (req.HasFlag(AccessRequirement.Ruby)) v2req |= SCBitFlags.Ruby;
+			if (req.HasFlag(AccessRequirement.BlackOrb)) v2req |= SCBitFlags.Orbs;
+			if (req.HasFlag(AccessRequirement.Tnt)) v2req |= SCBitFlags.Tnt;
 
-			foreach (var bitflags in this)
+			if (chg.HasFlag(MapChange.Chime)) v2req |= SCBitFlags.Chime;
+			if (chg.HasFlag(MapChange.Canoe)) v2req |= SCBitFlags.Canoe;
+			if (chg.HasFlag(MapChange.Airship)) v2req |= SCBitFlags.Floater;
+
+			foreach (var flag in this)
 			{
-				flags.Add(bitflags.ToRequirements());
+				if (v2req.IsSupersetOf(flag)) return true;
 			}
 
-			return flags;
+			return false;
 		}
 
 		public static SCBitFlagSet NoRequirements { get; } = new SCBitFlagSet(SCBitFlags.None);
@@ -101,6 +144,8 @@ namespace FF1Lib.Sanity
 			return unchecked((int)result);
 		}
 	}
+
+
 
 	public static class SCBitFlagsExtensions
 	{
@@ -155,32 +200,6 @@ namespace FF1Lib.Sanity
 		public static bool IsImpassable(this SCBitFlags left)
 		{
 			return (left & SCBitFlags.Impassable) > 0;
-		}
-
-		public static AccessRequirement ToRequirements(this SCBitFlags left)
-		{
-			AccessRequirement flags = AccessRequirement.None;
-
-			if ((left & SCBitFlags.Lute) > 0) flags |= AccessRequirement.Lute;
-			if ((left & SCBitFlags.Crown) > 0) flags |= AccessRequirement.Crown;
-			if ((left & SCBitFlags.Key) > 0) flags |= AccessRequirement.Key;
-			if ((left & SCBitFlags.Ruby) > 0) flags |= AccessRequirement.Ruby;
-			if ((left & SCBitFlags.Rod) > 0) flags |= AccessRequirement.Rod;
-			if ((left & SCBitFlags.Cube) > 0) flags |= AccessRequirement.Cube;
-			if ((left & SCBitFlags.Oxyale) > 0) flags |= AccessRequirement.Oxyale;
-			if ((left & SCBitFlags.Orbs) > 0) flags |= AccessRequirement.EarthOrb | AccessRequirement.FireOrb | AccessRequirement.WaterOrb | AccessRequirement.AirOrb;
-
-			return flags;
-		}
-
-		public static bool IsAccessible(this List<AccessRequirement> flags, AccessRequirement req)
-		{
-			foreach (var flag in flags)
-			{
-				if ((flag & req) == flag) return true;
-			}
-
-			return false;
 		}
 	}
 }

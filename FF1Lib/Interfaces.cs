@@ -26,6 +26,7 @@
 		bool? IncentivizeTitansTrove { get; }
 		bool? IncentivizeEarth { get; }
 		bool? IncentivizeSeaShrine { get; }
+		bool? IncentivizeCardia { get; }
 		IncentivePlacementType IceCaveIncentivePlacementType { get; }
 		IncentivePlacementType OrdealsIncentivePlacementType { get; }
 		IncentivePlacementType MarshIncentivePlacementType { get; }
@@ -36,6 +37,8 @@
 		IncentivePlacementTypeGated SkyPalaceIncentivePlacementType { get; }
 		IncentivePlacementType CorneriaIncentivePlacementType { get; }
 		IncentivePlacementType MarshLockedIncentivePlacementType { get; }
+		IncentivePlacementType CardiaIncentivePlacementType { get; }
+		bool? MermaidPrison { get; }
 
 		bool? IncentivizeXcalber { get; }
 		bool? IncentivizeMasamune { get; }
@@ -64,6 +67,7 @@
 		bool? IncentivizeCanoe { get; }
 		bool IncentivizeRibbon2 { get; }
 		bool? IncentivizeOtherCastArmor { get; }
+		bool? IncentivizePowerRod { get; }
 		bool? IncentivizeDefCastArmor { get; }
 		bool? IncentivizeOffCastArmor { get; }
 		bool? IncentivizeDefCastWeapon { get; }
@@ -73,6 +77,17 @@
 		bool Incentivize65K { get; }
 		bool IncentivizeBad { get; }
 		bool? NoMasamune { get; }
+		bool? NoXcalber { get; }
+		bool? IsFloaterRemoved { get;  }
+		bool? NoTail { get; }
+		bool? IsCanoeFree { get; }
+		bool? FreeLute { get; }
+		bool? FreeTail { get; }
+		bool? IsBridgeFree { get; }
+		bool? IsCanalFree { get; }
+		bool? IsShipFree { get; }
+		bool? GuaranteedMasamune { get; }
+
 	}
 	public interface IMapEditFlags : IItemPlacementFlags
 	{
@@ -80,14 +95,18 @@
 		bool? MapOnracDock { get; }
 		bool? MapMirageDock { get; }
 		bool? MapBahamutCardiaDock { get; }
+		bool? MapDragonsHoard { get; }
 		bool? MapLefeinRiver { get; }
 		bool? MapGaiaMountainPass { get; }
 		bool? TitansTrove { get; }
 		bool? GaiaShortcut { get; }
 		bool? MoveGaiaItemShop { get; }
+		bool DisableOWMapModifications { get; }
+		//OwMapExchanges OwMapExchange { get; }
 	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
+		bool LaterLoose { get; }
 		bool Spoilers { get; }
 		bool? MapCanalBridge { get; }
 		bool? MapConeriaDwarves { get; }
@@ -97,12 +116,30 @@
 		bool? RandomLoot { get; }
 		bool? BetterTrapChests { get; }
 		bool? EarlierRuby { get; }
-		bool? GuaranteedRuseItem { get; }
+		GuaranteedDefenseItem GuaranteedDefenseItem { get; }
+		GuaranteedPowerItem GuaranteedPowerItem { get; }
 		bool? GuaranteedMasamune { get; }
 		bool? SendMasamuneHome { get; }
 		bool? NoMasamune { get; }
+		bool? NoXcalber { get; }
+		RandomizeTreasureMode RandomizeTreasure { get; }
 		WorldWealthMode WorldWealth { get; }
+		DeepDungeonGeneratorMode DeepDungeonGenerator { get; }
 		ConsumableChestSet MoreConsumableChests { get; }
+		ExtConsumableSet ExtConsumableSet { get; }
+		ExtConsumableChestSet ExtConsumableChests { get; }
+		bool IncentiveChestItemsFanfare { get; }
+		ItemMagicMode ItemMagicMode { get; }
+		bool LooseItemsForwardPlacement { get; }
+		bool LooseItemsSpreadPlacement { get; }
+		bool LooseItemsNpcBalance { get; }
+		bool? Entrances { get; }
+		OwMapExchanges OwMapExchange { get; }
+		bool Archipelago { get; }
+		bool PredictivePlacement { get;}
+		bool AllowUnsafePlacement { get; }
+		bool DeepDungeon { get; }
+		bool Etherizer { get; }
 	}
 	public interface IItemShuffleFlags
 	{
@@ -113,17 +150,17 @@
 		bool? EarlySarda { get; }
 		bool? EarlySage { get; }
 		bool? EarlyOrdeals { get; }
+		bool NoOverworld { get; }
 	}
 	public interface IScaleFlags
 	{
-		bool StartingGold { get; }
-		bool WrapPriceOverflow { get; }
-		bool WrapStatOverflow { get; }
+		StartingGold StartingGold { get; }
 		double ExpMultiplier { get; }
 		int PriceScaleFactorLow { get; }
 		int PriceScaleFactorHigh { get; }
 		bool? ExcludeGoldFromScaling { get; }
 		bool CheapVendorItem { get; }
+		ExtConsumableSet ExtConsumableSet { get; }
 	}
 	public interface IFloorShuffleFlags
 	{
@@ -139,20 +176,26 @@
 		bool? DeepTownsPossible { get; }
 		bool? AllowDeepTowns { get; }
 		bool? AllowUnsafeStartArea { get; }
+		bool? IsFloaterRemoved { get; }
+	        bool? IsAirshipFree { get; }
+		bool? MapBahamutCardiaDock { get; }
+	        OwMapExchanges OwMapExchange { get; }
 	}
 	public interface IVictoryConditionFlags
 	{
 		bool OnlyRequireGameIsBeatable { get; }
 		bool ShardHunt { get; }
 		bool? ShortToFR { get; }
-		bool? FreeBridge { get; }
-		bool? FreeAirship { get; }
-		bool? FreeShip { get; }
-		bool? FreeCanal { get; }
+		bool? IsBridgeFree { get; }
+		bool? IsAirshipFree { get; }
+		bool? IsShipFree { get; }
+		bool? IsCanalFree { get; }
 		bool? FreeCanoe { get; }
 		bool? FreeLute { get; }
 		bool? FreeTail { get; }
 		bool? NoTail { get; }
+		bool? IsFloaterRemoved { get; }
 		bool? LooseExcludePlacedDungeons { get; }
+		bool NoOverworld { get; }
 	}
 }

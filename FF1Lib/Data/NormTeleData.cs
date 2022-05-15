@@ -9,6 +9,11 @@ namespace FF1Lib
 {
 	public struct TeleData
 	{
+	    public TeleData(MapId m, byte x, byte y) {
+		Map = m;
+		X = x;
+		Y = y;
+	    }
 		public MapId Map;
 		public byte X;
 		public byte Y;
@@ -60,12 +65,12 @@ namespace FF1Lib
 
 		public IEnumerator<TeleData> GetEnumerator()
 		{
-			for (int i = 0; i < 64; i++) yield return this[i];
+			for (int i = 0; i < 256; i++) yield return this[i];
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			for (int i = 0; i < 64; i++) yield return this[i];
+			for (int i = 0; i < 256; i++) yield return this[i];
 		}
 	}
 }

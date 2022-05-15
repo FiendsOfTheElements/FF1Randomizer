@@ -1,5 +1,5 @@
 ; 
-; TrappedChests - 2021-01-31
+; TrappedChests - 2021-05-23
 ;
 ; Modify OpenTreasureChest to check for traps
 ;  and trigger a battle if there's one for a
@@ -27,12 +27,13 @@ GMFLG_TCOPEN		= $04
 lut_TrappedChest	= $8F00
 lut_Treasure		= $B100   ; BANK_TREASURE
 
-InTalkBattle		= $9600 
+InTalkBattleNoRun   = $9600 
 InTalkReenterMap 	= $9618
-CheckCanTake		= $9620
+CheckCanTake        = $B180
 InTalkDialogueBox	= $963D
 SkipDialogueBox		= $9643
-GiveReward 		= $B006
+GiveReward 		= $B410
+VictoryLoop             = $C938
 SwapPRG_L 		= $FE03
 
  .ORG $DD78
@@ -50,7 +51,7 @@ SwapPRG_L 		= $FE03
   TXA                      ; X has the dialog ID, either Can't hold or In this chest you found
   RTS
 
- .ORG $8EB0
+ .ORG $8EA0
   
 CheckTrap:
   LDA dlg_itemid              ; Load item and check if we have
@@ -58,25 +59,38 @@ CheckTrap:
   BCS CantTake                ; If not branch
     LDX tileprop+1            ; Get tile property (chest ID)
     LDA lut_TrappedChest, X   ; Check if that chest is trapped
-    BEQ NoTrap                ; If $00, no trap, branch and gve the item
+    BEQ NoTrap                ; If $00, no trap, branch and gve the item		
       STA btlformation        ; If it is, store the battle formation
+	  LDA dlg_itemid		  ; save dlg_itemid
+	  PHA					  ; save dlg_itemid
+	  LDA #$0
+	  STA dlg_itemid		  ; clear dlg_itemid
       LDA #$C0                ; Show "Monster-in-a-box!"
       JSR InTalkDialogueBox   
       LDA btlformation        ; Get back battle formation
-      JSR InTalkBattle        ; Trigger the battle
+      JSR InTalkBattleNoRun   ; Trigger the battle
       LDA #$03
       CMP btl_result          ; Check if we ran from battle
       BNE WonBattle           ; If we did
+DontGiveItem:    
+		PLA					  ; remove dlg_itemid from stack
         JSR InTalkReenterMap  ; Skip giving the item
         PLA                   ; Clear an extra address in the stack
         PLA                   ;  since we're one routine deeper
         JMP SkipDialogueBox   
-WonBattle:      
-      CLC
+WonBattle:
+	  PLA					  ; restore dlg_itemid
+	  STA dlg_itemid 	      ; restore dlg_itemid
+      LDA #$7B
+      CMP btlformation          ; Check if we killed Chaos
+      BEQ KilledChaos                 
       JSR GiveItem            ; Give the item
       JSR InTalkReenterMap    ; And reenter the map
       LDX #$F0                ; Load "In this chest you've found..."
+	  STX tileprop+1		  ; Fake a TileProp(must be non zero)
       RTS
+KilledChaos:
+  JMP VictoryLoop
 NoTrap:
   JSR GiveItem                ; GiveItem only
   RTS
@@ -85,8 +99,6 @@ CantTake:
   RTS
 
 GiveItem:
-  LDA #BANK_TALKROUTINE    ; Get return bank
-  STA ret_bank             ;  for LoadPrice
   CLC
   LDA dlg_itemid           ; Get item
   JSR GiveReward           ; Give item as normal

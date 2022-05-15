@@ -14,7 +14,7 @@
         },
         {
             "branch": "dev",
-            "longName": "FFRandomizer - beta",
+            "longName": "FFRandomizer",
             "shortName": "FFR β",
             "themeColor": "#111122",
             "cssFile": "beta.css",

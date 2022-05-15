@@ -4,7 +4,7 @@
 /* @import url('main.css');*/
 @import url('slider.css');
 @import url('mainmenu.css');
-    
+
 
 html, body {
     all: unset;
@@ -51,6 +51,7 @@ input {
 }
 */
 .update-notification {
+    color: #FFFFFF;
     background-color: #30bb6b;
     border-radius: 15px;
     position: fixed;
@@ -61,6 +62,11 @@ input {
     font-size: 1rem;
     font-weight: bold;
     z-index: 101;
+    text-decoration-line: none;
+}
+
+a.update-notification:visited {
+    color: #FFFFFF;
 }
 
 .update-notification:hover {
@@ -156,7 +162,7 @@ h1 {
     .main .top-row {
         display: none;
     }
-     
+
 }
 
 
@@ -294,7 +300,7 @@ body { */
 .td-party{
     padding: 12px;
     text-align: center;
-    min-width: 42px;
+    min-width: 39px;
     padding-left: 5px;
     padding-right: 5px;
     max-width:72px;
@@ -429,7 +435,7 @@ tr.bottom-borderd {
 }
 
 .job.fighter {
-    background-image: url("/images/classes/fighter.png");   
+    background-image: url("/images/classes/fighter.png");
 }
 
 .job.thief {
@@ -453,7 +459,7 @@ tr.bottom-borderd {
 }
 
 .job.knight {
-    background-image: url("/images/classes/knight.png");   
+    background-image: url("/images/classes/knight.png");
 }
 
 .job.ninja {
@@ -486,4 +492,35 @@ tr.bottom-borderd {
 
 .nes-btn.is-tiny {
     font-size: 0.5em;
+}
+
+.fun-inactivated {
+    color: #999999;
+    cursor: pointer;
+}
+
+.fun-activated {
+    color: #ffffff;
+    cursor: default;
+}
+
+.image-center {
+    text-align:center;
+}
+
+.ua-bg-top {
+    background-color: #0057b7;
+    position: fixed;
+    top: 30%;
+    bottom: 50%;
+    width: 100vw;
+    z-index: -1;
+}
+.ua-bg-bottom {
+    background-color: #ffd700;
+    position: fixed;
+    top: 50%;
+    bottom: 30%;
+    width: 100vw;
+    z-index: -1;
 }
