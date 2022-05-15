@@ -498,12 +498,12 @@ namespace FF1Lib
 			byte ship_x = 0x98;
 			byte ship_y = 0xA9;
 
-			if (flags.DeepDungeon)
+			if (flags.GameMode == GameModes.DeepDungeon)
 			{
 				coneria_y = 0x9B;
 			}
 
-			if (owMapExchange != null && flags.OwMapExchange != OwMapExchanges.NoOverworld)
+			if (owMapExchange != null && flags.GameMode == GameModes.Standard)
 			{
 				coneria_x = (byte)(owMapExchange.StartingLocation.X - 0x07);
 				coneria_y = (byte)(owMapExchange.StartingLocation.Y - 0x07);
@@ -522,7 +522,7 @@ namespace FF1Lib
 			var saveondeath_part2 = "A200BD00609D0064BD00619D0065BD00629D0066BD00639D0067E8D0E5A9558DFE64A9AA8DFF64A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD644C1D80";
 
 			// Since we want to spawn inside with No Overworld and not at transport, update coordinate to Coneria Castle
-			if (flags.OwMapExchange == OwMapExchanges.NoOverworld)
+			if (flags.NoOverworld)
 			{
 				coneria_x = GetFromBank(0x0E, 0x9DC0+0x08, 1)[0];
 				coneria_y = GetFromBank(0x0E, 0x9DD0+0x08, 1)[0];

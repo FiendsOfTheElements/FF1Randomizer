@@ -1393,7 +1393,7 @@ namespace FF1Lib
 				// add all the other stuff that you can't find in vanilla.
 				if (randomizeTreasureMode == RandomizeTreasureMode.DeepDungeon)
 				{
-					generator = new DeepDungeonItemGenerator(chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList(), _rom.UnusedGoldItems, incentiveData.RemovedItems.ToList(), normalTreasures, flags.DeepDungeon, flags.Etherizer, _rom);
+					generator = new DeepDungeonItemGenerator(chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList(), _rom.UnusedGoldItems, incentiveData.RemovedItems.ToList(), normalTreasures, (flags.GameMode == GameModes.DeepDungeon), flags.Etherizer, _rom);
 				}
 				else
 				{

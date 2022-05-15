@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 namespace FF1Lib
 {
 	public enum MapIndex : byte
@@ -388,5 +389,15 @@ namespace FF1Lib
 		Black8Slot3,
 		Black8Slot4,
 		None
+	}
+
+	public enum GameModes
+	{
+		[Description("Standard")]
+		Standard = 0,
+		[Description("Deep Dungeon")]
+		DeepDungeon,
+		[Description("No Overworld")]
+		NoOverworld,
 	}
 }

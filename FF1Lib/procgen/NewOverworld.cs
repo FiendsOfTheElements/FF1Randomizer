@@ -1220,7 +1220,7 @@ namespace FF1Lib.Procgen
 	    return finalState;
 	}
 
-	public static OwMapExchangeData GenerateNewOverworld(MT19337 rng, OwMapExchanges mode) {
+	public static OwMapExchangeData GenerateNewOverworld(MT19337 rng, OwMapExchanges mode, bool shuffledaccess, bool unsafestart) {
 	    var mt = new OverworldTiles();
 
 	    int maxtries = 1;
@@ -1286,8 +1286,7 @@ namespace FF1Lib.Procgen
 		    placementTries--;
 
 		    List<GenerationStep> placementSteps = new List<GenerationStep>();
-		    if (mode == OwMapExchanges.GenerateNewOverworldShuffledAccess ||
-			mode == OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe) {
+		    if (shuffledaccess) {
 
 			var earlyRewardLocations = new List<OwFeature> {
 			    OverworldTiles.TEMPLE_OF_FIENDS,
@@ -1342,7 +1341,7 @@ namespace FF1Lib.Procgen
 
 			features.AddRange(earlyRewardLocations);
 
-			if (mode == OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe) {
+			if (shuffledaccess && unsafestart) {
 			    features.AddRange(unsafeFeatures);
 			    unsafeFeatures.Clear();
 			}

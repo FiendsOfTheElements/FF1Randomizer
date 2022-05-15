@@ -131,6 +131,11 @@ namespace FF1Lib
 		public bool SanityCheckerV2 { get; set; } = true;
 
 		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.None;
+		public bool OwShuffledAccess { get; set; } = false;
+		public bool OwUnsafeStart { get; set; } = false;
+		public bool OwRandomPregen { get; set; } = false;
+
+		public GameModes GameMode { get; set; } = GameModes.Standard;
 
 		[IntegerFlag(0, Int32.MaxValue-1)]
 		public int MapGenSeed { get; set; } = 0;
@@ -338,7 +343,6 @@ namespace FF1Lib
 		public bool? EarlyOrdeals { get; set; } = false;
 		public bool? ShuffleObjectiveNPCs { get; set; } = false;
 		public bool OnlyRequireGameIsBeatable { get; set; } = true;
-		//public bool NoOverworld { get; set; } = false;
 		public bool? FreeBridge { get; set; } = false;
 		public bool? FreeShip { get; set; } = false;
 		public bool? FreeAirship { get; set; } = false;
@@ -390,7 +394,6 @@ namespace FF1Lib
 		public bool FixHitChanceCap { get; set; } = false;
 
 		public bool? MelmondClinic { get; set; } = false;
-        public bool DeepDungeon { get; set; } = false;
 		public bool DDProgressiveTilesets { get; set; } = false;
 		public bool DDFiendOrbs { get; set; } = false;
 		public TailBahamutMode TailBahamutMode { get; set; } = TailBahamutMode.Random;
@@ -557,8 +560,6 @@ namespace FF1Lib
 		public bool? ClampMinimumBossStatScale { get; set; } = false;
 		public bool? ClampMinimumPriceScale { get; set; } = false;
 		public bool EFGWaterfall { get; set; } = false;
-		public bool EFGEarth1 { get; set; } = false;
-		public bool EFGEarth2 { get; set; } = false;
 		public bool? FiendShuffle { get; set; } = false;
 		public bool DisableTentSaving { get; set; } = false;
 		public bool DisableInnSaving { get; set; } = false;
@@ -701,7 +702,7 @@ namespace FF1Lib
 		public bool? IncentivizeCrown => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeSlab => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeBottle => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
-		public bool NoOverworld => (SanityCheckerV2 & OwMapExchange == OwMapExchanges.NoOverworld);
+		public bool NoOverworld => (SanityCheckerV2 & GameMode == GameModes.NoOverworld);
 		public bool? IsShipFree => FreeShip | NoOverworld;
 		public bool? IsCanoeFree => FreeCanoe | (OwMapExchange == OwMapExchanges.Desert);
 		public bool? IsAirshipFree => FreeAirship & !NoOverworld & !(OwMapExchange == OwMapExchanges.Desert);

@@ -22,29 +22,11 @@ namespace FF1Lib
 		[Description("Generate New Overworld")]
 		GenerateNewOverworld,
 
-		[Description("Generate New Overworld (shuffled access)")]
-		GenerateNewOverworldShuffledAccess,
-
-		[Description("Generate New Overworld (unsafe start)")]
-		GenerateNewOverworldShuffledAccessUnsafe,
-
 		[Description("Lost Woods")]
 		LostWoods,
 
 		[Description("Desert of Death")]
 		Desert,
-
-		[Description("No Overworld")]
-		NoOverworld,
-
-		[Description("Random Pregenerated 256")]
-		RandomPregenerated,
-
-		[Description("Random Pregenerated 256 (shuffled access)")]
-		RandomPregeneratedShuffled,
-
-		[Description("Random Pregenerated 256 (unsafe start)")]
-		RandomPregeneratedUnsafe,
 
 		[Description("Import Custom Map")]
 		ImportCustomMap,
@@ -93,17 +75,17 @@ namespace FF1Lib
 
 			string name;
 
-			if (flags.OwMapExchange == OwMapExchanges.RandomPregenerated)
+			if (flags.OwShuffledAccess && flags.OwUnsafeStart)
 			{
-				name = "normal256.zip";
+				name = "unsafe256.zip";
 			}
-			else if (flags.OwMapExchange == OwMapExchanges.RandomPregenerated)
+			else if (flags.OwShuffledAccess && !flags.OwUnsafeStart)
 			{
 				name = "shuffled256.zip";
 			}
 			else
 			{
-				name = "unsafe256.zip";
+				name = "normal256.zip";
 			}
 
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
@@ -285,6 +267,18 @@ namespace FF1Lib
 
 			MT19337 maprng = new MT19337((uint)seed);
 
+
+			var gm = flags.GameMode;
+			switch (gm)
+			{
+				case GameModes.NoOverworld:
+					return new OwMapExchange(_rom, _overworldMap, "nooverworld");
+				case GameModes.DeepDungeon:
+					return null;
+				case GameModes.Standard:
+					break;
+			}
+
 			var mx = flags.OwMapExchange;
 
 			switch (mx)
@@ -297,19 +291,15 @@ namespace FF1Lib
 						flags.ReplacementMap = DesertOfDeath.GenerateDesert(maprng);
 					}
 					return new OwMapExchange(_rom, _overworldMap, flags.ReplacementMap);
-				case OwMapExchanges.NoOverworld:
-					return new OwMapExchange(_rom, _overworldMap, "nooverworld");
-				case OwMapExchanges.RandomPregenerated:
-				case OwMapExchanges.RandomPregeneratedShuffled:
-				case OwMapExchanges.RandomPregeneratedUnsafe:
-					return new OwMapExchange(_rom, flags, _overworldMap, rng);
 				case OwMapExchanges.GenerateNewOverworld:
-				case OwMapExchanges.GenerateNewOverworldShuffledAccess:
-				case OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe:
 				case OwMapExchanges.LostWoods:
-					if (flags.ReplacementMap == null)
+					if (flags.OwRandomPregen)
 					{
-						flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, mx);
+						return new OwMapExchange(_rom, flags, _overworldMap, rng);
+					}
+					else if (flags.ReplacementMap == null)
+					{
+						flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, mx, flags.OwShuffledAccess, flags.OwUnsafeStart);
 					}
 					return new OwMapExchange(_rom, _overworldMap, flags.ReplacementMap);
 				case OwMapExchanges.ImportCustomMap:
