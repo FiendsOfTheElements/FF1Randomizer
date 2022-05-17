@@ -20,6 +20,13 @@ namespace FF1Lib
 		[Description("Same Floor")]
 		SameFloor
 	}
+	public enum DeepDungeonGeneratorMode
+	{
+		[Description("Progressive")]
+		Progressive = 0,
+		[Description("Chaotic")]
+		Chaotic,
+	}
 
 	public class DeepDungeonItemGenerator : IItemGenerator
 	{
@@ -104,89 +111,89 @@ namespace FF1Lib
 					{ MapLocation.Gaia, 39 },
 					{ MapLocation.Onrac, 46 },
 					{ MapLocation.Lefein, 53 },
-					{ MapLocation.ConeriaCastle1, 0 },
-					{ MapLocation.ConeriaCastle2, 9 },
-					{ MapLocation.ConeriaCastleRoom1, 10 },
-					{ MapLocation.ConeriaCastleRoom2, 10 },
+					{ MapLocation.ConeriaCastle1, 7 },
+					{ MapLocation.ConeriaCastle2, 16 },
+					{ MapLocation.ConeriaCastleRoom1, 12 },
+					{ MapLocation.ConeriaCastleRoom2, 12 },
 					{ MapLocation.ElflandCastle, 13 },
-					{ MapLocation.ElflandCastleRoom1, 13 },
+					{ MapLocation.ElflandCastleRoom1, 15 },
 					{ MapLocation.NorthwestCastle, 13 },
-					{ MapLocation.NorthwestCastleRoom2, 23 },
-					{ MapLocation.CastleOrdeals1, 26 },
-					{ MapLocation.CastleOrdealsMaze, 26 },
-					{ MapLocation.CastleOrdealsTop, 26 },
-					{ MapLocation.TempleOfFiends1, 0 },
-					{ MapLocation.TempleOfFiends1Room1, 0 },
-					{ MapLocation.TempleOfFiends1Room2, 0 },
+					{ MapLocation.NorthwestCastleRoom2, 15 },
+					{ MapLocation.CastleOrdeals1, 33 },
+					{ MapLocation.CastleOrdealsMaze, 33 },
+					{ MapLocation.CastleOrdealsTop, 33 },
+					{ MapLocation.TempleOfFiends1, 8 },
+					{ MapLocation.TempleOfFiends1Room1, 8 },
+					{ MapLocation.TempleOfFiends1Room2, 8 },
 					{ MapLocation.TempleOfFiends1Room3, 16 },
 					{ MapLocation.TempleOfFiends1Room4, 16 },
-					{ MapLocation.TempleOfFiends2, 50 },
-					{ MapLocation.TempleOfFiends3, 50 },
-					{ MapLocation.TempleOfFiendsChaos, 50 },
-					{ MapLocation.TempleOfFiendsAir, 50 },
-					{ MapLocation.TempleOfFiendsEarth, 50 },
-					{ MapLocation.TempleOfFiendsFire, 50 },
-					{ MapLocation.TempleOfFiendsWater, 50 },
-					{ MapLocation.TempleOfFiendsPhantom, 50 },
+					{ MapLocation.TempleOfFiends2, 54 },
+					{ MapLocation.TempleOfFiends3, 54 },
+					{ MapLocation.TempleOfFiendsChaos, 54 },
+					{ MapLocation.TempleOfFiendsAir, 54 },
+					{ MapLocation.TempleOfFiendsEarth, 54 },
+					{ MapLocation.TempleOfFiendsFire, 54 },
+					{ MapLocation.TempleOfFiendsWater, 54 },
+					{ MapLocation.TempleOfFiendsPhantom, 54 },
 					{ MapLocation.EarthCave1, 18 },
-					{ MapLocation.EarthCave2, 18 },
-					{ MapLocation.EarthCaveVampire, 18 },
-					{ MapLocation.EarthCave4, 18 },
-					{ MapLocation.EarthCaveLich, 18 },
-					{ MapLocation.GurguVolcano1, 32 },
-					{ MapLocation.GurguVolcano2, 32 },
-					{ MapLocation.GurguVolcano3, 32 },
-					{ MapLocation.GurguVolcano4, 32 },
-					{ MapLocation.GurguVolcano5, 32 },
-					{ MapLocation.GurguVolcano6, 32 },
-					{ MapLocation.GurguVolcanoKary, 32 },
-					{ MapLocation.IceCave1, 32 },
-					{ MapLocation.IceCave2, 32 },
-					{ MapLocation.IceCave3, 32 },
-					{ MapLocation.IceCave5, 32 },
-					{ MapLocation.IceCaveBackExit, 32 },
-					{ MapLocation.IceCaveFloater, 32 },
-					{ MapLocation.IceCavePitRoom, 32 },
-					{ MapLocation.SeaShrine1, 38 },
+					{ MapLocation.EarthCave2, 19 },
+					{ MapLocation.EarthCaveVampire, 20 },
+					{ MapLocation.EarthCave4, 21 },
+					{ MapLocation.EarthCaveLich, 22 },
+					{ MapLocation.GurguVolcano1, 25 },
+					{ MapLocation.GurguVolcano2, 28 },
+					{ MapLocation.GurguVolcano3, 28 },
+					{ MapLocation.GurguVolcano4, 28 },
+					{ MapLocation.GurguVolcano5, 28 },
+					{ MapLocation.GurguVolcano6, 28 },
+					{ MapLocation.GurguVolcanoKary, 28 },
+					{ MapLocation.IceCave1, 30 },
+					{ MapLocation.IceCave2, 30 },
+					{ MapLocation.IceCave3, 30 },
+					{ MapLocation.IceCave5, 30 },
+					{ MapLocation.IceCaveBackExit, 30 },
+					{ MapLocation.IceCaveFloater, 30 },
+					{ MapLocation.IceCavePitRoom, 30 },
+					{ MapLocation.SeaShrine1, 37 },
 					{ MapLocation.SeaShrine2, 38 },
 					{ MapLocation.SeaShrine2Room2, 38 },
-					{ MapLocation.SeaShrine4, 38 },
-					{ MapLocation.SeaShrine5, 38 },
-					{ MapLocation.SeaShrine6, 38 },
-					{ MapLocation.SeaShrine7, 38 },
-					{ MapLocation.SeaShrine8, 38 },
-					{ MapLocation.SeaShrineKraken, 38 },
-					{ MapLocation.SeaShrineMermaids, 38 },
-					{ MapLocation.Cardia1, 19 },
-					{ MapLocation.Cardia2, 19 },
-					{ MapLocation.BahamutCave1, 19 },
-					{ MapLocation.BahamutCave2, 19 },
-					{ MapLocation.Cardia4, 19 },
-					{ MapLocation.Cardia5, 19 },
-					{ MapLocation.Cardia6, 19 },
+					{ MapLocation.SeaShrine4, 41 },
+					{ MapLocation.SeaShrine5, 41 },
+					{ MapLocation.SeaShrine6, 41 },
+					{ MapLocation.SeaShrine7, 43 },
+					{ MapLocation.SeaShrine8, 43 },
+					{ MapLocation.SeaShrineKraken, 43 },
+					{ MapLocation.SeaShrineMermaids, 40 },
+					{ MapLocation.Cardia1, 34 },
+					{ MapLocation.Cardia2, 34 },
+					{ MapLocation.BahamutCave1, 34 },
+					{ MapLocation.BahamutCave2, 34 },
+					{ MapLocation.Cardia4, 35 },
+					{ MapLocation.Cardia5, 35 },
+					{ MapLocation.Cardia6, 35 },
 					{ MapLocation.Waterfall, 36 },
 					{ MapLocation.DwarfCave, 9 },
-					{ MapLocation.DwarfCaveRoom3, 18 },
-					{ MapLocation.MatoyasCave, 0 },
+					{ MapLocation.DwarfCaveRoom3, 14 },
+					{ MapLocation.MatoyasCave, 9 },
 					{ MapLocation.SardasCave, 13 },
 					{ MapLocation.MarshCave1, 10 },
 					{ MapLocation.MarshCave3, 10 },
-					{ MapLocation.MarshCaveBottom, 10 },
-					{ MapLocation.MarshCaveBottomRoom13, 15 },
-					{ MapLocation.MarshCaveBottomRoom14, 15 },
-					{ MapLocation.MarshCaveBottomRoom16, 15 },
+					{ MapLocation.MarshCaveBottom, 11 },
+					{ MapLocation.MarshCaveBottomRoom13, 17 },
+					{ MapLocation.MarshCaveBottomRoom14, 17 },
+					{ MapLocation.MarshCaveBottomRoom16, 17 },
 					{ MapLocation.MarshCaveTop, 10 },
-					{ MapLocation.MirageTower1, 39 },
-					{ MapLocation.MirageTower2, 39 },
-					{ MapLocation.MirageTower3, 39 },
-					{ MapLocation.SkyPalace1, 40 },
-					{ MapLocation.SkyPalace2, 40 },
-					{ MapLocation.SkyPalace3, 40 },
-					{ MapLocation.SkyPalaceMaze, 40 },
-					{ MapLocation.SkyPalaceTiamat, 40 },
-					{ MapLocation.TitansTunnelEast, 13 },
-					{ MapLocation.TitansTunnelWest, 13 },
-					{ MapLocation.TitansTunnelRoom, 13 },
+					{ MapLocation.MirageTower1, 44 },
+					{ MapLocation.MirageTower2, 46 },
+					{ MapLocation.MirageTower3, 46 },
+					{ MapLocation.SkyPalace1, 48 },
+					{ MapLocation.SkyPalace2, 50 },
+					{ MapLocation.SkyPalace3, 53 },
+					{ MapLocation.SkyPalaceMaze, 53 },
+					{ MapLocation.SkyPalaceTiamat, 53 },
+					{ MapLocation.TitansTunnelEast, 20 },
+					{ MapLocation.TitansTunnelWest, 20 },
+					{ MapLocation.TitansTunnelRoom, 20 },
 					{ MapLocation.Caravan, 0 },
 				};
 			}
@@ -287,10 +294,6 @@ namespace FF1Lib
 			}
 
 			return (Item)spunitem;
-		}
-		public Item SpliceItem(MT19337 rng)
-		{
-			return (Item)treasures.SpliceRandom(rng).index;
 		}
 	}
 
@@ -1381,12 +1384,14 @@ namespace FF1Lib
 
 			List<IRewardSource> normalTreasures = new();
 
-			if ((bool)flags.RandomLoot)
+			var randomizeTreasureMode = (flags.RandomizeTreasure == RandomizeTreasureMode.Random) ? (RandomizeTreasureMode)rng.Between(0, 2) : flags.RandomizeTreasure;
+
+			if (randomizeTreasureMode != RandomizeTreasureMode.None)
 			{
 				IItemGenerator generator;
 				// We want to leave out anything incentivized (and thus already placed), but
 				// add all the other stuff that you can't find in vanilla.
-				if (flags.WorldWealth == WorldWealthMode.DeepDungeon || flags.WorldWealth == WorldWealthMode.DeepDungeonProgressive)
+				if (randomizeTreasureMode == RandomizeTreasureMode.DeepDungeon)
 				{
 					generator = new DeepDungeonItemGenerator(chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList(), _rom.UnusedGoldItems, incentiveData.RemovedItems.ToList(), normalTreasures, flags.DeepDungeon, flags.Etherizer, _rom);
 				}
@@ -1399,7 +1404,7 @@ namespace FF1Lib
 			}
 
 			// Place treasures
-			if ((bool)flags.RandomLoot && flags.WorldWealth == WorldWealthMode.DeepDungeonProgressive)
+			if (randomizeTreasureMode == RandomizeTreasureMode.DeepDungeon && flags.DeepDungeonGenerator == DeepDungeonGeneratorMode.Progressive)
 			{
 				placedItems.AddRange(normalTreasures);
 			}

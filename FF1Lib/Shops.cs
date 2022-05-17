@@ -200,10 +200,10 @@ namespace FF1Lib
 						indeces.Remove(exclusion);
 					}
 
-					ItemGenerator generator = new ItemGenerator(indeces, UnusedGoldItems, new List<Item>(), wealth);
+					ShopItemGenerator generator = new ShopItemGenerator(indeces, UnusedGoldItems, new List<Item>());
 					for (int i = 0; i < newShops.Length; i++)
 					{
-						newShops[i] = newShops[i].Select(x => (byte)generator.SpliceItem(rng)).ToList();
+						newShops[i] = newShops[i].Select(x => (byte)generator.GetItem(rng)).ToList();
 					}
 				}
 			}

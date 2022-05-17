@@ -1,0 +1,19 @@
+﻿square1  t2 s8 e1 
+square2  t2 s8 e2 
+triangle t2 s8 e0 
+
+sq1 | 2.R 8.D1 8.E1 8.F1 8.A1 | 1.D2                    | 8.D1 8.E1 8.F1 8.A1 2.D2
+sq2 | 1.R                     | 2.R 8.D2 8.E2 8.F2 8.A2 | 2.D3                8.R  16B2 16C3 16B2 8.A2 8.B2
+tri | 1.R                     | 1.R                     | 8.D0 8.E0 8.F0 8.A0 2.D1
+
+sq1 | 1.R
+sq2 | 8.C3 8.B2 8.A2 8.G2 8.F2 8.G2 8.A2 8.F2
+tri | 1.R
+
+sq1 | 2.R 8.D1 8.E1 8.F1 8.A1 | 1.D2                    | 8.D1 8.E1 8.F1 8.A1 2.D2
+sq2 | 1.D2                    | 2.R 8.D2 8.E2 8.F2 8.A2 | 2.D3                8.R  16B2 16C3 16B2 8.A2 8.B2
+tri | 1.R                     | 1.R                     | 8.D0 8.E0 8.F0 8.A0 2.D1
+
+sq1 | 1.R                                     | 1.R
+sq2 | 8.C3 8.A2 8.F2 8.A2 8.E3 8.F3 8.E3 8.C3 | 1.D3
+tri | 1.R                                     | 1.R

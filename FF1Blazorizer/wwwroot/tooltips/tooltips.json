@@ -367,10 +367,10 @@
 		"description": "If items scale such that their cost is higher than 65,535G (the maximum price an item could have in the vanilla game), this flag will allow those prices to \"wrap\" back to 1G and continue from there.\nFor example, when disabled, an item that should cost 67,000G would cost 65,535G. When enabled, that item would cost 1,465G."
 	},
 	{
-		"Id": "startingGoldCheckBox",
-		"title": "Scale Starting Gold",
+		"Id": "startingGoldDropDown",
+		"title": "Starting Gold",
 		"screenshot": "startingGoldCheckBox.png",
-		"description": "Scales the starting gold according to the Exp & Gold scaling selected."
+		"description": "Set the starting gold."
 	},
 	{
 		"Id": "excludeGoldFromScalingCheckBox",
@@ -911,13 +911,19 @@
 		"Id": "randomLootCheckBox",
 		"title": "Randomize Treasures",
 		"screenshot": "randomLootCheckBox.png",
-		"description": "Randomizes the contents of each chest based on the tier of the item. Each setting for random wealth weighs the pool differently. Items not normally found in chests may be available, some items may not be found in chests that normally would, and duplicates may exist."
+		"description": "Randomizes the contents of each chest. Items not normally found in chests may be available, some items may not be found in chests that normally would, and duplicates may exist.\n\nNone: Chests' content isn't randomized.\nWorld Wealth: Chests' content is randomized based on the tier of the item. Each setting for random wealth weighs the pool differently.\nDeep Dungeon: Chest' content is randomized based on each chest's location.\nRandom: One of the previous options is selected at random."
 	},
 	{
 		"Id": "worldWealthDropDown",
 		"title": "Random Wealth",
 		"screenshot": "worldWealthDropDown.gif",
-		"description": "Alters the distribution of items:\n Normal is the same number of each tier of item as in the vanilla item pool.\n High removes gold chests for more legendary and rare equipment.\n Low and Impovershed reduces the available top tier equipment with more common items.\n Melmond has the lowest chance of top tier gear."
+		"description": "Alters the distribution of items:\n Normal is the same number of each tier of item as in the vanilla item pool.\n High removes gold chests for more legendary and rare equipment.\n Melmond has the lowest chance of top tier gear."
+	},
+	{
+		"Id": "deepDungeonItemModeDropDown",
+		"title": "Deep Dungeon Mode",
+		"screenshot": "ddDistributeEvenly.gif",
+		"description": "Sets how randomized items are placed using the Deep Dungeon treasures randomizer.\n\nProgressive: Treasures get progressively better as you progress.\nChaotic: The quality of the treasures are totally random, wherever the chests are."
 	},
 	{
 		"Id": "betterTrapTreasureCheckBox",
@@ -1320,7 +1326,7 @@
 		"screenshot": "everythingHasDeathTouchExcludeFiendsCheckbox.png",
 		"description": "Bosses are included when shuffling/randomizing status attacks. Bosses are the Fiends, WarMech and Chaos."
 	},
-		{
+	{
 		"Id": "removeTrapTilesCheckBox",
 		"title": "Remove Trap Tiles",
 		"screenshot": "removeTrapTilesCheckBox.gif",

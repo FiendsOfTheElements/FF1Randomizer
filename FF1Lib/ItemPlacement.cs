@@ -180,7 +180,9 @@ namespace FF1Lib
 			
 			List<IRewardSource> normalTreasures = new();
 
-			if ((bool)_flags.RandomLoot)
+			var randomizeTreasureMode = (_flags.RandomizeTreasure == RandomizeTreasureMode.Random) ? (RandomizeTreasureMode)rng.Between(0, 2) : _flags.RandomizeTreasure;
+
+			if (randomizeTreasureMode != RandomizeTreasureMode.None)
 			{
 				IItemGenerator generator;
 
@@ -188,7 +190,7 @@ namespace FF1Lib
 				// add all the other stuff that you can't find in vanilla.
 				var randomTreasure = treasurePool.ToList();
 				
-				if (_flags.WorldWealth == WorldWealthMode.DeepDungeon || _flags.WorldWealth == WorldWealthMode.DeepDungeonProgressive)
+				if (randomizeTreasureMode == RandomizeTreasureMode.DeepDungeon)
 				{
 					generator = new DeepDungeonItemGenerator(itemLocationPool, rom.UnusedGoldItems, removedItems, normalTreasures, _flags.DeepDungeon, _flags.Etherizer, rom);
 				}
@@ -200,7 +202,7 @@ namespace FF1Lib
 				treasurePool = treasurePool.Select(treasure => generator.GetItem(rng)).ToList();
 			}
 
-			if ((bool)_flags.BetterTrapChests && _flags.WorldWealth != WorldWealthMode.DeepDungeonProgressive)
+			if ((bool)_flags.BetterTrapChests && randomizeTreasureMode != RandomizeTreasureMode.DeepDungeon)
 			{
 				// First we'll make a list of all 'notable' treasure.
 				var notableTreasureList = new List<Item>()
@@ -237,7 +239,7 @@ namespace FF1Lib
 				Debug.Assert(treasurePool.Count() == itemLocationPool.Count());
 			}
 
-			if ((bool)_flags.RandomLoot && _flags.WorldWealth == WorldWealthMode.DeepDungeonProgressive)
+			if (randomizeTreasureMode == RandomizeTreasureMode.DeepDungeon && _flags.DeepDungeonGenerator == DeepDungeonGeneratorMode.Progressive)
 			{
 				placedItems.AddRange(normalTreasures);
 			}

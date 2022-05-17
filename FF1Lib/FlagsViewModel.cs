@@ -500,6 +500,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormationShuffleMode"));
 			}
 		}
+		public RandomizeTreasureMode RandomizeTreasure
+		{
+			get => Flags.RandomizeTreasure;
+			set
+			{
+				Flags.RandomizeTreasure = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeTreasure"));
+			}
+		}
 		public WorldWealthMode WorldWealth
 		{
 			get => Flags.WorldWealth;
@@ -507,6 +516,15 @@ namespace FF1Lib
 			{
 				Flags.WorldWealth = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WorldWealthMode"));
+			}
+		}
+		public DeepDungeonGeneratorMode DeepDungeonGenerator
+		{
+			get => Flags.DeepDungeonGenerator;
+			set
+			{
+				Flags.DeepDungeonGenerator = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeepDungeonGenerator"));
 			}
 		}
 
@@ -1996,7 +2014,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool StartingGold
+		public StartingGold StartingGold
 		{
 			get => Flags.StartingGold;
 			set
@@ -2403,24 +2421,6 @@ namespace FF1Lib
 			}
 		}
 
-		public bool WrapPriceOverflow
-		{
-			get => Flags.WrapPriceOverflow;
-			set
-			{
-				Flags.WrapPriceOverflow = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WrapPriceOverflow"));
-			}
-		}
-		public bool WrapStatOverflow
-		{
-			get => Flags.WrapStatOverflow;
-			set
-			{
-				Flags.WrapStatOverflow = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WrapStatOverflow"));
-			}
-		}
 		public bool IncludeMorale
 		{
 			get => Flags.IncludeMorale;
@@ -3482,24 +3482,7 @@ namespace FF1Lib
 			{
 			}
 		}
-		public bool? RandomTreasure
-		{
-			get => Flags.RandomLoot;
-			set
-			{
-				Flags.RandomLoot = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomTreasure"));
-			}
-		}
-		public WorldWealthMode WorldWealthEnum
-		{
-			get => Flags.WorldWealth;
-			set
-			{
-				Flags.WorldWealth = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WorldWealthEnum"));
-			}
-		}
+
 		public bool? ClampPrices
 		{
 			get => Flags.ClampMinimumPriceScale;
@@ -4480,16 +4463,6 @@ namespace FF1Lib
 			set
 			{
 				Flags.CheapVendorItem = value;
-				RaisePropertyChanged();
-			}
-		}
-
-		public bool ApplyExpBoostToGold
-		{
-			get => Flags.ApplyExpBoostToGold;
-			set
-			{
-				Flags.ApplyExpBoostToGold = value;
 				RaisePropertyChanged();
 			}
 		}

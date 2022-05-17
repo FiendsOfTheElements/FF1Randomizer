@@ -122,7 +122,9 @@
 		bool? SendMasamuneHome { get; }
 		bool? NoMasamune { get; }
 		bool? NoXcalber { get; }
+		RandomizeTreasureMode RandomizeTreasure { get; }
 		WorldWealthMode WorldWealth { get; }
+		DeepDungeonGeneratorMode DeepDungeonGenerator { get; }
 		ConsumableChestSet MoreConsumableChests { get; }
 		ExtConsumableSet ExtConsumableSet { get; }
 		ExtConsumableChestSet ExtConsumableChests { get; }
@@ -152,9 +154,7 @@
 	}
 	public interface IScaleFlags
 	{
-		bool StartingGold { get; }
-		bool WrapPriceOverflow { get; }
-		bool WrapStatOverflow { get; }
+		StartingGold StartingGold { get; }
 		double ExpMultiplier { get; }
 		int PriceScaleFactorLow { get; }
 		int PriceScaleFactorHigh { get; }
