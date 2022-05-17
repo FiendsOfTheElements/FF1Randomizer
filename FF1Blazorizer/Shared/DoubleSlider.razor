@@ -30,15 +30,15 @@
 				}}
 				#rc-{Id} > input[name='high-range'] {{
 					position: relative;
-					--track-background: linear-gradient(to right, transparent {100 * (ValueLow - MinValue) / (MaxValue - MinValue) + 1}%, var(--range-color) 0, var(--range-color) {100 * (ValueHigh - MinValue) / (MaxValue - MinValue) - 1}%, transparent 0 ) no-repeat 0 45% / 100% 40%;
-					clip-path: polygon({(ValueLow + ValueHigh) / (MaxValue - MinValue) + 1}% 0, 100% 0, 100% 100%, {(ValueLow + ValueHigh) / (MaxValue - MinValue) + 1}% 100%);
+					--track-background: linear-gradient(to right, transparent {100 * (ValuesRange.low - MinValue) / (MaxValue - MinValue) + 1}%, var(--range-color) 0, var(--range-color) {100 * (ValuesRange.high - MinValue) / (MaxValue - MinValue) - 1}%, transparent 0 ) no-repeat 0 45% / 100% 40%;
+					clip-path: polygon({(ValuesRange.low + ValuesRange.high) / (MaxValue - MinValue) + 1}% 0, 100% 0, 100% 100%, {(ValuesRange.low + ValuesRange.high) / (MaxValue - MinValue) + 1}% 100%);
 				}}
 				#rc-{Id} > input[type='range']::-webkit-slider-runnable-track {{
 					background: var(--track-background);
 				}}
 			</style>"))
-				<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueLow" @bind:event="onchange" />
-				<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueHigh" @bind:event="onchange" />
+				<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="ValuesRangeLow" @bind:event="onchange" />
+				<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="ValuesRangeHigh" @bind:event="onchange" />
 			</div>
 		</BSRow>
 	</BSContainer>
@@ -75,15 +75,15 @@ else
 				}}
 				#rc-{Id} > input[name='high-range'] {{
 					position: relative;
-					--track-background: linear-gradient(to right, transparent {100 * (ValueLow - MinValue) / (MaxValue - MinValue) + 1}%, var(--range-color) 0, var(--range-color) {100 * (ValueHigh - MinValue) / (MaxValue - MinValue) - 1}%, transparent 0 ) no-repeat 0 45% / 100% 40%;
-					clip-path: polygon({(ValueLow + ValueHigh) / (MaxValue - MinValue) + 1}% 0, 100% 0, 100% 100%, {(ValueLow + ValueHigh) / (MaxValue - MinValue) + 1}% 100%);
+					--track-background: linear-gradient(to right, transparent {100 * (ValuesRange.low - MinValue) / (MaxValue - MinValue) + 1}%, var(--range-color) 0, var(--range-color) {100 * (ValuesRange.high - MinValue) / (MaxValue - MinValue) - 1}%, transparent 0 ) no-repeat 0 45% / 100% 40%;
+					clip-path: polygon({(ValuesRange.low + ValuesRange.high) / (MaxValue - MinValue) + 1}% 0, 100% 0, 100% 100%, {(ValuesRange.low + ValuesRange.high) / (MaxValue - MinValue) + 1}% 100%);
 				}}
 				#rc-{Id} > input[type='range']::-webkit-slider-runnable-track {{
 					background: var(--track-background);
 				}}
 			</style>"))
-				<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueLow" @bind:event="onchange" />
-				<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="@ValueHigh" @bind:event="onchange" />
+				<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="ValuesRangeLow" @bind:event="onchange" />
+				<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="ValuesRangeHigh" @bind:event="onchange" />
 			</div>
 		</BSRow>
 	</BSContainer>
@@ -167,60 +167,56 @@ else
 	//slider fields
 	int _valueLow = 0;
 	int _valueHigh = 0;
+
 	[Parameter] public int MinValue { get; set; }
 	[Parameter] public int MaxValue { get; set; }
 	[Parameter] public int Step { get; set; }
 	[Parameter]
-	public int ValueLow
+	public (int low, int high) ValuesRange
 	{
-		get => _valueLow;
 
+		get => (_valueLow, _valueHigh);
 		set
-		{
-			if (_valueLow.Equals(value))
-				return;
-
-			if (value > _valueHigh)
+		{ 
+			if (_valueLow.Equals(value.low) && _valueHigh.Equals(value.high))
 			{
-				_valueLow = _valueHigh;
-				_valueHigh = value;
+				return;	
+			}
+
+			if (value.low > value.high)
+			{
+				_valueLow = value.high;
+				_valueHigh = value.low;
 			}
 			else
 			{
-				_valueLow = value;
+				_valueLow = value.low;
+				_valueHigh = value.high;
 			}
-			ValueLowChanged.InvokeAsync(_valueLow);
-			ValueHighChanged.InvokeAsync(_valueHigh);
+
+			ValuesRangeChanged.InvokeAsync((_valueLow,_valueHigh));
 		}
 	}
-	[Parameter]
-	public int ValueHigh
+
+	private int ValuesRangeLow
 	{
-
-		get => _valueHigh;
-
+		get => ValuesRange.low;
 		set
 		{
-			if (_valueHigh.Equals(value))
-				return;
-
-			if (value < _valueLow)
-			{
-				_valueHigh = _valueLow;
-				_valueLow = value;
-			}
-			else
-			{
-				_valueHigh = value;
-			}
-
-			ValueLowChanged.InvokeAsync(_valueLow);
-			ValueHighChanged.InvokeAsync(_valueHigh);
+			ValuesRange = (value, ValuesRange.high);
 		}
-
 	}
-	[Parameter] public EventCallback<int> ValueLowChanged { get; set; }
-	[Parameter] public EventCallback<int> ValueHighChanged { get; set; }
+
+	private int ValuesRangeHigh
+	{
+		get => ValuesRange.high;
+		set
+		{
+			ValuesRange = (ValuesRange.low, value);
+		}
+	}
+
+	[Parameter] public EventCallback<(int, int)> ValuesRangeChanged { get; set; }
 	[Parameter]
 	public string Id { get; set; }
 
