@@ -583,7 +583,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool OrbsRequiredEnabled => !ShardHunt && !FreeOrbs && !DeepDungeon;
+		public bool OrbsRequiredEnabled => !ShardHunt && !FreeOrbs;
 		public bool OrbsRequiredOptionsEnabled => OrbsRequiredEnabled && (Flags.OrbsRequiredCount != 4);
 
 		public FinalFormation TransformFinalFormation
@@ -1977,15 +1977,6 @@ namespace FF1Lib
             }
         }
 
-        public bool DeepDungeon
-		{
-			get => Flags.DeepDungeon;
-			set
-			{
-				Flags.DeepDungeon = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeepDungeon"));
-			}
-		}
 		public bool DDProgressiveTilesets
 		{
 			get => Flags.DDProgressiveTilesets;
@@ -3538,24 +3529,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EFGWaterfall"));
 			}
 		}
-		public bool EFGEarth1
-		{
-			get => Flags.EFGEarth1;
-			set
-			{
-				Flags.EFGEarth1 = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EFGEarth1"));
-			}
-		}
-		public bool EFGEarth2
-		{
-			get => Flags.EFGEarth2;
-			set
-			{
-				Flags.EFGEarth2 = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EFGEarth2"));
-			}
-		}
 		public bool DisableTentSaving
 		{
 			get => Flags.DisableTentSaving;
@@ -4476,6 +4449,43 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+		public bool OwShuffledAccess
+		{
+			get => Flags.OwShuffledAccess;
+			set
+			{
+				Flags.OwShuffledAccess = value;
+				RaisePropertyChanged();
+			}
+		}
+		public bool OwUnsafeStart
+		{
+			get => Flags.OwUnsafeStart;
+			set
+			{
+				Flags.OwUnsafeStart = value;
+				RaisePropertyChanged();
+			}
+		}
+		public bool OwRandomPregen
+		{
+			get => Flags.OwRandomPregen;
+			set
+			{
+				Flags.OwRandomPregen = value;
+				RaisePropertyChanged();
+			}
+		}
+		public GameModes GameMode
+		{
+			get => Flags.GameMode;
+			set
+			{
+				Flags.GameMode = value;
+				RaisePropertyChanged();
+			}
+		}
+
 
 		public SpoilerBatHints SkyWarriorSpoilerBats
 		{

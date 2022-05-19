@@ -192,7 +192,7 @@ namespace FF1Lib
 				
 				if (randomizeTreasureMode == RandomizeTreasureMode.DeepDungeon)
 				{
-					generator = new DeepDungeonItemGenerator(itemLocationPool, rom.UnusedGoldItems, removedItems, normalTreasures, _flags.DeepDungeon, _flags.Etherizer, rom);
+					generator = new DeepDungeonItemGenerator(itemLocationPool, rom.UnusedGoldItems, removedItems, normalTreasures, (_flags.GameMode == GameModes.DeepDungeon), _flags.Etherizer, rom);
 				}
 				else
 				{

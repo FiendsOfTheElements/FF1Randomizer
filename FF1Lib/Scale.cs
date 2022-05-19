@@ -70,7 +70,7 @@ namespace FF1Lib
 		Gp400,
 		[Description("800 gp")]
 		Gp800,
-		[Description("2500 gp")]
+		[Description("2,500 gp")]
 		Gp2500,
 		[Description("9,999 gp")]
 		Gp9999,
