@@ -316,6 +316,10 @@ namespace FF1Lib
 		private int tailfloor = 0;
 		private FF1Rom _rom;
 
+		private int tntfloor = 8 + 7;
+		private int rubyfloor = 22 + 7;
+		private int oxyfloor = 36 + 7;
+
 		private struct Treasure
 		{
 			public int value;
@@ -1293,7 +1297,14 @@ namespace FF1Lib
 					{
 						c = candidates.SpliceRandom(rng);
 						maps[currentmap][c.y, c.x] = currentdeck.SpliceRandom(rng);
-						chests.Add(new TreasureChest(chestAddress + chestCount, "DeepDungeon" + chestCount, (MapLocation)currentmap, Item.None));
+						chests.Add(new TreasureChest(chestAddress + chestCount,
+							"DeepDungeon" + (currentmap - 7) + "B" + "_Chest" + chestCount,
+							(MapLocation)currentmap,
+							Item.None,
+							flags.DDFiendOrbs ? AccessRequirement.None :
+							((currentmap > tntfloor ? AccessRequirement.Tnt : AccessRequirement.None) |
+							(currentmap > rubyfloor ? AccessRequirement.Ruby : AccessRequirement.None) |
+							(currentmap > oxyfloor ? AccessRequirement.Oxyale : AccessRequirement.None))));
 						_rom.Put(0x800 + tilesetmappings[currentmap] * 0x100 + maps[currentmap][c.y, c.x] * 2, Blob.FromHex("09" + Convert.ToHexString(new byte[] { (byte)(chestCount + 1) })));
 						chestCount++;
 					}
@@ -1302,9 +1313,6 @@ namespace FF1Lib
 		}
 		public List<IRewardSource> ShuffleTreasures(Flags flags, IncentiveData incentiveData, MT19337 rng)
 		{
-			var tntfloor = 8 + 7;
-			var rubyfloor = 22 + 7;
-			var oxyfloor = 36 + 7;
 
 			List<IRewardSource> placedItems = new();
 
