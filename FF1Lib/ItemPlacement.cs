@@ -99,14 +99,19 @@ namespace FF1Lib
 
 			var treasurePool = _allTreasures.ToList();
 
+			bool jingleGuaranteedDefenseItem = true;
+			bool jingleGuaranteedPowerItem = true;
+
 			if (_flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(_flags.ItemMagicMode == ItemMagicMode.None) && !incentivePool.Contains(Item.PowerRod))
 			{
 				unincentivizedQuestItems.Add(Item.PowerRod);
+				jingleGuaranteedDefenseItem = false;
 			}
 
 			if (_flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(_flags.ItemMagicMode == ItemMagicMode.None) && !incentivePool.Contains(Item.PowerGauntlets))
 			{
 				unincentivizedQuestItems.Add(Item.PowerGauntlets);
+				jingleGuaranteedPowerItem = false;
 			}
 
 			foreach (var incentive in incentivePool)
@@ -155,6 +160,11 @@ namespace FF1Lib
 					if (placedItem is TreasureChest && placedItem.Item != Item.Shard &&
 						placedItem.Item != ReplacementItem)
 					{
+						if ((placedItem.Item == Item.PowerGauntlets && !jingleGuaranteedPowerItem) || (placedItem.Item == Item.PowerRod && !jingleGuaranteedDefenseItem))
+						{
+							continue;
+						}
+
 						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { 0x01 });
 					}
 				}
