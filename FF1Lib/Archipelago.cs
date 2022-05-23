@@ -207,6 +207,15 @@ namespace FF1Lib
 
 		private int GetLocationId(SCLogicRewardSource r)
 		{
+			if (flags.GameMode == GameModes.DeepDungeon)
+			{
+				if (r.RewardSource is TreasureChest)
+				{
+					var rewardSourceInfo = r.RewardSource.Name.Split('_');
+					return 13000 + int.Parse(rewardSourceInfo[1].TrimEnd('B')) * 16 + int.Parse(rewardSourceInfo[3]);
+				}
+			}
+
 			if (r.RewardSource is TreasureChest)
 			{
 				return r.RewardSource.Address - 0x3100 + ChestOffset;
