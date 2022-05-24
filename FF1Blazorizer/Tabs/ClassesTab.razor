@@ -43,6 +43,7 @@
 <div class="col2">
 	<h4>Magic Charges</h4>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="MpGainOnMaxGainModeDropDown" TItem="MpGainOnMaxGain" @bind-Value="Flags.MpGainOnMaxGainMode">Mp Charges Restore On New Max Mp:</EnumDropDown>
+    <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EarlierHighTierMagic" @bind-Value="@Flags.EarlierHighTierMagic">Earlier High-Tier Magic Charges</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ChangeMaxMP" @bind-Value="@Flags.ChangeMaxMP">Max MP</TriStateCheckBox>
 	<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="RedMageMaxMP" @bind-Value="@Flags.RedMageMaxMP">Red Mage Max MP:</IntSlider>
 	<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="WhiteMageMaxMP" @bind-Value="@Flags.WhiteMageMaxMP">White Mage Max MP:</IntSlider>

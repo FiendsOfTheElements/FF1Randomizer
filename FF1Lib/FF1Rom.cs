@@ -1099,6 +1099,7 @@ namespace FF1Lib
 			ClassData.SetMpGainOnMaxGain(flags, this);
 			ClassData.RaiseThiefHitRate(flags);
 			ClassData.BuffThiefAGI(flags);
+			ClassData.EarlierHighTierMagicCharges(flags);
 			ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);
 
 			if ((bool)flags.EnableRandomPromotions)

@@ -3831,6 +3831,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? EarlierHighTierMagic
+		{
+			get => Flags.EarlierHighTierMagic;
+			set
+			{
+				Flags.EarlierHighTierMagic = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlierHighTierMagic"));
+			}
+		}
+
 		public bool? ChangeMaxMP
 		{
 			get => Flags.ChangeMaxMP;

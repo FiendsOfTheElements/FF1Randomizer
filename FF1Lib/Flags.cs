@@ -627,6 +627,7 @@ namespace FF1Lib
 
 		[IntegerFlag(0, 4)]
 		public int RandomizeClassMaxMalus { get; set; } = 1;
+		public bool? EarlierHighTierMagic { get; set; } = false;
 		public bool? ChangeMaxMP { get; set; } = false;
 
 		[IntegerFlag(0, 9)]

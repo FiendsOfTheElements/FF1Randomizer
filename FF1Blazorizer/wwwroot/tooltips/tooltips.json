@@ -1584,6 +1584,12 @@
 		"description": "When a character gains Max MP, they also gain a current MP in that spell slot. \n\nThis can be enabled for all classes, only for classes once they promote, or only for classes that receive the 'Max+MP+' class blessing (which will only show up when this option is set to blessed classes)."
 	},
 	{
+		"Id": "EarlierHighTierMagic",
+		"title": "Earlier High-Tier Magic Charges",
+		"screenshot": "EarlierHighTierMagic.png",
+		"description": "Charges for Tier 5-8 spells are progressively gained at earlier levels for all Mages; Tier 7-8 charges are still somewhat limited. For example, White/Black Mages get their first Tier 6 charge two levels earlier and first Tier 8 charge five levels earlier.\n\nProgression still follows a logical pattern similar to vanilla and no spell charges are gained later than vanilla. A few lower-tier charges are also gained earlier to ensure you always gain at least one charge on every level up. White/Black Mages now cap out at Level 45 and Red Mages now gain full charges by Level 50."
+	},
+	{
 		"Id": "ChangeMaxMP",
 		"title": "Change Spellcaster Max MP",
 		"screenshot": "ChangeMaxMP.png",
