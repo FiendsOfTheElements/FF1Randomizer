@@ -1587,7 +1587,7 @@
 		"Id": "EarlierHighTierMagic",
 		"title": "Earlier High-Tier Magic Charges",
 		"screenshot": "EarlierHighTierMagic.png",
-		"description": "Charges for Tier 5-8 spells are progressively gained at earlier levels for all Mages; Tier 7-8 charges are still somewhat limited. For example, White/Black Mages get their first Tier 6 charge two levels earlier and first Tier 8 charge five levels earlier.\n\nProgression still follows a logical pattern similar to vanilla and no spell charges are gained later than vanilla. A few lower-tier charges are also gained earlier to ensure you always gain at least one charge on every level up. White/Black Mages now cap out at Level 45 and Red Mages now gain full charges by Level 50."
+		"description": "Charges for Tier 5-8 spells are progressively gained at earlier levels for all Mages; Tier 7-8 charges are still somewhat limited.\n\nProgression still follows a logical pattern similar to vanilla and no spell charges are gained later than vanilla. A few lower-tier charges are also gained earlier to ensure you always gain at least one charge on every level up. White/Black Mages now get full charges at Level 45 and Red Mages now get full charges at Level 50.\n[grid][r]{i}Vanilla ➔ Modified|Tier-5|Tier-6|Tier-7|Tier-8[r]{l}WM & BM 1st Charge|12 ➔ 11|16 ➔ 14|20 ➔ 17|25 ➔ 20[r]{l}WM & BM 4th Charge|18 ➔ 17|22 ➔ 20|26 ➔ 25|30 ➔ 27[r]{l}Red M. 1st Charge|15 ➔ 13|20 ➔ 15|26 ➔ 19|31 ➔ 23[r]{l}Red M. 4th Charge|21 ➔ 20|26 ➔ 24|32 ➔ 28|36 ➔ 31\n"
 	},
 	{
 		"Id": "ChangeMaxMP",
