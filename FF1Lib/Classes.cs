@@ -254,6 +254,35 @@ namespace FF1Lib
 			_classes[(int)Classes.Thief].EvaStarting = (byte)Math.Min(_classes[(int)Classes.Thief].AgiStarting + 48, 255);
 		}
 
+		public void EarlierHighTierMagicCharges(Flags flags)
+		{
+			if (!(bool)flags.EarlierHighTierMagic)
+			{
+				return;
+			}
+													  // Right-most bits are Tier-1 Charges, Left-most are Tier-8; each byte is a Level Up (Now maxes at L45 for WM/BM)
+			var EarlierHighTierMP_WMBMByteList = new List<byte> { 0b00000011, 0b00000010, 0b00000001, 0b00000110, 0b00000100, 0b00000001, 0b00001100, 0b00001010, 0b00000001,
+													  0b00011100, 0b00000010, 0b00010000, 0b00101001, 0b00010100, 0b00100000, 0b01010010, 0b00101000, 0b01000001, 0b10100100,
+													  0b00010000, 0b11000000, 0b00101000, 0b10000011, 0b01000000, 0b00010100, 0b10000010, 0b01101000, 0b00000100, 0b10010000,
+													  0b01000010, 0b00100000, 0b10001000, 0b01000000, 0b00000100, 0b00010000, 0b10000000, 0b00100000, 0b01000000, 0b00001000,
+													  0b10000000, 0b00010000, 0b00100000, 0b01000000, 0b10000000,
+													  0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000 };
+
+			var EarlierHighTierMP_RMByteList = new List<byte> { 0b00000011, 0b00000010, 0b00000001, 0b00000010, 0b00000100, 0b00000101, 0b00000010, 0b00000100, 0b00001001,
+													0b00001000, 0b00000100, 0b00011010, 0b00000001, 0b00110000, 0b00001100, 0b00000010, 0b00110000, 0b01001000, 0b00010100,
+													0b00100001, 0b11000001, 0b00000010, 0b10111000, 0b01000000, 0b00000100, 0b10100000, 0b01000010, 0b00010000, 0b00001000,
+													0b10100000, 0b00000100, 0b01000000, 0b00000010, 0b00010000, 0b10000000, 0b01001000, 0b00100000, 0b00000100, 0b10010000,
+													0b01000000, 0b00001000, 0b00100000, 0b10000000, 0b00010000, 0b01000000, 0b10000000, 0b00100000, 0b01000000, 0b10000000 };
+
+			// Note that capitalization matters - "SpcGrowth" is different
+			_classes[(int)Classes.RedMage].SpCGrowth = EarlierHighTierMP_RMByteList;
+			_classes[(int)Classes.RedWizard].SpCGrowth = EarlierHighTierMP_RMByteList;
+			_classes[(int)Classes.WhiteMage].SpCGrowth = EarlierHighTierMP_WMBMByteList;
+			_classes[(int)Classes.WhiteWizard].SpCGrowth = EarlierHighTierMP_WMBMByteList;
+			_classes[(int)Classes.BlackMage].SpCGrowth = EarlierHighTierMP_WMBMByteList;
+			_classes[(int)Classes.BlackWizard].SpCGrowth = EarlierHighTierMP_WMBMByteList;
+		}
+
 		public void SetMPMax(Flags flags)
 		{
 			if (!(bool)flags.ChangeMaxMP)
