@@ -252,6 +252,9 @@ namespace FF1Lib
 						case ScriptTouchMultiplier.None:
 							count = 0;
 							break;
+						case ScriptTouchMultiplier.Half:
+							count = 18;
+							break;
 						case ScriptTouchMultiplier.Vanilla:
 							count = 36;//should never happen
 							break;
@@ -635,6 +638,9 @@ namespace FF1Lib
 			{
 				case ScriptTouchMultiplier.None:
 					count = 0;
+					break;
+				case ScriptTouchMultiplier.Half:
+					count = 18;
 					break;
 				case ScriptTouchMultiplier.Vanilla:
 					count = 36; //should never happen / now it does!
@@ -1343,6 +1349,9 @@ namespace FF1Lib
 	{
 		[Description("None")]
 		None,
+
+		[Description("Half")]
+		Half,
 
 		[Description("Vanilla")]
 		Vanilla,
