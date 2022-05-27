@@ -605,6 +605,7 @@ namespace FF1Lib
 		public bool? RandomPromotionsSpoilers { get; set; } = false;
 		public bool? RandomizeClass { get; set; } = false;
 		public bool? RandomizeClassCasting { get; set; } = false;
+		public bool? RandomizeClassKeyItems { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
 		public bool? RandomizeClassIncludeNaturalResist { get; set; } = false;
 		public bool? RandomizeClassIncludeXpBonus { get; set; } = false;
@@ -623,10 +624,10 @@ namespace FF1Lib
 		public bool ExclusiveLegendaryWhiteShop { get; set; } = false;
 		public bool ExclusiveLegendaryItemShop { get; set; } = false;
 
-		[IntegerFlag(0, 4)]
+		[IntegerFlag(0, 3)]
 		public int RandomizeClassMaxBonus { get; set; } = 2;
 
-		[IntegerFlag(0, 4)]
+		[IntegerFlag(0, 3)]
 		public int RandomizeClassMaxMalus { get; set; } = 1;
 		public bool? ChangeMaxMP { get; set; } = false;
 

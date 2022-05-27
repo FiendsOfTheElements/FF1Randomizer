@@ -1061,6 +1061,7 @@ namespace FF1Lib
 			ClassData.RaiseThiefHitRate(flags);
 			ClassData.BuffThiefAGI(flags);
 			ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);
+			ClassData.ProcessStartWithRoutines(flags, this);
 
 			if ((bool)flags.EnableRandomPromotions)
 			{

@@ -3,6 +3,7 @@ using System.Linq;
 using RomUtilities;
 using System.ComponentModel;
 using System;
+using System.Reflection;
 
 namespace FF1Lib
 {
@@ -723,5 +724,126 @@ namespace FF1Lib
 
 		[Description("Madness")]
 		Madness
+	}
+
+	public class SpellSlotInfo
+	{
+		public byte BattleId { get; set; }
+		public byte NameId { get; set; }
+		public int Level { get; set; }
+		public int Slot { get; set; }
+		public int MenuId { get; set; }
+		public SpellSchools SpellSchool { get; set; }
+		public byte PermissionByte { get; set; }
+
+		public SpellSlotInfo(byte _battleId, int _level, int _slot, SpellSchools _spellSchool)
+		{
+			List<byte> permBytes = new() { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
+
+			BattleId = _battleId;
+			NameId = (byte)(_battleId + 0xB0);
+			Level = _level;
+			Slot = _slot;
+			MenuId = (_slot + 1) + (_spellSchool == SpellSchools.Black ? 4 : 0);
+			SpellSchool = _spellSchool;
+			//PermissionByte = permBytes[MenuId - 1];
+		}
+
+		public SpellSlotInfo()
+		{
+			List<byte> permBytes = new() { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
+
+			BattleId = 0x00;
+			NameId = 0x00;
+			Level = 0;
+			Slot = 0;
+			MenuId = 0;
+			SpellSchool = SpellSchools.White;
+			//PermissionByte = permBytes[MenuId - 1];
+		}
+	}
+
+	public static class SpellSlotStructure
+	{
+		public static SpellSlotInfo Cure = new SpellSlotInfo(0x00, 1, 0, SpellSchools.White);
+		public static SpellSlotInfo Harm = new SpellSlotInfo(0x01, 1, 1, SpellSchools.White);
+		public static SpellSlotInfo Fog = new SpellSlotInfo(0x02, 1, 2, SpellSchools.White);
+		public static SpellSlotInfo Ruse = new SpellSlotInfo(0x03, 1, 3, SpellSchools.White);
+		public static SpellSlotInfo Fire = new SpellSlotInfo(0x04, 1, 0, SpellSchools.Black);
+		public static SpellSlotInfo Slep = new SpellSlotInfo(0x05, 1, 1, SpellSchools.Black);
+		public static SpellSlotInfo Lock = new SpellSlotInfo(0x06, 1, 2, SpellSchools.Black);
+		public static SpellSlotInfo Lit = new SpellSlotInfo(0x07, 1, 3, SpellSchools.Black);
+		public static SpellSlotInfo Lamp = new SpellSlotInfo(0x08, 2, 0, SpellSchools.White);
+		public static SpellSlotInfo Mute = new SpellSlotInfo(0x09, 2, 1, SpellSchools.White);
+		public static SpellSlotInfo Alit = new SpellSlotInfo(0x0A, 2, 2, SpellSchools.White);
+		public static SpellSlotInfo Invs = new SpellSlotInfo(0x0B, 2, 3, SpellSchools.White);
+		public static SpellSlotInfo Ice = new SpellSlotInfo(0x0C, 2, 0, SpellSchools.Black);
+		public static SpellSlotInfo Dark = new SpellSlotInfo(0x0D, 2, 1, SpellSchools.Black);
+		public static SpellSlotInfo Tmpr = new SpellSlotInfo(0x0E, 2, 2, SpellSchools.Black);
+		public static SpellSlotInfo Slow = new SpellSlotInfo(0x0F, 2, 3, SpellSchools.Black);
+		public static SpellSlotInfo Cur2 = new SpellSlotInfo(0x10, 3, 0, SpellSchools.White);
+		public static SpellSlotInfo Hrm2 = new SpellSlotInfo(0x11, 3, 1, SpellSchools.White);
+		public static SpellSlotInfo Afir = new SpellSlotInfo(0x12, 3, 2, SpellSchools.White);
+		public static SpellSlotInfo Heal = new SpellSlotInfo(0x13, 3, 3, SpellSchools.White);
+		public static SpellSlotInfo Fir2 = new SpellSlotInfo(0x14, 3, 0, SpellSchools.Black);
+		public static SpellSlotInfo Hold = new SpellSlotInfo(0x15, 3, 1, SpellSchools.Black);
+		public static SpellSlotInfo Lit2 = new SpellSlotInfo(0x16, 3, 2, SpellSchools.Black);
+		public static SpellSlotInfo Lok2 = new SpellSlotInfo(0x17, 3, 3, SpellSchools.Black);
+		public static SpellSlotInfo Pure = new SpellSlotInfo(0x18, 4, 0, SpellSchools.White);
+		public static SpellSlotInfo Fear = new SpellSlotInfo(0x19, 4, 1, SpellSchools.White);
+		public static SpellSlotInfo Aice = new SpellSlotInfo(0x1A, 4, 2, SpellSchools.White);
+		public static SpellSlotInfo Amut = new SpellSlotInfo(0x1B, 4, 3, SpellSchools.White);
+		public static SpellSlotInfo Slp2 = new SpellSlotInfo(0x1C, 4, 0, SpellSchools.Black);
+		public static SpellSlotInfo Fast = new SpellSlotInfo(0x1D, 4, 1, SpellSchools.Black);
+		public static SpellSlotInfo Conf = new SpellSlotInfo(0x1E, 4, 2, SpellSchools.Black);
+		public static SpellSlotInfo Ice2 = new SpellSlotInfo(0x1F, 4, 3, SpellSchools.Black);
+		public static SpellSlotInfo Cur3 = new SpellSlotInfo(0x20, 5, 0, SpellSchools.White);
+		public static SpellSlotInfo Life = new SpellSlotInfo(0x21, 5, 1, SpellSchools.White);
+		public static SpellSlotInfo Hrm3 = new SpellSlotInfo(0x22, 5, 2, SpellSchools.White);
+		public static SpellSlotInfo Hel2 = new SpellSlotInfo(0x23, 5, 3, SpellSchools.White);
+		public static SpellSlotInfo Fir3 = new SpellSlotInfo(0x24, 5, 0, SpellSchools.Black);
+		public static SpellSlotInfo Bane = new SpellSlotInfo(0x25, 5, 1, SpellSchools.Black);
+		public static SpellSlotInfo Warp = new SpellSlotInfo(0x26, 5, 2, SpellSchools.Black);
+		public static SpellSlotInfo Slo2 = new SpellSlotInfo(0x27, 5, 3, SpellSchools.Black);
+		public static SpellSlotInfo Soft = new SpellSlotInfo(0x28, 6, 0, SpellSchools.White);
+		public static SpellSlotInfo Exit = new SpellSlotInfo(0x29, 6, 1, SpellSchools.White);
+		public static SpellSlotInfo Fog2 = new SpellSlotInfo(0x2A, 6, 2, SpellSchools.White);
+		public static SpellSlotInfo Inv2 = new SpellSlotInfo(0x2B, 6, 3, SpellSchools.White);
+		public static SpellSlotInfo Lit3 = new SpellSlotInfo(0x2C, 6, 0, SpellSchools.Black);
+		public static SpellSlotInfo Rub = new SpellSlotInfo(0x2D, 6, 1, SpellSchools.Black);
+		public static SpellSlotInfo Qake = new SpellSlotInfo(0x2E, 6, 2, SpellSchools.Black);
+		public static SpellSlotInfo Stun = new SpellSlotInfo(0x2F, 6, 3, SpellSchools.Black);
+		public static SpellSlotInfo Cur4 = new SpellSlotInfo(0x30, 7, 0, SpellSchools.White);
+		public static SpellSlotInfo Hrm4 = new SpellSlotInfo(0x31, 7, 1, SpellSchools.White);
+		public static SpellSlotInfo Arub = new SpellSlotInfo(0x32, 7, 2, SpellSchools.White);
+		public static SpellSlotInfo Hel3 = new SpellSlotInfo(0x33, 7, 3, SpellSchools.White);
+		public static SpellSlotInfo Ice3 = new SpellSlotInfo(0x34, 7, 0, SpellSchools.Black);
+		public static SpellSlotInfo Brak = new SpellSlotInfo(0x35, 7, 1, SpellSchools.Black);
+		public static SpellSlotInfo Sabr = new SpellSlotInfo(0x36, 7, 2, SpellSchools.Black);
+		public static SpellSlotInfo Blnd = new SpellSlotInfo(0x37, 7, 3, SpellSchools.Black);
+		public static SpellSlotInfo Lif2 = new SpellSlotInfo(0x38, 8, 0, SpellSchools.White);
+		public static SpellSlotInfo Fade = new SpellSlotInfo(0x39, 8, 1, SpellSchools.White);
+		public static SpellSlotInfo Wall = new SpellSlotInfo(0x3A, 8, 2, SpellSchools.White);
+		public static SpellSlotInfo Xfer = new SpellSlotInfo(0x3B, 8, 3, SpellSchools.White);
+		public static SpellSlotInfo Nuke = new SpellSlotInfo(0x3C, 8, 0, SpellSchools.Black);
+		public static SpellSlotInfo Stop = new SpellSlotInfo(0x3D, 8, 1, SpellSchools.Black);
+		public static SpellSlotInfo Zap = new SpellSlotInfo(0x3E, 8, 2, SpellSchools.Black);
+		public static SpellSlotInfo XXXX = new SpellSlotInfo(0x3F, 8, 3, SpellSchools.Black);
+		public static SpellSlotInfo None = new SpellSlotInfo();
+
+		public static List<SpellSlotInfo> GetSpellSlots()
+		{
+			var fields = typeof(SpellSlotStructure).GetFields(BindingFlags.Public | BindingFlags.Static);
+			return fields.Where(f => f.FieldType == typeof(SpellSlotInfo))
+				.Select(f => f.GetValue(null) as SpellSlotInfo)
+				.Where(t => t != null)
+				.ToList();
+		}
+	}
+
+	public enum SpellSchools
+	{
+		White = 0,
+		Black
 	}
 }

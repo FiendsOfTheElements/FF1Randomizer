@@ -177,18 +177,18 @@ namespace FF1Lib
 			// this is a duplicate { "..", 0xC3 },
 			{ "!", 0xC4 },
 			{ "?", 0xC5 },
-			{ "@S", 0xD4 },
-			{ "@H", 0xD5 },
-			{ "@K", 0xD6 },
-			{ "@X", 0xD7 },
-			{ "@F", 0xD8 },
-			{ "@N", 0xD9 },
-			{ "@A", 0xDA },
-			{ "@s", 0xDB },
-			{ "@h", 0xDC },
-			{ "@G", 0xDD },
-			{ "@B", 0xDE },
-			{ "@T", 0xDF },
+			{ "@S", 0xD4 }, // swords
+			{ "@H", 0xD5 }, // hammers
+			{ "@K", 0xD6 }, // knives
+			{ "@X", 0xD7 }, // axes
+			{ "@F", 0xD8 }, // staves
+			{ "@N", 0xD9 }, // nunchucks
+			{ "@A", 0xDA }, // armors
+			{ "@s", 0xDB }, // shields
+			{ "@h", 0xDC }, // helmets
+			{ "@G", 0xDD }, // gauntelets
+			{ "@B", 0xDE }, // bracelets
+			{ "@T", 0xDF }, // shirts
 			{ "%", 0xE0 },
 			{ "@p", 0xE1 },
 			{ "€s", 0xE2 },

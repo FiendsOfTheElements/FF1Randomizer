@@ -3974,6 +3974,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassCasting"));
 			}
 		}
+		public bool? RandomizeClassKeyItems
+		{
+			get => Flags.RandomizeClassKeyItems;
+			set
+			{
+				Flags.RandomizeClassKeyItems = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassKeyItems"));
+			}
+		}
 		public bool? RandomizeClassIncludeNaturalResist
 		{
 			get => Flags.RandomizeClassIncludeNaturalResist;
