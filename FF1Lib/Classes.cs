@@ -706,15 +706,13 @@ namespace FF1Lib
 			}
 
 			// Add Natural Resist Bonuses
-			if ((bool)flags.RandomizeClassIncludeNaturalResist)
-			{
-				bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res All", mod: 0xFF, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
-				bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res PEDTS", mod: (int)(Element.POISON | Element.EARTH | Element.DEATH | Element.TIME | Element.STATUS), Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
+			bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res All", mod: 0xFF, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
+			bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res PEDTS", mod: (int)(Element.POISON | Element.EARTH | Element.DEATH | Element.TIME | Element.STATUS), Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
 
-				bonusNormal.Add(CreateRandomResistBonusMalus(rng));
-				bonusNormal.Add(CreateRandomResistBonusMalus(rng));
-			}
-
+			bonusNormal.Add(CreateRandomResistBonusMalus(rng));
+			bonusNormal.Add(CreateRandomResistBonusMalus(rng));
+			
+			// Add XP Bonuses
 			if ((bool)flags.RandomizeClassIncludeXpBonus)
 			{
 				bonusStrong.Add(new BonusMalus(BonusMalusAction.BonusXp, "+50% XP", mod: 150, Classes: new List<Classes> { Classes.Fighter, Classes.BlackBelt }));
@@ -724,6 +722,7 @@ namespace FF1Lib
 				bonusNormal.Add(new BonusMalus(BonusMalusAction.BonusXp, "+50% XP", mod: 150, Classes: new List<Classes> { Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
 			}
 
+			// Add Max MP on MP Gain Bonus
 			if (flags.MpGainOnMaxGainMode == MpGainOnMaxGain.Blursed)
 			{
 				bonusNormal.Add(new BonusMalus(BonusMalusAction.MpGainOnMaxMpGain, "Max+Mp+", Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
