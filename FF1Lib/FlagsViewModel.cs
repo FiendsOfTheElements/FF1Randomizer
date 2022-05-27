@@ -1217,6 +1217,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MoveGaiaItemShop"));
 			}
 		}
+		public bool? ShufflePravokaShops
+		{
+			get => Flags.ShufflePravokaShops;
+			set
+			{
+				Flags.ShufflePravokaShops = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShufflePravokaShops"));
+			}
+		}
 		public bool? FlipDungeons
 		{
 			get => Flags.FlipDungeons;

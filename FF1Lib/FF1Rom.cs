@@ -298,6 +298,8 @@ namespace FF1Lib
 				attackedTown = RandomVampireAttack(maps, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
 			}
 
+			ShufflePravoka(flags, rng, maps, attackedTown == MapId.Pravoka);
+
 			if ((bool)flags.GaiaShortcut)
 			{
 				EnableGaiaShortcut(maps);

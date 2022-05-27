@@ -889,6 +889,12 @@
 		"description": "Upgrades the L8 Magic Shops in Lefein to include additional L1-L8 Magic Shops from around the world.\nDoes not include L7 and L8 Magic Shops from the neighboring town of Gaia.\nNote: This flag is ignored if the \"Shop Reduction\" flag for the Magic Shops is enabled."
 	},
 	{
+		"Id": "shufflePravokaShopsCheckBox",
+		"title": "Shuffle Pravoka's Shop",
+		"screenshot": "shufflePravokaShopsCheckBox.png",
+		"description": "Shops in Pravoka are shuffled amongst all occupied and unoccupied buildings."
+	},
+	{
 		"Id": "randomVampAttackCheckBox",
 		"title": "Vampire Attacks Random Town",
 		"screenshot": "vampAttack.png",
