@@ -1560,6 +1560,12 @@
 		"description": "Gives the selected class a multiplier to exp. This bonus is multiplicative with the flagset's exp multiplier.\n\ne.g. A Flagset bonus XP of 2.0x and a class bonus of 1.5x will have a total of 3.0x for that class."
 	},
 	{
+		"Id": "RandomizeClassKeyItemsCheckBox",
+		"title": "Blursed Classes - Start with Key Items",
+		"screenshot": "RandomizeClassKeyItemsCheckBox.png",
+		"description": "Each Classes will start with a different Key Item. Free or Removed Key Items aren't included. If Thief Lockpicking is enabled, KEY will be excluded. These Key Items are never included: BRIDGE, SHIP, CANAL, CANOE, FLOATER."
+	},
+	{
 		"Id": "EnableRandomPromotions",
 		"title": "Random Promotions",
 		"screenshot": "EnableRandomPromotions.gif",
