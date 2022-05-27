@@ -969,7 +969,8 @@ namespace FF1Lib
 			var dialogueStrings = new List<string>
 			{
 				"I. aM. WarMECH.",
-				"I think you ought to\nknow, I'm feeling very\ndepressed.",
+				"Give me the AllSpark,\nand you may live to be\nmy pet!",
+				"I'm afraid that's\nsomething I cannot allow\nto happen, Dave.",
 				"Bite my shiny metal ass!",
 				"Put down your weapons.\nYou have 15 seconds to\ncomply.",
 				"rEsIsTaNcE iS fUtIlE.",
