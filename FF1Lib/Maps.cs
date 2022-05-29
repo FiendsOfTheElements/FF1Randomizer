@@ -859,7 +859,7 @@ namespace FF1Lib
 				shopTiles.Add((0x1A, 0x68)); // Clinic
 
 				// Clinic
-				highWallTiles.Add((0x1A, 0x09)); 
+				highWallTiles.Add((0x1A, 0x09));
 				maps[(int)MapId.Pravoka][0x08, 0x1A] = 0x1B;
 
 				// Item Shop
@@ -1376,6 +1376,28 @@ namespace FF1Lib
 				// Have locked rooms draw inside NPCs, instead of outside NPCs
 				PutInBank(0x1F, 0xCEDE, new byte[] { 0x81 });
 			}
+		}
+
+		public void RandomizeChestLocations(List<Map> maps) {
+
+		    // For a tileset, I need to determine:
+		    //
+		    // * doors and locked doors
+		    // * floor tiles with the move bit that are empty.
+
+		    // To relocate chests in a dungeon (a group of maps)
+		    //
+		    // * Find the all the chest tiles and spike tiles
+		    // * Wipe all the tiles with the 1st floor tile in the tileset
+		    // * Find all the doors
+		    // * For each door, flood fill search for floor tiles, other doors, and teleports & record what we found
+		    // * Also record the positions of NPCs
+		    //
+		    // * Place each chest tile randomly on a room floor tiles
+		    // * Place the spike tile randomly on a room floor tile adjacent to chest tiles
+		    // ** Weighting 40% below chest, 20% left/right/top
+		    // * Finally, sanity check each room that we can reach all chests, doors, teleports and NPCs in the room
+
 		}
 	}
 }

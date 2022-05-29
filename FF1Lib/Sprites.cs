@@ -1122,13 +1122,16 @@ namespace FF1Lib
 		}
 	    }
 
+	    public byte GetMapTilesetIndex(int mapId) {
+		return Get(MAPTILESET_ASSIGNMENT + mapId, 1)[0];
+	    }
+
 	    Image<Rgba32> exportMapTiles(int mapId,
 					 bool inside,
 					 int PATTERNTABLE_OFFSET,
 					 int PATTERNTABLE_ASSIGNMENT)
 	    {
-		var tileset = Get(MAPTILESET_ASSIGNMENT + mapId, 1)[0];
-
+		var tileset = GetMapTilesetIndex(mapId);
 		var tilesetProps = new TileSet(this, tileset);
 
 		List<byte[]> palette = new();
