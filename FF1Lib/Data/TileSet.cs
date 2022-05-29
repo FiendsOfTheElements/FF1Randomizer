@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace FF1Lib
 {
+    [Flags]
 	public enum TilePropFunc : byte
 	{
 		TP_SPEC_DOOR = 0b00000010,
@@ -60,6 +61,12 @@ namespace FF1Lib
 		}
 
 		public byte ShopId
+		{
+			get { return Byte2; }
+			set { Byte2 = value; }
+		}
+
+		public byte BattleId
 		{
 			get { return Byte2; }
 			set { Byte2 = value; }

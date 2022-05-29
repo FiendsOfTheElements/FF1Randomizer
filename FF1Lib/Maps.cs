@@ -5,6 +5,7 @@ using System.Text;
 using FF1Lib.Procgen;
 using RomUtilities;
 using static FF1Lib.FF1Text;
+using FF1Lib.Sanity;
 
 namespace FF1Lib
 {
@@ -1378,26 +1379,211 @@ namespace FF1Lib
 			}
 		}
 
-		public void RandomizeChestLocations(List<Map> maps) {
+		class Room {
+		    public List<MapElement> floor = new();
+		    public List<MapElement> chests = new();
+		    public List<MapElement> doors = new ();
+		    public List<MapElement> tele = new ();
+		    public List<NPC> npcs = new ();
+		    public Room() { }
+		}
 
+		public void shuffleChestLocations(List<Map> maps, MapId[] ids) {
 		    // For a tileset, I need to determine:
 		    //
 		    // * doors and locked doors
 		    // * floor tiles with the move bit that are empty.
 
+		    Console.WriteLine($"\nTiles for {ids[0]}");
+
+		    var tileset = new TileSet(this, GetMapTilesetIndex(ids[0]));
+
+		    List<byte> blankGfxTiles = new();
+
+		    for (byte i = 0; i < 128; i++) {
+			var chr = Get(TILESETPATTERNTABLE_OFFSET + (GetMapTilesetIndex(ids[0]) << 11) + (i * 16), 16);
+			bool blank = true;
+			// Check that entire tile is color 1
+			for (int j = 0; j < 8; j++) {
+			    if (chr[j] != 0xff) {
+				blank = false;
+			    }
+			}
+			for (int j = 8; j < 16; j++) {
+			    if (chr[j] != 0) {
+				blank = false;
+			    }
+			}
+			if (blank) {
+			    blankGfxTiles.Add(i);
+			}
+		    }
+		    foreach(var b in blankGfxTiles) {
+			Console.WriteLine($"blank chr {b:X}");
+		    }
+		    List<byte> doorTiles = new() {0x36, 0x37, 0x3B};
+		    List<byte> floorTiles = new();
+		    List<byte> spikeTiles = new();
+		    List<byte> battleTiles = new();
+
+		    for (byte i = 0; i < 128; i++) {
+			if ((tileset.TileProperties[i].TilePropFunc & TilePropFunc.TP_NOMOVE) != 0) {
+			    continue;
+			}
+			// Can move
+
+			if (!blankGfxTiles.Contains(tileset.TopLeftTiles[i]) ||
+			    !blankGfxTiles.Contains(tileset.TopRightTiles[i]) ||
+			    !blankGfxTiles.Contains(tileset.BottomLeftTiles[i]) ||
+			    !blankGfxTiles.Contains(tileset.BottomRightTiles[i]))
+			{
+			    continue;
+			}
+			// Blank, in-room gfx
+
+			if (tileset.TileProperties[i].TilePropFunc == TilePropFunc.TP_SPEC_BATTLE) {
+			    if (tileset.TileProperties[i].BattleId != 0x80) {
+				// Spike tile
+				spikeTiles.Add(i);
+				Console.WriteLine($"spike tile {i:X}");
+			    } else {
+				// Random battle
+				battleTiles.Add(i);
+				Console.WriteLine($"battle tile {i:X}");
+			    }
+			    continue;
+			}
+
+			floorTiles.Add(i);
+			Console.WriteLine($"floor tile {i:X}");
+		    }
+
+		    List<byte> chestPool = new();
+		    List<byte> spikePool = new();
+		    List<SCCoords> doorCoords = new();
+
 		    // To relocate chests in a dungeon (a group of maps)
 		    //
 		    // * Find the all the chest tiles and spike tiles
-		    // * Wipe all the tiles with the 1st floor tile in the tileset
+		    // * Wipe all the tiles with the floor tile in the tileset
 		    // * Find all the doors
 		    // * For each door, flood fill search for floor tiles, other doors, and teleports & record what we found
 		    // * Also record the positions of NPCs
+
+		    List<Room> rooms = new();
+
+		    foreach (var mapId in ids) {
+			var map = maps[(int)mapId];
+
+			for (int y = 0; y < 64; y++) {
+			    for (int x = 0; x < 64; x++) {
+				var tf = tileset.TileProperties[map[y, x]];
+				bool wipe = false;
+
+				if (tf.TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE)) {
+				    chestPool.Add(map[y, x]);
+				    Console.WriteLine($"add {map[y, x]:X} to chest pool");
+				    wipe = true;
+				}
+				if (tf.TilePropFunc == TilePropFunc.TP_SPEC_BATTLE && tf.BattleId != 0x80) {
+				    spikePool.Add(map[y, x]);
+				    Console.WriteLine($"add {map[y, x]:X} to spike pool");
+				    wipe = true;
+				}
+
+				if (doorTiles.Contains(map[y, x])) {
+				    doorCoords.Add(new SCCoords(x, y));
+				}
+
+				if (wipe) {
+				    map[y, x] = floorTiles[0];
+				}
+			    }
+			}
+
+			List<SCCoords> searched = new();
+			foreach (var dc in doorCoords) {
+			    var st = dc.SmUp;
+			    var room = new Room();
+			    bool newRoom = true;
+			    map.Flood((st.X, st.Y), (MapElement me) => {
+				if (doorTiles.Contains(me.Value)) {
+				    room.doors.Add(me);
+				    if (searched.Contains(dc)) {
+					newRoom = false;
+				    }
+				} else if (floorTiles.Contains(me.Value)) {
+				    room.floor.Add(me);
+				    return true;
+				}
+				else if ((tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_TELE_MASK) != 0) {
+				    room.tele.Add(me);
+				}
+
+				for (int i = 0; i < 16; i++) {
+				    var npc = GetNpc((MapId)mapId, i);
+				    if (npc.Coord == me.Coord) {
+					room.npcs.Add(npc);
+				    }
+				}
+				return false;
+			    });
+			    searched.Add(dc);
+			    if (newRoom) {
+				rooms.Add(room);
+			    }
+			}
+		    }
+
 		    //
 		    // * Place each chest tile randomly on a room floor tiles
 		    // * Place the spike tile randomly on a room floor tile adjacent to chest tiles
 		    // ** Weighting 40% below chest, 20% left/right/top
 		    // * Finally, sanity check each room that we can reach all chests, doors, teleports and NPCs in the room
+		}
 
+		public void ShuffleAllChestLocations(List<Map> maps) {
+		    // Groups of maps that make up a shuffle pool
+		    // They need to all use the same tileset.
+
+		    // maps 0-7 are towns
+		    List<MapId[]> dungeons = new() {
+			new MapId[] { MapId.ConeriaCastle1F, MapId.ConeriaCastle2F, MapId.ElflandCastle, MapId.NorthwestCastle },
+
+			// 18 - Waterfall
+			// 19 - Dwarves
+			// 20 - Matoya
+			// 21 - Sarda
+			new MapId[] { MapId.Waterfall, MapId.DwarfCave, MapId.MatoyasCave, MapId.SardasCave },
+
+			new MapId[] { MapId.MarshCaveB1, MapId.MarshCaveB2, MapId.MarshCaveB3 }, // Marsh
+			new MapId[] { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5 }, // Earth Cave
+			new MapId[] { MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5 }, // Volcano
+			new MapId[] { MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3 }, // Ice Cave
+			new MapId[] { MapId.CastleOfOrdeals1F, MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals3F }, // Ordeals
+			new MapId[] { MapId.Cardia, MapId.BahamutsRoomB1, MapId.BahamutsRoomB2 }, // Cardia
+			new MapId[] { MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 }, // Sea Shrine
+			new MapId[] { MapId.MirageTower1F, MapId.MirageTower2F, MapId.MirageTower3F }, // Mirage
+			new MapId[] { MapId.SkyPalace1F, MapId.SkyPalace2F, MapId.SkyPalace3F, MapId.SkyPalace4F, MapId.SkyPalace5F }, // Sky Castle
+			new MapId[] { MapId.TempleOfFiendsRevisited1F,
+			    MapId.TempleOfFiendsRevisited2F,
+			    MapId.TempleOfFiendsRevisited3F,
+			    MapId.TempleOfFiendsRevisitedEarth,
+			    MapId.TempleOfFiendsRevisitedFire,
+			    MapId.TempleOfFiendsRevisitedWater,
+			    MapId.TempleOfFiendsRevisitedAir,
+			    MapId.TempleOfFiendsRevisitedChaos }, // ToFR
+
+			// These don't really fit in anywhere
+			// new MapId[] { MapId.TempleOfFiends }, // ToF
+			// new MapId[] { MapId.TitansTunnel }, // Titan
+		    };
+
+		    // TODO: if Coneria is incentived, remove it from shuffle.
+
+		    foreach (MapId[] b in dungeons) {
+			shuffleChestLocations(maps, b);
+		    }
 		}
 	}
 }

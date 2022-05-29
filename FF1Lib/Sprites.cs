@@ -1122,11 +1122,11 @@ namespace FF1Lib
 		}
 	    }
 
-	    public byte GetMapTilesetIndex(int mapId) {
-		return Get(MAPTILESET_ASSIGNMENT + mapId, 1)[0];
+	    public byte GetMapTilesetIndex(MapId mapId) {
+		return Get(MAPTILESET_ASSIGNMENT + (int)mapId, 1)[0];
 	    }
 
-	    Image<Rgba32> exportMapTiles(int mapId,
+	    Image<Rgba32> exportMapTiles(MapId mapId,
 					 bool inside,
 					 int PATTERNTABLE_OFFSET,
 					 int PATTERNTABLE_ASSIGNMENT)
@@ -1136,15 +1136,15 @@ namespace FF1Lib
 
 		List<byte[]> palette = new();
 		if (!inside) {
-		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0, 4));
-		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 4, 4));
-		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 8, 4));
-		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 12, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 0, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 4, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 8, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 12, 4));
 		} else {
-		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 0, 4));
-		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 4, 4));
-		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 8, 4));
-		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 12, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 0x20 + 0, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 0x20 + 4, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 0x20 + 8, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 0x20 + 12, 4));
 		}
 
 		var output = new Image<Rgba32>(16 * 16, 8 * 16);
@@ -1175,20 +1175,20 @@ namespace FF1Lib
 		return output;
 	    }
 
-	    public Image<Rgba32> ExportMapTiles(int mapId, bool inside) {
+	    public Image<Rgba32> ExportMapTiles(MapId mapId, bool inside) {
 		return exportMapTiles(mapId, inside,
 					 TILESETPATTERNTABLE_OFFSET,
 					 TILESETPATTERNTABLE_ASSIGNMENT);
 	    }
 
-	    public Image<Rgba32> RenderMap(List<Map> maps, int mapId, bool inside) {
+	    public Image<Rgba32> RenderMap(List<Map> maps, MapId mapId, bool inside) {
 		var tiles = ExportMapTiles(mapId, inside);
 
 		var output = new Image<Rgba32>(64 * 16, 64 * 16);
 
 		for (int y = 0; y < 64; y++) {
 		    for (int x = 0; x < 64; x++) {
-			var t = maps[mapId][y, x];
+			var t = maps[(int)mapId][y, x];
 			var tile_row = t/16;
 			var tile_col = t%16;
 			var src = tiles.Clone(d => d.Crop(new Rectangle(tile_col*16, tile_row*16, 16, 16)));

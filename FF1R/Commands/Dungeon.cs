@@ -55,12 +55,44 @@ namespace FF1R.Commands
 		string name;
 
 		if (Tiles) {
-		    output = rom.ExportMapTiles(i, Inside);
+		    output = rom.ExportMapTiles((FF1Lib.MapId)i, Inside);
 		    name = $"dungeontiles{i}.png";
 		} else {
-		    output = rom.RenderMap(maps, i, Inside);
+		    output = rom.RenderMap(maps, (FF1Lib.MapId)i, Inside);
 		    name = $"dungeonmap{i}.png";
 		}
+		output.Save(name);
+		Console.WriteLine($"Wrote {name}");
+	    }
+
+	    return 0;
+	}
+    }
+
+    [Command("relocatechests", Description = "Render dungeon")]
+    class RelocateDungeonChests
+    {
+	[Argument(0, Description = "Final Fantasy Randomized ROM")]
+	[FileExists]
+	public string RomPath { get; }
+
+	int OnExecute(IConsole console)
+	{
+	    var rom = new FF1Rom(RomPath);
+	    rom.LoadSharedDataTables();
+
+	    var maps = rom.ReadMaps();
+
+	    rom.ShuffleAllChestLocations(maps);
+
+	    int start = 0;
+	    int end = 60;
+
+	    for (int i = start; i <= end; i++) {
+		Image<Rgba32> output;
+		string name;
+		output = rom.RenderMap(maps, (MapId)i, true);
+		name = $"dungeonmap{i}.png";
 		output.Save(name);
 		Console.WriteLine($"Wrote {name}");
 	    }
