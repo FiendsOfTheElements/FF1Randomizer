@@ -42,6 +42,8 @@ namespace FF1Lib
 	    const int TILESET_TILEDATA =					0x800;
 	    const int MAPPALETTE_OFFSET =					0x2000;
 
+	    const int MAPTILESET_ASSIGNMENT =				0x2CC0;
+
 	    public byte[] EncodeForPPU(byte[] tile) {
 		// Take an array of 64 bytes with a ordinary linear
 		// encoding (left to right, top to bottom, one byte
@@ -1121,52 +1123,56 @@ namespace FF1Lib
 	    }
 
 	    Image<Rgba32> exportMapGraphics(int mapId,
-					    int tileset,
-					    int PALETTE_ASSIGNMENT,
 					    int PATTERNTABLE_OFFSET,
 					    int PATTERNTABLE_ASSIGNMENT)
 	    {
+		var tileset = Get(MAPTILESET_ASSIGNMENT + mapId, 1)[0];
+
 		var output = new Image<Rgba32>(16 * 16, 8 * 16);
 
 		int offset = MAPPALETTE_OFFSET + (mapId * 0x30);
 
-		List<byte[]> controlPalette = new();
-		controlPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0, 4));
-		controlPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 4, 4));
-		controlPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 8, 4));
-		controlPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 12, 4));
+		List<byte[]> outsideRoomPalette = new();
+	        outsideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0, 4));
+		outsideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 4, 4));
+		outsideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 8, 4));
+		outsideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 12, 4));
+
+		List<byte[]> insideRoomPalette = new();
+	        insideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 0, 4));
+		insideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 4, 4));
+		insideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 8, 4));
+		insideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 12, 4));
 
 		for(int imagecount = 0; imagecount < 128; imagecount += 1) {
-		    var pal = Get(TILESETPALETTE_ASSIGNMENT + imagecount + (tileset<<7), 1);
+		    var pal = Get(TILESETPALETTE_ASSIGNMENT + imagecount + (tileset<<7), 1)[0];
 
-		    var pt1 = Get(PATTERNTABLE_ASSIGNMENT +   0 + imagecount, 1);
-		    var pt2 = Get(PATTERNTABLE_ASSIGNMENT + 128 + imagecount, 1);
-		    var pt3 = Get(PATTERNTABLE_ASSIGNMENT + 256 + imagecount, 1);
-		    var pt4 = Get(PATTERNTABLE_ASSIGNMENT + 384 + imagecount, 1);
+		    var pt1 = Get(PATTERNTABLE_ASSIGNMENT + (tileset << 9) +   0 + imagecount, 1)[0];
+		    var pt2 = Get(PATTERNTABLE_ASSIGNMENT + (tileset << 9) + 128 + imagecount, 1)[0];
+		    var pt3 = Get(PATTERNTABLE_ASSIGNMENT + (tileset << 9) + 256 + imagecount, 1)[0];
+		    var pt4 = Get(PATTERNTABLE_ASSIGNMENT + (tileset << 9) + 384 + imagecount, 1)[0];
 
-		    var chr1 = Get(PATTERNTABLE_OFFSET + (pt1[0] * 16), 16);
-		    var chr2 = Get(PATTERNTABLE_OFFSET + (pt2[0] * 16), 16);
-		    var chr3 = Get(PATTERNTABLE_OFFSET + (pt3[0] * 16), 16);
-		    var chr4 = Get(PATTERNTABLE_OFFSET + (pt4[0] * 16), 16);
+		    var chr1 = Get(PATTERNTABLE_OFFSET + (tileset << 11) + (pt1 * 16), 16);
+		    var chr2 = Get(PATTERNTABLE_OFFSET + (tileset << 11) + (pt2 * 16), 16);
+		    var chr3 = Get(PATTERNTABLE_OFFSET + (tileset << 11) + (pt3 * 16), 16);
+		    var chr4 = Get(PATTERNTABLE_OFFSET + (tileset << 11) + (pt4 * 16), 16);
 
 		    var dc1 = DecodePPU(chr1);
 		    var dc2 = DecodePPU(chr2);
 		    var dc3 = DecodePPU(chr3);
 		    var dc4 = DecodePPU(chr4);
 
-		    renderTile(output, dc1, controlPalette[pal[0] & 3], (imagecount % 16) * 16, (imagecount/16) * 16);
-		    renderTile(output, dc2, controlPalette[pal[0] & 3], (imagecount % 16) * 16+8, (imagecount/16) * 16);
-		    renderTile(output, dc3, controlPalette[pal[0] & 3], (imagecount % 16) * 16, (imagecount/16) * 16+8);
-		    renderTile(output, dc4, controlPalette[pal[0] & 3], (imagecount % 16) * 16+8, (imagecount/16) * 16+8);
+		    renderTile(output, dc1, insideRoomPalette[pal & 3], (imagecount % 16) * 16, (imagecount/16) * 16);
+		    renderTile(output, dc2, insideRoomPalette[pal & 3], (imagecount % 16) * 16+8, (imagecount/16) * 16);
+		    renderTile(output, dc3, insideRoomPalette[pal & 3], (imagecount % 16) * 16, (imagecount/16) * 16+8);
+		    renderTile(output, dc4, insideRoomPalette[pal & 3], (imagecount % 16) * 16+8, (imagecount/16) * 16+8);
 		}
 
 		return output;
 	    }
 
 	    public Image<Rgba32> ExportMapGraphics(int mapId) {
-		return exportMapGraphics(0,
-					 0,
-					 0,
+		return exportMapGraphics(mapId,
 					 TILESETPATTERNTABLE_OFFSET,
 					 TILESETPATTERNTABLE_ASSIGNMENT);
 	    }
