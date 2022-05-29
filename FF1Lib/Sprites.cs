@@ -1122,9 +1122,10 @@ namespace FF1Lib
 		}
 	    }
 
-	    Image<Rgba32> exportMapGraphics(int mapId,
-					    int PATTERNTABLE_OFFSET,
-					    int PATTERNTABLE_ASSIGNMENT)
+	    Image<Rgba32> exportMapTiles(int mapId,
+					 bool inside,
+					 int PATTERNTABLE_OFFSET,
+					 int PATTERNTABLE_ASSIGNMENT)
 	    {
 		var tileset = Get(MAPTILESET_ASSIGNMENT + mapId, 1)[0];
 
@@ -1132,17 +1133,18 @@ namespace FF1Lib
 
 		int offset = MAPPALETTE_OFFSET + (mapId * 0x30);
 
-		List<byte[]> outsideRoomPalette = new();
-	        outsideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0, 4));
-		outsideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 4, 4));
-		outsideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 8, 4));
-		outsideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 12, 4));
-
-		List<byte[]> insideRoomPalette = new();
-	        insideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 0, 4));
-		insideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 4, 4));
-		insideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 8, 4));
-		insideRoomPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 12, 4));
+		List<byte[]> palette = new();
+		if (!inside) {
+		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 4, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 8, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 12, 4));
+		} else {
+		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 0, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 4, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 8, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 12, 4));
+		}
 
 		for(int imagecount = 0; imagecount < 128; imagecount += 1) {
 		    var pal = Get(TILESETPALETTE_ASSIGNMENT + imagecount + (tileset<<7), 1)[0];
@@ -1162,19 +1164,37 @@ namespace FF1Lib
 		    var dc3 = DecodePPU(chr3);
 		    var dc4 = DecodePPU(chr4);
 
-		    renderTile(output, dc1, insideRoomPalette[pal & 3], (imagecount % 16) * 16, (imagecount/16) * 16);
-		    renderTile(output, dc2, insideRoomPalette[pal & 3], (imagecount % 16) * 16+8, (imagecount/16) * 16);
-		    renderTile(output, dc3, insideRoomPalette[pal & 3], (imagecount % 16) * 16, (imagecount/16) * 16+8);
-		    renderTile(output, dc4, insideRoomPalette[pal & 3], (imagecount % 16) * 16+8, (imagecount/16) * 16+8);
+		    renderTile(output, dc1, palette[pal & 3], (imagecount % 16) * 16, (imagecount/16) * 16);
+		    renderTile(output, dc2, palette[pal & 3], (imagecount % 16) * 16+8, (imagecount/16) * 16);
+		    renderTile(output, dc3, palette[pal & 3], (imagecount % 16) * 16, (imagecount/16) * 16+8);
+		    renderTile(output, dc4, palette[pal & 3], (imagecount % 16) * 16+8, (imagecount/16) * 16+8);
 		}
 
 		return output;
 	    }
 
-	    public Image<Rgba32> ExportMapGraphics(int mapId) {
-		return exportMapGraphics(mapId,
+	    public Image<Rgba32> ExportMapTiles(int mapId, bool inside) {
+		return exportMapTiles(mapId, inside,
 					 TILESETPATTERNTABLE_OFFSET,
 					 TILESETPATTERNTABLE_ASSIGNMENT);
+	    }
+
+	    public Image<Rgba32> RenderMap(List<Map> maps, int mapId, bool inside) {
+		var tiles = ExportMapTiles(mapId, inside);
+
+		var output = new Image<Rgba32>(64 * 16, 64 * 16);
+
+		for (int y = 0; y < 64; y++) {
+		    for (int x = 0; x < 64; x++) {
+			var t = maps[mapId][y, x];
+			var tile_row = t/16;
+			var tile_col = t%16;
+			var src = tiles.Clone(d => d.Crop(new Rectangle(tile_col*16, tile_row*16, 16, 16)));
+			output.Mutate(d => d.DrawImage(src, new Point(x*16, y*16), 1));
+		    }
+		}
+
+		return output;
 	    }
 
 	}
