@@ -32,6 +32,9 @@ namespace FF1R.Commands
 	[Option("-i")]
 	public bool Inside { get; } = false;
 
+	[Option("-t")]
+	public bool Tiles { get; } = false;
+
 	int OnExecute(IConsole console)
 	{
 	    var rom = new FF1Rom(RomPath);
@@ -39,16 +42,29 @@ namespace FF1R.Commands
 
 	    var maps = rom.ReadMaps();
 
+	    int start = Map;
+	    int end = Map;
+
 	    if (All) {
-		for (int i = 0; i < 60; i++) {
-		    var output = rom.RenderMap(maps, i, Inside);
-		    output.Save($"dungeonmap{i}.png");
+		start = 0;
+		end = 60;
+	    }
+
+	    for (int i = start; i <= end; i++) {
+		Image<Rgba32> output;
+		string name;
+
+		if (Tiles) {
+		    output = rom.ExportMapTiles(i, Inside);
+		    name = $"dungeontiles{i}.png";
+		} else {
+		    output = rom.RenderMap(maps, i, Inside);
+		    name = $"dungeonmap{i}.png";
 		}
+		output.Save(name);
+		Console.WriteLine($"Wrote {name}");
 	    }
-	    else {
-		var output = rom.RenderMap(maps, Map, Inside);
-		output.Save($"dungeonmap{Map}.png");
-	    }
+
 	    return 0;
 	}
     }
