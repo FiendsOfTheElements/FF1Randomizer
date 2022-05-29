@@ -138,6 +138,31 @@ namespace FF1Lib
 	    SparklingHand = 232
 	}
 
+	public enum SpellColor : byte {
+	    White = 0x20,
+	    Blue = 0x21,
+	    Violet = 0x22,
+	    Purple = 0x23,
+	    Pink = 0x24,
+	    PinkOrange = 0x25,
+	    LightOrange = 0x26,
+	    DarkOrange = 0x27,
+	    Yellow = 0x28,
+	    Green = 0x29,
+	    LightGreen = 0x2A,
+	    BlueGreen = 0x2B,
+	    Teal = 0x2C,
+	    Gray = 0x2D,
+	    Black1 = 0x2E,
+	    Black2 = 0x2F
+	}
+
+	public enum SpellSchools
+	{
+		White = 0,
+		Black
+	}
+
 	[JsonObject(MemberSerialization.OptIn)]
 	public class MagicSpell
 	{
@@ -237,16 +262,26 @@ namespace FF1Lib
 		return isRegularSpell;
 	    }
 
-	    [JsonProperty]
 	    public byte palette = 0;
 
-	    public bool ShouldSerializepalette() {
+	    [JsonProperty]
+	    [JsonConverter(typeof(StringEnumConverter))]
+	    public SpellColor SpellColor {
+		get {
+		    return (SpellColor)palette;
+		}
+		set {
+		    palette = (byte)value;
+		}
+	    }
+
+	    public bool ShouldSerializeSpellColor() {
 		return isRegularSpell;
 	    }
 
-	    void updateMagicIndex(byte level, byte slot, string type) {
+	    void updateMagicIndex(byte level, byte slot, SpellSchools type) {
 		this.Index = (byte)((level-1) * 8 + (slot-1));
-		if (type == "black") {
+		if (type == SpellSchools.Black) {
 		    this.Index += 4;
 		}
 	    }
@@ -257,7 +292,10 @@ namespace FF1Lib
 		    return (byte)((Index / 8)+1);
 		}
 		set {
-		    this.updateMagicIndex(value, Slot, MagicType);
+		    if (value < 1 || value > 8) {
+			throw new Exception("Spell level must be between 1 and 8");
+		    }
+		    this.updateMagicIndex(value, Slot, SpellSchool);
 		}
 	    }
 
@@ -271,7 +309,10 @@ namespace FF1Lib
 		    return (byte)((Index % 4) + 1);
 		}
 		set {
-		    this.updateMagicIndex(Level, value, MagicType);
+		    if (value < 1 || value > 4) {
+			throw new Exception("Spell slot must be between 1 and 4");
+		    }
+		    this.updateMagicIndex(Level, value, SpellSchool);
 		}
 	    }
 
@@ -280,12 +321,13 @@ namespace FF1Lib
 	    }
 
 	    [JsonProperty]
-	    public string MagicType {
+	    [JsonConverter(typeof(StringEnumConverter))]
+	    public SpellSchools SpellSchool {
 		get {
 		    if (Index % 8 < 4) {
-			return "white";
+			return SpellSchools.White;
 		    }
-		    return "black";
+		    return SpellSchools.Black;
 		}
 		set {
 		    this.updateMagicIndex(Level, Slot, value);
@@ -1376,11 +1418,5 @@ namespace FF1Lib
 				.Where(t => t != null)
 				.ToList();
 		}
-	}
-
-	public enum SpellSchools
-	{
-		White = 0,
-		Black
 	}
 }
