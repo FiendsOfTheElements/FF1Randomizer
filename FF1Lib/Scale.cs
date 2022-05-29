@@ -587,8 +587,8 @@ namespace FF1Lib
 			newAstos.accuracy = 42;
 			newAstos.critrate = 1;
 			newAstos.agility = 250;
-			newAstos.elem_weakness = (byte)Element.STATUS | (byte)Element.DEATH;
-			newAstos.elem_resist = (byte)Element.NONE;
+			newAstos.elem_weakness = (byte)SpellElement.Status | (byte)SpellElement.Death;
+			newAstos.elem_resist = (byte)SpellElement.None;
 
 			if (newAstos.AIscript == 0xFF) {
 			    var i = searchForNoSpellNoAbilityEnemyScript();

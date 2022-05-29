@@ -10,6 +10,13 @@ namespace FF1Lib
 	public partial class FF1Rom : NesRom
 	{
 
+	    bool ResourcePackHasGameplayChanges(Stream stream) {
+	        var resourcePackArchive = new ZipArchive(stream);
+                if (resourcePackArchive.GetEntry("spellbook.json") != null) return true;
+                if (resourcePackArchive.GetEntry("overworld.json") != null) return true;
+		return false;
+	    }
+
 		void LoadResourcePack(Stream stream)
 		{
 			var resourcePackArchive = new ZipArchive(stream);
@@ -128,6 +135,18 @@ namespace FF1Lib
 				using (var s = bridgeStory.Open())
 				{
 					LoadBridgeStory(s);
+				}
+			}
+
+			var spellbook = resourcePackArchive.GetEntry("spellbook.json");
+			if (spellbook != null)
+			{
+				using (var s = spellbook.Open())
+				{
+				    using (StreamReader reader = new StreamReader(stream)) {
+					var allSpells = JsonConvert.DeserializeObject<List<MagicSpell>>(reader.ReadToEnd());
+					this.PutSpells(allSpells);
+				    }
 				}
 			}
 		}

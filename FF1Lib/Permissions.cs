@@ -101,7 +101,7 @@ namespace FF1Lib
 
 			set {
 				if (value != null)
-				{ 
+				{
 					_permissions.RemoveAll(x => x.Item1 == GetEquipPermission(index));
 					_permissions.AddRange(value.Select(x => (GetEquipPermission(index), x)).ToList());
 				}
@@ -360,12 +360,19 @@ namespace FF1Lib
 			set
 			{
 				if (value != null)
-				{ 
+				{
 					_permissions.RemoveAll(x => x.Item1 == index);
 					_permissions.AddRange(value.Select(x => (index, x)).ToList());
 				}
 			}
 		}
+	    public List<Classes> PermissionsFor(SpellSlots slot)
+	    {
+		return _permissions
+		    .Where(x => x.Item2 == slot)
+		    .Select(x => x.Item1)
+		    .ToList();
+	    }
 	}
 
 }

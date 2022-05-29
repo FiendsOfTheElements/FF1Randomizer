@@ -121,6 +121,14 @@ namespace FF1Lib
 			return rom;
 		}
 
+		public void LoadSharedDataTables() {
+			ItemsText = new ItemNames(this);
+			ArmorPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, this);
+			WeaponPermissions = new GearPermissions(0x3BF50, (int)Item.WoodenNunchucks, this);
+			SpellPermissions = new SpellPermissions(this);
+			ClassData = new GameClasses(WeaponPermissions, ArmorPermissions, SpellPermissions, this);
+		}
+
 		public void Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
 		    Flags flagsForRng = flags;
@@ -147,10 +155,13 @@ namespace FF1Lib
 			MT19337 rng;
 			using (SHA256 hasher = SHA256.Create())
 			{
-				if (flags.TournamentSafe && flags.ResourcePack != null)
-				{
-					resourcesPackHash = hasher.ComputeHash(new MemoryStream(Convert.FromBase64String(flags.ResourcePack)).ToArray());
+			    if (flags.ResourcePack != null) {
+				var rp = new MemoryStream(Convert.FromBase64String(flags.ResourcePack));
+                                if (flags.TournamentSafe || ResourcePackHasGameplayChanges(rp)) {
+				    rp.Seek(0, SeekOrigin.Begin);
+				    resourcesPackHash = hasher.ComputeHash(rp).ToArray();
 				}
+			    }
 
 				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flagsForRng));
 				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed, resourcesPackHash });
@@ -179,11 +190,8 @@ namespace FF1Lib
 			SeparateUnrunnables();
 			DrawCanoeUnderBridge();
 
-			ItemsText = new ItemNames(this);
-			ArmorPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, this);
-			WeaponPermissions = new GearPermissions(0x3BF50, (int)Item.WoodenNunchucks, this);
-			SpellPermissions = new SpellPermissions(this);
-			ClassData = new GameClasses(WeaponPermissions, ArmorPermissions, SpellPermissions, this);
+			LoadSharedDataTables();
+
 			DeepDungeon = new DeepDungeon(this);
 
 			var talkroutines = new TalkRoutines();
@@ -1655,7 +1663,7 @@ namespace FF1Lib
 					temptext[j] = temptext[j].Replace("@B", "Bracelet");
 					temptext[j] = temptext[j].Replace("@T", "Shirt");
 				}
-				
+
 				blursetext += classlist[i] + "\n" + "BONUS" + "\n" + String.Join("\n", temptext.ToArray()) + "\n\n";
 			}
 

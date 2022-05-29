@@ -457,4 +457,43 @@ namespace FF1Lib
 			rom.Put(ItemTextPointerOffset, Blob.FromUShorts(_itemsPointers.ToArray()));
 		}
 	}
+
+	public class BattleMessages {
+	    // Note battle messages are moved into bank 1B by
+	    // BankRearranging.Bank1B() so these offsets are specific
+	    // to an FFR ROM offsets not vanilla.
+	    public const int BattleTextPointers = 0x6C3BA;
+	    public const int BattleTextBase = 0x64000;
+	    public const int BattleTextPointerCount = 0x50;
+
+	    private List<string> _battleTexts = new();
+	    private List<ushort> _battleTextPointers = new();
+
+	    private Blob ReadUntil(FF1Rom rom, int offset, byte delimiter)
+	    {
+		var bytes = new List<byte>();
+		while (rom[offset] != delimiter && offset < 0x70000)
+		{
+		    bytes.Add(rom[offset++]);
+		}
+		bytes.Add(delimiter);
+
+		return bytes.ToArray();
+	    }
+
+	    public BattleMessages(FF1Rom rom) {
+		_battleTextPointers = rom.Get(BattleTextPointers, 2 * BattleTextPointerCount).ToUShorts().ToList();
+
+		for (int i = 0; i < _battleTextPointers.Count; i++)
+		{
+		    _battleTexts.Add(FF1Text.BytesToText(ReadUntil(rom, BattleTextBase + _battleTextPointers[i], 0x00)));
+		}
+	    }
+
+		public string this[int textid]
+		{
+			get => _battleTexts[textid];
+			set => _battleTexts[textid] = value;
+		}
+	}
 }

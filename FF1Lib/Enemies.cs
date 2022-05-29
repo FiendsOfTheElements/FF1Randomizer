@@ -793,7 +793,7 @@ namespace FF1Lib
 			public byte SpellChance2;
 			public byte SkillChance2;
 			public MonsterType MonsterType;
-			public Element ElementalWeakness;
+			public SpellElement ElementalWeakness;
 			public FormationSpriteSheet SpriteSheet;
 			public FormationPattern FormationPattern;
 			public int Palette1;
@@ -814,7 +814,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite2,
 					Palette1 = 0x39,
 					Palette2 = 0x39,
-					ElementalWeakness = Element.FIRE,
+					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.BRAK, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.BRAK, (byte)SpellByte.FIRE },
@@ -832,7 +832,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite4,
 					Palette1 = 0x3A,
 					Palette2 = 0x3A,
-					ElementalWeakness = Element.NONE,
+					ElementalWeakness = SpellElement.None,
 					MonsterType = MonsterType.REGENERATIVE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.CUR2, (byte)SpellByte.CUR3, (byte)SpellByte.CUR3, (byte)SpellByte.FAST, (byte)SpellByte.CUR2, (byte)SpellByte.CUR3, (byte)SpellByte.CUR3, (byte)SpellByte.FAST },
@@ -850,7 +850,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite2,
 					Palette1 = 0x36,
 					Palette2 = 0x36,
-					ElementalWeakness = Element.EARTH,
+					ElementalWeakness = SpellElement.Earth,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.DARK, (byte)SpellByte.SLOW, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.DARK, (byte)SpellByte.SLOW, (byte)SpellByte.LIT2 },
@@ -868,7 +868,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite2,
 					Palette1 = 0x30,
 					Palette2 = 0x30,
-					ElementalWeakness = Element.LIGHTNING,
+					ElementalWeakness = SpellElement.Lightning,
 					MonsterType = MonsterType.UNDEAD,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FAST, (byte)SpellByte.FIRE, (byte)SpellByte.FOG, (byte)SpellByte.FIRE, (byte)SpellByte.SLOW, (byte)SpellByte.FIRE, (byte)SpellByte.RUB },
@@ -886,7 +886,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite3,
 					Palette1 = 0x1D, // Yellow/Orange
 					Palette2 = 0x1D,
-					ElementalWeakness = Element.ICE,
+					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.UNDEAD,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.FAST, (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.FAST },
@@ -904,7 +904,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite1,
 					Palette1 = 0x1A, // Grey/Purple
 					Palette2 = 0x1A,
-					ElementalWeakness = Element.POISON,
+					ElementalWeakness = SpellElement.Poison,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.SLOW, (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.FAST, (byte)SpellByte.SLOW, (byte)SpellByte.STUN, (byte)SpellByte.STOP },
@@ -922,7 +922,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite4,
 					Palette1 = 0x14, // Blue/Purple
 					Palette2 = 0x14,
-					ElementalWeakness = Element.LIGHTNING,
+					ElementalWeakness = SpellElement.Lightning,
 					MonsterType = MonsterType.AQUATIC,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.STUN, (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.STUN, (byte)SpellByte.ICE, (byte)SpellByte.ICE2 },
@@ -940,7 +940,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite4,
 					Palette1 = 0x2D, // Blue/Grey
 					Palette2 = 0x2D,
-					ElementalWeakness = Element.NONE,
+					ElementalWeakness = SpellElement.None,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.CURE, (byte)SpellByte.FAST, (byte)SpellByte.CURE, (byte)SpellByte.SLOW, (byte)SpellByte.CURE, (byte)SpellByte.FAST, (byte)SpellByte.CURE, (byte)SpellByte.SLOW },
@@ -958,7 +958,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite3,
 					Palette1 = 0x23, // Green/White
 					Palette2 = 0x23,
-					ElementalWeakness = Element.ICE,
+					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FAST, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FAST },
@@ -976,7 +976,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite1,
 					Palette1 = 0x25, // Red/White
 					Palette2 = 0x2F,
-					ElementalWeakness = Element.FIRE,
+					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.STUN, (byte)SpellByte.SLOW, (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.STUN, (byte)SpellByte.SLOW },
@@ -994,7 +994,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite2,
 					Palette1 = 0x36, // Yellow/Purple
 					Palette2 = 0x36,
-					ElementalWeakness = Element.TIME,
+					ElementalWeakness = SpellElement.Time,
 					MonsterType = MonsterType.NONE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.XFER, (byte)SpellByte.SLOW, (byte)SpellByte.WALL, (byte)SpellByte.FAST, (byte)SpellByte.XFER, (byte)SpellByte.SLOW, (byte)SpellByte.WALL },
@@ -1012,7 +1012,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite3,
 					Palette1 = 0x00, // Brown/Red
 					Palette2 = 0x00,
-					ElementalWeakness = Element.ICE,
+					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.STUN, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.FIRE, (byte)SpellByte.STUN, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2 },
@@ -1030,7 +1030,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite3,
 					Palette1 = 0x01, // Blue/White
 					Palette2 = 0x01,
-					ElementalWeakness = Element.LIGHTNING,
+					ElementalWeakness = SpellElement.Lightning,
 					MonsterType = MonsterType.GIANT,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.STOP, (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.STOP },
@@ -1048,7 +1048,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite1,
 					Palette1 = 0x23, // Green/Grey
 					Palette2 = 0x23,
-					ElementalWeakness = Element.POISON,
+					ElementalWeakness = SpellElement.Poison,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.STUN, (byte)SpellByte.BRAK, (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.STUN, (byte)SpellByte.BRAK },
@@ -1066,7 +1066,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite4,
 					Palette1 = 0x26, // Yellow/Blue
 					Palette2 = 0x26,
-					ElementalWeakness = Element.LIGHTNING,
+					ElementalWeakness = SpellElement.Lightning,
 					MonsterType = MonsterType.GIANT,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.CUR2, (byte)SpellByte.FAST, (byte)SpellByte.SLOW, (byte)SpellByte.STUN, (byte)SpellByte.CUR2, (byte)SpellByte.FAST, (byte)SpellByte.SLOW },
@@ -1084,7 +1084,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite3,
 					Palette1 = 0x0D, // Red/Red
 					Palette2 = 0x0D,
-					ElementalWeakness = Element.ICE,
+					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2 },
@@ -1102,7 +1102,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite3,
 					Palette1 = 0x27, // Orange/Red
 					Palette2 = 0x27,
-					ElementalWeakness = Element.ICE,
+					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.DRAGON,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.DARK, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.FIRE, (byte)SpellByte.DARK, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2 },
@@ -1120,7 +1120,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite1,
 					Palette1 = 0x1B, // Brown/Blue
 					Palette2 = 0x1B,
-					ElementalWeakness = Element.FIRE,
+					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.UNDEAD,
 					SpellChance1 = 0x00,
 					Spells1 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
@@ -1138,7 +1138,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite2,
 					Palette1 = 0x1A, // Blue/Green
 					Palette2 = 0x24,
-					ElementalWeakness = Element.ICE,
+					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.AQUATIC,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.LIT2 },
@@ -1156,7 +1156,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite1,
 					Palette1 = 0x13, // Blue/Purple
 					Palette2 = 0x14,
-					ElementalWeakness = Element.ICE,
+					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE2 },
@@ -1174,7 +1174,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite4,
 					Palette1 = 0x32, // Brown/White
 					Palette2 = 0x32,
-					ElementalWeakness = Element.LIGHTNING,
+					ElementalWeakness = SpellElement.Lightning,
 					MonsterType = MonsterType.GIANT,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT },
@@ -1343,6 +1343,45 @@ namespace FF1Lib
 		    es.elem = (byte)SpellElement.Status;
 		    Put(MagicOffset + MagicSize * 81, es.compressData());
 		}
+
+		public List<EnemyInfo> GetEnemies() {
+		    var enm = new List<EnemyInfo>();
+		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		    var scripts = GetEnemyScripts();
+		    for (int i = 0; i < EnemyCount; ++i)
+		    {
+			var enemy = new EnemyInfo();
+			enemy.decompressData(Get(EnemyOffset + i * EnemySize, EnemySize));
+			enemy.allAIScripts = scripts;
+			enemy.name = enemyText[i];
+			enemy.index = i;
+			enm.Add(enemy);
+		    }
+		    return enm;
+		}
+
+
+		public List<EnemyScriptInfo> GetEnemyScripts() {
+		    var spells = this.GetSpells();
+		    var skills = this.GetEnemySkills();
+		    var scripts = new List<EnemyScriptInfo>();
+		    for (int i = 0; i < ScriptCount; ++i)
+		    {
+			var script = new EnemyScriptInfo();
+			script.index = (byte)i;
+			script.allGameSpells = spells;
+			script.allEnemySkills = skills;
+			script.decompressData(Get(ScriptOffset + i * ScriptSize, ScriptSize));
+			scripts.Add(script);
+		    }
+		    return scripts;
+		}
+
+		public List<MagicSpell> GetEnemySkills() {
+		    var skills = Get(EnemySkillOffset, MagicSize * EnemySkillCount).Chunk(MagicSize);
+		    var skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount);
+		    return skills.Select((spell, i) => new MagicSpell((byte)i, spell, skillNames[i], false)).ToList();
+		}
 	}
 
 	public enum ScriptTouchMultiplier
@@ -1368,4 +1407,5 @@ namespace FF1Lib
 		[Description("Random")]
 		Random,
 	}
+
 }
