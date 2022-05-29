@@ -1388,7 +1388,7 @@ namespace FF1Lib
 		    public Room() { }
 		}
 
-		public void shuffleChestLocations(List<Map> maps, MapId[] ids) {
+		public void shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids) {
 		    // For a tileset, I need to determine:
 		    //
 		    // * doors and locked doors
@@ -1507,32 +1507,46 @@ namespace FF1Lib
 			    var room = new Room();
 			    bool newRoom = true;
 			    map.Flood((st.X, st.Y), (MapElement me) => {
+				Console.WriteLine($"{me.Coord} {me.Value:X}");
 				if (doorTiles.Contains(me.Value)) {
 				    room.doors.Add(me);
 				    if (searched.Contains(dc)) {
 					newRoom = false;
 				    }
-				} else if (floorTiles.Contains(me.Value)) {
-				    room.floor.Add(me);
-				    return true;
+				    searched.Add(dc);
 				}
-				else if ((tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_TELE_MASK) != 0) {
-				    room.tele.Add(me);
-				}
-
 				for (int i = 0; i < 16; i++) {
 				    var npc = GetNpc((MapId)mapId, i);
 				    if (npc.Coord == me.Coord) {
 					room.npcs.Add(npc);
 				    }
 				}
-				return false;
+
+				if (floorTiles.Contains(me.Value)) {
+				    room.floor.Add(me);
+				}
+				if ((tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_TELE_MASK) != 0) {
+				    room.tele.Add(me);
+				}
+
+				return !doorTiles.Contains(me.Value) && (tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0;
 			    });
-			    searched.Add(dc);
 			    if (newRoom) {
 				rooms.Add(room);
 			    }
 			}
+		    }
+
+		    List<MapElement> allCandidates = new();
+		    foreach (var r in rooms) {
+			foreach (var f in r.floor) {
+			    allCandidates.Add(f);
+			}
+		    }
+
+		    foreach (var c in chestPool) {
+			MapElement me = allCandidates.SpliceRandom(rng);
+			me.Value = c;
 		    }
 
 		    //
@@ -1542,7 +1556,7 @@ namespace FF1Lib
 		    // * Finally, sanity check each room that we can reach all chests, doors, teleports and NPCs in the room
 		}
 
-		public void ShuffleAllChestLocations(List<Map> maps) {
+		public void ShuffleAllChestLocations(MT19337 rng, List<Map> maps) {
 		    // Groups of maps that make up a shuffle pool
 		    // They need to all use the same tileset.
 
@@ -1582,7 +1596,7 @@ namespace FF1Lib
 		    // TODO: if Coneria is incentived, remove it from shuffle.
 
 		    foreach (MapId[] b in dungeons) {
-			shuffleChestLocations(maps, b);
+			shuffleChestLocations(rng, maps, b);
 		    }
 		}
 	}

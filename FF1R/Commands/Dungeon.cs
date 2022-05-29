@@ -83,7 +83,9 @@ namespace FF1R.Commands
 
 	    var maps = rom.ReadMaps();
 
-	    rom.ShuffleAllChestLocations(maps);
+	    var rng = new MT19337(12);
+
+	    rom.ShuffleAllChestLocations(rng, maps);
 
 	    int start = 0;
 	    int end = 60;
