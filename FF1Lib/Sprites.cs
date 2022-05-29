@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using RomUtilities;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -61,6 +62,26 @@ namespace FF1Lib
 		    ppuformat[row+8] |= (byte)(bit1 << col);  // write bit1 to the second plane
 		}
 		return ppuformat;
+	    }
+
+	    public byte[] DecodePPU(byte[] ppuformat) {
+		// Read the 16-byte, dual-plane encoding used by the NES PPU
+		// and return an array of 64 bytes with a ordinary linear
+		// encoding (left to right, top to bottom, one byte
+		// per pixel, valid values 0-3).
+		//
+		// see https://wiki.nesdev.com/w/index.php/PPU_pattern_tables
+
+		var tile = new byte[64];
+
+		for (int i = 0; i < 64; i++) {
+		    var row = (i >> 3) & 0x07;
+		    var col = 7 - (i & 0x07);
+		    var bit0 = (ppuformat[row] & (1 << col)) >> col;    // read bit0 from the first plane
+		    var bit1 = (ppuformat[row+8] & (1 << col)) >> col;  // read bit1 from the second plane
+		    tile[i] = (byte)((bit1<<1) | bit0);
+		}
+		return tile;
 	    }
 
 	    Dictionary<byte, byte> colorReduction = new Dictionary<byte, byte>() {
@@ -1092,5 +1113,63 @@ namespace FF1Lib
 		    PutInBank(0x12, 0x8D40 + (w*16), EncodeForPPU(tile));
 		}
 	    }
+
+	    void renderTile(Image<Rgba32> img, byte[] tile, byte[] pal, int x, int y) {
+		for (int i = 0; i < 64; i++) {
+		    img[x+(i%8), y+(i/8)] = NESpalette[pal[tile[i]]];
+		}
+	    }
+
+	    Image<Rgba32> exportMapGraphics(int mapId,
+					    int tileset,
+					    int PALETTE_ASSIGNMENT,
+					    int PATTERNTABLE_OFFSET,
+					    int PATTERNTABLE_ASSIGNMENT)
+	    {
+		var output = new Image<Rgba32>(16 * 16, 8 * 16);
+
+		int offset = MAPPALETTE_OFFSET + (mapId * 0x30);
+
+		List<byte[]> controlPalette = new();
+		controlPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0, 4));
+		controlPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 4, 4));
+		controlPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 8, 4));
+		controlPalette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 12, 4));
+
+		for(int imagecount = 0; imagecount < 128; imagecount += 1) {
+		    var pal = Get(TILESETPALETTE_ASSIGNMENT + imagecount + (tileset<<7), 1);
+
+		    var pt1 = Get(PATTERNTABLE_ASSIGNMENT +   0 + imagecount, 1);
+		    var pt2 = Get(PATTERNTABLE_ASSIGNMENT + 128 + imagecount, 1);
+		    var pt3 = Get(PATTERNTABLE_ASSIGNMENT + 256 + imagecount, 1);
+		    var pt4 = Get(PATTERNTABLE_ASSIGNMENT + 384 + imagecount, 1);
+
+		    var chr1 = Get(PATTERNTABLE_OFFSET + (pt1[0] * 16), 16);
+		    var chr2 = Get(PATTERNTABLE_OFFSET + (pt2[0] * 16), 16);
+		    var chr3 = Get(PATTERNTABLE_OFFSET + (pt3[0] * 16), 16);
+		    var chr4 = Get(PATTERNTABLE_OFFSET + (pt4[0] * 16), 16);
+
+		    var dc1 = DecodePPU(chr1);
+		    var dc2 = DecodePPU(chr2);
+		    var dc3 = DecodePPU(chr3);
+		    var dc4 = DecodePPU(chr4);
+
+		    renderTile(output, dc1, controlPalette[pal[0] & 3], (imagecount % 16) * 16, (imagecount/16) * 16);
+		    renderTile(output, dc2, controlPalette[pal[0] & 3], (imagecount % 16) * 16+8, (imagecount/16) * 16);
+		    renderTile(output, dc3, controlPalette[pal[0] & 3], (imagecount % 16) * 16, (imagecount/16) * 16+8);
+		    renderTile(output, dc4, controlPalette[pal[0] & 3], (imagecount % 16) * 16+8, (imagecount/16) * 16+8);
+		}
+
+		return output;
+	    }
+
+	    public Image<Rgba32> ExportMapGraphics(int mapId) {
+		return exportMapGraphics(0,
+					 0,
+					 0,
+					 TILESETPATTERNTABLE_OFFSET,
+					 TILESETPATTERNTABLE_ASSIGNMENT);
+	    }
+
 	}
 }
