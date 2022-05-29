@@ -1129,9 +1129,7 @@ namespace FF1Lib
 	    {
 		var tileset = Get(MAPTILESET_ASSIGNMENT + mapId, 1)[0];
 
-		var output = new Image<Rgba32>(16 * 16, 8 * 16);
-
-		int offset = MAPPALETTE_OFFSET + (mapId * 0x30);
+		var tilesetProps = new TileSet(this, tileset);
 
 		List<byte[]> palette = new();
 		if (!inside) {
@@ -1146,13 +1144,14 @@ namespace FF1Lib
 		    palette.Add(Get(MAPPALETTE_OFFSET + (mapId * 0x30) + 0x20 + 12, 4));
 		}
 
+		var output = new Image<Rgba32>(16 * 16, 8 * 16);
 		for(int imagecount = 0; imagecount < 128; imagecount += 1) {
-		    var pal = Get(TILESETPALETTE_ASSIGNMENT + imagecount + (tileset<<7), 1)[0];
+		    var pal = tilesetProps.TileAttributes[imagecount];
 
-		    var pt1 = Get(PATTERNTABLE_ASSIGNMENT + (tileset << 9) +   0 + imagecount, 1)[0];
-		    var pt2 = Get(PATTERNTABLE_ASSIGNMENT + (tileset << 9) + 128 + imagecount, 1)[0];
-		    var pt3 = Get(PATTERNTABLE_ASSIGNMENT + (tileset << 9) + 256 + imagecount, 1)[0];
-		    var pt4 = Get(PATTERNTABLE_ASSIGNMENT + (tileset << 9) + 384 + imagecount, 1)[0];
+		    var pt1 = tilesetProps.TopLeftTiles[imagecount];
+		    var pt2 = tilesetProps.TopRightTiles[imagecount];
+		    var pt3 = tilesetProps.BottomLeftTiles[imagecount];
+		    var pt4 = tilesetProps.BottomRightTiles[imagecount];
 
 		    var chr1 = Get(PATTERNTABLE_OFFSET + (tileset << 11) + (pt1 * 16), 16);
 		    var chr2 = Get(PATTERNTABLE_OFFSET + (tileset << 11) + (pt2 * 16), 16);
