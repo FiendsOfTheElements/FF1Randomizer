@@ -1383,8 +1383,10 @@ namespace FF1Lib
 		    public List<MapElement> floor = new();
 		    public List<MapElement> chests = new();
 		    public List<MapElement> doors = new ();
-		    public List<MapElement> tele = new ();
+		    public List<MapElement> teleIn = new ();
+		    public List<MapElement> teleOut = new ();
 		    public List<NPC> npcs = new ();
+		    public bool hasBattles = false;
 		    public Room() { }
 		}
 
@@ -1398,29 +1400,33 @@ namespace FF1Lib
 
 		    var tileset = new TileSet(this, GetMapTilesetIndex(ids[0]));
 
-		    List<byte> blankGfxTiles = new();
+		    List<byte> blankPPUTiles = new();
 
 		    for (byte i = 0; i < 128; i++) {
+			// Go through the pattern table, and find the CHR which
+			// is entirely color 1.
+
 			var chr = Get(TILESETPATTERNTABLE_OFFSET + (GetMapTilesetIndex(ids[0]) << 11) + (i * 16), 16);
+			var dec = DecodePPU(chr);
+
 			bool blank = true;
 			// Check that entire tile is color 1
-			for (int j = 0; j < 8; j++) {
-			    if (chr[j] != 0xff) {
+			for (int j = 0; j < dec.Length; j++) {
+			    if (dec[j] != 1) {
 				blank = false;
-			    }
-			}
-			for (int j = 8; j < 16; j++) {
-			    if (chr[j] != 0) {
-				blank = false;
+				break;
 			    }
 			}
 			if (blank) {
-			    blankGfxTiles.Add(i);
+			    blankPPUTiles.Add(i);
 			}
 		    }
-		    foreach(var b in blankGfxTiles) {
+		    foreach(var b in blankPPUTiles) {
 			Console.WriteLine($"blank chr {b:X}");
 		    }
+
+		    // Go through the all the map tiles and find ones
+		    // with certain properties.
 		    List<byte> doorTiles = new() {0x36, 0x37, 0x3B};
 		    List<byte> floorTiles = new();
 		    List<byte> spikeTiles = new();
@@ -1430,37 +1436,51 @@ namespace FF1Lib
 			if ((tileset.TileProperties[i].TilePropFunc & TilePropFunc.TP_NOMOVE) != 0) {
 			    continue;
 			}
-			// Can move
+			// Allowed to walk onto this tile
 
-			if (!blankGfxTiles.Contains(tileset.TopLeftTiles[i]) ||
-			    !blankGfxTiles.Contains(tileset.TopRightTiles[i]) ||
-			    !blankGfxTiles.Contains(tileset.BottomLeftTiles[i]) ||
-			    !blankGfxTiles.Contains(tileset.BottomRightTiles[i]))
+			if ((tileset.TileAttributes[i] & 3) != 1 &&
+			    (tileset.TileAttributes[i] & 3) != 2) {
+			    continue;
+			}
+			// This tile has the "room" palette
+
+			if (!blankPPUTiles.Contains(tileset.TopLeftTiles[i]) ||
+			    !blankPPUTiles.Contains(tileset.TopRightTiles[i]) ||
+			    !blankPPUTiles.Contains(tileset.BottomLeftTiles[i]) ||
+			    !blankPPUTiles.Contains(tileset.BottomRightTiles[i]))
 			{
 			    continue;
 			}
-			// Blank, in-room gfx
+			// The visual tile is "blank" (flips between
+			// floor color (black) and ceiling color
+			// (generally white/off white).
 
 			if (tileset.TileProperties[i].TilePropFunc == TilePropFunc.TP_SPEC_BATTLE) {
 			    if (tileset.TileProperties[i].BattleId != 0x80) {
-				// Spike tile
+				// This is a spike tile
 				spikeTiles.Add(i);
 				Console.WriteLine($"spike tile {i:X}");
 			    } else {
-				// Random battle
+				// This is random battle tile
 				battleTiles.Add(i);
 				Console.WriteLine($"battle tile {i:X}");
 			    }
 			    continue;
 			}
 
+			// Found a plain, no-encounter floor tile
 			floorTiles.Add(i);
 			Console.WriteLine($"floor tile {i:X}");
 		    }
 
+		    byte vanillaTeleporters = 0x41;
+		    List<TeleporterSM> teleporters = new();
+		    for (int i = 0; i < vanillaTeleporters; i++) {
+			teleporters.Add(new TeleporterSM(this, i));
+		    }
+
 		    List<byte> chestPool = new();
 		    List<byte> spikePool = new();
-		    List<SCCoords> doorCoords = new();
 
 		    // To relocate chests in a dungeon (a group of maps)
 		    //
@@ -1473,8 +1493,11 @@ namespace FF1Lib
 		    List<Room> rooms = new();
 
 		    foreach (var mapId in ids) {
+			Console.WriteLine($"\nFinding rooms for map {mapId}");
+
 			var map = maps[(int)mapId];
 
+			List<SCCoords> startCoords = new();
 			for (int y = 0; y < 64; y++) {
 			    for (int x = 0; x < 64; x++) {
 				var tf = tileset.TileProperties[map[y, x]];
@@ -1485,54 +1508,123 @@ namespace FF1Lib
 				    Console.WriteLine($"add {map[y, x]:X} to chest pool");
 				    wipe = true;
 				}
-				if (tf.TilePropFunc == TilePropFunc.TP_SPEC_BATTLE && tf.BattleId != 0x80) {
+				if (spikeTiles.Contains(map[y, x])) {
 				    spikePool.Add(map[y, x]);
 				    Console.WriteLine($"add {map[y, x]:X} to spike pool");
 				    wipe = true;
 				}
-
 				if (doorTiles.Contains(map[y, x])) {
-				    doorCoords.Add(new SCCoords(x, y));
+				    startCoords.Add(new SCCoords(x, y-1));
+				    Console.WriteLine($"Found door {map[y, x]:X} at {x},{y}");
 				}
 
 				if (wipe) {
-				    map[y, x] = floorTiles[0];
+				    map[y, x] = 0xff;
 				}
 			    }
 			}
 
-			List<SCCoords> searched = new();
-			foreach (var dc in doorCoords) {
-			    var st = dc.SmUp;
+			foreach (var t in teleporters) {
+			    if (t.Destination == (byte)mapId &&
+				(floorTiles.Contains(map[t.Y,t.X]) || battleTiles.Contains(map[t.Y,t.X])))
+			    {
+				startCoords.Add(new SCCoords(t.X, t.Y));
+			    }
+			}
+
+			List<(int x, int y)> searched = new();
+			foreach (var st in startCoords) {
 			    var room = new Room();
 			    bool newRoom = true;
+			    Console.WriteLine($"Searching from {st}");
+
+			    var logit = false;
+
 			    map.Flood((st.X, st.Y), (MapElement me) => {
-				Console.WriteLine($"{me.Coord} {me.Value:X}");
+
+				if (logit) {
+				    Console.WriteLine($"Search {me.Coord} {me.Value:X}");
+				}
+
+				if (me.Value == 0xff) {
+				    // This square previously contained
+				    // a chest or spike tile
+				    room.floor.Add(me);
+				    return true;
+				}
+
 				if (doorTiles.Contains(me.Value)) {
 				    room.doors.Add(me);
-				    if (searched.Contains(dc)) {
+				    if (searched.Contains(me.Coord)) {
+					Console.WriteLine($"Saw {me.Coord} already");
 					newRoom = false;
+				    } else {
+					Console.WriteLine($"{me.Coord} is new door");
+					searched.Add(me.Coord);
 				    }
-				    searched.Add(dc);
+				    return false;
 				}
+
+				bool hasNpc = false;
 				for (int i = 0; i < 16; i++) {
 				    var npc = GetNpc((MapId)mapId, i);
 				    if (npc.Coord == me.Coord) {
 					room.npcs.Add(npc);
+					hasNpc = true;
 				    }
 				}
 
-				if (floorTiles.Contains(me.Value)) {
-				    room.floor.Add(me);
-				}
-				if ((tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_TELE_MASK) != 0) {
-				    room.tele.Add(me);
+				bool teleporterTarget = false;
+				foreach (var t in teleporters) {
+				    if (t.Destination == (byte)mapId && me.Coord == (t.X, t.Y)) {
+					Console.WriteLine($"Found teleport in {me.Coord}");
+					room.teleIn.Add(me);
+					teleporterTarget = true;
+				    }
 				}
 
-				return !doorTiles.Contains(me.Value) && (tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0;
+				if (tileset.TileProperties[me.Value].TilePropFunc == TilePropFunc.TP_SPEC_BATTLE &&
+				    tileset.TileProperties[me.Value].BattleId == 0x80)
+				{
+				    room.hasBattles = true;
+				}
+
+				if (!hasNpc && !teleporterTarget && (floorTiles.Contains(me.Value) || battleTiles.Contains(me.Value) || spikeTiles.Contains(me.Value)) &&
+				    (me.Coord != (st.X, st.Y)))
+				{
+				    room.floor.Add(me);
+				}
+
+				if ((tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_TELE_MASK) != 0) {
+				    Console.WriteLine($"Found teleport out {me.Coord}");
+				    room.teleOut.Add(me);
+				    return false;
+				}
+
+				return !hasNpc &&
+				    (tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0;
 			    });
 			    if (newRoom) {
+				Console.WriteLine($"Added new room");
 				rooms.Add(room);
+			    }
+
+			    foreach (var me in room.floor) {
+				if (me.Value == 0xff) {
+				    if (room.hasBattles) {
+					me.Value = battleTiles[0];
+				    } else {
+					me.Value = floorTiles[0];
+				    }
+				}
+			    }
+			}
+
+			for (int y = 0; y < 64; y++) {
+			    for (int x = 0; x < 64; x++) {
+				if (map[y,x] == 0xff) {
+				    Console.WriteLine($"Unreachable? {x},{y}");
+				}
 			    }
 			}
 		    }
@@ -1540,6 +1632,7 @@ namespace FF1Lib
 		    List<MapElement> allCandidates = new();
 		    foreach (var r in rooms) {
 			foreach (var f in r.floor) {
+			    //f.Value = 0xD;
 			    allCandidates.Add(f);
 			}
 		    }
