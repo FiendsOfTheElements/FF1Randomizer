@@ -2239,6 +2239,9 @@ namespace FF1Lib
 			PutInBank(0x11, 0xB900, Blob.FromHex("A000A200B900622904F006B900B6D001E8C8D0F060"));
 
 			PutInBank(0x11, 0xB915, Blob.FromHex("B00AA445B90062090499006260"));
+
+			//Change the too full logic for GiveReward consumables to clear the chest. This is to not run into an issue with consumables blocking chest progression.
+			PutInBank(0x11, 0xB432, Blob.FromHex("B045"));
 		}
 	}
 }
