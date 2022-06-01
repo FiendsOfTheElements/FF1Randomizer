@@ -509,6 +509,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeTreasure"));
 			}
 		}
+		public bool OpenChestsInOrder
+		{
+			get => Flags.OpenChestsInOrder;
+			set
+			{
+				Flags.OpenChestsInOrder = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OpenChestsInOrder"));
+			}
+		}
 		public WorldWealthMode WorldWealth
 		{
 			get => Flags.WorldWealth;

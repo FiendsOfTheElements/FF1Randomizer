@@ -123,6 +123,7 @@
 		bool? NoMasamune { get; }
 		bool? NoXcalber { get; }
 		RandomizeTreasureMode RandomizeTreasure { get; }
+		bool OpenChestsInOrder { get; }
 		WorldWealthMode WorldWealth { get; }
 		DeepDungeonGeneratorMode DeepDungeonGenerator { get; }
 		ConsumableChestSet MoreConsumableChests { get; }

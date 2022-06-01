@@ -165,7 +165,7 @@ namespace FF1Lib
 							continue;
 						}
 
-						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { 0x01 });
+						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { (byte)placedItem.Item });
 					}
 				}
 			}			
@@ -260,6 +260,12 @@ namespace FF1Lib
 
 				var leftovers = treasurePool.Zip(itemLocationPool, (treasure, location) => NewItemPlacement(location, treasure));
 				placedItems.AddRange(leftovers);
+			}
+
+			//chest order placement
+			for (int i = 0; i < treasurePool.Count; i++)
+			{
+				rom.Put(FF1Rom.TreasureChestOrderOffset + i, new byte[] { (byte)treasurePool[i] });
 			}
 
 			return placedItems;
