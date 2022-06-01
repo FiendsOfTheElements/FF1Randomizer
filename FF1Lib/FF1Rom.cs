@@ -1237,6 +1237,11 @@ namespace FF1Lib
 			uint last_rng_value = rng.Next();
 			WriteSeedAndFlags(seed.ToHex(), flagstext, last_rng_value);
 			ExtraTrackingAndInitCode(flags, preferences);
+
+			if(flags.OpenChestsInOrder)
+			{
+				OpenChestsInOrder();
+			}
 		}
 
 		private void EnableNPCSwatter(NPCdata npcdata)

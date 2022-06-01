@@ -10,6 +10,7 @@ namespace FF1Lib
 	{
 		public const int TreasureJingleOffset = 0x47600;
 		public const int TreasureOffset = 0x03100;
+		public const int TreasureChestOrderOffset = 0x47F00;
 		public const int TreasureSize = 1;
 		public const int TreasurePoolCount = 256;
 		public const int TreasureCount = 256;
