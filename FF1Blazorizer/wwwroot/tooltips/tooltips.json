@@ -1849,7 +1849,7 @@
 		"Id": "chanceToRunDropDown",
 		"title": "Chance to Run",
 		"screenshot": "chanceToRunDropDown.png",
-		"description": "Changes the way the chance to run is calculated.\nVanilla: Run chance is calculated from a glitched stat as it was programmed in the original NES release.\nFixed: Run chance is calculated from the intended stat, Luck. This greatly improves the effectiveness of the RUN command, as well as classes with high Luck stats, such as the Thief.\n Percentages: Run chance is the selected static value for all classes. This causes no specific class to be any better or worse at running away because their chance to run is the same."
+		"description": "Changes the way the chance to run is calculated.\nBugged: Run chance is calculated from a glitched stat as it was programmed in the original NES release.\nCorrected: Run chance is calculated from the intended stat, Luck. This greatly improves the effectiveness of the RUN command, as well as classes with high Luck stats, such as the Thief.\n Percentages: Run chance is the selected static value for all classes. This causes no specific class to be any better or worse at running away because their chance to run is the same."
 	},
 	{
 		"Id": "spellBugsCheckBox",
