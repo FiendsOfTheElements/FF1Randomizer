@@ -1380,12 +1380,14 @@ namespace FF1Lib
 		}
 
 		class Room {
+		    public MapId mapId;
+		    public MapElement start;
 		    public List<MapElement> floor = new();
-		    public List<MapElement> chests = new();
 		    public List<MapElement> doors = new ();
+		    public List<MapElement> chests = new ();
 		    public List<MapElement> teleIn = new ();
 		    public List<MapElement> teleOut = new ();
-		    public List<NPC> npcs = new ();
+		    public List<MapElement> npcs = new ();
 		    public bool hasBattles = false;
 		    public Room() { }
 		}
@@ -1398,7 +1400,11 @@ namespace FF1Lib
 
 		    Console.WriteLine($"\nTiles for {ids[0]}");
 
+		    bool keepLinkedChests = false;
+
 		    var tileset = new TileSet(this, GetMapTilesetIndex(ids[0]));
+
+		    var npcdata = new NPCdata(this);
 
 		    List<byte> blankPPUTiles = new();
 
@@ -1482,164 +1488,231 @@ namespace FF1Lib
 		    List<byte> chestPool = new();
 		    List<byte> spikePool = new();
 
-		    // To relocate chests in a dungeon (a group of maps)
-		    //
-		    // * Find the all the chest tiles and spike tiles
-		    // * Wipe all the tiles with the floor tile in the tileset
-		    // * Find all the doors
-		    // * For each door, flood fill search for floor tiles, other doors, and teleports & record what we found
-		    // * Also record the positions of NPCs
+		    bool needRetry = true;
+		    List<MapElement> placedChests = null;
+		    List<Room> roomsToSanityCheck = null;
+		    for (int attempts = 0; needRetry && attempts < 500; attempts++) {
+			needRetry = false;
 
-		    List<Room> rooms = new();
+			// To relocate chests in a dungeon (a group of maps)
+			//
+			// * Find the all the chest tiles and spike tiles
+			// * Wipe all the tiles with the floor tile in the tileset
+			// * Find all the doors
+			// * For each door, flood fill search for floor tiles, other doors, and teleports & record what we found
+			// * Also record the positions of NPCs
 
-		    foreach (var mapId in ids) {
-			Console.WriteLine($"\nFinding rooms for map {mapId}");
+			List<Room> rooms = new();
 
-			var map = maps[(int)mapId];
+			foreach (var mapId in ids) {
+			    Console.WriteLine($"\nFinding rooms for map {mapId}");
 
-			List<SCCoords> startCoords = new();
-			for (int y = 0; y < 64; y++) {
-			    for (int x = 0; x < 64; x++) {
-				var tf = tileset.TileProperties[map[y, x]];
-				bool wipe = false;
+			    var map = maps[(int)mapId];
 
-				if (tf.TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE)) {
-				    chestPool.Add(map[y, x]);
-				    Console.WriteLine($"add {map[y, x]:X} to chest pool");
-				    wipe = true;
+			    List<SCCoords> startCoords = new();
+			    for (int y = 0; y < 64; y++) {
+				for (int x = 0; x < 64; x++) {
+				    var tf = tileset.TileProperties[map[y, x]];
+				    bool wipe = false;
+
+				    if (tf.TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE)) {
+					if (keepLinkedChests || !chestPool.Contains(map[y, x])) {
+					    chestPool.Add(map[y, x]);
+					}
+					Console.WriteLine($"add {map[y, x]:X} to chest pool");
+					wipe = true;
+				    }
+				    if (spikeTiles.Contains(map[y, x])) {
+					spikePool.Add(map[y, x]);
+					Console.WriteLine($"add {map[y, x]:X} to spike pool");
+					wipe = true;
+				    }
+				    if (doorTiles.Contains(map[y, x])) {
+					startCoords.Add(new SCCoords(x, y-1));
+					Console.WriteLine($"Found door {map[y, x]:X} at {x},{y}");
+				    }
+
+				    if (wipe) {
+					map[y, x] = 0xff;
+				    }
 				}
-				if (spikeTiles.Contains(map[y, x])) {
-				    spikePool.Add(map[y, x]);
-				    Console.WriteLine($"add {map[y, x]:X} to spike pool");
-				    wipe = true;
+			    }
+
+			    foreach (var t in teleporters) {
+				if (t.Destination == (byte)mapId &&
+				    (floorTiles.Contains(map[t.Y,t.X]) || battleTiles.Contains(map[t.Y,t.X])))
+				{
+				    startCoords.Add(new SCCoords(t.X, t.Y));
 				}
-				if (doorTiles.Contains(map[y, x])) {
-				    startCoords.Add(new SCCoords(x, y-1));
-				    Console.WriteLine($"Found door {map[y, x]:X} at {x},{y}");
+			    }
+
+			    List<(int x, int y)> searched = new();
+			    foreach (var st in startCoords) {
+				var room = new Room();
+				room.mapId = mapId;
+				room.start = map[(st.X, st.Y)];
+				bool newRoom = true;
+				Console.WriteLine($"Searching from {st}");
+
+				var logit = false;
+
+				map.Flood((st.X, st.Y), (MapElement me) => {
+
+				    if (logit) {
+					Console.WriteLine($"Search {me.Coord} {me.Value:X}");
+				    }
+
+				    bool hasNpc = false;
+				    for (int i = 0; i < 16; i++) {
+					var npc = GetNpc(mapId, i);
+					if (npc.Coord == me.Coord) {
+					    room.npcs.Add(me);
+					    hasNpc = true;
+					}
+				    }
+
+				    if (me.Value == 0xff) {
+					// This square previously contained
+					// a chest or spike tile
+					if (!hasNpc) {
+					    // not occupied by NPC
+					    room.floor.Add(me);
+					    return true;
+					}
+					return false;
+				    }
+
+				    if (doorTiles.Contains(me.Value)) {
+					room.doors.Add(me);
+					if (searched.Contains(me.Coord)) {
+					    Console.WriteLine($"Saw {me.Coord} already");
+					    newRoom = false;
+					} else {
+					    Console.WriteLine($"{me.Coord} is new door");
+					    searched.Add(me.Coord);
+					}
+					return false;
+				    }
+
+				    bool teleporterTarget = false;
+				    foreach (var t in teleporters) {
+					if (t.Destination == (byte)mapId && me.Coord == (t.X, t.Y)) {
+					    Console.WriteLine($"Found teleport in {me.Coord}");
+					    room.teleIn.Add(me);
+					    teleporterTarget = true;
+					}
+				    }
+
+				    if (tileset.TileProperties[me.Value].TilePropFunc == TilePropFunc.TP_SPEC_BATTLE &&
+					tileset.TileProperties[me.Value].BattleId == 0x80)
+				    {
+					room.hasBattles = true;
+				    }
+
+				    if (!hasNpc && !teleporterTarget && (floorTiles.Contains(me.Value) || battleTiles.Contains(me.Value) || spikeTiles.Contains(me.Value)) &&
+					(me.Coord != (st.X, st.Y)))
+				    {
+					room.floor.Add(me);
+				    }
+
+				    if ((tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_TELE_MASK) != 0) {
+					Console.WriteLine($"Found teleport out {me.Coord}");
+					room.teleOut.Add(me);
+					return false;
+				    }
+
+				    return !hasNpc &&
+					(tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0;
+				});
+				if (newRoom) {
+				    Console.WriteLine($"Added new room");
+				    rooms.Add(room);
 				}
 
-				if (wipe) {
-				    map[y, x] = 0xff;
+				foreach (var me in room.floor) {
+				    if (me.Value == 0xff) {
+					if (room.hasBattles) {
+					    me.Value = battleTiles[0];
+					} else {
+					    me.Value = floorTiles[0];
+					}
+				    }
+				}
+			    }
+
+			    for (int y = 0; y < 64; y++) {
+				for (int x = 0; x < 64; x++) {
+				    if (map[y,x] == 0xff) {
+					map[y,x] = floorTiles[0];
+				    }
 				}
 			    }
 			}
 
-			foreach (var t in teleporters) {
-			    if (t.Destination == (byte)mapId &&
-				(floorTiles.Contains(map[t.Y,t.X]) || battleTiles.Contains(map[t.Y,t.X])))
-			    {
-				startCoords.Add(new SCCoords(t.X, t.Y));
+			List<(Room,MapElement)> allCandidates = new();
+			foreach (var r in rooms) {
+			    foreach (var f in r.floor) {
+				//f.Value = 0xD;
+				allCandidates.Add((r, f));
 			    }
 			}
 
-			List<(int x, int y)> searched = new();
-			foreach (var st in startCoords) {
-			    var room = new Room();
-			    bool newRoom = true;
-			    Console.WriteLine($"Searching from {st}");
+			Console.WriteLine($"rooms {rooms.Count}");
 
-			    var logit = false;
+			roomsToSanityCheck = new();
+			placedChests = new();
+			foreach (var c in chestPool) {
+			    (Room,MapElement) me = allCandidates.SpliceRandom(rng);
+			    me.Item2.Value = c;
+			    me.Item1.chests.Add(me.Item2);
+			    placedChests.Add(me.Item2);
+			    if (!roomsToSanityCheck.Contains(me.Item1)) {
+				roomsToSanityCheck.Add(me.Item1);
+			    }
+			}
 
-			    map.Flood((st.X, st.Y), (MapElement me) => {
-
-				if (logit) {
-				    Console.WriteLine($"Search {me.Coord} {me.Value:X}");
-				}
-
-				if (me.Value == 0xff) {
-				    // This square previously contained
-				    // a chest or spike tile
-				    room.floor.Add(me);
-				    return true;
-				}
-
-				if (doorTiles.Contains(me.Value)) {
-				    room.doors.Add(me);
-				    if (searched.Contains(me.Coord)) {
-					Console.WriteLine($"Saw {me.Coord} already");
-					newRoom = false;
-				    } else {
-					Console.WriteLine($"{me.Coord} is new door");
-					searched.Add(me.Coord);
-				    }
+			foreach (var r in roomsToSanityCheck) {
+			    r.start.Map.Flood((r.start.X, r.start.Y), (MapElement me) => {
+				if (r.doors.Remove(me) || r.chests.Remove(me) || r.teleOut.Remove(me) || r.npcs.Remove(me)) {
+				    // found something, don't traverse
 				    return false;
 				}
-
-				bool hasNpc = false;
-				for (int i = 0; i < 16; i++) {
-				    var npc = GetNpc((MapId)mapId, i);
-				    if (npc.Coord == me.Coord) {
-					room.npcs.Add(npc);
-					hasNpc = true;
-				    }
-				}
-
-				bool teleporterTarget = false;
-				foreach (var t in teleporters) {
-				    if (t.Destination == (byte)mapId && me.Coord == (t.X, t.Y)) {
-					Console.WriteLine($"Found teleport in {me.Coord}");
-					room.teleIn.Add(me);
-					teleporterTarget = true;
-				    }
-				}
-
-				if (tileset.TileProperties[me.Value].TilePropFunc == TilePropFunc.TP_SPEC_BATTLE &&
-				    tileset.TileProperties[me.Value].BattleId == 0x80)
-				{
-				    room.hasBattles = true;
-				}
-
-				if (!hasNpc && !teleporterTarget && (floorTiles.Contains(me.Value) || battleTiles.Contains(me.Value) || spikeTiles.Contains(me.Value)) &&
-				    (me.Coord != (st.X, st.Y)))
-				{
-				    room.floor.Add(me);
-				}
-
-				if ((tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_TELE_MASK) != 0) {
-				    Console.WriteLine($"Found teleport out {me.Coord}");
-				    room.teleOut.Add(me);
-				    return false;
-				}
-
-				return !hasNpc &&
-				    (tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0;
+				r.teleIn.Remove(me);
+				return (tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0;
 			    });
-			    if (newRoom) {
-				Console.WriteLine($"Added new room");
-				rooms.Add(room);
-			    }
-
-			    foreach (var me in room.floor) {
-				if (me.Value == 0xff) {
-				    if (room.hasBattles) {
-					me.Value = battleTiles[0];
-				    } else {
-					me.Value = floorTiles[0];
-				    }
-				}
-			    }
-			}
-
-			for (int y = 0; y < 64; y++) {
-			    for (int x = 0; x < 64; x++) {
-				if (map[y,x] == 0xff) {
-				    Console.WriteLine($"Unreachable? {x},{y}");
-				}
+			    if (r.doors.Count > 0 || r.chests.Count > 0 || r.teleOut.Count > 0 || r.npcs.Count > 0) {
+				Console.WriteLine($"Room at {r.mapId} {r.start.X}, {r.start.Y} failed sanity check: {r.doors.Count} {r.chests.Count} {r.teleOut.Count} {r.npcs.Count}");
+				needRetry = true;
+				break;
 			    }
 			}
 		    }
 
-		    List<MapElement> allCandidates = new();
-		    foreach (var r in rooms) {
-			foreach (var f in r.floor) {
-			    //f.Value = 0xD;
-			    allCandidates.Add(f);
-			}
+		    if (needRetry) {
+			throw new Exception("Couldn't place chests");
 		    }
 
-		    foreach (var c in chestPool) {
-			MapElement me = allCandidates.SpliceRandom(rng);
-			me.Value = c;
+		    // Finally, add spike tiles.
+		    Console.WriteLine($"spikes {placedChests.Count} {spikePool.Count}");
+
+		    var directions = new Direction[] { Direction.Down, Direction.Down, Direction.Down,
+			Direction.Right, Direction.Left, Direction.Up };
+		    while (spikePool.Count > 0) {
+			var pc = placedChests.PickRandom(rng);
+			var dir = directions.PickRandom(rng);
+			var me = pc.Neighbor(dir);
+			if (floorTiles.Contains(me.Value) || battleTiles.Contains(me.Value)) {
+			    me.Value = spikePool[spikePool.Count-1];
+			    //me.Value = 0xD;
+			    spikePool.RemoveAt(spikePool.Count-1);
+			}
+			var roll = rng.Between(1, 20);
+			if (roll == 1 && spikePool.Count > 0 && roomsToSanityCheck.Count > 0) {
+			    var rm = roomsToSanityCheck.SpliceRandom(rng);
+			    rm.start.Value = spikePool[spikePool.Count-1];
+			    //rm.start.Value = 0xD;
+			    spikePool.RemoveAt(spikePool.Count-1);
+			}
 		    }
 
 		    //
@@ -1681,7 +1754,7 @@ namespace FF1Lib
 			    MapId.TempleOfFiendsRevisitedAir,
 			    MapId.TempleOfFiendsRevisitedChaos }, // ToFR
 
-			// These don't really fit in anywhere
+			// There's no space to shuffle anything.
 			// new MapId[] { MapId.TempleOfFiends }, // ToF
 			// new MapId[] { MapId.TitansTunnel }, // Titan
 		    };
