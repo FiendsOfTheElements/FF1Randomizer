@@ -1203,7 +1203,7 @@
 		"Id": "cureHealBuffCheckBox",
 		"title": "Improve Curative Spells",
 		"screenshot": "cureHealBuffCheckBox.png",
-		"description": "Improves the efficacy of CURE, HEAL, LAMP, and AMUT spells, granting greater healing from CURE and HEAL spells while, for LAMP and AMUT, curing paralysis effects."
+		"description": "Improves the efficacy of CURE, CUR2, CUR3, HEAL, HEL2, HEL3, LAMP, and AMUT spells. CURE spells now restore twice as much health and HEAL spells restore 33% more. LAMP and AMUT now also cure paralysis effects."
 	},
 	{
 		"Id": "tier1DamageBuff",
