@@ -1409,7 +1409,7 @@ namespace FF1Lib
 		    // * doors and locked doors
 		    // * floor tiles with the move bit that are empty.
 
-		    bool debug = true;
+		    bool debug = false;
 
 		    if (debug) Console.WriteLine($"\nTiles for {ids[0]}");
 
