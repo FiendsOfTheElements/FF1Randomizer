@@ -283,6 +283,8 @@ namespace FF1Lib
 
 			if ((bool)flags.ReversedFloors) new ReversedFloors(this, maps, rng).Work();
 
+			if ((bool)flags.RelocateChests) this.RandomlyRelocateChests(rng,maps);
+
 			var flippedMaps = new List<MapId>();
 
 			teleporters.LoadData();

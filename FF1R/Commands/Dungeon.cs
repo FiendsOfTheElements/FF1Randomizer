@@ -85,7 +85,7 @@ namespace FF1R.Commands
 
 	    var rng = new MT19337(12);
 
-	    rom.ShuffleAllChestLocations(rng, maps);
+	    rom.RandomlyRelocateChests(rng, maps);
 
 	    int start = 0;
 	    int end = 60;

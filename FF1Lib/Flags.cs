@@ -135,6 +135,8 @@ namespace FF1Lib
 		public bool OwUnsafeStart { get; set; } = false;
 		public bool OwRandomPregen { get; set; } = false;
 
+		public bool? RelocateChests { get; set; } = false;
+
 		public GameModes GameMode { get; set; } = GameModes.Standard;
 
 		[IntegerFlag(0, Int32.MaxValue-1)]
