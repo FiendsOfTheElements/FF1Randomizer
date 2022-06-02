@@ -20,12 +20,11 @@
 
 	<h4>Class blursing</h4>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomizeClassCheckBox" @bind-Value="Flags.RandomizeClass">Blursed Classes</TriStateCheckBox>
-	<IntSlider Indent Min="0" Max="4" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassMaxBonusSlider" @bind-Value="@Flags.RandomizeClassMaxBonus">Bonuses:</IntSlider>
-	<IntSlider Indent Min="0" Max="4" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassMaxMalusSlider" @bind-Value="@Flags.RandomizeClassMaxMalus">Maluses:</IntSlider>
+	<IntSlider Indent Min="0" Max="3" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassMaxBonusSlider" @bind-Value="@Flags.RandomizeClassMaxBonus">Bonuses:</IntSlider>
+	<IntSlider Indent Min="0" Max="3" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassMaxMalusSlider" @bind-Value="@Flags.RandomizeClassMaxMalus">Maluses:</IntSlider>
 
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassCastingCheckBox" @bind-Value="Flags.RandomizeClassCasting">Add Spellcasting Bonuses</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassIncludeNaturalResistCheckBox" @bind-Value="Flags.RandomizeClassIncludeNaturalResist">Add Natural Resist Bonuses</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassIncludeXpBonuxCheckBox" @bind-Value="Flags.RandomizeClassIncludeXpBonus">Add XP Bonuses</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassKeyItemsCheckBox" @bind-Value="Flags.RandomizeClassKeyItems">Start with Key Items</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.RandomizeClass" Id="RandomizeClassChaosCheckBox" @bind-Value="Flags.RandomizeClassChaos">Chaos Mode</TriStateCheckBox>
 
 	<div class="checkbox-cell"></div>
@@ -37,12 +36,13 @@
 	<div class="checkbox-cell"></div>
 			<h4>Levels</h4>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingLevelDropDown" TItem="StartingLevel" @bind-Value="Flags.StartingLevel">Starting Level:</EnumDropDown>
-			<DoubleSlider UpdateToolTip="@UpdateToolTipID" DoubleCol Id="MaximumLevelDoubleSilder" MinValue="1" MaxValue="50" Step="1" @bind-ValueHigh="Flags.MaxLevelHigh" @bind-ValueLow="Flags.MaxLevelLow">Max Level:</DoubleSlider>
+			<DoubleSlider UpdateToolTip="@UpdateToolTipID" DoubleCol Id="MaximumLevelDoubleSilder" MinValue="1" MaxValue="50" Step="1" @bind-ValuesRange="(Flags.MaxLevelLow, Flags.MaxLevelHigh)">Max Level:</DoubleSlider>
 
 </div>
 <div class="col2">
 	<h4>Magic Charges</h4>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="MpGainOnMaxGainModeDropDown" TItem="MpGainOnMaxGain" @bind-Value="Flags.MpGainOnMaxGainMode">Mp Charges Restore On New Max Mp:</EnumDropDown>
+    <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EarlierHighTierMagic" @bind-Value="@Flags.EarlierHighTierMagic">Earlier High-Tier Magic Charges</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ChangeMaxMP" @bind-Value="@Flags.ChangeMaxMP">Max MP</TriStateCheckBox>
 	<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="RedMageMaxMP" @bind-Value="@Flags.RedMageMaxMP">Red Mage Max MP:</IntSlider>
 	<IntSlider Indent Min="1" Max="9" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.ChangeMaxMP" Id="WhiteMageMaxMP" @bind-Value="@Flags.WhiteMageMaxMP">White Mage Max MP:</IntSlider>

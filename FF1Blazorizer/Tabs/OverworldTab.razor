@@ -4,70 +4,118 @@
 @inject IJSRuntime JSRuntime
 @using Newtonsoft.Json;
 
-	<div id="Overworld" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
-		<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Overworld</a></h3>
-		@if (IsOpen)
-		{
-	<div class="col1 full">
-		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
-		<p>@StatusMessage</p>
-		<br>
-	</div>
-	<div class="col1">
-			<h4>Map generation parameters</h4>
-			Map generation seed:
-			<br>
-			<input type="text" style="width: calc(100% - 160px);" class="nes-input @(_mapgenSeedInputClass)" id="mapgenSeedInput"
-				   @onchange="@OnSeedInputChanged" value="@(_mapgenSeed)"
-				   disabled="@(!IsGenerateMap(Flags.OwMapExchange))" />
-			<a class='styled-button @(IsGenerateMap(Flags.OwMapExchange) ? "" : "disabled-button")' @onclick="@OnNewSeed">New</a>
-			<a class='styled-button @(IsGenerateMap(Flags.OwMapExchange) ? "" : "disabled-button")' @onclick="@OnClearSeed">Clear</a>
-			<br>
-			<br>
-			<a class='styled-button @(IsGenerateMap(Flags.OwMapExchange) ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>
-			<a class='styled-button @(Flags.ReplacementMap != null && Flags.ReplacementMap.DecompressedMapRows != null ? "" : "disabled-button")' @onclick="@OnExportMap">Export Map</a>
-			<br>
-			<br>
-			<h4>Import Custom Map</h4>
-			<input type="file" id="importMapInput" accept=".json" @onchange="@OnImportMap" />
-		</div>
+<div id="Overworld" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Game Mode & Overworld</a></h3>
+	@if (IsOpen)
+	{
 
-		<div class="col2">
-			<h4>Vanilla overworld edits</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionCheckBox"
+			<div class="col1 full">
+				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="gameMode" TItem="GameModes" @bind-Value="Flags.GameMode">Game Mode:</EnumDropDown>
+			</div>
+
+		@if (Flags.GameMode == GameModes.Standard)
+		{
+			<div class="col1 full">
+				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
+				<p>@StatusMessage</p>
+				<br>
+			</div>
+
+			@if (Flags.OwMapExchange == OwMapExchanges.None)
+			{
+				<div class="col1">
+					<h4>Overworld Edits</h4>
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapOpenProgression">Early Open Progression</TriStateCheckBox>
 
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDwavesNWCheckBox"
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDwavesNWCheckBox"
 							  IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" Indent @bind-Value="Flags.MapDwarvesNorthwest">Extended Open Progression</TriStateCheckBox>
 
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDocksCheckBox"
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDocksCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapOpenProgressionDocks">Northern Docks</TriStateCheckBox>
 
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionFloaterDockCheckBox"
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionFloaterDockCheckBox"
 							  IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" @bind-Value="Flags.MapAirshipDock">Ryukahn Desert Dock</TriStateCheckBox>
 
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bahamutCardiaDockCheckBox"
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bahamutCardiaDockCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapBahamutCardiaDock">Bahamut Cardia Dock</TriStateCheckBox>
 
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinRiverDockCheckBox"
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinRiverDockCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapLefeinRiver">Lefein River Dock</TriStateCheckBox>
 
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaMountainPassCheckBox"
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaMountainPassCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapGaiaMountainPass">Gaia Mountain Pass</TriStateCheckBox>
-			<div class="checkbox-cell"></div>
+					<div class="checkbox-cell"></div>
+				</div>
+			}
+			else if (Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld || Flags.OwMapExchange == OwMapExchanges.LostWoods || Flags.OwMapExchange == OwMapExchanges.Desert)
+			{
+				<div class="col1">
+					<h4>Map generation parameters</h4>
+					Map generation seed:
+					<br>
+					<input type="text" style="width: calc(100% - 160px);" class="nes-input @(_mapgenSeedInputClass)" id="mapgenSeedInput"
+							@onchange="@OnSeedInputChanged" value="@(_mapgenSeed)"
+							disabled="@(!IsGenerateMap(Flags.OwMapExchange))" />
+					<a class='styled-button @(IsGenerateMap(Flags.OwMapExchange) ? "" : "disabled-button")' @onclick="@OnNewSeed">New</a>
+					<a class='styled-button @(IsGenerateMap(Flags.OwMapExchange) ? "" : "disabled-button")' @onclick="@OnClearSeed">Clear</a>
+					<br>
+					<br>
+					<a class='styled-button @(IsGenerateMap(Flags.OwMapExchange) ? "" : "disabled-button")' @onclick="@OnGenerateMap">Generate Map</a>
+					<a class='styled-button @(Flags.ReplacementMap != null && Flags.ReplacementMap.DecompressedMapRows != null ? "" : "disabled-button")' @onclick="@OnExportMap">Export Map</a>
+					<br>
+					<br>
+				</div>
+				@if (Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld)
+				{
+					<div class="col2">
+						<h4>Options</h4>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="usePregenCheckBox" @bind-Value="Flags.OwRandomPregen">Use Pregenerated Map</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffledAccessCheckBox" @bind-Value="Flags.OwShuffledAccess">Shuffled Access</CheckBox>
+						<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="unsafeStartCheckBox" IsEnabled="@Flags.OwShuffledAccess" @bind-Value="Flags.OwUnsafeStart">Unsafe Start</CheckBox>
+						<div class="checkbox-cell"></div>
+					</div>
+				}
+			}
+			else if (Flags.OwMapExchange == OwMapExchanges.ImportCustomMap)
+			{
+				<div class="col1">
+					<h4>Import Custom Map</h4>
+					<input type="file" id="importMapInput" accept=".json" @onchange="@OnImportMap" />
+					<div class="checkbox-cell"></div>
+				</div>
+			}
 
-			<h4>Other map changes</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="OWDamageTilesCheckBox" @bind-Value="Flags.OWDamageTiles">Marsh and Desert Tiles Deal Damage</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="DamageTilesKillCheckBox" @bind-Value="Flags.DamageTilesKill">Lethal Damage Tiles</TriStateCheckBox>
+			@if (Flags.OwMapExchange != OwMapExchanges.Desert)
+			{
+				<div class="col2">
+					<h4>Other map changes</h4>
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="OWDamageTilesCheckBox" @bind-Value="Flags.OWDamageTiles">Marsh and Desert Tiles Deal Damage</TriStateCheckBox>
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="DamageTilesKillCheckBox" @bind-Value="Flags.DamageTilesKill">Lethal Damage Tiles</TriStateCheckBox>
 
-			<div class="clear-it"></div>
-		</div>
+					<div class="clear-it"></div>
+				</div>
+			}
 		}
+		else if (Flags.GameMode == GameModes.DeepDungeon)
+		{
+			<div class="col1 full">
+				<div class="checkbox-cell"></div>
+				<h4>Deep Dungeon Options</h4>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDProgressiveTilesets" @bind-Value="Flags.DDProgressiveTilesets">Progressive Tilesets</CheckBox>
+				<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDFiendOrbs" @bind-Value="Flags.DDFiendOrbs">Fiend Orbs</CheckBox>
+				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="TailBahamutDropDown" TItem="TailBahamutMode" @bind-Value="Flags.TailBahamutMode">Bahamut and TAIL floors:</EnumDropDown>
+				<div class="clear-it"></div>
+			</div>
+		}
+
+
+	}
 	</div>
 
 
@@ -95,8 +143,6 @@
 
 		bool IsGenerateMap(OwMapExchanges ex) {
 			return (ex == OwMapExchanges.GenerateNewOverworld ||
-			ex == OwMapExchanges.GenerateNewOverworldShuffledAccess ||
-			ex == OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe ||
 			ex == OwMapExchanges.LostWoods ||
 			ex == OwMapExchanges.Desert);
 		}
@@ -132,10 +178,8 @@
 				switch (Flags.OwMapExchange)
 				{
 					case OwMapExchanges.GenerateNewOverworld:
-					case OwMapExchanges.GenerateNewOverworldShuffledAccess:
-					case OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe:
 					case OwMapExchanges.LostWoods:
-						Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, Flags.OwMapExchange);
+						Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, Flags.OwMapExchange, Flags.OwShuffledAccess, Flags.OwUnsafeStart);
 						break;
 					case OwMapExchanges.Desert:
 						Flags.ReplacementMap = DesertOfDeath.GenerateDesert(maprng);

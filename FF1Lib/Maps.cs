@@ -815,6 +815,91 @@ namespace FF1Lib
 
 			return selectedMap;
 		}
+		public void ShufflePravoka(Flags flags, MT19337 rng, List<Map> maps, bool blightedPravoka)
+		{
+			if (!(bool)flags.ShufflePravokaShops)
+			{
+				return;
+			}
+
+			// weapon, armor, white, black, inn
+			List<(byte sign, byte door)> shopTiles = new() { (0x21, 0x1F), (0x22, 0x44), (0x23, 0x50), (0x24, 0x5A), (0x25, 0x6E) };
+
+			// prep coordinates
+			List<(int x, int y)> roofTiles = new() { (0x0F, 0x12), (0x21, 0x04), (0x23, 0x10), (0x1F, 0x12) };
+			List<(int x, int y)> wallTiles = new() { (0x22, 0x11), (0x1E, 0x13), (0x20, 0x05), (0x0E, 0x13) };
+			List<(int x, int y)> highWallTiles = new() { (0x13, 0x03) };
+
+			List<(int x, int y)> validLocations = new()
+			{
+				(0x03, 0x12),
+				(0x04, 0x0C),
+				(0x05, 0x04),
+				(0x08, 0x12),
+				(0x09, 0x0B),
+				(0x0C, 0x06),
+				(0x0C, 0x0D),
+				(0x13, 0x03),
+				(0x19, 0x19),
+				(0x1B, 0x04),
+				(0x1B, 0x0E),
+				(0x1C, 0x15),
+				(0x1F, 0x12),
+				(0x1F, 0x1B),
+				(0x21, 0x04),
+				(0x21, 0x0E),
+				(0x22, 0x16),
+				(0x23, 0x10),
+			};
+
+			// we can add the item shop and the clinic and a few more potential locations if pravoka hasn't been attacked by vampire
+			if (!blightedPravoka)
+			{
+				shopTiles.Add((0x20, 0x78)); // Item Shop
+				shopTiles.Add((0x1A, 0x68)); // Clinic
+
+				// Clinic
+				highWallTiles.Add((0x1A, 0x09)); 
+				maps[(int)MapId.Pravoka][0x08, 0x1A] = 0x1B;
+
+				// Item Shop
+				roofTiles.Add((0x05, 0x016));
+				wallTiles.Add((0x04, 0x17));
+
+				validLocations.AddRange(new List<(int x, int y)> {
+					(0x04, 0x1B),
+					(0x05, 0x16),
+					(0x0C, 0x19),
+					(0x19, 0x12),
+					(0x1A, 0x09),
+					(0x20, 0x09),
+				});
+			}
+
+			// wipe the map first
+			foreach (var coord in roofTiles)
+			{
+				maps[(int)MapId.Pravoka][coord.y, coord.x] = 0x18;
+			}
+
+			foreach (var coord in wallTiles)
+			{
+				maps[(int)MapId.Pravoka].Put(coord, new List<Blob> { Blob.FromHex("1D1D1D") }.ToArray());
+			}
+
+			foreach (var coord in highWallTiles)
+			{
+				maps[(int)MapId.Pravoka].Put(coord, new List<Blob> { Blob.FromHex("1D"), Blob.FromHex("16") }.ToArray());
+			}
+
+			// then place the shops
+			foreach (var shop in shopTiles)
+			{
+				var coord = validLocations.SpliceRandom(rng);
+				maps[(int)MapId.Pravoka][coord.y, coord.x] = shop.sign;
+				maps[(int)MapId.Pravoka][coord.y + 1, coord.x] = shop.door;
+			}
+		}
 
 		public List<MapId> HorizontalFlipDungeons(MT19337 rng, List<Map> maps, TeleportShuffle teleporters, OverworldMap overworld)
 		{
@@ -969,7 +1054,8 @@ namespace FF1Lib
 			var dialogueStrings = new List<string>
 			{
 				"I. aM. WarMECH.",
-				"I think you ought to\nknow, I'm feeling very\ndepressed.",
+				"Give me the AllSpark,\nand you may live to be\nmy pet!",
+				"I'm afraid that's\nsomething I cannot allow\nto happen, Dave.",
 				"Bite my shiny metal ass!",
 				"Put down your weapons.\nYou have 15 seconds to\ncomply.",
 				"rEsIsTaNcE iS fUtIlE.",

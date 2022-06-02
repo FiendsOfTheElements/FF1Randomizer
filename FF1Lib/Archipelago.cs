@@ -282,6 +282,15 @@ namespace FF1Lib
 				}
 			}
 
+			if (flags.GameMode == GameModes.NoOverworld)
+			{
+				switch (item)
+				{
+					case Item.Floater: return "SIGIL";
+					case Item.Canoe: return "MARK";
+				}
+			}
+
 			return item.ToString();
 		}
 

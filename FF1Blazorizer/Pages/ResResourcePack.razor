@@ -162,6 +162,22 @@ Received #
 		href="/ResImages?image=resource-pack-reference/weapons.png" download>Reference
 		image for weapons.</a></p>
 
+		<h2>spellbook.json</h2>
+
+		<p>Replacement spellbook to load.  <a href="/resource-pack-reference/magic.json" download>Vanilla spellbook for reference.</a> Valid values for fields:</p>
+
+		<ul>
+		<li>routine: None, Damage, DamageUndead, Heal, CureAilment, FullHeal, ArmorUp, DefElement, Fast, Sabr, Lock, Ruse, PowerWord, InflictStatus, Slow, Fear, Xfer</li>
+		<li>targeting: None, AllEnemies, OneEnemy, Self, AllCharacters, OneCharacter</li>
+		<li>elem: None, Earth, Lightning, Ice, Fire, Death, Time, Poison, Status, All</li>
+		<li>accuracy: chance of hitting.</li>
+		<li>effect: base damage for damage spells, base healing for healing spells, amount by which armor is raised by fog, or damage raised by tmpr, etc.  Note: for spell routine CureStatus or InflictStatus, omit "effect", use "status" instead.  For all other spells, omit "status" (it's not possible to inflict/cure damage and status ailments at the same time, except with FullHeal/CUR4).</li>
+	        <li>status: None, Confuse, Mute, Dark, Stun, Sleep, Stone, Death, Poison</li>
+		<li>oobSpellRoutine: CURE, CUR2, CUR3, CUR4, HEAL, HEL3, HEL2, PURE, LIFE, LIF2, WARP, SOFT, EXIT, None</li>
+		<li>MagicGraphic: None, BarOfLight, FourSparkles, Stars, EnergyBeam, EnergyFlare, GlowingBall, LargeSparkle, SparklingHand</li>
+		<li>SpellColor: White, Blue, Violet, Purple, Pink, PinkOrange, LightOrange, DarkOrange, Yellow, Green, LightGreen, BlueGreen, Teal, Gray, Black1</li>
+		</ul>
+
 		<ul>
 			<li>Back to <a href="/Resources">Resources</a></li>
 		</ul>

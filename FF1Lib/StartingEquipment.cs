@@ -193,21 +193,21 @@ namespace FF1Lib
 		private List<Item> GetCasterItemPool()
 		{
 			var spells = new HashSet<Spell>(spellHelper.GetAllSpells().Where(s =>
-				s.Info.routine == (byte)SpellRoutine.Damage ||
-				s.Info.routine == (byte)SpellRoutine.DamageUndead ||
-				s.Info.routine == (byte)SpellRoutine.Fast ||
-				s.Info.routine == (byte)SpellRoutine.FullHeal ||
-				s.Info.routine == (byte)SpellRoutine.Heal ||
-				s.Info.routine == (byte)SpellRoutine.InflictStatus &&
+				s.Info.routine == SpellRoutine.Damage ||
+				s.Info.routine == SpellRoutine.DamageUndead ||
+				s.Info.routine == SpellRoutine.Fast ||
+				s.Info.routine == SpellRoutine.FullHeal ||
+				s.Info.routine == SpellRoutine.Heal ||
+				s.Info.routine == SpellRoutine.InflictStatus &&
 					(
 						s.Info.effect == (byte)SpellStatus.Death ||
 						s.Info.effect == (byte)SpellStatus.Confuse ||
 						s.Info.effect == (byte)SpellStatus.Stone
 					) ||
-				s.Info.routine == (byte)SpellRoutine.Lock ||
-				s.Info.routine == (byte)SpellRoutine.PowerWord ||
-				s.Info.routine == (byte)SpellRoutine.Ruse ||
-				s.Info.routine == (byte)SpellRoutine.Sabr).Select(s => s.Id));
+				s.Info.routine == SpellRoutine.Lock ||
+				s.Info.routine == SpellRoutine.PowerWord ||
+				s.Info.routine == SpellRoutine.Ruse ||
+				s.Info.routine == SpellRoutine.Sabr).Select(s => s.Id));
 
 			var weaps = weapons.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
 			var arms = armors.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);

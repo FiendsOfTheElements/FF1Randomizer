@@ -99,14 +99,19 @@ namespace FF1Lib
 
 			var treasurePool = _allTreasures.ToList();
 
+			bool jingleGuaranteedDefenseItem = true;
+			bool jingleGuaranteedPowerItem = true;
+
 			if (_flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(_flags.ItemMagicMode == ItemMagicMode.None) && !incentivePool.Contains(Item.PowerRod))
 			{
 				unincentivizedQuestItems.Add(Item.PowerRod);
+				jingleGuaranteedDefenseItem = false;
 			}
 
 			if (_flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(_flags.ItemMagicMode == ItemMagicMode.None) && !incentivePool.Contains(Item.PowerGauntlets))
 			{
 				unincentivizedQuestItems.Add(Item.PowerGauntlets);
+				jingleGuaranteedPowerItem = false;
 			}
 
 			foreach (var incentive in incentivePool)
@@ -155,7 +160,12 @@ namespace FF1Lib
 					if (placedItem is TreasureChest && placedItem.Item != Item.Shard &&
 						placedItem.Item != ReplacementItem)
 					{
-						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { 0x01 });
+						if ((placedItem.Item == Item.PowerGauntlets && !jingleGuaranteedPowerItem) || (placedItem.Item == Item.PowerRod && !jingleGuaranteedDefenseItem))
+						{
+							continue;
+						}
+
+						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { (byte)placedItem.Item });
 					}
 				}
 			}			
@@ -192,7 +202,7 @@ namespace FF1Lib
 				
 				if (randomizeTreasureMode == RandomizeTreasureMode.DeepDungeon)
 				{
-					generator = new DeepDungeonItemGenerator(itemLocationPool, rom.UnusedGoldItems, removedItems, normalTreasures, _flags.DeepDungeon, _flags.Etherizer, rom);
+					generator = new DeepDungeonItemGenerator(itemLocationPool, rom.UnusedGoldItems, removedItems, normalTreasures, (_flags.GameMode == GameModes.DeepDungeon), _flags.Etherizer, rom);
 				}
 				else
 				{
@@ -250,6 +260,12 @@ namespace FF1Lib
 
 				var leftovers = treasurePool.Zip(itemLocationPool, (treasure, location) => NewItemPlacement(location, treasure));
 				placedItems.AddRange(leftovers);
+			}
+
+			//chest order placement
+			for (int i = 0; i < treasurePool.Count; i++)
+			{
+				rom.Put(FF1Rom.TreasureChestOrderOffset + i, new byte[] { (byte)treasurePool[i] });
 			}
 
 			return placedItems;

@@ -33,7 +33,10 @@ namespace FF1R.Commands
 
 	[Option("-p")]
 	public int Pack { get; } = 1;
-
+	[Option("-a")]
+	public bool SuffleAccess { get; }
+	[Option("-u")]
+	public bool UnsafeStart { get; }
 	[Option("-S")]
 	public string SeedFile { get; } = null;
 
@@ -69,7 +72,7 @@ namespace FF1R.Commands
 		var rng = new MT19337((uint)effectiveSeed);
 		do {
 		    try {
-			replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, subtype);
+			replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, subtype, SuffleAccess, UnsafeStart);
 		    } catch (Exception) {
 			if (!this.Retry) {
 			    Console.WriteLine($"Failed to generate seed {effectiveSeed}");

@@ -121,12 +121,18 @@ namespace FF1Lib
 			return rom;
 		}
 
+		public void LoadSharedDataTables() {
+			ItemsText = new ItemNames(this);
+			ArmorPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, this);
+			WeaponPermissions = new GearPermissions(0x3BF50, (int)Item.WoodenNunchucks, this);
+			SpellPermissions = new SpellPermissions(this);
+			ClassData = new GameClasses(WeaponPermissions, ArmorPermissions, SpellPermissions, this);
+		}
+
 		public void Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
 		    Flags flagsForRng = flags;
 		    if (flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ||
-			flags.OwMapExchange == OwMapExchanges.GenerateNewOverworldShuffledAccess ||
-			flags.OwMapExchange == OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe ||
 			flags.OwMapExchange == OwMapExchanges.LostWoods)
 		    {
 			// Procgen maps can be either
@@ -149,10 +155,13 @@ namespace FF1Lib
 			MT19337 rng;
 			using (SHA256 hasher = SHA256.Create())
 			{
-				if (flags.TournamentSafe && flags.ResourcePack != null)
-				{
-					resourcesPackHash = hasher.ComputeHash(new MemoryStream(Convert.FromBase64String(flags.ResourcePack)).ToArray());
+			    if (flags.ResourcePack != null) {
+				var rp = new MemoryStream(Convert.FromBase64String(flags.ResourcePack));
+                                if (flags.TournamentSafe || ResourcePackHasGameplayChanges(rp)) {
+				    rp.Seek(0, SeekOrigin.Begin);
+				    resourcesPackHash = hasher.ComputeHash(rp).ToArray();
 				}
+			    }
 
 				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flagsForRng));
 				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed, resourcesPackHash });
@@ -181,11 +190,8 @@ namespace FF1Lib
 			SeparateUnrunnables();
 			DrawCanoeUnderBridge();
 
-			ItemsText = new ItemNames(this);
-			ArmorPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, this);
-			WeaponPermissions = new GearPermissions(0x3BF50, (int)Item.WoodenNunchucks, this);
-			SpellPermissions = new SpellPermissions(this);
-			ClassData = new GameClasses(WeaponPermissions, ArmorPermissions, SpellPermissions, this);
+			LoadSharedDataTables();
+
 			DeepDungeon = new DeepDungeon(this);
 
 			var talkroutines = new TalkRoutines();
@@ -222,59 +228,24 @@ namespace FF1Lib
 				DesertOfDeath.ApplyDesertModifications(this, owMapExchange, npcdata);
 			}
 
-			if (flags.EFGWaterfall || flags.EFGEarth1 || flags.EFGEarth2)
+			if (flags.EFGWaterfall)
 			{
 				MapRequirements reqs;
 				MapGeneratorStrategy strategy;
 				MapGenerator generator = new MapGenerator();
-				if (flags.EFGWaterfall)
+
+				reqs = new MapRequirements
 				{
-					reqs = new MapRequirements
-					{
-						MapId = MapId.Waterfall,
-						Rom = this,
-					};
-					strategy = MapGeneratorStrategy.WaterfallClone;
-					CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
+					MapId = MapId.Waterfall,
+					Rom = this,
+				};
+				strategy = MapGeneratorStrategy.WaterfallClone;
+				CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
 
-					// Should add more into the reqs so that this can be done inside the generator.
-					teleporters.Waterfall.SetEntrance(waterfall.Entrance);
-					overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
-					maps[(int)MapId.Waterfall] = waterfall.Map;
-				}
-
-				if (flags.EFGEarth1)
-				{
-					reqs = new MapRequirements
-					{
-						MapId = MapId.EarthCaveB1,
-						Rom = this,
-					};
-
-					strategy = MapGeneratorStrategy.Square;
-					var earthB1 = generator.Generate(rng, strategy, reqs);
-
-					// Should add more into the reqs so that this can be done inside the generator.
-					teleporters.EarthCave1.SetEntrance(earthB1.Entrance);
-					overworldMap.PutOverworldTeleport(OverworldTeleportIndex.EarthCave1, teleporters.EarthCave1);
-					maps[(int)MapId.EarthCaveB1] = earthB1.Map;
-				}
-				if (flags.EFGEarth2)
-				{
-					reqs = new MapRequirements
-					{
-						MapId = MapId.EarthCaveB2,
-						Rom = this,
-					};
-
-					strategy = MapGeneratorStrategy.Square;
-					var earthB2 = generator.Generate(rng, strategy, reqs);
-
-					// Should add more into the reqs so that this can be done inside the generator.
-					teleporters.EarthCave2.SetEntrance(earthB2.Entrance);
-					overworldMap.PutStandardTeleport(TeleportIndex.EarthCave2, teleporters.EarthCave2, OverworldTeleportIndex.EarthCave1);
-					maps[(int)MapId.EarthCaveB2] = earthB2.Map;
-				}
+				// Should add more into the reqs so that this can be done inside the generator.
+				teleporters.Waterfall.SetEntrance(waterfall.Entrance);
+				overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
+				maps[(int)MapId.Waterfall] = waterfall.Map;
 			}
 
 			if((bool)flags.OWDamageTiles || (flags.OwMapExchange == OwMapExchanges.Desert))
@@ -312,8 +283,7 @@ namespace FF1Lib
 				EnableTitansTrove(maps);
 			}
 
-			// Original placement of DeepDungeon routine
-			if (flags.DeepDungeon)
+			if (flags.GameMode == GameModes.DeepDungeon)
 			{
 				DeepDungeon.Generate(rng, overworldMap, maps, flags);
 				DeepDungeonFloorIndicator();
@@ -335,6 +305,8 @@ namespace FF1Lib
 			{
 				attackedTown = RandomVampireAttack(maps, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
 			}
+
+			ShufflePravoka(flags, rng, maps, attackedTown == MapId.Pravoka);
 
 			if ((bool)flags.GaiaShortcut)
 			{
@@ -434,12 +406,12 @@ namespace FF1Lib
 				EnableToFRExit(maps);
 			}
 
-			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs && !flags.DeepDungeon)
+			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs)
 			{
 				EnableShardHunt(rng, talkroutines, flags.ShardCount);
 			}
 
-			if (!flags.FreeOrbs && !flags.ShardHunt && !flags.DeepDungeon)
+			if (!flags.FreeOrbs && !flags.ShardHunt && (flags.GameMode != GameModes.DeepDungeon))
 			{
 				SetOrbRequirement(rng, talkroutines, flags.OrbsRequiredCount, flags.OrbsRequiredMode, (bool)flags.OrbsRequiredSpoilers);
 			}
@@ -572,8 +544,7 @@ namespace FF1Lib
 					overworldMap = new OverworldMap(this, flags, palettes);
 					overworldMap.Teleporters = teleporters;
 
-					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon
-						&& !(flags.OwMapExchange == OwMapExchanges.NoOverworld))
+					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && flags.GameMode == GameModes.Standard)
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 					}
@@ -582,7 +553,7 @@ namespace FF1Lib
 					if ((bool)flags.Entrances || (bool)flags.Floors || flags.OwMapExchange != OwMapExchanges.None || (bool)flags.FreeOrbs)
 						talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
 
-					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && !flags.DeepDungeon)
+					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && (flags.GameMode != GameModes.DeepDungeon))
 					{
 						overworldMap.ShuffleObjectiveNPCs(rng);
 					}
@@ -624,7 +595,7 @@ namespace FF1Lib
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, new SanityCheckerV1());
 					}
 
-					if (flags.DeepDungeon)
+					if (flags.GameMode == GameModes.DeepDungeon)
 					{
 						sanityChecker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
 						generatedPlacement = DeepDungeon.ShuffleTreasures(flags, incentivesData, rng);
@@ -680,7 +651,7 @@ namespace FF1Lib
 
 			new LegendaryShops(rng, flags, maps, flippedMaps, shopData, this).PlaceShops();
 
-			if (flags.DeepDungeon)
+			if (flags.GameMode == GameModes.DeepDungeon)
 			{
 				shopData.Shops.Find(x => x.Type == FF1Lib.ShopType.Item && x.Entries.Contains(Item.Bottle)).Entries.Remove(Item.Bottle);
 				shopData.StoreData();
@@ -984,7 +955,7 @@ namespace FF1Lib
 				ItemsText[(int)Item.House] = "XETH@p";
 			}
 
-			if ((bool)flags.HintsVillage && !flags.DeepDungeon)
+			if ((bool)flags.HintsVillage && (flags.GameMode != GameModes.DeepDungeon))
 			{
 				NPCHints(rng, npcdata, flags, overworldMap);
 			}
@@ -1050,7 +1021,7 @@ namespace FF1Lib
 
 			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
-				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, (bool)flags.SwoleBahamut, flags.DeepDungeon, flags.EvadeCap, rng);
+				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, (bool)flags.SwoleBahamut, (flags.GameMode == GameModes.DeepDungeon), flags.EvadeCap, rng);
 			}
 
 			if (flags.EnemyScaleStatsHigh != 100 || flags.EnemyScaleStatsLow != 100 || ((bool)flags.SeparateEnemyHPScaling && (flags.EnemyScaleHpLow != 100 || flags.EnemyScaleHpHigh != 100)))
@@ -1099,7 +1070,9 @@ namespace FF1Lib
 			ClassData.SetMpGainOnMaxGain(flags, this);
 			ClassData.RaiseThiefHitRate(flags);
 			ClassData.BuffThiefAGI(flags);
+			ClassData.EarlierHighTierMagicCharges(flags);
 			ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);
+			ClassData.ProcessStartWithRoutines(flags, this);
 
 			if ((bool)flags.EnableRandomPromotions)
 			{
@@ -1264,6 +1237,11 @@ namespace FF1Lib
 			uint last_rng_value = rng.Next();
 			WriteSeedAndFlags(seed.ToHex(), flagstext, last_rng_value);
 			ExtraTrackingAndInitCode(flags, preferences);
+
+			if(flags.OpenChestsInOrder)
+			{
+				OpenChestsInOrder();
+			}
 		}
 
 		private void EnableNPCSwatter(NPCdata npcdata)
@@ -1690,7 +1668,7 @@ namespace FF1Lib
 					temptext[j] = temptext[j].Replace("@B", "Bracelet");
 					temptext[j] = temptext[j].Replace("@T", "Shirt");
 				}
-				
+
 				blursetext += classlist[i] + "\n" + "BONUS" + "\n" + String.Join("\n", temptext.ToArray()) + "\n\n";
 			}
 

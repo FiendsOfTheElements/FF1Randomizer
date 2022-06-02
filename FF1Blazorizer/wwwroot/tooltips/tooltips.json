@@ -889,6 +889,12 @@
 		"description": "Upgrades the L8 Magic Shops in Lefein to include additional L1-L8 Magic Shops from around the world.\nDoes not include L7 and L8 Magic Shops from the neighboring town of Gaia.\nNote: This flag is ignored if the \"Shop Reduction\" flag for the Magic Shops is enabled."
 	},
 	{
+		"Id": "shufflePravokaShopsCheckBox",
+		"title": "Shuffle Pravoka's Shop",
+		"screenshot": "shufflePravokaShopsCheckBox.png",
+		"description": "Shops in Pravoka are shuffled amongst all occupied and unoccupied buildings."
+	},
+	{
 		"Id": "randomVampAttackCheckBox",
 		"title": "Vampire Attacks Random Town",
 		"screenshot": "vampAttack.png",
@@ -911,7 +917,7 @@
 		"Id": "randomLootCheckBox",
 		"title": "Randomize Treasures",
 		"screenshot": "randomLootCheckBox.png",
-		"description": "Randomizes the contents of each chest. Items not normally found in chests may be available, some items may not be found in chests that normally would, and duplicates may exist.\n\nNone: Chests' content isn't randomized.\nWorld Wealth: Chests' content is randomized based on the tier of the item. Each setting for random wealth weighs the pool differently.\nDeep Dungeon: Chest' content is randomized based on each chest's location.\nRandom: One of the previous options is selected at random."
+		"description": "Randomizes the contents of each chest. Items not normally found in chests may be available, some items may not be found in chests that normally would, and duplicates may exist.\n\nNone: Chests' content isn't randomized.\nWorld Wealth: Chests' content is randomized based on the tier of the item. Each setting for random wealth weighs the pool differently.\nDeep Dungeon: Chests' content is randomized based on each chest's location.\nRandom: One of the previous options is selected at random."
 	},
 	{
 		"Id": "worldWealthDropDown",
@@ -1560,6 +1566,12 @@
 		"description": "Gives the selected class a multiplier to exp. This bonus is multiplicative with the flagset's exp multiplier.\n\ne.g. A Flagset bonus XP of 2.0x and a class bonus of 1.5x will have a total of 3.0x for that class."
 	},
 	{
+		"Id": "RandomizeClassKeyItemsCheckBox",
+		"title": "Blursed Classes - Start with Key Items",
+		"screenshot": "RandomizeClassKeyItemsCheckBox.png",
+		"description": "Each Classes will start with a different Key Item. Free or Removed Key Items aren't included. If Thief Lockpicking is enabled, KEY will be excluded. These Key Items are never included: BRIDGE, SHIP, CANAL, CANOE, FLOATER."
+	},
+	{
 		"Id": "EnableRandomPromotions",
 		"title": "Random Promotions",
 		"screenshot": "EnableRandomPromotions.gif",
@@ -1582,6 +1594,12 @@
 		"title": "Gain Spell Charges With Max MP Gain",
 		"screenshot": null,
 		"description": "When a character gains Max MP, they also gain a current MP in that spell slot. \n\nThis can be enabled for all classes, only for classes once they promote, or only for classes that receive the 'Max+MP+' class blessing (which will only show up when this option is set to blessed classes)."
+	},
+	{
+		"Id": "EarlierHighTierMagic",
+		"title": "Earlier High-Tier Magic Charges",
+		"screenshot": "EarlierHighTierMagic.png",
+		"description": "Charges for Tier 5-8 spells are progressively gained at earlier levels for all Mages; Tier 7-8 charges are still somewhat limited.\n\nProgression still follows a logical pattern similar to vanilla and no spell charges are gained later than vanilla. A few lower-tier charges are also gained earlier to ensure you always gain at least one charge on every level up. White/Black Mages now get full charges at Level 45 and Red Mages now get full charges at Level 50.\n[grid][r]{i}Vanilla ➔ Modified|Tier-5|Tier-6|Tier-7|Tier-8[r]{l}WM & BM 1st Charge|12 ➔ 11|16 ➔ 14|20 ➔ 17|25 ➔ 20[r]{l}WM & BM 4th Charge|18 ➔ 17|22 ➔ 20|26 ➔ 25|30 ➔ 27[r]{l}Red M. 1st Charge|15 ➔ 13|20 ➔ 15|26 ➔ 19|31 ➔ 23[r]{l}Red M. 4th Charge|21 ➔ 20|26 ➔ 24|32 ➔ 28|36 ➔ 31\n"
 	},
 	{
 		"Id": "ChangeMaxMP",
@@ -1831,7 +1849,7 @@
 		"Id": "chanceToRunDropDown",
 		"title": "Chance to Run",
 		"screenshot": "chanceToRunDropDown.png",
-		"description": "Changes the way the chance to run is calculated.\nVanilla: Run chance is calculated from a glitched stat as it was programmed in the original NES release.\nFixed: Run chance is calculated from the intended stat, Luck. This greatly improves the effectiveness of the RUN command, as well as classes with high Luck stats, such as the Thief.\n Percentages: Run chance is the selected static value for all classes. This causes no specific class to be any better or worse at running away because their chance to run is the same."
+		"description": "Changes the way the chance to run is calculated.\nBugged: Run chance is calculated from a glitched stat as it was programmed in the original NES release.\nCorrected: Run chance is calculated from the intended stat, Luck. This greatly improves the effectiveness of the RUN command, as well as classes with high Luck stats, such as the Thief.\n Percentages: Run chance is the selected static value for all classes. This causes no specific class to be any better or worse at running away because their chance to run is the same."
 	},
 	{
 		"Id": "spellBugsCheckBox",
@@ -2001,10 +2019,34 @@
 		"description": "Alternative item placement engine that allows the randomizer to accept more complex map changes."
 	},
 	{
+		"Id": "gameMode",
+		"title": "Game Mode",
+		"screenshot": "deepdungeon.png",
+		"description": "Select the type of gameplay.\n\nStandard: Normal game mode where you explore the world, dive dungeons and prepare for your fight againt Chaos.\nDeep Dungeon: Turns Coneria Castle into a 52-floor completely procedurally generated dungeon. As you go deeper, the monster encounters get stronger and every so often there will be a branch to the next town, but dying or restoring a save will return you to the overworld. Somewhere within the dungeon is a TAIL and Bahamut.\nNo Overworld: Removes the overworld from the game entirely; towns and dungeons are connected directly by stairs and warps. The FLOATER and the CANOE are replaced respectively by the SIGIL and Lukahn's MARK."
+	},
+	{
 		"Id": "owMapExchange",
 		"title": "Overworld Map",
 		"screenshot": "owMapExchange.png",
-		"description": "Options to generate a new random overworld map. Note: map generation is resource intensive, may take 30-60 seconds during which time your browser may be unresponsive.  If a seed fails to generate a map, try a different seed, or choose 'random pregenerated' to get a random map from a set of maps that were pre-generated using the same code as 'Generate New Overworld'.\nGenerate New Overworld - Creates a completely new overworld, vanilla access requirements (game is beatable even vanilla progression/no treasure shuffle).\nShuffled access - Locations placed with random item requirements (e.g. could need canoe to reach Elfland, or airship to reach Matoya).\nShuffled access, unsafe start - May place late-game dungeons in starting area.\nLost Woods - Randomly generated endless forest map.\nDesert of Death - Randomly generated deadly desert map.\nNo Overworld - Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps. The FLOATER and the CANOE are replaced respectively by the SIGIL and Lukahn's MARK.'\nImport custom map - Import a map using the 'Import map' button."
+		"description": "Select the layout of Overworld.\nVanilla: The original Final Fantasy 1 Overworld.\nGenerate New Overworld: Creates a completely new overworld, vanilla access requirements (game is beatable even vanilla progression/no treasure shuffle). Map generation is resource intensive and may take 30-60 seconds during which time your browser may be unresponsive. If a seed fails to generate a map, try a different seed, or select Use Pregenerated Map.\nLost Woods: Randomly generated endless forest map.\nDesert of Death: Randomly generated deadly desert map.\nImport custom map: Import a map using the 'Import map' button."
+	},
+	{
+		"Id": "usePregenCheckBox",
+		"title": "Use Pregenerated Map",
+		"screenshot": "pregen256.png",
+		"description": "Use one of the 256 pregenerated maps for a quicker and error free access to the generated new overworld experience."
+	},
+	{
+		"Id": "shuffledAccessCheckBox",
+		"title": "Shuffled Access",
+		"screenshot": "procgenowShuffledAccess.png",
+		"description": "Locations are placed with random item requirements (e.g. could need canoe to reach Elfland, or airship to reach Matoya)."
+	},
+	{
+		"Id": "unsafeStartCheckBox",
+		"title": "Unsafe Start",
+		"screenshot": "procgenowUnsafeStart.png",
+		"description": "May place late-game dungeons in starting area."
 	},
 	{
 		"Id": "enableArchipelago",
@@ -2261,5 +2303,10 @@
 		"Id": "uninterruptedMusicCheckBox",
 		"title": "Uninterrupted Music",
 		"description": "Modifies the chime that plays when opening standard treasure chests so music keeps playing instead of restarting after every chest. (Incentivized items playing the longer fanfare tune remain unchanged.)"
+	},
+	{
+		"Id": "OpenChestsInOrder",
+		"title": "Open Chests In Order",
+		"description": "Non incentive items are opened in order. \n\nWarning, if your inventory gets full it will block your equipment progress."
 	}
 ]

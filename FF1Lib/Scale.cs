@@ -70,7 +70,7 @@ namespace FF1Lib
 		Gp400,
 		[Description("800 gp")]
 		Gp800,
-		[Description("2500 gp")]
+		[Description("2,500 gp")]
 		Gp2500,
 		[Description("9,999 gp")]
 		Gp9999,
@@ -587,8 +587,8 @@ namespace FF1Lib
 			newAstos.accuracy = 42;
 			newAstos.critrate = 1;
 			newAstos.agility = 250;
-			newAstos.elem_weakness = (byte)Element.STATUS | (byte)Element.DEATH;
-			newAstos.elem_resist = (byte)Element.NONE;
+			newAstos.elem_weakness = (byte)SpellElement.Status | (byte)SpellElement.Death;
+			newAstos.elem_resist = (byte)SpellElement.None;
 
 			if (newAstos.AIscript == 0xFF) {
 			    var i = searchForNoSpellNoAbilityEnemyScript();

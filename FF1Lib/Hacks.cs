@@ -498,12 +498,12 @@ namespace FF1Lib
 			byte ship_x = 0x98;
 			byte ship_y = 0xA9;
 
-			if (flags.DeepDungeon)
+			if (flags.GameMode == GameModes.DeepDungeon)
 			{
 				coneria_y = 0x9B;
 			}
 
-			if (owMapExchange != null && flags.OwMapExchange != OwMapExchanges.NoOverworld)
+			if (owMapExchange != null && flags.GameMode == GameModes.Standard)
 			{
 				coneria_x = (byte)(owMapExchange.StartingLocation.X - 0x07);
 				coneria_y = (byte)(owMapExchange.StartingLocation.Y - 0x07);
@@ -517,12 +517,12 @@ namespace FF1Lib
 
 			// write new routine to save data at game over (the game will save when you clear the final textbox and not before), see 1B_8FF5_GameOverAndRestart.asm
 			var saveondeath_standardmid = $"AD0460D02EAD0060F04FAD0160CD0164D008AD0260CD0264F03FAD016038E9078D1060AD026038E9078D1160A9048D1460D026AD056038E9078D1060AD066038E9078D1160A9018D1460AD0060F00AA9{ship_x:X2}8D0160A9{ship_y:X2}8D0260";
-			var saveondeath_dwmodemid = $"AD0460F00AA9{airship_x:X2}8D0560A9{airship_y:X2}8D0660AD0060F00AA9{ship_x:X2}8D0160A9{ship_y:X2}8D0260A9{coneria_x:X2}8D1060A9{coneria_y:X2}8D11604E1E606E1D606E1C60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
+			var saveondeath_dwmodemid = $"AD0460F00AA9{airship_x:X2}8D0560A9{airship_y:X2}8D0660AD0060F00AA9{ship_x:X2}8D0160A9{ship_y:X2}8D0260A9{coneria_x:X2}8D1060A9{coneria_y:X2}8D11604E1E606E1D606E1C60A9018D1460EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
 			var saveondeath_part1 = "20E38BA200BD0061C9FFF041BD0C619D0A61BD0D619D0B61BD28639D2063BD29639D2163BD2A639D2263BD2B639D2363BD2C639D2463BD2D639D2563BD2E639D2663BD2F639D2763A9009D01618A186940AAD0B1";
 			var saveondeath_part2 = "A200BD00609D0064BD00619D0065BD00629D0066BD00639D0067E8D0E5A9558DFE64A9AA8DFF64A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD644C1D80";
 
 			// Since we want to spawn inside with No Overworld and not at transport, update coordinate to Coneria Castle
-			if (flags.OwMapExchange == OwMapExchanges.NoOverworld)
+			if (flags.NoOverworld)
 			{
 				coneria_x = GetFromBank(0x0E, 0x9DC0+0x08, 1)[0];
 				coneria_y = GetFromBank(0x0E, 0x9DD0+0x08, 1)[0];
@@ -1855,13 +1855,13 @@ namespace FF1Lib
 			bahamutInfo.accuracy = 106;
 			bahamutInfo.critrate = 1;
 			bahamutInfo.agility = 58;
-			bahamutInfo.elem_weakness = (byte)Element.NONE;
+			bahamutInfo.elem_weakness = (byte)SpellElement.None;
 
 			if (swoleBahamut)
 			{
 				bahamutInfo.exp = 16000; // increase exp for swole bahamut, either mode
 				bahamutInfo.hp = 700; // subject to additional boss HP scaling
-				bahamutInfo.elem_resist = (byte)Element.POISON; // no longer susceptible to BANE or BRAK
+				bahamutInfo.elem_resist = (byte)SpellElement.Poison; // no longer susceptible to BANE or BRAK
 
 				int availableScript = bahamutInfo.AIscript;
 				if (availableScript == 0xFF) {
@@ -2230,6 +2230,18 @@ namespace FF1Lib
 			PutInBank(0x1B, 0x9500, Blob.FromHex("818C3595C8955B96EE968197818C3595C8955B96EE968197"));
 			//actual new level up function
 			PutInBank(0x1B, 0x9518, Blob.FromHex("A000B1860AAAA026B1860A187186187D00958582E8A9007D0095858360"));
+		}
+
+		public void OpenChestsInOrder()
+		{
+			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9112003FEBD00B6D0062000B9BD00BF2010B42015B98A60EAEAEAEAEAEA"));
+
+			PutInBank(0x11, 0xB900, Blob.FromHex("A000A200B900622904F006B900B6D001E8C8D0F060"));
+
+			PutInBank(0x11, 0xB915, Blob.FromHex("B00AA445B90062090499006260"));
+
+			//Change the too full logic for GiveReward consumables to clear the chest. This is to not run into an issue with consumables blocking chest progression.
+			PutInBank(0x11, 0xB432, Blob.FromHex("B045"));
 		}
 	}
 }
