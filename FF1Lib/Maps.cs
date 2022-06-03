@@ -1388,6 +1388,7 @@ namespace FF1Lib
 		    public List<MapElement> teleIn = new ();
 		    public List<MapElement> teleOut = new ();
 		    public List<MapElement> npcs = new ();
+		    public List<MapElement> killablenpcs = new ();
 		    public bool hasBattles = false;
 		    public Room() { }
 		    public Room(Room copyfrom) {
@@ -1399,25 +1400,25 @@ namespace FF1Lib
 			teleIn = new List<MapElement>(copyfrom.teleIn);
 			teleOut = new List<MapElement>(copyfrom.teleOut);
 			npcs = new List<MapElement>(copyfrom.npcs);
+			killablenpcs = new List<MapElement>(copyfrom.killablenpcs);
 			hasBattles = copyfrom.hasBattles;
 		    }
 		}
 
-		public void shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests) {
+		public void shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests, NPCdata npcdata) {
 		    // For a tileset, I need to determine:
 		    //
 		    // * doors and locked doors
 		    // * floor tiles with the move bit that are empty.
 
-		    bool debug = false;
+		    bool debug = true;
+		    bool spreadPlacement = false;
 
 		    if (debug) Console.WriteLine($"\nTiles for {ids[0]}");
 
 		    bool keepLinkedChests = false;
 
 		    var tileset = new TileSet(this, GetMapTilesetIndex(ids[0]));
-
-		    var npcdata = new NPCdata(this);
 
 		    List<byte> blankPPUTiles = new();
 
@@ -1578,11 +1579,16 @@ namespace FF1Lib
 				}
 
 				bool hasNpc = false;
+				bool hasKillableNpc = false;
 				for (int i = 0; i < 16; i++) {
 				    var npc = GetNpc(mapId, i);
 				    if (npc.Coord == me.Coord) {
-					room.npcs.Add(me);
 					hasNpc = true;
+					hasKillableNpc = (npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_fight);
+					room.npcs.Add(me);
+					if (hasKillableNpc) {
+					    room.killablenpcs.Add(me);
+					}
 				    }
 				}
 
@@ -1594,7 +1600,8 @@ namespace FF1Lib
 					room.floor.Add(me);
 					return true;
 				    }
-				    return false;
+				    // Is occupied by an NPC, but if killable, we search past it.
+				    return hasKillableNpc;
 				}
 
 				if (tileset.TileProperties[me.Value].TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE)) {
@@ -1647,7 +1654,7 @@ namespace FF1Lib
 				    return false;
 				}
 
-				return !hasNpc &&
+				return (!hasNpc || hasKillableNpc) &&
 				    (tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0;
 			    });
 			    if (newRoom) {
@@ -1684,7 +1691,7 @@ namespace FF1Lib
 		    List<(Room,MapElement)> allCandidates = new();
 
 		    int attempts;
-		    for (attempts = 0; needRetry && attempts < 250; attempts++) {
+		    for (attempts = 0; needRetry && attempts < 300; attempts++) {
 			// Make a copy of the rooms
 			workingrooms.Clear();
 			placedChests.Clear();
@@ -1706,7 +1713,18 @@ namespace FF1Lib
 			if (debug) Console.WriteLine($"rooms {rooms.Count}");
 
 			foreach (var c in chestPool) {
-			    (Room,MapElement) me = allCandidates.SpliceRandom(rng);
+			    (Room,MapElement) me;
+			    if (spreadPlacement) {
+				Room r;
+				do {
+				    r = workingrooms.PickRandom(rng);
+				    Console.WriteLine($"{r.mapId} {r.start.Coord} {r.floor.Count} {rooms.Count}");
+				} while (r.floor.Count == 0);
+				me = (r, r.floor.SpliceRandom(rng));
+			    } else {
+				// full random
+				me = allCandidates.SpliceRandom(rng);
+			    }
 			    me.Item2.Value = c;
 			    me.Item1.chests.Add(me.Item2);
 			    placedChests.Add((me.Item1, me.Item2));
@@ -1719,7 +1737,9 @@ namespace FF1Lib
 			    r.start.Map.Flood((r.start.X, r.start.Y), (MapElement me) => {
 				if (r.doors.Remove(me) || r.chests.Remove(me) || r.teleOut.Remove(me) || r.npcs.Remove(me)) {
 				    // found something, don't traverse
-				    return false;
+				    if (!r.killablenpcs.Contains(me)) {
+					return false;
+				    }
 				}
 				r.teleIn.Remove(me);
 				return (tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0;
@@ -1743,7 +1763,9 @@ namespace FF1Lib
 			}
 		    }
 
-		    Console.WriteLine($"success after {attempts} attempts");
+		    if (!needRetry) {
+			Console.WriteLine($"success after {attempts} attempts");
+		    }
 
 		    if (needRetry) {
 			throw new Exception("Couldn't place chests");
@@ -1783,7 +1805,7 @@ namespace FF1Lib
 		    // * Finally, sanity check each room that we can reach all chests, doors, teleports and NPCs in the room
 		}
 
-		public void RandomlyRelocateChests(MT19337 rng, List<Map> maps, Flags flags) {
+		public void RandomlyRelocateChests(MT19337 rng, List<Map> maps, NPCdata npcdata, Flags flags) {
 		    // Groups of maps that make up a shuffle pool
 		    // They need to all use the same tileset.
 
@@ -1810,7 +1832,7 @@ namespace FF1Lib
 			    MapId.TempleOfFiendsRevisitedChaos }, // ToFR
 
 			// There's no space to shuffle anything.
-			// new MapId[] { MapId.TempleOfFiends }, // ToF
+			new MapId[] { MapId.TempleOfFiends }, // ToF
 			// new MapId[] { MapId.TitansTunnel }, // Titan
 		    };
 
@@ -1898,7 +1920,7 @@ namespace FF1Lib
 		    }
 
 		    foreach (MapId[] b in dungeons) {
-			shuffleChestLocations(rng, maps, b, preserveChests);
+			shuffleChestLocations(rng, maps, b, preserveChests, npcdata);
 		    }
 		}
 	}

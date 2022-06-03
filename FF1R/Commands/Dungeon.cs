@@ -79,14 +79,10 @@ namespace FF1R.Commands
 	int OnExecute(IConsole console)
 	{
 	    var rom = new FF1Rom(RomPath);
-	    rom.LoadSharedDataTables();
-
-	    var maps = rom.ReadMaps();
-
-	    var rng = new MT19337(12);
 
 	    var flags = new Flags();
 
+	    flags.RelocateChests = true;
 	    flags.IncentivizeMarsh = true;
 	    flags.IncentivizeEarth = true;
 	    flags.IncentivizeVolcano = true;
@@ -99,10 +95,12 @@ namespace FF1R.Commands
 	    flags.IncentivizeCardia = true;
 	    flags.IncentivizeMarshKeyLocked = true;
 
-	    rom.RandomlyRelocateChests(rng, maps, flags);
+	    rom.Randomize(new byte[]{12}, flags, new Preferences());
 
 	    int start = 0;
 	    int end = 60;
+
+	    var maps = rom.ReadMaps();
 
 	    for (int i = start; i <= end; i++) {
 		Image<Rgba32> output;

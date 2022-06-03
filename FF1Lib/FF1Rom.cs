@@ -283,8 +283,6 @@ namespace FF1Lib
 
 			if ((bool)flags.ReversedFloors) new ReversedFloors(this, maps, rng).Work();
 
-			if ((bool)flags.RelocateChests) this.RandomlyRelocateChests(rng, maps, flags);
-
 			var flippedMaps = new List<MapId>();
 
 			teleporters.LoadData();
@@ -829,6 +827,8 @@ namespace FF1Lib
 			{
 				ShuffleTrapTiles(rng, (bool)flags.RandomTrapFormations, (bool)flags.FightBahamut);
 			}
+
+			if ((bool)flags.RelocateChests) this.RandomlyRelocateChests(rng, maps, npcdata, flags);
 
 			if ((bool)flags.ConfusedOldMen)
 			{
