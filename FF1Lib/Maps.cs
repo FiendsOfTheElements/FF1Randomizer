@@ -1403,7 +1403,7 @@ namespace FF1Lib
 		    }
 		}
 
-		public void shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids) {
+		public void shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests) {
 		    // For a tileset, I need to determine:
 		    //
 		    // * doors and locked doors
@@ -1523,11 +1523,19 @@ namespace FF1Lib
 				bool wipe = false;
 
 				if (tf.TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE)) {
-				    if (keepLinkedChests || !chestPool.Contains(map[y, x])) {
-					chestPool.Add(map[y, x]);
+				    bool skip = false;
+				    foreach (var pc in preserveChests) {
+					if (mapId == pc.Item1 && pc.Item2 == map[y, x]) {
+					    skip = true;
+					}
 				    }
-				    if (debug) Console.WriteLine($"add {map[y, x]:X} to chest pool");
-				    wipe = true;
+				    if (!skip) {
+					if (keepLinkedChests || !chestPool.Contains(map[y, x])) {
+					    chestPool.Add(map[y, x]);
+					}
+					if (debug) Console.WriteLine($"add {map[y, x]:X} to chest pool");
+					wipe = true;
+				    }
 				}
 				if (spikeTiles.Contains(map[y, x])) {
 				    spikePool.Add(map[y, x]);
@@ -1764,22 +1772,16 @@ namespace FF1Lib
 		    // * Finally, sanity check each room that we can reach all chests, doors, teleports and NPCs in the room
 		}
 
-		public void RandomlyRelocateChests(MT19337 rng, List<Map> maps) {
+		public void RandomlyRelocateChests(MT19337 rng, List<Map> maps, Flags flags) {
 		    // Groups of maps that make up a shuffle pool
 		    // They need to all use the same tileset.
 
 		    // maps 0-7 are towns
 		    List<MapId[]> dungeons = new() {
 			new MapId[] { MapId.ConeriaCastle1F, MapId.ConeriaCastle2F, MapId.ElflandCastle, MapId.NorthwestCastle },
-
-			// 18 - Waterfall
-			// 19 - Dwarves
-			// 20 - Matoya
-			// 21 - Sarda
 			new MapId[] { MapId.Waterfall, MapId.DwarfCave, MapId.MatoyasCave, MapId.SardasCave },
 
 			new MapId[] { MapId.MarshCaveB1, MapId.MarshCaveB2, MapId.MarshCaveB3 }, // Marsh
-			new MapId[] { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5 }, // Earth Cave
 			new MapId[] { MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5 }, // Volcano
 			new MapId[] { MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3 }, // Ice Cave
 			new MapId[] { MapId.CastleOfOrdeals1F, MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals3F }, // Ordeals
@@ -1801,10 +1803,91 @@ namespace FF1Lib
 			// new MapId[] { MapId.TitansTunnel }, // Titan
 		    };
 
-		    // TODO: if Coneria is incentived, remove it from shuffle.
+		    List<(MapId,byte)> preserveChests = new();
+
+		    if ((bool)flags.IncentivizeMarsh && flags.MarshIncentivePlacementType == IncentivePlacementType.Vanilla) {
+			preserveChests.Add((MapId.MarshCaveB3, 0x49));
+		    }
+
+		    bool addearth = true;
+		    if ((bool)flags.IncentivizeEarth) {
+			if (flags.EarthIncentivePlacementType == IncentivePlacementTypeGated.Vanilla) {
+			    preserveChests.Add((MapId.EarthCaveB3, 0x51));
+			}
+
+			if (flags.EarthIncentivePlacementType == IncentivePlacementTypeGated.RandomNoGating ||
+			    flags.EarthIncentivePlacementType == IncentivePlacementTypeGated.RandomBehindGating)
+			{
+			    // Split shuffle before/after gating
+			    dungeons.Add(new MapId[] { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3 });
+			    dungeons.Add(new MapId[] { MapId.EarthCaveB4, MapId.EarthCaveB5 });
+			    addearth = false;
+			}
+		    }
+		    if (addearth) {
+			dungeons.Add(new MapId[] { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5 });
+		    }
+
+		    if ((bool)flags.IncentivizeVolcano && flags.VolcanoIncentivePlacementType == IncentivePlacementType.Vanilla) {
+			preserveChests.Add((MapId.GurguVolcanoB5, 0x7E));
+		    }
+
+		    if ((bool)flags.IncentivizeIceCave && flags.IceCaveIncentivePlacementType == IncentivePlacementType.Vanilla) {
+			preserveChests.Add((MapId.IceCaveB2, 0x5F));
+		    }
+
+		    if ((bool)flags.IncentivizeOrdeals && flags.OrdealsIncentivePlacementType == IncentivePlacementType.Vanilla) {
+			preserveChests.Add((MapId.CastleOfOrdeals3F, 0x78));
+		    }
+
+		    if ((bool)flags.IncentivizeSeaShrine) {
+			if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.Vanilla)
+			{
+			    preserveChests.Add((MapId.SeaShrineB1, 0x7B));
+			}
+
+			if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomNoGating ||
+			    flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomBehindGating)
+			{
+			    preserveChests.Add((MapId.SeaShrineB2, 0x6C));
+			}
+		    }
+
+		    if ((bool)flags.IncentivizeConeria) {
+			if (flags.CorneriaIncentivePlacementType == IncentivePlacementType.Vanilla) {
+			    preserveChests.Add((MapId.ConeriaCastle1F, 0x65));
+			}
+			if (flags.CorneriaIncentivePlacementType == IncentivePlacementType.RandomAtLocation) {
+			    preserveChests.Add((MapId.ConeriaCastle1F, 0x63));
+			    preserveChests.Add((MapId.ConeriaCastle1F, 0x64));
+			    preserveChests.Add((MapId.ConeriaCastle1F, 0x65));
+			    preserveChests.Add((MapId.ConeriaCastle1F, 0x66));
+			    preserveChests.Add((MapId.ConeriaCastle1F, 0x67));
+			    preserveChests.Add((MapId.ConeriaCastle1F, 0x68));
+			}
+		    }
+
+		    if ((bool)flags.IncentivizeMarshKeyLocked) {
+			if (flags.MarshLockedIncentivePlacementType == IncentivePlacementType.Vanilla) {
+			    preserveChests.Add((MapId.MarshCaveB3, 0x4D));
+			}
+			if (flags.MarshLockedIncentivePlacementType == IncentivePlacementType.RandomAtLocation) {
+			    preserveChests.Add((MapId.MarshCaveB3, 0x4B));
+			    preserveChests.Add((MapId.MarshCaveB3, 0x4C));
+			    preserveChests.Add((MapId.MarshCaveB3, 0x4D));
+			}
+		    }
+
+		    if ((bool)flags.IncentivizeSkyPalace && flags.SkyPalaceIncentivePlacementType == IncentivePlacementTypeGated.Vanilla) {
+			preserveChests.Add((MapId.SkyPalace2F, 0x5F));
+		    }
+
+		    if ((bool)flags.IncentivizeCardia && flags.CardiaIncentivePlacementType == IncentivePlacementType.Vanilla) {
+			preserveChests.Add((MapId.Cardia, 0x6B));
+		    }
 
 		    foreach (MapId[] b in dungeons) {
-			shuffleChestLocations(rng, maps, b);
+			shuffleChestLocations(rng, maps, b, preserveChests);
 		    }
 		}
 	}

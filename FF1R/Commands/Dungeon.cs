@@ -85,7 +85,21 @@ namespace FF1R.Commands
 
 	    var rng = new MT19337(12);
 
-	    rom.RandomlyRelocateChests(rng, maps);
+	    var flags = new Flags();
+
+	    flags.IncentivizeMarsh = true;
+	    flags.IncentivizeEarth = true;
+	    flags.IncentivizeVolcano = true;
+	    flags.IncentivizeIceCave = true;
+	    flags.IncentivizeOrdeals = true;
+	    flags.IncentivizeSeaShrine = true;
+	    flags.IncentivizeConeria = true;
+	    flags.IncentivizeMarshKeyLocked = true;
+	    flags.IncentivizeSkyPalace = true;
+	    flags.IncentivizeCardia = true;
+	    flags.IncentivizeMarshKeyLocked = true;
+
+	    rom.RandomlyRelocateChests(rng, maps, flags);
 
 	    int start = 0;
 	    int end = 60;
