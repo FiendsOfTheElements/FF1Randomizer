@@ -17,6 +17,8 @@ namespace FF1Lib
 		None = 0,
 		[Description("Shuffle Rarity")]
 		Intrazone,
+		[Description("Shuffle Rarity Tiered")]
+		ShuffleRarityTiered,
 		[Description("Shuffle Across Zones")]
 		InterZone,
 		[Description("Totally Random")]
@@ -120,6 +122,38 @@ namespace FF1Lib
 						newFormations[i][j] = shuffleFormations[j - 2][0];
 					}
 
+				}
+
+				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
+			}
+			if(shuffleMode == FormationShuffleMode.ShuffleRarityTiered) {
+				// intra-zone shuffle, does not change which formations are in zomes.
+				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
+				var newFormations = new List<Blob>();
+
+				for (int i = 0; i < ZoneCount; i++)
+				{
+					var currentEncounterZone = oldFormations[i].Chunk(1);
+
+					List<(Blob, int)> weightedEncounterPool = new List<(Blob, int)>();
+					//natural weights
+					weightedEncounterPool.Add((currentEncounterZone[0], 48));
+					weightedEncounterPool.Add((currentEncounterZone[1], 48));
+					weightedEncounterPool.Add((currentEncounterZone[2], 48));
+					weightedEncounterPool.Add((currentEncounterZone[3], 48));
+					weightedEncounterPool.Add((currentEncounterZone[4], 24));
+					weightedEncounterPool.Add((currentEncounterZone[5], 24));
+					weightedEncounterPool.Add((currentEncounterZone[6], 12));
+					weightedEncounterPool.Add((currentEncounterZone[7], 4));
+
+					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
 				}
 
 				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());

@@ -1256,14 +1256,11 @@
 		"screenshot": "shopReductionTable.png",
 		"description": "Reduces the number of Items/Magic sold in Shops, or removes Shops entirely.\nModes:\nNone - Do not remove anything\nWhole Shops - Removes the specified amount of shops as a whole\nAll Items of a Kind - Selects the specified amount of distinct Items and removes all instances of them (e.g. all Heals)\nSpread - Applies the reduction for each shop individually (e.g. each shop gets a 40% reduction)\nUnequal - Removes the amount from all entries (e.g. some shops will be full, some might be half full, some might be removed)"
 	},
-
-
-
 	{
 		"Id": "formationShuffleModeDropDown",
 		"title": "Enemy Formation Shuffle Mode",
 		"screenshot": "formationShuffleModeDropDown.gif",
-		"description": "Shuffles the encounters that appear in enemy domains.\nVanilla: Enemy groups remain as they exist in the original game. This allows players to predict encounters in a dungeon if they know the vanilla values.\n Shuffle Rarity: Enemy groups are shuffled within a zone, so that Group 1 fights can appear as Group 6, etc. This removes the ability to 'scout' the encounter table and know which fights will appear without having to re-learn the process for each new dungeon.\n Shuffle Across Zones: Shuffles the domains (such that Ice Cave groups could appear in Gurgu Volcano, etc.) but does not alter the contents of the domains themselves.\n Totally Random: Draws at random and populates the encounter table, excepting fiends, plot-triggered encounters, and empty encounters. These encounters can appear in any zone except the starting zones.\n Note: This feature is disabled when generating new enemy formations (via Enemizer)."
+		"description": "Shuffles the encounters that appear in enemy domains.\nVanilla: Enemy groups remain as they exist in the original game. This allows players to predict encounters in a dungeon if they know the vanilla values.\n Shuffle Rarity: Enemy groups are shuffled within a zone, so that Group 1 fights can appear as Group 6, etc. This removes the ability to 'scout' the encounter table and know which fights will appear without having to re-learn the process for each new dungeon.\nTiered Rarity Shuffle: Enemy formations will shuffle their encounter group based on their original rarity. (1-4 will tend to be lower in rarity, 5-6 can sometimes be lower in rarity, 7-8 will rarely be lower in rarity.)\n  Shuffle Across Zones: Shuffles the domains (such that Ice Cave groups could appear in Gurgu Volcano, etc.) but does not alter the contents of the domains themselves.\n Totally Random: Draws at random and populates the encounter table, excepting fiends, plot-triggered encounters, and empty encounters. These encounters can appear in any zone except the starting zones.\n Note: This feature is disabled when generating new enemy formations (via Enemizer)."
 	},
 	{
 		"Id": "runnabilityDropDown",
