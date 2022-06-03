@@ -1597,6 +1597,17 @@ namespace FF1Lib
 				    return false;
 				}
 
+				if (tileset.TileProperties[me.Value].TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE)) {
+				    // A preserved chest (vanilla
+				    // incentive location) needs to be
+				    // included in logic checking so
+				    // we don't accept a placement
+				    // that puts another chest
+				    // blocking it.
+				    room.chests.Add(me);
+				    return false;
+				}
+
 				if (doorTiles.Contains(me.Value)) {
 				    room.doors.Add(me);
 				    if (searched.Contains(me.Coord)) {
