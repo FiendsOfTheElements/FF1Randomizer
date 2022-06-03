@@ -1411,7 +1411,7 @@ namespace FF1Lib
 		    // * doors and locked doors
 		    // * floor tiles with the move bit that are empty.
 
-		    bool debug = true;
+		    bool debug = false;
 		    bool spreadPlacement = false;
 
 		    if (debug) Console.WriteLine($"\nTiles for {ids[0]}");
@@ -1584,7 +1584,8 @@ namespace FF1Lib
 				    var npc = GetNpc(mapId, i);
 				    if (npc.Coord == me.Coord) {
 					hasNpc = true;
-					hasKillableNpc = (npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_fight);
+					hasKillableNpc = (npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_fight ||
+							  npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_kill);
 					room.npcs.Add(me);
 					if (hasKillableNpc) {
 					    room.killablenpcs.Add(me);

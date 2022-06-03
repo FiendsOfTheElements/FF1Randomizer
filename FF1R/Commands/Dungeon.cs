@@ -95,7 +95,7 @@ namespace FF1R.Commands
 	    flags.IncentivizeCardia = true;
 	    flags.IncentivizeMarshKeyLocked = true;
 
-	    rom.Randomize(new byte[]{12}, flags, new Preferences());
+	    rom.Randomize(new byte[]{13}, flags, new Preferences());
 
 	    int start = 0;
 	    int end = 60;
