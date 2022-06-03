@@ -664,8 +664,8 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief @S", equipment: equipThiefWeapon, Classes: new List<Classes> { Classes.Fighter, Classes.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcMax, "-4 Max MP", mod: -4, Classes: new List<Classes> {  Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
 				new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, Classes: new List<Classes> { Classes.Fighter, Classes.Thief }),
-				new BonusMalus(BonusMalusAction.Sick, "Sick"),
-				new BonusMalus(BonusMalusAction.Sleepy, "Sleepy"),
+				//new BonusMalus(BonusMalusAction.Sick, "Sick"), these were too powerful for man
+				//new BonusMalus(BonusMalusAction.Sleepy, "Sleepy"),
 			};
 
 			if (!(bool)flags.ArmorCrafter)
@@ -1735,7 +1735,7 @@ namespace FF1Lib
 			// Compute catclawcrit outside of the game because there's not data on gear blursing
 			int catclawcrit = 6 * (flags.WeaponCritRate ? 10 : 5);
 
-			if ((bool)flags.RandomWeaponBonus)
+			if ((bool)flags.RandomWeaponBonus && !(bool)flags.Weaponizer)
 			{
 				int blursevalue = 0;
 				if (rom.ItemsText[(int)Item.CatClaw][6] != 'w')

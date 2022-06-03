@@ -1203,7 +1203,7 @@
 		"Id": "cureHealBuffCheckBox",
 		"title": "Improve Curative Spells",
 		"screenshot": "cureHealBuffCheckBox.png",
-		"description": "Improves the efficacy of CURE, HEAL, LAMP, and AMUT spells, granting greater healing from CURE and HEAL spells while, for LAMP and AMUT, curing paralysis effects."
+		"description": "Improves the efficacy of CURE, CUR2, CUR3, HEAL, HEL2, HEL3, LAMP, and AMUT spells. CURE spells now restore twice as much health and HEAL spells restore 33% more. LAMP and AMUT now also cure paralysis effects."
 	},
 	{
 		"Id": "tier1DamageBuff",
@@ -1849,7 +1849,7 @@
 		"Id": "chanceToRunDropDown",
 		"title": "Chance to Run",
 		"screenshot": "chanceToRunDropDown.png",
-		"description": "Changes the way the chance to run is calculated.\nVanilla: Run chance is calculated from a glitched stat as it was programmed in the original NES release.\nFixed: Run chance is calculated from the intended stat, Luck. This greatly improves the effectiveness of the RUN command, as well as classes with high Luck stats, such as the Thief.\n Percentages: Run chance is the selected static value for all classes. This causes no specific class to be any better or worse at running away because their chance to run is the same."
+		"description": "Changes the way the chance to run is calculated.\nBugged: Run chance is calculated from a glitched stat as it was programmed in the original NES release.\nCorrected: Run chance is calculated from the intended stat, Luck. This greatly improves the effectiveness of the RUN command, as well as classes with high Luck stats, such as the Thief.\n Percentages: Run chance is the selected static value for all classes. This causes no specific class to be any better or worse at running away because their chance to run is the same."
 	},
 	{
 		"Id": "spellBugsCheckBox",

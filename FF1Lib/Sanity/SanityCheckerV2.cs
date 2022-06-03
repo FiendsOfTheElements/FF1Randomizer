@@ -756,6 +756,7 @@ namespace FF1Lib
 			if (victoryConditions.IsShipFree ?? false)
 			{
 				changes |= MapChange.Ship;
+				SetShipDock(255);
 			}
 			if (victoryConditions.IsAirshipFree ?? false)
 			{
