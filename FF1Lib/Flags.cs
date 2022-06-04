@@ -136,7 +136,6 @@ namespace FF1Lib
 		public bool OwRandomPregen { get; set; } = false;
 
 		public bool? RelocateChests { get; set; } = false;
-		public bool RelocateChestsSpreadPlacement { get; set; } = false;
 
 		public GameModes GameMode { get; set; } = GameModes.Standard;
 

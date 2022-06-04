@@ -1438,7 +1438,7 @@ namespace FF1Lib
 		    // * doors and locked doors
 		    // * floor tiles with the move bit that are empty.
 
-		    bool debug = false;
+		    bool debug = true;
 
 		    if (debug) Console.WriteLine($"\nTiles for {ids[0]}");
 
@@ -1691,7 +1691,7 @@ namespace FF1Lib
 
 			    foreach (var me in room.floor) {
 				if (me.Value == 0xff) {
-				    if (room.hasBattles) {
+				    if (room.hasBattles || floorTiles.Count == 0) {
 					me.Value = battleTiles[0];
 				    } else {
 					me.Value = floorTiles[0];
@@ -1703,7 +1703,11 @@ namespace FF1Lib
 			for (int y = 0; y < 64; y++) {
 			    for (int x = 0; x < 64; x++) {
 				if (map[y,x] == 0xff) {
-				    map[y,x] = floorTiles[0];
+				    if (floorTiles.Count > 0) {
+					map[y,x] = floorTiles[0];
+				    } else {
+					map[y,x] = battleTiles[0];
+				    }
 				}
 			    }
 			}
@@ -1790,7 +1794,7 @@ namespace FF1Lib
 			if (needRetry) {
 			    // Clear failed chest attempt
 			    foreach (var ch in placedChests) {
-				if (ch.Item1.hasBattles) {
+				if (ch.Item1.hasBattles || floorTiles.Count == 0) {
 				    ch.Item2.Value = battleTiles[0];
 				} else {
 				    ch.Item2.Value = floorTiles[0];
@@ -1845,18 +1849,13 @@ namespace FF1Lib
 		    // Groups of maps that make up a shuffle pool
 		    // They need to all use the same tileset.
 
-		    // maps 0-7 are towns
 		    List<MapId[]> dungeons = new() {
 			new MapId[] { MapId.ConeriaCastle1F, MapId.ConeriaCastle2F, MapId.ElflandCastle, MapId.NorthwestCastle },
-			new MapId[] { MapId.Waterfall, MapId.DwarfCave, MapId.MatoyasCave, MapId.SardasCave },
 
 			new MapId[] { MapId.MarshCaveB1, MapId.MarshCaveB2, MapId.MarshCaveB3 }, // Marsh
 			new MapId[] { MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3 }, // Ice Cave
 			new MapId[] { MapId.CastleOfOrdeals1F, MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals3F }, // Ordeals
-			new MapId[] { MapId.Cardia, MapId.BahamutsRoomB1, MapId.BahamutsRoomB2 }, // Cardia
-			new MapId[] { MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 }, // Sea Shrine
 			new MapId[] { MapId.MirageTower1F, MapId.MirageTower2F, MapId.MirageTower3F }, // Mirage
-			new MapId[] { MapId.SkyPalace1F, MapId.SkyPalace2F, MapId.SkyPalace3F, MapId.SkyPalace4F, MapId.SkyPalace5F }, // Sky Castle
 			new MapId[] { MapId.TempleOfFiendsRevisited1F,
 			    MapId.TempleOfFiendsRevisited2F,
 			    MapId.TempleOfFiendsRevisited3F,
@@ -1869,6 +1868,13 @@ namespace FF1Lib
 			// There's no space to shuffle anything.
 			new MapId[] { MapId.TempleOfFiends }, // ToF
 			// new MapId[] { MapId.TitansTunnel }, // Titan
+		    };
+
+		    List<MapId[]> spreadPlacementDungeons = new() {
+			new MapId[] { MapId.Waterfall, MapId.DwarfCave, MapId.MatoyasCave, MapId.SardasCave },
+			new MapId[] { MapId.Cardia, MapId.BahamutsRoomB1, MapId.BahamutsRoomB2 }, // Cardia
+			new MapId[] { MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 }, // Sea Shrine
+			new MapId[] { MapId.SkyPalace1F, MapId.SkyPalace2F, MapId.SkyPalace3F, MapId.SkyPalace4F, MapId.SkyPalace5F }, // Sky Castle
 		    };
 
 		    List<(MapId,byte)> preserveChests = new();
@@ -1964,8 +1970,14 @@ namespace FF1Lib
 
 		    foreach (MapId[] b in dungeons) {
 			shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
-					      (bool)flags.EnemyTrapTiles ? (byte)0x00 : (byte)0x80,
-					      flags.RelocateChestsSpreadPlacement);
+					      0x80,
+					      false);
+		    }
+
+		    foreach (MapId[] b in spreadPlacementDungeons) {
+			shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
+					      0x80,
+					      true);
 		    }
 		}
 	}
