@@ -828,8 +828,6 @@ namespace FF1Lib
 				ShuffleTrapTiles(rng, (bool)flags.RandomTrapFormations, (bool)flags.FightBahamut);
 			}
 
-			if ((bool)flags.RelocateChests) this.RandomlyRelocateChests(rng, maps, npcdata, flags);
-
 			if ((bool)flags.ConfusedOldMen)
 			{
 				EnableConfusedOldMen(rng);
@@ -1182,6 +1180,15 @@ namespace FF1Lib
 			if (flags.SkyWarriorSpoilerBats != SpoilerBatHints.Vanilla) {
 			    // Update after dialogue is loaded
 			    SkyWarriorSpoilerBats(rng, flags, npcdata);
+			}
+
+			// NOTE: logic checking for relocated chests
+			// accounts for NPC locations and whether they
+			// are fightable/killable, so it needs to
+			// happen after anything that adds, removes or
+			// relocates NPCs or changes their routines.
+			if ((bool)flags.RelocateChests) {
+			    this.RandomlyRelocateChests(rng, maps, npcdata, flags);
 			}
 
 			RollCredits(rng);

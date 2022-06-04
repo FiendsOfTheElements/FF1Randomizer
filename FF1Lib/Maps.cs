@@ -1405,7 +1405,7 @@ namespace FF1Lib
 		    }
 		}
 
-		public void shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests, NPCdata npcdata) {
+		public void shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests, NPCdata npcdata, byte randomEncounter) {
 		    // For a tileset, I need to determine:
 		    //
 		    // * doors and locked doors
@@ -1476,7 +1476,7 @@ namespace FF1Lib
 			// (generally white/off white).
 
 			if (tileset.TileProperties[i].TilePropFunc == TilePropFunc.TP_SPEC_BATTLE) {
-			    if (tileset.TileProperties[i].BattleId != 0x80) {
+			    if (tileset.TileProperties[i].BattleId != randomEncounter) {
 				// This is a spike tile
 				spikeTiles.Add(i);
 				if (debug) Console.WriteLine($"spike tile {i:X}");
@@ -1638,7 +1638,7 @@ namespace FF1Lib
 				}
 
 				if (tileset.TileProperties[me.Value].TilePropFunc == TilePropFunc.TP_SPEC_BATTLE &&
-				    tileset.TileProperties[me.Value].BattleId == 0x80)
+				    tileset.TileProperties[me.Value].BattleId == randomEncounter)
 				{
 				    room.hasBattles = true;
 				}
@@ -1719,7 +1719,6 @@ namespace FF1Lib
 				Room r;
 				do {
 				    r = workingrooms.PickRandom(rng);
-				    Console.WriteLine($"{r.mapId} {r.start.Coord} {r.floor.Count} {rooms.Count}");
 				} while (r.floor.Count == 0);
 				me = (r, r.floor.SpliceRandom(rng));
 			    } else {
@@ -1921,7 +1920,7 @@ namespace FF1Lib
 		    }
 
 		    foreach (MapId[] b in dungeons) {
-			shuffleChestLocations(rng, maps, b, preserveChests, npcdata);
+			shuffleChestLocations(rng, maps, b, preserveChests, npcdata, (bool)flags.EnemyTrapTiles ? (byte)0x00 : (byte)0x80);
 		    }
 		}
 	}
