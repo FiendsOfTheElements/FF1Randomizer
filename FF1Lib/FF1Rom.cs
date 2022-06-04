@@ -563,6 +563,25 @@ namespace FF1Lib
 
 			await this.Progress();
 
+			if ((bool)flags.ClassAsNpcFiends || (bool)flags.ClassAsNpcKeyNPC)
+			{
+				ClassAsNPC(flags, talkroutines, npcdata, flippedMaps, rng);
+			}
+
+			if (flags.NPCSwatter)
+			{
+				EnableNPCSwatter(npcdata);
+			}
+
+			// NOTE: logic checking for relocated chests
+			// accounts for NPC locations and whether they
+			// are fightable/killable, so it needs to
+			// happen after anything that adds, removes or
+			// relocates NPCs or changes their routines.
+			if ((bool)flags.RelocateChests && flags.GameMode != GameModes.DeepDungeon) {
+			    this.RandomlyRelocateChests(rng, maps, npcdata, flags);
+			}
+
 			EnterTeleData enterBackup = new EnterTeleData(this);
 			NormTeleData normBackup = new NormTeleData(this);
 
@@ -801,11 +820,6 @@ namespace FF1Lib
 				UnleashWarMECH();
 			}
 
-			if ((bool)flags.ClassAsNpcFiends || (bool)flags.ClassAsNpcKeyNPC)
-			{
-				ClassAsNPC(flags, talkroutines, npcdata, flippedMaps, rng);
-			}
-
 			if ((bool)flags.FiendShuffle)
 			{
 				FiendShuffle(rng);
@@ -876,11 +890,6 @@ namespace FF1Lib
 			if (flags.BattleMagicMenuWrapAround)
 			{
 				BattleMagicMenuWrapAround();
-			}
-
-			if (flags.NPCSwatter)
-			{
-				EnableNPCSwatter(npcdata);
 			}
 
 			if (flags.EasyMode)
@@ -1060,6 +1069,8 @@ namespace FF1Lib
 			ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.FreeClinic);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
+			WriteMaps(maps);
+
 			extConsumables.AddExtConsumables();
 
 			if ((bool)flags.SwolePirates)
@@ -1180,15 +1191,7 @@ namespace FF1Lib
 			    SkyWarriorSpoilerBats(rng, flags, npcdata);
 			}
 
-			// NOTE: logic checking for relocated chests
-			// accounts for NPC locations and whether they
-			// are fightable/killable, so it needs to
-			// happen after anything that adds, removes or
-			// relocates NPCs or changes their routines.
-			if ((bool)flags.RelocateChests) {
-			    this.RandomlyRelocateChests(rng, maps, npcdata, flags);
-			}
-
+			// Can't have any map edits after this!
 			WriteMaps(maps);
 
 			RollCredits(rng);
