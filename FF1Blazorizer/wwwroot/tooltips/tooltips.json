@@ -2304,7 +2304,8 @@
 	{
 		"Id": "relocateChests",
 		"title": "Relocate Chests",
-		"description": "Relocate chests and enemy spike tiles to new locations in the dungeon."
+		"screenshot": "shufflechests.png",
+		"description": "Relocate chests and enemy spike tiles to new locations in castles and dungeons."
 	},
 	{
 		"Id": "relocateChestsSpreadPlacement",
