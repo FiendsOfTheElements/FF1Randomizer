@@ -1403,16 +1403,42 @@ namespace FF1Lib
 			killablenpcs = new List<MapElement>(copyfrom.killablenpcs);
 			hasBattles = copyfrom.hasBattles;
 		    }
+		    public void Replace(Room copyfrom) {
+			mapId = copyfrom.mapId;
+			start = copyfrom.start;
+			floor.Clear();
+			floor.AddRange(copyfrom.floor);
+
+			doors.Clear();
+			doors.AddRange(copyfrom.doors);
+
+			chests.Clear();
+			chests.AddRange(copyfrom.chests);
+
+			teleIn.Clear();
+			teleIn.AddRange(copyfrom.teleIn);
+
+			teleOut.Clear();
+			teleOut.AddRange(copyfrom.teleOut);
+
+			npcs.Clear();
+			npcs.AddRange(copyfrom.npcs);
+
+			killablenpcs.Clear();
+			killablenpcs.AddRange(copyfrom.killablenpcs);
+
+			hasBattles = copyfrom.hasBattles;
+		    }
 		}
 
-		public void shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests, NPCdata npcdata, byte randomEncounter) {
+		public void shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests,
+						  NPCdata npcdata, byte randomEncounter, bool spreadPlacement) {
 		    // For a tileset, I need to determine:
 		    //
 		    // * doors and locked doors
 		    // * floor tiles with the move bit that are empty.
 
 		    bool debug = false;
-		    bool spreadPlacement = false;
 
 		    if (debug) Console.WriteLine($"\nTiles for {ids[0]}");
 
@@ -1685,6 +1711,9 @@ namespace FF1Lib
 
 		    // make a copy of the rooms
 		    List<Room> workingrooms = new(rooms.Count);
+		    foreach (var r in rooms) {
+			workingrooms.Add(new Room());
+		    }
 
 		    bool needRetry = true;
 		    List<(Room,MapElement)> placedChests = new();
@@ -1692,15 +1721,22 @@ namespace FF1Lib
 		    List<(Room,MapElement)> allCandidates = new();
 
 		    int attempts;
-		    for (attempts = 0; needRetry && attempts < 300; attempts++) {
+		    for (attempts = 0; needRetry && attempts < 500; attempts++) {
 			// Make a copy of the rooms
-			workingrooms.Clear();
 			placedChests.Clear();
 			roomsToSanityCheck.Clear();
 			needRetry = false;
 
-			foreach (var r in rooms) {
-			    workingrooms.Add(new Room(r));
+			for (int i = 0; i < rooms.Count; i++) {
+			    // We do this goofy replacement thing
+			    // instead of just allocating new objects
+			    // because we need this inner loop to be
+			    // as close to constant memory usage as
+			    // possible, otherwise it'll fall over as
+			    // the number of iterations gets large and
+			    // it starts grabbing more and more
+			    // memory.
+			    workingrooms[i].Replace(rooms[i]);
 			}
 
 			allCandidates.Clear();
@@ -1764,11 +1800,11 @@ namespace FF1Lib
 		    }
 
 		    if (!needRetry) {
-			Console.WriteLine($"success after {attempts} attempts");
+			Console.WriteLine($"{ids[0]} success after {attempts} attempts");
 		    }
 
 		    if (needRetry) {
-			throw new Exception("Couldn't place chests");
+			throw new Exception($"{ids[0]} Couldn't place chests after {attempts} attempts");
 		    }
 
 		    // Finally, add spike tiles.
@@ -1815,7 +1851,6 @@ namespace FF1Lib
 			new MapId[] { MapId.Waterfall, MapId.DwarfCave, MapId.MatoyasCave, MapId.SardasCave },
 
 			new MapId[] { MapId.MarshCaveB1, MapId.MarshCaveB2, MapId.MarshCaveB3 }, // Marsh
-			new MapId[] { MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5 }, // Volcano
 			new MapId[] { MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3 }, // Ice Cave
 			new MapId[] { MapId.CastleOfOrdeals1F, MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals3F }, // Ordeals
 			new MapId[] { MapId.Cardia, MapId.BahamutsRoomB1, MapId.BahamutsRoomB2 }, // Cardia
@@ -1860,6 +1895,14 @@ namespace FF1Lib
 		    if (addearth) {
 			dungeons.Add(new MapId[] { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5 });
 		    }
+
+		    //if (flags.RelocateChestsSpreadPlacement) {
+		    //dungeons.Add(new MapId[] { MapId.GurguVolcanoB1, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5 });
+			// Separate armory otherwise it will only get a handful of chests
+		    //dungeons.Add(new MapId[] { MapId.GurguVolcanoB2 });
+		    //} else {
+		    dungeons.Add(new MapId[] { MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5 });
+		    //}
 
 		    if ((bool)flags.IncentivizeVolcano && flags.VolcanoIncentivePlacementType == IncentivePlacementType.Vanilla) {
 			preserveChests.Add((MapId.GurguVolcanoB5, 0x7E));
@@ -1920,7 +1963,9 @@ namespace FF1Lib
 		    }
 
 		    foreach (MapId[] b in dungeons) {
-			shuffleChestLocations(rng, maps, b, preserveChests, npcdata, (bool)flags.EnemyTrapTiles ? (byte)0x00 : (byte)0x80);
+			shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
+					      (bool)flags.EnemyTrapTiles ? (byte)0x00 : (byte)0x80,
+					      flags.RelocateChestsSpreadPlacement);
 		    }
 		}
 	}

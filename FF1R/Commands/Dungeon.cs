@@ -83,6 +83,7 @@ namespace FF1R.Commands
 	    var flags = new Flags();
 
 	    flags.RelocateChests = true;
+	    flags.RelocateChestsSpreadPlacement = true;
 	    flags.IncentivizeMarsh = true;
 	    flags.IncentivizeEarth = true;
 	    flags.IncentivizeVolcano = true;

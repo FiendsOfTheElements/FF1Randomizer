@@ -1060,8 +1060,6 @@ namespace FF1Lib
 			ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.FreeClinic);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
-			WriteMaps(maps);
-
 			extConsumables.AddExtConsumables();
 
 			if ((bool)flags.SwolePirates)
@@ -1190,6 +1188,8 @@ namespace FF1Lib
 			if ((bool)flags.RelocateChests) {
 			    this.RandomlyRelocateChests(rng, maps, npcdata, flags);
 			}
+
+			WriteMaps(maps);
 
 			RollCredits(rng);
 			StatsTrackingScreen();

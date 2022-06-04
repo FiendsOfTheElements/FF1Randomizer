@@ -5137,6 +5137,15 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+		public bool RelocateChestsSpreadPlacement
+		{
+		    get => Flags.RelocateChestsSpreadPlacement;
+			set
+			{
+				Flags.RelocateChestsSpreadPlacement = value;
+				RaisePropertyChanged();
+			}
+		}
 
 		public string PlayerName
 		{

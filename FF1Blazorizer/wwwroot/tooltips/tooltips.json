@@ -2304,7 +2304,12 @@
 	{
 		"Id": "relocateChests",
 		"title": "Relocate Chests",
-		"description": "Relocate chests and enemy spike tiles to positions and rooms in the dungeons."
+		"description": "Relocate chests and enemy spike tiles to new locations in the dungeon."
+	},
+	{
+		"Id": "relocateChestsSpreadPlacement",
+		"title": "Spread over rooms",
+		"description": "Placement will tend to spread chests uniformly over rooms.  This reduces the tendency for certain rooms to end up with a disproportionate number of chests."
 	},
 	{
 		"Id": "OpenChestsInOrder",
