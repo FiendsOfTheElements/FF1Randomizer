@@ -1438,7 +1438,7 @@ namespace FF1Lib
 		    // * doors and locked doors
 		    // * floor tiles with the move bit that are empty.
 
-		    bool debug = true;
+		    bool debug = false;
 
 		    if (debug) Console.WriteLine($"\nTiles for {ids[0]}");
 
@@ -1505,7 +1505,7 @@ namespace FF1Lib
 			    if (tileset.TileProperties[i].BattleId != randomEncounter) {
 				// This is a spike tile
 				spikeTiles.Add(i);
-				if (debug) Console.WriteLine($"spike tile {i:X}");
+				if (debug) Console.WriteLine($"spike tile {i:X} BattleId {tileset.TileProperties[i].BattleId:X}");
 			    } else {
 				// This is random battle tile
 				battleTiles.Add(i);
@@ -1691,7 +1691,7 @@ namespace FF1Lib
 
 			    foreach (var me in room.floor) {
 				if (me.Value == 0xff) {
-				    if (room.hasBattles || floorTiles.Count == 0) {
+				    if ((room.hasBattles && battleTiles.Count > 0) || floorTiles.Count == 0) {
 					me.Value = battleTiles[0];
 				    } else {
 					me.Value = floorTiles[0];
@@ -1794,7 +1794,7 @@ namespace FF1Lib
 			if (needRetry) {
 			    // Clear failed chest attempt
 			    foreach (var ch in placedChests) {
-				if (ch.Item1.hasBattles || floorTiles.Count == 0) {
+				if ((ch.Item1.hasBattles && battleTiles.Count > 0) || floorTiles.Count == 0) {
 				    ch.Item2.Value = battleTiles[0];
 				} else {
 				    ch.Item2.Value = floorTiles[0];
@@ -1815,6 +1815,11 @@ namespace FF1Lib
 		    if (debug) Console.WriteLine($"spikes {placedChests.Count} {spikePool.Count}");
 
 		    if (placedChests.Count == 0) {
+			return;
+		    }
+
+		    if (spikePool.Count > placedChests.Count)  {
+			Console.WriteLine($"WARNING spikePool.Count > placedChests.Count something is wrong");
 			return;
 		    }
 
@@ -1970,13 +1975,13 @@ namespace FF1Lib
 
 		    foreach (MapId[] b in dungeons) {
 			shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
-					      0x80,
+					      (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
 					      false);
 		    }
 
 		    foreach (MapId[] b in spreadPlacementDungeons) {
 			shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
-					      0x80,
+					      (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
 					      true);
 		    }
 		}
