@@ -83,7 +83,7 @@ namespace FF1Lib
 						lastPlacements.Remove(Item.Floater);
 					}
 
-					if (_flags.OwMapExchange == OwMapExchanges.Desert && !(bool)_flags.IsShipFree)
+					if (_flags.DesertOfDeath && !(bool)_flags.IsShipFree)
 					{
 						nextPlacements.Remove(Item.Ship);
 						fixedPlacements.Add(Item.Ship);

@@ -178,9 +178,10 @@
 		bool? AllowDeepTowns { get; }
 		bool? AllowUnsafeStartArea { get; }
 		bool? IsFloaterRemoved { get; }
-	        bool? IsAirshipFree { get; }
+	    bool? IsAirshipFree { get; }
 		bool? MapBahamutCardiaDock { get; }
-	        OwMapExchanges OwMapExchange { get; }
+	    OwMapExchanges OwMapExchange { get; }
+		GameModes GameMode { get; }
 	}
 	public interface IVictoryConditionFlags
 	{
@@ -191,12 +192,13 @@
 		bool? IsAirshipFree { get; }
 		bool? IsShipFree { get; }
 		bool? IsCanalFree { get; }
-		bool? FreeCanoe { get; }
+		bool? IsCanoeFree { get; }
 		bool? FreeLute { get; }
 		bool? FreeTail { get; }
 		bool? NoTail { get; }
 		bool? IsFloaterRemoved { get; }
 		bool? LooseExcludePlacedDungeons { get; }
 		bool NoOverworld { get; }
+		bool DesertOfDeath { get; }
 	}
 }

@@ -1320,7 +1320,7 @@ namespace FF1Lib
 			}
 
 			if (flags.IsFloaterRemoved ?? false) incentivePool.Remove(Item.Floater);
-			if (flags.FreeCanoe ?? false) incentivePool.Remove(Item.Canoe);
+			if (flags.IsCanoeFree ?? false) incentivePool.Remove(Item.Canoe);
 			if (flags.IsBridgeFree ?? false) incentivePool.Remove(Item.Bridge);
 			if (flags.IsCanalFree ?? false) incentivePool.Remove(Item.Canal);
 			if (flags.FreeLute ?? false) incentivePool.Remove(Item.Lute);

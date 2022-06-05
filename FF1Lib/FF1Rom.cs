@@ -223,7 +223,7 @@ namespace FF1Lib
 				NPCShuffleDialogs();
 			}
 
-			if (flags.OwMapExchange == OwMapExchanges.Desert)
+			if (flags.DesertOfDeath)
 			{
 				DesertOfDeath.ApplyDesertModifications(this, owMapExchange, npcdata);
 			}
@@ -248,7 +248,7 @@ namespace FF1Lib
 				maps[(int)MapId.Waterfall] = waterfall.Map;
 			}
 
-			if((bool)flags.OWDamageTiles || (flags.OwMapExchange == OwMapExchanges.Desert))
+			if((bool)flags.OWDamageTiles || flags.DesertOfDeath)
 			{
 				EnableDamageTile();
 			}
@@ -460,7 +460,7 @@ namespace FF1Lib
 				EnableChaosRush();
 			}
 
-			if ((bool)flags.IsBridgeFree && (flags.OwMapExchange != OwMapExchanges.Desert))
+			if ((bool)flags.IsBridgeFree && (!flags.DesertOfDeath))
 			{
 				EnableFreeBridge();
 			}
@@ -485,7 +485,7 @@ namespace FF1Lib
 				EnableFreeCanal((bool)flags.NPCItems, npcdata);
 			}
 
-			if ((bool)flags.FreeCanoe || (flags.OwMapExchange == OwMapExchanges.Desert))
+			if ((bool)flags.IsCanoeFree)
 			{
 				EnableFreeCanoe();
 			}
@@ -550,7 +550,7 @@ namespace FF1Lib
 					}
 
 					// Disable the Princess Warp back to Castle Coneria
-					if ((bool)flags.Entrances || (bool)flags.Floors || flags.OwMapExchange != OwMapExchanges.None || (bool)flags.FreeOrbs)
+					if ((bool)flags.Entrances || (bool)flags.Floors || (flags.GameMode == GameModes.Standard && flags.OwMapExchange != OwMapExchanges.None) || (bool)flags.FreeOrbs)
 						talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
 
 					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && (flags.GameMode != GameModes.DeepDungeon))

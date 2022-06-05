@@ -519,7 +519,7 @@ namespace FF1Lib.Sanity
 			{
 				requirements |= SCRequirements.Canal;
 			}
-			if (victoryConditions.FreeCanoe ?? false)
+			if (victoryConditions.IsCanoeFree ?? false)
 			{
 				requirements |= SCRequirements.Canoe;
 			}
