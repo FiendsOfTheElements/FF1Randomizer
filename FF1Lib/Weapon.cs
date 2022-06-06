@@ -63,7 +63,8 @@ namespace FF1Lib
 		Master = 0x008,
 		RedWizard = 0x004,
 		WhiteWizard = 0x002,
-		BlackWizard = 0x001
+		BlackWizard = 0x001,
+		None = 0x000
 	}
 
 	// lut_ClassEquipBit: ;  FT   TH   BB   RM   WM   BM      KN   NJ   MA   RW   WW   BW

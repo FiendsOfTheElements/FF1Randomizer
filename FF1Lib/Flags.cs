@@ -676,8 +676,8 @@ namespace FF1Lib
 		public bool WhiteMageHarmEveryone { get; set; } = false;
 
 		public bool? EarlierRuby { get; set; } = false;
-		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (OwMapExchange != OwMapExchanges.Desert);
-		public bool DisableOWMapModifications => SanityCheckerV2 & (OwMapExchange != OwMapExchanges.None);
+		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (!DesertOfDeath);
+		public bool DisableOWMapModifications => SanityCheckerV2 & (GameMode == GameModes.Standard && OwMapExchange != OwMapExchanges.None);
 		public bool? MapOnracDock => MapOpenProgressionDocks & !DisableOWMapModifications;
 		public bool? MapMirageDock => MapOpenProgressionDocks & !DisableOWMapModifications;
 		public bool? MapConeriaDwarves => MapOpenProgression & !DisableOWMapModifications;
@@ -707,14 +707,15 @@ namespace FF1Lib
 		public bool? IncentivizeSlab => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeBottle => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool NoOverworld => (SanityCheckerV2 & GameMode == GameModes.NoOverworld);
+		public bool DesertOfDeath => (GameMode == GameModes.Standard & OwMapExchange == OwMapExchanges.Desert);
 		public bool? IsShipFree => FreeShip | NoOverworld;
-		public bool? IsCanoeFree => FreeCanoe | (OwMapExchange == OwMapExchanges.Desert);
-		public bool? IsAirshipFree => FreeAirship & !NoOverworld & !(OwMapExchange == OwMapExchanges.Desert);
-		public bool? IsBridgeFree => FreeBridge | NoOverworld | (OwMapExchange == OwMapExchanges.Desert);
-		public bool? IsCanalFree => (FreeCanal & !NoOverworld) | (OwMapExchange == OwMapExchanges.Desert);
-		public bool? IsFloaterRemoved => ((NoFloater|IsAirshipFree) & !NoOverworld) | (OwMapExchange == OwMapExchanges.Desert);
+		public bool? IsCanoeFree => FreeCanoe | DesertOfDeath;
+		public bool? IsAirshipFree => FreeAirship & !NoOverworld & !DesertOfDeath;
+		public bool? IsBridgeFree => FreeBridge | NoOverworld | DesertOfDeath;
+		public bool? IsCanalFree => (FreeCanal & !NoOverworld) | DesertOfDeath;
+		public bool? IsFloaterRemoved => ((NoFloater|IsAirshipFree) & !NoOverworld) | DesertOfDeath;
 		public bool IncentivizeBridge => false;
-		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe & !(OwMapExchange == OwMapExchanges.Desert);
+		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe & !DesertOfDeath;
 		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;
 		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !IsShipFree & !NoOverworld;
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;

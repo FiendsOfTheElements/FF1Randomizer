@@ -521,7 +521,7 @@ namespace FF1Lib
 			{
 				requirements |= SCRequirements.Canal;
 			}
-			if (_flags.FreeCanoe ?? false)
+			if (_flags.IsCanoeFree ?? false)
 			{
 				requirements |= SCRequirements.Canoe;
 			}

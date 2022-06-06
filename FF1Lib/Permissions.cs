@@ -50,6 +50,8 @@ namespace FF1Lib
 		}
 		public void Write(FF1Rom rom)
 		{
+			for (int i = 0; i < GearPermissionsCount; i++) _permissions.Add((EquipPermission.None, (Item)(_itemoffset + i)));
+
 			rom.Put(_offset, Blob.FromUShorts(_permissions
 				.GroupBy(x => x.Item2, x => x.Item1)
 				.Select(x => (x.Key, (ushort)((int)x.Aggregate((a, b) => a | b) ^ 0xFFF)))
