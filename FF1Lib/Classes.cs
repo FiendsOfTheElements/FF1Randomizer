@@ -785,7 +785,8 @@ namespace FF1Lib
 					{
 						var validMaluses = malusNormal.Where(x => x.ClassList.Contains((Classes)i) &&
 							!assignedBonusMalus[i].Select(y => y.Action).ToList().Contains(x.Action) &&
-							!(x.Action == BonusMalusAction.CantLearnSpell && assignedBonusMalus[i].Where(y => y.Action == BonusMalusAction.StartWithSpell).Select(x => x.SpellSlotMod).ToList().Contains(x.SpellSlotMod))).ToList();
+							!(x.Action == BonusMalusAction.CantLearnSpell && assignedBonusMalus[i].Where(y => y.Action == BonusMalusAction.StartWithSpell).Select(x => x.SpellSlotMod).ToList().Contains(x.SpellSlotMod)) &&
+							!(x.Action == BonusMalusAction.ArmorRemove && x.Equipment.Contains(Item.Ribbon) && assignedBonusMalus[i].Where(y => y.Action == BonusMalusAction.InnateResist && y.StatMod == 0xFF).Any())).ToList();
 
 						if (!validMaluses.Any())
 						{
