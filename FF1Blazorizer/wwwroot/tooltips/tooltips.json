@@ -540,7 +540,7 @@
 		"Id": "incentivePlacementType",
 		"title": "Incentive Placement Types",
 		"screenshot": "incentivizeRandomChestInLocationCheckBox.gif",
-		"description": "Vanilla - Sets the incentive chest to be the default chest and room (the one shown in the tooltip) for a given location.\nRandom - Chooses a random chest at the selected location to act as an incentive chest.\nBefore Gating - Chooses a chest on a floor that comes before gating; e.g. Earth Cave floors 1-3 before the ROD block, Mirage Tower before the CUBE plate, all of Sea Shrine minus the crescent-shaped \"TFC\" room.\nBehind Gating - Chooses a chest on a floor that comes after gating; e.g. Earth Cave Floor 4 after ROD block, Sky Palace after the CUBE plate, Sea Shrine in the crescent-shaped \"TFC\" chest."
+		"description": "Vanilla - Sets the incentive chest to be the default chest and room (the one shown in the tooltip) for a given location.\nRandom - Chooses a random chest at the selected location to act as an incentive chest.\nBefore Gating - Chooses a chest on a floor that comes before gating; e.g. Earth Cave floors 1-3 before the ROD block, Mirage Tower before the CUBE plate, all of Sea Shrine minus the crescent-shaped \"TFC\" room.\nBehind Gating - Chooses a chest on a floor that comes after gating; e.g. Earth Cave Floor 4 after ROD block, Sky Palace after the CUBE plate, Sea Shrine in the crescent-shaped \"TFC\" room (which requires the KEY to enter)."
 	},
 
 	{
