@@ -33,13 +33,13 @@
 		"Id": "reversedFloors",
 		"title": "Reversed Dungeons",
 		"screenshot": null,
-		"description": "Where meaningful possible it swaps entrance and exit stairs otherwise it modifies the location of entrance stairs. Some floors are also slightly modified to allow for meaningful relocation of stairs."
+		"description": "Where meaningfully possible, swaps entrance and exit stairs; otherwise, modifies the location of entrance stairs. Some floors are also slightly modified to allow for meaningful relocation of stairs."
 	},
 	{
 		"Id": "noEmptyScripts",
 		"title": "No Empty Scripts",
 		"screenshot": "enemyScriptsCheckBox.png",
-		"description": "Prevents non boss scripts to be empty."
+		"description": "Prevents non-boss scripts from being empty."
 	},
 	{
 		"Id": "mermaidPrison",
