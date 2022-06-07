@@ -33,13 +33,13 @@
 		"Id": "reversedFloors",
 		"title": "Reversed Dungeons",
 		"screenshot": null,
-		"description": "Where meaningful possible it swaps entrance and exit stairs otherwise it modifies the location of entrance stairs. Some floors are also slightly modified to allow for meaningful relocation of stairs."
+		"description": "Where meaningfully possible, swaps entrance and exit stairs; otherwise, modifies the location of entrance stairs. Some floors are also slightly modified to allow for meaningful relocation of stairs."
 	},
 	{
 		"Id": "noEmptyScripts",
 		"title": "No Empty Scripts",
 		"screenshot": "enemyScriptsCheckBox.png",
-		"description": "Prevents non boss scripts to be empty."
+		"description": "Prevents non-boss scripts from being empty."
 	},
 	{
 		"Id": "mermaidPrison",
@@ -540,7 +540,7 @@
 		"Id": "incentivePlacementType",
 		"title": "Incentive Placement Types",
 		"screenshot": "incentivizeRandomChestInLocationCheckBox.gif",
-		"description": "Vanilla - Sets the incentive chest to be the default chest and room (the one shown in the tooltip) for a given location.\nRandom - Chooses a random chest at the selected location to act as an incentive chest.\nBefore Gating - Chooses a chest on a floor that comes before gating; e.g. Earth Cave floors 1-3 before the ROD block, Mirage Tower before the CUBE plate, all of Sea Shrine minus the crescent-shaped \"TFC\" room.\nBehind Gating - Chooses a chest on a floor that comes after gating; e.g. Earth Cave Floor 4 after ROD block, Sky Palace after the CUBE plate, Sea Shrine in the crescent-shaped \"TFC\" chest."
+		"description": "Vanilla - Sets the incentive chest to be the default chest and room (the one shown in the tooltip) for a given location.\nRandom - Chooses a random chest at the selected location to act as an incentive chest.\nBefore Gating - Chooses a chest on a floor that comes before gating; e.g. Earth Cave floors 1-3 before the ROD block, Mirage Tower before the CUBE plate, all of Sea Shrine minus the crescent-shaped \"TFC\" room.\nBehind Gating - Chooses a chest on a floor that comes after gating; e.g. Earth Cave Floor 4 after ROD block, Sky Palace after the CUBE plate, Sea Shrine in the crescent-shaped \"TFC\" room (which requires the KEY to enter)."
 	},
 
 	{
@@ -1207,9 +1207,9 @@
 	},
 	{
 		"Id": "tier1DamageBuff",
-		"title": "Improve Tier1 Damage Spells",
+		"title": "Improve Tier-1 Damage Spells",
 		"screenshot": null,
-		"description": "Improves the efficacy of the FIRE, ICE, LIT, and HARM spells."
+		"description": "Makes HARM single-target, and improves the efficacy of the FIRE, ICE, LIT, and HARM spells to have equivalent power to their Tier-3 counterparts (e.g. HARM now does as much damage as HRM3, but to a single target)."
 	},
 	{
 		"Id": "LockMode",
