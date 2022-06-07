@@ -1207,9 +1207,9 @@
 	},
 	{
 		"Id": "tier1DamageBuff",
-		"title": "Improve Tier1 Damage Spells",
+		"title": "Improve Tier-1 Damage Spells",
 		"screenshot": null,
-		"description": "Improves the efficacy of the FIRE, ICE, LIT, and HARM spells."
+		"description": "Makes HARM single-target, and improves the efficacy of the FIRE, ICE, LIT, and HARM spells to have equivalent power to their Tier-3 counterparts (e.g. HARM now does as much damage as HRM3, but to a single target)."
 	},
 	{
 		"Id": "LockMode",
