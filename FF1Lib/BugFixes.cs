@@ -20,7 +20,7 @@ namespace FF1Lib
 
 	public enum ThiefAGI
 	{
-	    [Description("Vanilla")]
+	    [Description("10 (vanilla)")]
 	    Vanilla = 0,
 
 		[Description("30")]
