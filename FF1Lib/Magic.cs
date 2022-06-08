@@ -522,13 +522,6 @@ namespace FF1Lib
 		public void ShuffleMagicLevels(MT19337 rng, bool keepPermissions, bool tieredShuffle, bool mixSpellbooks, bool noSpellcrafter)
 		{
 			var magicSpells = GetSpells();
-			if(tieredShuffle && noSpellcrafter)
-			{
-				// if we are doing a tiered shuffle, swap the position of TMPR and SABR before further shuffling for balance purposes
-				MagicSpell tmpTMPR = magicSpells[14];
-				magicSpells[14] = magicSpells[54];
-				magicSpells[54] = tmpTMPR;
-			}
 
 			// First we have to un-interleave white and black spells.
 			var whiteSpells = magicSpells.Where((spell, i) => (i / 4) % 2 == 0).ToList();
