@@ -77,7 +77,7 @@ namespace FF1Lib
 				{ CanoeableRegion.OnracRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.Onrac, OverworldTeleportIndex.Waterfall} }
 			};
 
-			if (flags.OwMapExchange == OwMapExchanges.None) {
+			if (flags.GameMode == GameModes.Standard && flags.OwMapExchange == OwMapExchanges.None) {
 			    // Can only apply map edits to vanilla-ish maps
 
 			if ((bool)flags.MapOnracDock)
@@ -549,7 +549,7 @@ namespace FF1Lib
 				    defaultRequirements[MapLocation.TitansTunnelWest] = new LocationRequirement(new List<MapChange> { MapChange.TitanFed });
 				}
 
-				if (flags.OwMapExchange != OwMapExchanges.None) {
+				if (flags.GameMode == GameModes.Standard && flags.OwMapExchange != OwMapExchanges.None) {
 				    // Don't move Titan's tunnel on custom/procgen maps
 				    keepers.Add(OverworldTeleportIndex.TitansTunnelEast);
 				    keepers.Add(OverworldTeleportIndex.TitansTunnelWest);
