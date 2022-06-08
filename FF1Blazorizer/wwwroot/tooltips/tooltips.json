@@ -2208,7 +2208,7 @@
 	{
 		"Id": "noConsecutiveNukesCheckBox",
 		"title": "Prevent consecutive NUKE or NUCLEAR",
-		"description": "When shuffling spell and skill scripts, prevent consecutive casts of NUKE or NUCLEAR without at least one other spell or skill in between.  Also prevents having the starting spell and skill slots filled by both NUKE and NUCLEAR at the same time."
+		"description": "When shuffling spell and skill scripts, prevent consecutive casts of NUKE or NUCLEAR without at least one other spell or skill in between.  Also prevents having the starting spell and skill slots filled by both NUKE and NUCLEAR at the same time. (Because one is a spell and one is a skill, it's still rarely possible for NUKE to be activated immediately after NUCLEAR - or vice-versa - later in the fight.)"
 	},
 
 	{
