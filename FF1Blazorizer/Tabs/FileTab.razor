@@ -9,7 +9,7 @@
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
-@inject HttpClient Http 
+@inject HttpClient Http
 
 
 <div id="generate" class="framed-content">
@@ -241,7 +241,8 @@
 			SetStatusMessage("Generating Final Fantasy Randomizer ROM ... Please Wait ... ");
 			StateHasChanged();
 
-			await Task.Run(DoRandomize);
+			//await Task.Run(DoRandomize);
+			await DoRandomize();
 		}
 
 		async Task DoRandomize()
@@ -266,7 +267,8 @@
 			{
 				Utilities.SpoilerCache = string.Empty;
 
-				_rom.Randomize(seed, Flags.Flags, Flags.Preferences);
+				await _rom.Randomize(seed, Flags.Flags, Flags.Preferences);
+				Console.WriteLine(_rom.RandomizeComplete);
 
 				var data = new byte[512 * 1024 + 16];
 				using (var stream = new MemoryStream(data, true))

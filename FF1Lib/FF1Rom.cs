@@ -129,8 +129,12 @@ namespace FF1Lib
 			ClassData = new GameClasses(WeaponPermissions, ArmorPermissions, SpellPermissions, this);
 		}
 
-		public void Randomize(Blob seed, Flags flags, Preferences preferences)
+		public bool RandomizeComplete = false;
+
+		public async Task Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
+		    RandomizeComplete = false;
+
 		    Flags flagsForRng = flags;
 		    if (flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ||
 			flags.OwMapExchange == OwMapExchanges.LostWoods)
@@ -192,6 +196,8 @@ namespace FF1Lib
 
 			LoadSharedDataTables();
 
+			await Task.Yield();
+
 			DeepDungeon = new DeepDungeon(this);
 
 			var talkroutines = new TalkRoutines();
@@ -206,7 +212,7 @@ namespace FF1Lib
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
 			var overworldMap = new OverworldMap(this, flags, palettes);
 
-			var owMapExchange = OwMapExchange.FromFlags(this, overworldMap, flags, rng);
+			var owMapExchange = await OwMapExchange.FromFlags(this, overworldMap, flags, rng);
 			owMapExchange?.ExecuteStep1();
 
 			TeleportShuffle teleporters = new TeleportShuffle(this, owMapExchange?.Data);
@@ -256,6 +262,8 @@ namespace FF1Lib
 			{
 				DamageTilesKill(flags.SaveGameWhenGameOver);
 			}
+
+			await Task.Yield();
 
 			if ((bool)flags.ReversedFloors) new ReversedFloors(this, maps, rng).Work();
 
@@ -388,6 +396,8 @@ namespace FF1Lib
 			{
 				CraftPowerItem(flags);
 			}
+
+			await Task.Yield();
 
 			new RibbonShuffle(this, rng, flags, ItemsText, ArmorPermissions).Work();
 
@@ -1242,6 +1252,8 @@ namespace FF1Lib
 			{
 				OpenChestsInOrder();
 			}
+
+			RandomizeComplete = true;
 		}
 
 		private void EnableNPCSwatter(NPCdata npcdata)

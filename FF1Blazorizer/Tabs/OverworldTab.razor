@@ -170,7 +170,7 @@
 			ValidateSeed((string)e.Value);
 		}
 
-		void GenerateMap()
+		async Task GenerateMap()
 		{
 			var maprng = new MT19337((uint)Flags.MapGenSeed);
 			try
@@ -179,7 +179,7 @@
 				{
 					case OwMapExchanges.GenerateNewOverworld:
 					case OwMapExchanges.LostWoods:
-						Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, Flags.OwMapExchange, Flags.OwShuffledAccess, Flags.OwUnsafeStart);
+						Flags.ReplacementMap = await NewOverworld.GenerateNewOverworld(maprng, Flags.OwMapExchange, Flags.OwShuffledAccess, Flags.OwUnsafeStart);
 						break;
 					case OwMapExchanges.Desert:
 						Flags.ReplacementMap = DesertOfDeath.GenerateDesert(maprng);
@@ -207,7 +207,7 @@
 			StatusMessage = "Generating new map, this may take some time...";
 			StateHasChanged();
 
-			await Task.Run(GenerateMap);
+			await GenerateMap();
 		}
 
 		void ValidateSeed(string seed)
