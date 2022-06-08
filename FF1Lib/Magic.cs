@@ -12,13 +12,13 @@ namespace FF1Lib
 {
 	public enum LockHitMode
 	{
-		[Description("Vanilla")]
+		[Description("64 (Vanilla)")]
 		Vanilla = 0,
 		[Description("107 Accuracy")]
 		Accuracy107,
 		[Description("162 Accuracy")]
 		Accuracy162,
-		[Description("Auto Hit")]
+		[Description("Auto-hit")]
 		AutoHit
 	}
 
