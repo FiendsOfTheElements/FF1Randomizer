@@ -1215,7 +1215,7 @@
 		"Id": "LockMode",
 		"title": "Set Lock Hit Mode",
 		"screenshot": "LockMode.png",
-		"description": "Allows control over the chance to hit when casting LOCK and LOK2 spells. 107 is about a 20% chance to hit vs Chaos. 162 is about a 50% chance to hit vs Chaos. Auto-hit will always hit (100%)."
+		"description": "Allows control over the chance to hit when casting LOCK and LOK2 spells. Vanilla is about a 7% chance to hit vs Chaos; 107 is about 28%; 162 is about 56%. Auto-hit will always hit (100%)."
 	},
 	{
 		"Id": "magicAutohitThresholdDropDown",
