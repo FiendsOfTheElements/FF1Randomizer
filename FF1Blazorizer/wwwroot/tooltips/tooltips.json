@@ -1502,7 +1502,7 @@
 		"Id": "doubleBBCritCheckBox",
 		"title": "Halve BB Crit Rate",
 		"screenshot": "doubleBBCritCheckBox.png",
-		"description": "Halves the Black Belt's unarmed critical hit rate. Vanilla behavior is for the crit rate to equal the character's level, times 2 (crit rate = Level * 2). With this \"rebalance\", the crit rate merely equals their current level (crit rate = Level)."
+		"description": "Halves the Black Belt's unarmed critical hit rate, so that it is now equal to their current level. (Vanilla crit rate is equal to the character's level times 2.)"
 	},
 	{
 		"Id": "thiefHitCheckBox",
