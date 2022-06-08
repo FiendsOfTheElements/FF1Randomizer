@@ -27,7 +27,7 @@
 		"Id": "ribbonMode",
 		"title": "Ribbon",
 		"screenshot": null,
-		"description": "Shattered spreads the resistances across many amror pieces. Each Element occurs multiple times. It tries to ensure that every class can attain full protection."
+		"description": "Shattered spreads the resistances across many armor pieces. Each Element occurs multiple times. It tries to ensure that every class can attain full protection."
 	},
 	{
 		"Id": "reversedFloors",
@@ -1215,7 +1215,7 @@
 		"Id": "LockMode",
 		"title": "Set Lock Hit Mode",
 		"screenshot": "LockMode.png",
-		"description": "Allows control over the chance to hit when casting LOCK and LOK2 spells. 107 is about a 20% chance to hit vs Chaos. 160 is about a 50% chance to hit vs Chaos. Autohit will always hit (100%)."
+		"description": "Allows control over the chance to hit when casting LOCK and LOK2 spells. 107 is about a 20% chance to hit vs Chaos. 162 is about a 50% chance to hit vs Chaos. Auto-hit will always hit (100%)."
 	},
 	{
 		"Id": "magicAutohitThresholdDropDown",
@@ -1324,7 +1324,7 @@
 		"Id": "touchPool",
 		"title": "Status Attacks Pool",
 		"screenshot": "disableStunTouchCheckBox.png",
-		"description": "Sets what status ailment can be infliected when randomizing status attacks.\nAll: All possible status, including silence, death and stone.\nAll except Stun Status: All possible status, except stun ailment.\nOnly Death Status: Only the Death ailment can be assigned.\nRandom: Select one of the previous options at random."
+		"description": "Sets what status ailment can be inflicted when randomizing status attacks.\nAll: All possible status, including silence, death and stone.\nAll except Stun Status: All possible status, except stun ailment.\nOnly Death Status: Only the Death ailment can be assigned.\nRandom: Select one of the previous options at random."
 	},
 	{
 		"Id": "touchIncludeBosses",
@@ -1342,7 +1342,7 @@
 		"Id": "enemyTrapTilesCheckBox",
 		"title": "Shuffle Trap Tiles",
 		"screenshot": "enemyTrapTilesCheckBox.gif",
-		"description": "Shuffles all the forced encounter tiles in the game, except the Fiend refights. This doesn't add in any new tiles, instead simply shuffling the existing encounter tiles among themselves."
+		"description": "Shuffles all the forced encounter tiles in the game, except the Fiend refights. This doesn't add in any new tiles, instead it simply shuffles the existing encounter tiles among themselves."
 	},
 	{
 		"Id": "randomTrapFormationsCheckBox",
@@ -1898,7 +1898,7 @@
 		"Id": "fixMissingBattleRngEntry",
 		"title": "Fix Missing Battle RNG Entry",
 		"screenshot": "fixMissingBattleRngEntry.gif",
-		"description": "The vanilla Battle RNG table has two 0x00s out of 256 hex values. If checked, this flag replaces one of them with 0x95, the missing hex value. In essence, this takes some spells and effects and reduces the likelihood of them occuring (so the famous 3 in 256 chance to critical hit with spells becomes a 2 in 256 chance)"
+		"description": "The vanilla Battle RNG table has two 0x00s out of 256 hex values. If checked, this flag replaces one of them with 0x95, the missing hex value. In essence, this takes some spells and effects and reduces the likelihood of them occuring (so the famous 3 in 256 chance to critical hit with spells becomes a 2 in 256 chance)."
 	},
 
 	{
@@ -1990,7 +1990,7 @@
 		"Id": "inventoryAutosortCheckBox",
 		"title": "Autosort Inventory",
 		"screenshot": "inventoryAutosortCheckBox.png",
-		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items (TENTs, CABINs, and HOUSEs) on the second row, then all other key items in your inventory.\nNote: if \"Extended Consumables\" is on, these consumable items will be placed in the third row, with Key Items flowing after."
+		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items (TENTs, CABINs, and HOUSEs) on the second row, then all other key items in your inventory.\nNote: if \"New Consumables\" is on, these consumable items will be placed in the third row, with Key Items flowing after."
 	},
 	{
 		"Id": "shopInfoCheckBox",
@@ -2155,7 +2155,7 @@
 		"Id": "WhiteMageHarmEveryoneCheckBox",
 		"title": "Improved HARM for White Mage",
 		"screenshot": "whiteMageHarmEveryoneCheckBox.gif",
-		"description": "HARM spells (including via item magic) will deal damage to any target if CAST or USED by a White Mage/White Wizard. On non undead targets, the spell will not crit (will not deal double damage except on a 3/256)."
+		"description": "HARM spells (including via item magic) will deal damage to any target if CAST or USED by a White Mage/White Wizard. On non-undead targets, the spell will not crit (will not deal double damage except on a 3/256)."
 	},
 	{
 		"Id": "armorCrafterCheckBox",

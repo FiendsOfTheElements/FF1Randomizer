@@ -18,7 +18,7 @@ namespace FF1Lib
 		Accuracy107,
 		[Description("162 Accuracy")]
 		Accuracy162,
-		[Description("Auto Hit")]
+		[Description("Auto-hit")]
 		AutoHit
 	}
 
