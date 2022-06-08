@@ -1952,7 +1952,7 @@
 	},
 	{
 		"Id": "dashCheckBox",
-		"title": "Enable Dash",
+		"title": "Faster Walking Speed",
 		"screenshot": "dashCheckBox.gif",
 		"description": "If enabled, the player's movement speed on foot is doubled. Hold B while walking to reduce to normal speed."
 	},

@@ -40,7 +40,7 @@
 	<h4>Conveniences</h4>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="noPartyShuffleCheckBox" @bind-Value="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" @bind-Value="Flags.SpeedHacks">Speed Hacks</CheckBox>
-    <CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" @bind-Value="Flags.Dash">Faster Walking</CheckBox>
+    <CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" @bind-Value="Flags.Dash">Faster Walking Speed</CheckBox>
     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedboatCheckBox" @bind-Value="Flags.SpeedBoat">Faster Ship</CheckBox>
     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableMinimap" @bind-Value="Flags.DisableMinimap">Disable Minimap</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="quickMinimapLoad" @bind-Value="Flags.QuickMinimapLoad" IsEnabled="@(!Flags.DisableMinimap && Flags.OwMapExchange == OwMapExchanges.None)">Quick Minimap Load</CheckBox>
