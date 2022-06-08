@@ -46,21 +46,21 @@ namespace FF1Lib
 		}
 
 		[DebuggerStepThrough]
-		public static T PickRemoveRandomItemWeighted<T>(this IList<(T Item, int Weight)> weightedList, MT19337 rng)
+		public static T SpliceRandomItemWeighted<T>(this IList<(T Item, int Weight)> weightedList, MT19337 rng)
 		{
 			int offset = 0;
-			(T Item, int RangeTo)[] rangedItems = weightedList
+			(T Item, int RangeTo, int Weight)[] rangedItems = weightedList
 				.OrderBy(item => item.Weight)
-				.Select(entry => (entry.Item, RangeTo: offset += entry.Weight))
+				.Select(entry => (entry.Item, RangeTo: offset += entry.Weight, entry.Weight))
 				.ToArray();
 
 			int randomNumber = rng.Between(1, weightedList.Sum(item => item.Weight));
-			(T Item, int RangeTo) picked = rangedItems.First(item => randomNumber <= item.RangeTo);
+			(T Item, int RangeTo, int Weight) picked = rangedItems.First(item => randomNumber <= item.RangeTo);
 
 			//remove the picked item from the list
 			for(int i = 0; i < weightedList.Count; i++)
 			{
-				if(weightedList[i].Item.Equals(picked.Item))
+				if(weightedList[i].Item.Equals(picked.Item) && weightedList[i].Weight == picked.Weight)
 				{
 					weightedList.RemoveAt(i);
 					break;

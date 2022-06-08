@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
+using System.Diagnostics;
 using RomUtilities;
 using FF1Lib.Helpers;
 using System.IO;
@@ -101,7 +99,7 @@ namespace FF1Lib
 
 			if (shuffleMode == FormationShuffleMode.Intrazone)
 			{
-				// intra-zone shuffle, does not change which formations are in zomes.
+				// intra-zone shuffle, does not change which formations are in zones.
 				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
 				var newFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
 
@@ -127,7 +125,7 @@ namespace FF1Lib
 				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 			}
 			if(shuffleMode == FormationShuffleMode.ShuffleRarityTiered) {
-				// intra-zone shuffle, does not change which formations are in zomes.
+				// intra-zone shuffle, does not change which formations are in zones.
 				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
 				var newFormations = new List<Blob>();
 
@@ -136,24 +134,29 @@ namespace FF1Lib
 					var currentEncounterZone = oldFormations[i].Chunk(1);
 
 					List<(Blob, int)> weightedEncounterPool = new List<(Blob, int)>();
-					//natural weights
+
+					//3 tiers
+					//encounter groups 1-4 in highest frequency
+					//5-6 in mid
+					//7-8 in low
+
 					weightedEncounterPool.Add((currentEncounterZone[0], 48));
 					weightedEncounterPool.Add((currentEncounterZone[1], 48));
 					weightedEncounterPool.Add((currentEncounterZone[2], 48));
 					weightedEncounterPool.Add((currentEncounterZone[3], 48));
 					weightedEncounterPool.Add((currentEncounterZone[4], 24));
 					weightedEncounterPool.Add((currentEncounterZone[5], 24));
-					weightedEncounterPool.Add((currentEncounterZone[6], 12));
-					weightedEncounterPool.Add((currentEncounterZone[7], 4));
+					weightedEncounterPool.Add((currentEncounterZone[6], 8));
+					weightedEncounterPool.Add((currentEncounterZone[7], 8));
 
-					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
-					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
-					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
-					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
-					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
-					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
-					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
-					newFormations.Add(weightedEncounterPool.PickRemoveRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
 				}
 
 				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
