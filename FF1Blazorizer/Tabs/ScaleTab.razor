@@ -26,7 +26,10 @@
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="evadeCapDropDown" TItem="EvadeCapValues" @bind-Value="Flags.EvadeCap">Evade Cap Value:</EnumDropDown>
 		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="includeMoraleCheckBox" @bind-Value="Flags.IncludeMorale">Scaled Stats Includes Morale</CheckBox>
 		<div class="row-seperator"></div>
-		<h4>Encounter Rates</h4>
+        <div class="row">
+		    <h4>Encounter Rates</h4>
+            <ToolTipBox id="encounterRatesTooltip" UpdateToolTip="@UpdateToolTipID"></ToolTipBox>
+        </div>
 		<!-- In vanilla, the encounter rate is 10/256 for land, 3/256 for sea, and 8/256 for most dungeons -->
 		<div class="row">
 			<div class="col-lg-4 noleftpadding">Overworld Encounter Rate:</div>
