@@ -45,7 +45,7 @@
 		"Id": "mermaidPrison",
 		"title": "Mermaid Prison",
 		"screenshot": null,
-		"description": "Locks all doors on the Mermaid Floor in Sea Shrine."
+		"description": "Locks all doors on the Mermaid Floor in Sea Shrine, so that the KEY is now required to access the treasures on that floor."
 	},
 	{
 		"Id": "laterLoose",
