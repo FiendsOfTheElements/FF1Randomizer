@@ -123,7 +123,7 @@
 		"Id": "looseNpcBalance",
 		"title": "Favor NPCs",
 		"screenshot": "looseNpcBalanceCheckBox.png",
-		"description": "Makes it more likely for any loose items to land on NPCs."
+		"description": "Makes it more likely for any loose items to land on NPCs.\nRequires that one (or both) of the \"Main NPCs\" or \"Fetch Quest NPCs\" flags above are not set."
 	},
 
 	{
@@ -382,7 +382,7 @@
 		"Id": "cheapVendorItemCheckBox",
 		"title": "Exclude Gold from Scaling - Cheap Vendor Item",
 		"screenshot": "cheapVendorItemCheckBox.png",
-		"description": "Guarantees a less expensive vendor item when excluding gold from scaling"
+		"description": "Guarantees a less expensive vendor item when excluding gold from scaling."
 	},
 	{
 		"Id": "applyExpBoostToGoldCheckBox",
@@ -1781,7 +1781,7 @@
 		"Id": "legendaryShopHasExtConsumables",
 		"title": "New Consumables in Legendary Shop",
 		"screenshot": "newConsumables.png",
-		"description": "The new Consumables can appear in legendary item shop. The legendary item shop will have 1-2 random new consumables."
+		"description": "The new Consumables can appear in legendary item shop. The legendary item shop will have 1-2 random new consumables.\nRequires the Legendary Item Shop flag to be set, in the Shops & Magic Tab."
 	},
 
 	{
