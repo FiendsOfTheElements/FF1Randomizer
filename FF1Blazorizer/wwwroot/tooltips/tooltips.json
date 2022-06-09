@@ -81,7 +81,7 @@
 		"Id": "itemMagicMode",
 		"title": "Item Magic Shuffling",
 		"screenshot": "itemMagicModeDropDown.png",
-		"description": "Vanilla: Vanilla item magic or weaponizer/armorcrafter behavior.\n\nShuffle: Shuffle item magic.\n\nNone: No item magic.\n\nRandom: Any of the above."
+		"description": "Vanilla: Vanilla item magic or weaponizer/armorcrafter behavior.\n\nRandomized: Change item magic based on Item Magic Pool below (among equipment that normally casts spells when used).\n\nNone: No item magic.\n\nRandom: Any of the above."
 	},
 	{
 		"Id": "itemMagicPool",

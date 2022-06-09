@@ -457,7 +457,7 @@ namespace FF1Lib
 	public enum ItemMagicMode
 	{
 		Vanilla = 0,
-		Shuffled = 1,
+		Randomized = 1,
 		None = 2,
 		Random = 3
 	}
