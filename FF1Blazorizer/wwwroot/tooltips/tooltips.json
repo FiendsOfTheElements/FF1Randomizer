@@ -1104,7 +1104,7 @@
 		"Id": "shopsCheckBox",
 		"title": "Shop Shuffle",
 		"screenshot": "shopsCheckBox.png",
-		"description": "Shuffles the contents of Weapon, Armor, and Item shops, changing which shops have what items for sale. PURE and SOFT potions will always be available in the Coneria Item Shop.\n Note that this only shuffles the contents of each shop among like shops around the world -- weapons for weapons, armor for armor, and items among other items. You won't, for instance, find HEAL pots in a Weapon shop or a Silver Bracelet in an Item shop."
+		"description": "Shuffles the contents of Weapon, Armor, and Item shops, changing which shops have what items for sale. PURE and SOFT potions will be available in the Coneria Item Shop under most flagsets (any flags that make it likely you'll face these statuses early, such as Randomized Status Attacks).\n Note that this only shuffles the contents of each shop among like shops around the world -- weapons for weapons, armor for armor, and items among other items. You won't, for instance, find HEAL pots in a Weapon shop or a Silver Bracelet in an Item shop."
 	},
 	{
 		"Id": "randomWaresCheckBox",
