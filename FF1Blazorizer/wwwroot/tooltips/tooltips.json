@@ -1358,7 +1358,7 @@
 		"Id": "WarMECHModeDropDown",
 		"title": "WarMECH Mode",
 		"screenshot": "WarMECHModeDropDown.png",
-		"description": "Changes the way WarMECH can be found, and interacted with, in the game.\n Vanilla: WarMECH may appear as a group 7 encounter on Sky Castle 5F, as in the original game.\n Patrolling: A WarMECH sprite will appear wandering on Sky Castle 4F. Talking to WarMECH starts an unrunnable battle.\n Required: A WarMECH sprite will guard Tiamat's room. You must defeat it before you can fight the actual boss.\n Unleashed: WarMECH appears as a Group 7 formation in ALL zones, not just Sky Palace."
+		"description": "Changes the way WarMECH can be found, and interacted with, in the game.\n Vanilla: WarMECH may appear as a rare Group 7 encounter (3 out of 64 random encounters) on Sky Castle 5F, as in the original game.\n Patrolling: A WarMECH sprite will appear wandering on Sky Castle 4F. Talking to WarMECH starts an unrunnable battle.\n Required: A WarMECH sprite will guard Tiamat's room. You must defeat it before you can fight the actual boss. If WarMECH is Required or Patrolling, it will not appear anywhere else.\n Unleashed: WarMECH appears as a Group 7 formation (3/64 encounters) in ALL zones, including the overworld."
 	},
 	{
 		"Id": "swolePiratesCheckBox",
