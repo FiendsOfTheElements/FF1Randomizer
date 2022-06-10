@@ -27,7 +27,7 @@
 		"Id": "ribbonMode",
 		"title": "Ribbon",
 		"screenshot": null,
-		"description": "Shattered spreads the resistances across many amror pieces. Each Element occurs multiple times. It tries to ensure that every class can attain full protection."
+		"description": "Shattered spreads the resistances across many armor pieces. Each Element occurs multiple times. It tries to ensure that every class can attain full protection."
 	},
 	{
 		"Id": "reversedFloors",
@@ -1215,7 +1215,7 @@
 		"Id": "LockMode",
 		"title": "Set Lock Hit Mode",
 		"screenshot": "LockMode.png",
-		"description": "Allows control over the chance to hit when casting LOCK and LOK2 spells. 107 is about a 20% chance to hit vs Chaos. 160 is about a 50% chance to hit vs Chaos. Autohit will always hit (100%)."
+		"description": "Allows control over the chance to hit when casting LOCK and LOK2 spells. Vanilla is about a 7% chance to hit vs Chaos; 107 is about 28%; 162 is about 56%. Auto-hit will always hit (100%)."
 	},
 	{
 		"Id": "magicAutohitThresholdDropDown",
@@ -1321,7 +1321,7 @@
 		"Id": "touchPool",
 		"title": "Status Attacks Pool",
 		"screenshot": "disableStunTouchCheckBox.png",
-		"description": "Sets what status ailment can be infliected when randomizing status attacks.\nAll: All possible status, including silence, death and stone.\nAll except Stun Status: All possible status, except stun ailment.\nOnly Death Status: Only the Death ailment can be assigned.\nRandom: Select one of the previous options at random."
+		"description": "Sets what status ailment can be inflicted when randomizing status attacks.\nAll: All possible status, including silence, death and stone.\nAll except Stun Status: All possible status, except stun ailment.\nOnly Death Status: Only the Death ailment can be assigned.\nRandom: Select one of the previous options at random."
 	},
 	{
 		"Id": "touchIncludeBosses",
@@ -1339,7 +1339,7 @@
 		"Id": "enemyTrapTilesCheckBox",
 		"title": "Shuffle Trap Tiles",
 		"screenshot": "enemyTrapTilesCheckBox.gif",
-		"description": "Shuffles all the forced encounter tiles in the game, except the Fiend refights. This doesn't add in any new tiles, instead simply shuffling the existing encounter tiles among themselves."
+		"description": "Shuffles all the forced encounter tiles in the game, except the Fiend refights. This doesn't add in any new tiles, instead it simply shuffles the existing encounter tiles among themselves."
 	},
 	{
 		"Id": "randomTrapFormationsCheckBox",
@@ -1499,7 +1499,7 @@
 		"Id": "doubleBBCritCheckBox",
 		"title": "Halve BB Crit Rate",
 		"screenshot": "doubleBBCritCheckBox.png",
-		"description": "Halves the Black Belt's unarmed critical hit rate. Vanilla behavior is for the crit rate to equal the character's level, times 2 (crit rate = Level * 2). With this \"rebalance\", the crit rate merely equals their current level (crit rate = Level)."
+		"description": "Halves the Black Belt's unarmed critical hit rate, so that it is now equal to their current level. (Vanilla crit rate is equal to the character's level times 2.)"
 	},
 	{
 		"Id": "thiefHitCheckBox",
@@ -1895,7 +1895,7 @@
 		"Id": "fixMissingBattleRngEntry",
 		"title": "Fix Missing Battle RNG Entry",
 		"screenshot": "fixMissingBattleRngEntry.gif",
-		"description": "The vanilla Battle RNG table has two 0x00s out of 256 hex values. If checked, this flag replaces one of them with 0x95, the missing hex value. In essence, this takes some spells and effects and reduces the likelihood of them occuring (so the famous 3 in 256 chance to critical hit with spells becomes a 2 in 256 chance)"
+		"description": "The vanilla Battle RNG table has two 0x00s out of 256 hex values. If checked, this flag replaces one of them with 0x95, the missing hex value. In essence, this takes some spells and effects and reduces the likelihood of them occuring (so the famous 3 in 256 chance to critical hit with spells becomes a 2 in 256 chance)."
 	},
 
 	{
@@ -1949,7 +1949,7 @@
 	},
 	{
 		"Id": "dashCheckBox",
-		"title": "Enable Dash",
+		"title": "Faster Walking Speed",
 		"screenshot": "dashCheckBox.gif",
 		"description": "If enabled, the player's movement speed on foot is doubled. Hold B while walking to reduce to normal speed."
 	},
@@ -1987,7 +1987,7 @@
 		"Id": "inventoryAutosortCheckBox",
 		"title": "Autosort Inventory",
 		"screenshot": "inventoryAutosortCheckBox.png",
-		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items (TENTs, CABINs, and HOUSEs) on the second row, then all other key items in your inventory.\nNote: if \"Extended Consumables\" is on, these consumable items will be placed in the third row, with Key Items flowing after."
+		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items (TENTs, CABINs, and HOUSEs) on the second row, then all other key items in your inventory.\nNote: if \"New Consumables\" is on, these consumable items will be placed in the third row, with Key Items flowing after."
 	},
 	{
 		"Id": "shopInfoCheckBox",
@@ -2152,7 +2152,7 @@
 		"Id": "WhiteMageHarmEveryoneCheckBox",
 		"title": "Improved HARM for White Mage",
 		"screenshot": "whiteMageHarmEveryoneCheckBox.gif",
-		"description": "HARM spells (including via item magic) will deal damage to any target if CAST or USED by a White Mage/White Wizard. On non undead targets, the spell will not crit (will not deal double damage except on a 3/256)."
+		"description": "HARM spells (including via item magic) will deal damage to any target if CAST or USED by a White Mage/White Wizard. On non-undead targets, the spell will not crit (will not deal double damage except on a 3/256)."
 	},
 	{
 		"Id": "armorCrafterCheckBox",
@@ -2205,7 +2205,7 @@
 	{
 		"Id": "noConsecutiveNukesCheckBox",
 		"title": "Prevent consecutive NUKE or NUCLEAR",
-		"description": "When shuffling spell and skill scripts, prevent consecutive casts of NUKE or NUCLEAR without at least one other spell or skill in between.  Also prevents having the starting spell and skill slots filled by both NUKE and NUCLEAR at the same time."
+		"description": "When shuffling spell and skill scripts, prevent consecutive casts of NUKE or NUCLEAR without at least one other spell or skill in between.  Also prevents having the starting spell and skill slots filled by both NUKE and NUCLEAR at the same time. (Because one is a spell and one is a skill, it's still rarely possible for NUKE to be activated immediately after NUCLEAR - or vice-versa - later in the fight.)"
 	},
 
 	{
