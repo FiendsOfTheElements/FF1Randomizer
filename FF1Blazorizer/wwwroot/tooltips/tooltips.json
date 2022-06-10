@@ -1432,6 +1432,12 @@
 
 
 	{
+		"Id": "allowedStartingClassesTooltip",
+		"title": "Allowed Starting Classes",
+		"screenshot": null,
+		"description": "Select which character classes can be chosen at the start of the game, from both regular and promoted classes. The four character slots can be restricted individually, or all together with the \"All\" row.\n\"Forced\" means that slot will be randomly chosen from the selected possibilities and then locked so you cannot change it. \"None\" means that slot can have a blank spot with no light warrior. Forced + None together means if None is randomly selected, that slot will be locked to having no light warrior."
+	},
+	{
 		"Id": "EnablePoolParty",
 		"title": "Party Draft",
 		"screenshot": "EnablePoolParty.gif",
@@ -1466,6 +1472,12 @@
 		"title": "Only Replace Nones at Taverns",
 		"screenshot": "tavernModeReplaceOnlyNone.png",
 		"description": "Limit hiring to only replace \"None\" characters. This means once you chose a party member for that spot you are stuck with them."
+	},
+	{
+		"Id": "recruitableAdventurersTooltip",
+		"title": "Recruitable Adventurer Classes",
+		"screenshot": null,
+		"description": "Select the possible classes available to recruit. Applies to both Tavern Recruitement and NPC Recruits."
 	},
 
 	{

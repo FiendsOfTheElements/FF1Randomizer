@@ -6,7 +6,12 @@
 	@if (IsOpen)
 	{
 		<div class="col1 full">
-			<h4>Allowed Starting Classes</h4>
+
+            <div class="row">
+		        <h4>Allowed Starting Classes</h4>
+                <ToolTipBox id="allowedStartingClassesTooltip" UpdateToolTip="@UpdateToolTipID"></ToolTipBox>
+            </div>
+
 			<div class="table-wrapper">
 				<table>
 					<tr class="jobs">
@@ -133,8 +138,11 @@
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.RecruitmentMode" Id="tavernModeReplaceOnlyNone" @bind-Value="Flags.RecruitmentModeReplaceOnlyNone">Only Replace Nones at Taverns</TriStateCheckBox>
 				</div>
 				<div class="checkbox-cell"></div>
-				<strong>Recruitable Adventurers</strong>
-				<p>Apply to both Tavern Recruitement and NPC Recruits</p>
+
+                <div class="row">
+		            <strong>Recruitable Adventurers</strong>
+                    <ToolTipBox id="recruitableAdventurersTooltip" UpdateToolTip="@UpdateToolTipID"></ToolTipBox>
+                </div>
 				<div class="table-wrapper">
 					<table>
 						<tr class="jobs">
@@ -161,9 +169,9 @@
 			</div>
 			<div class="col2">
 				<h4>NPC Recruits</h4>
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="classAsNpcFiendsCheckBox" @bind-Value="Flags.ClassAsNpcFiends">Characters gated by Fiends</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="classAsNpcFiendsCheckBox" @bind-Value="Flags.ClassAsNpcFiends">Recruits gated by Fiends</TriStateCheckBox>
 				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false)" Id="classAsNpcForcedFiendsCheckBox" @bind-Value="Flags.ClassAsNpcForcedFiends">Forced Characters</TriStateCheckBox>
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="classAsNpcKeyNpcCheckBox" @bind-Value="Flags.ClassAsNpcKeyNPC">Characters linked to Key NPCs</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="classAsNpcKeyNpcCheckBox" @bind-Value="Flags.ClassAsNpcKeyNPC">Recruits linked to Key NPCs</TriStateCheckBox>
 				<IntSlider Indent Min="0" Max="12" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcCountSlider" @bind-Value="@Flags.ClassAsNpcCount">Characters Count:</IntSlider>
 				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcDuplicateCheckBox" @bind-Value="Flags.ClassAsNpcDuplicate">Allow Duplicates</TriStateCheckBox>
 				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcPromoCheckBox" @bind-Value="Flags.ClassAsNpcPromotion">Promoted Classes</TriStateCheckBox>
