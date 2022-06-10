@@ -761,9 +761,9 @@
 	},
 	{
 		"Id": "dragonsHoardCheckBox",
-		"title": "Dragon's Hoard",
+		"title": "Bahamut's Hoard",
 		"screenshot": "dragonsHoard.png",
-		"description": "Places all the Cardia chests in Bahamut's room.\n\nNote: This does not remove the Cardia chests at the other locations. Looting the Dragon's Hoard chests means the linked chests at the other Cardia locations will be empty, and vice versa."
+		"description": "Places all the Cardia Islands chests in Bahamut's room.\nNote: This does not remove the Cardia chests at the other locations. Looting the Hoard chests means the linked chests at the other Cardia locations will be empty, and vice versa."
 	},
 	{
 		"Id": "hallOfDragonsCheckBox",
