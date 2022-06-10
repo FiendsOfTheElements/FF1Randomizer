@@ -2158,7 +2158,7 @@
 		"Id": "WhiteMageHarmEveryoneCheckBox",
 		"title": "Improved HARM for White Mage",
 		"screenshot": "whiteMageHarmEveryoneCheckBox.gif",
-		"description": "HARM spells (including via item magic) will deal damage to any target if CAST or USED by a White Mage/White Wizard. On non-undead targets, the spell will not crit (will not deal double damage except on a 3/256)."
+		"description": "HARM spells (including via item magic) will deal damage to any target if CAST or USED by a White Mage/White Wizard. On non-undead targets, the spells will not crit (will not deal double damage except on a 3/256), averaging 30/60/90/120 damage for HARM1-4."
 	},
 	{
 		"Id": "armorCrafterCheckBox",
