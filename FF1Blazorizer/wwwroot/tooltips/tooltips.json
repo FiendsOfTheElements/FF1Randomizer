@@ -39,7 +39,7 @@
 		"Id": "noEmptyScripts",
 		"title": "No Empty Scripts",
 		"screenshot": "enemyScriptsCheckBox.png",
-		"description": "Prevents non-boss scripts from being empty."
+		"description": "Prevents non-boss scripts from being empty.\nWithout this flag, enemies will be more likely to have scripts with both skills and spells. This flag results in spreading them out more, giving about 25% more enemies with scripts on average with a Vanilla Script Count."
 	},
 	{
 		"Id": "mermaidPrison",
