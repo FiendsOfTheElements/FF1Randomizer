@@ -1482,7 +1482,7 @@
 
 	{
 		"Id": "classAsNpcFiendsCheckBox",
-		"title": "Characters Gated by Fiends",
+		"title": "Recruits Gated by Fiends",
 		"screenshot": "classAsNpcFiendsCheckBox.png",
 		"description": "A new character (from a random class) is behind each Fiend. When talked to, that character replaces the selected party member. Push B at the selection screen to cancel taking the gated character."
 	},
@@ -1494,15 +1494,15 @@
 	},
 	{
 		"Id": "classAsNpcKeyNpcCheckBox",
-		"title": "Characters linked to Key NPCs",
+		"title": "Recruits Linked to Key NPCs",
 		"screenshot": "classAsNpcKeyNpcCheckBox.png",
 		"description": "A new character (from a random class) is linked to a key NPC. If that key NPC requirement is fulfilled, the linked character replaces the selected party member. Push B at the selection screen to cancel taking the gated character.\nPossible key NPCs: Princess Sara, Matoya, Bikke, King of the Northwest Castle, Elf Prince, Smith, Nerrick, Dr. Unne, Sarda, Canoe Sage, Fairy, Lefeinish Man."
 	},
 	{
 		"Id": "classAsNpcDuplicateCheckBox",
-		"title": "Allow Duplicates",
+		"title": "Allow Duplicate Recruits",
 		"screenshot": "classAsNpcDuplicateCheckBox.png",
-		"description": "Duplicate party classes can be in the gated character pool. All six classes are not guaranteed to be in the pool and may not necessarily be available in the given seed."
+		"description": "Normally, Recruits will have unique classes, unless they are forced to repeat (because Recruit Count is higher than the available classes); this flag removes that restriction.  All selected classes are not guaranteed to be in the pool and a class may not necessarily be available at all in a given seed."
 	},
 	{
 		"Id": "classAsNpcPromoCheckBox",
@@ -1824,7 +1824,7 @@
 		"Id": "magisizeWeaponsCheckBox",
 		"title": "All Weapons Cast Spells",
 		"screenshot": "magisizeWeapons.png",
-		"description": "All weapons can cast randomly assigned spells. Excludes standard casting weapons which, naturally, continue to cast their normally assigned spells."
+		"description": "ALL weapons can cast spells based on the Item Magic Pool, instead of only equipment that normally casts spells."
 	},
 
 	{

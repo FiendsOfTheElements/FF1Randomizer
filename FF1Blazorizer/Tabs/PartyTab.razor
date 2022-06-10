@@ -169,10 +169,10 @@
 			</div>
 			<div class="col2">
 				<h4>NPC Recruits</h4>
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="classAsNpcFiendsCheckBox" @bind-Value="Flags.ClassAsNpcFiends">Recruits gated by Fiends</TriStateCheckBox>
-				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false)" Id="classAsNpcForcedFiendsCheckBox" @bind-Value="Flags.ClassAsNpcForcedFiends">Forced Characters</TriStateCheckBox>
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="classAsNpcKeyNpcCheckBox" @bind-Value="Flags.ClassAsNpcKeyNPC">Recruits linked to Key NPCs</TriStateCheckBox>
-				<IntSlider Indent Min="0" Max="12" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcCountSlider" @bind-Value="@Flags.ClassAsNpcCount">Characters Count:</IntSlider>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="classAsNpcFiendsCheckBox" @bind-Value="Flags.ClassAsNpcFiends">Recruits Gated by Fiends</TriStateCheckBox>
+				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false)" Id="classAsNpcForcedFiendsCheckBox" @bind-Value="Flags.ClassAsNpcForcedFiends">Forced Recruits</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="classAsNpcKeyNpcCheckBox" @bind-Value="Flags.ClassAsNpcKeyNPC">Recruits Linked to Key NPCs</TriStateCheckBox>
+				<IntSlider Indent Min="0" Max="12" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcCountSlider" @bind-Value="@Flags.ClassAsNpcCount">Recruit Count:</IntSlider>
 				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcDuplicateCheckBox" @bind-Value="Flags.ClassAsNpcDuplicate">Allow Duplicates</TriStateCheckBox>
 				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcPromoCheckBox" @bind-Value="Flags.ClassAsNpcPromotion">Promoted Classes</TriStateCheckBox>
 			</div>
