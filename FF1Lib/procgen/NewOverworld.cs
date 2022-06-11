@@ -259,7 +259,9 @@ namespace FF1Lib.Procgen
 	short bridgedRegion;
 	bool shouldPlaceBridge;
 
-        public OverworldState(MT19337 rng, List<GenerationStep> steps, OverworldTiles overworldTiles) {
+	FF1Rom.ReportProgress progress;
+
+        public OverworldState(MT19337 rng, List<GenerationStep> steps, OverworldTiles overworldTiles, FF1Rom.ReportProgress progress) {
             this.rng = rng;
             this.ownBasemap = true;
             this.ownTilemap = true;
@@ -283,6 +285,7 @@ namespace FF1Lib.Procgen
 	    this.startingRegion = -1;
 	    this.bridgedRegion = -1;
 	    this.shouldPlaceBridge = true;
+	    this.progress = progress;
         }
 
 	// Shallow copy construtor.  To be memory efficient, this uses
@@ -316,6 +319,7 @@ namespace FF1Lib.Procgen
 	    this.startingRegion = copy.startingRegion;
 	    this.bridgedRegion = copy.bridgedRegion;
 	    this.shouldPlaceBridge = copy.shouldPlaceBridge;
+	    this.progress = copy.progress;
         }
 
 	public void SetSteps(List<GenerationStep> steps) {
@@ -383,8 +387,7 @@ namespace FF1Lib.Procgen
             }
             this.StepQueue = new Queue<GenerationStep>(this.StepQueue);
             var nextStep = this.StepQueue.Dequeue();
-	    Console.WriteLine("await "+nextStep.method.Name);
-	    await Task.Delay(1);
+	    await this.progress(nextStep.method.Name);
 	    Console.WriteLine(nextStep.method.Name);
             return await nextStep.RunStep(this);
         }
@@ -517,7 +520,7 @@ namespace FF1Lib.Procgen
 
             int lowering_iter = 0;
             while (land_count < min_land_tiles || mountain_count < min_mtn_tiles) {
-		await Task.Delay(1);
+		await this.progress();
 
                 lowering_iter += 1;
                 mountain_count = 0;
@@ -1198,7 +1201,7 @@ namespace FF1Lib.Procgen
 
     public static class NewOverworld {
 
-	public static async Task<OverworldState> RunSteps(OverworldState startingState) {
+	public static async Task<OverworldState> RunSteps(OverworldState startingState, FF1Rom.ReportProgress progress) {
 	    Stack<GenerationTask> workStack = new Stack<GenerationTask>();
 
 	    System.GC.Collect(System.GC.MaxGeneration);
@@ -1209,7 +1212,7 @@ namespace FF1Lib.Procgen
 	    int maxTasksCount = 300;
 	    int taskCount = 0;
 	    while (workStack.Count > 0 && taskCount < maxTasksCount) {
-		await Task.Delay(1);
+		await progress();
 		taskCount += 1;
 		var p = workStack.Pop();
 		var r = await p();
@@ -1226,7 +1229,9 @@ namespace FF1Lib.Procgen
 	    return finalState;
 	}
 
-	public async static Task<OwMapExchangeData> GenerateNewOverworld(MT19337 rng, OwMapExchanges mode, bool shuffledaccess, bool unsafestart) {
+	public async static Task<OwMapExchangeData> GenerateNewOverworld(MT19337 rng, OwMapExchanges mode,
+									 bool shuffledaccess, bool unsafestart,
+									 FF1Rom.ReportProgress progress) {
 	    var mt = new OverworldTiles();
 
 	    int maxtries = 1;
@@ -1277,8 +1282,8 @@ namespace FF1Lib.Procgen
 		    };
 		}
 
-		var blankState = new OverworldState(rng, worldGenSteps, mt);
-		var worldState = await RunSteps(blankState);
+		var blankState = new OverworldState(rng, worldGenSteps, mt, progress);
+		var worldState = await RunSteps(blankState, progress);
 
 		if (worldState == null) {
 		    throw new Exception($"Couldn't generate a map with this seed, try a different seed");
@@ -1528,7 +1533,7 @@ namespace FF1Lib.Procgen
 
 		    var prePlacementState = new OverworldState(worldState);
 		    prePlacementState.SetSteps(placementSteps);
-		    postPlacementState = await RunSteps(prePlacementState);
+		    postPlacementState = await RunSteps(prePlacementState, progress);
 		}
 
 		if (postPlacementState == null) {
@@ -1559,7 +1564,7 @@ namespace FF1Lib.Procgen
 		};
 
 		postPlacementState.SetSteps(polishSteps);
-		var finalState = await RunSteps(postPlacementState);
+		var finalState = await RunSteps(postPlacementState, progress);
 
 		if (finalState != null) {
 		    return ReplacementMap(finalState, mt);

@@ -299,7 +299,7 @@ namespace FF1Lib
 					}
 					else if (flags.ReplacementMap == null)
 					{
-						flags.ReplacementMap = await NewOverworld.GenerateNewOverworld(maprng, mx, flags.OwShuffledAccess, flags.OwUnsafeStart);
+					    flags.ReplacementMap = await NewOverworld.GenerateNewOverworld(maprng, mx, flags.OwShuffledAccess, flags.OwUnsafeStart, _rom.Progress);
 					}
 					return new OwMapExchange(_rom, _overworldMap, flags.ReplacementMap);
 				case OwMapExchanges.ImportCustomMap:

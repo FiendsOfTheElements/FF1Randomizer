@@ -245,6 +245,12 @@
 			await DoRandomize();
 		}
 
+		async Task Progress(int step, int max, string message) {
+		      SetStatusMessage(StatusMessage + $"<br>{step}/{max} {message} ");
+		      StateHasChanged();
+		      await Task.Delay(1);
+		}
+
 		async Task DoRandomize()
 		{
 			Blob seed;
@@ -267,8 +273,8 @@
 			{
 				Utilities.SpoilerCache = string.Empty;
 
+				_rom.ProgressCallback = this.Progress;
 				await _rom.Randomize(seed, Flags.Flags, Flags.Preferences);
-				Console.WriteLine(_rom.RandomizeComplete);
 
 				var data = new byte[512 * 1024 + 16];
 				using (var stream = new MemoryStream(data, true))

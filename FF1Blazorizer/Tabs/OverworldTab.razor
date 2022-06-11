@@ -17,7 +17,7 @@
 		{
 			<div class="col1 full">
 				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
-				<p>@StatusMessage</p>
+				<p>@((MarkupString)StatusMessage)</p>
 				<br>
 			</div>
 
@@ -170,6 +170,14 @@
 			ValidateSeed((string)e.Value);
 		}
 
+		async Task Progress(string message="", int addMax=0) {
+		      if (message != "") {
+		        StatusMessage = StatusMessage + $"<br>{message}";
+		      }
+		      StateHasChanged();
+		      await Task.Delay(1);
+		}
+
 		async Task GenerateMap()
 		{
 			var maprng = new MT19337((uint)Flags.MapGenSeed);
@@ -179,7 +187,7 @@
 				{
 					case OwMapExchanges.GenerateNewOverworld:
 					case OwMapExchanges.LostWoods:
-						Flags.ReplacementMap = await NewOverworld.GenerateNewOverworld(maprng, Flags.OwMapExchange, Flags.OwShuffledAccess, Flags.OwUnsafeStart);
+						Flags.ReplacementMap = await NewOverworld.GenerateNewOverworld(maprng, Flags.OwMapExchange, Flags.OwShuffledAccess, Flags.OwUnsafeStart, this.Progress);
 						break;
 					case OwMapExchanges.Desert:
 						Flags.ReplacementMap = DesertOfDeath.GenerateDesert(maprng);
