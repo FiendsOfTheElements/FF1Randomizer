@@ -280,6 +280,8 @@ namespace FF1Lib
 		public bool? MapAirshipDock { get; set; } = false;
 		public bool? MapBahamutCardiaDock  { get; set; } = false;
 		public bool? MapLefeinRiver  { get; set; } = false;
+		public bool? MapBridgeLefein { get; set; } = false;
+		public bool? MapRiverToMelmond { get; set; } = false;
 		public bool? MapGaiaMountainPass  { get; set; } = false;
 		public bool? MapDragonsHoard { get; set; } = false;
 		public bool? MapHallOfDragons { get; set; } = false;
@@ -294,6 +296,7 @@ namespace FF1Lib
 		public bool? IncentivizeCanoeItem { get; set; } = false;
 		public bool? IncentivizeAirship { get; set; } = false;
 		public bool? IncentivizeShipAndCanal { get; set; } = false;
+		public bool? IncentivizeBridgeItem { get; set; } = false;
 
 		public bool? IncentivizeMarsh { get; set; } = false;
 		public bool? IncentivizeEarth { get; set; } = false;
@@ -714,7 +717,7 @@ namespace FF1Lib
 		public bool? IsBridgeFree => FreeBridge | NoOverworld | DesertOfDeath;
 		public bool? IsCanalFree => (FreeCanal & !NoOverworld) | DesertOfDeath;
 		public bool? IsFloaterRemoved => ((NoFloater|IsAirshipFree) & !NoOverworld) | DesertOfDeath;
-		public bool IncentivizeBridge => false;
+		public bool? IncentivizeBridge => NPCItems & IncentivizeBridgeItem & !IsBridgeFree & !NoOverworld;
 		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe & !DesertOfDeath;
 		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;
 		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !IsShipFree & !NoOverworld;
@@ -753,7 +756,7 @@ namespace FF1Lib
 			+ ((IncentivizeSlab ?? false) ? 1 : 0)
 			+ ((IncentivizeBottle ?? false) ? 1 : 0)
 			+ ((IncentivizeFloater ?? false) ? 1 : 0)
-			+ (IncentivizeBridge ? 1 : 0)
+			+ ((IncentivizeBridge ?? false) ? 1 : 0)
 			+ ((IncentivizeLute ?? false) ? 1 : 0)
 			+ ((IncentivizeShip ?? false) ? 1 : 0)
 			+ ((IncentivizeRod ?? false) ? 1 : 0)
@@ -788,7 +791,7 @@ namespace FF1Lib
 			+ ((IncentivizeSlab ?? true) ? 1 : 0)
 			+ ((IncentivizeBottle ?? true) ? 1 : 0)
 			+ ((IncentivizeFloater ?? true) ? 1 : 0)
-			+ (IncentivizeBridge ? 1 : 0)
+			+ ((IncentivizeBridge ?? true) ? 1 : 0)
 			+ ((IncentivizeLute ?? true) ? 1 : 0)
 			+ ((IncentivizeShip ?? true) ? 1 : 0)
 			+ ((IncentivizeRod ?? true) ? 1 : 0)
@@ -804,7 +807,7 @@ namespace FF1Lib
 
 		public string IncentivizedItems => ""
 			+ ((IncentivizeAdamant != null) ? (IncentivizeAdamant ?? false ? "Adamant " : "") : ("Adamant? "))
-			+ (IncentivizeBridge ? "Bridge " : "")
+			+ ((IncentivizeBridge != null) ? (IncentivizeBridge ?? false ? "Bridge " : "") : ("Bridge? "))
 			+ ((IncentivizeBottle != null) ? (IncentivizeBottle ?? false ? "Bottle " : "") : ("Bottle? "))
 			+ ((IncentivizeCanal != null) ? (IncentivizeCanal ?? false ? "Canal " : "") : ("Canal? "))
 			+ ((IncentivizeCanoe != null) ? (IncentivizeCanoe ?? false ? "Canoe " : "") : ("Canoe? "))

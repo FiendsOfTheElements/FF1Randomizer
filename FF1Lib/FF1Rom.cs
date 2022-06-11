@@ -214,6 +214,25 @@ namespace FF1Lib
 
 			var shipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(this);
 
+/*
+			// Adjusts Ship spawn location based on extended walk route flags
+			if ((bool)flags.MapBridgeLefein == true) {
+				//Matoya Dock = Coneria
+				//Lefein = Pravoka
+				if ((bool)flags.MapGaiaMountainPass == true) {
+					// Gaia = Pravoka
+				}
+				
+				// If Highway to Ordeals, then also Mirage/Sky/Ordeals = Pravoka
+			}
+			if ((bool)flags.MapRiverToMelmond == true) {
+				//Melmond = Dwarf
+				//Earth = Dwarf
+				//Titan = Dwarf
+				//Sarda = Dwarf
+			}*/
+
+
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
 			var oldItemNames = ItemsText.ToList();

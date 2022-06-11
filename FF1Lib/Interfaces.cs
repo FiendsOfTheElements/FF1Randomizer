@@ -45,7 +45,7 @@
 		bool? IncentivizeKatana { get; }
 		bool? IncentivizeVorpal { get; }
 		bool? IncentivizeRibbon { get; }
-		bool IncentivizeBridge { get; }
+		bool? IncentivizeBridge { get; }
 		bool? IncentivizeShip { get; }
 		bool? IncentivizeCanal { get; }
 		bool? IncentivizeLute { get; }
@@ -97,6 +97,8 @@
 		bool? MapBahamutCardiaDock { get; }
 		bool? MapDragonsHoard { get; }
 		bool? MapLefeinRiver { get; }
+		bool? MapBridgeLefein { get; }
+		bool? MapRiverToMelmond { get; }
 		bool? MapGaiaMountainPass { get; }
 		bool? TitansTrove { get; }
 		bool? GaiaShortcut { get; }
