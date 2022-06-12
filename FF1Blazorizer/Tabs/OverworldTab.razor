@@ -170,9 +170,14 @@
 			ValidateSeed((string)e.Value);
 		}
 
+		int currentStep;
+		int maxSteps;
+
 		async Task Progress(string message="", int addMax=0) {
+		      maxSteps += addMax;
+		      currentStep += 1;
 		      if (message != "") {
-		        StatusMessage = StatusMessage + $"<br>{message}";
+		        StatusMessage = StatusMessage + $"<br>{currentStep}/{maxSteps} {message}";
 		      }
 		      StateHasChanged();
 		      await Task.Delay(1);
@@ -181,6 +186,8 @@
 		async Task GenerateMap()
 		{
 			var maprng = new MT19337((uint)Flags.MapGenSeed);
+		        this.currentStep = 0;
+			this.maxSteps = 0;
 			try
 			{
 				switch (Flags.OwMapExchange)

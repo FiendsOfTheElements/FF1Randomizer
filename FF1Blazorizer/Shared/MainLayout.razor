@@ -2,6 +2,13 @@
 @inherits LayoutComponentBase
 
 <div id="main">
+	<div class="ffr-modal @(modalActive ? "active" : "inactive")">
+	  <div class="ffr-modal-content">
+	    Content goes here.
+	  </div>
+	</div>
+
+        <div class="@(modalActive ? "page-dimmed" : "page-normal")">
 	<div class="ua-bg-top"></div>
 	<div class="ua-bg-bottom"></div>
 
@@ -10,9 +17,11 @@
 
 		<div id="nav-holder"></div>
 		<CascadingValue Value="@showChaos">
+		  <CascadingValue Value="@ShowModal">
 			<div>
 				@Body
 			</div>
+		  </CascadingValue>
 		</CascadingValue>
 
 		<footer id="main-footer">
@@ -40,14 +49,29 @@
 			</div>
 		</div>
 	</div>
+	</div>
 </div>
 @code
 {
 	bool showChaos { get; set; } = false;
+	bool modalActive { get; set; } = false;
+	string modalText { get; set; } = "";
+
+	public delegate void ShowModalT(bool active);
+	ShowModalT ShowModal { get; set; }
+
+	protected override void OnInitialized() {
+		ShowModal = this._showModal;
+	}
 
 	private void TriggerChaos(bool chaostriggered)
 	{
 		showChaos = chaostriggered;
+		StateHasChanged();
+	}
+
+        private void _showModal(bool active) {
+		modalActive = active;
 		StateHasChanged();
 	}
 

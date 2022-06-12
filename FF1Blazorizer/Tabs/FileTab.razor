@@ -56,6 +56,7 @@
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 		[Parameter] public bool IsOpen { get; set; } = true;
 		[Parameter] public bool showChaos { get; set; }
+		[CascadingParameter] public MainLayout.ShowModalT ShowModal { get; set; }
 
 		private string RomMessage = "Upload Rom:";
 		private bool RememberROM = false;
@@ -274,6 +275,9 @@
 				Utilities.SpoilerCache = string.Empty;
 
 				_rom.ProgressCallback = this.Progress;
+
+				ShowModal(true);
+
 				await _rom.Randomize(seed, Flags.Flags, Flags.Preferences);
 
 				var data = new byte[512 * 1024 + 16];

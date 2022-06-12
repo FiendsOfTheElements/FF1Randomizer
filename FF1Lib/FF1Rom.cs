@@ -189,7 +189,7 @@ namespace FF1Lib
 			// Back up Rng so that fun flags are uniform when different ones are selected
 			uint funRngSeed = rng.Next();
 
-			await this.Progress("Beginning randomization", 24);
+			await this.Progress("Beginning randomization", 22);
 
 			if (flags.TournamentSafe) AssureSafe();
 
