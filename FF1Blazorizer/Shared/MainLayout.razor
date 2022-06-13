@@ -5,10 +5,11 @@
 	<div class="ffr-modal @(modalActive ? "active" : "inactive")">
 	  <div class="ffr-modal-popup">
 	    <a class="styled-button ffr-modal-dismiss-button @(generating ? "disabled-button" : "active")" @onclick="@DismissModal">Dismiss</a>
-	    <div class="ffr-modal-content">
-	    @((MarkupString)modalContent)
+	    <div class="ffr-modal-scrollarea">
+	      <div class="ffr-modal-content">
+	        @((MarkupString)modalContent)
+	      </div>
 	    </div>
-	    <div class="ffr-modal-clear"></div>
 	  </div>
 	</div>
 

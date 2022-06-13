@@ -374,7 +374,7 @@ namespace FF1Lib
 
 			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
 			{
-				AlternativeFiends(rng);
+				await AlternativeFiends(rng);
 			}
 
 			if (flags.BuffTier1DamageSpells)
@@ -1172,7 +1172,7 @@ namespace FF1Lib
 
 			if (flags.ResourcePack != null) {
 			    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack))) {
-				this.LoadResourcePack(stream);
+				await this.LoadResourcePack(stream);
 			    }
 			    preferences.ThirdBattlePalette = true;
 			}
@@ -1240,7 +1240,7 @@ namespace FF1Lib
 			if (preferences.SpriteSheet != null) {
 			    using (var stream = new MemoryStream(Convert.FromBase64String(preferences.SpriteSheet)))
 			    {
-				SetCustomPlayerSprites(stream, preferences.ThirdBattlePalette);
+				await SetCustomPlayerSprites(stream, preferences.ThirdBattlePalette);
 			    }
 			}
 

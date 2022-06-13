@@ -555,8 +555,14 @@ tr.bottom-borderd {
     background-color: #e76e55;
 }
 
-.ffr-modal-clear {
-    clear: both;
+.ffr-modal-scrollarea {
+    overflow: scroll;
+    width: 100%;
+    height: calc(100% - 12px - 1.5em);
+    padding: 1em;
+}
+
+.ffr-modal-dismiss-content {
 }
 
 .ua-bg-top {
