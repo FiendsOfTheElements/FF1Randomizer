@@ -579,7 +579,7 @@ namespace FF1Lib
 			// happen after anything that adds, removes or
 			// relocates NPCs or changes their routines.
 			if ((bool)flags.RelocateChests && flags.GameMode != GameModes.DeepDungeon) {
-			    this.RandomlyRelocateChests(rng, maps, npcdata, flags);
+			    await this.RandomlyRelocateChests(rng, maps, npcdata, flags);
 			}
 
 			EnterTeleData enterBackup = new EnterTeleData(this);

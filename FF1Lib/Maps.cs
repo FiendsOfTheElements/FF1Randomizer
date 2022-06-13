@@ -6,6 +6,7 @@ using FF1Lib.Procgen;
 using RomUtilities;
 using static FF1Lib.FF1Text;
 using FF1Lib.Sanity;
+using System.Threading.Tasks;
 
 namespace FF1Lib
 {
@@ -1431,7 +1432,7 @@ namespace FF1Lib
 		    }
 		}
 
-		public void shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests,
+		public async Task shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests,
 						  NPCdata npcdata, byte randomEncounter, bool spreadPlacement) {
 		    // For a tileset, I need to determine:
 		    //
@@ -1725,7 +1726,13 @@ namespace FF1Lib
 		    List<(Room,MapElement)> allCandidates = new();
 
 		    int attempts;
-		    for (attempts = 0; needRetry && attempts < 500; attempts++) {
+		    await this.Progress($"Relocating chests for group of floors containing {ids[0]}", 1);
+		    for (attempts = 0; needRetry && attempts < 800; attempts++) {
+			if (attempts % 20 == 0) {
+			    await this.Progress("", 20);
+			    System.GC.Collect(System.GC.MaxGeneration);
+			}
+
 			// Make a copy of the rooms
 			placedChests.Clear();
 			roomsToSanityCheck.Clear();
@@ -1850,7 +1857,7 @@ namespace FF1Lib
 		    // * Finally, sanity check each room that we can reach all chests, doors, teleports and NPCs in the room
 		}
 
-		public void RandomlyRelocateChests(MT19337 rng, List<Map> maps, NPCdata npcdata, Flags flags) {
+		public async Task RandomlyRelocateChests(MT19337 rng, List<Map> maps, NPCdata npcdata, Flags flags) {
 		    // Groups of maps that make up a shuffle pool
 		    // They need to all use the same tileset.
 
@@ -1907,13 +1914,7 @@ namespace FF1Lib
 			dungeons.Add(new MapId[] { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5 });
 		    }
 
-		    //if (flags.RelocateChestsSpreadPlacement) {
-		    //dungeons.Add(new MapId[] { MapId.GurguVolcanoB1, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5 });
-			// Separate armory otherwise it will only get a handful of chests
-		    //dungeons.Add(new MapId[] { MapId.GurguVolcanoB2 });
-		    //} else {
 		    dungeons.Add(new MapId[] { MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5 });
-		    //}
 
 		    if ((bool)flags.IncentivizeVolcano && flags.VolcanoIncentivePlacementType == IncentivePlacementType.Vanilla) {
 			preserveChests.Add((MapId.GurguVolcanoB5, 0x7E));
@@ -1974,13 +1975,13 @@ namespace FF1Lib
 		    }
 
 		    foreach (MapId[] b in dungeons) {
-			shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
+			await shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
 					      (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
 					      false);
 		    }
 
 		    foreach (MapId[] b in spreadPlacementDungeons) {
-			shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
+			await shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
 					      (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
 					      true);
 		    }
