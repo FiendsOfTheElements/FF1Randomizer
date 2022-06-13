@@ -124,6 +124,9 @@
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 		[Parameter] public bool noTabLayout { get; set; }
 		[Parameter] public bool IsOpen { get; set; } = true;
+		[CascadingParameter(Name="ShowModal")] public MainLayout.ShowModalT ShowModal { get; set; }
+		[CascadingParameter(Name="SetGenerating")] public MainLayout.ShowModalT SetGenerating { get; set; }
+		[CascadingParameter(Name="SetModalContent")] public MainLayout.SetContentT SetModalContent { get; set; }
 
 		private string _mapgenSeed;
 		private string _mapgenSeedInputClass = "";
@@ -172,13 +175,18 @@
 
 		int currentStep;
 		int maxSteps;
+		string lastMessage = "";
+		string modalContent = "";
 
 		async Task Progress(string message="", int addMax=0) {
 		      maxSteps += addMax;
 		      currentStep += 1;
 		      if (message != "") {
-		        StatusMessage = StatusMessage + $"<br>{currentStep}/{maxSteps} {message}";
+			 lastMessage = message;
 		      }
+		      modalContent = $"Progress: {currentStep}/{maxSteps}<br>{lastMessage}";
+		      SetModalContent(modalContent + "<br>" + StatusMessage);
+
 		      StateHasChanged();
 		      await Task.Delay(1);
 		}
@@ -188,6 +196,9 @@
 			var maprng = new MT19337((uint)Flags.MapGenSeed);
 		        this.currentStep = 0;
 			this.maxSteps = 0;
+			SetModalContent("");
+			ShowModal(true);
+			SetGenerating(true);
 			try
 			{
 				switch (Flags.OwMapExchange)
@@ -207,6 +218,10 @@
 			{
 				StatusMessage = x.Message;
 				Console.WriteLine(x.ToString());
+			}
+			finally {
+				await Progress("");
+				SetGenerating(false);
 			}
 			StateHasChanged();
 		}

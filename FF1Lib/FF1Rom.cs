@@ -1301,12 +1301,11 @@ namespace FF1Lib
 			WriteSeedAndFlags(seed.ToHex(), flagstext, last_rng_value);
 			ExtraTrackingAndInitCode(flags, preferences);
 
-			await this.Progress();
-
 			if(flags.OpenChestsInOrder)
 			{
 				OpenChestsInOrder();
 			}
+			await this.Progress("Randomization completed");
 		}
 
 		private void EnableNPCSwatter(NPCdata npcdata)

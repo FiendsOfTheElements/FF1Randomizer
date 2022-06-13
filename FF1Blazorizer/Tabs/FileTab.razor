@@ -56,7 +56,9 @@
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 		[Parameter] public bool IsOpen { get; set; } = true;
 		[Parameter] public bool showChaos { get; set; }
-		[CascadingParameter] public MainLayout.ShowModalT ShowModal { get; set; }
+		[CascadingParameter(Name="ShowModal")] public MainLayout.ShowModalT ShowModal { get; set; }
+		[CascadingParameter(Name="SetGenerating")] public MainLayout.ShowModalT SetGenerating { get; set; }
+		[CascadingParameter(Name="SetModalContent")] public MainLayout.SetContentT SetModalContent { get; set; }
 
 		private string RomMessage = "Upload Rom:";
 		private bool RememberROM = false;
@@ -246,8 +248,21 @@
 			await DoRandomize();
 		}
 
+		string warnings = "";
+		string lastMessage = "";
+		string modalContent = "";
+
 		async Task Progress(int step, int max, string message) {
-		      SetStatusMessage(StatusMessage + $"<br>{step}/{max} {message} ");
+		      if (message.StartsWith("WARNING")) {
+		         warnings = warnings + "<br>" + message;
+			 modalContent = $"Progress: {step}/{max}<br>{warnings}";
+		      } else {
+		         if (message != "") {
+			   lastMessage = message;
+			 }
+		         modalContent = $"Progress: {step}/{max}<br>{warnings}<br>{lastMessage}";
+		      }
+		      SetModalContent(modalContent + "<br>" + StatusMessage);
 		      StateHasChanged();
 		      await Task.Delay(1);
 		}
@@ -276,8 +291,10 @@
 
 				_rom.ProgressCallback = this.Progress;
 
+				this.warnings = "";
+				SetModalContent("");
 				ShowModal(true);
-
+				SetGenerating(true);
 				await _rom.Randomize(seed, Flags.Flags, Flags.Preferences);
 
 				var data = new byte[512 * 1024 + 16];
@@ -322,6 +339,9 @@
 				SetStatusMessage(StatusMessage + "FAILURE: " + e.Message);
 				Console.WriteLine(e.ToString());
 				StateHasChanged();
+			} finally {
+		          SetModalContent(modalContent + "<br>" + StatusMessage);
+			  SetGenerating(false);
 			}
 		}
 

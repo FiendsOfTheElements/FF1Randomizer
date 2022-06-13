@@ -531,7 +531,7 @@ tr.bottom-borderd {
   margin-left: 0px;
 }
 
-.ffr-modal-content {
+.ffr-modal-popup {
   border: 4px solid #ffffff;
   border-image: url(../images/site-border-large.png) 4;
   border-image-outset: 2px;
@@ -539,9 +539,24 @@ tr.bottom-borderd {
   width: 50%;
   height: 50%;
   min-width: 400px;
-  min-height: 400px;
+  min-height: 200px;
   margin: auto;
   margin-top: 10%;
+  position: relative;
+}
+
+.ffr-modal-dismiss-button {
+    position: absolute;
+    bottom: 10px;
+    right: 8px;
+}
+
+.ffr-modal-dismiss-button.active {
+    background-color: #e76e55;
+}
+
+.ffr-modal-clear {
+    clear: both;
 }
 
 .ua-bg-top {

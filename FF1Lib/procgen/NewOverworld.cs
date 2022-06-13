@@ -1295,6 +1295,7 @@ namespace FF1Lib.Procgen
 
 		if (worldState == null) {
 		    //throw new Exception($"Couldn't generate a map with this seed, try a different seed");
+		    await progress("Couldn't generate a map with this seed, trying a different seed", 1);
 		    continue;
 		}
 

@@ -3,8 +3,12 @@
 
 <div id="main">
 	<div class="ffr-modal @(modalActive ? "active" : "inactive")">
-	  <div class="ffr-modal-content">
-	    Content goes here.
+	  <div class="ffr-modal-popup">
+	    <a class="styled-button ffr-modal-dismiss-button @(generating ? "disabled-button" : "active")" @onclick="@DismissModal">Dismiss</a>
+	    <div class="ffr-modal-content">
+	    @((MarkupString)modalContent)
+	    </div>
+	    <div class="ffr-modal-clear"></div>
 	  </div>
 	</div>
 
@@ -17,10 +21,14 @@
 
 		<div id="nav-holder"></div>
 		<CascadingValue Value="@showChaos">
-		  <CascadingValue Value="@ShowModal">
+		  <CascadingValue Value="@ShowModal" Name="ShowModal">
+		  <CascadingValue Value="@SetGenerating" Name="SetGenerating">
+		  <CascadingValue Value="@SetModalContent" Name="SetModalContent">
 			<div>
 				@Body
 			</div>
+		  </CascadingValue>
+		  </CascadingValue>
 		  </CascadingValue>
 		</CascadingValue>
 
@@ -55,13 +63,20 @@
 {
 	bool showChaos { get; set; } = false;
 	bool modalActive { get; set; } = false;
-	string modalText { get; set; } = "";
+	bool generating { get; set; } = false;
+	string modalContent { get; set; } = "";
 
 	public delegate void ShowModalT(bool active);
+	public delegate void SetContentT(string content);
+
 	ShowModalT ShowModal { get; set; }
+	ShowModalT SetGenerating { get; set; }
+	SetContentT SetModalContent { get; set; }
 
 	protected override void OnInitialized() {
 		ShowModal = this._showModal;
+		SetGenerating = this._setGenerating;
+		SetModalContent = this._setModalContent;
 	}
 
 	private void TriggerChaos(bool chaostriggered)
@@ -75,4 +90,19 @@
 		StateHasChanged();
 	}
 
+        private void _setGenerating(bool active) {
+		generating = active;
+		StateHasChanged();
+	}
+
+        private void _setModalContent(string content) {
+		modalContent = content;
+		StateHasChanged();
+	}
+
+	private void DismissModal() {
+		if (!generating) {
+		  _showModal(false);
+		}
+	}
 }
