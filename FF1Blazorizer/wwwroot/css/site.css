@@ -566,7 +566,7 @@ tr.bottom-borderd {
 }
 
 .ffr-modal-scrollarea {
-    overflow: scroll;
+    overflow: auto;
     width: 100%;
     height: calc(100% - 12px - 1.5em);
     padding: 1em;
