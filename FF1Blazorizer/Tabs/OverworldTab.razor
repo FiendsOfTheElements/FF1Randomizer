@@ -197,16 +197,21 @@
 
 		async Task GenerateMap()
 		{
-			var maprng = new MT19337((uint)Flags.MapGenSeed);
 		        this.currentStep = 0;
 			this.maxSteps = 0;
 			SetModalContent("");
 			ShowModal(true);
 			SetGenerating(true);
+
+		        int effectiveSeed = Flags.MapGenSeed;
+			var maprng = new MT19337((uint)effectiveSeed);
+
 			try
 			{
-				switch (Flags.OwMapExchange)
-				{
+		                do {
+				  try {
+				    switch (Flags.OwMapExchange)
+				    {
 					case OwMapExchanges.GenerateNewOverworld:
 					case OwMapExchanges.LostWoods:
 						Flags.ReplacementMap = await NewOverworld.GenerateNewOverworld(maprng, Flags.OwMapExchange, Flags.OwShuffledAccess, Flags.OwUnsafeStart, this.Progress);
@@ -214,9 +219,14 @@
 					case OwMapExchanges.Desert:
 						Flags.ReplacementMap = DesertOfDeath.GenerateDesert(maprng);
 						break;
-				}
-
+				    }
+				  } catch (FailedToGenerate) {
+			            effectiveSeed = (int)maprng.Next() & 0x7FFFFFFF;
+			            maprng = new MT19337((uint)effectiveSeed);
+				  }
+		                } while (Flags.ReplacementMap == null);
 				StatusMessage = $"Success! checksum {Flags.ReplacementMap.ComputeChecksum()}";
+				Flags.MapGenSeed = effectiveSeed;
 			}
 			catch (Exception x)
 			{
@@ -263,7 +273,7 @@
 			{
 				var blb = Blob.FromHex(_mapgenSeed);
 				Flags.MapGenSeed = ((blb[0]&0x7F) << 24) | (blb[1] << 16) | (blb[2] << 8) | blb[3];
-				_mapgenSeed = _mapgenSeed = $"{Flags.MapGenSeed,8:X8}";
+				_mapgenSeed = $"{Flags.MapGenSeed,8:X8}";
 				_mapgenSeedInputClass = "";
 			}
 			catch (Exception)

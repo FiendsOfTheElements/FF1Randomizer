@@ -17,6 +17,10 @@ namespace FF1Lib.Procgen
         }
     }
 
+    public class FailedToGenerate : Exception {
+	public FailedToGenerate(string message) : base(message) { }
+    }
+
     // A contigious region of the map.
     // There are two types of regions, computed separately.
     //
@@ -1211,7 +1215,7 @@ namespace FF1Lib.Procgen
 	    workStack.Push(startingState.NextStep);
 
 	    OverworldState finalState = null;
-	    int maxTasksCount = 300;
+	    int maxTasksCount = 150;
 	    int taskCount = 0;
 
 	    await progress("", startingState.StepQueue.Count);
@@ -1242,7 +1246,7 @@ namespace FF1Lib.Procgen
 									 FF1Rom.ReportProgress progress) {
 	    var mt = new OverworldTiles();
 
-	    int maxtries = 10;
+	    int maxtries = 1;
 	    int tries = maxtries;
 	    while (tries > 0) {
 		tries--;
@@ -1561,7 +1565,7 @@ namespace FF1Lib.Procgen
 		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores5, false}, "apply_shores5"),
 		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores6, false}, "apply_shores6"),
 
-		    new GenerationStep("ApplyFilter", new object[]{mt.prune_forests, true}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.prune_forests, true}, "prune_forests"),
 		    new GenerationStep("PreventAirshipLanding", new object[]{}),
 
 		    new GenerationStep("ApplyFilter", new object[]{mt.mountain_borders, false}, "mountain_borders"),
@@ -1580,7 +1584,7 @@ namespace FF1Lib.Procgen
 		    return ReplacementMap(finalState, mt);
 		}
 	    }
-	    throw new Exception($"Couldn't generate a map with this seed, try a different seed");
+	    throw new FailedToGenerate($"Couldn't generate a map with this seed, try a different seed");
 	}
 
 	public static OwMapExchangeData ReplacementMap(OverworldState st, OverworldTiles mt) {
