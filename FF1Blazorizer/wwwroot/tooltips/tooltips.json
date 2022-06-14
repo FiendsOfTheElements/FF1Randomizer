@@ -39,13 +39,13 @@
 		"Id": "noEmptyScripts",
 		"title": "No Empty Scripts",
 		"screenshot": "enemyScriptsCheckBox.png",
-		"description": "Prevents non-boss scripts from being empty."
+		"description": "Prevents non-boss scripts from being empty.\nWithout this flag, enemies will be more likely to have scripts with both skills and spells. This flag results in spreading them out more, giving about 25% more enemies with scripts on average with a Vanilla Script Count."
 	},
 	{
 		"Id": "mermaidPrison",
 		"title": "Mermaid Prison",
 		"screenshot": null,
-		"description": "Locks all doors on the Mermaid Floor in Sea Shrine."
+		"description": "Locks all doors on the Mermaid Floor in Sea Shrine, so that the KEY is now required to access the treasures on that floor."
 	},
 	{
 		"Id": "laterLoose",
@@ -81,7 +81,7 @@
 		"Id": "itemMagicMode",
 		"title": "Item Magic Shuffling",
 		"screenshot": "itemMagicModeDropDown.png",
-		"description": "Vanilla: Vanilla item magic or weaponizer/armorcrafter behavior.\n\nShuffle: Shuffle item magic.\n\nNone: No item magic.\n\nRandom: Any of the above."
+		"description": "Vanilla: Vanilla item magic or weaponizer/armorcrafter behavior.\n\nRandomized: Change item magic based on Item Magic Pool below (among equipment that normally casts spells when used).\n\nNone: No item magic.\n\nRandom: Any of the above."
 	},
 	{
 		"Id": "itemMagicPool",
@@ -105,7 +105,7 @@
 		"Id": "enableLifeInBattle",
 		"title": "Enable Life in Battle",
 		"screenshot": "enableLifeInBattleCheckBox.gif",
-		"description": "Makes the LIFE spell, the LIF2 spell and the PHNIX potion work in battle."
+		"description": "Makes the LIFE spell, the LIF2 spell and the PHNIX potion (if enabled) work in battle."
 	},
 	{
 		"Id": "kiPlacementMode",
@@ -123,7 +123,7 @@
 		"Id": "looseNpcBalance",
 		"title": "Favor NPCs",
 		"screenshot": "looseNpcBalanceCheckBox.png",
-		"description": "Makes it more likely for any loose items to land on NPCs."
+		"description": "Makes it more likely for any loose items to land on NPCs.\nRequires that one (or both) of the \"Main NPCs\" or \"Fetch Quest NPCs\" flags above are not set."
 	},
 
 	{
@@ -382,7 +382,7 @@
 		"Id": "cheapVendorItemCheckBox",
 		"title": "Exclude Gold from Scaling - Cheap Vendor Item",
 		"screenshot": "cheapVendorItemCheckBox.png",
-		"description": "Guarantees a less expensive vendor item when excluding gold from scaling"
+		"description": "Guarantees a less expensive vendor item when excluding gold from scaling."
 	},
 	{
 		"Id": "applyExpBoostToGoldCheckBox",
@@ -420,6 +420,12 @@
 		"title": "Scaled Stats Includes Morale",
 		"screenshot": "includeMoraleCheckBox.png",
 		"description": "Includes enemy morale in the stat scaling, as opposed to keeping morale separate (fixed at their vanilla values)."
+	},
+	{
+		"Id": "encounterRatesTooltip",
+		"title": "Encounter Rates",
+		"screenshot": null,
+		"description": "Sets the odds of seeing random encounters. A 1.00x multiplier is the same chance of encounters as vanilla (which is 8 random encounters out of 256 steps in most dungeons, for example).\n\"Most dungeons\" covers the majority of dungeon areas, but there are some areas which have higher encounter rates: The \"Bridge of Destiny\" (the final floor of Sky Fortress where you fight Tiamat-1) has triple the rate, and the fiend floors in ToFR are 13-50% higher."
 	},
 
 	{
@@ -755,9 +761,9 @@
 	},
 	{
 		"Id": "dragonsHoardCheckBox",
-		"title": "Dragon's Hoard",
+		"title": "Bahamut's Hoard",
 		"screenshot": "dragonsHoard.png",
-		"description": "Places all the Cardia chests in Bahamut's room.\n\nNote: This does not remove the Cardia chests at the other locations. Looting the Dragon's Hoard chests means the linked chests at the other Cardia locations will be empty, and vice versa."
+		"description": "Places all the Cardia Islands chests in Bahamut's room.\nNote: This does not remove the Cardia chests at the other locations. Looting the Hoard chests means the linked chests at the other Cardia locations will be empty, and vice versa."
 	},
 	{
 		"Id": "hallOfDragonsCheckBox",
@@ -1104,7 +1110,7 @@
 		"Id": "shopsCheckBox",
 		"title": "Shop Shuffle",
 		"screenshot": "shopsCheckBox.png",
-		"description": "Shuffles the contents of Weapon, Armor, and Item shops, changing which shops have what items for sale. PURE and SOFT potions will always be available in the Coneria Item Shop.\n Note that this only shuffles the contents of each shop among like shops around the world -- weapons for weapons, armor for armor, and items among other items. You won't, for instance, find HEAL pots in a Weapon shop or a Silver Bracelet in an Item shop."
+		"description": "Shuffles the contents of Weapon, Armor, and Item shops, changing which shops have what items for sale. PURE and SOFT potions will be available in the Coneria Item Shop under most flagsets (any flags that make it likely you'll face these statuses early, such as Randomized Status Attacks).\n Note that this only shuffles the contents of each shop among like shops around the world -- weapons for weapons, armor for armor, and items among other items. You won't, for instance, find HEAL pots in a Weapon shop or a Silver Bracelet in an Item shop."
 	},
 	{
 		"Id": "randomWaresCheckBox",
@@ -1260,7 +1266,7 @@
 		"Id": "formationShuffleModeDropDown",
 		"title": "Enemy Formation Shuffle Mode",
 		"screenshot": "formationShuffleModeDropDown.gif",
-		"description": "Shuffles the encounters that appear in enemy domains.\nVanilla: Enemy groups remain as they exist in the original game. This allows players to predict encounters in a dungeon if they know the vanilla values.\n Shuffle Rarity: Enemy groups are shuffled within a zone, so that Group 1 fights can appear as Group 6, etc. This removes the ability to 'scout' the encounter table and know which fights will appear without having to re-learn the process for each new dungeon.\nTiered Rarity Shuffle: Enemy formations will shuffle their encounter group based on their original rarity. (1-4 will tend to be lower in rarity, 5-6 can sometimes be lower in rarity, 7-8 will rarely be lower in rarity.)\n  Shuffle Across Zones: Shuffles the domains (such that Ice Cave groups could appear in Gurgu Volcano, etc.) but does not alter the contents of the domains themselves.\n Totally Random: Draws at random and populates the encounter table, excepting fiends, plot-triggered encounters, and empty encounters. These encounters can appear in any zone except the starting zones.\n Note: This feature is disabled when generating new enemy formations (via Enemizer)."
+		"description": "Shuffles the encounters that appear in enemy domains.\nVanilla: Enemy groups remain as they exist in the original game. This allows players to predict encounters in a dungeon if they know the vanilla values.\n Shuffle Rarity: Enemy groups are shuffled within a zone, so that Group 1 (common) fights can appear as Group 6 (uncommon), etc. This removes the ability to 'scout' the encounter table and know which fights will appear in advance.\nTiered Rarity Shuffle: Enemy formations will shuffle within their encounter groups based on their original rarity. (1-4 will tend to be lower in rarity, 5-6 can sometimes be lower in rarity, 7-8 will rarely be lower in rarity.)\nShuffle Across Zones: Shuffles ALL encounters, so that any encounter can appear anywhere regardless of zone or rarity. The overworld between Coneria and ToF is still guaranteed to have earlier enemies (e.g. BONE, WOLF, GrIMP).\n Totally Random: Populates the encounter table entirely at random (excepting fiends, plot-triggered encounters, and empty encounters). This means specific formations can be added multiple times, and that \"B-side\" formations that aren't used in vanilla can appear as well. The overworld between Coneria and ToF is still guaranteed to have earlier enemies (e.g. BONE, WOLF, GrIMP).\n Note: This feature is disabled when generating new enemy formations (via Enemizer)."
 	},
 	{
 		"Id": "runnabilityDropDown",
@@ -1352,13 +1358,13 @@
 		"Id": "WarMECHModeDropDown",
 		"title": "WarMECH Mode",
 		"screenshot": "WarMECHModeDropDown.png",
-		"description": "Changes the way WarMECH can be found, and interacted with, in the game.\n Vanilla: WarMECH may appear as a group 7 encounter on Sky Castle 5F, as in the original game.\n Patrolling: A WarMECH sprite will appear wandering on Sky Castle 4F. Talking to WarMECH starts an unrunnable battle.\n Required: A WarMECH sprite will guard Tiamat's room. You must defeat it before you can fight the actual boss.\n Unleashed: WarMECH appears as a Group 7 formation in ALL zones, not just Sky Palace."
+		"description": "Changes the way WarMECH can be found, and interacted with, in the game.\n Vanilla: WarMECH may appear on Sky Castle 5F, as in the original game.\n Patrolling: A WarMECH sprite will appear wandering on Sky Castle 4F (the floor before the Tiamat-1 fight). Talking to WarMECH starts an unrunnable battle.\n Required: A WarMECH sprite will guard Tiamat's room. You must defeat it before you can fight the actual boss. If WarMECH is Required or Patrolling, it will not appear anywhere else.\n Unleashed: WarMECH appears as a Group 7 formation (3/64 encounters) in ALL zones, including the overworld."
 	},
 	{
 		"Id": "swolePiratesCheckBox",
 		"title": "Buff the Pirates",
 		"screenshot": "swolePiratesCheckBox.png",
-		"description": "Increases the stats of Bikke's pirates considerably, roughly to the equivalent of a level 6 Fighter with a cheap but decent sword and iron armor, and increases the XP and gold yield from them by a factor of 20. This is done before stat scaling, and also increases the level of scripts they can carry when using the \"Generate Balanced Scripts\" flag if \"Allow Unsafe Pirates\" is on."
+		"description": "Increases the stats of Bikke's pirates considerably, roughly equivalent to a level 6 Fighter with a cheap but decent sword and iron armor, and increases the XP and gold yield from them by a factor of 20. This is done before stat scaling, and also increases the level of scripts they can carry when using the \"Generate Balanced Scripts\" flag if \"Allow Unsafe Pirates\" is on."
 	},
 	{
 		"Id": "allowUnsafePiratesCheckBox",
@@ -1426,6 +1432,12 @@
 
 
 	{
+		"Id": "allowedStartingClassesTooltip",
+		"title": "Allowed Starting Classes",
+		"screenshot": null,
+		"description": "Select which character classes can be chosen at the start of the game, from both regular and promoted classes. The four character slots can be restricted individually, or all together with the \"All\" row.\n\"Forced\" means that slot will be randomly chosen from the selected possibilities and then locked so you cannot change it. \"None\" means that slot can have a blank spot with no light warrior. Forced + None together means if None is randomly selected, that slot will be locked to having no light warrior."
+	},
+	{
 		"Id": "EnablePoolParty",
 		"title": "Party Draft",
 		"screenshot": "EnablePoolParty.gif",
@@ -1461,10 +1473,16 @@
 		"screenshot": "tavernModeReplaceOnlyNone.png",
 		"description": "Limit hiring to only replace \"None\" characters. This means once you chose a party member for that spot you are stuck with them."
 	},
+	{
+		"Id": "recruitableAdventurersTooltip",
+		"title": "Recruitable Adventurer Classes",
+		"screenshot": null,
+		"description": "Select the possible classes available to recruit. Applies to both Tavern Recruitement and NPC Recruits."
+	},
 
 	{
 		"Id": "classAsNpcFiendsCheckBox",
-		"title": "Characters Gated by Fiends",
+		"title": "Recruits Gated by Fiends",
 		"screenshot": "classAsNpcFiendsCheckBox.png",
 		"description": "A new character (from a random class) is behind each Fiend. When talked to, that character replaces the selected party member. Push B at the selection screen to cancel taking the gated character."
 	},
@@ -1476,15 +1494,15 @@
 	},
 	{
 		"Id": "classAsNpcKeyNpcCheckBox",
-		"title": "Characters linked to Key NPCs",
+		"title": "Recruits Linked to Key NPCs",
 		"screenshot": "classAsNpcKeyNpcCheckBox.png",
 		"description": "A new character (from a random class) is linked to a key NPC. If that key NPC requirement is fulfilled, the linked character replaces the selected party member. Push B at the selection screen to cancel taking the gated character.\nPossible key NPCs: Princess Sara, Matoya, Bikke, King of the Northwest Castle, Elf Prince, Smith, Nerrick, Dr. Unne, Sarda, Canoe Sage, Fairy, Lefeinish Man."
 	},
 	{
 		"Id": "classAsNpcDuplicateCheckBox",
-		"title": "Allow Duplicates",
+		"title": "Allow Duplicate Recruits",
 		"screenshot": "classAsNpcDuplicateCheckBox.png",
-		"description": "Duplicate party classes can be in the gated character pool. All six classes are not guaranteed to be in the pool and may not necessarily be available in the given seed."
+		"description": "Normally, Recruits will have unique classes, unless they are forced to repeat (because Recruit Count is higher than the available classes); this flag removes that restriction.  All selected classes are not guaranteed to be in the pool and a class may not necessarily be available at all in a given seed."
 	},
 	{
 		"Id": "classAsNpcPromoCheckBox",
@@ -1745,7 +1763,7 @@
 		"Id": "enableExtConsumables",
 		"title": "New Consumables",
 		"screenshot": "newConsumables.png",
-		"description": "Enables new Consumables\n[grid][r]{i}Item|{i}Effect[r]FCure|Full cure[r]Phnix|Raise dead light warrior (usable in battle!)[r]Smoke|Automatic run from battle[r]Blast|Cast FIR3[r]RFRSH|Cast HEL3[r]FLARE|Cast NUCLEAR[r]BLACK|Cast BANE with lower accuracy(can be used outside of battle)[r]GUARD|Cast FOG2[r]QUICK|Cast FAST[r]HIGH|HiPotion[r]WIZRD|Cast CONF[r]CLOAK|Cast RUSE\nNote: Smoke will allow you to run from any fight, including bosses. However, in boss fights you will be set back one-step before the boss tile (or just in front of the boss) and will still have to fight them."
+		"description": "Enables new consumables:\n[grid][r]{i}Item|{i}Effect[r]FCURE|Full cure[r]PHNIX|Raise dead light warrior[r]SMOKE|Automatic run from battle[r]BLAST|Cast FIR3[r]RFRSH|Cast HEL3[r]FLARE|Cast NUCLEAR[r]BLACK|Cast BANE with lower accuracy[r]GUARD|Cast FOG2[r]QUICK|Cast FAST[r]HIGH|Restores 160 HP[r]WIZRD|Cast CONF[r]CLOAK|Cast RUSE\n\nPHNIX can be used during battle if the \"Enable Life in Battle\" flag is set.\nSMOKE will allow you to run from any fight, including bosses. However, you will be placed back one step and will still have to fight them.\nBLACK has 24 accuracy, the same as RUB. (BANE has 40 accuracy and ZAP! has 32, for comparison.) You can also use BLACK outside of battle if you wish to kill one of your light warriors.\nHIGH Potions will randomly restore between 96 and 192 HP when used during battle."
 	},
 	{
 		"Id": "extStartingItemSet",
@@ -1775,7 +1793,7 @@
 		"Id": "legendaryShopHasExtConsumables",
 		"title": "New Consumables in Legendary Shop",
 		"screenshot": "newConsumables.png",
-		"description": "The new Consumables can appear in legendary item shop. The legendary item shop will have 1-2 random new consumables."
+		"description": "The new Consumables can appear in legendary item shop. The legendary item shop will have 1-2 random new consumables.\nRequires the Legendary Item Shop flag to be set, in the Shops & Magic Tab."
 	},
 
 	{
@@ -1806,7 +1824,7 @@
 		"Id": "magisizeWeaponsCheckBox",
 		"title": "All Weapons Cast Spells",
 		"screenshot": "magisizeWeapons.png",
-		"description": "All weapons can cast randomly assigned spells. Excludes standard casting weapons which, naturally, continue to cast their normally assigned spells."
+		"description": "ALL weapons can cast spells based on the Item Magic Pool, instead of only equipment that normally casts spells."
 	},
 
 	{
@@ -2152,7 +2170,7 @@
 		"Id": "WhiteMageHarmEveryoneCheckBox",
 		"title": "Improved HARM for White Mage",
 		"screenshot": "whiteMageHarmEveryoneCheckBox.gif",
-		"description": "HARM spells (including via item magic) will deal damage to any target if CAST or USED by a White Mage/White Wizard. On non-undead targets, the spell will not crit (will not deal double damage except on a 3/256)."
+		"description": "HARM spells (including via item magic) will deal damage to any target if CAST or USED by a White Mage/White Wizard. On non-undead targets, the spells will not crit (will not deal double damage except on a 3/256), averaging 30/60/90/120 damage for HARM1-4."
 	},
 	{
 		"Id": "armorCrafterCheckBox",

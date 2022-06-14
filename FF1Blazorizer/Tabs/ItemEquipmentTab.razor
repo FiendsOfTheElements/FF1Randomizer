@@ -43,7 +43,7 @@
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extConsumableChests" IsEnabled="Flags.ExtConsumablesEnabled" TItem="ExtConsumableChestSet" @bind-Value="Flags.ExtConsumableChests">Chests:</EnumDropDown>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extConsumableTreasureStackSize" IsEnabled="Flags.ExtConsumablesEnabled" TItem="TreasureStackSize" @bind-Value="Flags.ExtConsumableTreasureStackSize">Chest Stacks:</EnumDropDown>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="normalShopsHaveExtConsumables" IsEnabled="Flags.ExtConsumablesEnabled" @bind-Value="Flags.NormalShopsHaveExtConsumables">Normal Shops</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopHasExtConsumables" IsEnabled="Flags.ExtConsumablesEnabled" @bind-Value="Flags.LegendaryShopHasExtConsumables">Legendary Shops</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopHasExtConsumables" IsEnabled="@(Flags.ExtConsumablesEnabled && Flags.LegendaryItemShop != false)" @bind-Value="Flags.LegendaryShopHasExtConsumables">Legendary Shops</TriStateCheckBox>
 	<div class="checkbox-cell"></div>
 	<h4>Spellcasting Gear</h4>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="itemMagicMode" TItem="ItemMagicMode" @bind-Value="Flags.ItemMagicMode">Item Magic:</EnumDropDown>

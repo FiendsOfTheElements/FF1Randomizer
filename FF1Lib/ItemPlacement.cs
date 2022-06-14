@@ -263,9 +263,18 @@ namespace FF1Lib
 			}
 
 			//chest order placement
-			for (int i = 0; i < treasurePool.Count; i++)
+			var chestOrderPool = treasurePool;
+			if (_flags.ShardHunt)
 			{
-				rom.Put(FF1Rom.TreasureChestOrderOffset + i, new byte[] { (byte)treasurePool[i] });
+				//add the shards back into the chest order pool
+				chestOrderPool = chestOrderPool.Concat(shards).ToList();
+			}
+
+			chestOrderPool.Shuffle(rng);
+
+			for (int i = 0; i < chestOrderPool.Count; i++)
+			{	
+				rom.Put(FF1Rom.TreasureChestOrderOffset + i, new byte[] { (byte)chestOrderPool[i] });
 			}
 
 			return placedItems;
