@@ -703,6 +703,13 @@ namespace FF1Lib
 				"Abducting Princess Sara",
 				"Placing the worst skills in Medusa's script",
 				"Applying for a Bridge building permit",
+				"Reticulating Splines",
+				"Digging Cave Holes",
+				"Bottling the Fairy",
+				"Floating the Sky Castle",
+				"Locking the door in Temple of Fiends",
+				"Teaching Kraken Kung Fu",
+				"Raising the Lich",
 			};
 
 			funMessages.AddRange(Enumerable.Repeat("Finalizing", funMessages.Count * 4).ToList());
