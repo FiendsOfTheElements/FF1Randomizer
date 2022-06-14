@@ -1298,8 +1298,6 @@ namespace FF1Lib.Procgen
 		var worldState = await RunSteps(blankState, progress);
 
 		if (worldState == null) {
-		    //throw new Exception($"Couldn't generate a map with this seed, try a different seed");
-		    await progress("Couldn't generate a map with this seed, trying a different seed", 1);
 		    continue;
 		}
 
@@ -1584,7 +1582,7 @@ namespace FF1Lib.Procgen
 		    return ReplacementMap(finalState, mt);
 		}
 	    }
-	    throw new FailedToGenerate($"Couldn't generate a map with this seed, try a different seed");
+	    throw new FailedToGenerate($"Couldn't generate a map, try a different map generation seed");
 	}
 
 	public static OwMapExchangeData ReplacementMap(OverworldState st, OverworldTiles mt) {

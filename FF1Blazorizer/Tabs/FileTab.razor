@@ -6,6 +6,7 @@
 @using System.Text.Json;
 @using BlazorStrap
 @using Microsoft.AspNetCore.Components.Web
+@using FF1Lib.Procgen;
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
@@ -337,16 +338,19 @@
 					await JSRuntime.InvokeVoidAsync("downloadFile", $"{Flags.PlayerName}_{_seed}_{Flags.Encoded}.yaml", encodedSpoiler);
 				}
 
+			} catch (FailedToGenerate e) {
+				SetStatusMessage(StatusMessage + "FAILURE: " + e.Message);
 			}
 			catch (Exception e)
 			{
 				SetStatusMessage(StatusMessage + "FAILURE: " + e.Message);
+				modalContent = $"{modalContent}<br><br>{e.ToString().Replace("\n", "<br>")}<br>";
 				Console.WriteLine(e.ToString());
-				StateHasChanged();
 			} finally {
 		          SetModalContent(modalContent + "<br>" + StatusMessage);
 			  SetGenerating(false);
 			}
+			StateHasChanged();
 		}
 
 
