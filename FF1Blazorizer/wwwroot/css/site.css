@@ -551,6 +551,16 @@ tr.bottom-borderd {
     right: 8px;
 }
 
+.ffr-modal-cancel-button {
+    position: absolute;
+    bottom: 10px;
+    right: calc(8px + 7em);
+}
+
+.ffr-modal-dismiss-button.active {
+    background-color: #e76e55;
+}
+
 .ffr-modal-dismiss-button.active {
     background-color: #e76e55;
 }

@@ -59,6 +59,7 @@
 		[CascadingParameter(Name="ShowModal")] public MainLayout.ShowModalT ShowModal { get; set; }
 		[CascadingParameter(Name="SetGenerating")] public MainLayout.ShowModalT SetGenerating { get; set; }
 		[CascadingParameter(Name="SetModalContent")] public MainLayout.SetContentT SetModalContent { get; set; }
+		[CascadingParameter(Name="GetCancelled")] public MainLayout.GetCancelledT GetCancelled { get; set; }
 
 		private string RomMessage = "Upload Rom:";
 		private bool RememberROM = false;
@@ -265,6 +266,9 @@
 		      SetModalContent(modalContent + "<br>" + StatusMessage);
 		      StateHasChanged();
 		      await Task.Delay(1);
+		      if (GetCancelled()) {
+		         throw new OperationCanceledException();
+		      }
 		}
 
 		async Task DoRandomize()

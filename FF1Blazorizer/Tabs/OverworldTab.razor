@@ -127,6 +127,7 @@
 		[CascadingParameter(Name="ShowModal")] public MainLayout.ShowModalT ShowModal { get; set; }
 		[CascadingParameter(Name="SetGenerating")] public MainLayout.ShowModalT SetGenerating { get; set; }
 		[CascadingParameter(Name="SetModalContent")] public MainLayout.SetContentT SetModalContent { get; set; }
+		[CascadingParameter(Name="GetCancelled")] public MainLayout.GetCancelledT GetCancelled { get; set; }
 
 		private string _mapgenSeed;
 		private string _mapgenSeedInputClass = "";
@@ -189,6 +190,9 @@
 
 		      StateHasChanged();
 		      await Task.Delay(1);
+		      if (GetCancelled()) {
+		         throw new OperationCanceledException();
+		      }
 		}
 
 		async Task GenerateMap()
