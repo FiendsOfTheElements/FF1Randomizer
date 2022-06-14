@@ -189,7 +189,7 @@ namespace FF1Lib
 			// Back up Rng so that fun flags are uniform when different ones are selected
 			uint funRngSeed = rng.Next();
 
-			await this.Progress("Beginning randomization", 22);
+			await this.Progress("Beginning Randomization", 22);
 
 			if (flags.TournamentSafe) AssureSafe();
 
@@ -311,9 +311,13 @@ namespace FF1Lib
 
 			if (flags.GameMode == GameModes.DeepDungeon)
 			{
+				await this.Progress("Generating Deep Dungeon's Floors...", 2);
+
 				DeepDungeon.Generate(rng, overworldMap, maps, flags);
 				DeepDungeonFloorIndicator();
 				UnusedGoldItems = new List<int> { };
+
+				await this.Progress("Generating Deep Dungeon's Floors... Done!");
 			}
 
 			if ((bool)flags.LefeinShops)
@@ -552,6 +556,7 @@ namespace FF1Lib
 
 			if (flags.NoOverworld)
 			{
+				await this.Progress("Linking NoOverworld's Map", 1);
 				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
 			}
 
@@ -574,7 +579,8 @@ namespace FF1Lib
 			{
 				try
 				{
-				        await this.Progress("", 3);
+
+					await this.Progress((bool)flags.Treasures ? "Shuffling Treasures - Retries: " + i : "Placing Treasures", 3);
 
 					enterBackup.StoreData();
 					normBackup.StoreData();
@@ -662,7 +668,28 @@ namespace FF1Lib
 				}
 			}
 
-			await this.Progress();
+			List<string> funMessages = new()
+			{
+				"Placing Out of Bound Bat",
+				"Cleaning up Lich's closet",
+				"Labelling pots in Sarda's Cave",
+				"Partying in the Bat Party Room",
+				"Buffing up NPC's path-blocking AI",
+				"Debugging WarMech's software",
+				"Knocking down some impertinent fools",
+				"Sending Garland 2,000 years in the past",
+				"Giving a snack to Titan while waiting for the main course",
+				"Disguising Astos",
+				"Cursing the Elf Prince",
+				"Stealing Matoya's Crystal",
+				"Abducting Princess Sara",
+				"Placing the worst skills in Medusa's script",
+				"Applying for a Bridge building permit",
+			};
+
+			funMessages.AddRange(Enumerable.Repeat("Finalizing", funMessages.Count * 4).ToList());
+
+			await this.Progress(funMessages.PickRandom(rng));
 
 			// Change Astos routine so item isn't lost in wall of text
 			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems || (bool)flags.ShuffleAstos)
@@ -1305,7 +1332,7 @@ namespace FF1Lib
 			{
 				OpenChestsInOrder();
 			}
-			await this.Progress("Randomization completed");
+			await this.Progress("Randomization Completed");
 		}
 
 		private void EnableNPCSwatter(NPCdata npcdata)
