@@ -73,12 +73,12 @@ namespace FF1R.Commands
 		do {
 		    try {
 			replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, subtype, SuffleAccess, UnsafeStart);
-		    } catch (Exception) {
+		    } catch (FailedToGenerate) {
 			if (!this.Retry) {
 			    Console.WriteLine($"Failed to generate seed {effectiveSeed}");
 			    throw;
 			}
-			effectiveSeed = (int)rng.Next();
+			effectiveSeed = (int)rng.Next() & 0x7FFFFFFF;
 			rng = new MT19337((uint)effectiveSeed);
 		    }
 		} while (replacementMap == null);
