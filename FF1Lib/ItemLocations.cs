@@ -439,6 +439,18 @@ namespace FF1Lib
 			{MapLocation.GurguVolcano5, Dock.Elfland},
 			{MapLocation.GurguVolcano6, Dock.Elfland},
 			{MapLocation.GurguVolcanoKary, Dock.Elfland},
+			{MapLocation.Gaia, Dock.Pravoka},
+			{MapLocation.Lefein, Dock.Pravoka},
+			{MapLocation.Melmond, Dock.DwarfCave},
+			{MapLocation.TitansTunnelRoom, Dock.DwarfCave},
+			{MapLocation.TitansTunnelEast, Dock.DwarfCave},
+			{MapLocation.TitansTunnelWest, Dock.DwarfCave},
+			{MapLocation.EarthCave1, Dock.DwarfCave},
+			{MapLocation.EarthCave2, Dock.DwarfCave},
+			{MapLocation.EarthCaveVampire, Dock.DwarfCave},
+			{MapLocation.EarthCave4, Dock.DwarfCave},
+			{MapLocation.EarthCaveLich, Dock.DwarfCave},
+			{MapLocation.SardasCave, Dock.DwarfCave},
 		};
 		public static Dictionary<OverworldTeleportIndex, MapLocation> OverworldToMapLocation = new Dictionary<OverworldTeleportIndex, MapLocation>
 		{

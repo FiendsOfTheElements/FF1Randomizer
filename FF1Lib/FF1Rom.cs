@@ -214,57 +214,11 @@ namespace FF1Lib
 
 			var shipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(this);
 
-
-			// Adjusts Ship spawn location based on extended walk route flags
+			// Ships found at Matoya's need to spawn at Coneria when Matoya's Dock no longer exists
 			if ((bool)flags.MapBridgeLefein == true) {
-				//Matoya Dock = Coneria
 				var ChangeDockLocation = shipLocations.GetShipLocation((int)MapLocation.MatoyasCave);
 				ChangeDockLocation.X = Dock.Coneria[0];
 				ChangeDockLocation.Y = Dock.Coneria[1];
-				//Lefein = Pravoka
-				ChangeDockLocation = shipLocations.GetShipLocation((int)MapLocation.Lefein);
-				ChangeDockLocation.X = Dock.Pravoka[0];
-				ChangeDockLocation.Y = Dock.Pravoka[1];
-
-				if ((bool)flags.MapGaiaMountainPass == true) {
-					// Gaia with Mountain Pass = Pravoka
-					ChangeDockLocation = shipLocations.GetShipLocation((int)MapLocation.Gaia);
-					ChangeDockLocation.X = Dock.Pravoka[0];
-					ChangeDockLocation.Y = Dock.Pravoka[1]; 
-				}
-
-				// If Highway to Ordeals, then also Mirage/Sky/Ordeals = Pravoka
-			}
-			if ((bool)flags.MapRiverToMelmond == true) {
-				//Melmond = Dwarf
-				var ChangeDockLocation = shipLocations.GetShipLocation((int)MapLocation.Melmond);
-				ChangeDockLocation.X = Dock.DwarfCave[0];
-				ChangeDockLocation.Y = Dock.DwarfCave[1];
-				shipLocations.SetShipLocation(255);
-				//Earth = Dwarf
-				ChangeDockLocation = shipLocations.GetShipLocation((int)MapLocation.EarthCave1);
-				ChangeDockLocation.X = Dock.DwarfCave[0];
-				ChangeDockLocation.Y = Dock.DwarfCave[1];
-				ChangeDockLocation = shipLocations.GetShipLocation((int)MapLocation.EarthCave2);
-				ChangeDockLocation.X = Dock.DwarfCave[0];
-				ChangeDockLocation.Y = Dock.DwarfCave[1];
-				ChangeDockLocation = shipLocations.GetShipLocation((int)MapLocation.EarthCaveVampire);
-				ChangeDockLocation.X = Dock.DwarfCave[0];
-				ChangeDockLocation.Y = Dock.DwarfCave[1];
-				ChangeDockLocation = shipLocations.GetShipLocation((int)MapLocation.EarthCave4);
-				ChangeDockLocation.X = Dock.DwarfCave[0];
-				ChangeDockLocation.Y = Dock.DwarfCave[1];
-				ChangeDockLocation = shipLocations.GetShipLocation((int)MapLocation.EarthCaveLich);
-				ChangeDockLocation.X = Dock.DwarfCave[0];
-				ChangeDockLocation.Y = Dock.DwarfCave[1];
-				//Titan = Dwarf
-				ChangeDockLocation = shipLocations.GetShipLocation((int)MapLocation.TitansTunnelRoom);
-				ChangeDockLocation.X = Dock.DwarfCave[0];
-				ChangeDockLocation.Y = Dock.DwarfCave[1];
-				//Sarda = Dwarf
-				ChangeDockLocation = shipLocations.GetShipLocation((int)MapLocation.SardasCave);
-				ChangeDockLocation.X = Dock.DwarfCave[0];
-				ChangeDockLocation.Y = Dock.DwarfCave[1];
 			}
 
 			var maps = ReadMaps();
