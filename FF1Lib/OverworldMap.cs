@@ -82,6 +82,8 @@ namespace FF1Lib
 			if (flags.GameMode == GameModes.Standard && flags.OwMapExchange == OwMapExchanges.None) {
 			    // Can only apply map edits to vanilla-ish maps
 
+
+			// NOTE: mapLocationRequirements information (for all of these map changes) is no longer used by the map generator and does nothing (TODO: Delete it all)
 			if ((bool)flags.MapOnracDock)
 			{
 				MapEditsToApply.Add(OnracDock);
@@ -110,18 +112,21 @@ namespace FF1Lib
 			    mapLocationRequirements[MapLocation.Lefein].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
 		  }
 			if ((bool)flags.MapBridgeLefein && !flags.DisableOWMapModifications) {
-			    MapEditsToApply.Add(BridgeToLefein);
-			    mapLocationRequirements[MapLocation.Lefein].Add(MapChange.Bridge);
-					
-					// Moves the Bridge to its new home
+					// Moves the Bridge to its new home below Lefein
 					OwLocationData _OwLocationData = new(rom);
 					_OwLocationData.LoadData();
 					_OwLocationData.BridgeLocation = new SCCoords(230, 123);
 					_OwLocationData.StoreData();
+
+			    MapEditsToApply.Add(BridgeToLefein);
+					mapLocationRequirements[MapLocation.Lefein].Add(MapChange.Bridge);
+					mapLocationRequirements[MapLocation.MatoyasCave].Add(MapChange.None);
+					mapLocationRequirements[MapLocation.Pravoka].Add(MapChange.None);
+					mapLocationRequirements[MapLocation.IceCave1].Add(MapChange.Canoe);
       }
 			if ((bool)flags.MapGaiaMountainPass && !flags.DisableOWMapModifications) {
 			    MapEditsToApply.Add(GaiaMountainPass);
-					// If Lefein river dock is on, then Gaia also becomes ship-accessible
+					// If Lefein River Dock is on, then Gaia also becomes Ship-accessible
 			    if ((bool)flags.MapLefeinRiver) {
 			        mapLocationRequirements[MapLocation.Gaia].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
 			    }
@@ -144,7 +149,7 @@ namespace FF1Lib
 						mapLocationRequirements[MapLocation.TitansTunnelEast].Add(MapChange.Ship | MapChange.Canoe);
 						mapLocationRequirements[MapLocation.EarthCave1].Add(MapChange.Ship | MapChange.Canoe);
 					}
-		  }			
+		  }
 			if ((bool)flags.MapVolcanoIceRiver)
 			{
 				MapEditsToApply.Add(VolcanoIceRiver);
