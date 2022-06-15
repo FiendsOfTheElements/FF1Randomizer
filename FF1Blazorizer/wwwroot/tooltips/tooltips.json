@@ -2323,7 +2323,12 @@
 		"Id": "relocateChests",
 		"title": "Relocate Chests",
 		"screenshot": "shufflechests.png",
-		"description": "Relocate chests and enemy spike tiles to new locations in castles and dungeons."
+		"description": "Relocate chests and enemy trap tiles to new locations in castles and dungeons."
+	},
+	{
+		"Id": "markRelocatedTrapTiles",
+		"title": "Relocated trap tiles are marked",
+		"description": "Relocated trap tiles will be marked."
 	},
 	{
 		"Id": "OpenChestsInOrder",

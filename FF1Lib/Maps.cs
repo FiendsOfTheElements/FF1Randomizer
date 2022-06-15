@@ -1433,7 +1433,7 @@ namespace FF1Lib
 		}
 
 		public async Task shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests,
-						  NPCdata npcdata, byte randomEncounter, bool spreadPlacement) {
+							NPCdata npcdata, byte randomEncounter, bool spreadPlacement, bool markSpikeTiles) {
 		    // For a tileset, I need to determine:
 		    //
 		    // * doors and locked doors
@@ -1830,6 +1830,14 @@ namespace FF1Lib
 			return;
 		    }
 
+		    if (markSpikeTiles) {
+			var ts = GetMapTilesetIndex(ids[0]);
+			foreach (var sp in spikePool) {
+			    tileset.TopRightTiles[sp] = 0x7D;
+			}
+			tileset.TopRightTiles.StoreTable();
+		    }
+
 		    var directions = new Direction[] { Direction.Down, Direction.Down, Direction.Down,
 			Direction.Right, Direction.Left, Direction.Up };
 		    while (spikePool.Count > 0) {
@@ -1977,13 +1985,13 @@ namespace FF1Lib
 		    foreach (MapId[] b in dungeons) {
 			await shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
 					      (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
-					      false);
+						    false, flags.RelocateChestsTrapIndicator);
 		    }
 
 		    foreach (MapId[] b in spreadPlacementDungeons) {
 			await shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
 					      (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
-					      true);
+						    true, flags.RelocateChestsTrapIndicator);
 		    }
 		}
 	}

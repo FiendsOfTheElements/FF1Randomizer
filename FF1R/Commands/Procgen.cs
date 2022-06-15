@@ -6,6 +6,7 @@ using System.IO;
 using FFR.Common;
 using Newtonsoft.Json;
 using FF1Lib;
+using FF1Lib.Procgen;
 using System.Collections.Generic;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -40,6 +41,10 @@ namespace FF1R.Commands
 	[Option("-S")]
 	public string SeedFile { get; } = null;
 
+	async Task Progress(string message="", int addMax=0) {
+	    await Task.Yield();
+	}
+
 	int OnExecute(IConsole console)
 	{
 	    if (Seed == 0 && this.SeedFile == null) {
@@ -72,7 +77,7 @@ namespace FF1R.Commands
 		var rng = new MT19337((uint)effectiveSeed);
 		do {
 		    try {
-			replacementMap = FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, subtype, SuffleAccess, UnsafeStart);
+			replacementMap = Task.Run<OwMapExchangeData>(async () => await FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, subtype, SuffleAccess, UnsafeStart, this.Progress)).Result;
 		    } catch (FailedToGenerate) {
 			if (!this.Retry) {
 			    Console.WriteLine($"Failed to generate seed {effectiveSeed}");
