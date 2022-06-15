@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using RomUtilities;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -41,6 +42,8 @@ namespace FF1Lib
 	    const int TILESET_TILEDATA =					0x800;
 	    const int MAPPALETTE_OFFSET =					0x2000;
 
+	    const int MAPTILESET_ASSIGNMENT =				0x2CC0;
+
 	    public byte[] EncodeForPPU(byte[] tile) {
 		// Take an array of 64 bytes with a ordinary linear
 		// encoding (left to right, top to bottom, one byte
@@ -61,6 +64,26 @@ namespace FF1Lib
 		    ppuformat[row+8] |= (byte)(bit1 << col);  // write bit1 to the second plane
 		}
 		return ppuformat;
+	    }
+
+	    public byte[] DecodePPU(byte[] ppuformat) {
+		// Read the 16-byte, dual-plane encoding used by the NES PPU
+		// and return an array of 64 bytes with a ordinary linear
+		// encoding (left to right, top to bottom, one byte
+		// per pixel, valid values 0-3).
+		//
+		// see https://wiki.nesdev.com/w/index.php/PPU_pattern_tables
+
+		var tile = new byte[64];
+
+		for (int i = 0; i < 64; i++) {
+		    var row = (i >> 3) & 0x07;
+		    var col = 7 - (i & 0x07);
+		    var bit0 = (ppuformat[row] & (1 << col)) >> col;    // read bit0 from the first plane
+		    var bit1 = (ppuformat[row+8] & (1 << col)) >> col;  // read bit1 from the second plane
+		    tile[i] = (byte)((bit1<<1) | bit0);
+		}
+		return tile;
 	    }
 
 	    Dictionary<byte, byte> colorReduction = new Dictionary<byte, byte>() {
@@ -1092,5 +1115,89 @@ namespace FF1Lib
 		    PutInBank(0x12, 0x8D40 + (w*16), EncodeForPPU(tile));
 		}
 	    }
+
+	    void renderTile(Image<Rgba32> img, byte[] tile, byte[] pal, int x, int y) {
+		for (int i = 0; i < 64; i++) {
+		    img[x+(i%8), y+(i/8)] = NESpalette[pal[tile[i]]];
+		}
+	    }
+
+	    public byte GetMapTilesetIndex(MapId mapId) {
+		return Get(MAPTILESET_ASSIGNMENT + (int)mapId, 1)[0];
+	    }
+
+	    Image<Rgba32> exportMapTiles(MapId mapId,
+					 bool inside,
+					 int PATTERNTABLE_OFFSET,
+					 int PATTERNTABLE_ASSIGNMENT)
+	    {
+		var tileset = GetMapTilesetIndex(mapId);
+		var tilesetProps = new TileSet(this, tileset);
+
+		List<byte[]> palette = new();
+		if (!inside) {
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 0, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 4, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 8, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 12, 4));
+		} else {
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 0x20 + 0, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 0x20 + 4, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 0x20 + 8, 4));
+		    palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 0x20 + 12, 4));
+		}
+
+		var output = new Image<Rgba32>(16 * 16, 8 * 16);
+		for(int imagecount = 0; imagecount < 128; imagecount += 1) {
+		    var pal = tilesetProps.TileAttributes[imagecount];
+
+		    var pt1 = tilesetProps.TopLeftTiles[imagecount];
+		    var pt2 = tilesetProps.TopRightTiles[imagecount];
+		    var pt3 = tilesetProps.BottomLeftTiles[imagecount];
+		    var pt4 = tilesetProps.BottomRightTiles[imagecount];
+
+		    var chr1 = Get(PATTERNTABLE_OFFSET + (tileset << 11) + (pt1 * 16), 16);
+		    var chr2 = Get(PATTERNTABLE_OFFSET + (tileset << 11) + (pt2 * 16), 16);
+		    var chr3 = Get(PATTERNTABLE_OFFSET + (tileset << 11) + (pt3 * 16), 16);
+		    var chr4 = Get(PATTERNTABLE_OFFSET + (tileset << 11) + (pt4 * 16), 16);
+
+		    var dc1 = DecodePPU(chr1);
+		    var dc2 = DecodePPU(chr2);
+		    var dc3 = DecodePPU(chr3);
+		    var dc4 = DecodePPU(chr4);
+
+		    renderTile(output, dc1, palette[pal & 3], (imagecount % 16) * 16, (imagecount/16) * 16);
+		    renderTile(output, dc2, palette[pal & 3], (imagecount % 16) * 16+8, (imagecount/16) * 16);
+		    renderTile(output, dc3, palette[pal & 3], (imagecount % 16) * 16, (imagecount/16) * 16+8);
+		    renderTile(output, dc4, palette[pal & 3], (imagecount % 16) * 16+8, (imagecount/16) * 16+8);
+		}
+
+		return output;
+	    }
+
+	    public Image<Rgba32> ExportMapTiles(MapId mapId, bool inside) {
+		return exportMapTiles(mapId, inside,
+					 TILESETPATTERNTABLE_OFFSET,
+					 TILESETPATTERNTABLE_ASSIGNMENT);
+	    }
+
+	    public Image<Rgba32> RenderMap(List<Map> maps, MapId mapId, bool inside) {
+		var tiles = ExportMapTiles(mapId, inside);
+
+		var output = new Image<Rgba32>(64 * 16, 64 * 16);
+
+		for (int y = 0; y < 64; y++) {
+		    for (int x = 0; x < 64; x++) {
+			var t = maps[(int)mapId][y, x];
+			var tile_row = t/16;
+			var tile_col = t%16;
+			var src = tiles.Clone(d => d.Crop(new Rectangle(tile_col*16, tile_row*16, 16, 16)));
+			output.Mutate(d => d.DrawImage(src, new Point(x*16, y*16), 1));
+		    }
+		}
+
+		return output;
+	    }
+
 	}
 }

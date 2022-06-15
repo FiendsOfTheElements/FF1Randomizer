@@ -350,7 +350,7 @@ namespace FF1Lib
 
 	public enum Direction
 	{
-		Up,
+		Up = 0,
 		Down,
 		Left,
 		Right,
@@ -375,7 +375,7 @@ namespace FF1Lib
 			get { return (Tile)Map[Y, X]; }
 			set { Map[Y, X] = (byte)value; }
 		}
-		
+
 		public MapElement(Map map, int x, int y, byte value)
 		{
 			Map = map;
@@ -411,5 +411,19 @@ namespace FF1Lib
 
 			return new List<MapElement> { up.Left(), up, up.Right(), Left(), Right(), down.Left(), down, down.Right() };
 		}
+
+	    public override bool Equals(Object obj) {
+		if ((obj == null) || ! this.GetType().Equals(obj.GetType()))
+		{
+		    return false;
+		}
+		var b = (MapElement)obj;
+		return (this.Map == b.Map && this.X == b.X && this.Y == b.Y);
+	    }
+
+	    public override int GetHashCode()
+	    {
+		return (X << 2) ^ Y;
+	    }
 	}
 }

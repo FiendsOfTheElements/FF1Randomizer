@@ -568,6 +568,25 @@ namespace FF1Lib
 
 			await this.Progress();
 
+			if ((bool)flags.ClassAsNpcFiends || (bool)flags.ClassAsNpcKeyNPC)
+			{
+				ClassAsNPC(flags, talkroutines, npcdata, flippedMaps, rng);
+			}
+
+			if (flags.NPCSwatter)
+			{
+				EnableNPCSwatter(npcdata);
+			}
+
+			// NOTE: logic checking for relocated chests
+			// accounts for NPC locations and whether they
+			// are fightable/killable, so it needs to
+			// happen after anything that adds, removes or
+			// relocates NPCs or changes their routines.
+			if ((bool)flags.RelocateChests && flags.GameMode != GameModes.DeepDungeon) {
+			    await this.RandomlyRelocateChests(rng, maps, npcdata, flags);
+			}
+
 			EnterTeleData enterBackup = new EnterTeleData(this);
 			NormTeleData normBackup = new NormTeleData(this);
 
@@ -579,7 +598,6 @@ namespace FF1Lib
 			{
 				try
 				{
-
 					await this.Progress((bool)flags.Treasures ? "Shuffling Treasures - Retries: " + i : "Placing Treasures", 3);
 
 					enterBackup.StoreData();
@@ -685,6 +703,13 @@ namespace FF1Lib
 				"Abducting Princess Sara",
 				"Placing the worst skills in Medusa's script",
 				"Applying for a Bridge building permit",
+				"Reticulating Splines",
+				"Digging Cave Holes",
+				"Bottling the Fairy",
+				"Floating the Sky Castle",
+				"Locking the door in Temple of Fiends",
+				"Teaching Kraken Kung Fu",
+				"Raising the Lich",
 			};
 
 			funMessages.AddRange(Enumerable.Repeat("Finalizing", funMessages.Count * 4).ToList());
@@ -828,11 +853,6 @@ namespace FF1Lib
 				UnleashWarMECH();
 			}
 
-			if ((bool)flags.ClassAsNpcFiends || (bool)flags.ClassAsNpcKeyNPC)
-			{
-				ClassAsNPC(flags, talkroutines, npcdata, flippedMaps, rng);
-			}
-
 			if ((bool)flags.FiendShuffle)
 			{
 				FiendShuffle(rng);
@@ -903,11 +923,6 @@ namespace FF1Lib
 			if (flags.BattleMagicMenuWrapAround)
 			{
 				BattleMagicMenuWrapAround();
-			}
-
-			if (flags.NPCSwatter)
-			{
-				EnableNPCSwatter(npcdata);
 			}
 
 			if (flags.EasyMode)
@@ -1209,6 +1224,9 @@ namespace FF1Lib
 			    SkyWarriorSpoilerBats(rng, flags, npcdata);
 			}
 
+			// Can't have any map edits after this!
+			WriteMaps(maps);
+
 			RollCredits(rng);
 			StatsTrackingScreen();
 
@@ -1332,6 +1350,7 @@ namespace FF1Lib
 			{
 				OpenChestsInOrder();
 			}
+
 			await this.Progress("Randomization Completed");
 		}
 
