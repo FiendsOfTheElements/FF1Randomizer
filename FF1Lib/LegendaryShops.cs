@@ -128,7 +128,7 @@ namespace FF1Lib
 			{
 				ShopData.Shops.Add(shop);
 				PlaceShop(shop.Index, pool);
-			}			
+			}
 		}
 
 		private void CreateArmorShop(int slots, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
@@ -227,8 +227,8 @@ namespace FF1Lib
 			tileSet.TileProperties[tile] = new TileProp(3, (byte)ShopId);
 			tileSet.TopLeftTiles[tile] = ul;
 			tileSet.TopRightTiles[tile] = ur;
-			tileSet.BottemLeftTiles[tile] = bl;
-			tileSet.BottemRightTiles[tile] = br;
+			tileSet.BottomLeftTiles[tile] = bl;
+			tileSet.BottomRightTiles[tile] = br;
 
 			return tile;
 		}

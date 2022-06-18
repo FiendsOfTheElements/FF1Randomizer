@@ -6,6 +6,7 @@ using System.Diagnostics;
 using RomUtilities;
 using FF1Lib.Helpers;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace FF1Lib
 {
@@ -247,7 +248,7 @@ namespace FF1Lib
 
 		public void ShuffleEnemyScripts(MT19337 rng, Flags flags)
 		{
-			
+
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
@@ -398,7 +399,7 @@ namespace FF1Lib
 			var bigBossIndices = new List<int> { 32, 35, 37, 39, 41, 42 };
 
 			if (shuffleNormalEnemies)
-			{ 
+			{
 			    ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, noConsecutiveNukes, nonEmpty, rng);
 			}
 
@@ -837,7 +838,7 @@ namespace FF1Lib
 			public int Palette2;
 			public FormationGFX GFXOffset;
 		}
-		public void AlternativeFiends(MT19337 rng)
+		public async Task AlternativeFiends(MT19337 rng)
 		{
 			const int FiendsIndex = 0x77;
 			const int FiendsScriptIndex = 0x22;
@@ -1248,7 +1249,7 @@ namespace FF1Lib
 				var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[1].Name + ".png"));
 				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1)) {
 				    using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2)) {
-					if (SetLichKaryGraphics(stream1, stream2)) {
+					if (await SetLichKaryGraphics(stream1, stream2)) {
 					    break;
 					}
 					// The graphics didn't fit, throw out the first element and try the next pair
@@ -1266,7 +1267,7 @@ namespace FF1Lib
 				var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[3].Name + ".png"));
 				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1)) {
 				    using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2)) {
-					if (SetKrakenTiamatGraphics(stream1, stream2)) {
+					if (await SetKrakenTiamatGraphics(stream1, stream2)) {
 					    break;
 					}
 					alternateFiendsList.RemoveAt(2);

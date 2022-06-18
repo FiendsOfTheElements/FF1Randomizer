@@ -866,7 +866,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleScriptsEnemies"));
 			}
 		}
-		
+
 		public bool? ShuffleSkillsSpellsEnemies
 		{
 			get => Flags.ShuffleSkillsSpellsEnemies;
@@ -5124,6 +5124,25 @@ namespace FF1Lib
 			set
 			{
 				Flags.ReversedFloors = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? RelocateChests
+		{
+		    get => Flags.RelocateChests;
+			set
+			{
+				Flags.RelocateChests = value;
+				RaisePropertyChanged();
+			}
+		}
+		public bool RelocateChestsTrapIndicator
+		{
+		    get => Flags.RelocateChestsTrapIndicator;
+			set
+			{
+				Flags.RelocateChestsTrapIndicator = value;
 				RaisePropertyChanged();
 			}
 		}

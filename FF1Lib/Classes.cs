@@ -1338,7 +1338,7 @@ namespace FF1Lib
 					_classes[i].MagicRanks[1] = classBaseString[shuffleBlackPermissions[i]];
 				}
 
-				_classes[i + 6].Ranks[(int)RankedType.Black] = magicRanks[i + 6];
+				_classes[i + 6].Ranks[(int)RankedType.Black] = magicRanks[i + 18];
 
 				if (magicRanks[i + 18] > Rank.F)
 				{

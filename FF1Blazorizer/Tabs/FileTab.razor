@@ -6,10 +6,11 @@
 @using System.Text.Json;
 @using BlazorStrap
 @using Microsoft.AspNetCore.Components.Web
+@using FF1Lib.Procgen;
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
-@inject HttpClient Http 
+@inject HttpClient Http
 
 
 <div id="generate" class="framed-content">
@@ -56,6 +57,10 @@
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 		[Parameter] public bool IsOpen { get; set; } = true;
 		[Parameter] public bool showChaos { get; set; }
+		[CascadingParameter(Name="ShowModal")] public MainLayout.ShowModalT ShowModal { get; set; }
+		[CascadingParameter(Name="SetGenerating")] public MainLayout.ShowModalT SetGenerating { get; set; }
+		[CascadingParameter(Name="SetModalContent")] public MainLayout.SetContentT SetModalContent { get; set; }
+		[CascadingParameter(Name="GetCancelled")] public MainLayout.GetCancelledT GetCancelled { get; set; }
 
 		private string RomMessage = "Upload Rom:";
 		private bool RememberROM = false;
@@ -241,7 +246,30 @@
 			SetStatusMessage("Generating Final Fantasy Randomizer ROM ... Please Wait ... ");
 			StateHasChanged();
 
-			await Task.Run(DoRandomize);
+			//await Task.Run(DoRandomize);
+			await DoRandomize();
+		}
+
+		string warnings = "";
+		string lastMessage = "";
+		string modalContent = "";
+
+		async Task Progress(int step, int max, string message) {
+		      if (message.StartsWith("WARNING")) {
+		         warnings = warnings + "<br>" + message;
+			 modalContent = $"Progress: {step}/{max}<br>{warnings}";
+		      } else {
+		         if (message != "") {
+			   lastMessage = message;
+			 }
+		         modalContent = $"Progress: {step}/{max}<br>{warnings}<br>{lastMessage}";
+		      }
+		      SetModalContent(modalContent + "<br>" + StatusMessage);
+		      StateHasChanged();
+		      await Task.Delay(1);
+		      if (GetCancelled()) {
+		         throw new OperationCanceledException();
+		      }
 		}
 
 		async Task DoRandomize()
@@ -266,7 +294,13 @@
 			{
 				Utilities.SpoilerCache = string.Empty;
 
-				_rom.Randomize(seed, Flags.Flags, Flags.Preferences);
+				_rom.ProgressCallback = this.Progress;
+
+				this.warnings = "";
+				SetModalContent("");
+				ShowModal(true);
+				SetGenerating(true);
+				await _rom.Randomize(seed, Flags.Flags, Flags.Preferences);
 
 				var data = new byte[512 * 1024 + 16];
 				using (var stream = new MemoryStream(data, true))
@@ -304,13 +338,19 @@
 					await JSRuntime.InvokeVoidAsync("downloadFile", $"{Flags.PlayerName}_{_seed}_{Flags.Encoded}.yaml", encodedSpoiler);
 				}
 
+			} catch (FailedToGenerate e) {
+				SetStatusMessage(StatusMessage + "FAILURE: " + e.Message);
 			}
 			catch (Exception e)
 			{
 				SetStatusMessage(StatusMessage + "FAILURE: " + e.Message);
+				modalContent = $"{modalContent}<br><br>{e.ToString().Replace("\n", "<br>")}<br>";
 				Console.WriteLine(e.ToString());
-				StateHasChanged();
+			} finally {
+		          SetModalContent(modalContent + "<br>" + StatusMessage);
+			  SetGenerating(false);
 			}
+			StateHasChanged();
 		}
 
 

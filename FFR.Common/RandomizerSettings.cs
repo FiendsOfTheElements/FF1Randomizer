@@ -1,7 +1,7 @@
 ﻿namespace FFR.Common
 {
 	using System;
-
+	using System.IO;
 	using FF1Lib;
 	using RomUtilities;
 
@@ -47,6 +47,15 @@
 
 			return new RandomizerSettings(seed, flags);
 		}
+
+	    public static RandomizerSettings FromJson(string seed, string jsonpath)
+		{
+		    string txt = File.ReadAllText(jsonpath);
+		    var flags = new Flags();
+		    flags.LoadFromJson(txt);
+		    return new RandomizerSettings(seed, flags, new Preferences());
+		}
+
 	}
 
 	static class SettingsUtils {
