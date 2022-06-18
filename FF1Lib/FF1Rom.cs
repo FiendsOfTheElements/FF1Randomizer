@@ -216,12 +216,10 @@ namespace FF1Lib
 
 			// Ships found at Matoya's need to spawn at Coneria when Matoya's Dock no longer exists
 			if ((bool)flags.MapBridgeLefein == true) {
-				var ChangeDockLocation = shipLocations.GetShipLocation((int)MapLocation.MatoyasCave);
-				//The other version that also doesn't work: shipLocations.GetShipLocation((int)OverworldTeleportIndex.MatoyasCave);
+				var ChangeDockLocation = shipLocations.GetShipLocation((int)OverworldTeleportIndex.MatoyasCave);
 				ChangeDockLocation.X = Dock.Coneria[0];
 				ChangeDockLocation.Y = Dock.Coneria[1];
-
-				//What should work if it was just a Dictionary: ShipLocations[MapLocation.MatoyasCave] = Dock.Coneria;
+				ItemLocations.ShipLocations[MapLocation.MatoyasCave] = Dock.Coneria;
 			}
 
 			var maps = ReadMaps();
