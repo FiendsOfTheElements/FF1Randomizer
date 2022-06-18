@@ -21,7 +21,7 @@ namespace FF1Lib
 	{
 		[Description("None")]
 		None,
-		[Description("World Wealth")]
+		[Description("Randomized")]
 		RandomizeTreasure,
 		[Description("Deep Dungeon")]
 		DeepDungeon,

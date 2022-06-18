@@ -923,13 +923,13 @@
 		"Id": "randomLootCheckBox",
 		"title": "Randomize Treasures",
 		"screenshot": "randomLootCheckBox.png",
-		"description": "Randomizes the contents of each chest. Items not normally found in chests may be available, some items may not be found in chests that normally would, and duplicates may exist.\n\nNone: Chests' content isn't randomized.\nWorld Wealth: Chests' content is randomized based on the tier of the item. Each setting for random wealth weighs the pool differently.\nDeep Dungeon: Chests' content is randomized based on each chest's location.\nRandom: One of the previous options is selected at random."
+		"description": "Randomizes the contents of each chest. Items not normally found in vanilla chests may be available, some items may not be found in chests that normally would be, and duplicates may exist.\n\nNone: Chests' content isn't randomized, only shuffled.\nRandomized: Chests' content is randomized based on the quality tier of each item. When selected, you will also be able to customize how good the overall treasure pool is.\nDeep Dungeon: Chests' content is randomized based on each chest's location. Designed for the \"Deep Dungeon\" Game Mode, but also works with other world types: treasure value is based on vanilla dungeon progression in that case.\nRandom: One of the previous options is selected at random."
 	},
 	{
 		"Id": "worldWealthDropDown",
 		"title": "Random Wealth",
 		"screenshot": "worldWealthDropDown.gif",
-		"description": "Alters the distribution of items:\n Normal is the same number of each tier of item as in the vanilla item pool.\n High removes gold chests for more legendary and rare equipment.\n Melmond has the lowest chance of top tier gear."
+		"description": "Alters the distribution of items:\n\"Standard Wealth\" is the same number of each tier of item as is present in the vanilla item pool.\n\"High Wealth\" removes some gold chests for more legendary and rare equipment.\n\"Melmond Wealth\" has the lowest chance of top tier gear."
 	},
 	{
 		"Id": "deepDungeonItemModeDropDown",
