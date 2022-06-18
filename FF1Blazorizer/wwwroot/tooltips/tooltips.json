@@ -830,13 +830,13 @@
 		"Id": "bridgeToLefeinCheckBox",
 		"title": "Bridge to Lefein from Pravoka",
 		"screenshot": "bridgeToLefein.png",
-		"description": "Makes the Bridge connect Pravoka to Lefein, allowing you to potentially walk to Lefein (or further with additional flags such as \"Gaia Mountain Pass\"). The original Bridge location is now a land bridge.\nRemember to disable the \"Free Bridge\" flag if you want the Bridge item to be found in the pool; the Bridge can also be incentivized if desired."
+		"description": "Makes the Bridge connect Pravoka to Lefein, allowing you to potentially walk to Lefein (or further with additional flags such as \"Gaia Mountain Pass\"). The original Bridge location is now an always-walkable land bridge.\nRemember to disable the \"Free Bridge\" flag if you want the Bridge item to be found in the pool; the Bridge can also be incentivized if desired."
 	},
 	{
 		"Id": "riverToMelmondCheckBox",
 		"title": "River to Melmond Region from Dwarves",
-		"screenshot": null,
-		"description": "Adds a new river connecting the Dwarf Cave & Coneria area to Melmond, Earth Cave, and Titan's Tunnel. This allows access to the Melmond region without the CANAL, and without the SHIP as well if \"Early Open Progression\" is enabled."
+		"screenshot": "RiverToMelmond.png",
+		"description": "Adds a new river connecting the Dwarf Cave area to Melmond, Earth Cave, and Titan's Tunnel. This allows access to the Melmond region without the CANAL, and also without the SHIP if \"Early Open Progression\" is enabled."
 	},
 	{
 		"Id": "gaiaMountainPassCheckBox",
