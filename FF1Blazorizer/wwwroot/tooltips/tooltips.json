@@ -584,7 +584,7 @@
 		"Id": "incentivizeShipAndCanalCheckBox",
 		"title": "Ship & Canal",
 		"screenshot": "incentivizeShipAndCanalCheckBox.png",
-		"description": "Adds the SHIP and the CANAL to the incentive pool to be distributed in the selected incentive locations.\nWhen using a vanilla-based overworld map, the Ship will spawn at the nearest inner-sea Dock (defaulting to Coneria). For example, finding the Ship in the Ice Cave will spawn the ship at Pravoka."
+		"description": "Adds the SHIP and the CANAL to the incentive pool to be distributed in the selected incentive locations.\nWhen using a vanilla-based overworld map, the Ship will spawn at the nearest inner-sea Dock (defaulting to Coneria). For example, finding the Ship in the Ice Cave will spawn the Ship at Pravoka."
 	},
 	{
 		"Id": "incentivizeBridgeCheckBox",
