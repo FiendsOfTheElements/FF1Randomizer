@@ -667,9 +667,9 @@
 
 	{
 		"Id": "hintsVillage",
-		"title": "Hints Givers in Villages",
+		"title": "Hint Givers in Towns",
 		"screenshot": "hintsVillage.gif",
-		"description": "In each town, a villager reveals the location of an item:\n- The old men in Coneria, Pravoka, Melmond, and Onrac\n- An Elf scholar in Elfland\n- Lukahn in Crescent Lake\n- The Witch in Gaia\n- The villager on the left side of Lefein (no SLAB translation required)"
+		"description": "In each town, a villager reveals the location of an item:\n- The old men in Coneria, Pravoka, Melmond, and Onrac\n- An Elf scholar in Elfland\n- Lukahn in Crescent Lake\n- The Witch in Gaia\n- The villager on the left side of Lefein (no SLAB translation required)\nThe hint givers are always in the same locations, as pictured here."
 	},
 	{
 		"Id": "hintsDungeon",
@@ -1388,7 +1388,7 @@
 		"Id": "alternateFiendsCheckBox",
 		"title": "Alternate Fiends",
 		"screenshot": "AlternateFiends.png",
-		"description": "Replace all four Fiends with new Fiends, from a pool of about 20, each with their own weaknesses and skills/spells lists."
+		"description": "Replace all four Fiends with new Fiends, from a pool of about 20, each with their own weaknesses and skill/spell lists.\nNote that the new Alternate Fiend spells & skills will still be shuffled unless \"Shuffle Scripts\" and \"Shuffle Skills & Spells\" are turned off for Bosses."
 	},
 
 	{
@@ -2127,7 +2127,7 @@
 		"Id": "MaximumLevelDoubleSilder",
 		"title": "Max Level Cap",
 		"screenshot": "MaximumLevelDoubleSilder.png",
-		"description": "Allows you to lower the maximum level, increasing the challenge of the given flagset.\nIf a range is selected, a random number is choosen from the range.\nIf starting levels are higher than the maximum level, players will start at that level but will be unable to gain levels.\nFor beginners it is not recommended to go below level 20."
+		"description": "Allows you to lower the maximum level, increasing the challenge of the given flagset.\nIf a range is selected, a random number is choosen from the range. With a range, there is no way to know what the actual cap is until you reach it.\nIf starting levels are higher than the maximum level, players will start at that level but will be unable to gain levels.\nFor beginners it is not recommended to go below level 20."
 	},
 
 	{
