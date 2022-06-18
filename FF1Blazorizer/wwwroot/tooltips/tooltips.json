@@ -929,7 +929,7 @@
 		"Id": "worldWealthDropDown",
 		"title": "Random Wealth",
 		"screenshot": "worldWealthDropDown.gif",
-		"description": "Alters the distribution of items:\n\"Standard Wealth\" is the same number of each tier of item as is present in the vanilla item pool.\n\"High Wealth\" removes some gold chests for more legendary and rare equipment.\n\"Melmond Wealth\" has the lowest chance of top tier gear."
+		"description": "Alters the distribution of items:\n\"Vanilla Wealth\" is the same number of each tier of item as is present in the vanilla item pool.\n\"High Wealth\" removes some gold chests for more legendary and rare equipment.\n\"Melmond Wealth\" has the lowest chance of top tier gear."
 	},
 	{
 		"Id": "deepDungeonItemModeDropDown",
@@ -1272,7 +1272,7 @@
 		"Id": "runnabilityDropDown",
 		"title": "Unrunnable Formations",
 		"screenshot": "enemyFormationsUnrunnableCheckBox.png",
-		"description": "Changes whether the party can run from certain packs or not. Note that this does not change bosses, which under this flag remain unrunnable.\n Normal: Vanilla unrunnable formations. If it's unrunnable in the original game, it remains unrunnable here.\n Shuffle: Shuffles what formations are and are not runnable. Bosses and some other encounters will remain unrunnable.\n All Unrunnable: Disables the ability to run from fights.\n\nAll Runnable: Makes all encounters runnable (except for bosses).\n Random Choice: Select one of these options randomly."
+		"description": "Changes whether the party can run from certain packs or not. Note that this does not change bosses, which under this flag remain unrunnable.\n Vanilla: Normal unrunnable formations. If it's unrunnable in the original game, it remains unrunnable here.\n Shuffle: Shuffles what formations are and are not runnable (about 11% of all normal-enemy formations will be unrunnable). Bosses and Minibosses (Astos, Pirates, Vampire, Garland) will remain unrunnable.\n All Unrunnable: Disables the ability to run from fights.\n\nAll Runnable: Makes all encounters runnable (except for bosses).\n Random Choice: Select one of these options randomly."
 	},
 	{
 		"Id": "unrunnablesStrikeFirstAndSurpriseCheckBox",
@@ -1321,7 +1321,7 @@
 		"Id": "touchMode",
 		"title": "Status Attacks Mode",
 		"screenshot": "enemyStatusAttacksCheckBox.png",
-		"description": "Sets the status ailments each enemy can inflict when they use physical attacks.\nStandard: Enemies keep their standard touch attack.\nShuffle: Shuffle the existing touch attacks amongst all enemies.\nRandomize: Assign randomly selected touch attacks to enemies.\nRandom: Select one of the previous options at random."
+		"description": "Sets the status ailments each enemy can inflict when they use physical attacks.\nVanilla: Enemies keep their standard touch attack.\nShuffle: Shuffle the existing touch attacks amongst all enemies.\nRandomize: Assign randomly selected touch attacks to enemies.\nRandom: Select one of the previous options at random."
 	},
 	{
 		"Id": "touchPool",

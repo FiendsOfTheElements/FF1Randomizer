@@ -12,7 +12,7 @@ namespace FF1Lib
 	{
 		[Description("High Wealth")]
 		High,
-		[Description("Standard Wealth")]
+		[Description("Vanilla Wealth")]
 		Standard,
 		[Description("Melmond Wealth")]
 		Melmond,
