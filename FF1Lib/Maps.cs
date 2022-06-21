@@ -1885,8 +1885,6 @@ namespace FF1Lib
 			    MapId.TempleOfFiendsRevisitedAir,
 			    MapId.TempleOfFiendsRevisitedChaos }, // ToFR
 
-			// There's no space to shuffle anything.
-			new MapId[] { MapId.TempleOfFiends }, // ToF
 			// new MapId[] { MapId.TitansTunnel }, // Titan
 		    };
 
@@ -1895,6 +1893,7 @@ namespace FF1Lib
 			new MapId[] { MapId.Cardia, MapId.BahamutsRoomB1, MapId.BahamutsRoomB2 }, // Cardia
 			new MapId[] { MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 }, // Sea Shrine
 			new MapId[] { MapId.SkyPalace1F, MapId.SkyPalace2F, MapId.SkyPalace3F, MapId.SkyPalace4F, MapId.SkyPalace5F }, // Sky Castle
+			new MapId[] { MapId.TempleOfFiends }, // ToF
 		    };
 
 		    List<(MapId,byte)> preserveChests = new();

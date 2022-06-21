@@ -2251,5 +2251,13 @@ namespace FF1Lib
 			//Change the too full logic for GiveReward consumables to clear the chest. This is to not run into an issue with consumables blocking chest progression.
 			PutInBank(0x11, 0xB432, Blob.FromHex("B045"));
 		}
+
+		public void MoveToFBats() {
+		    MoveNpc(MapId.TempleOfFiends, 2, 0x0C, 0x0D, inRoom: false, stationary: false);
+		    MoveNpc(MapId.TempleOfFiends, 3, 0x1D, 0x0B, inRoom: false, stationary: false);
+		    MoveNpc(MapId.TempleOfFiends, 4, 0x1A, 0x19, inRoom: false, stationary: false);
+		    MoveNpc(MapId.TempleOfFiends, 5, 0x0F, 0x18, inRoom: false, stationary: false);
+		    MoveNpc(MapId.TempleOfFiends, 6, 0x14, 0x0C, inRoom: false, stationary: false);
+		}
 	}
 }

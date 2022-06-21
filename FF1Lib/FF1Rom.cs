@@ -583,6 +583,8 @@ namespace FF1Lib
 				SpeedHacksMoveNpcs();
 			}
 
+			MoveToFBats();
+
 			// NOTE: logic checking for relocated chests
 			// accounts for NPC locations and whether they
 			// are fightable/killable, so it needs to
