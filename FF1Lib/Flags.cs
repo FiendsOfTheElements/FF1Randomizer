@@ -380,6 +380,7 @@ namespace FF1Lib
 		public ThiefAGI ThiefAgilityBuff { get; set; } = ThiefAGI.Vanilla;
 		public SpoilerBatHints SkyWarriorSpoilerBats { get; set; } = SpoilerBatHints.Vanilla;
 		public bool? SpoilerBatsDontCheckOrbs { get; set; } = false;
+		public bool? MoveToFBats { get; set; } = false;
 
 		[IntegerFlag(0, 50)]
 		public int WeaponTypeBonusValue { get; set; } = 10;

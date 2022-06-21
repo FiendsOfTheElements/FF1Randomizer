@@ -1728,8 +1728,8 @@ namespace FF1Lib
 		    int attempts;
 		    await this.Progress($"Relocating chests for group of floors containing {ids[0]}", 1);
 		    for (attempts = 0; needRetry && attempts < 800; attempts++) {
-			if (attempts % 20 == 0) {
-			    await this.Progress("", 20);
+			if (attempts % 10 == 0) {
+			    await this.Progress("", 1);
 			    System.GC.Collect(System.GC.MaxGeneration);
 			}
 

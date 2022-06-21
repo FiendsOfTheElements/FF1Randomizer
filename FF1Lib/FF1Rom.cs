@@ -583,7 +583,9 @@ namespace FF1Lib
 				SpeedHacksMoveNpcs();
 			}
 
-			MoveToFBats();
+			if ((bool)flags.MoveToFBats) {
+			    MoveToFBats();
+			}
 
 			// NOTE: logic checking for relocated chests
 			// accounts for NPC locations and whether they
