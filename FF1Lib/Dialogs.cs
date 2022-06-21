@@ -360,7 +360,7 @@ namespace FF1Lib
 			{
 				(0x7B, "000008083E080800FFFFFFFFFFFFFFFF"), // + sign
 				(0x7C, "FFFFFF7F3DFFFFFFFFFF99C2E6C299FE"),  // Trapped chest (standard)
-				(0x7D, "00000000000000000000663C183C6600")  // Trap tile
+				(0x7D, "FFFF99C3E7C399FF0000663C183C6600")  // Trap tile
 			};
 
 			foreach (var newchar in newChars)
