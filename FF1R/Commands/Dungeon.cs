@@ -76,6 +76,15 @@ namespace FF1R.Commands
 	[FileExists]
 	public string RomPath { get; }
 
+	[Option("-s")]
+	public int Seed { get; } = 13;
+
+	[Argument(1, Description = "Map to dump")]
+	public int Map { get; } = 0;
+
+	[Option("-a")]
+	public bool All { get; } = false;
+
 	int OnExecute(IConsole console)
 	{
 	    var rom = new FF1Rom(RomPath);
@@ -83,6 +92,7 @@ namespace FF1R.Commands
 	    var flags = new Flags();
 
 	    flags.RelocateChests = true;
+	    flags.RelocateChestsTrapIndicator = true;
 	    flags.IncentivizeMarsh = true;
 	    flags.IncentivizeEarth = true;
 	    flags.IncentivizeVolcano = true;
@@ -94,11 +104,17 @@ namespace FF1R.Commands
 	    flags.IncentivizeSkyPalace = true;
 	    flags.IncentivizeCardia = true;
 	    flags.IncentivizeMarshKeyLocked = true;
+	    flags.SpeedHacks = true;
 
-	    rom.Randomize(new byte[]{13}, flags, new Preferences());
+	    rom.Randomize(new byte[]{(byte)Seed}, flags, new Preferences());
 
-	    int start = 0;
-	    int end = 60;
+	    int start = Map;
+	    int end = Map;
+
+	    if (All) {
+		start = 0;
+		end = 60;
+	    }
 
 	    var maps = rom.ReadMaps();
 

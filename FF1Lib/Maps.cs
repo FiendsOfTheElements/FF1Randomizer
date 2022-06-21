@@ -1728,8 +1728,8 @@ namespace FF1Lib
 		    int attempts;
 		    await this.Progress($"Relocating chests for group of floors containing {ids[0]}", 1);
 		    for (attempts = 0; needRetry && attempts < 800; attempts++) {
-			if (attempts % 20 == 0) {
-			    await this.Progress("", 20);
+			if (attempts % 10 == 0) {
+			    await this.Progress("", 1);
 			    System.GC.Collect(System.GC.MaxGeneration);
 			}
 
@@ -1885,8 +1885,6 @@ namespace FF1Lib
 			    MapId.TempleOfFiendsRevisitedAir,
 			    MapId.TempleOfFiendsRevisitedChaos }, // ToFR
 
-			// There's no space to shuffle anything.
-			new MapId[] { MapId.TempleOfFiends }, // ToF
 			// new MapId[] { MapId.TitansTunnel }, // Titan
 		    };
 
@@ -1895,6 +1893,7 @@ namespace FF1Lib
 			new MapId[] { MapId.Cardia, MapId.BahamutsRoomB1, MapId.BahamutsRoomB2 }, // Cardia
 			new MapId[] { MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 }, // Sea Shrine
 			new MapId[] { MapId.SkyPalace1F, MapId.SkyPalace2F, MapId.SkyPalace3F, MapId.SkyPalace4F, MapId.SkyPalace5F }, // Sky Castle
+			new MapId[] { MapId.TempleOfFiends }, // ToF
 		    };
 
 		    List<(MapId,byte)> preserveChests = new();
