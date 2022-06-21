@@ -578,6 +578,11 @@ namespace FF1Lib
 				EnableNPCSwatter(npcdata);
 			}
 
+			if (flags.SpeedHacks)
+			{
+				SpeedHacksMoveNpcs();
+			}
+
 			// NOTE: logic checking for relocated chests
 			// accounts for NPC locations and whether they
 			// are fightable/killable, so it needs to
