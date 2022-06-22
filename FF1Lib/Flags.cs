@@ -677,6 +677,8 @@ namespace FF1Lib
 
 		public bool? Lockpicking { get; set; } = false;
 
+		public bool? ReducedLuck { get; set; } = false;
+
 		[IntegerFlag(1, 50)]
 		public int LockpickingLevelRequirement { get; set; } = 10;
 

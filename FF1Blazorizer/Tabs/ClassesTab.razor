@@ -15,6 +15,7 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="WhiteMageHarmEveryoneCheckBox" @bind-Value="Flags.WhiteMageHarmEveryone">Improved HARM for White Mage</CheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="Lockpicking" @bind-Value="Flags.Lockpicking">Thief Lockpicking</TriStateCheckBox>
 			<IntSlider Indent Min="1" Max="50" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.Lockpicking" Id="LockpickingLevelRequirement" @bind-Value="@Flags.LockpickingLevelRequirement">Lockpicking Level Requirement:</IntSlider>
+    <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ReducedLuckCheckBox" @bind-Value="Flags.ReducedLuck">Reduced Luck</TriStateCheckBox>
 
 	<div class="checkbox-cell"></div>
 

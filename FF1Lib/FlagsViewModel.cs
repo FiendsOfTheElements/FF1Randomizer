@@ -4715,6 +4715,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? ReducedLuck
+		{
+			get => Flags.ReducedLuck;
+			set
+			{
+				Flags.ReducedLuck = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public bool? IncreaseDarkPenalty
 		{
 			get => Flags.IncreaseDarkPenalty;
