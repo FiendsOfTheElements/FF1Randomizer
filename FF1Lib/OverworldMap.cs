@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using RomUtilities;
+using FF1Lib.Sanity;
+
 
 namespace FF1Lib
 {
@@ -80,6 +82,8 @@ namespace FF1Lib
 			if (flags.GameMode == GameModes.Standard && flags.OwMapExchange == OwMapExchanges.None) {
 			    // Can only apply map edits to vanilla-ish maps
 
+
+			// NOTE: mapLocationRequirements information (for all of these map changes) is no longer used by the map generator and does nothing (TODO: Delete it all)
 			if ((bool)flags.MapOnracDock)
 			{
 				MapEditsToApply.Add(OnracDock);
@@ -106,15 +110,46 @@ namespace FF1Lib
 			if ((bool)flags.MapLefeinRiver && !flags.DisableOWMapModifications) {
 			    MapEditsToApply.Add(LefeinRiverDock);
 			    mapLocationRequirements[MapLocation.Lefein].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
-		        }
+		  }
+			if ((bool)flags.MapBridgeLefein && !flags.DisableOWMapModifications) {
+					// Moves the Bridge to its new home below Lefein
+					OwLocationData _OwLocationData = new(rom);
+					_OwLocationData.LoadData();
+					_OwLocationData.BridgeLocation = new SCCoords(230, 123);
+					_OwLocationData.StoreData();
+
+			    MapEditsToApply.Add(BridgeToLefein);
+					mapLocationRequirements[MapLocation.Lefein].Add(MapChange.Bridge);
+					mapLocationRequirements[MapLocation.MatoyasCave].Add(MapChange.None);
+					mapLocationRequirements[MapLocation.Pravoka].Add(MapChange.None);
+					mapLocationRequirements[MapLocation.IceCave1].Add(MapChange.Canoe);
+      }
 			if ((bool)flags.MapGaiaMountainPass && !flags.DisableOWMapModifications) {
 			    MapEditsToApply.Add(GaiaMountainPass);
+					// If Lefein River Dock is on, then Gaia also becomes Ship-accessible
 			    if ((bool)flags.MapLefeinRiver) {
-				// If Lefein river dock is on, then Gaia also becomes ship-accessible
 			        mapLocationRequirements[MapLocation.Gaia].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
 			    }
+					// If Lefein Bridge is on, then Gaia is also Bridge-accessible
+					if ((bool)flags.MapBridgeLefein) {
+							mapLocationRequirements[MapLocation.Gaia].Add(MapChange.Bridge);
+					}
 			    _walkableNodes[WalkableRegion.LefeinRegion] = new List<OverworldTeleportIndex>{OverworldTeleportIndex.Gaia, OverworldTeleportIndex.Lefein };
 			}
+			if ((bool)flags.MapRiverToMelmond && !flags.DisableOWMapModifications) {
+					MapEditsToApply.Add(RiverToMelmond);
+					// With Early Open Progression, you only need a Canoe
+					if ((bool)flags.MapConeriaDwarves) {
+						mapLocationRequirements[MapLocation.Melmond].Add(MapChange.Canoe);
+						mapLocationRequirements[MapLocation.TitansTunnelEast].Add(MapChange.Canoe);
+						mapLocationRequirements[MapLocation.EarthCave1].Add(MapChange.Canoe);
+					}
+					else {
+						mapLocationRequirements[MapLocation.Melmond].Add(MapChange.Ship | MapChange.Canoe);
+						mapLocationRequirements[MapLocation.TitansTunnelEast].Add(MapChange.Ship | MapChange.Canoe);
+						mapLocationRequirements[MapLocation.EarthCave1].Add(MapChange.Ship | MapChange.Canoe);
+					}
+		  }
 			if ((bool)flags.MapVolcanoIceRiver)
 			{
 				MapEditsToApply.Add(VolcanoIceRiver);
@@ -920,9 +955,14 @@ namespace FF1Lib
 		public int ConeriaTownEntranceItemShopIndex = 0;
 
 		public const byte GrassTile = 0x00;
-		public const byte GrassBottomRightCoast = 0x06;
 		public const byte OceanTile = 0x17;
-		public const byte RiverTile = 0x44;
+		
+		public const byte MarshTile = 0x55;
+		public const byte MarshTopLeft = 0x62;
+		public const byte MarshTopRight = 0x63;
+		public const byte MarshBottomLeft = 0x72;
+		public const byte MarshBottomRight = 0x73;
+		
 		public const byte MountainTopLeft = 0x10;
 		public const byte MountainTopMid = 0x11;
 		public const byte MountainTopRight = 0x12;
@@ -932,10 +972,13 @@ namespace FF1Lib
 		public const byte MountainBottomLeft = 0x30;
 		public const byte MountainBottomMid = 0x31;
 		public const byte MountainBottomRight = 0x33;
+		
+		public const byte RiverTile = 0x44;
 		public const byte RiverTopLeft = 0x40;
 		public const byte RiverTopRight = 0x41;
 		public const byte RiverBottomLeft = 0x50;
 		public const byte RiverBottomRight = 0x51;
+		
 		public const byte ForestTopLeft = 0x03;
 		public const byte ForestTopMid = 0x04;
 		public const byte ForestTopRight = 0x05;
@@ -945,18 +988,32 @@ namespace FF1Lib
 		public const byte ForestBottomLeft = 0x23;
 		public const byte ForestBottomMid = 0x24;
 		public const byte ForestBottomRight = 0x25;
+		
 		public const byte DockBottomMid = 0x78;
 		public const byte DockRightMid = 0x1F;
-		public const byte CoastTopLeft = 0x06;
+		public const byte DockLeftMid = 0x0F;
+		
+		//public const byte Ocean = 0x17;
+		// These are the tiny bits of jaggedness at the edge of a grass tile to make it look nice next to Ocean
 		public const byte CoastLeft = 0x16;
-		public const byte Ocean = 0x17;
 		public const byte CoastRight = 0x18;
+		public const byte CoastTop = 0x07;
+		public const byte CoastBottom = 0x27;
+		
+		// The directions here refer to where the grass-side is, so "CoastTopLeft" is placed on the bottom-right
+		public const byte CoastTopLeft = 0x06;
 		public const byte CoastBottomLeft = 0x26;
-	    public const byte GrassyMid = 0x54;
-	    public const byte GrassTopLeft = 0x60;
-	    public const byte GrassTopRight = 0x61;
-	    public const byte GrassBottomLeft = 0x70;
-	    public const byte GrassBottomRight = 0x71;
+		public const byte CoastTopRight = 0x08;
+		public const byte CoastBottomRight = 0x28;
+		
+		// The special grassy effect around e.g. Elfland or Gaia
+	  public const byte GrassyMid = 0x54;
+	  public const byte GrassTopLeft = 0x60;
+	  public const byte GrassTopRight = 0x61;
+	  public const byte GrassBottomLeft = 0x70;
+	  public const byte GrassBottomRight = 0x71;
+		
+		// Reference OverworldTiles.cs in the procGen if you need a tile not yet listed here, e.g. more Docks
 
 		public static List<MapEdit> OnracDock =
 			new List<MapEdit>
@@ -1062,6 +1119,121 @@ namespace FF1Lib
 			    new MapEdit{X = 0xE2, Y = 0x3C, Tile = ForestMidLeft},
 			    new MapEdit{X = 0xE2, Y = 0x3D, Tile = ForestMidLeft},
 			    new MapEdit{X = 0xE2, Y = 0x3E, Tile = ForestBottomLeft},
+			};
+		public static List<MapEdit> BridgeToLefein =
+			new List<MapEdit>
+			{
+					//Top Lefein Side
+					new MapEdit{X = 228, Y = 120, Tile = CoastRight},
+					new MapEdit{X = 229, Y = 120, Tile = ForestMidLeft},
+					new MapEdit{X = 230, Y = 120, Tile = ForestMidRight},
+					new MapEdit{X = 231, Y = 120, Tile = CoastLeft},
+					new MapEdit{X = 228, Y = 121, Tile = CoastRight},
+					new MapEdit{X = 229, Y = 121, Tile = ForestBottomLeft},
+					new MapEdit{X = 230, Y = 121, Tile = ForestBottomRight},
+					new MapEdit{X = 231, Y = 121, Tile = CoastLeft},
+					new MapEdit{X = 229, Y = 122, Tile = CoastTopRight},
+					new MapEdit{X = 230, Y = 122, Tile = GrassTile},
+					new MapEdit{X = 231, Y = 122, Tile = CoastLeft},
+					// Bottom Pravoka side
+					new MapEdit{X = 229, Y = 124, Tile = CoastRight},
+					new MapEdit{X = 230, Y = 124, Tile = GrassTile},
+					new MapEdit{X = 231, Y = 124, Tile = CoastBottomLeft},
+					new MapEdit{X = 229, Y = 125, Tile = CoastRight},
+					new MapEdit{X = 230, Y = 125, Tile = GrassTile},
+					new MapEdit{X = 231, Y = 125, Tile = GrassTile},
+					new MapEdit{X = 232, Y = 125, Tile = CoastLeft},
+					new MapEdit{X = 229, Y = 126, Tile = CoastRight},
+					new MapEdit{X = 230, Y = 126, Tile = GrassTile},
+					new MapEdit{X = 231, Y = 126, Tile = GrassTile},
+					new MapEdit{X = 232, Y = 126, Tile = CoastLeft},
+					// Landbridge above Coneria 
+					new MapEdit{X = 150, Y = 151, Tile = CoastRight},
+					new MapEdit{X = 150, Y = 152, Tile = CoastBottomRight},
+					new MapEdit{X = 151, Y = 152, Tile = GrassTile},
+					new MapEdit{X = 152, Y = 152, Tile = GrassTile},
+					new MapEdit{X = 153, Y = 152, Tile = GrassTile},
+					new MapEdit{X = 154, Y = 152, Tile = CoastTopLeft},
+					// Delete Matoya Dock
+					new MapEdit{X = 156, Y = 141, Tile = GrassTile},
+					new MapEdit{X = 157, Y = 141, Tile = GrassTile},
+					new MapEdit{X = 158, Y = 141, Tile = GrassTile},
+					new MapEdit{X = 159, Y = 141, Tile = GrassTile},
+					new MapEdit{X = 156, Y = 142, Tile = CoastTopRight},
+					new MapEdit{X = 157, Y = 142, Tile = GrassTile},
+					new MapEdit{X = 158, Y = 142, Tile = GrassTile},
+					new MapEdit{X = 159, Y = 142, Tile = GrassTile},
+			};
+		public static List<MapEdit> RiverToMelmond =
+			new List<MapEdit>
+			{
+					//Top Side Mountain
+					new MapEdit{X = 84, Y = 146, Tile = CoastBottomRight},
+					new MapEdit{X = 80, Y = 147, Tile = CoastBottomRight},
+					new MapEdit{X = 77, Y = 149, Tile = CoastBottomRight},
+					new MapEdit{X = 78, Y = 148, Tile = CoastBottomRight},					
+					new MapEdit{X = 83, Y = 146, Tile = CoastBottom},
+					new MapEdit{X = 82, Y = 146, Tile = CoastBottom},
+					new MapEdit{X = 81, Y = 146, Tile = CoastBottom},
+					new MapEdit{X = 79, Y = 147, Tile = CoastBottom},
+										
+					new MapEdit{X = 81, Y = 147, Tile = MountainTopLeft},
+					new MapEdit{X = 81, Y = 148, Tile = MountainMid},
+					new MapEdit{X = 82, Y = 147, Tile = MountainTopMid},
+					new MapEdit{X = 83, Y = 147, Tile = MountainTopMid},
+					new MapEdit{X = 84, Y = 147, Tile = MountainTopRight},
+					new MapEdit{X = 78, Y = 151, Tile = MountainMidLeft},
+					new MapEdit{X = 78, Y = 152, Tile = MountainBottomLeft},
+					new MapEdit{X = 79, Y = 152, Tile = MountainBottomRight},
+					new MapEdit{X = 79, Y = 151, Tile = MountainMidRight},
+					new MapEdit{X = 79, Y = 150, Tile = MountainMidRight},
+					new MapEdit{X = 80, Y = 149, Tile = MountainBottomMid},
+					new MapEdit{X = 78, Y = 149, Tile = MountainTopLeft},
+					new MapEdit{X = 80, Y = 148, Tile = MountainTopMid},
+					new MapEdit{X = 79, Y = 148, Tile = MountainTopLeft},
+					new MapEdit{X = 79, Y = 149, Tile = MountainMid},
+					
+					//Bottom Side Mountain
+					new MapEdit{X = 86, Y = 151, Tile = CoastTopLeft},					
+					new MapEdit{X = 87, Y = 150, Tile = CoastTopLeft},
+					new MapEdit{X = 85, Y = 152, Tile = CoastTop},
+					new MapEdit{X = 88, Y = 149, Tile = MarshBottomLeft},
+					
+					new MapEdit{X = 82, Y = 148, Tile = MountainBottomMid},
+					new MapEdit{X = 83, Y = 148, Tile = MountainBottomRight},
+					new MapEdit{X = 85, Y = 149, Tile = MountainTopLeft},
+					new MapEdit{X = 84, Y = 150, Tile = MountainTopMid},
+					new MapEdit{X = 84, Y = 151, Tile = MountainBottomMid},
+					new MapEdit{X = 85, Y = 151, Tile = MountainBottomRight},
+					new MapEdit{X = 83, Y = 150, Tile = MountainTopLeft},
+					new MapEdit{X = 81, Y = 149, Tile = MountainBottomRight},
+					new MapEdit{X = 86, Y = 147, Tile = MountainTopLeft},
+					new MapEdit{X = 87, Y = 147, Tile = MountainTopRight},
+					new MapEdit{X = 86, Y = 148, Tile = MountainMidLeft},
+					new MapEdit{X = 87, Y = 148, Tile = MountainMidRight},
+					new MapEdit{X = 87, Y = 149, Tile = MountainBottomRight},
+					new MapEdit{X = 86, Y = 149, Tile = MountainMid},
+					new MapEdit{X = 86, Y = 150, Tile = MountainBottomRight},
+					new MapEdit{X = 85, Y = 150, Tile = MountainMid},
+					new MapEdit{X = 82, Y = 151, Tile = MountainTopMid},
+					new MapEdit{X = 81, Y = 151, Tile = MountainTopLeft},
+					new MapEdit{X = 81, Y = 152, Tile = MountainMidLeft},
+					new MapEdit{X = 81, Y = 153, Tile = MountainBottomLeft},
+
+					// River from Dwarf to Melmond
+					new MapEdit{X = 85, Y = 147, Tile = RiverTile},
+					new MapEdit{X = 85, Y = 148, Tile = RiverBottomRight},
+					new MapEdit{X = 84, Y = 148, Tile = RiverTopLeft},
+					new MapEdit{X = 84, Y = 149, Tile = RiverBottomRight},
+					new MapEdit{X = 83, Y = 149, Tile = RiverTile},
+					new MapEdit{X = 82, Y = 149, Tile = RiverTopLeft},
+					new MapEdit{X = 82, Y = 150, Tile = RiverBottomRight},
+					new MapEdit{X = 81, Y = 150, Tile = RiverTile},
+					new MapEdit{X = 80, Y = 150, Tile = RiverTopLeft},
+					new MapEdit{X = 80, Y = 151, Tile = RiverTile},
+					new MapEdit{X = 80, Y = 152, Tile = RiverTile},
+					new MapEdit{X = 80, Y = 153, Tile = MarshTile},
+					new MapEdit{X = 79, Y = 153, Tile = MarshTile},
 			};
 		public static List<MapEdit> GaiaMountainPass =
 			new List<MapEdit>

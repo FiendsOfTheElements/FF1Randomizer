@@ -1388,6 +1388,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapLefeinRiver"));
 			}
 		}
+		public bool? MapBridgeLefein
+		{
+			get => Flags.MapBridgeLefein;
+			set
+			{
+				Flags.MapBridgeLefein = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapBridgeLefein"));
+			}
+		}
+		public bool? MapRiverToMelmond
+		{
+			get => Flags.MapRiverToMelmond;
+			set
+			{
+				Flags.MapRiverToMelmond = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapRiverToMelmond"));
+			}
+		}
 		public bool? MapGaiaMountainPass
 		{
 			get => Flags.MapGaiaMountainPass;
@@ -1869,6 +1887,15 @@ namespace FF1Lib
 			{
 				Flags.IncentivizeShipAndCanal = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeShipAndCanal"));
+			}
+		}
+		public bool? IncentivizeBridgeItem
+		{
+			get => Flags.IncentivizeBridgeItem;
+			set
+			{
+				Flags.IncentivizeBridgeItem = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeBridgeItem"));
 			}
 		}
 		public bool? LooseExcludePlacedDungeons

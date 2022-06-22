@@ -454,7 +454,7 @@ namespace FF1Lib
 			if (flags.IncentivizeCube ?? false) incentivePool.Add(Item.Cube);
 			if (flags.IncentivizeChime ?? false) incentivePool.Add(Item.Chime);
 
-			if (flags.IncentivizeBridge) incentivePool.Add(Item.Bridge);
+			if (flags.IncentivizeBridge ?? false) incentivePool.Add(Item.Bridge);
 			if (flags.IncentivizeShip ?? false) incentivePool.Add(Item.Ship);
 			if (flags.IncentivizeCanoe ?? false) incentivePool.Add(Item.Canoe);
 			if (flags.IncentivizeCanal ?? false) incentivePool.Add(Item.Canal);

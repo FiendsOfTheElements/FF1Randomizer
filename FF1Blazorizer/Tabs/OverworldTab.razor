@@ -47,9 +47,17 @@
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapLefeinRiver">Lefein River Dock</TriStateCheckBox>
 
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bridgeToLefeinCheckBox"
+							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+							  @bind-Value="Flags.MapBridgeLefein">Bridge to Lefein</TriStateCheckBox>
+
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaMountainPassCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapGaiaMountainPass">Gaia Mountain Pass</TriStateCheckBox>
+
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="riverToMelmondCheckBox"
+							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+							  @bind-Value="Flags.MapRiverToMelmond">River to Melmond</TriStateCheckBox>
 					<div class="checkbox-cell"></div>
 				</div>
 			}

@@ -181,7 +181,7 @@ namespace FF1Lib
 			if (flags.IncentivizeTail ?? false) incentivePool.Add(Item.Tail);
 			if (flags.IncentivizeAdamant ?? false) incentivePool.Add(Item.Adamant);
 
-			if (flags.IncentivizeBridge) incentivePool.Add(Item.Bridge);
+			if (flags.IncentivizeBridge ?? false) incentivePool.Add(Item.Bridge);
 			if (flags.IncentivizeLute ?? false) incentivePool.Add(Item.Lute);
 			if (flags.IncentivizeShip ?? false) incentivePool.Add(Item.Ship);
 			if (flags.IncentivizeRod ?? false) incentivePool.Add(Item.Rod);

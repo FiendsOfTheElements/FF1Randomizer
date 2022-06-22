@@ -530,7 +530,7 @@ public static class UnsramIndex
 
 	public static class Dock
 	{
-		public static byte[] Coneria = new byte[] { 0x98, 0xA9 }; //152, 196
+		public static byte[] Coneria = new byte[] { 0x98, 0xA9 }; //152, 169
 		public static byte[] DwarfCave = new byte[] { 0x79, 0x8B }; //121, 139
 		public static byte[] MatoyasCave = new byte[] { 0x9E, 0x8E }; //158, 142
 		public static byte[] Pravoka = new byte[] { 0xD2, 0x99 }; //210, 153
