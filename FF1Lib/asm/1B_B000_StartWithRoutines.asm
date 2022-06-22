@@ -2,7 +2,7 @@
 ; Routines to modify stats at the start of the game, after partygen
 ;  and at the start of the battle.
 ;
-; Last Update: 2022-05-27
+; Last Update: 2022-06-21
 ;
 
 tmp = $10
@@ -103,8 +103,8 @@ StartOfBattle:
   JSR CatClaws
   JSR ThorHammer
   JSR Hunter
-  JSR Sleepy
-  JSR Sick
+  JSR SteelArmor
+  JSR WoodArmors
   JMP UnarmedAttack
 
 ; Give Black Belt Unarmed Attack
@@ -188,6 +188,96 @@ Th_IsEquipWeapon:
 Th_NotClass:
   RTS
   
+; Steal Armor cast Fast
+SteelArmor:
+  LDA #<lut_SteelArmor
+  STA class_lut_a                 
+  LDA #>lut_SteelArmor
+  STA class_lut_b
+  
+  LDY #$00
+  LDA (btl_ob_charstat_ptr), Y
+  JSR CheckIfClassQuick
+  BNE St_NotSteel
+    LDY #$1C ; armors
+St_Loop:    
+    LDA (btl_ob_charstat_ptr), Y
+    BPL St_NoEquip
+    JSR St_IsEquipArmor
+St_NoEquip:    
+    INY
+    CPY #$20
+    BNE St_Loop
+    RTS
+St_IsEquipArmor:
+    AND #$7F
+    CMP #$05 ; Steel Armor Id
+    BNE St_NotSteel
+      TYA
+      PHA
+      LDY #$0B ; Hit Multiplier
+      LDA #$02
+      STA (btl_ib_charstat_ptr), Y
+      PLA
+      TAY
+St_NotSteel:
+  RTS
+  
+; Wood Armor set give max evade
+WoodArmors:
+  LDA #<lut_WoodArmors
+  STA class_lut_a                 
+  LDA #>lut_WoodArmors
+  STA class_lut_b
+  
+  TXA
+  PHA
+
+  LDX #$00
+  LDY #$00
+  LDA (btl_ob_charstat_ptr), Y
+  JSR CheckIfClassQuick
+  BNE Wo_NotWood
+    LDY #$1C ; armors
+Wo_Loop:    
+    LDA (btl_ob_charstat_ptr), Y
+    BPL Wo_NoEquip
+    JSR Wo_IsEquipArmor
+Wo_NoEquip:    
+    INY
+    CPY #$20
+    BNE Wo_Loop
+    
+    CPX #$03
+    BNE Wo_NotWood
+      LDY #$07 ; Evade
+      LDA #$FF
+      STA (btl_ib_charstat_ptr), Y
+      PLA
+      TAX
+      RTS
+Wo_IsEquipArmor:
+    AND #$7F
+    CMP #$02 ; Wood0 Armor Id
+    BNE Wo_NotArmor
+      INX
+      RTS
+Wo_NotArmor:      
+    CMP #$1B ; Wood Helmet Id
+    BNE Wo_NotHelmet
+      INX
+      RTS
+Wo_NotHelmet:
+    CMP #$11 ; Wood Shield Id
+    BNE Wo_NotShield
+      INX
+Wo_NotShield:      
+      RTS
+Wo_NotWood:
+  PLA
+  TAX
+  RTS  
+  
 ; Hunter hurt all enemy type
 Hunter:
   LDA #<lut_Hunter 
@@ -203,8 +293,8 @@ Hunter:
     LDA #$FF
     STA (btl_ib_charstat_ptr), Y
 Hu_NotClass:
-  RTS      
-
+  RTS   
+  
 ; Always start battle asleep
 Sleepy:
   LDA #<lut_Sleepy 
@@ -244,7 +334,7 @@ Sick:
 Sik_NotClass:  
   RTS  
 
- .ORG $B180
+ .ORG $B200
 
 lut_Blackbelts:
  .BYTE $FF, $00, $01, $00, $00, $00 ; $FF added for reference, replace by $00 if copying lut
@@ -276,7 +366,17 @@ lut_Sick:
  .BYTE $00, $00, $00, $00, $00, $00 
  .BYTE $00   
 
- .ORG $B280
+lut_SteelArmor:
+ .BYTE $00, $00, $00, $00, $00, $00
+ .BYTE $00, $00, $00, $00, $00, $00 
+ .BYTE $00  
+
+lut_WoodArmors:
+ .BYTE $00, $00, $00, $00, $00, $00
+ .BYTE $00, $00, $00, $00, $00, $00 
+ .BYTE $00  
+
+ .ORG $B300
 
 ApplyStartOfGame:
   LDA #>ResumeHere 

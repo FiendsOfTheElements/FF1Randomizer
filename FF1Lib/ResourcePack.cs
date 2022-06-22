@@ -4,6 +4,7 @@ using RomUtilities;
 using System.IO;
 using System;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace FF1Lib
 {
@@ -17,7 +18,7 @@ namespace FF1Lib
 		return false;
 	    }
 
-		void LoadResourcePack(Stream stream)
+		async Task LoadResourcePack(Stream stream)
 		{
 			var resourcePackArchive = new ZipArchive(stream);
 
@@ -26,7 +27,7 @@ namespace FF1Lib
 			{
 				using (var s = maptiles.Open())
 				{
-					SetCustomMapGraphics(s, 245, 4,
+					await SetCustomMapGraphics(s, 245, 4,
 							 new int[] { OVERWORLDPALETTE_OFFSET },
 							 OVERWORLDPALETTE_ASSIGNMENT,
 							 OVERWORLDPATTERNTABLE_OFFSET,
@@ -40,7 +41,7 @@ namespace FF1Lib
 				using (var s = towntiles.Open())
 				{
 					int cur_tileset = 0;
-					SetCustomMapGraphics(s, 128, 4,
+					await SetCustomMapGraphics(s, 128, 4,
 							 new int[] {
 						 MAPPALETTE_OFFSET + (0 * 0x30),
 						 MAPPALETTE_OFFSET + (1 * 0x30),
@@ -62,7 +63,7 @@ namespace FF1Lib
 			{
 				using (var s = spritesheet.Open())
 				{
-					SetCustomPlayerSprites(s, true);
+					await SetCustomPlayerSprites(s, true);
 				}
 			}
 
@@ -71,7 +72,7 @@ namespace FF1Lib
 			{
 				using (var s = fiends.Open())
 				{
-					SetCustomFiendGraphics(s);
+					await SetCustomFiendGraphics(s);
 				}
 			}
 
@@ -80,7 +81,7 @@ namespace FF1Lib
 			{
 				using (var s = chaos.Open())
 				{
-					SetCustomChaosGraphics(s);
+					await SetCustomChaosGraphics(s);
 				}
 			}
 
@@ -89,7 +90,7 @@ namespace FF1Lib
 			{
 				using (var s = backdrop.Open())
 				{
-					SetCustomBattleBackdrop(s);
+					await SetCustomBattleBackdrop(s);
 				}
 			}
 

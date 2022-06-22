@@ -12,7 +12,9 @@
 	 Subcommand("render", typeof(Commands.MapRender)),
 	 Subcommand("dumpmagic", typeof(Commands.DumpMagicStats)),
 	 Subcommand("dumpenemies", typeof(Commands.DumpEnemyStats)),
-	Subcommand("importmagic", typeof(Commands.ImportMagicStats))]
+	 Subcommand("importmagic", typeof(Commands.ImportMagicStats)),
+	 Subcommand("renderdungeon", typeof(Commands.RenderDungeon)),
+	Subcommand("relocatechests", typeof(Commands.RelocateDungeonChests))]
 
 	class Program
 	{

@@ -66,7 +66,7 @@ namespace FF1Lib
 		Gp100,
 		[Description("200 gp")]
 		Gp200,
-		[Description("400 gp (vanilla)")]
+		[Description("400 gp (Vanilla)")]
 		Gp400,
 		[Description("800 gp")]
 		Gp800,

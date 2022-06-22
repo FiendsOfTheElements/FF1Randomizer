@@ -12,7 +12,7 @@ namespace FF1Lib
 	{
 		[Description("High Wealth")]
 		High,
-		[Description("Standard Wealth")]
+		[Description("Vanilla Wealth")]
 		Standard,
 		[Description("Melmond Wealth")]
 		Melmond,
@@ -21,7 +21,7 @@ namespace FF1Lib
 	{
 		[Description("None")]
 		None,
-		[Description("World Wealth")]
+		[Description("Randomized")]
 		RandomizeTreasure,
 		[Description("Deep Dungeon")]
 		DeepDungeon,

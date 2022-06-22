@@ -673,9 +673,9 @@
 
 	{
 		"Id": "hintsVillage",
-		"title": "Hints Givers in Villages",
+		"title": "Hint Givers in Towns",
 		"screenshot": "hintsVillage.gif",
-		"description": "In each town, a villager reveals the location of an item:\n- The old men in Coneria, Pravoka, Melmond, and Onrac\n- An Elf scholar in Elfland\n- Lukahn in Crescent Lake\n- The Witch in Gaia\n- The villager on the left side of Lefein (no SLAB translation required)"
+		"description": "In each town, a villager reveals the location of an item:\n- The old men in Coneria, Pravoka, Melmond, and Onrac\n- An Elf scholar in Elfland\n- Lukahn in Crescent Lake\n- The Witch in Gaia\n- The villager on the left side of Lefein (no SLAB translation required)\nThe hint givers are always in the same locations, as pictured here."
 	},
 	{
 		"Id": "hintsDungeon",
@@ -941,13 +941,13 @@
 		"Id": "randomLootCheckBox",
 		"title": "Randomize Treasures",
 		"screenshot": "randomLootCheckBox.png",
-		"description": "Randomizes the contents of each chest. Items not normally found in chests may be available, some items may not be found in chests that normally would, and duplicates may exist.\n\nNone: Chests' content isn't randomized.\nWorld Wealth: Chests' content is randomized based on the tier of the item. Each setting for random wealth weighs the pool differently.\nDeep Dungeon: Chests' content is randomized based on each chest's location.\nRandom: One of the previous options is selected at random."
+		"description": "Randomizes the contents of each chest. Items not normally found in vanilla chests may be available, some items may not be found in chests that normally would be, and duplicates may exist.\n\nNone: Chests' content isn't randomized, only shuffled.\nRandomized: Chests' content is randomized based on the quality tier of each item. When selected, you will also be able to customize how good the overall treasure pool is.\nDeep Dungeon: Chests' content is randomized based on each chest's location. Designed for the \"Deep Dungeon\" Game Mode, but also works with other world types: treasure value is based on vanilla dungeon progression in that case.\nRandom: One of the previous options is selected at random."
 	},
 	{
 		"Id": "worldWealthDropDown",
 		"title": "Random Wealth",
 		"screenshot": "worldWealthDropDown.gif",
-		"description": "Alters the distribution of items:\n Normal is the same number of each tier of item as in the vanilla item pool.\n High removes gold chests for more legendary and rare equipment.\n Melmond has the lowest chance of top tier gear."
+		"description": "Alters the distribution of items:\n\"Vanilla Wealth\" is the same number of each tier of item as is present in the vanilla item pool.\n\"High Wealth\" removes some gold chests for more legendary and rare equipment.\n\"Melmond Wealth\" has the lowest chance of top tier gear."
 	},
 	{
 		"Id": "deepDungeonItemModeDropDown",
@@ -1284,13 +1284,13 @@
 		"Id": "formationShuffleModeDropDown",
 		"title": "Enemy Formation Shuffle Mode",
 		"screenshot": "formationShuffleModeDropDown.gif",
-		"description": "Shuffles the encounters that appear in enemy domains.\nVanilla: Enemy groups remain as they exist in the original game. This allows players to predict encounters in a dungeon if they know the vanilla values.\n Shuffle Rarity: Enemy groups are shuffled within a zone, so that Group 1 (common) fights can appear as Group 6 (uncommon), etc. This removes the ability to 'scout' the encounter table and know which fights will appear without having to re-learn the process for each new dungeon.\nTiered Rarity Shuffle: Enemy formations will shuffle their encounter group based on their original rarity. (1-4 will tend to be lower in rarity, 5-6 can sometimes be lower in rarity, 7-8 will rarely be lower in rarity.)\n  Shuffle Across Zones: Shuffles the domains (such that Ice Cave groups could appear in Gurgu Volcano, etc.) but does not alter the contents of the domains themselves.\n Totally Random: Draws at random and populates the encounter table, excepting fiends, plot-triggered encounters, and empty encounters. These encounters can appear in any zone except the starting zones.\n Note: This feature is disabled when generating new enemy formations (via Enemizer)."
+		"description": "Shuffles the encounters that appear in enemy domains.\nVanilla: Enemy groups remain as they exist in the original game. This allows players to predict encounters in a dungeon if they know the vanilla values.\n Shuffle Rarity: Enemy groups are shuffled within a zone, so that Group 1 (common) fights can appear as Group 6 (uncommon), etc. This removes the ability to 'scout' the encounter table and know which fights will appear in advance.\nTiered Rarity Shuffle: Enemy formations will shuffle within their encounter groups based on their original rarity. (1-4 will tend to be lower in rarity, 5-6 can sometimes be lower in rarity, 7-8 will rarely be lower in rarity.)\nShuffle Across Zones: Shuffles ALL encounters, so that any encounter can appear anywhere regardless of zone or rarity. The overworld between Coneria and ToF is still guaranteed to have earlier enemies (e.g. BONE, WOLF, GrIMP).\n Totally Random: Populates the encounter table entirely at random (excepting fiends, plot-triggered encounters, and empty encounters). This means specific formations can be added multiple times, and that \"B-side\" formations that aren't used in vanilla can appear as well. The overworld between Coneria and ToF is still guaranteed to have earlier enemies (e.g. BONE, WOLF, GrIMP).\n Note: This feature is disabled when generating new enemy formations (via Enemizer)."
 	},
 	{
 		"Id": "runnabilityDropDown",
 		"title": "Unrunnable Formations",
 		"screenshot": "enemyFormationsUnrunnableCheckBox.png",
-		"description": "Changes whether the party can run from certain packs or not. Note that this does not change bosses, which under this flag remain unrunnable.\n Normal: Vanilla unrunnable formations. If it's unrunnable in the original game, it remains unrunnable here.\n Shuffle: Shuffles what formations are and are not runnable. Bosses and some other encounters will remain unrunnable.\n All Unrunnable: Disables the ability to run from fights.\n\nAll Runnable: Makes all encounters runnable (except for bosses).\n Random Choice: Select one of these options randomly."
+		"description": "Changes whether the party can run from certain packs or not. Note that this does not change bosses, which under this flag remain unrunnable.\n Vanilla: Normal unrunnable formations. If it's unrunnable in the original game, it remains unrunnable here.\n Shuffle: Shuffles what formations are and are not runnable (about 11% of all normal-enemy formations will be unrunnable). Bosses and Minibosses (Astos, Pirates, Vampire, Garland) will remain unrunnable.\n All Unrunnable: Disables the ability to run from fights.\n\nAll Runnable: Makes all encounters runnable (except for bosses).\n Random Choice: Select one of these options randomly."
 	},
 	{
 		"Id": "unrunnablesStrikeFirstAndSurpriseCheckBox",
@@ -1339,7 +1339,7 @@
 		"Id": "touchMode",
 		"title": "Status Attacks Mode",
 		"screenshot": "enemyStatusAttacksCheckBox.png",
-		"description": "Sets the status ailments each enemy can inflict when they use physical attacks.\nStandard: Enemies keep their standard touch attack.\nShuffle: Shuffle the existing touch attacks amongst all enemies.\nRandomize: Assign randomly selected touch attacks to enemies.\nRandom: Select one of the previous options at random."
+		"description": "Sets the status ailments each enemy can inflict when they use physical attacks.\nVanilla: Enemies keep their standard touch attack.\nShuffle: Shuffle the existing touch attacks amongst all enemies.\nRandomize: Assign randomly selected touch attacks to enemies.\nRandom: Select one of the previous options at random."
 	},
 	{
 		"Id": "touchPool",
@@ -1406,7 +1406,7 @@
 		"Id": "alternateFiendsCheckBox",
 		"title": "Alternate Fiends",
 		"screenshot": "AlternateFiends.png",
-		"description": "Replace all four Fiends with new Fiends, from a pool of about 20, each with their own weaknesses and skills/spells lists."
+		"description": "Replace all four Fiends with new Fiends, from a pool of about 20, each with their own weaknesses and skill/spell lists.\nNote that the new Alternate Fiend spells & skills will still be shuffled unless \"Shuffle Scripts\" and \"Shuffle Skills & Spells\" are turned off for Bosses."
 	},
 
 	{
@@ -2145,7 +2145,7 @@
 		"Id": "MaximumLevelDoubleSilder",
 		"title": "Max Level Cap",
 		"screenshot": "MaximumLevelDoubleSilder.png",
-		"description": "Allows you to lower the maximum level, increasing the challenge of the given flagset.\nIf a range is selected, a random number is choosen from the range.\nIf starting levels are higher than the maximum level, players will start at that level but will be unable to gain levels.\nFor beginners it is not recommended to go below level 20."
+		"description": "Allows you to lower the maximum level, increasing the challenge of the given flagset.\nIf a range is selected, a random number is choosen from the range. With a range, there is no way to know what the actual cap is until you reach it.\nIf starting levels are higher than the maximum level, players will start at that level but will be unable to gain levels.\nFor beginners it is not recommended to go below level 20."
 	},
 
 	{
@@ -2338,8 +2338,26 @@
 		"description": "Modifies the chime that plays when opening standard treasure chests so music keeps playing instead of restarting after every chest. (Incentivized items playing the longer fanfare tune remain unchanged.)"
 	},
 	{
+		"Id": "relocateChests",
+		"title": "Relocate Chests",
+		"screenshot": "shufflechests.png",
+		"description": "Relocate chests and enemy trap tiles to new locations in castles and dungeons."
+	},
+	{
+		"Id": "markRelocatedTrapTiles",
+		"title": "Relocated trap tiles are marked",
+		"screenshot": "markedTrapTile.png",
+		"description": "Relocated trap tiles will be marked."
+	},
+	{
 		"Id": "OpenChestsInOrder",
 		"title": "Open Chests In Order",
 		"description": "Non incentive items are opened in order. \n\nWarning, if your inventory gets full it will block your equipment progress."
+	},
+	{
+		"Id": "moveToFBats",
+		"title": "Move Temple of Fiends Bats",
+		"screenshot": "moveToFBats.png",
+		"description": "Temple of Fiends bats are moved out of Garland's room."
 	}
 ]
