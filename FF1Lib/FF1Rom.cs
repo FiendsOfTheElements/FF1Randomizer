@@ -962,10 +962,12 @@ namespace FF1Lib
 				DoubleWeaponCritRates();
 			}
 
+			List<int> blursesValues = Enumerable.Repeat(0, 40).ToList();
+
 			//needs to go after item magic, moved after double weapon crit to have more control over the actual number of crit gained.
 			if ((bool)flags.RandomWeaponBonus)
 			{
-				RandomWeaponBonus(rng, flags.RandomWeaponBonusLow, flags.RandomWeaponBonusHigh, (bool)flags.RandomWeaponBonusExcludeMasa);
+				blursesValues = RandomWeaponBonus(rng, flags.RandomWeaponBonusLow, flags.RandomWeaponBonusHigh, (bool)flags.RandomWeaponBonusExcludeMasa);
 			}
 
 			if ((bool)flags.RandomArmorBonus)
@@ -1180,7 +1182,7 @@ namespace FF1Lib
 			ClassData.BuffThiefAGI(flags);
 			ClassData.EarlierHighTierMagicCharges(flags);
 			ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);
-			ClassData.ProcessStartWithRoutines(flags, this);
+			ClassData.ProcessStartWithRoutines(flags, blursesValues, this);;
 
 			if ((bool)flags.EnableRandomPromotions)
 			{
