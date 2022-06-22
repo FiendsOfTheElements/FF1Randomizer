@@ -193,6 +193,12 @@
 		"description": "Disables screen flashing when stepping over lava tiles. A useful option if you have a sensitivity to flashing lights or bright colors."
 	},
 	{
+		"Id": "disableDamageTileSFXCheckBox",
+		"title": "Disable Damage Tile SFX",
+		"screenshot": null,
+		"description": "Disables the \"ksssshhh\" sound effect when stepping over lava tiles."
+	},
+	{
 		"Id": "disableSpellCastFlashCheckBox",
 		"title": "Disable Spell Cast Flash",
 		"screenshot": "disableSpellCastFlashCheckBox.gif",

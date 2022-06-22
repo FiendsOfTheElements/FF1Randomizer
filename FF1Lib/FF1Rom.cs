@@ -1253,6 +1253,10 @@ namespace FF1Lib
 			{
 				DisableDamageTileFlicker();
 			}
+			if (preferences.DisableDamageTileSFX)
+			{
+				DisableDamageTileSFX();
+			}
 
 			if (preferences.ThirdBattlePalette)
 			{
