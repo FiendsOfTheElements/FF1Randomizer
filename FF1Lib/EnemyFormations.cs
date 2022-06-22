@@ -8,7 +8,7 @@ namespace FF1Lib
 {
 	public enum Runnability
 	{
-		[Description("Normal")]
+		[Description("Vanilla")]
 		Normal,
 		[Description("Shuffle")]
 		Shuffle,

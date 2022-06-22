@@ -36,7 +36,7 @@ namespace FF1Lib
 	}
 	public enum TouchMode
 	{
-		[Description("Standard")]
+		[Description("Vanilla")]
 		Standard = 0,
 		[Description("Shuffle")]
 		Shuffle,
