@@ -1214,7 +1214,7 @@
 		"Id": "magicLevelsCheckBox",
 		"title": "Magic Levels",
 		"screenshot": "magicLevelsCheckBox.png",
-		"description": "Shuffles the levels of spells, but not what level is sold, at each magic shop.\nUnless \"Keep Permissions\" is checked, the ability of a character to learn a given spell depends on whether or not a class can learn the spell originally in that spell's new slot (so make sure you know the vanilla spell slots for your characters)."
+		"description": "Shuffles the levels of spells, but not what level is sold, at each magic shop.\nUnless \"Keep Permissions\" is checked, the ability of a character to learn a given spell depends on whether or not a class can learn the spell originally in that spell's new slot. You can reference the \"Spell Permissions Guide\" linked in the Guides & Mechanics section of the Wiki for a spell slot breakdown."
 	},
 	{
 		"Id": "magicLevelsTieredCheckBox",
