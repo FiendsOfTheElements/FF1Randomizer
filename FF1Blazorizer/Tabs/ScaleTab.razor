@@ -14,7 +14,7 @@
 		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="cheapVendorItemCheckBox" @bind-Value="Flags.CheapVendorItem" IsEnabled="Flags.ExcludeGoldFromScaling">Cheap Vendor Item</CheckBox>
 		<div class="row-seperator"></div>
 		<h4>Enemies</h4>
-		<DoubleSlider ShowMedian DoubleCol Id="enemyStatsDoubleSlider" MinValue="20" MaxValue="500" Step="10" @bind-ValuesRange="(Flags.EnemyScaleStatsLow,Flags.EnemyScaleStatsHigh)" DisableTooltip>Enemy Stats:</DoubleSlider>
+		<DoubleSlider ShowMedian DoubleCol Id="enemyStatsDoubleSlider" UpdateToolTip="@UpdateToolTipID" MinValue="20" MaxValue="500" Step="10" @bind-ValuesRange="(Flags.EnemyScaleStatsLow,Flags.EnemyScaleStatsHigh)">Enemy Stats:</DoubleSlider>
 		<DoubleSlider ShowMedian DoubleCol Id="enemyHpDoubleSlider" Indent IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" Step="10" @bind-ValuesRange="(Flags.EnemyScaleHpLow, Flags.EnemyScaleHpHigh)" DisableTooltip>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateEnemyHPScalingCheckBox" @bind-Value="Flags.SeparateEnemyHPScaling">Separate HP&nbspScaling:</TriStateCheckBox>
 		</DoubleSlider>

@@ -57,13 +57,13 @@
 		"Id": "scriptMultiplier",
 		"title": "Everything has a Script",
 		"screenshot": "enemyScriptsCheckBox.png",
-		"description": "Controls how many non-boss enemies will have a script. Vanilla just shuffles the scripts, all other settings assign them randomly.\n\nPirates are safe unless declared unsafe."
+		"description": "Controls how many non-boss enemies will have a script. Vanilla just shuffles the scripts; all other settings randomize them.\nVanilla means about 30% of enemies will have scripts (Half = ~15%, Increased = ~45%, Double = ~60%, All = 100%, Random = ~15% to ~75%).\nPirates are safe unless declared unsafe."
 	},
 	{
 		"Id": "touchMultiplier",
 		"title": "Everything has a Touch",
 		"screenshot": "enemyStatusAttacksCheckBox.png",
-		"description": "Controls how many non-boss enemies will have a touch effect.\n\nPirates are safe unless declared unsafe."
+		"description": "Controls how many non-boss enemies will have a touch effect. Vanilla means about 30% of enemies will have touch attacks (Half = ~15%, Increased = ~45%, Double = ~60%, All = 100%, Random = ~15% to ~75%).\nPirates are safe unless declared unsafe."
 	},
 	{
 		"Id": "importResourcePack",
@@ -87,7 +87,7 @@
 		"Id": "itemMagicPool",
 		"title": "Item Magic Pool",
 		"screenshot": "itemMagicPoolDropDown.png",
-		"description": "Sets the pool of Spells for item magic shuffling.\n\nAll Magic: All valid spells.\n\nBalanced: Removes too weak and too strong spells.\n\nLow: Removes too strong spells.\n\nSupport: Removes too strong spells and all damage spells.\n\nRandom: Any of the above."
+		"description": "Sets the pool of Spells for item magic shuffling. (Compatible with Spellcrafter.)\n\nAll Magic: All valid spells.\n\nBalanced: Removes too weak and too strong spells.\n\nLow: Removes too strong spells.\n\nSupport: Removes too strong spells and all damage spells.\n\nCurated: A hand-selected pool that tries to make all item magic you find useful, but rarely strong enough to be dominating. Appropriate for tournament play. (Essentially, a tighter version of \"Balanced\".)\n\nRandom: Any of the above."
 	},
 	{
 		"Id": "quickMinimapLoad",
@@ -117,7 +117,7 @@
 		"Id": "loosePlacementMode",
 		"title": "Loose Placement",
 		"screenshot": "loosePlacementMode.png",
-		"description": "Chaotic: Random Chests and NPCs. Tends to put more key items into larger dungeons.\n\nSpread: Tries to spread out the loose items into different dungeons and gatings. With F/E it tries to spread out the items to different entrances/gatings.\n\nForward: Additionally tries to place loose items into newly opened up areas. It creates key item chains where one key item leads to the next, drives items out into the last corners of the world and can create some really nice fetch quest chains."
+		"description": "Chaotic: Random Chests and NPCs. Tends to put more key items earlier in progression and into larger dungeons.\n\nSpread: Tries to spread out the loose items into different dungeons and gatings. With F/E it tries to spread out the items to different entrances/gatings.\n\nForward: Additionally tries to place loose items into newly opened up areas. It creates key item chains where one key item leads to the next, drives items out into the last corners of the world and can create some really nice fetch quest chains."
 	},
 	{
 		"Id": "looseNpcBalance",
@@ -359,6 +359,12 @@
 		"title": "Price Scaling",
 		"screenshot": "clampMinimumPriceScaleLable.png",
 		"description": "Sets the scale of the prices of shop items and the value of gold treasure boxes you find.\nAn item's price is randomized by: (Original Price) / (Exp & Gold Multiplier) x (Randomly choosen value between min and max percent).\nThe average cost of an item is (Original Price) / (Exp & Gold Multiplier) x (Average Percent).\nExample: Silver Sword, 3.0x Exp & Gold Boost, 20-100%.\n4000 / 3 x 0.44 = 586g on average."
+	},
+	{
+		"Id": "enemyStatsDoubleSlider",
+		"title": "Randomized Enemy Stats",
+		"screenshot": null,
+		"description": "Enemy stats are randomized between a range comparative to their vanilla values. Enemy & Boss resistances and weaknesses stay the same as vanilla, as do their values for Magic Defense, Morale, and their XP/Gold rewards."
 	},
 	{
 		"Id": "wrapPriceOverflowCheckBox",
@@ -1327,7 +1333,7 @@
 		"Id": "enemySkillsSpellsCheckBox",
 		"title": "Enemy Skills/Spells",
 		"screenshot": "enemySkillsSpellsCheckBox.png",
-		"description": "Shuffles enemy skills and spells so they can appear in any script. This include only all random encounters."
+		"description": "Shuffles non-boss enemy skills and spells so they can appear in any script.\nNote: This can result in some of the scripts ending up empty, so only about 80% as many enemies will have scripts compared to them not being shuffled (so ~24% of enemies with a Vanilla Script Count instead of ~30%). Enable \"No Empty Scripts\" to spread active scripts back out."
 	},
 	{
 		"Id": "enemySkillsSpellsTieredCheckBox",
@@ -1339,13 +1345,13 @@
 		"Id": "touchMode",
 		"title": "Status Attacks Mode",
 		"screenshot": "enemyStatusAttacksCheckBox.png",
-		"description": "Sets the status ailments each enemy can inflict when they use physical attacks.\nVanilla: Enemies keep their standard touch attack.\nShuffle: Shuffle the existing touch attacks amongst all enemies.\nRandomize: Assign randomly selected touch attacks to enemies.\nRandom: Select one of the previous options at random."
+		"description": "Sets the status ailments each enemy can inflict when they use physical attacks.\nVanilla: Enemies keep their standard touch attack.\nShuffle: Shuffle the standard vanilla touch attacks amongst all enemies. (This includes exactly 1 Death touch and 1 Stone touch.)\nRandomize: Assign randomly selected touch attacks to enemies. (There's a 9% chance for Death or Stone, and a 91% chance for one of the other effects.)\nRandom: Select one of the previous options at random."
 	},
 	{
 		"Id": "touchPool",
 		"title": "Status Attacks Pool",
 		"screenshot": "disableStunTouchCheckBox.png",
-		"description": "Sets what status ailment can be inflicted when randomizing status attacks.\nAll: All possible status, including silence, death and stone.\nAll except Stun Status: All possible status, except stun ailment.\nOnly Death Status: Only the Death ailment can be assigned.\nRandom: Select one of the previous options at random."
+		"description": "Sets what status ailment can be inflicted when randomizing status attacks.\nAll: All possible status - Death, Stone, Mute, Poison, Dark, Stun, and Sleep.\nAll except Stun Status: All possible status, except Stun.\nOnly Death Status: Only the Death ailment can be assigned.\nRandom: Select one of the previous options at random."
 	},
 	{
 		"Id": "touchIncludeBosses",
@@ -1731,7 +1737,7 @@
 		"Id": "increaseWepBonusesCheckBox",
 		"title": "Weapon Attack Bonuses",
 		"screenshot": "increaseWepBonusesCheckBox.png",
-		"description": "Increases elemental and \"type\" bonuses to weapons, improving the damage bonus from +4 (vanilla behavior) to +X (based on the slider). Default setting is +10."
+		"description": "Increases elemental and \"type\" bonuses to weapons, improving the damage bonus from +4 (vanilla behavior) to +X (based on the slider)."
 	},
 
 	{
