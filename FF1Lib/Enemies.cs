@@ -598,7 +598,7 @@ namespace FF1Lib
 			}
 			else if (flags.TouchMode == TouchMode.Randomize)
 			{
-				RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates, (bool)flags.TouchIncludeBosses, flags.TouchPool, flags.ScriptMultiplier);
+				RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates, (bool)flags.TouchIncludeBosses, flags.TouchPool, flags.TouchMultiplier);
 			}
 
 		}
