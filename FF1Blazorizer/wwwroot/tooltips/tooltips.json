@@ -1264,7 +1264,7 @@
 		"Id": "generateNewSpellbook",
 		"title": "Generate New Spellbooks (Spellcrafter)",
 		"screenshot": "generateNewSpellbook.png",
-		"description": "Randomly generates completely new white and black magic spell books, replacing all magic in the game with this new selection of spells. Some spells may have the same names (i.e., FIRE, ICE, WARP, TMPR) while others will be completely new spells not seen before in the vanilla version of Final Fantasy (i.e., ROCK, SNOW, VOLT, etc.).\n Note: Spellcrafter will also change the default slots characters can learn spells, in effect reducing the number of spells, and spell slots, the Knight, Ninja, and Red Mage can learn."
+		"description": "Randomly generates completely new white and black magic spell books, replacing all magic in the game with this new selection of spells. Some spells may have the same names (i.e., FIRE, ICE, WARP, TMPR) while others will be completely new spells not seen before in the vanilla version of Final Fantasy (i.e., ROCK, SNOW, VOLT, etc.).\n Note: Spellcrafter will also change the default slots characters can learn spells, in effect reducing the number of spells, and spell slots, the Knight, Ninja, and Red Mage can learn.\nCheck the Spellcraft FAQ on the Wiki (under Randomizer Documentation) for more detailed information."
 	},
 	{
 		"Id": "spellcrafterRetainPermissions",
@@ -1457,7 +1457,7 @@
 		"Id": "randomizeEnemizer",
 		"title": "Generate New Enemies (Enemizer)",
 		"screenshot": "randomizeEnemizer.png",
-		"description": "When enabled, this flag will generate an entirely new set of enemies to populate the entire world. Although the basic sprites will remain the same (as the game has to use the original assets), and they will (generally) retain something of their original names, these will be new enemies with all their appropriate stats scaled to the zone you're exploring. \nAs an example, you could leave Coneria and find level 1 MECHs waiting for you in the forest, G.CRABs lurking on the ocean, or BEASTs out on the plains."
+		"description": "When enabled, this flag will generate an entirely new set of enemies to populate the entire world. Although the basic sprites will remain the same (as the game has to use the original assets), and they will (generally) retain something of their original names, these will be new enemies with all their appropriate stats scaled to the zone you're exploring. \nAs an example, you could leave Coneria and find level 1 MECHs waiting for you in the forest, G.CRABs lurking on the ocean, or BEASTs out on the plains.\nCheck the Enemizer FAQ on the Wiki (under Randomizer Documentation) for more detailed information."
 	},
 
 
@@ -1578,7 +1578,7 @@
 		"Id": "RandomizeClassCheckBox",
 		"title": "Blursed Classes",
 		"screenshot": "RandomizeClassCheckBox.png",
-		"description": "\"Blursed\" Classes (as in classes with \"blessings\" and \"curses\") give bonuses and maluses at random to each of the selectable classes in the game.\nPress Select at the Party Selection screen (and A at Status Screen) to reveal the modifiers applied to a given class."
+		"description": "\"Blursed\" Classes (as in classes with \"blessings\" and \"curses\") give bonuses and maluses at random to each of the selectable classes in the game.\nPress Select at the Party Selection screen (and A at Status Screen) to reveal the modifiers applied to a given class.\nCheck \"Class Blursings\" on the Wiki (under Randomizer Documentation) for a breakdown of the possible blursings."
 	},
 	{
 		"Id": "RandomizeClassCastingCheckBox",
