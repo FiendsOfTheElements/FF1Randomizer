@@ -1119,7 +1119,7 @@
 		"Id": "GuaranteedMasamuneCheckBox",
 		"title": "Guaranteed Endgame Masamune",
 		"screenshot": "guaranteedMasamuneCheckBox.png",
-		"description": "Guarantees the contents of the vanilla Masamune chest will be a Masamune.\nThis flag does not change the placement of other Masamune(s)."
+		"description": "Guarantees the contents of the vanilla Masamune chest (the bottom-right chest on the Air Floor in ToFR, the same floor you re-fight Tiamat on) will be a Masamune.\nThis flag does not change the placement of other Masamune(s)."
 	},
 	{
 		"Id": "SendMasamuneHomeCheckBox",
