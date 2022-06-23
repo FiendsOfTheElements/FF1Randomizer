@@ -2191,6 +2191,12 @@
 		"description": "Having a thief in the party, when they reach the required level, allows players to open all locked doors. (Selecting level 1 will allow the thief to always unlock doors.)\n\n Enabling this flag also adds a -10 level requirement bonus and a +10 level requirement malus to blursed classes."
 	},
 	{
+		"Id": "ReducedLuckCheckBox",
+		"title": "Reduced Starting Luck",
+		"screenshot": "ReducedLuck.png",
+		"description": "Reduces the starting Luck of all classes by 4. This makes the higher starting Luck of the Thief and Black Mage - as well as any +Luck Blursing bonuses - stand out more meaningfully, and also makes it more of a decision point if you should attempt to run or fight.\n[grid][r]{i}Vanilla ➔ Reduced |Lvl 2|Lvl 10|Lvl 18|Lvl 25[r]{l}Fighter|29% ➔ 7%|45% ➔ 30%|52% ➔ 40%|56% ➔ 46%[r]{l}Black Mage|57% ➔ 35%|59% ➔ 43%|55% ➔ 43%|52% ➔ 42%[r]{l}Thief|89% ➔ 67%|92% ➔ 77%|94% ➔ 82%|95% ➔ 85%\n\n(Black Belt, Red Mage, and White Mage are all fairly similar to Fighter.)"
+	},
+	{
 		"Id": "WhiteMageHarmEveryoneCheckBox",
 		"title": "Improved HARM for White Mage",
 		"screenshot": "whiteMageHarmEveryoneCheckBox.gif",

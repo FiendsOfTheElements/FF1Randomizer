@@ -1192,6 +1192,14 @@ namespace FF1Lib
 			ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);
 			ClassData.ProcessStartWithRoutines(flags, blursesValues, this);;
 
+			if ((bool)flags.ReducedLuck)
+			{
+				for (int i = 0; i < 12; i++)
+				{
+					ClassData[(Classes)i].LckStarting = (byte)(Math.Max(ClassData[(Classes)i].LckStarting - 4, 0));
+				}
+			}
+
 			if ((bool)flags.EnableRandomPromotions)
 			{
 				EnableRandomPromotions(flags, rng);
