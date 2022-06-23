@@ -708,7 +708,7 @@
 		"Id": "entrancesCheckBox",
 		"title": "Shuffle Entrances",
 		"screenshot": "entrancesCheckBox.gif",
-		"description": "Overworld entrances (except for towns) are shuffled together, such that the entrance to Earth Cave may be at Waterfall, Volcano may be at the Cardia Islands, etc.\nThis flag must be on for \"Floor Shuffle\" to be activated.\n \"Treasures\" and \"Main NPC Items\" shuffle flags, found in the Treasures tab, must be enabled for this flag to function."
+		"description": "Overworld entrances (except for towns) are shuffled together, such that the entrance to Earth Cave may be at Waterfall, Volcano may be at the Cardia Islands, etc.\n\"Treasures\" and \"Main NPC Items\" shuffle flags, found in the Treasures tab, must be enabled for this flag to function."
 	},
 	{
 		"Id": "allowUnsafeStartAreaCheckBox",
