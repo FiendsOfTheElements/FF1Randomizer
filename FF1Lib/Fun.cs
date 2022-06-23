@@ -583,6 +583,12 @@ namespace FF1Lib
 		{
 			Data[0x7C7E2] = 0xA9;
 		}
+		
+		// Overwrites the lava SFX Assembly Code with a bunch of NOPs
+		public void DisableDamageTileSFX()
+		{
+			Put(0x7C7E7, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+		}		
 
 		public void ChangeLute(MT19337 rng)
 		{

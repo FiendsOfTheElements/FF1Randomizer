@@ -2786,6 +2786,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableDamageTileFlicker"));
 			}
 		}
+		public bool DisableDamageTileSFX
+		{
+			get => Preferences.DisableDamageTileSFX;
+			set
+			{
+				Preferences.DisableDamageTileSFX = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableDamageTileSFX"));
+			}
+		}
 		public MenuColor MenuColor
 		{
 			get => Preferences.MenuColor;
