@@ -656,7 +656,7 @@
 		"Id": "incentivizeOtherCastArmorCheckBox",
 		"title": "Power Gauntlet",
 		"screenshot": "incentivizeOtherCastArmorCheckBox.png",
-		"description": "Adds the Power Gauntlet to the incentive pool to be distributed in the selected incentive locations. The Power Gauntlet is the Guaranteed Power Item when that flag is enabled"
+		"description": "Adds the Power Gauntlet to the incentive pool to be distributed in the selected incentive locations. The Power Gauntlet is the Guaranteed Offense Item when that flag is enabled."
 	},
 	{
 		"Id": "incentivizePowerRodCheckBox",
@@ -1830,13 +1830,13 @@
 		"Id": "guaranteedDefenseItem",
 		"title": "Guaranteed Defense Item",
 		"screenshot": "ruseItemCheckBox.png",
-		"description": "Guarantees that the Power Staff has RUSE/INV/INV2 depending on the setting. The item will be treated as a Key Item during placement."
+		"description": "Guarantees that the Power Staff has RUSE/INV/INV2 depending on the setting. (This item can be incentivized on the Incentives tab.)\n\"Any\" selects from any of the possible spell options; \"Random\" can also select \"None\"."
 	},
 	{
 		"Id": "guaranteedPowerItem",
-		"title": "Guaranteed Power Item",
+		"title": "Guaranteed Offense Item",
 		"screenshot": null,
-		"description": "Guarantees that the Power Gauntlet has SABR/TMPR/FAST depending on the setting. The item will be treated as a Key Item during placement."
+		"description": "Guarantees that the Power Gauntlet has SABR/TMPR/FAST depending on the setting. (This item can be incentivized on the Incentives tab.)\n\"Any\" selects from any of the possible spell options; \"Random\" can also select \"None\"."
 	},
 	{
 		"Id": "itemMagicCheckBox",

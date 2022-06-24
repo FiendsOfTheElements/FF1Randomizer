@@ -50,7 +50,7 @@
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.Vanilla && Flags.ItemMagicMode != ItemMagicMode.None)" Id="itemMagicPool" TItem="ItemMagicPool" @bind-Value="Flags.ItemMagicPool">Item Magic Pool:</EnumDropDown>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsCheckBox" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.Vanilla && Flags.ItemMagicMode != ItemMagicMode.None)" @bind-Value="Flags.MagisizeWeapons">All Weapons Cast Spells</TriStateCheckBox>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="guaranteedDefenseItem" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.None)" TItem="GuaranteedDefenseItem" @bind-Value="Flags.GuaranteedDefenseItem">Guaranteed Defense Item</EnumDropDown>
-    <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="guaranteedPowerItem" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.None)" TItem="GuaranteedPowerItem" @bind-Value="Flags.GuaranteedPowerItem">Guaranteed Power Item</EnumDropDown>
+    <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="guaranteedPowerItem" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.None)" TItem="GuaranteedPowerItem" @bind-Value="Flags.GuaranteedPowerItem">Guaranteed Offense Item</EnumDropDown>
 </div>
 
 		<div class="col1 full">
