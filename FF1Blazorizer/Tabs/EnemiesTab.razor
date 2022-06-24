@@ -17,7 +17,7 @@
 			<h4>Bosses</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossScriptsCheckBox" @bind-Value="Flags.ShuffleScriptsBosses">Shuffle Scripts</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossSkillsSpellsCheckBox" @bind-Value="Flags.ShuffleSkillsSpellsBosses">Shuffle Skills & Spells</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsBosses != false)" Id="noConsecutiveNukesCheckBox" @bind-Value="Flags.NoConsecutiveNukes">Prevent consecutive NUKE or NUCLEAR</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsBosses != false)" Id="noConsecutiveNukesCheckBox" @bind-Value="Flags.NoConsecutiveNukes">Prevent Consecutive NUKE or NUCLEAR</TriStateCheckBox>
 
 			<div class="checkbox-cell"></div>
 			<h4>Enemies</h4>
@@ -67,13 +67,13 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="swoleBahamutCheckBox" IsEnabled="@(Flags.FightBahamut != false)" @bind-Value="Flags.SwoleBahamut">Buffed</TriStateCheckBox>
 
 			<div class="checkbox-cell"></div>
-		    <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDropDown" TItem="SpoilerBatHints" @bind-Value="Flags.SkyWarriorSpoilerBats">Temple of Fiends bats give boss hints:</EnumDropDown>
+		    <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDropDown" TItem="SpoilerBatHints" @bind-Value="Flags.SkyWarriorSpoilerBats">Temple of Fiends Bats Give Boss Hints:</EnumDropDown>
 			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="spoilerBatsDontCheckOrbsCheckbox" IsEnabled="@Flags.SpoilerBatsDontCheckOrbsEnabled" @bind-Value="Flags.SpoilerBatsDontCheckOrbs">Early Spoilers</TriStateCheckBox>
 
 		<div class="checkbox-cell"></div>
 		<h4>Enemizer</h4>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" @bind-Value="Flags.RandomizeFormationEnemizer">Generate new formations</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" Indent IsEnabled="@Flags.RandomizeFormationEnemizer" @bind-Value="Flags.RandomizeEnemizer">Generate new enemies</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeFormationEnemizer" @bind-Value="Flags.RandomizeFormationEnemizer">Generate New Formations</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="randomizeEnemizer" Indent IsEnabled="@Flags.RandomizeFormationEnemizer" @bind-Value="Flags.RandomizeEnemizer">Generate New Enemies</TriStateCheckBox>
 
 		</div>
 		</div>

@@ -10,7 +10,7 @@
 		<h4>Gold</h4>
 		<DoubleSlider ShowMedian DoubleCol Id="clampMinimumPriceScaleLable" UpdateToolTip="@UpdateToolTipID" MinValue="0" MaxValue="500" Step="10" @bind-ValuesRange="(Flags.PriceScaleFactorLow,Flags.PriceScaleFactorHigh)">Prices:</DoubleSlider>
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingGoldDropDown" TItem="StartingGold" @bind-Value="Flags.StartingGold">Starting Gold:</EnumDropDown>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="excludeGoldFromScalingCheckBox" @bind-Value="Flags.ExcludeGoldFromScaling">Exclude Gold from scaling</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="excludeGoldFromScalingCheckBox" @bind-Value="Flags.ExcludeGoldFromScaling">Exclude Gold from Scaling</TriStateCheckBox>
 		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="cheapVendorItemCheckBox" @bind-Value="Flags.CheapVendorItem" IsEnabled="Flags.ExcludeGoldFromScaling">Cheap Vendor Item</CheckBox>
 		<div class="row-seperator"></div>
 		<h4>Enemies</h4>
@@ -51,7 +51,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-lg-5">Most dungeons: @Math.Ceiling(8.0 * (Flags.DungeonEncounterRate/30.0))/256</div>
+			<div class="col-lg-5">Most Dungeons: @Math.Ceiling(8.0 * (Flags.DungeonEncounterRate/30.0))/256</div>
 		</div>
 		<div class="row-seperator"></div>
 		<h4>Experience</h4>

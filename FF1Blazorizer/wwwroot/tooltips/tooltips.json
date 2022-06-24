@@ -824,7 +824,7 @@
 		"Id": "mapOpenProgressionFloaterDockCheckBox",
 		"title": "Ryukahn Desert Dock",
 		"screenshot": "mapOpenProgressionFloaterDockCheckBox.png",
-		"description": "Adds an additional dock near the Ryukhan desert."
+		"description": "Adds an additional dock near the Ryukhan desert (where you use the Floater to obtain the Airship)."
 	},
 	{
 		"Id": "bahamutCardiaDockCheckBox",
@@ -1177,7 +1177,7 @@
 		"Id": "legendaryShopsGroup",
 		"title": "Legendary Shops",
 		"screenshot": "legendaryShopsGroup.gif",
-		"description": "Creates up to five legendary shops in dungeons, one of each type.\nThe potential locations are: Earth Cave B2, Marsh Cave B2, Dwarves' Cave, Mirage Tower F1, Ice Cave B1, Left Sea Shrine 2"
+		"description": "Creates up to five legendary shops in dungeons, one of each type.\nThe potential locations are: Earth Cave B2, Marsh Cave B2, Dwarves' Cave, Mirage Tower F1, Ice Cave B1, & Left Sea Shrine 2."
 	},
 	{
 		"Id": "exlegendaryWeaponShopCheckBox",
@@ -1489,7 +1489,7 @@
 		"Id": "tavernMode",
 		"title": "Tavern Recruitment Mode",
 		"screenshot": "tavernMode.png",
-		"description": "Replaces the Clinics found in towns with Pubs. These pubs allow the party to recruit a Light Warrior of a random class, in addition to the standard Clinic duties of reviving fallen Light Warriors."
+		"description": "Replaces the Clinics found in towns with Pubs. These Pubs allow the party to recruit a Light Warrior of a random class, in addition to the standard Clinic duties of reviving fallen Light Warriors."
 	},
 	{
 		"Id": "tavernModeHireOnly",
