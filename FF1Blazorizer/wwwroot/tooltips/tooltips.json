@@ -441,6 +441,12 @@
 	},
 
 	{
+		"Id": "XPGoldBoostTooltip",
+		"title": "Exp/Gold Boost",
+		"screenshot": null,
+		"description": "Increases the amount of gold and XP you get from battles. The first slider is a multiplier, meaning you'll get 2.0x (or whatever) the vanilla amount. The second slider is a flat value, which adds that much XP and Gold to the amount gained from any fight."
+	},
+	{
 		"Id": "progressiveScaleModeDropDown",
 		"title": "Exp/Gold Progressive Scaling",
 		"screenshot": "progressiveScaleModeDropDown.png",
