@@ -64,8 +64,8 @@
 			else if (Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld || Flags.OwMapExchange == OwMapExchanges.LostWoods || Flags.OwMapExchange == OwMapExchanges.Desert)
 			{
 				<div class="col1">
-					<h4>Map generation parameters</h4>
-					Map generation seed:
+					<h4>Map generation Parameters</h4>
+					Map Generation Seed:
 					<br>
 					<input type="text" style="width: calc(100% - 160px);" class="nes-input @(_mapgenSeedInputClass)" id="mapgenSeedInput"
 							@onchange="@OnSeedInputChanged" value="@(_mapgenSeed)"
@@ -102,7 +102,7 @@
 			@if (Flags.OwMapExchange != OwMapExchanges.Desert)
 			{
 				<div class="col2">
-					<h4>Other map changes</h4>
+					<h4>Other Map Changes</h4>
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="OWDamageTilesCheckBox" @bind-Value="Flags.OWDamageTiles">Marsh and Desert Tiles Deal Damage</TriStateCheckBox>
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="DamageTilesKillCheckBox" @bind-Value="Flags.DamageTilesKill">Lethal Damage Tiles</TriStateCheckBox>
 
