@@ -117,7 +117,7 @@
 		"Id": "loosePlacementMode",
 		"title": "Loose Placement",
 		"screenshot": "loosePlacementMode.png",
-		"description": "Chaotic: Random Chests and NPCs. Tends to put more key items earlier in progression and into larger dungeons.\n\nSpread: Tries to spread out the loose items into different dungeons and gatings. With F/E it tries to spread out the items to different entrances/gatings.\n\nForward: Additionally tries to place loose items into newly opened up areas. It creates key item chains where one key item leads to the next, drives items out into the last corners of the world and can create some really nice fetch quest chains."
+		"description": "Chaotic: Random Chests and NPCs. Tends to put more key items earlier in progression and into larger dungeons.\n\nSpread: Tries to spread out the loose items into different dungeons and gatings. With Entrance + Floor Shuffle (Maps tab), it tries to spread out the items to different entrances/gatings.\n\nForward: Additionally tries to place loose items into newly opened up areas. It creates key item chains where one key item leads to the next, drives items out into the last corners of the world and can create some really nice fetch quest chains."
 	},
 	{
 		"Id": "looseNpcBalance",
