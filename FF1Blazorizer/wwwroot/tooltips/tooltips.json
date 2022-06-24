@@ -1614,7 +1614,7 @@
 		"Id": "RandomizeClassKeyItemsCheckBox",
 		"title": "Blursed Classes - Start with Key Items",
 		"screenshot": "RandomizeClassKeyItemsCheckBox.png",
-		"description": "Each Classes will start with a different Key Item. Free or Removed Key Items aren't included. If Thief Lockpicking is enabled, KEY will be excluded. These Key Items are never included: BRIDGE, SHIP, CANAL, CANOE, FLOATER."
+		"description": "Each class will start with a different Key Item, separate from the normal count for Bonuses (so they will still each get Key Items when Bonuses is set to 0). This is separate from Incentives, and will only include standard Key Items (such as OXYALE or TNT), not any other incentivized equipment.\nFree or Removed Key Items aren't included. If Thief Lockpicking is enabled, KEY will be excluded. These Key Items are never included: BRIDGE, SHIP, CANAL, CANOE, FLOATER."
 	},
 	{
 		"Id": "EnableRandomPromotions",
