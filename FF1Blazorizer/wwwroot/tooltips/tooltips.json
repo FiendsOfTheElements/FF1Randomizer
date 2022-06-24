@@ -69,7 +69,7 @@
 		"Id": "importResourcePack",
 		"title": "Import Resource Pack",
 		"screenshot": "importResourcePack.png",
-		"description": "Imports into the game various custom assets like sprites, gamescript and worldmap grouped in a single zip package. See Resources for more info."
+		"description": "Imports into the game various custom assets like sprites, gamescript and worldmap grouped in a single zip package. See the Wiki for more info."
 	},
 	{
 		"Id": "disableMinimap",
@@ -971,7 +971,7 @@
 		"Id": "betterTrapTreasureCheckBox",
 		"title": "Better Trap Treasure",
 		"screenshot": "betterTrapTreasureCheckBox.png",
-		"description": "Adjusts treasure chests that require walking over an encounter tile so that they are more likely to have high-tier treasures. More information on the tiers of weapons is available in the \"Resources\" tab."
+		"description": "Adjusts treasure chests that require walking over an encounter tile so that they are more likely to have high-tier treasures."
 	},
 	{
 		"Id": "earlierRubyCheckBox",
@@ -2073,7 +2073,7 @@
 		"Id": "owMapExchange",
 		"title": "Overworld Map",
 		"screenshot": "owMapExchange.png",
-		"description": "Select the layout of Overworld.\nVanilla: The original Final Fantasy 1 Overworld.\nGenerate New Overworld: Creates a completely new overworld, vanilla access requirements (game is beatable even vanilla progression/no treasure shuffle). Map generation is resource intensive and may take 30-60 seconds during which time your browser may be unresponsive. If a seed fails to generate a map, try a different seed, or select Use Pregenerated Map.\nLost Woods: Randomly generated endless forest map.\nDesert of Death: Randomly generated deadly desert map.\nImport custom map: Import a map using the 'Import map' button."
+		"description": "Select the layout of Overworld.\nVanilla: The original Final Fantasy 1 Overworld.\nGenerate New Overworld: Creates a completely new overworld, vanilla access requirements (game is beatable even vanilla progression/no treasure shuffle). Map generation is resource-intensive and may take 30-60 seconds during which time your browser may be unresponsive. If a seed fails to generate a map, try a different seed, or select Use Pregenerated Map.\nLost Woods: Randomly generated endless forest map.\nDesert of Death: Randomly generated deadly desert map.\nImport custom map: Import a map using the 'Import map' button."
 	},
 	{
 		"Id": "usePregenCheckBox",
@@ -2258,48 +2258,48 @@
 	},
 	{
 		"Id": "noConsecutiveNukesCheckBox",
-		"title": "Prevent consecutive NUKE or NUCLEAR",
+		"title": "Prevent Consecutive NUKE or NUCLEAR",
 		"description": "When shuffling spell and skill scripts, prevent consecutive casts of NUKE or NUCLEAR without at least one other spell or skill in between.  Also prevents having the starting spell and skill slots filled by both NUKE and NUCLEAR at the same time. (Because one is a spell and one is a skill, it's still rarely possible for NUKE to be activated immediately after NUCLEAR - or vice-versa - later in the fight.)"
 	},
 
 	{
 		"Id": "beginnerPresetToolTipBox",
-		"title": "Beginner preset",
+		"title": "Beginner Preset",
 		"description": "Introduction to the randomizer, and the basis for most of the other presets."
 	},
 	{
 		"Id": "improvedVanillaPresetToolTipBox",
-		"title": "Improved Vanilla preset",
+		"title": "Improved Vanilla Preset",
 		"description": "Applies the bugfixes and quality-of-life improvements to the base game, but does not randomize anything."
 	},
 	{
 		"Id": "deepDungeonPresetToolTipBox",
-		"title": "Deep Dungeon preset",
+		"title": "Deep Dungeon Preset",
 		"description": "Turns Coneria Castle into a 52-floor completely procedurally generated dungeon, leading to Chaos.\nAs you go deeper, the monster encounters get stronger. Every so often there will be a branch to the next town, but dying or restoring a save will send you back to start.\nKey flags\n- Save on game over\n- Save items replaced by ethers that restore magic charges\n- The Tail can be found between floors 10 and 30, before Bahamut.\n[grid][r]Towns|Level[r]Pravoka|between 2 and 6[r]Elfland|between 9 and 13[r]Melmond|between 16 and 20[r]Crescent Lake|between 23 and 27[r]Onrac|between 30 and 34[r]Gaia|between 37 and 41[r]Lefein|between 44 and 48"
 	},
 	{
 		"Id": "overRandomizerToolTipBox",
-		"title": "Over Randomizer preset",
-		"description": "The randomizer will give you entirely new weapons, armor, spells, and enemies.\nKey flags\nWeaponizer - see tooltip on the 'Gear & Items'\nArmor Crafter - see tooltip on the Gear & Items for details\nSpell Crafter - See 'Spellcrafter FAQ' on the Resources page\nEnemizer - See 'Enemizer FAQ' on the Resources page"
+		"title": "Over Randomizer Preset",
+		"description": "The randomizer will give you entirely new weapons, armor, spells, and enemies.\nKey flags\nWeaponizer - see tooltip on the 'Gear & Items'\nArmor Crafter - see tooltip on the Gear & Items for details\nEnemizer & Spell Crafter - See the FAQs on the Wiki, under Randomizer Documentation."
 	},
 	{
 		"Id": "chaosRushToolTipBox",
-		"title": "Chaos Rush preset",
+		"title": "Chaos Rush Preset",
 		"description": "You can challenge Chaos immediately at the start of the game.  How fast can you become strong enough to defeat Chaos?\nKey flags\n- All 4 Orbs are lit, ToFR is unlocked, and you start with the LUTE\n- Your 4 Light Warriors are chosen for you\n- Free Ship, Canoe and Airship\n- Free TAIL\n- High XP and gold scaling\n- Low encounter rate\n- Short ToFR"
 	},
 	{
 		"Id": "hiddenChaosToolTipBox",
-		"title": "Hidden Chaos preset",
+		"title": "Hidden Chaos Preset",
 		"description": "Chaos is hidden in a random chest and must be found to be defeated. Once you've killed Chaos the game ends. If you find Chaos and then lose, fear not -- the fiend will not move and can be tracked down to the same treasure chest to be fought again.\nKey flags\n- Randomized treasure, high wealth\n- Rare and legendary gear in shops\n- All 4 Orbs are lit, ToFR is unlocked, and you start with the LUTE, but is anyone home?"
 	},
 	{
 		"Id": "entranceFloorShufflePresetToolTipBox",
-		"title": "Entrance and Floor Shuffle preset",
+		"title": "Entrance and Floor Shuffle Preset",
 		"description": "Overworld entrances (except for towns) are shuffled together, and shuffles cave and dungeon floors.  For example, the entrance to Waterfall could lead to Earth B1, which may lead to Volcano B3, which leads to Matoya's Cave, etc.\nKey flags\n- Dungeon encounter rate is slightly lower than Beginner flagset"
 	},
 	{
 		"Id": "noverworldShufflePresetToolTipBox",
-		"title": "NOverworld preset",
+		"title": "NOverworld Preset",
 		"description": "Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps.  Introduces two new items, the SIGIL and the MARK, which you must find to unlock progression.\nKey flags\n- Save on death\n- Save items replaced with ethers, which restore magic charges\n- Start with a random item that casts offensive area-of-effect magic"
 	},
 	{
