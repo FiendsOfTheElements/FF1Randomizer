@@ -193,7 +193,7 @@ namespace FF1Lib
 		public bool ShardHunt { get; set; } = false;
 		public ShardCount ShardCount { get; set; } = ShardCount.Count16;
 
-		[IntegerFlag(1, 4)]
+		[IntegerFlag(0, 4)]
 		public int OrbsRequiredCount { get; set; } = 4;
 		public OrbsRequiredMode OrbsRequiredMode { get; set; } = OrbsRequiredMode.Any;
 		public bool? OrbsRequiredSpoilers { get; set; } = false;
@@ -354,7 +354,6 @@ namespace FF1Lib
 		public bool? FreeShip { get; set; } = false;
 		public bool? FreeAirship { get; set; } = false;
 		public bool? FreeLute { get; set; } = false;
-		public bool FreeOrbs { get; set; } = false;
 		public bool EnableCritNumberDisplay { get; set; } = false;
 		public bool? FreeCanal { get; set; } = false;
 		public bool? FreeCanoe { get; set; } = false;

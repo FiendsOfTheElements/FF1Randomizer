@@ -547,7 +547,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ShardHuntEnabled => !FreeOrbs;
+		public bool ShardHuntEnabled => (Flags.OrbsRequiredCount == 4 || ShardHunt);
 
 		public ShardCount ShardCount
 		{
@@ -558,8 +558,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShardCount"));
 			}
 		}
-
-		public bool ExtraShardsEnabled => ShardHunt && !FreeOrbs;
 
 		public int OrbsRequiredCount
 		{
@@ -592,8 +590,8 @@ namespace FF1Lib
 			}
 		}
 
-		public bool OrbsRequiredEnabled => !ShardHunt && !FreeOrbs;
-		public bool OrbsRequiredOptionsEnabled => OrbsRequiredEnabled && (Flags.OrbsRequiredCount != 4);
+		public bool OrbsRequiredEnabled => !ShardHunt && (Flags.GameMode != GameModes.DeepDungeon);
+		public bool OrbsRequiredOptionsEnabled => OrbsRequiredEnabled && (Flags.OrbsRequiredCount != 4 && Flags.OrbsRequiredCount != 0);
 
 		public FinalFormation TransformFinalFormation
 		{
@@ -1988,15 +1986,6 @@ namespace FF1Lib
 			{
 				Flags.FreeCanoe = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanoe"));
-			}
-		}
-		public bool FreeOrbs
-		{
-			get => Flags.FreeOrbs;
-			set
-			{
-				Flags.FreeOrbs = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeOrbs"));
 			}
 		}
 

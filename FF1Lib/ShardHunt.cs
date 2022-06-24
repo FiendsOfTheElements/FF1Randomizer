@@ -228,6 +228,7 @@ namespace FF1Lib
 				case 3: goal = 3; break;
 				case 2: goal = 2; break;
 				case 1: goal = 1; break;
+				case 0: { goal = 0; mode = OrbsRequiredMode.Any; }  break; // for 0 Orbs, force Any
 				case 5: goal = rng.Between(1, 3); break;
 			}
 
@@ -236,12 +237,15 @@ namespace FF1Lib
 			if (goal == 1)
 			{
 				orbIntro = "The ORB now covers";
+			} else if (goal == 0)
+			{
+				orbIntro = "You now approach";
 			}
 			updatedBlackOrbDialogue.Add(0x21, $"{orbIntro}\nthe black ORB..\nTo take a step forward\nis to go back 2000 years\nin time.");
 
 			if (mode.Equals(OrbsRequiredMode.Any))
 			{
-				// Orb Requirement is Any 3, Any 2, or Any 1
+				// Orb Requirement is Any 3, Any 2, Any 1, or 0
 
 				// Modify "shift earth orb down code" that normally assigns shard values 2 for earth / fire, and 4 for water / wind
 				// (now assigns shard value of 1 for all orbs; AKA modded 0F_CE12_OrbRewards.asm)
@@ -250,7 +254,7 @@ namespace FF1Lib
 				// Adjust Black Orb Behavior to check $6035 for goal "shards" (in this case, the orb count)
 				BlackOrbChecksShardsCountFor(goal, talkroutines);
 
-				if (spoilersEnabled)
+				if (spoilersEnabled && goal != 0)
 				{
 					String total = "";
 					switch (goal)
