@@ -289,6 +289,10 @@ namespace FF1Lib
 				DamageTilesKill(flags.SaveGameWhenGameOver);
 			}
 
+			if ((bool)flags.MoveToFBats) {
+			    MoveToFBats();
+			}
+
 			if ((bool)flags.ReversedFloors) new ReversedFloors(this, maps, rng).Work();
 
 			var flippedMaps = new List<MapId>();
@@ -584,10 +588,6 @@ namespace FF1Lib
 			if (flags.SpeedHacks)
 			{
 				SpeedHacksMoveNpcs();
-			}
-
-			if ((bool)flags.MoveToFBats) {
-			    MoveToFBats();
 			}
 
 			// NOTE: logic checking for relocated chests
