@@ -275,15 +275,6 @@
 		"screenshot": "customHeroSprites.png",
 		"description": "Import custom player sprites. Must use sprite sheets from\nhttp://www.groggy.dog/ffr_sprites/Images/sprites.bmp\nCompatible with Fun % flag Three Battle Palettes.\nNotes for custom sprites:\n1) Use NES colors http://www.groggy.dog/ffr_sprites/Images/NESpalette.png\n2) Maximum of three colors per sprite, plus black (for battle sprites) or transparent (magenta, for mapman sprites)\n3) Mapman can have separate palettes for head and body\n4) All battle sprite postures for a given class must have the same palette\n5) Maximum of two (or three with 'Three Battle Palettes' flag) distinct battle palettes across all classes, classes will need to share palettes, and sprites intended to share a palette need to use exactly same colors in the import image.\n\nImport problems (usually palette problems) will be reported on the Javascript console; use your browser's Web Developer Tools to view the messages.\nSprites are saved when you click 'Save Preferences' in the Fun% menu."
 	},
-
-
-
-	{
-		"Id": "freeOrbsCheckBox",
-		"title": "Free Orbs",
-		"screenshot": "freeOrbsCheckBox.png",
-		"description": "Starts the game with all four Orbs lit. The KEY and LUTE are still required to reach Chaos, although other settings may change this behavior."
-	},
 	{
 		"Id": "trappedChaosCheckBox",
 		"title": "Hidden Chaos",
@@ -2248,7 +2239,7 @@
 		"Id": "OrbsRequiredModeDropDown",
 		"title": "Total Orbs Required",
 		"screenshot": "orbsRequiredDropDown.png",
-		"description": "Changes the total number of ORBS needed to enter the Temple of Fiends Revisited.\n[grid][r]{i}Option|{i}Explained[r]{l}4|{l}(Vanilla Behavior) All 4 ORBS are required[r]{l}Any 3|{l}Any combination of 3 ORBS are accepted[r]{l}Any 2|{l}Any combination of 2 ORBS are accepted[r]{l}Any 1|{l}Any single ORB is accepted[r]{l}Specific 3|{l}3 Randomly selected ORBS are required[r]{l}Specific 2|{l}2 Randomly selected ORBS are required[r]{l}Specific 1|{l}1 Randomly selected ORB is required\n\n\"Total Orbs Required: Random\" will pick a number 1 - 3.\n\nGoing above the minimum ORB requirement will still grant access to ToFR.\nThis option is ignored if Shard Hunt, Deep Dungeon, and/or Free Orbs is enabled."
+		"description": "Changes the total number of ORBS needed to enter the Temple of Fiends Revisited.\n[grid][r]{i}Option|{i}Explained[r]{l}4|{l}(Vanilla Behavior) All 4 ORBS are required[r]{l}Any 3|{l}Any combination of 3 ORBS are accepted[r]{l}Any 2|{l}Any combination of 2 ORBS are accepted[r]{l}Any 1|{l}Any single ORB is accepted[r]{l}Specific 3|{l}3 Randomly selected ORBS are required[r]{l}Specific 2|{l}2 Randomly selected ORBS are required[r]{l}Specific 1|{l}1 Randomly selected ORB is required[r]{l}0|{l}No ORBS are required\n\n\"Total Orbs Required: Random\" will pick a number 1 - 3.\n\nGoing above the minimum ORB requirement will still grant access to ToFR.\nThis option is ignored if Shard Hunt or Deep Dungeon is enabled."
 	},
 	{
 		"Id": "orbsRequiredSpoilersCheckbox",

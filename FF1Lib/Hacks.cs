@@ -748,15 +748,6 @@ namespace FF1Lib
 			Data[0x3020 + (int)Item.Tail] = 0x01;
 		}
 
-		public void EnableFreeOrbs()
-		{
-			const int initItemOffset = 0x3020;
-			Data[initItemOffset + (int)Item.EarthOrb] = 0x01;
-			Data[initItemOffset + (int)Item.FireOrb] = 0x01;
-			Data[initItemOffset + (int)Item.WaterOrb] = 0x01;
-			Data[initItemOffset + (int)Item.AirOrb] = 0x01;
-		}
-
 		public void ChangeUnrunnableRunToWait()
 		{
 			// See Unrunnable.asm

@@ -448,12 +448,12 @@ namespace FF1Lib
 				EnableToFRExit(maps);
 			}
 
-			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs)
+			if (((bool)flags.Treasures) && flags.ShardHunt)
 			{
 				EnableShardHunt(rng, talkroutines, flags.ShardCount);
 			}
 
-			if (!flags.FreeOrbs && !flags.ShardHunt && (flags.GameMode != GameModes.DeepDungeon))
+			if (!flags.ShardHunt && (flags.GameMode != GameModes.DeepDungeon))
 			{
 				SetOrbRequirement(rng, talkroutines, flags.OrbsRequiredCount, flags.OrbsRequiredMode, (bool)flags.OrbsRequiredSpoilers);
 			}
@@ -517,11 +517,6 @@ namespace FF1Lib
 			if ((bool)flags.IsShipFree)
 			{
 					EnableFreeShip();
-			}
-
-			if (flags.FreeOrbs)
-			{
-				EnableFreeOrbs();
 			}
 
 			if ((bool)flags.IsCanalFree)
@@ -629,7 +624,7 @@ namespace FF1Lib
 					}
 
 					// Disable the Princess Warp back to Castle Coneria
-					if ((bool)flags.Entrances || (bool)flags.Floors || (flags.GameMode == GameModes.Standard && flags.OwMapExchange != OwMapExchanges.None) || (bool)flags.FreeOrbs)
+					if ((bool)flags.Entrances || (bool)flags.Floors || (flags.GameMode == GameModes.Standard && flags.OwMapExchange != OwMapExchanges.None) || (flags.OrbsRequiredCount == 0 && !flags.ShardHunt))
 						talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
 
 					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && (flags.GameMode != GameModes.DeepDungeon))

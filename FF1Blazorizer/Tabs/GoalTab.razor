@@ -23,13 +23,11 @@
 
 	<div class="col2">
 		<h4>Orbs of Light</h4>
-		<IntSliderRng DisableTooltip="true" Min="1" Max="5" Step="1" UpdateToolTip="@UpdateToolTipID" Id="OrbsRequiredCount" @bind-Value="@Flags.OrbsRequiredCount">Total Orbs Required:</IntSliderRng>
+		<IntSliderRng DisableTooltip="true" Min="0" Max="5" Step="1" IsEnabled="@Flags.OrbsRequiredEnabled" UpdateToolTip="@UpdateToolTipID" Id="OrbsRequiredCount" @bind-Value="@Flags.OrbsRequiredCount">Total Orbs Required:</IntSliderRng>
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="OrbsRequiredModeDropDown" IsEnabled="@(Flags.OrbsRequiredOptionsEnabled)" TItem="OrbsRequiredMode" @bind-Value="Flags.OrbsRequiredMode">Mode:</EnumDropDown>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="orbsRequiredSpoilersCheckbox" IsEnabled="@(Flags.OrbsRequiredOptionsEnabled)" @bind-Value="Flags.OrbsRequiredSpoilers">Orb Spoilers</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeOrbsCheckBox" IsEnabled="@Flags.FreeOrbsEnabled" @bind-Value="Flags.FreeOrbs">Free Orbs</CheckBox>
-		<div class="checkbox-cell"></div>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" IsEnabled="@Flags.ShardHuntEnabled" @bind-Value="Flags.ShardHunt">Treasure Hunt</CheckBox>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" IsEnabled="@Flags.ShardHuntEnabled" @bind-Value="Flags.ShardHunt">Shard Hunt</CheckBox>
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="ShardCount" @bind-Value="Flags.ShardCount">Goal:</EnumDropDown>
 
 	     <div class="checkbox-cell"></div>
