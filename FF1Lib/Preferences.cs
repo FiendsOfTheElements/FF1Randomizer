@@ -36,5 +36,6 @@ namespace FF1Lib
 		public bool QuickJoy2Reset { get; set; } = false;
 
 		public string PlayerName { get; set; } = "Player 01";
+		public bool BlandSite { get; set; } = false;
 	}
 }

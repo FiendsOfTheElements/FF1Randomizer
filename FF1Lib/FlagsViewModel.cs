@@ -2840,6 +2840,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoTabLayout"));
 			}
 		}
+		public bool BlandSite
+		{
+			get => Preferences.BlandSite;
+			set
+			{
+				Preferences.BlandSite = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlandSite"));
+			}
+		}
 		public TitanSnack TitanSnack
 		{
 			get => Preferences.TitanSnack;

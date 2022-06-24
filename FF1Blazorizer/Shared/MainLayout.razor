@@ -15,13 +15,18 @@
 	</div>
 
         <div class="@(modalActive ? "page-dimmed" : "page-normal")">
+
+@if(!blandSite)
+{
 	<div class="ua-bg-top"></div>
 	<div class="ua-bg-bottom"></div>
+}
 
 	<div id="wrapper">
 		<div id="banner-holder"></div>
 
 		<div id="nav-holder"></div>
+		<CascadingValue Value="@SetBlandSite" Name="SetBlandSite">
 		<CascadingValue Value="@showChaos">
 		  <CascadingValue Value="@ShowModal" Name="ShowModal">
 		  <CascadingValue Value="@SetGenerating" Name="SetGenerating">
@@ -34,6 +39,7 @@
 		  </CascadingValue>
 		  </CascadingValue>
 		  </CascadingValue>
+		</CascadingValue>
 		</CascadingValue>
 
 		<footer id="main-footer">
@@ -70,6 +76,7 @@
 	bool generating { get; set; } = false;
 	string modalContent { get; set; } = "";
 	bool cancelled { get; set; } = false;
+	bool blandSite { get; set; } = true;
 
 	public delegate void ShowModalT(bool active);
 	public delegate void SetContentT(string content);
@@ -80,11 +87,14 @@
 	SetContentT SetModalContent { get; set; }
 	GetCancelledT GetCancelled { get; set; }
 
+	ShowModalT SetBlandSite { get; set; }
+
 	protected override void OnInitialized() {
 		ShowModal = this._showModal;
 		SetGenerating = this._setGenerating;
 		SetModalContent = this._setModalContent;
 		GetCancelled = this._getCancelled;
+		SetBlandSite = this._setBlandSite;
 	}
 
 	private void TriggerChaos(bool chaostriggered)
@@ -105,6 +115,11 @@
 
         private void _setModalContent(string content) {
 		modalContent = content;
+		StateHasChanged();
+	}
+
+	private void _setBlandSite(bool isbland) {
+		blandSite = isbland;
 		StateHasChanged();
 	}
 
