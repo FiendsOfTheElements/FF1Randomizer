@@ -172,8 +172,9 @@
 				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false)" Id="classAsNpcForcedFiendsCheckBox" @bind-Value="Flags.ClassAsNpcForcedFiends">Forced Recruits</TriStateCheckBox>
 				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="classAsNpcKeyNpcCheckBox" @bind-Value="Flags.ClassAsNpcKeyNPC">Recruits Linked to Key NPCs</TriStateCheckBox>
 				<IntSlider Indent Min="0" Max="12" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcCountSlider" @bind-Value="@Flags.ClassAsNpcCount">Recruit Count:</IntSlider>
-				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcDuplicateCheckBox" @bind-Value="Flags.ClassAsNpcDuplicate">Allow Duplicates</TriStateCheckBox>
-				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcPromoCheckBox" @bind-Value="Flags.ClassAsNpcPromotion">Promoted Classes</TriStateCheckBox>
+                <div class="checkbox-cell"></div>
+                <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcDuplicateCheckBox" @bind-Value="Flags.ClassAsNpcDuplicate">Allow Duplicates</TriStateCheckBox>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ClassAsNpcFiends != false || Flags.ClassAsNpcKeyNPC != false)" Id="classAsNpcPromoCheckBox" @bind-Value="Flags.ClassAsNpcPromotion">Promoted Classes</TriStateCheckBox>
 			</div>
 		</div>
 		<div class="clear-it"></div>
