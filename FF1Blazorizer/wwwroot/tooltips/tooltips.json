@@ -2337,7 +2337,7 @@
 		"Id": "swoleAstosCheckBox",
 		"title": "Buffed Astos",
 		"screenshot": "buffedAstosCheckBox.png",
-		"description": "Give Astos more HP, armor, evade and nasty spells and skills.  Hint: Astos likes status effects, and death.  He can dish it out, but he can't take it."
+		"description": "Astos becomes as strong as a fiend, with extremely high evasion, nasty spells and skills, and a high XP reward. He likes to utilize Status and Death magic - but is also vulnerable to the same."
 	},
 	{
 		"Id": "unsafeAstosCheckBox",
