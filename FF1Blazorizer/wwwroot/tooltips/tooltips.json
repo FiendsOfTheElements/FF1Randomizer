@@ -444,13 +444,13 @@
 		"Id": "XPGoldBoostTooltip",
 		"title": "Exp/Gold Boost",
 		"screenshot": null,
-		"description": "Increases the amount of gold and XP you get from battles. The first slider is a multiplier, meaning you'll get 2.0x (or whatever) the vanilla amount. The second slider is a flat value, which adds that much XP and Gold to the amount gained from any fight."
+		"description": "Increases the amount of gold and XP you get, and reduces the amount required. The first slider is a divider, which decreases prices and reduces the requirements to level up (e.g. \"2.5x\" means your first level will require 16xp instead of 40, and a Heal Potion's base cost will be 24g instead of 60). The second slider is a flat value, which adds that much XP and Gold to the amount gained from any fight."
 	},
 	{
 		"Id": "progressiveScaleModeDropDown",
 		"title": "Exp/Gold Progressive Scaling",
 		"screenshot": "progressiveScaleModeDropDown.png",
-		"description": "Increases the bonus provided by Exp/Gold boost based on the number of Key Items collected.\nWhen Shards are being used, the boost is applied per Shard - so \"50% per 8 Shards\" gives you a 6.25% boost for each Shard you have."
+		"description": "Increases the bonus provided by the 2nd Exp/Gold Boost Slider (flat bonus) based on the number of Key Items collected, including any that were free to start. (Does not, however, include incentivized equipment items.)\nWhen Shards are being used, the boost is applied per Shard - so \"50% per 8 Shards\" gives you a 6.25% boost for each Shard you have."
 	},
 
 	{
@@ -2286,7 +2286,7 @@
 	{
 		"Id": "overRandomizerToolTipBox",
 		"title": "Over Randomizer Preset",
-		"description": "The randomizer will give you entirely new weapons, armor, spells, and enemies.\nKey flags\nWeaponizer - see tooltip on the 'Gear & Items'\nArmor Crafter - see tooltip on the Gear & Items for details\nEnemizer & Spell Crafter - See the FAQs on the Wiki, under Randomizer Documentation."
+		"description": "The randomizer will give you entirely new weapons, armor, spells, and enemies.\nKey flags\nWeaponizer & Armor Crafter - see tooltips on the 'Gear & Items' tab\nEnemizer & Spell Crafter - See the FAQs on the Wiki, under Randomizer Documentation."
 	},
 	{
 		"Id": "chaosRushToolTipBox",
@@ -2301,17 +2301,17 @@
 	{
 		"Id": "entranceFloorShufflePresetToolTipBox",
 		"title": "Entrance and Floor Shuffle Preset",
-		"description": "Overworld entrances (except for towns) are shuffled together, and shuffles cave and dungeon floors.  For example, the entrance to Waterfall could lead to Earth B1, which may lead to Volcano B3, which leads to Matoya's Cave, etc.\nKey flags\n- Dungeon encounter rate is slightly lower than Beginner flagset"
+		"description": "Overworld entrances (except for towns) are shuffled together, as are cave and dungeon floors.  For example, the entrance to Waterfall could lead to Earth B1, which may lead to Volcano B3, which leads to Matoya's Cave, etc.\nKey flags\n- Dungeon encounter rate is slightly lower than Beginner flagset"
 	},
 	{
 		"Id": "noverworldShufflePresetToolTipBox",
 		"title": "NOverworld Preset",
-		"description": "Removes overworld from the game entirely, towns and dungeons are connected directly by stairs and warps.  Introduces two new items, the SIGIL and the MARK, which you must find to unlock progression.\nKey flags\n- Save on death\n- Save items replaced with ethers, which restore magic charges\n- Start with a random item that casts offensive area-of-effect magic"
+		"description": "Removes the overworld from the game entirely - towns and dungeons are connected directly by stairs and warps.  Introduces two new items, the SIGIL and the MARK, which you must find to unlock progression.\nKey flags\n- Save on death\n- Save items replaced with ethers, which restore magic charges\n- Start with a random item that casts offensive area-of-effect magic"
 	},
 	{
 		"Id": "shardHuntPresetToolTipBox",
 		"title": "Shard Hunt",
-		"description": "The orbs have been shattered and spread across the world.  Find 28 shards to unlock the Temple of Fiends.  Defeating Lich and Kary award 2 shards, Kraken and Tiamat award 4 shards.\nKey flags\n- Dungeon encounter rate is slightly lower than Beginner flagset"
+		"description": "The orbs have been shattered and spread across the world.  Find 28 Shards to unlock the Temple of Fiends.  Defeating Lich or Kary award 2 Shards; Kraken or Tiamat award 4 Shards.\nKey flags\n- Dungeon encounter rate is slightly lower than Beginner flagset"
 	},
 	{
 		"Id": "oopsAllLooseToolTipBox",
@@ -2326,12 +2326,12 @@
 	{
 		"Id": "floaterlessPresetToolTipBox",
 		"title": "Floaterless",
-		"description": "Sail the high seas!  The floater has been removed from the game, so you can't get the airship, but new docks, rivers and mountain passes have been added to ensure you can still get everywhere you need to go.\nKey flags\n- Northern docks let you access the Onrac continent, Bahamut's island, and the Mirage desert.\n- A new river dock grants access to the Lefein region, and a mountain pass provides access to Gaia.\n- Overworld encounter rate is reduced"
+		"description": "Sail the high seas!  The Floater has been removed from the game, so you can't get the airship, but new docks, rivers and mountain passes have been added to ensure you can still get everywhere you need to go.\nKey flags\n- Northern docks let you access the Onrac continent, Bahamut's island, and the Mirage desert.\n- A new river dock grants access to the Lefein region, and a mountain pass provides access to Gaia.\n- Overworld encounter rate is reduced"
 	},
 	{
 		"Id": "freeEnterpriseToolTipBox",
 		"title": "Free Enterprise",
-		"description": "All bosses rush modeled after the open world gameplay style of FF4: Free Enterprise.  Go anywhere in your trusty airship, the Enterprise.  The LUTE, KEY and lighting the four orbs are still required to access the final dungeon.\n- Free airship and canoe\n- Starting party is two forced, two none.  You will have the opportunity to recruit additional party members by completing quests and defeating fiends.\n- No random encounters, gain XP is by finding XP chests, taking spike tile fights, and defeating bosses.\n- Every incentive location is in play, with a key item or legendary treasure\n- Randomized treasure, high wealth, rare and legendary gear in shops\n- Start with a random item that casts offensive area-of-effect magic\n- Free TAIL, fight buff Bahamut\n- Buffed, unsafe pirates\n- Buffed Astos\n- Required WarMECH\n- Alternate fiends and final boss\n- Short ToFR"
+		"description": "All bosses rush modeled after the open world gameplay style of FF4: Free Enterprise.  Go anywhere in your trusty airship, the Enterprise.  The LUTE, KEY and lighting the four orbs are still required to access the final dungeon.\n- Free airship and canoe\n- Starting party is two forced, two none.  You will have the opportunity to recruit additional party members by completing quests and defeating fiends.\n- No random encounters; gain XP by finding XP chests, taking spike tile fights, and defeating bosses.\n- Every incentive location is in play, with a key item or legendary treasure\n- Randomized treasure, high wealth, rare and legendary gear in shops\n- Start with a random item that casts offensive area-of-effect magic\n- Free TAIL, fight buff Bahamut\n- Buffed, unsafe pirates\n- Buffed Astos\n- Required WarMECH\n- Alternate fiends and final boss\n- Short ToFR"
 	},
 	{
 		"Id": "swoleAstosCheckBox",
