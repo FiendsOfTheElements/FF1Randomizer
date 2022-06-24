@@ -388,7 +388,7 @@
 		"Id": "excludeGoldFromScalingCheckBox",
 		"title": "Exclude Gold from Scaling",
 		"screenshot": "excludeGoldFromScalingCheckBox.png",
-		"description": "Gold treasures will only roll to ±10% of their vanilla value instead of scaling with prices. Removes the flat gold boost from \"Exp. & Gold Boost\" to enemy rewards. Also removes the inverse \"Exp. & Gold Boost\" multiplier to prices."
+		"description": "Gold treasures will only roll to ±10% of their vanilla value instead of scaling with prices. Removes both the price reduction and flat gold bonus from \"Exp. & Gold Boost\"."
 	},
 	{
 		"Id": "cheapVendorItemCheckBox",
@@ -444,7 +444,7 @@
 		"Id": "XPGoldBoostTooltip",
 		"title": "Exp/Gold Boost",
 		"screenshot": null,
-		"description": "Increases the amount of gold and XP you get, and reduces the amount required. The first slider is a divider, which decreases prices and reduces the requirements to level up (e.g. \"2.5x\" means your first level will require 16xp instead of 40, and a Heal Potion's base cost will be 24g instead of 60). The second slider is a flat value, which adds that much XP and Gold to the amount gained from any fight."
+		"description": "Increases the amount of gold and XP you get, and reduces the amount required. The first slider is a divider, which decreases prices and reduces the requirements to level up (e.g. \"2.5x\" means your first level up will require 16xp instead of 40, and a Heal Potion's base cost will be 24g instead of 60). The second slider is a flat value, which adds that much XP and Gold to the amount gained from every monster slayed."
 	},
 	{
 		"Id": "progressiveScaleModeDropDown",
@@ -852,7 +852,7 @@
 	},
 	{
 		"Id": "riverToMelmondCheckBox",
-		"title": "River to Melmond Region from Dwarve Cave",
+		"title": "River to Melmond Region from Dwarf Cave",
 		"screenshot": "RiverToMelmond.png",
 		"description": "Adds a new river connecting the Dwarf Cave area to Melmond, Earth Cave, and Titan's Tunnel. This allows access to the Melmond region without the CANAL, and also without the SHIP if \"Early Open Progression\" is enabled."
 	},
