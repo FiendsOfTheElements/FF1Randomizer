@@ -1418,7 +1418,7 @@
 		"Id": "alternateFiendsCheckBox",
 		"title": "Alternate Fiends",
 		"screenshot": "AlternateFiends.png",
-		"description": "Replace all four Fiends with new Fiends, from a pool of about 20, each with their own weaknesses and skill/spell lists.\nNote that the new Alternate Fiend spells & skills will still be shuffled unless \"Shuffle Scripts\" and \"Shuffle Skills & Spells\" are turned off for Bosses."
+		"description": "Replace all four Fiends with new Fiends, from a pool of about 20, each with their own weaknesses and skill/spell lists.\nNote that the new Alternate Fiend spells & skills will still be shuffled unless \"Shuffle Scripts\" and \"Shuffle Skills & Spells\" are turned off for Bosses.\nSee also: \"Alternate Final Boss\", under the Goal tab."
 	},
 
 	{
