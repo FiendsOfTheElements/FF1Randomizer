@@ -919,9 +919,6 @@ namespace FF1Lib
 			validMaps.Shuffle(rng);
 			var mapsToFlip = validMaps.GetRange(0, rng.Between((int)(validMaps.Count * 0.33), (int)(validMaps.Count * 0.75)));
 
-			//var mapsToFlip = validMaps;
-
-
 			foreach (MapId map in mapsToFlip)
 			{
 				maps[(int)map].FlipHorizontal();
@@ -983,19 +980,31 @@ namespace FF1Lib
 			if (mapsToFlip.Contains(MapId.IceCaveB1))
 			{
 				teleporters.IceCave1.FlipXcoordinate(); overworld.PutOverworldTeleport(OverworldTeleportIndex.IceCave1, teleporters.IceCave1);
-				overworld.PutStandardTeleport(TeleportIndex.IceCave5, new TeleportDestination(MapLocation.IceCaveBackExit, MapIndex.IceCaveB1, new Coordinate(0x39, 0x14, CoordinateLocale.Standard), TeleportIndex.IceCave5), OverworldTeleportIndex.IceCave1);
+
+				var t = teleporters.NormalTele[(int)TeleportIndex.IceCave5];
+				t.FlipXcoordinate();
+				overworld.PutStandardTeleport(TeleportIndex.IceCave5, new TeleportDestination(MapLocation.IceCaveBackExit, MapIndex.IceCaveB1, new Coordinate(t.X, t.Y, CoordinateLocale.Standard), TeleportIndex.IceCave5), OverworldTeleportIndex.IceCave1);
 			}
 			if (mapsToFlip.Contains(MapId.IceCaveB2))
 			{
 				teleporters.IceCave2.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.IceCave2, teleporters.IceCave2, OverworldTeleportIndex.IceCave1);
 				teleporters.IceCavePitRoom.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.IceCavePitRoom, teleporters.IceCavePitRoom, OverworldTeleportIndex.IceCave1);
-				overworld.PutStandardTeleport(TeleportIndex.IceCave7, new TeleportDestination(MapLocation.IceCaveFloater, MapIndex.IceCaveB2, new Coordinate(0x0C, 0x0B, CoordinateLocale.StandardInRoom), TeleportIndex.IceCave7), OverworldTeleportIndex.IceCave1);
+
+				var t = teleporters.NormalTele[(int)TeleportIndex.IceCave7];
+				t.FlipXcoordinate();
+				overworld.PutStandardTeleport(TeleportIndex.IceCave7, new TeleportDestination(MapLocation.IceCaveFloater, MapIndex.IceCaveB2, new Coordinate(t.X, t.Y, CoordinateLocale.StandardInRoom), TeleportIndex.IceCave7), OverworldTeleportIndex.IceCave1);
 			}
 			if (mapsToFlip.Contains(MapId.IceCaveB3))
 			{
 				teleporters.IceCave3.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.IceCave3, teleporters.IceCave3, OverworldTeleportIndex.IceCave1);
-				overworld.PutStandardTeleport(TeleportIndex.IceCave4, new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(0x18, 0x06, CoordinateLocale.StandardInRoom), TeleportIndex.IceCave4), OverworldTeleportIndex.IceCave1);
-				overworld.PutStandardTeleport(TeleportIndex.IceCave6, new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(0x04, 0x21, CoordinateLocale.Standard), TeleportIndex.IceCave6), OverworldTeleportIndex.IceCave1);
+
+				var t1 = teleporters.NormalTele[(int)TeleportIndex.IceCave4];
+				t1.FlipXcoordinate();
+				overworld.PutStandardTeleport(TeleportIndex.IceCave4, new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(t1.X, t1.Y, CoordinateLocale.StandardInRoom), TeleportIndex.IceCave4), OverworldTeleportIndex.IceCave1);
+
+				var t2 = teleporters.NormalTele[(int)TeleportIndex.IceCave6];
+				t2.FlipXcoordinate();
+				overworld.PutStandardTeleport(TeleportIndex.IceCave6, new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(t2.X, t2.Y, CoordinateLocale.Standard), TeleportIndex.IceCave6), OverworldTeleportIndex.IceCave1);
 			}
 
 			if (mapsToFlip.Contains(MapId.MarshCaveB1)) teleporters.MarshCave1.FlipXcoordinate(); overworld.PutOverworldTeleport(OverworldTeleportIndex.MarshCave1, teleporters.MarshCave1);
