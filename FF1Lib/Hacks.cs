@@ -8,15 +8,15 @@ namespace FF1Lib
 {
 	public enum PoolSize
 	{
-		[Description("4 characters")]
+		[Description("4 Characters")]
 		Size4,
-		[Description("5 characters")]
+		[Description("5 Characters")]
 		Size5,
-		[Description("6 characters")]
+		[Description("6 Characters")]
 		Size6,
-		[Description("7 characters")]
+		[Description("7 Characters")]
 		Size7,
-		[Description("8 characters")]
+		[Description("8 Characters")]
 		Size8,
 	}
 

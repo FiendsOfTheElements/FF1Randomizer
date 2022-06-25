@@ -28,11 +28,11 @@
 		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenWaterfall" @bind-Value="Flags.EFGWaterfall">Generated Waterfall Cave</CheckBox>
 		<div class="checkbox-cell"></div>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="flipDungeonsCheckBox" @bind-Value="Flags.FlipDungeons">Flip Dungeons Horizontally</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="reversedFloors" @bind-Value="Flags.ReversedFloors">Reverse Floors</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="reversedFloors" @bind-Value="Flags.ReversedFloors">Swap Stair Locations</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="relocateChests" @bind-Value="Flags.RelocateChests">Relocate chests and trap tiles</TriStateCheckBox>
-		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="markRelocatedTrapTiles" @bind-Value="Flags.RelocateChestsTrapIndicator" IsEnabled="@(Flags.RelocateChests != false)">Relocated trap tiles are marked</CheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="moveToFBats" @bind-Value="Flags.MoveToFBats">Move Temple of Fiends bats</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="relocateChests" @bind-Value="Flags.RelocateChests">Relocate Chests and Trap Tiles</TriStateCheckBox>
+		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="markRelocatedTrapTiles" @bind-Value="Flags.RelocateChestsTrapIndicator" IsEnabled="@(Flags.RelocateChests != false)">Relocated Trap Tiles Are Marked</CheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="moveToFBats" @bind-Value="Flags.MoveToFBats">Move Temple of Fiends Bats</TriStateCheckBox>
 	</div>
 	<div class="col2">
 		<h4>Progression</h4>
