@@ -1218,7 +1218,7 @@
 		"Id": "legendaryItemShopCheckBox",
 		"title": "Legendary Item Shop",
 		"screenshot": null,
-		"description": "Always sells either Cabins or Houses, and also sells two additional non-Tent items.\nIf New Consumables are active (Gear & Items tab) and \"Legendary Shops\" is selected, then the shop will sell Cabins or Houses, 1-2 new consumables, and 0-1 other non-Tent items."
+		"description": "Always sells either Cabins or Houses, and also sells two additional non-Shelter items (Heals, Pures, or Softs). It will never be selling the Shop Key Item.\nIf New Consumables are active (Gear & Items tab) and \"Legendary Shops\" is selected, then the shop will sell Cabins or Houses, 1-2 new consumables, and 0-1 other non-Shelter items."
 	},
 	{
 		"Id": "exlegendaryItemShopCheckBox",
