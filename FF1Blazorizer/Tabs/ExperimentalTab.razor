@@ -20,28 +20,12 @@
 				<br>
 				<input type="text" style="width: calc(100% - 80px);" class="nes-input" id="seedInput" @onchange="@OnPlayerNameChanged" value="@(Flags.PlayerName)" />
 			</p>
-
-			<h4>Goal</h4>
-			<IntSliderRng DisableTooltip="true" Min="1" Max="5" Step="1" UpdateToolTip="@UpdateToolTipID" Id="OrbsRequiredCount" @bind-Value="@Flags.OrbsRequiredCount">Total Orbs Required:</IntSliderRng>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="OrbsRequiredModeDropDown" IsEnabled="@(Flags.OrbsRequiredOptionsEnabled)" TItem="OrbsRequiredMode" @bind-Value="Flags.OrbsRequiredMode">Mode:</EnumDropDown>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="orbsRequiredSpoilersCheckbox" IsEnabled="@(Flags.OrbsRequiredOptionsEnabled)" @bind-Value="Flags.OrbsRequiredSpoilers">Orb Spoilers</TriStateCheckBox>
-
 			<div class="checkbox-cell"></div>
-
-			<h4>Maps</h4>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth1" @bind-Value="Flags.EFGEarth1">Generated Earth Cave B1</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth2" @bind-Value="Flags.EFGEarth2">Generated Earth Cave B2</CheckBox>
 		</div>
 		<div class="col2">
-			<h4>Deep Dungeon</h4>
-			<p>Deep Dungeon should be considered extremely experimental at this time. The rest of the flags and tooltips are not properly adjusted to play nicely with it yet.</p>
-			<p>While it should work with most flags, such as scaling and Blursed items, map edits and Floor shuffle will either fail to generate a ROM, or create an unpleasant experience.</p>
-			<p>Please try it out and provide feedback!</p>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.Archipelago)" Id="deepdungeon" @bind-Value="Flags.DeepDungeon">Deep Dungeon</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDEvenTreasureDistribution" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.DDEvenTreasureDistribution">Distribute treasure evenly</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDProgressiveTilesets" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.DDProgressiveTilesets">Progressive Tilesets</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDFiendOrbs" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.DDFiendOrbs">Fiend Orbs</CheckBox>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="TailBahamutDropDown" TItem="TailBahamutMode" IsEnabled="@Flags.DeepDungeon" @bind-Value="Flags.TailBahamutMode">Bahamut and TAIL floors:</EnumDropDown>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.RecruitmentMode)" Id="improvedClinicCheckBox" @bind-Value="Flags.ImprovedClinic">Clinics Heal All Statuses</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeClinicCheckBox" @bind-Value="Flags.FreeClinic">Clinics Don't Cost Money</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="OpenChestsInOrder" @bind-Value="Flags.OpenChestsInOrder">Open Chests in Order</CheckBox>
 		</div>
 
   	<div class="clear-it"></div>

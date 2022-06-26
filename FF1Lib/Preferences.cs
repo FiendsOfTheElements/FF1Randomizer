@@ -13,9 +13,12 @@ namespace FF1Lib
 		public bool TeamSteak { get; set; }
 		public MusicShuffle Music { get; set; }
 		public bool DisableDamageTileFlicker { get; set; } = true;
+		public bool DisableDamageTileSFX { get; set; }
 		public MenuColor MenuColor { get; set; } = MenuColor.Blue;
 		public MapmanSlot MapmanSlot { get; set; } = MapmanSlot.Leader;
 		public bool DisableSpellCastFlash { get; set; } = true;
+		public bool LockRespondRate { get; set; } = true;
+		public bool UninterruptedMusic { get; set; } = false;
 		public bool ChangeLute { get; set; } = false;
 		public TitanSnack TitanSnack { get; set; } = TitanSnack.Ruby;
 		public Fate HurrayDwarfFate { get; set; } = Fate.Spare;
@@ -33,5 +36,6 @@ namespace FF1Lib
 		public bool QuickJoy2Reset { get; set; } = false;
 
 		public string PlayerName { get; set; } = "Player 01";
+		public bool BlandSite { get; set; } = false;
 	}
 }

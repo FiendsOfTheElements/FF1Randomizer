@@ -177,18 +177,18 @@ namespace FF1Lib
 			// this is a duplicate { "..", 0xC3 },
 			{ "!", 0xC4 },
 			{ "?", 0xC5 },
-			{ "@S", 0xD4 },
-			{ "@H", 0xD5 },
-			{ "@K", 0xD6 },
-			{ "@X", 0xD7 },
-			{ "@F", 0xD8 },
-			{ "@N", 0xD9 },
-			{ "@A", 0xDA },
-			{ "@s", 0xDB },
-			{ "@h", 0xDC },
-			{ "@G", 0xDD },
-			{ "@B", 0xDE },
-			{ "@T", 0xDF },
+			{ "@S", 0xD4 }, // swords
+			{ "@H", 0xD5 }, // hammers
+			{ "@K", 0xD6 }, // knives
+			{ "@X", 0xD7 }, // axes
+			{ "@F", 0xD8 }, // staves
+			{ "@N", 0xD9 }, // nunchucks
+			{ "@A", 0xDA }, // armors
+			{ "@s", 0xDB }, // shields
+			{ "@h", 0xDC }, // helmets
+			{ "@G", 0xDD }, // gauntelets
+			{ "@B", 0xDE }, // bracelets
+			{ "@T", 0xDF }, // shirts
 			{ "%", 0xE0 },
 			{ "@p", 0xE1 },
 			{ "€s", 0xE2 },
@@ -455,6 +455,45 @@ namespace FF1Lib
 				throw new Exception("Items Text is too large to fit within available space.");
 			}
 			rom.Put(ItemTextPointerOffset, Blob.FromUShorts(_itemsPointers.ToArray()));
+		}
+	}
+
+	public class BattleMessages {
+	    // Note battle messages are moved into bank 1B by
+	    // BankRearranging.Bank1B() so these offsets are specific
+	    // to an FFR ROM offsets not vanilla.
+	    public const int BattleTextPointers = 0x6C3BA;
+	    public const int BattleTextBase = 0x64000;
+	    public const int BattleTextPointerCount = 0x50;
+
+	    private List<string> _battleTexts = new();
+	    private List<ushort> _battleTextPointers = new();
+
+	    private Blob ReadUntil(FF1Rom rom, int offset, byte delimiter)
+	    {
+		var bytes = new List<byte>();
+		while (rom[offset] != delimiter && offset < 0x70000)
+		{
+		    bytes.Add(rom[offset++]);
+		}
+		bytes.Add(delimiter);
+
+		return bytes.ToArray();
+	    }
+
+	    public BattleMessages(FF1Rom rom) {
+		_battleTextPointers = rom.Get(BattleTextPointers, 2 * BattleTextPointerCount).ToUShorts().ToList();
+
+		for (int i = 0; i < _battleTextPointers.Count; i++)
+		{
+		    _battleTexts.Add(FF1Text.BytesToText(ReadUntil(rom, BattleTextBase + _battleTextPointers[i], 0x00)));
+		}
+	    }
+
+		public string this[int textid]
+		{
+			get => _battleTexts[textid];
+			set => _battleTexts[textid] = value;
 		}
 	}
 }

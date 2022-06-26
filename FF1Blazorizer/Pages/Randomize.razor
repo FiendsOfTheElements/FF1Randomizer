@@ -6,7 +6,7 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IJSRuntime JSRuntime
 
-<div id="main-content" class="content px-4 tinted">
+	<div id="main-content" class="@(Flags.BlandSite ? "" : "content px-4 tinted")">
 	<ToolTip @ref="ToolTipElement" ToolTipId="@ToolTipId" />
 	<aside id="left-column">
 		@if (!hideAnnouncement)
@@ -85,7 +85,7 @@
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
-							<BSTabLabel>Overworld</BSTabLabel>
+							<BSTabLabel>Mode &amp; World</BSTabLabel>
 							<BSTabContent>
 								<OverworldTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
@@ -157,15 +157,8 @@
 @code {
 
 	[CascadingParameter] public bool showChaos { get; set; }
-	//[Parameter] public bool showChaos { get; set; } = false;
+	[CascadingParameter(Name="SetBlandSite")] public MainLayout.ShowModalT SetBlandSite { get; set; }
 
-	//private bool showChaos { get; set; }
-
-	//void ShowChaos()
-	//{
-	//	showChaos = true;
-	//	StateHasChanged();
-	//}
 
 
 	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
@@ -206,7 +199,7 @@
 
 		Flags.Preferences = new Preferences();
 		await LoadPreferences();
-
+		SetBlandSite(Flags.BlandSite);
 		StateHasChanged();
 	}
 
@@ -224,7 +217,6 @@
 		}
 		StateHasChanged();
 	}
-
 	private void UpdateToolTipID(string Id, MouseEventArgs e)
 	{
 		ToolTipId = Id;
@@ -281,4 +273,5 @@
 	private void Hidden(BSTabEvent e)
 	{
 		//Console.WriteLine($"Hidden -> Activated: {e.Activated?.Id.ToString()} , Deactivated: {e.Deactivated?.Id.ToString()}");
-	} }
+	} 
+}

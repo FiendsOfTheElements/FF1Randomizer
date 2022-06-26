@@ -54,7 +54,7 @@ namespace FF1Lib.Sanity
 
 			Stopwatch w = Stopwatch.StartNew();
 
-			ConcurrentBag<SCMap> tmpscmaps = new ConcurrentBag<SCMap>();
+			List<SCMap> tmpscmaps = new List<SCMap>();
 			//Parallel.ForEach(Enum.GetValues<MapId>(), mapid => ProcessMap(mapid, tmpscmaps));
 
 			foreach(var mapid in Enum.GetValues<MapId>()) ProcessMap(mapid, tmpscmaps);
@@ -70,7 +70,7 @@ namespace FF1Lib.Sanity
 			w.Stop();
 		}
 
-		private void ProcessMap(MapId mapid, ConcurrentBag<SCMap> tmpscmaps)
+		private void ProcessMap(MapId mapid, List<SCMap> tmpscmaps)
 		{
 			var e1 = maps[(int)mapid];
 			var ts = tileSets[mapTileSets[mapid]];

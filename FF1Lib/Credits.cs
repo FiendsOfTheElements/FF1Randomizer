@@ -194,11 +194,22 @@ namespace FF1Lib
 			{
 				" FFR Developers",
 				"",
-				" Entroper",
-				" MeridianBC",
-				" nitz Septimus",
-				"tartopan wildham",
-				"MadMartin tetron",
+				"  Entroper",
+				"  MeridianBC",
+				"  nitz",
+				"  Septimus",
+				"  tartopan",
+				"  RetroFanMan",
+			},
+			new []
+			{
+				" FFR Developers",
+				"",
+				"  wildham",
+				"  MadMartin",
+				"  tetron",
+				"  lifereboot",
+				"  Twinge",
 			},
 			new []
 			{
@@ -206,8 +217,7 @@ namespace FF1Lib
 				"",
 				" artea, pinkpuff",
 				" drcat, bdjeffyp",
-				" ofd, lifereboot",
-				" Darkmoon",
+				" ofd, Darkmoon",
 				" leggystarscream",
 				" nic0lette",
 				" splitpunched",
@@ -218,9 +228,9 @@ namespace FF1Lib
 				"",
 				"jkoper, Kababesh",
 				"DarkwingDuck.sda",
-				"Miaut, Ayntlerz ",
-				"gameboy9, sbq92 ",
-				"EunosXX, Jaylow7",
+				"Miaut, Ayntlerz",
+				"gameboy9, sbq92",
+				"EunosXX Xarnax42",
 				"  theCubeMiser",
 				"  Beefucurry",
 			},
@@ -228,12 +238,13 @@ namespace FF1Lib
 			{
 				"  Playtesting",
 				"",
-				"  Xarnax42",
+				"Jaylow7 Ategenos",
 				"  TristalMTG",
 				"  PanzerDave",
-				"  Ategenos",
 				"  Buffalax",
 				"  crimsonavix",
+				"  VampireKnight",
+				"  Angelique"
 			},
 			new []
 			{

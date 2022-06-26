@@ -4,13 +4,21 @@ using RomUtilities;
 using System.IO;
 using System;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
 	{
 
-		void LoadResourcePack(Stream stream)
+	    bool ResourcePackHasGameplayChanges(Stream stream) {
+	        var resourcePackArchive = new ZipArchive(stream);
+                if (resourcePackArchive.GetEntry("spellbook.json") != null) return true;
+                if (resourcePackArchive.GetEntry("overworld.json") != null) return true;
+		return false;
+	    }
+
+		async Task LoadResourcePack(Stream stream)
 		{
 			var resourcePackArchive = new ZipArchive(stream);
 
@@ -19,7 +27,7 @@ namespace FF1Lib
 			{
 				using (var s = maptiles.Open())
 				{
-					SetCustomMapGraphics(s, 245, 4,
+					await SetCustomMapGraphics(s, 245, 4,
 							 new int[] { OVERWORLDPALETTE_OFFSET },
 							 OVERWORLDPALETTE_ASSIGNMENT,
 							 OVERWORLDPATTERNTABLE_OFFSET,
@@ -33,7 +41,7 @@ namespace FF1Lib
 				using (var s = towntiles.Open())
 				{
 					int cur_tileset = 0;
-					SetCustomMapGraphics(s, 128, 4,
+					await SetCustomMapGraphics(s, 128, 4,
 							 new int[] {
 						 MAPPALETTE_OFFSET + (0 * 0x30),
 						 MAPPALETTE_OFFSET + (1 * 0x30),
@@ -55,7 +63,7 @@ namespace FF1Lib
 			{
 				using (var s = spritesheet.Open())
 				{
-					SetCustomPlayerSprites(s, true);
+					await SetCustomPlayerSprites(s, true);
 				}
 			}
 
@@ -64,7 +72,7 @@ namespace FF1Lib
 			{
 				using (var s = fiends.Open())
 				{
-					SetCustomFiendGraphics(s);
+					await SetCustomFiendGraphics(s);
 				}
 			}
 
@@ -73,7 +81,7 @@ namespace FF1Lib
 			{
 				using (var s = chaos.Open())
 				{
-					SetCustomChaosGraphics(s);
+					await SetCustomChaosGraphics(s);
 				}
 			}
 
@@ -82,7 +90,7 @@ namespace FF1Lib
 			{
 				using (var s = backdrop.Open())
 				{
-					SetCustomBattleBackdrop(s);
+					await SetCustomBattleBackdrop(s);
 				}
 			}
 
@@ -128,6 +136,18 @@ namespace FF1Lib
 				using (var s = bridgeStory.Open())
 				{
 					LoadBridgeStory(s);
+				}
+			}
+
+			var spellbook = resourcePackArchive.GetEntry("spellbook.json");
+			if (spellbook != null)
+			{
+				using (var s = spellbook.Open())
+				{
+				    using (StreamReader reader = new StreamReader(stream)) {
+					var allSpells = JsonConvert.DeserializeObject<List<MagicSpell>>(reader.ReadToEnd());
+					this.PutSpells(allSpells);
+				    }
 				}
 			}
 		}

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RomUtilities;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace FF1Lib
 {
@@ -596,47 +598,120 @@ namespace FF1Lib
 
 		public class EnemyInfo
 		{
+		    public int index;
+		        public string name;
 			public int exp;
 			public int gp;
 			public int hp;
 			public int morale;
+
+		    [JsonIgnoreAttribute]
 			public byte AIscript;
+
+
+		    public EnemyScriptInfo spellSkillScript {
+			get {
+			    if (AIscript == 0xff) {
+				return null;
+			    }
+			    return allAIScripts[AIscript];
+			}
+		    }
 			public int agility;
 			public int absorb;
 			public int num_hits;
 			public int accuracy;
 			public int damage;
 			public int critrate;
+
+		    [JsonIgnoreAttribute]
 			public byte atk_elem;
+
+		    [JsonConverter(typeof(StringEnumConverter))]
+		    public SpellElement AttackElement {
+			get {
+			    return (SpellElement)atk_elem;
+			}
+		    }
+
+		    [JsonIgnoreAttribute]
 			public byte atk_ailment;
+
+
+		    [JsonConverter(typeof(StringEnumConverter))]
+		    public SpellStatus AttackAilment {
+			get {
+			    return (SpellStatus)atk_ailment;
+			}
+		    }
+
+		    [JsonIgnoreAttribute]
 			public byte monster_type;
+
+		    [JsonConverter(typeof(StringEnumConverter))]
+		    public MonsterType MonsterType {
+			get {
+			    return (MonsterType)monster_type;
+			}
+		    }
+
 			public int mdef;
+
+		    [JsonIgnoreAttribute]
 			public byte elem_weakness;
+
+		    [JsonConverter(typeof(StringEnumConverter))]
+		    public SpellElement ElementalWeakness {
+			get {
+			    return (SpellElement)elem_weakness;
+			}
+			}
+
+		    [JsonIgnoreAttribute]
 			public byte elem_resist;
+
+		    [JsonConverter(typeof(StringEnumConverter))]
+		    public SpellElement ElementalResist {
+			get {
+			    return (SpellElement)elem_resist;
+			}
+		    }
+
+		    [JsonIgnoreAttribute]
 			public int tier; // enemy's tier rating, used by Enemizer to determine stats and Formation Generator to enforce certain placement rules
+		    [JsonIgnoreAttribute]
 			public int skilltier = 0;
+		    [JsonIgnoreAttribute]
 			public byte image; // the image used by this image, of the 52 unique monster images available to normal enemies (does not include fiends or chaos).
+		    [JsonIgnoreAttribute]
 			public byte pal; // the palette normally used by this enemy.  this and the enemy's image are not stored in game data directly, rather they are implied by data in the formations
 
+		    [JsonIgnoreAttribute]
 			public byte tileset
 			{
 				get => (byte)((image >> 2) & 0b00001111);
 			}
 
+		    [JsonIgnoreAttribute]
 			public byte pic
 			{
 				get => (byte)(image & 0b00000011);
 			}
 
+		    [JsonIgnoreAttribute]
 			public bool Large
 			{
 				get => (image & 1) == 1;
 			}
 
+		    [JsonIgnoreAttribute]
 			public bool Small
 			{
 				get => (image & 1) == 0;
 			}
+
+		    [JsonIgnoreAttribute]
+		    public List<EnemyScriptInfo> allAIScripts;
 
 			public byte[] compressData() // compresses the information of the enemy into an array of bytes to be placed in the game code
 			{
@@ -686,14 +761,49 @@ namespace FF1Lib
 				elem_weakness = data[18];
 				elem_resist = data[19];
 			}
+
+		    public void writeData(FF1Rom rom) {
+			var d = compressData();
+			rom.Put(EnemyOffset + index * EnemySize, d);
+		    }
+
 		}
 
+		[JsonObject(MemberSerialization.OptIn)]
 		public class EnemyScriptInfo
 		{
+		        [JsonProperty]
+			public byte index;
+
+		        [JsonProperty]
 			public byte spell_chance;
+
+		        [JsonProperty]
 			public byte skill_chance;
-			public byte[] spell_list = new byte[8];
+
+   		        public byte[] spell_list = new byte[8];
 			public byte[] skill_list = new byte[4];
+
+		        public List<MagicSpell> allGameSpells;
+		        public List<MagicSpell> allEnemySkills;
+
+		        [JsonProperty]
+			List<string> SpellList {
+			    get {
+				return spell_list.Where(s => s != 0xff).Select(s => this.allGameSpells[s].Name).ToList();
+			    }
+			    set {
+			    }
+			}
+
+		        [JsonProperty]
+			List<string> SkillList {
+			    get {
+				return skill_list.Where(s => s != 0xff).Select(s => this.allEnemySkills[s].Name).ToList();
+			    }
+			    set {
+			    }
+			}
 
 			public byte[] compressData()
 			{
@@ -716,6 +826,11 @@ namespace FF1Lib
 				scriptData[15] = 0xFF;
 				return scriptData;
 			}
+
+		    public void writeData(FF1Rom rom) {
+			var d = compressData();
+			rom.Put(ScriptOffset + index * ScriptSize, d);
+		    }
 
 			public void decompressData(byte[] data)
 			{
@@ -3755,8 +3870,9 @@ namespace FF1Lib
 
 		public void ObfuscateEnemies(MT19337 rng, Flags flags)
 		{
+			var flagsValue = EnemyObfuscation.None;
 
-			if (flags.EnemyObfuscation == EnemyObfuscation.Imp || flags.EnemyObfuscation == EnemyObfuscation.ImpAll)
+			if (flagsValue == EnemyObfuscation.Imp || flagsValue == EnemyObfuscation.ImpAll)
 			{
 				List<FormationInfo> formations = LoadFormations();
 				string[] enemyNames = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
@@ -3772,7 +3888,7 @@ namespace FF1Lib
 					variants.Add((name, (byte)rng.Between(0, 128)));
 				}
 
-				int limit = flags.EnemyObfuscation == EnemyObfuscation.ImpAll ? 128 : 119;
+				int limit = flagsValue == EnemyObfuscation.ImpAll ? 128 : 119;
 
 				for (int i = 0; i < limit; i++) enemyNames[i] = variants[i].name;
 
@@ -3786,7 +3902,7 @@ namespace FF1Lib
 					formations[i].pal1 = variants[formations[i].id[0]].pal;
 					formations[i].pal1 = variants[formations[i].id[1]].pal;
 
-					if(flags.EnemyObfuscation == EnemyObfuscation.ImpAll && (flags.TrappedChaos ?? false) && formations[i].id.Any(id => id == 127))
+					if(flagsValue == EnemyObfuscation.ImpAll && (flags.TrappedChaos ?? false) && formations[i].id.Any(id => id == 127))
 					{
 						formations[i].unrunnable_a = false;
 						formations[i].unrunnable_b = false;

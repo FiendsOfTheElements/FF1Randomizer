@@ -45,7 +45,7 @@
 		bool? IncentivizeKatana { get; }
 		bool? IncentivizeVorpal { get; }
 		bool? IncentivizeRibbon { get; }
-		bool IncentivizeBridge { get; }
+		bool? IncentivizeBridge { get; }
 		bool? IncentivizeShip { get; }
 		bool? IncentivizeCanal { get; }
 		bool? IncentivizeLute { get; }
@@ -78,6 +78,16 @@
 		bool IncentivizeBad { get; }
 		bool? NoMasamune { get; }
 		bool? NoXcalber { get; }
+		bool? IsFloaterRemoved { get;  }
+		bool? NoTail { get; }
+		bool? IsCanoeFree { get; }
+		bool? FreeLute { get; }
+		bool? FreeTail { get; }
+		bool? IsBridgeFree { get; }
+		bool? IsCanalFree { get; }
+		bool? IsShipFree { get; }
+		bool? GuaranteedMasamune { get; }
+
 	}
 	public interface IMapEditFlags : IItemPlacementFlags
 	{
@@ -87,6 +97,8 @@
 		bool? MapBahamutCardiaDock { get; }
 		bool? MapDragonsHoard { get; }
 		bool? MapLefeinRiver { get; }
+		bool? MapBridgeLefein { get; }
+		bool? MapRiverToMelmond { get; }
 		bool? MapGaiaMountainPass { get; }
 		bool? TitansTrove { get; }
 		bool? GaiaShortcut { get; }
@@ -112,7 +124,10 @@
 		bool? SendMasamuneHome { get; }
 		bool? NoMasamune { get; }
 		bool? NoXcalber { get; }
+		RandomizeTreasureMode RandomizeTreasure { get; }
+		bool OpenChestsInOrder { get; }
 		WorldWealthMode WorldWealth { get; }
+		DeepDungeonGeneratorMode DeepDungeonGenerator { get; }
 		ConsumableChestSet MoreConsumableChests { get; }
 		ExtConsumableSet ExtConsumableSet { get; }
 		ExtConsumableChestSet ExtConsumableChests { get; }
@@ -123,9 +138,11 @@
 		bool LooseItemsNpcBalance { get; }
 		bool? Entrances { get; }
 		OwMapExchanges OwMapExchange { get; }
+		GameModes GameMode { get;  }
 		bool Archipelago { get; }
 		bool PredictivePlacement { get;}
 		bool AllowUnsafePlacement { get; }
+		bool Etherizer { get; }
 	}
 	public interface IItemShuffleFlags
 	{
@@ -140,9 +157,7 @@
 	}
 	public interface IScaleFlags
 	{
-		bool StartingGold { get; }
-		bool WrapPriceOverflow { get; }
-		bool WrapStatOverflow { get; }
+		StartingGold StartingGold { get; }
 		double ExpMultiplier { get; }
 		int PriceScaleFactorLow { get; }
 		int PriceScaleFactorHigh { get; }
@@ -165,8 +180,10 @@
 		bool? AllowDeepTowns { get; }
 		bool? AllowUnsafeStartArea { get; }
 		bool? IsFloaterRemoved { get; }
-	        bool? IsAirshipFree { get; }
+	    bool? IsAirshipFree { get; }
 		bool? MapBahamutCardiaDock { get; }
+	    OwMapExchanges OwMapExchange { get; }
+		GameModes GameMode { get; }
 	}
 	public interface IVictoryConditionFlags
 	{
@@ -177,12 +194,13 @@
 		bool? IsAirshipFree { get; }
 		bool? IsShipFree { get; }
 		bool? IsCanalFree { get; }
-		bool? FreeCanoe { get; }
+		bool? IsCanoeFree { get; }
 		bool? FreeLute { get; }
 		bool? FreeTail { get; }
 		bool? NoTail { get; }
 		bool? IsFloaterRemoved { get; }
 		bool? LooseExcludePlacedDungeons { get; }
 		bool NoOverworld { get; }
+		bool DesertOfDeath { get; }
 	}
 }

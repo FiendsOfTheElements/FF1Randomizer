@@ -52,7 +52,7 @@ namespace FF1Lib
 			{
 				currentMapChanges |= MapChange.Canal;
 			}
-			if (victoryConditions.FreeCanoe ?? false)
+			if (victoryConditions.IsCanoeFree ?? false)
 			{
 				currentMapChanges |= MapChange.Canoe;
 			}

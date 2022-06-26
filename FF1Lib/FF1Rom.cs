@@ -29,13 +29,15 @@ namespace FF1Lib
 
 		public const int GoldItemOffset = 108; // 108 items before gold chests
 		public const int GoldItemCount = 68;
-		public static List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
+		public List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
 
 		public ItemNames ItemsText;
 		public GearPermissions ArmorPermissions;
 		public GearPermissions WeaponPermissions;
 		public SpellPermissions SpellPermissions;
 		public GameClasses ClassData;
+
+		public DeepDungeon DeepDungeon;
 
 		private SanityCheckerV2 sanityChecker = null;
 		private IncentiveData incentivesData = null;
@@ -119,12 +121,34 @@ namespace FF1Lib
 			return rom;
 		}
 
-		public void Randomize(Blob seed, Flags flags, Preferences preferences)
+		public void LoadSharedDataTables() {
+			ItemsText = new ItemNames(this);
+			ArmorPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, this);
+			WeaponPermissions = new GearPermissions(0x3BF50, (int)Item.WoodenNunchucks, this);
+			SpellPermissions = new SpellPermissions(this);
+			ClassData = new GameClasses(WeaponPermissions, ArmorPermissions, SpellPermissions, this);
+		}
+
+		public delegate Task ProgressMessage(int step, int max, string message);
+
+		public delegate Task ReportProgress(string message="", int addMax=0);
+
+		int currentStep = 0;
+		int maxSteps = 0;
+		public ProgressMessage ProgressCallback;
+
+		public async Task Progress(string message="", int addMax=0) {
+		    maxSteps += addMax;
+		    currentStep += 1;
+		    if (ProgressCallback != null) {
+			await ProgressCallback(currentStep, maxSteps, message);
+		    }
+		}
+
+		public async Task Randomize(Blob seed, Flags flags, Preferences preferences)
 		{
 		    Flags flagsForRng = flags;
 		    if (flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ||
-			flags.OwMapExchange == OwMapExchanges.GenerateNewOverworldShuffledAccess ||
-			flags.OwMapExchange == OwMapExchanges.GenerateNewOverworldShuffledAccessUnsafe ||
 			flags.OwMapExchange == OwMapExchanges.LostWoods)
 		    {
 			// Procgen maps can be either
@@ -147,10 +171,13 @@ namespace FF1Lib
 			MT19337 rng;
 			using (SHA256 hasher = SHA256.Create())
 			{
-				if (flags.TournamentSafe && flags.ResourcePack != null)
-				{
-					resourcesPackHash = hasher.ComputeHash(new MemoryStream(Convert.FromBase64String(flags.ResourcePack)).ToArray());
+			    if (flags.ResourcePack != null) {
+				var rp = new MemoryStream(Convert.FromBase64String(flags.ResourcePack));
+                                if (flags.TournamentSafe || ResourcePackHasGameplayChanges(rp)) {
+				    rp.Seek(0, SeekOrigin.Begin);
+				    resourcesPackHash = hasher.ComputeHash(rp).ToArray();
 				}
+			    }
 
 				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flagsForRng));
 				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed, resourcesPackHash });
@@ -161,6 +188,8 @@ namespace FF1Lib
 			// We have to do "fun" stuff last because it alters the RNG state.
 			// Back up Rng so that fun flags are uniform when different ones are selected
 			uint funRngSeed = rng.Next();
+
+			await this.Progress("Beginning Randomization", 22);
 
 			if (flags.TournamentSafe) AssureSafe();
 
@@ -179,11 +208,11 @@ namespace FF1Lib
 			SeparateUnrunnables();
 			DrawCanoeUnderBridge();
 
-			ItemsText = new ItemNames(this);
-			ArmorPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, this);
-			WeaponPermissions = new GearPermissions(0x3BF50, (int)Item.WoodenNunchucks, this);
-			SpellPermissions = new SpellPermissions(this);
-			ClassData = new GameClasses(WeaponPermissions, ArmorPermissions, SpellPermissions, this);
+			LoadSharedDataTables();
+
+			await this.Progress();
+
+			DeepDungeon = new DeepDungeon(this);
 
 			var talkroutines = new TalkRoutines();
 			var npcdata = new NPCdata(this);
@@ -197,13 +226,23 @@ namespace FF1Lib
 			var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
 			var overworldMap = new OverworldMap(this, flags, palettes);
 
-			var owMapExchange = OwMapExchange.FromFlags(this, overworldMap, flags, rng);
+			var owMapExchange = await OwMapExchange.FromFlags(this, overworldMap, flags, rng);
 			owMapExchange?.ExecuteStep1();
 
-			TeleportShuffle teleporters = new TeleportShuffle(owMapExchange?.Data);
+			await this.Progress();
+
+			TeleportShuffle teleporters = new TeleportShuffle(this, owMapExchange?.Data);
 			overworldMap.Teleporters = teleporters;
 
 			var shipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(this);
+
+			// Ships found at Matoya's need to spawn at Coneria when Matoya's Dock no longer exists
+			if ((bool)flags.MapBridgeLefein == true) {
+				var ChangeDockLocation = shipLocations.GetShipLocation((int)OverworldTeleportIndex.MatoyasCave);
+				ChangeDockLocation.X = Dock.Coneria[0];
+				ChangeDockLocation.Y = Dock.Coneria[1];
+				ItemLocations.ShipLocations[MapLocation.MatoyasCave] = Dock.Coneria;
+			}
 
 			var maps = ReadMaps();
 			var shopItemLocation = ItemLocations.CaravanItemShop1;
@@ -214,67 +253,34 @@ namespace FF1Lib
 				NPCShuffleDialogs();
 			}
 
-			if (flags.OwMapExchange == OwMapExchanges.Desert)
+			if (flags.DesertOfDeath)
 			{
 				DesertOfDeath.ApplyDesertModifications(this, owMapExchange, npcdata);
 			}
 
-			if (flags.EFGWaterfall || flags.EFGEarth1 || flags.EFGEarth2)
+			await this.Progress();
+
+			if (flags.EFGWaterfall)
 			{
 				MapRequirements reqs;
 				MapGeneratorStrategy strategy;
 				MapGenerator generator = new MapGenerator();
-				if (flags.EFGWaterfall)
+
+				reqs = new MapRequirements
 				{
-					reqs = new MapRequirements
-					{
-						MapId = MapId.Waterfall,
-						Rom = this,
-					};
-					strategy = MapGeneratorStrategy.WaterfallClone;
-					CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
+					MapId = MapId.Waterfall,
+					Rom = this,
+				};
+				strategy = MapGeneratorStrategy.WaterfallClone;
+				CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
 
-					// Should add more into the reqs so that this can be done inside the generator.
-					teleporters.Waterfall.SetEntrance(waterfall.Entrance);
-					overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
-					maps[(int)MapId.Waterfall] = waterfall.Map;
-				}
-
-				if (flags.EFGEarth1)
-				{
-					reqs = new MapRequirements
-					{
-						MapId = MapId.EarthCaveB1,
-						Rom = this,
-					};
-
-					strategy = MapGeneratorStrategy.Square;
-					var earthB1 = generator.Generate(rng, strategy, reqs);
-
-					// Should add more into the reqs so that this can be done inside the generator.
-					teleporters.EarthCave1.SetEntrance(earthB1.Entrance);
-					overworldMap.PutOverworldTeleport(OverworldTeleportIndex.EarthCave1, teleporters.EarthCave1);
-					maps[(int)MapId.EarthCaveB1] = earthB1.Map;
-				}
-				if (flags.EFGEarth2)
-				{
-					reqs = new MapRequirements
-					{
-						MapId = MapId.EarthCaveB2,
-						Rom = this,
-					};
-
-					strategy = MapGeneratorStrategy.Square;
-					var earthB2 = generator.Generate(rng, strategy, reqs);
-
-					// Should add more into the reqs so that this can be done inside the generator.
-					teleporters.EarthCave2.SetEntrance(earthB2.Entrance);
-					overworldMap.PutStandardTeleport(TeleportIndex.EarthCave2, teleporters.EarthCave2, OverworldTeleportIndex.EarthCave1);
-					maps[(int)MapId.EarthCaveB2] = earthB2.Map;
-				}
+				// Should add more into the reqs so that this can be done inside the generator.
+				teleporters.Waterfall.SetEntrance(waterfall.Entrance);
+				overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
+				maps[(int)MapId.Waterfall] = waterfall.Map;
 			}
 
-			if((bool)flags.OWDamageTiles || (flags.OwMapExchange == OwMapExchanges.Desert))
+			if((bool)flags.OWDamageTiles || flags.DesertOfDeath)
 			{
 				EnableDamageTile();
 			}
@@ -283,7 +289,15 @@ namespace FF1Lib
 				DamageTilesKill(flags.SaveGameWhenGameOver);
 			}
 
+			if ((bool)flags.MoveToFBats) {
+			    MoveToFBats();
+			}
+
+			if ((bool)flags.ReversedFloors) new ReversedFloors(this, maps, rng).Work();
+
 			var flippedMaps = new List<MapId>();
+
+			teleporters.LoadData();
 
 			if ((bool)flags.FlipDungeons)
 			{
@@ -295,7 +309,7 @@ namespace FF1Lib
 				DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
 			}
 
-			// Original placement of DeepDungeon routine
+			await this.Progress();
 
 			if (preferences.ModernBattlefield)
 			{
@@ -305,6 +319,17 @@ namespace FF1Lib
 			if ((bool)flags.TitansTrove)
 			{
 				EnableTitansTrove(maps);
+			}
+
+			if (flags.GameMode == GameModes.DeepDungeon)
+			{
+				await this.Progress("Generating Deep Dungeon's Floors...", 2);
+
+				DeepDungeon.Generate(rng, overworldMap, maps, flags);
+				DeepDungeonFloorIndicator();
+				UnusedGoldItems = new List<int> { };
+
+				await this.Progress("Generating Deep Dungeon's Floors... Done!");
 			}
 
 			if ((bool)flags.LefeinShops)
@@ -322,6 +347,8 @@ namespace FF1Lib
 			{
 				attackedTown = RandomVampireAttack(maps, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
 			}
+
+			ShufflePravoka(flags, rng, maps, attackedTown == MapId.Pravoka);
 
 			if ((bool)flags.GaiaShortcut)
 			{
@@ -343,6 +370,8 @@ namespace FF1Lib
 				FixSpellBugs();
 			}
 
+			await this.Progress();
+
 			//must be done before spells get shuffled around otherwise we'd be changing a spell that isnt lock
 			if (flags.LockMode != LockHitMode.Vanilla)
 			{
@@ -361,7 +390,7 @@ namespace FF1Lib
 
 			if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
 			{
-				AlternativeFiends(rng);
+				await AlternativeFiends(rng);
 			}
 
 			if (flags.BuffTier1DamageSpells)
@@ -399,6 +428,8 @@ namespace FF1Lib
 				CraftDefenseItem(flags);
 			}
 
+			await this.Progress();
+
 			if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
 			{
 				CraftPowerItem(flags);
@@ -421,12 +452,12 @@ namespace FF1Lib
 				EnableToFRExit(maps);
 			}
 
-			if (((bool)flags.Treasures) && flags.ShardHunt && !flags.FreeOrbs && !flags.DeepDungeon)
+			if (((bool)flags.Treasures) && flags.ShardHunt)
 			{
 				EnableShardHunt(rng, talkroutines, flags.ShardCount);
 			}
 
-			if (!flags.FreeOrbs && !flags.ShardHunt && !flags.DeepDungeon)
+			if (!flags.ShardHunt && (flags.GameMode != GameModes.DeepDungeon))
 			{
 				SetOrbRequirement(rng, talkroutines, flags.OrbsRequiredCount, flags.OrbsRequiredMode, (bool)flags.OrbsRequiredSpoilers);
 			}
@@ -455,6 +486,8 @@ namespace FF1Lib
 				ShuffleSkyCastle4F(rng, maps);
 			}
 
+			await this.Progress();
+
 			if ((bool)flags.EarlyKing)
 			{
 				EnableEarlyKing(npcdata);
@@ -475,7 +508,7 @@ namespace FF1Lib
 				EnableChaosRush();
 			}
 
-			if ((bool)flags.IsBridgeFree && (flags.OwMapExchange != OwMapExchanges.Desert))
+			if ((bool)flags.IsBridgeFree && (!flags.DesertOfDeath))
 			{
 				EnableFreeBridge();
 			}
@@ -490,17 +523,14 @@ namespace FF1Lib
 					EnableFreeShip();
 			}
 
-			if (flags.FreeOrbs)
-			{
-				EnableFreeOrbs();
-			}
-
 			if ((bool)flags.IsCanalFree)
 			{
 				EnableFreeCanal((bool)flags.NPCItems, npcdata);
 			}
 
-			if ((bool)flags.FreeCanoe || (flags.OwMapExchange == OwMapExchanges.Desert))
+			await this.Progress();
+
+			if ((bool)flags.IsCanoeFree)
 			{
 				EnableFreeCanoe();
 			}
@@ -533,6 +563,7 @@ namespace FF1Lib
 
 			if (flags.NoOverworld)
 			{
+				await this.Progress("Linking NoOverworld's Map", 1);
 				NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
 			}
 
@@ -542,31 +573,68 @@ namespace FF1Lib
 				DraculasCurse(talkroutines, npcdata, rng, flags);
 			}
 
+			await this.Progress();
+
+			if ((bool)flags.ClassAsNpcFiends || (bool)flags.ClassAsNpcKeyNPC)
+			{
+				ClassAsNPC(flags, talkroutines, npcdata, flippedMaps, rng);
+			}
+
+			if (flags.NPCSwatter)
+			{
+				EnableNPCSwatter(npcdata);
+			}
+
+			if (flags.SpeedHacks)
+			{
+				SpeedHacksMoveNpcs();
+			}
+
+			// NOTE: logic checking for relocated chests
+			// accounts for NPC locations and whether they
+			// are fightable/killable, so it needs to
+			// happen after anything that adds, removes or
+			// relocates NPCs or changes their routines.
+			if ((bool)flags.RelocateChests && flags.GameMode != GameModes.DeepDungeon) {
+			    await this.RandomlyRelocateChests(rng, maps, npcdata, flags);
+			}
+
+			EnterTeleData enterBackup = new EnterTeleData(this);
+			NormTeleData normBackup = new NormTeleData(this);
+
+			enterBackup.LoadData();
+			normBackup.LoadData();
+
 			var maxRetries = 3;
 			for (var i = 0; i < maxRetries; i++)
 			{
 				try
 				{
+					await this.Progress((bool)flags.Treasures ? "Shuffling Treasures - Retries: " + i : "Placing Treasures", 3);
+
+					enterBackup.StoreData();
+					normBackup.StoreData();
+
 					overworldMap = new OverworldMap(this, flags, palettes);
 					overworldMap.Teleporters = teleporters;
 
-					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && !flags.DeepDungeon
-						&& !(flags.OwMapExchange == OwMapExchanges.NoOverworld))
+					if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && flags.GameMode == GameModes.Standard)
 					{
 						overworldMap.ShuffleEntrancesAndFloors(rng, flags);
 					}
 
 					// Disable the Princess Warp back to Castle Coneria
-					if ((bool)flags.Entrances || (bool)flags.Floors || flags.OwMapExchange != OwMapExchanges.None || (bool)flags.FreeOrbs)
+					if ((bool)flags.Entrances || (bool)flags.Floors || (flags.GameMode == GameModes.Standard && flags.OwMapExchange != OwMapExchanges.None) || (flags.OrbsRequiredCount == 0 && !flags.ShardHunt))
 						talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
 
-					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && !flags.DeepDungeon)
+					if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && (flags.GameMode != GameModes.DeepDungeon))
 					{
 						overworldMap.ShuffleObjectiveNPCs(rng);
 					}
 
-
 					incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, new SanityCheckerV1());
+
+				        await this.Progress();
 
 					if (((bool)flags.Shops))
 					{
@@ -602,12 +670,19 @@ namespace FF1Lib
 						incentivesData = new IncentiveData(rng, flags, overworldMap, shopItemLocation, new SanityCheckerV1());
 					}
 
-					if ((bool)flags.Treasures && !flags.DeepDungeon)
+				        await this.Progress();
+
+					if (flags.GameMode == GameModes.DeepDungeon)
+					{
+						sanityChecker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
+						generatedPlacement = DeepDungeon.ShuffleTreasures(flags, incentivesData, rng);
+					}
+					else if ((bool)flags.Treasures)
 					{
 						sanityChecker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
 						generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, overworldMap, teleporters, sanityChecker);
 					}
-					else if (owMapExchange != null && !flags.DeepDungeon)
+					else if (owMapExchange != null)
 					{
 						sanityChecker = new SanityCheckerV2(maps, overworldMap, npcdata, this, shopItemLocation, shipLocations);
 						if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags).Complete) throw new InsaneException("Not Completable");
@@ -622,6 +697,36 @@ namespace FF1Lib
 					throw new InvalidOperationException(e.Message);
 				}
 			}
+
+			List<string> funMessages = new()
+			{
+				"Placing Out of Bound Bat",
+				"Cleaning up Lich's closet",
+				"Labelling pots in Sarda's Cave",
+				"Partying in the Bat Party Room",
+				"Buffing up NPC's path-blocking AI",
+				"Debugging WarMech's software",
+				"Knocking down some impertinent fools",
+				"Sending Garland 2,000 years in the past",
+				"Giving a snack to Titan while waiting for the main course",
+				"Disguising Astos",
+				"Cursing the Elf Prince",
+				"Stealing Matoya's Crystal",
+				"Abducting Princess Sara",
+				"Placing the worst skills in Medusa's script",
+				"Applying for a Bridge building permit",
+				"Reticulating Splines",
+				"Digging Cave Holes",
+				"Bottling the Fairy",
+				"Floating the Sky Castle",
+				"Locking the door in Temple of Fiends",
+				"Teaching Kraken Kung Fu",
+				"Raising the Lich",
+			};
+
+			funMessages.AddRange(Enumerable.Repeat("Finalizing", funMessages.Count * 4).ToList());
+
+			await this.Progress(funMessages.PickRandom(rng));
 
 			// Change Astos routine so item isn't lost in wall of text
 			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems || (bool)flags.ShuffleAstos)
@@ -653,7 +758,7 @@ namespace FF1Lib
 
 			new LegendaryShops(rng, flags, maps, flippedMaps, shopData, this).PlaceShops();
 
-			if (flags.DeepDungeon)
+			if (flags.GameMode == GameModes.DeepDungeon)
 			{
 				shopData.Shops.Find(x => x.Type == FF1Lib.ShopType.Item && x.Entries.Contains(Item.Bottle)).Entries.Remove(Item.Bottle);
 				shopData.StoreData();
@@ -661,6 +766,8 @@ namespace FF1Lib
 
 			//has to be done before modifying itemnames and after modifying spellnames...
 			extConsumables.LoadSpells();
+
+			await this.Progress();
 
 			if (preferences.AccessibleSpellNames)
 			{
@@ -715,40 +822,13 @@ namespace FF1Lib
 				ShuffleRng(rng);
 			}
 
-			if (((bool)flags.EnemyScripts))
-			{
-				ShuffleEnemyScripts(rng, (bool)flags.AllowUnsafePirates, (bool)!flags.BossScriptsOnly, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.EnemySkillsSpellsTiered, flags.ScriptMultiplier);
-			}
+			ShuffleEnemyScripts(rng, flags);
 
-			if (((bool)flags.EnemySkillsSpells))
-			{
-				if ((bool)flags.EnemySkillsSpellsTiered && (bool)!flags.BossSkillsOnly)
-				{
-					GenerateBalancedEnemyScripts(rng, (bool)flags.SwolePirates);
-					ShuffleEnemySkillsSpells(rng, false, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.NoConsecutiveNukes, (bool)flags.NoEmptyScripts);
-				}
-				else
-				{
-				    ShuffleEnemySkillsSpells(rng, (bool)!flags.BossSkillsOnly, (bool)!flags.NoBossSkillScriptShuffle, (bool)flags.NoConsecutiveNukes, (bool)flags.NoEmptyScripts);
-				}
-			}
+			ShuffleEnemySkillsSpells(rng, flags);
 
-			if (((bool)flags.EnemyStatusAttacks))
-			{
-				if (((bool)flags.RandomStatusAttacks))
-				{
-					RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates, (bool)flags.DisableStunTouch, flags.TouchMultiplier);
-				}
-				else
-				{
-					ShuffleEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates);
-				}
-			}
+			StatusAttacks(flags, rng);
 
-			if ((bool)flags.EverythingHasDeathTouch)
-			{
-				EverythingHasDeathTouch((bool)flags.AllowUnsafePirates, (bool)flags.EverythingHasDeathTouchExcludeFiends);
-			}
+			await this.Progress();
 
 			if (flags.Runnability == Runnability.Random)
 				flags.Runnability = (Runnability)Rng.Between(rng, 0, 3);
@@ -785,11 +865,6 @@ namespace FF1Lib
 				UnleashWarMECH();
 			}
 
-			if ((bool)flags.ClassAsNpcFiends || (bool)flags.ClassAsNpcKeyNPC)
-			{
-				ClassAsNPC(flags, talkroutines, npcdata, flippedMaps, rng);
-			}
-
 			if ((bool)flags.FiendShuffle)
 			{
 				FiendShuffle(rng);
@@ -804,6 +879,8 @@ namespace FF1Lib
 			{
 				RemoveTrapTiles(flags.EnemizerEnabled);
 			}
+
+			await this.Progress();
 
 			if (((bool)flags.EnemyTrapTiles) && !flags.EnemizerEnabled)
 			{
@@ -860,11 +937,6 @@ namespace FF1Lib
 				BattleMagicMenuWrapAround();
 			}
 
-			if (flags.NPCSwatter)
-			{
-				EnableNPCSwatter(npcdata);
-			}
-
 			if (flags.EasyMode)
 			{
 				EnableEasyMode();
@@ -893,10 +965,12 @@ namespace FF1Lib
 				DoubleWeaponCritRates();
 			}
 
+			List<int> blursesValues = Enumerable.Repeat(0, 40).ToList();
+
 			//needs to go after item magic, moved after double weapon crit to have more control over the actual number of crit gained.
 			if ((bool)flags.RandomWeaponBonus)
 			{
-				RandomWeaponBonus(rng, flags.RandomWeaponBonusLow, flags.RandomWeaponBonusHigh, (bool)flags.RandomWeaponBonusExcludeMasa);
+				blursesValues = RandomWeaponBonus(rng, flags.RandomWeaponBonusLow, flags.RandomWeaponBonusHigh, (bool)flags.RandomWeaponBonusExcludeMasa);
 			}
 
 			if ((bool)flags.RandomArmorBonus)
@@ -908,6 +982,8 @@ namespace FF1Lib
 			{
 				IncreaseWeaponBonus(flags.WeaponTypeBonusValue);
 			}
+
+			await this.Progress();
 
 			if (flags.WeaponStats)
 			{
@@ -967,11 +1043,18 @@ namespace FF1Lib
 			    FunEnemyNames(preferences.TeamSteak, (bool)flags.AlternateFiends, new MT19337(funRngSeed));
 			}
 
+			await this.Progress();
+
 			if (ItemsText[(int)Item.Ribbon].Length > 7
 			    && ItemsText[(int)Item.Ribbon][7] == ' ')
 			    {
 				ItemsText[(int)Item.Ribbon] = ItemsText[(int)Item.Ribbon].Remove(7);
 			    }
+
+			if (flags.ImprovedClinic && !(bool)flags.RecruitmentMode)
+			{
+				ImprovedClinic();
+			}
 
 			if (flags.Etherizer)
 			{
@@ -981,16 +1064,9 @@ namespace FF1Lib
 				ItemsText[(int)Item.House] = "XETH@p";
 			}
 
-			if ((bool)flags.HintsVillage && !flags.DeepDungeon)
+			if ((bool)flags.HintsVillage && (flags.GameMode != GameModes.DeepDungeon))
 			{
 				NPCHints(rng, npcdata, flags, overworldMap);
-			}
-
-			if (flags.DeepDungeon)
-			{
-				DeepDungeon(rng, overworldMap, maps, flags);
-				DeepDungeonFloorIndicator();
-				UnusedGoldItems = new List<int> { };
 			}
 
 			if ((bool)flags.TrappedChestsEnabled)
@@ -1025,6 +1101,8 @@ namespace FF1Lib
 				ScaleAltExp(flags.ExpMultiplierRedMage, FF1Class.RedMage);
 			}
 
+			await this.Progress();
+
 			if (flags.ExpMultiplierWhiteMage > 1.0)
 			{
 				ScaleAltExp(flags.ExpMultiplierWhiteMage, FF1Class.WhiteMage);
@@ -1035,7 +1113,7 @@ namespace FF1Lib
 				ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
 			}
 
-			ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation);
+			ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.FreeClinic);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 			WriteMaps(maps);
@@ -1054,7 +1132,7 @@ namespace FF1Lib
 
 			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
-				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, (bool)flags.SwoleBahamut, flags.DeepDungeon, flags.EvadeCap, rng);
+				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, (bool)flags.SwoleBahamut, (flags.GameMode == GameModes.DeepDungeon), flags.EvadeCap, rng);
 			}
 
 			if (flags.EnemyScaleStatsHigh != 100 || flags.EnemyScaleStatsLow != 100 || ((bool)flags.SeparateEnemyHPScaling && (flags.EnemyScaleHpLow != 100 || flags.EnemyScaleHpHigh != 100)))
@@ -1079,6 +1157,8 @@ namespace FF1Lib
 			    ShuffleAstos(flags, npcdata, talkroutines, rng);
 			}
 
+			await this.Progress();
+
 			if ((bool)flags.EnablePoolParty)
 			{
 				EnablePoolParty(flags, rng);
@@ -1100,9 +1180,20 @@ namespace FF1Lib
 			SetupClassAltXp();
 
 			ClassData.SetMPMax(flags);
+			ClassData.SetMpGainOnMaxGain(flags, this);
 			ClassData.RaiseThiefHitRate(flags);
 			ClassData.BuffThiefAGI(flags);
+			ClassData.EarlierHighTierMagicCharges(flags);
 			ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);
+			ClassData.ProcessStartWithRoutines(flags, blursesValues, this);;
+
+			if ((bool)flags.ReducedLuck)
+			{
+				for (int i = 0; i < 12; i++)
+				{
+					ClassData[(Classes)i].LckStarting = (byte)(Math.Max(ClassData[(Classes)i].LckStarting - 4, 0));
+				}
+			}
 
 			if ((bool)flags.EnableRandomPromotions)
 			{
@@ -1131,6 +1222,8 @@ namespace FF1Lib
 
 			Fix3DigitStats();
 
+			await this.Progress();
+
 			if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
 			{
 				Spooky(talkroutines, npcdata, rng, flags);
@@ -1141,11 +1234,9 @@ namespace FF1Lib
 				EnableInventoryAutosort();
 			}
 
-			ObfuscateEnemies(rng, flags);
-
 			if (flags.ResourcePack != null) {
 			    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack))) {
-				this.LoadResourcePack(stream);
+				await this.LoadResourcePack(stream);
 			    }
 			    preferences.ThirdBattlePalette = true;
 			}
@@ -1155,6 +1246,9 @@ namespace FF1Lib
 			    SkyWarriorSpoilerBats(rng, flags, npcdata);
 			}
 
+			// Can't have any map edits after this!
+			WriteMaps(maps);
+
 			RollCredits(rng);
 			StatsTrackingScreen();
 
@@ -1162,18 +1256,22 @@ namespace FF1Lib
 			{
 				DisableDamageTileFlicker();
 			}
+			if (preferences.DisableDamageTileSFX)
+			{
+				DisableDamageTileSFX();
+			}
 
 			if (preferences.ThirdBattlePalette)
 			{
 				UseVariablePaletteForCursorAndStone();
 			}
 
-			if (preferences.PaletteSwap && !flags.EnemizerEnabled && flags.EnemyObfuscation == EnemyObfuscation.None)
+			if (preferences.PaletteSwap && !flags.EnemizerEnabled)
 			{
 				PaletteSwap(new MT19337(funRngSeed));
 			}
 
-			if (preferences.TeamSteak && !(bool)flags.RandomizeEnemizer && flags.EnemyObfuscation == EnemyObfuscation.None)
+			if (preferences.TeamSteak && !(bool)flags.RandomizeEnemizer)
 			{
 				TeamSteak();
 			}
@@ -1188,6 +1286,8 @@ namespace FF1Lib
 
 			HurrayDwarfFate(preferences.HurrayDwarfFate, npcdata, new MT19337(funRngSeed));
 
+			await this.Progress();
+
 			if (preferences.Music != MusicShuffle.None)
 			{
 				ShuffleMusic(preferences.Music, new MT19337(funRngSeed));
@@ -1198,10 +1298,20 @@ namespace FF1Lib
 				DisableSpellCastScreenFlash();
 			}
 
+			if (preferences.LockRespondRate)
+			{
+				LockRespondRate();
+			}
+
+			if (preferences.UninterruptedMusic)
+			{
+				UninterruptedMusic();
+			}
+
 			if (preferences.SpriteSheet != null) {
 			    using (var stream = new MemoryStream(Convert.FromBase64String(preferences.SpriteSheet)))
 			    {
-				SetCustomPlayerSprites(stream, preferences.ThirdBattlePalette);
+				await SetCustomPlayerSprites(stream, preferences.ThirdBattlePalette);
 			    }
 			}
 
@@ -1234,6 +1344,8 @@ namespace FF1Lib
 			SpellPermissions.Write(this);
 			ClassData.Write(this);
 
+			await this.Progress();
+
 			if (flags.Archipelago)
 			{
 				shipLocations.SetShipLocation(255);
@@ -1259,6 +1371,13 @@ namespace FF1Lib
 			uint last_rng_value = rng.Next();
 			WriteSeedAndFlags(seed.ToHex(), flagstext, last_rng_value);
 			ExtraTrackingAndInitCode(flags, preferences);
+
+			if(flags.OpenChestsInOrder)
+			{
+				OpenChestsInOrder();
+			}
+
+			await this.Progress("Randomization Completed");
 		}
 
 		private void EnableNPCSwatter(NPCdata npcdata)
@@ -1656,5 +1775,40 @@ namespace FF1Lib
 			Put(BattleRngOffset, battleRng.SelectMany(blob => blob.ToBytes()).ToArray());
 		}
 
+		public string SpoilBlursings()
+		{
+			string blursetext = "";
+			List<string> classlist = new() { "Fighter", "Thief", "Black Belt", "Red Mage", "White Mage", "Black Mage" };
+			for (int i = 0; i < 6; i++)
+			{
+				var pointer = GetFromBank(0x1E, 0x8950 + (i * 2), 2).ToUShorts();
+				var endpointer = GetFromBank(0x1E, 0x8950 + ((i+1) * 2), 2).ToUShorts();
+
+				var temptext = FF1Text.BytesToText(GetFromBank(0x1E, pointer[0], endpointer[0] - pointer[0])).Split("\n").ToList();
+
+				temptext.RemoveAll(x => x == "");
+
+				for (int j = 0; j < temptext.Count; j++)
+				{
+					temptext[j] = temptext[j].Replace("\n", "");
+					temptext[j] = temptext[j].Replace("@S", "Sword");
+					temptext[j] = temptext[j].Replace("@H", "Hammer");
+					temptext[j] = temptext[j].Replace("@K", "Knife");
+					temptext[j] = temptext[j].Replace("@X", "Axe");
+					temptext[j] = temptext[j].Replace("@F", "Staff");
+					temptext[j] = temptext[j].Replace("@N", "Nunchuks");
+					temptext[j] = temptext[j].Replace("@A", "Armor");
+					temptext[j] = temptext[j].Replace("@s", "Shield");
+					temptext[j] = temptext[j].Replace("@h", "Helmet");
+					temptext[j] = temptext[j].Replace("@G", "Gauntlet");
+					temptext[j] = temptext[j].Replace("@B", "Bracelet");
+					temptext[j] = temptext[j].Replace("@T", "Shirt");
+				}
+
+				blursetext += classlist[i] + "\n" + "BONUS" + "\n" + String.Join("\n", temptext.ToArray()) + "\n\n";
+			}
+
+			return blursetext;
+		}
 	}
 }

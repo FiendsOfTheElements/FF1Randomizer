@@ -9,28 +9,28 @@ namespace FF1Lib
 {
 	public enum ChanceToRunMode
 	{
-		[Description("Vanilla")]
+		[Description("Bugged")]
 		Vanilla,
 
-		[Description("Fixed")]
+		[Description("Corrected")]
 		Fixed,
 
-		[Description("25%")]
+		[Description("Fixed 25%")]
 		Fix25,
 
-		[Description("40%")]
+		[Description("Fixed 40%")]
 		Fix40,
 
-		[Description("55%")]
+		[Description("Fixed 55%")]
 		Fix55,
 
-		[Description("70%")]
+		[Description("Fixed 70%")]
 		Fix70,
 
-		[Description("85%")]
+		[Description("Fixed 85%")]
 		Fix85,
 
-		[Description("100%")]
+		[Description("Fixed 100%")]
 		Fix100
 	}
 

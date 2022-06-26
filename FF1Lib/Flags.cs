@@ -56,6 +56,7 @@ namespace FF1Lib
 
 		#endregion
 
+		public bool? ReversedFloors { get; set; } = false;
 		public bool BuffTier1DamageSpells { get; set; } = false;
 		public bool NoEmptyScripts { get; set; } = false;
 		public bool LaterLoose { get; set; } = false;
@@ -67,7 +68,8 @@ namespace FF1Lib
 
 		public ScriptTouchMultiplier ScriptMultiplier { get; set; } = ScriptTouchMultiplier.Vanilla;
 		public ScriptTouchMultiplier TouchMultiplier { get; set; } = ScriptTouchMultiplier.Vanilla;
-
+		public TouchPool TouchPool { get; set; } = TouchPool.All;
+		public TouchMode TouchMode { get; set; } = TouchMode.Standard;
 		public RibbonMode RibbonMode { get; set; } = RibbonMode.Vanilla;
 
 		public bool Archipelago { get; set; } = false;
@@ -108,8 +110,6 @@ namespace FF1Lib
 
 		public SpellNameMadness SpellNameMadness { get; set; } = SpellNameMadness.None;
 
-		public EnemyObfuscation EnemyObfuscation { get; set; } = EnemyObfuscation.None;
-
 		public ExtConsumableSet ExtConsumableSet { get; set; } = ExtConsumableSet.None;
 
 		public bool ExtConsumablesEnabled => ExtConsumableSet != ExtConsumableSet.None;
@@ -131,6 +131,14 @@ namespace FF1Lib
 		public bool SanityCheckerV2 { get; set; } = true;
 
 		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.None;
+		public bool OwShuffledAccess { get; set; } = false;
+		public bool OwUnsafeStart { get; set; } = false;
+		public bool OwRandomPregen { get; set; } = false;
+
+		public bool? RelocateChests { get; set; } = false;
+		public bool RelocateChestsTrapIndicator { get; set; } = false;
+
+		public GameModes GameMode { get; set; } = GameModes.Standard;
 
 		[IntegerFlag(0, Int32.MaxValue-1)]
 		public int MapGenSeed { get; set; } = 0;
@@ -163,7 +171,6 @@ namespace FF1Lib
 
 		public bool? ExcludeGoldFromScaling { get; set; } = false;
 		public bool CheapVendorItem { get; set; } = false;
-		public bool ApplyExpBoostToGold { get; set; } = false;
 
 		public StartingLevel StartingLevel { get; set; }
 
@@ -186,7 +193,7 @@ namespace FF1Lib
 		public bool ShardHunt { get; set; } = false;
 		public ShardCount ShardCount { get; set; } = ShardCount.Count16;
 
-		[IntegerFlag(1, 4)]
+		[IntegerFlag(0, 4)]
 		public int OrbsRequiredCount { get; set; } = 4;
 		public OrbsRequiredMode OrbsRequiredMode { get; set; } = OrbsRequiredMode.Any;
 		public bool? OrbsRequiredSpoilers { get; set; } = false;
@@ -233,21 +240,19 @@ namespace FF1Lib
 		public bool? TrappedChaos { get; set; } = false;
 		public bool? TCIndicator { get; set; } = false;
 		public bool? SwolePirates { get; set; } = false;
-		public bool? EnemyScripts { get; set; } = false;
-		public bool? BossScriptsOnly { get; set; } = false;
-		public bool? EnemySkillsSpells { get; set; } = false;
+		public bool? ShuffleScriptsEnemies { get; set; } = false;
+		public bool? ShuffleScriptsBosses { get; set; } = false;
+		public bool? ShuffleSkillsSpellsEnemies { get; set; } = false;
+		public bool? ShuffleSkillsSpellsBosses { get; set; } = false;
 		public bool? NoConsecutiveNukes { get; set; } = false;
 		public bool TranceHasStatusElement { get; set; } = false;
-		public bool? BossSkillsOnly { get; set; } = false;
 		public bool? EnemySkillsSpellsTiered { get; set; } = false;
-		public bool? EnemyStatusAttacks { get; set; } = false;
-		public bool? RandomStatusAttacks { get; set; } = false;
 		public bool? AllowUnsafePirates { get; set; } = false;
 		public bool? AllowUnsafeMelmond { get; set; } = false;
 
 		public WarMECHMode WarMECHMode { get; set; } = WarMECHMode.Vanilla;
 		public bool? OrdealsPillars { get; set; } = false;
-		public SkyCastle4FMazeMode SkyCastle4FMazeMode { get; set; } = SkyCastle4FMazeMode.Normal;
+		public SkyCastle4FMazeMode SkyCastle4FMazeMode { get; set; } = SkyCastle4FMazeMode.Vanilla;
 		public bool? TitansTrove { get; set; } = false;
 		public bool? LefeinSuperStore { get; set; } = false;
 		public bool? LefeinShops { get; set; } = false;
@@ -261,6 +266,7 @@ namespace FF1Lib
 		public bool? OWDamageTiles { get; set; } = false;
 		public bool? DamageTilesKill { get; set; } = false;
 		public bool? MoveGaiaItemShop { get; set; } = false;
+		public bool? ShufflePravokaShops { get; set; } = false;
 		public bool? FlipDungeons { get; set; } = false;
 		public bool SpookyFlag { get; set; } = false;
 		public bool DraculasFlag { get; set; } = false;
@@ -277,6 +283,8 @@ namespace FF1Lib
 		public bool? MapAirshipDock { get; set; } = false;
 		public bool? MapBahamutCardiaDock  { get; set; } = false;
 		public bool? MapLefeinRiver  { get; set; } = false;
+		public bool? MapBridgeLefein { get; set; } = false;
+		public bool? MapRiverToMelmond { get; set; } = false;
 		public bool? MapGaiaMountainPass  { get; set; } = false;
 		public bool? MapDragonsHoard { get; set; } = false;
 		public bool? MapHallOfDragons { get; set; } = false;
@@ -291,6 +299,7 @@ namespace FF1Lib
 		public bool? IncentivizeCanoeItem { get; set; } = false;
 		public bool? IncentivizeAirship { get; set; } = false;
 		public bool? IncentivizeShipAndCanal { get; set; } = false;
+		public bool? IncentivizeBridgeItem { get; set; } = false;
 
 		public bool? IncentivizeMarsh { get; set; } = false;
 		public bool? IncentivizeEarth { get; set; } = false;
@@ -341,12 +350,10 @@ namespace FF1Lib
 		public bool? EarlyOrdeals { get; set; } = false;
 		public bool? ShuffleObjectiveNPCs { get; set; } = false;
 		public bool OnlyRequireGameIsBeatable { get; set; } = true;
-		//public bool NoOverworld { get; set; } = false;
 		public bool? FreeBridge { get; set; } = false;
 		public bool? FreeShip { get; set; } = false;
 		public bool? FreeAirship { get; set; } = false;
 		public bool? FreeLute { get; set; } = false;
-		public bool FreeOrbs { get; set; } = false;
 		public bool EnableCritNumberDisplay { get; set; } = false;
 		public bool? FreeCanal { get; set; } = false;
 		public bool? FreeCanoe { get; set; } = false;
@@ -364,6 +371,8 @@ namespace FF1Lib
 		public bool ChestInfo { get; set; } = false;
 		public bool IncentiveChestItemsFanfare { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;
+		public bool ImprovedClinic { get; set; } = false;
+		public bool FreeClinic { get; set; } = false;
 		public bool Etherizer { get; set; } = false;
 		public bool HouseMPRestoration { get; set; } = false;
 		public bool WeaponStats { get; set; } = false;
@@ -373,6 +382,7 @@ namespace FF1Lib
 		public ThiefAGI ThiefAgilityBuff { get; set; } = ThiefAGI.Vanilla;
 		public SpoilerBatHints SkyWarriorSpoilerBats { get; set; } = SpoilerBatHints.Vanilla;
 		public bool? SpoilerBatsDontCheckOrbs { get; set; } = false;
+		public bool? MoveToFBats { get; set; } = false;
 
 		[IntegerFlag(0, 50)]
 		public int WeaponTypeBonusValue { get; set; } = 10;
@@ -391,14 +401,10 @@ namespace FF1Lib
 		public bool FixHitChanceCap { get; set; } = false;
 
 		public bool? MelmondClinic { get; set; } = false;
-        public bool DeepDungeon { get; set; } = false;
-		public bool DDEvenTreasureDistribution { get; set; } = false;
 		public bool DDProgressiveTilesets { get; set; } = false;
 		public bool DDFiendOrbs { get; set; } = false;
 		public TailBahamutMode TailBahamutMode { get; set; } = TailBahamutMode.Random;
-		public bool StartingGold { get; set; } = false;
-		public bool WrapStatOverflow { get; set; } = false;
-		public bool WrapPriceOverflow { get; set; } = false;
+		public StartingGold StartingGold { get; set; } = StartingGold.Gp400;
 		public bool IncludeMorale { get; set; } = false;
 		public bool DeadsGainXP { get; set; } = false;
 		public bool NonesGainXP { get; set; } = false;
@@ -453,7 +459,7 @@ namespace FF1Lib
 		[DoubleFlag(1.0, 5.0, 0.1)]
 		public double ExpMultiplier { get; set; } = 0;
 
-		[IntegerFlag(0, 500, 10)]
+		[IntegerFlag(0, 250, 25)]
 		public int ExpBonus { get; set; } = 0;
 
 		[DoubleFlag(1.0, 3.0, 0.1)]
@@ -561,8 +567,6 @@ namespace FF1Lib
 		public bool? ClampMinimumBossStatScale { get; set; } = false;
 		public bool? ClampMinimumPriceScale { get; set; } = false;
 		public bool EFGWaterfall { get; set; } = false;
-		public bool EFGEarth1 { get; set; } = false;
-		public bool EFGEarth2 { get; set; } = false;
 		public bool? FiendShuffle { get; set; } = false;
 		public bool DisableTentSaving { get; set; } = false;
 		public bool DisableInnSaving { get; set; } = false;
@@ -608,6 +612,7 @@ namespace FF1Lib
 		public bool? RandomPromotionsSpoilers { get; set; } = false;
 		public bool? RandomizeClass { get; set; } = false;
 		public bool? RandomizeClassCasting { get; set; } = false;
+		public bool? RandomizeClassKeyItems { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
 		public bool? RandomizeClassIncludeNaturalResist { get; set; } = false;
 		public bool? RandomizeClassIncludeXpBonus { get; set; } = false;
@@ -626,11 +631,12 @@ namespace FF1Lib
 		public bool ExclusiveLegendaryWhiteShop { get; set; } = false;
 		public bool ExclusiveLegendaryItemShop { get; set; } = false;
 
-		[IntegerFlag(0, 4)]
+		[IntegerFlag(0, 3)]
 		public int RandomizeClassMaxBonus { get; set; } = 2;
 
-		[IntegerFlag(0, 4)]
+		[IntegerFlag(0, 3)]
 		public int RandomizeClassMaxMalus { get; set; } = 1;
+		public bool? EarlierHighTierMagic { get; set; } = false;
 		public bool? ChangeMaxMP { get; set; } = false;
 
 		[IntegerFlag(0, 9)]
@@ -648,24 +654,29 @@ namespace FF1Lib
 		[IntegerFlag(0, 9)]
 		public int NinjaMaxMP { get; set; } = 4;
 
+		public MpGainOnMaxGain MpGainOnMaxGainMode { get; set; } = MpGainOnMaxGain.None;
+
 		public LockHitMode LockMode { get; set; } = LockHitMode.Vanilla;
 
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
 		public FormationShuffleMode FormationShuffleMode { get; set; } = FormationShuffleMode.None;
 
-		public WorldWealthMode WorldWealth { get; set; } = WorldWealthMode.Normal;
-
+		public RandomizeTreasureMode RandomizeTreasure { get; set; } = RandomizeTreasureMode.None;
+		public bool OpenChestsInOrder { get; set; } = false;
+		public WorldWealthMode WorldWealth { get; set; } = WorldWealthMode.Standard;
+		public DeepDungeonGeneratorMode DeepDungeonGenerator { get; set; } = DeepDungeonGeneratorMode.Progressive;
 		public EvadeCapValues EvadeCap { get; set; } = EvadeCapValues.medium;
 
 		public bool? AllowUnsafeStartArea { get; set; } = false;
 
 		public bool? IncreaseDarkPenalty { get; set; } = false;
 
-		public bool? EverythingHasDeathTouch { get; set; } = false;
-		public bool? EverythingHasDeathTouchExcludeFiends { get; set; } = false;
+		public bool? TouchIncludeBosses { get; set; } = false;
 
 		public bool? Lockpicking { get; set; } = false;
+
+		public bool? ReducedLuck { get; set; } = false;
 
 		[IntegerFlag(1, 50)]
 		public int LockpickingLevelRequirement { get; set; } = 10;
@@ -673,9 +684,8 @@ namespace FF1Lib
 		public bool WhiteMageHarmEveryone { get; set; } = false;
 
 		public bool? EarlierRuby { get; set; } = false;
-		public bool? DisableStunTouch { get; set; } = false;
-		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (OwMapExchange != OwMapExchanges.Desert);
-		public bool DisableOWMapModifications => SanityCheckerV2 & (OwMapExchange != OwMapExchanges.None);
+		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (!DesertOfDeath);
+		public bool DisableOWMapModifications => SanityCheckerV2 & (GameMode == GameModes.Standard && OwMapExchange != OwMapExchanges.None);
 		public bool? MapOnracDock => MapOpenProgressionDocks & !DisableOWMapModifications;
 		public bool? MapMirageDock => MapOpenProgressionDocks & !DisableOWMapModifications;
 		public bool? MapConeriaDwarves => MapOpenProgression & !DisableOWMapModifications;
@@ -704,14 +714,16 @@ namespace FF1Lib
 		public bool? IncentivizeCrown => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeSlab => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeBottle => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
-		public bool NoOverworld => (SanityCheckerV2 & OwMapExchange == OwMapExchanges.NoOverworld);
+		public bool NoOverworld => (SanityCheckerV2 & GameMode == GameModes.NoOverworld);
+		public bool DesertOfDeath => (GameMode == GameModes.Standard & OwMapExchange == OwMapExchanges.Desert);
 		public bool? IsShipFree => FreeShip | NoOverworld;
-		public bool? IsAirshipFree => FreeAirship & !NoOverworld & !(OwMapExchange == OwMapExchanges.Desert);
-		public bool? IsBridgeFree => FreeBridge | NoOverworld;
-		public bool? IsCanalFree => (FreeCanal & !NoOverworld) | (OwMapExchange == OwMapExchanges.Desert);
-		public bool? IsFloaterRemoved => ((NoFloater|IsAirshipFree) & !NoOverworld) | (OwMapExchange == OwMapExchanges.Desert);
-		public bool IncentivizeBridge => false;
-		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe & !(OwMapExchange == OwMapExchanges.Desert);
+		public bool? IsCanoeFree => FreeCanoe | DesertOfDeath;
+		public bool? IsAirshipFree => FreeAirship & !NoOverworld & !DesertOfDeath;
+		public bool? IsBridgeFree => FreeBridge | NoOverworld | DesertOfDeath;
+		public bool? IsCanalFree => (FreeCanal & !NoOverworld) | DesertOfDeath;
+		public bool? IsFloaterRemoved => ((NoFloater|IsAirshipFree) & !NoOverworld) | DesertOfDeath;
+		public bool? IncentivizeBridge => NPCItems & IncentivizeBridgeItem & !IsBridgeFree & !NoOverworld;
+		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe & !DesertOfDeath;
 		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;
 		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !IsShipFree & !NoOverworld;
 		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems;
@@ -749,7 +761,7 @@ namespace FF1Lib
 			+ ((IncentivizeSlab ?? false) ? 1 : 0)
 			+ ((IncentivizeBottle ?? false) ? 1 : 0)
 			+ ((IncentivizeFloater ?? false) ? 1 : 0)
-			+ (IncentivizeBridge ? 1 : 0)
+			+ ((IncentivizeBridge ?? false) ? 1 : 0)
 			+ ((IncentivizeLute ?? false) ? 1 : 0)
 			+ ((IncentivizeShip ?? false) ? 1 : 0)
 			+ ((IncentivizeRod ?? false) ? 1 : 0)
@@ -784,7 +796,7 @@ namespace FF1Lib
 			+ ((IncentivizeSlab ?? true) ? 1 : 0)
 			+ ((IncentivizeBottle ?? true) ? 1 : 0)
 			+ ((IncentivizeFloater ?? true) ? 1 : 0)
-			+ (IncentivizeBridge ? 1 : 0)
+			+ ((IncentivizeBridge ?? true) ? 1 : 0)
 			+ ((IncentivizeLute ?? true) ? 1 : 0)
 			+ ((IncentivizeShip ?? true) ? 1 : 0)
 			+ ((IncentivizeRod ?? true) ? 1 : 0)
@@ -800,7 +812,7 @@ namespace FF1Lib
 
 		public string IncentivizedItems => ""
 			+ ((IncentivizeAdamant != null) ? (IncentivizeAdamant ?? false ? "Adamant " : "") : ("Adamant? "))
-			+ (IncentivizeBridge ? "Bridge " : "")
+			+ ((IncentivizeBridge != null) ? (IncentivizeBridge ?? false ? "Bridge " : "") : ("Bridge? "))
 			+ ((IncentivizeBottle != null) ? (IncentivizeBottle ?? false ? "Bottle " : "") : ("Bottle? "))
 			+ ((IncentivizeCanal != null) ? (IncentivizeCanal ?? false ? "Canal " : "") : ("Canal? "))
 			+ ((IncentivizeCanoe != null) ? (IncentivizeCanoe ?? false ? "Canoe " : "") : ("Canoe? "))
@@ -927,11 +939,11 @@ namespace FF1Lib
 			return (Flags)this.MemberwiseClone();
 		}
 
-		public bool? ImmediatePureAndSoftRequired => EnemyStatusAttacks | Entrances | MapOpenProgression | RandomizeFormationEnemizer | RandomizeEnemizer;
+		public bool? ImmediatePureAndSoftRequired => (TouchMode != TouchMode.Standard) | Entrances | MapOpenProgression | RandomizeFormationEnemizer | RandomizeEnemizer;
 		public bool? DeepCastlesPossible => Entrances & Floors;
 		public bool? DeepTownsPossible => Towns & Entrances & Floors & EntrancesMixedWithTowns;
 		public bool EnemizerEnabled => (bool)RandomizeFormationEnemizer | (bool)RandomizeEnemizer;
-		public bool EnemizerDontMakeNewScripts => (bool)EnemySkillsSpells & !((bool)BossSkillsOnly | (bool)EnemySkillsSpellsTiered);
+		public bool EnemizerDontMakeNewScripts => (bool)ShuffleSkillsSpellsEnemies & !((bool)EnemySkillsSpellsTiered);
 
 		public bool? TrappedChestsEnabled => (bool)TrappedChaos | (bool)TCMasaGuardian | (TCBetterTreasure == TCOptions.All | TCKeyItems == TCOptions.All | TCShards == TCOptions.All) | ((TCBetterTreasure == TCOptions.Pooled | TCKeyItems == TCOptions.Pooled | TCShards == TCOptions.Pooled) & TCChestCount > 0) | (TCChestCount > 0);
 

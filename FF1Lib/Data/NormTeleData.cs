@@ -17,6 +17,14 @@ namespace FF1Lib
 		public MapId Map;
 		public byte X;
 		public byte Y;
+
+		public void FlipXcoordinate()
+		{
+			var x1 = X & 0x3F;
+			var x2 = X & 0xC0;
+
+			X = (byte)((64 - x1 - 1) | x2);
+		}
 	}
 
 	public class NormTeleData : IEnumerable<TeleData>

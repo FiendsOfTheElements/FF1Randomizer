@@ -142,7 +142,7 @@ namespace FF1Lib
 			Put(ShopPointerBase + pointers[0], allEntries.ToArray());
 		}
 
-		private ItemShopSlot ShuffleShopType(ShopType shopType, ushort[] pointers, MT19337 rng, bool randomize = false, IEnumerable<Item> excludeItemsFromRandomShops = null, WorldWealthMode wealth = WorldWealthMode.Normal)
+		private ItemShopSlot ShuffleShopType(ShopType shopType, ushort[] pointers, MT19337 rng, bool randomize = false, IEnumerable<Item> excludeItemsFromRandomShops = null, WorldWealthMode wealth = WorldWealthMode.Standard)
 		{
 			var shops = GetShops(shopType, pointers);
 
@@ -200,10 +200,10 @@ namespace FF1Lib
 						indeces.Remove(exclusion);
 					}
 
-					ItemGenerator generator = new ItemGenerator(indeces, wealth);
+					ShopItemGenerator generator = new ShopItemGenerator(indeces, UnusedGoldItems, new List<Item>());
 					for (int i = 0; i < newShops.Length; i++)
 					{
-						newShops[i] = newShops[i].Select(x => (byte)generator.SpliceItem(rng)).ToList();
+						newShops[i] = newShops[i].Select(x => (byte)generator.GetItem(rng)).ToList();
 					}
 				}
 			}

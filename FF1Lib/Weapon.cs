@@ -35,19 +35,7 @@ namespace FF1Lib
 		CHUCK = 0xA8
 	}
 
-	public enum Element : byte
-	{
-		NONE = 0x00,
-		STATUS = 0x01,
-		POISON = 0x02,
-		TIME = 0x04,
-		DEATH = 0x08,
-		FIRE = 0x10,
-		ICE = 0x20,
-		LIGHTNING = 0x40,
-		EARTH = 0x80
-	}
-
+	[Flags]
 	public enum MonsterType : byte
 	{
 		NONE = 0x00,
@@ -61,6 +49,7 @@ namespace FF1Lib
 		REGENERATIVE = 0x80
 	}
 
+	[Flags]
 	public enum EquipPermission : ushort
 	{
 		Fighter = 0x800,
@@ -74,7 +63,8 @@ namespace FF1Lib
 		Master = 0x008,
 		RedWizard = 0x004,
 		WhiteWizard = 0x002,
-		BlackWizard = 0x001
+		BlackWizard = 0x001,
+		None = 0x000
 	}
 
 	// lut_ClassEquipBit: ;  FT   TH   BB   RM   WM   BM      KN   NJ   MA   RW   WW   BW
@@ -96,16 +86,19 @@ namespace FF1Lib
 		//6 - weapon type sprite
 		//7 - weapon sprite palette color
 
-		public void RandomWeaponBonus(MT19337 rng, int min, int max, bool excludeMasa)
+		public List<int> RandomWeaponBonus(MT19337 rng, int min, int max, bool excludeMasa)
 		{
 			//get base stats
 			Weapon currentWeapon;
+			List<int> blurseValues = new();
+
 			for (int i = 0; i < WeaponCount; i++)
 			{
 				if (i != 39 || !excludeMasa)
 				{
 					currentWeapon = new Weapon(i, this);
 					int bonus = rng.Between(min, max);
+					blurseValues.Add(bonus);
 					if (bonus != 0)
 					{
 						//adjust stats
@@ -133,12 +126,14 @@ namespace FF1Lib
 					}
 				}
 			}
+
+			return blurseValues;
 		}
 
 		//sample function for creating new weapons
 		public void ExpandWeapon()
 		{
-			Weapon flameChucks = new Weapon(0, "Flame@N", WeaponIcon.CHUCK, 20, 26, 10, 0, (byte)Element.FIRE, 0, WeaponSprite.CHUCK, 0x25);
+			Weapon flameChucks = new Weapon(0, "Flame@N", WeaponIcon.CHUCK, 20, 26, 10, 0, (byte)SpellElement.Fire, 0, WeaponSprite.CHUCK, 0x25);
 			WeaponPermissions[flameChucks.Id] = (ushort)(EquipPermission.BlackBelt | EquipPermission.Master | EquipPermission.Ninja);
 			flameChucks.writeWeaponMemory(this);
 		}
@@ -161,10 +156,10 @@ namespace FF1Lib
 		    };
 
 		    var powers = new int[] {
-			(int)Element.POISON,
-			(int)Element.FIRE | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.REGENERATIVE<<8),
-			(int)Element.ICE,
-			(int)Element.LIGHTNING,
+			(int)SpellElement.Poison,
+			(int)SpellElement.Fire | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.REGENERATIVE<<8),
+			(int)SpellElement.Ice,
+			(int)SpellElement.Lightning,
 			(int)(MonsterType.MAGICAL|MonsterType.MAGE)<<8,
 			(int)MonsterType.DRAGON<<8,
 			(int)MonsterType.GIANT<<8,
@@ -172,10 +167,10 @@ namespace FF1Lib
 			//(int)MonsterType.WERE<<8,
 			(int)MonsterType.AQUATIC<<8,
 			//(int)MonsterType.MAGE<<8,
-			(int)Element.FIRE | (int)Element.ICE,
+			(int)SpellElement.Fire | (int)SpellElement.Ice,
 			(int)MonsterType.MAGICAL<<8|(int)MonsterType.DRAGON<<8|(int)MonsterType.GIANT<<8|(int)MonsterType.UNDEAD<<8
 			    |(int)MonsterType.WERE<<8|(int)MonsterType.AQUATIC<<8|(int)MonsterType.MAGE<<8,
-			(int)Element.POISON | (int)Element.FIRE | (int)Element.ICE | (int)Element.LIGHTNING,
+			(int)SpellElement.Poison | (int)SpellElement.Fire | (int)SpellElement.Ice | (int)SpellElement.Lightning,
 		    };
 
 		    var powerNames = new string[][] {
@@ -286,7 +281,6 @@ namespace FF1Lib
 
 		    var spellHelper = new SpellHelper(this);
 		    var Spells = GetSpells();
-		    var allSpells = LoadSpells();
 
 		    var defenseSwordSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any).
 								Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
@@ -442,7 +436,7 @@ namespace FF1Lib
 				name = nameWithIcon =  "Defense";
 			    } else if (weaponItemId == Item.ThorHammer && !noItemMagic) {
 				name = nameWithIcon = "Thor  @H";
-				elementalWeakness = (byte)(Element.ICE|Element.FIRE|Element.LIGHTNING);
+				elementalWeakness = (byte)(SpellElement.Ice|SpellElement.Fire|SpellElement.Lightning);
 			    } else {
 				if (spellIndex != 0xFF) {
 				    name = Spells[spellIndex].Name;
@@ -473,22 +467,22 @@ namespace FF1Lib
 			    }
 
 			    if (spellIndex != 0xFF) {
-				var spellInfo = allSpells[spellIndex];
+				var spellInfo = Spells[spellIndex];
 				// Weapons casting elemental magic also
 				// get elemental bonus
-				if ((spellInfo.elem & (byte)SpellElement.Ice) != 0) {
-				    elementalWeakness = (byte)Element.ICE;
+				if ((spellInfo.elem & SpellElement.Ice) != 0) {
+				    elementalWeakness = (byte)SpellElement.Ice;
 				}
-				if ((spellInfo.elem & (byte)SpellElement.Fire) != 0) {
-				    elementalWeakness = (byte)Element.FIRE;
+				if ((spellInfo.elem & SpellElement.Fire) != 0) {
+				    elementalWeakness = (byte)SpellElement.Fire;
 				}
-				if ((spellInfo.elem & (byte)SpellElement.Lightning) != 0) {
-				    elementalWeakness = (byte)Element.LIGHTNING;
+				if ((spellInfo.elem & SpellElement.Lightning) != 0) {
+				    elementalWeakness = (byte)SpellElement.Lightning;
 				}
-				if ((spellInfo.elem & (byte)SpellElement.Poison) != 0) {
-				    elementalWeakness = (byte)Element.POISON;
+				if ((spellInfo.elem & SpellElement.Poison) != 0) {
+				    elementalWeakness = (byte)SpellElement.Poison;
 				}
-				if (spellInfo.routine == (byte)SpellRoutine.DamageUndead) {
+				if (spellInfo.routine == SpellRoutine.DamageUndead) {
 				    typeWeakeness = (byte)MonsterType.UNDEAD;
 				}
 			    }
@@ -599,7 +593,7 @@ namespace FF1Lib
 	public class Weapon
 	{
 		public Item Id => (Item)(WeaponIndex + (int)Item.WoodenNunchucks);
-		public Spell Spell => SpellIndex == 0xFF ? 0 : (Spell)(SpellIndex - 1 + (int)Spell.CURE);
+	        public Spell Spell => SpellIndex == 0xFF ? 0 : (Spell)(SpellIndex - 1 + (int)Spell.CURE);
 
 		//index
 		public int WeaponIndex;
@@ -667,7 +661,7 @@ namespace FF1Lib
 
 		public static IEnumerable<Weapon> LoadAllWeapons(FF1Rom rom, Flags flags)
 		{
-			int i = flags.ExtConsumableSet != ExtConsumableSet.None ? 4 : 0;
+			int i = flags != null && flags.ExtConsumableSet != ExtConsumableSet.None ? 4 : 0;
 			for (; i < 40; i++)
 			{
 				yield return new Weapon(i, rom);

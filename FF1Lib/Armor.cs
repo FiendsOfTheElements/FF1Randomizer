@@ -148,24 +148,24 @@ namespace FF1Lib
 		    };
 
 		    var resists = new byte[] {
-			(byte)Element.STATUS,
-			(byte)Element.POISON,
-			(byte)Element.TIME,
-			(byte)Element.DEATH,
-			(byte)Element.FIRE,
-			(byte)Element.ICE,
-			(byte)Element.LIGHTNING,
-			(byte)Element.EARTH,
+			(byte)SpellElement.Status,
+			(byte)SpellElement.Poison,
+			(byte)SpellElement.Time,
+			(byte)SpellElement.Death,
+			(byte)SpellElement.Fire,
+			(byte)SpellElement.Ice,
+			(byte)SpellElement.Lightning,
+			(byte)SpellElement.Earth,
 		    };
 		    var resistNames = new Dictionary<int, string> {
-			{ (int)Element.STATUS, "Active" },    // resist status attacks
-			{ (int)Element.POISON, "Aegis" },     // resist stone/poison
-			{ (int)Element.TIME, "Time" },        // resis time
-			{ (int)Element.DEATH, "Protec" },     // resist death
-			{ (int)Element.FIRE, "Ice" },         // resist fire
-			{ (int)Element.ICE, "Flame" },        // resist ice
-			{ (int)Element.LIGHTNING, "Ohm" },    // resist lightning
-			{ (int)Element.EARTH, "Earth" },      // resist earth
+			{ (int)SpellElement.Status, "Active" },    // resist status attacks
+			{ (int)SpellElement.Poison, "Aegis" },     // resist stone/poison
+			{ (int)SpellElement.Time, "Time" },        // resis time
+			{ (int)SpellElement.Death, "Protec" },     // resist death
+			{ (int)SpellElement.Fire, "Ice" },         // resist fire
+			{ (int)SpellElement.Ice, "Flame" },        // resist ice
+			{ (int)SpellElement.Lightning, "Ohm" },    // resist lightning
+			{ (int)SpellElement.Earth, "Earth" },      // resist earth
 		    };
 		    var classNames = new string[][] {
 			new string[] { "Velvet", "Silk",   "Burlap" },
@@ -475,7 +475,7 @@ namespace FF1Lib
 			    var resistName = "";
 			    for (int j = 0; j < resists.Length; j++) {
 				if ((elementalResist & resists[j]) != 0) {
-				    resistName += " " + (Element)resists[j];
+				    resistName += " " + (SpellElement)resists[j];
 				}
 			    }
 			    if (resistName != "") {

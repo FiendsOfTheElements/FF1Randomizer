@@ -40,6 +40,7 @@ namespace FF1Lib
 				var incentives = ctx.Incentivized.ToList();
 				var nonincentives = ctx.Unincentivized.ToList();
 				var shards = ctx.Shards.ToList();
+				var removedItems = ctx.Removed.ToList();
 				treasurePool = ctx.AllTreasures.ToList();
 				incentives.Shuffle(rng);
 				nonincentives.Shuffle(rng);
@@ -82,7 +83,7 @@ namespace FF1Lib
 						lastPlacements.Remove(Item.Floater);
 					}
 
-					if (_flags.OwMapExchange == OwMapExchanges.Desert && !(bool)_flags.IsShipFree)
+					if (_flags.DesertOfDeath && !(bool)_flags.IsShipFree)
 					{
 						nextPlacements.Remove(Item.Ship);
 						fixedPlacements.Add(Item.Ship);
@@ -127,7 +128,7 @@ namespace FF1Lib
 
 					nextPlacements.Shuffle(rng);
 					lastPlacements.Shuffle(rng);
-					var allPlacements = fixedPlacements.Concat(nextPlacements).Concat(lastPlacements);
+					var allPlacements = fixedPlacements.Concat(nextPlacements).Concat(lastPlacements).Except(removedItems);
 
 					foreach (var item in allPlacements)
 					{

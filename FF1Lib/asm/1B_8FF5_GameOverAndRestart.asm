@@ -168,3 +168,5 @@ NoShip:
     LSR $601E
     ROR $601D
     ROR $601C
+	LDA #$01
+	STA $6014

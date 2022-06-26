@@ -8,15 +8,15 @@ namespace FF1Lib
 {
 	public enum PoolSize
 	{
-		[Description("4 characters")]
+		[Description("4 Characters")]
 		Size4,
-		[Description("5 characters")]
+		[Description("5 Characters")]
 		Size5,
-		[Description("6 characters")]
+		[Description("6 Characters")]
 		Size6,
-		[Description("7 characters")]
+		[Description("7 Characters")]
 		Size7,
-		[Description("8 characters")]
+		[Description("8 Characters")]
 		Size8,
 	}
 
@@ -376,7 +376,9 @@ namespace FF1Lib
 			// Faster Lineup Modifications
 			var animationOffsets = new List<int> { 0x39AA0, 0x39AB4, 0x39B10, 0x39B17, 0x39B20, 0x39B27 };
 			animationOffsets.ForEach(addr => Data[addr] = 0x04);
+		}
 
+		public void SpeedHacksMoveNpcs() {
 			// Move NPCs out of the way.
 			MoveNpc(MapId.Coneria, 0, 0x11, 0x02, inRoom: false, stationary: true); // North Coneria Soldier
 			MoveNpc(MapId.Coneria, 4, 0x12, 0x14, inRoom: false, stationary: true); // South Coneria Gal
@@ -385,10 +387,16 @@ namespace FF1Lib
 			MoveNpc(MapId.Onrac, 13, 0x29, 0x1B, inRoom: false, stationary: true); // Onrac Guy
 			MoveNpc(MapId.Lefein, 3, 0x21, 0x07, inRoom: false, stationary: true); // Lefein Guy
 																				   //MoveNpc(MapId.Waterfall, 1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
-			MoveNpc(MapId.EarthCaveB3, 10, 0x09, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
-			MoveNpc(MapId.EarthCaveB3, 7, 0x0B, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
-			MoveNpc(MapId.EarthCaveB3, 8, 0x0A, 0x0C, inRoom: true, stationary: false); // Earth Cave Bat B3
+			MoveNpc(MapId.EarthCaveB3, 10, 0x32, 0x0C, inRoom: false, stationary: false); // Earth Cave Bat B3
+			MoveNpc(MapId.EarthCaveB3, 7, 0x31, 0x1A, inRoom: true, stationary: false); // Earth Cave Bat B3
+			MoveNpc(MapId.EarthCaveB3, 8, 0x1D, 0x0E, inRoom: true, stationary: false); // Earth Cave Bat B3
+
+			MoveNpc(MapId.EarthCaveB3, 2, 0x0B, 0x0A, inRoom: true, stationary: false); // Earth Cave Bat B3
+			MoveNpc(MapId.EarthCaveB3, 3, 0x0A, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
+			MoveNpc(MapId.EarthCaveB3, 4, 0x09, 0x0A, inRoom: true, stationary: false); // Earth Cave Bat B3
+
 			MoveNpc(MapId.EarthCaveB3, 9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
+
 			MoveNpc(MapId.EarthCaveB5, 1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
 			MoveNpc(MapId.ConeriaCastle1F, 5, 0x07, 0x0F, inRoom: false, stationary: true); // Coneria Ghost Lady
 
@@ -498,12 +506,12 @@ namespace FF1Lib
 			byte ship_x = 0x98;
 			byte ship_y = 0xA9;
 
-			if (flags.DeepDungeon)
+			if (flags.GameMode == GameModes.DeepDungeon)
 			{
 				coneria_y = 0x9B;
 			}
 
-			if (owMapExchange != null && flags.OwMapExchange != OwMapExchanges.NoOverworld)
+			if (owMapExchange != null && flags.GameMode == GameModes.Standard)
 			{
 				coneria_x = (byte)(owMapExchange.StartingLocation.X - 0x07);
 				coneria_y = (byte)(owMapExchange.StartingLocation.Y - 0x07);
@@ -517,12 +525,12 @@ namespace FF1Lib
 
 			// write new routine to save data at game over (the game will save when you clear the final textbox and not before), see 1B_8FF5_GameOverAndRestart.asm
 			var saveondeath_standardmid = $"AD0460D02EAD0060F04FAD0160CD0164D008AD0260CD0264F03FAD016038E9078D1060AD026038E9078D1160A9048D1460D026AD056038E9078D1060AD066038E9078D1160A9018D1460AD0060F00AA9{ship_x:X2}8D0160A9{ship_y:X2}8D0260";
-			var saveondeath_dwmodemid = $"AD0460F00AA9{airship_x:X2}8D0560A9{airship_y:X2}8D0660AD0060F00AA9{ship_x:X2}8D0160A9{ship_y:X2}8D0260A9{coneria_x:X2}8D1060A9{coneria_y:X2}8D11604E1E606E1D606E1C60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
+			var saveondeath_dwmodemid = $"AD0460F00AA9{airship_x:X2}8D0560A9{airship_y:X2}8D0660AD0060F00AA9{ship_x:X2}8D0160A9{ship_y:X2}8D0260A9{coneria_x:X2}8D1060A9{coneria_y:X2}8D11604E1E606E1D606E1C60A9018D1460EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
 			var saveondeath_part1 = "20E38BA200BD0061C9FFF041BD0C619D0A61BD0D619D0B61BD28639D2063BD29639D2163BD2A639D2263BD2B639D2363BD2C639D2463BD2D639D2563BD2E639D2663BD2F639D2763A9009D01618A186940AAD0B1";
 			var saveondeath_part2 = "A200BD00609D0064BD00619D0065BD00629D0066BD00639D0067E8D0E5A9558DFE64A9AA8DFF64A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD644C1D80";
 
 			// Since we want to spawn inside with No Overworld and not at transport, update coordinate to Coneria Castle
-			if (flags.OwMapExchange == OwMapExchanges.NoOverworld)
+			if (flags.NoOverworld)
 			{
 				coneria_x = GetFromBank(0x0E, 0x9DC0+0x08, 1)[0];
 				coneria_y = GetFromBank(0x0E, 0x9DD0+0x08, 1)[0];
@@ -738,15 +746,6 @@ namespace FF1Lib
 		public void EnableFreeTail()
 		{
 			Data[0x3020 + (int)Item.Tail] = 0x01;
-		}
-
-		public void EnableFreeOrbs()
-		{
-			const int initItemOffset = 0x3020;
-			Data[initItemOffset + (int)Item.EarthOrb] = 0x01;
-			Data[initItemOffset + (int)Item.FireOrb] = 0x01;
-			Data[initItemOffset + (int)Item.WaterOrb] = 0x01;
-			Data[initItemOffset + (int)Item.AirOrb] = 0x01;
 		}
 
 		public void ChangeUnrunnableRunToWait()
@@ -1562,26 +1561,26 @@ namespace FF1Lib
 			Put(EnemyTextPointerOffset + 120 * 2, lich2name);
 
 			// Scale Undeads
-			ScaleSingleEnemyStats(0x15, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Bone
-			ScaleSingleEnemyStats(0x16, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // R.Bone
-			ScaleSingleEnemyStats(0x24, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // ZomBull
-			ScaleSingleEnemyStats(0x27, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Shadow
-			ScaleSingleEnemyStats(0x28, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Image
-			ScaleSingleEnemyStats(0x29, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Wraith
-			ScaleSingleEnemyStats(0x2A, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Ghost
-			ScaleSingleEnemyStats(0x2B, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Zombie
-			ScaleSingleEnemyStats(0x2C, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Ghoul
-			ScaleSingleEnemyStats(0x2D, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Geist
-			ScaleSingleEnemyStats(0x2E, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Specter
-			ScaleSingleEnemyStats(0x33, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Phantom
-			ScaleSingleEnemyStats(0x3C, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Vampire
-			ScaleSingleEnemyStats(0x3D, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // WzVampire
-			ScaleSingleEnemyStats(0x44, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Zombie D
-			ScaleSingleEnemyStats(0x4F, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Mummy
-			ScaleSingleEnemyStats(0x50, 125, 125, false, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // WzMummy
-			ScaleSingleEnemyStats(0x77, 120, 120, false, false, null, false, 120, 120, GetEvadeIntFromFlag(flags.EvadeCap)); // Lich1
-			ScaleSingleEnemyStats(0x78, 120, 120, false, false, null, false, 120, 120, GetEvadeIntFromFlag(flags.EvadeCap)); // Lich2
-			ScaleSingleEnemyStats(0x7F, 110, 110, false, false, null, false, 110, 110, GetEvadeIntFromFlag(flags.EvadeCap)); // Chaos
+			ScaleSingleEnemyStats(0x15, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Bone
+			ScaleSingleEnemyStats(0x16, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // R.Bone
+			ScaleSingleEnemyStats(0x24, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // ZomBull
+			ScaleSingleEnemyStats(0x27, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Shadow
+			ScaleSingleEnemyStats(0x28, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Image
+			ScaleSingleEnemyStats(0x29, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Wraith
+			ScaleSingleEnemyStats(0x2A, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Ghost
+			ScaleSingleEnemyStats(0x2B, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Zombie
+			ScaleSingleEnemyStats(0x2C, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Ghoul
+			ScaleSingleEnemyStats(0x2D, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Geist
+			ScaleSingleEnemyStats(0x2E, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Specter
+			ScaleSingleEnemyStats(0x33, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Phantom
+			ScaleSingleEnemyStats(0x3C, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Vampire
+			ScaleSingleEnemyStats(0x3D, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // WzVampire
+			ScaleSingleEnemyStats(0x44, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Zombie D
+			ScaleSingleEnemyStats(0x4F, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // Mummy
+			ScaleSingleEnemyStats(0x50, 125, 125, false, null, false, 125, 125, GetEvadeIntFromFlag(flags.EvadeCap)); // WzMummy
+			ScaleSingleEnemyStats(0x77, 120, 120, false, null, false, 120, 120, GetEvadeIntFromFlag(flags.EvadeCap)); // Lich1
+			ScaleSingleEnemyStats(0x78, 120, 120, false, null, false, 120, 120, GetEvadeIntFromFlag(flags.EvadeCap)); // Lich2
+			ScaleSingleEnemyStats(0x7F, 110, 110, false, null, false, 110, 110, GetEvadeIntFromFlag(flags.EvadeCap)); // Chaos
 
 			// Intro
 			Blob intro = FF1Text.TextToStory(new string[]
@@ -1855,13 +1854,13 @@ namespace FF1Lib
 			bahamutInfo.accuracy = 106;
 			bahamutInfo.critrate = 1;
 			bahamutInfo.agility = 58;
-			bahamutInfo.elem_weakness = (byte)Element.NONE;
+			bahamutInfo.elem_weakness = (byte)SpellElement.None;
 
 			if (swoleBahamut)
 			{
 				bahamutInfo.exp = 16000; // increase exp for swole bahamut, either mode
 				bahamutInfo.hp = 700; // subject to additional boss HP scaling
-				bahamutInfo.elem_resist = (byte)Element.POISON; // no longer susceptible to BANE or BRAK
+				bahamutInfo.elem_resist = (byte)SpellElement.Poison; // no longer susceptible to BANE or BRAK
 
 				int availableScript = bahamutInfo.AIscript;
 				if (availableScript == 0xFF) {
@@ -2201,7 +2200,7 @@ namespace FF1Lib
 			var teledata = new ExitTeleData(this);
 			teledata.LoadData();
 
-			var tpsReport = new TeleportShuffle(flags.ReplacementMap);
+			var tpsReport = new TeleportShuffle(this, flags.ReplacementMap);
 
 			var tofCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.TempleOfFiends1];
 			var mirageCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.MirageTower1];
@@ -2230,6 +2229,26 @@ namespace FF1Lib
 			PutInBank(0x1B, 0x9500, Blob.FromHex("818C3595C8955B96EE968197818C3595C8955B96EE968197"));
 			//actual new level up function
 			PutInBank(0x1B, 0x9518, Blob.FromHex("A000B1860AAAA026B1860A187186187D00958582E8A9007D0095858360"));
+		}
+
+		public void OpenChestsInOrder()
+		{
+			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9112003FEBD00B6D0062000B9BD00BF2010B42015B98A60EAEAEAEAEAEA"));
+
+			PutInBank(0x11, 0xB900, Blob.FromHex("A000A200B900622904F006B900B6D001E8C8D0F060"));
+
+			PutInBank(0x11, 0xB915, Blob.FromHex("B00AA445B90062090499006260"));
+
+			//Change the too full logic for GiveReward consumables to clear the chest. This is to not run into an issue with consumables blocking chest progression.
+			PutInBank(0x11, 0xB432, Blob.FromHex("B045"));
+		}
+
+		public void MoveToFBats() {
+		    MoveNpc(MapId.TempleOfFiends, 2, 0x0C, 0x0D, inRoom: false, stationary: false);
+		    MoveNpc(MapId.TempleOfFiends, 3, 0x1D, 0x0B, inRoom: false, stationary: false);
+		    MoveNpc(MapId.TempleOfFiends, 4, 0x1A, 0x19, inRoom: false, stationary: false);
+		    MoveNpc(MapId.TempleOfFiends, 5, 0x0F, 0x18, inRoom: false, stationary: false);
+		    MoveNpc(MapId.TempleOfFiends, 6, 0x14, 0x0C, inRoom: false, stationary: false);
 		}
 	}
 }

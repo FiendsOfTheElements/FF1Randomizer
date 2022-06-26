@@ -10,6 +10,7 @@ namespace FF1Lib
 	{
 		public const int TreasureJingleOffset = 0x47600;
 		public const int TreasureOffset = 0x03100;
+		public const int TreasureChestOrderOffset = 0x47F00;
 		public const int TreasureSize = 1;
 		public const int TreasurePoolCount = 256;
 		public const int TreasureCount = 256;
@@ -59,7 +60,7 @@ namespace FF1Lib
 				item.Put(this);
 			}
 			// Move the ship someplace closer to where it really ends up.
-			if (!(flags.IsShipFree ?? false) && !(flags.OwMapExchange == OwMapExchanges.Desert))
+			if (!(flags.IsShipFree ?? false) && !(flags.DesertOfDeath))
 			{
 				MapLocation shipLocation = placedItems.Find(reward => reward.Item == Item.Ship).MapLocation;
 				if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out var overworldIndex))

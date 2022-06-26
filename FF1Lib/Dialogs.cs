@@ -359,7 +359,8 @@ namespace FF1Lib
 			var newChars = new List<(byte, string)>
 			{
 				(0x7B, "000008083E080800FFFFFFFFFFFFFFFF"), // + sign
-				(0x7C, "FFFFFF7F3DFFFFFFFFFF99C2E6C299FE")  // Trapped chest (standard)
+				(0x7C, "FFFFFF7F3DFFFFFFFFFF99C2E6C299FE"),  // Trapped chest (standard)
+				(0x7D, "FFFF99C3E7C399FF0000663C183C6600")  // Trap tile
 			};
 
 			foreach (var newchar in newChars)
@@ -1320,7 +1321,7 @@ namespace FF1Lib
 			}
 
 			if (flags.IsFloaterRemoved ?? false) incentivePool.Remove(Item.Floater);
-			if (flags.FreeCanoe ?? false) incentivePool.Remove(Item.Canoe);
+			if (flags.IsCanoeFree ?? false) incentivePool.Remove(Item.Canoe);
 			if (flags.IsBridgeFree ?? false) incentivePool.Remove(Item.Bridge);
 			if (flags.IsCanalFree ?? false) incentivePool.Remove(Item.Canal);
 			if (flags.FreeLute ?? false) incentivePool.Remove(Item.Lute);

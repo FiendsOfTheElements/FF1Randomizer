@@ -510,7 +510,7 @@ namespace FF1Lib
 				routine = 0x03,
 				effect = 0b00000001,
 				elem = 0b00000010,
-				accuracy = 0x12,
+				accuracy = 0x18,
 				targeting = 0x01
 			};
 

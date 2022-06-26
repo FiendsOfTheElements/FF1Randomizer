@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
+using System.Diagnostics;
 using RomUtilities;
 using FF1Lib.Helpers;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace FF1Lib
 {
@@ -17,10 +16,34 @@ namespace FF1Lib
 		None = 0,
 		[Description("Shuffle Rarity")]
 		Intrazone,
+		[Description("Shuffle Rarity Tiered")]
+		ShuffleRarityTiered,
 		[Description("Shuffle Across Zones")]
 		InterZone,
 		[Description("Totally Random")]
 		Randomize
+	}
+	public enum TouchPool
+	{
+		[Description("All")]
+		All = 0,
+		[Description("All except Stun Status")]
+		RemoveStun,
+		[Description("Only Death Status")]
+		OnlyDeath,
+		[Description("Random")]
+		Random
+	}
+	public enum TouchMode
+	{
+		[Description("Vanilla")]
+		Standard = 0,
+		[Description("Shuffle")]
+		Shuffle,
+		[Description("Randomize")]
+		Randomize,
+		[Description("Random")]
+		Random
 	}
 	public partial class FF1Rom : NesRom
 	{
@@ -77,7 +100,7 @@ namespace FF1Lib
 
 			if (shuffleMode == FormationShuffleMode.Intrazone)
 			{
-				// intra-zone shuffle, does not change which formations are in zomes.
+				// intra-zone shuffle, does not change which formations are in zones.
 				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
 				var newFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
 
@@ -98,6 +121,43 @@ namespace FF1Lib
 						newFormations[i][j] = shuffleFormations[j - 2][0];
 					}
 
+				}
+
+				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
+			}
+			if(shuffleMode == FormationShuffleMode.ShuffleRarityTiered) {
+				// intra-zone shuffle, does not change which formations are in zones.
+				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
+				var newFormations = new List<Blob>();
+
+				for (int i = 0; i < ZoneCount; i++)
+				{
+					var currentEncounterZone = oldFormations[i].Chunk(1);
+
+					List<(Blob, int)> weightedEncounterPool = new List<(Blob, int)>();
+
+					//3 tiers
+					//encounter groups 1-4 in highest frequency
+					//5-6 in mid
+					//7-8 in low
+
+					weightedEncounterPool.Add((currentEncounterZone[0], 48));
+					weightedEncounterPool.Add((currentEncounterZone[1], 48));
+					weightedEncounterPool.Add((currentEncounterZone[2], 48));
+					weightedEncounterPool.Add((currentEncounterZone[3], 48));
+					weightedEncounterPool.Add((currentEncounterZone[4], 24));
+					weightedEncounterPool.Add((currentEncounterZone[5], 24));
+					weightedEncounterPool.Add((currentEncounterZone[6], 8));
+					weightedEncounterPool.Add((currentEncounterZone[7], 8));
+
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
+					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
 				}
 
 				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
@@ -186,19 +246,31 @@ namespace FF1Lib
 			Put(ZoneFormationsOffset, newFormations.ToArray());
 		}
 
-		public void ShuffleEnemyScripts(MT19337 rng, bool AllowUnsafePirates, bool doNormals, bool doBosses, bool excludeImps, ScriptTouchMultiplier scriptMultiplier)
+		public void ShuffleEnemyScripts(MT19337 rng, Flags flags)
 		{
+
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			var newEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
-			if (doNormals)
+			bool shuffleNormalEnemies = (bool)flags.ShuffleScriptsEnemies;
+			bool shuffleBosses = (bool)flags.ShuffleScriptsBosses;
+			bool allowUnsafePirates = (bool)flags.AllowUnsafePirates;
+			bool excludeImps = (bool)flags.EnemySkillsSpellsTiered;
+			ScriptTouchMultiplier scriptMultiplier = flags.ScriptMultiplier;
+
+			if (!shuffleNormalEnemies && !shuffleBosses)
+			{
+				return;
+			}
+
+			if (shuffleNormalEnemies)
 			{
 				var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
-				if (!AllowUnsafePirates) normalOldEnemies.RemoveAt(Enemy.Pirate);
+				if (!allowUnsafePirates) normalOldEnemies.RemoveAt(Enemy.Pirate);
 				if (excludeImps) normalOldEnemies.RemoveAt(Enemy.Imp);
 				normalOldEnemies.Shuffle(rng);
 				if (excludeImps) normalOldEnemies.Insert(Enemy.Imp, oldEnemies[Enemy.Imp]);
-				if (!AllowUnsafePirates) normalOldEnemies.Insert(Enemy.Pirate, oldEnemies[Enemy.Pirate]);
+				if (!allowUnsafePirates) normalOldEnemies.Insert(Enemy.Pirate, oldEnemies[Enemy.Pirate]);
 
 				var allScripts = normalOldEnemies.Select(e => e[EnemyStat.Scripts]).Distinct().ToList();
 				allScripts.Remove(0xFF);
@@ -217,6 +289,9 @@ namespace FF1Lib
 					{
 						case ScriptTouchMultiplier.None:
 							count = 0;
+							break;
+						case ScriptTouchMultiplier.Half:
+							count = 18;
 							break;
 						case ScriptTouchMultiplier.Vanilla:
 							count = 36;//should never happen
@@ -246,13 +321,13 @@ namespace FF1Lib
 
 					foreach (var i in indices.Take(count))
 					{
-						if (i == 15 && !AllowUnsafePirates) continue;
+						if (i == 15 && !allowUnsafePirates) continue;
 						newEnemies[i][EnemyStat.Scripts] = allScripts.PickRandom(rng);
 					}
 				}
 			}
 
-			if(doBosses)
+			if(shuffleBosses)
 			{
 				var oldBosses = new List<Blob>
 				{
@@ -290,8 +365,25 @@ namespace FF1Lib
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void ShuffleEnemySkillsSpells(MT19337 rng, bool doNormals, bool doBosses, bool noConsecutiveNukes, bool nonEmpty)
+		public void ShuffleEnemySkillsSpells(MT19337 rng, Flags flags)
 		{
+			bool shuffleNormalEnemies = (bool)flags.ShuffleSkillsSpellsEnemies;
+			bool shuffleBosses = (bool)flags.ShuffleSkillsSpellsBosses;
+			bool noConsecutiveNukes = (bool)flags.NoConsecutiveNukes;
+			bool nonEmpty = (bool)flags.NoEmptyScripts;
+			bool buffedPirates = (bool)flags.SwolePirates;
+			bool generateBalancedscript = (bool)flags.EnemySkillsSpellsTiered && shuffleNormalEnemies;
+
+			if (!shuffleBosses && !shuffleNormalEnemies)
+			{
+				return;
+			}
+
+			if (generateBalancedscript)
+			{
+				GenerateBalancedEnemyScripts(rng, buffedPirates);
+			}
+
 			var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
 
 			// Remove two instances each of CRACK and TOXIC since they're likely to get spread out to several enemies.
@@ -306,10 +398,12 @@ namespace FF1Lib
 			var bossIndices = new List<int> { 34, 36, 38, 40 };
 			var bigBossIndices = new List<int> { 32, 35, 37, 39, 41, 42 };
 
-			if(doNormals)
+			if (shuffleNormalEnemies)
+			{
 			    ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, noConsecutiveNukes, nonEmpty, rng);
+			}
 
-			if(doBosses)
+			if (shuffleBosses)
 			{
 			    ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, noConsecutiveNukes, false, rng);
 			    ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, noConsecutiveNukes, false, rng);
@@ -485,7 +579,29 @@ namespace FF1Lib
 
 			return buckets;
 		}
+		public void StatusAttacks(Flags flags, MT19337 rng)
+		{
+			if (flags.TouchMode == TouchMode.Random)
+			{
+				var selectedMode = rng.Between(0, Enum.GetNames(typeof(TouchMode)).Length - 1);
 
+				flags.TouchMode = (TouchMode)selectedMode;
+			}
+
+			if (flags.TouchMode == TouchMode.Standard)
+			{
+				return;
+			}
+			else if (flags.TouchMode == TouchMode.Shuffle)
+			{
+				ShuffleEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates);
+			}
+			else if (flags.TouchMode == TouchMode.Randomize)
+			{
+				RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates, (bool)flags.TouchIncludeBosses, flags.TouchPool, flags.TouchMultiplier);
+			}
+
+		}
 		public void ShuffleEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates)
 		{
 			var oldEnemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
@@ -510,8 +626,15 @@ namespace FF1Lib
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool DisableStunTouch, ScriptTouchMultiplier touchMultiplier)
+		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool incudeBosses, TouchPool touchPool, ScriptTouchMultiplier touchMultiplier)
 		{
+			if (touchPool == TouchPool.Random)
+			{
+				int selectedPool = rng.Between(0, Enum.GetNames(typeof(TouchPool)).Length - 1);
+
+				touchPool = (TouchPool)selectedPool;
+			}
+
 			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 
 			List<(byte touch, byte element)> statusElements = new List<(byte touch, byte element)>()
@@ -523,122 +646,72 @@ namespace FF1Lib
 				(0x40, 0x01), //Mute Touch = Status
 			};
 
-			if (DisableStunTouch) statusElements.Remove((0x10, 0x01));
+			if (touchPool == TouchPool.RemoveStun)
+			{
+				statusElements.Remove((0x10, 0x01));
+			}
 
 			(byte touch, byte element) deathElement = (0x01, 0x08); //Death Touch = Death Element
 			(byte touch, byte element) stoneElement = (0x02, 0x02); //Stone Touch = Poison
 
-			var weightedStatusElements = statusElements.Concat(statusElements).Concat(statusElements).Concat(statusElements).Append(deathElement).Append(stoneElement).ToList();
+			List<(byte touch, byte element)> weightedStatusElements = new();
 
-			if (touchMultiplier == ScriptTouchMultiplier.Vanilla)
+			if (touchPool == TouchPool.OnlyDeath)
 			{
-				for (int i = 0; i < EnemyCount; i++)
-				{
-					if (!AllowUnsafePirates)
-					{
-						if (i == 15) //pirates
-						{
-							continue;
-						}
-					}
-
-					int roll = rng.Between(0, 128);
-					if (roll < 1) //1 vanilla death toucher
-					{
-						//Death Touch
-						var (touch, element) = deathElement;
-						enemies[i][15] = touch;
-						enemies[i][14] = element;
-					}
-					else if (roll < 2) //1 vanilla stone toucher
-					{
-						//Stone Touch
-						var (touch, element) = stoneElement;
-						enemies[i][15] = touch;
-						enemies[i][14] = element;
-					}
-					else if (roll < 37) //35 enemies with other assorted status touches
-					{
-						var (touch, element) = statusElements.PickRandom(rng);
-						enemies[i][15] = touch;
-						enemies[i][14] = element;
-					}
-					else
-					{
-						//Otherwise, the enemy has no touch or associated element.
-						enemies[i][14] = 0x00;
-						enemies[i][15] = 0x00;
-					}
-				}
+				weightedStatusElements.Add(deathElement);
 			}
 			else
 			{
-				var count = 0;
-				switch (touchMultiplier)
+				while (weightedStatusElements.Count < 20)
 				{
-					case ScriptTouchMultiplier.None:
-						count = 0;
-						break;
-					case ScriptTouchMultiplier.Vanilla:
-						count = 36;//should never happen
-						break;
-					case ScriptTouchMultiplier.OneAndHalf:
-						count = 54;
-						break;
-					case ScriptTouchMultiplier.Double:
-						count = 72;
-						break;
-					case ScriptTouchMultiplier.All:
-						count = EnemyCount - 10;
-						break;
-					case ScriptTouchMultiplier.Random:
-						count = rng.Between(18, 90);
-						break;
+					weightedStatusElements.AddRange(statusElements);
 				}
 
-				List<int> indices = new List<int>();
-				for (int i = 0; i < EnemyCount - 10; i++)
-				{
-					enemies[i][14] = 0x00;
-					enemies[i][15] = 0x00;
-
-					indices.Add(i);
-				}
-
-				indices.Shuffle(rng);
-
-				foreach (var i in indices.Take(count))
-				{
-					if (i == 15 && !AllowUnsafePirates) continue;
-					var (touch, element) = weightedStatusElements.PickRandom(rng);
-					enemies[i][15] = touch;
-					enemies[i][14] = element;
-				}
+				weightedStatusElements.Append(deathElement);
+				weightedStatusElements.Append(stoneElement);
 			}
 
-			Put(EnemyOffset, enemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
-		}
-
-		public void EverythingHasDeathTouch(bool AllowUnsafePirates, bool ExcludeFiends)
-		{
-			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
-
-			(byte touch, byte element) deathElement = (0x01, 0x08); //Death Touch = Death Element
-
-			int numEnemies = EnemyCount;
-			if (ExcludeFiends)
+			var count = 0;
+			switch (touchMultiplier)
 			{
-				numEnemies = EnemyCount - 9; // Fiends, Fiend Refights, and Chaos
+				case ScriptTouchMultiplier.None:
+					count = 0;
+					break;
+				case ScriptTouchMultiplier.Half:
+					count = 18;
+					break;
+				case ScriptTouchMultiplier.Vanilla:
+					count = 36; //should never happen / now it does!
+					break;
+				case ScriptTouchMultiplier.OneAndHalf:
+					count = 54;
+					break;
+				case ScriptTouchMultiplier.Double:
+					count = 72;
+					break;
+				case ScriptTouchMultiplier.All:
+					count = EnemyCount - 10;
+					break;
+				case ScriptTouchMultiplier.Random:
+					count = rng.Between(18, 90);
+					break;
 			}
 
-			for (int i = 0; i < numEnemies; i++)
+			List<int> indices = new List<int>();
+			for (int i = 0; i < (incudeBosses ? EnemyCount : (EnemyCount - 10)); i++)
 			{
-				if (i == 15 && !AllowUnsafePirates) // don't give Death Touch to Pirates
-				{
-					continue;
-				}
+				enemies[i][14] = 0x00;
+				enemies[i][15] = 0x00;
 
-				var (touch, element) = deathElement;
+				indices.Add(i);
+			}
+
+			indices.Shuffle(rng);
+
+			foreach (var i in indices.Take(count))
+			{
+				if (i == 15 && !AllowUnsafePirates) continue;
+				var (touch, element) = weightedStatusElements.PickRandom(rng);
 				enemies[i][15] = touch;
 				enemies[i][14] = element;
 			}
@@ -758,14 +831,14 @@ namespace FF1Lib
 			public byte SpellChance2;
 			public byte SkillChance2;
 			public MonsterType MonsterType;
-			public Element ElementalWeakness;
+			public SpellElement ElementalWeakness;
 			public FormationSpriteSheet SpriteSheet;
 			public FormationPattern FormationPattern;
 			public int Palette1;
 			public int Palette2;
 			public FormationGFX GFXOffset;
 		}
-		public void AlternativeFiends(MT19337 rng)
+		public async Task AlternativeFiends(MT19337 rng)
 		{
 			const int FiendsIndex = 0x77;
 			const int FiendsScriptIndex = 0x22;
@@ -779,7 +852,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite2,
 					Palette1 = 0x39,
 					Palette2 = 0x39,
-					ElementalWeakness = Element.FIRE,
+					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.BRAK, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.BRAK, (byte)SpellByte.FIRE },
@@ -797,7 +870,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite4,
 					Palette1 = 0x3A,
 					Palette2 = 0x3A,
-					ElementalWeakness = Element.NONE,
+					ElementalWeakness = SpellElement.None,
 					MonsterType = MonsterType.REGENERATIVE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.CUR2, (byte)SpellByte.CUR3, (byte)SpellByte.CUR3, (byte)SpellByte.FAST, (byte)SpellByte.CUR2, (byte)SpellByte.CUR3, (byte)SpellByte.CUR3, (byte)SpellByte.FAST },
@@ -815,7 +888,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite2,
 					Palette1 = 0x36,
 					Palette2 = 0x36,
-					ElementalWeakness = Element.EARTH,
+					ElementalWeakness = SpellElement.Earth,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.DARK, (byte)SpellByte.SLOW, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.DARK, (byte)SpellByte.SLOW, (byte)SpellByte.LIT2 },
@@ -833,7 +906,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite2,
 					Palette1 = 0x30,
 					Palette2 = 0x30,
-					ElementalWeakness = Element.LIGHTNING,
+					ElementalWeakness = SpellElement.Lightning,
 					MonsterType = MonsterType.UNDEAD,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FAST, (byte)SpellByte.FIRE, (byte)SpellByte.FOG, (byte)SpellByte.FIRE, (byte)SpellByte.SLOW, (byte)SpellByte.FIRE, (byte)SpellByte.RUB },
@@ -851,7 +924,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite3,
 					Palette1 = 0x1D, // Yellow/Orange
 					Palette2 = 0x1D,
-					ElementalWeakness = Element.ICE,
+					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.UNDEAD,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.FAST, (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.FAST },
@@ -869,7 +942,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite1,
 					Palette1 = 0x1A, // Grey/Purple
 					Palette2 = 0x1A,
-					ElementalWeakness = Element.POISON,
+					ElementalWeakness = SpellElement.Poison,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.SLOW, (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.FAST, (byte)SpellByte.SLOW, (byte)SpellByte.STUN, (byte)SpellByte.STOP },
@@ -887,7 +960,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite4,
 					Palette1 = 0x14, // Blue/Purple
 					Palette2 = 0x14,
-					ElementalWeakness = Element.LIGHTNING,
+					ElementalWeakness = SpellElement.Lightning,
 					MonsterType = MonsterType.AQUATIC,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.STUN, (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.STUN, (byte)SpellByte.ICE, (byte)SpellByte.ICE2 },
@@ -905,7 +978,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite4,
 					Palette1 = 0x2D, // Blue/Grey
 					Palette2 = 0x2D,
-					ElementalWeakness = Element.NONE,
+					ElementalWeakness = SpellElement.None,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.CURE, (byte)SpellByte.FAST, (byte)SpellByte.CURE, (byte)SpellByte.SLOW, (byte)SpellByte.CURE, (byte)SpellByte.FAST, (byte)SpellByte.CURE, (byte)SpellByte.SLOW },
@@ -923,7 +996,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite3,
 					Palette1 = 0x23, // Green/White
 					Palette2 = 0x23,
-					ElementalWeakness = Element.ICE,
+					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FAST, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FAST },
@@ -941,7 +1014,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite1,
 					Palette1 = 0x25, // Red/White
 					Palette2 = 0x2F,
-					ElementalWeakness = Element.FIRE,
+					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.STUN, (byte)SpellByte.SLOW, (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.STUN, (byte)SpellByte.SLOW },
@@ -959,7 +1032,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite2,
 					Palette1 = 0x36, // Yellow/Purple
 					Palette2 = 0x36,
-					ElementalWeakness = Element.TIME,
+					ElementalWeakness = SpellElement.Time,
 					MonsterType = MonsterType.NONE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.XFER, (byte)SpellByte.SLOW, (byte)SpellByte.WALL, (byte)SpellByte.FAST, (byte)SpellByte.XFER, (byte)SpellByte.SLOW, (byte)SpellByte.WALL },
@@ -977,7 +1050,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite3,
 					Palette1 = 0x00, // Brown/Red
 					Palette2 = 0x00,
-					ElementalWeakness = Element.ICE,
+					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.STUN, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.FIRE, (byte)SpellByte.STUN, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2 },
@@ -995,7 +1068,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite3,
 					Palette1 = 0x01, // Blue/White
 					Palette2 = 0x01,
-					ElementalWeakness = Element.LIGHTNING,
+					ElementalWeakness = SpellElement.Lightning,
 					MonsterType = MonsterType.GIANT,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.STOP, (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.STOP },
@@ -1013,7 +1086,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite1,
 					Palette1 = 0x23, // Green/Grey
 					Palette2 = 0x23,
-					ElementalWeakness = Element.POISON,
+					ElementalWeakness = SpellElement.Poison,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.STUN, (byte)SpellByte.BRAK, (byte)SpellByte.STUN, (byte)SpellByte.STOP, (byte)SpellByte.STUN, (byte)SpellByte.BRAK },
@@ -1031,7 +1104,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite4,
 					Palette1 = 0x26, // Yellow/Blue
 					Palette2 = 0x26,
-					ElementalWeakness = Element.LIGHTNING,
+					ElementalWeakness = SpellElement.Lightning,
 					MonsterType = MonsterType.GIANT,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.CUR2, (byte)SpellByte.FAST, (byte)SpellByte.SLOW, (byte)SpellByte.STUN, (byte)SpellByte.CUR2, (byte)SpellByte.FAST, (byte)SpellByte.SLOW },
@@ -1049,7 +1122,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite3,
 					Palette1 = 0x0D, // Red/Red
 					Palette2 = 0x0D,
-					ElementalWeakness = Element.ICE,
+					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2 },
@@ -1067,7 +1140,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite3,
 					Palette1 = 0x27, // Orange/Red
 					Palette2 = 0x27,
-					ElementalWeakness = Element.ICE,
+					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.DRAGON,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.DARK, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.FIRE, (byte)SpellByte.DARK, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2 },
@@ -1085,7 +1158,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite1,
 					Palette1 = 0x1B, // Brown/Blue
 					Palette2 = 0x1B,
-					ElementalWeakness = Element.FIRE,
+					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.UNDEAD,
 					SpellChance1 = 0x00,
 					Spells1 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
@@ -1103,7 +1176,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite2,
 					Palette1 = 0x1A, // Blue/Green
 					Palette2 = 0x24,
-					ElementalWeakness = Element.ICE,
+					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.AQUATIC,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.LIT2 },
@@ -1121,7 +1194,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite1,
 					Palette1 = 0x13, // Blue/Purple
 					Palette2 = 0x14,
-					ElementalWeakness = Element.ICE,
+					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE2 },
@@ -1139,7 +1212,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite4,
 					Palette1 = 0x32, // Brown/White
 					Palette2 = 0x32,
-					ElementalWeakness = Element.LIGHTNING,
+					ElementalWeakness = SpellElement.Lightning,
 					MonsterType = MonsterType.GIANT,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT },
@@ -1176,7 +1249,7 @@ namespace FF1Lib
 				var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[1].Name + ".png"));
 				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1)) {
 				    using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2)) {
-					if (SetLichKaryGraphics(stream1, stream2)) {
+					if (await SetLichKaryGraphics(stream1, stream2)) {
 					    break;
 					}
 					// The graphics didn't fit, throw out the first element and try the next pair
@@ -1194,7 +1267,7 @@ namespace FF1Lib
 				var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[3].Name + ".png"));
 				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1)) {
 				    using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2)) {
-					if (SetKrakenTiamatGraphics(stream1, stream2)) {
+					if (await SetKrakenTiamatGraphics(stream1, stream2)) {
 					    break;
 					}
 					alternateFiendsList.RemoveAt(2);
@@ -1308,12 +1381,54 @@ namespace FF1Lib
 		    es.elem = (byte)SpellElement.Status;
 		    Put(MagicOffset + MagicSize * 81, es.compressData());
 		}
+
+		public List<EnemyInfo> GetEnemies() {
+		    var enm = new List<EnemyInfo>();
+		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		    var scripts = GetEnemyScripts();
+		    for (int i = 0; i < EnemyCount; ++i)
+		    {
+			var enemy = new EnemyInfo();
+			enemy.decompressData(Get(EnemyOffset + i * EnemySize, EnemySize));
+			enemy.allAIScripts = scripts;
+			enemy.name = enemyText[i];
+			enemy.index = i;
+			enm.Add(enemy);
+		    }
+		    return enm;
+		}
+
+
+		public List<EnemyScriptInfo> GetEnemyScripts() {
+		    var spells = this.GetSpells();
+		    var skills = this.GetEnemySkills();
+		    var scripts = new List<EnemyScriptInfo>();
+		    for (int i = 0; i < ScriptCount; ++i)
+		    {
+			var script = new EnemyScriptInfo();
+			script.index = (byte)i;
+			script.allGameSpells = spells;
+			script.allEnemySkills = skills;
+			script.decompressData(Get(ScriptOffset + i * ScriptSize, ScriptSize));
+			scripts.Add(script);
+		    }
+		    return scripts;
+		}
+
+		public List<MagicSpell> GetEnemySkills() {
+		    var skills = Get(EnemySkillOffset, MagicSize * EnemySkillCount).Chunk(MagicSize);
+		    var skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount);
+		    return skills.Select((spell, i) => new MagicSpell((byte)i, spell, skillNames[i], false)).ToList();
+		}
 	}
 
 	public enum ScriptTouchMultiplier
 	{
 		[Description("None")]
 		None,
+
+		[Description("Half")]
+		Half,
 
 		[Description("Vanilla")]
 		Vanilla,
@@ -1330,4 +1445,5 @@ namespace FF1Lib
 		[Description("Random")]
 		Random,
 	}
+
 }

@@ -8,28 +8,28 @@
 		{
 	<div class="col1 full">
 		<h4>Gold</h4>
-		<DoubleSlider ShowMedian DoubleCol Id="clampMinimumPriceScaleLable" UpdateToolTip="@UpdateToolTipID" MinValue="0" MaxValue="500" Step="10" @bind-ValueHigh="Flags.PriceScaleFactorHigh" @bind-ValueLow="Flags.PriceScaleFactorLow">Prices:</DoubleSlider>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="wrapPriceOverflowCheckBox" @bind-Value="Flags.WrapPriceOverflow">Wrap Overflowing Prices</CheckBox>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="startingGoldCheckBox" @bind-Value="Flags.StartingGold">Scale Starting Gold</CheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="excludeGoldFromScalingCheckBox" @bind-Value="Flags.ExcludeGoldFromScaling">Exclude Gold from scaling</TriStateCheckBox>
+		<DoubleSlider ShowMedian DoubleCol Id="clampMinimumPriceScaleLable" UpdateToolTip="@UpdateToolTipID" MinValue="0" MaxValue="500" Step="10" @bind-ValuesRange="(Flags.PriceScaleFactorLow,Flags.PriceScaleFactorHigh)">Prices:</DoubleSlider>
+		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingGoldDropDown" TItem="StartingGold" @bind-Value="Flags.StartingGold">Starting Gold:</EnumDropDown>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="excludeGoldFromScalingCheckBox" @bind-Value="Flags.ExcludeGoldFromScaling">Exclude Gold from Scaling</TriStateCheckBox>
 		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="cheapVendorItemCheckBox" @bind-Value="Flags.CheapVendorItem" IsEnabled="Flags.ExcludeGoldFromScaling">Cheap Vendor Item</CheckBox>
-		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="applyExpBoostToGoldCheckBox" @bind-Value="Flags.ApplyExpBoostToGold" IsEnabled="Flags.ExcludeGoldFromScaling">Apply Flat Gold Boost to Enemies</CheckBox>
 		<div class="row-seperator"></div>
 		<h4>Enemies</h4>
-		<DoubleSlider ShowMedian DoubleCol Id="enemyStatsDoubleSlider" MinValue="20" MaxValue="500" Step="10" @bind-ValueHigh="Flags.EnemyScaleStatsHigh" @bind-ValueLow="Flags.EnemyScaleStatsLow" DisableTooltip>Enemy Stats:</DoubleSlider>
-		<DoubleSlider ShowMedian DoubleCol Id="enemyHpDoubleSlider" Indent IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" Step="10" @bind-ValueHigh="Flags.EnemyScaleHpHigh" @bind-ValueLow="Flags.EnemyScaleHpLow" DisableTooltip>
+		<DoubleSlider ShowMedian DoubleCol Id="enemyStatsDoubleSlider" UpdateToolTip="@UpdateToolTipID" MinValue="20" MaxValue="500" Step="10" @bind-ValuesRange="(Flags.EnemyScaleStatsLow,Flags.EnemyScaleStatsHigh)">Enemy Stats:</DoubleSlider>
+		<DoubleSlider ShowMedian DoubleCol Id="enemyHpDoubleSlider" Indent IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" Step="10" @bind-ValuesRange="(Flags.EnemyScaleHpLow, Flags.EnemyScaleHpHigh)" DisableTooltip>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateEnemyHPScalingCheckBox" @bind-Value="Flags.SeparateEnemyHPScaling">Separate HP&nbspScaling:</TriStateCheckBox>
 		</DoubleSlider>
 		<div class="row-seperator"></div>
-		<DoubleSlider ShowMedian DoubleCol Id="bossStatsDoubleSlider" MinValue="20" MaxValue="500" Step="10" @bind-ValueHigh="Flags.BossScaleStatsHigh" @bind-ValueLow="Flags.BossScaleStatsLow" DisableTooltip>Boss Stats:</DoubleSlider>
-		<DoubleSlider ShowMedian DoubleCol Id="bossHpDoubleSlider" Indent IsEnabled="Flags.SeparateBossHPScaling" MinValue="20" MaxValue="500" Step="10" @bind-ValueHigh="Flags.BossScaleHpHigh" @bind-ValueLow="Flags.BossScaleHpLow" DisableTooltip>
+		<DoubleSlider ShowMedian DoubleCol Id="bossStatsDoubleSlider" MinValue="20" MaxValue="500" Step="10" @bind-ValuesRange="(Flags.BossScaleStatsLow, Flags.BossScaleStatsHigh)" DisableTooltip>Boss Stats:</DoubleSlider>
+		<DoubleSlider ShowMedian DoubleCol Id="bossHpDoubleSlider" Indent IsEnabled="Flags.SeparateBossHPScaling" MinValue="20" MaxValue="500" Step="10" @bind-ValuesRange="(Flags.BossScaleHpLow, Flags.BossScaleHpHigh)" DisableTooltip>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateBossHPScalingCheckBox" @bind-Value="Flags.SeparateBossHPScaling">Separate HP&nbspScaling:</TriStateCheckBox>
 		</DoubleSlider>
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="evadeCapDropDown" TItem="EvadeCapValues" @bind-Value="Flags.EvadeCap">Evade Cap Value:</EnumDropDown>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="wrapStatOverflowCheckBox" @bind-Value="Flags.WrapStatOverflow">Wrap Overflowing Scaled Stats</CheckBox>
 		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="includeMoraleCheckBox" @bind-Value="Flags.IncludeMorale">Scaled Stats Includes Morale</CheckBox>
 		<div class="row-seperator"></div>
-		<h4>Encounter Rates</h4>
+        <div class="row">
+		    <h4>Encounter Rates</h4>
+            <ToolTipBox id="encounterRatesTooltip" UpdateToolTip="@UpdateToolTipID"></ToolTipBox>
+        </div>
 		<!-- In vanilla, the encounter rate is 10/256 for land, 3/256 for sea, and 8/256 for most dungeons -->
 		<div class="row">
 			<div class="col-lg-4 noleftpadding">Overworld Encounter Rate:</div>
@@ -51,24 +51,26 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-lg-5">Most dungeons: @Math.Ceiling(8.0 * (Flags.DungeonEncounterRate/30.0))/256</div>
+			<div class="col-lg-5">Most Dungeons: @Math.Ceiling(8.0 * (Flags.DungeonEncounterRate/30.0))/256</div>
 		</div>
 		<div class="row-seperator"></div>
 		<h4>Experience</h4>
 		<div class="row">
-			<div class="col-lg-4 noleftpadding">Exp. &amp; Gold Boost:</div>
+			<div class="col-lg-4 noleftpadding">Exp. &amp; Gold Boost:
+                <ToolTipBox id="XPGoldBoostTooltip" UpdateToolTip="@UpdateToolTipID"></ToolTipBox>
+            </div>
 			<div class="col-lg-4">@Math.Round(Flags.ExpMultiplier * 0.1, 1).ToString("F1")x + @Flags.ExpBonus</div>
 			<div class="col-slider">
 				<Slider @bind-Value="Flags.ExpMultiplier" Min="10" Max="50" Step="1"></Slider>
-				<Slider @bind-Value="Flags.ExpBonus" Min="0" Max="500" Step="10"></Slider>
+				<Slider @bind-Value="Flags.ExpBonus" Min="0" Max="250" Step="25"></Slider>
 			</div>
 		</div>
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="progressiveScaleModeDropDown" TItem="ProgressiveScaleMode" @bind-Value="Flags.ProgressiveScaleMode">Exp. &amp; Gold Progressive Scaling:</EnumDropDown>
 		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="nonesGainXPcheckBox" @bind-Value="Flags.NonesGainXP">Nones Gain XP</CheckBox>
 		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deadsGainXPcheckBox" @bind-Value="Flags.DeadsGainXP">Deads Gain XP</CheckBox>
 		<div class="row-seperator"></div>
-		<DoubleSlider DoubleCol ShowPercent  UpdateToolTip="@UpdateToolTipID" Id="expChestConversion" MinValue="0" MaxValue="100" Step="10" @bind-ValueHigh="Flags.ExpChestConversionMax" @bind-ValueLow="Flags.ExpChestConversionMin">Exp Chest Conversion:</DoubleSlider>
-		<DoubleSlider ShowMedian DontShowPercent DoubleCol  UpdateToolTip="@UpdateToolTipID" Id="expChestReward" MinValue="500" MaxValue="20000" Step="500" @bind-ValueHigh="Flags.ExpChestMaxReward" @bind-ValueLow="Flags.ExpChestMinReward">Exp Chest Reward:</DoubleSlider>
+		<DoubleSlider DoubleCol ShowPercent UpdateToolTip="@UpdateToolTipID" Id="expChestConversion" MinValue="0" MaxValue="100" Step="10" @bind-ValuesRange="(Flags.ExpChestConversionMin, Flags.ExpChestConversionMax)">Exp Chest Conversion:</DoubleSlider>
+		<DoubleSlider ShowMedian DontShowPercent DoubleCol  UpdateToolTip="@UpdateToolTipID" Id="expChestReward" MinValue="500" MaxValue="20000" Step="500" @bind-ValuesRange="(Flags.ExpChestMinReward, Flags.ExpChestMaxReward)">Exp Chest Reward:</DoubleSlider>
 
 		<div class="row-seperator"></div>
 		<div class="clear-it"></div>

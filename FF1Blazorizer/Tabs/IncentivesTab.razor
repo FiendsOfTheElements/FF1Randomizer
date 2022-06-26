@@ -2,11 +2,14 @@
 
 
 <div id="Incentives" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
-	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Incentivized Locations and Items</a></h3>
+        <h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Incentivized Locations and Items</a></h3>
 	@if (IsOpen)
 	{
 		<div class="col1">
-			<h4>Locations: @(Flags.Flags.IncentivizedLocationCountMin) @((Flags.Flags.IncentivizedLocationCountMin != Flags.Flags.IncentivizedLocationCountMax) ? "- " + Flags.Flags.IncentivizedLocationCountMax : "") </h4>
+            <div class="row">
+			    <h4>Locations: @(Flags.Flags.IncentivizedLocationCountMin) @((Flags.Flags.IncentivizedLocationCountMin != Flags.Flags.IncentivizedLocationCountMax) ? "- " + Flags.Flags.IncentivizedLocationCountMax : "") </h4>
+                <ToolTipBox id="IncentivesTooltip" UpdateToolTip="@UpdateToolTipID"></ToolTipBox>
+            </div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFreeNPCsCheckBox" IsEnabled="@Flags.IncentivizeFreeNPCsEnabled" @bind-Value="Flags.IncentivizeFreeNPCs">Main NPCs</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFetchNPCsCheckBox" IsEnabled="@Flags.IncentivizeFetchNPCsEnabled" @bind-Value="Flags.IncentivizeFetchNPCs">Fetch Quest NPCs</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
@@ -89,7 +92,7 @@
 
 			<div class="row">
 				<div class="col-sm-6 noleftpadding">
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeConeriaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeConeria">Coneria (locked)</TriStateCheckBox>
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeConeriaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeConeria">Coneria (Locked)</TriStateCheckBox>
 				</div>
 				<div class="col-sm-6">
 					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.CorneriaIncentivePlacementType"></EnumDropDown>
@@ -98,7 +101,7 @@
 
 			<div class="row">
 				<div class="col-sm-6 noleftpadding">
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMarshKeyLockedCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMarshKeyLocked">Marsh (locked)</TriStateCheckBox>
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMarshKeyLockedCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMarshKeyLocked">Marsh (Locked)</TriStateCheckBox>
 				</div>
 				<div class="col-sm-6">
 					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.MarshLockedIncentivePlacementType"></EnumDropDown>
@@ -107,7 +110,7 @@
 
 			<div class="row">
 				<div class="col-sm-6 noleftpadding">
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeCardiaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCardia">Cardia Islands incentive </TriStateCheckBox>
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeCardiaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCardia">Cardia Islands</TriStateCheckBox>
 				</div>
 				<div class="col-sm-6">
 					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentiveCardiaDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.CardiaIncentivePlacementType"></EnumDropDown>
@@ -121,7 +124,7 @@
 			<h4>Loose Placement</h4>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="loosePlacementMode" IsEnabled="@(Flags.Treasures != false)" TItem="LoosePlacementMode" @bind-Value="Flags.LoosePlacementMode"></EnumDropDown>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="laterLoose" IsEnabled="@(Flags.Treasures != false & Flags.KeyItemPlacementMode != KeyItemPlacementMode.Vanilla)" @bind-Value="Flags.LaterLoose">Later Loose</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="looseNpcBalance" IsEnabled="@(Flags.Treasures != false)" @bind-Value="Flags.LooseItemsNpcBalance">Favor NPCs</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="looseNpcBalance" IsEnabled="@(Flags.Treasures != false && (Flags.IncentivizeFreeNPCs != true || Flags.IncentivizeFetchNPCs != true))" @bind-Value="Flags.LooseItemsNpcBalance">Favor NPCs</CheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="LooseExcludePlacedDungeonsCheckBox" IsEnabled="@(Flags.Treasures != false)" @bind-Value="Flags.LooseExcludePlacedDungeons">No Loose Items in Incentivized Dungeons</TriStateCheckBox>
 		</div>
 		<div class="col2">
@@ -133,6 +136,7 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeAirshipCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoFloater == false))" @bind-Value="Flags.IncentivizeAirship">Floater</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeCanoeItemCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCanoeItem">Canoe</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeShipAndCanalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeShipAndCanal">Ship &amp; Canal</TriStateCheckBox>
+            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeBridgeCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeBridgeItem">Bridge</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeTailCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoTail != true))" @bind-Value="Flags.IncentivizeTail">Tail</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMasamuneCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoMasamune != true))" @bind-Value="Flags.IncentivizeMasamune">Masamune</TriStateCheckBox>
@@ -150,7 +154,7 @@
 
 			<div class="checkbox-cell"></div>
 			<h4>Hints</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Treasures != false && !Flags.DeepDungeon)" Id="hintsVillage" @bind-Value="Flags.HintsVillage">Hint givers in villages</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Treasures != false && (Flags.GameMode != GameModes.DeepDungeon))" Id="hintsVillage" @bind-Value="Flags.HintsVillage">Hint Givers in Towns</TriStateCheckBox>
 		</div>
 		<div class="clear-it"></div>
 	}

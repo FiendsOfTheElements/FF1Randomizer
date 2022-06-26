@@ -234,7 +234,7 @@ namespace FF1Lib
 				}
 			}
 
-			var resist = a1.ElementalResist | a2.ElementalResist | a3.ElementalResist;
+			var resist = (a1?.ElementalResist ?? 0) | (a2?.ElementalResist ?? 0) | (a3?.ElementalResist ?? 0);
 
 			if ((resist & (byte)SpellElement.Fire) > 0) elements.Remove(SpellElement.Fire);
 			if ((resist & (byte)SpellElement.Lightning) > 0) elements.Remove(SpellElement.Lightning);
