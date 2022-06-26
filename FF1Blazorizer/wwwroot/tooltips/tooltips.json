@@ -480,7 +480,12 @@
 	},
 
 
-
+	{
+		"Id": "IncentivesTooltip",
+		"title": "Incentivized Items & Locations",
+		"screenshot": null,
+		"description": "Incentivized Items are guaranteed to be spread out amongst the Incentivized Locations, giving you an idea of where to look for important items.\nIf there are more Items than Locations selected, the excess items will be \"loose\", meaning they will be in random locations. This can be further controlled via the options in the \"Loose Placement\" section.\nIf there are more Locations than Items selected, excess locations will be duds, and only contain a random treasure."
+	},
 	{
 		"Id": "incentivizeFreeNPCsCheckBox",
 		"title": "Main NPCs",
@@ -2206,7 +2211,7 @@
 		"Id": "ReducedLuckCheckBox",
 		"title": "Reduced Starting Luck",
 		"screenshot": "ReducedLuck.png",
-		"description": "Reduces the starting Luck of all classes by 4. This makes the higher starting Luck of the Thief and Black Mage - as well as any +Luck Blursing bonuses - stand out more meaningfully, and also makes it more of a decision point if you should attempt to run or fight.\n[grid][r]{i}Vanilla ➔ Reduced |Lvl 2|Lvl 10|Lvl 18|Lvl 25[r]{l}Fighter|29% ➔ 7%|45% ➔ 30%|52% ➔ 40%|56% ➔ 46%[r]{l}Black Mage|57% ➔ 35%|59% ➔ 43%|55% ➔ 43%|52% ➔ 42%[r]{l}Thief|89% ➔ 67%|92% ➔ 77%|94% ➔ 82%|95% ➔ 85%\n\n(Black Belt, Red Mage, and White Mage are all fairly similar to Fighter.)"
+		"description": "Reduces the starting Luck of all classes by 4. This makes the higher starting Luck of the Thief and Black Mage - as well as any +Luck Blursing bonuses - stand out more meaningfully, and also makes it more of a decision point if you should attempt to run or fight.\nChance to run comparison:\n[grid][r]{i}Vanilla ➔ Reduced |Lvl 2|Lvl 10|Lvl 18|Lvl 25[r]{l}Fighter|29% ➔ 7%|45% ➔ 30%|52% ➔ 40%|56% ➔ 46%[r]{l}Black Mage|57% ➔ 35%|59% ➔ 43%|55% ➔ 43%|52% ➔ 42%[r]{l}Thief|89% ➔ 67%|92% ➔ 77%|94% ➔ 82%|95% ➔ 85%\n\n(Black Belt, Red Mage, and White Mage are all fairly similar to Fighter.)"
 	},
 	{
 		"Id": "WhiteMageHarmEveryoneCheckBox",
