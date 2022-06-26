@@ -270,6 +270,11 @@
 		"description": "Instead of holding Up+A and Up+B on controller 2 for a hard reset and a soft reset, only holding A and B, respectively, is required."
 	},
 	{
+		"Id": "blandSite",
+		"title": "Bland Site",
+		"description": "Removes the website background and only shows black. (A refresh will be required for changes to take effect.)"
+	},
+	{
 		"Id": "spriteSheetToolTipBox",
 		"title": "Custom Player Sprites",
 		"screenshot": "customHeroSprites.png",
@@ -471,7 +476,12 @@
 	},
 
 
-
+	{
+		"Id": "IncentivesTooltip",
+		"title": "Incentivized Items & Locations",
+		"screenshot": null,
+		"description": "Incentivized Items are guaranteed to be spread out amongst the Incentivized Locations, giving you an idea of where to look for important items.\nIf there are more Items than Locations selected, the excess items will be \"loose\", meaning they will be in random locations. This can be further controlled via the options in the \"Loose Placement\" section.\nIf there are more Locations than Items selected, excess locations will be duds, and only contain a random treasure.\nAny Key Items given for free or banned (in the Treasures tab) can't be incentivized, and thus won't be included in the total item count at the top."
+	},
 	{
 		"Id": "incentivizeFreeNPCsCheckBox",
 		"title": "Main NPCs",
@@ -1201,6 +1211,12 @@
 		"description": "Removes White Magic found in the Legendary White Magic Shop from all other shops found in the world."
 	},
 	{
+		"Id": "legendaryItemShopCheckBox",
+		"title": "Legendary Item Shop",
+		"screenshot": null,
+		"description": "Always sells either Cabins or Houses, and also sells two additional non-Shelter items (Heals, Pures, or Softs). It will never be selling the Shop Key Item.\nIf New Consumables are active (Gear & Items tab) and \"Legendary Shops\" is selected, then the shop will sell Cabins or Houses, 1-2 new consumables, and 0-1 other non-Shelter items."
+	},
+	{
 		"Id": "exlegendaryItemShopCheckBox",
 		"title": "Exclusive Legendary Item Shop",
 		"screenshot": "exlegendaryItemShopCheckBox.png",
@@ -1391,7 +1407,7 @@
 		"Id": "swolePiratesCheckBox",
 		"title": "Buff the Pirates",
 		"screenshot": "swolePiratesCheckBox.png",
-		"description": "Increases the stats of Bikke's pirates considerably, roughly equivalent to a level 6 Fighter with a cheap but decent sword and iron armor, and increases the XP and gold yield from them by a factor of 20. This is done before stat scaling, and also increases the level of scripts they can carry when using the \"Generate Balanced Scripts\" flag if \"Allow Unsafe Pirates\" is on."
+		"description": "Increases the stats of Bikke's pirates considerably, roughly equivalent to a level 6 Fighter with a cheap but decent sword and iron armor (or a Catman with more absorb and less magic defense), and increases the XP and gold yield from them by a factor of 20.\nThis is done before stat randomization (in the Scale tab), and also increases the level of scripts they can carry when using both the \"Generate Balanced Scripts\" and \"Pirates - Unsafe Script\" flags."
 	},
 	{
 		"Id": "allowUnsafePiratesCheckBox",
@@ -1568,7 +1584,7 @@
 		"Id": "MDefModeDropDown",
 		"title": "MDef Growth Rebalancing",
 		"screenshot": "MDefModeDropDown.gif",
-		"description": "Changes how much MDef is gained at each level up.\nBB/Master +3/+4: This changes the BB to gain +3 MDef instead of +4 per level, and the Master +4 instead of +1 per level (+4/+1 is the vanilla behavior, which discourages promotion of Black Belts). With this setting, MDef growth would be:\nFi = 3, Ki = 3, Th = 2 Ni = 2, BB = 3, Ma = 4, RM = 2, RW = 2, WM = 2, WW = 2, BM = 2, BW = 2\nInvert All: This takes the MDef growth of all promoted and unpromoted classes and sets them to: 5 - original MDef. With this setting, MDef growth would be:\nFi = 2, Ki= 2, Th = 3, Ni = 3, BB = 1, Ma = 4, RM = 3, RW = 4, WM = 3, WW = 3, BM = 3, BW = 3"
+		"description": "Changes how much MDef is gained per level up:\n[grid][r]{i}MDef Growth|Vanilla|BB/Master +3/+4|Inverted[r]{l}Black Belt|4|3|1[r]{l}Master|1|4|4[r]{l}Fighter & Knight|3|3|2[r]{l}Thief & Ninja|2|2|3[r]{l}Red Mage & Wizard|2|2|3[r]{l}White Mage & Wizard|2|2|3[r]{l}Black Mage & Wizard|2|2|3\n\nNotably, in Vanilla the Black Belt gets worse when promoted; using \"BB/Master +3/+4\" fixes this behavior."
 	},
 
 	{
@@ -2197,7 +2213,7 @@
 		"Id": "ReducedLuckCheckBox",
 		"title": "Reduced Starting Luck",
 		"screenshot": "ReducedLuck.png",
-		"description": "Reduces the starting Luck of all classes by 4. This makes the higher starting Luck of the Thief and Black Mage - as well as any +Luck Blursing bonuses - stand out more meaningfully, and also makes it more of a decision point if you should attempt to run or fight.\n[grid][r]{i}Vanilla ➔ Reduced |Lvl 2|Lvl 10|Lvl 18|Lvl 25[r]{l}Fighter|29% ➔ 7%|45% ➔ 30%|52% ➔ 40%|56% ➔ 46%[r]{l}Black Mage|57% ➔ 35%|59% ➔ 43%|55% ➔ 43%|52% ➔ 42%[r]{l}Thief|89% ➔ 67%|92% ➔ 77%|94% ➔ 82%|95% ➔ 85%\n\n(Black Belt, Red Mage, and White Mage are all fairly similar to Fighter.)"
+		"description": "Reduces the starting Luck of all classes by 4. This makes the higher starting Luck of the Thief and Black Mage - as well as any +Luck Blursing bonuses - stand out more meaningfully, and also makes it more of a decision point if you should attempt to run or fight.\nChance to run comparison:\n[grid][r]{i}Vanilla ➔ Reduced |Lvl 2|Lvl 10|Lvl 18|Lvl 25[r]{l}Fighter|29% ➔ 7%|45% ➔ 30%|52% ➔ 40%|56% ➔ 46%[r]{l}Black Mage|57% ➔ 35%|59% ➔ 43%|55% ➔ 43%|52% ➔ 42%[r]{l}Thief|89% ➔ 67%|92% ➔ 77%|94% ➔ 82%|95% ➔ 85%\n\n(Black Belt, Red Mage, and White Mage are all fairly similar to Fighter.)"
 	},
 	{
 		"Id": "WhiteMageHarmEveryoneCheckBox",
