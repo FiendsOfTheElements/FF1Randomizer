@@ -1891,8 +1891,7 @@ namespace FF1Lib
 			    MapId.TempleOfFiendsRevisitedEarth,
 			    MapId.TempleOfFiendsRevisitedFire,
 			    MapId.TempleOfFiendsRevisitedWater,
-			    MapId.TempleOfFiendsRevisitedAir,
-			    MapId.TempleOfFiendsRevisitedChaos }, // ToFR
+			    MapId.TempleOfFiendsRevisitedAir }, // ToFR
 
 			// new MapId[] { MapId.TitansTunnel }, // Titan
 		    };
