@@ -1588,7 +1588,7 @@
 		"Id": "MDefModeDropDown",
 		"title": "MDef Growth Rebalancing",
 		"screenshot": "MDefModeDropDown.gif",
-		"description": "Changes how much MDef is gained at each level up.\nBB/Master +3/+4: This changes the BB to gain +3 MDef instead of +4 per level, and the Master +4 instead of +1 per level (+4/+1 is the vanilla behavior, which discourages promotion of Black Belts). With this setting, MDef growth would be:\nFi = 3, Ki = 3, Th = 2 Ni = 2, BB = 3, Ma = 4, RM = 2, RW = 2, WM = 2, WW = 2, BM = 2, BW = 2\nInvert All: This takes the MDef growth of all promoted and unpromoted classes and sets them to: 5 - original MDef. With this setting, MDef growth would be:\nFi = 2, Ki= 2, Th = 3, Ni = 3, BB = 1, Ma = 4, RM = 3, RW = 4, WM = 3, WW = 3, BM = 3, BW = 3"
+		"description": "Changes how much MDef is gained per level up:\n[grid][r]{i}MDef Growth|Vanilla|BB/Master +3/+4|Inverted[r]{l}Black Belt|4|3|1[r]{l}Master|1|4|4[r]{l}Fighter & Knight|3|3|2[r]{l}Thief & Ninja|2|2|3[r]{l}Red Mage & Wizard|2|2|3[r]{l}White Mage & Wizard|2|2|3[r]{l}Black Mage & Wizard|2|2|3\n\nNotably, in Vanilla the Black Belt gets worse when promoted; using \"BB/Master +3/+4\" fixes this behavior."
 	},
 
 	{

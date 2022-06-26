@@ -198,8 +198,8 @@ namespace FF1Lib
 
 		public void RemakeStyleMasterMDEF()
 		{
-		    //Black Belt & Master growth rates are separate
-		    ClassData[Classes.BlackBelt].MDefGrowth = 3;
+			//Black Belt & Master growth rates are separate
+			ClassData[Classes.BlackBelt].MDefGrowth = 3;
 			ClassData[Classes.Master].MDefGrowth = 4;
 		}
 
