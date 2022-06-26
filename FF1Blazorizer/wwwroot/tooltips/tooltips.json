@@ -484,7 +484,7 @@
 		"Id": "IncentivesTooltip",
 		"title": "Incentivized Items & Locations",
 		"screenshot": null,
-		"description": "Incentivized Items are guaranteed to be spread out amongst the Incentivized Locations, giving you an idea of where to look for important items.\nIf there are more Items than Locations selected, the excess items will be \"loose\", meaning they will be in random locations. This can be further controlled via the options in the \"Loose Placement\" section.\nIf there are more Locations than Items selected, excess locations will be duds, and only contain a random treasure."
+		"description": "Incentivized Items are guaranteed to be spread out amongst the Incentivized Locations, giving you an idea of where to look for important items.\nIf there are more Items than Locations selected, the excess items will be \"loose\", meaning they will be in random locations. This can be further controlled via the options in the \"Loose Placement\" section.\nIf there are more Locations than Items selected, excess locations will be duds, and only contain a random treasure.\nAny Key Items given for free (in the Treasures tab) can't be incentivized, thus they won't be included in the total item count at the top."
 	},
 	{
 		"Id": "incentivizeFreeNPCsCheckBox",
