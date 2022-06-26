@@ -1411,7 +1411,7 @@
 		"Id": "swolePiratesCheckBox",
 		"title": "Buff the Pirates",
 		"screenshot": "swolePiratesCheckBox.png",
-		"description": "Increases the stats of Bikke's pirates considerably, roughly equivalent to a level 6 Fighter with a cheap but decent sword and iron armor, and increases the XP and gold yield from them by a factor of 20. This is done before stat scaling, and also increases the level of scripts they can carry when using the \"Generate Balanced Scripts\" flag if \"Allow Unsafe Pirates\" is on."
+		"description": "Increases the stats of Bikke's pirates considerably, roughly equivalent to a level 6 Fighter with a cheap but decent sword and iron armor (or a Catman with more absorb and less magic defense), and increases the XP and gold yield from them by a factor of 20.\nThis is done before stat randomization (in the Scale tab), and also increases the level of scripts they can carry when using both the \"Generate Balanced Scripts\" and \"Pirates - Unsafe Script\" flags."
 	},
 	{
 		"Id": "allowUnsafePiratesCheckBox",
