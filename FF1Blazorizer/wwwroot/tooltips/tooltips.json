@@ -270,6 +270,11 @@
 		"description": "Instead of holding Up+A and Up+B on controller 2 for a hard reset and a soft reset, only holding A and B, respectively, is required."
 	},
 	{
+		"Id": "blandSite",
+		"title": "Bland Site",
+		"description": "Removes the website background and only shows black. (A refresh will be required for changes to take effect.)"
+	},
+	{
 		"Id": "spriteSheetToolTipBox",
 		"title": "Custom Player Sprites",
 		"screenshot": "customHeroSprites.png",
