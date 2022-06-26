@@ -81,7 +81,7 @@ namespace FF1Lib
 
 			//SwapTilesAndTele(MapId.IceCaveB2, 0x37, 0x05, 0x34, 0x01);
 
-			SwapIceB3(MapId.IceCaveB3, 0x27, 0x06, 0x1F, 0x16, 0x3B, 0x1E);
+			SwapIceB3(MapId.IceCaveB3, 0x27, 0x06, 0x1F, 0x15, 0x35, 0x1D);
 
 			SwapTwoTilesAndTele(MapId.MirageTower2F, 0x10, 0x1F, 0x17, 0x03, 0x10, 0x03, 0x12, 0x1C);
 
@@ -182,8 +182,10 @@ namespace FF1Lib
 
 			for (int x = 0; x <= 4; x++)
 			{
-				for (int y = 0; y <= 6; y++)
+				for (int y = 0; y <= 5; y++)
 				{
+					if (x == 0 && y < 2) continue;
+					if (x == 4 && y < 2) continue;
 					SwapTiles(map, x1 + x, y1 + y, tx + x, ty + y);
 					SwapTele(mapId, x1 + x, y1 + y, tx + x, ty + y);
 				}
@@ -210,12 +212,11 @@ namespace FF1Lib
 					return;
 			}
 
-			for (int x = -1; x <= 1; x++)
+			for (int x = -2; x <= 2; x++)
 			{
-				for (int y = -1; y <= 3; y++)
+				for (int y = -2; y <= 3; y++)
 				{
-					if (x == -1 && y == 3) continue;
-					if (x == 1 && y == 3) continue;
+					if (x != 0 && y == 3) continue;
 					SwapTiles(map, x1 + x, y1 + y, tx + x, ty + y);
 					SwapTele(mapId, x1 + x, y1 + y, tx + x, ty + y);
 				}
