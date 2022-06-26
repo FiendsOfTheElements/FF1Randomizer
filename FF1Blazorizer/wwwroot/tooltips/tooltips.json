@@ -1215,6 +1215,12 @@
 		"description": "Removes White Magic found in the Legendary White Magic Shop from all other shops found in the world."
 	},
 	{
+		"Id": "legendaryItemShopCheckBox",
+		"title": "Legendary Item Shop",
+		"screenshot": null,
+		"description": "Always sells either Cabins or Houses, and also sells two additional non-Tent items.\nIf New Consumables are active (Gear & Items tab) and \"Legendary Shops\" is selected, then the shop will sell Cabins or Houses, 1-2 new consumables, and 0-1 other non-Tent items."
+	},
+	{
 		"Id": "exlegendaryItemShopCheckBox",
 		"title": "Exclusive Legendary Item Shop",
 		"screenshot": "exlegendaryItemShopCheckBox.png",
