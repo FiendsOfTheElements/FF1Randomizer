@@ -2,7 +2,7 @@
 ; Routines to modify stats at the start of the game, after partygen
 ;  and at the start of the battle.
 ;
-; Last Update: 2022-06-21
+; Last Update: 2022-06-27
 ;
 
 tmp = $10
@@ -100,6 +100,11 @@ NotANone2:
  .ORG $B080
  
 StartOfBattle:
+  LDA #$08
+  CMP $F2
+  BEQ IsBattle
+    JMP ApplyStartOfGame
+IsBattle:
   JSR CatClaws
   JSR ThorHammer
   JSR Hunter
@@ -588,9 +593,11 @@ MpStart:
   PHA
   TAX
   LDY #$07
-  LDA #$01
 MpLoop:  
   INX
+  LDA ch_mp,X
+  CLC
+  ADC #$01
   STA ch_mp,X
   STA ch_mp+8,X
   DEY  
