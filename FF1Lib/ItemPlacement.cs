@@ -182,8 +182,19 @@ namespace FF1Lib
 				treasurePool.Remove(Item.Masamune);
 			}
 
-			// Fill pool with cabins to account for removed items
-			treasurePool.AddRange(Enumerable.Repeat(Item.Cabin, itemLocationPool.Count() - treasurePool.Count()));
+			// Use cabins to balance item population
+			int poolDifference = itemLocationPool.Count() - treasurePool.Count();
+			if (poolDifference < 0)
+			{
+				for (int i = 0; i > poolDifference; i--)
+				{
+					treasurePool.Remove(Item.Cabin);
+				}
+			}
+			else if (poolDifference > 0)
+			{
+				treasurePool.AddRange(Enumerable.Repeat(Item.Cabin, poolDifference));
+			}
 
 			Debug.Assert(treasurePool.Count() == itemLocationPool.Count());
 
