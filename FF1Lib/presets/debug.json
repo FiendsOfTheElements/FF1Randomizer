@@ -33,8 +33,7 @@
 		"FormationShuffleMode": 1,
 		"EnemyFormationsUnrunnable": true,
 		"EnemyFormationsSurprise": true,
-		"EnemyTrapTiles": true,
-		"RandomTrapFormations": true,
+		"EnemyTrapTiles": 1,
 
 		"EnemyScripts": true,
 		"EnemySkillsSpells": true,

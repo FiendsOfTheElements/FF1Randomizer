@@ -36,9 +36,7 @@
 
 			<div class="checkbox-cell"></div>
 			<h4>Trap Tiles</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="removeTrapTilesCheckBox" @bind-Value="Flags.RemoveTrapTiles">Remove Trap Tiles</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyTrapTilesCheckBox" IsEnabled="@Flags.CanShuffleTrapTiles" @bind-Value="Flags.EnemyTrapTiles">Shuffle Trap Tiles</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="randomTrapFormationsCheckBox" IsEnabled="@Flags.EnemyTrapTiles" @bind-Value="Flags.RandomTrapFormations">Use Alternate Formations</TriStateCheckBox>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.RandomizeEnemizer)" Id="EnemyTrapTiles" TItem="TrapTileMode" @bind-Value="Flags.EnemyTrapTiles">Trap Tile Mode:</EnumDropDown>
 		</div>
 
 		<div class="col2">

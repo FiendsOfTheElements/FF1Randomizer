@@ -7,9 +7,24 @@ using RomUtilities;
 using static FF1Lib.FF1Text;
 using FF1Lib.Sanity;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace FF1Lib
 {
+	public enum TrapTileMode
+	{
+		[Description("Vanilla")]
+		Vanilla,
+		[Description("Shuffle")]
+		Shuffle,
+		[Description("B-Side Formations")]
+		BSideFormations,
+		[Description("Random")]
+		Random,
+		[Description("Remove Trap Tiles")]
+		Remove
+	}
+
 	public enum MapId : byte
 	{
 		Coneria = 0,
@@ -333,7 +348,7 @@ namespace FF1Lib
 			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
 		}
 
-		public void ShuffleTrapTiles(MT19337 rng, bool randomize, bool fightBahamut)
+		public void ShuffleTrapTiles(MT19337 rng, TrapTileMode mode, bool fightBahamut)
 		{
 			// This is magic BNE code that enables formation 1 trap tiles but we have to change
 			// all the 0x0A 0x80 into 0x0A 0x00 and use 0x00 for random encounters instead of 0x80.
@@ -341,7 +356,7 @@ namespace FF1Lib
 			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
 
 			List<byte> encounters;
-			if (randomize)
+			if (mode == TrapTileMode.BSideFormations)
 			{
 				encounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
 				encounters.Add(0xFF); // IronGOL
@@ -350,10 +365,22 @@ namespace FF1Lib
 					encounters.Remove(0x80 + 0x71); // ANKYLO (used for Bahamut)
 				}
 			}
-			else
+			else if (mode == TrapTileMode.Shuffle)
 			{
 				var traps = tilesets.Where(IsNonBossTrapTile).ToList();
 				encounters = traps.Select(trap => trap[1]).ToList();
+			}
+			else
+			{
+				//all random
+				encounters = Enumerable.Range(0, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
+				encounters.Remove(WarMECHFormationIndex);
+				encounters.Add(0xFF); // IronGOL
+				if (fightBahamut)
+				{
+					encounters.Remove(0x80 + 0x71); // ANKYLO (used for Bahamut)
+					encounters.Remove(0x71); // ANKYLO (used for Bahamut)
+				}
 			}
 
 			tilesets.ForEach(tile =>
