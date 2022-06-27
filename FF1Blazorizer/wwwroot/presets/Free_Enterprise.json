@@ -127,7 +127,7 @@
     "Runnability": 3,
     "EnemyFormationsSurprise": true,
     "UnrunnablesStrikeFirstAndSurprise": false,
-    "EnemyTrapTiles": 2,
+    "EnemyTrapTiles": 3,
     "TCFormations": 0,
     "TCBetterTreasure": 0,
     "TCKeyItems": 0,
