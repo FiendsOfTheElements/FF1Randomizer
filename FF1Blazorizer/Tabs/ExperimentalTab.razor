@@ -20,18 +20,12 @@
 				<br>
 				<input type="text" style="width: calc(100% - 80px);" class="nes-input" id="seedInput" @onchange="@OnPlayerNameChanged" value="@(Flags.PlayerName)" />
 			</p>
-
-			<h4>Goal</h4>
-			<IntSliderRng DisableTooltip="true" Min="1" Max="5" Step="1" UpdateToolTip="@UpdateToolTipID" Id="OrbsRequiredCount" @bind-Value="@Flags.OrbsRequiredCount">Total Orbs Required:</IntSliderRng>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="OrbsRequiredModeDropDown" IsEnabled="@(Flags.OrbsRequiredOptionsEnabled)" TItem="OrbsRequiredMode" @bind-Value="Flags.OrbsRequiredMode">Mode:</EnumDropDown>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="orbsRequiredSpoilersCheckbox" IsEnabled="@(Flags.OrbsRequiredOptionsEnabled)" @bind-Value="Flags.OrbsRequiredSpoilers">Orb Spoilers</TriStateCheckBox>
-
 			<div class="checkbox-cell"></div>
 		</div>
 		<div class="col2">
-			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.RecruitmentMode)" Id="improvedClinicCheckBox" @bind-Value="Flags.ImprovedClinic">Clinics heal all statuses</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeClinicCheckBox" @bind-Value="Flags.FreeClinic">Clinics don't cost money</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="OpenChestsInOrder" @bind-Value="Flags.OpenChestsInOrder">Open Chests In Order</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.RecruitmentMode)" Id="improvedClinicCheckBox" @bind-Value="Flags.ImprovedClinic">Clinics Heal All Statuses</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeClinicCheckBox" @bind-Value="Flags.FreeClinic">Clinics Don't Cost Money</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="OpenChestsInOrder" @bind-Value="Flags.OpenChestsInOrder">Open Chests in Order</CheckBox>
 		</div>
 
   	<div class="clear-it"></div>

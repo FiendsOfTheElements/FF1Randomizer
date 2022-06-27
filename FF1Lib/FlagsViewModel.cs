@@ -547,7 +547,7 @@ namespace FF1Lib
 			}
 		}
 
-		public bool ShardHuntEnabled => !FreeOrbs;
+		public bool ShardHuntEnabled => (Flags.OrbsRequiredCount == 4 || ShardHunt);
 
 		public ShardCount ShardCount
 		{
@@ -558,8 +558,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShardCount"));
 			}
 		}
-
-		public bool ExtraShardsEnabled => ShardHunt && !FreeOrbs;
 
 		public int OrbsRequiredCount
 		{
@@ -592,8 +590,8 @@ namespace FF1Lib
 			}
 		}
 
-		public bool OrbsRequiredEnabled => !ShardHunt && !FreeOrbs;
-		public bool OrbsRequiredOptionsEnabled => OrbsRequiredEnabled && (Flags.OrbsRequiredCount != 4);
+		public bool OrbsRequiredEnabled => !ShardHunt && (Flags.GameMode != GameModes.DeepDungeon);
+		public bool OrbsRequiredOptionsEnabled => OrbsRequiredEnabled && (Flags.OrbsRequiredCount != 4 && Flags.OrbsRequiredCount != 0);
 
 		public FinalFormation TransformFinalFormation
 		{
@@ -866,7 +864,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleScriptsEnemies"));
 			}
 		}
-		
+
 		public bool? ShuffleSkillsSpellsEnemies
 		{
 			get => Flags.ShuffleSkillsSpellsEnemies;
@@ -1388,6 +1386,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapLefeinRiver"));
 			}
 		}
+		public bool? MapBridgeLefein
+		{
+			get => Flags.MapBridgeLefein;
+			set
+			{
+				Flags.MapBridgeLefein = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapBridgeLefein"));
+			}
+		}
+		public bool? MapRiverToMelmond
+		{
+			get => Flags.MapRiverToMelmond;
+			set
+			{
+				Flags.MapRiverToMelmond = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapRiverToMelmond"));
+			}
+		}
 		public bool? MapGaiaMountainPass
 		{
 			get => Flags.MapGaiaMountainPass;
@@ -1871,6 +1887,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeShipAndCanal"));
 			}
 		}
+		public bool? IncentivizeBridgeItem
+		{
+			get => Flags.IncentivizeBridgeItem;
+			set
+			{
+				Flags.IncentivizeBridgeItem = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IncentivizeBridgeItem"));
+			}
+		}
 		public bool? LooseExcludePlacedDungeons
 		{
 			get => Flags.LooseExcludePlacedDungeons;
@@ -1961,15 +1986,6 @@ namespace FF1Lib
 			{
 				Flags.FreeCanoe = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeCanoe"));
-			}
-		}
-		public bool FreeOrbs
-		{
-			get => Flags.FreeOrbs;
-			set
-			{
-				Flags.FreeOrbs = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeOrbs"));
 			}
 		}
 
@@ -2759,6 +2775,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableDamageTileFlicker"));
 			}
 		}
+		public bool DisableDamageTileSFX
+		{
+			get => Preferences.DisableDamageTileSFX;
+			set
+			{
+				Preferences.DisableDamageTileSFX = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisableDamageTileSFX"));
+			}
+		}
 		public MenuColor MenuColor
 		{
 			get => Preferences.MenuColor;
@@ -2802,6 +2827,15 @@ namespace FF1Lib
 			{
 				Preferences.NoTabLayout = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NoTabLayout"));
+			}
+		}
+		public bool BlandSite
+		{
+			get => Preferences.BlandSite;
+			set
+			{
+				Preferences.BlandSite = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlandSite"));
 			}
 		}
 		public TitanSnack TitanSnack
@@ -4542,6 +4576,15 @@ namespace FF1Lib
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpoilerBatsDontCheckOrbs"));
 		    }
 		}
+		public bool? MoveToFBats
+		{
+		    get => Flags.MoveToFBats;
+		    set
+		    {
+			Flags.MoveToFBats = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MoveToFBats"));
+		    }
+		}
 
 		public bool SpoilerBatsDontCheckOrbsEnabled => !SkyWarriorSpoilerBats.Equals(SpoilerBatHints.Vanilla);
 
@@ -4675,6 +4718,16 @@ namespace FF1Lib
 			set
 			{
 				Flags.Lockpicking = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? ReducedLuck
+		{
+			get => Flags.ReducedLuck;
+			set
+			{
+				Flags.ReducedLuck = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -5124,6 +5177,25 @@ namespace FF1Lib
 			set
 			{
 				Flags.ReversedFloors = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? RelocateChests
+		{
+		    get => Flags.RelocateChests;
+			set
+			{
+				Flags.RelocateChests = value;
+				RaisePropertyChanged();
+			}
+		}
+		public bool RelocateChestsTrapIndicator
+		{
+		    get => Flags.RelocateChestsTrapIndicator;
+			set
+			{
+				Flags.RelocateChestsTrapIndicator = value;
 				RaisePropertyChanged();
 			}
 		}

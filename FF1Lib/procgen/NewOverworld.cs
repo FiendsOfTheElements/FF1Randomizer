@@ -4,6 +4,7 @@ using System.Reflection;
 using RomUtilities;
 using FF1Lib.Sanity;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace FF1Lib.Procgen
 {
@@ -14,6 +15,10 @@ namespace FF1Lib.Procgen
                 double range = (high - low);
                 return low + range * ((double)rng.Next() / uint.MaxValue);
         }
+    }
+
+    public class FailedToGenerate : Exception {
+	public FailedToGenerate(string message) : base(message) { }
     }
 
     // A contigious region of the map.
@@ -245,7 +250,7 @@ namespace FF1Lib.Procgen
         private bool ownTilemap;
         private bool ownRegions;
         private bool ownPlacements;
-        Queue<GenerationStep> StepQueue;
+        public Queue<GenerationStep> StepQueue;
         float heightmax;
         float mountain_elevation;
         float sea_elevation;
@@ -258,7 +263,9 @@ namespace FF1Lib.Procgen
 	short bridgedRegion;
 	bool shouldPlaceBridge;
 
-        public OverworldState(MT19337 rng, List<GenerationStep> steps, OverworldTiles overworldTiles) {
+	FF1Rom.ReportProgress progress;
+
+        public OverworldState(MT19337 rng, List<GenerationStep> steps, OverworldTiles overworldTiles, FF1Rom.ReportProgress progress) {
             this.rng = rng;
             this.ownBasemap = true;
             this.ownTilemap = true;
@@ -282,6 +289,7 @@ namespace FF1Lib.Procgen
 	    this.startingRegion = -1;
 	    this.bridgedRegion = -1;
 	    this.shouldPlaceBridge = true;
+	    this.progress = progress;
         }
 
 	// Shallow copy construtor.  To be memory efficient, this uses
@@ -315,6 +323,7 @@ namespace FF1Lib.Procgen
 	    this.startingRegion = copy.startingRegion;
 	    this.bridgedRegion = copy.bridgedRegion;
 	    this.shouldPlaceBridge = copy.shouldPlaceBridge;
+	    this.progress = copy.progress;
         }
 
 	public void SetSteps(List<GenerationStep> steps) {
@@ -376,14 +385,15 @@ namespace FF1Lib.Procgen
 	    this.DockPlacements = new List<ValueTuple<short, SCCoords>>(this.DockPlacements);
             this.ownPlacements = true;
         }
-        public Result NextStep() {
+        public async Task<Result> NextStep() {
             if (this.StepQueue.Count == 0) {
                 return new Result(this);
             }
             this.StepQueue = new Queue<GenerationStep>(this.StepQueue);
             var nextStep = this.StepQueue.Dequeue();
+	    await this.progress($"{(nextStep.message != "" ? nextStep.message : nextStep.method.Name)}");
 	    Console.WriteLine(nextStep.method.Name);
-            return nextStep.RunStep(this);
+            return await nextStep.RunStep(this);
         }
 
         const float UNSET = -1000000;
@@ -468,7 +478,7 @@ namespace FF1Lib.Procgen
 	// amount of mountains and walkable land.  It then creates the
 	// initial tile map of consisting of just mountain, land, and
 	// ocean.
-        public Result CreateInitialMap() {
+        public async Task<Result> CreateInitialMap() {
             this.OwnBasemap();
             this.OwnTilemap();
 
@@ -514,6 +524,10 @@ namespace FF1Lib.Procgen
 
             int lowering_iter = 0;
             while (land_count < min_land_tiles || mountain_count < min_mtn_tiles) {
+		if (lowering_iter % 10 == 0) {
+		    await this.progress("", 10);
+		}
+
                 lowering_iter += 1;
                 mountain_count = 0;
                 land_count = 0;
@@ -558,10 +572,10 @@ namespace FF1Lib.Procgen
                 }
             }
 
-            return this.NextStep();
+            return await this.NextStep();
         }
 
-        public Result CreateLostWoodsMap() {
+        public async Task<Result> CreateLostWoodsMap() {
             this.OwnBasemap();
             this.OwnTilemap();
 
@@ -654,11 +668,11 @@ namespace FF1Lib.Procgen
                 }
             }
 
-            return this.NextStep();
+            return await this.NextStep();
         }
 
 	// Apply a 3x3 filter over the entire map.
-        public Result ApplyFilter(OwTileFilter filter, bool repeat) {
+        public Task<Result> ApplyFilter(OwTileFilter filter, bool repeat) {
             this.OwnTilemap();
             this.Tilemap = filter.ApplyFilter(this.Tilemap, repeat);
             return this.NextStep();
@@ -762,7 +776,7 @@ namespace FF1Lib.Procgen
 	    return size;
 	}
 
-        public Result MakeValleys(int count) {
+        public Task<Result> MakeValleys(int count) {
 	    double lower_elev = this.mountain_elevation + (this.heightmax-this.mountain_elevation)*.5;
 	    double upper_elev = this.heightmax;
 
@@ -793,17 +807,17 @@ namespace FF1Lib.Procgen
 	    return this.NextStep();
         }
 
-        public Result FlowMountainRivers(int count) {
+        public Task<Result> FlowMountainRivers(int count) {
             this.FlowRivers(this.mountain_elevation + (this.heightmax-this.mountain_elevation)*.5, this.heightmax, count, 256);
             return this.NextStep();
         }
 
-        public Result FlowMountainRiversLostWoods(int count) {
+        public Task<Result> FlowMountainRiversLostWoods(int count) {
             this.FlowRivers(mountain_elevation + (heightmax - mountain_elevation) / 18, this.heightmax, count, 350);
             return this.NextStep();
         }
 
-        public Result FlowPlainsRivers(int count) {
+        public Task<Result> FlowPlainsRivers(int count) {
             this.FlowRivers(this.sea_elevation + (this.mountain_elevation-this.sea_elevation)*.5, this.mountain_elevation, count, 256);
             return this.NextStep();
         }
@@ -820,7 +834,7 @@ namespace FF1Lib.Procgen
             this.Traversable_regionlist = traversable.Item2;
         }
 
-        public Result UpdateRegions() {
+        public Task<Result> UpdateRegions() {
             this.UpdateBiomeRegions();
             this.UpdateTraversableRegions();
             return this.NextStep();
@@ -830,7 +844,7 @@ namespace FF1Lib.Procgen
 	// mostly just clutter up the map and don't look good.  Delete
 	// all the "tiny" islands and keep a handful of "small"
 	// islands.
-        public Result RemoveSmallIslands() {
+        public Task<Result> RemoveSmallIslands() {
             this.OwnTilemap();
 
             const int tiny_island_size = 5;
@@ -869,7 +883,7 @@ namespace FF1Lib.Procgen
 
 	// Find tiny regions and merge them into one of the adjacent
 	// regions.
-	public Result RemoveTinyRegions(int tiny_region_size) {
+	public Task<Result> RemoveTinyRegions(int tiny_region_size) {
             this.OwnTilemap();
 
             foreach (var r in this.Biome_regionlist) {
@@ -937,7 +951,7 @@ namespace FF1Lib.Procgen
             }
         }
 
-        public Result AddBiomes(int max, bool extraForest) {
+        public Task<Result> AddBiomes(int max, bool extraForest) {
             this.OwnTilemap();
 
             byte[] biome_types;
@@ -977,7 +991,7 @@ namespace FF1Lib.Procgen
         }
 
 	// Turn small patches of inland ocean into river tiles.
-        public Result SmallSeasBecomeLakes() {
+        public Task<Result> SmallSeasBecomeLakes() {
             this.OwnTilemap();
             foreach (var r in this.Biome_regionlist) {
                 if (r.RegionType != OverworldTiles.OCEAN_REGION) {
@@ -1173,45 +1187,52 @@ namespace FF1Lib.Procgen
         }
     }
 
-    public delegate Result GenerationTask();
+    public delegate Task<Result> GenerationTask();
 
     public class GenerationStep {
         public MethodInfo method;
         object[] parameters;
-        public GenerationStep(string methodName, object[] parameters) {
+	public string message;
+        public GenerationStep(string methodName, object[] parameters, string message="") {
             Type magicType = Type.GetType("FF1Lib.Procgen.OverworldState");
             this.method = magicType.GetMethod(methodName);
             Debug.Assert(method != null);
             this.parameters = parameters;
+	    this.message = message;
         }
 
-        public Result RunStep(OverworldState st) {
-            return (Result)method.Invoke(st, this.parameters);
+        public Task<Result> RunStep(OverworldState st) {
+            return (Task<Result>)method.Invoke(st, this.parameters);
         }
     }
 
 
     public static class NewOverworld {
 
-	public static OverworldState RunSteps(OverworldState startingState) {
+	public static async Task<OverworldState> RunSteps(OverworldState startingState, FF1Rom.ReportProgress progress) {
 	    Stack<GenerationTask> workStack = new Stack<GenerationTask>();
-
-	    System.GC.Collect();
 
 	    workStack.Push(startingState.NextStep);
 
 	    OverworldState finalState = null;
-	    int maxTasksCount = 300;
+	    int maxTasksCount = 150;
 	    int taskCount = 0;
+
+	    await progress("", startingState.StepQueue.Count);
+	    await progress("", maxTasksCount);
 	    while (workStack.Count > 0 && taskCount < maxTasksCount) {
+		await progress();
+		System.GC.Collect(System.GC.MaxGeneration);
+
 		taskCount += 1;
 		var p = workStack.Pop();
-		var r = p();
+		var r = await p();
 		if (r.final != null) {
 		    finalState = r.final;
 		    break;
 		}
 		if (r.additionalTasks != null) {
+		    await progress("", r.additionalTasks.Count);
 		    foreach (var v in r.additionalTasks) {
 			workStack.Push(v);
 		    }
@@ -1220,7 +1241,9 @@ namespace FF1Lib.Procgen
 	    return finalState;
 	}
 
-	public static OwMapExchangeData GenerateNewOverworld(MT19337 rng, OwMapExchanges mode, bool shuffledaccess, bool unsafestart) {
+	public async static Task<OwMapExchangeData> GenerateNewOverworld(MT19337 rng, OwMapExchanges mode,
+									 bool shuffledaccess, bool unsafestart,
+									 FF1Rom.ReportProgress progress) {
 	    var mt = new OverworldTiles();
 
 	    int maxtries = 1;
@@ -1232,17 +1255,17 @@ namespace FF1Lib.Procgen
 		if (mode == OwMapExchanges.LostWoods) {
 		    worldGenSteps = new List<GenerationStep> {
 			new GenerationStep("CreateLostWoodsMap", new object[]{}),
-			new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains, false}),
+			new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains, false}, "expand_mountains"),
 			new GenerationStep("FlowMountainRiversLostWoods", new object[] {16}),
-			new GenerationStep("ApplyFilter", new object[] {mt.connect_diagonals, false}),
+			new GenerationStep("ApplyFilter", new object[] {mt.connect_diagonals, false}, "connect_diagonals"),
 			new GenerationStep("UpdateRegions", new object[]{}),
 			new GenerationStep("AddBiomes", new object[]{1600, true}),
 
-			new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}),
+			new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}, "remove_salients"),
 			new GenerationStep("UpdateRegions", new object[]{}),
 			new GenerationStep("RemoveTinyRegions", new object[]{25}),
 
-			new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}),
+			new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}, "remove_salients"),
 			new GenerationStep("UpdateRegions", new object[]{}),
 			new GenerationStep("RemoveTinyRegions", new object[]{25}),
 		    };
@@ -1250,20 +1273,20 @@ namespace FF1Lib.Procgen
 		    worldGenSteps = new List<GenerationStep> {
 			new GenerationStep("CreateInitialMap", new object[]{}),
 			new GenerationStep("MakeValleys", new object[] {6}),
-			new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains, false}),
-			new GenerationStep("ApplyFilter", new object[] {mt.expand_oceans, false}),
+			new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains, false}, "expand_mountains"),
+			new GenerationStep("ApplyFilter", new object[] {mt.expand_oceans, false}, "expand_oceans"),
 			new GenerationStep("FlowMountainRivers", new object[] {12}),
 			new GenerationStep("FlowPlainsRivers", new object[] {12}),
-			new GenerationStep("ApplyFilter", new object[] {mt.connect_diagonals, false}),
+			new GenerationStep("ApplyFilter", new object[] {mt.connect_diagonals, false}, "connect_diagonals"),
 			new GenerationStep("UpdateRegions", new object[]{}),
 			new GenerationStep("RemoveSmallIslands", new object[]{}),
 			new GenerationStep("AddBiomes", new object[]{400, false}),
 
-			new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}),
+			new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}, "remove_salients"),
 			new GenerationStep("UpdateRegions", new object[]{}),
 			new GenerationStep("RemoveTinyRegions", new object[]{5}),
 
-			new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}),
+			new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}, "remove_salients"),
 			new GenerationStep("UpdateRegions", new object[]{}),
 			new GenerationStep("RemoveTinyRegions", new object[]{5}),
 
@@ -1271,11 +1294,11 @@ namespace FF1Lib.Procgen
 		    };
 		}
 
-		var blankState = new OverworldState(rng, worldGenSteps, mt);
-		var worldState = RunSteps(blankState);
+		var blankState = new OverworldState(rng, worldGenSteps, mt, progress);
+		var worldState = await RunSteps(blankState, progress);
 
 		if (worldState == null) {
-		    throw new Exception($"Couldn't generate a map with this seed, try a different seed");
+		    continue;
 		}
 
 		var maxPlacementTries = 8;
@@ -1522,7 +1545,7 @@ namespace FF1Lib.Procgen
 
 		    var prePlacementState = new OverworldState(worldState);
 		    prePlacementState.SetSteps(placementSteps);
-		    postPlacementState = RunSteps(prePlacementState);
+		    postPlacementState = await RunSteps(prePlacementState, progress);
 		}
 
 		if (postPlacementState == null) {
@@ -1530,36 +1553,36 @@ namespace FF1Lib.Procgen
 		}
 
 		var polishSteps = new List<GenerationStep> {
-		    new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains1, true}),
-		    new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains2, true}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains1, true}, "polish_mountains1"),
+		    new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains2, true}, "polish_mountains2"),
 
-		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1, false}),
-		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2, false}),
-		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores3, false}),
-		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores4, false}),
-		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores5, false}),
-		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores6, false}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1, false}, "apply_shores1"),
+		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2, false}, "apply_shores2"),
+		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores3, false}, "apply_shores3"),
+		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores4, false}, "apply_shores4"),
+		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores5, false}, "apply_shores5"),
+		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores6, false}, "apply_shores6"),
 
-		    new GenerationStep("ApplyFilter", new object[]{mt.prune_forests, true}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.prune_forests, true}, "prune_forests"),
 		    new GenerationStep("PreventAirshipLanding", new object[]{}),
 
-		    new GenerationStep("ApplyFilter", new object[]{mt.mountain_borders, false}),
-		    new GenerationStep("ApplyFilter", new object[]{mt.river_borders, false}),
-		    new GenerationStep("ApplyFilter", new object[]{mt.desert_borders, false}),
-		    new GenerationStep("ApplyFilter", new object[]{mt.marsh_borders, false}),
-		    new GenerationStep("ApplyFilter", new object[]{mt.grass_borders, false}),
-		    new GenerationStep("ApplyFilter", new object[]{mt.forest_borders, false}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.mountain_borders, false}, "mountain_borders"),
+		    new GenerationStep("ApplyFilter", new object[]{mt.river_borders, false}, "river_borders"),
+		    new GenerationStep("ApplyFilter", new object[]{mt.desert_borders, false}, "desert_borders"),
+		    new GenerationStep("ApplyFilter", new object[]{mt.marsh_borders, false}, "marsh_borders"),
+		    new GenerationStep("ApplyFilter", new object[]{mt.grass_borders, false}, "grass_borders"),
+		    new GenerationStep("ApplyFilter", new object[]{mt.forest_borders, false}, "forest_borders"),
 		    new GenerationStep("CheckBridgeShores", new object[]{}),
 		};
 
 		postPlacementState.SetSteps(polishSteps);
-		var finalState = RunSteps(postPlacementState);
+		var finalState = await RunSteps(postPlacementState, progress);
 
 		if (finalState != null) {
 		    return ReplacementMap(finalState, mt);
 		}
 	    }
-	    throw new Exception($"Couldn't generate a map with this seed, try a different seed");
+	    throw new FailedToGenerate($"Couldn't generate a map, try a different map generation seed");
 	}
 
 	public static OwMapExchangeData ReplacementMap(OverworldState st, OverworldTiles mt) {

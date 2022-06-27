@@ -124,6 +124,8 @@ namespace FF1Lib
 			UnarmedAttack,
 			CatClawMaster,
 			ThorMaster,
+			SteelLord,
+			WoodAdept,
 			Hunter,
 			Sleepy,
 			Sick,
@@ -671,6 +673,8 @@ namespace FF1Lib
 			if (!(bool)flags.ArmorCrafter)
 			{
 				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorRemove, "-" + olditemnames[(int)Item.ProRing], equipment: new List<Item> { Item.ProRing }));
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.SteelLord, "Steel Lord", Classes: new List<Classes> { Classes.Fighter }));
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.WoodAdept, "Wood Adept"));
 			}
 
 			if (Rng.Between(rng, 0, 10) == 0)
@@ -1013,10 +1017,21 @@ namespace FF1Lib
 						case BonusMalusAction.ThorMaster:
 							_classes[i].ThorMaster = true;
 							_classes[i + 6].ThorMaster = true;
+							_weaponPermissions.AddPermissionsRange(new List<(Classes, Item)> { ((Classes)(i + 6), Item.ThorHammer) });
 							break;
 						case BonusMalusAction.CatClawMaster:
 							_classes[i].CatClawMaster = true;
 							_classes[i + 6].CatClawMaster = true;
+							_weaponPermissions.AddPermissionsRange(new List<(Classes, Item)> { ((Classes)(i + 6), Item.CatClaw) });
+							break;
+						case BonusMalusAction.SteelLord:
+							_classes[i].SteelLord = true;
+							_classes[i + 6].SteelLord = true;
+							break;
+						case BonusMalusAction.WoodAdept:
+							_classes[i].WoodAdept = true;
+							_classes[i + 6].WoodAdept = true;
+							_armorPermissions.AddPermissionsRange(new List<(Classes, Item)> { ((Classes)i, Item.WoodenArmor), ((Classes)i, Item.WoodenHelm), ((Classes)i, Item.WoodenShield), ((Classes)(i+6), Item.WoodenArmor), ((Classes)(i+6), Item.WoodenHelm), ((Classes)(i+6), Item.WoodenShield) });
 							break;
 						case BonusMalusAction.Sick:
 							_classes[i].Sick = true;
@@ -1338,7 +1353,7 @@ namespace FF1Lib
 					_classes[i].MagicRanks[1] = classBaseString[shuffleBlackPermissions[i]];
 				}
 
-				_classes[i + 6].Ranks[(int)RankedType.Black] = magicRanks[i + 6];
+				_classes[i + 6].Ranks[(int)RankedType.Black] = magicRanks[i + 18];
 
 				if (magicRanks[i + 18] > Rank.F)
 				{
@@ -1547,6 +1562,9 @@ namespace FF1Lib
 			byte innateResistValue = 0x00;
 			string description = "Res ";
 			List<SpellElement> elements = Enum.GetValues(typeof(SpellElement)).Cast<SpellElement>().ToList();
+			elements.Remove(SpellElement.Any);
+			elements.Remove(SpellElement.All);
+
 			//3 picks but can get a none
 			for (int picks = 0; picks < 3; picks++)
 			{
@@ -1705,7 +1723,7 @@ namespace FF1Lib
 			return spellBlursings;
 		}
 
-		public void ProcessStartWithRoutines(Flags flags, FF1Rom rom)
+		public void ProcessStartWithRoutines(Flags flags, List<int> blursesValues, FF1Rom rom)
 		{
 			// See 1B_B000_StartWithRoutines.asm
 			// Utilities
@@ -1713,10 +1731,10 @@ namespace FF1Lib
 
 			// Party Initial Setup Hijack
 			rom.PutInBank(0x1F, 0xC0AC, Blob.FromHex("2012D828EAEAEAEAEAEAEA"));
-			rom.PutInBank(0x1F, 0xD812, rom.CreateLongJumpTableEntry(0x1B, 0xB280));
+			rom.PutInBank(0x1F, 0xD812, rom.CreateLongJumpTableEntry(0x1B, 0xB080));
 
 			// StartWith Initialization Routine
-			rom.PutInBank(0x1B, 0xB280, Blob.FromHex("A9B248A9A048A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E484C07FE20B1B220F7B2205AB32090B320C0B360A98085EDA9B485EEA200A0002015B0F0071885108A6510AA18986940A890EDA900851085118512E000F01718A9C865108510A90065118511A90065128512CA1890E520EADD60A98D85EDA9B485EEA200A0002000B0D001E818986940A890F3A900851085118512E000F01718A96465108510A90065118511A90065128512CA1890E5AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A200A000A9A785EDA9B485EE2015B048A99A85EDA9B485EE2015B048A90085EDA96385EE98AA65ED85ED68A86891ED8A6940A8D0CF60A200A000A9B485EDA9B485EE2000B0D00320ACB318986940A890F1609848AAA007A901E89D20639D286388D0F668A860A200A000A9C185EDA9B485EE2015B0F006AAA9019D206018986940A890EE60"));
+			rom.PutInBank(0x1B, 0xB300, Blob.FromHex("A9B348A92048A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E484C07FE2031B32077B320DAB32010B42044B460A98085EDA9B485EEA200A0002015B0F0071885108A6510AA18986940A890EDA900851085118512E000F01718A9C865108510A90065118511A90065128512CA1890E520EADD60A98D85EDA9B485EEA200A0002000B0D001E818986940A890F3A900851085118512E000F01718A96465108510A90065118511A90065128512CA1890E5AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A200A000A9A785EDA9B485EE2015B048A99A85EDA9B485EE2015B048A90085EDA96385EE98AA65ED85ED68A86891ED8A6940A8D0CF60A200A000A9B485EDA9B485EE2000B0D003202CB418986940A890F1609848AAA007E8BD20631869019D20639D286388D0F068A860A200A000A9C185EDA9B485EE2015B0F006AAA9019D206018986940A890EE60"));
 
 			// Insert luts
 			Blob lut_IncreaseGP = _classes.Select(x => (byte)(x.StartWithGold != BlursesStartWithGold.Remove ? (byte)x.StartWithGold : 0x00)).ToArray();
@@ -1738,24 +1756,16 @@ namespace FF1Lib
 
 			if ((bool)flags.RandomWeaponBonus && !(bool)flags.Weaponizer)
 			{
-				int blursevalue = 0;
-				if (rom.ItemsText[(int)Item.CatClaw][6] != 'w')
-				{
-					blursevalue = int.Parse(rom.ItemsText[(int)Item.CatClaw][6].ToString());
-					if (rom.ItemsText[(int)Item.CatClaw][5] == '-')
-					{
-						blursevalue = -blursevalue;
-					}
-				}
+				int blursevalue = blursesValues[Item.CatClaw - Item.WoodenNunchucks];
 				catclawcrit += 3 * blursevalue;
 			}
 
 			// Battle Hijack, take over part of BB unarmed check
-			rom.PutInBank(0x0C, 0xADBB, Blob.FromHex("2071C2F00760EAEAEAEAEAEA"));
-			rom.PutInBank(0x1F, 0xC271, rom.CreateLongJumpTableEntry(0x1B, 0xB080));
+			rom.PutInBank(0x0C, 0xADBB, Blob.FromHex("2012D8F00760EAEAEAEAEAEA"));
+			//rom.PutInBank(0x1F, 0xC271, rom.CreateLongJumpTableEntry(0x1B, 0xB080));
 
 			// Battle StartWith
-			rom.PutInBank(0x1B, 0xB080, Blob.FromHex($"20A2B020D7B0200EB12026B12040B14C92B0A98085EDA9B185EEA000B1822003B060A98D85EDA9B185EEA000B1822003B0D023A018B1823011C8B182300CC8B1823007C8B1823002A900297FC923D006A00FA9{catclawcrit:X2}918060A99A85EDA9B185EEA000B1822003B0D025A018B1823011C8B182300CC8B1823007C8B1823002A900297FC924D008A009B180180A918060A9A785EDA9B185EEA000B1822003B0D006A00DA9FF918060A9B485EDA9B185EEA000B1822003B0D008A001B1820920918260A9C185EDA9B185EEA000B1822003B0D00F20E7FC2903D008A001B1820904918260"));
+			rom.PutInBank(0x1B, 0xB080, Blob.FromHex($"A908C5F2F0034C00B320ABB020E0B0208FB12017B12048B14C9BB0A90085EDA9B285EEA000B1822003B060A90D85EDA9B285EEA000B1822003B0D023A018B1823011C8B182300CC8B1823007C8B1823002A900297FC923D006A00FA9{catclawcrit:X2}918060A91A85EDA9B285EEA000B1822003B0D025A018B1823011C8B182300CC8B1823007C8B1823002A900297FC924D008A009B180180A918060A94E85EDA9B285EEA000B1822003B0D01FA01CB18210032037B1C8C020D0F460297FC905D00A9848A00BA902918068A860A95B85EDA9B285EE8A48A200A000B1822003B0D02FA01CB18210032078B1C8C020D0F4E003D01DA007A9FF918068AA60297FC902D002E860C91BD002E860C911D001E86068AA60A92785EDA9B285EEA000B1822003B0D006A00DA9FF918060A93485EDA9B285EEA000B1822003B0D008A001B1820920918260A94185EDA9B285EEA000B1822003B0D00F20E7FC2903D008A001B1820904918260"));
 
 			// Insert luts
 			Blob lut_Blackbelts = _classes.Select(x => (byte)(x.UnarmedAttack ? 0x01 : 0x00)).ToArray();
@@ -1764,13 +1774,17 @@ namespace FF1Lib
 			Blob lut_Hunter = _classes.Select(x => (byte)(x.Hunter ? 0x01 : 0x00)).ToArray();
 			Blob lut_Sleepy = _classes.Select(x => (byte)(x.Sleepy ? 0x01 : 0x00)).ToArray();
 			Blob lut_Sick = _classes.Select(x => (byte)(x.Sick ? 0x01 : 0x00)).ToArray();
+			Blob lut_SteelArmor = _classes.Select(x => (byte)(x.SteelLord ? 0x01 : 0x00)).ToArray();
+			Blob lut_WoodArmors = _classes.Select(x => (byte)(x.WoodAdept ? 0x01 : 0x00)).ToArray();
 
-			rom.PutInBank(0x1B, 0xB180, lut_Blackbelts + new byte[] { 0x00 } +
+			rom.PutInBank(0x1B, 0xB200, lut_Blackbelts + new byte[] { 0x00 } +
 				lut_CatClaws + new byte[] { 0x00 } +
 				lut_ThorHammer + new byte[] { 0x00 } +
 				lut_Hunter + new byte[] { 0x00 } +
 				lut_Sleepy + new byte[] { 0x00 } +
-				lut_Sick + new byte[] { 0x00 });
+				lut_Sick + new byte[] { 0x00 } +
+				lut_SteelArmor + new byte[] { 0x00 } +
+				lut_WoodArmors + new byte[] { 0x00 });
 		}
 
 		private List<BonusMalus> StartWithKeyItems(Flags flags, MT19337 rng, List<string> olditemnames)
@@ -1852,6 +1866,8 @@ namespace FF1Lib
 		public bool Hunter { get; set; }
 		public bool Sleepy { get; set; }
 		public bool Sick { get; set; }
+		public bool WoodAdept { get; set; }
+		public bool SteelLord { get; set; }
 		public Item StartingKeyItem { get; set; }
 
 		public ClassData(byte classid, byte[] startingStats, byte[] levelUpStats, byte hitgrowth, byte mdefgrowth, byte maxspc, GearPermissions weapPerm, GearPermissions armorPerm, SpellPermissions spellPerm)
@@ -1881,6 +1897,8 @@ namespace FF1Lib
 			Hunter = false;
 			Sleepy = false;
 			Sick = false;
+			WoodAdept = false;
+			SteelLord = false;
 			StartingKeyItem = Item.None;
 		}
 

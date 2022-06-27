@@ -13,6 +13,7 @@ namespace FF1Lib
 		public bool TeamSteak { get; set; }
 		public MusicShuffle Music { get; set; }
 		public bool DisableDamageTileFlicker { get; set; } = true;
+		public bool DisableDamageTileSFX { get; set; }
 		public MenuColor MenuColor { get; set; } = MenuColor.Blue;
 		public MapmanSlot MapmanSlot { get; set; } = MapmanSlot.Leader;
 		public bool DisableSpellCastFlash { get; set; } = true;
@@ -35,5 +36,6 @@ namespace FF1Lib
 		public bool QuickJoy2Reset { get; set; } = false;
 
 		public string PlayerName { get; set; } = "Player 01";
+		public bool BlandSite { get; set; } = false;
 	}
 }

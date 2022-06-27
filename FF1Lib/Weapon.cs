@@ -86,16 +86,19 @@ namespace FF1Lib
 		//6 - weapon type sprite
 		//7 - weapon sprite palette color
 
-		public void RandomWeaponBonus(MT19337 rng, int min, int max, bool excludeMasa)
+		public List<int> RandomWeaponBonus(MT19337 rng, int min, int max, bool excludeMasa)
 		{
 			//get base stats
 			Weapon currentWeapon;
+			List<int> blurseValues = new();
+
 			for (int i = 0; i < WeaponCount; i++)
 			{
 				if (i != 39 || !excludeMasa)
 				{
 					currentWeapon = new Weapon(i, this);
 					int bonus = rng.Between(min, max);
+					blurseValues.Add(bonus);
 					if (bonus != 0)
 					{
 						//adjust stats
@@ -123,6 +126,8 @@ namespace FF1Lib
 					}
 				}
 			}
+
+			return blurseValues;
 		}
 
 		//sample function for creating new weapons

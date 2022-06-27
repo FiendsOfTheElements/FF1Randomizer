@@ -40,21 +40,21 @@ namespace FF1Lib
 
 	public enum EvadeCapValues
 	{
-		[Description("Very low, 225")]
+		[Description("Very Low: 225")]
 		veryLow,
-		[Description("low, 230")]
+		[Description("Low: 230")]
 		low,
-		[Description("medium low, 235")]
+		[Description("Medium-low: 235")]
 		medLow,
-		[Description("medium, 240")]
+		[Description("Medium: 240")]
 		medium,
-		[Description("medium high, 245")]
+		[Description("Medium-high: 245")]
 		medHigh,
-		[Description("high, 250")]
+		[Description("High: 250")]
 		high,
-		[Description("extreme, 253")]
+		[Description("Extreme: 253")]
 		extreme,
-		[Description("insane, 255")]
+		[Description("Uncapped: 255")]
 		insane,
 	}
 
@@ -66,7 +66,7 @@ namespace FF1Lib
 		Gp100,
 		[Description("200 gp")]
 		Gp200,
-		[Description("400 gp (vanilla)")]
+		[Description("400 gp (Vanilla)")]
 		Gp400,
 		[Description("800 gp")]
 		Gp800,

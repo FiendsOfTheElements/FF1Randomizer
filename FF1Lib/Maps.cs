@@ -5,6 +5,8 @@ using System.Text;
 using FF1Lib.Procgen;
 using RomUtilities;
 using static FF1Lib.FF1Text;
+using FF1Lib.Sanity;
+using System.Threading.Tasks;
 
 namespace FF1Lib
 {
@@ -269,7 +271,7 @@ namespace FF1Lib
 
 	public enum SkyCastle4FMazeMode
 	{
-		Normal,
+		Vanilla,
 		Teleporters,
 		Maze
 	}
@@ -859,7 +861,7 @@ namespace FF1Lib
 				shopTiles.Add((0x1A, 0x68)); // Clinic
 
 				// Clinic
-				highWallTiles.Add((0x1A, 0x09)); 
+				highWallTiles.Add((0x1A, 0x09));
 				maps[(int)MapId.Pravoka][0x08, 0x1A] = 0x1B;
 
 				// Item Shop
@@ -916,9 +918,6 @@ namespace FF1Lib
 			// Select maps to flip
 			validMaps.Shuffle(rng);
 			var mapsToFlip = validMaps.GetRange(0, rng.Between((int)(validMaps.Count * 0.33), (int)(validMaps.Count * 0.75)));
-
-			//var mapsToFlip = validMaps;
-
 
 			foreach (MapId map in mapsToFlip)
 			{
@@ -981,19 +980,31 @@ namespace FF1Lib
 			if (mapsToFlip.Contains(MapId.IceCaveB1))
 			{
 				teleporters.IceCave1.FlipXcoordinate(); overworld.PutOverworldTeleport(OverworldTeleportIndex.IceCave1, teleporters.IceCave1);
-				overworld.PutStandardTeleport(TeleportIndex.IceCave5, new TeleportDestination(MapLocation.IceCaveBackExit, MapIndex.IceCaveB1, new Coordinate(0x39, 0x14, CoordinateLocale.Standard), TeleportIndex.IceCave5), OverworldTeleportIndex.IceCave1);
+
+				var t = teleporters.NormalTele[(int)TeleportIndex.IceCave5];
+				t.FlipXcoordinate();
+				overworld.PutStandardTeleport(TeleportIndex.IceCave5, new TeleportDestination(MapLocation.IceCaveBackExit, MapIndex.IceCaveB1, new Coordinate(t.X, t.Y, CoordinateLocale.Standard), TeleportIndex.IceCave5), OverworldTeleportIndex.IceCave1);
 			}
 			if (mapsToFlip.Contains(MapId.IceCaveB2))
 			{
 				teleporters.IceCave2.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.IceCave2, teleporters.IceCave2, OverworldTeleportIndex.IceCave1);
 				teleporters.IceCavePitRoom.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.IceCavePitRoom, teleporters.IceCavePitRoom, OverworldTeleportIndex.IceCave1);
-				overworld.PutStandardTeleport(TeleportIndex.IceCave7, new TeleportDestination(MapLocation.IceCaveFloater, MapIndex.IceCaveB2, new Coordinate(0x0C, 0x0B, CoordinateLocale.StandardInRoom), TeleportIndex.IceCave7), OverworldTeleportIndex.IceCave1);
+
+				var t = teleporters.NormalTele[(int)TeleportIndex.IceCave7];
+				t.FlipXcoordinate();
+				overworld.PutStandardTeleport(TeleportIndex.IceCave7, new TeleportDestination(MapLocation.IceCaveFloater, MapIndex.IceCaveB2, new Coordinate(t.X, t.Y, CoordinateLocale.StandardInRoom), TeleportIndex.IceCave7), OverworldTeleportIndex.IceCave1);
 			}
 			if (mapsToFlip.Contains(MapId.IceCaveB3))
 			{
 				teleporters.IceCave3.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.IceCave3, teleporters.IceCave3, OverworldTeleportIndex.IceCave1);
-				overworld.PutStandardTeleport(TeleportIndex.IceCave4, new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(0x18, 0x06, CoordinateLocale.StandardInRoom), TeleportIndex.IceCave4), OverworldTeleportIndex.IceCave1);
-				overworld.PutStandardTeleport(TeleportIndex.IceCave6, new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(0x04, 0x21, CoordinateLocale.Standard), TeleportIndex.IceCave6), OverworldTeleportIndex.IceCave1);
+
+				var t1 = teleporters.NormalTele[(int)TeleportIndex.IceCave4];
+				t1.FlipXcoordinate();
+				overworld.PutStandardTeleport(TeleportIndex.IceCave4, new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(t1.X, t1.Y, CoordinateLocale.StandardInRoom), TeleportIndex.IceCave4), OverworldTeleportIndex.IceCave1);
+
+				var t2 = teleporters.NormalTele[(int)TeleportIndex.IceCave6];
+				t2.FlipXcoordinate();
+				overworld.PutStandardTeleport(TeleportIndex.IceCave6, new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(t2.X, t2.Y, CoordinateLocale.Standard), TeleportIndex.IceCave6), OverworldTeleportIndex.IceCave1);
 			}
 
 			if (mapsToFlip.Contains(MapId.MarshCaveB1)) teleporters.MarshCave1.FlipXcoordinate(); overworld.PutOverworldTeleport(OverworldTeleportIndex.MarshCave1, teleporters.MarshCave1);
@@ -1376,6 +1387,619 @@ namespace FF1Lib
 				// Have locked rooms draw inside NPCs, instead of outside NPCs
 				PutInBank(0x1F, 0xCEDE, new byte[] { 0x81 });
 			}
+		}
+
+		class Room {
+		    public MapId mapId;
+		    public MapElement start;
+		    public List<MapElement> floor = new();
+		    public List<MapElement> doors = new ();
+		    public List<MapElement> chests = new ();
+		    public List<MapElement> teleIn = new ();
+		    public List<MapElement> teleOut = new ();
+		    public List<MapElement> npcs = new ();
+		    public List<MapElement> killablenpcs = new ();
+		    public bool hasBattles = false;
+		    public Room() { }
+		    public Room(Room copyfrom) {
+			mapId = copyfrom.mapId;
+			start = copyfrom.start;
+			floor = new List<MapElement>(copyfrom.floor);
+			doors = new List<MapElement>(copyfrom.doors);
+			chests = new List<MapElement>(copyfrom.chests);
+			teleIn = new List<MapElement>(copyfrom.teleIn);
+			teleOut = new List<MapElement>(copyfrom.teleOut);
+			npcs = new List<MapElement>(copyfrom.npcs);
+			killablenpcs = new List<MapElement>(copyfrom.killablenpcs);
+			hasBattles = copyfrom.hasBattles;
+		    }
+		    public void Replace(Room copyfrom) {
+			mapId = copyfrom.mapId;
+			start = copyfrom.start;
+			floor.Clear();
+			floor.AddRange(copyfrom.floor);
+
+			doors.Clear();
+			doors.AddRange(copyfrom.doors);
+
+			chests.Clear();
+			chests.AddRange(copyfrom.chests);
+
+			teleIn.Clear();
+			teleIn.AddRange(copyfrom.teleIn);
+
+			teleOut.Clear();
+			teleOut.AddRange(copyfrom.teleOut);
+
+			npcs.Clear();
+			npcs.AddRange(copyfrom.npcs);
+
+			killablenpcs.Clear();
+			killablenpcs.AddRange(copyfrom.killablenpcs);
+
+			hasBattles = copyfrom.hasBattles;
+		    }
+		}
+
+		public async Task shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests,
+							NPCdata npcdata, byte randomEncounter, bool spreadPlacement, bool markSpikeTiles) {
+		    // For a tileset, I need to determine:
+		    //
+		    // * doors and locked doors
+		    // * floor tiles with the move bit that are empty.
+
+		    bool debug = false;
+
+		    if (debug) Console.WriteLine($"\nTiles for {ids[0]}");
+
+		    bool keepLinkedChests = false;
+
+		    var tileset = new TileSet(this, GetMapTilesetIndex(ids[0]));
+
+		    List<byte> blankPPUTiles = new();
+
+		    for (byte i = 0; i < 128; i++) {
+			// Go through the pattern table, and find the CHR which
+			// is entirely color 1.
+
+			var chr = Get(TILESETPATTERNTABLE_OFFSET + (GetMapTilesetIndex(ids[0]) << 11) + (i * 16), 16);
+			var dec = DecodePPU(chr);
+
+			bool blank = true;
+			// Check that entire tile is color 1
+			for (int j = 0; j < dec.Length; j++) {
+			    if (dec[j] != 1) {
+				blank = false;
+				break;
+			    }
+			}
+			if (blank) {
+			    blankPPUTiles.Add(i);
+			}
+		    }
+		    foreach(var b in blankPPUTiles) {
+			if (debug) Console.WriteLine($"blank chr {b:X}");
+		    }
+
+		    // Go through the all the map tiles and find ones
+		    // with certain properties.
+		    List<byte> doorTiles = new() {0x36, 0x37, 0x3B};
+		    List<byte> floorTiles = new();
+		    List<byte> spikeTiles = new();
+		    List<byte> battleTiles = new();
+
+		    for (byte i = 0; i < 128; i++) {
+			if ((tileset.TileProperties[i].TilePropFunc & TilePropFunc.TP_NOMOVE) != 0) {
+			    continue;
+			}
+			// Allowed to walk onto this tile
+
+			if ((tileset.TileAttributes[i] & 3) != 1 &&
+			    (tileset.TileAttributes[i] & 3) != 2) {
+			    continue;
+			}
+			// This tile has the "room" palette
+
+			if (!blankPPUTiles.Contains(tileset.TopLeftTiles[i]) ||
+			    !blankPPUTiles.Contains(tileset.TopRightTiles[i]) ||
+			    !blankPPUTiles.Contains(tileset.BottomLeftTiles[i]) ||
+			    !blankPPUTiles.Contains(tileset.BottomRightTiles[i]))
+			{
+			    continue;
+			}
+			// The visual tile is "blank" (flips between
+			// floor color (black) and ceiling color
+			// (generally white/off white).
+
+			if (tileset.TileProperties[i].TilePropFunc == TilePropFunc.TP_SPEC_BATTLE) {
+			    if (tileset.TileProperties[i].BattleId != randomEncounter) {
+				// This is a spike tile
+				spikeTiles.Add(i);
+				if (debug) Console.WriteLine($"spike tile {i:X} BattleId {tileset.TileProperties[i].BattleId:X}");
+			    } else {
+				// This is random battle tile
+				battleTiles.Add(i);
+				if (debug) Console.WriteLine($"battle tile {i:X}");
+			    }
+			    continue;
+			}
+
+			// Found a plain, no-encounter floor tile
+			floorTiles.Add(i);
+			if (debug) Console.WriteLine($"floor tile {i:X}");
+		    }
+
+		    byte vanillaTeleporters = 0x41;
+		    List<TeleporterSM> teleporters = new();
+		    for (int i = 0; i < vanillaTeleporters; i++) {
+			teleporters.Add(new TeleporterSM(this, i));
+		    }
+
+		    List<byte> chestPool = new();
+		    List<byte> spikePool = new();
+
+		    // To relocate chests in a dungeon (a group of maps)
+		    //
+		    // * Find the all the chest tiles and spike tiles
+		    // * Wipe all the tiles with the floor tile in the tileset
+		    // * Find all the doors
+		    // * For each door, flood fill search for floor tiles, other doors, and teleports & record what we found
+		    // * Also record the positions of NPCs
+
+		    List<Room> rooms = new();
+
+		    foreach (var mapId in ids) {
+			if (debug) Console.WriteLine($"\nFinding rooms for map {mapId}");
+
+			var map = maps[(int)mapId];
+
+			List<SCCoords> startCoords = new();
+			for (int y = 0; y < 64; y++) {
+			    for (int x = 0; x < 64; x++) {
+				var tf = tileset.TileProperties[map[y, x]];
+				bool wipe = false;
+
+				if (tf.TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE)) {
+				    bool skip = false;
+				    foreach (var pc in preserveChests) {
+					if (mapId == pc.Item1 && pc.Item2 == map[y, x]) {
+					    skip = true;
+					}
+				    }
+				    if (!skip) {
+					if (keepLinkedChests || !chestPool.Contains(map[y, x])) {
+					    chestPool.Add(map[y, x]);
+					}
+					if (debug) Console.WriteLine($"add {map[y, x]:X} to chest pool");
+					wipe = true;
+				    }
+				}
+				if (spikeTiles.Contains(map[y, x])) {
+				    spikePool.Add(map[y, x]);
+				    if (debug) Console.WriteLine($"add {map[y, x]:X} to spike pool");
+				    wipe = true;
+				}
+				if (doorTiles.Contains(map[y, x])) {
+				    startCoords.Add(new SCCoords(x, y-1));
+				    if (debug) Console.WriteLine($"Found door {map[y, x]:X} at {x},{y}");
+				}
+
+				if (wipe) {
+				    map[y, x] = 0xff;
+				}
+			    }
+			}
+
+			foreach (var t in teleporters) {
+			    if (t.Destination == (byte)mapId &&
+				(floorTiles.Contains(map[t.Y,t.X]) || battleTiles.Contains(map[t.Y,t.X])))
+			    {
+				startCoords.Add(new SCCoords(t.X, t.Y));
+			    }
+			}
+
+			List<(int x, int y)> searched = new();
+			foreach (var st in startCoords) {
+			    var room = new Room();
+			    room.mapId = mapId;
+			    room.start = map[(st.X, st.Y)];
+			    bool newRoom = true;
+			    if (debug) Console.WriteLine($"Searching from {st}");
+
+			    var logit = false;
+
+			    map.Flood((st.X, st.Y), (MapElement me) => {
+
+				if (logit) {
+				    if (debug) Console.WriteLine($"Search {me.Coord} {me.Value:X}");
+				}
+
+				bool hasNpc = false;
+				bool hasKillableNpc = false;
+				for (int i = 0; i < 16; i++) {
+				    var npc = GetNpc(mapId, i);
+				    if (npc.Coord == me.Coord) {
+					hasNpc = true;
+					hasKillableNpc = (npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_fight ||
+							  npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_kill);
+					room.npcs.Add(me);
+					if (hasKillableNpc) {
+					    room.killablenpcs.Add(me);
+					}
+				    }
+				}
+
+				if (me.Value == 0xff) {
+				    // This square previously contained
+				    // a chest or spike tile
+				    if (!hasNpc) {
+					// not occupied by NPC
+					room.floor.Add(me);
+					return true;
+				    }
+				    // Is occupied by an NPC, but if killable, we search past it.
+				    return hasKillableNpc;
+				}
+
+				if (tileset.TileProperties[me.Value].TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE)) {
+				    // A preserved chest (vanilla
+				    // incentive location) needs to be
+				    // included in logic checking so
+				    // we don't accept a placement
+				    // that puts another chest
+				    // blocking it.
+				    room.chests.Add(me);
+				    return false;
+				}
+
+				if (doorTiles.Contains(me.Value)) {
+				    room.doors.Add(me);
+				    if (searched.Contains(me.Coord)) {
+					if (debug) Console.WriteLine($"Saw {me.Coord} already");
+					newRoom = false;
+				    } else {
+					if (debug) Console.WriteLine($"{me.Coord} is new door");
+					searched.Add(me.Coord);
+				    }
+				    return false;
+				}
+
+				bool teleporterTarget = false;
+				foreach (var t in teleporters) {
+				    if (t.Destination == (byte)mapId && me.Coord == (t.X, t.Y)) {
+					if (debug) Console.WriteLine($"Found teleport in {me.Coord}");
+					room.teleIn.Add(me);
+					teleporterTarget = true;
+				    }
+				}
+
+				if (tileset.TileProperties[me.Value].TilePropFunc == TilePropFunc.TP_SPEC_BATTLE &&
+				    tileset.TileProperties[me.Value].BattleId == randomEncounter)
+				{
+				    room.hasBattles = true;
+				}
+
+				if (!hasNpc && !teleporterTarget && (floorTiles.Contains(me.Value) || battleTiles.Contains(me.Value) || spikeTiles.Contains(me.Value)) &&
+				    (me.Coord != (st.X, st.Y)))
+				{
+				    room.floor.Add(me);
+				}
+
+				if ((tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_TELE_MASK) != 0) {
+				    if (debug) Console.WriteLine($"Found teleport out {me.Coord}");
+				    room.teleOut.Add(me);
+				    return false;
+				}
+
+				return (!hasNpc || hasKillableNpc) &&
+				    (tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0;
+			    });
+			    if (newRoom) {
+				if (debug) Console.WriteLine($"Added new room");
+				rooms.Add(room);
+			    }
+
+			    foreach (var me in room.floor) {
+				if (me.Value == 0xff) {
+				    if ((room.hasBattles && battleTiles.Count > 0) || floorTiles.Count == 0) {
+					me.Value = battleTiles[0];
+				    } else {
+					me.Value = floorTiles[0];
+				    }
+				}
+			    }
+			}
+
+			for (int y = 0; y < 64; y++) {
+			    for (int x = 0; x < 64; x++) {
+				if (map[y,x] == 0xff) {
+				    if (floorTiles.Count > 0) {
+					map[y,x] = floorTiles[0];
+				    } else {
+					map[y,x] = battleTiles[0];
+				    }
+				}
+			    }
+			}
+		    }
+
+		    // make a copy of the rooms
+		    List<Room> workingrooms = new(rooms.Count);
+		    foreach (var r in rooms) {
+			workingrooms.Add(new Room());
+		    }
+
+		    bool needRetry = true;
+		    List<(Room,MapElement)> placedChests = new();
+		    List<Room> roomsToSanityCheck = new();
+		    List<(Room,MapElement)> allCandidates = new();
+
+		    int attempts;
+		    await this.Progress($"Relocating chests for group of floors containing {ids[0]}", 1);
+		    for (attempts = 0; needRetry && attempts < 800; attempts++) {
+			if (attempts % 10 == 0) {
+			    await this.Progress("", 1);
+			    System.GC.Collect(System.GC.MaxGeneration);
+			}
+
+			// Make a copy of the rooms
+			placedChests.Clear();
+			roomsToSanityCheck.Clear();
+			needRetry = false;
+
+			for (int i = 0; i < rooms.Count; i++) {
+			    // We do this goofy replacement thing
+			    // instead of just allocating new objects
+			    // because we need this inner loop to be
+			    // as close to constant memory usage as
+			    // possible, otherwise it'll fall over as
+			    // the number of iterations gets large and
+			    // it starts grabbing more and more
+			    // memory.
+			    workingrooms[i].Replace(rooms[i]);
+			}
+
+			allCandidates.Clear();
+			foreach (var r in workingrooms) {
+			    foreach (var f in r.floor) {
+				//f.Value = 0xD;
+				allCandidates.Add((r, f));
+			    }
+			}
+
+			if (debug) Console.WriteLine($"rooms {rooms.Count}");
+
+			foreach (var c in chestPool) {
+			    (Room,MapElement) me;
+			    if (spreadPlacement) {
+				Room r;
+				do {
+				    r = workingrooms.PickRandom(rng);
+				} while (r.floor.Count == 0);
+				me = (r, r.floor.SpliceRandom(rng));
+			    } else {
+				// full random
+				me = allCandidates.SpliceRandom(rng);
+			    }
+			    me.Item2.Value = c;
+			    me.Item1.chests.Add(me.Item2);
+			    placedChests.Add((me.Item1, me.Item2));
+			    if (!roomsToSanityCheck.Contains(me.Item1)) {
+				roomsToSanityCheck.Add(me.Item1);
+			    }
+			}
+
+			foreach (var r in roomsToSanityCheck) {
+			    r.start.Map.Flood((r.start.X, r.start.Y), (MapElement me) => {
+				if (r.doors.Remove(me) || r.chests.Remove(me) || r.teleOut.Remove(me) || r.npcs.Remove(me)) {
+				    // found something, don't traverse
+				    if (!r.killablenpcs.Contains(me)) {
+					return false;
+				    }
+				}
+				r.teleIn.Remove(me);
+				return (tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0;
+			    });
+			    if (r.doors.Count > 0 || r.chests.Count > 0 || r.teleOut.Count > 0 || r.npcs.Count > 0) {
+				if (debug) Console.WriteLine($"Room at {r.mapId} {r.start.X}, {r.start.Y} failed sanity check: {r.doors.Count} {r.chests.Count} {r.teleOut.Count} {r.npcs.Count}");
+				needRetry = true;
+				break;
+			    }
+			}
+
+			if (needRetry) {
+			    // Clear failed chest attempt
+			    foreach (var ch in placedChests) {
+				if ((ch.Item1.hasBattles && battleTiles.Count > 0) || floorTiles.Count == 0) {
+				    ch.Item2.Value = battleTiles[0];
+				} else {
+				    ch.Item2.Value = floorTiles[0];
+				}
+			    }
+			}
+		    }
+
+		    if (!needRetry) {
+			Console.WriteLine($"{ids[0]} success after {attempts} attempts");
+		    }
+
+		    if (needRetry) {
+			throw new Exception($"{ids[0]} Couldn't place chests after {attempts} attempts");
+		    }
+
+		    // Finally, add spike tiles.
+		    if (debug) Console.WriteLine($"spikes {placedChests.Count} {spikePool.Count}");
+
+		    if (placedChests.Count == 0) {
+			return;
+		    }
+
+		    if (spikePool.Count > placedChests.Count)  {
+			Console.WriteLine($"WARNING spikePool.Count > placedChests.Count something is wrong");
+			return;
+		    }
+
+		    if (markSpikeTiles) {
+			var ts = GetMapTilesetIndex(ids[0]);
+			foreach (var sp in spikePool) {
+			    tileset.TopRightTiles[sp] = 0x7D;
+			}
+			tileset.TopRightTiles.StoreTable();
+		    }
+
+		    var directions = new Direction[] { Direction.Down, Direction.Down, Direction.Down,
+			Direction.Right, Direction.Left, Direction.Up };
+		    while (spikePool.Count > 0) {
+			var pc = placedChests.PickRandom(rng);
+			var dir = directions.PickRandom(rng);
+			var me = pc.Item2.Neighbor(dir);
+			if (floorTiles.Contains(me.Value) || battleTiles.Contains(me.Value)) {
+			    me.Value = spikePool[spikePool.Count-1];
+			    //me.Value = 0xD;
+			    spikePool.RemoveAt(spikePool.Count-1);
+			}
+			var roll = rng.Between(1, 20);
+			if (roll == 1 && spikePool.Count > 0 && roomsToSanityCheck.Count > 0) {
+			    var rm = roomsToSanityCheck.SpliceRandom(rng);
+			    rm.start.Value = spikePool[spikePool.Count-1];
+			    //rm.start.Value = 0xD;
+			    spikePool.RemoveAt(spikePool.Count-1);
+			}
+		    }
+
+		    //
+		    // * Place each chest tile randomly on a room floor tiles
+		    // * Place the spike tile randomly on a room floor tile adjacent to chest tiles
+		    // ** Weighting 40% below chest, 20% left/right/top
+		    // * Finally, sanity check each room that we can reach all chests, doors, teleports and NPCs in the room
+		}
+
+		public async Task RandomlyRelocateChests(MT19337 rng, List<Map> maps, NPCdata npcdata, Flags flags) {
+		    // Groups of maps that make up a shuffle pool
+		    // They need to all use the same tileset.
+
+		    List<MapId[]> dungeons = new() {
+			new MapId[] { MapId.ConeriaCastle1F, MapId.ConeriaCastle2F, MapId.ElflandCastle, MapId.NorthwestCastle },
+
+			new MapId[] { MapId.MarshCaveB1, MapId.MarshCaveB2, MapId.MarshCaveB3 }, // Marsh
+			new MapId[] { MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3 }, // Ice Cave
+			new MapId[] { MapId.CastleOfOrdeals1F, MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals3F }, // Ordeals
+			new MapId[] { MapId.MirageTower1F, MapId.MirageTower2F, MapId.MirageTower3F }, // Mirage
+			new MapId[] { MapId.TempleOfFiendsRevisited1F,
+			    MapId.TempleOfFiendsRevisited2F,
+			    MapId.TempleOfFiendsRevisited3F,
+			    MapId.TempleOfFiendsRevisitedEarth,
+			    MapId.TempleOfFiendsRevisitedFire,
+			    MapId.TempleOfFiendsRevisitedWater,
+			    MapId.TempleOfFiendsRevisitedAir }, // ToFR
+
+			// new MapId[] { MapId.TitansTunnel }, // Titan
+		    };
+
+		    List<MapId[]> spreadPlacementDungeons = new() {
+			new MapId[] { MapId.Waterfall, MapId.DwarfCave, MapId.MatoyasCave, MapId.SardasCave },
+			new MapId[] { MapId.Cardia, MapId.BahamutsRoomB1, MapId.BahamutsRoomB2 }, // Cardia
+			new MapId[] { MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 }, // Sea Shrine
+			new MapId[] { MapId.SkyPalace1F, MapId.SkyPalace2F, MapId.SkyPalace3F, MapId.SkyPalace4F, MapId.SkyPalace5F }, // Sky Castle
+			new MapId[] { MapId.TempleOfFiends }, // ToF
+		    };
+
+		    List<(MapId,byte)> preserveChests = new();
+
+		    if ((bool)flags.IncentivizeMarsh && flags.MarshIncentivePlacementType == IncentivePlacementType.Vanilla) {
+			preserveChests.Add((MapId.MarshCaveB3, 0x49));
+		    }
+
+		    bool addearth = true;
+		    if ((bool)flags.IncentivizeEarth) {
+			if (flags.EarthIncentivePlacementType == IncentivePlacementTypeGated.Vanilla) {
+			    preserveChests.Add((MapId.EarthCaveB3, 0x51));
+			}
+
+			if (flags.EarthIncentivePlacementType == IncentivePlacementTypeGated.RandomNoGating ||
+			    flags.EarthIncentivePlacementType == IncentivePlacementTypeGated.RandomBehindGating)
+			{
+			    // Split shuffle before/after gating
+			    dungeons.Add(new MapId[] { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3 });
+			    dungeons.Add(new MapId[] { MapId.EarthCaveB4, MapId.EarthCaveB5 });
+			    addearth = false;
+			}
+		    }
+		    if (addearth) {
+			dungeons.Add(new MapId[] { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5 });
+		    }
+
+		    dungeons.Add(new MapId[] { MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5 });
+
+		    if ((bool)flags.IncentivizeVolcano && flags.VolcanoIncentivePlacementType == IncentivePlacementType.Vanilla) {
+			preserveChests.Add((MapId.GurguVolcanoB5, 0x7E));
+		    }
+
+		    if ((bool)flags.IncentivizeIceCave && flags.IceCaveIncentivePlacementType == IncentivePlacementType.Vanilla) {
+			preserveChests.Add((MapId.IceCaveB2, 0x5F));
+		    }
+
+		    if ((bool)flags.IncentivizeOrdeals && flags.OrdealsIncentivePlacementType == IncentivePlacementType.Vanilla) {
+			preserveChests.Add((MapId.CastleOfOrdeals3F, 0x78));
+		    }
+
+		    if ((bool)flags.IncentivizeSeaShrine) {
+			if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.Vanilla)
+			{
+			    preserveChests.Add((MapId.SeaShrineB1, 0x7B));
+			}
+
+			if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomNoGating ||
+			    flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomBehindGating)
+			{
+			    preserveChests.Add((MapId.SeaShrineB2, 0x6C));
+			}
+		    }
+
+		    if ((bool)flags.IncentivizeConeria) {
+			if (flags.CorneriaIncentivePlacementType == IncentivePlacementType.Vanilla) {
+			    preserveChests.Add((MapId.ConeriaCastle1F, 0x65));
+			}
+			if (flags.CorneriaIncentivePlacementType == IncentivePlacementType.RandomAtLocation) {
+			    preserveChests.Add((MapId.ConeriaCastle1F, 0x63));
+			    preserveChests.Add((MapId.ConeriaCastle1F, 0x64));
+			    preserveChests.Add((MapId.ConeriaCastle1F, 0x65));
+			    preserveChests.Add((MapId.ConeriaCastle1F, 0x66));
+			    preserveChests.Add((MapId.ConeriaCastle1F, 0x67));
+			    preserveChests.Add((MapId.ConeriaCastle1F, 0x68));
+			}
+		    }
+
+		    if ((bool)flags.IncentivizeMarshKeyLocked) {
+			if (flags.MarshLockedIncentivePlacementType == IncentivePlacementType.Vanilla) {
+			    preserveChests.Add((MapId.MarshCaveB3, 0x4D));
+			}
+			if (flags.MarshLockedIncentivePlacementType == IncentivePlacementType.RandomAtLocation) {
+			    preserveChests.Add((MapId.MarshCaveB3, 0x4B));
+			    preserveChests.Add((MapId.MarshCaveB3, 0x4C));
+			    preserveChests.Add((MapId.MarshCaveB3, 0x4D));
+			}
+		    }
+
+		    if ((bool)flags.IncentivizeSkyPalace && flags.SkyPalaceIncentivePlacementType == IncentivePlacementTypeGated.Vanilla) {
+			preserveChests.Add((MapId.SkyPalace2F, 0x5F));
+		    }
+
+		    if ((bool)flags.IncentivizeCardia && flags.CardiaIncentivePlacementType == IncentivePlacementType.Vanilla) {
+			preserveChests.Add((MapId.Cardia, 0x6B));
+		    }
+
+		    foreach (MapId[] b in dungeons) {
+			await shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
+					      (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
+						    false, flags.RelocateChestsTrapIndicator);
+		    }
+
+		    foreach (MapId[] b in spreadPlacementDungeons) {
+			await shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
+					      (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
+						    true, flags.RelocateChestsTrapIndicator);
+		    }
 		}
 	}
 }

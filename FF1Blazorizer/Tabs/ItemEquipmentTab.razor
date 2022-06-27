@@ -17,9 +17,9 @@
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentDragonslayer" IsEnabled="!Flags.Weaponizer" @bind-Value="Flags.StartingEquipmentDragonslayer">Dragonslayer</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentLegendKit" IsEnabled="!Flags.Weaponizer" @bind-Value="Flags.StartingEquipmentLegendKit">Legendary Kit</TriStateCheckBox>
 	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomEndgameWeapon">Random Endgame Weapon</TriStateCheckBox>
-	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomAoe">Random Aoe Caster Item</TriStateCheckBox>
+	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomAoe">Random AoE Caster Item</TriStateCheckBox>
 	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomCasterItem">Random Caster Item</TriStateCheckBox>
-	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentOneItem">One Helpful Item</TriStateCheckBox>
+	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentOneItem">One Legendary Item</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRandomTypeWeapon" @bind-Value="Flags.StartingEquipmentRandomTypeWeapon">Random Typed Weapon</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentGrandpasSecretStash" @bind-Value="Flags.StartingEquipmentGrandpasSecretStash">Grandpa's Secret Stash</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRandomCommons" @bind-Value="Flags.StartingEquipmentRandomCrap">Random Commons</TriStateCheckBox>
@@ -43,14 +43,14 @@
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extConsumableChests" IsEnabled="Flags.ExtConsumablesEnabled" TItem="ExtConsumableChestSet" @bind-Value="Flags.ExtConsumableChests">Chests:</EnumDropDown>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="extConsumableTreasureStackSize" IsEnabled="Flags.ExtConsumablesEnabled" TItem="TreasureStackSize" @bind-Value="Flags.ExtConsumableTreasureStackSize">Chest Stacks:</EnumDropDown>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="normalShopsHaveExtConsumables" IsEnabled="Flags.ExtConsumablesEnabled" @bind-Value="Flags.NormalShopsHaveExtConsumables">Normal Shops</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopHasExtConsumables" IsEnabled="Flags.ExtConsumablesEnabled" @bind-Value="Flags.LegendaryShopHasExtConsumables">Legendary Shops</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopHasExtConsumables" IsEnabled="@(Flags.ExtConsumablesEnabled && Flags.LegendaryItemShop != false)" @bind-Value="Flags.LegendaryShopHasExtConsumables">Legendary Shops</TriStateCheckBox>
 	<div class="checkbox-cell"></div>
 	<h4>Spellcasting Gear</h4>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="itemMagicMode" TItem="ItemMagicMode" @bind-Value="Flags.ItemMagicMode">Item Magic:</EnumDropDown>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.Vanilla && Flags.ItemMagicMode != ItemMagicMode.None)" Id="itemMagicPool" TItem="ItemMagicPool" @bind-Value="Flags.ItemMagicPool">Item Magic Pool:</EnumDropDown>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magisizeWeaponsCheckBox" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.Vanilla && Flags.ItemMagicMode != ItemMagicMode.None)" @bind-Value="Flags.MagisizeWeapons">All Weapons Cast Spells</TriStateCheckBox>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="guaranteedDefenseItem" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.None)" TItem="GuaranteedDefenseItem" @bind-Value="Flags.GuaranteedDefenseItem">Guaranteed Defense Item</EnumDropDown>
-    <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="guaranteedPowerItem" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.None)" TItem="GuaranteedPowerItem" @bind-Value="Flags.GuaranteedPowerItem">Guaranteed Power Item</EnumDropDown>
+    <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="guaranteedPowerItem" IsEnabled="@(Flags.ItemMagicMode != ItemMagicMode.None)" TItem="GuaranteedPowerItem" @bind-Value="Flags.GuaranteedPowerItem">Guaranteed Offense Item</EnumDropDown>
 </div>
 
 		<div class="col1 full">
@@ -74,12 +74,12 @@
 
 		</div>
 		<div class="col2">
-			<h4>Weapon randomization</h4>
+			<h4>Weapon Randomization</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="weaponizerCheckBox" @bind-Value="Flags.Weaponizer">Use Weaponizer</TriStateCheckBox>
-			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="weaponizerPowersCheckBox" @bind-Value="Flags.WeaponizerCommonWeaponsHavePowers">Common weapons can have powers</TriStateCheckBox>
-			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="weaponizerNamingCheckBox" @bind-Value="Flags.WeaponizerNamesUseQualityOnly">Name for casting and quality only</TriStateCheckBox>
+			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="weaponizerPowersCheckBox" @bind-Value="Flags.WeaponizerCommonWeaponsHavePowers">Common Weapons Can Have Powers</TriStateCheckBox>
+			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="weaponizerNamingCheckBox" @bind-Value="Flags.WeaponizerNamesUseQualityOnly">Name for Casting & Quality Only</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
-			<h4>Armor randomization</h4>
+			<h4>Armor Randomization</h4>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="ribbonMode" TItem="RibbonMode" @bind-Value="Flags.RibbonMode">Ribbon:</EnumDropDown>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="armorCrafterCheckBox" @bind-Value="Flags.ArmorCrafter">Use Armor Crafter</TriStateCheckBox>
 		</div>

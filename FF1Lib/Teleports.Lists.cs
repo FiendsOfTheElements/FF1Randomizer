@@ -9,6 +9,8 @@ namespace FF1Lib
 	{
 		FF1Rom rom;
 
+		public NormTeleData NormalTele { get; set; }
+
 		public TeleportShuffle(FF1Rom _rom, OwMapExchangeData data)
 		{
 			rom = _rom;
@@ -30,6 +32,8 @@ namespace FF1Lib
 
 			enter.LoadData();
 			tele.LoadData();
+
+			NormalTele = tele;
 
 			foreach (var e in EnterMapping)
 			{

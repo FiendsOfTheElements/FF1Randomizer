@@ -57,7 +57,7 @@ namespace FF1Lib
 			{
 				Spells = GetSupportSpells(rng);
 			}
-			else if (flags.ItemMagicPool == ItemMagicPool.Tournament)
+			else if (flags.ItemMagicPool == ItemMagicPool.Curated)
 			{
 				Spells = GetTournamentSpells(rng);
 			}
@@ -457,7 +457,7 @@ namespace FF1Lib
 	public enum ItemMagicMode
 	{
 		Vanilla = 0,
-		Shuffled = 1,
+		Randomized = 1,
 		None = 2,
 		Random = 3
 	}
@@ -468,7 +468,7 @@ namespace FF1Lib
 		Balanced = 1,
 		Low = 2,
 		Support = 3,
-		Tournament = 4,
+		Curated = 4,
 		Random = 5
 	}
 

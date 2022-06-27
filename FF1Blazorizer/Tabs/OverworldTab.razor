@@ -17,7 +17,7 @@
 		{
 			<div class="col1 full">
 				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
-				<p>@StatusMessage</p>
+				<p>@((MarkupString)StatusMessage)</p>
 				<br>
 			</div>
 
@@ -47,17 +47,25 @@
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapLefeinRiver">Lefein River Dock</TriStateCheckBox>
 
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bridgeToLefeinCheckBox"
+							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+							  @bind-Value="Flags.MapBridgeLefein">Bridge to Lefein</TriStateCheckBox>
+
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaMountainPassCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapGaiaMountainPass">Gaia Mountain Pass</TriStateCheckBox>
+
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="riverToMelmondCheckBox"
+							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+							  @bind-Value="Flags.MapRiverToMelmond">River to Melmond</TriStateCheckBox>
 					<div class="checkbox-cell"></div>
 				</div>
 			}
 			else if (Flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld || Flags.OwMapExchange == OwMapExchanges.LostWoods || Flags.OwMapExchange == OwMapExchanges.Desert)
 			{
 				<div class="col1">
-					<h4>Map generation parameters</h4>
-					Map generation seed:
+					<h4>Map Generation Parameters</h4>
+					Map Generation Seed:
 					<br>
 					<input type="text" style="width: calc(100% - 160px);" class="nes-input @(_mapgenSeedInputClass)" id="mapgenSeedInput"
 							@onchange="@OnSeedInputChanged" value="@(_mapgenSeed)"
@@ -94,7 +102,7 @@
 			@if (Flags.OwMapExchange != OwMapExchanges.Desert)
 			{
 				<div class="col2">
-					<h4>Other map changes</h4>
+					<h4>Other Map Changes</h4>
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="OWDamageTilesCheckBox" @bind-Value="Flags.OWDamageTiles">Marsh and Desert Tiles Deal Damage</TriStateCheckBox>
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="DamageTilesKillCheckBox" @bind-Value="Flags.DamageTilesKill">Lethal Damage Tiles</TriStateCheckBox>
 
@@ -124,6 +132,10 @@
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 		[Parameter] public bool noTabLayout { get; set; }
 		[Parameter] public bool IsOpen { get; set; } = true;
+		[CascadingParameter(Name="ShowModal")] public MainLayout.ShowModalT ShowModal { get; set; }
+		[CascadingParameter(Name="SetGenerating")] public MainLayout.ShowModalT SetGenerating { get; set; }
+		[CascadingParameter(Name="SetModalContent")] public MainLayout.SetContentT SetModalContent { get; set; }
+		[CascadingParameter(Name="GetCancelled")] public MainLayout.GetCancelledT GetCancelled { get; set; }
 
 		private string _mapgenSeed;
 		private string _mapgenSeedInputClass = "";
@@ -170,28 +182,68 @@
 			ValidateSeed((string)e.Value);
 		}
 
-		void GenerateMap()
+		int currentStep;
+		int maxSteps;
+		string lastMessage = "";
+		string modalContent = "";
+
+		async Task Progress(string message="", int addMax=0) {
+		      maxSteps += addMax;
+		      currentStep += 1;
+		      if (message != "") {
+			 lastMessage = message;
+		      }
+		      modalContent = $"Progress: {currentStep}/{maxSteps}<br>{lastMessage}";
+		      SetModalContent(modalContent + "<br>" + StatusMessage);
+
+		      StateHasChanged();
+		      await Task.Delay(1);
+		      if (GetCancelled()) {
+		         throw new OperationCanceledException();
+		      }
+		}
+
+		async Task GenerateMap()
 		{
-			var maprng = new MT19337((uint)Flags.MapGenSeed);
+		        this.currentStep = 0;
+			this.maxSteps = 0;
+			SetModalContent("");
+			ShowModal(true);
+			SetGenerating(true);
+
+		        int effectiveSeed = Flags.MapGenSeed;
+			var maprng = new MT19337((uint)effectiveSeed);
+
 			try
 			{
-				switch (Flags.OwMapExchange)
-				{
+		                do {
+				  try {
+				    switch (Flags.OwMapExchange)
+				    {
 					case OwMapExchanges.GenerateNewOverworld:
 					case OwMapExchanges.LostWoods:
-						Flags.ReplacementMap = NewOverworld.GenerateNewOverworld(maprng, Flags.OwMapExchange, Flags.OwShuffledAccess, Flags.OwUnsafeStart);
+						Flags.ReplacementMap = await NewOverworld.GenerateNewOverworld(maprng, Flags.OwMapExchange, Flags.OwShuffledAccess, Flags.OwUnsafeStart, this.Progress);
 						break;
 					case OwMapExchanges.Desert:
 						Flags.ReplacementMap = DesertOfDeath.GenerateDesert(maprng);
 						break;
-				}
-
+				    }
+				  } catch (FailedToGenerate) {
+			            effectiveSeed = (int)maprng.Next() & 0x7FFFFFFF;
+			            maprng = new MT19337((uint)effectiveSeed);
+				  }
+		                } while (Flags.ReplacementMap == null);
 				StatusMessage = $"Success! checksum {Flags.ReplacementMap.ComputeChecksum()}";
+				Flags.MapGenSeed = effectiveSeed;
 			}
 			catch (Exception x)
 			{
 				StatusMessage = x.Message;
 				Console.WriteLine(x.ToString());
+			}
+			finally {
+				await Progress("");
+				SetGenerating(false);
 			}
 			StateHasChanged();
 		}
@@ -207,7 +259,7 @@
 			StatusMessage = "Generating new map, this may take some time...";
 			StateHasChanged();
 
-			await Task.Run(GenerateMap);
+			await GenerateMap();
 		}
 
 		void ValidateSeed(string seed)
@@ -229,7 +281,7 @@
 			{
 				var blb = Blob.FromHex(_mapgenSeed);
 				Flags.MapGenSeed = ((blb[0]&0x7F) << 24) | (blb[1] << 16) | (blb[2] << 8) | blb[3];
-				_mapgenSeed = _mapgenSeed = $"{Flags.MapGenSeed,8:X8}";
+				_mapgenSeed = $"{Flags.MapGenSeed,8:X8}";
 				_mapgenSeedInputClass = "";
 			}
 			catch (Exception)

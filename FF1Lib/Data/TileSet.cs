@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace FF1Lib
 {
+    [Flags]
 	public enum TilePropFunc : byte
 	{
 		TP_SPEC_DOOR = 0b00000010,
@@ -65,6 +66,12 @@ namespace FF1Lib
 			set { Byte2 = value; }
 		}
 
+		public byte BattleId
+		{
+			get { return Byte2; }
+			set { Byte2 = value; }
+		}
+
 		public TileProp(byte p1, byte p2)
 		{
 			Byte1 = p1;
@@ -80,8 +87,8 @@ namespace FF1Lib
 		public MemTable<byte> TileAttributes;
 		public MemTable<byte> TopLeftTiles;
 		public MemTable<byte> TopRightTiles;
-		public MemTable<byte> BottemLeftTiles;
-		public MemTable<byte> BottemRightTiles;
+		public MemTable<byte> BottomLeftTiles;
+		public MemTable<byte> BottomRightTiles;
 
 		public TileSet(FF1Rom _rom, byte idx)
 		{
@@ -91,8 +98,8 @@ namespace FF1Lib
 
 				TopLeftTiles = new MemTable<byte>(_rom, 0x0100, 128);
 				TopRightTiles = new MemTable<byte>(_rom, 0x0180, 128);
-				BottemLeftTiles = new MemTable<byte>(_rom, 0x0200, 128);
-				BottemRightTiles = new MemTable<byte>(_rom, 0x0280, 128);
+				BottomLeftTiles = new MemTable<byte>(_rom, 0x0200, 128);
+				BottomRightTiles = new MemTable<byte>(_rom, 0x0280, 128);
 
 				TileAttributes = new MemTable<byte>(_rom, 0x0300, 128);
 			}
@@ -103,8 +110,8 @@ namespace FF1Lib
 
 				TopLeftTiles = new MemTable<byte>(_rom, 0x1000 + 0x200 * idx, 128);
 				TopRightTiles = new MemTable<byte>(_rom, 0x1080 + 0x200 * idx, 128);
-				BottemLeftTiles = new MemTable<byte>(_rom, 0x1100 + 0x200 * idx, 128);
-				BottemRightTiles = new MemTable<byte>(_rom, 0x1180 + 0x200 * idx, 128);
+				BottomLeftTiles = new MemTable<byte>(_rom, 0x1100 + 0x200 * idx, 128);
+				BottomRightTiles = new MemTable<byte>(_rom, 0x1180 + 0x200 * idx, 128);
 			}
 		}
 
@@ -114,8 +121,8 @@ namespace FF1Lib
 			TileAttributes.LoadTable();
 			TopLeftTiles.LoadTable();
 			TopRightTiles.LoadTable();
-			BottemLeftTiles.LoadTable();
-			BottemRightTiles.LoadTable();
+			BottomLeftTiles.LoadTable();
+			BottomRightTiles.LoadTable();
 		}
 
 		public void StoreData()
@@ -124,8 +131,8 @@ namespace FF1Lib
 			TileAttributes.StoreTable();
 			TopLeftTiles.StoreTable();
 			TopRightTiles.StoreTable();
-			BottemLeftTiles.StoreTable();
-			BottemRightTiles.StoreTable();
+			BottomLeftTiles.StoreTable();
+			BottomRightTiles.StoreTable();
 		}
 	}
 }

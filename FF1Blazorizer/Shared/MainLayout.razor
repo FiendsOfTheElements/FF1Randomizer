@@ -2,17 +2,44 @@
 @inherits LayoutComponentBase
 
 <div id="main">
+	<div class="ffr-modal @(modalActive ? "active" : "inactive")">
+	  <div class="ffr-modal-popup">
+	    <a class="styled-button ffr-modal-dismiss-button @(generating ? "disabled-button" : "active")" @onclick="@DismissModal">Dismiss</a>
+	    <a class="styled-button ffr-modal-cancel-button @(generating ? "active" : "disabled-button")" @onclick="@CancelModal">Cancel</a>
+	    <div class="ffr-modal-scrollarea">
+	      <div class="ffr-modal-content">
+	        @((MarkupString)modalContent)
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+        <div class="@(modalActive ? "page-dimmed" : "page-normal")">
+
+@if(!blandSite)
+{
 	<div class="ua-bg-top"></div>
 	<div class="ua-bg-bottom"></div>
+}
 
 	<div id="wrapper">
 		<div id="banner-holder"></div>
 
 		<div id="nav-holder"></div>
+		<CascadingValue Value="@SetBlandSite" Name="SetBlandSite">
 		<CascadingValue Value="@showChaos">
+		  <CascadingValue Value="@ShowModal" Name="ShowModal">
+		  <CascadingValue Value="@SetGenerating" Name="SetGenerating">
+		  <CascadingValue Value="@SetModalContent" Name="SetModalContent">
+		  <CascadingValue Value="@GetCancelled" Name="GetCancelled">
 			<div>
 				@Body
 			</div>
+		  </CascadingValue>
+		  </CascadingValue>
+		  </CascadingValue>
+		  </CascadingValue>
+		</CascadingValue>
 		</CascadingValue>
 
 		<footer id="main-footer">
@@ -40,15 +67,78 @@
 			</div>
 		</div>
 	</div>
+	</div>
 </div>
 @code
 {
 	bool showChaos { get; set; } = false;
+	bool modalActive { get; set; } = false;
+	bool generating { get; set; } = false;
+	string modalContent { get; set; } = "";
+	bool cancelled { get; set; } = false;
+	bool blandSite { get; set; } = true;
+
+	public delegate void ShowModalT(bool active);
+	public delegate void SetContentT(string content);
+	public delegate bool GetCancelledT();
+
+	ShowModalT ShowModal { get; set; }
+	ShowModalT SetGenerating { get; set; }
+	SetContentT SetModalContent { get; set; }
+	GetCancelledT GetCancelled { get; set; }
+
+	ShowModalT SetBlandSite { get; set; }
+
+	protected override void OnInitialized() {
+		ShowModal = this._showModal;
+		SetGenerating = this._setGenerating;
+		SetModalContent = this._setModalContent;
+		GetCancelled = this._getCancelled;
+		SetBlandSite = this._setBlandSite;
+	}
 
 	private void TriggerChaos(bool chaostriggered)
 	{
 		showChaos = chaostriggered;
 		StateHasChanged();
+	}
+
+        private void _showModal(bool active) {
+		modalActive = active;
+		StateHasChanged();
+	}
+
+        private void _setGenerating(bool active) {
+		generating = active;
+		StateHasChanged();
+	}
+
+        private void _setModalContent(string content) {
+		modalContent = content;
+		StateHasChanged();
+	}
+
+	private void _setBlandSite(bool isbland) {
+		blandSite = isbland;
+		StateHasChanged();
+	}
+
+	private bool _getCancelled() {
+		var r = this.cancelled;
+		this.cancelled = false;
+		return r;
+	}
+
+	private void DismissModal() {
+		if (!generating) {
+		  _showModal(false);
+		}
+	}
+
+	private void CancelModal() {
+		if (generating) {
+		this.cancelled = true;
+		}
 	}
 
 }
