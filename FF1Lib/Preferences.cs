@@ -26,6 +26,7 @@ namespace FF1Lib
 		public bool RenounceChestInfo { get; set; } = false;
 		public bool RenounceCantHoldRed { get; set; } = false;
 		public bool AccessibleSpellNames { get; set; } = false;
+		public bool CleanBlursedEquipmentNames { get; set; } = false;
 		public bool ShopInfoIcons { get; set; } = false;
 		public bool NoTabLayout { get; set; } = false;
 	  public string SpriteSheet { get; set; } = null;

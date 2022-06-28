@@ -86,7 +86,7 @@ namespace FF1Lib
 		//6 - weapon type sprite
 		//7 - weapon sprite palette color
 
-		public List<int> RandomWeaponBonus(MT19337 rng, int min, int max, bool excludeMasa)
+		public List<int> RandomWeaponBonus(MT19337 rng, int min, int max, bool excludeMasa, bool cleanNames)
 		{
 			//get base stats
 			Weapon currentWeapon;
@@ -110,27 +110,29 @@ namespace FF1Lib
 
 						// Shortens names to make more sense when there are only 4 characters available
 						// Most of these are only used with Weaponizer, but some are vanilla
-						if (currentWeapon.Name[0..5] == "Shock") { currentWeapon.Name = "Shok" + currentWeapon.Name.Substring(4); }
-						else if (currentWeapon.Name[0..5] == "Water") { currentWeapon.Name = "Watr" + currentWeapon.Name.Substring(4); }
-						else if (currentWeapon.Name[0..6] == "IceHot") { currentWeapon.Name = "IcHt" + currentWeapon.Name.Substring(4); }
-						else if (currentWeapon.Name[0..5] == "Storm") { currentWeapon.Name = "Strm" + currentWeapon.Name.Substring(4); }
-						else if (currentWeapon.Name[0..6] == "Splash") { currentWeapon.Name = "Aqua" + currentWeapon.Name.Substring(4); }
-						else if (currentWeapon.Name[0..6] == "Banish") { currentWeapon.Name = "Holy" + currentWeapon.Name.Substring(4); }
-						else if (currentWeapon.Name[0..5] == "Smite") { currentWeapon.Name = "Holy" + currentWeapon.Name.Substring(4); }
-						else if (currentWeapon.Name[0..6] == "Divine") { currentWeapon.Name = "Bles" + currentWeapon.Name.Substring(4); }
-						else if (currentWeapon.Name[0..5] == "Weird") { currentWeapon.Name = "Odd " + currentWeapon.Name.Substring(4); }
+						if (cleanNames)
+						{
+							if (currentWeapon.Name[0..5] == "Shock") { currentWeapon.Name = "Shok" + currentWeapon.Name.Substring(4); }
+							else if (currentWeapon.Name[0..5] == "Water") { currentWeapon.Name = "Watr" + currentWeapon.Name.Substring(4); }
+							else if (currentWeapon.Name[0..6] == "IceHot") { currentWeapon.Name = "IcHt" + currentWeapon.Name.Substring(4); }
+							else if (currentWeapon.Name[0..5] == "Storm") { currentWeapon.Name = "Strm" + currentWeapon.Name.Substring(4); }
+							else if (currentWeapon.Name[0..6] == "Splash") { currentWeapon.Name = "Aqua" + currentWeapon.Name.Substring(4); }
+							else if (currentWeapon.Name[0..6] == "Banish") { currentWeapon.Name = "Holy" + currentWeapon.Name.Substring(4); }
+							else if (currentWeapon.Name[0..5] == "Smite") { currentWeapon.Name = "Holy" + currentWeapon.Name.Substring(4); }
+							else if (currentWeapon.Name[0..6] == "Divine") { currentWeapon.Name = "Bles" + currentWeapon.Name.Substring(4); }
+							else if (currentWeapon.Name[0..5] == "Weird") { currentWeapon.Name = "Odd " + currentWeapon.Name.Substring(4); }
 
-						else if (currentWeapon.Name[0..5] == "Sharp") { currentWeapon.Name = "Shrp" + currentWeapon.Name.Substring(4); }
-						else if (currentWeapon.Name[0..6] == "Copper") { currentWeapon.Name = "Copr" + currentWeapon.Name.Substring(4); }
-						else if (currentWeapon.Name[0..5] == "Shiny") { currentWeapon.Name = "Shny" + currentWeapon.Name.Substring(4); }
-						else if (currentWeapon.Name[0..6] == "Wicked") { currentWeapon.Name = "Wckd" + currentWeapon.Name.Substring(4); }
-						else if (currentWeapon.Name[0..5] == "Steel") { currentWeapon.Name = "Stl " + currentWeapon.Name.Substring(4); }
-						else if (currentWeapon.Name[0..5] == "Heavy") { currentWeapon.Name = "Hvy " + currentWeapon.Name.Substring(4); }
-						else if (currentWeapon.Name[0..6] == "Silver") { currentWeapon.Name = "Slvr" + currentWeapon.Name.Substring(4); }
-						//else if (currentWeapon.Name[0..5] == "Great") { currentWeapon.Name = "Grt " + currentWeapon.Name.Substring(4); }
-						
-						else if (currentWeapon.Name[0..6] == "Vorpal") { currentWeapon.Name = "Vorpl" + currentWeapon.Name.Substring(5); }
+							else if (currentWeapon.Name[0..5] == "Sharp") { currentWeapon.Name = "Shrp" + currentWeapon.Name.Substring(4); }
+							else if (currentWeapon.Name[0..6] == "Copper") { currentWeapon.Name = "Copr" + currentWeapon.Name.Substring(4); }
+							else if (currentWeapon.Name[0..5] == "Shiny") { currentWeapon.Name = "Shny" + currentWeapon.Name.Substring(4); }
+							else if (currentWeapon.Name[0..6] == "Wicked") { currentWeapon.Name = "Wckd" + currentWeapon.Name.Substring(4); }
+							else if (currentWeapon.Name[0..5] == "Steel") { currentWeapon.Name = "Stl " + currentWeapon.Name.Substring(4); }
+							else if (currentWeapon.Name[0..5] == "Heavy") { currentWeapon.Name = "Hvy " + currentWeapon.Name.Substring(4); }
+							else if (currentWeapon.Name[0..6] == "Silver") { currentWeapon.Name = "Slvr" + currentWeapon.Name.Substring(4); }
+							//else if (currentWeapon.Name[0..5] == "Great") { currentWeapon.Name = "Grt " + currentWeapon.Name.Substring(4); }
 
+							else if (currentWeapon.Name[0..6] == "Vorpal") { currentWeapon.Name = "Vorpl" + currentWeapon.Name.Substring(5); }
+						}
 
 						//change last two non icon characters to -/+bonus
 						string bonusString = string.Format((bonus > 0) ? "+{0}" : "{0}", bonus.ToString());
