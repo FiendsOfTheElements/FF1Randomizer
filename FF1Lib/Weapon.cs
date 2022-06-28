@@ -169,7 +169,9 @@ namespace FF1Lib
 			//(int)MonsterType.MAGE<<8,
 			(int)SpellElement.Fire | (int)SpellElement.Ice,
 			(int)MonsterType.MAGICAL<<8|(int)MonsterType.DRAGON<<8|(int)MonsterType.GIANT<<8|(int)MonsterType.UNDEAD<<8
-			    |(int)MonsterType.WERE<<8|(int)MonsterType.AQUATIC<<8|(int)MonsterType.MAGE<<8,
+				|(int)MonsterType.WERE<<8|(int)MonsterType.AQUATIC<<8|(int)MonsterType.MAGE<<8|(int)MonsterType.REGENERATIVE<<8 |
+				(int)SpellElement.Poison|(int)SpellElement.Fire|(int)SpellElement.Ice|(int)SpellElement.Lightning|
+				(int)SpellElement.Earth|(int)SpellElement.Death|(int)SpellElement.Time|(int)SpellElement.Status,
 			(int)SpellElement.Poison | (int)SpellElement.Fire | (int)SpellElement.Ice | (int)SpellElement.Lightning,
 		    };
 
@@ -180,7 +182,7 @@ namespace FF1Lib
 			new string[] { "Shock", "Bolt" },
 			new string[] { "Rune", "Ritual" },
 			new string[] { "Dragon" },
-			new string[] { "Giant", "Imp", "Troll" },
+			new string[] { "Giant", "Imp", "Ogre" },
 			new string[] { "Holy", "Smite", "Banish", "Slayer" },
 			//new string[] { "Were" },
 			new string[] { "Coral", "Aqua", "Water", "Splash" },
