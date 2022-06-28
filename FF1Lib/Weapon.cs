@@ -108,6 +108,30 @@ namespace FF1Lib
 						currentWeapon.Damage = (byte)Math.Max(1, (int)currentWeapon.Damage + (2 * bonus));
 						currentWeapon.Crit = (byte)Math.Max(1, (int)currentWeapon.Crit + (3 * bonus));
 
+						// Shortens names to make more sense when there are only 4 characters available
+						// Most of these are only used with Weaponizer, but some are vanilla
+						if (currentWeapon.Name[0..5] == "Shock") { currentWeapon.Name = "Shok" + currentWeapon.Name.Substring(4); }
+						else if (currentWeapon.Name[0..5] == "Water") { currentWeapon.Name = "Watr" + currentWeapon.Name.Substring(4); }
+						else if (currentWeapon.Name[0..6] == "IceHot") { currentWeapon.Name = "IcHt" + currentWeapon.Name.Substring(4); }
+						else if (currentWeapon.Name[0..5] == "Storm") { currentWeapon.Name = "Strm" + currentWeapon.Name.Substring(4); }
+						else if (currentWeapon.Name[0..6] == "Splash") { currentWeapon.Name = "Aqua" + currentWeapon.Name.Substring(4); }
+						else if (currentWeapon.Name[0..6] == "Banish") { currentWeapon.Name = "Holy" + currentWeapon.Name.Substring(4); }
+						else if (currentWeapon.Name[0..5] == "Smite") { currentWeapon.Name = "Holy" + currentWeapon.Name.Substring(4); }
+						else if (currentWeapon.Name[0..6] == "Divine") { currentWeapon.Name = "Bles" + currentWeapon.Name.Substring(4); }
+						else if (currentWeapon.Name[0..5] == "Weird") { currentWeapon.Name = "Odd " + currentWeapon.Name.Substring(4); }
+
+						else if (currentWeapon.Name[0..5] == "Sharp") { currentWeapon.Name = "Shrp" + currentWeapon.Name.Substring(4); }
+						else if (currentWeapon.Name[0..6] == "Copper") { currentWeapon.Name = "Copr" + currentWeapon.Name.Substring(4); }
+						else if (currentWeapon.Name[0..5] == "Shiny") { currentWeapon.Name = "Shny" + currentWeapon.Name.Substring(4); }
+						else if (currentWeapon.Name[0..6] == "Wicked") { currentWeapon.Name = "Wckd" + currentWeapon.Name.Substring(4); }
+						else if (currentWeapon.Name[0..5] == "Steel") { currentWeapon.Name = "Stl " + currentWeapon.Name.Substring(4); }
+						else if (currentWeapon.Name[0..5] == "Heavy") { currentWeapon.Name = "Hvy " + currentWeapon.Name.Substring(4); }
+						else if (currentWeapon.Name[0..6] == "Silver") { currentWeapon.Name = "Slvr" + currentWeapon.Name.Substring(4); }
+						//else if (currentWeapon.Name[0..5] == "Great") { currentWeapon.Name = "Grt " + currentWeapon.Name.Substring(4); }
+						
+						else if (currentWeapon.Name[0..6] == "Vorpal") { currentWeapon.Name = "Vorpl" + currentWeapon.Name.Substring(5); }
+
+
 						//change last two non icon characters to -/+bonus
 						string bonusString = string.Format((bonus > 0) ? "+{0}" : "{0}", bonus.ToString());
 						byte[] bonusBytes = FF1Text.TextToBytes(bonusString);
@@ -155,41 +179,86 @@ namespace FF1Lib
 			{  0,  0, -1 }, // staff
 		    };
 
+				// Powers are doubled up to dilute the pool and make the Chroma "slays everything" and the other strongest effects more rare
 		    var powers = new int[] {
-			(int)SpellElement.Poison,
-			(int)SpellElement.Fire | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.REGENERATIVE<<8),
-			(int)SpellElement.Ice,
-			(int)SpellElement.Lightning,
-			(int)(MonsterType.MAGICAL|MonsterType.MAGE)<<8,
-			(int)MonsterType.DRAGON<<8,
-			(int)MonsterType.GIANT<<8,
-			(int)MonsterType.UNDEAD<<8,
-			//(int)MonsterType.WERE<<8,
-			(int)MonsterType.AQUATIC<<8,
-			//(int)MonsterType.MAGE<<8,
-			(int)SpellElement.Fire | (int)SpellElement.Ice,
+			// Chroma/XCal effect should stay first so it gets assigned to Xcalbr
 			(int)MonsterType.MAGICAL<<8|(int)MonsterType.DRAGON<<8|(int)MonsterType.GIANT<<8|(int)MonsterType.UNDEAD<<8
 				|(int)MonsterType.WERE<<8|(int)MonsterType.AQUATIC<<8|(int)MonsterType.MAGE<<8|(int)MonsterType.REGENERATIVE<<8 |
 				(int)SpellElement.Poison|(int)SpellElement.Fire|(int)SpellElement.Ice|(int)SpellElement.Lightning|
 				(int)SpellElement.Earth|(int)SpellElement.Death|(int)SpellElement.Time|(int)SpellElement.Status,
+			
+			(int)SpellElement.Poison,
+			(int)SpellElement.Earth|(int)SpellElement.Death|(int)SpellElement.Time|(int)SpellElement.Status|
+				(int)MonsterType.WERE<<8|(int)MonsterType.REGENERATIVE<<8,
+			
+			(int)SpellElement.Fire | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.WERE<<8),
+			(int)SpellElement.Fire | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.WERE<<8),
+			
+			(int)SpellElement.Ice,
+			(int)SpellElement.Ice,
+			
+			(int)SpellElement.Lightning,
+			(int)SpellElement.Lightning | (int)MonsterType.AQUATIC<<8, // Almost the same as just Lightning
+			
+			(int)(MonsterType.MAGICAL|MonsterType.MAGE)<<8,
+			(int)(MonsterType.MAGICAL|MonsterType.MAGE)<<8,
+			
+			(int)MonsterType.DRAGON<<8,
+			(int)MonsterType.DRAGON<<8,
+			
+			(int)MonsterType.GIANT<<8,
+			(int)MonsterType.GIANT<<8,
+			
+			(int)MonsterType.UNDEAD<<8,
+			(int)MonsterType.UNDEAD<<8,
+			
+			(int)MonsterType.AQUATIC<<8,
+			(int)MonsterType.AQUATIC<<8,
+			
+			(int)SpellElement.Fire | (int)SpellElement.Ice,
+			(int)SpellElement.Fire | (int)SpellElement.Ice,
+
 			(int)SpellElement.Poison | (int)SpellElement.Fire | (int)SpellElement.Ice | (int)SpellElement.Lightning,
+			
+			(int)MonsterType.AQUATIC<<8 | (int)MonsterType.MAGE<<8 | (int)MonsterType.REGENERATIVE<<8,
 		    };
 
 		    var powerNames = new string[][] {
-			new string[] { "Poison" },
-			new string[] { "Flame", "Burn" },
-			new string[] { "Ice", "Freeze" },
-			new string[] { "Shock", "Bolt" },
-			new string[] { "Rune", "Ritual" },
-			new string[] { "Dragon" },
-			new string[] { "Giant", "Imp", "Ogre" },
-			new string[] { "Holy", "Smite", "Banish", "Slayer" },
-			//new string[] { "Were" },
-			new string[] { "Coral", "Aqua", "Water", "Splash" },
-			//new string[] { "Mage" },
-			new string[] { "IceHot" },
 			new string[] { "Chroma" },
-			new string[] { "Elmntl" }
+			
+			new string[] { "Poison" },
+			new string[] { "Odd", "Weird" },
+			
+			new string[] { "Flame", "Burn", "Blaze", "Hot", "Heat" },
+			new string[] { "Flame", "Burn", "Blaze", "Hot", "Heat" },
+			
+			new string[] { "Icy", "Freeze", "Frost", "Cold", "Frozen" },
+			new string[] { "Icy", "Freeze", "Frost", "Cold", "Frozen" },
+			
+			new string[] { "Shock", "Bolt" },
+			new string[] { "Storm" },
+			
+			new string[] { "Rune", "Ritual" },
+			new string[] { "Rune", "Ritual" },
+			
+			new string[] { "Dragon" },
+			new string[] { "Dragon" },
+			
+			new string[] { "Giant", "Imp", "Ogre" },
+			new string[] { "Giant", "Imp", "Ogre" },
+			
+			new string[] { "Holy", "Smite", "Banish", "Divine", "Blessd", "Sun" },
+			new string[] { "Holy", "Smite", "Banish", "Divine", "Blessd", "Sun" },
+			
+			new string[] { "Coral", "Aqua", "Water", "Splash" },
+			new string[] { "Coral", "Aqua", "Water", "Splash" },
+			
+			new string[] { "IceHot" },
+			new string[] { "IceHot" },
+			
+			new string[] { "Elmntl" },
+			
+			new string[] { "Boss" },
 		    };
 
 		    var weaponIcons = new WeaponIcon[] {
@@ -397,7 +466,7 @@ namespace FF1Lib
 				 // bonus (all of them) as vanilla
 				 // xcal because based on player
 				 // feedback, that's what they expect.
-				specialPower = 10;
+				specialPower = 0;
 			    } else {
 				int spellChance = rng.Between(1, 100);
 				if ((commonWeaponsHavePowers || tier == 2)
@@ -450,12 +519,12 @@ namespace FF1Lib
 				    for (int i = 0; i < qualityLevels.Length; i++) {
 					if (score <= qualityLevels[i]) {
 					    gear = gearQuality[i];
-					    break;
+						break;
 					}
 				    }
 				    var gearname = rng.Between(0, gear.Length-1);
 				    name = gear[gearname];
-				}
+						}
 				nameWithIcon = $"{name,-6}{Weapon.IconCodes[icon]}";
 			    }
 
