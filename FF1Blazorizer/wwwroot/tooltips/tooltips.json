@@ -694,7 +694,7 @@
 		"Id": "hintsVillage",
 		"title": "Hint Givers in Towns",
 		"screenshot": "hintsVillage.gif",
-		"description": "In each town, a villager reveals the location of an item:\n- The old men in Coneria, Pravoka, Melmond, and Onrac\n- An Elf scholar in Elfland\n- Lukahn in Crescent Lake\n- The Witch in Gaia\n- The villager on the left side of Lefein (no SLAB translation required)\nThe hint givers are always in the same locations, as pictured here."
+		"description": "In each town, a villager reveals the location of an item:\n- The old men in Coneria, Pravoka, Melmond, and Onrac\n- An Elf scholar in Elfland\n- Lukahn in Crescent Lake\n- The Witch in Gaia\n- The villager on the left side of Lefein (no SLAB translation required)\nThe hint givers are always in the same locations, as pictured here. Pravoka's hint giver is hiding until Bikke's Pirates are defeated."
 	},
 	{
 		"Id": "hintsDungeon",
