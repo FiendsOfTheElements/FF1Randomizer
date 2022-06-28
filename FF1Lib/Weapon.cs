@@ -193,6 +193,7 @@ namespace FF1Lib
 			(int)SpellElement.Earth|(int)SpellElement.Death|(int)SpellElement.Time|(int)SpellElement.Status|
 				(int)MonsterType.WERE<<8|(int)MonsterType.REGENERATIVE<<8, // Most of these attributes aren't used in vanilla but can matter with e.g. Enemizer; Regen covers 9 vanilla enemies, notably WarMech
 			
+			(int)SpellElement.Fire | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.WERE<<8), //Undead only adds Lich-2 to the Fire list
 			(int)SpellElement.Fire | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.WERE<<8),
 			(int)SpellElement.Fire | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.WERE<<8),
 			
@@ -234,6 +235,7 @@ namespace FF1Lib
 			new string[] { "Poison" },
 			new string[] { "Odd", "Weird" },
 			
+			new string[] { "Flame", "Burn", "Blaze", "Hot", "Heat" },
 			new string[] { "Flame", "Burn", "Blaze", "Hot", "Heat" },
 			new string[] { "Flame", "Burn", "Blaze", "Hot", "Heat" },
 			
