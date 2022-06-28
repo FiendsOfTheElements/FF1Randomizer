@@ -181,7 +181,7 @@ namespace FF1Lib
 			{  0,  0, -1 }, // staff
 		    };
 
-				// These lists are doubled up to dilute the pool and make the Chroma "slays everything" and the other strongest effects more rare
+				// These entries are doubled/tripled up to dilute the pool and make the Chroma "slays everything" and the other strongest effects more rare
 		    var powers = new int[] {
 			// Chroma/XCal effect should stay first so it properly gets assigned to Xcalbr
 			(int)MonsterType.MAGICAL<<8|(int)MonsterType.DRAGON<<8|(int)MonsterType.GIANT<<8|(int)MonsterType.UNDEAD<<8
@@ -207,13 +207,16 @@ namespace FF1Lib
 			
 			(int)MonsterType.DRAGON<<8,
 			(int)MonsterType.DRAGON<<8,
+			(int)MonsterType.DRAGON<<8,
 			
 			(int)MonsterType.GIANT<<8,
 			(int)MonsterType.GIANT<<8,
 			
 			(int)MonsterType.UNDEAD<<8,
 			(int)MonsterType.UNDEAD<<8,
+			(int)MonsterType.UNDEAD<<8,
 			
+			(int)MonsterType.AQUATIC<<8,
 			(int)MonsterType.AQUATIC<<8,
 			(int)MonsterType.AQUATIC<<8,
 			
@@ -245,13 +248,16 @@ namespace FF1Lib
 			
 			new string[] { "Dragon", "Dino" },
 			new string[] { "Dragon", "Dino" },
+			new string[] { "Dragon", "Dino" },
 			
 			new string[] { "Giant", "Imp", "Ogre" },
 			new string[] { "Giant", "Imp", "Ogre" },
 			
 			new string[] { "Holy", "Smite", "Banish", "Divine", "Blessd", "Sun" },
 			new string[] { "Holy", "Smite", "Banish", "Divine", "Blessd", "Sun" },
+			new string[] { "Holy", "Smite", "Banish", "Divine", "Blessd", "Sun" },
 			
+			new string[] { "Coral", "Aqua", "Water", "Splash" },
 			new string[] { "Coral", "Aqua", "Water", "Splash" },
 			new string[] { "Coral", "Aqua", "Water", "Splash" },
 			
