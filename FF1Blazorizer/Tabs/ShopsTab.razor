@@ -60,8 +60,10 @@
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="spellNameMadness" TItem="SpellNameMadness" @bind-Value="Flags.SpellNameMadness">Spell Name Obfuscation:</EnumDropDown>
 		</div>
 		<div class="col1 full">
-			<h4>Shop Reduction</h4>
-			<ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="shopReductionTable">Remove shops from towns</ToolTipBox>
+            <div class="row">
+			    <h4>Shop Reduction</h4>
+			    <ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="shopReductionTable"></ToolTipBox>
+            </div>
 			<div class="row">
 				<div class="col-lg-2 tighter noleftpadding">Weapon Shops:</div>
 				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Weapons"></EnumDropDown></div>
