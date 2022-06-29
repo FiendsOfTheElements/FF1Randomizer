@@ -695,12 +695,8 @@ namespace FF1Lib
 			}*/
 
 			// Single Spells Bonus/Malus
-			// Incompatible with Spellcrafter, so only add them when Spellcrafter is not enabled
-			if (!(bool)flags.GenerateNewSpellbook)
-			{
-				bonusNormal.AddRange(CreateSpellBonuses(rom, rng));
-				malusNormal.AddRange(CreateSpellMaluses(rom, rng));
-			}
+			bonusNormal.AddRange(CreateSpellBonuses(rom, rng));
+			malusNormal.AddRange(CreateSpellMaluses(rom, rng));
 
 			// Add Lockpicking Bonus/Malus
 			if ((bool)flags.Lockpicking && flags.LockpickingLevelRequirement < 50)
