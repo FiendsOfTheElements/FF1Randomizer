@@ -1184,43 +1184,13 @@
 		"Id": "legendaryShopsGroup",
 		"title": "Legendary Shops",
 		"screenshot": "legendaryShopsGroup.gif",
-		"description": "Creates up to five legendary shops in dungeons, one of each type. Shops will tend to have high-tier gear (which will often include things you cannot normally find in shops) or highly desirable spells.\nThe potential locations are: Earth Cave B2, Marsh Cave B2, Dwarves' Cave, Mirage Tower F1, Ice Cave B1, & Left Sea Shrine 2."
-	},
-	{
-		"Id": "exlegendaryWeaponShopCheckBox",
-		"title": "Exclusive Legendary Weapon Shop",
-		"screenshot": "exlegendaryWeaponShopCheckBox.png",
-		"description": "Removes weapons found in the Legendary Weapon Shop from all other shops and treasure chests found in the world."
-	},
-	{
-		"Id": "exlegendaryArmorShopCheckBox",
-		"title": "Exclusive Legendary Armor Shop",
-		"screenshot": "exlegendaryArmorShopCheckBox.png",
-		"description": "Removes armor found in the Legendary Armor Shop from all other shops and treasure chests found in the world."
-	},
-	{
-		"Id": "exlegendaryBlackShopCheckBox",
-		"title": "Exclusive Legendary Black Magic Shop",
-		"screenshot": "exlegendaryBlackShopCheckBox.png",
-		"description": "Removes Black Magic found in the Legendary Black Magic Shop from all other shops found in the world."
-	},
-	{
-		"Id": "exlegendaryWhiteShopCheckBox",
-		"title": "Exclusive Legendary White Magic Shop",
-		"screenshot": "exlegendaryWhiteShopCheckBox.png",
-		"description": "Removes White Magic found in the Legendary White Magic Shop from all other shops found in the world."
+		"description": "Creates up to five legendary shops in dungeons, one of each type. Shops will tend to have high-tier gear (which will often include things you cannot normally find in shops) or highly desirable spells.\nThe potential locations are: Earth Cave B2, Marsh Cave B2, Dwarves' Cave, Mirage Tower F1, Ice Cave B1, & Left Sea Shrine 2.\n\"Exclusive\" means that it will also remove any items/spells found in the Legendary Shop from all other shops and treasure chests in the world."
 	},
 	{
 		"Id": "legendaryItemShopCheckBox",
 		"title": "Legendary Item Shop",
 		"screenshot": null,
 		"description": "Always sells either Cabins or Houses, and also sells two additional non-Shelter items (Heals, Pures, or Softs). It will never be selling the Shop Key Item.\nIf New Consumables are active (Gear & Items tab) and \"Legendary Shops\" is selected, then the shop will sell Cabins or Houses, 1-2 new consumables, and 0-1 other non-Shelter items."
-	},
-	{
-		"Id": "exlegendaryItemShopCheckBox",
-		"title": "Exclusive Legendary Item Shop",
-		"screenshot": "exlegendaryItemShopCheckBox.png",
-		"description": "Removes items found in the Legendary Item Shop from all other shops and treasure chests found in the world."
 	},
 
 	{
