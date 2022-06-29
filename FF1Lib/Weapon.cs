@@ -112,6 +112,7 @@ namespace FF1Lib
 						// Most of these are only used with Weaponizer, but some are vanilla
 						if (cleanNames)
 						{
+							// I didn't use a switch+case here because of the mix of name lengths being checked, but I'm sure this could be more elegant and anyone can feel free to clean it up
 							if (currentWeapon.Name[0..5] == "Shock") { currentWeapon.Name = "Shok" + currentWeapon.Name.Substring(4); }
 							else if (currentWeapon.Name[0..5] == "Water") { currentWeapon.Name = "Watr" + currentWeapon.Name.Substring(4); }
 							else if (currentWeapon.Name[0..6] == "IceHot") { currentWeapon.Name = "IcHt" + currentWeapon.Name.Substring(4); }
