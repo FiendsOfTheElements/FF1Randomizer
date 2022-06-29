@@ -454,7 +454,7 @@ namespace FF1Lib
 
 			if (((bool)flags.Treasures) && flags.ShardHunt)
 			{
-				EnableShardHunt(rng, talkroutines, flags.ShardCount);
+				EnableShardHunt(rng, talkroutines, flags.ShardCountLow, flags.ShardCountHigh);
 			}
 
 			if (!flags.ShardHunt && (flags.GameMode != GameModes.DeepDungeon))

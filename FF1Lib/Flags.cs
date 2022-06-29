@@ -191,7 +191,10 @@ namespace FF1Lib
 		public bool? RandomLoot { get; set; } = false;
 
 		public bool ShardHunt { get; set; } = false;
-		public ShardCount ShardCount { get; set; } = ShardCount.Count16;
+		[IntegerFlag(12, 40)]
+		public int ShardCountLow { get; set; } = 28;
+		[IntegerFlag(12, 40)]
+		public int ShardCountHigh { get; set; } = 28;
 
 		[IntegerFlag(0, 4)]
 		public int OrbsRequiredCount { get; set; } = 4;
