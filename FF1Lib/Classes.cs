@@ -701,12 +701,12 @@ namespace FF1Lib
 			// Add Lockpicking Bonus/Malus
 			if ((bool)flags.Lockpicking && flags.LockpickingLevelRequirement < 50)
 			{
-				malusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "+10 Lp Lv", mod: 10, Classes: new List<Classes> { Classes.Thief }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "EarlyLokpik", mod: 10, Classes: new List<Classes> { Classes.Thief }));
 			}
 
 			if ((bool)flags.Lockpicking && flags.LockpickingLevelRequirement > 1)
 			{
-				bonusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "-10 Lp Lv", mod: -10, Classes: new List<Classes> { Classes.Thief }));
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "LateLockpik", mod: -10, Classes: new List<Classes> { Classes.Thief }));
 			}
 
 			// Add Natural Resist Bonuses
