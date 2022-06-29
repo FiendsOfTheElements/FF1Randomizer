@@ -317,7 +317,7 @@
     "ExpMultiplierBlackMage": 1,
     "EncounterRate": 9,
     "DungeonEncounterRate": 9,
-    "ProgressiveScaleMode": 6,
+    "ProgressiveScaleMode": 7,
     "StartingItemSet": 4,
     "ConsumableTreasureStackSize": 2,
     "FIGHTER1": true,
