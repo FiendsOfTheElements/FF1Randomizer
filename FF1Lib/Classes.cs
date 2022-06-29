@@ -1634,7 +1634,10 @@ namespace FF1Lib
 					var test = SpellSlotStructure.GetSpellSlots();
 
 					SpellSlotInfo spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spell.PickRandom(rng));
-					spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.BlackMage }));
+					if (spellId != null)
+					{
+						spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.BlackMage }));
+					}
 				}
 			}
 
@@ -1645,7 +1648,10 @@ namespace FF1Lib
 					var test = SpellSlotStructure.GetSpellSlots();
 					var pickedSpell = spell.PickRandom(rng);
 					SpellSlotInfo spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == pickedSpell);
-					spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage }));
+					if (spellId != null)
+					{
+						spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage }));
+					}
 				}
 			}
 
@@ -1684,6 +1690,11 @@ namespace FF1Lib
 					List<Classes> validClasses = new();
 					SpellSlotInfo spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spell.PickRandom(rng));
 
+					if (spellId == null)
+					{
+						continue;
+					}
+
 					if (_spellPermissions[Classes.RedMage].Where(x => x == (SpellSlots)spellId.BattleId).Any())
 					{
 						validClasses.Add(Classes.RedMage);
@@ -1710,14 +1721,19 @@ namespace FF1Lib
 			{
 				SpellSlotInfo spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellDark.PickRandom(rng));
 
-				spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.BlackMage }));
+				if (spellId != null)
+				{
+					spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.BlackMage }));
+				}
 			}
 
 			if (spellLamp.Any())
 			{
 				SpellSlotInfo spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellLamp.PickRandom(rng));
-
-				spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage }));
+				if (spellId != null)
+				{
+					spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage }));
+				}
 			}
 
 			return spellBlursings;
