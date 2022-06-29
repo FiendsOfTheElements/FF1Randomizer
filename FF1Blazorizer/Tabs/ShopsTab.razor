@@ -14,8 +14,10 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopLocsCheckBox" @bind-Value="Flags.MagicShopLocs">Magic Shop Locations</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicShopLocs" Id="magicShopLocationPairsCheckBox" @bind-Value="Flags.MagicShopLocationPairs">Paired Shuffle</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
-			<h4>Legendary Shops</h4>
-			<ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopsGroup">Create Legendary Shops in Dungeons:</ToolTipBox>
+            <div class="row">
+			    <h4>Legendary Shops</h4>
+                <ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopsGroup"></ToolTipBox>
+            </div>
       <TriStateCheckBox DisableTooltip Id="legendaryWeaponShopCheckBox" @bind-Value="Flags.LegendaryWeaponShop">Legendary Weapon Shop</TriStateCheckBox>
       <CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="exlegendaryWeaponShopCheckBox" IsEnabled="Flags.LegendaryWeaponShop" @bind-Value="Flags.ExclusiveLegendaryWeaponShop">Exclusive</CheckBox>
 
