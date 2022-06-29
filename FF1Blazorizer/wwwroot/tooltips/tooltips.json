@@ -1303,7 +1303,7 @@
 		"Id": "shopReductionTable",
 		"title": "Shop Reduction",
 		"screenshot": "shopReductionTable.png",
-		"description": "Reduces the number of Items/Magic sold in Shops, or removes Shops entirely. Numbers are rounded, so e.g. when using Spread w/ 60% Reduction, a shop that'd otherwise sell 4 items will sell 2, and a shop that'd sell 1 item would be closed.  Modes:\nNone - Do not remove anything\nWhole Shops - Removes the specified amount of shops as a whole\nAll Items of a Kind - Selects the specified amount of distinct Items and removes all instances of them (e.g. all Heals)\nSpread - Applies the reduction for each shop individually (e.g. each shop gets a 40% reduction)\nUnequal - Removes the amount from all entries (e.g. some shops will be full, some might be half full, some might be removed)\nRandom - Any of the other options at random."
+		"description": "Reduces the number of Items/Magic sold in Shops, or removes Shops entirely. Numbers are rounded, so e.g. when using Spread w/ 60% Reduction, a shop that'd otherwise sell 4 items will sell 2, and a shop that'd sell 1 item would be closed.  Modes:\nNone - Do not remove anything.\nWhole Shops - Removes the specified amount of shops as a whole.\nAll Items of a Kind - Selects the specified amount of distinct Items and removes all instances of them (e.g. all Heals).\nSpread - Applies the reduction for each shop individually (e.g. each shop has 40% fewer items for sale).\nUnequal - Removes the amount from all entries combined (e.g. some shops will be full, some might be half full, some might be removed).\nRandom - Any of the other options at random."
 	},
 	{
 		"Id": "formationShuffleModeDropDown",
