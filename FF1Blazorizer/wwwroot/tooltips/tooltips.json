@@ -1551,7 +1551,7 @@
 		"Id": "classAsNpcPromoCheckBox",
 		"title": "Promoted Classes",
 		"screenshot": "classAsNpcPromoCheckBox.png",
-		"description": "All gated characters will be from the promoted classes."
+		"description": "All recruits will instead be from promoted classes. (Without this flag, they will always be unpromoted.)"
 	},
 
 
