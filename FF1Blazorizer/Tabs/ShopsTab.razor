@@ -14,22 +14,24 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopLocsCheckBox" @bind-Value="Flags.MagicShopLocs">Magic Shop Locations</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicShopLocs" Id="magicShopLocationPairsCheckBox" @bind-Value="Flags.MagicShopLocationPairs">Paired Shuffle</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
-			<h4>Legendary Shops</h4>
-			<ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopsGroup">Create Legendary Shops in Dungeons:</ToolTipBox>
+            <div class="row">
+			    <h4>Legendary Shops</h4>
+                <ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopsGroup"></ToolTipBox>
+            </div>
       <TriStateCheckBox DisableTooltip Id="legendaryWeaponShopCheckBox" @bind-Value="Flags.LegendaryWeaponShop">Legendary Weapon Shop</TriStateCheckBox>
-      <CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="exlegendaryWeaponShopCheckBox" IsEnabled="Flags.LegendaryWeaponShop" @bind-Value="Flags.ExclusiveLegendaryWeaponShop">Exclusive</CheckBox>
+      <CheckBox Indent DisableTooltip Id="exlegendaryWeaponShopCheckBox" IsEnabled="Flags.LegendaryWeaponShop" @bind-Value="Flags.ExclusiveLegendaryWeaponShop">Exclusive</CheckBox>
 
       <TriStateCheckBox DisableTooltip Id="legendaryArmorShopCheckBox" @bind-Value="Flags.LegendaryArmorShop">Legendary Armor Shop</TriStateCheckBox>
-      <CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="exlegendaryArmorShopCheckBox" IsEnabled="Flags.LegendaryArmorShop" @bind-Value="Flags.ExclusiveLegendaryArmorShop">Exclusive</CheckBox>
+      <CheckBox Indent DisableTooltip Id="exlegendaryArmorShopCheckBox" IsEnabled="Flags.LegendaryArmorShop" @bind-Value="Flags.ExclusiveLegendaryArmorShop">Exclusive</CheckBox>
 
 	    <TriStateCheckBox DisableTooltip Id="legendaryBlackShopCheckBox" @bind-Value="Flags.LegendaryBlackShop">Legendary Black Shop</TriStateCheckBox>
-	    <CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="exlegendaryBlackShopCheckBox" IsEnabled="Flags.LegendaryBlackShop" @bind-Value="Flags.ExclusiveLegendaryBlackShop">Exclusive</CheckBox>
+	    <CheckBox Indent DisableTooltip Id="exlegendaryBlackShopCheckBox" IsEnabled="Flags.LegendaryBlackShop" @bind-Value="Flags.ExclusiveLegendaryBlackShop">Exclusive</CheckBox>
 
 	    <TriStateCheckBox DisableTooltip Id="legendaryWhiteShopCheckBox" @bind-Value="Flags.LegendaryWhiteShop">Legendary White Shop</TriStateCheckBox>
-	    <CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="exlegendaryWhiteShopCheckBox" IsEnabled="Flags.LegendaryWhiteShop" @bind-Value="Flags.ExclusiveLegendaryWhiteShop">Exclusive</CheckBox>
+	    <CheckBox Indent DisableTooltip Id="exlegendaryWhiteShopCheckBox" IsEnabled="Flags.LegendaryWhiteShop" @bind-Value="Flags.ExclusiveLegendaryWhiteShop">Exclusive</CheckBox>
 
 	    <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryItemShopCheckBox" @bind-Value="Flags.LegendaryItemShop">Legendary Item Shop</TriStateCheckBox>
-	    <CheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="exlegendaryItemShopCheckBox" IsEnabled="Flags.LegendaryItemShop" @bind-Value="Flags.ExclusiveLegendaryItemShop">Exclusive</CheckBox>
+	    <CheckBox Indent DisableTooltip Id="exlegendaryItemShopCheckBox" IsEnabled="Flags.LegendaryItemShop" @bind-Value="Flags.ExclusiveLegendaryItemShop">Exclusive</CheckBox>
 
 	    <div class="checkbox-cell"></div>
     </div>
@@ -60,8 +62,10 @@
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="spellNameMadness" TItem="SpellNameMadness" @bind-Value="Flags.SpellNameMadness">Spell Name Obfuscation:</EnumDropDown>
 		</div>
 		<div class="col1 full">
-			<h4>Shop Reduction</h4>
-			<ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="shopReductionTable">Remove shops from towns</ToolTipBox>
+            <div class="row">
+			    <h4>Shop Reduction</h4>
+			    <ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="shopReductionTable"></ToolTipBox>
+            </div>
 			<div class="row">
 				<div class="col-lg-2 tighter noleftpadding">Weapon Shops:</div>
 				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Weapons"></EnumDropDown></div>
