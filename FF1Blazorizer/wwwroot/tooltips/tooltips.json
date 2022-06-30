@@ -1414,7 +1414,7 @@
 		"Id": "swoleBahamutCheckBox",
 		"title": "Fight Bahamut - Buffed Bahamut",
 		"screenshot": "buffedBahamutCheckBox.png",
-		"description": "Increases the stats of Bahamut, roughly to the equivalent of Tiamat. Buffed Bahamut may be given skills, increased critical hit rate, and/or increased number of hits.\nAlso grants a larger XP yield, roughly half that of WarMECH."
+		"description": "Increases the stats of Bahamut, roughly to the equivalent of Tiamat. Buffed Bahamut will often be given skills, increased critical hit rate, and/or increased number of hits.\nAlso grants a larger XP yield, roughly half that of WarMECH.\n(Buffed Bahamut's skills, if present, will stay in place regardless of other Script Shuffle settings.)"
 	},
 
 	{
@@ -2314,7 +2314,7 @@
 		"Id": "swoleAstosCheckBox",
 		"title": "Buffed Astos",
 		"screenshot": "buffedAstosCheckBox.png",
-		"description": "Astos becomes as strong as a fiend, with extremely high evasion, nasty spells and skills, and a high XP reward. He likes to utilize Status and Death magic - but is also vulnerable to the same."
+		"description": "Astos becomes as strong as a fiend, with extremely high evasion, nasty spells and skills, and a high XP reward. He likes to utilize Status and Death magic - but is also vulnerable to the same.\n(Buffed Astos will retain their nasty spell & skill set regardless of Script Shuffle settings.)"
 	},
 	{
 		"Id": "unsafeAstosCheckBox",
