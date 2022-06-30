@@ -478,9 +478,15 @@
 
 	{
 		"Id": "IncentivesTooltip",
-		"title": "Incentivized Items & Locations",
+		"title": "Incentivized Items & Locations Explanation",
 		"screenshot": null,
 		"description": "Incentivized Items are guaranteed to be spread out amongst the Incentivized Locations, giving you an idea of where to look for important items.\nIf there are more Items than Locations selected, the excess items will be \"loose\", meaning they will be in random locations. This can be further controlled via the options in the \"Loose Placement\" section.\nIf there are more Locations than Items selected, excess locations will be duds, and only contain a random treasure.\nAny Key Items given for free or banned (in the Treasures tab) can't be incentivized, and thus won't be included in the total item count at the top."
+	},
+	{
+		"Id": "IncentiveItemsTooltip",
+		"title": "Incentivized Items",
+		"screenshot": "incentivizeXcalCheckBox.png",
+		"description": "Selecting items from the list below adds them to the pool of items to be distributed amongst the Incentive Locations.\n(See the tooltip next to \"Locations\" for how incentives work in general.)"
 	},
 	{
 		"Id": "incentivizeFreeNPCsCheckBox",
@@ -588,18 +594,6 @@
 		"description": "Adds the CROWN, CRYSTAL, HERB, TNT, RUBY, BOTTLE, SLAB, and ADAMANT to the incentive pool to be distributed in the selected incentive locations."
 	},
 	{
-		"Id": "incentivizeAirshipCheckBox",
-		"title": "Floater",
-		"screenshot": "incentivizeAirshipCheckBox.png",
-		"description": "Adds the FLOATER to the incentive pool to be distributed in the selected incentive locations."
-	},
-	{
-		"Id": "incentivizeCanoeItemCheckBox",
-		"title": "Canoe",
-		"screenshot": "incentivizeCanoeItemCheckBox.png",
-		"description": "Adds the CANOE to the incentive pool to be distributed in the selected incentive locations."
-	},
-	{
 		"Id": "incentivizeShipAndCanalCheckBox",
 		"title": "Ship & Canal",
 		"screenshot": "incentivizeShipAndCanalCheckBox.png",
@@ -609,55 +603,7 @@
 		"Id": "incentivizeBridgeCheckBox",
 		"title": "Bridge",
 		"screenshot": null,
-		"description": "Adds the BRIDGE to the incentive pool to be distributed in the selected incentive locations.\nIt is recommended to only incentivize the Bridge alongside flags that open up the map more, such as \"Extended Open Progression\" and/or \"Bridge to Lefein\", or a Generated Overworld Map."
-	},
-	{
-		"Id": "incentivizeTailCheckBox",
-		"title": "Tail",
-		"screenshot": "incentivizeTailCheckBox.png",
-		"description": "Adds the TAIL to the incentive pool to be distributed in the selected incentive locations."
-	},
-	{
-		"Id": "incentivizeMasamuneCheckBox",
-		"title": "Masamune",
-		"screenshot": "incentivizeMasamuneCheckBox.png",
-		"description": "Adds the Masamune to the incentive pool to be distributed in the selected incentive locations."
-	},
-	{
-		"Id": "incentivizeXcalCheckBox",
-		"title": "Xcalber",
-		"screenshot": "incentivizeXcalCheckBox.png",
-		"description": "Adds the Xcalber to the incentive pool to be distributed in the selected incentive locations."
-	},
-	{
-		"Id": "incentivizeKatanaCheckBox",
-		"title": "Katana",
-		"screenshot": "incentivizeKatanaCheckBox.png",
-		"description": "Adds the Katana to the incentive pool to be distributed in the selected incentive locations."
-	},
-	{
-		"Id": "incentivizeVorpalCheckBox",
-		"title": "Vorpal",
-		"screenshot": "incentivizeVorpalCheckBox.png",
-		"description": "Adds the Vorpal Sword to the incentive pool to be distributed in the selected incentive locations."
-	},
-	{
-		"Id": "incentivizeDefCastWeaponCheckBox",
-		"title": "Defense",
-		"screenshot": "incentivizeDefCastWeaponCheckBox.png",
-		"description": "Adds the Defense Sword to the incentive pool to be distributed in the selected incentive locations."
-	},
-	{
-		"Id": "incentivizeOffCastWeaponCheckBox",
-		"title": "Thor Hammer",
-		"screenshot": "incentivizeOffCastWeaponCheckBox.png",
-		"description": "Adds the Thor Hammer to the incentive pool to be distributed in the selected incentive locations."
-	},
-	{
-		"Id": "incentivizeOpalCheckBox",
-		"title": "Opal Bracelet",
-		"screenshot": "incentivizeOpalCheckBox.png",
-		"description": "Adds the Opal Bracelet to the incentive pool to be distributed in the selected incentive locations."
+		"description": "Adds the BRIDGE to the incentive pool to be distributed in the selected incentive locations.\nIt is recommended to only incentivize the Bridge alongside flags that open up the map more, such as \"Extended Open Progression\" and/or \"Bridge to Lefein\", or a Generated Overworld Map, because otherwise the Bridge will always be found very early in a generally uninteresting fashion."
 	},
 	{
 		"Id": "incentivizeOtherCastArmorCheckBox",
@@ -672,22 +618,10 @@
 		"description": "Adds the Power Staff to the incentive pool to be distributed in the selected incentive locations. The Power Staff is the Guaranteed Defense Item when that flag is enabled."
 	},
 	{
-		"Id": "incentivizeDefCastArmorCheckBox",
-		"title": "White Shirt",
-		"screenshot": "incentivizeDefCastArmorCheckBox.png",
-		"description": "Adds the White Shirt to the incentive pool to be distributed in the selected incentive locations."
-	},
-	{
-		"Id": "incentivizeOffCastArmorCheckBox",
-		"title": "Black Shirt",
-		"screenshot": "incentivizeOffCastArmorCheckBox.png",
-		"description": "Adds the Black Shirt to the incentive pool to be distributed in the selected incentive locations."
-	},
-	{
 		"Id": "incentivizeRibbonCheckBox",
 		"title": "Ribbon",
 		"screenshot": "incentivizeRibbonCheckBox.png",
-		"description": "Adds one (1) Ribbon to the incentive pool to be distributed in the selected incentive locations."
+		"description": "Adds ONE (1) Ribbon to the incentive pool to be distributed in the selected incentive locations. Other Ribbons may be found in normal chests."
 	},
 
 	{
@@ -1070,7 +1004,7 @@
 		"Id": "freeBridgeCheckBox",
 		"title": "Free Bridge",
 		"screenshot": "freeBridgeCheckBox.png",
-		"description": "The BRIDGE linking Coneria to Pravoka and onward is built when the game begins."
+		"description": "The BRIDGE linking Coneria to Pravoka and onward is built when the game begins.\n(Instead, the Bridge will connect the Pravoka area to Lefein if the \"Bridge to Lefein\" flag (Mode & World tab) is active.)"
 	},
 	{
 		"Id": "freeCanalCheckBox",
