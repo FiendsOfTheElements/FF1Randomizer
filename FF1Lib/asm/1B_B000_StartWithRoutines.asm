@@ -2,7 +2,7 @@
 ; Routines to modify stats at the start of the game, after partygen
 ;  and at the start of the battle.
 ;
-; Last Update: 2022-06-27
+; Last Update: 2022-06-30
 ;
 
 tmp = $10
@@ -339,8 +339,6 @@ Sick:
 Sik_NotClass:  
   RTS  
 
- .ORG $B200
-
 lut_Blackbelts:
  .BYTE $FF, $00, $01, $00, $00, $00 ; $FF added for reference, replace by $00 if copying lut
  .BYTE $00, $00, $01, $00, $00, $00 
@@ -410,7 +408,18 @@ ApplyStartOfGame:
   
   JMP SwapPRG_skip
   
-ResumeHere:  
+ResumeHere:
+  LDY #$00
+LoopAll4Warriors:  
+  JSR IndividualStartWithLoop
+  TYA
+  CLC
+  ADC #$40
+  TAY
+  BNE LoopAll4Warriors
+  RTS
+
+IndividualStartWithLoop:  
   JSR IncreaseStartingGP
   JSR DecreaseStartingGP
   JSR DoStartSpells
@@ -425,25 +434,13 @@ IncreaseStartingGP:
   LDA #>lut_IncreaseGP
   STA class_lut_b
   LDX #$00
-  LDY #$00
 IGP_ClassLoop: 
   JSR GetValueByClass
   BEQ IGP_NotClass
-    CLC
+    LDA #$00
     STA tmp
-    TXA
-    ADC tmp
-    TAX
-IGP_NotClass:
-  CLC
-  TYA
-  ADC #$40
-  TAY
-  BCC IGP_ClassLoop
-  LDA #$00
-  STA tmp
-  STA tmp+1
-  STA tmp+2
+    STA tmp+1
+    STA tmp+2
 IGP_GoldLoop:
   CPX #$00
   BEQ IGP_NoClassLeft
@@ -462,6 +459,7 @@ IGP_GoldLoop:
     BCC IGP_GoldLoop
 IGP_NoClassLeft:  
   JSR AddGPToParty
+IGP_NotClass:  
   RTS
 
 ; Decrease Starting GP
@@ -471,25 +469,16 @@ DecreaseStartingGP:
   LDA #>lut_DecreaseGP
   STA class_lut_b
   LDX #$00
-  LDY #$00
 DGP_ClassLoop: 
   JSR CheckIfClass
-  BNE DGP_NotClass
+  BNE DGP_Done
     INX
-DGP_NotClass:
-  CLC
-  TYA
-  ADC #$40
-  TAY
-  BCC DGP_ClassLoop
-  LDA #$00
-  STA tmp
-  STA tmp+1
-  STA tmp+2
-DGP_GoldLoop:
-  CPX #$00
-  BEQ DGP_LoopDone
+    LDA #$00
+    STA tmp
+    STA tmp+1
+    STA tmp+2
     CLC  
+
     LDA #$64
     ADC tmp
     STA tmp
@@ -499,10 +488,7 @@ DGP_GoldLoop:
     LDA #$00
     ADC tmp+2
     STA tmp+2
-    DEX
-    CLC
-    BCC DGP_GoldLoop
-DGP_LoopDone: 
+
     LDA gold
     SEC
     SBC tmp         ; subtract low byte
@@ -526,7 +512,6 @@ DGP_Done:
 ; Start w/ Spells
 DoStartSpells:
   LDX #$00
-  LDY #$00
 SpellLoop:  
   LDA #<lut_StartSpellsSpell 
   STA class_lut_a                 
@@ -562,32 +547,21 @@ SpellLoop:
   STA (class_lut_a),Y
 
   TXA
-  ADC #$40
   TAY
   
-  BNE SpellLoop  
   RTS  
 
 ; Start with 1 MP in all level
 DoMpStart:
   LDX #$00
-  LDY #$00
   LDA #<lut_MpStart 
   STA class_lut_a                 
   LDA #>lut_MpStart
   STA class_lut_b
 StartSpellLoop:
   JSR CheckIfClass  
-  BNE NoMpStart
-    JSR MpStart
-NoMpStart:
-  CLC
-  TYA
-  ADC #$40
-  TAY 
-  BCC StartSpellLoop
-  RTS
- 
+  BEQ MpStart
+    RTS
 MpStart:
   TYA
   PHA
@@ -609,7 +583,6 @@ MpLoop:
 ; Start with a Key Item
 DoStartWithKI:
   LDX #$00
-  LDY #$00
   LDA #<lut_StartingKeyItems 
   STA class_lut_a                 
   LDA #>lut_StartingKeyItems
@@ -621,11 +594,6 @@ KILoop:
     LDA #$01
     STA items, X
 NoKI:
-  CLC
-  TYA
-  ADC #$40
-  TAY 
-  BCC KILoop
   RTS
  
  .ORG $B480
@@ -659,3 +627,22 @@ lut_StartingKeyItems: ;
  .BYTE $00, $00, $00, $00, $00, $00
  .BYTE $00, $00, $00, $00, $00, $00 
  .BYTE $00
+ 
+ 
+ .ORG $B600
+
+LvlUp_NoDisplay = $87AA
+
+RecruitModeJump:
+  LDA tmp
+  STA tmp+3
+  TAY
+  LDA lut_CharOffset, Y
+  TAY
+  JSR IndividualStartWithLoop
+  LDA tmp+3
+  STA tmp
+  JMP LvlUp_NoDisplay
+  
+lut_CharOffset:
+  .BYTE $00, $40, $80, $C0
