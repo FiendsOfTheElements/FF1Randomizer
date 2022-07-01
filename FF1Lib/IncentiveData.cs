@@ -14,7 +14,7 @@ namespace FF1Lib
 		RandomAtLocation
 	}
 
-	public enum IncentivePlacementTypeGated
+	/*public enum IncentivePlacementTypeGated
 	{
 		[Description("Vanilla")]
 		Vanilla,
@@ -24,6 +24,54 @@ namespace FF1Lib
 		RandomNoGating,
 		[Description("Behind Gating")]
 		RandomBehindGating
+	}*/
+	
+	public enum IncentivePlacementTypeEarth
+	{
+		[Description("Vanilla")]
+		Vanilla,
+		[Description("Random")]
+		RandomAtLocation,
+		[Description("Random Pre-Rod")]
+		RandomPreRod,
+		[Description("Random Post-Rod")]
+		RandomPostRod
+	}
+	
+	public enum IncentivePlacementTypeSky
+	{
+		[Description("Vanilla")]
+		Vanilla,
+		[Description("Random")]
+		RandomAtLocation,
+		[Description("Random Mirage")]
+		RandomMirage,
+		[Description("Random Sky")]
+		RandomSky
+	}
+	
+	public enum IncentivePlacementTypeSea
+	{
+		[Description("Vanilla")]
+		Vanilla,
+		[Description("Random")]
+		RandomAtLocation,
+		[Description("Random Unlocked")]
+		RandomUnlocked,
+		[Description("Random Locked")]
+		RandomLocked
+	}
+	
+		public enum IncentivePlacementTypeVolcano
+	{
+		[Description("Vanilla")]
+		Vanilla,
+		[Description("Random")]
+		RandomAtLocation,
+		[Description("Random Deep")]
+		RandomDeep,
+		[Description("Random Shallow")]
+		RandomShallow
 	}
 
 	public class IncentiveData
