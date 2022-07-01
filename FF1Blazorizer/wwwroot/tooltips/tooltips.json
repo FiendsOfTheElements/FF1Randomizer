@@ -2202,7 +2202,7 @@
 	{
 		"Id": "chaosRushToolTipBox",
 		"title": "Chaos Rush Preset",
-		"description": "You can challenge Chaos immediately at the start of the game.  How fast can you become strong enough to defeat Chaos?\nKey flags\n- All 4 Orbs are lit, ToFR is unlocked, and you start with the LUTE\n- Your 4 Light Warriors are chosen for you\n- Free Ship, Canoe and Airship\n- Free TAIL\n- High XP and gold scaling\n- Low encounter rate\n- Short ToFR"
+		"description": "You can challenge Chaos immediately at the start of the game.  How fast can you become strong enough to defeat Chaos?\nKey flags\n- No Orbs are required, ToFR is unlocked, and you start with the LUTE\n- Your 4 Light Warriors are chosen for you\n- Free Ship, Canoe and Airship\n- Free TAIL\n- High XP and gold scaling\n- Low encounter rate\n- Short ToFR"
 	},
 	{
 		"Id": "hiddenChaosToolTipBox",
