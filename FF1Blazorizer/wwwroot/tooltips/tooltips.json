@@ -1329,7 +1329,7 @@
 		"Id": "fightBahamutCheckBox",
 		"title": "Fight Bahamut",
 		"screenshot": "fightBahamutCheckBox.gif",
-		"description": "Turning in the TAIL is not the only requirement for class change; you must also defeat Bahamut to prove your courage.\nIf \"Remove Tail\" is enabled, the only requirement for class change is to defeat Bahamut.\nNote: This flag is ignored when \"Enemizer\" or \"Lich's Revenge\" is enabled."
+		"description": "Turning in the TAIL is not the only requirement for class change; you must also defeat Bahamut to prove your courage. Also makes Bahamut's dragon minions hostile.\nIf \"Remove Tail\" is enabled, the only requirement for class change is to defeat Bahamut.\nNote: This flag is ignored when \"Enemizer\" or \"Lich's Revenge\" is enabled."
 	},
 	{
 		"Id": "swoleBahamutCheckBox",
