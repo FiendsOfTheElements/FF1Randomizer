@@ -263,8 +263,14 @@ namespace FF1Lib
 		public bool? SwoleAstos { get; set; } = false;
 		public bool? ConfusedOldMen { get; set; } = false;
 		public bool? GaiaShortcut { get; set; } = false;
+
+		[IntegerFlag(0, 10, 1)]
+		public int DamageTileLow { get; set; } = 1;
+		[IntegerFlag(0, 10, 1)]
+		public int DamageTileHigh { get; set; } = 1;
 		public bool? OWDamageTiles { get; set; } = false;
 		public bool? DamageTilesKill { get; set; } = false;
+
 		public bool? MoveGaiaItemShop { get; set; } = false;
 		public bool? ShufflePravokaShops { get; set; } = false;
 		public bool? FlipDungeons { get; set; } = false;
