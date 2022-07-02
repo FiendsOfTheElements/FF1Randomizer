@@ -42,6 +42,32 @@ namespace FF1Lib
 			PutInBank(0x1E, 0xB100, Blob.FromHex($"A200A000BD0161C901F026BD0B61D00DBD0A61C902B006A9019D0161C8BD0A6138E9019D0A61BD0B61E9009D0B614C32B1C88A186940AAD0CBC004F00160A980854BA91E8557A52D6AA9009002A902851C2000FE2082D920B3D9A9064820EFD968A88898D0F6A0402000FE2018D92082D9A91E8D01202089C688D0ECA952854B20A1B1A9008D00208D0120{saveOnDeathJump}A9C048A91148A98F48A9F748A91B85574C03FE2028D8482000FE2089C668F0F360"));
 			PutInBank(0x1F, 0xC861, Blob.FromHex("A91E2003FE4C00B1"));
 		}
+
+		public void AdjustDamageTileDamage(int DamageTileAmount, bool isDamageTilesKillOn)
+		{
+			// Overwrites a bit of the newly created DamageTilesKill assembly code to account for the adjustable damage
+			if (isDamageTilesKillOn) {
+				string damString = "0" + DamageTileAmount.ToString();
+				string damStringPlus1 = "0" + (DamageTileAmount + 1).ToString();
+				PutInBank(0x1E, 0xB114, Blob.FromHex($"{damStringPlus1}"));
+				//PutInBank(0x1E, 0xB114, Blob.FromHex($"07"));
+				
+				PutInBank(0x1E, 0xB122, Blob.FromHex($"{damString}"));
+				//PutInBank(0x1E, 0xB122, Blob.FromHex($"06"));
+
+				Console.WriteLine(DamageTileAmount);
+				Console.WriteLine(DamageTileAmount + 1);
+				Console.WriteLine(damString);
+				Console.WriteLine(damStringPlus1);
+
+			}
+			// No Lethal Damage Tiles Flag, overwrite normal rom code instead
+			else {
+				Data[0x7C86C] = (byte)(DamageTileAmount + 1); //"HP Less than" check so it doesn't kill
+				Data[0x7C874] = (byte)(DamageTileAmount);
+			}
+			
+		}
 	}
 
 	public class DesertOfDeath

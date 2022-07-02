@@ -2056,7 +2056,7 @@
 		"Id": "DamageTileDamageSlider",
 		"title": "Adjustable Damage for Damage Tiles",
 		"screenshot": null,
-		"description": "Adjusts the amount of damage that lava/etc. tiles do when you walk on them. If a range is selected, a random value in that range will be chosen. If 0, then lava won't deal damage at all."
+		"description": "Adjusts the amount of damage that damaging tiles (e.g. lava) deal when you walk on them. If a range is selected, a random value in that range will be chosen. If 0, then lava won't deal damage at all.\nCompatible with \"Marsh & Desert Tiles Deal Damage\" and \"Lethal Damage Tiles\"."
 	},
 	{
 		"Id": "OWDamageTilesCheckBox",
