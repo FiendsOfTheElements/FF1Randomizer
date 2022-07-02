@@ -47,19 +47,8 @@ namespace FF1Lib
 		{
 			// Overwrites a bit of the newly created DamageTilesKill assembly code to account for the adjustable damage
 			if (isDamageTilesKillOn) {
-				string damString = "0" + DamageTileAmount.ToString();
-				string damStringPlus1 = "0" + (DamageTileAmount + 1).ToString();
-				PutInBank(0x1E, 0xB114, Blob.FromHex($"{damStringPlus1}"));
-				//PutInBank(0x1E, 0xB114, Blob.FromHex($"07"));
-				
-				PutInBank(0x1E, 0xB122, Blob.FromHex($"{damString}"));
-				//PutInBank(0x1E, 0xB122, Blob.FromHex($"06"));
-
-				Console.WriteLine(DamageTileAmount);
-				Console.WriteLine(DamageTileAmount + 1);
-				Console.WriteLine(damString);
-				Console.WriteLine(damStringPlus1);
-
+				PutInBank(0x1E, 0xB114, Blob.FromHex($"{DamageTileAmount + 1:X2}"));
+				PutInBank(0x1E, 0xB122, Blob.FromHex($"{DamageTileAmount:X2}"));
 			}
 			// No Lethal Damage Tiles Flag, overwrite normal rom code instead
 			else {
