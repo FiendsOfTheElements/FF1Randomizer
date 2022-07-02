@@ -590,6 +590,11 @@ namespace FF1Lib
 				SpeedHacksMoveNpcs();
 			}
 
+			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
+			{
+				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, (bool)flags.SwoleBahamut, (flags.GameMode == GameModes.DeepDungeon), flags.EvadeCap, rng);
+			}
+
 			// NOTE: logic checking for relocated chests
 			// accounts for NPC locations and whether they
 			// are fightable/killable, so it needs to
@@ -1128,11 +1133,6 @@ namespace FF1Lib
 			if ((bool)flags.SwoleAstos)
 			{
 				EnableSwoleAstos(rng);
-			}
-
-			if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
-			{
-				FightBahamut(talkroutines, npcdata, (bool)flags.NoTail, (bool)flags.SwoleBahamut, (flags.GameMode == GameModes.DeepDungeon), flags.EvadeCap, rng);
 			}
 
 			if (flags.EnemyScaleStatsHigh != 100 || flags.EnemyScaleStatsLow != 100 || ((bool)flags.SeparateEnemyHPScaling && (flags.EnemyScaleHpLow != 100 || flags.EnemyScaleHpHigh != 100)))

@@ -274,6 +274,10 @@ namespace FF1Lib
 
 			foreach (var item in forcedItemPlacements.Select(x => x.Item))
 			{
+				if ((bool)flags.GuaranteedMasamune && item == Item.Masamune)
+				{
+					continue;
+				}
 				incentivePool.Remove(item);
 			}
 

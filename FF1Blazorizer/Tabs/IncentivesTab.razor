@@ -128,28 +128,30 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="LooseExcludePlacedDungeonsCheckBox" IsEnabled="@(Flags.Treasures != false)" @bind-Value="Flags.LooseExcludePlacedDungeons">No Loose Items in Incentivized Dungeons</TriStateCheckBox>
 		</div>
 		<div class="col2">
-
-			<h4>Items: @(Flags.Flags.IncentivizedItemCountMin) @((Flags.Flags.IncentivizedItemCountMin != Flags.Flags.IncentivizedItemCountMax) ? "- " + Flags.Flags.IncentivizedItemCountMax : "")</h4>
-			<p>@Flags.Flags.IncentivizedItems</p>
+            <div class="row">
+			    <h4>Items: @(Flags.Flags.IncentivizedItemCountMin) @((Flags.Flags.IncentivizedItemCountMin != Flags.Flags.IncentivizedItemCountMax) ? "- " + Flags.Flags.IncentivizedItemCountMax : "")</h4>
+                <ToolTipBox id="IncentiveItemsTooltip" UpdateToolTip="@UpdateToolTipID"></ToolTipBox>
+            </div>
+            <p>@Flags.Flags.IncentivizedItems</p>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMainItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMainItems">Main Progression Items</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFetchItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeFetchItems">Other Quest Items</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeAirshipCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoFloater == false))" @bind-Value="Flags.IncentivizeAirship">Floater</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeCanoeItemCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCanoeItem">Canoe</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="incentivizeAirshipCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoFloater == false))" @bind-Value="Flags.IncentivizeAirship">Floater</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="incentivizeCanoeItemCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCanoeItem">Canoe</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeShipAndCanalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeShipAndCanal">Ship &amp; Canal</TriStateCheckBox>
             <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeBridgeCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeBridgeItem">Bridge</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeTailCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoTail != true))" @bind-Value="Flags.IncentivizeTail">Tail</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="incentivizeTailCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoTail != true))" @bind-Value="Flags.IncentivizeTail">Tail</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMasamuneCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoMasamune != true))" @bind-Value="Flags.IncentivizeMasamune">Masamune</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeXcalCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoXcalber != true))" @bind-Value="Flags.IncentivizeXcalber">Xcalber</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeKatanaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeKatana">Katana</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeVorpalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeVorpal">Vorpal</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeDefCastWeaponCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeDefCastWeapon">Defense</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOffCastWeaponCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOffCastWeapon">Thor Hammer</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOpalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOpal">Opal Bracelet</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="incentivizeMasamuneCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoMasamune != true))" @bind-Value="Flags.IncentivizeMasamune">Masamune</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="incentivizeXcalCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoXcalber != true))" @bind-Value="Flags.IncentivizeXcalber">Xcalber</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="incentivizeKatanaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeKatana">Katana</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="incentivizeVorpalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeVorpal">Vorpal</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="incentivizeDefCastWeaponCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeDefCastWeapon">Defense Sword</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="incentivizeOffCastWeaponCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOffCastWeapon">Thor Hammer</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="incentivizeOpalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOpal">Opal Bracelet</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOtherCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOtherCastArmor">Power Gauntlet</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizePowerRodCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizePowerRod">Power Staff</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeDefCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeDefCastArmor">White Shirt</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOffCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOffCastArmor">Black Shirt</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="incentivizeDefCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeDefCastArmor">White Shirt</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="incentivizeOffCastArmorCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOffCastArmor">Black Shirt</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeRibbonCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeRibbon">Ribbon</TriStateCheckBox>
 
 			<div class="checkbox-cell"></div>
