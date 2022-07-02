@@ -880,16 +880,16 @@ namespace FF1Lib
 				ShuffleEnemyFormations(rng, flags.FormationShuffleMode);
 			}
 
-			if ((bool)flags.RemoveTrapTiles)
+			if (flags.EnemyTrapTiles == TrapTileMode.Remove)
 			{
 				RemoveTrapTiles(flags.EnemizerEnabled);
 			}
 
 			await this.Progress();
 
-			if (((bool)flags.EnemyTrapTiles) && !flags.EnemizerEnabled)
+			if (flags.EnemyTrapTiles != TrapTileMode.Vanilla && flags.EnemyTrapTiles != TrapTileMode.Remove &&!flags.EnemizerEnabled)
 			{
-				ShuffleTrapTiles(rng, (bool)flags.RandomTrapFormations, (bool)flags.FightBahamut);
+				ShuffleTrapTiles(rng, flags.EnemyTrapTiles, (bool)flags.FightBahamut);
 			}
 
 			if ((bool)flags.ConfusedOldMen)

@@ -1283,24 +1283,11 @@
 		"description": "Bosses are included when shuffling/randomizing status attacks. Bosses are the Fiends, WarMech and Chaos."
 	},
 	{
-		"Id": "removeTrapTilesCheckBox",
-		"title": "Remove Trap Tiles",
-		"screenshot": "removeTrapTilesCheckBox.gif",
-		"description": "Removes all the forced encounter tiles from the game, except the Fiend refights."
-	},
-	{
-		"Id": "enemyTrapTilesCheckBox",
-		"title": "Shuffle Trap Tiles",
+		"Id": "EnemyTrapTiles",
+		"title": "Trap Tiles",
 		"screenshot": "enemyTrapTilesCheckBox.gif",
-		"description": "Shuffles all the forced encounter tiles in the game, except the Fiend refights. This doesn't add in any new tiles, instead it simply shuffles the existing encounter tiles among themselves."
+		"description": "Vanilla - All tiles are their original monster formations.\n\nShuffle - Shuffles all the forced encounter tiles in the game, except the Fiend refights. This doesn't add in any new tiles, instead it simply shuffles the existing encounter tiles among themselves.\n\nA Side Formations - Trap Tiles are populated from the a-side encounter list.\n\nB Side Formation - Trap tiles are populated from the b-side encounter list.\n\nRandom - Trap tiles are populated from any of the a-side or b-side encounter formations. Does not include bosses.\n\nRemoved - Removes all the forced encounter tiles from the game, except the Fiend refights.\n\nLocal Formations - Tiles will use formations from the same dungeon that they appear in.\n\nCurated - Random but with too punishing encounters removed. To make up for this, the best grind tiles have also been removed. (This is a sample pool. Tournament organizers can request specific enemy formations to be used, contact your local dev for details.)"
 	},
-	{
-		"Id": "randomTrapFormationsCheckBox",
-		"title": "Use Alternate Formations",
-		"screenshot": "randomTrapFormationsCheckBox.png",
-		"description": "Adds several formations into the shuffle pool for the forced encounter tiles, including formations that are not available in the original game."
-	},
-
 	{
 		"Id": "WarMECHModeDropDown",
 		"title": "WarMECH Mode",
