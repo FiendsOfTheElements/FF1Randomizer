@@ -288,6 +288,27 @@ namespace FF1Lib
 			{
 				DamageTilesKill(flags.SaveGameWhenGameOver);
 			}
+			
+			// Adjustable lava damage
+			if ((int)flags.DamageTileLow != 1 || (int)flags.DamageTileHigh != 1)
+			{
+				int DamageTileAmount = rng.Between(flags.DamageTileLow, flags.DamageTileHigh);
+				
+				// Overwrites a bit of the newly created DamageTilesKill assembly code to account for the adjustable damage
+				if ((bool)flags.DamageTilesKill) {
+					PutInBank(0x1E, 0xB114, Blob.FromHex($"{DamageTileAmount + 1}"));
+					//Data[0xE] = (byte)(DamageTileAmount + 1); //"HP Less than" check so it doesn't kill
+					PutInBank(0x1E, 0xB121, Blob.FromHex($"{DamageTileAmount}"));
+					//Data[0xE] = (byte)(DamageTileAmount);
+				}
+				// No LethalDamageTiles Flag, overwrite normal rom code instead
+				else {
+					Data[0x7C86C] = (byte)(DamageTileAmount + 1); //"HP Less than" check so it doesn't kill
+					Data[0x7C874] = (byte)(DamageTileAmount);
+				}
+				
+
+			}
 
 			if ((bool)flags.MoveToFBats) {
 			    MoveToFBats();
