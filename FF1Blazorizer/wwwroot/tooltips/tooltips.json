@@ -2261,9 +2261,9 @@
 	},
 	{
 		"Id": "relocateChests",
-		"title": "Relocate Chests",
+		"title": "Relocate Chests & Trap Tiles",
 		"screenshot": "shufflechests.png",
-		"description": "Relocate chests and enemy trap tiles to new locations in castles and dungeons."
+		"description": "Relocate chests and enemy trap tiles to new locations in castles and dungeons.\n(\"Linked\" chests, where multiple chest locations give the same treasure and result in empty chests, are removed.)"
 	},
 	{
 		"Id": "markRelocatedTrapTiles",
