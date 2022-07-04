@@ -182,7 +182,6 @@ namespace FF1Lib
 			{  0,  0, -1 }, // staff
 		    };
 
-				// These entries are doubled/tripled up to dilute the pool and make the Chroma "slays everything" and the other strongest effects more rare
 		    var powers = new int[] {
 			// Chroma/XCal effect should stay first so it properly gets assigned to Xcalbr
 			(int)MonsterType.MAGICAL<<8|(int)MonsterType.DRAGON<<8|(int)MonsterType.GIANT<<8|(int)MonsterType.UNDEAD<<8
@@ -195,34 +194,22 @@ namespace FF1Lib
 				(int)MonsterType.WERE<<8|(int)MonsterType.REGENERATIVE<<8, // Most of these attributes aren't used in vanilla but can matter with e.g. Enemizer; Regen covers 9 vanilla enemies, notably WarMech
 			
 			(int)SpellElement.Fire | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.WERE<<8), //Undead only adds Lich-2 to the Fire list
-			(int)SpellElement.Fire | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.WERE<<8),
-			(int)SpellElement.Fire | ((int)MonsterType.UNDEAD<<8) | ((int)MonsterType.WERE<<8),
 			
-			(int)SpellElement.Ice,
 			(int)SpellElement.Ice,
 			
 			(int)SpellElement.Lightning,
 			(int)SpellElement.Lightning | (int)MonsterType.AQUATIC<<8, // Almost the same as just Lightning; adds Kraken-2 and Wizard
 			
 			(int)(MonsterType.MAGICAL|MonsterType.MAGE)<<8,
-			(int)(MonsterType.MAGICAL|MonsterType.MAGE)<<8,
 			
-			(int)MonsterType.DRAGON<<8,
-			(int)MonsterType.DRAGON<<8,
 			(int)MonsterType.DRAGON<<8,
 			
 			(int)MonsterType.GIANT<<8,
-			(int)MonsterType.GIANT<<8,
 			
-			(int)MonsterType.UNDEAD<<8,
-			(int)MonsterType.UNDEAD<<8,
 			(int)MonsterType.UNDEAD<<8,
 			
 			(int)MonsterType.AQUATIC<<8,
-			(int)MonsterType.AQUATIC<<8,
-			(int)MonsterType.AQUATIC<<8,
 			
-			(int)SpellElement.Fire | (int)SpellElement.Ice,
 			(int)SpellElement.Fire | (int)SpellElement.Ice,
 
 			(int)SpellElement.Poison | (int)SpellElement.Fire | (int)SpellElement.Ice | (int)SpellElement.Lightning,
@@ -237,34 +224,22 @@ namespace FF1Lib
 			new string[] { "Odd", "Weird" },
 			
 			new string[] { "Flame", "Burn", "Blaze", "Hot", "Heat" },
-			new string[] { "Flame", "Burn", "Blaze", "Hot", "Heat" },
-			new string[] { "Flame", "Burn", "Blaze", "Hot", "Heat" },
 			
-			new string[] { "Icy", "Freeze", "Frost", "Cold", "Frozen" },
 			new string[] { "Icy", "Freeze", "Frost", "Cold", "Frozen" },
 			
 			new string[] { "Shock", "Bolt" },
 			new string[] { "Storm" },
 			
 			new string[] { "Rune", "Ritual" },
-			new string[] { "Rune", "Ritual" },
 			
-			new string[] { "Dragon", "Dino" },
-			new string[] { "Dragon", "Dino" },
 			new string[] { "Dragon", "Dino" },
 			
 			new string[] { "Giant", "Imp", "Ogre" },
-			new string[] { "Giant", "Imp", "Ogre" },
 			
-			new string[] { "Holy", "Smite", "Banish", "Divine", "Blessd", "Sun" },
-			new string[] { "Holy", "Smite", "Banish", "Divine", "Blessd", "Sun" },
 			new string[] { "Holy", "Smite", "Banish", "Divine", "Blessd", "Sun" },
 			
 			new string[] { "Coral", "Aqua", "Water", "Splash" },
-			new string[] { "Coral", "Aqua", "Water", "Splash" },
-			new string[] { "Coral", "Aqua", "Water", "Splash" },
 			
-			new string[] { "IceHot" },
 			new string[] { "IceHot" },
 			
 			new string[] { "Elmntl" },
@@ -272,7 +247,26 @@ namespace FF1Lib
 			new string[] { "Boss" },
 		    };
 
-		    var weaponIcons = new WeaponIcon[] {
+			// Weighs some effects to be more common than others, reducing how often both the strongest and weakest are seen
+			var powerWeighting = new int[] {
+				0,			// Chroma
+				1,			// Poison
+				2,			// Weird
+				3,  3,  3,	// Flame
+				4,  4,		// Icy
+				5,			// Shock
+				6,			// Storm (Very similar to Shock)
+				7,  7,		// Rune
+				8,  8,  8,	// Dragon
+				9,  9,		// Giant
+				10, 10, 10,	// Holy
+				11, 11,	11,	// Aqua
+				12, 12,		// IceHot
+				13,			// Elmntl
+				14,			// Boss
+			};
+
+			var weaponIcons = new WeaponIcon[] {
 			WeaponIcon.SWORD,
 			WeaponIcon.AXE,
 			WeaponIcon.KNIFE,
@@ -494,9 +488,9 @@ namespace FF1Lib
 			    if (spellIndex == 0xFF && specialPower == -1) {
 				int powerChance = rng.Between(1, 100);
 				if (tier == 1 && commonWeaponsHavePowers && powerChance <= 20) {
-				    specialPower = rng.Between(0, powers.Length-1);
+				    specialPower = powerWeighting[rng.Between(0, powerWeighting.Length - 1)];
 				} else if (tier > 1) {
-				    specialPower = rng.Between(0, powers.Length-1);
+				    specialPower = powerWeighting[rng.Between(0, powerWeighting.Length - 1)];
 				}
 			    }
 
