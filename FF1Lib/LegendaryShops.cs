@@ -348,7 +348,13 @@ namespace FF1Lib
 			}
 			else
 			{
-				var spells = new List<Spell> { Spell.LOCK, Spell.TMPR, Spell.FIR2, Spell.LIT2, Spell.LOK2, Spell.FAST, Spell.ICE2, Spell.FIR3, Spell.BANE, Spell.WARP, Spell.LIT3, Spell.QAKE, Spell.ICE3, Spell.BRAK, Spell.SABR, Spell.NUKE, Spell.ZAP, Spell.XXXX };
+				var spells = new List<Spell> { Spell.TMPR, Spell.FIR2, Spell.LIT2, Spell.FAST, Spell.ICE2, Spell.FIR3, Spell.BANE, Spell.WARP, Spell.LIT3, Spell.QAKE, Spell.ICE3, Spell.BRAK, Spell.SABR, Spell.NUKE, Spell.ZAP, Spell.XXXX };
+				// LOCK & LOK2 are included as long as their accuracy is set to high or auto-hit
+				if ((flags.LockMode != LockHitMode.Vanilla) && (flags.LockMode != LockHitMode.Accuracy107)) {
+					spells.Add(Spell.LOCK);
+					spells.Add(Spell.LOK2);
+				}
+
 				var items = spells.Where(s => Spells.ContainsKey(s.ToString().ToLowerInvariant())).Select(s => Convert.ToByte(Spells[s.ToString().ToLowerInvariant()].Index + MagicNamesIndexInItemText)).Cast<Item>().ToList();
 
 				List<Item> result = new List<Item>();
