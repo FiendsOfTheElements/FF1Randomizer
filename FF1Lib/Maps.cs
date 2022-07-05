@@ -1972,7 +1972,6 @@ namespace FF1Lib
 						dungeons.Add(new MapId[] { MapId.SeaShrineB1 }); //Mermaid Floor
 						preserveChests.Add((MapId.SeaShrineB2, 0x6C));
 						addsea = false;
-						Console.WriteLine("OKAY");
 					}
 					else {
 						preserveChests.Add((MapId.SeaShrineB2, 0x6C)); // TFC

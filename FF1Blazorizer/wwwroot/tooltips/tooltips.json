@@ -480,7 +480,7 @@
 		"Id": "IncentivesTooltip",
 		"title": "Incentivized Items & Locations Explanation",
 		"screenshot": null,
-		"description": "Incentivized Items are guaranteed to be spread out amongst the Incentivized Locations, giving you an idea of where to look for important items.\nIf there are more Items than Locations selected, the excess items will be \"loose\", meaning they will be in random locations. This can be further controlled via the options in the \"Loose Placement\" section.\nIf there are more Locations than Items selected, excess locations will be duds, and only contain a random treasure.\nAny Key Items given for free or banned (in the Treasures tab) can't be incentivized, and thus won't be included in the total item count at the top."
+		"description": "Incentivized Items are guaranteed to be distributed amongst the Incentivized Locations, giving you an idea of where to look for important items.\nIf there are more Items than Locations selected, the excess items will be \"loose\", meaning they will be in random locations. This can be further controlled via the options in the \"Loose Placement\" section.\nIf there are more Locations than Items selected, excess locations will be duds, and only contain a random treasure.\nAny Key Items given for free or banned (in the Treasures tab) can't be incentivized, and thus won't be included in the total item count at the top."
 	},
 	{
 		"Id": "IncentiveItemsTooltip",
@@ -504,74 +504,74 @@
 		"Id": "incentivizeIceCaveCheckBox",
 		"title": "Ice Cave Incentive Chest",
 		"screenshot": "incentivizeIceCaveCheckBox.png",
-		"description": "Incentivizes the FLOATER chest in Ice Cave from the vanilla game.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Vanilla: Incentivizes the FLOATER chest in Ice Cave (pictured)."
 	},
 	{
 		"Id": "incentivizeOrdealsCheckBox",
 		"title": "Castle Ordeals Incentive Chest",
 		"screenshot": "incentivizeOrdealsCheckBox.png",
-		"description": "Incentivizes the TAIL chest in the Castle of Ordeals from the vanilla game.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Vanilla: Incentivizes the TAIL chest at the end of the Castle of Ordeals (pictured)."
 	},
 	{
 		"Id": "incentivizeMarshCheckBox",
 		"title": "Marsh Cave Incentive Chest",
 		"screenshot": "incentivizeMarshCheckBox.png",
-		"description": "Incentivizes the CROWN chest in Marsh Cave from the vanilla game.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Vanilla: Incentivizes the CROWN chest in Marsh Cave's bottom floor (pictured)."
 	},
 	{
 		"Id": "incentivizeTitansCheckBox",
 		"title": "Titan’s Trove Incentive Chest",
 		"screenshot": "incentivizeTitansCheckBox.png",
-		"description": "Incentivizes the leftmost chest in Titan’s Trove. Note that if the Titan’s Trove map edit is on, this chest will require the RUBY to access.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Vanilla: Incentivizes the leftmost chest in Titan’s Trove. Note that if the \"Titan’s Trove\" map edit is on, this chest will require the RUBY to access."
 	},
 	{
 		"Id": "incentivizeEarthCheckBox",
 		"title": "Earth Cave Incentive Chest",
 		"screenshot": "incentivizeEarthCheckBox.png",
-		"description": "Incentivizes the RUBY chest next to the Vampire in Earth Cave in the vanilla game. The Vampire must be killed to obtain access to this chest.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Vanilla: Incentivizes the RUBY chest next to the Vampire in Earth Cave (pictured). The Vampire must be killed to obtain access to this chest.\nPre-Rod: A random chest in the first 3 floors of Earth Cave (before the rod plate) will be incentivized.\nPost-Rod: A random chest on floor 4 of Earth Cave (after the rod plate) will be incentivized."
 	},
 	{
 		"Id": "incentivizeVolcanoCheckBox",
 		"title": "Volcano Incentive Chest",
 		"screenshot": "incentivizeVolcanoCheckBox.png",
-		"description": "Incentivizes the leftmost chest on KARY’s floor (the \"Red D Chest\" in the vanilla game). This chest requires the passage of two trap tile encounters to access, so make sure you are prepared before approaching.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Vanilla: Incentivizes the leftmost chest on KARY’s floor (the \"Red D Chest\", pictured). This chest requires passing through two trap tile encounters to access.\nShallow: A random chest on the 2nd floor of Volcano (where the \"armory\" and hairpins are) will be incentivized.\nDeep: A random chest on floor 4-5 (Kary's floor and the floor before it) will be incentivized."
 	},
 	{
 		"Id": "incentivizeSeaShrineCheckBox",
 		"title": "Sea Shrine Incentive Chest",
 		"screenshot": "incentivizeSeaShrineCheckBox.png",
-		"description": "Incentivizes the SLAB chest on the Mermaids floor on Sea Shrine from the vanilla game.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Vanilla: Incentivizes the SLAB chest on the Mermaids floor on Sea Shrine (pictured).\nLocked: The Crescent-shaped \"TFC\" room, on the floor before you get to the Mermaids on the right side of Sea Shrine, will be incentivized and require the KEY to access. If the \"Mermaid Prison\" flag (Map tab) is on, then either the TFC chest or any mermaid chest will be incentivized (and require the KEY).\nUnlocked: the opposited of Locked - a random Sea Shrine chest that does not require the KEY to access will be incentivized."
 	},
 	{
 		"Id": "incentivizeSkyPalaceCheckBox",
 		"title": "Sky Palace Incentive Chest",
 		"screenshot": "incentivizeSkyPalaceCheckBox.png",
-		"description": "Incentivizes the ADAMANT chest (the bottom-left chest on the \"Sky Spider\" floor) in Sky Palace from the vanilla game.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Vanilla: Incentivizes the ADAMANT chest (the bottom-left chest on the \"Sky Spider\" floor) in Sky Palace (pictured).\nMirage: A random chest in Mirage Tower will be incentivized, requiring only the CHIME and not the CUBE to access.\nSky: A random chest in the Sky Palace will be incentivized, on any floor after using the CUBE."
 	},
 	{
 		"Id": "incentivizeConeriaCheckBox",
 		"title": "Coneria Castle Incentive Chest",
 		"screenshot": "incentivizeConeriaCheckBox.png",
-		"description": "Incentivizes the TNT chest in the Coneria locked treasury from the vanilla game. This chest requires the KEY to access.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Vanilla: Incentivizes the TNT chest in the Coneria locked treasury (pictured). This chest requires the KEY to access."
 	},
 	{
 		"Id": "incentivizeMarshKeyLockedCheckBox",
 		"title": "Marsh KEY Locked Incentive Chest",
 		"screenshot": "incentivizeMarshKeyLockedCheckBox.png",
-		"description": "Incentivizes the bottom right chest of the bottom floor of Marsh Cave. This chest requires the KEY to access.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Vanilla: Incentivizes the bottom right chest of the bottom floor of Marsh Cave (pictured). This chest requires the KEY to access."
 	},
 	{
 		"Id": "incentivizeCardiaCheckBox",
 		"title": "Cardia Incentive Chest",
 		"screenshot": "cardiaIncentive.png",
-		"description": "Incentivizes top-right chest in the left-most room of the forest island of the Cardia Islands. The AIRSHIP is required to access, unless combined with the 'Bahamut Cardia dock' and 'Dragon's Hoard' flags.\nNote that if incentive placement is set to \"random\" this item can appear in any of the chests among the populated Cardia islands.\nOne random item from your incentive item pool will be guaranteed in this chest, provided the number of incentive items matches or is less than the number of incentive locations."
+		"description": "Vanilla: Incentivizes top-right chest in the left-most room of the forest island of the Cardia Islands. The AIRSHIP is required to access, unless combined with the 'Bahamut Cardia dock' and 'Dragon's Hoard' flags.\nRandom: This item can appear in any of the chests among all of the Cardia Islands."
 	},
 
 	{
 		"Id": "incentivePlacementType",
 		"title": "Incentive Placement Types",
 		"screenshot": "incentivizeRandomChestInLocationCheckBox.gif",
-		"description": "Vanilla - Sets the incentive chest to be the default chest and room (the one shown in the tooltip) for a given location.\nRandom - Chooses a random chest at the selected location to act as an incentive chest.\nBefore Gating - Chooses a chest on a floor that comes before gating; e.g. Earth Cave floors 1-3 before the ROD block, Mirage Tower before the CUBE plate, all of Sea Shrine minus the crescent-shaped \"TFC\" room.\nBehind Gating - Chooses a chest on a floor that comes after gating; e.g. Earth Cave Floor 4 after ROD block, Sky Palace after the CUBE plate, Sea Shrine in the crescent-shaped \"TFC\" room (which requires the KEY to enter)."
+		"description": "Vanilla: Sets the incentive chest to be the default chest (pictured in each tooltip) for a given location.\nRandom: Chooses a random chest from all chests at the selected location to act as an incentive chest.\nSome locations will also have additional options, explained in their tooltips."
 	},
 
 	{
