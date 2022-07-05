@@ -28,7 +28,7 @@
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="orbsRequiredSpoilersCheckbox" IsEnabled="@(Flags.OrbsRequiredOptionsEnabled)" @bind-Value="Flags.OrbsRequiredSpoilers">Orb Spoilers</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
 		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" IsEnabled="@Flags.ShardHuntEnabled" @bind-Value="Flags.ShardHunt">Shard Hunt</CheckBox>
-        <DoubleSlider Indent DoubleCol DisableTooltip="true" Id="ShardCountDoubleSilder" MinValue="12" MaxValue="40" Step="4" @bind-ValuesRange="(Flags.ShardCountLow, Flags.ShardCountHigh)">Goal:</DoubleSlider>
+        <DoubleSliderMax Indent DoubleCol DisableTooltip="true" Id="ShardCountDoubleSilder" MinValue="12" MaxValue="40" Step="4" @bind-ValuesRange="(Flags.ShardCountLow, Flags.ShardCountHigh)">Goal:</DoubleSliderMax>
 
 	     <div class="checkbox-cell"></div>
 	     <h4>Events</h4>
