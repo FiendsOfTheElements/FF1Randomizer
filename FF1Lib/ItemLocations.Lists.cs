@@ -59,6 +59,16 @@ namespace FF1Lib
 			Volcano20, Volcano21, Volcano22, Volcano23, Volcano24,
 			Volcano25, Volcano26, Volcano27, Volcano28, Volcano29,
 			Volcano30, Volcano31, Volcano32, VolcanoMajor };
+		public static readonly IReadOnlyCollection<IRewardSource> VolcanoShallow =
+			new List<IRewardSource> { Volcano1, Volcano2, Volcano3, Volcano4,
+			Volcano5, Volcano6, Volcano7, Volcano8, Volcano9,
+			Volcano10, Volcano11, Volcano12, Volcano13, Volcano14,
+			Volcano15, Volcano16, Volcano17, Volcano18 };
+		public static readonly IReadOnlyCollection<IRewardSource> VolcanoDeep =
+			new List<IRewardSource> { Volcano19,
+			Volcano20, Volcano21, Volcano22, Volcano23, Volcano24,
+			Volcano25, Volcano26, Volcano27, Volcano28, Volcano29,
+			Volcano30, Volcano31, Volcano32, VolcanoMajor };
 		public static readonly IReadOnlyCollection<IRewardSource> IceCave =
 			new List<IRewardSource> { IceCave1, IceCave2, IceCave3, IceCave4,
 			IceCave5, IceCave6, IceCave7, IceCaveMajor, IceCave9,
@@ -88,7 +98,14 @@ namespace FF1Lib
 			SeaShrine25, SeaShrine26, SeaShrine27, SeaShrine28, SeaShrine29,
 			SeaShrine30, SeaShrine31, SeaShrineMajor };
 		public static readonly IReadOnlyCollection<IRewardSource> SeaShrineMermaids =
-			new List<IRewardSource> { SeaShrine20, SeaShrine21, SeaShrine22, SeaShrine23, SeaShrine24, SeaShrine25, SeaShrine26, SeaShrine27, SeaShrine28, SeaShrine29, SeaShrine30, SeaShrine31 };
+			new List<IRewardSource> { SeaShrine20, SeaShrine21, SeaShrine22, SeaShrine23,
+			SeaShrine24, SeaShrine25, SeaShrine26, SeaShrine27, SeaShrine28, SeaShrine29,
+			SeaShrine30, SeaShrine31, SeaShrineMajor };
+		public static readonly IReadOnlyCollection<IRewardSource> SeaShrineUnlockedMinusMermaids =
+			new List<IRewardSource> { SeaShrine1, SeaShrine2, SeaShrine3, SeaShrine4,
+			SeaShrine5, SeaShrine6, SeaShrine7, SeaShrine8, SeaShrine9,
+			SeaShrine10, SeaShrine11, SeaShrine12, SeaShrine13, SeaShrine14,
+			SeaShrine15, SeaShrine16, SeaShrine18, SeaShrine19, };
 		public static readonly IReadOnlyCollection<IRewardSource> Waterfall =
 			new List<IRewardSource> { Waterfall1, Waterfall2, Waterfall3, Waterfall4,
 			Waterfall5, Waterfall6 };

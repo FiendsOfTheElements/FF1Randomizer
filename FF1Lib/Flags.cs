@@ -317,10 +317,10 @@ namespace FF1Lib
 		public IncentivePlacementType OrdealsIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 		public IncentivePlacementType MarshIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 		public IncentivePlacementType TitansIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
-		public IncentivePlacementTypeGated EarthIncentivePlacementType { get; set; } = IncentivePlacementTypeGated.Vanilla;
-		public IncentivePlacementType VolcanoIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
-		public IncentivePlacementTypeGated SeaShrineIncentivePlacementType { get; set; } = IncentivePlacementTypeGated.Vanilla;
-		public IncentivePlacementTypeGated SkyPalaceIncentivePlacementType { get; set; } = IncentivePlacementTypeGated.Vanilla;
+		public IncentivePlacementTypeEarth EarthIncentivePlacementType { get; set; } = IncentivePlacementTypeEarth.Vanilla;
+		public IncentivePlacementTypeVolcano VolcanoIncentivePlacementType { get; set; } = IncentivePlacementTypeVolcano.Vanilla;
+		public IncentivePlacementTypeSea SeaShrineIncentivePlacementType { get; set; } = IncentivePlacementTypeSea.Vanilla;
+		public IncentivePlacementTypeSky SkyPalaceIncentivePlacementType { get; set; } = IncentivePlacementTypeSky.Vanilla;
 		public IncentivePlacementType CorneriaIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 		public IncentivePlacementType MarshLockedIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 		public IncentivePlacementType CardiaIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;

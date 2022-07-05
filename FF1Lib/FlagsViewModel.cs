@@ -1690,7 +1690,7 @@ namespace FF1Lib
 			}
 		}
 
-		public IncentivePlacementTypeGated EarthIncentivePlacementType
+		public IncentivePlacementTypeEarth EarthIncentivePlacementType
 		{
 			get => Flags.EarthIncentivePlacementType;
 			set
@@ -1700,7 +1700,7 @@ namespace FF1Lib
 			}
 		}
 
-		public IncentivePlacementType VolcanoIncentivePlacementType
+		public IncentivePlacementTypeVolcano VolcanoIncentivePlacementType
 		{
 			get => Flags.VolcanoIncentivePlacementType;
 			set
@@ -1710,7 +1710,7 @@ namespace FF1Lib
 			}
 		}
 
-		public IncentivePlacementTypeGated SeaShrineIncentivePlacementType
+		public IncentivePlacementTypeSea SeaShrineIncentivePlacementType
 		{
 			get => Flags.SeaShrineIncentivePlacementType;
 			set
@@ -1720,7 +1720,7 @@ namespace FF1Lib
 			}
 		}
 
-		public IncentivePlacementTypeGated SkyPalaceIncentivePlacementType
+		public IncentivePlacementTypeSky SkyPalaceIncentivePlacementType
 		{
 			get => Flags.SkyPalaceIncentivePlacementType;
 			set

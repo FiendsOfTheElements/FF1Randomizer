@@ -357,9 +357,17 @@ namespace FF1Lib
 
 			if (flags.IncentivizeVolcano ?? false)
 			{
-				if (flags.VolcanoIncentivePlacementType == IncentivePlacementType.RandomAtLocation)
+				if (flags.VolcanoIncentivePlacementType == IncentivePlacementTypeVolcano.RandomAtLocation)
 				{
 					incentiveLocationPool.Add(ItemLocations.Volcano.ToList().SpliceRandom(rng));
+				}
+				else if (flags.VolcanoIncentivePlacementType == IncentivePlacementTypeVolcano.RandomShallow)
+				{
+					incentiveLocationPool.Add(ItemLocations.VolcanoShallow.ToList().SpliceRandom(rng));
+				}
+				else if (flags.VolcanoIncentivePlacementType == IncentivePlacementTypeVolcano.RandomDeep)
+				{
+					incentiveLocationPool.Add(ItemLocations.VolcanoDeep.ToList().SpliceRandom(rng));
 				}
 				else
 				{
@@ -368,15 +376,15 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeEarth ?? false)
 			{
-				if (flags.EarthIncentivePlacementType == IncentivePlacementTypeGated.RandomAtLocation)
+				if (flags.EarthIncentivePlacementType == IncentivePlacementTypeEarth.RandomAtLocation)
 				{
 					incentiveLocationPool.Add(ItemLocations.EarthCave.ToList().SpliceRandom(rng));
 				}
-				else if (flags.EarthIncentivePlacementType == IncentivePlacementTypeGated.RandomBehindGating)
+				else if (flags.EarthIncentivePlacementType == IncentivePlacementTypeEarth.RandomPostRod)
 				{
 					incentiveLocationPool.Add(ItemLocations.EarthCaveFloor4.ToList().SpliceRandom(rng));
 				}
-				else if (flags.EarthIncentivePlacementType == IncentivePlacementTypeGated.RandomNoGating)
+				else if (flags.EarthIncentivePlacementType == IncentivePlacementTypeEarth.RandomPreRod)
 				{
 					incentiveLocationPool.Add(ItemLocations.EarthCavePreRod.ToList().SpliceRandom(rng));
 				}
@@ -409,15 +417,15 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeSkyPalace ?? false)
 			{
-				if (flags.SkyPalaceIncentivePlacementType == IncentivePlacementTypeGated.RandomAtLocation)
+				if (flags.SkyPalaceIncentivePlacementType == IncentivePlacementTypeSky.RandomAtLocation)
 				{
 					incentiveLocationPool.Add(ItemLocations.SkyPalace.Concat(ItemLocations.MirageTower).ToList().SpliceRandom(rng));
 				}
-				else if (flags.SkyPalaceIncentivePlacementType == IncentivePlacementTypeGated.RandomBehindGating)
+				else if (flags.SkyPalaceIncentivePlacementType == IncentivePlacementTypeSky.RandomSky)
 				{
 					incentiveLocationPool.Add(ItemLocations.SkyPalace.ToList().SpliceRandom(rng));
 				}
-				else if (flags.SkyPalaceIncentivePlacementType == IncentivePlacementTypeGated.RandomNoGating)
+				else if (flags.SkyPalaceIncentivePlacementType == IncentivePlacementTypeSky.RandomMirage)
 				{
 					incentiveLocationPool.Add(ItemLocations.MirageTower.ToList().SpliceRandom(rng));
 				}
@@ -428,11 +436,11 @@ namespace FF1Lib
 			}
 			if (flags.IncentivizeSeaShrine ?? false)
 			{
-				if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomAtLocation)
+				if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeSea.RandomAtLocation)
 				{
 					incentiveLocationPool.Add(ItemLocations.SeaShrine.ToList().SpliceRandom(rng));
 				}
-				else if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomBehindGating)
+				else if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeSea.RandomLocked)
 				{
 					if ((bool)flags.MermaidPrison)
 					{
@@ -443,9 +451,16 @@ namespace FF1Lib
 						incentiveLocationPool.Add(ItemLocations.SeaShrineLocked);
 					}
 				}
-				else if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomNoGating)
+				else if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeSea.RandomUnlocked)
 				{
-					incentiveLocationPool.Add(ItemLocations.SeaShrineUnlocked.ToList().SpliceRandom(rng));
+					if ((bool)flags.MermaidPrison)
+					{
+						incentiveLocationPool.Add(ItemLocations.SeaShrineUnlockedMinusMermaids.ToList().SpliceRandom(rng));
+					}
+					else
+					{
+						incentiveLocationPool.Add(ItemLocations.SeaShrineUnlocked.ToList().SpliceRandom(rng));
+					}
 				}
 				else
 				{

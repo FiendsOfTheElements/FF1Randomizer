@@ -1912,12 +1912,12 @@ namespace FF1Lib
 
 		    bool addearth = true;
 		    if ((bool)flags.IncentivizeEarth) {
-			if (flags.EarthIncentivePlacementType == IncentivePlacementTypeGated.Vanilla) {
+			if (flags.EarthIncentivePlacementType == IncentivePlacementTypeEarth.Vanilla) {
 			    preserveChests.Add((MapId.EarthCaveB3, 0x51));
 			}
 
-			if (flags.EarthIncentivePlacementType == IncentivePlacementTypeGated.RandomNoGating ||
-			    flags.EarthIncentivePlacementType == IncentivePlacementTypeGated.RandomBehindGating)
+			if (flags.EarthIncentivePlacementType == IncentivePlacementTypeEarth.RandomPreRod ||
+			    flags.EarthIncentivePlacementType == IncentivePlacementTypeEarth.RandomPostRod)
 			{
 			    // Split shuffle before/after gating
 			    dungeons.Add(new MapId[] { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3 });
@@ -1931,7 +1931,7 @@ namespace FF1Lib
 
 		    dungeons.Add(new MapId[] { MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5 });
 
-		    if ((bool)flags.IncentivizeVolcano && flags.VolcanoIncentivePlacementType == IncentivePlacementType.Vanilla) {
+		    if ((bool)flags.IncentivizeVolcano && flags.VolcanoIncentivePlacementType == IncentivePlacementTypeVolcano.Vanilla) {
 			preserveChests.Add((MapId.GurguVolcanoB5, 0x7E));
 		    }
 
@@ -1944,13 +1944,13 @@ namespace FF1Lib
 		    }
 
 		    if ((bool)flags.IncentivizeSeaShrine) {
-			if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.Vanilla)
+			if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeSea.Vanilla)
 			{
 			    preserveChests.Add((MapId.SeaShrineB1, 0x7B));
 			}
 
-			if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomNoGating ||
-			    flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeGated.RandomBehindGating)
+			if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeSea.RandomUnlocked||
+			    flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeSea.RandomLocked)
 			{
 			    preserveChests.Add((MapId.SeaShrineB2, 0x6C));
 			}
@@ -1981,7 +1981,7 @@ namespace FF1Lib
 			}
 		    }
 
-		    if ((bool)flags.IncentivizeSkyPalace && flags.SkyPalaceIncentivePlacementType == IncentivePlacementTypeGated.Vanilla) {
+		    if ((bool)flags.IncentivizeSkyPalace && flags.SkyPalaceIncentivePlacementType == IncentivePlacementTypeSky.Vanilla) {
 			preserveChests.Add((MapId.SkyPalace2F, 0x5F));
 		    }
 
