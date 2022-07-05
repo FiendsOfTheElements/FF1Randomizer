@@ -14,18 +14,6 @@ namespace FF1Lib
 		RandomAtLocation
 	}
 
-	/*public enum IncentivePlacementTypeGated
-	{
-		[Description("Vanilla")]
-		Vanilla,
-		[Description("Random")]
-		RandomAtLocation,
-		[Description("Before Gating")]
-		RandomNoGating,
-		[Description("Behind Gating")]
-		RandomBehindGating
-	}*/
-	
 	public enum IncentivePlacementTypeEarth
 	{
 		[Description("Vanilla")]
@@ -36,8 +24,7 @@ namespace FF1Lib
 		RandomPreRod,
 		[Description("Random Post-Rod")]
 		RandomPostRod
-	}
-	
+	}	
 	public enum IncentivePlacementTypeSky
 	{
 		[Description("Vanilla")]
@@ -48,8 +35,7 @@ namespace FF1Lib
 		RandomMirage,
 		[Description("Random Sky")]
 		RandomSky
-	}
-	
+	}	
 	public enum IncentivePlacementTypeSea
 	{
 		[Description("Vanilla")]
@@ -60,9 +46,8 @@ namespace FF1Lib
 		RandomUnlocked,
 		[Description("Random Locked")]
 		RandomLocked
-	}
-	
-		public enum IncentivePlacementTypeVolcano
+	}	
+	public enum IncentivePlacementTypeVolcano
 	{
 		[Description("Vanilla")]
 		Vanilla,
