@@ -540,7 +540,7 @@
 		"Id": "incentivizeSeaShrineCheckBox",
 		"title": "Sea Shrine Incentive Chest",
 		"screenshot": "incentivizeSeaShrineCheckBox.png",
-		"description": "Vanilla: Incentivizes the SLAB chest on the Mermaids floor on Sea Shrine (pictured).\nLocked: The Crescent-shaped \"TFC\" room, on the floor before you get to the Mermaids on the right side of Sea Shrine, will be incentivized and require the KEY to access. If the \"Mermaid Prison\" flag (Map tab) is on, then either the TFC chest or any mermaid chest will be incentivized (and require the KEY).\nUnlocked: the opposited of Locked - a random Sea Shrine chest that does not require the KEY to access will be incentivized."
+		"description": "Vanilla: Incentivizes the SLAB chest on the Mermaids floor at the end of the right Sea Shrine path (pictured).\nLocked: The Crescent-shaped \"TFC\" room, on the floor before you get to the Mermaids on the right side of Sea Shrine, will be incentivized and require the KEY to access. If the \"Mermaid Prison\" flag (Map tab) is on, then either the TFC chest or any mermaid chest will be incentivized (and require the KEY).\nUnlocked: the opposited of Locked - a random Sea Shrine chest that does not require the KEY to access will be incentivized."
 	},
 	{
 		"Id": "incentivizeSkyPalaceCheckBox",
@@ -564,7 +564,7 @@
 		"Id": "incentivizeCardiaCheckBox",
 		"title": "Cardia Incentive Chest",
 		"screenshot": "cardiaIncentive.png",
-		"description": "Vanilla: Incentivizes top-right chest in the left-most room of the forest island of the Cardia Islands. The AIRSHIP is required to access, unless combined with the 'Bahamut Cardia dock' and 'Dragon's Hoard' flags.\nRandom: This item can appear in any of the chests among all of the Cardia Islands."
+		"description": "Vanilla: Incentivizes top-right chest in the left-most room of the forest island of the Cardia Islands. The AIRSHIP is required to access, unless combined with the 'Bahamut Cardia Dock' and 'Dragon's Hoard' flags.\nRandom: This item can appear in any of the chests among all of the Cardia Islands."
 	},
 
 	{
