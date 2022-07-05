@@ -1899,7 +1899,7 @@ namespace FF1Lib
 		    List<MapId[]> spreadPlacementDungeons = new() {
 			new MapId[] { MapId.Waterfall, MapId.DwarfCave, MapId.MatoyasCave, MapId.SardasCave },
 			new MapId[] { MapId.Cardia, MapId.BahamutsRoomB1, MapId.BahamutsRoomB2 }, // Cardia
-			new MapId[] { MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 }, // Sea Shrine
+			//new MapId[] { MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 }, // Sea Shrine
 			new MapId[] { MapId.SkyPalace1F, MapId.SkyPalace2F, MapId.SkyPalace3F, MapId.SkyPalace4F, MapId.SkyPalace5F }, // Sky Castle
 			new MapId[] { MapId.TempleOfFiends }, // ToF
 		    };
@@ -1929,13 +1929,26 @@ namespace FF1Lib
 			dungeons.Add(new MapId[] { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5 });
 		    }
 
-		    dungeons.Add(new MapId[] { MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5 });
+		    
 
-		    if ((bool)flags.IncentivizeVolcano && flags.VolcanoIncentivePlacementType == IncentivePlacementTypeVolcano.Vanilla) {
-			preserveChests.Add((MapId.GurguVolcanoB5, 0x7E));
-		    }
+			bool addvolcano = true;
+			if ((bool)flags.IncentivizeVolcano && flags.VolcanoIncentivePlacementType == IncentivePlacementTypeVolcano.Vanilla) {
+				preserveChests.Add((MapId.GurguVolcanoB5, 0x7E));
+			}
+			else if (flags.VolcanoIncentivePlacementType == IncentivePlacementTypeVolcano.RandomShallow ||
+					 flags.VolcanoIncentivePlacementType == IncentivePlacementTypeVolcano.RandomDeep)
+			{
+				// Split shuffle before/after gating
+				dungeons.Add(new MapId[] { MapId.GurguVolcanoB1, MapId.GurguVolcanoB2 });
+				dungeons.Add(new MapId[] { MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5 });
+				addvolcano = false;
+			}
+			if (addvolcano) {
+				dungeons.Add(new MapId[] { MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5 });
+			}
 
-		    if ((bool)flags.IncentivizeIceCave && flags.IceCaveIncentivePlacementType == IncentivePlacementType.Vanilla) {
+
+			if ((bool)flags.IncentivizeIceCave && flags.IceCaveIncentivePlacementType == IncentivePlacementType.Vanilla) {
 			preserveChests.Add((MapId.IceCaveB2, 0x5F));
 		    }
 
@@ -1943,17 +1956,31 @@ namespace FF1Lib
 			preserveChests.Add((MapId.CastleOfOrdeals3F, 0x78));
 		    }
 
+			bool addsea = true;
 		    if ((bool)flags.IncentivizeSeaShrine) {
-			if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeSea.Vanilla)
-			{
-			    preserveChests.Add((MapId.SeaShrineB1, 0x7B));
-			}
+				if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeSea.Vanilla)
+				{
+					preserveChests.Add((MapId.SeaShrineB1, 0x7B));
+				}
 
-			if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeSea.RandomUnlocked||
-			    flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeSea.RandomLocked)
-			{
-			    preserveChests.Add((MapId.SeaShrineB2, 0x6C));
-			}
+				if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeSea.RandomUnlocked||
+					flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeSea.RandomLocked)
+				{
+					if ((bool)flags.MermaidPrison) {
+						// Split shuffle before/after gating
+						dungeons.Add(new MapId[] { MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 });
+						dungeons.Add(new MapId[] { MapId.SeaShrineB1 }); //Mermaid Floor
+						preserveChests.Add((MapId.SeaShrineB2, 0x6C));
+						addsea = false;
+						Console.WriteLine("OKAY");
+					}
+					else {
+						preserveChests.Add((MapId.SeaShrineB2, 0x6C)); // TFC
+					}
+				}
+				if (addsea) {
+					dungeons.Add(new MapId[] { MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 });
+				}
 		    }
 
 		    if ((bool)flags.IncentivizeConeria) {
