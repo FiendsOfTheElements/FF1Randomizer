@@ -1899,7 +1899,6 @@ namespace FF1Lib
 		    List<MapId[]> spreadPlacementDungeons = new() {
 			new MapId[] { MapId.Waterfall, MapId.DwarfCave, MapId.MatoyasCave, MapId.SardasCave },
 			new MapId[] { MapId.Cardia, MapId.BahamutsRoomB1, MapId.BahamutsRoomB2 }, // Cardia
-			//new MapId[] { MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 }, // Sea Shrine
 			new MapId[] { MapId.SkyPalace1F, MapId.SkyPalace2F, MapId.SkyPalace3F, MapId.SkyPalace4F, MapId.SkyPalace5F }, // Sky Castle
 			new MapId[] { MapId.TempleOfFiends }, // ToF
 		    };
@@ -1949,11 +1948,11 @@ namespace FF1Lib
 
 
 			if ((bool)flags.IncentivizeIceCave && flags.IceCaveIncentivePlacementType == IncentivePlacementType.Vanilla) {
-			preserveChests.Add((MapId.IceCaveB2, 0x5F));
+				preserveChests.Add((MapId.IceCaveB2, 0x5F));
 		    }
 
 		    if ((bool)flags.IncentivizeOrdeals && flags.OrdealsIncentivePlacementType == IncentivePlacementType.Vanilla) {
-			preserveChests.Add((MapId.CastleOfOrdeals3F, 0x78));
+				preserveChests.Add((MapId.CastleOfOrdeals3F, 0x78));
 		    }
 
 			bool addsea = true;
