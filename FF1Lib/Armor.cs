@@ -188,7 +188,7 @@ namespace FF1Lib
 
 		    // cast FAST, SABR or TMPR
 		    var powerGauntletSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any).
-								     Concat(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any)).
+								     Concat(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Any)).
 								     Select(s => s.Id));
 		    // cast INV2, FOG2, or WALL
 		    var whiteShirtSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.AllCharacters).
