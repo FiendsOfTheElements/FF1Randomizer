@@ -219,8 +219,8 @@
 	{
 		"Id": "cleanBlursedEquipmentNamesCheckBox",
 		"title": "Cleaner Names for Blursed Weapons & Armor",
-		"screenshot": null,
-		"description": "Makes equipment names cleaner when they are shortened by having a Blursing. For example, \"Vorpa+1\" becomes \"Vorpl+1\", \"Heav-3\" becomes \"Hvy -3\", and \"IceH+4\" becomes \"IcHt+4\". This is most relevant when using Weaponizer and Armor Crafter, but affects some vanilla equipment as well."
+		"screenshot": "cleanBlursedEquipmentNames.png",
+		"description": "Makes equipment names cleaner when they are shortened by having a Blursing (a random plus or minus to their stats). For example, \"Vorpa+1\" becomes \"Vorpl+1\", \"Heav-3\" becomes \"Hvy -3\", and \"IceH+4\" becomes \"IcHt+4\". This also adjusts generated armor names without an icon, e.g. \"Silve+2\" doesn't indicate where it can be equipped, so is changed to \"SlvrC+2\" or \"SlvrR+2\" to indicate that it is a Cape or Ring.\nThis setting is most relevant when using Weaponizer and Armor Crafter, but affects some vanilla equipment as well. Equipment generated without any stat plus/minus keeps its original long name."
 	},
 	{
 		"Id": "shopInfoIconsCheckBox",
