@@ -524,12 +524,12 @@ namespace FF1Lib
 				    for (int i = 0; i < qualityLevels.Length; i++) {
 					if (score <= qualityLevels[i]) {
 					    gear = gearQuality[i];
-						break;
+					    break;
 					}
 				    }
 				    var gearname = rng.Between(0, gear.Length-1);
 				    name = gear[gearname];
-						}
+				}
 				nameWithIcon = $"{name,-6}{Weapon.IconCodes[icon]}";
 			    }
 

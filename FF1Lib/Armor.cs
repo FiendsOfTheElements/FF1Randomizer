@@ -97,7 +97,6 @@ namespace FF1Lib
 					}
 
 					currentArmor.Name = FF1Text.BytesToText(nameBytes);
-					
 					currentArmor.writeArmorMemory(this);
 				}
 			}
