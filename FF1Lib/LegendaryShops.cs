@@ -412,7 +412,7 @@ namespace FF1Lib
 
 			// Only add Soft & Pure if they are otherwise rare/special
 			IEnumerable<byte> specialSpells2 = new List<byte>();
-			if (flags.ExclusiveLegendaryWhiteShop && flags.ExclusiveLegendaryItemShop) {
+			if (flags.ExclusiveLegendaryWhiteShop && flags.ExclusiveLegendaryItemShop && (flags.LegendaryWhiteShop ?? false) && (flags.LegendaryItemShop ?? false)) {
 				specialSpells2 = Spells.Where(s => s.Key.StartsWith("soft"))
 				.Concat(Spells.Where(s => s.Key.StartsWith("sft")))
 				.Concat(Spells.Where(s => s.Key.StartsWith("pure")))
@@ -433,6 +433,7 @@ namespace FF1Lib
 
 			items.Shuffle(rng);
 			result.AddRange(items.Take(slots).Select(i => (Item)Convert.ToByte(i + 0xB0)));
+			//if (result.Contains(items.Take(slots).Select(i => (Item)Convert.ToByte(i + 0xB0)))) { }
 
 			return result;
 		}
