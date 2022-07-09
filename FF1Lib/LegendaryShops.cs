@@ -368,6 +368,8 @@ namespace FF1Lib
 
 		private List<Item> GetCraftedSpellInventory(int slots, bool black)
 		{
+			// BUG - Can pull the same spell multiple times, e.g. CUR6 & CUR6
+
 			var stDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting != 0x01).Where(s => s.tier >= 3).OrderBy(s => -s.tier).Take(3);
 			var aoeDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(6);
 
@@ -399,21 +401,29 @@ namespace FF1Lib
 				.Concat(WordSpells2)
 				.Select(s => Convert.ToByte(SpellInfos.IndexOf(s)));
 
-
 			var specialSpells = Spells.Where(s => s.Key.StartsWith("lif"))
 			.Concat(Spells.Where(s => s.Key.StartsWith("warp")))
 			.Concat(Spells.Where(s => s.Key.StartsWith("wrp")))
 			.Concat(Spells.Where(s => s.Key.StartsWith("exit")))
 			.Concat(Spells.Where(s => s.Key.StartsWith("ext")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("soft")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("sft")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("pure")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("pur")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("xfer")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("xfr")))
 			.Select(s => Convert.ToByte(s.Value.Index));
+
+			// Only add Soft & Pure if they are otherwise rare/special
+			IEnumerable<byte> specialSpells2 = new List<byte>();
+			if (flags.ExclusiveLegendaryWhiteShop && flags.ExclusiveLegendaryItemShop) {
+				specialSpells2 = Spells.Where(s => s.Key.StartsWith("soft"))
+				.Concat(Spells.Where(s => s.Key.StartsWith("sft")))
+				.Concat(Spells.Where(s => s.Key.StartsWith("pure")))
+				.Concat(Spells.Where(s => s.Key.StartsWith("pur")))
+				.Select(s => Convert.ToByte(s.Value.Index));
+			}
 
 
 			var items = spells
 				.Concat(specialSpells)
+				.Concat(specialSpells2)
 				.Where(s => BlackSpell(s) ^ !black)
 				.ToList();
 
