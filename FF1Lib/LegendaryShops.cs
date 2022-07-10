@@ -377,7 +377,7 @@ namespace FF1Lib
 			var aoeHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(1);
 
 			var stHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);
-			var aoeHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);
+			var aoeHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting == 0x08).OrderBy(s => -s.tier).Take(2);
 
 			var WallSpells = SpellInfos.Where(s => s.routine == 0x0A && s.effect == 0xFF).Take(1);
 			var FastSpells = SpellInfos.Where(s => s.routine == 0x0C).OrderBy(s => -s.tier).Take(2);
@@ -406,8 +406,6 @@ namespace FF1Lib
 			.Concat(Spells.Where(s => s.Key.StartsWith("wrp")))
 			.Concat(Spells.Where(s => s.Key.StartsWith("exit")))
 			.Concat(Spells.Where(s => s.Key.StartsWith("ext")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("xfer")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("xfr")))
 			.Select(s => Convert.ToByte(s.Value.Index));
 
 			// Only add Soft & Pure if they are otherwise rare/special
