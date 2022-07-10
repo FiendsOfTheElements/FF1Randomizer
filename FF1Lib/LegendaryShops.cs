@@ -368,8 +368,6 @@ namespace FF1Lib
 
 		private List<Item> GetCraftedSpellInventory(int slots, bool black)
 		{
-			// BUG - Can pull the same spell multiple times, e.g. CUR6 & CUR6
-
 			var stDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting != 0x01).Where(s => s.tier >= 3).OrderBy(s => -s.tier).Take(3);
 			var aoeDamSpells = SpellInfos.Where(s => s.routine == 0x01 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(6);
 
@@ -406,6 +404,8 @@ namespace FF1Lib
 			.Concat(Spells.Where(s => s.Key.StartsWith("wrp")))
 			.Concat(Spells.Where(s => s.Key.StartsWith("exit")))
 			.Concat(Spells.Where(s => s.Key.StartsWith("ext")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("xfer")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("xfr")))
 			.Select(s => Convert.ToByte(s.Value.Index));
 
 			// Only add Soft & Pure if they are otherwise rare/special
@@ -431,7 +431,6 @@ namespace FF1Lib
 
 			items.Shuffle(rng);
 			result.AddRange(items.Take(slots).Select(i => (Item)Convert.ToByte(i + 0xB0)));
-			//if (result.Contains(items.Take(slots).Select(i => (Item)Convert.ToByte(i + 0xB0)))) { }
 
 			return result;
 		}
