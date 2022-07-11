@@ -30,9 +30,9 @@ namespace FF1Lib
 
 		public static readonly IReadOnlyList<Item> LegendaryArmorTier =
 		new List<Item> {
-			Item.OpalArmor, Item.DragonArmor, Item.Opal, Item.OpalShield,
-			Item.OpalShield, Item.AegisShield, Item.OpalHelm, Item.Ribbon,
-			Item.Ribbon, Item.Ribbon, Item.OpalGauntlets, Item.OpalGauntlets,
+			Item.OpalArmor, Item.DragonArmor, Item.Opal,
+			Item.OpalShield, Item.AegisShield,
+			Item.Ribbon, Item.Ribbon, Item.Ribbon,
 		};
 
 		public static readonly IReadOnlyList<Item> RareWeaponTier =
@@ -45,6 +45,7 @@ namespace FF1Lib
 
 		public static readonly IReadOnlyList<Item> RareArmorTier =
 		new List<Item> {
+			Item.OpalHelm, Item.OpalGauntlets,
 			Item.SteelArmor, Item.FlameArmor, Item.IceArmor, Item.Gold,
 			Item.WhiteShirt, Item.BlackShirt, Item.FlameShield, Item.IceShield,
 			Item.ProCape, Item.ProCape, Item.HealHelm,
