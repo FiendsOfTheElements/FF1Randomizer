@@ -33,6 +33,7 @@ namespace FF1Lib
 			Item.OpalArmor, Item.DragonArmor, Item.Opal,
 			Item.OpalShield, Item.AegisShield,
 			Item.Ribbon, Item.Ribbon, Item.Ribbon,
+			Item.PowerGauntlets,
 		};
 
 		public static readonly IReadOnlyList<Item> RareWeaponTier =
@@ -41,6 +42,7 @@ namespace FF1Lib
 			Item.SunSword, Item.CoralSword, Item.WereSword, Item.RuneSword,
 			Item.LightAxe, Item.HealRod, Item.MageRod, Item.Defense,
 			Item.WizardRod, Item.CatClaw, Item.ThorHammer, Item.BaneSword,
+			Item.PowerRod,
 		};
 
 		public static readonly IReadOnlyList<Item> RareArmorTier =
@@ -49,7 +51,7 @@ namespace FF1Lib
 			Item.SteelArmor, Item.FlameArmor, Item.IceArmor, Item.Gold,
 			Item.WhiteShirt, Item.BlackShirt, Item.FlameShield, Item.IceShield,
 			Item.ProCape, Item.ProCape, Item.HealHelm,
-			Item.ZeusGauntlets, Item.PowerGauntlets, Item.ProRing, Item.ProRing,
+			Item.ZeusGauntlets, Item.ProRing, Item.ProRing,
 		};
 
 		public static readonly IReadOnlyList<Item> CommonWeaponTier =
@@ -59,7 +61,7 @@ namespace FF1Lib
 			Item.Rapier, Item.IronHammer, Item.ShortSword, Item.HandAxe,
 			Item.Scimitar, Item.IronNunchucks, Item.LargeKnife, Item.IronStaff,
 			Item.Sabre, Item.LongSword, Item.GreatAxe, Item.Falchon, Item.SilverKnife,
-			Item.SilverSword, Item.SilverHammer, Item.SilverAxe, Item.PowerRod,
+			Item.SilverSword, Item.SilverHammer, Item.SilverAxe, 
 		};
 
 		public static readonly IReadOnlyList<Item> CommonArmorTier =
