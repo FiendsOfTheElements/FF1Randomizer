@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using RomUtilities;
+﻿using System.Diagnostics;
 using FF1Lib.Sanity;
 
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FF1Lib.Procgen
+﻿namespace FF1Lib.Procgen
 {
 	static class MapHelper
 	{

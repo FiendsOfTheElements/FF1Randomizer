@@ -1,10 +1,4 @@
-﻿using RomUtilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace FF1Lib.Procgen
+﻿namespace FF1Lib.Procgen
 {
 	class WaterfallEngine : IMapGeneratorEngine
 	{

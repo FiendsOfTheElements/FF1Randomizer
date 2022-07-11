@@ -1,10 +1,5 @@
 ﻿using FF1Lib.Sanity;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static FF1Lib.FF1Rom;
 
 namespace FF1Lib

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
-
-namespace FF1Lib.Sanity
+﻿namespace FF1Lib.Sanity
 {
 	[Serializable]
 	public class NopeException : Exception

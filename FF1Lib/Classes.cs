@@ -1,10 +1,4 @@
-﻿using RomUtilities;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text;
-using System.Runtime.CompilerServices;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using FF1Lib.Helpers;
 
 namespace FF1Lib

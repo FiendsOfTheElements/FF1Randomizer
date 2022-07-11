@@ -1,15 +1,9 @@
-using System.Collections.Generic;
-using System;
-using System.Reflection;
-using RomUtilities;
 using FF1Lib.Sanity;
-using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace FF1Lib.Procgen
 {
 
-    public partial class OverworldState {
+	public partial class OverworldState {
 
 	public async Task<Result> BridgeAlternatives() {
 	    var o1 = new OverworldState(this);

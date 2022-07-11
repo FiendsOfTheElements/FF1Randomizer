@@ -1,10 +1,4 @@
 ﻿using FF1Lib.Data;
-using RomUtilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static FF1Lib.FF1Rom;
 
 namespace FF1Lib

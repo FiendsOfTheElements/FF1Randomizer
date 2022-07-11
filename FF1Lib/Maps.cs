@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using FF1Lib.Procgen;
-using RomUtilities;
-using static FF1Lib.FF1Text;
+﻿using FF1Lib.Procgen;
 using FF1Lib.Sanity;
-using System.Threading.Tasks;
 
 namespace FF1Lib
 {
