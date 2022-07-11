@@ -1584,13 +1584,19 @@
 		"Id": "startingEquipmentGrandpasSecretStash",
 		"title": "Starting Equipment - Grandpa's Secret Stash",
 		"screenshot": "startingEquipmentGrandpasSecretStash.png",
-		"description": "Adds three legendary tier items and five common tier tiems to the party's starting inventory."
+		"description": "Adds three items that are either legendary tier (e.g. Dragon Armor, Vorpal) or caster items (e.g. Heal Helmet) as well as five common tier items to the party's starting inventory."
 	},
 	{
 		"Id": "startingEquipmentRandomCommons",
 		"title": "Starting Equipment - Random Commons",
 		"screenshot": "startingEquipmentRandomCommons.png",
 		"description": "Fills up the party's entire inventory with random equipment. There is a small chance to roll rare and legendary items into this mix of gear."
+	},
+	{
+		"Id": "startingEquipmentOneItem",
+		"title": "Starting Equipment - One Powerful Item",
+		"screenshot": null,
+		"description": "Adds one item that is either legendary tier (e.g. Ribbon, Katana) or a caster item (such as the Bane Sword) to the party's starting inventory."
 	},
 	{
 		"Id": "startingEquipmentRandomTypeWeapon",
