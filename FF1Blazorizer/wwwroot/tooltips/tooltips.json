@@ -2152,7 +2152,7 @@
 		"Id": "increaseDarkPenaltyCheckBox",
 		"title": "Increase Dark Penalty",
 		"screenshot": "increaseDarkPenaltyCheckBox.png",
-		"description": "If enabled, \"Dark\" status severely decreases an attacker's chance to hit or crit an enemy.\nAffects both players and enemies inflicted with \"Dark\" status."
+		"description": "If enabled, \"Dark\" status severely decreases an attacker's chance to hit or crit an enemy: their crit chance is set to 0%, and they lose all of their base hit chance (this effectively makes the penalty -168 instead of the normal -40), leaving them with only their Hit% vs the defender's Evasion.\nAffects both players and enemies inflicted with \"Dark\" status."
 	},
 	{
 		"Id": "OrbsRequiredModeDropDown",
