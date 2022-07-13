@@ -55,6 +55,10 @@
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapGaiaMountainPass">Gaia Mountain Pass</TriStateCheckBox>
 
+                    <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="highwayToOrdealsCheckBox"
+							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+							  @bind-Value="Flags.MapHighwayToOrdeals">Highway to Ordeals</TriStateCheckBox>
+
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="riverToMelmondCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapRiverToMelmond">River to Melmond</TriStateCheckBox>

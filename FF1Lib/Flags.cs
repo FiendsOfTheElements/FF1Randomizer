@@ -283,7 +283,8 @@ namespace FF1Lib
 		public bool? MapLefeinRiver  { get; set; } = false;
 		public bool? MapBridgeLefein { get; set; } = false;
 		public bool? MapRiverToMelmond { get; set; } = false;
-		public bool? MapGaiaMountainPass  { get; set; } = false;
+		public bool? MapGaiaMountainPass { get; set; } = false;
+		public bool? MapHighwayToOrdeals { get; set; } = false;
 		public bool? MapDragonsHoard { get; set; } = false;
 		public bool? MapHallOfDragons { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;

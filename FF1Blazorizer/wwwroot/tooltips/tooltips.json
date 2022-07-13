@@ -792,6 +792,12 @@
 		"description": "Adds a new river connecting the Dwarf Cave area to Melmond, Earth Cave, and Titan's Tunnel. This allows access to the Melmond region without the CANAL, and also without the SHIP if \"Early Open Progression\" is enabled."
 	},
 	{
+		"Id": "highwayToOrdealsCheckBox",
+		"title": "Highway to Ordeals",
+		"screenshot": "MapHighwayToOrdeals.gif",
+		"description": "Adds a passageway connecting the Lefein area to the Mirage Desert, and a passageway from the Mirage Desert to the Castle of Ordeals.\nRequires other Map Edit flags to be relevant, such as \"Bridge to Lefein\" or \"Northern Docks\"."
+	},
+	{
 		"Id": "gaiaMountainPassCheckBox",
 		"title": "Gaia Mountain Pass",
 		"screenshot": "gaiaMountainPass.png",
