@@ -48,7 +48,7 @@ namespace FF1Lib
 		// Gold           112 / 234        48
 
 		private static readonly List<int>[] RelativeRatios = {
-			new List<int> {  1,  3, 6, 7, 9, -4, -5, -12, -5 },  // High Wealth
+			new List<int> {  1,  3, 7, 7, 9, -4, -5, -13, -5 },  // High Wealth
 			new List<int> {  0,  0, 0, 0, 0,  0,  0,   0,  0 },
 			//new List<int> {  0,  -1, -2, -3, -3, 4, 5, 0,  0 },
 			//new List<int> {  0,  -1, -3, -5, -4, 6, 7, 0,  0 },
@@ -126,7 +126,7 @@ namespace FF1Lib
 
 	public class ShopItemGenerator : IItemGenerator
 	{
-		private static readonly List<int> Ratios = new() { 1, 4, 8, 17, 19, 13, 23, 36, 112 };
+		private static readonly List<int> Ratios = new() { 1, 4, 10, 18, 18, 12, 23, 36, 112 };
 
 		private List<List<Item>> _pool;
 
