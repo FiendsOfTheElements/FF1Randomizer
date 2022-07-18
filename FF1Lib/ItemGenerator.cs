@@ -37,11 +37,11 @@ namespace FF1Lib
 		// Type:          Vanilla Count:
 		// Unique (Masa)       1
 		// Legendary Weapon    4
-		// Legendary Armor     9
-		// Rare Weapon        17
-		// Rare Armor         19
-		// Common Weapon      35 - 1 - 4 - 17 = 13
-		// Common Armor       51 - 12 - 16    = 23
+		// Legendary Armor    10
+		// Rare Weapon        18
+		// Rare Armor         18
+		// Common Weapon      35 - 1 - 4 - 18 = 12
+		// Common Armor       51 - 10 - 18    = 23
 		// Weapon          35 / 234        15
 		// Armor           51 / 234        22
 		// Consumable      36 / 234        15

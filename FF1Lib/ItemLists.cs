@@ -42,7 +42,7 @@ namespace FF1Lib
 			Item.SunSword, Item.CoralSword, Item.WereSword, Item.RuneSword,
 			Item.LightAxe, Item.HealRod, Item.MageRod, Item.Defense,
 			Item.WizardRod, Item.CatClaw, Item.ThorHammer, Item.BaneSword,
-			Item.PowerRod, // Usually spellcasting and good in most flagsets; ideally added situationally if this gets overhauled
+			Item.PowerRod, // Usually spellcasting and good in most flagsets; ideally added situationally if this section gets overhauled
 		};
 
 		public static readonly IReadOnlyList<Item> RareArmorTier =
