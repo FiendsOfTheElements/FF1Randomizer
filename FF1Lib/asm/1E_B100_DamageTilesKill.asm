@@ -1,3 +1,5 @@
+; Changed slightly from the original on July 2022 for compatibility with adjustable lava damage
+
 tmp             = $10 ; 16 bytes
 palcyc_mode     = tmp+$C  ; shared tmp
 btl_combatboxcount  = $6AF8     ; the number of combat boxes that have been drawn
@@ -42,8 +44,11 @@ Loop:
   BCS DmgSubtract
   
   LDA #$01
-  STA ch_ailments, X
-  INY
+  STA ch_ailments, X		; set dead status
+
+	LDA #0
+	STA ch_curhp, X				; sets HP directly to 0 -- added to prevent problems with lava damage > 1
+	JMP AlreadyDead
 
 DmgSubtract:
   LDA ch_curhp, X       ; subtract 1 HP
