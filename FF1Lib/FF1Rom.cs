@@ -294,21 +294,6 @@ namespace FF1Lib
 			{
 				int DamageTileAmount = rng.Between(flags.DamageTileLow, flags.DamageTileHigh);
 				AdjustDamageTileDamage(DamageTileAmount, (bool)flags.DamageTilesKill);
-				/*
-				// Overwrites a bit of the newly created DamageTilesKill assembly code to account for the adjustable damage
-				if ((bool)flags.DamageTilesKill) {
-					PutInBank(0x1E, 0xB114, Blob.FromHex($"{DamageTileAmount + 1}"));
-					//Data[0xE] = (byte)(DamageTileAmount + 1); //"HP Less than" check so it doesn't kill
-					PutInBank(0x1E, 0xB122, Blob.FromHex($"{DamageTileAmount}"));
-					//Data[0xE] = (byte)(DamageTileAmount);
-				}
-				// No Lethal Damage Tiles Flag, overwrite normal rom code instead
-				else {
-					Data[0x7C86C] = (byte)(DamageTileAmount + 1); //"HP Less than" check so it doesn't kill
-					Data[0x7C874] = (byte)(DamageTileAmount);
-				}
-				*/
-
 			}
 
 			if ((bool)flags.MoveToFBats) {
