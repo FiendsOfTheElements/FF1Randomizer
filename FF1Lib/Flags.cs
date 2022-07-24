@@ -224,9 +224,7 @@ namespace FF1Lib
 		public Runnability Runnability { get; set; } = Runnability.Normal;
 		public bool? EnemyFormationsSurprise { get; set; } = false;
 		public bool? UnrunnablesStrikeFirstAndSurprise { get; set; } = false;
-		public bool? EnemyTrapTiles { get; set; } = false;
-		public bool? RemoveTrapTiles { get; set; } = false;
-		public bool? RandomTrapFormations { get; set; } = false;
+		public TrapTileMode EnemyTrapTiles { get; set; } = TrapTileMode.Vanilla;
 		public FormationPool TCFormations { get; set; } = FormationPool.AltFormationDist;
 		public TCOptions TCBetterTreasure { get; set; } = TCOptions.None;
 		public TCOptions TCKeyItems { get; set; } = TCOptions.None;

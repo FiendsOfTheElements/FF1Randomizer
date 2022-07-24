@@ -437,6 +437,7 @@ IncreaseStartingGP:
 IGP_ClassLoop: 
   JSR GetValueByClass
   BEQ IGP_NotClass
+    TAX
     LDA #$00
     STA tmp
     STA tmp+1

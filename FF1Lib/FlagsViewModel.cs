@@ -956,24 +956,14 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-		public bool CanShuffleTrapTiles => !((Flags.RandomizeEnemizer ?? false) || (Flags.RemoveTrapTiles ?? false));
 
-		public bool? EnemyTrapTiles
+		public TrapTileMode EnemyTrapTiles
 		{
 			get => Flags.EnemyTrapTiles;
 			set
 			{
 				Flags.EnemyTrapTiles = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyTrapTiles"));
-			}
-		}
-		public bool? RandomTrapFormations
-		{
-			get => Flags.RandomTrapFormations;
-			set
-			{
-				Flags.RandomTrapFormations = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomTrapFormations"));
+				RaisePropertyChanged();
 			}
 		}
 		public FormationPool TCFormations
@@ -1074,15 +1064,6 @@ namespace FF1Lib
 			{
 				Flags.TCIndicator = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TCIndicator"));
-			}
-		}
-		public bool? RemoveTrapTiles
-		{
-			get => Flags.RemoveTrapTiles;
-			set
-			{
-				Flags.RemoveTrapTiles = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RemoveTrapTiles"));
 			}
 		}
 
@@ -2809,6 +2790,15 @@ namespace FF1Lib
 			{
 				Preferences.AccessibleSpellNames = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ModernizeSpellNames"));
+			}
+		}
+		public bool CleanBlursedEquipmentNames
+		{
+			get => Preferences.CleanBlursedEquipmentNames;
+			set
+			{
+				Preferences.CleanBlursedEquipmentNames = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CleanBlursedEquipmentNames"));
 			}
 		}
 		public bool ShopInfoIcons

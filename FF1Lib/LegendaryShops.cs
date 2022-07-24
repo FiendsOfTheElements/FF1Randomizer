@@ -322,7 +322,13 @@ namespace FF1Lib
 			}
 			else
 			{
-				var spells = new List<Spell> { Spell.RUSE, Spell.INVS, Spell.PURE, Spell.CUR3, Spell.LIFE, Spell.HRM3, Spell.SOFT, Spell.EXIT, Spell.INV2, Spell.CUR4, Spell.HRM4, Spell.HEL3, Spell.LIF2, Spell.FADE, Spell.WALL };
+				var spells = new List<Spell> { Spell.RUSE, Spell.INVS, Spell.CUR3, Spell.LIFE, Spell.HRM3, Spell.EXIT, Spell.INV2, Spell.CUR4, Spell.HRM4, Spell.HEL3, Spell.LIF2, Spell.FADE, Spell.WALL, Spell.HEL2, Spell.XFER };
+				// If status restorative effects are set up to be especially rare, lean into that and makes the spells rarer too
+				if (flags.ExclusiveLegendaryWhiteShop && flags.ExclusiveLegendaryItemShop && (flags.LegendaryWhiteShop ?? false) && (flags.LegendaryItemShop ?? false)) {
+					spells.Add(Spell.SOFT);
+					spells.Add(Spell.PURE);
+				}
+
 				var items = spells.Where(s => Spells.ContainsKey(s.ToString().ToLowerInvariant())).Select(s => Convert.ToByte(Spells[s.ToString().ToLowerInvariant()].Index + MagicNamesIndexInItemText)).Cast<Item>().ToList();
 
 				List<Item> result = new List<Item>();
@@ -342,7 +348,13 @@ namespace FF1Lib
 			}
 			else
 			{
-				var spells = new List<Spell> { Spell.LOCK, Spell.TMPR, Spell.FIR2, Spell.LIT2, Spell.LOK2, Spell.FAST, Spell.ICE2, Spell.FIR3, Spell.BANE, Spell.WARP, Spell.LIT3, Spell.QAKE, Spell.ICE3, Spell.BRAK, Spell.SABR, Spell.NUKE, Spell.ZAP, Spell.XXXX };
+				var spells = new List<Spell> { Spell.TMPR, Spell.FIR2, Spell.LIT2, Spell.FAST, Spell.ICE2, Spell.FIR3, Spell.BANE, Spell.WARP, Spell.LIT3, Spell.QAKE, Spell.ICE3, Spell.BRAK, Spell.SABR, Spell.NUKE, Spell.ZAP, Spell.XXXX };
+				// LOCK & LOK2 are included as long as their accuracy is set to high or auto-hit
+				if ((flags.LockMode != LockHitMode.Vanilla) && (flags.LockMode != LockHitMode.Accuracy107)) {
+					spells.Add(Spell.LOCK);
+					spells.Add(Spell.LOK2);
+				}
+
 				var items = spells.Where(s => Spells.ContainsKey(s.ToString().ToLowerInvariant())).Select(s => Convert.ToByte(Spells[s.ToString().ToLowerInvariant()].Index + MagicNamesIndexInItemText)).Cast<Item>().ToList();
 
 				List<Item> result = new List<Item>();
@@ -363,7 +375,7 @@ namespace FF1Lib
 			var aoeHarmSpells = SpellInfos.Where(s => s.routine == 0x02 && s.targeting == 0x01).OrderBy(s => -s.tier).Take(1);
 
 			var stHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);
-			var aoeHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting != 0x08).OrderBy(s => -s.tier).Take(2);
+			var aoeHealSpells = SpellInfos.Where(s => (s.routine == 0x07 || s.routine == 0x0F) && s.targeting == 0x08).OrderBy(s => -s.tier).Take(2);
 
 			var WallSpells = SpellInfos.Where(s => s.routine == 0x0A && s.effect == 0xFF).Take(1);
 			var FastSpells = SpellInfos.Where(s => s.routine == 0x0C).OrderBy(s => -s.tier).Take(2);
@@ -387,21 +399,29 @@ namespace FF1Lib
 				.Concat(WordSpells2)
 				.Select(s => Convert.ToByte(SpellInfos.IndexOf(s)));
 
-
 			var specialSpells = Spells.Where(s => s.Key.StartsWith("lif"))
 			.Concat(Spells.Where(s => s.Key.StartsWith("warp")))
 			.Concat(Spells.Where(s => s.Key.StartsWith("wrp")))
 			.Concat(Spells.Where(s => s.Key.StartsWith("exit")))
 			.Concat(Spells.Where(s => s.Key.StartsWith("ext")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("soft")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("sft")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("pure")))
-			.Concat(Spells.Where(s => s.Key.StartsWith("pur")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("xfer")))
+			.Concat(Spells.Where(s => s.Key.StartsWith("xfr")))
 			.Select(s => Convert.ToByte(s.Value.Index));
+
+			// Only add Soft & Pure if they are otherwise rare/special
+			IEnumerable<byte> specialSpells2 = new List<byte>();
+			if (flags.ExclusiveLegendaryWhiteShop && flags.ExclusiveLegendaryItemShop && (flags.LegendaryWhiteShop ?? false) && (flags.LegendaryItemShop ?? false)) {
+				specialSpells2 = Spells.Where(s => s.Key.StartsWith("soft"))
+				.Concat(Spells.Where(s => s.Key.StartsWith("sft")))
+				.Concat(Spells.Where(s => s.Key.StartsWith("pure")))
+				.Concat(Spells.Where(s => s.Key.StartsWith("pur")))
+				.Select(s => Convert.ToByte(s.Value.Index));
+			}
 
 
 			var items = spells
 				.Concat(specialSpells)
+				.Concat(specialSpells2)
 				.Where(s => BlackSpell(s) ^ !black)
 				.ToList();
 

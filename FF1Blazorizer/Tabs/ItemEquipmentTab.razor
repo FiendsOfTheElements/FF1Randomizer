@@ -19,7 +19,7 @@
 	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomEndgameWeapon">Random Endgame Weapon</TriStateCheckBox>
 	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomAoe">Random AoE Caster Item</TriStateCheckBox>
 	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentRandomCasterItem">Random Caster Item</TriStateCheckBox>
-	<TriStateCheckBox DisableTooltip="true" @bind-Value="Flags.StartingEquipmentOneItem">One Legendary Item</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentOneItem" @bind-Value="Flags.StartingEquipmentOneItem">One Legendary/Caster Item</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRandomTypeWeapon" @bind-Value="Flags.StartingEquipmentRandomTypeWeapon">Random Typed Weapon</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentGrandpasSecretStash" @bind-Value="Flags.StartingEquipmentGrandpasSecretStash">Grandpa's Secret Stash</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="startingEquipmentRandomCommons" @bind-Value="Flags.StartingEquipmentRandomCrap">Random Commons</TriStateCheckBox>
@@ -69,8 +69,8 @@
 		<div class="col1">
 			<h4>Balance</h4>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleWeaponCritCheckBox" @bind-Value="Flags.WeaponCritRate">Double Weapon Crit Rate</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseWepBonusesCheckBox" @bind-Value="Flags.WeaponBonuses">Increase Weapon Elemental and Type Bonuses</CheckBox>
-			<IntSlider Indent Min="1" Max="50" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.WeaponBonuses" Id="WeaponTypeBonusValue" @bind-Value="@Flags.WeaponTypeBonusValue">Weapon Elemental/Type Damage Bonus:</IntSlider>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseWepBonusesCheckBox" @bind-Value="Flags.WeaponBonuses">Increase Weapon Elemental & Type Bonuses</CheckBox>
+			<IntSlider Indent Min="1" Max="50" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.WeaponBonuses" Id="WeaponTypeBonusValue" @bind-Value="@Flags.WeaponTypeBonusValue">Damage Bonus:</IntSlider>
 
 		</div>
 		<div class="col2">
