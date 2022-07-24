@@ -288,6 +288,13 @@ namespace FF1Lib
 			{
 				DamageTilesKill(flags.SaveGameWhenGameOver);
 			}
+			
+			// Adjustable lava damage - run if anything other than the default of 1 damage
+			if ((int)flags.DamageTileLow != 1 || (int)flags.DamageTileHigh != 1)
+			{
+				int DamageTileAmount = rng.Between(flags.DamageTileLow, flags.DamageTileHigh);
+				AdjustDamageTileDamage(DamageTileAmount, (bool)flags.DamageTilesKill);
+			}
 
 			if ((bool)flags.MoveToFBats) {
 			    MoveToFBats();

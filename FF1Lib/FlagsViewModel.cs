@@ -1178,6 +1178,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GaiaShortcut"));
 			}
 		}
+		public int DamageTileLow
+		{
+			get => Flags.DamageTileLow;
+			set
+			{
+				Flags.DamageTileLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DamageTileLow"));
+			}
+		}
+		public int DamageTileHigh
+		{
+			get => Flags.DamageTileHigh;
+			set
+			{
+				Flags.DamageTileHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DamageTileHigh"));
+			}
+		}
 		public bool? OWDamageTiles
 		{
 			get => Flags.OWDamageTiles;
