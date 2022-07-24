@@ -1394,6 +1394,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GaiaMountainPass"));
 			}
 		}
+		public bool? MapHighwayToOrdeals
+		{
+			get => Flags.MapHighwayToOrdeals;
+			set
+			{
+				Flags.MapHighwayToOrdeals = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapHighwayToOrdeals"));
+			}
+		}
 		public bool? MapDragonsHoard
 		{
 			get => Flags.MapDragonsHoard;

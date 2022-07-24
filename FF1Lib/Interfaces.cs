@@ -100,6 +100,7 @@
 		bool? MapBridgeLefein { get; }
 		bool? MapRiverToMelmond { get; }
 		bool? MapGaiaMountainPass { get; }
+		bool? MapHighwayToOrdeals { get; }
 		bool? TitansTrove { get; }
 		bool? GaiaShortcut { get; }
 		bool? MoveGaiaItemShop { get; }
