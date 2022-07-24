@@ -24,10 +24,10 @@
       <TriStateCheckBox DisableTooltip Id="legendaryArmorShopCheckBox" @bind-Value="Flags.LegendaryArmorShop">Legendary Armor Shop</TriStateCheckBox>
       <CheckBox Indent DisableTooltip Id="exlegendaryArmorShopCheckBox" IsEnabled="Flags.LegendaryArmorShop" @bind-Value="Flags.ExclusiveLegendaryArmorShop">Exclusive</CheckBox>
 
-	    <TriStateCheckBox DisableTooltip Id="legendaryBlackShopCheckBox" @bind-Value="Flags.LegendaryBlackShop">Legendary Black Shop</TriStateCheckBox>
+	    <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryBlackShopCheckBox" @bind-Value="Flags.LegendaryBlackShop">Legendary Black Shop</TriStateCheckBox>
 	    <CheckBox Indent DisableTooltip Id="exlegendaryBlackShopCheckBox" IsEnabled="Flags.LegendaryBlackShop" @bind-Value="Flags.ExclusiveLegendaryBlackShop">Exclusive</CheckBox>
 
-	    <TriStateCheckBox DisableTooltip Id="legendaryWhiteShopCheckBox" @bind-Value="Flags.LegendaryWhiteShop">Legendary White Shop</TriStateCheckBox>
+	    <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryWhiteShopCheckBox" @bind-Value="Flags.LegendaryWhiteShop">Legendary White Shop</TriStateCheckBox>
 	    <CheckBox Indent DisableTooltip Id="exlegendaryWhiteShopCheckBox" IsEnabled="Flags.LegendaryWhiteShop" @bind-Value="Flags.ExclusiveLegendaryWhiteShop">Exclusive</CheckBox>
 
 	    <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryItemShopCheckBox" @bind-Value="Flags.LegendaryItemShop">Legendary Item Shop</TriStateCheckBox>
@@ -46,7 +46,7 @@
 			<h4>Balance</h4>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="cureHealBuffCheckBox" @bind-Value="Flags.BuffHealingSpells">Improve CUREs, HEALs, LAMP, AMUT spells</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tier1DamageBuff" @bind-Value="Flags.BuffTier1DamageSpells">Improve FIRE, LIT, ICE, HARM spells</CheckBox>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="LockMode" TItem="LockHitMode" @bind-Value="Flags.LockMode">LOCK and LOK2 Mode:</EnumDropDown>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="LockMode" TItem="LockHitMode" @bind-Value="Flags.LockMode">LOCK & LOK2 Mode:</EnumDropDown>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="magicAutohitThresholdDropDown" TItem="AutohitThreshold" @bind-Value="Flags.MagicAutohitThreshold">Power Word Threshold:</EnumDropDown>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enableSoftInBattle" @bind-Value="Flags.EnableSoftInBattle">Enable Soft in Battle</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enableLifeInBattle" @bind-Value="Flags.EnableLifeInBattle">Enable Life in Battle</CheckBox>

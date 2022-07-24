@@ -1127,6 +1127,18 @@
 		"description": "Creates up to five legendary shops in dungeons, one of each type. Shops will tend to have high-tier gear (which will often include things you cannot normally find in shops) or highly desirable spells.\nThe potential locations are: Earth Cave B2, Marsh Cave B2, Dwarves' Cave, Mirage Tower F1, Ice Cave B1, & Left Sea Shrine 2.\n\"Exclusive\" means that it will also remove any items/spells found in the Legendary Shop from all other shops and treasure chests in the world."
 	},
 	{
+		"Id": "legendaryBlackShopCheckBox",
+		"title": "Legendary Black Magic Shop",
+		"screenshot": null,
+		"description": "Randomly selects 5 strong spells. Compatible with Spell Crafter.\nThe pool for vanilla spells is: FIR2, LIT2, ICE2, FIR3, LIT3, ICE3, NUKE, BRAK, BANE, QAKE, ZAP!, XXXX, LOCK, LOK2, TMPR, SABR, FAST, WARP. If \"LOCK & LOK2 Mode\" is only set to Vanilla or 107 Accuracy, LOCK & LOK2 are removed from the pool."
+	},
+	{
+		"Id": "legendaryWhiteShopCheckBox",
+		"title": "Legendary White Magic Shop",
+		"screenshot": null,
+		"description": "Randomly selects 4 strong spells. Compatible with Spell Crafter.\nThe pool for vanilla spells is: CUR3, CUR4, HEL2, HEL3, LIFE, LIF2, HRM3, HRM4, FADE, RUSE, INVS, INV2, EXIT, WALL, XFER. When Exclusive Legendary White Magic Shops and Exclusive Legendary Item Shops are both present, PURE and SOFT are added to the pool."
+	},
+	{
 		"Id": "legendaryItemShopCheckBox",
 		"title": "Legendary Item Shop",
 		"screenshot": null,
