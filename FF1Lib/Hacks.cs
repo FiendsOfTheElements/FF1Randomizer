@@ -1828,6 +1828,8 @@ namespace FF1Lib
 			const byte idAnkylo = 0x4E; // ANKYLO ENEMY #
 			const byte encCerbWzOgre = 0x22; // CEREBUS + WzOGRE
 			const byte encTyroWyvern = 0x3D + offsetAtoB; // TYRO + WYVERN
+			const byte encGasD = 0x59; // GAS DRAGON
+			const byte encBlueD = 0x4E; // BLUE DRAGON
 
 			// Turn Ankylo into Bahamut
 			var encountersData = new Encounters(this);
@@ -1944,20 +1946,39 @@ namespace FF1Lib
 			npcdata.GetTalkArray(ObjectId.Bahamut)[(int)TalkArrayPos.battle_id] = encAnkylo;
 			npcdata.SetRoutine(ObjectId.Bahamut, (newTalkRoutines)fightBahamut);
 
+			// Fun Minion dialogue pairings
+			var minionDialogs = new List<string> {
+				"For the king!;For the master!",
+				"No one approaches\nthe master and lives!;Who goes there!?\nYou are not worthy!",
+				"Weaklings!\nYou will die here!;NOW you DIE!",
+				"PFFT!;PEW..PEW..PEW!",
+				"ROOOOAAR!!;HIIISSSS!!",
+				"No! You are not welcome\nhere!;Get out get out get out!",
+			};
+			string[] minions = minionDialogs.PickRandom(rng).Split(";");
+
 			// Update Dragon dialogs
 			Dictionary<int, string> dialogs = new Dictionary<int, string>();
 			dialogs.Add(0x20, bahamutDialogue);
+			dialogs.Add(0xEC, minions[0]); // (CardiaDragon11 / Left) "This is BAHAMUT's room."
+			dialogs.Add(0xED, minions[1]); // (CardiaDragon12 / Right) "BAHAMUT verifies the\ntrue courage of all."
 			dialogs.Add(0xE9, "Have you met BAHAMUT,\nthe Dragon King? He\nfights those with\ncourage as true\nwarriors."); // Cardia Tiny
 			dialogs.Add(0xE5, "You are not afraid of\nBAHAMUT??\nYou will be!"); // Cardia Forest
 			dialogs.Add(0xAB, "Many have searched\nfor BAHAMUT, but,\nnone that found him\nsurvived."); // Onrac Pre-Promo
 			dialogs.Add(0xAC, "Well, well..\nI see you have\nslayed the dragon."); // Onrac Post-Promo
 			InsertDialogs(dialogs);
 
-			// Change Bahamut Dragon NPCs to the "Onrac Dragon" so they will change what they say post promotion
+			// Change Bahamut Dragon NPCs (Left/Right Minions)
 			if (!deepDungeon)
 			{
-				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.OnracDragon, 19, 7, inRoom: true, stationary: true);
-				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.OnracDragon, 23, 7, inRoom: true, stationary: true);
+				npcdata.GetTalkArray(ObjectId.CardiaDragon11)[(int)TalkArrayPos.battle_id] = encGasD;
+				npcdata.SetRoutine(ObjectId.CardiaDragon11, newTalkRoutines.Talk_fight);
+
+				npcdata.GetTalkArray(ObjectId.CardiaDragon12)[(int)TalkArrayPos.battle_id] = encBlueD;
+				npcdata.SetRoutine(ObjectId.CardiaDragon12, newTalkRoutines.Talk_fight);
+
+				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.CardiaDragon11, 20, 4, inRoom: true, stationary: true);
+				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.CardiaDragon12, 22, 4, inRoom: true, stationary: true);
 			}
 		}
 
