@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using FF1Lib.Sanity;
 
 namespace FF1Lib.Procgen
 {
-    public class OverworldTiles {
+	public class OverworldTiles {
         public const byte LAND = 0x00;
 	public const byte CONERIA_CASTLE_ENTRANCE_W = 0x01;
 	public const byte CONERIA_CASTLE_ENTRANCE_E = 0x02;

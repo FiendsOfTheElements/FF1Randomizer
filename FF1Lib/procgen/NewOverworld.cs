@@ -1,15 +1,11 @@
-using System.Collections.Generic;
-using System;
 using System.Reflection;
-using RomUtilities;
 using FF1Lib.Sanity;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace FF1Lib.Procgen
 {
 
-    public static class RNGExtensions {
+	public static class RNGExtensions {
        public static double Uniform(this MT19337 rng, double low, double high)
         {
                 double range = (high - low);

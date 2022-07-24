@@ -1,6 +1,4 @@
-﻿using RomUtilities;
-
-namespace FF1Lib
+﻿namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
 	{

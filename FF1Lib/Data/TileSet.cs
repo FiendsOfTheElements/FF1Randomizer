@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 
 namespace FF1Lib
 {
-    [Flags]
+	[Flags]
 	public enum TilePropFunc : byte
 	{
 		TP_SPEC_DOOR = 0b00000010,

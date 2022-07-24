@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Net;
-using System.Text;
-using RomUtilities;
 
 namespace FF1Lib
 {
-    public enum SpoilerBatHints {
+	public enum SpoilerBatHints {
 	[Description("Vanilla")]
 	Vanilla = 0,
 	[Description("Hints")]
