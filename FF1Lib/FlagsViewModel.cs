@@ -2792,6 +2792,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ModernizeSpellNames"));
 			}
 		}
+		public bool CleanBlursedEquipmentNames
+		{
+			get => Preferences.CleanBlursedEquipmentNames;
+			set
+			{
+				Preferences.CleanBlursedEquipmentNames = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CleanBlursedEquipmentNames"));
+			}
+		}
 		public bool ShopInfoIcons
 		{
 			get => Preferences.ShopInfoIcons;

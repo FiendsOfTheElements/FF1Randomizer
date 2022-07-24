@@ -683,6 +683,7 @@ namespace FF1Lib
 			}
 
 			// Add Spellcasting Bonuses, keep around in case of revolt
+			// If re-implemented, change names so that "Spells" is spelled out since "Sp" has regularly been confusing
 			/*
 			if ((bool)flags.RandomizeClassCasting)
 			{
