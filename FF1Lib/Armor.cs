@@ -27,7 +27,7 @@ namespace FF1Lib
 		public const int ArmorTypeOffset        = 0x3BCD1;
 		public const int ArmorPermissionsCount = 40;
 
-		public void RandomArmorBonus(MT19337 rng, int min, int max)
+		public void RandomArmorBonus(MT19337 rng, int min, int max, bool cleanNames)
 		{
 			//get base stats
 			Armor currentArmor;
@@ -53,6 +53,36 @@ namespace FF1Lib
 					string bonusString = string.Format((bonus > 0) ? "+{0}" : "{0}", bonus.ToString());
 					byte[] bonusBytes = FF1Text.TextToBytes(bonusString);
 
+					// Adjusts blursed armor names to be more understandable
+					if (cleanNames) {
+						if (currentArmor.Name[0..6] == "Copper") { currentArmor.Name = "Copr" + currentArmor.Name.Substring(4); }
+						if (currentArmor.Name[0..5] == "Steel")  { currentArmor.Name = "Stl " + currentArmor.Name.Substring(4); }
+						if (currentArmor.Name[0..6] == "Silver") { currentArmor.Name = "Slvr" + currentArmor.Name.Substring(4); }
+						if (currentArmor.Name[0..6] == "Burlap") { currentArmor.Name = "Brlp" + currentArmor.Name.Substring(4); }
+						if (currentArmor.Name[0..6] == "Leathr") { currentArmor.Name = "Lthr" + currentArmor.Name.Substring(4); }
+						if (currentArmor.Name[0..6] == "Emerld") { currentArmor.Name = "Emrl" + currentArmor.Name.Substring(4); }
+
+						if (currentArmor.Name[0..5] == "Earth")  { currentArmor.Name = "Erth" + currentArmor.Name.Substring(4); }
+						if (currentArmor.Name[0..6] == "Active") { currentArmor.Name = "Actv" + currentArmor.Name.Substring(4); }
+						if (currentArmor.Name[0..5] == "Power")  { currentArmor.Name = "Powr" + currentArmor.Name.Substring(4); }
+
+						if (currentArmor.Name[0..6] == "Ribbon") {
+							// Don't adjust vanilla Ribbon with no icon; only Ribbons with icons or C/R from Armor Crafter
+							if (!currentArmor.Name.EndsWith(" ")) { currentArmor.Name = "Ribn" + currentArmor.Name.Substring(4); }
+						}
+
+						// No-icon "cape" and "ring" equipment needs to keep the "C" and "R" so it's clear where it's equipped
+						if (currentArmor.Name.EndsWith("C"))
+						{
+							currentArmor.Name = currentArmor.Name.Substring(0, 4) + "C  ";
+						}
+						else if (currentArmor.Name.EndsWith("R"))
+						{
+							currentArmor.Name = currentArmor.Name.Substring(0, 4) + "R  ";
+						}
+					}
+
+
 					var nameBytes = FF1Text.TextToBytes(currentArmor.Name, false);
 
 					int iconIndex = nameBytes[6] > 200 && nameBytes[6] != 255 ? 5 : 6;
@@ -62,7 +92,6 @@ namespace FF1Lib
 					}
 
 					currentArmor.Name = FF1Text.BytesToText(nameBytes);
-
 					currentArmor.writeArmorMemory(this);
 				}
 			}
@@ -183,7 +212,7 @@ namespace FF1Lib
 
 		    // cast FAST, SABR or TMPR
 		    var powerGauntletSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any).
-								     Concat(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any)).
+								     Concat(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Any)).
 								     Select(s => s.Id));
 		    // cast INV2, FOG2, or WALL
 		    var whiteShirtSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.AllCharacters).

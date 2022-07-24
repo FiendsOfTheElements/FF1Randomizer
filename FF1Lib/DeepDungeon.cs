@@ -314,6 +314,7 @@ namespace FF1Lib
 		private int tntfloor = 8 + 7;
 		private int rubyfloor = 22 + 7;
 		private int oxyfloor = 36 + 7;
+		public int WarMechFloor { get; set; }
 
 		private struct Treasure
 		{
@@ -1182,6 +1183,9 @@ namespace FF1Lib
 			// Put Bahamut and a TAIL somewhere in the dungeon.
 			PlaceBahamut(rng, maps, flags);
 
+			// Placce WarMech if it's enabled
+			PlaceWarMech(rng, maps, flags);
+
 			// Assign random palettes to the maps.
 			SpinPalettes(rng, maps);
 
@@ -1858,6 +1862,49 @@ namespace FF1Lib
 			_rom.SetNpc((MapId)59, 0, (ObjectId)0x18, c.x, c.y, true, true);
 			_rom.SetNpc((MapId)59, 1, (ObjectId)0x19, c.x, c.y, true, true);
 			_rom.SetNpc((MapId)59, 2, (ObjectId)0x1A, c.x, c.y, true, true);
+		}
+		private void PlaceWarMech(MT19337 rng, List<Map> maps, Flags flags)
+		{
+			List<Candidate> candidates = new List<Candidate>();
+			Candidate c;
+			int warmechfloor = 0;
+			bool warmechstationary = false;
+			Map m;
+			Tileset t;
+
+			if (flags.WarMECHMode == WarMECHMode.Vanilla || flags.WarMECHMode == WarMECHMode.Unleashed)
+			{
+				WarMechFloor = 0;
+				return;
+			}
+			else if (flags.WarMECHMode == WarMECHMode.Patrolling)
+			{
+				warmechfloor = RollDice(rng, 1, 6) + 45 + 7;
+				warmechstationary = false;
+				m = maps[warmechfloor];
+				t = tilesets[tilesetmappings[warmechfloor]];
+
+				for (int i = 1; i < 63; i++)
+				{
+					for (int j = 1; j < 63; j++)
+					{
+						if (m[j, i] == t.floortile)
+						{
+							if (Traversible(m, t, i, j, 1, 1, false)) candidates.Add(new Candidate(i, j));
+						}
+					}
+				}
+			}
+			else if (flags.WarMECHMode == WarMECHMode.Required)
+			{
+				warmechfloor = 59;
+				warmechstationary = true;
+				candidates.Add(new Candidate(0x0F, 0x16));
+			}
+
+			WarMechFloor = warmechfloor;
+			c = candidates.SpliceRandom(rng);
+			_rom.SetNpc((MapId)warmechfloor, 4, ObjectId.WarMECH, c.x, c.y, false, warmechstationary);
 		}
 		private void PlaceBahamut(MT19337 rng, List<Map> maps, Flags flags)
 		{

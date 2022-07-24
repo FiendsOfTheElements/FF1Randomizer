@@ -282,14 +282,21 @@ public partial class FF1Rom : NesRom
 			maps[(int)MapId.Waterfall] = waterfall.Map;
 		}
 
-		if((bool)flags.OWDamageTiles || flags.DesertOfDeath)
-		{
-			EnableDamageTile();
-		}
-		if ((bool)flags.DamageTilesKill)
-		{
-			DamageTilesKill(flags.SaveGameWhenGameOver);
-		}
+			if((bool)flags.OWDamageTiles || flags.DesertOfDeath)
+			{
+				EnableDamageTile();
+			}
+			if ((bool)flags.DamageTilesKill)
+			{
+				DamageTilesKill(flags.SaveGameWhenGameOver);
+			}
+			
+			// Adjustable lava damage - run if anything other than the default of 1 damage
+			if ((int)flags.DamageTileLow != 1 || (int)flags.DamageTileHigh != 1)
+			{
+				int DamageTileAmount = rng.Between(flags.DamageTileLow, flags.DamageTileHigh);
+				AdjustDamageTileDamage(DamageTileAmount, (bool)flags.DamageTilesKill);
+			}
 
 		if ((bool)flags.MoveToFBats) {
 		    MoveToFBats();
@@ -334,10 +341,12 @@ public partial class FF1Rom : NesRom
 			await this.Progress("Generating Deep Dungeon's Floors... Done!");
 		}
 
-		if ((bool)flags.LefeinShops)
-		{
-			EnableLefeinShops(maps);
-		}
+			int warmMechFloor = DeepDungeon.WarMechFloor;
+
+			if ((bool)flags.LefeinShops)
+			{
+				EnableLefeinShops(maps);
+			}
 
         if ((bool)flags.MelmondClinic)
         {
@@ -865,7 +874,7 @@ public partial class FF1Rom : NesRom
 		// After unrunnable shuffle and before formation shuffle. Perfect!
 		if (flags.WarMECHMode != WarMECHMode.Vanilla)
 		{
-			WarMECHNpc(flags.WarMECHMode, npcdata, rng, maps);
+			WarMECHNpc(flags.WarMECHMode, npcdata, rng, maps, flags.GameMode == GameModes.DeepDungeon, (MapId)warmMechFloor);
 		}
 
 		if (flags.WarMECHMode == WarMECHMode.Unleashed)
@@ -975,16 +984,16 @@ public partial class FF1Rom : NesRom
 
 		List<int> blursesValues = Enumerable.Repeat(0, 40).ToList();
 
-		//needs to go after item magic, moved after double weapon crit to have more control over the actual number of crit gained.
-		if ((bool)flags.RandomWeaponBonus)
-		{
-			blursesValues = RandomWeaponBonus(rng, flags.RandomWeaponBonusLow, flags.RandomWeaponBonusHigh, (bool)flags.RandomWeaponBonusExcludeMasa);
-		}
+			//needs to go after item magic, moved after double weapon crit to have more control over the actual number of crit gained.
+			if ((bool)flags.RandomWeaponBonus)
+			{
+				blursesValues = RandomWeaponBonus(rng, flags.RandomWeaponBonusLow, flags.RandomWeaponBonusHigh, (bool)flags.RandomWeaponBonusExcludeMasa, preferences.CleanBlursedEquipmentNames);
+			}
 
-		if ((bool)flags.RandomArmorBonus)
-		{
-			RandomArmorBonus(rng, flags.RandomArmorBonusLow, flags.RandomArmorBonusHigh);
-		}
+			if ((bool)flags.RandomArmorBonus)
+			{
+				RandomArmorBonus(rng, flags.RandomArmorBonusLow, flags.RandomArmorBonusHigh, preferences.CleanBlursedEquipmentNames);
+			}
 
 		if (flags.WeaponBonuses)
 		{

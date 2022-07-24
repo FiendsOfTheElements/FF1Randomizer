@@ -981,7 +981,7 @@ namespace FF1Lib
 
 			return mapsToFlip;
 		}
-		public void WarMECHNpc(WarMECHMode mode, NPCdata npcpdata, MT19337 rng, List<Map> maps)
+		public void WarMECHNpc(WarMECHMode mode, NPCdata npcpdata, MT19337 rng, List<Map> maps, bool deepDungeon, MapId warmechDDmap)
 		{
 			const byte UnusedTextPointer = 0xF7;
 			const byte WarMECHEncounter = 0x56;
@@ -1020,7 +1020,7 @@ namespace FF1Lib
 			if (mode != WarMECHMode.Unleashed)
 				MakeWarMECHUnrunnable();
 
-			if (mode == WarMECHMode.Required)
+			if (mode == WarMECHMode.Required && !deepDungeon)
 			{
 				// Can't use mapNpcIndex 0, that's the Wind ORB.
 				SetNpc(MapId.SkyPalace5F, 1, ObjectId.WarMECH, 0x07, 0x0E, inRoom: false, stationary: true);
@@ -1029,11 +1029,20 @@ namespace FF1Lib
 			}
 			else if (mode == WarMECHMode.Patrolling)
 			{
-				var (x, y) = GetSkyCastleFloorTile(rng, maps[(byte)MapId.SkyPalace4F]);
-				SetNpc(MapId.SkyPalace4F, 0, ObjectId.WarMECH, x, y, inRoom: false, stationary: false);
+				byte warmechMap = (byte)MapId.SkyPalace4F;
+
+				if (!deepDungeon)
+				{
+					var (x, y) = GetSkyCastleFloorTile(rng, maps[warmechMap]);
+					SetNpc((MapId)warmechMap, 0, ObjectId.WarMECH, x, y, inRoom: false, stationary: false);
+				}
+				else
+				{
+					warmechMap = (byte)warmechDDmap;
+				}
 
 				// We can change all the colors here.
-				Put(0x02978, Blob.FromHex("0F0F18140F0F1714"));
+				PutInBank(0x00, 0xA000 + (warmechMap * 0x30) + 0x18, Blob.FromHex("0F0F18140F0F1714"));
 			}
 		}
 

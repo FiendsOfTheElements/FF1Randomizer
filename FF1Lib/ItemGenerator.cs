@@ -31,22 +31,22 @@ namespace FF1Lib
 		// Type:          Vanilla Count:
 		// Unique (Masa)       1
 		// Legendary Weapon    4
-		// Legendary Armor    12
-		// Rare Weapon        17
-		// Rare Armor         16
-		// Common Weapon      35 - 1 - 4 - 17 = 13
-		// Common Armor       51 - 12 - 16    = 23
+		// Legendary Armor    10
+		// Rare Weapon        18
+		// Rare Armor         18
+		// Common Weapon      35 - 1 - 4 - 18 = 12
+		// Common Armor       51 - 10 - 18    = 23
 		// Weapon          35 / 234        15
 		// Armor           51 / 234        22
 		// Consumable      36 / 234        15
 		// Gold           112 / 234        48
 
 		private static readonly List<int>[] RelativeRatios = {
-			new List<int> {  1,  3, 9, 7, 8, -4, -5, -13, -6 },
+			new List<int> {  1,  3, 7, 7, 9, -4, -5, -13, -5 },  // High Wealth
 			new List<int> {  0,  0, 0, 0, 0,  0,  0,   0,  0 },
 			//new List<int> {  0,  -1, -2, -3, -3, 4, 5, 0,  0 },
 			//new List<int> {  0,  -1, -3, -5, -4, 6, 7, 0,  0 },
-			new List<int> {  -1, -2, -4, -5, -4, 14, 14, 0, -12 },
+			new List<int> {  -1, -2, -4, -5, -5, 14, 15, 0, -12 }, //Melmond Wealth
 		};
 
 		private List<List<Item>> _pool;
@@ -120,7 +120,7 @@ namespace FF1Lib
 
 	public class ShopItemGenerator : IItemGenerator
 	{
-		private static readonly List<int> Ratios = new() { 1, 4, 12, 17, 16, 13, 23, 36, 112 };
+		private static readonly List<int> Ratios = new() { 1, 4, 10, 18, 18, 12, 23, 36, 112 };
 
 		private List<List<Item>> _pool;
 

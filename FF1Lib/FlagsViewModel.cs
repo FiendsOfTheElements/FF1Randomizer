@@ -1174,6 +1174,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GaiaShortcut"));
 			}
 		}
+		public int DamageTileLow
+		{
+			get => Flags.DamageTileLow;
+			set
+			{
+				Flags.DamageTileLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DamageTileLow"));
+			}
+		}
+		public int DamageTileHigh
+		{
+			get => Flags.DamageTileHigh;
+			set
+			{
+				Flags.DamageTileHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DamageTileHigh"));
+			}
+		}
 		public bool? OWDamageTiles
 		{
 			get => Flags.OWDamageTiles;
@@ -1388,6 +1406,15 @@ namespace FF1Lib
 			{
 				Flags.MapGaiaMountainPass = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GaiaMountainPass"));
+			}
+		}
+		public bool? MapHighwayToOrdeals
+		{
+			get => Flags.MapHighwayToOrdeals;
+			set
+			{
+				Flags.MapHighwayToOrdeals = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MapHighwayToOrdeals"));
 			}
 		}
 		public bool? MapDragonsHoard
@@ -2786,6 +2813,15 @@ namespace FF1Lib
 			{
 				Preferences.AccessibleSpellNames = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ModernizeSpellNames"));
+			}
+		}
+		public bool CleanBlursedEquipmentNames
+		{
+			get => Preferences.CleanBlursedEquipmentNames;
+			set
+			{
+				Preferences.CleanBlursedEquipmentNames = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CleanBlursedEquipmentNames"));
 			}
 		}
 		public bool ShopInfoIcons

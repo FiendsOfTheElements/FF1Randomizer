@@ -105,7 +105,7 @@ namespace FF1Lib
 			if ((bool)flags.MapLefeinRiver && !flags.DisableOWMapModifications) {
 			    MapEditsToApply.Add(LefeinRiverDock);
 			    mapLocationRequirements[MapLocation.Lefein].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
-		  }
+			}
 			if ((bool)flags.MapBridgeLefein && !flags.DisableOWMapModifications) {
 					// Moves the Bridge to its new home below Lefein
 					OwLocationData _OwLocationData = new(rom);
@@ -118,7 +118,7 @@ namespace FF1Lib
 					mapLocationRequirements[MapLocation.MatoyasCave].Add(MapChange.None);
 					mapLocationRequirements[MapLocation.Pravoka].Add(MapChange.None);
 					mapLocationRequirements[MapLocation.IceCave1].Add(MapChange.Canoe);
-      }
+			}
 			if ((bool)flags.MapGaiaMountainPass && !flags.DisableOWMapModifications) {
 			    MapEditsToApply.Add(GaiaMountainPass);
 					// If Lefein River Dock is on, then Gaia also becomes Ship-accessible
@@ -131,20 +131,24 @@ namespace FF1Lib
 					}
 			    _walkableNodes[WalkableRegion.LefeinRegion] = new List<OverworldTeleportIndex>{OverworldTeleportIndex.Gaia, OverworldTeleportIndex.Lefein };
 			}
+			if ((bool)flags.MapHighwayToOrdeals && !flags.DisableOWMapModifications)
+			{
+				MapEditsToApply.Add(HighwayToOrdeals);
+			}
 			if ((bool)flags.MapRiverToMelmond && !flags.DisableOWMapModifications) {
-					MapEditsToApply.Add(RiverToMelmond);
-					// With Early Open Progression, you only need a Canoe
-					if ((bool)flags.MapConeriaDwarves) {
-						mapLocationRequirements[MapLocation.Melmond].Add(MapChange.Canoe);
-						mapLocationRequirements[MapLocation.TitansTunnelEast].Add(MapChange.Canoe);
-						mapLocationRequirements[MapLocation.EarthCave1].Add(MapChange.Canoe);
-					}
-					else {
-						mapLocationRequirements[MapLocation.Melmond].Add(MapChange.Ship | MapChange.Canoe);
-						mapLocationRequirements[MapLocation.TitansTunnelEast].Add(MapChange.Ship | MapChange.Canoe);
-						mapLocationRequirements[MapLocation.EarthCave1].Add(MapChange.Ship | MapChange.Canoe);
-					}
-		  }
+				MapEditsToApply.Add(RiverToMelmond);
+				// With Early Open Progression, you only need a Canoe
+				if ((bool)flags.MapConeriaDwarves) {
+					mapLocationRequirements[MapLocation.Melmond].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.TitansTunnelEast].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.EarthCave1].Add(MapChange.Canoe);
+				}
+				else {
+					mapLocationRequirements[MapLocation.Melmond].Add(MapChange.Ship | MapChange.Canoe);
+					mapLocationRequirements[MapLocation.TitansTunnelEast].Add(MapChange.Ship | MapChange.Canoe);
+					mapLocationRequirements[MapLocation.EarthCave1].Add(MapChange.Ship | MapChange.Canoe);
+				}
+			}
 			if ((bool)flags.MapVolcanoIceRiver)
 			{
 				MapEditsToApply.Add(VolcanoIceRiver);
@@ -1002,12 +1006,18 @@ namespace FF1Lib
 		public const byte CoastBottomRight = 0x28;
 		
 		// The special grassy effect around e.g. Elfland or Gaia
-	  public const byte GrassyMid = 0x54;
-	  public const byte GrassTopLeft = 0x60;
-	  public const byte GrassTopRight = 0x61;
-	  public const byte GrassBottomLeft = 0x70;
-	  public const byte GrassBottomRight = 0x71;
-		
+		public const byte GrassyMid = 0x54;
+		public const byte GrassTopLeft = 0x60;
+		public const byte GrassTopRight = 0x61;
+		public const byte GrassBottomLeft = 0x70;
+		public const byte GrassBottomRight = 0x71;
+
+		public const byte DesertMid = 0x45;
+		public const byte DesertTopLeft = 0x42;
+		public const byte DesertTopRight = 0x43;
+		public const byte DesertBottomLeft = 0x52;
+		public const byte DesertBottomRight = 0x53;
+
 		// Reference OverworldTiles.cs in the procGen if you need a tile not yet listed here, e.g. more Docks
 
 		public static List<MapEdit> OnracDock =
@@ -1159,6 +1169,47 @@ namespace FF1Lib
 					new MapEdit{X = 158, Y = 142, Tile = GrassTile},
 					new MapEdit{X = 159, Y = 142, Tile = GrassTile},
 			};
+			public static List<MapEdit> HighwayToOrdeals =
+			new List<MapEdit>
+			{
+					// Mirage to Ordeals
+					new MapEdit{X = 186, Y = 49, Tile = MountainBottomRight},
+					new MapEdit{X = 187, Y = 49, Tile = DesertTopLeft},
+					new MapEdit{X = 188, Y = 49, Tile = DesertTopRight},
+					new MapEdit{X = 189, Y = 49, Tile = MountainBottomLeft},
+
+					new MapEdit{X = 186, Y = 48, Tile = MountainTopRight},
+					new MapEdit{X = 187, Y = 48, Tile = GrassBottomLeft},
+					new MapEdit{X = 188, Y = 48, Tile = GrassBottomRight},
+					new MapEdit{X = 189, Y = 48, Tile = MountainTopLeft},
+
+					new MapEdit{X = 185, Y = 47, Tile = MountainTopRight},
+					new MapEdit{X = 186, Y = 47, Tile = GrassBottomLeft},
+					new MapEdit{X = 187, Y = 47, Tile = GrassyMid},
+					new MapEdit{X = 188, Y = 47, Tile = GrassyMid},
+					new MapEdit{X = 189, Y = 47, Tile = GrassTopRight},
+					new MapEdit{X = 190, Y = 47, Tile = MountainTopLeft},
+
+					//Lefein to Mirage
+					new MapEdit{X = 209, Y = 50, Tile = DesertMid},
+					new MapEdit{X = 209, Y = 51, Tile = DesertBottomRight},
+					new MapEdit{X = 208, Y = 51, Tile = DesertMid},
+					new MapEdit{X = 208, Y = 52, Tile = DesertBottomRight},
+
+					new MapEdit{X = 209, Y = 52, Tile = GrassTile},
+					new MapEdit{X = 210, Y = 52, Tile = GrassTile},
+					new MapEdit{X = 210, Y = 53, Tile = GrassTile},
+					new MapEdit{X = 211, Y = 53, Tile = GrassTile},
+					new MapEdit{X = 210, Y = 54, Tile = GrassTile},
+
+					new MapEdit{X = 208, Y = 53, Tile = MountainTopLeft},
+					new MapEdit{X = 209, Y = 53, Tile = MountainTopRight},
+					new MapEdit{X = 209, Y = 54, Tile = MountainMidRight},
+
+					new MapEdit{X = 210, Y = 51, Tile = MountainBottomLeft},
+					new MapEdit{X = 211, Y = 52, Tile = MountainBottomLeft},
+			};
+
 		public static List<MapEdit> RiverToMelmond =
 			new List<MapEdit>
 			{
