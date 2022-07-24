@@ -1528,7 +1528,7 @@ namespace FF1Lib
 		    "is a sitting duck",         // 0-49
 		    "is easy to hit",            // 50-74
 		    "",                          // 75-124,
-		    "is extra hard to hit",      // 125-149
+		    "is somewhat hard to hit",   // 125-149
 		    "is very hard to hit",       // 150-174
 		    "is super hard to hit",      // 175-199
 		    "is incredibly hard to hit", // 200-219
@@ -1540,8 +1540,8 @@ namespace FF1Lib
 		    "has pathetic armor",           // 0-39
 		    "has weak armor",               // 40-69
 		    "",                             // 70-99
-		    "has pretty thick armor",       // 100-124
-		    "has extra thick armor",        // 125-149
+		    "has somewhat thick armor",     // 100-124
+		    "has thick armor",        			// 125-149
 		    "has very thick armor",         // 150-174
 		    "has incredibly thick armor",   // 175-199
 		    "has insanely thick armor",     // 200-224
