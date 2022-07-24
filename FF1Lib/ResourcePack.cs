@@ -144,7 +144,7 @@ namespace FF1Lib
 			{
 				using (var s = spellbook.Open())
 				{
-				    using (StreamReader reader = new StreamReader(stream)) {
+				    using (StreamReader reader = new StreamReader(s)) {
 					var allSpells = JsonConvert.DeserializeObject<List<MagicSpell>>(reader.ReadToEnd());
 					this.PutSpells(allSpells);
 				    }

@@ -231,13 +231,13 @@ namespace FF1Lib
 			new string[] { "Storm" },
 			
 			new string[] { "Rune", "Ritual" },
-			
+		
 			new string[] { "Dragon", "Dino" },
 			
 			new string[] { "Giant", "Imp", "Ogre" },
 			
 			new string[] { "Holy", "Smite", "Banish", "Divine", "Blessd", "Sun" },
-			
+
 			new string[] { "Coral", "Aqua", "Water", "Splash" },
 			
 			new string[] { "IceHot" },

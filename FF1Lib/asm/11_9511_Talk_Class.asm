@@ -1,4 +1,4 @@
-;; Last Update : 2022-01-25 - Fix MP reset bug
+;; Last Update : 2022-06-30 - Compatibility with StartWith blursings
 
 unsram 		= $6000
 ch_stats        = unsram + $0100  ; MUST be on page bound.  Each character allowed $40 bytes, so use 00,40,80,C0 to index ch_stats
@@ -41,6 +41,7 @@ InTalkReenterMap = $9618
 InTalkDialogueBox = $963D
 SkipDialogueBox = $9643
 LineupMenu_ProcessJoy = $9A14              ; Bank $0E
+RecruitModeJump = $B600                    ; Bank $1B, include LvlUp_NoDisplay, see 1B_B000_StartWithRoutines.asm
 
  .ORG $9520 ; In bank 11
 
@@ -123,16 +124,16 @@ MagicLoop:                    ; Zero out all spell values and MPs
   BNE MagicLoop
   RTS  
  
-LevelUp:
+LevelUp:                       ; see 
   LDA #$11                     ; Push bank
   PHA
   LDA #>SwapPRG_skip           ; Put RTS address on stack
   PHA                          ;  so we switch back to bank 0E
   LDA #<SwapPRG_skip-1         ;  after LoadStartingStats switch to bank 00
   PHA
-  LDA #>LvlUp_NoDisplay       ; Put RTS address on stack
+  LDA #>RecruitModeJump        ; Put RTS address on stack
   PHA                          ;  because we'll be switching bank
-  LDA #<LvlUp_NoDisplay-1
+  LDA #<RecruitModeJump-1
   PHA
   TXA
   LSR

@@ -14,16 +14,18 @@ namespace FF1Lib
 	{
 		[Description("Disabled")]
 		Disabled,
-		[Description("150% @ 12 Items")]
+		[Description("+50% @ 12 Items")]
 		FiftyPercentAt12,
-		[Description("150% @ 15 Items")]
+		[Description("+50% @ 15 Items")]
 		FiftyPercentAt15,
-		[Description("200% @ 12 Items")]
+		[Description("Doubled @ 12 Items")]
 		DoubledAt12,
-		[Description("200% @ 15 Items")]
+		[Description("Doubled @ 15 Items")]
 		DoubledAt15,
-		[Description("+ 5% Per Item")]
+		[Description("+5% Per Item")]
 		Progressive5Percent,
+		[Description("+7.7% Per Item")]
+		Progressive7Percent,
 		[Description("+10% Per Item")]
 		Progressive10Percent,
 		[Description("+20% Per Item")]
@@ -413,6 +415,9 @@ namespace FF1Lib
 					break;
 				case ProgressiveScaleMode.Progressive5Percent:
 					ScaleFactor = 20;
+					break;
+				case ProgressiveScaleMode.Progressive7Percent:
+					ScaleFactor = 13;
 					break;
 				case ProgressiveScaleMode.Progressive10Percent:
 					ScaleFactor = 10;

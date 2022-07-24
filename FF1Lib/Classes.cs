@@ -702,12 +702,12 @@ namespace FF1Lib
 			// Add Lockpicking Bonus/Malus
 			if ((bool)flags.Lockpicking && flags.LockpickingLevelRequirement < 50)
 			{
-				malusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "+10 Lp Lv", mod: 10, Classes: new List<Classes> { Classes.Thief }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "LateLockpik", mod: 10, Classes: new List<Classes> { Classes.Thief }));
 			}
 
 			if ((bool)flags.Lockpicking && flags.LockpickingLevelRequirement > 1)
 			{
-				bonusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "-10 Lp Lv", mod: -10, Classes: new List<Classes> { Classes.Thief }));
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "EarlyLokpik", mod: -10, Classes: new List<Classes> { Classes.Thief }));
 			}
 
 			// Add Natural Resist Bonuses
@@ -1635,7 +1635,10 @@ namespace FF1Lib
 					var test = SpellSlotStructure.GetSpellSlots();
 
 					SpellSlotInfo spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spell.PickRandom(rng));
-					spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.BlackMage }));
+					if (spellId != null)
+					{
+						spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.BlackMage }));
+					}
 				}
 			}
 
@@ -1646,7 +1649,10 @@ namespace FF1Lib
 					var test = SpellSlotStructure.GetSpellSlots();
 					var pickedSpell = spell.PickRandom(rng);
 					SpellSlotInfo spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == pickedSpell);
-					spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage }));
+					if (spellId != null)
+					{
+						spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage }));
+					}
 				}
 			}
 
@@ -1685,6 +1691,11 @@ namespace FF1Lib
 					List<Classes> validClasses = new();
 					SpellSlotInfo spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spell.PickRandom(rng));
 
+					if (spellId == null)
+					{
+						continue;
+					}
+
 					if (_spellPermissions[Classes.RedMage].Where(x => x == (SpellSlots)spellId.BattleId).Any())
 					{
 						validClasses.Add(Classes.RedMage);
@@ -1711,14 +1722,19 @@ namespace FF1Lib
 			{
 				SpellSlotInfo spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellDark.PickRandom(rng));
 
-				spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.BlackMage }));
+				if (spellId != null)
+				{
+					spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.BlackMage }));
+				}
 			}
 
 			if (spellLamp.Any())
 			{
 				SpellSlotInfo spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellLamp.PickRandom(rng));
-
-				spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage }));
+				if (spellId != null)
+				{
+					spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage }));
+				}
 			}
 
 			return spellBlursings;
@@ -1735,7 +1751,7 @@ namespace FF1Lib
 			rom.PutInBank(0x1F, 0xD812, rom.CreateLongJumpTableEntry(0x1B, 0xB080));
 
 			// StartWith Initialization Routine
-			rom.PutInBank(0x1B, 0xB300, Blob.FromHex("A9B348A92048A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E484C07FE2031B32077B320DAB32010B42040B460A98085EDA9B485EEA200A0002015B0F0071885108A6510AA18986940A890EDA900851085118512E000F01718A9C865108510A90065118511A90065128512CA1890E520EADD60A98D85EDA9B485EEA200A0002000B0D001E818986940A890F3A900851085118512E000F01718A96465108510A90065118511A90065128512CA1890E5AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A200A000A9A785EDA9B485EE2015B048A99A85EDA9B485EE2015B048A90085EDA96385EE98AA65ED85ED68A86891ED8A6940A8D0CF60A200A000A9B485EDA9B485EE2000B0D003202CB418986940A890F1609848AAA007A901E89D20639D286388D0F668A860A200A000A9C185EDA9B485EE2015B0F006AAA9019D206018986940A890EE60"));
+			rom.PutInBank(0x1B, 0xB300, Blob.FromHex("A9B348A92048A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E484C07FEA000202EB398186940A8D0F660203EB32075B320C7B320F7B3201FB460A98085EDA9B485EEA2002015B0F027AAA900851085118512E000F01718A9C865108510A90065118511A90065128512CA1890E520EADD60A98D85EDA9B485EEA2002000B0D042E8A90085108511851218A96465108510A90065118511A90065128512AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A200A9A785EDA9B485EE2015B048A99A85EDA9B485EE2015B048A90085EDA96385EE98AA65ED85ED68A86891ED8AA860A200A9B485EDA9B485EE2000B0F001609848AAA007E8BD20631869019D20639D286388D0F068A860A200A9C185EDA9B485EE2015B0F006AAA9019D20606000"));
 
 			// Insert luts
 			Blob lut_IncreaseGP = _classes.Select(x => (byte)(x.StartWithGold != BlursesStartWithGold.Remove ? (byte)x.StartWithGold : 0x00)).ToArray();
@@ -1766,7 +1782,7 @@ namespace FF1Lib
 			//rom.PutInBank(0x1F, 0xC271, rom.CreateLongJumpTableEntry(0x1B, 0xB080));
 
 			// Battle StartWith
-			rom.PutInBank(0x1B, 0xB080, Blob.FromHex($"A908C5F2F0034C00B320ABB020E0B0208FB12017B12048B14C9BB0A90085EDA9B285EEA000B1822003B060A90D85EDA9B285EEA000B1822003B0D023A018B1823011C8B182300CC8B1823007C8B1823002A900297FC923D006A00FA9{catclawcrit:X2}918060A91A85EDA9B285EEA000B1822003B0D025A018B1823011C8B182300CC8B1823007C8B1823002A900297FC924D008A009B180180A918060A94E85EDA9B285EEA000B1822003B0D01FA01CB18210032037B1C8C020D0F460297FC905D00A9848A00BA902918068A860A95B85EDA9B285EE8A48A200A000B1822003B0D02FA01CB18210032078B1C8C020D0F4E003D01DA007A9FF918068AA60297FC902D002E860C91BD002E860C911D001E86068AA60A92785EDA9B285EEA000B1822003B0D006A00DA9FF918060A93485EDA9B285EEA000B1822003B0D008A001B1820920918260A94185EDA9B285EEA000B1822003B0D00F20E7FC2903D008A001B1820904918260"));
+			rom.PutInBank(0x1B, 0xB080, Blob.FromHex($"A908C5F2F0034C00B320ABB020E0B02096B12017B12048B14C9BB0A90085EDA9B285EEA000B1822003B060A90D85EDA9B285EEA000B1822003B0D023A018B1823011C8B182300CC8B1823007C8B1823002A900297FC923D006A00FA9{catclawcrit:X2}918060A91A85EDA9B285EEA000B1822003B0D025A018B1823011C8B182300CC8B1823007C8B1823002A900297FC924D008A009B180180A918060A94E85EDA9B285EEA000B1822003B0D01FA01CB18210032037B1C8C020D0F460297FC905D00A9848A00BA902918068A860A95B85EDA9B285EE8A48A200A000B1822003B0D036A01CB1821003207FB1C8C020D0F4E003D02418A007B18069789002A9FF918068AA60297FC902D002E860C91BD002E860C911D001E86068AA60A92785EDA9B285EEA000B1822003B0D006A00DA9FF918060A93485EDA9B285EEA000B1822003B0D008A001B1820920918260A94185EDA9B285EEA000B1822003B0D00F20E7FC2903D008A001B1820904918260"));
 
 			// Insert luts
 			Blob lut_Blackbelts = _classes.Select(x => (byte)(x.UnarmedAttack ? 0x01 : 0x00)).ToArray();
@@ -1786,6 +1802,9 @@ namespace FF1Lib
 				lut_Sick + new byte[] { 0x00 } +
 				lut_SteelArmor + new byte[] { 0x00 } +
 				lut_WoodArmors + new byte[] { 0x00 });
+
+			// Recruit Mode Switcher
+			rom.PutInBank(0x1B, 0xB600, Blob.FromHex("A5108513A8B913B6A8202EB3A51385104CAA87004080C0"));
 		}
 
 		private List<BonusMalus> StartWithKeyItems(Flags flags, MT19337 rng, List<string> olditemnames)

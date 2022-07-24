@@ -312,65 +312,6 @@ namespace FF1Lib
 
 		const ushort TalkFight = 0x94AA;
 
-		bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
-		bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
-		bool IsNonBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] > 0 && tuple[1] < FirstBossEncounterIndex;
-		bool IsNonBossTrapTileEx(Blob tuple) => IsBattleTile(tuple) && ((tuple[1] > 0 && tuple[1] < FirstBossEncounterIndex) || tuple[1] > LastBossEncounterIndex);
-		bool IsBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] <= LastBossEncounterIndex && tuple[1] >= FirstBossEncounterIndex;
-
-		public void RemoveTrapTiles(bool extendedtraptiles)
-		{
-			// This must be called before shuffle trap tiles since it uses the vanilla format for random encounters
-			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
-			tilesets.ForEach(tile =>
-			{
-
-				if (extendedtraptiles ? IsNonBossTrapTileEx(tile) : IsNonBossTrapTile(tile))
-				{
-					tile[1] = (byte)(extendedtraptiles ? 0x00 : 0x80);
-				}
-			});
-			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
-		}
-
-		public void ShuffleTrapTiles(MT19337 rng, bool randomize, bool fightBahamut)
-		{
-			// This is magic BNE code that enables formation 1 trap tiles but we have to change
-			// all the 0x0A 0x80 into 0x0A 0x00 and use 0x00 for random encounters instead of 0x80.
-			Data[0x7CDC5] = 0xD0;
-			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
-
-			List<byte> encounters;
-			if (randomize)
-			{
-				encounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
-				encounters.Add(0xFF); // IronGOL
-				if (fightBahamut)
-				{
-					encounters.Remove(0x80 + 0x71); // ANKYLO (used for Bahamut)
-				}
-			}
-			else
-			{
-				var traps = tilesets.Where(IsNonBossTrapTile).ToList();
-				encounters = traps.Select(trap => trap[1]).ToList();
-			}
-
-			tilesets.ForEach(tile =>
-			{
-				if (IsNonBossTrapTile(tile))
-				{
-					tile[1] = encounters.SpliceRandom(rng);
-				}
-				else if (IsRandomBattleTile(tile))
-				{
-					tile[1] = 0x00;
-				}
-			});
-
-			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
-		}
-
 		private struct OrdealsRoom
 		{
 			public byte Entrance;
@@ -1047,7 +988,7 @@ namespace FF1Lib
 
 			return mapsToFlip;
 		}
-		public void WarMECHNpc(WarMECHMode mode, NPCdata npcpdata, MT19337 rng, List<Map> maps)
+		public void WarMECHNpc(WarMECHMode mode, NPCdata npcpdata, MT19337 rng, List<Map> maps, bool deepDungeon, MapId warmechDDmap)
 		{
 			const byte UnusedTextPointer = 0xF7;
 			const byte WarMECHEncounter = 0x56;
@@ -1086,7 +1027,7 @@ namespace FF1Lib
 			if (mode != WarMECHMode.Unleashed)
 				MakeWarMECHUnrunnable();
 
-			if (mode == WarMECHMode.Required)
+			if (mode == WarMECHMode.Required && !deepDungeon)
 			{
 				// Can't use mapNpcIndex 0, that's the Wind ORB.
 				SetNpc(MapId.SkyPalace5F, 1, ObjectId.WarMECH, 0x07, 0x0E, inRoom: false, stationary: true);
@@ -1095,11 +1036,20 @@ namespace FF1Lib
 			}
 			else if (mode == WarMECHMode.Patrolling)
 			{
-				var (x, y) = GetSkyCastleFloorTile(rng, maps[(byte)MapId.SkyPalace4F]);
-				SetNpc(MapId.SkyPalace4F, 0, ObjectId.WarMECH, x, y, inRoom: false, stationary: false);
+				byte warmechMap = (byte)MapId.SkyPalace4F;
+
+				if (!deepDungeon)
+				{
+					var (x, y) = GetSkyCastleFloorTile(rng, maps[warmechMap]);
+					SetNpc((MapId)warmechMap, 0, ObjectId.WarMECH, x, y, inRoom: false, stationary: false);
+				}
+				else
+				{
+					warmechMap = (byte)warmechDDmap;
+				}
 
 				// We can change all the colors here.
-				Put(0x02978, Blob.FromHex("0F0F18140F0F1714"));
+				PutInBank(0x00, 0xA000 + (warmechMap * 0x30) + 0x18, Blob.FromHex("0F0F18140F0F1714"));
 			}
 		}
 
