@@ -332,6 +332,8 @@ namespace FF1Lib
 				await this.Progress("Generating Deep Dungeon's Floors... Done!");
 			}
 
+			int warmMechFloor = DeepDungeon.WarMechFloor;
+
 			if ((bool)flags.LefeinShops)
 			{
 				EnableLefeinShops(maps);
@@ -862,7 +864,7 @@ namespace FF1Lib
 			// After unrunnable shuffle and before formation shuffle. Perfect!
 			if (flags.WarMECHMode != WarMECHMode.Vanilla)
 			{
-				WarMECHNpc(flags.WarMECHMode, npcdata, rng, maps);
+				WarMECHNpc(flags.WarMECHMode, npcdata, rng, maps, flags.GameMode == GameModes.DeepDungeon, (MapId)warmMechFloor);
 			}
 
 			if (flags.WarMECHMode == WarMECHMode.Unleashed)
