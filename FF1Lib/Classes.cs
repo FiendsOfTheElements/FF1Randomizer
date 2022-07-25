@@ -613,6 +613,8 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.StartWithGold, "+200 GP", mod: 1),
 				new BonusMalus(BonusMalusAction.StartWithMp, "+1 MP LvAll", Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
 				new BonusMalus(BonusMalusAction.ThorMaster, "Thor Master", Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.WhiteMage }),
+				new BonusMalus(BonusMalusAction.Hunter, "Vamp Killer", mod: 0x18),
+				new BonusMalus(BonusMalusAction.Hunter, "Drgn Slayer", mod: 0x02),
 			};
 
 			if (!(bool)flags.Weaponizer)
@@ -633,7 +635,7 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.SpcGrowth, "Improved MP", bytelist: improvedMPlist, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.StartWithGold, "+1,000 GP", mod: 5, Classes: new List<Classes> { Classes.Thief }),
 				new BonusMalus(BonusMalusAction.PowerRW, "Sage", spelllist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), Classes: new List<Classes> { Classes.RedMage }),
-				new BonusMalus(BonusMalusAction.Hunter, "Hunter"),
+				new BonusMalus(BonusMalusAction.Hunter, "Hunter", mod: 0xFF),
 				//new BonusMalus(BonusMalusAction.UnarmedAttack, "Monk", Classes: new List<Classes> { Classes.WhiteMage }), need extra work
 			};
 
@@ -667,7 +669,7 @@ namespace FF1Lib
 			if (!(bool)flags.ArmorCrafter)
 			{
 				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorRemove, "-" + olditemnames[(int)Item.ProRing], equipment: new List<Item> { Item.ProRing }));
-				bonusNormal.Add(new BonusMalus(BonusMalusAction.SteelLord, "Steel Lord", Classes: new List<Classes> { Classes.Fighter }));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.SteelLord, "Steel Lord", Classes: new List<Classes> { Classes.Fighter }));
 				bonusNormal.Add(new BonusMalus(BonusMalusAction.WoodAdept, "Wood Adept"));
 			}
 
@@ -1002,8 +1004,8 @@ namespace FF1Lib
 							_classes[i + 6].StartWithMp = true;
 							break;
 						case BonusMalusAction.Hunter:
-							_classes[i].Hunter = true;
-							_classes[i + 6].Hunter = true;
+							_classes[i].HurtType |= (byte)bonusmalus.StatMod;
+							_classes[i + 6].HurtType |= (byte)bonusmalus.StatMod;
 							break;
 						case BonusMalusAction.UnarmedAttack:
 							_classes[i].UnarmedAttack = true;
@@ -1776,13 +1778,13 @@ namespace FF1Lib
 			//rom.PutInBank(0x1F, 0xC271, rom.CreateLongJumpTableEntry(0x1B, 0xB080));
 
 			// Battle StartWith
-			rom.PutInBank(0x1B, 0xB080, Blob.FromHex($"A908C5F2F0034C00B320ABB020E0B02096B12017B12048B14C9BB0A90085EDA9B285EEA000B1822003B060A90D85EDA9B285EEA000B1822003B0D023A018B1823011C8B182300CC8B1823007C8B1823002A900297FC923D006A00FA9{catclawcrit:X2}918060A91A85EDA9B285EEA000B1822003B0D025A018B1823011C8B182300CC8B1823007C8B1823002A900297FC924D008A009B180180A918060A94E85EDA9B285EEA000B1822003B0D01FA01CB18210032037B1C8C020D0F460297FC905D00A9848A00BA902918068A860A95B85EDA9B285EE8A48A200A000B1822003B0D036A01CB1821003207FB1C8C020D0F4E003D02418A007B18069789002A9FF918068AA60297FC902D002E860C91BD002E860C911D001E86068AA60A92785EDA9B285EEA000B1822003B0D006A00DA9FF918060A93485EDA9B285EEA000B1822003B0D008A001B1820920918260A94185EDA9B285EEA000B1822003B0D00F20E7FC2903D008A001B1820904918260"));
+			rom.PutInBank(0x1B, 0xB080, Blob.FromHex($"A908C5F2F0034C00B320ABB020E0B02096B12017B12048B14C9BB0A90085EDA9B285EEA000B1822003B060A90D85EDA9B285EEA000B1822003B0D023A018B1823011C8B182300CC8B1823007C8B1823002A900297FC923D006A00FA9{catclawcrit:X2}918060A91A85EDA9B285EEA000B1822003B0D025A018B1823011C8B182300CC8B1823007C8B1823002A900297FC924D008A009B180180A918060A94E85EDA9B285EEA000B1822003B0D01FA01CB18210032037B1C8C020D0F460297FC905D00A9848A00BA902918068A860A95B85EDA9B285EE8A48A200A000B1822003B0D036A01CB1821003207FB1C8C020D0F4E003D02418A007B18069789002A9FF918068AA60297FC902D002E860C91BD002E860C911D001E86068AA60A92785EDA9B285EEA000B1822015B0F006A00D5180918060A93485EDA9B285EEA000B1822003B0D008A001B1820920918260A94185EDA9B285EEA000B1822003B0D00F20E7FC2903D008A001B1820904918260"));
 
 			// Insert luts
 			Blob lut_Blackbelts = _classes.Select(x => (byte)(x.UnarmedAttack ? 0x01 : 0x00)).ToArray();
 			Blob lut_CatClaws = _classes.Select(x => (byte)(x.CatClawMaster ? 0x01 : 0x00)).ToArray();
 			Blob lut_ThorHammer = _classes.Select(x => (byte)(x.ThorMaster ? 0x01 : 0x00)).ToArray();
-			Blob lut_Hunter = _classes.Select(x => (byte)(x.Hunter ? 0x01 : 0x00)).ToArray();
+			Blob lut_Hunter = _classes.Select(x => (byte)x.HurtType).ToArray();
 			Blob lut_Sleepy = _classes.Select(x => (byte)(x.Sleepy ? 0x01 : 0x00)).ToArray();
 			Blob lut_Sick = _classes.Select(x => (byte)(x.Sick ? 0x01 : 0x00)).ToArray();
 			Blob lut_SteelArmor = _classes.Select(x => (byte)(x.SteelLord ? 0x01 : 0x00)).ToArray();
@@ -1877,7 +1879,7 @@ namespace FF1Lib
 		public bool UnarmedAttack { get; set; }
 		public bool CatClawMaster { get; set; }
 		public bool ThorMaster { get; set; }
-		public bool Hunter { get; set; }
+		public byte HurtType { get; set; }
 		public bool Sleepy { get; set; }
 		public bool Sick { get; set; }
 		public bool WoodAdept { get; set; }
@@ -1908,7 +1910,7 @@ namespace FF1Lib
 			UnarmedAttack = (classid == 2 || classid == 8);
 			CatClawMaster = false;
 			ThorMaster = false;
-			Hunter = false;
+			HurtType = 0x00;
 			Sleepy = false;
 			Sick = false;
 			WoodAdept = false;
