@@ -547,7 +547,18 @@ namespace FF1Lib
 		public bool? FORCED2 { get; set; } = false;
 		public bool? FORCED3 { get; set; } = false;
 		public bool? FORCED4 { get; set; } = false;
-
+		public bool? DraftFighter { get; set; } = false;
+		public bool? DraftThief { get; set; } = false;
+		public bool? DraftBlackBelt { get; set; } = false;
+		public bool? DraftRedMage { get; set; } = false;
+		public bool? DraftWhiteMage { get; set; } = false;
+		public bool? DraftBlackMage { get; set; } = false;
+		public bool? DraftKnight { get; set; } = false;
+		public bool? DraftNinja { get; set; } = false;
+		public bool? DraftMaster { get; set; } = false;
+		public bool? DraftRedWiz { get; set; } = false;
+		public bool? DraftWhiteWiz { get; set; } = false;
+		public bool? DraftBlackWiz { get; set; } = false;
 		public bool? TAVERN1 { get; set; } = false;
 		public bool? TAVERN2 { get; set; } = false;
 		public bool? TAVERN3 { get; set; } = false;

@@ -32,6 +32,8 @@
 						<td class="td-party">None!</td>
 
 					</tr>
+					@if (Flags.EnablePoolParty != true)
+					{
 					<tr class="odd bottom-borderd">
 						<td class="right-bordered td-party">All</td>
 						<td class="td-party"><TriStateCheckBox DisableTooltip Id="partyForcedAll" @bind-Value="@Flags.AllForced" IsEnabled="@(Flags.EnablePoolParty != true)"></TriStateCheckBox></td>
@@ -49,8 +51,6 @@
 						<td class="right-bordered td-party"><TriStateCheckBox DisableTooltip Id="partyBlackWizAll" @bind-Value="@Flags.AllBlackWizards"></TriStateCheckBox></td>
 						<td class="td-party"><TriStateCheckBox DisableTooltip Id="partyNoneAll" @bind-Value="@Flags.AllNones" IsEnabled="@(Flags.EnablePoolParty != true)"></TriStateCheckBox></td>
 					</tr>
-					@if (Flags.EnablePoolParty != true)
-					{
 						<tr>
 							<td class="right-bordered td-party">#1</td>
 							<td class="td-party"><TriStateCheckBox DisableTooltip Id="partyForced1" @bind-Value="@Flags.FORCED1"></TriStateCheckBox></td>
@@ -102,7 +102,7 @@
 							<td class="right-bordered td-party"><TriStateCheckBox DisableTooltip Id="partyBlackWiz3" @bind-Value="@Flags.BLACK_WIZ3"></TriStateCheckBox></td>
 							<td class="td-party"><TriStateCheckBox DisableTooltip Id="partyNone3" @bind-Value="@Flags.NONE_CLASS3"></TriStateCheckBox></td>
 						</tr>
-						<tr class="odd">
+						<tr class=@(Flags.EnablePoolParty != false ? "odd bottom-borderd" : "odd")>
 							<td class="right-bordered td-party">#4</td>
 							<td class="td-party"><TriStateCheckBox DisableTooltip Id="partyForced4" @bind-Value="@Flags.FORCED4"></TriStateCheckBox></td>
 							<td class="td-party"><TriStateCheckBox DisableTooltip Id="partyFighter4" @bind-Value="@Flags.FIGHTER4"></TriStateCheckBox></td>
@@ -120,6 +120,26 @@
 							<td class="td-party"><TriStateCheckBox DisableTooltip Id="partyNone4" @bind-Value="@Flags.NONE_CLASS4"></TriStateCheckBox></td>
 						</tr>
 					}
+					@if (Flags.EnablePoolParty != false)
+					{
+							<tr class=@(Flags.EnablePoolParty == true ? "odd" : "")>
+							<td class="right-bordered td-party">Draft</td>
+							<td class="td-party"></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip Id="draftFighter" @bind-Value="@Flags.DraftFighter"></TriStateCheckBox></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip Id="DraftThief" @bind-Value="@Flags.DraftThief"></TriStateCheckBox></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip Id="DraftBlackBelt" @bind-Value="@Flags.DraftBlackBelt"></TriStateCheckBox></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip Id="DraftRedMage" @bind-Value="@Flags.DraftRedMage"></TriStateCheckBox></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip Id="DraftWhiteMage" @bind-Value="@Flags.DraftWhiteMage"></TriStateCheckBox></td>
+							<td class="right-bordered td-party"><TriStateCheckBox DisableTooltip Id="DraftBlackMage" @bind-Value="@Flags.DraftBlackMage"></TriStateCheckBox></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip Id="DraftKnight" @bind-Value="@Flags.DraftKnight"></TriStateCheckBox></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip Id="DraftNinja" @bind-Value="@Flags.DraftNinja"></TriStateCheckBox></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip Id="DraftMaster" @bind-Value="@Flags.DraftMaster"></TriStateCheckBox></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip Id="DraftRedWiz" @bind-Value="@Flags.DraftRedWiz"></TriStateCheckBox></td>
+							<td class="td-party"><TriStateCheckBox DisableTooltip Id="DraftWhiteWiz" @bind-Value="@Flags.DraftWhiteWiz"></TriStateCheckBox></td>
+							<td class="right-bordered td-party"><TriStateCheckBox DisableTooltip Id="DraftBlackWiz" @bind-Value="@Flags.DraftBlackWiz"></TriStateCheckBox></td>
+							<td class="td-party"></td>
+						</tr>
+						}
 				</table>
 			</div>
 

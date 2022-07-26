@@ -3461,7 +3461,114 @@ namespace FF1Lib
 			}
 		}
 
-
+		public bool? DraftFighter
+		{
+			get => Flags.DraftFighter;
+			set
+			{
+				Flags.DraftFighter = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DraftFighter"));
+			}
+		}
+		public bool? DraftThief
+		{
+			get => Flags.DraftThief;
+			set
+			{
+				Flags.DraftThief = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DraftThief"));
+			}
+		}
+		public bool? DraftBlackBelt
+		{
+			get => Flags.DraftBlackBelt;
+			set
+			{
+				Flags.DraftBlackBelt = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DraftBlackBelt"));
+			}
+		}
+		public bool? DraftRedMage
+		{
+			get => Flags.DraftRedMage;
+			set
+			{
+				Flags.DraftRedMage = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DraftRedMage"));
+			}
+		}
+		public bool? DraftWhiteMage
+		{
+			get => Flags.DraftWhiteMage;
+			set
+			{
+				Flags.DraftWhiteMage = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DraftWhiteMage"));
+			}
+		}
+		public bool? DraftBlackMage
+		{
+			get => Flags.DraftBlackMage;
+			set
+			{
+				Flags.DraftBlackMage = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DraftBlackMage"));
+			}
+		}
+		public bool? DraftKnight
+		{
+			get => Flags.DraftKnight;
+			set
+			{
+				Flags.DraftKnight = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DraftKnight"));
+			}
+		}
+		public bool? DraftNinja
+		{
+			get => Flags.DraftNinja;
+			set
+			{
+				Flags.DraftNinja = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DraftNinja"));
+			}
+		}
+		public bool? DraftMaster
+		{
+			get => Flags.DraftMaster;
+			set
+			{
+				Flags.DraftMaster = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DraftMaster"));
+			}
+		}
+		public bool? DraftRedWiz
+		{
+			get => Flags.DraftRedWiz;
+			set
+			{
+				Flags.DraftRedWiz = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DraftRedWiz"));
+			}
+		}
+		public bool? DraftWhiteWiz
+		{
+			get => Flags.DraftWhiteWiz;
+			set
+			{
+				Flags.DraftWhiteWiz = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DraftWhiteWiz"));
+			}
+		}
+		public bool? DraftBlackWiz
+		{
+			get => Flags.DraftBlackWiz;
+			set
+			{
+				Flags.DraftBlackWiz = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DraftBlackWiz"));
+			}
+		}
 		public bool? TAVERN1
 		{
 			get => Flags.TAVERN1;
