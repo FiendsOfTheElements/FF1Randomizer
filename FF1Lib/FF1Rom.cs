@@ -192,7 +192,7 @@ public partial class FF1Rom : NesRom
 		uint funRngSeed = rng.Next();
 
 		await this.Progress("Beginning Randomization", 22);
-		AssureSafe();
+
 		if (flags.TournamentSafe) AssureSafe();
 
 		UpgradeToMMC3();
