@@ -7,7 +7,6 @@
 			<BSCol LG="4" Class="noleftpadding">
 				<div class="@DisabledClass @IndentClass">
 					@ChildContent
-					@UnlimitedValue
 					@if (!DisableTooltip)
 					{
 						<input type="image" src="/images/help.png" style="margin-left: 10px" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
@@ -51,7 +50,6 @@ else
 			<BSCol LG="6" Class="noleftpadding">
 				<div class="@DisabledClass @IndentClass">
 					@ChildContent
-					@UnlimitedValue
 					@if (!DisableTooltip)
 					{
 						<input type="image" src="/images/help.png" style="margin-left: 10px" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
@@ -93,50 +91,53 @@ else
 
 @code
 {
-	[Parameter]
-	public bool Indent { get; set; }
-	private string IndentClass => Indent ? "indent" : "";
+    [Parameter]
+    public bool Indent { get; set; }
+    private string IndentClass => Indent ? "indent" : "";
 
-	[Parameter]
-	public bool? IsEnabled { get; set; } = true;
-	private bool Disabled => !(IsEnabled ?? true);
-	private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
+    [Parameter]
+    public bool? IsEnabled { get; set; } = true;
+    private bool Disabled => !(IsEnabled ?? true);
+    private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
 
-	[Parameter]
-	public bool DoubleCol { get; set; }
-	[Parameter]
-	public bool ShowMedian { get; set; }
-	[Parameter]
-	public bool ShowPositiveSign { get; set; }
-	[Parameter]
-	public bool ShowPercent { get; set; }
-	[Parameter]
-	public bool DontShowPercent { get; set; }
+    [Parameter]
+    public bool DoubleCol { get; set; }
+    [Parameter]
+    public bool ShowMedian { get; set; }
+    [Parameter]
+    public bool ShowPositiveSign { get; set; }
+    [Parameter]
+    public bool ShowPercent { get; set; }
+    [Parameter]
+    public bool DontShowPercent { get; set; }
 
-	[Parameter]
-	public RenderFragment ChildContent { get; set; }
-	private string DisplayText => BuildDisplayString();
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    private string DisplayText => BuildDisplayString();
 
-	private string BuildDisplayString()
-	{
-		string displayString = "";
-		if (_valueLow > 0 && ShowPositiveSign)
-		{
-			displayString += "+";
-		}
-		displayString += _valueLow;
-		if (ShowMedian && !DontShowPercent || ShowPercent)
-		{
-			displayString += "%";
-		}
+    private string BuildDisplayString()
+    {
+        string displayString = "";
+        if (_valueLow > 0 && ShowPositiveSign)
+        {
+            displayString += "+";
+        }
+        displayString += _valueLow;
+        if (ShowMedian && !DontShowPercent || ShowPercent)
+        {
+            displayString += "%";
+        }
 
-		displayString += " - ";
+        displayString += " - ";
 
-		if (_valueHigh > 0 && ShowPositiveSign)
-		{
-			displayString += "+";
-		}
-		displayString += _valueHigh;
+        if (_valueHigh > 0 && ShowPositiveSign)
+        {
+            displayString += "+";
+        }
+
+        if (_valueHigh == MaxValue) { displayString += "Max"; }
+        else { displayString += _valueHigh; }
+
 		if (ShowMedian && !DontShowPercent)
 		{
 			displayString += "% (" + Median + "%)";
@@ -236,13 +237,6 @@ else
 		UpdateToolTip?.Invoke("", e);
 	}
 	
-	public string UnlimitedValue => (Value < Max) ? Value.ToString() : "Unlimited";
-	[Parameter]
-	public int Max { get; set; }
-	[Parameter]
-	public int Value { get; set; }
-
-
 	[Parameter]
 	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
 }
