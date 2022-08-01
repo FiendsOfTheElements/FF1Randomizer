@@ -1416,14 +1416,44 @@ public partial class FF1Rom : NesRom
 		{
 			byte[] hashable = Data.ToBytes();
 
+			//zero out overworld palette data
+			for (int i = 0x380; i < 0x390; i++)
+			{
+				hashable[i] = 0;
+			}
+
 			//zero out mapman palette data
 			for (int i = 0x390; i < 0x3BC; i++)
 			{
 				hashable[i] = 0;
 			}
 
+			//zero out standard map palette data
+			for (int i = 0x2000; i < 0x2C00; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out overworld graphics
+			for (int i = 0x8000; i < 0x9000; i++)
+			{
+				hashable[i] = 0;
+			}
+
 			//zero out character mapman graphics
 			for (int i = 0x9000; i < 0xA200; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out standard map object graphics
+			for (int i = 0xA200; i < 0xC000; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out standard map graphics
+			for (int i = 0xC000; i < 0x10000; i++)
 			{
 				hashable[i] = 0;
 			}
@@ -1453,7 +1483,7 @@ public partial class FF1Rom : NesRom
 			}
 
 			var Hash = hasher.ComputeHash(hashable);
-			if (ByteArrayToString(Hash) != "7ea7f20bcb93b9d3c5f951f59b9cc3a42b347dbf0323b98d74b06bc81309d77a")
+			if (ByteArrayToString(Hash) != "2006658f5cc514f3444776596412eb73fccf79a5aa962fdaef0ece99789ed873")
 			{
 				Console.WriteLine($"Rom hash: {ByteArrayToString(Hash)}");
 				throw new TournamentSafeException("File has been modified");
