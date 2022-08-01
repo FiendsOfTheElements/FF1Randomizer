@@ -196,6 +196,13 @@ namespace FF1Lib
 		[IntegerFlag(12, 40)]
 		public int ShardCountHigh { get; set; } = 28;
 
+
+		[IntegerFlag(100, 1300)]
+		public int MagicAutohitThresholdLow { get; set; } = 300;
+		[IntegerFlag(100, 1300)]
+		public int MagicAutohitThresholdHigh { get; set; } = 300;
+
+
 		[IntegerFlag(0, 4)]
 		public int OrbsRequiredCount { get; set; } = 4;
 		public OrbsRequiredMode OrbsRequiredMode { get; set; } = OrbsRequiredMode.Any;
@@ -220,7 +227,6 @@ namespace FF1Lib
 		public bool? MagicLevelsTiered { get; set; } = false;
 		public bool? MagicLevelsMixed { get; set; } = false;
 
-		public AutohitThreshold MagicAutohitThreshold { get; set; } = AutohitThreshold.Vanilla;
 
 		public bool? Rng { get; set; } = false;
 		public bool FixMissingBattleRngEntry { get; set; } = false;

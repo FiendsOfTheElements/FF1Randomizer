@@ -22,27 +22,6 @@ namespace FF1Lib
 		AutoHit
 	}
 
-	public enum AutohitThreshold
-	{
-		[Description("300")]
-		Vanilla = 0,
-		[Description("600")]
-		Autohit600,
-		[Description("900")]
-		Autohit900,
-		[Description("1200")]
-		Autohit1200,
-		[Description("Unlimited")]
-		Autohit65535,
-		[Description("300 or 600")]
-		Autohit300to600,
-		[Description("300, 600, or 900")]
-		Autohit300to900,
-		[Description("300, 600, 900, or 1200")]
-		Autohit300to1200,
-		[Description("Any of the above")]
-		Any,
-	}
 
 	public enum SpellRoutine : byte
 	{
@@ -904,26 +883,14 @@ namespace FF1Lib
 			}
 		}
 
-		public void UpdateMagicAutohitThreshold(MT19337 rng, AutohitThreshold threshold)
+		public void UpdateMagicAutohitThreshold(MT19337 rng, int min, int max)
 		{
-			short limit = 300;
-			switch (threshold)
-			{
-				case AutohitThreshold.Vanilla: limit = 300; break;
-				case AutohitThreshold.Autohit600: limit = 600; break;
-				case AutohitThreshold.Autohit900: limit = 900; break;
-				case AutohitThreshold.Autohit1200: limit = 1200; break;
-				case AutohitThreshold.Autohit65535: limit = short.MaxValue; break;
-				case AutohitThreshold.Autohit300to600: limit = (short)(rng.Between(1, 2) * 300); break;
-				case AutohitThreshold.Autohit300to900: limit = (short)(rng.Between(1, 3) * 300); break;
-				case AutohitThreshold.Autohit300to1200: limit = (short)(rng.Between(1, 4) * 300); break;
-				case AutohitThreshold.Any:
-				{
-					short[] any = { 300, 600, 900, 1200, short.MaxValue };
-					limit = any.PickRandom(rng);
-					break;
-				}
-			}
+			int limit = 300;
+			limit = rng.Between(min, max);
+
+			// 1300 is used for Unlimited/Max
+			//The additional check is to even out the random chances of "Unlimited" being selected from a range
+			if (max == 1300 && limit >= (1200 + (100 / (14 - (min / 100))))) { limit = short.MaxValue; }
 
 			// Set the low and high bytes of the limit which are then loaded and compared to the targets hp.
 			Data[0x33AE0] = (byte)(limit & 0x00ff);

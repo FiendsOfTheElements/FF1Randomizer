@@ -403,7 +403,7 @@ namespace FF1Lib
 				BuffHealingSpells();
 			}
 
-			UpdateMagicAutohitThreshold(rng, flags.MagicAutohitThreshold);
+			UpdateMagicAutohitThreshold(rng, flags.MagicAutohitThresholdLow, flags.MagicAutohitThresholdHigh);
 
 			if ((bool)flags.GenerateNewSpellbook)
 			{

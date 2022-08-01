@@ -1261,10 +1261,10 @@
 		"description": "Allows control over the chance to hit when casting LOCK and LOK2 spells. Vanilla is about a 7% chance to hit vs Chaos; 107 is about 28%; 162 is about 56%. Auto-hit will always hit (100%)."
 	},
 	{
-		"Id": "magicAutohitThresholdDropDown",
-		"title": "Power Word HP Limit",
+		"Id": "magicAutohitThresholdDoubleSilder",
+		"title": "\"Power Word\" Spell HP Limit",
 		"screenshot": "magicAutohitThresholdDropDown.png",
-		"description": "Changes the threshold at which BLND, STUN, and XXXX are effective, both against enemies and the heroes.\nThe value, as selected in the dropdown, will always be a multiple of 300, or unlimited, but you can set it to randomly select, before the ROM is generated, which option will be used in the game."
+		"description": "Changes the threshold at which BLND, STUN, and XXXX are effective, both against enemies and the heroes.\nThese spells will automatically hit (unless the target has the appropriate resistance) when the target's HP is less than or equal to the value on the slider (vanilla is 300). \"Unlimited\" means that it will hit regardless of the target's HP.\nIf a range is selected, a random number is choosen from within that range for the seed. (If \"Unlimited\" is part of a range, it will be selected at a proprotional rate for the size of the range.)"
 	},
 
 	{
@@ -2164,7 +2164,7 @@
 		"Id": "MaximumLevelDoubleSilder",
 		"title": "Max Level Cap",
 		"screenshot": "MaximumLevelDoubleSilder.png",
-		"description": "Allows you to lower the maximum level, increasing the challenge of the given flagset.\nIf a range is selected, a random number is choosen from the range. With a range, there is no way to know what the actual cap is until you reach it.\nIf starting levels are higher than the maximum level, players will start at that level but will be unable to gain levels.\nFor beginners it is not recommended to go below level 20."
+		"description": "Allows you to lower the maximum level, increasing the challenge of the given flagset.\nIf a range is selected, a random number is choosen from within that range. With a range, there is no way to know what the actual cap is until you reach it.\nIf starting levels are higher than the maximum level, players will start at that level but will be unable to gain levels.\nFor beginners it is not recommended to go below level 20."
 	},
 
 	{

@@ -569,6 +569,25 @@ namespace FF1Lib
 		}
 
 
+		public int MagicAutohitThresholdLow
+		{
+			get => Flags.MagicAutohitThresholdLow;
+			set
+			{
+				Flags.MagicAutohitThresholdLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicAutohitThresholdLow"));
+			}
+		}
+		public int MagicAutohitThresholdHigh
+		{
+			get => Flags.MagicAutohitThresholdHigh;
+			set
+			{
+				Flags.MagicAutohitThresholdHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicAutohitThresholdHigh"));
+			}
+		}
+
 
 		public int OrbsRequiredCount
 		{
@@ -787,16 +806,6 @@ namespace FF1Lib
 			{
 				Flags.MagicLevelsMixed = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicLevelsMixed"));
-			}
-		}
-
-		public AutohitThreshold MagicAutohitThreshold
-		{
-			get => Flags.MagicAutohitThreshold;
-			set
-			{
-				Flags.MagicAutohitThreshold = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicAutohitThreshold"));
 			}
 		}
 
