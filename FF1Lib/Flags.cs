@@ -76,8 +76,6 @@ namespace FF1Lib
 
 		public bool DisableMinimap { get; set; } = false;
 
-		public bool QuickMinimapLoad { get; set; } = false;
-
 		public bool LooseItemsForwardPlacement { get; set; } = false;
 
 		public bool LooseItemsSpreadPlacement { get; set; } = false;

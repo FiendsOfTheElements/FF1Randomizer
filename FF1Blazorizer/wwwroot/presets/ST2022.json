@@ -40,7 +40,6 @@
     "ItemMagicPool": 4,
     "MagisizeWeapons": false,
     "DisableMinimap": false,
-    "QuickMinimapLoad": true,
     "LooseItemsForwardPlacement": false,
     "LooseItemsSpreadPlacement": false,
     "LooseItemsNpcBalance": false,

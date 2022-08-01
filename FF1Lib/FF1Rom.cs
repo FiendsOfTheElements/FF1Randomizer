@@ -1335,8 +1335,8 @@ public partial class FF1Rom : NesRom
 
 		owMapExchange?.ExecuteStep2();
 
-
-		if(flags.QuickMinimapLoad || owMapExchange != null)
+		// Used to be a separate Quick Minimap flag - consolidated into Speed Hacks
+		if(flags.SpeedHacks || owMapExchange != null)
 		{
 			new QuickMiniMap(this, overworldMap).EnableQuickMinimap();
 		}

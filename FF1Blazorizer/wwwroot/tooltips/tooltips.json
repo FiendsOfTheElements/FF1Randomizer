@@ -90,12 +90,6 @@
 		"description": "Sets the pool of Spells for item magic shuffling. (Compatible with Spellcrafter.)\n\nAll Magic: All valid spells.\n\nBalanced: Removes too weak and too strong spells.\n\nLow: Removes too strong spells.\n\nSupport: Removes too strong spells and all damage spells.\n\nCurated: A hand-selected pool that tries to make all item magic you find useful, but rarely strong enough to be dominating. Appropriate for tournament play. (Essentially, a tighter version of \"Balanced\".)\n\nRandom: Any of the above."
 	},
 	{
-		"Id": "quickMinimapLoad",
-		"title": "Quick Minimap Load",
-		"screenshot": "quickminimapload.gif",
-		"description": "Speeds up loading of the minimap."
-	},
-	{
 		"Id": "enableSoftInBattle",
 		"title": "Enable Soft in Battle",
 		"screenshot": "enableSoftInBattleCheckBox.gif",
@@ -1903,7 +1897,7 @@
 		"Id": "speedHacksCheckBox",
 		"title": "Speed Hacks",
 		"screenshot": "speedHacksCheckBox.gif",
-		"description": "If enabled, many game processes such as area transitions, opening the menu, and battle animations are significantly faster."
+		"description": "If enabled, many game processes such as area transitions, opening the menu, loading the mini-map, and battle animations are significantly faster."
 	},
 	{
 		"Id": "speedboatCheckBox",

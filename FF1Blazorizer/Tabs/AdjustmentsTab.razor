@@ -16,7 +16,7 @@
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="chanceToRunDropDown" TItem="ChanceToRunMode" @bind-Value="Flags.ChanceToRun">Chance to Run:</EnumDropDown>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spellBugsCheckBox" @bind-Value="Flags.SpellBugs">Spell Fixes</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyStatusAttackBugCheckBox" @bind-Value="Flags.EnemyStatusAttackBug">Enemy Status Attacks</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="blackBeltAbsorbCheckBox" @bind-Value="Flags.BlackBeltAbsorb">Bl. Belt & Master Absorb Calculation</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="blackBeltAbsorbCheckBox" @bind-Value="Flags.BlackBeltAbsorb">Bl. Belt & Master Absorb Fix</CheckBox>
 				
 	<div class="checkbox-cell"></div>
 	<h4>RNG</h4>
@@ -38,7 +38,6 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedHacksCheckBox" @bind-Value="Flags.SpeedHacks">Speed Hacks</CheckBox>
     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="dashCheckBox" @bind-Value="Flags.Dash">Faster Walking Speed</CheckBox>
     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="speedboatCheckBox" @bind-Value="Flags.SpeedBoat">Faster Ship</CheckBox>
-    <CheckBox UpdateToolTip="@UpdateToolTipID" Id="quickMinimapLoad" @bind-Value="Flags.QuickMinimapLoad" IsEnabled="@(!Flags.DisableMinimap && Flags.OwMapExchange == OwMapExchanges.None)">Quick Minimap Load</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="identifyTreasuresCheckBox" @bind-Value="Flags.IdentifyTreasures">Identify Treasures</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="buyTenCheckBox" @bind-Value="Flags.BuyTen">Buy Quantity</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="waitWhenUnrunnableCheckBox" @bind-Value="Flags.WaitWhenUnrunnable">Change Unrunnable RUN to WAIT</CheckBox>
