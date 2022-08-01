@@ -1834,7 +1834,7 @@
 		"Id": "spellBugsCheckBox",
 		"title": "Spell Fixes",
 		"screenshot": "spellBugsCheckBox.png",
-		"description": "Fixes multiple bugs in various spells, such as TMPR, SABR, and HEL2, so that they provide their proper effect (as opposed to not working, or even in some cases providing an opposite effect from what was intended, as in the vanilla game). Also provides the opportunity to cancel out of casting WARP or EXIT."
+		"description": "Fixes multiple bugs in various spells, such as TMPR, SABR, XFER, and HEL2, so that they provide their proper effect (as opposed to not working, or even in some cases providing an opposite effect from what was intended, as in the vanilla game). Also fixes enemy AoE spell targeting and provides the opportunity to cancel out of casting WARP or EXIT."
 	},
 	{
 		"Id": "enemyStatusAttackBugCheckBox",
@@ -1847,18 +1847,6 @@
 		"title": "Bl. Belt & Master Absorb Calculation",
 		"screenshot": "blackBeltAbsorbCheckBox.gif",
 		"description": "Fixes a bug in the way the Black Belts' & Masters' Absorb stat is calculated. Unchecked, Absorb is set to the Light Warrior's level so long as the character does not have a weapon equiped (instead of using their armor). Enabled, the absorb is applied only when the Light Warrior does not have any armor equipped, the intended behavior."
-	},
-	{
-		"Id": "enemyElementalResistancesCheckBox",
-		"title": "Enemy Elemental Resistances",
-		"screenshot": "enemyElementalResistancesCheckBox.png",
-		"description": "Fixes a bug where XFER and other spells that affect elemental resistances would not work for enemies."
-	},
-	{
-		"Id": "enemySpellsTargetingAlliesCheckBox",
-		"title": "Enemy Spells Targeting Allies",
-		"screenshot": "enemySpellsTargetingAlliesCheckBox.png",
-		"description": "Fixes a bug in the way spells are applied when an enemy casts AoE (area of effect) spells on all allies. Unchecked, spells, such as INV2, will skip the enemy that cast the spell. Checked, the spell will (correctly) affect all enemies in the group, including the caster."
 	},
 	{
 		"Id": "improveTurnOrderRandomizationCheckBox",

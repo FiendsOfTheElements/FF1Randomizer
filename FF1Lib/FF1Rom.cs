@@ -379,6 +379,8 @@ public partial class FF1Rom : NesRom
 		if (flags.SpellBugs)
 		{
 			FixSpellBugs();
+			FixEnemyAOESpells();
+			FixEnemyElementalResistances();
 		}
 
 		await this.Progress();
@@ -388,12 +390,7 @@ public partial class FF1Rom : NesRom
 		{
 			ChangeLockMode(flags.LockMode);
 		}
-
-		if (flags.EnemySpellsTargetingAllies)
-		{
-			FixEnemyAOESpells();
-		}
-
+				
 		if (flags.AllSpellLevelsForKnightNinja)
 		{
 			KnightNinjaChargesForAllLevels();
@@ -1048,11 +1045,6 @@ public partial class FF1Rom : NesRom
 		if((bool)flags.WhiteMageHarmEveryone)
 		{
 			WhiteMageHarmEveryone();
-		}
-
-		if (flags.EnemyElementalResistancesBug)
-		{
-			FixEnemyElementalResistances();
 		}
 
 		if (preferences.FunEnemyNames && !flags.EnemizerEnabled)
