@@ -1263,7 +1263,7 @@
 	{
 		"Id": "magicAutohitThresholdDropDown",
 		"title": "Power Word HP Limit",
-		"screenshot": "magicAutohitThresholdDropDown.gif",
+		"screenshot": "magicAutohitThresholdDropDown.png",
 		"description": "Changes the threshold at which BLND, STUN, and XXXX are effective, both against enemies and the heroes.\nThe value, as selected in the dropdown, will always be a multiple of 300, or unlimited, but you can set it to randomly select, before the ROM is generated, which option will be used in the game."
 	},
 
