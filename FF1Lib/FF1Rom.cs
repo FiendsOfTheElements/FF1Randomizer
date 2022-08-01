@@ -192,7 +192,7 @@ public partial class FF1Rom : NesRom
 		uint funRngSeed = rng.Next();
 
 		await this.Progress("Beginning Randomization", 22);
-
+		AssureSafe();
 		if (flags.TournamentSafe) AssureSafe();
 
 		UpgradeToMMC3();
@@ -1434,6 +1434,12 @@ public partial class FF1Rom : NesRom
 				hashable[i] = 0;
 			}
 
+			//zero out standard map object graphic lookup
+			for (int i = 0x2E00; i < 0x2ED0; i++)
+			{
+				hashable[i] = 0;
+			}
+
 			//zero out overworld graphics
 			for (int i = 0x8000; i < 0x9000; i++)
 			{
@@ -1483,7 +1489,7 @@ public partial class FF1Rom : NesRom
 			}
 
 			var Hash = hasher.ComputeHash(hashable);
-			if (ByteArrayToString(Hash) != "2006658f5cc514f3444776596412eb73fccf79a5aa962fdaef0ece99789ed873")
+			if (ByteArrayToString(Hash) != "7b68bd0b57d81658d5a14ba7e69ce98e266f9ebc46dba75d4f4f418cf90a14f4")
 			{
 				Console.WriteLine($"Rom hash: {ByteArrayToString(Hash)}");
 				throw new TournamentSafeException("File has been modified");
