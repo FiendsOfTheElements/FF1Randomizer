@@ -1440,6 +1440,18 @@ public partial class FF1Rom : NesRom
 				hashable[i] = 0;
 			}
 
+			//zero out backdrop palette data
+			for (int i = 0x3200; i < 0x3260; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out battle backdrop lookup
+			for (int i = 0x3300; i < 0x3380; i++)
+			{
+				hashable[i] = 0;
+			}
+
 			//zero out overworld graphics
 			for (int i = 0x8000; i < 0x9000; i++)
 			{
@@ -1470,6 +1482,12 @@ public partial class FF1Rom : NesRom
 				hashable[i] = 0;
 			}
 
+			// Battlepalettes
+			for (int i = 0x30F20; i < 0x31020; i++)
+			{
+				hashable[i] = 0;
+			}
+
 			// lut_InBattleCharPaletteAssign (LUT for assigning palettes to in-battle char sprites)
 			for (int i = 0x3203C; i < 0x32048; i++)
 			{
@@ -1489,7 +1507,7 @@ public partial class FF1Rom : NesRom
 			}
 
 			var Hash = hasher.ComputeHash(hashable);
-			if (ByteArrayToString(Hash) != "7b68bd0b57d81658d5a14ba7e69ce98e266f9ebc46dba75d4f4f418cf90a14f4")
+			if (ByteArrayToString(Hash) != "0614d282abe33d5c6e9a22f6cc7b5f972d30c292d4b873ce07f703c1a14b168c")
 			{
 				Console.WriteLine($"Rom hash: {ByteArrayToString(Hash)}");
 				throw new TournamentSafeException("File has been modified");
