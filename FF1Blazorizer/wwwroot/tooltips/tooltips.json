@@ -584,7 +584,7 @@
 		"Id": "LooseExcludePlacedDungeonsCheckBox",
 		"title": "No Loose Items in Incentivized Dungeons",
 		"screenshot": "LooseExcludePlacedDungeons.png",
-		"description": "If a dungeon is incentivized, additional loose items and/or unincentivized key items won't be placed inside of it.\nThis means that once you find the incentivized item, you can opt to leave the incentive area knowing that any remaining loose items will be somewhere else.\nNote: Waterfall itself is NOT incentivized even if the Robot is (via \"Main NPCs\"), so loose items may still appear there with this checked."
+		"description": "If a dungeon is incentivized, additional loose items and/or unincentivized key items won't be placed inside of it.\nThis means that once you find the incentivized item, you can opt to leave the incentive area knowing that any remaining loose items will be somewhere else.\nNote: Waterfall itself is NOT incentivized even if the Robot is (via \"Main NPCs\"), so loose items may still appear there with this checked (and likewise with Matoya). Mirage Tower and Sky Palace are considered one dungeon for this flag."
 	},
 
 	{
