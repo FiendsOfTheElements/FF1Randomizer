@@ -135,11 +135,11 @@
             <p>@Flags.Flags.IncentivizedItems</p>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMainItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMainItems">Main Progression Items</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeFetchItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeFetchItems">Other Quest Items</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip Id="incentivizeAirshipCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoFloater == false))" @bind-Value="Flags.IncentivizeAirship">Floater</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip Id="incentivizeCanoeItemCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCanoeItem">Canoe</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeShipAndCanalCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeShipAndCanal">Ship &amp; Canal</TriStateCheckBox>
-            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeBridgeCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeBridgeItem">Bridge</TriStateCheckBox>
-			<TriStateCheckBox DisableTooltip Id="incentivizeTailCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoTail != true))" @bind-Value="Flags.IncentivizeTail">Tail</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="incentivizeAirshipCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoFloater == false) && (Flags.FreeAirship != true))" @bind-Value="Flags.IncentivizeAirship">Floater</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="incentivizeCanoeItemCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.Flags.FreeCanoe != true))" @bind-Value="Flags.IncentivizeCanoeItem">Canoe</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeShipAndCanalCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.FreeCanal != true || Flags.FreeShip != true))" @bind-Value="Flags.IncentivizeShipAndCanal">Ship &amp; Canal</TriStateCheckBox>
+            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeBridgeCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.FreeBridge != true))" @bind-Value="Flags.IncentivizeBridgeItem">Bridge</TriStateCheckBox>
+			<TriStateCheckBox DisableTooltip Id="incentivizeTailCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoTail != true) && (Flags.FreeTail != true))" @bind-Value="Flags.IncentivizeTail">Tail</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox DisableTooltip Id="incentivizeMasamuneCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoMasamune != true))" @bind-Value="Flags.IncentivizeMasamune">Masamune</TriStateCheckBox>
 			<TriStateCheckBox DisableTooltip Id="incentivizeXcalCheckBox" IsEnabled="@((Flags.Treasures != false) && (Flags.NoXcalber != true))" @bind-Value="Flags.IncentivizeXcalber">Xcalber</TriStateCheckBox>
