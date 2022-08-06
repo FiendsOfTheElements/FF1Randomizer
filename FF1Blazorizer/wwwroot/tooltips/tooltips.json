@@ -452,7 +452,7 @@
 		"Id": "progressiveScaleModeDropDown",
 		"title": "Exp/Gold Progressive Scaling",
 		"screenshot": "progressiveScaleModeDropDown.png",
-		"description": "Increases the bonus provided by the 2nd Exp/Gold Boost Slider (flat bonus) based on the number of Key Items collected, including any that were free to start and any that have already been turned in. (Does not, however, include incentivized equipment items.)\nWhen Shards are being used, the boost is applied per Shard - so \"50% per 8 Shards\" gives you a 6.25% boost for each Shard you have."
+		"description": "Increases Exp and Gold gains from enemies (including the flat bonus provided by the 2nd Exp/Gold Boost Slider) based on the number of Key Items collected, including any that were free to start and any that have already been turned in. (Does not, however, include incentivized equipment items.) The bonus is additive, so if it's set to 10% and you have 6 Key Items, your total bonus is 60% (x1.6) more from every enemy defeated.\nWhen Shards are being used, the boost is applied per Shard - so \"50% per 8 Shards\" gives you a 6.25% boost for each Shard you have."
 	},
 
 	{
