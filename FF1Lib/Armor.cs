@@ -50,7 +50,7 @@ namespace FF1Lib
 					currentArmor.Absorb = (byte)Math.Max(1, currentArmor.Absorb + (armorTypeAbsorbBonus * bonus));
 
 					//change last two non icon characters to -/+bonus
-					string bonusString = string.Format((bonus > 0) ? "+{0}" : "{0}", bonus.ToString());
+					string bonusString = string.Format((bonus > 0) ? "+{0}" : "-{0}", Math.Abs(bonus).ToString());
 					byte[] bonusBytes = FF1Text.TextToBytes(bonusString);
 
 					// Adjusts blursed armor names to be more understandable

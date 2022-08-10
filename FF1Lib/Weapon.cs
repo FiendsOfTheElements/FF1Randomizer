@@ -130,7 +130,7 @@ namespace FF1Lib
 						}
 
 						//change last two non icon characters to -/+bonus
-						string bonusString = string.Format((bonus > 0) ? "+{0}" : "{0}", bonus.ToString());
+						string bonusString = string.Format((bonus > 0) ? "+{0}" : "-{0}", Math.Abs(bonus).ToString());
 						byte[] bonusBytes = FF1Text.TextToBytes(bonusString);
 
 						var nameBytes = FF1Text.TextToBytes(currentWeapon.Name, false);
