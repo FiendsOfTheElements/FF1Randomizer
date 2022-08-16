@@ -592,8 +592,8 @@ namespace FF1Lib
 			var bonusNormal = new List<BonusMalus> {
 				new BonusMalus(BonusMalusAction.StrMod, "+10 Str.", mod: 10),
 				new BonusMalus(BonusMalusAction.StrMod, "+20 Str.", mod: 20),
-				new BonusMalus(BonusMalusAction.AgiMod, "+10 Agi.", mod: 10),
-				new BonusMalus(BonusMalusAction.AgiMod, "+20 Agi.", mod: 20),
+				new BonusMalus(BonusMalusAction.AgiMod, "+15 Agi.", mod: 15),
+				new BonusMalus(BonusMalusAction.AgiMod, "+25 Agi.", mod: 25),
 				new BonusMalus(BonusMalusAction.VitMod, "+10 Vit.", mod: 10),
 				new BonusMalus(BonusMalusAction.VitMod, "+20 Vit.", mod: 20),
 				new BonusMalus(BonusMalusAction.LckMod, "+5 Luck", mod: 5),
@@ -625,7 +625,7 @@ namespace FF1Lib
 			// Strong Bonuses List
 			var bonusStrong = new List<BonusMalus> {
 				new BonusMalus(BonusMalusAction.StrMod, "+40 Str.", mod: 40),
-				new BonusMalus(BonusMalusAction.AgiMod, "+40 Agi.", mod: 40),
+				new BonusMalus(BonusMalusAction.AgiMod, "+50 Agi.", mod: 50),
 				new BonusMalus(BonusMalusAction.VitMod, "+40 Vit.", mod: 40),
 				new BonusMalus(BonusMalusAction.LckMod, "+15 Luck", mod: 15),
 				new BonusMalus(BonusMalusAction.HpMod, "+80 HP", mod: 80),
