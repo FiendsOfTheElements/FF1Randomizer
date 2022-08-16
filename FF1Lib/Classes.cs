@@ -658,7 +658,7 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.StrMod, "+40 Str.", mod: 40),
 				new BonusMalus(BonusMalusAction.AgiMod, "+50 Agi.", mod: 50),
 				new BonusMalus(BonusMalusAction.VitMod, "+40 Vit.", mod: 40),
-				new BonusMalus(BonusMalusAction.LckMod, "+15 Luck", mod: 15),
+				new BonusMalus(BonusMalusAction.LckMod, "+15 Luck", mod: 15, Classes: new List<Classes> { Classes.Fighter, Classes.BlackBelt, Classes.WhiteMage, Classes.RedMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.HpMod, "+80 HP", mod: 80),
 				new BonusMalus(BonusMalusAction.MDefGrowth, "+2 MDef/Lv", mod: 2, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+Fighter @S", equipment: equipFighterWeapon, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage } ),
