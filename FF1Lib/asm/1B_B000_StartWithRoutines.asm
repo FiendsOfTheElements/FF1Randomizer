@@ -446,7 +446,7 @@ IGP_GoldLoop:
   CPX #$00
   BEQ IGP_NoClassLeft
     CLC  
-    LDA #$C8
+    LDA #$64
     ADC tmp
     STA tmp
     LDA #$00
@@ -480,7 +480,7 @@ DGP_ClassLoop:
     STA tmp+2
     CLC  
 
-    LDA #$64
+    LDA #$32
     ADC tmp
     STA tmp
     LDA #$00

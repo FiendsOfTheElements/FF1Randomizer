@@ -641,7 +641,6 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+Thief @S", equipment: equipThiefWeapon, Classes: new List<Classes> { Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+Red Mage @A", equipment: equipRedMageArmor, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.SpcMod, "+2 Lv1 MP", mod: 2, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
-				new BonusMalus(BonusMalusAction.StartWithGold, "+600 GP", mod: 3),
 				new BonusMalus(BonusMalusAction.StartWithMp, "+1 MP LvAll", Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
 				new BonusMalus(BonusMalusAction.ThorMaster, "Thor Master", Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.WhiteMage }),
 				new BonusMalus(BonusMalusAction.Hunter, "Vamp Killer", mod: 0x18),
@@ -664,7 +663,6 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+Fighter @S", equipment: equipFighterWeapon, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+Fighter @A", equipment: equipFighterArmor, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage, Classes.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcGrowth, "Improved MP", bytelist: improvedMPlist, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
-				new BonusMalus(BonusMalusAction.StartWithGold, "+2,000 GP", mod: 10, Classes: new List<Classes> { Classes.Thief }),
 				new BonusMalus(BonusMalusAction.PowerRW, "Sage", spelllist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), Classes: new List<Classes> { Classes.RedMage }),
 				new BonusMalus(BonusMalusAction.Hunter, "Hunter", mod: 0xFF),
 				//new BonusMalus(BonusMalusAction.UnarmedAttack, "Monk", Classes: new List<Classes> { Classes.WhiteMage }), need extra work
@@ -687,7 +685,6 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.MDefMod, "-10 MDef", mod: -10),
 				new BonusMalus(BonusMalusAction.HitGrowth, "-1 Hit%/Lv", mod: -1),
 				new BonusMalus(BonusMalusAction.MDefGrowth, "-1 MDef/Lv", mod: -1),
-				new BonusMalus(BonusMalusAction.StartWithGold, "-100 GP", mod: -1),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "No " + olditemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "No @B", equipment: braceletList),
 				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief @S", equipment: equipThiefWeapon, Classes: new List<Classes> { Classes.Fighter, Classes.RedMage } ),
@@ -696,6 +693,48 @@ namespace FF1Lib
 				//new BonusMalus(BonusMalusAction.Sick, "Sick"), these were too powerful for man
 				//new BonusMalus(BonusMalusAction.Sleepy, "Sleepy"),
 			};
+
+			// Each positive mod is +100, each negative is -50
+			if (flags.StartingGold == StartingGold.None) {
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+200 GP", mod: 2));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+1400 GP", mod: 14, Classes: new List<Classes> { Classes.Thief }));
+			}
+
+			else if (flags.StartingGold == StartingGold.Gp100) {
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+400 GP", mod: 4));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+2000 GP", mod: 20, Classes: new List<Classes> { Classes.Thief }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-50 GP", mod: -1));
+			}
+			else if (flags.StartingGold == StartingGold.Gp200) {
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+600 GP", mod: 6));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+3000 GP", mod: 30, Classes: new List<Classes> { Classes.Thief }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-100 GP", mod: -2));
+			}
+			else if (flags.StartingGold == StartingGold.Gp400 || flags.StartingGold == StartingGold.RandomLow) {
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+800 GP", mod: 8));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+4000 GP", mod: 40, Classes: new List<Classes> { Classes.Thief }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-150 GP", mod: -3));
+			}
+			else if (flags.StartingGold == StartingGold.Gp800) {
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+1500 GP", mod: 15));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+6000 GP", mod: 60, Classes: new List<Classes> { Classes.Thief }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-300 GP", mod: -6));
+			}
+			else if (flags.StartingGold == StartingGold.Gp2500) {
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+5000 GP", mod: 50));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+20,000 GP", mod: 200, Classes: new List<Classes> { Classes.Thief }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-1000 GP", mod: -20));
+			}
+			else if (flags.StartingGold == StartingGold.Gp9999) {
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+20,000 GP", mod: 200));
+				// Strong bonus doesn't make sense with gold already so high, so isn't created
+				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-4000 GP", mod: -80));
+			}
+			// This is already so much starting gold that bonuses for it no longer make sense
+			//else if (flags.StartingGold == StartingGold.Gp65535 || flags.StartingGold == StartingGold.RandomHigh)
+
+			
+
 
 			if (!(bool)flags.ArmorCrafter)
 			{
@@ -1778,7 +1817,7 @@ namespace FF1Lib
 			rom.PutInBank(0x1F, 0xD812, rom.CreateLongJumpTableEntry(0x1B, 0xB080));
 
 			// StartWith Initialization Routine
-			rom.PutInBank(0x1B, 0xB300, Blob.FromHex("A9B348A92048A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E484C07FEA000202EB398186940A8D0F660203EB32075B320C7B320F7B3201FB460A98085EDA9B485EEA2002015B0F027AAA900851085118512E000F01718A9C865108510A90065118511A90065128512CA1890E520EADD60A98D85EDA9B485EEA2002000B0D042E8A90085108511851218A96465108510A90065118511A90065128512AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A200A9A785EDA9B485EE2015B048A99A85EDA9B485EE2015B048A90085EDA96385EE98AA65ED85ED68A86891ED8AA860A200A9B485EDA9B485EE2000B0F001609848AAA007E8BD20631869019D20639D286388D0F068A860A200A9C185EDA9B485EE2015B0F006AAA9019D20606000"));
+			rom.PutInBank(0x1B, 0xB300, Blob.FromHex("A9B348A92048A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E484C07FEA000202EB398186940A8D0F660203EB32075B320C7B320F7B3201FB460A98085EDA9B485EEA2002015B0F027AAA900851085118512E000F01718A96465108510A90065118511A90065128512CA1890E520EADD60A98D85EDA9B485EEA2002000B0D042E8A90085108511851218A93265108510A90065118511A90065128512AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A200A9A785EDA9B485EE2015B048A99A85EDA9B485EE2015B048A90085EDA96385EE98AA65ED85ED68A86891ED8AA860A200A9B485EDA9B485EE2000B0F001609848AAA007E8BD20631869019D20639D286388D0F068A860A200A9C185EDA9B485EE2015B0F006AAA9019D20606000"));
 
 			// Insert luts
 			Blob lut_IncreaseGP = _classes.Select(x => (byte)(x.StartWithGold != BlursesStartWithGold.Remove ? (byte)x.StartWithGold : 0x00)).ToArray();
