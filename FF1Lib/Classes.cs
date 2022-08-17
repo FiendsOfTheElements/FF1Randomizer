@@ -552,6 +552,14 @@ namespace FF1Lib
 				}
 			}
 
+			List<Item> equipShirts = new();
+			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			{
+				if (itemnames[i].Contains("@T"))
+				{
+					equipShirts.Add((Item)i);
+				}
+			}
 			List<Item> equipShields = new();
 			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
 			{
@@ -560,7 +568,6 @@ namespace FF1Lib
 					equipShields.Add((Item)i);
 				}
 			}
-
 			List<Item> equipGauntlets = new();
 			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
 			{
@@ -569,7 +576,6 @@ namespace FF1Lib
 					equipGauntlets.Add((Item)i);
 				}
 			}
-
 			List<Item> equipHelmets = new();
 			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
 			{
@@ -632,17 +638,19 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.HitMod, "+20 Hit%", mod: 20, Classes: hitBonusClass ),
 				new BonusMalus(BonusMalusAction.MDefMod, "+10 MDef", mod: 10),
 				new BonusMalus(BonusMalusAction.MDefMod, "+20 MDef", mod: 20),
-				new BonusMalus(BonusMalusAction.WeaponAdd, "Equip @X", equipment: equipAxes, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
+				new BonusMalus(BonusMalusAction.WeaponAdd, "+All @X", equipment: equipAxes, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+Legendary@S", equipment: equipLegendaryWeapons),
-				new BonusMalus(BonusMalusAction.ArmorAdd, "+Wizard @T", equipment: new List<Item> {  Item.WhiteShirt, Item.BlackShirt }),
+				new BonusMalus(BonusMalusAction.ArmorAdd, "+All @T", equipment: equipShirts),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+All @s", equipment: equipShields, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+All @G", equipment: equipGauntlets, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+All @h", equipment: equipHelmets, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+Thief @S", equipment: equipThiefWeapon, Classes: new List<Classes> { Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+Red Mage @A", equipment: equipRedMageArmor, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage } ),
+				new BonusMalus(BonusMalusAction.ArmorAdd, "Promo. FI @A", mod: 99, equipment: equipFighterArmor, Classes: new List<Classes> { Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage, Classes.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcMod, "+2 Lv1 MP", mod: 2, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
 				new BonusMalus(BonusMalusAction.StartWithMp, "+1 MP LvAll", Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
 				new BonusMalus(BonusMalusAction.ThorMaster, "Thor Master", Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.WhiteMage }),
+				new BonusMalus(BonusMalusAction.PowerRW, "Promo. Sage", mod: 0, spelllist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), Classes: new List<Classes> { Classes.RedMage }),
 				new BonusMalus(BonusMalusAction.Hunter, "Vamp Killer", mod: 0x18),
 				new BonusMalus(BonusMalusAction.Hunter, "Drgn Slayer", mod: 0x02),
 			};
@@ -663,7 +671,7 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+Fighter @S", equipment: equipFighterWeapon, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+Fighter @A", equipment: equipFighterArmor, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage, Classes.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcGrowth, "Improved MP", bytelist: improvedMPlist, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
-				new BonusMalus(BonusMalusAction.PowerRW, "Sage", spelllist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), Classes: new List<Classes> { Classes.RedMage }),
+				new BonusMalus(BonusMalusAction.PowerRW, "Sage", mod: 1, spelllist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), Classes: new List<Classes> { Classes.RedMage }),
 				new BonusMalus(BonusMalusAction.Hunter, "Hunter", mod: 0xFF),
 				//new BonusMalus(BonusMalusAction.UnarmedAttack, "Monk", Classes: new List<Classes> { Classes.WhiteMage }), need extra work
 			};
@@ -970,7 +978,10 @@ namespace FF1Lib
 							_weaponPermissions[(Classes)(i + 6)] = bonusmalus.Equipment;
 							break;
 						case BonusMalusAction.ArmorAdd:
-							_armorPermissions.AddPermissionsRange(bonusmalus.Equipment.Select(x => ((Classes)i, x)).ToList());
+							// mod 99 used to indicate it's for promo only
+							if ((byte)bonusmalus.StatMod != 99) {
+								_armorPermissions.AddPermissionsRange(bonusmalus.Equipment.Select(x => ((Classes)i, x)).ToList());
+							}
 							_armorPermissions.AddPermissionsRange(bonusmalus.Equipment.Select(x => ((Classes)(i + 6), x)).ToList());
 							break;
 						case BonusMalusAction.ArmorRemove:
@@ -1027,7 +1038,10 @@ namespace FF1Lib
 							_classes[i + 6].SpCGrowth = bonusmalus.SpcGrowth;
 							break;
 						case BonusMalusAction.PowerRW:
-							_spellPermissions[(Classes)i] = wmWhiteSpells.Concat(bmBlackSpells).ToList();
+							// Strong blessing applies unpromoted; regular only applies promoted
+							if ((byte)bonusmalus.StatMod == 1) {
+								_spellPermissions[(Classes)i] = wmWhiteSpells.Concat(bmBlackSpells).ToList();
+							}
 							_spellPermissions[(Classes)(i + 6)] = wwWhiteSpells.Concat(bwBlackSpells).ToList();
 							break;
 						case BonusMalusAction.NoPromoMagic:
