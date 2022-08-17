@@ -1759,11 +1759,11 @@ namespace FF1Lib
 			spellList.Add(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies, SpellElement.None).Where(s => s.Info.effect > 70 && s.Info.effect < 100).Select(x => (byte)x.Id).ToList()); // Fade
 			spellList.Add(new List<byte> { (byte)(rom.Get(FF1Rom.MagicOutOfBattleOffset + (FF1Rom.MagicOutOfBattleSize * 12), 1)[0]) }); // Exit
 
-			List<byte> spellDark = new();
+			/*List<byte> spellDark = new();
 			List<byte> spellLamp = new();
-
 			spellDark.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.AllEnemies, SpellElement.Any, SpellStatus.Dark).Select(x => (byte)x.Id).ToList());
 			spellLamp.AddRange(spellHelper.FindSpells(SpellRoutine.CureAilment, SpellTargeting.Any, SpellElement.Any, SpellStatus.Dark).Select(x => (byte)x.Id).ToList());
+			*/
 
 			foreach (var spell in spellList)
 			{
@@ -1799,7 +1799,7 @@ namespace FF1Lib
 				}
 			}
 
-			if (spellDark.Any())
+			/*if (spellDark.Any())
 			{
 				SpellSlotInfo spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellDark.PickRandom(rng));
 
@@ -1816,7 +1816,7 @@ namespace FF1Lib
 				{
 					spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage }));
 				}
-			}
+			}*/
 
 			return spellBlursings;
 		}
