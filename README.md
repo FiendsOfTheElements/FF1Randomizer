@@ -1,6 +1,10 @@
 # FF1 Randomizer
 
-This is a randomizer for Final Fantasy 1 for the NES. It currently operates on the US version of the ROM only. A randomizer takes certain elements of a game and randomize them, creating a whole new gameplay experience.
+This is a randomizer for Final Fantasy 1 for the NES. It currently
+operates on the US version of the ROM only. A randomizer takes certain
+elements of a game and randomize them, creating a whole new gameplay
+experience.  If you just want to play, it is deployed at
+https://finalfantasyrandomizer.com
 
 ## Project Structure
 
@@ -14,7 +18,64 @@ The general project structure is as follows:
 - deployment scripts: .circleci
 
 
+## Architecture
 
+The randomizer is written in C#.  The user interface is written using
+Blazor.  Blazor is a web framework that includes the ability to run
+.NET applications directly in the browser.  This means that the
+randomizer is able to run entirely on the user's computer and is
+cross-platform without users having to explicitly download or install
+anything.
+
+Different randomizer versions are handled as instanced deploys.  The
+version is embedded in the URL as
+https://4-5-1.finalfantasyrandomizer.com,
+https://4-5-2.finalfantasyrandomizer.com, etc and the
+finalfantasyrandomizer.com start page is just a redirect to the latest
+version.
+
+Most of the code that actually changes the ROM can be found in FF1Lib.
+The entry point for randomization is FF1Rom.Randomize().  It is
+initalized with the starting ROM and then goes through and makes all
+the changes that the user selected.  You should read data from the ROM
+using FF1Rom.Get() or FF1Rom.GetFromBank() and apply changes using
+FF1Rom.Put() or FF1Rom.PutInBank().
+
+Some data is loaded into tables which are written back at the end.  In
+these cases, reading the data and writing it back will produce
+incorrect results.  Check FF1Rom.LoadSharedDataTables().
+
+Offsets used by Get() and Put() do not include the 16 byte iNES header
+from the .nes file.  If you are getting ROM offsets from somewhere
+else (like another ROM hack) they might be .nes file offsets which
+will be 16 bytes greater than the correct ROM offset.
+
+The randomizer changes the mapper from MMC1 to MMC3 in order to bump
+the ROM size from 256k to 512k and have more space for hacks.  It also
+moves some code out of their original locations into the newly
+available banks.  When creating patches, be aware that some functions
+may have moved.
+
+The web user interface can be found in FF1Blazor.  It calls FF1Rom.Randomize() in FileTab.razor.
+
+When adding a new flag, you need to add it to FF1Lib.Flags and
+FF1FLib.FlagsViewModel.  The latter class wraps the Flags in order to
+raise events when a flag is changed (used to trigger a re-render by the UI).
+
+The FF1Rom.Randomize() method is an asynchronous method.  Because
+randomization can take a while, it periodically returns control to the
+caller using "await" to give the browser's javascript event loop a
+chance to process input, re-render, etc.  This is necessary because
+the .NET virtual machine that executes the randomizer is written in
+webassembly and runs in the same thread as the page's javascript.
+
+The randomizer has been touched by a number of people with varying
+style, programming skill, goals, and at different points of evolution
+of abstractions in the code base.  As a result, different features
+manipulate the ROM in many different ways.  When in doubt, prefer to
+use functions and classes that abstract interaction with the ROM
+instead of just blindly changing bytes, it will be less likely your
+feature has unintended interactions with other features.
 
 ## Setting up a Development Environment
 
@@ -29,7 +90,7 @@ The general project structure is as follows:
 
 ### Developing on Linux
 
-1. [Download and install the .NET 5.0 SDK](https://docs.microsoft.com/en-us/dotnet/core/install/linux)
+1. [Download and install the .NET SDK](https://docs.microsoft.com/en-us/dotnet/core/install/linux)
 2. `cd FF1Blazorizer && dotnet publish -c Debug -o output`
 3. `cd output/wwwroot && python3 -m http.server 8000`
 
