@@ -771,8 +771,8 @@ namespace FF1Lib
 			}*/
 
 			// Single Spells Bonus/Malus
-			bonusNormal.AddRange(CreateSpellBonuses(rom, rng));
-			malusNormal.AddRange(CreateSpellMaluses(rom, rng));
+			bonusNormal.AddRange(CreateSpellBonuses(rom, rng, flags));
+			malusNormal.AddRange(CreateSpellMaluses(rom, rng, flags));
 
 			// Add Lockpicking Bonus/Malus
 			if ((bool)flags.Lockpicking && flags.LockpickingLevelRequirement < 50)
@@ -1690,7 +1690,7 @@ namespace FF1Lib
 			return new BonusMalus(BonusMalusAction.InnateResist, description, mod: innateResistValue);
 		}
 
-		public List<BonusMalus> CreateSpellBonuses(FF1Rom rom, MT19337 rng)
+		public List<BonusMalus> CreateSpellBonuses(FF1Rom rom, MT19337 rng, Flags flags)
 		{
 			List<BonusMalus> spellBlursings = new();
 
@@ -1701,12 +1701,18 @@ namespace FF1Lib
 
 			blackSpellList.Add(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any).Select(x => (byte)x.Id).ToList()); // Fast
 			blackSpellList.Add(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.OneCharacter).Select(x => (byte)x.Id).ToList()); // Tmpr
-			blackSpellList.Add(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Self).Where(s => s.Info.effect <= 15).Select(x => (byte)x.Id).ToList()); // Sabr
+			//blackSpellList.Add(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Self).Where(s => s.Info.effect <= 18).Select(x => (byte)x.Id).ToList()); // Sabr
 			blackSpellList.Add(new List<byte> { (byte)(rom.Get(FF1Rom.MagicOutOfBattleOffset + FF1Rom.MagicOutOfBattleSize * 10, 1)[0]) }); // Warp
+			// Include LOCK/LOK2 as long as accuracy isn't too low
+			if ((flags.LockMode != LockHitMode.Vanilla) && (flags.LockMode != LockHitMode.Accuracy107)) {
+				blackSpellList.Add(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.Any).Select(x => (byte)x.Id).ToList()); // Lock or Lok2
+			}
 
 			whiteSpellList.Add(spellHelper.FindSpells(SpellRoutine.Life, SpellTargeting.OneCharacter).Select(x => (byte)x.Id).ToList()); // Life
-			whiteSpellList.Add(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Self).Select(x => (byte)x.Id).ToList()); // Ruse
+			//whiteSpellList.Add(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Self).Select(x => (byte)x.Id).ToList()); // Ruse
 			whiteSpellList.Add(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.AllCharacters).Where(s => s.Info.effect <= 50).Select(x => (byte)x.Id).ToList()); // Inv2
+			whiteSpellList.Add(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.OneCharacter).Where(s => s.Info.effect >= 70 && s.Info.effect <= 140).Select(x => (byte)x.Id).ToList()); //Cur3
+			whiteSpellList.Add(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect >= 24 && s.Info.effect <= 40 && s.Info.Level <= 4).Select(x => (byte)x.Id).ToList()); //Hel2 if Lvl 4 or Less
 			whiteSpellList.Add(new List<byte> { (byte)(rom.Get(FF1Rom.MagicOutOfBattleOffset + FF1Rom.MagicOutOfBattleSize * 12, 1)[0]) }); // Exit
 
 			foreach (var spell in blackSpellList)
@@ -1739,7 +1745,7 @@ namespace FF1Lib
 
 			return spellBlursings;
 		}
-		public List<BonusMalus> CreateSpellMaluses(FF1Rom rom, MT19337 rng)
+		public List<BonusMalus> CreateSpellMaluses(FF1Rom rom, MT19337 rng, Flags flags)
 		{
 
 			List<BonusMalus> spellBlursings = new();
@@ -1747,17 +1753,24 @@ namespace FF1Lib
 			SpellHelper spellHelper = new(rom);
 
 			List<List<byte>> spellList = new();
-			List<List<byte>> whiteSpellList = new();
 
 			spellList.Add(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any).Select(x => (byte)x.Id).ToList()); // Fast
 			spellList.Add(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.OneCharacter).Select(x => (byte)x.Id).ToList()); // Tmpr
 			spellList.Add(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies, SpellElement.None).Where(s => s.Info.effect >= 100).Select(x => (byte)x.Id).ToList()); // Nuke
+			spellList.Add(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).Where(s => s.Info.effect >= 50 && s.Info.elem != SpellElement.None).Select(x => (byte)x.Id).ToList()); // Fir3, Ice3, or Lit3
 			spellList.Add(new List<byte> { (byte)(rom.Get(FF1Rom.MagicOutOfBattleOffset + (FF1Rom.MagicOutOfBattleSize * 10), 1)[0]) }); // Warp
+			// Include LOCK/LOK2 as long as accuracy isn't too low
+			if ((flags.LockMode != LockHitMode.Vanilla) && (flags.LockMode != LockHitMode.Accuracy107))
+			{
+				spellList.Add(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.Any).Select(x => (byte)x.Id).ToList()); // Lock or Lok2
+			}
 
 			spellList.Add(spellHelper.FindSpells(SpellRoutine.Life, SpellTargeting.OneCharacter).Select(x => (byte)x.Id).ToList()); // Life
-			spellList.Add(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Self).Select(x => (byte)x.Id).ToList()); // Ruse
+			spellList.Add(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.AllCharacters).Select(x => (byte)x.Id).ToList()); // Inv2
 			spellList.Add(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies, SpellElement.None).Where(s => s.Info.effect > 70 && s.Info.effect < 100).Select(x => (byte)x.Id).ToList()); // Fade
 			spellList.Add(new List<byte> { (byte)(rom.Get(FF1Rom.MagicOutOfBattleOffset + (FF1Rom.MagicOutOfBattleSize * 12), 1)[0]) }); // Exit
+			spellList.Add(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.OneCharacter).Where(s => s.Info.effect >= 70 && s.Info.effect <= 200).Select(x => (byte)x.Id).ToList()); //Cur3
+			spellList.Add(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect >= 42 && s.Info.effect <= 100).Select(x => (byte)x.Id).ToList()); //Hel3
 
 			/*List<byte> spellDark = new();
 			List<byte> spellLamp = new();
