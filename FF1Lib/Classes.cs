@@ -727,19 +727,19 @@ namespace FF1Lib
 			else if (flags.StartingGold == StartingGold.Gp800) {
 				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+1500 GP", mod: 15));
 				bonusStrong.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+6000 GP", mod: 60, Classes: new List<Classes> { Classes.Thief }));
-				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-300 GP", mod: -1));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-350 GP", mod: -1));
 			}
 			else if (flags.StartingGold == StartingGold.Gp2500) {
 				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+5000 GP", mod: 50));
 				bonusStrong.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+20,000 GP", mod: 200, Classes: new List<Classes> { Classes.Thief }));
-				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-1000 GP", mod: -1));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-1100 GP", mod: -1));
 			}
 			else if (flags.StartingGold == StartingGold.Gp9999) {
 				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+20,000 GP", mod: 200));
 				// Strong bonus doesn't make sense with gold already so high, so isn't created
-				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-4000 GP", mod: -1));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-4500 GP", mod: -1));
 			}
-			// This is already so much starting gold that bonuses for it no longer make sense
+			// These are so much starting gold that bonuses for it no longer make sense
 			//else if (flags.StartingGold == StartingGold.Gp65535 || flags.StartingGold == StartingGold.RandomHigh)
 
 			
@@ -1847,37 +1847,30 @@ namespace FF1Lib
 			
 			// The labels for the Malus Gold Amounts are processed separately in Randomize -
 			// Change those as well when changing the numbers below
-			int MalusGoldAmount = -150;
+			int MalusGoldAmount = 150;
 			// No malus available for 0GP start
 			//if (flags.StartingGold == StartingGold.None)
-			if (flags.StartingGold == StartingGold.Gp100)
-			{
-				MalusGoldAmount = -50;
+			if (flags.StartingGold == StartingGold.Gp100) {
+				MalusGoldAmount = 50;
 			}
-			else if (flags.StartingGold == StartingGold.Gp200)
-			{
-				MalusGoldAmount = -100;
+			else if (flags.StartingGold == StartingGold.Gp200) {
+				MalusGoldAmount = 100;
 			}
-			else if (flags.StartingGold == StartingGold.Gp400 || flags.StartingGold == StartingGold.RandomLow)
-			{
-				MalusGoldAmount = -150;
+			else if (flags.StartingGold == StartingGold.Gp400 || flags.StartingGold == StartingGold.RandomLow) {
+				MalusGoldAmount = 150;
 			}
-			else if (flags.StartingGold == StartingGold.Gp800)
-			{
-				MalusGoldAmount = -300;
+			else if (flags.StartingGold == StartingGold.Gp800) {
+				MalusGoldAmount = 350;
 			}
-			else if (flags.StartingGold == StartingGold.Gp2500)
-			{
-				MalusGoldAmount = -1000;
+			else if (flags.StartingGold == StartingGold.Gp2500) {
+				MalusGoldAmount = 1100;
 			}
-			else if (flags.StartingGold == StartingGold.Gp9999)
-			{
-				MalusGoldAmount = -4000;
+			else if (flags.StartingGold == StartingGold.Gp9999) {
+				MalusGoldAmount = 4500;
 			}
 
 			// StartWith Initialization Routine
-			//rom.PutInBank(0x1B, 0xB300, Blob.FromHex("A9B348A92048A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E484C07FEA000202EB398186940A8D0F660203EB32075B320C7B320F7B3201FB460A98085EDA9B485EEA2002015B0F027AAA900851085118512E000F01718A96465108510A90065118511A90065128512CA1890E520EADD60A98D85EDA9B485EEA2002000B0D042E8A90085108511851218A93265108510A90065118511A90065128512AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A200A9A785EDA9B485EE2015B048A99A85EDA9B485EE2015B048A90085EDA96385EE98AA65ED85ED68A86891ED8AA860A200A9B485EDA9B485EE2000B0F001609848AAA007E8BD20631869019D20639D286388D0F068A860A200A9C185EDA9B485EE2015B0F006AAA9019D20606000"));
-			rom.PutInBank(0x1B, 0xB300, Blob.FromHex($"A9B348A92048A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E484C07FEA000202EB398186940A8D0F660203EB32075B320C7B320F7B3201FB460A98085EDA9B485EEA2002015B0F027AAA900851085118512E000F01718A9{(MalusGoldAmount % 0x100):X2}65108510A9{((MalusGoldAmount / 0x100) % 0x100):X2}65118511A9{(MalusGoldAmount / 0x10000):X2}65128512CA1890E520EADD60A98D85EDA9B485EEA2002000B0D042E8A90085108511851218A93265108510A90065118511A90065128512AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A200A9A785EDA9B485EE2015B048A99A85EDA9B485EE2015B048A90085EDA96385EE98AA65ED85ED68A86891ED8AA860A200A9B485EDA9B485EE2000B0F001609848AAA007E8BD20631869019D20639D286388D0F068A860A200A9C185EDA9B485EE2015B0F006AAA9019D20606000"));
+			rom.PutInBank(0x1B, 0xB300, Blob.FromHex($"A9B348A92048A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E484C07FEA000202EB398186940A8D0F660203EB32075B320C7B320F7B3201FB460A98085EDA9B485EEA2002015B0F027AAA900851085118512E000F01718A96465108510A90065118511A90065128512CA1890E520EADD60A98D85EDA9B485EEA2002000B0D042E8A90085108511851218A9{(MalusGoldAmount % 0x100):X2}65108510A9{((MalusGoldAmount / 0x100) % 0x100):X2}65118511A9{(MalusGoldAmount / 0x10000):X2}65128512AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A200A9A785EDA9B485EE2015B048A99A85EDA9B485EE2015B048A90085EDA96385EE98AA65ED85ED68A86891ED8AA860A200A9B485EDA9B485EE2000B0F001609848AAA007E8BD20631869019D20639D286388D0F068A860A200A9C185EDA9B485EE2015B0F006AAA9019D20606000"));
 
 			// Insert luts
 			Blob lut_IncreaseGP = _classes.Select(x => (byte)(x.StartWithGold != BlursesStartWithGold.Remove ? (byte)x.StartWithGold : 0x00)).ToArray();

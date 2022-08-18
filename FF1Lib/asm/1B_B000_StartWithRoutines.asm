@@ -480,13 +480,13 @@ DGP_ClassLoop:
     STA tmp+2
     CLC  
 
-    LDA #$32
-    ADC tmp
+    LDA #$32		; These 3 LDA values are replaced in the c# code
+    ADC tmp			; to dynamically adjust depending on starting gold
     STA tmp
-    LDA #$00
+    LDA #$00		; ^
     ADC tmp+1
     STA tmp+1
-    LDA #$00
+    LDA #$00		; ^
     ADC tmp+2
     STA tmp+2
 
