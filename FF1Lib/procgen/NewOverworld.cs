@@ -1376,7 +1376,15 @@ namespace FF1Lib.Procgen
 
 			AddPlacements("PlaceInBridgedRegion", 1, 3, null);
 			AddPlacements("PlaceRequiringCanoe", 1, 2, null);
-			AddPlacements("PlaceInTitanWestRegion", 1, 3, null);
+			if (features.Contains(OverworldTiles.TITANS_TUNNEL_EAST)) {
+			    // If Titan's east hasn't been placed yet,
+			    // make sure we don't place it the Titan's west region.
+			    features.Remove(OverworldTiles.TITANS_TUNNEL_EAST);
+			    AddPlacements("PlaceInTitanWestRegion", 1, 3, null);
+			    features.Add(OverworldTiles.TITANS_TUNNEL_EAST);
+			} else {
+			    AddPlacements("PlaceInTitanWestRegion", 1, 3, null);
+			}
 
 			placementSteps.Add(new GenerationStep("PlaceCanal", new object[]{}));
 			AddPlacements("PlaceInCanalRegion", 1, 3, null);
