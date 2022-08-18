@@ -1241,9 +1241,9 @@
 	},
 	{
 		"Id": "runnabilityDropDown",
-		"title": "Unrunnable Formations",
+		"title": "Unrunnable Formations & Quantity",
 		"screenshot": "enemyFormationsUnrunnableCheckBox.png",
-		"description": "Changes whether the party can run from certain packs or not. Note that this does not change bosses, which under this flag remain unrunnable.\n Vanilla: Normal unrunnable formations. If it's unrunnable in the original game, it remains unrunnable here.\n Shuffle: Shuffles what formations are and are not runnable (about 11% of all normal-enemy formations will be unrunnable). Bosses and Minibosses (Astos, Pirates, Vampire, Garland) will remain unrunnable.\n All Unrunnable: Disables the ability to run from fights.\n\nAll Runnable: Makes all encounters runnable (except for bosses).\n Random Choice: Select one of these options randomly."
+		"description": "Changes whether the party can run from certain packs or not. Note that this does not change bosses, which under this flag remain unrunnable.\n Vanilla: Normal unrunnable formations. If it's unrunnable in the original game, it remains unrunnable here.\nShuffle (Vanilla): Shuffles what formations are and are not runnable, with the same ratio as vanilla (about 12% of all normal-enemy formations will be unrunnable). Bosses and Minibosses (Astos, Pirates, Vampire, Garland) will remain unrunnable.\nShuffled (Other) & Half Unrunnable: Like the Vanilla Shuffle, but increases the amount of total encounters that will be unrunnable - around 18%/25%/37%/50% of normal fights for \"+50%\"/\"Double\"/\"Triple\"/\"Half Unrunnable\".\n All Unrunnable: Disables the ability to run from fights.\n\nAll Runnable: Makes all encounters runnable (except for bosses).\n Random Choice: Select one of these options randomly."
 	},
 	{
 		"Id": "unrunnablesStrikeFirstAndSurpriseCheckBox",

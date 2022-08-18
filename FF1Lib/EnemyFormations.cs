@@ -5,9 +5,17 @@ namespace FF1Lib
 	public enum Runnability
 	{
 		[Description("Vanilla")]
-		Normal,
-		[Description("Shuffle")]
+		Vanilla,
+		[Description("Shuffle (Vanilla)")]
 		Shuffle,
+		[Description("Shuffle (+50%)")]
+		ShufflePlus50,
+		[Description("Shuffle (Double)")]
+		ShuffleDouble,
+		[Description("Shuffle (Triple)")]
+		ShuffleTriple,
+		[Description("Half Unrunnable")]
+		HalfUnrunnable,
 		[Description("All Unrunnable")]
 		AllUnrunnable,
 		[Description("All Runnable")]
@@ -59,7 +67,7 @@ namespace FF1Lib
 		private const byte UnrunnableOffset = 0x0D;       // no run flag (in low bit)
 		private const byte QuantityBOffset = 0x0E;        // enemy quantities for B formation (2 bytes)
 
-		public void ShuffleUnrunnable(MT19337 rng)
+		public void ShuffleUnrunnable(MT19337 rng, Flags flags)
 		{
 			// Load a list of formations from ROM
 			List<Blob> formations = Get(FormationsOffset, FormationSize * FormationCount).Chunk(FormationSize);
@@ -82,7 +90,19 @@ namespace FF1Lib
 			// We include - all normal formation A-Sides except encounter 00 (imps), all normal formation B-Sides, and the four B-sides at the end
 			List<int> ids = Enumerable.Range(1, NormalFormationCount - 1).Concat(Enumerable.Range(FormationCount, NormalFormationCount)).Concat(Enumerable.Range(FormationCount + ChaosFormationIndex + 1, 4)).ToList();
 			ids.Shuffle(rng);
-			ids = ids.Take(unrunnableAcount + unrunnableBcount).ToList(); // combine the number of unrunnables between both sides
+
+			// Adjusts unrunnable count based on flag settings
+			int unrunnableTotal = unrunnableAcount + unrunnableBcount;
+			if (flags.Runnability == Runnability.ShufflePlus50)
+				unrunnableTotal = (int)Math.Round(unrunnableTotal * 1.5);
+			else if (flags.Runnability == Runnability.ShuffleDouble)
+				unrunnableTotal *= 2;
+			else if (flags.Runnability == Runnability.ShuffleTriple)
+				unrunnableTotal *= 3;
+			else if (flags.Runnability == Runnability.HalfUnrunnable)
+				unrunnableTotal = NormalFormationCount; // Doesn't need to be halved because the total asumes it's split between A and B sides
+
+			ids = ids.Take(unrunnableTotal).ToList(); // total unrunnables between both sides and multipliers
 			foreach (int id in ids)
 			{
 				if (id < FormationCount)

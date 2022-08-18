@@ -213,7 +213,7 @@ namespace FF1Lib
 
 		public bool? Rng { get; set; } = false;
 		public bool FixMissingBattleRngEntry { get; set; } = false;
-		public Runnability Runnability { get; set; } = Runnability.Normal;
+		public Runnability Runnability { get; set; } = Runnability.Vanilla;
 		public bool? EnemyFormationsSurprise { get; set; } = false;
 		public bool? UnrunnablesStrikeFirstAndSurprise { get; set; } = false;
 		public TrapTileMode EnemyTrapTiles { get; set; } = TrapTileMode.Vanilla;

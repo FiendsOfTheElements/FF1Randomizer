@@ -120,7 +120,7 @@
     "MagicAutohitThreshold": 0,
     "Rng": true,
     "FixMissingBattleRngEntry": false,
-    "Runnability": 3,
+    "Runnability": 7,
     "EnemyFormationsSurprise": true,
     "UnrunnablesStrikeFirstAndSurprise": false,
     "EnemyTrapTiles": 1,
