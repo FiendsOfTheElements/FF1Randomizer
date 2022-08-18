@@ -1077,15 +1077,23 @@ namespace FF1Lib.Procgen
 	    for (int tryweight = 0; !found && tryweight <= maxweight; tryweight++) {
 		foreach (var p in points) {
 		    if (feature.MountainCave) {
-			var nw = p.OwUp.OwLeft;
 			var n = p.OwUp;
-			var ne = p.OwUp.OwRight;
+			var nw = n.OwLeft;
+			var ne = n.OwRight;
+
+			var nn = n.OwUp;
+			var nnw = nn.OwLeft;
+			var nne = nn.OwRight;
+
 			if (this.Feature_weightmap[n.Y, n.X] != tryweight) {
 			    continue;
 			}
 			if (this.Tilemap[nw.Y, nw.X] == OverworldTiles.MOUNTAIN &&
 			    this.Tilemap[n.Y, n.X] == OverworldTiles.MOUNTAIN &&
-			    this.Tilemap[ne.Y, ne.X] == OverworldTiles.MOUNTAIN)
+			    this.Tilemap[ne.Y, ne.X] == OverworldTiles.MOUNTAIN &&
+			    this.Tilemap[nnw.Y, nnw.X] == OverworldTiles.MOUNTAIN &&
+			    this.Tilemap[nn.Y, nn.X] == OverworldTiles.MOUNTAIN &&
+			    this.Tilemap[nne.Y, nne.X] == OverworldTiles.MOUNTAIN)
 			{
 			    point = new SCCoords(n.X, n.Y);
 			    found = true;
