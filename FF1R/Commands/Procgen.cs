@@ -78,13 +78,20 @@ namespace FF1R.Commands
 		do {
 		    try {
 			replacementMap = Task.Run<OwMapExchangeData>(async () => await FF1Lib.Procgen.NewOverworld.GenerateNewOverworld(rng, subtype, SuffleAccess, UnsafeStart, this.Progress)).Result;
-		    } catch (FailedToGenerate) {
-			if (!this.Retry) {
-			    Console.WriteLine($"Failed to generate seed {effectiveSeed}");
-			    throw;
-			}
-			effectiveSeed = (int)rng.Next() & 0x7FFFFFFF;
-			rng = new MT19337((uint)effectiveSeed);
+		    } catch (System.AggregateException ae) {
+			ae.Handle((x) =>
+			{
+			    if (x is FailedToGenerate) {
+				if (!this.Retry) {
+				    Console.WriteLine($"Failed to generate seed {effectiveSeed}");
+				    return false;
+				}
+				effectiveSeed = (int)rng.Next() & 0x7FFFFFFF;
+				rng = new MT19337((uint)effectiveSeed);
+				return true;
+			    }
+			    return false;
+			});
 		    }
 		} while (replacementMap == null);
 
