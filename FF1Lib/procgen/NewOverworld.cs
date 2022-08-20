@@ -1585,6 +1585,7 @@ namespace FF1Lib.Procgen
 		    new GenerationStep("ApplyFilter", new object[]{mt.grass_borders, false}, "grass_borders"),
 		    new GenerationStep("ApplyFilter", new object[]{mt.forest_borders, false}, "forest_borders"),
 		    new GenerationStep("CheckBridgeShores", new object[]{}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores7, false}, "apply_shores7"),
 		};
 
 		postPlacementState.SetSteps(polishSteps);

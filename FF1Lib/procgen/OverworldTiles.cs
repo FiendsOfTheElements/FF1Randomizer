@@ -165,7 +165,7 @@ namespace FF1Lib.Procgen
 	};
 	public Dictionary<byte, int> BiomeRegionTypeMap;
 
-	public byte[][] TraversableRegionTypes = new byte[][] {
+	public static byte[][] TraversableRegionTypes = new byte[][] {
 	    new byte[] {
 		LAND, GRASS, GRASS_NW, GRASS_NE, GRASS_SW, GRASS_SE,
 		MARSH, MARSH_NW, MARSH_NE, MARSH_SW, MARSH_SE,
@@ -212,6 +212,7 @@ namespace FF1Lib.Procgen
 	public OwTileFilter apply_shores4;
 	public OwTileFilter apply_shores5;
 	public OwTileFilter apply_shores6;
+	public OwTileFilter apply_shores7;
 
 	public OwTileFilter prune_forests;
 	public OwTileFilter polish_mountains1;
@@ -1054,6 +1055,20 @@ namespace FF1Lib.Procgen
 		    {STAR,         STAR, STAR},
 		    {STAR,     SHORE_SW, STAR},
 		    {SHORE_NE,     STAR, STAR}},
+		    SHORE_S),
+	    }, allTiles, non_shore_tiles, null);
+
+	this.apply_shores7 = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
+		    {LAND,     STAR, STAR},
+		    {STAR, SHORE_NW, STAR},
+		    {STAR,     STAR, STAR}},
+		    SHORE_N),
+		new Rule(new byte[3,3] {
+		    {STAR,         STAR, LAND},
+		    {STAR,     SHORE_SW, STAR},
+		    {STAR,     STAR, STAR}},
 		    SHORE_S),
 	    }, allTiles, non_shore_tiles, null);
 
