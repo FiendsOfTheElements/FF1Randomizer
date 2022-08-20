@@ -132,12 +132,23 @@ namespace FF1Lib.Procgen
 		foreach (var p in riverRegion.Points) {
 		    this.Tilemap[p.Y, p.X] = OverworldTiles.OCEAN;
 		}
-		this.Traversable_regionlist[riverRegion.RegionId] = new OwRegion(riverRegion);
-		this.Traversable_regionlist[riverRegion.RegionId].RegionType = OverworldTiles.OCEAN_REGION;
 
-		riverRegion = this.Biome_regionlist[this.Biome_regionmap[riverRegion.Points[0].Y, riverRegion.Points[0].X]];
-		this.Biome_regionlist[riverRegion.RegionId] = new OwRegion(riverRegion);
-		this.Biome_regionlist[riverRegion.RegionId].RegionType = OverworldTiles.OCEAN_REGION;
+		if (riverRegion.Adjacent.Contains(OverworldTiles.MainOceanRegionId)) {
+		    var biomeRiverRegion = this.Biome_regionlist[this.Biome_regionmap[riverRegion.Points[0].Y, riverRegion.Points[0].X]];
+		    OwRegion.Merge(this.Traversable_regionmap,
+				   this.Traversable_regionlist,
+				   riverRegion, this.Traversable_regionlist[OverworldTiles.MainOceanRegionId]);
+		    OwRegion.Merge(this.Biome_regionmap,
+				   this.Biome_regionlist,
+				   biomeRiverRegion, this.Biome_regionlist[OverworldTiles.MainOceanRegionId]);
+		} else {
+		    this.Traversable_regionlist[riverRegion.RegionId] = new OwRegion(riverRegion);
+		    this.Traversable_regionlist[riverRegion.RegionId].RegionType = OverworldTiles.OCEAN_REGION;
+
+		    riverRegion = this.Biome_regionlist[this.Biome_regionmap[riverRegion.Points[0].Y, riverRegion.Points[0].X]];
+		    this.Biome_regionlist[riverRegion.RegionId] = new OwRegion(riverRegion);
+		    this.Biome_regionlist[riverRegion.RegionId].RegionType = OverworldTiles.OCEAN_REGION;
+		}
 
 		//this.Tilemap[this.FeatureCoordinates["Bridge"].Y, this.FeatureCoordinates["Bridge"].X] = OverworldTiles.DOCK_W;
 		return await this.NextStep();

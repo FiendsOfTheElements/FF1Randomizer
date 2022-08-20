@@ -172,6 +172,18 @@ namespace FF1Lib.Procgen
 		regionMap[p.Y, p.X] = dst.RegionId;
 	    }
 	    src.Points.Clear();
+	    foreach (var a in src.Adjacent) {
+		// Make anything adjacent to src,
+		// adjacent to dst
+		if (!dst.Adjacent.Contains(a)) {
+		    dst.Adjacent.Add(a);
+		}
+		regionList[a].Adjacent.Remove(src.RegionId);
+		if (!regionList[a].Adjacent.Contains(dst.RegionId)) {
+		    regionList[a].Adjacent.Add(dst.RegionId);
+		}
+	    }
+	    src.Adjacent.Clear();
 	}
     }
 
