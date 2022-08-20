@@ -2,27 +2,6 @@
 
 namespace FF1Lib
 {
-	public enum Runnability
-	{
-		[Description("Vanilla")]
-		Vanilla,
-		[Description("Shuffle (Vanilla)")]
-		Shuffle,
-		[Description("Shuffle (+50%)")]
-		ShufflePlus50,
-		[Description("Shuffle (Double)")]
-		ShuffleDouble,
-		[Description("Shuffle (Triple)")]
-		ShuffleTriple,
-		[Description("Half Unrunnable")]
-		HalfUnrunnable,
-		[Description("All Unrunnable")]
-		AllUnrunnable,
-		[Description("All Runnable")]
-		AllRunnable,
-		[Description("Random Choice")]
-		Random
-	};
 	public partial class FF1Rom : NesRom
 	{
 		public enum FinalFormation
@@ -67,20 +46,15 @@ namespace FF1Lib
 		private const byte UnrunnableOffset = 0x0D;       // no run flag (in low bit)
 		private const byte QuantityBOffset = 0x0E;        // enemy quantities for B formation (2 bytes)
 
-		public void ShuffleUnrunnable(MT19337 rng, Flags flags)
+		public void ShuffleUnrunnable(MT19337 rng, Flags flags, double unrunnablePercent)
 		{
 			// Load a list of formations from ROM
 			List<Blob> formations = Get(FormationsOffset, FormationSize * FormationCount).Chunk(FormationSize);
-			int unrunnableAcount = 0, unrunnableBcount = 0; // number of formations marked as unrunnable on both sides
-															// First we mark all formations as runnable except for fiends/chaos (both sides) or the other boss fights (on a-side only)
+			// First we mark all formations as runnable except for fiends/chaos (both sides) or the other boss fights (on a-side only)
 			for (int i = 0; i < FormationCount; ++i)
 			{
 				if (i >= NormalFormationCount && i <= ChaosFormationIndex)
 					continue; // skip fiends and Chaos on both sides
-				if ((formations[i][UnrunnableOffset] & 0x01) == 0x01 && i < NormalFormationCount)
-					unrunnableAcount++; // only add normal formations to the count for a-side
-				if ((formations[i][UnrunnableOffset] & 0x02) == 0x02 && (i < NormalFormationCount || i > ChaosFormationIndex))
-					unrunnableBcount++; // only add the b-sides that are not fiend/chaos fights
 				if (i > ChaosFormationIndex)
 					formations[i][UnrunnableOffset] &= 0xFD; // the last four fights only mark the B-side as runnable
 				else
@@ -91,17 +65,11 @@ namespace FF1Lib
 			List<int> ids = Enumerable.Range(1, NormalFormationCount - 1).Concat(Enumerable.Range(FormationCount, NormalFormationCount)).Concat(Enumerable.Range(FormationCount + ChaosFormationIndex + 1, 4)).ToList();
 			ids.Shuffle(rng);
 
-			// Adjusts unrunnable count based on flag settings
-			int unrunnableTotal = unrunnableAcount + unrunnableBcount;
-			if (flags.Runnability == Runnability.ShufflePlus50)
-				unrunnableTotal = (int)Math.Round(unrunnableTotal * 1.5);
-			else if (flags.Runnability == Runnability.ShuffleDouble)
-				unrunnableTotal *= 2;
-			else if (flags.Runnability == Runnability.ShuffleTriple)
-				unrunnableTotal *= 3;
-			else if (flags.Runnability == Runnability.HalfUnrunnable)
-				unrunnableTotal = NormalFormationCount; // Doesn't need to be halved because the total asumes it's split between A and B sides
+			// Take unrunnable percentage from flags and convert into number of encounters that are unrunnable
+			// The +1 to NormalFormationCount is needed to account for the extra B-side formation spots
+			int unrunnableTotal = (int)Math.Round(unrunnablePercent * (NormalFormationCount + 1) / 100 * 2);
 
+			//NormalFormationCount
 			ids = ids.Take(unrunnableTotal).ToList(); // total unrunnables between both sides and multipliers
 			foreach (int id in ids)
 			{

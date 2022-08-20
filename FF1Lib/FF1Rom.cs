@@ -847,20 +847,30 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		if (flags.Runnability == Runnability.Random)
+		/*if (flags.Runnability == Runnability.Random)
 			flags.Runnability = (Runnability)Rng.Between(rng, 0, 7);
 
 		if (flags.Runnability == Runnability.AllRunnable)
 			CompletelyRunnable();
 		else if (flags.Runnability == Runnability.AllUnrunnable)
 			CompletelyUnrunnable();
-		else if (flags.Runnability != Runnability.Vanilla)
-			ShuffleUnrunnable(rng, flags);
+		else if (flags.Runnability != Runnability.Vanilla)*/
+
+		
+		if (flags.UnrunnableShuffle != false) {
+			double UnrunnablePercent = rng.Between(flags.UnrunnablesLow, flags.UnrunnablesHigh);
+			// This is separate because the basic Imp formation is not otherwise included in the possible unrunnable formations
+			if (UnrunnablePercent >= 99.8)
+				CompletelyUnrunnable();
+			else
+				ShuffleUnrunnable(rng, flags, UnrunnablePercent);
+		}
+
 
 		// Always on to supply the correct changes for WaitWhenUnrunnable
 		AllowStrikeFirstAndSurprise(flags.WaitWhenUnrunnable, (bool)flags.UnrunnablesStrikeFirstAndSurprise);
 
-		if (((bool)flags.EnemyFormationsSurprise))
+		if ((bool)flags.EnemyFormationsSurprise)
 		{
 			ShuffleSurpriseBonus(rng);
 		}

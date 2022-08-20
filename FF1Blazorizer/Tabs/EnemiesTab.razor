@@ -9,8 +9,12 @@
 		<div class="col1">
 			<h4>Formations</h4>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="formationShuffleModeDropDown" TItem="FormationShuffleMode" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" @bind-Value="Flags.FormationShuffleMode">Rarity:</EnumDropDown>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="runnabilityDropDown" TItem="Runnability" @bind-Value="Flags.Runnability">Unrunnable Formations:</EnumDropDown>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="unrunnablesStrikeFirstAndSurpriseCheckBox" @bind-Value="Flags.UnrunnablesStrikeFirstAndSurprise">Unrunnable First Strike &amp; Surprise</TriStateCheckBox>
+
+            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="runnabilityShuffleCheckbox" @bind-Value="Flags.UnrunnableShuffle">Shuffle Unrunnable Encounters</TriStateCheckBox>
+            <DoubleSlider ShowMedian DoubleCol Indent Id="runnabilityDoubleSlider" IsEnabled="@(Flags.UnrunnableShuffle != false)" MinValue="0" MaxValue="100" Step="4" @bind-ValuesRange="(Flags.UnrunnablesLow,Flags.UnrunnablesHigh)">Count:</DoubleSlider>
+            
+
+            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="unrunnablesStrikeFirstAndSurpriseCheckBox" @bind-Value="Flags.UnrunnablesStrikeFirstAndSurprise">Unrunnable First Strike &amp; Surprise</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsSurpriseCheckBox" @bind-Value="Flags.EnemyFormationsSurprise">Shuffle Surprise Bonus</TriStateCheckBox>
 
 			<div class="checkbox-cell"></div>
