@@ -1243,7 +1243,7 @@
 		"Id": "runnabilityShuffleCheckbox",
 		"title": "Unrunnable Formation Shuffle & Quantity",
 		"screenshot": "enemyFormationsUnrunnableCheckBox.png",
-		"description": "When unchecked, the same formations that are unrunnable in the vanilla game will remain unrunnable. Otherwise, which formations you can run from will be shuffled. Bosses (Fiends & Chaos) and Minibosses (Astos, Pirates, Vampire, & Garland) will always be unrunnable.\nAdjust the slider to select what percentage of non-boss fights will be unrunnable (Vanilla is 12%). If a range is selected, a random percentage within that range will be chosen when the seed is generated."
+		"description": "When unchecked, the same formations that are unrunnable in the vanilla game will remain unrunnable. Otherwise, which formations you can run from will be shuffled. Bosses (Fiends & Chaos) and Minibosses (Astos, Pirates, Vampire, & Garland) will always be unrunnable.\nAdjust the slider to select what percentage of non-boss fights will be unrunnable (vanilla is 12%). If a range is selected, a random percentage within that range will be chosen when the seed is generated."
 	},
 	{
 		"Id": "unrunnablesStrikeFirstAndSurpriseCheckBox",

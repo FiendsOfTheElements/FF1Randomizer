@@ -12,8 +12,6 @@
 
             <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="runnabilityShuffleCheckbox" @bind-Value="Flags.UnrunnableShuffle">Shuffle Unrunnable Encounters</TriStateCheckBox>
             <DoubleSlider ShowMedian DoubleCol Indent Id="runnabilityDoubleSlider" IsEnabled="@(Flags.UnrunnableShuffle != false)" MinValue="0" MaxValue="100" Step="4" @bind-ValuesRange="(Flags.UnrunnablesLow,Flags.UnrunnablesHigh)">Count:</DoubleSlider>
-            
-
             <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="unrunnablesStrikeFirstAndSurpriseCheckBox" @bind-Value="Flags.UnrunnablesStrikeFirstAndSurprise">Unrunnable First Strike &amp; Surprise</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsSurpriseCheckBox" @bind-Value="Flags.EnemyFormationsSurprise">Shuffle Surprise Bonus</TriStateCheckBox>
 

@@ -214,14 +214,14 @@ namespace FF1Lib
 		public bool? Rng { get; set; } = false;
 		public bool FixMissingBattleRngEntry { get; set; } = false;
 
-		public bool? UnrunnableShuffle { get; set; } = false;
+		public bool? UnrunnableShuffle { get; set; } = true;
 		[IntegerFlag(0, 100, 4)]
-		public int UnrunnablesLow { get; set; } = 12;
-
+		public int UnrunnablesLow { get; set; } = 0;
 		[IntegerFlag(0, 100, 4)]
-		public int UnrunnablesHigh { get; set; } = 12;
+		public int UnrunnablesHigh { get; set; } = 0;
 		public bool? EnemyFormationsSurprise { get; set; } = false;
 		public bool? UnrunnablesStrikeFirstAndSurprise { get; set; } = false;
+
 		public TrapTileMode EnemyTrapTiles { get; set; } = TrapTileMode.Vanilla;
 		public FormationPool TCFormations { get; set; } = FormationPool.AltFormationDist;
 		public TCOptions TCBetterTreasure { get; set; } = TCOptions.None;
