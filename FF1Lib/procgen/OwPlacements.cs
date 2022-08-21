@@ -132,12 +132,23 @@ namespace FF1Lib.Procgen
 		foreach (var p in riverRegion.Points) {
 		    this.Tilemap[p.Y, p.X] = OverworldTiles.OCEAN;
 		}
-		this.Traversable_regionlist[riverRegion.RegionId] = new OwRegion(riverRegion);
-		this.Traversable_regionlist[riverRegion.RegionId].RegionType = OverworldTiles.OCEAN_REGION;
 
-		riverRegion = this.Biome_regionlist[this.Biome_regionmap[riverRegion.Points[0].Y, riverRegion.Points[0].X]];
-		this.Biome_regionlist[riverRegion.RegionId] = new OwRegion(riverRegion);
-		this.Biome_regionlist[riverRegion.RegionId].RegionType = OverworldTiles.OCEAN_REGION;
+		if (riverRegion.Adjacent.Contains(OverworldTiles.MainOceanRegionId)) {
+		    var biomeRiverRegion = this.Biome_regionlist[this.Biome_regionmap[riverRegion.Points[0].Y, riverRegion.Points[0].X]];
+		    OwRegion.Merge(this.Traversable_regionmap,
+				   this.Traversable_regionlist,
+				   riverRegion, this.Traversable_regionlist[OverworldTiles.MainOceanRegionId]);
+		    OwRegion.Merge(this.Biome_regionmap,
+				   this.Biome_regionlist,
+				   biomeRiverRegion, this.Biome_regionlist[OverworldTiles.MainOceanRegionId]);
+		} else {
+		    this.Traversable_regionlist[riverRegion.RegionId] = new OwRegion(riverRegion);
+		    this.Traversable_regionlist[riverRegion.RegionId].RegionType = OverworldTiles.OCEAN_REGION;
+
+		    riverRegion = this.Biome_regionlist[this.Biome_regionmap[riverRegion.Points[0].Y, riverRegion.Points[0].X]];
+		    this.Biome_regionlist[riverRegion.RegionId] = new OwRegion(riverRegion);
+		    this.Biome_regionlist[riverRegion.RegionId].RegionType = OverworldTiles.OCEAN_REGION;
+		}
 
 		//this.Tilemap[this.FeatureCoordinates["Bridge"].Y, this.FeatureCoordinates["Bridge"].X] = OverworldTiles.DOCK_W;
 		return await this.NextStep();
@@ -146,31 +157,33 @@ namespace FF1Lib.Procgen
 	}
 
 	public async Task<Result> CheckBridgeShores() {
-	    var shore_tiles = new HashSet<byte>();
-	    shore_tiles.Add(OverworldTiles.SHORE_NW);
-	    shore_tiles.Add(OverworldTiles.SHORE_NE);
-	    shore_tiles.Add(OverworldTiles.SHORE_SW);
-	    shore_tiles.Add(OverworldTiles.SHORE_SE);
+	    // If any of the previous passes messed up the bridge we need
+	    // to fix it.
+	    var traversable_tiles = new HashSet<byte>(OverworldTiles.TraversableRegionTypes[OverworldTiles.LAND_REGION]);
+	    traversable_tiles.Remove(OverworldTiles.SHORE_NW);
+	    traversable_tiles.Remove(OverworldTiles.SHORE_NE);
+	    traversable_tiles.Remove(OverworldTiles.SHORE_SW);
+	    traversable_tiles.Remove(OverworldTiles.SHORE_SE);
 
 	    var b = this.FeatureCoordinates["Bridge"];
 
 	    if (this.Traversable_regionlist[this.Traversable_regionmap[this.FeatureCoordinates["Bridge"].Y, this.FeatureCoordinates["Bridge"].X+1]].RegionType == OverworldTiles.LAND_REGION) {
 		// Horizontal bridge
-		if (shore_tiles.Contains(this.Tilemap[b.Y, b.X-1])) {
+		if (!traversable_tiles.Contains(this.Tilemap[b.Y, b.X-1])) {
 		    this.OwnTilemap();
 		    this.Tilemap[b.Y, b.X-1] = OverworldTiles.LAND;
 		}
-		if (shore_tiles.Contains(this.Tilemap[b.Y, b.X+1])) {
+		if (!traversable_tiles.Contains(this.Tilemap[b.Y, b.X+1])) {
 		    this.OwnTilemap();
 		    this.Tilemap[b.Y, b.X+1] = OverworldTiles.LAND;
 		}
 	    } else {
 		// Vertical bridge
-		if (shore_tiles.Contains(this.Tilemap[b.Y-1, b.X])) {
+		if (!traversable_tiles.Contains(this.Tilemap[b.Y-1, b.X])) {
 		    this.OwnTilemap();
 		    this.Tilemap[b.Y-1, b.X] = OverworldTiles.LAND;
 		}
-		if (shore_tiles.Contains(this.Tilemap[b.Y+1, b.X])) {
+		if (!traversable_tiles.Contains(this.Tilemap[b.Y+1, b.X])) {
 		    this.OwnTilemap();
 		    this.Tilemap[b.Y+1, b.X] = OverworldTiles.LAND;
 		}

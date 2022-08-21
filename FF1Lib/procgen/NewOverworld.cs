@@ -172,6 +172,18 @@ namespace FF1Lib.Procgen
 		regionMap[p.Y, p.X] = dst.RegionId;
 	    }
 	    src.Points.Clear();
+	    foreach (var a in src.Adjacent) {
+		// Make anything adjacent to src,
+		// adjacent to dst
+		if (!dst.Adjacent.Contains(a)) {
+		    dst.Adjacent.Add(a);
+		}
+		regionList[a].Adjacent.Remove(src.RegionId);
+		if (!regionList[a].Adjacent.Contains(dst.RegionId)) {
+		    regionList[a].Adjacent.Add(dst.RegionId);
+		}
+	    }
+	    src.Adjacent.Clear();
 	}
     }
 
@@ -1167,6 +1179,158 @@ namespace FF1Lib.Procgen
 
 	    return ValueTuple.Create(true, point);
 	}
+
+	bool canTraverse(int curRegionType, SCCoords adj) {
+	    int adjRegionType = -1;
+	    var tile = this.Tilemap[adj.Y, adj.X];
+
+	    if (tile == OverworldTiles.WATERFALL) {
+		adjRegionType = OverworldTiles.RIVER_REGION;
+	    } else if (OverworldTiles.Entrances.Contains(tile)) {
+		adjRegionType = OverworldTiles.ENTRANCES_REGION;
+	    } else if (overworldTiles.TraversableRegionTypeMap.ContainsKey(tile)) {
+		adjRegionType = overworldTiles.TraversableRegionTypeMap[tile];
+	    }
+
+	    if (adjRegionType == -1 || adjRegionType == OverworldTiles.MOUNTAIN_REGION) {
+		return false;
+	    }
+
+	    if (curRegionType == adjRegionType) {
+		return true;
+	    }
+
+	    if ((curRegionType == OverworldTiles.LAND_REGION &&
+		 adjRegionType == OverworldTiles.DOCK_REGION) ||
+		(curRegionType == OverworldTiles.DOCK_REGION &&
+		 adjRegionType == OverworldTiles.LAND_REGION))
+	    {
+		return true;
+	    }
+
+	    if ((curRegionType == OverworldTiles.LAND_REGION &&
+		 adjRegionType == OverworldTiles.ENTRANCES_REGION) ||
+		(curRegionType == OverworldTiles.ENTRANCES_REGION &&
+		 adjRegionType == OverworldTiles.LAND_REGION))
+	    {
+		return true;
+	    }
+
+	    if ((curRegionType == OverworldTiles.LAND_REGION &&
+		 adjRegionType == OverworldTiles.RIVER_REGION) ||
+		(curRegionType == OverworldTiles.RIVER_REGION &&
+		 adjRegionType == OverworldTiles.LAND_REGION))
+	    {
+		return true;
+	    }
+
+	    if ((curRegionType == OverworldTiles.OCEAN_REGION &&
+		 adjRegionType == OverworldTiles.RIVER_REGION) ||
+		(curRegionType == OverworldTiles.RIVER_REGION &&
+		 adjRegionType == OverworldTiles.OCEAN_REGION))
+	    {
+		return true;
+	    }
+
+	    if ((curRegionType == OverworldTiles.OCEAN_REGION &&
+		 adjRegionType == OverworldTiles.DOCK_REGION) ||
+		(curRegionType == OverworldTiles.DOCK_REGION &&
+		 adjRegionType == OverworldTiles.OCEAN_REGION))
+	    {
+		return true;
+	    }
+
+	    return false;
+	}
+
+	public bool CheckSanity() {
+	    bool[,] visited = new bool[OverworldState.MAPSIZE, OverworldState.MAPSIZE];
+	    var workingStack = new Stack<SCCoords>();
+	    var remainingEntrances = new List<byte>(OverworldTiles.Entrances);
+	    remainingEntrances.Add(OverworldTiles.AIRSHIP_DESERT);
+
+	    workingStack.Push(this.FeatureCoordinates["StartingLocation"]);
+
+	    while (workingStack.Count > 0 && remainingEntrances.Count > 0) {
+		while (workingStack.Count > 0 && remainingEntrances.Count > 0) {
+		    var current = workingStack.Pop();
+		    if (visited[current.Y, current.X]) {
+			continue;
+		    }
+		    visited[current.Y, current.X] = true;
+
+		    int regionType = -1;
+		    var tile = this.Tilemap[current.Y, current.X];
+
+		    if (remainingEntrances.Contains(tile)) {
+			remainingEntrances.Remove(tile);
+			regionType = OverworldTiles.ENTRANCES_REGION;
+
+			if (tile == OverworldTiles.TITAN_CAVE_E) {
+			    workingStack.Push(this.FeatureCoordinates["TitansTunnelWest"]);
+			}
+			if (tile == OverworldTiles.TITAN_CAVE_W) {
+			    workingStack.Push(this.FeatureCoordinates["TitansTunnelEast"]);
+			}
+
+		    } else if (OverworldTiles.Entrances.Contains(tile)) {
+			regionType = OverworldTiles.ENTRANCES_REGION;
+		    } else if (overworldTiles.TraversableRegionTypeMap.ContainsKey(tile)) {
+			regionType = overworldTiles.TraversableRegionTypeMap[tile];
+		    }
+
+		    if (regionType == -1 || regionType == OverworldTiles.MOUNTAIN_REGION) {
+			continue;
+		    }
+
+		    if (canTraverse(regionType, current.OwUp)) {
+			workingStack.Push(current.OwUp);
+		    }
+		    if (canTraverse(regionType, current.OwRight)) {
+			workingStack.Push(current.OwRight);
+		    }
+		    if (canTraverse(regionType, current.OwDown)) {
+			workingStack.Push(current.OwDown);
+		    }
+		    if (canTraverse(regionType, current.OwLeft)) {
+			workingStack.Push(current.OwLeft);
+		    }
+
+		    if (regionType == OverworldTiles.LAND) {
+			if (current.OwUp == this.FeatureCoordinates["Bridge"]) {
+			    workingStack.Push(current.OwUp.OwUp);
+			}
+			if (current.OwRight == this.FeatureCoordinates["Bridge"]) {
+			    workingStack.Push(current.OwRight.OwRight);
+			}
+			if (current.OwDown == this.FeatureCoordinates["Bridge"]) {
+			    workingStack.Push(current.OwDown.OwDown);
+			}
+			if (current.OwLeft == this.FeatureCoordinates["Bridge"]) {
+			    workingStack.Push(current.OwLeft.OwLeft);
+			}
+		    }
+		}
+
+		if (!remainingEntrances.Contains(OverworldTiles.AIRSHIP_DESERT)) {
+		    for (int y = 0; y < OverworldState.MAPSIZE; y++) {
+			for (int x = 0; x < OverworldState.MAPSIZE; x++) {
+			    if (!visited[y, x] && overworldTiles.airship_landable.Contains(this.Tilemap[y, x])) {
+				workingStack.Push(new SCCoords(x, y));
+			    }
+			}
+		    }
+		}
+	    }
+
+	    if (remainingEntrances.Count > 0) {
+		foreach (var e in remainingEntrances) {
+		    Console.WriteLine($"Procgen map failed sanity check: couldn't reach {e:X}");
+		}
+		return false;
+	    }
+	    return true;
+	}
     }
 
     public class Result {
@@ -1585,12 +1749,13 @@ namespace FF1Lib.Procgen
 		    new GenerationStep("ApplyFilter", new object[]{mt.grass_borders, false}, "grass_borders"),
 		    new GenerationStep("ApplyFilter", new object[]{mt.forest_borders, false}, "forest_borders"),
 		    new GenerationStep("CheckBridgeShores", new object[]{}),
+		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores7, false}, "apply_shores7"),
 		};
 
 		postPlacementState.SetSteps(polishSteps);
 		var finalState = await RunSteps(postPlacementState, progress);
 
-		if (finalState != null) {
+		if (finalState != null && finalState.CheckSanity()) {
 		    return ReplacementMap(finalState, mt);
 		}
 	    }
