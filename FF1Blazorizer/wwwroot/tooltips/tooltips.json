@@ -1249,7 +1249,7 @@
 		"Id": "unrunnablesStrikeFirstAndSurpriseCheckBox",
 		"title": "First Strike and Surprise Possible when Unrunnable",
 		"screenshot": "unrunnablesStrikeFirstAndSupriseCheckBox.png",
-		"description": "Allows you to first strike an unrunnable formation. Also allows an unrunnable formation to ambush YOU."
+		"description": "Allows you to first strike an unrunnable formation, or an unrunnable formation to ambush you."
 	},
 	{
 		"Id": "enemyFormationsSurpriseCheckBox",
