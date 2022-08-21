@@ -1056,7 +1056,7 @@
 				new MapArea { location = MapLocation.SeaShrine1, map = MapId.SeaShrineB3, ul_corner = (0, 0), ur_corner = (43, 0), ll_corner = (0, 64), lr_corner = (43, 64) },
 				new MapArea { location = MapLocation.SeaShrine2, map = MapId.SeaShrineB2, ul_corner = (0, 0), ur_corner = (48, 0), ll_corner = (0, 64), lr_corner = (48, 64) },
 				new MapArea { location = MapLocation.SeaShrine6, map = MapId.SeaShrineB2, ul_corner = (51, 39), ur_corner = (64, 39), ll_corner = (51, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.SeaShrineMermaids, map = MapId.SeaShrineB1, ul_corner = (51, 39), ur_corner = (64, 39), ll_corner = (51, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.SeaShrineMermaids, map = MapId.SeaShrineB1, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
 				new MapArea { location = MapLocation.SkyPalace1, map = MapId.SkyPalace1F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
 				new MapArea { location = MapLocation.SkyPalace2, map = MapId.SkyPalace2F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
 				new MapArea { location = MapLocation.SkyPalace3, map = MapId.SkyPalace3F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
