@@ -695,6 +695,7 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.MDefGrowth, "-1 MDef/Lv", mod: -1),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "No " + olditemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "No @B", equipment: braceletList),
+				new BonusMalus(BonusMalusAction.ArmorReplace, "No Promo @A", mod: 99, equipment: equipFighterArmor, Classes: new List<Classes> { Classes.Fighter } ),
 				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief @S", equipment: equipThiefWeapon, Classes: new List<Classes> { Classes.Fighter, Classes.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcMax, "-4 Max MP", mod: -4, Classes: new List<Classes> {  Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
 				new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, Classes: new List<Classes> { Classes.Fighter, Classes.Thief }),
@@ -990,7 +991,10 @@ namespace FF1Lib
 							_armorPermissions.RemovePermissionsRange(bonusmalus.Equipment.Select(x => ((Classes)(i + 6), x)).ToList());
 							break;
 						case BonusMalusAction.ArmorReplace:
-							_armorPermissions[(Classes)i] = bonusmalus.Equipment;
+							// mod 99 used to indicate it's for promo only
+							if ((byte)bonusmalus.StatMod != 99) {
+								_armorPermissions[(Classes)i] = bonusmalus.Equipment;
+							}
 							_armorPermissions[(Classes)(i + 6)] = bonusmalus.Equipment;
 							break;
 						case BonusMalusAction.SpcMod:
