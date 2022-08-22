@@ -1071,9 +1071,19 @@ namespace FF1Lib.Procgen
 		    {STAR,     STAR, STAR}},
 		    SHORE_N),
 		new Rule(new byte[3,3] {
-		    {STAR,         STAR, LAND},
+		    {STAR,         STAR, STAR},
 		    {STAR,     SHORE_SW, STAR},
+		    {LAND,     STAR, STAR}},
+		    SHORE_S),
+		new Rule(new byte[3,3] {
+		    {STAR,     STAR, LAND},
+		    {STAR, SHORE_NE, STAR},
 		    {STAR,     STAR, STAR}},
+		    SHORE_N),
+		new Rule(new byte[3,3] {
+		    {STAR,         STAR, STAR},
+		    {STAR,     SHORE_SE, STAR},
+		    {STAR,     STAR, LAND}},
 		    SHORE_S),
 	    }, allTiles, non_shore_tiles, null);
 
