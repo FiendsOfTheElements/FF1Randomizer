@@ -1098,34 +1098,30 @@ public partial class FF1Rom : NesRom
 
 		ExpGoldBoost(flags);
 
-		if(flags.ExpMultiplierFighter > 1.0)
+		if(flags.ExpMultiplierFighter != 1.0)
 		{
 			ScaleAltExp(flags.ExpMultiplierFighter, FF1Class.Fighter);
 		}
-
-		if (flags.ExpMultiplierThief > 1.0)
+		if (flags.ExpMultiplierThief != 1.0)
 		{
 			ScaleAltExp(flags.ExpMultiplierThief, FF1Class.Thief);
 		}
-
-		if (flags.ExpMultiplierBlackBelt > 1.0)
+		if (flags.ExpMultiplierBlackBelt != 1.0)
 		{
 			ScaleAltExp(flags.ExpMultiplierBlackBelt, FF1Class.BlackBelt);
 		}
-
-		if (flags.ExpMultiplierRedMage > 1.0)
+		if (flags.ExpMultiplierRedMage != 1.0)
 		{
 			ScaleAltExp(flags.ExpMultiplierRedMage, FF1Class.RedMage);
 		}
 
 		await this.Progress();
 
-		if (flags.ExpMultiplierWhiteMage > 1.0)
+		if (flags.ExpMultiplierWhiteMage != 1.0)
 		{
 			ScaleAltExp(flags.ExpMultiplierWhiteMage, FF1Class.WhiteMage);
 		}
-
-		if (flags.ExpMultiplierBlackMage > 1.0)
+		if (flags.ExpMultiplierBlackMage != 1.0)
 		{
 			ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
 		}
