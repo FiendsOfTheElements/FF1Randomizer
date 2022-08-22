@@ -1240,6 +1240,12 @@ namespace FF1Lib.Procgen
 		return true;
 	    }
 
+	    if ((curRegionType == OverworldTiles.BRIDGE_REGION &&
+		 adjRegionType == OverworldTiles.LAND_REGION))
+	    {
+		return true;
+	    }
+
 	    return false;
 	}
 
@@ -1297,16 +1303,16 @@ namespace FF1Lib.Procgen
 		    }
 
 		    if (regionType == OverworldTiles.LAND) {
-			if (current.OwUp == this.FeatureCoordinates["Bridge"]) {
+			if (current.OwUp == this.FeatureCoordinates["Bridge"] && canTraverse(BRIDGE_REGION, current.OwUp.OwUp)) {
 			    workingStack.Push(current.OwUp.OwUp);
 			}
-			if (current.OwRight == this.FeatureCoordinates["Bridge"]) {
+			if (current.OwRight == this.FeatureCoordinates["Bridge"] && canTraverse(BRIDGE_REGION, current.OwRight.OwRight)) {
 			    workingStack.Push(current.OwRight.OwRight);
 			}
-			if (current.OwDown == this.FeatureCoordinates["Bridge"]) {
+			if (current.OwDown == this.FeatureCoordinates["Bridge"] && canTraverse(BRIDGE_REGION, current.OwDown.OwDown) {
 			    workingStack.Push(current.OwDown.OwDown);
 			}
-			if (current.OwLeft == this.FeatureCoordinates["Bridge"]) {
+			if (current.OwLeft == this.FeatureCoordinates["Bridge"] && canTraverse(BRIDGE_REGION, current.OwLeft.OwLeft) {
 			    workingStack.Push(current.OwLeft.OwLeft);
 			}
 		    }

@@ -149,6 +149,7 @@ namespace FF1Lib.Procgen
 
 	public const int DOCK_REGION = 4;
 	public const int ENTRANCES_REGION = 5;
+	public const int BRIDGE_REGION = 6;
 
 	public const int MainOceanRegionId = 0;
 
