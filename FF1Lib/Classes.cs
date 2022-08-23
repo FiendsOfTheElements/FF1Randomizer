@@ -646,11 +646,9 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+All @h", equipment: equipHelmets, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+Thief @S", equipment: equipThiefWeapon, Classes: new List<Classes> { Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+Red Mage @A", equipment: equipRedMageArmor, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage } ),
-				new BonusMalus(BonusMalusAction.ArmorAdd, "Promo. FI @A", mod: 99, equipment: equipFighterArmor, Classes: new List<Classes> { Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage, Classes.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcMod, "+2 Lv1 MP", mod: 2, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
 				new BonusMalus(BonusMalusAction.StartWithMp, "+1 MP LvAll", Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
 				new BonusMalus(BonusMalusAction.ThorMaster, "Thor Master", Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.WhiteMage }),
-				new BonusMalus(BonusMalusAction.PowerRW, "Promo. Sage", mod: 0, spelllist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), Classes: new List<Classes> { Classes.RedMage }),
 				new BonusMalus(BonusMalusAction.Hunter, "Vamp Killer", mod: 0x18),
 				new BonusMalus(BonusMalusAction.Hunter, "Drgn Slayer", mod: 0x02),
 			};
@@ -695,10 +693,8 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.MDefGrowth, "-1 MDef/Lv", mod: -1),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "No " + olditemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "No @B", equipment: braceletList),
-				new BonusMalus(BonusMalusAction.ArmorReplace, "No Promo @A", mod: 99, equipment: equipFighterArmor, Classes: new List<Classes> { Classes.Fighter } ),
 				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief @S", equipment: equipThiefWeapon, Classes: new List<Classes> { Classes.Fighter, Classes.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcMax, "-4 Max MP", mod: -4, Classes: new List<Classes> {  Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
-				new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, Classes: new List<Classes> { Classes.Fighter, Classes.Thief }),
 				//new BonusMalus(BonusMalusAction.Sick, "Sick"), these were too powerful for man
 				//new BonusMalus(BonusMalusAction.Sleepy, "Sleepy"),
 			};
@@ -743,8 +739,17 @@ namespace FF1Lib
 			// These are so much starting gold that bonuses for it no longer make sense
 			//else if (flags.StartingGold == StartingGold.Gp65535 || flags.StartingGold == StartingGold.RandomHigh)
 
-			
 
+			// Do not add Promo-based blursings if there is no ability to promote
+			if (!((bool)flags.NoTail && !(bool)flags.FightBahamut))
+			{
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.ArmorAdd, "Promo. FI @A", mod: 99, equipment: equipFighterArmor, Classes: new List<Classes> { Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage, Classes.RedMage }));
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.PowerRW, "Promo. Sage", mod: 0, spelllist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), Classes: new List<Classes> { Classes.RedMage }));
+
+				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorReplace, "No Promo @A", mod: 99, equipment: equipFighterArmor, Classes: new List<Classes> { Classes.Fighter }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, Classes: new List<Classes> { Classes.Fighter, Classes.Thief }));
+			}
+			
 
 			if (!(bool)flags.ArmorCrafter)
 			{
