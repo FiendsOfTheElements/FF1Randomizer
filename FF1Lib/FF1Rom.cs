@@ -871,13 +871,30 @@ public partial class FF1Rom : NesRom
 			EnableMelmondGhetto(flags.EnemizerEnabled);
 		}
 
+		// Weighted; Vanilla, Unleashed, and All are less likely
+		if (flags.WarMECHMode == WarMECHMode.Random)
+		{
+			int RandWarMECHMode = rng.Between(1, 100);
+
+			if (RandWarMECHMode <= 15)
+				flags.WarMECHMode = WarMECHMode.Vanilla;	// 15%
+			else if (RandWarMECHMode <= 45)
+				flags.WarMECHMode = WarMECHMode.Patrolling;	// 30%
+			else if (RandWarMECHMode <= 75)
+				flags.WarMECHMode = WarMECHMode.Required;	// 30%
+			else if (RandWarMECHMode <= 90)
+				flags.WarMECHMode = WarMECHMode.Unleashed;	// 15%
+			else 
+				flags.WarMECHMode = WarMECHMode.All;		// 10%
+
+		}
 		// After unrunnable shuffle and before formation shuffle. Perfect!
 		if (flags.WarMECHMode != WarMECHMode.Vanilla)
 		{
 			WarMECHNpc(flags.WarMECHMode, npcdata, rng, maps, flags.GameMode == GameModes.DeepDungeon, (MapId)warmMechFloor);
 		}
 
-		if (flags.WarMECHMode == WarMECHMode.Unleashed)
+		if (flags.WarMECHMode == WarMECHMode.Unleashed || flags.WarMECHMode == WarMECHMode.All)
 		{
 			UnleashWarMECH();
 		}

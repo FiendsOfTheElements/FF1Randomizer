@@ -1877,7 +1877,7 @@ namespace FF1Lib
 				WarMechFloor = 0;
 				return;
 			}
-			else if (flags.WarMECHMode == WarMECHMode.Patrolling)
+			if (flags.WarMECHMode == WarMECHMode.Patrolling || flags.WarMECHMode == WarMECHMode.All)
 			{
 				warmechfloor = RollDice(rng, 1, 6) + 45 + 7;
 				warmechstationary = false;
@@ -1895,7 +1895,7 @@ namespace FF1Lib
 					}
 				}
 			}
-			else if (flags.WarMECHMode == WarMECHMode.Required)
+			if (flags.WarMECHMode == WarMECHMode.Required || flags.WarMECHMode == WarMECHMode.All)
 			{
 				warmechfloor = 59;
 				warmechstationary = true;
