@@ -4751,13 +4751,13 @@ namespace FF1Lib
 
 		public bool ExtConsumablesEnabled => Flags.ExtConsumablesEnabled;
 
-		public bool EnableLifeInBattle
+		public LifeInBattleSetting EnableLifeInBattle
 		{
 			get => Flags.EnableLifeInBattle;
 			set
 			{
 				Flags.EnableLifeInBattle = value;
-				RaisePropertyChanged();
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnableLifeInBattle"));
 			}
 		}
 
