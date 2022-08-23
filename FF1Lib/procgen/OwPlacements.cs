@@ -51,7 +51,7 @@ namespace FF1Lib.Procgen
 	    }
 	}
 
-	public async Task<Result> PlaceBridge(bool fromStartingRegion) {
+	public async Task<Result> PlaceBridge(bool fromStartingRegion, bool makeBridgeRequired) {
 	    if (!this.shouldPlaceBridge) {
 		return await this.NextStep();
 	    }
@@ -60,7 +60,7 @@ namespace FF1Lib.Procgen
 		foreach (var adj in r.Adjacent) {
 		    var w = this.Traversable_regionlist[adj];
 		    if (w.RegionType == OverworldTiles.RIVER_REGION) {
-			tasks.Add(() => new OverworldState(this).BridgePlacement(r, w));
+			tasks.Add(() => new OverworldState(this).BridgePlacement(r, w, makeBridgeRequired));
 		    }
 		}
 	    };
@@ -78,7 +78,7 @@ namespace FF1Lib.Procgen
 	    return new Result(tasks);
 	}
 
-	public async Task<Result> BridgePlacement(OwRegion originRegion, OwRegion riverRegion) {
+	public async Task<Result> BridgePlacement(OwRegion originRegion, OwRegion riverRegion, bool makeBridgeRequired) {
 	    var points = new List<SCCoords>(riverRegion.Points);
 	    points.Shuffle(this.rng);
 	    short nextRegion = -1;
@@ -119,12 +119,10 @@ namespace FF1Lib.Procgen
 
 	    if (nextRegion != -1) {
 		this.OwnPlacements();
+		this.bridgeOriginRegion = originRegion.RegionId;
 		this.bridgedRegion = nextRegion;
 		this.Reachable_regions.Add(nextRegion);
 		this.Exclude_docks.Add(nextRegion);
-		if (!this.DockPlacement(originRegion)) {
-		    return new Result(false);
-		}
 
 		this.OwnRegions();
 		this.OwnTilemap();
@@ -148,6 +146,46 @@ namespace FF1Lib.Procgen
 		    riverRegion = this.Biome_regionlist[this.Biome_regionmap[riverRegion.Points[0].Y, riverRegion.Points[0].X]];
 		    this.Biome_regionlist[riverRegion.RegionId] = new OwRegion(riverRegion);
 		    this.Biome_regionlist[riverRegion.RegionId].RegionType = OverworldTiles.OCEAN_REGION;
+		}
+
+
+		if (makeBridgeRequired) {
+		    // If true, make it so that the bridge _must_ be
+		    // crossed to get to the next region by banning
+		    // docks and airship landing spots.
+
+		    var exclude = new List<int>();
+		    this.FindAllReachableByRiver(this.Traversable_regionlist[nextRegion], exclude);
+		    if (exclude.Contains(originRegion.RegionId)) {
+			// Loops back to starting region
+			return new Result(false);
+		    }
+
+		    // TODO turn adjacent rivers into ocean
+
+		    int pointCount = 0;
+		    foreach (var e in exclude) {
+			pointCount += this.Traversable_regionlist[e].Points.Count;
+			if (pointCount > 1024) {
+			    // This is going to exclude too large of an area
+			    return new Result(false);
+			}
+			if (e != nextRegion && this.Reachable_regions.Contains(e)) {
+			    // already reachable by some other means
+			    return new Result(false);
+			}
+			this.Reachable_regions.Add(e);
+			if (!this.Exclude_docks.Contains(e)) {
+			    this.Exclude_docks.Add(e);
+			}
+			if (!this.Exclude_airship.Contains(e)) {
+			    this.Exclude_airship.Add(e);
+			}
+		    }
+		}
+
+		if (!this.DockPlacement(originRegion)) {
+		    return new Result(false);
 		}
 
 		//this.Tilemap[this.FeatureCoordinates["Bridge"].Y, this.FeatureCoordinates["Bridge"].X] = OverworldTiles.DOCK_W;
@@ -495,7 +533,7 @@ namespace FF1Lib.Procgen
 		    } else if (airshipReachable == false && shipReachable == false && canoeReachable == false
 			       && this.Reachable_regions.Contains(trav.RegionId))
 		    {
-			// bridge or titan's tunnel access
+			// bridge, canal, or titan's tunnel access
 			found = true;
 		    }
 		    if (found) {
@@ -708,7 +746,7 @@ namespace FF1Lib.Procgen
 	    return new Result(false);
 	}
 
-	public async Task<Result> PlaceCanal() {
+	public async Task<Result> PlaceCanal(bool makeCanalRequired) {
 	    var tasks = new List<GenerationTask>();
 	    foreach (var w in this.Traversable_regionlist) {
 		if (w.RegionType == OverworldTiles.LAND_REGION &&
@@ -716,7 +754,7 @@ namespace FF1Lib.Procgen
 		    !this.Exclude_docks.Contains(w.RegionId) &&
 		    w.Adjacent.Contains(OverworldTiles.MainOceanRegionId))
 		{
-		    tasks.Add(() => new OverworldState(this).CanalPlacement(w));
+		    tasks.Add(() => new OverworldState(this).CanalPlacement(w, makeCanalRequired));
 		}
 	    }
 	    tasks.Shuffle(this.rng);
@@ -724,7 +762,8 @@ namespace FF1Lib.Procgen
 	    return new Result(tasks);
 	}
 
-	public async Task<Result> CanalPlacement(OwRegion region) {
+	public async Task<Result> CanalPlacement(OwRegion region, bool makeCanalRequired) {
+
 	    var points = new List<SCCoords>(region.Points);
 	    points.Shuffle(this.rng);
 	    bool placed = false;
@@ -756,6 +795,36 @@ namespace FF1Lib.Procgen
 		if (!this.Exclude_docks.Contains(region.RegionId)) {
 		    this.Exclude_docks.Add(region.RegionId);
 		}
+		this.Reachable_regions.Add(region.RegionId);
+
+		if (makeCanalRequired) {
+		    // If true, make it so that the canal is the only
+		    // way to get to the target region by banning
+		    // other docks and airship landing spots.
+
+		    var exclude = new List<int>();
+		    this.FindAllReachableByRiver(region, exclude);
+		    int pointCount = 0;
+		    foreach (var e in exclude) {
+			pointCount += this.Traversable_regionlist[e].Points.Count;
+			if (pointCount > 1024) {
+			    // This is going to exclude too large of an area
+			    return new Result(false);
+			}
+			if (e != region.RegionId && this.Reachable_regions.Contains(e)) {
+			    // already reachable by some other means
+			    return new Result(false);
+			}
+			this.Reachable_regions.Add(e);
+			if (!this.Exclude_docks.Contains(e)) {
+			    this.Exclude_docks.Add(e);
+			}
+			if (!this.Exclude_airship.Contains(e)) {
+			    this.Exclude_airship.Add(e);
+			}
+		    }
+		}
+
 		return await this.NextStep();
 	    }
 	    return new Result(false);
