@@ -1877,6 +1877,13 @@ namespace FF1Lib
 				WarMechFloor = 0;
 				return;
 			}
+			if (flags.WarMECHMode == WarMECHMode.Required || flags.WarMECHMode == WarMECHMode.All)
+			{
+				warmechfloor = 59;
+				warmechstationary = true;
+				_rom.SetNpc((MapId)warmechfloor, 4, ObjectId.WarMECH, 0x0F, 0x16, false, warmechstationary);
+			}
+			// This needs to be second because the floor information needs to be passed on later
 			if (flags.WarMECHMode == WarMECHMode.Patrolling || flags.WarMECHMode == WarMECHMode.All)
 			{
 				warmechfloor = RollDice(rng, 1, 6) + 45 + 7;
@@ -1895,13 +1902,7 @@ namespace FF1Lib
 					}
 				}
 			}
-			if (flags.WarMECHMode == WarMECHMode.Required || flags.WarMECHMode == WarMECHMode.All)
-			{
-				warmechfloor = 59;
-				warmechstationary = true;
-				candidates.Add(new Candidate(0x0F, 0x16));
-			}
-
+			
 			WarMechFloor = warmechfloor;
 			c = candidates.SpliceRandom(rng);
 			_rom.SetNpc((MapId)warmechfloor, 4, ObjectId.WarMECH, c.x, c.y, false, warmechstationary);
