@@ -1292,13 +1292,13 @@
 		"Id": "touchMode",
 		"title": "Status Attacks Mode",
 		"screenshot": "enemyStatusAttacksCheckBox.png",
-		"description": "Sets the status ailments each enemy can inflict when they use physical attacks.\nVanilla: Enemies keep their standard touch attack.\nShuffle: Shuffle the standard vanilla touch attacks amongst all enemies. (This includes exactly 1 Death touch and 1 Stone touch.)\nRandomize: Assign randomly selected touch attacks to enemies. (There's a 9% chance for Death or Stone, and a 91% chance for one of the other effects.)\nRandom: Select one of the previous options at random."
+		"description": "Sets the status ailments each enemy can inflict when they use physical attacks.\nVanilla: Enemies keep their standard touch attack.\nShuffle: Shuffle the standard vanilla touch attacks amongst all enemies. (This includes exactly 1 Death touch and 1 Stone touch.)\nRandomize: Assign randomly selected touch attacks to enemies. (See the Pool tooltip for further breakdowns.)\nRandom: Select one of the previous options at random."
 	},
 	{
 		"Id": "touchPool",
 		"title": "Status Attacks Pool",
 		"screenshot": "disableStunTouchCheckBox.png",
-		"description": "Sets what status ailment can be inflicted when randomizing status attacks.\nAll: All possible status - Death, Stone, Mute, Poison, Dark, Stun, and Sleep.\nAll except Stun Status: All possible status, except Stun.\nOnly Death Status: Only the Death ailment can be assigned.\nRandom: Select one of the previous options at random."
+		"description": "Sets what status ailment can be inflicted when randomizing status attacks.\nAll: All possible status - Death, Stone, Mute, Poison, Dark, Stun, and Sleep. (There's a ~9% chance for Death or Stone, and a ~91% chance for one of the other effects for both \"All\" Pools.)\nAll except Stun Status: All possible status, except Stun.\nBalanced Rude: Emphasizes nastier effects somewhat more: ~15% chance for Death or Stone, ~8% chance for Stun, reduced chance for Dark (unless \"Increase Dark Penalty\" is on), increased chance for Mute.\nOnly Death Status: Only the Death ailment can be assigned.\nRandom: Select one of the previous options at random."
 	},
 	{
 		"Id": "touchIncludeBosses",
