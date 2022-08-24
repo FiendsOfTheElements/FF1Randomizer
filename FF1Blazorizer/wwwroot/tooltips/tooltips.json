@@ -2157,13 +2157,13 @@
 	{
 		"Id": "StartingLevelDoubleSlider",
 		"title": "Starting Level",
-		"screenshot": "startingLevelDropDown.gif",
+		"screenshot": "StartingLevelDoubleSlider.gif",
 		"description": "Allows you to change the level your party members will be when you start the game. If a range is selected, a random level is choosen from within that range.\nStarting Levels are affected by class-specific XP bonuses, which may result in those classes having higher or lower levels."
 	},
 	{
 		"Id": "MaximumLevelDoubleSlider",
 		"title": "Max Level Cap",
-		"screenshot": "MaximumLevelDoubleSilder.png",
+		"screenshot": "MaximumLevelDoubleSlider.png",
 		"description": "Allows you to lower the maximum level, increasing the challenge of the given flagset.\nIf a range is selected, a random level is choosen from within that range. With a range, there is no way to know what the actual cap is until you reach it.\nIf starting levels are higher than the maximum level, players will start at that level but will be unable to gain levels.\nFor beginners it is not recommended to go below level 20."
 	},
 
