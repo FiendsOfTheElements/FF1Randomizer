@@ -172,7 +172,10 @@ namespace FF1Lib
 		public bool? ExcludeGoldFromScaling { get; set; } = false;
 		public bool CheapVendorItem { get; set; } = false;
 
-		public StartingLevel StartingLevel { get; set; }
+		[IntegerFlag(1, 50)]
+		public int StartLevelLow { get; set; } = 1;
+		[IntegerFlag(1, 50)]
+		public int StartLevelHigh { get; set; } = 1;
 
 		[IntegerFlag(1, 50)]
 		public int MaxLevelLow { get; set; } = 50;

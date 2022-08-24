@@ -2016,13 +2016,12 @@ namespace FF1Lib
 			return firstResult;
 		}
 
-		public void SetMaxLevel(Flags flags, MT19337 rng)
+		public void SetMaxLevel(Flags flags, MT19337 rng, int StartingLevelFromFlags)
 		{
-			int maxLevel = flags.MaxLevelLow;
-			if (flags.MaxLevelLow < flags.MaxLevelHigh) maxLevel = rng.Between(flags.MaxLevelLow, flags.MaxLevelHigh);
+			int maxLevel = rng.Between(flags.MaxLevelLow, flags.MaxLevelHigh);
 			//This seems to be needed because if you're above the level cap it seems to continue giving xp.
 			//Thus  the fix for starter levels > max levels is to just set max levels = starter levels so it doesnt increase xp further after those levels.
-			if (maxLevel < StartingLevels.GetLevelNumber(flags.StartingLevel)) maxLevel = StartingLevels.GetLevelNumber(flags.StartingLevel);
+			if (maxLevel < StartingLevelFromFlags) maxLevel = StartingLevelFromFlags;
 			maxLevel = Math.Min(maxLevel, 50);
 			maxLevel = Math.Max(maxLevel, 1);
 			maxLevel = maxLevel - 1;

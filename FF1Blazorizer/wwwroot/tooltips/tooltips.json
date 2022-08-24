@@ -2155,7 +2155,7 @@
 		"description": "If a character is at 1 HP, stepping on damage tiles will kill them. If all characters are dead, game over will be triggered."
 	},
 	{
-		"Id": "startingLevelDropDown",
+		"Id": "StartingLevelDoubleSilder",
 		"title": "Starting Level",
 		"screenshot": "startingLevelDropDown.gif",
 		"description": "Allows you to change the level your party members will be when you start the game."

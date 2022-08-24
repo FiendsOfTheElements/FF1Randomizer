@@ -943,11 +943,13 @@ namespace FF1Lib
 			}
 
 			new TreasureStacks(this, flags).SetTreasureStacks();
-			new StartingLevels(this, flags).SetStartingLevels();
+
+			int StartingLevelFromFlags = rng.Between(flags.StartLevelLow, flags.StartLevelHigh);
+			new StartingLevels(this, flags).SetStartingLevels(StartingLevelFromFlags);
 
 			if (flags.MaxLevelLow < 50)
 			{
-				SetMaxLevel(flags, rng);
+				SetMaxLevel(flags, rng, StartingLevelFromFlags);
 			}
 
 			if (!flags.Etherizer && (flags.HouseMPRestoration || flags.HousesFillHp))
