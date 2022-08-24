@@ -1689,7 +1689,7 @@ namespace FF1Lib.Procgen
 				new GenerationStep("PlaceRequiringCanoe", new object[]{OverworldTiles.ORDEALS_CASTLE}),
 				new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}),
 				new GenerationStep("PlaceInTitanWestRegion", new object[]{OverworldTiles.SARDAS_CAVE_FEATURE}),
-				new GenerationStep("PlaceCanal", new object[]{}),
+				new GenerationStep("PlaceCanal", new object[]{false}),
 				new GenerationStep("PlaceInCanalRegion", new object[]{OverworldTiles.EARTH_CAVE_FEATURE}),
 
 				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,

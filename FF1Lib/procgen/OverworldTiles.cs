@@ -400,9 +400,9 @@ namespace FF1Lib.Procgen
 	    });
 
 	public static OwFeature GAIA_TOWN = new OwFeature(new byte[,] {
-	    {None, GAIA, GAIA},
-	    {GAIA, GAIA, None},
-	    {None, None, None},
+	    {None, None, GAIA, GAIA},
+	    {None, GAIA, GAIA, None},
+	    {None, None, None, None},
 	    }, new Dictionary<string, SCCoords> {
 		{ "Gaia", new SCCoords(1, 1) },
 	    });
