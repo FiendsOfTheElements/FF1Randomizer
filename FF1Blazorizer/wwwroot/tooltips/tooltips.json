@@ -2158,7 +2158,7 @@
 		"Id": "StartingLevelDoubleSlider",
 		"title": "Starting Level",
 		"screenshot": "startingLevelDropDown.gif",
-		"description": "Allows you to change the level your party members will be when you start the game.\nIf a range is selected, a random level is choosen from within that range.\n"
+		"description": "Allows you to change the level your party members will be when you start the game. If a range is selected, a random level is choosen from within that range.\nStarting Levels are affected by class-specific XP bonuses, which may result in those classes having higher or lower levels."
 	},
 	{
 		"Id": "MaximumLevelDoubleSlider",
