@@ -20,7 +20,7 @@ namespace FF1Lib
 			flags = _flags;
 		}
 
-		public void SetStartingLevels(int StartingLevelFromFlags)
+		public void SetStartingLevels(int StartingLevelFromFlags, List<byte[]> levelRequirementBytes)
 		{
 			//Call NewGame_LoadStartingLevels instead of NewGame_LoadStartingStats
 			rom.PutInBank(0x1F, 0xC0B4, Blob.FromHex("209ADD"));
@@ -37,42 +37,17 @@ namespace FF1Lib
 			//JSR to the routine above instead of LvlUp_Display
 			rom.PutInBank(0x1B, 0x8853, Blob.FromHex("200885"));
 
-			var exp = (int)(GetExp(StartingLevelFromFlags) / flags.ExpMultiplier) / 16 + 1;
+			// If Starting Level is 1, set xp to 0; otherwise pull from the level up table
+			var exp = 0;
+			if (StartingLevelFromFlags != 1)
+				exp = (int)(Math.Max(BitConverter.ToUInt32(levelRequirementBytes[StartingLevelFromFlags - 2], 0), 1)) / 16 + 1;
 
-			if (StartingLevelFromFlags == 1) exp = 0;
-
+			
 			//Fill in Exp divided by 16 LowByte
 			rom.PutInBank(0x1B, 0x84A4, new byte[] { (byte)(exp & 0xFF) });
 
 			//Fill in Exp divided by 16 HighByte
 			rom.PutInBank(0x1B, 0x84A9, new byte[] { (byte)(exp / 0xFF) });
 		}
-
-		private double GetExp(int StartingLevelFromFlags)
-		{
-			switch (StartingLevelFromFlags)
-			{
-				case 1:
-					return 0;
-				case 3:
-					return 196;
-				case 5:
-					return 1171;
-				case 10:
-					return 11116;
-				case 16:
-					return 48361;
-				case 25:
-					return 191103;
-				case 36:
-					return 530448;
-				case 50:
-					return 999999;
-			}
-
-			return 0;
-		}
-
-		
 	}
 }

@@ -2155,16 +2155,16 @@
 		"description": "If a character is at 1 HP, stepping on damage tiles will kill them. If all characters are dead, game over will be triggered."
 	},
 	{
-		"Id": "StartingLevelDoubleSilder",
+		"Id": "StartingLevelDoubleSlider",
 		"title": "Starting Level",
 		"screenshot": "startingLevelDropDown.gif",
-		"description": "Allows you to change the level your party members will be when you start the game."
+		"description": "Allows you to change the level your party members will be when you start the game.\nIf a range is selected, a random level is choosen from within that range.\n"
 	},
 	{
-		"Id": "MaximumLevelDoubleSilder",
+		"Id": "MaximumLevelDoubleSlider",
 		"title": "Max Level Cap",
 		"screenshot": "MaximumLevelDoubleSilder.png",
-		"description": "Allows you to lower the maximum level, increasing the challenge of the given flagset.\nIf a range is selected, a random number is choosen from within that range. With a range, there is no way to know what the actual cap is until you reach it.\nIf starting levels are higher than the maximum level, players will start at that level but will be unable to gain levels.\nFor beginners it is not recommended to go below level 20."
+		"description": "Allows you to lower the maximum level, increasing the challenge of the given flagset.\nIf a range is selected, a random level is choosen from within that range. With a range, there is no way to know what the actual cap is until you reach it.\nIf starting levels are higher than the maximum level, players will start at that level but will be unable to gain levels.\nFor beginners it is not recommended to go below level 20."
 	},
 
 	{

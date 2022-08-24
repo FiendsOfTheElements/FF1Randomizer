@@ -944,13 +944,13 @@ namespace FF1Lib
 
 			new TreasureStacks(this, flags).SetTreasureStacks();
 
+			/*
 			int StartingLevelFromFlags = rng.Between(flags.StartLevelLow, flags.StartLevelHigh);
 			new StartingLevels(this, flags).SetStartingLevels(StartingLevelFromFlags);
 
 			if (flags.MaxLevelLow < 50)
-			{
 				SetMaxLevel(flags, rng, StartingLevelFromFlags);
-			}
+			*/
 
 			if (!flags.Etherizer && (flags.HouseMPRestoration || flags.HousesFillHp))
 			{
@@ -1081,39 +1081,25 @@ namespace FF1Lib
 				}
 			}
 
-			ExpGoldBoost(flags);
+			// XP & Gold Scaling; Starting Level Slider; Max Level Slider
+			ExpGoldLevelSettings(flags, rng);
 
 			if(flags.ExpMultiplierFighter > 1.0)
-			{
 				ScaleAltExp(flags.ExpMultiplierFighter, FF1Class.Fighter);
-			}
-
 			if (flags.ExpMultiplierThief > 1.0)
-			{
 				ScaleAltExp(flags.ExpMultiplierThief, FF1Class.Thief);
-			}
-
 			if (flags.ExpMultiplierBlackBelt > 1.0)
-			{
 				ScaleAltExp(flags.ExpMultiplierBlackBelt, FF1Class.BlackBelt);
-			}
-
 			if (flags.ExpMultiplierRedMage > 1.0)
-			{
 				ScaleAltExp(flags.ExpMultiplierRedMage, FF1Class.RedMage);
-			}
 
 			await this.Progress();
 
 			if (flags.ExpMultiplierWhiteMage > 1.0)
-			{
 				ScaleAltExp(flags.ExpMultiplierWhiteMage, FF1Class.WhiteMage);
-			}
-
 			if (flags.ExpMultiplierBlackMage > 1.0)
-			{
 				ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
-			}
+
 
 			ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.FreeClinic);
 			ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
