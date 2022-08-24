@@ -78,6 +78,50 @@ namespace FF1Lib.Procgen
 	    return new Result(tasks);
 	}
 
+	public bool MakeIsolated(int nextRegion, OwRegion originRegion) {
+	    var exclude = new List<int>();
+	    this.FindAllReachableByRiver(this.Traversable_regionlist[nextRegion], exclude);
+	    if (originRegion != null && exclude.Contains(originRegion.RegionId)) {
+		// Loops back to starting region
+		return false;
+	    }
+
+	    this.OwnPlacements();
+	    int pointCount = 0;
+	    foreach (var e in exclude) {
+		var excl = this.Traversable_regionlist[e];
+		pointCount +=  excl.Points.Count;
+		if (pointCount > 1024) {
+		    // This is going to exclude too large of an area
+		    return false;
+		}
+		if (e != nextRegion && this.Reachable_regions.Contains(e)) {
+		    // already reachable by some other means
+		    return false;
+		}
+		if (excl.RegionType == OverworldTiles.RIVER_REGION && excl.Adjacent.Contains(OverworldTiles.MainOceanRegionId)) {
+		    excl = new OwRegion(excl);
+		    foreach (var p in excl.Points) {
+			this.Tilemap[p.Y, p.X] = OverworldTiles.MARSH;
+		    }
+		    excl.RegionType = OverworldTiles.LAND_REGION;
+		    this.Traversable_regionlist[excl.RegionId] = excl;
+
+		    var biomeRiverRegion = new OwRegion(this.Biome_regionlist[this.Biome_regionmap[excl.Points[0].Y, excl.Points[0].X]]);
+		    biomeRiverRegion.RegionType = OverworldTiles.MARSH_REGION;
+		    this.Biome_regionlist[biomeRiverRegion.RegionId] = biomeRiverRegion;
+		}
+		this.Reachable_regions.Add(e);
+		if (!this.Exclude_docks.Contains(e)) {
+		    this.Exclude_docks.Add(e);
+		}
+		if (!this.Exclude_airship.Contains(e)) {
+		    this.Exclude_airship.Add(e);
+		}
+	    }
+	    return true;
+	}
+
 	public async Task<Result> BridgePlacement(OwRegion originRegion, OwRegion riverRegion, bool makeBridgeRequired) {
 	    var points = new List<SCCoords>(riverRegion.Points);
 	    points.Shuffle(this.rng);
@@ -148,39 +192,13 @@ namespace FF1Lib.Procgen
 		    this.Biome_regionlist[riverRegion.RegionId].RegionType = OverworldTiles.OCEAN_REGION;
 		}
 
-
 		if (makeBridgeRequired) {
 		    // If true, make it so that the bridge _must_ be
 		    // crossed to get to the next region by banning
 		    // docks and airship landing spots.
 
-		    var exclude = new List<int>();
-		    this.FindAllReachableByRiver(this.Traversable_regionlist[nextRegion], exclude);
-		    if (exclude.Contains(originRegion.RegionId)) {
-			// Loops back to starting region
+		    if (!this.MakeIsolated(nextRegion, originRegion)) {
 			return new Result(false);
-		    }
-
-		    // TODO turn adjacent rivers into ocean
-
-		    int pointCount = 0;
-		    foreach (var e in exclude) {
-			pointCount += this.Traversable_regionlist[e].Points.Count;
-			if (pointCount > 1024) {
-			    // This is going to exclude too large of an area
-			    return new Result(false);
-			}
-			if (e != nextRegion && this.Reachable_regions.Contains(e)) {
-			    // already reachable by some other means
-			    return new Result(false);
-			}
-			this.Reachable_regions.Add(e);
-			if (!this.Exclude_docks.Contains(e)) {
-			    this.Exclude_docks.Add(e);
-			}
-			if (!this.Exclude_airship.Contains(e)) {
-			    this.Exclude_airship.Add(e);
-			}
 		    }
 		}
 
@@ -442,19 +460,19 @@ namespace FF1Lib.Procgen
 	}
 
 	public async Task<Result> IsolatedPlacement(OwFeature feature, OwRegion region, bool requireAirshipAccess) {
+	    if (!requireAirshipAccess) {
+		if (!this.Exclude_airship.Contains(region.RegionId)) {
+		    this.OwnPlacements();
+		    this.Exclude_airship.Add(region.RegionId);
+		}
+	    }
 	    var v = this.PlaceFeature(this.Traversable_regionmap, region, feature);
 	    if (v.Item1) {
-		this.OwnPlacements();
 		var exclude = new List<int>();
 		this.FindAllReachableByRiver(region, exclude);
 		foreach (var e in exclude) {
 		    if (!this.Exclude_docks.Contains(e)) {
 			this.Exclude_docks.Add(e);
-		    }
-		}
-		if (!requireAirshipAccess) {
-		    if (!this.Exclude_airship.Contains(region.RegionId)) {
-			this.Exclude_airship.Add(region.RegionId);
 		    }
 		}
 		return await this.NextStep();
@@ -481,15 +499,15 @@ namespace FF1Lib.Procgen
 	}
 
 	public async Task<Result> RequiresCanoePlacement(OwFeature feature, OwRegion region) {
+	    if (!this.Exclude_airship.Contains(region.RegionId)) {
+		this.OwnPlacements();
+		this.Exclude_airship.Add(region.RegionId);
+	    }
 	    var v = this.PlaceFeature(this.Traversable_regionmap, region, feature);
 	    if (v.Item1) {
-		this.OwnPlacements();
 		var exclude = new List<int>();
 		if (!this.Exclude_docks.Contains(region.RegionId)) {
 		    this.Exclude_docks.Add(region.RegionId);
-		}
-		if (!this.Exclude_airship.Contains(region.RegionId)) {
-		    this.Exclude_airship.Add(region.RegionId);
 		}
 		return await this.NextStep();
 	    } else {
@@ -763,6 +781,12 @@ namespace FF1Lib.Procgen
 	}
 
 	public async Task<Result> CanalPlacement(OwRegion region, bool makeCanalRequired) {
+	    if (makeCanalRequired) {
+		if (!this.Exclude_airship.Contains(region.RegionId)) {
+		    this.OwnPlacements();
+		    this.Exclude_airship.Add(region.RegionId);
+		}
+	    }
 
 	    var points = new List<SCCoords>(region.Points);
 	    points.Shuffle(this.rng);
@@ -802,26 +826,8 @@ namespace FF1Lib.Procgen
 		    // way to get to the target region by banning
 		    // other docks and airship landing spots.
 
-		    var exclude = new List<int>();
-		    this.FindAllReachableByRiver(region, exclude);
-		    int pointCount = 0;
-		    foreach (var e in exclude) {
-			pointCount += this.Traversable_regionlist[e].Points.Count;
-			if (pointCount > 1024) {
-			    // This is going to exclude too large of an area
-			    return new Result(false);
-			}
-			if (e != region.RegionId && this.Reachable_regions.Contains(e)) {
-			    // already reachable by some other means
-			    return new Result(false);
-			}
-			this.Reachable_regions.Add(e);
-			if (!this.Exclude_docks.Contains(e)) {
-			    this.Exclude_docks.Add(e);
-			}
-			if (!this.Exclude_airship.Contains(e)) {
-			    this.Exclude_airship.Add(e);
-			}
+		    if (!this.MakeIsolated(region.RegionId, null)) {
+			return new Result(false);
 		    }
 		}
 

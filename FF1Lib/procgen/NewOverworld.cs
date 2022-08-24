@@ -1544,9 +1544,24 @@ namespace FF1Lib.Procgen
 			    }
 			};
 
+			bool rubyRequired = rng.Between(0, 3) > 0;
+			bool canalRequired = rng.Between(0, 4) > 0;
+			bool bridgeRequired = rng.Between(0, 1) > 0;
+
+			Console.WriteLine($"rubyRequired {rubyRequired} canalRequired {canalRequired} bridgeRequired {bridgeRequired}");
+
 			placementSteps.Add(new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}));
-			placementSteps.Add(new GenerationStep("PlaceBridge", new object[]{false, true}));
-			placementSteps.Add(new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}));
+			if (bridgeRequired) {
+			    // bridge start from any region, but you can't land on the bridged region
+			    placementSteps.Add(new GenerationStep("PlaceBridge", new object[]{false, true}));
+			} else {
+			    // bridge starts from starting area,
+			    // possibly you can avoid it (but item
+			    // placement may still make it part of
+			    // progression)
+			    placementSteps.Add(new GenerationStep("PlaceBridge", new object[]{true, false}));
+			}
+			placementSteps.Add(new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, !rubyRequired}));
 
 			features.AddRange(earlyRewardLocations);
 
@@ -1576,7 +1591,7 @@ namespace FF1Lib.Procgen
 			    AddPlacements("PlaceInTitanWestRegion", 1, 3, null);
 			}
 
-			placementSteps.Add(new GenerationStep("PlaceCanal", new object[]{true}));
+			placementSteps.Add(new GenerationStep("PlaceCanal", new object[]{canalRequired}));
 			AddPlacements("PlaceInCanalRegion", 1, 3, null);
 			AddPlacements("PlaceInMountains", 2, 5, null);
 			placementSteps.Add(new GenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}));
@@ -1747,6 +1762,7 @@ namespace FF1Lib.Procgen
 		}
 
 		var polishSteps = new List<GenerationStep> {
+		    new GenerationStep("PreventAirshipLanding", new object[]{}),
 		    new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains1, true}, "polish_mountains1"),
 		    new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains2, true}, "polish_mountains2"),
 
