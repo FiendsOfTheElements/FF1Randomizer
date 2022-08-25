@@ -130,7 +130,7 @@ namespace FF1Lib.Procgen
 	// Cut out a rectangular section of a region, adding a new
 	// region for the cut out, and replacing the entry in the
 	// region list with an updated region.
-	public static void Cutout(short[,] regionMap, List<OwRegion> regionList,
+	public static short Cutout(short[,] regionMap, List<OwRegion> regionList,
 				  SCCoords cp, int w, int h) {
 	    OwRegion orig = regionList[regionMap[cp.Y, cp.X]];
 
@@ -158,6 +158,7 @@ namespace FF1Lib.Procgen
 	    }
 	    replacement.Adjacent.Add(cutout.RegionId);
 	    cutout.Adjacent.Add(replacement.RegionId);
+	    return cutout.RegionId;
 	}
 
 	public static void Merge(short[,] regionMap, List<OwRegion> regionList,
@@ -178,6 +179,7 @@ namespace FF1Lib.Procgen
 		if (!dst.Adjacent.Contains(a)) {
 		    dst.Adjacent.Add(a);
 		}
+		regionList[a] = new OwRegion(regionList[a]);
 		regionList[a].Adjacent.Remove(src.RegionId);
 		if (!regionList[a].Adjacent.Contains(dst.RegionId)) {
 		    regionList[a].Adjacent.Add(dst.RegionId);
@@ -268,6 +270,7 @@ namespace FF1Lib.Procgen
         private OverworldTiles overworldTiles;
 
 	short startingRegion;
+	short bridgeOriginRegion;
 	short bridgedRegion;
 	bool shouldPlaceBridge;
 
@@ -295,6 +298,7 @@ namespace FF1Lib.Procgen
 	    this.DockPlacements = new List<ValueTuple<short, SCCoords>>();
             this.overworldTiles = overworldTiles;
 	    this.startingRegion = -1;
+	    this.bridgeOriginRegion = -1;
 	    this.bridgedRegion = -1;
 	    this.shouldPlaceBridge = true;
 	    this.progress = progress;
@@ -329,6 +333,7 @@ namespace FF1Lib.Procgen
             this.sea_elevation = copy.sea_elevation;
             this.overworldTiles = copy.overworldTiles;
 	    this.startingRegion = copy.startingRegion;
+	    this.bridgeOriginRegion = copy.bridgeOriginRegion;
 	    this.bridgedRegion = copy.bridgedRegion;
 	    this.shouldPlaceBridge = copy.shouldPlaceBridge;
 	    this.progress = copy.progress;
@@ -1070,7 +1075,14 @@ namespace FF1Lib.Procgen
 		}
 	    }
 	    this.OwnRegions();
-	    OwRegion.Cutout(this.Traversable_regionmap, this.Traversable_regionlist, point, feature.GetLength(1), feature.GetLength(0));
+	    this.OwnPlacements();
+	    var orig = this.Traversable_regionmap[point.Y, point.X];
+	    var cutout = OwRegion.Cutout(this.Traversable_regionmap, this.Traversable_regionlist, point, feature.GetLength(1), feature.GetLength(0));
+
+	    if (this.Exclude_airship.Contains(orig)) {
+		this.Exclude_airship.Add(cutout);
+	    }
+
 	    OwRegion.Cutout(this.Biome_regionmap, this.Biome_regionlist, point, feature.GetLength(1), feature.GetLength(0));
 	}
 
@@ -1240,6 +1252,12 @@ namespace FF1Lib.Procgen
 		return true;
 	    }
 
+	    if ((curRegionType == OverworldTiles.BRIDGE_REGION &&
+		 adjRegionType == OverworldTiles.LAND_REGION))
+	    {
+		return true;
+	    }
+
 	    return false;
 	}
 
@@ -1297,16 +1315,16 @@ namespace FF1Lib.Procgen
 		    }
 
 		    if (regionType == OverworldTiles.LAND) {
-			if (current.OwUp == this.FeatureCoordinates["Bridge"]) {
+			if (current.OwUp == this.FeatureCoordinates["Bridge"] && canTraverse(OverworldTiles.BRIDGE_REGION, current.OwUp.OwUp)) {
 			    workingStack.Push(current.OwUp.OwUp);
 			}
-			if (current.OwRight == this.FeatureCoordinates["Bridge"]) {
+			if (current.OwRight == this.FeatureCoordinates["Bridge"] && canTraverse(OverworldTiles.BRIDGE_REGION, current.OwRight.OwRight)) {
 			    workingStack.Push(current.OwRight.OwRight);
 			}
-			if (current.OwDown == this.FeatureCoordinates["Bridge"]) {
+			if (current.OwDown == this.FeatureCoordinates["Bridge"] && canTraverse(OverworldTiles.BRIDGE_REGION, current.OwDown.OwDown)) {
 			    workingStack.Push(current.OwDown.OwDown);
 			}
-			if (current.OwLeft == this.FeatureCoordinates["Bridge"]) {
+			if (current.OwLeft == this.FeatureCoordinates["Bridge"] && canTraverse(OverworldTiles.BRIDGE_REGION, current.OwLeft.OwLeft)) {
 			    workingStack.Push(current.OwLeft.OwLeft);
 			}
 		    }
@@ -1526,9 +1544,24 @@ namespace FF1Lib.Procgen
 			    }
 			};
 
+			bool rubyRequired = rng.Between(0, 3) > 0;
+			bool canalRequired = rng.Between(0, 4) > 0;
+			bool bridgeRequired = rng.Between(0, 1) > 0;
+
+			Console.WriteLine($"rubyRequired {rubyRequired} canalRequired {canalRequired} bridgeRequired {bridgeRequired}");
+
 			placementSteps.Add(new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}));
-			placementSteps.Add(new GenerationStep("PlaceBridge", new object[]{true}));
-			placementSteps.Add(new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}));
+			if (bridgeRequired) {
+			    // bridge start from any region, but you can't land on the bridged region
+			    placementSteps.Add(new GenerationStep("PlaceBridge", new object[]{false, true}));
+			} else {
+			    // bridge starts from starting area,
+			    // possibly you can avoid it (but item
+			    // placement may still make it part of
+			    // progression)
+			    placementSteps.Add(new GenerationStep("PlaceBridge", new object[]{true, false}));
+			}
+			placementSteps.Add(new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, !rubyRequired}));
 
 			features.AddRange(earlyRewardLocations);
 
@@ -1558,7 +1591,7 @@ namespace FF1Lib.Procgen
 			    AddPlacements("PlaceInTitanWestRegion", 1, 3, null);
 			}
 
-			placementSteps.Add(new GenerationStep("PlaceCanal", new object[]{}));
+			placementSteps.Add(new GenerationStep("PlaceCanal", new object[]{canalRequired}));
 			AddPlacements("PlaceInCanalRegion", 1, 3, null);
 			AddPlacements("PlaceInMountains", 2, 5, null);
 			placementSteps.Add(new GenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}));
@@ -1650,13 +1683,13 @@ namespace FF1Lib.Procgen
 				new GenerationStep("BridgeAlternatives", new object[]{}),
 				new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY_CASTLE}),
 				new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.TEMPLE_OF_FIENDS}),
-				new GenerationStep("PlaceBridge", new object[]{true}),
+				new GenerationStep("PlaceBridge", new object[]{true, false}),
 				new GenerationStep("PlacePravoka", new object[]{}),
 				new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.GAIA_TOWN, true}),
 				new GenerationStep("PlaceRequiringCanoe", new object[]{OverworldTiles.ORDEALS_CASTLE}),
 				new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}),
 				new GenerationStep("PlaceInTitanWestRegion", new object[]{OverworldTiles.SARDAS_CAVE_FEATURE}),
-				new GenerationStep("PlaceCanal", new object[]{}),
+				new GenerationStep("PlaceCanal", new object[]{false}),
 				new GenerationStep("PlaceInCanalRegion", new object[]{OverworldTiles.EARTH_CAVE_FEATURE}),
 
 				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
@@ -1729,6 +1762,7 @@ namespace FF1Lib.Procgen
 		}
 
 		var polishSteps = new List<GenerationStep> {
+		    new GenerationStep("PreventAirshipLanding", new object[]{}),
 		    new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains1, true}, "polish_mountains1"),
 		    new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains2, true}, "polish_mountains2"),
 
@@ -1750,6 +1784,7 @@ namespace FF1Lib.Procgen
 		    new GenerationStep("ApplyFilter", new object[]{mt.forest_borders, false}, "forest_borders"),
 		    new GenerationStep("CheckBridgeShores", new object[]{}),
 		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores7, false}, "apply_shores7"),
+		    new GenerationStep("PreventAirshipLanding", new object[]{}),
 		};
 
 		postPlacementState.SetSteps(polishSteps);

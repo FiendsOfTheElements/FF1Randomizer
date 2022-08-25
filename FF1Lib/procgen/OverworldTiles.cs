@@ -149,6 +149,7 @@ namespace FF1Lib.Procgen
 
 	public const int DOCK_REGION = 4;
 	public const int ENTRANCES_REGION = 5;
+	public const int BRIDGE_REGION = 6;
 
 	public const int MainOceanRegionId = 0;
 
@@ -399,9 +400,9 @@ namespace FF1Lib.Procgen
 	    });
 
 	public static OwFeature GAIA_TOWN = new OwFeature(new byte[,] {
-	    {None, GAIA, GAIA},
-	    {GAIA, GAIA, None},
-	    {None, None, None},
+	    {None, None, GAIA, GAIA},
+	    {None, GAIA, GAIA, None},
+	    {None, None, None, None},
 	    }, new Dictionary<string, SCCoords> {
 		{ "Gaia", new SCCoords(1, 1) },
 	    });
@@ -711,6 +712,7 @@ namespace FF1Lib.Procgen
         non_water_tiles.Remove(DOCK_SW);
         non_water_tiles.Remove(DOCK_SQ);
         non_water_tiles.Remove(WATERFALL);
+	non_water_tiles.Remove(MOUNTAIN);
 
         var non_shore_tiles = new HashSet<byte>(allTiles);
         non_shore_tiles.Remove(OCEAN);
@@ -1071,9 +1073,19 @@ namespace FF1Lib.Procgen
 		    {STAR,     STAR, STAR}},
 		    SHORE_N),
 		new Rule(new byte[3,3] {
-		    {STAR,         STAR, LAND},
+		    {STAR,         STAR, STAR},
 		    {STAR,     SHORE_SW, STAR},
+		    {LAND,     STAR, STAR}},
+		    SHORE_S),
+		new Rule(new byte[3,3] {
+		    {STAR,     STAR, LAND},
+		    {STAR, SHORE_NE, STAR},
 		    {STAR,     STAR, STAR}},
+		    SHORE_N),
+		new Rule(new byte[3,3] {
+		    {STAR,         STAR, STAR},
+		    {STAR,     SHORE_SE, STAR},
+		    {STAR,     STAR, LAND}},
 		    SHORE_S),
 	    }, allTiles, non_shore_tiles, null);
 
