@@ -1416,8 +1416,44 @@ public partial class FF1Rom : NesRom
 		{
 			byte[] hashable = Data.ToBytes();
 
+			//zero out overworld palette data
+			for (int i = 0x380; i < 0x390; i++)
+			{
+				hashable[i] = 0;
+			}
+
 			//zero out mapman palette data
 			for (int i = 0x390; i < 0x3BC; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out standard map palette data
+			for (int i = 0x2000; i < 0x2C00; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out standard map object graphic lookup
+			for (int i = 0x2E00; i < 0x2ED0; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out backdrop palette data
+			for (int i = 0x3200; i < 0x3260; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out battle backdrop lookup
+			for (int i = 0x3300; i < 0x3380; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out overworld graphics
+			for (int i = 0x8000; i < 0x9000; i++)
 			{
 				hashable[i] = 0;
 			}
@@ -1428,8 +1464,26 @@ public partial class FF1Rom : NesRom
 				hashable[i] = 0;
 			}
 
+			//zero out standard map object graphics
+			for (int i = 0xA200; i < 0xC000; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out standard map graphics
+			for (int i = 0xC000; i < 0x10000; i++)
+			{
+				hashable[i] = 0;
+			}
+
 			//zero out character battle graphics
 			for (int i = 0x25000; i < 0x26800; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			// Battlepalettes
+			for (int i = 0x30F20; i < 0x31020; i++)
 			{
 				hashable[i] = 0;
 			}
@@ -1453,7 +1507,7 @@ public partial class FF1Rom : NesRom
 			}
 
 			var Hash = hasher.ComputeHash(hashable);
-			if (ByteArrayToString(Hash) != "7ea7f20bcb93b9d3c5f951f59b9cc3a42b347dbf0323b98d74b06bc81309d77a")
+			if (ByteArrayToString(Hash) != "0614d282abe33d5c6e9a22f6cc7b5f972d30c292d4b873ce07f703c1a14b168c")
 			{
 				Console.WriteLine($"Rom hash: {ByteArrayToString(Hash)}");
 				throw new TournamentSafeException("File has been modified");
