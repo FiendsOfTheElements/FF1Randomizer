@@ -595,7 +595,7 @@ namespace FF1Lib.Procgen
 		return new Result(false);
 	    }
 	    if (shipReachable) {
-		var d = this.DockPlacement(trav);
+		this.DockPlacement(trav);
 		if (!this.Reachable_regions.Contains(trav.RegionId)) {
 		    return new Result(false);
 		}
@@ -605,6 +605,10 @@ namespace FF1Lib.Procgen
 	}
 
 	public bool DockPlacement(OwRegion region) {
+	    if (this.Exclude_docks.Contains(region.RegionId)) {
+		return false;
+	    }
+
 	    var points = new List<SCCoords>(region.Points);
 	    points.Shuffle(this.rng);
 	    OwFeature placed = null;
@@ -820,6 +824,7 @@ namespace FF1Lib.Procgen
 		    this.Exclude_docks.Add(region.RegionId);
 		}
 		this.Reachable_regions.Add(region.RegionId);
+		this.canalRegion = region.RegionId;
 
 		if (makeCanalRequired) {
 		    // If true, make it so that the canal is the only
@@ -837,15 +842,9 @@ namespace FF1Lib.Procgen
 	}
 
 	public async Task<Result> PlaceInCanalRegion(OwFeature feature) {
-	    var p = this.FeatureCoordinates["Canal"];
-	    var region = this.Traversable_regionlist[this.Traversable_regionmap[p.Y, p.X]];
-	    foreach (var adj in region.Adjacent) {
-		if (this.Traversable_regionlist[adj].RegionType == OverworldTiles.LAND_REGION) {
-		    var r = this.PlaceFeature(this.Traversable_regionmap, this.Traversable_regionlist[adj], feature);
-		    if (r.Item1) {
-			return await this.NextStep();
-		    }
-		}
+	    var r = this.PlaceFeature(this.Traversable_regionmap, this.Traversable_regionlist[this.canalRegion], feature);
+	    if (r.Item1) {
+		return await this.NextStep();
 	    }
 	    return new Result(false);
 	}
