@@ -440,30 +440,15 @@ namespace FF1Lib
 			PutInBank(0x1B, 0x806D, Blob.FromHex("20CBCFEAEAEAEAEA"));
 		}
 
-		private void ScaleEncounterRate(double overworldMultiplier, double dungeonMultiplier)
+		
+		private void ScaleEncounterRate(int LandEncounterRate, int SeaEncounterRate, int DungeonEncounterRate)
 		{
-			if (overworldMultiplier == 0)
-			{
-				PutInBank(0x1F, 0xC50E, Blob.FromHex("EAEA"));
-			}
-			else
-			{
-				byte[] threats = new byte[] { Data[OverworldThreatLevelOffset], Data[OceanThreatLevelOffset] };
-				threats = threats.Select(x => (byte)Math.Ceiling(x * overworldMultiplier)).ToArray();
-				Data[OverworldThreatLevelOffset] = threats[0];
-				Data[OceanThreatLevelOffset] = threats[1];
-			}
-
-			if (dungeonMultiplier == 0)
-			{
-				PutInBank(0x1F, 0xCDCC, Blob.FromHex("1860"));
-			}
-			else
-			{
-				var threats = Get(ThreatLevelsOffset, ThreatLevelsSize).ToBytes();
-				threats = threats.Select(x => (byte)Math.Ceiling(x * dungeonMultiplier)).ToArray();
-				Put(ThreatLevelsOffset, threats);
-			}
+			Data[OverworldThreatLevelOffset] = (byte)LandEncounterRate;
+			Data[OceanThreatLevelOffset] = (byte)SeaEncounterRate;
+			
+			var threats = Get(ThreatLevelsOffset, ThreatLevelsSize).ToBytes();
+			threats = threats.Select(x => (byte)Math.Ceiling(x * (double)DungeonEncounterRate / 8)).ToArray();
+			Put(ThreatLevelsOffset, threats);
 		}
 
 		public void ExpGoldBoost(Flags flags)

@@ -31,28 +31,28 @@
             <ToolTipBox id="encounterRatesTooltip" UpdateToolTip="@UpdateToolTipID"></ToolTipBox>
         </div>
 		<!-- In vanilla, the encounter rate is 10/256 for land, 3/256 for sea, and 8/256 for most dungeons -->
-		<div class="row">
-			<div class="col-lg-4 noleftpadding">Overworld Encounter Rate:</div>
-			<div class="col-lg-4">@Math.Round(Flags.EncounterRate / 30.0, 2).ToString("F2")x</div>
+        <div class="row">
+			<div class="col-lg-4 noleftpadding">Land/River Rate:</div>
+			<div class="col-lg-4">@(Flags.LandEncounterRate) / 256</div>
 			<div class="col-slider">
-				<Slider @bind-Value="Flags.EncounterRate" Min="0" Max="45" Step="1"></Slider>
+				<Slider @bind-Value="Flags.LandEncounterRate" Min="0" Max="15" Step="1"></Slider>
+			</div>
+		</div>
+        <div class="row">
+			<div class="col-lg-4 noleftpadding">Sea Rate:</div>
+			<div class="col-lg-4">@(Flags.SeaEncounterRate) / 256</div>
+			<div class="col-slider">
+				<Slider @bind-Value="Flags.SeaEncounterRate" Min="0" Max="8" Step="1"></Slider>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-lg-3">Land: @Math.Ceiling(10.0 * (Flags.EncounterRate/30.0))/256</div>
-			<div class="col-lg-3">Sea: @Math.Ceiling(3.0 * (Flags.EncounterRate/30.0))/256</div>
-		</div>
-		<div class="row-seperator"></div>
-		<div class="row">
-			<div class="col-lg-4 noleftpadding">Dungeon Encounter Rate:</div>
-			<div class="col-lg-4">@Math.Round(Flags.DungeonEncounterRate / 30.0, 2).ToString("F2")x</div>
+			<div class="col-lg-4 noleftpadding">Dungeon Rate:</div>
+			<div class="col-lg-4">@(Flags.DungeonEncounterRate) / 256</div>
 			<div class="col-slider">
-				<Slider @bind-Value="Flags.DungeonEncounterRate" Min="0" Max="45" Step="1"></Slider>
+				<Slider @bind-Value="Flags.DungeonEncounterRate" Min="0" Max="15" Step="1"></Slider>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-lg-5">Most Dungeons: @Math.Ceiling(8.0 * (Flags.DungeonEncounterRate/30.0))/256</div>
-		</div>
+		
 		<div class="row-seperator"></div>
 		<h4>Experience</h4>
 		<div class="row">

@@ -2615,16 +2615,25 @@ namespace FF1Lib
 			}
 		}
 
-		public double EncounterRate
+		public int LandEncounterRate
 		{
-			get => Flags.EncounterRate;
+			get => Flags.LandEncounterRate;
 			set
 			{
-				Flags.EncounterRate = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EncounterRate"));
+				Flags.LandEncounterRate = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LandEncounterRate"));
 			}
 		}
-		public double DungeonEncounterRate
+		public int SeaEncounterRate
+		{
+			get => Flags.SeaEncounterRate;
+			set
+			{
+				Flags.SeaEncounterRate = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SeaEncounterRate"));
+			}
+		}
+		public int DungeonEncounterRate
 		{
 			get => Flags.DungeonEncounterRate;
 			set
