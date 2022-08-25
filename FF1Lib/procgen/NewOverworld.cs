@@ -273,6 +273,7 @@ namespace FF1Lib.Procgen
 	short bridgeOriginRegion;
 	short bridgedRegion;
 	bool shouldPlaceBridge;
+	short canalRegion;
 
 	FF1Rom.ReportProgress progress;
 
@@ -300,6 +301,7 @@ namespace FF1Lib.Procgen
 	    this.startingRegion = -1;
 	    this.bridgeOriginRegion = -1;
 	    this.bridgedRegion = -1;
+	    this.canalRegion = -1;
 	    this.shouldPlaceBridge = true;
 	    this.progress = progress;
         }
@@ -335,6 +337,7 @@ namespace FF1Lib.Procgen
 	    this.startingRegion = copy.startingRegion;
 	    this.bridgeOriginRegion = copy.bridgeOriginRegion;
 	    this.bridgedRegion = copy.bridgedRegion;
+	    this.canalRegion = copy.canalRegion;
 	    this.shouldPlaceBridge = copy.shouldPlaceBridge;
 	    this.progress = copy.progress;
         }
@@ -1579,7 +1582,7 @@ namespace FF1Lib.Procgen
 			features.AddRange(otherFeatures);
 			features.AddRange(unsafeFeatures);
 
-			AddPlacements("PlaceInBridgedRegion", 1, 3, null);
+			AddPlacements("PlaceInBridgedRegion", 1, 2, null);
 			AddPlacements("PlaceRequiringCanoe", 1, 2, null);
 			if (features.Contains(OverworldTiles.TITANS_TUNNEL_EAST)) {
 			    // If Titan's east hasn't been placed yet,
@@ -1588,11 +1591,11 @@ namespace FF1Lib.Procgen
 			    AddPlacements("PlaceInTitanWestRegion", 1, 3, null);
 			    features.Add(OverworldTiles.TITANS_TUNNEL_EAST);
 			} else {
-			    AddPlacements("PlaceInTitanWestRegion", 1, 3, null);
+			    AddPlacements("PlaceInTitanWestRegion", 1, 2, null);
 			}
 
 			placementSteps.Add(new GenerationStep("PlaceCanal", new object[]{canalRequired}));
-			AddPlacements("PlaceInCanalRegion", 1, 3, null);
+			AddPlacements("PlaceInCanalRegion", 1, 2, null);
 			AddPlacements("PlaceInMountains", 2, 5, null);
 			placementSteps.Add(new GenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}));
 			placementSteps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
