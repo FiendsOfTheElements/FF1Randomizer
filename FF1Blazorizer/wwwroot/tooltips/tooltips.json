@@ -30,6 +30,12 @@
 		"description": "Shattered spreads the resistances across many armor pieces. Each Element occurs multiple times. It tries to ensure that every class can attain full protection."
 	},
 	{
+		"Id": "shipCanalBeforeFloater",
+		"title": "Ship and Canal before Floater",
+		"screenshot": null,
+		"description": "Forces the Ship and the Canal to be placed before the Floater."
+	},
+	{
 		"Id": "reversedFloors",
 		"title": "Swapped Entrance & Exit Locations",
 		"screenshot": null,

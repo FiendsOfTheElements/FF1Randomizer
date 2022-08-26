@@ -144,6 +144,7 @@
 		bool PredictivePlacement { get;}
 		bool AllowUnsafePlacement { get; }
 		bool Etherizer { get; }
+		bool ShipCanalBeforeFloater { get; }
 	}
 	public interface IItemShuffleFlags
 	{
