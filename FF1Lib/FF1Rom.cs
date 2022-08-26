@@ -306,11 +306,16 @@ public partial class FF1Rom : NesRom
 
 		var flippedMaps = new List<MapId>();
 
+
+		var mapFlipper = new FlippedMaps(this, maps, rng);
+
+		mapFlipper.VerticalFlipStep2();
+
 		teleporters.LoadData();
 
 		if ((bool)flags.FlipDungeons)
 		{
-			flippedMaps = HorizontalFlipDungeons(rng, maps, teleporters, overworldMap);
+			flippedMaps = mapFlipper.HorizontalFlip(rng, maps, teleporters, overworldMap);
 		}
 
 		if ((bool)flags.RandomizeFormationEnemizer)

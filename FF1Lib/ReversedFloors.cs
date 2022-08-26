@@ -65,16 +65,16 @@
 
 			SwapTilesAndTele(MapId.GurguVolcanoB4, 0x03, 0x17, 0x17, 0x2D);
 
-			//SwapTilesAndTele(MapId.GurguVolcanoB4, 0x23, 0x06, 0x01, 0x06, 0x31, 0x11);
+			SwapTilesAndTele(MapId.GurguVolcanoB4, 0x23, 0x06, 0x01, 0x06, 0x31, 0x11);
 			SwapTilesAndTele(MapId.GurguVolcanoB4, 0x23, 0x06, 0x28, 0x2D);
 
 			SwapTilesAndTele(MapId.GurguVolcanoB5, 0x20, 0x1F, 0x32, 0x05, 0x0D, 0x05);
 
 			SwapTilesAndTele(MapId.IceCaveB2, 0x1E, 0x02, 0x05, 0x02);
 
-			//SwapTilesAndTele(MapId.IceCaveB2, 0x37, 0x05, 0x34, 0x01);
+			SwapTilesAndTele(MapId.IceCaveB2, 0x37, 0x05, 0x34, 0x01);
 
-			SwapIceB3(MapId.IceCaveB3, 0x27, 0x06, 0x1F, 0x15, 0x35, 0x1D);
+			SwapIceB3(MapId.IceCaveB3, 0x27, 0x06, 0x1F, 0x16, 0x3B, 0x23);//0x1E);
 
 			SwapTwoTilesAndTele(MapId.MirageTower2F, 0x10, 0x1F, 0x17, 0x03, 0x10, 0x03, 0x12, 0x1C);
 
@@ -82,7 +82,6 @@
 
 			SwapSeaShrineB2();
 
-			//SwapTilesAndTele(MapId.SeaShrineB3, 0x15, 0x2A, 0x03, 0x1B, 0x1E, 0x13);
 			SwapTilesAndTele(MapId.SeaShrineB3, 0x15, 0x2A, 0x02, 0x02, 0x1F, 0x07);
 
 			SwapTilesAndTele(MapId.SeaShrineB3, 0x30, 0x0A, 0x2F, 0x1D);
@@ -98,10 +97,6 @@
 			SwapTwoTilesAndTele(MapId.SkyPalace2F, 0x13, 0x04, 0x07, 0x23, 0x13, 0x26, 0x20, 0x08);
 
 			SwapTilesAndTele(MapId.SkyPalace3F, 0x18, 0x17, 0x11, 0x29, 0x1B, 0x37);
-
-			SwapTilesAndTele(MapId.SkyPalace4F, 0x23, 0x23, 0x33, 0x13, 0x13, 0x33);
-
-			//SwapTilesAndTele(MapId.TitansTunnel, 0x0B, 0x0E, 0x05, 0x03);
 
 			SwapTilesAndTele(MapId.IceCaveB3, 0x03, 0x02, 0x05, 0x04);
 
@@ -191,25 +186,30 @@
 
 			int tx;
 			int ty;
-			switch (rng.Between(0, 2))
+			int ymin;
+			//switch (rng.Between(0, 2))
+			switch(1)
 			{
 				case 1:
 					tx = x2;
 					ty = y2;
+					ymin = -1;
 					break;
 				case 2:
 					tx = x3;
 					ty = y3;
+					ymin = -2;
 					break;
 				default:
 					return;
 			}
 
-			for (int x = -2; x <= 2; x++)
+			for (int x = -1; x <= 1; x++)
 			{
-				for (int y = -2; y <= 3; y++)
+				for (int y = ymin; y <= 3; y++)
 				{
-					if (x != 0 && y == 3) continue;
+					if (x == -1 && y == 3) continue;
+					if (x == 1 && y == 3) continue;
 					SwapTiles(map, x1 + x, y1 + y, tx + x, ty + y);
 					SwapTele(mapId, x1 + x, y1 + y, tx + x, ty + y);
 				}
@@ -221,26 +221,6 @@
 			if (rng.Between(0, 1) == 0) return;
 			SwapTiles(maps[(int)mapId], x1, y1, x2, y2);
 			SwapTele(mapId, x1, y1, x2, y2);
-
-			DuplicateTile(MapId.GurguVolcanoB3, 0x13, 0x07, 0x13, 0x06);
-			DuplicateTile(MapId.GurguVolcanoB3, 0x10, 0x07, 0x12, 0x07);
-			DuplicateTile(MapId.GurguVolcanoB3, 0x10, 0x07, 0x11, 0x07);
-			DuplicateTile(MapId.GurguVolcanoB3, 0x10, 0x07, 0x11, 0x06);
-			DuplicateTile(MapId.GurguVolcanoB3, 0x10, 0x07, 0x12, 0x06);
-			DuplicateTile(MapId.GurguVolcanoB3, 0x10, 0x06, 0x11, 0x05);
-			DuplicateTile(MapId.GurguVolcanoB3, 0x10, 0x07, 0x12, 0x05);
-
-			DuplicateTile(MapId.GurguVolcanoB3, 0x13, 0x05, 0x14, 0x05);
-			DuplicateTile(MapId.GurguVolcanoB3, 0x13, 0x05, 0x15, 0x05);
-			DuplicateTile(MapId.GurguVolcanoB3, 0x18, 0x09, 0x16, 0x05);
-			DuplicateTile(MapId.GurguVolcanoB3, 0x13, 0x06, 0x14, 0x06);
-			DuplicateTile(MapId.GurguVolcanoB3, 0x20, 0x04, 0x15, 0x06);
-			DuplicateTile(MapId.GurguVolcanoB3, 0x1A, 0x04, 0x16, 0x06);
-			DuplicateTile(MapId.GurguVolcanoB3, 0x1B, 0x01, 0x15, 0x07);
-			DuplicateTile(MapId.GurguVolcanoB3, 0x1A, 0x07, 0x16, 0x07);
-
-			DuplicateTile(MapId.GurguVolcanoB3, 0x0D, 0x07, 0x13, 0x05);
-			DuplicateTile(MapId.GurguVolcanoB3, 0x15, 0x0B, 0x14, 0x06);
 		}
 
 		private void DuplicateTile(MapId mapId, int x1, int y1, int x2, int y2)

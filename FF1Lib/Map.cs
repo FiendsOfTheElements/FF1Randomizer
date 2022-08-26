@@ -73,6 +73,37 @@ namespace FF1Lib
 			}
 		}
 
+		public void SwapSections(int xs1, int ys1, int xs2, int ys2, int xt, int yt)
+		{
+			for (int x1 = xs1; x1 <= xs2; x1++)
+				for (int y1 = ys1; y1 <= ys2; y1++)
+				{
+					var x2 = x1 - xs1 + xt;
+					var y2 = y1 - ys1 + yt;
+
+					var t = _map[y1, x1];
+					_map[y1, x1] = _map[y2, x2];
+					_map[y2, x2] = t;
+				}
+		}
+
+		public void FlipSectionVertical(int xs1, int ys1, int xs2, int ys2)
+		{
+			for (int x1 = xs1; x1 <= xs2; x1++)
+				for (int y1 = ys1; y1 <= ys2; y1++)
+				{
+					var x2 = x1;
+					var y2 = ys2 - (y1 - ys1);
+
+					if (y2 > y1)
+					{
+						var t = this[y1, x1];
+						this[y1, x1] = this[y2, x2];
+						this[y2, x2] = t;
+					}
+				}
+		}
+
 		public Map Clone()
 		{
 			Map map = new Map(0);
