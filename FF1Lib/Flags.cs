@@ -482,7 +482,7 @@ namespace FF1Lib
 		[DoubleFlag(0, 8)]
 		public double SeaEncounterRate { get; set; } = 2;
 		[DoubleFlag(0, 15)]
-		public double DungeonEncounterRate { get; set; } = 0;
+		public double DungeonEncounterRate { get; set; } = 6;
 
 		public ProgressiveScaleMode ProgressiveScaleMode { get; set; } = ProgressiveScaleMode.Disabled;
 
