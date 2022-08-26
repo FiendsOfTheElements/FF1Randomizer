@@ -439,7 +439,7 @@
 		"Id": "encounterRatesTooltip",
 		"title": "Encounter Rates",
 		"screenshot": null,
-		"description": "Sets the odds of seeing random encounters. A 1.00x multiplier is the same chance of encounters as vanilla (which is 8 random encounters out of 256 steps in most dungeons, for example).\n\"Most dungeons\" covers the majority of dungeon areas, but there are some areas which have higher encounter rates: The \"Bridge of Destiny\" (the final floor of Sky Fortress where you fight Tiamat-1) has triple the rate, and the fiend floors in ToFR are 13-50% higher."
+		"description": "Sets the odds of seeing random encounters in each zone.\nDungeon Rate covers the vast majority of dungeon floors, but there are some which have higher encounter rates: The \"Bridge of Destiny\" (the final floor of Sky Fortress where you fight Tiamat-1) has triple the listed rate, and the fiend floors in ToFR are 13-50% higher. (Special dungeon floors are always rounded up, so a Dungeon Rate of 1/256 would be have 3/256 for the Bridge of Destiny and 2/256 for the fiend floors.)\nVanilla rates are: 10/256 for Land/River; 3/256 for Ocean; 8/256 for Dungeons."
 	},
 
 	{

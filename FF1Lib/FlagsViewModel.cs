@@ -2615,7 +2615,7 @@ namespace FF1Lib
 			}
 		}
 
-		public int LandEncounterRate
+		public double LandEncounterRate
 		{
 			get => Flags.LandEncounterRate;
 			set
@@ -2624,7 +2624,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LandEncounterRate"));
 			}
 		}
-		public int SeaEncounterRate
+		public double SeaEncounterRate
 		{
 			get => Flags.SeaEncounterRate;
 			set
@@ -2633,7 +2633,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SeaEncounterRate"));
 			}
 		}
-		public int DungeonEncounterRate
+		public double DungeonEncounterRate
 		{
 			get => Flags.DungeonEncounterRate;
 			set

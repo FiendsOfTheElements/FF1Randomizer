@@ -441,13 +441,13 @@ namespace FF1Lib
 		}
 
 		
-		private void ScaleEncounterRate(int LandEncounterRate, int SeaEncounterRate, int DungeonEncounterRate)
+		private void ScaleEncounterRate(double LandEncounterRate, double SeaEncounterRate, double DungeonEncounterRate)
 		{
 			Data[OverworldThreatLevelOffset] = (byte)LandEncounterRate;
 			Data[OceanThreatLevelOffset] = (byte)SeaEncounterRate;
 			
 			var threats = Get(ThreatLevelsOffset, ThreatLevelsSize).ToBytes();
-			threats = threats.Select(x => (byte)Math.Ceiling(x * (double)DungeonEncounterRate / 8)).ToArray();
+			threats = threats.Select(x => (byte)Math.Ceiling(x * DungeonEncounterRate / 8)).ToArray();
 			Put(ThreatLevelsOffset, threats);
 		}
 
