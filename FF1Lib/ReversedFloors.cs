@@ -7,12 +7,14 @@
 		MT19337 rng;
 		NormTeleData tele;
 		EnterTeleData enter;
+		List<MapId> vflippedMaps;
 
-		public ReversedFloors(FF1Rom _rom, List<Map> _maps, MT19337 _rng)
+		public ReversedFloors(FF1Rom _rom, List<Map> _maps, MT19337 _rng, List<MapId> _vflippedMaps)
 		{
 			rom = _rom;
 			maps = _maps;
 			rng = _rng;
+			vflippedMaps = _vflippedMaps;
 			tele = new NormTeleData(rom);
 			enter = new EnterTeleData(rom);
 		}
@@ -74,7 +76,7 @@
 
 			SwapTilesAndTele(MapId.IceCaveB2, 0x37, 0x05, 0x34, 0x01);
 
-			SwapIceB3(MapId.IceCaveB3, 0x27, 0x06, 0x1F, 0x16, 0x3B, 0x23);//0x1E);
+			SwapIceB3();
 
 			SwapTwoTilesAndTele(MapId.MirageTower2F, 0x10, 0x1F, 0x17, 0x03, 0x10, 0x03, 0x12, 0x1C);
 
@@ -180,25 +182,28 @@
 			}
 		}
 
-		private void SwapIceB3(MapId mapId, int x1, int y1, int x2, int y2, int x3, int y3)
+		private void SwapIceB3()
 		{
+			var mapId = MapId.IceCaveB3;
+			int x1 = 0x27, y1 = 0x06, x2 = 0x1F, y2 = 0x16, x3 = 0x3B, y3 = 0x1E;
+
+			if (vflippedMaps.Contains(mapId)) y3 = 0x23;
+
 			var map = maps[(int)mapId];
 
 			int tx;
 			int ty;
-			int ymin;
-			//switch (rng.Between(0, 2))
-			switch(1)
+			int ymin = -1;
+			switch (rng.Between(0, 2))
 			{
 				case 1:
 					tx = x2;
 					ty = y2;
-					ymin = -1;
 					break;
 				case 2:
 					tx = x3;
 					ty = y3;
-					ymin = -2;
+					if (vflippedMaps.Contains(mapId)) ymin = -2;
 					break;
 				default:
 					return;

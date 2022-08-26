@@ -754,6 +754,12 @@
 		"screenshot": "flipDungeons.png",
 		"description": "At random, dungeon floors are flipped horizontally."
 	},
+	{
+		"Id": "verticallyFlipDungeons",
+		"title": "It probably does something",
+		"screenshot": null,
+		"description": "Nope, have to try it out."
+	},
 
 	{
 		"Id": "mapOpenProgressionCheckBox",

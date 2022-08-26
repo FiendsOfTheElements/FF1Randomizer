@@ -32,6 +32,7 @@
     <None Remove="maps\pregenerated.zip" />
     <None Remove="maps\shuffled256.zip" />
     <None Remove="maps\unsafe256.zip" />
+    <None Remove="maps\vfmaps.zip" />
   </ItemGroup>
 
   <ItemGroup>
@@ -78,6 +79,7 @@
     <EmbeddedResource Include="bosses\SCYLLA.png" />
     <EmbeddedResource Include="bosses\SHIVA.png" />
     <EmbeddedResource Include="bosses\TITAN.png" />
+    <EmbeddedResource Include="maps\vfmaps.zip" />
   </ItemGroup>
 
   <ItemGroup>

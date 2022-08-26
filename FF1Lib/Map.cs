@@ -117,6 +117,20 @@ namespace FF1Lib
 			return map;
 		}
 
+		public void Save(Stream stream)
+		{
+			var buffer = new byte[4096];
+			Buffer.BlockCopy(_map, 0, buffer, 0, buffer.Length);
+			stream.Write(buffer);
+		}
+
+		public void Load(Stream stream)
+		{
+			var buffer = new byte[4096];
+			stream.Read(buffer, 0, buffer.Length);
+			Buffer.BlockCopy(buffer, 0, _map, 0, buffer.Length);
+		}
+
 		public void Put((int x, int y) coord, Blob[] blobs)
 		{
 			for (int i = 0; i < blobs.Length; ++i)

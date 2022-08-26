@@ -1,6 +1,7 @@
 ﻿using RomUtilities;
 using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace FF1Lib
 	{
 		FF1Rom rom;
 		List<Map> maps;
+		Flags flags;
 		MT19337 rng;
 		NormTeleData tele;
 		EnterTeleData enter;
@@ -42,26 +44,56 @@ namespace FF1Lib
 			MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5
 		};
 
-		public FlippedMaps(FF1Rom _rom, List<Map> _maps, MT19337 _rng)
+		List<MapId> mapsToFlipVertically;
+
+		public FlippedMaps(FF1Rom _rom, List<Map> _maps, Flags _flags, MT19337 _rng)
 		{
 			rom = _rom;
 			maps = _maps;
+			flags = _flags;
 			rng = _rng;
 			tele = new NormTeleData(rom);
 			enter = new EnterTeleData(rom);
 		}
 
-		public List<MapId> VerticalFlipStep2()
+		public List<MapId> VerticalFlipStep1()
+		{
+			if (!flags.VerticallyFlipDungeons ?? false)
+			{
+				mapsToFlipVertically = new List<MapId>();
+				return mapsToFlipVertically;
+			}
+
+			ValidMaps_Vertical.Shuffle(rng);
+			mapsToFlipVertically = ValidMaps_Vertical.GetRange(0, rng.Between((int)(ValidMaps_Vertical.Count * 0.33), (int)(ValidMaps_Vertical.Count * 0.75)));
+			mapsToFlipVertically = ValidMaps_Vertical;
+
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith("vfmaps.zip"));
+
+			using var stream = assembly.GetManifestResourceStream(resourcePath);
+
+			var archive = new ZipArchive(stream);
+
+			foreach (var mapId in mapsToFlipVertically)
+			{
+				var map = maps[(int)mapId];
+
+				var entry = archive.GetEntry(mapId.ToString() + ".ffm");
+
+				using var stream2 = entry.Open();
+				map.Load(stream2);
+			}
+
+			return mapsToFlipVertically;
+		}
+
+		public void VerticalFlipStep2()
 		{
 			tele.LoadData();
 			enter.LoadData();
 
-			ValidMaps_Vertical.Shuffle(rng);
-			var mapsToFlip = ValidMaps_Vertical.GetRange(0, rng.Between((int)(ValidMaps_Vertical.Count * 0.33), (int)(ValidMaps_Vertical.Count * 0.75)));
-
-			mapsToFlip = ValidMaps_Vertical;
-
-			foreach (MapId mapId in mapsToFlip)
+			foreach (MapId mapId in mapsToFlipVertically)
 			{
 				var map = maps[(int)mapId];
 
@@ -107,8 +139,6 @@ namespace FF1Lib
 
 			tele.StoreData();
 			enter.StoreData();
-
-			return mapsToFlip;
 		}
 
 		private void FlipVolcanoB5(Map map)

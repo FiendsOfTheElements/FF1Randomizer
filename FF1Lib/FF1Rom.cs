@@ -302,12 +302,12 @@ public partial class FF1Rom : NesRom
 		    MoveToFBats();
 		}
 
-		if ((bool)flags.ReversedFloors) new ReversedFloors(this, maps, rng).Work();
+		var mapFlipper = new FlippedMaps(this, maps, flags, rng);
+		var vflippedMaps = mapFlipper.VerticalFlipStep1();
+
+		if ((bool)flags.ReversedFloors) new ReversedFloors(this, maps, rng, vflippedMaps).Work();
 
 		var flippedMaps = new List<MapId>();
-
-
-		var mapFlipper = new FlippedMaps(this, maps, rng);
 
 		mapFlipper.VerticalFlipStep2();
 
