@@ -5340,6 +5340,15 @@ namespace FF1Lib
 			}
 		}
 
+		public bool ShipCanalBeforeFloater
+		{
+			get => Flags.ShipCanalBeforeFloater;
+			set
+			{
+				Flags.ShipCanalBeforeFloater = value;
+				RaisePropertyChanged();
+			}
+		}
 
 		public void LoadResourcePackFlags(Stream stream) {
 		    Flags.LoadResourcePackFlags(stream);
