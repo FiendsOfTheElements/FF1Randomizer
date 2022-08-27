@@ -756,9 +756,9 @@
 	},
 	{
 		"Id": "verticallyFlipDungeons",
-		"title": "It probably does something",
-		"screenshot": null,
-		"description": "Nope, have to try it out."
+		"title": "Flip Dungeons Vertically",
+		"screenshot": "flipDungeons.png",
+		"description": "At random, dungeon floors are flipped vertically. Maps are modified to ensure full accessibility to rooms."
 	},
 
 	{

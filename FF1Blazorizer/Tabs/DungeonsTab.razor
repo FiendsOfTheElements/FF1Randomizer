@@ -28,7 +28,7 @@
 		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenWaterfall" @bind-Value="Flags.EFGWaterfall">Generated Waterfall Cave</CheckBox>
 		<div class="checkbox-cell"></div>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="flipDungeonsCheckBox" @bind-Value="Flags.FlipDungeons">Flip Dungeons Horizontally</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="verticallyFlipDungeons" @bind-Value="Flags.VerticallyFlipDungeons">It probably does something</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="verticallyFlipDungeons" IsEnabled="@(Flags.GameMode == GameModes.Standard)" @bind-Value="Flags.VerticallyFlipDungeons">Flip Dungeons Vertically</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="reversedFloors" @bind-Value="Flags.ReversedFloors">Swap Stair Locations</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="relocateChests" @bind-Value="Flags.RelocateChests">Relocate Chests and Trap Tiles</TriStateCheckBox>

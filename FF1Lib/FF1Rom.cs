@@ -593,7 +593,7 @@ public partial class FF1Rom : NesRom
 
 		if ((bool)flags.ClassAsNpcFiends || (bool)flags.ClassAsNpcKeyNPC)
 		{
-			ClassAsNPC(flags, talkroutines, npcdata, flippedMaps, rng);
+			ClassAsNPC(flags, talkroutines, npcdata, flippedMaps, vflippedMaps, rng);
 		}
 
 		if (flags.NPCSwatter)
@@ -778,7 +778,7 @@ public partial class FF1Rom : NesRom
 
 		shopData.LoadData();
 
-		new LegendaryShops(rng, flags, maps, flippedMaps, shopData, this).PlaceShops();
+		new LegendaryShops(rng, flags, maps, flippedMaps, vflippedMaps, shopData, this).PlaceShops();
 
 		if (flags.GameMode == GameModes.DeepDungeon)
 		{

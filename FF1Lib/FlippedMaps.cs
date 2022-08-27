@@ -58,7 +58,7 @@ namespace FF1Lib
 
 		public List<MapId> VerticalFlipStep1()
 		{
-			if (!flags.VerticallyFlipDungeons ?? false)
+			if (!flags.VerticallyFlipDungeons ?? false || flags.GameMode != GameModes.Standard)
 			{
 				mapsToFlipVertically = new List<MapId>();
 				return mapsToFlipVertically;
@@ -66,8 +66,18 @@ namespace FF1Lib
 
 			ValidMaps_Vertical.Shuffle(rng);
 			mapsToFlipVertically = ValidMaps_Vertical.GetRange(0, rng.Between((int)(ValidMaps_Vertical.Count * 0.33), (int)(ValidMaps_Vertical.Count * 0.75)));
-			mapsToFlipVertically = ValidMaps_Vertical;
 
+			/*
+			foreach (var mapId in mapsToFlipVertically)
+			{
+				var map = maps[(int)mapId];
+				var fileName = @"d:\FFR\vfmaps\" + mapId.ToString() + ".ffm";
+				using var stream = new FileStream(fileName, FileMode.Create);
+				map.Save(stream);
+				stream.Close();
+			}
+			*/
+			
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith("vfmaps.zip"));
 
@@ -83,7 +93,7 @@ namespace FF1Lib
 
 				using var stream2 = entry.Open();
 				map.Load(stream2);
-			}
+			}			
 
 			return mapsToFlipVertically;
 		}
@@ -121,6 +131,22 @@ namespace FF1Lib
 						var npc = rom.GetNpc(mapId, 0);
 						npc.Coord.y = npc.Coord.y + 2;
 						rom.MoveNpc(mapId, npc);
+					}
+
+					if (mapId == MapId.GurguVolcanoB4)
+					{
+						for (int x = 0; x < 64; x++)
+						{
+							if (map[1, x] == 48) map[1, x] = 65;
+						}
+					}
+
+					if (mapId == MapId.GurguVolcanoB3 || mapId == MapId.Waterfall)
+					{
+						for (int x = 0; x < 64; x++)
+						{
+							if (map[63, x] == 7) map[63, x] = 46;
+						}
 					}
 				}
 				else
