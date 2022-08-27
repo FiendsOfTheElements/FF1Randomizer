@@ -20,6 +20,14 @@ namespace FF1Lib
 
 			X = (byte)((64 - x1 - 1) | x2);
 		}
+
+		public void FlipYcoordinate()
+		{
+			var y1 = Y & 0x3F;
+			var y2 = Y & 0xC0;
+
+			Y = (byte)((64 - y1 - 1) | y2);
+		}
 	}
 
 	public class NormTeleData : IEnumerable<TeleData>

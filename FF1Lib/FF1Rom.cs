@@ -302,15 +302,20 @@ public partial class FF1Rom : NesRom
 		    MoveToFBats();
 		}
 
-		if ((bool)flags.ReversedFloors) new ReversedFloors(this, maps, rng).Work();
+		var mapFlipper = new FlippedMaps(this, maps, flags, rng);
+		var vflippedMaps = mapFlipper.VerticalFlipStep1();
+
+		if ((bool)flags.ReversedFloors) new ReversedFloors(this, maps, rng, vflippedMaps).Work();
 
 		var flippedMaps = new List<MapId>();
+
+		mapFlipper.VerticalFlipStep2();
 
 		teleporters.LoadData();
 
 		if ((bool)flags.FlipDungeons)
 		{
-			flippedMaps = HorizontalFlipDungeons(rng, maps, teleporters, overworldMap);
+			flippedMaps = mapFlipper.HorizontalFlip(rng, maps, teleporters, overworldMap);
 		}
 
 		if ((bool)flags.RandomizeFormationEnemizer)
@@ -588,7 +593,7 @@ public partial class FF1Rom : NesRom
 
 		if ((bool)flags.ClassAsNpcFiends || (bool)flags.ClassAsNpcKeyNPC)
 		{
-			ClassAsNPC(flags, talkroutines, npcdata, flippedMaps, rng);
+			ClassAsNPC(flags, talkroutines, npcdata, flippedMaps, vflippedMaps, rng);
 		}
 
 		if (flags.NPCSwatter)
@@ -773,7 +778,7 @@ public partial class FF1Rom : NesRom
 
 		shopData.LoadData();
 
-		new LegendaryShops(rng, flags, maps, flippedMaps, shopData, this).PlaceShops();
+		new LegendaryShops(rng, flags, maps, flippedMaps, vflippedMaps, shopData, this).PlaceShops();
 
 		if (flags.GameMode == GameModes.DeepDungeon)
 		{

@@ -264,6 +264,7 @@ namespace FF1Lib
 		public bool? MoveGaiaItemShop { get; set; } = false;
 		public bool? ShufflePravokaShops { get; set; } = false;
 		public bool? FlipDungeons { get; set; } = false;
+		public bool? VerticallyFlipDungeons { get; set; } = false;
 		public bool SpookyFlag { get; set; } = false;
 		public bool DraculasFlag { get; set; } = false;
 		public bool? MapOpenProgression { get; set; } = false;

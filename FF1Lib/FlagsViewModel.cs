@@ -1237,6 +1237,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FlipDungeons"));
 			}
 		}
+		public bool? VerticallyFlipDungeons
+		{
+			get => Flags.VerticallyFlipDungeons;
+			set
+			{
+				Flags.VerticallyFlipDungeons = value;
+				RaisePropertyChanged();
+			}
+		}
 		public bool SpookyFlag
 		{
 			get => Flags.SpookyFlag;

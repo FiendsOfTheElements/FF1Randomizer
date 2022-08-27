@@ -469,7 +469,7 @@ namespace FF1Lib
 
 		public readonly List<string> ClassNames = new List<string> { "Fighter", "Thief", "Black Belt", "Red Mage", "White Mage", "Black Mage", "Knight", "Ninja", "Master", "Red Wizard", "White Wizard", "Black Wizard" };
 
-		public void ClassAsNPC(Flags flags, TalkRoutines talkroutines, NPCdata npcdata, List<MapId> flippedmaps, MT19337 rng)
+		public void ClassAsNPC(Flags flags, TalkRoutines talkroutines, NPCdata npcdata, List<MapId> flippedmaps, List<MapId> vflippedmaps, MT19337 rng)
 		{
 			var crescentSages = new List<ObjectId> { ObjectId.CrescentSage2, ObjectId.CrescentSage3, ObjectId.CrescentSage4, ObjectId.CrescentSage5, ObjectId.CrescentSage6, ObjectId.CrescentSage7, ObjectId.CrescentSage8, ObjectId.CrescentSage9, ObjectId.CrescentSage10 };
 			var keyNpc = new List<TargetNpc> {
@@ -635,6 +635,10 @@ namespace FF1Lib
 				bool volcanoB5flipped = flippedmaps.Contains(MapId.GurguVolcanoB5);
 				bool seaB5flipped = flippedmaps.Contains(MapId.SeaShrineB5);
 
+				bool earthB5vflipped = vflippedmaps.Contains(MapId.EarthCaveB5);
+				bool volcanoB5vflipped = vflippedmaps.Contains(MapId.GurguVolcanoB5);
+				bool seaB5vflipped = vflippedmaps.Contains(MapId.SeaShrineB5);
+
 				var dungeonNpc = new List<ObjectId> { ObjectId.MelmondMan6, ObjectId.GaiaMan4, ObjectId.OnracPunk1, ObjectId.GaiaMan1 };
 
 				SetNpc(MapId.Melmond, 8, ObjectId.None, 0x12, 0x18, false, false);
@@ -646,9 +650,13 @@ namespace FF1Lib
 				var volcanoX = volcanoB5flipped ? (0x3F - ((bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x05)) : ((bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x05);
 				var seaX = seaB5flipped ? (0x3F - ((bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0A)) : ((bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0A);
 
-				SetNpc(MapId.EarthCaveB5, 0x0C, ObjectId.MelmondMan6, earthX, 0x28, true, true);
-				SetNpc(MapId.GurguVolcanoB5, 0x02, ObjectId.GaiaMan4, volcanoX, 0x35, true, true);
-				SetNpc(MapId.SeaShrineB5, 0x01, ObjectId.OnracPunk1, seaX, 0x07, true, true);
+				var earthY = earthB5vflipped ? 0x17 : 0x28;
+				var volcanoY = earthB5vflipped ? 0x0A : 0x35;
+				var seaY = earthB5vflipped ? 0x38  : 0x07;
+
+				SetNpc(MapId.EarthCaveB5, 0x0C, ObjectId.MelmondMan6, earthX, earthY, true, true);
+				SetNpc(MapId.GurguVolcanoB5, 0x02, ObjectId.GaiaMan4, volcanoX, volcanoY, true, true);
+				SetNpc(MapId.SeaShrineB5, 0x01, ObjectId.OnracPunk1, seaY, 0x07, true, true);
 				SetNpc(MapId.SkyPalace5F, 0x02, ObjectId.GaiaMan1, (bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x09, 0x03, true, true);
 
 				// Restore the default color if Required WarMech is enabled so Tiamat's NPC don't look too weird
