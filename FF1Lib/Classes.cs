@@ -677,20 +677,37 @@ namespace FF1Lib
 
 			// Maluses List
 			var malusNormal = new List<BonusMalus> {
-				new BonusMalus(BonusMalusAction.StrMod, "-10 Str.", mod: -10, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.RedMage } ),
+				// Lesser Maluses are for giving an accurate display of the actual stat changes (since they can't go below 0)
+				new BonusMalus(BonusMalusAction.StrMod, "-5 Str.", mod: -5, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.WhiteMage } ),
+				new BonusMalus(BonusMalusAction.StrMod, "-10 Str.", mod: -10, Classes: new List<Classes> { Classes.Fighter, Classes.RedMage } ),
 				new BonusMalus(BonusMalusAction.StrMod, "-20 Str.", mod: -20, Classes: new List<Classes> { Classes.Fighter }),
-				new BonusMalus(BonusMalusAction.AgiMod, "-10 Agi.", mod: -10),
+
+				new BonusMalus(BonusMalusAction.AgiMod, "-5 Agi.", mod: -5, Classes: new List<Classes> { Classes.Fighter, Classes.BlackBelt, Classes.WhiteMage } ),
+				new BonusMalus(BonusMalusAction.AgiMod, "-10 Agi.", mod: -10, Classes: new List<Classes> { Classes.Thief, Classes.RedMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.AgiMod, "-20 Agi.", mod: -20, Classes: new List<Classes> { Classes.Thief }),
-				new BonusMalus(BonusMalusAction.VitMod, "-10 Vit.", mod: -10, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.RedMage } ),
+
+				new BonusMalus(BonusMalusAction.VitMod, "-5 Vit.", mod: -5, Classes: new List<Classes> { Classes.Thief, Classes.RedMage } ),
+				new BonusMalus(BonusMalusAction.VitMod, "-10 Vit.", mod: -10, Classes: new List<Classes> { Classes.Fighter, Classes.BlackBelt, Classes.WhiteMage } ),
 				new BonusMalus(BonusMalusAction.VitMod, "-20 Vit.", mod: -20, Classes: new List<Classes> { Classes.BlackBelt }),
+
 				new BonusMalus(BonusMalusAction.LckMod, "-5 Luck", mod: -5),
 				new BonusMalus(BonusMalusAction.LckMod, "-10 Luck", mod: -10, Classes: new List<Classes> { Classes.Thief, Classes.BlackMage }),
+
 				new BonusMalus(BonusMalusAction.HpMod, "-15 HP", mod: -15),
-				new BonusMalus(BonusMalusAction.HpMod, "-30 HP", mod: -30),
+				// Each class starts at 1HP for the nastier version
+				new BonusMalus(BonusMalusAction.HpMod, "-34 HP", mod: -34, Classes: new List<Classes> { Classes.Fighter } ),
+				new BonusMalus(BonusMalusAction.HpMod, "-32 HP", mod: -32, Classes: new List<Classes> { Classes.BlackBelt } ),
+				new BonusMalus(BonusMalusAction.HpMod, "-29 HP", mod: -29, Classes: new List<Classes> { Classes.Thief, Classes.RedMage }),
+				new BonusMalus(BonusMalusAction.HpMod, "-27 HP", mod: -27, Classes: new List<Classes> { Classes.WhiteMage }),
+				new BonusMalus(BonusMalusAction.HpMod, "-24 HP", mod: -24, Classes: new List<Classes> { Classes.BlackMage }),
 				new BonusMalus(BonusMalusAction.HpGrowth, "BlackM HP", binarylist: _classes[(int)Classes.BlackMage].HpGrowth, Classes: new List<Classes> { Classes.Fighter }),
-				new BonusMalus(BonusMalusAction.HitMod, "-10 Hit%", mod: -10),
-				new BonusMalus(BonusMalusAction.MDefMod, "-10 MDef", mod: -10),
+
+				new BonusMalus(BonusMalusAction.HitMod, "-5 Hit%", mod: -5, Classes: new List<Classes> { Classes.BlackBelt, Classes.Thief, Classes.WhiteMage, Classes.BlackMage } ),
+				new BonusMalus(BonusMalusAction.HitMod, "-7 Hit%", mod: -7, Classes: new List<Classes> { Classes.RedMage } ),
+				new BonusMalus(BonusMalusAction.HitMod, "-10 Hit%", mod: -10, Classes: new List<Classes> { Classes.Fighter } ),
 				new BonusMalus(BonusMalusAction.HitGrowth, "-1 Hit%/Lv", mod: -1),
+
+				new BonusMalus(BonusMalusAction.MDefMod, "-10 MDef", mod: -10),
 				new BonusMalus(BonusMalusAction.MDefGrowth, "-1 MDef/Lv", mod: -1),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "No " + olditemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "No @B", equipment: braceletList),
@@ -766,7 +783,7 @@ namespace FF1Lib
 			}
 
 			// Add Spellcasting Bonuses, keep around in case of revolt
-			// If re-implemented, change names so that "Spells" is spelled out since "Sp" has regularly been confusing
+			// If re-implemented, change names for Knight/Ninja so that "Spells" is spelled out since "Sp" has regularly been confused with "Speed"
 			/*
 			if ((bool)flags.RandomizeClassCasting)
 			{
