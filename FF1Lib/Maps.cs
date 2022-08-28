@@ -259,7 +259,9 @@ namespace FF1Lib
 		Vanilla,
 		Patrolling,
 		Required,
-		Unleashed
+		Unleashed,
+		All,
+		Random
 	}
 
 	public enum SkyCastle4FMazeMode
@@ -873,17 +875,17 @@ namespace FF1Lib
 			formations[6] = formations[7];
 			Put(formationOffset, formations);
 
-			if (mode != WarMECHMode.Unleashed)
+			if (mode != WarMECHMode.Unleashed && mode != WarMECHMode.All)
 				MakeWarMECHUnrunnable();
 
-			if (mode == WarMECHMode.Required && !deepDungeon)
+			if ((mode == WarMECHMode.Required || mode == WarMECHMode.All) && !deepDungeon)
 			{
 				// Can't use mapNpcIndex 0, that's the Wind ORB.
 				SetNpc(MapId.SkyPalace5F, 1, ObjectId.WarMECH, 0x07, 0x0E, inRoom: false, stationary: true);
 
 				Data[0x029AB] = 0x14; // we can only change one color without messing up the Wind ORB.
 			}
-			else if (mode == WarMECHMode.Patrolling)
+			if (mode == WarMECHMode.Patrolling || mode == WarMECHMode.All)
 			{
 				byte warmechMap = (byte)MapId.SkyPalace4F;
 
