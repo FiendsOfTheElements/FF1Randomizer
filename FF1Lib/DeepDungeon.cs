@@ -382,6 +382,7 @@ namespace FF1Lib
 				};
 				for (int i = 0; i < treasuredeck.Count(); i++)
 				{
+					// If this is ever used - Append may not work like this and need fixing
 					result.Append(treasuredeck[i]);
 				}
 				return result;
