@@ -102,10 +102,10 @@
 		"description": "Makes the SOFT spell and the SOFT potion work in battle."
 	},
 	{
-		"Id": "enableLifeInBattle",
+		"Id": "lifeInBattleDropDown",
 		"title": "Enable Life in Battle",
 		"screenshot": "enableLifeInBattleCheckBox.gif",
-		"description": "Makes the LIFE spell, the LIF2 spell and the PHNIX potion (if enabled) work in battle.\nCombat buffs & debuffs are retained when revived during battle - you will keep the benefits of any FAST, TMPR, FOG, etc. (as well as the detriment of SLOW) that were applied before dying. (Status Ailments such as Poison, Mute, or Stun are removed when the character dies and will not be retained.)"
+		"description": "Makes LIFE spells and the PHNIX potion (if enabled - Gear & Items Tab) work in battle. If \"LIFE1 Only\" is selected, LIF2 will only work outside of battle, while LIFE1 and PHNIX potions will also work during battle.\nCombat buffs & debuffs are retained when revived during battle - you will keep the benefits of any FAST, TMPR, FOG, etc. (as well as the detriment of SLOW) that were applied before dying. (Status Ailments such as Poison, Mute, or Stun are removed when the character dies and will not be retained.)"
 	},
 	{
 		"Id": "kiPlacementMode",

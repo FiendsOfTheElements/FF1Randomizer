@@ -52,7 +52,7 @@
     "SpellNameMadness": 0,
     "ExtConsumableSet": 0,
     "EnableSoftInBattle": false,
-    "EnableLifeInBattle": false,
+    "EnableLifeInBattle": 2,
     "NormalShopsHaveExtConsumables": false,
     "LegendaryShopHasExtConsumables": false,
     "ExtConsumableTreasureStackSize": 0,

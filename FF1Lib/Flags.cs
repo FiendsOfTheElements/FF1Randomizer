@@ -105,8 +105,7 @@ namespace FF1Lib
 		public bool ExtConsumablesEnabled => ExtConsumableSet != ExtConsumableSet.None;
 
 		public bool EnableSoftInBattle { get; set; } = false;
-
-		public bool EnableLifeInBattle { get; set; } = false;
+		public LifeInBattleSetting EnableLifeInBattle { get; set; } = LifeInBattleSetting.LifeInBattleAll;
 
 		public bool? NormalShopsHaveExtConsumables { get; set; } = false;
 

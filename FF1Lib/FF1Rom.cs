@@ -803,9 +803,9 @@ public partial class FF1Rom : NesRom
 			EnableSoftInBattle();
 		}
 
-		if (flags.EnableLifeInBattle)
+		if (flags.EnableLifeInBattle != LifeInBattleSetting.LifeInBattleOff)
 		{
-			EnableLifeInBattle();
+			EnableLifeInBattle(flags);
 		}
 
 		if (flags.TranceHasStatusElement)
