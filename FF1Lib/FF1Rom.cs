@@ -384,6 +384,8 @@ public partial class FF1Rom : NesRom
 		if (flags.SpellBugs)
 		{
 			FixSpellBugs();
+			FixEnemyAOESpells();
+			FixEnemyElementalResistances();
 		}
 
 		await this.Progress();
@@ -393,12 +395,7 @@ public partial class FF1Rom : NesRom
 		{
 			ChangeLockMode(flags.LockMode);
 		}
-
-		if (flags.EnemySpellsTargetingAllies)
-		{
-			FixEnemyAOESpells();
-		}
-
+				
 		if (flags.AllSpellLevelsForKnightNinja)
 		{
 			KnightNinjaChargesForAllLevels();
@@ -1055,11 +1052,6 @@ public partial class FF1Rom : NesRom
 			WhiteMageHarmEveryone();
 		}
 
-		if (flags.EnemyElementalResistancesBug)
-		{
-			FixEnemyElementalResistances();
-		}
-
 		if (preferences.FunEnemyNames && !flags.EnemizerEnabled)
 		{
 		    FunEnemyNames(preferences.TeamSteak, (bool)flags.AlternateFiends, new MT19337(funRngSeed));
@@ -1348,8 +1340,8 @@ public partial class FF1Rom : NesRom
 
 		owMapExchange?.ExecuteStep2();
 
-
-		if(flags.QuickMinimapLoad || owMapExchange != null)
+		// Used to be a separate Quick Minimap flag - consolidated into Speed Hacks
+		if(flags.SpeedHacks || owMapExchange != null)
 		{
 			new QuickMiniMap(this, overworldMap).EnableQuickMinimap();
 		}

@@ -2328,24 +2328,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyStatusAttackBug"));
 			}
 		}
-		public bool EnemySpellsTargetingAllies
-		{
-			get => Flags.EnemySpellsTargetingAllies;
-			set
-			{
-				Flags.EnemySpellsTargetingAllies = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemySpellsTargetingAllies"));
-			}
-		}
-		public bool EnemyElementalResistancesBug
-		{
-			get => Flags.EnemyElementalResistancesBug;
-			set
-			{
-				Flags.EnemyElementalResistancesBug = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyElementalResistancesBug"));
-			}
-		}
 		public bool ImproveTurnOrderRandomization
 		{
 			get => Flags.ImproveTurnOrderRandomization;
@@ -5217,15 +5199,6 @@ namespace FF1Lib
 			set
 			{
 				Preferences.QuickJoy2Reset = value;
-				RaisePropertyChanged();
-			}
-		}
-		public bool QuickMinimapLoad
-		{
-			get => Flags.QuickMinimapLoad;
-			set
-			{
-				Flags.QuickMinimapLoad = value;
 				RaisePropertyChanged();
 			}
 		}

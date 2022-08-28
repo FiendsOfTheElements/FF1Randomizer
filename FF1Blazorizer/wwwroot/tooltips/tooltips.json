@@ -9,7 +9,7 @@
 		"Id": "tournamentSafeCheckBox",
 		"title": "Tournament Safe ROM",
 		"screenshot": "tournamentSafeCheckBox.png",
-		"description": "Verifies that the ROM provided is an original Final Fantasy 1 ROM. If the ROM has been modified beyond certain allowances (the sprites for the main heroes on the map and in battle may be changed, as well as the vehicles), a randomized ROM will fail to generate and the site will spit out the following error: -- FAILURE: file has been modified --\n\nWhen this flag is turned on, the Damage Tile Flicker and Spellcasting Flash are also disabled, regardless of the preferences selected.\nAdditionally, the Crop Fiendly flag is enabled, regardless of the preferences selected."
+		"description": "Verifies that the ROM provided is an original Final Fantasy 1 ROM. If the ROM has been modified beyond certain allowances (the sprites for the main heroes on the map and in battle may be changed, as well as the vehicles), a randomized ROM will fail to generate and the site will spit out the following error: -- FAILURE: file has been modified --\n\nWhen this flag is turned on, the Damage Tile Flicker and Spellcasting Flash are also disabled, regardless of the preferences selected.\nAdditionally, the Crop Friendly flag is enabled, regardless of the preferences selected."
 	},
 	{
 		"Id": "spoilersCheckBox",
@@ -94,12 +94,6 @@
 		"title": "Item Magic Pool",
 		"screenshot": "itemMagicPoolDropDown.png",
 		"description": "Sets the pool of Spells for item magic shuffling. (Compatible with Spellcrafter.)\n\nAll Magic: All valid spells.\n\nBalanced: Removes too weak and too strong spells.\n\nLow: Removes too strong spells.\n\nSupport: Removes too strong spells and all damage spells.\n\nCurated: A hand-selected pool that tries to make all item magic you find useful, but rarely strong enough to be dominating. Appropriate for tournament play. (Essentially, a tighter version of \"Balanced\".)\n\nRandom: Any of the above."
-	},
-	{
-		"Id": "quickMinimapLoad",
-		"title": "Quick Minimap Load",
-		"screenshot": "quickminimapload.gif",
-		"description": "Speeds up loading of the minimap."
 	},
 	{
 		"Id": "enableSoftInBattle",
@@ -1846,7 +1840,7 @@
 		"Id": "spellBugsCheckBox",
 		"title": "Spell Fixes",
 		"screenshot": "spellBugsCheckBox.png",
-		"description": "Fixes multiple bugs in various spells, such as TMPR, SABR, and HEL2, so that they provide their proper effect (as opposed to not working, or even in some cases providing an opposite effect from what was intended, as in the vanilla game). Also provides the opportunity to cancel out of casting WARP or EXIT."
+		"description": "Fixes multiple bugs in various spells, such as TMPR, SABR, XFER, and HEL2, so that they provide their proper effect (as opposed to not working, or even in some cases providing an opposite effect from what was intended, as in the vanilla game). Also fixes enemy AoE spell targeting and provides the opportunity to cancel out of casting WARP or EXIT."
 	},
 	{
 		"Id": "enemyStatusAttackBugCheckBox",
@@ -1859,18 +1853,6 @@
 		"title": "Bl. Belt & Master Absorb Calculation",
 		"screenshot": "blackBeltAbsorbCheckBox.gif",
 		"description": "Fixes a bug in the way the Black Belts' & Masters' Absorb stat is calculated. Unchecked, Absorb is set to the Light Warrior's level so long as the character does not have a weapon equiped (instead of using their armor). Enabled, the absorb is applied only when the Light Warrior does not have any armor equipped, the intended behavior."
-	},
-	{
-		"Id": "enemyElementalResistancesCheckBox",
-		"title": "Enemy Elemental Resistances",
-		"screenshot": "enemyElementalResistancesCheckBox.png",
-		"description": "Fixes a bug where XFER and other spells that affect elemental resistances would not work for enemies."
-	},
-	{
-		"Id": "enemySpellsTargetingAlliesCheckBox",
-		"title": "Enemy Spells Targeting Allies",
-		"screenshot": "enemySpellsTargetingAlliesCheckBox.png",
-		"description": "Fixes a bug in the way spells are applied when an enemy casts AoE (area of effect) spells on all allies. Unchecked, spells, such as INV2, will skip the enemy that cast the spell. Checked, the spell will (correctly) affect all enemies in the group, including the caster."
 	},
 	{
 		"Id": "improveTurnOrderRandomizationCheckBox",
@@ -1927,7 +1909,7 @@
 		"Id": "speedHacksCheckBox",
 		"title": "Speed Hacks",
 		"screenshot": "speedHacksCheckBox.gif",
-		"description": "If enabled, many game processes such as area transitions, opening the menu, and battle animations are significantly faster."
+		"description": "If enabled, many game processes such as area transitions, opening the menu, loading the mini-map, and battle animations are significantly faster."
 	},
 	{
 		"Id": "speedboatCheckBox",

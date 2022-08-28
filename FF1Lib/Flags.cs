@@ -76,8 +76,6 @@ namespace FF1Lib
 
 		public bool DisableMinimap { get; set; } = false;
 
-		public bool QuickMinimapLoad { get; set; } = false;
-
 		public bool LooseItemsForwardPlacement { get; set; } = false;
 
 		public bool LooseItemsSpreadPlacement { get; set; } = false;
@@ -393,8 +391,6 @@ namespace FF1Lib
 		public bool BattleMagicMenuWrapAround { get; set; } = false;
 		public bool InventoryAutosort { get; set; } = false;
 		public bool EnemyStatusAttackBug { get; set; } = false;
-		public bool EnemySpellsTargetingAllies { get; set; } = false;
-		public bool EnemyElementalResistancesBug { get; set; } = false;
 		public bool ImproveTurnOrderRandomization { get; set; } = false;
 		public bool FixHitChanceCap { get; set; } = false;
 
