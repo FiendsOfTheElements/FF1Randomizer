@@ -659,6 +659,7 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.StartWithGold, "-100 GP", mod: -1),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "No " + olditemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "No @B", equipment: braceletList),
+				new BonusMalus(BonusMalusAction.WeaponRemove, "No " + olditemnames[(int)Item.Masamune], equipment: new List<Item> { Item.Masamune }),
 				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief @S", equipment: equipThiefWeapon, Classes: new List<Classes> { Classes.Fighter, Classes.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcMax, "-4 Max MP", mod: -4, Classes: new List<Classes> {  Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
 				new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, Classes: new List<Classes> { Classes.Fighter, Classes.Thief }),
