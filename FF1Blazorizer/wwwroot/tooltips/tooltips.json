@@ -1542,7 +1542,7 @@
 		"Id": "ClassXpBonus",
 		"title": "Class XP Bonus",
 		"screenshot": "classXPBonus.png",
-		"description": "Gives the selected class a multiplier to exp. This bonus is multiplicative with the flagset's exp multiplier.\n\ne.g. A Flagset bonus XP of 2.0x and a class bonus of 1.5x will have a total of 3.0x for that class."
+		"description": "Gives the selected class a multiplier to exp. This bonus is multiplicative with the flagset's exp multiplier. For example, flagset XP scaling of 2.0x and a class bonus of 1.5x will have a total of 3.0x for that class.\nNote: With extremely low XP scaling and class bonus, it is possible to reach the maximum of 999,999 XP and no longer be able to level up. (At the most extreme, 1.0x scaling and a 0.5x class bonus effectively caps the class at Level 35.)"
 	},
 	{
 		"Id": "RandomizeClassKeyItemsCheckBox",
@@ -2085,7 +2085,7 @@
 		"Id": "startingLevelDropDown",
 		"title": "Starting Level",
 		"screenshot": "startingLevelDropDown.gif",
-		"description": "Allows you to change the level your party members will be when you start the game."
+		"description": "Allows you to change the level your party members will be when you start the game.\nThis is affected by Class XP Bonus settings, so a class with adjusted XP scaling may start with a higher or lower level than set here (but the same amount of XP as the other classes)."
 	},
 	{
 		"Id": "MaximumLevelDoubleSilder",

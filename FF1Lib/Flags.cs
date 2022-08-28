@@ -456,22 +456,22 @@ namespace FF1Lib
 		[IntegerFlag(0, 250, 25)]
 		public int ExpBonus { get; set; } = 0;
 
-		[DoubleFlag(1.0, 3.0, 0.1)]
+		[DoubleFlag(0.5, 3.0, 0.1)]
 		public double ExpMultiplierFighter { get; set; } = 1.0;
 
-		[DoubleFlag(1.0, 3.0, 0.1)]
+		[DoubleFlag(0.5, 3.0, 0.1)]
 		public double ExpMultiplierThief { get; set; } = 1.0;
 
-		[DoubleFlag(1.0, 3.0, 0.1)]
+		[DoubleFlag(0.5, 3.0, 0.1)]
 		public double ExpMultiplierBlackBelt { get; set; } = 1.0;
 
-		[DoubleFlag(1.0, 3.0, 0.1)]
+		[DoubleFlag(0.5, 3.0, 0.1)]
 		public double ExpMultiplierRedMage { get; set; } = 1.0;
 
-		[DoubleFlag(1.0, 3.0, 0.1)]
+		[DoubleFlag(0.5, 3.0, 0.1)]
 		public double ExpMultiplierWhiteMage { get; set; } = 1.0;
 
-		[DoubleFlag(1.0, 3.0, 0.1)]
+		[DoubleFlag(0.5, 3.0, 0.1)]
 		public double ExpMultiplierBlackMage { get; set; } = 1.0;
 
 		[DoubleFlag(0, 45)]
