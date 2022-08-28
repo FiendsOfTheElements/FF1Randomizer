@@ -67,7 +67,7 @@ namespace FF1Lib
 
 			// Take unrunnable percentage from flags and convert into number of encounters that are unrunnable
 			// The +1 to NormalFormationCount is needed to account for the extra B-side formation spots
-			int unrunnableTotal = (int)Math.Round((double)(unrunnablePercent * (NormalFormationCount + 1) / 100 * 2));
+			int unrunnableTotal = (int)Math.Round((unrunnablePercent * (NormalFormationCount + 1) / 100.0 * 2));
 
 			ids = ids.Take(unrunnableTotal).ToList();
 			foreach (int id in ids)
