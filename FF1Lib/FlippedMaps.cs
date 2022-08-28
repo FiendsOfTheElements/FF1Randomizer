@@ -66,6 +66,7 @@ namespace FF1Lib
 
 			ValidMaps_Vertical.Shuffle(rng);
 			mapsToFlipVertically = ValidMaps_Vertical.GetRange(0, rng.Between((int)(ValidMaps_Vertical.Count * 0.33), (int)(ValidMaps_Vertical.Count * 0.75)));
+			if (flags.EFGWaterfall) mapsToFlipVertically.Remove(MapId.Waterfall);
 
 			/*
 			foreach (var mapId in mapsToFlipVertically)
@@ -440,13 +441,10 @@ namespace FF1Lib
 
 		public List<MapId> HorizontalFlip(MT19337 rng, List<Map> maps, TeleportShuffle teleporters, OverworldMap overworld)
 		{
-
-
 			// Select maps to flip
 			ValidMaps_Horizontal.Shuffle(rng);
-			//var mapsToFlip = ValidMaps_Horizontal.GetRange(0, rng.Between((int)(ValidMaps_Horizontal.Count * 0.33), (int)(ValidMaps_Horizontal.Count * 0.75)));
-
-			var mapsToFlip = ValidMaps_Horizontal;
+			var mapsToFlip = ValidMaps_Horizontal.GetRange(0, rng.Between((int)(ValidMaps_Horizontal.Count * 0.33), (int)(ValidMaps_Horizontal.Count * 0.75)));
+			if (flags.EFGWaterfall) mapsToFlip.Remove(MapId.Waterfall);
 
 			foreach (MapId map in mapsToFlip)
 			{
