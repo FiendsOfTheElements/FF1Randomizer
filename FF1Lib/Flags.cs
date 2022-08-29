@@ -194,9 +194,9 @@ namespace FF1Lib
 		public bool? RandomLoot { get; set; } = false;
 
 		public bool ShardHunt { get; set; } = false;
-		[IntegerFlag(12, 40)]
+		[IntegerFlag(12, 44)]
 		public int ShardCountLow { get; set; } = 28;
-		[IntegerFlag(12, 40)]
+		[IntegerFlag(12, 44)]
 		public int ShardCountHigh { get; set; } = 28;
 
 
