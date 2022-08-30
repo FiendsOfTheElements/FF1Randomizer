@@ -157,7 +157,43 @@ namespace FF1Lib.Procgen
 		replacement.Adjacent.Add(adj);
 	    }
 	    replacement.Adjacent.Add(cutout.RegionId);
-	    cutout.Adjacent.Add(replacement.RegionId);
+
+	    for (int x = 0; x < w+2; x++) {
+		for (int y = 0; y < h+2; y++) {
+		    // top edge
+		    var px = cp.X-1+x;
+		    var py = cp.Y-1;
+		    var pr = regionMap[py, px];
+		    if (! cutout.Adjacent.Contains(pr)) {
+			cutout.Adjacent.Add(pr);
+		    }
+
+		    // right edge
+		    px = cp.X+w;
+		    py = cp.Y-1+y;
+		    pr = regionMap[py, px];
+		    if (! cutout.Adjacent.Contains(pr)) {
+			cutout.Adjacent.Add(pr);
+		    }
+
+		    // bottom edge
+		    px = cp.X-1+x;
+		    py = cp.Y+h;
+		    pr = regionMap[py, px];
+		    if (! cutout.Adjacent.Contains(pr)) {
+			cutout.Adjacent.Add(pr);
+		    }
+
+		    // left edge
+		    px = cp.X-1;
+		    py = cp.Y-1+y;
+		    pr = regionMap[py, px];
+		    if (! cutout.Adjacent.Contains(pr)) {
+			cutout.Adjacent.Add(pr);
+		    }
+		}
+	    }
+
 	    return cutout.RegionId;
 	}
 
@@ -2037,8 +2073,19 @@ namespace FF1Lib.Procgen
 	    var entranceRegions = new Dictionary<string, short>();
 	    foreach (var c in state.FeatureCoordinates) {
 		var featureRegion = state.Traversable_regionmap[c.Value.Y, c.Value.X];
-		var adj = state.Traversable_regionlist[featureRegion].Adjacent[0];
-		entranceRegions[c.Key] = adj;
+
+		entranceRegions[c.Key] = -1;
+
+		if (state.Traversable_regionlist[featureRegion].RegionType == OverworldTiles.LAND_REGION) {
+		    entranceRegions[c.Key] = featureRegion;
+		} else {
+		    foreach (var adj in state.Traversable_regionlist[featureRegion].Adjacent) {
+			if (state.Traversable_regionlist[adj].RegionType == OverworldTiles.LAND_REGION) {
+			    entranceRegions[c.Key] = adj;
+			    break;
+			}
+		    }
+		}
 	    }
 
 	    SCCoords? coneriaDock = null;
@@ -2050,22 +2097,24 @@ namespace FF1Lib.Procgen
 		float dist = 1000000;
 		var closestDock = new SCCoords(0, 0);
 		var entranceRegion = entranceRegions[c.Key];
-		foreach (var dock in state.DockPlacements) {
-		    if (dock.Item1 != entranceRegion) {
-			continue;
+		if (entranceRegion > -1) {
+		    foreach (var dock in state.DockPlacements) {
+			if (dock.Item1 != entranceRegion) {
+			    continue;
+			}
+			var featurePosition = c.Value;
+			var dockPosition = dock.Item2;
+			var d2 = (float)Math.Sqrt((featurePosition.X-dockPosition.X)*(featurePosition.X-dockPosition.X) +
+						  (featurePosition.Y-dockPosition.Y)*(featurePosition.Y-dockPosition.Y));
+			if (d2 < dist) {
+			    dist = d2;
+			    closestDock = dockPosition;
+			}
 		    }
-		    var featurePosition = c.Value;
-		    var dockPosition = dock.Item2;
-		    var d2 = (float)Math.Sqrt((featurePosition.X-dockPosition.X)*(featurePosition.X-dockPosition.X) +
-					      (featurePosition.Y-dockPosition.Y)*(featurePosition.Y-dockPosition.Y));
-		    if (d2 < dist) {
-			dist = d2;
-			closestDock = dockPosition;
-		    }
-		    //Console.WriteLine($"Considered {dockPosition.X}, {dockPosition.Y} which is {d2} from {c.Key} at {featurePosition.X} {featurePosition.Y}");
 		}
 		if (dist < 1000000) {
 		    //state.Tilemap[closestDock.Y,closestDock.X] = OverworldTiles.CONERIA_CASTLE_TOP_W;
+
 		    locations.Add(new ShipLocation(closestDock.X,
 						   closestDock.Y,
 						   (byte)EntranceToOWTeleporterIndex[c.Key]));
