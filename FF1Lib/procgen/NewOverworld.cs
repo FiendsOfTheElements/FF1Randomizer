@@ -1556,9 +1556,12 @@ namespace FF1Lib.Procgen
 			    OverworldTiles.MELMOND_TOWN,
 			    OverworldTiles.LEFEIN_CITY,
 			    OverworldTiles.BAHAMUTS_CAVE_FEATURE,
+			    OverworldTiles.ASTOS_CASTLE,
+			};
+
+			var dudFeatures = new List<OwFeature> {
 			    OverworldTiles.CARDIA_1_FEATURE,
 			    OverworldTiles.CARDIA_5_FEATURE,
-			    OverworldTiles.ASTOS_CASTLE,
 			};
 
 			var unsafeFeatures = new List<OwFeature> {
@@ -1613,7 +1616,7 @@ namespace FF1Lib.Procgen
 
 			features.Add(OverworldTiles.TITANS_TUNNEL_EAST);
 
-			AddPlacements("PlaceInStartingArea", 1, 3, null);
+			AddPlacements("PlaceInStartingArea", 1, 2, null);
 
 			features.AddRange(otherFeatures);
 			features.AddRange(unsafeFeatures);
@@ -1624,7 +1627,7 @@ namespace FF1Lib.Procgen
 			    // If Titan's east hasn't been placed yet,
 			    // make sure we don't place it the Titan's west region.
 			    features.Remove(OverworldTiles.TITANS_TUNNEL_EAST);
-			    AddPlacements("PlaceInTitanWestRegion", 1, 3, null);
+			    AddPlacements("PlaceInTitanWestRegion", 1, 2, null);
 			    features.Add(OverworldTiles.TITANS_TUNNEL_EAST);
 			} else {
 			    AddPlacements("PlaceInTitanWestRegion", 1, 2, null);
@@ -1632,6 +1635,13 @@ namespace FF1Lib.Procgen
 
 			placementSteps.Add(new GenerationStep("PlaceCanal", new object[]{canalRequired}));
 			AddPlacements("PlaceInCanalRegion", 1, 2, null);
+
+			// Annoying when bridge, canal, or titan
+			// tunnel leads to a Cardia dead end, so add
+			// them to the mix only after
+			// bridge/canal/titan placement.
+			features.AddRange(dudFeatures);
+
 			AddPlacements("PlaceInMountains", 2, 5, null);
 			placementSteps.Add(new GenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}));
 			placementSteps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
@@ -1645,9 +1655,9 @@ namespace FF1Lib.Procgen
 			placementSteps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
 											   new int[]{OverworldTiles.MARSH_REGION},
 											   true, true, true, false}));
-			AddPlacements("PlaceInBiome", 4, 8, new object[] { null, true, false, false, false });
-			AddPlacements("PlaceInBiome", 3, 6, new object[] { null, false, true, true, true });
-			AddPlacements("PlaceInBiome", features.Count, features.Count, new object[] { null, false, true, true, false });
+			AddPlacements("PlaceInBiome", 3, 5, new object[] { null, true, false, false, false });
+			AddPlacements("PlaceInBiome", 2, 3, new object[] { null, false, true, true, true });
+			AddPlacements("PlaceInBiome", features.Count, features.Count, new object[] { null, false, false, false, false });
 		    } else if (mode == OwMapExchanges.LostWoods) {
 			placementSteps.AddRange(new GenerationStep[] {
 				new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}),
