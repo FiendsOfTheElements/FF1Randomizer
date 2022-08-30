@@ -1191,8 +1191,8 @@
 
 						teleportersLocDest.Add((
 							teleporttile.PropertyValue,
-							maparea.Find(area => area.map == (MapId)i && area.ul_corner.Item1 < FlippedX((MapId)i, x) && area.lr_corner.Item1 > FlippedX((MapId)i, x) && area.ul_corner.Item2 < y && area.lr_corner.Item2 > y).location,
-							maparea.Find(area => area.map == (MapId)targetteleporter.Destination && area.ul_corner.Item1 < FlippedX((MapId)targetteleporter.Destination, targetteleporter.X) && area.lr_corner.Item1 > FlippedX((MapId)targetteleporter.Destination, targetteleporter.X) && area.ul_corner.Item2 < targetteleporter.Y && area.lr_corner.Item2 > targetteleporter.Y).location));
+							maparea.Find(area => area.map == (MapId)i && area.ul_corner.Item1 <= FlippedX((MapId)i, x) && area.lr_corner.Item1 >= FlippedX((MapId)i, x) && area.ul_corner.Item2 <= y && area.lr_corner.Item2 >= y).location,
+							maparea.Find(area => area.map == (MapId)targetteleporter.Destination && area.ul_corner.Item1 <= FlippedX((MapId)targetteleporter.Destination, targetteleporter.X) && area.lr_corner.Item1 >= FlippedX((MapId)targetteleporter.Destination, targetteleporter.X) && area.ul_corner.Item2 <= targetteleporter.Y && area.lr_corner.Item2 >= targetteleporter.Y).location));
 					}
 				}
 			}
