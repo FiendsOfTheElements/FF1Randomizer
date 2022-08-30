@@ -313,6 +313,7 @@ namespace FF1Lib.Procgen
 		    this.OwnPlacements();
 		    var s = feature.Entrances["Ship"];
 		    this.DockPlacements.Add(new ValueTuple<short, SCCoords>(region.RegionId, new SCCoords(p.X+s.X, p.Y+s.Y)));
+		    this.Reachable_regions.Add(region.RegionId);
 		}
 		return await this.NextStep();
 	    }
