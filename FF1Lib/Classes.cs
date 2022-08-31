@@ -569,22 +569,19 @@ namespace FF1Lib
 					equipShields.Add((Item)i);
 				}
 			}
-			List<Item> equipGauntlets = new();
+			List<Item> equipGauntletsHelmets = new();
 			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
 			{
 				if (itemnames[i].Contains("@G"))
 				{
-					equipGauntlets.Add((Item)i);
+					equipGauntletsHelmets.Add((Item)i);
 				}
-			}
-			List<Item> equipHelmets = new();
-			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
-			{
-				if (itemnames[i].Contains("@h"))
+				else if (itemnames[i].Contains("@h"))
 				{
-					equipHelmets.Add((Item)i);
+					equipGauntletsHelmets.Add((Item)i);
 				}
 			}
+
 
 			List<Item> equipLegendaryWeapons = new() { Item.Vorpal, Item.Katana, Item.Xcalber };
 
@@ -643,8 +640,7 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+Legendary@S", equipment: equipLegendaryWeapons),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+Equip @T", equipment: equipShirts),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+Equip @s", equipment: equipShields, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
-				new BonusMalus(BonusMalusAction.ArmorAdd, "+Equip @G", equipment: equipGauntlets, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
-				new BonusMalus(BonusMalusAction.ArmorAdd, "+Equip @h", equipment: equipHelmets, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
+				new BonusMalus(BonusMalusAction.ArmorAdd, "+Equip @G+@h", equipment: equipGauntletsHelmets, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+Thief @S", equipment: equipThiefWeapon, Classes: new List<Classes> { Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+Red Mage @A", equipment: equipRedMageArmor, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.SpcMod, "+2 Lv1 MP", mod: 2, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
