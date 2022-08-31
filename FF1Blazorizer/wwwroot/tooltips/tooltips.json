@@ -459,7 +459,7 @@
 		"Id": "nonesGainXPcheckBox",
 		"title": "Nones Gain XP",
 		"screenshot": "nonesGainXPcheckBox.png",
-		"description": "When enabled, \"None\" characters will count as alive characters for XP calculation and gain their share of XP. If \"Tavern Recruitment Mode\" and/or \"Gated Characters\" are also enabled, characters hired over these \"None\" characters will gain all the EXP (and levels) of the None at that point."
+		"description": "When enabled, \"None\" characters will count as alive characters for XP calculation and gain their share of XP.\nIf \"Tavern Recruitment Mode\" and/or \"Gated Characters\" are also enabled, characters hired to replace these \"None\" characters will gain all the XP of the None at that point. (If you have already promoted, Recruits replacing Nones will be given their promotion first, and then their XP.)"
 	},
 	{
 		"Id": "deadsGainXPcheckBox",
