@@ -354,7 +354,7 @@ namespace FF1Lib
 
 		    var defenseSwordSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any).
 								Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
-								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any, SpellElement.All)).
+								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any).Where(s => s.Info.status == SpellStatus.Any)).
 								Select(s => s.Id));
 		    var thorHammerSpells =  new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).
 								   Where(s => s.Info.elem != (byte)SpellElement.None).

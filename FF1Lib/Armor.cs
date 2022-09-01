@@ -219,7 +219,7 @@ namespace FF1Lib
 
 								Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
 
-								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any, SpellElement.All)).
+								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any).Where(s => s.Info.status == SpellStatus.Any)).
 
 								Select(s => s.Id));
 		    // Any elemental AOE damage, excludes NUKE/FADE
@@ -366,7 +366,7 @@ namespace FF1Lib
 			    } else if (itemId == Item.WhiteShirt) {
 				spells = whiteShirtSpells;
 			    } else if (itemId == Item.BlackShirt) {
-				spells = whiteShirtSpells;
+				spells = blackShirtSpells;
 			    } else if (itemId == Item.Ribbon) {
 			    } else if (tier >= 1 &&
 				       (armorType == HELM || armorType == GAUNTLET ||
