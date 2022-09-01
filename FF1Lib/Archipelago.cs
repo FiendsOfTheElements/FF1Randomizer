@@ -280,8 +280,8 @@ namespace FF1Lib
 			{
 				switch (item)
 				{
-					case Item.Floater: return "SIGIL";
-					case Item.Canoe: return "MARK";
+					case Item.Floater: return "Sigil";
+					case Item.Canoe: return "Mark";
 				}
 			}
 
@@ -318,6 +318,15 @@ namespace FF1Lib
 					case Item.SmallKnife: return 185 + ItemOffset;
 					case Item.WoodenRod: return 186 + ItemOffset;
 					case Item.Rapier: return 187 + ItemOffset;
+				}
+			}
+
+			if (flags.GameMode == GameModes.NoOverworld)
+			{
+				switch (item)
+				{
+					case Item.Floater: return 243 + ItemOffset;
+					case Item.Canoe: return 244 + ItemOffset;
 				}
 			}
 
