@@ -539,9 +539,11 @@ namespace FF1Lib
 			}
 
 			List<Item> equipFighterArmor = _armorPermissions[Classes.Fighter].ToList().Where(x => !bannableArmor.Contains(x)).ToList();
-			List<Item> equipRedMageArmor = _armorPermissions[Classes.RedMage].ToList().Where(x => !bannableArmor.Contains(x)).ToList(); ;
+			List<Item> equipRedMageArmor = _armorPermissions[Classes.RedMage].ToList().Where(x => !bannableArmor.Contains(x)).ToList();
+			List<Item> equipRedWizardArmor = _armorPermissions[Classes.RedWizard].ToList().Where(x => !bannableArmor.Contains(x)).ToList();
 			List<Item> equipFighterWeapon = _weaponPermissions[Classes.Fighter].ToList();
 			List<Item> equipThiefWeapon = _weaponPermissions[Classes.Thief].ToList();
+
 			List<Item> equipAxes = new();
 			for (int i = (int)Item.WoodenNunchucks; i <= (int)Item.Masamune; i++)
 			{
@@ -550,6 +552,36 @@ namespace FF1Lib
 					equipAxes.Add((Item)i);
 				}
 			}
+
+			List<Item> equipShirts = new();
+			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			{
+				if (itemnames[i].Contains("@T"))
+				{
+					equipShirts.Add((Item)i);
+				}
+			}
+			List<Item> equipShields = new();
+			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			{
+				if (itemnames[i].Contains("@s"))
+				{
+					equipShields.Add((Item)i);
+				}
+			}
+			List<Item> equipGauntletsHelmets = new();
+			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			{
+				if (itemnames[i].Contains("@G"))
+				{
+					equipGauntletsHelmets.Add((Item)i);
+				}
+				else if (itemnames[i].Contains("@h"))
+				{
+					equipGauntletsHelmets.Add((Item)i);
+				}
+			}
+
 
 			List<Item> equipLegendaryWeapons = new() { Item.Vorpal, Item.Katana, Item.Xcalber };
 
@@ -592,8 +624,8 @@ namespace FF1Lib
 			var bonusNormal = new List<BonusMalus> {
 				new BonusMalus(BonusMalusAction.StrMod, "+10 Str.", mod: 10),
 				new BonusMalus(BonusMalusAction.StrMod, "+20 Str.", mod: 20),
-				new BonusMalus(BonusMalusAction.AgiMod, "+10 Agi.", mod: 10),
-				new BonusMalus(BonusMalusAction.AgiMod, "+20 Agi.", mod: 20),
+				new BonusMalus(BonusMalusAction.AgiMod, "+15 Agi.", mod: 15),
+				new BonusMalus(BonusMalusAction.AgiMod, "+25 Agi.", mod: 25),
 				new BonusMalus(BonusMalusAction.VitMod, "+10 Vit.", mod: 10),
 				new BonusMalus(BonusMalusAction.VitMod, "+20 Vit.", mod: 20),
 				new BonusMalus(BonusMalusAction.LckMod, "+5 Luck", mod: 5),
@@ -604,13 +636,14 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.HitMod, "+20 Hit%", mod: 20, Classes: hitBonusClass ),
 				new BonusMalus(BonusMalusAction.MDefMod, "+10 MDef", mod: 10),
 				new BonusMalus(BonusMalusAction.MDefMod, "+20 MDef", mod: 20),
-				new BonusMalus(BonusMalusAction.WeaponAdd, "Equip @X", equipment: equipAxes, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
+				new BonusMalus(BonusMalusAction.WeaponAdd, "+Equip @X", equipment: equipAxes, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+Legendary@S", equipment: equipLegendaryWeapons),
-				new BonusMalus(BonusMalusAction.ArmorAdd, "+Wizard @T", equipment: new List<Item> {  Item.WhiteShirt, Item.BlackShirt }),
+				new BonusMalus(BonusMalusAction.ArmorAdd, "+Equip @T", equipment: equipShirts),
+				new BonusMalus(BonusMalusAction.ArmorAdd, "+Equip @s", equipment: equipShields, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
+				new BonusMalus(BonusMalusAction.ArmorAdd, "+Equip @G+@h", equipment: equipGauntletsHelmets, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+Thief @S", equipment: equipThiefWeapon, Classes: new List<Classes> { Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+Red Mage @A", equipment: equipRedMageArmor, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.SpcMod, "+2 Lv1 MP", mod: 2, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
-				new BonusMalus(BonusMalusAction.StartWithGold, "+200 GP", mod: 1),
 				new BonusMalus(BonusMalusAction.StartWithMp, "+1 MP LvAll", Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
 				new BonusMalus(BonusMalusAction.ThorMaster, "Thor Master", Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.WhiteMage }),
 				new BonusMalus(BonusMalusAction.Hunter, "Vamp Killer", mod: 0x18),
@@ -625,27 +658,26 @@ namespace FF1Lib
 			// Strong Bonuses List
 			var bonusStrong = new List<BonusMalus> {
 				new BonusMalus(BonusMalusAction.StrMod, "+40 Str.", mod: 40),
-				new BonusMalus(BonusMalusAction.AgiMod, "+40 Agi.", mod: 40),
+				new BonusMalus(BonusMalusAction.AgiMod, "+50 Agi.", mod: 50),
 				new BonusMalus(BonusMalusAction.VitMod, "+40 Vit.", mod: 40),
-				new BonusMalus(BonusMalusAction.LckMod, "+15 Luck", mod: 15),
+				new BonusMalus(BonusMalusAction.LckMod, "+15 Luck", mod: 15, Classes: new List<Classes> { Classes.Fighter, Classes.BlackBelt, Classes.WhiteMage, Classes.RedMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.HpMod, "+80 HP", mod: 80),
 				new BonusMalus(BonusMalusAction.MDefGrowth, "+2 MDef/Lv", mod: 2, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+Fighter @S", equipment: equipFighterWeapon, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+Fighter @A", equipment: equipFighterArmor, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage, Classes.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcGrowth, "Improved MP", bytelist: improvedMPlist, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
-				new BonusMalus(BonusMalusAction.StartWithGold, "+1,000 GP", mod: 5, Classes: new List<Classes> { Classes.Thief }),
-				new BonusMalus(BonusMalusAction.PowerRW, "Sage", spelllist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), Classes: new List<Classes> { Classes.RedMage }),
+				new BonusMalus(BonusMalusAction.PowerRW, "Sage", mod: 1, spelllist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), Classes: new List<Classes> { Classes.RedMage }),
 				new BonusMalus(BonusMalusAction.Hunter, "Hunter", mod: 0xFF),
 				//new BonusMalus(BonusMalusAction.UnarmedAttack, "Monk", Classes: new List<Classes> { Classes.WhiteMage }), need extra work
 			};
 
 			// Maluses List
 			var malusNormal = new List<BonusMalus> {
-				new BonusMalus(BonusMalusAction.StrMod, "-10 Str.", mod: -10),
+				new BonusMalus(BonusMalusAction.StrMod, "-10 Str.", mod: -10, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.RedMage } ),
 				new BonusMalus(BonusMalusAction.StrMod, "-20 Str.", mod: -20, Classes: new List<Classes> { Classes.Fighter }),
 				new BonusMalus(BonusMalusAction.AgiMod, "-10 Agi.", mod: -10),
 				new BonusMalus(BonusMalusAction.AgiMod, "-20 Agi.", mod: -20, Classes: new List<Classes> { Classes.Thief }),
-				new BonusMalus(BonusMalusAction.VitMod, "-10 Vit.", mod: -10),
+				new BonusMalus(BonusMalusAction.VitMod, "-10 Vit.", mod: -10, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.BlackBelt, Classes.WhiteMage, Classes.RedMage } ),
 				new BonusMalus(BonusMalusAction.VitMod, "-20 Vit.", mod: -20, Classes: new List<Classes> { Classes.BlackBelt }),
 				new BonusMalus(BonusMalusAction.LckMod, "-5 Luck", mod: -5),
 				new BonusMalus(BonusMalusAction.LckMod, "-10 Luck", mod: -10, Classes: new List<Classes> { Classes.Thief, Classes.BlackMage }),
@@ -656,16 +688,67 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.MDefMod, "-10 MDef", mod: -10),
 				new BonusMalus(BonusMalusAction.HitGrowth, "-1 Hit%/Lv", mod: -1),
 				new BonusMalus(BonusMalusAction.MDefGrowth, "-1 MDef/Lv", mod: -1),
-				new BonusMalus(BonusMalusAction.StartWithGold, "-100 GP", mod: -1),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "No " + olditemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "No @B", equipment: braceletList),
 				new BonusMalus(BonusMalusAction.WeaponRemove, "No " + olditemnames[(int)Item.Masamune], equipment: new List<Item> { Item.Masamune }),
 				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief @S", equipment: equipThiefWeapon, Classes: new List<Classes> { Classes.Fighter, Classes.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcMax, "-4 Max MP", mod: -4, Classes: new List<Classes> {  Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
-				new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, Classes: new List<Classes> { Classes.Fighter, Classes.Thief }),
 				//new BonusMalus(BonusMalusAction.Sick, "Sick"), these were too powerful for man
 				//new BonusMalus(BonusMalusAction.Sleepy, "Sleepy"),
 			};
+
+			// Negative amounts are processed separately in ProcessStartWithRoutines, because they affect the Assembly code
+			// If changing the Malus gold labels below, change those as well to alter the actual number used
+			if (flags.StartingGold == StartingGold.None) {
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+200 GP", mod: 2));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+1400 GP", mod: 14, Classes: new List<Classes> { Classes.Thief }));
+			}
+
+			else if (flags.StartingGold == StartingGold.Gp100) {
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+400 GP", mod: 4));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+2000 GP", mod: 20, Classes: new List<Classes> { Classes.Thief }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-50 GP", mod: -1));
+			}
+			else if (flags.StartingGold == StartingGold.Gp200) {
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+600 GP", mod: 6));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+3000 GP", mod: 30, Classes: new List<Classes> { Classes.Thief }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-100 GP", mod: -1));
+			}
+			else if (flags.StartingGold == StartingGold.Gp400 || flags.StartingGold == StartingGold.RandomLow) {
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+800 GP", mod: 8));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+4000 GP", mod: 40, Classes: new List<Classes> { Classes.Thief }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-150 GP", mod: -1));
+			}
+			else if (flags.StartingGold == StartingGold.Gp800) {
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+1500 GP", mod: 15));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+6000 GP", mod: 60, Classes: new List<Classes> { Classes.Thief }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-350 GP", mod: -1));
+			}
+			else if (flags.StartingGold == StartingGold.Gp2500) {
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+5000 GP", mod: 50));
+				bonusStrong.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+20,000 GP", mod: 200, Classes: new List<Classes> { Classes.Thief }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-1100 GP", mod: -1));
+			}
+			else if (flags.StartingGold == StartingGold.Gp9999) {
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+20,000 GP", mod: 200));
+				// Strong bonus doesn't make sense with gold already so high, so isn't created
+				malusNormal.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-4500 GP", mod: -1));
+			}
+			// These are so much starting gold that bonuses for it no longer make sense
+			//else if (flags.StartingGold == StartingGold.Gp65535 || flags.StartingGold == StartingGold.RandomHigh)
+
+
+			// Do not add Promo-based blursings if there is no ability to promote
+			if (!((bool)flags.NoTail && !(bool)flags.FightBahamut))
+			{
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.ArmorAdd, "Promo FI @A", mod: 99, equipment: equipFighterArmor, Classes: new List<Classes> { Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage, Classes.RedMage }));
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.PowerRW, "Promo Sage", mod: 0, spelllist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), Classes: new List<Classes> { Classes.RedMage }));
+
+				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorReplace, "No Promo @A", mod: 99, equipment: equipFighterArmor, Classes: new List<Classes> { Classes.Fighter }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorReplace, "Promo RW @A", mod: 99, equipment: equipRedWizardArmor, Classes: new List<Classes> { Classes.Thief }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, Classes: new List<Classes> { Classes.Fighter, Classes.Thief }));
+			}
+			
 
 			if (!(bool)flags.ArmorCrafter)
 			{
@@ -693,8 +776,8 @@ namespace FF1Lib
 			}*/
 
 			// Single Spells Bonus/Malus
-			bonusNormal.AddRange(CreateSpellBonuses(rom, rng));
-			malusNormal.AddRange(CreateSpellMaluses(rom, rng));
+			bonusNormal.AddRange(CreateSpellBonuses(rom, rng, flags));
+			malusNormal.AddRange(CreateSpellMaluses(rom, rng, flags));
 
 			// Add Lockpicking Bonus/Malus
 			if ((bool)flags.Lockpicking && flags.LockpickingLevelRequirement < 50)
@@ -902,7 +985,10 @@ namespace FF1Lib
 							_weaponPermissions[(Classes)(i + 6)] = bonusmalus.Equipment;
 							break;
 						case BonusMalusAction.ArmorAdd:
-							_armorPermissions.AddPermissionsRange(bonusmalus.Equipment.Select(x => ((Classes)i, x)).ToList());
+							// mod 99 used to indicate it's for promo only
+							if ((byte)bonusmalus.StatMod != 99) {
+								_armorPermissions.AddPermissionsRange(bonusmalus.Equipment.Select(x => ((Classes)i, x)).ToList());
+							}
 							_armorPermissions.AddPermissionsRange(bonusmalus.Equipment.Select(x => ((Classes)(i + 6), x)).ToList());
 							break;
 						case BonusMalusAction.ArmorRemove:
@@ -910,7 +996,10 @@ namespace FF1Lib
 							_armorPermissions.RemovePermissionsRange(bonusmalus.Equipment.Select(x => ((Classes)(i + 6), x)).ToList());
 							break;
 						case BonusMalusAction.ArmorReplace:
-							_armorPermissions[(Classes)i] = bonusmalus.Equipment;
+							// mod 99 used to indicate it's for promo only
+							if ((byte)bonusmalus.StatMod != 99) {
+								_armorPermissions[(Classes)i] = bonusmalus.Equipment;
+							}
 							_armorPermissions[(Classes)(i + 6)] = bonusmalus.Equipment;
 							break;
 						case BonusMalusAction.SpcMod:
@@ -959,7 +1048,10 @@ namespace FF1Lib
 							_classes[i + 6].SpCGrowth = bonusmalus.SpcGrowth;
 							break;
 						case BonusMalusAction.PowerRW:
-							_spellPermissions[(Classes)i] = wmWhiteSpells.Concat(bmBlackSpells).ToList();
+							// Strong blessing applies unpromoted; regular only applies promoted
+							if ((byte)bonusmalus.StatMod == 1) {
+								_spellPermissions[(Classes)i] = wmWhiteSpells.Concat(bmBlackSpells).ToList();
+							}
 							_spellPermissions[(Classes)(i + 6)] = wwWhiteSpells.Concat(bwBlackSpells).ToList();
 							break;
 						case BonusMalusAction.NoPromoMagic:
@@ -1607,7 +1699,7 @@ namespace FF1Lib
 			return new BonusMalus(BonusMalusAction.InnateResist, description, mod: innateResistValue);
 		}
 
-		public List<BonusMalus> CreateSpellBonuses(FF1Rom rom, MT19337 rng)
+		public List<BonusMalus> CreateSpellBonuses(FF1Rom rom, MT19337 rng, Flags flags)
 		{
 			List<BonusMalus> spellBlursings = new();
 
@@ -1618,12 +1710,18 @@ namespace FF1Lib
 
 			blackSpellList.Add(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any).Select(x => (byte)x.Id).ToList()); // Fast
 			blackSpellList.Add(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.OneCharacter).Select(x => (byte)x.Id).ToList()); // Tmpr
-			blackSpellList.Add(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Self).Where(s => s.Info.effect <= 15).Select(x => (byte)x.Id).ToList()); // Sabr
+			//blackSpellList.Add(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.Self).Where(s => s.Info.effect <= 18).Select(x => (byte)x.Id).ToList()); // Sabr
 			blackSpellList.Add(new List<byte> { (byte)(rom.Get(FF1Rom.MagicOutOfBattleOffset + FF1Rom.MagicOutOfBattleSize * 10, 1)[0]) }); // Warp
+			// Include LOCK/LOK2 as long as accuracy isn't too low
+			if ((flags.LockMode != LockHitMode.Vanilla) && (flags.LockMode != LockHitMode.Accuracy107)) {
+				blackSpellList.Add(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.Any).Select(x => (byte)x.Id).ToList()); // Lock or Lok2
+			}
 
 			whiteSpellList.Add(spellHelper.FindSpells(SpellRoutine.Life, SpellTargeting.OneCharacter).Select(x => (byte)x.Id).ToList()); // Life
-			whiteSpellList.Add(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Self).Select(x => (byte)x.Id).ToList()); // Ruse
-			whiteSpellList.Add(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any).Where(s => s.Info.effect <= 50).Select(x => (byte)x.Id).ToList()); // Inv2
+			//whiteSpellList.Add(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Self).Select(x => (byte)x.Id).ToList()); // Ruse
+			whiteSpellList.Add(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.AllCharacters).Where(s => s.Info.effect <= 50).Select(x => (byte)x.Id).ToList()); // Inv2
+			whiteSpellList.Add(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.OneCharacter).Where(s => s.Info.effect >= 70 && s.Info.effect <= 140).Select(x => (byte)x.Id).ToList()); //Cur3
+			whiteSpellList.Add(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect >= 24 && s.Info.effect <= 40 && s.Info.Level <= 4).Select(x => (byte)x.Id).ToList()); //Hel2 if Lvl 4 or Less
 			whiteSpellList.Add(new List<byte> { (byte)(rom.Get(FF1Rom.MagicOutOfBattleOffset + FF1Rom.MagicOutOfBattleSize * 12, 1)[0]) }); // Exit
 
 			foreach (var spell in blackSpellList)
@@ -1656,7 +1754,7 @@ namespace FF1Lib
 
 			return spellBlursings;
 		}
-		public List<BonusMalus> CreateSpellMaluses(FF1Rom rom, MT19337 rng)
+		public List<BonusMalus> CreateSpellMaluses(FF1Rom rom, MT19337 rng, Flags flags)
 		{
 
 			List<BonusMalus> spellBlursings = new();
@@ -1664,23 +1762,33 @@ namespace FF1Lib
 			SpellHelper spellHelper = new(rom);
 
 			List<List<byte>> spellList = new();
-			List<List<byte>> whiteSpellList = new();
 
 			spellList.Add(spellHelper.FindSpells(SpellRoutine.Fast, SpellTargeting.Any).Select(x => (byte)x.Id).ToList()); // Fast
 			spellList.Add(spellHelper.FindSpells(SpellRoutine.Sabr, SpellTargeting.OneCharacter).Select(x => (byte)x.Id).ToList()); // Tmpr
 			spellList.Add(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies, SpellElement.None).Where(s => s.Info.effect >= 100).Select(x => (byte)x.Id).ToList()); // Nuke
+			spellList.Add(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).Where(s => s.Info.effect >= 50 && s.Info.elem != SpellElement.None).Select(x => (byte)x.Id).ToList()); // Fir3, Ice3, or Lit3
 			spellList.Add(new List<byte> { (byte)(rom.Get(FF1Rom.MagicOutOfBattleOffset + (FF1Rom.MagicOutOfBattleSize * 10), 1)[0]) }); // Warp
+			// Include LOCK/LOK2 as long as accuracy isn't too low
+			if ((flags.LockMode != LockHitMode.Vanilla) && (flags.LockMode != LockHitMode.Accuracy107))
+			{
+				spellList.Add(spellHelper.FindSpells(SpellRoutine.Lock, SpellTargeting.Any).Select(x => (byte)x.Id).ToList()); // Lock or Lok2
+			}
 
 			spellList.Add(spellHelper.FindSpells(SpellRoutine.Life, SpellTargeting.OneCharacter).Select(x => (byte)x.Id).ToList()); // Life
-			spellList.Add(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Self).Select(x => (byte)x.Id).ToList()); // Ruse
+			spellList.Add(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.AllCharacters).Select(x => (byte)x.Id).ToList()); // Inv2
 			spellList.Add(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies, SpellElement.None).Where(s => s.Info.effect > 70 && s.Info.effect < 100).Select(x => (byte)x.Id).ToList()); // Fade
 			spellList.Add(new List<byte> { (byte)(rom.Get(FF1Rom.MagicOutOfBattleOffset + (FF1Rom.MagicOutOfBattleSize * 12), 1)[0]) }); // Exit
+			spellList.Add(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.OneCharacter).Where(s => s.Info.effect >= 70 && s.Info.effect <= 200).Select(x => (byte)x.Id).ToList()); // Cur3
+			spellList.Add(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect >= 42 && s.Info.effect <= 100).Select(x => (byte)x.Id).ToList()); // Hel3
+			spellList.Add(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any).Where(s => s.Info.status == SpellStatus.Any).Select(x => (byte)x.Id).ToList()); // Wall
+			
 
-			List<byte> spellDark = new();
+
+			/*List<byte> spellDark = new();
 			List<byte> spellLamp = new();
-
 			spellDark.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.AllEnemies, SpellElement.Any, SpellStatus.Dark).Select(x => (byte)x.Id).ToList());
 			spellLamp.AddRange(spellHelper.FindSpells(SpellRoutine.CureAilment, SpellTargeting.Any, SpellElement.Any, SpellStatus.Dark).Select(x => (byte)x.Id).ToList());
+			*/
 
 			foreach (var spell in spellList)
 			{
@@ -1716,7 +1824,7 @@ namespace FF1Lib
 				}
 			}
 
-			if (spellDark.Any())
+			/*if (spellDark.Any())
 			{
 				SpellSlotInfo spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellDark.PickRandom(rng));
 
@@ -1733,7 +1841,7 @@ namespace FF1Lib
 				{
 					spellBlursings.Add(new BonusMalus(BonusMalusAction.StartWithSpell, "+" + rom.ItemsText[(int)spellId.NameId] + " L" + $"{spellId.Level}", spellslotmod: spellId, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage }));
 				}
-			}
+			}*/
 
 			return spellBlursings;
 		}
@@ -1748,8 +1856,33 @@ namespace FF1Lib
 			rom.PutInBank(0x1F, 0xC0AC, Blob.FromHex("2012D828EAEAEAEAEAEAEA"));
 			rom.PutInBank(0x1F, 0xD812, rom.CreateLongJumpTableEntry(0x1B, 0xB080));
 
+			
+			// The labels for the Malus Gold Amounts are processed separately in Randomize -
+			// Change those as well when changing the numbers below
+			int MalusGoldAmount = 150;
+			// No malus available for 0GP start
+			//if (flags.StartingGold == StartingGold.None)
+			if (flags.StartingGold == StartingGold.Gp100) {
+				MalusGoldAmount = 50;
+			}
+			else if (flags.StartingGold == StartingGold.Gp200) {
+				MalusGoldAmount = 100;
+			}
+			else if (flags.StartingGold == StartingGold.Gp400 || flags.StartingGold == StartingGold.RandomLow) {
+				MalusGoldAmount = 150;
+			}
+			else if (flags.StartingGold == StartingGold.Gp800) {
+				MalusGoldAmount = 350;
+			}
+			else if (flags.StartingGold == StartingGold.Gp2500) {
+				MalusGoldAmount = 1100;
+			}
+			else if (flags.StartingGold == StartingGold.Gp9999) {
+				MalusGoldAmount = 4500;
+			}
+
 			// StartWith Initialization Routine
-			rom.PutInBank(0x1B, 0xB300, Blob.FromHex("A9B348A92048A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E484C07FEA000202EB398186940A8D0F660203EB32075B320C7B320F7B3201FB460A98085EDA9B485EEA2002015B0F027AAA900851085118512E000F01718A9C865108510A90065118511A90065128512CA1890E520EADD60A98D85EDA9B485EEA2002000B0D042E8A90085108511851218A96465108510A90065118511A90065128512AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A200A9A785EDA9B485EE2015B048A99A85EDA9B485EE2015B048A90085EDA96385EE98AA65ED85ED68A86891ED8AA860A200A9B485EDA9B485EE2000B0F001609848AAA007E8BD20631869019D20639D286388D0F068A860A200A9C185EDA9B485EE2015B0F006AAA9019D20606000"));
+			rom.PutInBank(0x1B, 0xB300, Blob.FromHex($"A9B348A92048A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E484C07FEA000202EB398186940A8D0F660203EB32075B320C7B320F7B3201FB460A98085EDA9B485EEA2002015B0F027AAA900851085118512E000F01718A96465108510A90065118511A90065128512CA1890E520EADD60A98D85EDA9B485EEA2002000B0D042E8A90085108511851218A9{(MalusGoldAmount % 0x100):X2}65108510A9{((MalusGoldAmount / 0x100) % 0x100):X2}65118511A9{(MalusGoldAmount / 0x10000):X2}65128512AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A200A9A785EDA9B485EE2015B048A99A85EDA9B485EE2015B048A90085EDA96385EE98AA65ED85ED68A86891ED8AA860A200A9B485EDA9B485EE2000B0F001609848AAA007E8BD20631869019D20639D286388D0F068A860A200A9C185EDA9B485EE2015B0F006AAA9019D20606000"));
 
 			// Insert luts
 			Blob lut_IncreaseGP = _classes.Select(x => (byte)(x.StartWithGold != BlursesStartWithGold.Remove ? (byte)x.StartWithGold : 0x00)).ToArray();
