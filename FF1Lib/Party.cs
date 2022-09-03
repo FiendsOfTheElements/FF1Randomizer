@@ -656,7 +656,7 @@ namespace FF1Lib
 
 				SetNpc(MapId.EarthCaveB5, 0x0C, ObjectId.MelmondMan6, earthX, earthY, true, true);
 				SetNpc(MapId.GurguVolcanoB5, 0x02, ObjectId.GaiaMan4, volcanoX, volcanoY, true, true);
-				SetNpc(MapId.SeaShrineB5, 0x01, ObjectId.OnracPunk1, seaY, 0x07, true, true);
+				SetNpc(MapId.SeaShrineB5, 0x01, ObjectId.OnracPunk1, seaX, seaY, true, true);
 				SetNpc(MapId.SkyPalace5F, 0x02, ObjectId.GaiaMan1, (bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x09, 0x03, true, true);
 
 				// Restore the default color if Required WarMech is enabled so Tiamat's NPC don't look too weird
