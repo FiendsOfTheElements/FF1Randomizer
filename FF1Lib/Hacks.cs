@@ -684,6 +684,25 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x81DC, FF1Text.TextToBytes("Don't\nforget\n.."));
 			PutInBank(0x0E, 0x81FC, FF1Text.TextToBytes("Your\ngame\nhasn't\nbeen\nsaved."));
 		}
+
+		public void UnifySpellSystem()
+		{
+			// ConvertOBStatsToIB
+			PutInBank(0x0B, 0x9A41, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+
+			// ConvertIBStatsToOB
+			PutInBank(0x0B, 0x9A88, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+
+			// Magic Shop
+			PutInBank(0x0E, 0xAB25, Blob.FromHex("12"));
+			PutInBank(0x0E, 0xAB5E, Blob.FromHex("12"));
+
+			// Magic Menu
+			PutInBank(0x0E, 0xAEF2, Blob.FromHex("00"));
+
+			// Draw Complex Strings
+			PutInBank(0x1F, 0xDF7C, Blob.FromHex("00"));
+		}
 		public void Spooky(TalkRoutines talkroutines, NPCdata npcdata, MT19337 rng, Flags flags)
 		{
 			const byte FiendsEncounter = 0x77;

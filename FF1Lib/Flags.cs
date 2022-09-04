@@ -624,7 +624,6 @@ namespace FF1Lib
 		public bool? RandomizeClassCasting { get; set; } = false;
 		public bool? RandomizeClassKeyItems { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
-		public bool? RandomizeClassIncludeNaturalResist { get; set; } = false;
 		public bool? RandomizeClassIncludeXpBonus { get; set; } = false;
 		public bool? AlternateFiends { get; set; } = false;
 		public bool? NoBossSkillScriptShuffle { get; set; } = false;
