@@ -1292,7 +1292,7 @@
 		"Id": "enemySkillsSpellsTieredCheckBox",
 		"title": "Generate Balanced Scripts",
 		"screenshot": "enemySkillsSpellsTieredCheckBox.png",
-		"description": "Balances skill shuffles among the enemies so that earlier enemies will only have potential access to earlier skills while later enemies are more likely to get the later, more dangerous, skills."
+		"description": "Balances skill shuffles among the non-boss enemies so that earlier enemies will only have potential access to earlier skills while later enemies are more likely to get the later, more dangerous, skills.\nBalanced enemy spells will be selected from ALL spells, not just the spells normally in the enemy pool."
 	},
 	{
 		"Id": "touchMode",
