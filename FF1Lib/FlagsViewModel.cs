@@ -4174,15 +4174,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassKeyItems"));
 			}
 		}
-		public bool? RandomizeClassIncludeNaturalResist
-		{
-			get => Flags.RandomizeClassIncludeNaturalResist;
-			set
-			{
-				Flags.RandomizeClassIncludeNaturalResist = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassIncludeNaturalResist"));
-			}
-		}
 		public bool? RandomizeClassIncludeXpBonus
 		{
 			get => Flags.RandomizeClassIncludeXpBonus;

@@ -206,6 +206,7 @@ public partial class FF1Rom : NesRom
 		CastableItemTargeting();
 		FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
 		FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
+		UnifySpellSystem();
 		ExpandNormalTeleporters();
 		SeparateUnrunnables();
 		DrawCanoeUnderBridge();
