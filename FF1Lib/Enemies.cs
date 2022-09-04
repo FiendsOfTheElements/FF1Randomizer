@@ -1261,6 +1261,13 @@ namespace FF1Lib
 
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 
+
+			// remove when image handling is fixed
+			alternateFiendsList.Shuffle(rng);
+			await Task.Delay(1);
+
+			// restore when image handling is fixed
+			/*
 			while (true) {
 			    // Shuffle alternate
 			    alternateFiendsList.Shuffle(rng);
@@ -1300,6 +1307,7 @@ namespace FF1Lib
 			    }
 			    break;
 			}
+			*/
 
 			// Replace the 4 fiends and their 2nd version at the same time
 			for (int i = 0; i < 4; i++)
@@ -1329,7 +1337,7 @@ namespace FF1Lib
 				fiendsScript[(i * 2)].spell_list = alternateFiendsList[i].Spells1.ToArray();
 				fiendsScript[(i * 2) + 1].spell_list = alternateFiendsList[i].Spells2.ToArray();
 
-				/*
+				// comment out when image handling is fixed
 				encountersData.formations[fiendsFormationOrder[(i * 2)]].pattern = alternateFiendsList[i].FormationPattern;
 				encountersData.formations[fiendsFormationOrder[(i * 2)]].spriteSheet = alternateFiendsList[i].SpriteSheet;
 				encountersData.formations[fiendsFormationOrder[(i * 2)]].gfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
@@ -1341,7 +1349,7 @@ namespace FF1Lib
 				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].gfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
 				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].palette1 = alternateFiendsList[i].Palette1;
 				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].palette2 = alternateFiendsList[i].Palette2;
-				*/
+				
 			}
 
 			encountersData.Write(this);
