@@ -47,11 +47,13 @@ namespace FF1Lib.Procgen
 		this.matcherFunc = 1;
 	}
 
-	byte CheckRule(byte[,] tilemap, Rule rule, int x, int y) {
+	byte CheckRule(byte[,] tilemap, Rule rule, int x, int y, int xmax, int ymax) {
 	    for (int j = 0; j < 3; j++) {
 		for (int i = 0; i < 3; i++) {
 		    var ruletile = rule.pattern[j,i];
-		    var checktile = tilemap[y+(j-1),x+(i-1)];
+		    int ty = ((y+(j-1))%ymax + ymax) % ymax;
+		    int tx = ((x+(i-1))%xmax + xmax) % xmax;
+		    var checktile = tilemap[ty, tx];
 		    if (!((checktile == ruletile) ||
 			  (ruletile == STAR && starTiles.Contains(checktile)) ||
 			  (ruletile == MATCH && matchTiles.Contains(checktile)) ||
@@ -99,24 +101,19 @@ namespace FF1Lib.Procgen
 	}
 
 	public byte[,] ApplyFilter(byte[,] tilemap, bool repeat) {
-	    byte[,] newtilemap = new byte[OverworldState.MAPSIZE,OverworldState.MAPSIZE];
+	    byte[,] newtilemap = new byte[tilemap.GetLength(0),tilemap.GetLength(1)];
 
 	    bool anyChanged;
 	    do {
 		anyChanged = false;
 
-		for (int y = 0; y < OverworldState.MAPSIZE; y++) {
-		    for (int x = 0; x < OverworldState.MAPSIZE; x++) {
+		for (int y = 0; y < tilemap.GetLength(0); y++) {
+		    for (int x = 0; x < tilemap.GetLength(1); x++) {
 			byte rep = tilemap[y,x];
-
-			if (y == 0 || y == (OverworldState.MAPSIZE-1) || x == 0 || x == (OverworldState.MAPSIZE-1)) {
-			    newtilemap[y,x] = rep;
-			    continue;
-			}
 
 			if (matcherFunc == 0) {
 			    foreach (var r in rules) {
-				byte check = this.CheckRule(tilemap, r, x, y);
+				byte check = this.CheckRule(tilemap, r, x, y, tilemap.GetLength(1), tilemap.GetLength(0));
 				if (check != 0xFF) {
 				    rep = check;
 				    break;

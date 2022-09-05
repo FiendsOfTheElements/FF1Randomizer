@@ -163,6 +163,8 @@ namespace FF1Lib.Procgen
 		    // top edge
 		    var px = cp.X-1+x;
 		    var py = cp.Y-1;
+		    px = ((px%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
+		    py = ((py%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
 		    var pr = regionMap[py, px];
 		    if (! cutout.Adjacent.Contains(pr)) {
 			cutout.Adjacent.Add(pr);
@@ -171,6 +173,8 @@ namespace FF1Lib.Procgen
 		    // right edge
 		    px = cp.X+w;
 		    py = cp.Y-1+y;
+		    px = ((px%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
+		    py = ((py%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
 		    pr = regionMap[py, px];
 		    if (! cutout.Adjacent.Contains(pr)) {
 			cutout.Adjacent.Add(pr);
@@ -179,6 +183,8 @@ namespace FF1Lib.Procgen
 		    // bottom edge
 		    px = cp.X-1+x;
 		    py = cp.Y+h;
+		    px = ((px%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
+		    py = ((py%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
 		    pr = regionMap[py, px];
 		    if (! cutout.Adjacent.Contains(pr)) {
 			cutout.Adjacent.Add(pr);
@@ -187,6 +193,8 @@ namespace FF1Lib.Procgen
 		    // left edge
 		    px = cp.X-1;
 		    py = cp.Y-1+y;
+		    px = ((px%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
+		    py = ((py%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
 		    pr = regionMap[py, px];
 		    if (! cutout.Adjacent.Contains(pr)) {
 			cutout.Adjacent.Add(pr);
@@ -1930,7 +1938,7 @@ namespace FF1Lib.Procgen
 	    }
 
 	    if (compressedSize > OverworldMap.MaximumMapDataSize) {
-		throw new Exception($"Generated map is too large to fit in the ROM by {compressedSize - OverworldMap.MaximumMapDataSize} bytes, try a different seed.");
+		throw new FailedToGenerate($"Generated map is too large to fit in the ROM by {compressedSize - OverworldMap.MaximumMapDataSize} bytes, try a different seed.");
 	    }
 
 	    ExchangeData.DecompressedMapRows = tiles;
