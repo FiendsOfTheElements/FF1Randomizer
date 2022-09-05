@@ -757,7 +757,7 @@ namespace FF1Lib
 			{
 				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorRemove, "-" + olditemnames[(int)Item.ProRing], equipment: new List<Item> { Item.ProRing }));
 				bonusStrong.Add(new BonusMalus(BonusMalusAction.SteelLord, "Steel@A\n Cast Fast", Classes: new List<Classes> { Classes.Fighter }));
-				bonusNormal.Add(new BonusMalus(BonusMalusAction.WoodAdept, "Wooden @A@s@h\n Add Evade"));
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.WoodAdept, "Wood@A@s@h Set\n Add Evade"));
 			}
 
 			if (Rng.Between(rng, 0, 10) == 0)

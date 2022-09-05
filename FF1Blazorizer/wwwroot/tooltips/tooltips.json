@@ -1527,10 +1527,10 @@
 		"description": "Instead of simply applying \"basic\" blessings and curses to classes, Chaos Mode shuffles all the stats, spellcasting abilities, and equipment permissions between all the classes, making for very different classes from the vanilla game. Only for experienced players that are comfortable with Blursed Classes in general."
 	},
 	{
-		"Id": "RandomizeClassIncludeNaturalResistCheckBox",
-		"title": "Blursed Classes - Natural Resists",
-		"screenshot": "randomizeClassIncludeNaturalResistCheckBox.gif",
-		"description": "Adds a set of bonuses that can give classes natural resistances to spell types. S = Status, P = Poison, T = Time, D = Death, F = Fire, I = Ice, L = Lightning, E = Earth."
+		"Id": "RandomizeClassInnateMagicCheckBox",
+		"title": "Blursed Classes - Innage Magic",
+		"screenshot": "RandomizeClassInnateMagicCheckBox.png",
+		"description": "Adds a set of bonuses that give a set of starting spells at the level 8 slots, regardless of their actual spell level. Also gives 2 MPs of that level to be able to cast them."
 	},
 	{
 		"Id": "RandomizeClassIncludeXpBonuxCheckBox",
