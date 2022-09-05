@@ -5320,6 +5320,25 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? ShuffleChimeAccess
+		{
+		    get => Flags.ShuffleChimeAccess;
+			set
+			{
+				Flags.ShuffleChimeAccess = value;
+				RaisePropertyChanged();
+			}
+		}
+		public bool? ShuffleChimeIncludeTowns
+		{
+		    get => Flags.ShuffleChimeIncludeTowns;
+			set
+			{
+				Flags.ShuffleChimeIncludeTowns = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public string PlayerName
 		{
 			get => Preferences.PlayerName;
