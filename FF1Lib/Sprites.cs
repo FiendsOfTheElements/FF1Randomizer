@@ -70,7 +70,7 @@ namespace FF1Lib
 		var tile = new byte[64];
 
 		for (int i = 0; i < 64; i++) {
-		    var row = (i >> 3) & 0x07;
+		    var row = (i >> 3) & 0x07; // doh
 		    var col = 7 - (i & 0x07);
 		    var bit0 = (ppuformat[row] & (1 << col)) >> col;    // read bit0 from the first plane
 		    var bit1 = (ppuformat[row+8] & (1 << col)) >> col;  // read bit1 from the second plane
