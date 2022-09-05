@@ -1,16 +1,27 @@
-﻿global using System;
-global using System.Collections.Generic;
-global using System.IO;
-global using System.Linq;
-global using System.Threading.Tasks;
-global using FF1Lib;
-global using RomUtilities;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
+using FF1Lib;
+using FF1Lib.Procgen;
+using RomUtilities;
 
-using Sandbox;
+namespace Sandbox
+{
+    class Program
+    {
+	    // private static FF1Rom rom;
 
-//var filename = "ff1.nes";
-//var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+        static async Task Main(string[] args)
+        {
+			//var filename = "ff1.nes";
+			//var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
 
-//rom = new FF1Rom(fs);
+			//rom = new FF1Rom(fs);
 
-await Performance.Run();
+			await Performance.Run();
+        }
+	}
+}

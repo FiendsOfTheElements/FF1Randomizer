@@ -1,4 +1,11 @@
-﻿namespace FF1Lib
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using RomUtilities;
+using FF1Lib.Helpers;
+using System.Linq;
+
+namespace FF1Lib
 {
 	public class GearPermissions
 	{

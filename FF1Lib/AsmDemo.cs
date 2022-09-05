@@ -1,4 +1,6 @@
 ﻿using FF1Lib.Assembly;
+using System;
+using System.Diagnostics;
 
 namespace FF1Lib
 {

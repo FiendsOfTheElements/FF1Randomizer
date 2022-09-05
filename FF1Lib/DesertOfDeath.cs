@@ -1,4 +1,11 @@
-﻿namespace FF1Lib
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
+using RomUtilities;
+
+namespace FF1Lib
 {
 	public partial class FF1Rom
 	{

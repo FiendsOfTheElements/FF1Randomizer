@@ -1,4 +1,9 @@
-﻿namespace FF1Lib
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+
+namespace FF1Lib
 {
 	public class TeleportShuffle
 	{

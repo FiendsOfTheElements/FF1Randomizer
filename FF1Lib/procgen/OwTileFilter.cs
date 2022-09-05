@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using FF1Lib.Sanity;
 
 namespace FF1Lib.Procgen
 {
-	public class Rule {
+    public class Rule {
 	public Rule(byte[,] pattern, byte replacement) {
 	    this.pattern = pattern;
 	    this.replacement = replacement;

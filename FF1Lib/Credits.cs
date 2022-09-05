@@ -1,3 +1,7 @@
+using RomUtilities;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom

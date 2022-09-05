@@ -1,4 +1,9 @@
 ﻿using System.ComponentModel;
+using System.Collections.Generic;
+using RomUtilities;
+using System;
+using System.Linq;
+using FF1Lib.Helpers;
 
 namespace FF1Lib
 {
@@ -243,7 +248,7 @@ namespace FF1Lib
 
 			int levelUpTargetA = (bool)flags.RandomizeClass ? 0xB5 : 0x87;
 			int levelUpTargetB = (bool)flags.RandomizeClass ? 0xFF : 0xA9;
-			
+
 			// New routine to level up replaced character and zero some stuff, needs new level up stuff in bank 1B
 			PutInBank(0x0E, 0x9D34, Blob.FromHex($"A99D48A94B48A9{levelUpTargetA:X2}48A9{levelUpTargetB:X2}488A182A2A2A8510A91B4C03FEA9008D24008D25008D012060"));
 

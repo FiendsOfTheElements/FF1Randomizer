@@ -1,4 +1,8 @@
-﻿using System.ComponentModel;
+﻿using RomUtilities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Text;
 
 namespace FF1Lib
 {

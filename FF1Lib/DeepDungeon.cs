@@ -1,4 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using RomUtilities;
+using FF1Lib.Sanity;
 using static FF1Lib.FF1Rom;
 using static System.Math;
 

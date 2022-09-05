@@ -1,4 +1,8 @@
-﻿namespace FF1Lib.Procgen
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace FF1Lib.Procgen
 {
 	enum BrushPart
 	{

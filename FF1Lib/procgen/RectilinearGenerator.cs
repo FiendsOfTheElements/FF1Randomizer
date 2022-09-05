@@ -1,4 +1,8 @@
 ﻿using FF1Lib.Procgen;
+using RomUtilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FF1Lib.procgen
 {

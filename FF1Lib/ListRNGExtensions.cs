@@ -1,8 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using RomUtilities;
 
 namespace FF1Lib
 {
-	public static class ListRNGExtensions
+    public static class ListRNGExtensions
     {
         [DebuggerStepThrough]
         public static T PickRandom<T>(this IList<T> fromList, MT19337 rng)

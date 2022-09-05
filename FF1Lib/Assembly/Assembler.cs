@@ -1,4 +1,7 @@
-﻿using Patcher6502;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Patcher6502;
 
 namespace FF1Lib.Assembly
 {

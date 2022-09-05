@@ -1,4 +1,7 @@
-﻿namespace FF1Lib
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+namespace FF1Lib
 {
 	public static class ItemLists
 	{

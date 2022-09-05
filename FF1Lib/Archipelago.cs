@@ -1,7 +1,13 @@
 ﻿using FF1Lib.Sanity;
 using Newtonsoft.Json;
+using RomUtilities;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FF1Lib
 {

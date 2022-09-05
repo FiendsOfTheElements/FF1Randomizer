@@ -1,4 +1,10 @@
-﻿namespace FF1Lib
+﻿using RomUtilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.ComponentModel;
+
+namespace FF1Lib
 {
 	public enum spellDataBytes
 	{

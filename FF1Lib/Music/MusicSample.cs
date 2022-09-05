@@ -1,4 +1,10 @@
-﻿using FF1Lib.Music;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using FF1Lib.Music;
+using RomUtilities;
 
 namespace FF1Lib
 {

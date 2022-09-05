@@ -1,5 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.IO;
 using static FF1Lib.FF1Rom;
 
 namespace FF1Lib

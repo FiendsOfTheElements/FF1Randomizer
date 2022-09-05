@@ -1,6 +1,12 @@
-﻿namespace FF1Lib
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using RomUtilities;
+
+namespace FF1Lib
 {
-	public partial class FF1Rom
+    public partial class FF1Rom
     {
 	    public const int ItemTextPointerOffset = 0x2B700;
 	    public const int ItemTextPointerCount = 256;

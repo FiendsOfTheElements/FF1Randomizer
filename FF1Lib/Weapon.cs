@@ -1,4 +1,10 @@
-﻿using FF1Lib.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Linq;
+using RomUtilities;
+using FF1Lib;
+using FF1Lib.Helpers;
 
 namespace FF1Lib
 {

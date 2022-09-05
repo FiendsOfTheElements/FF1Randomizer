@@ -1,6 +1,14 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using System.Numerics;
 using System.Reflection;
+using System.Text;
+using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Schema;
+using RomUtilities;
 using System.IO.Compression;
 using static FF1Lib.FF1Rom;
 

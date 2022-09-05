@@ -1,4 +1,11 @@
-﻿using System.ComponentModel;
+﻿using FF1Lib;
+using RomUtilities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FF1Lib
 {

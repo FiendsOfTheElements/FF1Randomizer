@@ -1,4 +1,13 @@
-﻿namespace FF1Lib
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using RomUtilities;
+
+namespace FF1Lib
 {
 	// ReSharper disable once InconsistentNaming
 	public static class FF1Text

@@ -1,4 +1,9 @@
-﻿namespace FF1Lib.Procgen
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using RomUtilities;
+
+namespace FF1Lib.Procgen
 {
 	public class Maze
 	{

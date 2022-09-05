@@ -1,4 +1,12 @@
-﻿namespace FF1Lib.Helpers
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static FF1Lib.FF1Rom;
+using FF1Lib;
+
+namespace FF1Lib.Helpers
 {
 
 	public class SpellHelper

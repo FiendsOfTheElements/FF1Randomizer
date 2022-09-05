@@ -1,4 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using RomUtilities;
 using static System.Math;
 using FF1Lib.Helpers;
 

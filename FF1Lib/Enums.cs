@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 namespace FF1Lib
 {
 	public enum MapIndex : byte
