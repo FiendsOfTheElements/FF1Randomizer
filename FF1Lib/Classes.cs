@@ -2072,7 +2072,7 @@ namespace FF1Lib
 			Blob lut_InnateSpells03 = _classes.Select(x => (byte)(x.InnateSpells[2].Level > 0 ? x.InnateSpells[2].BattleId + 1 : 0x00)).ToArray();
 			Blob lut_StartSpellsSpell = _classes.Select(x => (byte)x.StartingSpell.MenuId).ToArray();
 			Blob lut_MpStart = _classes.Select(x => (byte)(x.StartWithMp ? 0x01 : 0x00)).ToArray();
-			Blob lut_StartingKeyItems = _classes.Select(x => x.StartingKeyItem == Item.Canoe ? (byte)0x12 : (byte)(x.StartingKeyItem + 0x20)).ToArray();
+			Blob lut_StartingKeyItems = _classes.Select(x => x.StartingKeyItem == Item.Canoe ? (byte)0x12 : (x.StartingKeyItem == Item.None ? (byte)0x00 : (byte)(x.StartingKeyItem + 0x20))).ToArray();
 
 			rom.PutInBank(0x1B, 0xB480, lut_IncreaseGP + new byte[] { 0x00 } +
 				lut_DecreaseGP + new byte[] { 0x00 } +
