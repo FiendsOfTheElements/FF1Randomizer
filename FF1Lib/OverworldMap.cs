@@ -1719,7 +1719,6 @@ namespace FF1Lib
 		for (int i = 0; i < tileset.TileProperties.Count; i++) {
 		    var tp = tileset.TileProperties[i];
 		    if ((tp.TilePropFunc & TilePropFunc.OWTP_SPEC_MASK) == TilePropFunc.OWTP_SPEC_CHIME) {
-			Console.WriteLine($"Removing from {i}");
 			tp.TilePropFunc &= ~TilePropFunc.OWTP_SPEC_CHIME;
 			tileset.TileProperties[i] = tp;
 		    }
@@ -1728,7 +1727,6 @@ namespace FF1Lib
 		var chime = candidates.SpliceRandom(rng);
 
 		foreach (var i in chime) {
-		    Console.WriteLine($"Adding to {i}");
 		    var tp = tileset.TileProperties[i];
 		    tp.TilePropFunc |= TilePropFunc.OWTP_SPEC_CHIME;
 		    tileset.TileProperties[i] = tp;
