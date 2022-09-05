@@ -1253,7 +1253,7 @@ public partial class FF1Rom : NesRom
 
 		if (flags.InventoryAutosort && !(preferences.RenounceAutosort))
 		{
-			EnableInventoryAutosort();
+			EnableInventoryAutosort(flags.NoOverworld);
 		}
 
 		if (flags.ResourcePack != null)

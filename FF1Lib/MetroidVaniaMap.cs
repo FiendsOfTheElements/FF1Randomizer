@@ -858,6 +858,7 @@
 			MoveNpc(MapId.Onrac, 0x09, 0x11, 0x23, false, false);
 
 			ItemsText[(int)Item.Floater] = "SIGIL  ";
+			ItemsText[(int)Item.EarthOrb] = "MARK   ";
 
 			Put(0x2B5F4, FF1Text.TextToBytes("MARK", useDTE: false));
 
