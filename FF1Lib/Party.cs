@@ -65,10 +65,11 @@ namespace FF1Lib
 				{
 					forcedclass = options.PickRandom(rng);
 				}
+				// No available classes from flags - choose an unpromoted class at random
 				else
 				{
 					forcedclass = (FF1Class)(Enum.GetValues(typeof(FF1Class))).
-						GetValue(rng.Between(0, slotNumber == 1 ? 11 : 12));
+						GetValue(rng.Between(0, 5));
 				}
 				options.Clear();
 				options.Add(forcedclass);
