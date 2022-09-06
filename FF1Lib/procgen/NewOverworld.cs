@@ -238,7 +238,7 @@ namespace FF1Lib.Procgen
     // This is the class that does most of the work.  It holds the
     // state of the map generation up to this point, and defines all
     // the methods that apply transformations to the map.
-    public partial class OverworldState : FF1Lib.Procgen.ProcgenState<OwResult, OwGenerationStep, ProgenFramework.GenerationTaskType<FF1Lib.Procgen.OwResult>> {
+    public partial class OverworldState : ProcgenState<OwResult, OwGenerationStep, ProgenFramework.GenerationTaskType<OwResult>> {
         public const int MAPSIZE = 256;
         float[,] Basemap;
         public byte[,] Tilemap;

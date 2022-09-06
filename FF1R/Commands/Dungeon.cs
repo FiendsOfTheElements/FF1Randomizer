@@ -130,4 +130,59 @@ namespace FF1R.Commands
 	    return 0;
 	}
     }
+
+    [Command("createdungeon", Description = "Createdungeon")]
+    class CreateDungeon
+    {
+	[Argument(0, Description = "Final Fantasy Randomized ROM")]
+	[FileExists]
+	public string RomPath { get; }
+
+	[Argument(1, Description = "Map to dump")]
+	public int Map { get; } = 0;
+
+	[Option("-a")]
+	public bool All { get; } = false;
+
+	[Option("-s")]
+	public int Seed { get; } = 0;
+
+	async Task Progress(string message="", int addMax=0) {
+	    await Task.Yield();
+	}
+
+	int OnExecute(IConsole console)
+	{
+	    var rom = new FF1Rom(RomPath);
+	    rom.LoadSharedDataTables();
+
+	    var maps = rom.ReadMaps();
+
+	    int start = Map;
+	    int end = Map;
+
+	    if (All) {
+		start = 0;
+		end = 60;
+	    }
+
+	    var rng = new MT19337((uint)Seed);
+
+	    for (int i = start; i <= end; i++) {
+		Image<Rgba32> output;
+		string name;
+
+		var replacementMap = Task.Run<FF1Lib.Procgen.CompleteMap>(async () => await FF1Lib.Procgen.NewDungeon.GenerateNewMap(rng, (FF1Lib.MapId)i, maps, this.Progress)).Result;
+		maps[i] = replacementMap.Map;
+
+		output = rom.RenderMap(maps, (FF1Lib.MapId)i, true);
+		name = $"dungeonmap{i}.png";
+		output.Save(name);
+		Console.WriteLine($"Wrote {name}");
+	    }
+
+	    return 0;
+	}
+    }
+
 }
