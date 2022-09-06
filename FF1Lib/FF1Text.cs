@@ -168,7 +168,25 @@
 			// this is a duplicate { "..", 0xC3 },
 			{ "!", 0xC4 },
 			{ "?", 0xC5 },
-			{ "@S", 0xD4 }, // swords
+
+			{ "∞R", 0xC6 }, // recovery magic
+			{ "∞c", 0xC7 }, // health (cure) magic
+			{ "∞a", 0xC8 }, // ailment magic
+			{ "∞l", 0xC9 }, // life magic
+			{ "∞h", 0xCA }, // holy magic
+			{ "∞s", 0xCB }, // space magic
+			{ "∞t", 0xCC }, // tele magic
+			{ "∞U", 0xCD }, // buff magic
+
+			// Everything below here are icons (almost)
+			{ "@U", 0xCE }, // unarmed
+			{ "@R", 0xCF }, // rod
+			{ "@c", 0xD0 }, // scimitar
+			{ "@f", 0xD1 }, // falchion
+			{ "@r", 0xD2 }, // rapier
+			{ "@w", 0xD3 }, // shortsword
+
+			{ "@S", 0xD4 }, // swords (long)
 			{ "@H", 0xD5 }, // hammers
 			{ "@K", 0xD6 }, // knives
 			{ "@X", 0xD7 }, // axes
@@ -181,23 +199,30 @@
 			{ "@B", 0xDE }, // bracelets
 			{ "@T", 0xDF }, // shirts
 			{ "%", 0xE0 },
-			{ "@p", 0xE1 },
-			{ "€s", 0xE2 },
-			{ "€p", 0xE3 },
-			{ "€T", 0xE4 },
-			{ "€d", 0xE5 },
-			{ "€f", 0xE6 },
-			{ "€i", 0xE7 },
-			{ "€t", 0xE8 },
-			{ "€e", 0xE9 },
-			{ "§d", 0xEA },
-			{ "§s", 0xEB },
-			{ "§p", 0xEC },
-			{ "§b", 0xED },
-			{ "§P", 0xEE },
-			{ "§Z", 0xEF },
-			{ "§M", 0xF0 },
-			{ "§C", 0xF1 },
+			{ "@p", 0xE1 }, // potion
+			{ "€s", 0xE2 }, // status
+			{ "€p", 0xE3 }, // poison
+			{ "€T", 0xE4 }, // time
+			{ "€d", 0xE5 }, // death
+			{ "€f", 0xE6 }, // fire
+			{ "€i", 0xE7 }, // ice
+			{ "€t", 0xE8 }, // lightning
+			{ "€e", 0xE9 }, // earth
+			{ "§d", 0xEA }, // dead
+			{ "§s", 0xEB },	// stone
+			{ "§p", 0xEC }, // poison
+			{ "§b", 0xED }, // blind
+			{ "§P", 0xEE }, // stun
+			{ "§Z", 0xEF }, // sleep
+			{ "§M", 0xF0 }, // mute
+			{ "§C", 0xF1 }, // confuse
+
+			{ "∞A", 0xF2 }, // all magic
+			{ "∞W", 0xF3 }, // white magic
+			{ "∞G", 0xF4 }, // grey magic
+			{ "∞B", 0xF5 }, // black magic
+			//{ "∞S", 0xFE }, // self magic
+
 			{ " ", 0xFF }
 		};
 

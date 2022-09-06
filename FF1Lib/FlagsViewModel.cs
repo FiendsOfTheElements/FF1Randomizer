@@ -4156,6 +4156,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassChaos"));
 			}
 		}
+		public bool? Transmooglifier
+		{
+			get => Flags.Transmooglifier;
+			set
+			{
+				Flags.Transmooglifier = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Transmooglifier"));
+			}
+		}
 		public bool? RandomizeClassCasting
 		{
 			get => Flags.RandomizeClassCasting;

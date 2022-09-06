@@ -1524,7 +1524,13 @@
 		"Id": "RandomizeClassChaosCheckBox",
 		"title": "Chaos Mode",
 		"screenshot": "RandomizeClassChaosCheckBox.png",
-		"description": "Instead of simply applying \"basic\" blessings and curses to classes, Chaos Mode shuffles all the stats, spellcasting abilities, and equipment permissions between all the classes, making for very different classes from the vanilla game. Only for experienced players that are comfortable with Blursed Classes in general."
+		"description": "Chaos Mode shuffles all the stats, spellcasting abilities, and equipment permissions between all the classes, making for classes with very different abilities from the vanilla game. Only for experienced players."
+	},
+	{
+		"Id": "TransmooglifierCheckBox",
+		"title": "Transmooglifier",
+		"screenshot": "RandomizeClassChaosCheckBox.png",
+		"description": "Procedurally generates custom classes from a set of 26. Each class corresponds to heuristically randomized spell permissions, stats, equipment sets, and abilities. These classes take the slots of the original classes, so other options that refer to Fighter will instead change slot 1's class. This also disables some slot specific balance options."
 	},
 	{
 		"Id": "RandomizeClassIncludeNaturalResistCheckBox",
