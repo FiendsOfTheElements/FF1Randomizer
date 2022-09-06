@@ -11,7 +11,7 @@ namespace FF1Lib.Procgen
 	public byte replacement;
     }
 
-    public class OwTileFilter {
+    public class PgTileFilter {
 	const byte STAR = 0x80;
 	const byte MATCH = 0x81;
 	const byte CAVE = 0x82;
@@ -26,7 +26,7 @@ namespace FF1Lib.Procgen
 	Dictionary<byte, int> regionTypeMap;
 	byte[][] regionTypeList;
 
-	public OwTileFilter(Rule[] rules,
+	public PgTileFilter(Rule[] rules,
 		     HashSet<byte> starTiles,
 		     HashSet<byte> matchTiles,
 		     HashSet<byte> caveTiles) {
@@ -37,7 +37,7 @@ namespace FF1Lib.Procgen
 		this.matcherFunc = 0;
 	}
 
-		public OwTileFilter(byte[][] regionTypeList, Dictionary<byte, int> regionTypeMap) {
+		public PgTileFilter(byte[][] regionTypeList, Dictionary<byte, int> regionTypeMap) {
 	    this.rules = null;
 	    this.starTiles = null;
 	    this.matchTiles = null;
