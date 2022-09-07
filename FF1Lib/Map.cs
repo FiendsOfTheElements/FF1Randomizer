@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using FF1Lib.Sanity;
 
 namespace FF1Lib
 {
@@ -193,9 +194,16 @@ namespace FF1Lib
 		}
 		public void Fill((int x, int y) coord, (int w, int h) size, byte fill)
 		{
-			for (int i = coord.x; i < coord.x + size.w; ++ i)
+		    int x = coord.x;
+		    int y = coord.y;
+		    int w = size.w;
+		    int h = size.h;
+		    if (h < 0) { y += h; h = -h; }
+		    if (w < 0) { x += w; w = -w; }
+
+			for (int i = x; i < x + w; ++ i)
 			{
-				for (int j = coord.y; j < coord.y + size.h; ++j)
+				for (int j = y; j < y + h; ++j)
 				{
 					this[j, i] = fill;
 				}

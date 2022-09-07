@@ -63,24 +63,34 @@ namespace FF1Lib.Procgen
 
 	    List<MapGenerationStep> mapGenSteps = null;
 
-	    switch (mapId) {
-		case MapId.Coneria:
-		    mapGenSteps = new () {
-			new MapGenerationStep("WipeMap", new object[] { (byte)0x10 }),
-			new MapGenerationStep("PlaceShop", new object[] { }),
-		    };
-		    break;
-		default:
-		    break;
+	    while (true) {
+		switch (mapId) {
+		    case MapId.Coneria:
+			mapGenSteps = new () {
+			    new MapGenerationStep("WipeMap", new object[] { (byte)0x10 }),
+			    new MapGenerationStep("PlaceShop", new object[] { }),
+			};
+			break;
+		    case MapId.EarthCaveB1:
+			mapGenSteps = new () {
+			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
+			    new MapGenerationStep("EarthB1Style", new object[] { }),
+			    new MapGenerationStep("PlaceTreasureRoom", new object[] { }),
+			};
+			break;
+		    default:
+			return new CompleteMap { Map = maps[(int)mapId] };
+		}
+
+		if (mapGenSteps != null) {
+		    var blankState = new MapState(rng, mapGenSteps, progress);
+		    var worldState = await ProgenFramework.RunSteps<MapState, MapResult, MapGenerationStep>(blankState, progress);
+		    if (worldState != null) {
+			return new CompleteMap { Map = worldState.Tilemap };
+		    }
+		}
 	    }
 
-	    if (mapGenSteps != null) {
-		var blankState = new MapState(rng, mapGenSteps, progress);
-		var worldState = await ProgenFramework.RunSteps<MapState, MapResult, MapGenerationStep>(blankState, progress);
-		return new CompleteMap { Map = worldState.Tilemap };
-	    }
-
-	    return new CompleteMap { Map = maps[(int)mapId] };
 	}
     }
 
