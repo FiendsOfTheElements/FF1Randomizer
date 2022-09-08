@@ -12,15 +12,18 @@ namespace FF1Lib.Procgen
         public const int MAPSIZE = 64;
 	private bool ownTilemap;
         public Map Tilemap;
+	public DungeonTiles dt;
 
-        public MapState(MT19337 rng, List<MapGenerationStep> steps, FF1Rom.ReportProgress progress) : base(rng, steps, progress) {
+        public MapState(MT19337 rng, List<MapGenerationStep> steps, DungeonTiles dt, FF1Rom.ReportProgress progress) : base(rng, steps, progress) {
             this.ownTilemap = true;
 	    this.Tilemap = new Map(0);
+	    this.dt = dt;
 	}
 
         public MapState(MapState copy) : base(copy) {
             this.ownTilemap = false;
 	    this.Tilemap = copy.Tilemap;
+	    this.dt = copy.dt;
 	}
 
         void OwnTilemap() {
@@ -41,6 +44,14 @@ namespace FF1Lib.Procgen
 		}
 	    }
 	}
+
+	// Apply a 3x3 filter over the entire map.
+        public Task<MapResult> ApplyFilter(PgTileFilter filter, bool repeat) {
+            this.OwnTilemap();
+            this.Tilemap.MapBytes = filter.ApplyFilter(this.Tilemap.MapBytes, repeat);
+            return this.NextStep();
+        }
+
     }
 
     public class MapGenerationStep : GenerationStep<ProcgenState<MapResult, MapGenerationStep, ProgenFramework.GenerationTaskType<MapResult>>, MapResult> {
@@ -63,6 +74,8 @@ namespace FF1Lib.Procgen
 
 	    List<MapGenerationStep> mapGenSteps = null;
 
+	    var dt = new DungeonTiles();
+
 	    while (true) {
 		switch (mapId) {
 		    case MapId.Coneria:
@@ -79,6 +92,7 @@ namespace FF1Lib.Procgen
 			    new MapGenerationStep("PlaceTreasureRoom", new object[] { }),
 			    new MapGenerationStep("PlaceTreasureRoom", new object[] { }),
 			    new MapGenerationStep("PlaceTreasureRoom", new object[] { }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_rock_walls, false }),
 			};
 			break;
 		    default:
@@ -86,7 +100,7 @@ namespace FF1Lib.Procgen
 		}
 
 		if (mapGenSteps != null) {
-		    var blankState = new MapState(rng, mapGenSteps, progress);
+		    var blankState = new MapState(rng, mapGenSteps, dt, progress);
 		    var worldState = await ProgenFramework.RunSteps<MapState, MapResult, MapGenerationStep>(blankState, progress);
 		    if (worldState != null) {
 			return new CompleteMap { Map = worldState.Tilemap };

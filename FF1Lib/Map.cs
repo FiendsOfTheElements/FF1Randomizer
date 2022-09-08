@@ -8,7 +8,7 @@ namespace FF1Lib
 		public const int RowLength = 64;
 		public const int RowCount = 64;
 
-		private readonly byte[,] _map;
+		private byte[,] _map;
 
 		public byte this[int y, int x]
 		{
@@ -72,6 +72,11 @@ namespace FF1Lib
 					_map[y, x] = fill;
 				}
 			}
+		}
+
+		public byte[,] MapBytes {
+		    get { return this._map; }
+		    set { this._map = value; }
 		}
 
 		public void SwapSections(int xs1, int ys1, int xs2, int ys2, int xt, int yt)
@@ -240,6 +245,8 @@ namespace FF1Lib
 			}
 			return section;
 		}
+
+
 
 		public bool Filter(Dictionary<byte[,], byte[,]> filter, (int x, int y) filterSize)
 		{

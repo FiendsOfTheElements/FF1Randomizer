@@ -55,7 +55,7 @@ namespace FF1Lib.Procgen
 	}
     }
 
-    public class ProcgenState<ResultType, GenStepType, GenerationTaskType>
+    public abstract class ProcgenState<ResultType, GenStepType, GenerationTaskType>
 	where ResultType : Result<ProcgenState<ResultType, GenStepType, GenerationTaskType>, GenStepType, GenerationTaskType>, new()
 	where GenStepType : GenerationStep<ProcgenState<ResultType, GenStepType, GenerationTaskType>, ResultType>
     {
@@ -89,7 +89,7 @@ namespace FF1Lib.Procgen
         }
     }
 
-    public class Result<StateT, GenStepType, GenerationTaskType> {
+    public abstract class Result<StateT, GenStepType, GenerationTaskType> {
         public StateT final;
         public List<GenerationTaskType> additionalTasks;
 
@@ -118,7 +118,7 @@ namespace FF1Lib.Procgen
         }
     }
 
-    public class GenerationStep<StateT, ResultType> {
+    public abstract class GenerationStep<StateT, ResultType> {
         public MethodInfo method;
         object[] parameters;
 	public string message;
