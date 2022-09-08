@@ -107,7 +107,7 @@ namespace FF1Lib.Procgen
 	    {
 		for (int j = y; j < y + h && clear; ++j)
 		{
-		    if (this.Tilemap[j, i] == clearTile) {
+		    if (this.Tilemap[j, i] != clearTile) {
 			clear = false;
 			break;
 		    }
@@ -128,7 +128,8 @@ namespace FF1Lib.Procgen
 	    return pts;
 	}
 
-	public List<SCCoords> AddRoom(List<SCCoords> candidates, Direction direction, (int n, int x) major, (int n, int x) minor, bool endOnly) {
+	public List<SCCoords> AddRoom(List<SCCoords> candidates, Direction direction, (int n, int x) major, (int n, int x) minor,
+				      byte emptyTile, byte roomTile, bool endOnly) {
 	    candidates.Shuffle(this.rng);
 
 	    var majN = this.rng.Between(major.n, major.x);
@@ -171,11 +172,12 @@ namespace FF1Lib.Procgen
 		}
 
 
-		if (!this.CheckClear(x, y, w, h, DungeonTiles.CAVE_FLOOR)) {
+		if (!this.CheckClear(x, y, w, h, emptyTile)) {
 		    continue;
 		}
 
-		this.Tilemap.Fill((x,y), (w, h), DungeonTiles.CAVE_FLOOR);
+		this.OwnTilemap();
+		this.Tilemap.Fill((x,y), (w, h), roomTile);
 
 		var pts = InnerEdge(new SCCoords(x, y), w, h);
 
@@ -186,16 +188,16 @@ namespace FF1Lib.Procgen
 		List<SCCoords> end = null;
 		switch (direction) {
 		    case Direction.Up:
-			end = pts.Where((p) => p.Y < y+(h/2)).ToList();
+			end = pts.Where((p) => p.Y < y+(h-3)).ToList();
 			break;
 		    case Direction.Right:
-			end = pts.Where((p) => p.X > x+(w/2)).ToList();
+			end = pts.Where((p) => p.X > x+(w-3)).ToList();
 			break;
 		    case Direction.Down:
-			end = pts.Where((p) => p.Y > y+(h/2)).ToList();
+			end = pts.Where((p) => p.Y > y+(h-3)).ToList();
 			break;
 		    case Direction.Left:
-			end = pts.Where((p) => p.X < x+(w/2)).ToList();
+			end = pts.Where((p) => p.X < x+(w-3)).ToList();
 			break;
 		}
 		return end;
@@ -204,8 +206,8 @@ namespace FF1Lib.Procgen
 	}
 
 	public async Task<MapResult> EarthB1Style() {
-	    this.OwnTilemap();
-	    var start = this.AddRoom(new List<SCCoords> { new SCCoords(30, 30) }, Direction.Down, (9, 9), (9, 9), false);
+	    var start = this.AddRoom(new List<SCCoords> { new SCCoords(30, 25) }, Direction.Down, (9, 9), (9, 9),
+				     DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR, false);
 
 	    var ls = new List<List<SCCoords>>();
 	    ls.Add(start);
@@ -225,7 +227,8 @@ namespace FF1Lib.Procgen
 
 	    for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < ld.Count; j++) {
-		    var ret = this.AddRoom(ls[j], ld[j], (4, 12), (2, 3), true);
+		    var ret = this.AddRoom(ls[j], ld[j], (4, 12), (2, 3),
+					   DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR, true);
 		    if (ret != null) { ls[j] = ret; }
 
 		    Direction dir;
@@ -239,7 +242,8 @@ namespace FF1Lib.Procgen
 	    int treasureRooms = 0;
 	    for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < ld.Count; j++) {
-		    var ret = this.AddRoom(ls[j], ld[j], (8, 12), (8, 12), false);
+		    var ret = this.AddRoom(ls[j], ld[j], (8, 12), (8, 12),
+					   DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR, false);
 		    if (ret != null) {
 			ls[j].Clear();
 			treasureRooms++;
@@ -263,10 +267,34 @@ namespace FF1Lib.Procgen
 
 	public async Task<MapResult> PlaceTreasureRoom() {
 	    var cand = this.Candidates(DungeonTiles.CAVE_FLOOR);
-	    cand.Shuffle(this.rng);
 
-	    this.Tilemap[cand[0].Y, cand[0].X] = 0;
 
+	    List<SCCoords> border = null;
+	    for (int i = 0; i < 6 && border == null; i++) {
+		border = AddRoom(cand, Direction.Down, (8, 12), (8, 12), DungeonTiles.CAVE_FLOOR, DungeonTiles.CAVE_ROOM_FLOOR, false);
+	    }
+
+	    if (border == null) {
+		return new MapResult(false);
+	    }
+
+	    int xmin = 65, xmax = -1, ymax = -1;
+	    foreach (var b in border) {
+		if (b.X < xmin) { xmin = b.X; }
+		if (b.X > xmax) { xmax = b.X; }
+		if (b.Y > ymax) { ymax = b.Y; }
+		this.Tilemap[b.Y, b.X] = DungeonTiles.CAVE_FLOOR;
+	    }
+
+	    var doorx = this.rng.Between(xmin+2, xmax-2);
+	    this.Tilemap[ymax-1, doorx] = DungeonTiles.CAVE_DOOR;
+
+	    return await this.NextStep();
+	}
+
+	public async Task<MapResult> PlaceTile(int x, int y, byte tile) {
+	    this.OwnTilemap();
+	    this.Tilemap[y, x] = tile;
 	    return await this.NextStep();
 	}
     }

@@ -12,7 +12,9 @@ namespace FF1Lib.Procgen
 	public const byte TOWN_INN_SIGN = 0x25;
 
         public const byte CAVE_BLANK = 0x1A;
+        public const byte CAVE_ROOM_FLOOR = 0x2E;
         public const byte CAVE_FLOOR = 0x41;
+        public const byte CAVE_DOOR = 0x36;
 
 	public const byte None = 0xFF;
 

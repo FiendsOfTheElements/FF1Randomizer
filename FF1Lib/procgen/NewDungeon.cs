@@ -75,6 +75,9 @@ namespace FF1Lib.Procgen
 			mapGenSteps = new () {
 			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 			    new MapGenerationStep("EarthB1Style", new object[] { }),
+			    new MapGenerationStep("PlaceTile", new object[] { 30, 30, (byte)0x18 }),
+			    new MapGenerationStep("PlaceTreasureRoom", new object[] { }),
+			    new MapGenerationStep("PlaceTreasureRoom", new object[] { }),
 			    new MapGenerationStep("PlaceTreasureRoom", new object[] { }),
 			};
 			break;

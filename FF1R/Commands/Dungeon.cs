@@ -175,8 +175,13 @@ namespace FF1R.Commands
 		var replacementMap = Task.Run<FF1Lib.Procgen.CompleteMap>(async () => await FF1Lib.Procgen.NewDungeon.GenerateNewMap(rng, (FF1Lib.MapId)i, maps, this.Progress)).Result;
 		maps[i] = replacementMap.Map;
 
+		output = rom.RenderMap(maps, (FF1Lib.MapId)i, false);
+		name = $"dungeonmap{i}-outside.png";
+		output.Save(name);
+		Console.WriteLine($"Wrote {name}");
+
 		output = rom.RenderMap(maps, (FF1Lib.MapId)i, true);
-		name = $"dungeonmap{i}.png";
+		name = $"dungeonmap{i}-inside.png";
 		output.Save(name);
 		Console.WriteLine($"Wrote {name}");
 	    }
