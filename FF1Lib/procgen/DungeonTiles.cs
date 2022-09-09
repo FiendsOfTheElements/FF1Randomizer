@@ -11,11 +11,18 @@ namespace FF1Lib.Procgen
         public const byte TOWN_BLACK_MAGIC_SIGN = 0x24;
 	public const byte TOWN_INN_SIGN = 0x25;
 
+	public const byte CAVE_ROOM_NW = 0x00;
+	public const byte CAVE_ROOM_N  = 0x01;
+	public const byte CAVE_ROOM_NE = 0x02;
+	public const byte CAVE_ROOM_W  = 0x03;
+	public const byte CAVE_ROOM_E  = 0x05;
+
         public const byte CAVE_BLANK = 0x1A;
         public const byte CAVE_ROOM_FLOOR = 0x2E;
         public const byte CAVE_FLOOR = 0x41;
         public const byte CAVE_DOOR = 0x36;
         public const byte CAVE_ROCK = 0x3E;
+
 
 	public const byte STAR = 0x80;
 	public const byte _ = 0x81;
@@ -29,6 +36,7 @@ namespace FF1Lib.Procgen
 	    });
 
 	public PgTileFilter cave_rock_walls;
+	public PgTileFilter cave_room_walls;
 
 	public DungeonTiles() {
 
@@ -36,6 +44,9 @@ namespace FF1Lib.Procgen
 	    for (byte i = 0; i < 0x80; i++) {
 		allTiles.Add(i);
 	    }
+
+	    var non_room_tiles = new HashSet<byte>(allTiles);
+	    non_room_tiles.Remove(CAVE_ROOM_FLOOR);
 
 	    this.cave_rock_walls = new PgTileFilter(
 		new Rule[] {
@@ -81,6 +92,28 @@ namespace FF1Lib.Procgen
 			{STAR, STAR, STAR}},
 			CAVE_ROCK),
 		}, allTiles, null, null);
+
+	    this.cave_room_walls = new PgTileFilter(
+		new Rule[] {
+		    new Rule(new byte[3,3] {
+			{STAR, _, STAR},
+			{STAR, CAVE_ROOM_FLOOR, STAR},
+			{STAR, CAVE_ROOM_FLOOR, STAR}},
+			CAVE_ROOM_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{_, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR},
+			{STAR, STAR, STAR}},
+			CAVE_ROOM_W),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, _},
+			{STAR, STAR, STAR}},
+			CAVE_ROOM_E),
+
+		}, allTiles, non_room_tiles, null);
 	}
     }
 }

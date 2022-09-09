@@ -93,6 +93,7 @@ namespace FF1Lib.Procgen
 			    new MapGenerationStep("PlaceTreasureRoom", new object[] { }),
 			    new MapGenerationStep("PlaceTreasureRoom", new object[] { }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_rock_walls, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
 			};
 			break;
 		    default:
