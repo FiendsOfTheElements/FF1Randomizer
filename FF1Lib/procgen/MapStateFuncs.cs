@@ -167,10 +167,9 @@ namespace FF1Lib.Procgen
 		if (h < 0) { y += h; h = -h; }
 		if (w < 0) { x += w; w = -w; }
 
-		if (x < 0 || y < 0 || (x+w)>MAPSIZE || (y+h)>MAPSIZE) {
+		if (x < 1 || y < 1 || (x+w)>(MAPSIZE-1) || (y+h)>(MAPSIZE-1)) {
 		    continue;
 		}
-
 
 		if (!this.CheckClear(x, y, w, h, emptyTile)) {
 		    continue;
@@ -185,19 +184,46 @@ namespace FF1Lib.Procgen
 		    return pts;
 		}
 
-		List<SCCoords> end = null;
+		var d1 = direction;
 		switch (direction) {
 		    case Direction.Up:
-			end = pts.Where((p) => p.Y < y+(h-3)).ToList();
+			if (this.Tilemap[y-1, x] != emptyTile) {
+			    direction = Direction.Down;
+			}
 			break;
 		    case Direction.Right:
-			end = pts.Where((p) => p.X > x+(w-3)).ToList();
+			if (this.Tilemap[y, x+w] != emptyTile) {
+			    direction = Direction.Left;
+			}
 			break;
 		    case Direction.Down:
-			end = pts.Where((p) => p.Y > y+(h-3)).ToList();
+			if (this.Tilemap[y+h, x] != emptyTile) {
+			    direction = Direction.Up;
+			}
 			break;
 		    case Direction.Left:
-			end = pts.Where((p) => p.X < x+(w-3)).ToList();
+			if (this.Tilemap[y, x-1] != emptyTile) { direction = Direction.Right; }
+			break;
+		}
+
+		if (d1 != direction) {
+		    Console.WriteLine($"d2 {d1} {direction} {x} {y} {w} {h}");
+		}
+
+		List<SCCoords> end = null;
+		int endcap = 2;
+		switch (direction) {
+		    case Direction.Up:
+			end = pts.Where((p) => p.Y < y+endcap).ToList();
+			break;
+		    case Direction.Right:
+			end = pts.Where((p) => p.X > x+(w-endcap-1)).ToList();
+			break;
+		    case Direction.Down:
+			end = pts.Where((p) => p.Y > y+(h-endcap-1)).ToList();
+			break;
+		    case Direction.Left:
+			end = pts.Where((p) => p.X < x+endcap).ToList();
 			break;
 		}
 		return end;
@@ -215,7 +241,7 @@ namespace FF1Lib.Procgen
 	    ls.Add(start);
 	    ls.Add(start);
 	    ls.Add(start);
-	    ls.Add(start);
+	    //ls.Add(start);
 
 	    var ld = new List<Direction>();
 	    ld.Add(Direction.Up);
@@ -223,7 +249,7 @@ namespace FF1Lib.Procgen
 	    ld.Add(Direction.Down);
 	    ld.Add(Direction.Left);
 	    ld.Add((Direction)this.rng.Between(0, 3));
-	    ld.Add((Direction)this.rng.Between(0, 3));
+	    //ld.Add((Direction)this.rng.Between(0, 3));
 
 	    for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < ld.Count; j++) {
