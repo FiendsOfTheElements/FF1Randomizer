@@ -137,5 +137,23 @@ namespace FF1Lib.Procgen
 
 	    return tilemap;
 	}
+
+	public List<SCCoords> Candidates(byte[,] tilemap) {
+	    List<SCCoords> candidates = new();
+
+	    for (int y = 0; y < tilemap.GetLength(0); y++) {
+		for (int x = 0; x < tilemap.GetLength(1); x++) {
+		    foreach (var r in rules) {
+			byte check = this.CheckRule(tilemap, r, x, y, tilemap.GetLength(1), tilemap.GetLength(0));
+			if (check != 0xFF) {
+			    candidates.Add(new SCCoords(x, y));
+			    break;
+			}
+		    }
+		}
+	    }
+
+	    return candidates;
+	}
     }
 }

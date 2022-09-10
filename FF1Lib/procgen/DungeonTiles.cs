@@ -22,7 +22,10 @@ namespace FF1Lib.Procgen
         public const byte CAVE_FLOOR = 0x41;
         public const byte CAVE_DOOR = 0x36;
         public const byte CAVE_ROCK = 0x3E;
+        public const byte CAVE_ROOM_LOWER_WALL = 0x30;
 
+	public const byte CAVE_EARTH_B1_ENTRANCE = 0x18;
+	public const byte CAVE_EARTH_B1_EXIT = 0x24;
 
 	public const byte STAR = 0x80;
 	public const byte _ = 0x81;
@@ -37,6 +40,7 @@ namespace FF1Lib.Procgen
 
 	public PgTileFilter cave_rock_walls;
 	public PgTileFilter cave_room_walls;
+	public PgTileFilter cave_corners;
 
 	public DungeonTiles() {
 
@@ -47,6 +51,7 @@ namespace FF1Lib.Procgen
 
 	    var non_room_tiles = new HashSet<byte>(allTiles);
 	    non_room_tiles.Remove(CAVE_ROOM_FLOOR);
+	    non_room_tiles.Remove(CAVE_DOOR);
 
 	    this.cave_rock_walls = new PgTileFilter(
 		new Rule[] {
@@ -96,7 +101,25 @@ namespace FF1Lib.Procgen
 	    this.cave_room_walls = new PgTileFilter(
 		new Rule[] {
 		    new Rule(new byte[3,3] {
-			{STAR, _, STAR},
+			{_,                  _,            STAR},
+			{_,    CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR},
+			{STAR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR}},
+			CAVE_ROOM_NW),
+
+		    new Rule(new byte[3,3] {
+			{STAR,                  _,         _},
+			{CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, _},
+			{CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, STAR}},
+			CAVE_ROOM_NE),
+
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_ROOM_FLOOR, STAR},
+			{STAR, CAVE_ROOM_FLOOR, STAR},
+			{STAR,               _, STAR}},
+			CAVE_ROOM_LOWER_WALL),
+
+		    new Rule(new byte[3,3] {
+			{STAR,               _, STAR},
 			{STAR, CAVE_ROOM_FLOOR, STAR},
 			{STAR, CAVE_ROOM_FLOOR, STAR}},
 			CAVE_ROOM_N),
@@ -113,7 +136,36 @@ namespace FF1Lib.Procgen
 			{STAR, STAR, STAR}},
 			CAVE_ROOM_E),
 
+
 		}, allTiles, non_room_tiles, null);
+
+	    this.cave_corners = new PgTileFilter(
+		new Rule[] {
+		    new Rule(new byte[3,3] {
+			{CAVE_ROCK, CAVE_ROCK,  CAVE_ROCK},
+			{CAVE_ROCK, CAVE_FLOOR, CAVE_FLOOR},
+			{CAVE_ROCK, CAVE_FLOOR, CAVE_FLOOR}},
+			CAVE_FLOOR),
+
+		    new Rule(new byte[3,3] {
+			{CAVE_ROCK,   CAVE_ROCK, CAVE_ROCK},
+			{CAVE_FLOOR, CAVE_FLOOR, CAVE_ROCK},
+			{CAVE_FLOOR, CAVE_FLOOR, CAVE_ROCK}},
+			CAVE_FLOOR),
+
+		    new Rule(new byte[3,3] {
+			{CAVE_FLOOR, CAVE_FLOOR, CAVE_ROCK},
+			{CAVE_FLOOR, CAVE_FLOOR, CAVE_ROCK},
+			{CAVE_ROCK,   CAVE_ROCK, CAVE_ROCK}},
+			CAVE_FLOOR),
+
+		    new Rule(new byte[3,3] {
+			{CAVE_ROCK, CAVE_FLOOR, CAVE_FLOOR},
+			{CAVE_ROCK, CAVE_FLOOR, CAVE_FLOOR},
+			{CAVE_ROCK,  CAVE_ROCK, CAVE_ROCK}},
+			CAVE_FLOOR),
+
+		}, allTiles, null, null);
 	}
     }
 }

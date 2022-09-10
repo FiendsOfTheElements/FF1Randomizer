@@ -13,17 +13,20 @@ namespace FF1Lib.Procgen
 	private bool ownTilemap;
         public Map Tilemap;
 	public DungeonTiles dt;
+	int roomCount;
 
         public MapState(MT19337 rng, List<MapGenerationStep> steps, DungeonTiles dt, FF1Rom.ReportProgress progress) : base(rng, steps, progress) {
             this.ownTilemap = true;
 	    this.Tilemap = new Map(0);
 	    this.dt = dt;
+	    this.roomCount = 0;
 	}
 
         public MapState(MapState copy) : base(copy) {
             this.ownTilemap = false;
 	    this.Tilemap = copy.Tilemap;
 	    this.dt = copy.dt;
+	    this.roomCount = copy.roomCount;
 	}
 
         void OwnTilemap() {
@@ -88,12 +91,11 @@ namespace FF1Lib.Procgen
 			mapGenSteps = new () {
 			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 			    new MapGenerationStep("EarthB1Style", new object[] { }),
-			    new MapGenerationStep("PlaceTile", new object[] { 30, 30, (byte)0x18 }),
-			    new MapGenerationStep("PlaceTreasureRoom", new object[] { }),
-			    new MapGenerationStep("PlaceTreasureRoom", new object[] { }),
-			    new MapGenerationStep("PlaceTreasureRoom", new object[] { }),
+			    new MapGenerationStep("PlaceTile", new object[] { 30, 30, DungeonTiles.CAVE_EARTH_B1_ENTRANCE }),
+			    new MapGenerationStep("PlaceTreasureRooms", new object[] { }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_rock_walls, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
+			    new MapGenerationStep("PlaceExitStairs", new object[] { 30, 30, DungeonTiles.CAVE_EARTH_B1_EXIT }),
 			};
 			break;
 		    default:

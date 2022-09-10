@@ -1,5 +1,5 @@
 using FF1Lib.Sanity;
-using OwGenerationTask = FF1Lib.Procgen.ProgenFramework.GenerationTaskType<FF1Lib.Procgen.OwResult>;
+using MapGenerationTask = FF1Lib.Procgen.ProgenFramework.GenerationTaskType<FF1Lib.Procgen.MapResult>;
 
 namespace FF1Lib.Procgen
 {
@@ -288,32 +288,55 @@ namespace FF1Lib.Procgen
 		return new MapResult(false);
 	    }
 
+	    this.roomCount = treasureRooms;
+
 	    return await this.NextStep();
 	}
 
-	public async Task<MapResult> PlaceTreasureRoom() {
+	public async Task<MapResult> PlaceTreasureRooms() {
+	    var tasks = new List<MapGenerationTask>();
+	    tasks.Add(() => new MapState(this).PlaceTreasureRoom(this.roomCount));
+	    await Task.Yield();
+	    return new MapResult(tasks);
+	}
+
+	public async Task<MapResult> PlaceTreasureRoom(int numRooms) {
 	    var cand = this.Candidates(DungeonTiles.CAVE_FLOOR);
 
+	    for (int j = 0; j < numRooms; j++) {
+		List<SCCoords> border = null;
+		for (int i = 0; i < 6 && border == null; i++) {
+		    border = AddRoom(cand, Direction.Down, (8, 12), (8, 12), DungeonTiles.CAVE_FLOOR, DungeonTiles.CAVE_ROOM_FLOOR, false);
+		}
 
-	    List<SCCoords> border = null;
-	    for (int i = 0; i < 6 && border == null; i++) {
-		border = AddRoom(cand, Direction.Down, (8, 12), (8, 12), DungeonTiles.CAVE_FLOOR, DungeonTiles.CAVE_ROOM_FLOOR, false);
+		if (border == null) {
+		    return new MapResult(false);
+		}
+
+		int xmin = 65, xmax = -1, ymax = -1;
+		foreach (var b in border) {
+		    if (b.X < xmin) { xmin = b.X; }
+		    if (b.X > xmax) { xmax = b.X; }
+		    if (b.Y > ymax) { ymax = b.Y; }
+		    this.Tilemap[b.Y, b.X] = DungeonTiles.CAVE_FLOOR;
+		}
+
+		var doorx = this.rng.Between(xmin+2, xmax-2);
+		this.Tilemap[ymax-1, doorx] = DungeonTiles.CAVE_DOOR;
 	    }
 
-	    if (border == null) {
-		return new MapResult(false);
-	    }
+	    return await this.NextStep();
+	}
 
-	    int xmin = 65, xmax = -1, ymax = -1;
-	    foreach (var b in border) {
-		if (b.X < xmin) { xmin = b.X; }
-		if (b.X > xmax) { xmax = b.X; }
-		if (b.Y > ymax) { ymax = b.Y; }
-		this.Tilemap[b.Y, b.X] = DungeonTiles.CAVE_FLOOR;
-	    }
+	public async Task<MapResult> PlaceExitStairs(int entrancex, int entrancey, byte tile) {
+	    var c = this.dt.cave_corners.Candidates(this.Tilemap.MapBytes);
 
-	    var doorx = this.rng.Between(xmin+2, xmax-2);
-	    this.Tilemap[ymax-1, doorx] = DungeonTiles.CAVE_DOOR;
+	    var e = c.Where((d) => Math.Sqrt((d.X-entrancex)*(d.X-entrancex) + (d.Y-entrancey)*(d.Y-entrancey)) > 20).ToList();
+
+	    var p = e.PickRandom(this.rng);
+
+	    this.OwnTilemap();
+	    this.Tilemap[p.Y, p.X] = tile;
 
 	    return await this.NextStep();
 	}
