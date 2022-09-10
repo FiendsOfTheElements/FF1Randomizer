@@ -341,6 +341,20 @@ namespace FF1Lib.Procgen
 	    return await this.NextStep();
 	}
 
+
+	public async Task<MapResult> PlaceChests(List<byte> chests) {
+	    this.OwnTilemap();
+
+	    var cand = this.Candidates(DungeonTiles.CAVE_ROOM_FLOOR);
+
+	    foreach (var c in chests) {
+		var p = cand.SpliceRandom(this.rng);
+		this.Tilemap[p.Y, p.X] = c;
+	    }
+
+	    return await this.NextStep();
+	}
+
 	public async Task<MapResult> PlaceTile(int x, int y, byte tile) {
 	    this.OwnTilemap();
 	    this.Tilemap[y, x] = tile;

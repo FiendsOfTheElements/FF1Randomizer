@@ -96,6 +96,7 @@ namespace FF1Lib.Procgen
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_rock_walls, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
 			    new MapGenerationStep("PlaceExitStairs", new object[] { 30, 30, DungeonTiles.CAVE_EARTH_B1_EXIT }),
+			    new MapGenerationStep("PlaceChests", new object[] { new List<byte> { 0x42, 0x42, 0x42, 0x42, 0x42, 0x42 } }),
 			};
 			break;
 		    default:
