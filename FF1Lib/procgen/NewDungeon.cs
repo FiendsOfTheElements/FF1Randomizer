@@ -15,6 +15,13 @@ namespace FF1Lib.Procgen
 	public DungeonTiles dt;
 	int roomCount;
 
+	public List<byte> Stairs;
+	public List<byte> Chests;
+	public List<byte> Traps;
+	public List<int> NPCs;
+
+	public SCCoords Entrance;
+
         public MapState(MT19337 rng, List<MapGenerationStep> steps, DungeonTiles dt, FF1Rom.ReportProgress progress) : base(rng, steps, progress) {
             this.ownTilemap = true;
 	    this.Tilemap = new Map(0);
@@ -81,12 +88,14 @@ namespace FF1Lib.Procgen
 
 	    while (true) {
 		switch (mapId) {
-		    case MapId.Coneria:
+		    /*
+		      case MapId.Coneria:
 			mapGenSteps = new () {
 			    new MapGenerationStep("WipeMap", new object[] { (byte)0x10 }),
 			    new MapGenerationStep("PlaceShop", new object[] { }),
 			};
 			break;
+		    */
 		    case MapId.EarthCaveB1:
 			mapGenSteps = new () {
 			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
@@ -95,6 +104,7 @@ namespace FF1Lib.Procgen
 			    new MapGenerationStep("PlaceTreasureRooms", new object[] { }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_rock_walls, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
 			    new MapGenerationStep("PlaceExitStairs", new object[] { 30, 30, DungeonTiles.CAVE_EARTH_B1_EXIT }),
 			    new MapGenerationStep("PlaceChests", new object[] { new List<byte> { 0x42, 0x42, 0x42, 0x42, 0x42, 0x42 } }),
 			};

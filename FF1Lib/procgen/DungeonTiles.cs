@@ -16,6 +16,9 @@ namespace FF1Lib.Procgen
 	public const byte CAVE_ROOM_NE = 0x02;
 	public const byte CAVE_ROOM_W  = 0x03;
 	public const byte CAVE_ROOM_E  = 0x05;
+	public const byte CAVE_ROOM_SW  = 0x06;
+	public const byte CAVE_ROOM_S  = 0x07;
+	public const byte CAVE_ROOM_SE  = 0x08;
 
         public const byte CAVE_BLANK = 0x1A;
         public const byte CAVE_ROOM_FLOOR = 0x2E;
@@ -40,6 +43,7 @@ namespace FF1Lib.Procgen
 
 	public PgTileFilter cave_rock_walls;
 	public PgTileFilter cave_room_walls;
+	public PgTileFilter cave_room_walls2;
 	public PgTileFilter cave_corners;
 
 	public DungeonTiles() {
@@ -52,6 +56,14 @@ namespace FF1Lib.Procgen
 	    var non_room_tiles = new HashSet<byte>(allTiles);
 	    non_room_tiles.Remove(CAVE_ROOM_FLOOR);
 	    non_room_tiles.Remove(CAVE_DOOR);
+	    non_room_tiles.Remove(CAVE_ROOM_NW);
+	    non_room_tiles.Remove(CAVE_ROOM_N);
+	    non_room_tiles.Remove(CAVE_ROOM_NE);
+	    non_room_tiles.Remove(CAVE_ROOM_E);
+	    non_room_tiles.Remove(CAVE_ROOM_W);
+	    non_room_tiles.Remove(CAVE_ROOM_SE);
+	    non_room_tiles.Remove(CAVE_ROOM_S);
+	    non_room_tiles.Remove(CAVE_ROOM_SW);
 
 	    this.cave_rock_walls = new PgTileFilter(
 		new Rule[] {
@@ -135,8 +147,33 @@ namespace FF1Lib.Procgen
 			{CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, _},
 			{STAR, STAR, STAR}},
 			CAVE_ROOM_E),
+		}, allTiles, non_room_tiles, null);
 
+	    this.cave_room_walls2 = new PgTileFilter(
+		new Rule[] {
+		    new Rule(new byte[3,3] {
+			{STAR,            STAR,      STAR},
+			{STAR, CAVE_ROOM_W,      STAR},
+			{STAR, CAVE_ROOM_LOWER_WALL, STAR}},
+			CAVE_ROOM_SW),
 
+		    new Rule(new byte[3,3] {
+			{STAR,            STAR,      STAR},
+			{STAR, CAVE_ROOM_E,          STAR},
+			{STAR, CAVE_ROOM_LOWER_WALL, STAR}},
+			CAVE_ROOM_SE),
+
+		    new Rule(new byte[3,3] {
+			{STAR,            STAR,      STAR},
+			{STAR, CAVE_ROOM_FLOOR,      STAR},
+			{STAR, CAVE_ROOM_LOWER_WALL, STAR}},
+			CAVE_ROOM_S),
+
+		    new Rule(new byte[3,3] {
+			{STAR,            STAR,      STAR},
+			{STAR, CAVE_ROOM_FLOOR,      STAR},
+			{STAR, CAVE_DOOR, STAR}},
+			CAVE_ROOM_S),
 		}, allTiles, non_room_tiles, null);
 
 	    this.cave_corners = new PgTileFilter(

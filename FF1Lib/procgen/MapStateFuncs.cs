@@ -232,7 +232,7 @@ namespace FF1Lib.Procgen
 	}
 
 	public async Task<MapResult> EarthB1Style() {
-	    var start = this.AddRoom(new List<SCCoords> { new SCCoords(30, 25) }, Direction.Down, (9, 9), (9, 9),
+	    var start = this.AddRoom(new List<SCCoords> { new SCCoords(30, 27) }, Direction.Down, (5, 5), (5, 5),
 				     DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR, false);
 
 	    var ls = new List<List<SCCoords>>();
@@ -253,7 +253,7 @@ namespace FF1Lib.Procgen
 
 	    for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < ld.Count; j++) {
-		    var ret = this.AddRoom(ls[j], ld[j], (4, 12), (2, 3),
+		    var ret = this.AddRoom(ls[j], ld[j], (4, 12), (1, 2),
 					   DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR, true);
 		    if (ret != null) { ls[j] = ret; }
 
@@ -284,7 +284,7 @@ namespace FF1Lib.Procgen
 	    }
 	    Console.WriteLine($"{treasureRooms}");
 
-	    if (treasureRooms < 2) {
+	    if (treasureRooms < 3) {
 		return new MapResult(false);
 	    }
 
@@ -330,10 +330,21 @@ namespace FF1Lib.Procgen
 
 	public async Task<MapResult> PlaceExitStairs(int entrancex, int entrancey, byte tile) {
 	    var c = this.dt.cave_corners.Candidates(this.Tilemap.MapBytes);
+	    var doors = this.Candidates(DungeonTiles.CAVE_DOOR);
 
-	    var e = c.Where((d) => Math.Sqrt((d.X-entrancex)*(d.X-entrancex) + (d.Y-entrancey)*(d.Y-entrancey)) > 20).ToList();
+	    var e = c.Where((d) => Math.Sqrt((d.X-entrancex)*(d.X-entrancex) + (d.Y-entrancey)*(d.Y-entrancey)) > 20);
 
-	    var p = e.PickRandom(this.rng);
+	    foreach (var f in doors) {
+		e = e.Where((d) => Math.Sqrt((d.X-f.X)*(d.X-f.X) + (d.Y-f.Y)*(d.Y-f.Y)) > 15);
+	    }
+
+	    var g = e.ToList();
+
+	    if (g.Count == 0) {
+		return new MapResult(false);
+	    }
+
+	    var p = g.PickRandom(this.rng);
 
 	    this.OwnTilemap();
 	    this.Tilemap[p.Y, p.X] = tile;
