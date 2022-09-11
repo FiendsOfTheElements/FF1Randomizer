@@ -16,7 +16,7 @@ namespace FF1Lib
 		[Description("Just Tents")]
 		JustTents,
 
-		[Description("Explorer Starting Pack")]
+		[Description("Explorer Pack")]
 		ExplorerStartingPack,
 
 		[Description("Real Estate")]
@@ -34,7 +34,7 @@ namespace FF1Lib
 		[Description("R. Beggar's Choice")]
 		RandomizedBeggarsChoice,
 
-		[Description("R. Explorer Starting Pack")]
+		[Description("R. Explorer Pack")]
 		RandomizedExplorerStartingPack,
 
 		[Description("R. Warrior's Standard")]
