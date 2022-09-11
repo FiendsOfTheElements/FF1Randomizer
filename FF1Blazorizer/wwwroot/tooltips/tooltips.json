@@ -1139,6 +1139,18 @@
 		"description": "Creates up to five legendary shops in dungeons, one of each type. Shops will tend to have high-tier gear (which will often include things you cannot normally find in shops) or highly desirable spells.\nThe potential locations are: Earth Cave B2, Marsh Cave B2, Dwarves' Cave, Mirage Tower F1, Ice Cave B1, & Left Sea Shrine 2.\n\"Exclusive\" means that it will also remove any items/spells found in the Legendary Shop from all other shops and treasure chests in the world."
 	},
 	{
+		"Id": "legendaryWeaponShopCheckBox",
+		"title": "Legendary Weapon Shop",
+		"screenshot": null,
+		"description": "Randomly selects 3 Legendary or stronger Rare weapons, but does not include Masamune. (Examples: Katana, Coral Sword, Mage Staff.)"
+	},
+	{
+		"Id": "legendaryArmorShopCheckBox",
+		"title": "Legendary Armor Shop",
+		"screenshot": null,
+		"description": "Randomly selects 5 Legendary or Rare pieces of armor. (Examples: Ribbon, Opal set, Wizard shirts.)"
+	},
+	{
 		"Id": "legendaryBlackShopCheckBox",
 		"title": "Legendary Black Magic Shop",
 		"screenshot": null,
