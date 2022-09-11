@@ -1763,7 +1763,7 @@
 		"Id": "extConsumableTreasureStackSize",
 		"title": "New Consumable Treasure Stack Size",
 		"screenshot": "extConsumableTreasureStackSize.png",
-		"description": "New Consumable rewards from chests and NPCs may 'stack', giving you more than one item.\n[grid][r]{i}Option|{i}FCure|{i}Phnix|{i}Blast|{i}Smoke[r]{l}Stingy|||2|2[r]{l}Adequate|2||3|3[r]{l}Generous|3|2|5|5[r]{l}Ridiculous|5|3|10|10\n"
+		"description": "New Consumable rewards from chests and NPCs may 'stack', giving you more than one item.\n[grid][r]{i}Option|{i}FCure|{i}Phnix|{i}Blast|{i}Smoke[r]{l}Stingy|||2|2[r]{l}Adequate|2||3|3[r]{l}Generous|3|2|5|5[r]{l}Ridiculous|5|3|10|10\nNote: In-game text only shows a single consumable no matter how many you gained."
 	},
 	{
 		"Id": "normalShopsHaveExtConsumables",
