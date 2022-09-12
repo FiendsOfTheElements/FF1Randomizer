@@ -363,9 +363,7 @@ namespace FF1Lib
 			List<string> dataScreen = new List<string>();
 
 			dataScreen.AddRange(transmooglifier.classDescriptions);
-			Console.WriteLine($"Data Count: { dataScreen.Count }");
 			dataScreen.AddRange(transmooglifier.classDescriptions); // Add again for Promo Classes
-			Console.WriteLine($"Data Count+promot: { dataScreen.Count }");
 
 			CreateDataScreens("", dataScreen, rom);
 		}
@@ -2128,10 +2126,6 @@ namespace FF1Lib
 		public byte[] LevelUpArray()
 		{
 			var levelUp = new List<byte>();
-			Console.WriteLine("array hp count: " + HpGrowth.Count);
-			Console.WriteLine("array str count: " + StrGrowth.Count);
-			Console.WriteLine("array int count: " + IntGrowth.Count);
-			Console.WriteLine("array spc count: " + SpCGrowth.Count);
 			for (int j = 0; j < 49; j++)
 			{
 				byte tempStats = 0x00;

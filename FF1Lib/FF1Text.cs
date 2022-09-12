@@ -165,20 +165,26 @@
 			{ ".", 0xC0 },
 			{ ";", 0xC1 }, //should never be used as a space character
 			{ "-", 0xC2 },
-			// this is a duplicate { "..", 0xC3 },
+			// this is a duplicate { "..", 0xC3 }, // could I use this?
 			{ "!", 0xC4 },
 			{ "?", 0xC5 },
 
+			// I can put two in 7E, 7F
+
+			// 0xC6 Level icon (it has a sinlge different PIXEL so it's off limits despite being otherwise identical to the regular L...)
+			// 0xC7 Equip icon (ditto but for E) 
 			{ "∞R", 0xC6 }, // recovery magic
 			{ "∞c", 0xC7 }, // health (cure) magic
+
+			// These are free
 			{ "∞a", 0xC8 }, // ailment magic
 			{ "∞l", 0xC9 }, // life magic
+
+			// These are used by the Menu's STATUS and WEAPON condense
 			{ "∞h", 0xCA }, // holy magic
 			{ "∞s", 0xCB }, // space magic
 			{ "∞t", 0xCC }, // tele magic
 			{ "∞U", 0xCD }, // buff magic
-
-			// Everything below here are icons (almost)
 			{ "@U", 0xCE }, // unarmed
 			{ "@R", 0xCF }, // rod
 			{ "@c", 0xD0 }, // scimitar
@@ -221,6 +227,8 @@
 			{ "∞W", 0xF3 }, // white magic
 			{ "∞G", 0xF4 }, // grey magic
 			{ "∞B", 0xF5 }, // black magic
+			// I can put one more in 0xF6
+
 			//{ "∞S", 0xFE }, // self magic
 
 			{ " ", 0xFF }

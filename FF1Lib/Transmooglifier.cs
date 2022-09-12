@@ -35,6 +35,8 @@ namespace FF1Lib
 
 		public List<string> classDescriptions = new List<string>();
 
+		const int lut_MapmanPalettes = 0x8150;
+
 		public void Transmooglify(MT19337 rng, FF1Rom rom)
 		{
 			ClassDef.rom = rom;
@@ -42,7 +44,9 @@ namespace FF1Lib
 			ClassDef.newPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, rom);
 
 			AddNewIcons(rom);
-			PopulateSpellTypes(rom);
+
+			if (spellFamilies.Count <= 0)
+				PopulateSpellTypes(rom);
 
 			List<ClassDef> classes = CreateClasses();
 
@@ -53,19 +57,44 @@ namespace FF1Lib
 				Console.WriteLine($"Class Name: { classes[i].name }");
 				classDescriptions.Add(classes[i].PublishToClass(i));
 			}
+
+			LoadImages(classes);
+		}
+
+		public void LoadImages(List<ClassDef> classes)
+		{
+			ClassDef.rom.PutInBank(0x1F, 0xD8B6, Blob.FromHex("A90F2003FE4CC081EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			ClassDef.rom.PutInBank(0x0F, 0x81C0, Blob.FromHex("AD0061C9FFD002A90D0A0A0A6908AAA008BD508199D003CA8810F660"));
+
+			for (int i = 0; i < 6; i++)
+			{
+				ClassDef c = classes[i];
+				Console.WriteLine("Class Palettes " + c.name);
+
+				ClassDef.rom.ImportMapmanSync(c.getImage(), c.classIndex, 24, 0, ClassDef.rom.NESpalette);
+				ClassDef.rom.ImportBattleSpriteSync(c.getImage(), c.classIndex, 0, 0, ClassDef.rom.NESpalette);
+
+				Console.WriteLine("Class Palettes " + c.promoName);
+				ClassDef.rom.ImportMapmanSync(c.getImage(true), c.classIndex+6, 24, 0, ClassDef.rom.NESpalette);
+				ClassDef.rom.ImportBattleSpriteSync(c.getImage(true), c.classIndex+6, 0, 0, ClassDef.rom.NESpalette);
+			}
+
+			// add palette for "none" mapman
+			ClassDef.rom.PutInBank(0x0F, lut_MapmanPalettes + (13 << 3), new byte[] {0x0F, 0x0F, 0x12, 0x36,
+										0x0F, 0x0F, 0x21, 0x36});
 		}
 
 		public byte[] getTile(int imageTileIndex, Dictionary<Rgba32, byte> index, Image<Rgba32> image)
 		{
 			var newtile = new byte[64];
-				int px = 0;
-				for (int y = 0; y<(0 + 8); y++)
+			int px = 0;
+			for (int y = 0; y < (0 + 8); y++)
+			{
+				for (int x = (imageTileIndex * 8); x < ((imageTileIndex * 8) + 8); x++)
 				{
-					for (int x = (imageTileIndex * 8); x<((imageTileIndex * 8) + 8); x++)
-					{
-						newtile[px] = index[image[x, y]];
-						px++;
-					}
+					newtile[px] = index[image[x, y]];
+					px++;
+				}
 			}
 
 			return newtile;
@@ -73,8 +102,26 @@ namespace FF1Lib
 
 		public void AddNewIcons(FF1Rom rom)
 		{
-			foreach (string i in new List<string>(Directory.EnumerateDirectories(Directory.GetCurrentDirectory())))
-				Console.WriteLine($"Directory: { i }");
+			// New Icon Hacks PLAN
+			//	Remove the code from AddElementIcons
+			//	New image blobs are imported into Bank 12, 0x8800. There is 0x800 of space but we can only use 0x600. as the last 0x200 is reserved for orbs.
+			//
+			//	In bank F's LoadMenuBGCHRAndPalettes, which is roughly at 0xEA9F, jmp to this afterwards
+			//		LDA #$0C		// Bank 12...?
+			//		JSR SwapPRG_L	// Swap to Bank 12
+			//
+			//		LDA #<00		// from source address 0x8800. I hope I have upper and lower bits set correctly and not backwards
+			//		STA tmp
+			//		LDA #>88
+			//		STA tmp+1
+			//
+			//		LDX #$06		// Grab 6 rows of tiles
+			//		LDA #$0			// dest PPU address $0000
+			//		JSR CHRLoadToA  // load up icons 
+			//		// end scene, jump back? or forward
+			//
+			//
+			//	Then assign all the icons to values from 0x00-0x60 in FF1Text.cs
 
 			IImageFormat format;
 
@@ -470,7 +517,7 @@ namespace FF1Lib
 			// Berserker / Gladiator
 			classes.Add(new ClassDef()
 			{
-				name = "BERSERK",
+				name = "BERSERKR",
 				promoName = "GLADIATR",
 				shortName = "Br",
 				promoShortName = "Gd",
@@ -610,7 +657,7 @@ namespace FF1Lib
 			classes.Add(new ClassDef()
 			{
 				name = "M.KNIGHT",
-				promoName = "SPELLBLADE",
+				promoName = "SPLLBLDE",
 				shortName = "Sq",
 				promoShortName = "Pl",
 				HP = 35,
@@ -629,8 +676,8 @@ namespace FF1Lib
 				averageMagicSchools = 3f,
 				promoMagic = new List<string> { "elem", "grey", "space", "black", "time" },
 				armourWeight = MEDIUM,
-				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.LONGSWORD },
-				possibleWeapon = new List<WeaponSprite> { WeaponSprite.RAPIER, WeaponSprite.SCIMITAR, WeaponSprite.KNIFE, WeaponSprite.FALCHION, WeaponSprite.SHORTSWORD },
+				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.RAPIER },
+				possibleWeapon = new List<WeaponSprite> { WeaponSprite.LONGSWORD, WeaponSprite.SCIMITAR, WeaponSprite.KNIFE, WeaponSprite.FALCHION, WeaponSprite.SHORTSWORD },
 				weaponsMax = 5,
 				averageWeapons = 3.5f
 			});
@@ -691,7 +738,7 @@ namespace FF1Lib
 			// Animist / Geomancer
 			classes.Add(new ClassDef()
 			{
-				name = "ANIMIST",
+				name = "ELMNTIST",
 				promoName = "GEOMANCR",
 				shortName = "An",
 				promoShortName = "Gm",
@@ -712,10 +759,11 @@ namespace FF1Lib
 				averageMagicSchools = 1f,
 				armourWeight = CLOTH,
 				promoArmourWeight = CLOTH,
-				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.CHUCK },
+				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.CHUCK, WeaponSprite.RAPIER },
 				possibleWeapon = new List<WeaponSprite> { WeaponSprite.STAFF, WeaponSprite.IRONSTAFF },
 				weaponsMax = 2,
-				averageWeapons = 0.5f
+				averageWeapons = 0.5f,
+				UnarmedAttack = 0.2f
 			});
 
 			// Magus / Arcanist
@@ -812,7 +860,7 @@ namespace FF1Lib
 			classes.Add(new ClassDef()
 			{
 				name = "MOOGLE",
-				promoName = "MogKNIGHT",
+				promoName = "MogKNGHT",
 				shortName = "Mog",
 				promoShortName = "MgK",
 				HP = 20,
@@ -843,7 +891,7 @@ namespace FF1Lib
 			classes.Add(new ClassDef()
 			{
 				name = "CHOCOBO",
-				promoName = "B.CHOCO",
+				promoName = "Bl.CHOCO",
 				shortName = "Ch",
 				promoShortName = "BCh",
 				HP = 22,
@@ -903,24 +951,25 @@ namespace FF1Lib
 		public static FF1Rom rom;
 		public static MT19337 rng;
 		public static GearPermissions newPermissions;
+		public int classIndex;
 
 		// Armor Permission sets
-		public static ushort CLOTH  = (ushort)(EquipPermission.BlackBelt | EquipPermission.BlackMage | EquipPermission.BlackWizard | EquipPermission.Fighter | EquipPermission.Knight | EquipPermission.Master | EquipPermission.Ninja | EquipPermission.RedMage | EquipPermission.RedWizard | EquipPermission.Thief | EquipPermission.WhiteMage | EquipPermission.WhiteWizard);
+		public static ushort CLOTH = (ushort)(EquipPermission.BlackBelt | EquipPermission.BlackMage | EquipPermission.BlackWizard | EquipPermission.Fighter | EquipPermission.Knight | EquipPermission.Master | EquipPermission.Ninja | EquipPermission.RedMage | EquipPermission.RedWizard | EquipPermission.Thief | EquipPermission.WhiteMage | EquipPermission.WhiteWizard);
 		public static ushort CAPE = (ushort)(EquipPermission.BlackMage | EquipPermission.BlackWizard | EquipPermission.Fighter | EquipPermission.Knight | EquipPermission.Ninja | EquipPermission.RedMage | EquipPermission.RedWizard | EquipPermission.Thief | EquipPermission.WhiteMage | EquipPermission.WhiteWizard);
 
-		public static ushort LIGHT  = (ushort)(EquipPermission.BlackBelt | EquipPermission.Fighter | EquipPermission.Knight | EquipPermission.Master | EquipPermission.Ninja | EquipPermission.RedMage | EquipPermission.RedWizard | EquipPermission.Thief);
+		public static ushort LIGHT = (ushort)(EquipPermission.BlackBelt | EquipPermission.Fighter | EquipPermission.Knight | EquipPermission.Master | EquipPermission.Ninja | EquipPermission.RedMage | EquipPermission.RedWizard | EquipPermission.Thief);
 		public static ushort BUCKLR = (ushort)(EquipPermission.Fighter | EquipPermission.Knight | EquipPermission.Ninja | EquipPermission.RedMage | EquipPermission.RedWizard | EquipPermission.Thief);
 
 		public static ushort MEDIUM = (ushort)(EquipPermission.Fighter | EquipPermission.Knight | EquipPermission.Ninja | EquipPermission.RedMage | EquipPermission.RedWizard);
-		public static ushort BONKS  = (ushort)(EquipPermission.Fighter | EquipPermission.Knight | EquipPermission.Ninja | EquipPermission.RedWizard);
+		public static ushort BONKS = (ushort)(EquipPermission.Fighter | EquipPermission.Knight | EquipPermission.Ninja | EquipPermission.RedWizard);
 
-		public static ushort HEAVY  = (ushort)(EquipPermission.Fighter | EquipPermission.Knight | EquipPermission.Ninja);
-		public static ushort HEALH  = (ushort)(EquipPermission.Knight | EquipPermission.Ninja);
-		public static ushort ZBONK  = (ushort)(EquipPermission.Knight | EquipPermission.Ninja | EquipPermission.RedWizard);
+		public static ushort HEAVY = (ushort)(EquipPermission.Fighter | EquipPermission.Knight | EquipPermission.Ninja);
+		public static ushort HEALH = (ushort)(EquipPermission.Knight | EquipPermission.Ninja);
+		public static ushort ZBONK = (ushort)(EquipPermission.Knight | EquipPermission.Ninja | EquipPermission.RedWizard);
 
 		public static ushort KNIGHT = (ushort)(EquipPermission.Knight);
 
-		public static ushort STEEL  = (ushort)(EquipPermission.Fighter | EquipPermission.Knight);
+		public static ushort STEEL = (ushort)(EquipPermission.Fighter | EquipPermission.Knight);
 		public static ushort BSHIRT = (ushort)(EquipPermission.BlackWizard);
 		public static ushort WSHIRT = (ushort)(EquipPermission.WhiteWizard);
 		public static ushort WIZARD = (ushort)(EquipPermission.BlackWizard | EquipPermission.WhiteWizard | EquipPermission.RedWizard);
@@ -977,7 +1026,7 @@ namespace FF1Lib
 
 		// Armor
 		public int armourWeight;   // See definitions above -> CLOTH, LIGHT, MEDIUM, HEAVY, KNIGHT
-									// Additionally certain conditions will offer excal, white shirt, black shirt, 
+								   // Additionally certain conditions will offer excal, white shirt, black shirt, 
 		public int promoArmourWeight = -1; // If -1, increase the armour Weight by a class. Other values as specified. 
 
 		// Special abilities and blursings
@@ -993,6 +1042,8 @@ namespace FF1Lib
 		// Returns a description string
 		public String PublishToClass(int classIndex)
 		{
+			this.classIndex = classIndex;
+
 			CommitNames(classIndex);
 
 			CommitStats(classIndex);
@@ -1016,7 +1067,7 @@ namespace FF1Lib
 			String description =
 
 			// Everyone has these stats
-			String.Format("HP{0,9}\n", HP*20+49*VIT/4) +
+			String.Format("HP{0,9}\n", HP * 20 + 49 * VIT / 4) +
 			String.Format("STR.{0,7}\n", STR) +
 			String.Format("AGL.{0,7}\n", AGI) +
 			String.Format("MDEF{0,7}\n", "+" + MDEF) +
@@ -1173,26 +1224,26 @@ namespace FF1Lib
 		{
 			var mSchool = magicSchool.ToUpper();
 
-			if (mSchool == "ALL"		) return "∞A";
-			if (mSchool == "BLACK"		) return "∞B";
-			if (mSchool == "ELEM"		) return "€f€i€t€e";
-			if (mSchool == "FIRE"		) return "€f";
-			if (mSchool == "LIT"	    ) return "€t";
-			if (mSchool == "ICE"		) return "€i";
-			if (mSchool == "EARTH"		) return "€e";
-			if (mSchool == "STATUS"		) return "€s";
-			if (mSchool == "GREY"		) return "∞G";
-			if (mSchool == "DEATH"		) return "€d";
-			if (mSchool == "POISON"		) return "€p";
-			if (mSchool == "TIME"		) return "€T";
-			if (mSchool == "WHITE"		) return "∞W";
-			if (mSchool == "RECOVERY"	) return "∞R";
-			if (mSchool == "HEALTH"		) return "∞c";
-			if (mSchool == "AILMENT"	) return "∞a";
-			if (mSchool == "LIFE"		) return "∞l";
-			if (mSchool == "HOLY"		) return "∞h";
-			if (mSchool == "SPACE"		) return "∞s";
-			if (mSchool == "BUFF"		) return "∞U";
+			if (mSchool == "ALL") return "∞A";
+			if (mSchool == "BLACK") return "∞B";
+			if (mSchool == "ELEM") return "€f€i€t€e";
+			if (mSchool == "FIRE") return "€f";
+			if (mSchool == "LIT") return "€t";
+			if (mSchool == "ICE") return "€i";
+			if (mSchool == "EARTH") return "€e";
+			if (mSchool == "STATUS") return "€s";
+			if (mSchool == "GREY") return "∞G";
+			if (mSchool == "DEATH") return "€d";
+			if (mSchool == "POISON") return "€p";
+			if (mSchool == "TIME") return "€T";
+			if (mSchool == "WHITE") return "∞W";
+			if (mSchool == "RECOVERY") return "∞R";
+			if (mSchool == "HEALTH") return "∞c";
+			if (mSchool == "AILMENT") return "∞a";
+			if (mSchool == "LIFE") return "∞l";
+			if (mSchool == "HOLY") return "∞h";
+			if (mSchool == "SPACE") return "∞s";
+			if (mSchool == "BUFF") return "∞U";
 
 			return "";
 		}
@@ -1208,11 +1259,11 @@ namespace FF1Lib
 		public void CommitStats(int classIndex)
 		{
 			Classes c = (Classes)classIndex;
-			Classes p = (Classes)(classIndex+6);
+			Classes p = (Classes)(classIndex + 6);
 
 			RollStats();
 
-			rom.ClassData[c].HpStarting = rom.ClassData[p].HpStarting =(byte)( HP % 50 + 30 + Rng.Between(rng, -5, 5));
+			rom.ClassData[c].HpStarting = rom.ClassData[p].HpStarting = (byte)(HP % 50 + 30 + Rng.Between(rng, -5, 5));
 			rom.ClassData[c].HpGrowth = rom.ClassData[p].HpGrowth = MakeGrowthTable(HP);
 
 			rom.ClassData[c].StrStarting = rom.ClassData[p].StrStarting = (byte)(STR % 50 + Math.Clamp((STR / 12) * 5, 1, 100));
@@ -1235,7 +1286,7 @@ namespace FF1Lib
 
 			rom.ClassData[c].MDefStarting = rom.ClassData[p].MDefStarting = (byte)Rng.Between(rng, 10, 25);
 			rom.ClassData[c].MDefGrowth = rom.ClassData[p].MDefGrowth = (byte)MDEF;
-		}				  
+		}
 
 		public void RollStats()
 		{
@@ -1243,7 +1294,7 @@ namespace FF1Lib
 			float dwn = 0.75f;
 			int v = 2; // roll modifier for Hit/MDEF
 
-			HP =  Math.Clamp(Rng.Between(rng, (int)(HP * dwn),  (int)(HP * up)),  0, 100);
+			HP = Math.Clamp(Rng.Between(rng, (int)(HP * dwn), (int)(HP * up)), 0, 100);
 			STR = Math.Clamp(Rng.Between(rng, (int)(STR * dwn), (int)(STR * up)), 0, 100);
 			AGI = Math.Clamp(Rng.Between(rng, (int)(AGI * dwn), (int)(AGI * up)), 0, 100);
 			VIT = Math.Clamp(Rng.Between(rng, (int)(VIT * dwn), (int)(VIT * up)), 0, 100);
@@ -1293,7 +1344,7 @@ namespace FF1Lib
 
 			foreach (WeaponSprite w in possibleWeapon)
 			{
-				if (Rng.Between(rng, 0, 100) <= (int)((averageWeapons / possibleWeapon.Count)*100))	// Times 100 because there's no float option and I'm lazy
+				if (Rng.Between(rng, 0, 100) <= (int)((averageWeapons / possibleWeapon.Count) * 100))   // Times 100 because there's no float option and I'm lazy
 					ret.Add(w);
 				if (ret.Count >= weaponsMax)
 					break;
@@ -1309,7 +1360,7 @@ namespace FF1Lib
 			Classes c = (Classes)classIndex;
 			Classes p = (Classes)(classIndex + 6);
 
-			var pam = promoArmourWeight == -1 ? Math.Clamp(armourWeight + 1,0,4) : promoArmourWeight;
+			var pam = promoArmourWeight == -1 ? Math.Clamp(armourWeight + 1, 0, 4) : promoArmourWeight;
 			foreach (Item i in ItemLists.AllArmor) {
 				if (isEquippable(i, armourWeight))
 					newPermissions.AddPermission(c, i);
@@ -1320,7 +1371,7 @@ namespace FF1Lib
 
 		public bool isEquippable(Item i, int weight, bool promoted = false)
 		{
-				
+
 			// Weight Classes
 			if (weight >= 0 && (rom.ArmorPermissions[i] == CLOTH || rom.ArmorPermissions[i] == CAPE))
 				return true;
@@ -1405,7 +1456,7 @@ namespace FF1Lib
 			foreach (string s in possibleMagic)
 			{
 				if (Rng.Between(rng, 0, 100) <= (int)((averageMagicSchools / possibleMagic.Count) * 100))  // Times 100 because there's no float option and I'm lazy
-				{  
+				{
 					ret.AddRange(Transmooglifier.spellFamilies[s]);
 					promoMagic.Remove(s); // Make sure we can acquire different spells on level up
 					finalSchools.Add(s);
@@ -1430,7 +1481,7 @@ namespace FF1Lib
 			foreach (string s in promoMagic)
 			{
 				if (Rng.Between(rng, 0, 100) <= (int)((averageMagicSchools / possibleMagic.Count) * 100)) // Times 100 because there's no float option and I'm lazy
-				{ 
+				{
 					ret.AddRange(Transmooglifier.spellFamilies[s]);
 					finalPromoSchools.Add(s);
 				}
@@ -1446,8 +1497,8 @@ namespace FF1Lib
 			Classes c = (Classes)classIndex;
 			Classes p = (Classes)(classIndex + 6);
 
-			mageLevel = Math.Clamp(Rng.Between(rng, mageLevel-1, mageLevel+1), 0, 8); // Level that the mage's spells will cap at, clamped 0-8 ±1. -1 is 'no cap', useful for limited things like Fire Magic.
-			spellChargeGrowth = Math.Clamp(Rng.Between(rng, (int)(spellChargeGrowth *.5f), (int)(spellChargeGrowth * 1.5f)), 0, 100); // Total spell casts by end of game, Clamped 0-100±50%. Will allocate them lower levels and up
+			mageLevel = Math.Clamp(Rng.Between(rng, mageLevel - 1, mageLevel + 1), 0, 8); // Level that the mage's spells will cap at, clamped 0-8 ±1. -1 is 'no cap', useful for limited things like Fire Magic.
+			spellChargeGrowth = Math.Clamp(Rng.Between(rng, (int)(spellChargeGrowth * .5f), (int)(spellChargeGrowth * 1.5f)), 0, 100); // Total spell casts by end of game, Clamped 0-100±50%. Will allocate them lower levels and up
 			spellChargeMax = Math.Clamp(Rng.Between(rng, spellChargeMax - 2, spellChargeMax + 2), 0, 9); // Maximum spell charges total. Clamped 1-9±2.
 		}
 
@@ -1505,7 +1556,7 @@ namespace FF1Lib
 			{
 				if (i == 0)
 					return 0;
-				if ((spellCharges[i-1] > spellCharges[i] + 1 || spellCharges[i - 1] == spellChargeMax) && spellCharges[i] != spellChargeMax)
+				if ((spellCharges[i - 1] > spellCharges[i] + 1 || spellCharges[i - 1] == spellChargeMax) && spellCharges[i] != spellChargeMax)
 					return i;
 			}
 			return 0;
@@ -1514,7 +1565,7 @@ namespace FF1Lib
 		public void CommitBlursingSpecials(int classIndex)
 		{
 			Classes c = (Classes)classIndex;
-			Classes p = (Classes)(classIndex+6);
+			Classes p = (Classes)(classIndex + 6);
 
 			// Clear BBelt
 			rom.ClassData[c].UnarmedAttack = false;
@@ -1534,5 +1585,22 @@ namespace FF1Lib
 			if (Rng.Between(rng, 0, 100) <= (int)(SteelLord * 100))
 				rom.ClassData[c].SteelLord = rom.ClassData[p].SteelLord = true;
 		}
+
+		public Image<Rgba32> getImage(bool promoted = false)
+		{
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+
+			string path;
+
+			if (!promoted)
+				path = assembly.GetManifestResourceNames().First(str => str.EndsWith(name + ".png"));
+			else
+				path = assembly.GetManifestResourceNames().First(str => str.EndsWith(promoName + ".png"));
+
+			Image<Rgba32> image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(path));
+
+			return image;
+		}
+
 	}
 }
