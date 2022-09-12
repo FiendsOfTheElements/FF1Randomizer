@@ -146,24 +146,28 @@ namespace FF1Lib
 				{ new Rgba32(252, 252, 252), 3 }
 			};
 
-			for (int w = 0; w < 6; w++)
-			{
-				rom.PutInBank(0x09, 0x8D40 - 0x60 + (w * 16), rom.EncodeForPPU(getTile(w, index, image)));
-				//rom.PutInBank(0x12, 0x8D40 + (w * 16), rom.EncodeForPPU(newtile));
-			}
-
-			image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(spelliconsPath), out format);
-			for (int w = 0; w < 4; w++)
+			for (int w = 0; w < 5; w++)
 			{
 				rom.PutInBank(0x09, 0x8D40 + 0x1E0 + (w * 16), rom.EncodeForPPU(getTile(w, index, image)));
 				//rom.PutInBank(0x12, 0x8D40 + (w * 16), rom.EncodeForPPU(newtile));
 			}
 
-			for (int w = 4; w < 11; w++)
-			{
-				rom.PutInBank(0x09, 0x8D40 - 0x120 + (w * 16), rom.EncodeForPPU(getTile(w, index, image)));
-				//rom.PutInBank(0x12, 0x8D40 + (w * 16), rom.EncodeForPPU(newtile));
-			}
+			rom.PutInBank(0x09, 0x8800 + 0x10 * 0x48, rom.EncodeForPPU(getTile(5, index, image)));
+
+			// For now, there's no room for new spells T_T
+
+			//image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(spelliconsPath), out format);
+			//for (int w = 0; w < 4; w++)
+			//{
+			//	rom.PutInBank(0x09, 0x8D40 + 0x1E0 + (w * 16), rom.EncodeForPPU(getTile(w, index, image)));
+			//	//rom.PutInBank(0x12, 0x8D40 + (w * 16), rom.EncodeForPPU(newtile));
+			//}
+
+			//for (int w = 4; w < 11; w++)
+			//{
+			//	rom.PutInBank(0x09, 0x8D40 - 0x120 + (w * 16), rom.EncodeForPPU(getTile(w, index, image)));
+			//	//rom.PutInBank(0x12, 0x8D40 + (w * 16), rom.EncodeForPPU(newtile));
+			//}
 		}
 
 		public List<ClassDef> CreateClasses()
@@ -1224,26 +1228,26 @@ namespace FF1Lib
 		{
 			var mSchool = magicSchool.ToUpper();
 
-			if (mSchool == "ALL") return "∞A";
-			if (mSchool == "BLACK") return "∞B";
+			//if (mSchool == "ALL") return "∞A";
+			//if (mSchool == "BLACK") return "∞B";
 			if (mSchool == "ELEM") return "€f€i€t€e";
 			if (mSchool == "FIRE") return "€f";
 			if (mSchool == "LIT") return "€t";
 			if (mSchool == "ICE") return "€i";
 			if (mSchool == "EARTH") return "€e";
 			if (mSchool == "STATUS") return "€s";
-			if (mSchool == "GREY") return "∞G";
+			//if (mSchool == "GREY") return "∞G";
 			if (mSchool == "DEATH") return "€d";
 			if (mSchool == "POISON") return "€p";
 			if (mSchool == "TIME") return "€T";
-			if (mSchool == "WHITE") return "∞W";
-			if (mSchool == "RECOVERY") return "∞R";
-			if (mSchool == "HEALTH") return "∞c";
-			if (mSchool == "AILMENT") return "∞a";
-			if (mSchool == "LIFE") return "∞l";
-			if (mSchool == "HOLY") return "∞h";
-			if (mSchool == "SPACE") return "∞s";
-			if (mSchool == "BUFF") return "∞U";
+			//if (mSchool == "WHITE") return "∞W";
+			//if (mSchool == "RECOVERY") return "∞R";
+			//if (mSchool == "HEALTH") return "∞c";
+			//if (mSchool == "AILMENT") return "∞a";
+			//if (mSchool == "LIFE") return "∞l";
+			//if (mSchool == "HOLY") return "∞h";
+			//if (mSchool == "SPACE") return "∞s";
+			//if (mSchool == "BUFF") return "∞U";
 
 			return "";
 		}
