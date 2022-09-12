@@ -3,7 +3,7 @@
 @using System.IO;
 @inject IJSRuntime JSRuntime
 
-<div id="Beta" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+<div id="Experimental" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
 	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Experimental Beta Flags</a></h3>
 	@if (IsOpen)
 	{
