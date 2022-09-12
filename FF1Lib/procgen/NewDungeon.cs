@@ -14,7 +14,9 @@ namespace FF1Lib.Procgen
         public Map Tilemap;
 	public DungeonTiles dt;
 	int roomCount;
+	public TileSet tileSet;
 
+	private bool ownFeatures;
 	public List<byte> Stairs;
 	public List<byte> Chests;
 	public List<byte> Traps;
@@ -22,11 +24,16 @@ namespace FF1Lib.Procgen
 
 	public SCCoords Entrance;
 
-        public MapState(MT19337 rng, List<MapGenerationStep> steps, DungeonTiles dt, FF1Rom.ReportProgress progress) : base(rng, steps, progress) {
+        public MapState(MT19337 rng, List<MapGenerationStep> steps, Map tilemap, DungeonTiles dt, TileSet tileSet, FF1Rom.ReportProgress progress) : base(rng, steps, progress) {
             this.ownTilemap = true;
-	    this.Tilemap = new Map(0);
+	    this.Tilemap = tilemap.Clone();
 	    this.dt = dt;
 	    this.roomCount = 0;
+	    this.tileSet = tileSet;
+	    this.Stairs = new();
+	    this.Chests = new();
+	    this.Traps = new();
+	    this.NPCs = new();
 	}
 
         public MapState(MapState copy) : base(copy) {
@@ -34,6 +41,12 @@ namespace FF1Lib.Procgen
 	    this.Tilemap = copy.Tilemap;
 	    this.dt = copy.dt;
 	    this.roomCount = copy.roomCount;
+	    this.tileSet = copy.tileSet;
+	    this.Stairs = copy.Stairs;
+	    this.Chests = copy.Chests;
+	    this.Traps = copy.Traps;
+	    this.NPCs = copy.NPCs;
+	    this.Entrance = copy.Entrance;
 	}
 
         void OwnTilemap() {
@@ -42,6 +55,17 @@ namespace FF1Lib.Procgen
             }
 	    this.Tilemap = this.Tilemap.Clone();
             this.ownTilemap = true;
+        }
+
+        void OwnFeatures() {
+            if (this.ownFeatures) {
+                return;
+            }
+	    this.Chests = new (this.Chests);
+	    this.Stairs = new (this.Stairs);
+	    this.Traps = new (this.Traps);
+	    this.NPCs = new (this.NPCs);
+            this.ownFeatures = true;
         }
 
 	public void RenderFeature(SCCoords point, byte[,] feature) {
@@ -79,7 +103,7 @@ namespace FF1Lib.Procgen
 
     public static class NewDungeon {
 
-	public async static Task<CompleteMap> GenerateNewMap(MT19337 rng, MapId mapId, List<Map> maps, FF1Rom.ReportProgress progress) {
+	public async static Task<CompleteMap> GenerateNewMap(MT19337 rng, FF1Rom rom, MapId mapId, List<Map> maps, FF1Rom.ReportProgress progress) {
 	    await progress("", 1);
 
 	    List<MapGenerationStep> mapGenSteps = null;
@@ -98,15 +122,18 @@ namespace FF1Lib.Procgen
 		    */
 		    case MapId.EarthCaveB1:
 			mapGenSteps = new () {
+			    new MapGenerationStep("CollectInfo", new object[] {  }),
 			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 			    new MapGenerationStep("EarthB1Style", new object[] { }),
+			    new MapGenerationStep("SetEntrance", new object[] { 30, 30 }),
 			    new MapGenerationStep("PlaceTile", new object[] { 30, 30, DungeonTiles.CAVE_EARTH_B1_ENTRANCE }),
 			    new MapGenerationStep("PlaceTreasureRooms", new object[] { }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_rock_walls, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
 			    new MapGenerationStep("PlaceExitStairs", new object[] { 30, 30, DungeonTiles.CAVE_EARTH_B1_EXIT }),
-			    new MapGenerationStep("PlaceChests", new object[] { new List<byte> { 0x42, 0x42, 0x42, 0x42, 0x42, 0x42 } }),
+			    new MapGenerationStep("PlaceChests", new object[] { }),
+			    new MapGenerationStep("SanityCheck", new object[] { }),
 			};
 			break;
 		    default:
@@ -114,7 +141,8 @@ namespace FF1Lib.Procgen
 		}
 
 		if (mapGenSteps != null) {
-		    var blankState = new MapState(rng, mapGenSteps, dt, progress);
+		    var tileset = new TileSet(rom, rom.GetMapTilesetIndex(mapId));
+		    var blankState = new MapState(rng, mapGenSteps, maps[(int)mapId], dt, tileset, progress);
 		    var worldState = await ProgenFramework.RunSteps<MapState, MapResult, MapGenerationStep>(blankState, progress);
 		    if (worldState != null) {
 			return new CompleteMap { Map = worldState.Tilemap };

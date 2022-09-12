@@ -207,7 +207,7 @@ namespace FF1Lib.Procgen
 		}
 
 		if (d1 != direction) {
-		    Console.WriteLine($"d2 {d1} {direction} {x} {y} {w} {h}");
+		    //Console.WriteLine($"d2 {d1} {direction} {x} {y} {w} {h}");
 		}
 
 		List<SCCoords> end = null;
@@ -282,9 +282,9 @@ namespace FF1Lib.Procgen
 		    ld[j] = dir;
 		}
 	    }
-	    Console.WriteLine($"{treasureRooms}");
+	    //Console.WriteLine($"{treasureRooms}");
 
-	    if (treasureRooms < 3) {
+	    if (treasureRooms < 2) {
 		return new MapResult(false);
 	    }
 
@@ -332,10 +332,10 @@ namespace FF1Lib.Procgen
 	    var c = this.dt.cave_corners.Candidates(this.Tilemap.MapBytes);
 	    var doors = this.Candidates(DungeonTiles.CAVE_DOOR);
 
-	    var e = c.Where((d) => Math.Sqrt((d.X-entrancex)*(d.X-entrancex) + (d.Y-entrancey)*(d.Y-entrancey)) > 20);
+	    var e = c.Where((d) => Math.Sqrt((d.X-entrancex)*(d.X-entrancex) + (d.Y-entrancey)*(d.Y-entrancey)) > 12);
 
 	    foreach (var f in doors) {
-		e = e.Where((d) => Math.Sqrt((d.X-f.X)*(d.X-f.X) + (d.Y-f.Y)*(d.Y-f.Y)) > 15);
+		e = e.Where((d) => Math.Sqrt((d.X-f.X)*(d.X-f.X) + (d.Y-f.Y)*(d.Y-f.Y)) > 12);
 	    }
 
 	    var g = e.ToList();
@@ -353,14 +353,22 @@ namespace FF1Lib.Procgen
 	}
 
 
-	public async Task<MapResult> PlaceChests(List<byte> chests) {
+	public async Task<MapResult> PlaceChests() {
 	    this.OwnTilemap();
 
 	    var cand = this.Candidates(DungeonTiles.CAVE_ROOM_FLOOR);
 
-	    foreach (var c in chests) {
+	    var traps = new List<byte>(this.Traps);
+
+	    foreach (var c in this.Chests) {
 		var p = cand.SpliceRandom(this.rng);
 		this.Tilemap[p.Y, p.X] = c;
+
+		if (traps.Count > 0) {
+		    if (this.Tilemap[p.Y+1, p.X] == DungeonTiles.CAVE_ROOM_FLOOR) {
+			this.Tilemap[p.Y+1, p.X] = traps.SpliceRandom(this.rng);
+		    }
+		}
 	    }
 
 	    return await this.NextStep();
@@ -369,6 +377,73 @@ namespace FF1Lib.Procgen
 	public async Task<MapResult> PlaceTile(int x, int y, byte tile) {
 	    this.OwnTilemap();
 	    this.Tilemap[y, x] = tile;
+	    return await this.NextStep();
+	}
+
+	public async Task<MapResult> CollectInfo() {
+	    this.OwnFeatures();
+
+	    byte randomEncounter = 0x80;
+
+	    for (int y = 0; y < MAPSIZE; y++) {
+		for (int x = 0; x < MAPSIZE; x++) {
+		    byte t = this.Tilemap[y, x];
+
+		    if (this.tileSet.TileProperties[t].TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE)) {
+			this.Chests.Add(t);
+		    }
+		    if ((this.tileSet.TileProperties[t].TilePropFunc & TilePropFunc.TP_TELE_MASK) != 0) {
+			this.Stairs.Add(t);
+		    }
+		    if (this.tileSet.TileProperties[t].TilePropFunc == TilePropFunc.TP_SPEC_BATTLE) {
+			if (this.tileSet.TileProperties[t].BattleId != randomEncounter) {
+			    this.Traps.Add(t);
+			}
+		    }
+		}
+	    }
+
+	    return await this.NextStep();
+	}
+
+	public async Task<MapResult> SetEntrance(int x, int y) {
+	    this.Entrance = new SCCoords(x, y);
+	    return await this.NextStep();
+	}
+
+	public async Task<MapResult> SanityCheck() {
+	    this.OwnFeatures();
+
+	    foreach (var c in this.Chests) {
+		Console.WriteLine($"chest {c:X}");
+	    }
+
+	    this.Tilemap.Flood((this.Entrance.X, this.Entrance.Y), (MapElement me) => {
+//Console.WriteLine($" {me.X} {me.Y} {me.Value:X}");
+		if (this.Chests.Contains(me.Value)) {
+		    Console.WriteLine($"removing {me.Value:X}");
+		    this.Chests.Remove(me.Value);
+		}
+		if (this.Stairs.Contains(me.Value)) {
+		    this.Stairs.Remove(me.Value);
+		}
+
+		if ((this.tileSet.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_SPEC_DOOR) != 0) {
+		    return true;
+		}
+
+		if ((this.tileSet.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) != 0) {
+		    return false;
+		}
+		return true;
+	    });
+
+	    Console.WriteLine($"count {this.Chests.Count} {this.Stairs.Count}");
+
+	    if (this.Chests.Count > 0 || this.Stairs.Count > 0) {
+		return new MapResult(false);
+	    }
+
 	    return await this.NextStep();
 	}
     }

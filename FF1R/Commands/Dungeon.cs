@@ -172,7 +172,7 @@ namespace FF1R.Commands
 		Image<Rgba32> output;
 		string name;
 
-		var replacementMap = Task.Run<FF1Lib.Procgen.CompleteMap>(async () => await FF1Lib.Procgen.NewDungeon.GenerateNewMap(rng, (FF1Lib.MapId)i, maps, this.Progress)).Result;
+		var replacementMap = Task.Run<FF1Lib.Procgen.CompleteMap>(async () => await FF1Lib.Procgen.NewDungeon.GenerateNewMap(rng, rom, (FF1Lib.MapId)i, maps, this.Progress)).Result;
 		maps[i] = replacementMap.Map;
 
 		output = rom.RenderMap(maps, (FF1Lib.MapId)i, false);
