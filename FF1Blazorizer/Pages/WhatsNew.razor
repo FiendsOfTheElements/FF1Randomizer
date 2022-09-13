@@ -2,30 +2,15 @@
 <div class="content px-4 tinted">
 	<div class="nes-container is-dark col-xs-12">
 
-        <h1><a href="https://beta.finalfantasyrandomizer.com">[Current Beta]</a></h1>
+        <h1><a href="https://4-6-0.finalfantasyrandomizer.com">Version 4.6.0</a></h1>
         <h2>General & Features</h2>
         <ul>
 			<li>Upgraded .net to 6.0, which should noticeably increase site performance.</li>
-            <li>"Alt Fiends" custom sprites temporarily removed because of a compatability issue; they will hopefully be re-implemented with the next major update.</li>
             <li>"Highway to Ordeals" Map Edit flag, connecting Lefein to Mirage to Ordeals.</li>
-            <li>"Flip Dungeons Vertically" flag.</li>
-            <li>Several options have been converted into sliders, allowing for more precise/streamlined adjustment and allowing for random ranges:
-                <ul>
-                    <li>Unrunnable Formation Count</li>
-                    <li>Adjustable Damage Tile Damage (Lava)</li>
-                    <li>Shard Hunt Count</li>
-                    <li>Starting Character Level</li>
-                    <li>PowerWord Spell Strength (XXXX etc.)</li>
-                </ul>
-            </li>
-            <li>"Balanced Rude" Touch Pool option for those that like things spicier (but still mostly reasonable).</li>
-            <li>"Shuffle Chime Access" flag.</li>
-            <li>Class-specific XP can now be adjusted down (to as low as 50%) as well as up.</li>
-            <li>"Life in Battle" can now be set to only work for LIFE1 and not LIF2.</li>
             <li>Incentive flag to require Ship+Canal are placed before the Floater.</li>
-            <li>WarMECH Mode can now also be set to "Random" or "All".</li>
-            <li>New Shallow/Deep incentive areas for Volcano.</li>
-            <li>"Innate Magic" blursing sub-flag provides sets of 2-3 spells that are given at Tier-8 (regardless of the actual tiers of the spells, which can still be learned at their normal level), come with 2MP, and can be given to melee classes:
+            <li>Unrunnable Formation Count has been converted into a slider, allowing for more precise adjustment and allowing for random ranges.</li>
+            <li>New Adjustable Tile Damage (lava) slider, letting you set tile damage 0-10 or randomized in a range.</li>
+            <li>"Innate Magic" blursing sub-flag provides sets of spells that are given at Tier-8 (regardless of the actual tiers of the spells, which can still be learned at their normal level), come with 2MP, and can be given to melee classes:
                 <ul>
                     <li>"Tele Magic" gives WARP & EXIT</li>
                     <li>"Buff Magic" gives TMPR, FAST, & INV2</li>
@@ -40,34 +25,44 @@
                 <ul>
                     <li>+All Shields and +All Gauntlets/All Helmets Blessings</li>
                     <li>-No Masamune Malus</li>
-                    <li>+BonusGold buffed and made to scale with the flagset's Starting Gold</li>
+                    <li>+/-Gold buffed and made to scale with the flagset's Starting Gold</li>
                     <li>+Promo Sage and +Promo Fighter Armor Blessings</li>
                     <li>Starting spell bonuses are now always given at Tier-8 (regardless of the actual tiers of the spells, which can still be learned at their normal level) and come with 2MP.</li>
                     <li>+More starting spell possibilities: CUR3, HEL2, LOCK/LOK2</li>
                     <li>-More removed spell possibilities: CUR3, HEL3, INV2, WALL, LOCK/LOK2, FIR3/LIT3/ICE3</li>
                     <li>-No Knight Armor Malus</li>
                     <li>-Ninja gets Red Wizard Armor Malus</li>
-                    <li>+Vamp Killer & Dragonslayer Type-slaying Blessings</li>
+                    <li>+Hurt Undead, +Hurt Dragons type-slaying Blessings</li>
                 </ul>
             </li>
+            <li>"Flip Dungeons Vertically" flag.</li>
+            <li>"Balanced Rude" Touch Pool option for those that like things spicier (but still mostly reasonable).</li>
+            <li>"Shuffle Chime Access" flag.</li>
+            <li>"Life in Battle" can now be set to only work for LIFE1 and not LIFE2.</li>
+            <li>WarMECH Mode can now also be set to "Random" or "All".</li>
+            <li>Class-specific XP can now be adjusted down (to as low as 50%) as well as up.</li>
+            <li>New Shallow/Deep incentive areas for Volcano.</li>
         </ul>
         <h2>Bugfixes & Tweaks</h2>
         <ul>
             <li>Fixed: Death & Stone Touch effects were never generating with Randomized Status Effects.</li>
             <li>Changed Tourney-safe Restrictions to allow more visual modifications.</li>
+            <li>Fixes & tweaks for Blursings: Addressed language-specific crashes; Thor Master & CatClaw Ace now let you equip those weapons pre-promotion; spell blursings no longer show what tier level they are; bigger Agility boosts; removed some do-nothing blursings for specific cases/classes; removed confusing starting DARK/LAMP maluses; promo-specific blursings no longer available if you cannot promote; starting INV2 instead of INVS; removed RUSE from possible starting spells; fixed Shirts + Armor Crafter.</li>
             <li>Bugfixes for Proc-gen Overworld relating to Titan's Tunnel, Bridge placement, and more.</li>
             <li>Proc-gen Overworld now more likely to require early progression items: Bridge, Ruby, or Canal.</li>
-            <li>Fixes & tweaks for blursings: Language-specific crashes; Thor Master & CatClaw Ace now let you equip those weapons pre-promotion; Starting INV2 instead of INVS; Bigger Agility Boosts; removed possibilty for some do-nothing blursings for specific cases/classes; removed confusing Starting DARK/LAMP maluses; spell maluses no longer show what tier level they are; promo-specific blursings no longer available if you cannot promote; removed RUSE from Starting Spell list; fixed Shirts + Armor Crafter.</li>
             <li>Adjusted equipment tiers: Opal Gauntlets/Helm Legendary->Rare; Power Guantlet Rare->Legendary; Power Rod Common->Rare.</li>
             <li>Fixed E/F Shuffle not randomizing some connections properly.</li>
             <li>Armor Crafter: Fixed Black Shirt using the wrong spell pool.</li>
             <li>Weaponizer & Armor Crafter: Fixed WALL not being included in defensive spell pools.</li>
             <li>"Gating" incentive location terminology cleanup.</li>
-            <li>NOverworld fixes for Arcipelago & Key Item Blessings.</li>
-            <li>Fix: Rare case where a "Forced" party member could result in starting with a promoted character (without itending this as a possibility).</li>
+            <li>NOverworld fixes for Archipelago & Key Item Blessings.</li>
             <li>Fixed a few bugs concerning Item Magic Pools and Starting Caster Equipment.</li>
             <li>Removed 4F Sky from "Swap Stair Locations" (4F Sky already has its own setting).</li>
-            <li>Consolidate Adjustments Tab (fewer checkboxes); Misc. clarity fixes (better tooltips, graying out incompatible flags, etc.).</li>
+            <li>Ribbon now only included in Legendary Armor Shop pool once instead of three times.</li>
+            <li>Fixed rare case where a "Forced" party member could result in starting with a promoted character (without any promotions checked).</li>
+            <li>Archipelago moved from Experimental Tab to Goals Tab.</li>
+            <li>"Clinics Don't Cost Money" & "Clinics Heal All Statuses" combined into one "Improved Clinics" flag, and moved from Experimental Tab to Shop Tab.</li>
+            <li>Consolidated Adjustments Tab (fewer checkboxes); Misc. clarity fixes (better tooltips, graying out incompatible flags, etc.)</li>
         </ul>
 
         <h1><a href="https://4-5-4.finalfantasyrandomizer.com">Version 4.5.4</a></h1>
