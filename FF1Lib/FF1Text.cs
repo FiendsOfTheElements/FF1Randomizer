@@ -1,4 +1,9 @@
-﻿namespace FF1Lib
+﻿using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using RomUtilities;
+
+namespace FF1Lib
 {
 	// ReSharper disable once InconsistentNaming
 	public static class FF1Text
@@ -172,22 +177,10 @@
 			// I can put two in 7E, 7F
 
 			// 0xC6 Level icon (it has a sinlge different PIXEL so it's off limits despite being otherwise identical to the regular L...)
-			// 0xC7 Equip icon (ditto but for E) 
-			//{ "∞R", 0xC6 }, // recovery magic
-			//{ "∞c", 0xC7 }, // health (cure) magic
+			// 0xC7 Equip icon (ditto but for E)
 
-			// These are free
-			{ "@w", 0xC8 }, // shortsword
 
-			//{ "∞a", 0xC8 }, // ailment magic
-			//{ "∞l", 0xC9 }, // life magic
-
-			// These are used by the Menu's STATUS and WEAPON condense
-			//{ "∞h", 0xCA }, // holy magic
-			//{ "∞s", 0xCB }, // space magic
-			//{ "∞t", 0xCC }, // tele magic
-			//{ "∞U", 0xCD }, // buff magic
-
+			// Base Game Icons
 			{ "@S", 0xD4 }, // swords (long)
 			{ "@H", 0xD5 }, // hammers
 			{ "@K", 0xD6 }, // knives
@@ -202,37 +195,53 @@
 			{ "@T", 0xDF }, // shirts
 			{ "%", 0xE0 },
 			{ "@p", 0xE1 }, // potion
-			{ "€s", 0xE2 }, // status
-			{ "€p", 0xE3 }, // poison
-			{ "€T", 0xE4 }, // time
-			{ "€d", 0xE5 }, // death
-			{ "€f", 0xE6 }, // fire
-			{ "€i", 0xE7 }, // ice
-			{ "€t", 0xE8 }, // lightning
-			{ "€e", 0xE9 }, // earth
-			{ "§d", 0xEA }, // dead
-			{ "§s", 0xEB },	// stone
-			{ "§p", 0xEC }, // poison
-			{ "§b", 0xED }, // blind
-			{ "§P", 0xEE }, // stun
-			{ "§Z", 0xEF }, // sleep
-			{ "§M", 0xF0 }, // mute
-			{ "§C", 0xF1 }, // confuse
-
-			{ "@U", 0xF2 }, // unarmed
-			{ "@R", 0xF3 }, // rod
-			{ "@c", 0xF4 }, // scimitar
-			{ "@f", 0xF5 }, // falchion
-			{ "@r", 0xF6 }, // rapier
-
-			//{ "∞W", 0xF3 }, // white magic
-			//{ "∞G", 0xF4 }, // grey magic
-			//{ "∞B", 0xF5 }, // black magic
-			// I can put one more in 0xF6
-
-			//{ "∞S", 0xFE }, // self magic
 
 			{ " ", 0xFF }
+		};
+
+		// Custom Icons
+		private static readonly Dictionary<string, byte> Icons = new Dictionary<string, byte>
+		{
+			{ "≈U", 0xA1 }, // unarmed
+			{ "≈R", 0xA2 }, // rod
+			{ "≈c", 0xA3 }, // scimitar
+			{ "≈f", 0xA4 }, // falchion
+			{ "≈r", 0xA5 }, // rapier
+			{ "≈w", 0xA6 }, // shortsword
+
+			{ "ΩA", 0xA7 }, // all magic
+			{ "ΩW", 0xA8 }, // white magic
+			{ "ΩG", 0xA9 }, // grey magic
+			{ "ΩB", 0xAA }, // black magic
+			{ "ΩR", 0xAB }, // recovery magic
+			{ "Ωc", 0xAC }, // health (cure) magic
+			{ "Ωa", 0xAD }, // ailment magic
+			{ "Ωl", 0xAE }, // life magic
+			{ "Ωh", 0xAF }, // holy magic
+			{ "Ωs", 0xB0 }, // space magic
+			{ "Ωt", 0xB1 }, // tele magic
+			{ "ΩU", 0xB2 }, // buff magic
+			{ "ΩS", 0xB3 }, // self magic
+
+			{ "€s", 0xB4 }, // status
+			{ "€p", 0xB5 }, // poison
+			{ "€T", 0xB6 }, // time
+			{ "€d", 0xB7 }, // death
+			{ "€f", 0xB8 }, // fire
+			{ "€i", 0xB9 }, // ice
+			{ "€t", 0xBA }, // lightning
+			{ "€e", 0xBB }, // earth
+
+			{ "§d", 0xBC }, // dead
+			{ "§s", 0xBD },	// stone
+			{ "§p", 0xBE }, // poison
+			{ "§b", 0xBF }, // blind
+			{ "§P", 0xC0 }, // stun
+			{ "§Z", 0xC1 }, // sleep
+			{ "§M", 0xC2 }, // mute
+			{ "§C", 0xC3 }, // confuse
+
+
 		};
 
 		static FF1Text()
@@ -257,6 +266,10 @@
 			return builder.ToString();
 		}
 
+		public static bool isIcon(string charCode) {
+			return Icons.ContainsKey(charCode);
+		}
+
 		public static Blob TextToBytes(string text, bool useDTE = true, Delimiter delimiter = Delimiter.Null)
 		{
 			Blob bytes = new byte[text.Length + 1];
@@ -264,9 +277,16 @@
 			while (i < text.Length - 1)
 			{
 				var twoChars = text.Substring(i, 2);
-				if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@' || twoChars[0] == '€' || twoChars[0] == '§'))
+				if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@') || isIcon(twoChars))
 				{
-					bytes[j++] = BytesByText[twoChars];
+					if (isIcon(twoChars))
+					{
+						bytes[j++] = 0x10;
+						bytes[j++] = Icons[twoChars];
+					}
+					else
+						bytes[j++] = BytesByText[twoChars];
+
 					i += 2;
 				}
 				else
@@ -394,6 +414,108 @@
 
 			return TextToBytes(flagLeft + text + flagRight, false, Delimiter.Empty);
 		}
+
+		// Loads custom icons
+		public static void AddNewIcons(FF1Rom rom)
+		{
+			// Icons have a 0x10 Control code indicating the next byte is pulled from the 0x00-0x7F tile reference instead of the 0x80-0xFF like regular fonts
+
+			// Control Code 0x10 Blobs
+			rom.PutInBank(0x1E, 0x8600, Blob.FromHex("C98090174980AE0220A6558E0620A6548E06208D0720E6544C4EE0AAA98448A9F348A90E4C03FE")); // Parse and draw the control code
+
+			rom.PutInBank(0x0E, 0x84F4, Blob.FromHex("8A20708D203EDE4C4EE0")); // Setup for print char stat?
+			rom.PutInBank(0x1F, 0xDF2D, Blob.FromHex("A91E2003FE8A4C0086")); // Swap and jump to our code in bank 1E
+
+
+			//	New image blobs are imported into Bank 12, 0x8800. There is 0x800 of space but we can only use 0x600. as the last 0x200 is reserved for orbs.
+
+			// Copy over the ORBS
+			var tileset = rom.GetFromBank(0x0D, 0xB600, 0x0200);     // Get font tileset
+			rom.PutInBank(0x12, 0x8800 + 0x600, tileset);              // Put it in bank 12
+
+			// Change where the ORBS are loaded from and to so we can piggyback our icons - Now we load 8 lines from Bank 12 into 0000 of the PPU
+			rom.PutInBank(0x1F, 0xEAA2, Blob.FromHex("A9122003FEA208A9008510A9888511A900"));
+
+			// Load icons from images. Make your own if you'd like! Don't forget to add them to the icon dictionary
+
+			IImageFormat format;
+
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var weaponiconsPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("weapon_icons.png"));
+			var spelliconsPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("spell_icons.png"));
+
+			// 0 = black
+			// 1 = grey
+			// 2 = blue
+			// 3 = white
+
+			Dictionary<Rgba32, byte> index = new Dictionary<Rgba32, byte> {
+				{ new Rgba32(0x00, 0x00, 0x00), 0 },
+				{ new Rgba32(0x7f, 0x7f, 0x7f), 1 },
+				{ new Rgba32(116, 116, 116), 1 },
+				{ new Rgba32(0x00, 0x00, 0xff), 2 },
+				{ new Rgba32(36, 24, 140), 2 },
+				{ new Rgba32(0xff, 0xff, 0xff), 3 },
+				{ new Rgba32(252, 252, 252), 3 }
+			};
+
+			// New Code
+			int offset = 0x8800;
+			offset += 16 * 32 + 16; // First line needs to remain blank, it's used by the system for special commands
+
+			// Weapons
+			Image<Rgba32> image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(weaponiconsPath), out format);
+			for (int w = 0; w < 6; w++)
+			{
+				rom.PutInBank(0x12, offset, rom.EncodeForPPU(getTile(w, index, image)));
+				offset += 16;
+			}
+
+			// Spells
+			image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(spelliconsPath), out format);
+			for (int w = 0; w < 13; w++)
+			{
+				rom.PutInBank(0x12, offset, rom.EncodeForPPU(getTile(w, index, image)));
+				offset += 16;
+			}
+
+			// These are the old icons, no images for these only THE BLOB
+			var newIcons = "00183C3C18180018FFFFFFFFFFFFFFFF" + // E2 to F1
+							"001812446036381CFFFFFFFFFFFFFFFF" +
+							"0044BA6CE6FE7C38FFFFFFFFFFFFFFFF" +
+							"00386CC66C7C3838FFFFFFFFFFFFFFFF" +
+							"000C3872D88C8448FFFFFFFFFFFFFFFF" +
+							"0010104410441010FFFFFFFFFFFFFFFF" +
+							"00103070FE1C1810FFFFFFFFFFFFFFFF" +
+							"00000000E7F3E7EFFFFFFFFFFFFFFFFF" +
+							"007CFE92FE540038FFFFFFFFFFFFFFFF" +
+							"003C7EBDD9B1523CFFFFFFFFFFFFFFFF" +
+							"0038102828447C38FFFFFFFFFFFFFFFF" +
+							"00006CDA926C0000FFFFFFFFFFFFFFFF" +
+							"0080E82E82E82E02FFFFFFFFFFFFFFFF" +
+							"0070102E4274080EFFFFFFFFFFFFFFFF" +
+							"003C7EFFD57E3C0EFFFFFFFFFFFFFFFF" +
+							"003C42421C100010FFFFFFFFFFFFFFFF";
+
+			rom.PutInBank(0x12, offset, Blob.FromHex(newIcons));
+		}
+
+		public static byte[] getTile(int imageTileIndex, Dictionary<Rgba32, byte> index, Image<Rgba32> image)
+		{
+			var newtile = new byte[64];
+			int px = 0;
+			for (int y = 0; y < (0 + 8); y++)
+			{
+				for (int x = (imageTileIndex * 8); x < ((imageTileIndex * 8) + 8); x++)
+				{
+					newtile[px] = index[image[x, y]];
+					px++;
+				}
+			}
+
+			return newtile;
+		}
+
 	}
 
 	public class ItemNames
@@ -520,5 +642,6 @@
 			get => _battleTexts[textid];
 			set => _battleTexts[textid] = value;
 		}
+
 	}
 }
