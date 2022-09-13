@@ -327,9 +327,15 @@ namespace FF1Lib
 					bytes[j++] = Blob.FromHex(text.Substring(i + 1, 2))[0];
 					i += 3;
 				}
-				else if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@' || twoChars[0] == '€' || twoChars[0] == '§'))
+				else if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@') || isIcon(twoChars))
 				{
-					bytes[j++] = BytesByText[twoChars];
+					if (isIcon(twoChars))
+					{
+						bytes[j++] = 0x10;
+						bytes[j++] = Icons[twoChars];
+					}
+					else
+						bytes[j++] = BytesByText[twoChars];
 					i += 2;
 				}
 				else
