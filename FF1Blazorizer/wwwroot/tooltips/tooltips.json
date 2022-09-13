@@ -1712,15 +1712,9 @@
 	},
 	{
 		"Id": "improvedClinicCheckBox",
-		"title": "Clinics Heal All Statuses",
+		"title": "Clinics are Free & Heal All Statuses",
 		"screenshot": "improved-clinic.png",
-		"description": "In addition to reviving dead characters at 1 HP, all clinics now heal Poison and Stone statuses (without affecting your HP)."
-	},
-	{
-		"Id": "freeClinicCheckBox",
-		"title": "Clinics Don't Cost Money",
-		"screenshot": "free-clinic.png",
-		"description": "All clinics revive your characters for free."
+		"description": "In addition to reviving dead characters at 1 HP, all clinics now heal Poison and Stone statuses (without affecting your HP).\nClincs are also now free."
 	},
 	{
 		"Id": "etherizerCheckBox",

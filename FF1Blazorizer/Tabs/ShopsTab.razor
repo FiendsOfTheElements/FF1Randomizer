@@ -13,6 +13,10 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopsCheckBox" @bind-Value="Flags.MagicShops">Magic Shops</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopLocsCheckBox" @bind-Value="Flags.MagicShopLocs">Magic Shop Locations</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicShopLocs" Id="magicShopLocationPairsCheckBox" @bind-Value="Flags.MagicShopLocationPairs">Paired Shuffle</TriStateCheckBox>
+
+            <div class="checkbox-cell"></div>
+            <CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.RecruitmentMode)" Id="improvedClinicCheckBox" @bind-Value="Flags.ImprovedClinic">Improved Clinics</CheckBox>
+
 			<div class="checkbox-cell"></div>
             <div class="row">
 			    <h4>Legendary Shops</h4>

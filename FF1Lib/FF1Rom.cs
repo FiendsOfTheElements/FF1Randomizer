@@ -1140,7 +1140,7 @@ public partial class FF1Rom : NesRom
 			ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
 		}
 
-		ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.FreeClinic);
+		ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.ImprovedClinic);
 		ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 		WriteMaps(maps);

@@ -373,7 +373,6 @@ namespace FF1Lib
 		public bool IncentiveChestItemsFanfare { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;
 		public bool ImprovedClinic { get; set; } = false;
-		public bool FreeClinic { get; set; } = false;
 		public bool Etherizer { get; set; } = false;
 		public bool HouseMPRestoration { get; set; } = false;
 		public bool WeaponStats { get; set; } = false;
