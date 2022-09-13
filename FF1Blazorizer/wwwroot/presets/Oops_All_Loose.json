@@ -257,7 +257,6 @@
     "IncentiveChestItemsFanfare": true,
     "WaitWhenUnrunnable": true,
     "ImprovedClinic": false,
-    "FreeClinic": false,
     "Etherizer": false,
     "HouseMPRestoration": true,
     "WeaponStats": true,
