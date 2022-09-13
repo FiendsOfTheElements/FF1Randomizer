@@ -43,8 +43,6 @@ namespace FF1Lib
 			ClassDef.rng = rng;
 			ClassDef.newPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, rom);
 
-			AddNewIcons(rom);
-
 			if (spellFamilies.Count <= 0)
 				PopulateSpellTypes(rom);
 
@@ -82,92 +80,6 @@ namespace FF1Lib
 			// add palette for "none" mapman
 			ClassDef.rom.PutInBank(0x0F, lut_MapmanPalettes + (13 << 3), new byte[] {0x0F, 0x0F, 0x12, 0x36,
 										0x0F, 0x0F, 0x21, 0x36});
-		}
-
-		public byte[] getTile(int imageTileIndex, Dictionary<Rgba32, byte> index, Image<Rgba32> image)
-		{
-			var newtile = new byte[64];
-			int px = 0;
-			for (int y = 0; y < (0 + 8); y++)
-			{
-				for (int x = (imageTileIndex * 8); x < ((imageTileIndex * 8) + 8); x++)
-				{
-					newtile[px] = index[image[x, y]];
-					px++;
-				}
-			}
-
-			return newtile;
-		}
-
-		public void AddNewIcons(FF1Rom rom)
-		{
-			// New Icon Hacks PLAN
-			//	Remove the code from AddElementIcons
-			//	New image blobs are imported into Bank 12, 0x8800. There is 0x800 of space but we can only use 0x600. as the last 0x200 is reserved for orbs.
-			//
-			//	In bank F's LoadMenuBGCHRAndPalettes, which is roughly at 0xEA9F, jmp to this afterwards
-			//		LDA #$0C		// Bank 12...?
-			//		JSR SwapPRG_L	// Swap to Bank 12
-			//
-			//		LDA #<00		// from source address 0x8800. I hope I have upper and lower bits set correctly and not backwards
-			//		STA tmp
-			//		LDA #>88
-			//		STA tmp+1
-			//
-			//		LDX #$06		// Grab 6 rows of tiles
-			//		LDA #$0			// dest PPU address $0000
-			//		JSR CHRLoadToA  // load up icons 
-			//		// end scene, jump back? or forward
-			//
-			//
-			//	Then assign all the icons to values from 0x00-0x60 in FF1Text.cs
-
-			IImageFormat format;
-
-			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-			var weaponiconsPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("weapon_icons.png"));
-			var spelliconsPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("spell_icons.png"));
-
-			Image<Rgba32> image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(weaponiconsPath), out format);
-
-			// 0 = black
-			// 1 = grey
-			// 2 = blue
-			// 3 = white
-
-			Dictionary<Rgba32, byte> index = new Dictionary<Rgba32, byte> {
-				{ new Rgba32(0x00, 0x00, 0x00), 0 },
-				{ new Rgba32(0x7f, 0x7f, 0x7f), 1 },
-				{ new Rgba32(116, 116, 116), 1 },
-				{ new Rgba32(0x00, 0x00, 0xff), 2 },
-				{ new Rgba32(36, 24, 140), 2 },
-				{ new Rgba32(0xff, 0xff, 0xff), 3 },
-				{ new Rgba32(252, 252, 252), 3 }
-			};
-
-			for (int w = 0; w < 5; w++)
-			{
-				rom.PutInBank(0x09, 0x8D40 + 0x1E0 + (w * 16), rom.EncodeForPPU(getTile(w, index, image)));
-				//rom.PutInBank(0x12, 0x8D40 + (w * 16), rom.EncodeForPPU(newtile));
-			}
-
-			rom.PutInBank(0x09, 0x8800 + 0x10 * 0x48, rom.EncodeForPPU(getTile(5, index, image)));
-
-			// For now, there's no room for new spells T_T
-
-			//image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(spelliconsPath), out format);
-			//for (int w = 0; w < 4; w++)
-			//{
-			//	rom.PutInBank(0x09, 0x8D40 + 0x1E0 + (w * 16), rom.EncodeForPPU(getTile(w, index, image)));
-			//	//rom.PutInBank(0x12, 0x8D40 + (w * 16), rom.EncodeForPPU(newtile));
-			//}
-
-			//for (int w = 4; w < 11; w++)
-			//{
-			//	rom.PutInBank(0x09, 0x8D40 - 0x120 + (w * 16), rom.EncodeForPPU(getTile(w, index, image)));
-			//	//rom.PutInBank(0x12, 0x8D40 + (w * 16), rom.EncodeForPPU(newtile));
-			//}
 		}
 
 		public List<ClassDef> CreateClasses()
@@ -1101,25 +1013,25 @@ namespace FF1Lib
 				var weaponTypes = "";
 
 				if (rom.ClassData[(Classes)classIndex].UnarmedAttack)
-					weaponTypes += "@U ";
+					weaponTypes += "≈U ";
 				foreach (WeaponSprite w in finalSets)
 				{
 					switch (w)
 					{
 						case WeaponSprite.SHORTSWORD:
-							weaponTypes += "@w ";
+							weaponTypes += "≈w ";
 							break;
 						case WeaponSprite.SCIMITAR:
-							weaponTypes += "@c ";
+							weaponTypes += "≈c ";
 							break;
 						case WeaponSprite.FALCHION:
-							weaponTypes += "@f ";
+							weaponTypes += "≈f ";
 							break;
 						case WeaponSprite.LONGSWORD:
 							weaponTypes += "@S ";
 							break;
 						case WeaponSprite.RAPIER:
-							weaponTypes += "@r ";
+							weaponTypes += "≈r ";
 							break;
 						case WeaponSprite.HAMMER:
 							weaponTypes += "@H ";
@@ -1134,7 +1046,7 @@ namespace FF1Lib
 							weaponTypes += "@F ";
 							break;
 						case WeaponSprite.IRONSTAFF:
-							weaponTypes += "@R ";
+							weaponTypes += "≈R ";
 							break;
 						case WeaponSprite.CHUCK:
 							weaponTypes += "@N ";
@@ -1228,26 +1140,26 @@ namespace FF1Lib
 		{
 			var mSchool = magicSchool.ToUpper();
 
-			//if (mSchool == "ALL") return "∞A";
-			//if (mSchool == "BLACK") return "∞B";
+			if (mSchool == "ALL") return "ΩA";
+			if (mSchool == "BLACK") return "ΩB";
 			if (mSchool == "ELEM") return "€f€i€t€e";
 			if (mSchool == "FIRE") return "€f";
 			if (mSchool == "LIT") return "€t";
 			if (mSchool == "ICE") return "€i";
 			if (mSchool == "EARTH") return "€e";
 			if (mSchool == "STATUS") return "€s";
-			//if (mSchool == "GREY") return "∞G";
+			if (mSchool == "GREY") return "ΩG";
 			if (mSchool == "DEATH") return "€d";
 			if (mSchool == "POISON") return "€p";
 			if (mSchool == "TIME") return "€T";
-			//if (mSchool == "WHITE") return "∞W";
-			//if (mSchool == "RECOVERY") return "∞R";
-			//if (mSchool == "HEALTH") return "∞c";
-			//if (mSchool == "AILMENT") return "∞a";
-			//if (mSchool == "LIFE") return "∞l";
-			//if (mSchool == "HOLY") return "∞h";
-			//if (mSchool == "SPACE") return "∞s";
-			//if (mSchool == "BUFF") return "∞U";
+			if (mSchool == "WHITE") return "ΩW";
+			if (mSchool == "RECOVERY") return "ΩR";
+			if (mSchool == "HEALTH") return "Ωc";
+			if (mSchool == "AILMENT") return "Ωa";
+			if (mSchool == "LIFE") return "Ωl";
+			if (mSchool == "HOLY") return "Ωh";
+			if (mSchool == "SPACE") return "Ωs";
+			if (mSchool == "BUFF") return "ΩU";
 
 			return "";
 		}
