@@ -382,10 +382,10 @@ namespace FF1Lib
 		[Description("All Equipment")]
 		Common,
 
-		[Description("Rare, Legendary and Caster Items")]
+		[Description("Rare, Legendary & Caster Items")]
 		Rare,
 
-		[Description("Legendary and Caster Items")]
+		[Description("Legendary & Caster Items")]
 		Legendary,
 
 		[Description("Caster Items")]
