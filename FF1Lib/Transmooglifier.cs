@@ -654,10 +654,10 @@ namespace FF1Lib
 			// Animist / Geomancer
 			classes.Add(new ClassDef()
 			{
-				name = "ELMNTIST",
-				promoName = "GEOMANCR",
-				shortName = "An",
-				promoShortName = "Gm",
+				name = "GEOMANCR",
+				promoName = "ELMNTIST",
+				shortName = "Gm",
+				promoShortName = "El",
 				HP = 16,
 				STR = 14,
 				AGI = 14,
@@ -1169,6 +1169,10 @@ namespace FF1Lib
 		{
 			rom.ItemsText[0xF0 + classIndex] = name.PadRight(8);
 			rom.ItemsText[0xF0 + classIndex + 6] = promoName.PadRight(8);
+
+			// Shop info Panel
+			rom.InfoClassAbbrev[classIndex] = shortName;
+			rom.InfoClassAbbrev[classIndex+6] = promoShortName;
 		}
 
 		// Commit Stats to the character class

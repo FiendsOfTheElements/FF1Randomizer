@@ -239,7 +239,7 @@
 		    (ushort)EquipPermission.BlackMage,
 		    (ushort)EquipPermission.BlackWizard,
 		};
-		string[] InfoClassAbbrev = new string[] {
+		public string[] InfoClassAbbrev = new string[] {
 		    "Fi",
 		    "Kn",
 		    "Th",
