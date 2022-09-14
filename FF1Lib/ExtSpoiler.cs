@@ -47,6 +47,7 @@ namespace FF1Lib
 			WriteWeaponSpoiler();
 			WriteArmorSpoiler();
 			WriteShopSpoiler();
+			WriteSpellSpoiler();
 			WriteV2Spoiler();
 		}
 
@@ -101,6 +102,45 @@ namespace FF1Lib
 			if (elementalResist.HasFlag(SpellElement.Status)) list.Add(SpellElement.Status);
 
 			return string.Join(", ", list);
+		}
+
+		private void WriteSpellSpoiler()
+		{
+			Utilities.WriteSpoilerLine("Lv   Spell  Target  Acc   Usability          Routine       OOB  Element");
+			Utilities.WriteSpoilerLine("----------------------------------------------------------------------------------------------------");
+
+			foreach (var spell in magicSpells)
+			{
+				Utilities.WriteSpoilerLine($"{spell.Level}.{spell.Slot}  {spell.Name.PadRight(6)}  {spell.targeting.ToString().Substring(0,4).PadRight(7)} {spell.accuracy.ToString().PadRight(3)} {GenerateSpellPermission(rom.SpellPermissions.PermissionsFor((SpellSlots)spell.Index)),17}  {spell.routine.ToString().PadRight(14)} {spell.oobSpellRoutine.ToString().PadRight(5)} {GetElementalResist((SpellElement)spell.elem)}");
+			}
+
+			Utilities.WriteSpoilerLine("");
+			Utilities.WriteSpoilerLine("");
+		}
+
+		public string GenerateSpellPermission(List<Classes> usableClasses)
+		{
+			var description = "";
+			for (int i = 0; i < 6; i++)
+			{
+				if (usableClasses.Contains((Classes)i))
+				{
+					description += " " + rom.InfoClassAbbrev[i * 2];
+				}
+				else if (usableClasses.Contains((Classes)i+6))
+				{
+					description += " " + rom.InfoClassAbbrev[i * 2 + 1];
+				}
+				else
+				{
+					description += "   ";
+				}
+			}
+			if (description == "FiThBbRmWmBm")
+			{
+				description = "All classes";
+			}
+			return description;
 		}
 
 		private void WriteItemPlacementSpoiler()
