@@ -109,6 +109,7 @@ namespace FF1Lib
 			enemyText[32] = "SeaSNEK";    // -1  SeaSNAKE
 			enemyText[40] = "iMAGE";      // +0  IMAGE
 			enemyText[48] = "SANDWICH";   // +2  Sand W
+			enemyText[51] = "WrongEYE";   //     Phantom
 			enemyText[53] = "SNEKLADY";   // +0  GrMEDUSA
 			enemyText[56] = "EXPEDE";     // +2  PEDE
 			enemyText[61] = "EDWARD";     // +0  WzVAMP

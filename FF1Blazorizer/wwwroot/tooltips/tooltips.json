@@ -452,14 +452,14 @@
 		"Id": "progressiveScaleModeDropDown",
 		"title": "Exp/Gold Progressive Scaling",
 		"screenshot": "progressiveScaleModeDropDown.png",
-		"description": "Increases the bonus provided by the 2nd Exp/Gold Boost Slider (flat bonus) based on the number of Key Items collected, including any that were free to start and any that have already been turned in. (Does not, however, include incentivized equipment items.)\nWhen Shards are being used, the boost is applied per Shard - so \"50% per 8 Shards\" gives you a 6.25% boost for each Shard you have."
+		"description": "Increases Exp and Gold gains from enemies (including the flat bonus provided by the 2nd Exp/Gold Boost Slider) based on the number of Key Items collected, including any that were free to start and any that have already been turned in. (Does not, however, include incentivized equipment items.) The bonus is additive, so if it's set to 10% and you have 6 Key Items, your total bonus is 60% (x1.6) more from every enemy defeated.\nWhen Shards are being used, the boost is applied per Shard - so \"50% per 8 Shards\" gives you a 6.25% boost for each Shard you have."
 	},
 
 	{
 		"Id": "nonesGainXPcheckBox",
 		"title": "Nones Gain XP",
 		"screenshot": "nonesGainXPcheckBox.png",
-		"description": "When enabled, \"None\" characters will count as alive characters for XP calculation and gain their share of XP. If \"Tavern Recruitment Mode\" and/or \"Gated Characters\" are also enabled, characters hired over these \"None\" characters will gain all the EXP (and levels) of the None at that point."
+		"description": "When enabled, \"None\" characters will count as alive characters for XP calculation and gain their share of XP.\nIf \"Tavern Recruitment Mode\" and/or \"Gated Characters\" are also enabled, characters hired to replace these \"None\" characters will gain all the XP of the None at that point. (If you have already promoted, Recruits replacing Nones will be given their promotion first, and then their XP.)"
 	},
 	{
 		"Id": "deadsGainXPcheckBox",
@@ -486,7 +486,7 @@
 		"Id": "IncentivesTooltip",
 		"title": "Incentivized Items & Locations Explanation",
 		"screenshot": null,
-		"description": "Incentivized Items are guaranteed to be distributed amongst the Incentivized Locations, giving you an idea of where to look for important items.\nIf there are more Items than Locations selected, the excess items will be \"loose\", meaning they will be in random locations. This can be further controlled via the options in the \"Loose Placement\" section.\nIf there are more Locations than Items selected, excess locations will be duds, and only contain a random treasure.\nAny Key Items given for free or banned (in the Treasures tab) can't be incentivized, and thus won't be included in the total item count at the top."
+		"description": "Incentivized Items are guaranteed to be spread out amongst the Incentivized Locations, giving you an idea of where to look for important items.\nIf there are more Items than Locations selected, the excess items will be \"loose\", meaning they will be in random locations. This can be further controlled via the options in the \"Loose Placement\" section. If any Key Items (such as the Tail or Canoe) are not incentivized, they will also be considered loose.\nIf there are more Locations than Items selected, excess locations will be duds, and only contain a random treasure.\nAny Key Items given for free or banned (in the Treasures tab) can't be incentivized, and thus won't be included in the total item count at the top."
 	},
 	{
 		"Id": "IncentiveItemsTooltip",
@@ -584,7 +584,7 @@
 		"Id": "LooseExcludePlacedDungeonsCheckBox",
 		"title": "No Loose Items in Incentivized Dungeons",
 		"screenshot": "LooseExcludePlacedDungeons.png",
-		"description": "If a dungeon is incentivized, additional loose items and/or unincentivized key items won't be placed inside of it.\nThis means that once you find the incentivized item, you can opt to leave the incentive area knowing that any remaining loose items will be somewhere else.\nNote: Waterfall itself is NOT incentivized even if the Robot is (via \"Main NPCs\"), so loose items may still appear there with this checked."
+		"description": "If a dungeon is incentivized, additional loose items and/or unincentivized key items won't be placed inside of it.\nThis means that once you find the incentivized item, you can opt to leave the incentive area knowing that any remaining loose items will be somewhere else.\nNote: Waterfall itself is NOT incentivized even if the Robot is (via \"Main NPCs\"), so loose items may still appear there with this checked (and likewise with Matoya). Mirage Tower and Sky Palace are considered one dungeon for this flag."
 	},
 
 	{

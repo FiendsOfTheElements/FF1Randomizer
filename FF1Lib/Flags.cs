@@ -956,6 +956,8 @@ namespace FF1Lib
 
 		public bool? TrappedChestsEnabled => (bool)TrappedChaos | (bool)TCMasaGuardian | (TCBetterTreasure == TCOptions.All | TCKeyItems == TCOptions.All | TCShards == TCOptions.All) | ((TCBetterTreasure == TCOptions.Pooled | TCKeyItems == TCOptions.Pooled | TCShards == TCOptions.Pooled) & TCChestCount > 0) | (TCChestCount > 0);
 
+		public bool IsAnythingLoose => (IncentivizedItemCountMax > IncentivizedLocationCountMin) || IncentivizeMainItems != true || IncentivizeFetchItems != true || (IncentivizeAirship != true && FreeAirship != true && NoFloater != true) || (IncentivizeCanoeItem != true && FreeCanoe != true) || (IncentivizeShipAndCanal != true && (FreeShip != true || FreeCanal != true)) || (IncentivizeBridgeItem != true && FreeBridge != true) || (IncentivizeTail != true && FreeTail != true && NoTail != true);
+
 		public static string EncodeFlagsText(Flags flags)
 		{
 			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);

@@ -1311,6 +1311,8 @@ namespace FF1Lib
 			}
 		}
 
+		public bool IsAnythingLoose => Flags.IsAnythingLoose;
+
 		public bool? DeepCastlesPossible => Flags.DeepCastlesPossible;
 		public bool? DeepTownsPossible => Flags.DeepTownsPossible;
 
