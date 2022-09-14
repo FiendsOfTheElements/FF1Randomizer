@@ -23,9 +23,6 @@
 			<div class="checkbox-cell"></div>
 		</div>
 		<div class="col2">
-			<h4>Class Randomization</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != true && Flags.RandomizeClassChaos != true)" Id="TransmooglifierCheckBox" @bind-Value="Flags.Transmooglifier">Transmooglifier</TriStateCheckBox>
-			<br />
 			<h4>Misc.</h4>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.RecruitmentMode)" Id="improvedClinicCheckBox" @bind-Value="Flags.ImprovedClinic">Clinics Heal All Statuses</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeClinicCheckBox" @bind-Value="Flags.FreeClinic">Clinics Don't Cost Money</CheckBox>

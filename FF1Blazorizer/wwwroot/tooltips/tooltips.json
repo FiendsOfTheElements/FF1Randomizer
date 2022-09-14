@@ -1529,8 +1529,8 @@
 	{
 		"Id": "TransmooglifierCheckBox",
 		"title": "Transmooglifier",
-		"screenshot": "RandomizeClassChaosCheckBox.png",
-		"description": "Procedurally generates custom classes from a set of 26. Each class corresponds to heuristically randomized spell permissions, stats, equipment sets, and abilities. These classes take the slots of the original classes, so other options that refer to Fighter will instead change slot 1's class. This also disables some slot specific balance options."
+		"screenshot": "transmooglifier.gif",
+		"description": "Procedurally generates six custom classes from a set of 26. Each class corresponds to heuristically randomized spell permissions, stats, equipment sets, abilities, and blursings - this means the classes will have unique properties every time. They can be described as \"What you might expect form a class named X\".\nThis also disables most specific balance options. Character specific buffs will refer to character slot. Example: Fighter XP will now refer to 'Slot 0 character class XP Bonus'."
 	},
 	{
 		"Id": "RandomizeClassIncludeNaturalResistCheckBox",
