@@ -147,6 +147,10 @@ namespace FF1Lib.Procgen
 	public const int DESERT_REGION = 7;
 	public const int OTHER_REGION = 8;
 
+	public const int DOCK_REGION = 4;
+	public const int ENTRANCES_REGION = 5;
+	public const int BRIDGE_REGION = 6;
+
 	public const int MainOceanRegionId = 0;
 
 	public byte[][] BiomeRegionTypes = new byte[][] {
@@ -165,7 +169,7 @@ namespace FF1Lib.Procgen
 	};
 	public Dictionary<byte, int> BiomeRegionTypeMap;
 
-	public byte[][] TraversableRegionTypes = new byte[][] {
+	public static byte[][] TraversableRegionTypes = new byte[][] {
 	    new byte[] {
 		LAND, GRASS, GRASS_NW, GRASS_NE, GRASS_SW, GRASS_SE,
 		MARSH, MARSH_NW, MARSH_NE, MARSH_SW, MARSH_SE,
@@ -174,12 +178,13 @@ namespace FF1Lib.Procgen
 		FOREST_SW, FOREST_S, FOREST_SE,
 		SHORE_NW, SHORE_NE, SHORE_SW, SHORE_SE,
 		DESERT, DESERT_NW, DESERT_NE, DESERT_SW, DESERT_SE,
-		CITY_PAVED},
+		CITY_PAVED, AIRSHIP_DESERT},
 	    new byte[] {OCEAN, SHORE_W, SHORE_N, SHORE_E, SHORE_S},
 	    new byte[] {RIVER, RIVER_NW, RIVER_NE, RIVER_SW, RIVER_SE},
 	    new byte[] { MOUNTAIN, MOUNTAIN_NW, MOUNTAIN_N, MOUNTAIN_NE ,
 			 MOUNTAIN_W, MOUNTAIN_E,
 			 MOUNTAIN_SW, MOUNTAIN_S, MOUNTAIN_SE},
+	    new byte[] { DOCK_W, DOCK_E, DOCK_SE, DOCK_S, DOCK_SW, DOCK_SQ }
 	};
 	public Dictionary<byte, int> TraversableRegionTypeMap;
 
@@ -212,6 +217,7 @@ namespace FF1Lib.Procgen
 	public OwTileFilter apply_shores4;
 	public OwTileFilter apply_shores5;
 	public OwTileFilter apply_shores6;
+	public OwTileFilter apply_shores7;
 
 	public OwTileFilter prune_forests;
 	public OwTileFilter polish_mountains1;
@@ -394,11 +400,12 @@ namespace FF1Lib.Procgen
 	    });
 
 	public static OwFeature GAIA_TOWN = new OwFeature(new byte[,] {
-	    {None, GAIA, GAIA},
-	    {GAIA, GAIA, None},
-	    {None, None, None},
+	    {None, None, None, None, None},
+	    {None, None, GAIA, GAIA, None},
+	    {None, GAIA, GAIA, None, None},
+	    {None, None, None, None, None},
 	    }, new Dictionary<string, SCCoords> {
-		{ "Gaia", new SCCoords(1, 1) },
+		{ "Gaia", new SCCoords(2, 2) },
 	    });
 
 	public static OwFeature MIRAGE_TOWER = new OwFeature(new byte[,] {
@@ -548,6 +555,7 @@ namespace FF1Lib.Procgen
 
 	public static OwFeature WATERFALL_FEATURE = new OwFeature(WATERFALL, "Waterfall", false);
 
+	public HashSet<byte> airship_landable;
 
     public OverworldTiles() {
         this.expand_mountains = new OwTileFilter(
@@ -705,6 +713,7 @@ namespace FF1Lib.Procgen
         non_water_tiles.Remove(DOCK_SW);
         non_water_tiles.Remove(DOCK_SQ);
         non_water_tiles.Remove(WATERFALL);
+	non_water_tiles.Remove(MOUNTAIN);
 
         var non_shore_tiles = new HashSet<byte>(allTiles);
         non_shore_tiles.Remove(OCEAN);
@@ -787,7 +796,7 @@ namespace FF1Lib.Procgen
 	pit_caves.Add(CARDIA_5);
 	pit_caves.Add(CARDIA_6);
 
-        var airship_landable = new HashSet<byte>();
+        this.airship_landable = new HashSet<byte>();
 	airship_landable.Add(LAND);
 	airship_landable.Add(GRASS);
 	airship_landable.Add(GRASS_NW);
@@ -1054,6 +1063,30 @@ namespace FF1Lib.Procgen
 		    {STAR,         STAR, STAR},
 		    {STAR,     SHORE_SW, STAR},
 		    {SHORE_NE,     STAR, STAR}},
+		    SHORE_S),
+	    }, allTiles, non_shore_tiles, null);
+
+	this.apply_shores7 = new OwTileFilter(
+	    new Rule[] {
+		new Rule(new byte[3,3] {
+		    {LAND,     STAR, STAR},
+		    {STAR, SHORE_NW, STAR},
+		    {STAR,     STAR, STAR}},
+		    SHORE_N),
+		new Rule(new byte[3,3] {
+		    {STAR,         STAR, STAR},
+		    {STAR,     SHORE_SW, STAR},
+		    {LAND,     STAR, STAR}},
+		    SHORE_S),
+		new Rule(new byte[3,3] {
+		    {STAR,     STAR, LAND},
+		    {STAR, SHORE_NE, STAR},
+		    {STAR,     STAR, STAR}},
+		    SHORE_N),
+		new Rule(new byte[3,3] {
+		    {STAR,         STAR, STAR},
+		    {STAR,     SHORE_SE, STAR},
+		    {STAR,     STAR, LAND}},
 		    SHORE_S),
 	    }, allTiles, non_shore_tiles, null);
 

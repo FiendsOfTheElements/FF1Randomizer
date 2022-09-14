@@ -536,11 +536,18 @@ namespace FF1Lib
 			Put(0x3217A, Blob.FromHex("A90C8D8E68A900AE8E68205DAEA8AE8E68EAEAEAEAEAEA"));
 		}
 
-		public void EnableInventoryAutosort()
+		public void EnableInventoryAutosort(bool noOverworld)
 		{
+			string finalChunk = "60";
+
+			if (noOverworld)
+			{
+				finalChunk = "AD1260F00DA911990003E663C8A90099000360";
+			}
+
 			//see 0F_8670_SortInventory.asm
 			Put(0x7EF58, Blob.FromHex("A90F2003FE20008DEAEAEA"));
-			PutInBank(0x0F,0x8D00,Blob.FromHex("8663A9009D0003A900856218A000A219BD2060F0058A990003C8E8E01CD0F1A216BD2060F0058A990003C8E8E019D0F1A21CBD2060F0058A990003C8E8E020D0F1A200BD2060F0058A990003C8E8E011D0F160"));
+			PutInBank(0x0F,0x8D00,Blob.FromHex("8663A9009D0003A900856218A000A219BD2060F0058A990003C8E8E01CD0F1A216BD2060F0058A990003C8E8E019D0F1A21CBD2060F0058A990003C8E8E020D0F1A200BD2060F0058A990003C8E8E011D0F1" + finalChunk));
 		}
 
 		public void EnableCritNumberDisplay()
@@ -683,6 +690,25 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x81BB, FF1Text.TextToBytes("Welcome\n  ..\nStay to\nheal\nyour\nwounds?"));
 			PutInBank(0x0E, 0x81DC, FF1Text.TextToBytes("Don't\nforget\n.."));
 			PutInBank(0x0E, 0x81FC, FF1Text.TextToBytes("Your\ngame\nhasn't\nbeen\nsaved."));
+		}
+
+		public void UnifySpellSystem()
+		{
+			// ConvertOBStatsToIB
+			PutInBank(0x0B, 0x9A41, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+
+			// ConvertIBStatsToOB
+			PutInBank(0x0B, 0x9A88, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+
+			// Magic Shop
+			PutInBank(0x0E, 0xAB25, Blob.FromHex("12"));
+			PutInBank(0x0E, 0xAB5E, Blob.FromHex("12"));
+
+			// Magic Menu
+			PutInBank(0x0E, 0xAEF2, Blob.FromHex("00"));
+
+			// Draw Complex Strings
+			PutInBank(0x1F, 0xDF7C, Blob.FromHex("00"));
 		}
 		public void Spooky(TalkRoutines talkroutines, NPCdata npcdata, MT19337 rng, Flags flags)
 		{

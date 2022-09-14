@@ -31,10 +31,10 @@
 		IncentivePlacementType OrdealsIncentivePlacementType { get; }
 		IncentivePlacementType MarshIncentivePlacementType { get; }
 		IncentivePlacementType TitansIncentivePlacementType { get; }
-		IncentivePlacementTypeGated EarthIncentivePlacementType { get; }
-		IncentivePlacementType VolcanoIncentivePlacementType { get; }
-		IncentivePlacementTypeGated SeaShrineIncentivePlacementType { get; }
-		IncentivePlacementTypeGated SkyPalaceIncentivePlacementType { get; }
+		IncentivePlacementTypeEarth EarthIncentivePlacementType { get; }
+		IncentivePlacementTypeVolcano VolcanoIncentivePlacementType { get; }
+		IncentivePlacementTypeSea SeaShrineIncentivePlacementType { get; }
+		IncentivePlacementTypeSky SkyPalaceIncentivePlacementType { get; }
 		IncentivePlacementType CorneriaIncentivePlacementType { get; }
 		IncentivePlacementType MarshLockedIncentivePlacementType { get; }
 		IncentivePlacementType CardiaIncentivePlacementType { get; }
@@ -144,6 +144,7 @@
 		bool PredictivePlacement { get;}
 		bool AllowUnsafePlacement { get; }
 		bool Etherizer { get; }
+		bool ShipCanalBeforeFloater { get; }
 	}
 	public interface IItemShuffleFlags
 	{

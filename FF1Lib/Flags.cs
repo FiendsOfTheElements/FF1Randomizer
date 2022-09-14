@@ -76,17 +76,15 @@ namespace FF1Lib
 
 		public bool DisableMinimap { get; set; } = false;
 
-		public bool QuickMinimapLoad { get; set; } = false;
-
 		public bool LooseItemsForwardPlacement { get; set; } = false;
 
 		public bool LooseItemsSpreadPlacement { get; set; } = false;
 
 		public bool LooseItemsNpcBalance { get; set; } = false;
 
-
 		public bool PredictivePlacement { get; set; } = false;
 		public bool AllowUnsafePlacement { get; set; } = false;
+		public bool ShipCanalBeforeFloater { get; set; } = false;
 
 		[IntegerFlag(0, 100, 10)]
 		public int ExpChestConversionMin { get; set; } = 0;
@@ -107,8 +105,7 @@ namespace FF1Lib
 		public bool ExtConsumablesEnabled => ExtConsumableSet != ExtConsumableSet.None;
 
 		public bool EnableSoftInBattle { get; set; } = false;
-
-		public bool EnableLifeInBattle { get; set; } = false;
+		public LifeInBattleSetting EnableLifeInBattle { get; set; } = LifeInBattleSetting.LifeInBattleAll;
 
 		public bool? NormalShopsHaveExtConsumables { get; set; } = false;
 
@@ -213,9 +210,15 @@ namespace FF1Lib
 
 		public bool? Rng { get; set; } = false;
 		public bool FixMissingBattleRngEntry { get; set; } = false;
-		public Runnability Runnability { get; set; } = Runnability.Normal;
+
+		public bool? UnrunnableShuffle { get; set; } = true;
+		[IntegerFlag(0, 100, 4)]
+		public int UnrunnablesLow { get; set; } = 0;
+		[IntegerFlag(0, 100, 4)]
+		public int UnrunnablesHigh { get; set; } = 0;
 		public bool? EnemyFormationsSurprise { get; set; } = false;
 		public bool? UnrunnablesStrikeFirstAndSurprise { get; set; } = false;
+
 		public TrapTileMode EnemyTrapTiles { get; set; } = TrapTileMode.Vanilla;
 		public FormationPool TCFormations { get; set; } = FormationPool.AltFormationDist;
 		public TCOptions TCBetterTreasure { get; set; } = TCOptions.None;
@@ -264,6 +267,7 @@ namespace FF1Lib
 		public bool? MoveGaiaItemShop { get; set; } = false;
 		public bool? ShufflePravokaShops { get; set; } = false;
 		public bool? FlipDungeons { get; set; } = false;
+		public bool? VerticallyFlipDungeons { get; set; } = false;
 		public bool SpookyFlag { get; set; } = false;
 		public bool DraculasFlag { get; set; } = false;
 		public bool? MapOpenProgression { get; set; } = false;
@@ -314,10 +318,10 @@ namespace FF1Lib
 		public IncentivePlacementType OrdealsIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 		public IncentivePlacementType MarshIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 		public IncentivePlacementType TitansIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
-		public IncentivePlacementTypeGated EarthIncentivePlacementType { get; set; } = IncentivePlacementTypeGated.Vanilla;
-		public IncentivePlacementType VolcanoIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
-		public IncentivePlacementTypeGated SeaShrineIncentivePlacementType { get; set; } = IncentivePlacementTypeGated.Vanilla;
-		public IncentivePlacementTypeGated SkyPalaceIncentivePlacementType { get; set; } = IncentivePlacementTypeGated.Vanilla;
+		public IncentivePlacementTypeEarth EarthIncentivePlacementType { get; set; } = IncentivePlacementTypeEarth.Vanilla;
+		public IncentivePlacementTypeVolcano VolcanoIncentivePlacementType { get; set; } = IncentivePlacementTypeVolcano.Vanilla;
+		public IncentivePlacementTypeSea SeaShrineIncentivePlacementType { get; set; } = IncentivePlacementTypeSea.Vanilla;
+		public IncentivePlacementTypeSky SkyPalaceIncentivePlacementType { get; set; } = IncentivePlacementTypeSky.Vanilla;
 		public IncentivePlacementType CorneriaIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 		public IncentivePlacementType MarshLockedIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
 		public IncentivePlacementType CardiaIncentivePlacementType { get; set; } = IncentivePlacementType.Vanilla;
@@ -392,8 +396,6 @@ namespace FF1Lib
 		public bool BattleMagicMenuWrapAround { get; set; } = false;
 		public bool InventoryAutosort { get; set; } = false;
 		public bool EnemyStatusAttackBug { get; set; } = false;
-		public bool EnemySpellsTargetingAllies { get; set; } = false;
-		public bool EnemyElementalResistancesBug { get; set; } = false;
 		public bool ImproveTurnOrderRandomization { get; set; } = false;
 		public bool FixHitChanceCap { get; set; } = false;
 
@@ -459,22 +461,22 @@ namespace FF1Lib
 		[IntegerFlag(0, 250, 25)]
 		public int ExpBonus { get; set; } = 0;
 
-		[DoubleFlag(1.0, 3.0, 0.1)]
+		[DoubleFlag(0.5, 3.0, 0.1)]
 		public double ExpMultiplierFighter { get; set; } = 1.0;
 
-		[DoubleFlag(1.0, 3.0, 0.1)]
+		[DoubleFlag(0.5, 3.0, 0.1)]
 		public double ExpMultiplierThief { get; set; } = 1.0;
 
-		[DoubleFlag(1.0, 3.0, 0.1)]
+		[DoubleFlag(0.5, 3.0, 0.1)]
 		public double ExpMultiplierBlackBelt { get; set; } = 1.0;
 
-		[DoubleFlag(1.0, 3.0, 0.1)]
+		[DoubleFlag(0.5, 3.0, 0.1)]
 		public double ExpMultiplierRedMage { get; set; } = 1.0;
 
-		[DoubleFlag(1.0, 3.0, 0.1)]
+		[DoubleFlag(0.5, 3.0, 0.1)]
 		public double ExpMultiplierWhiteMage { get; set; } = 1.0;
 
-		[DoubleFlag(1.0, 3.0, 0.1)]
+		[DoubleFlag(0.5, 3.0, 0.1)]
 		public double ExpMultiplierBlackMage { get; set; } = 1.0;
 
 		[DoubleFlag(0, 45)]
@@ -622,7 +624,6 @@ namespace FF1Lib
 		public bool? RandomizeClassCasting { get; set; } = false;
 		public bool? RandomizeClassKeyItems { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
-		public bool? RandomizeClassIncludeNaturalResist { get; set; } = false;
 		public bool? RandomizeClassIncludeXpBonus { get; set; } = false;
 		public bool? AlternateFiends { get; set; } = false;
 		public bool? NoBossSkillScriptShuffle { get; set; } = false;

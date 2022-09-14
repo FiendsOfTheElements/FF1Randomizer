@@ -225,7 +225,7 @@ namespace FF1Lib
 			if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
 			{
 				blob += "1C";
-				blob += flags.EnableLifeInBattle ? "1D" : "00";
+				blob += (flags.EnableLifeInBattle != LifeInBattleSetting.LifeInBattleOff) ? "1D" : "00";
 				blob += "1E1F";
 			}
 			else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)

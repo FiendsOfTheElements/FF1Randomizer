@@ -206,6 +206,7 @@ public partial class FF1Rom : NesRom
 		CastableItemTargeting();
 		FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
 		FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
+		UnifySpellSystem();
 		ExpandNormalTeleporters();
 		SeparateUnrunnables();
 		DrawCanoeUnderBridge();
@@ -302,15 +303,20 @@ public partial class FF1Rom : NesRom
 		    MoveToFBats();
 		}
 
-		if ((bool)flags.ReversedFloors) new ReversedFloors(this, maps, rng).Work();
+		var mapFlipper = new FlippedMaps(this, maps, flags, rng);
+		var vflippedMaps = mapFlipper.VerticalFlipStep1();
+
+		if ((bool)flags.ReversedFloors) new ReversedFloors(this, maps, rng, vflippedMaps).Work();
 
 		var flippedMaps = new List<MapId>();
+
+		mapFlipper.VerticalFlipStep2();
 
 		teleporters.LoadData();
 
 		if ((bool)flags.FlipDungeons)
 		{
-			flippedMaps = HorizontalFlipDungeons(rng, maps, teleporters, overworldMap);
+			flippedMaps = mapFlipper.HorizontalFlip(rng, maps, teleporters, overworldMap);
 		}
 
 		if ((bool)flags.RandomizeFormationEnemizer)
@@ -379,6 +385,8 @@ public partial class FF1Rom : NesRom
 		if (flags.SpellBugs)
 		{
 			FixSpellBugs();
+			FixEnemyAOESpells();
+			FixEnemyElementalResistances();
 		}
 
 		await this.Progress();
@@ -388,12 +396,7 @@ public partial class FF1Rom : NesRom
 		{
 			ChangeLockMode(flags.LockMode);
 		}
-
-		if (flags.EnemySpellsTargetingAllies)
-		{
-			FixEnemyAOESpells();
-		}
-
+				
 		if (flags.AllSpellLevelsForKnightNinja)
 		{
 			KnightNinjaChargesForAllLevels();
@@ -588,7 +591,7 @@ public partial class FF1Rom : NesRom
 
 		if ((bool)flags.ClassAsNpcFiends || (bool)flags.ClassAsNpcKeyNPC)
 		{
-			ClassAsNPC(flags, talkroutines, npcdata, flippedMaps, rng);
+			ClassAsNPC(flags, talkroutines, npcdata, flippedMaps, vflippedMaps, rng);
 		}
 
 		if (flags.NPCSwatter)
@@ -773,7 +776,7 @@ public partial class FF1Rom : NesRom
 
 		shopData.LoadData();
 
-		new LegendaryShops(rng, flags, maps, flippedMaps, shopData, this).PlaceShops();
+		new LegendaryShops(rng, flags, maps, flippedMaps, vflippedMaps, shopData, this).PlaceShops();
 
 		if (flags.GameMode == GameModes.DeepDungeon)
 		{
@@ -801,9 +804,9 @@ public partial class FF1Rom : NesRom
 			EnableSoftInBattle();
 		}
 
-		if (flags.EnableLifeInBattle)
+		if (flags.EnableLifeInBattle != LifeInBattleSetting.LifeInBattleOff)
 		{
-			EnableLifeInBattle();
+			EnableLifeInBattle(flags);
 		}
 
 		if (flags.TranceHasStatusElement)
@@ -846,21 +849,20 @@ public partial class FF1Rom : NesRom
 		StatusAttacks(flags, rng);
 
 		await this.Progress();
-
-		if (flags.Runnability == Runnability.Random)
-			flags.Runnability = (Runnability)Rng.Between(rng, 0, 3);
-
-		if (flags.Runnability == Runnability.AllRunnable)
-			CompletelyRunnable();
-		else if (flags.Runnability == Runnability.AllUnrunnable)
-			CompletelyUnrunnable();
-		else if (flags.Runnability == Runnability.Shuffle)
-			ShuffleUnrunnable(rng);
+		
+		if ((bool)flags.UnrunnableShuffle) {
+			int UnrunnablePercent = rng.Between(flags.UnrunnablesLow, flags.UnrunnablesHigh);
+			// This is separate because the basic Imp formation is not otherwise included in the possible unrunnable formations
+			if (UnrunnablePercent >= 100)
+				CompletelyUnrunnable();
+			else
+				ShuffleUnrunnable(rng, flags, UnrunnablePercent);
+		}
 
 		// Always on to supply the correct changes for WaitWhenUnrunnable
 		AllowStrikeFirstAndSurprise(flags.WaitWhenUnrunnable, (bool)flags.UnrunnablesStrikeFirstAndSurprise);
 
-		if (((bool)flags.EnemyFormationsSurprise))
+		if ((bool)flags.EnemyFormationsSurprise)
 		{
 			ShuffleSurpriseBonus(rng);
 		}
@@ -871,13 +873,30 @@ public partial class FF1Rom : NesRom
 			EnableMelmondGhetto(flags.EnemizerEnabled);
 		}
 
+		// Weighted; Vanilla, Unleashed, and All are less likely
+		if (flags.WarMECHMode == WarMECHMode.Random)
+		{
+			int RandWarMECHMode = rng.Between(1, 100);
+
+			if (RandWarMECHMode <= 15)
+				flags.WarMECHMode = WarMECHMode.Vanilla;	// 15%
+			else if (RandWarMECHMode <= 45)
+				flags.WarMECHMode = WarMECHMode.Patrolling;	// 30%
+			else if (RandWarMECHMode <= 75)
+				flags.WarMECHMode = WarMECHMode.Required;	// 30%
+			else if (RandWarMECHMode <= 90)
+				flags.WarMECHMode = WarMECHMode.Unleashed;	// 15%
+			else 
+				flags.WarMECHMode = WarMECHMode.All;		// 10%
+
+		}
 		// After unrunnable shuffle and before formation shuffle. Perfect!
 		if (flags.WarMECHMode != WarMECHMode.Vanilla)
 		{
 			WarMECHNpc(flags.WarMECHMode, npcdata, rng, maps, flags.GameMode == GameModes.DeepDungeon, (MapId)warmMechFloor);
 		}
 
-		if (flags.WarMECHMode == WarMECHMode.Unleashed)
+		if (flags.WarMECHMode == WarMECHMode.Unleashed || flags.WarMECHMode == WarMECHMode.All)
 		{
 			UnleashWarMECH();
 		}
@@ -1050,11 +1069,6 @@ public partial class FF1Rom : NesRom
 			WhiteMageHarmEveryone();
 		}
 
-		if (flags.EnemyElementalResistancesBug)
-		{
-			FixEnemyElementalResistances();
-		}
-
 		if (preferences.FunEnemyNames && !flags.EnemizerEnabled)
 		{
 		    FunEnemyNames(preferences.TeamSteak, (bool)flags.AlternateFiends, new MT19337(funRngSeed));
@@ -1098,34 +1112,30 @@ public partial class FF1Rom : NesRom
 
 		ExpGoldBoost(flags);
 
-		if(flags.ExpMultiplierFighter > 1.0)
+		if(flags.ExpMultiplierFighter != 1.0)
 		{
 			ScaleAltExp(flags.ExpMultiplierFighter, FF1Class.Fighter);
 		}
-
-		if (flags.ExpMultiplierThief > 1.0)
+		if (flags.ExpMultiplierThief != 1.0)
 		{
 			ScaleAltExp(flags.ExpMultiplierThief, FF1Class.Thief);
 		}
-
-		if (flags.ExpMultiplierBlackBelt > 1.0)
+		if (flags.ExpMultiplierBlackBelt != 1.0)
 		{
 			ScaleAltExp(flags.ExpMultiplierBlackBelt, FF1Class.BlackBelt);
 		}
-
-		if (flags.ExpMultiplierRedMage > 1.0)
+		if (flags.ExpMultiplierRedMage != 1.0)
 		{
 			ScaleAltExp(flags.ExpMultiplierRedMage, FF1Class.RedMage);
 		}
 
 		await this.Progress();
 
-		if (flags.ExpMultiplierWhiteMage > 1.0)
+		if (flags.ExpMultiplierWhiteMage != 1.0)
 		{
 			ScaleAltExp(flags.ExpMultiplierWhiteMage, FF1Class.WhiteMage);
 		}
-
-		if (flags.ExpMultiplierBlackMage > 1.0)
+		if (flags.ExpMultiplierBlackMage != 1.0)
 		{
 			ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
 		}
@@ -1243,7 +1253,7 @@ public partial class FF1Rom : NesRom
 
 		if (flags.InventoryAutosort && !(preferences.RenounceAutosort))
 		{
-			EnableInventoryAutosort();
+			EnableInventoryAutosort(flags.NoOverworld);
 		}
 
 		if (flags.ResourcePack != null)
@@ -1343,8 +1353,8 @@ public partial class FF1Rom : NesRom
 
 		owMapExchange?.ExecuteStep2();
 
-
-		if(flags.QuickMinimapLoad || owMapExchange != null)
+		// Used to be a separate Quick Minimap flag - consolidated into Speed Hacks
+		if(flags.SpeedHacks || owMapExchange != null)
 		{
 			new QuickMiniMap(this, overworldMap).EnableQuickMinimap();
 		}
@@ -1416,8 +1426,44 @@ public partial class FF1Rom : NesRom
 		{
 			byte[] hashable = Data.ToBytes();
 
+			//zero out overworld palette data
+			for (int i = 0x380; i < 0x390; i++)
+			{
+				hashable[i] = 0;
+			}
+
 			//zero out mapman palette data
 			for (int i = 0x390; i < 0x3BC; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out standard map palette data
+			for (int i = 0x2000; i < 0x2C00; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out standard map object graphic lookup
+			for (int i = 0x2E00; i < 0x2ED0; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out backdrop palette data
+			for (int i = 0x3200; i < 0x3260; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out battle backdrop lookup
+			for (int i = 0x3300; i < 0x3380; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out overworld graphics
+			for (int i = 0x8000; i < 0x9000; i++)
 			{
 				hashable[i] = 0;
 			}
@@ -1428,8 +1474,26 @@ public partial class FF1Rom : NesRom
 				hashable[i] = 0;
 			}
 
+			//zero out standard map object graphics
+			for (int i = 0xA200; i < 0xC000; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			//zero out standard map graphics
+			for (int i = 0xC000; i < 0x10000; i++)
+			{
+				hashable[i] = 0;
+			}
+
 			//zero out character battle graphics
 			for (int i = 0x25000; i < 0x26800; i++)
+			{
+				hashable[i] = 0;
+			}
+
+			// Battlepalettes
+			for (int i = 0x30F20; i < 0x31020; i++)
 			{
 				hashable[i] = 0;
 			}
@@ -1453,7 +1517,7 @@ public partial class FF1Rom : NesRom
 			}
 
 			var Hash = hasher.ComputeHash(hashable);
-			if (ByteArrayToString(Hash) != "7ea7f20bcb93b9d3c5f951f59b9cc3a42b347dbf0323b98d74b06bc81309d77a")
+			if (ByteArrayToString(Hash) != "0614d282abe33d5c6e9a22f6cc7b5f972d30c292d4b873ce07f703c1a14b168c")
 			{
 				Console.WriteLine($"Rom hash: {ByteArrayToString(Hash)}");
 				throw new TournamentSafeException("File has been modified");

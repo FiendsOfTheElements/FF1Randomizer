@@ -858,6 +858,7 @@
 			MoveNpc(MapId.Onrac, 0x09, 0x11, 0x23, false, false);
 
 			ItemsText[(int)Item.Floater] = "SIGIL  ";
+			ItemsText[(int)Item.EarthOrb] = "MARK   ";
 
 			Put(0x2B5F4, FF1Text.TextToBytes("MARK", useDTE: false));
 
@@ -1056,7 +1057,7 @@
 				new MapArea { location = MapLocation.SeaShrine1, map = MapId.SeaShrineB3, ul_corner = (0, 0), ur_corner = (43, 0), ll_corner = (0, 64), lr_corner = (43, 64) },
 				new MapArea { location = MapLocation.SeaShrine2, map = MapId.SeaShrineB2, ul_corner = (0, 0), ur_corner = (48, 0), ll_corner = (0, 64), lr_corner = (48, 64) },
 				new MapArea { location = MapLocation.SeaShrine6, map = MapId.SeaShrineB2, ul_corner = (51, 39), ur_corner = (64, 39), ll_corner = (51, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.SeaShrineMermaids, map = MapId.SeaShrineB1, ul_corner = (51, 39), ur_corner = (64, 39), ll_corner = (51, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.SeaShrineMermaids, map = MapId.SeaShrineB1, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
 				new MapArea { location = MapLocation.SkyPalace1, map = MapId.SkyPalace1F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
 				new MapArea { location = MapLocation.SkyPalace2, map = MapId.SkyPalace2F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
 				new MapArea { location = MapLocation.SkyPalace3, map = MapId.SkyPalace3F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
@@ -1191,8 +1192,8 @@
 
 						teleportersLocDest.Add((
 							teleporttile.PropertyValue,
-							maparea.Find(area => area.map == (MapId)i && area.ul_corner.Item1 < FlippedX((MapId)i, x) && area.lr_corner.Item1 > FlippedX((MapId)i, x) && area.ul_corner.Item2 < y && area.lr_corner.Item2 > y).location,
-							maparea.Find(area => area.map == (MapId)targetteleporter.Destination && area.ul_corner.Item1 < FlippedX((MapId)targetteleporter.Destination, targetteleporter.X) && area.lr_corner.Item1 > FlippedX((MapId)targetteleporter.Destination, targetteleporter.X) && area.ul_corner.Item2 < targetteleporter.Y && area.lr_corner.Item2 > targetteleporter.Y).location));
+							maparea.Find(area => area.map == (MapId)i && area.ul_corner.Item1 <= FlippedX((MapId)i, x) && area.lr_corner.Item1 >= FlippedX((MapId)i, x) && area.ul_corner.Item2 <= y && area.lr_corner.Item2 >= y).location,
+							maparea.Find(area => area.map == (MapId)targetteleporter.Destination && area.ul_corner.Item1 <= FlippedX((MapId)targetteleporter.Destination, targetteleporter.X) && area.lr_corner.Item1 >= FlippedX((MapId)targetteleporter.Destination, targetteleporter.X) && area.ul_corner.Item2 <= targetteleporter.Y && area.lr_corner.Item2 >= targetteleporter.Y).location));
 					}
 				}
 			}

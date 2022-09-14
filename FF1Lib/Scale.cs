@@ -56,25 +56,25 @@ namespace FF1Lib
 
 	public enum StartingGold
 	{ 
-		[Description("0 gp")]
+		[Description("0 GP")]
 		None,
-		[Description("100 gp")]
+		[Description("100 GP")]
 		Gp100,
-		[Description("200 gp")]
+		[Description("200 GP")]
 		Gp200,
-		[Description("400 gp (Vanilla)")]
+		[Description("400 GP (Vanilla)")]
 		Gp400,
-		[Description("800 gp")]
+		[Description("800 GP")]
 		Gp800,
-		[Description("2,500 gp")]
+		[Description("2500 GP")]
 		Gp2500,
-		[Description("9,999 gp")]
+		[Description("9999 GP")]
 		Gp9999,
-		[Description("65,535 gp")]
+		[Description("65,535 GP")]
 		Gp65535,
-		[Description("Random (0-800 gp)")]
+		[Description("Random (0-800 GP)")]
 		RandomLow,
-		[Description("Random (0-65,535 gp)")]
+		[Description("Random (0-65,535 GP)")]
 		RandomHigh,
 	}
 

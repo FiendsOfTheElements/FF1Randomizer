@@ -382,6 +382,7 @@ namespace FF1Lib
 				};
 				for (int i = 0; i < treasuredeck.Count(); i++)
 				{
+					// If this is ever used - Append may not work like this and need fixing
 					result.Append(treasuredeck[i]);
 				}
 				return result;
@@ -1877,7 +1878,14 @@ namespace FF1Lib
 				WarMechFloor = 0;
 				return;
 			}
-			else if (flags.WarMECHMode == WarMECHMode.Patrolling)
+			if (flags.WarMECHMode == WarMECHMode.Required || flags.WarMECHMode == WarMECHMode.All)
+			{
+				warmechfloor = 59;
+				warmechstationary = true;
+				_rom.SetNpc((MapId)warmechfloor, 4, ObjectId.WarMECH, 0x0F, 0x16, false, warmechstationary);
+			}
+			// This needs to be second because the floor information needs to be passed on later
+			if (flags.WarMECHMode == WarMECHMode.Patrolling || flags.WarMECHMode == WarMECHMode.All)
 			{
 				warmechfloor = RollDice(rng, 1, 6) + 45 + 7;
 				warmechstationary = false;
@@ -1895,13 +1903,7 @@ namespace FF1Lib
 					}
 				}
 			}
-			else if (flags.WarMECHMode == WarMECHMode.Required)
-			{
-				warmechfloor = 59;
-				warmechstationary = true;
-				candidates.Add(new Candidate(0x0F, 0x16));
-			}
-
+			
 			WarMechFloor = warmechfloor;
 			c = candidates.SpliceRandom(rng);
 			_rom.SetNpc((MapId)warmechfloor, 4, ObjectId.WarMECH, c.x, c.y, false, warmechstationary);
