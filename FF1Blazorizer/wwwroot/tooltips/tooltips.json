@@ -1724,15 +1724,9 @@
 	},
 	{
 		"Id": "improvedClinicCheckBox",
-		"title": "Clinics Heal All Statuses",
+		"title": "Clinics are Free & Heal All Statuses",
 		"screenshot": "improved-clinic.png",
-		"description": "In addition to reviving dead characters at 1 HP, all clinics now heal Poison and Stone statuses (without affecting your HP)."
-	},
-	{
-		"Id": "freeClinicCheckBox",
-		"title": "Clinics Don't Cost Money",
-		"screenshot": "free-clinic.png",
-		"description": "All clinics revive your characters for free."
+		"description": "In addition to reviving dead characters at 1 HP, all clinics now heal Poison and Stone statuses (without affecting your HP).\nClincs are also now free."
 	},
 	{
 		"Id": "etherizerCheckBox",
@@ -2037,7 +2031,7 @@
 		"Id": "enableArchipelago",
 		"title": "Enable Archipelago Support",
 		"screenshot": "archipelagoEnable.png",
-		"description": "Create a game that's compatible with Archipelago Multi-Worlds, allowing different games to share the same treasure pool. By default, only Key Items are included in the common treasure pool. Require Archipelago's client."
+		"description": "Create a game that's compatible with Archipelago Multi-Worlds, allowing different games to share the same treasure pool. By default, only Key Items are included in the common treasure pool. Requires Archipelago's client."
 	},
 	{
 		"Id": "enableArchipelagoShards",

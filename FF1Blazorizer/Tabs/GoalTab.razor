@@ -19,6 +19,19 @@
 	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="preserveAllFiendRefightsCheckBox" IsEnabled="@Flags.CanPreserveAllFiendRefights" @bind-Value="Flags.PreserveAllFiendRefights">Refight All Fiends</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="exitToFRCheckBox" @bind-Value="Flags.ExitToFR">Add ToFR Exit</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosFloorEncountersCheckBox" @bind-Value="Flags.ChaosFloorEncounters">Add Chaos Floor Encounters</TriStateCheckBox>
+
+    <div class="checkbox-cell"></div>
+    <h4>Archipelago</h4>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enableArchipelago" @bind-Value="Flags.Archipelago">Enable</CheckBox>
+		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoShards" @bind-Value="Flags.ArchipelagoShards">Shards</CheckBox>
+		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoGold" @bind-Value="Flags.ArchipelagoGold">Gold</CheckBox>
+		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoConsumables" @bind-Value="Flags.ArchipelagoConsumables">Consumables</CheckBox>
+		<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoEquipment" TItem="ArchipelagoEquipment" @bind-Value="Flags.ArchipelagoEquipment">Equipment:</EnumDropDown>
+		<p>
+			Player Name:
+			<br>
+			<input type="text" style="width: calc(100% - 80px);" class="nes-input" id="seedInput" @onchange="@OnPlayerNameChanged" value="@(Flags.PlayerName)" />
+		</p>
 </div>
 
 	<div class="col2">
@@ -45,4 +58,9 @@
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
+
+    void OnPlayerNameChanged(ChangeEventArgs e)
+	{
+		Flags.PlayerName = e.Value as string;
+	}
 }
