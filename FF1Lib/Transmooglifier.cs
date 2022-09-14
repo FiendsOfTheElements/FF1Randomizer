@@ -52,7 +52,6 @@ namespace FF1Lib
 
 			for (int i = 0; i < 6; i++)
 			{
-				Console.WriteLine($"Class Name: { classes[i].name }");
 				classDescriptions.Add(classes[i].PublishToClass(i));
 			}
 
@@ -91,12 +90,10 @@ namespace FF1Lib
 			for (int i = 0; i < 6; i++)
 			{
 				ClassDef c = classes[i];
-				Console.WriteLine("Class Palettes " + c.name);
 
 				ClassDef.rom.ImportMapmanSync(c.getImage(), c.classIndex, 24, 0, ClassDef.rom.NESpalette);
 				ClassDef.rom.ImportBattleSpriteSync(c.getImage(), c.classIndex, 0, 0, ClassDef.rom.NESpalette);
 
-				Console.WriteLine("Class Palettes " + c.promoName);
 				ClassDef.rom.ImportMapmanSync(c.getImage(true), c.classIndex+6, 24, 0, ClassDef.rom.NESpalette);
 				ClassDef.rom.ImportBattleSpriteSync(c.getImage(true), c.classIndex+6, 0, 0, ClassDef.rom.NESpalette);
 			}
@@ -1310,7 +1307,6 @@ namespace FF1Lib
 			newPermissions.ClearPermissions(c);
 			newPermissions.ClearPermissions(p);
 
-			Console.WriteLine(name + ": " + armourWeight + ", " + pam);
 			foreach (Item i in ItemLists.AllArmor) {
 				if (isEquippable(i, armourWeight))
 					newPermissions.AddPermission(c, i);
