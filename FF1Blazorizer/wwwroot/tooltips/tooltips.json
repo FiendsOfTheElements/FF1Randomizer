@@ -2317,5 +2317,15 @@
 		"title": "Move Temple of Fiends Bats",
 		"screenshot": "moveToFBats.png",
 		"description": "Temple of Fiends bats are moved out of Garland's room."
+	},
+	{
+		"Id": "ShuffleChimeAccess",
+		"title": "Shuffle Chime Access",
+		"description": "Shuffle the CHIME access requirement to another entrance.  This means Mirage Tower won't require the CHIME to enter, but some other dungeon, cave or castle will be impossible to enter without the CHIME, unless CHIME access is shuffled back to Mirage.\n (CUBE is still required to reach the Sky Palace)."
+	},
+	{
+		"Id": "ShuffleChimeIncludeTowns",
+		"title": "Shuffle Chime includes Towns",
+		"description": "Include towns (except Coneria) in the pool of entrances that may require CHIME to enter."
 	}
 ]

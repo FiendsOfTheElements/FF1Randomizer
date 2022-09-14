@@ -127,6 +127,9 @@ namespace FF1Lib
 		public bool? RelocateChests { get; set; } = false;
 		public bool RelocateChestsTrapIndicator { get; set; } = false;
 
+		public bool? ShuffleChimeAccess { get; set; } = false;
+		public bool? ShuffleChimeIncludeTowns { get; set; } = false;
+
 		public GameModes GameMode { get; set; } = GameModes.Standard;
 
 		[IntegerFlag(0, Int32.MaxValue-1)]

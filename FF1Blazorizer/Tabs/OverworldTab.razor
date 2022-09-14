@@ -103,17 +103,20 @@
 				</div>
 			}
 
-			@if (Flags.OwMapExchange != OwMapExchanges.Desert)
-			{
 				<div class="col2">
 					<h4>Other Map Changes</h4>
+				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ShuffleChimeAccess" @bind-Value="Flags.ShuffleChimeAccess">Shuffle Chime Access</TriStateCheckBox>
+				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="ShuffleChimeIncludeTowns" @bind-Value="Flags.ShuffleChimeIncludeTowns" IsEnabled="Flags.ShuffleChimeAccess">Include towns</TriStateCheckBox>
+			@if (Flags.OwMapExchange != OwMapExchanges.Desert)
+			{
+
                     <DoubleSlider DoubleCol Id="DamageTileDamageSlider" UpdateToolTip="@UpdateToolTipID" MinValue="0" MaxValue="10" Step="1" @bind-ValuesRange="(Flags.DamageTileLow,Flags.DamageTileHigh)">Damage Tile Damage:</DoubleSlider>
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="OWDamageTilesCheckBox" @bind-Value="Flags.OWDamageTiles">Marsh & Desert Tiles Deal Damage</TriStateCheckBox>
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="DamageTilesKillCheckBox" @bind-Value="Flags.DamageTilesKill">Lethal Damage Tiles</TriStateCheckBox>
 
 					<div class="clear-it"></div>
-				</div>
 			}
+				</div>
 		}
 		else if (Flags.GameMode == GameModes.DeepDungeon)
 		{
@@ -126,7 +129,6 @@
 				<div class="clear-it"></div>
 			</div>
 		}
-
 
 	}
 	</div>
