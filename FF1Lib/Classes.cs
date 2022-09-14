@@ -62,10 +62,10 @@ namespace FF1Lib
 
 	public class GameClasses
 	{
-		public List<ClassData> _classes;
-		public GearPermissions _weaponPermissions;
-		public GearPermissions _armorPermissions;
-		public SpellPermissions _spellPermissions;
+		private List<ClassData> _classes;
+		private GearPermissions _weaponPermissions;
+		private GearPermissions _armorPermissions;
+		private SpellPermissions _spellPermissions;
 
 		const int lut_LvlUpHitRateBonus = 0x6CA59;
 		const int lut_LvlUpMagDefBonus = 0x6CA65;

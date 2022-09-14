@@ -52,7 +52,7 @@ namespace FF1Lib
 
 		private void WriteWeaponSpoiler()
 		{
-			Utilities.WriteSpoilerLine("Weapon    Damage  Crit    Hit     Usability     Casting");
+			Utilities.WriteSpoilerLine("Weapon    Damage  Crit    Hit     Usability           Casting");
 			Utilities.WriteSpoilerLine("----------------------------------------------------------------------------------------------------");
 
 			foreach (var weapon in weapons)
@@ -60,7 +60,7 @@ namespace FF1Lib
 				var casting = "";
 				if(weapon.SpellIndex != 0) casting = "casting: " + magicSpells[weapon.SpellIndex - 1].Name;
 
-				Utilities.WriteSpoilerLine($"{weapon.Name.PadRight(8)}  +{weapon.Damage,2}      +{weapon.Crit,2}%    +{weapon.HitBonus,2}%    {rom.GenerateEquipPermission(weaponPermissions[weapon.Id]),12}  {casting}");
+				Utilities.WriteSpoilerLine($"{weapon.Name.PadRight(8)}  +{weapon.Damage,2}      +{weapon.Crit,2}%    +{weapon.HitBonus,2}%    {rom.GenerateEquipPermission(weaponPermissions[weapon.Id]),17}  {casting}");
 			}
 
 			Utilities.WriteSpoilerLine("");
@@ -69,7 +69,7 @@ namespace FF1Lib
 
 		private void WriteArmorSpoiler()
 		{
-			Utilities.WriteSpoilerLine("Armor     Type        Absorb  Weight  Usability     Casting         Resist");
+			Utilities.WriteSpoilerLine("Armor     Type        Absorb  Weight  Usability          Casting         Resist");
 			Utilities.WriteSpoilerLine("----------------------------------------------------------------------------------------------------");
 
 			foreach (var armor in armors)
@@ -77,7 +77,7 @@ namespace FF1Lib
 				var casting = "";
 				if (armor.SpellIndex != 0) casting = "casting: " + magicSpells[armor.SpellIndex - 1].Name;
 				
-				Utilities.WriteSpoilerLine($"{armor.Name.PadRight(8)}  {armor.Type.ToString().PadRight(10)}  +{armor.Absorb,2}     -{armor.Weight,3}%   {rom.GenerateEquipPermission(armorPermissions[armor.Id]),12}  {casting.PadRight(16)}{GetElementalResist((SpellElement)armor.ElementalResist)}");
+				Utilities.WriteSpoilerLine($"{armor.Name.PadRight(8)}  {armor.Type.ToString().PadRight(10)}  +{armor.Absorb,2}     -{armor.Weight,3}%   {rom.GenerateEquipPermission(armorPermissions[armor.Id]),17}  {casting.PadRight(16)}{GetElementalResist((SpellElement)armor.ElementalResist)}");
 			}
 
 			Utilities.WriteSpoilerLine("");

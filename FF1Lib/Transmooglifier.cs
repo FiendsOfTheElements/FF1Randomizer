@@ -56,7 +56,31 @@ namespace FF1Lib
 				classDescriptions.Add(classes[i].PublishToClass(i));
 			}
 
+			// Lazy hack to make coding ArmorPermissions easier, since I base my perms off the pre-existing vanilla class perms and not custom ID tables
+			rom.ArmorPermissions = ClassDef.newPermissions;
+
 			LoadImages(classes);
+		}
+
+		public List<ClassDef> ShuffleClasses(MT19337 rng, List<ClassDef> classes)
+		{
+			List<ClassDef> ret = CreateClasses();
+
+			do
+			{
+				classes.Shuffle(rng);
+			} while (!ClassesGuaranteed(classes.GetRange(0, 6)));
+
+			return classes.GetRange(0, 6);
+		}
+
+		public bool ClassesGuaranteed(List<ClassDef> classes)
+		{
+			// Guarantee presence of KNIGHT
+			// Guarantee presence of one of each weapon type
+			// Guarantee presence of every spell...?
+
+			return true;
 		}
 
 		public void LoadImages(List<ClassDef> classes)
@@ -207,6 +231,7 @@ namespace FF1Lib
 				spellChargeMax = 9,
 				possibleMagic = new List<string> { "black", "white", "elem", "status", "buff", "recovery", "grey" },
 				MagicSchoolsMax = 2,
+				promoMagic = new List<string> { "all" },
 				averageMagicSchools = 3f,
 				armourWeight = MEDIUM,
 				guaranteedWeapon = new List<WeaponSprite> { },
@@ -603,7 +628,7 @@ namespace FF1Lib
 			{
 				name = "JUGGLER",
 				promoName = "BARD",
-				shortName = "Hn",
+				shortName = "Jg",
 				promoShortName = "Ba",
 				HP = 9,
 				STR = 12,
@@ -930,15 +955,15 @@ namespace FF1Lib
 
 		public int[] spellGrowthChart = new int[8];
 
-		private List<String> finalSchools = new List<String>();
-		private List<String> finalPromoSchools = new List<String>();
+		public List<String> finalSchools = new List<String>();
+		public List<String> finalPromoSchools = new List<String>();
 
 		// Weapons
 		public List<WeaponSprite> guaranteedWeapon = new List<WeaponSprite>(); // Uses Weapon Sprites, not weapon types, because those are lopsided AF. Distribution: 2 CHUCK, 4 AXE, 3 HAMMER, 5 KNIFE (Katana and CatClaw), 3 STAFF (Wooden, Power, Wizard), 3 IRONSTAFF (Iron, Heal, Mage), 3 SHORTSWORD (Giant, Were, Short), 2 SCIMITAR (Masa, Scimitar), 4 FALCHION (Falchion, Flame, Vorpal, Rune), 5 LONGSWORD (Silver, XCal, Ice, Sun, Long), 6 RAPIER (Rapier, Sabre, Defense, Bane, Dragon, Coral)
 		public List<WeaponSprite> possibleWeapon = new List<WeaponSprite>();       //		Out of those, CHUCK and SHORTSWORD have no end game weapons. Every other end game weapon will be promo locked.
 		public int weaponsMax;                         // Maximum number of additional weapon types to show up
 		public float averageWeapons;                   // Average number of weapon types to show up. Each types in the list will be chosen or not based on averageWeapons / possibleWeapon.size()
-		private List<WeaponSprite> finalSets;
+		public List<WeaponSprite> finalSets;
 
 		// Armor
 		public int armourWeight;   // See definitions above -> CLOTH, LIGHT, MEDIUM, HEAVY, KNIGHT
@@ -1170,9 +1195,9 @@ namespace FF1Lib
 			rom.ItemsText[0xF0 + classIndex] = name.PadRight(8);
 			rom.ItemsText[0xF0 + classIndex + 6] = promoName.PadRight(8);
 
-			// Shop info Panel
-			rom.InfoClassAbbrev[classIndex] = shortName;
-			rom.InfoClassAbbrev[classIndex+6] = promoShortName;
+			// Shop info Panel - everywhere else uses regular classes then promoted, but this table for some reason uses reg, pro, reg, pro, reg, pro, etc...
+			rom.InfoClassAbbrev[classIndex*2] = shortName;
+			rom.InfoClassAbbrev[classIndex*2+1] = promoShortName;
 		}
 
 		// Commit Stats to the character class
@@ -1241,20 +1266,20 @@ namespace FF1Lib
 			var sets = RollWeaponSet();
 			finalSets = sets;
 
-			rom.ClassData._weaponPermissions.ClearPermissions((Classes)i);
+			rom.WeaponPermissions.ClearPermissions((Classes)i);
 
 			foreach (Weapon w in Weapon.LoadAllWeapons(rom, null))
-			{ // First var is ROM
+			{
 				if (sets.Contains(w.WeaponTypeSprite) & !ItemLists.UberTier.Contains(w.Id) & !ItemLists.LegendaryWeaponTier.Contains(w.Id) && w.Id != Item.Defense && w.Id != Item.LightAxe && w.Id != Item.ThorHammer && w.Id != Item.CatClaw)
-					rom.ClassData._weaponPermissions.AddPermission((Classes)i, w.Id);
+					rom.WeaponPermissions.AddPermission((Classes)i, w.Id);
 			}
 
-			rom.ClassData._weaponPermissions.ClearPermissions((Classes)i + 6);
+			rom.WeaponPermissions.ClearPermissions((Classes)i + 6);
 
 			foreach (Weapon w in Weapon.LoadAllWeapons(rom, null))
 			{
 				if (sets.Contains(w.WeaponTypeSprite))
-					rom.ClassData._weaponPermissions.AddPermission((Classes)i + 6, w.Id);
+					rom.WeaponPermissions.AddPermission((Classes)i + 6, w.Id);
 			}
 		}
 
@@ -1281,6 +1306,11 @@ namespace FF1Lib
 			Classes p = (Classes)(classIndex + 6);
 
 			var pam = promoArmourWeight == -1 ? Math.Clamp(armourWeight + 1, 0, 4) : promoArmourWeight;
+
+			newPermissions.ClearPermissions(c);
+			newPermissions.ClearPermissions(p);
+
+			Console.WriteLine(name + ": " + armourWeight + ", " + pam);
 			foreach (Item i in ItemLists.AllArmor) {
 				if (isEquippable(i, armourWeight))
 					newPermissions.AddPermission(c, i);
@@ -1338,8 +1368,8 @@ namespace FF1Lib
 			RollSpellCastingStats(classIndex);
 
 			// Spell Permissions Committing
-			rom.ClassData._spellPermissions.ClearPermissions(c);
-			rom.ClassData._spellPermissions.ClearPermissions(p);
+			rom.SpellPermissions.ClearPermissions(c);
+			rom.SpellPermissions.ClearPermissions(p);
 
 			HashSet<int> availableLevels = new HashSet<int>();
 			HashSet<int> availablePromoLevels = new HashSet<int>();
@@ -1348,7 +1378,7 @@ namespace FF1Lib
 			{
 				if (s.Level <= mageLevel)
 				{
-					rom.ClassData._spellPermissions.AddPermission(c, (SpellSlots)s.Index);
+					rom.SpellPermissions.AddPermission(c, (SpellSlots)s.Index);
 					availableLevels.Add(s.Level);
 				}
 			}
@@ -1357,7 +1387,7 @@ namespace FF1Lib
 			{
 				if (sp.Level <= mageLevel + mageLevelPromotion)
 				{
-					rom.ClassData._spellPermissions.AddPermission(p, (SpellSlots)sp.Index);
+					rom.SpellPermissions.AddPermission(p, (SpellSlots)sp.Index);
 					availablePromoLevels.Add(sp.Level);
 				}
 			}
