@@ -546,7 +546,7 @@ namespace FF1Lib
 		{
 			// The masamune uses the same palette as the cursor and stone characters
 			// so we can free up a whole palette if we reset the varies palette to
-			// the masmune palette after every swing and magic annimation. The only
+			// the masamune palette after every swing and magic annimation. The only
 			// drawback is that stoned characters will flash with attacks and magic.
 
 			// Change UpdateVariablePalette to edit Palette 3
