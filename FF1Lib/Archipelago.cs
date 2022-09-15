@@ -1,13 +1,7 @@
 ﻿using FF1Lib.Sanity;
 using Newtonsoft.Json;
-using RomUtilities;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FF1Lib
 {
@@ -235,8 +229,10 @@ namespace FF1Lib
 			if (l.HasFlag(SCRequirements.Cube)) list.Add(Item.Cube.ToString());
 			if (l.HasFlag(SCRequirements.Oxyale)) list.Add(Item.Oxyale.ToString());
 			if (l.HasFlag(SCRequirements.Tnt)) list.Add(Item.Tnt.ToString());
-			if (l.HasFlag(SCRequirements.Canoe)) list.Add(Item.Canoe.ToString());
-			if (l.HasFlag(SCRequirements.Floater)) list.Add(Item.Floater.ToString());
+			if (l.HasFlag(SCRequirements.Canoe) && !flags.NoOverworld) list.Add(Item.Canoe.ToString());
+			if (l.HasFlag(SCRequirements.Canoe) && flags.NoOverworld) list.Add("Mark");
+			if (l.HasFlag(SCRequirements.Floater) && !flags.NoOverworld) list.Add(Item.Floater.ToString());
+			if (l.HasFlag(SCRequirements.Floater) && flags.NoOverworld) list.Add("Sigil");
 			if (l.HasFlag(SCRequirements.Bridge)) list.Add(Item.Bridge.ToString());
 			if (l.HasFlag(SCRequirements.Canal)) list.Add(Item.Canal.ToString());
 			if (l.HasFlag(SCRequirements.Bottle)) list.Add(Item.Bottle.ToString());
@@ -286,8 +282,8 @@ namespace FF1Lib
 			{
 				switch (item)
 				{
-					case Item.Floater: return "SIGIL";
-					case Item.Canoe: return "MARK";
+					case Item.Floater: return "Sigil";
+					case Item.Canoe: return "Mark";
 				}
 			}
 
@@ -324,6 +320,15 @@ namespace FF1Lib
 					case Item.SmallKnife: return 185 + ItemOffset;
 					case Item.WoodenRod: return 186 + ItemOffset;
 					case Item.Rapier: return 187 + ItemOffset;
+				}
+			}
+
+			if (flags.GameMode == GameModes.NoOverworld)
+			{
+				switch (item)
+				{
+					case Item.Floater: return 243 + ItemOffset;
+					case Item.Canoe: return 244 + ItemOffset;
 				}
 			}
 
@@ -377,10 +382,10 @@ namespace FF1Lib
 		[Description("All Equipment")]
 		Common,
 
-		[Description("Rare, Legendary and Caster Items")]
+		[Description("Rare, Legendary & Caster Items")]
 		Rare,
 
-		[Description("Legendary and Caster Items")]
+		[Description("Legendary & Caster Items")]
 		Legendary,
 
 		[Description("Caster Items")]

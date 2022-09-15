@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using RomUtilities;
+﻿using System.Diagnostics;
 using FF1Lib.Sanity;
-
+using FF1Lib.Procgen;
 
 namespace FF1Lib
 {
@@ -110,7 +105,7 @@ namespace FF1Lib
 			if ((bool)flags.MapLefeinRiver && !flags.DisableOWMapModifications) {
 			    MapEditsToApply.Add(LefeinRiverDock);
 			    mapLocationRequirements[MapLocation.Lefein].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
-		  }
+			}
 			if ((bool)flags.MapBridgeLefein && !flags.DisableOWMapModifications) {
 					// Moves the Bridge to its new home below Lefein
 					OwLocationData _OwLocationData = new(rom);
@@ -123,7 +118,7 @@ namespace FF1Lib
 					mapLocationRequirements[MapLocation.MatoyasCave].Add(MapChange.None);
 					mapLocationRequirements[MapLocation.Pravoka].Add(MapChange.None);
 					mapLocationRequirements[MapLocation.IceCave1].Add(MapChange.Canoe);
-      }
+			}
 			if ((bool)flags.MapGaiaMountainPass && !flags.DisableOWMapModifications) {
 			    MapEditsToApply.Add(GaiaMountainPass);
 					// If Lefein River Dock is on, then Gaia also becomes Ship-accessible
@@ -136,20 +131,24 @@ namespace FF1Lib
 					}
 			    _walkableNodes[WalkableRegion.LefeinRegion] = new List<OverworldTeleportIndex>{OverworldTeleportIndex.Gaia, OverworldTeleportIndex.Lefein };
 			}
+			if ((bool)flags.MapHighwayToOrdeals && !flags.DisableOWMapModifications)
+			{
+				MapEditsToApply.Add(HighwayToOrdeals);
+			}
 			if ((bool)flags.MapRiverToMelmond && !flags.DisableOWMapModifications) {
-					MapEditsToApply.Add(RiverToMelmond);
-					// With Early Open Progression, you only need a Canoe
-					if ((bool)flags.MapConeriaDwarves) {
-						mapLocationRequirements[MapLocation.Melmond].Add(MapChange.Canoe);
-						mapLocationRequirements[MapLocation.TitansTunnelEast].Add(MapChange.Canoe);
-						mapLocationRequirements[MapLocation.EarthCave1].Add(MapChange.Canoe);
-					}
-					else {
-						mapLocationRequirements[MapLocation.Melmond].Add(MapChange.Ship | MapChange.Canoe);
-						mapLocationRequirements[MapLocation.TitansTunnelEast].Add(MapChange.Ship | MapChange.Canoe);
-						mapLocationRequirements[MapLocation.EarthCave1].Add(MapChange.Ship | MapChange.Canoe);
-					}
-		  }
+				MapEditsToApply.Add(RiverToMelmond);
+				// With Early Open Progression, you only need a Canoe
+				if ((bool)flags.MapConeriaDwarves) {
+					mapLocationRequirements[MapLocation.Melmond].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.TitansTunnelEast].Add(MapChange.Canoe);
+					mapLocationRequirements[MapLocation.EarthCave1].Add(MapChange.Canoe);
+				}
+				else {
+					mapLocationRequirements[MapLocation.Melmond].Add(MapChange.Ship | MapChange.Canoe);
+					mapLocationRequirements[MapLocation.TitansTunnelEast].Add(MapChange.Ship | MapChange.Canoe);
+					mapLocationRequirements[MapLocation.EarthCave1].Add(MapChange.Ship | MapChange.Canoe);
+				}
+			}
 			if ((bool)flags.MapVolcanoIceRiver)
 			{
 				MapEditsToApply.Add(VolcanoIceRiver);
@@ -956,13 +955,13 @@ namespace FF1Lib
 
 		public const byte GrassTile = 0x00;
 		public const byte OceanTile = 0x17;
-		
+
 		public const byte MarshTile = 0x55;
 		public const byte MarshTopLeft = 0x62;
 		public const byte MarshTopRight = 0x63;
 		public const byte MarshBottomLeft = 0x72;
 		public const byte MarshBottomRight = 0x73;
-		
+
 		public const byte MountainTopLeft = 0x10;
 		public const byte MountainTopMid = 0x11;
 		public const byte MountainTopRight = 0x12;
@@ -972,13 +971,13 @@ namespace FF1Lib
 		public const byte MountainBottomLeft = 0x30;
 		public const byte MountainBottomMid = 0x31;
 		public const byte MountainBottomRight = 0x33;
-		
+
 		public const byte RiverTile = 0x44;
 		public const byte RiverTopLeft = 0x40;
 		public const byte RiverTopRight = 0x41;
 		public const byte RiverBottomLeft = 0x50;
 		public const byte RiverBottomRight = 0x51;
-		
+
 		public const byte ForestTopLeft = 0x03;
 		public const byte ForestTopMid = 0x04;
 		public const byte ForestTopRight = 0x05;
@@ -988,31 +987,37 @@ namespace FF1Lib
 		public const byte ForestBottomLeft = 0x23;
 		public const byte ForestBottomMid = 0x24;
 		public const byte ForestBottomRight = 0x25;
-		
+
 		public const byte DockBottomMid = 0x78;
 		public const byte DockRightMid = 0x1F;
 		public const byte DockLeftMid = 0x0F;
-		
+
 		//public const byte Ocean = 0x17;
 		// These are the tiny bits of jaggedness at the edge of a grass tile to make it look nice next to Ocean
 		public const byte CoastLeft = 0x16;
 		public const byte CoastRight = 0x18;
 		public const byte CoastTop = 0x07;
 		public const byte CoastBottom = 0x27;
-		
+
 		// The directions here refer to where the grass-side is, so "CoastTopLeft" is placed on the bottom-right
 		public const byte CoastTopLeft = 0x06;
 		public const byte CoastBottomLeft = 0x26;
 		public const byte CoastTopRight = 0x08;
 		public const byte CoastBottomRight = 0x28;
-		
+
 		// The special grassy effect around e.g. Elfland or Gaia
-	  public const byte GrassyMid = 0x54;
-	  public const byte GrassTopLeft = 0x60;
-	  public const byte GrassTopRight = 0x61;
-	  public const byte GrassBottomLeft = 0x70;
-	  public const byte GrassBottomRight = 0x71;
-		
+		public const byte GrassyMid = 0x54;
+		public const byte GrassTopLeft = 0x60;
+		public const byte GrassTopRight = 0x61;
+		public const byte GrassBottomLeft = 0x70;
+		public const byte GrassBottomRight = 0x71;
+
+		public const byte DesertMid = 0x45;
+		public const byte DesertTopLeft = 0x42;
+		public const byte DesertTopRight = 0x43;
+		public const byte DesertBottomLeft = 0x52;
+		public const byte DesertBottomRight = 0x53;
+
 		// Reference OverworldTiles.cs in the procGen if you need a tile not yet listed here, e.g. more Docks
 
 		public static List<MapEdit> OnracDock =
@@ -1147,7 +1152,7 @@ namespace FF1Lib
 					new MapEdit{X = 230, Y = 126, Tile = GrassTile},
 					new MapEdit{X = 231, Y = 126, Tile = GrassTile},
 					new MapEdit{X = 232, Y = 126, Tile = CoastLeft},
-					// Landbridge above Coneria 
+					// Landbridge above Coneria
 					new MapEdit{X = 150, Y = 151, Tile = CoastRight},
 					new MapEdit{X = 150, Y = 152, Tile = CoastBottomRight},
 					new MapEdit{X = 151, Y = 152, Tile = GrassTile},
@@ -1164,6 +1169,47 @@ namespace FF1Lib
 					new MapEdit{X = 158, Y = 142, Tile = GrassTile},
 					new MapEdit{X = 159, Y = 142, Tile = GrassTile},
 			};
+			public static List<MapEdit> HighwayToOrdeals =
+			new List<MapEdit>
+			{
+					// Mirage to Ordeals
+					new MapEdit{X = 186, Y = 49, Tile = MountainBottomRight},
+					new MapEdit{X = 187, Y = 49, Tile = DesertTopLeft},
+					new MapEdit{X = 188, Y = 49, Tile = DesertTopRight},
+					new MapEdit{X = 189, Y = 49, Tile = MountainBottomLeft},
+
+					new MapEdit{X = 186, Y = 48, Tile = MountainTopRight},
+					new MapEdit{X = 187, Y = 48, Tile = GrassBottomLeft},
+					new MapEdit{X = 188, Y = 48, Tile = GrassBottomRight},
+					new MapEdit{X = 189, Y = 48, Tile = MountainTopLeft},
+
+					new MapEdit{X = 185, Y = 47, Tile = MountainTopRight},
+					new MapEdit{X = 186, Y = 47, Tile = GrassBottomLeft},
+					new MapEdit{X = 187, Y = 47, Tile = GrassyMid},
+					new MapEdit{X = 188, Y = 47, Tile = GrassyMid},
+					new MapEdit{X = 189, Y = 47, Tile = GrassTopRight},
+					new MapEdit{X = 190, Y = 47, Tile = MountainTopLeft},
+
+					//Lefein to Mirage
+					new MapEdit{X = 209, Y = 50, Tile = DesertMid},
+					new MapEdit{X = 209, Y = 51, Tile = DesertBottomRight},
+					new MapEdit{X = 208, Y = 51, Tile = DesertMid},
+					new MapEdit{X = 208, Y = 52, Tile = DesertBottomRight},
+
+					new MapEdit{X = 209, Y = 52, Tile = GrassTile},
+					new MapEdit{X = 210, Y = 52, Tile = GrassTile},
+					new MapEdit{X = 210, Y = 53, Tile = GrassTile},
+					new MapEdit{X = 211, Y = 53, Tile = GrassTile},
+					new MapEdit{X = 210, Y = 54, Tile = GrassTile},
+
+					new MapEdit{X = 208, Y = 53, Tile = MountainTopLeft},
+					new MapEdit{X = 209, Y = 53, Tile = MountainTopRight},
+					new MapEdit{X = 209, Y = 54, Tile = MountainMidRight},
+
+					new MapEdit{X = 210, Y = 51, Tile = MountainBottomLeft},
+					new MapEdit{X = 211, Y = 52, Tile = MountainBottomLeft},
+			};
+
 		public static List<MapEdit> RiverToMelmond =
 			new List<MapEdit>
 			{
@@ -1171,12 +1217,12 @@ namespace FF1Lib
 					new MapEdit{X = 84, Y = 146, Tile = CoastBottomRight},
 					new MapEdit{X = 80, Y = 147, Tile = CoastBottomRight},
 					new MapEdit{X = 77, Y = 149, Tile = CoastBottomRight},
-					new MapEdit{X = 78, Y = 148, Tile = CoastBottomRight},					
+					new MapEdit{X = 78, Y = 148, Tile = CoastBottomRight},
 					new MapEdit{X = 83, Y = 146, Tile = CoastBottom},
 					new MapEdit{X = 82, Y = 146, Tile = CoastBottom},
 					new MapEdit{X = 81, Y = 146, Tile = CoastBottom},
 					new MapEdit{X = 79, Y = 147, Tile = CoastBottom},
-										
+
 					new MapEdit{X = 81, Y = 147, Tile = MountainTopLeft},
 					new MapEdit{X = 81, Y = 148, Tile = MountainMid},
 					new MapEdit{X = 82, Y = 147, Tile = MountainTopMid},
@@ -1192,13 +1238,13 @@ namespace FF1Lib
 					new MapEdit{X = 80, Y = 148, Tile = MountainTopMid},
 					new MapEdit{X = 79, Y = 148, Tile = MountainTopLeft},
 					new MapEdit{X = 79, Y = 149, Tile = MountainMid},
-					
+
 					//Bottom Side Mountain
-					new MapEdit{X = 86, Y = 151, Tile = CoastTopLeft},					
+					new MapEdit{X = 86, Y = 151, Tile = CoastTopLeft},
 					new MapEdit{X = 87, Y = 150, Tile = CoastTopLeft},
 					new MapEdit{X = 85, Y = 152, Tile = CoastTop},
 					new MapEdit{X = 88, Y = 149, Tile = MarshBottomLeft},
-					
+
 					new MapEdit{X = 82, Y = 148, Tile = MountainBottomMid},
 					new MapEdit{X = 83, Y = 148, Tile = MountainBottomRight},
 					new MapEdit{X = 85, Y = 149, Tile = MountainTopLeft},
@@ -1631,5 +1677,62 @@ namespace FF1Lib
 				_rom.SetNpc(ObjectiveNPCMapIds[location], 0, npc, x, y, inRoom, stationary);
 			}
 		}
+
+	    public void ShuffleChime(MT19337 rng, bool includeTowns) {
+		List<byte[]> dungeons = new List<byte[]> {
+		    new byte[] { OverworldTiles.EARTH_CAVE },
+		    new byte[] { OverworldTiles.ELFLAND_CASTLE_W, OverworldTiles.ELFLAND_CASTLE_E },
+		    new byte[] { OverworldTiles.MIRAGE_BOTTOM },
+		    new byte[] { OverworldTiles.ASTOS_CASTLE_W, OverworldTiles.ASTOS_CASTLE_E },
+		    new byte[] { OverworldTiles.ICE_CAVE },
+		    new byte[] { OverworldTiles.DWARF_CAVE },
+		    new byte[] { OverworldTiles.MATOYAS_CAVE },
+		    new byte[] { OverworldTiles.TITAN_CAVE_E, OverworldTiles.TITAN_CAVE_W },
+		    new byte[] { OverworldTiles.ORDEALS_CASTLE_W, OverworldTiles.ORDEALS_CASTLE_E },
+		    new byte[] { OverworldTiles.SARDAS_CAVE },
+		    new byte[] { OverworldTiles.TOF_ENTRANCE_W, OverworldTiles.TOF_ENTRANCE_E },
+		    new byte[] { OverworldTiles.VOLCANO_TOP_W, OverworldTiles.VOLCANO_TOP_E },
+		    new byte[] { OverworldTiles.BAHAMUTS_CAVE },
+		    new byte[] { OverworldTiles.MARSH_CAVE }
+		};
+
+		List<byte[]> towns = new List<byte[]>{
+		    new byte[] { OverworldTiles.PRAVOKA },
+		    new byte[] { OverworldTiles.ELFLAND },
+		    new byte[] { OverworldTiles.MELMOND },
+		    new byte[] { OverworldTiles.CRESCENT_LAKE },
+		    new byte[] { OverworldTiles.GAIA },
+		    new byte[] { OverworldTiles.ONRAC },
+		    new byte[] { OverworldTiles.LEFEIN },
+		};
+
+		var candidates = new List<byte[]>(dungeons);
+
+		if (includeTowns) {
+		    candidates.AddRange(towns);
+		}
+
+		var tileset = new TileSet(this._rom, TileSet.OverworldIndex);
+		tileset.LoadData();
+
+		// clear existing
+		for (int i = 0; i < tileset.TileProperties.Count; i++) {
+		    var tp = tileset.TileProperties[i];
+		    if ((tp.TilePropFunc & TilePropFunc.OWTP_SPEC_MASK) == TilePropFunc.OWTP_SPEC_CHIME) {
+			tp.TilePropFunc &= ~TilePropFunc.OWTP_SPEC_CHIME;
+			tileset.TileProperties[i] = tp;
+		    }
+		}
+
+		var chime = candidates.SpliceRandom(rng);
+
+		foreach (var i in chime) {
+		    var tp = tileset.TileProperties[i];
+		    tp.TilePropFunc |= TilePropFunc.OWTP_SPEC_CHIME;
+		    tileset.TileProperties[i] = tp;
+		}
+
+		tileset.StoreData();
+	    }
 	}
 }

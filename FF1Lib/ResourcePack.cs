@@ -1,10 +1,5 @@
 using System.IO.Compression;
-using System.Collections.Generic;
-using RomUtilities;
-using System.IO;
-using System;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
 
 namespace FF1Lib
 {

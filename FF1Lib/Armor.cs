@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using RomUtilities;
-using FF1Lib.Helpers;
-using System.Linq;
+﻿using FF1Lib.Helpers;
 
 namespace FF1Lib
 {
@@ -55,7 +50,7 @@ namespace FF1Lib
 					currentArmor.Absorb = (byte)Math.Max(1, currentArmor.Absorb + (armorTypeAbsorbBonus * bonus));
 
 					//change last two non icon characters to -/+bonus
-					string bonusString = string.Format((bonus > 0) ? "+{0}" : "{0}", bonus.ToString());
+					string bonusString = string.Format((bonus > 0) ? "+{0}" : "-{0}", Math.Abs(bonus).ToString());
 					byte[] bonusBytes = FF1Text.TextToBytes(bonusString);
 
 					// Adjusts blursed armor names to be more understandable
@@ -224,7 +219,7 @@ namespace FF1Lib
 
 								Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
 
-								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any, SpellElement.All)).
+								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any).Where(s => s.Info.status == SpellStatus.Any)).
 
 								Select(s => s.Id));
 		    // Any elemental AOE damage, excludes NUKE/FADE
@@ -371,7 +366,7 @@ namespace FF1Lib
 			    } else if (itemId == Item.WhiteShirt) {
 				spells = whiteShirtSpells;
 			    } else if (itemId == Item.BlackShirt) {
-				spells = whiteShirtSpells;
+				spells = blackShirtSpells;
 			    } else if (itemId == Item.Ribbon) {
 			    } else if (tier >= 1 &&
 				       (armorType == HELM || armorType == GAUNTLET ||

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FF1Lib.Assembly
+﻿namespace FF1Lib.Assembly
 {
 	public enum MemoryMode
 	{

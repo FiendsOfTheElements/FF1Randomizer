@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System;
-
-namespace FF1Lib.Procgen
+﻿namespace FF1Lib.Procgen
 {
 	public struct RoomSpec
 	{

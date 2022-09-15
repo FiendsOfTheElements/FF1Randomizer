@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -32,6 +32,7 @@
     <None Remove="maps\pregenerated.zip" />
     <None Remove="maps\shuffled256.zip" />
     <None Remove="maps\unsafe256.zip" />
+    <None Remove="maps\vfmaps.zip" />
   </ItemGroup>
 
   <ItemGroup>
@@ -78,13 +79,14 @@
     <EmbeddedResource Include="bosses\SCYLLA.png" />
     <EmbeddedResource Include="bosses\SHIVA.png" />
     <EmbeddedResource Include="bosses\TITAN.png" />
+    <EmbeddedResource Include="maps\vfmaps.zip" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Patcher6502" Version="0.3.0" />
     <PackageReference Include="RomUtilities" Version="3.1.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
   </ItemGroup>
 

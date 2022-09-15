@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using RomUtilities;
-using System.ComponentModel;
-using System;
+﻿using System.ComponentModel;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -44,6 +40,15 @@ namespace FF1Lib
 		Any,
 	}
 
+	public enum LifeInBattleSetting
+	{
+		[Description("LIFE1 & LIFE2")]
+		LifeInBattleAll,
+		[Description("LIFE1 Only")]
+		LifeInBattleLife1Only,
+		[Description("Off (Vanilla)")]
+		LifeInBattleOff
+	}
 	public enum SpellRoutine : byte
 	{
 	        None = 0,
@@ -1263,7 +1268,7 @@ namespace FF1Lib
 
 
 
-		public void EnableLifeInBattle()
+		public void EnableLifeInBattle(Flags flags)
 		{
 			var spellInfos = LoadSpells().ToList();
 			var spells = GetSpells().ToDictionary(s => s.Name.ToLowerInvariant());
@@ -1271,18 +1276,22 @@ namespace FF1Lib
 
 			foreach (var spl in spells.Where(s => s.Key.StartsWith("life") || s.Key.StartsWith("lif")).Select(s => s.Value))
 			{
-				SpellInfo spell = new SpellInfo
+				if ((spl.oobSpellRoutine == OOBSpellRoutine.LIFE && flags.EnableLifeInBattle == LifeInBattleSetting.LifeInBattleLife1Only) || (flags.EnableLifeInBattle == LifeInBattleSetting.LifeInBattleAll))
 				{
-					routine = 0x08, //cure ailment
-					effect = spl.Name == "LIF2" ? (byte)0x81 : (byte)0x01, //death element
-					targeting = 0x10, //single target
-					accuracy = 00,
-					elem = 0,
-					gfx = 224,
-					palette = spl.Name == "LIF2" ? (byte)44 : (byte)43,
-				};
 
-				Put(MagicOffset + spl.Index * MagicSize, spell.compressData());
+					SpellInfo spell = new SpellInfo
+					{
+						routine = 0x08, //cure ailment
+						effect = spl.oobSpellRoutine == OOBSpellRoutine.LIF2 ? (byte)0x81 : (byte)0x01, //death element
+						targeting = 0x10, //single target
+						accuracy = 00,
+						elem = 0,
+						gfx = 224,
+						palette = spl.oobSpellRoutine == OOBSpellRoutine.LIF2 ? (byte)44 : (byte)43,
+					};
+
+					Put(MagicOffset + spl.Index * MagicSize, spell.compressData());
+				}
 			}
 		}
 	}

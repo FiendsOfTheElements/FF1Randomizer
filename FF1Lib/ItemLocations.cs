@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace FF1Lib
 {
@@ -441,6 +438,17 @@ namespace FF1Lib
 			{MapLocation.GurguVolcanoKary, Dock.Elfland},
 			{MapLocation.Gaia, Dock.Pravoka},
 			{MapLocation.Lefein, Dock.Pravoka},
+			{MapLocation.MirageTower1, Dock.Pravoka},
+			{MapLocation.MirageTower2, Dock.Pravoka},
+			{MapLocation.MirageTower3, Dock.Pravoka},
+			{MapLocation.SkyPalace1, Dock.Pravoka},
+			{MapLocation.SkyPalace2, Dock.Pravoka},
+			{MapLocation.SkyPalace3, Dock.Pravoka},
+			{MapLocation.SkyPalaceMaze, Dock.Pravoka},
+			{MapLocation.SkyPalaceTiamat, Dock.Pravoka},
+			{MapLocation.CastleOrdeals1, Dock.Pravoka},
+			{MapLocation.CastleOrdealsMaze, Dock.Pravoka},
+			{MapLocation.CastleOrdealsTop, Dock.Pravoka},
 			{MapLocation.Melmond, Dock.DwarfCave},
 			{MapLocation.TitansTunnelRoom, Dock.DwarfCave},
 			{MapLocation.TitansTunnelEast, Dock.DwarfCave},

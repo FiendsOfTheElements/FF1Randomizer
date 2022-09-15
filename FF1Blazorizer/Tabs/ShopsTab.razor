@@ -13,15 +13,19 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopsCheckBox" @bind-Value="Flags.MagicShops">Magic Shops</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="magicShopLocsCheckBox" @bind-Value="Flags.MagicShopLocs">Magic Shop Locations</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.MagicShopLocs" Id="magicShopLocationPairsCheckBox" @bind-Value="Flags.MagicShopLocationPairs">Paired Shuffle</TriStateCheckBox>
+
+            <div class="checkbox-cell"></div>
+            <CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.RecruitmentMode)" Id="improvedClinicCheckBox" @bind-Value="Flags.ImprovedClinic">Improved Clinics</CheckBox>
+
 			<div class="checkbox-cell"></div>
             <div class="row">
 			    <h4>Legendary Shops</h4>
                 <ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="legendaryShopsGroup"></ToolTipBox>
             </div>
-      <TriStateCheckBox DisableTooltip Id="legendaryWeaponShopCheckBox" @bind-Value="Flags.LegendaryWeaponShop">Legendary Weapon Shop</TriStateCheckBox>
+      <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryWeaponShopCheckBox" @bind-Value="Flags.LegendaryWeaponShop">Legendary Weapon Shop</TriStateCheckBox>
       <CheckBox Indent DisableTooltip Id="exlegendaryWeaponShopCheckBox" IsEnabled="Flags.LegendaryWeaponShop" @bind-Value="Flags.ExclusiveLegendaryWeaponShop">Exclusive</CheckBox>
 
-      <TriStateCheckBox DisableTooltip Id="legendaryArmorShopCheckBox" @bind-Value="Flags.LegendaryArmorShop">Legendary Armor Shop</TriStateCheckBox>
+      <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryArmorShopCheckBox" @bind-Value="Flags.LegendaryArmorShop">Legendary Armor Shop</TriStateCheckBox>
       <CheckBox Indent DisableTooltip Id="exlegendaryArmorShopCheckBox" IsEnabled="Flags.LegendaryArmorShop" @bind-Value="Flags.ExclusiveLegendaryArmorShop">Exclusive</CheckBox>
 
 	    <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="legendaryBlackShopCheckBox" @bind-Value="Flags.LegendaryBlackShop">Legendary Black Shop</TriStateCheckBox>
@@ -49,7 +53,7 @@
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="LockMode" TItem="LockHitMode" @bind-Value="Flags.LockMode">LOCK & LOK2 Mode:</EnumDropDown>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="magicAutohitThresholdDropDown" TItem="AutohitThreshold" @bind-Value="Flags.MagicAutohitThreshold">Power Word Threshold:</EnumDropDown>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enableSoftInBattle" @bind-Value="Flags.EnableSoftInBattle">Enable Soft in Battle</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enableLifeInBattle" @bind-Value="Flags.EnableLifeInBattle">Enable Life in Battle</CheckBox>
+            <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="lifeInBattleDropDown" TItem="LifeInBattleSetting" @bind-Value="Flags.EnableLifeInBattle">Life in Battle:</EnumDropDown>
 
 			<div class="checkbox-cell"></div>
 			<h4>Spell Crafter</h4>

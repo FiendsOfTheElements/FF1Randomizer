@@ -1,24 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using RomUtilities;
-using System.ComponentModel;
-using System;
+﻿using System.ComponentModel;
 
 namespace FF1Lib
 {
-	public enum Runnability
-	{
-		[Description("Vanilla")]
-		Normal,
-		[Description("Shuffle")]
-		Shuffle,
-		[Description("All Unrunnable")]
-		AllUnrunnable,
-		[Description("All Runnable")]
-		AllRunnable,
-		[Description("Random Choice")]
-		Random
-	};
 	public partial class FF1Rom : NesRom
 	{
 		public enum FinalFormation
@@ -63,20 +46,15 @@ namespace FF1Lib
 		private const byte UnrunnableOffset = 0x0D;       // no run flag (in low bit)
 		private const byte QuantityBOffset = 0x0E;        // enemy quantities for B formation (2 bytes)
 
-		public void ShuffleUnrunnable(MT19337 rng)
+		public void ShuffleUnrunnable(MT19337 rng, Flags flags, int unrunnablePercent)
 		{
 			// Load a list of formations from ROM
 			List<Blob> formations = Get(FormationsOffset, FormationSize * FormationCount).Chunk(FormationSize);
-			int unrunnableAcount = 0, unrunnableBcount = 0; // number of formations marked as unrunnable on both sides
-															// First we mark all formations as runnable except for fiends/chaos (both sides) or the other boss fights (on a-side only)
+			// First we mark all formations as runnable except for fiends/chaos (both sides) or the other boss fights (on a-side only)
 			for (int i = 0; i < FormationCount; ++i)
 			{
 				if (i >= NormalFormationCount && i <= ChaosFormationIndex)
 					continue; // skip fiends and Chaos on both sides
-				if ((formations[i][UnrunnableOffset] & 0x01) == 0x01 && i < NormalFormationCount)
-					unrunnableAcount++; // only add normal formations to the count for a-side
-				if ((formations[i][UnrunnableOffset] & 0x02) == 0x02 && (i < NormalFormationCount || i > ChaosFormationIndex))
-					unrunnableBcount++; // only add the b-sides that are not fiend/chaos fights
 				if (i > ChaosFormationIndex)
 					formations[i][UnrunnableOffset] &= 0xFD; // the last four fights only mark the B-side as runnable
 				else
@@ -86,7 +64,12 @@ namespace FF1Lib
 			// We include - all normal formation A-Sides except encounter 00 (imps), all normal formation B-Sides, and the four B-sides at the end
 			List<int> ids = Enumerable.Range(1, NormalFormationCount - 1).Concat(Enumerable.Range(FormationCount, NormalFormationCount)).Concat(Enumerable.Range(FormationCount + ChaosFormationIndex + 1, 4)).ToList();
 			ids.Shuffle(rng);
-			ids = ids.Take(unrunnableAcount + unrunnableBcount).ToList(); // combine the number of unrunnables between both sides
+
+			// Take unrunnable percentage from flags and convert into number of encounters that are unrunnable
+			// The +1 to NormalFormationCount is needed to account for the extra B-side formation spots
+			int unrunnableTotal = (int)Math.Round((unrunnablePercent * (NormalFormationCount + 1) / 100.0 * 2));
+
+			ids = ids.Take(unrunnableTotal).ToList();
 			foreach (int id in ids)
 			{
 				if (id < FormationCount)
@@ -97,6 +80,7 @@ namespace FF1Lib
 			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray()); // and put it all back in the ROM
 		}
 
+		// TODO Should probably be merged into the above, and just include the Imp Formation if the percentage is 99.8+
 		public void CompletelyUnrunnable()
 		{
 			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
@@ -108,7 +92,8 @@ namespace FF1Lib
 			Put(FormationsOffset + FormationSize * 0x7E, lastFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
-		public void CompletelyRunnable()
+		// Should be obsolete, leaving here just in case
+		/*public void CompletelyRunnable()
 		{
 			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
 			formations.ForEach(formation => formation[UnrunnableOffset] &= 0xFC);
@@ -117,7 +102,7 @@ namespace FF1Lib
 			List<Blob> lastFormations = Get(FormationsOffset + FormationSize * 0x7E, FormationSize * 2).Chunk(FormationSize);
 			lastFormations.ForEach(formation => formation[UnrunnableOffset] &= 0xFD);
 			Put(FormationsOffset + FormationSize * 0x7E, lastFormations.SelectMany(formation => formation.ToBytes()).ToArray());
-		}
+		}*/
 
 		private void FiendShuffle(MT19337 rng)
 		{

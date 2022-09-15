@@ -1,10 +1,4 @@
-﻿using RomUtilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace FF1Lib.Procgen
+﻿namespace FF1Lib.Procgen
 {
 	class WaterfallEngine : IMapGeneratorEngine
 	{
@@ -176,6 +170,7 @@ namespace FF1Lib.Procgen
 
 			//Then we do the cleanup
 			complete = CleanUp(complete);
+			if (complete == null) return null;
 
 			//Now, place the door (so it doesn't get in the way of the cleanup)
 			int doorPos = (possibleDoors[rng.Between(0, possibleDoors.Count - 1)] + room_x)%64;
@@ -248,6 +243,7 @@ namespace FF1Lib.Procgen
 					}
 					else
 					{
+						if (updated.Neighbor(Direction.Left).Tile != Tile.WaterfallInside && updated.Neighbor(Direction.Left).Tile != Tile.WaterfallRandomEncounters) return null;
 						updated.Neighbor(Direction.Left).Tile = Tile.WaterfallRandomEncounters;
 					}
 				}

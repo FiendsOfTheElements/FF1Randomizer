@@ -1,10 +1,4 @@
 ﻿using FF1Lib.Data;
-using RomUtilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
@@ -16,6 +10,7 @@ namespace FF1Lib
 		FF1Rom rom;
 		List<Map> maps;
 		List<MapId> flippedMaps;
+		List<MapId> vflippedMaps;
 
 		MapTileSets MapTileSets;
 		ShopData ShopData;
@@ -38,13 +33,14 @@ namespace FF1Lib
 			(MapId.SeaShrineB4, 27, 40, 0x22, 0x23, 0x32, 0x33, 0xAA)
 		};
 
-		public LegendaryShops(MT19337 _rng, Flags _flags, List<Map> _maps, List<MapId> _flippedMaps, ShopData _shopdata, FF1Rom _rom)
+		public LegendaryShops(MT19337 _rng, Flags _flags, List<Map> _maps, List<MapId> _flippedMaps, List<MapId> _vflippedMaps, ShopData _shopdata, FF1Rom _rom)
 		{
 			rng = _rng;
 			flags = _flags;
 			rom = _rom;
 			maps = _maps;
 			flippedMaps = _flippedMaps;
+			vflippedMaps = _vflippedMaps;
 
 			MapTileSets = new MapTileSets(rom);
 			ShopData = _shopdata;
@@ -213,6 +209,7 @@ namespace FF1Lib
 			var tile = CreateTile(loc.Item1, index + 1, loc.Item4, loc.Item5, loc.Item6, loc.Item7, loc.Item8);
 
 			if (flippedMaps.Contains(loc.Item1)) loc.Item2 = Map.RowLength - loc.Item2 - 1;
+			if (vflippedMaps.Contains(loc.Item1)) loc.Item3 = Map.RowLength - loc.Item3 - 1;
 
 			maps[(int)loc.Item1][loc.Item3, loc.Item2] = tile;
 		}
@@ -293,6 +290,8 @@ namespace FF1Lib
 		private List<Item> GetWeaponShopInventory(int slots)
 		{
 			var items = new List<Item> { Item.Vorpal, Item.Katana, Item.Xcalber, Item.Defense, Item.FlameSword, Item.IceSword, Item.CoralSword, Item.SunSword, Item.BaneSword, Item.CatClaw, Item.ThorHammer, Item.WizardRod, Item.MageRod, Item.HealRod, Item.LightAxe };
+			// Currently Absent Rares:
+			// Item.DragonSword, Item.GiantSword, Item.WereSword, Item.RuneSword, Item.PowerRod
 
 			List<Item> result = new List<Item>();
 
@@ -304,7 +303,7 @@ namespace FF1Lib
 
 		private List<Item> GetArmorShopInventory(int slots)
 		{
-			var items = ItemLists.LegendaryArmorTier.Concat(ItemLists.RareArmorTier).Distinct().ToList();
+			var items = ItemLists.LegendaryArmorTier.Distinct().Concat(ItemLists.RareArmorTier).Distinct().ToList();
 
 			List<Item> result = new List<Item>();
 

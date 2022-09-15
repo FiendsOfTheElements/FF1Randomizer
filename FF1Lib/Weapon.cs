@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using RomUtilities;
-using FF1Lib;
-using FF1Lib.Helpers;
+﻿using FF1Lib.Helpers;
 
 namespace FF1Lib
 {
@@ -136,7 +130,7 @@ namespace FF1Lib
 						}
 
 						//change last two non icon characters to -/+bonus
-						string bonusString = string.Format((bonus > 0) ? "+{0}" : "{0}", bonus.ToString());
+						string bonusString = string.Format((bonus > 0) ? "+{0}" : "-{0}", Math.Abs(bonus).ToString());
 						byte[] bonusBytes = FF1Text.TextToBytes(bonusString);
 
 						var nameBytes = FF1Text.TextToBytes(currentWeapon.Name, false);
@@ -360,7 +354,7 @@ namespace FF1Lib
 
 		    var defenseSwordSpells = new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Ruse, SpellTargeting.Any).
 								Concat(spellHelper.FindSpells(SpellRoutine.ArmorUp, SpellTargeting.AllCharacters)).
-								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any, SpellElement.All)).
+								Concat(spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.Any).Where(s => s.Info.status == SpellStatus.Any)).
 								Select(s => s.Id));
 		    var thorHammerSpells =  new List<FF1Lib.Spell>(spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).
 								   Where(s => s.Info.elem != (byte)SpellElement.None).

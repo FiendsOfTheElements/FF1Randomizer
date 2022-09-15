@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FF1Lib
+﻿namespace FF1Lib
 {
 	public static class Utilities
 	{

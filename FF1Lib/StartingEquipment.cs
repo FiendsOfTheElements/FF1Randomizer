@@ -1,13 +1,5 @@
 ﻿using FF1Lib.Data;
 using FF1Lib.Helpers;
-using RomUtilities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -145,16 +137,6 @@ namespace FF1Lib
 
 		private void GetRandomAoe(List<Item> items)
 		{
-			if (!(flags.Weaponizer ?? false) && !(flags.MagisizeWeapons ?? false))
-			{
-				var pool = new Item[] { Item.BaneSword, Item.BlackShirt, Item.ZeusGauntlets, Item.ThorHammer, Item.MageRod }.ToList();
-
-				if (flags.StartingEquipmentNoDuplicates) pool.RemoveAll(i => items.Contains(i));
-
-				if (pool.Count > 0) items.Add(pool.PickRandom(rng));
-			}
-			else
-			{
 				var damageAoes = spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).Select(s => s.Id);
 				var instaAoes = spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.AllEnemies, SpellElement.Any, SpellStatus.Death).Select(s => s.Id);
 				var powerWordAoes = spellHelper.FindSpells(SpellRoutine.PowerWord, SpellTargeting.AllEnemies, SpellElement.Any, SpellStatus.Death).Select(s => s.Id);
@@ -168,26 +150,15 @@ namespace FF1Lib
 
 				var names = weapons.Where(w => spells.Contains(w.Spell)).Select(w => w.Name).Concat(armors.Where(w => spells.Contains(w.Spell)).Select(a => a.Name)).ToList();
 
+				if (flags.StartingEquipmentNoDuplicates) pool.RemoveAll(i => items.Contains(i));
 				if (pool.Count > 0) items.Add(pool.PickRandom(rng));
-			}
 		}
 
 		private void GetRandomCasterItem(List<Item> items)
 		{
-			if (!(flags.Weaponizer ?? false) && !(flags.MagisizeWeapons ?? false))
-			{
-				var pool = new Item[] { Item.BaneSword, Item.BlackShirt, Item.ZeusGauntlets, Item.ThorHammer, Item.MageRod, Item.Defense, Item.WhiteShirt, Item.HealRod, Item.PowerGauntlets }.ToList();
-
-				if (flags.StartingEquipmentNoDuplicates) pool.RemoveAll(i => items.Contains(i));
-
-				if (pool.Count > 0) items.Add(pool.PickRandom(rng));
-			}
-			else
-			{
-				var pool = GetCasterItemPool();
-
-				if (pool.Count > 0) items.Add(pool.PickRandom(rng));
-			}
+			var pool = GetCasterItemPool();
+			if (flags.StartingEquipmentNoDuplicates) pool.RemoveAll(i => items.Contains(i));
+			if (pool.Count > 0) items.Add(pool.PickRandom(rng));
 		}
 
 		private List<Item> GetCasterItemPool()
@@ -220,15 +191,13 @@ namespace FF1Lib
 		private void GetOneItem(List<Item> items)
 		{
 			var pool = GetLegendaryPool();
-
 			if (flags.StartingEquipmentNoDuplicates) pool.RemoveAll(i => items.Contains(i));
-
 			items.Add(pool.PickRandom(rng));
 		}
 
 		private List<Item> GetLegendaryPool()
 		{
-			if (!(flags.Weaponizer ?? false) && !(flags.MagisizeWeapons ?? false))
+			if (!(flags.Weaponizer ?? false) && !(flags.MagisizeWeapons ?? false) && flags.ItemMagicMode == ItemMagicMode.Vanilla)
 			{
 				return ItemLists.UberTier
 				.Concat(ItemLists.LegendaryWeaponTier)

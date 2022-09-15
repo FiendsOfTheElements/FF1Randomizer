@@ -1,11 +1,4 @@
-﻿using FF1Lib.Data;
-using RomUtilities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
@@ -232,7 +225,7 @@ namespace FF1Lib
 			if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
 			{
 				blob += "1C";
-				blob += flags.EnableLifeInBattle ? "1D" : "00";
+				blob += (flags.EnableLifeInBattle != LifeInBattleSetting.LifeInBattleOff) ? "1D" : "00";
 				blob += "1E1F";
 			}
 			else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)

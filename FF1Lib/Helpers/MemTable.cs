@@ -1,11 +1,4 @@
-﻿using RomUtilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FF1Lib
+﻿namespace FF1Lib
 {
 	public class MemTable<T> where T : unmanaged
 	{
@@ -68,6 +61,10 @@ namespace FF1Lib
 			{
 				Data[idx] = value;
 			}
+		}
+
+		public int Count {
+		    get { return count; }
 		}
 	}
 

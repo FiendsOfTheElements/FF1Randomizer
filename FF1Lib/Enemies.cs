@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ComponentModel;
-using System.Diagnostics;
-using RomUtilities;
+﻿using System.ComponentModel;
 using FF1Lib.Helpers;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace FF1Lib
 {
@@ -29,6 +22,8 @@ namespace FF1Lib
 		All = 0,
 		[Description("All except Stun Status")]
 		RemoveStun,
+		[Description("Balanced Rude")]
+		BalancedRude,
 		[Description("Only Death Status")]
 		OnlyDeath,
 		[Description("Random")]
@@ -598,7 +593,7 @@ namespace FF1Lib
 			}
 			else if (flags.TouchMode == TouchMode.Randomize)
 			{
-				RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates, (bool)flags.TouchIncludeBosses, flags.TouchPool, flags.TouchMultiplier);
+				RandomEnemyStatusAttacks(rng, (bool)flags.AllowUnsafePirates, (bool)flags.TouchIncludeBosses, flags.TouchPool, flags.TouchMultiplier, (bool)flags.IncreaseDarkPenalty);
 			}
 
 		}
@@ -626,7 +621,7 @@ namespace FF1Lib
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
 
-		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool incudeBosses, TouchPool touchPool, ScriptTouchMultiplier touchMultiplier)
+		public void RandomEnemyStatusAttacks(MT19337 rng, bool AllowUnsafePirates, bool includeBosses, TouchPool touchPool, ScriptTouchMultiplier touchMultiplier, bool IncreaseDarkPenalty)
 		{
 			if (touchPool == TouchPool.Random)
 			{
@@ -646,13 +641,16 @@ namespace FF1Lib
 				(0x40, 0x01), //Mute Touch = Status
 			};
 
-			if (touchPool == TouchPool.RemoveStun)
+			if (touchPool == TouchPool.RemoveStun || touchPool == TouchPool.BalancedRude)
 			{
 				statusElements.Remove((0x10, 0x01));
 			}
 
 			(byte touch, byte element) deathElement = (0x01, 0x08); //Death Touch = Death Element
 			(byte touch, byte element) stoneElement = (0x02, 0x02); //Stone Touch = Poison
+			(byte touch, byte element) stunElement = (0x10, 0x01); //Stun Touch = Status
+			(byte touch, byte element) muteElement = (0x40, 0x01); //Mute Touch = Status
+			(byte touch, byte element) darkElement = (0x08, 0x01); //Dark Touch = Status
 
 			List<(byte touch, byte element)> weightedStatusElements = new();
 
@@ -660,6 +658,29 @@ namespace FF1Lib
 			{
 				weightedStatusElements.Add(deathElement);
 			}
+			else if (touchPool == TouchPool.BalancedRude)
+			{
+				// Remove Dark from main pool unless Improved Dark is active
+				if (!IncreaseDarkPenalty)
+				{
+					statusElements.Remove((0x08, 0x01));
+				}
+				while (weightedStatusElements.Count < 8)
+				{
+					weightedStatusElements.AddRange(statusElements); // Normally: Mute, Sleep, Poison
+				}
+
+				// Only one copy of Dark in the pool normally since it's weak without Improved Dark
+				weightedStatusElements.Add(darkElement);
+				
+				// One extra Mute since it's Rude
+				weightedStatusElements.Add(muteElement);
+				// One each of Stun, Death, Stone
+				weightedStatusElements.Add(stunElement);
+				weightedStatusElements.Add(deathElement);
+				weightedStatusElements.Add(stoneElement);
+			}
+			// "All" and "All Except Stun"
 			else
 			{
 				while (weightedStatusElements.Count < 20)
@@ -667,8 +688,8 @@ namespace FF1Lib
 					weightedStatusElements.AddRange(statusElements);
 				}
 
-				weightedStatusElements.Append(deathElement);
-				weightedStatusElements.Append(stoneElement);
+				weightedStatusElements.Add(deathElement);
+				weightedStatusElements.Add(stoneElement);
 			}
 
 			var count = 0;
@@ -698,7 +719,7 @@ namespace FF1Lib
 			}
 
 			List<int> indices = new List<int>();
-			for (int i = 0; i < (incudeBosses ? EnemyCount : (EnemyCount - 10)); i++)
+			for (int i = 0; i < (includeBosses ? EnemyCount : (EnemyCount - 10)); i++)
 			{
 				enemies[i][14] = 0x00;
 				enemies[i][15] = 0x00;
@@ -838,7 +859,7 @@ namespace FF1Lib
 			public int Palette2;
 			public FormationGFX GFXOffset;
 		}
-		public async Task AlternativeFiends(MT19337 rng)
+		public void AlternativeFiends(MT19337 rng)
 		{
 			const int FiendsIndex = 0x77;
 			const int FiendsScriptIndex = 0x22;
@@ -1249,7 +1270,8 @@ namespace FF1Lib
 				var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[1].Name + ".png"));
 				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1)) {
 				    using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2)) {
-					if (await SetLichKaryGraphics(stream1, stream2)) {
+					//if (await SetLichKaryGraphics(stream1, stream2)) {
+					if (SetLichKaryGraphics(stream1, stream2)) {
 					    break;
 					}
 					// The graphics didn't fit, throw out the first element and try the next pair
@@ -1267,7 +1289,8 @@ namespace FF1Lib
 				var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[3].Name + ".png"));
 				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1)) {
 				    using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2)) {
-					if (await SetKrakenTiamatGraphics(stream1, stream2)) {
+					//if (await SetKrakenTiamatGraphics(stream1, stream2)) {
+					if (SetKrakenTiamatGraphics(stream1, stream2)) {
 					    break;
 					}
 					alternateFiendsList.RemoveAt(2);

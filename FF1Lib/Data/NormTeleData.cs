@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 
 namespace FF1Lib
 {
@@ -24,6 +19,14 @@ namespace FF1Lib
 			var x2 = X & 0xC0;
 
 			X = (byte)((64 - x1 - 1) | x2);
+		}
+
+		public void FlipYcoordinate()
+		{
+			var y1 = Y & 0x3F;
+			var y2 = Y & 0xC0;
+
+			Y = (byte)((64 - y1 - 1) | y2);
 		}
 	}
 

@@ -1,10 +1,4 @@
-﻿using RomUtilities;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.Collections;
 
 namespace FF1Lib
 {
@@ -79,6 +73,37 @@ namespace FF1Lib
 			}
 		}
 
+		public void SwapSections(int xs1, int ys1, int xs2, int ys2, int xt, int yt)
+		{
+			for (int x1 = xs1; x1 <= xs2; x1++)
+				for (int y1 = ys1; y1 <= ys2; y1++)
+				{
+					var x2 = x1 - xs1 + xt;
+					var y2 = y1 - ys1 + yt;
+
+					var t = _map[y1, x1];
+					_map[y1, x1] = _map[y2, x2];
+					_map[y2, x2] = t;
+				}
+		}
+
+		public void FlipSectionVertical(int xs1, int ys1, int xs2, int ys2)
+		{
+			for (int x1 = xs1; x1 <= xs2; x1++)
+				for (int y1 = ys1; y1 <= ys2; y1++)
+				{
+					var x2 = x1;
+					var y2 = ys2 - (y1 - ys1);
+
+					if (y2 > y1)
+					{
+						var t = this[y1, x1];
+						this[y1, x1] = this[y2, x2];
+						this[y2, x2] = t;
+					}
+				}
+		}
+
 		public Map Clone()
 		{
 			Map map = new Map(0);
@@ -90,6 +115,20 @@ namespace FF1Lib
 				}
 			}
 			return map;
+		}
+
+		public void Save(Stream stream)
+		{
+			var buffer = new byte[4096];
+			Buffer.BlockCopy(_map, 0, buffer, 0, buffer.Length);
+			stream.Write(buffer);
+		}
+
+		public void Load(Stream stream)
+		{
+			var buffer = new byte[4096];
+			stream.Read(buffer, 0, buffer.Length);
+			Buffer.BlockCopy(buffer, 0, _map, 0, buffer.Length);
 		}
 
 		public void Put((int x, int y) coord, Blob[] blobs)

@@ -1,10 +1,4 @@
 ﻿using FF1Lib.Sanity;
-using RomUtilities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 
 namespace FF1Lib
 {
@@ -221,6 +215,8 @@ namespace FF1Lib
 						//go through each KI, place it in the testRewardSource, run the sanity checker and see how many RewardSources are available afterwards.
 						foreach (var item in allKeyItems)
 						{
+							if (_flags.ShipCanalBeforeFloater && item == Item.Floater && (allKeyItems.Contains(Item.Ship) || allKeyItems.Contains(Item.Canal))) continue;
+
 							var accessibleSources2 = GetAllAccessibleRewardSources(preBlackOrbLocationPool, placedItems, item);
 
 							var incCount = accessibleSources2.Where(s => incentiveLocationPool.Contains(s)).Count();
