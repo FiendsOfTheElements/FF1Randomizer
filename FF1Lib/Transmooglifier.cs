@@ -43,8 +43,8 @@ namespace FF1Lib
 			ClassDef.rng = rng;
 			ClassDef.newPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, rom);
 
-			if (spellFamilies.Count <= 0)
-				PopulateSpellTypes(rom);
+			spellFamilies = new Dictionary<string, List<MagicSpell>>();
+			PopulateSpellTypes(rom);
 
 			List<ClassDef> classes = CreateClasses();
 
