@@ -44,6 +44,7 @@ namespace FF1Lib
 		public void WriteSpoiler()
 		{
 			WriteItemPlacementSpoiler();
+			WriteClassSpoiler();
 			WriteWeaponSpoiler();
 			WriteArmorSpoiler();
 			WriteSpellSpoiler();
@@ -141,6 +142,27 @@ namespace FF1Lib
 				description = "All classes";
 			}
 			return description;
+		}
+
+		private void WriteClassSpoiler()
+		{
+			Utilities.WriteSpoilerLine("Name        HP   Str  Agi  Int  Vit  Lck  Mdef Hit    Promotes to");
+			Utilities.WriteSpoilerLine("----------------------------------------------------------------------------------------------------");
+
+			for (int i = 0; i < 6; i++) {
+				ClassData c = rom.ClassData[(Classes)i];
+				ClassData p = rom.ClassData[(Classes)i+6];
+
+				int VitForHealthUp = (c.VitGrowth.Where(x => x).Count() + c.VitStarting + 49 - c.VitGrowth.Where(x => x).Count() + c.VitStarting) / 2; // (Lv50 Vit + Lv 1 Vit) / 2 -> Average Vit
+
+
+				Utilities.WriteSpoilerLine($"{rom.ItemsText[0xF0 + i], -12}{c.HpGrowth.Where(x=>x).Count() * 20 + c.HpStarting + 49 * (VitForHealthUp / 4), 4} {c.StrGrowth.Where(x => x).Count() + c.StrStarting + (49-c.StrGrowth.Where(x => x).Count())/4,3}  " +
+					$"{c.AgiGrowth.Where(x => x).Count() + c.AgiStarting+ (49 - c.AgiGrowth.Where(x => x).Count()) / 4,3}  {c.IntGrowth.Where(x => x).Count() + c.IntStarting+ (49 - c.IntGrowth.Where(x => x).Count()) / 4,3}  {c.VitGrowth.Where(x => x).Count() + c.VitStarting+ (49 - c.VitGrowth.Where(x => x).Count()) / 4,3}  {c.LckGrowth.Where(x => x).Count() + c.LckStarting+ (49 - c.LckGrowth.Where(x => x).Count()) / 4,3}  " +
+					$"{c.MDefGrowth * 49 + c.MDefStarting,3}  {c.HitGrowth * 49 + c.HitStarting,3}   {rom.ItemsText[0xF0 + i+6],-14}");
+			}
+
+			Utilities.WriteSpoilerLine("");
+			Utilities.WriteSpoilerLine("");
 		}
 
 		private void WriteItemPlacementSpoiler()
