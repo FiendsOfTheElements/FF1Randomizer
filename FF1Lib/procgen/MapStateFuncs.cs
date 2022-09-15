@@ -326,6 +326,7 @@ namespace FF1Lib.Procgen
 
 		var doorx = this.rng.Between(xmin+2, xmax-2);
 		this.Tilemap[ymax-1, doorx] = DungeonTiles.CAVE_DOOR;
+		this.Tilemap[ymax, doorx] = DungeonTiles.CAVE_CLOSE_DOOR;
 	    }
 
 	    return await this.NextStep();
@@ -518,11 +519,15 @@ namespace FF1Lib.Procgen
 		    this.Stairs.Remove(me.Value);
 		}
 
-		if ((this.tileSet.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_SPEC_DOOR) != 0) {
+		if ((this.tileSet.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_SPEC_DOOR) == TilePropFunc.TP_SPEC_DOOR) {
 		    return true;
 		}
 
-		if ((this.tileSet.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) != 0) {
+		if ((this.tileSet.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_SPEC_CLOSEROOM) == TilePropFunc.TP_SPEC_CLOSEROOM) {
+		    return true;
+		}
+
+		if ((this.tileSet.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) == TilePropFunc.TP_NOMOVE) {
 		    return false;
 		}
 		return true;
@@ -558,7 +563,8 @@ namespace FF1Lib.Procgen
 			}
 			var t = this.Tilemap[nextPos.Y, nextPos.X];
 			if ((this.tileSet.TileProperties[t].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0 ||
-			    (this.tileSet.TileProperties[t].TilePropFunc & TilePropFunc.TP_SPEC_DOOR) != 0)
+			    (this.tileSet.TileProperties[t].TilePropFunc & TilePropFunc.TP_SPEC_DOOR) == TilePropFunc.TP_SPEC_DOOR ||
+			    (this.tileSet.TileProperties[t].TilePropFunc & TilePropFunc.TP_SPEC_CLOSEROOM) == TilePropFunc.TP_SPEC_CLOSEROOM)
 			{
 			    var nextPath = new List<SCCoords>(path);
 			    nextPath.Add(nextPos);

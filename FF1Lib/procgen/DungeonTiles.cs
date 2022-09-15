@@ -24,6 +24,7 @@ namespace FF1Lib.Procgen
         public const byte CAVE_ROOM_FLOOR = 0x2E;
         public const byte CAVE_FLOOR = 0x41;
         public const byte CAVE_DOOR = 0x36;
+        public const byte CAVE_CLOSE_DOOR = 0x3A;
         public const byte CAVE_ROCK = 0x3E;
         public const byte CAVE_ROOM_LOWER_WALL = 0x30;
 

@@ -694,6 +694,8 @@ namespace FF1Lib
 
 		public bool WhiteMageHarmEveryone { get; set; } = false;
 
+		public bool Dungeonizer { get; set; } = true;
+
 		public bool? EarlierRuby { get; set; } = false;
 		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (!DesertOfDeath);
 		public bool DisableOWMapModifications => SanityCheckerV2 & (GameMode == GameModes.Standard && OwMapExchange != OwMapExchanges.None);
