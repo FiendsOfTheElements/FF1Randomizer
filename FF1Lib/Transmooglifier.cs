@@ -1499,26 +1499,46 @@ namespace FF1Lib
 
 		public void CommitBlursingSpecials(int classIndex)
 		{
+			// TODO: Add Lockpicking? Hunter? Weak? Stat buffs for promotions that are getting nothing?
+
 			Classes c = (Classes)classIndex;
 			Classes p = (Classes)(classIndex + 6);
 
 			// Clear BBelt
 			rom.ClassData[c].UnarmedAttack = false;
 
-			if (Rng.Between(rng, 0, 100) <= (int)(UnarmedAttack * 100))
+			if (Rng.Between(rng, 0, 100) <= (int)(UnarmedAttack * 100)) {
+				rom.ClassData[c].UnarmedAttack = rom.ClassData[c].UnarmedAttack = true;
 				rom.ClassData[c].UnarmedAttack = rom.ClassData[p].UnarmedAttack = true;
+			}
 
-			if (Rng.Between(rng, 0, 100) <= (int)(CatClawMaster * 100))
+			if (Rng.Between(rng, 0, 100) <= (int)(CatClawMaster * 100)) {
+				rom.ClassData[c].CatClawMaster = rom.ClassData[c].CatClawMaster = true;
 				rom.ClassData[c].CatClawMaster = rom.ClassData[p].CatClawMaster = true;
+				rom.WeaponPermissions.AddPermission(c, Item.CatClaw);
+				rom.WeaponPermissions.AddPermission(p, Item.CatClaw);
+			}
 
-			if (Rng.Between(rng, 0, 100) <= (int)(ThorMaster * 100))
+			if (Rng.Between(rng, 0, 100) <= (int)(ThorMaster * 100)) {
+				rom.ClassData[c].ThorMaster = rom.ClassData[c].ThorMaster = true;
 				rom.ClassData[c].ThorMaster = rom.ClassData[p].ThorMaster = true;
+				rom.WeaponPermissions.AddPermission(c, Item.ThorHammer);
+				rom.WeaponPermissions.AddPermission(p, Item.ThorHammer);
+			}
 
-			if (Rng.Between(rng, 0, 100) <= (int)(WoodAdept * 100))
+			if (Rng.Between(rng, 0, 100) <= (int)(WoodAdept * 100)) {
+				rom.ClassData[c].WoodAdept = rom.ClassData[c].WoodAdept = true;
 				rom.ClassData[c].WoodAdept = rom.ClassData[p].WoodAdept = true;
+				rom.ArmorPermissions.AddPermissionsRange(new List<(Classes, Item)> { (c, Item.WoodenArmor), (c, Item.WoodenHelm), (c, Item.WoodenShield), (p, Item.WoodenArmor), (p, Item.WoodenHelm), (p, Item.WoodenShield) });
+			}
 
 			if (Rng.Between(rng, 0, 100) <= (int)(SteelLord * 100))
+			{
+				rom.ClassData[c].SteelLord = rom.ClassData[c].SteelLord = true;
 				rom.ClassData[c].SteelLord = rom.ClassData[p].SteelLord = true;
+				rom.WeaponPermissions.AddPermission(c, Item.SteelArmor);
+				rom.WeaponPermissions.AddPermission(p, Item.SteelArmor);
+			}
 		}
 
 		public Image<Rgba32> getImage(bool promoted = false)
