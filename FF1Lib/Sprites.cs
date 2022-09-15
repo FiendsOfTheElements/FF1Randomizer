@@ -59,7 +59,7 @@ namespace FF1Lib
 		return ppuformat;
 	    }
 
-	    public byte[] DecodePPU(byte[] ppuformat) {
+	    public static byte[] DecodePPU(byte[] ppuformat) {
 		// Read the 16-byte, dual-plane encoding used by the NES PPU
 		// and return an array of 64 bytes with a ordinary linear
 		// encoding (left to right, top to bottom, one byte

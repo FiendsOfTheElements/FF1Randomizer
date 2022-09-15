@@ -20,6 +20,8 @@ namespace FF1Lib.Procgen
 	public List<byte> Stairs;
 	public List<byte> Chests;
 	public List<byte> Traps;
+	public List<byte> RoomFloorTiles;
+	public List<byte> RoomBattleTiles;
 	public List<int> NPCs;
 
 	public SCCoords Entrance;
@@ -34,6 +36,8 @@ namespace FF1Lib.Procgen
 	    this.Chests = new();
 	    this.Traps = new();
 	    this.NPCs = new();
+	    this.RoomFloorTiles = new();
+	    this.RoomBattleTiles = new();
 	}
 
         public MapState(MapState copy) : base(copy) {
@@ -47,6 +51,8 @@ namespace FF1Lib.Procgen
 	    this.Traps = copy.Traps;
 	    this.NPCs = copy.NPCs;
 	    this.Entrance = copy.Entrance;
+	    this.RoomFloorTiles = copy.RoomFloorTiles;
+	    this.RoomBattleTiles = copy.RoomBattleTiles;
 	}
 
         void OwnTilemap() {
@@ -122,16 +128,17 @@ namespace FF1Lib.Procgen
 		    */
 		    case MapId.EarthCaveB1:
 			mapGenSteps = new () {
-			    new MapGenerationStep("CollectInfo", new object[] {  }),
+			    new MapGenerationStep("CollectInfo", new object[] { }),
 			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
+			    new MapGenerationStep("SetEntrance", new object[] { 0x17, 0x18 }),
 			    new MapGenerationStep("EarthB1Style", new object[] { }),
-			    new MapGenerationStep("SetEntrance", new object[] { 30, 30 }),
-			    new MapGenerationStep("PlaceTile", new object[] { 30, 30, DungeonTiles.CAVE_EARTH_B1_ENTRANCE }),
+			    new MapGenerationStep("PlaceTile", new object[] { 0x17, 0x18, DungeonTiles.CAVE_EARTH_B1_ENTRANCE }),
 			    new MapGenerationStep("PlaceTreasureRooms", new object[] { }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_rock_walls, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
-			    new MapGenerationStep("PlaceExitStairs", new object[] { 30, 30, DungeonTiles.CAVE_EARTH_B1_EXIT }),
+			    new MapGenerationStep("PlaceExitStairs", new object[] { DungeonTiles.CAVE_EARTH_B1_EXIT }),
+			    new MapGenerationStep("PlaceHallOfGiants", new object[] { new List<byte> {0x1B, 0x1C} }),
 			    new MapGenerationStep("PlaceChests", new object[] { }),
 			    new MapGenerationStep("SanityCheck", new object[] { }),
 			};

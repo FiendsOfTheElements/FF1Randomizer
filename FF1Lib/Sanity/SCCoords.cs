@@ -68,6 +68,10 @@ namespace FF1Lib.Sanity
 		{
 			return base.GetHashCode();
 		}
+
+	    public double Dist(SCCoords d) {
+		return Math.Sqrt((d.X-this.X)*(d.X-this.X) + (d.Y-this.Y)*(d.Y-this.Y));
+	    }
 	}
 
 	public class SCCoordsEqualityComparer : IEqualityComparer<SCCoords>

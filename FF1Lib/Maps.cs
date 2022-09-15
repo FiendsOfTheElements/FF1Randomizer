@@ -1190,7 +1190,7 @@ namespace FF1Lib
 			}
 		}
 
-		class Room {
+		public class Room {
 		    public MapId mapId;
 		    public MapElement start;
 		    public List<MapElement> floor = new();
@@ -1242,20 +1242,13 @@ namespace FF1Lib
 		    }
 		}
 
-		public async Task shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests,
-							NPCdata npcdata, byte randomEncounter, bool spreadPlacement, bool markSpikeTiles) {
-		    // For a tileset, I need to determine:
-		    //
-		    // * doors and locked doors
-		    // * floor tiles with the move bit that are empty.
-
+		public static void FindRoomTiles(TileSet tileset,
+					    List<byte> floorTiles,
+					    List<byte> spikeTiles,
+					    List<byte> battleTiles,
+					    byte randomEncounter)
+		{
 		    bool debug = false;
-
-		    if (debug) Console.WriteLine($"\nTiles for {ids[0]}");
-
-		    bool keepLinkedChests = false;
-
-		    var tileset = new TileSet(this, GetMapTilesetIndex(ids[0]));
 
 		    List<byte> blankPPUTiles = new();
 
@@ -1263,7 +1256,7 @@ namespace FF1Lib
 			// Go through the pattern table, and find the CHR which
 			// is entirely color 1.
 
-			var chr = Get(TILESETPATTERNTABLE_OFFSET + (GetMapTilesetIndex(ids[0]) << 11) + (i * 16), 16);
+			var chr = tileset.Rom.Get(TILESETPATTERNTABLE_OFFSET + (tileset.Index << 11) + (i * 16), 16);
 			var dec = DecodePPU(chr);
 
 			bool blank = true;
@@ -1278,16 +1271,6 @@ namespace FF1Lib
 			    blankPPUTiles.Add(i);
 			}
 		    }
-		    foreach(var b in blankPPUTiles) {
-			if (debug) Console.WriteLine($"blank chr {b:X}");
-		    }
-
-		    // Go through the all the map tiles and find ones
-		    // with certain properties.
-		    List<byte> doorTiles = new() {0x36, 0x37, 0x3B};
-		    List<byte> floorTiles = new();
-		    List<byte> spikeTiles = new();
-		    List<byte> battleTiles = new();
 
 		    for (byte i = 0; i < 128; i++) {
 			if ((tileset.TileProperties[i].TilePropFunc & TilePropFunc.TP_NOMOVE) != 0) {
@@ -1329,6 +1312,63 @@ namespace FF1Lib
 			floorTiles.Add(i);
 			if (debug) Console.WriteLine($"floor tile {i:X}");
 		    }
+
+		}
+
+		public static void PlaceSpikeTiles(MT19337 rng,
+						   List<byte> spikePool,
+						   List<MapElement> placedChests,
+						   List<byte> floorTiles,
+						   List<byte> battleTiles,
+						   List<Room> roomsToSanityCheck)
+		{
+		    bool debug = false;
+
+		    var directions = new Direction[] { Direction.Down, Direction.Down, Direction.Down,
+			Direction.Right, Direction.Left, Direction.Up };
+		    while (spikePool.Count > 0) {
+			var pc = placedChests.PickRandom(rng);
+			var dir = directions.PickRandom(rng);
+			var me = pc.Neighbor(dir);
+			if (floorTiles.Contains(me.Value) || battleTiles.Contains(me.Value)) {
+			    me.Value = spikePool[spikePool.Count-1];
+			    if (debug) me.Value = 0xD;
+			    spikePool.RemoveAt(spikePool.Count-1);
+			}
+			var roll = rng.Between(1, 20);
+			if (roll == 1 && spikePool.Count > 0 && roomsToSanityCheck.Count > 0) {
+			    var rm = roomsToSanityCheck.SpliceRandom(rng);
+			    rm.start.Value = spikePool[spikePool.Count-1];
+			    if (debug) rm.start.Value = 0xD;
+			    spikePool.RemoveAt(spikePool.Count-1);
+			}
+		    }
+
+		}
+
+		public async Task shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests,
+							NPCdata npcdata, byte randomEncounter, bool spreadPlacement, bool markSpikeTiles) {
+		    // For a tileset, I need to determine:
+		    //
+		    // * doors and locked doors
+		    // * floor tiles with the move bit that are empty.
+
+		    bool debug = false;
+
+		    if (debug) Console.WriteLine($"\nTiles for {ids[0]}");
+
+		    bool keepLinkedChests = false;
+
+		    var tileset = new TileSet(this, GetMapTilesetIndex(ids[0]));
+
+		    // Go through the all the map tiles and find ones
+		    // with certain properties.
+		    List<byte> doorTiles = new() {0x36, 0x37, 0x3B};
+		    List<byte> floorTiles = new();
+		    List<byte> spikeTiles = new();
+		    List<byte> battleTiles = new();
+
+		    FindRoomTiles(tileset, floorTiles, spikeTiles, battleTiles, randomEncounter);
 
 		    byte vanillaTeleporters = 0x41;
 		    List<TeleporterSM> teleporters = new();
@@ -1648,25 +1688,10 @@ namespace FF1Lib
 			tileset.TopRightTiles.StoreTable();
 		    }
 
-		    var directions = new Direction[] { Direction.Down, Direction.Down, Direction.Down,
-			Direction.Right, Direction.Left, Direction.Up };
-		    while (spikePool.Count > 0) {
-			var pc = placedChests.PickRandom(rng);
-			var dir = directions.PickRandom(rng);
-			var me = pc.Item2.Neighbor(dir);
-			if (floorTiles.Contains(me.Value) || battleTiles.Contains(me.Value)) {
-			    me.Value = spikePool[spikePool.Count-1];
-			    //me.Value = 0xD;
-			    spikePool.RemoveAt(spikePool.Count-1);
-			}
-			var roll = rng.Between(1, 20);
-			if (roll == 1 && spikePool.Count > 0 && roomsToSanityCheck.Count > 0) {
-			    var rm = roomsToSanityCheck.SpliceRandom(rng);
-			    rm.start.Value = spikePool[spikePool.Count-1];
-			    //rm.start.Value = 0xD;
-			    spikePool.RemoveAt(spikePool.Count-1);
-			}
-		    }
+		    PlaceSpikeTiles(rng, spikePool,
+				    placedChests.Select((pc) => pc.Item2).ToList(),
+				    floorTiles,
+				    battleTiles, roomsToSanityCheck);
 
 		    //
 		    // * Place each chest tile randomly on a room floor tiles
@@ -1729,7 +1754,7 @@ namespace FF1Lib
 			dungeons.Add(new MapId[] { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5 });
 		    }
 
-		    
+
 
 			bool addvolcano = true;
 			if ((bool)flags.IncentivizeVolcano && flags.VolcanoIncentivePlacementType == IncentivePlacementTypeVolcano.Vanilla) {
