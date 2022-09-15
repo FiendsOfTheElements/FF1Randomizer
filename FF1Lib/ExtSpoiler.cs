@@ -62,7 +62,7 @@ namespace FF1Lib
 				var casting = "";
 				if(weapon.SpellIndex != 0) casting = "casting: " + magicSpells[weapon.SpellIndex - 1].Name;
 
-				Utilities.WriteSpoilerLine($"{weapon.Name.PadRight(8)}  +{weapon.Damage,2}      +{weapon.Crit,2}%    +{weapon.HitBonus,2}%    {rom.GenerateEquipPermission(weaponPermissions[weapon.Id]),17}  {casting}");
+				Utilities.WriteSpoilerLine($"{weapon.Name.PadRight(8)}  +{weapon.Damage,2}      +{weapon.Crit,2}%    +{weapon.HitBonus,2}%    {GenerateSpoilerEquipPermission(weaponPermissions[weapon.Id]),17}  {casting}");
 			}
 
 			Utilities.WriteSpoilerLine("");
@@ -79,7 +79,7 @@ namespace FF1Lib
 				var casting = "";
 				if (armor.SpellIndex != 0) casting = "casting: " + magicSpells[armor.SpellIndex - 1].Name;
 				
-				Utilities.WriteSpoilerLine($"{armor.Name.PadRight(8)}  {armor.Type.ToString().PadRight(10)}  +{armor.Absorb,2}     -{armor.Weight,3}%   {rom.GenerateEquipPermission(armorPermissions[armor.Id]),17}  {casting.PadRight(16)}{GetElementalResist((SpellElement)armor.ElementalResist)}");
+				Utilities.WriteSpoilerLine($"{armor.Name.PadRight(8)}  {armor.Type.ToString().PadRight(10)}  +{armor.Absorb,2}     -{armor.Weight,3}%   {GenerateSpoilerEquipPermission(armorPermissions[armor.Id]),17}  {casting.PadRight(16)}{GetElementalResist((SpellElement)armor.ElementalResist)}");
 			}
 
 			Utilities.WriteSpoilerLine("");
@@ -125,21 +125,26 @@ namespace FF1Lib
 			for (int i = 0; i < 6; i++)
 			{
 				if (usableClasses.Contains((Classes)i))
-				{
 					description += " " + rom.InfoClassAbbrev[i * 2];
-				}
 				else if (usableClasses.Contains((Classes)i+6))
-				{
 					description += " " + rom.InfoClassAbbrev[i * 2 + 1];
-				}
 				else
-				{
 					description += "   ";
-				}
 			}
-			if (description == "FiThBbRmWmBm")
+			return description;
+		}
+
+		public string GenerateSpoilerEquipPermission(int classUsability)
+		{
+			var description = "";
+			for (int i = 0; i < 6; i++)
 			{
-				description = "All classes";
+				if ((classUsability & rom.InfoClassEquipPerms[i * 2]) != 0)
+					description += " " + rom.InfoClassAbbrev[i * 2];
+				else if ((classUsability & rom.InfoClassEquipPerms[i * 2 + 1]) != 0)
+					description += " " + rom.InfoClassAbbrev[i * 2 + 1];
+				else
+					description += "   ";
 			}
 			return description;
 		}

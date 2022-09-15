@@ -225,7 +225,7 @@
 
 		}
 
-		ushort[] InfoClassEquipPerms = new ushort[] {
+		public ushort[] InfoClassEquipPerms = new ushort[] {
 		    (ushort)EquipPermission.Fighter,
 		    (ushort)EquipPermission.Knight,
 		    (ushort)EquipPermission.Thief,
@@ -261,11 +261,14 @@
 			    description += " " + InfoClassAbbrev[i*2];
 			} else if ((classUsability & InfoClassEquipPerms[i*2+1]) != 0) {
 			    description += " " + InfoClassAbbrev[i*2+1];
-			} else {
-				description += "   ";
 			}
 		    }
-		    if (description == "FiThBbRmWmBm") {
+			description = description.Trim();
+			if (description.Length > 12)
+			{
+				description = description.Replace(" ", "");
+			}
+			if (description == "FiThBbRmWmBm") {
 			description =  "All classes";
 		    }
 		    return description;
