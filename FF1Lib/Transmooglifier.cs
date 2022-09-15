@@ -298,7 +298,7 @@ namespace FF1Lib
 				HP = 25,
 				STR = 40,
 				AGI = 25,
-				VIT = 35,
+				VIT = 25,
 				LCK = 10,
 				HIT = 4,
 				MDEF = 1,
@@ -328,7 +328,7 @@ namespace FF1Lib
 				HP = 30,
 				STR = 32,
 				AGI = 20,
-				VIT = 40,
+				VIT = 30,
 				LCK = 40,
 				HIT = 4,
 				MDEF = 3,
@@ -356,10 +356,10 @@ namespace FF1Lib
 				promoName = "VIKING",
 				shortName = "Mr",
 				promoShortName = "Vk",
-				HP = 20,
-				STR = 70,
+				HP = 35,
+				STR = 60,
 				AGI = 20,
-				VIT = 50,
+				VIT = 40,
 				LCK = 15,
 				HIT = 3,
 				MDEF = 2,
@@ -379,9 +379,9 @@ namespace FF1Lib
 				shortName = "Ln",
 				promoShortName = "Dr",
 				HP = 24,
-				STR = 70,
+				STR = 55,
 				AGI = 15,
-				VIT = 40,
+				VIT = 30,
 				LCK = 20,
 				HIT = 3,
 				MDEF = 4,
@@ -403,7 +403,7 @@ namespace FF1Lib
 				HP = 21,
 				STR = 33,
 				AGI = 40,
-				VIT = 24,
+				VIT = 14,
 				LCK = 70,
 				HIT = 2,
 				MDEF = 1,
@@ -432,7 +432,7 @@ namespace FF1Lib
 				HP = 18,
 				STR = 40,
 				AGI = 75,
-				VIT = 20,
+				VIT = 14,
 				LCK = 30,
 				HIT = 5,
 				MDEF = 2,
@@ -462,7 +462,7 @@ namespace FF1Lib
 				HP = 35,
 				STR = 75,
 				AGI = 10,
-				VIT = 60,
+				VIT = 50,
 				LCK = 5,
 				HIT = 5,
 				MDEF = 0,
@@ -486,7 +486,7 @@ namespace FF1Lib
 				HP = 18,
 				STR = 20,
 				AGI = 45,
-				VIT = 24,
+				VIT = 20,
 				LCK = 45,
 				HIT = 4,
 				MDEF = 1,
@@ -511,9 +511,9 @@ namespace FF1Lib
 				shortName = "Df",
 				promoShortName = "Tp",
 				HP = 35,
-				STR = 40,
+				STR = 38,
 				AGI = 10,
-				VIT = 70,
+				VIT = 60,
 				LCK = 20,
 				HIT = 3,
 				MDEF = 5,
@@ -543,7 +543,7 @@ namespace FF1Lib
 				HP = 22,
 				STR = 45,
 				AGI = 15,
-				VIT = 50,
+				VIT = 40,
 				LCK = 33,
 				HIT = 3,
 				MDEF = 3,
@@ -569,9 +569,9 @@ namespace FF1Lib
 				shortName = "Sq",
 				promoShortName = "Pl",
 				HP = 35,
-				STR = 40,
+				STR = 35,
 				AGI = 5,
-				VIT = 40,
+				VIT = 35,
 				LCK = 10,
 				HIT = 3,
 				MDEF = 3,
@@ -601,7 +601,7 @@ namespace FF1Lib
 				HP = 35,
 				STR = 40,
 				AGI = 5,
-				VIT = 40,
+				VIT = 30,
 				LCK = 10,
 				HIT = 3,
 				MDEF = 3,
@@ -654,9 +654,9 @@ namespace FF1Lib
 				shortName = "Sc",
 				promoShortName = "Sa",
 				HP = 14,
-				STR = 8,
-				AGI = 17,
-				VIT = 17,
+				STR = 4,
+				AGI = 7,
+				VIT = 7,
 				LCK = 5,
 				HIT = 1,
 				MDEF = 5,
@@ -683,7 +683,7 @@ namespace FF1Lib
 				HP = 16,
 				STR = 14,
 				AGI = 14,
-				VIT = 22,
+				VIT = 18,
 				LCK = 25,
 				HIT = 1,
 				MDEF = 3,
@@ -712,9 +712,9 @@ namespace FF1Lib
 				shortName = "Ms",
 				promoShortName = "Ar",
 				HP = 16,
-				STR = 18,
+				STR = 13,
 				AGI = 14,
-				VIT = 16,
+				VIT = 12,
 				LCK = 20,
 				HIT = 1,
 				MDEF = 3,
@@ -742,7 +742,7 @@ namespace FF1Lib
 				HP = 23,
 				STR = 10,
 				AGI = 5,
-				VIT = 20,
+				VIT = 15,
 				LCK = 10,
 				HIT = 1,
 				MDEF = 3,
@@ -773,7 +773,7 @@ namespace FF1Lib
 				HP = 12,
 				STR = 8,
 				AGI = 44,
-				VIT = 12,
+				VIT = 10,
 				LCK = 60,
 				HIT = 1,
 				MDEF = 5,
@@ -802,9 +802,9 @@ namespace FF1Lib
 				shortName = "Mg",
 				promoShortName = "MK",
 				HP = 20,
-				STR = 38,
+				STR = 33,
 				AGI = 34,
-				VIT = 42,
+				VIT = 36,
 				LCK = 30,
 				HIT = 3,
 				MDEF = 3,
@@ -835,7 +835,7 @@ namespace FF1Lib
 				HP = 22,
 				STR = 48,
 				AGI = 44,
-				VIT = 32,
+				VIT = 28,
 				LCK = 30,
 				HIT = 5,
 				MDEF = 2,
@@ -1205,53 +1205,58 @@ namespace FF1Lib
 
 			RollStats();
 
-			rom.ClassData[c].HpStarting = rom.ClassData[p].HpStarting = (byte)(HP % 50 + 30 + Rng.Between(rng, -5, 5));
+			rom.ClassData[c].HpStarting = rom.ClassData[p].HpStarting = (byte)(HP >= 50 ? HP % 50 + 30 + Rng.Between(rng, -5, 5) : 30 + Rng.Between(rng, -5, 5));
 			rom.ClassData[c].HpGrowth = rom.ClassData[p].HpGrowth = MakeGrowthTable(HP);
 
-			rom.ClassData[c].StrStarting = rom.ClassData[p].StrStarting = (byte)(STR % 50 + Math.Clamp((STR / 12) * 5, 1, 100));
+			rom.ClassData[c].StrStarting = rom.ClassData[p].StrStarting = (byte)(STR >= 50 ? STR % 50 + Math.Clamp((STR / 12) * 5, 1, 100) : Math.Clamp((STR / 12) * 5, 1, 100));
 			rom.ClassData[c].StrGrowth = rom.ClassData[p].StrGrowth = MakeGrowthTable(STR);
 
-			rom.ClassData[c].AgiStarting = rom.ClassData[p].AgiStarting = (byte)(AGI % 50 + Math.Clamp((AGI / 12) * 5, 1, 100));
+			rom.ClassData[c].AgiStarting = rom.ClassData[p].AgiStarting = (byte)(AGI >= 50 ? AGI % 50 + Math.Clamp((AGI / 12) * 5, 1, 100) : Math.Clamp((AGI / 12) * 5, 1, 100));
 			rom.ClassData[c].AgiGrowth = rom.ClassData[p].AgiGrowth = MakeGrowthTable(AGI);
 
-			rom.ClassData[c].VitStarting = rom.ClassData[p].VitStarting = (byte)(VIT % 50 + Math.Clamp((VIT / 12) * 5, 1, 100));
+			rom.ClassData[c].VitStarting = rom.ClassData[p].VitStarting = (byte)(VIT >= 50 ? VIT % 50 + Math.Clamp((VIT / 12) * 5, 1, 100) : Math.Clamp((VIT / 12) * 5, 1, 100));
 			rom.ClassData[c].VitGrowth = rom.ClassData[p].VitGrowth = MakeGrowthTable(VIT);
 
-			rom.ClassData[c].LckStarting = rom.ClassData[p].LckStarting = (byte)(LCK % 50 + Math.Clamp((LCK / 12) * 5, 1, 100));
-			rom.ClassData[c].LckGrowth = rom.ClassData[p].LckGrowth = MakeGrowthTable(LCK);
+			//rom.ClassData[c].IntStarting = rom.ClassData[p].IntStarting = (byte)(INT >= 50 ? INT % 50 + Math.Clamp((INT / 12) * 5, 1, 100) : Math.Clamp((VIT / 12) * 5, 1, 100));
+			//rom.ClassData[c].IntGrowth = rom.ClassData[p].IntGrowth = MakeGrowthTable(INT);
 
-			rom.ClassData[c].LckStarting = rom.ClassData[p].LckStarting = (byte)(LCK % 50 + Math.Clamp((LCK / 12) * 5, 1, 100));
+			rom.ClassData[c].LckStarting = rom.ClassData[p].LckStarting = (byte)(LCK >= 50 ? LCK % 50 + Math.Clamp((LCK / 12) * 5, 1, 100) : Math.Clamp((LCK / 12) * 5, 1, 100));
 			rom.ClassData[c].LckGrowth = rom.ClassData[p].LckGrowth = MakeGrowthTable(LCK);
 
 			rom.ClassData[c].HitStarting = rom.ClassData[p].HitStarting = (byte)Rng.Between(rng, 2, 10);
 			rom.ClassData[c].HitGrowth = rom.ClassData[p].HitGrowth = (byte)HIT;
 
-			rom.ClassData[c].MDefStarting = rom.ClassData[p].MDefStarting = (byte)Rng.Between(rng, 10, 25);
+			rom.ClassData[c].MDefStarting = rom.ClassData[p].MDefStarting = (byte)Rng.Between(rng, 10, 35);
 			rom.ClassData[c].MDefGrowth = rom.ClassData[p].MDefGrowth = (byte)MDEF;
+
+			Console.WriteLine(name + "Starting: " + rom.ClassData[c].HpStarting + ", " + rom.ClassData[c].StrStarting + ", " + rom.ClassData[c].AgiStarting + ", " + rom.ClassData[c].VitStarting + ", " + rom.ClassData[c].LckStarting);
+			Console.WriteLine(name + "Growth: " + rom.ClassData[c].HpGrowth.Where(x => x).Count() + ", " + rom.ClassData[c].StrGrowth.Where(x => x).Count() + ", " + rom.ClassData[c].AgiGrowth.Where(x => x).Count() + ", " + rom.ClassData[c].VitGrowth.Where(x => x).Count() + ", " + rom.ClassData[c].LckGrowth.Where(x => x).Count());
+
 		}
 
 		public void RollStats()
 		{
 			float up = 1.25f;
 			float dwn = 0.75f;
-			int v = 2; // roll modifier for Hit/MDEF
-
+			int v = 1; // roll modifier for Hit/MDEF
+			Console.WriteLine(name + "Preroll: " + HP + ", " + STR + ", " + AGI + ", " + VIT + ", " + LCK);
 			HP = Math.Clamp(Rng.Between(rng, (int)(HP * dwn), (int)(HP * up)), 0, 100);
 			STR = Math.Clamp(Rng.Between(rng, (int)(STR * dwn), (int)(STR * up)), 0, 100);
 			AGI = Math.Clamp(Rng.Between(rng, (int)(AGI * dwn), (int)(AGI * up)), 0, 100);
 			VIT = Math.Clamp(Rng.Between(rng, (int)(VIT * dwn), (int)(VIT * up)), 0, 100);
 			LCK = Math.Clamp(Rng.Between(rng, (int)(LCK * dwn), (int)(LCK * up)), 0, 100);
+			Console.WriteLine(name + "Postroll: " + HP + ", " + STR + ", " + AGI + ", " + VIT + ", " + LCK);
 
-			HIT = Math.Clamp(Rng.Between(rng, HIT - v, HIT + v), 0, 7);
-			MDEF = Math.Clamp(Rng.Between(rng, MDEF - v, MDEF + v), 0, 7);
+			HIT = Math.Clamp(Rng.Between(rng, HIT - v, HIT + v), 0, 4);
+			MDEF = Math.Clamp(Rng.Between(rng, MDEF - v, MDEF + v), 0, 4);
 		}
 
 		public List<bool> MakeGrowthTable(int value)
 		{
-			value = Math.Clamp(value, 0, 49);
-			var growth = Enumerable.Repeat(true, value).ToList();
+			var newvalue = Math.Clamp(value, 0, 49);
+			var growth = Enumerable.Repeat(true, newvalue).ToList();
 
-			growth.AddRange(Enumerable.Repeat(false, 49 - value).ToList());
+			growth.AddRange(Enumerable.Repeat(false, 49 - newvalue).ToList());
 			growth.Shuffle(rng);
 
 			return growth;
