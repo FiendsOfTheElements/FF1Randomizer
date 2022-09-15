@@ -291,7 +291,7 @@ public partial class FF1Rom : NesRom
 			{
 				DamageTilesKill(flags.SaveGameWhenGameOver);
 			}
-			
+
 			// Adjustable lava damage - run if anything other than the default of 1 damage
 			if ((int)flags.DamageTileLow != 1 || (int)flags.DamageTileHigh != 1)
 			{
@@ -396,7 +396,7 @@ public partial class FF1Rom : NesRom
 		{
 			ChangeLockMode(flags.LockMode);
 		}
-				
+
 		if (flags.AllSpellLevelsForKnightNinja)
 		{
 			KnightNinjaChargesForAllLevels();
@@ -404,7 +404,8 @@ public partial class FF1Rom : NesRom
 
 		if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
 		{
-			await AlternativeFiends(rng);
+			await this.Progress("Creating new Fiends", 1);
+			AlternativeFiends(rng);
 		}
 
 		if (flags.BuffTier1DamageSpells)
@@ -574,6 +575,10 @@ public partial class FF1Rom : NesRom
 		extConsumables.AddNormalShopEntries();
 
 		overworldMap.ApplyMapEdits();
+
+		if ((bool)flags.ShuffleChimeAccess) {
+		    overworldMap.ShuffleChime(rng, (bool)flags.ShuffleChimeIncludeTowns);
+		}
 
 		if (flags.NoOverworld)
 		{
@@ -849,7 +854,7 @@ public partial class FF1Rom : NesRom
 		StatusAttacks(flags, rng);
 
 		await this.Progress();
-		
+
 		if ((bool)flags.UnrunnableShuffle) {
 			int UnrunnablePercent = rng.Between(flags.UnrunnablesLow, flags.UnrunnablesHigh);
 			// This is separate because the basic Imp formation is not otherwise included in the possible unrunnable formations
@@ -886,7 +891,7 @@ public partial class FF1Rom : NesRom
 				flags.WarMECHMode = WarMECHMode.Required;	// 30%
 			else if (RandWarMECHMode <= 90)
 				flags.WarMECHMode = WarMECHMode.Unleashed;	// 15%
-			else 
+			else
 				flags.WarMECHMode = WarMECHMode.All;		// 10%
 
 		}
@@ -1140,7 +1145,7 @@ public partial class FF1Rom : NesRom
 			ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
 		}
 
-		ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.FreeClinic);
+		ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.ImprovedClinic);
 		ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 		WriteMaps(maps);

@@ -452,14 +452,14 @@
 		"Id": "progressiveScaleModeDropDown",
 		"title": "Exp/Gold Progressive Scaling",
 		"screenshot": "progressiveScaleModeDropDown.png",
-		"description": "Increases the bonus provided by the 2nd Exp/Gold Boost Slider (flat bonus) based on the number of Key Items collected, including any that were free to start and any that have already been turned in. (Does not, however, include incentivized equipment items.)\nWhen Shards are being used, the boost is applied per Shard - so \"50% per 8 Shards\" gives you a 6.25% boost for each Shard you have."
+		"description": "Increases Exp and Gold gains from enemies (including the flat bonus provided by the 2nd Exp/Gold Boost Slider) based on the number of Key Items collected, including any that were free to start and any that have already been turned in. (Does not, however, include incentivized equipment items.) The bonus is additive, so if it's set to 10% and you have 6 Key Items, your total bonus is 60% (x1.6) more from every enemy defeated.\nWhen Shards are being used, the boost is applied per Shard - so \"50% per 8 Shards\" gives you a 6.25% boost for each Shard you have."
 	},
 
 	{
 		"Id": "nonesGainXPcheckBox",
 		"title": "Nones Gain XP",
 		"screenshot": "nonesGainXPcheckBox.png",
-		"description": "When enabled, \"None\" characters will count as alive characters for XP calculation and gain their share of XP. If \"Tavern Recruitment Mode\" and/or \"Gated Characters\" are also enabled, characters hired over these \"None\" characters will gain all the EXP (and levels) of the None at that point."
+		"description": "When enabled, \"None\" characters will count as alive characters for XP calculation and gain their share of XP.\nIf \"Tavern Recruitment Mode\" and/or \"Gated Characters\" are also enabled, characters hired to replace these \"None\" characters will gain all the XP of the None at that point. (If you have already promoted, Recruits replacing Nones will be given their promotion first, and then their XP.)"
 	},
 	{
 		"Id": "deadsGainXPcheckBox",
@@ -486,7 +486,7 @@
 		"Id": "IncentivesTooltip",
 		"title": "Incentivized Items & Locations Explanation",
 		"screenshot": null,
-		"description": "Incentivized Items are guaranteed to be distributed amongst the Incentivized Locations, giving you an idea of where to look for important items.\nIf there are more Items than Locations selected, the excess items will be \"loose\", meaning they will be in random locations. This can be further controlled via the options in the \"Loose Placement\" section.\nIf there are more Locations than Items selected, excess locations will be duds, and only contain a random treasure.\nAny Key Items given for free or banned (in the Treasures tab) can't be incentivized, and thus won't be included in the total item count at the top."
+		"description": "Incentivized Items are guaranteed to be spread out amongst the Incentivized Locations, giving you an idea of where to look for important items.\nIf there are more Items than Locations selected, the excess items will be \"loose\", meaning they will be in random locations. This can be further controlled via the options in the \"Loose Placement\" section. If any Key Items (such as the Tail or Canoe) are not incentivized, they will also be considered loose.\nIf there are more Locations than Items selected, excess locations will be duds, and only contain a random treasure.\nAny Key Items given for free or banned (in the Treasures tab) can't be incentivized, and thus won't be included in the total item count at the top."
 	},
 	{
 		"Id": "IncentiveItemsTooltip",
@@ -1111,7 +1111,7 @@
 		"Id": "randomWaresIncludesCheckBox",
 		"title": "Include Caster and Elite Gear",
 		"screenshot": "randomWaresIncludesCheckBox.png",
-		"description": "Adds rare and high level Weapons and Armor found in the game to Weapon and Armor Shops (respectively). These can include normally unique or high-value items such as the Masmune and Ribbons as well as equipment that casts spells when used, such as Black Shirts and Thor Hammers."
+		"description": "Adds rare and high level Weapons and Armor found in the game to Weapon and Armor Shops (respectively). These can include normally unique or high-value items such as the Masamune and Ribbons as well as equipment that casts spells when used, such as Black Shirts and Thor Hammers."
 	},
 	{
 		"Id": "magicShopsCheckBox",
@@ -1137,6 +1137,18 @@
 		"title": "Legendary Shops",
 		"screenshot": "legendaryShopsGroup.gif",
 		"description": "Creates up to five legendary shops in dungeons, one of each type. Shops will tend to have high-tier gear (which will often include things you cannot normally find in shops) or highly desirable spells.\nThe potential locations are: Earth Cave B2, Marsh Cave B2, Dwarves' Cave, Mirage Tower F1, Ice Cave B1, & Left Sea Shrine 2.\n\"Exclusive\" means that it will also remove any items/spells found in the Legendary Shop from all other shops and treasure chests in the world."
+	},
+	{
+		"Id": "legendaryWeaponShopCheckBox",
+		"title": "Legendary Weapon Shop",
+		"screenshot": null,
+		"description": "Randomly selects 3 Legendary or stronger Rare weapons, but does not include Masamune. (Examples: Katana, Coral Sword, Mage Staff.)"
+	},
+	{
+		"Id": "legendaryArmorShopCheckBox",
+		"title": "Legendary Armor Shop",
+		"screenshot": null,
+		"description": "Randomly selects 5 Legendary or Rare pieces of armor. (Examples: Ribbon, Opal set, Wizard shirts.)"
 	},
 	{
 		"Id": "legendaryBlackShopCheckBox",
@@ -1292,7 +1304,7 @@
 		"Id": "enemySkillsSpellsTieredCheckBox",
 		"title": "Generate Balanced Scripts",
 		"screenshot": "enemySkillsSpellsTieredCheckBox.png",
-		"description": "Balances skill shuffles among the enemies so that earlier enemies will only have potential access to earlier skills while later enemies are more likely to get the later, more dangerous, skills."
+		"description": "Balances skill shuffles among the non-boss enemies so that earlier enemies will only have potential access to earlier skills while later enemies are more likely to get the later, more dangerous, skills.\nBalanced enemy spells will be selected from ALL spells, not just the spells normally in the enemy pool."
 	},
 	{
 		"Id": "touchMode",
@@ -1316,7 +1328,7 @@
 		"Id": "EnemyTrapTiles",
 		"title": "Trap Tiles",
 		"screenshot": "enemyTrapTilesCheckBox.gif",
-		"description": "Vanilla - All tiles are their original monster formations.\n\nShuffle - Shuffles all the forced encounter tiles in the game, except the Fiend refights. This doesn't add in any new tiles, instead it simply shuffles the existing encounter tiles among themselves.\n\nA Side Formations - Trap Tiles are populated from the a-side encounter list.\n\nB Side Formation - Trap tiles are populated from the b-side encounter list.\n\nRandom - Trap tiles are populated from any of the a-side or b-side encounter formations. Does not include bosses.\n\nRemoved - Removes all the forced encounter tiles from the game, except the Fiend refights.\n\nLocal Formations - Tiles will use formations from the same dungeon that they appear in.\n\nCurated - Random but with too punishing encounters removed. To make up for this, the best grind tiles have also been removed. (This is a sample pool. Tournament organizers can request specific enemy formations to be used, contact your local dev for details.)"
+		"description": "Vanilla: All tiles are their original monster formations.\n\nShuffle: Shuffles all the forced encounter tiles in the game, except the Fiend refights. This doesn't add in any new tiles, instead it simply shuffles the existing encounter tiles among themselves.\n\nA-Side Formations: Trap Tiles are randomly populated from the A-side encounter list.\n\nB-Side Formations: Trap tiles are randomly populated from the B-side encounter list.\n\nA-Side & B-Side: Trap tiles are randomly populated from any of the A-side or B-side encounter formations.\n\nRemove Trap Tiles: Removes all the forced encounter tiles from the game, except the Fiend refights.\n\nLocal Formations: Tiles will use formations from the same dungeon that they appear in (when possible).\n\nCurated: \"A-Side & B-Side\" but with overly punishing encounters removed. To make up for this, the best grind tiles have also been removed. (This is a sample pool. Tournament organizers can request specific enemy formations to be used, contact your local dev for details.)\n\n(None of the randomized pools include bosses.)"
 	},
 	{
 		"Id": "WarMECHModeDropDown",
@@ -1460,7 +1472,7 @@
 		"Id": "classAsNpcKeyNpcCheckBox",
 		"title": "Recruits Linked to Key NPCs",
 		"screenshot": "classAsNpcKeyNpcCheckBox.png",
-		"description": "A new character (from a random class) is linked to a key NPC. If that key NPC requirement is fulfilled, the linked character replaces the selected party member. Push B at the selection screen to cancel taking the gated character.\nPossible key NPCs: Princess Sara, Matoya, Bikke, King of the Northwest Castle, Elf Prince, Smith, Nerrick, Dr. Unne, Sarda, Canoe Sage, Fairy, Lefeinish Man.\nNote that the slider for Recruit Count only applies to the Key NPC Recruits; if \"Recruits Gated by Fiends\" is also selected, there will be an additional 4 recruits total. Also, if both flags are selected, one of each class will first be linked to Key NPCs, and then if any are left they will be assigned to Fiends. Any excess Recruits (beyond 6 total) will be purely random classes."
+		"description": "A new character (from a random class) is linked to a key NPC. If that key NPC requirement is fulfilled (e.g., you have given the Fairy the Bottle), you can replace a party member (including a None) with the Recruit.\nThe new Recruit will keep any XP from the replaced party member, but no spells or spell charges. Push B at the selection screen to cancel taking the gated character.\nPossible key NPCs: Princess Sara, Matoya, Bikke, King of the Northwest Castle, Elf Prince, Smith, Nerrick, Dr. Unne, Sarda, Canoe Sage, Fairy, Lefeinish Man.\nNote that the slider for Recruit Count only applies to the Key NPC Recruits; if \"Recruits Gated by Fiends\" is also selected, there will be an additional 4 recruits total. Also, if both flags are selected, one of each class will first be linked to Key NPCs, and then if any are left they will be assigned to Fiends. Any excess Recruits (beyond 6 total) will be purely random classes."
 	},
 	{
 		"Id": "classAsNpcDuplicateCheckBox",
@@ -1664,7 +1676,7 @@
 		"Id": "RandomWeaponBonusExcludeMasa",
 		"title": "Random Weapon Bonus - Exclude Masa",
 		"screenshot": "RandomWeaponBonusExcludeMasa.png",
-		"description": "Masmune will not receive any bonuses or minuses; it will always be the regular, vanilla Masamune."
+		"description": "Masamune will not receive any bonuses or minuses; it will always be the regular, vanilla Masamune."
 	},
 	{
 		"Id": "RandomArmorBonus",
@@ -1690,7 +1702,7 @@
 		"Id": "startingItemsDropDown",
 		"title": "Starting Inventory",
 		"screenshot": "startinginventory.png",
-		"description": "Starts the game with a set of consumable items.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}SafetyBit|1||||1|1[r]{l}Beggar's Choice|5|||20|2|1[r]{l}Just Tents|10|||||[r]{l}Explorer Starting Pack|10|||50|4|2[r]{l}Real Estate|15|3|1|||[r]{l}Warrior's Standard|15|3|1|50|6|3[r]{l}Royal Packmule|50|15|5|99|10|5[r]{l}Duckling Boon|99|99|99|99|99|99[r]{l}R. Beggar's Choice|1-5|||0-20|0-2|0-1[r]{l}R. Explorer Starting Pack|1-10|||0-50|0-4|0-2[r]{l}R. Warrior's Standard|3-15|0-3|0-1|20-50|2-6|1-3[r]{l}R. Royal Packmule|10-50|5-15|1-5|30-99|5-10|2-5[r]{l}R. High Rolling|35-99|10-25|5-10|30-99|10-20|5-10[r]{l}Randomized|0-99|0-99|0-99|0-99|0-20|0-10\n"
+		"description": "Starts the game with a set of consumable items.\n[grid][r]{i}Option|{i}Tent|{i}Cabin|{i}House|{i}Heal|{i}Pure|{i}Soft[r]{l}SafetyBit|1||||1|1[r]{l}Beggar's Choice|5|||20|2|1[r]{l}Just Tents|10|||||[r]{l}Explorer Pack|10|||50|4|2[r]{l}Real Estate|15|3|1|||[r]{l}Warrior's Standard|15|3|1|50|6|3[r]{l}Royal Packmule|50|15|5|99|10|5[r]{l}Duckling Boon|99|99|99|99|99|99[r]{l}R. Beggar's Choice|1-5|||0-20|0-2|0-1[r]{l}R. Explorer Pack|1-10|||0-50|0-4|0-2[r]{l}R. Warrior's Standard|3-15|0-3|0-1|20-50|2-6|1-3[r]{l}R. Royal Packmule|10-50|5-15|1-5|30-99|5-10|2-5[r]{l}R. High Rolling|35-99|10-25|5-10|30-99|10-20|5-10[r]{l}Randomized|0-99|0-99|0-99|0-99|0-20|0-10\n"
 	},
 	{
 		"Id": "consumableTreasureStackSizeDropDown",
@@ -1712,15 +1724,9 @@
 	},
 	{
 		"Id": "improvedClinicCheckBox",
-		"title": "Clinics Heal All Statuses",
+		"title": "Clinics are Free & Heal All Statuses",
 		"screenshot": "improved-clinic.png",
-		"description": "In addition to reviving dead characters at 1 HP, all clinics now heal Poison and Stone statuses (without affecting your HP)."
-	},
-	{
-		"Id": "freeClinicCheckBox",
-		"title": "Clinics Don't Cost Money",
-		"screenshot": "free-clinic.png",
-		"description": "All clinics revive your characters for free."
+		"description": "In addition to reviving dead characters at 1 HP, all clinics now heal Poison and Stone statuses (without affecting your HP).\nClincs are also now free."
 	},
 	{
 		"Id": "etherizerCheckBox",
@@ -1751,7 +1757,7 @@
 		"Id": "extConsumableTreasureStackSize",
 		"title": "New Consumable Treasure Stack Size",
 		"screenshot": "extConsumableTreasureStackSize.png",
-		"description": "New Consumable rewards from chests and NPCs may 'stack', giving you more than one item.\n[grid][r]{i}Option|{i}FCure|{i}Phnix|{i}Blast|{i}Smoke[r]{l}Stingy|||2|2[r]{l}Adequate|2||3|3[r]{l}Generous|3|2|5|5[r]{l}Ridiculous|5|3|10|10\n"
+		"description": "New Consumable rewards from chests and NPCs may 'stack', giving you more than one item.\n[grid][r]{i}Option|{i}FCure|{i}Phnix|{i}Blast|{i}Smoke[r]{l}Stingy|||2|2[r]{l}Adequate|2||3|3[r]{l}Generous|3|2|5|5[r]{l}Ridiculous|5|3|10|10\nNote: In-game text only shows a single consumable no matter how many you gained."
 	},
 	{
 		"Id": "normalShopsHaveExtConsumables",
@@ -1776,7 +1782,7 @@
 		"Id": "guaranteedPowerItem",
 		"title": "Guaranteed Offense Item",
 		"screenshot": null,
-		"description": "Guarantees that the Power Gauntlet has SABR/TMPR/FAST depending on the setting. (This item can be incentivized on the Incentives tab.)\n\"Any\" selects from any of the possible spell options; \"Random\" can also select \"None\"."
+		"description": "Guarantees that the Power Gauntlet has SABR/TMPR/FAST depending on the setting. (This item can be incentivized on the Incentives tab.)\n\"None\" will still cast SABR but be named \"Power\" when Vanilla Item Magic is selected. If Item Magic is Randomized, then None will assign the Power Gauntlet a random spell from the selected Item Magic Pool.\n\"Any\" selects from any of the possible spell options; \"Random\" can also select \"None\"."
 	},
 	{
 		"Id": "itemMagicCheckBox",
@@ -1801,7 +1807,7 @@
 		"Id": "weaponizerCheckBox",
 		"title": "Use Weaponizer",
 		"screenshot": "weaponizer.png",
-		"description": "Generates random weapons. Names are assigned based on casting, bonuses vs monster types/weaknesses, or quality. Press 'select' on the equip or shop screen to view exact stats. There is a 50% chance of a rare weapon being promotion locked. Legendary weapons (Katana, XCalibr, Masmune) have vanilla class restrictions.\n[grid][r]|Class permissions[r]Fighter|Swords, Axes, Knives, Hammers[r]Thief|Swords, Knives, Nunchucks[r]Black Belt|Nunchucks[r]Red Mage|Swords, Knives, Staves[r]White Mage|Hammers, Staves[r]Black Mage|Knives, Staves\n\n[grid][r]{b}Name|{b}Element/Type| ┇ |{b}Tier|{b}Name[r]Chroma, Prism|All types & elements| ┇ |1|Wooden, Small, Short[r]Boss|Aqua, Mage, Regen [Slays Fiends & WarMech]| ┇ |2|Copper, Long[r]Elmntl|Fire, Ice, Lit, Poison| ┇ |3|Iron, Heavy[r]IceHot|Fire, Ice| ┇ |4|Steel, Great[r]Odd, Weird|Regen, Were, Earth, Death, Time, Status| ┇ |5|Silver, Shiny[r]Shock, Bolt, Storm|Lightning (Storm also slays Aquatic)| ┇ |6|Mithrl, Sharp[r]Flame, Blaze, etc.|Fire, Undead, Were| ┇ |7|Opal, Diamnd, Wicked[r]Poison|Poison\n\nIcy/Frozen/Cold/etc., Giant/Imp/Ogre, Dragon/Dino, Rune/Ritual, Sun/Holy/Banish/etc., and Coral/Aqua/etc. all slay the same types as they do in vanilla. Check the Wiki for information on enemy weaknesses & types.\nIf you're also using Blursed Weapons, the names may be easier to understand if you turn on \"Cleaner Blursed Names\" under the Quality of Life tab."
+		"description": "Generates random weapons. Names are assigned based on casting, bonuses vs monster types/weaknesses, or quality. Press 'select' on the equip or shop screen to view exact stats. There is a 50% chance of a rare weapon being promotion locked. Legendary weapons (Katana, XCalibr, Masamune) have vanilla class restrictions.\n[grid][r]|Class permissions[r]Fighter|Swords, Axes, Knives, Hammers[r]Thief|Swords, Knives, Nunchucks[r]Black Belt|Nunchucks[r]Red Mage|Swords, Knives, Staves[r]White Mage|Hammers, Staves[r]Black Mage|Knives, Staves\n\n[grid][r]{b}Name|{b}Element/Type| ┇ |{b}Tier|{b}Name[r]Chroma, Prism|All types & elements| ┇ |1|Wooden, Small, Short[r]Boss|Aqua, Mage, Regen [Slays Fiends & WarMech]| ┇ |2|Copper, Long[r]Elmntl|Fire, Ice, Lit, Poison| ┇ |3|Iron, Heavy[r]IceHot|Fire, Ice| ┇ |4|Steel, Great[r]Odd, Weird|Regen, Were, Earth, Death, Time, Status| ┇ |5|Silver, Shiny[r]Shock, Bolt, Storm|Lightning (Storm also slays Aquatic)| ┇ |6|Mithrl, Sharp[r]Flame, Blaze, etc.|Fire, Undead, Were| ┇ |7|Opal, Diamnd, Wicked[r]Poison|Poison\n\nIcy/Frozen/Cold/etc., Giant/Imp/Ogre, Dragon/Dino, Rune/Ritual, Sun/Holy/Banish/etc., and Coral/Aqua/etc. all slay the same types as they do in vanilla. Check the Wiki for information on enemy weaknesses & types.\nIf you're also using Blursed Weapons, the names may be easier to understand if you turn on \"Cleaner Blursed Names\" under the Quality of Life tab."
 	},
 	{
 		"Id": "weaponizerPowersCheckBox",
@@ -2025,7 +2031,7 @@
 		"Id": "enableArchipelago",
 		"title": "Enable Archipelago Support",
 		"screenshot": "archipelagoEnable.png",
-		"description": "Create a game that's compatible with Archipelago Multi-Worlds, allowing different games to share the same treasure pool. By default, only Key Items are included in the common treasure pool. Require Archipelago's client."
+		"description": "Create a game that's compatible with Archipelago Multi-Worlds, allowing different games to share the same treasure pool. By default, only Key Items are included in the common treasure pool. Requires Archipelago's client."
 	},
 	{
 		"Id": "enableArchipelagoShards",
@@ -2311,5 +2317,15 @@
 		"title": "Move Temple of Fiends Bats",
 		"screenshot": "moveToFBats.png",
 		"description": "Temple of Fiends bats are moved out of Garland's room."
+	},
+	{
+		"Id": "ShuffleChimeAccess",
+		"title": "Shuffle Chime Access",
+		"description": "Shuffle the CHIME access requirement to another entrance.  This means Mirage Tower won't require the CHIME to enter, but some other dungeon, cave or castle will be impossible to enter without the CHIME, unless CHIME access is shuffled back to Mirage.\n (CUBE is still required to reach the Sky Palace)."
+	},
+	{
+		"Id": "ShuffleChimeIncludeTowns",
+		"title": "Shuffle Chime includes Towns",
+		"description": "Include towns (except Coneria) in the pool of entrances that may require CHIME to enter."
 	}
 ]

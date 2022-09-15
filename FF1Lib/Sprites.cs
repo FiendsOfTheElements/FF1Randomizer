@@ -776,7 +776,7 @@ namespace FF1Lib
 		}
 	    }
 
-	    public async Task FiendImport(Image<Rgba32> image, int sizeX, int sizeY,
+	    public void FiendImport(Image<Rgba32> image, int sizeX, int sizeY,
 				    int imageOffsetX, int imageOffsetY, List<byte[]> chrEntries,
 				    int nametableDest, int paletteDest1, int paletteDest2) {
 
@@ -802,9 +802,11 @@ namespace FF1Lib
 			}
 			List<byte> pal;
 			if (!makeNTPalette(colors, NESpalette, out pal, toNEScolor)) {
-			    await this.Progress($"WARNING: Failed importing fiend at {left}, {top}, too many unique colors (limit 4 unique colors):", 1+pal.Count);
+			    //await this.Progress($"WARNING: Failed importing fiend at {left}, {top}, too many unique colors (limit 4 unique colors):", 1+pal.Count);
+				Console.WriteLine($"WARNING: Failed importing fiend at {left}, {top}, too many unique colors (limit 4 unique colors):", 1 + pal.Count);
 			    for (int i = 0; i < pal.Count; i++) {
-				await this.Progress($"WARNING: NES palette {i}: ${pal[i],2:X}");
+				//await this.Progress($"WARNING: NES palette {i}: ${pal[i],2:X}");
+				Console.WriteLine($"WARNING: NES palette {i}: ${pal[i],2:X}");
 			    }
 			    return;
 			}
@@ -814,7 +816,8 @@ namespace FF1Lib
 
 		var fiendPals = new List<List<byte>>();
 		if (!mergePalettes(candidatePals, fiendPals, 2)) {
-		    await this.Progress($"WARNING: Too many unique 4-color palettes");
+		    //await this.Progress($"WARNING: Too many unique 4-color palettes");
+			Console.WriteLine($"WARNING: Too many unique 4-color palettes");
 		}
 
 		byte[] attributeTable = new byte[16];
@@ -890,7 +893,7 @@ namespace FF1Lib
 				int left = imageOffsetX + tilesX * 8;
 				byte idx = chrIndex(makeTile(image, top, left, index), chrEntries, 110);
 				if (idx == 0xff) {
-				    await this.Progress($"WARNING: Error importing CHR at {left}, {top}, too many unique CHR ");
+				    //await this.Progress($"WARNING: Error importing CHR at {left}, {top}, too many unique CHR ");
 				    idx = 0;
 				}
 				// put the NT
@@ -912,14 +915,19 @@ namespace FF1Lib
 	    const int KARY1 = 0x79;
 	    const int LICH1 = 0x7A;
 
-	    public async Task<bool> SetLichKaryGraphics(Stream lich, Stream kary) {
+	    //public async Task<bool> SetLichKaryGraphics(Stream lich, Stream kary) {
+		public bool SetLichKaryGraphics(Stream lich, Stream kary) {
 		var formations = LoadFormations();
 		IImageFormat format;
 		Image<Rgba32> lichImage = Image.Load<Rgba32>(lich, out format);
 		Image<Rgba32> karyImage = Image.Load<Rgba32>(kary, out format);
 		List<byte[]> CHR = new List<byte[]>();
+		/*
 		await FiendImport(lichImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[LICH1].pal2 * 4));
 		await FiendImport(karyImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET+(formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KARY1].pal2 * 4));
+		*/
+		FiendImport(lichImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[LICH1].pal2 * 4));
+		FiendImport(karyImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET+(formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KARY1].pal2 * 4));
 		if (CHR.Count < 110) {
 		    int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (18 * 16);
 		    for (int i = 0; i < CHR.Count; i++) {
@@ -929,14 +937,19 @@ namespace FF1Lib
 		} else return false;
 	    }
 
-	    public async Task<bool> SetKrakenTiamatGraphics(Stream kraken, Stream tiamat) {
+	    //public async Task<bool> SetKrakenTiamatGraphics(Stream kraken, Stream tiamat) {
+		public bool SetKrakenTiamatGraphics(Stream kraken, Stream tiamat) {
 		var formations = LoadFormations();
 		IImageFormat format;
 		Image<Rgba32> krakenImage = Image.Load<Rgba32>(kraken, out format);
 		Image<Rgba32> tiamatImage = Image.Load<Rgba32>(tiamat, out format);
 		List<byte[]> CHR = new List<byte[]>();
+			/*
 		await FiendImport(krakenImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal2 * 4));
 		await FiendImport(tiamatImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal2 * 4));
+			*/
+		FiendImport(krakenImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal2 * 4));
+		FiendImport(tiamatImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal2 * 4));
 		if (CHR.Count < 110) {
 		    int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (18 * 16);
 		    for (int i = 0; i < CHR.Count; i++) {
@@ -966,9 +979,13 @@ namespace FF1Lib
 		Image<Rgba32> image = Image.Load<Rgba32>(fiends, out format);
 		{
 		    List<byte[]> CHR = new List<byte[]>();
+				/*
 		    await FiendImport(image, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[LICH1].pal2 * 4));
 		    await FiendImport(image, 8, 8, 64, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET+(formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KARY1].pal2 * 4));
-		    if (CHR.Count < 110) {
+				*/
+			FiendImport(image, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET + (formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[LICH1].pal2 * 4));
+			FiendImport(image, 8, 8, 64, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET + (formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[KARY1].pal2 * 4));
+				if (CHR.Count < 110) {
 			int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (18 * 16);
 			for (int i = 0; i < CHR.Count; i++) {
 			    Put(offset + (i*16), EncodeForPPU(CHR[i]));
@@ -979,9 +996,13 @@ namespace FF1Lib
 		}
 		{
 		    List<byte[]> CHR = new List<byte[]>();
+				/*
 		    await FiendImport(image, 8, 8,  0, 64, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal2 * 4));
 		    await FiendImport(image, 8, 8, 64, 64, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal2 * 4));
-		    if (CHR.Count < 110) {
+				*/
+			FiendImport(image, 8, 8, 0, 64, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal2 * 4));
+			FiendImport(image, 8, 8, 64, 64, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal2 * 4));
+			if (CHR.Count < 110) {
 			int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (18 * 16);
 			for (int i = 0; i < CHR.Count; i++) {
 			    Put(offset + (i*16), EncodeForPPU(CHR[i]));
@@ -998,7 +1019,8 @@ namespace FF1Lib
 		const int CHAOS = 0x7B;
 		Image<Rgba32> image = Image.Load<Rgba32>(chaos, out format);
 		List<byte[]> CHR = new List<byte[]>();
-		await FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
+		//await FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
+		FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
 		if (CHR.Count < 110) {
 		    int offset = BATTLEPATTERNTABLE_OFFSET + (formations[CHAOS].tileset * 2048) + (18 * 16);
 		    for (int i = 0; i < CHR.Count; i++) {

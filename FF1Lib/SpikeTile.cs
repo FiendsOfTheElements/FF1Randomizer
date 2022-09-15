@@ -12,7 +12,7 @@ namespace FF1Lib
 		ASideFormations,
 		[Description("B-Side Formations")]
 		BSideFormations,
-		[Description("Random")]
+		[Description("A-Side & B-Side")]
 		Random,
 		[Description("Local Formations")]
 		LocalFormations,

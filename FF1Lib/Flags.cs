@@ -127,6 +127,9 @@ namespace FF1Lib
 		public bool? RelocateChests { get; set; } = false;
 		public bool RelocateChestsTrapIndicator { get; set; } = false;
 
+		public bool? ShuffleChimeAccess { get; set; } = false;
+		public bool? ShuffleChimeIncludeTowns { get; set; } = false;
+
 		public GameModes GameMode { get; set; } = GameModes.Standard;
 
 		[IntegerFlag(0, Int32.MaxValue-1)]
@@ -373,7 +376,6 @@ namespace FF1Lib
 		public bool IncentiveChestItemsFanfare { get; set; } = false;
 		public bool WaitWhenUnrunnable { get; set; } = false;
 		public bool ImprovedClinic { get; set; } = false;
-		public bool FreeClinic { get; set; } = false;
 		public bool Etherizer { get; set; } = false;
 		public bool HouseMPRestoration { get; set; } = false;
 		public bool WeaponStats { get; set; } = false;
@@ -955,6 +957,8 @@ namespace FF1Lib
 		public bool EnemizerDontMakeNewScripts => (bool)ShuffleSkillsSpellsEnemies & !((bool)EnemySkillsSpellsTiered);
 
 		public bool? TrappedChestsEnabled => (bool)TrappedChaos | (bool)TCMasaGuardian | (TCBetterTreasure == TCOptions.All | TCKeyItems == TCOptions.All | TCShards == TCOptions.All) | ((TCBetterTreasure == TCOptions.Pooled | TCKeyItems == TCOptions.Pooled | TCShards == TCOptions.Pooled) & TCChestCount > 0) | (TCChestCount > 0);
+
+		public bool IsAnythingLoose => (IncentivizedItemCountMax > IncentivizedLocationCountMin) || IncentivizeMainItems != true || IncentivizeFetchItems != true || (IncentivizeAirship != true && FreeAirship != true && NoFloater != true) || (IncentivizeCanoeItem != true && FreeCanoe != true) || (IncentivizeShipAndCanal != true && (FreeShip != true || FreeCanal != true)) || (IncentivizeBridgeItem != true && FreeBridge != true) || (IncentivizeTail != true && FreeTail != true && NoTail != true);
 
 		public static string EncodeFlagsText(Flags flags)
 		{

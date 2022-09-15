@@ -1311,6 +1311,8 @@ namespace FF1Lib
 			}
 		}
 
+		public bool IsAnythingLoose => Flags.IsAnythingLoose;
+
 		public bool? DeepCastlesPossible => Flags.DeepCastlesPossible;
 		public bool? DeepTownsPossible => Flags.DeepTownsPossible;
 
@@ -4528,15 +4530,6 @@ namespace FF1Lib
 			}
 		}
 
-		public bool FreeClinic
-		{
-			get => Flags.FreeClinic;
-			set
-			{
-				Flags.FreeClinic = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeClinic"));
-			}
-		}
 
 		public bool Etherizer
 		{
@@ -5307,6 +5300,25 @@ namespace FF1Lib
 			set
 			{
 				Flags.RelocateChestsTrapIndicator = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? ShuffleChimeAccess
+		{
+		    get => Flags.ShuffleChimeAccess;
+			set
+			{
+				Flags.ShuffleChimeAccess = value;
+				RaisePropertyChanged();
+			}
+		}
+		public bool? ShuffleChimeIncludeTowns
+		{
+		    get => Flags.ShuffleChimeIncludeTowns;
+			set
+			{
+				Flags.ShuffleChimeIncludeTowns = value;
 				RaisePropertyChanged();
 			}
 		}
