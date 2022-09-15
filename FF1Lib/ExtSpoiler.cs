@@ -46,8 +46,8 @@ namespace FF1Lib
 			WriteItemPlacementSpoiler();
 			WriteWeaponSpoiler();
 			WriteArmorSpoiler();
-			WriteShopSpoiler();
 			WriteSpellSpoiler();
+			WriteShopSpoiler();
 			WriteV2Spoiler();
 		}
 

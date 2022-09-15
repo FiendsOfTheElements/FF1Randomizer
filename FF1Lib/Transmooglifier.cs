@@ -725,7 +725,7 @@ namespace FF1Lib
 				spellChargeMax = 9,
 				possibleMagic = new List<string> { "fire", "lit", "health", "ice", "life", "earth", "death", "space", "holy", "time", "poison", "ailment" },
 				MagicSchoolsMax = 3,
-				averageMagicSchools = 3.25f,
+				averageMagicSchools = 5.25f,
 				promoMagic = new List<string> { "fire", "lit", "health", "ice", "life", "earth", "death", "space", "holy", "time", "poison", "ailment" },
 				armourWeight = CLOTH,
 				promoArmourWeight = CLOTH,
@@ -735,10 +735,10 @@ namespace FF1Lib
 			// Priest / Cleric
 			classes.Add(new ClassDef()
 			{
-				name = "SQUIRE",
-				promoName = "PALADIN",
-				shortName = "Sq",
-				promoShortName = "Pl",
+				name = "PRIEST",
+				promoName = "CLERIC",
+				shortName = "Pr",
+				promoShortName = "Cl",
 				HP = 23,
 				STR = 10,
 				AGI = 5,
@@ -782,10 +782,10 @@ namespace FF1Lib
 				mageLevelPromotion = 4,
 				spellChargeGrowth = 72,
 				spellChargeMax = 9,
-				possibleMagic = new List<string> { "space", "lit", "ice" },
-				MagicSchoolsMax = 1,
-				averageMagicSchools = 1.5f,
-				promoMagic = new List<string> { "space", "holy" },
+				possibleMagic = new List<string> { "lit", "ice", "space", "buff" },
+				MagicSchoolsMax = 2,
+				averageMagicSchools = 2.5f,
+				promoMagic = new List<string> { "space", "holy", "buff" },
 				armourWeight = CLOTH,
 				promoArmourWeight = CLOTH,
 				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.HAMMER },
@@ -809,13 +809,13 @@ namespace FF1Lib
 				HIT = 3,
 				MDEF = 3,
 				guaranteedMagic = new List<string> { },
-				mageLevel = 6,
+				mageLevel = 4,
 				mageLevelPromotion = 3,
 				spellChargeGrowth = 72,
 				spellChargeMax = 2,
 				possibleMagic = new List<string> { "lit", "ice", "fire" },
 				MagicSchoolsMax = 3,
-				averageMagicSchools = 2.5f,
+				averageMagicSchools = 1.5f,
 				promoMagic = new List<string> { "earth", "holy", "space" },
 				armourWeight = CLOTH,
 				promoArmourWeight = KNIGHT,
@@ -859,27 +859,27 @@ namespace FF1Lib
 			spellFamilies.Add("black", allMagic.Where(x => x.SpellSchool == SpellSchools.Black).ToList()); // 32 spells
 			spellFamilies.Add("white", allMagic.Where(x => x.SpellSchool == SpellSchools.White).ToList()); // 32 spells
 
-			spellFamilies.Add("buff", allMagic.Where(x => x.routine == SpellRoutine.ArmorUp || x.routine == SpellRoutine.DefElement || x.routine == SpellRoutine.Fast || x.routine == SpellRoutine.Sabr || x.routine == SpellRoutine.Lock || x.routine == SpellRoutine.Ruse || x.routine == SpellRoutine.Xfer).ToList()); // 15
-			spellFamilies.Add("elem", allMagic.Where(x => x.elem == SpellElement.Fire || x.elem == SpellElement.Ice || x.elem == SpellElement.Lightning || x.elem == SpellElement.Earth).ToList()); // 13
-			spellFamilies.Add("status", allMagic.Where(x => x.elem == SpellElement.Status || x.routine == SpellRoutine.Fear).ToList()); // 12
-			spellFamilies.Add("recovery", allMagic.Where(x => x.routine == SpellRoutine.Heal || x.routine == SpellRoutine.CureAilment || x.routine == SpellRoutine.FullHeal || x.routine == SpellRoutine.Life).ToList()); // 11
-			spellFamilies.Add("grey", allMagic.Where(x => x.elem == SpellElement.Death || x.elem == SpellElement.Poison || x.elem == SpellElement.Time).ToList()); // 10
+			spellFamilies.Add("buff", allMagic.Where(x => x.routine == SpellRoutine.ArmorUp || x.routine == SpellRoutine.DefElement || x.routine == SpellRoutine.Fast || x.routine == SpellRoutine.Sabr || x.routine == SpellRoutine.Lock || x.routine == SpellRoutine.Ruse || x.routine == SpellRoutine.Xfer).ToList()); // 16
+			spellFamilies.Add("recovery", allMagic.Where(x => x.routine == SpellRoutine.Heal || x.routine == SpellRoutine.CureAilment || x.routine == SpellRoutine.FullHeal || x.routine == SpellRoutine.Life).ToList()); // 13
+			spellFamilies.Add("elem", allMagic.Where(x => x.elem == SpellElement.Fire || x.elem == SpellElement.Ice || x.elem == SpellElement.Lightning || x.elem == SpellElement.Earth).ToList()); // 10
+			spellFamilies.Add("status", allMagic.Where(x => x.elem == SpellElement.Status || x.routine == SpellRoutine.Fear).ToList()); // 9
 
-			spellFamilies.Add("health", allMagic.Where(x => x.routine == SpellRoutine.Heal || x.routine == SpellRoutine.FullHeal).ToList()); // 6
-
-			spellFamilies.Add("fire", allMagic.Where(x => x.elem == SpellElement.Fire).ToList()); // 5
-			spellFamilies.Add("lit", allMagic.Where(x => x.elem == SpellElement.Lightning).ToList()); // 5
-			spellFamilies.Add("ice", allMagic.Where(x => x.elem == SpellElement.Ice).ToList()); // 5
+			spellFamilies.Add("health", allMagic.Where(x => x.routine == SpellRoutine.Heal || x.routine == SpellRoutine.FullHeal).ToList()); // 7
+			spellFamilies.Add("grey", allMagic.Where(x => x.elem == SpellElement.Death || x.elem == SpellElement.Poison || x.elem == SpellElement.Time).ToList()); // 6
 			spellFamilies.Add("time", allMagic.Where(x => x.elem == SpellElement.Time || x.routine == SpellRoutine.Fast || x.routine == SpellRoutine.Slow).ToList()); // 5
-
-			spellFamilies.Add("death", allMagic.Where(x => x.elem == SpellElement.Death).ToList()); // 4
-			spellFamilies.Add("earth", allMagic.Where(x => x.elem == SpellElement.Earth).ToList()); // 3
-			spellFamilies.Add("poison", allMagic.Where(x => x.elem == SpellElement.Poison).ToList()); // 3
-
-			spellFamilies.Add("ailment", allMagic.Where(x => x.routine == SpellRoutine.CureAilment).ToList()); // 3
-			spellFamilies.Add("life", allMagic.Where(x => x.routine == SpellRoutine.Life).ToList()); // 2
 			spellFamilies.Add("holy", allMagic.Where(x => x.SpellSchool == SpellSchools.White && (x.routine == SpellRoutine.Damage || x.routine == SpellRoutine.DamageUndead)).ToList()); // 5
-			spellFamilies.Add("space", allMagic.Where(x => x.oobSpellRoutine == OOBSpellRoutine.EXIT || x.oobSpellRoutine == OOBSpellRoutine.WARP || (x.routine == SpellRoutine.Damage || x.elem == SpellElement.None)).ToList()); // 3
+			spellFamilies.Add("ailment", allMagic.Where(x => (x.routine == SpellRoutine.CureAilment && (x.oobSpellRoutine != OOBSpellRoutine.LIFE || x.oobSpellRoutine != OOBSpellRoutine.LIF2))).ToList()); // 4
+			spellFamilies.Add("space", allMagic.Where(x => x.oobSpellRoutine == OOBSpellRoutine.EXIT || x.oobSpellRoutine == OOBSpellRoutine.WARP || (x.routine == SpellRoutine.Damage && x.elem == SpellElement.None)).ToList()); // 4
+
+			spellFamilies.Add("fire", allMagic.Where(x => x.elem == SpellElement.Fire).ToList()); // 3
+			spellFamilies.Add("lit", allMagic.Where(x => x.elem == SpellElement.Lightning).ToList()); // 3
+			spellFamilies.Add("ice", allMagic.Where(x => x.elem == SpellElement.Ice).ToList()); // 3
+
+			spellFamilies.Add("life", allMagic.Where(x => x.oobSpellRoutine == OOBSpellRoutine.LIFE || x.oobSpellRoutine == OOBSpellRoutine.LIF2).ToList()); // 2
+
+			spellFamilies.Add("death", allMagic.Where(x => x.elem == SpellElement.Death).ToList()); // 2
+			spellFamilies.Add("poison", allMagic.Where(x => x.elem == SpellElement.Poison).ToList()); // 2
+			spellFamilies.Add("earth", allMagic.Where(x => x.elem == SpellElement.Earth).ToList()); // 1
 		}
 	}
 
@@ -1367,26 +1367,13 @@ namespace FF1Lib
 			rom.SpellPermissions.ClearPermissions(c);
 			rom.SpellPermissions.ClearPermissions(p);
 
-			HashSet<int> availableLevels = new HashSet<int>();
-			HashSet<int> availablePromoLevels = new HashSet<int>();
-
 			foreach (MagicSpell s in spells)
-			{
 				if (s.Level <= mageLevel)
-				{
 					rom.SpellPermissions.AddPermission(c, (SpellSlots)s.Index);
-					availableLevels.Add(s.Level);
-				}
-			}
 
 			foreach (MagicSpell sp in promoSpells)
-			{
 				if (sp.Level <= mageLevel + mageLevelPromotion)
-				{
 					rom.SpellPermissions.AddPermission(p, (SpellSlots)sp.Index);
-					availablePromoLevels.Add(sp.Level);
-				}
-			}
 
 			// Spell Charge Growth
 			CommitSpellChargeGrowth(c, p, spells.Count == 0);
@@ -1395,7 +1382,6 @@ namespace FF1Lib
 		public List<MagicSpell> RollSpellSet()
 		{
 			// TODO 			public byte InnateResist; // Only used when adding single elemental or status spell groups. "Fire Samurai is strong against Fire" kind of deal
-
 
 			List<MagicSpell> ret = new();
 
@@ -1420,9 +1406,12 @@ namespace FF1Lib
 			return ret;
 		}
 
-		public List<MagicSpell> RollPromoSpellSet(List<MagicSpell> ret)
+		public List<MagicSpell> RollPromoSpellSet(List<MagicSpell> spells)
 		{
 			// TODO 			public byte InnateResist; // Only used when adding single elemental or status spell groups. "Fire Samurai is strong against Fire" kind of deal
+
+			List<MagicSpell> ret = new();
+			ret.AddRange(spells);
 
 			foreach (string s in promoMagic)
 			{
