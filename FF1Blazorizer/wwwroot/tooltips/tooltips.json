@@ -33,7 +33,7 @@
 		"Id": "shipCanalBeforeFloater",
 		"title": "Ship and Canal before Floater",
 		"screenshot": null,
-		"description": "Forces the Ship and the Canal to be placed before the Floater."
+		"description": "Forces the Ship and the Canal to be placed before the Floater. This means they will appear earlier in logic and makes it more likely they will be required."
 	},
 	{
 		"Id": "reversedFloors",
@@ -584,7 +584,7 @@
 		"Id": "LooseExcludePlacedDungeonsCheckBox",
 		"title": "No Loose Items in Incentivized Dungeons",
 		"screenshot": "LooseExcludePlacedDungeons.png",
-		"description": "If a dungeon is incentivized, additional loose items and/or unincentivized key items won't be placed inside of it.\nThis means that once you find the incentivized item, you can opt to leave the incentive area knowing that any remaining loose items will be somewhere else.\nNote: Waterfall itself is NOT incentivized even if the Robot is (via \"Main NPCs\"), so loose items may still appear there with this checked (and likewise with Matoya). Mirage Tower and Sky Palace are considered one dungeon for this flag."
+		"description": "If a dungeon is incentivized, additional loose items and/or unincentivized key items won't be placed inside of it.\nThis means that once you find the incentivized item, you can opt to leave the incentive area knowing that any remaining loose items will be somewhere else.\nNote: Waterfall and other locations such as Matoya's Cave are NOT incentivized even if the NPCS there are (via \"Main NPCs\"), so loose items may still appear in those locations with this checked."
 	},
 
 	{
@@ -1542,7 +1542,7 @@
 		"Id": "RandomizeClassInnateMagicCheckBox",
 		"title": "Blursed Classes - Innage Magic",
 		"screenshot": "RandomizeClassInnateMagicCheckBox.png",
-		"description": "Adds a set of bonuses that give a set of starting spells at the level 8 slots, regardless of their actual spell level. Also gives 2 MPs of that level to be able to cast them."
+		"description": "Adds a set of bonuses that give a set of starting spells at the level 8 slots, regardless of their actual spell level. Also gives 2 MPs of that level to be able to cast them.\n[grid][r]Tele Magic|WARP & EXIT[r]{l}Buff Magic|TMPR, FAST, & INV2[r]{l}Self Magic|RUSE & SABR[r]{l}Heal Magic|CUR3, HEL2, & LIFE[r]{l}Heal+ Magic|CUR4, HEL3, & LIFE[r]{l}Elem Magic|ICE2, FIR2, & LIT2[r]{l}Elem+ Magic|ICE3, FIR3, & LIT3[r]{l}Doom Magic|3 random spells causing instant death/stone[r]{l}Clean Magic|3 random status cures (incl. LIFE/LIF2)"
 	},
 	{
 		"Id": "RandomizeClassIncludeXpBonuxCheckBox",

@@ -120,7 +120,7 @@
 			<div class="checkbox-cell"></div>
 			<h4>Key Items Placement</h4>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="kiPlacementMode" IsEnabled="@(Flags.Treasures != false)" TItem="KeyItemPlacementMode" @bind-Value="Flags.KeyItemPlacementMode"></EnumDropDown>
-            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="shipCanalBeforeFloater" IsEnabled="@(Flags.Treasures != false & Flags.KeyItemPlacementMode != KeyItemPlacementMode.Vanilla)" @bind-Value="Flags.ShipCanalBeforeFloater">Ship and Canal before Floater</CheckBox>
+            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="shipCanalBeforeFloater" IsEnabled="@(Flags.Treasures != false & Flags.KeyItemPlacementMode != KeyItemPlacementMode.Vanilla)" @bind-Value="Flags.ShipCanalBeforeFloater">Ship & Canal Before Floater</CheckBox>
             <div class="checkbox-cell"></div>
 			<h4>Loose Placement</h4>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="loosePlacementMode" IsEnabled="@(Flags.Treasures != false && Flags.IsAnythingLoose)" TItem="LoosePlacementMode" @bind-Value="Flags.LoosePlacementMode"></EnumDropDown>
