@@ -23,7 +23,7 @@
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeIceCaveCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeIceCave">Ice Cave</TriStateCheckBox>
 				</div>
 				<div class="col-sm-6">
-					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.IceCaveIncentivePlacementType"></EnumDropDown>
+					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentivizeIceCaveDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.IceCaveIncentivePlacementType"></EnumDropDown>
 				</div>
 			</div>
 			<div class="row">
@@ -31,7 +31,7 @@
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeOrdealsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeOrdeals">Ordeals</TriStateCheckBox>
 				</div>
 				<div class="col-sm-6">
-					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.OrdealsIncentivePlacementType"></EnumDropDown>
+					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentivizeOrdealsDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.OrdealsIncentivePlacementType"></EnumDropDown>
 				</div>
 			</div>
 			<div class="row">
@@ -39,7 +39,7 @@
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMarshCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMarsh">Marsh Cave</TriStateCheckBox>
 				</div>
 				<div class="col-sm-6">
-					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.MarshIncentivePlacementType"></EnumDropDown>
+					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentivizeMarshDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.MarshIncentivePlacementType"></EnumDropDown>
 				</div>
 			</div>
 
@@ -48,7 +48,7 @@
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeTitansCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeTitansTrove">Titan's Trove</TriStateCheckBox>
 				</div>
 				<div class="col-sm-6">
-					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.TitansIncentivePlacementType"></EnumDropDown>
+					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentivizeTitansDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.TitansIncentivePlacementType"></EnumDropDown>
 				</div>
 			</div>
 			<div class="checkbox-cell"></div>
@@ -58,7 +58,7 @@
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeEarthCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeEarth">Earth Cave</TriStateCheckBox>
 				</div>
 				<div class="col-sm-6">
-					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="IncentivePlacementTypeEarth" @bind-Value="Flags.EarthIncentivePlacementType"></EnumDropDown>
+					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentivizeEarthDropDown" TItem="IncentivePlacementTypeGated" @bind-Value="Flags.EarthIncentivePlacementType"></EnumDropDown>
 				</div>
 			</div>
 
@@ -67,7 +67,7 @@
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeVolcanoCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeVolcano">Volcano</TriStateCheckBox>
 				</div>
 				<div class="col-sm-6">
-					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="IncentivePlacementTypeVolcano" @bind-Value="Flags.VolcanoIncentivePlacementType"></EnumDropDown>
+					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentivizeVolcanoDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.VolcanoIncentivePlacementType"></EnumDropDown>
 				</div>
 			</div>
 
@@ -76,7 +76,7 @@
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeSeaShrineCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeSeaShrine">Sea Shrine</TriStateCheckBox>
 				</div>
 				<div class="col-sm-6">
-					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="IncentivePlacementTypeSea" @bind-Value="Flags.SeaShrineIncentivePlacementType"></EnumDropDown>
+					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentivizeSeaShrineDropDown" TItem="IncentivePlacementTypeGated" @bind-Value="Flags.SeaShrineIncentivePlacementType"></EnumDropDown>
 				</div>
 			</div>
 
@@ -85,7 +85,7 @@
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeSkyPalaceCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeSkyPalace">Sky Palace</TriStateCheckBox>
 				</div>
 				<div class="col-sm-6">
-					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="IncentivePlacementTypeSky" @bind-Value="Flags.SkyPalaceIncentivePlacementType"></EnumDropDown>
+					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentivizeSkyDropDown" TItem="IncentivePlacementTypeGated" @bind-Value="Flags.SkyPalaceIncentivePlacementType"></EnumDropDown>
 				</div>
 			</div>
 			<div class="checkbox-cell"></div>
@@ -95,7 +95,7 @@
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeConeriaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeConeria">Coneria (Locked)</TriStateCheckBox>
 				</div>
 				<div class="col-sm-6">
-					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.CorneriaIncentivePlacementType"></EnumDropDown>
+					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentivizeConeriaDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.CorneriaIncentivePlacementType"></EnumDropDown>
 				</div>
 			</div>
 
@@ -104,7 +104,7 @@
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeMarshKeyLockedCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeMarshKeyLocked">Marsh (Locked)</TriStateCheckBox>
 				</div>
 				<div class="col-sm-6">
-					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.MarshLockedIncentivePlacementType"></EnumDropDown>
+					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentivizeMarshKeyLockedDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.MarshLockedIncentivePlacementType"></EnumDropDown>
 				</div>
 			</div>
 
@@ -113,7 +113,7 @@
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="incentivizeCardiaCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.IncentivizeCardia">Cardia Islands</TriStateCheckBox>
 				</div>
 				<div class="col-sm-6">
-					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentiveCardiaDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.CardiaIncentivePlacementType"></EnumDropDown>
+					<EnumDropDown DisableTooltip UpdateToolTip="@UpdateToolTipID" Id="incentivizeCardiaDropDown" TItem="IncentivePlacementType" @bind-Value="Flags.CardiaIncentivePlacementType"></EnumDropDown>
 				</div>
 			</div>
 
