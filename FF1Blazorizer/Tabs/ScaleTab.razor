@@ -70,7 +70,7 @@
 		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="deadsGainXPcheckBox" @bind-Value="Flags.DeadsGainXP">Deads Gain XP</CheckBox>
 		<div class="row-seperator"></div>
 		<DoubleSlider DoubleCol ShowPercent UpdateToolTip="@UpdateToolTipID" Id="expChestConversion" MinValue="0" MaxValue="100" Step="10" @bind-ValuesRange="(Flags.ExpChestConversionMin, Flags.ExpChestConversionMax)">Exp Chest Conversion:</DoubleSlider>
-		<DoubleSlider ShowMedian DontShowPercent DoubleCol  UpdateToolTip="@UpdateToolTipID" Id="expChestReward" MinValue="500" MaxValue="20000" Step="500" @bind-ValuesRange="(Flags.ExpChestMinReward, Flags.ExpChestMaxReward)">Exp Chest Reward:</DoubleSlider>
+		<DoubleSlider ShowMedian DontShowPercent DoubleCol IsEnabled="@(Flags.ExpChestConversionMax != 0)" UpdateToolTip="@UpdateToolTipID" Id="expChestReward" MinValue="500" MaxValue="20000" Step="500" @bind-ValuesRange="(Flags.ExpChestMinReward, Flags.ExpChestMaxReward)">Exp Chest Reward:</DoubleSlider>
 
 		<div class="row-seperator"></div>
 		<div class="clear-it"></div>

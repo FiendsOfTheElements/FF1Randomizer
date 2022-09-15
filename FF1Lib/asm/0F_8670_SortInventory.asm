@@ -19,6 +19,7 @@ lodgings_start = $6036
 orbs_start = $6031
 shards_addr = $6035
 items_stop = $603C
+canoe_offset = $6012
 
 
 .org $8D00
@@ -84,6 +85,16 @@ SkipUniqueDest:
 INX
 CPX #$11 ;see if we've run through the unique items
 BNE UniqueItemsLoop
+
+; special canoe check, only enable for NoOverworld
+LDA canoe_offset
+BEQ EndList
+LDA #$11
+STA item_box, Y
+INC cursor_max     
+INY
+LDA #$00
+STA item_box, Y
 
 ;INY
 ;LDA shards_addr

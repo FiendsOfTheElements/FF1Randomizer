@@ -149,6 +149,7 @@ namespace FF1Lib.Procgen
 
 	public const int DOCK_REGION = 4;
 	public const int ENTRANCES_REGION = 5;
+	public const int BRIDGE_REGION = 6;
 
 	public const int MainOceanRegionId = 0;
 
@@ -197,7 +198,7 @@ namespace FF1Lib.Procgen
 	    ICE_CAVE, DWARF_CAVE, MATOYAS_CAVE,
 	    TITAN_CAVE_E, TITAN_CAVE_W,
 	    CARAVAN_DESERT, ORDEALS_CASTLE_W, ORDEALS_CASTLE_E,
-	    SARDAS_CAVE, WATERFALL, CONERIA, PRAVOKA,
+	    SARDAS_CAVE, WATERFALL, CONERIA,
 	    PRAVOKA, ELFLAND, MELMOND, CRESCENT_LAKE,
 	    TOF_ENTRANCE_W, TOF_ENTRANCE_E,
 	    GAIA, ONRAC, VOLCANO_TOP_W, VOLCANO_TOP_E,
@@ -399,11 +400,12 @@ namespace FF1Lib.Procgen
 	    });
 
 	public static OwFeature GAIA_TOWN = new OwFeature(new byte[,] {
-	    {None, GAIA, GAIA},
-	    {GAIA, GAIA, None},
-	    {None, None, None},
+	    {None, None, None, None, None},
+	    {None, None, GAIA, GAIA, None},
+	    {None, GAIA, GAIA, None, None},
+	    {None, None, None, None, None},
 	    }, new Dictionary<string, SCCoords> {
-		{ "Gaia", new SCCoords(1, 1) },
+		{ "Gaia", new SCCoords(2, 2) },
 	    });
 
 	public static OwFeature MIRAGE_TOWER = new OwFeature(new byte[,] {
@@ -711,6 +713,7 @@ namespace FF1Lib.Procgen
         non_water_tiles.Remove(DOCK_SW);
         non_water_tiles.Remove(DOCK_SQ);
         non_water_tiles.Remove(WATERFALL);
+	non_water_tiles.Remove(MOUNTAIN);
 
         var non_shore_tiles = new HashSet<byte>(allTiles);
         non_shore_tiles.Remove(OCEAN);
@@ -1071,9 +1074,19 @@ namespace FF1Lib.Procgen
 		    {STAR,     STAR, STAR}},
 		    SHORE_N),
 		new Rule(new byte[3,3] {
-		    {STAR,         STAR, LAND},
+		    {STAR,         STAR, STAR},
 		    {STAR,     SHORE_SW, STAR},
+		    {LAND,     STAR, STAR}},
+		    SHORE_S),
+		new Rule(new byte[3,3] {
+		    {STAR,     STAR, LAND},
+		    {STAR, SHORE_NE, STAR},
 		    {STAR,     STAR, STAR}},
+		    SHORE_N),
+		new Rule(new byte[3,3] {
+		    {STAR,         STAR, STAR},
+		    {STAR,     SHORE_SE, STAR},
+		    {STAR,     STAR, LAND}},
 		    SHORE_S),
 	    }, allTiles, non_shore_tiles, null);
 

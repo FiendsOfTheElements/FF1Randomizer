@@ -62,6 +62,10 @@
 				Data[idx] = value;
 			}
 		}
+
+		public int Count {
+		    get { return count; }
+		}
 	}
 
 	public class MemTable<T, I> : MemTable<T> where T : unmanaged where I : Enum

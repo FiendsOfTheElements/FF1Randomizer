@@ -9,15 +9,17 @@
 		<div class="col1">
 			<h4>Formations</h4>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="formationShuffleModeDropDown" TItem="FormationShuffleMode" IsEnabled="@(!Flags.RandomizeFormationEnemizer)" @bind-Value="Flags.FormationShuffleMode">Rarity:</EnumDropDown>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="runnabilityDropDown" TItem="Runnability" @bind-Value="Flags.Runnability">Unrunnable Formations:</EnumDropDown>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="unrunnablesStrikeFirstAndSurpriseCheckBox" @bind-Value="Flags.UnrunnablesStrikeFirstAndSurprise">Unrunnable First Strike &amp; Surprise</TriStateCheckBox>
+
+            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="runnabilityShuffleCheckbox" @bind-Value="Flags.UnrunnableShuffle">Shuffle Unrunnable Encounters</TriStateCheckBox>
+            <DoubleSlider ShowPercent DoubleCol Indent DisableTooltip Id="runnabilityDoubleSlider" IsEnabled="@(Flags.UnrunnableShuffle != false)" MinValue="0" MaxValue="100" Step="4" @bind-ValuesRange="(Flags.UnrunnablesLow,Flags.UnrunnablesHigh)">Count:</DoubleSlider>
+            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="unrunnablesStrikeFirstAndSurpriseCheckBox" @bind-Value="Flags.UnrunnablesStrikeFirstAndSurprise">Unrunnable Ambush/Preemptive</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyFormationsSurpriseCheckBox" @bind-Value="Flags.EnemyFormationsSurprise">Shuffle Surprise Bonus</TriStateCheckBox>
 
 			<div class="checkbox-cell"></div>
 			<h4>Bosses</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossScriptsCheckBox" @bind-Value="Flags.ShuffleScriptsBosses">Shuffle Scripts</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossSkillsSpellsCheckBox" @bind-Value="Flags.ShuffleSkillsSpellsBosses">Shuffle Skills & Spells</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsBosses != false)" Id="noConsecutiveNukesCheckBox" @bind-Value="Flags.NoConsecutiveNukes">Prevent Consecutive NUKE or NUCLEAR</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsBosses != false)" Id="noConsecutiveNukesCheckBox" @bind-Value="Flags.NoConsecutiveNukes">No Consecutive NUKE or NUCLEAR</TriStateCheckBox>
 
 			<div class="checkbox-cell"></div>
 			<h4>Enemies</h4>
@@ -36,12 +38,12 @@
 
 			<div class="checkbox-cell"></div>
 			<h4>Trap Tiles</h4>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.RandomizeEnemizer)" Id="EnemyTrapTiles" TItem="TrapTileMode" @bind-Value="Flags.EnemyTrapTiles">Trap Tile Mode:</EnumDropDown>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.RandomizeEnemizer)" Id="EnemyTrapTiles" TItem="TrapTileMode" @bind-Value="Flags.EnemyTrapTiles">Trap Tile Pool:</EnumDropDown>
 		</div>
 
 		<div class="col2">
 			<h4>WarMech</h4>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="WarMECHModeDropDown" TItem="WarMECHMode" @bind-Value="Flags.WarMECHMode">WarMECH Mode: </EnumDropDown>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="WarMECHModeDropDown" TItem="WarMECHMode" @bind-Value="Flags.WarMECHMode">WarMECH Mode:</EnumDropDown>
 			<div class="checkbox-cell"></div>
 
 			<h4>Pirates</h4>

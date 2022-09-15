@@ -52,7 +52,7 @@ namespace FF1Lib
 			}
 			else if (flags.ItemMagicPool == ItemMagicPool.Curated)
 			{
-				Spells = GetTournamentSpells(rng);
+				Spells = GetTournamentSpells(rng, (bool)flags.MagisizeWeapons);
 			}
 			else
 			{
@@ -228,12 +228,12 @@ namespace FF1Lib
 			return foundSpells.Concat(foundSpells).ToList();
 		}
 
-		private List<MagicSpell> GetTournamentSpells(MT19337 rng)
+		private List<MagicSpell> GetTournamentSpells(MT19337 rng, bool AllWeaponsMagic)
 		{
 			var Spells = GetSpells();
 
 			SpellHelper spellHelper = new SpellHelper(this);
-			List<(Spell Id, MagicSpell Info)> foundSpells = GetTournamentSpells(spellHelper, rng);
+			List<(Spell Id, MagicSpell Info)> foundSpells = GetTournamentSpells(spellHelper, rng, AllWeaponsMagic);
 
 			var Spells2 = new List<MagicSpell>();
 			foreach (var spl in foundSpells)
@@ -246,7 +246,7 @@ namespace FF1Lib
 			return Spells2;
 		}
 
-		private List<(Spell Id, MagicSpell Info)> GetTournamentSpells(SpellHelper spellHelper, MT19337 rng)
+		private List<(Spell Id, MagicSpell Info)> GetTournamentSpells(SpellHelper spellHelper, MT19337 rng, bool AllWeaponsMagic)
 		{
 			List<(Spell Id, MagicSpell Info)> foundSpells = new List<(Spell Id, MagicSpell Info)>();
 
@@ -283,7 +283,13 @@ namespace FF1Lib
 			foundSpells.AddRange(spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Stun));
 
 			foundSpells.Shuffle(rng);
+
+			// For normal situations, prevents any spell from appearing on more than two items
 			var selection = foundSpells.Take(22).Distinct();
+			// Use the full set with the All Weapons Cast Spells flag so that there's enough
+			if (AllWeaponsMagic) {
+				selection = foundSpells;
+			}
 
 			return selection.Concat(selection).ToList();
 		}

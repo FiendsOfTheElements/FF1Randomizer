@@ -803,13 +803,31 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixMissingBattleRngEntry"));
 			}
 		}
-		public Runnability Runnability
+		public bool? UnrunnableShuffle
 		{
-			get => Flags.Runnability;
+			get => Flags.UnrunnableShuffle;
 			set
 			{
-				Flags.Runnability = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Runnability"));
+				Flags.UnrunnableShuffle = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnrunnableShuffle"));
+			}
+		}
+		public int UnrunnablesLow
+		{
+			get => Flags.UnrunnablesLow;
+			set
+			{
+				Flags.UnrunnablesLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnrunnablesLow"));
+			}
+		}
+		public int UnrunnablesHigh
+		{
+			get => Flags.UnrunnablesHigh;
+			set
+			{
+				Flags.UnrunnablesHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnrunnablesHigh"));
 			}
 		}
 		public bool? UnrunnablesStrikeFirstAndSurprise
@@ -1237,6 +1255,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FlipDungeons"));
 			}
 		}
+		public bool? VerticallyFlipDungeons
+		{
+			get => Flags.VerticallyFlipDungeons;
+			set
+			{
+				Flags.VerticallyFlipDungeons = value;
+				RaisePropertyChanged();
+			}
+		}
 		public bool SpookyFlag
 		{
 			get => Flags.SpookyFlag;
@@ -1283,6 +1310,8 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChaosRush"));
 			}
 		}
+
+		public bool IsAnythingLoose => Flags.IsAnythingLoose;
 
 		public bool? DeepCastlesPossible => Flags.DeepCastlesPossible;
 		public bool? DeepTownsPossible => Flags.DeepTownsPossible;
@@ -1694,7 +1723,7 @@ namespace FF1Lib
 			}
 		}
 
-		public IncentivePlacementTypeGated EarthIncentivePlacementType
+		public IncentivePlacementTypeEarth EarthIncentivePlacementType
 		{
 			get => Flags.EarthIncentivePlacementType;
 			set
@@ -1704,7 +1733,7 @@ namespace FF1Lib
 			}
 		}
 
-		public IncentivePlacementType VolcanoIncentivePlacementType
+		public IncentivePlacementTypeVolcano VolcanoIncentivePlacementType
 		{
 			get => Flags.VolcanoIncentivePlacementType;
 			set
@@ -1714,7 +1743,7 @@ namespace FF1Lib
 			}
 		}
 
-		public IncentivePlacementTypeGated SeaShrineIncentivePlacementType
+		public IncentivePlacementTypeSea SeaShrineIncentivePlacementType
 		{
 			get => Flags.SeaShrineIncentivePlacementType;
 			set
@@ -1724,7 +1753,7 @@ namespace FF1Lib
 			}
 		}
 
-		public IncentivePlacementTypeGated SkyPalaceIncentivePlacementType
+		public IncentivePlacementTypeSky SkyPalaceIncentivePlacementType
 		{
 			get => Flags.SkyPalaceIncentivePlacementType;
 			set
@@ -2317,24 +2346,6 @@ namespace FF1Lib
 			{
 				Flags.EnemyStatusAttackBug = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyStatusAttackBug"));
-			}
-		}
-		public bool EnemySpellsTargetingAllies
-		{
-			get => Flags.EnemySpellsTargetingAllies;
-			set
-			{
-				Flags.EnemySpellsTargetingAllies = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemySpellsTargetingAllies"));
-			}
-		}
-		public bool EnemyElementalResistancesBug
-		{
-			get => Flags.EnemyElementalResistancesBug;
-			set
-			{
-				Flags.EnemyElementalResistancesBug = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnemyElementalResistancesBug"));
 			}
 		}
 		public bool ImproveTurnOrderRandomization
@@ -4165,15 +4176,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassKeyItems"));
 			}
 		}
-		public bool? RandomizeClassIncludeNaturalResist
-		{
-			get => Flags.RandomizeClassIncludeNaturalResist;
-			set
-			{
-				Flags.RandomizeClassIncludeNaturalResist = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassIncludeNaturalResist"));
-			}
-		}
 		public bool? RandomizeClassIncludeXpBonus
 		{
 			get => Flags.RandomizeClassIncludeXpBonus;
@@ -4528,15 +4530,6 @@ namespace FF1Lib
 			}
 		}
 
-		public bool FreeClinic
-		{
-			get => Flags.FreeClinic;
-			set
-			{
-				Flags.FreeClinic = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeClinic"));
-			}
-		}
 
 		public bool Etherizer
 		{
@@ -4751,13 +4744,13 @@ namespace FF1Lib
 
 		public bool ExtConsumablesEnabled => Flags.ExtConsumablesEnabled;
 
-		public bool EnableLifeInBattle
+		public LifeInBattleSetting EnableLifeInBattle
 		{
 			get => Flags.EnableLifeInBattle;
 			set
 			{
 				Flags.EnableLifeInBattle = value;
-				RaisePropertyChanged();
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnableLifeInBattle"));
 			}
 		}
 
@@ -5211,15 +5204,6 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-		public bool QuickMinimapLoad
-		{
-			get => Flags.QuickMinimapLoad;
-			set
-			{
-				Flags.QuickMinimapLoad = value;
-				RaisePropertyChanged();
-			}
-		}
 
 		public bool DisableMinimap
 		{
@@ -5320,6 +5304,25 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? ShuffleChimeAccess
+		{
+		    get => Flags.ShuffleChimeAccess;
+			set
+			{
+				Flags.ShuffleChimeAccess = value;
+				RaisePropertyChanged();
+			}
+		}
+		public bool? ShuffleChimeIncludeTowns
+		{
+		    get => Flags.ShuffleChimeIncludeTowns;
+			set
+			{
+				Flags.ShuffleChimeIncludeTowns = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public string PlayerName
 		{
 			get => Preferences.PlayerName;
@@ -5340,6 +5343,15 @@ namespace FF1Lib
 			}
 		}
 
+		public bool ShipCanalBeforeFloater
+		{
+			get => Flags.ShipCanalBeforeFloater;
+			set
+			{
+				Flags.ShipCanalBeforeFloater = value;
+				RaisePropertyChanged();
+			}
+		}
 
 		public void LoadResourcePackFlags(Stream stream) {
 		    Flags.LoadResourcePackFlags(stream);
