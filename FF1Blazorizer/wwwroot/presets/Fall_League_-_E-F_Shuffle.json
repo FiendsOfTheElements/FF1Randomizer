@@ -269,7 +269,7 @@
     "ChestInfo": true,
     "IncentiveChestItemsFanfare": false,
     "WaitWhenUnrunnable": true,
-    "ImprovedClinic": true,
+    "ImprovedClinic": false,
     "Etherizer": false,
     "HouseMPRestoration": true,
     "WeaponStats": true,
