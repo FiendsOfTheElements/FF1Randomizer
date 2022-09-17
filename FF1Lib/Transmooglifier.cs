@@ -61,6 +61,7 @@ namespace FF1Lib
 			LoadImages(classes);
 		}
 
+		// Unused, for Guarantee Classes if implemented
 		public List<ClassDef> ShuffleClasses(MT19337 rng, List<ClassDef> classes)
 		{
 			List<ClassDef> ret = CreateClasses();
@@ -73,6 +74,7 @@ namespace FF1Lib
 			return classes.GetRange(0, 6);
 		}
 
+		// Unusued, for Guarantee Classes if implemented
 		public bool ClassesGuaranteed(List<ClassDef> classes)
 		{
 			// Guarantee presence of KNIGHT
@@ -881,6 +883,65 @@ namespace FF1Lib
 			spellFamilies.Add("poison", allMagic.Where(x => x.elem == SpellElement.Poison).ToList()); // 2
 			spellFamilies.Add("earth", allMagic.Where(x => x.elem == SpellElement.Earth).ToList()); // 1
 		}
+
+		public void BalanceVanillaWeaponsForCustomClasses(FF1Rom rom)
+		{
+			// Improve these to be end game weapons
+			Weapon CatClaw = new Weapon((int)Item.CatClaw, rom);
+			CatClaw.Crit += 25;
+			CatClaw.writeWeaponMemory(rom);
+
+			Weapon LightAxe = new Weapon((int)Item.LightAxe, rom);
+			LightAxe.Damage += 24;
+			LightAxe.writeWeaponMemory(rom);
+
+			Weapon Defense = new Weapon((int)Item.Defense, rom);
+			Defense.Damage += 10;
+			Defense.writeWeaponMemory(rom);
+
+			Weapon ThorHammer = new Weapon((int)Item.ThorHammer, rom);
+			ThorHammer.Crit += 35;
+			ThorHammer.ElementalWeakness = (byte)SpellElement.Lightning;
+			ThorHammer.TypeWeakness = 0x06; // Dragons and Giants, as per mythos
+			ThorHammer.writeWeaponMemory(rom);
+
+
+			// Move and Improve these to be end game weapons
+			Weapon BaneSword = new Weapon((int)Item.BaneSword, rom);
+			BaneSword.WeaponTypeSprite = WeaponSprite.SHORTSWORD;
+			BaneSword.TypeWeakness = 0x83; // Mages, Dragons, and Regen - this targets three Fiends and Warmech
+			BaneSword.Damage += 8;
+			BaneSword.writeWeaponMemory(rom);
+
+			Weapon DragonSword = new Weapon((int)Item.DragonSword, rom);
+			DragonSword.WeaponTypeSprite = WeaponSprite.CHUCK;
+			DragonSword.HitBonus = 0;
+			DragonSword.Damage += 10;
+			DragonSword.Crit += 30;
+			DragonSword.writeWeaponMemory(rom);
+
+
+			// Move these to other weapon sets
+			Weapon Katana = new Weapon((int)Item.Katana, rom);
+			Katana.WeaponTypeSprite = WeaponSprite.SCIMITAR;
+			Katana.writeWeaponMemory(rom);
+
+			Weapon IceSword = new Weapon((int)Item.IceSword, rom);
+			IceSword.WeaponTypeSprite = WeaponSprite.SCIMITAR;
+			IceSword.writeWeaponMemory(rom);
+
+			Weapon HealRod = new Weapon((int)Item.HealRod, rom);
+			HealRod.WeaponTypeSprite = WeaponSprite.STAFF;
+			HealRod.writeWeaponMemory(rom);
+
+			Weapon WizardRod = new Weapon((int)Item.WizardRod, rom);
+			WizardRod.WeaponTypeSprite = WeaponSprite.STAFF;
+			WizardRod.writeWeaponMemory(rom);
+
+			Weapon PowerRod = new Weapon((int)Item.PowerRod, rom);
+			PowerRod.WeaponTypeSprite = WeaponSprite.IRONSTAFF;
+			PowerRod.writeWeaponMemory(rom);
+		}
 	}
 
 	public class ClassDef
@@ -1541,8 +1602,8 @@ namespace FF1Lib
 			{
 				rom.ClassData[c].SteelLord = rom.ClassData[c].SteelLord = true;
 				rom.ClassData[c].SteelLord = rom.ClassData[p].SteelLord = true;
-				rom.WeaponPermissions.AddPermission(c, Item.SteelArmor);
-				rom.WeaponPermissions.AddPermission(p, Item.SteelArmor);
+				rom.ArmorPermissions.AddPermission(c, Item.SteelArmor);
+				rom.ArmorPermissions.AddPermission(p, Item.SteelArmor);
 			}
 		}
 
