@@ -55,7 +55,7 @@ namespace FF1Lib
 				classDescriptions.Add(classes[i].PublishToClass(i));
 			}
 
-			// Lazy hack to make coding ArmorPermissions easier, since I base my perms off the pre-existing vanilla class perms and not custom ID tables
+			// Lazy way to make coding ArmorPermissions easier, since I base my perms off the pre-existing vanilla class perms and not custom ID tables
 			rom.ArmorPermissions = ClassDef.newPermissions;
 
 			LoadImages(classes);
@@ -429,7 +429,7 @@ namespace FF1Lib
 			{
 				name = "FENCER",
 				promoName = "ASSASSIN",
-				shortName = "Fr",
+				shortName = "Fn",
 				promoShortName = "As",
 				HP = 18,
 				STR = 40,
