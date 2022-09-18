@@ -1514,6 +1514,9 @@ namespace FF1Lib
 				if (sets.Contains(w.WeaponTypeSprite))
 					rom.WeaponPermissions.AddPermission((Classes)i + 6, w.Id);
 			}
+
+			rom.WeaponPermissions.AddPermission((Classes)i, Item.Masamune);
+			rom.WeaponPermissions.AddPermission((Classes)i+6, Item.Masamune);
 		}
 
 		public List<WeaponSprite> RollWeaponSet()
