@@ -46,6 +46,8 @@ namespace FF1Lib
 			spellFamilies = new Dictionary<string, List<MagicSpell>>();
 			PopulateSpellTypes(rom);
 
+			//GenerateStats(rng);
+
 			List<ClassDef> classes = CreateClasses();
 
 			classes.Shuffle(rng);
@@ -58,7 +60,131 @@ namespace FF1Lib
 			// Lazy way to make coding ArmorPermissions easier, since I base my perms off the pre-existing vanilla class perms and not custom ID tables
 			rom.ArmorPermissions = ClassDef.newPermissions;
 
+			// Defense is a rapier
+			Weapon Defense = new Weapon((int)Item.Defense, rom);
+			Defense.WeaponTypeSprite = WeaponSprite.RAPIER;
+			Defense.writeWeaponMemory(rom);
+
 			LoadImages(classes);
+		}
+
+		void GenerateStats(MT19337 rng)
+		{
+			int[] weapons = new int[12];
+			int unequippableWeaponsTotal = 0;
+
+			int armorClassTotal = 0;
+			int heavyArmorAvailable = 0;
+
+			int timesNoConeriaWeapon = 0;
+			int timesNoConeriaWeaponRandFour = 0;
+
+			int timesUnCastableSpell = 0;
+
+			Dictionary<string, int> spellSchoolCounts = new Dictionary<string, int>();
+
+			for (int l = 0; l < 10000; l++) // 100 000 works but expect it to take a half hour even on a beefcake dev machine
+			{
+
+				// Generate Fresh Classes
+				List<ClassDef> classes = CreateClasses();
+				classes.Shuffle(rng);
+
+				bool heavy = false;
+				for (int i = 0; i < 6; i++)
+				{
+					classDescriptions.Add(classes[i].PublishToClass(i));
+
+					// Find out % of times each category is chosen
+					foreach (WeaponSprite w in classes[i].finalSets)
+					{
+						weapons[Array.IndexOf(Enum.GetValues(w.GetType()), w)]++;
+					}
+
+					// Add armor class
+					armorClassTotal += classes[i].armourWeight;
+
+					if (classes[i].armourWeight >= 3 && !heavy)
+					{
+						heavy = true;
+						heavyArmorAvailable++;
+					}
+
+					// Spell School Counter
+					foreach (string sf in classes[i].finalSchools)
+					{
+						if (spellSchoolCounts.ContainsKey(sf))
+							spellSchoolCounts[sf]++;
+						else
+						{
+							spellSchoolCounts.Add(sf, 0);
+							spellSchoolCounts[sf]++;
+						}
+					}
+
+					foreach (string sf in classes[i].finalPromoSchools)
+					{
+						if (spellSchoolCounts.ContainsKey(sf))
+							spellSchoolCounts[sf]++;
+						else
+						{
+							spellSchoolCounts.Add(sf, 0);
+							spellSchoolCounts[sf]++;
+						}
+					}
+				}
+
+				// How many unequippable weapons
+				foreach (Weapon w in Weapon.LoadAllWeapons(ClassDef.rom, null))
+				{
+					if (ClassDef.rom.WeaponPermissions[w.Id] == 0)
+					{
+						unequippableWeaponsTotal++;
+					}
+				}
+
+				// Find out % of times no equipment is available at Coneria
+
+				// Generate a fresh Coneria Shop
+				List<Item> list = ItemLists.CommonWeaponTier.ToList();
+				list.Shuffle(rng);
+				bool noConeria = true;
+				bool noConeriaRandFour = true;
+				for (int i = 0; i < 4; i++)
+				{
+					if (ClassDef.rom.WeaponPermissions[list[i]] != 0)
+						noConeria = false;
+
+					if (ClassDef.rom.WeaponPermissions[list[i]] <= 0xF) // Cuts out two chars randomly
+						noConeriaRandFour = false;
+				}
+
+				if (noConeria)
+					timesNoConeriaWeapon++;
+
+				if (noConeriaRandFour)
+					timesNoConeriaWeaponRandFour++;
+
+				// How many spells are uncastable
+				foreach (MagicSpell s in ClassDef.rom.GetSpells())
+				{
+					var p = ClassDef.rom.SpellPermissions.PermissionsFor((SpellSlots)s.Slot);
+
+					if (p.Count() == 0)
+						timesUnCastableSpell++;
+				}	
+			}
+
+			
+			Console.WriteLine("Weapon classes: " + string.Join(", ", weapons));
+			Console.WriteLine("Unequippable Weapons Avg: " + (float)(unequippableWeaponsTotal/1000f));
+			Console.WriteLine("Armour Class Avg: " + (float)(armorClassTotal / 1000f / 6f));
+			Console.WriteLine("Times Heavy Armor was Around: " + heavyArmorAvailable);
+			Console.WriteLine("Times No Equippable Weapon in Coneria: " + timesNoConeriaWeapon);
+			Console.WriteLine("Times No Equippable Weapon for four randoms in Coneria: " + timesNoConeriaWeaponRandFour);
+
+			Console.WriteLine("Spell Schools: " + string.Join(", ", spellSchoolCounts));
+			Console.WriteLine("Times No Castable Spell: " + timesUnCastableSpell);
 		}
 
 		// Unused, for Guarantee Classes if implemented
@@ -206,7 +332,7 @@ namespace FF1Lib
 				possibleWeapon = new List<WeaponSprite> { WeaponSprite.STAFF, WeaponSprite.KNIFE },
 				weaponsMax = 2,
 				averageWeapons = 1f,
-				UnarmedAttack = 0.75f,
+				UnarmedAttack = 1f,
 				CatClawMaster = 0.75f,
 			});
 
@@ -228,13 +354,13 @@ namespace FF1Lib
 				mageLevelPromotion = 3,
 				spellChargeGrowth = 60,
 				spellChargeMax = 9,
-				possibleMagic = new List<string> { "black", "white", "elem", "status", "buff", "recovery", "grey" },
-				MagicSchoolsMax = 2,
+				possibleMagic = new List<string> { "black", "white", "grey", "elem", "status", "buff", "recovery" },
+				MagicSchoolsMax = 3,
 				promoMagic = new List<string> { "all" },
-				averageMagicSchools = 3f,
+				averageMagicSchools = 2.5f,
 				armourWeight = MEDIUM,
-				guaranteedWeapon = new List<WeaponSprite> { },
-				possibleWeapon = new List<WeaponSprite> { WeaponSprite.SCIMITAR, WeaponSprite.RAPIER, WeaponSprite.KNIFE, WeaponSprite.SHORTSWORD, WeaponSprite.FALCHION },
+				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.SHORTSWORD },
+				possibleWeapon = new List<WeaponSprite> { WeaponSprite.SCIMITAR, WeaponSprite.RAPIER, WeaponSprite.KNIFE, WeaponSprite.FALCHION },
 				weaponsMax = 5,
 				averageWeapons = 2.5f
 			});
@@ -313,9 +439,9 @@ namespace FF1Lib
 				averageMagicSchools = 0.33f,
 				armourWeight = HEAVY,
 				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.KNIFE, WeaponSprite.SCIMITAR },
-				possibleWeapon = new List<WeaponSprite> { WeaponSprite.RAPIER, WeaponSprite.SHORTSWORD },
-				weaponsMax = 1,
-				averageWeapons = 0.5f,
+				possibleWeapon = new List<WeaponSprite> { WeaponSprite.RAPIER, WeaponSprite.SHORTSWORD, WeaponSprite.CHUCK },
+				weaponsMax = 2,
+				averageWeapons = 1.55f,
 				WoodAdept = 0.2f,
 				SteelLord = 0.2f
 			});
@@ -348,7 +474,7 @@ namespace FF1Lib
 				possibleWeapon = new List<WeaponSprite> { WeaponSprite.STAFF, WeaponSprite.IRONSTAFF },
 				weaponsMax = 2,
 				averageWeapons = 1f,
-				UnarmedAttack = 0.75f,
+				UnarmedAttack = 1f,
 			});
 
 			// Marauder / Viking
@@ -365,9 +491,9 @@ namespace FF1Lib
 				LCK = 15,
 				HIT = 3,
 				MDEF = 2,
-				armourWeight = MEDIUM,
-				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.AXE },
-				possibleWeapon = new List<WeaponSprite> { WeaponSprite.SHORTSWORD, WeaponSprite.LONGSWORD, WeaponSprite.SCIMITAR,
+				armourWeight = HEAVY,
+				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.AXE, WeaponSprite.SHORTSWORD },
+				possibleWeapon = new List<WeaponSprite> { WeaponSprite.LONGSWORD, WeaponSprite.SCIMITAR,
 					WeaponSprite.RAPIER, WeaponSprite.FALCHION, WeaponSprite.HAMMER, WeaponSprite.KNIFE },
 				weaponsMax = 6,
 				averageWeapons = 1f
@@ -388,9 +514,9 @@ namespace FF1Lib
 				HIT = 3,
 				MDEF = 4,
 				armourWeight = KNIGHT,
-				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.LONGSWORD },
+				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.LONGSWORD, WeaponSprite.SHORTSWORD },
 				possibleWeapon = new List<WeaponSprite> { WeaponSprite.AXE, WeaponSprite.SCIMITAR,
-					WeaponSprite.RAPIER, WeaponSprite.FALCHION, WeaponSprite.SHORTSWORD },
+					WeaponSprite.RAPIER, WeaponSprite.FALCHION },
 				weaponsMax = 3,
 				averageWeapons = 3f
 			});
@@ -413,13 +539,13 @@ namespace FF1Lib
 				mageLevelPromotion = 0,
 				spellChargeGrowth = 40,
 				spellChargeMax = 5,
-				possibleMagic = new List<string> { "death" },
+				possibleMagic = new List<string> { "death", "grey" },
 				MagicSchoolsMax = 1,
 				averageMagicSchools = 0.5f,
 				armourWeight = LIGHT,
-				promoArmourWeight = LIGHT,
+				promoArmourWeight = MEDIUM,
 				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.FALCHION, WeaponSprite.SCIMITAR },
-				possibleWeapon = new List<WeaponSprite> { WeaponSprite.RAPIER, WeaponSprite.KNIFE },
+				possibleWeapon = new List<WeaponSprite> { WeaponSprite.AXE, WeaponSprite.RAPIER, WeaponSprite.KNIFE },
 				weaponsMax = 2,
 				averageWeapons = 0.75f
 			});
@@ -471,10 +597,10 @@ namespace FF1Lib
 				armourWeight = LIGHT,
 				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.AXE, WeaponSprite.HAMMER },
 				possibleWeapon = new List<WeaponSprite> { WeaponSprite.SHORTSWORD, WeaponSprite.LONGSWORD, WeaponSprite.SCIMITAR,
-					WeaponSprite.RAPIER, WeaponSprite.FALCHION },
-				weaponsMax = 3,
+					WeaponSprite.RAPIER, WeaponSprite.FALCHION, WeaponSprite.CHUCK },
+				weaponsMax = 4,
 				averageWeapons = 0.75f,
-				UnarmedAttack = 0.33f,
+				UnarmedAttack = 0.6f,
 				ThorMaster = 0.33f
 			});
 
@@ -501,7 +627,7 @@ namespace FF1Lib
 				averageMagicSchools = 1f,
 				armourWeight = LIGHT,
 				promoArmourWeight = LIGHT,
-				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.FALCHION, WeaponSprite.RAPIER, WeaponSprite.KNIFE },
+				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.FALCHION, WeaponSprite.SHORTSWORD, WeaponSprite.KNIFE },
 				WoodAdept = 0.5f
 			});
 
@@ -529,9 +655,9 @@ namespace FF1Lib
 				promoMagic = new List<string> { "life", "ailment", "health", "elem" },
 				armourWeight = HEAVY,
 				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.HAMMER, WeaponSprite.LONGSWORD },
-				possibleWeapon = new List<WeaponSprite> { WeaponSprite.FALCHION, WeaponSprite.AXE },
+				possibleWeapon = new List<WeaponSprite> { WeaponSprite.FALCHION, WeaponSprite.AXE, WeaponSprite.SHORTSWORD },
 				weaponsMax = 2,
-				averageWeapons = 0.75f,
+				averageWeapons = 1f,
 				SteelLord = 0.4f
 			});
 
@@ -560,7 +686,8 @@ namespace FF1Lib
 				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.HAMMER, WeaponSprite.LONGSWORD },
 				possibleWeapon = new List<WeaponSprite> { WeaponSprite.FALCHION, WeaponSprite.AXE },
 				weaponsMax = 2,
-				averageWeapons = 0.75f
+				averageWeapons = 0.75f,
+				UnarmedAttack = 0.25f
 			});
 
 			// Squire / Paladin
@@ -587,9 +714,9 @@ namespace FF1Lib
 				promoMagic = new List<string> { "white", "recovery" },
 				armourWeight = HEAVY,
 				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.HAMMER, WeaponSprite.LONGSWORD },
-				possibleWeapon = new List<WeaponSprite> { WeaponSprite.STAFF, WeaponSprite.IRONSTAFF },
+				possibleWeapon = new List<WeaponSprite> { WeaponSprite.SHORTSWORD, WeaponSprite.STAFF, WeaponSprite.IRONSTAFF },
 				weaponsMax = 2,
-				averageWeapons = 0.75f,
+				averageWeapons = 1f,
 				ThorMaster = 0.2f
 			});
 
@@ -616,10 +743,10 @@ namespace FF1Lib
 				averageMagicSchools = 3f,
 				promoMagic = new List<string> { "elem", "grey", "space", "black", "time" },
 				armourWeight = MEDIUM,
-				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.RAPIER },
-				possibleWeapon = new List<WeaponSprite> { WeaponSprite.LONGSWORD, WeaponSprite.SCIMITAR, WeaponSprite.KNIFE, WeaponSprite.FALCHION, WeaponSprite.SHORTSWORD },
-				weaponsMax = 5,
-				averageWeapons = 3.5f
+				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.RAPIER, WeaponSprite.SHORTSWORD },
+				possibleWeapon = new List<WeaponSprite> { WeaponSprite.LONGSWORD, WeaponSprite.SCIMITAR, WeaponSprite.KNIFE, WeaponSprite.FALCHION },
+				weaponsMax = 4,
+				averageWeapons = 3f
 			});
 
 			// Juggler / Bard
@@ -640,7 +767,7 @@ namespace FF1Lib
 				mageLevelPromotion = 0,
 				spellChargeGrowth = 40,
 				spellChargeMax = 5,
-				possibleMagic = new List<string> { "buff", "status", "time", "space", "health", "recovery", "ailment" },
+				possibleMagic = new List<string> { "buff", "status", "time", "space", "health", "recovery", "poison", "ailment" },
 				MagicSchoolsMax = 3,
 				averageMagicSchools = 3f,
 				armourWeight = CLOTH,
@@ -784,7 +911,7 @@ namespace FF1Lib
 				mageLevelPromotion = 4,
 				spellChargeGrowth = 72,
 				spellChargeMax = 9,
-				possibleMagic = new List<string> { "lit", "ice", "space", "buff" },
+				possibleMagic = new List<string> { "lit", "ice", "space", "buff", "grey" },
 				MagicSchoolsMax = 2,
 				averageMagicSchools = 2.5f,
 				promoMagic = new List<string> { "space", "holy", "buff" },
@@ -822,7 +949,7 @@ namespace FF1Lib
 				armourWeight = CLOTH,
 				promoArmourWeight = KNIGHT,
 				guaranteedWeapon = new List<WeaponSprite> { },
-				possibleWeapon = new List<WeaponSprite> { WeaponSprite.HAMMER, WeaponSprite.LONGSWORD, WeaponSprite.SCIMITAR, WeaponSprite.FALCHION, WeaponSprite.AXE, WeaponSprite.SHORTSWORD, WeaponSprite.KNIFE, WeaponSprite.STAFF, WeaponSprite.IRONSTAFF, WeaponSprite.RAPIER },
+				possibleWeapon = new List<WeaponSprite> { WeaponSprite.AXE, WeaponSprite.SHORTSWORD, WeaponSprite.HAMMER, WeaponSprite.LONGSWORD, WeaponSprite.SCIMITAR, WeaponSprite.FALCHION,  WeaponSprite.KNIFE, WeaponSprite.STAFF, WeaponSprite.IRONSTAFF, WeaponSprite.RAPIER },
 				weaponsMax = 5,
 				averageWeapons = 3f
 			});
@@ -896,6 +1023,7 @@ namespace FF1Lib
 			LightAxe.writeWeaponMemory(rom);
 
 			Weapon Defense = new Weapon((int)Item.Defense, rom);
+			Defense.WeaponTypeSprite = WeaponSprite.RAPIER;
 			Defense.Damage += 10;
 			Defense.writeWeaponMemory(rom);
 
@@ -1289,10 +1417,6 @@ namespace FF1Lib
 
 			rom.ClassData[c].MDefStarting = rom.ClassData[p].MDefStarting = (byte)Rng.Between(rng, 10, 35);
 			rom.ClassData[c].MDefGrowth = rom.ClassData[p].MDefGrowth = (byte)MDEF;
-
-			Console.WriteLine(name + "Starting: " + rom.ClassData[c].HpStarting + ", " + rom.ClassData[c].StrStarting + ", " + rom.ClassData[c].AgiStarting + ", " + rom.ClassData[c].VitStarting + ", " + rom.ClassData[c].LckStarting);
-			Console.WriteLine(name + "Growth: " + rom.ClassData[c].HpGrowth.Where(x => x).Count() + ", " + rom.ClassData[c].StrGrowth.Where(x => x).Count() + ", " + rom.ClassData[c].AgiGrowth.Where(x => x).Count() + ", " + rom.ClassData[c].VitGrowth.Where(x => x).Count() + ", " + rom.ClassData[c].LckGrowth.Where(x => x).Count());
-
 		}
 
 		public void RollStats()
@@ -1300,13 +1424,11 @@ namespace FF1Lib
 			float up = 1.25f;
 			float dwn = 0.75f;
 			int v = 1; // roll modifier for Hit/MDEF
-			Console.WriteLine(name + "Preroll: " + HP + ", " + STR + ", " + AGI + ", " + VIT + ", " + LCK);
 			HP = Math.Clamp(Rng.Between(rng, (int)(HP * dwn), (int)(HP * up)), 0, 100);
 			STR = Math.Clamp(Rng.Between(rng, (int)(STR * dwn), (int)(STR * up)), 0, 100);
 			AGI = Math.Clamp(Rng.Between(rng, (int)(AGI * dwn), (int)(AGI * up)), 0, 100);
 			VIT = Math.Clamp(Rng.Between(rng, (int)(VIT * dwn), (int)(VIT * up)), 0, 100);
 			LCK = Math.Clamp(Rng.Between(rng, (int)(LCK * dwn), (int)(LCK * up)), 0, 100);
-			Console.WriteLine(name + "Postroll: " + HP + ", " + STR + ", " + AGI + ", " + VIT + ", " + LCK);
 
 			HIT = Math.Clamp(Rng.Between(rng, HIT - v, HIT + v), 0, 4);
 			MDEF = Math.Clamp(Rng.Between(rng, MDEF - v, MDEF + v), 0, 4);
