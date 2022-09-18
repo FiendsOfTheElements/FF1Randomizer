@@ -21,6 +21,7 @@
 
 	<h4>Class Randomization</h4>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != true && Flags.RandomizeClassChaos != true)" Id="TransmooglifierCheckBox" @bind-Value="Flags.Transmooglifier">Transmooglifier</TriStateCheckBox>
+	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="MooglieWeaponBalanceCheckBox" @bind-Value="Flags.MooglieWeaponBalance">Balance Weapons for Customs</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != true && Flags.Transmooglifier != true)" Id="RandomizeClassChaosCheckBox" @bind-Value="Flags.RandomizeClassChaos">Chaos Mode</TriStateCheckBox>
 
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClassChaos != true && Flags.Transmooglifier != true)" Id="RandomizeClassCheckBox" @bind-Value="Flags.RandomizeClass">Blursed Classes</TriStateCheckBox>

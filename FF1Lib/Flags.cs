@@ -630,6 +630,7 @@ namespace FF1Lib
 		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 
 		public bool? Transmooglifier { get; set; } = false;
+		public bool? MooglieWeaponBalance { get; set; } = false;
 
 		public bool? LegendaryWeaponShop { get; set; } = false;
 		public bool? LegendaryArmorShop { get; set; } = false;

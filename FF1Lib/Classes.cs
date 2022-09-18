@@ -357,7 +357,7 @@ namespace FF1Lib
 		{
 			// The MEAT
 			Transmooglifier transmooglifier = new Transmooglifier();
-			transmooglifier.Transmooglify(rng, rom);
+			transmooglifier.Transmooglify(flags, rng, rom);
 
 			// Description screen
 			List<string> dataScreen = new List<string>();

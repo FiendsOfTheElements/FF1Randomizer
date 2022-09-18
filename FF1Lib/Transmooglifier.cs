@@ -37,7 +37,7 @@ namespace FF1Lib
 
 		const int lut_MapmanPalettes = 0x8150;
 
-		public void Transmooglify(MT19337 rng, FF1Rom rom)
+		public void Transmooglify(Flags flags, MT19337 rng, FF1Rom rom)
 		{
 			ClassDef.rom = rom;
 			ClassDef.rng = rng;
@@ -45,6 +45,9 @@ namespace FF1Lib
 
 			spellFamilies = new Dictionary<string, List<MagicSpell>>();
 			PopulateSpellTypes(rom);
+
+			if ((bool)flags.MooglieWeaponBalance)
+				BalanceVanillaWeaponsForCustomClasses(rom);
 
 			//GenerateStats(rng);
 

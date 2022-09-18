@@ -4156,6 +4156,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassChaos"));
 			}
 		}
+		public bool? MooglieWeaponBalance
+		{
+			get => Flags.MooglieWeaponBalance;
+			set
+			{
+				Flags.MooglieWeaponBalance = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MooglieWeaponBalance"));
+			}
+		}
 		public bool? Transmooglifier
 		{
 			get => Flags.Transmooglifier;
