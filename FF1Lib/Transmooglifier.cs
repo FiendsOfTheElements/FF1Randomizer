@@ -57,6 +57,9 @@ namespace FF1Lib
 
 			classes.Shuffle(rng);
 
+			if ((bool)flags.GuaranteeCustomClassComposition)
+				classes = ClassesGuaranteed(classes);
+
 			for (int i = 0; i < 6; i++)
 			{
 				classDescriptions.Add(classes[i].PublishToClass(i));
@@ -192,27 +195,33 @@ namespace FF1Lib
 			Console.WriteLine("Times No Castable Spell: " + timesUnCastableSpell);
 		}
 
-		// Unused, for Guarantee Classes if implemented
-		public List<ClassDef> ShuffleClasses(MT19337 rng, List<ClassDef> classes)
-		{
-			List<ClassDef> ret = CreateClasses();
-
-			do
-			{
-				classes.Shuffle(rng);
-			} while (!ClassesGuaranteed(classes.GetRange(0, 6)));
-
-			return classes.GetRange(0, 6);
-		}
-
 		// Unusued, for Guarantee Classes if implemented
-		public bool ClassesGuaranteed(List<ClassDef> classes)
+		public List<ClassDef> ClassesGuaranteed(List<ClassDef> classes)
 		{
-			// Guarantee presence of KNIGHT
-			// Guarantee presence of one of each weapon type
-			// Guarantee presence of every spell...?
+			List<string> Heavies  = new List<string> { "FIGHTER", "RONIN", "MARAUDER", "LANCER", "SOLDIER" };
+			List<string> Lights   = new List<string> { "THIEF", "PIRATE", "FENCER", "HUNTER", "JUGGLER" };
+			List<string> Punchers = new List<string> { "Bl.BELT", "PUGILIST", "BERSERKR", "CHOCOBO" };
+			List<string> Hybrids  = new List<string> { "RedMAGE", "DEFENDER", "M.KNIGHT", "MOOGLE" };
+			List<string> Healers  = new List<string> { "Wh.MAGE", "PRIEST", "SQUIRE", "SCHOLAR" };
+			List<string> Nukers   = new List<string> { "Bl.MAGE", "GEOMANCR", "TimeMAGE", "MAGUS" };
 
-			return true;
+			Heavies.Shuffle(ClassDef.rng);
+			Lights.Shuffle(ClassDef.rng);
+			Punchers.Shuffle(ClassDef.rng);
+			Hybrids.Shuffle(ClassDef.rng);
+			Healers.Shuffle(ClassDef.rng);
+			Nukers.Shuffle(ClassDef.rng);
+
+			var names = new List<string> { Heavies[0], Lights[0], Punchers[0], Hybrids[0], Healers[0], Nukers[0] };
+
+			var outClasses = new List<ClassDef>();
+			foreach (ClassDef c in classes)
+			{
+				if (names.Contains(c.name))
+					outClasses.Add(c);
+			}
+
+			return outClasses;
 		}
 
 		public void LoadImages(List<ClassDef> classes)
