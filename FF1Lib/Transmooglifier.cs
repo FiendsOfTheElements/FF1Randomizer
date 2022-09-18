@@ -47,7 +47,9 @@ namespace FF1Lib
 			PopulateSpellTypes(rom);
 
 			if ((bool)flags.MooglieWeaponBalance)
+			{
 				BalanceVanillaWeaponsForCustomClasses(rom);
+			}
 
 			//GenerateStats(rng);
 
@@ -64,7 +66,7 @@ namespace FF1Lib
 			rom.ArmorPermissions = ClassDef.newPermissions;
 
 			// Defense is a rapier
-			Weapon Defense = new Weapon((int)Item.Defense, rom);
+			Weapon Defense = new Weapon((int)Item.Defense - (int)Item.WoodenNunchucks, rom);
 			Defense.WeaponTypeSprite = WeaponSprite.RAPIER;
 			Defense.writeWeaponMemory(rom);
 
@@ -1017,20 +1019,20 @@ namespace FF1Lib
 		public void BalanceVanillaWeaponsForCustomClasses(FF1Rom rom)
 		{
 			// Improve these to be end game weapons
-			Weapon CatClaw = new Weapon((int)Item.CatClaw, rom);
+			Weapon CatClaw = new Weapon((int)Item.CatClaw-(int)Item.WoodenNunchucks, rom);
 			CatClaw.Crit += 25;
 			CatClaw.writeWeaponMemory(rom);
 
-			Weapon LightAxe = new Weapon((int)Item.LightAxe, rom);
+			Weapon LightAxe = new Weapon((int)Item.LightAxe - (int)Item.WoodenNunchucks, rom);
 			LightAxe.Damage += 24;
 			LightAxe.writeWeaponMemory(rom);
 
-			Weapon Defense = new Weapon((int)Item.Defense, rom);
+			Weapon Defense = new Weapon((int)Item.Defense - (int)Item.WoodenNunchucks, rom);
 			Defense.WeaponTypeSprite = WeaponSprite.RAPIER;
 			Defense.Damage += 10;
 			Defense.writeWeaponMemory(rom);
 
-			Weapon ThorHammer = new Weapon((int)Item.ThorHammer, rom);
+			Weapon ThorHammer = new Weapon((int)Item.ThorHammer - (int)Item.WoodenNunchucks, rom);
 			ThorHammer.Crit += 35;
 			ThorHammer.ElementalWeakness = (byte)SpellElement.Lightning;
 			ThorHammer.TypeWeakness = 0x06; // Dragons and Giants, as per mythos
@@ -1038,38 +1040,41 @@ namespace FF1Lib
 
 
 			// Move and Improve these to be end game weapons
-			Weapon BaneSword = new Weapon((int)Item.BaneSword, rom);
+			Weapon BaneSword = new Weapon((int)Item.BaneSword - (int)Item.WoodenNunchucks, rom);
 			BaneSword.WeaponTypeSprite = WeaponSprite.SHORTSWORD;
 			BaneSword.TypeWeakness = 0x83; // Mages, Dragons, and Regen - this targets three Fiends and Warmech
 			BaneSword.Damage += 8;
 			BaneSword.writeWeaponMemory(rom);
 
-			Weapon DragonSword = new Weapon((int)Item.DragonSword, rom);
+			Weapon DragonSword = new Weapon((int)Item.DragonSword - (int)Item.WoodenNunchucks, rom);
 			DragonSword.WeaponTypeSprite = WeaponSprite.CHUCK;
 			DragonSword.HitBonus = 0;
 			DragonSword.Damage += 10;
 			DragonSword.Crit += 30;
+
+			DragonSword.Name = DragonSword.Name[0..6]+"@N";
+
 			DragonSword.writeWeaponMemory(rom);
 
 
 			// Move these to other weapon sets
-			Weapon Katana = new Weapon((int)Item.Katana, rom);
+			Weapon Katana = new Weapon((int)Item.Katana - (int)Item.WoodenNunchucks, rom);
 			Katana.WeaponTypeSprite = WeaponSprite.SCIMITAR;
 			Katana.writeWeaponMemory(rom);
 
-			Weapon IceSword = new Weapon((int)Item.IceSword, rom);
+			Weapon IceSword = new Weapon((int)Item.IceSword - (int)Item.WoodenNunchucks, rom);
 			IceSword.WeaponTypeSprite = WeaponSprite.SCIMITAR;
 			IceSword.writeWeaponMemory(rom);
 
-			Weapon HealRod = new Weapon((int)Item.HealRod, rom);
+			Weapon HealRod = new Weapon((int)Item.HealRod - (int)Item.WoodenNunchucks, rom);
 			HealRod.WeaponTypeSprite = WeaponSprite.STAFF;
 			HealRod.writeWeaponMemory(rom);
 
-			Weapon WizardRod = new Weapon((int)Item.WizardRod, rom);
+			Weapon WizardRod = new Weapon((int)Item.WizardRod - (int)Item.WoodenNunchucks, rom);
 			WizardRod.WeaponTypeSprite = WeaponSprite.STAFF;
 			WizardRod.writeWeaponMemory(rom);
 
-			Weapon PowerRod = new Weapon((int)Item.PowerRod, rom);
+			Weapon PowerRod = new Weapon((int)Item.PowerRod - (int)Item.WoodenNunchucks, rom);
 			PowerRod.WeaponTypeSprite = WeaponSprite.IRONSTAFF;
 			PowerRod.writeWeaponMemory(rom);
 		}
@@ -1440,10 +1445,41 @@ namespace FF1Lib
 		public List<bool> MakeGrowthTable(int value)
 		{
 			var newvalue = Math.Clamp(value, 0, 49);
-			var growth = Enumerable.Repeat(true, newvalue).ToList();
 
-			growth.AddRange(Enumerable.Repeat(false, 49 - newvalue).ToList());
-			growth.Shuffle(rng);
+			// We're going to weight the level ups towards the start.
+			var sixths = newvalue / 6;
+			var remainder = newvalue % 6;
+
+			// Now we allocate it out in thirds: 3, 2, 1
+
+			// First third gets half of our total stat levels, + remainder. If there's not enough, we pad it with no grows.
+			var growth = Enumerable.Repeat(true, sixths * 3 + remainder).ToList();
+			if (growth.Count < 16) {
+				growth.AddRange(Enumerable.Repeat(false, 16 - sixths * 3 + remainder).ToList());
+				growth.Shuffle(rng);
+			}
+
+			// Second third gets 1/3rd our total stat buffs.
+			var tiertwo = Enumerable.Repeat(true, sixths * 2).ToList();
+			if (tiertwo.Count < 16 - (growth.Count - 16))
+			{
+				tiertwo.AddRange(Enumerable.Repeat(false, 16 - (growth.Count - 16) - sixths * 2).ToList());
+				tiertwo.Shuffle(rng);
+			}
+
+			// Last third gets 1/6th our total stat buffs, but also +1 space because 49 levels
+			var tierthree = Enumerable.Repeat(true, sixths).ToList();
+			if (tierthree.Count < 49 - growth.Count - tiertwo.Count)
+			{
+				tierthree.AddRange(Enumerable.Repeat(false, 49 - growth.Count - tiertwo.Count - sixths).ToList());
+				tierthree.Shuffle(rng);
+			}
+
+			growth.AddRange(tiertwo);
+			growth.AddRange(tierthree);
+
+			if (growth.Count != 49)
+				Console.WriteLine("There are " + growth.Count + " entries in my growth table! " + name);
 
 			return growth;
 		}

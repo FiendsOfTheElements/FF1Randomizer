@@ -1536,7 +1536,7 @@
 		"Id": "MooglieWeaponBalanceCheckBox",
 		"title": "Balance Weapons for Customs",
 		"screenshot": null,
-		"description": "Recategorizes weapons to improve end game weapons that are not Masamune or Katana. Specifically: \n• Dragon Sword: now Dragon Chucks - 29 Dmg, 0 Hit, 30 Crit.\n• Cat Claw: 30 Crit.\n• Light Axe: 50 dmg\n• Thor Hammer: 40 Crit, LIT, DRAGON, GIANT damage\n• Bane: 30 dmg, MAGE, DRAGON, REGEN damage, now a Shortsword\n• Defense: +10 dmg\n• Katana: Now a Scimitar not a Knife\n• Ice Sword: Now a Scimitar not a Longsword."
+		"description": "Recategorizes weapons to improve end game weapons that are not Masamune or Katana. Specifically: \n• Dragon Sword: now Dragon Chucks - 29 Dmg, 0 Hit, 30 Crit.\n• Cat Claw: 30 Crit.\n• Light Axe: 50 dmg\n• Thor Hammer: 40 Crit, LIT, DRAGON, GIANT damage\n• Bane: 30 dmg, MAGE, DRAGON, REGEN damage, now a Shortsword\n• Defense: +10 dmg\n• Katana: Now a Scimitar not a Knife\n• Ice Sword: Now a Scimitar not a Longsword.\n\nDoes not work with Weaponizer"
 	},
 	{
 		"Id": "RandomizeClassIncludeNaturalResistCheckBox",
