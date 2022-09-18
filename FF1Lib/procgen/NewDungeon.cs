@@ -143,6 +143,15 @@ namespace FF1Lib.Procgen
 			    new MapGenerationStep("SanityCheck", new object[] { }),
 			};
 			break;
+		    case MapId.EarthCaveB2:
+			mapGenSteps = new () {
+			    new MapGenerationStep("CollectInfo", new object[] { }),
+			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
+			    new MapGenerationStep("SetEntrance", new object[] { 0x0A, 0x09 }),
+			    new MapGenerationStep("EarthB2Style", new object[] { }),
+			    //new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
+			};
+			break;
 		    default:
 			return new CompleteMap { Map = maps[(int)mapId] };
 		}

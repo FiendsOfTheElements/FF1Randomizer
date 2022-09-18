@@ -28,6 +28,12 @@ namespace FF1Lib.Procgen
         public const byte CAVE_ROCK = 0x3E;
         public const byte CAVE_ROOM_LOWER_WALL = 0x30;
 
+        public const byte CAVE_WALL_N = 0x30;
+        public const byte CAVE_WALL_W = 0x32;
+        public const byte CAVE_WALL_E = 0x33;
+        public const byte CAVE_WALL_NW = 0x34;
+        public const byte CAVE_WALL_NE = 0x35;
+
 	public const byte CAVE_EARTH_B1_ENTRANCE = 0x18;
 	public const byte CAVE_EARTH_B1_EXIT = 0x24;
 
@@ -46,6 +52,7 @@ namespace FF1Lib.Procgen
 	public PgTileFilter cave_room_walls;
 	public PgTileFilter cave_room_walls2;
 	public PgTileFilter cave_corners;
+	public PgTileFilter earth_cave_walls;
 
 	public DungeonTiles() {
 
@@ -204,6 +211,41 @@ namespace FF1Lib.Procgen
 			CAVE_FLOOR),
 
 		}, allTiles, null, null);
+
+	    this.earth_cave_walls = new PgTileFilter(
+		new Rule[] {
+		    new Rule(new byte[3,3] {
+			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
+			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
+			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, CAVE_FLOOR}},
+			CAVE_WALL_NW),
+		    new Rule(new byte[3,3] {
+			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
+			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
+			{DungeonTiles.CAVE_FLOOR, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK}},
+			CAVE_WALL_NE),
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
+			{STAR, DungeonTiles.CAVE_FLOOR, STAR}},
+			CAVE_WALL_N),
+		    new Rule(new byte[3,3] {
+			{STAR, DungeonTiles.CAVE_FLOOR, STAR},
+			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_N),
+		    new Rule(new byte[3,3] {
+			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, STAR},
+			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR},
+			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, STAR}},
+			CAVE_WALL_W),
+		    new Rule(new byte[3,3] {
+			{STAR, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
+			{DungeonTiles.CAVE_FLOOR, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
+			{STAR, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK}},
+			CAVE_WALL_E),
+		}, allTiles, null, null);
+
 	}
     }
 }

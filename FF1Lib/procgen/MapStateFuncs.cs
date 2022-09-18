@@ -101,12 +101,20 @@ namespace FF1Lib.Procgen
 	    return new List<SCCoords>(points);
 	}
 
+	public static List<SCCoords> BoxPoints(SCCoords cp, int w, int h) {
+	    List<SCCoords> coords = new List<SCCoords>();
+	    for (int i = cp.X; i < cp.X + w; ++ i) {
+		for (int j = cp.Y; j < cp.Y + h; ++j) {
+		    coords.Add(new SCCoords(i, j));
+		}
+	    }
+	    return coords;
+	}
+
 	public bool CheckClear(int x, int y, int w, int h, byte clearTile) {
 	    bool clear = true;
-	    for (int i = x; i < x + w && clear; ++ i)
-	    {
-		for (int j = y; j < y + h && clear; ++j)
-		{
+	    for (int i = x; i < x + w && clear; ++ i) {
+		for (int j = y; j < y + h && clear; ++j) {
 		    if (this.Tilemap[j, i] != clearTile) {
 			clear = false;
 			break;
@@ -128,8 +136,72 @@ namespace FF1Lib.Procgen
 	    return pts;
 	}
 
+	SCCoords Adj(SCCoords p, Direction d) {
+	    switch (d) {
+		case Direction.Up:
+		    return p.SmUp;
+		case Direction.Right:
+		    return p.SmRight;
+		case Direction.Down:
+		    return p.SmDown;
+		case Direction.Left:
+		    return p.SmLeft;
+		default:
+		    return p;
+	    }
+	}
+
+	public bool MakeBox(SCCoords c, Direction direction, (int n, int x) major, (int n, int x) minor,
+				      out int x, out int y, out int w, out int h)
+	{
+	    var majN = this.rng.Between(major.n, major.x);
+	    var minN = this.rng.Between(minor.n, minor.x);
+
+	    x = 0;
+	    y = 0;
+	    w = 0;
+	    h = 0;
+	    switch (direction) {
+		case Direction.Up:
+		    w = minN;
+		    h = -majN;
+		    x = c.X-(w/2);
+		    y = c.Y;
+		    break;
+		case Direction.Right:
+		    w = majN;
+		    h = minN;
+		    x = c.X+1;
+		    y = c.Y-(h/2);
+		    break;
+		case Direction.Down:
+		    w = minN;
+		    h = majN;
+		    x = c.X-(w/2);
+		    y = c.Y+1;
+		    break;
+		case Direction.Left:
+		    w = -majN;
+		    h = minN;
+		    x = c.X;
+		    y = c.Y-(h/2);
+		    break;
+	    }
+
+	    if (h < 0) { y += h; h = -h; }
+	    if (w < 0) { x += w; w = -w; }
+
+	    if (x < 1 || y < 1 || (x+w)>(MAPSIZE-1) || (y+h)>(MAPSIZE-1)) {
+		return false;
+	    }
+	    return true;
+	}
+
 	public List<SCCoords> AddBox(List<SCCoords> candidates, Direction direction, (int n, int x) major, (int n, int x) minor,
-				      byte emptyTile, byte roomTile, bool endOnly) {
+				     byte emptyTile, byte roomTile, bool endOnly, out SCCoords topLeft, out int _w, out int _h) {
+	    topLeft = new SCCoords(0, 0);
+	    _w = 0;
+	    _h = 0;
 	    if (candidates == null || candidates.Count == 0) {
 		return null;
 	    }
@@ -139,49 +211,22 @@ namespace FF1Lib.Procgen
 	    var minN = this.rng.Between(minor.n, minor.x);
 
 	    foreach (var c in candidates) {
-		int x = 0, y = 0, w = 0, h = 0;
-		switch (direction) {
-		    case Direction.Up:
-			w = minN;
-			h = -majN;
-			x = c.X-(w/2);
-			y = c.Y;
-			break;
-		    case Direction.Right:
-			w = majN;
-			h = minN;
-			x = c.X+1;
-			y = c.Y-(h/2);
-			break;
-		    case Direction.Down:
-			w = minN;
-			h = majN;
-			x = c.X-(w/2);
-			y = c.Y+1;
-			break;
-		    case Direction.Left:
-			w = -majN;
-			h = minN;
-			x = c.X;
-			y = c.Y-(h/2);
-			break;
-		}
-
-		if (h < 0) { y += h; h = -h; }
-		if (w < 0) { x += w; w = -w; }
-
-		if (x < 1 || y < 1 || (x+w)>(MAPSIZE-1) || (y+h)>(MAPSIZE-1)) {
+		int x, y, w, h;
+		if (!this.MakeBox(c, direction, (majN, majN), (minN, minN), out x, out y, out w, out h)) {
 		    continue;
 		}
 
-		if (!this.CheckClear(x, y, w, h, emptyTile)) {
+		if (emptyTile != 0xff && !this.CheckClear(x, y, w, h, emptyTile)) {
 		    continue;
 		}
 
 		this.OwnTilemap();
 		this.Tilemap.Fill((x,y), (w, h), roomTile);
 
-		var pts = InnerEdge(new SCCoords(x, y), w, h);
+		topLeft = new SCCoords(x, y);
+		_w = w;
+		_h = h;
+		var pts = InnerEdge(topLeft, w, h);
 
 		if (!endOnly) {
 		    return pts;
@@ -235,8 +280,10 @@ namespace FF1Lib.Procgen
 	}
 
 	public async Task<MapResult> EarthB1Style() {
+	    SCCoords _topLeft;
+	    int _w, _h;
 	    var start = this.AddBox(new List<SCCoords> { new SCCoords(this.Entrance.X, this.Entrance.Y-3) }, Direction.Down, (5, 5), (5, 5),
-				     DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR, false);
+				    DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR, false, out _topLeft, out _w, out _h);
 
 	    var ls = new List<List<SCCoords>>();
 	    ls.Add(start);
@@ -257,7 +304,8 @@ namespace FF1Lib.Procgen
 	    for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < ld.Count; j++) {
 		    var ret = this.AddBox(ls[j], ld[j], (4, 12), (1, 2),
-					   DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR, true);
+					  DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR, true,
+					  out _topLeft, out _w, out _h);
 		    if (ret != null) { ls[j] = ret; }
 
 		    Direction dir;
@@ -272,7 +320,8 @@ namespace FF1Lib.Procgen
 	    for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < ld.Count; j++) {
 		    var ret = this.AddBox(ls[j], ld[j], (8, 12), (8, 12),
-					   DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR, false);
+					  DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR, false,
+					  out _topLeft, out _w, out _h);
 		    if (ret != null) {
 			ls[j].Clear();
 			treasureRooms++;
@@ -296,6 +345,114 @@ namespace FF1Lib.Procgen
 	    return await this.NextStep();
 	}
 
+	class EarthB2Room {
+	    public List<SCCoords> points;
+	    public SCCoords topLeft;
+	    public int w, h;
+	}
+
+	public async Task<MapResult> EarthB2Style() {
+	    this.OwnTilemap();
+
+	    var startroom = new EarthB2Room();
+
+	    this.AddBox(new List<SCCoords> { new SCCoords(this.Entrance.X, this.Entrance.Y-3) }, Direction.Down, (5, 5), (5, 5),
+			DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR, false, out startroom.topLeft, out startroom.w, out startroom.h);
+
+	    startroom.points = BoxPoints(startroom.topLeft, startroom.w, startroom.h);
+
+	    var rooms = new List<EarthB2Room> { startroom };
+
+	    for (int i = 0; i < 1; i++) {
+		int roomIndex = this.rng.Between(0, rooms.Count-1);
+		var room = rooms[roomIndex];
+		//var key = allPoints.Keys.ToList().PickRandom(this.rng);
+		//var room = allPoints[key];
+
+		var candidates = room.points;
+		var prevTopLeft = room.topLeft;
+		var prevW = room.w;
+		var prevH = room.h;
+
+		//int exits = this.rng.Between(1, 2);
+		int exits = 1;
+
+		for (int j = 0; j < exits; j++) {
+
+		    var pt = candidates.PickRandom(this.rng);
+		    var dir = (Direction)this.rng.Between(0, 3);
+
+		    int x, y, w, h;
+		    var valid = true;
+
+		    valid = this.MakeBox(pt, dir, (3, 15), (3, 15), out x, out y, out w, out h);
+
+		    if (!valid) {
+			continue;
+		    }
+
+		    if (x <= (prevTopLeft.X+1) &&
+			x+w >= (prevTopLeft.X+prevW-2) &&
+			y >= prevTopLeft.Y &&
+			y+h < prevTopLeft.Y+prevH)
+		    {
+			// splits room in half, reject
+			continue;
+		    }
+
+		    if (y <= (prevTopLeft.Y+1) &&
+			y+h >= (prevTopLeft.Y+prevH-2) &&
+			x >= prevTopLeft.X &&
+			x+w < prevTopLeft.X+prevW)
+		    {
+			// splits room in half, reject
+			continue;
+		    }
+
+		    var topLeft = new SCCoords(x, y);
+		    var boxpoints = BoxPoints(topLeft, w, h);
+
+		    valid = true;
+		    foreach (var p in boxpoints) {
+			if (this.Tilemap[p.Y, p.X] != DungeonTiles.CAVE_BLANK && !candidates.Contains(p)) {
+			    valid = false;
+			    break;
+			}
+		    }
+
+		    if (!valid) {
+			continue;
+		    }
+
+		    //var clear = InnerEdge(topLeft, w, h);
+		    var clear = OuterEdge(prevTopLeft, prevW, prevH);
+
+		    foreach (var p in boxpoints) {
+			this.Tilemap[p.Y, p.X] = DungeonTiles.CAVE_FLOOR;
+		    }
+
+		    foreach (var p in clear) {
+			if (boxpoints.Contains(p)) {
+			    this.Tilemap[p.Y, p.X] = DungeonTiles.CAVE_BLANK;
+			}
+		    }
+
+		    var hall = Adj(pt, dir);
+		    this.Tilemap[hall.Y, hall.X] = 0x13;
+		    //this.Tilemap[hall.Y, hall.X] = DungeonTiles.CAVE_FLOOR;
+		    //this.Tilemap[pt.Y, pt.X] = DungeonTiles.CAVE_FLOOR;
+
+		    //var sp = this.ShortestPath(this.Entrance, hall, new List<byte> {DungeonTiles.CAVE_BLANK} );
+
+		    rooms.RemoveAt(roomIndex);
+
+		    rooms.Add(new EarthB2Room { points = boxpoints, topLeft = topLeft, w = w, h = h });
+		}
+	    }
+
+	    return await this.NextStep();
+	}
+
 	public async Task<MapResult> PlaceTreasureRooms() {
 	    var tasks = new List<MapGenerationTask>();
 	    tasks.Add(() => new MapState(this).PlaceTreasureRoom(this.roomCount));
@@ -306,10 +463,14 @@ namespace FF1Lib.Procgen
 	public async Task<MapResult> PlaceTreasureRoom(int numRooms) {
 	    var cand = this.Candidates(new List<byte> {DungeonTiles.CAVE_FLOOR});
 
+	    SCCoords _topLeft;
+	    int _w, _h;
+
 	    for (int j = 0; j < numRooms; j++) {
 		List<SCCoords> border = null;
 		for (int i = 0; i < 6 && border == null; i++) {
-		    border = AddBox(cand, Direction.Down, (8, 12), (8, 12), DungeonTiles.CAVE_FLOOR, DungeonTiles.CAVE_ROOM_FLOOR, false);
+		    border = AddBox(cand, Direction.Down, (8, 12), (8, 12), DungeonTiles.CAVE_FLOOR, DungeonTiles.CAVE_ROOM_FLOOR, false,
+		    out _topLeft, out _w, out _h);
 		}
 
 		if (border == null) {
@@ -543,7 +704,7 @@ namespace FF1Lib.Procgen
 	}
 
 
-	public List<SCCoords> ShortestPath(SCCoords start, SCCoords end) {
+	public List<SCCoords> ShortestPath(SCCoords start, SCCoords end, List<byte> nonWalkable=null) {
 	    PriorityQueue<List<SCCoords>, double> working = new();
 	    HashSet<SCCoords> visited = new ();
 
@@ -559,9 +720,12 @@ namespace FF1Lib.Procgen
 
 		    foreach (var nextPos in new SCCoords[] { pos.SmUp, pos.SmRight, pos.SmDown, pos.SmLeft }) {
 			if (visited.Contains(nextPos)) {
+			    //Console.WriteLine($"visited already {nextPos}");
 			    continue;
 			}
+			visited.Add(nextPos);
 			var t = this.Tilemap[nextPos.Y, nextPos.X];
+			if (nonWalkable != null && nonWalkable.Contains(t)) { continue; }
 			if ((this.tileSet.TileProperties[t].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0 ||
 			    (this.tileSet.TileProperties[t].TilePropFunc & TilePropFunc.TP_SPEC_DOOR) == TilePropFunc.TP_SPEC_DOOR ||
 			    (this.tileSet.TileProperties[t].TilePropFunc & TilePropFunc.TP_SPEC_CLOSEROOM) == TilePropFunc.TP_SPEC_CLOSEROOM)
@@ -569,7 +733,7 @@ namespace FF1Lib.Procgen
 			    var nextPath = new List<SCCoords>(path);
 			    nextPath.Add(nextPos);
 			    working.Enqueue(nextPath, nextPos.Dist(end));
-			    visited.Add(nextPos);
+			    //Console.WriteLine($"enqueuing on {nextPos}");
 			}
 		    }
 		}
