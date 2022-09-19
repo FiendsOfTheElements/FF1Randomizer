@@ -93,7 +93,7 @@
     "MaxLevelLow": 50,
     "MaxLevelHigh": 50,
     "Spoilers": false,
-    "TournamentSafe": false,
+    "TournamentSafe": true,
     "BlindSeed": false,
     "Shops": true,
     "Treasures": true,
