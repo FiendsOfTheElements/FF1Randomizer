@@ -1,0 +1,74 @@
+﻿@using System.ComponentModel;
+@using System.IO;
+@using System.Web;
+@using RomUtilities;
+@using FF1Lib;
+@using System.Text.Json;
+@using BlazorStrap
+@using Microsoft.AspNetCore.Components.Web
+@inject IJSRuntime JSRuntime
+
+
+@page "/RomInfo"
+
+<div class="content px-4 tinted">
+	<div class="nes-container is-dark col-xs-12">
+		<input type="file" id="fileInput" accept=".nes" @onchange="@OnFileChanged" />
+		<br/>
+		@RomMessage
+
+		<p>
+			<textarea rows="50" cols="100">
+				@RomText
+			</textarea>
+		</p>
+	</div>
+</div>
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string> SetStatusMessage { get; set; }
+	[Parameter] public string StatusMessage { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+	[Parameter] public bool showChaos { get; set; }
+
+	private string RomText = "";
+	private string RomMessage = "";
+	private byte[] _fileData;
+
+	async Task OnFileChanged(ChangeEventArgs e)
+	{
+		var encoded = await JSRuntime.InvokeAsync<string>("handleFileSelect", "fileInput");
+		SetFileData(encoded);
+	}
+
+	void SetFileData(string encoded)
+	{
+		_fileData = Convert.FromBase64String(encoded);
+		using (var stream = new MemoryStream(_fileData))
+		{
+			FF1Rom temprom = new FF1Rom(stream);
+			if (temprom.HeaderLength != 16)
+			{
+				RomMessage = "ROM header length is incorrect, try a different ROM";
+				return;
+			}
+			try
+			{
+				RomText = temprom.RomInfo();
+				RomMessage = "Rom Info Loaded";
+
+				StateHasChanged();
+			}
+			catch (FF1Lib.FF1Rom.TournamentSafeException)
+			{
+				RomMessage = "Detected ROM hash does not match the expected hash.\nResults may vary.";
+			}
+		}
+	}
+
+	
+
+
+	}
