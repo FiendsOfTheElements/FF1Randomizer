@@ -427,10 +427,10 @@ namespace FF1Lib
 			// Icons have a 0x10 Control code indicating the next byte is pulled from the 0x00-0x7F tile reference instead of the 0x80-0xFF like regular fonts
 
 			// Control Code 0x10 Blobs
-			rom.PutInBank(0x1E, 0x8600, Blob.FromHex("C98090174980AE0220A6558E0620A6548E06208D0720E6544C4EE0AAA98448A9F348A90E4C03FE")); // Parse and draw the control code
+			rom.PutInBank(0x1E, 0x8680, Blob.FromHex("C98090174980AE0220A6558E0620A6548E06208D0720E6544C4EE0AAA98448A9F348A90E4C03FE")); // Parse and draw the control code
 
 			rom.PutInBank(0x0E, 0x84F4, Blob.FromHex("8A20708D203EDE4C4EE0")); // Setup for print char stat?
-			rom.PutInBank(0x1F, 0xDF2D, Blob.FromHex("A91E2003FE8A4C0086")); // Swap and jump to our code in bank 1E
+			rom.PutInBank(0x1F, 0xDF2D, Blob.FromHex("A91E2003FE8A4C8086")); // Swap and jump to our code in bank 1E
 
 
 			//	New image blobs are imported into Bank 12, 0x8800. There is 0x800 of space but we can only use 0x600. as the last 0x200 is reserved for orbs.
