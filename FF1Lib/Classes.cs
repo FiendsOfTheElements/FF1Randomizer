@@ -691,9 +691,7 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.MDefMod, "-10 MDef", mod: -10),
 				new BonusMalus(BonusMalusAction.HitGrowth, "-1 Hit%/Lv", mod: -1),
 				new BonusMalus(BonusMalusAction.MDefGrowth, "-1 MDef/Lv", mod: -1),
-				new BonusMalus(BonusMalusAction.ArmorRemove, "No " + olditemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "No @B", equipment: braceletList),
-				new BonusMalus(BonusMalusAction.WeaponRemove, "No " + olditemnames[(int)Item.Masamune], equipment: new List<Item> { Item.Masamune }),
 				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief @S", equipment: equipThiefWeapon, Classes: new List<Classes> { Classes.Fighter, Classes.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcMax, "-4 Max MP", mod: -4, Classes: new List<Classes> {  Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
 				//new BonusMalus(BonusMalusAction.Sick, "Sick"), these were too powerful for man
@@ -740,6 +738,15 @@ namespace FF1Lib
 			// These are so much starting gold that bonuses for it no longer make sense
 			//else if (flags.StartingGold == StartingGold.Gp65535 || flags.StartingGold == StartingGold.RandomHigh)
 
+			if (!(bool)flags.NoMasamune)
+			{
+				malusNormal.Add(new BonusMalus(BonusMalusAction.WeaponRemove, "No " + olditemnames[(int)Item.Masamune], equipment: new List<Item> { Item.Masamune }));
+			}
+
+			if (flags.RibbonMode == RibbonMode.Vanilla)
+			{
+				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorRemove, "No " + olditemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }));
+			}
 
 			// Do not add Promo-based blursings if there is no ability to promote
 			if (!((bool)flags.NoTail && !(bool)flags.FightBahamut))
