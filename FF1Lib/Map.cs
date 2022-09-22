@@ -402,7 +402,7 @@ namespace FF1Lib
 		}
 	}
 
-	public enum Direction
+	public enum Direction : int
 	{
 		Up = 0,
 		Down,

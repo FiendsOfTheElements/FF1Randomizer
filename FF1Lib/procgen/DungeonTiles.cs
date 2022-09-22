@@ -362,6 +362,12 @@ namespace FF1Lib.Procgen
 			CAVE_WALL_NE),
 
 		    new Rule(new byte[3,3] {
+			{STAR, CAVE_WALL_E, STAR},
+			{STAR, CAVE_WALL_N,  STAR},
+			{STAR, CAVE_WALL_E, STAR}},
+			CAVE_WALL_E),
+
+		    new Rule(new byte[3,3] {
 			{STAR, STAR, STAR},
 			{STAR, CAVE_WALL_N,  STAR},
 			{STAR, CAVE_WALL_E, STAR}},
@@ -421,6 +427,24 @@ namespace FF1Lib.Procgen
 			{STAR,        CAVE_WALL_N, STAR}},
 			CAVE_WALL_NE),
 
+
+		    new Rule(new byte[3,3] {
+			{STAR,        CAVE_WALL_E, STAR},
+			{CAVE_FLOOR,  CAVE_WALL_N, CAVE_FLOOR},
+			{STAR,        CAVE_WALL_N, STAR}},
+			CAVE_WALL_E),
+
+		    new Rule(new byte[3,3] {
+			{STAR,        CAVE_WALL_W, STAR},
+			{CAVE_FLOOR,  CAVE_WALL_N, CAVE_FLOOR},
+			{STAR,        CAVE_WALL_N, STAR}},
+			CAVE_WALL_W),
+
+		    new Rule(new byte[3,3] {
+			{CAVE_FLOOR,   CAVE_FLOOR, CAVE_FLOOR},
+			{CAVE_FLOOR,  CAVE_WALL_N, CAVE_FLOOR},
+			{STAR,        CAVE_WALL_N, STAR}},
+			CAVE_WALL_W),
 
 		}, allTiles, null, null);
 

@@ -1,5 +1,6 @@
 using FF1Lib.Sanity;
 using MapGenerationTask = FF1Lib.Procgen.ProgenFramework.GenerationTaskType<FF1Lib.Procgen.MapResult>;
+using Direction = FF1Lib.Direction;
 
 namespace FF1Lib.Procgen
 {
@@ -21,13 +22,6 @@ namespace FF1Lib.Procgen
 	    this.RenderFeature(new SCCoords(5, 5), DungeonTiles.BLACK_MAGIC_SHOP.Tiles);
 	    return await this.NextStep();
 	}
-
-	public enum Direction : int {
-	    Up = 0,
-	    Right = 1,
-	    Left = 2,
-	    Down = 3
-	};
 
 	public static List<SCCoords> InnerEdge(SCCoords cp, int w, int h) {
 	    HashSet<SCCoords> points = new ();
@@ -250,7 +244,7 @@ namespace FF1Lib.Procgen
 	}
 
 	public bool CornerBox(List<SCCoords> candidates, Quadrants q, (int n, int x) wrange, (int n, int x) hrange,
-					List<SCCoords> coverable, byte emptyTile, byte roomTile, out SCCoords topLeft, out int w, out int h) {
+					List<SCCoords> coverable, byte emptyTile, out SCCoords topLeft, out int w, out int h) {
 	    candidates.Shuffle(this.rng);
 
 	    w = this.rng.Between(wrange.n, wrange.x);
@@ -279,13 +273,11 @@ namespace FF1Lib.Procgen
 		    continue;
 		}
 
-		if (topLeft.X == 0 || topLeft.Y == 0 || (topLeft.X + w) > MAPSIZE || (topLeft.Y + h) > MAPSIZE) continue;
+		if (topLeft.X == 0 || topLeft.Y == 0 || (topLeft.X + w) >= MAPSIZE || (topLeft.Y + h) >= MAPSIZE) continue;
 
 		if (!this.CheckClear(topLeft.X, topLeft.Y, w, h, emptyTile, coverable)) {
 		    continue;
 		}
-
-		this.Tilemap.Fill((topLeft.X, topLeft.Y), (w, h), roomTile);
 
 		return true;
 	    }
@@ -425,65 +417,66 @@ namespace FF1Lib.Procgen
 	    public int w, h;
 	}
 
-	/*
-	public void ConnectRegions(SCCoords start) {
-
-	    int regionId = 1;
+	public void ConnectRegions() {
 
 	    var regions = new byte[MAPSIZE,MAPSIZE];
 
-	    while (true) {
-		HashSet<SCCoords> visited = new();
+	    var regionList = new List<SCCoords>();
 
-		var working_list = new Stack<SCCoords>();
+	    regionList.Add(new SCCoords(0, 0));
 
-		points.Push(start);
+	    for (int y = 0; y < MAPSIZE; y++) {
+		for (int x = 0; x < MAPSIZE; x++) {
+		    if (regions[y,x] > 0) continue;
+		    if (this.Tilemap[y,x] != DungeonTiles.CAVE_FLOOR) continue;
 
-		List<Tuple<SCCoords, Direction>> hops = new List();
-
-		while (points.Count > 0) {
-		    var next = points.Pop();
-
-		    if (visited.Contains(next)) continue;
-
-		    regions[next.Y, next.X] = regionId;
-
-		    visited.Add(next);
-
-		    if (next.SmUp == DungeonTiles.CAVE_BLANK && next.SmUp.SmUp == DungeonTiles.CAVE_FLOOR) {
-			hops.Add(new Tuple<SCCoords, Direction>(next, Direction.Up));
-		    }
-		    if (next.SmRight == DungeonTiles.CAVE_BLANK && next.SmRight.SmRight == DungeonTiles.CAVE_FLOOR) {
-			hops.Add(new Tuple<SCCoords, SCCoords>(next, Direction.Right));
-		    }
-		    if (next.SmDown == DungeonTiles.CAVE_BLANK && next.SmDown.SmDown == DungeonTiles.CAVE_FLOOR) {
-			hops.Add(new Tuple<SCCoords, SCCoords>(next, Direction.Down));
-		    }
-		    if (next.SmLeft == DungeonTiles.CAVE_BLANK && next.SmLeft.SmLeft == DungeonTiles.CAVE_FLOOR) {
-			hops.Add(new Tuple<SCCoords, SCCoords>(next, Direction.Left));
-		    }
-
-		    if (next.SmUp == DungeonTiles.CAVE_FLOOR && !visited.Contains(next.SmUp)) {
-			points.Push(next.SmUp);
-		    }
-		    if (next.SmRight == DungeonTiles.CAVE_FLOOR && !visited.Contains(next.SmRight)) {
-			points.Push(next.SmRight);
-		    }
-		    if (next.SmDown == DungeonTiles.CAVE_FLOOR && !visited.Contains(next.SmDown)) {
-			points.Push(next.SmDown);
-		    }
-		    if (next.SmLeft == DungeonTiles.CAVE_FLOOR && !visited.Contains(next.SmLeft)) {
-			points.Push(next.SmLeft);
-		    }
+		    regionList.Add(new SCCoords(x, y));
+		    int currentRegion = regionList.Count-1;
+		    this.Tilemap.Flood((x, y), (MapElement me) => {
+			if (me.Value == DungeonTiles.CAVE_FLOOR) {
+			    regions[me.Y, me.X] = (byte)currentRegion;
+			    return true;
+			}
+			return false;
+		    });
 		}
+	    }
 
-		foreach (var h in hops) {
-		    Console.WriteLine($"{h}");
+	    var dirs = new Direction[] { Direction.Up, Direction.Right, Direction.Down, Direction.Left };
+
+	    foreach (var r in regionList) {
+		var thisRegion = regions[r.Y, r.X];
+		if (thisRegion == 0) continue;
+
+		Dictionary<int, List<SCCoords>> hops = new();
+
+		this.Tilemap.Flood((r.X, r.Y), (MapElement me) => {
+		    if (regions[me.Y, me.X] == thisRegion) {
+			foreach (var d in dirs) {
+			    var n = me.Neighbor(d);
+			    if (n.Value == DungeonTiles.CAVE_BLANK) {
+				var nn = me.Neighbor(d).Neighbor(d);
+				var neighborReg = regions[nn.Y, nn.X];
+				if (neighborReg > thisRegion) {
+				    if (!hops.ContainsKey(neighborReg)) {
+					hops[neighborReg] = new List<SCCoords>();
+				    }
+				    hops[neighborReg].Add(new SCCoords(n.X, n.Y));
+				}
+			    }
+			}
+			return true;
+		    }
+		    return false;
+		});
+
+		Console.WriteLine($"{hops.Keys}");
+		foreach (var h in hops.Keys.ToList()) {
+		    var p = hops[h].PickRandom(this.rng);
+		    this.Tilemap[p.Y, p.X] = DungeonTiles.CAVE_FLOOR;
 		}
-		break;
 	    }
 	}
-	*/
 
 	public async Task<MapResult> EarthB2Style() {
 	    this.OwnTilemap();
@@ -497,8 +490,10 @@ namespace FF1Lib.Procgen
 
 	    var rooms = new List<EarthB2Room> { startroom };
 
-	    for (int i = 0; i < 200; i++) {
-		int roomIndex = this.rng.Between(rooms.Count/2, rooms.Count-1);
+	    int roomTotal = this.rng.Between(35, 40);
+	    int i;
+	    for (i = 0; rooms.Count < roomTotal && i < 200; i++) {
+		int roomIndex = this.rng.Between(Math.Max(rooms.Count-6, 0), rooms.Count-1);
 		//int roomIndex = this.rng.Between(0, rooms.Count-1);
 		var room = rooms[roomIndex];
 		var quad = (Quadrants)this.rng.Between(0, 3);
@@ -510,15 +505,31 @@ namespace FF1Lib.Procgen
 		SCCoords topLeft;
 		int w, h;
 
-		bool valid = CornerBox(candidates, quad, (3, 6), (3, 6), candidates, DungeonTiles.CAVE_BLANK,
-				       DungeonTiles.CAVE_FLOOR, out topLeft, out w, out h);
+		bool valid;
+
+		valid = CornerBox(candidates, quad, (4, 6), (4, 6), candidates, DungeonTiles.CAVE_BLANK, out topLeft, out w, out h);
 
 		if (!valid) {
 		    continue;
 		}
 
 		var boxpoints = BoxPoints(topLeft, w, h);
+		var oldRoomBoxpoints = BoxPoints(room.topLeft, room.w, room.h);
 		var clear = OuterEdge(room.topLeft, room.w, room.h);
+		var newRoomEdge = OuterEdge(topLeft, w, h);
+
+		foreach (var c in newRoomEdge) {
+		    if (this.Tilemap[c.Y, c.X] != DungeonTiles.CAVE_BLANK && !oldRoomBoxpoints.Contains(c)) {
+			valid = false;
+			break;
+		    }
+		}
+
+		if (!valid) {
+		    continue;
+		}
+
+		this.Tilemap.Fill((topLeft.X, topLeft.Y), (w, h), DungeonTiles.CAVE_FLOOR);
 
 		foreach (var c in clear) {
 		    if (boxpoints.Contains(c)) {
@@ -530,7 +541,9 @@ namespace FF1Lib.Procgen
 		rooms.Add(new EarthB2Room { points = boxpoints, topLeft = topLeft, w = w, h = h });
 	    }
 
-	    //ConnectRegions
+	    Console.WriteLine($"{rooms.Count} {i}");
+
+	    this.ConnectRegions();
 
 	    return await this.NextStep();
 	}
