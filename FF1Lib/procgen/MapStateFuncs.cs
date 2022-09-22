@@ -111,10 +111,13 @@ namespace FF1Lib.Procgen
 	    return coords;
 	}
 
-	public bool CheckClear(int x, int y, int w, int h, byte clearTile) {
+	public bool CheckClear(int x, int y, int w, int h, byte clearTile, List<SCCoords> coverable) {
 	    bool clear = true;
 	    for (int i = x; i < x + w && clear; ++ i) {
 		for (int j = y; j < y + h && clear; ++j) {
+		    if (coverable != null && coverable.Contains(new SCCoords(i, j))) {
+			continue;
+		    }
 		    if (this.Tilemap[j, i] != clearTile) {
 			clear = false;
 			break;
@@ -197,6 +200,98 @@ namespace FF1Lib.Procgen
 	    return true;
 	}
 
+	/*public bool CornerBox(SCCoords c, (int n, int x) major, (int n, int x) minor,
+			      out int x, out int y, out int w, out int h)
+	{
+	    var majN = this.rng.Between(major.n, major.x);
+	    var minN = this.rng.Between(minor.n, minor.x);
+
+	}*/
+
+	public List<SCCoords> EndCap(List<SCCoords> pts, Direction direction, SCCoords topLeft, int w, int h) {
+	    int endcap = 2;
+	    switch (direction) {
+		case Direction.Up:
+		    return pts.Where((p) => p.Y < topLeft.Y+endcap).ToList();
+		case Direction.Right:
+		    return pts.Where((p) => p.X > topLeft.X+(w-endcap-1)).ToList();
+		case Direction.Down:
+		    return pts.Where((p) => p.Y > topLeft.Y+(h-endcap-1)).ToList();
+		case Direction.Left:
+		    return pts.Where((p) => p.X < topLeft.X+endcap).ToList();
+		default:
+		    return null;
+	    }
+	}
+
+	public enum Quadrants : int {
+	    UpRight = 0,
+	    DownRight = 1,
+	    DownLeft = 2,
+	    UpLeft = 3
+	}
+
+	public List<SCCoords> Quadrant(List<SCCoords> pts, Quadrants q, SCCoords topLeft, int w, int h) {
+	    int midx = topLeft.X + (w/2);
+	    int midy = topLeft.Y + (h/2);
+
+	    switch (q) {
+		case Quadrants.UpRight:
+		    return pts.Where((p) => p.X >= midx && p.Y < midy).ToList();
+		case Quadrants.DownRight:
+		    return pts.Where((p) => p.X >= midx && p.Y >= midy).ToList();
+		case Quadrants.DownLeft:
+		    return pts.Where((p) => p.X < midx && p.Y >= midy).ToList();
+		case Quadrants.UpLeft:
+		    return pts.Where((p) => p.X >= midx && p.Y < midy).ToList();
+		default:
+		    return null;
+	    }
+	}
+
+	public bool CornerBox(List<SCCoords> candidates, Quadrants q, (int n, int x) wrange, (int n, int x) hrange,
+					List<SCCoords> coverable, byte emptyTile, byte roomTile, out SCCoords topLeft, out int w, out int h) {
+	    candidates.Shuffle(this.rng);
+
+	    w = this.rng.Between(wrange.n, wrange.x);
+	    h = this.rng.Between(hrange.n, hrange.x);
+
+	    topLeft = new SCCoords(0, 0);
+
+	    foreach (var c in candidates) {
+		switch (q) {
+		case Quadrants.UpRight:
+		    if (h > c.Y) { continue; }
+		    topLeft = new SCCoords(c.X, c.Y-h);
+		    break;
+		case Quadrants.DownRight:
+		    topLeft = new SCCoords(c.X, c.Y);
+		    break;
+		case Quadrants.DownLeft:
+		    if (w > c.X) { continue; }
+		    topLeft = new SCCoords(c.X-w, c.Y);
+		    break;
+		case Quadrants.UpLeft:
+		    if (w > c.X || h > c.Y) { continue; }
+		    topLeft = new SCCoords(c.X-w, c.Y-h);
+		    break;
+		default:
+		    continue;
+		}
+
+		if (topLeft.X == 0 || topLeft.Y == 0 || (topLeft.X + w) > MAPSIZE || (topLeft.Y + h) > MAPSIZE) continue;
+
+		if (!this.CheckClear(topLeft.X, topLeft.Y, w, h, emptyTile, coverable)) {
+		    continue;
+		}
+
+		this.Tilemap.Fill((topLeft.X, topLeft.Y), (w, h), roomTile);
+
+		return true;
+	    }
+	    return false;
+	}
+
 	public List<SCCoords> AddBox(List<SCCoords> candidates, Direction direction, (int n, int x) major, (int n, int x) minor,
 				     byte emptyTile, byte roomTile, bool endOnly, out SCCoords topLeft, out int _w, out int _h) {
 	    topLeft = new SCCoords(0, 0);
@@ -216,7 +311,7 @@ namespace FF1Lib.Procgen
 		    continue;
 		}
 
-		if (emptyTile != 0xff && !this.CheckClear(x, y, w, h, emptyTile)) {
+		if (emptyTile != 0xff && !this.CheckClear(x, y, w, h, emptyTile, null)) {
 		    continue;
 		}
 
@@ -232,7 +327,6 @@ namespace FF1Lib.Procgen
 		    return pts;
 		}
 
-		var d1 = direction;
 		switch (direction) {
 		    case Direction.Up:
 			if (this.Tilemap[y-1, x] != emptyTile) {
@@ -254,27 +348,7 @@ namespace FF1Lib.Procgen
 			break;
 		}
 
-		if (d1 != direction) {
-		    //Console.WriteLine($"d2 {d1} {direction} {x} {y} {w} {h}");
-		}
-
-		List<SCCoords> end = null;
-		int endcap = 2;
-		switch (direction) {
-		    case Direction.Up:
-			end = pts.Where((p) => p.Y < y+endcap).ToList();
-			break;
-		    case Direction.Right:
-			end = pts.Where((p) => p.X > x+(w-endcap-1)).ToList();
-			break;
-		    case Direction.Down:
-			end = pts.Where((p) => p.Y > y+(h-endcap-1)).ToList();
-			break;
-		    case Direction.Left:
-			end = pts.Where((p) => p.X < x+endcap).ToList();
-			break;
-		}
-		return end;
+		return this.EndCap(pts, direction, topLeft, w, h);
 	    }
 	    return null;
 	}
@@ -351,6 +425,66 @@ namespace FF1Lib.Procgen
 	    public int w, h;
 	}
 
+	/*
+	public void ConnectRegions(SCCoords start) {
+
+	    int regionId = 1;
+
+	    var regions = new byte[MAPSIZE,MAPSIZE];
+
+	    while (true) {
+		HashSet<SCCoords> visited = new();
+
+		var working_list = new Stack<SCCoords>();
+
+		points.Push(start);
+
+		List<Tuple<SCCoords, Direction>> hops = new List();
+
+		while (points.Count > 0) {
+		    var next = points.Pop();
+
+		    if (visited.Contains(next)) continue;
+
+		    regions[next.Y, next.X] = regionId;
+
+		    visited.Add(next);
+
+		    if (next.SmUp == DungeonTiles.CAVE_BLANK && next.SmUp.SmUp == DungeonTiles.CAVE_FLOOR) {
+			hops.Add(new Tuple<SCCoords, Direction>(next, Direction.Up));
+		    }
+		    if (next.SmRight == DungeonTiles.CAVE_BLANK && next.SmRight.SmRight == DungeonTiles.CAVE_FLOOR) {
+			hops.Add(new Tuple<SCCoords, SCCoords>(next, Direction.Right));
+		    }
+		    if (next.SmDown == DungeonTiles.CAVE_BLANK && next.SmDown.SmDown == DungeonTiles.CAVE_FLOOR) {
+			hops.Add(new Tuple<SCCoords, SCCoords>(next, Direction.Down));
+		    }
+		    if (next.SmLeft == DungeonTiles.CAVE_BLANK && next.SmLeft.SmLeft == DungeonTiles.CAVE_FLOOR) {
+			hops.Add(new Tuple<SCCoords, SCCoords>(next, Direction.Left));
+		    }
+
+		    if (next.SmUp == DungeonTiles.CAVE_FLOOR && !visited.Contains(next.SmUp)) {
+			points.Push(next.SmUp);
+		    }
+		    if (next.SmRight == DungeonTiles.CAVE_FLOOR && !visited.Contains(next.SmRight)) {
+			points.Push(next.SmRight);
+		    }
+		    if (next.SmDown == DungeonTiles.CAVE_FLOOR && !visited.Contains(next.SmDown)) {
+			points.Push(next.SmDown);
+		    }
+		    if (next.SmLeft == DungeonTiles.CAVE_FLOOR && !visited.Contains(next.SmLeft)) {
+			points.Push(next.SmLeft);
+		    }
+		}
+
+		foreach (var h in hops) {
+		    Console.WriteLine($"{h}");
+		}
+		break;
+	    }
+	}
+	*/
+
 	public async Task<MapResult> EarthB2Style() {
 	    this.OwnTilemap();
 
@@ -363,92 +497,40 @@ namespace FF1Lib.Procgen
 
 	    var rooms = new List<EarthB2Room> { startroom };
 
-	    for (int i = 0; i < 1; i++) {
-		int roomIndex = this.rng.Between(0, rooms.Count-1);
+	    for (int i = 0; i < 200; i++) {
+		int roomIndex = this.rng.Between(rooms.Count/2, rooms.Count-1);
+		//int roomIndex = this.rng.Between(0, rooms.Count-1);
 		var room = rooms[roomIndex];
-		//var key = allPoints.Keys.ToList().PickRandom(this.rng);
-		//var room = allPoints[key];
+		var quad = (Quadrants)this.rng.Between(0, 3);
 
-		var candidates = room.points;
-		var prevTopLeft = room.topLeft;
-		var prevW = room.w;
-		var prevH = room.h;
+		var candidates = Quadrant(room.points, quad, room.topLeft, room.w, room.h);
 
-		//int exits = this.rng.Between(1, 2);
-		int exits = 1;
+		//Console.WriteLine($"{candidates.Count} {quad} {room.topLeft} {room.w} {room.h}");
 
-		for (int j = 0; j < exits; j++) {
+		SCCoords topLeft;
+		int w, h;
 
-		    var pt = candidates.PickRandom(this.rng);
-		    var dir = (Direction)this.rng.Between(0, 3);
+		bool valid = CornerBox(candidates, quad, (3, 6), (3, 6), candidates, DungeonTiles.CAVE_BLANK,
+				       DungeonTiles.CAVE_FLOOR, out topLeft, out w, out h);
 
-		    int x, y, w, h;
-		    var valid = true;
-
-		    valid = this.MakeBox(pt, dir, (3, 15), (3, 15), out x, out y, out w, out h);
-
-		    if (!valid) {
-			continue;
-		    }
-
-		    if (x <= (prevTopLeft.X+1) &&
-			x+w >= (prevTopLeft.X+prevW-2) &&
-			y >= prevTopLeft.Y &&
-			y+h < prevTopLeft.Y+prevH)
-		    {
-			// splits room in half, reject
-			continue;
-		    }
-
-		    if (y <= (prevTopLeft.Y+1) &&
-			y+h >= (prevTopLeft.Y+prevH-2) &&
-			x >= prevTopLeft.X &&
-			x+w < prevTopLeft.X+prevW)
-		    {
-			// splits room in half, reject
-			continue;
-		    }
-
-		    var topLeft = new SCCoords(x, y);
-		    var boxpoints = BoxPoints(topLeft, w, h);
-
-		    valid = true;
-		    foreach (var p in boxpoints) {
-			if (this.Tilemap[p.Y, p.X] != DungeonTiles.CAVE_BLANK && !candidates.Contains(p)) {
-			    valid = false;
-			    break;
-			}
-		    }
-
-		    if (!valid) {
-			continue;
-		    }
-
-		    //var clear = InnerEdge(topLeft, w, h);
-		    var clear = OuterEdge(prevTopLeft, prevW, prevH);
-
-		    foreach (var p in boxpoints) {
-			this.Tilemap[p.Y, p.X] = DungeonTiles.CAVE_FLOOR;
-		    }
-
-		    foreach (var p in clear) {
-			if (boxpoints.Contains(p)) {
-			    this.Tilemap[p.Y, p.X] = DungeonTiles.CAVE_BLANK;
-			}
-		    }
-
-		    var hall = Adj(pt, dir);
-		    this.Tilemap[hall.Y, hall.X] = 0x13;
-		    //this.Tilemap[hall.Y, hall.X] = DungeonTiles.CAVE_FLOOR;
-		    //this.Tilemap[pt.Y, pt.X] = DungeonTiles.CAVE_FLOOR;
-
-		    //var sp = this.ShortestPath(this.Entrance, hall, new List<byte> {DungeonTiles.CAVE_BLANK} );
-
-		    rooms.RemoveAt(roomIndex);
-
-		    rooms.Add(new EarthB2Room { points = boxpoints, topLeft = topLeft, w = w, h = h });
+		if (!valid) {
+		    continue;
 		}
+
+		var boxpoints = BoxPoints(topLeft, w, h);
+		var clear = OuterEdge(room.topLeft, room.w, room.h);
+
+		foreach (var c in clear) {
+		    if (boxpoints.Contains(c)) {
+			this.Tilemap[c.Y, c.X] = DungeonTiles.CAVE_BLANK;
+			boxpoints.Remove(c);
+		    }
+		}
+
+		rooms.Add(new EarthB2Room { points = boxpoints, topLeft = topLeft, w = w, h = h });
 	    }
+
+	    //ConnectRegions
 
 	    return await this.NextStep();
 	}

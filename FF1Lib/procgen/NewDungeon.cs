@@ -149,7 +149,13 @@ namespace FF1Lib.Procgen
 			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 			    new MapGenerationStep("SetEntrance", new object[] { 0x0A, 0x09 }),
 			    new MapGenerationStep("EarthB2Style", new object[] { }),
-			    //new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls3, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls4, true }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls5, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls6, false }),
 			};
 			break;
 		    default:

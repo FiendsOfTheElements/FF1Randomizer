@@ -53,6 +53,11 @@ namespace FF1Lib.Procgen
 	public PgTileFilter cave_room_walls2;
 	public PgTileFilter cave_corners;
 	public PgTileFilter earth_cave_walls;
+	public PgTileFilter earth_cave_walls2;
+	public PgTileFilter earth_cave_walls3;
+	public PgTileFilter earth_cave_walls4;
+	public PgTileFilter earth_cave_walls5;
+	public PgTileFilter earth_cave_walls6;
 
 	public DungeonTiles() {
 
@@ -215,35 +220,208 @@ namespace FF1Lib.Procgen
 	    this.earth_cave_walls = new PgTileFilter(
 		new Rule[] {
 		    new Rule(new byte[3,3] {
-			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
-			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
-			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, CAVE_FLOOR}},
+			{STAR, STAR, STAR},
+			{CAVE_BLANK, CAVE_BLANK, CAVE_BLANK},
+			{CAVE_BLANK, CAVE_BLANK, CAVE_FLOOR}},
 			CAVE_WALL_NW),
 		    new Rule(new byte[3,3] {
-			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
-			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
-			{DungeonTiles.CAVE_FLOOR, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK}},
-			CAVE_WALL_NE),
-		    new Rule(new byte[3,3] {
 			{STAR, STAR, STAR},
-			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
-			{STAR, DungeonTiles.CAVE_FLOOR, STAR}},
-			CAVE_WALL_N),
+			{CAVE_BLANK, CAVE_BLANK, CAVE_BLANK},
+			{CAVE_FLOOR, CAVE_BLANK, CAVE_BLANK}},
+			CAVE_WALL_NE),
+
 		    new Rule(new byte[3,3] {
-			{STAR, DungeonTiles.CAVE_FLOOR, STAR},
-			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
-			{STAR, STAR, STAR}},
-			CAVE_WALL_N),
-		    new Rule(new byte[3,3] {
-			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, STAR},
-			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR},
-			{DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK, STAR}},
+			{CAVE_BLANK, CAVE_BLANK, STAR},
+			{CAVE_BLANK, CAVE_BLANK, CAVE_FLOOR},
+			{CAVE_BLANK, CAVE_BLANK, STAR}},
 			CAVE_WALL_W),
 		    new Rule(new byte[3,3] {
-			{STAR, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
-			{DungeonTiles.CAVE_FLOOR, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK},
-			{STAR, DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_BLANK}},
+			{STAR, CAVE_BLANK, CAVE_BLANK},
+			{CAVE_FLOOR, CAVE_BLANK, CAVE_BLANK},
+			{STAR, CAVE_BLANK, CAVE_BLANK}},
 			CAVE_WALL_E),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{STAR, CAVE_BLANK, STAR},
+			{STAR, CAVE_FLOOR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_FLOOR, STAR},
+			{STAR, CAVE_BLANK, STAR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_N),
+
+
+		}, allTiles, null, null);
+
+	    this.earth_cave_walls2 = new PgTileFilter(
+		new Rule[] {
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_WALL_E, STAR},
+			{STAR, CAVE_BLANK, STAR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_WALL_W, STAR},
+			{STAR, CAVE_BLANK, STAR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{CAVE_WALL_N, CAVE_BLANK, CAVE_WALL_N},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_N),
+		}, allTiles, null, null);
+
+	    this.earth_cave_walls3 = new PgTileFilter(
+		new Rule[] {
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{CAVE_FLOOR, CAVE_BLANK,  CAVE_WALL_N},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_E),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{CAVE_WALL_N, CAVE_BLANK,  CAVE_FLOOR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_W),
+
+		}, allTiles, null, null);
+
+
+	    this.earth_cave_walls4 = new PgTileFilter(
+		new Rule[] {
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{STAR, CAVE_BLANK,  STAR},
+			{STAR, CAVE_WALL_W, STAR}},
+			CAVE_WALL_W),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{STAR, CAVE_BLANK,  STAR},
+			{STAR, CAVE_WALL_E, STAR}},
+			CAVE_WALL_E),
+
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_WALL_W, STAR},
+			{STAR, CAVE_BLANK,  STAR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_W),
+
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_WALL_E, STAR},
+			{STAR, CAVE_BLANK,  STAR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_E),
+
+		}, allTiles, null, null);
+
+	    this.earth_cave_walls5 = new PgTileFilter(
+		new Rule[] {
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{CAVE_FLOOR, CAVE_BLANK, CAVE_FLOOR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_E),
+		}, allTiles, null, null);
+
+	    this.earth_cave_walls6 = new PgTileFilter(
+		new Rule[] {
+
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_WALL_W, STAR},
+			{STAR, CAVE_BLANK,  STAR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_WALL_E, STAR},
+			{STAR, CAVE_BLANK,  STAR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_WALL_E, STAR},
+			{STAR, CAVE_WALL_W,  STAR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_NW),
+
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_WALL_W, STAR},
+			{STAR, CAVE_WALL_E,  STAR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_NE),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{STAR, CAVE_WALL_N,  STAR},
+			{STAR, CAVE_WALL_E, STAR}},
+			CAVE_WALL_NE),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{STAR, CAVE_WALL_N,  STAR},
+			{STAR, CAVE_WALL_W, STAR}},
+			CAVE_WALL_NW),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{STAR, CAVE_WALL_NE,  STAR},
+			{STAR, CAVE_WALL_W, STAR}},
+			CAVE_WALL_NW),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{STAR, CAVE_WALL_NW,  STAR},
+			{STAR, CAVE_WALL_E, STAR}},
+			CAVE_WALL_NE),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{STAR, CAVE_WALL_W, CAVE_WALL_N},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{CAVE_WALL_N, CAVE_WALL_E, STAR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_FLOOR, STAR},
+			{CAVE_FLOOR, CAVE_WALL_N, CAVE_FLOOR},
+			{CAVE_WALL_N, CAVE_WALL_N, STAR}},
+			CAVE_WALL_E),
+
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_FLOOR, STAR},
+			{CAVE_FLOOR, CAVE_WALL_N, CAVE_FLOOR},
+			{STAR, CAVE_WALL_N, CAVE_WALL_N}},
+			CAVE_WALL_W),
+
+		    new Rule(new byte[3,3] {
+			{CAVE_WALL_N, CAVE_WALL_N, STAR},
+			{CAVE_FLOOR,  CAVE_WALL_N, CAVE_FLOOR},
+			{STAR, CAVE_FLOOR, STAR}},
+			CAVE_WALL_E),
+
+		    new Rule(new byte[3,3] {
+			{CAVE_FLOOR, CAVE_FLOOR, CAVE_FLOOR},
+			{CAVE_WALL_N, CAVE_WALL_N, CAVE_FLOOR},
+			{STAR,        CAVE_WALL_N, STAR}},
+			CAVE_WALL_NE),
+
+
 		}, allTiles, null, null);
 
 	}
