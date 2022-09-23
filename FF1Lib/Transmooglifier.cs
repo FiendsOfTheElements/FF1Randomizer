@@ -776,7 +776,7 @@ namespace FF1Lib
 				VIT = 8,
 				LCK = 75,
 				HIT = 1,
-				MDEF = 1,
+				MDEF = 4,
 				mageLevel = 8,
 				mageLevelPromotion = 0,
 				spellChargeGrowth = 40,

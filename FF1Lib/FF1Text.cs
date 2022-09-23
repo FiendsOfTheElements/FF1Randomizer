@@ -422,7 +422,7 @@ namespace FF1Lib
 		}
 
 		// Loads custom icons
-		public static void AddNewIcons(FF1Rom rom)
+		public static void AddNewIcons(FF1Rom rom, Flags flags)
 		{
 			// Icons have a 0x10 Control code indicating the next byte is pulled from the 0x00-0x7F tile reference instead of the 0x80-0xFF like regular fonts
 
@@ -437,7 +437,10 @@ namespace FF1Lib
 
 			// Copy over the ORBS
 			var tileset = rom.GetFromBank(0x0D, 0xB600, 0x0200);     // Get font tileset
-			rom.PutInBank(0x12, 0x8800 + 0x600, tileset);              // Put it in bank 12
+			rom.PutInBank(0x12, 0x8800 + 0x600, tileset);            // Put it in bank 12
+
+			if (flags.ShardHunt)
+				rom.addShardIcon(0x12, 0x8800 + 0x760);			        // If we're shard hunt, add the shard to tiles 0x76 and 0x77
 
 			// Change where the ORBS are loaded from and to so we can piggyback our icons - Now we load 8 lines from Bank 12 into 0000 of the PPU
 			rom.PutInBank(0x1F, 0xEAA2, Blob.FromHex("A9122003FEA208A9008510A9888511A900"));
