@@ -117,7 +117,7 @@ namespace FF1Lib
 			"SHARD", "JEWEL", "PIECE", "CHUNK", "PRISM", "STONE", "SLICE", "WEDGE", "BIGGS", "SLIVR", "ORBLT", "ESPER", "FORCE",
 		};
 
-		public void addShardIcon(int bank, int offset)
+		public void addShardIcon(int bank, int address)
 		{
 			// Replace the upper two tiles of the unlit orb with an empty and found shard.
 			// These are at tile address $76 and $77 respectively.
