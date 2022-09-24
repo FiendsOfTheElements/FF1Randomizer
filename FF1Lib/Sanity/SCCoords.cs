@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
+using Direction = FF1Lib.Direction;
+using Quadrants = FF1Lib.Procgen.MapState.Quadrants;
 
 namespace FF1Lib.Sanity
 {
@@ -46,6 +48,36 @@ namespace FF1Lib.Sanity
 
 	    [JsonIgnore()]
 		public SCCoords SmClamp => new SCCoords(X & 0x3F, Y & 0x3F);
+
+	    public SCCoords SmNeighbor(Direction d) {
+		switch (d) {
+		    case Direction.Up:
+			return SmUp;
+		    case Direction.Right:
+			return SmRight;
+		    case Direction.Down:
+			return SmDown;
+		    case Direction.Left:
+			return SmLeft;
+		    default:
+			return this;
+		}
+	    }
+
+	    public SCCoords SmNeighbor(Quadrants q) {
+		switch (q) {
+		    case Quadrants.UpRight:
+			return SmUp.SmRight;
+		    case Quadrants.DownRight:
+			return SmDown.SmRight;
+		    case Quadrants.DownLeft:
+			return SmDown.SmLeft;
+		    case Quadrants.UpLeft:
+			return SmUp.SmLeft;
+		    default:
+			return this;
+		}
+	    }
 
 		public static bool operator ==(SCCoords a, SCCoords b)
 		{
