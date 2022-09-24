@@ -242,7 +242,15 @@ DrawInfoBox:
   CLC
   ADC #$02
   STA dest_y
+
+  LDA class_index              ; To secure in case of control codes, we need to save and restore the index 
+  PHA
+
   JSR DrawComplexString        ; Draw info text
+
+  PLA                          ; Restore class index
+  STA class_index
+
   JSR TurnMenuScreenOn         ; Show box on the screen
   RTS
 
