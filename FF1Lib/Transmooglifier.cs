@@ -775,7 +775,7 @@ namespace FF1Lib
 				AGI = 75,
 				VIT = 8,
 				LCK = 75,
-				HIT = 1,
+				HIT = 3,
 				MDEF = 4,
 				mageLevel = 8,
 				mageLevelPromotion = 0,
@@ -1215,7 +1215,7 @@ namespace FF1Lib
 			String description =
 
 			// Everyone has these stats
-			String.Format("HP{0,9}\n",   c.HpGrowth.Where(x => x).Count() * 20 + c.HpStarting + 49 * (VitForHealthUp / 4)) +
+			String.Format("HP{0,9}\n", c.HpGrowth.Where(x => x).Count() * 20 + c.HpStarting + 49 * (VitForHealthUp / 4)) +
 			String.Format("STR.{0,7}\n", c.StrGrowth.Where(x => x).Count() + c.StrStarting + (49 - c.StrGrowth.Where(x => x).Count()) / 4) +
 			String.Format("AGL.{0,7}\n", c.AgiGrowth.Where(x => x).Count() + c.AgiStarting + (49 - c.AgiGrowth.Where(x => x).Count()) / 4) +
 			String.Format("MDEF{0,7}\n", "+" + (c.MDefGrowth * 49 + c.MDefStarting)) +
@@ -1453,7 +1453,7 @@ namespace FF1Lib
 			VIT = Math.Clamp(Rng.Between(rng, (int)(VIT * dwn), (int)(VIT * up)), 0, 100);
 			LCK = Math.Clamp(Rng.Between(rng, (int)(LCK * dwn), (int)(LCK * up)), 0, 100);
 
-			HIT = Math.Clamp(Rng.Between(rng, HIT - v, HIT + v), 0, 4);
+			HIT = Math.Clamp(Rng.Between(rng, HIT - v, HIT + v), 1, 4);
 			MDEF = Math.Clamp(Rng.Between(rng, MDEF - v, MDEF + v), 0, 5);
 		}
 
