@@ -284,6 +284,30 @@ namespace FF1Lib.Procgen
 			{STAR, STAR, STAR}},
 			CAVE_WALL_N),
 
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{CAVE_ROOM_FLOOR, CAVE_BLANK, CAVE_FLOOR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_W),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{CAVE_FLOOR, CAVE_BLANK, CAVE_ROOM_FLOOR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_E),
+
+
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_BLANK, STAR},
+			{STAR, CAVE_BLANK, CAVE_BLANK},
+			{CAVE_FLOOR, CAVE_BLANK, CAVE_ROOM_FLOOR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_BLANK, STAR},
+			{CAVE_BLANK, CAVE_BLANK, STAR},
+			{CAVE_ROOM_FLOOR, CAVE_BLANK, CAVE_FLOOR}},
+			CAVE_WALL_N),
 
 		}, allTiles, null, null);
 

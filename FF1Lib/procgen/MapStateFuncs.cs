@@ -489,6 +489,7 @@ namespace FF1Lib.Procgen
 
 	    int roomTotal = this.rng.Between(29, 33);
 	    int i;
+	    int treasureCount = 0;
 	    for (i = 0; rooms.Count < roomTotal && i < 400; i++) {
 		int progressWindow = 6;
 		int connectWindow = 6;
@@ -564,25 +565,54 @@ namespace FF1Lib.Procgen
 		    continue;
 		}
 
-		foreach (var b in boxpoints) {
-		    regions[b.Y, b.X] = (byte)rooms.Count;
-		    this.Tilemap[b.Y, b.X] = DungeonTiles.CAVE_FLOOR;
-		}
+		int treasureDraw = this.rng.Between(0, Math.Max(0, rooms.Count-(treasureCount*4)));
+		Console.WriteLine($"treasure room {Math.Max(0, rooms.Count-(treasureCount*5))} {treasureDraw}");
+		if (treasureDraw > 4 && (quad == Quadrants.UpLeft || quad == Quadrants.UpRight)) {
+		    Console.WriteLine("draw");
 
-		foreach (var c in clear) {
-		    if (boxpoints.Contains(c)) {
-			this.Tilemap[c.Y, c.X] = DungeonTiles.CAVE_BLANK;
-			regions[c.Y, c.X] = 0;
-			boxpoints.Remove(c);
+		    List<SCCoords> doorCandidates = new();
+		    for (int x = topLeft.X+1; x < topLeft.X+w-1; x++) {
+			if (this.Tilemap[topLeft.Y+h, x] == DungeonTiles.CAVE_FLOOR) {
+			    doorCandidates.Add(new SCCoords(x, topLeft.Y+h-1));
+			}
 		    }
-		}
 
-		rooms.Add(new EarthB2Room { points = boxpoints, topLeft = topLeft, w = w, h = h });
+		    if (doorCandidates.Count == 0) {
+			continue;
+		    }
+
+		    treasureCount++;
+		    foreach (var b in boxpoints) {
+			regions[b.Y, b.X] = (byte)rooms.Count;
+			this.Tilemap[b.Y, b.X] = DungeonTiles.CAVE_ROOM_FLOOR;
+		    }
+		    var door = doorCandidates.PickRandom(this.rng);
+		    this.Tilemap[door.Y, door.X] = DungeonTiles.CAVE_DOOR;
+		    this.Tilemap[door.Y+1, door.X] = DungeonTiles.CAVE_CLOSE_DOOR;
+
+		} else {
+		    foreach (var b in boxpoints) {
+			regions[b.Y, b.X] = (byte)rooms.Count;
+			this.Tilemap[b.Y, b.X] = DungeonTiles.CAVE_FLOOR;
+		    }
+
+		    foreach (var c in clear) {
+			if (boxpoints.Contains(c)) {
+			    this.Tilemap[c.Y, c.X] = DungeonTiles.CAVE_BLANK;
+			    regions[c.Y, c.X] = 0;
+			    boxpoints.Remove(c);
+			}
+		    }
+		    rooms.Add(new EarthB2Room { points = boxpoints, topLeft = topLeft, w = w, h = h });
+		}
 	    }
 
 	    Console.WriteLine($"{rooms.Count} {i}");
 
 	    if (rooms.Count < 25) {
+		return new MapResult(false);
+	    }
+	    if (treasureCount < 3) {
 		return new MapResult(false);
 	    }
 
