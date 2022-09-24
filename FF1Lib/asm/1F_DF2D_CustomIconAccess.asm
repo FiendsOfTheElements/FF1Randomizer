@@ -10,12 +10,20 @@ StallAndDraw = $DE3E
 ReturnHome = $DF36
 SwapPRG = $FE03
 Restore = $E04E ; the @Restore from DrawComplexString
+CHRLoad = $E965
+CHRLoadToA = $E95A
+LoadMenuCHR = $E98E
 
 
-.org $8600 ; 
+
+.org $8680 ; 
 
 ; Replaces the character with our Custom Icon
 PrintCharStatOrIcon:
+    LDX shop_id
+    CPX #$0
+    BNE @CharStat 
+
     CMP #$80            ; if (currentChar < 0x80)... basically if it's 0x10
     BCC @CharStat       ;   Jump ahead to @CharStat
     EOR #$80            ; remove highest bit (so 0x81 is tile 0x1)
@@ -62,13 +70,58 @@ PrintCharStatBreakout:
 
 
 ; Overwrites most of LoadMenuBGCHRAndPalettes in Bank F to allow for new symbols/gylphs in memory
-.include "variables.inc"
+.org $EAA2 ; in bank 1F
 
-    LDA #$0C                 
-    JSR SwapPRG_L                    
+OverwriteUnusedMenuBGCHR:
+    LDA #$12                 
+    JSR SwapPRG                    
     LDX #$08             ; 8 rows of tiles
     LDA #<$8800                 
     STA tmp
     LDA #>$8800
     STA tmp+1
     LDA #$0 
+
+
+.org $EA02 ; in bank 1F
+ReplaceShopBGCHRLoad: ; This overwrites things
+
+    LDA #$12             ; swap to icon bank
+    JSR SwapPRG
+    JSR AddIconsToShopBGCHR
+
+    LDA #BANK_MENUCHR 
+    JSR SwapPRG
+
+    LDA #$00           ; dest PPU address = $0000
+    LDX #$08           ; 8 rows to load
+    JSR CHRLoadToA
+    NOP                 ; Blanking out the original LoadMenuCHR because we're doing it ourselves from Bank 12
+    NOP
+    NOP
+
+.org $9000
+AddIconsToShopBGCHR:
+
+    LDA #<$8000          ; Load in the shop icons
+    STA tmp
+    LDA #>$8000
+    STA tmp+1
+
+    LDX #$08             ; 8 rows of tiles
+    LDA #$8              ; dest PPU adddress = $8000
+
+    JSR CHRLoadToA
+
+    LDA #<lut_ShopCHR  ; Now complete the original routine
+    STA tmp
+    LDA #>lut_ShopCHR  ; source pointer (tmp) = lut_ShopCHR
+    STA tmp+1
+
+    RTS
+
+
+
+
+
+

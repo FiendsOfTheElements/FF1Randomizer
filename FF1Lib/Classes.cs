@@ -529,14 +529,14 @@ namespace FF1Lib
 			var screenBlob = Blob.FromHex("00");
 
 			// Insert template
-			screenBlob = FF1Text.TextToBytes(templateScreen, true, FF1Text.Delimiter.Null);
+			screenBlob = FF1Text.TextToBytes(templateScreen, true, FF1Text.Delimiter.Null, true);
 			rom.PutInBank(0x1E, 0x8970, screenBlob);
 			totalByte += screenBlob.Length;
 
 			// Insert class data screen
 			for (int i = 0; i < 12; i++)
 			{
-				var tempBlob = FF1Text.TextToBytes(dataScreen[i], true, FF1Text.Delimiter.Null);
+				var tempBlob = FF1Text.TextToBytes(dataScreen[i], true, FF1Text.Delimiter.Null, true);
 				rom.PutInBank(0x1E, 0x8970 + totalByte, tempBlob);
 				var tempAddress = 0x8970 + totalByte;
 				rom.PutInBank(0x1E, 0x8950 + (i * 2), new byte[] { (byte)(tempAddress % 0x100), (byte)(tempAddress / 0x100) });

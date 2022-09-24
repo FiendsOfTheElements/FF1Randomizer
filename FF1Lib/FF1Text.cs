@@ -181,6 +181,13 @@ namespace FF1Lib
 
 
 			// Base Game Icons
+			{ "≈U", 0xCE }, // unarmed
+			{ "≈R", 0xCF }, // rod
+			{ "≈c", 0xD0 }, // scimitar
+			{ "≈f", 0xD1 }, // falchion
+			{ "≈r", 0xD2 }, // rapier
+			{ "≈w", 0xD3 }, // shortsword
+
 			{ "@S", 0xD4 }, // swords (long)
 			{ "@H", 0xD5 }, // hammers
 			{ "@K", 0xD6 }, // knives
@@ -195,6 +202,25 @@ namespace FF1Lib
 			{ "@T", 0xDF }, // shirts
 			{ "%", 0xE0 },
 			{ "@p", 0xE1 }, // potion
+
+			{ "€s", 0xE2 }, // status
+			{ "€p", 0xE3 }, // poison
+			{ "€T", 0xE4 }, // time
+			{ "€d", 0xE5 }, // death
+			{ "€f", 0xE6 }, // fire
+			{ "€i", 0xE7 }, // ice
+			{ "€t", 0xE8 }, // lightning
+			{ "€e", 0xE9 }, // earth
+
+			{ "§d", 0xEA }, // dead
+			{ "§s", 0xEB },	// stone
+			{ "§p", 0xEC }, // poison
+			{ "§b", 0xED }, // blind
+			{ "§P", 0xEE }, // stun
+			{ "§Z", 0xEF }, // sleep
+			{ "§M", 0xF0 }, // mute
+			{ "§C", 0xF1 }, // confuse
+
 
 			{ " ", 0xFF }
 		};
@@ -270,7 +296,7 @@ namespace FF1Lib
 			return Icons.ContainsKey(charCode);
 		}
 
-		public static Blob TextToBytes(string text, bool useDTE = true, Delimiter delimiter = Delimiter.Null)
+		public static Blob TextToBytes(string text, bool useDTE = true, Delimiter delimiter = Delimiter.Null, bool useExtraIcons = false)
 		{
 			Blob bytes = new byte[text.Length + 1];
 			int i = 0, j = 0;
@@ -279,7 +305,7 @@ namespace FF1Lib
 				var twoChars = text.Substring(i, 2);
 				if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@') || isIcon(twoChars))
 				{
-					if (isIcon(twoChars))
+					if (isIcon(twoChars) && useExtraIcons)
 					{
 						bytes[j++] = 0x10;
 						bytes[j++] = Icons[twoChars];
@@ -308,7 +334,7 @@ namespace FF1Lib
 			return bytes.SubBlob(0, j);
 		}
 
-		public static Blob TextToBytesInfo(string text, bool useDTE = true, Delimiter delimiter = Delimiter.Null)
+		public static Blob TextToBytesInfo(string text, bool useDTE = true, Delimiter delimiter = Delimiter.Null, bool useExtraIcons = false)
 		{
 			Blob bytes = new byte[text.Length + 1];
 			int i = 0, j = 0;
@@ -329,13 +355,14 @@ namespace FF1Lib
 				}
 				else if (BytesByText.ContainsKey(twoChars) && (useDTE || twoChars[0] == '@') || isIcon(twoChars))
 				{
-					if (isIcon(twoChars))
+					if (isIcon(twoChars) && useExtraIcons)
 					{
 						bytes[j++] = 0x10;
 						bytes[j++] = Icons[twoChars];
 					}
 					else
 						bytes[j++] = BytesByText[twoChars];
+
 					i += 2;
 				}
 				else
@@ -440,18 +467,27 @@ namespace FF1Lib
 			rom.PutInBank(0x12, 0x8800 + 0x600, tileset);            // Put it in bank 12
 
 			if (flags.ShardHunt)
-				rom.addShardIcon(0x12, 0x8800 + 0x760);			        // If we're shard hunt, add the shard to tiles 0x76 and 0x77
+				rom.addShardIcon(0x12, 0x8800 + 0x760);			        // If we're shard hunt, add the shard to tiles 0x76 and 0x77 because we missed em
 
 			// Change where the ORBS are loaded from and to so we can piggyback our icons - Now we load 8 lines from Bank 12 into 0000 of the PPU
 			rom.PutInBank(0x1F, 0xEAA2, Blob.FromHex("A9122003FEA208A9008510A9888511A900"));
 
-			// Load icons from images. Make your own if you'd like! Don't forget to add them to the icon dictionary
+			// The code below handles loading in icons into the shop, since the shop doesn't have as much free space
+			tileset = rom.GetFromBank(0x09, 0x8800, 0x0800);
+			rom.PutInBank(0x12, 0x8000, tileset);                    // Put it in bank 12
 
+			// Subvert shop loading code and redirect it to Bank 12 for better management
+			rom.PutInBank(0x1F, 0xEA02, Blob.FromHex("A9122003FE200090A9092003FEA900A208205AE9EAEAEA"));
+			rom.PutInBank(0x12, 0x9000, Blob.FromHex("A9008510A9808511A208A908205AE9A9008510A980851160"));
+
+
+			// Load icons from images. Make your own if you'd like! Don't forget to add them to the icon dictionary
 			IImageFormat format;
 
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 			var weaponiconsPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("weapon_icons.png"));
 			var spelliconsPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("spell_icons.png"));
+			var elementstatusiconsPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("elementstatus_icons.png"));
 
 			// 0 = black
 			// 1 = grey
@@ -470,13 +506,14 @@ namespace FF1Lib
 
 			// New Code
 			int offset = 0x8800;
-			offset += 16 * 32 + 16; // First line needs to remain blank, it's used by the system for special commands
+			offset += 16 * 32 + 16; // Left the first line blank for silly reasons. If more icons get added, clean this up
 
 			// Weapons
 			Image<Rgba32> image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(weaponiconsPath), out format);
 			for (int w = 0; w < 6; w++)
 			{
 				rom.PutInBank(0x12, offset, rom.EncodeForPPU(getTile(w, index, image)));
+				rom.PutInBank(0x12, 0x84E0 + w * 16, rom.EncodeForPPU(getTile(w, index, image)));     // Shop Icons
 				offset += 16;
 			}
 
@@ -489,24 +526,30 @@ namespace FF1Lib
 			}
 
 			// These are the old icons, no images for these only THE BLOB
-			var newIcons = "00183C3C18180018FFFFFFFFFFFFFFFF" + // E2 to F1
-							"001812446036381CFFFFFFFFFFFFFFFF" +
-							"0044BA6CE6FE7C38FFFFFFFFFFFFFFFF" +
-							"00386CC66C7C3838FFFFFFFFFFFFFFFF" +
-							"000C3872D88C8448FFFFFFFFFFFFFFFF" +
-							"0010104410441010FFFFFFFFFFFFFFFF" +
-							"00103070FE1C1810FFFFFFFFFFFFFFFF" +
-							"00000000E7F3E7EFFFFFFFFFFFFFFFFF" +
-							"007CFE92FE540038FFFFFFFFFFFFFFFF" +
-							"003C7EBDD9B1523CFFFFFFFFFFFFFFFF" +
-							"0038102828447C38FFFFFFFFFFFFFFFF" +
-							"00006CDA926C0000FFFFFFFFFFFFFFFF" +
-							"0080E82E82E82E02FFFFFFFFFFFFFFFF" +
-							"0070102E4274080EFFFFFFFFFFFFFFFF" +
-							"003C7EFFD57E3C0EFFFFFFFFFFFFFFFF" +
-							"003C42421C100010FFFFFFFFFFFFFFFF";
+			image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(elementstatusiconsPath), out format);
+			for (int w = 0; w < 16; w++)
+			{
+				rom.PutInBank(0x12, offset, rom.EncodeForPPU(getTile(w, index, image)));			// Non Shop Icons
+				rom.PutInBank(0x12, 0x8620 + w*16, rom.EncodeForPPU(getTile(w, index, image)));     // Shop Icons
+				offset += 16;
+			}
 
-			rom.PutInBank(0x12, offset, Blob.FromHex(newIcons));
+			// Additional Icon space
+			//
+			// Everywhere font is available (Bank 0x9)
+			//	• 2 icons		at 0x87E0
+			//
+			// Menu and Party Select (Bank 0x12)
+			//  • 32 Icons		at 0x8810 (0x8800 is reserved for backgrounds)
+			//	• 28 Icons		at 0x8C40
+			//
+			// Shop (Bank 0x12)
+			//	• 7/8 Icons		at 0x8460 (first slot is L, add 0x10 if not replacing it)
+			//	• 5 Icons		at 0x8720
+			//
+			// Shard Hunt Only Icons available in Menu (Bank 0x12)
+			//  • 20 Icons		at 0x8E00
+			//
 		}
 
 		public static byte[] getTile(int imageTileIndex, Dictionary<Rgba32, byte> index, Image<Rgba32> image)
