@@ -1207,17 +1207,21 @@ namespace FF1Lib
 		public String GenerateDescription(int classIndex)
 		{
 			// String is currently 11 characters wide and 24 lines tall.
+			ClassData c = rom.ClassData[(Classes)classIndex];
+
+			int VitForHealthUp = (c.VitGrowth.Where(x => x).Count() + c.VitStarting + 49 - c.VitGrowth.Where(x => x).Count() + c.VitStarting) / 2; // (Lv50 Vit + Lv 1 Vit) / 2 -> Average Vit
+
 
 			String description =
 
 			// Everyone has these stats
-			String.Format("HP{0,9}\n", HP * 20 + 49 * VIT / 4) +
-			String.Format("STR.{0,7}\n", STR) +
-			String.Format("AGL.{0,7}\n", AGI) +
-			String.Format("MDEF{0,7}\n", "+" + MDEF) +
-			String.Format("VIT.{0,7}\n", VIT) +
-			String.Format("LCK.{0,7}\n", LCK) +
-			String.Format("HIT %{0,6}\n", "+" + HIT);
+			String.Format("HP{0,9}\n",   c.HpGrowth.Where(x => x).Count() * 20 + c.HpStarting + 49 * (VitForHealthUp / 4)) +
+			String.Format("STR.{0,7}\n", c.StrGrowth.Where(x => x).Count() + c.StrStarting + (49 - c.StrGrowth.Where(x => x).Count()) / 4) +
+			String.Format("AGL.{0,7}\n", c.AgiGrowth.Where(x => x).Count() + c.AgiStarting + (49 - c.AgiGrowth.Where(x => x).Count()) / 4) +
+			String.Format("MDEF{0,7}\n", "+" + (c.MDefGrowth * 49 + c.MDefStarting)) +
+			String.Format("VIT.{0,7}\n", c.VitGrowth.Where(x => x).Count() + c.VitStarting + (49 - c.VitGrowth.Where(x => x).Count()) / 4) +
+			String.Format("LCK.{0,7}\n", c.LckGrowth.Where(x => x).Count() + c.LckStarting + (49 - c.LckGrowth.Where(x => x).Count()) / 4) +
+			String.Format("HIT %{0,6}\n", "+" + (c.HitGrowth * 49 + c.HitStarting));
 
 			// If we have magic, add our spell charges
 			//if (finalSchools.Count > 0 && spellChargeMax != 0)
@@ -1434,6 +1438,8 @@ namespace FF1Lib
 
 			rom.ClassData[c].MDefStarting = rom.ClassData[p].MDefStarting = (byte)Rng.Between(rng, 10, 35);
 			rom.ClassData[c].MDefGrowth = rom.ClassData[p].MDefGrowth = (byte)MDEF;
+			if (rom.ClassData[c].MDefGrowth == 5)
+				rom.ClassData[c].MDefStarting = 10;
 		}
 
 		public void RollStats()
@@ -1448,7 +1454,7 @@ namespace FF1Lib
 			LCK = Math.Clamp(Rng.Between(rng, (int)(LCK * dwn), (int)(LCK * up)), 0, 100);
 
 			HIT = Math.Clamp(Rng.Between(rng, HIT - v, HIT + v), 0, 4);
-			MDEF = Math.Clamp(Rng.Between(rng, MDEF - v, MDEF + v), 0, 4);
+			MDEF = Math.Clamp(Rng.Between(rng, MDEF - v, MDEF + v), 0, 5);
 		}
 
 		public List<bool> MakeGrowthTable(int value)
