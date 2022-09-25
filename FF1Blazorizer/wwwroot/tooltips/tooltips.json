@@ -145,10 +145,16 @@
 		"description": "Randomly change Princess Sara's Lute to another instrument from a list of over 70 different, community-contributed options."
 	},
 	{
-		"Id": "titanSnack",
+		"Id": "titanSnackCheckBox",
 		"title": "Titan's Favorite Snack",
 		"screenshot": "titanSnack.png",
 		"description": "Randomly change Titan's RUBY to another snack from 100 different, community-contributed options.\n[grid][r]{l}{i}Ruby|{l}Default / Vanilla[r]{l}{i}Other Minerals|{l}Rocks or similar Titan cuisine[r]{l}{i}Junk Food|{l}Human food to eat in moderation[r]{l}{i}Healthy Food|{l}Human food of a healthier variety[r]{l}{i}Beverages|{l}Drinks[r]{l}{i}All|{l}All of the above except Ruby\n"
+	},
+	{
+		"Id": "randomShardNamesCheckBox",
+		"title": "Random Shard Names",
+		"screenshot": "randomShardName.png",
+		"description": "When playing with \"Shard Hunt\" active (Goals Tab), the SHARDs will have random names (such as WEDGEs or ORBLTs)."
 	},
 	{
 		"Id": "hurrayDwarfFate",
@@ -339,7 +345,7 @@
 		"Id": "shardHuntCheckBox",
 		"title": "Shard Hunt",
 		"screenshot": "shardHuntCheckBox.png",
-		"description": "Activates Shard Hunt, a mode in which the Light Warriors must acquire a number of orb pieces (which can be called SHARDs, PIECEs, ORBLETs, etc.) in order to open the time gate (the Black Orb) in the Temple of Fiends.\nDefeating Fiends and activating the altars for the four standard orbs will, instead or lighting one big orb, grant the player 2 SHARDs for the Earth and Fire orbs (the Lich and Kary fights in the vanilla game) or 4 SHARDs for the Water and Air orbs (the Kraken and Tiamat fights in the vanilla game).\nThe SHARDs replace generally low-quality items in the treasure pool."
+		"description": "Activates Shard Hunt, a mode in which the Light Warriors must acquire a number of SHARDs in order to open the time gate (the Black Orb) in the Temple of Fiends.\nDefeating Fiends and activating the altars for the four standard orbs will, instead or lighting one big orb, grant the player 2 SHARDs for the Earth and Fire orbs (the Lich and Kary fights in the vanilla game) or 4 SHARDs for the Water and Air orbs (the Kraken and Tiamat fights in the vanilla game).\nThe SHARDs replace generally low-quality items in the treasure pool."
 	},
 	{
 		"Id": "shardCountDropDown",

@@ -2772,6 +2772,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TeamSteak"));
 			}
 		}
+		public bool randomShardNames
+		{
+			get => Preferences.randomShardNames;
+			set
+			{
+				Preferences.randomShardNames = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("randomShardNames"));
+			}
+		}
 		public MusicShuffle Music
 		{
 			get => Preferences.Music;
