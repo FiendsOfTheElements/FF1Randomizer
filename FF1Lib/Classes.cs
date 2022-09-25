@@ -799,8 +799,8 @@ namespace FF1Lib
 			}
 
 			// Add Natural Resist Bonuses
-			bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res All", mod: 0xFF, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
-			bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res PEDTS", mod: (int)(SpellElement.Poison | SpellElement.Earth | SpellElement.Death | SpellElement.Time | SpellElement.Status), Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
+			bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res. All", mod: 0xFF, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
+			bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res. PEDTS", mod: (int)(SpellElement.Poison | SpellElement.Earth | SpellElement.Death | SpellElement.Time | SpellElement.Status), Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
 			bonusNormal.Add(CreateRandomResistBonusMalus(rng));
 			bonusNormal.Add(CreateRandomResistBonusMalus(rng));
 
@@ -1665,7 +1665,7 @@ namespace FF1Lib
 		public BonusMalus CreateRandomResistBonusMalus(MT19337 rng)
 		{
 			byte innateResistValue = 0x00;
-			string description = "Res ";
+			string description = "Res. ";
 			List<SpellElement> elements = Enum.GetValues(typeof(SpellElement)).Cast<SpellElement>().ToList();
 			elements.Remove(SpellElement.Any);
 			elements.Remove(SpellElement.All);
