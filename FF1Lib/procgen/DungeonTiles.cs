@@ -309,6 +309,18 @@ namespace FF1Lib.Procgen
 			{CAVE_ROOM_FLOOR, CAVE_BLANK, CAVE_FLOOR}},
 			CAVE_WALL_N),
 
+		    new Rule(new byte[3,3] {
+			{STAR,             STAR, STAR},
+			{CAVE_BLANK, CAVE_BLANK, CAVE_ROOM_FLOOR},
+			{CAVE_FLOOR, CAVE_BLANK, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR,             STAR, STAR},
+			{CAVE_ROOM_FLOOR, CAVE_BLANK, CAVE_BLANK},
+			{STAR, CAVE_BLANK, CAVE_FLOOR}},
+			CAVE_WALL_N),
+
 		}, allTiles, null, null);
 
 	    this.earth_cave_walls2 = new PgTileFilter(
