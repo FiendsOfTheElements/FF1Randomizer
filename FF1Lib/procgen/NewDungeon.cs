@@ -137,9 +137,9 @@ namespace FF1Lib.Procgen
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_rock_walls, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
-			    new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_corners, DungeonTiles.CAVE_EARTH_B1_EXIT, 16, 12 }),
+			    new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_corners, DungeonTiles.CAVE_EXIT_TO_EARTH_B2, 16, 12 }),
 			    new MapGenerationStep("PlaceHallOfGiants", new object[] { new List<byte> {0x1B, 0x1C} }),
-			    new MapGenerationStep("PlaceChests", new object[] { }),
+			    new MapGenerationStep("PlaceChests", new object[] { rom, maps, mapId, new List<(MapId,byte)> {} }),
 			    new MapGenerationStep("SanityCheck", new object[] { }),
 			};
 			break;
@@ -148,7 +148,7 @@ namespace FF1Lib.Procgen
 			    new MapGenerationStep("CollectInfo", new object[] { }),
 			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 			    new MapGenerationStep("SetEntrance", new object[] { 0x0A, 0x09 }),
-			    new MapGenerationStep("EarthB2Style", new object[] { }),
+			    new MapGenerationStep("EarthB2Style", new object[] { 29, 33, 6, 6, 2}),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls3, false }),
@@ -158,9 +158,33 @@ namespace FF1Lib.Procgen
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls6, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
-			    new MapGenerationStep("PlaceChests", new object[] { }),
-			    new MapGenerationStep("PlaceTile", new object[] { 0x0A, 0x09, DungeonTiles.CAVE_EARTH_WARP }),
-			    new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_wall_corners, DungeonTiles.CAVE_EARTH_B2_EXIT, 36, 12 }),
+			    new MapGenerationStep("PlaceChests", new object[] { rom, maps, mapId, new List<(MapId,byte)> {} }),
+			    new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
+			    new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_wall_corners, DungeonTiles.CAVE_EXIT_TO_EARTH_B3, 36, 12 }),
+			};
+			break;
+		    case MapId.EarthCaveB3:
+			mapGenSteps = new () {
+			    new MapGenerationStep("CollectInfo", new object[] { }),
+			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
+			    new MapGenerationStep("SetEntrance", new object[] { 0x1B, 0x2D }),
+			    new MapGenerationStep("EarthB2Style", new object[] { 19, 23, 4, 5, 3 }),
+			    new MapGenerationStep("PlaceRodRoom", new object[] { DungeonTiles.CAVE_EXIT_TO_EARTH_B4 }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls3, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls4, true }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls5, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls6, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_rock_walls, false }),
+			    new MapGenerationStep("PlaceVampire", new object[] { }),
+			    new MapGenerationStep("PlaceChests", new object[] { rom, maps, mapId, new List<(MapId,byte)> { (mapId, DungeonTiles.RUBY_CHEST) } }),
+			    new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
+			    //new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_wall_corners, DungeonTiles.CAVE_EARTH_B2_EXIT, 36, 12 }),
+			    //new MapGenerationStep("SanityCheck", new object[] { }),
 			};
 			break;
 		    default:

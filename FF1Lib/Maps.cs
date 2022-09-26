@@ -1326,7 +1326,9 @@ namespace FF1Lib
 
 		    var directions = new Direction[] { Direction.Down, Direction.Down, Direction.Down,
 			Direction.Right, Direction.Left, Direction.Up };
-		    while (spikePool.Count > 0) {
+
+		    int tries = spikePool.Count*4;
+		    while (spikePool.Count > 0 && tries > 0) {
 			var pc = placedChests.PickRandom(rng);
 			var dir = directions.PickRandom(rng);
 			var me = pc.Neighbor(dir);
@@ -1342,18 +1344,20 @@ namespace FF1Lib
 			    if (debug) rm.start.Value = 0xD;
 			    spikePool.RemoveAt(spikePool.Count-1);
 			}
+			tries--;
 		    }
 
 		}
 
 		public async Task shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests,
-							NPCdata npcdata, byte randomEncounter, bool spreadPlacement, bool markSpikeTiles) {
+							NPCdata npcdata, byte randomEncounter, bool spreadPlacement, bool markSpikeTiles,
+							List<byte> chestPool, List<byte> spikePool) {
 		    // For a tileset, I need to determine:
 		    //
 		    // * doors and locked doors
 		    // * floor tiles with the move bit that are empty.
 
-		    bool debug = false;
+		    bool debug = true;
 
 		    if (debug) Console.WriteLine($"\nTiles for {ids[0]}");
 
@@ -1376,8 +1380,8 @@ namespace FF1Lib
 			teleporters.Add(new TeleporterSM(this, i));
 		    }
 
-		    List<byte> chestPool = new();
-		    List<byte> spikePool = new();
+		    if (chestPool == null) chestPool = new();
+		    if (spikePool == null) spikePool = new();
 
 		    // To relocate chests in a dungeon (a group of maps)
 		    //
@@ -1461,8 +1465,10 @@ namespace FF1Lib
 				    var npc = GetNpc(mapId, i);
 				    if (npc.Coord == me.Coord) {
 					hasNpc = true;
-					hasKillableNpc = (npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_fight ||
-							  npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_kill);
+					if (npcdata != null) {
+					    hasKillableNpc = (npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_fight ||
+							      npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_kill);
+					}
 					room.npcs.Add(me);
 					if (hasKillableNpc) {
 					    room.killablenpcs.Add(me);
@@ -1630,6 +1636,8 @@ namespace FF1Lib
 			    }
 			}
 
+			if (debug) Console.WriteLine($"did chest placement");
+
 			foreach (var r in roomsToSanityCheck) {
 			    r.start.Map.Flood((r.start.X, r.start.Y), (MapElement me) => {
 				if (r.doors.Remove(me) || r.chests.Remove(me) || r.teleOut.Remove(me) || r.npcs.Remove(me)) {
@@ -1675,10 +1683,10 @@ namespace FF1Lib
 			return;
 		    }
 
-		    if (spikePool.Count > placedChests.Count)  {
+		    /*if (spikePool.Count > placedChests.Count)  {
 			Console.WriteLine($"WARNING spikePool.Count > placedChests.Count something is wrong");
 			return;
-		    }
+			}*/
 
 		    if (markSpikeTiles) {
 			var ts = GetMapTilesetIndex(ids[0]);
@@ -1843,13 +1851,15 @@ namespace FF1Lib
 		    foreach (MapId[] b in dungeons) {
 			await shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
 					      (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
-						    false, flags.RelocateChestsTrapIndicator);
+						    false, flags.RelocateChestsTrapIndicator,
+						    null, null);
 		    }
 
 		    foreach (MapId[] b in spreadPlacementDungeons) {
 			await shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
 					      (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
-						    true, flags.RelocateChestsTrapIndicator);
+						    true, flags.RelocateChestsTrapIndicator,
+						    null, null);
 		    }
 		}
 	}

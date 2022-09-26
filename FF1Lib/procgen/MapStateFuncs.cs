@@ -473,7 +473,7 @@ namespace FF1Lib.Procgen
 	    }
 	}
 
-	public async Task<MapResult> EarthB2Style() {
+	public async Task<MapResult> EarthB2Style(int minRooms, int maxRooms, int progressWindow, int connectWindow, int minTreasureRooms) {
 	    this.OwnTilemap();
 
 	    var startroom = new EarthB2Room();
@@ -487,13 +487,10 @@ namespace FF1Lib.Procgen
 
 	    var regions = new byte[MAPSIZE,MAPSIZE];
 
-	    int roomTotal = this.rng.Between(29, 33);
+	    int roomTotal = this.rng.Between(minRooms, maxRooms);
 	    int i;
 	    int treasureCount = 0;
 	    for (i = 0; rooms.Count < roomTotal && i < 400; i++) {
-		int progressWindow = 6;
-		int connectWindow = 6;
-
 		int roomIndex = this.rng.Between(Math.Max(rooms.Count-progressWindow, 0), rooms.Count-1);
 		//int roomIndex = this.rng.Between(0, rooms.Count-1);
 		var room = rooms[roomIndex];
@@ -565,10 +562,9 @@ namespace FF1Lib.Procgen
 		    continue;
 		}
 
-		int treasureDraw = this.rng.Between(0, Math.Max(0, rooms.Count-(treasureCount*4)));
-		Console.WriteLine($"treasure room {Math.Max(0, rooms.Count-(treasureCount*5))} {treasureDraw}");
-		if (treasureDraw > 4 && (quad == Quadrants.UpLeft || quad == Quadrants.UpRight)) {
-		    Console.WriteLine("draw");
+		int treasureDraw = this.rng.Between(0, Math.Max(0, rooms.Count-(treasureCount*minTreasureRooms)));
+		if (treasureDraw > minTreasureRooms && (quad == Quadrants.UpLeft || quad == Quadrants.UpRight)) {
+		    //Console.WriteLine("draw");
 
 		    List<SCCoords> doorCandidates = new();
 		    for (int x = topLeft.X+1; x < topLeft.X+w-1; x++) {
@@ -609,10 +605,10 @@ namespace FF1Lib.Procgen
 
 	    Console.WriteLine($"{rooms.Count} {i}");
 
-	    if (rooms.Count < 25) {
+	    if (rooms.Count < minRooms) {
 		return new MapResult(false);
 	    }
-	    if (treasureCount < 3) {
+	    if (treasureCount < minTreasureRooms) {
 		return new MapResult(false);
 	    }
 
@@ -755,15 +751,26 @@ namespace FF1Lib.Procgen
 	    return await this.NextStep();
 	}
 
-	public async Task<MapResult> PlaceChests() {
+	public async Task<MapResult> PlaceChests(FF1Rom rom, List<Map> maps,
+						 MapId mapId, List<(MapId,byte)> preserveChests) {
 	    this.OwnTilemap();
 
-	    var cand = this.Candidates(new List<byte> {DungeonTiles.CAVE_ROOM_FLOOR});
+	    maps = new List<Map>(maps);
+	    maps[(int)mapId] = this.Tilemap;
+	    await rom.shuffleChestLocations(this.rng, maps, new MapId[] { mapId },
+					   preserveChests, null, 0x80, true, false,
+					   this.Chests, this.Traps);
+
+	    /*var cand = this.Candidates(new List<byte> {DungeonTiles.CAVE_ROOM_FLOOR});
 	    var doors = this.Candidates(new List<byte> {DungeonTiles.CAVE_DOOR});
 
 	    var traps = new List<byte>(this.Traps);
 
 	    List<MapElement> chests = new();
+
+	    if (cand.Count < chests.Count) {
+		return new MapResult(false);
+	    }
 
 	    foreach (var c in this.Chests) {
 		var p = cand.SpliceRandom(this.rng);
@@ -778,10 +785,12 @@ namespace FF1Lib.Procgen
 		r.start = this.Tilemap[(d.X, d.Y)];
 	    }
 
+	    Console.WriteLine("PlaceSpikeTiles");
+
 	    FF1Rom.PlaceSpikeTiles(this.rng, traps, chests,
 				   this.RoomFloorTiles,
 				   this.RoomBattleTiles,
-				   rooms);
+				   rooms);*/
 
 	    return await this.NextStep();
 	}
@@ -790,6 +799,75 @@ namespace FF1Lib.Procgen
 	    this.OwnTilemap();
 	    this.Tilemap[y, x] = tile;
 	    return await this.NextStep();
+	}
+
+	public async Task<MapResult> PlaceEntrance(byte tile) {
+	    this.OwnTilemap();
+	    this.Tilemap[this.Entrance.Y, this.Entrance.X] = tile;
+	    return await this.NextStep();
+	}
+
+	public async Task<MapResult> PlaceRodRoom(byte exitTile) {
+	    this.OwnTilemap();
+
+	    var candidates = this.dt.cave_edges.Candidates(this.Tilemap.MapBytes);
+
+	    candidates.Shuffle(this.rng);
+
+	    foreach (var c in candidates) {
+		Direction d;
+		if (this.Tilemap[c.Y-1, c.X] == DungeonTiles.CAVE_FLOOR) {
+		    d = Direction.Down;
+		} else if (this.Tilemap[c.Y, c.X+1] == DungeonTiles.CAVE_FLOOR) {
+		    d = Direction.Left;
+		} else if (this.Tilemap[c.Y+1, c.X] == DungeonTiles.CAVE_FLOOR) {
+		    d = Direction.Up;
+		} else if (this.Tilemap[c.Y, c.X-1] == DungeonTiles.CAVE_FLOOR) {
+		    d = Direction.Right;
+		} else {
+		    continue;
+		}
+
+		SCCoords topLeft;
+		int _w, _h;
+		var pts = this.AddBox(new List<SCCoords> { c.SmNeighbor(d).SmNeighbor(d) },
+			    d, (7, 7), (7, 7),
+			    DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_ROD_FLOOR, false, out topLeft, out _w, out _h);
+
+		if (pts == null) {
+		    continue;
+		}
+
+		foreach (var p in pts) {
+		    this.Tilemap[p.Y, p.X] = DungeonTiles.CAVE_ROCK;
+		}
+
+		this.Tilemap[c.Y, c.X] = DungeonTiles.CAVE_ROD_FLOOR;
+		var next = c;
+		for (int i = 0; i < 3; i++ ) {
+		    next = next.SmNeighbor(d);
+		    this.Tilemap[next.Y, next.X] = DungeonTiles.CAVE_ROD_FLOOR;
+		}
+
+		next = next.SmNeighbor(d).SmNeighbor(d).SmNeighbor(d);
+
+		this.Tilemap[next.Y, next.X] = exitTile;
+
+		break;
+	    }
+	    return await this.NextStep();
+	}
+
+	public async Task<MapResult> PlaceVampire() {
+	    var candidates = this.dt.room_tops.Candidates(this.Tilemap.MapBytes);
+
+	    candidates.Shuffle(this.rng);
+
+	    foreach (var c in candidates) {
+		this.RenderFeature(c.SmLeft, DungeonTiles.VAMPIRE_ROOM.Tiles);
+		return await this.NextStep();
+	    }
+	    return new MapResult(false);
 	}
 
 	public async Task<MapResult> CollectInfo() {
