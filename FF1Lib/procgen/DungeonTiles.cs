@@ -40,6 +40,7 @@ namespace FF1Lib.Procgen
 	public const byte CAVE_EXIT_TO_EARTH_B2 = 0x24;
 	public const byte CAVE_EXIT_TO_EARTH_B3 = 0x25;
 	public const byte CAVE_EXIT_TO_EARTH_B4 = 0x26;
+	public const byte CAVE_EXIT_TO_EARTH_B5 = 0x27;
 
 	public const byte RUBY_CHEST = 0x51;
 	public const byte CAVE_BOSS_DECORATION_W = 0x10;
