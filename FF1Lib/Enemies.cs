@@ -1215,7 +1215,7 @@ namespace FF1Lib
 					GFXOffset = FormationGFX.Sprite1,
 					Palette1 = 0x13, // Blue/Purple
 					Palette2 = 0x14,
-					ElementalWeakness = SpellElement.Ice,
+					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE, (byte)SpellByte.ICE2 },
