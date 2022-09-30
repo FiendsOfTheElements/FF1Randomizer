@@ -117,7 +117,7 @@ namespace FF1Lib
 			"SHARD", "JEWEL", "PIECE", "CHUNK", "PRISM", "STONE", "SLICE", "WEDGE", "BIGGS", "SLIVR", "ORBLT", "ESPER", "FORCE",
 		};
 
-		public void EnableShardHunt(MT19337 rng, TalkRoutines talkroutines, ShardCount count)
+		public void EnableShardHunt(MT19337 rng, TalkRoutines talkroutines, ShardCount count, bool RandomShardNames)
 		{
 			int goal = 16;
 			switch (count) {
@@ -132,7 +132,9 @@ namespace FF1Lib
 				case ShardCount.Range16_36: goal = rng.Between(16, 36); break;
 			}
 
-			string shardName = ShardNames.PickRandom(rng);
+			string shardName = "SHARD";
+			if (RandomShardNames)
+				shardName = ShardNames.PickRandom(rng);
 
 			// Replace unused CANOE string and EarthOrb pointer with whatever we're calling the scavenged item.
 			ItemsText[(int)Item.Shard] = shardName;
