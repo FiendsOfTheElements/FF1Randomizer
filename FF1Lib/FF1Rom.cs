@@ -1196,6 +1196,11 @@ public partial class FF1Rom : NesRom
 			EnableCanalBridge();
 		}
 
+		if ((bool)flags.AirBoat)
+		{
+			EnableAirBoat((bool)flags.IsAirshipFree);
+		}
+
 		if (flags.NonesGainXP || flags.DeadsGainXP)
 		{
 			XpAdmissibility((bool)flags.NonesGainXP, flags.DeadsGainXP);

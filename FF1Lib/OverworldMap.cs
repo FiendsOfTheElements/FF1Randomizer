@@ -56,6 +56,18 @@ namespace FF1Lib
 
 			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value.ToList());
 			var floorLocationRequirements = ItemLocations.MapLocationFloorRequirements.ToDictionary(x => x.Key, x => x.Value);
+			
+			if ((bool)flags.AirBoat)
+			{
+				foreach(var location in mapLocationRequirements)
+				{
+					if (location.Value.Contains(MapChange.Airship | MapChange.Canoe))
+					{
+						location.Value.Remove(MapChange.Airship | MapChange.Canoe);
+						location.Value.Add(MapChange.Airship | MapChange.Ship);
+					}
+				}
+			}
 
 			_walkableNodes = new Dictionary<WalkableRegion, List<OverworldTeleportIndex>> {
 				{ WalkableRegion.ConeriaRegion, new List<OverworldTeleportIndex>{OverworldTeleportIndex.ConeriaCastle1, OverworldTeleportIndex.Coneria, OverworldTeleportIndex.TempleOfFiends1} },

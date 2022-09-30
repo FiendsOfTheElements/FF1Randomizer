@@ -369,6 +369,7 @@ namespace FF1Lib
 		public bool NoPartyShuffle { get; set; } = false;
 		public bool Dash { get; set; } = false;
 		public bool SpeedBoat { get; set; } = false;
+		public bool? AirBoat { get; set; } = false;
 		public bool BuyTen { get; set; } = false;
 		public bool IdentifyTreasures { get; set; } = false;
 		public bool ShopInfo { get; set; } = false;
