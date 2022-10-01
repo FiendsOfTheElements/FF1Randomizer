@@ -1173,7 +1173,7 @@ public partial class FF1Rom : NesRom
 			ScaleBossStats(rng, flags);
 		}
 
-		PartyComposition(rng, flags, preferences);
+		PartyGeneration(rng, flags, preferences);
 
 		if (((bool)flags.RecruitmentMode))
 		{
@@ -1186,11 +1186,6 @@ public partial class FF1Rom : NesRom
 		}
 
 		await this.Progress();
-
-		if ((bool)flags.EnablePoolParty)
-		{
-			EnablePoolParty(flags, rng);
-		}
 
 		if ((bool)flags.MapCanalBridge)
 		{
