@@ -4167,6 +4167,33 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassChaos"));
 			}
 		}
+		public bool? MooglieWeaponBalance
+		{
+			get => Flags.MooglieWeaponBalance;
+			set
+			{
+				Flags.MooglieWeaponBalance = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MooglieWeaponBalance"));
+			}
+		}
+		public bool? Transmooglifier
+		{
+			get => Flags.Transmooglifier;
+			set
+			{
+				Flags.Transmooglifier = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Transmooglifier"));
+			}
+		}
+		public bool? GuaranteeCustomClassComposition
+		{
+			get => Flags.GuaranteeCustomClassComposition;
+			set
+			{
+				Flags.GuaranteeCustomClassComposition = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GuaranteeCustomClassComposition"));
+			}
+		}
 		public bool? RandomizeClassCasting
 		{
 			get => Flags.RandomizeClassCasting;

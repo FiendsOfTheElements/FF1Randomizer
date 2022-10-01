@@ -221,7 +221,7 @@ public partial class FF1Rom : NesRom
 		var talkroutines = new TalkRoutines();
 		var npcdata = new NPCdata(this);
 		UpdateDialogs(npcdata, flags);
-		AddElementIcons();
+		FF1Text.AddNewIcons(this, flags);
 
 		if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 

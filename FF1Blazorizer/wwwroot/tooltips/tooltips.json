@@ -1542,7 +1542,25 @@
 		"Id": "RandomizeClassChaosCheckBox",
 		"title": "Chaos Mode",
 		"screenshot": "RandomizeClassChaosCheckBox.png",
-		"description": "Instead of simply applying \"basic\" blessings and curses to classes, Chaos Mode shuffles all the stats, spellcasting abilities, and equipment permissions between all the classes, making for very different classes from the vanilla game. Only for experienced players that are comfortable with Blursed Classes in general."
+		"description": "Chaos Mode shuffles all the stats, spellcasting abilities, and equipment permissions between all the classes, making for classes with very different abilities from the vanilla game. Only for experienced players."
+	},
+	{
+		"Id": "TransmooglifierCheckBox",
+		"title": "Transmooglifier",
+		"screenshot": "transmooglifier.gif",
+		"description": "Procedurally generates six custom classes from a set of 26. Each class corresponds to heuristically randomized spell permissions, stats, equipment sets, abilities, and blursings - this means the classes will have unique properties every time. They can be described as \"What you might expect from a class named X\".\nThis also disables most specific balance options. Character specific buffs will refer to character slot. Example: Fighter XP will now refer to 'Slot 0 character class XP Bonus'."
+	},
+	{
+		"Id": "GuaranteeCustomClassCompositionCheckBox",
+		"title": "Guarantee Custom Class Composition",
+		"screenshot": null,
+		"description": "Guarantees you will be offered a balanced party of classes, including: a heavy armor class, an agility or luck class, an unarmed or low armor class, a white magic recovery class, an offensive mage class, and a hybrid class."
+	},
+	{
+		"Id": "MooglieWeaponBalanceCheckBox",
+		"title": "Balance Weapons for Customs",
+		"screenshot": null,
+		"description": "Recategorizes weapons to improve end game weapons that are not Masamune or Katana. Specifically: \n• Dragon Sword: now Dragon Chucks - 29 Dmg, 0 Hit, 30 Crit.\n• Cat Claw: 30 Crit.\n• Light Axe: 50 dmg\n• Thor Hammer: 40 Crit, LIT, DRAGON, GIANT damage\n• Bane: 30 dmg, MAGE, DRAGON, REGEN damage, now a Shortsword\n• Defense: +10 dmg\n• Katana: Now a Scimitar not a Knife\n• Ice Sword: Now a Scimitar not a Longsword.\n\nDoes not work with Weaponizer"
 	},
 	{
 		"Id": "RandomizeClassInnateMagicCheckBox",

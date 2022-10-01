@@ -58,6 +58,12 @@
     <EmbeddedResource Include="maps\shuffled256.zip" />
     <EmbeddedResource Include="maps\unsafe256.zip" />
 
+    <EmbeddedResource Include="icons\weapon_icons.png" />
+    <EmbeddedResource Include="icons\spell_icons.png" />
+    <EmbeddedResource Include="icons\elementstatus_icons.png" />
+
+    <EmbeddedResource Include="customclasses\*.png" />
+
     <EmbeddedResource Include="bosses\ASTAROTH.png" />
     <EmbeddedResource Include="bosses\ASURA.png" />
     <EmbeddedResource Include="bosses\BARBRICA.png" />
