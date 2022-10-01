@@ -59,7 +59,7 @@ namespace FF1Lib.Procgen
 	    return new List<SCCoords>(points);
 	}
 
-	public static List<SCCoords> OuterEdge(SCCoords cp, int w, int h) {
+	public static List<SCCoords> OuterEdge(SCCoords cp, int w, int h, bool corners) {
 	    HashSet<SCCoords> points = new ();
 	    for (int x = 0; x < w+2; x++) {
 		for (int y = 0; y < h+2; y++) {
@@ -92,6 +92,12 @@ namespace FF1Lib.Procgen
 		    points.Add(new SCCoords(px, py));
 		}
 	    }
+	    if (!corners) {
+		points.Remove(new SCCoords(cp.X-1, cp.Y-1));
+		points.Remove(new SCCoords(cp.X+w, cp.Y-1));
+		points.Remove(new SCCoords(cp.X-1, cp.Y+h));
+		points.Remove(new SCCoords(cp.X+w, cp.Y+h));
+	    }
 	    return new List<SCCoords>(points);
 	}
 
@@ -105,7 +111,10 @@ namespace FF1Lib.Procgen
 	    return coords;
 	}
 
-	public bool CheckClear(int x, int y, int w, int h, byte clearTile, List<SCCoords> coverable) {
+	public bool CheckClear(int x, int y, int w, int h, byte clearTile, List<SCCoords> coverable, int zone) {
+
+	    if (x < zone || y < zone || (x + w) >= (MAPSIZE-zone) || (y + h) >= (MAPSIZE-zone)) return false;
+
 	    bool clear = true;
 	    for (int i = x; i < x + w && clear; ++ i) {
 		for (int j = y; j < y + h && clear; ++j) {
@@ -225,13 +234,13 @@ namespace FF1Lib.Procgen
 
 	    switch (q) {
 		case Quadrants.UpRight:
-		    return pts.Where((p) => p.X >= midx && p.Y < midy).ToList();
+		    return pts.Where((p) => p.X >= midx && p.Y <= midy).ToList();
 		case Quadrants.DownRight:
 		    return pts.Where((p) => p.X >= midx && p.Y >= midy).ToList();
 		case Quadrants.DownLeft:
-		    return pts.Where((p) => p.X < midx && p.Y >= midy).ToList();
+		    return pts.Where((p) => p.X <= midx && p.Y >= midy).ToList();
 		case Quadrants.UpLeft:
-		    return pts.Where((p) => p.X >= midx && p.Y < midy).ToList();
+		    return pts.Where((p) => p.X <= midx && p.Y <= midy).ToList();
 		default:
 		    return null;
 	    }
@@ -267,11 +276,7 @@ namespace FF1Lib.Procgen
 		    continue;
 		}
 
-		int zone = 4;
-
-		if (topLeft.X < zone || topLeft.Y < zone || (topLeft.X + w) >= (MAPSIZE-zone) || (topLeft.Y + h) >= (MAPSIZE-zone)) continue;
-
-		if (!this.CheckClear(topLeft.X, topLeft.Y, w, h, emptyTile, coverable)) {
+		if (!this.CheckClear(topLeft.X, topLeft.Y, w, h, emptyTile, coverable, 4)) {
 		    continue;
 		}
 
@@ -299,7 +304,7 @@ namespace FF1Lib.Procgen
 		    continue;
 		}
 
-		if (emptyTile != 0xff && !this.CheckClear(x, y, w, h, emptyTile, null)) {
+		if (emptyTile != 0xff && !this.CheckClear(x, y, w, h, emptyTile, null, 0)) {
 		    continue;
 		}
 
@@ -411,6 +416,8 @@ namespace FF1Lib.Procgen
 	    public List<SCCoords> points;
 	    public SCCoords topLeft;
 	    public int w, h;
+	    public bool tight;
+	    public bool hallway;
 	}
 
 	public void ConnectRegions() {
@@ -451,13 +458,15 @@ namespace FF1Lib.Procgen
 			foreach (var d in dirs) {
 			    var n = me.Neighbor(d);
 			    if (n.Value == DungeonTiles.CAVE_BLANK) {
-				var nn = me.Neighbor(d).Neighbor(d);
-				var neighborReg = regions[nn.Y, nn.X];
-				if (neighborReg > thisRegion) {
-				    if (!hops.ContainsKey(neighborReg)) {
-					hops[neighborReg] = new List<SCCoords>();
+				foreach (var i in dirs) {
+				    var nn = me.Neighbor(d).Neighbor(i);
+				    var neighborReg = regions[nn.Y, nn.X];
+				    if (neighborReg > thisRegion) {
+					if (!hops.ContainsKey(neighborReg)) {
+					    hops[neighborReg] = new List<SCCoords>();
+					}
+					hops[neighborReg].Add(new SCCoords(n.X, n.Y));
 				    }
-				    hops[neighborReg].Add(new SCCoords(n.X, n.Y));
 				}
 			    }
 			}
@@ -473,7 +482,7 @@ namespace FF1Lib.Procgen
 	    }
 	}
 
-	public async Task<MapResult> EarthB2Style(int minRooms, int maxRooms, int progressWindow, int connectWindow, int minTreasureRooms) {
+	public async Task<MapResult> EarthB2Style(int minRooms, int maxRooms, int progressWindow, int connectWindow, int minTreasureRooms, PgFeature[] features, int featureAfter) {
 	    this.OwnTilemap();
 
 	    var startroom = new EarthB2Room();
@@ -490,8 +499,16 @@ namespace FF1Lib.Procgen
 	    int roomTotal = this.rng.Between(minRooms, maxRooms);
 	    int i;
 	    int treasureCount = 0;
-	    for (i = 0; rooms.Count < roomTotal && i < 400; i++) {
-		int roomIndex = this.rng.Between(Math.Max(rooms.Count-progressWindow, 0), rooms.Count-1);
+	    int featureCount = 0;
+	    bool didTreasure = false;
+	    for (i = 0; rooms.Count < roomTotal && i < roomTotal*20; i++) {
+		int roomIndex;
+
+		if (didTreasure) {
+		    roomIndex = this.rng.Between(0, rooms.Count-1);
+		} else {
+		    roomIndex = this.rng.Between(Math.Max(rooms.Count-progressWindow, 0), rooms.Count-1);
+		}
 		//int roomIndex = this.rng.Between(0, rooms.Count-1);
 		var room = rooms[roomIndex];
 		var quad = (Quadrants)this.rng.Between(0, 3);
@@ -500,12 +517,64 @@ namespace FF1Lib.Procgen
 
 		//Console.WriteLine($"{candidates.Count} {quad} {room.topLeft} {room.w} {room.h}");
 
-		SCCoords topLeft;
-		int w, h;
+		SCCoords topLeft = new SCCoords(0, 0);
+		int w = 0;
+		int h = 0;
 
-		bool valid;
+		bool valid = false;
 
-		valid = CornerBox(candidates, quad, (4, 7), (4, 7), candidates, DungeonTiles.CAVE_BLANK, out topLeft, out w, out h);
+		int treasureDraw = this.rng.Between(0, Math.Max(0, rooms.Count-(treasureCount*minTreasureRooms)));
+		int featureDraw = this.rng.Between(0, Math.Max(0, rooms.Count-(featureCount*features.Length + featureAfter)));
+
+		bool placeTreasure = false;
+		bool placeFeature = false;
+
+		if (quad == Quadrants.UpLeft || quad == Quadrants.UpRight || room.hallway) {
+		    placeTreasure = (minTreasureRooms > 0 && treasureDraw > minTreasureRooms);
+		    placeFeature = (featureCount < features.Length && (featureDraw > features.Length));
+		}
+
+		int hallwayDraw;
+		if (room.tight) {
+		    hallwayDraw = this.rng.Between(0, 1);
+		} else {
+		    hallwayDraw = this.rng.Between(0, 7);
+		}
+		bool makeHallway = (hallwayDraw == 0 || hallwayDraw == 1);
+
+		if (placeFeature) {
+		    var thisFeature = features[featureCount];
+		    int featureH = thisFeature.Tiles.GetLength(0);
+		    int featureW = thisFeature.Tiles.GetLength(1);
+
+		    List<SCCoords> checkpoints = new();
+		    for (int j = 0; j < room.w; j++) {
+			checkpoints.Add(new SCCoords(room.topLeft.X-featureW/2 + j, room.topLeft.Y-featureH));
+		    }
+		    checkpoints.Shuffle(this.rng);
+		    foreach (var c in checkpoints) {
+			if (CheckClear(c.X, c.Y, featureW, featureH, DungeonTiles.CAVE_BLANK, null, 4)) {
+			    //Console.WriteLine($"trying {c}");
+			    topLeft = c;
+			    w = featureW;
+			    h = featureH;
+			    valid = true;
+			    break;
+			}
+		    }
+		} else if (placeTreasure) {
+		    valid = CornerBox(candidates, quad, (3, 9), (3, 9), candidates, DungeonTiles.CAVE_BLANK, out topLeft, out w, out h);
+		} else if (hallwayDraw == 0) {
+		    // Vertical hallway
+		    valid = CornerBox(candidates, quad, (1, 1), (6, 8), candidates, DungeonTiles.CAVE_BLANK, out topLeft, out w, out h);
+		} else if (hallwayDraw == 1) {
+		    // Horizontal hallway
+		    valid = CornerBox(candidates, quad, (6, 8), (1, 1), candidates, DungeonTiles.CAVE_BLANK, out topLeft, out w, out h);
+		} else {
+		    valid = CornerBox(candidates, quad, (4, 7), (4, 7), candidates, DungeonTiles.CAVE_BLANK, out topLeft, out w, out h);
+		}
+
+		//Console.WriteLine($"val {valid} {hallwayDraw} {topLeft} {w} {h}");
 
 		if (!valid) {
 		    continue;
@@ -513,8 +582,8 @@ namespace FF1Lib.Procgen
 
 		var boxpoints = BoxPoints(topLeft, w, h);
 		var oldRoomBoxpoints = BoxPoints(room.topLeft, room.w, room.h);
-		var clear = OuterEdge(room.topLeft, room.w, room.h);
-		var newRoomEdge = OuterEdge(topLeft, w, h);
+		var clear = OuterEdge(room.topLeft, room.w, room.h, true);
+		var newRoomEdge = OuterEdge(topLeft, w, h, true);
 
 		// Make sure it isn't touching anything
 		foreach (var c in newRoomEdge) {
@@ -527,10 +596,11 @@ namespace FF1Lib.Procgen
 		}
 
 		if (!valid) {
+		    //Console.WriteLine($"hit edge 1");
 		    continue;
 		}
 
-		List<SCCoords> secondEdge = OuterEdge(topLeft.SmNeighbor(Quadrants.UpLeft), w+2, h+2);
+		List<SCCoords> secondEdge = OuterEdge(topLeft.SmNeighbor(Quadrants.UpLeft), w+2, h+2, false);
 		List<int> connecting = new();
 		foreach (var c in secondEdge) {
 		    if (this.Tilemap[c.Y, c.X] != DungeonTiles.CAVE_BLANK &&
@@ -541,20 +611,23 @@ namespace FF1Lib.Procgen
 			if (reg > 0 && (reg+connectWindow) <= rooms.Count) {
 			    connecting.Add(reg);
 			} else {
+			    //Console.WriteLine($"rejected connecting {reg} {rooms.Count} {c} {this.Tilemap[c.Y, c.X]:X}");
 			    valid = false;
 			    break;
 			}
 		    }
 		}
 
-		secondEdge = OuterEdge(topLeft.SmNeighbor(Quadrants.UpLeft).SmNeighbor(Quadrants.UpLeft), w+4, h+4);
-		foreach (var c in secondEdge) {
-		    if (this.Tilemap[c.Y, c.X] != DungeonTiles.CAVE_BLANK &&
-			!oldRoomBoxpoints.Contains(c) &&
-			!connecting.Contains(regions[c.Y, c.X]))
-		    {
-			valid = false;
-			break;
+		if (!room.tight) {
+		    secondEdge = OuterEdge(topLeft.SmNeighbor(Quadrants.UpLeft).SmNeighbor(Quadrants.UpLeft), w+4, h+4, false);
+		    foreach (var c in secondEdge) {
+			if (this.Tilemap[c.Y, c.X] != DungeonTiles.CAVE_BLANK &&
+			    !oldRoomBoxpoints.Contains(c) &&
+			    !connecting.Contains(regions[c.Y, c.X]))
+			{
+			    //Console.WriteLine($"second edge {regions[c.Y, c.X]} {rooms.Count} {oldRoomBoxpoints.Contains(c)} {connecting.Contains(regions[c.Y, c.X])}");
+			    valid = false;
+			}
 		    }
 		}
 
@@ -562,10 +635,23 @@ namespace FF1Lib.Procgen
 		    continue;
 		}
 
-		int treasureDraw = this.rng.Between(0, Math.Max(0, rooms.Count-(treasureCount*minTreasureRooms)));
-		if (treasureDraw > minTreasureRooms && (quad == Quadrants.UpLeft || quad == Quadrants.UpRight)) {
-		    //Console.WriteLine("draw");
+		if (placeFeature) {
+		    this.RenderFeature(topLeft, features[featureCount].Tiles);
+		    if (features[featureCount].Entrances.ContainsKey("ExitDoor")) {
+			var pts = new List<SCCoords>();
+			var exit = features[featureCount].Entrances["ExitDoor"];
+			var pt = new SCCoords(topLeft.X + exit.X, topLeft.Y + exit.Y + 1);
+			pts.Add(pt);
+			//Console.WriteLine($"------------------ {pt} {rooms.Count}");
 
+			foreach (var b in boxpoints) {
+			    regions[b.Y, b.X] = (byte)rooms.Count;
+			}
+			rooms.Add(new EarthB2Room { points = pts, topLeft = topLeft, w = w, h = h, tight = true});
+		    }
+		    featureCount++;
+		    didTreasure = false;
+		} else if (placeTreasure) {
 		    List<SCCoords> doorCandidates = new();
 		    for (int x = topLeft.X+1; x < topLeft.X+w-1; x++) {
 			if (this.Tilemap[topLeft.Y+h, x] == DungeonTiles.CAVE_FLOOR) {
@@ -584,31 +670,31 @@ namespace FF1Lib.Procgen
 		    }
 		    var door = doorCandidates.PickRandom(this.rng);
 		    this.Tilemap[door.Y, door.X] = DungeonTiles.CAVE_DOOR;
-		    this.Tilemap[door.Y+1, door.X] = DungeonTiles.CAVE_CLOSE_DOOR;
-
+		    didTreasure = true;
 		} else {
 		    foreach (var b in boxpoints) {
 			regions[b.Y, b.X] = (byte)rooms.Count;
 			this.Tilemap[b.Y, b.X] = DungeonTiles.CAVE_FLOOR;
 		    }
 
-		    foreach (var c in clear) {
-			if (boxpoints.Contains(c)) {
-			    this.Tilemap[c.Y, c.X] = DungeonTiles.CAVE_BLANK;
-			    regions[c.Y, c.X] = 0;
-			    boxpoints.Remove(c);
+		    if (!makeHallway && !room.hallway) {
+			foreach (var c in clear) {
+			    if (boxpoints.Contains(c)) {
+				this.Tilemap[c.Y, c.X] = DungeonTiles.CAVE_BLANK;
+				regions[c.Y, c.X] = 0;
+				boxpoints.Remove(c);
+			    }
 			}
 		    }
-		    rooms.Add(new EarthB2Room { points = boxpoints, topLeft = topLeft, w = w, h = h });
+		    rooms.Add(new EarthB2Room { points = boxpoints, topLeft = topLeft, w = w, h = h, hallway = makeHallway });
+		    didTreasure = false;
 		}
 	    }
 
 	    Console.WriteLine($"{rooms.Count} {i}");
 
-	    if (rooms.Count < minRooms) {
-		return new MapResult(false);
-	    }
-	    if (treasureCount < minTreasureRooms) {
+	    if (rooms.Count < minRooms || treasureCount < minTreasureRooms || featureCount < features.Length) {
+		Console.WriteLine($"would have failed");
 		return new MapResult(false);
 	    }
 

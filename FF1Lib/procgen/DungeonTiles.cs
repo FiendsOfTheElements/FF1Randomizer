@@ -26,7 +26,6 @@ namespace FF1Lib.Procgen
         public const byte CAVE_DOOR = 0x36;
         public const byte CAVE_CLOSE_DOOR = 0x3A;
         public const byte CAVE_ROCK = 0x3E;
-        public const byte CAVE_ROOM_LOWER_WALL = 0x30;
 
 	public const byte CAVE_ROD_FLOOR = 0x20;
 
@@ -48,6 +47,7 @@ namespace FF1Lib.Procgen
 
 	public const byte STAR = 0x80;
 	public const byte _ = 0x81;
+	public const byte ROOM = 0x82;
 	public const byte None = 0xFF;
 
 	public static PgFeature BLACK_MAGIC_SHOP = new PgFeature(new byte[,] {
@@ -57,11 +57,22 @@ namespace FF1Lib.Procgen
 	    }, new Dictionary<string, SCCoords> {
 	    });
 
-	public static PgFeature VAMPIRE_ROOM = new PgFeature(new byte[,] {
+	public static PgFeature SMALL_VAMPIRE_FEATURE = new PgFeature(new byte[,] {
 	    {CAVE_ROOM_E, RUBY_CHEST, CAVE_ROOM_W},
 	    {CAVE_BOSS_DECORATION_W, CAVE_ROOM_FLOOR, CAVE_BOSS_DECORATION_E},
 	    }, new Dictionary<string, SCCoords> {
 		{"Vampire", new SCCoords(1, 1)}
+	    });
+
+	public static PgFeature VAMPIRE_ROOM = new PgFeature(new byte[,] {
+	    {CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR},
+	    {CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, RUBY_CHEST, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR},
+	    {CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_BOSS_DECORATION_W, CAVE_ROOM_FLOOR, CAVE_BOSS_DECORATION_E, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_DOOR, CAVE_ROOM_FLOOR},
+	    {None, None, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_E, CAVE_ROOM_FLOOR, CAVE_ROOM_W, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, None, None},
+	    {None, None, None, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_DOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, None, None, None},
+	    }, new Dictionary<string, SCCoords> {
+		{"Vampire", new SCCoords(5, 1)},
+		{"ExitDoor", new SCCoords(9, 2)}
 	    });
 
 	public PgTileFilter cave_rock_walls;
@@ -72,7 +83,7 @@ namespace FF1Lib.Procgen
 	public PgTileFilter earth_cave_walls;
 	public PgTileFilter earth_cave_walls2;
 	public PgTileFilter earth_cave_walls3;
-	public PgTileFilter earth_cave_walls4;
+	public PgTileFilter earth_cave_extend_walls;
 	public PgTileFilter earth_cave_walls5;
 	public PgTileFilter earth_cave_walls6;
 	public PgTileFilter cave_edges;
@@ -85,17 +96,25 @@ namespace FF1Lib.Procgen
 		allTiles.Add(i);
 	    }
 
+	    var room_tiles = new HashSet<byte>();
+	    room_tiles.Add(CAVE_ROOM_FLOOR);
+	    room_tiles.Add(CAVE_DOOR);
+	    room_tiles.Add(CAVE_ROOM_NW);
+	    room_tiles.Add(CAVE_ROOM_N);
+	    room_tiles.Add(CAVE_ROOM_NE);
+	    room_tiles.Add(CAVE_ROOM_E);
+	    room_tiles.Add(CAVE_ROOM_W);
+	    room_tiles.Add(CAVE_ROOM_SE);
+	    room_tiles.Add(CAVE_ROOM_S);
+	    room_tiles.Add(CAVE_ROOM_SW);
+	    room_tiles.Add(RUBY_CHEST);
+	    room_tiles.Add(CAVE_BOSS_DECORATION_W);
+	    room_tiles.Add(CAVE_BOSS_DECORATION_E);
+
 	    var non_room_tiles = new HashSet<byte>(allTiles);
-	    non_room_tiles.Remove(CAVE_ROOM_FLOOR);
-	    non_room_tiles.Remove(CAVE_DOOR);
-	    non_room_tiles.Remove(CAVE_ROOM_NW);
-	    non_room_tiles.Remove(CAVE_ROOM_N);
-	    non_room_tiles.Remove(CAVE_ROOM_NE);
-	    non_room_tiles.Remove(CAVE_ROOM_E);
-	    non_room_tiles.Remove(CAVE_ROOM_W);
-	    non_room_tiles.Remove(CAVE_ROOM_SE);
-	    non_room_tiles.Remove(CAVE_ROOM_S);
-	    non_room_tiles.Remove(CAVE_ROOM_SW);
+	    foreach (var t in room_tiles) {
+		non_room_tiles.Remove(t);
+	    }
 
 	    var floorOrRodFloor = new HashSet<byte>();
 	    floorOrRodFloor.Add(CAVE_FLOOR);
@@ -161,15 +180,21 @@ namespace FF1Lib.Procgen
 			CAVE_ROOM_NE),
 
 		    new Rule(new byte[3,3] {
-			{STAR, CAVE_ROOM_FLOOR, STAR},
-			{STAR, CAVE_ROOM_FLOOR, STAR},
-			{STAR,               _, STAR}},
-			CAVE_ROOM_LOWER_WALL),
+			{STAR, ROOM, STAR},
+			{STAR, CAVE_DOOR, STAR},
+			{STAR,    _, STAR}},
+			CAVE_DOOR),
 
 		    new Rule(new byte[3,3] {
-			{STAR,               _, STAR},
-			{STAR, CAVE_ROOM_FLOOR, STAR},
-			{STAR, CAVE_ROOM_FLOOR, STAR}},
+			{STAR, ROOM, STAR},
+			{STAR, ROOM, STAR},
+			{STAR,    _, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR,    _, STAR},
+			{STAR, ROOM, STAR},
+			{STAR, ROOM, STAR}},
 			CAVE_ROOM_N),
 
 		    new Rule(new byte[3,3] {
@@ -183,26 +208,44 @@ namespace FF1Lib.Procgen
 			{CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, _},
 			{STAR, STAR, STAR}},
 			CAVE_ROOM_E),
-		}, allTiles, non_room_tiles, null);
+		}, allTiles, non_room_tiles, room_tiles);
 
 	    this.cave_room_walls2 = new PgTileFilter(
 		new Rule[] {
 		    new Rule(new byte[3,3] {
 			{STAR,            STAR,      STAR},
 			{STAR, CAVE_ROOM_W,      STAR},
-			{STAR, CAVE_ROOM_LOWER_WALL, STAR}},
+			{STAR, CAVE_WALL_N, STAR}},
+			CAVE_ROOM_SW),
+
+		    new Rule(new byte[3,3] {
+			{STAR,            STAR,      STAR},
+			{CAVE_WALL_N, CAVE_ROOM_FLOOR,  STAR},
+			{STAR, CAVE_WALL_N, STAR}},
 			CAVE_ROOM_SW),
 
 		    new Rule(new byte[3,3] {
 			{STAR,            STAR,      STAR},
 			{STAR, CAVE_ROOM_E,          STAR},
-			{STAR, CAVE_ROOM_LOWER_WALL, STAR}},
+			{STAR, CAVE_WALL_N, STAR}},
+			CAVE_ROOM_SE),
+
+		    new Rule(new byte[3,3] {
+			{STAR,            STAR,      STAR},
+			{STAR, CAVE_ROOM_FLOOR,      CAVE_WALL_N},
+			{STAR, CAVE_WALL_N, STAR}},
+			CAVE_ROOM_SE),
+
+		    new Rule(new byte[3,3] {
+			{STAR,            STAR,      STAR},
+			{STAR, CAVE_ROOM_FLOOR,      CAVE_DOOR},
+			{STAR, CAVE_WALL_N, STAR}},
 			CAVE_ROOM_SE),
 
 		    new Rule(new byte[3,3] {
 			{STAR,            STAR,      STAR},
 			{STAR, CAVE_ROOM_FLOOR,      STAR},
-			{STAR, CAVE_ROOM_LOWER_WALL, STAR}},
+			{STAR, CAVE_WALL_N, STAR}},
 			CAVE_ROOM_S),
 
 		    new Rule(new byte[3,3] {
@@ -210,6 +253,12 @@ namespace FF1Lib.Procgen
 			{STAR, CAVE_ROOM_FLOOR,      STAR},
 			{STAR, CAVE_DOOR, STAR}},
 			CAVE_ROOM_S),
+
+		    new Rule(new byte[3,3] {
+			{STAR,  CAVE_DOOR,  STAR},
+			{STAR, CAVE_FLOOR,  STAR},
+			{STAR, STAR, STAR}},
+			CAVE_CLOSE_DOOR),
 		}, allTiles, non_room_tiles, null);
 
 	    this.cave_corners = new PgTileFilter(
@@ -408,6 +457,18 @@ namespace FF1Lib.Procgen
 			CAVE_WALL_N),
 
 		    new Rule(new byte[3,3] {
+			{STAR, CAVE_WALL_N, STAR},
+			{STAR, CAVE_BLANK, CAVE_FLOOR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_WALL_N, STAR},
+			{CAVE_FLOOR, CAVE_BLANK, STAR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
 			{STAR, STAR, STAR},
 			{CAVE_WALL_N, CAVE_BLANK, CAVE_WALL_N},
 			{CAVE_FLOOR, STAR, CAVE_FLOOR}},
@@ -418,6 +479,79 @@ namespace FF1Lib.Procgen
 			{CAVE_WALL_N, CAVE_BLANK, CAVE_WALL_N},
 			{STAR, STAR, STAR}},
 			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{CAVE_WALL_N, CAVE_BLANK, CAVE_ROCK},
+			{CAVE_FLOOR, STAR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{CAVE_ROCK, CAVE_BLANK, CAVE_WALL_N},
+			{STAR, STAR, CAVE_FLOOR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{CAVE_WALL_N, CAVE_BLANK, STAR},
+			{CAVE_FLOOR, STAR, CAVE_ROCK}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{STAR, CAVE_BLANK, CAVE_WALL_N},
+			{CAVE_ROCK, STAR, CAVE_FLOOR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_WALL_N, CAVE_FLOOR},
+			{STAR, CAVE_BLANK, CAVE_WALL_N},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{CAVE_FLOOR, CAVE_WALL_N, STAR},
+			{CAVE_WALL_N, CAVE_BLANK, STAR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{CAVE_FLOOR,  CAVE_BLANK, CAVE_WALL_N},
+			{CAVE_WALL_N, CAVE_BLANK, STAR},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{CAVE_WALL_N,  CAVE_BLANK, CAVE_FLOOR},
+			{STAR, CAVE_BLANK, CAVE_WALL_N},
+			{STAR, STAR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR,  STAR, STAR},
+			{STAR,  CAVE_BLANK, CAVE_FLOOR},
+			{STAR,  CAVE_BLANK, CAVE_WALL_N}},
+			CAVE_WALL_W),
+
+		    new Rule(new byte[3,3] {
+			{STAR,  CAVE_BLANK, CAVE_FLOOR},
+			{STAR,  CAVE_BLANK, CAVE_WALL_N},
+			{STAR,  STAR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR,  STAR, STAR},
+			{CAVE_FLOOR,  CAVE_BLANK, STAR},
+			{CAVE_WALL_N,  CAVE_BLANK, STAR}},
+			CAVE_WALL_E),
+
+		    new Rule(new byte[3,3] {
+			{CAVE_FLOOR,  CAVE_BLANK, STAR},
+			{CAVE_WALL_N, CAVE_BLANK, STAR},
+			{STAR,  STAR, STAR}},
+			CAVE_WALL_N),
+
 		}, allTiles, null, null);
 
 	    this.earth_cave_walls3 = new PgTileFilter(
@@ -438,7 +572,7 @@ namespace FF1Lib.Procgen
 		}, allTiles, null, null);
 
 
-	    this.earth_cave_walls4 = new PgTileFilter(
+	    this.earth_cave_extend_walls = new PgTileFilter(
 		new Rule[] {
 
 		    new Rule(new byte[3,3] {
