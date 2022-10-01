@@ -1621,7 +1621,7 @@ namespace FF1Lib
 					rom.SpellPermissions.AddPermission(p, (SpellSlots)sp.Index);
 
 			// Spell Charge Growth
-			CommitSpellChargeGrowth(c, p, spells.Count == 0);
+			CommitSpellChargeGrowth(c, p, finalSchools.Count == 0);
 		}
 
 		public List<MagicSpell> RollSpellSet()
@@ -1727,6 +1727,10 @@ namespace FF1Lib
 				rom.ClassData[c].SpCGrowth = spellGrowth;
 				rom.ClassData[c].MaxSpC = (byte)spellChargeMax;
 				rom.ClassData[c].SpCStarting = 2;
+			}
+			else
+			{
+				rom.ClassData[c].SpCStarting = 0;
 			}
 		}
 
