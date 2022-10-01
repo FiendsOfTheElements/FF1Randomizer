@@ -479,7 +479,9 @@ namespace FF1Lib
 			// Subvert shop loading code and redirect it to Bank 12 for better management
 			rom.PutInBank(0x1F, 0xEA02, Blob.FromHex("A9122003FE200090A9092003FEA900A208205AE9EAEAEA"));
 			rom.PutInBank(0x12, 0x9000, Blob.FromHex("A9008510A9808511A208A908205AE9A9008510A980851160"));
-
+			rom.PutInBank(0x1F, 0xE99E, Blob.FromHex("A9122003FE202090"));
+			rom.PutInBank(0x12, 0x9020, Blob.FromHex("A9008510A9808511A208A908205AE9AD0220A9118D062060"));
+			
 
 			// Load icons from images. Make your own if you'd like! Don't forget to add them to the icon dictionary
 			IImageFormat format;
@@ -543,8 +545,8 @@ namespace FF1Lib
 			//  • 32 Icons		at 0x8810 (0x8800 is reserved for backgrounds)
 			//	• 28 Icons		at 0x8C40
 			//
-			// Shop (Bank 0x12)
-			//	• 7/8 Icons		at 0x8460 (first slot is L, add 0x10 if not replacing it)
+			// Shop and battle (Bank 0x12)
+			//	• 7 Icons		at 0x8470 (first slot is L, add 0x10 if not replacing it)
 			//	• 5 Icons		at 0x8720
 			//
 			// Shard Hunt Only Icons available in Menu (Bank 0x12)

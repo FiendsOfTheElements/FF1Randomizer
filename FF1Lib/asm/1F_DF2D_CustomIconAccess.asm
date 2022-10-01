@@ -13,6 +13,7 @@ Restore = $E04E ; the @Restore from DrawComplexString
 CHRLoad = $E965
 CHRLoadToA = $E95A
 LoadMenuCHR = $E98E
+LoadMapObjCHR = $E99E;
 
 
 
@@ -121,7 +122,28 @@ AddIconsToShopBGCHR:
     RTS
 
 
+.org $E99E
+ReplaceSTMBGCHRLoad:
+    LDA #$12             ; swap to icon bank
+    JSR SwapPRG
+    JSR AddIconsToSTMBGCHR
 
 
+.org $9020
+AddIconsToSTMBGCHR:
 
+    LDA #<$8000          ; Load in the shop icons
+    STA tmp
+    LDA #>$8000
+    STA tmp+1
 
+    LDX #$08             ; 8 rows of tiles
+    LDA #$8              ; dest PPU adddress = $8000
+
+    JSR CHRLoadToA
+
+    LDA PPU_STATUS
+    LDA #$11
+    STA PPU_ADDRESS
+
+    RTS
