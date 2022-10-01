@@ -109,6 +109,7 @@ namespace FF1Lib
 			enemyText[32] = "SeaSNEK";    // -1  SeaSNAKE
 			enemyText[40] = "iMAGE";      // +0  IMAGE
 			enemyText[48] = "SANDWICH";   // +2  Sand W
+			enemyText[51] = "WrongEYE";   //     Phantom
 			enemyText[53] = "SNEKLADY";   // +0  GrMEDUSA
 			enemyText[56] = "EXPEDE";     // +2  PEDE
 			enemyText[61] = "EDWARD";     // +0  WzVAMP
@@ -545,7 +546,7 @@ namespace FF1Lib
 		{
 			// The masamune uses the same palette as the cursor and stone characters
 			// so we can free up a whole palette if we reset the varies palette to
-			// the masmune palette after every swing and magic annimation. The only
+			// the masamune palette after every swing and magic annimation. The only
 			// drawback is that stoned characters will flash with attacks and magic.
 
 			// Change UpdateVariablePalette to edit Palette 3

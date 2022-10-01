@@ -432,7 +432,6 @@
     "RandomizeClass": true,
     "RandomizeClassCasting": true,
     "RandomizeClassChaos": false,
-    "RandomizeClassIncludeNaturalResist": false,
     "RandomizeClassIncludeXpBonus": false,
     "AlternateFiends": false,
     "NoBossSkillScriptShuffle": false,

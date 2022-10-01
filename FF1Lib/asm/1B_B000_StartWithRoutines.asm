@@ -2,7 +2,7 @@
 ; Routines to modify stats at the start of the game, after partygen
 ;  and at the start of the battle.
 ;
-; Last Update: 2022-06-30
+; Last Update: 2022-09-05
 ;
 
 tmp = $10
@@ -255,8 +255,13 @@ Wo_NoEquip:
     
     CPX #$03
     BNE Wo_NotWood
+      CLC
       LDY #$07 ; Evade
-      LDA #$FF
+      LDA (btl_ib_charstat_ptr), Y
+      ADC #$78
+      BCC Wo_StoreValue
+        LDA #$FF
+Wo_StoreValue:     
       STA (btl_ib_charstat_ptr), Y
       PLA
       TAX
@@ -292,10 +297,10 @@ Hunter:
   
   LDY #$00
   LDA (btl_ob_charstat_ptr), Y
-  JSR CheckIfClassQuick
-  BNE Hu_NotClass
+  JSR GetValueByClass
+  BEQ Hu_NotClass
     LDY #$0D ; enemy type
-    LDA #$FF
+    EOR (btl_ib_charstat_ptr), Y
     STA (btl_ib_charstat_ptr), Y
 Hu_NotClass:
   RTS   
@@ -338,6 +343,8 @@ Sick:
      STA (btl_ob_charstat_ptr), Y
 Sik_NotClass:  
   RTS  
+ 
+ .ORG $B200
 
 lut_Blackbelts:
  .BYTE $FF, $00, $01, $00, $00, $00 ; $FF added for reference, replace by $00 if copying lut
@@ -377,7 +384,7 @@ lut_SteelArmor:
 lut_WoodArmors:
  .BYTE $00, $00, $00, $00, $00, $00
  .BYTE $00, $00, $00, $00, $00, $00 
- .BYTE $00  
+ .BYTE $FF  
 
  .ORG $B300
 
@@ -422,7 +429,7 @@ LoopAll4Warriors:
 IndividualStartWithLoop:  
   JSR IncreaseStartingGP
   JSR DecreaseStartingGP
-  JSR DoStartSpells
+  JSR DoInnateSpells
   JSR DoMpStart
   JSR DoStartWithKI
   RTS
@@ -480,13 +487,13 @@ DGP_ClassLoop:
     STA tmp+2
     CLC  
 
-    LDA #$32		; These 3 LDA values are replaced in the c# code
-    ADC tmp			; to dynamically adjust depending on starting gold
+    LDA #$32         ; These 3 LDA values are replaced in the c# code
+    ADC tmp          ; to dynamically adjust depending on starting gold
     STA tmp
-    LDA #$00		; ^
+    LDA #$00         ; ^
     ADC tmp+1
     STA tmp+1
-    LDA #$00		; ^
+    LDA #$00         ; ^
     ADC tmp+2
     STA tmp+2
 
@@ -510,47 +517,49 @@ DGP_ClassLoop:
 DGP_Done:
   RTS
 
-; Start w/ Spells
-DoStartSpells:
-  LDX #$00
-SpellLoop:  
-  LDA #<lut_StartSpellsSpell 
-  STA class_lut_a                 
-  LDA #>lut_StartSpellsSpell
-  STA class_lut_b
-  
-  JSR GetValueByClass
-  PHA
-  
-  LDA #<lut_StartSpellsLevel 
-  STA class_lut_a                 
-  LDA #>lut_StartSpellsLevel
-  STA class_lut_b
+; Innate Spells
+DoInnateSpells:
+  LDX #$03
 
-  JSR GetValueByClass
-  PHA
-  
-  LDA #<ch_spells 
-  STA class_lut_a                 
+  LDA #<ch_spells+$1C  ;lv8 spells
+  STA tmp+1                 
   LDA #>ch_spells
+  STA tmp+2
+
+  LDA #<lut_InnateSpell01 
+  STA class_lut_a                 
+  LDA #>lut_InnateSpell01
   STA class_lut_b
-  
-  TYA
-  TAX
-  
+   
+InnateSpellLoop:
+  JSR GetValueByClass
+  BEQ InnateNoSpells
+  STA (tmp+1),Y
+  INC tmp+1
+
+  LDA #$0D
+  CLC
   ADC class_lut_a
   STA class_lut_a
-  
-  PLA
-  TAY
-  
-  PLA
-  STA (class_lut_a),Y
-
-  TXA
-  TAY
-  
-  RTS  
+  BCC InnateNoCarry        ; 4 bytes
+    INC class_lut_b
+InnateNoCarry:
+  DEX
+  BNE InnateSpellLoop  
+InnateNoSpells:
+  CPX #$03
+  BEQ InnateDone
+    TYA
+    CLC
+    ADC #$07
+    TAX
+    LDA ch_mp,X
+    CLC
+    ADC #$02
+    STA ch_mp,X
+    STA ch_mp+8,X
+InnateDone:
+  RTS 
 
 ; Start with 1 MP in all level
 DoMpStart:
@@ -593,7 +602,7 @@ KILoop:
   BEQ NoKI
     TAX
     LDA #$01
-    STA items, X
+    STA unsram, X                   ; need to offset KI values +$20 so we can also add the canoe
 NoKI:
   RTS
  
@@ -609,15 +618,20 @@ lut_DecreaseGP:
  .BYTE $00, $00, $00, $00, $00, $00 
  .BYTE $00  
 
-lut_StartSpellsLevel: ;
+lut_InnateSpell01: ;
  .BYTE $00, $00, $00, $00, $00, $00
  .BYTE $00, $00, $00, $00, $00, $00 
  .BYTE $00  
 
-lut_StartSpellsSpell: ; 
+lut_InnateSpell02: ;
  .BYTE $00, $00, $00, $00, $00, $00
  .BYTE $00, $00, $00, $00, $00, $00 
- .BYTE $00  
+ .BYTE $00 
+ 
+lut_InnateSpell03: ;
+ .BYTE $00, $00, $00, $00, $00, $00
+ .BYTE $00, $00, $00, $00, $00, $00 
+ .BYTE $00     
 
 lut_MpStart: ; 
  .BYTE $00, $00, $00, $00, $00, $00

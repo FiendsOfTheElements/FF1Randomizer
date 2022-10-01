@@ -124,7 +124,7 @@ namespace FF1Lib
 			PutInBank(bank, address, Blob.FromHex("001C22414141221CFFE3DDBEBEBEDDE3001C3E7F7F7F3E1CFFFFE3CFDFDFFFFF"));
 		}
 
-		public void EnableShardHunt(MT19337 rng, TalkRoutines talkroutines, ShardCount count)
+		public void EnableShardHunt(MT19337 rng, TalkRoutines talkroutines, ShardCount count, bool RandomShardNames)
 		{
 			int goal = 16;
 			switch (count) {
@@ -139,7 +139,9 @@ namespace FF1Lib
 				case ShardCount.Range16_36: goal = rng.Between(16, 36); break;
 			}
 
-			string shardName = ShardNames.PickRandom(rng);
+			string shardName = "SHARD";
+			if (RandomShardNames)
+				shardName = ShardNames.PickRandom(rng);
 
 			// Replace unused CANOE string and EarthOrb pointer with whatever we're calling the scavenged item.
 			ItemsText[(int)Item.Shard] = shardName;

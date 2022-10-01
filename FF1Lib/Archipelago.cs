@@ -229,8 +229,10 @@ namespace FF1Lib
 			if (l.HasFlag(SCRequirements.Cube)) list.Add(Item.Cube.ToString());
 			if (l.HasFlag(SCRequirements.Oxyale)) list.Add(Item.Oxyale.ToString());
 			if (l.HasFlag(SCRequirements.Tnt)) list.Add(Item.Tnt.ToString());
-			if (l.HasFlag(SCRequirements.Canoe)) list.Add(Item.Canoe.ToString());
-			if (l.HasFlag(SCRequirements.Floater)) list.Add(Item.Floater.ToString());
+			if (l.HasFlag(SCRequirements.Canoe) && !flags.NoOverworld) list.Add(Item.Canoe.ToString());
+			if (l.HasFlag(SCRequirements.Canoe) && flags.NoOverworld) list.Add("Mark");
+			if (l.HasFlag(SCRequirements.Floater) && !flags.NoOverworld) list.Add(Item.Floater.ToString());
+			if (l.HasFlag(SCRequirements.Floater) && flags.NoOverworld) list.Add("Sigil");
 			if (l.HasFlag(SCRequirements.Bridge)) list.Add(Item.Bridge.ToString());
 			if (l.HasFlag(SCRequirements.Canal)) list.Add(Item.Canal.ToString());
 			if (l.HasFlag(SCRequirements.Bottle)) list.Add(Item.Bottle.ToString());
@@ -380,10 +382,10 @@ namespace FF1Lib
 		[Description("All Equipment")]
 		Common,
 
-		[Description("Rare, Legendary and Caster Items")]
+		[Description("Rare, Legendary & Caster Items")]
 		Rare,
 
-		[Description("Legendary and Caster Items")]
+		[Description("Legendary & Caster Items")]
 		Legendary,
 
 		[Description("Caster Items")]

@@ -290,6 +290,8 @@ namespace FF1Lib
 		private List<Item> GetWeaponShopInventory(int slots)
 		{
 			var items = new List<Item> { Item.Vorpal, Item.Katana, Item.Xcalber, Item.Defense, Item.FlameSword, Item.IceSword, Item.CoralSword, Item.SunSword, Item.BaneSword, Item.CatClaw, Item.ThorHammer, Item.WizardRod, Item.MageRod, Item.HealRod, Item.LightAxe };
+			// Currently Absent Rares:
+			// Item.DragonSword, Item.GiantSword, Item.WereSword, Item.RuneSword, Item.PowerRod
 
 			List<Item> result = new List<Item>();
 
@@ -301,7 +303,7 @@ namespace FF1Lib
 
 		private List<Item> GetArmorShopInventory(int slots)
 		{
-			var items = ItemLists.LegendaryArmorTier.Concat(ItemLists.RareArmorTier).Distinct().ToList();
+			var items = ItemLists.LegendaryArmorTier.Distinct().Concat(ItemLists.RareArmorTier).Distinct().ToList();
 
 			List<Item> result = new List<Item>();
 

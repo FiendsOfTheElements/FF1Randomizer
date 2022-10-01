@@ -937,6 +937,11 @@ namespace FF1Lib
 			// Update treasure box dialog for new DrawDialogueString routine
 			newDialogs.Add(0xF0 + 0x50, "In the treasure box,\nyou found..\n#");
 
+			// Remove reference to "Cave of Marsh" from Astos dialog, unless Crown not shuffled
+			if (flags.IncentivizeFetchNPCs != false || flags.Treasures != false) {
+				newDialogs.Add(0x11, "Astos double-crossed us.\nFind where they stashed\nthe CROWN. Then bring it\ndirectly back to me!");
+			}
+
 			InsertDialogs(newDialogs);
 
 			// SHIP, BRIDGE, CANAL, CANOE and AIRSHIP text so they can be given by NPCs

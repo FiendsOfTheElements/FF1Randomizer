@@ -1311,6 +1311,8 @@ namespace FF1Lib
 			}
 		}
 
+		public bool IsAnythingLoose => Flags.IsAnythingLoose;
+
 		public bool? DeepCastlesPossible => Flags.DeepCastlesPossible;
 		public bool? DeepTownsPossible => Flags.DeepTownsPossible;
 
@@ -2770,6 +2772,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TeamSteak"));
 			}
 		}
+		public bool randomShardNames
+		{
+			get => Preferences.randomShardNames;
+			set
+			{
+				Preferences.randomShardNames = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("randomShardNames"));
+			}
+		}
 		public MusicShuffle Music
 		{
 			get => Preferences.Music;
@@ -4201,15 +4212,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassKeyItems"));
 			}
 		}
-		public bool? RandomizeClassIncludeNaturalResist
-		{
-			get => Flags.RandomizeClassIncludeNaturalResist;
-			set
-			{
-				Flags.RandomizeClassIncludeNaturalResist = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassIncludeNaturalResist"));
-			}
-		}
 		public bool? RandomizeClassIncludeXpBonus
 		{
 			get => Flags.RandomizeClassIncludeXpBonus;
@@ -4564,15 +4566,6 @@ namespace FF1Lib
 			}
 		}
 
-		public bool FreeClinic
-		{
-			get => Flags.FreeClinic;
-			set
-			{
-				Flags.FreeClinic = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeClinic"));
-			}
-		}
 
 		public bool Etherizer
 		{
@@ -5343,6 +5336,25 @@ namespace FF1Lib
 			set
 			{
 				Flags.RelocateChestsTrapIndicator = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool? ShuffleChimeAccess
+		{
+		    get => Flags.ShuffleChimeAccess;
+			set
+			{
+				Flags.ShuffleChimeAccess = value;
+				RaisePropertyChanged();
+			}
+		}
+		public bool? ShuffleChimeIncludeTowns
+		{
+		    get => Flags.ShuffleChimeIncludeTowns;
+			set
+			{
+				Flags.ShuffleChimeIncludeTowns = value;
 				RaisePropertyChanged();
 			}
 		}

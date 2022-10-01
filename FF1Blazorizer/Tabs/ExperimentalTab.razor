@@ -3,29 +3,16 @@
 @using System.IO;
 @inject IJSRuntime JSRuntime
 
-<div id="Beta" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
+<div id="Experimental" class="tabcontent framed-content clearfix @(noTabLayout ? "no-tab" : "") @(IsOpen ? "" : "collapsed")">
 	<h3 class="@(IsOpen ? "" : "h3-collapsed")"><a class="@(noTabLayout ? "collapsible-header" : "")" @onclick="(() => IsOpen = (!noTabLayout || !IsOpen))">Experimental Beta Flags</a></h3>
 	@if (IsOpen)
 	{
 		<p>Test out features from 2000 years in the future - at your own risk!</p>
 		<div class="col1">
-			<h4>Archipelago</h4>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enableArchipelago" @bind-Value="Flags.Archipelago">Enable</CheckBox>
-			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoShards" @bind-Value="Flags.ArchipelagoShards">Shards</CheckBox>
-			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoGold" @bind-Value="Flags.ArchipelagoGold">Gold</CheckBox>
-			<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoConsumables" @bind-Value="Flags.ArchipelagoConsumables">Consumables</CheckBox>
-			<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoEquipment" TItem="ArchipelagoEquipment" @bind-Value="Flags.ArchipelagoEquipment">Equipment:</EnumDropDown>
-			<p>
-				Player Name:
-				<br>
-				<input type="text" style="width: calc(100% - 80px);" class="nes-input" id="seedInput" @onchange="@OnPlayerNameChanged" value="@(Flags.PlayerName)" />
-			</p>
+			
 			<div class="checkbox-cell"></div>
 		</div>
 		<div class="col2">
-			<h4>Misc.</h4>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.RecruitmentMode)" Id="improvedClinicCheckBox" @bind-Value="Flags.ImprovedClinic">Clinics Heal All Statuses</CheckBox>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="freeClinicCheckBox" @bind-Value="Flags.FreeClinic">Clinics Don't Cost Money</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="OpenChestsInOrder" @bind-Value="Flags.OpenChestsInOrder">Open Chests in Order</CheckBox>
 		</div>
 
@@ -38,11 +25,6 @@
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
-
-	void OnPlayerNameChanged(ChangeEventArgs e)
-	{
-		Flags.PlayerName = e.Value as string;
-	}
 
 	async Task OnImportResourcePack(ChangeEventArgs e)
 	{

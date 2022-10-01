@@ -42,6 +42,7 @@ public partial class FF1Rom : NesRom
 	private SanityCheckerV2 sanityChecker = null;
 	private IncentiveData incentivesData = null;
 
+	private Blob SavedHash;
 	public new void Put(int index, Blob data)
 	{
 		//Debug.Assert(index <= 0x4000 * 0x0E + 0x9F48 - 0x8000 && (index + data.Length) > 0x4000 * 0x0E + 0x9F48 - 0x8000);
@@ -206,6 +207,7 @@ public partial class FF1Rom : NesRom
 		CastableItemTargeting();
 		FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
 		FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
+		UnifySpellSystem();
 		ExpandNormalTeleporters();
 		SeparateUnrunnables();
 		DrawCanoeUnderBridge();
@@ -290,7 +292,7 @@ public partial class FF1Rom : NesRom
 			{
 				DamageTilesKill(flags.SaveGameWhenGameOver);
 			}
-			
+
 			// Adjustable lava damage - run if anything other than the default of 1 damage
 			if ((int)flags.DamageTileLow != 1 || (int)flags.DamageTileHigh != 1)
 			{
@@ -395,7 +397,7 @@ public partial class FF1Rom : NesRom
 		{
 			ChangeLockMode(flags.LockMode);
 		}
-				
+
 		if (flags.AllSpellLevelsForKnightNinja)
 		{
 			KnightNinjaChargesForAllLevels();
@@ -403,7 +405,8 @@ public partial class FF1Rom : NesRom
 
 		if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
 		{
-			await AlternativeFiends(rng);
+			await this.Progress("Creating new Fiends", 1);
+			AlternativeFiends(rng);
 		}
 
 		if (flags.BuffTier1DamageSpells)
@@ -467,7 +470,7 @@ public partial class FF1Rom : NesRom
 
 		if (((bool)flags.Treasures) && flags.ShardHunt)
 		{
-			EnableShardHunt(rng, talkroutines, flags.ShardCount);
+			EnableShardHunt(rng, talkroutines, flags.ShardCount, preferences.randomShardNames);
 		}
 
 		if (!flags.ShardHunt && (flags.GameMode != GameModes.DeepDungeon))
@@ -573,6 +576,10 @@ public partial class FF1Rom : NesRom
 		extConsumables.AddNormalShopEntries();
 
 		overworldMap.ApplyMapEdits();
+
+		if ((bool)flags.ShuffleChimeAccess) {
+		    overworldMap.ShuffleChime(rng, (bool)flags.ShuffleChimeIncludeTowns);
+		}
 
 		if (flags.NoOverworld)
 		{
@@ -848,7 +855,7 @@ public partial class FF1Rom : NesRom
 		StatusAttacks(flags, rng);
 
 		await this.Progress();
-		
+
 		if ((bool)flags.UnrunnableShuffle) {
 			int UnrunnablePercent = rng.Between(flags.UnrunnablesLow, flags.UnrunnablesHigh);
 			// This is separate because the basic Imp formation is not otherwise included in the possible unrunnable formations
@@ -885,7 +892,7 @@ public partial class FF1Rom : NesRom
 				flags.WarMECHMode = WarMECHMode.Required;	// 30%
 			else if (RandWarMECHMode <= 90)
 				flags.WarMECHMode = WarMECHMode.Unleashed;	// 15%
-			else 
+			else
 				flags.WarMECHMode = WarMECHMode.All;		// 10%
 
 		}
@@ -1139,7 +1146,7 @@ public partial class FF1Rom : NesRom
 			ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
 		}
 
-		ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.FreeClinic);
+		ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.ImprovedClinic);
 		ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
 		WriteMaps(maps);
@@ -1252,7 +1259,7 @@ public partial class FF1Rom : NesRom
 
 		if (flags.InventoryAutosort && !(preferences.RenounceAutosort))
 		{
-			EnableInventoryAutosort();
+			EnableInventoryAutosort(flags.NoOverworld);
 		}
 
 		if (flags.ResourcePack != null)
@@ -1821,6 +1828,8 @@ public partial class FF1Rom : NesRom
 			hashpart /= 12;
 		}
 
+		SavedHash = hash;
+
 		Regex rgx = new Regex("[^a-zA-Z0-9]");
 		// Put the new string data in a known location.
 		PutInBank(0x0F, 0x8900, Blob.Concat(
@@ -1830,7 +1839,7 @@ public partial class FF1Rom : NesRom
 
 		// Write Flagstring + Version for reference
 		var urlpart = (FFRVersion.Branch == "master") ? FFRVersion.Version.Replace('.','-') : "beta-" + FFRVersion.Sha.PadRight(7).Substring(0, 7);
-		PutInBank(0x1E, 0xBE00, Encoding.ASCII.GetBytes($"FFRInfo|Seed: {seed}|Flags: {flags}|Version: {urlpart}"));
+		PutInBank(0x1E, 0xBE00, Encoding.ASCII.GetBytes($"FFRInfo|Seed: {seed}|OW Seed: {flags.Split('_')[1]}|Flags: {flags.Split('_')[0]}|Version: {urlpart}"));
 	}
 
 	public void FixMissingBattleRngEntry()
@@ -1890,5 +1899,23 @@ public partial class FF1Rom : NesRom
 		}
 
 		return blursetext;
+	}
+
+	public string RomInfo()
+	{
+		var rawtext = GetFromBank(0x1E, 0xBE00, 0x200);
+		var trimedtext = rawtext.ReplaceOutOfPlace(Blob.FromHex("00"), Blob.FromHex(""));
+		string infotext = Encoding.ASCII.GetString(trimedtext).Replace('|', '\n');
+
+		return infotext;
+	}
+	public string GetHash()
+	{
+		string hashtext = FF1Text.BytesToText(SavedHash);
+
+		hashtext = hashtext.Replace(" ", "");
+		hashtext = hashtext.Replace("@", "");
+
+		return hashtext;
 	}
 }
