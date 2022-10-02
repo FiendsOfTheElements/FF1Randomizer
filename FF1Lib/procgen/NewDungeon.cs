@@ -148,7 +148,8 @@ namespace FF1Lib.Procgen
 			    new MapGenerationStep("CollectInfo", new object[] { }),
 			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 			    new MapGenerationStep("SetEntrance", new object[] { 0x0A, 0x09 }),
-			    new MapGenerationStep("EarthB2Style", new object[] { 29, 33, 6, 6, 2, new PgFeature[] { } }),
+			    new MapGenerationStep("EarthB2Style", new object[] { 29, 33, 6, 6, 2, new PgFeature[] { }, 0 }),
+			    new MapGenerationStep("ConnectRegions", new object[] { }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls3, false }),
@@ -168,23 +169,18 @@ namespace FF1Lib.Procgen
 			    new MapGenerationStep("CollectInfo", new object[] { }),
 			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 			    new MapGenerationStep("SetEntrance", new object[] { 0x1B, 0x2D }),
-			    new MapGenerationStep("EarthB2Style", new object[] { 22, 28, 2, 5, 2, new PgFeature[] { DungeonTiles.VAMPIRE_ROOM, DungeonTiles.ROD_ROOM }, 3 }),
+			    new MapGenerationStep("EarthB2Style", new object[] { 20, 25, 2, 4, 2, new PgFeature[] { DungeonTiles.VAMPIRE_ROOM, DungeonTiles.ROD_ROOM }, 3 }),
 			    new MapGenerationStep("ConnectRegions", new object[] { }),
-			    //new MapGenerationStep("PlaceRodRoom", new object[] { DungeonTiles.CAVE_EXIT_TO_EARTH_B4 }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls3, false }),
-			    //new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls5, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls6, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
-			    //new MapGenerationStep("ApplyFilter", new object[] { dt.cave_rock_walls, false }),
-			    //new MapGenerationStep("PlaceVampire", new object[] { }),
-			    //new MapGenerationStep("PlaceChests", new object[] { rom, maps, mapId, new List<(MapId,byte)> { (mapId, DungeonTiles.RUBY_CHEST) } }),
+			    new MapGenerationStep("PlaceChests", new object[] { rom, maps, mapId, new List<(MapId,byte)> { (mapId, DungeonTiles.RUBY_CHEST) } }),
 			    new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
-			    //new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_wall_corners, DungeonTiles.CAVE_EARTH_B2_EXIT, 36, 12 }),
 			    //new MapGenerationStep("SanityCheck", new object[] { }),
 			};
 			break;
@@ -193,7 +189,8 @@ namespace FF1Lib.Procgen
 			    new MapGenerationStep("CollectInfo", new object[] { }),
 			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 			    new MapGenerationStep("SetEntrance", new object[] { 0x36, 0x21 }),
-			    new MapGenerationStep("EarthB2Style", new object[] { 29, 33, 6, 6, 2, new PgFeature[] { }}),
+			    new MapGenerationStep("EarthB2Style", new object[] { 29, 33, 6, 6, 2, new PgFeature[] { }, 0}),
+			    new MapGenerationStep("ConnectRegions", new object[] { }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
 			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls3, false }),
@@ -215,7 +212,7 @@ namespace FF1Lib.Procgen
 		if (mapGenSteps != null) {
 		    var tileset = new TileSet(rom, rom.GetMapTilesetIndex(mapId));
 		    var blankState = new MapState(rng, mapGenSteps, maps[(int)mapId], dt, tileset, progress);
-		    var worldState = await ProgenFramework.RunSteps<MapState, MapResult, MapGenerationStep>(blankState, 800, progress);
+		    var worldState = await ProgenFramework.RunSteps<MapState, MapResult, MapGenerationStep>(blankState, 5000, progress);
 		    if (worldState != null) {
 			return new CompleteMap { Map = worldState.Tilemap };
 		    }

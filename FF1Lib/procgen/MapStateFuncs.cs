@@ -255,7 +255,7 @@ namespace FF1Lib.Procgen
 
 	    topLeft = new SCCoords(0, 0);
 
-	    //while (w > wrange.n && h > hrange.n) {
+	    while (w >= wrange.n && h >= hrange.n) {
 		foreach (var c in candidates) {
 		    switch (q) {
 			case Quadrants.UpRight:
@@ -278,22 +278,22 @@ namespace FF1Lib.Procgen
 		    }
 
 		    if (!this.CheckClear(topLeft.X, topLeft.Y, w, h, emptyTile, coverable, 4)) {
+			//Console.WriteLine($"failed {topLeft} {w} {h}");
 			continue;
 		    }
 
 		    return true;
 		}
 
-		/*int shrink = this.rng.Between(0, 1);
+		int shrink = this.rng.Between(0, 1);
 		if (shrink == 0 && w > wrange.n) {
 		    w--;
-		}
-		else if (h > hrange.n) {
+		} else if (h > hrange.n) {
 		    h--;
 		} else {
 		    w--;
-		    }
-		    }*/
+		}
+	    }
 	    return false;
 	}
 
@@ -430,6 +430,7 @@ namespace FF1Lib.Procgen
 	    public int w, h;
 	    public bool tight;
 	    public bool hallway;
+	    public int gating;
 	}
 
 	public async Task<MapResult> ConnectRegions() {
@@ -507,6 +508,7 @@ namespace FF1Lib.Procgen
 			DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR, false, out startroom.topLeft, out startroom.w, out startroom.h);
 
 	    startroom.points = BoxPoints(startroom.topLeft, startroom.w, startroom.h);
+	    startroom.gating = 0;
 
 	    var rooms = new List<EarthB2Room> { startroom };
 	    var regions = new byte[MAPSIZE,MAPSIZE];
@@ -515,7 +517,7 @@ namespace FF1Lib.Procgen
 	    var tasks = new List<MapGenerationTask>();
 
 	    tasks.Add(() => new MapState(this).EarthB2NextRoom(progressWindow, connectWindow, minTreasureRooms, features, featureAfter,
-								   rooms, regions, roomTotal, 0, 0, false, -1));
+								   rooms, regions, roomTotal, 0, 0, false, 0));
 
 	    await Task.Yield();
 	    return new MapResult(tasks);
@@ -540,22 +542,23 @@ namespace FF1Lib.Procgen
 	    if (gating == rooms.Count-1) {
 		roomIdx.Add(gating);
 	    } else if (didTreasure) {
-		for (int i = 0; i < rooms.Count; i++) {
+		for (int i = rooms.Count-1; i >= 0 ; i--) {
 		    roomIdx.Add(i);
 		}
 	    } else {
-		for (int i = Math.Max(rooms.Count-progressWindow, 0); i < rooms.Count; i++) {
+		for (int i = rooms.Count-1; i >= Math.Max(rooms.Count-progressWindow, 0); i--) {
 		    roomIdx.Add(i);
 		}
 	    }
 
-	    roomIdx.Shuffle(this.rng);
+	    var fallbackTasks = new List<MapGenerationTask>();
+
 	    foreach (var rm in roomIdx) {
 		var room = rooms[rm];
 
 		int hallwayDraw;
 		if (room.tight) {
-		    hallwayDraw = this.rng.Between(0, 1);
+		    hallwayDraw = 1;
 		} else {
 		    hallwayDraw = this.rng.Between(0, 7);
 		}
@@ -567,27 +570,40 @@ namespace FF1Lib.Procgen
 		foreach (var quad in quads) {
 		    bool placeTreasure = false;
 		    bool placeFeature = false;
+		    bool featureCandidate = false;
 		    if (quad == Quadrants.UpLeft || quad == Quadrants.UpRight || room.hallway) {
 			placeTreasure = (minTreasureRooms > 0 && treasureDraw > minTreasureRooms);
-			placeFeature = (featureCount < features.Length && (featureDraw > features.Length)) && (gating < rooms.Count-1);
+			featureCandidate = featureCount < features.Length && (rm != gating) && (room.gating == gating);
+			placeFeature = featureCandidate && featureDraw > features.Length;
 		    }
 
-		    tasks.Add(() => new MapState(this).EarthB2AddRoom(rm, quad, progressWindow, connectWindow, minTreasureRooms, features, featureAfter,
-								      rooms, regions, roomTotal, treasureCount, featureCount, gating,
-								      placeTreasure, placeFeature, hallwayDraw));
 		    if (placeFeature) {
 			tasks.Add(() => new MapState(this).EarthB2AddRoom(rm, quad, progressWindow, connectWindow, minTreasureRooms, features, featureAfter,
 									  rooms, regions, roomTotal, treasureCount, featureCount, gating,
-									  placeTreasure, false, hallwayDraw));
+									  false, true, hallwayDraw));
 		    }
 		    if (placeTreasure) {
+			// tried to place a feature, try treasure placement instead.
 			tasks.Add(() => new MapState(this).EarthB2AddRoom(rm, quad, progressWindow, connectWindow, minTreasureRooms, features, featureAfter,
 									  rooms, regions, roomTotal, treasureCount, featureCount, gating,
-									  false, placeFeature, hallwayDraw));
+									  true, false, hallwayDraw));
+		    }
+		    // tried a treasure room placement, try a regular room
+		    tasks.Add(() => new MapState(this).EarthB2AddRoom(rm, quad, progressWindow, connectWindow, minTreasureRooms, features, featureAfter,
+								      rooms, regions, roomTotal, treasureCount, featureCount, gating,
+								      false, false, hallwayDraw));
+
+		    if (featureCandidate && !placeFeature) {
+			// we didn't try to place a feature earlier but we want to, so add it to try later
+			fallbackTasks.Add(() => new MapState(this).EarthB2AddRoom(rm, quad, progressWindow, connectWindow, minTreasureRooms, features, featureAfter,
+									  rooms, regions, roomTotal, treasureCount, featureCount, gating,
+									  false, true, hallwayDraw));
 		    }
 		}
 	    }
 	    //Console.WriteLine($"Adding {tasks.Count} tasks");
+
+	    tasks.AddRange(fallbackTasks);
 
 	    return new MapResult(tasks);
 	}
@@ -675,9 +691,9 @@ namespace FF1Lib.Procgen
 		if (this.Tilemap[c.Y, c.X] != DungeonTiles.CAVE_BLANK &&
 		    !oldRoomBoxpoints.Contains(c))
 		{
-		    // Pass if this is adjacent to a room that we placed sufficiently earlier
+		    // Pass if this is adjacent to a room that we placed sufficiently earlier & in the same gating
 		    var reg = regions[c.Y, c.X];
-		    if (reg > 0 && (reg+connectWindow) <= rooms.Count && ((roomIndex < gating && reg < gating) || (roomIndex > gating && reg > gating)) ) {
+		    if (reg > 0 && (reg+connectWindow) <= rooms.Count && (rooms[reg].gating == room.gating)) {
 			connecting.Add(reg);
 		    } else {
 			//Console.WriteLine($"rejected connecting {reg} {rooms.Count} {c} {this.Tilemap[c.Y, c.X]:X}");
@@ -720,13 +736,11 @@ namespace FF1Lib.Procgen
 		    //Console.WriteLine($"------------------ {pt} {rooms.Count}");
 
 		    gating = rooms.Count;
-		    regions = new byte[MAPSIZE,MAPSIZE];
-		    Array.Copy(fromRegions, regions, regions.Length);
 		    foreach (var b in boxpoints) {
 			regions[b.Y, b.X] = (byte)rooms.Count;
 		    }
 		    rooms = new(rooms);
-		    rooms.Add(new EarthB2Room { points = pts, topLeft = topLeft, w = w, h = h, tight = true});
+		    rooms.Add(new EarthB2Room { points = pts, topLeft = topLeft, w = w, h = h, tight = true, gating = gating });
 		}
 		featureCount++;
 	    } else if (placeTreasure) {
@@ -755,7 +769,16 @@ namespace FF1Lib.Procgen
 		    this.Tilemap[b.Y, b.X] = DungeonTiles.CAVE_FLOOR;
 		}
 
-		if (!makeHallway && !room.hallway) {
+		bool cornerToCorner = false;
+		if ((topLeft.X+w == room.topLeft.X && topLeft.Y+h == room.topLeft.Y) ||
+		    (topLeft.X+w == room.topLeft.X && topLeft.Y == room.topLeft.Y+room.h) ||
+		    (topLeft.X == room.topLeft.X+room.h && topLeft.Y == room.topLeft.Y+room.h) ||
+		    (topLeft.X == room.topLeft.X+room.h && topLeft.Y+h == room.topLeft.Y)
+		) {
+		    cornerToCorner = true;
+		}
+
+		if (!makeHallway && !room.hallway && !cornerToCorner) {
 		    foreach (var c in clear) {
 			if (boxpoints.Contains(c)) {
 			    this.Tilemap[c.Y, c.X] = DungeonTiles.CAVE_BLANK;
@@ -765,7 +788,7 @@ namespace FF1Lib.Procgen
 		    }
 		}
 		rooms = new(rooms);
-		rooms.Add(new EarthB2Room { points = boxpoints, topLeft = topLeft, w = w, h = h, hallway = makeHallway });
+		rooms.Add(new EarthB2Room { points = boxpoints, topLeft = topLeft, w = w, h = h, hallway = makeHallway, gating = room.gating });
 	    }
 
 	    var tasks = new List<MapGenerationTask>();
@@ -774,8 +797,6 @@ namespace FF1Lib.Procgen
 
 	    await Task.Yield();
 	    return new MapResult(tasks);
-
-	    //Console.WriteLine($"Backtracking");
 	}
 
 	public async Task<MapResult> PlaceTreasureRooms() {
