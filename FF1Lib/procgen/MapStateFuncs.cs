@@ -573,7 +573,7 @@ namespace FF1Lib.Procgen
 		    bool featureCandidate = false;
 		    if (quad == Quadrants.UpLeft || quad == Quadrants.UpRight || room.hallway) {
 			placeTreasure = (minTreasureRooms > 0 && treasureDraw > minTreasureRooms);
-			featureCandidate = featureCount < features.Length && (rm != gating) && (room.gating == gating);
+			featureCandidate = featureCount < features.Length && rooms.Count > featureAfter && (rm != gating) && (room.gating == gating);
 			placeFeature = featureCandidate && featureDraw > features.Length;
 		    }
 

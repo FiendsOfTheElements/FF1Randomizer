@@ -205,6 +205,25 @@ namespace FF1Lib.Procgen
 			    new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_wall_corners, DungeonTiles.CAVE_EXIT_TO_EARTH_B5, 36, 12 }),
 			};
 			break;
+		    case MapId.EarthCaveB5:
+			mapGenSteps = new () {
+			    new MapGenerationStep("CollectInfo", new object[] { }),
+			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
+			    new MapGenerationStep("SetEntrance", new object[] { 0x19, 0x35 }),
+			    new MapGenerationStep("EarthB2Style", new object[] { 18, 22, 6, 4, 0, new PgFeature[] { DungeonTiles.LICH_ROOM }, 12 }),
+			    new MapGenerationStep("ConnectRegions", new object[] { }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls3, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls5, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls6, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
+			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
+			    new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
+			    //new MapGenerationStep("SanityCheck", new object[] { }),
+			};
+			break;
 		    default:
 			return new CompleteMap { Map = maps[(int)mapId] };
 		}
