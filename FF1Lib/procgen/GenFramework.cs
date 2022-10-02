@@ -139,7 +139,7 @@ namespace FF1Lib.Procgen
 
 	public delegate Task<ResultType> GenerationTaskType<ResultType>();
 
-	public static async Task<StateT> RunSteps<StateT, ResultType, GenStepType>(StateT startingState, FF1Rom.ReportProgress progress)
+	public static async Task<StateT> RunSteps<StateT, ResultType, GenStepType>(StateT startingState, int maxTasksCount, FF1Rom.ReportProgress progress)
 	    where ResultType : Result<ProcgenState<ResultType, GenStepType, GenerationTaskType<ResultType>>, GenStepType, GenerationTaskType<ResultType>>, new()
 	    where StateT : ProcgenState<ResultType, GenStepType, GenerationTaskType<ResultType>>
 	    where GenStepType : GenerationStep<ProcgenState<ResultType, GenStepType, GenerationTaskType<ResultType>>, ResultType>
@@ -149,7 +149,6 @@ namespace FF1Lib.Procgen
 	    workStack.Push(startingState.NextStep);
 
 	    StateT finalState = null;
-	    int maxTasksCount = 150;
 	    int taskCount = 0;
 
 	    await progress("", startingState.StepQueue.Count);

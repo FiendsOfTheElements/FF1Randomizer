@@ -1400,7 +1400,7 @@ namespace FF1Lib.Procgen
 		}
 
 		var blankState = new OverworldState(rng, worldGenSteps, mt, progress);
-		var worldState = await ProgenFramework.RunSteps<OverworldState, OwResult, OwGenerationStep>(blankState, progress);
+		var worldState = await ProgenFramework.RunSteps<OverworldState, OwResult, OwGenerationStep>(blankState, 150, progress);
 
 		if (worldState == null) {
 		    continue;
@@ -1683,7 +1683,7 @@ namespace FF1Lib.Procgen
 
 		    var prePlacementState = new OverworldState(worldState);
 		    prePlacementState.SetSteps(placementSteps);
-		    postPlacementState = await ProgenFramework.RunSteps<OverworldState, OwResult, OwGenerationStep>(prePlacementState, progress);
+		    postPlacementState = await ProgenFramework.RunSteps<OverworldState, OwResult, OwGenerationStep>(prePlacementState, 150, progress);
 		}
 
 		if (postPlacementState == null) {
@@ -1717,7 +1717,7 @@ namespace FF1Lib.Procgen
 		};
 
 		postPlacementState.SetSteps(polishSteps);
-		var finalState = await ProgenFramework.RunSteps<OverworldState, OwResult, OwGenerationStep>(postPlacementState, progress);
+		var finalState = await ProgenFramework.RunSteps<OverworldState, OwResult, OwGenerationStep>(postPlacementState, 150, progress);
 
 		if (finalState != null && finalState.CheckSanity()) {
 		    return ReplacementMap(finalState, mt);
