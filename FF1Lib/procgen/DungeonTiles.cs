@@ -562,15 +562,15 @@ namespace FF1Lib.Procgen
 		    // upper horizonal gap fix for on E wall
 		    new Rule(new byte[3,3] {
 			{STAR,  CAVE_FLOOR, CAVE_FLOOR},
-			{_, CAVE_FLOOR, CAVE_WALL_E},
-			{STAR, STAR,    CAVE_WALL_E}},
+			{_,     CAVE_FLOOR, CAVE_WALL_E},
+			{STAR,       STAR,  CAVE_WALL_E}},
 			CAVE_WALL_NE, 1, 0),
 
-		    // lower horizonal gap fix on W wall
+		    // upper horizonal gap fix on W wall
 		    new Rule(new byte[3,3] {
 			{CAVE_FLOOR,  CAVE_FLOOR, STAR},
 			{CAVE_WALL_W, CAVE_FLOOR,  _},
-			{STAR, STAR, STAR}},
+			{CAVE_WALL_W, STAR, STAR}},
 			CAVE_WALL_NW, -1, 0),
 
 		}, allTiles, non_floor_tiles, null);
@@ -621,6 +621,14 @@ namespace FF1Lib.Procgen
 			{STAR,         CAVE_BLANK, STAR}},
 			CAVE_WALL_NE),
 
+
+		    new Rule(new byte[3,3] {
+			{STAR,                STAR, STAR},
+			{CAVE_FLOOR,   CAVE_WALL_E, CAVE_WALL_N},
+			{CAVE_FLOOR,   CAVE_FLOOR,  STAR}},
+			CAVE_WALL_N),
+
+
 		}, allTiles, null, null);
 
 	    this.earth_cave_walls4 = new PgTileFilter(
@@ -663,9 +671,9 @@ namespace FF1Lib.Procgen
 
 		    // junction
 		    new Rule(new byte[3,3] {
-			{STAR,      CAVE_WALL_N, STAR},
+			{STAR,       CAVE_WALL_N, STAR},
 			{CAVE_FLOOR, CAVE_FLOOR, CAVE_FLOOR},
-			{STAR,      CAVE_WALL_E, STAR}},
+			{STAR,       CAVE_WALL_E, STAR}},
 			CAVE_WALL_NE, 0, -1),
 
 		    // doesn't look good.
@@ -680,6 +688,34 @@ namespace FF1Lib.Procgen
 			{CAVE_FLOOR,  CAVE_BLANK,  CAVE_FLOOR},
 			{STAR, STAR, STAR}},
 			CAVE_WALL_E),
+
+		    // mid wall gap fix on W wall
+		    new Rule(new byte[3,3] {
+			{CAVE_WALL_W, CAVE_FLOOR, STAR},
+			{CAVE_WALL_W, CAVE_FLOOR, CAVE_WALL_NE},
+			{CAVE_WALL_W, CAVE_FLOOR, STAR}},
+			CAVE_WALL_NW, -1, 0),
+
+		    // mid wall gap fix on W wall
+		    new Rule(new byte[3,3] {
+			{CAVE_WALL_W, CAVE_FLOOR, STAR},
+			{CAVE_WALL_W, CAVE_FLOOR, CAVE_WALL_N},
+			{CAVE_WALL_W, CAVE_FLOOR, STAR}},
+			CAVE_WALL_NW, -1, 0),
+
+		    // mid wall gap fix on E wall
+		    new Rule(new byte[3,3] {
+			{STAR,         CAVE_FLOOR, CAVE_WALL_E},
+			{CAVE_WALL_NW, CAVE_FLOOR, CAVE_WALL_E},
+			{STAR,         CAVE_FLOOR, CAVE_WALL_E}},
+			CAVE_WALL_NE, 1, 0),
+
+		    // mid wall gap fix on E wall
+		    new Rule(new byte[3,3] {
+			{STAR,         CAVE_FLOOR, CAVE_WALL_E},
+			{CAVE_WALL_N,  CAVE_FLOOR, CAVE_WALL_E},
+			{STAR,         CAVE_FLOOR, CAVE_WALL_E}},
+			CAVE_WALL_NE, 1, 0),
 
 		}, allTiles, null, null);
 
