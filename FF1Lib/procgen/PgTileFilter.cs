@@ -6,9 +6,18 @@ namespace FF1Lib.Procgen
 	public Rule(byte[,] pattern, byte replacement) {
 	    this.pattern = pattern;
 	    this.replacement = replacement;
+	    this.rx = 0;
+	    this.ry = 0;
+	}
+	public Rule(byte[,] pattern, byte replacement, int rx, int ry) {
+	    this.pattern = pattern;
+	    this.replacement = replacement;
+	    this.rx = rx;
+	    this.ry = ry;
 	}
 	public byte[,] pattern;
 	public byte replacement;
+	public int rx, ry;
     }
 
     public class PgTileFilter {
@@ -48,6 +57,8 @@ namespace FF1Lib.Procgen
 	}
 
 	byte CheckRule(byte[,] tilemap, Rule rule, int x, int y, int xmax, int ymax) {
+	    x -= rule.rx;
+	    y -= rule.ry;
 	    for (int j = 0; j < 3; j++) {
 		for (int i = 0; i < 3; i++) {
 		    var ruletile = rule.pattern[j,i];
