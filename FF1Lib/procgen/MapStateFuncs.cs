@@ -247,15 +247,17 @@ namespace FF1Lib.Procgen
 	}
 
 	public bool CornerBox(List<SCCoords> candidates, Quadrants q, (int n, int x) wrange, (int n, int x) hrange,
-					List<SCCoords> coverable, byte emptyTile, out SCCoords topLeft, out int w, out int h) {
+			      List<SCCoords> coverable, byte emptyTile, int minArea, out SCCoords topLeft, out int w, out int h) {
 	    candidates.Shuffle(this.rng);
 
-	    w = this.rng.Between(wrange.n, wrange.x);
-	    h = this.rng.Between(hrange.n, hrange.x);
+	    do {
+		w = this.rng.Between(wrange.n, wrange.x);
+		h = this.rng.Between(hrange.n, hrange.x);
+	    } while ((w*h) < minArea);
 
 	    topLeft = new SCCoords(0, 0);
 
-	    while (w >= wrange.n && h >= hrange.n) {
+	    while (w >= wrange.n && h >= hrange.n && (w*h >= minArea)) {
 		foreach (var c in candidates) {
 		    switch (q) {
 			case Quadrants.UpRight:
@@ -499,12 +501,15 @@ namespace FF1Lib.Procgen
 	    return await this.NextStep();
 	}
 
-	public async Task<MapResult> EarthB2Style(int minRooms, int maxRooms, int progressWindow, int connectWindow, int minTreasureRooms, PgFeature[] features, int featureAfter) {
+	public async Task<MapResult> EarthB2Style(int startRoomLeft, int startRoomRight, int startRoomTop, int startRoomBottom,
+	    int minRooms, int maxRooms, int progressWindow, int connectWindow, int minTreasureRooms, PgFeature[] features, int featureAfter) {
 	    this.OwnTilemap();
 
 	    var startroom = new EarthB2Room();
 
-	    this.AddBox(new List<SCCoords> { new SCCoords(this.Entrance.X, this.Entrance.Y-3) }, Direction.Down, (5, 5), (5, 5),
+	    this.AddBox(new List<SCCoords> { new SCCoords(this.Entrance.X-startRoomLeft, this.Entrance.Y-startRoomTop) }, Direction.Right,
+			(startRoomLeft+startRoomRight+1, startRoomLeft+startRoomRight+1),
+			(startRoomTop+startRoomBottom+1, startRoomTop+startRoomBottom+1),
 			DungeonTiles.CAVE_BLANK, DungeonTiles.CAVE_FLOOR, false, out startroom.topLeft, out startroom.w, out startroom.h);
 
 	    startroom.points = BoxPoints(startroom.topLeft, startroom.w, startroom.h);
@@ -650,15 +655,16 @@ namespace FF1Lib.Procgen
 		    }
 		}
 	    } else if (placeTreasure) {
-		valid = CornerBox(candidates, quad, (4, 9), (4, 9), candidates, DungeonTiles.CAVE_BLANK, out topLeft, out w, out h);
+		var minRoomArea = (this.Chests.Count * 4) / minTreasureRooms;
+		valid = CornerBox(candidates, quad, (4, 9), (4, 9), candidates, DungeonTiles.CAVE_BLANK, minRoomArea, out topLeft, out w, out h);
 	    } else if (hallwayDraw == 0) {
 		// Vertical hallway
-		valid = CornerBox(candidates, quad, (1, 1), (6, 8), candidates, DungeonTiles.CAVE_BLANK, out topLeft, out w, out h);
+		valid = CornerBox(candidates, quad, (1, 1), (6, 8), candidates, DungeonTiles.CAVE_BLANK, 0, out topLeft, out w, out h);
 	    } else if (hallwayDraw == 1) {
 		// Horizontal hallway
-		valid = CornerBox(candidates, quad, (6, 8), (1, 1), candidates, DungeonTiles.CAVE_BLANK, out topLeft, out w, out h);
+		valid = CornerBox(candidates, quad, (6, 8), (1, 1), candidates, DungeonTiles.CAVE_BLANK, 0, out topLeft, out w, out h);
 	    } else {
-		valid = CornerBox(candidates, quad, (4, 7), (4, 7), candidates, DungeonTiles.CAVE_BLANK, out topLeft, out w, out h);
+		valid = CornerBox(candidates, quad, (4, 7), (4, 7), candidates, DungeonTiles.CAVE_BLANK, 0, out topLeft, out w, out h);
 	    }
 
 	    //Console.WriteLine($"val {valid} {hallwayDraw} {topLeft} {w} {h}");

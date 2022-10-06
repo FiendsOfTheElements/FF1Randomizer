@@ -399,13 +399,13 @@ namespace FF1Lib.Procgen
 		    // NW and NE corners
 		    new Rule(new byte[3,3] {
 			{STAR, STAR, STAR},
-			{STAR,    CAVE_BLANK, CAVE_BLANK},
+			{STAR,    CAVE_BLANK, _},
 			{      _, CAVE_BLANK, CAVE_FLOOR}},
 			CAVE_WALL_NW),
 
 		    new Rule(new byte[3,3] {
 			{STAR, STAR, STAR},
-			{CAVE_BLANK, CAVE_BLANK, STAR},
+			{_, CAVE_BLANK, STAR},
 			{CAVE_FLOOR, CAVE_BLANK, _}},
 			CAVE_WALL_NE),
 
