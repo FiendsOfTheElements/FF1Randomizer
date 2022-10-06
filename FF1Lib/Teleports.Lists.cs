@@ -45,7 +45,7 @@
 			}
 		}
 
-		private TeleportDestination Get(string name)
+		public TeleportDestination Get(string name)
 		{
 			return (TeleportDestination)typeof(TeleportShuffle).GetField(name).GetValue(this);
 		}

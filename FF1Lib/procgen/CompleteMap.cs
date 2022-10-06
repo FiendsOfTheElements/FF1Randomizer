@@ -3,8 +3,11 @@
 	public class CompleteMap
 	{
 		public Map Map;
-		public Coordinate Entrance;
 		public MapRequirements Requirements;
+	        public Coordinate Entrance;
+	        public TeleportDestination Destination;
+	        public string TeleportName;
+	        public OverworldTeleportIndex OverworldEntrance;
 
 		/* -- The rest of this is text map drawing. -- */
 

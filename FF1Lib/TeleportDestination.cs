@@ -72,6 +72,23 @@
 		public bool OwnsPalette => !LocationHelper.UnpalettableLocations.Contains(Destination);
 		public TeleportDestination(MapLocation destination, MapIndex index, Coordinate coordinates, IEnumerable<TeleportIndex> teleports = null, ExitTeleportIndex exits = ExitTeleportIndex.None)
 		{
+		    // destination is a logical map area, this is
+		    // distinct from mapindex because some dungeons
+		    // (marsh, volcano, sea) have multiple distinct
+		    // areas on the same map
+
+		    // mapindex is the actual map that gets loaded
+
+		    // coordinates is where the player appears
+
+		    // teleports is a list of other teleports in this
+		    // map location (essentially, other places the
+		    // player can access once they've arrived here)
+
+		    // exit teleports are special because they take
+		    // you to a particular location on the overworld
+		    // map (mainly used for titan's tunnel)
+
 			Destination = destination;
 			Index = index;
 			CoordinateX = coordinates.X;

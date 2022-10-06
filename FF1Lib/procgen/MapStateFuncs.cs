@@ -1096,8 +1096,18 @@ namespace FF1Lib.Procgen
 	    return await this.NextStep();
 	}
 
-	public async Task<MapResult> SetEntrance(int x, int y) {
-	    this.Entrance = new SCCoords(x, y);
+	public async Task<MapResult> SetEntrance(
+	    MapLocation mapLocation,
+	    string teleportName,
+	    OverworldTeleportIndex overworldTeleportIndex,
+	    MapId mapId,
+	    SCCoords coord)
+	{
+	    this.mapLocation = mapLocation;
+	    this.teleportName = teleportName;
+	    this.overworldTeleportIndex = overworldTeleportIndex;
+	    this.mapId = mapId;
+	    this.Entrance = coord;
 	    return await this.NextStep();
 	}
 

@@ -24,6 +24,10 @@ namespace FF1Lib.Procgen
 	public List<byte> RoomBattleTiles;
 	public List<int> NPCs;
 
+	public MapLocation mapLocation;
+	public string teleportName;
+	public OverworldTeleportIndex overworldTeleportIndex;
+	public MapId mapId;
 	public SCCoords Entrance;
 
         public MapState(MT19337 rng, List<MapGenerationStep> steps, Map tilemap, DungeonTiles dt, TileSet tileSet, FF1Rom.ReportProgress progress) : base(rng, steps, progress) {
@@ -53,6 +57,10 @@ namespace FF1Lib.Procgen
 	    this.Entrance = copy.Entrance;
 	    this.RoomFloorTiles = copy.RoomFloorTiles;
 	    this.RoomBattleTiles = copy.RoomBattleTiles;
+	    this.mapLocation = copy.mapLocation;
+	    this.teleportName = copy.teleportName;
+	    this.overworldTeleportIndex = copy.overworldTeleportIndex;
+	    this.mapId = copy.mapId;
 	}
 
         void OwnTilemap() {
@@ -130,7 +138,11 @@ namespace FF1Lib.Procgen
 			mapGenSteps = new () {
 			    new MapGenerationStep("CollectInfo", new object[] { }),
 			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
-			    new MapGenerationStep("SetEntrance", new object[] { 0x17, 0x18 }),
+			    new MapGenerationStep("SetEntrance", new object[] { MapLocation.None, // coming from overworld
+									       "", //
+									       OverworldTeleportIndex.EarthCave1,
+									       MapId.EarthCaveB1, // arriving at earth b1
+									       new SCCoords(0x17, 0x18) }),
 			    new MapGenerationStep("EarthB1Style", new object[] { }),
 			    new MapGenerationStep("PlaceTile", new object[] { 0x17, 0x18, DungeonTiles.CAVE_EARTH_WARP }),
 			    new MapGenerationStep("PlaceTreasureRooms", new object[] { }),
@@ -245,12 +257,19 @@ namespace FF1Lib.Procgen
 		    var blankState = new MapState(rng, mapGenSteps, maps[(int)mapId], dt, tileset, progress);
 		    var worldState = await ProgenFramework.RunSteps<MapState, MapResult, MapGenerationStep>(blankState, 5000, progress);
 		    if (worldState != null) {
-			return new CompleteMap { Map = worldState.Tilemap };
+			return new CompleteMap {
+			    Map = worldState.Tilemap,
+			    Destination = new TeleportDestination(worldState.mapLocation, (MapIndex)(byte)(worldState.mapId),
+								  new Coordinate(worldState.Entrance.X, worldState.Entrance.Y, CoordinateLocale.Standard)),
+			    TeleportName = worldState.teleportName,
+			    OverworldEntrance = worldState.overworldTeleportIndex
+			};
 		    }
 		}
 	    }
 
 	}
+
     }
 
 }

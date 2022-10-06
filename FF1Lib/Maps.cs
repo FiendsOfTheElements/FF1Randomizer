@@ -1862,5 +1862,17 @@ namespace FF1Lib
 						    null, null);
 		    }
 		}
+
+		public void ImportCustomMap(List<Map> maps, TeleportShuffle teleporters,
+					    OverworldMap overworldMap, CompleteMap newmap) {
+		    maps[(int)MapId.EarthCaveB1] = newmap.Map;
+		    if (newmap.TeleportName != "") {
+			teleporters.Get(newmap.TeleportName).SetEntrance(newmap.Entrance);
+		    }
+		    if (newmap.OverworldEntrance != OverworldTeleportIndex.None) {
+			overworldMap.PutOverworldTeleport(newmap.OverworldEntrance,
+							  teleporters.Get(newmap.TeleportName));
+		    }
+		}
 	}
 }

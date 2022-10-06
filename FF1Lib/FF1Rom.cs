@@ -285,7 +285,7 @@ public partial class FF1Rom : NesRom
 
 		if (flags.Dungeonizer) {
 		    var newmap = await NewDungeon.GenerateNewMap(rng, this, MapId.EarthCaveB1, maps, this.Progress);
-		    maps[(int)MapId.EarthCaveB1] = newmap.Map;
+		    this.ImportCustomMap(maps, teleporters, overworldMap, newmap);
 		}
 
 			if((bool)flags.OWDamageTiles || flags.DesertOfDeath)
