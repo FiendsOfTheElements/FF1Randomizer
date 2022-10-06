@@ -549,7 +549,7 @@ namespace FF1Lib.Procgen
 		    new Rule(new byte[3,3] {
 			{STAR, STAR, STAR},
 			{_, CAVE_FLOOR, CAVE_WALL_E},
-			{CAVE_FLOOR,  CAVE_FLOOR, CAVE_FLOOR}},
+			{STAR, CAVE_FLOOR, CAVE_FLOOR}},
 			CAVE_WALL_N, 1, 0),
 
 		    // lower horizonal gap fix on W wall
@@ -716,6 +716,13 @@ namespace FF1Lib.Procgen
 			{CAVE_WALL_N,  CAVE_FLOOR, CAVE_WALL_E},
 			{STAR,         CAVE_FLOOR, CAVE_WALL_E}},
 			CAVE_WALL_NE, 1, 0),
+
+		    // fill in absolutely any other remaining gaps.
+		    new Rule(new byte[3,3] {
+			{STAR, STAR, STAR},
+			{STAR, CAVE_BLANK, STAR},
+			{STAR, CAVE_FLOOR, STAR}},
+			CAVE_WALL_N),
 
 		}, allTiles, null, null);
 

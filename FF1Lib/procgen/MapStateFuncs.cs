@@ -517,7 +517,7 @@ namespace FF1Lib.Procgen
 	    var tasks = new List<MapGenerationTask>();
 
 	    tasks.Add(() => new MapState(this).EarthB2NextRoom(progressWindow, connectWindow, minTreasureRooms, features, featureAfter,
-								   rooms, regions, roomTotal, 0, 0, false, 0));
+							       rooms, regions, roomTotal, 0, 0, false, 0));
 
 	    await Task.Yield();
 	    return new MapResult(tasks);
@@ -525,7 +525,7 @@ namespace FF1Lib.Procgen
 
 	public async Task<MapResult> EarthB2NextRoom(int progressWindow, int connectWindow, int minTreasureRooms, PgFeature[] features, int featureAfter,
 						     List<EarthB2Room> rooms, byte[,] regions, int roomTotal, int treasureCount, int featureCount,
-						     bool didTreasure, int gating)
+						     bool restart, int gating)
 	{
 	    if (rooms.Count == roomTotal) {
 		if (treasureCount < minTreasureRooms || featureCount < features.Length) {
@@ -541,10 +541,12 @@ namespace FF1Lib.Procgen
 
 	    if (gating == rooms.Count-1) {
 		roomIdx.Add(gating);
-	    } else if (didTreasure) {
+	    } else if (restart) {
 		for (int i = rooms.Count-1; i >= 0 ; i--) {
 		    roomIdx.Add(i);
 		}
+	    } else if (rooms[rooms.Count-1].hallway) {
+		roomIdx.Add(rooms.Count-1);
 	    } else {
 		for (int i = rooms.Count-1; i >= Math.Max(rooms.Count-progressWindow, 0); i--) {
 		    roomIdx.Add(i);
@@ -624,7 +626,7 @@ namespace FF1Lib.Procgen
 	    int h = 0;
 
 	    bool valid = false;
-	    bool didTreasure = false;
+	    bool restart = false;
 	    bool makeHallway = (hallwayDraw == 0 || hallwayDraw == 1);
 
 	    if (placeFeature) {
@@ -695,6 +697,7 @@ namespace FF1Lib.Procgen
 		    var reg = regions[c.Y, c.X];
 		    if (reg > 0 && (reg+connectWindow) <= rooms.Count && (rooms[reg].gating == room.gating)) {
 			connecting.Add(reg);
+			restart = true;
 		    } else {
 			//Console.WriteLine($"rejected connecting {reg} {rooms.Count} {c} {this.Tilemap[c.Y, c.X]:X}");
 			valid = false;
@@ -762,7 +765,7 @@ namespace FF1Lib.Procgen
 		}
 		var door = doorCandidates.PickRandom(this.rng);
 		this.Tilemap[door.Y, door.X] = DungeonTiles.CAVE_DOOR;
-		didTreasure = true;
+		restart = true;
 	    } else {
 		foreach (var b in boxpoints) {
 		    regions[b.Y, b.X] = (byte)rooms.Count;
@@ -793,7 +796,7 @@ namespace FF1Lib.Procgen
 
 	    var tasks = new List<MapGenerationTask>();
 	    tasks.Add(() => new MapState(this).EarthB2NextRoom(progressWindow, connectWindow, minTreasureRooms, features, featureAfter,
-							       rooms, regions, roomTotal, treasureCount, featureCount, didTreasure, gating));
+							       rooms, regions, roomTotal, treasureCount, featureCount, restart, gating));
 
 	    await Task.Yield();
 	    return new MapResult(tasks);
