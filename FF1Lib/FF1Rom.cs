@@ -493,11 +493,11 @@ public partial class FF1Rom : NesRom
 			ShuffleOrdeals(rng, maps);
 		}
 
-		if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Maze)
+		if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Maze && flags.GameMode != GameModes.DeepDungeon)
 		{
 			DoSkyCastle4FMaze(rng, maps);
 		}
-		else if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Teleporters)
+		else if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Teleporters && flags.GameMode != GameModes.DeepDungeon)
 		{
 			ShuffleSkyCastle4F(rng, maps);
 		}
