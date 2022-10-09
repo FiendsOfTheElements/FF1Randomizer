@@ -25,9 +25,9 @@ namespace FF1Lib.Procgen
 	public List<int> NPCs;
 
 	public MapLocation mapLocation;
-	public string teleportName;
-	public OverworldTeleportIndex overworldTeleportIndex;
 	public MapId mapId;
+	public Dictionary<OverworldTeleportIndex, TeleportDestination> OverworldEntrances;
+	public List<TeleportDestination> MapDestinations;
 	public SCCoords Entrance;
 
         public MapState(MT19337 rng, List<MapGenerationStep> steps, Map tilemap, DungeonTiles dt, TileSet tileSet, FF1Rom.ReportProgress progress) : base(rng, steps, progress) {
@@ -42,6 +42,8 @@ namespace FF1Lib.Procgen
 	    this.NPCs = new();
 	    this.RoomFloorTiles = new();
 	    this.RoomBattleTiles = new();
+	    this.OverworldEntrances = new();
+	    this.MapDestinations = new();
 	}
 
         public MapState(MapState copy) : base(copy) {
@@ -58,9 +60,9 @@ namespace FF1Lib.Procgen
 	    this.RoomFloorTiles = copy.RoomFloorTiles;
 	    this.RoomBattleTiles = copy.RoomBattleTiles;
 	    this.mapLocation = copy.mapLocation;
-	    this.teleportName = copy.teleportName;
-	    this.overworldTeleportIndex = copy.overworldTeleportIndex;
 	    this.mapId = copy.mapId;
+	    this.OverworldEntrances = copy.OverworldEntrances;
+	    this.MapDestinations = copy.MapDestinations;
 	}
 
         void OwnTilemap() {
@@ -117,159 +119,182 @@ namespace FF1Lib.Procgen
 
     public static class NewDungeon {
 
-	public async static Task<CompleteMap> GenerateNewMap(MT19337 rng, FF1Rom rom, MapId mapId, List<Map> maps, FF1Rom.ReportProgress progress) {
-	    await progress("", 1);
-
-	    List<MapGenerationStep> mapGenSteps = null;
-
-	    var dt = new DungeonTiles();
-
-	    while (true) {
-		switch (mapId) {
-		    /*
-		      case MapId.Coneria:
-			mapGenSteps = new () {
-			    new MapGenerationStep("WipeMap", new object[] { (byte)0x10 }),
-			    new MapGenerationStep("PlaceShop", new object[] { }),
-			};
-			break;
-		    */
-		    case MapId.EarthCaveB1:
-			mapGenSteps = new () {
-			    new MapGenerationStep("CollectInfo", new object[] { }),
-			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
-			    new MapGenerationStep("SetEntrance", new object[] { MapLocation.None, // coming from overworld
-									       "", //
-									       OverworldTeleportIndex.EarthCave1,
-									       MapId.EarthCaveB1, // arriving at earth b1
-									       new SCCoords(0x17, 0x18) }),
-			    new MapGenerationStep("EarthB1Style", new object[] { }),
-			    new MapGenerationStep("PlaceTile", new object[] { 0x17, 0x18, DungeonTiles.CAVE_EARTH_WARP }),
-			    new MapGenerationStep("PlaceTreasureRooms", new object[] { }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_rock_walls, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
-			    new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_corners, DungeonTiles.CAVE_EXIT_TO_EARTH_B2, 16, 12 }),
-			    new MapGenerationStep("PlaceHallOfGiants", new object[] { new List<byte> {0x1B, 0x1C} }),
-			    new MapGenerationStep("PlaceChests", new object[] { rom, maps, mapId, new List<(MapId,byte)> {} }),
-			    new MapGenerationStep("SanityCheck", new object[] { }),
-			};
-			break;
-		    case MapId.EarthCaveB2:
-			mapGenSteps = new () {
-			    new MapGenerationStep("CollectInfo", new object[] { }),
-			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
-			    new MapGenerationStep("SetEntrance", new object[] { 0x0A, 0x09 }),
-			    new MapGenerationStep("EarthB2Style", new object[] { 1, 1, 0, 3,
-										33, 36, 3, 6, 2, new PgFeature[] { }, 0 }),
-			    new MapGenerationStep("ConnectRegions", new object[] { }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls3, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }), // double up to fix gaps
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls4, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
-			    new MapGenerationStep("PlaceChests", new object[] { rom, maps, mapId, new List<(MapId,byte)> {} }),
-			    new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
-			    new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_wall_corners, DungeonTiles.CAVE_EXIT_TO_EARTH_B3, 36, 12 }),
-			};
-			break;
-		    case MapId.EarthCaveB3:
-			mapGenSteps = new () {
-			    new MapGenerationStep("CollectInfo", new object[] { }),
-			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
-			    new MapGenerationStep("SetEntrance", new object[] { 0x1B, 0x2D, }),
-			    new MapGenerationStep("EarthB2Style", new object[] { 1, 5, 0, 2,
-										20, 25, 2, 4, 2,
-										new PgFeature[] { DungeonTiles.VAMPIRE_ROOM, DungeonTiles.ROD_ROOM }, 4 }),
-			    new MapGenerationStep("ConnectRegions", new object[] { }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls3, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }), // double up to fix gaps introduced by extend walls
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls4, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
-			    new MapGenerationStep("PlaceChests", new object[] { rom, maps, mapId, new List<(MapId,byte)> { (mapId, DungeonTiles.RUBY_CHEST) } }),
-			    new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
-			    //new MapGenerationStep("SanityCheck", new object[] { }),
-			};
-			break;
-		    case MapId.EarthCaveB4:
-			mapGenSteps = new () {
-			    new MapGenerationStep("CollectInfo", new object[] { }),
-			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
-			    new MapGenerationStep("SetEntrance", new object[] { 0x36, 0x21 }),
-			    new MapGenerationStep("EarthB2Style", new object[] { 3, 0, 0, 2,
-				    33, 36, 6, 6, 2,
-				    new PgFeature[] { }, 0}),
-			    new MapGenerationStep("ConnectRegions", new object[] { }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls3, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }), // double up to fix gaps
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls4, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
-			    new MapGenerationStep("PlaceChests", new object[] { rom, maps, mapId, new List<(MapId,byte)> {} }),
-			    new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
-			    new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_wall_corners, DungeonTiles.CAVE_EXIT_TO_EARTH_B5, 36, 12 }),
-			};
-			break;
-		    case MapId.EarthCaveB5:
-			mapGenSteps = new () {
-			    new MapGenerationStep("CollectInfo", new object[] { }),
-			    new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
-			    new MapGenerationStep("SetEntrance", new object[] { 0x19, 0x35 }),
-			    new MapGenerationStep("EarthB2Style", new object[] { 1, 1, 1, 1,
-				    18, 22, 6, 4, 0, new PgFeature[] { DungeonTiles.LICH_ROOM }, 12 }),
-			    new MapGenerationStep("ConnectRegions", new object[] { }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls3, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }), // double up to fix gaps
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls4, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
-			    new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
-			    new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
-			    //new MapGenerationStep("SanityCheck", new object[] { }),
-			};
-			break;
-		    default:
-			return new CompleteMap { Map = maps[(int)mapId] };
-		}
-
-		if (mapGenSteps != null) {
-		    var tileset = new TileSet(rom, rom.GetMapTilesetIndex(mapId));
-		    var blankState = new MapState(rng, mapGenSteps, maps[(int)mapId], dt, tileset, progress);
-		    var worldState = await ProgenFramework.RunSteps<MapState, MapResult, MapGenerationStep>(blankState, 5000, progress);
-		    if (worldState != null) {
-			return new CompleteMap {
-			    Map = worldState.Tilemap,
-			    Destination = new TeleportDestination(worldState.mapLocation, (MapIndex)(byte)(worldState.mapId),
-								  new Coordinate(worldState.Entrance.X, worldState.Entrance.Y, CoordinateLocale.Standard)),
-			    TeleportName = worldState.teleportName,
-			    OverworldEntrance = worldState.overworldTeleportIndex
-			};
-		    }
-		}
+	public async static Task<CompleteMap> GenerateMap(MT19337 rng, FF1Rom rom, List<Map> maps, MapId mapId,
+							  List<MapGenerationStep> mapGenSteps, DungeonTiles dt, FF1Rom.ReportProgress progress) {
+	    var tileset = new TileSet(rom, rom.GetMapTilesetIndex(mapId));
+	    var blankState = new MapState(rng, mapGenSteps, maps[(int)mapId], dt, tileset, progress);
+	    var worldState = await ProgenFramework.RunSteps<MapState, MapResult, MapGenerationStep>(blankState, 5000, progress);
+	    if (worldState != null) {
+		return new CompleteMap {
+		    MapId = mapId,
+		    Map = worldState.Tilemap,
+		    OverworldEntrances = worldState.OverworldEntrances,
+		    MapDestinations = worldState.MapDestinations,
+		};
+	    } else {
+		return null;
 	    }
-
 	}
 
+	public async static Task<List<CompleteMap>> GenerateEarthCave(MT19337 rng, FF1Rom rom, List<Map> maps, FF1Rom.ReportProgress progress) {
+	    var dt = new DungeonTiles();
+
+	    List<CompleteMap> newmaps = new();
+	    List<MapGenerationStep> mapGenSteps;
+	    CompleteMap newmap;
+
+	    mapGenSteps = new () {
+		new MapGenerationStep("CollectInfo", new object[] { }),
+		new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
+		new MapGenerationStep("SetEntrance", new object[] { new SCCoords(0x17, 0x18) }),
+		new MapGenerationStep("AddOverworldEntrance", new object[] { OverworldTeleportIndex.EarthCave1,
+									    new TeleportDestination(MapLocation.EarthCave1,
+												    MapIndex.EarthCaveB1, new Coordinate(0x17, 0x18, CoordinateLocale.Standard),
+												    TeleportIndex.EarthCave2) }),
+		new MapGenerationStep("AddMapDestination", new object[] { new TeleportDestination(MapLocation.EarthCave1, MapIndex.EarthCaveB1,
+											       new Coordinate(0x17, 0x18, CoordinateLocale.Standard),
+											       TeleportIndex.EarthCave2) }),
+		new MapGenerationStep("EarthB1Style", new object[] { }),
+		new MapGenerationStep("PlaceTile", new object[] { 0x17, 0x18, DungeonTiles.CAVE_EARTH_WARP }),
+		new MapGenerationStep("PlaceTreasureRooms", new object[] { }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_rock_walls, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
+		new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_corners, DungeonTiles.CAVE_EXIT_TO_EARTH_B2, 16, 12 }),
+		new MapGenerationStep("PlaceHallOfGiants", new object[] { new List<byte> {0x1B, 0x1C} }),
+		new MapGenerationStep("PlaceChests", new object[] { rom, maps, MapIndex.EarthCaveB1, new List<(MapId,byte)> {} }),
+		new MapGenerationStep("SanityCheck", new object[] { }),
+	    };
+
+	    newmap = null;
+	    do {
+		newmap = await GenerateMap(rng, rom, maps, MapId.EarthCaveB1, mapGenSteps, dt, progress);
+	    } while (newmap == null);
+	    newmaps.Add(newmap);
+
+	    mapGenSteps = new () {
+		new MapGenerationStep("CollectInfo", new object[] { }),
+		new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
+		new MapGenerationStep("SetEntrance", new object[] { new SCCoords(0x0A, 0x09) }),
+		new MapGenerationStep("EarthB2Style", new object[] { 1, 1, 0, 3,
+								    33, 36, 3, 6, 2, new PgFeature[] { }, 0 }),
+		new MapGenerationStep("ConnectRegions", new object[] { }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls3, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }), // double up to fix gaps
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls4, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
+		new MapGenerationStep("PlaceChests", new object[] { rom, maps, MapIndex.EarthCaveB2, new List<(MapId,byte)> {} }),
+		new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
+		new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_wall_corners, DungeonTiles.CAVE_EXIT_TO_EARTH_B3, 36, 12 }),
+	    };
+
+	    newmap = null;
+	    do {
+		newmap = await GenerateMap(rng, rom, maps, MapId.EarthCaveB2, mapGenSteps, dt, progress);
+	    } while (newmap == null);
+	    newmaps.Add(newmap);
+
+	    mapGenSteps = new () {
+		new MapGenerationStep("CollectInfo", new object[] { }),
+		new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
+		new MapGenerationStep("SetEntrance", new object[] { new SCCoords(0x1B, 0x2D) }),
+		new MapGenerationStep("EarthB2Style", new object[] { 1, 5, 0, 2,
+								    20, 25, 2, 4, 2,
+								    new PgFeature[] { DungeonTiles.VAMPIRE_ROOM, DungeonTiles.ROD_ROOM }, 4 }),
+		new MapGenerationStep("ConnectRegions", new object[] { }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls3, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }), // double up to fix gaps introduced by extend walls
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls4, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
+		new MapGenerationStep("PlaceChests", new object[] { rom, maps, MapIndex.EarthCaveB3, new List<(MapId,byte)> { (MapId.EarthCaveB3, DungeonTiles.RUBY_CHEST) } }),
+		new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
+		//new MapGenerationStep("SanityCheck", new object[] { }),
+	    };
+
+	    newmap = null;
+	    do {
+		newmap = await GenerateMap(rng, rom, maps, MapId.EarthCaveB3, mapGenSteps, dt, progress);
+	    } while (newmap == null);
+	    newmaps.Add(newmap);
+
+	    mapGenSteps = new () {
+		new MapGenerationStep("CollectInfo", new object[] { }),
+		new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
+		new MapGenerationStep("SetEntrance", new object[] { new SCCoords(0x36, 0x21) }),
+		new MapGenerationStep("EarthB2Style", new object[] { 3, 0, 0, 2,
+								    33, 36, 6, 6, 2,
+								    new PgFeature[] { }, 0}),
+		new MapGenerationStep("ConnectRegions", new object[] { }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls3, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }), // double up to fix gaps
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls4, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
+		new MapGenerationStep("PlaceChests", new object[] { rom, maps, MapIndex.EarthCaveB4, new List<(MapId,byte)> {} }),
+		new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
+		new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_wall_corners, DungeonTiles.CAVE_EXIT_TO_EARTH_B5, 36, 12 }),
+	    };
+
+	    do {
+		newmap = await GenerateMap(rng, rom, maps, MapId.EarthCaveB4, mapGenSteps, dt, progress);
+	    } while (newmap == null);
+	    newmaps.Add(newmap);
+
+	    mapGenSteps = new () {
+		new MapGenerationStep("CollectInfo", new object[] { }),
+		new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
+		new MapGenerationStep("SetEntrance", new object[] { new SCCoords(0x19, 0x35) }),
+		new MapGenerationStep("EarthB2Style", new object[] { 1, 1, 1, 1,
+								    18, 22, 6, 4, 0, new PgFeature[] { DungeonTiles.LICH_ROOM }, 12 }),
+		new MapGenerationStep("ConnectRegions", new object[] { }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls3, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }), // double up to fix gaps
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls4, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
+		new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
+		//new MapGenerationStep("SanityCheck", new object[] { }),
+	    };
+
+	    do {
+		newmap = await GenerateMap(rng, rom, maps, MapId.EarthCaveB5, mapGenSteps, dt, progress);
+	    } while (newmap == null);
+	    newmaps.Add(newmap);
+
+	    return newmaps;
+	}
+
+	public async static Task<List<CompleteMap>> GenerateNewDungeon(MT19337 rng, FF1Rom rom, MapId mapId, List<Map> maps, FF1Rom.ReportProgress progress) {
+	    switch (mapId) {
+		case MapId.EarthCaveB1:
+		    var v = await GenerateEarthCave(rng, rom, maps, progress);
+		    return v;
+		default:
+		    return new List<CompleteMap>();
+	    }
+	}
     }
 
 }

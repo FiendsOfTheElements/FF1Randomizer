@@ -2,12 +2,12 @@
 {
 	public class CompleteMap
 	{
+	        public MapId MapId;
 		public Map Map;
 		public MapRequirements Requirements;
 	        public Coordinate Entrance;
-	        public TeleportDestination Destination;
-	        public string TeleportName;
-	        public OverworldTeleportIndex OverworldEntrance;
+	        public Dictionary<OverworldTeleportIndex, TeleportDestination> OverworldEntrances;
+	        public List<TeleportDestination> MapDestinations;
 
 		/* -- The rest of this is text map drawing. -- */
 

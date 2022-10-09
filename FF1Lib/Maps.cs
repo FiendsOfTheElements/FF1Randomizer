@@ -1865,13 +1865,20 @@ namespace FF1Lib
 
 		public void ImportCustomMap(List<Map> maps, TeleportShuffle teleporters,
 					    OverworldMap overworldMap, CompleteMap newmap) {
-		    maps[(int)MapId.EarthCaveB1] = newmap.Map;
-		    if (newmap.TeleportName != "") {
-			teleporters.Get(newmap.TeleportName).SetEntrance(newmap.Entrance);
+		    maps[(int)newmap.MapId] = newmap.Map;
+		    foreach (var dest in newmap.MapDestinations) {
+			// Update the teleport information, this
+			// consists of the corresponding map location
+			// (this is a walkable area of the map,
+			// because some dungeons have multiple parts
+			// that are actually on the same map), the map
+			// index, where the teleport puts the player,
+			// and what teleports (but not warps) are
+			// accessible in this map location.
+			teleporters.Set(dest.Destination.ToString(), dest);
 		    }
-		    if (newmap.OverworldEntrance != OverworldTeleportIndex.None) {
-			overworldMap.PutOverworldTeleport(newmap.OverworldEntrance,
-							  teleporters.Get(newmap.TeleportName));
+		    foreach (var kv in newmap.OverworldEntrances) {
+			overworldMap.PutOverworldTeleport(kv.Key, kv.Value);
 		    }
 		}
 	}

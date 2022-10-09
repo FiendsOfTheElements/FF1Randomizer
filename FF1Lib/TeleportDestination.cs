@@ -81,7 +81,7 @@
 
 		    // coordinates is where the player appears
 
-		    // teleports is a list of other teleports in this
+		    // teleports is a list of _other_ teleports in this
 		    // map location (essentially, other places the
 		    // player can access once they've arrived here)
 

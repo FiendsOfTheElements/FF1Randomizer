@@ -172,18 +172,21 @@ namespace FF1R.Commands
 		Image<Rgba32> output;
 		string name;
 
-		var replacementMap = Task.Run<FF1Lib.Procgen.CompleteMap>(async () => await FF1Lib.Procgen.NewDungeon.GenerateNewMap(rng, rom, (FF1Lib.MapId)i, maps, this.Progress)).Result;
-		maps[i] = replacementMap.Map;
+		var replacementMaps = Task.Run<List<FF1Lib.Procgen.CompleteMap>>(async () => await FF1Lib.Procgen.NewDungeon.GenerateNewDungeon(rng, rom, (FF1Lib.MapId)i, maps, this.Progress)).Result;
 
-		output = rom.RenderMap(maps, (FF1Lib.MapId)i, false);
-		name = $"dungeonmap{i}-outside.png";
-		output.Save(name);
-		Console.WriteLine($"Wrote {name}");
+		foreach (var replacementMap in replacementMaps) {
+		    maps[(int)replacementMap.MapId] = replacementMap.Map;
 
-		output = rom.RenderMap(maps, (FF1Lib.MapId)i, true);
-		name = $"dungeonmap{i}-inside.png";
-		output.Save(name);
-		Console.WriteLine($"Wrote {name}");
+		    output = rom.RenderMap(maps, replacementMap.MapId, false);
+		    name = $"dungeonmap{(int)replacementMap.MapId}-outside.png";
+		    output.Save(name);
+		    Console.WriteLine($"Wrote {name}");
+
+		    output = rom.RenderMap(maps, replacementMap.MapId, true);
+		    name = $"dungeonmap{(int)replacementMap.MapId}-inside.png";
+		    output.Save(name);
+		    Console.WriteLine($"Wrote {name}");
+		}
 	    }
 
 	    return 0;

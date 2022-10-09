@@ -125,6 +125,9 @@ namespace FF1Lib.Procgen
         public GenerationStep(string className, string methodName, object[] parameters, string message="") {
             Type magicType = Type.GetType(className);
             this.method = magicType.GetMethod(methodName);
+	    if (method == null) {
+		Console.WriteLine($"No method {methodName}");
+	    }
             Debug.Assert(method != null);
             this.parameters = parameters;
 	    this.message = message;
