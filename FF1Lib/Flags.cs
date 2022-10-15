@@ -185,7 +185,7 @@ namespace FF1Lib
 		public bool ShardHunt { get; set; } = false;
 		public ShardCount ShardCount { get; set; } = ShardCount.Count16;
 
-		[IntegerFlag(0, 4)]
+		[IntegerFlag(0, 5)]
 		public int OrbsRequiredCount { get; set; } = 4;
 		public OrbsRequiredMode OrbsRequiredMode { get; set; } = OrbsRequiredMode.Any;
 		public bool? OrbsRequiredSpoilers { get; set; } = false;
