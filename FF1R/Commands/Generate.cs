@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace FF1R.Commands
 {
 	using System;
@@ -108,7 +110,7 @@ namespace FF1R.Commands
 				: OutFile;
 
 			var rom = new FF1Rom(RomPath);
-			rom.Randomize(settings.Seed, settings.Flags, settings.Preferences);
+			Task.Run(async () => await rom.Randomize(settings.Seed, settings.Flags, settings.Preferences)).Wait();
 			rom.Save(outFile);
 
 			if (Verbose) {

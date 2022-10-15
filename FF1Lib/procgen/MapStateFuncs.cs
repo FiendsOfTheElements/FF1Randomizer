@@ -964,10 +964,13 @@ namespace FF1Lib.Procgen
 
 	    maps = new List<Map>(maps);
 	    maps[(int)mapId] = this.Tilemap;
-	    await rom.shuffleChestLocations(this.rng, maps, new MapId[] { this.mapId },
-					   preserveChests, null, 0x80, true, false,
-					   this.Chests, this.Traps);
-
+	    try {
+		await rom.shuffleChestLocations(this.rng, maps, new MapId[] { this.mapId },
+						preserveChests, null, 0x80, true, false,
+						this.Chests, this.Traps);
+	    } catch (Exception) {
+		return new MapResult(false);
+	    }
 	    /*var cand = this.Candidates(new List<byte> {DungeonTiles.CAVE_ROOM_FLOOR});
 	    var doors = this.Candidates(new List<byte> {DungeonTiles.CAVE_DOOR});
 
@@ -1127,10 +1130,10 @@ namespace FF1Lib.Procgen
 	    return await this.NextStep();
 	}
 
-	public async Task<MapResult> AddMapDestination(TeleportDestination td)
+	public async Task<MapResult> AddMapDestination(TeleportIndex idx, TeleportDestination td)
 	{
-	    this.MapDestinations = new List<TeleportDestination>(this.MapDestinations);
-	    this.MapDestinations.Add(td);
+	    this.MapDestinations = new Dictionary<TeleportIndex, TeleportDestination>(this.MapDestinations);
+	    this.MapDestinations[idx] = td;
 	    return await this.NextStep();
 	}
 

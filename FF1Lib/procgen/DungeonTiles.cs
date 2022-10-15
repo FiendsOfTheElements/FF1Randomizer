@@ -75,7 +75,7 @@ namespace FF1Lib.Procgen
 	    {None, None, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_E, CAVE_ROOM_FLOOR, CAVE_ROOM_W, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, None, None},
 	    {None, None, None, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_DOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, None, None, None},
 	    }, new Dictionary<string, SCCoords> {
-		{"Vampire", new SCCoords(5, 1)},
+		{"Vampire", new SCCoords(5, 2)},
 		{"ExitDoor", new SCCoords(9, 2)}
 	    });
 
@@ -106,7 +106,7 @@ namespace FF1Lib.Procgen
 	    {CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR},
 	    {CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_DOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR, CAVE_ROOM_FLOOR},
 	    }, new Dictionary<string, SCCoords> {
-		{"Lich", new SCCoords(4, 5)},
+		{"LichOrb", new SCCoords(4, 6)},
 	});
 
 	public PgTileFilter cave_rock_walls;

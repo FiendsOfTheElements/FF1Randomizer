@@ -1107,7 +1107,7 @@ public partial class FF1Rom : NesRom
 			ItemsText[(int)Item.House] = "XETH@p";
 		}
 
-		if ((bool)flags.HintsVillage && (flags.GameMode != GameModes.DeepDungeon))
+		if ((bool)flags.HintsVillage && (flags.GameMode != GameModes.DeepDungeon) && (bool)flags.Treasures)
 		{
 			NPCHints(rng, npcdata, flags, overworldMap);
 		}
@@ -1395,7 +1395,7 @@ public partial class FF1Rom : NesRom
 		ItemsText.Write(this, UnusedGoldItems);
 
 
-		if (flags.Spoilers) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, generatedPlacement, overworldMap, incentivesData, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
+		if (flags.Spoilers && sanityChecker != null) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, generatedPlacement, overworldMap, incentivesData, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
 
 		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 

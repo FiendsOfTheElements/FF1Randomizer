@@ -21,7 +21,7 @@ namespace FF1Lib.Procgen
 	        public Dictionary<OverworldTeleportIndex, TeleportDestination> OverworldEntrances;
 
 	    [JsonProperty]
-	        public List<TeleportDestination> MapDestinations;
+	        public Dictionary<TeleportIndex, TeleportDestination> MapDestinations;
 
 	    [JsonProperty]
 	        public List<NPC> NPCs;

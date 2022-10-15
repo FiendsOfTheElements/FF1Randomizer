@@ -1902,7 +1902,10 @@ namespace FF1Lib
 			// index, where the teleport puts the player,
 			// and what teleports (but not warps) are
 			// accessible in this map location.
-			teleporters.Set(dest.Destination.ToString(), dest);
+			teleporters.Set(dest.Value.Destination.ToString(), dest.Value);
+			if (dest.Key != TeleportIndex.Overworld) {
+			    overworldMap.PutStandardTeleport(dest.Key, dest.Value, OverworldTeleportIndex.None);
+			}
 		    }
 		    foreach (var kv in newmap.OverworldEntrances) {
 			overworldMap.PutOverworldTeleport(kv.Key, kv.Value);

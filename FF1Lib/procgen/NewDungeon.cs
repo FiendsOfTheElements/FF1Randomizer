@@ -27,7 +27,7 @@ namespace FF1Lib.Procgen
 	public MapLocation mapLocation;
 	public MapId mapId;
 	public Dictionary<OverworldTeleportIndex, TeleportDestination> OverworldEntrances;
-	public List<TeleportDestination> MapDestinations;
+	public Dictionary<TeleportIndex, TeleportDestination> MapDestinations;
 	public SCCoords Entrance;
 
         public MapState(MT19337 rng, List<MapGenerationStep> steps, MapId mapId, Map tilemap, DungeonTiles dt, TileSet tileSet, FF1Rom.ReportProgress progress) : base(rng, steps, progress) {
@@ -131,6 +131,7 @@ namespace FF1Lib.Procgen
 		    Map = worldState.Tilemap,
 		    OverworldEntrances = worldState.OverworldEntrances,
 		    MapDestinations = worldState.MapDestinations,
+		    NPCs = worldState.NPCs,
 		};
 	    } else {
 		return null;
@@ -152,9 +153,10 @@ namespace FF1Lib.Procgen
 									    new TeleportDestination(MapLocation.EarthCave1,
 												    MapIndex.EarthCaveB1, new Coordinate(0x17, 0x18, CoordinateLocale.Standard),
 												    TeleportIndex.EarthCave2) }),
-		new MapGenerationStep("AddMapDestination", new object[] { new TeleportDestination(MapLocation.EarthCave1, MapIndex.EarthCaveB1,
-											       new Coordinate(0x17, 0x18, CoordinateLocale.Standard),
-											       TeleportIndex.EarthCave2) }),
+		new MapGenerationStep("AddMapDestination", new object[] { TeleportIndex.Overworld,
+									 new TeleportDestination(MapLocation.EarthCave1, MapIndex.EarthCaveB1,
+												 new Coordinate(0x17, 0x18, CoordinateLocale.Standard),
+												 TeleportIndex.EarthCave2) }),
 		new MapGenerationStep("EarthB1Style", new object[] { }),
 		new MapGenerationStep("PlaceTile", new object[] { 0x17, 0x18, DungeonTiles.CAVE_EARTH_WARP }),
 		new MapGenerationStep("PlaceTreasureRooms", new object[] { }),
@@ -177,7 +179,8 @@ namespace FF1Lib.Procgen
 		new MapGenerationStep("CollectInfo", new object[] { rom, npcdata }),
 		new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 		new MapGenerationStep("SetEntrance", new object[] { new SCCoords(0x0A, 0x09) }),
-		new MapGenerationStep("AddMapDestination", new object[] { new TeleportDestination(MapLocation.EarthCave2, MapIndex.EarthCaveB2,
+		new MapGenerationStep("AddMapDestination", new object[] { TeleportIndex.EarthCave2,
+			new TeleportDestination(MapLocation.EarthCave2, MapIndex.EarthCaveB2,
 											       new Coordinate(0x0A, 0x09, CoordinateLocale.Standard),
 											       TeleportIndex.EarthCaveVampire) }),
 		new MapGenerationStep("EarthB2Style", new object[] { 1, 1, 0, 3,
@@ -210,7 +213,8 @@ namespace FF1Lib.Procgen
 		new MapGenerationStep("CollectInfo", new object[] { rom, npcdata }),
 		new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 		new MapGenerationStep("SetEntrance", new object[] { new SCCoords(0x1B, 0x2D) }),
-		new MapGenerationStep("AddMapDestination", new object[] { new TeleportDestination(MapLocation.EarthCaveVampire, MapIndex.EarthCaveB3,
+		new MapGenerationStep("AddMapDestination", new object[] { TeleportIndex.EarthCaveVampire,
+									 new TeleportDestination(MapLocation.EarthCaveVampire, MapIndex.EarthCaveB3,
 											       new Coordinate(0x1B, 0x2D, CoordinateLocale.Standard),
 											       TeleportIndex.EarthCave4) }),
 		new MapGenerationStep("EarthB2Style", new object[] { 1, 5, 0, 2,
@@ -243,7 +247,8 @@ namespace FF1Lib.Procgen
 		new MapGenerationStep("CollectInfo", new object[] { rom, npcdata }),
 		new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 		new MapGenerationStep("SetEntrance", new object[] { new SCCoords(0x36, 0x21) }),
-		new MapGenerationStep("AddMapDestination", new object[] { new TeleportDestination(MapLocation.EarthCave4, MapIndex.EarthCaveB4,
+		new MapGenerationStep("AddMapDestination", new object[] { TeleportIndex.EarthCave4,
+									 new TeleportDestination(MapLocation.EarthCave4, MapIndex.EarthCaveB4,
 											       new Coordinate(0x36, 0x21, CoordinateLocale.Standard),
 											       TeleportIndex.EarthCaveLich) }),
 		new MapGenerationStep("EarthB2Style", new object[] { 3, 0, 0, 2,
@@ -276,7 +281,8 @@ namespace FF1Lib.Procgen
 		new MapGenerationStep("CollectInfo", new object[] { rom, npcdata }),
 		new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 		new MapGenerationStep("SetEntrance", new object[] { new SCCoords(0x19, 0x35) }),
-		new MapGenerationStep("AddMapDestination", new object[] { new TeleportDestination(MapLocation.EarthCaveLich, MapIndex.EarthCaveB5,
+		new MapGenerationStep("AddMapDestination", new object[] { TeleportIndex.EarthCaveLich,
+									 new TeleportDestination(MapLocation.EarthCaveLich, MapIndex.EarthCaveB5,
 												  new Coordinate(0x19, 0x35, CoordinateLocale.Standard),
 												  ExitTeleportIndex.ExitEarthCave) }),
 		new MapGenerationStep("EarthB2Style", new object[] { 1, 1, 1, 1,
