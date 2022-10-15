@@ -655,7 +655,7 @@ namespace FF1Lib.Procgen
 		    }
 		}
 	    } else if (placeTreasure) {
-		var minRoomArea = (this.Chests.Count * 4) / minTreasureRooms;
+		var minRoomArea = (this.Chests.Count * 6) / minTreasureRooms;
 		valid = CornerBox(candidates, quad, (4, 9), (4, 9), candidates, DungeonTiles.CAVE_BLANK, minRoomArea, out topLeft, out w, out h);
 	    } else if (hallwayDraw == 0) {
 		// Vertical hallway

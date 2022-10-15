@@ -3712,6 +3712,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EFGWaterfall"));
 			}
 		}
+		public bool ProcgenEarth
+		{
+			get => Flags.ProcgenEarth;
+			set
+			{
+				Flags.ProcgenEarth = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProcgenEarth"));
+			}
+		}
 		public bool DisableTentSaving
 		{
 			get => Flags.DisableTentSaving;

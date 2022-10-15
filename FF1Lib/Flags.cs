@@ -694,7 +694,7 @@ namespace FF1Lib
 
 		public bool WhiteMageHarmEveryone { get; set; } = false;
 
-		public bool ProcgenEarth { get; set; } = true;
+		public bool ProcgenEarth { get; set; } = false;
 
 		public bool? EarlierRuby { get; set; } = false;
 		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (!DesertOfDeath);
