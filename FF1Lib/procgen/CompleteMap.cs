@@ -1,13 +1,30 @@
-﻿namespace FF1Lib.Procgen
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace FF1Lib.Procgen
 {
+    [JsonObject(MemberSerialization.OptIn)]
 	public class CompleteMap
 	{
+	    [JsonProperty]
+	    [JsonConverter(typeof(StringEnumConverter))]
 	        public MapId MapId;
+
+	    [JsonProperty]
 		public Map Map;
+
 		public MapRequirements Requirements;
 	        public Coordinate Entrance;
+
+	    [JsonProperty]
+	    [JsonConverter(typeof(KeyValuePairConverter))]
 	        public Dictionary<OverworldTeleportIndex, TeleportDestination> OverworldEntrances;
+
+	    [JsonProperty]
 	        public List<TeleportDestination> MapDestinations;
+
+	    [JsonProperty]
+	        public List<NPC> NPCs;
 
 		/* -- The rest of this is text map drawing. -- */
 

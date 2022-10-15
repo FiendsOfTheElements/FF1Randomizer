@@ -283,10 +283,10 @@ public partial class FF1Rom : NesRom
 			maps[(int)MapId.Waterfall] = waterfall.Map;
 		}
 
-		if (flags.Dungeonizer) {
-		    var newmaps = await NewDungeon.GenerateNewDungeon(rng, this, MapId.EarthCaveB1, maps, this.Progress);
+		if (flags.ProcgenEarth) {
+		    var newmaps = await NewDungeon.GenerateNewDungeon(rng, this, MapId.EarthCaveB1, maps, npcdata, this.Progress);
 		    foreach (var newmap in newmaps) {
-			this.ImportCustomMap(maps, teleporters, overworldMap, newmap);
+			this.ImportCustomMap(maps, teleporters, overworldMap, npcdata, newmap);
 		    }
 		}
 

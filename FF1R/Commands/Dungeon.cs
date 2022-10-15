@@ -63,6 +63,16 @@ namespace FF1R.Commands
 		}
 		output.Save(name);
 		Console.WriteLine($"Wrote {name}");
+
+		name = $"dungeon{i}-npcs.json";
+		var npcdata = new FF1Rom.NPCdata(rom);
+		var npcs = rom.GetNpcs((FF1Lib.MapId)i, npcdata);
+		using (StreamWriter file = File.CreateText(name)) {
+		    JsonSerializer serializer = new JsonSerializer();
+		    serializer.Formatting = Formatting.Indented;
+		    serializer.Serialize(file, npcs);
+		}
+		Console.WriteLine($"Wrote {name}");
 	    }
 
 	    return 0;
@@ -168,11 +178,14 @@ namespace FF1R.Commands
 
 	    var rng = new MT19337((uint)Seed);
 
+	    var npcdata = new FF1Rom.NPCdata(rom);
+
 	    for (int i = start; i <= end; i++) {
 		Image<Rgba32> output;
 		string name;
 
-		var replacementMaps = Task.Run<List<FF1Lib.Procgen.CompleteMap>>(async () => await FF1Lib.Procgen.NewDungeon.GenerateNewDungeon(rng, rom, (FF1Lib.MapId)i, maps, this.Progress)).Result;
+		var replacementMaps = Task.Run<List<FF1Lib.Procgen.CompleteMap>>(async () => await FF1Lib.Procgen.NewDungeon.GenerateNewDungeon(rng, rom, (FF1Lib.MapId)i,
+																		maps, npcdata, this.Progress)).Result;
 
 		foreach (var replacementMap in replacementMaps) {
 		    maps[(int)replacementMap.MapId] = replacementMap.Map;

@@ -311,6 +311,8 @@ public static class UnsramIndex
 		RodPlate = 22,
 		LutePlate = 23,
 
+		LichOrb = 27,
+
 		SkyWarrior1 = 58,
 		SkyWarrior2 = 59,
 		SkyWarrior3 = 60,

@@ -751,6 +751,23 @@ namespace FF1Lib.Procgen
 		    rooms = new(rooms);
 		    rooms.Add(new EarthB2Room { points = pts, topLeft = topLeft, w = w, h = h, tight = true, gating = gating });
 		}
+
+		var npcPlacements = new Dictionary<string, ObjectId> {
+		    {"Vampire", ObjectId.Vampire},
+		    {"RodPlate", ObjectId.RodPlate},
+		    {"LichOrb", ObjectId.LichOrb},
+		};
+
+		foreach (var f in npcPlacements) {
+		    if (features[featureCount].Entrances.ContainsKey(f.Key)) {
+			this.OwnFeatures();
+			var coord = features[featureCount].Entrances[f.Key];
+			var npc = this.NPCs.Where(n => n.ObjectId == f.Value).First();
+			npc.Coord = (topLeft.X + coord.X, topLeft.Y + coord.Y);
+			this.NPCs[npc.Index] = npc;
+		    }
+		}
+
 		featureCount++;
 	    } else if (placeTreasure) {
 		List<SCCoords> doorCandidates = new();
@@ -942,13 +959,12 @@ namespace FF1Lib.Procgen
 	    return await this.NextStep();
 	}
 
-	public async Task<MapResult> PlaceChests(FF1Rom rom, List<Map> maps,
-						 MapId mapId, List<(MapId,byte)> preserveChests) {
+	public async Task<MapResult> PlaceChests(FF1Rom rom, List<Map> maps, List<(MapId,byte)> preserveChests) {
 	    this.OwnTilemap();
 
 	    maps = new List<Map>(maps);
 	    maps[(int)mapId] = this.Tilemap;
-	    await rom.shuffleChestLocations(this.rng, maps, new MapId[] { mapId },
+	    await rom.shuffleChestLocations(this.rng, maps, new MapId[] { this.mapId },
 					   preserveChests, null, 0x80, true, false,
 					   this.Chests, this.Traps);
 
@@ -1061,13 +1077,15 @@ namespace FF1Lib.Procgen
 	    return new MapResult(false);
 	}
 
-	public async Task<MapResult> CollectInfo() {
+	public async Task<MapResult> CollectInfo(FF1Rom rom, FF1Rom.NPCdata npcdata) {
 	    this.OwnFeatures();
 
 	    this.Traps = new();
 	    this.RoomFloorTiles = new();
 	    this.RoomBattleTiles = new();
 	    byte randomEncounter = 0x80;
+
+	    this.NPCs = rom.GetNpcs(this.mapId, npcdata);
 
 	    FF1Rom.FindRoomTiles(this.tileSet,
 				 this.RoomFloorTiles,
@@ -1116,6 +1134,23 @@ namespace FF1Lib.Procgen
 	    return await this.NextStep();
 	}
 
+	public async Task<MapResult> MoveBats() {
+	    this.OwnFeatures();
+
+	    var cand = this.Candidates(new List<byte> {DungeonTiles.CAVE_FLOOR});
+
+	    for (int i = 0; i < NPCs.Count; i++) {
+		var npc = NPCs[i];
+		if (npc.ObjectId == ObjectId.Bat) {
+		    var coord = cand.SpliceRandom(this.rng);
+		    npc.Coord = (coord.X, coord.Y);
+		    npc.InRoom = false;
+		    NPCs[i] = npc;
+		}
+	    }
+	    return await this.NextStep();
+	}
+
 	public async Task<MapResult> SanityCheck() {
 	    this.OwnFeatures();
 
@@ -1146,11 +1181,12 @@ namespace FF1Lib.Procgen
 		return true;
 	    });
 
-	    Console.WriteLine($"count {this.Chests.Count} {this.Stairs.Count}");
-
 	    if (this.Chests.Count > 0 || this.Stairs.Count > 0) {
+		Console.WriteLine($"!!! failed sanity check count {this.Chests.Count} {this.Stairs.Count}");
 		return new MapResult(false);
 	    }
+
+	    Console.WriteLine($"Passed sanity check {this.Chests.Count} {this.Stairs.Count}");
 
 	    return await this.NextStep();
 	}

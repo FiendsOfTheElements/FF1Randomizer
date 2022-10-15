@@ -1,5 +1,7 @@
 ﻿using FF1Lib.Procgen;
 using FF1Lib.Sanity;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace FF1Lib
 {
@@ -273,11 +275,14 @@ namespace FF1Lib
 
 	public struct NPC
 	{
+	    [JsonProperty]
+	    [JsonConverter(typeof(StringEnumConverter))]
 		public ObjectId ObjectId;
 		public int Index;
 		public (int x, int y) Coord;
 		public bool InRoom;
 		public bool Stationary;
+	        public FF1Rom.generalNPC General;
 	}
 
 	public partial class FF1Rom : NesRom
@@ -994,6 +999,27 @@ namespace FF1Lib
 
 			return tempNPC;
 		}
+
+		public List<NPC> GetNpcs(MapId mid, NPCdata npcdata)
+		{
+		    var tempNPC = new NPC();
+		    var npcs = new List<NPC>();
+		    for (int i = 0; i < MapSpriteCount; i++)
+		    {
+			int offset = MapSpriteOffset + ((byte)mid * MapSpriteCount + i) * MapSpriteSize;
+
+			tempNPC.ObjectId = (ObjectId)Data[offset];
+			tempNPC.Index = i;
+			tempNPC.Coord = (Data[offset + 1] & 0x3F, Data[offset + 2]);
+			tempNPC.InRoom = (Data[offset + 1] & 0x80) > 0;
+			tempNPC.Stationary = (Data[offset + 1] & 0x40) > 0;
+			tempNPC.General = npcdata.GetNPC(tempNPC.ObjectId);
+
+			npcs.Add(tempNPC);
+		    }
+		    return npcs;
+		}
+
 		public List<Map> ReadMaps()
 		{
 			var pointers = Get(MapPointerOffset, MapCount * MapPointerSize).ToUShorts();
@@ -1357,7 +1383,7 @@ namespace FF1Lib
 		    // * doors and locked doors
 		    // * floor tiles with the move bit that are empty.
 
-		    bool debug = true;
+		    bool debug = false;
 
 		    if (debug) Console.WriteLine($"\nTiles for {ids[0]}");
 
@@ -1864,7 +1890,8 @@ namespace FF1Lib
 		}
 
 		public void ImportCustomMap(List<Map> maps, TeleportShuffle teleporters,
-					    OverworldMap overworldMap, CompleteMap newmap) {
+					    OverworldMap overworldMap, NPCdata npcdata,
+					    CompleteMap newmap) {
 		    maps[(int)newmap.MapId] = newmap.Map;
 		    foreach (var dest in newmap.MapDestinations) {
 			// Update the teleport information, this
@@ -1879,6 +1906,10 @@ namespace FF1Lib
 		    }
 		    foreach (var kv in newmap.OverworldEntrances) {
 			overworldMap.PutOverworldTeleport(kv.Key, kv.Value);
+		    }
+		    foreach (var npc in newmap.NPCs) {
+			npcdata.SetNPC(npc.ObjectId, npc.General);
+			this.MoveNpc(newmap.MapId, npc);
 		    }
 		}
 	}
