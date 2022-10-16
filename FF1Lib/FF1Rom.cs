@@ -1101,10 +1101,8 @@ public partial class FF1Rom : NesRom
 			ItemsText[(int)Item.House] = "XETH@p";
 		}
 
-		if ((bool)flags.HintsVillage && (flags.GameMode != GameModes.DeepDungeon))
-		{
-			NPCHints(rng, npcdata, flags, overworldMap);
-		}
+		var locationhints = new LocationHints(sanityChecker, this, shopData, npcdata);
+		NPCHints(rng, npcdata, flags, locationhints, incentivesData);
 
 		if ((bool)flags.TrappedChestsEnabled)
 		{
