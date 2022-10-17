@@ -19,21 +19,19 @@ namespace FF1Lib
 		FF1Rom rom;
 		ShopData shopData;
 		FF1Rom.NPCdata npcData;
+		bool noOverworld;
 		public List<LocationHintsInfo> hints { get; }
 
-		public LocationHints(SanityCheckerV2 _checker, FF1Rom _rom, ShopData _shopdata, FF1Rom.NPCdata _npcdata)
+		public LocationHints(SanityCheckerV2 _checker, FF1Rom _rom, ShopData _shopdata, FF1Rom.NPCdata _npcdata, bool _nooverworld)
 		{
 			checker = _checker;
 			rom = _rom;
 			shopData = _shopdata;
 			npcData = _npcdata;
 			hints = new();
+			noOverworld = _nooverworld;
 
-			bool nooverworld = false;
-
-			nooverworld = true;
-
-			if (nooverworld)
+			if (noOverworld)
 			{
 				GenerateNoOW();
 			}
@@ -41,9 +39,7 @@ namespace FF1Lib
 			{
 				Generate();
 			}
-
 		}
-
 		private void Generate()
 		{
 			foreach (var d in checker.Main.Dungeons)
@@ -60,35 +56,9 @@ namespace FF1Lib
 		{
 			var entranceArea = checker.Main.Dungeons.Find(x => x.Areas.FirstOrDefault(a => a != null).Map.MapId == MapId.ConeriaCastle1F).Areas.FirstOrDefault(a => a != null);
 
-			foreach (var a in entranceArea.ChildAreas)
-			{
-				foreach (var p in a.PointsOfInterest)
-				{
-					switch (p.Type)
-					{
-						case Sanity.SCPointOfInterestType.Shop:
-							var shop = shopData.Shops.First(x => x.Index == p.ShopId - 1);
-							if (shop != null && shop.Entries != null && shop.Entries.Where(x => x <= Item.Oxyale).Any())
-							{
-
-								hints.Add(new LocationHintsInfo(OverworldTeleportIndex.ConeriaCastle1, a.Map.MapId, p.Type, 0, "", p.ShopId, shop.Entries.Find(x => x <= Item.Oxyale)));
-							}
-							break;
-						case Sanity.SCPointOfInterestType.Treasure:
-							var item = (Item)rom.Get(0x3100 + p.TreasureId, 1)[0];
-							hints.Add(new LocationHintsInfo(OverworldTeleportIndex.ConeriaCastle1, a.Map.MapId, p.Type, 0, "", p.TreasureId, item));
-							break;
-						case Sanity.SCPointOfInterestType.QuestNpc:
-							var npcitem = (Item)npcData.GetTalkArray(p.Npc.ObjectId)[(int)FF1Rom.TalkArrayPos.item_id];
-							hints.Add(new LocationHintsInfo(OverworldTeleportIndex.ConeriaCastle1, a.Map.MapId, p.Type, 0, "", (int)p.Npc.ObjectId, npcitem));
-							break;
-					}
-				}
-
-			}
+			CrawlAreaNoOW(OverworldTeleportIndex.ConeriaCastle1, entranceArea, 1, "");
 		}
-
-		private void CrawlArea(OverworldTeleportIndex overworld, Sanity.SCArea a, int depth, string split)
+		private void ProcessPointOfInterest(OverworldTeleportIndex overworld, Sanity.SCArea a, int depth, string split)
 		{
 			foreach (var p in a.PointsOfInterest)
 			{
@@ -98,21 +68,51 @@ namespace FF1Lib
 						var shop = shopData.Shops.First(x => x.Index == p.ShopId - 1);
 						if (shop != null && shop.Entries != null && shop.Entries.Where(x => x <= Item.Oxyale).Any())
 						{
-							
-							hints.Add(new LocationHintsInfo(overworld, a.Map.MapId, p.Type, depth, split, p.ShopId, shop.Entries.Find(x => x <= Item.Oxyale)));
+							var newshophint = new LocationHintsInfo(overworld, a.Map.MapId, p.Type, depth, split, p.ShopId, shop.Entries.Find(x => x <= Item.Oxyale));
+
+							if (!hints.Where(x => x.type == newshophint.type && x.id == newshophint.id).Any())
+							{
+								hints.Add(newshophint);
+							}
 						}
 						break;
 					case Sanity.SCPointOfInterestType.Treasure:
 						var item = (Item)rom.Get(0x3100 + p.TreasureId, 1)[0];
-						hints.Add(new LocationHintsInfo(overworld, a.Map.MapId, p.Type, depth, split, p.TreasureId, item));
+						var newchesthint = new LocationHintsInfo(overworld, a.Map.MapId, p.Type, depth, split, p.TreasureId, item);
+						if (!hints.Where(x => x.type == newchesthint.type && x.id == newchesthint.id).Any())
+						{
+							hints.Add(newchesthint);
+						}
 						break;
 					case Sanity.SCPointOfInterestType.QuestNpc:
 						var npcitem = (Item)npcData.GetTalkArray(p.Npc.ObjectId)[(int)FF1Rom.TalkArrayPos.item_id];
-						hints.Add(new LocationHintsInfo(overworld, a.Map.MapId, p.Type, depth, split, (int)p.Npc.ObjectId, npcitem));
+						var newnpchint = new LocationHintsInfo(overworld, a.Map.MapId, p.Type, depth, split, (int)p.Npc.ObjectId, npcitem);
+						if (!hints.Where(x => x.type == newnpchint.type && x.id == newnpchint.id).Any())
+						{
+							hints.Add(newnpchint);
+						}
 						break;
 				}
 			}
-		
+		}
+		private void CrawlAreaNoOW(OverworldTeleportIndex overworld, Sanity.SCArea a, int depth, string split)
+		{
+			ProcessPointOfInterest(overworld, a, depth, split);
+
+			var nextarea = a.ChildAreas.Distinct().ToList();
+
+			if (depth < 10)
+			{ 
+				foreach (var a2 in nextarea)
+				{
+					CrawlAreaNoOW(overworld, a2, depth + 1, "");
+				}
+			}
+		}
+		private void CrawlArea(OverworldTeleportIndex overworld, Sanity.SCArea a, int depth, string split)
+		{
+			ProcessPointOfInterest(overworld, a, depth, split);
+
 			foreach (var a2 in a.ChildAreas)
 			{
 				string cardinalstext = split;
@@ -494,7 +494,7 @@ namespace FF1Lib
 
 			incentivizedHintItems.Shuffle(rng);
 			hintedItems.AddRange(looseHintItems.OrderBy(x => priorityOrder[x.item]));
-			hintedItems.AddRange(incentivizedHintItems.ToList().GetRange(0, Math.Max(0, npcSelected.Count - hintedItems.Count)));
+			hintedItems.AddRange(incentivizedHintItems.ToList());
 
 			hintedItems = hintedItems.DistinctBy(x => x.item).ToList();
 
@@ -519,12 +519,6 @@ namespace FF1Lib
 					else if (tempItem.item == Item.Canal) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 24, 5));
 					else if (tempItem.item == Item.Canoe) tempName = FF1Text.BytesToText(Get(0x2B5D0 + 36, 5));
 					else tempName = ItemsText[(int)tempItem.item].Replace(" ", "");
-
-					if (tempItem == null)
-					{
-						hintedItems.RemoveRange(0, 1);
-						continue;
-					}
 
 					if (tempItem.type == Sanity.SCPointOfInterestType.Treasure)
 					{

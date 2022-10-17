@@ -1101,7 +1101,7 @@ public partial class FF1Rom : NesRom
 			ItemsText[(int)Item.House] = "XETH@p";
 		}
 
-		var locationhints = new LocationHints(sanityChecker, this, shopData, npcdata);
+		var locationhints = new LocationHints(sanityChecker, this, shopData, npcdata, flags.NoOverworld);
 		NPCHints(rng, npcdata, flags, locationhints, incentivesData);
 
 		if ((bool)flags.TrappedChestsEnabled)
