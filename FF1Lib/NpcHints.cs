@@ -29,7 +29,19 @@ namespace FF1Lib
 			npcData = _npcdata;
 			hints = new();
 
-			Generate();
+			bool nooverworld = false;
+
+			nooverworld = true;
+
+			if (nooverworld)
+			{
+				GenerateNoOW();
+			}
+			else
+			{
+				Generate();
+			}
+
 		}
 
 		private void Generate()
@@ -42,6 +54,37 @@ namespace FF1Lib
 				{
 					CrawlArea(d.OverworldTeleport, entranceArea, 1, "");
 				}
+			}
+		}
+		private void GenerateNoOW()
+		{
+			var entranceArea = checker.Main.Dungeons.Find(x => x.Areas.FirstOrDefault(a => a != null).Map.MapId == MapId.ConeriaCastle1F).Areas.FirstOrDefault(a => a != null);
+
+			foreach (var a in entranceArea.ChildAreas)
+			{
+				foreach (var p in a.PointsOfInterest)
+				{
+					switch (p.Type)
+					{
+						case Sanity.SCPointOfInterestType.Shop:
+							var shop = shopData.Shops.First(x => x.Index == p.ShopId - 1);
+							if (shop != null && shop.Entries != null && shop.Entries.Where(x => x <= Item.Oxyale).Any())
+							{
+
+								hints.Add(new LocationHintsInfo(OverworldTeleportIndex.ConeriaCastle1, a.Map.MapId, p.Type, 0, "", p.ShopId, shop.Entries.Find(x => x <= Item.Oxyale)));
+							}
+							break;
+						case Sanity.SCPointOfInterestType.Treasure:
+							var item = (Item)rom.Get(0x3100 + p.TreasureId, 1)[0];
+							hints.Add(new LocationHintsInfo(OverworldTeleportIndex.ConeriaCastle1, a.Map.MapId, p.Type, 0, "", p.TreasureId, item));
+							break;
+						case Sanity.SCPointOfInterestType.QuestNpc:
+							var npcitem = (Item)npcData.GetTalkArray(p.Npc.ObjectId)[(int)FF1Rom.TalkArrayPos.item_id];
+							hints.Add(new LocationHintsInfo(OverworldTeleportIndex.ConeriaCastle1, a.Map.MapId, p.Type, 0, "", (int)p.Npc.ObjectId, npcitem));
+							break;
+					}
+				}
+
 			}
 		}
 
