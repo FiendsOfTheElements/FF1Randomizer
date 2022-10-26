@@ -201,6 +201,7 @@
 		bool? FreeTail { get; }
 		bool? NoTail { get; }
 		bool? IsFloaterRemoved { get; }
+		bool? AirBoat { get; }
 		bool? LooseExcludePlacedDungeons { get; }
 		bool NoOverworld { get; }
 		bool DesertOfDeath { get; }

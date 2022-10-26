@@ -2337,6 +2337,12 @@
 		"description": "Non incentive items are opened in order. \n\nWarning, if your inventory gets full it will block your equipment progress."
 	},
 	{
+		"Id": "AirBoatCheckBox",
+		"title": "AirBoat",
+		"screenshot": "airboat.gif",
+		"description": "The Ship and the Airship are fused together. Getting the FLOATER allows the Ship to transform into the Airship, and the Airship can land on water. You can't raise the Airship from the desert anymore."
+	},
+	{
 		"Id": "moveToFBats",
 		"title": "Move Temple of Fiends Bats",
 		"screenshot": "moveToFBats.png",
