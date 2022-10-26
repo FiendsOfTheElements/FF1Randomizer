@@ -1386,16 +1386,9 @@ public partial class FF1Rom : NesRom
 
 		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
-		var flagstext = Flags.EncodeFlagsText(flagsForRng);
-		if (flags.ReplacementMap != null)
-		{
-		    flagstext += "_" + flags.ReplacementMap.ComputeChecksum();
-		}
-
-		flagstext += "_" + resourcesPackHash.ToHex();
-
 		uint last_rng_value = rng.Next();
-		WriteSeedAndFlags(seed.ToHex(), flagstext, last_rng_value);
+
+		WriteSeedAndFlags(seed.ToHex(), flags, flagsForRng, resourcesPackHash.ToHex(), last_rng_value);
 		ExtraTrackingAndInitCode(flags, preferences);
 
 		if(flags.OpenChestsInOrder)
@@ -1800,8 +1793,21 @@ public partial class FF1Rom : NesRom
 		Data[0x7FE97] = 0x03;
 	}
 
-	public void WriteSeedAndFlags(string seed, string flags, uint last_rng_value)
+	public void WriteSeedAndFlags(string seed, Flags flags, Flags flagsforrng, string resourcepackhash, uint last_rng_value)
 	{
+
+		string flagstext = Flags.EncodeFlagsText(flags);
+		var rngflagstext = Flags.EncodeFlagsText(flagsforrng);
+		string owseed = "none";
+
+		if (flags.ReplacementMap != null)
+		{
+			owseed = flags.MapGenSeed.ToString("X8");
+			rngflagstext += "_" + flags.ReplacementMap.ComputeChecksum();
+		}
+
+		rngflagstext += "_" + resourcepackhash;
+
 		// Replace most of the old copyright string printing with a JSR to a LongJump
 		Put(0x38486, Blob.FromHex("20B9FF60"));
 
@@ -1810,7 +1816,7 @@ public partial class FF1Rom : NesRom
 
 		Blob hash;
 		var hasher = SHA256.Create();
-		hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{FFRVersion.Sha}_{last_rng_value}"));
+		hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{rngflagstext}_{FFRVersion.Sha}_{last_rng_value}"));
 
 		var hashpart = BitConverter.ToUInt64(hash, 0);
 		hash = Blob.FromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
@@ -1832,7 +1838,7 @@ public partial class FF1Rom : NesRom
 
 		// Write Flagstring + Version for reference
 		var urlpart = (FFRVersion.Branch == "master") ? FFRVersion.Version.Replace('.','-') : "beta-" + FFRVersion.Sha.PadRight(7).Substring(0, 7);
-		PutInBank(0x1E, 0xBE00, Encoding.ASCII.GetBytes($"FFRInfo|Seed: {seed}|OW Seed: {flags.Split('_')[1]}|Flags: {flags.Split('_')[0]}|Version: {urlpart}"));
+		PutInBank(0x1E, 0xBE00, Encoding.ASCII.GetBytes($"FFRInfo|Seed: {seed}|OW Seed: {owseed}|Res. Pack Hash: {((resourcepackhash == "00") ? "none" : resourcepackhash)}|Flags: {flagstext}|Version: {urlpart}"));
 	}
 
 	public void FixMissingBattleRngEntry()
