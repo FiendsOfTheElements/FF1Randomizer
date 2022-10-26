@@ -420,12 +420,14 @@ namespace FF1Lib
 
 			return wrapped;
 	    }
-		public void NPCHints(MT19337 rng, NPCdata npcdata, Flags flags, LocationHints locationshints, IncentiveData incentivedata)
+		public void NPCHints(MT19337 rng, NPCdata npcdata, Flags flags, IncentiveData incentivedata, SanityCheckerV2 sanitychecker, ShopData shopdata)
 		{
 			if (!(bool)flags.HintsVillage || flags.GameMode == GameModes.DeepDungeon)
 			{
 				return;
 			}
+
+			var locationshints = new LocationHints(sanitychecker, this, shopdata, npcdata, flags.NoOverworld);
 
 			// Het all game dialogs, get all item names, set dialog templates
 			var hintschests = new List<string>() { "The $ is #.", "The $? It's # I believe.", "Did you know that the $ is #?", "My grandpa used to say 'The $ is #'.", "Did you hear? The $ is #!", "Wanna hear a secret? The $ is #!", "I've read somewhere that the $ is #.", "I used to have the $. I lost it #!", "I've hidden the $ #, can you find it?", "Interesting! This book says the $ is #!", "Duh, everyone knows that the $ is #!", "I saw the $ while I was #." };
