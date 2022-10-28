@@ -1189,11 +1189,6 @@ public partial class FF1Rom : NesRom
 			EnableCanalBridge();
 		}
 
-		if ((bool)flags.AirBoat)
-		{
-			EnableAirBoat((bool)flags.IsAirshipFree);
-		}
-
 		if (flags.NonesGainXP || flags.DeadsGainXP)
 		{
 			XpAdmissibility((bool)flags.NonesGainXP, flags.DeadsGainXP);
@@ -1319,6 +1314,11 @@ public partial class FF1Rom : NesRom
 		if (preferences.Music != MusicShuffle.None)
 		{
 			ShuffleMusic(preferences.Music, new MT19337(funRngSeed));
+		}
+
+		if ((bool)flags.AirBoat)
+		{
+			EnableAirBoat((bool)flags.IsAirshipFree, (bool)flags.IsShipFree);
 		}
 
 		if (preferences.DisableSpellCastFlash || flags.TournamentSafe)
