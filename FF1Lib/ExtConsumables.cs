@@ -46,47 +46,50 @@ namespace FF1Lib
 
 		public void AddExtConsumables()
 		{
-			ChangeItemJumpTable();
-
-			WriteOutOfBattleRoutines();
-
-			WriteDrawItemBoxEndOfItemIndex();
-
-			ChangeItemNames();
-			ChangeMenuTexts();
-
-			WriteDrawDrinkBoxBreakoutRoutine();
-			WriteDrawDrinkBoxRoutine();
-			WriteLutDrinkBoxOrder();
-			WriteLutDrinkBoxEffect();
-			WriteLutDrinkBoxTarget();
-			WriteLutDrinkBox();
-			WriteCursorPositions();
-
-			WriteDrinkBoxMenuRoutine();
-			ModifyBattle_PlMag_TargetOnePlayer();
-			WriteCureAilmentsBreakout();
-
-			ModifyUndoBattleCommand();
-			ModifyAfterFadeIn();
-			WriteBattleDoTurn();
-			ModifyBattleLogicLoop();
-
-			if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
+			if (flags.ExtConsumableSet != ExtConsumableSet.None)
 			{
-				CreateLifeSpell();
-				CreateSmokeSpell();
-			}
-			else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
-			{
-				CreateBlackPotionSpell();
-			}
-			else if (flags.ExtConsumableSet == ExtConsumableSet.SetC)
-			{
-				CreateHighPotionSpell();
-			}
+				ChangeItemJumpTable();
 
-			ClearShops();
+				WriteOutOfBattleRoutines();
+
+				WriteDrawItemBoxEndOfItemIndex();
+
+				ChangeItemNames();
+				ChangeMenuTexts();
+
+				WriteDrawDrinkBoxBreakoutRoutine();
+				WriteDrawDrinkBoxRoutine();
+				WriteLutDrinkBoxOrder();
+				WriteLutDrinkBoxEffect();
+				WriteLutDrinkBoxTarget();
+				WriteLutDrinkBox();
+				WriteCursorPositions();
+
+				WriteDrinkBoxMenuRoutine();
+				ModifyBattle_PlMag_TargetOnePlayer();
+				WriteCureAilmentsBreakout();
+
+				ModifyUndoBattleCommand();
+				ModifyAfterFadeIn();
+				WriteBattleDoTurn();
+				ModifyBattleLogicLoop();
+
+				if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
+				{
+					CreateLifeSpell();
+					CreateSmokeSpell();
+				}
+				else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
+				{
+					CreateBlackPotionSpell();
+				}
+				else if (flags.ExtConsumableSet == ExtConsumableSet.SetC)
+				{
+					CreateHighPotionSpell();
+				}
+
+				ClearShops();
+			}
 		}		
 
 		private void ChangeItemJumpTable()
@@ -434,6 +437,23 @@ namespace FF1Lib
 				var spl2 = Spells.Where(s => s.Key.StartsWith(altname)).OrderBy(s => s.Key).Select(s => s.Value).Last();
 				return (byte)(spl2.Index);
 			}
+		}
+		private byte FindWeakCure()
+		{
+			var spl = SpellInfos.Where(s => s.routine == 0x07 && s.targeting == 0x10 && s.effect < 33).OrderBy(s => -s.tier).First();
+			return (byte)(SpellInfos.IndexOf(spl));
+		}
+
+		private byte FindAntidote()
+		{
+			var spl = SpellInfos.Where(s => s.routine == 0x08 && (s.effect & 0b100) > 0).OrderBy(s => -s.tier).First();
+			return (byte)(SpellInfos.IndexOf(spl));
+		}
+
+		private byte FindLotion()
+		{
+			var spl = SpellInfos.Where(s => s.routine == 0x08 && (s.effect & 0b10) > 0).OrderBy(s => -s.tier).First();
+			return (byte)(SpellInfos.IndexOf(spl));
 		}
 
 		private byte FindBlastSpell()

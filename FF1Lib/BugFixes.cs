@@ -96,8 +96,8 @@ namespace FF1Lib
 		public void FixSpellBugs()
 		{
 			Put(0x33A4E, Blob.FromHex("F017EA")); // LOCK routine
-			Put(0x3029C, Blob.FromHex("0E")); // LOK2 spell effect
-			Put(0x302F9, Blob.FromHex("18")); // HEL2 effectivity
+			if (Get(0x3029B, 2) == Blob.FromHex("0110")) Put(0x3029C, Blob.FromHex("0E")); // LOK2 spell effect
+			if (Get(0x302FD, 2) == Blob.FromHex("C027")) Put(0x302F9, Blob.FromHex("18")); // HEL2 effectivity
 
 			// TMPR and SABR
 			// Remove jump to PrepareEnemyMagAttack
@@ -111,7 +111,7 @@ namespace FF1Lib
 			// Call new saving code from BtlMag_SavePlayerDefenderStats
 			Put(0x337C5, Blob.FromHex("209FB6EAEAEAEA"));
 			// SABR's hit% bonus
-			Put(0x30390, Blob.FromHex("0A"));
+			if (Get(0x30391, 3) == Blob.FromHex("100004")) Put(0x30390, Blob.FromHex("0A"));
 
 			TameExitAndWarpBoss();
 
