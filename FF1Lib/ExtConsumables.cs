@@ -46,50 +46,47 @@ namespace FF1Lib
 
 		public void AddExtConsumables()
 		{
-			if (flags.ExtConsumableSet != ExtConsumableSet.None)
+			ChangeItemJumpTable();
+
+			WriteOutOfBattleRoutines();
+
+			WriteDrawItemBoxEndOfItemIndex();
+
+			ChangeItemNames();
+			ChangeMenuTexts();
+
+			WriteDrawDrinkBoxBreakoutRoutine();
+			WriteDrawDrinkBoxRoutine();
+			WriteLutDrinkBoxOrder();
+			WriteLutDrinkBoxEffect();
+			WriteLutDrinkBoxTarget();
+			WriteLutDrinkBox();
+			WriteCursorPositions();
+
+			WriteDrinkBoxMenuRoutine();
+			ModifyBattle_PlMag_TargetOnePlayer();
+			WriteCureAilmentsBreakout();
+
+			ModifyUndoBattleCommand();
+			ModifyAfterFadeIn();
+			WriteBattleDoTurn();
+			ModifyBattleLogicLoop();
+
+			if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
 			{
-				ChangeItemJumpTable();
-
-				WriteOutOfBattleRoutines();
-
-				WriteDrawItemBoxEndOfItemIndex();
-
-				ChangeItemNames();
-				ChangeMenuTexts();
-
-				WriteDrawDrinkBoxBreakoutRoutine();
-				WriteDrawDrinkBoxRoutine();
-				WriteLutDrinkBoxOrder();
-				WriteLutDrinkBoxEffect();
-				WriteLutDrinkBoxTarget();
-				WriteLutDrinkBox();
-				WriteCursorPositions();
-
-				WriteDrinkBoxMenuRoutine();
-				ModifyBattle_PlMag_TargetOnePlayer();
-				WriteCureAilmentsBreakout();
-
-				ModifyUndoBattleCommand();
-				ModifyAfterFadeIn();
-				WriteBattleDoTurn();
-				ModifyBattleLogicLoop();
-
-				if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
-				{
-					CreateLifeSpell();
-					CreateSmokeSpell();
-				}
-				else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
-				{
-					CreateBlackPotionSpell();
-				}
-				else if (flags.ExtConsumableSet == ExtConsumableSet.SetC)
-				{
-					CreateHighPotionSpell();
-				}
-
-				ClearShops();
+				CreateLifeSpell();
+				CreateSmokeSpell();
 			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
+			{
+				CreateBlackPotionSpell();
+			}
+			else if (flags.ExtConsumableSet == ExtConsumableSet.SetC)
+			{
+				CreateHighPotionSpell();
+			}
+
+			ClearShops();
 		}		
 
 		private void ChangeItemJumpTable()
