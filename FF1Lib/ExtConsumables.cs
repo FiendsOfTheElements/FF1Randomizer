@@ -438,6 +438,23 @@ namespace FF1Lib
 				return (byte)(spl2.Index);
 			}
 		}
+		private byte FindWeakCure()
+		{
+			var spl = SpellInfos.Where(s => s.routine == 0x07 && s.targeting == 0x10 && s.effect < 33).OrderBy(s => -s.tier).First();
+			return (byte)(SpellInfos.IndexOf(spl));
+		}
+
+		private byte FindAntidote()
+		{
+			var spl = SpellInfos.Where(s => s.routine == 0x08 && (s.effect & 0b100) > 0).OrderBy(s => -s.tier).First();
+			return (byte)(SpellInfos.IndexOf(spl));
+		}
+
+		private byte FindLotion()
+		{
+			var spl = SpellInfos.Where(s => s.routine == 0x08 && (s.effect & 0b10) > 0).OrderBy(s => -s.tier).First();
+			return (byte)(SpellInfos.IndexOf(spl));
+		}
 
 		private byte FindBlastSpell()
 		{
