@@ -2173,6 +2173,18 @@
 		"description": "HARM spells (including via item magic) will deal damage to any target if CAST or USED by a White Mage/White Wizard. On non-undead targets, the spells will not crit (will not deal double damage except on a 3/256), averaging 30/60/90/120 damage for HARM1-4."
 	},
 	{
+		"Id": "BossExtraTurnsSlider",
+		"title": "Boss Extra Turns",
+		"screenshot": null,
+		"description": "Bosses (Garland, Astos, Warmech, Fiends, and Chaos) will take additional turns per round. This is a flag recommended for advanced players. This flag is not compatable with alternate final formations."
+	},
+	{
+		"Id": "SplitExtraTurnAttacks",
+		"title": "Scale Attacks Down To Extra Turns",
+		"screenshot": null,
+		"description": "When bosses have extra turns, their number of attacks are divided by the number of turns they have (rounded up). In addition the chance to cast spells or skills is reduced if it is greater than 48 (Spells) or 32 (Skills)."
+	},
+	{
 		"Id": "armorCrafterCheckBox",
 		"title": "Use Armor Crafter",
 		"screenshot": "armorCrafter.png",

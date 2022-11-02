@@ -1170,6 +1170,11 @@ public partial class FF1Rom : NesRom
 			ScaleBossStats(rng, flags);
 		}
 
+		if(flags.BossExtraTurns > 1 && flags.BossExtraTurns <= 9 && flags.TransformFinalFormation == FinalFormation.None)
+		{
+			ExtraBossTurns(flags.BossExtraTurns, flags.SplitExtraTurnAttacks);
+		}
+
 		PartyGeneration(rng, flags, preferences);
 
 		if (((bool)flags.RecruitmentMode))

@@ -699,6 +699,11 @@ namespace FF1Lib
 
 		public bool WhiteMageHarmEveryone { get; set; } = false;
 
+		[IntegerFlag(1, 9)]
+		public int BossExtraTurns { get; set; } = 1;
+
+		public bool SplitExtraTurnAttacks { get; set; } = false;
+
 		public bool? EarlierRuby { get; set; } = false;
 		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (!DesertOfDeath);
 		public bool DisableOWMapModifications => SanityCheckerV2 & (GameMode == GameModes.Standard && OwMapExchange != OwMapExchanges.None);

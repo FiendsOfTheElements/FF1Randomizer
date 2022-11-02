@@ -4930,6 +4930,26 @@ namespace FF1Lib
 			}
 		}
 
+		public int BossExtraTurns
+		{
+			get => Flags.BossExtraTurns;
+			set
+			{
+				Flags.BossExtraTurns = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BossExtraTurns"));
+			}
+		}
+
+		public bool SplitExtraTurnAttacks
+		{
+			get => Flags.SplitExtraTurnAttacks;
+			set
+			{
+				Flags.SplitExtraTurnAttacks = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public bool CropScreen
 		{
 			get => Preferences.CropScreen;
