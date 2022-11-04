@@ -495,6 +495,10 @@ namespace FF1Lib
 			{
 				Data[0x3000] = 0x81;
 			}
+			else if (!freeShip)
+			{
+				Data[0x3000] = 0x80;
+			}
 
 			byte overworldtrack = Data[0x7C649];
 			byte shiptrack = Data[0x7C62D];
