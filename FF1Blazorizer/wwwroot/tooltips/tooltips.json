@@ -348,12 +348,6 @@
 		"description": "Activates Shard Hunt, a mode in which the Light Warriors must acquire a number of orb pieces in order to open the time gate (the Black Orb) in the Temple of Fiends.\nDefeating Fiends and activating the altars for the four standard orbs will, instead or lighting one big orb, grant the player 2 SHARDs for the Earth and Fire orbs (the Lich and Kary fights in the vanilla game) or 4 SHARDs for the Water and Air orbs (the Kraken and Tiamat fights in the vanilla game).\nThe SHARDs replace generally low-quality items in the treasure pool. The number of SHARDs required is based on the slider, either a fixed value or random between two values. There will always be exactly 32 Shards in the treasure pool regardless of this setting (so 44 total Shards available including fiend fight rewards).\nBe warned that setting the Shard Goal to 44 requires every last Shard across the world to be found in addition to defeating all fiends; not recommended for normal play. (The Shards will also slightly overlap the box UI in the menu for 43 or 44 Shards, but will still work fine otherwise.)\nSee also the \"Random Shard Names\" option in the Fun% Tab if you'd like to enable/disable randomized names for the SHARDs."
 	},
 	{
-		"Id": "shardCountDropDown",
-		"title": "Shard Goal",
-		"screenshot": "shardCountDropDown.png",
-		"description": "Sets the number of SHARDs the player needs to collect in order to restore the Black Orb and travel into the past to the Temple of Fiends Revisited. Can be set to a fixed amount (i.e., exactly 16 Shards) or a range (i.e., 16-24 Shards).\nThere will always be exactly 32 Shards in the treasure pool regardless of this setting (so 44 total Shards available including fiend fight rewards)."
-	},
-	{
 		"Id": "lichRevengeCheckBox",
 		"title": "Lich's Revenge - Halloween Special 2020",
 		"screenshot": "LichRevenge.png",

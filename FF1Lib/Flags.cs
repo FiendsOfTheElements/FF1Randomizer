@@ -494,6 +494,7 @@ namespace FF1Lib
 		[DoubleFlag(0.5, 3.0, 0.1)]
 		public double ExpMultiplierBlackMage { get; set; } = 1.0;
 
+		//These are essentially Integers but mysteriously break if actually defined as Integers so have been left as Doubles
 		[DoubleFlag(0, 15)]
 		public double LandEncounterRate { get; set; } = 6;
 		[DoubleFlag(0, 8)]

@@ -2,28 +2,6 @@
 
 namespace FF1Lib
 {
-	public enum ShardCount
-	{
-		[Description("Exactly 16")]
-		Count16,
-		[Description("Exactly 20")]
-		Count20,
-		[Description("Exactly 24")]
-		Count24,
-		[Description("Exactly 28")]
-		Count28,
-		[Description("Exactly 32")]
-		Count32,
-		[Description("Exactly 36")]
-		Count36,
-		[Description("From 16-24")]
-		Range16_24,
-		[Description("From 24-32")]
-		Range24_32,
-		[Description("From 16-36")]
-		Range16_36,
-	}
-
 	public partial class FF1Rom : NesRom
 	{
 		private const int TotalOrbsToInsert = 32;
@@ -148,7 +126,7 @@ namespace FF1Lib
 			// Fancy shard drawing code, see 0E_B8D7_DrawShardBox.asm
 			Put(0x3B87D, Blob.FromHex($"A9{ppu & 0xFF:X2}8511A9{(ppu & 0xFF00) >> 8:X2}8512A977A00048AD0220A5128D0620A51118692085118D0620900DAD0220E612A5128D0620A5118D062068A200CC3560D002A976C0{goal:X2}D001608D0720C8E8E006D0EB1890C1"));
 
-			// Expand the height of the Shard/Orb box to be one tile higher (Y position -1, Y height +1)
+			// Expand the height of the Shard/Orb box to be one tile higher (Y position 2->1, Y height 8->9)
 			Put(0x3BAA3, Blob.FromHex($"01"));
 			Put(0x3BAA5, Blob.FromHex($"09"));
 
