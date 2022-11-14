@@ -381,6 +381,12 @@
 		"description": "Enemy stats are randomized between a range comparative to their vanilla values. Enemy & Boss resistances and weaknesses stay the same as vanilla, as do their values for Magic Defense, Morale, and their XP/Gold rewards."
 	},
 	{
+		"Id": "bossStatsDoubleSlider",
+		"title": "Bosses",
+		"screenshot": null,
+		"description": "Bosses include: Garland, Pirates, Astos, WarMech, the Four Fiends (plus their re-fights), and Chaos. Bahamut is also considered a Boss if \"Fight Bahamut\" (Enemies Tab) is enabled."
+	},
+	{
 		"Id": "wrapPriceOverflowCheckBox",
 		"title": "Wrap Overflowing Prices",
 		"screenshot": "wrapPriceOverflowCheckBox.png",
@@ -1285,13 +1291,13 @@
 		"Id": "bossScriptsCheckBox",
 		"title": "Boss Scripts",
 		"screenshot": "shuffleBossesScripts.png",
-		"description": "Shuffles the spells and skills (if any) each bosses uses. The original Fiends are shuffled between themselves, then the second Fiends, WarMech and Chaos."
+		"description": "Shuffles the spells and skills (if any) each bosses uses. There are two pools that are shuffled independently: The original Four Fiends are shuffled between themselves, and the second pool includes the Fiends re-fights, WarMech, and Chaos."
 	},
 	{
 		"Id": "bossSkillsSpellsCheckBox",
 		"title": "Boss Skills/Spells",
 		"screenshot": "onlyShuffleBossSkillsCheckBox.png",
-		"description": "Shuffles bosses' skills and spells so they can appear in any script. The original Fiends are shuffled between themselves, then the second Fiends, WarMech and Chaos."
+		"description": "Shuffles bosses' skills and spells so they can appear in any script. There are two pools that are shuffled independently: The original Four Fiends are shuffled between themselves, and the second pool includes the Fiends re-fights, WarMech, and Chaos."
 	},
 
 	{
