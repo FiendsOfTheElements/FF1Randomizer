@@ -545,13 +545,22 @@ namespace FF1Lib
 
 		public bool ShardHuntEnabled => (Flags.OrbsRequiredCount == 4 || ShardHunt);
 
-		public ShardCount ShardCount
+		public int ShardCountLow
 		{
-			get => Flags.ShardCount;
+			get => Flags.ShardCountLow;
 			set
 			{
-				Flags.ShardCount = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShardCount"));
+				Flags.ShardCountLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShardCountLow"));
+			}
+		}
+		public int ShardCountHigh
+		{
+			get => Flags.ShardCountHigh;
+			set
+			{
+				Flags.ShardCountHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShardCountHigh"));
 			}
 		}
 

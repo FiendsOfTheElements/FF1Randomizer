@@ -124,20 +124,10 @@ namespace FF1Lib
 			PutInBank(bank, address, Blob.FromHex("001C22414141221CFFE3DDBEBEBEDDE3001C3E7F7F7F3E1CFFFFE3CFDFDFFFFF"));
 		}
 
-		public void EnableShardHunt(MT19337 rng, TalkRoutines talkroutines, ShardCount count, bool RandomShardNames)
+		public void EnableShardHunt(MT19337 rng, TalkRoutines talkroutines, int min, int max, bool RandomShardNames)
 		{
-			int goal = 16;
-			switch (count) {
-				case ShardCount.Count16: goal = 16; break;
-				case ShardCount.Count20: goal = 20; break;
-				case ShardCount.Count24: goal = 24; break;
-				case ShardCount.Count28: goal = 28; break;
-				case ShardCount.Count32: goal = 32; break;
-				case ShardCount.Count36: goal = 36; break;
-				case ShardCount.Range16_24: goal = rng.Between(16, 24); break;
-				case ShardCount.Range24_32: goal = rng.Between(24, 32); break;
-				case ShardCount.Range16_36: goal = rng.Between(16, 36); break;
-			}
+			int goal = 28;
+			goal = rng.Between(min, max);
 
 			string shardName = "SHARD";
 			if (RandomShardNames)

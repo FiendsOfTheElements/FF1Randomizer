@@ -470,7 +470,7 @@ public partial class FF1Rom : NesRom
 
 		if (((bool)flags.Treasures) && flags.ShardHunt)
 		{
-			EnableShardHunt(rng, talkroutines, flags.ShardCount, preferences.randomShardNames);
+			EnableShardHunt(rng, talkroutines, flags.ShardCountLow, flags.ShardCountHigh, preferences.randomShardNames);
 		}
 
 		if (!flags.ShardHunt && (flags.GameMode != GameModes.DeepDungeon))
