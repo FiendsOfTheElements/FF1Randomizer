@@ -775,13 +775,22 @@ namespace FF1Lib
 			}
 		}
 
-		public AutohitThreshold MagicAutohitThreshold
+		public int MagicAutohitThresholdLow
 		{
-			get => Flags.MagicAutohitThreshold;
+			get => Flags.MagicAutohitThresholdLow;
 			set
 			{
-				Flags.MagicAutohitThreshold = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicAutohitThreshold"));
+				Flags.MagicAutohitThresholdLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicAutohitThresholdLow"));
+			}
+		}
+		public int MagicAutohitThresholdHigh
+		{
+			get => Flags.MagicAutohitThresholdHigh;
+			set
+			{
+				Flags.MagicAutohitThresholdHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicAutohitThresholdHigh"));
 			}
 		}
 
@@ -4603,13 +4612,22 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
-		public StartingLevel StartingLevel
+		public int StartLevelLow
 		{
-			get => Flags.StartingLevel;
+			get => Flags.StartLevelLow;
 			set
 			{
-				Flags.StartingLevel = value;
-				RaisePropertyChanged();
+				Flags.StartLevelLow = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("StartLevelLow"));
+			}
+		}
+		public int StartLevelHigh
+		{
+			get => Flags.StartLevelHigh;
+			set
+			{
+				Flags.StartLevelHigh = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("StartLevelHigh"));
 			}
 		}
 		public int MaxLevelLow

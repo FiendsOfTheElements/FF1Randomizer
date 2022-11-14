@@ -164,7 +164,10 @@ namespace FF1Lib
 		public bool? ExcludeGoldFromScaling { get; set; } = false;
 		public bool CheapVendorItem { get; set; } = false;
 
-		public StartingLevel StartingLevel { get; set; }
+		[IntegerFlag(1, 50)]
+		public int StartLevelLow { get; set; } = 1;
+		[IntegerFlag(1, 50)]
+		public int StartLevelHigh { get; set; } = 1;
 
 		[IntegerFlag(1, 50)]
 		public int MaxLevelLow { get; set; } = 50;
@@ -183,7 +186,17 @@ namespace FF1Lib
 		public bool? RandomLoot { get; set; } = false;
 
 		public bool ShardHunt { get; set; } = false;
-		public ShardCount ShardCount { get; set; } = ShardCount.Count16;
+		[IntegerFlag(12, 44)]
+		public int ShardCountLow { get; set; } = 28;
+		[IntegerFlag(12, 44)]
+		public int ShardCountHigh { get; set; } = 28;
+
+
+		[IntegerFlag(100, 1300)]
+		public int MagicAutohitThresholdLow { get; set; } = 300;
+		[IntegerFlag(100, 1300)]
+		public int MagicAutohitThresholdHigh { get; set; } = 300;
+
 
 		[IntegerFlag(0, 5)]
 		public int OrbsRequiredCount { get; set; } = 4;
@@ -209,7 +222,6 @@ namespace FF1Lib
 		public bool? MagicLevelsTiered { get; set; } = false;
 		public bool? MagicLevelsMixed { get; set; } = false;
 
-		public AutohitThreshold MagicAutohitThreshold { get; set; } = AutohitThreshold.Vanilla;
 
 		public bool? Rng { get; set; } = false;
 		public bool FixMissingBattleRngEntry { get; set; } = false;

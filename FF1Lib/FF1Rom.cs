@@ -419,7 +419,7 @@ public partial class FF1Rom : NesRom
 			BuffHealingSpells();
 		}
 
-		UpdateMagicAutohitThreshold(rng, flags.MagicAutohitThreshold);
+		UpdateMagicAutohitThreshold(rng, flags.MagicAutohitThresholdLow, flags.MagicAutohitThresholdHigh);
 
 		if ((bool)flags.GenerateNewSpellbook)
 		{
@@ -985,12 +985,6 @@ public partial class FF1Rom : NesRom
 		}
 
 		new TreasureStacks(this, flags).SetTreasureStacks();
-		new StartingLevels(this, flags).SetStartingLevels();
-
-		if (flags.MaxLevelLow < 50)
-		{
-			SetMaxLevel(flags, rng);
-		}
 
 		if (!flags.Etherizer && (flags.HouseMPRestoration || flags.HousesFillHp))
 		{
@@ -1113,9 +1107,10 @@ public partial class FF1Rom : NesRom
 			}
 		}
 
-		ExpGoldBoost(flags);
+		// XP & Gold Scaling; Starting Level Slider; Max Level Slider
+		ExpGoldLevelSettings(flags, rng);
 
-		if(flags.ExpMultiplierFighter != 1.0)
+		if (flags.ExpMultiplierFighter != 1.0)
 		{
 			ScaleAltExp(flags.ExpMultiplierFighter, FF1Class.Fighter);
 		}
