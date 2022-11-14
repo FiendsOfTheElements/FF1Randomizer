@@ -2,33 +2,6 @@
 
 namespace FF1Lib
 {
-	public enum StartingLevel
-	{
-		[Description("1")]
-		Level01,
-
-		[Description("3")]
-		Level03,
-
-		[Description("5")]
-		Level05,
-
-		[Description("10")]
-		Level10,
-
-		[Description("16")]
-		Level16,
-
-		[Description("25")]
-		Level25,
-
-		[Description("36")]
-		Level36,
-
-		[Description("50")]
-		Level50
-	}
-
 	public class StartingLevels
 	{
 		FF1Rom rom;
@@ -40,7 +13,7 @@ namespace FF1Lib
 			flags = _flags;
 		}
 
-		public void SetStartingLevels()
+		public void SetStartingLevels(int StartingLevelFromFlags, List<byte[]> levelRequirementBytes)
 		{
 			//Call NewGame_LoadStartingLevels instead of NewGame_LoadStartingStats
 			rom.PutInBank(0x1F, 0xC0B4, Blob.FromHex("209ADD"));
@@ -57,9 +30,10 @@ namespace FF1Lib
 			//JSR to the routine above instead of LvlUp_Display
 			rom.PutInBank(0x1B, 0x8853, Blob.FromHex("200885"));
 
-			var exp = (int)(GetExp() / flags.ExpMultiplier) / 16 + 1;
-
-			if (flags.StartingLevel == StartingLevel.Level01) exp = 0;
+			// If Starting Level is 1, set xp to 0; otherwise pull from the level up table
+			var exp = 0;
+			if (StartingLevelFromFlags != 1)
+				exp = (int)(Math.Max(BitConverter.ToUInt32(levelRequirementBytes[StartingLevelFromFlags - 2], 0), 1)) / 16 + 1;
 
 			//Fill in Exp divided by 16 LowByte
 			rom.PutInBank(0x1B, 0x84A4, new byte[] { (byte)(exp & 0xFF) });
@@ -68,55 +42,5 @@ namespace FF1Lib
 			rom.PutInBank(0x1B, 0x84A9, new byte[] { (byte)(exp / 0xFF) });
 		}
 
-		private double GetExp()
-		{
-			switch (flags.StartingLevel)
-			{
-				case StartingLevel.Level01:
-					return 0;
-				case StartingLevel.Level03:
-					return 196;
-				case StartingLevel.Level05:
-					return 1171;
-				case StartingLevel.Level10:
-					return 11116;
-				case StartingLevel.Level16:
-					return 48361;
-				case StartingLevel.Level25:
-					return 191103;
-				case StartingLevel.Level36:
-					return 530448;
-				case StartingLevel.Level50:
-					return 999999;
-			}
-
-			return 0;
-		}
-
-		//RFM: couldnt get byte, type casted enum to work, brute force method instead. The flag auto encoder had a problem with startinglevel being a byte type.
-		public static int GetLevelNumber(StartingLevel startingLevel)
-		{
-			switch (startingLevel)
-			{
-				case StartingLevel.Level01:
-					return 1;
-				case StartingLevel.Level03:
-					return 3;
-				case StartingLevel.Level05:
-					return 5;
-				case StartingLevel.Level10:
-					return 10;
-				case StartingLevel.Level16:
-					return 16;
-				case StartingLevel.Level25:
-					return 25;
-				case StartingLevel.Level36:
-					return 36;
-				case StartingLevel.Level50:
-					return 50;
-			}
-
-			return 1;
-		}
 	}
 }

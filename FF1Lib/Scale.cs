@@ -466,7 +466,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void ExpGoldBoost(Flags flags)
+		public void ExpGoldLevelSettings(Flags flags, MT19337 rng)
 		{
 			var enemyBlob = Get(EnemyOffset, EnemySize * EnemyCount);
 			var enemies = enemyBlob.Chunk(EnemySize);
@@ -513,6 +513,14 @@ namespace FF1Lib
 			byte firstLevelRequirement = Data[0x7C04B];
 			firstLevelRequirement = (byte)(firstLevelRequirement / flags.ExpMultiplier);
 			Data[0x7C04B] = firstLevelRequirement;
+
+			//StartingLevel Slider
+			int StartingLevelFromFlags = rng.Between(flags.StartLevelLow, flags.StartLevelHigh);
+			new StartingLevels(this, flags).SetStartingLevels(StartingLevelFromFlags, levelRequirementsBytes);
+
+			// MaxLevel Slider
+			if (flags.MaxLevelLow < 50)
+				SetMaxLevel(flags, rng, StartingLevelFromFlags);
 		}
 
 		public void ScaleAltExp(double scale, FF1Class characterClass)
