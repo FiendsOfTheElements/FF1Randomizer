@@ -323,7 +323,12 @@ namespace FF1Lib
 			{
 				var spells = new List<Spell> { Spell.RUSE, Spell.INVS, Spell.CUR3, Spell.LIFE, Spell.HRM3, Spell.EXIT, Spell.INV2, Spell.CUR4, Spell.HRM4, Spell.HEL3, Spell.LIF2, Spell.FADE, Spell.WALL, Spell.HEL2, Spell.XFER };
 				// If status restorative effects are set up to be especially rare, lean into that and makes the spells rarer too
-				if (flags.ExclusiveLegendaryWhiteShop && flags.ExclusiveLegendaryItemShop && (flags.LegendaryWhiteShop ?? false) && (flags.LegendaryItemShop ?? false)) {
+				if ((flags.ExclusiveLegendaryWhiteShop && (flags.LegendaryWhiteShop ?? false)) &&
+
+					((flags.ExclusiveLegendaryItemShop && (flags.LegendaryItemShop ?? false)) ||
+
+					((flags.ShopKillExcludeConeria_Item != true) &&
+					(flags.ShopKillFactor_Item == ShopKillFactor.KillAll || flags.ShopKillFactor_Item == ShopKillFactor.Kill80Percent)))) {
 					spells.Add(Spell.SOFT);
 					spells.Add(Spell.PURE);
 				}
