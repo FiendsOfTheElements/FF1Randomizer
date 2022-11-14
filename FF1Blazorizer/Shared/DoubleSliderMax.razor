@@ -122,7 +122,10 @@ else
         {
             displayString += "+";
         }
-        displayString += _valueLow;
+
+        if (_valueLow == MaxValue) { displayString += "Unlimited"; }
+        else { displayString += _valueLow; }
+
         if (ShowMedian && !DontShowPercent || ShowPercent)
         {
             displayString += "%";
