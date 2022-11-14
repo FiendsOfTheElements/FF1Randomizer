@@ -345,7 +345,7 @@
 		"Id": "shardHuntCheckBox",
 		"title": "Shard Hunt",
 		"screenshot": "shardHuntCheckBox.png",
-		"description": "Activates Shard Hunt, a mode in which the Light Warriors must acquire a number of SHARDs in order to open the time gate (the Black Orb) in the Temple of Fiends.\nDefeating Fiends and activating the altars for the four standard orbs will, instead or lighting one big orb, grant the player 2 SHARDs for the Earth and Fire orbs (the Lich and Kary fights in the vanilla game) or 4 SHARDs for the Water and Air orbs (the Kraken and Tiamat fights in the vanilla game).\nThe SHARDs replace generally low-quality items in the treasure pool."
+		"description": "Activates Shard Hunt, a mode in which the Light Warriors must acquire a number of orb pieces (which can be called SHARDs, PIECEs, ORBLETs, etc.) in order to open the time gate (the Black Orb) in the Temple of Fiends.\nDefeating Fiends and activating the altars for the four standard orbs will, instead or lighting one big orb, grant the player 2 SHARDs for the Earth and Fire orbs (the Lich and Kary fights in the vanilla game) or 4 SHARDs for the Water and Air orbs (the Kraken and Tiamat fights in the vanilla game).\nThe SHARDs replace generally low-quality items in the treasure pool. The number of SHARDs required is based on the slider, either a fixed value or random between two values. There will always be exactly 32 Shards in the treasure pool regardless of this setting (so 44 total Shards available including fiend fight rewards).\nBe warned that setting the Shard Goal to 44 requires every last Shard across the world to be found in addition to defeating all fiends; not recommended for normal play."
 	},
 	{
 		"Id": "shardCountDropDown",
@@ -1219,10 +1219,10 @@
 		"description": "Allows control over the chance to hit when casting LOCK and LOK2 spells. Vanilla is about a 7% chance to hit vs Chaos; 107 is about 28%; 162 is about 56%. Auto-hit will always hit (100%)."
 	},
 	{
-		"Id": "magicAutohitThresholdDropDown",
-		"title": "Power Word HP Limit",
-		"screenshot": "magicAutohitThresholdDropDown.gif",
-		"description": "Changes the threshold at which BLND, STUN, and XXXX are effective, both against enemies and the heroes.\nThe value, as selected in the dropdown, will always be a multiple of 300, or unlimited, but you can set it to randomly select, before the ROM is generated, which option will be used in the game."
+		"Id": "magicAutohitThresholdDoubleSilder",
+		"title": "\"Power Word\" Spell HP Limit",
+		"screenshot": "magicAutohitThresholdDropDown.png",
+		"description": "Changes the threshold at which BLND, STUN, and XXXX are effective, both against enemies and the heroes.\nThese spells will automatically hit (unless the target has the appropriate resistance) when the target's HP is less than or equal to the value on the slider (vanilla is 300). \"Unlimited\" means that it will hit regardless of the target's HP.\nIf a range is selected, a random number is choosen from within that range for the seed. (If \"Unlimited\" is part of a range, it will be selected at a proprotional rate for the size of the range.)"
 	},
 
 	{
@@ -2112,16 +2112,16 @@
 		"description": "If a character is at 1 HP, stepping on damage tiles will kill them. If all characters are dead, game over will be triggered."
 	},
 	{
-		"Id": "startingLevelDropDown",
+		"Id": "StartingLevelDoubleSlider",
 		"title": "Starting Level",
-		"screenshot": "startingLevelDropDown.gif",
-		"description": "Allows you to change the level your party members will be when you start the game.\nThis is affected by Class XP Bonus settings, so a class with adjusted XP scaling may start with a higher or lower level than set here (but the same amount of XP as the other classes)."
+		"screenshot": "StartingLevelDoubleSlider.gif",
+		"description": "Allows you to change the level your party members will be when you start the game. If a range is selected, a random level is choosen from within that range.\nStarting Levels are affected by class-specific XP bonuses, which may result in those classes having higher or lower levels."
 	},
 	{
-		"Id": "MaximumLevelDoubleSilder",
+		"Id": "MaximumLevelDoubleSlider",
 		"title": "Max Level Cap",
-		"screenshot": "MaximumLevelDoubleSilder.png",
-		"description": "Allows you to lower the maximum level, increasing the challenge of the given flagset.\nIf a range is selected, a random number is choosen from the range. With a range, there is no way to know what the actual cap is until you reach it.\nIf starting levels are higher than the maximum level, players will start at that level but will be unable to gain levels.\nFor beginners it is not recommended to go below level 20."
+		"screenshot": "MaximumLevelDoubleSlider.png",
+		"description": "Allows you to lower the maximum level, increasing the challenge of the given flagset.\nIf a range is selected, a random level is choosen from within that range. With a range, there is no way to know what the actual cap is until you reach it.\nIf starting levels are higher than the maximum level, players will start at that level but will be unable to gain levels.\nFor beginners it is not recommended to go below level 20."
 	},
 
 	{
