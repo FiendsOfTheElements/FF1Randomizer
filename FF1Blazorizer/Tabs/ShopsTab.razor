@@ -51,7 +51,7 @@
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="cureHealBuffCheckBox" @bind-Value="Flags.BuffHealingSpells">Improve CUREs, HEALs, LAMP, AMUT spells</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tier1DamageBuff" @bind-Value="Flags.BuffTier1DamageSpells">Improve FIRE, LIT, ICE, HARM spells</CheckBox>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="LockMode" TItem="LockHitMode" @bind-Value="Flags.LockMode">LOCK & LOK2 Mode:</EnumDropDown>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="magicAutohitThresholdDropDown" TItem="AutohitThreshold" @bind-Value="Flags.MagicAutohitThreshold">Power Word Threshold:</EnumDropDown>
+			<DoubleSliderMax DoubleCol UpdateToolTip="@UpdateToolTipID" Id="magicAutohitThresholdDoubleSilder" MinValue="100" MaxValue="1300" Step="100" @bind-ValuesRange="(Flags.MagicAutohitThresholdLow, Flags.MagicAutohitThresholdHigh)">Power Word Threshold:</DoubleSliderMax>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enableSoftInBattle" @bind-Value="Flags.EnableSoftInBattle">Enable Soft in Battle</CheckBox>
             <EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="lifeInBattleDropDown" TItem="LifeInBattleSetting" @bind-Value="Flags.EnableLifeInBattle">Life in Battle:</EnumDropDown>
 
