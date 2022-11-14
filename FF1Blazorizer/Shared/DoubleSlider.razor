@@ -16,7 +16,7 @@
 			<BSCol LG="4">
 				<div class="@DisabledClass alloneline">@DisplayText</div>
 			</BSCol>
-			<div class="col-slider" id="rc-@Id">
+			<div class="@IndentClass col-slider" id="rc-@Id">
 				@(new MarkupString($@"<style>
 				#rc-{Id} > input[type='range'] {{
 					background: var(--track-background);
@@ -61,7 +61,7 @@ else
 			</BSCol>
 		</BSRow>
 		<BSRow>
-			<div class="col-slider" id="rc-@Id">
+			<div class="@IndentClass col-slider" id="rc-@Id">
 				@(new MarkupString($@"<style>
 				#rc-{Id} > input[type='range'] {{
 					background: var(--track-background);

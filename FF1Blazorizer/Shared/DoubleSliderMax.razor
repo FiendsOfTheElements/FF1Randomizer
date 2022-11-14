@@ -1,0 +1,242 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+
+@if (DoubleCol)
+{
+	<BSContainer>
+		<BSRow>
+			<BSCol LG="4" Class="noleftpadding">
+				<div class="@DisabledClass @IndentClass">
+					@ChildContent
+					@if (!DisableTooltip)
+					{
+						<input type="image" src="/images/help.png" style="margin-left: 10px" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
+					}
+				</div>
+			</BSCol>
+			<BSCol LG="4">
+				<div class="@DisabledClass alloneline">@DisplayText</div>
+			</BSCol>
+			<div class="@IndentClass col-slider" id="rc-@Id">
+				@(new MarkupString($@"<style>
+				#rc-{Id} > input[type='range'] {{
+					background: var(--track-background);
+					pointer-events: none;
+				}}
+				#rc-{Id} > input[name='low-range'] {{
+					position: absolute;
+				}}
+				#rc-{Id} > input[name='low-range']::-webkit-slider-thumb {{
+					position: relative;
+				}}
+				#rc-{Id} > input[name='high-range'] {{
+					position: relative;
+					--track-background: linear-gradient(to right, transparent {100 * (ValuesRange.low - MinValue) / (MaxValue - MinValue) + 1}%, var(--range-color) 0, var(--range-color) {100 * (ValuesRange.high - MinValue) / (MaxValue - MinValue) - 1}%, transparent 0 ) no-repeat 0 45% / 100% 40%;
+					clip-path: polygon({(ValuesRange.low + ValuesRange.high) / (MaxValue - MinValue) + 1}% 0, 100% 0, 100% 100%, {(ValuesRange.low + ValuesRange.high) / (MaxValue - MinValue) + 1}% 100%);
+				}}
+				#rc-{Id} > input[type='range']::-webkit-slider-runnable-track {{
+					background: var(--track-background);
+				}}
+			</style>"))
+				<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="ValuesRangeLow" @bind:event="onchange" />
+				<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="ValuesRangeHigh" @bind:event="onchange" />
+			</div>
+		</BSRow>
+	</BSContainer>
+}
+else
+{
+	<BSContainer>
+		<BSRow>
+			<BSCol LG="6" Class="noleftpadding">
+				<div class="@DisabledClass @IndentClass">
+					@ChildContent
+					@if (!DisableTooltip)
+					{
+						<input type="image" src="/images/help.png" style="margin-left: 10px" class="btn-group-help" title="Show Help" @onclick="@ShowToolTip" id="@Id" />
+					}
+				</div>
+			</BSCol>
+			<BSCol LG="6">
+				<div class="@DisabledClass alloneline">@DisplayText</div>
+			</BSCol>
+		</BSRow>
+		<BSRow>
+			<div class="@IndentClass col-slider" id="rc-@Id">
+				@(new MarkupString($@"<style>
+				#rc-{Id} > input[type='range'] {{
+					background: var(--track-background);
+					pointer-events: none;
+				}}
+				#rc-{Id} > input[name='low-range'] {{
+					position: absolute;
+				}}
+				#rc-{Id} > input[name='low-range']::-webkit-slider-thumb {{
+					position: relative;
+				}}
+				#rc-{Id} > input[name='high-range'] {{
+					position: relative;
+					--track-background: linear-gradient(to right, transparent {100 * (ValuesRange.low - MinValue) / (MaxValue - MinValue) + 1}%, var(--range-color) 0, var(--range-color) {100 * (ValuesRange.high - MinValue) / (MaxValue - MinValue) - 1}%, transparent 0 ) no-repeat 0 45% / 100% 40%;
+					clip-path: polygon({(ValuesRange.low + ValuesRange.high) / (MaxValue - MinValue) + 1}% 0, 100% 0, 100% 100%, {(ValuesRange.low + ValuesRange.high) / (MaxValue - MinValue) + 1}% 100%);
+				}}
+				#rc-{Id} > input[type='range']::-webkit-slider-runnable-track {{
+					background: var(--track-background);
+				}}
+			</style>"))
+				<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="ValuesRangeLow" @bind:event="onchange" />
+				<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="ValuesRangeHigh" @bind:event="onchange" />
+			</div>
+		</BSRow>
+	</BSContainer>
+}
+
+@code
+{
+    [Parameter]
+    public bool Indent { get; set; }
+    private string IndentClass => Indent ? "indent" : "";
+
+    [Parameter]
+    public bool? IsEnabled { get; set; } = true;
+    private bool Disabled => !(IsEnabled ?? true);
+    private string DisabledClass => (IsEnabled ?? true) ? "" : "disabled";
+
+    [Parameter]
+    public bool DoubleCol { get; set; }
+    [Parameter]
+    public bool ShowMedian { get; set; }
+    [Parameter]
+    public bool ShowPositiveSign { get; set; }
+    [Parameter]
+    public bool ShowPercent { get; set; }
+    [Parameter]
+    public bool DontShowPercent { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    private string DisplayText => BuildDisplayString();
+
+    private string BuildDisplayString()
+    {
+        string displayString = "";
+        if (_valueLow > 0 && ShowPositiveSign)
+        {
+            displayString += "+";
+        }
+        displayString += _valueLow;
+        if (ShowMedian && !DontShowPercent || ShowPercent)
+        {
+            displayString += "%";
+        }
+
+        displayString += " - ";
+
+        if (_valueHigh > 0 && ShowPositiveSign)
+        {
+            displayString += "+";
+        }
+
+        if (_valueHigh == MaxValue) { displayString += "Unlimited"; }
+        else { displayString += _valueHigh; }
+
+		if (ShowMedian && !DontShowPercent)
+		{
+			displayString += "% (" + Median + "%)";
+		}
+		else if (ShowMedian && DontShowPercent)
+		{
+			displayString += " (" + Median + ")";
+		}
+		else if (ShowPercent)
+		{
+			displayString += "%";
+		}
+
+		return displayString;
+	}
+
+	private int Median
+	{
+		get
+		{
+			if (_valueLow == 0 && _valueHigh == 0) return 0;
+
+			if (_valueLow == 0 && _valueHigh == 10) return 1;
+			if (_valueLow == 0) return (int)Math.Sqrt(10 * _valueHigh);
+
+			return (int)Math.Sqrt(_valueLow * _valueHigh);
+		}
+	}
+
+	//slider fields
+	int _valueLow = 0;
+	int _valueHigh = 0;
+
+	[Parameter] public int MinValue { get; set; }
+	[Parameter] public int MaxValue { get; set; }
+	[Parameter] public int Step { get; set; }
+	[Parameter]
+	public (int low, int high) ValuesRange
+	{
+
+		get => (_valueLow, _valueHigh);
+		set
+		{ 
+			if (_valueLow.Equals(value.low) && _valueHigh.Equals(value.high))
+			{
+				return;	
+			}
+
+			if (value.low > value.high)
+			{
+				_valueLow = value.high;
+				_valueHigh = value.low;
+			}
+			else
+			{
+				_valueLow = value.low;
+				_valueHigh = value.high;
+			}
+
+			ValuesRangeChanged.InvokeAsync((_valueLow,_valueHigh));
+		}
+	}
+
+	private int ValuesRangeLow
+	{
+		get => ValuesRange.low;
+		set
+		{
+			ValuesRange = (value, ValuesRange.high);
+		}
+	}
+
+	private int ValuesRangeHigh
+	{
+		get => ValuesRange.high;
+		set
+		{
+			ValuesRange = (ValuesRange.low, value);
+		}
+	}
+
+	[Parameter] public EventCallback<(int, int)> ValuesRangeChanged { get; set; }
+	[Parameter]
+	public string Id { get; set; }
+
+	//tooltip section
+	[Parameter]
+	public bool DisableTooltip { get; set; }
+
+	private void ShowToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke(Id, e);
+	}
+
+	private void HideToolTip(MouseEventArgs e)
+	{
+		UpdateToolTip?.Invoke("", e);
+	}
+	
+	[Parameter]
+	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
+}
