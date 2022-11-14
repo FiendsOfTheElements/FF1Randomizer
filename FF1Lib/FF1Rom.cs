@@ -1139,7 +1139,7 @@ public partial class FF1Rom : NesRom
 		}
 
 		ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.ImprovedClinic);
-		ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
+		ScaleEncounterRate(flags.LandEncounterRate, flags.SeaEncounterRate, flags.DungeonEncounterRate);
 
 		WriteMaps(maps);
 

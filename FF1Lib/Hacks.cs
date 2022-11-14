@@ -379,7 +379,7 @@ namespace FF1Lib
 
 		private void EnableEasyMode()
 		{
-			ScaleEncounterRate(0.20, 0.20);
+			//ScaleEncounterRate(0.20, 0.20);
 			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 			foreach (var enemy in enemies)
 			{

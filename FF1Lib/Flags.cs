@@ -494,11 +494,13 @@ namespace FF1Lib
 		[DoubleFlag(0.5, 3.0, 0.1)]
 		public double ExpMultiplierBlackMage { get; set; } = 1.0;
 
-		[DoubleFlag(0, 45)]
-		public double EncounterRate { get; set; } = 0;
+		[DoubleFlag(0, 15)]
+		public double LandEncounterRate { get; set; } = 6;
+		[DoubleFlag(0, 8)]
+		public double SeaEncounterRate { get; set; } = 2;
+		[DoubleFlag(0, 15)]
+		public double DungeonEncounterRate { get; set; } = 6;
 
-		[DoubleFlag(0, 45)]
-		public double DungeonEncounterRate { get; set; } = 0;
 		public ProgressiveScaleMode ProgressiveScaleMode { get; set; } = ProgressiveScaleMode.Disabled;
 
 		public StartingItemSet StartingItemSet { get; set; } = StartingItemSet.None;

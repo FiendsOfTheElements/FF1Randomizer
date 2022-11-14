@@ -2653,13 +2653,22 @@ namespace FF1Lib
 			}
 		}
 
-		public double EncounterRate
+		public double LandEncounterRate
 		{
-			get => Flags.EncounterRate;
+			get => Flags.LandEncounterRate;
 			set
 			{
-				Flags.EncounterRate = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EncounterRate"));
+				Flags.LandEncounterRate = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LandEncounterRate"));
+			}
+		}
+		public double SeaEncounterRate
+		{
+			get => Flags.SeaEncounterRate;
+			set
+			{
+				Flags.SeaEncounterRate = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SeaEncounterRate"));
 			}
 		}
 		public double DungeonEncounterRate
