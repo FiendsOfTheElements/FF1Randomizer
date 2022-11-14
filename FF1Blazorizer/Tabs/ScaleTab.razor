@@ -15,13 +15,13 @@
 		<div class="row-seperator"></div>
 		<h4>Enemies</h4>
 		<DoubleSlider ShowMedian DoubleCol Id="enemyStatsDoubleSlider" UpdateToolTip="@UpdateToolTipID" MinValue="20" MaxValue="500" Step="10" @bind-ValuesRange="(Flags.EnemyScaleStatsLow,Flags.EnemyScaleStatsHigh)">Enemy Stats:</DoubleSlider>
-		<DoubleSlider ShowMedian DoubleCol Id="enemyHpDoubleSlider" Indent IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" Step="10" @bind-ValuesRange="(Flags.EnemyScaleHpLow, Flags.EnemyScaleHpHigh)" DisableTooltip>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateEnemyHPScalingCheckBox" @bind-Value="Flags.SeparateEnemyHPScaling">Separate HP&nbspScaling:</TriStateCheckBox>
+		<DoubleSlider ShowMedian DoubleCol Id="enemyHpDoubleSlider" IsEnabled="Flags.SeparateEnemyHPScaling" MinValue="20" MaxValue="500" Step="10" @bind-ValuesRange="(Flags.EnemyScaleHpLow, Flags.EnemyScaleHpHigh)" DisableTooltip>
+			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="separateEnemyHPScalingCheckBox" @bind-Value="Flags.SeparateEnemyHPScaling">Separate HP&nbspScaling:</TriStateCheckBox>
 		</DoubleSlider>
 		<div class="row-seperator"></div>
 		<DoubleSlider ShowMedian DoubleCol Id="bossStatsDoubleSlider" MinValue="20" MaxValue="500" Step="10" @bind-ValuesRange="(Flags.BossScaleStatsLow, Flags.BossScaleStatsHigh)" DisableTooltip>Boss Stats:</DoubleSlider>
-		<DoubleSlider ShowMedian DoubleCol Id="bossHpDoubleSlider" Indent IsEnabled="Flags.SeparateBossHPScaling" MinValue="20" MaxValue="500" Step="10" @bind-ValuesRange="(Flags.BossScaleHpLow, Flags.BossScaleHpHigh)" DisableTooltip>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="separateBossHPScalingCheckBox" @bind-Value="Flags.SeparateBossHPScaling">Separate HP&nbspScaling:</TriStateCheckBox>
+		<DoubleSlider ShowMedian DoubleCol Id="bossHpDoubleSlider" IsEnabled="Flags.SeparateBossHPScaling" MinValue="20" MaxValue="500" Step="10" @bind-ValuesRange="(Flags.BossScaleHpLow, Flags.BossScaleHpHigh)" DisableTooltip>
+			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="separateBossHPScalingCheckBox" @bind-Value="Flags.SeparateBossHPScaling">Separate HP&nbspScaling:</TriStateCheckBox>
 		</DoubleSlider>
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="evadeCapDropDown" TItem="EvadeCapValues" @bind-Value="Flags.EvadeCap">Evade Cap Value:</EnumDropDown>
 		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="includeMoraleCheckBox" @bind-Value="Flags.IncludeMorale">Scaled Stats Includes Morale</CheckBox>
