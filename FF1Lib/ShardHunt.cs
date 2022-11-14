@@ -138,11 +138,19 @@ namespace FF1Lib
 
 			addShardIcon(0xD, 0xB760);
 
-			int ppu = 0x2043;
-			ppu = ppu + (goal <= 24 ? 0x20 : 0x00);
+			int ppu = 0x2023;
+			// Adjust vertical centering based on how many SHARDs are required
+			if (goal <= 18)
+				ppu += 0x40;
+			else if (goal <= 30)
+				ppu += 0x20;
 
 			// Fancy shard drawing code, see 0E_B8D7_DrawShardBox.asm
 			Put(0x3B87D, Blob.FromHex($"A9{ppu & 0xFF:X2}8511A9{(ppu & 0xFF00) >> 8:X2}8512A977A00048AD0220A5128D0620A51118692085118D0620900DAD0220E612A5128D0620A5118D062068A200CC3560D002A976C0{goal:X2}D001608D0720C8E8E006D0EB1890C1"));
+
+			// Expand the height of the Shard/Orb box to be one tile higher (Y position -1, Y height +1)
+			Put(0x3BAA3, Blob.FromHex($"01"));
+			Put(0x3BAA5, Blob.FromHex($"09"));
 
 			// Black Orb Override to check for shards rather than ORBs.
 			BlackOrbChecksShardsCountFor(goal,talkroutines);
