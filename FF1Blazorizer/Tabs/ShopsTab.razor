@@ -73,32 +73,32 @@
 			<div class="row">
 				<div class="col-lg-2 tighter noleftpadding">Weapon Shops:</div>
 				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Weapons"></EnumDropDown></div>
-				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Weapons"></EnumDropDown></div>
-				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Weapons">Exclude Coneria</CheckBox></div>
+				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip IsEnabled="(Flags.ShopKillMode_Weapons != ShopKillMode.None)" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Weapons"></EnumDropDown></div>
+				<div class="col-lg-4 tighter"><CheckBox DisableTooltip IsEnabled="(Flags.ShopKillMode_Weapons != ShopKillMode.None)" @bind-Value="Flags.ShopKillExcludeConeria_Weapons">Exclude Coneria</CheckBox></div>
 			</div>
 			<div class="row">
 				<div class="col-lg-2 tighter noleftpadding">Armor Shops:</div>
 				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Armor"></EnumDropDown></div>
-				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Armor"></EnumDropDown></div>
-				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Armor">Exclude Coneria</CheckBox></div>
+				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip IsEnabled="(Flags.ShopKillMode_Armor != ShopKillMode.None)" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Armor"></EnumDropDown></div>
+				<div class="col-lg-4 tighter"><CheckBox DisableTooltip IsEnabled="(Flags.ShopKillMode_Armor != ShopKillMode.None)" @bind-Value="Flags.ShopKillExcludeConeria_Armor">Exclude Coneria</CheckBox></div>
 			</div>
 			<div class="row">
 				<div class="col-lg-2 tighter noleftpadding">Item Shops:</div>
 				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Item"></EnumDropDown></div>
-				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Item"></EnumDropDown></div>
-				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Item">Exclude Coneria</CheckBox></div>
+				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip IsEnabled="(Flags.ShopKillMode_Item != ShopKillMode.None)" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Item"></EnumDropDown></div>
+				<div class="col-lg-4 tighter"><CheckBox DisableTooltip IsEnabled="(Flags.ShopKillMode_Item != ShopKillMode.None)" @bind-Value="Flags.ShopKillExcludeConeria_Item">Exclude Coneria</CheckBox></div>
 			</div>
 			<div class="row">
 				<div class="col-lg-2 tighter noleftpadding">Black Magic:</div>
 				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_Black"></EnumDropDown></div>
-				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Black"></EnumDropDown></div>
-				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_Black">Exclude Coneria</CheckBox></div>
+				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip IsEnabled="(Flags.ShopKillMode_Black != ShopKillMode.None)" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_Black"></EnumDropDown></div>
+				<div class="col-lg-4 tighter"><CheckBox DisableTooltip IsEnabled="(Flags.ShopKillMode_Black != ShopKillMode.None)" @bind-Value="Flags.ShopKillExcludeConeria_Black">Exclude Coneria</CheckBox></div>
 			</div>
 			<div class="row">
 				<div class="col-lg-2 tighter noleftpadding">White Magic:</div>
 				<div class="col-lg-4 tighter"><EnumDropDown DisableTooltip TItem="ShopKillMode" @bind-Value="Flags.ShopKillMode_White"></EnumDropDown></div>
-				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_White"></EnumDropDown></div>
-				<div class="col-lg-4 tighter"><CheckBox DisableTooltip @bind-Value="Flags.ShopKillExcludeConeria_White">Exclude Coneria</CheckBox></div>
+				<div class="col-lg-2 tighter"><EnumDropDown DisableTooltip IsEnabled="(Flags.ShopKillMode_White != ShopKillMode.None)" TItem="ShopKillFactor" @bind-Value="Flags.ShopKillFactor_White"></EnumDropDown></div>
+				<div class="col-lg-4 tighter"><CheckBox DisableTooltip IsEnabled="(Flags.ShopKillMode_White != ShopKillMode.None)" @bind-Value="Flags.ShopKillExcludeConeria_White">Exclude Coneria</CheckBox></div>
 			</div>
 			<div class="checkbox-cell"></div>
 		</div>
