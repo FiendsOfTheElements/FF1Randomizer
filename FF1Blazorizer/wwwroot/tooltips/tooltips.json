@@ -1071,7 +1071,7 @@
 		"Id": "NoMasamuneCheckBox",
 		"title": "Remove Masamune",
 		"screenshot": "NoMasamuneCheckBox.gif",
-		"description": "Removes the legendary sword, the Masamune, from chests, from shops (if elite gear is turned on), and from incentive locations (if the Masamune is incentivized)."
+		"description": "Removes the legendary Masamune sword from all chests, and also removes it from shops when \"Include Caster & Elite Gear\" is turned on. (Also disables the Masamune as an incentive.)"
 	},
 	{
 		"Id": "NoXcalberCheckBox",

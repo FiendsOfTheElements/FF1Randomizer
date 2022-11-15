@@ -59,7 +59,7 @@
 	<h4>Masamune</h4>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="GuaranteedMasamuneCheckBox" IsEnabled="@(Flags.NoMasamune != true)" @bind-Value="Flags.GuaranteedMasamune">Guaranteed Endgame Masamune</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="SendMasamuneHomeCheckBox" IsEnabled="@((Flags.NoMasamune != true) && Flags.GuaranteedMasamune != false && Flags.IncentivizeMasamune == false)" @bind-Value="Flags.SendMasamuneHome">Send Masamune Home</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="masaGuardianCheckBox" @bind-Value="Flags.TCMasaGuardian">WarMech, Guardian of Masamune</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="masaGuardianCheckBox" IsEnabled="@(Flags.NoMasamune != true)" @bind-Value="Flags.TCMasaGuardian">WarMech, Guardian of Masamune</TriStateCheckBox>
 
 </div>
 	<div class="clear-it"></div>
