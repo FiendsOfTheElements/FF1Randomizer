@@ -1706,7 +1706,7 @@
 		"Id": "RandomWeaponBonusExcludeMasa",
 		"title": "Random Weapon Bonus - Exclude Masa",
 		"screenshot": "RandomWeaponBonusExcludeMasa.png",
-		"description": "Masamune will not receive any bonuses or minuses; it will always be the regular, vanilla Masamune."
+		"description": "Masamune will not receive any bonuses or minuses; it will always be the regular, vanilla Masamune. (Disabled when Masamune is removed from the game.)"
 	},
 	{
 		"Id": "RandomArmorBonus",
