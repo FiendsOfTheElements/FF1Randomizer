@@ -1,8 +1,9 @@
 ;
 ; AirBoat
-; Last modifications: 2022-09-30
+; Last modifications: 2022-11-20
 ;
 
+tmp		= $10
 ow_scroll_x     = $27  ; X scroll of OW in tiles
 ow_scroll_y     = $28  ; Y scroll in tiles
 
@@ -53,10 +54,21 @@ AIRBOATBANK = $1B
   JSR SwapPRG_L
   JMP OWButtonA
 
- .ORG $C60C 
-;BoardShip:
+ .ORG $C609 
+;BoardShip: 12b
 ; ...
-  BMI Board_Fail
+  NOP
+  NOP
+  NOP
+  NOP
+  NOP
+  NOP
+  NOP
+  LDA #AIRBOATBANK
+  STA cur_bank 
+  JSR SwapPRG_L
+  JSR BoardCheck
+  BEQ Board_Fail
 
  .ORG $C632
 ;DockShip:
@@ -228,3 +240,19 @@ DockShip:
     STA music_track     ; switch to music track $44 (overworld theme)
 
     RTS                 ; exit
+
+BoardCheck:
+  JSR CheckShip
+  BEQ BoardFail
+    LDA ship_x          ; is ship docked at current X/Y
+    CMP tmp+2           ; coords?
+    BNE BoardFail
+    LDA ship_y
+    CMP tmp+3
+    BNE BoardFail      ; if not... fail
+      LDA #$01
+      RTS
+BoardFail:
+  LDA #$00
+  RTS
+  
