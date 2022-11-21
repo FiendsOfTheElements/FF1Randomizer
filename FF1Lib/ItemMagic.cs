@@ -449,6 +449,15 @@ namespace FF1Lib
 				case GuaranteedPowerItem.FAST:
 					WriteItemSpellData(newspell[fast.Value], Item.PowerGauntlets);
 					break;
+				case GuaranteedPowerItem.None:
+					var armors = Armor.LoadAllArmors(this, flags).ToList();
+					var powerg = armors.FirstOrDefault(a => a.Id == Item.PowerGauntlets);
+
+					// Removes the spell and changes the name to reduce confusion
+					powerg.SpellIndex = 0;
+					powerg.writeArmorMemory(this);
+					ItemsText[(int)Item.PowerGauntlets] = "Sour  @G";
+					break;
 			}
 		}
 	}
@@ -483,11 +492,12 @@ namespace FF1Lib
 
 	public enum GuaranteedPowerItem
 	{
-		None = 0,
-		TMPR = 1,
-		SABR = 2,
-		FAST = 3,
-		Any = 4,
-		Random = 5
+		Vanilla = 0,
+		None = 1,
+		TMPR = 2,
+		SABR = 3,
+		FAST = 4,
+		Any = 5,
+		Random = 6
 	}
 }

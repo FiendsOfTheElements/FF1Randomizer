@@ -1364,14 +1364,14 @@ namespace FF1Lib
 			// Place guaranteed casting items
 			if (flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
 			{
-				var postGuaranttedChests = chests.Where(x => (int)x.MapLocation >= 33 && !placedItems.Any(y => y.Address == x.Address)).ToList();
-				placedItems.Add(new TreasureChest(postGuaranttedChests.PickRandom(rng), Item.PowerRod));
+				var postGuaranteedChests = chests.Where(x => (int)x.MapLocation >= 33 && !placedItems.Any(y => y.Address == x.Address)).ToList();
+				placedItems.Add(new TreasureChest(postGuaranteedChests.PickRandom(rng), Item.PowerRod));
 			}
 
 			if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
 			{
-				var postGuaranttedChests = chests.Where(x => (int)x.MapLocation >= 33 && !placedItems.Any(y => y.Address == x.Address)).ToList();
-				placedItems.Add(new TreasureChest(postGuaranttedChests.PickRandom(rng), Item.PowerGauntlets));
+				var postGuaranteedChests = chests.Where(x => (int)x.MapLocation >= 33 && !placedItems.Any(y => y.Address == x.Address)).ToList();
+				placedItems.Add(new TreasureChest(postGuaranteedChests.PickRandom(rng), Item.PowerGauntlets));
 			}
 
 			// Place Shards

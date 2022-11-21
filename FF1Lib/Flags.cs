@@ -56,7 +56,7 @@ namespace FF1Lib
 
 		public GuaranteedDefenseItem GuaranteedDefenseItem { get; set; } = GuaranteedDefenseItem.None;
 
-		public GuaranteedPowerItem GuaranteedPowerItem { get; set; } = GuaranteedPowerItem.None;
+		public GuaranteedPowerItem GuaranteedPowerItem { get; set; } = GuaranteedPowerItem.Vanilla;
 
 		public ScriptTouchMultiplier ScriptMultiplier { get; set; } = ScriptTouchMultiplier.Vanilla;
 		public ScriptTouchMultiplier TouchMultiplier { get; set; } = ScriptTouchMultiplier.Vanilla;
@@ -941,11 +941,11 @@ namespace FF1Lib
 			if (flags.ItemMagicMode == ItemMagicMode.Random) newflags.ItemMagicMode = (ItemMagicMode)rng.Between(0, 2);
 			if (flags.ItemMagicPool == ItemMagicPool.Random) newflags.ItemMagicPool = (ItemMagicPool)rng.Between(0, 4);
 
-			if (flags.GuaranteedDefenseItem == GuaranteedDefenseItem.Random) newflags.GuaranteedDefenseItem = rng.Between(0, 1) > 0 ? GuaranteedDefenseItem.Any : GuaranteedDefenseItem.None;
-			if (flags.GuaranteedPowerItem == GuaranteedPowerItem.Random) newflags.GuaranteedPowerItem = rng.Between(0, 1) > 0 ? GuaranteedPowerItem.Any : GuaranteedPowerItem.None;
+			if (flags.GuaranteedDefenseItem == GuaranteedDefenseItem.Random) newflags.GuaranteedDefenseItem = rng.Between(0, 3) > 0 ? GuaranteedDefenseItem.Any : GuaranteedDefenseItem.None;
+			if (flags.GuaranteedPowerItem == GuaranteedPowerItem.Random) newflags.GuaranteedPowerItem = rng.Between(0, 3) > 0 ? GuaranteedPowerItem.Any : GuaranteedPowerItem.None;
 
 			if (newflags.GuaranteedDefenseItem == GuaranteedDefenseItem.Any) newflags.GuaranteedDefenseItem = (GuaranteedDefenseItem)rng.Between(1, 3);
-			if (newflags.GuaranteedPowerItem == GuaranteedPowerItem.Any) newflags.GuaranteedPowerItem = (GuaranteedPowerItem)rng.Between(1, 3);
+			if (newflags.GuaranteedPowerItem == GuaranteedPowerItem.Any) newflags.GuaranteedPowerItem = (GuaranteedPowerItem)rng.Between(2, 4);
 
 			return newflags;
 		}

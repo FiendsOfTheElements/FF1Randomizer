@@ -446,7 +446,7 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
+		if (flags.GuaranteedPowerItem != GuaranteedPowerItem.Vanilla && !(flags.ItemMagicMode == ItemMagicMode.None))
 		{
 			CraftPowerItem(flags);
 		}
