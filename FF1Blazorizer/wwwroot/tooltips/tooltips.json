@@ -1806,7 +1806,7 @@
 		"Id": "guaranteedDefenseItem",
 		"title": "Power Staff Effect",
 		"screenshot": "ruseItemCheckBox.png",
-		"description": "Guarantees that the Power Staff has RUSE/INV/INV2 depending on the setting. It will still have the set spell when Item Magic is randomized. (This item can be incentivized on the Incentives tab.)\n\"Any\" selects from any of the possible spell options; \"Random\" can also select \"None\"."
+		"description": "Guarantees that the Power Staff casts RUSE/INV/INV2/FOG2 depending on the setting. It will still have the set spell when Item Magic is randomized. (This item can be incentivized on the Incentives tab.)\n\"Any\" selects from any of the 4 possible spell options; \"Random\" can also select \"None\"."
 	},
 	{
 		"Id": "guaranteedPowerItem",

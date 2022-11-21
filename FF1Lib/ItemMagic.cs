@@ -399,14 +399,16 @@ namespace FF1Lib
 			var ruse = newspell.Select((s, i) => (s, i)).Where(x => x.s.Data[4] == 0x10 && x.s.Data[3] == 0x04).Select(s => (int?)s.i).FirstOrDefault();
 			var inv = newspell.Select((s, i) => (s, i)).Where(x => x.s.Data[4] == 0x10 && x.s.Data[3] == 0x10).Select(s => (int?)s.i).FirstOrDefault();
 			var inv2 = newspell.Select((s, i) => (s, i)).Where(x => x.s.Data[4] == 0x10 && x.s.Data[3] == 0x08).Select(s => (int?)s.i).FirstOrDefault();
+			var fog2 = newspell.Select((s, i) => (s, i)).Where(x => x.s.targeting == SpellTargeting.AllCharacters && x.s.routine == SpellRoutine.ArmorUp).Select(s => (int?)s.i).FirstOrDefault();
 
 			//no spell was found
-			if (ruse == null && inv == null && inv2 == null) return;
+			if (ruse == null && inv == null && inv2 == null && fog2 == null) return;
 
 			//backup spells
 			ruse = ruse.HasValue ? ruse : (inv2.HasValue ? inv2 : inv);
 			inv = inv.HasValue ? inv : (inv2.HasValue ? inv2 : ruse);
 			inv2 = inv2.HasValue ? inv2 : (ruse.HasValue ? ruse : inv);
+			fog2 = fog2.HasValue ? fog2 : (inv2.HasValue ? inv2 : ruse);
 
 			switch (flags.GuaranteedDefenseItem)
 			{
@@ -418,6 +420,9 @@ namespace FF1Lib
 					break;
 				case GuaranteedDefenseItem.INV2:
 					WriteItemSpellData(newspell[inv2.Value], Item.PowerRod);
+					break;
+				case GuaranteedDefenseItem.FOG2:
+					WriteItemSpellData(newspell[fog2.Value], Item.PowerRod);
 					break;
 			}
 		}
@@ -486,8 +491,9 @@ namespace FF1Lib
 		INV = 1,
 		INV2 = 2,
 		RUSE = 3,
-		Any = 4,
-		Random = 5
+		FOG2 = 4,
+		Any = 5,
+		Random = 6
 	}
 
 	public enum GuaranteedPowerItem
