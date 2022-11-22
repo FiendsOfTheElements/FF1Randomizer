@@ -405,10 +405,10 @@ namespace FF1Lib
 			if (ruse == null && inv == null && inv2 == null && fog2 == null) return;
 
 			//backup spells
-			ruse = ruse.HasValue ? ruse : (inv2.HasValue ? inv2 : inv);
-			inv = inv.HasValue ? inv : (inv2.HasValue ? inv2 : ruse);
-			inv2 = inv2.HasValue ? inv2 : (ruse.HasValue ? ruse : inv);
-			fog2 = fog2.HasValue ? fog2 : (inv2.HasValue ? inv2 : ruse);
+			ruse = ruse.HasValue ? ruse : (inv2.HasValue ? inv2 : (inv.HasValue ? inv : fog2));
+			inv = inv.HasValue ? inv : (inv2.HasValue ? inv2 : (ruse.HasValue ? ruse : fog2));
+			inv2 = inv2.HasValue ? inv2 : (ruse.HasValue ? ruse : (inv.HasValue ? inv : fog2));
+			fog2 = fog2.HasValue ? fog2 : (inv2.HasValue ? inv2 : (ruse.HasValue ? ruse : inv));
 
 			switch (flags.GuaranteedDefenseItem)
 			{

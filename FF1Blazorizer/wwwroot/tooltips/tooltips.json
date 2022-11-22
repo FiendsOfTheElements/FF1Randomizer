@@ -1806,13 +1806,13 @@
 		"Id": "guaranteedDefenseItem",
 		"title": "Power Staff Effect",
 		"screenshot": "ruseItemCheckBox.png",
-		"description": "Guarantees that the Power Staff casts RUSE/INV/INV2/FOG2 depending on the setting. It will still have the set spell when Item Magic is randomized. (This item can be incentivized on the Incentives tab.)\n\"Any\" selects from any of the 4 possible spell options; \"Random\" can also select \"None\"."
+		"description": "Guarantees that the Power Staff casts RUSE/INV/INV2/FOG2 depending on the setting. It will still have the set spell when Item Magic is randomized. (This item can be incentivized on the Incentives tab.)\n\"Any\" selects from any of the 4 possible spell options; \"Random\" can also select \"None\".\nWhen using Spell Crafter, the same type of spell will be used if one exists. Otherwise the closest option will be chosen instead."
 	},
 	{
 		"Id": "guaranteedPowerItem",
-		"title": "Guaranteed Offense Item",
+		"title": "Power Gauntlet Effect",
 		"screenshot": null,
-		"description": "Guarantees that the Power Gauntlet casts SABR/TMPR/FAST depending on the setting. It will still have the set spell when Item Magic is randomized. (This item can be incentivized on the Incentives tab.)\n\"Vanilla\" will still cast the SABR spell but be named \"Power\" when Vanilla Item Magic is selected. If Item Magic is Randomized, then Vanilla will assign the Power Gauntlet a random spell from the selected Item Magic Pool.\n\"None\" removes all spells from the Power Gauntlet and renames it to 'Sour'. \"Any\" selects from any of the 3 possible spell options; \"Random\" can also select \"None\"."
+		"description": "Guarantees that the Power Gauntlet casts SABR/TMPR/FAST depending on the setting. It will still have the set spell when Item Magic is randomized. (This item can be incentivized on the Incentives tab.)\n\"Vanilla\" will still cast the SABR spell but be named \"Power\" when Vanilla Item Magic is selected. If Item Magic is Randomized, then Vanilla will assign the Power Gauntlet a random spell from the selected Item Magic Pool.\n\"None\" removes all spells from the Power Gauntlet and renames it to 'Sour'. \"Any\" selects from any of the 3 possible spell options; \"Random\" can also select \"None\".\nWhen using Spell Crafter, the same type of spell will be used if one exists. Otherwise the closest option will be chosen instead."
 	},
 	{
 		"Id": "itemMagicCheckBox",
