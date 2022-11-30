@@ -15,6 +15,8 @@ using System.IO;
 	- Hunter
 	- Other Bonuses/Maluses
 
+• Recruitment in-game text
+
 • Special gear additions or resistances if you have a single element/status spell school (as a focus, not one of many)
 
 */
@@ -34,6 +36,8 @@ namespace FF1Lib
 		public static Dictionary<string, List<MagicSpell>> spellFamilies = new Dictionary<string, List<MagicSpell>>();
 
 		public List<string> classDescriptions = new List<string>();
+
+		public int lockpickClass = -1;
 
 		const int lut_MapmanPalettes = 0x8150;
 
@@ -60,6 +64,11 @@ namespace FF1Lib
 			if ((bool)flags.GuaranteeCustomClassComposition)
 				classes = ClassesGuaranteed(classes);
 
+			if ((bool)flags.Lockpicking)
+			{
+				ChooseLockpickingClass(classes);
+			}
+
 			for (int i = 0; i < 6; i++)
 			{
 				classDescriptions.Add(classes[i].PublishToClass(i));
@@ -76,6 +85,7 @@ namespace FF1Lib
 			LoadImages(classes);
 		}
 
+		// This function is for debug, testing, and balancing
 		void GenerateStats(MT19337 rng)
 		{
 			int[] weapons = new int[12];
@@ -1087,6 +1097,47 @@ namespace FF1Lib
 			PowerRod.WeaponTypeSprite = WeaponSprite.IRONSTAFF;
 			PowerRod.writeWeaponMemory(rom);
 		}
+
+		public int ChooseLockpickingClass(List<ClassDef> classes)
+		{
+			// First lockpicking attempt: Find a thematic lockpicker if available. Some lockpick with their fists.
+			List<string> desiredLockpickers = new List<string> { "THIEF", "PIRATE", "MARAUDER", "BERSERKR", "FENCER", "JUGGLER", "SOLDIER", "PUGILIST", "Bl.BELT" };
+
+			foreach (var className in desiredLockpickers)
+			{
+				for (int i = 0; i < 6; i++)
+				{
+					if (classes[i].name.Equals(className))
+					{
+						classes[i].Lockpicker = true;
+						return i;
+					}
+				}
+			}
+
+			// Second lockpicking attempt: Choose whomever has agility over 35
+			for (int i = 0; i < 6; i++)
+			{
+				if (classes[i].AGI > 35)
+				{
+					classes[i].Lockpicker = true;
+					return i;
+				}
+			}
+
+			// Third lockpicking attempt: Choose whomever has strength over 35
+			for (int i = 0; i < 6; i++)
+			{
+				if (classes[i].STR > 35)
+				{
+					classes[i].Lockpicker = true;
+					return i;
+				}
+			}
+
+			// No one fits? Okay, slot 2 (Guaranteed agility unit if guaranteed is on) it is.
+			return 1;
+		}
 	}
 
 	public class ClassDef
@@ -1182,6 +1233,8 @@ namespace FF1Lib
 		public float ThorMaster;
 		public float WoodAdept;
 		public float SteelLord;
+
+		public bool Lockpicker = false;
 
 		// Returns a description string
 		public String PublishToClass(int classIndex)
@@ -1304,6 +1357,8 @@ namespace FF1Lib
 				description += "Steel Lord\n";
 			if (rom.ClassData[(Classes)classIndex].WoodAdept)
 				description += "Wood Adept\n";
+			if (Lockpicker)
+				description += "Lockpicking\n";
 
 			description += "\n";
 
@@ -1788,6 +1843,9 @@ namespace FF1Lib
 				rom.ArmorPermissions.AddPermission(c, Item.SteelArmor);
 				rom.ArmorPermissions.AddPermission(p, Item.SteelArmor);
 			}
+
+			if (Lockpicker)
+				rom.SetLockpickingClass(classIndex);
 		}
 
 		public Image<Rgba32> getImage(bool promoted = false)
