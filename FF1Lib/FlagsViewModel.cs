@@ -2163,6 +2163,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpeedBoat"));
 			}
 		}
+		public bool? AirBoat
+		{
+			get => Flags.AirBoat;
+			set
+			{
+				Flags.AirBoat = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AirBoat"));
+			}
+		}
 		public bool BuyTen
 		{
 			get => Flags.BuyTen;

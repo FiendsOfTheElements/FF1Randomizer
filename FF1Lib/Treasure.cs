@@ -55,27 +55,8 @@ namespace FF1Lib
 				//Debug.WriteLine(item.SpoilerText);
 				item.Put(this);
 			}
-			// Move the ship someplace closer to where it really ends up.
-			if (!(flags.IsShipFree ?? false) && !(flags.DesertOfDeath))
-			{
-				MapLocation shipLocation = placedItems.Find(reward => reward.Item == Item.Ship).MapLocation;
-				if (overridenOverworld != null && overridenOverworld.TryGetValue(shipLocation, out var overworldIndex))
-				{
-					shipLocation = teleporters.OverworldMapLocations.TryGetValue(overworldIndex, out var vanillaShipLocation) ? vanillaShipLocation : shipLocation;
-				}
-				MoveShipToRewardSource(shipLocation);
-			}
+
 			return placedItems;
-		}
-
-		private void MoveShipToRewardSource(MapLocation vanillaMapLocation)
-		{
-			if (!ItemLocations.ShipLocations.TryGetValue(vanillaMapLocation, out Blob location))
-			{
-				location = Dock.Coneria;
-			}
-
-			Put(0x3000 + UnsramIndex.ShipX, location);
 		}
 	}
 }

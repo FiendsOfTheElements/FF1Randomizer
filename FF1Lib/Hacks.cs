@@ -484,7 +484,51 @@ namespace FF1Lib
 		{
 			Data[0x3020 + (int)Item.Tail] = 0x01;
 		}
+		public void EnableAirBoat(bool freeAirship, bool freeShip)
+		{
+			if (freeAirship)
+			{
+				Data[0x3020 + (int)Item.Floater] = 0x01;
+			}
 
+			if (freeAirship && freeShip)
+			{
+				Data[0x3000] = 0x81;
+			}
+
+			byte overworldtrack = Data[0x7C649];
+			byte shiptrack = Data[0x7C62D];
+			byte airshiptrack = Data[0x7C235];
+
+			// see 1B_A000_AirBoatRoutines.asm
+			PutInBank(0x0E, 0xB25F, Blob.FromHex("EAEA38")); // disable floater raising the airship
+			PutInBank(0x1F, 0xC10C, Blob.FromHex("204BE2"));
+			PutInBank(0x1F, 0xC25A, Blob.FromHex("A91B85572003FE4C10A0"));
+			PutInBank(0x1F, 0xC609, Blob.FromHex("EAEAEAEAEAEAEAA91B85572003FE20C2A0F0C8")); 
+			PutInBank(0x1F, 0xC632, Blob.FromHex("A91B85572003FE4C9FA0"));
+			PutInBank(0x1F, 0xC6D7, Blob.FromHex("EAEA201CA0"));
+			PutInBank(0x1F, 0xE1F6, Blob.FromHex("2089C6")); 
+			PutInBank(0x1F, 0xE248, Blob.FromHex("4C58E2A91B85572003FE4C25E2"));
+			PutInBank(0x1F, 0xE373, Blob.FromHex("2000A0"));
+			PutInBank(0x1B, 0xA000, Blob.FromHex($"AD00602901D00160AD00602980498060A542C908F0034C5FA04CB8C6BD00042908D008A9018D0460A90060BD00042904F00160AD00602901D003A90160A5271869078D0160A5281869078D0260A90485468542A9{shiptrack:X2}854BA9008D0460686860AD0460D00DA542C904F00160AD2B60D01560A527186907CD0560D0F5A528186907CD0660D0EBA90885468542A9{airshiptrack:X2}854BA9008D0460AD006009808D00604CA8E1AD0060297F8D0060A5271869078D0160A5281869078D026018A9308D0C40A9{overworldtrack:X2}854B602000A0F011AD0160C512D00AAD0260C513D003A90160A90060"));
+
+
+			var tileset = new TileSet(this, TileSet.OverworldIndex);
+			tileset.LoadData();
+
+			// clear existing
+			for (int i = 0; i < tileset.TileProperties.Count; i++)
+			{
+				var tp = tileset.TileProperties[i];
+				if ((tp.TilePropFunc & TilePropFunc.OWTP_SPEC_MASK) == TilePropFunc.OWTP_SPEC_FLOATER)
+				{
+					tp.TilePropFunc &= ~TilePropFunc.OWTP_SPEC_FLOATER;
+					tileset.TileProperties[i] = tp;
+				}
+			}
+
+			tileset.StoreData();
+		}
 		public void ChangeUnrunnableRunToWait()
 		{
 			// See Unrunnable.asm

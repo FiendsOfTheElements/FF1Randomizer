@@ -1564,7 +1564,7 @@
 	},
 	{
 		"Id": "RandomizeClassInnateMagicCheckBox",
-		"title": "Blursed Classes - Innage Magic",
+		"title": "Blursed Classes - Innate Magic",
 		"screenshot": "RandomizeClassInnateMagicCheckBox.png",
 		"description": "Adds a set of bonuses that give a set of starting spells at the level 8 slots, regardless of their actual spell level. Also gives 2 MPs of that level to be able to cast them.\n[grid][r]Tele Magic|WARP & EXIT[r]{l}Buff Magic|TMPR, FAST, & INV2[r]{l}Self Magic|RUSE & SABR[r]{l}Heal Magic|CUR3, HEL2, & LIFE[r]{l}Heal+ Magic|CUR4, HEL3, & LIFE[r]{l}Elem Magic|ICE2, FIR2, & LIT2[r]{l}Elem+ Magic|ICE3, FIR3, & LIT3[r]{l}Nuke Magic|NUKE[r]{l}Doom Magic|3 random spells causing instant death/stone[r]{l}Clean Magic|3 random status cures (incl. LIFE/LIF2)\n\nDoom and Nuke Magic are for spellcasters only; Self Magic is melee only. Nuke Magic is rare; Elem+, Heal+, and Buff Magic are rare for melee classes."
 	},
@@ -2335,6 +2335,12 @@
 		"Id": "OpenChestsInOrder",
 		"title": "Open Chests In Order",
 		"description": "Non incentive items are opened in order. \n\nWarning, if your inventory gets full it will block your equipment progress."
+	},
+	{
+		"Id": "AirBoatCheckBox",
+		"title": "AirBoat",
+		"screenshot": "airboat.gif",
+		"description": "The Ship and the Airship are fused together. Getting the FLOATER allows the Ship to transform into the Airship, and the Airship can land on water. You can't raise the Airship from the desert anymore."
 	},
 	{
 		"Id": "moveToFBats",

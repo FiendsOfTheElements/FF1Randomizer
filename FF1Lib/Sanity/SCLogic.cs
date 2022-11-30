@@ -116,14 +116,14 @@ namespace FF1Lib.Sanity
 
 		private void DoAirShipPathing()
 		{
-			var areaIndex = main.Overworld.Tiles[locations.AirShipLocation.X, locations.AirShipLocation.Y].Area;
+			var areaIndex = (bool)victoryConditions.AirBoat ? main.Overworld.Tiles[locations.ShipLocation.X, locations.ShipLocation.Y].Area : main.Overworld.Tiles[locations.AirShipLocation.X, locations.AirShipLocation.Y].Area;
 			var area = main.Overworld.Areas[areaIndex];
 
 			if (processedAreas.TryGetValue(areaIndex, out var logicArea))
 			{
 				foreach (var landable in main.Overworld.Areas.Values.Where(a => (a.Tile & SCBitFlags.AirDock) > 0))
 				{
-					CheckArea(landable.Index, logicArea.Requirements.Restrict(SCRequirements.Floater));
+					CheckArea(landable.Index, logicArea.Requirements.Restrict(SCRequirements.Floater | ((bool)victoryConditions.AirBoat ? SCRequirements.Ship : SCRequirements.None)));
 				}
 
 				while (todoset.Count > 0)
