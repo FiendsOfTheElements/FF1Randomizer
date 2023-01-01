@@ -703,12 +703,12 @@ namespace FF1Lib
 		    var skills = scriptBytes[scriptIndex].SubBlob(11, 4).ToBytes().Where(b => b != 0xFF).ToList();
 		    string enemyName;
 		    if (b.index == Enemy.Chaos) {
-			enemyName = enemyText[b.index];
+			enemyName = enemyText[b.index].PadRight(8, '_');
 		    } else {
 			// alt fiends puts the name in the fiend1 spot
 			// but does not duplicate it in the fiend2
 			// spot.
-			enemyName = enemyText[b.index-1];
+			enemyName = enemyText[b.index-1].PadRight(8, '_'); ;
 		    }
 
 		    var bossStats = new[] {
@@ -864,7 +864,8 @@ namespace FF1Lib
 			}
 		    }
 
-		    InsertDialogs(b.dialog, dialogtext);
+			dialogtext = dialogtext.Replace("_", String.Empty);
+			InsertDialogs(b.dialog, dialogtext);
 		}
 
 		if ((bool)flags.SpoilerBatsDontCheckOrbs) {
