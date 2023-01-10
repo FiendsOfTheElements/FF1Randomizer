@@ -672,9 +672,9 @@ namespace FF1Lib
 				var volcanoX = volcanoB5flipped ? (0x3F - ((bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x05)) : ((bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x05);
 				var seaX = seaB5flipped ? (0x3F - ((bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0A)) : ((bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0A);
 
-				var earthY = earthB5vflipped ? 0x17 : 0x28;
-				var volcanoY = earthB5vflipped ? 0x0A : 0x35;
-				var seaY = earthB5vflipped ? 0x38  : 0x07;
+				var earthY = earthB5vflipped ? 0x16 : 0x28;
+				var volcanoY = volcanoB5vflipped ? 0x0A : 0x35;
+				var seaY = seaB5vflipped ? 0x38  : 0x07;
 
 				SetNpc(MapId.EarthCaveB5, 0x0C, ObjectId.MelmondMan6, earthX, earthY, true, true);
 				SetNpc(MapId.GurguVolcanoB5, 0x02, ObjectId.GaiaMan4, volcanoX, volcanoY, true, true);
