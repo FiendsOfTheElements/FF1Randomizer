@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Linq;
 
 namespace FF1Lib
 {
@@ -1645,6 +1647,77 @@ namespace FF1Lib
 			//Change the too full logic for GiveReward consumables to clear the chest. This is to not run into an issue with consumables blocking chest progression.
 			PutInBank(0x11, 0xB432, Blob.FromHex("B045"));
 		}
+
+		public void ExtraBossTurns(int bossTurns, bool proprotionalHitsExtraTurns)
+		{
+			//move the turn order lut shuffle from bank 0C to the 1C extension bank
+			byte [] turnOrderLut = Get(0x3215C, 13).ToBytes();
+			Put(0x6d900, turnOrderLut);
+
+			var bossTurnOrderLut = Get(0x3215C, 13).ToBytes().ToList();
+			var smallBossTurnOrderLut = Get(0x3215C, 13).ToBytes().ToList();
+
+			//add the extra turns to the fiend lut
+			//replace the non zero indexes with 0x00 the bosse
+			for (int i = 0; i < bossTurns - 1; i++)
+			{
+				int foundIndex = bossTurnOrderLut.IndexOf((byte)(0x08 - i));
+				if (foundIndex > -1)
+				{
+					bossTurnOrderLut.RemoveAt(foundIndex);
+					bossTurnOrderLut.Add(0x00);
+				}
+			}
+
+			Put(0x6d90D, bossTurnOrderLut.ToArray());
+
+
+			//replace the non zero indexes with 0x00 and 0x02 for warmech and astos/garland
+			for (int i = 0; i < bossTurns - 1; i++)
+			{
+				int foundIndex = smallBossTurnOrderLut.IndexOf((byte)(0x08 - (i * 2)));
+				if (foundIndex > -1)
+				{
+					smallBossTurnOrderLut.RemoveAt(foundIndex);
+					smallBossTurnOrderLut.Add(0x00);
+				}
+
+				foundIndex = smallBossTurnOrderLut.IndexOf((byte)(0x08 - (i * 2) - 1));
+				if (foundIndex > -1)
+				{
+					smallBossTurnOrderLut.RemoveAt(foundIndex);
+					smallBossTurnOrderLut.Add(0x02);
+				}				
+			}
+
+			Put(0x6D91A, smallBossTurnOrderLut.ToArray());
+
+			//add the code for turn order selection based on formation
+			//replace old code with stubs to jump to extension
+			Put(0x31452, Blob.FromHex("205CA1"));
+			Put(0x3215C, Blob.FromHex("A99948A92648A91B4C03FEEAEAEAEAEAEAEAEAEAEAEA"));
+			Put(0x6D927, Blob.FromHex("A56AC956F010C97EF012C97CF00EC973900AC980B006205C994C5199A00DB9FF9899476888D0F74C5199A9A148A96648A90C4C03FEA00DAD926CC902D006B919994C6E99B90C9999476888D0EA60"));
+
+
+			//scale boss attacks/scripts if they want to split the attacks
+			if (proprotionalHitsExtraTurns)
+			{
+				ScaleProprotionalToTurns(Enemy.Garland, bossTurns);
+				ScaleProprotionalToTurns(Enemy.Astos, bossTurns);
+				ScaleProprotionalToTurns(Enemy.WarMech, bossTurns);
+				ScaleProprotionalToTurns(Enemy.Lich, bossTurns);
+				ScaleProprotionalToTurns(Enemy.Kary, bossTurns);
+				ScaleProprotionalToTurns(Enemy.Kraken, bossTurns);
+				ScaleProprotionalToTurns(Enemy.Tiamat, bossTurns);
+				ScaleProprotionalToTurns(Enemy.Lich2, bossTurns);
+				ScaleProprotionalToTurns(Enemy.Kary2, bossTurns);
+				ScaleProprotionalToTurns(Enemy.Kraken2, bossTurns);
+				ScaleProprotionalToTurns(Enemy.Tiamat2, bossTurns);
+				ScaleProprotionalToTurns(Enemy.Chaos, bossTurns);
+			}
+		}
+
+
 
 		public void MoveToFBats() {
 		    MoveNpc(MapId.TempleOfFiends, 2, 0x0C, 0x0D, inRoom: false, stationary: false);

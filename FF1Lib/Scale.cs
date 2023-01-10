@@ -1,6 +1,8 @@
 using System.ComponentModel;
 using static System.Math;
 using FF1Lib.Helpers;
+using System;
+using RomUtilities;
 
 namespace FF1Lib
 {
@@ -312,6 +314,36 @@ namespace FF1Lib
 			enemy[EnemyStat.CriticalPercent] = (byte)Min(newCrit, 0xFF); // critical%
 
 			Put(EnemyOffset + index * EnemySize, enemy);
+		}
+
+		public void ScaleProprotionalToTurns(byte enemyIndex, int turns)
+		{
+			EnemyInfo newEnemy = new EnemyInfo();
+			newEnemy.decompressData(Get(EnemyOffset + EnemySize * enemyIndex, EnemySize));
+			newEnemy.num_hits = (byte)Max(Ceiling((float)newEnemy.num_hits / turns), 1.0);
+
+			//update script to tend it towards the newly split melee attacks
+			//bosses with a high spell/script usage could become way too dangerous with extra turns
+			//average spells down to a minimum of 48 or leave it if the original cast chance if it was <= 48
+			//same with scripts except to 32
+			if (newEnemy.AIscript != 0xFF)
+			{
+				EnemyScriptInfo newEnemyScript = new EnemyScriptInfo();
+				newEnemyScript.decompressData(Get(ScriptOffset + newEnemy.AIscript * ScriptSize, ScriptSize));
+				if(newEnemyScript.spell_chance > 48)
+				{
+					newEnemyScript.spell_chance = (byte)Max((newEnemyScript.spell_chance + (turns - 1) * 48) / turns, 48);
+				}
+
+				if(newEnemyScript.skill_chance > 32)
+				{
+					newEnemyScript.skill_chance = (byte)Max((newEnemyScript.skill_chance + (turns - 1) * 32) / turns, 32);
+				}
+
+				Put(ScriptOffset + newEnemy.AIscript * ScriptSize, newEnemyScript.compressData());
+			}
+
+			Put(EnemyOffset + EnemySize * enemyIndex, newEnemy.compressData());
 		}
 
 		private int RangeScaleWithZero(double value, double lowPercent, double highPercent, double lowScalelowPercent, double adjustment, MT19337 rng)

@@ -12,6 +12,9 @@
 			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="OpenChestsInOrder" @bind-Value="Flags.OpenChestsInOrder">Open Chests in Order</CheckBox>
 			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="AirBoatCheckBox" @bind-Value="Flags.AirBoat">AirBoat</TriStateCheckBox>
+            <div class="checkbox-cell"></div>
+            <IntSlider Id="BossExtraTurnsSlider" Indent Min="1" Max="4" Step="1" UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.TransformFinalFormation == FinalFormation.None)" @bind-Value="@Flags.BossExtraTurns">Boss Turns: </IntSlider>
+            <CheckBox Id="SplitExtraTurnAttacks" UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.TransformFinalFormation == FinalFormation.None)" @bind-Value="Flags.SplitExtraTurnAttacks">Scale Attacks Down With Extra Turns</CheckBox>
 		</div>
 		<div class="col2">
 			<div class="checkbox-cell"></div>
