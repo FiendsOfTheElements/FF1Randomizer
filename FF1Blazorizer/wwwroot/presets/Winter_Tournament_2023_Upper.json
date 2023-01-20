@@ -106,7 +106,7 @@
     "ShardCount": 0,
     "OrbsRequiredCount": 3,
     "OrbsRequiredMode": 1,
-    "OrbsRequiredSpoilers": false,
+    "OrbsRequiredSpoilers": true,
     "TransformFinalFormation": 0,
     "ChaosRush": false,
     "ShortToFR": false,
