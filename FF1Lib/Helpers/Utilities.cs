@@ -24,5 +24,7 @@
 				SpoilerCache += $"{text}\n";
 			}
 		}
+
+		public static string OverworldMapImage { get; set; } = null;
 	}
 }

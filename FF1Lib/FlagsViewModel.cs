@@ -394,6 +394,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Spoilers"));
 			}
 		}
+		public bool OverworldMapImage
+		{
+			get => Flags.OverworldMapImage;
+			set
+			{
+				Flags.OverworldMapImage = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OverworldMapImage"));
+			}
+		}
 		public bool BlindSeed
 		{
 			get => Flags.BlindSeed;

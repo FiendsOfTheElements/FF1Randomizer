@@ -172,6 +172,7 @@ namespace FF1Lib
 		public int MaxLevelHigh { get; set; } = 50;
 
 		public bool Spoilers { get; set; } = false;
+		public bool OverworldMapImage { get; set; } = false;
 		public bool TournamentSafe { get; set; } = false;
 		public bool BlindSeed { get; set; } = false;
 		public bool? Shops { get; set; } = false;

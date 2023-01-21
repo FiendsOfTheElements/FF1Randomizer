@@ -1,6 +1,12 @@
 ﻿using System.Diagnostics;
 using FF1Lib.Sanity;
 using FF1Lib.Procgen;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.Formats.Bmp;
 
 namespace FF1Lib
 {
@@ -56,10 +62,10 @@ namespace FF1Lib
 
 			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value.ToList());
 			var floorLocationRequirements = ItemLocations.MapLocationFloorRequirements.ToDictionary(x => x.Key, x => x.Value);
-			
+
 			if ((bool)flags.AirBoat)
 			{
-				foreach(var location in mapLocationRequirements)
+				foreach (var location in mapLocationRequirements)
 				{
 					if (location.Value.Contains(MapChange.Airship | MapChange.Canoe))
 					{
@@ -87,133 +93,133 @@ namespace FF1Lib
 			};
 
 			if (flags.GameMode == GameModes.Standard && flags.OwMapExchange == OwMapExchanges.None) {
-			    // Can only apply map edits to vanilla-ish maps
+				// Can only apply map edits to vanilla-ish maps
 
 
-			// NOTE: mapLocationRequirements information (for all of these map changes) is no longer used by the map generator and does nothing (TODO: Delete it all)
-			if ((bool)flags.MapOnracDock)
-			{
-				MapEditsToApply.Add(OnracDock);
-				mapLocationRequirements[MapLocation.Onrac].Add(MapChange.Ship | MapChange.Canal);
-				mapLocationRequirements[MapLocation.Caravan].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
-				mapLocationRequirements[MapLocation.Waterfall].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
-			}
-			if ((bool)flags.MapMirageDock)
-			{
-				MapEditsToApply.Add(MirageDock);
-				mapLocationRequirements[MapLocation.MirageTower1].Add(MapChange.Ship | MapChange.Canal | MapChange.Chime);
-			}
-			if ((bool)flags.MapAirshipDock && !flags.DisableOWMapModifications)
-			{
-				MapEditsToApply.Add(AirshipDock);
-				mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Ship | MapChange.Canal);
-			}
-			if ((bool)flags.MapBahamutCardiaDock && !flags.DisableOWMapModifications)
-			{
-				MapEditsToApply.Add(BahamutCardiaDock);
-				mapLocationRequirements[MapLocation.BahamutCave1].Add(MapChange.Ship | MapChange.Canal);
-				mapLocationRequirements[MapLocation.Cardia1].Add(MapChange.Ship | MapChange.Canal);
-			}
-			if ((bool)flags.MapLefeinRiver && !flags.DisableOWMapModifications) {
-			    MapEditsToApply.Add(LefeinRiverDock);
-			    mapLocationRequirements[MapLocation.Lefein].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
-			}
-			if ((bool)flags.MapBridgeLefein && !flags.DisableOWMapModifications) {
+				// NOTE: mapLocationRequirements information (for all of these map changes) is no longer used by the map generator and does nothing (TODO: Delete it all)
+				if ((bool)flags.MapOnracDock)
+				{
+					MapEditsToApply.Add(OnracDock);
+					mapLocationRequirements[MapLocation.Onrac].Add(MapChange.Ship | MapChange.Canal);
+					mapLocationRequirements[MapLocation.Caravan].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
+					mapLocationRequirements[MapLocation.Waterfall].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
+				}
+				if ((bool)flags.MapMirageDock)
+				{
+					MapEditsToApply.Add(MirageDock);
+					mapLocationRequirements[MapLocation.MirageTower1].Add(MapChange.Ship | MapChange.Canal | MapChange.Chime);
+				}
+				if ((bool)flags.MapAirshipDock && !flags.DisableOWMapModifications)
+				{
+					MapEditsToApply.Add(AirshipDock);
+					mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Ship | MapChange.Canal);
+				}
+				if ((bool)flags.MapBahamutCardiaDock && !flags.DisableOWMapModifications)
+				{
+					MapEditsToApply.Add(BahamutCardiaDock);
+					mapLocationRequirements[MapLocation.BahamutCave1].Add(MapChange.Ship | MapChange.Canal);
+					mapLocationRequirements[MapLocation.Cardia1].Add(MapChange.Ship | MapChange.Canal);
+				}
+				if ((bool)flags.MapLefeinRiver && !flags.DisableOWMapModifications) {
+					MapEditsToApply.Add(LefeinRiverDock);
+					mapLocationRequirements[MapLocation.Lefein].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
+				}
+				if ((bool)flags.MapBridgeLefein && !flags.DisableOWMapModifications) {
 					// Moves the Bridge to its new home below Lefein
 					OwLocationData _OwLocationData = new(rom);
 					_OwLocationData.LoadData();
 					_OwLocationData.BridgeLocation = new SCCoords(230, 123);
 					_OwLocationData.StoreData();
 
-			    MapEditsToApply.Add(BridgeToLefein);
+					MapEditsToApply.Add(BridgeToLefein);
 					mapLocationRequirements[MapLocation.Lefein].Add(MapChange.Bridge);
 					mapLocationRequirements[MapLocation.MatoyasCave].Add(MapChange.None);
 					mapLocationRequirements[MapLocation.Pravoka].Add(MapChange.None);
 					mapLocationRequirements[MapLocation.IceCave1].Add(MapChange.Canoe);
-			}
-			if ((bool)flags.MapGaiaMountainPass && !flags.DisableOWMapModifications) {
-			    MapEditsToApply.Add(GaiaMountainPass);
+				}
+				if ((bool)flags.MapGaiaMountainPass && !flags.DisableOWMapModifications) {
+					MapEditsToApply.Add(GaiaMountainPass);
 					// If Lefein River Dock is on, then Gaia also becomes Ship-accessible
-			    if ((bool)flags.MapLefeinRiver) {
-			        mapLocationRequirements[MapLocation.Gaia].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
-			    }
+					if ((bool)flags.MapLefeinRiver) {
+						mapLocationRequirements[MapLocation.Gaia].Add(MapChange.Ship | MapChange.Canal | MapChange.Canoe);
+					}
 					// If Lefein Bridge is on, then Gaia is also Bridge-accessible
 					if ((bool)flags.MapBridgeLefein) {
-							mapLocationRequirements[MapLocation.Gaia].Add(MapChange.Bridge);
+						mapLocationRequirements[MapLocation.Gaia].Add(MapChange.Bridge);
 					}
-			    _walkableNodes[WalkableRegion.LefeinRegion] = new List<OverworldTeleportIndex>{OverworldTeleportIndex.Gaia, OverworldTeleportIndex.Lefein };
-			}
-			if ((bool)flags.MapHighwayToOrdeals && !flags.DisableOWMapModifications)
-			{
-				MapEditsToApply.Add(HighwayToOrdeals);
-			}
-			if ((bool)flags.MapRiverToMelmond && !flags.DisableOWMapModifications) {
-				MapEditsToApply.Add(RiverToMelmond);
-				// With Early Open Progression, you only need a Canoe
-				if ((bool)flags.MapConeriaDwarves) {
-					mapLocationRequirements[MapLocation.Melmond].Add(MapChange.Canoe);
-					mapLocationRequirements[MapLocation.TitansTunnelEast].Add(MapChange.Canoe);
-					mapLocationRequirements[MapLocation.EarthCave1].Add(MapChange.Canoe);
+					_walkableNodes[WalkableRegion.LefeinRegion] = new List<OverworldTeleportIndex> { OverworldTeleportIndex.Gaia, OverworldTeleportIndex.Lefein };
 				}
-				else {
-					mapLocationRequirements[MapLocation.Melmond].Add(MapChange.Ship | MapChange.Canoe);
-					mapLocationRequirements[MapLocation.TitansTunnelEast].Add(MapChange.Ship | MapChange.Canoe);
-					mapLocationRequirements[MapLocation.EarthCave1].Add(MapChange.Ship | MapChange.Canoe);
-				}
-			}
-			if ((bool)flags.MapVolcanoIceRiver)
-			{
-				MapEditsToApply.Add(VolcanoIceRiver);
-				mapLocationRequirements[MapLocation.GurguVolcano1].Add(MapChange.Bridge | MapChange.Canoe);
-				mapLocationRequirements[MapLocation.CrescentLake].Add(MapChange.Bridge | MapChange.Canoe);
-				mapLocationRequirements[MapLocation.Elfland].Add(MapChange.Bridge | MapChange.Canoe);
-				mapLocationRequirements[MapLocation.ElflandCastle].Add(MapChange.Bridge | MapChange.Canoe);
-				mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Bridge | MapChange.Canoe);
-				mapLocationRequirements[MapLocation.MarshCave1].Add(MapChange.Bridge | MapChange.Canoe);
-				mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Bridge | MapChange.Canoe);
-
-				if ((bool)flags.MapCanalBridge)
+				if ((bool)flags.MapHighwayToOrdeals && !flags.DisableOWMapModifications)
 				{
-					mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.Bridge | MapChange.Canoe);
-					_canoeableNodes[CanoeableRegion.ElflandRegion].Add(OverworldTeleportIndex.DwarfCave);
+					MapEditsToApply.Add(HighwayToOrdeals);
 				}
-
-				_canoeableNodes[CanoeableRegion.ElflandRegion].AddRange(_canoeableNodes[CanoeableRegion.PravokaRegion]);
-				_canoeableNodes[CanoeableRegion.PravokaRegion].Clear();
-			}
-			if ((bool)flags.MapConeriaDwarves)
-			{
-				MapEditsToApply.Add(ConeriaToDwarves);
-				mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.None);
-				_walkableNodes[WalkableRegion.ConeriaRegion].Add(OverworldTeleportIndex.DwarfCave);
-
-				if ((bool)flags.MapCanalBridge)
+				if ((bool)flags.MapRiverToMelmond && !flags.DisableOWMapModifications) {
+					MapEditsToApply.Add(RiverToMelmond);
+					// With Early Open Progression, you only need a Canoe
+					if ((bool)flags.MapConeriaDwarves) {
+						mapLocationRequirements[MapLocation.Melmond].Add(MapChange.Canoe);
+						mapLocationRequirements[MapLocation.TitansTunnelEast].Add(MapChange.Canoe);
+						mapLocationRequirements[MapLocation.EarthCave1].Add(MapChange.Canoe);
+					}
+					else {
+						mapLocationRequirements[MapLocation.Melmond].Add(MapChange.Ship | MapChange.Canoe);
+						mapLocationRequirements[MapLocation.TitansTunnelEast].Add(MapChange.Ship | MapChange.Canoe);
+						mapLocationRequirements[MapLocation.EarthCave1].Add(MapChange.Ship | MapChange.Canoe);
+					}
+				}
+				if ((bool)flags.MapVolcanoIceRiver)
 				{
-					MapChange dwarvesToNorthwest = MapChange.Canoe;
-					if ((bool)flags.MapDwarvesNorthwest && !flags.DisableOWMapModifications)
-					{
-						MapEditsToApply.Add(DwarvesNorthwestGrass);
-						dwarvesToNorthwest = MapChange.None;
+					MapEditsToApply.Add(VolcanoIceRiver);
+					mapLocationRequirements[MapLocation.GurguVolcano1].Add(MapChange.Bridge | MapChange.Canoe);
+					mapLocationRequirements[MapLocation.CrescentLake].Add(MapChange.Bridge | MapChange.Canoe);
+					mapLocationRequirements[MapLocation.Elfland].Add(MapChange.Bridge | MapChange.Canoe);
+					mapLocationRequirements[MapLocation.ElflandCastle].Add(MapChange.Bridge | MapChange.Canoe);
+					mapLocationRequirements[MapLocation.NorthwestCastle].Add(MapChange.Bridge | MapChange.Canoe);
+					mapLocationRequirements[MapLocation.MarshCave1].Add(MapChange.Bridge | MapChange.Canoe);
+					mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Bridge | MapChange.Canoe);
 
-						_walkableNodes[WalkableRegion.ConeriaRegion].AddRange(_walkableNodes[WalkableRegion.ElflandRegion]);
-						_walkableNodes[WalkableRegion.ElflandRegion].Clear();
+					if ((bool)flags.MapCanalBridge)
+					{
+						mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.Bridge | MapChange.Canoe);
+						_canoeableNodes[CanoeableRegion.ElflandRegion].Add(OverworldTeleportIndex.DwarfCave);
 					}
-					mapLocationRequirements[MapLocation.Elfland].Add(dwarvesToNorthwest);
-					mapLocationRequirements[MapLocation.ElflandCastle].Add(dwarvesToNorthwest);
-					mapLocationRequirements[MapLocation.NorthwestCastle].Add(dwarvesToNorthwest);
-					mapLocationRequirements[MapLocation.MarshCave1].Add(dwarvesToNorthwest);
 
-					mapLocationRequirements[MapLocation.GurguVolcano1].Add(MapChange.Canoe);
-					mapLocationRequirements[MapLocation.CrescentLake].Add(MapChange.Canoe);
-					mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Canoe);
-					if ((bool)flags.MapVolcanoIceRiver)
+					_canoeableNodes[CanoeableRegion.ElflandRegion].AddRange(_canoeableNodes[CanoeableRegion.PravokaRegion]);
+					_canoeableNodes[CanoeableRegion.PravokaRegion].Clear();
+				}
+				if ((bool)flags.MapConeriaDwarves)
+				{
+					MapEditsToApply.Add(ConeriaToDwarves);
+					mapLocationRequirements[MapLocation.DwarfCave].Add(MapChange.None);
+					_walkableNodes[WalkableRegion.ConeriaRegion].Add(OverworldTeleportIndex.DwarfCave);
+
+					if ((bool)flags.MapCanalBridge)
 					{
-						mapLocationRequirements[MapLocation.IceCave1].Add(MapChange.Canoe);
-						mapLocationRequirements[MapLocation.Pravoka].Add(MapChange.Canoe);
-						mapLocationRequirements[MapLocation.MatoyasCave].Add(MapChange.Canoe);
+						MapChange dwarvesToNorthwest = MapChange.Canoe;
+						if ((bool)flags.MapDwarvesNorthwest && !flags.DisableOWMapModifications)
+						{
+							MapEditsToApply.Add(DwarvesNorthwestGrass);
+							dwarvesToNorthwest = MapChange.None;
+
+							_walkableNodes[WalkableRegion.ConeriaRegion].AddRange(_walkableNodes[WalkableRegion.ElflandRegion]);
+							_walkableNodes[WalkableRegion.ElflandRegion].Clear();
+						}
+						mapLocationRequirements[MapLocation.Elfland].Add(dwarvesToNorthwest);
+						mapLocationRequirements[MapLocation.ElflandCastle].Add(dwarvesToNorthwest);
+						mapLocationRequirements[MapLocation.NorthwestCastle].Add(dwarvesToNorthwest);
+						mapLocationRequirements[MapLocation.MarshCave1].Add(dwarvesToNorthwest);
+
+						mapLocationRequirements[MapLocation.GurguVolcano1].Add(MapChange.Canoe);
+						mapLocationRequirements[MapLocation.CrescentLake].Add(MapChange.Canoe);
+						mapLocationRequirements[MapLocation.AirshipLocation].Add(MapChange.Canoe);
+						if ((bool)flags.MapVolcanoIceRiver)
+						{
+							mapLocationRequirements[MapLocation.IceCave1].Add(MapChange.Canoe);
+							mapLocationRequirements[MapLocation.Pravoka].Add(MapChange.Canoe);
+							mapLocationRequirements[MapLocation.MatoyasCave].Add(MapChange.Canoe);
+						}
 					}
 				}
-			}
 			}
 
 			if ((bool)flags.TitansTrove)
@@ -483,14 +489,14 @@ namespace FF1Lib
 			}
 		}
 
-        void UpdatePalettes(OverworldTeleportIndex oti, TeleportDestination teleport)
+		void UpdatePalettes(OverworldTeleportIndex oti, TeleportDestination teleport)
 		{
-            if (teleport.OwnsPalette)
+			if (teleport.OwnsPalette)
 			{
 				var mapIndex = teleport.Index;
 				PutPalette(oti, mapIndex);
 
-                if (ContinuedMapIndexForPalettes.TryGetValue(mapIndex, out var list))
+				if (ContinuedMapIndexForPalettes.TryGetValue(mapIndex, out var list))
 				{
 					list.ForEach(map => PutPalette(oti, map));
 				}
@@ -581,27 +587,27 @@ namespace FF1Lib
 
 				if ((bool)flags.IsFloaterRemoved && !(bool)flags.IsAirshipFree)
 				{
-				    if (!(bool)flags.MapBahamutCardiaDock) {
-					keepers.Add(OverworldTeleportIndex.Cardia1);
-					keepers.Add(OverworldTeleportIndex.BahamutCave1);
-				    }
-				    keepers.Add(OverworldTeleportIndex.Cardia2);
-				    keepers.Add(OverworldTeleportIndex.Cardia4);
-				    keepers.Add(OverworldTeleportIndex.Cardia5);
-				    keepers.Add(OverworldTeleportIndex.Cardia6);
-				    keepers.Add(OverworldTeleportIndex.TitansTunnelWest);
+					if (!(bool)flags.MapBahamutCardiaDock) {
+						keepers.Add(OverworldTeleportIndex.Cardia1);
+						keepers.Add(OverworldTeleportIndex.BahamutCave1);
+					}
+					keepers.Add(OverworldTeleportIndex.Cardia2);
+					keepers.Add(OverworldTeleportIndex.Cardia4);
+					keepers.Add(OverworldTeleportIndex.Cardia5);
+					keepers.Add(OverworldTeleportIndex.Cardia6);
+					keepers.Add(OverworldTeleportIndex.TitansTunnelWest);
 
-				    defaultRequirements[MapLocation.SardasCave] = new LocationRequirement(new List<MapChange> { MapChange.TitanFed });
-				    defaultRequirements[MapLocation.TitansTunnelWest] = new LocationRequirement(new List<MapChange> { MapChange.TitanFed });
+					defaultRequirements[MapLocation.SardasCave] = new LocationRequirement(new List<MapChange> { MapChange.TitanFed });
+					defaultRequirements[MapLocation.TitansTunnelWest] = new LocationRequirement(new List<MapChange> { MapChange.TitanFed });
 				}
 
 				if (flags.GameMode == GameModes.Standard && flags.OwMapExchange != OwMapExchanges.None) {
-				    // Don't move Titan's tunnel on custom/procgen maps
-				    keepers.Add(OverworldTeleportIndex.TitansTunnelEast);
-				    keepers.Add(OverworldTeleportIndex.TitansTunnelWest);
+					// Don't move Titan's tunnel on custom/procgen maps
+					keepers.Add(OverworldTeleportIndex.TitansTunnelEast);
+					keepers.Add(OverworldTeleportIndex.TitansTunnelWest);
 				}
 
-				placedMaps = placedMaps .Where(x => keepers.Contains(x.Key)) .ToDictionary(x => x.Key, x => x.Value);
+				placedMaps = placedMaps.Where(x => keepers.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
 				placedFloors.Remove(TeleportIndex.SeaShrine1);
 				FixUnusedDefaultBackdrops();
 			}
@@ -764,8 +770,8 @@ namespace FF1Lib
 			// gets the guaranteed PURE and SOFT.
 			switch (shuffled[OverworldTeleportIndex.Coneria].Destination)
 			{
-				case MapLocation.Pravoka: ConeriaTownEntranceItemShopIndex = 1;	break;
-				case MapLocation.Elfland: ConeriaTownEntranceItemShopIndex = 2;	break;
+				case MapLocation.Pravoka: ConeriaTownEntranceItemShopIndex = 1; break;
+				case MapLocation.Elfland: ConeriaTownEntranceItemShopIndex = 2; break;
 				case MapLocation.CrescentLake: ConeriaTownEntranceItemShopIndex = 3; break;
 				case MapLocation.Gaia: ConeriaTownEntranceItemShopIndex = 4; break; // Gaia before Onrac!
 				case MapLocation.Onrac: ConeriaTownEntranceItemShopIndex = 5; break;
@@ -1109,33 +1115,33 @@ namespace FF1Lib
 		public static List<MapEdit> BahamutCardiaDock =
 			new List<MapEdit>
 			{
-			    new MapEdit{X = 0x5f, Y = 0x33, Tile = ForestBottomRight},
-			    new MapEdit{X = 0x5f, Y = 0x34, Tile = GrassTile},
-			    new MapEdit{X = 0x60, Y = 0x34, Tile = GrassTile},
-			    new MapEdit{X = 0x61, Y = 0x34, Tile = GrassTile},
-			    new MapEdit{X = 0x62, Y = 0x34, Tile = GrassTile},
-			    new MapEdit{X = 0x60, Y = 0x35, Tile = GrassTile},
-			    new MapEdit{X = 0x61, Y = 0x35, Tile = DockBottomMid},
-			    new MapEdit{X = 0x62, Y = 0x35, Tile = DockBottomMid},
-			    new MapEdit{X = 0x63, Y = 0x35, Tile = GrassTile},
+				new MapEdit{X = 0x5f, Y = 0x33, Tile = ForestBottomRight},
+				new MapEdit{X = 0x5f, Y = 0x34, Tile = GrassTile},
+				new MapEdit{X = 0x60, Y = 0x34, Tile = GrassTile},
+				new MapEdit{X = 0x61, Y = 0x34, Tile = GrassTile},
+				new MapEdit{X = 0x62, Y = 0x34, Tile = GrassTile},
+				new MapEdit{X = 0x60, Y = 0x35, Tile = GrassTile},
+				new MapEdit{X = 0x61, Y = 0x35, Tile = DockBottomMid},
+				new MapEdit{X = 0x62, Y = 0x35, Tile = DockBottomMid},
+				new MapEdit{X = 0x63, Y = 0x35, Tile = GrassTile},
 			};
 		public static List<MapEdit> LefeinRiverDock =
 			new List<MapEdit>
 			{
-			    new MapEdit{X = 0xE0, Y = 0x3A, Tile = RiverTile},
-			    new MapEdit{X = 0xE0, Y = 0x3B, Tile = RiverTile},
-			    new MapEdit{X = 0xE0, Y = 0x3C, Tile = RiverBottomLeft},
-			    new MapEdit{X = 0xE1, Y = 0x3C, Tile = RiverTopRight},
-			    new MapEdit{X = 0xE1, Y = 0x3D, Tile = RiverTile},
-			    new MapEdit{X = 0xE1, Y = 0x3E, Tile = RiverTile},
-			    new MapEdit{X = 0xDF, Y = 0x3B, Tile = ForestTopRight},
-			    new MapEdit{X = 0xDF, Y = 0x3C, Tile = ForestMidRight},
-			    new MapEdit{X = 0xE0, Y = 0x3D, Tile = ForestTopRight},
-			    new MapEdit{X = 0xE0, Y = 0x3E, Tile = ForestBottomRight},
-			    new MapEdit{X = 0xE1, Y = 0x3B, Tile = ForestBottomLeft},
-			    new MapEdit{X = 0xE2, Y = 0x3C, Tile = ForestMidLeft},
-			    new MapEdit{X = 0xE2, Y = 0x3D, Tile = ForestMidLeft},
-			    new MapEdit{X = 0xE2, Y = 0x3E, Tile = ForestBottomLeft},
+				new MapEdit{X = 0xE0, Y = 0x3A, Tile = RiverTile},
+				new MapEdit{X = 0xE0, Y = 0x3B, Tile = RiverTile},
+				new MapEdit{X = 0xE0, Y = 0x3C, Tile = RiverBottomLeft},
+				new MapEdit{X = 0xE1, Y = 0x3C, Tile = RiverTopRight},
+				new MapEdit{X = 0xE1, Y = 0x3D, Tile = RiverTile},
+				new MapEdit{X = 0xE1, Y = 0x3E, Tile = RiverTile},
+				new MapEdit{X = 0xDF, Y = 0x3B, Tile = ForestTopRight},
+				new MapEdit{X = 0xDF, Y = 0x3C, Tile = ForestMidRight},
+				new MapEdit{X = 0xE0, Y = 0x3D, Tile = ForestTopRight},
+				new MapEdit{X = 0xE0, Y = 0x3E, Tile = ForestBottomRight},
+				new MapEdit{X = 0xE1, Y = 0x3B, Tile = ForestBottomLeft},
+				new MapEdit{X = 0xE2, Y = 0x3C, Tile = ForestMidLeft},
+				new MapEdit{X = 0xE2, Y = 0x3D, Tile = ForestMidLeft},
+				new MapEdit{X = 0xE2, Y = 0x3E, Tile = ForestBottomLeft},
 			};
 		public static List<MapEdit> BridgeToLefein =
 			new List<MapEdit>
@@ -1181,9 +1187,9 @@ namespace FF1Lib
 					new MapEdit{X = 158, Y = 142, Tile = GrassTile},
 					new MapEdit{X = 159, Y = 142, Tile = GrassTile},
 			};
-			public static List<MapEdit> HighwayToOrdeals =
-			new List<MapEdit>
-			{
+		public static List<MapEdit> HighwayToOrdeals =
+		new List<MapEdit>
+		{
 					// Mirage to Ordeals
 					new MapEdit{X = 186, Y = 49, Tile = MountainBottomRight},
 					new MapEdit{X = 187, Y = 49, Tile = DesertTopLeft},
@@ -1220,7 +1226,7 @@ namespace FF1Lib
 
 					new MapEdit{X = 210, Y = 51, Tile = MountainBottomLeft},
 					new MapEdit{X = 211, Y = 52, Tile = MountainBottomLeft},
-			};
+		};
 
 		public static List<MapEdit> RiverToMelmond =
 			new List<MapEdit>
@@ -1296,54 +1302,54 @@ namespace FF1Lib
 		public static List<MapEdit> GaiaMountainPass =
 			new List<MapEdit>
 			{
-			    new MapEdit{X = 0xD4, Y = 0x22, Tile = MountainBottomRight},
-			    new MapEdit{X = 0xD3, Y = 0x23, Tile = MountainMidRight},
-			    new MapEdit{X = 0xD4, Y = 0x23, Tile = GrassTopLeft},
-			    new MapEdit{X = 0xD5, Y = 0x23, Tile = GrassyMid},
-			    new MapEdit{X = 0xD6, Y = 0x23, Tile = GrassBottomRight},
-			    new MapEdit{X = 0xD7, Y = 0x23, Tile = MountainMidLeft},
+				new MapEdit{X = 0xD4, Y = 0x22, Tile = MountainBottomRight},
+				new MapEdit{X = 0xD3, Y = 0x23, Tile = MountainMidRight},
+				new MapEdit{X = 0xD4, Y = 0x23, Tile = GrassTopLeft},
+				new MapEdit{X = 0xD5, Y = 0x23, Tile = GrassyMid},
+				new MapEdit{X = 0xD6, Y = 0x23, Tile = GrassBottomRight},
+				new MapEdit{X = 0xD7, Y = 0x23, Tile = MountainMidLeft},
 
-			    new MapEdit{X = 0xD3, Y = 0x24, Tile = MountainMidRight},
-			    new MapEdit{X = 0xD4, Y = 0x24, Tile = GrassBottomLeft},
-			    new MapEdit{X = 0xD5, Y = 0x24, Tile = GrassBottomRight},
-			    new MapEdit{X = 0xD6, Y = 0x24, Tile = MountainTopLeft},
+				new MapEdit{X = 0xD3, Y = 0x24, Tile = MountainMidRight},
+				new MapEdit{X = 0xD4, Y = 0x24, Tile = GrassBottomLeft},
+				new MapEdit{X = 0xD5, Y = 0x24, Tile = GrassBottomRight},
+				new MapEdit{X = 0xD6, Y = 0x24, Tile = MountainTopLeft},
 
-			    new MapEdit{X = 0xD3, Y = 0x25, Tile = MountainMidRight},
-			    new MapEdit{X = 0xD4, Y = 0x25, Tile = GrassTile},
-			    new MapEdit{X = 0xD5, Y = 0x25, Tile = MountainTopLeft},
-			    new MapEdit{X = 0xD3, Y = 0x26, Tile = MountainMidRight},
-			    new MapEdit{X = 0xD4, Y = 0x26, Tile = GrassTile},
-			    new MapEdit{X = 0xD5, Y = 0x26, Tile = MountainMidLeft},
-			    new MapEdit{X = 0xD3, Y = 0x27, Tile = MountainMidRight},
-			    new MapEdit{X = 0xD4, Y = 0x27, Tile = GrassTile},
-			    new MapEdit{X = 0xD5, Y = 0x27, Tile = MountainMidLeft},
-			    new MapEdit{X = 0xD3, Y = 0x28, Tile = MountainMidRight},
-			    new MapEdit{X = 0xD4, Y = 0x28, Tile = GrassTile},
-			    new MapEdit{X = 0xD5, Y = 0x28, Tile = MountainBottomLeft},
-			    new MapEdit{X = 0xD3, Y = 0x29, Tile = MountainMidRight},
-			    new MapEdit{X = 0xD4, Y = 0x29, Tile = GrassTile},
-			    new MapEdit{X = 0xD5, Y = 0x29, Tile = CoastTopLeft},
-			    new MapEdit{X = 0xD3, Y = 0x2A, Tile = MountainMidRight},
-			    new MapEdit{X = 0xD4, Y = 0x2A, Tile = GrassTile},
-			    new MapEdit{X = 0xD5, Y = 0x2A, Tile = CoastLeft},
-			    new MapEdit{X = 0xD3, Y = 0x2B, Tile = MountainMidRight},
-			    new MapEdit{X = 0xD4, Y = 0x2B, Tile = GrassTile},
-			    new MapEdit{X = 0xD5, Y = 0x2B, Tile = CoastLeft},
-			    new MapEdit{X = 0xD3, Y = 0x2C, Tile = MountainMidRight},
-			    new MapEdit{X = 0xD4, Y = 0x2C, Tile = GrassTile},
-			    new MapEdit{X = 0xD5, Y = 0x2C, Tile = CoastBottomLeft},
-			    new MapEdit{X = 0xD4, Y = 0x2D, Tile = MountainTopRight},
-			    new MapEdit{X = 0xD5, Y = 0x2D, Tile = GrassTile},
-			    new MapEdit{X = 0xD6, Y = 0x2D, Tile = CoastBottomLeft},
-			    new MapEdit{X = 0xD5, Y = 0x2E, Tile = MountainTopRight},
-			    new MapEdit{X = 0xD6, Y = 0x2E, Tile = GrassTile},
-			    new MapEdit{X = 0xD7, Y = 0x2E, Tile = CoastBottomLeft},
-			    new MapEdit{X = 0xD6, Y = 0x2F, Tile = MountainTopRight},
-			    new MapEdit{X = 0xD7, Y = 0x2F, Tile = GrassTile},
-			    new MapEdit{X = 0xD8, Y = 0x2F, Tile = CoastBottomLeft},
-			    new MapEdit{X = 0xD7, Y = 0x30, Tile = MountainTopRight},
-			    new MapEdit{X = 0xD8, Y = 0x30, Tile = ForestTopLeft},
-			    new MapEdit{X = 0xD9, Y = 0x30, Tile = ForestTopRight},
+				new MapEdit{X = 0xD3, Y = 0x25, Tile = MountainMidRight},
+				new MapEdit{X = 0xD4, Y = 0x25, Tile = GrassTile},
+				new MapEdit{X = 0xD5, Y = 0x25, Tile = MountainTopLeft},
+				new MapEdit{X = 0xD3, Y = 0x26, Tile = MountainMidRight},
+				new MapEdit{X = 0xD4, Y = 0x26, Tile = GrassTile},
+				new MapEdit{X = 0xD5, Y = 0x26, Tile = MountainMidLeft},
+				new MapEdit{X = 0xD3, Y = 0x27, Tile = MountainMidRight},
+				new MapEdit{X = 0xD4, Y = 0x27, Tile = GrassTile},
+				new MapEdit{X = 0xD5, Y = 0x27, Tile = MountainMidLeft},
+				new MapEdit{X = 0xD3, Y = 0x28, Tile = MountainMidRight},
+				new MapEdit{X = 0xD4, Y = 0x28, Tile = GrassTile},
+				new MapEdit{X = 0xD5, Y = 0x28, Tile = MountainBottomLeft},
+				new MapEdit{X = 0xD3, Y = 0x29, Tile = MountainMidRight},
+				new MapEdit{X = 0xD4, Y = 0x29, Tile = GrassTile},
+				new MapEdit{X = 0xD5, Y = 0x29, Tile = CoastTopLeft},
+				new MapEdit{X = 0xD3, Y = 0x2A, Tile = MountainMidRight},
+				new MapEdit{X = 0xD4, Y = 0x2A, Tile = GrassTile},
+				new MapEdit{X = 0xD5, Y = 0x2A, Tile = CoastLeft},
+				new MapEdit{X = 0xD3, Y = 0x2B, Tile = MountainMidRight},
+				new MapEdit{X = 0xD4, Y = 0x2B, Tile = GrassTile},
+				new MapEdit{X = 0xD5, Y = 0x2B, Tile = CoastLeft},
+				new MapEdit{X = 0xD3, Y = 0x2C, Tile = MountainMidRight},
+				new MapEdit{X = 0xD4, Y = 0x2C, Tile = GrassTile},
+				new MapEdit{X = 0xD5, Y = 0x2C, Tile = CoastBottomLeft},
+				new MapEdit{X = 0xD4, Y = 0x2D, Tile = MountainTopRight},
+				new MapEdit{X = 0xD5, Y = 0x2D, Tile = GrassTile},
+				new MapEdit{X = 0xD6, Y = 0x2D, Tile = CoastBottomLeft},
+				new MapEdit{X = 0xD5, Y = 0x2E, Tile = MountainTopRight},
+				new MapEdit{X = 0xD6, Y = 0x2E, Tile = GrassTile},
+				new MapEdit{X = 0xD7, Y = 0x2E, Tile = CoastBottomLeft},
+				new MapEdit{X = 0xD6, Y = 0x2F, Tile = MountainTopRight},
+				new MapEdit{X = 0xD7, Y = 0x2F, Tile = GrassTile},
+				new MapEdit{X = 0xD8, Y = 0x2F, Tile = CoastBottomLeft},
+				new MapEdit{X = 0xD7, Y = 0x30, Tile = MountainTopRight},
+				new MapEdit{X = 0xD8, Y = 0x30, Tile = ForestTopLeft},
+				new MapEdit{X = 0xD9, Y = 0x30, Tile = ForestTopRight},
 			};
 
 		public static Dictionary<OverworldTeleportIndex, Palette> OverworldToPalette =
@@ -1383,8 +1389,8 @@ namespace FF1Lib
 				{OverworldTeleportIndex.Unused2,            Palette.Greyscale},
 			};
 		public static Dictionary<MapIndex, List<MapIndex>> ContinuedMapIndexForPalettes =
-            new Dictionary<MapIndex, List<MapIndex>>
-		    {
+			new Dictionary<MapIndex, List<MapIndex>>
+			{
 				{ MapIndex.ConeriaCastle1F, new List<MapIndex> { MapIndex.ConeriaCastle2F } },
 				{ MapIndex.CastleOrdeals1F, new List<MapIndex> { MapIndex.CastleOrdeals2F, MapIndex.CastleOrdeals3F } },
 				{ MapIndex.IceCaveB2, new List<MapIndex> { MapIndex.IceCaveB3 } },
@@ -1393,8 +1399,8 @@ namespace FF1Lib
 					MapIndex.TempleOfFiendsWater, MapIndex.TempleOfFiendsAir, MapIndex.TempleOfFiendsChaos } }
 			};
 		public static Dictionary<MapLocation, List<MapLocation>> ConnectedMapLocations =
-            new Dictionary<MapLocation, List<MapLocation>>
-		    {
+			new Dictionary<MapLocation, List<MapLocation>>
+			{
 				{ MapLocation.ConeriaCastle1, new List<MapLocation> { MapLocation.ConeriaCastle2, MapLocation.ConeriaCastleRoom1, MapLocation.ConeriaCastleRoom2 } },
 				{ MapLocation.ElflandCastle, new List<MapLocation> { MapLocation.ElflandCastleRoom1 } },
 				{ MapLocation.NorthwestCastle, new List<MapLocation> { MapLocation.NorthwestCastleRoom2 } },
@@ -1581,19 +1587,19 @@ namespace FF1Lib
 			SwapMap(decompressedRows);
 		}
 
-	    public void SwapMap(List<List<byte>> decompressedRows) {
+		public void SwapMap(List<List<byte>> decompressedRows) {
 			var recompressedMap = CompressMapRows(decompressedRows);
 			PutCompressedMapRows(recompressedMap);
-	    }
+		}
 
-	    public void SwapMap(List<string> decompressedRows) {
-		var rows = new List<List<byte>>();
+		public void SwapMap(List<string> decompressedRows) {
+			var rows = new List<List<byte>>();
 			foreach (var c in decompressedRows) {
-			    rows.Add(new List<byte>(Convert.FromBase64String(c)));
+				rows.Add(new List<byte>(Convert.FromBase64String(c)));
 			}
 			var recompressedMap = CompressMapRows(rows);
 			PutCompressedMapRows(recompressedMap);
-	    }
+		}
 
 		public void ApplyMapEdits()
 		{
@@ -1653,7 +1659,7 @@ namespace FF1Lib
 			return outputMap;
 		}
 
-	    public const int MaximumMapDataSize = 0x3E00;
+		public const int MaximumMapDataSize = 0x3E00;
 
 		public void PutCompressedMapRows(List<List<byte>> compressedRows)
 		{
@@ -1675,7 +1681,7 @@ namespace FF1Lib
 		public void ShuffleObjectiveNPCs(MT19337 rng)
 		{
 			var locations = ObjectiveNPCs.Values.ToList();
-			foreach(var npc in ObjectiveNPCs.Keys.ToList())
+			foreach (var npc in ObjectiveNPCs.Keys.ToList())
 			{
 				var location = locations.SpliceRandom(rng);
 				ObjectiveNPCs[npc] = location;
@@ -1690,61 +1696,119 @@ namespace FF1Lib
 			}
 		}
 
-	    public void ShuffleChime(MT19337 rng, bool includeTowns) {
-		List<byte[]> dungeons = new List<byte[]> {
-		    new byte[] { OverworldTiles.EARTH_CAVE },
-		    new byte[] { OverworldTiles.ELFLAND_CASTLE_W, OverworldTiles.ELFLAND_CASTLE_E },
-		    new byte[] { OverworldTiles.MIRAGE_BOTTOM },
-		    new byte[] { OverworldTiles.ASTOS_CASTLE_W, OverworldTiles.ASTOS_CASTLE_E },
-		    new byte[] { OverworldTiles.ICE_CAVE },
-		    new byte[] { OverworldTiles.DWARF_CAVE },
-		    new byte[] { OverworldTiles.MATOYAS_CAVE },
-		    new byte[] { OverworldTiles.TITAN_CAVE_E, OverworldTiles.TITAN_CAVE_W },
-		    new byte[] { OverworldTiles.ORDEALS_CASTLE_W, OverworldTiles.ORDEALS_CASTLE_E },
-		    new byte[] { OverworldTiles.SARDAS_CAVE },
-		    new byte[] { OverworldTiles.TOF_ENTRANCE_W, OverworldTiles.TOF_ENTRANCE_E },
-		    new byte[] { OverworldTiles.VOLCANO_TOP_W, OverworldTiles.VOLCANO_TOP_E },
-		    new byte[] { OverworldTiles.BAHAMUTS_CAVE },
-		    new byte[] { OverworldTiles.MARSH_CAVE }
+		public void ShuffleChime(MT19337 rng, bool includeTowns) {
+			List<byte[]> dungeons = new List<byte[]> {
+			new byte[] { OverworldTiles.EARTH_CAVE },
+			new byte[] { OverworldTiles.ELFLAND_CASTLE_W, OverworldTiles.ELFLAND_CASTLE_E },
+			new byte[] { OverworldTiles.MIRAGE_BOTTOM },
+			new byte[] { OverworldTiles.ASTOS_CASTLE_W, OverworldTiles.ASTOS_CASTLE_E },
+			new byte[] { OverworldTiles.ICE_CAVE },
+			new byte[] { OverworldTiles.DWARF_CAVE },
+			new byte[] { OverworldTiles.MATOYAS_CAVE },
+			new byte[] { OverworldTiles.TITAN_CAVE_E, OverworldTiles.TITAN_CAVE_W },
+			new byte[] { OverworldTiles.ORDEALS_CASTLE_W, OverworldTiles.ORDEALS_CASTLE_E },
+			new byte[] { OverworldTiles.SARDAS_CAVE },
+			new byte[] { OverworldTiles.TOF_ENTRANCE_W, OverworldTiles.TOF_ENTRANCE_E },
+			new byte[] { OverworldTiles.VOLCANO_TOP_W, OverworldTiles.VOLCANO_TOP_E },
+			new byte[] { OverworldTiles.BAHAMUTS_CAVE },
+			new byte[] { OverworldTiles.MARSH_CAVE }
 		};
 
-		List<byte[]> towns = new List<byte[]>{
-		    new byte[] { OverworldTiles.PRAVOKA },
-		    new byte[] { OverworldTiles.ELFLAND },
-		    new byte[] { OverworldTiles.MELMOND },
-		    new byte[] { OverworldTiles.CRESCENT_LAKE },
-		    new byte[] { OverworldTiles.GAIA },
-		    new byte[] { OverworldTiles.ONRAC },
-		    new byte[] { OverworldTiles.LEFEIN },
+			List<byte[]> towns = new List<byte[]>{
+			new byte[] { OverworldTiles.PRAVOKA },
+			new byte[] { OverworldTiles.ELFLAND },
+			new byte[] { OverworldTiles.MELMOND },
+			new byte[] { OverworldTiles.CRESCENT_LAKE },
+			new byte[] { OverworldTiles.GAIA },
+			new byte[] { OverworldTiles.ONRAC },
+			new byte[] { OverworldTiles.LEFEIN },
 		};
 
-		var candidates = new List<byte[]>(dungeons);
+			var candidates = new List<byte[]>(dungeons);
 
-		if (includeTowns) {
-		    candidates.AddRange(towns);
+			if (includeTowns) {
+				candidates.AddRange(towns);
+			}
+
+			var tileset = new TileSet(this._rom, TileSet.OverworldIndex);
+			tileset.LoadData();
+
+			// clear existing
+			for (int i = 0; i < tileset.TileProperties.Count; i++) {
+				var tp = tileset.TileProperties[i];
+				if ((tp.TilePropFunc & TilePropFunc.OWTP_SPEC_MASK) == TilePropFunc.OWTP_SPEC_CHIME) {
+					tp.TilePropFunc &= ~TilePropFunc.OWTP_SPEC_CHIME;
+					tileset.TileProperties[i] = tp;
+				}
+			}
+
+			var chime = candidates.SpliceRandom(rng);
+
+			foreach (var i in chime) {
+				var tp = tileset.TileProperties[i];
+				tp.TilePropFunc |= TilePropFunc.OWTP_SPEC_CHIME;
+				tileset.TileProperties[i] = tp;
+			}
+
+			tileset.StoreData();
 		}
 
-		var tileset = new TileSet(this._rom, TileSet.OverworldIndex);
-		tileset.LoadData();
+		public void RenderMap()
+		{
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith("maptiles.png"));
 
-		// clear existing
-		for (int i = 0; i < tileset.TileProperties.Count; i++) {
-		    var tp = tileset.TileProperties[i];
-		    if ((tp.TilePropFunc & TilePropFunc.OWTP_SPEC_MASK) == TilePropFunc.OWTP_SPEC_CHIME) {
-			tp.TilePropFunc &= ~TilePropFunc.OWTP_SPEC_CHIME;
-			tileset.TileProperties[i] = tp;
-		    }
+			using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
+			{
+				IImageFormat format;
+				var tileSet = Image.Load<Rgb24>(stream, out format);
+
+				Rgb24[][][] tiles = new Rgb24[128][][];
+				for (int tile_row = 0; tile_row < 8; tile_row++)
+				{
+					for (int tile_col = 0; tile_col < 16; tile_col++)
+					{
+						var tile = tileSet.Clone(d => d.Crop(new Rectangle(tile_col * 16, tile_row * 16, 16, 16)));
+						tile.Mutate(d => d.Resize(new Size(4, 4)));
+
+						tile.ProcessPixelRows(t =>
+						{
+							tiles[16 * tile_row + tile_col] = new Rgb24[][] {
+							t.GetRowSpan(0).ToArray(),
+							t.GetRowSpan(1).ToArray(),
+							t.GetRowSpan(2).ToArray(),
+							t.GetRowSpan(3).ToArray() };
+						});
+					}
+				}
+
+				var rows = DecompressMapRows(GetCompressedMapRows());
+				var output = new Image<Rgb24>(4 * 256, 4 * 256);
+
+				output.ProcessPixelRows(d =>
+				{
+					for (int y = 0; y < 256; y++)
+					{
+						var s0 = d.GetRowSpan(4 * y + 0);
+						var s1 = d.GetRowSpan(4 * y + 1);
+						var s2 = d.GetRowSpan(4 * y + 2);
+						var s3 = d.GetRowSpan(4 * y + 3);
+
+						for (int x = 0; x < 256; x++)
+						{
+							var tile = tiles[rows[y][x] % 128];
+							tile[0].CopyTo(s0.Slice(x * 4, 4));
+							tile[1].CopyTo(s1.Slice(x * 4, 4));
+							tile[2].CopyTo(s2.Slice(x * 4, 4));
+							tile[3].CopyTo(s3.Slice(x * 4, 4));
+						}
+					}
+				});
+
+				using MemoryStream ms = new MemoryStream(4 * 1048576);
+				output.SaveAsBmp(ms);
+				Utilities.OverworldMapImage = Convert.ToBase64String(ms.GetBuffer(), 0, (int)ms.Length);
+			}
 		}
-
-		var chime = candidates.SpliceRandom(rng);
-
-		foreach (var i in chime) {
-		    var tp = tileset.TileProperties[i];
-		    tp.TilePropFunc |= TilePropFunc.OWTP_SPEC_CHIME;
-		    tileset.TileProperties[i] = tp;
-		}
-
-		tileset.StoreData();
-	    }
 	}
 }

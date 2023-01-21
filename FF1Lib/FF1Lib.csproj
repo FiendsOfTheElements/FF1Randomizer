@@ -24,6 +24,7 @@
     <None Remove="maps\default.json" />
     <None Remove="maps\elfland_start.ffm" />
     <None Remove="maps\elfland_start.json" />
+    <None Remove="maps\maptiles.png" />
     <None Remove="maps\melmond_start.ffm" />
     <None Remove="maps\melmond_start.json" />
     <None Remove="maps\nooverworld.ffm" />
@@ -41,6 +42,7 @@
     <EmbeddedResource Include="maps\default.json" />
     <EmbeddedResource Include="maps\elfland_start.ffm" />
     <EmbeddedResource Include="maps\elfland_start.json" />
+    <EmbeddedResource Include="maps\maptiles.png" />
     <EmbeddedResource Include="maps\melmond_start.ffm">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
