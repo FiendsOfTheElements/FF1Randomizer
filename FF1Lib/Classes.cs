@@ -595,7 +595,7 @@ namespace FF1Lib
 			List<Item> equipShields = new();
 			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
 			{
-				if (itemnames[i].Contains("@s"))
+				if (itemnames[i].Contains("@s") || itemnames[i].Contains("Buckl") || itemnames[i].Contains("ProCa"))
 				{
 					equipShields.Add((Item)i);
 				}
