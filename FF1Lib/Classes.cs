@@ -551,7 +551,7 @@ namespace FF1Lib
 			// Equipment lists
 			List<Item> braceletList = new();
 			List<Item> ringList = new();
-			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			for (int i = (int)Item.Cloth; i <= (int)Item.ProRing; i++)
 			{
 				if (itemnames[i].Contains("@B"))
 				{
@@ -585,7 +585,7 @@ namespace FF1Lib
 			}
 
 			List<Item> equipShirts = new();
-			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			for (int i = (int)Item.Cloth; i <= (int)Item.ProRing; i++)
 			{
 				if (itemnames[i].Contains("@T"))
 				{
@@ -593,7 +593,7 @@ namespace FF1Lib
 				}
 			}
 			List<Item> equipShields = new();
-			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			for (int i = (int)Item.Cloth; i <= (int)Item.ProRing; i++)
 			{
 				if (itemnames[i].Contains("@s"))
 				{
@@ -601,7 +601,7 @@ namespace FF1Lib
 				}
 			}
 			List<Item> equipGauntletsHelmets = new();
-			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			for (int i = (int)Item.Cloth; i <= (int)Item.ProRing; i++)
 			{
 				if (itemnames[i].Contains("@G"))
 				{
