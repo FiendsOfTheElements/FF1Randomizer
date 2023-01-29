@@ -2158,7 +2158,7 @@
 		"Id": "Lockpicking",
 		"title": "Thief Lockpicking",
 		"screenshot": "Lockpicking.png",
-		"description": "Having a thief in the party, when they reach the required level, allows players to open all locked doors. (Selecting level 1 will allow the thief to always unlock doors.)\n\n Enabling this flag also adds a -10 level requirement bonus and a +10 level requirement malus to blursed classes."
+		"description": "Having a thief in the party, when they reach the required level, allows players to open all locked doors. (Selecting level 1 will allow the thief to always unlock doors.)\n\n Enabling this flag also adds a -10 level requirement bonus and a +10 level requirement malus to blursed classes.\n\nThis can be enabled for all Thieves or only for Thieves that receive the 'Lockpicking' class blessing (which will only show up when this option is set to blessed classes)."
 	},
 	{
 		"Id": "ReducedLuckCheckBox",

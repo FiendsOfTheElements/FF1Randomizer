@@ -60,6 +60,16 @@ namespace FF1Lib
 		Blursed
 	}
 
+	public enum Lockpicking
+	{
+		[Description("None")]
+		None = 0,
+		[Description("Thief")]
+		Thief,
+		[Description("Blessed Thief Only")]
+		Blursed
+	}
+
 	public class GameClasses
 	{
 		private List<ClassData> _classes;
@@ -124,7 +134,8 @@ namespace FF1Lib
 			Sleepy,
 			Sick,
 			StartWithKI,
-			InnateSpells
+			InnateSpells,
+			Lockpicking
 		}
 
 		public class BonusMalus
@@ -726,6 +737,11 @@ namespace FF1Lib
 				//new BonusMalus(BonusMalusAction.Sleepy, "Sleepy"),
 			};
 
+			// Add lockpicking bonus
+			if (flags.Lockpicking == Lockpicking.Blursed) {
+				new BonusMalus(BonusMalusAction.Lockpicking, "Lockpicking", Classes: new List<Classes> { Classes.Thief });
+			}
+
 			// Negative amounts are processed separately in ProcessStartWithRoutines, because they affect the Assembly code
 			// If changing the Malus gold labels below, change those as well to alter the actual number used
 			if (flags.StartingGold == StartingGold.None) {
@@ -813,14 +829,15 @@ namespace FF1Lib
 			}
 
 			// Add Lockpicking Bonus/Malus
-			if ((bool)flags.Lockpicking && flags.LockpickingLevelRequirement < 50)
-			{
-				malusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "LateLockpik", mod: 10, Classes: new List<Classes> { Classes.Thief }));
-			}
-
-			if ((bool)flags.Lockpicking && flags.LockpickingLevelRequirement > 1)
-			{
-				bonusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "EarlyLokpik", mod: -10, Classes: new List<Classes> { Classes.Thief }));
+			if (flags.Lockpicking != Lockpicking.None){
+				if (flags.LockpickingLevelRequirement < 50)
+				{
+					malusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "LateLockpik", mod: 10, Classes: new List<Classes> { Classes.Thief }));
+				}
+				if (flags.LockpickingLevelRequirement > 1)
+				{
+					bonusNormal.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "EarlyLokpik", mod: -10, Classes: new List<Classes> { Classes.Thief }));
+				}
 			}
 
 			// Add Natural Resist Bonuses
@@ -1094,7 +1111,7 @@ namespace FF1Lib
 							break;
 						case BonusMalusAction.LockpickingLevel:
 							int newLockPickingLevel = flags.LockpickingLevelRequirement + bonusmalus.StatMod;
-							if ((bool)flags.Lockpicking)
+							if (flags.Lockpicking != Lockpicking.None)
 							{
 								//constrain lp level to 1-50
 								newLockPickingLevel = Math.Max(1, newLockPickingLevel);
@@ -1174,6 +1191,10 @@ namespace FF1Lib
 						case BonusMalusAction.InnateSpells:
 							_classes[i].InnateSpells = bonusmalus.SpellsMod.ToList();
 							_classes[i + 6].InnateSpells = bonusmalus.SpellsMod.ToList();
+							break;
+						case BonusMalusAction.Lockpicking:
+							_classes[i].Lockpicking = true;
+							_classes[i + 6].Lockpicking = true;
 							break;
 					}
 				}
@@ -2142,6 +2163,7 @@ namespace FF1Lib
 			Blob lut_Sick = _classes.Select(x => (byte)(x.Sick ? 0x01 : 0x00)).ToArray();
 			Blob lut_SteelArmor = _classes.Select(x => (byte)(x.SteelLord ? 0x01 : 0x00)).ToArray();
 			Blob lut_WoodArmors = _classes.Select(x => (byte)(x.WoodAdept ? 0x01 : 0x00)).ToArray();
+			Blob lut_Lockpicking = _classes.Select(x => (byte)(x.Lockpicking ? 0x01 : 0x00)).ToArray();
 
 			rom.PutInBank(0x1B, 0xB200, lut_Blackbelts + new byte[] { 0x00 } +
 				lut_CatClaws + new byte[] { 0x00 } +
@@ -2150,7 +2172,8 @@ namespace FF1Lib
 				lut_Sleepy + new byte[] { 0x00 } +
 				lut_Sick + new byte[] { 0x00 } +
 				lut_SteelArmor + new byte[] { 0x00 } +
-				lut_WoodArmors + new byte[] { 0x00 });
+				lut_WoodArmors + new byte[] { 0x00 } +
+				lut_Lockpicking + new byte[] { 0x00 });
 
 			// Recruit Mode Switcher
 			rom.PutInBank(0x1B, 0xB600, Blob.FromHex("A5108513A8B913B6A8202EB3A51385104CAA87004080C0"));
@@ -2184,7 +2207,7 @@ namespace FF1Lib
 				kiBlursings.Add(new BonusMalus(BonusMalusAction.StartWithKI, "+" + olditemnames[(int)Item.Tail], mod: (int)Item.Tail));
 			}
 
-			if (!(bool)flags.Lockpicking)
+			if (flags.Lockpicking != Lockpicking.None)
 			{
 				kiBlursings.Add(new BonusMalus(BonusMalusAction.StartWithKI, "+" + olditemnames[(int)Item.Key], mod: (int)Item.Key));
 			}
@@ -2247,6 +2270,7 @@ namespace FF1Lib
 		public bool Sick { get; set; }
 		public bool WoodAdept { get; set; }
 		public bool SteelLord { get; set; }
+		public bool Lockpicking { get; set; }
 		public List<SpellSlotInfo> InnateSpells { get; set; }
 		public Item StartingKeyItem { get; set; }
 
@@ -2279,6 +2303,7 @@ namespace FF1Lib
 			Sick = false;
 			WoodAdept = false;
 			SteelLord = false;
+			Lockpicking = false;
 			StartingKeyItem = Item.None;
 			InnateSpells = new() { new SpellSlotInfo(), new SpellSlotInfo(), new SpellSlotInfo() };
 		}

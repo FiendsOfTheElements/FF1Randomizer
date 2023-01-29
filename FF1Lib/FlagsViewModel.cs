@@ -4870,13 +4870,14 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? Lockpicking
+
+		public Lockpicking Lockpicking
 		{
 			get => Flags.Lockpicking;
 			set
 			{
 				Flags.Lockpicking = value;
-				RaisePropertyChanged();
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Lockpicking"));
 			}
 		}
 
