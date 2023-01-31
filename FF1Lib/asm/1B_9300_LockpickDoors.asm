@@ -4,6 +4,9 @@
 SwapPRG = $FE03
 SMMove_Norm_RTS = $CE52
 
+class_lut_a = $ED
+class_lut_b = $EE
+
 ;currently in the MENU_BANK
 ;this replacement could be a lot less bytes if we use a temporary memory to store A
 ;A gets overwritten by the bank swap method and we cant grab it from the stack without some heavy stack manipulation
@@ -24,6 +27,13 @@ BCS SMMove_Norm_RTS ;save a byte by just branching to a nearby rts instead of ha
 ;exact change replacing 18 bytes at CE53
 ;AA 98 48 A9 1B 20 03 FE 20 00 93 C0 01 68 A8 8A B0 ED
 
+
+.ORG $B26C ; for reference
+lut_Lockpicking:
+  .BYTE $00, $00, $00, $00, $00, $00
+  .BYTE $00, $00, $00, $00, $00, $00
+  .BYTE $00
+
 ;bank 1b
 .ORG $9300
 CheckDoorLocked:
@@ -42,7 +52,15 @@ CheckDoorLocked:
     PHA
     LDA #$00
     PHA
+    LDA #<lut_Lockpicking
+    STA class_lut_a
+    LDA #>lut_Lockpicking
+    STA class_lut_b
     LDY #$00
+    Lockpicking:
+      ; check to see if they have the Lockpicking bonus
+      JSR CheckIfClass
+      BNE NextClass
     CheckLevel:
       LDX ch_level,Y
       CPX #$09
@@ -54,7 +72,7 @@ CheckDoorLocked:
       BCS UnderLeveled
       TAY
       PHA
-      JMP CheckLevel
+      JMP Lockpicking
     CheckClass:
       LDX ch_class,Y
       CPX #$01
@@ -78,5 +96,21 @@ CheckDoorLocked:
     LDA #BANK_MENUS
     JMP SwapPRG
 
-;74 bytes
-;8A4A2903C902D038A2008645AE2560D02F48A90048A000BE2661E009B00B18686940B013A8484C1793BE0061E001F010E007F00C4C1E93A00168AAA90E4C03FEA0006868AAA90E4C03FE
+CheckIfClass:
+  LDA ch_class, Y
+  CMP #$0C
+  BCC NotANone
+    LDA #$0C
+
+NotANone:
+  STY tmp
+  TAY
+  LDA (class_lut_a), Y
+  CMP #$01
+  PHP
+  LDY tmp
+  PLP
+  RTS
+
+;108 bytes
+;8A4A2903C902D045A2008645AE2560D03C48A90048A96C85EDA9B285EEA000205793D007BE2661E009B00B18686940B013A8484C1F93BE0061E001F010E007F00C4C2B93A00168AAA90E4C03FEA0006868AAA90E4C03FEB90061C90C9002A90C8410A8B1EDC90108A4102860

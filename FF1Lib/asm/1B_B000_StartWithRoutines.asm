@@ -393,6 +393,11 @@ lut_WoodArmors:
  .BYTE $00, $00, $00, $00, $00, $00 
  .BYTE $FF  
 
+lut_Lockpicking:
+  .BYTE $00, $00, $00, $00, $00, $00
+  .BYTE $00, $00, $00, $00, $00, $00
+  .BYTE $00
+
  .ORG $B300
 
 ApplyStartOfGame:
