@@ -738,8 +738,12 @@ namespace FF1Lib
 			};
 
 			// Add lockpicking bonus
-			if (flags.Lockpicking == Lockpicking.Blursed) {
-				new BonusMalus(BonusMalusAction.Lockpicking, "Lockpicking", Classes: new List<Classes> { Classes.Thief });
+			if (flags.Lockpicking == Lockpicking.Thief) {
+				// Give Thief and Ninja the effect of the bonus without adding a blursing
+				_classes[(int)Classes.Thief].Lockpicking = true;
+				_classes[(int)Classes.Ninja].Lockpicking = true;
+			} else if (flags.Lockpicking == Lockpicking.Blursed) {
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.Lockpicking, "Lockpicking", Classes: new List<Classes> { Classes.Thief }));
 			}
 
 			// Negative amounts are processed separately in ProcessStartWithRoutines, because they affect the Assembly code
