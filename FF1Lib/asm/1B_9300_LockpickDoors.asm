@@ -57,14 +57,15 @@ CheckDoorLocked:
     LDA #>lut_Lockpicking
     STA class_lut_b
     LDY #$00
-    Lockpicking:
+    CheckLockpicking:
       ; check to see if they have the Lockpicking bonus
       JSR CheckIfClass
       BNE NextClass
     CheckLevel:
       LDX ch_level,Y
       CPX #$09
-      BCS CheckClass
+      BCS DoorUnlocked
+      JMP NextClass
     NextClass:
       CLC
       PLA
@@ -72,14 +73,7 @@ CheckDoorLocked:
       BCS UnderLeveled
       TAY
       PHA
-      JMP Lockpicking
-    CheckClass:
-      LDX ch_class,Y
-      CPX #$01
-      BEQ DoorUnlocked
-      CPX #$07
-      BEQ DoorUnlocked
-      JMP NextClass
+      JMP CheckLockpicking
 
   UnderLeveled:
     LDY #$01
@@ -112,5 +106,5 @@ NotANone:
   PLP
   RTS
 
-;108 bytes
-;8A4A2903C902D045A2008645AE2560D03C48A90048A96C85EDA9B285EEA000205793D007BE2661E009B00B18686940B013A8484C1F93BE0061E001F010E007F00C4C2B93A00168AAA90E4C03FEA0006868AAA90E4C03FEB90061C90C9002A90C8410A8B1EDC90108A4102860
+;96 bytes
+;8A4A2903C902D03AA2008645AE2560D03148A90048A96C85EDA9B285EEA000204C93D00ABE2661E009B0174C2E9318686940B005A8484C1F93A00168AAA90E4C03FEA0006868AAA90E4C03FEB90061C90C9002A90C8410A8B1EDC90108A4102860
