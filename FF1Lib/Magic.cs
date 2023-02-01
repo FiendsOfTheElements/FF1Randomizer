@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -9,7 +9,7 @@ namespace FF1Lib
 
 	public enum SpellRoutine : byte
 	{
-	        None = 0,
+		None = 0,
 		Damage = 0x01,
 		DamageUndead = 0x02,
 		Heal = 0x07,
@@ -60,7 +60,7 @@ namespace FF1Lib
 	[Flags]
 	public enum SpellStatus : byte
 	{
-	        None = 0,
+		None = 0,
 		Any = 0xFF,
 		Confuse = 0b10000000,
 		Mute = 0b01000000,
@@ -73,51 +73,51 @@ namespace FF1Lib
 	}
 
 	public enum OOBSpellRoutine : byte {
-	    CURE = 0,
-	    CUR2 = 1,
-	    CUR3 = 2,
-	    CUR4 = 3,
-	    HEAL = 4,
-	    HEL3 = 5,
-	    HEL2 = 6,
-	    PURE = 7,
-	    LIFE = 8,
-	    LIF2 = 9,
-	    WARP = 10,
-	    SOFT = 11,
-	    EXIT = 12,
-	    None = 255
+		CURE = 0,
+		CUR2 = 1,
+		CUR3 = 2,
+		CUR4 = 3,
+		HEAL = 4,
+		HEL3 = 5,
+		HEL2 = 6,
+		PURE = 7,
+		LIFE = 8,
+		LIF2 = 9,
+		WARP = 10,
+		SOFT = 11,
+		EXIT = 12,
+		None = 255
 	}
 
 	public enum MagicGraphic : byte  {
-	    None = 0,
-	    BarOfLight = 176,
-	    FourSparkles = 184,
-	    Stars = 192,
-	    EnergyBeam = 200,
-	    EnergyFlare = 208,
-	    GlowingBall = 216,
-	    LargeSparkle = 224,
-	    SparklingHand = 232
+		None = 0,
+		BarOfLight = 176,
+		FourSparkles = 184,
+		Stars = 192,
+		EnergyBeam = 200,
+		EnergyFlare = 208,
+		GlowingBall = 216,
+		LargeSparkle = 224,
+		SparklingHand = 232
 	}
 
 	public enum SpellColor : byte {
-	    White = 0x20,
-	    Blue = 0x21,
-	    Violet = 0x22,
-	    Purple = 0x23,
-	    Pink = 0x24,
-	    PinkOrange = 0x25,
-	    LightOrange = 0x26,
-	    DarkOrange = 0x27,
-	    Yellow = 0x28,
-	    Green = 0x29,
-	    LightGreen = 0x2A,
-	    BlueGreen = 0x2B,
-	    Teal = 0x2C,
-	    Gray = 0x2D,
-	    Black1 = 0x2E,
-	    Black2 = 0x2F
+		White = 0x20,
+		Blue = 0x21,
+		Violet = 0x22,
+		Purple = 0x23,
+		Pink = 0x24,
+		PinkOrange = 0x25,
+		LightOrange = 0x26,
+		DarkOrange = 0x27,
+		Yellow = 0x28,
+		Green = 0x29,
+		LightGreen = 0x2A,
+		BlueGreen = 0x2B,
+		Teal = 0x2C,
+		Gray = 0x2D,
+		Black1 = 0x2E,
+		Black2 = 0x2F
 	}
 
 	public enum SpellSchools
@@ -129,289 +129,288 @@ namespace FF1Lib
 	[JsonObject(MemberSerialization.OptIn)]
 	public class MagicSpell
 	{
-	    [JsonProperty]
-	    public byte Index;
+		[JsonProperty]
+		public byte Index;
 
-	    public bool ShouldSerializeIndex() {
-		return !isRegularSpell;
-	    }
-
-	    public Blob Data;
-
-	    [JsonProperty]
-	    public string Name;
-
-	    [JsonProperty]
-	    public byte TextPointer;
-
-	    public bool ShouldSerializeTextPointer() {
-		return isRegularSpell;
-	    }
-
-	    [JsonProperty]
-	    public string Message;
-
-	    public bool ShouldSerializeMessage() {
-		return isRegularSpell;
-	    }
-
-	    [JsonProperty]
-	    public byte accuracy = 0;
-
-	    [JsonProperty]
-	    [JsonConverter(typeof(StringEnumConverter))]
-	    public SpellElement elem = 0;
-
-	    [JsonProperty]
-	    [JsonConverter(typeof(StringEnumConverter))]
-	    public SpellTargeting targeting = 0;
-
-	    [JsonProperty]
-	    [JsonConverter(typeof(StringEnumConverter))]
-	    public SpellRoutine routine = 0;
-
-	    [JsonProperty]
-	    public byte effect = 0;
-
-	    public bool ShouldSerializeeffect() {
-		return routine != SpellRoutine.CureAilment &&
-		    routine != SpellRoutine.InflictStatus &&
-		    routine != SpellRoutine.DefElement &&
-		    routine != SpellRoutine.Slow &&
-		    routine != SpellRoutine.None &&
-		    routine != SpellRoutine.FullHeal &&
-		    routine != SpellRoutine.Xfer;
-
-	    }
-
-	    [JsonProperty]
-	    [JsonConverter(typeof(StringEnumConverter))]
-	    public SpellStatus status {
-		get { return (SpellStatus)effect; }
-		set { effect = (byte)value; }
-	    }
-	    public bool ShouldSerializestatus() {
-		return routine == SpellRoutine.CureAilment || routine == SpellRoutine.InflictStatus;
-	    }
-
-	    [JsonProperty]
-	    [JsonConverter(typeof(StringEnumConverter))]
-	    public SpellElement defelement {
-		get {
-		    return (SpellElement)effect;
+		public bool ShouldSerializeIndex() {
+			return !isRegularSpell;
 		}
-		set {
-		    effect = (byte)value;
+
+		public Blob Data;
+
+		[JsonProperty]
+		public string Name;
+
+		[JsonProperty]
+		public byte TextPointer;
+
+		public bool ShouldSerializeTextPointer() {
+			return isRegularSpell;
 		}
-	    }
-	    public bool ShouldSerializedefelement() {
-		return routine == SpellRoutine.DefElement;
-	    }
 
-	    public byte gfx = 0;
+		[JsonProperty]
+		public string Message;
 
-	    [JsonProperty]
-	    [JsonConverter(typeof(StringEnumConverter))]
-	    public MagicGraphic MagicGraphic {
-		get {
-		    return (MagicGraphic)gfx;
+		public bool ShouldSerializeMessage() {
+			return isRegularSpell;
 		}
-		set {
-		    gfx = (byte)value;
+
+		[JsonProperty]
+		public byte accuracy = 0;
+
+		[JsonProperty]
+		[JsonConverter(typeof(StringEnumConverter))]
+		public SpellElement elem = 0;
+
+		[JsonProperty]
+		[JsonConverter(typeof(StringEnumConverter))]
+		public SpellTargeting targeting = 0;
+
+		[JsonProperty]
+		[JsonConverter(typeof(StringEnumConverter))]
+		public SpellRoutine routine = 0;
+
+		[JsonProperty]
+		public byte effect = 0;
+
+		public bool ShouldSerializeeffect() {
+			return routine != SpellRoutine.CureAilment &&
+				routine != SpellRoutine.InflictStatus &&
+				routine != SpellRoutine.DefElement &&
+				routine != SpellRoutine.Slow &&
+				routine != SpellRoutine.None &&
+				routine != SpellRoutine.FullHeal &&
+				routine != SpellRoutine.Xfer;
 		}
-	    }
 
-	    public bool ShouldSerializegfx() {
-		return isRegularSpell;
-	    }
-
-	    public byte palette = 0;
-
-	    [JsonProperty]
-	    [JsonConverter(typeof(StringEnumConverter))]
-	    public SpellColor SpellColor {
-		get {
-		    return (SpellColor)palette;
+		[JsonProperty]
+		[JsonConverter(typeof(StringEnumConverter))]
+		public SpellStatus status {
+			get { return (SpellStatus)effect; }
+			set { effect = (byte)value; }
 		}
-		set {
-		    palette = (byte)value;
+		public bool ShouldSerializestatus() {
+			return routine == SpellRoutine.CureAilment || routine == SpellRoutine.InflictStatus;
 		}
-	    }
 
-	    public bool ShouldSerializeSpellColor() {
-		return isRegularSpell;
-	    }
-
-	    void updateMagicIndex(byte level, byte slot, SpellSchools type) {
-		this.Index = (byte)((level-1) * 8 + (slot-1));
-		if (type == SpellSchools.Black) {
-		    this.Index += 4;
-		}
-	    }
-
-	    [JsonProperty]
-	    public byte Level {
-		get {
-		    return (byte)((Index / 8)+1);
-		}
-		set {
-		    if (value < 1 || value > 8) {
-			throw new Exception("Spell level must be between 1 and 8");
-		    }
-		    this.updateMagicIndex(value, Slot, SpellSchool);
-		}
-	    }
-
-	    public bool ShouldSerializeLevel() {
-		return isRegularSpell;
-	    }
-
-	    [JsonProperty]
-	    public byte Slot {
-		get {
-		    return (byte)((Index % 4) + 1);
-		}
-		set {
-		    if (value < 1 || value > 4) {
-			throw new Exception("Spell slot must be between 1 and 4");
-		    }
-		    this.updateMagicIndex(Level, value, SpellSchool);
-		}
-	    }
-
-	    public bool ShouldSerializeSlot() {
-		return isRegularSpell;
-	    }
-
-	    [JsonProperty]
-	    [JsonConverter(typeof(StringEnumConverter))]
-	    public SpellSchools SpellSchool {
-		get {
-		    if (Index % 8 < 4) {
-			return SpellSchools.White;
-		    }
-		    return SpellSchools.Black;
-		}
-		set {
-		    this.updateMagicIndex(Level, Slot, value);
-		}
-	    }
-
-	    public bool ShouldSerializeMagicType() {
-		return isRegularSpell;
-	    }
-
-	    [JsonProperty]
-	    [JsonConverter(typeof(StringEnumConverter))]
-	    public OOBSpellRoutine oobSpellRoutine = OOBSpellRoutine.None;
-
-	    public bool ShouldSerializeoobSpellRoutine() {
-		return isRegularSpell;
-	    }
-
-	    List<Classes> _permissions = new();
-
-	    [JsonProperty]
-	    public string permissions {
-		get {
-		    if (_permissions == null) {
-			return "";
-		    }
-		    string ret = "";
-		    foreach (var c in _permissions) {
-			if (ret != "") {
-			    ret += ", ";
+		[JsonProperty]
+		[JsonConverter(typeof(StringEnumConverter))]
+		public SpellElement defelement {
+			get {
+				return (SpellElement)effect;
 			}
-			ret += Enum.GetName(c);
-		    }
-		    return ret;
+			set {
+				effect = (byte)value;
+			}
 		}
-		set {
-		    _permissions.Clear();
-		    var sp = value.Split(",");
-		    foreach (var cl in sp) {
-			_permissions.Add(Enum.Parse<Classes>(cl));
-		    }
+		public bool ShouldSerializedefelement() {
+			return routine == SpellRoutine.DefElement;
 		}
-	    }
 
-	    public bool ShouldSerializepermissions() {
-		return isRegularSpell;
-	    }
+		public byte gfx = 0;
 
-	    bool isRegularSpell;
-
-	    public MagicSpell(byte _Index,
-			      Blob _Data,
-			      string _Name,
-			      byte _TextPointer,
-			      string _Message,
-			      List<Classes> __permissions)
-	    {
-		Index = _Index;
-		Data = _Data;
-		Name = _Name;
-		TextPointer = _TextPointer;
-		Message = _Message;
-		_permissions = __permissions;
-		isRegularSpell = true;
-		this.decompressData(Data);
-	    }
-
-	    public MagicSpell(byte _Index,
-			      Blob _Data,
-			      string _Name,
-			      bool _isRegularSpell)
-	    {
-		Index = _Index;
-		Data = _Data;
-		Name = _Name;
-		isRegularSpell = _isRegularSpell;
-		this.decompressData(Data);
-	    }
-
-	    public MagicSpell()
-	    {
-		Data = (Blob)new byte[8];
-		isRegularSpell = true;
-	    }
-
-	    public byte[] compressData()
-	    {
-		Data[0] = accuracy;
-		Data[1] = effect;
-		Data[2] = (byte)elem;
-		Data[3] = (byte)targeting;
-		Data[4] = (byte)routine;
-		Data[5] = gfx;
-		Data[6] = palette;
-		Data[7] = 0x00; // last byte is always 00
-		return Data;
-	    }
-
-	    public void writeData(FF1Rom rom) {
-		compressData();
-		if (isRegularSpell) {
-		    rom.Put(FF1Rom.MagicOffset + FF1Rom.MagicSize * Index, Data);
-		    rom.ItemsText[176 + Index] = Name;
+		[JsonProperty]
+		[JsonConverter(typeof(StringEnumConverter))]
+		public MagicGraphic MagicGraphic {
+			get {
+				return (MagicGraphic)gfx;
+			}
+			set {
+				gfx = (byte)value;
+			}
 		}
-	    }
 
-	    public void decompressData(byte[] data)
-	    {
-		accuracy = data[0];
-		effect = data[1];
-		elem = (SpellElement)data[2];
-		targeting = (SpellTargeting)data[3];
-		routine = (SpellRoutine)data[4];
-		gfx = data[5];
-		palette = data[6];
-	    }
+		public bool ShouldSerializegfx() {
+			return isRegularSpell;
+		}
 
-	    public override string ToString()
-	    {
-		return Index.ToString() + ": " + Name;
-	    }
+		public byte palette = 0;
+
+		[JsonProperty]
+		[JsonConverter(typeof(StringEnumConverter))]
+		public SpellColor SpellColor {
+			get {
+				return (SpellColor)palette;
+			}
+			set {
+				palette = (byte)value;
+			}
+		}
+
+		public bool ShouldSerializeSpellColor() {
+			return isRegularSpell;
+		}
+
+		void updateMagicIndex(byte level, byte slot, SpellSchools type) {
+			this.Index = (byte)((level-1) * 8 + (slot-1));
+			if (type == SpellSchools.Black) {
+				this.Index += 4;
+			}
+		}
+
+		[JsonProperty]
+		public byte Level {
+			get {
+				return (byte)((Index / 8)+1);
+			}
+			set {
+				if (value < 1 || value > 8) {
+				throw new Exception("Spell level must be between 1 and 8");
+				}
+				this.updateMagicIndex(value, Slot, SpellSchool);
+			}
+		}
+
+		public bool ShouldSerializeLevel() {
+			return isRegularSpell;
+		}
+
+		[JsonProperty]
+		public byte Slot {
+			get {
+				return (byte)((Index % 4) + 1);
+			}
+			set {
+				if (value < 1 || value > 4) {
+					throw new Exception("Spell slot must be between 1 and 4");
+				}
+				this.updateMagicIndex(Level, value, SpellSchool);
+			}
+		}
+
+		public bool ShouldSerializeSlot() {
+			return isRegularSpell;
+		}
+
+		[JsonProperty]
+		[JsonConverter(typeof(StringEnumConverter))]
+		public SpellSchools SpellSchool {
+			get {
+				if (Index % 8 < 4) {
+					return SpellSchools.White;
+				}
+				return SpellSchools.Black;
+			}
+			set {
+				this.updateMagicIndex(Level, Slot, value);
+			}
+		}
+
+		public bool ShouldSerializeMagicType() {
+			return isRegularSpell;
+		}
+
+		[JsonProperty]
+		[JsonConverter(typeof(StringEnumConverter))]
+		public OOBSpellRoutine oobSpellRoutine = OOBSpellRoutine.None;
+
+		public bool ShouldSerializeoobSpellRoutine() {
+			return isRegularSpell;
+		}
+
+		List<Classes> _permissions = new();
+
+		[JsonProperty]
+		public string permissions {
+			get {
+				if (_permissions == null) {
+					return "";
+				}
+				string ret = "";
+				foreach (var c in _permissions) {
+					if (ret != "") {
+						ret += ", ";
+					}
+					ret += Enum.GetName(c);
+				}
+				return ret;
+			}
+			set {
+				_permissions.Clear();
+				var sp = value.Split(",");
+				foreach (var cl in sp) {
+					_permissions.Add(Enum.Parse<Classes>(cl));
+				}
+			}
+		}
+
+		public bool ShouldSerializepermissions() {
+			return isRegularSpell;
+		}
+
+		bool isRegularSpell;
+
+		public MagicSpell(byte _Index,
+			Blob _Data,
+			string _Name,
+			byte _TextPointer,
+			string _Message,
+			List<Classes> __permissions)
+		{
+			Index = _Index;
+			Data = _Data;
+			Name = _Name;
+			TextPointer = _TextPointer;
+			Message = _Message;
+			_permissions = __permissions;
+			isRegularSpell = true;
+			this.decompressData(Data);
+		}
+
+		public MagicSpell(byte _Index,
+			Blob _Data,
+			string _Name,
+			bool _isRegularSpell)
+		{
+			Index = _Index;
+			Data = _Data;
+			Name = _Name;
+			isRegularSpell = _isRegularSpell;
+			this.decompressData(Data);
+		}
+
+		public MagicSpell()
+		{
+			Data = (Blob)new byte[8];
+			isRegularSpell = true;
+		}
+
+		public byte[] compressData()
+		{
+			Data[0] = accuracy;
+			Data[1] = effect;
+			Data[2] = (byte)elem;
+			Data[3] = (byte)targeting;
+			Data[4] = (byte)routine;
+			Data[5] = gfx;
+			Data[6] = palette;
+			Data[7] = 0x00; // last byte is always 00
+			return Data;
+		}
+
+		public void writeData(FF1Rom rom) {
+			compressData();
+			if (isRegularSpell) {
+				rom.Put(FF1Rom.MagicOffset + FF1Rom.MagicSize * Index, Data);
+				rom.ItemsText[176 + Index] = Name;
+			}
+		}
+
+		public void decompressData(byte[] data)
+		{
+			accuracy = data[0];
+			effect = data[1];
+			elem = (SpellElement)data[2];
+			targeting = (SpellTargeting)data[3];
+			routine = (SpellRoutine)data[4];
+			gfx = data[5];
+			palette = data[6];
+		}
+
+		public override string ToString()
+		{
+			return Index.ToString() + ": " + Name;
+		}
 	}
 
 	public partial class FF1Rom : NesRom
@@ -812,185 +811,185 @@ namespace FF1Lib
 			var battleMessages = new BattleMessages(this);
 
 			var spellsList = spells.Select((spell, i) => new MagicSpell((byte)i, spell, ItemsText[176 + i], pointers[i],
-										    pointers[i] > 0 ? battleMessages[pointers[i]-1] : "",
-										    SpellPermissions.PermissionsFor((SpellSlots)i))
+											pointers[i] > 0 ? battleMessages[pointers[i]-1] : "",
+											SpellPermissions.PermissionsFor((SpellSlots)i))
 			).ToList();
 
 			for (int i = 0; i < MagicOutOfBattleCount; i++) {
-			    var spellIndex = Data[MagicOutOfBattleOffset  + i*MagicOutOfBattleSize] - 0xB0;
-			    spellsList[spellIndex].oobSpellRoutine = (OOBSpellRoutine)i;
+				var spellIndex = Data[MagicOutOfBattleOffset  + i*MagicOutOfBattleSize] - 0xB0;
+				spellsList[spellIndex].oobSpellRoutine = (OOBSpellRoutine)i;
 			}
 			return spellsList;
 		}
 
 		public void PutSpells(List<MagicSpell> spellsList, EnemyScripts enemyScripts) {
 
-		    spellsList.Sort(delegate(MagicSpell a, MagicSpell b) { return a.Index.CompareTo(b.Index); });
+			spellsList.Sort(delegate(MagicSpell a, MagicSpell b) { return a.Index.CompareTo(b.Index); });
 
-		    var oldSpells = GetSpells();
+			var oldSpells = GetSpells();
 
-		    foreach (var sp in spellsList) {
-			sp.writeData(this);
+			foreach (var sp in spellsList) {
+				sp.writeData(this);
 
-			if (sp.oobSpellRoutine == OOBSpellRoutine.None) {
-			    continue;
+				if (sp.oobSpellRoutine == OOBSpellRoutine.None) {
+					continue;
+				}
+
+				// update the out of battle magic code, it's a simple hardcoded table
+				// that compares the spell index and jumps to the desired routine
+				Data[MagicOutOfBattleOffset + (MagicOutOfBattleSize * (int)sp.oobSpellRoutine)] = (byte)(sp.Index + 0xB0);
+
+				// update the effectivity of healing spells
+				int mask = 1;
+				while (sp.effect >= mask) {
+					mask = mask << 1;
+				}
+				mask = mask >> 1;
+				mask = mask - 1;
+
+
+				switch (sp.oobSpellRoutine) {
+					case OOBSpellRoutine.CURE:
+						// AND #mask
+						// ADC #effect
+						Put(0x3AF5E, new byte[] { 0x29, (byte)mask, 0x69, sp.effect }); // changing the oob code for CURE to reflect new values
+						break;
+					case OOBSpellRoutine.CUR2:
+						Put(0x3AF66, new byte[] { 0x29, (byte)mask, 0x69, sp.effect }); // changing the oob code for CUR2 to reflect new values
+						break;
+					case OOBSpellRoutine.CUR3:
+						Put(0x3AF6E, new byte[] { 0x29, (byte)mask, 0x69, sp.effect }); // changing the oob code for CUR3 to reflect new values
+						break;
+
+					case OOBSpellRoutine.HEAL:
+						// AND #mask
+						// CLC
+						// ADC #effect
+						Put(0x3AFDB, new byte[] { 0x29, (byte)mask, 0x18, 0x69, sp.effect }); // changing the oob code for HEAL to reflect the above effect
+						break;
+					case OOBSpellRoutine.HEL2:
+						Put(0x3AFE4, new byte[] { 0x29, (byte)mask, 0x18, 0x69, sp.effect }); // changing the oob code for HEL2 to reflect the above effect
+						break;
+					case OOBSpellRoutine.HEL3:
+						Put(0x3AFED, new byte[] { 0x29, (byte)mask, 0x18, 0x69, sp.effect }); // changing the oob code for HEL3 to reflect the above effect
+						break;
+					default:
+						break;
+				}
 			}
 
-			// update the out of battle magic code, it's a simple hardcoded table
-			// that compares the spell index and jumps to the desired routine
-			Data[MagicOutOfBattleOffset + (MagicOutOfBattleSize * (int)sp.oobSpellRoutine)] = (byte)(sp.Index + 0xB0);
+			var sh = new SpellHelper(spellsList);
 
-			// update the effectivity of healing spells
-			int mask = 1;
-			while (sp.effect >= mask) {
-			    mask = mask << 1;
-			}
-			mask = mask >> 1;
-			mask = mask - 1;
+			Dictionary<Spell, Spell> oldToNew = new();
 
+			for (int i = 0; i < oldSpells.Count; i++) {
+				var sp = oldSpells[i];
+				IEnumerable<(Spell Id, MagicSpell Info)> result;
 
-			switch (sp.oobSpellRoutine) {
-			    case OOBSpellRoutine.CURE:
-				// AND #mask
-				// ADC #effect
-				Put(0x3AF5E, new byte[] { 0x29, (byte)mask, 0x69, sp.effect }); // changing the oob code for CURE to reflect new values
-				break;
-			    case OOBSpellRoutine.CUR2:
-				Put(0x3AF66, new byte[] { 0x29, (byte)mask, 0x69, sp.effect }); // changing the oob code for CUR2 to reflect new values
-				break;
-			    case OOBSpellRoutine.CUR3:
-				Put(0x3AF6E, new byte[] { 0x29, (byte)mask, 0x69, sp.effect }); // changing the oob code for CUR3 to reflect new values
-				break;
+				result = sh.FindSpells(sp.routine, sp.targeting, sp.elem, sp.status, sp.oobSpellRoutine);
 
-			    case OOBSpellRoutine.HEAL:
-				// AND #mask
-				// CLC
-				// ADC #effect
-				Put(0x3AFDB, new byte[] { 0x29, (byte)mask, 0x18, 0x69, sp.effect }); // changing the oob code for HEAL to reflect the above effect
-				break;
-			    case OOBSpellRoutine.HEL2:
-				Put(0x3AFE4, new byte[] { 0x29, (byte)mask, 0x18, 0x69, sp.effect }); // changing the oob code for HEL2 to reflect the above effect
-				break;
-			    case OOBSpellRoutine.HEL3:
-				Put(0x3AFED, new byte[] { 0x29, (byte)mask, 0x18, 0x69, sp.effect }); // changing the oob code for HEL3 to reflect the above effect
-				break;
-			    default:
-				break;
-			}
-		    }
-
-		    var sh = new SpellHelper(spellsList);
-
-		    Dictionary<Spell, Spell> oldToNew = new();
-
-		    for (int i = 0; i < oldSpells.Count; i++) {
-			var sp = oldSpells[i];
-			IEnumerable<(Spell Id, MagicSpell Info)> result;
-
-			result = sh.FindSpells(sp.routine, sp.targeting, sp.elem, sp.status, sp.oobSpellRoutine);
-
-			if (!result.Any()) {
-			    // Relax element
-			    result = sh.FindSpells(sp.routine, sp.targeting, SpellElement.Any, sp.status, sp.oobSpellRoutine);
-			}
-
-			if (!result.Any() && sp.routine != SpellRoutine.None) {
-			    // Relax OOB spell routine
-			    result = sh.FindSpells(sp.routine, sp.targeting, SpellElement.Any, sp.status, OOBSpellRoutine.None);
-			}
-
-			if (!result.Any()) {
-			    // Relax targeting
-			    if (sp.targeting == SpellTargeting.AllEnemies) {
-				result = sh.FindSpells(sp.routine, SpellTargeting.OneEnemy, SpellElement.Any, sp.status, OOBSpellRoutine.None);
-			    } else if (sp.targeting == SpellTargeting.Self) {
-				result = sh.FindSpells(sp.routine, SpellTargeting.OneCharacter, SpellElement.Any, sp.status, OOBSpellRoutine.None);
 				if (!result.Any()) {
-				    result = sh.FindSpells(sp.routine, SpellTargeting.AllCharacters, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+					// Relax element
+					result = sh.FindSpells(sp.routine, sp.targeting, SpellElement.Any, sp.status, sp.oobSpellRoutine);
 				}
-			    } else if (sp.targeting == SpellTargeting.OneCharacter) {
-				result = sh.FindSpells(sp.routine, SpellTargeting.AllCharacters, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+
+				if (!result.Any() && sp.routine != SpellRoutine.None) {
+					// Relax OOB spell routine
+					result = sh.FindSpells(sp.routine, sp.targeting, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+				}
+
 				if (!result.Any()) {
-				    result = sh.FindSpells(sp.routine, SpellTargeting.Self, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+					// Relax targeting
+					if (sp.targeting == SpellTargeting.AllEnemies) {
+						result = sh.FindSpells(sp.routine, SpellTargeting.OneEnemy, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+					} else if (sp.targeting == SpellTargeting.Self) {
+						result = sh.FindSpells(sp.routine, SpellTargeting.OneCharacter, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+						if (!result.Any()) {
+							result = sh.FindSpells(sp.routine, SpellTargeting.AllCharacters, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+						}
+					} else if (sp.targeting == SpellTargeting.OneCharacter) {
+						result = sh.FindSpells(sp.routine, SpellTargeting.AllCharacters, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+						if (!result.Any()) {
+							result = sh.FindSpells(sp.routine, SpellTargeting.Self, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+						}
+					} else if (sp.targeting == SpellTargeting.AllCharacters) {
+						result = sh.FindSpells(sp.routine, SpellTargeting.OneCharacter, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+						if (!result.Any()) {
+							result = sh.FindSpells(sp.routine, SpellTargeting.Self, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+						}
+					}
 				}
-			    } else if (sp.targeting == SpellTargeting.AllCharacters) {
-				result = sh.FindSpells(sp.routine, SpellTargeting.OneCharacter, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+
 				if (!result.Any()) {
-				    result = sh.FindSpells(sp.routine, SpellTargeting.Self, SpellElement.Any, sp.status, OOBSpellRoutine.None);
+					throw new Exception($"Cannot find replacement spell for {sp.Name} with {sp.routine} {sp.status}");
 				}
-			    }
-			}
 
-			if (!result.Any()) {
-			    throw new Exception($"Cannot find replacement spell for {sp.Name} with {sp.routine} {sp.status}");
-			}
-
-			if (result.Count() == 1) {
-			    oldToNew[(Spell)((int)Spell.CURE + i)] = result.First().Item1;
-			    continue;
-			}
-
-			if (sp.routine == SpellRoutine.Damage || sp.routine == SpellRoutine.DamageUndead ||
-			    sp.routine == SpellRoutine.Heal || sp.routine == SpellRoutine.ArmorUp ||
-			    sp.routine == SpellRoutine.Sabr || sp.routine == SpellRoutine.Lock ||
-			    sp.routine == SpellRoutine.Ruse || sp.routine == SpellRoutine.Fear)
-			{
-			    // Find the new spell that's closest to the old spell
-			    // based on effectivity
-			    int minimum = 256;
-			    foreach (var candidate in result) {
-				int diff = Math.Abs(candidate.Item2.effect - sp.effect);
-				if (diff < minimum) {
-				    minimum = diff;
-				    oldToNew[(Spell)((int)Spell.CURE + i)] = candidate.Item1;
+				if (result.Count() == 1) {
+					oldToNew[(Spell)((int)Spell.CURE + i)] = result.First().Item1;
+					continue;
 				}
-			    }
-			} else {
-			    int minimum = 256;
-			    // Find the new spell that's closest to the old spell
-			    // based on accuracy
-			    foreach (var candidate in result) {
-				var diff = Math.Abs(candidate.Item2.accuracy - sp.accuracy);
-				if (diff < minimum) {
-				    minimum = diff;
-				    oldToNew[(Spell)((int)Spell.CURE + i)] = candidate.Item1;
+
+				if (sp.routine == SpellRoutine.Damage || sp.routine == SpellRoutine.DamageUndead ||
+					sp.routine == SpellRoutine.Heal || sp.routine == SpellRoutine.ArmorUp ||
+					sp.routine == SpellRoutine.Sabr || sp.routine == SpellRoutine.Lock ||
+					sp.routine == SpellRoutine.Ruse || sp.routine == SpellRoutine.Fear)
+				{
+					// Find the new spell that's closest to the old spell
+					// based on effectivity
+					int minimum = 256;
+					foreach (var candidate in result) {
+						int diff = Math.Abs(candidate.Item2.effect - sp.effect);
+						if (diff < minimum) {
+							minimum = diff;
+							oldToNew[(Spell)((int)Spell.CURE + i)] = candidate.Item1;
+						}
+					}
+				} else {
+					int minimum = 256;
+					// Find the new spell that's closest to the old spell
+					// based on accuracy
+					foreach (var candidate in result) {
+						var diff = Math.Abs(candidate.Item2.accuracy - sp.accuracy);
+						if (diff < minimum) {
+							minimum = diff;
+							oldToNew[(Spell)((int)Spell.CURE + i)] = candidate.Item1;
+						}
+					}
 				}
-			    }
 			}
-		    }
 
 			/*
-		    foreach (var kv in oldToNew) {
-			Console.WriteLine($"{(int)kv.Key - (int)Spell.CURE} -> {(int)kv.Value - (int)Spell.CURE}");
-			Console.WriteLine($"{oldSpells[(int)kv.Key - (int)Spell.CURE]} -> {spellsList[(int)kv.Value - (int)Spell.CURE]}");
-		    }
-		    */
+			foreach (var kv in oldToNew) {
+				Console.WriteLine($"{(int)kv.Key - (int)Spell.CURE} -> {(int)kv.Value - (int)Spell.CURE}");
+				Console.WriteLine($"{oldSpells[(int)kv.Key - (int)Spell.CURE]} -> {spellsList[(int)kv.Value - (int)Spell.CURE]}");
+			}
+			*/
 
 			// Fix enemy spell pointers to point to where the spells are now.
 			enemyScripts.UpdateSpellsIndices(oldToNew.ToDictionary(s => (SpellByte)(s.Key - (byte)Spell.CURE), s => (SpellByte)(s.Value - (byte)Spell.CURE)));
 
-		    // Fix weapon and armor spell pointers to point to where the spells are now.
-		    foreach (var wep in Weapon.LoadAllWeapons(this, null)) {
-			if (wep.Spell != Spell.None) {
-			    wep.SpellIndex = (byte)((int)oldToNew[wep.Spell] - (int)Spell.CURE + 1);
+			// Fix weapon and armor spell pointers to point to where the spells are now.
+			foreach (var wep in Weapon.LoadAllWeapons(this, null)) {
+				if (wep.Spell != Spell.None) {
+					wep.SpellIndex = (byte)((int)oldToNew[wep.Spell] - (int)Spell.CURE + 1);
+				}
+				wep.writeWeaponMemory(this);
 			}
-			wep.writeWeaponMemory(this);
-		    }
 
-		    foreach (var arm in Armor.LoadAllArmors(this, null)) {
-			if (arm.Spell != Spell.None) {
-			    arm.SpellIndex = (byte)((int)oldToNew[arm.Spell] - (int)Spell.CURE + 1);
+			foreach (var arm in Armor.LoadAllArmors(this, null)) {
+				if (arm.Spell != Spell.None) {
+					arm.SpellIndex = (byte)((int)oldToNew[arm.Spell] - (int)Spell.CURE + 1);
+				}
+				arm.writeArmorMemory(this);
 			}
-			arm.writeArmorMemory(this);
-		    }
 
-		    // Confused enemies are supposed to cast FIRE, so
-		    // pick a single-target damage spell.
-		    var confSpell = sh.FindSpells(SpellRoutine.Damage, SpellTargeting.OneEnemy);
-		    if (!confSpell.Any()) {
-			throw new Exception("Missing a single-target damage spell to use for confused status");
-		    }
-		    Put(ConfusedSpellIndexOffset, new[] { (byte)confSpell.First().Item2.Index });
+			// Confused enemies are supposed to cast FIRE, so
+			// pick a single-target damage spell.
+			var confSpell = sh.FindSpells(SpellRoutine.Damage, SpellTargeting.OneEnemy);
+			if (!confSpell.Any()) {
+				throw new Exception("Missing a single-target damage spell to use for confused status");
+			}
+			Put(ConfusedSpellIndexOffset, new[] { (byte)confSpell.First().Item2.Index });
 		}
 
 		public void PutSpellNames(List<MagicSpell> spells)
