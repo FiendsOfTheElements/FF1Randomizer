@@ -181,11 +181,7 @@ namespace FF1Lib
 
 		private void GetRandomAoe(List<Item> items)
 		{
-			var damageAoes = spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).Select(s => s.Id);
-			var instaAoes = spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.AllEnemies, SpellElement.Any, SpellStatus.Death).Select(s => s.Id);
-			var powerWordAoes = spellHelper.FindSpells(SpellRoutine.PowerWord, SpellTargeting.AllEnemies, SpellElement.Any, SpellStatus.Death).Select(s => s.Id);
-
-			var spells = new HashSet<Spell>(damageAoes.Concat(instaAoes).Concat(powerWordAoes));
+			var spells = new HashSet<Spell>(spellHelper.GetAoEAttackSpells().Select(s => s.Id));
 
 			var weaps = weaponsList.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
 			var arms = armorsList.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
