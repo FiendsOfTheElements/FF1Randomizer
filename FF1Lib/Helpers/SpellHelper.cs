@@ -62,5 +62,14 @@
 			//yeah stupid way of doing it, but i don't care
 			return SpellInfos.Select(s => ((Spell)Convert.ToByte((int)Spell.CURE + s.Index), s)).ToList();
 		}
+
+		public IEnumerable<(Spell Id, MagicSpell Info)> GetAoEAttackSpells()
+		{
+				var damageAoes = FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies);
+				var instaAoes = FindSpells(SpellRoutine.InflictStatus, SpellTargeting.AllEnemies, SpellElement.Any, SpellStatus.Death);
+				var powerWordAoes = FindSpells(SpellRoutine.PowerWord, SpellTargeting.AllEnemies, SpellElement.Any, SpellStatus.Death);
+
+				return damageAoes.Concat(instaAoes).Concat(powerWordAoes);
+		}
 	}
 }
