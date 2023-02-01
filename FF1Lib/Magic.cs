@@ -453,6 +453,23 @@ namespace FF1Lib
 		{
 			return Index.ToString() + ": " + Name;
 		}
+
+		public bool IsAoEAttack()
+		{
+			return (
+				   targeting == SpellTargeting.AllEnemies
+				&& (
+					   routine == SpellRoutine.Damage
+					|| (
+						   effect == (byte)SpellStatus.Death
+						&& (
+							   routine == SpellRoutine.InflictStatus
+							|| routine == SpellRoutine.PowerWord
+						)
+					)
+				)
+			);
+		}
 	}
 
 	public partial class FF1Rom : NesRom
