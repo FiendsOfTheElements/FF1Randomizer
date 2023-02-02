@@ -266,6 +266,7 @@ namespace FF1Lib
 		public int DamageTileHigh { get; set; } = 1;
 		public bool? OWDamageTiles { get; set; } = false;
 		public bool? DamageTilesKill { get; set; } = false;
+		public bool? ArmorResistsDamageTileDamage { get; set; } = false;
 
 		public bool? MoveGaiaItemShop { get; set; } = false;
 		public bool? ShufflePravokaShops { get; set; } = false;
