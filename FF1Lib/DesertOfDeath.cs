@@ -48,7 +48,7 @@
 			}
 			else if (IsArmorResistsDamageTileDamageOn) {
 				PutInBank(0x1E, 0xB14C, Blob.FromHex($"{DamageTileAmount + 1:X2}"));
-				PutInBank(0x1E, 0xB154, Blob.FromHex($"{DamageTileAmount:X2}"));
+				PutInBank(0x1E, 0xB15C, Blob.FromHex($"{DamageTileAmount:X2}"));
 			}
 			// No Lethal Damage Tiles Flag, overwrite normal rom code instead
 			else {
