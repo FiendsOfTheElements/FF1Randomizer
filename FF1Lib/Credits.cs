@@ -206,6 +206,7 @@ namespace FF1Lib
 				"  tetron",
 				"  lifereboot",
 				"  Twinge",
+				"  Chronometrics",
 			},
 			new []
 			{
