@@ -2929,6 +2929,16 @@ namespace FF1Lib
 			}
 		}
 
+		public int RespondRate
+		{
+			get => Preferences.RespondRate;
+			set
+			{
+				Preferences.RespondRate = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public bool UninterruptedMusic
 		{
 			get => Preferences.UninterruptedMusic;

@@ -104,6 +104,9 @@ namespace FF1Lib
 			PutInBank(0x1B, 0x89F0, Blob.FromHex("4CE38B"));
 
 			var responserate = preferences.OptOutSpeedHackMessages ? (byte)0x04 : (byte)0x07;
+			if (preferences.LockRespondRate) {
+				responserate = (byte)(preferences.RespondRate - 1);
+			}
 
 			// Default Response Rate 8 (0-based)
 			Data[0x384CB] = responserate; // Initialize respondrate to 7
