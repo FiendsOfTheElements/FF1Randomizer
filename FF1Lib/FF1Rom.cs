@@ -1328,7 +1328,7 @@ public partial class FF1Rom : NesRom
 
 		if (preferences.LockRespondRate)
 		{
-			LockRespondRate();
+			LockRespondRate(preferences.RespondRate);
 		}
 
 		if (preferences.UninterruptedMusic)

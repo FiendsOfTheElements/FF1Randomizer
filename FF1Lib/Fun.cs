@@ -174,7 +174,7 @@ namespace FF1Lib
 			Put(0x32051, Blob.FromHex("AD446D"));
 		}
 
-		public void LockRespondRate()
+		public void LockRespondRate(int respondRate)
 		{
 			// original title screen behavior
 			/*
@@ -205,6 +205,10 @@ namespace FF1Lib
 			 */
 
 			Put(0x3A1FD, Blob.FromHex("C901D004A900D002A9001865FA290785FA"));
+
+			// Override the read of the respond rate address so that it always reports a hardcoded value
+			PutInBank(0x0B, 0x99C8, Blob.FromHex("A0001A"));
+			PutInBank(0x0B, 0x99C9, Blob.FromHex($"{respondRate - 1:X2}")); // respondrate is 0-based
 		}
 
 		public void UninterruptedMusic()

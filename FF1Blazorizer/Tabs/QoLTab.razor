@@ -13,6 +13,7 @@
     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableDamageTileSFXCheckBox" @bind-Value="Flags.DisableDamageTileSFX">Disable Damage Tile SFX</CheckBox>
     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="uninterruptedMusicCheckBox" @bind-Value="Flags.UninterruptedMusic">Uninterrupted Music</CheckBox>
     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="lockRespondRateCheckBox" @bind-Value="Flags.LockRespondRate">Lock Respond Rate</CheckBox>
+    <IntSlider Indent Min="1" Max="8" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.LockRespondRate" Id="respondRate" @bind-Value="@Flags.RespondRate">Respond Rate:</IntSlider>
     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="accessibleSpellNamesCheckBox" IsEnabled="@(!Flags.GenerateNewSpellbook)" @bind-Value="Flags.AccessibleSpellNames">Accessible Spell Names</CheckBox>
     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="cleanBlursedEquipmentNamesCheckBox" @bind-Value="Flags.CleanBlursedEquipmentNames">Cleaner Blursed Names</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shopInfoIconsCheckBox" @bind-Value="Flags.ShopInfoIcons">Shop Information Icons</CheckBox>
