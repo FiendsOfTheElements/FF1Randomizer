@@ -113,7 +113,7 @@
           <DoubleSlider DoubleCol Id="DamageTileDamageSlider" UpdateToolTip="@UpdateToolTipID" MinValue="0" MaxValue="10" Step="1" @bind-ValuesRange="(Flags.DamageTileLow,Flags.DamageTileHigh)">Damage Tile Damage:</DoubleSlider>
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="OWDamageTilesCheckBox" @bind-Value="Flags.OWDamageTiles">Marsh & Desert Tiles Deal Damage</TriStateCheckBox>
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="DamageTilesKillCheckBox" @bind-Value="Flags.DamageTilesKill">Lethal Damage Tiles</TriStateCheckBox>
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ArmorResistsDamageTileDamageCheckBox" @bind-Value="Flags.ArmorResistsDamageTileDamage">Armor Resists Damage Tiles</TriStateCheckBox>
+					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ArmorResistsDamageTileDamageCheckBox" @bind-Value="Flags.ArmorResistsDamageTileDamage" IsEnabled="!Flags.ArmorCrafter">Armor Resists Damage Tiles</TriStateCheckBox>
 
 					<div class="clear-it"></div>
 			}

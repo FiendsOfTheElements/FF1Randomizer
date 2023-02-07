@@ -293,7 +293,7 @@ public partial class FF1Rom : NesRom
 				DamageTilesKill(flags.SaveGameWhenGameOver);
 			}
 
-			if ((bool)flags.ArmorResistsDamageTileDamage) {
+			if ((bool)flags.ArmorResistsDamageTileDamage && !(bool)flags.ArmorCrafter) {
 				EnableArmorDamageTileResist((bool)flags.DamageTilesKill);
 			}
 
