@@ -61,7 +61,7 @@ namespace FF1Lib
 
 			if ((bool)flags.StartingEquipmentRandomAoe && flags.ItemMagicMode != ItemMagicMode.None) {
 				// guarantee that at least one item has an AoE attack spell
-				if (Spells.Where(spell => spell.IsAoEAttack()).Count() < 1) {
+				if (Spells.Any(spell => spell.IsAoEAttack())) {
 					var spellHelper = new SpellHelper(this);
 					var aoe_spells = new List<MagicSpell>(spellHelper.GetAoEAttackSpells().Select(s => s.Info).ToList());
 					aoe_spells.Shuffle(rng);
