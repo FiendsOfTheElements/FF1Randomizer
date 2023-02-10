@@ -5,7 +5,7 @@ palcyc_mode     = tmp+$C  ; shared tmp
 btl_combatboxcount  = $6AF8     ; the number of combat boxes that have been drawn
 music_track     = $4B
 cur_bank        = $57
-mapflags        = $2D  ; bit 0 set when in standard map.  bit 1 set to indicate column drawing instead of row drawing
+mapflags        = $2D  ; bit 0 set when in standard map.  bit 1 set to indicate column drawing instead of row drawing= $F2
 
 unsram          = $6000  ; $400 bytes
 ch_stats        = unsram + $0100  ; MUST be on page bound.  Each character allowed $40 bytes, so use 00,40,80,C0 to index ch_stats
@@ -28,6 +28,7 @@ SwapPRG_L = $FE03
 
 tmpA = $10
 tmpY = $11
+location = $F2
 cur_map = $48
 ch_armor = ch_stats + $1C
 
@@ -43,8 +44,8 @@ Loop:
 
 	LDA #$01				; only do any of the special armor checks if the randomizer has set this to 0
 	BNE AssignDamage
-	LDA mapflags            ; see if we're on the overworld, or in a standard map
-	LSR A
+	LDA location            ; see if we're on the overworld, or in a standard map
+	CMP #$03
 	BCC AssignDamage        ; if we're on the overworld, skip the armor check
 
 	@VolcanoCheck:
