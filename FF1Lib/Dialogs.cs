@@ -439,8 +439,8 @@ namespace FF1Lib
 			PutInBank(newTalkRoutinesBank, 0x902B, Get(0x3902B, 0x8EA));
 
 			// Backup npc manpulation routines and showMapObject as various other routines use them
-			var npcManipulationRoutines = GetFromBank(0x0E, 0x9079, 0x60);
-			var hideMapObject = GetFromBank(0x0E, 0x9273, 0x30);
+			var npcManipulationRoutines = GetFromBank(oldTalkRoutinesBank, 0x9079, 0x60);
+			var hideMapObject = GetFromBank(oldTalkRoutinesBank, 0x9273, 0x30);
 
 			// Clear saved space
 			PutInBank(oldTalkRoutinesBank, 0x902B, new byte[0x8EA]);
@@ -449,8 +449,8 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xECD5, Blob.FromHex("A558"));
 
 			// Put back HideMapObject & showMapObject
-			PutInBank(0x0E, 0x9079, npcManipulationRoutines);
-			PutInBank(0x0E, 0x9273, hideMapObject);
+			PutInBank(oldTalkRoutinesBank, 0x9079, npcManipulationRoutines);
+			PutInBank(oldTalkRoutinesBank, 0x9273, hideMapObject);
 
 			// New utilities for talk routines, see 11_8200_TalkRoutines.asm
 			PutInBank(newTalkRoutinesBank, 0x9600, Blob.FromHex("856A20CDD8A9008D01208D1540A002204A96A001204A9660A003204A964C0FE4C96CB015C944B00CC91C900D2034DDB0094C39962046DDB00118A9F160A000204A9660686868684CB6C88510A91148A9FE48A90648B9609648B9649648A51060CAF1E8CF02FFFF39"));
