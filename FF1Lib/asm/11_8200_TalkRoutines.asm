@@ -693,10 +693,10 @@ Talk_chaos:
   RTS
 
   NOP
-  NOP  
+  NOP
 
  .ORG $9600
- 
+
 BattleTransition = $D8CD
 LoadBattleCHRPal = $E900
 LoadBattleCHRPal_R = $E8FF
@@ -893,7 +893,7 @@ HaveCanoe:
 
   NOP
   NOP
-  
+
 Talk_Floater:
   LDA item_floater            ; see if the player has the Oxyale
   BNE HaveFloater             ; if they don't...
