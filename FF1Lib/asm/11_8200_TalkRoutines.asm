@@ -92,7 +92,15 @@ lut_MapObjTalkJumpTbl = $90D3
 lut_MapObjTalkJumpTbl_moved = $8000
 
 
- .ORG $901B
+GMFLG_SPEAK = %00001000
+npc_counter = $60C0 ; how many unique NPCs have been spoken to
+npc_damage_divider = npc_counter + 1  ; what we divide the npc_counter value by to determine damage increase
+
+.ORG $60C0
+	.BYTE $00, $FF
+
+.ORG $901B
+
 ;;  TalkToObject
 ;;    Called to talk to a object on the map (townsperson, etc).
 ;;
@@ -825,6 +833,64 @@ CanTake:                ; Clear carry if we can take, otherwise, carry was set
 TooFull:
  LDA #$F1 ; Can't hold
  RTS
+
+.ORG $B0D0
+
+CheckTalkedTo:
+    LDA game_flags, Y
+    LSR A
+    LSR A
+    LSR A
+    LSR A
+    RTS
+	NOP
+	NOP
+
+SetTalkedTo:
+    LDA game_flags, Y
+    ORA #GMFLG_SPEAK
+    STA game_flags, Y
+    RTS
+	NOP
+	NOP
+
+CheckNPCForSentience:
+	CMP #$22
+	BEQ :+
+		CMP #$23
+	BEQ :+
+		CMP #$76
+	BEQ :+
+		CMP #$91
+	BEQ :+
+		CMP #$92
+	BEQ :+
+		CMP #$AD
+	BEQ :+
+		CMP #$CA
+	BEQ :+
+		; not already spoken to
+		JSR SetTalkedTo
+		LDY npc_counter
+		INY
+		STY npc_counter
+	:
+		RTS
+
+CheckFriendship:
+	; see if this option is turned on
+	LDA npc_damage_divider
+	CMP #$FF ; FF will be replaced by some value 0-2 if the flag is enabled
+	BEQ :+
+	; make sure we have not already talked to it
+	LDY talkarray+6
+	JSR CheckTalkedTo
+	BCS :+
+		; make sure this is not a door, orb, etc.
+		TYA
+		JSR CheckNPCForSentience
+  :
+	RTS
 
  .ORG $0000
  
