@@ -111,8 +111,10 @@ npc_damage_divider = npc_counter + 1  ; what we divide the npc_counter value by 
 TalkToObject:
     LDA mapobj_id, X    ; get the ID of the object they're talking to
     STA talkarray+6           ; back the ID up for later
-
-    LDY #0              ; mulitply the ID by 6 (6 bytes of talk data per object)
+	JSR CheckFriendship
+	LDA talkarray+6
+	CLC
+    LDY #0              ; multiply the ID by 6 (6 bytes of talk data per object)
     STY tmp+5
     ASL
     ROL tmp+5
