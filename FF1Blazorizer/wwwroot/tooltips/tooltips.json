@@ -1587,6 +1587,11 @@
 		"description": "Each class will start with a different Key Item, separate from the normal count for Bonuses (so they will still each get Key Items when Bonuses is set to 0). This is separate from Incentives, and will only include standard Key Items (such as OXYALE or TNT), not any other incentivized equipment. Characters gained mid-game via recruitment (Party tab) will still come with their appropriate Key Item.\nFree or Removed Key Items aren't included. If Thief Lockpicking is enabled, KEY will be excluded. These Key Items are never included: BRIDGE, SHIP, CANAL, CANOE, FLOATER.\nIn NoOverworld gamemode, the SIGIL and the MARK are included."
 	},
 	{
+		"Id": "RandomizeClassFriendshipRuneCheckBox",
+		"title": "Blursed Classes - Friendship Rune",
+		"description": "Adds a bonus which gives extra melee damage. The amount of damage is equal to the number of NPCs spoken to divided by the Damage Divisor setting.\nIf NPC Guillotine is enabled the bonus is renamed to \"Soul Eater\"."
+	},
+	{
 		"Id": "EnableRandomPromotions",
 		"title": "Random Promotions",
 		"screenshot": "EnableRandomPromotions.gif",
