@@ -94,8 +94,18 @@ NotANone2:
   PHP
   LDY tmp
   PLP
-  RTS 
-   
+  RTS
+
+IsEquipped:
+	@Loop:
+		LDA (btl_ob_charstat_ptr), Y
+		BPL @NoEquip
+			RTS
+	@NoEquip:
+		INY
+		CPY #$20
+		BNE @Loop
+			RTS
 
  .ORG $B080
  
@@ -135,18 +145,8 @@ CatClaws:
   JSR CheckIfClassQuick
   BNE CC_NotClass
     LDY #$18 ; weapons
-    LDA (btl_ob_charstat_ptr), Y
-    BMI CC_IsEquipWeapon
-    INY
-    LDA (btl_ob_charstat_ptr), Y
-    BMI CC_IsEquipWeapon
-    INY
-    LDA (btl_ob_charstat_ptr), Y
-    BMI CC_IsEquipWeapon
-    INY
-    LDA (btl_ob_charstat_ptr), Y
-    BMI CC_IsEquipWeapon
-    LDA #$00
+	JSR IsEquipped
+	BPL CC_NotClass
 CC_IsEquipWeapon:
       AND #$7F
       CMP #$23 ; catclaw weapon Id
@@ -155,7 +155,7 @@ CC_IsEquipWeapon:
         LDA #$FF ; hardcoded value
         STA (btl_ib_charstat_ptr), Y
 CC_NotClass:
-  RTS  
+  RTS
 
 ; Double damage with Thor Hammers
 ThorHammer:
@@ -169,18 +169,8 @@ ThorHammer:
   JSR CheckIfClassQuick
   BNE Th_NotClass
     LDY #$18 ; weapons
-    LDA (btl_ob_charstat_ptr), Y
-    BMI Th_IsEquipWeapon
-    INY
-    LDA (btl_ob_charstat_ptr), Y
-    BMI Th_IsEquipWeapon
-    INY
-    LDA (btl_ob_charstat_ptr), Y
-    BMI Th_IsEquipWeapon
-    INY
-    LDA (btl_ob_charstat_ptr), Y
-    BMI Th_IsEquipWeapon
-    LDA #$00
+	JSR IsEquipped
+	BPL Th_NotClass
 Th_IsEquipWeapon:
       AND #$7F
       CMP #$24 ; Thor Hammer weapon Id
@@ -205,26 +195,18 @@ SteelArmor:
   JSR CheckIfClassQuick
   BNE St_NotSteel
     LDY #$1C ; armors
-St_Loop:    
-    LDA (btl_ob_charstat_ptr), Y
-    BPL St_NoEquip
-    JSR St_IsEquipArmor
-St_NoEquip:    
-    INY
-    CPY #$20
-    BNE St_Loop
-    RTS
-St_IsEquipArmor:
-    AND #$7F
-    CMP #$05 ; Steel Armor Id
-    BNE St_NotSteel
-      TYA
-      PHA
-      LDY #$0B ; Hit Multiplier
-      LDA #$02
-      STA (btl_ib_charstat_ptr), Y
-      PLA
-      TAY
+	JSR IsEquipped
+	BPL St_NotSteel
+		AND #$7F
+		CMP #$05 ; Steel Armor Id
+		BNE St_NotSteel
+		  TYA
+		  PHA
+		  LDY #$0B ; Hit Multiplier
+		  LDA #$02
+		  STA (btl_ib_charstat_ptr), Y
+		  PLA
+		  TAY
 St_NotSteel:
   RTS
   
@@ -244,14 +226,9 @@ WoodArmors:
   JSR CheckIfClassQuick
   BNE Wo_NotWood
     LDY #$1C ; armors
-Wo_Loop:    
-    LDA (btl_ob_charstat_ptr), Y
-    BPL Wo_NoEquip
+	JSR IsEquipped
+	BPL Wo_NotWood
     JSR Wo_IsEquipArmor
-Wo_NoEquip:    
-    INY
-    CPY #$20
-    BNE Wo_Loop
     
     CPX #$03
     BNE Wo_NotWood
@@ -269,19 +246,19 @@ Wo_StoreValue:
 Wo_IsEquipArmor:
     AND #$7F
     CMP #$02 ; Wood0 Armor Id
-    BNE Wo_NotArmor
+    BNE :+
       INX
       RTS
-Wo_NotArmor:      
+:
     CMP #$1B ; Wood Helmet Id
-    BNE Wo_NotHelmet
+    BNE :+
       INX
       RTS
-Wo_NotHelmet:
+:
     CMP #$11 ; Wood Shield Id
-    BNE Wo_NotShield
+    BNE :+
       INX
-Wo_NotShield:      
+:
       RTS
 Wo_NotWood:
   PLA
