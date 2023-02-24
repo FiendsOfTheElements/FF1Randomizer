@@ -4230,6 +4230,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassIncludeXpBonus"));
 			}
 		}
+		public bool? RandomizeClassFriendshipRune
+		{
+			get => Flags.RandomizeClassFriendshipRune;
+			set
+			{
+				Flags.RandomizeClassFriendshipRune = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassFriendshipRune"));
+			}
+		}
+		public int FriendshipRuneDivisor
+		{
+			get => Flags.FriendshipRuneDivisor;
+			set
+			{
+				Flags.FriendshipRuneDivisor = value;
+				RaisePropertyChanged();
+			}
+		}
 		public int RandomizeClassMaxBonus
 		{
 			get => Flags.RandomizeClassMaxBonus;
