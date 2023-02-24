@@ -29,7 +29,7 @@
 	<IntSlider Indent Min="0" Max="3" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false)" Id="RandomizeClassMaxBonusSlider" @bind-Value="@Flags.RandomizeClassMaxBonus">Bonuses:</IntSlider>
 	<IntSlider Indent Min="0" Max="3" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false)" Id="RandomizeClassMaxMalusSlider" @bind-Value="@Flags.RandomizeClassMaxMalus">Maluses:</IntSlider>
 
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false)" Id="RandomizeClassIncludeXpBonuxCheckBox" @bind-Value="Flags.RandomizeClassIncludeXpBonus">Add XP Bonuses</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false)" Id="RandomizeClassIncludeXpBonusCheckBox" @bind-Value="Flags.RandomizeClassIncludeXpBonus">Add XP Bonuses</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false)" Id="RandomizeClassInnateMagicCheckBox" @bind-Value="Flags.RandomizeClassCasting">Add Innate Magic Bonuses</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false)" Id="RandomizeClassKeyItemsCheckBox" @bind-Value="Flags.RandomizeClassKeyItems">Start with Key Items</TriStateCheckBox>
 
