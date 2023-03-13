@@ -328,5 +328,34 @@ namespace FF1Lib
 
 			locations.StoreData();
 		}
+		public static OwMapExchangeData ConvertFromFFM(MemoryStream stream)
+		{
+			OwMapExchangeData mapdata = new();
+
+			List<List<byte>> decompressedRows = new List<List<byte>>();
+
+			//var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			//var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith(fileName));
+
+			//using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
+			using (BinaryReader rd = new BinaryReader(stream))
+			{
+				for (int i = 0; i < 256; i++)
+				{
+					var row = rd.ReadBytes(256);
+					decompressedRows.Add(new List<byte>(row));
+				}
+			}
+			List<string> rows = new();
+
+			foreach (var c in decompressedRows)
+			{
+				rows.Add(Convert.ToBase64String(c.ToArray()));
+			}
+
+			mapdata.DecompressedMapRows = rows;
+
+			return mapdata;
+		}
 	}
 }

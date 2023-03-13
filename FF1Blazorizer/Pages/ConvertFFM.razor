@@ -1,0 +1,61 @@
+﻿@using System.ComponentModel;
+@using System.IO;
+@using System.Web;
+@using RomUtilities;
+@using FF1Lib;
+@using System.Text.Json;
+@using Newtonsoft.Json;
+@using BlazorStrap
+@using Microsoft.AspNetCore.Components.Web
+@inject IJSRuntime JSRuntime
+
+
+@page "/ConvertFFM"
+
+<div class="content px-4 tinted">
+	<div class="nes-container is-dark col-xs-12">
+		<input type="file" id="fileInput" accept=".ffm" @onchange="@OnFileChanged" />
+		<br/>
+		<a class='styled-button @(mapData != null ? "" : "disabled-button")' @onclick="@OnExportMap">Export Map</a>
+		@RomMessage
+	</div>
+</div>
+
+@code {
+	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public Action<string> SetStatusMessage { get; set; }
+	[Parameter] public string StatusMessage { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+	[Parameter] public bool showChaos { get; set; }
+
+	//private string RomText = "";
+	private string RomMessage = "";
+	private byte[] _fileData;
+	private OwMapExchangeData mapData;
+
+	async Task OnFileChanged(ChangeEventArgs e)
+	{
+		var encoded = await JSRuntime.InvokeAsync<string>("handleFileSelect", "fileInput");
+		SetFileData(encoded);
+	}
+
+	void SetFileData(string encoded)
+	{
+		_fileData = Convert.FromBase64String(encoded);
+		using (var stream = new MemoryStream(_fileData))
+		{
+			mapData = OwMapExchange.ConvertFromFFM(stream);
+		}
+
+		RomMessage = "FFM File Loaded.";
+	}
+
+	async Task OnExportMap(MouseEventArgs e)
+	{
+		var content = JsonConvert.SerializeObject(mapData, Formatting.Indented);
+		var fileData = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(content));
+		await JSRuntime.InvokeVoidAsync("downloadFile", $"FFR_map.json", fileData);
+	}	
+
+}
