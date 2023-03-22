@@ -310,6 +310,7 @@ namespace FF1Lib.Procgen
 	short bridgedRegion;
 	bool shouldPlaceBridge;
 	short canalRegion;
+	short airshipDesertRegion;
 
 	FF1Rom.ReportProgress progress;
 
@@ -338,6 +339,7 @@ namespace FF1Lib.Procgen
 	    this.bridgeOriginRegion = -1;
 	    this.bridgedRegion = -1;
 	    this.canalRegion = -1;
+	    this.airshipDesertRegion = -1;
 	    this.shouldPlaceBridge = true;
 	    this.progress = progress;
         }
@@ -374,6 +376,7 @@ namespace FF1Lib.Procgen
 	    this.bridgeOriginRegion = copy.bridgeOriginRegion;
 	    this.bridgedRegion = copy.bridgedRegion;
 	    this.canalRegion = copy.canalRegion;
+	    this.airshipDesertRegion = copy.airshipDesertRegion;
 	    this.shouldPlaceBridge = copy.shouldPlaceBridge;
 	    this.progress = copy.progress;
         }
