@@ -672,7 +672,14 @@ public partial class FF1Rom : NesRom
 
 					if (!((bool)flags.RandomWaresIncludesSpecialGear))
 					{
-						excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
+						if ((bool)flags.Weaponizer)
+						{
+							excludeItemsFromRandomShops.AddRange(Weapon.LoadAllWeapons(this, flags).Where(w => w.Spell >= Spell.CURE).Select(w => w.Id));
+							excludeItemsFromRandomShops.AddRange(Armor.LoadAllArmors(this, flags).Where(w => w.Spell >= Spell.CURE).Select(w => w.Id));
+							excludeItemsFromRandomShops.AddRange(ItemLists.RareWeaponTier.Except(ItemLists.AllMagicItem));
+						}
+						else
+							excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
 
 						if (flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
 							excludeItemsFromRandomShops.Add(Item.PowerRod);
