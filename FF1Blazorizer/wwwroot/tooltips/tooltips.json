@@ -1834,10 +1834,16 @@
 		"description": "Generates random weapons. Names are assigned based on casting, bonuses vs monster types/weaknesses, or quality. Press 'select' on the equip or shop screen to view exact stats. There is a 50% chance of a rare weapon being promotion locked. Legendary weapons (Katana, XCalibr, Masamune) have vanilla class restrictions.\n[grid][r]|Class permissions[r]Fighter|Swords, Axes, Knives, Hammers[r]Thief|Swords, Knives, Nunchucks[r]Black Belt|Nunchucks[r]Red Mage|Swords, Knives, Staves[r]White Mage|Hammers, Staves[r]Black Mage|Knives, Staves\n\n[grid][r]{b}Name|{b}Element/Type| ┇ |{b}Tier|{b}Name[r]Chroma, Prism|All types & elements| ┇ |1|Wooden, Small, Short[r]Boss|Aqua, Mage, Regen [Slays Fiends & WarMech]| ┇ |2|Copper, Long[r]Elmntl|Fire, Ice, Lit, Poison| ┇ |3|Iron, Heavy[r]IceHot|Fire, Ice| ┇ |4|Steel, Great[r]Odd, Weird|Regen, Were, Earth, Death, Time, Status| ┇ |5|Silver, Shiny[r]Shock, Bolt, Storm|Lightning (Storm also slays Aquatic)| ┇ |6|Mithrl, Sharp[r]Flame, Blaze, etc.|Fire, Undead, Were| ┇ |7|Opal, Diamnd, Wicked[r]Poison|Poison\n\nIcy/Frozen/Cold/etc., Giant/Imp/Ogre, Dragon/Dino, Rune/Ritual, Sun/Holy/Banish/etc., and Coral/Aqua/etc. all slay the same types as they do in vanilla. Check the Wiki for information on enemy weaknesses & types.\nIf you're also using Blursed Weapons, the names may be easier to understand if you turn on \"Cleaner Blursed Names\" under the Quality of Life tab."
 	},
 	{
+		"Id": "weaponizerSpellsCheckBox",
+		"title": "Common Weapons Can Have Spells",
+		"screenshot": "weaponizerCommonSpell.png",
+		"description": "Common (shop) weapons can have spells."
+	},
+	{
 		"Id": "weaponizerPowersCheckBox",
 		"title": "Common Weapons Can Have Powers",
 		"screenshot": "weaponizerCommonPower.png",
-		"description": "Common (shop) weapons can have spells or bonuses vs monster types or elemental weaknesses."
+		"description": "Common (shop) weapons can have bonuses vs monster types or elemental weaknesses."
 	},
 	{
 		"Id": "weaponizerNamingCheckBox",

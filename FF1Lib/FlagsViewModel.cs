@@ -746,6 +746,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponizerCommonWeaponsHavePowers"));
 			}
 		}
+		public bool? WeaponizerCommonWeaponsHaveSpells
+		{
+			get => Flags.WeaponizerCommonWeaponsHaveSpells;
+			set
+			{
+				Flags.WeaponizerCommonWeaponsHaveSpells = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeaponizerCommonWeaponsHaveSpells"));
+			}
+		}
 		public bool? ArmorCrafter
 		{
 			get => Flags.ArmorCrafter;

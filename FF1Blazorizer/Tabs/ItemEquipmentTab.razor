@@ -76,6 +76,7 @@
 		<div class="col2">
 			<h4>Weapon Randomization</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="weaponizerCheckBox" @bind-Value="Flags.Weaponizer">Use Weaponizer</TriStateCheckBox>
+			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="weaponizerSpellsCheckBox" @bind-Value="Flags.WeaponizerCommonWeaponsHaveSpells">Common Weapons Can Have Spells</TriStateCheckBox>
 			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="weaponizerPowersCheckBox" @bind-Value="Flags.WeaponizerCommonWeaponsHavePowers">Common Weapons Can Have Powers</TriStateCheckBox>
 			<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="weaponizerNamingCheckBox" @bind-Value="Flags.WeaponizerNamesUseQualityOnly">Name for Casting & Quality Only</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
