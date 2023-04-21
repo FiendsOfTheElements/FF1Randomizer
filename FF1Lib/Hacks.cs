@@ -1649,6 +1649,38 @@ namespace FF1Lib
 			PutInBank(0x11, 0xB432, Blob.FromHex("B045"));
 		}
 
+		public void SetRNG()
+		{
+			//see 1B_9900_SetRNG.asm for details
+			//take into consideration if disable music is on:
+			//had to move the battle prep function which included loading the music track
+			byte musicTrack = Get(0x2D9C1, 1)[0];
+			PutInBank(0x1B, 0x9A00, Blob.FromHex($"A9008DB7688DB868A9{musicTrack:X2}8D4B008DA76B60"));
+
+			
+			//a lot of patch bridge expansions from banks C and B to 1B
+			PutInBank(0x0C, 0x97C7, Blob.FromHex("EAEAEA"));
+
+			PutInBank(0x0B, 0x99B8, Blob.FromHex("A99848A9FF48A91B4C03FEEAEAEAEAEA"));
+
+			PutInBank(0x0C, 0x942C, Blob.FromHex("A99948A93F48A91B4C03FEEAEA"));
+
+			PutInBank(0x0C, 0xB197, Blob.FromHex("AAA99948A97F48A91B4C03FE8AEAEAEA2086BB859A869B200CB0"));
+
+			PutInBank(0x0C, 0xA357, Blob.FromHex("A99948A9BF48A91B4C03FE8A28"));
+
+			PutInBank(0x1B, 0x9900, Blob.FromHex("20009AA56A8510297FC973B010AD4103D00BA5F70A0A0A0A38E5F78510A56A0A0A0A0A18656A186510188D40038D8A68A9008D4103A99948A9C248A90B4C03FE"));
+
+			PutInBank(0x1B, 0x9940, Blob.FromHex("AD40031869438D8A688D4003A01CA9008D8C6C998E6888D0FAA99448A93648A90C4C03FE"));
+
+			PutInBank(0x1B, 0x9980, Blob.FromHex("8A8D896C8DCD6BAD8E68180A0A0A0A6D8E68186D8E68186D8E68186D40038D8A6818A9028DA76DA9008D8F6CA9B148A9A248A90C4C03FE"));
+
+			PutInBank(0x1B, 0x99C0, Blob.FromHex("AD8E68180A0A0A0A6D8E68186D8E68186D8E68186D40038D8A6818AC8E68B94868290385880A0AA8B98F684A4A4A08AAA9A348A96148A90C4C03FE"));
+
+			//rewrite SMMove_Battle to mark the trap tile flag to keep parity between runners on trap tiles.
+			PutInBank(0x1F, 0xCDC3, Blob.FromHex("A545D0112071C5C5F8B013A548186940204AC59005856A8D4103A92085441860"));
+		}
+
 		public void MoveToFBats() {
 		    MoveNpc(MapId.TempleOfFiends, 2, 0x0C, 0x0D, inRoom: false, stationary: false);
 		    MoveNpc(MapId.TempleOfFiends, 3, 0x1D, 0x0B, inRoom: false, stationary: false);

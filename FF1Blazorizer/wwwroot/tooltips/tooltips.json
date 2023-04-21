@@ -2337,6 +2337,11 @@
 		"description": "Non incentive items are opened in order. \n\nWarning, if your inventory gets full it will block your equipment progress."
 	},
 	{
+		"Id": "SetRNG",
+		"title": "Set RNG",
+		"description": "Between two runners playing the same seed, identical battles will start at the same location in the RNG table and the RNG pointer will not progress each frame.\n\nAll bosses and spike tiles will have the same RNG.\n\nThe first through nth random encounter will consume the same RNG values for each battle. If you are facing an issue with a particular random encounter try soft reseting."
+	},
+	{
 		"Id": "AirBoatCheckBox",
 		"title": "AirBoat",
 		"screenshot": "airboat.gif",

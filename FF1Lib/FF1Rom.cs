@@ -1400,6 +1400,11 @@ public partial class FF1Rom : NesRom
 			OpenChestsInOrder();
 		}
 
+		if(flags.SetRNG)
+		{
+			SetRNG();
+		}
+
 		await this.Progress("Randomization Completed");
 	}
 
