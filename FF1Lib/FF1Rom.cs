@@ -919,7 +919,7 @@ public partial class FF1Rom : NesRom
 
 		if (flags.EnemyTrapTiles == TrapTileMode.Remove)
 		{
-			RemoveTrapTiles(flags.EnemizerEnabled);
+			RemoveTrapTiles(flags.EnemizerEnabled || flags.SetRNG);
 		}
 
 		await this.Progress();
@@ -1402,7 +1402,7 @@ public partial class FF1Rom : NesRom
 
 		if(flags.SetRNG)
 		{
-			SetRNG();
+			SetRNG(flags);
 		}
 
 		await this.Progress("Randomization Completed");
