@@ -1649,11 +1649,7 @@ namespace FF1Lib
 			PutInBank(0x11, 0xB432, Blob.FromHex("B045"));
 		}
 
-<<<<<<< HEAD
 		public void SetRNG(Flags flags)
-=======
-		public void SetRNG()
->>>>>>> af3936f9d66236c8ddc97ed0f856d21798be2ea8
 		{
 			//see 1B_9900_SetRNG.asm for details
 			//take into consideration if disable music is on:
