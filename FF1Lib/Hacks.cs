@@ -1649,7 +1649,7 @@ namespace FF1Lib
 			PutInBank(0x11, 0xB432, Blob.FromHex("B045"));
 		}
 
-		public void SetRNG()
+		public void SetRNG(Flags flags)
 		{
 			//see 1B_9900_SetRNG.asm for details
 			//take into consideration if disable music is on:
@@ -1679,6 +1679,21 @@ namespace FF1Lib
 
 			//rewrite SMMove_Battle to mark the trap tile flag to keep parity between runners on trap tiles.
 			PutInBank(0x1F, 0xCDC3, Blob.FromHex("A545D0112071C5C5F8B013A548186940204AC59005856A8D4103A92085441860"));
+
+			// Vanilla doesnt use the 'extended' way of knowing if a tile is a trap tile so we update those.
+			if(flags.EnemyTrapTiles == TrapTileMode.Vanilla)
+			{
+				var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
+				tilesets.ForEach(tile =>
+				{
+
+					if (IsRandomBattleTile(tile))
+					{
+						tile[1] = (byte)(0x00);
+					}
+				});
+				Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
+			}
 		}
 
 		public void MoveToFBats() {
