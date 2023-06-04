@@ -1659,6 +1659,12 @@
 		"description": "Fills up the party's entire inventory with random equipment. There is a small chance to roll rare and legendary items into this mix of gear."
 	},
 	{
+		"Id": "startingEquipmentRandomAoE",
+		"title": "Starting Equipment - Random AoE Caster Item",
+		"screenshot": null,
+		"description": "Adds one item capable of casting magic that targets all enemies.\nNote: Altering the Item Magic Mode may cause the available pool of weapons/armor to not have any offensive AoE magic, resulting in no starting item being awarded for this flag setting."
+	},
+	{
 		"Id": "startingEquipmentOneItem",
 		"title": "Starting Equipment - One Powerful Item",
 		"screenshot": null,
