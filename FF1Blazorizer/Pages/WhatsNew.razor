@@ -1,7 +1,30 @@
 @page "/WhatsNew"
 <div class="content px-4 tinted">
 	<div class="nes-container is-dark col-xs-12">
-        <h1><a href="https://4-6-4.finalfantasyrandomizer.com">Version 4.6.4</a></h1>
+		<h1><a href="https://4-7-0.finalfantasyrandomizer.com">Version 4.7.0</a></h1>
+		<h2>New Features</h2>
+		<ul>
+			<li>Shorter ROM filename when downloading a randomized ROM.</li>
+			<li>Introducing "<a href="https://4-7-0.finalfantasyrandomizer.com">/RomInfo</a>" - Instead of needing to provide a seed, flagstring, URL, and/or filename, simply use /RomInfo to analyze your ROM file. It will display version/seed/flag details players can then copy and paste for development when reporting bugs.</li>
+			<li>New option for Class Randomization: Transmooglifier</li>
+			<li>Experimental Feature: Airboat</li>
+			<li>Experimental Feature: Set RNG</li>
+			<li>Improved Lock Respond Rate. The game's Respond Rate is now controlled by a UI slider, and can no longer be changed by fast inputs during quick resets.</li>
+			<li>Shard Hunt now defaults to SHARD naming. Randomized Shard names (WEDGE, ORBLT) is now a Fun% option.</li>
+			<li>"Equip Shields" Class Blessing nows grants permission to equip Buckler and ProCape.</li>
+		</ul>
+		<h2>Bugfixes</h2>
+		<ul>
+			<li>Procedurally Generated Overworld: Airship floater area now has grass in its corners, preventing an uncommon soft-lock scenario where you could take off from a region but never land there again.</li>
+			<li>NPC Hint Givers will now correctly advise players of item locations (via the Sanity2 item placement algorithm).</li>
+			<li>Fixed an interaction to prevent "Sky Maze" option if Deep Dungeon is enabled.</li>
+			<li>Fixed a bug relating to Transmooglifier and NoOverworld compatibility.</li>
+			<li>Fixed a bug where "Orbs Required" could corrupt the site URL flagstring.</li>
+			<li>Fixed a bug where Bat Spoilers was causing a different seed hash to display for players using Fun Enemy Names.</li>
+			<li>Minor code cleanup and UI adjustments.</li>
+		</ul>
+
+		<h1><a href="https://4-6-4.finalfantasyrandomizer.com">Version 4.6.4</a></h1>
         <ul>
             <li>Winter Tournament Presets updated.</li>
 			<li>Fixed a bug where "hurt" class blessings could be canceled or transfered to other party members.</li>
