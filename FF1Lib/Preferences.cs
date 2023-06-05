@@ -14,9 +14,12 @@
 		public MapmanSlot MapmanSlot { get; set; } = MapmanSlot.Leader;
 		public bool DisableSpellCastFlash { get; set; } = true;
 		public bool LockRespondRate { get; set; } = true;
+		[IntegerFlag(1, 8)]
+		public int RespondRate { get; set; } = 8;
 		public bool UninterruptedMusic { get; set; } = false;
 		public bool ChangeLute { get; set; } = false;
 		public TitanSnack TitanSnack { get; set; } = TitanSnack.Ruby;
+		public bool randomShardNames { get; set; } = false;
 		public Fate HurrayDwarfFate { get; set; } = Fate.Spare;
 		public bool RenounceAutosort { get; set; } = false;
 		public bool RenounceChestInfo { get; set; } = false;
