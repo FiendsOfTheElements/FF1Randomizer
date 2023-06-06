@@ -6,9 +6,17 @@
 		<ul>
 			<li>Shorter ROM filename when downloading a randomized ROM.</li>
 			<li>Introducing "<a href="https://4-7-0.finalfantasyrandomizer.com/RomInfo">/RomInfo</a>" - Instead of needing to provide a seed, flagstring, URL, and/or filename, simply use /RomInfo to analyze your ROM file. It will display version/seed/flag details players can then copy and paste for development when reporting bugs.</li>
-			<li>New option for Class Randomization: Transmooglifier</li>
-			<li>Experimental Feature: Airboat</li>
-			<li>Experimental Feature: Set RNG</li>
+			<li>Transmooglifier, a new option for Class Randomization:
+			<ul>
+				<li>Generates six custom classes from a set of 26 possibilities, such as Geomancer and Juggler.</li>
+				<li>Each class will have semi-randomized spell permissions, stats, equipment, etc. appropriate for that class type.</li>
+				<li>Each class features a new custom sprite.</li>
+				<li>Sub-option for forcing a balanced set of classes (e.g. ensuring there is at least one Heavy Armor class).</li>
+				<li>Sub-option for rebalancing weapons to provide more viable end-game options for the various classes.</li>
+			</ul>
+			</li>
+			<li>Experimental Feature: Airboat, where the Floater allows the Ship to transform into the Airship and land in water.</li>
+			<li>Experimental Feature: Set RNG, which makes RNG more consistent (e.g. bosses have the same RNG) within a given seed.</li>
 			<li>Improved Lock Respond Rate. The game's Respond Rate is now controlled by a UI slider, and can no longer be changed by fast inputs during quick resets.</li>
 			<li>Shard Hunt now defaults to SHARD naming. Randomized Shard names (WEDGE, ORBLT) is now a Fun% option.</li>
 			<li>"Equip Shields" Class Blessing nows grants permission to equip Buckler and ProCape.</li>
@@ -18,7 +26,6 @@
 			<li>Procedurally Generated Overworld: Airship floater area now has grass in its corners, preventing an uncommon soft-lock scenario where you could take off from a region but never land there again.</li>
 			<li>NPC Hint Givers will now correctly advise players of item locations (via the Sanity2 item placement algorithm).</li>
 			<li>Fixed an interaction to prevent "Sky Maze" option if Deep Dungeon is enabled.</li>
-			<li>Fixed a bug relating to Transmooglifier and NoOverworld compatibility.</li>
 			<li>Fixed a bug where "Orbs Required" could corrupt the site URL flagstring.</li>
 			<li>Fixed a bug where Bat Spoilers was causing a different seed hash to display for players using Fun Enemy Names.</li>
 			<li>Minor code cleanup and UI adjustments.</li>

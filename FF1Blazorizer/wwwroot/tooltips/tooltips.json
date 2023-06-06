@@ -1548,7 +1548,7 @@
 		"Id": "TransmooglifierCheckBox",
 		"title": "Transmooglifier",
 		"screenshot": "transmooglifier.gif",
-		"description": "Procedurally generates six custom classes from a set of 26. Each class corresponds to heuristically randomized spell permissions, stats, equipment sets, abilities, and blursings - this means the classes will have unique properties every time. They can be described as \"What you might expect from a class named X\".\nThis also disables most specific balance options. Character specific buffs will refer to character slot. Example: Fighter XP will now refer to 'Slot 0 character class XP Bonus'."
+		"description": "Procedurally generates six custom classes from a set of 26. Each class corresponds to heuristically randomized spell permissions, stats, equipment sets, abilities, and blursings - this means the classes will have unique properties every time. They can be described as \"What you might expect from a class named X\".\nThis also disables most specific balance options. Character specific buffs will refer to character slot. Example: Fighter XP will now refer to 'Slot 0 character class XP Bonus'.\nNote: It is recommended to disable any custom sprites when using Transmooglifier, since Transmooglifier also uses custom sprites."
 	},
 	{
 		"Id": "GuaranteeCustomClassCompositionCheckBox",
@@ -1662,7 +1662,7 @@
 		"Id": "startingEquipmentRandomAoE",
 		"title": "Starting Equipment - Random AoE Caster Item",
 		"screenshot": null,
-		"description": "Adds one item capable of casting magic that targets all enemies.\nNote: Altering the Item Magic Mode may cause the available pool of weapons/armor to not have any offensive AoE magic, resulting in no starting item being awarded for this flag setting."
+		"description": "Adds one item capable of casting magic that targets all enemies.\nNote: Altering the Item Magic Mode may cause the available pool of weapons/armor to not have any offensive AoE magic, resulting in no AoE starting item being awarded for this flag setting."
 	},
 	{
 		"Id": "startingEquipmentOneItem",
