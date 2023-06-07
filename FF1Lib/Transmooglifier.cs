@@ -60,6 +60,9 @@ namespace FF1Lib
 			if ((bool)flags.GuaranteeCustomClassComposition)
 				classes = ClassesGuaranteed(classes);
 
+			if ((bool)flags.WhiteMageHarmEveryone)
+				ClassDef.ImprovedHarmRequested = true;
+
 			for (int i = 0; i < 6; i++)
 			{
 				classDescriptions.Add(classes[i].PublishToClass(i));
@@ -1183,6 +1186,10 @@ namespace FF1Lib
 		public float WoodAdept;
 		public float SteelLord;
 
+		// More Blursings?
+		public bool ImprovedHarm;
+		public static bool ImprovedHarmRequested = false;
+
 		// Returns a description string
 		public String PublishToClass(int classIndex)
 		{
@@ -1304,6 +1311,9 @@ namespace FF1Lib
 				description += "Steel Lord\n";
 			if (rom.ClassData[(Classes)classIndex].WoodAdept)
 				description += "Wood Adept\n";
+
+			if (ImprovedHarm)
+				description += "Better Harm\n";
 
 			description += "\n";
 
@@ -1637,6 +1647,10 @@ namespace FF1Lib
 					ret.AddRange(Transmooglifier.spellFamilies[s]);
 					promoMagic.Remove(s); // Make sure we can acquire different spells on level up
 					finalSchools.Add(s);
+
+					// Special case to see if this character gets Improved Harm when flag is set
+					if ((s == "white" || s == "holy" || s == "all") && ImprovedHarmRequested)
+						ImprovedHarm = true;
 				}
 				if (finalSchools.Count >= MagicSchoolsMax)
 					break;
@@ -1787,6 +1801,14 @@ namespace FF1Lib
 				rom.ClassData[c].SteelLord = rom.ClassData[p].SteelLord = true;
 				rom.ArmorPermissions.AddPermission(c, Item.SteelArmor);
 				rom.ArmorPermissions.AddPermission(p, Item.SteelArmor);
+			}
+
+			if (ImprovedHarm)
+			{
+				// Changes the character code from White Mage slot 4 to this one
+				ClassDef.rom.PutInBank(0x1C, 0xA200 + 0x21, new byte[] { (byte)(classIndex) });
+				ClassDef.rom.PutInBank(0x1C, 0xA200 + 0x25, new byte[] { (byte)(classIndex + 6) });
+				ImprovedHarmRequested = false;
 			}
 		}
 
