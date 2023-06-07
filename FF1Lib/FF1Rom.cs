@@ -919,7 +919,7 @@ public partial class FF1Rom : NesRom
 
 		if (flags.EnemyTrapTiles == TrapTileMode.Remove)
 		{
-			RemoveTrapTiles(flags.EnemizerEnabled);
+			RemoveTrapTiles(flags.EnemizerEnabled || flags.SetRNG);
 		}
 
 		await this.Progress();
@@ -1328,7 +1328,7 @@ public partial class FF1Rom : NesRom
 
 		if (preferences.LockRespondRate)
 		{
-			LockRespondRate();
+			LockRespondRate(preferences.RespondRate);
 		}
 
 		if (preferences.UninterruptedMusic)
@@ -1398,6 +1398,11 @@ public partial class FF1Rom : NesRom
 		if(flags.OpenChestsInOrder)
 		{
 			OpenChestsInOrder();
+		}
+
+		if(flags.SetRNG)
+		{
+			SetRNG(flags);
 		}
 
 		await this.Progress("Randomization Completed");

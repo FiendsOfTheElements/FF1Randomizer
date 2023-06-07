@@ -514,6 +514,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OpenChestsInOrder"));
 			}
 		}
+		public bool SetRNG
+		{
+			get => Flags.SetRNG;
+			set
+			{
+				Flags.SetRNG = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SetRNG"));
+			}
+		}
 		public WorldWealthMode WorldWealth
 		{
 			get => Flags.WorldWealth;
@@ -2926,6 +2935,16 @@ namespace FF1Lib
 			{
 				Preferences.LockRespondRate = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LockRespondRate"));
+			}
+		}
+
+		public int RespondRate
+		{
+			get => Preferences.RespondRate;
+			set
+			{
+				Preferences.RespondRate = value;
+				RaisePropertyChanged();
 			}
 		}
 

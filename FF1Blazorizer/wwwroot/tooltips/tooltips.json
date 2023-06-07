@@ -1659,6 +1659,12 @@
 		"description": "Fills up the party's entire inventory with random equipment. There is a small chance to roll rare and legendary items into this mix of gear."
 	},
 	{
+		"Id": "startingEquipmentRandomAoE",
+		"title": "Starting Equipment - Random AoE Caster Item",
+		"screenshot": null,
+		"description": "Adds one item capable of casting magic that targets all enemies.\nNote: Altering the Item Magic Mode may cause the available pool of weapons/armor to not have any offensive AoE magic, resulting in no starting item being awarded for this flag setting."
+	},
+	{
 		"Id": "startingEquipmentOneItem",
 		"title": "Starting Equipment - One Powerful Item",
 		"screenshot": null,
@@ -2312,7 +2318,7 @@
 		"Id": "lockRespondRateCheckBox",
 		"title": "Lock Respond Rate",
 		"screenshot": "lockRespondRateCheckBox.png",
-		"description": "Pressing LEFT or RIGHT on the Title Screen will not change the Respond Rate from its preferred value of 8.\nThis prevents accidental changes to the text speed during gameplay."
+		"description": "Pressing LEFT or RIGHT on the New Game screen will not change the Respond Rate from the slider value selected here.\nThis prevents accidental changes to the battle text speed during gameplay."
 	},
 	{
 		"Id": "uninterruptedMusicCheckBox",
@@ -2335,6 +2341,11 @@
 		"Id": "OpenChestsInOrder",
 		"title": "Open Chests In Order",
 		"description": "Non incentive items are opened in order. \n\nWarning, if your inventory gets full it will block your equipment progress."
+	},
+	{
+		"Id": "SetRNG",
+		"title": "Set RNG",
+		"description": "Between two runners playing the same seed, identical battles will start at the same location in the RNG table and the RNG pointer will not progress each frame.\n\nAll bosses and spike tiles will have the same RNG.\n\nThe first through nth random encounter will consume the same RNG values for each battle. If you are facing an issue with a particular random encounter try soft reseting."
 	},
 	{
 		"Id": "AirBoatCheckBox",
