@@ -1248,7 +1248,7 @@ namespace FF1Lib
 			// Add Weapon information here. There will never be more than 6 weapons.
 			description += "\nEquipment  \n";
 
-			if (finalSets.Count > 0)
+			if (finalSets.Count > 0 || rom.ClassData[(Classes)classIndex].UnarmedAttack)
 			{
 				var weaponTypes = "";
 
