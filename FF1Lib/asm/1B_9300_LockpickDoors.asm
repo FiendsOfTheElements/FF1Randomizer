@@ -1,12 +1,15 @@
-﻿.include "Constants.inc"
+.include "Constants.inc"
 .include "variables.inc"
 
 SwapPRG = $FE03
 SMMove_Norm_RTS = $CE52
 
+class_lut_a = $ED
+class_lut_b = $EE
+
 ;currently in the MENU_BANK
 ;this replacement could be a lot less bytes if we use a temporary memory to store A
-;A gets overwriten by the bank swap method and we cant grab it from the stack without some heavy stack manipulation
+;A gets overwritten by the bank swap method and we cant grab it from the stack without some heavy stack manipulation
 ;so we store it in X to carry through bank swaps
 .org $CE53
 TAX
@@ -24,6 +27,13 @@ BCS SMMove_Norm_RTS ;save a byte by just branching to a nearby rts instead of ha
 ;exact change replacing 18 bytes at CE53
 ;AA 98 48 A9 1B 20 03 FE 20 00 93 C0 01 68 A8 8A B0 ED
 
+
+.ORG $B268 ; for reference
+lut_Lockpicking:
+  .BYTE $00, $00, $00, $00, $00, $00
+  .BYTE $00, $00, $00, $00, $00, $00
+  .BYTE $00
+
 ;bank 1b
 .ORG $9300
 CheckDoorLocked:
@@ -37,58 +47,64 @@ CheckDoorLocked:
   STX tileprop+1            ; erase the secondary attribute byte (prevent it from being a locked shop)
   LDX item_mystickey        ; check to see if the player has the key
   BNE DoorUnlocked             ; if they do, open the door
-    ;all of this checking is rom space ineffecient but I don't know if we have available temp memory to do an index
+    ;all of this checking is rom space inefficient but I don't know if we have available temp memory to do an index
     ;check to see if they have a thief/ninja in the party, and they're at or above level 10, the class and level are randomizable at rom creation
-    LDX ch_level
-    CPX #$09
-    BCC Slot1UnderLeveled
-    LDX ch_class
-    CPX #$01
-    BEQ DoorUnlocked
-    CPX #$07
-    BEQ DoorUnlocked
+    PHA
+    LDA #$00
+    PHA
+    LDA #<lut_Lockpicking
+    STA class_lut_a
+    LDA #>lut_Lockpicking
+    STA class_lut_b
+    LDY #$00
+    CheckLockpicking:
+      ; check to see if they have the Lockpicking bonus
+      JSR CheckIfClass
+      BNE NextClass
+    CheckLevel:
+      LDX ch_level,Y
+      CPX #$09
+      BCS DoorUnlocked
+      JMP NextClass
+    NextClass:
+      CLC
+      PLA
+      ADC #$40
+      BCS UnderLeveled
+      TAY
+      PHA
+      JMP CheckLockpicking
 
-    Slot1UnderLeveled:
-    LDX ch_level+$40
-    CPX #$09
-    BCC Slot2UnderLeveled
-    LDX ch_class+$40
-    CPX #$01
-    BEQ DoorUnlocked
-    CPX #$07
-    BEQ DoorUnlocked
-
-    Slot2UnderLeveled:
-    LDX ch_level+$80
-    CPX #$09
-    BCC Slot3UnderLeveled
-    LDX ch_class+$80
-    CPX #$01
-    BEQ DoorUnlocked
-    CPX #$07
-    BEQ DoorUnlocked
-
-    Slot3UnderLeveled:
-    LDX ch_level+$C0
-    CPX #$09
-    BCC Slot4UnderLeveled
-    LDX ch_class+$C0
-    CPX #$01
-    BEQ DoorUnlocked
-    CPX #$07
-    BEQ DoorUnlocked
-
-    Slot4UnderLeveled:
+  UnderLeveled:
     LDY #$01
+    PLA
     TAX
     LDA #BANK_MENUS
     JMP SwapPRG
 
   DoorUnlocked:
     LDY #$00
+    PLA
+    PLA
     TAX
     LDA #BANK_MENUS
     JMP SwapPRG
 
-;105 bytes
-;8A 4A 29 03 C9 02 D0 59 A2 00 86 45 AE 25 60 D0 50 AE 26 61 E0 09 90 0B AE 00 61 E0 01 F0 42 E0 07 F0 3E AE 66 61 E0 09 90 0B AE 40 61 E0 01 F0 30 E0 07 F0 2C AE A6 61 E0 09 90 0B AE 80 61 E0 01 F0 1E E0 07 F0 1A AE E6 61 E0 09 90 0B AE C0 61 E0 01 F0 0C E0 07 F0 08 A0 01 AA A9 0E 4C 03 FE A0 00 AA A9 0E 4C 03 FE
+CheckIfClass:
+  LDA ch_class, Y
+  CMP #$0C
+  BCC NotANone
+    LDA #$0C
+
+NotANone:
+  STY tmp
+  TAY
+  LDA (class_lut_a), Y
+  CMP #$01
+  PHP
+  LDY tmp
+  PLP
+  RTS
+
+;97 bytes
+;8A4A2903C902D03AA2008645AE2560D03148A90048A96885EDA9B285EEA000204C93D00ABE2661E009B0174C2E9318686940B005A8484C1F93A00168AAA90E4C03FEA0006868AAA90E4C03FEB90061C90C9002A90C8410A8B1EDC90108A4102860

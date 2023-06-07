@@ -1049,7 +1049,7 @@ public partial class FF1Rom : NesRom
 			MDefChanges(flags.MDefMode);
 		}
 
-		if ((bool)flags.Lockpicking)
+		if (flags.Lockpicking != Lockpicking.None)
 		{
 			EnableLockpicking();
 			SetLockpickingLevel(flags.LockpickingLevelRequirement);

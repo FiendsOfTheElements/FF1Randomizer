@@ -691,7 +691,7 @@ namespace FF1Lib
 
 		public bool? TouchIncludeBosses { get; set; } = false;
 
-		public bool? Lockpicking { get; set; } = false;
+		public Lockpicking Lockpicking { get; set; } = Lockpicking.None;
 
 		public bool? ReducedLuck { get; set; } = false;
 
