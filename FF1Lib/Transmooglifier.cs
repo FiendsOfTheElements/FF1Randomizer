@@ -340,7 +340,7 @@ namespace FF1Lib
 				mageLevelPromotion = 4,
 				spellChargeGrowth = 20,
 				spellChargeMax = 4,
-				possibleMagic = new List<string> { "earth" },
+				possibleMagic = new List<string> { },
 				MagicSchoolsMax = 1,
 				averageMagicSchools = 0.25f,
 				promoMagic = new List<string> { "ailment", "health", "buff" },
