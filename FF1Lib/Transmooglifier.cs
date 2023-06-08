@@ -595,7 +595,8 @@ namespace FF1Lib
 				possibleWeapon = new List<WeaponSprite> { WeaponSprite.FALCHION, WeaponSprite.SCIMITAR },
 				weaponsMax = 2,
 				averageWeapons = 0.75f,
-				SteelLord = 0.4f
+				SteelLord = 0.4f,
+				InnateResist = (byte)SpellElement.Poison
 			});
 
 			// Berserker / Gladiator
@@ -676,7 +677,8 @@ namespace FF1Lib
 				possibleWeapon = new List<WeaponSprite> { WeaponSprite.FALCHION, WeaponSprite.AXE, WeaponSprite.SHORTSWORD },
 				weaponsMax = 2,
 				averageWeapons = 1f,
-				SteelLord = 0.4f
+				SteelLord = 0.4f,
+				InnateResist = (byte)SpellElement.Death
 			});
 
 			// Soldier / Dark Knight
@@ -790,7 +792,8 @@ namespace FF1Lib
 				averageMagicSchools = 3f,
 				armourWeight = CLOTH,
 				promoArmourWeight = CLOTH,
-				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.KNIFE }
+				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.KNIFE },
+				InnateResist = (byte)SpellElement.Status
 			});
 
 			// Scholar / Sage
@@ -848,7 +851,8 @@ namespace FF1Lib
 				possibleWeapon = new List<WeaponSprite> { WeaponSprite.STAFF, WeaponSprite.IRONSTAFF },
 				weaponsMax = 2,
 				averageWeapons = 0.5f,
-				UnarmedAttack = 0.2f
+				UnarmedAttack = 0.2f,
+				InnateResist = (byte)SpellElement.Fire | (byte)SpellElement.Ice | (byte)SpellElement.Lightning | (byte)SpellElement.Earth
 			});
 
 			// Magus / Arcanist
@@ -938,7 +942,8 @@ namespace FF1Lib
 				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.HAMMER },
 				possibleWeapon = new List<WeaponSprite> { WeaponSprite.STAFF, WeaponSprite.IRONSTAFF },
 				weaponsMax = 2,
-				averageWeapons = 0.5f
+				averageWeapons = 0.5f,
+				InnateResist = (byte)SpellElement.Time
 			});
 
 			// Moogle / Mog Knight
@@ -1206,6 +1211,8 @@ namespace FF1Lib
 
 			CommitArmor(classIndex);
 
+			CommitResistances(classIndex);
+
 			CommitBlursingSpecials(classIndex);
 
 			return GenerateDescription(classIndex);
@@ -1302,6 +1309,31 @@ namespace FF1Lib
 
 			// Add Armor information. Much shorter to code.
 			description += getArmourString(armourWeight) + "\n";
+
+			// Innate Resistances
+			if (InnateResist > 0)
+			{
+				description += "Resist ";
+
+				if ((InnateResist & (byte)SpellElement.Status) > 0)
+					description += "€s";
+				if ((InnateResist & (byte)SpellElement.Poison) > 0)
+					description += "€p";
+				if ((InnateResist & (byte)SpellElement.Time) > 0)
+					description += "€T";
+				if ((InnateResist & (byte)SpellElement.Death) > 0)
+					description += "€d";
+				if ((InnateResist & (byte)SpellElement.Fire) > 0)
+					description += "€f";
+				if ((InnateResist & (byte)SpellElement.Ice) > 0)
+					description += "€i";
+				if ((InnateResist & (byte)SpellElement.Lightning) > 0)
+					description += "€t";
+				if ((InnateResist & (byte)SpellElement.Earth) > 0)
+					description += "€e";
+
+				description += "\n";
+			}
 
 			// Special abilities from Blursings
 			if (rom.ClassData[(Classes)classIndex].CatClawMaster)
@@ -1763,6 +1795,15 @@ namespace FF1Lib
 					return i;
 			}
 			return 0;
+		}
+
+		public void CommitResistances(int classIndex)
+		{
+			Classes c = (Classes)classIndex;
+			Classes p = (Classes)(classIndex + 6);
+
+			rom.ClassData[c].InnateResist = InnateResist;
+			rom.ClassData[p].InnateResist = InnateResist;
 		}
 
 		public void CommitBlursingSpecials(int classIndex)
