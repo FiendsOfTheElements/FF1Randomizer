@@ -6,6 +6,7 @@ using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.IO;
+using System.ComponentModel;
 
 /* To Implement
 
@@ -21,6 +22,18 @@ using System.IO;
 
 namespace FF1Lib
 {
+	public enum TransmooglifierVariance
+	{
+		[Description("Low (10%)")]
+		Low,
+
+		[Description("Moderate (25%)")]
+		Moderate,
+
+		[Description("High (50%)")]
+		High
+	}
+
 	public class Transmooglifier
 	{
 		// Armor definitions. Why not an enum? Who knows...
@@ -43,6 +56,25 @@ namespace FF1Lib
 			ClassDef.rng = rng;
 			ClassDef.newPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, rom);
 
+			switch (flags.TransmooglifierVariance)
+			{
+				case TransmooglifierVariance.Low:
+					ClassDef.percentUp = 1.1f;
+					ClassDef.percentDown = 0.9f;
+					ClassDef.flatVariance = 1;
+					break;
+				case TransmooglifierVariance.Moderate:
+					ClassDef.percentUp = 1.25f;
+					ClassDef.percentDown = 0.75f;
+					ClassDef.flatVariance = 1;
+					break;
+				case TransmooglifierVariance.High:
+					ClassDef.percentUp = 1.5f;
+					ClassDef.percentDown = 0.5f;
+					ClassDef.flatVariance = 2;
+					break;
+			}
+
 			spellFamilies = new Dictionary<string, List<MagicSpell>>();
 			PopulateSpellTypes(rom);
 
@@ -60,6 +92,9 @@ namespace FF1Lib
 			if ((bool)flags.GuaranteeCustomClassComposition)
 				classes = ClassesGuaranteed(classes);
 
+			if ((bool)flags.WhiteMageHarmEveryone)
+				ClassDef.ImprovedHarmRequested = true;
+
 			for (int i = 0; i < 6; i++)
 			{
 				classDescriptions.Add(classes[i].PublishToClass(i));
@@ -76,6 +111,7 @@ namespace FF1Lib
 			LoadImages(classes);
 		}
 
+		// This function is for debug, testing, and balancing
 		void GenerateStats(MT19337 rng)
 		{
 			int[] weapons = new int[12];
@@ -180,12 +216,12 @@ namespace FF1Lib
 
 					if (p.Count() == 0)
 						timesUnCastableSpell++;
-				}	
+				}
 			}
 
-			
+
 			Console.WriteLine("Weapon classes: " + string.Join(", ", weapons));
-			Console.WriteLine("Unequippable Weapons Avg: " + (float)(unequippableWeaponsTotal/1000f));
+			Console.WriteLine("Unequippable Weapons Avg: " + (float)(unequippableWeaponsTotal / 1000f));
 			Console.WriteLine("Armour Class Avg: " + (float)(armorClassTotal / 1000f / 6f));
 			Console.WriteLine("Times Heavy Armor was Around: " + heavyArmorAvailable);
 			Console.WriteLine("Times No Equippable Weapon in Coneria: " + timesNoConeriaWeapon);
@@ -198,12 +234,12 @@ namespace FF1Lib
 		// Unusued, for Guarantee Classes if implemented
 		public List<ClassDef> ClassesGuaranteed(List<ClassDef> classes)
 		{
-			List<string> Heavies  = new List<string> { "FIGHTER", "RONIN", "MARAUDER", "LANCER", "SOLDIER" };
-			List<string> Lights   = new List<string> { "THIEF", "PIRATE", "FENCER", "HUNTER", "JUGGLER" };
+			List<string> Heavies = new List<string> { "FIGHTER", "RONIN", "MARAUDER", "LANCER", "SOLDIER" };
+			List<string> Lights = new List<string> { "THIEF", "PIRATE", "FENCER", "HUNTER", "JUGGLER" };
 			List<string> Punchers = new List<string> { "Bl.BELT", "PUGILIST", "BERSERKR", "CHOCOBO" };
-			List<string> Hybrids  = new List<string> { "RedMAGE", "DEFENDER", "M.KNIGHT", "MOOGLE" };
-			List<string> Healers  = new List<string> { "Wh.MAGE", "PRIEST", "SQUIRE", "SCHOLAR" };
-			List<string> Nukers   = new List<string> { "Bl.MAGE", "GEOMANCR", "TimeMAGE", "MAGUS" };
+			List<string> Hybrids = new List<string> { "RedMAGE", "DEFENDER", "M.KNIGHT", "MOOGLE" };
+			List<string> Healers = new List<string> { "Wh.MAGE", "PRIEST", "SQUIRE", "SCHOLAR" };
+			List<string> Nukers = new List<string> { "Bl.MAGE", "GEOMANCR", "TimeMAGE", "MAGUS" };
 
 			Heavies.Shuffle(ClassDef.rng);
 			Lights.Shuffle(ClassDef.rng);
@@ -236,8 +272,8 @@ namespace FF1Lib
 				ClassDef.rom.ImportMapmanSync(c.getImage(), c.classIndex, 24, 0, ClassDef.rom.NESpalette);
 				ClassDef.rom.ImportBattleSpriteSync(c.getImage(), c.classIndex, 0, 0, ClassDef.rom.NESpalette);
 
-				ClassDef.rom.ImportMapmanSync(c.getImage(true), c.classIndex+6, 24, 0, ClassDef.rom.NESpalette);
-				ClassDef.rom.ImportBattleSpriteSync(c.getImage(true), c.classIndex+6, 0, 0, ClassDef.rom.NESpalette);
+				ClassDef.rom.ImportMapmanSync(c.getImage(true), c.classIndex + 6, 24, 0, ClassDef.rom.NESpalette);
+				ClassDef.rom.ImportBattleSpriteSync(c.getImage(true), c.classIndex + 6, 0, 0, ClassDef.rom.NESpalette);
 			}
 
 			// add palette for "none" mapman
@@ -336,7 +372,7 @@ namespace FF1Lib
 				mageLevelPromotion = 4,
 				spellChargeGrowth = 20,
 				spellChargeMax = 4,
-				possibleMagic = new List<string> { "earth" },
+				possibleMagic = new List<string> { },
 				MagicSchoolsMax = 1,
 				averageMagicSchools = 0.25f,
 				promoMagic = new List<string> { "ailment", "health", "buff" },
@@ -499,7 +535,7 @@ namespace FF1Lib
 				shortName = "Mr",
 				promoShortName = "Vk",
 				HP = 35,
-				STR = 60,
+				STR = 55,
 				AGI = 20,
 				VIT = 40,
 				LCK = 15,
@@ -521,7 +557,7 @@ namespace FF1Lib
 				shortName = "Ln",
 				promoShortName = "Dr",
 				HP = 24,
-				STR = 55,
+				STR = 50,
 				AGI = 15,
 				VIT = 30,
 				LCK = 20,
@@ -546,7 +582,7 @@ namespace FF1Lib
 				STR = 33,
 				AGI = 40,
 				VIT = 14,
-				LCK = 70,
+				LCK = 60,
 				HIT = 2,
 				MDEF = 1,
 				mageLevel = 8,
@@ -573,7 +609,7 @@ namespace FF1Lib
 				promoShortName = "As",
 				HP = 18,
 				STR = 40,
-				AGI = 75,
+				AGI = 65,
 				VIT = 14,
 				LCK = 30,
 				HIT = 5,
@@ -591,7 +627,8 @@ namespace FF1Lib
 				possibleWeapon = new List<WeaponSprite> { WeaponSprite.FALCHION, WeaponSprite.SCIMITAR },
 				weaponsMax = 2,
 				averageWeapons = 0.75f,
-				SteelLord = 0.4f
+				SteelLord = 0.4f,
+				InnateResist = (byte)SpellElement.Poison
 			});
 
 			// Berserker / Gladiator
@@ -602,7 +639,7 @@ namespace FF1Lib
 				shortName = "Br",
 				promoShortName = "Gd",
 				HP = 35,
-				STR = 75,
+				STR = 65,
 				AGI = 10,
 				VIT = 50,
 				LCK = 5,
@@ -655,7 +692,7 @@ namespace FF1Lib
 				HP = 35,
 				STR = 38,
 				AGI = 10,
-				VIT = 60,
+				VIT = 55,
 				LCK = 20,
 				HIT = 3,
 				MDEF = 5,
@@ -672,7 +709,8 @@ namespace FF1Lib
 				possibleWeapon = new List<WeaponSprite> { WeaponSprite.FALCHION, WeaponSprite.AXE, WeaponSprite.SHORTSWORD },
 				weaponsMax = 2,
 				averageWeapons = 1f,
-				SteelLord = 0.4f
+				SteelLord = 0.4f,
+				InnateResist = (byte)SpellElement.Death
 			});
 
 			// Soldier / Dark Knight
@@ -772,9 +810,9 @@ namespace FF1Lib
 				promoShortName = "Ba",
 				HP = 9,
 				STR = 12,
-				AGI = 75,
+				AGI = 65,
 				VIT = 8,
-				LCK = 75,
+				LCK = 65,
 				HIT = 3,
 				MDEF = 4,
 				mageLevel = 8,
@@ -786,7 +824,8 @@ namespace FF1Lib
 				averageMagicSchools = 3f,
 				armourWeight = CLOTH,
 				promoArmourWeight = CLOTH,
-				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.KNIFE }
+				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.KNIFE },
+				InnateResist = (byte)SpellElement.Status
 			});
 
 			// Scholar / Sage
@@ -844,7 +883,8 @@ namespace FF1Lib
 				possibleWeapon = new List<WeaponSprite> { WeaponSprite.STAFF, WeaponSprite.IRONSTAFF },
 				weaponsMax = 2,
 				averageWeapons = 0.5f,
-				UnarmedAttack = 0.2f
+				UnarmedAttack = 0.2f,
+				InnateResist = (byte)SpellElement.Fire | (byte)SpellElement.Ice | (byte)SpellElement.Lightning | (byte)SpellElement.Earth
 			});
 
 			// Magus / Arcanist
@@ -917,7 +957,7 @@ namespace FF1Lib
 				STR = 8,
 				AGI = 44,
 				VIT = 10,
-				LCK = 60,
+				LCK = 55,
 				HIT = 1,
 				MDEF = 5,
 				guaranteedMagic = new List<string> { "time" },
@@ -934,7 +974,8 @@ namespace FF1Lib
 				guaranteedWeapon = new List<WeaponSprite> { WeaponSprite.HAMMER },
 				possibleWeapon = new List<WeaponSprite> { WeaponSprite.STAFF, WeaponSprite.IRONSTAFF },
 				weaponsMax = 2,
-				averageWeapons = 0.5f
+				averageWeapons = 0.5f,
+				InnateResist = (byte)SpellElement.Time
 			});
 
 			// Moogle / Mog Knight
@@ -963,7 +1004,7 @@ namespace FF1Lib
 				armourWeight = CLOTH,
 				promoArmourWeight = KNIGHT,
 				guaranteedWeapon = new List<WeaponSprite> { },
-				possibleWeapon = new List<WeaponSprite> { WeaponSprite.AXE, WeaponSprite.SHORTSWORD, WeaponSprite.HAMMER, WeaponSprite.LONGSWORD, WeaponSprite.SCIMITAR, WeaponSprite.FALCHION,  WeaponSprite.KNIFE, WeaponSprite.STAFF, WeaponSprite.IRONSTAFF, WeaponSprite.RAPIER },
+				possibleWeapon = new List<WeaponSprite> { WeaponSprite.AXE, WeaponSprite.SHORTSWORD, WeaponSprite.HAMMER, WeaponSprite.LONGSWORD, WeaponSprite.SCIMITAR, WeaponSprite.FALCHION, WeaponSprite.KNIFE, WeaponSprite.STAFF, WeaponSprite.IRONSTAFF, WeaponSprite.RAPIER },
 				weaponsMax = 5,
 				averageWeapons = 3f
 			});
@@ -1028,7 +1069,7 @@ namespace FF1Lib
 		public void BalanceVanillaWeaponsForCustomClasses(FF1Rom rom)
 		{
 			// Improve these to be end game weapons
-			Weapon CatClaw = new Weapon((int)Item.CatClaw-(int)Item.WoodenNunchucks, rom);
+			Weapon CatClaw = new Weapon((int)Item.CatClaw - (int)Item.WoodenNunchucks, rom);
 			CatClaw.Crit += 25;
 			CatClaw.writeWeaponMemory(rom);
 
@@ -1061,7 +1102,7 @@ namespace FF1Lib
 			DragonSword.Damage += 10;
 			DragonSword.Crit += 30;
 
-			DragonSword.Name = DragonSword.Name[0..6]+"@N";
+			DragonSword.Name = DragonSword.Name[0..6] + "@N";
 
 			DragonSword.writeWeaponMemory(rom);
 
@@ -1091,6 +1132,11 @@ namespace FF1Lib
 
 	public class ClassDef
 	{
+		// Random Ranges
+		public static float percentUp = 1.25f;
+		public static float percentDown = 0.75f;
+		public static int flatVariance = 1;
+
 		// For conveniece
 		public static FF1Rom rom;
 		public static MT19337 rng;
@@ -1183,6 +1229,10 @@ namespace FF1Lib
 		public float WoodAdept;
 		public float SteelLord;
 
+		// More Blursings?
+		public bool ImprovedHarm;
+		public static bool ImprovedHarmRequested = false;
+
 		// Returns a description string
 		public String PublishToClass(int classIndex)
 		{
@@ -1197,6 +1247,8 @@ namespace FF1Lib
 			CommitWeapons(classIndex);
 
 			CommitArmor(classIndex);
+
+			CommitResistances(classIndex);
 
 			CommitBlursingSpecials(classIndex);
 
@@ -1240,7 +1292,7 @@ namespace FF1Lib
 			// Add Weapon information here. There will never be more than 6 weapons.
 			description += "\nEquipment  \n";
 
-			if (finalSets.Count > 0)
+			if (finalSets.Count > 0 || rom.ClassData[(Classes)classIndex].UnarmedAttack)
 			{
 				var weaponTypes = "";
 
@@ -1295,6 +1347,31 @@ namespace FF1Lib
 			// Add Armor information. Much shorter to code.
 			description += getArmourString(armourWeight) + "\n";
 
+			// Innate Resistances
+			if (InnateResist > 0)
+			{
+				description += "Resist ";
+
+				if ((InnateResist & (byte)SpellElement.Status) > 0)
+					description += "€s";
+				if ((InnateResist & (byte)SpellElement.Poison) > 0)
+					description += "€p";
+				if ((InnateResist & (byte)SpellElement.Time) > 0)
+					description += "€T";
+				if ((InnateResist & (byte)SpellElement.Death) > 0)
+					description += "€d";
+				if ((InnateResist & (byte)SpellElement.Fire) > 0)
+					description += "€f";
+				if ((InnateResist & (byte)SpellElement.Ice) > 0)
+					description += "€i";
+				if ((InnateResist & (byte)SpellElement.Lightning) > 0)
+					description += "€t";
+				if ((InnateResist & (byte)SpellElement.Earth) > 0)
+					description += "€e";
+
+				description += "\n";
+			}
+
 			// Special abilities from Blursings
 			if (rom.ClassData[(Classes)classIndex].CatClawMaster)
 				description += "CatClaw Ace\n";
@@ -1304,6 +1381,9 @@ namespace FF1Lib
 				description += "Steel Lord\n";
 			if (rom.ClassData[(Classes)classIndex].WoodAdept)
 				description += "Wood Adept\n";
+
+			if (ImprovedHarm)
+				description += "Better Harm\n";
 
 			description += "\n";
 
@@ -1403,8 +1483,8 @@ namespace FF1Lib
 			rom.ItemsText[0xF0 + classIndex + 6] = promoName.PadRight(8);
 
 			// Shop info Panel - everywhere else uses regular classes then promoted, but this table for some reason uses reg, pro, reg, pro, reg, pro, etc...
-			rom.InfoClassAbbrev[classIndex*2] = shortName;
-			rom.InfoClassAbbrev[classIndex*2+1] = promoShortName;
+			rom.InfoClassAbbrev[classIndex * 2] = shortName;
+			rom.InfoClassAbbrev[classIndex * 2 + 1] = promoShortName;
 		}
 
 		// Commit Stats to the character class
@@ -1444,9 +1524,9 @@ namespace FF1Lib
 
 		public void RollStats()
 		{
-			float up = 1.25f;
-			float dwn = 0.75f;
-			int v = 1; // roll modifier for Hit/MDEF
+			float up = percentUp;
+			float dwn = percentDown;
+			int v = flatVariance; // roll modifier for Hit/MDEF
 			HP = Math.Clamp(Rng.Between(rng, (int)(HP * dwn), (int)(HP * up)), 0, 100);
 			STR = Math.Clamp(Rng.Between(rng, (int)(STR * dwn), (int)(STR * up)), 0, 100);
 			AGI = Math.Clamp(Rng.Between(rng, (int)(AGI * dwn), (int)(AGI * up)), 0, 100);
@@ -1469,7 +1549,8 @@ namespace FF1Lib
 
 			// First third gets half of our total stat levels, + remainder. If there's not enough, we pad it with no grows.
 			var growth = Enumerable.Repeat(true, sixths * 3 + remainder).ToList();
-			if (growth.Count < 16) {
+			if (growth.Count < 16)
+			{
 				growth.AddRange(Enumerable.Repeat(false, 16 - sixths * 3 + remainder).ToList());
 				growth.Shuffle(rng);
 			}
@@ -1522,7 +1603,7 @@ namespace FF1Lib
 			}
 
 			rom.WeaponPermissions.AddPermission((Classes)i, Item.Masamune);
-			rom.WeaponPermissions.AddPermission((Classes)i+6, Item.Masamune);
+			rom.WeaponPermissions.AddPermission((Classes)i + 6, Item.Masamune);
 		}
 
 		public List<WeaponSprite> RollWeaponSet()
@@ -1552,7 +1633,8 @@ namespace FF1Lib
 			newPermissions.ClearPermissions(c);
 			newPermissions.ClearPermissions(p);
 
-			foreach (Item i in ItemLists.AllArmor) {
+			foreach (Item i in ItemLists.AllArmor)
+			{
 				if (isEquippable(i, armourWeight))
 					newPermissions.AddPermission(c, i);
 				if (isEquippable(i, pam, true))
@@ -1620,6 +1702,8 @@ namespace FF1Lib
 				if (sp.Level <= mageLevel + mageLevelPromotion)
 					rom.SpellPermissions.AddPermission(p, (SpellSlots)sp.Index);
 
+			rom.ClassData[c].SpCStarting = 0;
+
 			// Spell Charge Growth
 			CommitSpellChargeGrowth(c, p, finalSchools.Count == 0);
 		}
@@ -1637,6 +1721,10 @@ namespace FF1Lib
 					ret.AddRange(Transmooglifier.spellFamilies[s]);
 					promoMagic.Remove(s); // Make sure we can acquire different spells on level up
 					finalSchools.Add(s);
+
+					// Special case to see if this character gets Improved Harm when flag is set
+					if ((s == "white" || s == "holy" || s == "all") && ImprovedHarmRequested)
+						ImprovedHarm = true;
 				}
 				if (finalSchools.Count >= MagicSchoolsMax)
 					break;
@@ -1679,7 +1767,7 @@ namespace FF1Lib
 
 			mageLevel = Math.Clamp(Rng.Between(rng, mageLevel - 1, mageLevel + 1), 0, 8); // Level that the mage's spells will cap at, clamped 0-8 ±1. -1 is 'no cap', useful for limited things like Fire Magic.
 			spellChargeGrowth = Math.Clamp(Rng.Between(rng, (int)(spellChargeGrowth * .5f), (int)(spellChargeGrowth * 1.5f)), 0, 100); // Total spell casts by end of game, Clamped 0-100±50%. Will allocate them lower levels and up
-			spellChargeMax = Math.Clamp(Rng.Between(rng, spellChargeMax - 2, spellChargeMax + 2), 0, 9); // Maximum spell charges total. Clamped 1-9±2.
+			spellChargeMax = Math.Clamp(Rng.Between(rng, spellChargeMax - (flatVariance * 2), spellChargeMax + (flatVariance * 2)), 1, 9); // Maximum spell charges total. Clamped 1-9±2.
 		}
 
 		public void CommitSpellChargeGrowth(Classes c, Classes p, bool noBaseClassSpells)
@@ -1746,6 +1834,15 @@ namespace FF1Lib
 			return 0;
 		}
 
+		public void CommitResistances(int classIndex)
+		{
+			Classes c = (Classes)classIndex;
+			Classes p = (Classes)(classIndex + 6);
+
+			rom.ClassData[c].InnateResist = InnateResist;
+			rom.ClassData[p].InnateResist = InnateResist;
+		}
+
 		public void CommitBlursingSpecials(int classIndex)
 		{
 			// TODO: Add Lockpicking? Hunter? Weak? Stat buffs for promotions that are getting nothing?
@@ -1756,26 +1853,30 @@ namespace FF1Lib
 			// Clear BBelt
 			rom.ClassData[c].UnarmedAttack = false;
 
-			if (Rng.Between(rng, 0, 100) <= (int)(UnarmedAttack * 100)) {
+			if (Rng.Between(rng, 0, 100) <= (int)(UnarmedAttack * 100))
+			{
 				rom.ClassData[c].UnarmedAttack = rom.ClassData[c].UnarmedAttack = true;
 				rom.ClassData[c].UnarmedAttack = rom.ClassData[p].UnarmedAttack = true;
 			}
 
-			if (Rng.Between(rng, 0, 100) <= (int)(CatClawMaster * 100)) {
+			if (Rng.Between(rng, 0, 100) <= (int)(CatClawMaster * 100))
+			{
 				rom.ClassData[c].CatClawMaster = rom.ClassData[c].CatClawMaster = true;
 				rom.ClassData[c].CatClawMaster = rom.ClassData[p].CatClawMaster = true;
 				rom.WeaponPermissions.AddPermission(c, Item.CatClaw);
 				rom.WeaponPermissions.AddPermission(p, Item.CatClaw);
 			}
 
-			if (Rng.Between(rng, 0, 100) <= (int)(ThorMaster * 100)) {
+			if (Rng.Between(rng, 0, 100) <= (int)(ThorMaster * 100))
+			{
 				rom.ClassData[c].ThorMaster = rom.ClassData[c].ThorMaster = true;
 				rom.ClassData[c].ThorMaster = rom.ClassData[p].ThorMaster = true;
 				rom.WeaponPermissions.AddPermission(c, Item.ThorHammer);
 				rom.WeaponPermissions.AddPermission(p, Item.ThorHammer);
 			}
 
-			if (Rng.Between(rng, 0, 100) <= (int)(WoodAdept * 100)) {
+			if (Rng.Between(rng, 0, 100) <= (int)(WoodAdept * 100))
+			{
 				rom.ClassData[c].WoodAdept = rom.ClassData[c].WoodAdept = true;
 				rom.ClassData[c].WoodAdept = rom.ClassData[p].WoodAdept = true;
 				rom.ArmorPermissions.AddPermissionsRange(new List<(Classes, Item)> { (c, Item.WoodenArmor), (c, Item.WoodenHelm), (c, Item.WoodenShield), (p, Item.WoodenArmor), (p, Item.WoodenHelm), (p, Item.WoodenShield) });
@@ -1787,6 +1888,14 @@ namespace FF1Lib
 				rom.ClassData[c].SteelLord = rom.ClassData[p].SteelLord = true;
 				rom.ArmorPermissions.AddPermission(c, Item.SteelArmor);
 				rom.ArmorPermissions.AddPermission(p, Item.SteelArmor);
+			}
+
+			if (ImprovedHarm)
+			{
+				// Changes the character code from White Mage slot 4 to this one
+				ClassDef.rom.PutInBank(0x1C, 0xA200 + 0x21, new byte[] { (byte)(classIndex) });
+				ClassDef.rom.PutInBank(0x1C, 0xA200 + 0x25, new byte[] { (byte)(classIndex + 6) });
+				ImprovedHarmRequested = false;
 			}
 		}
 

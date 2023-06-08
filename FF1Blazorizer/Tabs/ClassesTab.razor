@@ -12,7 +12,7 @@
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="thiefAgilityBuffDropDown" TItem="ThiefAGI" @bind-Value="Flags.ThiefAgilityBuff">Better Thief &amp; Ninja Agility</EnumDropDown>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="fixHitChanceCapCheckBox" @bind-Value="Flags.FixHitChanceCap">Raise Hit % Cap</CheckBox>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="MDefModeDropDown" TItem="MDEFGrowthMode" @bind-Value="Flags.MDefMode">MDEF Growth:</EnumDropDown>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="WhiteMageHarmEveryoneCheckBox" @bind-Value="Flags.WhiteMageHarmEveryone">Improved HARM for White Mage</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="WhiteMageHarmEveryoneCheckBox" @bind-Value="Flags.WhiteMageHarmEveryone">Improved HARM for White Mage</CheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="Lockpicking" @bind-Value="Flags.Lockpicking">Thief Lockpicking</TriStateCheckBox>
 			<IntSlider Indent Min="1" Max="50" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.Lockpicking" Id="LockpickingLevelRequirement" @bind-Value="@Flags.LockpickingLevelRequirement">Lockpicking Level Requirement:</IntSlider>
     <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ReducedLuckCheckBox" @bind-Value="Flags.ReducedLuck">Reduced Luck</TriStateCheckBox>
@@ -29,6 +29,7 @@
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false)" Id="RandomizeClassKeyItemsCheckBox" @bind-Value="Flags.RandomizeClassKeyItems">Start with Key Items</TriStateCheckBox>
 
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != true && Flags.RandomizeClassChaos != true)" Id="TransmooglifierCheckBox" @bind-Value="Flags.Transmooglifier">Transmooglifier</TriStateCheckBox>
+	<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Transmooglifier" Id="transmooglifierVariance" TItem="TransmooglifierVariance" @bind-Value="Flags.TransmooglifierVariance">Variance:</EnumDropDown>
 	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Transmooglifier" Id="GuaranteeCustomClassCompositionCheckBox" @bind-Value="Flags.GuaranteeCustomClassComposition">Guarantee Custom Party Composition</TriStateCheckBox>
 	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Weaponizer == false)" Id="MooglieWeaponBalanceCheckBox" @bind-Value="Flags.MooglieWeaponBalance">Balance Weapons for Customs</TriStateCheckBox>
 
