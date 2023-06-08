@@ -215,9 +215,7 @@
 			PutInBank(0x1B, 0x846A, Blob.FromHex("A026B186C931F00748A93285106860686868AA688AC94FD00DA510A2008610C932D0064C53884CD587686860"));
 
 			// LvlUp_AdjustBBSubStats
-			PutInBank(0x1B, 0x874A + 0x5, Get(0x2D966, 0x33));
-			// Overwrite BB check with Unarmed LUT check
-			PutInBank(0x1B, 0x874A, Blob.FromHex("A90085EDA9B285EEA000B1862003B0"));
+			PutInBank(0x1B, 0x874A, Get(0x2D966, 0x33));
 
 			// data_MaxRewardPlusOne, and data_MaxHPPlusOne
 			PutInBank(0x1B, 0x87A2, Get(0x2D9A3, 0x5));
