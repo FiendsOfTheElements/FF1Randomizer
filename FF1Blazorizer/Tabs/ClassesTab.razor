@@ -29,6 +29,7 @@
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false)" Id="RandomizeClassKeyItemsCheckBox" @bind-Value="Flags.RandomizeClassKeyItems">Start with Key Items</TriStateCheckBox>
 
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != true && Flags.RandomizeClassChaos != true)" Id="TransmooglifierCheckBox" @bind-Value="Flags.Transmooglifier">Transmooglifier</TriStateCheckBox>
+	<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Transmooglifier" Id="transmooglifierVariance" TItem="TransmooglifierVariance" @bind-Value="Flags.TransmooglifierVariance">Variance:</EnumDropDown>
 	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Transmooglifier" Id="GuaranteeCustomClassCompositionCheckBox" @bind-Value="Flags.GuaranteeCustomClassComposition">Guarantee Custom Party Composition</TriStateCheckBox>
 	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Weaponizer == false)" Id="MooglieWeaponBalanceCheckBox" @bind-Value="Flags.MooglieWeaponBalance">Balance Weapons for Customs</TriStateCheckBox>
 

@@ -1551,6 +1551,12 @@
 		"description": "Procedurally generates six custom classes from a set of 26. Each class corresponds to heuristically randomized spell permissions, stats, equipment sets, abilities, and blursings - this means the classes will have unique properties every time. They can be described as \"What you might expect from a class named X\".\nThis also disables most specific balance options. Character specific buffs will refer to character slot. Example: Fighter XP will now refer to 'Slot 0 character class XP Bonus'.\nNote: It is recommended to disable any custom sprites when using Transmooglifier, since Transmooglifier also uses custom sprites."
 	},
 	{
+		"Id": "transmooglifierVariance",
+		"title": "Variance",
+		"screenshot": null,
+		"description": "Changes the amount by which class stats can vary when procedurally generated. Some classes are very specialized and may exhibit exceptionally high values on Moderate or High."
+	},
+	{
 		"Id": "GuaranteeCustomClassCompositionCheckBox",
 		"title": "Guarantee Custom Class Composition",
 		"screenshot": null,
