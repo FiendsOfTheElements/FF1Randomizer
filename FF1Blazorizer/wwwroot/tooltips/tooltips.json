@@ -145,13 +145,19 @@
 		"description": "Randomly change Princess Sara's Lute to another instrument from a list of over 70 different, community-contributed options."
 	},
 	{
-		"Id": "titanSnack",
+		"Id": "titanSnackDropDown",
 		"title": "Titan's Favorite Snack",
 		"screenshot": "titanSnack.png",
 		"description": "Randomly change Titan's RUBY to another snack from 100 different, community-contributed options.\n[grid][r]{l}{i}Ruby|{l}Default / Vanilla[r]{l}{i}Other Minerals|{l}Rocks or similar Titan cuisine[r]{l}{i}Junk Food|{l}Human food to eat in moderation[r]{l}{i}Healthy Food|{l}Human food of a healthier variety[r]{l}{i}Beverages|{l}Drinks[r]{l}{i}All|{l}All of the above except Ruby\n"
 	},
 	{
-		"Id": "hurrayDwarfFate",
+		"Id": "randomShardNamesCheckBox",
+		"title": "Random Shard Names",
+		"screenshot": "randomShardName.png",
+		"description": "When playing with \"Shard Hunt\" active (Goals Tab), the SHARDs will have random names (such as WEDGEs or ORBLTs)."
+	},
+	{
+		"Id": "hurrayDwarfFateDropDown",
 		"title": "Hurray Dwarf's Fate",
 		"screenshot": "hurrayDwarfFate.png",
 		"description": "Choose if Hurray Dwarf (one of the NPCs in the Dwarf Cave) is spared or killed when NPC Guillotine is turned on. If you choose to kill the Dwarf, he will say one of a number of different random dialogue options before meeting his untimely fate."
@@ -175,7 +181,7 @@
 		"description": "Changes the behavior of in-battle color palettes to allow sprite edits to use three different palettes instead of the normal two. This is an advanced option that requires the use of external tools such as FFHackster for importing sprites in order to have a noticeable effect.\n Note: While using the \"Three Battle Palettes\" option, some effects on screen maybe cause unintended side effects during play. These are minor, such as characters struck by Stone changing color in battle as spells are cast, but could be confusing if you're not used to these side effects."
 	},
 	{
-		"Id": "partyMapmanSlot",
+		"Id": "partyMapmanSlotDropDown",
 		"title": "Map Character Slot",
 		"screenshot": "partyMapmanSlot.gif",
 		"description": "Allows the player to select which character appears on the overworld and in dungeons, based on which character position in the party (leader, second, third, or fourth) is selected. This choice is made before the ROM is randomized and can only be altered, in game, by moving your characters around to the selected slot."
@@ -339,7 +345,7 @@
 		"Id": "shardHuntCheckBox",
 		"title": "Shard Hunt",
 		"screenshot": "shardHuntCheckBox.png",
-		"description": "Activates Shard Hunt, a mode in which the Light Warriors must acquire a number of orb pieces (which can be called SHARDs, PIECEs, ORBLETs, etc.) in order to open the time gate (the Black Orb) in the Temple of Fiends.\nDefeating Fiends and activating the altars for the four standard orbs will, instead or lighting one big orb, grant the player 2 SHARDs for the Earth and Fire orbs (the Lich and Kary fights in the vanilla game) or 4 SHARDs for the Water and Air orbs (the Kraken and Tiamat fights in the vanilla game).\nThe SHARDs replace generally low-quality items in the treasure pool."
+		"description": "Activates Shard Hunt, a mode in which the Light Warriors must acquire a number of SHARDs in order to open the time gate (the Black Orb) in the Temple of Fiends.\nDefeating Fiends and activating the altars for the four standard orbs will, instead or lighting one big orb, grant the player 2 SHARDs for the Earth and Fire orbs (the Lich and Kary fights in the vanilla game) or 4 SHARDs for the Water and Air orbs (the Kraken and Tiamat fights in the vanilla game).\nThe SHARDs replace generally low-quality items in the treasure pool."
 	},
 	{
 		"Id": "shardCountDropDown",
@@ -1536,11 +1542,35 @@
 		"Id": "RandomizeClassChaosCheckBox",
 		"title": "Chaos Mode",
 		"screenshot": "RandomizeClassChaosCheckBox.png",
-		"description": "Instead of simply applying \"basic\" blessings and curses to classes, Chaos Mode shuffles all the stats, spellcasting abilities, and equipment permissions between all the classes, making for very different classes from the vanilla game. Only for experienced players that are comfortable with Blursed Classes in general."
+		"description": "Chaos Mode shuffles all the stats, spellcasting abilities, and equipment permissions between all the classes, making for classes with very different abilities from the vanilla game. Only for experienced players."
+	},
+	{
+		"Id": "TransmooglifierCheckBox",
+		"title": "Transmooglifier",
+		"screenshot": "transmooglifier.gif",
+		"description": "Procedurally generates six custom classes from a set of 26. Each class corresponds to heuristically randomized spell permissions, stats, equipment sets, abilities, and blursings - this means the classes will have unique properties every time. They can be described as \"What you might expect from a class named X\".\nThis also disables most specific balance options. Character specific buffs will refer to character slot. Example: Fighter XP will now refer to 'Slot 0 character class XP Bonus'.\nNote: It is recommended to disable any custom sprites when using Transmooglifier, since Transmooglifier also uses custom sprites."
+	},
+	{
+		"Id": "transmooglifierVariance",
+		"title": "Variance",
+		"screenshot": null,
+		"description": "Changes the amount by which class stats can vary when procedurally generated. Some classes are very specialized and may exhibit exceptionally high values on Moderate or High."
+	},
+	{
+		"Id": "GuaranteeCustomClassCompositionCheckBox",
+		"title": "Guarantee Custom Class Composition",
+		"screenshot": null,
+		"description": "Guarantees you will be offered a balanced party of classes, including: a heavy armor class, an agility or luck class, an unarmed or low armor class, a white magic recovery class, an offensive mage class, and a hybrid class."
+	},
+	{
+		"Id": "MooglieWeaponBalanceCheckBox",
+		"title": "Balance Weapons for Customs",
+		"screenshot": null,
+		"description": "Recategorizes weapons to improve end game weapons that are not Masamune or Katana. Specifically: \n• Dragon Sword: now Dragon Chucks - 29 Dmg, 0 Hit, 30 Crit.\n• Cat Claw: 30 Crit.\n• Light Axe: 50 dmg\n• Thor Hammer: 40 Crit, LIT, DRAGON, GIANT damage\n• Bane: 30 dmg, MAGE, DRAGON, REGEN damage, now a Shortsword\n• Defense: +10 dmg\n• Katana: Now a Scimitar not a Knife\n• Ice Sword: Now a Scimitar not a Longsword.\n\nDoes not work with Weaponizer"
 	},
 	{
 		"Id": "RandomizeClassInnateMagicCheckBox",
-		"title": "Blursed Classes - Innage Magic",
+		"title": "Blursed Classes - Innate Magic",
 		"screenshot": "RandomizeClassInnateMagicCheckBox.png",
 		"description": "Adds a set of bonuses that give a set of starting spells at the level 8 slots, regardless of their actual spell level. Also gives 2 MPs of that level to be able to cast them.\n[grid][r]Tele Magic|WARP & EXIT[r]{l}Buff Magic|TMPR, FAST, & INV2[r]{l}Self Magic|RUSE & SABR[r]{l}Heal Magic|CUR3, HEL2, & LIFE[r]{l}Heal+ Magic|CUR4, HEL3, & LIFE[r]{l}Elem Magic|ICE2, FIR2, & LIT2[r]{l}Elem+ Magic|ICE3, FIR3, & LIT3[r]{l}Nuke Magic|NUKE[r]{l}Doom Magic|3 random spells causing instant death/stone[r]{l}Clean Magic|3 random status cures (incl. LIFE/LIF2)\n\nDoom and Nuke Magic are for spellcasters only; Self Magic is melee only. Nuke Magic is rare; Elem+, Heal+, and Buff Magic are rare for melee classes."
 	},
@@ -1633,6 +1663,12 @@
 		"title": "Starting Equipment - Random Commons",
 		"screenshot": "startingEquipmentRandomCommons.png",
 		"description": "Fills up the party's entire inventory with random equipment. There is a small chance to roll rare and legendary items into this mix of gear."
+	},
+	{
+		"Id": "startingEquipmentRandomAoE",
+		"title": "Starting Equipment - Random AoE Caster Item",
+		"screenshot": null,
+		"description": "Adds one item capable of casting magic that targets all enemies.\nNote: Altering the Item Magic Mode may cause the available pool of weapons/armor to not have any offensive AoE magic, resulting in no AoE starting item being awarded for this flag setting."
 	},
 	{
 		"Id": "startingEquipmentOneItem",
@@ -2288,7 +2324,7 @@
 		"Id": "lockRespondRateCheckBox",
 		"title": "Lock Respond Rate",
 		"screenshot": "lockRespondRateCheckBox.png",
-		"description": "Pressing LEFT or RIGHT on the Title Screen will not change the Respond Rate from its preferred value of 8.\nThis prevents accidental changes to the text speed during gameplay."
+		"description": "Pressing LEFT or RIGHT on the New Game screen will not change the Respond Rate from the slider value selected here.\nThis prevents accidental changes to the battle text speed during gameplay."
 	},
 	{
 		"Id": "uninterruptedMusicCheckBox",
@@ -2311,6 +2347,17 @@
 		"Id": "OpenChestsInOrder",
 		"title": "Open Chests In Order",
 		"description": "Non incentive items are opened in order. \n\nWarning, if your inventory gets full it will block your equipment progress."
+	},
+	{
+		"Id": "SetRNG",
+		"title": "Set RNG",
+		"description": "Between two runners playing the same seed, identical battles will start at the same location in the RNG table and the RNG pointer will not progress each frame.\n\nAll bosses and spike tiles will have the same RNG.\n\nThe first through nth random encounter will consume the same RNG values for each battle. If you are facing an issue with a particular random encounter try soft reseting."
+	},
+	{
+		"Id": "AirBoatCheckBox",
+		"title": "AirBoat",
+		"screenshot": "airboat.gif",
+		"description": "The Ship and the Airship are fused together. Getting the FLOATER allows the Ship to transform into the Airship, and the Airship can land on water. You can't raise the Airship from the desert anymore."
 	},
 	{
 		"Id": "moveToFBats",

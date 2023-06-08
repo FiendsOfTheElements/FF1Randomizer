@@ -85,8 +85,8 @@
 			var coneria_y = townPosList[8].Item2;
 
 			// If saved at Inn, spawn directly in the town
-			PutInBank(0x1E, 0x9000, Blob.FromHex("2054C4AD10608527AD11608528AD1460854685422025902096C6BD00048544BD0104854560A91E48A9FE48A906484CFDC6"));
-			PutInBank(0x1F, 0xC0B7, Blob.FromHex("A91E2003FE200090244510034CE2C1EAEAEAEAEA"));
+			PutInBank(0x1E, 0xA000, Blob.FromHex("2054C4AD10608527AD11608528AD1460854685422025A02096C6BD00048544BD0104854560A91E48A9FE48A906484CFDC6"));
+			PutInBank(0x1F, 0xC0B7, Blob.FromHex("A91E2003FE2000A0244510034CE2C1EAEAEAEAEA"));
 
 			// Spawn at coneria castle with new game
 			PutInBank(0x00, 0xB010, Blob.FromHex($"{coneria_x:X2}{coneria_y:X2}"));
@@ -96,7 +96,7 @@
 			PutInBank(0x0E, 0xA53D, Blob.FromHex("20E09D"));
 
 			// Exit/Warp teleport you to Coneria
-			PutInBank(0x0E, 0x9F70, Blob.FromHex($"A2FF9AA9{coneria_x:X2}8527A9{coneria_y:X2}8528A9C048A9BE48A99048A91348A91E4C03FE"));
+			PutInBank(0x0E, 0x9F70, Blob.FromHex($"A2FF9AA9{coneria_x:X2}8527A9{coneria_y:X2}8528A9C048A9BE48A9A048A91348A91E4C03FE"));
 			PutInBank(0x0E, 0xB0FF, Blob.FromHex("4C709F"));
 
 			// Put positions

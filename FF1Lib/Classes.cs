@@ -343,15 +343,146 @@ namespace FF1Lib
 
 		public void Randomize(Flags flags, MT19337 rng, List<string> olditemnames, ItemNames itemnames, FF1Rom rom)
 		{
-			if (!(bool)flags.RandomizeClass)
-			{
+			if (!(bool)flags.RandomizeClass && !(bool)flags.Transmooglifier && !(bool)flags.RandomizeClassChaos)
 				return;
-			}
 
+			RandomizeClassHacks(flags, rom);
+
+			if ((bool)flags.Transmooglifier)
+				Transmooglify(flags, rng, rom);
+			else if ((bool)flags.RandomizeClass)
+				RandomizeClassBlursings(flags, rng, olditemnames, itemnames, rom);
+			else if ((bool)flags.RandomizeClassChaos)
+				RandomizeClassChaos(flags, rng, rom);
+		}
+
+		public void Transmooglify(Flags flags, MT19337 rng, FF1Rom rom)
+		{
+			// The MEAT
+			Transmooglifier transmooglifier = new Transmooglifier();
+			transmooglifier.Transmooglify(flags, rng, rom);
+
+			// Description screen
+			List<string> dataScreen = new List<string>();
+
+			dataScreen.AddRange(transmooglifier.classDescriptions);
+			dataScreen.AddRange(transmooglifier.classDescriptions); // Add again for Promo Classes
+
+			CreateDataScreens("", dataScreen, rom);
+		}
+
+		public void RandomizeClassChaos(Flags flags, MT19337 rng, FF1Rom rom)
+		{
 			// Strings to build info screen in game
 			List<string> rankString = new List<string> { "-", "E", "D", "C", "B", "A", "S" };
 			List<string> symboleString = new List<string> { "@S", "@H", "@K", "@X", "@F", "@N", "@A", "@s", "@h", "@G", "HP", "Str", "Agi", "Int", "Vit", "Lck", "Ht%", "MDf", "Wt", "Bk", "Sp" };
 
+			// The MEAT
+			DoRandomizeClassChaosMode(((bool)flags.MagicLevelsMixed && (bool)flags.MagicPermissions) || ((bool)flags.SpellcrafterMixSpells && !(bool)flags.SpellcrafterRetainPermissions), (flags.ThiefAgilityBuff != ThiefAGI.Vanilla), rng, rom);
+
+			// Description screen
+			var templateScreen =
+				"STATS".PadRight(11) + "\n" +
+				"S A I V L".PadRight(11) + "\n" +
+				"? ? ? ? ?".PadRight(11) + "\n\n" +
+				"Ht% MDf HP".PadRight(11) + "\n" +
+				" ?   ?   ?".PadRight(11) + "\n\n" +
+				"MAGIC".PadRight(11) + "\n" +
+				"Wht Blk SpC".PadRight(11) + "\n" +
+				" ?   ?   ?".PadRight(11) + "\n\n" +
+				"WEAPONS".PadRight(11) + "\n" +
+				"@S @H @K @X @F @N".PadRight(11) + "\n" +
+				"? ? ? ? ? ?".PadRight(11) + "\n\n" +
+				"ARMORS".PadRight(11) + "\n" +
+				"@A @s @h @G".PadRight(11) + "\n" +
+				"? ? ? ?".PadRight(11) + "\n\n" +
+				"PROMOTION".PadRight(11);
+
+			List<string> dataScreen = new List<string>();
+			for (int i = 0; i < 12; i++)
+			{
+				// Generate promo change data
+				string promoChange = "";
+				if (i < 6)
+				{
+					for (int j = 0; j < Enum.GetNames(typeof(RankedType)).Length - 1; j++)
+					{
+						if (_classes[i + 6].Ranks[j] > _classes[i].Ranks[j])
+						{
+							if (j == (int)RankedType.White)
+							{
+								promoChange += _classes[i + 6].MagicRanks[0] + "W";
+							}
+							else if (j == (int)RankedType.Black)
+							{
+								promoChange += _classes[i + 6].MagicRanks[1] + "B";
+							}
+							else
+								promoChange += symboleString[j] + rankString[(int)_classes[i + 6].Ranks[j]];
+
+							if (promoChange.Split('\n').Last().Length > (11 - 4))
+								promoChange += "\n";
+							else
+								promoChange += " ";
+						}
+					}
+				}
+
+				// Generate data screen
+				var dataChaosScreen =
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Strength]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Agility]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Intellect]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Vitality]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Luck]] +
+					"\n\n\n" +
+					" " + _classes[i].HitGrowth + "   " +
+					_classes[i].MDefGrowth + "   " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.HP]] +
+					"\n\n\n\n" +
+					" " + _classes[i].MagicRanks[0] + "  " +
+					_classes[i].MagicRanks[1] + "  " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Charges]] +
+					//rankString[(int)classData[i].Ranks[(int)RankedType.Black]] + "   " +
+					//rankString[(int)classData[i].Ranks[(int)RankedType.Charges]] +
+					"\n\n\n\n" +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Swords]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Hammers]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Knives]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Axes]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Staves]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Nunchucks]] +
+					"\n\n\n\n" +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Armors]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Shields]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Helmets]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Gauntlets]] +
+					"\n\n\n" +
+					String.Join("", promoChange);
+
+				dataScreen.Add(dataChaosScreen);
+			}
+
+			CreateDataScreens(templateScreen, dataScreen, rom);
+		}
+
+		public void RandomizeClassBlursings(Flags flags, MT19337 rng, List<string> olditemnames, ItemNames itemnames, FF1Rom rom)
+		{
+			// The MEAT
+			List<string> bonusmalusDescription = new List<string>();
+			bonusmalusDescription = DoRandomizeClassNormalMode(rng, olditemnames, itemnames, flags, rom);
+
+			// Description screen
+			var templateScreen = "BONUS";
+
+			List<string> dataScreen = new List<string>();
+			dataScreen.AddRange(bonusmalusDescription.Concat(bonusmalusDescription));
+
+			CreateDataScreens(templateScreen, dataScreen, rom);
+		}
+
+		public void RandomizeClassHacks(Flags flags, FF1Rom rom)
+		{
 			// Starting Stats awards MP to allow any class to start with spell charges
 			rom.PutInBank(0x1F, 0xC7CA, Blob.FromHex("B94BB09D20639D286360"));
 			_classes[(int)Classes.RedMage].SpCStarting = 2;
@@ -366,149 +497,43 @@ namespace FF1Lib
 			rom.PutInBank(0x0E, 0xA0E0, Blob.FromHex("A98948A90F48A91E85574C03FE"));
 
 			// EnterInfoMenu, see 1E_8800_DrawInfoBox.asm
-			rom.PutInBank(0x1E, 0x8800, Blob.FromHex("203CC4A5674A4A4A4A4AB015A200205B83A220205B83A9118538A90285394C3388A210205B83A230205B83A9038538A9028539A667BD0003C9FFD002A90C0AAA207188A98048A9C0484C1A85A9118538A9028539A667BD0061C9FFD002A90C0AAA207188A9B648A91248A90E85574C03FEA90D853CA91A853DA9008D0120A90085378A482063E0A970853EA989853FA538853AE63AA539853BE63BA91E855785582036DE68AABD5089853EBD5189853FA53B186902853B2036DE205E8560"));
+			//rom.PutInBank(0x1E, 0x8800, Blob.FromHex("203CC4A5674A4A4A4A4AB015A200205B83A220205B83A9118538A90285394C3388A210205B83A230205B83A9038538A9028539A667BD0003C9FFD002A90C0AAA207188A98048A9C0484C1A85A9118538A9028539A667BD0061C9FFD002A90C0AAA207188A9B648A91248A90E85574C03FEA90D853CA91A853DA9008D0120A90085378A482063E0A970853EA989853FA538853AE63AA539853BE63BA91E855785582036DE68AABD5089853EBD5189853FA53B186902853B2036DE205E8560"));
+			string InfoMenuHeight = "02";
+			if ((bool)flags.Transmooglifier)
+			{
+				InfoMenuHeight = "00";
+			}
+			// EnterInfoMenu, see 1E_8800_DrawInfoBox.asm
+			rom.PutInBank(0x1E, 0x8800, Blob.FromHex($"203CC4A5674A4A4A4A4AB015A200205B83A220205B83A9118538A90285394C3388A210205B83A230205B83A9038538A9028539A667BD0003C9FFD002A90C0AAA207188A98048A9C0484C1A85A9118538A9028539A667BD0061C9FFD002A90C0AAA207188A9B648A91248A90E85574C03FEA90D853CA91A853DA9008D0120A90085378A482063E0A970853EA989853FA538853AE63AA539853BE63BA91E855785582036DE68AABD5089853EBD5189853FA53B1869{InfoMenuHeight}853BA567482036DE688567205E8560"));
 
 			// StatusWaitForBtn_SFX, see 1E_8800_DrawInfoBox.asm
 			rom.PutInBank(0x1E, 0x8910, Blob.FromHex("202C85A5240522D00FA525F0F3A9008525A90E85574C03FEA9008524852585224C4C88"));
 
 			// InfoScreen in PtyGen and Status screen
 			// DoPartyGen_OnCharacter change to check for Select button, see 1E_8800_DrawInfoBox.asm
-			if (flags.EnablePoolParty ?? false)
-			{
-				// We just reproduce EnablePoolParty()'s new DoPartyGen_OnCharacter and add the select button
-				rom.PutInBank(0x1E, 0x85B0, Blob.FromHex("A667BD01030D41038D4103A9FF8D4003BD0103C900F00718EE40032A90FA20A480A9008522200F82A522F0034C0088A667AC4003A524F013BD0003C9FFF009BD01034D41038D41034C2C81A525F0118AC900F00AA9009D0103A9FF9D00033860A520290FC561F0B98561C900F0B3C898C9099002A0008C4003B944862C4103F0ED9D0103B942039D0003A901853720B0824CD1858040201008040201"));
-				rom.PutInBank(0x1E, 0x8843, Blob.FromHex("A98548A9AF48"));
-			}
-			else
+			if (!(bool)flags.EnablePoolParty)
 			{
 				var partypermissions = rom.Get(0x78110, 0x11);
 				rom.PutInBank(0x1E, 0x80C1, Blob.FromHex("A6678A4A4A4A4AA8B9B085859020A480A9008522200F82A522F0034C0088A524D049A525F0023860A520290FC561F0E08561C900F0DAA667BD0003186901C90CD002A9FF9D0003A8C8B9B4852490F0E8A901853720B0824CD180"));
 				rom.PutInBank(0x1E, 0x85B0, partypermissions);
 			}
+		}
 
-
-			List<string> bonusmalusDescription = new List<string>();
-
-			// Chaos Mode enabled?
-			if ((bool)flags.RandomizeClassChaos)
-			{
-				DoRandomizeClassChaosMode(((bool)flags.MagicLevelsMixed && (bool)flags.MagicPermissions) || ((bool)flags.SpellcrafterMixSpells && !(bool)flags.SpellcrafterRetainPermissions), (flags.ThiefAgilityBuff != ThiefAGI.Vanilla), rng, rom);
-			}
-			else
-			{
-				bonusmalusDescription = DoRandomizeClassNormalMode(rng, olditemnames, itemnames, flags, rom);
-			}
-
+		public void CreateDataScreens(string templateScreen, List<string> dataScreen, FF1Rom rom)
+		{
 			// dataScreen
 			int totalByte = 0;
-			var templateScreen = "";
 			var screenBlob = Blob.FromHex("00");
-			var dataScreen = new List<string>();
-
-			// Generate template
-			if ((bool)flags.RandomizeClassChaos)
-			{
-				templateScreen =
-					"STATS".PadRight(11) + "\n" +
-					"S A I V L".PadRight(11) + "\n" +
-					"? ? ? ? ?".PadRight(11) + "\n\n" +
-					"Ht% MDf HP".PadRight(11) + "\n" +
-					" ?   ?   ?".PadRight(11) + "\n\n" +
-					"MAGIC".PadRight(11) + "\n" +
-					"Wht Blk SpC".PadRight(11) + "\n" +
-					" ?   ?   ?".PadRight(11) + "\n\n" +
-					"WEAPONS".PadRight(11) + "\n" +
-					"@S @H @K @X @F @N".PadRight(11) + "\n" +
-					"? ? ? ? ? ?".PadRight(11) + "\n\n" +
-					"ARMORS".PadRight(11) + "\n" +
-					"@A @s @h @G".PadRight(11) + "\n" +
-					"? ? ? ?".PadRight(11) + "\n\n" +
-					"PROMOTION".PadRight(11);
-			}
-			else
-				templateScreen = "BONUS";
 
 			// Insert template
-			screenBlob = FF1Text.TextToBytes(templateScreen, true, FF1Text.Delimiter.Null);
+			screenBlob = FF1Text.TextToBytes(templateScreen, true, FF1Text.Delimiter.Null, true);
 			rom.PutInBank(0x1E, 0x8970, screenBlob);
 			totalByte += screenBlob.Length;
-
-			// Build individual dataScreens, calculate their pointers and insert them
-			if ((bool)flags.RandomizeClassChaos)
-			{
-				for (int i = 0; i < 12; i++)
-				{
-					// Generate promo change data
-					string promoChange = "";
-					if (i < 6)
-					{
-						for (int j = 0; j < Enum.GetNames(typeof(RankedType)).Length - 1; j++)
-						{
-							if (_classes[i + 6].Ranks[j] > _classes[i].Ranks[j])
-							{
-								if (j == (int)RankedType.White)
-								{
-									promoChange += _classes[i + 6].MagicRanks[0] + "W";
-								}
-								else if (j == (int)RankedType.Black)
-								{
-									promoChange += _classes[i + 6].MagicRanks[1] + "B";
-								}
-								else
-									promoChange += symboleString[j] + rankString[(int)_classes[i + 6].Ranks[j]];
-
-								if (promoChange.Split('\n').Last().Length > (11 - 4))
-									promoChange += "\n";
-								else
-									promoChange += " ";
-							}
-						}
-					}
-
-					// Generate data screen
-					var dataChaosScreen =
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Strength]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Agility]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Intellect]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Vitality]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Luck]] +
-						"\n\n\n" +
-						" " + _classes[i].HitGrowth + "   " +
-						_classes[i].MDefGrowth + "   " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.HP]] +
-						"\n\n\n\n" +
-						" " + _classes[i].MagicRanks[0] + "  " +
-						_classes[i].MagicRanks[1] + "  " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Charges]] +
-						//rankString[(int)classData[i].Ranks[(int)RankedType.Black]] + "   " +
-						//rankString[(int)classData[i].Ranks[(int)RankedType.Charges]] +
-						"\n\n\n\n" +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Swords]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Hammers]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Knives]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Axes]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Staves]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Nunchucks]] +
-						"\n\n\n\n" +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Armors]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Shields]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Helmets]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Gauntlets]] +
-						"\n\n\n" +
-						String.Join("", promoChange);
-
-					dataScreen.Add(dataChaosScreen);
-				}
-			}
-			else
-			{
-				dataScreen.AddRange(bonusmalusDescription.Concat(bonusmalusDescription));
-			}
 
 			// Insert class data screen
 			for (int i = 0; i < 12; i++)
 			{
-				var tempBlob = FF1Text.TextToBytes(dataScreen[i], true, FF1Text.Delimiter.Null);
+				var tempBlob = FF1Text.TextToBytes(dataScreen[i], true, FF1Text.Delimiter.Null, true);
 				rom.PutInBank(0x1E, 0x8970 + totalByte, tempBlob);
 				var tempAddress = 0x8970 + totalByte;
 				rom.PutInBank(0x1E, 0x8950 + (i * 2), new byte[] { (byte)(tempAddress % 0x100), (byte)(tempAddress / 0x100) });
@@ -520,13 +545,13 @@ namespace FF1Lib
 			var noneAddress = 0x8970 + totalByte;
 			rom.PutInBank(0x1E, 0x8950 + 24, new byte[] { (byte)(noneAddress % 0x100), (byte)(noneAddress / 0x100) });
 		}
-
+					
 		public List<string> DoRandomizeClassNormalMode(MT19337 rng, List<string> olditemnames, ItemNames itemnames, Flags flags, FF1Rom rom)
 		{
 			// Equipment lists
 			List<Item> braceletList = new();
 			List<Item> ringList = new();
-			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			for (int i = (int)Item.Cloth; i <= (int)Item.ProRing; i++)
 			{
 				if (itemnames[i].Contains("@B"))
 				{
@@ -560,7 +585,7 @@ namespace FF1Lib
 			}
 
 			List<Item> equipShirts = new();
-			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			for (int i = (int)Item.Cloth; i <= (int)Item.ProRing; i++)
 			{
 				if (itemnames[i].Contains("@T"))
 				{
@@ -568,15 +593,15 @@ namespace FF1Lib
 				}
 			}
 			List<Item> equipShields = new();
-			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			for (int i = (int)Item.Cloth; i <= (int)Item.ProRing; i++)
 			{
-				if (itemnames[i].Contains("@s"))
+				if (itemnames[i].Contains("@s") || itemnames[i].Contains("Buckl") || itemnames[i].Contains("ProCa"))
 				{
 					equipShields.Add((Item)i);
 				}
 			}
 			List<Item> equipGauntletsHelmets = new();
-			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			for (int i = (int)Item.Cloth; i <= (int)Item.ProRing; i++)
 			{
 				if (itemnames[i].Contains("@G"))
 				{
@@ -2300,7 +2325,6 @@ namespace FF1Lib
 		public byte[] LevelUpArray()
 		{
 			var levelUp = new List<byte>();
-
 			for (int j = 0; j < 49; j++)
 			{
 				byte tempStats = 0x00;

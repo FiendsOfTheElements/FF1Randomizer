@@ -602,6 +602,10 @@ namespace FF1Lib.Procgen
 		}
 	    }
 
+	    if (feature == OverworldTiles.AIRSHIP_FEATURE) {
+		this.airshipDesertRegion = region.RegionId;
+	    }
+
 	    return await this.NextStep();
 	}
 
@@ -800,7 +804,7 @@ namespace FF1Lib.Procgen
 		var ep = p.OwRight;
 		if (this.Traversable_regionmap[ep.Y, ep.X] == OverworldTiles.MainOceanRegionId) {
 		    var r = this.PlaceFeatureAt(this.Traversable_regionmap, region,
-					new SCCoords(p.X-5, p.Y-2), OverworldTiles.E_CANAL_STRUCTURE, true);
+					new SCCoords(p.X-6, p.Y-2), OverworldTiles.E_CANAL_STRUCTURE, true);
 		    if (r.Item1) {
 			placed = true;
 			break;
@@ -853,6 +857,12 @@ namespace FF1Lib.Procgen
 	public async Task<Result> PreventAirshipLanding() {
 	    this.OwnTilemap();
 	    foreach (var er in Exclude_airship) {
+		if (er == this.airshipDesertRegion) {
+		    // Guarantee that you can always get back to the
+		    // region where you got the airship, using the
+		    // airship, to avoid soft lock.
+		    continue;
+		}
 		var region = this.Traversable_regionlist[er];
 		foreach (var p in region.Points) {
 		    bool adjMarsh = false;

@@ -514,6 +514,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OpenChestsInOrder"));
 			}
 		}
+		public bool SetRNG
+		{
+			get => Flags.SetRNG;
+			set
+			{
+				Flags.SetRNG = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SetRNG"));
+			}
+		}
 		public WorldWealthMode WorldWealth
 		{
 			get => Flags.WorldWealth;
@@ -2163,6 +2172,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SpeedBoat"));
 			}
 		}
+		public bool? AirBoat
+		{
+			get => Flags.AirBoat;
+			set
+			{
+				Flags.AirBoat = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AirBoat"));
+			}
+		}
 		public bool BuyTen
 		{
 			get => Flags.BuyTen;
@@ -2772,6 +2790,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TeamSteak"));
 			}
 		}
+		public bool randomShardNames
+		{
+			get => Preferences.randomShardNames;
+			set
+			{
+				Preferences.randomShardNames = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("randomShardNames"));
+			}
+		}
 		public MusicShuffle Music
 		{
 			get => Preferences.Music;
@@ -2908,6 +2935,16 @@ namespace FF1Lib
 			{
 				Preferences.LockRespondRate = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LockRespondRate"));
+			}
+		}
+
+		public int RespondRate
+		{
+			get => Preferences.RespondRate;
+			set
+			{
+				Preferences.RespondRate = value;
+				RaisePropertyChanged();
 			}
 		}
 
@@ -4158,6 +4195,33 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassChaos"));
 			}
 		}
+		public bool? MooglieWeaponBalance
+		{
+			get => Flags.MooglieWeaponBalance;
+			set
+			{
+				Flags.MooglieWeaponBalance = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MooglieWeaponBalance"));
+			}
+		}
+		public bool? Transmooglifier
+		{
+			get => Flags.Transmooglifier;
+			set
+			{
+				Flags.Transmooglifier = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Transmooglifier"));
+			}
+		}
+		public bool? GuaranteeCustomClassComposition
+		{
+			get => Flags.GuaranteeCustomClassComposition;
+			set
+			{
+				Flags.GuaranteeCustomClassComposition = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GuaranteeCustomClassComposition"));
+			}
+		}
 		public bool? RandomizeClassCasting
 		{
 			get => Flags.RandomizeClassCasting;
@@ -4564,6 +4628,15 @@ namespace FF1Lib
 			set
 			{
 				Flags.StartingLevel = value;
+				RaisePropertyChanged();
+			}
+		}
+		public TransmooglifierVariance TransmooglifierVariance
+		{
+			get => Flags.TransmooglifierVariance;
+			set
+			{
+				Flags.TransmooglifierVariance = value;
 				RaisePropertyChanged();
 			}
 		}

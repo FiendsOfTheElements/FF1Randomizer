@@ -44,15 +44,17 @@ namespace FF1Lib
 		public void WriteSpoiler()
 		{
 			WriteItemPlacementSpoiler();
+			WriteClassSpoiler();
 			WriteWeaponSpoiler();
 			WriteArmorSpoiler();
+			WriteSpellSpoiler();
 			WriteShopSpoiler();
 			WriteV2Spoiler();
 		}
 
 		private void WriteWeaponSpoiler()
 		{
-			Utilities.WriteSpoilerLine("Weapon    Damage  Crit    Hit     Usability     Casting");
+			Utilities.WriteSpoilerLine("Weapon    Damage  Crit    Hit     Usability           Casting");
 			Utilities.WriteSpoilerLine("----------------------------------------------------------------------------------------------------");
 
 			foreach (var weapon in weapons)
@@ -60,7 +62,7 @@ namespace FF1Lib
 				var casting = "";
 				if(weapon.SpellIndex != 0) casting = "casting: " + magicSpells[weapon.SpellIndex - 1].Name;
 
-				Utilities.WriteSpoilerLine($"{weapon.Name.PadRight(8)}  +{weapon.Damage,2}      +{weapon.Crit,2}%    +{weapon.HitBonus,2}%    {rom.GenerateEquipPermission(weaponPermissions[weapon.Id]),12}  {casting}");
+				Utilities.WriteSpoilerLine($"{weapon.Name.PadRight(8)}  +{weapon.Damage,2}      +{weapon.Crit,2}%    +{weapon.HitBonus,2}%    {GenerateSpoilerEquipPermission(weaponPermissions[weapon.Id]),17}  {casting}");
 			}
 
 			Utilities.WriteSpoilerLine("");
@@ -69,7 +71,7 @@ namespace FF1Lib
 
 		private void WriteArmorSpoiler()
 		{
-			Utilities.WriteSpoilerLine("Armor     Type        Absorb  Weight  Usability     Casting         Resist");
+			Utilities.WriteSpoilerLine("Armor     Type        Absorb  Weight  Usability          Casting         Resist");
 			Utilities.WriteSpoilerLine("----------------------------------------------------------------------------------------------------");
 
 			foreach (var armor in armors)
@@ -77,7 +79,7 @@ namespace FF1Lib
 				var casting = "";
 				if (armor.SpellIndex != 0) casting = "casting: " + magicSpells[armor.SpellIndex - 1].Name;
 				
-				Utilities.WriteSpoilerLine($"{armor.Name.PadRight(8)}  {armor.Type.ToString().PadRight(10)}  +{armor.Absorb,2}     -{armor.Weight,3}%   {rom.GenerateEquipPermission(armorPermissions[armor.Id]),12}  {casting.PadRight(16)}{GetElementalResist((SpellElement)armor.ElementalResist)}");
+				Utilities.WriteSpoilerLine($"{armor.Name.PadRight(8)}  {armor.Type.ToString().PadRight(10)}  +{armor.Absorb,2}     -{armor.Weight,3}%   {GenerateSpoilerEquipPermission(armorPermissions[armor.Id]),17}  {casting.PadRight(16)}{GetElementalResist((SpellElement)armor.ElementalResist)}");
 			}
 
 			Utilities.WriteSpoilerLine("");
@@ -101,6 +103,71 @@ namespace FF1Lib
 			if (elementalResist.HasFlag(SpellElement.Status)) list.Add(SpellElement.Status);
 
 			return string.Join(", ", list);
+		}
+
+		private void WriteSpellSpoiler()
+		{
+			Utilities.WriteSpoilerLine("Lv   Spell  Target  Acc   Usability          Routine       OOB  Element");
+			Utilities.WriteSpoilerLine("----------------------------------------------------------------------------------------------------");
+
+			foreach (var spell in magicSpells)
+			{
+				Utilities.WriteSpoilerLine($"{spell.Level}.{spell.Slot}  {spell.Name.PadRight(6)}  {spell.targeting.ToString().Substring(0,4).PadRight(7)} {spell.accuracy.ToString().PadRight(3)} {GenerateSpellPermission(rom.SpellPermissions.PermissionsFor((SpellSlots)spell.Index)),17}  {spell.routine.ToString().PadRight(14)} {spell.oobSpellRoutine.ToString().PadRight(5)} {GetElementalResist((SpellElement)spell.elem)}");
+			}
+
+			Utilities.WriteSpoilerLine("");
+			Utilities.WriteSpoilerLine("");
+		}
+
+		public string GenerateSpellPermission(List<Classes> usableClasses)
+		{
+			var description = "";
+			for (int i = 0; i < 6; i++)
+			{
+				if (usableClasses.Contains((Classes)i))
+					description += " " + rom.InfoClassAbbrev[i * 2];
+				else if (usableClasses.Contains((Classes)i+6))
+					description += " " + rom.InfoClassAbbrev[i * 2 + 1];
+				else
+					description += "   ";
+			}
+			return description;
+		}
+
+		public string GenerateSpoilerEquipPermission(int classUsability)
+		{
+			var description = "";
+			for (int i = 0; i < 6; i++)
+			{
+				if ((classUsability & rom.InfoClassEquipPerms[i * 2]) != 0)
+					description += " " + rom.InfoClassAbbrev[i * 2];
+				else if ((classUsability & rom.InfoClassEquipPerms[i * 2 + 1]) != 0)
+					description += " " + rom.InfoClassAbbrev[i * 2 + 1];
+				else
+					description += "   ";
+			}
+			return description;
+		}
+
+		private void WriteClassSpoiler()
+		{
+			Utilities.WriteSpoilerLine("Name        HP   Str  Agi  Int  Vit  Lck  Mdef Hit    Promotes to");
+			Utilities.WriteSpoilerLine("----------------------------------------------------------------------------------------------------");
+
+			for (int i = 0; i < 6; i++) {
+				ClassData c = rom.ClassData[(Classes)i];
+				ClassData p = rom.ClassData[(Classes)i+6];
+
+				int VitForHealthUp = (c.VitGrowth.Where(x => x).Count() + c.VitStarting + 49 - c.VitGrowth.Where(x => x).Count() + c.VitStarting) / 2; // (Lv50 Vit + Lv 1 Vit) / 2 -> Average Vit
+
+
+				Utilities.WriteSpoilerLine($"{rom.ItemsText[0xF0 + i], -12}{c.HpGrowth.Where(x=>x).Count() * 20 + c.HpStarting + 49 * (VitForHealthUp / 4), 4} {c.StrGrowth.Where(x => x).Count() + c.StrStarting + (49-c.StrGrowth.Where(x => x).Count())/4,3}  " +
+					$"{c.AgiGrowth.Where(x => x).Count() + c.AgiStarting+ (49 - c.AgiGrowth.Where(x => x).Count()) / 4,3}  {c.IntGrowth.Where(x => x).Count() + c.IntStarting+ (49 - c.IntGrowth.Where(x => x).Count()) / 4,3}  {c.VitGrowth.Where(x => x).Count() + c.VitStarting+ (49 - c.VitGrowth.Where(x => x).Count()) / 4,3}  {c.LckGrowth.Where(x => x).Count() + c.LckStarting+ (49 - c.LckGrowth.Where(x => x).Count()) / 4,3}  " +
+					$"{c.MDefGrowth * 49 + c.MDefStarting,3}  {c.HitGrowth * 49 + c.HitStarting,3}   {rom.ItemsText[0xF0 + i+6],-14}");
+			}
+
+			Utilities.WriteSpoilerLine("");
+			Utilities.WriteSpoilerLine("");
 		}
 
 		private void WriteItemPlacementSpoiler()

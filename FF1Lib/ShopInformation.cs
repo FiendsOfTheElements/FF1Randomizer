@@ -13,37 +13,6 @@
 	}
 	public partial class FF1Rom : NesRom
 	{
-		public void AddElementIcons()
-		{
-			// Need to be called after UpdateDialogs since we use some of the space freed by it in bank 1F
-
-			var tileset = GetFromBank(0x09, 0x8800, 0x0800);     // Get font tileset
-
-			PutInBank(0x12, 0x8800, tileset);                    // Put it in bank 12
-			PutInBank(0x1F, 0xDC40, Blob.FromHex("A9124C90E9")); // Load bank 12, then jump to LoadMenuCHR (skipping normal bank loading)
-			PutInBank(0x1F, 0xEA74, Blob.FromHex("2040DC"));     // LoadBattleBGCHRAndPalettes now jump to $DC40 instead of directly to LoadMenuCHR
-			PutInBank(0x1F, 0xEA9F, Blob.FromHex("2002EA"));     // Change LoadMenuBGCHRAndPalettes to use LoadShopBGCHRPalettes instead of LoadBattleBGCHRAndPalettes
-
-			// Insert graphics
-			var newIcons = "00183C3C18180018FFFFFFFFFFFFFFFF" + // E2 to F1
-				"001812446036381CFFFFFFFFFFFFFFFF" +
-				"0044BA6CE6FE7C38FFFFFFFFFFFFFFFF" +
-				"00386CC66C7C3838FFFFFFFFFFFFFFFF" +
-				"000C3872D88C8448FFFFFFFFFFFFFFFF" +
-				"0010104410441010FFFFFFFFFFFFFFFF" +
-				"00103070FE1C1810FFFFFFFFFFFFFFFF" +
-				"00000000E7F3E7EFFFFFFFFFFFFFFFFF" +
-				"007CFE92FE540038FFFFFFFFFFFFFFFF" +
-				"003C7EBDD9B1523CFFFFFFFFFFFFFFFF" +
-				"0038102828447C38FFFFFFFFFFFFFFFF" +
-				"00006CDA926C0000FFFFFFFFFFFFFFFF" +
-				"0080E82E82E82E02FFFFFFFFFFFFFFFF" +
-				"0070102E4274080EFFFFFFFFFFFFFFFF" +
-				"003C7EFFD57E3C0EFFFFFFFFFFFFFFFF" +
-				"003C42421C100010FFFFFFFFFFFFFFFF";
-
-			PutInBank(0x09, 0x8E20, Blob.FromHex(newIcons));
-		}
 		public enum shopInfoWordsIndex
 		{
 			wpAtk = 0,
@@ -256,7 +225,7 @@
 
 		}
 
-		ushort[] InfoClassEquipPerms = new ushort[] {
+		public ushort[] InfoClassEquipPerms = new ushort[] {
 		    (ushort)EquipPermission.Fighter,
 		    (ushort)EquipPermission.Knight,
 		    (ushort)EquipPermission.Thief,
@@ -270,7 +239,7 @@
 		    (ushort)EquipPermission.BlackMage,
 		    (ushort)EquipPermission.BlackWizard,
 		};
-		string[] InfoClassAbbrev = new string[] {
+		public string[] InfoClassAbbrev = new string[] {
 		    "Fi",
 		    "Kn",
 		    "Th",
@@ -294,11 +263,12 @@
 			    description += " " + InfoClassAbbrev[i*2+1];
 			}
 		    }
-		    description = description.Trim();
-		    if (description.Length > 12) {
-			description = description.Replace(" ", "");
-		    }
-		    if (description == "FiThBbRmWmBm") {
+			description = description.Trim();
+			if (description.Length > 12)
+			{
+				description = description.Replace(" ", "");
+			}
+			if (description == "FiThBbRmWmBm") {
 			description =  "All classes";
 		    }
 		    return description;
