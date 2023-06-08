@@ -6,6 +6,7 @@ using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.IO;
+using System.ComponentModel;
 
 /* To Implement
 
@@ -21,6 +22,18 @@ using System.IO;
 
 namespace FF1Lib
 {
+	public enum TransmooglifierVariance
+	{
+		[Description("Low (10%)")]
+		Low,
+
+		[Description("Moderate (25%)")]
+		Moderate,
+
+		[Description("High (50%)")]
+		High
+	}
+
 	public class Transmooglifier
 	{
 		// Armor definitions. Why not an enum? Who knows...
@@ -42,6 +55,25 @@ namespace FF1Lib
 			ClassDef.rom = rom;
 			ClassDef.rng = rng;
 			ClassDef.newPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, rom);
+
+			switch (flags.TransmooglifierVariance)
+			{
+				case TransmooglifierVariance.Low:
+					ClassDef.percentUp = 1.1f;
+					ClassDef.percentDown = 0.9f;
+					ClassDef.flatVariance = 1;
+					break;
+				case TransmooglifierVariance.Moderate:
+					ClassDef.percentUp = 1.25f;
+					ClassDef.percentDown = 0.75f;
+					ClassDef.flatVariance = 1;
+					break;
+				case TransmooglifierVariance.High:
+					ClassDef.percentUp = 1.5f;
+					ClassDef.percentDown = 0.5f;
+					ClassDef.flatVariance = 2;
+					break;
+			}
 
 			spellFamilies = new Dictionary<string, List<MagicSpell>>();
 			PopulateSpellTypes(rom);
@@ -606,7 +638,7 @@ namespace FF1Lib
 				shortName = "Br",
 				promoShortName = "Gd",
 				HP = 35,
-				STR = 75,
+				STR = 65,
 				AGI = 10,
 				VIT = 50,
 				LCK = 5,
@@ -1095,6 +1127,11 @@ namespace FF1Lib
 
 	public class ClassDef
 	{
+		// Random Ranges
+		public static float percentUp = 1.25f;
+		public static float percentDown = 0.75f;
+		public static int flatVariance = 1;
+
 		// For conveniece
 		public static FF1Rom rom;
 		public static MT19337 rng;
@@ -1455,9 +1492,9 @@ namespace FF1Lib
 
 		public void RollStats()
 		{
-			float up = 1.25f;
-			float dwn = 0.75f;
-			int v = 1; // roll modifier for Hit/MDEF
+			float up = percentUp;
+			float dwn = percentDown;
+			int v = flatVariance; // roll modifier for Hit/MDEF
 			HP = Math.Clamp(Rng.Between(rng, (int)(HP * dwn), (int)(HP * up)), 0, 100);
 			STR = Math.Clamp(Rng.Between(rng, (int)(STR * dwn), (int)(STR * up)), 0, 100);
 			AGI = Math.Clamp(Rng.Between(rng, (int)(AGI * dwn), (int)(AGI * up)), 0, 100);
@@ -1698,7 +1735,7 @@ namespace FF1Lib
 
 			mageLevel = Math.Clamp(Rng.Between(rng, mageLevel - 1, mageLevel + 1), 0, 8); // Level that the mage's spells will cap at, clamped 0-8 ±1. -1 is 'no cap', useful for limited things like Fire Magic.
 			spellChargeGrowth = Math.Clamp(Rng.Between(rng, (int)(spellChargeGrowth * .5f), (int)(spellChargeGrowth * 1.5f)), 0, 100); // Total spell casts by end of game, Clamped 0-100±50%. Will allocate them lower levels and up
-			spellChargeMax = Math.Clamp(Rng.Between(rng, spellChargeMax - 2, spellChargeMax + 2), 1, 9); // Maximum spell charges total. Clamped 1-9±2.
+			spellChargeMax = Math.Clamp(Rng.Between(rng, spellChargeMax - (flatVariance * 2), spellChargeMax + (flatVariance * 2)), 1, 9); // Maximum spell charges total. Clamped 1-9±2.
 		}
 
 		public void CommitSpellChargeGrowth(Classes c, Classes p, bool noBaseClassSpells)

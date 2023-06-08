@@ -165,6 +165,7 @@ namespace FF1Lib
 		public bool CheapVendorItem { get; set; } = false;
 
 		public StartingLevel StartingLevel { get; set; }
+		public TransmooglifierVariance TransmooglifierVariance { get; set; }
 
 		[IntegerFlag(1, 50)]
 		public int MaxLevelLow { get; set; } = 50;

@@ -4631,6 +4631,15 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+		public TransmooglifierVariance TransmooglifierVariance
+		{
+			get => Flags.TransmooglifierVariance;
+			set
+			{
+				Flags.TransmooglifierVariance = value;
+				RaisePropertyChanged();
+			}
+		}
 		public int MaxLevelLow
 		{
 			get => Flags.MaxLevelLow;
