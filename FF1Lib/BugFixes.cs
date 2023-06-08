@@ -135,6 +135,9 @@ namespace FF1Lib
 			//PutInBank(0x0B, 0x9966, Blob.FromHex("2046D860"));
 			//PutInBank(0x1F, 0xD846, CreateLongJumpTableEntry(0x0F, 0x8800));
 
+
+			// Fixes documented in 1B_BBUnarmedLUTs.asm
+
 			// Overwrite BB check with Unarmed LUT check
 			PutInBank(0x1B, 0x874A, Blob.FromHex("A90085EDA9B285EEA000B1862003B0"));
 
