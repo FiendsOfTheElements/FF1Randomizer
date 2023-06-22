@@ -381,7 +381,6 @@ namespace FF1Lib
 			if ((bool)flags.RandomizeClass || (bool)flags.Transmooglifier || (bool)flags.RandomizeClassChaos)
 			{
 				selectButtonCode = "F0034C0088";
-				PutInBank(0x1E, 0x8843, Blob.FromHex("A98548A9AF48"));
 			}
 
 			// New DoPartyGen_OnCharacter and update references; see 1E_85B0_DoPartyGen_OnCharacter.asm
