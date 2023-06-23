@@ -8,18 +8,6 @@ using SixLabors.ImageSharp.PixelFormats;
 using System.IO;
 using System.ComponentModel;
 
-/* To Implement
-
-• Special Bonuses for Classes
-	- improved HARM
-	- Lockpicking
-	- Hunter
-	- Other Bonuses/Maluses
-
-• Special gear additions or resistances if you have a single element/status spell school (as a focus, not one of many)
-
-*/
-
 namespace FF1Lib
 {
 	public enum TransmooglifierVariance
@@ -49,6 +37,8 @@ namespace FF1Lib
 		public List<string> classDescriptions = new List<string>();
 
 		const int lut_MapmanPalettes = 0x8150;
+
+		public int lockpickClass = -1;
 
 		public void Transmooglify(Flags flags, MT19337 rng, FF1Rom rom)
 		{
@@ -91,6 +81,9 @@ namespace FF1Lib
 
 			if ((bool)flags.GuaranteeCustomClassComposition)
 				classes = ClassesGuaranteed(classes);
+
+			if ((bool)flags.Lockpicking)
+				ChooseLockpickingClass(classes);
 
 			if ((bool)flags.WhiteMageHarmEveryone)
 				ClassDef.ImprovedHarmRequested = true;
@@ -1128,6 +1121,47 @@ namespace FF1Lib
 			PowerRod.WeaponTypeSprite = WeaponSprite.IRONSTAFF;
 			PowerRod.writeWeaponMemory(rom);
 		}
+
+		public int ChooseLockpickingClass(List<ClassDef> classes)
+		{
+			// First lockpicking attempt: Find a thematic lockpicker if available. Some lockpick with their fists.
+			List<string> desiredLockpickers = new List<string> { "THIEF", "PIRATE", "MARAUDER", "BERSERKR", "FENCER", "JUGGLER", "SOLDIER", "PUGILIST", "Bl.BELT" };
+
+			foreach (var className in desiredLockpickers)
+			{
+				for (int i = 0; i < 6; i++)
+				{
+					if (classes[i].name.Equals(className))
+					{
+						classes[i].Lockpicker = true;
+						return i;
+					}
+				}
+			}
+
+			// Second lockpicking attempt: Choose whomever has agility over 35
+			for (int i = 0; i < 6; i++)
+			{
+				if (classes[i].AGI > 35)
+				{
+					classes[i].Lockpicker = true;
+					return i;
+				}
+			}
+
+			// Third lockpicking attempt: Choose whomever has strength over 35
+			for (int i = 0; i < 6; i++)
+			{
+				if (classes[i].STR > 35)
+				{
+					classes[i].Lockpicker = true;
+					return i;
+				}
+			}
+
+			// No one fits? Okay, slot 2 (Guaranteed agility unit if guaranteed is on) it is.
+			return 1;
+		}
 	}
 
 	public class ClassDef
@@ -1230,6 +1264,7 @@ namespace FF1Lib
 		public float SteelLord;
 
 		// More Blursings?
+		public bool Lockpicker = false;
 		public bool ImprovedHarm;
 		public static bool ImprovedHarmRequested = false;
 
@@ -1382,6 +1417,8 @@ namespace FF1Lib
 			if (rom.ClassData[(Classes)classIndex].WoodAdept)
 				description += "Wood Adept\n";
 
+			if (Lockpicker)
+				description += "Lockpicking\n";
 			if (ImprovedHarm)
 				description += "Better Harm\n";
 
@@ -1845,13 +1882,12 @@ namespace FF1Lib
 
 		public void CommitBlursingSpecials(int classIndex)
 		{
-			// TODO: Add Lockpicking? Hunter? Weak? Stat buffs for promotions that are getting nothing?
-
 			Classes c = (Classes)classIndex;
 			Classes p = (Classes)(classIndex + 6);
 
 			// Clear BBelt
 			rom.ClassData[c].UnarmedAttack = false;
+			rom.ClassData[p].UnarmedAttack = false;
 
 			if (Rng.Between(rng, 0, 100) <= (int)(UnarmedAttack * 100))
 			{
@@ -1897,6 +1933,9 @@ namespace FF1Lib
 				ClassDef.rom.PutInBank(0x1C, 0xA200 + 0x25, new byte[] { (byte)(classIndex + 6) });
 				ImprovedHarmRequested = false;
 			}
+
+			if (Lockpicker)
+				rom.SetLockpickingClass(classIndex);
 		}
 
 		public Image<Rgba32> getImage(bool promoted = false)
