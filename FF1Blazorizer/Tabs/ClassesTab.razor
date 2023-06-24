@@ -13,7 +13,7 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="fixHitChanceCapCheckBox" @bind-Value="Flags.FixHitChanceCap">Raise Hit % Cap</CheckBox>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="MDefModeDropDown" TItem="MDEFGrowthMode" @bind-Value="Flags.MDefMode">MDEF Growth:</EnumDropDown>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="WhiteMageHarmEveryoneCheckBox" @bind-Value="Flags.WhiteMageHarmEveryone">Improved HARM for White Mage</CheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="Lockpicking" @bind-Value="Flags.Lockpicking">Thief Lockpicking</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="Lockpicking" @bind-Value="Flags.Lockpicking">Thief Lockpicking</TriStateCheckBox>
 			<IntSlider Indent Min="1" Max="50" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.Lockpicking" Id="LockpickingLevelRequirement" @bind-Value="@Flags.LockpickingLevelRequirement">Lockpicking Level Requirement:</IntSlider>
     <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ReducedLuckCheckBox" @bind-Value="Flags.ReducedLuck">Reduced Luck</TriStateCheckBox>
 

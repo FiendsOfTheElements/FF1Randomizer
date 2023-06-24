@@ -516,6 +516,9 @@ namespace FF1Lib
 				var partypermissions = rom.Get(0x78110, 0x11);
 				rom.PutInBank(0x1E, 0x80C1, Blob.FromHex("A6678A4A4A4A4AA8B9B085859020A480A9008522200F82A522F0034C0088A524D049A525F0023860A520290FC561F0E08561C900F0DAA667BD0003186901C90CD002A9FF9D0003A8C8B9B4852490F0E8A901853720B0824CD180"));
 				rom.PutInBank(0x1E, 0x85B0, partypermissions);
+			} else {
+				// We just reproduce EnablePoolParty()'s new DoPartyGen_OnCharacter and add the select button
+				rom.PutInBank(0x1E, 0x8843, Blob.FromHex("A98548A9AF48"));
 			}
 		}
 
