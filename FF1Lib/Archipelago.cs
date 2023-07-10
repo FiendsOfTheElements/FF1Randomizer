@@ -18,6 +18,7 @@ namespace FF1Lib
 		Preferences preferences;
 		ExpChests expChests;
 		IncentiveData incentivesData;
+		List<SCLogicRewardSource> itemPlacement;
 
 		public string Json { get; private set; }
 
@@ -28,6 +29,11 @@ namespace FF1Lib
 			incentivesData = _incentivesData;
 			flags = _flags;
 			preferences = _preferences;
+			itemPlacement = generatedPlacement.Select(x => new SCLogicRewardSource
+			{
+				Requirements = new SCRequirementsSet(x.AccessRequirement),
+				RewardSource = x
+			}).ToList();
 
 			var kiPlacement = generatedPlacement.Where(r => ItemLists.AllQuestItems.Contains(r.Item) && r.Item != Item.Bridge).ToList();
 
@@ -150,7 +156,7 @@ namespace FF1Lib
 					items = logic.RewardSources.GroupBy(r => GetItemId(r.RewardSource.Item)).ToDictionary(r => GetItemName(r.First().RewardSource.Item), r => new ArchipelagoItem { id = r.Key, count = r.Count(), incentive = incentivesData.IncentiveItems.Contains(r.First().RewardSource.Item) }),
 					locations = logic.RewardSources.ToDictionary(r => r.RewardSource.Name, r => GetLocationId(r)),
 					locations2 = logic.RewardSources.ToDictionary(r => r.RewardSource.Name, r => new ArchipelagoLocation { id = GetLocationId(r), incentive = IsLocationIncentivized(r) }),
-					rules = logic.RewardSources.ToDictionary(r => r.RewardSource.Name, r => GetRule(r))
+					rules = (flags.GameMode == GameModes.DeepDungeon) ? itemPlacement.ToDictionary(r => r.RewardSource.Name, r => GetRule(r)) : logic.RewardSources.ToDictionary(r => r.RewardSource.Name, r => GetRule(r))
 				}
 			};
 
@@ -195,6 +201,15 @@ namespace FF1Lib
 
 		private int GetLocationId(SCLogicRewardSource r)
 		{
+			if (flags.GameMode == GameModes.DeepDungeon)
+			{
+				if (r.RewardSource is TreasureChest)
+				{
+					var rewardSourceInfo = r.RewardSource.Name.Split('_');
+					return 13000 + int.Parse(rewardSourceInfo[1].TrimEnd('B')) * 16 + int.Parse(rewardSourceInfo[3]);
+				}
+			}
+
 			if (r.RewardSource is TreasureChest)
 			{
 				return r.RewardSource.Address - 0x3100 + ChestOffset;

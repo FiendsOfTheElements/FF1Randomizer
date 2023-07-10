@@ -1232,6 +1232,8 @@ namespace FF1Lib
 			List<byte> accessibleroomtiles;
 			int chestAddress = 0x3101;
 			int chestCount = 0;
+			List<int> chestCountPerMap = Enumerable.Repeat(0, 61).ToList();
+
 
 			// First we distribute the actual treasure box tiles, not caring what's in them.
 			// The boxes are organized by tileset, so we deal with them one tileset at a time.
@@ -1287,9 +1289,9 @@ namespace FF1Lib
 							}
 						}
 					}
-					// If the list of candidates is empty, this is no longer a viable tileset for
-					// placing treasures in.
-					if (candidates.Count() == 0)
+					// If the list of candidates is empty, this is no longer a viable map for
+					// placing treasures in; if Archipelago is enabled, we cap chests at 16 per map for compatibility's sake
+					if (candidates.Count() == 0 || (flags.Archipelago && chestCountPerMap[currentmap] >= 16))
 					{
 						mapspinner.Remove(currentmap);
 					}
@@ -1298,7 +1300,7 @@ namespace FF1Lib
 						c = candidates.SpliceRandom(rng);
 						maps[currentmap][c.y, c.x] = currentdeck.SpliceRandom(rng);
 						chests.Add(new TreasureChest(chestAddress + chestCount,
-							"DeepDungeon" + (currentmap - 7) + "B" + "_Chest" + chestCount,
+							"DD_" + (currentmap - 7) + "B_" + "Chest_" + chestCountPerMap[currentmap],
 							(MapLocation)currentmap,
 							Item.None,
 							flags.DDFiendOrbs ? AccessRequirement.None :
@@ -1307,6 +1309,7 @@ namespace FF1Lib
 							(currentmap > oxyfloor ? AccessRequirement.Oxyale : AccessRequirement.None))));
 						_rom.Put(0x800 + tilesetmappings[currentmap] * 0x100 + maps[currentmap][c.y, c.x] * 2, Blob.FromHex("09" + Convert.ToHexString(new byte[] { (byte)(chestCount + 1) })));
 						chestCount++;
+						chestCountPerMap[currentmap]++;
 					}
 				}
 			}
