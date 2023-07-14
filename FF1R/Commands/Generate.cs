@@ -2,6 +2,7 @@ namespace FF1R.Commands
 {
 	using System;
 	using McMaster.Extensions.CommandLineUtils;
+	using System.IO;
 
 	using FF1Lib;
 	using FFR.Common;
@@ -116,6 +117,16 @@ namespace FF1R.Commands
 				console.WriteLine($"Flags: {Flags.EncodeFlagsText(settings.Flags)}");
 			}
 			console.WriteLine($"ROM created at: {outFile}");
+
+			if (settings.Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
+			{
+				var spoilerOut = outFile.Substring(0, outFile.Length - 4) + ".txt";
+				using (StreamWriter writer = new(spoilerOut))
+				{
+					writer.Write(Utilities.SpoilerCache);
+				}
+				console.WriteLine($"Spoilers File created at: {spoilerOut}");
+			}
 
 			return 0;
 		}
