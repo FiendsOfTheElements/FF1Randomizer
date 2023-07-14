@@ -19,6 +19,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ffft\ffrft.ips" />
+    <None Remove="ffft\ffrftdemo.ips" />
+    <None Remove="ffft\FtModules.xml" />
     <None Remove="maps\crescent_start.ffm" />
     <None Remove="maps\crescent_start.json" />
     <None Remove="maps\default.json" />
@@ -36,6 +39,8 @@
   </ItemGroup>
 
   <ItemGroup>
+		<EmbeddedResource Include="ffft\ffrft.ips" />
+		<EmbeddedResource Include="ffft\FtModules.xml" />
 		<EmbeddedResource Include="maps\crescent_start.ffm" />
     <EmbeddedResource Include="maps\crescent_start.json" />
     <EmbeddedResource Include="maps\default.json" />
