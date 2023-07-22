@@ -260,8 +260,6 @@ namespace FF1Lib
 			{ MusicUsage.Other, 0 },
 		};
 
-		const int MaxNonsensicalOtherSongs = 6;
-
 		readonly static Dictionary<int, MusicUsage> NatSongUsages = new()
 		{
 			{ 0, MusicUsage.Title | MusicUsage.Overworld | MusicUsage.Town | MusicUsage.Dungeon },
@@ -294,6 +292,17 @@ namespace FF1Lib
 			{ MusicUsage.Menu, new[]{ 0x3ADB4, 0x3B677 } },
 			// Ships, Battle, and Boss are special cases as they map multiple:multiple
 			// Other special cases are lineup, ending, bridge cutscene, victory fanfare, gameover, and minigames
+		};
+
+		readonly static int[] NonsensicalSongOtherOffsets = new[]
+		{
+			0x3997F, // Lineup menu
+			0x37804, // Ending
+			0x3784E, // Bridge Cutscene
+			0x31E44, // Battle Fanfare
+			0x3C5EF, // Gameover
+			0x36E86, // minigame
+			0x27C0D, // minimap
 		};
 
 		readonly static HashSet<int> BossFormIdcs = new() { 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7a, 0x7c, 0x7d, 0x7e, 0x7f };
@@ -429,7 +438,7 @@ namespace FF1Lib
 			{
 				int numNeeded = (usage != MusicUsage.Other)
 					? MaxUsageSongs[usage]
-					: MaxNonsensicalOtherSongs;
+					: NonsensicalSongOtherOffsets.Length;
 
 				if (numNeeded > 0)
 				{
@@ -437,6 +446,7 @@ namespace FF1Lib
 						allSongs.AddRange(allSongs.Take(allSongs.Count));
 
 					songs.AddRange(allSongs.Skip(songIdx).Take(numNeeded));
+					songIdx += numNeeded;
 				}
 			}
 		}
@@ -612,7 +622,7 @@ namespace FF1Lib
 
 						usagesIdcs[usage].Add(songIdx);
 
-						Console.Write($"{songIdx:x2} ({usage.ToString()}): {((FtSong)isong).Title}\n");
+						Debug.Print($"{songIdx:x2} ({usage.ToString()}): {((FtSong)isong).Title}");
 
 						songIdx++;
 					}
@@ -708,7 +718,7 @@ namespace FF1Lib
 			var bossSongIdcs = usagesSongIdcs[MusicUsage.Boss];
 			formSongIdcs[LastBossFormIdx] = (byte)bossSongIdcs.Last();
 			if (bossSongIdcs.Count > 1)
-				bossSongIdcs.RemoveRange(bossSongIdcs.Count - 1, 1);
+				bossSongIdcs.RemoveAt(bossSongIdcs.Count - 1);
 
 			WriteSongIdxList(usagesSongIdcs[MusicUsage.Boss], formSongIdcs.Data, BossFormIdcs);
 
@@ -716,6 +726,9 @@ namespace FF1Lib
 
 			// Ship
 			var shipSongIdcs = usagesSongIdcs[MusicUsage.Ships];
+			for (int i = 0; i < shipSongIdcs.Count; i++)
+				shipSongIdcs[i] += 0x41;
+
 			Data[0x7C62D] = (byte)shipSongIdcs[0];
 			Data[0x7C75D] = (byte)shipSongIdcs[0];
 
@@ -724,28 +737,7 @@ namespace FF1Lib
 			Data[0x7C761] = (byte)shipSongIdcs[1 % shipSongIdcs.Count];
 
 			if (mode == MusicShuffle.Nonsensical)
-			{
-				var otherIdcs = usagesSongIdcs[MusicUsage.Other];
-
-				//Lineup menu
-				Data[0x3997F] = (byte)otherIdcs[0];
-
-				//Ending
-				Data[0x37804] = (byte)otherIdcs[1];
-
-				//Bridge Cutscene
-				Data[0x3784E] = (byte)otherIdcs[2];
-
-				//Battle Fanfare
-				Data[0x31E44] = (byte)otherIdcs[3];
-
-				//Gameover
-				Data[0x3C5EF] = (byte)otherIdcs[4];
-
-				//Mini Things
-				Data[0x36E86] = (byte)otherIdcs[5]; //minigame
-				Data[0x27C0D] = (byte)otherIdcs[6]; //minimap
-			}
+				WriteSongIdxList(usagesSongIdcs[MusicUsage.Other], (byte[])Data, NonsensicalSongOtherOffsets, 0x41);
 		}
 	}
 }
