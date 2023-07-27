@@ -260,7 +260,8 @@ namespace FF1Lib
 			int levelUpTargetB = (bool)flags.RandomizeClass ? 0xFF : 0xA9;
 			
 			// New routine to level up replaced character and zero some stuff, needs new level up stuff in bank 1B
-			PutInBank(0x0E, 0x9D34, Blob.FromHex($"A99D48A94B48A9{levelUpTargetA:X2}48A9{levelUpTargetB:X2}488A182A2A2A8510A91B4C03FEA9008D24008D25008D012060"));
+			PutInBank(0x0E, 0x9D34, Blob.FromHex($"AD0D03F018A99D48A95048A9{levelUpTargetA:X2}48A9{levelUpTargetB:X2}488A182A2A2A8510A91B4C03FE4C0099"));
+			PutInBank(0x0E, 0x9900, Blob.FromHex($"A9008D24008D25008D012060"));
 
 			Data[0x101A] = 0x13;
 			Data[0x109A] = 0x13;

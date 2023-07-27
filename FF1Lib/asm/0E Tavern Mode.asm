@@ -47,9 +47,11 @@ BuyOrRevive_Routine lda #$03
 
 * = $9D34
 DoLevelUp	    
+                    LDA $030D   ; check if we're reviving or hiring
+                    BEQ :+      ; branch if reviving (no need to do levelup routine)
                     LDA #$9D
                     PHA
-                    LDA #$4B
+                    LDA #$50
                     PHA
                     LDA #$87
                     PHA
@@ -63,15 +65,16 @@ DoLevelUp
                     STA $10
                     LDA #$1B
                     JMP $FE03
+                    : JMP TurnOffPPU
+                    .END
+
+* = $9900           ; Address could already be in use, so check here first in case of crash
+TurnOffPPU:
                     LDA #$00
                     STA $0024
                     STA $0025
                     STA $2001
                     RTS
-                    .END
-
-
-
 
 * = $9D58
 

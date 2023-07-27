@@ -422,7 +422,7 @@ namespace FF1Lib
 	    }
 		public void NPCHints(MT19337 rng, NPCdata npcdata, Flags flags, IncentiveData incentivedata, SanityCheckerV2 sanitychecker, ShopData shopdata)
 		{
-			if (!(bool)flags.HintsVillage || flags.GameMode == GameModes.DeepDungeon || !(bool)flags.Treasures )
+			if (!(bool)flags.HintsVillage || flags.GameMode == GameModes.DeepDungeon || !(bool)flags.Treasures || flags.Archipelago )
 			{
 				return;
 			}
