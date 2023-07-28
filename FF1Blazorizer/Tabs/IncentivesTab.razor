@@ -157,7 +157,7 @@
 
 			<div class="checkbox-cell"></div>
 			<h4>Hints</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Treasures != false && (Flags.GameMode != GameModes.DeepDungeon))" Id="hintsVillage" @bind-Value="Flags.HintsVillage">Hint Givers in Towns</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Treasures != false && (Flags.GameMode != GameModes.DeepDungeon) && !Flags.Archipelago)" Id="hintsVillage" @bind-Value="Flags.HintsVillage">Hint Givers in Towns</TriStateCheckBox>
 		</div>
 		<div class="clear-it"></div>
 	}
