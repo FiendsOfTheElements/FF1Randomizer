@@ -144,7 +144,7 @@ namespace FF1Lib
 			{
 				game = "Final Fantasy",
 				description = "Hurray",
-				name = preferences.PlayerName,
+				name = preferences.PlayerName.Substring(0,16),
 				options = new ArchipelagoFFROptions
 				{
 					items = logic.RewardSources.GroupBy(r => GetItemId(r.RewardSource.Item)).ToDictionary(r => GetItemName(r.First().RewardSource.Item), r => new ArchipelagoItem { id = r.Key, count = r.Count(), incentive = incentivesData.IncentiveItems.Contains(r.First().RewardSource.Item) }),
@@ -157,7 +157,7 @@ namespace FF1Lib
 			Json = JsonConvert.SerializeObject(data, Formatting.Indented);
 
 			//Write PlayerName into Rom
-			var playerName = LimitByteLength(preferences.PlayerName, 0x40);
+			var playerName = LimitByteLength(preferences.PlayerName.Substring(0,16), 0x40);
 			byte[] buffer = Encoding.UTF8.GetBytes(playerName);
 			Debug.Assert(buffer.Length <= 0x40, "PlayerName wasn'T shortened correctly.");
 
