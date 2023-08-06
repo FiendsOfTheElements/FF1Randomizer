@@ -147,7 +147,7 @@ namespace FF1Lib
 				game = "Final Fantasy",
 				description = "Hurray",
 				name = (preferences.PlayerName.Length > 16) ? preferences.PlayerName.Substring(0,16) : preferences.PlayerName,
-				permalink = ((FFRVersion.Branch == "master") ? FFRVersion.Version.Replace('.', '-') : "beta-" + FFRVersion.Sha.PadRight(7).Substring(0, 7)) + ".finalfantasyrandomizer.com/?s=" + seed.ToHex() + "&f=" + Flags.EncodeFlagsText(flags),
+				permalink = ((FFRVersion.Branch == "master") ? FFRVersion.Version.Replace('.', '-') : "beta-" + FFRVersion.Sha.PadRight(8).Substring(0, 8)) + ".finalfantasyrandomizer.com/?s=" + seed.ToHex() + "&f=" + Flags.EncodeFlagsText(flags),
 				options = new ArchipelagoFFROptions
 				{
 					items = logic.RewardSources.GroupBy(r => GetItemId(r.RewardSource.Item)).ToDictionary(r => GetItemName(r.First().RewardSource.Item), r => new ArchipelagoItem { id = r.Key, count = r.Count(), incentive = incentivesData.IncentiveItems.Contains(r.First().RewardSource.Item) }),
