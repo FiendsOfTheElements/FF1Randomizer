@@ -1379,7 +1379,7 @@ public partial class FF1Rom : NesRom
 		{
 			shipLocations.SetShipLocation(255);
 
-			Archipelago exporter = new Archipelago(this, generatedPlacement, sanityChecker, expChests, incentivesData, flags, preferences);
+			Archipelago exporter = new Archipelago(this, generatedPlacement, sanityChecker, expChests, incentivesData, seed, flags, preferences);
 			Utilities.ArchipelagoCache = exporter.Work();
 		}
 
