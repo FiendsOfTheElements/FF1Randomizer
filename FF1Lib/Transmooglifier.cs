@@ -1915,15 +1915,15 @@ namespace FF1Lib
 			{
 				rom.ClassData[c].WoodAdept = rom.ClassData[c].WoodAdept = true;
 				rom.ClassData[c].WoodAdept = rom.ClassData[p].WoodAdept = true;
-				rom.ArmorPermissions.AddPermissionsRange(new List<(Classes, Item)> { (c, Item.WoodenArmor), (c, Item.WoodenHelm), (c, Item.WoodenShield), (p, Item.WoodenArmor), (p, Item.WoodenHelm), (p, Item.WoodenShield) });
+				newPermissions.AddPermissionsRange(new List<(Classes, Item)> { (c, Item.WoodenArmor), (c, Item.WoodenHelm), (c, Item.WoodenShield), (p, Item.WoodenArmor), (p, Item.WoodenHelm), (p, Item.WoodenShield) });
 			}
 
 			if (Rng.Between(rng, 0, 100) <= (int)(SteelLord * 100))
 			{
 				rom.ClassData[c].SteelLord = rom.ClassData[c].SteelLord = true;
 				rom.ClassData[c].SteelLord = rom.ClassData[p].SteelLord = true;
-				rom.ArmorPermissions.AddPermission(c, Item.SteelArmor);
-				rom.ArmorPermissions.AddPermission(p, Item.SteelArmor);
+				newPermissions.AddPermission(c, Item.SteelArmor);
+				newPermissions.AddPermission(p, Item.SteelArmor);
 			}
 
 			if (ImprovedHarm)
