@@ -129,7 +129,7 @@ namespace FF1Lib
 
 			_sanityCounter = 0;
 			var incentiveLocationPool = new HashSet<IRewardSource>(_incentivesData.IncentiveLocations, new RewardSourceEqualityComparer());
-			var preBlackOrbLocationPool = _incentivesData.AllValidPreBlackOrbItemLocations.ToList();
+			var preBlackOrbLocationPool = _incentivesData.AllValidPreBlackOrbItemLocationsPlusForced.ToList();
 			var preBlackOrbUnincentivizedLocationPool = preBlackOrbLocationPool.Where(x => !incentiveLocationPool.Any(y => y.Address == x.Address)).ToList();
 			if ((bool)_flags.LooseExcludePlacedDungeons)
 				preBlackOrbUnincentivizedLocationPool = IncentivizedDungeons(preBlackOrbUnincentivizedLocationPool);
@@ -169,7 +169,7 @@ namespace FF1Lib
 					nonincentives.Add(incentives.SpliceRandom(rng));
 				}
 
-				if (((bool)_flags.NPCItems) || ((bool)_flags.NPCFetchItems))
+				if (nonincentives.Concat(incentives).Any())
 				{
 					HashSet<Item> allPlacements = new HashSet<Item>(nonincentives.Concat(incentives));
 					HashSet<Item> allKeyItems = new HashSet<Item>(MapChangeItems.Concat(FetchQuestItems).Concat(GatingItems).Intersect(allPlacements));
@@ -182,11 +182,14 @@ namespace FF1Lib
 					//The sanity checker currently doesn't allow tracking which shops are available
 					//It could be easily added, but a little randomnes can't hurt(or so I'm thinking)
 					//So it places the vendoritem upfront.
-					var itemShopItem = SelectVendorItem(incentives.ToList(), nonincentives, treasurePool, incentiveLocationPool, rng);
-					placedItems.Add(new ItemShopSlot(_caravanItemLocation, itemShopItem));
+					if ((bool)_flags.NPCItems)
+					{ 
+						var itemShopItem = SelectVendorItem(incentives.ToList(), nonincentives, treasurePool, incentiveLocationPool, rng);
+						placedItems.Add(new ItemShopSlot(_caravanItemLocation, itemShopItem));
 
-					allPlacements.Remove(itemShopItem);
-					allKeyItems.Remove(itemShopItem);
+						allPlacements.Remove(itemShopItem);
+						allKeyItems.Remove(itemShopItem);
+					}
 
 					if (_flags.Archipelago && allKeyItems.Contains(Item.Bridge))
 					{
