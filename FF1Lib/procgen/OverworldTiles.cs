@@ -490,7 +490,7 @@ namespace FF1Lib.Procgen
 		{ "Ship", new SCCoords(0, 0) },
 	    });
 
-	public static PgFeature E_CANAL_STRUCTURE = new OwFeature(new byte[,] {
+	public static PgFeature E_CANAL_STRUCTURE = new PgFeature(new byte[,] {
 	    {None, None,     None,   None,  None,  None,  None},
 	    {None, DOCK_SE, DOCK_S, DOCK_SW, None, None,    None},
 	    {None, DOCK_E,   OCEAN,  OCEAN, OCEAN, OCEAN, OCEAN},
@@ -500,7 +500,7 @@ namespace FF1Lib.Procgen
 		{"Canal", new SCCoords(5, 2)}
 	    });
 
-	public static PgFeature W_CANAL_STRUCTURE = new OwFeature(new byte[,] {
+	public static PgFeature W_CANAL_STRUCTURE = new PgFeature(new byte[,] {
 	    {None,     None,   None,  None,  None,  None, None},
 	    {None, None,    None, DOCK_S, DOCK_S,  DOCK_SW, None},
 	    {OCEAN,   OCEAN,  OCEAN, OCEAN, OCEAN, DOCK_W, None},
