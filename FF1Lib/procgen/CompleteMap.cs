@@ -6,24 +6,25 @@ namespace FF1Lib.Procgen
     [JsonObject(MemberSerialization.OptIn)]
 	public class CompleteMap
 	{
-	    [JsonProperty]
+	    [JsonProperty(Order=1)]
 	    [JsonConverter(typeof(StringEnumConverter))]
 	        public MapId MapId;
 
-	    [JsonProperty]
 		public Map Map;
+
+	    [JsonProperty(Order = 2)]
+	        public List<string> DecompressedMapRows { get; set; }
 
 		public MapRequirements Requirements;
 	        public Coordinate Entrance;
 
-	    [JsonProperty]
-	    [JsonConverter(typeof(KeyValuePairConverter))]
+	    [JsonProperty(Order = 4)]
 	        public Dictionary<OverworldTeleportIndex, TeleportDestination> OverworldEntrances;
 
-	    [JsonProperty]
+	    [JsonProperty(Order = 5)]
 	        public Dictionary<TeleportIndex, TeleportDestination> MapDestinations;
 
-	    [JsonProperty]
+	    [JsonProperty(Order = 5)]
 	        public List<NPC> NPCs;
 
 		/* -- The rest of this is text map drawing. -- */
@@ -128,5 +129,45 @@ namespace FF1Lib.Procgen
 			return sb.ToString();
 		}
 
+	    public static CompleteMap LoadJson(Stream stream) {
+		using (StreamReader rd = new StreamReader(stream))
+		{
+		    return LoadJson(rd);
+		}
+	    }
+
+	    public static CompleteMap LoadJson(StreamReader rd) {
+		    var obj = JsonConvert.DeserializeObject<CompleteMap>(rd.ReadToEnd());
+
+		    obj.Map = new Map(0);
+
+		    for (int y = 0; y < 64; y++)
+		    {
+			byte[] row = Convert.FromBase64String(obj.DecompressedMapRows[y]);
+			for (int x = 0; x < 64; x++) {
+			    obj.Map[y, x] = row[x];
+			}
+		    }
+
+		    return obj;
+	    }
+
+	    public void SaveJson(StreamWriter stream) {
+		JsonSerializer serializer = new JsonSerializer();
+		serializer.Formatting = Formatting.Indented;
+
+		this.DecompressedMapRows = new List<string>();
+
+		for (int y = 0; y < 64; y++)
+		{
+		    byte[] row = new byte[64];
+		    for (int x = 0; x < 64; x++) {
+			row[x] = this.Map[y, x];
+		    }
+		    this.DecompressedMapRows.Add(Convert.ToBase64String(row));
+		}
+
+		serializer.Serialize(stream, this);
+	    }
 	}
 }

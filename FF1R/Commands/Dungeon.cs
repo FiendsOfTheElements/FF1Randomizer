@@ -199,6 +199,22 @@ namespace FF1R.Commands
 		    name = $"dungeonmap{(int)replacementMap.MapId}-inside.png";
 		    output.Save(name);
 		    Console.WriteLine($"Wrote {name}");
+
+		    name = $"dungeonmap{(int)replacementMap.MapId}.json";
+		    using (StreamWriter file = File.CreateText(name)) {
+			replacementMap.SaveJson(file);
+		    }
+		    Console.WriteLine($"Wrote {name}");
+
+		    using (StreamReader file = File.OpenText(name)) {
+			var newmap = FF1Lib.Procgen.CompleteMap.LoadJson(file);
+
+			name = $"dungeonmap{(int)replacementMap.MapId}-2.json";
+			using (StreamWriter file2 = File.CreateText(name)) {
+			    newmap.SaveJson(file2);
+			}
+			Console.WriteLine($"Wrote {name}");
+		    }
 		}
 	    }
 

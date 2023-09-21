@@ -273,14 +273,23 @@ namespace FF1Lib
 		Maze
 	}
 
+	[JsonObject(MemberSerialization.OptIn)]
 	public struct NPC
 	{
 	    [JsonProperty]
 	    [JsonConverter(typeof(StringEnumConverter))]
 		public ObjectId ObjectId;
+
+	    [JsonProperty]
 		public int Index;
+
+	    [JsonProperty]
 		public (int x, int y) Coord;
+
+	    [JsonProperty]
 		public bool InRoom;
+
+	    [JsonProperty]
 		public bool Stationary;
 	        public FF1Rom.generalNPC General;
 	}
@@ -1912,7 +1921,7 @@ namespace FF1Lib
 			overworldMap.PutOverworldTeleport(kv.Key, kv.Value);
 		    }
 		    foreach (var npc in newmap.NPCs) {
-			npcdata.SetNPC(npc.ObjectId, npc.General);
+			//npcdata.SetNPC(npc.ObjectId, npc.General);
 			this.MoveNpc(newmap.MapId, npc);
 		    }
 		}

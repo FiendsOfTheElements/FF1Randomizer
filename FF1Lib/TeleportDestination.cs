@@ -1,4 +1,7 @@
-﻿namespace FF1Lib
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace FF1Lib
 {
 	public enum CoordinateLocale
 	{
@@ -58,14 +61,30 @@
 		};
 	};
 
+	[JsonObject(MemberSerialization.OptIn)]
 	public struct TeleportDestination
 	{
+	    [JsonProperty(Order=1)]
+	    [JsonConverter(typeof(StringEnumConverter))]
 		public readonly MapLocation Destination;
+
+	    [JsonProperty(Order=2)]
+	    [JsonConverter(typeof(StringEnumConverter))]
 		public readonly MapIndex Index;
+
+	    [JsonProperty(Order=3)]
 		public byte CoordinateX { get; private set; }
+
+	    [JsonProperty(Order=4)]
 		public byte CoordinateY { get; private set; }
+
+	    [JsonProperty(Order=5, ItemConverterType = typeof(StringEnumConverter))]
 		public readonly IEnumerable<TeleportIndex> Teleports;
+
+	    [JsonProperty(Order=6)]
+	    [JsonConverter(typeof(StringEnumConverter))]
 		public readonly ExitTeleportIndex Exit;
+
 		public string SpoilerText =>
 		$"{Enum.GetName(typeof(MapLocation), Destination)}" +
 		$"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 30 - Enum.GetName(typeof(MapLocation), Destination).Length)).ToList())}";

@@ -205,8 +205,6 @@ namespace FF1Lib
 		{
 			public byte sprite;
 			public Blob oldtalkroutine;
-	    [JsonProperty]
-	    [JsonConverter(typeof(StringEnumConverter))]
 			public newTalkRoutines talkroutine;
 			public byte[] talkarray;
 		}
