@@ -13,37 +13,6 @@
 	}
 	public partial class FF1Rom : NesRom
 	{
-		public void AddElementIcons()
-		{
-			// Need to be called after UpdateDialogs since we use some of the space freed by it in bank 1F
-
-			var tileset = GetFromBank(0x09, 0x8800, 0x0800);     // Get font tileset
-
-			PutInBank(0x12, 0x8800, tileset);                    // Put it in bank 12
-			PutInBank(0x1F, 0xDC40, Blob.FromHex("A9124C90E9")); // Load bank 12, then jump to LoadMenuCHR (skipping normal bank loading)
-			PutInBank(0x1F, 0xEA74, Blob.FromHex("2040DC"));     // LoadBattleBGCHRAndPalettes now jump to $DC40 instead of directly to LoadMenuCHR
-			PutInBank(0x1F, 0xEA9F, Blob.FromHex("2002EA"));     // Change LoadMenuBGCHRAndPalettes to use LoadShopBGCHRPalettes instead of LoadBattleBGCHRAndPalettes
-
-			// Insert graphics
-			var newIcons = "00183C3C18180018FFFFFFFFFFFFFFFF" + // E2 to F1
-				"001812446036381CFFFFFFFFFFFFFFFF" +
-				"0044BA6CE6FE7C38FFFFFFFFFFFFFFFF" +
-				"00386CC66C7C3838FFFFFFFFFFFFFFFF" +
-				"000C3872D88C8448FFFFFFFFFFFFFFFF" +
-				"0010104410441010FFFFFFFFFFFFFFFF" +
-				"00103070FE1C1810FFFFFFFFFFFFFFFF" +
-				"00000000E7F3E7EFFFFFFFFFFFFFFFFF" +
-				"007CFE92FE540038FFFFFFFFFFFFFFFF" +
-				"003C7EBDD9B1523CFFFFFFFFFFFFFFFF" +
-				"0038102828447C38FFFFFFFFFFFFFFFF" +
-				"00006CDA926C0000FFFFFFFFFFFFFFFF" +
-				"0080E82E82E82E02FFFFFFFFFFFFFFFF" +
-				"0070102E4274080EFFFFFFFFFFFFFFFF" +
-				"003C7EFFD57E3C0EFFFFFFFFFFFFFFFF" +
-				"003C42421C100010FFFFFFFFFFFFFFFF";
-
-			PutInBank(0x09, 0x8E20, Blob.FromHex(newIcons));
-		}
 		public enum shopInfoWordsIndex
 		{
 			wpAtk = 0,
@@ -145,7 +114,7 @@
 			PutInBank(0x0E, 0xA931, Blob.FromHex("200095"));
 			PutInBank(0x0E, 0x9500, Blob.FromHex("A564C928F038A566C904B035C902B017A20020D495A24020D495A28020D495A2C020D4954C4195A200208B95A240208B95A280208B95A2C0208B954C41952047952027A74C2696A9008DD66A8DDA6A8DDE6A8DE26A6060AA4A8510BD0061A8B9A4EC8511BD0161F011C901F0E9C903F004A9038511A9144C8395A5104A4A4AAABDD66A18651085104C24EC8A8515BD00610AAABD00AD8510BD01AD8511A662BD000338E9B0851229078513A5124A4A4AA8B1108514A613BD38AC2514F005A9004CC595A90E8510A5154A4A4A4AAAA5109DD66A608A8515BD00610AAABDB9BC8512BDBABC8513A662BD000338C944B01638E91C0AAABD50BF25128510BD51BF251305104C1896E9440AAABDA0BF25128510BDA1BF25130510C9019005A9004CC595A90E4CC595A522F033A564C928F02DA662BD00038514205E962027A7A520C561F0F7A9008522204D964C46E1A9018538A9128539A90E853CA90A853D60204D96A90E85572063E0A53E8512A53F8513A514380AAAB00DBD0093853EBD0193853F4C8E96BD0094853EBD0194853FA9118557A90E85582036DEA512853EA513853FA900852260"));
 
-			if (flags.ChestInfo && !preferences.RenounceChestInfo)
+			if (flags.ChestInfo && flags.IdentifyTreasures && !preferences.RenounceChestInfo)
 			{
 				// Shorten TreasureChest Dialog
 				InsertDialogs(320, "You found.. #");
@@ -256,7 +225,7 @@
 
 		}
 
-		ushort[] InfoClassEquipPerms = new ushort[] {
+		public ushort[] InfoClassEquipPerms = new ushort[] {
 		    (ushort)EquipPermission.Fighter,
 		    (ushort)EquipPermission.Knight,
 		    (ushort)EquipPermission.Thief,
@@ -270,7 +239,7 @@
 		    (ushort)EquipPermission.BlackMage,
 		    (ushort)EquipPermission.BlackWizard,
 		};
-		string[] InfoClassAbbrev = new string[] {
+		public string[] InfoClassAbbrev = new string[] {
 		    "Fi",
 		    "Kn",
 		    "Th",
@@ -294,11 +263,12 @@
 			    description += " " + InfoClassAbbrev[i*2+1];
 			}
 		    }
-		    description = description.Trim();
-		    if (description.Length > 12) {
-			description = description.Replace(" ", "");
-		    }
-		    if (description == "FiThBbRmWmBm") {
+			description = description.Trim();
+			if (description.Length > 12)
+			{
+				description = description.Replace(" ", "");
+			}
+			if (description == "FiThBbRmWmBm") {
 			description =  "All classes";
 		    }
 		    return description;

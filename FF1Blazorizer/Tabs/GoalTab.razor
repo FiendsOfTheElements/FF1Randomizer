@@ -30,7 +30,7 @@
 		<p>
 			Player Name:
 			<br>
-			<input type="text" style="width: calc(100% - 80px);" class="nes-input" id="seedInput" @onchange="@OnPlayerNameChanged" value="@(Flags.PlayerName)" />
+				<input type="text" style="width: calc(100% - 80px);" class="nes-input" id="seedInput" maxlength="16" @onchange="@OnPlayerNameChanged" value="@(Flags.PlayerName)" />
 		</p>
 </div>
 
@@ -61,6 +61,6 @@
 
     void OnPlayerNameChanged(ChangeEventArgs e)
 	{
-		Flags.PlayerName = e.Value as string;
+		Flags.PlayerName = (e.Value as string).Substring(0,16);
 	}
 }

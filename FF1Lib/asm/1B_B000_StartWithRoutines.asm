@@ -289,21 +289,28 @@ Wo_NotWood:
   RTS  
   
 ; Hunter hurt all enemy type
-Hunter:
-  LDA #<lut_Hunter 
-  STA class_lut_a                 
-  LDA #>lut_Hunter
-  STA class_lut_b
-  
+Hunter:  
   LDY #$00
   LDA (btl_ob_charstat_ptr), Y
-  JSR GetValueByClass
+  ;character class in A
+  TAX
+  LDA lut_Hunter, X 
   BEQ Hu_NotClass
-    LDY #$0D ; enemy type
-    EOR (btl_ib_charstat_ptr), Y
+    LDY #$0D ; attacker weakness type
+    ORA (btl_ib_charstat_ptr), Y
     STA (btl_ib_charstat_ptr), Y
 Hu_NotClass:
-  RTS   
+  RTS
+  NOP
+  NOP
+  NOP
+  NOP
+  NOP
+  NOP
+  NOP
+;NOPs added because I couldnt rebuild the entire start with asm file.
+;Had to swap the bugged hunter function, and maintain instruction length to perserve addressing.
+;A0 00 B1 82 AA BD 27 B2 F0 06 A0 0D 11 80 91 80 60 EA EA EA EA EA EA EA     
   
 ; Always start battle asleep
 Sleepy:

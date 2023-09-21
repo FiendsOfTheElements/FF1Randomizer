@@ -343,15 +343,146 @@ namespace FF1Lib
 
 		public void Randomize(Flags flags, MT19337 rng, List<string> olditemnames, ItemNames itemnames, FF1Rom rom)
 		{
-			if (!(bool)flags.RandomizeClass)
-			{
+			if (!(bool)flags.RandomizeClass && !(bool)flags.Transmooglifier && !(bool)flags.RandomizeClassChaos)
 				return;
-			}
 
+			RandomizeClassHacks(flags, rom);
+
+			if ((bool)flags.Transmooglifier)
+				Transmooglify(flags, rng, rom);
+			else if ((bool)flags.RandomizeClass)
+				RandomizeClassBlursings(flags, rng, olditemnames, itemnames, rom);
+			else if ((bool)flags.RandomizeClassChaos)
+				RandomizeClassChaos(flags, rng, rom);
+		}
+
+		public void Transmooglify(Flags flags, MT19337 rng, FF1Rom rom)
+		{
+			// The MEAT
+			Transmooglifier transmooglifier = new Transmooglifier();
+			transmooglifier.Transmooglify(flags, rng, rom);
+
+			// Description screen
+			List<string> dataScreen = new List<string>();
+
+			dataScreen.AddRange(transmooglifier.classDescriptions);
+			dataScreen.AddRange(transmooglifier.classDescriptions); // Add again for Promo Classes
+
+			CreateDataScreens("", dataScreen, rom);
+		}
+
+		public void RandomizeClassChaos(Flags flags, MT19337 rng, FF1Rom rom)
+		{
 			// Strings to build info screen in game
 			List<string> rankString = new List<string> { "-", "E", "D", "C", "B", "A", "S" };
 			List<string> symboleString = new List<string> { "@S", "@H", "@K", "@X", "@F", "@N", "@A", "@s", "@h", "@G", "HP", "Str", "Agi", "Int", "Vit", "Lck", "Ht%", "MDf", "Wt", "Bk", "Sp" };
 
+			// The MEAT
+			DoRandomizeClassChaosMode(((bool)flags.MagicLevelsMixed && (bool)flags.MagicPermissions) || ((bool)flags.SpellcrafterMixSpells && !(bool)flags.SpellcrafterRetainPermissions), (flags.ThiefAgilityBuff != ThiefAGI.Vanilla), rng, rom);
+
+			// Description screen
+			var templateScreen =
+				"STATS".PadRight(11) + "\n" +
+				"S A I V L".PadRight(11) + "\n" +
+				"? ? ? ? ?".PadRight(11) + "\n\n" +
+				"Ht% MDf HP".PadRight(11) + "\n" +
+				" ?   ?   ?".PadRight(11) + "\n\n" +
+				"MAGIC".PadRight(11) + "\n" +
+				"Wht Blk SpC".PadRight(11) + "\n" +
+				" ?   ?   ?".PadRight(11) + "\n\n" +
+				"WEAPONS".PadRight(11) + "\n" +
+				"@S @H @K @X @F @N".PadRight(11) + "\n" +
+				"? ? ? ? ? ?".PadRight(11) + "\n\n" +
+				"ARMORS".PadRight(11) + "\n" +
+				"@A @s @h @G".PadRight(11) + "\n" +
+				"? ? ? ?".PadRight(11) + "\n\n" +
+				"PROMOTION".PadRight(11);
+
+			List<string> dataScreen = new List<string>();
+			for (int i = 0; i < 12; i++)
+			{
+				// Generate promo change data
+				string promoChange = "";
+				if (i < 6)
+				{
+					for (int j = 0; j < Enum.GetNames(typeof(RankedType)).Length - 1; j++)
+					{
+						if (_classes[i + 6].Ranks[j] > _classes[i].Ranks[j])
+						{
+							if (j == (int)RankedType.White)
+							{
+								promoChange += _classes[i + 6].MagicRanks[0] + "W";
+							}
+							else if (j == (int)RankedType.Black)
+							{
+								promoChange += _classes[i + 6].MagicRanks[1] + "B";
+							}
+							else
+								promoChange += symboleString[j] + rankString[(int)_classes[i + 6].Ranks[j]];
+
+							if (promoChange.Split('\n').Last().Length > (11 - 4))
+								promoChange += "\n";
+							else
+								promoChange += " ";
+						}
+					}
+				}
+
+				// Generate data screen
+				var dataChaosScreen =
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Strength]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Agility]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Intellect]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Vitality]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Luck]] +
+					"\n\n\n" +
+					" " + _classes[i].HitGrowth + "   " +
+					_classes[i].MDefGrowth + "   " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.HP]] +
+					"\n\n\n\n" +
+					" " + _classes[i].MagicRanks[0] + "  " +
+					_classes[i].MagicRanks[1] + "  " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Charges]] +
+					//rankString[(int)classData[i].Ranks[(int)RankedType.Black]] + "   " +
+					//rankString[(int)classData[i].Ranks[(int)RankedType.Charges]] +
+					"\n\n\n\n" +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Swords]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Hammers]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Knives]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Axes]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Staves]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Nunchucks]] +
+					"\n\n\n\n" +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Armors]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Shields]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Helmets]] + " " +
+					rankString[(int)_classes[i].Ranks[(int)RankedType.Gauntlets]] +
+					"\n\n\n" +
+					String.Join("", promoChange);
+
+				dataScreen.Add(dataChaosScreen);
+			}
+
+			CreateDataScreens(templateScreen, dataScreen, rom);
+		}
+
+		public void RandomizeClassBlursings(Flags flags, MT19337 rng, List<string> olditemnames, ItemNames itemnames, FF1Rom rom)
+		{
+			// The MEAT
+			List<string> bonusmalusDescription = new List<string>();
+			bonusmalusDescription = DoRandomizeClassNormalMode(rng, olditemnames, itemnames, flags, rom);
+
+			// Description screen
+			var templateScreen = "BONUS";
+
+			List<string> dataScreen = new List<string>();
+			dataScreen.AddRange(bonusmalusDescription.Concat(bonusmalusDescription));
+
+			CreateDataScreens(templateScreen, dataScreen, rom);
+		}
+
+		public void RandomizeClassHacks(Flags flags, FF1Rom rom)
+		{
 			// Starting Stats awards MP to allow any class to start with spell charges
 			rom.PutInBank(0x1F, 0xC7CA, Blob.FromHex("B94BB09D20639D286360"));
 			_classes[(int)Classes.RedMage].SpCStarting = 2;
@@ -366,149 +497,46 @@ namespace FF1Lib
 			rom.PutInBank(0x0E, 0xA0E0, Blob.FromHex("A98948A90F48A91E85574C03FE"));
 
 			// EnterInfoMenu, see 1E_8800_DrawInfoBox.asm
-			rom.PutInBank(0x1E, 0x8800, Blob.FromHex("203CC4A5674A4A4A4A4AB015A200205B83A220205B83A9118538A90285394C3388A210205B83A230205B83A9038538A9028539A667BD0003C9FFD002A90C0AAA207188A98048A9C0484C1A85A9118538A9028539A667BD0061C9FFD002A90C0AAA207188A9B648A91248A90E85574C03FEA90D853CA91A853DA9008D0120A90085378A482063E0A970853EA989853FA538853AE63AA539853BE63BA91E855785582036DE68AABD5089853EBD5189853FA53B186902853B2036DE205E8560"));
+			//rom.PutInBank(0x1E, 0x8800, Blob.FromHex("203CC4A5674A4A4A4A4AB015A200205B83A220205B83A9118538A90285394C3388A210205B83A230205B83A9038538A9028539A667BD0003C9FFD002A90C0AAA207188A98048A9C0484C1A85A9118538A9028539A667BD0061C9FFD002A90C0AAA207188A9B648A91248A90E85574C03FEA90D853CA91A853DA9008D0120A90085378A482063E0A970853EA989853FA538853AE63AA539853BE63BA91E855785582036DE68AABD5089853EBD5189853FA53B186902853B2036DE205E8560"));
+			string InfoMenuHeight = "02";
+			if ((bool)flags.Transmooglifier)
+			{
+				InfoMenuHeight = "00";
+			}
+			// EnterInfoMenu, see 1E_8800_DrawInfoBox.asm
+			rom.PutInBank(0x1E, 0x8800, Blob.FromHex($"203CC4A5674A4A4A4A4AB015A200205B83A220205B83A9118538A90285394C3388A210205B83A230205B83A9038538A9028539A667BD0003C9FFD002A90C0AAA207188A98048A9C0484C1A85A9118538A9028539A667BD0061C9FFD002A90C0AAA207188A9B648A91248A90E85574C03FEA90D853CA91A853DA9008D0120A90085378A482063E0A970853EA989853FA538853AE63AA539853BE63BA91E855785582036DE68AABD5089853EBD5189853FA53B1869{InfoMenuHeight}853BA567482036DE688567205E8560"));
 
 			// StatusWaitForBtn_SFX, see 1E_8800_DrawInfoBox.asm
 			rom.PutInBank(0x1E, 0x8910, Blob.FromHex("202C85A5240522D00FA525F0F3A9008525A90E85574C03FEA9008524852585224C4C88"));
 
 			// InfoScreen in PtyGen and Status screen
 			// DoPartyGen_OnCharacter change to check for Select button, see 1E_8800_DrawInfoBox.asm
-			if (flags.EnablePoolParty ?? false)
-			{
-				// We just reproduce EnablePoolParty()'s new DoPartyGen_OnCharacter and add the select button
-				rom.PutInBank(0x1E, 0x85B0, Blob.FromHex("A667BD01030D41038D4103A9FF8D4003BD0103C900F00718EE40032A90FA20A480A9008522200F82A522F0034C0088A667AC4003A524F013BD0003C9FFF009BD01034D41038D41034C2C81A525F0118AC900F00AA9009D0103A9FF9D00033860A520290FC561F0B98561C900F0B3C898C9099002A0008C4003B944862C4103F0ED9D0103B942039D0003A901853720B0824CD1858040201008040201"));
-				rom.PutInBank(0x1E, 0x8843, Blob.FromHex("A98548A9AF48"));
-			}
-			else
+			if (!(bool)flags.EnablePoolParty)
 			{
 				var partypermissions = rom.Get(0x78110, 0x11);
 				rom.PutInBank(0x1E, 0x80C1, Blob.FromHex("A6678A4A4A4A4AA8B9B085859020A480A9008522200F82A522F0034C0088A524D049A525F0023860A520290FC561F0E08561C900F0DAA667BD0003186901C90CD002A9FF9D0003A8C8B9B4852490F0E8A901853720B0824CD180"));
 				rom.PutInBank(0x1E, 0x85B0, partypermissions);
+			} else {
+				// We just reproduce EnablePoolParty()'s new DoPartyGen_OnCharacter and add the select button
+				rom.PutInBank(0x1E, 0x8843, Blob.FromHex("A98548A9AF48"));
 			}
+		}
 
-
-			List<string> bonusmalusDescription = new List<string>();
-
-			// Chaos Mode enabled?
-			if ((bool)flags.RandomizeClassChaos)
-			{
-				DoRandomizeClassChaosMode(((bool)flags.MagicLevelsMixed && (bool)flags.MagicPermissions) || ((bool)flags.SpellcrafterMixSpells && !(bool)flags.SpellcrafterRetainPermissions), (flags.ThiefAgilityBuff != ThiefAGI.Vanilla), rng, rom);
-			}
-			else
-			{
-				bonusmalusDescription = DoRandomizeClassNormalMode(rng, olditemnames, itemnames, flags, rom);
-			}
-
+		public void CreateDataScreens(string templateScreen, List<string> dataScreen, FF1Rom rom)
+		{
 			// dataScreen
 			int totalByte = 0;
-			var templateScreen = "";
 			var screenBlob = Blob.FromHex("00");
-			var dataScreen = new List<string>();
-
-			// Generate template
-			if ((bool)flags.RandomizeClassChaos)
-			{
-				templateScreen =
-					"STATS".PadRight(11) + "\n" +
-					"S A I V L".PadRight(11) + "\n" +
-					"? ? ? ? ?".PadRight(11) + "\n\n" +
-					"Ht% MDf HP".PadRight(11) + "\n" +
-					" ?   ?   ?".PadRight(11) + "\n\n" +
-					"MAGIC".PadRight(11) + "\n" +
-					"Wht Blk SpC".PadRight(11) + "\n" +
-					" ?   ?   ?".PadRight(11) + "\n\n" +
-					"WEAPONS".PadRight(11) + "\n" +
-					"@S @H @K @X @F @N".PadRight(11) + "\n" +
-					"? ? ? ? ? ?".PadRight(11) + "\n\n" +
-					"ARMORS".PadRight(11) + "\n" +
-					"@A @s @h @G".PadRight(11) + "\n" +
-					"? ? ? ?".PadRight(11) + "\n\n" +
-					"PROMOTION".PadRight(11);
-			}
-			else
-				templateScreen = "BONUS";
 
 			// Insert template
-			screenBlob = FF1Text.TextToBytes(templateScreen, true, FF1Text.Delimiter.Null);
+			screenBlob = FF1Text.TextToBytes(templateScreen, true, FF1Text.Delimiter.Null, true);
 			rom.PutInBank(0x1E, 0x8970, screenBlob);
 			totalByte += screenBlob.Length;
-
-			// Build individual dataScreens, calculate their pointers and insert them
-			if ((bool)flags.RandomizeClassChaos)
-			{
-				for (int i = 0; i < 12; i++)
-				{
-					// Generate promo change data
-					string promoChange = "";
-					if (i < 6)
-					{
-						for (int j = 0; j < Enum.GetNames(typeof(RankedType)).Length - 1; j++)
-						{
-							if (_classes[i + 6].Ranks[j] > _classes[i].Ranks[j])
-							{
-								if (j == (int)RankedType.White)
-								{
-									promoChange += _classes[i + 6].MagicRanks[0] + "W";
-								}
-								else if (j == (int)RankedType.Black)
-								{
-									promoChange += _classes[i + 6].MagicRanks[1] + "B";
-								}
-								else
-									promoChange += symboleString[j] + rankString[(int)_classes[i + 6].Ranks[j]];
-
-								if (promoChange.Split('\n').Last().Length > (11 - 4))
-									promoChange += "\n";
-								else
-									promoChange += " ";
-							}
-						}
-					}
-
-					// Generate data screen
-					var dataChaosScreen =
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Strength]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Agility]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Intellect]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Vitality]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Luck]] +
-						"\n\n\n" +
-						" " + _classes[i].HitGrowth + "   " +
-						_classes[i].MDefGrowth + "   " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.HP]] +
-						"\n\n\n\n" +
-						" " + _classes[i].MagicRanks[0] + "  " +
-						_classes[i].MagicRanks[1] + "  " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Charges]] +
-						//rankString[(int)classData[i].Ranks[(int)RankedType.Black]] + "   " +
-						//rankString[(int)classData[i].Ranks[(int)RankedType.Charges]] +
-						"\n\n\n\n" +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Swords]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Hammers]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Knives]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Axes]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Staves]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Nunchucks]] +
-						"\n\n\n\n" +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Armors]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Shields]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Helmets]] + " " +
-						rankString[(int)_classes[i].Ranks[(int)RankedType.Gauntlets]] +
-						"\n\n\n" +
-						String.Join("", promoChange);
-
-					dataScreen.Add(dataChaosScreen);
-				}
-			}
-			else
-			{
-				dataScreen.AddRange(bonusmalusDescription.Concat(bonusmalusDescription));
-			}
 
 			// Insert class data screen
 			for (int i = 0; i < 12; i++)
 			{
-				var tempBlob = FF1Text.TextToBytes(dataScreen[i], true, FF1Text.Delimiter.Null);
+				var tempBlob = FF1Text.TextToBytes(dataScreen[i], true, FF1Text.Delimiter.Null, true);
 				rom.PutInBank(0x1E, 0x8970 + totalByte, tempBlob);
 				var tempAddress = 0x8970 + totalByte;
 				rom.PutInBank(0x1E, 0x8950 + (i * 2), new byte[] { (byte)(tempAddress % 0x100), (byte)(tempAddress / 0x100) });
@@ -520,13 +548,13 @@ namespace FF1Lib
 			var noneAddress = 0x8970 + totalByte;
 			rom.PutInBank(0x1E, 0x8950 + 24, new byte[] { (byte)(noneAddress % 0x100), (byte)(noneAddress / 0x100) });
 		}
-
+					
 		public List<string> DoRandomizeClassNormalMode(MT19337 rng, List<string> olditemnames, ItemNames itemnames, Flags flags, FF1Rom rom)
 		{
 			// Equipment lists
 			List<Item> braceletList = new();
 			List<Item> ringList = new();
-			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			for (int i = (int)Item.Cloth; i <= (int)Item.ProRing; i++)
 			{
 				if (itemnames[i].Contains("@B"))
 				{
@@ -543,7 +571,10 @@ namespace FF1Lib
 
 			List<Item> equipFighterArmor = _armorPermissions[Classes.Fighter].ToList().Where(x => !bannableArmor.Contains(x)).ToList();
 			List<Item> equipRedMageArmor = _armorPermissions[Classes.RedMage].ToList().Where(x => !bannableArmor.Contains(x)).ToList();
-			List<Item> equipRedWizardArmor = _armorPermissions[Classes.RedWizard].ToList().Where(x => !bannableArmor.Contains(x)).ToList();
+
+			List<Item> equipFighterArmorFull = _armorPermissions[Classes.Fighter].ToList();
+			List<Item> equipRedWizardArmorFull = _armorPermissions[Classes.RedWizard].ToList();
+
 			List<Item> equipFighterWeapon = _weaponPermissions[Classes.Fighter].ToList();
 			List<Item> equipThiefWeapon = _weaponPermissions[Classes.Thief].ToList();
 
@@ -557,7 +588,7 @@ namespace FF1Lib
 			}
 
 			List<Item> equipShirts = new();
-			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			for (int i = (int)Item.Cloth; i <= (int)Item.ProRing; i++)
 			{
 				if (itemnames[i].Contains("@T"))
 				{
@@ -565,15 +596,15 @@ namespace FF1Lib
 				}
 			}
 			List<Item> equipShields = new();
-			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			for (int i = (int)Item.Cloth; i <= (int)Item.ProRing; i++)
 			{
-				if (itemnames[i].Contains("@s"))
+				if (itemnames[i].Contains("@s") || itemnames[i].Contains("Buckl") || itemnames[i].Contains("ProCa"))
 				{
 					equipShields.Add((Item)i);
 				}
 			}
 			List<Item> equipGauntletsHelmets = new();
-			for (int i = (int)Item.Cloth; i < (int)Item.ProRing; i++)
+			for (int i = (int)Item.Cloth; i <= (int)Item.ProRing; i++)
 			{
 				if (itemnames[i].Contains("@G"))
 				{
@@ -691,9 +722,7 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.MDefMod, "-10 MDef", mod: -10),
 				new BonusMalus(BonusMalusAction.HitGrowth, "-1 Hit%/Lv", mod: -1),
 				new BonusMalus(BonusMalusAction.MDefGrowth, "-1 MDef/Lv", mod: -1),
-				new BonusMalus(BonusMalusAction.ArmorRemove, "No " + olditemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }),
 				new BonusMalus(BonusMalusAction.ArmorRemove, "No @B", equipment: braceletList),
-				new BonusMalus(BonusMalusAction.WeaponRemove, "No " + olditemnames[(int)Item.Masamune], equipment: new List<Item> { Item.Masamune }),
 				new BonusMalus(BonusMalusAction.WeaponReplace, "Thief @S", equipment: equipThiefWeapon, Classes: new List<Classes> { Classes.Fighter, Classes.RedMage } ),
 				new BonusMalus(BonusMalusAction.SpcMax, "-4 Max MP", mod: -4, Classes: new List<Classes> {  Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
 				//new BonusMalus(BonusMalusAction.Sick, "Sick"), these were too powerful for man
@@ -740,6 +769,15 @@ namespace FF1Lib
 			// These are so much starting gold that bonuses for it no longer make sense
 			//else if (flags.StartingGold == StartingGold.Gp65535 || flags.StartingGold == StartingGold.RandomHigh)
 
+			if (!(bool)flags.NoMasamune)
+			{
+				malusNormal.Add(new BonusMalus(BonusMalusAction.WeaponRemove, "No " + olditemnames[(int)Item.Masamune], equipment: new List<Item> { Item.Masamune }));
+			}
+
+			if (flags.RibbonMode == RibbonMode.Vanilla)
+			{
+				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorRemove, "No " + olditemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }));
+			}
 
 			// Do not add Promo-based blursings if there is no ability to promote
 			if (!((bool)flags.NoTail && !(bool)flags.FightBahamut))
@@ -747,8 +785,8 @@ namespace FF1Lib
 				bonusNormal.Add(new BonusMalus(BonusMalusAction.ArmorAdd, "Promo FI @A", mod: 99, equipment: equipFighterArmor, Classes: new List<Classes> { Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage, Classes.RedMage }));
 				bonusNormal.Add(new BonusMalus(BonusMalusAction.PowerRW, "Promo Sage", mod: 0, spelllist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), Classes: new List<Classes> { Classes.RedMage }));
 
-				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorReplace, "No Promo @A", mod: 99, equipment: equipFighterArmor, Classes: new List<Classes> { Classes.Fighter }));
-				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorReplace, "Promo RW @A", mod: 99, equipment: equipRedWizardArmor, Classes: new List<Classes> { Classes.Thief }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorReplace, "No Promo @A", mod: 99, equipment: equipFighterArmorFull, Classes: new List<Classes> { Classes.Fighter }));
+				malusNormal.Add(new BonusMalus(BonusMalusAction.ArmorReplace, "Promo RW @A", mod: 99, equipment: equipRedWizardArmorFull, Classes: new List<Classes> { Classes.Thief }));
 				malusNormal.Add(new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, Classes: new List<Classes> { Classes.Fighter, Classes.Thief }));
 			}
 			
@@ -789,8 +827,8 @@ namespace FF1Lib
 			}
 
 			// Add Natural Resist Bonuses
-			bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res All", mod: 0xFF, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
-			bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res PEDTS", mod: (int)(SpellElement.Poison | SpellElement.Earth | SpellElement.Death | SpellElement.Time | SpellElement.Status), Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
+			bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res. All", mod: 0xFF, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
+			bonusStrong.Add(new BonusMalus(BonusMalusAction.InnateResist, "Res. PEDTS", mod: (int)(SpellElement.Poison | SpellElement.Earth | SpellElement.Death | SpellElement.Time | SpellElement.Status), Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
 			bonusNormal.Add(CreateRandomResistBonusMalus(rng));
 			bonusNormal.Add(CreateRandomResistBonusMalus(rng));
 
@@ -1655,7 +1693,7 @@ namespace FF1Lib
 		public BonusMalus CreateRandomResistBonusMalus(MT19337 rng)
 		{
 			byte innateResistValue = 0x00;
-			string description = "Res ";
+			string description = "Res. ";
 			List<SpellElement> elements = Enum.GetValues(typeof(SpellElement)).Cast<SpellElement>().ToList();
 			elements.Remove(SpellElement.Any);
 			elements.Remove(SpellElement.All);
@@ -2062,7 +2100,7 @@ namespace FF1Lib
 			}
 
 			// StartWith Initialization Routine
-			rom.PutInBank(0x1B, 0xB300, Blob.FromHex($"A9B348A92048A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E484C07FEA000202EB398186940A8D0F660203EB32075B320C7B32006B4202EB460A98085EDA9B485EEA2002015B0F027AAA900851085118512E000F01718A9C865108510A90065118511A90065128512CA1890E520EADD60A98D85EDA9B485EEA2002000B0D042E8A90085108511851218A9{(MalusGoldAmount % 0x100):X2}65108510A9{((MalusGoldAmount / 0x100) % 0x100):X2}65118511A9{(MalusGoldAmount / 0x10000):X2}65128512AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A203A91C8511A9638512A99A85EDA9B485EE2015B0F0129111E611A90D1865ED85ED9002E6EECAD0E9E003F01198186907AABD20631869029D20639D286360A200A9C185EDA9B485EE2000B0F001609848AAA007E8BD20631869019D20639D286388D0F068A860A200A9CE85EDA9B485EE2015B0F006AAA9019D006060"));
+			rom.PutInBank(0x1B, 0xB300, Blob.FromHex($"A9B348A92048A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E484C07FEA000202EB398186940A8D0F660203EB32075B320C7B32006B4202EB460A98085EDA9B485EEA2002015B0F027AAA900851085118512E000F01718A96465108510A90065118511A90065128512CA1890E520EADD60A98D85EDA9B485EEA2002000B0D042E8A90085108511851218A9{(MalusGoldAmount % 0x100):X2}65108510A9{((MalusGoldAmount / 0x100) % 0x100):X2}65118511A9{(MalusGoldAmount / 0x10000):X2}65128512AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A203A91C8511A9638512A99A85EDA9B485EE2015B0F0129111E611A90D1865ED85ED9002E6EECAD0E9E003F01198186907AABD20631869029D20639D286360A200A9C185EDA9B485EE2000B0F001609848AAA007E8BD20631869019D20639D286388D0F068A860A200A9CE85EDA9B485EE2015B0F006AAA9019D006060"));
 
 			// Insert luts
 			Blob lut_IncreaseGP = _classes.Select(x => (byte)(x.StartWithGold != BlursesStartWithGold.Remove ? (byte)x.StartWithGold : 0x00)).ToArray();
@@ -2096,7 +2134,7 @@ namespace FF1Lib
 			//rom.PutInBank(0x1F, 0xC271, rom.CreateLongJumpTableEntry(0x1B, 0xB080));
 
 			// Battle StartWith
-			rom.PutInBank(0x1B, 0xB080, Blob.FromHex($"A908C5F2F0034C00B320ABB020E0B02096B12017B12048B14C9BB0A90085EDA9B285EEA000B1822003B060A90D85EDA9B285EEA000B1822003B0D023A018B1823011C8B182300CC8B1823007C8B1823002A900297FC923D006A00FA9{catclawcrit:X2}918060A91A85EDA9B285EEA000B1822003B0D025A018B1823011C8B182300CC8B1823007C8B1823002A900297FC924D008A009B180180A918060A94E85EDA9B285EEA000B1822003B0D01FA01CB18210032037B1C8C020D0F460297FC905D00A9848A00BA902918068A860A95B85EDA9B285EE8A48A200A000B1822003B0D036A01CB1821003207FB1C8C020D0F4E003D02418A007B18069789002A9FF918068AA60297FC902D002E860C91BD002E860C911D001E86068AA60A92785EDA9B285EEA000B1822015B0F006A00D5180918060A93485EDA9B285EEA000B1822003B0D008A001B1820920918260A94185EDA9B285EEA000B1822003B0D00F20E7FC2903D008A001B1820904918260"));
+			rom.PutInBank(0x1B, 0xB080, Blob.FromHex($"A908C5F2F0034C00B320ABB020E0B02096B12017B12048B14C9BB0A90085EDA9B285EEA000B1822003B060A90D85EDA9B285EEA000B1822003B0D023A018B1823011C8B182300CC8B1823007C8B1823002A900297FC923D006A00FA9{catclawcrit:X2}918060A91A85EDA9B285EEA000B1822003B0D025A018B1823011C8B182300CC8B1823007C8B1823002A900297FC924D008A009B180180A918060A94E85EDA9B285EEA000B1822003B0D01FA01CB18210032037B1C8C020D0F460297FC905D00A9848A00BA902918068A860A95B85EDA9B285EE8A48A200A000B1822003B0D036A01CB1821003207FB1C8C020D0F4E003D02418A007B18069789002A9FF918068AA60297FC902D002E860C91BD002E860C911D001E86068AA60A000B182AABD27B2F006A00D1180918060EAEAEAEAEAEAEAA93485EDA9B285EEA000B1822003B0D008A001B1820920918260A94185EDA9B285EEA000B1822003B0D00F20E7FC2903D008A001B1820904918260"));
 
 			// Insert luts
 			Blob lut_Blackbelts = _classes.Select(x => (byte)(x.UnarmedAttack ? 0x01 : 0x00)).ToArray();
@@ -2290,7 +2328,6 @@ namespace FF1Lib
 		public byte[] LevelUpArray()
 		{
 			var levelUp = new List<byte>();
-
 			for (int j = 0; j < 49; j++)
 			{
 				byte tempStats = 0x00;

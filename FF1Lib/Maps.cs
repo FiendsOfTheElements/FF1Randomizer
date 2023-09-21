@@ -1836,12 +1836,13 @@ namespace FF1Lib
 						preserveChests.Add((MapId.SeaShrineB2, 0x6C)); // TFC
 					}
 				}
-				if (addsea) {
-					dungeons.Add(new MapId[] { MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 });
-				}
 		    }
+			if (addsea)
+			{
+				dungeons.Add(new MapId[] { MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 });
+			}
 
-		    if ((bool)flags.IncentivizeConeria) {
+			if ((bool)flags.IncentivizeConeria) {
 			if (flags.CorneriaIncentivePlacementType == IncentivePlacementType.Vanilla) {
 			    preserveChests.Add((MapId.ConeriaCastle1F, 0x65));
 			}

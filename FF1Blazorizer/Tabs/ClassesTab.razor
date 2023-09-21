@@ -7,11 +7,11 @@
 	{
 <div class="col1">
 	<h4>Class Balance</h4>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="doubleBBCritCheckBox" @bind-Value="Flags.BBCritRate">Halve BB Crit Rate</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thiefHitCheckBox" @bind-Value="Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% Growth</CheckBox>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="thiefAgilityBuffDropDown" TItem="ThiefAGI" @bind-Value="Flags.ThiefAgilityBuff">Better Thief &amp; Ninja Agility</EnumDropDown>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixHitChanceCapCheckBox" @bind-Value="Flags.FixHitChanceCap">Raise Hit % Cap</CheckBox>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="MDefModeDropDown" TItem="MDEFGrowthMode" @bind-Value="Flags.MDefMode">MDEF Growth:</EnumDropDown>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="doubleBBCritCheckBox" @bind-Value="Flags.BBCritRate">Halve BB Crit Rate</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="thiefHitCheckBox" @bind-Value="Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% Growth</CheckBox>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="thiefAgilityBuffDropDown" TItem="ThiefAGI" @bind-Value="Flags.ThiefAgilityBuff">Better Thief &amp; Ninja Agility</EnumDropDown>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="fixHitChanceCapCheckBox" @bind-Value="Flags.FixHitChanceCap">Raise Hit % Cap</CheckBox>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="MDefModeDropDown" TItem="MDEFGrowthMode" @bind-Value="Flags.MDefMode">MDEF Growth:</EnumDropDown>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="WhiteMageHarmEveryoneCheckBox" @bind-Value="Flags.WhiteMageHarmEveryone">Improved HARM for White Mage</CheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="Lockpicking" @bind-Value="Flags.Lockpicking">Thief Lockpicking</TriStateCheckBox>
 			<IntSlider Indent Min="1" Max="50" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.Lockpicking" Id="LockpickingLevelRequirement" @bind-Value="@Flags.LockpickingLevelRequirement">Lockpicking Level Requirement:</IntSlider>
@@ -19,19 +19,25 @@
 
 	<div class="checkbox-cell"></div>
 
-	<h4>Class Blursing</h4>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="RandomizeClassCheckBox" @bind-Value="Flags.RandomizeClass">Blursed Classes</TriStateCheckBox>
-	<IntSlider Indent Min="0" Max="3" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassMaxBonusSlider" @bind-Value="@Flags.RandomizeClassMaxBonus">Bonuses:</IntSlider>
-	<IntSlider Indent Min="0" Max="3" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassMaxMalusSlider" @bind-Value="@Flags.RandomizeClassMaxMalus">Maluses:</IntSlider>
+	<h4>Class Randomization</h4>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClassChaos != true && Flags.Transmooglifier != true)" Id="RandomizeClassCheckBox" @bind-Value="Flags.RandomizeClass">Blursed Classes</TriStateCheckBox>
+	<IntSlider Indent Min="0" Max="3" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false)" Id="RandomizeClassMaxBonusSlider" @bind-Value="@Flags.RandomizeClassMaxBonus">Bonuses:</IntSlider>
+	<IntSlider Indent Min="0" Max="3" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != false)" Id="RandomizeClassMaxMalusSlider" @bind-Value="@Flags.RandomizeClassMaxMalus">Maluses:</IntSlider>
 
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassIncludeXpBonuxCheckBox" @bind-Value="Flags.RandomizeClassIncludeXpBonus">Add XP Bonuses</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassInnateMagicCheckBox" @bind-Value="Flags.RandomizeClassCasting">Add Innate Magic Bonuses</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false && (Flags.RandomizeClassChaos != true))" Id="RandomizeClassKeyItemsCheckBox" @bind-Value="Flags.RandomizeClassKeyItems">Start with Key Items</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.RandomizeClass" Id="RandomizeClassChaosCheckBox" @bind-Value="Flags.RandomizeClassChaos">Chaos Mode</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false)" Id="RandomizeClassIncludeXpBonuxCheckBox" @bind-Value="Flags.RandomizeClassIncludeXpBonus">Add XP Bonuses</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false)" Id="RandomizeClassInnateMagicCheckBox" @bind-Value="Flags.RandomizeClassCasting">Add Innate Magic Bonuses</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.RandomizeClass != false)" Id="RandomizeClassKeyItemsCheckBox" @bind-Value="Flags.RandomizeClassKeyItems">Start with Key Items</TriStateCheckBox>
+
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != true && Flags.RandomizeClassChaos != true)" Id="TransmooglifierCheckBox" @bind-Value="Flags.Transmooglifier">Transmooglifier</TriStateCheckBox>
+	<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Transmooglifier" Id="transmooglifierVariance" TItem="TransmooglifierVariance" @bind-Value="Flags.TransmooglifierVariance">Variance:</EnumDropDown>
+	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Transmooglifier" Id="GuaranteeCustomClassCompositionCheckBox" @bind-Value="Flags.GuaranteeCustomClassComposition">Guarantee Custom Party Composition</TriStateCheckBox>
+	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Weaponizer == false)" Id="MooglieWeaponBalanceCheckBox" @bind-Value="Flags.MooglieWeaponBalance">Balance Weapons for Customs</TriStateCheckBox>
+
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.RandomizeClass != true && Flags.Transmooglifier != true)" Id="RandomizeClassChaosCheckBox" @bind-Value="Flags.RandomizeClassChaos">Chaos Mode</TriStateCheckBox>
 
 	<div class="checkbox-cell"></div>
 	<h4>Promotion</h4>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="EnableRandomPromotions" @bind-Value="Flags.EnableRandomPromotions">Random Classes at Class Change</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="EnableRandomPromotions" @bind-Value="Flags.EnableRandomPromotions">Random Classes at Class Change</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPIncludeBaseClasses" @bind-Value="Flags.IncludeBaseClasses">Include Base Classes</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@Flags.EnableRandomPromotions" Id="RPSpoilers" @bind-Value="Flags.RandomPromotionsSpoilers">Spoil Promotions</TriStateCheckBox>
 

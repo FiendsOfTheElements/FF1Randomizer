@@ -42,6 +42,7 @@ public partial class FF1Rom : NesRom
 	private SanityCheckerV2 sanityChecker = null;
 	private IncentiveData incentivesData = null;
 
+	private Blob SavedHash;
 	public new void Put(int index, Blob data)
 	{
 		//Debug.Assert(index <= 0x4000 * 0x0E + 0x9F48 - 0x8000 && (index + data.Length) > 0x4000 * 0x0E + 0x9F48 - 0x8000);
@@ -220,7 +221,7 @@ public partial class FF1Rom : NesRom
 		var talkroutines = new TalkRoutines();
 		var npcdata = new NPCdata(this);
 		UpdateDialogs(npcdata, flags);
-		AddElementIcons();
+		FF1Text.AddNewIcons(this, flags);
 
 		if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 
@@ -476,7 +477,7 @@ public partial class FF1Rom : NesRom
 
 		if (((bool)flags.Treasures) && flags.ShardHunt)
 		{
-			EnableShardHunt(rng, talkroutines, flags.ShardCount);
+			EnableShardHunt(rng, talkroutines, flags.ShardCount, preferences.randomShardNames, new MT19337(funRngSeed));
 		}
 
 		if (!flags.ShardHunt && (flags.GameMode != GameModes.DeepDungeon))
@@ -499,11 +500,11 @@ public partial class FF1Rom : NesRom
 			ShuffleOrdeals(rng, maps);
 		}
 
-		if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Maze)
+		if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Maze && flags.GameMode != GameModes.DeepDungeon)
 		{
 			DoSkyCastle4FMaze(rng, maps);
 		}
-		else if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Teleporters)
+		else if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Teleporters && flags.GameMode != GameModes.DeepDungeon)
 		{
 			ShuffleSkyCastle4F(rng, maps);
 		}
@@ -925,7 +926,7 @@ public partial class FF1Rom : NesRom
 
 		if (flags.EnemyTrapTiles == TrapTileMode.Remove)
 		{
-			RemoveTrapTiles(flags.EnemizerEnabled);
+			RemoveTrapTiles(flags.EnemizerEnabled || flags.SetRNG);
 		}
 
 		await this.Progress();
@@ -1107,10 +1108,7 @@ public partial class FF1Rom : NesRom
 			ItemsText[(int)Item.House] = "XETH@p";
 		}
 
-		if ((bool)flags.HintsVillage && (flags.GameMode != GameModes.DeepDungeon) && (bool)flags.Treasures)
-		{
-			NPCHints(rng, npcdata, flags, overworldMap);
-		}
+		NPCHints(rng, npcdata, flags, incentivesData, sanityChecker, shopData);
 
 		if ((bool)flags.TrappedChestsEnabled)
 		{
@@ -1179,7 +1177,7 @@ public partial class FF1Rom : NesRom
 			ScaleBossStats(rng, flags);
 		}
 
-		PartyComposition(rng, flags, preferences);
+		PartyGeneration(rng, flags, preferences);
 
 		if (((bool)flags.RecruitmentMode))
 		{
@@ -1192,11 +1190,6 @@ public partial class FF1Rom : NesRom
 		}
 
 		await this.Progress();
-
-		if ((bool)flags.EnablePoolParty)
-		{
-			EnablePoolParty(flags, rng);
-		}
 
 		if ((bool)flags.MapCanalBridge)
 		{
@@ -1330,6 +1323,11 @@ public partial class FF1Rom : NesRom
 			ShuffleMusic(preferences.Music, new MT19337(funRngSeed));
 		}
 
+		if ((bool)flags.AirBoat)
+		{
+			EnableAirBoat((bool)flags.IsAirshipFree, (bool)flags.IsShipFree);
+		}
+
 		if (preferences.DisableSpellCastFlash || flags.TournamentSafe)
 		{
 			DisableSpellCastScreenFlash();
@@ -1337,7 +1335,7 @@ public partial class FF1Rom : NesRom
 
 		if (preferences.LockRespondRate)
 		{
-			LockRespondRate();
+			LockRespondRate(preferences.RespondRate);
 		}
 
 		if (preferences.UninterruptedMusic)
@@ -1388,7 +1386,7 @@ public partial class FF1Rom : NesRom
 		{
 			shipLocations.SetShipLocation(255);
 
-			Archipelago exporter = new Archipelago(this, generatedPlacement, sanityChecker, expChests, incentivesData, flags, preferences);
+			Archipelago exporter = new Archipelago(this, generatedPlacement, sanityChecker, expChests, incentivesData, seed, flags, preferences);
 			Utilities.ArchipelagoCache = exporter.Work();
 		}
 
@@ -1399,21 +1397,19 @@ public partial class FF1Rom : NesRom
 
 		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
-		var flagstext = Flags.EncodeFlagsText(flagsForRng);
-		if (flags.ReplacementMap != null)
-		{
-		    flagstext += "_" + flags.ReplacementMap.ComputeChecksum();
-		}
-
-		flagstext += "_" + resourcesPackHash.ToHex();
-
 		uint last_rng_value = rng.Next();
-		WriteSeedAndFlags(seed.ToHex(), flagstext, last_rng_value);
+
+		WriteSeedAndFlags(seed.ToHex(), flags, flagsForRng, resourcesPackHash.ToHex(), last_rng_value);
 		ExtraTrackingAndInitCode(flags, preferences);
 
 		if(flags.OpenChestsInOrder)
 		{
 			OpenChestsInOrder();
+		}
+
+		if(flags.SetRNG)
+		{
+			SetRNG(flags);
 		}
 
 		await this.Progress("Randomization Completed");
@@ -1813,8 +1809,21 @@ public partial class FF1Rom : NesRom
 		Data[0x7FE97] = 0x03;
 	}
 
-	public void WriteSeedAndFlags(string seed, string flags, uint last_rng_value)
+	public void WriteSeedAndFlags(string seed, Flags flags, Flags flagsforrng, string resourcepackhash, uint last_rng_value)
 	{
+
+		string flagstext = Flags.EncodeFlagsText(flags);
+		var rngflagstext = Flags.EncodeFlagsText(flagsforrng);
+		string owseed = "none";
+
+		if (flags.ReplacementMap != null)
+		{
+			owseed = flags.MapGenSeed.ToString("X8");
+			rngflagstext += "_" + flags.ReplacementMap.ComputeChecksum();
+		}
+
+		rngflagstext += "_" + resourcepackhash;
+
 		// Replace most of the old copyright string printing with a JSR to a LongJump
 		Put(0x38486, Blob.FromHex("20B9FF60"));
 
@@ -1823,7 +1832,7 @@ public partial class FF1Rom : NesRom
 
 		Blob hash;
 		var hasher = SHA256.Create();
-		hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{flags}_{FFRVersion.Sha}_{last_rng_value}"));
+		hash = hasher.ComputeHash(Encoding.ASCII.GetBytes($"{seed}_{rngflagstext}_{FFRVersion.Sha}_{last_rng_value}"));
 
 		var hashpart = BitConverter.ToUInt64(hash, 0);
 		hash = Blob.FromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
@@ -1834,6 +1843,8 @@ public partial class FF1Rom : NesRom
 			hashpart /= 12;
 		}
 
+		SavedHash = hash;
+
 		Regex rgx = new Regex("[^a-zA-Z0-9]");
 		// Put the new string data in a known location.
 		PutInBank(0x0F, 0x8900, Blob.Concat(
@@ -1843,7 +1854,7 @@ public partial class FF1Rom : NesRom
 
 		// Write Flagstring + Version for reference
 		var urlpart = (FFRVersion.Branch == "master") ? FFRVersion.Version.Replace('.','-') : "beta-" + FFRVersion.Sha.PadRight(7).Substring(0, 7);
-		PutInBank(0x1E, 0xBE00, Encoding.ASCII.GetBytes($"FFRInfo|Seed: {seed}|Flags: {flags}|Version: {urlpart}"));
+		PutInBank(0x1E, 0xBE00, Encoding.ASCII.GetBytes($"FFRInfo|Seed: {seed}|OW Seed: {owseed}|Res. Pack Hash: {((resourcepackhash == "00") ? "none" : resourcepackhash)}|Flags: {flagstext}|Version: {urlpart}"));
 	}
 
 	public void FixMissingBattleRngEntry()
@@ -1903,5 +1914,23 @@ public partial class FF1Rom : NesRom
 		}
 
 		return blursetext;
+	}
+
+	public string RomInfo()
+	{
+		var rawtext = GetFromBank(0x1E, 0xBE00, 0x200);
+		var trimedtext = rawtext.ReplaceOutOfPlace(Blob.FromHex("00"), Blob.FromHex(""));
+		string infotext = Encoding.ASCII.GetString(trimedtext).Replace('|', '\n');
+
+		return infotext;
+	}
+	public string GetHash()
+	{
+		string hashtext = FF1Text.BytesToText(SavedHash);
+
+		hashtext = hashtext.Replace(" ", "");
+		hashtext = hashtext.Replace("@", "");
+
+		return hashtext;
 	}
 }

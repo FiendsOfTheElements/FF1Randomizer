@@ -119,36 +119,21 @@
 
 		<div class="col1 full">
 		<h4>Tournament Presets</h4>
-		<p>Fall League 2022</p>
+		<p>Winter Tournament 2023</p>
 
-        <a class="preset-button styled-button @((selectedPresetId == "Fall_League_-_E-F_Shuffle") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Fall_League_-_E-F_Shuffle"))">Select</a>
+        <a class="preset-button styled-button @((selectedPresetId == "Winter_Tournament_2023_Pods") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Winter_Tournament_2023_Pods"))">Select</a>
 		<p class="preset-paragraph">
-		<label><strong>Week 1 - Entrance/Floor Shuffle + Shard Hunt</strong></label><br>
+		<label><strong>Pods - 0 Loose / 2 Orbs Any</strong></label><br>
 		</p>
 
-		<a class="preset-button styled-button disabled">Select</a>
+		<a class="preset-button styled-button @((selectedPresetId == "Winter_Tournament_2023_Lower") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Winter_Tournament_2023_Lower"))">Select</a>
 		<p class="preset-paragraph">
-		<label><strong>Week 2 - Feedback Week (no preset available)</strong></label><br>
+		<label><strong>Lower Bracket - 0 Loose / 3 Orbs Any</strong></label><br>
 		</p>
 
-		<a class="preset-button styled-button @((selectedPresetId == "Fall_League_-_Procgen_OW_Oops_All_Loose") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Fall_League_-_Procgen_OW_Oops_All_Loose"))">Select</a>
+		<a class="preset-button styled-button @((selectedPresetId == "Winter_Tournament_2023_Upper") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Winter_Tournament_2023_Upper"))">Select</a>
 		<p class="preset-paragraph">
-		<label><strong>Week 3 - ProcGen OW Oops All Loose</strong></label><br>
-		</p>
-
-		<a class="preset-button styled-button @((selectedPresetId == "Fall_League_-_0_Loose_3_Orbs") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Fall_League_-_0_Loose_3_Orbs"))">Select</a>
-		<p class="preset-paragraph">
-		<label><strong>Week 4 - Zero Loose and 3 Orbs</strong></label><br>
-		</p>
-
-		<a class="preset-button styled-button @((selectedPresetId == "Fall_League_-_Noverworld") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Fall_League_-_Noverworld"))">Select</a>
-		<p class="preset-paragraph">
-		<label><strong>Semi-Finals - NoOverworld</strong></label><br>
-		</p>
-
-		<a class="preset-button styled-button @((selectedPresetId == "Fall_League_-_Relay_Race") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Fall_League_-_Relay_Race"))">Select</a>
-		<p class="preset-paragraph">
-		<label><strong>Finals - Relay Race</strong></label><br>
+		<label><strong>Upper Bracket - 0 Loose / 3 Orbs Specific</strong></label><br>
 		</p>
         </div>
 

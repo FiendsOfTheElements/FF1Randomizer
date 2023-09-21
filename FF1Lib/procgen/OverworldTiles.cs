@@ -490,22 +490,22 @@ namespace FF1Lib.Procgen
 		{ "Ship", new SCCoords(0, 0) },
 	    });
 
-	public static PgFeature E_CANAL_STRUCTURE = new PgFeature(new byte[,] {
-	    {None,     None,   None,  None,  None,  None},
-	    {DOCK_SE, DOCK_S, DOCK_SW, None, None,    None},
-	    {DOCK_E,   OCEAN,  OCEAN, OCEAN, OCEAN, OCEAN},
-	    {None,     None,   None,  None,  None,  None},
-	    {None,     None,   None,  None,  None,  None},
+	public static PgFeature E_CANAL_STRUCTURE = new OwFeature(new byte[,] {
+	    {None, None,     None,   None,  None,  None,  None},
+	    {None, DOCK_SE, DOCK_S, DOCK_SW, None, None,    None},
+	    {None, DOCK_E,   OCEAN,  OCEAN, OCEAN, OCEAN, OCEAN},
+	    {None, None,     None,   None,  None,  None,  None},
+	    {None, None,     None,   None,  None,  None,  None},
 	    }, new Dictionary<string, SCCoords> {
-		{"Canal", new SCCoords(4, 2)}
+		{"Canal", new SCCoords(5, 2)}
 	    });
 
-	public static PgFeature W_CANAL_STRUCTURE = new PgFeature(new byte[,] {
-	    {None,     None,   None,  None,  None,  None},
-	    {None, None,    None, DOCK_S, DOCK_S,  DOCK_SW},
-	    {OCEAN,   OCEAN,  OCEAN, OCEAN, OCEAN, DOCK_W},
-	    {None,     None,   None,  None,  None,  None},
-	    {None,     None,   None,  None,  None,  None},
+	public static PgFeature W_CANAL_STRUCTURE = new OwFeature(new byte[,] {
+	    {None,     None,   None,  None,  None,  None, None},
+	    {None, None,    None, DOCK_S, DOCK_S,  DOCK_SW, None},
+	    {OCEAN,   OCEAN,  OCEAN, OCEAN, OCEAN, DOCK_W, None},
+	    {None,     None,   None,  None,  None,  None, None},
+	    {None,     None,   None,  None,  None,  None, None},
 	    }, new Dictionary<string, SCCoords> {
 		{"Canal", new SCCoords(1, 2)}
 	    });
@@ -531,7 +531,7 @@ namespace FF1Lib.Procgen
 	    {None, MOUNTAIN, MOUNTAIN,  DESERT_NW,  AIRSHIP_DESERT, DESERT_NE, MOUNTAIN, MOUNTAIN, None},
 	    {None, MOUNTAIN, MOUNTAIN,  DESERT_SW,  AIRSHIP_DESERT, DESERT_SE, MOUNTAIN, MOUNTAIN, None},
 	    {None, MOUNTAIN, MOUNTAIN,  MOUNTAIN,  AIRSHIP_DESERT, MOUNTAIN, MOUNTAIN, MOUNTAIN, None},
-	    {None, MOUNTAIN, MOUNTAIN,  MOUNTAIN,  AIRSHIP_DESERT, MOUNTAIN, MOUNTAIN, MOUNTAIN, None},
+	    {None, LAND, MOUNTAIN,  MOUNTAIN,  AIRSHIP_DESERT, MOUNTAIN, MOUNTAIN, LAND, None},
 	    {None,     None,     None,      None,            None,     None,     None,     None, None},
 	    }, new Dictionary<string, SCCoords> {
 		{"Airship", new SCCoords(4, 3)}

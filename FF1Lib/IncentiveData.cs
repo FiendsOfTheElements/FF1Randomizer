@@ -330,6 +330,9 @@ namespace FF1Lib
 			AllValidPreBlackOrbItemLocations = AllValidItemLocations
 							 .Where(x => nonEndgameMapLocations.Contains(x.MapLocation) && nonEndgameMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation))
 							 .ToList();
+			AllValidPreBlackOrbItemLocationsPlusForced = itemLocationPool.Concat(forcedItemPlacements)
+							 .Where(x => nonEndgameMapLocations.Contains(x.MapLocation) && nonEndgameMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation))
+							 .ToList();
 		}
 
 		private List<IRewardSource> SelectIncentivizedChests(IIncentiveFlags flags, MT19337 rng)
@@ -511,6 +514,7 @@ namespace FF1Lib
 		public IEnumerable<IRewardSource> ForcedItemPlacements { get; }
 		public IEnumerable<IRewardSource> AllValidItemLocations { get; }
 		public IEnumerable<IRewardSource> AllValidPreBlackOrbItemLocations { get; }
+		public IEnumerable<IRewardSource> AllValidPreBlackOrbItemLocationsPlusForced { get; }
 		public IEnumerable<IRewardSource> IncentiveLocations { get; }
 		public IEnumerable<Item> IncentiveItems { get; }
 		public IEnumerable<Item> RemovedItems { get; }

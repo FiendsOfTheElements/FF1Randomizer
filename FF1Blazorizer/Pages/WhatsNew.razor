@@ -1,8 +1,77 @@
 @page "/WhatsNew"
 <div class="content px-4 tinted">
 	<div class="nes-container is-dark col-xs-12">
+		<h1><a href="https://4-7-2.finalfantasyrandomizer.com">Version 4.7.2</a></h1>
+		<ul>
+			<li>Adds Spoilers file support when generating randomized ROMs via the Command Line Interface.</li>
+			<li>NPC Hints flag is now properly disabled in the UI when Archipelago is active.</li>
+			<li>Bugfix: Corrected an issue where Random Shard Names Fun% setting was changing the seed.</li>
+			<li>Bugfix: Corrected an interaction where some Class Blessings would be applied repeatedly when reviving in Tavern Mode.</li>
+			<li>Bugfix: Corrected Deep Dungeon encounter rate for Floor 51; was previously no encounters.</li>
+			<li>Bugfix: Corrected chest weight values for "Deep Dungeon - Progressive" mode in Temple of Fiends; was previously awarding high value treasure too early.</li>
+			<li>Minor exceptions handling and site page adjustments.</li>
+		</ul>
 
-        <h1><a href="https://4-6-0.finalfantasyrandomizer.com">Version 4.6.0</a></h1>
+		<h1><a href="https://4-7-1.finalfantasyrandomizer.com">Version 4.7.1</a></h1>
+		<ul>
+			<li>Adds Lockpicking support to Transmooglifier.</li>
+			<li>Bugfix: Corrected an issue with Party Draft character selection when Class Blursings, Transmooglifier, or Chaos Mode was enabled.</li>
+			<li>Bugfix: Corrected Black Belt absorb and damage in Transmooglifier.</li>
+			<li>Update Presets: Trance is Status element is ON.</li>
+		</ul>
+
+		<h1><a href="https://4-7-0.finalfantasyrandomizer.com">Version 4.7.0</a></h1>
+		<h2>New Features</h2>
+		<ul>
+			<li>Shorter ROM filename when downloading a randomized ROM.</li>
+			<li>Introducing "<a href="https://4-7-0.finalfantasyrandomizer.com/RomInfo">/RomInfo</a>" - Instead of needing to provide a seed, flagstring, URL, and/or filename, simply use /RomInfo to analyze your ROM file. It will display version/seed/flag details players can then copy and paste for development when reporting bugs.</li>
+			<li>Transmooglifier, a new option for Class Randomization:
+			<ul>
+				<li>Generates six custom classes from a set of 26 possibilities, such as Geomancer and Juggler.</li>
+				<li>Each class will have semi-randomized spell permissions, stats, equipment, etc. appropriate for that class type.</li>
+				<li>Each class features a new custom sprite.</li>
+				<li>Sub-option for forcing a balanced set of classes (e.g. ensuring there is at least one Heavy Armor class).</li>
+				<li>Sub-option for rebalancing weapons to provide more viable end-game options for the various classes.</li>
+			</ul>
+			</li>
+			<li>Experimental Feature: Airboat, where the Floater allows the Ship to transform into the Airship and land in water.</li>
+			<li>Experimental Feature: Set RNG, which makes RNG more consistent (e.g. bosses have the same RNG) within a given seed.</li>
+			<li>Improved Lock Respond Rate. The game's Respond Rate is now controlled by a UI slider, and can no longer be changed by fast inputs during quick resets.</li>
+			<li>Shard Hunt now defaults to SHARD naming. Randomized Shard names (WEDGE, ORBLT) is now a Fun% option.</li>
+			<li>"Equip Shields" Class Blessing nows grants permission to equip Buckler and ProCape.</li>
+		</ul>
+		<h2>Bugfixes</h2>
+		<ul>
+			<li>Procedurally Generated Overworld: Airship floater area now has grass in its corners, preventing an uncommon soft-lock scenario where you could take off from a region but never land there again.</li>
+			<li>NPC Hint Givers will now correctly advise players of item locations (via the Sanity2 item placement algorithm).</li>
+			<li>Fixed an interaction to prevent "Sky Maze" option if Deep Dungeon is enabled.</li>
+			<li>Fixed a bug where "Orbs Required" could corrupt the site URL flagstring.</li>
+			<li>Fixed a bug where Bat Spoilers was causing a different seed hash to display for players using Fun Enemy Names.</li>
+			<li>Minor code cleanup and UI adjustments.</li>
+		</ul>
+
+		<h1><a href="https://4-6-4.finalfantasyrandomizer.com">Version 4.6.4</a></h1>
+        <ul>
+            <li>Winter Tournament Presets updated.</li>
+			<li>Fixed a bug where "hurt" class blessings could be canceled or transfered to other party members.</li>
+        </ul>
+
+        <h1><a href="https://4-6-3.finalfantasyrandomizer.com">Version 4.6.3</a></h1>
+        <ul>
+            <li>Winter Tournament Presets added.</li>
+			<li>Fixed a bug where recruitable NPCs were not beeing flipped correctly when Flip Dungeons Vertically is enabled.</li>
+        </ul>
+
+        <h1><a href="https://4-6-2.finalfantasyrandomizer.com">Version 4.6.2</a></h1>
+        <ul>
+            <li>Fixed "Relocate Chests" not working for Sea Shrine.</li>
+			<li>Fixed a bug with Promo Armor maluses preventing a character from equipping Ribbons/Bracelets/ProRings.</li>
+            <li>Fixed bonus starting gold blursings giving you twice as much gold as intended.</li>
+            <li>Fixed Alt-Fiend Shiva accidentally being weak against Ice instead of Fire.</li>
+            <li>No Ribbon and No Masa maluses now won't appear when those items are banned.</li>
+        </ul>
+
+        <h1><a href="https://4-6-1.finalfantasyrandomizer.com">Version 4.6.1</a></h1>
         <h2>General & Features</h2>
         <ul>
 			<li>Upgraded .net to 6.0, which should noticeably increase site performance.</li>
@@ -14,11 +83,12 @@
                 <ul>
                     <li>"Tele Magic" gives WARP & EXIT</li>
                     <li>"Buff Magic" gives TMPR, FAST, & INV2</li>
-                    <li>"Self Magic" gives RUSE & SABR</li>
+                    <li>"Self Magic" gives RUSE & SABR (melee only)</li>
                     <li>"Heal Magic" gives CUR3, HEL2, & LIFE; "Heal+ Magic" gives CUR4, HEL3, & LIFE</li>
                     <li>"Elem Magic" gives ICE2, FIR2, & LIT2; "Elem+ Magic" gives ICE3, FIR3, & LIT3</li>
                     <li>"Doom Magic" gives three random spells that cause instant death/stone</li>
                     <li>"Clean Magic" gives three random status ailment cures (which can include LIFE or LIF2)</li>
+                    <li>"Nuke Magic" gives NUKE (rare & spellcasters only)</li>
                 </ul>
             </li>
             <li>Other New Blursings:

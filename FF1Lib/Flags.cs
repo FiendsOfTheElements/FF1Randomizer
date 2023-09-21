@@ -165,6 +165,7 @@ namespace FF1Lib
 		public bool CheapVendorItem { get; set; } = false;
 
 		public StartingLevel StartingLevel { get; set; }
+		public TransmooglifierVariance TransmooglifierVariance { get; set; }
 
 		[IntegerFlag(1, 50)]
 		public int MaxLevelLow { get; set; } = 50;
@@ -185,7 +186,7 @@ namespace FF1Lib
 		public bool ShardHunt { get; set; } = false;
 		public ShardCount ShardCount { get; set; } = ShardCount.Count16;
 
-		[IntegerFlag(0, 4)]
+		[IntegerFlag(0, 5)]
 		public int OrbsRequiredCount { get; set; } = 4;
 		public OrbsRequiredMode OrbsRequiredMode { get; set; } = OrbsRequiredMode.Any;
 		public bool? OrbsRequiredSpoilers { get; set; } = false;
@@ -369,6 +370,7 @@ namespace FF1Lib
 		public bool NoPartyShuffle { get; set; } = false;
 		public bool Dash { get; set; } = false;
 		public bool SpeedBoat { get; set; } = false;
+		public bool? AirBoat { get; set; } = false;
 		public bool BuyTen { get; set; } = false;
 		public bool IdentifyTreasures { get; set; } = false;
 		public bool ShopInfo { get; set; } = false;
@@ -630,6 +632,10 @@ namespace FF1Lib
 		public bool? AlternateFiends { get; set; } = false;
 		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 
+		public bool? Transmooglifier { get; set; } = false;
+		public bool? MooglieWeaponBalance { get; set; } = false; 
+		public bool? GuaranteeCustomClassComposition { get; set; } = false;
+
 		public bool? LegendaryWeaponShop { get; set; } = false;
 		public bool? LegendaryArmorShop { get; set; } = false;
 		public bool? LegendaryBlackShop { get; set; } = false;
@@ -675,6 +681,7 @@ namespace FF1Lib
 
 		public RandomizeTreasureMode RandomizeTreasure { get; set; } = RandomizeTreasureMode.None;
 		public bool OpenChestsInOrder { get; set; } = false;
+		public bool SetRNG { get; set; } = false;
 		public WorldWealthMode WorldWealth { get; set; } = WorldWealthMode.Standard;
 		public DeepDungeonGeneratorMode DeepDungeonGenerator { get; set; } = DeepDungeonGeneratorMode.Progressive;
 		public EvadeCapValues EvadeCap { get; set; } = EvadeCapValues.medium;

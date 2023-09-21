@@ -21,5 +21,21 @@
 				PutInBank(0x1B, 0x934B, new byte[] { (byte)(requiredLevel - 1) });
 			}
 		}
+
+		public void SetLockpickingClass(int requiredClass)
+		{
+			if (requiredClass >= 0 && requiredClass < 6)
+			{
+				PutInBank(0x1B, 0x9315 + 7, new byte[] { (byte)(requiredClass) });
+				PutInBank(0x1B, 0x9327 + 7, new byte[] { (byte)(requiredClass) });
+				PutInBank(0x1B, 0x9339 + 7, new byte[] { (byte)(requiredClass) });
+				PutInBank(0x1B, 0x934B + 7, new byte[] { (byte)(requiredClass) });
+
+				PutInBank(0x1B, 0x9315 + 11, new byte[] { (byte)(requiredClass + 6) });
+				PutInBank(0x1B, 0x9327 + 11, new byte[] { (byte)(requiredClass + 6) });
+				PutInBank(0x1B, 0x9339 + 11, new byte[] { (byte)(requiredClass + 6) });
+				PutInBank(0x1B, 0x934B + 11, new byte[] { (byte)(requiredClass + 6) });
+			}
+		}
 	}
 }

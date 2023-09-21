@@ -269,6 +269,7 @@ namespace FF1Lib.Procgen
 	short bridgedRegion;
 	bool shouldPlaceBridge;
 	short canalRegion;
+	short airshipDesertRegion;
 
         public OverworldState(MT19337 rng, List<OwGenerationStep> steps, OverworldTiles overworldTiles, FF1Rom.ReportProgress progress) : base(rng, steps, progress) {
             this.ownBasemap = true;
@@ -293,6 +294,7 @@ namespace FF1Lib.Procgen
 	    this.bridgeOriginRegion = -1;
 	    this.bridgedRegion = -1;
 	    this.canalRegion = -1;
+	    this.airshipDesertRegion = -1;
 	    this.shouldPlaceBridge = true;
         }
 
@@ -326,6 +328,7 @@ namespace FF1Lib.Procgen
 	    this.bridgeOriginRegion = copy.bridgeOriginRegion;
 	    this.bridgedRegion = copy.bridgedRegion;
 	    this.canalRegion = copy.canalRegion;
+	    this.airshipDesertRegion = copy.airshipDesertRegion;
 	    this.shouldPlaceBridge = copy.shouldPlaceBridge;
         }
 

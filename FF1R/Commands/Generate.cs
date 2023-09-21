@@ -4,9 +4,11 @@ namespace FF1R.Commands
 {
 	using System;
 	using McMaster.Extensions.CommandLineUtils;
+	using System.IO;
 
 	using FF1Lib;
 	using FFR.Common;
+	using System.Threading.Tasks;
 
 	[Command("generate", Description = "Randomize a Final Fantasy ROM")]
 	class Generate
@@ -47,7 +49,7 @@ namespace FF1R.Commands
 			ShortName = "v")]
 		public bool Verbose { get; }
 
-		int OnExecute(IConsole console)
+		async Task<int> OnExecute(IConsole console)
 		{
 			RandomizerSettings settings;
 			if (!String.IsNullOrEmpty(Preset))
@@ -110,7 +112,7 @@ namespace FF1R.Commands
 				: OutFile;
 
 			var rom = new FF1Rom(RomPath);
-			Task.Run(async () => await rom.Randomize(settings.Seed, settings.Flags, settings.Preferences)).Wait();
+			await rom.Randomize(settings.Seed, settings.Flags, settings.Preferences);
 			rom.Save(outFile);
 
 			if (Verbose) {
@@ -118,6 +120,16 @@ namespace FF1R.Commands
 				console.WriteLine($"Flags: {Flags.EncodeFlagsText(settings.Flags)}");
 			}
 			console.WriteLine($"ROM created at: {outFile}");
+
+			if (settings.Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
+			{
+				var spoilerOut = outFile.Substring(0, outFile.Length - 4) + ".txt";
+				using (StreamWriter writer = new(spoilerOut))
+				{
+					writer.Write(Utilities.SpoilerCache);
+				}
+				console.WriteLine($"Spoilers File created at: {spoilerOut}");
+			}
 
 			return 0;
 		}

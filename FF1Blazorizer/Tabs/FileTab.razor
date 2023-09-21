@@ -323,19 +323,19 @@
 
 				StateHasChanged();
 
-				await JSRuntime.InvokeAsync<object>("downloadFile", $"FFR_{_seed}_{Flags.Encoded}.nes", encoded);
+				await JSRuntime.InvokeAsync<object>("downloadFile", $"FFR_{_seed}_{_rom.GetHash()}.nes", encoded);
 
 
 				if(Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
 				{
 					var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.SpoilerCache));
-					await JSRuntime.InvokeVoidAsync("downloadFile", $"Spoiler_{_seed}_{Flags.Encoded}.txt", encodedSpoiler);
+					await JSRuntime.InvokeVoidAsync("downloadFile", $"Spoiler_{_seed}_{_rom.GetHash()}.txt", encodedSpoiler);
 				}
 
 				if (Flags.Archipelago)
 				{
 					var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.ArchipelagoCache));
-					await JSRuntime.InvokeVoidAsync("downloadFile", $"{Flags.PlayerName}_{_seed}_{Flags.Encoded}.yaml", encodedSpoiler);
+					await JSRuntime.InvokeVoidAsync("downloadFile", $"{Flags.PlayerName}_{_seed}_{_rom.GetHash()}.yaml", encodedSpoiler);
 				}
 
 			} catch (FailedToGenerate e) {

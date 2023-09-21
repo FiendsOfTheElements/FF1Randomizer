@@ -53,6 +53,20 @@ namespace FF1Lib
 
 		private readonly List<FF1Class> DefaultChoices = Enumerable.Range(0, 6).Select(x => (FF1Class)x).ToList();
 
+
+		public void PartyGeneration(MT19337 rng, Flags flags, Preferences preferences)
+		{
+			PartyComposition(rng, flags);
+
+			EnableNones((byte)preferences.MapmanSlot);
+			AnyClassGainMP();
+			EnableTwelveClasses();
+
+			if((bool)flags.EnablePoolParty)
+			{ 
+				EnablePoolParty(flags, rng);
+			}
+		}
 		void UpdateCharacterFromOptions(int slotNumber, bool forced, IList<FF1Class> options, MT19337 rng)
 		{
 			const int lut_PtyGenBuf = 0x784AA;       // offset for party generation buffer LUT
@@ -97,8 +111,7 @@ namespace FF1Lib
 
 			options.Clear();
 		}
-
-		public void PartyComposition(MT19337 rng, Flags flags, Preferences preferences)
+		public void PartyComposition(MT19337 rng, Flags flags)
 		{
 			var options = new List<FF1Class>();
 
@@ -137,7 +150,14 @@ namespace FF1Lib
 
 			options = classSelection.Where(x => x.Item4 == true).Select(x => x.Item5).ToList();
 			UpdateCharacterFromOptions(4, (flags.FORCED4 ?? false), options, rng);
-
+		}
+		public void AnyClassGainMP()
+		{
+			// Spell level up change to allow any class to gain spell charges, see 1B_8818_LvlUp_LevelUp.asm
+			PutInBank(0x1B, 0x88D7, Blob.FromHex("AE8E68A001B182A02848B184DD02899005684A4CFA88684A900948B184186901918468C8C030D0E14C1C89000000090909040400090909"));
+		}
+		public void EnableNones(byte mapmanSlot)
+		{
 			// Load stats for None
 			PutInBank(0x1F, 0xC783, Blob.FromHex("2080B3C931F053EA"));
 			PutInBank(0x00, 0xB380, Blob.FromHex("BD0061C9FFD013A9019D0161A9009D07619D08619D0961A931600A0A0A0AA860"));
@@ -157,7 +177,7 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xC8A4, CreateLongJumpTableEntry(0x0F, 0x8BD0));
 
 			// MapMan for Nones and Fun% Party Leader
-			byte leader = (byte)((byte)preferences.MapmanSlot << 6);
+			byte leader = (byte)((byte)mapmanSlot << 6);
 			Data[0x7D8BC] = leader;
 			PutInBank(0x1F, 0xE92E, Blob.FromHex("20608FEAEAEAEA"));
 			PutInBank(0x02, 0x8F60, Blob.FromHex($"A9008510AD{leader:X2}61C9FFF00160A92560"));
@@ -170,12 +190,6 @@ namespace FF1Lib
 			PutInBank(0x0C, 0xB453, Blob.FromHex("20AAC8C9FFF015EA"));
 			PutInBank(0x1F, 0xC8AA, CreateLongJumpTableEntry(0x0F, 0x8BF0));
 			PutInBank(0x0F, 0x8BF0, Blob.FromHex("ADCE6BAA6A6A6AA8B90061C9FFF0068A09808D8A6C60"));
-
-			// Spell level up change to allow any class to gain spell charges, see 1B_8818_LvlUp_LevelUp.asm
-			PutInBank(0x1B, 0x88D7, Blob.FromHex("AE8E68A001B182A02848B184DD02899005684A4CFA88684A900948B184186901918468C8C030D0E14C1C89000000090909040400090909"));
-
-			// To allow all promoted classes
-			EnableTwelveClasses();
 		}
 
 		public void PubReplaceClinic(MT19337 rng, MapId attackedTown, Flags flags)
@@ -246,7 +260,8 @@ namespace FF1Lib
 			int levelUpTargetB = (bool)flags.RandomizeClass ? 0xFF : 0xA9;
 			
 			// New routine to level up replaced character and zero some stuff, needs new level up stuff in bank 1B
-			PutInBank(0x0E, 0x9D34, Blob.FromHex($"A99D48A94B48A9{levelUpTargetA:X2}48A9{levelUpTargetB:X2}488A182A2A2A8510A91B4C03FEA9008D24008D25008D012060"));
+			PutInBank(0x0E, 0x9D34, Blob.FromHex($"AD0D03F018A99D48A95048A9{levelUpTargetA:X2}48A9{levelUpTargetB:X2}488A182A2A2A8510A91B4C03FE4C0099"));
+			PutInBank(0x0E, 0x9900, Blob.FromHex($"A9008D24008D25008D012060"));
 
 			Data[0x101A] = 0x13;
 			Data[0x109A] = 0x13;
@@ -362,9 +377,15 @@ namespace FF1Lib
 
 		public void EnablePoolParty(Flags flags, MT19337 rng)
 		{
-			// Need EnableTwelveClasses()
+			string selectButtonCode = "EAEAEAEAEA";
+
+			if ((bool)flags.RandomizeClass || (bool)flags.Transmooglifier || (bool)flags.RandomizeClassChaos)
+			{
+				selectButtonCode = "F0034C0088";
+			}
+
 			// New DoPartyGen_OnCharacter and update references; see 1E_85B0_DoPartyGen_OnCharacter.asm
-			PutInBank(0x1E, 0x85B0, Blob.FromHex("A667BD01030D41038D4103A9FF8D4003BD0103C900F00718EE40032A90FA20A480A9008522200F82A522EAEAEAEAEAA667AC4003A524F013BD0003C9FFF009BD01034D41038D41034C2C81A525F0118AC900F00AA9009D0103A9FF9D00033860A520290FC561F0B98561C900F0B3C898C9099002A0008C4003B944862C4103F0ED9D0103B942039D0003A901853720B0824CD1858040201008040201"));
+			PutInBank(0x1E, 0x85B0, Blob.FromHex($"A667BD01030D41038D4103A9FF8D4003BD0103C900F00718EE40032A90FA20A480A9008522200F82A522{selectButtonCode}A667AC4003A524F013BD0003C9FFF009BD01034D41038D41034C2C81A525F0118AC900F00AA9009D0103A9FF9D00033860A520290FC561F0B98561C900F0B3C898C9099002A0008C4003B944862C4103F0ED9D0103B942039D0003A901853720B0824CD1858040201008040201"));
 			PutInBank(0x1E, 0x8032, Blob.FromHex("B085"));
 			PutInBank(0x1E, 0x803B, Blob.FromHex("B085"));
 			PutInBank(0x1E, 0x8044, Blob.FromHex("B085"));
@@ -651,9 +672,9 @@ namespace FF1Lib
 				var volcanoX = volcanoB5flipped ? (0x3F - ((bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x05)) : ((bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x05);
 				var seaX = seaB5flipped ? (0x3F - ((bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0A)) : ((bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0A);
 
-				var earthY = earthB5vflipped ? 0x17 : 0x28;
-				var volcanoY = earthB5vflipped ? 0x0A : 0x35;
-				var seaY = earthB5vflipped ? 0x38  : 0x07;
+				var earthY = earthB5vflipped ? 0x16 : 0x28;
+				var volcanoY = volcanoB5vflipped ? 0x0A : 0x35;
+				var seaY = seaB5vflipped ? 0x38  : 0x07;
 
 				SetNpc(MapId.EarthCaveB5, 0x0C, ObjectId.MelmondMan6, earthX, earthY, true, true);
 				SetNpc(MapId.GurguVolcanoB5, 0x02, ObjectId.GaiaMan4, volcanoX, volcanoY, true, true);
