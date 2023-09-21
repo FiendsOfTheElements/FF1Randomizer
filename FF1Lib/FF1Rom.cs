@@ -284,6 +284,14 @@ public partial class FF1Rom : NesRom
 			maps[(int)MapId.Waterfall] = waterfall.Map;
 		}
 
+		if (flags.ResourcePack != null)
+		{
+		    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack)))
+		    {
+			this.LoadResourcePackMaps(stream, maps, teleporters, overworldMap, npcdata);
+		    }
+		}
+
 		if (flags.ProcgenEarth) {
 		    var newmaps = await NewDungeon.GenerateNewDungeon(rng, this, MapId.EarthCaveB1, maps, npcdata, this.Progress);
 		    foreach (var newmap in newmaps) {
@@ -1265,7 +1273,7 @@ public partial class FF1Rom : NesRom
 		{
 		    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack)))
 			{
-				await this.LoadResourcePack(stream);
+			    await this.LoadResourcePack(stream);
 		    }
 		    preferences.ThirdBattlePalette = true;
 		}

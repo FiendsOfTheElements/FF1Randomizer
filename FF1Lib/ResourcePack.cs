@@ -13,7 +13,7 @@ namespace FF1Lib
 		return false;
 	    }
 
-		async Task LoadResourcePack(Stream stream)
+	    async Task LoadResourcePack(Stream stream)
 		{
 			var resourcePackArchive = new ZipArchive(stream);
 
@@ -145,6 +145,7 @@ namespace FF1Lib
 				    }
 				}
 			}
+
 		}
 
 		public void LoadDialogue(Stream stream)
@@ -242,6 +243,27 @@ namespace FF1Lib
 			}
 
 			SetBridgeStory(pages);
+		}
+
+		void LoadResourcePackMaps(Stream stream, List<Map> maps, TeleportShuffle teleporters,
+					    OverworldMap overworldMap, NPCdata npcdata)
+		{
+			var resourcePackArchive = new ZipArchive(stream);
+
+			for (int i = 0; i <= 60; i++) {
+			    var newdungeon = resourcePackArchive.GetEntry($"dungeonmap{i}.json");
+			    if (newdungeon != null)
+			    {
+				using (var s = newdungeon.Open())
+				{
+				    using (StreamReader reader = new StreamReader(s)) {
+					var newmap = FF1Lib.Procgen.CompleteMap.LoadJson(reader);
+					this.ImportCustomMap(maps, teleporters, overworldMap, npcdata, newmap);
+				    }
+				}
+			    }
+			}
+
 		}
 	}
 }

@@ -1921,7 +1921,6 @@ namespace FF1Lib
 			overworldMap.PutOverworldTeleport(kv.Key, kv.Value);
 		    }
 		    foreach (var npc in newmap.NPCs) {
-			//npcdata.SetNPC(npc.ObjectId, npc.General);
 			this.MoveNpc(newmap.MapId, npc);
 		    }
 		}
