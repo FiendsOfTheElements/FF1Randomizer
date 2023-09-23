@@ -257,8 +257,10 @@ namespace FF1Lib
 				using (var s = newdungeon.Open())
 				{
 				    using (StreamReader reader = new StreamReader(s)) {
-					var newmap = FF1Lib.Procgen.CompleteMap.LoadJson(reader);
-					this.ImportCustomMap(maps, teleporters, overworldMap, npcdata, newmap);
+					var newmaps = FF1Lib.Procgen.CompleteMap.LoadJson(reader);
+					foreach (var newmap in newmaps) {
+					    this.ImportCustomMap(maps, teleporters, overworldMap, npcdata, newmap);
+					}
 				    }
 				}
 			    }

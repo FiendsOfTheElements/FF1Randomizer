@@ -129,27 +129,29 @@ namespace FF1Lib.Procgen
 			return sb.ToString();
 		}
 
-	    public static CompleteMap LoadJson(Stream stream) {
+	    public static List<CompleteMap> LoadJson(Stream stream) {
 		using (StreamReader rd = new StreamReader(stream))
 		{
 		    return LoadJson(rd);
 		}
 	    }
 
-	    public static CompleteMap LoadJson(StreamReader rd) {
-		    var obj = JsonConvert.DeserializeObject<CompleteMap>(rd.ReadToEnd());
+	    public static List<CompleteMap> LoadJson(StreamReader rd) {
+		    var objs = JsonConvert.DeserializeObject<List<CompleteMap>>(rd.ReadToEnd());
 
-		    obj.Map = new Map(0);
+		    foreach (CompleteMap obj in objs) {
+			obj.Map = new Map(0);
 
-		    for (int y = 0; y < 64; y++)
-		    {
-			byte[] row = Convert.FromBase64String(obj.DecompressedMapRows[y]);
-			for (int x = 0; x < 64; x++) {
-			    obj.Map[y, x] = row[x];
+			for (int y = 0; y < 64; y++)
+			{
+			    byte[] row = Convert.FromBase64String(obj.DecompressedMapRows[y]);
+			    for (int x = 0; x < 64; x++) {
+				obj.Map[y, x] = row[x];
+			    }
 			}
 		    }
 
-		    return obj;
+		    return objs;
 	    }
 
 	    public void SaveJson(StreamWriter stream) {
@@ -168,6 +170,17 @@ namespace FF1Lib.Procgen
 		}
 
 		serializer.Serialize(stream, this);
+	    }
+
+	    public static void SaveJson(List<CompleteMap> maps, StreamWriter stream) {
+		stream.Write("[\n");
+		for (int i = 0; i < maps.Count; i++) {
+		    maps[i].SaveJson(stream);
+		    if (i+1 < maps.Count) {
+			stream.Write(",\n");
+		    }
+		}
+		stream.Write("]\n");
 	    }
 	}
 }
