@@ -28,6 +28,10 @@
 			{
 				currentAccess |= AccessRequirement.Lute;
 			}
+			if ((bool)victoryConditions.FreeRod)
+			{
+				currentAccess |= AccessRequirement.Rod;
+			}
 
 			var currentMapChanges = MapChange.None;
 			if (victoryConditions.IsBridgeFree ?? false)

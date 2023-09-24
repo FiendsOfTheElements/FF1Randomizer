@@ -293,10 +293,15 @@ public partial class FF1Rom : NesRom
 		}
 
 		if (flags.ProcgenEarth) {
-		    var newmaps = await NewDungeon.GenerateNewDungeon(rng, this, MapId.EarthCaveB1, maps, npcdata, this.Progress);
-		    foreach (var newmap in newmaps) {
-			this.ImportCustomMap(maps, teleporters, overworldMap, npcdata, newmap);
-		    }
+		    this.LoadPregenDungeon(rng, maps, teleporters, overworldMap, npcdata, "earth256.zip");
+
+		    // Here's the code to generate from scratch, but it takes too long in the browser.
+		    // So we get one from the pregen pack above.
+		    //
+		    // var newmaps = await NewDungeon.GenerateNewDungeon(rng, this, MapId.EarthCaveB1, maps, npcdata, this.Progress);
+		    // foreach (var newmap in newmaps) {
+		    //   this.ImportCustomMap(maps, teleporters, overworldMap, npcdata, newmap);
+		    //  }
 		}
 
 			if((bool)flags.OWDamageTiles || flags.DesertOfDeath)
@@ -574,6 +579,11 @@ public partial class FF1Rom : NesRom
 		if ((bool)flags.FreeTail && !(bool)flags.NoTail)
 		{
 			EnableFreeTail();
+		}
+
+		if ((bool)flags.FreeRod)
+		{
+			EnableFreeRod();
 		}
 
 		if ((bool)flags.MapHallOfDragons) {

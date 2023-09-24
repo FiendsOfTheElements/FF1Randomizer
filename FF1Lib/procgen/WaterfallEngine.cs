@@ -184,7 +184,7 @@
 			{
 				npc.Coord.x = (npc.Coord.x + room_x)%64;
 				npc.Coord.y = (npc.Coord.y + room_y) % 64;
-				reqs.Rom.MoveNpc(reqs.MapId, npc);
+				reqs.Rom.SetNpc(reqs.MapId, npc);
 			});
 
 

@@ -2,6 +2,7 @@
 using FF1Lib.Sanity;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.IO.Compression;
 
 namespace FF1Lib
 {
@@ -918,9 +919,9 @@ namespace FF1Lib
 			}
 		}
 
-		public void MoveNpc(MapId mapId, NPC npc)
+		public void SetNpc(MapId mapId, NPC npc)
 		{
-			MoveNpc(mapId, npc.Index, npc.Coord.x, npc.Coord.y, npc.InRoom, npc.Stationary);
+		    SetNpc(mapId, npc.Index, npc.ObjectId, npc.Coord.x, npc.Coord.y, npc.InRoom, npc.Stationary);
 		}
 
 		public void MoveNpc(MapId mapId, int mapNpcIndex, int x, int y, bool inRoom, bool stationary)
@@ -1921,8 +1922,30 @@ namespace FF1Lib
 			overworldMap.PutOverworldTeleport(kv.Key, kv.Value);
 		    }
 		    foreach (var npc in newmap.NPCs) {
-			this.MoveNpc(newmap.MapId, npc);
+			this.SetNpc(newmap.MapId, npc);
 		    }
+		}
+
+		void LoadPregenDungeon(MT19337 rng,
+				       List<Map> maps, TeleportShuffle teleporters,
+				       OverworldMap overworldMap, NPCdata npcdata,
+				       string name) {
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith(name));
+
+			using Stream stream = assembly.GetManifestResourceStream(resourcePath);
+
+			var archive = new ZipArchive(stream);
+
+			var maplist = archive.Entries.Where(e => e.Name.EndsWith(".json")).Select(e => e.Name).ToList();
+
+			var map = maplist.PickRandom(rng);
+
+			var loadedmaps = CompleteMap.LoadJson(archive.GetEntry(map).Open());
+
+			foreach (var m in loadedmaps) {
+			    ImportCustomMap(maps, teleporters, overworldMap, npcdata, m);
+			}
 		}
 	}
 }

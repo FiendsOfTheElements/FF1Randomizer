@@ -149,6 +149,7 @@ namespace FF1Lib.Procgen
 				obj.Map[y, x] = row[x];
 			    }
 			}
+			obj.DecompressedMapRows = null;
 		    }
 
 		    return objs;

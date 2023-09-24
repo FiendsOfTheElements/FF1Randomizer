@@ -2041,6 +2041,16 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? FreeRod
+		{
+			get => Flags.FreeRod;
+			set
+			{
+				Flags.FreeRod = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FreeRod"));
+			}
+		}
+
 		public bool FreeOrbsEnabled => !ShardHunt;
 
 		public bool? MelmondClinic
