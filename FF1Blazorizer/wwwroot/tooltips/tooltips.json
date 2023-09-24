@@ -2374,5 +2374,11 @@
 		"Id": "ShuffleChimeIncludeTowns",
 		"title": "Shuffle Chime includes Towns",
 		"description": "Include towns (except Coneria) in the pool of entrances that may require CHIME to enter."
-	}
+	},
+        {
+                "Id": "procGenEarth",
+                "title": "Procedurally Generated Earth Cave",
+                "screenshot": "procgenEarth.png",
+                "description": "Randomly selects new Earth Cave maps from a set of procedurally generated maps."
+        }
 ]

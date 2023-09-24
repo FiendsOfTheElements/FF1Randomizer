@@ -1185,11 +1185,11 @@ namespace FF1Lib.Procgen
 	    });
 
 	    if (this.Chests.Count > 0 || this.Stairs.Count > 0) {
-		Console.WriteLine($"!!! failed sanity check count {this.Chests.Count} {this.Stairs.Count}");
+		Console.WriteLine($"!!! failed sanity check, unreachable chests: {this.Chests.Count} stairs: {this.Stairs.Count}");
 		return new MapResult(false);
 	    }
 
-	    Console.WriteLine($"Passed sanity check {this.Chests.Count} {this.Stairs.Count}");
+	    Console.WriteLine($"Passed sanity check");
 
 	    return await this.NextStep();
 	}
