@@ -130,7 +130,6 @@ namespace FF1Lib
 				((bool)flags.IsFloaterRemoved, Item.Floater),
 				((bool)flags.IsCanoeFree, Item.Canoe),
 				((bool)flags.FreeLute, Item.Lute),
-				((bool)flags.FreeRod, Item.Rod),
 				((bool)flags.FreeTail, Item.Tail),
 				((bool)flags.IsBridgeFree, Item.Bridge),
 				((bool)flags.IsCanalFree, Item.Canal),
@@ -141,7 +140,6 @@ namespace FF1Lib
 			{
 				((bool)flags.IsCanoeFree, ItemLocations.CanoeSage),
 				((bool)flags.FreeLute, ItemLocations.Princess),
-				((bool)flags.FreeRod, ItemLocations.Sarda),
 				((bool)flags.IsBridgeFree, ItemLocations.KingConeria),
 				((bool)flags.IsShipFree, ItemLocations.Bikke),
 			};

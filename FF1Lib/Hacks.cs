@@ -483,11 +483,6 @@ namespace FF1Lib
 			Data[0x3020 + (int)Item.Lute] = 0x01;
 		}
 
-		public void EnableFreeRod()
-		{
-			Data[0x3020 + (int)Item.Rod] = 0x01;
-		}
-
 		public void EnableFreeTail()
 		{
 			Data[0x3020 + (int)Item.Tail] = 0x01;

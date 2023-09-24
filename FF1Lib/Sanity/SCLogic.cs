@@ -518,10 +518,6 @@ namespace FF1Lib.Sanity
 			{
 				requirements |= SCRequirements.Lute;
 			}
-			if ((bool)victoryConditions.FreeRod)
-			{
-				requirements |= SCRequirements.Rod;
-			}
 			if ((victoryConditions.IsBridgeFree ?? false) || excludeBridge)
 			{
 				requirements |= SCRequirements.Bridge;
