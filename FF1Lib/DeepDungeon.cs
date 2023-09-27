@@ -1161,7 +1161,7 @@ namespace FF1Lib
 					_rom.Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(i - 3) })));
 					_rom.Put(0x3F000 + i - 3, Blob.FromHex("0F"));
 					_rom.Put(0x3F100 + i - 3, Blob.FromHex("87"));
-					if ((bool)flags.ShortToFR)
+					if (flags.ToFRMode == ToFRMode.Short)
 					{
 						_rom.Put(0x3F100 + i - 3, Blob.FromHex("89"));
 						maps[59][0x07, 0x0F] = tilesets[7].doortile;

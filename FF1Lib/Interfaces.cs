@@ -191,7 +191,6 @@
 	{
 		bool OnlyRequireGameIsBeatable { get; }
 		bool ShardHunt { get; }
-		bool? ShortToFR { get; }
 		bool? IsBridgeFree { get; }
 		bool? IsAirshipFree { get; }
 		bool? IsShipFree { get; }
