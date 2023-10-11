@@ -159,7 +159,7 @@ namespace FF1Lib
 			flameChucks.writeWeaponMemory(this);
 		}
 
-		public void Weaponizer(MT19337 rng, bool useQualityNamesOnly, bool commonWeaponsHavePowers, bool noItemMagic) {
+		public void Weaponizer(MT19337 rng, bool useQualityNamesOnly, bool commonWeaponsHaveSpells, bool commonWeaponsHavePowers, bool noItemMagic) {
 		    var tierList = new List<IReadOnlyList<Item>> { ItemLists.CommonWeaponTier, ItemLists.RareWeaponTier,
 							  ItemLists.LegendaryWeaponTier, ItemLists.UberTier};
 		    var damageBases = new int[]      { 10, 18, 26, 36, 52 };
@@ -468,7 +468,7 @@ namespace FF1Lib
 				specialPower = 0;
 			    } else {
 				int spellChance = rng.Between(1, 100);
-				if ((commonWeaponsHavePowers || tier == 2)
+				if ((commonWeaponsHaveSpells || tier == 2)
 				    && ((weaponType < 4 && spellChance <= Math.Min(10*tier, 20))
 					|| (weaponType >= 4 && spellChance <= Math.Min(30*tier, 60))))
 				{

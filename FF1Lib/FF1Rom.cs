@@ -429,7 +429,7 @@ public partial class FF1Rom : NesRom
 		}
 
 		if ((bool)flags.Weaponizer) {
-		    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers, flags.ItemMagicMode == ItemMagicMode.None);
+		    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHaveSpells, (bool)flags.WeaponizerCommonWeaponsHavePowers, flags.ItemMagicMode == ItemMagicMode.None);
 		}
 
 		if ((bool)flags.ArmorCrafter) {
