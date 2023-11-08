@@ -162,7 +162,7 @@ namespace FF1Lib
 			//Write PlayerName into Rom
 			var playerName = LimitByteLength((preferences.PlayerName.Length > 16) ? preferences.PlayerName.Substring(0, 16) : preferences.PlayerName, 0x40);
 			byte[] buffer = Encoding.UTF8.GetBytes(playerName);
-			Debug.Assert(buffer.Length <= 0x40, "PlayerName wasn'T shortened correctly.");
+			Debug.Assert(buffer.Length <= 0x40, "PlayerName wasn't shortened correctly.");
 
 			rom.PutInBank(0x1E, 0xBCC0, buffer);
 

@@ -58,8 +58,10 @@
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
 
-    void OnPlayerNameChanged(ChangeEventArgs e)
+	void OnPlayerNameChanged(ChangeEventArgs e)
 	{
-		Flags.PlayerName = (e.Value as string).Substring(0,16);
+		string playername = (e.Value as string);
+
+		Flags.PlayerName = playername.Length > 16 ? playername.Substring(0, 16) : playername;
 	}
 }
