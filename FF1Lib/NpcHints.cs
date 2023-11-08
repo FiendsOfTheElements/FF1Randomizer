@@ -455,9 +455,9 @@ namespace FF1Lib
 			var incentivizedHintItems = new List<LocationHintsInfo>();
 			var looseHintItems = new List<LocationHintsInfo>();
 
-			var incentiveItems = incentivedata.IncentiveItems.ToList();
+			var hintableItems = incentivedata.IncentiveItems.ToList().Concat(ItemLists.AllQuestItems).Distinct().ToList();
 
-			foreach (var item in incentiveItems)
+			foreach (var item in hintableItems)
 			{
 				var itemlocation = locationshints.hints.Where(x => x.item == item);
 				if (itemlocation.Any())
@@ -510,9 +510,11 @@ namespace FF1Lib
 			var attempts = 0;
 			while (++attempts < 50)
 			{
+				int itemid = 0;
+
 				while(hintsList.Count < npcSelected.Count)
 				{
-					var tempItem = hintedItems.First();
+					var tempItem = hintedItems[itemid];
 					string tempHint;
 					string tempName;
 
@@ -529,7 +531,7 @@ namespace FF1Lib
 
 						tempHint = FormatText(tempHint.Split('#')[0] + LocationText(locationshints, tempItem, floorshuffle, nooverworld) + tempHint.Split('#')[1]);
 						hintsList.Add(tempHint);
-						hintedItems.RemoveRange(0, 1);
+						itemid++;
 					}
 					else if (tempItem.type == Sanity.SCPointOfInterestType.QuestNpc)
 					{
@@ -537,7 +539,7 @@ namespace FF1Lib
 						tempHint = tempHint.Split('$')[0] + tempName + tempHint.Split('$')[1];
 						tempHint = FormatText(tempHint.Split('&')[0] + NpcNames[(ObjectId)tempItem.id] + tempHint.Split('&')[1]);
 						hintsList.Add(tempHint);
-						hintedItems.RemoveRange(0, 1);
+						itemid++;
 					}
 					else if (tempItem.type == Sanity.SCPointOfInterestType.Shop)
 					{
@@ -545,7 +547,7 @@ namespace FF1Lib
 						tempHint = tempHint.Split('$')[0] + tempName + tempHint.Split('$')[1];
 						tempHint = FormatText(tempHint.Split('#')[0] + LocationText(locationshints, tempItem, floorshuffle, nooverworld) + tempHint.Split('#')[1]);
 						hintsList.Add(tempHint);
-						hintedItems.RemoveRange(0, 1);
+						itemid++;
 					}
 				}
 

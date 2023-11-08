@@ -607,15 +607,6 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TransformFinalFormation"));
 			}
 		}
-		public bool? ShortToFR
-		{
-			get => Flags.ShortToFR;
-			set
-			{
-				Flags.ShortToFR = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShortToFR"));
-			}
-		}
 		public bool? ChaosFloorEncounters
 		{
 			get => Flags.ChaosFloorEncounters;
@@ -634,34 +625,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExitToFR"));
 			}
 		}
-		public bool? PreserveFiendRefights
+		public ToFRMode ToFRMode
 		{
-			get => Flags.PreserveFiendRefights;
+			get => Flags.ToFRMode;
 			set
 			{
-				Flags.PreserveFiendRefights = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PreserveFiendRefights"));
+				Flags.ToFRMode = value;
+				RaisePropertyChanged();
 			}
 		}
-
-		public bool? PreserveAllFiendRefights
+		public FiendsRefights FiendsRefights
 		{
-			get => Flags.PreserveAllFiendRefights;
+			get => Flags.FiendsRefights;
 			set
 			{
-				Flags.PreserveAllFiendRefights = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PreserveAllFiendRefights"));
+				Flags.FiendsRefights = value;
+				RaisePropertyChanged();
 			}
 		}
-
-		public bool CanPreserveAllFiendRefights
-		{
-			get => (Flags.ShortToFR ?? true) && (Flags.PreserveFiendRefights ?? true);
-			set
-			{
-			}
-		}
-
 		public bool? MagicShops
 		{
 			get => Flags.MagicShops;
