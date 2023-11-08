@@ -275,6 +275,17 @@ namespace FF1Lib
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, battleJump, Blob.FromHex("EAEAEA"));
 			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, mapreload, Blob.FromHex("EAEAEA"));
 		}
+		public void PacifistBat(TalkRoutines talkroutines, NPCdata npcdata)
+		{
+			// Add Script
+			var Talk_Ending = talkroutines.Add(Blob.FromHex("4C38C9"));
+			npcdata.SetRoutine(ObjectId.MatoyaBroom4, (newTalkRoutines)Talk_Ending);
+			var broom4 = GetNpc(MapId.MatoyasCave, 4);
+			var bat3 = GetNpc(MapId.MarshCaveB1, 3);
+			SetNpc(MapId.MatoyasCave, 4, ObjectId.MatoyaBroom3, broom4.Coord.x, broom4.Coord.y, true, false);
+			SetNpc(MapId.MarshCaveB1, 3, ObjectId.MatoyaBroom4, bat3.Coord.x, bat3.Coord.y, false, false);
+			Data[MapObjGfxOffset + (int)ObjectId.MatoyaBroom4] = 0x11;
+		}
 
 		public enum FormationPattern
 		{

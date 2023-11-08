@@ -313,6 +313,25 @@ namespace FF1Lib.Sanity
 						}
 					}
 				}
+
+				foreach (var shop in area.PointsOfInterest.Where(p => p.Type == SCPointOfInterestType.Shop))
+				{
+					if (shopslot.ShopIndex == shop.ShopId)
+					{
+						if (rewardSourceDic.TryGetValue(shopslot.Address, out var x))
+						{
+							x.Requirements.Merge(logicArea.Requirements);
+						}
+						else
+						{
+							rewardSourceDic.Add(shopslot.Address, new SCLogicRewardSource
+							{
+								Requirements = logicArea.Requirements,
+								RewardSource = shopslot
+							});
+						}
+					}
+				}
 			}
 		}
 

@@ -99,7 +99,7 @@
 			else if ((tileDef.OWBitFlags & SCBitFlags.Caravan) > 0)
 			{
 				poi.Type = SCPointOfInterestType.Shop;
-				poi.ShopId = 69;
+				poi.ShopId = 70;
 				PointsOfInterest.Add(poi);
 			}
 		}

@@ -18,15 +18,17 @@ namespace FF1Lib
 		Preferences preferences;
 		ExpChests expChests;
 		IncentiveData incentivesData;
+		Blob seed;
 
 		public string Json { get; private set; }
 
-		public Archipelago(FF1Rom _rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, ExpChests _expChests, IncentiveData _incentivesData, Flags _flags, Preferences _preferences)
+		public Archipelago(FF1Rom _rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, ExpChests _expChests, IncentiveData _incentivesData, Blob _seed, Flags _flags, Preferences _preferences)
 		{
 			rom = _rom;
 			expChests = _expChests;
 			incentivesData = _incentivesData;
 			flags = _flags;
+			seed = _seed;
 			preferences = _preferences;
 
 			var kiPlacement = generatedPlacement.Where(r => ItemLists.AllQuestItems.Contains(r.Item) && r.Item != Item.Bridge).ToList();
@@ -144,7 +146,8 @@ namespace FF1Lib
 			{
 				game = "Final Fantasy",
 				description = "Hurray",
-				name = preferences.PlayerName,
+				name = (preferences.PlayerName.Length > 16) ? preferences.PlayerName.Substring(0,16) : preferences.PlayerName,
+				permalink = ((FFRVersion.Branch == "master") ? FFRVersion.Version.Replace('.', '-') : "beta-" + FFRVersion.Sha.PadRight(8).Substring(0, 8)) + ".finalfantasyrandomizer.com/?s=" + seed.ToHex() + "&f=" + Flags.EncodeFlagsText(flags),
 				options = new ArchipelagoFFROptions
 				{
 					items = logic.RewardSources.GroupBy(r => GetItemId(r.RewardSource.Item)).ToDictionary(r => GetItemName(r.First().RewardSource.Item), r => new ArchipelagoItem { id = r.Key, count = r.Count(), incentive = incentivesData.IncentiveItems.Contains(r.First().RewardSource.Item) }),
@@ -157,7 +160,7 @@ namespace FF1Lib
 			Json = JsonConvert.SerializeObject(data, Formatting.Indented);
 
 			//Write PlayerName into Rom
-			var playerName = LimitByteLength(preferences.PlayerName, 0x40);
+			var playerName = LimitByteLength((preferences.PlayerName.Length > 16) ? preferences.PlayerName.Substring(0, 16) : preferences.PlayerName, 0x40);
 			byte[] buffer = Encoding.UTF8.GetBytes(playerName);
 			Debug.Assert(buffer.Length <= 0x40, "PlayerName wasn'T shortened correctly.");
 
@@ -341,6 +344,7 @@ namespace FF1Lib
 		public string game { get; set; }
 
 		public string description { get; set; }
+		public string permalink { get; set; }
 
 		public string name { get; set; }
 

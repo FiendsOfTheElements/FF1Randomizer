@@ -413,8 +413,6 @@ namespace FF1Lib
 
 			var spellBytes = scripts.SelectMany(script => script.SubBlob(2, 8).ToBytes()).Where(b => b != 0xFF).ToList();
 			var skillBytes = scripts.SelectMany(script => script.SubBlob(11, 4).ToBytes()).Where(b => b != 0xFF).ToList();
-			spellBytes.Shuffle(rng);
-			skillBytes.Shuffle(rng);
 
 			List<List<byte>> spellBuckets;
 			List<List<byte>> skillBuckets;
@@ -432,7 +430,9 @@ namespace FF1Lib
 			var reroll = false;
 			do {
 			    reroll = false;
-			    spellBuckets = Bucketize(spellBytes, scripts.Count(script => script[0] != 0), 8, nonEmpty, rng);
+				spellBytes.Shuffle(rng);
+				skillBytes.Shuffle(rng);
+				spellBuckets = Bucketize(spellBytes, scripts.Count(script => script[0] != 0), 8, nonEmpty, rng);
 			    skillBuckets = Bucketize(skillBytes, scripts.Count(script => script[1] != 0), 4, false, rng);
 
 				var spellChances = scripts.Select(script => script[0]).ToList();
