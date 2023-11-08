@@ -314,7 +314,7 @@
 		"Id": "tofrModeDropDown",
 		"title": "ToFR Mode",
 		"screenshot": "shortToFRCheckBox.png",
-		"description": "Set the length of the the Temple of Fiends Revisited. By default, the four Orbs are still required to enter the dungeon.\n Note: Both the KEY and the LUTE will still be required, unless other settings are selected that change these requirements.\n\nLong: The Temple of Fiends is unchanged from the Vanilla Game.\nMid: The Lute is placed on the first floor and going to the left will allow you to directly go to the Earth floor. The first 3 Fiends floors have shortcuts. Two Fire floors chests are placed on Earth floor and the Masamune chest is placed on the Water floor.\nShort: The Black Orb leads straight to Chaos Floor.\nRandom: One of the previous options at random."
+		"description": "Set the length of the the Temple of Fiends Revisited. By default, the four Orbs are still required to enter the dungeon.\n Note: Both the KEY and the LUTE will still be required, unless other settings are selected that change these requirements.\n\nLong: The Temple of Fiends is unchanged from the Vanilla Game.\nMid: The Lute Plate is placed on the first floor and going to the left will allow you to directly go to the Earth floor. The first 3 Fiends floors have shortcuts. Two Fire floors chests are placed on Earth floor and the Masamune chest is placed on the Water floor.\nShort: The Black Orb leads straight to Chaos Floor.\nRandom: One of the previous options at random."
 	},
 	{
 		"Id": "fiendsRefightsDropDown",
