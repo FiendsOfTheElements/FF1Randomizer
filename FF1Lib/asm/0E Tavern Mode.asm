@@ -68,7 +68,7 @@ DoLevelUp
                     : JMP TurnOffPPU
                     .END
 
-* = $9900           ; Address could already be in use, so check here first in case of crash
+* = $9800           ; Address could already be in use, so check here first in case of crash; update: it was!
 TurnOffPPU:
                     LDA #$00
                     STA $0024
