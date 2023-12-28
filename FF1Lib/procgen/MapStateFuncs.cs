@@ -961,6 +961,7 @@ namespace FF1Lib.Procgen
 
 	public async Task<MapResult> PlaceChests(FF1Rom rom, List<Map> maps, List<(MapId,byte)> preserveChests) {
 	    this.OwnTilemap();
+            this.OwnFeatures();
 
 	    maps = new List<Map>(maps);
 	    maps[(int)mapId] = this.Tilemap;
