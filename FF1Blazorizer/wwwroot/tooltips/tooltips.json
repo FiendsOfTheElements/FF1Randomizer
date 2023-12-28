@@ -311,10 +311,16 @@
 		"description": "Unlocks all locked doors in the Temple of Fiends Revisited, allowing access to Chaos without the need for the KEY."
 	},
 	{
-		"Id": "shortToFRCheckBox",
-		"title": "Shorten ToFR",
+		"Id": "tofrModeDropDown",
+		"title": "ToFR Mode",
 		"screenshot": "shortToFRCheckBox.png",
-		"description": "Shortens the Temple of Fiends Revisited to lead straight to Chaos' Floor. By default, the four Orbs are still required to enter the dungeon.\n Note: Both the KEY and the LUTE will be required if this box is checked, unless other settings are selected that change these requirements."
+		"description": "Set the length of the the Temple of Fiends Revisited. By default, the four Orbs are still required to enter the dungeon.\n Note: Both the KEY and the LUTE will still be required, unless other settings are selected that change these requirements.\n\nLong: The Temple of Fiends is unchanged from the Vanilla Game.\nMid: The Lute Plate is placed on the first floor and going to the left will allow you to directly go to the Earth floor. The first 3 Fiends floors have shortcuts. Two Fire floors chests are placed on Earth floor and the Masamune chest is placed on the Water floor.\nShort: The Black Orb leads straight to Chaos Floor.\nRandom: One of the previous options at random."
+	},
+	{
+		"Id": "fiendsRefightsDropDown",
+		"title": "Fiends Refights",
+		"screenshot": "preserveAllFiendRefightsCheckBox.png",
+		"description": "Configure the Temple of Fiends Fiends Refights.\n\nAll: All Fiends must be fought to reach Chaos.\nTwo Paths: Only two fiends must be defeated. On floor 1F, two stairs will lead to two random Fiends floors each. If Short ToFR is selected, going left or right will lead to two different Fiends tiles.\nNone: No Fiends will be encountered in the Temple of Fiends Revisited.\nRandom: One of the previous options at random."
 	},
 	{
 		"Id": "preserveFiendRefightsCheckBox",

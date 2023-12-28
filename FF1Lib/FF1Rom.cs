@@ -211,6 +211,7 @@ public partial class FF1Rom : NesRom
 		ExpandNormalTeleporters();
 		SeparateUnrunnables();
 		DrawCanoeUnderBridge();
+		
 
 		LoadSharedDataTables();
 
@@ -221,6 +222,7 @@ public partial class FF1Rom : NesRom
 		var talkroutines = new TalkRoutines();
 		var npcdata = new NPCdata(this);
 		UpdateDialogs(npcdata, flags);
+		PacifistBat(talkroutines, npcdata);
 		FF1Text.AddNewIcons(this, flags);
 
 		if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
@@ -473,20 +475,7 @@ public partial class FF1Rom : NesRom
 
 		new RibbonShuffle(this, rng, flags, ItemsText, ArmorPermissions).Work();
 
-		if ((bool)flags.ShortToFR)
-		{
-			ShortenToFR(maps, (bool)flags.PreserveFiendRefights, (bool)flags.PreserveAllFiendRefights, (bool)flags.ExitToFR, rng);
-		}
-
-		if ((bool)flags.ChaosFloorEncounters)
-		{
-			EnableChaosFloorEncounters(maps);
-		}
-
-		if ((bool)flags.ExitToFR)
-		{
-			EnableToFRExit(maps);
-		}
+		UpdateToFR(maps, flags, rng);
 
 		if (((bool)flags.Treasures) && flags.ShardHunt)
 		{
@@ -537,11 +526,6 @@ public partial class FF1Rom : NesRom
 		if ((bool)flags.EarlySage)
 		{
 			EnableEarlySage(npcdata);
-		}
-
-		if ((bool)flags.ChaosRush)
-		{
-			EnableChaosRush();
 		}
 
 		if ((bool)flags.IsBridgeFree && (!flags.DesertOfDeath))

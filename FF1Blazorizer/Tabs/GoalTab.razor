@@ -13,10 +13,9 @@
 
 	<div class="checkbox-cell"></div>
 	<h4>Temple of Fiends</h4>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tofrModeDropDown" TItem="ToFRMode" @bind-Value="Flags.ToFRMode">Mode</EnumDropDown>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="fiendsRefightsDropDown" TItem="FiendsRefights" @bind-Value="Flags.FiendsRefights">Fiends Refights</EnumDropDown>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" @bind-Value="Flags.ChaosRush">Unlocked ToFR</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="shortToFRCheckBox" @bind-Value="Flags.ShortToFR">Shorten ToFR</TriStateCheckBox>
-	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="preserveFiendRefightsCheckBox" IsEnabled="@Flags.ShortToFR" @bind-Value="Flags.PreserveFiendRefights">Include Fiend Tiles</TriStateCheckBox>
-	<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="preserveAllFiendRefightsCheckBox" IsEnabled="@Flags.CanPreserveAllFiendRefights" @bind-Value="Flags.PreserveAllFiendRefights">Refight All Fiends</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="exitToFRCheckBox" @bind-Value="Flags.ExitToFR">Add ToFR Exit</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosFloorEncountersCheckBox" @bind-Value="Flags.ChaosFloorEncounters">Add Chaos Floor Encounters</TriStateCheckBox>
 
@@ -40,7 +39,7 @@
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="OrbsRequiredModeDropDown" IsEnabled="@(Flags.OrbsRequiredOptionsEnabled)" TItem="OrbsRequiredMode" @bind-Value="Flags.OrbsRequiredMode">Mode:</EnumDropDown>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="orbsRequiredSpoilersCheckbox" IsEnabled="@(Flags.OrbsRequiredOptionsEnabled)" @bind-Value="Flags.OrbsRequiredSpoilers">Orb Spoilers</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" IsEnabled="@Flags.ShardHuntEnabled" @bind-Value="Flags.ShardHunt">Shard Hunt</CheckBox>
+		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" @bind-Value="Flags.ShardHunt">Shard Hunt</CheckBox>
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="ShardCount" @bind-Value="Flags.ShardCount">Goal:</EnumDropDown>
 
 	     <div class="checkbox-cell"></div>
@@ -59,8 +58,10 @@
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
 
-    void OnPlayerNameChanged(ChangeEventArgs e)
+	void OnPlayerNameChanged(ChangeEventArgs e)
 	{
-		Flags.PlayerName = (e.Value as string).Substring(0,16);
+		string playername = (e.Value as string);
+
+		Flags.PlayerName = playername.Length > 16 ? playername.Substring(0, 16) : playername;
 	}
 }

@@ -142,10 +142,10 @@ AddExpToParty:
 
 SetDrawFlags:
 	LDA ch_ailments, X
+	TAX
+	LDA lut_AilmentsBit, X
 	LSR A
 	ROL btl_drawflagsA
-	LSR A
-	ROL btl_drawflagsB
 	RTS
 
 DivideRewardBySurvivors_L:
@@ -172,6 +172,11 @@ LvlUp_AwardAndUpdateExp_L:
 	PHA
 	LDA #$1B
 	JMP SwapPRG
+
+	NOP
+
+lut_AilmentsBit:
+ $00, $01, $01, $00
 	
 NOP
 BRK

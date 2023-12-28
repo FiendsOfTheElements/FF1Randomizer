@@ -657,32 +657,6 @@ namespace FF1Lib
 			melmond[0x0B, 0x1C] = 0x1D;
 			melmond[0x0B, 0x1D] = 0x02; // Corner shadow
 		}
-
-		public void EnableChaosFloorEncounters(List<Map> maps)
-		{
-			// Replace floor tiles with encounter tiles
-			for (int x = 0; x < 32; x++)
-			{
-				for (int y = 0; y < 32; y++)
-				{
-					if (maps[(byte)MapId.TempleOfFiendsRevisitedChaos][x, y] == (byte)Tile.ToFRNoEncounter)
-					{
-						maps[(byte)MapId.TempleOfFiendsRevisitedChaos][x, y] = (byte)Tile.ToFREncounter;
-					}
-				}
-			}
-
-			// Change base rate for encounters
-			Put(ThreatLevelsOffset + 60, Blob.FromHex("0D"));
-			// threat level reference for comparison: 08 = most dungeon floors; 18 = sky bridge; 09 = ToFR earth; 0A = ToFR fire; 0B = ToFR water; 0C = ToFR air; 01 = ToFR chaos
-		}
-
-		public void EnableToFRExit(List<Map> maps)
-		{
-			// add warp portal to ToFR 1st floor
-			maps[(byte)MapId.TempleOfFiendsRevisited1F][17, 20] = (byte)Tile.PortalWarp;
-		}
-
 		public MapId RandomVampireAttack(List<Map> maps, bool lefeinHospitality, bool includeConeria, MT19337 rng)
 		{
 			// Essentially picks a random town to have the vampire attack rather than Melmond.

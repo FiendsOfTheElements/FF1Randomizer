@@ -192,12 +192,10 @@ namespace FF1Lib
 		public bool? OrbsRequiredSpoilers { get; set; } = false;
 		public FinalFormation TransformFinalFormation { get; set; } = FinalFormation.None;
 		public bool? ChaosRush { get; set; } = false;
-		public bool? ShortToFR { get; set; } = false;
+		public ToFRMode ToFRMode { get; set; } = ToFRMode.Long;
+		public FiendsRefights FiendsRefights { get; set; } = FiendsRefights.All;
 		public bool? ExitToFR { get; set; } = false;
 		public bool? ChaosFloorEncounters { get; set; } = false;
-		public bool? PreserveFiendRefights { get; set; } = false;
-		public bool? PreserveAllFiendRefights { get; set; } = false;
-
 		public bool? MagicShops { get; set; } = false;
 		public bool? MagicShopLocs { get; set; } = false;
 		public bool? MagicShopLocationPairs { get; set; } = false;

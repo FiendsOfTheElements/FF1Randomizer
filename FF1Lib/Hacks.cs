@@ -472,12 +472,6 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xE231, Blob.FromHex("F037"));
 			PutInBank(0x1F, 0xE26A, Blob.FromHex("20A6E3A4422081E2A442C004F0032073E34C8CE3"));
 		}
-		public void EnableChaosRush()
-		{
-			// Overwrite Keylocked door in ToFR tileset with normal door.
-			Put(0x0F76, Blob.FromHex("0300"));
-		}
-
 		public void EnableFreeLute()
 		{
 			Data[0x3020 + (int)Item.Lute] = 0x01;
