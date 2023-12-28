@@ -1626,13 +1626,21 @@ namespace FF1Lib
 
 			if (debug) Console.WriteLine($"rooms {rooms.Count}");
 
+			List<Room> pendingRooms = new (workingrooms);
+
 			foreach (var c in chestPool) {
 			    (Room,MapElement) me;
 			    if (spreadPlacement) {
 				Room r;
-				do {
-				    r = workingrooms.PickRandom(rng);
-				} while (r.floor.Count == 0);
+				if (pendingRooms.Count > 0) {
+				    // Make sure every room gets a chest
+				    r = pendingRooms.SpliceRandom(rng);
+				} else {
+				    // Every room has a chest so allocate the remaining chests.
+				    do {
+					r = workingrooms.PickRandom(rng);
+				    } while (r.floor.Count == 0);
+				}
 				me = (r, r.floor.SpliceRandom(rng));
 			    } else {
 				// full random

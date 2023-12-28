@@ -360,7 +360,7 @@ namespace FF1Lib.Procgen
 	    return null;
 	}
 
-	public async Task<MapResult> EarthB1Style() {
+	public async Task<MapResult> EarthB1Style(int minTreasureRooms) {
 	    SCCoords _topLeft;
 	    int _w, _h;
 	    var start = this.AddBox(new List<SCCoords> { new SCCoords(this.Entrance.X, this.Entrance.Y-3) }, Direction.Down, (5, 5), (5, 5),
@@ -417,7 +417,7 @@ namespace FF1Lib.Procgen
 	    }
 	    //Console.WriteLine($"{treasureRooms}");
 
-	    if (treasureRooms < 2) {
+	    if (treasureRooms < minTreasureRooms) {
 		return new MapResult(false);
 	    }
 
