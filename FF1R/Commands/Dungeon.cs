@@ -209,18 +209,19 @@ namespace FF1R.Commands
 		Image<Rgba32> output;
 		string name;
 
+		var mapsCopy = new List<Map>(maps);
 		var replacementMaps = Task.Run<List<FF1Lib.Procgen.CompleteMap>>(async () => await FF1Lib.Procgen.NewDungeon.GenerateNewDungeon(rng, rom, mapid,
-																		maps, npcdata, this.Progress)).Result;
+																		mapsCopy, npcdata, this.Progress)).Result;
 
 		foreach (var replacementMap in replacementMaps) {
-		    maps[(int)replacementMap.MapId] = replacementMap.Map;
+		    mapsCopy[(int)replacementMap.MapId] = replacementMap.Map;
 		    if (DoRender) {
-			output = rom.RenderMap(maps, replacementMap.MapId, false);
+			output = rom.RenderMap(mapsCopy, replacementMap.MapId, false);
 			name = $"{effectiveSeed,8:X8}-dungeonmap{(int)replacementMap.MapId}-outside.png";
 			output.Save(name);
 			Console.WriteLine($"Wrote {name}");
 
-			output = rom.RenderMap(maps, replacementMap.MapId, true);
+			output = rom.RenderMap(mapsCopy, replacementMap.MapId, true);
 			name = $"{effectiveSeed,8:X8}-dungeonmap{(int)replacementMap.MapId}-inside.png";
 			output.Save(name);
 			Console.WriteLine($"Wrote {name}");
