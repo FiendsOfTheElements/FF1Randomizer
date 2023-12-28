@@ -119,6 +119,7 @@ namespace FF1Lib.Procgen
 	public PgTileFilter earth_cave_walls3;
 	public PgTileFilter earth_cave_extend_walls;
 	public PgTileFilter earth_cave_walls4;
+	public PgTileFilter earth_cave_walls5;
 	public PgTileFilter cave_edges;
 	public PgTileFilter room_tops;
 
@@ -726,6 +727,38 @@ namespace FF1Lib.Procgen
 
 		}, allTiles, null, null);
 
+
+	    this.earth_cave_walls5 = new PgTileFilter(
+		new Rule[] {
+
+		    // mismatched vertical walls
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_WALL_E, STAR},
+			{STAR, CAVE_WALL_W, STAR},
+			{STAR, CAVE_WALL_N, STAR}},
+			CAVE_WALL_E),
+
+		    // mismatched vertical walls
+		    new Rule(new byte[3,3] {
+			{STAR, CAVE_WALL_W, STAR},
+			{STAR, CAVE_WALL_E, STAR},
+			{STAR, CAVE_WALL_N, STAR}},
+			CAVE_WALL_W),
+
+		    // N wall gap
+		    new Rule(new byte[3,3] {
+			{STAR,              STAR,         STAR},
+			{CAVE_WALL_N, CAVE_BLANK,  CAVE_WALL_N},
+			{STAR,        CAVE_WALL_E, STAR}},
+			CAVE_WALL_NE),
+
+		    // N wall gap
+		    new Rule(new byte[3,3] {
+			{STAR,              STAR,         STAR},
+			{CAVE_WALL_N, CAVE_BLANK,  CAVE_WALL_N},
+			{STAR,        CAVE_WALL_W, STAR}},
+			CAVE_WALL_NW),
+		}, allTiles, null, null);
 	}
     }
 }

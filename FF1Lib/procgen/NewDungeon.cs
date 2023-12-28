@@ -194,6 +194,7 @@ namespace FF1Lib.Procgen
 		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }), // double up to fix gaps
 		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls4, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls5, false }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
 		new MapGenerationStep("PlaceChests", new object[] { rom, maps, new List<(MapId,byte)> {} }),
@@ -229,6 +230,7 @@ namespace FF1Lib.Procgen
 		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }), // double up to fix gaps introduced by extend walls
 		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls4, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls5, false }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
 		new MapGenerationStep("PlaceChests", new object[] { rom, maps, new List<(MapId,byte)> { (MapId.EarthCaveB3, DungeonTiles.RUBY_CHEST) } }),
@@ -263,6 +265,7 @@ namespace FF1Lib.Procgen
 		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }), // double up to fix gaps
 		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls4, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls5, false }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
 		new MapGenerationStep("PlaceChests", new object[] { rom, maps, new List<(MapId,byte)> {} }),
@@ -296,6 +299,7 @@ namespace FF1Lib.Procgen
 		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_extend_walls, true }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls2, false }), // double up to fix gaps
 		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls4, false }),
+		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls5, false }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
 		new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
