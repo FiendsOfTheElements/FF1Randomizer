@@ -977,36 +977,6 @@ namespace FF1Lib.Procgen
 	    } catch (Exception) {
 		return new MapResult(false);
 	    }
-	    /*var cand = this.Candidates(new List<byte> {DungeonTiles.CAVE_ROOM_FLOOR});
-	    var doors = this.Candidates(new List<byte> {DungeonTiles.CAVE_DOOR});
-
-	    var traps = new List<byte>(this.Traps);
-
-	    List<MapElement> chests = new();
-
-	    if (cand.Count < chests.Count) {
-		return new MapResult(false);
-	    }
-
-	    foreach (var c in this.Chests) {
-		var p = cand.SpliceRandom(this.rng);
-		var me = this.Tilemap[(p.X, p.Y)];
-		me.Value = c;
-		chests.Add(me);
-	    }
-
-	    List<FF1Rom.Room> rooms = new();
-	    foreach (var d in doors) {
-		FF1Rom.Room r = new();
-		r.start = this.Tilemap[(d.X, d.Y)];
-	    }
-
-	    Console.WriteLine("PlaceSpikeTiles");
-
-	    FF1Rom.PlaceSpikeTiles(this.rng, traps, chests,
-				   this.RoomFloorTiles,
-				   this.RoomBattleTiles,
-				   rooms);*/
 
 	    return await this.NextStep();
 	}
@@ -1089,6 +1059,7 @@ namespace FF1Lib.Procgen
 	public async Task<MapResult> CollectInfo(FF1Rom rom, FF1Rom.NPCdata npcdata) {
 	    this.OwnFeatures();
 
+	    List<byte> spikeTiles = new();
 	    this.Traps = new();
 	    this.RoomFloorTiles = new();
 	    this.RoomBattleTiles = new();
@@ -1098,25 +1069,24 @@ namespace FF1Lib.Procgen
 
 	    FF1Rom.FindRoomTiles(this.tileSet,
 				 this.RoomFloorTiles,
-				 this.Traps,
+				 spikeTiles,
 				 this.RoomBattleTiles,
 				 randomEncounter);
 
 	    for (int y = 0; y < MAPSIZE; y++) {
 		for (int x = 0; x < MAPSIZE; x++) {
 		    byte t = this.Tilemap[y, x];
+		    var tp = this.tileSet.TileProperties[t];
 
-		    if (this.tileSet.TileProperties[t].TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE)) {
+		    if (tp.TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE)) {
 			this.Chests.Add(t);
 		    }
-		    if ((this.tileSet.TileProperties[t].TilePropFunc & TilePropFunc.TP_TELE_MASK) != 0) {
+		    if ((tp.TilePropFunc & TilePropFunc.TP_TELE_MASK) != 0) {
 			this.Stairs.Add(t);
 		    }
-		    /*if (this.tileSet.TileProperties[t].TilePropFunc == TilePropFunc.TP_SPEC_BATTLE) {
-			if (this.tileSet.TileProperties[t].BattleId != randomEncounter) {
-			    this.Traps.Add(t);
-			}
-			}*/
+		    if (spikeTiles.Contains(t)) {
+			this.Traps.Add(t);
+		    }
 		}
 	    }
 
@@ -1162,10 +1132,6 @@ namespace FF1Lib.Procgen
 
 	public async Task<MapResult> SanityCheck() {
 	    this.OwnFeatures();
-
-	    foreach (var c in this.Chests) {
-		Console.WriteLine($"chest {c:X}");
-	    }
 
 	    var sanityError = new List<string>();
 

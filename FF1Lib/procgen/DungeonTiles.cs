@@ -720,9 +720,27 @@ namespace FF1Lib.Procgen
 
 		    // fill in absolutely any other remaining gaps.
 		    new Rule(new byte[3,3] {
-			{STAR, STAR, STAR},
+			{STAR, CAVE_FLOOR, STAR},
+			{STAR, CAVE_BLANK, STAR},
+			{STAR,       STAR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR,       STAR,       STAR},
+			{STAR, CAVE_BLANK, CAVE_FLOOR},
+			{STAR,       STAR,      STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR,       STAR, STAR},
 			{STAR, CAVE_BLANK, STAR},
 			{STAR, CAVE_FLOOR, STAR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR,             STAR, STAR},
+			{CAVE_FLOOR, CAVE_BLANK, STAR},
+			{STAR,             STAR, STAR}},
 			CAVE_WALL_N),
 
 		}, allTiles, null, null);

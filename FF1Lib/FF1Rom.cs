@@ -616,7 +616,7 @@ public partial class FF1Rom : NesRom
 
 		if (flags.SpeedHacks)
 		{
-			SpeedHacksMoveNpcs();
+			SpeedHacksMoveNpcs(!flags.ProcgenEarth);
 		}
 
 		if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
