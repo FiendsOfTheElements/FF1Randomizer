@@ -124,7 +124,7 @@ namespace FF1Lib.Procgen
 							  List<MapGenerationStep> mapGenSteps, DungeonTiles dt, FF1Rom.ReportProgress progress) {
 	    var tileset = new TileSet(rom, rom.GetMapTilesetIndex(mapId));
 	    var blankState = new MapState(rng, mapGenSteps, mapId, maps[(int)mapId], dt, tileset, progress);
-	    var worldState = await ProgenFramework.RunSteps<MapState, MapResult, MapGenerationStep>(blankState, 5000, progress);
+	    var worldState = await ProgenFramework.RunSteps<MapState, MapResult, MapGenerationStep>(blankState, 2000, progress);
 	    if (worldState != null) {
 		return new CompleteMap {
 		    MapId = mapId,
