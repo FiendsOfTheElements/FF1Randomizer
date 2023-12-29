@@ -565,6 +565,11 @@ public partial class FF1Rom : NesRom
 			EnableFreeTail();
 		}
 
+		if ((bool)flags.FreeRod)
+		{
+			EnableFreeRod();
+		}
+
 		if ((bool)flags.MapHallOfDragons) {
 		    BahamutB1Encounters(maps);
 		}

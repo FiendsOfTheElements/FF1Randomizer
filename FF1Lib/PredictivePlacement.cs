@@ -504,6 +504,10 @@ namespace FF1Lib
 			{
 				requirements |= SCRequirements.Lute;
 			}
+			if ((bool)_flags.FreeRod)
+			{
+				requirements |= SCRequirements.Rod;
+			}
 			if (_flags.IsBridgeFree ?? false)
 			{
 				requirements |= SCRequirements.Bridge;

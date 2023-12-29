@@ -742,6 +742,10 @@ namespace FF1Lib
 			{
 				requirements |= AccessRequirement.Lute;
 			}
+			if ((bool)victoryConditions.FreeRod)
+			{
+				requirements |= AccessRequirement.Rod;
+			}
 
 			changes = MapChange.None;
 			if (victoryConditions.IsBridgeFree ?? false)

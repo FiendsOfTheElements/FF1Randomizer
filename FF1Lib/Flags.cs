@@ -357,6 +357,7 @@ namespace FF1Lib
 		public bool? FreeShip { get; set; } = false;
 		public bool? FreeAirship { get; set; } = false;
 		public bool? FreeLute { get; set; } = false;
+		public bool? FreeRod { get; set; } = false;
 		public bool EnableCritNumberDisplay { get; set; } = false;
 		public bool? FreeCanal { get; set; } = false;
 		public bool? FreeCanoe { get; set; } = false;
@@ -744,7 +745,7 @@ namespace FF1Lib
 		public bool? IncentivizeCanoe => NPCItems & IncentivizeCanoeItem & !FreeCanoe & !DesertOfDeath;
 		public bool? IncentivizeLute => NPCItems & !FreeLute & IncentivizeMainItems;
 		public bool? IncentivizeShip => NPCItems & IncentivizeShipAndCanal & !IsShipFree & !NoOverworld;
-		public bool? IncentivizeRod => NPCItems & IncentivizeMainItems ;
+		public bool? IncentivizeRod => NPCItems & !FreeRod & IncentivizeMainItems ;
 		public bool? IncentivizeCube => NPCItems & IncentivizeMainItems;
 		public bool? IncentivizeFloater => !IsAirshipFree & !IsFloaterRemoved & IncentivizeAirship;
 		public bool? IncentivizePromotion => !FreeTail & !NoTail & IncentivizeTail;
