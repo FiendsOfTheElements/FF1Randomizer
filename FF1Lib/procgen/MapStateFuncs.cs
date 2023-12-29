@@ -963,12 +963,17 @@ namespace FF1Lib.Procgen
 	    this.OwnTilemap();
             this.OwnFeatures();
 
+	    List<byte> chestsToPlace = new (this.Chests);
+	    foreach (var i in preserveChests) {
+		chestsToPlace.Remove(i.Item2);
+	    }
+
 	    maps = new List<Map>(maps);
 	    maps[(int)mapId] = this.Tilemap;
 	    try {
 		await rom.shuffleChestLocations(this.rng, maps, new MapId[] { this.mapId },
 						preserveChests, null, 0x80, true, false,
-						this.Chests, this.Traps);
+						chestsToPlace, this.Traps);
 	    } catch (Exception) {
 		return new MapResult(false);
 	    }
@@ -1162,30 +1167,41 @@ namespace FF1Lib.Procgen
 		Console.WriteLine($"chest {c:X}");
 	    }
 
+	    var sanityError = new List<string>();
+
 	    this.Tilemap.Flood((this.Entrance.X, this.Entrance.Y), (MapElement me) => {
-		if (this.Chests.Contains(me.Value)) {
-		    Console.WriteLine($"removing {me.Value:X}");
-		    this.Chests.Remove(me.Value);
+		var tileProp = this.tileSet.TileProperties[me.Value];
+
+		if (tileProp.TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE)) {
+		    if (this.Chests.Contains(me.Value)) {
+			this.Chests.Remove(me.Value);
+		    } else {
+			sanityError.Add($"!!! failed sanity check, unexpected or duplicate chest {me.Value:X} at {me.X}, {me.Y}");
+		    }
 		}
+
 		if (this.Stairs.Contains(me.Value)) {
 		    this.Stairs.Remove(me.Value);
 		}
 
-		if ((this.tileSet.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_SPEC_DOOR) == TilePropFunc.TP_SPEC_DOOR) {
+		if ((tileProp.TilePropFunc & TilePropFunc.TP_SPEC_DOOR) == TilePropFunc.TP_SPEC_DOOR) {
 		    return true;
 		}
 
-		if ((this.tileSet.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_SPEC_CLOSEROOM) == TilePropFunc.TP_SPEC_CLOSEROOM) {
+		if ((tileProp.TilePropFunc & TilePropFunc.TP_SPEC_CLOSEROOM) == TilePropFunc.TP_SPEC_CLOSEROOM) {
 		    return true;
 		}
 
-		if ((this.tileSet.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) == TilePropFunc.TP_NOMOVE) {
+		if ((tileProp.TilePropFunc & TilePropFunc.TP_NOMOVE) == TilePropFunc.TP_NOMOVE) {
 		    return false;
 		}
 		return true;
 	    });
 
-	    if (this.Chests.Count > 0 || this.Stairs.Count > 0) {
+	    if (this.Chests.Count > 0 || this.Stairs.Count > 0 || sanityError.Count > 0) {
+		foreach (var se in sanityError) {
+		    Console.WriteLine(se);
+		}
 		Console.WriteLine($"!!! failed sanity check, unreachable chests: {this.Chests.Count} stairs: {this.Stairs.Count}");
 		return new MapResult(false);
 	    }
