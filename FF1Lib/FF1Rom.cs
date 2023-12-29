@@ -211,7 +211,7 @@ public partial class FF1Rom : NesRom
 		ExpandNormalTeleporters();
 		SeparateUnrunnables();
 		DrawCanoeUnderBridge();
-		
+
 
 		LoadSharedDataTables();
 
@@ -295,7 +295,7 @@ public partial class FF1Rom : NesRom
 		}
 
 		if (flags.ProcgenEarth) {
-		    this.LoadPregenDungeon(rng, maps, teleporters, overworldMap, npcdata, "earth256.zip");
+		    this.LoadPregenDungeon(rng, maps, teleporters, overworldMap, npcdata, "earthcaves.zip");
 
 		    // Here's the code to generate from scratch, but it takes too long in the browser.
 		    // So we get one from the pregen pack above.
