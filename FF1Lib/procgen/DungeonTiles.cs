@@ -120,6 +120,7 @@ namespace FF1Lib.Procgen
 	public PgTileFilter earth_cave_extend_walls;
 	public PgTileFilter earth_cave_walls4;
 	public PgTileFilter earth_cave_walls5;
+	public PgTileFilter earth_cave_wall_gaps;
 	public PgTileFilter cave_edges;
 	public PgTileFilter room_tops;
 
@@ -745,6 +746,28 @@ namespace FF1Lib.Procgen
 
 		}, allTiles, null, null);
 
+	    this.earth_cave_wall_gaps = new PgTileFilter(
+		new Rule[] {
+		    // N wall gap
+		    new Rule(new byte[3,3] {
+			{STAR,              STAR,        STAR},
+			{CAVE_WALL_N, CAVE_BLANK, CAVE_WALL_N},
+			{CAVE_FLOOR,  CAVE_BLANK, CAVE_FLOOR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR,              STAR,        STAR},
+			{CAVE_ROOM_FLOOR, CAVE_BLANK, CAVE_WALL_N},
+			{CAVE_FLOOR,  CAVE_BLANK, CAVE_FLOOR}},
+			CAVE_WALL_N),
+
+		    new Rule(new byte[3,3] {
+			{STAR,              STAR,        STAR},
+			{CAVE_WALL_N, CAVE_BLANK, CAVE_ROOM_FLOOR},
+			{CAVE_FLOOR,  CAVE_BLANK, CAVE_FLOOR}},
+			CAVE_WALL_N),
+
+		}, allTiles, null, null);
 
 	    this.earth_cave_walls5 = new PgTileFilter(
 		new Rule[] {
@@ -763,17 +786,16 @@ namespace FF1Lib.Procgen
 			{STAR, CAVE_WALL_N, STAR}},
 			CAVE_WALL_W),
 
-		    // N wall gap
+		    // N wall intersect
 		    new Rule(new byte[3,3] {
 			{STAR,              STAR,         STAR},
-			{CAVE_WALL_N, CAVE_BLANK,  CAVE_WALL_N},
+			{CAVE_WALL_N, CAVE_WALL_N,  CAVE_WALL_N},
 			{STAR,        CAVE_WALL_E, STAR}},
 			CAVE_WALL_NE),
 
-		    // N wall gap
 		    new Rule(new byte[3,3] {
 			{STAR,              STAR,         STAR},
-			{CAVE_WALL_N, CAVE_BLANK,  CAVE_WALL_N},
+			{CAVE_WALL_N, CAVE_WALL_N,  CAVE_WALL_N},
 			{STAR,        CAVE_WALL_W, STAR}},
 			CAVE_WALL_NW),
 		}, allTiles, null, null);
