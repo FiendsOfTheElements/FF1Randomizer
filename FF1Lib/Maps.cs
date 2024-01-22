@@ -1,5 +1,8 @@
 ﻿using FF1Lib.Procgen;
 using FF1Lib.Sanity;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.IO.Compression;
 
 namespace FF1Lib
 {
@@ -271,13 +274,25 @@ namespace FF1Lib
 		Maze
 	}
 
+	[JsonObject(MemberSerialization.OptIn)]
 	public struct NPC
 	{
+	    [JsonProperty]
+	    [JsonConverter(typeof(StringEnumConverter))]
 		public ObjectId ObjectId;
+
+	    [JsonProperty]
 		public int Index;
+
+	    [JsonProperty]
 		public (int x, int y) Coord;
+
+	    [JsonProperty]
 		public bool InRoom;
+
+	    [JsonProperty]
 		public bool Stationary;
+	        public FF1Rom.generalNPC General;
 	}
 
 	public partial class FF1Rom : NesRom
@@ -878,9 +893,9 @@ namespace FF1Lib
 			}
 		}
 
-		public void MoveNpc(MapId mapId, NPC npc)
+		public void SetNpc(MapId mapId, NPC npc)
 		{
-			MoveNpc(mapId, npc.Index, npc.Coord.x, npc.Coord.y, npc.InRoom, npc.Stationary);
+		    SetNpc(mapId, npc.Index, npc.ObjectId, npc.Coord.x, npc.Coord.y, npc.InRoom, npc.Stationary);
 		}
 
 		public void MoveNpc(MapId mapId, int mapNpcIndex, int x, int y, bool inRoom, bool stationary)
@@ -968,6 +983,27 @@ namespace FF1Lib
 
 			return tempNPC;
 		}
+
+		public List<NPC> GetNpcs(MapId mid, NPCdata npcdata)
+		{
+		    var tempNPC = new NPC();
+		    var npcs = new List<NPC>();
+		    for (int i = 0; i < MapSpriteCount; i++)
+		    {
+			int offset = MapSpriteOffset + ((byte)mid * MapSpriteCount + i) * MapSpriteSize;
+
+			tempNPC.ObjectId = (ObjectId)Data[offset];
+			tempNPC.Index = i;
+			tempNPC.Coord = (Data[offset + 1] & 0x3F, Data[offset + 2]);
+			tempNPC.InRoom = (Data[offset + 1] & 0x80) > 0;
+			tempNPC.Stationary = (Data[offset + 1] & 0x40) > 0;
+			tempNPC.General = npcdata.GetNPC(tempNPC.ObjectId);
+
+			npcs.Add(tempNPC);
+		    }
+		    return npcs;
+		}
+
 		public List<Map> ReadMaps()
 		{
 			var pointers = Get(MapPointerOffset, MapCount * MapPointerSize).ToUShorts();
@@ -1164,7 +1200,7 @@ namespace FF1Lib
 			}
 		}
 
-		class Room {
+		public class Room {
 		    public MapId mapId;
 		    public MapElement start;
 		    public List<MapElement> floor = new();
@@ -1216,20 +1252,13 @@ namespace FF1Lib
 		    }
 		}
 
-		public async Task shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests,
-							NPCdata npcdata, byte randomEncounter, bool spreadPlacement, bool markSpikeTiles) {
-		    // For a tileset, I need to determine:
-		    //
-		    // * doors and locked doors
-		    // * floor tiles with the move bit that are empty.
-
+		public static void FindRoomTiles(TileSet tileset,
+					    List<byte> floorTiles,
+					    List<byte> spikeTiles,
+					    List<byte> battleTiles,
+					    byte randomEncounter)
+		{
 		    bool debug = false;
-
-		    if (debug) Console.WriteLine($"\nTiles for {ids[0]}");
-
-		    bool keepLinkedChests = false;
-
-		    var tileset = new TileSet(this, GetMapTilesetIndex(ids[0]));
 
 		    List<byte> blankPPUTiles = new();
 
@@ -1237,7 +1266,7 @@ namespace FF1Lib
 			// Go through the pattern table, and find the CHR which
 			// is entirely color 1.
 
-			var chr = Get(TILESETPATTERNTABLE_OFFSET + (GetMapTilesetIndex(ids[0]) << 11) + (i * 16), 16);
+			var chr = tileset.Rom.Get(TILESETPATTERNTABLE_OFFSET + (tileset.Index << 11) + (i * 16), 16);
 			var dec = DecodePPU(chr);
 
 			bool blank = true;
@@ -1252,16 +1281,6 @@ namespace FF1Lib
 			    blankPPUTiles.Add(i);
 			}
 		    }
-		    foreach(var b in blankPPUTiles) {
-			if (debug) Console.WriteLine($"blank chr {b:X}");
-		    }
-
-		    // Go through the all the map tiles and find ones
-		    // with certain properties.
-		    List<byte> doorTiles = new() {0x36, 0x37, 0x3B};
-		    List<byte> floorTiles = new();
-		    List<byte> spikeTiles = new();
-		    List<byte> battleTiles = new();
 
 		    for (byte i = 0; i < 128; i++) {
 			if ((tileset.TileProperties[i].TilePropFunc & TilePropFunc.TP_NOMOVE) != 0) {
@@ -1304,14 +1323,75 @@ namespace FF1Lib
 			if (debug) Console.WriteLine($"floor tile {i:X}");
 		    }
 
+		}
+
+		public static void PlaceSpikeTiles(MT19337 rng,
+						   List<byte> spikePool,
+						   List<MapElement> placedChests,
+						   List<byte> floorTiles,
+						   List<byte> battleTiles,
+						   List<Room> roomsToSanityCheck)
+		{
+		    bool debug = false;
+
+		    var directions = new Direction[] { Direction.Down, Direction.Down, Direction.Down,
+			Direction.Right, Direction.Left, Direction.Up };
+
+		    int tries = spikePool.Count*4;
+		    while (spikePool.Count > 0 && tries > 0) {
+			var pc = placedChests.PickRandom(rng);
+			var dir = directions.PickRandom(rng);
+			var me = pc.Neighbor(dir);
+			if (floorTiles.Contains(me.Value) || battleTiles.Contains(me.Value)) {
+			    me.Value = spikePool[spikePool.Count-1];
+			    if (debug) me.Value = 0xD;
+			    spikePool.RemoveAt(spikePool.Count-1);
+			}
+			var roll = rng.Between(1, 20);
+			if (roll == 1 && spikePool.Count > 0 && roomsToSanityCheck.Count > 0) {
+			    var rm = roomsToSanityCheck.SpliceRandom(rng);
+			    rm.start.Value = spikePool[spikePool.Count-1];
+			    if (debug) rm.start.Value = 0xD;
+			    spikePool.RemoveAt(spikePool.Count-1);
+			}
+			tries--;
+		    }
+
+		}
+
+		public async Task shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests,
+							NPCdata npcdata, byte randomEncounter, bool spreadPlacement, bool markSpikeTiles,
+							List<byte> chestPool, List<byte> spikePool) {
+		    // For a tileset, I need to determine:
+		    //
+		    // * doors and locked doors
+		    // * floor tiles with the move bit that are empty.
+
+		    bool debug = false;
+
+		    if (debug) Console.WriteLine($"\nTiles for {ids[0]}");
+
+		    bool keepLinkedChests = false;
+
+		    var tileset = new TileSet(this, GetMapTilesetIndex(ids[0]));
+
+		    // Go through the all the map tiles and find ones
+		    // with certain properties.
+		    List<byte> doorTiles = new() {0x36, 0x37, 0x3B};
+		    List<byte> floorTiles = new();
+		    List<byte> spikeTiles = new();
+		    List<byte> battleTiles = new();
+
+		    FindRoomTiles(tileset, floorTiles, spikeTiles, battleTiles, randomEncounter);
+
 		    byte vanillaTeleporters = 0x41;
 		    List<TeleporterSM> teleporters = new();
 		    for (int i = 0; i < vanillaTeleporters; i++) {
 			teleporters.Add(new TeleporterSM(this, i));
 		    }
 
-		    List<byte> chestPool = new();
-		    List<byte> spikePool = new();
+		    if (chestPool == null) chestPool = new();
+		    if (spikePool == null) spikePool = new();
 
 		    // To relocate chests in a dungeon (a group of maps)
 		    //
@@ -1395,8 +1475,10 @@ namespace FF1Lib
 				    var npc = GetNpc(mapId, i);
 				    if (npc.Coord == me.Coord) {
 					hasNpc = true;
-					hasKillableNpc = (npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_fight ||
-							  npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_kill);
+					if (npcdata != null) {
+					    hasKillableNpc = (npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_fight ||
+							      npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_kill);
+					}
 					room.npcs.Add(me);
 					if (hasKillableNpc) {
 					    room.killablenpcs.Add(me);
@@ -1544,13 +1626,21 @@ namespace FF1Lib
 
 			if (debug) Console.WriteLine($"rooms {rooms.Count}");
 
+			List<Room> pendingRooms = new (workingrooms);
+
 			foreach (var c in chestPool) {
 			    (Room,MapElement) me;
 			    if (spreadPlacement) {
 				Room r;
-				do {
-				    r = workingrooms.PickRandom(rng);
-				} while (r.floor.Count == 0);
+				if (pendingRooms.Count > 0) {
+				    // Make sure every room gets a chest
+				    r = pendingRooms.SpliceRandom(rng);
+				} else {
+				    // Every room has a chest so allocate the remaining chests.
+				    do {
+					r = workingrooms.PickRandom(rng);
+				    } while (r.floor.Count == 0);
+				}
 				me = (r, r.floor.SpliceRandom(rng));
 			    } else {
 				// full random
@@ -1563,6 +1653,8 @@ namespace FF1Lib
 				roomsToSanityCheck.Add(me.Item1);
 			    }
 			}
+
+			if (debug) Console.WriteLine($"did chest placement");
 
 			foreach (var r in roomsToSanityCheck) {
 			    r.start.Map.Flood((r.start.X, r.start.Y), (MapElement me) => {
@@ -1609,10 +1701,10 @@ namespace FF1Lib
 			return;
 		    }
 
-		    if (spikePool.Count > placedChests.Count)  {
+		    /*if (spikePool.Count > placedChests.Count)  {
 			Console.WriteLine($"WARNING spikePool.Count > placedChests.Count something is wrong");
 			return;
-		    }
+			}*/
 
 		    if (markSpikeTiles) {
 			var ts = GetMapTilesetIndex(ids[0]);
@@ -1622,25 +1714,10 @@ namespace FF1Lib
 			tileset.TopRightTiles.StoreTable();
 		    }
 
-		    var directions = new Direction[] { Direction.Down, Direction.Down, Direction.Down,
-			Direction.Right, Direction.Left, Direction.Up };
-		    while (spikePool.Count > 0) {
-			var pc = placedChests.PickRandom(rng);
-			var dir = directions.PickRandom(rng);
-			var me = pc.Item2.Neighbor(dir);
-			if (floorTiles.Contains(me.Value) || battleTiles.Contains(me.Value)) {
-			    me.Value = spikePool[spikePool.Count-1];
-			    //me.Value = 0xD;
-			    spikePool.RemoveAt(spikePool.Count-1);
-			}
-			var roll = rng.Between(1, 20);
-			if (roll == 1 && spikePool.Count > 0 && roomsToSanityCheck.Count > 0) {
-			    var rm = roomsToSanityCheck.SpliceRandom(rng);
-			    rm.start.Value = spikePool[spikePool.Count-1];
-			    //rm.start.Value = 0xD;
-			    spikePool.RemoveAt(spikePool.Count-1);
-			}
-		    }
+		    PlaceSpikeTiles(rng, spikePool,
+				    placedChests.Select((pc) => pc.Item2).ToList(),
+				    floorTiles,
+				    battleTiles, roomsToSanityCheck);
 
 		    //
 		    // * Place each chest tile randomly on a room floor tiles
@@ -1703,7 +1780,7 @@ namespace FF1Lib
 			dungeons.Add(new MapId[] { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5 });
 		    }
 
-		    
+
 
 			bool addvolcano = true;
 			if ((bool)flags.IncentivizeVolcano && flags.VolcanoIncentivePlacementType == IncentivePlacementTypeVolcano.Vanilla) {
@@ -1793,14 +1870,64 @@ namespace FF1Lib
 		    foreach (MapId[] b in dungeons) {
 			await shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
 					      (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
-						    false, flags.RelocateChestsTrapIndicator);
+						    false, flags.RelocateChestsTrapIndicator,
+						    null, null);
 		    }
 
 		    foreach (MapId[] b in spreadPlacementDungeons) {
 			await shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
 					      (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
-						    true, flags.RelocateChestsTrapIndicator);
+						    true, flags.RelocateChestsTrapIndicator,
+						    null, null);
 		    }
+		}
+
+		public void ImportCustomMap(List<Map> maps, TeleportShuffle teleporters,
+					    OverworldMap overworldMap, NPCdata npcdata,
+					    CompleteMap newmap) {
+		    maps[(int)newmap.MapId] = newmap.Map;
+		    foreach (var dest in newmap.MapDestinations) {
+			// Update the teleport information, this
+			// consists of the corresponding map location
+			// (this is a walkable area of the map,
+			// because some dungeons have multiple parts
+			// that are actually on the same map), the map
+			// index, where the teleport puts the player,
+			// and what teleports (but not warps) are
+			// accessible in this map location.
+			teleporters.Set(dest.Value.Destination.ToString(), dest.Value);
+			if (dest.Key != TeleportIndex.Overworld) {
+			    overworldMap.PutStandardTeleport(dest.Key, dest.Value, OverworldTeleportIndex.None);
+			}
+		    }
+		    foreach (var kv in newmap.OverworldEntrances) {
+			overworldMap.PutOverworldTeleport(kv.Key, kv.Value);
+		    }
+		    foreach (var npc in newmap.NPCs) {
+			this.SetNpc(newmap.MapId, npc);
+		    }
+		}
+
+		void LoadPregenDungeon(MT19337 rng,
+				       List<Map> maps, TeleportShuffle teleporters,
+				       OverworldMap overworldMap, NPCdata npcdata,
+				       string name) {
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith(name));
+
+			using Stream stream = assembly.GetManifestResourceStream(resourcePath);
+
+			var archive = new ZipArchive(stream);
+
+			var maplist = archive.Entries.Where(e => e.Name.EndsWith(".json")).Select(e => e.Name).ToList();
+
+			var map = maplist.PickRandom(rng);
+
+			var loadedmaps = CompleteMap.LoadJson(archive.GetEntry(map).Open());
+
+			foreach (var m in loadedmaps) {
+			    ImportCustomMap(maps, teleporters, overworldMap, npcdata, m);
+			}
 		}
 	}
 }

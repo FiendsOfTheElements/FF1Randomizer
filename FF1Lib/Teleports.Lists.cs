@@ -45,12 +45,12 @@
 			}
 		}
 
-		private TeleportDestination Get(string name)
+		public TeleportDestination Get(string name)
 		{
 			return (TeleportDestination)typeof(TeleportShuffle).GetField(name).GetValue(this);
 		}
 
-		private void Set(string name, TeleportDestination tele)
+		public void Set(string name, TeleportDestination tele)
 		{
 			typeof(TeleportShuffle).GetField(name).SetValue(this, tele);
 		}

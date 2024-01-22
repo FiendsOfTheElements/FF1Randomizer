@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace FF1Lib
 {
@@ -199,7 +201,7 @@ namespace FF1Lib
 			}
 		}
 
-		public class generalNPC
+		public struct generalNPC
 		{
 			public byte sprite;
 			public Blob oldtalkroutine;
@@ -223,7 +225,9 @@ namespace FF1Lib
 			}
 			public void SetSprite(ObjectId targetobject, byte targetsprite)
 			{
-				_npcs[(int)targetobject].sprite = targetsprite;
+			    var tmp = _npcs[(int)targetobject];
+				tmp.sprite = targetsprite;
+				_npcs[(int)targetobject] = tmp;
 			}
 			public Blob GetOldRoutine(ObjectId targetobject)
 			{
@@ -231,7 +235,9 @@ namespace FF1Lib
 			}
 			public void SetRoutine(ObjectId targetobject, newTalkRoutines targettalkroutine)
 			{
-				_npcs[(int)targetobject].talkroutine = targettalkroutine;
+			    var tmp = _npcs[(int)targetobject];
+			    tmp.talkroutine = targettalkroutine;
+			    _npcs[(int)targetobject] = tmp;
 			}
 			public newTalkRoutines GetRoutine(ObjectId targetobject)
 			{
@@ -245,6 +251,14 @@ namespace FF1Lib
 			{
 				return _npcs.Count;
 			}
+		    public generalNPC GetNPC(ObjectId targetobject) {
+			return _npcs[(int)targetobject];
+
+		    }
+		    public void SetNPC(ObjectId targetobject, generalNPC npc) {
+			_npcs[(int)targetobject] = npc;
+
+		    }
 			public void UpdateItemPlacement(List<IRewardSource> itemplacement)
 			{
 				if (itemplacement == null) // Return if vanilla placement

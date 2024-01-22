@@ -28,7 +28,7 @@ namespace FF1Lib
 			MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5,
 			MapId.Waterfall,
 			MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5
-			
+
 		};
 
 		List<MapId> ValidMaps_Vertical = new List<MapId>
@@ -37,7 +37,7 @@ namespace FF1Lib
 			MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB4, MapId.EarthCaveB3, MapId.EarthCaveB5,
 			MapId.MarshCaveB1, MapId.MarshCaveB2, MapId.MarshCaveB3,
 			MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3,
-			MapId.MirageTower1F, MapId.MirageTower2F, 
+			MapId.MirageTower1F, MapId.MirageTower2F,
 			MapId.SkyPalace1F, MapId.SkyPalace2F, MapId.SkyPalace3F,
 			MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5,
 			MapId.Waterfall,
@@ -78,7 +78,7 @@ namespace FF1Lib
 				stream.Close();
 			}
 			*/
-			
+
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith("vfmaps.zip"));
 
@@ -94,7 +94,7 @@ namespace FF1Lib
 
 				using var stream2 = entry.Open();
 				map.Load(stream2);
-			}			
+			}
 
 			return mapsToFlipVertically;
 		}
@@ -131,7 +131,7 @@ namespace FF1Lib
 					{
 						var npc = rom.GetNpc(mapId, 0);
 						npc.Coord.y = npc.Coord.y + 2;
-						rom.MoveNpc(mapId, npc);
+						rom.SetNpc(mapId, npc);
 					}
 
 					if (mapId == MapId.GurguVolcanoB4)
@@ -176,7 +176,7 @@ namespace FF1Lib
 
 			var npc = rom.GetNpc(MapId.GurguVolcanoB5, 0);
 			npc.Coord.y = npc.Coord.y - 0x2E;
-			rom.MoveNpc(MapId.GurguVolcanoB5, npc);
+			rom.SetNpc(MapId.GurguVolcanoB5, npc);
 		}
 
 		private void FlipVolcanoB2(MapId mapId, Map map)
@@ -251,7 +251,7 @@ namespace FF1Lib
 				if (tempNpc.Coord != (0, 0))
 				{
 					tempNpc.Coord.y = 64 - tempNpc.Coord.y - 1 + (tempNpc.InRoom ? -1 : 0);
-					rom.MoveNpc(mapId, tempNpc);
+					rom.SetNpc(mapId, tempNpc);
 				}
 			}
 		}
@@ -290,7 +290,7 @@ namespace FF1Lib
 			for (int y = yend; y <= ybegin; y++)
 			{
 				var t = map[y, x];
- 
+
 				if (t >= 6 && t <= 8) t = (byte)(t - 6);
 				else if (t >= 0 && t <= 2) t = (byte)(t + 6);
 
@@ -335,7 +335,7 @@ namespace FF1Lib
 
 					if (map[y, x] == 52 && map[y + 1, x] == 56) map[y, x] = 48;
 					if (map[y, x] == 53 && map[y + 1, x] == 56) map[y, x] = 48;
-				}			
+				}
 		}
 
 		private void FixFullRoomMap(MapId mapId, Map map)
@@ -478,7 +478,7 @@ namespace FF1Lib
 					if (tempNpc.Coord != (0, 0))
 					{
 						tempNpc.Coord.x = 64 - tempNpc.Coord.x - 1;
-						rom.MoveNpc(map, tempNpc);
+						rom.SetNpc(map, tempNpc);
 					}
 				}
 			}

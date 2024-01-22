@@ -61,7 +61,7 @@ namespace FF1Lib
 			return ppuformat;
 		}
 
-		public byte[] DecodePPU(byte[] ppuformat)
+		public static byte[] DecodePPU(byte[] ppuformat)
 		{
 			// Read the 16-byte, dual-plane encoding used by the NES PPU
 			// and return an array of 64 bytes with a ordinary linear
@@ -261,8 +261,6 @@ namespace FF1Lib
 
 		public async Task ImportMapman(Image<Rgba32> image, int cur_class, int top, int left, Rgba32[] NESpalette)
 		{
-			Console.WriteLine("A");
-
 			// the mapman head tiles have a different palette
 			// than the body tiles.
 			var headColors = new List<Rgba32>();
@@ -278,7 +276,6 @@ namespace FF1Lib
 					}
 				}
 			}
-			Console.WriteLine("B");
 
 			List<byte> headPal;
 			Dictionary<Rgba32, byte> headIndex;
@@ -296,7 +293,6 @@ namespace FF1Lib
 				}
 				return;
 			}
-			Console.WriteLine("C");
 
 			var bodyColors = new List<Rgba32>();
 			firstUnique = new Dictionary<Rgba32, int>();
@@ -311,7 +307,6 @@ namespace FF1Lib
 					}
 				}
 			}
-			Console.WriteLine("D");
 
 			List<byte> bodyPal;
 			Dictionary<Rgba32, byte> bodyIndex;
@@ -331,8 +326,6 @@ namespace FF1Lib
 				return;
 			}
 
-			Console.WriteLine("E");
-
 			for (int mapmanPos = 0; mapmanPos < 4; mapmanPos++)
 			{
 				var newleft = left + (mapmanPos * 16);
@@ -349,15 +342,12 @@ namespace FF1Lib
 				Put(MAPMANGRAPHIC_OFFSET + (cur_class << 8) + (mapmanPos * 16 * 4) + (16 * 3), EncodeForPPU(bodyTileRight));
 			}
 
-			Console.WriteLine("F" + cur_class);
 			int offsetIntoLut = cur_class << 3;
 			// Write the palettes into a new LUT in bank $0F
 			// Will be read using the code below.
 			//Console.WriteLine($"writing to {lut_MapmanPalettes + offsetIntoLut} {lut_MapmanPalettes + offsetIntoLut + 4}");
 			PutInBank(0x0F, lut_MapmanPalettes + offsetIntoLut, headPal.ToArray());
 			PutInBank(0x0F, lut_MapmanPalettes + offsetIntoLut + 4, bodyPal.ToArray());
-
-			Console.WriteLine("G");
 		}
 
 		public async Task<int> ImportBattleSprite(Image<Rgba32> image, int cur_class, int top, int left, Rgba32[] NESpalette, List<List<byte>> battlePals)

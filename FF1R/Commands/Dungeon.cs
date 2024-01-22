@@ -63,6 +63,16 @@ namespace FF1R.Commands
 		}
 		output.Save(name);
 		Console.WriteLine($"Wrote {name}");
+
+		name = $"dungeon{i}-npcs.json";
+		var npcdata = new FF1Rom.NPCdata(rom);
+		var npcs = rom.GetNpcs((FF1Lib.MapId)i, npcdata);
+		using (StreamWriter file = File.CreateText(name)) {
+		    JsonSerializer serializer = new JsonSerializer();
+		    serializer.Formatting = Formatting.Indented;
+		    serializer.Serialize(file, npcs);
+		}
+		Console.WriteLine($"Wrote {name}");
 	    }
 
 	    return 0;
@@ -126,6 +136,104 @@ namespace FF1R.Commands
 		output.Save(name);
 		Console.WriteLine($"Wrote {name}");
 	    }
+
+	    return 0;
+	}
+    }
+
+    [Command("createdungeon", Description = "Createdungeon")]
+    class CreateDungeon
+    {
+	[Argument(0, Description = "Final Fantasy 'Improved Vanilla' ROM input")]
+	[FileExists]
+	public string RomPath { get; }
+
+	[Argument(1, Description = "Dungeon to create")]
+	public string Map { get; }
+
+	[Option("-s")]
+	public int Seed { get; } = 0;
+
+	[Option("-S")]
+	public string SeedFile { get; } = null;
+
+	[Option("-r")]
+	public bool DoRender { get; }
+
+	[Option("-p")]
+	public int Pack { get; } = 1;
+
+	async Task Progress(string message="", int addMax=0) {
+	    await Task.Yield();
+	}
+
+	int OnExecute(IConsole console)
+	{
+	    if (Seed == 0 && this.SeedFile == null) {
+		Console.WriteLine("Missing seed");
+		return 1;
+	    }
+
+	    var rom = new FF1Rom(RomPath);
+	    rom.LoadSharedDataTables();
+
+	    var maps = rom.ReadMaps();
+
+	    FF1Lib.MapId mapid = Enum.Parse<MapId>(Map);
+
+	    var rng = new MT19337((uint)Seed);
+
+	    var npcdata = new FF1Rom.NPCdata(rom);
+
+	    var numberOfMapsToGenerate = this.Pack;
+	    List<int> seeds = null;
+	    if (this.SeedFile != null) {
+		seeds = new List<int>();
+		foreach (string line in System.IO.File.ReadLines(this.SeedFile))
+		{
+		    seeds.Add(Int32.Parse(line));
+		}
+		numberOfMapsToGenerate = seeds.Count;
+	    }
+
+	    Parallel.For(0, numberOfMapsToGenerate, i =>
+	    {
+		int effectiveSeed;
+		if (seeds == null) {
+		    effectiveSeed = this.Seed + i;
+		} else {
+		    effectiveSeed = seeds[i];
+		}
+		var rng = new MT19337((uint)effectiveSeed);
+
+		Image<Rgba32> output;
+		string name;
+
+		var mapsCopy = new List<Map>(maps);
+		var replacementMaps = Task.Run<List<FF1Lib.Procgen.CompleteMap>>(async () => await FF1Lib.Procgen.NewDungeon.GenerateNewDungeon(rng, rom, mapid,
+																		mapsCopy, npcdata, this.Progress)).Result;
+
+		foreach (var replacementMap in replacementMaps) {
+		    mapsCopy[(int)replacementMap.MapId] = replacementMap.Map;
+		    if (DoRender) {
+			output = rom.RenderMap(mapsCopy, replacementMap.MapId, false);
+			name = $"{effectiveSeed,8:X8}-dungeonmap{(int)replacementMap.MapId}-outside.png";
+			output.Save(name);
+			Console.WriteLine($"Wrote {name}");
+
+			output = rom.RenderMap(mapsCopy, replacementMap.MapId, true);
+			name = $"{effectiveSeed,8:X8}-dungeonmap{(int)replacementMap.MapId}-inside.png";
+			output.Save(name);
+			Console.WriteLine($"Wrote {name}");
+		    }
+		}
+
+		name = $"{effectiveSeed,8:X8}.json";
+		using (StreamWriter file = File.CreateText(name)) {
+		    FF1Lib.Procgen.CompleteMap.SaveJson(replacementMaps, file);
+		}
+		Console.WriteLine($"Wrote {name}");
+	    });
 
 	    return 0;
 	}

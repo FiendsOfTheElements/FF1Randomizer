@@ -6,12 +6,21 @@ namespace FF1Lib.Procgen
 	public Rule(byte[,] pattern, byte replacement) {
 	    this.pattern = pattern;
 	    this.replacement = replacement;
+	    this.rx = 0;
+	    this.ry = 0;
+	}
+	public Rule(byte[,] pattern, byte replacement, int rx, int ry) {
+	    this.pattern = pattern;
+	    this.replacement = replacement;
+	    this.rx = rx;
+	    this.ry = ry;
 	}
 	public byte[,] pattern;
 	public byte replacement;
+	public int rx, ry;
     }
 
-    public class OwTileFilter {
+    public class PgTileFilter {
 	const byte STAR = 0x80;
 	const byte MATCH = 0x81;
 	const byte CAVE = 0x82;
@@ -26,7 +35,7 @@ namespace FF1Lib.Procgen
 	Dictionary<byte, int> regionTypeMap;
 	byte[][] regionTypeList;
 
-	public OwTileFilter(Rule[] rules,
+	public PgTileFilter(Rule[] rules,
 		     HashSet<byte> starTiles,
 		     HashSet<byte> matchTiles,
 		     HashSet<byte> caveTiles) {
@@ -37,7 +46,7 @@ namespace FF1Lib.Procgen
 		this.matcherFunc = 0;
 	}
 
-		public OwTileFilter(byte[][] regionTypeList, Dictionary<byte, int> regionTypeMap) {
+		public PgTileFilter(byte[][] regionTypeList, Dictionary<byte, int> regionTypeMap) {
 	    this.rules = null;
 	    this.starTiles = null;
 	    this.matchTiles = null;
@@ -47,11 +56,15 @@ namespace FF1Lib.Procgen
 		this.matcherFunc = 1;
 	}
 
-	byte CheckRule(byte[,] tilemap, Rule rule, int x, int y) {
+	byte CheckRule(byte[,] tilemap, Rule rule, int x, int y, int xmax, int ymax) {
+	    x -= rule.rx;
+	    y -= rule.ry;
 	    for (int j = 0; j < 3; j++) {
 		for (int i = 0; i < 3; i++) {
 		    var ruletile = rule.pattern[j,i];
-		    var checktile = tilemap[y+(j-1),x+(i-1)];
+		    int ty = ((y+(j-1))%ymax + ymax) % ymax;
+		    int tx = ((x+(i-1))%xmax + xmax) % xmax;
+		    var checktile = tilemap[ty, tx];
 		    if (!((checktile == ruletile) ||
 			  (ruletile == STAR && starTiles.Contains(checktile)) ||
 			  (ruletile == MATCH && matchTiles.Contains(checktile)) ||
@@ -99,24 +112,19 @@ namespace FF1Lib.Procgen
 	}
 
 	public byte[,] ApplyFilter(byte[,] tilemap, bool repeat) {
-	    byte[,] newtilemap = new byte[OverworldState.MAPSIZE,OverworldState.MAPSIZE];
+	    byte[,] newtilemap = new byte[tilemap.GetLength(0),tilemap.GetLength(1)];
 
 	    bool anyChanged;
 	    do {
 		anyChanged = false;
 
-		for (int y = 0; y < OverworldState.MAPSIZE; y++) {
-		    for (int x = 0; x < OverworldState.MAPSIZE; x++) {
+		for (int y = 0; y < tilemap.GetLength(0); y++) {
+		    for (int x = 0; x < tilemap.GetLength(1); x++) {
 			byte rep = tilemap[y,x];
-
-			if (y == 0 || y == (OverworldState.MAPSIZE-1) || x == 0 || x == (OverworldState.MAPSIZE-1)) {
-			    newtilemap[y,x] = rep;
-			    continue;
-			}
 
 			if (matcherFunc == 0) {
 			    foreach (var r in rules) {
-				byte check = this.CheckRule(tilemap, r, x, y);
+				byte check = this.CheckRule(tilemap, r, x, y, tilemap.GetLength(1), tilemap.GetLength(0));
 				if (check != 0xFF) {
 				    rep = check;
 				    break;
@@ -139,6 +147,24 @@ namespace FF1Lib.Procgen
 	    } while (repeat && anyChanged);
 
 	    return tilemap;
+	}
+
+	public List<SCCoords> Candidates(byte[,] tilemap) {
+	    List<SCCoords> candidates = new();
+
+	    for (int y = 0; y < tilemap.GetLength(0); y++) {
+		for (int x = 0; x < tilemap.GetLength(1); x++) {
+		    foreach (var r in rules) {
+			byte check = this.CheckRule(tilemap, r, x, y, tilemap.GetLength(1), tilemap.GetLength(0));
+			if (check != 0xFF) {
+			    candidates.Add(new SCCoords(x, y));
+			    break;
+			}
+		    }
+		}
+	    }
+
+	    return candidates;
 	}
     }
 }

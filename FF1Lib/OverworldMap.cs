@@ -512,7 +512,9 @@ namespace FF1Lib
 			_rom[teleportYOffset + (byte)index] = teleport.CoordinateY;
 			_rom[teleportMapIndexOffset + (byte)index] = (byte)teleport.Index;
 
-			UpdatePalettes(overworldEntryPoint, teleport);
+			if (overworldEntryPoint != OverworldTeleportIndex.None) {
+			    UpdatePalettes(overworldEntryPoint, teleport);
+			}
 		}
 
 		public void UpdateOverworldOverride(MapLocation location, OverworldTeleportIndex owti)

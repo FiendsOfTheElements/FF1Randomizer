@@ -33,6 +33,7 @@
     <None Remove="maps\shuffled256.zip" />
     <None Remove="maps\unsafe256.zip" />
     <None Remove="maps\vfmaps.zip" />
+    <None Remove="maps\earth.zip" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,6 +58,7 @@
     <EmbeddedResource Include="maps\procgen3.json" />
     <EmbeddedResource Include="maps\shuffled256.zip" />
     <EmbeddedResource Include="maps\unsafe256.zip" />
+    <EmbeddedResource Include="maps\earthcaves.zip" />
 
     <EmbeddedResource Include="icons\weapon_icons.png" />
     <EmbeddedResource Include="icons\spell_icons.png" />

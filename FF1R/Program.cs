@@ -14,7 +14,8 @@
 	 Subcommand("dumpenemies", typeof(Commands.DumpEnemyStats)),
 	 Subcommand("importmagic", typeof(Commands.ImportMagicStats)),
 	 Subcommand("renderdungeon", typeof(Commands.RenderDungeon)),
-	Subcommand("relocatechests", typeof(Commands.RelocateDungeonChests))]
+	 Subcommand("relocatechests", typeof(Commands.RelocateDungeonChests)),
+	 Subcommand("createdungeon", typeof(Commands.CreateDungeon))]
 
 	class Program
 	{

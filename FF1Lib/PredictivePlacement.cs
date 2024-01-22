@@ -183,7 +183,7 @@ namespace FF1Lib
 					//It could be easily added, but a little randomnes can't hurt(or so I'm thinking)
 					//So it places the vendoritem upfront.
 					if ((bool)_flags.NPCItems)
-					{ 
+					{
 						var itemShopItem = SelectVendorItem(incentives.ToList(), nonincentives, treasurePool, incentiveLocationPool, rng);
 						placedItems.Add(new ItemShopSlot(_caravanItemLocation, itemShopItem));
 
@@ -503,6 +503,10 @@ namespace FF1Lib
 			if ((bool)_flags.FreeLute)
 			{
 				requirements |= SCRequirements.Lute;
+			}
+			if ((bool)_flags.FreeRod)
+			{
+				requirements |= SCRequirements.Rod;
 			}
 			if (_flags.IsBridgeFree ?? false)
 			{

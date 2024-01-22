@@ -211,7 +211,7 @@ public partial class FF1Rom : NesRom
 		ExpandNormalTeleporters();
 		SeparateUnrunnables();
 		DrawCanoeUnderBridge();
-		
+
 
 		LoadSharedDataTables();
 
@@ -284,6 +284,26 @@ public partial class FF1Rom : NesRom
 			teleporters.Waterfall.SetEntrance(waterfall.Entrance);
 			overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
 			maps[(int)MapId.Waterfall] = waterfall.Map;
+		}
+
+		if (flags.ResourcePack != null)
+		{
+		    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack)))
+		    {
+			this.LoadResourcePackMaps(stream, maps, teleporters, overworldMap, npcdata);
+		    }
+		}
+
+		if (flags.ProcgenEarth) {
+		    this.LoadPregenDungeon(rng, maps, teleporters, overworldMap, npcdata, "earthcaves.zip");
+
+		    // Here's the code to generate from scratch, but it takes too long in the browser.
+		    // So we get one from the pregen pack above.
+		    //
+		    // var newmaps = await NewDungeon.GenerateNewDungeon(rng, this, MapId.EarthCaveB1, maps, npcdata, this.Progress);
+		    // foreach (var newmap in newmaps) {
+		    //   this.ImportCustomMap(maps, teleporters, overworldMap, npcdata, newmap);
+		    //  }
 		}
 
 			if((bool)flags.OWDamageTiles || flags.DesertOfDeath)
@@ -545,6 +565,11 @@ public partial class FF1Rom : NesRom
 			EnableFreeTail();
 		}
 
+		if ((bool)flags.FreeRod)
+		{
+			EnableFreeRod();
+		}
+
 		if ((bool)flags.MapHallOfDragons) {
 		    BahamutB1Encounters(maps);
 		}
@@ -591,7 +616,7 @@ public partial class FF1Rom : NesRom
 
 		if (flags.SpeedHacks)
 		{
-			SpeedHacksMoveNpcs();
+			SpeedHacksMoveNpcs(!flags.ProcgenEarth);
 		}
 
 		if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
@@ -1242,7 +1267,7 @@ public partial class FF1Rom : NesRom
 		{
 		    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack)))
 			{
-				await this.LoadResourcePack(stream);
+			    await this.LoadResourcePack(stream);
 		    }
 		    preferences.ThirdBattlePalette = true;
 		}
@@ -1370,7 +1395,7 @@ public partial class FF1Rom : NesRom
 		ItemsText.Write(this, UnusedGoldItems);
 
 
-		if (flags.Spoilers) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, generatedPlacement, overworldMap, incentivesData, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
+		if (flags.Spoilers && sanityChecker != null) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, generatedPlacement, overworldMap, incentivesData, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
 
 		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 

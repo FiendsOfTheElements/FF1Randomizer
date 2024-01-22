@@ -84,9 +84,13 @@ namespace FF1Lib
 		public MemTable<byte> TopRightTiles;
 		public MemTable<byte> BottomLeftTiles;
 		public MemTable<byte> BottomRightTiles;
+	        public byte Index;
+	        public FF1Rom Rom;
 
 		public TileSet(FF1Rom _rom, byte idx)
 		{
+		        this.Index = idx;
+			this.Rom = _rom;
 			if (idx == OverworldIndex)
 			{
 				TileProperties = new MemTable<TileProp>(_rom, 0x0000, 128);
