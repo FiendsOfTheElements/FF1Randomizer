@@ -161,6 +161,7 @@ namespace FF1Lib
 		TitansTunnelEast,
 		TitansTunnelWest,
 		TitansTunnelRoom,
+		None
 	}
 	public enum ExitTeleportIndex : byte
 	{
@@ -283,7 +284,8 @@ namespace FF1Lib
 		Cardia5 = 28,
 		Cardia6 = 29,
 		Unused1 = 30,
-		Unused2 = 31
+		Unused2 = 31,
+		None = 0xff
 	}
 	public enum Backdrop : byte
 	{

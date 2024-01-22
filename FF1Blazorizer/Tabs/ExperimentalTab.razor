@@ -12,9 +12,10 @@
 			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="OpenChestsInOrder" @bind-Value="Flags.OpenChestsInOrder">Open Chests in Order</CheckBox>
             <CheckBox UpdateToolTip="@UpdateToolTipID" Id="SetRNG" @bind-Value="Flags.SetRNG">Set RNG</CheckBox>
 			<div class="checkbox-cell"></div>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="AirBoatCheckBox" @bind-Value="Flags.AirBoat">AirBoat</TriStateCheckBox>
 		</div>
 		<div class="col2">
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="AirBoatCheckBox" @bind-Value="Flags.AirBoat">AirBoat</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="procGenEarth" @bind-Value="Flags.ProcgenEarth">Generated Earth Cave</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 		</div>
 

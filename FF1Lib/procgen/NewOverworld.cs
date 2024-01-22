@@ -1,6 +1,7 @@
 using System.Reflection;
 using FF1Lib.Sanity;
 using System.Diagnostics;
+using OwGenerationTask = FF1Lib.Procgen.ProgenFramework.GenerationTaskType<FF1Lib.Procgen.OwResult>;
 
 namespace FF1Lib.Procgen
 {
@@ -163,6 +164,8 @@ namespace FF1Lib.Procgen
 		    // top edge
 		    var px = cp.X-1+x;
 		    var py = cp.Y-1;
+		    px = ((px%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
+		    py = ((py%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
 		    var pr = regionMap[py, px];
 		    if (! cutout.Adjacent.Contains(pr)) {
 			cutout.Adjacent.Add(pr);
@@ -171,6 +174,8 @@ namespace FF1Lib.Procgen
 		    // right edge
 		    px = cp.X+w;
 		    py = cp.Y-1+y;
+		    px = ((px%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
+		    py = ((py%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
 		    pr = regionMap[py, px];
 		    if (! cutout.Adjacent.Contains(pr)) {
 			cutout.Adjacent.Add(pr);
@@ -179,6 +184,8 @@ namespace FF1Lib.Procgen
 		    // bottom edge
 		    px = cp.X-1+x;
 		    py = cp.Y+h;
+		    px = ((px%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
+		    py = ((py%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
 		    pr = regionMap[py, px];
 		    if (! cutout.Adjacent.Contains(pr)) {
 			cutout.Adjacent.Add(pr);
@@ -187,6 +194,8 @@ namespace FF1Lib.Procgen
 		    // left edge
 		    px = cp.X-1;
 		    py = cp.Y-1+y;
+		    px = ((px%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
+		    py = ((py%OverworldState.MAPSIZE) + OverworldState.MAPSIZE) % OverworldState.MAPSIZE;
 		    pr = regionMap[py, px];
 		    if (! cutout.Adjacent.Contains(pr)) {
 			cutout.Adjacent.Add(pr);
@@ -225,60 +234,11 @@ namespace FF1Lib.Procgen
 	}
     }
 
-    // Something we're going to place on the map.
-    // A town, castle, dungeon, cave, etc.
-    public class OwFeature {
-        public byte[,] Tiles;
-        public Dictionary<string, SCCoords> Entrances;
-	public bool MountainCave;
-
-        public OwFeature(byte[,] tiles,
-            Dictionary<string, SCCoords> entrances) {
-                this.Tiles = tiles;
-                this.Entrances = entrances;
-		this.MountainCave = false;
-            }
-
-        public OwFeature(byte tile, string entrance, bool mountainCave) {
-	    this.MountainCave = mountainCave;
-	    this.Entrances = new Dictionary<string, SCCoords>();
-	    if (this.MountainCave) {
-		this.Tiles = new byte[,] {
-		    { tile, },
-		};
-		    this.Entrances[entrance] = new SCCoords(0, 0);
-	    } else {
-		this.Tiles = new byte[,] {
-		    { OverworldTiles.None, OverworldTiles.None, OverworldTiles.None },
-		    { OverworldTiles.None, tile, OverworldTiles.None },
-		    { OverworldTiles.None, OverworldTiles.None, OverworldTiles.None },
-		};
-		this.Entrances[entrance] = new SCCoords(1, 1);
-	    }
-	}
-
-	public OwFeature NoneToMarsh() {
-	    if (this.MountainCave) {
-		return this;
-	    }
-	    var newtiles = new byte[this.Tiles.GetLength(0),this.Tiles.GetLength(1)];
-	    for (int j = 0; j < this.Tiles.GetLength(0); j++) {
-		for (int i = 0; i < this.Tiles.GetLength(1); i++) {
-		    if (this.Tiles[j,i] == OverworldTiles.None) {
-			newtiles[j,i] = OverworldTiles.MARSH;
-		    } else {
-			newtiles[j,i] = this.Tiles[j,i];
-		    }
-		}
-	    }
-	    return new OwFeature(newtiles, this.Entrances);
-	}
-    }
 
     // This is the class that does most of the work.  It holds the
     // state of the map generation up to this point, and defines all
     // the methods that apply transformations to the map.
-    public partial class OverworldState {
+    public partial class OverworldState : ProcgenState<OwResult, OwGenerationStep, ProgenFramework.GenerationTaskType<OwResult>> {
         public const int MAPSIZE = 256;
         float[,] Basemap;
         public byte[,] Tilemap;
@@ -296,12 +256,11 @@ namespace FF1Lib.Procgen
         private bool ownTilemap;
         private bool ownRegions;
         private bool ownPlacements;
-        public Queue<GenerationStep> StepQueue;
+
         float heightmax;
         float mountain_elevation;
         float sea_elevation;
 	public List<ValueTuple<short, SCCoords>> DockPlacements;
-        private MT19337 rng;
 
         private OverworldTiles overworldTiles;
 
@@ -312,10 +271,7 @@ namespace FF1Lib.Procgen
 	short canalRegion;
 	short airshipDesertRegion;
 
-	FF1Rom.ReportProgress progress;
-
-        public OverworldState(MT19337 rng, List<GenerationStep> steps, OverworldTiles overworldTiles, FF1Rom.ReportProgress progress) {
-            this.rng = rng;
+        public OverworldState(MT19337 rng, List<OwGenerationStep> steps, OverworldTiles overworldTiles, FF1Rom.ReportProgress progress) : base(rng, steps, progress) {
             this.ownBasemap = true;
             this.ownTilemap = true;
             this.ownRegions = true;
@@ -332,7 +288,6 @@ namespace FF1Lib.Procgen
             this.Reachable_regions = new List<int>();
             this.Exclude_docks = new List<int>();
             this.Exclude_airship = new List<int>();
-            this.StepQueue = new Queue<GenerationStep>(steps);
 	    this.DockPlacements = new List<ValueTuple<short, SCCoords>>();
             this.overworldTiles = overworldTiles;
 	    this.startingRegion = -1;
@@ -341,14 +296,13 @@ namespace FF1Lib.Procgen
 	    this.canalRegion = -1;
 	    this.airshipDesertRegion = -1;
 	    this.shouldPlaceBridge = true;
-	    this.progress = progress;
         }
 
 	// Shallow copy construtor.  To be memory efficient, this uses
 	// a copy-on-write strategy.  The Own* methods below perform
 	// deep copies only when needed to have a local copy on which
 	// to make changes.
-        public OverworldState(OverworldState copy) {
+        public OverworldState(OverworldState copy) : base(copy) {
             this.ownBasemap = false;
             this.ownTilemap = false;
             this.ownRegions = false;
@@ -365,8 +319,6 @@ namespace FF1Lib.Procgen
             this.Reachable_regions = copy.Reachable_regions;
             this.Exclude_docks = copy.Exclude_docks;
             this.Exclude_airship = copy.Exclude_airship;
-            this.rng = copy.rng;
-            this.StepQueue = copy.StepQueue;
 	    this.DockPlacements = copy.DockPlacements;
             this.heightmax = copy.heightmax;
             this.mountain_elevation = copy.mountain_elevation;
@@ -378,11 +330,10 @@ namespace FF1Lib.Procgen
 	    this.canalRegion = copy.canalRegion;
 	    this.airshipDesertRegion = copy.airshipDesertRegion;
 	    this.shouldPlaceBridge = copy.shouldPlaceBridge;
-	    this.progress = copy.progress;
         }
 
-	public void SetSteps(List<GenerationStep> steps) {
-	    this.StepQueue = new Queue<GenerationStep>(steps);
+	public void SetSteps(List<OwGenerationStep> steps) {
+	    this.StepQueue = new Queue<OwGenerationStep>(steps);
 	}
 
         void OwnBasemap() {
@@ -439,16 +390,6 @@ namespace FF1Lib.Procgen
             this.Exclude_airship = new List<int>(this.Exclude_airship);
 	    this.DockPlacements = new List<ValueTuple<short, SCCoords>>(this.DockPlacements);
             this.ownPlacements = true;
-        }
-        public async Task<Result> NextStep() {
-            if (this.StepQueue.Count == 0) {
-                return new Result(this);
-            }
-            this.StepQueue = new Queue<GenerationStep>(this.StepQueue);
-            var nextStep = this.StepQueue.Dequeue();
-	    await this.progress($"{(nextStep.message != "" ? nextStep.message : nextStep.method.Name)}");
-	    Console.WriteLine(nextStep.method.Name);
-            return await nextStep.RunStep(this);
         }
 
         const float UNSET = -1000000;
@@ -533,7 +474,7 @@ namespace FF1Lib.Procgen
 	// amount of mountains and walkable land.  It then creates the
 	// initial tile map of consisting of just mountain, land, and
 	// ocean.
-        public async Task<Result> CreateInitialMap() {
+        public async Task<OwResult> CreateInitialMap() {
             this.OwnBasemap();
             this.OwnTilemap();
 
@@ -608,7 +549,7 @@ namespace FF1Lib.Procgen
                     mountain_elevation -= .002f;
                 }
                 if (sea_elevation <= 0) {
-                    return new Result(false);
+                    return new OwResult(false);
                 }
             }
 
@@ -630,7 +571,7 @@ namespace FF1Lib.Procgen
             return await this.NextStep();
         }
 
-        public async Task<Result> CreateLostWoodsMap() {
+        public async Task<OwResult> CreateLostWoodsMap() {
             this.OwnBasemap();
             this.OwnTilemap();
 
@@ -690,7 +631,7 @@ namespace FF1Lib.Procgen
                     mountain_elevation -= .002f;
                 }
                 if (mountain_elevation <= 0) {
-                    return new Result(false);
+                    return new OwResult(false);
                 }
             }
 
@@ -727,7 +668,7 @@ namespace FF1Lib.Procgen
         }
 
 	// Apply a 3x3 filter over the entire map.
-        public Task<Result> ApplyFilter(OwTileFilter filter, bool repeat) {
+        public Task<OwResult> ApplyFilter(PgTileFilter filter, bool repeat) {
             this.OwnTilemap();
             this.Tilemap = filter.ApplyFilter(this.Tilemap, repeat);
             return this.NextStep();
@@ -831,7 +772,7 @@ namespace FF1Lib.Procgen
 	    return size;
 	}
 
-        public Task<Result> MakeValleys(int count) {
+        public Task<OwResult> MakeValleys(int count) {
 	    double lower_elev = this.mountain_elevation + (this.heightmax-this.mountain_elevation)*.5;
 	    double upper_elev = this.heightmax;
 
@@ -862,17 +803,17 @@ namespace FF1Lib.Procgen
 	    return this.NextStep();
         }
 
-        public Task<Result> FlowMountainRivers(int count) {
+        public Task<OwResult> FlowMountainRivers(int count) {
             this.FlowRivers(this.mountain_elevation + (this.heightmax-this.mountain_elevation)*.5, this.heightmax, count, 256);
             return this.NextStep();
         }
 
-        public Task<Result> FlowMountainRiversLostWoods(int count) {
+        public Task<OwResult> FlowMountainRiversLostWoods(int count) {
             this.FlowRivers(mountain_elevation + (heightmax - mountain_elevation) / 18, this.heightmax, count, 350);
             return this.NextStep();
         }
 
-        public Task<Result> FlowPlainsRivers(int count) {
+        public Task<OwResult> FlowPlainsRivers(int count) {
             this.FlowRivers(this.sea_elevation + (this.mountain_elevation-this.sea_elevation)*.5, this.mountain_elevation, count, 256);
             return this.NextStep();
         }
@@ -889,7 +830,7 @@ namespace FF1Lib.Procgen
             this.Traversable_regionlist = traversable.Item2;
         }
 
-        public Task<Result> UpdateRegions() {
+        public Task<OwResult> UpdateRegions() {
             this.UpdateBiomeRegions();
             this.UpdateTraversableRegions();
             return this.NextStep();
@@ -899,7 +840,7 @@ namespace FF1Lib.Procgen
 	// mostly just clutter up the map and don't look good.  Delete
 	// all the "tiny" islands and keep a handful of "small"
 	// islands.
-        public Task<Result> RemoveSmallIslands() {
+        public Task<OwResult> RemoveSmallIslands() {
             this.OwnTilemap();
 
             const int tiny_island_size = 5;
@@ -938,7 +879,7 @@ namespace FF1Lib.Procgen
 
 	// Find tiny regions and merge them into one of the adjacent
 	// regions.
-	public Task<Result> RemoveTinyRegions(int tiny_region_size) {
+	public Task<OwResult> RemoveTinyRegions(int tiny_region_size) {
             this.OwnTilemap();
 
             foreach (var r in this.Biome_regionlist) {
@@ -1006,7 +947,7 @@ namespace FF1Lib.Procgen
             }
         }
 
-        public Task<Result> AddBiomes(int max, bool extraForest) {
+        public Task<OwResult> AddBiomes(int max, bool extraForest) {
             this.OwnTilemap();
 
             byte[] biome_types;
@@ -1046,7 +987,7 @@ namespace FF1Lib.Procgen
         }
 
 	// Turn small patches of inland ocean into river tiles.
-        public Task<Result> SmallSeasBecomeLakes() {
+        public Task<OwResult> SmallSeasBecomeLakes() {
             this.OwnTilemap();
             foreach (var r in this.Biome_regionlist) {
                 if (r.RegionType != OverworldTiles.OCEAN_REGION) {
@@ -1129,7 +1070,7 @@ namespace FF1Lib.Procgen
 	}
 
 	// Place a feature somewhere in the region at random.
-	public ValueTuple<bool,SCCoords> PlaceFeature(short[,] regionMap, OwRegion region, OwFeature feature, int maxweight=0) {
+	public ValueTuple<bool,SCCoords> PlaceFeature(short[,] regionMap, OwRegion region, PgFeature feature, int maxweight=0) {
 	    var h = feature.Tiles.GetLength(0);
 	    var w = feature.Tiles.GetLength(1);
 
@@ -1184,7 +1125,7 @@ namespace FF1Lib.Procgen
 	// Place a feature at a specific position.  Calls
 	// RenderFeature and updates the appropriate weight map.
 	public ValueTuple<bool,SCCoords> PlaceFeatureAt(short[,] regionMap, OwRegion region, SCCoords point,
-							OwFeature feature, bool checkfit=true,
+							PgFeature feature, bool checkfit=true,
 							bool useDockWeight=false) {
 	    var h = feature.Tiles.GetLength(0);
 	    var w = feature.Tiles.GetLength(1);
@@ -1393,81 +1334,20 @@ namespace FF1Lib.Procgen
 	}
     }
 
-    public class Result {
-        public OverworldState final;
-        public List<GenerationTask> additionalTasks;
-
-	public bool Success { get { return this.final != null || this.additionalTasks != null; } }
-
-	public Result(bool f) {
-	    this.final = null;
-	    this.additionalTasks = null;
-	}
-
-        public Result(OverworldState f) {
-            this.final = f;
-            this.additionalTasks = null;
-        }
-
-        public Result(List<GenerationTask> tasks) {
-            this.final = null;
-            this.additionalTasks = tasks;
-        }
+    public class OwGenerationStep : GenerationStep<ProcgenState<OwResult, OwGenerationStep, ProgenFramework.GenerationTaskType<OwResult>>, OwResult> {
+	public OwGenerationStep(string methodName, object[] parameters, string message="") : base("FF1Lib.Procgen.OverworldState", methodName, parameters, message) { }
     }
 
-    public delegate Task<Result> GenerationTask();
+    public class OwResult : Result<ProcgenState<FF1Lib.Procgen.OwResult, OwGenerationStep, ProgenFramework.GenerationTaskType<OwResult>>,
+	OwGenerationStep, ProgenFramework.GenerationTaskType<OwResult>> {
 
-    public class GenerationStep {
-        public MethodInfo method;
-        object[] parameters;
-	public string message;
-        public GenerationStep(string methodName, object[] parameters, string message="") {
-            Type magicType = Type.GetType("FF1Lib.Procgen.OverworldState");
-            this.method = magicType.GetMethod(methodName);
-            Debug.Assert(method != null);
-            this.parameters = parameters;
-	    this.message = message;
-        }
-
-        public Task<Result> RunStep(OverworldState st) {
-            return (Task<Result>)method.Invoke(st, this.parameters);
-        }
+	public OwResult() : base() { }
+	public OwResult(bool f) : base(f) {}
+        public OwResult(ProcgenState<FF1Lib.Procgen.OwResult, OwGenerationStep, ProgenFramework.GenerationTaskType<OwResult>> f) : base(f) {}
+	public OwResult(List<OwGenerationTask> tasks) : base(tasks) { }
     }
-
 
     public static class NewOverworld {
-
-	public static async Task<OverworldState> RunSteps(OverworldState startingState, FF1Rom.ReportProgress progress) {
-	    Stack<GenerationTask> workStack = new Stack<GenerationTask>();
-
-	    workStack.Push(startingState.NextStep);
-
-	    OverworldState finalState = null;
-	    int maxTasksCount = 150;
-	    int taskCount = 0;
-
-	    await progress("", startingState.StepQueue.Count);
-	    await progress("", maxTasksCount);
-	    while (workStack.Count > 0 && taskCount < maxTasksCount) {
-		await progress();
-		System.GC.Collect(System.GC.MaxGeneration);
-
-		taskCount += 1;
-		var p = workStack.Pop();
-		var r = await p();
-		if (r.final != null) {
-		    finalState = r.final;
-		    break;
-		}
-		if (r.additionalTasks != null) {
-		    await progress("", r.additionalTasks.Count);
-		    foreach (var v in r.additionalTasks) {
-			workStack.Push(v);
-		    }
-		}
-	    }
-	    return finalState;
-	}
 
 	public async static Task<OwMapExchangeData> GenerateNewOverworld(MT19337 rng, OwMapExchanges mode,
 									 bool shuffledaccess, bool unsafestart,
@@ -1478,52 +1358,52 @@ namespace FF1Lib.Procgen
 	    int tries = maxtries;
 	    while (tries > 0) {
 		tries--;
-		List<GenerationStep> worldGenSteps;
+		List<OwGenerationStep> worldGenSteps;
 
 		if (mode == OwMapExchanges.LostWoods) {
-		    worldGenSteps = new List<GenerationStep> {
-			new GenerationStep("CreateLostWoodsMap", new object[]{}),
-			new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains, false}, "expand_mountains"),
-			new GenerationStep("FlowMountainRiversLostWoods", new object[] {16}),
-			new GenerationStep("ApplyFilter", new object[] {mt.connect_diagonals, false}, "connect_diagonals"),
-			new GenerationStep("UpdateRegions", new object[]{}),
-			new GenerationStep("AddBiomes", new object[]{1600, true}),
+		    worldGenSteps = new List<OwGenerationStep> {
+			new OwGenerationStep("CreateLostWoodsMap", new object[]{}),
+			new OwGenerationStep("ApplyFilter", new object[] {mt.expand_mountains, false}, "expand_mountains"),
+			new OwGenerationStep("FlowMountainRiversLostWoods", new object[] {16}),
+			new OwGenerationStep("ApplyFilter", new object[] {mt.connect_diagonals, false}, "connect_diagonals"),
+			new OwGenerationStep("UpdateRegions", new object[]{}),
+			new OwGenerationStep("AddBiomes", new object[]{1600, true}),
 
-			new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}, "remove_salients"),
-			new GenerationStep("UpdateRegions", new object[]{}),
-			new GenerationStep("RemoveTinyRegions", new object[]{25}),
+			new OwGenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}, "remove_salients"),
+			new OwGenerationStep("UpdateRegions", new object[]{}),
+			new OwGenerationStep("RemoveTinyRegions", new object[]{25}),
 
-			new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}, "remove_salients"),
-			new GenerationStep("UpdateRegions", new object[]{}),
-			new GenerationStep("RemoveTinyRegions", new object[]{25}),
+			new OwGenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}, "remove_salients"),
+			new OwGenerationStep("UpdateRegions", new object[]{}),
+			new OwGenerationStep("RemoveTinyRegions", new object[]{25}),
 		    };
 		} else {
-		    worldGenSteps = new List<GenerationStep> {
-			new GenerationStep("CreateInitialMap", new object[]{}),
-			new GenerationStep("MakeValleys", new object[] {6}),
-			new GenerationStep("ApplyFilter", new object[] {mt.expand_mountains, false}, "expand_mountains"),
-			new GenerationStep("ApplyFilter", new object[] {mt.expand_oceans, false}, "expand_oceans"),
-			new GenerationStep("FlowMountainRivers", new object[] {12}),
-			new GenerationStep("FlowPlainsRivers", new object[] {12}),
-			new GenerationStep("ApplyFilter", new object[] {mt.connect_diagonals, false}, "connect_diagonals"),
-			new GenerationStep("UpdateRegions", new object[]{}),
-			new GenerationStep("RemoveSmallIslands", new object[]{}),
-			new GenerationStep("AddBiomes", new object[]{400, false}),
+		    worldGenSteps = new List<OwGenerationStep> {
+			new OwGenerationStep("CreateInitialMap", new object[]{}),
+			new OwGenerationStep("MakeValleys", new object[] {6}),
+			new OwGenerationStep("ApplyFilter", new object[] {mt.expand_mountains, false}, "expand_mountains"),
+			new OwGenerationStep("ApplyFilter", new object[] {mt.expand_oceans, false}, "expand_oceans"),
+			new OwGenerationStep("FlowMountainRivers", new object[] {12}),
+			new OwGenerationStep("FlowPlainsRivers", new object[] {12}),
+			new OwGenerationStep("ApplyFilter", new object[] {mt.connect_diagonals, false}, "connect_diagonals"),
+			new OwGenerationStep("UpdateRegions", new object[]{}),
+			new OwGenerationStep("RemoveSmallIslands", new object[]{}),
+			new OwGenerationStep("AddBiomes", new object[]{400, false}),
 
-			new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}, "remove_salients"),
-			new GenerationStep("UpdateRegions", new object[]{}),
-			new GenerationStep("RemoveTinyRegions", new object[]{5}),
+			new OwGenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}, "remove_salients"),
+			new OwGenerationStep("UpdateRegions", new object[]{}),
+			new OwGenerationStep("RemoveTinyRegions", new object[]{5}),
 
-			new GenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}, "remove_salients"),
-			new GenerationStep("UpdateRegions", new object[]{}),
-			new GenerationStep("RemoveTinyRegions", new object[]{5}),
+			new OwGenerationStep("ApplyFilter", new object[]{mt.remove_salients, true}, "remove_salients"),
+			new OwGenerationStep("UpdateRegions", new object[]{}),
+			new OwGenerationStep("RemoveTinyRegions", new object[]{5}),
 
-			new GenerationStep("SmallSeasBecomeLakes", new object[]{}),
+			new OwGenerationStep("SmallSeasBecomeLakes", new object[]{}),
 		    };
 		}
 
 		var blankState = new OverworldState(rng, worldGenSteps, mt, progress);
-		var worldState = await RunSteps(blankState, progress);
+		var worldState = await ProgenFramework.RunSteps<OverworldState, OwResult, OwGenerationStep>(blankState, 150, progress);
 
 		if (worldState == null) {
 		    continue;
@@ -1536,10 +1416,10 @@ namespace FF1Lib.Procgen
 		while(placementTries > 0 && postPlacementState == null) {
 		    placementTries--;
 
-		    List<GenerationStep> placementSteps = new List<GenerationStep>();
+		    List<OwGenerationStep> placementSteps = new List<OwGenerationStep>();
 		    if (shuffledaccess) {
 
-			var earlyRewardLocations = new List<OwFeature> {
+			var earlyRewardLocations = new List<PgFeature> {
 			    OverworldTiles.TEMPLE_OF_FIENDS,
 			    OverworldTiles.SARDAS_CAVE_FEATURE,
 			    OverworldTiles.DWARF_CAVE_FEATURE,
@@ -1551,7 +1431,7 @@ namespace FF1Lib.Procgen
 			    OverworldTiles.CARDIA_6_FEATURE,
 			};
 
-			var otherFeatures = new List<OwFeature> {
+			var otherFeatures = new List<PgFeature> {
 			    OverworldTiles.GAIA_TOWN,
 			    OverworldTiles.OASIS2,
 			    OverworldTiles.ELFLAND_TOWN,
@@ -1562,19 +1442,19 @@ namespace FF1Lib.Procgen
 			    OverworldTiles.ASTOS_CASTLE,
 			};
 
-			var dudFeatures = new List<OwFeature> {
+			var dudFeatures = new List<PgFeature> {
 			    OverworldTiles.CARDIA_1_FEATURE,
 			    OverworldTiles.CARDIA_5_FEATURE,
 			};
 
-			var unsafeFeatures = new List<OwFeature> {
+			var unsafeFeatures = new List<PgFeature> {
 			    OverworldTiles.ORDEALS_CASTLE,
 			    OverworldTiles.ICE_CAVE_FEATURE,
 			    OverworldTiles.EARTH_CAVE_FEATURE,
 			    OverworldTiles.DRY_VOLCANO,
 			};
 
-			var features = new List<OwFeature>();
+			var features = new List<PgFeature>();
 
 			Action<string, int, int, object[]> AddPlacements = (string op, int min, int max, object[] addl) => {
 			    int count = rng.Between(min, max);
@@ -1585,7 +1465,7 @@ namespace FF1Lib.Procgen
 				if (addl != null) {
 				    parm.AddRange(addl);
 				}
-				placementSteps.Add(new GenerationStep(op, parm.ToArray()));
+				placementSteps.Add(new OwGenerationStep(op, parm.ToArray()));
 			    }
 			};
 
@@ -1595,18 +1475,18 @@ namespace FF1Lib.Procgen
 
 			Console.WriteLine($"rubyRequired {rubyRequired} canalRequired {canalRequired} bridgeRequired {bridgeRequired}");
 
-			placementSteps.Add(new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}));
+			placementSteps.Add(new OwGenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}));
 			if (bridgeRequired) {
 			    // bridge start from any region, but you can't land on the bridged region
-			    placementSteps.Add(new GenerationStep("PlaceBridge", new object[]{false, true}));
+			    placementSteps.Add(new OwGenerationStep("PlaceBridge", new object[]{false, true}));
 			} else {
 			    // bridge starts from starting area,
 			    // possibly you can avoid it (but item
 			    // placement may still make it part of
 			    // progression)
-			    placementSteps.Add(new GenerationStep("PlaceBridge", new object[]{true, false}));
+			    placementSteps.Add(new OwGenerationStep("PlaceBridge", new object[]{true, false}));
 			}
-			placementSteps.Add(new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, !rubyRequired}));
+			placementSteps.Add(new OwGenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, !rubyRequired}));
 
 			features.AddRange(earlyRewardLocations);
 
@@ -1636,7 +1516,7 @@ namespace FF1Lib.Procgen
 			    AddPlacements("PlaceInTitanWestRegion", 1, 2, null);
 			}
 
-			placementSteps.Add(new GenerationStep("PlaceCanal", new object[]{canalRequired}));
+			placementSteps.Add(new OwGenerationStep("PlaceCanal", new object[]{canalRequired}));
 			AddPlacements("PlaceInCanalRegion", 1, 2, null);
 
 			// Annoying when bridge, canal, or titan
@@ -1646,159 +1526,159 @@ namespace FF1Lib.Procgen
 			features.AddRange(dudFeatures);
 
 			AddPlacements("PlaceInMountains", 2, 5, null);
-			placementSteps.Add(new GenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}));
-			placementSteps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
+			placementSteps.Add(new OwGenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}));
+			placementSteps.Add(new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
 											   new int[]{OverworldTiles.DESERT_REGION},
 											   false, true, true, false}));
-			placementSteps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
+			placementSteps.Add(new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
 											   new int[]{OverworldTiles.DESERT_REGION},
 											   false, true, false, false}));
-			placementSteps.Add(new GenerationStep("PlaceOnCoast", new object[]{OverworldTiles.ONRAC_TOWN, true}));
-			placementSteps.Add(new GenerationStep("PlaceOnCoast", new object[]{OverworldTiles.PRAVOKA_CITY, false}));
-			placementSteps.Add(new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
+			placementSteps.Add(new OwGenerationStep("PlaceOnCoast", new object[]{OverworldTiles.ONRAC_TOWN, true}));
+			placementSteps.Add(new OwGenerationStep("PlaceOnCoast", new object[]{OverworldTiles.PRAVOKA_CITY, false}));
+			placementSteps.Add(new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
 											   new int[]{OverworldTiles.MARSH_REGION},
 											   true, true, true, false}));
 			AddPlacements("PlaceInBiome", 3, 5, new object[] { null, true, false, false, false });
 			AddPlacements("PlaceInBiome", 2, 3, new object[] { null, false, true, true, true });
 			AddPlacements("PlaceInBiome", features.Count, features.Count, new object[] { null, false, false, false, false });
 		    } else if (mode == OwMapExchanges.LostWoods) {
-			placementSteps.AddRange(new GenerationStep[] {
-				new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}),
-				new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}),
-				new GenerationStep("PlaceInTitanWestRegion", new object[]{OverworldTiles.CONERIA_CASTLE}),
-				new GenerationStep("PlaceInTitanWestRegion", new object[]{OverworldTiles.MELMOND_TOWN}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
+			placementSteps.AddRange(new OwGenerationStep[] {
+				new OwGenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY}),
+				new OwGenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}),
+				new OwGenerationStep("PlaceInTitanWestRegion", new object[]{OverworldTiles.CONERIA_CASTLE}),
+				new OwGenerationStep("PlaceInTitanWestRegion", new object[]{OverworldTiles.MELMOND_TOWN}),
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
 										new int[]{OverworldTiles.DESERT_REGION},
 										false, true, false, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
 										new int[]{OverworldTiles.MARSH_REGION},
 										false, true, false, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.TEMPLE_OF_FIENDS, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.TEMPLE_OF_FIENDS, null,
 										false, true, false, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.LEFEIN_CITY, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.LEFEIN_CITY, null,
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.PRAVOKA_CITY_MOAT,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.PRAVOKA_CITY_MOAT,
 										new int[]{OverworldTiles.MARSH_REGION},
 										false, true, false, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
 										new int[]{OverworldTiles.DESERT_REGION},
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.OASIS,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.OASIS,
 										new int[]{OverworldTiles.DESERT_REGION,
 										    OverworldTiles.FOREST_REGION},
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.TITANS_TUNNEL_EAST, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.TITANS_TUNNEL_EAST, null,
 										false, true, false, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MATOYAS_CAVE_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.MATOYAS_CAVE_FEATURE, null,
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CRESCENT_LAKE_CITY,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.CRESCENT_LAKE_CITY,
 										new int[]{OverworldTiles.FOREST_REGION},
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.VOLCANO, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.VOLCANO, null,
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.ICE_CAVE_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.ICE_CAVE_FEATURE, null,
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.ELFLAND_TOWN, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.ELFLAND_TOWN, null,
 										false, true, false, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.ELFLAND_CASTLE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.ELFLAND_CASTLE, null,
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.BAHAMUTS_CAVE_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.BAHAMUTS_CAVE_FEATURE, null,
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_1_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_1_FEATURE, null,
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_2_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_2_FEATURE, null,
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_4_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_4_FEATURE, null,
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_5_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_5_FEATURE, null,
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_6_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_6_FEATURE, null,
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.GAIA_TOWN, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.GAIA_TOWN, null,
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.ORDEALS_CASTLE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.ORDEALS_CASTLE, null,
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.E_CANAL_STRUCTURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.E_CANAL_STRUCTURE, null,
 										false, false, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.DWARF_CAVE_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.DWARF_CAVE_FEATURE, null,
 										false, false, true, false}),
 
-				new GenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}),
+				new OwGenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}),
 
-				new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.SARDAS_CAVE_FEATURE}),
-				new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.EARTH_CAVE_FEATURE}),
-				new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.ONRAC_TOWN}),
-				new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.ASTOS_CASTLE}),
+				new OwGenerationStep("PlaceInMountains", new object[]{OverworldTiles.SARDAS_CAVE_FEATURE}),
+				new OwGenerationStep("PlaceInMountains", new object[]{OverworldTiles.EARTH_CAVE_FEATURE}),
+				new OwGenerationStep("PlaceInMountains", new object[]{OverworldTiles.ONRAC_TOWN}),
+				new OwGenerationStep("PlaceInMountains", new object[]{OverworldTiles.ASTOS_CASTLE}),
 			    });
 		    } else if (mode == OwMapExchanges.GenerateNewOverworld) {
-			placementSteps.AddRange(new GenerationStep[] {
-				new GenerationStep("BridgeAlternatives", new object[]{}),
-				new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY_CASTLE}),
-				new GenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.TEMPLE_OF_FIENDS}),
-				new GenerationStep("PlaceBridge", new object[]{true, false}),
-				new GenerationStep("PlacePravoka", new object[]{}),
-				new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.GAIA_TOWN, true}),
-				new GenerationStep("PlaceRequiringCanoe", new object[]{OverworldTiles.ORDEALS_CASTLE}),
-				new GenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}),
-				new GenerationStep("PlaceInTitanWestRegion", new object[]{OverworldTiles.SARDAS_CAVE_FEATURE}),
-				new GenerationStep("PlaceCanal", new object[]{false}),
-				new GenerationStep("PlaceInCanalRegion", new object[]{OverworldTiles.EARTH_CAVE_FEATURE}),
+			placementSteps.AddRange(new OwGenerationStep[] {
+				new OwGenerationStep("BridgeAlternatives", new object[]{}),
+				new OwGenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.CONERIA_CITY_CASTLE}),
+				new OwGenerationStep("PlaceInStartingArea", new object[]{OverworldTiles.TEMPLE_OF_FIENDS}),
+				new OwGenerationStep("PlaceBridge", new object[]{true, false}),
+				new OwGenerationStep("PlacePravoka", new object[]{}),
+				new OwGenerationStep("PlaceIsolated", new object[]{OverworldTiles.GAIA_TOWN, true}),
+				new OwGenerationStep("PlaceRequiringCanoe", new object[]{OverworldTiles.ORDEALS_CASTLE}),
+				new OwGenerationStep("PlaceIsolated", new object[]{OverworldTiles.TITANS_TUNNEL_WEST, false}),
+				new OwGenerationStep("PlaceInTitanWestRegion", new object[]{OverworldTiles.SARDAS_CAVE_FEATURE}),
+				new OwGenerationStep("PlaceCanal", new object[]{false}),
+				new OwGenerationStep("PlaceInCanalRegion", new object[]{OverworldTiles.EARTH_CAVE_FEATURE}),
 
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.MIRAGE_TOWER,
 										new int[]{OverworldTiles.DESERT_REGION},
 										false, true, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.AIRSHIP_FEATURE,
 										new int[]{OverworldTiles.DESERT_REGION},
 										false, true, false, false}),
 
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.OASIS,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.OASIS,
 										new int[]{OverworldTiles.DESERT_REGION},
 										false, true, true, false}),
-				new GenerationStep("PlaceOnCoast", new object[]{OverworldTiles.ONRAC_TOWN, true}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.TITANS_TUNNEL_EAST, null,
+				new OwGenerationStep("PlaceOnCoast", new object[]{OverworldTiles.ONRAC_TOWN, true}),
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.TITANS_TUNNEL_EAST, null,
 										true, false, false, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MATOYAS_CAVE_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.MATOYAS_CAVE_FEATURE, null,
 										true, false, false, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.DWARF_CAVE_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.DWARF_CAVE_FEATURE, null,
 										true, false, false, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.ELFLAND_TOWN_CASTLE,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.ELFLAND_TOWN_CASTLE,
 										new int[]{OverworldTiles.LAND_REGION,
 										    OverworldTiles.GRASS_REGION,
 										    OverworldTiles.FOREST_REGION},
 										true, false, false, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.MARSH_CAVE_FEATURE,
 										new int[]{OverworldTiles.MARSH_REGION},
 										true, false, false, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.ASTOS_CASTLE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.ASTOS_CASTLE, null,
 										true, false, false, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.MELMOND_TOWN, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.MELMOND_TOWN, null,
 										true, false, false, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CRESCENT_LAKE_CITY,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.CRESCENT_LAKE_CITY,
 										new int[]{OverworldTiles.LAND_REGION,
 										    OverworldTiles.GRASS_REGION,
 										    OverworldTiles.FOREST_REGION,
 										    OverworldTiles.MARSH_REGION},
 										true, false, false, false}),
 
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.LEFEIN_CITY, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.LEFEIN_CITY, null,
 										false, true, true, false}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.BAHAMUTS_CAVE_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.BAHAMUTS_CAVE_FEATURE, null,
 										false, true, true, true}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_1_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_1_FEATURE, null,
 										false, true, true, true}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_2_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_2_FEATURE, null,
 										false, true, true, true}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_4_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_4_FEATURE, null,
 										false, true, true, true}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_5_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_5_FEATURE, null,
 										false, true, true, true}),
-				new GenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_6_FEATURE, null,
+				new OwGenerationStep("PlaceInBiome", new object[]{OverworldTiles.CARDIA_6_FEATURE, null,
 										false, true, true, true}),
 
-				new GenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}),
+				new OwGenerationStep("PlaceWaterfall", new object[]{OverworldTiles.WATERFALL_FEATURE}),
 
-				new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.ICE_CAVE_FEATURE}),
-				new GenerationStep("PlaceInMountains", new object[]{OverworldTiles.VOLCANO}),
+				new OwGenerationStep("PlaceInMountains", new object[]{OverworldTiles.ICE_CAVE_FEATURE}),
+				new OwGenerationStep("PlaceInMountains", new object[]{OverworldTiles.VOLCANO}),
 			    });
 		    } else {
 			throw new Exception($"Unknown mode {mode}");
@@ -1806,41 +1686,41 @@ namespace FF1Lib.Procgen
 
 		    var prePlacementState = new OverworldState(worldState);
 		    prePlacementState.SetSteps(placementSteps);
-		    postPlacementState = await RunSteps(prePlacementState, progress);
+		    postPlacementState = await ProgenFramework.RunSteps<OverworldState, OwResult, OwGenerationStep>(prePlacementState, 150, progress);
 		}
 
 		if (postPlacementState == null) {
 		    continue;
 		}
 
-		var polishSteps = new List<GenerationStep> {
-		    new GenerationStep("PreventAirshipLanding", new object[]{}),
-		    new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains1, true}, "polish_mountains1"),
-		    new GenerationStep("ApplyFilter", new object[]{mt.polish_mountains2, true}, "polish_mountains2"),
+		var polishSteps = new List<OwGenerationStep> {
+		    new OwGenerationStep("PreventAirshipLanding", new object[]{}),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.polish_mountains1, true}, "polish_mountains1"),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.polish_mountains2, true}, "polish_mountains2"),
 
-		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores1, false}, "apply_shores1"),
-		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores2, false}, "apply_shores2"),
-		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores3, false}, "apply_shores3"),
-		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores4, false}, "apply_shores4"),
-		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores5, false}, "apply_shores5"),
-		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores6, false}, "apply_shores6"),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.apply_shores1, false}, "apply_shores1"),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.apply_shores2, false}, "apply_shores2"),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.apply_shores3, false}, "apply_shores3"),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.apply_shores4, false}, "apply_shores4"),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.apply_shores5, false}, "apply_shores5"),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.apply_shores6, false}, "apply_shores6"),
 
-		    new GenerationStep("ApplyFilter", new object[]{mt.prune_forests, true}, "prune_forests"),
-		    new GenerationStep("PreventAirshipLanding", new object[]{}),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.prune_forests, true}, "prune_forests"),
+		    new OwGenerationStep("PreventAirshipLanding", new object[]{}),
 
-		    new GenerationStep("ApplyFilter", new object[]{mt.mountain_borders, false}, "mountain_borders"),
-		    new GenerationStep("ApplyFilter", new object[]{mt.river_borders, false}, "river_borders"),
-		    new GenerationStep("ApplyFilter", new object[]{mt.desert_borders, false}, "desert_borders"),
-		    new GenerationStep("ApplyFilter", new object[]{mt.marsh_borders, false}, "marsh_borders"),
-		    new GenerationStep("ApplyFilter", new object[]{mt.grass_borders, false}, "grass_borders"),
-		    new GenerationStep("ApplyFilter", new object[]{mt.forest_borders, false}, "forest_borders"),
-		    new GenerationStep("CheckBridgeShores", new object[]{}),
-		    new GenerationStep("ApplyFilter", new object[]{mt.apply_shores7, false}, "apply_shores7"),
-		    new GenerationStep("PreventAirshipLanding", new object[]{}),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.mountain_borders, false}, "mountain_borders"),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.river_borders, false}, "river_borders"),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.desert_borders, false}, "desert_borders"),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.marsh_borders, false}, "marsh_borders"),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.grass_borders, false}, "grass_borders"),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.forest_borders, false}, "forest_borders"),
+		    new OwGenerationStep("CheckBridgeShores", new object[]{}),
+		    new OwGenerationStep("ApplyFilter", new object[]{mt.apply_shores7, false}, "apply_shores7"),
+		    new OwGenerationStep("PreventAirshipLanding", new object[]{}),
 		};
 
 		postPlacementState.SetSteps(polishSteps);
-		var finalState = await RunSteps(postPlacementState, progress);
+		var finalState = await ProgenFramework.RunSteps<OverworldState, OwResult, OwGenerationStep>(postPlacementState, 150, progress);
 
 		if (finalState != null && finalState.CheckSanity()) {
 		    return ReplacementMap(finalState, mt);
@@ -1933,7 +1813,7 @@ namespace FF1Lib.Procgen
 	    }
 
 	    if (compressedSize > OverworldMap.MaximumMapDataSize) {
-		throw new Exception($"Generated map is too large to fit in the ROM by {compressedSize - OverworldMap.MaximumMapDataSize} bytes, try a different seed.");
+		throw new FailedToGenerate($"Generated map is too large to fit in the ROM by {compressedSize - OverworldMap.MaximumMapDataSize} bytes, try a different seed.");
 	    }
 
 	    ExchangeData.DecompressedMapRows = tiles;

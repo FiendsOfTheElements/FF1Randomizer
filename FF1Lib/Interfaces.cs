@@ -82,6 +82,7 @@
 		bool? NoTail { get; }
 		bool? IsCanoeFree { get; }
 		bool? FreeLute { get; }
+		bool? FreeRod { get; }
 		bool? FreeTail { get; }
 		bool? IsBridgeFree { get; }
 		bool? IsCanalFree { get; }
@@ -197,6 +198,7 @@
 		bool? IsCanalFree { get; }
 		bool? IsCanoeFree { get; }
 		bool? FreeLute { get; }
+		bool? FreeRod { get; }
 		bool? FreeTail { get; }
 		bool? NoTail { get; }
 		bool? IsFloaterRemoved { get; }

@@ -118,7 +118,7 @@ namespace FF1Lib
 			animationOffsets.ForEach(addr => Data[addr] = 0x04);
 		}
 
-		public void SpeedHacksMoveNpcs() {
+		public void SpeedHacksMoveNpcs(bool moveEarthBats) {
 			// Move NPCs out of the way.
 			MoveNpc(MapId.Coneria, 0, 0x11, 0x02, inRoom: false, stationary: true); // North Coneria Soldier
 			MoveNpc(MapId.Coneria, 4, 0x12, 0x14, inRoom: false, stationary: true); // South Coneria Gal
@@ -127,17 +127,20 @@ namespace FF1Lib
 			MoveNpc(MapId.Onrac, 13, 0x29, 0x1B, inRoom: false, stationary: true); // Onrac Guy
 			MoveNpc(MapId.Lefein, 3, 0x21, 0x07, inRoom: false, stationary: true); // Lefein Guy
 																				   //MoveNpc(MapId.Waterfall, 1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
-			MoveNpc(MapId.EarthCaveB3, 10, 0x32, 0x0C, inRoom: false, stationary: false); // Earth Cave Bat B3
-			MoveNpc(MapId.EarthCaveB3, 7, 0x31, 0x1A, inRoom: true, stationary: false); // Earth Cave Bat B3
-			MoveNpc(MapId.EarthCaveB3, 8, 0x1D, 0x0E, inRoom: true, stationary: false); // Earth Cave Bat B3
+			if (moveEarthBats) {
+			    MoveNpc(MapId.EarthCaveB3, 10, 0x32, 0x0C, inRoom: false, stationary: false); // Earth Cave Bat B3
+			    MoveNpc(MapId.EarthCaveB3, 7, 0x31, 0x1A, inRoom: true, stationary: false); // Earth Cave Bat B3
+			    MoveNpc(MapId.EarthCaveB3, 8, 0x1D, 0x0E, inRoom: true, stationary: false); // Earth Cave Bat B3
 
-			MoveNpc(MapId.EarthCaveB3, 2, 0x0B, 0x0A, inRoom: true, stationary: false); // Earth Cave Bat B3
-			MoveNpc(MapId.EarthCaveB3, 3, 0x0A, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
-			MoveNpc(MapId.EarthCaveB3, 4, 0x09, 0x0A, inRoom: true, stationary: false); // Earth Cave Bat B3
+			    MoveNpc(MapId.EarthCaveB3, 2, 0x0B, 0x0A, inRoom: true, stationary: false); // Earth Cave Bat B3
+			    MoveNpc(MapId.EarthCaveB3, 3, 0x0A, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
+			    MoveNpc(MapId.EarthCaveB3, 4, 0x09, 0x0A, inRoom: true, stationary: false); // Earth Cave Bat B3
 
-			MoveNpc(MapId.EarthCaveB3, 9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
+			    MoveNpc(MapId.EarthCaveB3, 9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
 
-			MoveNpc(MapId.EarthCaveB5, 1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
+			    MoveNpc(MapId.EarthCaveB5, 1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
+			}
+
 			MoveNpc(MapId.ConeriaCastle1F, 5, 0x07, 0x0F, inRoom: false, stationary: true); // Coneria Ghost Lady
 
 			MoveNpc(MapId.Pravoka, 4, 0x1F, 0x05, inRoom: false, stationary: true); // Pravoka Old Man
@@ -477,6 +480,11 @@ namespace FF1Lib
 			Data[0x3020 + (int)Item.Lute] = 0x01;
 		}
 
+		public void EnableFreeRod()
+		{
+			Data[0x3020 + (int)Item.Rod] = 0x01;
+		}
+
 		public void EnableFreeTail()
 		{
 			Data[0x3020 + (int)Item.Tail] = 0x01;
@@ -501,10 +509,10 @@ namespace FF1Lib
 			PutInBank(0x0E, 0xB25F, Blob.FromHex("EAEA38")); // disable floater raising the airship
 			PutInBank(0x1F, 0xC10C, Blob.FromHex("204BE2"));
 			PutInBank(0x1F, 0xC25A, Blob.FromHex("A91B85572003FE4C10A0"));
-			PutInBank(0x1F, 0xC609, Blob.FromHex("EAEAEAEAEAEAEAA91B85572003FE20C2A0F0C8")); 
+			PutInBank(0x1F, 0xC609, Blob.FromHex("EAEAEAEAEAEAEAA91B85572003FE20C2A0F0C8"));
 			PutInBank(0x1F, 0xC632, Blob.FromHex("A91B85572003FE4C9FA0"));
 			PutInBank(0x1F, 0xC6D7, Blob.FromHex("EAEA201CA0"));
-			PutInBank(0x1F, 0xE1F6, Blob.FromHex("2089C6")); 
+			PutInBank(0x1F, 0xE1F6, Blob.FromHex("2089C6"));
 			PutInBank(0x1F, 0xE248, Blob.FromHex("4C58E2A91B85572003FE4C25E2"));
 			PutInBank(0x1F, 0xE373, Blob.FromHex("2000A0"));
 			PutInBank(0x1B, 0xA000, Blob.FromHex($"AD00602901D00160AD00602980498060A542C908F0034C5FA04CB8C6BD00042908D008A9018D0460A90060BD00042904F00160AD00602901D003A90160A5271869078D0160A5281869078D0260A90485468542A9{shiptrack:X2}854BA9008D0460686860AD0460D00DA542C904F00160AD2B60D01560A527186907CD0560D0F5A528186907CD0660D0EBA90885468542A9{airshiptrack:X2}854BA9008D0460AD006009808D00604CA8E1AD0060297F8D0060A5271869078D0160A5281869078D026018A9308D0C40A9{overworldtrack:X2}854B602000A0F011AD0160C512D00AAD0260C513D003A90160A90060"));
@@ -1651,7 +1659,7 @@ namespace FF1Lib
 			byte musicTrack = Get(0x2D9C1, 1)[0];
 			PutInBank(0x1B, 0x9A00, Blob.FromHex($"A9008DB7688DB868A9{musicTrack:X2}8D4B008DA76B60"));
 
-			
+
 			//a lot of patch bridge expansions from banks C and B to 1B
 			PutInBank(0x0C, 0x97C7, Blob.FromHex("EAEAEA"));
 

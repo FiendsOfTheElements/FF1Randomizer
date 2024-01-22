@@ -1,24 +1,25 @@
 using FF1Lib.Sanity;
+using OwGenerationTask = FF1Lib.Procgen.ProgenFramework.GenerationTaskType<FF1Lib.Procgen.OwResult>;
 
 namespace FF1Lib.Procgen
 {
 
 	public partial class OverworldState {
 
-	public async Task<Result> BridgeAlternatives() {
+	public async Task<OwResult> BridgeAlternatives() {
 	    var o1 = new OverworldState(this);
 	    var o2 = new OverworldState(this);
 	    o1.shouldPlaceBridge = true;
 	    o2.shouldPlaceBridge = false;
 
 	    await Task.Yield();
-	    return new Result(new List<GenerationTask>() {
+	    return new OwResult(new List<OwGenerationTask>() {
 			o2.NextStep, o1.NextStep });
 	}
 
-	public async Task<Result> PlaceInStartingArea(OwFeature feature) {
+	public async Task<OwResult> PlaceInStartingArea(PgFeature feature) {
 	    if (this.startingRegion == -1) {
-		var tasks = new List<GenerationTask>();
+		var tasks = new List<OwGenerationTask>();
 		var sorted = new List<OwRegion>();
 		foreach (var w in this.Traversable_regionlist) {
 		    if (w.RegionType == OverworldTiles.LAND_REGION) {
@@ -29,13 +30,13 @@ namespace FF1Lib.Procgen
 		foreach (var w in sorted) {
 		    tasks.Add(() => new OverworldState(this).StartingAreaPlacement(feature, w));
 		}
-		return new Result(tasks);
+		return new OwResult(tasks);
 	    } else {
 		return await this.StartingAreaPlacement(feature, this.StartingRegion);
 	    }
 	}
 
-	public async Task<Result> StartingAreaPlacement(OwFeature feature, OwRegion region) {
+	public async Task<OwResult> StartingAreaPlacement(PgFeature feature, OwRegion region) {
 	    var v = this.PlaceFeature(this.Traversable_regionmap, region, feature);
 	    if (v.Item1) {
 		this.OwnPlacements();
@@ -47,15 +48,15 @@ namespace FF1Lib.Procgen
 
 		return await this.NextStep();
 	    } else {
-		return new Result(false);
+		return new OwResult(false);
 	    }
 	}
 
-	public async Task<Result> PlaceBridge(bool fromStartingRegion, bool makeBridgeRequired) {
+	public async Task<OwResult> PlaceBridge(bool fromStartingRegion, bool makeBridgeRequired) {
 	    if (!this.shouldPlaceBridge) {
 		return await this.NextStep();
 	    }
-	    var tasks = new List<GenerationTask>();
+	    var tasks = new List<OwGenerationTask>();
 	    Action<OwRegion> placementTasks = (OwRegion r) => {
 		foreach (var adj in r.Adjacent) {
 		    var w = this.Traversable_regionlist[adj];
@@ -75,7 +76,7 @@ namespace FF1Lib.Procgen
 		}
 	    }
 	    tasks.Shuffle(this.rng);
-	    return new Result(tasks);
+	    return new OwResult(tasks);
 	}
 
 	public bool MakeIsolated(int nextRegion, OwRegion originRegion) {
@@ -122,7 +123,7 @@ namespace FF1Lib.Procgen
 	    return true;
 	}
 
-	public async Task<Result> BridgePlacement(OwRegion originRegion, OwRegion riverRegion, bool makeBridgeRequired) {
+	public async Task<OwResult> BridgePlacement(OwRegion originRegion, OwRegion riverRegion, bool makeBridgeRequired) {
 	    var points = new List<SCCoords>(riverRegion.Points);
 	    points.Shuffle(this.rng);
 	    short nextRegion = -1;
@@ -198,21 +199,21 @@ namespace FF1Lib.Procgen
 		    // docks and airship landing spots.
 
 		    if (!this.MakeIsolated(nextRegion, originRegion)) {
-			return new Result(false);
+			return new OwResult(false);
 		    }
 		}
 
 		if (!this.DockPlacement(originRegion)) {
-		    return new Result(false);
+		    return new OwResult(false);
 		}
 
 		//this.Tilemap[this.FeatureCoordinates["Bridge"].Y, this.FeatureCoordinates["Bridge"].X] = OverworldTiles.DOCK_W;
 		return await this.NextStep();
 	    }
-	    return new Result(false);
+	    return new OwResult(false);
 	}
 
-	public async Task<Result> CheckBridgeShores() {
+	public async Task<OwResult> CheckBridgeShores() {
 	    // If any of the previous passes messed up the bridge we need
 	    // to fix it.
 	    var traversable_tiles = new HashSet<byte>(OverworldTiles.TraversableRegionTypes[OverworldTiles.LAND_REGION]);
@@ -247,7 +248,7 @@ namespace FF1Lib.Procgen
 	    return await this.NextStep();
 	}
 
-	public async Task<Result> PlacePravoka() {
+	public async Task<OwResult> PlacePravoka() {
 	    if (this.bridgedRegion != -1) {
 		return await this.CoastalPlacement(OverworldTiles.PRAVOKA_CITY, this.Traversable_regionlist[this.bridgedRegion], true, false);
 	    } else {
@@ -255,7 +256,7 @@ namespace FF1Lib.Procgen
 	    }
 	}
 
-	public async Task<Result> PlaceInBridgedRegion(OwFeature feature) {
+	public async Task<OwResult> PlaceInBridgedRegion(PgFeature feature) {
 	    if (this.bridgedRegion == -1) {
 		return await this.NextStep();
 	    }
@@ -265,11 +266,11 @@ namespace FF1Lib.Procgen
 		    return await this.NextStep();
 		}
 	    }
-	    return new Result(false);
+	    return new OwResult(false);
 	}
 
-	public async Task<Result> PlaceOnCoast(OwFeature feature, bool eastOnly) {
-	    var tasks = new List<GenerationTask>();
+	public async Task<OwResult> PlaceOnCoast(PgFeature feature, bool eastOnly) {
+	    var tasks = new List<OwGenerationTask>();
 	    foreach (var w in this.Traversable_regionlist) {
 		if (w.RegionType == OverworldTiles.LAND) {
 		    if (w.Adjacent.Contains(OverworldTiles.MainOceanRegionId) &&
@@ -281,10 +282,10 @@ namespace FF1Lib.Procgen
 	    }
 	    tasks.Shuffle(this.rng);
 	    await Task.Yield();
-	    return new Result(tasks);
+	    return new OwResult(tasks);
 	}
 
-	public async Task<Result> CoastalPlacement(OwFeature feature, OwRegion region, bool fill, bool eastOnly) {
+	public async Task<OwResult> CoastalPlacement(PgFeature feature, OwRegion region, bool fill, bool eastOnly) {
 	    var points = new List<SCCoords>(region.Points);
 	    points.Shuffle(this.rng);
 	    int w = feature.Tiles.GetLength(1);
@@ -317,7 +318,7 @@ namespace FF1Lib.Procgen
 		}
 		return await this.NextStep();
 	    }
-	    return new Result(false);
+	    return new OwResult(false);
 	}
 
 	public ValueTuple<bool, SCCoords> CheckAirshipAccess(OwRegion region) {
@@ -429,8 +430,8 @@ namespace FF1Lib.Procgen
 	    }
 	}
 
-	public async Task<Result> PlaceIsolated(OwFeature feature, bool requireAirshipAccess) {
-	    var tasks = new List<GenerationTask>();
+	public async Task<OwResult> PlaceIsolated(PgFeature feature, bool requireAirshipAccess) {
+	    var tasks = new List<OwGenerationTask>();
 	    foreach (var w in this.Traversable_regionlist) {
 		if (w.RegionType == OverworldTiles.LAND_REGION &&
 		    !this.Reachable_regions.Contains(w.RegionId))
@@ -457,10 +458,10 @@ namespace FF1Lib.Procgen
 	    }
 	    tasks.Shuffle(this.rng);
 	    await Task.Yield();
-	    return new Result(tasks);
+	    return new OwResult(tasks);
 	}
 
-	public async Task<Result> IsolatedPlacement(OwFeature feature, OwRegion region, bool requireAirshipAccess) {
+	public async Task<OwResult> IsolatedPlacement(PgFeature feature, OwRegion region, bool requireAirshipAccess) {
 	    if (!requireAirshipAccess) {
 		if (!this.Exclude_airship.Contains(region.RegionId)) {
 		    this.OwnPlacements();
@@ -478,12 +479,12 @@ namespace FF1Lib.Procgen
 		}
 		return await this.NextStep();
 	    } else {
-		return new Result(false);
+		return new OwResult(false);
 	    }
 	}
 
-	public async Task<Result> PlaceRequiringCanoe(OwFeature feature) {
-	    var tasks = new List<GenerationTask>();
+	public async Task<OwResult> PlaceRequiringCanoe(PgFeature feature) {
+	    var tasks = new List<OwGenerationTask>();
 	    foreach (var w in this.Traversable_regionlist) {
 		if (w.RegionType == OverworldTiles.LAND_REGION) {
 		    var r = CheckAirshipAccess(w);
@@ -496,10 +497,10 @@ namespace FF1Lib.Procgen
 	    }
 	    tasks.Shuffle(this.rng);
 	    await Task.Yield();
-	    return new Result(tasks);
+	    return new OwResult(tasks);
 	}
 
-	public async Task<Result> RequiresCanoePlacement(OwFeature feature, OwRegion region) {
+	public async Task<OwResult> RequiresCanoePlacement(PgFeature feature, OwRegion region) {
 	    if (!this.Exclude_airship.Contains(region.RegionId)) {
 		this.OwnPlacements();
 		this.Exclude_airship.Add(region.RegionId);
@@ -512,11 +513,11 @@ namespace FF1Lib.Procgen
 		}
 		return await this.NextStep();
 	    } else {
-		return new Result(false);
+		return new OwResult(false);
 	    }
 	}
 
-	public async Task<Result> PlaceInBiome(OwFeature feature, int[] biomes,
+	public async Task<OwResult> PlaceInBiome(PgFeature feature, int[] biomes,
 				   bool shipReachable,
 				   bool canoeReachable,
 				   bool airshipReachable,
@@ -565,7 +566,7 @@ namespace FF1Lib.Procgen
 		}
 	    }
 
-	    var tasks = new List<GenerationTask>();
+	    var tasks = new List<OwGenerationTask>();
 	    walkable.Shuffle(this.rng);
 	    islands.Shuffle(this.rng);
 
@@ -586,19 +587,19 @@ namespace FF1Lib.Procgen
 		}
 	    }
 
-	    return new Result(false);
+	    return new OwResult(false);
 	}
 
-	public async Task<Result> BiomePlacement(OwFeature feature, OwRegion region, bool shipReachable, int maxweight) {
+	public async Task<OwResult> BiomePlacement(PgFeature feature, OwRegion region, bool shipReachable, int maxweight) {
 	    var trav = this.Traversable_regionlist[this.Traversable_regionmap[region.Points[0].Y, region.Points[0].X]];
 	    var v = this.PlaceFeature(this.Biome_regionmap, region, feature, maxweight);
 	    if (!v.Item1) {
-		return new Result(false);
+		return new OwResult(false);
 	    }
 	    if (shipReachable) {
 		this.DockPlacement(trav);
 		if (!this.Reachable_regions.Contains(trav.RegionId)) {
-		    return new Result(false);
+		    return new OwResult(false);
 		}
 	    }
 
@@ -616,7 +617,7 @@ namespace FF1Lib.Procgen
 
 	    var points = new List<SCCoords>(region.Points);
 	    points.Shuffle(this.rng);
-	    OwFeature placed = null;
+	    PgFeature placed = null;
 		SCCoords placedAt = new SCCoords(0, 0);
 	    foreach (var p in points) {
 		var np = p.OwUp;
@@ -680,19 +681,19 @@ namespace FF1Lib.Procgen
 	    return false;
 	}
 
-	public async Task<Result> PlaceInTitanWestRegion(OwFeature feature) {
+	public async Task<OwResult> PlaceInTitanWestRegion(PgFeature feature) {
 	    var p = this.FeatureCoordinates["TitansTunnelWest"];
 	    var region = this.Traversable_regionlist[this.Traversable_regionmap[p.Y+1, p.X]];
 	    var r = this.PlaceFeature(this.Traversable_regionmap, region, feature);
 	    if (r.Item1) {
 		return await this.NextStep();
 	    } else {
-		return new Result(false);
+		return new OwResult(false);
 	    }
 	}
 
-	public async Task<Result> PlaceWaterfall(OwFeature feature) {
-	    var tasks = new List<GenerationTask>();
+	public async Task<OwResult> PlaceWaterfall(PgFeature feature) {
+	    var tasks = new List<OwGenerationTask>();
 	    foreach (var w in this.Traversable_regionlist) {
 		if (w.RegionType == OverworldTiles.RIVER_REGION) {
 		    var v = this.CheckIndirectAirshipAccess(w);
@@ -703,10 +704,10 @@ namespace FF1Lib.Procgen
 	    }
 	    tasks.Shuffle(this.rng);
 	    await Task.Yield();
-	    return new Result(tasks);
+	    return new OwResult(tasks);
 	}
 
-	public async Task<Result> WaterfallPlacement(OwFeature feature, OwRegion region) {
+	public async Task<OwResult> WaterfallPlacement(PgFeature feature, OwRegion region) {
 	    var points = new List<SCCoords>(region.Points);
 	    points.Shuffle(this.rng);
 	    foreach (var p in points) {
@@ -719,11 +720,11 @@ namespace FF1Lib.Procgen
 		    return await this.NextStep();
 		}
 	    }
-	    return new Result(false);
+	    return new OwResult(false);
 	}
 
-	public async Task<Result> PlaceInMountains(OwFeature feature) {
-	    var tasks = new List<GenerationTask>();
+	public async Task<OwResult> PlaceInMountains(PgFeature feature) {
+	    var tasks = new List<OwGenerationTask>();
 	    foreach (var w in this.Traversable_regionlist) {
 		if (w.RegionType == OverworldTiles.MOUNTAIN_REGION) {
 		    foreach (var i in w.Adjacent) {
@@ -739,13 +740,13 @@ namespace FF1Lib.Procgen
 	    }
 	    tasks.Shuffle(this.rng);
 	    await Task.Yield();
-	    return new Result(tasks);
+	    return new OwResult(tasks);
 	}
 
-	public async Task<Result> MountainRiverPlacement(OwFeature feature, OwRegion mtnRegion, OwRegion riverRegion) {
+	public async Task<OwResult> MountainRiverPlacement(PgFeature feature, OwRegion mtnRegion, OwRegion riverRegion) {
 	    var points = new List<SCCoords>(mtnRegion.Points);
 	    points.Shuffle(this.rng);
-	    OwFeature caveFeature = null;
+	    PgFeature caveFeature = null;
 	    if (feature.MountainCave) {
 		caveFeature = feature;
 		if (this.rng.Between(0, 1) == 0) {
@@ -770,11 +771,11 @@ namespace FF1Lib.Procgen
 		    }
 		}
 	    }
-	    return new Result(false);
+	    return new OwResult(false);
 	}
 
-	public async Task<Result> PlaceCanal(bool makeCanalRequired) {
-	    var tasks = new List<GenerationTask>();
+	public async Task<OwResult> PlaceCanal(bool makeCanalRequired) {
+	    var tasks = new List<OwGenerationTask>();
 	    foreach (var w in this.Traversable_regionlist) {
 		if (w.RegionType == OverworldTiles.LAND_REGION &&
 		    !this.Reachable_regions.Contains(w.RegionId) &&
@@ -786,10 +787,10 @@ namespace FF1Lib.Procgen
 	    }
 	    tasks.Shuffle(this.rng);
 	    await Task.Yield();
-	    return new Result(tasks);
+	    return new OwResult(tasks);
 	}
 
-	public async Task<Result> CanalPlacement(OwRegion region, bool makeCanalRequired) {
+	public async Task<OwResult> CanalPlacement(OwRegion region, bool makeCanalRequired) {
 	    if (makeCanalRequired) {
 		if (!this.Exclude_airship.Contains(region.RegionId)) {
 		    this.OwnPlacements();
@@ -837,24 +838,24 @@ namespace FF1Lib.Procgen
 		    // other docks and airship landing spots.
 
 		    if (!this.MakeIsolated(region.RegionId, null)) {
-			return new Result(false);
+			return new OwResult(false);
 		    }
 		}
 
 		return await this.NextStep();
 	    }
-	    return new Result(false);
+	    return new OwResult(false);
 	}
 
-	public async Task<Result> PlaceInCanalRegion(OwFeature feature) {
+	public async Task<OwResult> PlaceInCanalRegion(PgFeature feature) {
 	    var r = this.PlaceFeature(this.Traversable_regionmap, this.Traversable_regionlist[this.canalRegion], feature);
 	    if (r.Item1) {
 		return await this.NextStep();
 	    }
-	    return new Result(false);
+	    return new OwResult(false);
 	}
 
-	public async Task<Result> PreventAirshipLanding() {
+	public async Task<OwResult> PreventAirshipLanding() {
 	    this.OwnTilemap();
 	    foreach (var er in Exclude_airship) {
 		if (er == this.airshipDesertRegion) {

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using FF1Lib.Sanity;
 
 namespace FF1Lib
 {
@@ -7,7 +8,7 @@ namespace FF1Lib
 		public const int RowLength = 64;
 		public const int RowCount = 64;
 
-		private readonly byte[,] _map;
+		private byte[,] _map;
 
 		public byte this[int y, int x]
 		{
@@ -71,6 +72,11 @@ namespace FF1Lib
 					_map[y, x] = fill;
 				}
 			}
+		}
+
+		public byte[,] MapBytes {
+		    get { return this._map; }
+		    set { this._map = value; }
 		}
 
 		public void SwapSections(int xs1, int ys1, int xs2, int ys2, int xt, int yt)
@@ -193,9 +199,16 @@ namespace FF1Lib
 		}
 		public void Fill((int x, int y) coord, (int w, int h) size, byte fill)
 		{
-			for (int i = coord.x; i < coord.x + size.w; ++ i)
+		    int x = coord.x;
+		    int y = coord.y;
+		    int w = size.w;
+		    int h = size.h;
+		    if (h < 0) { y += h; h = -h; }
+		    if (w < 0) { x += w; w = -w; }
+
+			for (int i = x; i < x + w; ++ i)
 			{
-				for (int j = coord.y; j < coord.y + size.h; ++j)
+				for (int j = y; j < y + h; ++j)
 				{
 					this[j, i] = fill;
 				}
@@ -232,6 +245,8 @@ namespace FF1Lib
 			}
 			return section;
 		}
+
+
 
 		public bool Filter(Dictionary<byte[,], byte[,]> filter, (int x, int y) filterSize)
 		{
@@ -387,7 +402,7 @@ namespace FF1Lib
 		}
 	}
 
-	public enum Direction
+	public enum Direction : int
 	{
 		Up = 0,
 		Down,

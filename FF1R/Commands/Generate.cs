@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace FF1R.Commands
 {
 	using System;

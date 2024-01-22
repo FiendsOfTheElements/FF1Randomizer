@@ -206,31 +206,31 @@ namespace FF1Lib.Procgen
 	    BAHAMUTS_CAVE, LEFEIN, MARSH_CAVE
 	};
 
-	public OwTileFilter expand_mountains;
-	public OwTileFilter expand_oceans;
-	public OwTileFilter connect_diagonals;
-	public OwTileFilter remove_salients;
+	public PgTileFilter expand_mountains;
+	public PgTileFilter expand_oceans;
+	public PgTileFilter connect_diagonals;
+	public PgTileFilter remove_salients;
 
-	public OwTileFilter apply_shores1;
-	public OwTileFilter apply_shores2;
-	public OwTileFilter apply_shores3;
-	public OwTileFilter apply_shores4;
-	public OwTileFilter apply_shores5;
-	public OwTileFilter apply_shores6;
-	public OwTileFilter apply_shores7;
+	public PgTileFilter apply_shores1;
+	public PgTileFilter apply_shores2;
+	public PgTileFilter apply_shores3;
+	public PgTileFilter apply_shores4;
+	public PgTileFilter apply_shores5;
+	public PgTileFilter apply_shores6;
+	public PgTileFilter apply_shores7;
 
-	public OwTileFilter prune_forests;
-	public OwTileFilter polish_mountains1;
-	public OwTileFilter polish_mountains2;
+	public PgTileFilter prune_forests;
+	public PgTileFilter polish_mountains1;
+	public PgTileFilter polish_mountains2;
 
-	public OwTileFilter mountain_borders;
-	public OwTileFilter river_borders;
-	public OwTileFilter desert_borders;
-	public OwTileFilter marsh_borders;
-	public OwTileFilter grass_borders;
-	public OwTileFilter forest_borders;
+	public PgTileFilter mountain_borders;
+	public PgTileFilter river_borders;
+	public PgTileFilter desert_borders;
+	public PgTileFilter marsh_borders;
+	public PgTileFilter grass_borders;
+	public PgTileFilter forest_borders;
 
-	public static OwFeature CONERIA_CITY_CASTLE = new OwFeature(new byte[,] {
+	public static PgFeature CONERIA_CITY_CASTLE = new PgFeature(new byte[,] {
 	    {None, None, None,                 None,                None,  None, None, None},
 	    {None, None, None, CONERIA_CASTLE_TOP_W, CONERIA_CASTLE_TOP_E, None, None, None},
 	    {None, None, CITY_WALL_NW, CONERIA_CASTLE_MID_W, CONERIA_CASTLE_MID_E, CITY_WALL_NE, None, None},
@@ -246,7 +246,7 @@ namespace FF1Lib.Procgen
 		{ "StartingLocation", new SCCoords(3, 5) }
 	    });
 
-	public static OwFeature CONERIA_CITY = new OwFeature(new byte[,] {
+	public static PgFeature CONERIA_CITY = new PgFeature(new byte[,] {
 	    {None, None, None,                 None,                None,  None, None, None},
 	    {None, None, CITY_WALL_NW, CITY_WALL_N, CITY_WALL_N, CITY_WALL_NE, None, None},
 	    {None, CITY_WALL_W1, CITY_WALL_W2, CITY_PAVED, CITY_PAVED,   CITY_WALL_E2, CITY_WALL_E1, None},
@@ -260,7 +260,7 @@ namespace FF1Lib.Procgen
 		{ "StartingLocation", new SCCoords(3, 5) }
 	    });
 
-	public static OwFeature CONERIA_CASTLE = new OwFeature(new byte[,] {
+	public static PgFeature CONERIA_CASTLE = new PgFeature(new byte[,] {
 	    {None, None, None,                 None,                None,  None, None, None},
 	    {None, None, None, CONERIA_CASTLE_TOP_W, CONERIA_CASTLE_TOP_E, None, None, None},
 	    {None, None, CITY_WALL_NW, CONERIA_CASTLE_MID_W, CONERIA_CASTLE_MID_E, CITY_WALL_NE, None, None},
@@ -272,7 +272,7 @@ namespace FF1Lib.Procgen
 		{ "ConeriaCastle1", new SCCoords(3, 3) }
 	    });
 
-	public static OwFeature TEMPLE_OF_FIENDS = new OwFeature(new byte[,] {
+	public static PgFeature TEMPLE_OF_FIENDS = new PgFeature(new byte[,] {
 	    {None, None,      None,      None, None, None},
 	    {None, None, TOF_TOP_W, TOF_TOP_E, None, None},
 	    {None, TOF_BOTTOM_W, TOF_ENTRANCE_W, TOF_ENTRANCE_E, TOF_BOTTOM_E, None},
@@ -281,7 +281,7 @@ namespace FF1Lib.Procgen
 		{ "TempleOfFiends1", new SCCoords(2, 2) },
 	    });
 
-	public static OwFeature PRAVOKA_CITY = new OwFeature(new byte[,] {
+	public static PgFeature PRAVOKA_CITY = new PgFeature(new byte[,] {
 	    {None, None, None, None, None, None, None},
 	    {None, None, CITY_WALL_NW, CITY_WALL_N, CITY_WALL_NE, None, None},
 	    {None, CITY_WALL_W1, CITY_WALL_W2, PRAVOKA, CITY_WALL_E2, CITY_WALL_E1, None},
@@ -295,7 +295,7 @@ namespace FF1Lib.Procgen
 		{ "Ship", new SCCoords(3, 6) },
 	    });
 
-	public static OwFeature PRAVOKA_CITY_MOAT = new OwFeature(new byte[,] {
+	public static PgFeature PRAVOKA_CITY_MOAT = new PgFeature(new byte[,] {
 	    {None, None,  None,         None,        None,         None, None, None, None, None, None},
 	    {None, OCEAN, OCEAN,       OCEAN,              OCEAN,        OCEAN,              OCEAN,           OCEAN, OCEAN, OCEAN, None},
 	    {None, OCEAN, None, None,         None,        None,         None, None, None, OCEAN, None},
@@ -312,7 +312,7 @@ namespace FF1Lib.Procgen
 		{ "Bridge", new SCCoords(5, 1) },
 	    });
 
-	public static OwFeature ELFLAND_CASTLE = new OwFeature(new byte[,] {
+	public static PgFeature ELFLAND_CASTLE = new PgFeature(new byte[,] {
 	    	    {None,               None,               None, None},
 		    {None, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_E, None},
 		    {None, ELFLAND_CASTLE_W, ELFLAND_CASTLE_E, None},
@@ -321,7 +321,7 @@ namespace FF1Lib.Procgen
 	    { "ElflandCastle", new SCCoords(2, 2) }
 	    });
 
-	public static OwFeature ASTOS_CASTLE = new OwFeature(new byte[,] {
+	public static PgFeature ASTOS_CASTLE = new PgFeature(new byte[,] {
 	    {None, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_E, None},
 	    {None, ASTOS_CASTLE_W, ASTOS_CASTLE_E, None},
 	    {None, None, None, None},
@@ -329,7 +329,7 @@ namespace FF1Lib.Procgen
 		{ "NorthwestCastle", new SCCoords(1, 1) },
 	    });
 
-	public static OwFeature ORDEALS_CASTLE = new OwFeature(new byte[,] {
+	public static PgFeature ORDEALS_CASTLE = new PgFeature(new byte[,] {
 	    {None, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_E, None},
 	    {None, ORDEALS_CASTLE_W, ORDEALS_CASTLE_E, None},
 	    {None, None, None, None},
@@ -337,7 +337,7 @@ namespace FF1Lib.Procgen
 		{ "CastleOrdeals1", new SCCoords(1, 1) }
 	    });
 
-	public static OwFeature ELFLAND_TOWN = new OwFeature(new byte[,] {
+	public static PgFeature ELFLAND_TOWN = new PgFeature(new byte[,] {
 	    {None,    None, None, None,    None, None},
 	    {None, ELFLAND, LAND, LAND, ELFLAND, None},
 	    {None, ELFLAND, LAND, LAND, ELFLAND, None},
@@ -347,7 +347,7 @@ namespace FF1Lib.Procgen
 		{ "Elfland", new SCCoords(1, 1) },
 	    });
 
-	public static OwFeature ELFLAND_TOWN_CASTLE = new OwFeature(new byte[,] {
+	public static PgFeature ELFLAND_TOWN_CASTLE = new PgFeature(new byte[,] {
 	    {None, LAND, LAND, LAND, LAND, None},
 	    {LAND, LAND, SMALL_CASTLE_TOP_W, SMALL_CASTLE_TOP_E, LAND, LAND},
 	    {LAND, ELFLAND, ELFLAND_CASTLE_W, ELFLAND_CASTLE_E, ELFLAND, LAND},
@@ -358,7 +358,7 @@ namespace FF1Lib.Procgen
 	    { "ElflandCastle", new SCCoords(2, 2) }
 	    });
 
-	public static OwFeature MELMOND_TOWN = new OwFeature(new byte[,] {
+	public static PgFeature MELMOND_TOWN = new PgFeature(new byte[,] {
 	    {None, MELMOND, None,    None},
 	    {None, MELMOND, MELMOND, None},
 	    {None, None, None,    None},
@@ -366,7 +366,7 @@ namespace FF1Lib.Procgen
 		{ "Melmond", new SCCoords(1, 1) },
 	    });
 
-	public static OwFeature ONRAC_TOWN = new OwFeature(new byte[,] {
+	public static PgFeature ONRAC_TOWN = new PgFeature(new byte[,] {
 	    {None, None, None},
 	    {None, ONRAC, ONRAC},
 	    {None, ONRAC, ONRAC},
@@ -375,7 +375,7 @@ namespace FF1Lib.Procgen
 		{ "Onrac", new SCCoords(1, 1) },
 	    });
 
-	public static OwFeature LEFEIN_CITY = new OwFeature(new byte[,] {
+	public static PgFeature LEFEIN_CITY = new PgFeature(new byte[,] {
 	    {None,          None,             None,       None,             None,          None, None},
 	    {None, None, CITY_WALL_NW, CITY_WALL_N, CITY_WALL_NE, None, None},
 	    {None, CITY_WALL_W1, CITY_WALL_W2, LEFEIN, CITY_WALL_E2, CITY_WALL_E1, None},
@@ -386,7 +386,7 @@ namespace FF1Lib.Procgen
 		{ "Lefein", new SCCoords(3, 3) },
 	    });
 
-	public static OwFeature CRESCENT_LAKE_CITY = new OwFeature(new byte[,] {
+	public static PgFeature CRESCENT_LAKE_CITY = new PgFeature(new byte[,] {
 	    {None, None, None,         None,        None,         None, None},
 	    {None, None, CITY_WALL_NW, CITY_WALL_N, CITY_WALL_NE, None, None},
 	    {None, CITY_WALL_W1, CITY_WALL_W2, CITY_PAVED, CITY_WALL_E2, CITY_WALL_E1, None},
@@ -399,7 +399,7 @@ namespace FF1Lib.Procgen
 		{ "CrescentLake", new SCCoords(2, 5) },
 	    });
 
-	public static OwFeature GAIA_TOWN = new OwFeature(new byte[,] {
+	public static PgFeature GAIA_TOWN = new PgFeature(new byte[,] {
 	    {None, None, None, None, None},
 	    {None, None, GAIA, GAIA, None},
 	    {None, GAIA, GAIA, None, None},
@@ -408,7 +408,7 @@ namespace FF1Lib.Procgen
 		{ "Gaia", new SCCoords(2, 2) },
 	    });
 
-	public static OwFeature MIRAGE_TOWER = new OwFeature(new byte[,] {
+	public static PgFeature MIRAGE_TOWER = new PgFeature(new byte[,] {
 	    {None, None, None, None},
 	    {None, MIRAGE_TOP, DESERT, None, },
 	    {None, MIRAGE_BOTTOM, MIRAGE_SHADOW, None, },
@@ -417,7 +417,7 @@ namespace FF1Lib.Procgen
 		{ "MirageTower1", new SCCoords(1, 2) },
 	    });
 
-	public static OwFeature VOLCANO = new OwFeature(new byte[,] {
+	public static PgFeature VOLCANO = new PgFeature(new byte[,] {
 	    {MOUNTAIN,  RIVER, RIVER,                   RIVER, RIVER, MOUNTAIN},
 	    {RIVER, RIVER, LAND,                     LAND, RIVER, RIVER},
 	    {RIVER, LAND,  VOLCANO_TOP_W,   VOLCANO_TOP_E, LAND,  RIVER},
@@ -428,7 +428,7 @@ namespace FF1Lib.Procgen
 		{ "GurguVolcano1", new SCCoords(3, 2) },
 	    });
 
-	public static OwFeature DRY_VOLCANO = new OwFeature(new byte[,] {
+	public static PgFeature DRY_VOLCANO = new PgFeature(new byte[,] {
 	    {None,   LAND,              LAND, None},
 	    {LAND, VOLCANO_TOP_W,   VOLCANO_TOP_E, LAND},
 	    {LAND, VOLCANO_BASE_W, VOLCANO_BASE_E, LAND},
@@ -437,7 +437,7 @@ namespace FF1Lib.Procgen
 		{ "GurguVolcano1", new SCCoords(3, 2) },
 	    });
 
-	public static OwFeature OASIS = new OwFeature(new byte[,] {
+	public static PgFeature OASIS = new PgFeature(new byte[,] {
 	    {DESERT_SE, DESERT_NW,      DESERT_NE, FOREST, FOREST},
 	    {DESERT_NW, CARAVAN_DESERT, DESERT_SE, FOREST, FOREST},
 	    {DESERT_SW, DESERT_SE,      FOREST, FOREST, FOREST},
@@ -446,7 +446,7 @@ namespace FF1Lib.Procgen
 	}, new Dictionary<string, SCCoords> {
 	    });
 
-	public static OwFeature OASIS2 = new OwFeature(new byte[,] {
+	public static PgFeature OASIS2 = new PgFeature(new byte[,] {
 	    {     None, DESERT_NW,      DESERT_NE, FOREST, FOREST},
 	    {DESERT_NW, CARAVAN_DESERT, DESERT_SE, FOREST, FOREST},
 	    {DESERT_SW, DESERT_SE,      FOREST, FOREST, FOREST},
@@ -455,7 +455,7 @@ namespace FF1Lib.Procgen
 	}, new Dictionary<string, SCCoords> {
 	    });
 
-	public static OwFeature N_DOCK_STRUCTURE = new OwFeature(new byte[,] {
+	public static PgFeature N_DOCK_STRUCTURE = new PgFeature(new byte[,] {
 	    {None, DOCK_E,  OCEAN, None},
 	    {None, DOCK_E,  OCEAN, None},
 	    {None, DOCK_E,  OCEAN, None},
@@ -464,7 +464,7 @@ namespace FF1Lib.Procgen
 		{ "Ship", new SCCoords(0, 0) },
 	    });
 
-	public static OwFeature S_DOCK_STRUCTURE = new OwFeature(new byte[,] {
+	public static PgFeature S_DOCK_STRUCTURE = new PgFeature(new byte[,] {
 	    {  None, None,   None,   None,     None},
 	    {  None, DOCK_SE, DOCK_S, DOCK_SW, None},
 	    {  None, OCEAN,   OCEAN,  OCEAN,   None},
@@ -472,7 +472,7 @@ namespace FF1Lib.Procgen
 		{ "Ship", new SCCoords(0, 0) },
 	    });
 
-	public static OwFeature W_DOCK_STRUCTURE = new OwFeature(new byte[,] {
+	public static PgFeature W_DOCK_STRUCTURE = new PgFeature(new byte[,] {
 	    {   None,   None,   None,  None},
 	    {DOCK_S, DOCK_S,  DOCK_SW, None},
 	    {OCEAN,   OCEAN,  DOCK_W,  None},
@@ -481,7 +481,7 @@ namespace FF1Lib.Procgen
 		{ "Ship", new SCCoords(0, 0) },
 	    });
 
-	public static OwFeature E_DOCK_STRUCTURE = new OwFeature(new byte[,] {
+	public static PgFeature E_DOCK_STRUCTURE = new PgFeature(new byte[,] {
 	    {   None, None,   None,   None},
 	    {   None, DOCK_SE, DOCK_S, DOCK_S},
 	    {   None, DOCK_E,   OCEAN,  OCEAN},
@@ -490,7 +490,7 @@ namespace FF1Lib.Procgen
 		{ "Ship", new SCCoords(0, 0) },
 	    });
 
-	public static OwFeature E_CANAL_STRUCTURE = new OwFeature(new byte[,] {
+	public static PgFeature E_CANAL_STRUCTURE = new PgFeature(new byte[,] {
 	    {None, None,     None,   None,  None,  None,  None},
 	    {None, DOCK_SE, DOCK_S, DOCK_SW, None, None,    None},
 	    {None, DOCK_E,   OCEAN,  OCEAN, OCEAN, OCEAN, OCEAN},
@@ -500,7 +500,7 @@ namespace FF1Lib.Procgen
 		{"Canal", new SCCoords(5, 2)}
 	    });
 
-	public static OwFeature W_CANAL_STRUCTURE = new OwFeature(new byte[,] {
+	public static PgFeature W_CANAL_STRUCTURE = new PgFeature(new byte[,] {
 	    {None,     None,   None,  None,  None,  None, None},
 	    {None, None,    None, DOCK_S, DOCK_S,  DOCK_SW, None},
 	    {OCEAN,   OCEAN,  OCEAN, OCEAN, OCEAN, DOCK_W, None},
@@ -510,21 +510,21 @@ namespace FF1Lib.Procgen
 		{"Canal", new SCCoords(1, 2)}
 	    });
 
-	public static OwFeature MOUNTAIN_CAVE_FEATURE = new OwFeature(new byte[,] {
+	public static PgFeature MOUNTAIN_CAVE_FEATURE = new PgFeature(new byte[,] {
 	    {None, None, None, None, None},
 	    {None, None,  None, None, None},
 	    {None, GRASS, GRASS, GRASS, None},
 	    {None, GRASS, GRASS, GRASS, None},
 	    }, new Dictionary<string, SCCoords> { });
 
-	public static OwFeature FOREST_MOUNTAIN_CAVE_FEATURE = new OwFeature(new byte[,] {
+	public static PgFeature FOREST_MOUNTAIN_CAVE_FEATURE = new PgFeature(new byte[,] {
 	    {None, None, None, None, None},
 	    {None, None,  None, None, None},
 	    {None, FOREST, FOREST, FOREST, None},
 	    {None, FOREST, FOREST, FOREST, None},
 	    }, new Dictionary<string, SCCoords> { });
 
-	public static OwFeature AIRSHIP_FEATURE = new OwFeature(new byte[,] {
+	public static PgFeature AIRSHIP_FEATURE = new PgFeature(new byte[,] {
 	    {None,        None,      None,         None,           None,         None,        None,        None, None},
 	    {None, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, None},
 	    {None, MOUNTAIN,  MOUNTAIN,   MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, MOUNTAIN, None},
@@ -537,28 +537,28 @@ namespace FF1Lib.Procgen
 		{"Airship", new SCCoords(4, 3)}
 	    });
 
-	public static OwFeature EARTH_CAVE_FEATURE = new OwFeature(EARTH_CAVE, "EarthCave1", true);
-	public static OwFeature DWARF_CAVE_FEATURE = new OwFeature(DWARF_CAVE, "DwarfCave", true);
-	public static OwFeature TITANS_TUNNEL_WEST = new OwFeature(TITAN_CAVE_W, "TitansTunnelWest", true);
-	public static OwFeature TITANS_TUNNEL_EAST = new OwFeature(TITAN_CAVE_E, "TitansTunnelEast", true);
-	public static OwFeature MATOYAS_CAVE_FEATURE = new OwFeature(MATOYAS_CAVE, "MatoyasCave", true);
-	public static OwFeature SARDAS_CAVE_FEATURE = new OwFeature(SARDAS_CAVE, "SardasCave", true);
-	public static OwFeature ICE_CAVE_FEATURE = new OwFeature(ICE_CAVE, "IceCave1", true);
+	public static PgFeature EARTH_CAVE_FEATURE = new PgFeature(EARTH_CAVE, "EarthCave1", true);
+	public static PgFeature DWARF_CAVE_FEATURE = new PgFeature(DWARF_CAVE, "DwarfCave", true);
+	public static PgFeature TITANS_TUNNEL_WEST = new PgFeature(TITAN_CAVE_W, "TitansTunnelWest", true);
+	public static PgFeature TITANS_TUNNEL_EAST = new PgFeature(TITAN_CAVE_E, "TitansTunnelEast", true);
+	public static PgFeature MATOYAS_CAVE_FEATURE = new PgFeature(MATOYAS_CAVE, "MatoyasCave", true);
+	public static PgFeature SARDAS_CAVE_FEATURE = new PgFeature(SARDAS_CAVE, "SardasCave", true);
+	public static PgFeature ICE_CAVE_FEATURE = new PgFeature(ICE_CAVE, "IceCave1", true);
 
-	public static OwFeature MARSH_CAVE_FEATURE = new OwFeature(MARSH_CAVE, "MarshCave1", false);
-	public static OwFeature BAHAMUTS_CAVE_FEATURE = new OwFeature(BAHAMUTS_CAVE, "BahamutCave1", false);
-	public static OwFeature CARDIA_1_FEATURE = new OwFeature(CARDIA_1, "Cardia1", false);
-	public static OwFeature CARDIA_2_FEATURE = new OwFeature(CARDIA_2, "Cardia2", false);
-	public static OwFeature CARDIA_4_FEATURE = new OwFeature(CARDIA_4, "Cardia4", false);
-	public static OwFeature CARDIA_5_FEATURE = new OwFeature(CARDIA_5, "Cardia5", false);
-	public static OwFeature CARDIA_6_FEATURE = new OwFeature(CARDIA_6, "Cardia6", false);
+	public static PgFeature MARSH_CAVE_FEATURE = new PgFeature(MARSH_CAVE, "MarshCave1", false);
+	public static PgFeature BAHAMUTS_CAVE_FEATURE = new PgFeature(BAHAMUTS_CAVE, "BahamutCave1", false);
+	public static PgFeature CARDIA_1_FEATURE = new PgFeature(CARDIA_1, "Cardia1", false);
+	public static PgFeature CARDIA_2_FEATURE = new PgFeature(CARDIA_2, "Cardia2", false);
+	public static PgFeature CARDIA_4_FEATURE = new PgFeature(CARDIA_4, "Cardia4", false);
+	public static PgFeature CARDIA_5_FEATURE = new PgFeature(CARDIA_5, "Cardia5", false);
+	public static PgFeature CARDIA_6_FEATURE = new PgFeature(CARDIA_6, "Cardia6", false);
 
-	public static OwFeature WATERFALL_FEATURE = new OwFeature(WATERFALL, "Waterfall", false);
+	public static PgFeature WATERFALL_FEATURE = new PgFeature(WATERFALL, "Waterfall", false);
 
 	public HashSet<byte> airship_landable;
 
     public OverworldTiles() {
-        this.expand_mountains = new OwTileFilter(
+        this.expand_mountains = new PgTileFilter(
             new Rule[] {
             new Rule(new byte[3,3] {
                 {MOUNTAIN, _, _},
@@ -608,7 +608,7 @@ namespace FF1Lib.Procgen
             },
             null, new HashSet<byte>(new byte[] {LAND, OCEAN, MOUNTAIN}), null);
 
-        this.expand_oceans = new OwTileFilter(
+        this.expand_oceans = new PgTileFilter(
             new Rule[] {
             new Rule(new byte[3,3] {
                 {OCEAN, _, _},
@@ -658,7 +658,7 @@ namespace FF1Lib.Procgen
             },
             null, new HashSet<byte>(new byte[] {LAND, OCEAN, MOUNTAIN}), null);
 
-        this.connect_diagonals = new OwTileFilter(
+        this.connect_diagonals = new PgTileFilter(
             new Rule[] {
             new Rule(new byte[3,3] {
                 {STAR, RIVER, _},
@@ -805,7 +805,7 @@ namespace FF1Lib.Procgen
 	airship_landable.Add(GRASS_SE);
 	airship_landable.Add(LAND_NO_FIGHT);
 
-        this.apply_shores1 = new OwTileFilter(
+        this.apply_shores1 = new PgTileFilter(
             new Rule[] {
 		new Rule(new byte[3,3] {
 		    { STAR,   STAR,     STAR},
@@ -856,7 +856,7 @@ namespace FF1Lib.Procgen
 		    SHORE_SW),
             }, allTiles, non_water_tiles, null);
 
-	this.apply_shores2 = new OwTileFilter(
+	this.apply_shores2 = new PgTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR, STAR,   STAR},
@@ -956,7 +956,7 @@ namespace FF1Lib.Procgen
 		    SHORE_NE)
 	    }, allTiles, non_water_tiles, null);
 
-	this.apply_shores3 = new OwTileFilter(
+	this.apply_shores3 = new PgTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR, OCEAN,   STAR},
@@ -1004,7 +1004,7 @@ namespace FF1Lib.Procgen
 	    }, allTiles, airship_landable, null);
 
 
-	this.apply_shores4 = new OwTileFilter(
+	this.apply_shores4 = new PgTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR, STAR,   STAR},
@@ -1028,7 +1028,7 @@ namespace FF1Lib.Procgen
 		    SHORE_S),
 	    }, allTiles, non_shore_tiles, null);
 
-	this.apply_shores5 = new OwTileFilter(
+	this.apply_shores5 = new PgTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR, STAR,   STAR},
@@ -1052,7 +1052,7 @@ namespace FF1Lib.Procgen
 		    SHORE_E),
 	    }, allTiles, non_shore_tiles, null);
 
-	this.apply_shores6 = new OwTileFilter(
+	this.apply_shores6 = new PgTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR,     STAR, STAR},
@@ -1066,7 +1066,7 @@ namespace FF1Lib.Procgen
 		    SHORE_S),
 	    }, allTiles, non_shore_tiles, null);
 
-	this.apply_shores7 = new OwTileFilter(
+	this.apply_shores7 = new PgTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {LAND,     STAR, STAR},
@@ -1090,7 +1090,7 @@ namespace FF1Lib.Procgen
 		    SHORE_S),
 	    }, allTiles, non_shore_tiles, null);
 
-	this.mountain_borders = new OwTileFilter(
+	this.mountain_borders = new PgTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR, STAR,       STAR},
@@ -1134,7 +1134,7 @@ namespace FF1Lib.Procgen
 		    MOUNTAIN_S),
 	    }, allTiles, non_mountain_tiles, null);
 
-	this.river_borders = new OwTileFilter(
+	this.river_borders = new PgTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR, _,   STAR},
@@ -1158,7 +1158,7 @@ namespace FF1Lib.Procgen
 		    RIVER_SW),
 	    }, allTiles, non_water_tiles, null);
 
-	this.desert_borders = new OwTileFilter(
+	this.desert_borders = new PgTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {   STAR, STAR, STAR},
@@ -1237,7 +1237,7 @@ namespace FF1Lib.Procgen
 		    DESERT_SW),
 	    }, allTiles, non_desert_tiles, pit_caves);
 
-	this.marsh_borders = new OwTileFilter(
+	this.marsh_borders = new PgTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR, _,   STAR},
@@ -1261,7 +1261,7 @@ namespace FF1Lib.Procgen
 		    MARSH_SW),
 	    }, allTiles, non_marsh_tiles, null);
 
-	this.grass_borders = new OwTileFilter(
+	this.grass_borders = new PgTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR,   _,  STAR},
@@ -1305,7 +1305,7 @@ namespace FF1Lib.Procgen
 		    GRASS_SW),
 	    }, allTiles, non_grass_tiles, null);
 
-	this.forest_borders = new OwTileFilter(
+	this.forest_borders = new PgTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR, STAR,       STAR},
@@ -1349,7 +1349,7 @@ namespace FF1Lib.Procgen
 		    FOREST_S),
 	    }, allTiles, non_forest_tiles, null);
 
-	this.prune_forests = new OwTileFilter(
+	this.prune_forests = new PgTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR, STAR,     STAR},
@@ -1380,7 +1380,7 @@ namespace FF1Lib.Procgen
 
 	    }, allTiles, null, null);
 
-	this.polish_mountains1 = new OwTileFilter(
+	this.polish_mountains1 = new PgTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR, STAR,     STAR},
@@ -1428,7 +1428,7 @@ namespace FF1Lib.Procgen
 		     OCEAN),
 	    }, allTiles, mountain_tiles, null);
 
-	this.polish_mountains2 = new OwTileFilter(
+	this.polish_mountains2 = new PgTileFilter(
 	    new Rule[] {
 		new Rule(new byte[3,3] {
 		    {STAR, STAR,     STAR},
@@ -1474,7 +1474,7 @@ namespace FF1Lib.Procgen
             }
         }
 
-        this.remove_salients = new OwTileFilter(BiomeRegionTypes, BiomeRegionTypeMap);
+        this.remove_salients = new PgTileFilter(BiomeRegionTypes, BiomeRegionTypeMap);
     }
 
 
