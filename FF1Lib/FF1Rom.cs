@@ -294,7 +294,7 @@ public partial class FF1Rom : NesRom
 		    }
 		}
 
-		if (flags.ProcgenEarth) {
+		if ((bool)flags.ProcgenEarth) {
 		    this.LoadPregenDungeon(rng, maps, teleporters, overworldMap, npcdata, "earthcaves.zip");
 
 		    // Here's the code to generate from scratch, but it takes too long in the browser.
@@ -616,7 +616,7 @@ public partial class FF1Rom : NesRom
 
 		if (flags.SpeedHacks)
 		{
-			SpeedHacksMoveNpcs(!flags.ProcgenEarth);
+			SpeedHacksMoveNpcs(!(bool)flags.ProcgenEarth);
 		}
 
 		if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)

@@ -3740,7 +3740,7 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EFGWaterfall"));
 			}
 		}
-		public bool ProcgenEarth
+		public bool? ProcgenEarth
 		{
 			get => Flags.ProcgenEarth;
 			set
