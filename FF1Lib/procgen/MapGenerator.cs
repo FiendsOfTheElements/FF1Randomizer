@@ -72,7 +72,7 @@ namespace FF1Lib.Procgen
 							{ 0x03, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x05 },
 							{ 0x03, 0x46, 0x46, 0x46, 0x46, 0x46, 0x46, 0x05 },
 							{ 0x06, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x08 }},
-						NPCs = new List<NPC> { new NPC { Index = 0, Coord = (5, 2), InRoom = true, Stationary = false } },
+						NPCs = new List<NPC> { new NPC { ObjectId = ObjectId.CubeBot, Index = 0, Coord = (5, 2), InRoom = true, Stationary = false } },
 					}
 				};
 				reqs.Portals = new byte[] { (byte)Tile.WarpUp };
