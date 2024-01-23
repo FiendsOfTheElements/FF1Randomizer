@@ -957,6 +957,7 @@ namespace FF1Lib
 
 					if (Data[offset] == (byte)mapObjId)
 					{
+					        tempNPC.ObjectId = mapObjId;
 						tempNPC.Index = i;
 						tempNPC.Coord = (Data[offset + 1] & 0x3F, Data[offset + 2]);
 						tempNPC.InRoom = (Data[offset + 1] & 0x80) > 0;
