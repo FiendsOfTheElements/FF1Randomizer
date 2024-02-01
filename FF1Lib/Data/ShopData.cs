@@ -227,5 +227,27 @@
 		{
 			Shops.First(s => s.Index == shop.Index).Entries = shop.Entries;
 		}
+		public ItemShopSlot UpdateShopSlotAddress(ItemShopSlot itemShop)
+		{
+			var targetShop = Shops.Find(s => s.Index == (itemShop.ShopIndex - 1));
+			var itemSlot = int.Parse(itemShop.Name.Last().ToString()) - 1;
+
+			// If the slot was removed by ShopKiller, take first slot
+			if (targetShop.Entries.Count < (itemSlot + 1))
+			{
+				itemSlot = 0;
+			}
+
+			return new(GetShopEntryPointer(targetShop, itemSlot), itemShop.Name, itemShop.MapLocation, itemShop.Item, (byte)targetShop.Index);
+		}
+		public void UpdateShopSlotPlacement(List<IRewardSource> placement)
+		{
+			ItemShopSlot placedShopSlot = (ItemShopSlot)placement.First(s => s.GetType() == typeof(ItemShopSlot));
+
+			ItemShopSlot newShopSlot = UpdateShopSlotAddress(placedShopSlot);
+
+			placement.Remove(placedShopSlot);
+			placement.Add(newShopSlot);
+		}
 	}
 }

@@ -799,6 +799,9 @@ public partial class FF1Rom : NesRom
 			shopData.StoreData();
 		}
 
+		// This need to be after the last modification of shopData 
+		shopData.UpdateShopSlotPlacement(generatedPlacement);
+		
 		//has to be done before modifying itemnames and after modifying spellnames...
 		extConsumables.LoadSpells();
 
