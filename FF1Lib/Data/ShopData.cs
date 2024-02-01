@@ -230,12 +230,12 @@
 		public ItemShopSlot UpdateShopSlotAddress(ItemShopSlot itemShop)
 		{
 			var targetShop = Shops.Find(s => s.Index == (itemShop.ShopIndex - 1));
-			var itemSlot = int.Parse(itemShop.Name.Last().ToString()) - 1;
+			var itemSlot = targetShop.Entries.FindIndex(e => e == itemShop.Item);
 
-			// If the slot was removed by ShopKiller, take first slot
-			if (targetShop.Entries.Count < (itemSlot + 1))
+			// If the slot was removed by ShopKiller, remove slot from placement
+			if (itemSlot < 0 || (itemShop.Item == Item.Soft && targetShop.Entries.Count == 1))
 			{
-				itemSlot = 0;
+				return null;
 			}
 
 			return new(GetShopEntryPointer(targetShop, itemSlot), itemShop.Name, itemShop.MapLocation, itemShop.Item, (byte)targetShop.Index);
@@ -247,7 +247,10 @@
 			ItemShopSlot newShopSlot = UpdateShopSlotAddress(placedShopSlot);
 
 			placement.Remove(placedShopSlot);
-			placement.Add(newShopSlot);
+			if (newShopSlot != null)
+			{
+				placement.Add(newShopSlot);
+			}
 		}
 	}
 }
