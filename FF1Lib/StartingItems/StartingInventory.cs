@@ -2,31 +2,116 @@
 
 namespace FF1Lib
 {
-	public class StartingKeyItems
+	public enum StartingItemSet
+	{
+		[Description("None")]
+		None,
+
+		[Description("SafetyBit")]
+		SafetyBit,
+
+		[Description("Beggar's Choice")]
+		BeggarsChoice,
+
+		[Description("Just Tents")]
+		JustTents,
+
+		[Description("Explorer Pack")]
+		ExplorerStartingPack,
+
+		[Description("Real Estate")]
+		RealEstate,
+
+		[Description("Warrior's Standard")]
+		WarriorsStandard,
+
+		[Description("Royal Packmule")]
+		RoyalPackmule,
+
+		[Description("Duckling Boon")]
+		DucklingBoon,
+
+		[Description("R. Beggar's Choice")]
+		RandomizedBeggarsChoice,
+
+		[Description("R. Explorer Pack")]
+		RandomizedExplorerStartingPack,
+
+		[Description("R. Warrior's Standard")]
+		RandomizedWarriorsStandard,
+
+		[Description("R. Royal Packmule")]
+		RandomizedRoyalPackmule,
+
+		[Description("R. High Rolling")]
+		RandomizedHighRolling,
+
+		[Description("Randomized")]
+		Randomized,
+	}
+
+	public enum ExtStartingItemSet
+	{
+		[Description("None")]
+		None,
+
+		[Description("Lifeline")]
+		Lifeline,
+
+		[Description("Just Smokes")]
+		JustSmokes,
+
+		[Description("Bangs and Smokes")]
+		BangsAndSmokes,
+
+		[Description("Jester's Secret")]
+		JestersSecret,
+
+		[Description("Adventurer's Fortune")]
+		AdventurersFortune,
+
+		[Description("Blackbelt's Favorite")]
+		BlackbeltsFavorite,
+
+		[Description("Illegal Advantage")]
+		IllegalAdvantage,
+
+		[Description("R. Jester's Secret")]
+		RandomizedJestersSecret,
+
+		[Description("R. Adventurer's Fortune")]
+		RandomizedAdventurersFortune,
+
+		[Description("R. Blackbelt's Favorite")]
+		RandomizedBlackbeltsFavorite,
+
+		[Description("R. High Rolling")]
+		RandomizedHighRolling,
+
+		[Description("Randomized")]
+		Randomized,
+	}
+
+	public class StartingInventory
 	{
 		MT19337 rng;
 		Flags flags;
 		FF1Rom rom;
 
-		MemTable<byte, Item> KeyItemData;
+		StartingItems ItemData;
 
-		public StartingKeyItems(MT19337 _rng, Flags _flags, FF1Rom _rom)
+		public StartingInventory(MT19337 _rng, Flags _flags, FF1Rom _rom)
 		{
 			rng = _rng;
 			flags = _flags;
 			rom = _rom;
 
-			KeyItemData = new MemTable<byte, Item>(_rom, 0x3000, 0x20);
+			ItemData = new StartingItems(rom);
 		}
 
-		public void SetStartingKeyItems(List<Item> items)
+		public void SetStartingInventory()
 		{
-			KeyItemData.LoadTable();
-
-			foreach(var ki in items)
-			{
-				if[]
-			}
+			ItemData.LoadTable();
 
 			foreach (var e in StartingItemSetDic[flags.StartingItemSet])
 			{
@@ -68,6 +153,49 @@ namespace FF1Lib
 			ItemData.StoreTable();
 		}
 
+		public List<(Item item, int qty)> ReturnStartingInventory()
+		{
+			List<(Item item, int qty)> itemList = new();
+
+			foreach (var e in StartingItemSetDic[flags.StartingItemSet])
+			{
+				if (e.Cnt.HasValue)
+				{
+					itemList.Add((e.Item, (int)e.Cnt));
+				}
+				else
+				{
+					var min = e.Min;
+					var max = e.Max;
+					var rmin = e.RMin ?? min;
+					var rmax = e.RMax ?? max;
+
+					itemList.Add((e.Item, (int)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max)));
+				}
+			}
+
+			if (flags.ExtConsumableSet != ExtConsumableSet.None)
+			{
+				foreach (var e in ExtStartingItemSetDic[flags.ExtStartingItemSet])
+				{
+					if (e.Cnt.HasValue)
+					{
+						itemList.Add((e.Item, (int)e.Cnt));
+					}
+					else
+					{
+						var min = e.Min;
+						var max = e.Max;
+						var rmin = e.RMin ?? min;
+						var rmax = e.RMax ?? max;
+
+						itemList.Add((e.Item, (int)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max)));
+					}
+				}
+			}
+
+			return itemList;
+		}
 		private class StartingItem
 		{
 			public Item Item { get; set; }

@@ -2,116 +2,31 @@
 
 namespace FF1Lib
 {
-	public enum StartingItemSet
-	{
-		[Description("None")]
-		None,
-
-		[Description("SafetyBit")]
-		SafetyBit,
-
-		[Description("Beggar's Choice")]
-		BeggarsChoice,
-
-		[Description("Just Tents")]
-		JustTents,
-
-		[Description("Explorer Pack")]
-		ExplorerStartingPack,
-
-		[Description("Real Estate")]
-		RealEstate,
-
-		[Description("Warrior's Standard")]
-		WarriorsStandard,
-
-		[Description("Royal Packmule")]
-		RoyalPackmule,
-
-		[Description("Duckling Boon")]
-		DucklingBoon,
-
-		[Description("R. Beggar's Choice")]
-		RandomizedBeggarsChoice,
-
-		[Description("R. Explorer Pack")]
-		RandomizedExplorerStartingPack,
-
-		[Description("R. Warrior's Standard")]
-		RandomizedWarriorsStandard,
-
-		[Description("R. Royal Packmule")]
-		RandomizedRoyalPackmule,
-
-		[Description("R. High Rolling")]
-		RandomizedHighRolling,
-
-		[Description("Randomized")]
-		Randomized,
-	}
-
-	public enum ExtStartingItemSet
-	{
-		[Description("None")]
-		None,
-
-		[Description("Lifeline")]
-		Lifeline,
-
-		[Description("Just Smokes")]
-		JustSmokes,
-
-		[Description("Bangs and Smokes")]
-		BangsAndSmokes,
-
-		[Description("Jester's Secret")]
-		JestersSecret,
-
-		[Description("Adventurer's Fortune")]
-		AdventurersFortune,
-
-		[Description("Blackbelt's Favorite")]
-		BlackbeltsFavorite,
-
-		[Description("Illegal Advantage")]
-		IllegalAdvantage,
-
-		[Description("R. Jester's Secret")]
-		RandomizedJestersSecret,
-
-		[Description("R. Adventurer's Fortune")]
-		RandomizedAdventurersFortune,
-
-		[Description("R. Blackbelt's Favorite")]
-		RandomizedBlackbeltsFavorite,
-
-		[Description("R. High Rolling")]
-		RandomizedHighRolling,
-
-		[Description("Randomized")]
-		Randomized,
-	}
-
-	public class StartingInventory
+	public class StartingKeyItems
 	{
 		MT19337 rng;
 		Flags flags;
 		FF1Rom rom;
 
-		StartingItems ItemData;
+		MemTable<byte, Item> KeyItemData;
 
-		public StartingInventory(MT19337 _rng, Flags _flags, FF1Rom _rom)
+		public StartingKeyItems(MT19337 _rng, Flags _flags, FF1Rom _rom)
 		{
 			rng = _rng;
 			flags = _flags;
 			rom = _rom;
 
-			ItemData = new StartingItems(rom);
+			KeyItemData = new MemTable<byte, Item>(_rom, 0x3000, 0x20);
 		}
 
-		public void SetStartingInventory()
+		public void SetStartingKeyItems(List<Item> items)
 		{
-			ItemData.LoadTable();
+			KeyItemData.LoadTable();
+
+			foreach (var ki in items)
+			{
+				if[]
+			}
 
 			foreach (var e in StartingItemSetDic[flags.StartingItemSet])
 			{
