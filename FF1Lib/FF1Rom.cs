@@ -1407,10 +1407,7 @@ public partial class FF1Rom : NesRom
 		WriteSeedAndFlags(seed.ToHex(), flags, flagsForRng, resourcesPackHash.ToHex(), last_rng_value);
 		ExtraTrackingAndInitCode(flags, preferences);
 
-		if(flags.OpenChestsInOrder)
-		{
-			OpenChestsInOrder();
-		}
+		OpenChestsInOrder(flags.OpenChestsInOrder && !flags.Archipelago);
 
 		if(flags.SetRNG)
 		{
