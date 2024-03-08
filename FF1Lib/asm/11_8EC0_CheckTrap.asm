@@ -14,6 +14,7 @@ tileprop        = $44 ; 2 bytes
 ret_bank        = $58
 dlg_itemid 	= $61
 btlformation    = $6A
+btl_SpikeTileFlag = $0341 ; fort SetRNG compatibility
 talkarray 	= $70
 dlgsfx 		= $7D
 
@@ -107,6 +108,19 @@ GiveItem:
   ORA #GMFLG_TCOPEN  
   STA game_flags, Y  
   RTS
-  
 
+ .ORG $8E80
+; Trigger a battle inside the talk routine
+InTalkBattleNoRun:
+  STA btlformation         ; store battle formation
+  STA btl_SpikeTileFlag    ; treat chest fight like spike Tile for SetRNG
+  JSR BattleTransition     ; Do transition
+  LDA #$00
+  STA $2001
+  STA $4015
+  LDY #$02
+  JSR JumpThenSwapPRG      ; LoadBattleCHRPal
+  LDY #$01
+  JSR JumpThenSwapPRG      ; EnterBattle
+  RTS
   
