@@ -170,7 +170,7 @@ public partial class FF1Rom : NesRom
 	    }
 
 		Blob resourcesPackHash = new byte[1];
-
+		
 		MT19337 rng;
 		using (SHA256 hasher = SHA256.Create())
 		{
@@ -1399,6 +1399,8 @@ public partial class FF1Rom : NesRom
 
 
 		if (flags.Spoilers && sanityChecker != null) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, generatedPlacement, overworldMap, incentivesData, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
+
+		if (flags.OverworldMapImage) overworldMap.RenderMap();
 
 		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 

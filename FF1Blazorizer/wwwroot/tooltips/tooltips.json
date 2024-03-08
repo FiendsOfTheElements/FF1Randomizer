@@ -18,6 +18,12 @@
 		"description": "Download a spoiler log for the current seed. The resulting ROM's randomization will be different than if the log had not been generated in order to prevent cheating in races.\nNote: You may be asked by your browser to allow downloading multiple files when using this option."
 	},
 	{
+		"Id": "overworldMapImageCheckBox",
+		"title": "Generate Overworl Image!",
+		"screenshot": null,
+		"description": "Download an Image of the Overworld for the current seed. The resulting ROM's randomization will be different than if the log had not been generated in order to prevent cheating in races.\nNote: You may be asked by your browser to allow downloading multiple files when using this option."
+	},
+	{
 		"Id": "blindseedCheckBox",
 		"title": "Hide Flags",
 		"screenshot": "blindseed.png",
