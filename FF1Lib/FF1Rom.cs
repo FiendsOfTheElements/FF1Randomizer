@@ -93,6 +93,63 @@ public partial class FF1Rom : NesRom
 		}
 	}
 
+	public void ApplyIpsPatch(Blob patch)
+	{
+		var romBytes = (Header + Data).ToBytes();
+		var patchBytes = (byte[])patch;
+		var startSig = Encoding.ASCII.GetBytes("PATCH");
+		var endSig = Encoding.ASCII.GetBytes("EOF");
+
+		var t = patchBytes.Take(startSig.Length).ToArray();
+		if (patch.Length < startSig.Length + endSig.Length
+			|| !Enumerable.SequenceEqual(patchBytes.Take(startSig.Length).ToArray(), startSig))
+			throw new Exception("Data is not a valid IPS patch");
+
+		var patchBuff = new BinaryBuffer(patchBytes);
+		patchBuff.Position = startSig.Length;
+		int endOffs = patchBytes.Length - 3;
+		var endBuff = new byte[3];
+
+		while (patchBuff.Position + 6 < endOffs)
+		{
+			patchBuff.Read(endBuff, 0, null, false);
+			if (Enumerable.SequenceEqual(endBuff, endSig))
+				break;
+
+			byte offsHi = patchBuff.ReadByte();
+			int offs = ((int)offsHi << 16) | patchBuff.ReadUInt16BE();
+			if (offs >= romBytes.Length)
+				throw new Exception($"Invalid patch offset at offset {patchBuff.Position - 3}");
+
+			int size = patchBuff.ReadUInt16BE();
+			if (size != 0)
+			{
+				// Direct patch
+				if (offs + size > romBytes.Length)
+					throw new Exception($"Invalid patch size at offset {patchBuff.Position - 2}");
+
+				patchBuff.Read(romBytes, offs, size);
+			}
+			else
+			{
+				// RLE patch
+				size = patchBuff.ReadUInt16BE();
+				if (offs + size > romBytes.Length)
+					throw new Exception($"Invalid patch RLE size at offset {patchBuff.Position - 2}");
+
+				byte value = patchBuff.ReadByte();
+				(new Span<byte>(romBytes, offs, size)).Fill(value);
+			}
+		}
+
+		patchBuff.Read(endBuff, 0, null, false);
+		if (!Enumerable.SequenceEqual(endBuff, endSig))
+			throw new Exception($"Invalid patch termination at offset {patchBuff.Position}");
+
+		Array.Copy(romBytes, (byte[])Header, 16);
+		Array.Copy(romBytes, 16, (byte[])Data, 0, romBytes.Length - 16);
+	}
+
 	public Blob CreateLongJumpTableEntry(byte bank, ushort addr)
 	{
 		List<byte> tmp = new List<byte> { 0x20, 0xC8, 0xD7 }; // JSR $D7C8, beginning of each table entry
@@ -200,6 +257,7 @@ public partial class FF1Rom : NesRom
 		MakeSpace();
 		Bank1E();
 		Bank1B();
+		ApplyFfft();
 		EasterEggs();
 		DynamicWindowColor(preferences.MenuColor);
 		PermanentCaravan();
@@ -1809,6 +1867,21 @@ public partial class FF1Rom : NesRom
 
 		// Rewrite the lone place where SwapPRG was called directly and not through SwapPRG_L.
 		Data[0x7FE97] = 0x03;
+	}
+
+	public void ApplyFfft()
+	{
+		var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+		var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith("ffrft.ips"));
+
+		byte[] patch = null;
+		using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
+		{
+			patch = new byte[stream.Length];
+			stream.Read(patch, 0, patch.Length);
+		}
+
+		ApplyIpsPatch((Blob)patch);
 	}
 
 	public void WriteSeedAndFlags(string seed, Flags flags, Flags flagsforrng, string resourcepackhash, uint last_rng_value)
