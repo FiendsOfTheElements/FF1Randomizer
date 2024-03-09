@@ -1633,15 +1633,17 @@ namespace FF1Lib
 			    (Room,MapElement) me;
 			    if (spreadPlacement) {
 				Room r;
-				if (pendingRooms.Count > 0) {
-				    // Make sure every room gets a chest
-				    r = pendingRooms.SpliceRandom(rng);
-				} else {
-				    // Every room has a chest so allocate the remaining chests.
-				    do {
+				do {
+				    if (pendingRooms.Count > 0) {
+					// Make sure every room gets a chest
+					r = pendingRooms.SpliceRandom(rng);
+				    } else {
+					// Every room has a chest so allocate the remaining chests.
 					r = workingrooms.PickRandom(rng);
-				    } while (r.floor.Count == 0);
-				}
+				    }
+				    // If we drew a room with no available floor spaces
+				    // (r.floor.Count == 0), try again.
+				} while (r.floor.Count == 0);
 				me = (r, r.floor.SpliceRandom(rng));
 			    } else {
 				// full random

@@ -1639,8 +1639,13 @@ namespace FF1Lib
 			PutInBank(0x1B, 0x9518, Blob.FromHex("A000B1860AAAA026B1860A187186187D00958582E8A9007D0095858360"));
 		}
 
-		public void OpenChestsInOrder()
+		public void OpenChestsInOrder(bool enabled)
 		{
+			if (!enabled)
+			{
+				return;
+			}
+
 			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9112003FEBD00B6D0062000B9BD00BF2010B42015B98A60EAEAEAEAEAEA"));
 
 			PutInBank(0x11, 0xB900, Blob.FromHex("A000A200B900622904F006B900B6D001E8C8D0F060"));
