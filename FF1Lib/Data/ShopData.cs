@@ -242,6 +242,11 @@
 		}
 		public void UpdateShopSlotPlacement(List<IRewardSource> placement)
 		{
+			if (placement == null)
+			{
+				return;
+			}
+
 			ItemShopSlot placedShopSlot = (ItemShopSlot)placement.First(s => s.GetType() == typeof(ItemShopSlot));
 
 			ItemShopSlot newShopSlot = UpdateShopSlotAddress(placedShopSlot);
