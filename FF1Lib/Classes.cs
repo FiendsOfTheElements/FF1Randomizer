@@ -124,7 +124,8 @@ namespace FF1Lib
 			Sleepy,
 			Sick,
 			StartWithKI,
-			InnateSpells
+			InnateSpells,
+			FriendshipRune
 		}
 
 		public class BonusMalus
@@ -848,6 +849,14 @@ namespace FF1Lib
 				bonusNormal.Add(new BonusMalus(BonusMalusAction.MpGainOnMaxMpGain, "Max+Mp+", Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
 			}
 
+			if ((bool)flags.RandomizeClassFriendshipRune) {
+				var description = "Friendship";
+				if (flags.NPCSwatter) {
+					description = "Soul Eater";
+				}
+				bonusNormal.Add(new BonusMalus(BonusMalusAction.FriendshipRune, description, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
+			}
+
 			var assignedBonusMalus = new List<List<BonusMalus>> { new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>(), new List<BonusMalus>() };
 
 			// Shuffle bonuses and maluses
@@ -1161,6 +1170,10 @@ namespace FF1Lib
 							_classes[i].WoodAdept = true;
 							_classes[i + 6].WoodAdept = true;
 							_armorPermissions.AddPermissionsRange(new List<(Classes, Item)> { ((Classes)i, Item.WoodenArmor), ((Classes)i, Item.WoodenHelm), ((Classes)i, Item.WoodenShield), ((Classes)(i+6), Item.WoodenArmor), ((Classes)(i+6), Item.WoodenHelm), ((Classes)(i+6), Item.WoodenShield) });
+							break;
+						case BonusMalusAction.FriendshipRune:
+							_classes[i].FriendshipRune = true;
+							_classes[i + 6].FriendshipRune = true;
 							break;
 						case BonusMalusAction.Sick:
 							_classes[i].Sick = true;
@@ -2068,7 +2081,7 @@ namespace FF1Lib
 		{
 			// See 1B_B000_StartWithRoutines.asm
 			// Utilities
-			rom.PutInBank(0x1B, 0xB000, Blob.FromHex("B90061C90C9002A90C8410A8B1EDC90108A4102860B90061C90C9002A90C8410A8B1ED08A4102860"));
+			rom.PutInBank(0x1B, 0xB000, Blob.FromHex("B90061C90C9002A90C8410A8B1EDC90108A4102860B90061C90C9002A90C8410A8B1ED08A410286009808510981869048511B182C510D00160C8C411D0F4A90160"));
 
 			// Party Initial Setup Hijack
 			rom.PutInBank(0x1F, 0xC0AC, Blob.FromHex("2012D828EAEAEAEAEAEAEA"));
@@ -2099,8 +2112,15 @@ namespace FF1Lib
 				MalusGoldAmount = 4500;
 			}
 
+			var friendshipDivisor = (bool)flags.RandomizeClassFriendshipRune ? flags.FriendshipRuneDivisor : 255;
+			// the human-readable setting is 0, 2, or 4 , so we will bit shift 0, 1, or 2 times. We can divide the divisor by 2 to get the number of desired bit shifts.
+			// a value of 255 means "disabled"
+			if (friendshipDivisor > 0 && friendshipDivisor < 255) {
+				friendshipDivisor = friendshipDivisor / 2;
+			}
+
 			// StartWith Initialization Routine
-			rom.PutInBank(0x1B, 0xB300, Blob.FromHex($"A9B348A92048A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E484C07FEA000202EB398186940A8D0F660203EB32075B320C7B32006B4202EB460A98085EDA9B485EEA2002015B0F027AAA900851085118512E000F01718A96465108510A90065118511A90065128512CA1890E520EADD60A98D85EDA9B485EEA2002000B0D042E8A90085108511851218A9{(MalusGoldAmount % 0x100):X2}65108510A9{((MalusGoldAmount / 0x100) % 0x100):X2}65118511A9{(MalusGoldAmount / 0x10000):X2}65128512AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A203A91C8511A9638512A99A85EDA9B485EE2015B0F0129111E611A90D1865ED85ED9002E6EECAD0E9E003F01198186907AABD20631869029D20639D286360A200A9C185EDA9B485EE2000B0F001609848AAA007E8BD20631869019D20639D286388D0F068A860A200A9CE85EDA9B485EE2015B0F006AAA9019D006060"));
+			rom.PutInBank(0x1B, 0xB300, Blob.FromHex($"A9B348A92548A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E48A9{(friendshipDivisor):X2}8DC1604C07FEA0002033B398186940A8D0F6602043B3207AB320CCB3200BB42033B460A98085EDA9B485EEA2002015B0F027AAA900851085118512E000F01718A96465108510A90065118511A90065128512CA1890E520EADD60A98D85EDA9B485EEA2002000B0D042E8A90085108511851218A9{(MalusGoldAmount % 0x100):X2}65108510A9{((MalusGoldAmount / 0x100) % 0x100):X2}65118511A9{(MalusGoldAmount / 0x10000):X2}65128512AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A203A91C8511A9638512A99A85EDA9B485EE2015B0F0129111E611A90D1865ED85ED9002E6EECAD0E9E003F01198186907AABD20631869029D20639D286360A200A9C185EDA9B485EE2000B0F001609848AAA007E8BD20631869019D20639D286388D0F068A860A200A9CE85EDA9B485EE2015B0F006AAA9019D006060"));
 
 			// Insert luts
 			Blob lut_IncreaseGP = _classes.Select(x => (byte)(x.StartWithGold != BlursesStartWithGold.Remove ? (byte)x.StartWithGold : 0x00)).ToArray();
@@ -2133,8 +2153,9 @@ namespace FF1Lib
 			rom.PutInBank(0x0C, 0xADBB, Blob.FromHex("2012D8F00760EAEAEAEAEAEA"));
 			//rom.PutInBank(0x1F, 0xC271, rom.CreateLongJumpTableEntry(0x1B, 0xB080));
 
+
 			// Battle StartWith
-			rom.PutInBank(0x1B, 0xB080, Blob.FromHex($"A908C5F2F0034C00B320ABB020E0B02096B12017B12048B14C9BB0A90085EDA9B285EEA000B1822003B060A90D85EDA9B285EEA000B1822003B0D023A018B1823011C8B182300CC8B1823007C8B1823002A900297FC923D006A00FA9{catclawcrit:X2}918060A91A85EDA9B285EEA000B1822003B0D025A018B1823011C8B182300CC8B1823007C8B1823002A900297FC924D008A009B180180A918060A94E85EDA9B285EEA000B1822003B0D01FA01CB18210032037B1C8C020D0F460297FC905D00A9848A00BA902918068A860A95B85EDA9B285EE8A48A200A000B1822003B0D036A01CB1821003207FB1C8C020D0F4E003D02418A007B18069789002A9FF918068AA60297FC902D002E860C91BD002E860C911D001E86068AA60A000B182AABD27B2F006A00D1180918060EAEAEAEAEAEAEAA93485EDA9B285EEA000B1822003B0D008A001B1820920918260A94185EDA9B285EEA000B1822003B0D00F20E7FC2903D008A001B1820904918260"));
+			rom.PutInBank(0x1B, 0xB080, Blob.FromHex($"A908C5F2F0034C00B320AEB020CFB02061B120F2B02017B1209EB04C72B1A90085EDA9B285EEA000B1822003B060A90D85EDA9B285EEA000B1822003B0D00FA018A9232028B0D006A00FA9{catclawcrit:X2}918060A91A85EDA9B285EEA000B1822003B0D011A018A9242028B0D008A009B180180A918060A94E85EDA9B285EEA000B1822003B0D013A01CA9052028B0D00A9848A00BA902918068A860A95B85EDA9B285EE8A48A200A000B1822003B0D032A01C2028B0102B204AB1E003D02418A007B18069789002A9FF918068AA60297FC902D002E860C91BD002E860C911D001E86068AA60A000B182AABD27B2F006A00D1180918060A96885EDA9B285EEA000B1822003B0D028ADC0608510AEC160ADC160F00BA5104A8510CEC1604C8BB18EC160A009B1801865105002A9FF918060A93485EDA9B285EEA000B1822003B0D008A001B1820920918260A94185EDA9B285EEA000B1822003B0D00F20E7FC2903D008A001B1820904918260"));
 
 			// Insert luts
 			Blob lut_Blackbelts = _classes.Select(x => (byte)(x.UnarmedAttack ? 0x01 : 0x00)).ToArray();
@@ -2145,6 +2166,7 @@ namespace FF1Lib
 			Blob lut_Sick = _classes.Select(x => (byte)(x.Sick ? 0x01 : 0x00)).ToArray();
 			Blob lut_SteelArmor = _classes.Select(x => (byte)(x.SteelLord ? 0x01 : 0x00)).ToArray();
 			Blob lut_WoodArmors = _classes.Select(x => (byte)(x.WoodAdept ? 0x01 : 0x00)).ToArray();
+			Blob lut_FriendshipRune = _classes.Select(x => (byte)(x.FriendshipRune ? 0x01 : 0x00)).ToArray();
 
 			rom.PutInBank(0x1B, 0xB200, lut_Blackbelts + new byte[] { 0x00 } +
 				lut_CatClaws + new byte[] { 0x00 } +
@@ -2153,10 +2175,11 @@ namespace FF1Lib
 				lut_Sleepy + new byte[] { 0x00 } +
 				lut_Sick + new byte[] { 0x00 } +
 				lut_SteelArmor + new byte[] { 0x00 } +
-				lut_WoodArmors + new byte[] { 0x00 });
+				lut_WoodArmors + new byte[] { 0x00 } +
+				lut_FriendshipRune + new byte[] { 0x00 });
 
 			// Recruit Mode Switcher
-			rom.PutInBank(0x1B, 0xB600, Blob.FromHex("A5108513A8B913B6A8202EB3A51385104CAA87004080C0"));
+			rom.PutInBank(0x1B, 0xB600, Blob.FromHex("A5108513A8B913B6A82033B3A51385104CAA87004080C0"));
 		}
 
 		private List<BonusMalus> StartWithKeyItems(Flags flags, MT19337 rng, List<string> olditemnames)
@@ -2252,6 +2275,7 @@ namespace FF1Lib
 		public bool SteelLord { get; set; }
 		public List<SpellSlotInfo> InnateSpells { get; set; }
 		public Item StartingKeyItem { get; set; }
+		public bool FriendshipRune { get; set; }
 
 		public ClassData(byte classid, byte[] startingStats, byte[] levelUpStats, byte hitgrowth, byte mdefgrowth, byte maxspc, GearPermissions weapPerm, GearPermissions armorPerm, SpellPermissions spellPerm)
 		{
@@ -2284,6 +2308,7 @@ namespace FF1Lib
 			SteelLord = false;
 			StartingKeyItem = Item.None;
 			InnateSpells = new() { new SpellSlotInfo(), new SpellSlotInfo(), new SpellSlotInfo() };
+			FriendshipRune = false;
 		}
 
 		public byte[] StartingStatsArray()

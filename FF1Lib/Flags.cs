@@ -628,6 +628,11 @@ namespace FF1Lib
 		public bool? RandomizeClassKeyItems { get; set; } = false;
 		public bool? RandomizeClassChaos { get; set; } = false;
 		public bool? RandomizeClassIncludeXpBonus { get; set; } = false;
+		public bool? RandomizeClassFriendshipRune { get; set; } = false;
+
+		[IntegerFlag(0, 2)]
+		public int FriendshipRuneDivisor { get; set; } = 2;
+
 		public bool? AlternateFiends { get; set; } = false;
 		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 

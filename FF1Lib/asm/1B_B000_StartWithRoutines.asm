@@ -6,6 +6,8 @@
 ;
 
 tmp = $10
+npc_counter = $60C0
+npc_damage_divider = npc_counter + 1 ; will be set to 0-2 from the randomizer
 
 btl_ib_charstat_ptr = $80
 btl_ob_charstat_ptr = $82
@@ -94,8 +96,32 @@ NotANone2:
   PHP
   LDY tmp
   PLP
-  RTS 
-   
+  RTS
+
+;; IN:
+;; 	Y = #$18 (weapons offset), #$1C (armors offset)
+;; 	A = The weapon/armor ID we want to see if is equipped
+;; OUT:
+;; 	A = #$00 if the weapon/armor is equipped
+IsEquipped:
+	ORA #$80
+	STA tmp
+	TYA
+	CLC
+	ADC #4
+	STA tmp+1
+
+	@Loop:
+		LDA (btl_ob_charstat_ptr), Y
+		CMP tmp
+		BNE @NoEquip
+			RTS
+	@NoEquip:
+		INY
+		CPY tmp+1
+		BNE @Loop
+			LDA #1
+			RTS
 
  .ORG $B080
  
@@ -104,13 +130,15 @@ StartOfBattle:
   CMP $F2
   BEQ IsBattle
     JMP ApplyStartOfGame
+
 IsBattle:
   JSR CatClaws
   JSR ThorHammer
   JSR Hunter
   JSR SteelArmor
   JSR WoodArmors
-  JMP UnarmedAttack
+  JSR UnarmedAttack
+  JMP FriendshipRune
 
 ; Give Black Belt Unarmed Attack
 UnarmedAttack: 
@@ -135,27 +163,14 @@ CatClaws:
   JSR CheckIfClassQuick
   BNE CC_NotClass
     LDY #$18 ; weapons
-    LDA (btl_ob_charstat_ptr), Y
-    BMI CC_IsEquipWeapon
-    INY
-    LDA (btl_ob_charstat_ptr), Y
-    BMI CC_IsEquipWeapon
-    INY
-    LDA (btl_ob_charstat_ptr), Y
-    BMI CC_IsEquipWeapon
-    INY
-    LDA (btl_ob_charstat_ptr), Y
-    BMI CC_IsEquipWeapon
-    LDA #$00
-CC_IsEquipWeapon:
-      AND #$7F
-      CMP #$23 ; catclaw weapon Id
-      BNE CC_NotClass
-        LDY #$0F ; crit rate
-        LDA #$FF ; hardcoded value
-        STA (btl_ib_charstat_ptr), Y
+    LDA #$23 ; catclaw weapon Id
+	JSR IsEquipped
+	BNE CC_NotClass
+		LDY #$0F ; crit rate
+		LDA #$FF ; hardcoded value
+		STA (btl_ib_charstat_ptr), Y
 CC_NotClass:
-  RTS  
+  RTS
 
 ; Double damage with Thor Hammers
 ThorHammer:
@@ -169,27 +184,14 @@ ThorHammer:
   JSR CheckIfClassQuick
   BNE Th_NotClass
     LDY #$18 ; weapons
-    LDA (btl_ob_charstat_ptr), Y
-    BMI Th_IsEquipWeapon
-    INY
-    LDA (btl_ob_charstat_ptr), Y
-    BMI Th_IsEquipWeapon
-    INY
-    LDA (btl_ob_charstat_ptr), Y
-    BMI Th_IsEquipWeapon
-    INY
-    LDA (btl_ob_charstat_ptr), Y
-    BMI Th_IsEquipWeapon
-    LDA #$00
-Th_IsEquipWeapon:
-      AND #$7F
-      CMP #$24 ; Thor Hammer weapon Id
-      BNE Th_NotClass
-        LDY #$09 ; damage
-        LDA (btl_ib_charstat_ptr), Y
-        CLC
-        ASL
-        STA (btl_ib_charstat_ptr), Y
+    LDA #$24 ; Thor Hammer weapon Id
+	JSR IsEquipped
+	BNE Th_NotClass
+		LDY #$09 ; damage
+		LDA (btl_ib_charstat_ptr), Y
+		CLC
+		ASL
+		STA (btl_ib_charstat_ptr), Y
 Th_NotClass:
   RTS
   
@@ -205,26 +207,16 @@ SteelArmor:
   JSR CheckIfClassQuick
   BNE St_NotSteel
     LDY #$1C ; armors
-St_Loop:    
-    LDA (btl_ob_charstat_ptr), Y
-    BPL St_NoEquip
-    JSR St_IsEquipArmor
-St_NoEquip:    
-    INY
-    CPY #$20
-    BNE St_Loop
-    RTS
-St_IsEquipArmor:
-    AND #$7F
-    CMP #$05 ; Steel Armor Id
-    BNE St_NotSteel
-      TYA
-      PHA
-      LDY #$0B ; Hit Multiplier
-      LDA #$02
-      STA (btl_ib_charstat_ptr), Y
-      PLA
-      TAY
+	LDA #$05 ; Steel Armor Id
+	JSR IsEquipped
+	BNE St_NotSteel
+	  TYA
+	  PHA
+	  LDY #$0B ; Hit Multiplier
+	  LDA #$02
+	  STA (btl_ib_charstat_ptr), Y
+	  PLA
+	  TAY
 St_NotSteel:
   RTS
   
@@ -244,14 +236,9 @@ WoodArmors:
   JSR CheckIfClassQuick
   BNE Wo_NotWood
     LDY #$1C ; armors
-Wo_Loop:    
-    LDA (btl_ob_charstat_ptr), Y
-    BPL Wo_NoEquip
+	JSR IsEquipped
+	BPL Wo_NotWood
     JSR Wo_IsEquipArmor
-Wo_NoEquip:    
-    INY
-    CPY #$20
-    BNE Wo_Loop
     
     CPX #$03
     BNE Wo_NotWood
@@ -269,19 +256,19 @@ Wo_StoreValue:
 Wo_IsEquipArmor:
     AND #$7F
     CMP #$02 ; Wood0 Armor Id
-    BNE Wo_NotArmor
+    BNE :+
       INX
       RTS
-Wo_NotArmor:      
+:
     CMP #$1B ; Wood Helmet Id
-    BNE Wo_NotHelmet
+    BNE :+
       INX
       RTS
-Wo_NotHelmet:
+:
     CMP #$11 ; Wood Shield Id
-    BNE Wo_NotShield
+    BNE :+
       INX
-Wo_NotShield:      
+:
       RTS
 Wo_NotWood:
   PLA
@@ -301,17 +288,42 @@ Hunter:
     STA (btl_ib_charstat_ptr), Y
 Hu_NotClass:
   RTS
-  NOP
-  NOP
-  NOP
-  NOP
-  NOP
-  NOP
-  NOP
-;NOPs added because I couldnt rebuild the entire start with asm file.
-;Had to swap the bugged hunter function, and maintain instruction length to perserve addressing.
-;A0 00 B1 82 AA BD 27 B2 F0 06 A0 0D 11 80 91 80 60 EA EA EA EA EA EA EA     
-  
+
+; Increase damage from talking to NPCs
+FriendshipRune:
+	LDA #<lut_FriendshipRune
+	STA class_lut_a
+	LDA #>lut_FriendshipRune
+	STA class_lut_b
+
+	LDY #$00
+	LDA (btl_ob_charstat_ptr), Y
+	JSR CheckIfClassQuick
+	BNE @done
+		LDA npc_counter
+		STA tmp
+		LDX npc_damage_divider ; back up the divider
+		@divide:
+			LDA npc_damage_divider
+			BEQ :+
+				LDA tmp
+				LSR
+				STA tmp
+				DEC npc_damage_divider
+				JMP @divide
+		:
+		STX npc_damage_divider ; restore the divider
+		LDY #$09 ; damage
+		LDA (btl_ib_charstat_ptr), Y
+		CLC
+		ADC tmp
+		BVC :+
+			LDA #$FF
+		:
+		STA (btl_ib_charstat_ptr), Y
+@done:
+	RTS
+
 ; Always start battle asleep
 Sleepy:
   LDA #<lut_Sleepy 
@@ -393,8 +405,13 @@ lut_WoodArmors:
  .BYTE $00, $00, $00, $00, $00, $00 
  .BYTE $FF  
 
- .ORG $B300
+lut_FriendshipRune:
+ .BYTE $00, $00, $00, $00, $00, $00
+ .BYTE $00, $00, $00, $00, $00, $00
+ .BYTE $FF
 
+ .ORG $B300
+ 
 ApplyStartOfGame:
   LDA #>ResumeHere 
   PHA              
@@ -413,12 +430,15 @@ ApplyStartOfGame:
   LDA #<NewGame_LoadStartingLevels-1
   PHA
   
-  LDA #>NewGamePartyGeneration-1 
-  PHA                           
-  LDA #<NewGamePartyGeneration-1
+  LDA #>NewGamePartyGeneration-1
+  PHA
+  LDA #<(<NewGamePartyGeneration-1)
   PHA
   LDA #BANK_PARTYGEN            
   PHA
+
+  LDA #$FF ; replaced by the randomizer
+  STA npc_damage_divider
   
   JMP SwapPRG_skip
   
@@ -668,3 +688,15 @@ RecruitModeJump:
   
 lut_CharOffset:
   .BYTE $00, $40, $80, $C0
+
+; B000
+;B90061C90C9002A90C8410A8B1EDC90108A4102860B90061C90C9002A90C8410A8B1ED08A410286009808510981869048511B182C510D00160C8C411D0F4A90160
+
+; B080
+;A908C5F2F0034C00B320AEB020CFB02061B120F2B02017B1209EB04C72B1A90085EDA9B285EEA000B1822003B060A90D85EDA9B285EEA000B1822003B0D00FA018A9232028B0D006A00FA9FF918060A91A85EDA9B285EEA000B1822003B0D011A018A9242028B0D008A009B180180A918060A94E85EDA9B285EEA000B1822003B0D013A01CA9052028B0D00A9848A00BA902918068A860A95B85EDA9B285EE8A48A200A000B1822003B0D032A01C2028B0102B204AB1E003D02418A007B18069789002A9FF918068AA60297FC902D002E860C91BD002E860C911D001E86068AA60A000B182AABD27B2F006A00D1180918060A96885EDA9B285EEA000B1822003B0D028ADC0608510AEC160ADC160F00BA5104A8510CEC1604C8BB18EC160A009B1801865105002A9FF918060A93485EDA9B285EEA000B1822003B0D008A001B1820920918260A94185EDA9B285EEA000B1822003B0D00F20E7FC2903D008A001B1820904918260
+
+; B300
+;A9B348A92548A91B48A9FE48A90648A9DD48A99948A97F48A9FF48A91E48A9FF8DC1604C07FEA0002033B398186940A8D0F6602043B3207AB320CCB3200BB42033B460A98085EDA9B485EEA2002015B0F027AAA900851085118512E000F01718A96465108510A90065118511A90065128512CA1890E520EADD60A98D85EDA9B485EEA2002000B0D042E8A90085108511851218A93265108510A90065118511A90065128512AD1C6038E5108D1C60AD1D60E5118D1D60AD1E60E5128D1E60B00BA9008D1C608D1D608D1E6060A203A91C8511A9638512A99A85EDA9B485EE2015B0F0129111E611A90D1865ED85ED9002E6EECAD0E9E003F01198186907AABD20631869029D20639D286360A200A9C185EDA9B485EE2000B0F001609848AAA007E8BD20631869019D20639D286388D0F068A860A200A9CE85EDA9B485EE2015B0F006AAA9019D006060
+
+; B600
+;A5108513A8B913B6A8202EB3A51385104CAA87004080C0
