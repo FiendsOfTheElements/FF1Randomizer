@@ -15,6 +15,7 @@ namespace FF1Lib
 		FF1Rom rom;
 		SCLogic logic;
 		Flags flags;
+		Flags originalFlags;
 		Preferences preferences;
 		ExpChests expChests;
 		IncentiveData incentivesData;
@@ -22,12 +23,13 @@ namespace FF1Lib
 
 		public string Json { get; private set; }
 
-		public Archipelago(FF1Rom _rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, ExpChests _expChests, IncentiveData _incentivesData, Blob _seed, Flags _flags, Preferences _preferences)
+		public Archipelago(FF1Rom _rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, ExpChests _expChests, IncentiveData _incentivesData, Blob _seed, Flags _flags, Flags _originflags, Preferences _preferences)
 		{
 			rom = _rom;
 			expChests = _expChests;
 			incentivesData = _incentivesData;
 			flags = _flags;
+			originalFlags = _originflags;
 			seed = _seed;
 			preferences = _preferences;
 
@@ -147,7 +149,7 @@ namespace FF1Lib
 				game = "Final Fantasy",
 				description = "Hurray",
 				name = (preferences.PlayerName.Length > 16) ? preferences.PlayerName.Substring(0,16) : preferences.PlayerName,
-				permalink = ((FFRVersion.Branch == "master") ? FFRVersion.Version.Replace('.', '-') : "beta-" + FFRVersion.Sha.PadRight(8).Substring(0, 8)) + ".finalfantasyrandomizer.com/?s=" + seed.ToHex() + "&f=" + Flags.EncodeFlagsText(flags),
+				permalink = ((FFRVersion.Branch == "master") ? FFRVersion.Version.Replace('.', '-') : "beta-" + FFRVersion.Sha.PadRight(8).Substring(0, 8)) + ".finalfantasyrandomizer.com/?s=" + seed.ToHex() + "&f=" + Flags.EncodeFlagsText(originalFlags),
 				options = new ArchipelagoFFROptions
 				{
 					items = logic.RewardSources.GroupBy(r => GetItemId(r.RewardSource.Item)).ToDictionary(r => GetItemName(r.First().RewardSource.Item), r => new ArchipelagoItem { id = r.Key, count = r.Count(), incentive = incentivesData.IncentiveItems.Contains(r.First().RewardSource.Item) }),
