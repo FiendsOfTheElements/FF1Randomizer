@@ -280,7 +280,7 @@ namespace FF1Lib
 		public static MapObject Smith = new MapObject(ObjectId.Smith, MapLocation.DwarfCave, Item.Xcalber, AccessRequirement.Adamant, requiredItemTrade: Item.Adamant);
 
 		public static ItemShopSlot CaravanItemShop1 =
-			new ItemShopSlot(0x38461, nameof(CaravanItemShop1), MapLocation.Caravan, Item.Bottle, 70);
+			new ItemShopSlot(0x38461, nameof(CaravanItemShop1), MapLocation.Caravan, Item.Bottle, 69);
 
 		public static StaticItemLocation LichReward =
 			new StaticItemLocation(nameof(LichReward), MapLocation.EarthCaveLich, Item.EarthOrb);
