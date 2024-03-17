@@ -229,7 +229,7 @@
 		}
 		public ItemShopSlot UpdateShopSlotAddress(ItemShopSlot itemShop)
 		{
-			var targetShop = Shops.Find(s => s.Index == (itemShop.ShopIndex - 1));
+			var targetShop = Shops.Find(s => s.Index == itemShop.ShopIndex);
 			var itemSlot = targetShop.Entries.FindIndex(e => e == itemShop.Item);
 
 			// If the slot was removed by ShopKiller, remove slot from placement
