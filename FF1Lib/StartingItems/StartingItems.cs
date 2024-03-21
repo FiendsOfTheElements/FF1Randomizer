@@ -16,6 +16,7 @@ namespace FF1Lib
 			flags = _flags;
 			rom = _rom;
 
+			initialItems = new();
 			//ItemData = new StartingItems(rom);
 			ParseKeyItems();
 			new StartingInventory(rng, flags, rom).ReturnStartingInventory().ForEach(i => initialItems.Add(i.item, i.qty));

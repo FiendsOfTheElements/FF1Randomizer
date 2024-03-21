@@ -25,14 +25,14 @@ namespace FF1Lib
 
 			foreach (var ki in items)
 			{
-				if[]
+				//if[]
 			}
 
 			foreach (var e in StartingItemSetDic[flags.StartingItemSet])
 			{
 				if (e.Cnt.HasValue)
 				{
-					ItemData[e.Item] = (byte)e.Cnt;
+					//ItemData[e.Item] = (byte)e.Cnt;
 				}
 				else
 				{
@@ -41,7 +41,7 @@ namespace FF1Lib
 					var rmin = e.RMin ?? min;
 					var rmax = e.RMax ?? max;
 
-					ItemData[e.Item] = (byte)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max);
+					//ItemData[e.Item] = (byte)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max);
 				}
 			}
 
@@ -51,7 +51,7 @@ namespace FF1Lib
 				{
 					if (e.Cnt.HasValue)
 					{
-						ItemData[e.Item] = (byte)e.Cnt;
+						//ItemData[e.Item] = (byte)e.Cnt;
 					}
 					else
 					{
@@ -60,12 +60,12 @@ namespace FF1Lib
 						var rmin = e.RMin ?? min;
 						var rmax = e.RMax ?? max;
 
-						ItemData[e.Item] = (byte)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max);
+						//ItemData[e.Item] = (byte)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max);
 					}
 				}
 			}
 
-			ItemData.StoreTable();
+			//ItemData.StoreTable();
 		}
 
 		private class StartingItem

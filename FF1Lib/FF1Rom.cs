@@ -150,7 +150,17 @@ public partial class FF1Rom : NesRom
 
 	public async Task Randomize(Blob seed, Flags flags, Preferences preferences)
 	{
-	    Flags flagsForRng = flags;
+
+		NewFlags flagstest = new();
+		Setting settings = FlagRules.CollectFlags(flagstest);
+
+
+		/*
+		settingtest.Init();
+		settingtest.SetValue();
+		settingtest.GetSomething();
+		*/
+		Flags flagsForRng = flags;
 	    if (flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ||
 		flags.OwMapExchange == OwMapExchanges.LostWoods)
 	    {
@@ -205,13 +215,12 @@ public partial class FF1Rom : NesRom
 		PermanentCaravan();
 		ShiftEarthOrbDown();
 		CastableItemTargeting();
-		FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
-		FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
 		UnifySpellSystem();
 		ExpandNormalTeleporters();
 		SeparateUnrunnables();
 		DrawCanoeUnderBridge();
 
+		Bugfixes(settings);
 
 		LoadSharedDataTables();
 
@@ -402,14 +411,6 @@ public partial class FF1Rom : NesRom
 		if ((bool)flags.LefeinSuperStore && (flags.ShopKillMode_White == ShopKillMode.None && flags.ShopKillMode_Black == ShopKillMode.None))
 		{
 			EnableLefeinSuperStore(maps);
-		}
-
-		// This has to be done before we shuffle spell levels.
-		if (flags.SpellBugs)
-		{
-			FixSpellBugs();
-			FixEnemyAOESpells();
-			FixEnemyElementalResistances();
 		}
 
 		await this.Progress();
@@ -1039,22 +1040,7 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		if (flags.WeaponStats)
-		{
-			FixWeaponStats();
-		}
-
 		new ChanceToRun(this, flags).FixChanceToRun();
-
-		if (flags.EnemyStatusAttackBug)
-		{
-			FixEnemyStatusAttackBug();
-		}
-
-		if (flags.BlackBeltAbsorb)
-		{
-			FixBBAbsorbBug();
-		}
 
 		if (flags.MDefMode != MDEFGrowthMode.None)
 		{
@@ -1070,11 +1056,6 @@ public partial class FF1Rom : NesRom
 		if (flags.ImproveTurnOrderRandomization)
 		{
 			ImproveTurnOrderRandomization(rng);
-		}
-
-		if (flags.FixHitChanceCap)
-		{
-			FixHitChanceCap();
 		}
 
 		if ((bool)flags.IncreaseDarkPenalty)
@@ -1251,8 +1232,6 @@ public partial class FF1Rom : NesRom
 		{
 			ShopUpgrade(flags, preferences);
 		}
-
-		Fix3DigitStats();
 
 		await this.Progress();
 
