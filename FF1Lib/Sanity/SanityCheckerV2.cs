@@ -453,12 +453,12 @@ namespace FF1Lib
 
 		private void ProcessShop(SCPointOfInterest poi, byte dungeonIndex)
 		{
-			if (shopslot != null && poi.ShopId == shopslot.ShopIndex)
+			if (shopslot != null && shopslot.ShopIndex == poi.ShopId - 1)
 			{
 				ProcessItem(shopslot.Item, dungeonIndex);
 				rewardSources.Add(shopslot);
 			}
-			else if (poi.ShopId == declaredShopSlot.ShopIndex)
+			else if (declaredShopSlot.ShopIndex == poi.ShopId - 1)
 			{
 				rewardSources.Add(declaredShopSlot);
 				poi.Done = true;

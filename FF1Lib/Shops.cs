@@ -223,7 +223,7 @@
                                                   $"{Enum.GetName(typeof(MapLocation), location)}Shop{bottle.index + 1}",
                                                   location,
                                                   Item.Bottle,
-												  (byte)(61 + i));
+												  (byte)(60 + i));
                     }
 					Put(ShopPointerBase + pointer, newShops[i].ToArray());
 

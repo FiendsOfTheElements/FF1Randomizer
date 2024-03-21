@@ -150,6 +150,9 @@ public partial class FF1Rom : NesRom
 
 	public async Task Randomize(Blob seed, Flags flags, Preferences preferences)
 	{
+	    Flags flagsForRng = flags;
+		Flags unmodifiedFlags = flags.ShallowCopy();
+
 
 		NewFlags flagstest = new();
 		Setting settings = FlagRules.CollectFlags(flagstest);
@@ -160,7 +163,6 @@ public partial class FF1Rom : NesRom
 		settingtest.SetValue();
 		settingtest.GetSomething();
 		*/
-		Flags flagsForRng = flags;
 	    if (flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ||
 		flags.OwMapExchange == OwMapExchanges.LostWoods)
 	    {
@@ -1370,7 +1372,7 @@ public partial class FF1Rom : NesRom
 		{
 			shipLocations.SetShipLocation(255);
 
-			Archipelago exporter = new Archipelago(this, generatedPlacement, sanityChecker, expChests, incentivesData, seed, flags, preferences);
+			Archipelago exporter = new Archipelago(this, generatedPlacement, sanityChecker, expChests, incentivesData, seed, flags, unmodifiedFlags, preferences);
 			Utilities.ArchipelagoCache = exporter.Work();
 		}
 
@@ -1383,13 +1385,10 @@ public partial class FF1Rom : NesRom
 
 		uint last_rng_value = rng.Next();
 
-		WriteSeedAndFlags(seed.ToHex(), flags, flagsForRng, resourcesPackHash.ToHex(), last_rng_value);
+		WriteSeedAndFlags(seed.ToHex(), flags, flagsForRng, unmodifiedFlags, resourcesPackHash.ToHex(), last_rng_value);
 		ExtraTrackingAndInitCode(flags, preferences);
 
-		if(flags.OpenChestsInOrder)
-		{
-			OpenChestsInOrder();
-		}
+		OpenChestsInOrder(flags.OpenChestsInOrder && !flags.Archipelago);
 
 		if(flags.SetRNG)
 		{
@@ -1793,7 +1792,7 @@ public partial class FF1Rom : NesRom
 		Data[0x7FE97] = 0x03;
 	}
 
-	public void WriteSeedAndFlags(string seed, Flags flags, Flags flagsforrng, string resourcepackhash, uint last_rng_value)
+	public void WriteSeedAndFlags(string seed, Flags flags, Flags flagsforrng, Flags umodifiedflags, string resourcepackhash, uint last_rng_value)
 	{
 
 		string flagstext = Flags.EncodeFlagsText(flags);
@@ -1838,7 +1837,7 @@ public partial class FF1Rom : NesRom
 
 		// Write Flagstring + Version for reference
 		var urlpart = (FFRVersion.Branch == "master") ? FFRVersion.Version.Replace('.','-') : "beta-" + FFRVersion.Sha.PadRight(7).Substring(0, 7);
-		PutInBank(0x1E, 0xBE00, Encoding.ASCII.GetBytes($"FFRInfo|Seed: {seed}|OW Seed: {owseed}|Res. Pack Hash: {((resourcepackhash == "00") ? "none" : resourcepackhash)}|Flags: {flagstext}|Version: {urlpart}"));
+		PutInBank(0x1E, 0xBE00, Encoding.ASCII.GetBytes($"FFRInfo|Seed: {seed}|OW Seed: {owseed}|Res. Pack Hash: {((resourcepackhash == "00") ? "none" : resourcepackhash)}|Flags: {Flags.EncodeFlagsText(umodifiedflags)}|Version: {urlpart}"));
 	}
 
 	public void FixMissingBattleRngEntry()
