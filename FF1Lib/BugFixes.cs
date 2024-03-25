@@ -4,7 +4,27 @@ namespace FF1Lib
 { 
 	public partial class FF1Rom
 	{
-		private void Bugfixes(Setting settings)
+		public static partial class FlagRules
+		{
+			public static FlagRule BugFixes { get; set; } = new FlagRule()
+			{
+				Name = "Bugfixes",
+				Type = SettingType.Toggle,
+				Value = 1,
+				Actions = new List<FlagAction>()
+				{
+					new FlagAction() { Setting = "FixHouseMP", Action = FlagActions.Enable },
+					new FlagAction() { Setting = "FixHouseHP", Action = FlagActions.Enable },
+					new FlagAction() { Setting = "FixWeaponStats", Action = FlagActions.Enable },
+					new FlagAction() { Setting = "FixSpellBugs", Action = FlagActions.Enable },
+					new FlagAction() { Setting = "FixEnemyStatusAttack", Action = FlagActions.Enable },
+					new FlagAction() { Setting = "FixBBAbsorbBug", Action = FlagActions.Enable },
+					new FlagAction() { Setting = "ChanceToRun", Action = FlagActions.SetValue, Value = (int)ChanceToRunMode.Fixed },
+				}
+			};
+		}
+
+		private void Bugfixes(Settings settings)
 		{
 			bool fixhousemp = settings.GetBool("FixHouseMP");
 			bool fixhousehp = settings.GetBool("FixHouseHP");

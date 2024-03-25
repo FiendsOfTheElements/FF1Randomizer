@@ -1030,35 +1030,6 @@ namespace FF1Lib
 			}
 		}
 
-		public void ExpandNormalTeleporters()
-		{
-			// Code for extension is included in ExtraTrackingAndInitCode() in FF1Rom.cs
-			//  see 0F_9200_TeleportXYInroom.asm
-			const int BANK_TELEPORTINFO = 0x00;
-			const int BANK_EXTTELEPORTINFO = 0x0F;
-
-			const int lut_NormTele_X = 0xAD00;
-			const int lut_NormTele_Y = 0xAD40;
-			const int lut_NormTele_Map = 0xAD80;
-			const int NormTele_qty = 0x40;
-
-			const int lut_NormTele_X_ext = 0xB000;
-			const int lut_NormTele_Y_ext = 0xB100;
-			const int lut_NormTele_Map_ext = 0xB200;
-			//const int NormTele_ext_qty = 0x100;
-
-			var NormTele_X = GetFromBank(BANK_TELEPORTINFO, lut_NormTele_X, NormTele_qty);
-			var NormTele_Y = GetFromBank(BANK_TELEPORTINFO, lut_NormTele_Y, NormTele_qty);
-			var NormTele_Map = GetFromBank(BANK_TELEPORTINFO, lut_NormTele_Map, NormTele_qty);
-
-			PutInBank(BANK_EXTTELEPORTINFO, lut_NormTele_X_ext, NormTele_X);
-			PutInBank(BANK_EXTTELEPORTINFO, lut_NormTele_Y_ext, NormTele_Y);
-			PutInBank(BANK_EXTTELEPORTINFO, lut_NormTele_Map_ext, NormTele_Map);
-
-
-
-		}
-
 		public void BahamutB1Encounters(List<Map> maps)
 		{
 			// Adds dragon-themed encounters to the long

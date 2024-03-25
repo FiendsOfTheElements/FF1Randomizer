@@ -355,39 +355,6 @@ namespace FF1Lib
 				ItemsText[(int)item] = Spell.Name.PadRight(7);
 			}
 		}
-
-		public void CastableItemTargeting()
-		{
-			// update a lut with the correct location of a routine
-			Put(0x314E2, Blob.FromHex("EC9563"));
-
-			// see 0C_94F5_BatleSubMenu_MagicDrinkItem.asm for all changes
-			// This is only useful if Item Magic is shuffled since there are no single target spells on items in vanilla
-			int changesOffset = 0x314F5; // offset where changes start
-
-			Put(changesOffset, Get(changesOffset + 0x3, 0x14));
-			Put(changesOffset + 0x14, Blob.FromHex("2097F8"));
-			Put(changesOffset + 0x17, Get(changesOffset + 0x1D, 0x81));
-			Put(changesOffset + 0xAC, Get(changesOffset + 0x9F, 0x6));
-			Put(changesOffset + 0xB2, Blob.FromHex("04A0FF"));
-			Put(changesOffset + 0x99, Blob.FromHex("A940209D95C9FFF0034C5D934CF59448AE7D6B"));
-			Put(changesOffset + 0xB5, Blob.FromHex("68604A901020A49AAE7D6BC902D00468A9FF6068604A9008AD7A6B0980A868604A900468A0FE60AD7A6B203A9AAE7D6BC902D00468A9FF60ADAB6A29030980A86860"));
-			Put(changesOffset + 0xF7, Get(changesOffset + 0x100, 0x42));
-			Put(changesOffset + 0x127, Blob.FromHex("11"));
-			Put(changesOffset + 0x139, Get(changesOffset + 0x14F, 0xB0));
-			Put(changesOffset + 0x144, Blob.FromHex("EC"));
-			Put(changesOffset + 0x14F, Blob.FromHex("7D6B"));
-			Put(changesOffset + 0x155, Blob.FromHex("7D6B"));
-			Put(changesOffset + 0x1CF, Blob.FromHex("D6"));
-			Put(changesOffset + 0x1E9, Blob.FromHex("8D7D6BCE7D6BAD7D6B20119785808681A910209D95C9FFF0034C5D934C639600"));
-
-			// Writes the spell name rather than the item name, not in the .asm, intruduces a small bug when using non castable items
-			//Put(0x3307D, Blob.FromHex("0CAD8C6CC942B00369B04CA0B0C901D008AD8C6C38E927D00AAD8C6CC942B0031869B0"));
-
-			PutInBank(0x0C, 0x96E7, Blob.FromHex("A82011972065C2EAEA"));
-			PutInBank(0x1F, 0xC265, CreateLongJumpTableEntry(0x0F, 0x8AD0));
-			PutInBank(0x0F, 0x8AD0, Blob.FromHex("85808681C0FFD008A9D68580A9968581A91060"));
-		}
 	}
 
 	public partial class FF1Rom

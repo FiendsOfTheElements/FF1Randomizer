@@ -4,7 +4,6 @@ namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
 	{
-		public const int Nop = 0xEA;
 		public const int SardaOffset = 0x393E9;
 		public const int SardaSize = 7;
 		public const int CanoeSageOffset = 0x39482;
@@ -15,20 +14,11 @@ namespace FF1Lib
 		public const int MapSpriteSize = 3;
 		public const int MapSpriteCount = 16;
 
-		public const int CaravanFairyCheck = 0x7C4E5;
-		public const int CaravanFairyCheckSize = 7;
-
 		public const string BattleBoxDrawInFrames = "06"; // Half normal (Must divide 12)
 		public const string BattleBoxDrawInRows = "02";
 
 		public const string BattleBoxUndrawFrames = "04"; // 2/3 normal (Must  divide 12)
 		public const string BattleBoxUndrawRows = "03";
-
-		// Required for npc quest item randomizing
-		public void PermanentCaravan()
-		{
-			Put(CaravanFairyCheck, Enumerable.Repeat((byte)Nop, CaravanFairyCheckSize).ToArray());
-		}
 
 
 		public void EnableEarlySarda(NPCdata npcdata)
@@ -397,12 +387,6 @@ namespace FF1Lib
 
 			Put(EnemyOffset, enemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
-
-		public void EasterEggs()
-		{
-			Put(0x2ADDE, Blob.FromHex("91251A682CFF8EB1B74DB32505FFBE9296991E2F1AB6A4A9A8BE05FFFFFFFFFFFF9B929900"));
-		}
-
 		/// <summary>
 		/// Unused method, but this would allow a non-npc shuffle king to build bridge without rescuing princess
 		/// </summary>
@@ -469,12 +453,6 @@ namespace FF1Lib
 			**/
 			Put(0x7C64D, Blob.FromHex("ADFC6048A90F2003FE20808768082003FE2860"));
 		}
-		public void DrawCanoeUnderBridge()
-		{
-			// Draw canoe under bridge if bridge is placed over a river, see 1F_E26A_DrawCanoeUnderBridge.asm
-			PutInBank(0x1F, 0xE231, Blob.FromHex("F037"));
-			PutInBank(0x1F, 0xE26A, Blob.FromHex("20A6E3A4422081E2A442C004F0032073E34C8CE3"));
-		}
 		public void EnableFreeLute()
 		{
 			Data[0x3020 + (int)Item.Lute] = 0x01;
@@ -529,32 +507,6 @@ namespace FF1Lib
 			// See Disch's comments here: Battle_PlayerTryRun  [$A3D8 :: 0x323E8]
 			Put(0x32409, Blob.FromHex("189005A94E4C07AAEAEAEAEAEAEAEA"));
 			// new delta to special unrunnable message handler done in
-		}
-
-		public void SeparateUnrunnables()
-		{
-			// See SetRunnability.asm
-			// replace a segment of code in PrepareEnemyFormation with a JSR to a new routine in dummied ROM space in bank 0B
-			Put(0x2E141, Blob.FromHex("200C9B"));
-			// move the rest of PrepareEnemyFormation up pad the excised code with NOPs
-			Put(0x2E144, Get(0x2E160, 0x1E));
-			PutInBank(0x0B, 0xA162, Enumerable.Repeat((byte)0xEA, 0x1C).ToArray());
-			// write the new routine
-			Put(0x2DB0C, Blob.FromHex("AD6A001023AD926D8D8A6DAD936D8D8B6DA2008E886D8E896D8E8C6D8E8D6DAD916D29FE8D916D60AD916D29FD8D916D60"));
-			// change checks for unrunnability in bank 0C to check last two bits instead of last bit
-			Put(0x313D3, Blob.FromHex("03")); // changes AND #$01 to AND #$03 when checking start of battle for unrunnability
-											  // the second change is done in AllowStrikeFirstAndSurprise, which checks the unrunnability in battle
-											  // alter the default formation data to set unrunnability of a formation to both sides if the unrunnable flag is set
-			var formData = Get(FormationDataOffset, FormationDataSize * FormationCount).Chunk(FormationDataSize);
-			for (int i = 0; i < NormalFormationCount; ++i)
-			{
-				if ((formData[i][UnrunnableOffset] & 0x01) != 0)
-					formData[i][UnrunnableOffset] |= 0x02;
-			}
-			formData[126][UnrunnableOffset] |= 0x02; // set unrunnability for WzSahag/R.Sahag fight
-			formData[127][UnrunnableOffset] |= 0x02; // set unrunnability for IronGol fight
-
-			Put(FormationsOffset, formData.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
 		public void ImproveTurnOrderRandomization(MT19337 rng)
@@ -678,16 +630,6 @@ namespace FF1Lib
 
 			Put(offset, Blob.FromUShorts(newPermissions.ToArray()));
 		}
-
-		public void BattleMagicMenuWrapAround()
-		{
-			// Allow wrapping up or down in the battle magic menu, see 0C_9C9E_MenuSelection_Magic.asm
-			PutInBank(0x0C, 0x9C9E, Blob.FromHex("ADB36829F0C980F057C940F045C920F005C910F01160ADAB6A2903C903D00320D29CEEAB6A60ADAB6A2903D00320D29CCEAB6A60EEF86AADF86A29018DF86AA901200FF2201BF260"));
-
-			// Zero out empty space
-			var emptySpace = new byte[0x0A];
-			PutInBank(0X0C, 0x9CE6, emptySpace);
-		}
 		public void EnableCardiaTreasures(MT19337 rng, Map cardia)
 		{
 			// Assign items to the chests.
@@ -722,25 +664,6 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x81BB, FF1Text.TextToBytes("Welcome\n  ..\nStay to\nheal\nyour\nwounds?"));
 			PutInBank(0x0E, 0x81DC, FF1Text.TextToBytes("Don't\nforget\n.."));
 			PutInBank(0x0E, 0x81FC, FF1Text.TextToBytes("Your\ngame\nhasn't\nbeen\nsaved."));
-		}
-
-		public void UnifySpellSystem()
-		{
-			// ConvertOBStatsToIB
-			PutInBank(0x0B, 0x9A41, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-
-			// ConvertIBStatsToOB
-			PutInBank(0x0B, 0x9A88, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-
-			// Magic Shop
-			PutInBank(0x0E, 0xAB25, Blob.FromHex("12"));
-			PutInBank(0x0E, 0xAB5E, Blob.FromHex("12"));
-
-			// Magic Menu
-			PutInBank(0x0E, 0xAEF2, Blob.FromHex("00"));
-
-			// Draw Complex Strings
-			PutInBank(0x1F, 0xDF7C, Blob.FromHex("00"));
 		}
 		public void Spooky(TalkRoutines talkroutines, NPCdata npcdata, MT19337 rng, Flags flags)
 		{
@@ -1424,21 +1347,6 @@ namespace FF1Lib
 			return firstResult;
 		}
 
-		public void SetMaxLevel(Flags flags, MT19337 rng)
-		{
-			int maxLevel = flags.MaxLevelLow;
-			if (flags.MaxLevelLow < flags.MaxLevelHigh) maxLevel = rng.Between(flags.MaxLevelLow, flags.MaxLevelHigh);
-			//This seems to be needed because if you're above the level cap it seems to continue giving xp.
-			//Thus  the fix for starter levels > max levels is to just set max levels = starter levels so it doesnt increase xp further after those levels.
-			if (maxLevel < StartingLevels.GetLevelNumber(flags.StartingLevel)) maxLevel = StartingLevels.GetLevelNumber(flags.StartingLevel);
-			maxLevel = Math.Min(maxLevel, 50);
-			maxLevel = Math.Max(maxLevel, 1);
-			maxLevel = maxLevel - 1;
-			//new level up check is at 0x6C46F
-			Put(0x6C46F, new byte[] { (byte)maxLevel });
-			PutInBank(0x1B, 0x87E8, new byte[] { (byte)maxLevel });
-		}
-
 		public void ActivateCropScreen()
 		{
 			//PutInBank(0x0E, 0xA222, Blob.FromHex("20D0A0"));
@@ -1509,13 +1417,6 @@ namespace FF1Lib
 		public void DisableMinimap()
 		{
 			PutInBank(0x1F, 0xC1A6, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-		}
-
-		public void MoveLoadPlayerIBStats()
-		{
-			PutInBank(0x0C, 0xAD21, Blob.FromHex("A99448A91548A91B4C03FEEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-
-			PutInBank(0x1B, 0x9400, Blob.FromHex("00000000000000000000000048B182AA68A88A918060A000A901200C94A001A902200C94A00AA903200C94A00BA904200C94A021A905200C94A025A906200C94A023A907200C94A022A908200C94A020A909200C94A000B182AAA024B1821D0094A00A9180A9AD48A92B48A90C4C03FE"));
 		}
 
 		public void IncreaseDarkPenalty()
@@ -1621,22 +1522,6 @@ namespace FF1Lib
 			teledata[(byte)ExitTeleportIndex.ExitSkyPalace] = new TeleData { X = volcanoCoord.X, Y = volcanoCoord.Y, Map = (MapId)0xFF }; // mirage exit to volcano location
 
 			teledata.StoreData();
-		}
-
-		public void WhiteMageHarmEveryone()
-		{
-			PutInBank(0x0C, 0xB905, Blob.FromHex("2073B820F9B8202DB8A9A248A90348A91C4C03FEEAEAEAEAEAEAEAEAEA60"));
-			PutInBank(0x1C, 0xA200, Blob.FromHex("004080C0AD86682908D030A9008D56688D5768AD896C297FAABD00A2A8B90061C904F017C90AF013A9008D58688D5968A9B948A92148A90C4C03FEA9B948A92248A90C4C03FE"));
-		}
-
-		//doesn't change any XP until it actually happens in blessed/cursed classes, just lays the groundwork in the asm
-		public void SetupClassAltXp()
-		{
-			PutInBank(0x1B, 0x886E, Blob.FromHex("20189560"));
-			//lut for class xp table pointers
-			PutInBank(0x1B, 0x9500, Blob.FromHex("818C3595C8955B96EE968197818C3595C8955B96EE968197"));
-			//actual new level up function
-			PutInBank(0x1B, 0x9518, Blob.FromHex("A000B1860AAAA026B1860A187186187D00958582E8A9007D0095858360"));
 		}
 
 		public void OpenChestsInOrder(bool enabled)

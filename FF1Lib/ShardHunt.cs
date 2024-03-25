@@ -28,43 +28,6 @@ namespace FF1Lib
 	{
 		private const int TotalOrbsToInsert = 32;
 
-		public void ShiftEarthOrbDown()
-		{
-			// The orb rewarding code is inefficient enough there was room to add in giving you a shard as well.
-			// When not playing shard hunt this value is unused, but we always run this code because we always
-			// shuffle the earth orb orbs down 4 location to make the code simpler throughout FFR.
-			// Getting free shards for killing fiends is an interesting semi-incentive and adds an edge to this game.
-			// See OF_CE12_ShardRewards.asm
-			Put(0x7CE12, Blob.FromHex("A202A000F010A202A001D00AA204A002D004A204A003B93160D00FA901993160188A6D35608D3560E66C1860"));
-			Put(0x7CDB9, Blob.FromHex("12CE18CE1ECE24CE")); // Orb handling jump table.
-
-			// Now anyplace that refers to orb_earth in the assembly outside of the above code
-			// is going to need updating to the new address. Earth Orb is pretty popular actually.
-			List<int> earthOrbPtrsLowBytes = new List<int> {
-				0x39483, // Canoe Sage when not using Early Canoe
-				0x3950C, // Talk_BlackOrb
-				0x39529, // Talk_4Orb (bats in ToF)
-				0x39561, // Talk_ifearthvamp
-				0x39577, // Talk_ifearthfire
-				0x3B8A0, // DrawOrbBox in the main menu
-				0x7CE04, // SMMove_4Orbs
-			};
-			earthOrbPtrsLowBytes.ForEach(address =>
-			{
-				// It's entirely possible some future mods might touch these addresses so
-				// let's put a litle guard here.
-				System.Diagnostics.Debug.Assert(Data[address] == 0x35);
-				Data[address] = 0x31;
-			});
-			
-			// Fix for four NPCs checking for the Earth Orb in the wrong position (1 in Dwarf Cave, 3 in Melmond)
-			Data[MapObjOffset + 0x5D * MapObjSize] = 0x11;
-			Data[MapObjOffset + 0x6B * MapObjSize] = 0x11;
-			Data[MapObjOffset + 0x70 * MapObjSize] = 0x11;
-			Data[MapObjOffset + 0x74 * MapObjSize] = 0x11;
-
-			Data[0x7EF45] = 0x11; // Skip over orbs and shards when printing the item menu
-		}
 		private static readonly List<string> ShardNames = new List<string>
 		{
 			"JEWEL", "PIECE", "CHUNK", "PRISM", "STONE", "SLICE", "WEDGE", "BIGGS", "SLIVR", "ORBLT", "ESPER", "FORCE",

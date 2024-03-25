@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 
 using FF1Lib.Procgen;
 using FF1Lib.Assembly;
+using System.Numerics;
 
 namespace FF1Lib;
 
@@ -154,8 +155,15 @@ public partial class FF1Rom : NesRom
 		Flags unmodifiedFlags = flags.ShallowCopy();
 
 
-		NewFlags flagstest = new();
-		Setting settings = FlagRules.CollectFlags(flagstest);
+		Settings settingstest = new();
+		settingstest.Init();
+		settingstest.GenerateFlagstring();
+		//string test = "S";
+		//settingstest.ReadFlagstring(test);
+		//settingstest.SetValue();
+
+
+		//Setting settings = FlagRules.CollectFlags(flagstest);
 
 
 		/*
@@ -163,7 +171,7 @@ public partial class FF1Rom : NesRom
 		settingtest.SetValue();
 		settingtest.GetSomething();
 		*/
-	    if (flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ||
+		if (flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld ||
 		flags.OwMapExchange == OwMapExchanges.LostWoods)
 	    {
 		// Procgen maps can be either
@@ -208,21 +216,18 @@ public partial class FF1Rom : NesRom
 
 		if (flags.TournamentSafe) AssureSafe();
 
-		UpgradeToMMC3();
-		MakeSpace();
-		Bank1E();
-		Bank1B();
-		EasterEggs();
-		DynamicWindowColor(preferences.MenuColor);
-		PermanentCaravan();
-		ShiftEarthOrbDown();
-		CastableItemTargeting();
-		UnifySpellSystem();
-		ExpandNormalTeleporters();
-		SeparateUnrunnables();
-		DrawCanoeUnderBridge();
+		settingstest.CollapseRandomSettings(rng);
+		settingstest.ProcessStandardFlags();
+		//FlagRules.ProcessBaseFlags(settingstest);
 
-		Bugfixes(settings);
+
+		GlobalHacks();
+
+		DynamicWindowColor(preferences.MenuColor);
+
+
+		//Bugfixes(settings);
+		//ClassesBalance(settings, rng);
 
 		LoadSharedDataTables();
 
@@ -1000,22 +1005,6 @@ public partial class FF1Rom : NesRom
 		}
 
 		new TreasureStacks(this, flags).SetTreasureStacks();
-		new StartingLevels(this, flags).SetStartingLevels();
-
-		if (flags.MaxLevelLow < 50)
-		{
-			SetMaxLevel(flags, rng);
-		}
-
-		if (!flags.Etherizer && (flags.HouseMPRestoration || flags.HousesFillHp))
-		{
-			FixHouse(flags.HouseMPRestoration, flags.HousesFillHp);
-		}
-
-		if (flags.BBCritRate)
-		{
-			DontDoubleBBCritRates();
-		}
 
 		if (flags.WeaponCritRate)
 		{
@@ -1042,19 +1031,6 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		new ChanceToRun(this, flags).FixChanceToRun();
-
-		if (flags.MDefMode != MDEFGrowthMode.None)
-		{
-			MDefChanges(flags.MDefMode);
-		}
-
-		if ((bool)flags.Lockpicking)
-		{
-			EnableLockpicking();
-			SetLockpickingLevel(flags.LockpickingLevelRequirement);
-		}
-
 		if (flags.ImproveTurnOrderRandomization)
 		{
 			ImproveTurnOrderRandomization(rng);
@@ -1063,11 +1039,6 @@ public partial class FF1Rom : NesRom
 		if ((bool)flags.IncreaseDarkPenalty)
 		{
 			IncreaseDarkPenalty();
-		}
-
-		if((bool)flags.WhiteMageHarmEveryone)
-		{
-			WhiteMageHarmEveryone();
 		}
 
 		if (preferences.FunEnemyNames && !flags.EnemizerEnabled)
@@ -1191,9 +1162,6 @@ public partial class FF1Rom : NesRom
 
 		SetProgressiveScaleMode(flags);
 
-		MoveLoadPlayerIBStats();
-		SetupClassAltXp();
-
 		ClassData.SetMPMax(flags);
 		ClassData.SetMpGainOnMaxGain(flags, this);
 		ClassData.RaiseThiefHitRate(flags);
@@ -1201,14 +1169,6 @@ public partial class FF1Rom : NesRom
 		ClassData.EarlierHighTierMagicCharges(flags);
 		ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);
 		ClassData.ProcessStartWithRoutines(flags, blursesValues, this);;
-
-		if ((bool)flags.ReducedLuck)
-		{
-			for (int i = 0; i < 12; i++)
-			{
-				ClassData[(Classes)i].LckStarting = (byte)(Math.Max(ClassData[(Classes)i].LckStarting - 4, 0));
-			}
-		}
 
 		if ((bool)flags.EnableRandomPromotions)
 		{
@@ -1742,55 +1702,11 @@ public partial class FF1Rom : NesRom
 		// PutInBank(0x1E, 0xB100, Blob.FromHex("A900852485252000FEA91E85572089C620C2D7A5240525F0034C1FB14C06B1A9008D01202006E9A20BA90085372040B0203CC420D5B02000FEA91E85572089C64C36B1"));
 	}
 
-	public void MakeSpace()
-	{
-		// 54 bytes starting at 0xC265 in bank 1F, ROM offset: 7C275. FULL
-		// This removes the code for the minigame on the ship, and moves the prior code around too
-		PutInBank(0x1F, 0xC244, Blob.FromHex("F003C6476020C2D7A520290FD049A524F00EA9008524A542C908F074C901F0B160EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-		// 15 bytes starting at 0xC8A4 in bank 1F, ROM offset: 7C8B4
-		// This removes the routine that give a reward for beating the minigame, no need for a reward without the minigame
-		PutInBank(0x1F, 0xC8A4, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-		// 28 byte starting at 0xCFCB in bank 1F, ROM offset: 7CFE1
-		// This removes the AssertNasirCRC routine, which we were skipping anyways, no point in keeping uncalled routines
-		PutInBank(0x1F, 0xCFCB, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-
-		// Used by ShufflePromotions() and AllowNone()
-		PutInBank(0x0E, 0xB816, Blob.FromHex("206BC24C95EC"));
-		PutInBank(0x1F, 0xC26B, CreateLongJumpTableEntry(0x0F, 0x8B40));
-		PutInBank(0x0F, 0x8B40, Blob.FromHex("A562851029030A851118651165110A0A0A1869508540A5100A0A29F0186928854160"));
-	}
-
 	public override bool Validate()
 	{
 		return Get(0, 16) == Blob.FromHex("06400e890e890e401e400e400e400b42");
 	}
 
-	public void UpgradeToMMC3()
-	{
-		Header[4] = 32; // 32 pages of 16 kB
-		Header[6] = 0x43; // original is 0x13 where 1 = MMC1 and 4 = MMC3
-
-		// Expand ROM size, moving bank 0F to the end.
-		Blob newData = new byte[0x80000];
-		Array.Copy(Data, newData, 0x3C000);
-		Array.Copy(Data, 0x3C000, newData, 0x7C000, 0x4000);
-		Data = newData;
-
-		// Update symbol info
-		BA.MemoryMode = MemoryMode.MMC3;
-
-		// Change bank swap code.
-		// We put this code at SwapPRG_L, so we don't have to move any of the "long" calls to it.
-		// We completely overwrite SetMMC1SwapMode, since we don't need it anymore, and partially overwrite the original SwapPRG.
-		Put(0x7FE03, Blob.FromHex("8dfc6048a9068d0080680a8d018048a9078d00806869018d0180a90060"));
-
-		// Initialize MMC3
-		Put(0x7FE48, Blob.FromHex("8d00e0a9808d01a0a0008c00a08c00808c0180c88c0080c88c01808c0080c8c88c0180a9038d0080c88c0180a9048d00804ccdffa900"));
-		Put(0x7FFCD, Blob.FromHex("c88c0180a9058d0080c88c01804c7cfeea"));
-
-		// Rewrite the lone place where SwapPRG was called directly and not through SwapPRG_L.
-		Data[0x7FE97] = 0x03;
-	}
 
 	public void WriteSeedAndFlags(string seed, Flags flags, Flags flagsforrng, Flags umodifiedflags, string resourcepackhash, uint last_rng_value)
 	{
