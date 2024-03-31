@@ -3,7 +3,10 @@
 ; This is a simple but effective RNG with a much longer period than FF1's.
 
 ; A research paper on selecting good parameters for the multiplier:
-; https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.34.1024&rep=rep1&type=pdf
+; MATHEMATICS OF COMPUTATION
+; Volume 68, Number 225, January 1999, Pages 249–260
+; S 0025-5718(99)00996-5
+; https://www.ams.org/journals/mcom/1999-68-225/S0025-5718-99-00996-5/S0025-5718-99-00996-5.pdf
 ; We'll use a = 2891336453, or 0xAC564B05 from Table 4.
 ; Any odd integer will do for c, so we'll take a random value.
 
