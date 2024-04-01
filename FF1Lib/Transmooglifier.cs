@@ -40,7 +40,7 @@ namespace FF1Lib
 
 		public int lockpickClass = -1;
 
-		public void Transmooglify(Flags flags, MT19337 rng, FF1Rom rom)
+		public void Transmooglify(Flags flags, Settings settings, MT19337 rng, FF1Rom rom)
 		{
 			ClassDef.rom = rom;
 			ClassDef.rng = rng;
@@ -85,7 +85,7 @@ namespace FF1Lib
 			if ((bool)flags.Lockpicking)
 				ChooseLockpickingClass(classes);
 
-			if ((bool)flags.WhiteMageHarmEveryone)
+			if (settings.GetBool("WhiteMageHarmEveryone"))
 				ClassDef.ImprovedHarmRequested = true;
 
 			for (int i = 0; i < 6; i++)

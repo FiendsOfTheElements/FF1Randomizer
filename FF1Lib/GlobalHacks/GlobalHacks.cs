@@ -26,6 +26,7 @@ namespace FF1Lib
 			ExpandNormalTeleporters();
 			SeparateUnrunnables();
 			DrawCanoeUnderBridge();
+			BattleMagicMenuWrapAround();
 		}
 		public void UpgradeToMMC3()
 		{

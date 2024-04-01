@@ -1,17 +1,13 @@
 ﻿using System.ComponentModel;
 
 namespace FF1Lib
-{ 
-	public partial class FF1Rom
+{
+	public static partial class FlagRules
 	{
-		public static partial class FlagRules
+		public static FlagRule BugFixes { get; set; } = new FlagRule()
 		{
-			public static FlagRule BugFixes { get; set; } = new FlagRule()
-			{
-				Name = "Bugfixes",
-				Type = SettingType.Toggle,
-				Value = 1,
-				Actions = new List<FlagAction>()
+			Conditions = new() { new() { new FlagCondition() { Name = "Bugfixes", Type = SettingType.Toggle, Value = 1 } } },
+			Actions = new List<FlagAction>()
 				{
 					new FlagAction() { Setting = "FixHouseMP", Action = FlagActions.Enable },
 					new FlagAction() { Setting = "FixHouseHP", Action = FlagActions.Enable },
@@ -21,8 +17,11 @@ namespace FF1Lib
 					new FlagAction() { Setting = "FixBBAbsorbBug", Action = FlagActions.Enable },
 					new FlagAction() { Setting = "ChanceToRun", Action = FlagActions.SetValue, Value = (int)ChanceToRunMode.Fixed },
 				}
-			};
-		}
+		};
+	}
+	public partial class FF1Rom
+	{
+
 
 		private void Bugfixes(Settings settings)
 		{

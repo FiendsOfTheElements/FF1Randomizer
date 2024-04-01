@@ -315,7 +315,7 @@
 			}),
 		};
 
-		public static void UpdateOWFormations(FF1Rom rom, int safeX, int safeY )
+		public static void UpdateOWFormations(FF1Rom rom, ZoneFormations zoneformations, int safeX, int safeY )
 		{
 			var encountersData = new FF1Rom.Encounters(rom);
 
@@ -429,19 +429,18 @@
 				((safeX + 2) + (safeY + 2) * 8),
 			};
 
+
 			for (int i = 0; i < DomainCount; i++)
 			{
 				if (safeDomain.Contains(i))
 				{
-					newFormations.AddRange(easyDomain);
+					zoneformations[i] = new ZoneFormation() { Index = i, Formations = easyDomain };
 				}
 				else
 				{
-					newFormations.AddRange(hardDomain);
+					zoneformations[i] = new ZoneFormation() { Index = i, Formations = hardDomain };
 				}
 			}
-
-			rom.Put(FF1Rom.ZoneFormationsOffset, newFormations.ToArray());
 
 			//Update enemies names
 			var enemyText = rom.ReadText(FF1Rom.EnemyTextPointerOffset, FF1Rom.EnemyTextPointerBase, FF1Rom.EnemyCount);
@@ -900,7 +899,7 @@
 			return mapData;
 		}
 
-		public static void ApplyDesertModifications(FF1Rom rom, OwMapExchange owMapExchange, FF1Rom.NPCdata npcdata)
+		public static void ApplyDesertModifications(FF1Rom rom, ZoneFormations zoneformations, OwMapExchange owMapExchange, FF1Rom.NPCdata npcdata)
 		{
 			(int, int) startDomain = ((owMapExchange.StartingLocation.X / 32) - 1, (owMapExchange.StartingLocation.Y / 32) - 1);
 
@@ -1019,7 +1018,7 @@
 			// Disable Minimap
 			rom.PutInBank(0x1F, 0xC1A9, Blob.FromHex("00"));
 
-			UpdateOWFormations(rom, startDomain.Item1, startDomain.Item2);
+			UpdateOWFormations(rom, zoneformations, startDomain.Item1, startDomain.Item2);
 			DoDUpdateDialogues(rom, npcdata);
 		}
 		public static MapLocation SelectWeightedDoodads(List<int> weight, MT19337 rng)

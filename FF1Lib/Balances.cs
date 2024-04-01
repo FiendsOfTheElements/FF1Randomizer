@@ -4,6 +4,7 @@ namespace FF1Lib
 {
 	public partial class FF1Rom
 	{
+		// Move to Gear Class
 		public void DoubleWeaponCritRates()
 		{
 			// Increase crit rate of all weapons

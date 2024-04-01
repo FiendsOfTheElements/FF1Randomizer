@@ -247,34 +247,6 @@ namespace FF1Lib
 
 			Put(FormationsOffset + ChaosFormationIndex * FormationSize, finalBattle);
 		}
-
-		public void PacifistEnd(TalkRoutines talkroutines, NPCdata npcdata, bool extendedtraptiles)
-		{
-			// Remove ToFR Fiends tiles
-			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
-			tilesets.ForEach(tile =>
-			{
-				if (IsBossTrapTile(tile))
-				{
-					tile[1] = (byte)(extendedtraptiles ? 0x00 : 0x80);
-				}
-			});
-			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
-
-			// Update Chaos script
-			var Talk_Ending = talkroutines.Add(Blob.FromHex("4C38C9"));
-			npcdata.SetRoutine((ObjectId)0x1A, (newTalkRoutines)Talk_Ending);
-
-			//Update Fiends, Garland, Vampire, Astos and Bikke
-			var battleJump = Blob.FromHex("2020B1");
-			var mapreload = Blob.FromHex("201896");
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_fight, battleJump, Blob.FromHex("EAEAEA"));
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_fight, mapreload, Blob.FromHex("EAEAEA"));
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, battleJump, Blob.FromHex("EAEAEA"));
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, mapreload, Blob.FromHex("EAEAEA"));
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, battleJump, Blob.FromHex("EAEAEA"));
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, mapreload, Blob.FromHex("EAEAEA"));
-		}
 		public void PacifistBat(TalkRoutines talkroutines, NPCdata npcdata)
 		{
 			// Add Script

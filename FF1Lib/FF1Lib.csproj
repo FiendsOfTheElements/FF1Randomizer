@@ -66,6 +66,8 @@
 
     <EmbeddedResource Include="customclasses\*.png" />
 
+    <Compile Remove="Template.cs" />
+
     <EmbeddedResource Include="bosses\ASTAROTH.png" />
     <EmbeddedResource Include="bosses\ASURA.png" />
     <EmbeddedResource Include="bosses\BARBRICA.png" />
@@ -101,6 +103,10 @@
   <ItemGroup>
     <Resource Include="maps\crescent_start.ffm" />
     <EmbeddedResource Include="maps\normal256.zip" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Template.cs" />
   </ItemGroup>
 
   <ItemGroup>

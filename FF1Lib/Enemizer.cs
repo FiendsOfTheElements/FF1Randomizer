@@ -17,6 +17,10 @@ namespace FF1Lib
 
 		public const int EnemizerUnrunnabilityWeight = 31; // weight given to determine unrunnability.  for the highest level of encounters, this means 8/32 probability of a formation being unrunnable
 
+		private const int ZoneFormationsOffset = 0x2C000;
+		private const int ZoneFormationsSize = 8;
+		private const int ZoneCount = 128;
+
 		enum MonsterPerks
 		{
 			PERK_GAINSTAT10, // increases a minor stat by 10%, +2% XP
@@ -3551,12 +3555,12 @@ namespace FF1Lib
 		public void DoEnemizer(MT19337 rng, bool doEnemies, bool doFormations, bool shuffledSkillsOn)
 		{
 			// code modification to allow any formation except 0x00 to be a trap (lifted from ShuffleTrapTiles)
-			Data[0x7CDC5] = 0xD0; // changes the game's programming
-			bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
-			bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
-			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
-			tilesets.ForEach(tile => { if (IsRandomBattleTile(tile)) tile[1] = 0x00; });
-			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());// set all random battle tiles to zero
+			//Data[0x7CDC5] = 0xD0; // changes the game's programming
+			//bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
+			//bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
+			//var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
+			//tilesets.ForEach(tile => { if (IsRandomBattleTile(tile)) tile[1] = 0x00; });
+			//Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());// set all random battle tiles to zero
 
 			SpellInfo[] spell = LoadSpells(); // list of spells and their appropriate tiers
 			EnemySkillInfo[] skill = new EnemySkillInfo[EnemySkillCount]; // list of enemy skills and their appropriate tiers

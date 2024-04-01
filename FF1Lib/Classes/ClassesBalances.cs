@@ -44,57 +44,63 @@ namespace FF1Lib
 		[Description("Lockpicking")]
 		Lockpicking,
 	}
-
-	public partial class FF1Rom
+	public enum WhiteMageOptions
 	{
-		public static partial class FlagRules
+		[Description("None")]
+		None = 0,
+		[Description("Harm Hurts All Type")]
+		ImprovedHarm,
+	}
+
+	public static partial class FlagRules
+	{
+		public static FlagRule ThiefModeStandard { get; set; } = new FlagRule()
 		{
-			public static FlagRule ThiefModeStandard { get; set; } = new FlagRule()
-			{
-				Name = "ThiefMode",
-				Type = SettingType.OptionList,
-				Value = (int)ThiefOptions.None,
-				Actions = new List<FlagAction>()
+			Conditions = new() { new() { new FlagCondition() { Name = "ThiefMode", Type = SettingType.OptionList, Value = (int)ThiefOptions.None } } },
+			Actions = new List<FlagAction>()
 				{
 					new FlagAction() { Setting = "ThiefAgilityBuff", Action = FlagActions.SetValue, Value = (int)ThiefAGI.Vanilla },
 				}
-			};
-			public static FlagRule ThiefModeDoubleHit { get; set; } = new FlagRule()
-			{
-				Name = "ThiefMode",
-				Type = SettingType.OptionList,
-				Value = (int)ThiefOptions.DoubleHit,
-				Actions = new List<FlagAction>()
+		};
+		public static FlagRule ThiefModeDoubleHit { get; set; } = new FlagRule()
+		{
+			Conditions = new() { new() { new FlagCondition() { Name = "ThiefMode", Type = SettingType.OptionList, Value = (int)ThiefOptions.DoubleHit } } },
+			Actions = new List<FlagAction>()
 				{
-					new FlagAction() { Setting = "ThiefHitRate", Action = FlagActions.Enable },
+					new FlagAction() { Setting = "ThieHitRate", Action = FlagActions.Enable },
 					new FlagAction() { Setting = "ThiefAgilityBuff", Action = FlagActions.SetValue, Value = (int)ThiefAGI.Vanilla },
 				}
-			};
-			public static FlagRule ThiefModeAgiBuff { get; set; } = new FlagRule()
-			{
-				Name = "ThiefMode",
-				Type = SettingType.OptionList,
-				Value = (int)ThiefOptions.RaisedAgility,
-				Actions = new List<FlagAction>()
+		};
+		public static FlagRule ThiefModeAgiBuff { get; set; } = new FlagRule()
+		{
+			Conditions = new() { new() { new FlagCondition() { Name = "ThiefMode", Type = SettingType.OptionList, Value = (int)ThiefOptions.RaisedAgility } } },
+			Actions = new List<FlagAction>()
 				{
 					new FlagAction() { Setting = "ThiefAgilityBuff", Action = FlagActions.SetValue, Value = (int)ThiefAGI.Agi80 },
 				}
-			};
-			public static FlagRule ThiefModeLockpicking { get; set; } = new FlagRule()
-			{
-				Name = "ThiefMode",
-				Type = SettingType.OptionList,
-				Value = (int)ThiefOptions.Lockpicking,
-				Actions = new List<FlagAction>()
+		};
+		public static FlagRule ThiefModeLockpicking { get; set; } = new FlagRule()
+		{
+			Conditions = new() { new() { new FlagCondition() { Name = "ThiefMode", Type = SettingType.OptionList, Value = (int)ThiefOptions.Lockpicking } } },
+			Actions = new List<FlagAction>()
 				{
 					new FlagAction() { Setting = "ThiefAgilityBuff", Action = FlagActions.SetValue, Value = (int)ThiefAGI.Vanilla },
 					new FlagAction() { Setting = "ThiefLockpicking", Action = FlagActions.Enable },
 					new FlagAction() { Setting = "LockpickingLevelRequirement", Action = FlagActions.SetValue, Value = 15 },
 				}
-			};
-		}
-
-		public void ClassesBalance(Settings settings, MT19337 rng)
+		};
+		public static FlagRule WhiteMageModeImprovedHarm { get; set; } = new FlagRule()
+		{
+			Conditions = new() { new() { new FlagCondition() { Name = "WhiteMageMode", Type = SettingType.OptionList, Value = (int)WhiteMageOptions.ImprovedHarm } } },
+			Actions = new List<FlagAction>()
+				{
+					new FlagAction() { Setting = "WhiteMageHarmEveryone", Action = FlagActions.Enable },
+				}
+		};
+	}
+	public partial class FF1Rom
+	{
+		public void ClassesBalances(Settings settings, MT19337 rng)
 		{
 
 			// Stats
@@ -106,7 +112,7 @@ namespace FF1Lib
 
 			// MDef
 			// Put into classesData
-			var mdefgrowth = (MDEFGrowthMode)settings.GetEnum("MDefMode", typeof(MDEFGrowthMode));
+			var mdefgrowth = (MDEFGrowthMode)settings.GetInt("MDefMode");
 			if (mdefgrowth != MDEFGrowthMode.None)
 			{
 				MDefChanges(mdefgrowth);

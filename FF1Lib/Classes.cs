@@ -72,8 +72,15 @@ namespace FF1Lib
 		const int lut_InnateResist = 0x6D400;
 		const int lut_MaxMP = 0x6C902;
 		const int lut_MpGainOnMaxMpGainClasses = 0x6D830;
-		const int StartingStatsOffset = 0x3040;
 		const int NewLevelUpDataOffset = 0x6CDA9;
+		const int old_lut_LvlUpHitRateBonus = 0x2CA59;
+		const int old_lut_LvlUpMagDefBonus = 0x2CA65;
+		const int old_lut_InnateResist = 0x2D400;
+		const int old_lut_MaxMP = 0x2C902;
+		const int old_lut_MpGainOnMaxMpGainClasses = 0x2D830;
+		const int old_NewLevelUpDataOffset = 0x2CDA9;
+		const int StartingStatsOffset = 0x3040;
+
 
 		public enum BonusMalusAction
 		{
@@ -173,10 +180,10 @@ namespace FF1Lib
 
 			// Addresses
 			var startingStats = rom.Get(StartingStatsOffset, 0x60).Chunk(0x10);
-			var levelUpStats = rom.Get(NewLevelUpDataOffset, 588).Chunk(49 * 2);
-			var hitGrowth = rom.Get(lut_LvlUpHitRateBonus, 12).ToBytes().ToList();
-			var mdefGrowthBase = rom.Get(lut_LvlUpMagDefBonus, 6).ToBytes().ToList();
-			var mdefGrowthPromo = rom.Get(lut_LvlUpMagDefBonus + 6, 6).ToBytes().ToList();
+			var levelUpStats = rom.Get(old_NewLevelUpDataOffset, 588).Chunk(49 * 2);
+			var hitGrowth = rom.Get(old_lut_LvlUpHitRateBonus, 12).ToBytes().ToList();
+			var mdefGrowthBase = rom.Get(old_lut_LvlUpMagDefBonus, 6).ToBytes().ToList();
+			var mdefGrowthPromo = rom.Get(old_lut_LvlUpMagDefBonus + 6, 6).ToBytes().ToList();
 			var maxChargeList = new byte[] { 0x00, 0x00, 0x00, 0x09, 0x09, 0x09, 0x04, 0x04, 0x00, 0x09, 0x09, 0x09 };
 
 			// Populate stats
@@ -341,7 +348,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void Randomize(Flags flags, MT19337 rng, List<string> olditemnames, ItemNames itemnames, FF1Rom rom)
+		public void Randomize(Flags flags, Settings settings, MT19337 rng, List<string> olditemnames, ItemNames itemnames, FF1Rom rom)
 		{
 			if (!(bool)flags.RandomizeClass && !(bool)flags.Transmooglifier && !(bool)flags.RandomizeClassChaos)
 				return;
@@ -349,18 +356,18 @@ namespace FF1Lib
 			RandomizeClassHacks(flags, rom);
 
 			if ((bool)flags.Transmooglifier)
-				Transmooglify(flags, rng, rom);
+				Transmooglify(flags, settings, rng, rom);
 			else if ((bool)flags.RandomizeClass)
 				RandomizeClassBlursings(flags, rng, olditemnames, itemnames, rom);
 			else if ((bool)flags.RandomizeClassChaos)
 				RandomizeClassChaos(flags, rng, rom);
 		}
 
-		public void Transmooglify(Flags flags, MT19337 rng, FF1Rom rom)
+		public void Transmooglify(Flags flags, Settings settings, MT19337 rng, FF1Rom rom)
 		{
 			// The MEAT
 			Transmooglifier transmooglifier = new Transmooglifier();
-			transmooglifier.Transmooglify(flags, rng, rom);
+			transmooglifier.Transmooglify(flags, settings, rng, rom);
 
 			// Description screen
 			List<string> dataScreen = new List<string>();

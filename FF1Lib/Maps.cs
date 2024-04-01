@@ -317,9 +317,6 @@ namespace FF1Lib
 		public const int MapObjSize = 4;
 		public const int MapObjCount = 0xD0;
 
-		public const int FirstBossEncounterIndex = 0x73;
-		public const int LastBossEncounterIndex = 0x7F;
-
 		const ushort TalkFight = 0x94AA;
 
 		private struct OrdealsRoom
@@ -828,7 +825,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void WarMECHNpc(WarMECHMode mode, NPCdata npcpdata, MT19337 rng, List<Map> maps, bool deepDungeon, MapId warmechDDmap)
+		public void WarMECHNpc(WarMECHMode mode, NPCdata npcpdata, ZoneFormations zoneformations, MT19337 rng, List<Map> maps, bool deepDungeon, MapId warmechDDmap)
 		{
 			const byte UnusedTextPointer = 0xF7;
 			const byte WarMECHEncounter = 0x56;
@@ -859,10 +856,8 @@ namespace FF1Lib
 			InsertDialogs(UnusedTextPointer, dialogueStrings.PickRandom(rng));
 
 			// Get rid of random WarMECH encounters.  Group 8 is now also group 7.
-			var formationOffset = ZoneFormationsOffset + ZoneFormationsSize * (64 + (byte)MapId.SkyPalace5F);
-			var formations = Get(formationOffset, ZoneFormationsSize);
-			formations[6] = formations[7];
-			Put(formationOffset, formations);
+			var formation = zoneformations[64 + (byte)MapId.SkyPalace5F];
+			formation.Formations[6] = formation.Formations[7];
 
 			if (mode != WarMECHMode.Unleashed && mode != WarMECHMode.All)
 				MakeWarMECHUnrunnable();
@@ -1030,22 +1025,20 @@ namespace FF1Lib
 			}
 		}
 
-		public void BahamutB1Encounters(List<Map> maps)
+		public void BahamutB1Encounters(List<Map> maps, ZoneFormations zoneformations)
 		{
 			// Adds dragon-themed encounters to the long
 			// hallway to Bahamut's room
+			var formation = zoneformations[64 + (int)MapId.BahamutsRoomB1];
 
-			var bahamutB1ZoneOffset = ZoneFormationsOffset + (ZoneFormationsSize * (64 + (int)MapId.BahamutsRoomB1));
-			var formation = Get(bahamutB1ZoneOffset, ZoneFormationsSize);
-			formation[0] = 0x2A + 0x80; // 2-4 Red D
-			formation[1] = 0x30 + 0x80; // 3-4 Frost D
-			formation[2] = 0x4B + 0x80; // 2-4 Zombie D
-			formation[3] = 0x4E + 0x80; // 2-3 Blue D
-			formation[4] = 0x59 + 0x80; // 2-4 Gas D
-			formation[5] = 0x4E + 0x80; // 2-3 Blue D
-			formation[6] = 0x59 + 0x80; // 2-4 Gas D
-			formation[7] = 0x77; // Tiamat 1 (!)
-			Put(bahamutB1ZoneOffset, formation);
+			formation.Formations[0] = 0x2A + 0x80; // 2-4 Red D
+			formation.Formations[1] = 0x30 + 0x80; // 3-4 Frost D
+			formation.Formations[2] = 0x4B + 0x80; // 2-4 Zombie D
+			formation.Formations[3] = 0x4E + 0x80; // 2-3 Blue D
+			formation.Formations[4] = 0x59 + 0x80; // 2-4 Gas D
+			formation.Formations[5] = 0x4E + 0x80; // 2-3 Blue D
+			formation.Formations[6] = 0x59 + 0x80; // 2-4 Gas D
+			formation.Formations[7] = 0x77; // Tiamat 1 (!)
 
 			Put(ThreatLevelsOffset + (int)MapId.BahamutsRoomB1 + 1, Blob.FromHex("18"));
 

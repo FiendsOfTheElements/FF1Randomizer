@@ -623,8 +623,14 @@ namespace FF1Lib
 			// Insert dialogs
 			Put(dialogsPointerOffset, Blob.FromUShorts(pointers) + generatedText);
 		}
-		public void NPCShuffleDialogs()
+		public void NPCShuffleDialogs(Settings settings)
 		{
+			// Merge into dialogues class
+			if (!settings.GetBool("NPCItems") && !settings.GetBool("NPCFetchItems"))
+			{
+				return;
+			}
+
 			// Update all NPC dialogs for NPC shuffle so we can show what item they're giving.
 			Dictionary<int, string> NPCShuffleDialogs = new Dictionary<int, string>();
 

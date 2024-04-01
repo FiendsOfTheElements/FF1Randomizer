@@ -32,7 +32,6 @@ namespace FF1Lib
 
 			return locations.ShipLocation;
 		}
-
 		public ShipLocation GetShipLocation(int dungeonIndex)
 		{
 			var shiplocation = data.FirstOrDefault(s => s.TeleporterIndex == dungeonIndex);
@@ -40,6 +39,10 @@ namespace FF1Lib
 			if (shiplocation == null) shiplocation = data.FirstOrDefault(s => s.TeleporterIndex == 255);
 
 			return shiplocation;
+		}
+		public void UpdateDocks(Settings settings)
+		{
+			if(settings.)
 		}
 	}
 }

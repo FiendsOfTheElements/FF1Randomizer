@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Xml.Linq;
 using System.IO.Compression;
 using FF1Lib.Procgen;
+using RomUtilities;
 
 namespace FF1Lib
 {
@@ -19,17 +20,8 @@ namespace FF1Lib
 		Root,
 		Toggle,
 		OptionList,
-		IntegerValue,
 		IntegerRange,
-		FloatRange,
-		SettingList,
-		Randomize,
-		RandomMin,
-		RandomMax,
-		Value,
-		ValueMin,
-		ValueMax,
-		Weight,
+		SettingList
 	}
 	public struct Option
 	{
@@ -58,6 +50,14 @@ namespace FF1Lib
 			Name = _name;
 			Type = _type;
 			Randomize = false;
+		}
+		public Setting(Setting copysetting)
+		{
+			Name = copysetting.Name;
+			Type = copysetting.Type;
+			Randomize = copysetting.Randomize;
+			CurrentValue = copysetting.CurrentValue;
+			Options = copysetting.Options.Select(o => new Option() { Name = o.Name, Value = o.Value, Weight = o.Weight }).ToList();
 		}
 		public Setting(string _name, SettingType _type, Type _enumtype = null)
 		{
@@ -162,40 +162,91 @@ namespace FF1Lib
 			}
 		}
 	}
-	public class Settings
+	public struct LayoutFlag
 	{
-		private List<Setting> settings;
-		private Dictionary<string, Setting> fullsettings;
+		public string Name { get; set; }
+		public string DisplayName { get; set; }
+		public string Tooltip { get; set; }
+		public List<string> IncompatibleFlags { get; set; }
+	}
+	public struct LayoutSection
+	{
+		public string Name { get; set; }
+		public List<LayoutFlag> Flags { get; set; }
+	}
+	public partial class LayoutData
+	{
+		public List<LayoutSection> Layout { get; set; }
+		public LayoutData(bool standardflags)
+		{
+			if (standardflags)
+			{
+				Layout = StandardLayout;
+			}
+		}
+	}
+
+	public partial class Settings
+	{
+		private Dictionary<string, Setting> initialSettings;
+		private Dictionary<string, Setting> settings;
 		string flagstringtext;
 		public int Init()
 		{
-			settings = new();
-			fullsettings = new();
-			settings.Add(new Setting("Free Lute"));
+			initialSettings = new();
+			
+			initialSettings.Add("Free Lute", new Setting("Free Lute"));
 
-			settings.Add(new Setting("ThiefMode", typeof(ThiefOptions), (int)ThiefOptions.Lockpicking));
+			initialSettings.Add("ThiefMode", new Setting("ThiefMode", typeof(ThiefOptions), (int)ThiefOptions.Lockpicking));
 
-			settings.Add(new Setting("Bugfixes"));
+			initialSettings.Add("Bugfixes", new Setting("Bugfixes"));
 
-			settings.Find(s => s.Name == "Bugfixes").CurrentValue = 1;
-			settings.Find(s => s.Name == "Free Lute").Randomize = true;
+			initialSettings["Bugfixes"].CurrentValue = 1;
+			initialSettings["Free Lute"].Randomize = true;
 			//settings.Find(s => s.Name == "ThiefMode").CurrentValue = (int)ThiefAGI.Agi120;
 
-			var content = JsonConvert.SerializeObject(settings);
+			settings = initialSettings;
+
+			var content = JsonConvert.SerializeObject(initialSettings.Select(s => s.Value).ToList());
+
+			// load initial
+			// settings = initialSettings
+			// collapse, initialSettings stay same, setting is new
 			return 0;
 		}
-		public void SetStandardFlags()
+		public Settings(bool standardflags)
 		{
-			settings.Add(new Setting("Bugfixes", 1));
-			settings.Add(new Setting("Bugfixes", 1));
+			if (standardflags)
+			{
+				initialSettings = StandardSettings.ToDictionary(s => s.Name, s => s);
+			}
+			else
+			{
+				initialSettings = AdvancedSettings.ToDictionary(s => s.Name, s => s);
+			}
+
+			var content = JsonConvert.SerializeObject(initialSettings.Select(s => s.Value).ToList());
+
+			settings = initialSettings;
 
 		}
-		public void GenerateFlagstring()
+		public void SetStandardFlags(MT19337 rng)
+		{
+			CreateSettingsCopy();
+			CollapseRandomSettings(rng);
+			ProcessStandardFlags();
+		}
+		public void SetAdvancedFlags(MT19337 rng)
+		{
+			CreateSettingsCopy();
+			CollapseRandomSettings(rng);
+		}
+		public string GenerateFlagstring()
 		{
 			BigInteger sum = 0;
-			settings = settings.OrderBy(s => s.Name).ToList();
+			var tempsettings = initialSettings.OrderBy(s => s.Key).Select(s => s.Value).ToList();
 
-			foreach (var setting in settings)
+			foreach (var setting in tempsettings)
 			{
 				if (setting.Type == SettingType.Toggle || setting.Type == SettingType.OptionList)
 				{
@@ -215,13 +266,14 @@ namespace FF1Lib
 			}
 
 			flagstringtext = BigIntegerToString(sum);
+			return flagstringtext;
 		}
 		public void ReadFlagstring(string flagstring)
 		{
 			BigInteger sum = StringToBigInteger(flagstring);
-			settings = settings.OrderByDescending(s => s.Name).ToList();
+			var tempsettings = initialSettings.OrderByDescending(s => s.Key).Select(s => s.Value).ToList();
 
-			foreach (var setting in settings)
+			foreach (var setting in tempsettings)
 			{
 				if (setting.Type == SettingType.Toggle || setting.Type == SettingType.OptionList)
 				{
@@ -278,19 +330,28 @@ namespace FF1Lib
 
 			return sum;
 		}
+		private void CreateSettingsCopy()
+		{
+			settings = new();
+
+			foreach (var setting in initialSettings)
+			{
+				settings.Add(setting.Value.Name, new Setting(setting.Value));
+			}
+		}
 		public int CollapseRandomSettings(MT19337 rng)
 		{
+
 			foreach (var setting in settings)
 			{
-				setting.CollapseValue(rng);
-				fullsettings.Add(setting.Name, setting);
+				setting.Value.CollapseValue(rng);
 			}
 
 			return 0;
 		}
 		public bool GetBool(string name)
 		{
-			if (fullsettings.TryGetValue(name, out var value))
+			if (settings.TryGetValue(name, out var value))
 			{
 				return value.CurrentValue == 1;
 			}
@@ -301,7 +362,7 @@ namespace FF1Lib
 		}
 		public bool TryGetBool(string name, out bool value)
 		{
-			if (fullsettings.TryGetValue(name, out var result))
+			if (settings.TryGetValue(name, out var result))
 			{
 				value = result.CurrentValue == 1;
 				return true;
@@ -314,7 +375,7 @@ namespace FF1Lib
 		}
 		public bool TryGetInt(string name, out int value)
 		{
-			if (fullsettings.TryGetValue(name, out var result))
+			if (settings.TryGetValue(name, out var result))
 			{
 				value = result.CurrentValue;
 				return true;
@@ -327,7 +388,7 @@ namespace FF1Lib
 		}
 		public bool TryGetFloat(string name, out float value)
 		{
-			if (fullsettings.TryGetValue(name, out var result))
+			if (settings.TryGetValue(name, out var result))
 			{
 				var denomlist = result.Options.Where(x => x.Name == "Denom");
 
@@ -348,7 +409,7 @@ namespace FF1Lib
 		}
 		public float GetFloat(string name)
 		{
-			if (fullsettings.TryGetValue(name, out var result))
+			if (settings.TryGetValue(name, out var result))
 			{
 				var denomlist = result.Options.Where(x => x.Name == "Denom");
 
@@ -367,7 +428,7 @@ namespace FF1Lib
 		}
 		public bool TryGetEnum(string name, Type type, out object value)
 		{
-			if (fullsettings.TryGetValue(name, out var result))
+			if (settings.TryGetValue(name, out var result))
 			{
 				value = Enum.ToObject(type, result.CurrentValue);
 				return true;
@@ -380,7 +441,7 @@ namespace FF1Lib
 		}
 		public int GetInt(string name)
 		{
-			if (fullsettings.TryGetValue(name, out var value))
+			if (settings.TryGetValue(name, out var value))
 			{
 				return value.CurrentValue;
 			}
@@ -391,7 +452,7 @@ namespace FF1Lib
 		}
 		public object GetEnum(string name, Type type)
 		{
-			if (fullsettings.TryGetValue(name, out var value))
+			if (settings.TryGetValue(name, out var value))
 			{
 				return Enum.ToObject(type, value.CurrentValue);
 			}
@@ -402,19 +463,19 @@ namespace FF1Lib
 		}
 		public void UpdateSetting(string name, int updatevalue)
 		{
-			if (fullsettings.TryGetValue(name, out var value))
+			if (settings.TryGetValue(name, out var value))
 			{
 				value.CurrentValue = updatevalue;
 			}
 			else
 			{
-				fullsettings.Add(name, new() { Name = name, CurrentValue = updatevalue });
+				settings.Add(name, new() { Name = name, CurrentValue = updatevalue });
 			}
 		}
 		public int SetValue()
 		{
-			string content = "[{\"Name\":\"Free Lute\",\"Type\":1,\"Randomize\":true,\"CurrentValue\":0,\"Options\":[{\"Name\":\"False\",\"Value\":0,\"Weight\":1},{\"Name\":\"True\",\"Value\":1,\"Weight\":1}]},{\"Name\":\"Thief AGI Buff\",\"Type\":2,\"Randomize\":true,\"CurrentValue\":0,\"Options\":[{\"Name\":\"10 (Vanilla)\",\"Value\":0,\"Weight\":1},{\"Name\":\"80\",\"Value\":1,\"Weight\":1},{\"Name\":\"100\",\"Value\":2,\"Weight\":1},{\"Name\":\"120\",\"Value\":3,\"Weight\":1},{\"Name\":\"30\",\"Value\":4,\"Weight\":1},{\"Name\":\"50\",\"Value\":5,\"Weight\":1}]}]";
-			settings = JsonConvert.DeserializeObject<List<Setting>>(content);
+			string content = "[{\"Name\":\"Bugfixes\",\"Type\":1,\"Randomize\":false,\"CurrentValue\":1,\"Options\":[{\"Name\":\"False\",\"Value\":0,\"Weight\":1},{\"Name\":\"True\",\"Value\":1,\"Weight\":1}]},{\"Name\":\"ThiefMode\",\"Type\":2,\"Randomize\":false,\"CurrentValue\":1,\"Options\":[{\"Name\":\"None\",\"Value\":0,\"Weight\":1},{\"Name\":\"Double Hit% Growth\",\"Value\":1,\"Weight\":1},{\"Name\":\"Raised Agility\",\"Value\":2,\"Weight\":1},{\"Name\":\"Lockpicking\",\"Value\":3,\"Weight\":1}]},{\"Name\":\"WhiteMageMode\",\"Type\":2,\"Randomize\":false,\"CurrentValue\":1,\"Options\":[{\"Name\":\"None\",\"Value\":0,\"Weight\":1},{\"Name\":\"Harm Hurts All Type\",\"Value\":1,\"Weight\":1}]},{\"SubSettings\":[{\"Name\":\"Lute\",\"Type\":1,\"Randomize\":false,\"CurrentValue\":0,\"Options\":[{\"Name\":\"False\",\"Value\":0,\"Weight\":1},{\"Name\":\"True\",\"Value\":1,\"Weight\":1}]},{\"Name\":\"HealPotion\",\"Type\":1,\"Randomize\":false,\"CurrentValue\":99,\"Options\":[{\"Name\":\"False\",\"Value\":0,\"Weight\":1},{\"Name\":\"True\",\"Value\":1,\"Weight\":1}]}],\"Name\":\"TestFlagList\",\"Type\":4,\"Randomize\":false,\"CurrentValue\":0,\"Options\":null}]";
+			initialSettings = JsonConvert.DeserializeObject<List<Setting>>(content).ToDictionary(s => s.Name, s => s);
 
 
 			///Name = deserializedcontent.Name;
@@ -451,28 +512,29 @@ namespace FF1Lib
 
 			foreach (var flagrule in flagrules)
 			{
-				if (flagrule.Type == SettingType.Toggle)
+				bool conditionmet = false;
+
+				foreach (var conditionset in flagrule.Conditions)
 				{
-					if ((GetBool(flagrule.Name) && flagrule.Value == 1) || (!GetBool(flagrule.Name) && flagrule.Value == 0))
+					conditionmet = true;
+
+					foreach (var condition in conditionset)
 					{
-						foreach (var rule in flagrule.Actions)
+						if (TryGetInt(condition.Name, out var value))
 						{
-							ProcessRule(flagrule, 0);
+							conditionmet &= (value == condition.Value);
+						}
+						else
+						{
+							conditionmet = false;
+							break;
 						}
 					}
 				}
-				else if (flagrule.Type == SettingType.OptionList || flagrule.Type == SettingType.IntegerRange)
+
+				if (conditionmet)
 				{
-					if (TryGetInt(flagrule.Name, out var value))
-					{
-						if (value == flagrule.Value)
-						{
-							foreach (var rule in flagrule.Actions)
-							{
-								ProcessRule(flagrule, value);
-							}
-						}
-					}
+					ProcessRule(flagrule, 0);
 				}
 			}
 		}
@@ -489,10 +551,14 @@ namespace FF1Lib
 	}
 	public struct FlagRule
 	{
+		public List<List<FlagCondition>> Conditions { get; set; }
+		public List<FlagAction> Actions { get; set; }
+	}
+	public struct FlagCondition
+	{
 		public string Name { get; set; }
 		public SettingType Type { get; set; }
 		public int Value { get; set; }
-		public List<FlagAction> Actions { get; set; }
 	}
 	public struct FlagAction
 	{
@@ -501,41 +567,8 @@ namespace FF1Lib
 		public string Setting { get; set; }
 		public Type Type { get; set; }
 	}
-
-	// Website [strings] > Convert to Flags/Expand settings
-	// flagstring > Convert to Flags > Expand settings
 	public static partial class FlagRules
 	{
-		/*
-		private static List<FlagRule> Rules = new()
-		{
-			new FlagRule() { Name = "Bugfixes", Type = typeof(bool), Settings = new List<FlagAction>()
-			{
-				new FlagAction() { Setting = "FixHouseMP", Action = FlagActions.Enable },
-				new FlagAction() { Setting = "FixHouseHP", Action = FlagActions.Enable },
-				new FlagAction() { Setting = "FixWeaponStats", Action = FlagActions.Enable },
-				new FlagAction() { Setting = "FixSpellBugs", Action = FlagActions.Enable },
-				new FlagAction() { Setting = "FixEnemyStatusAttack", Action = FlagActions.Enable },
-				new FlagAction() { Setting = "FixBBAbsorbBug", Action = FlagActions.Enable },
-			} },
-		};
-		private static Dictionary<string, FlagRule> RulesDict = new()
-		{
-			{ "Bugfixes", new FlagRule() { Name = "Bugfixes", Type2 = SettingType.Toggle, Settings = new List<FlagAction>()
-				{
-					new FlagAction() { Setting = "FixHouseMP", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "FixHouseHP", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "FixWeaponStats", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "FixSpellBugs", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "FixEnemyStatusAttack", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "FixBBAbsorbBug", Action = FlagActions.Enable },
-				} }
-			},
-			{ "StartingGold", new FlagRule() { Name = "StartingGold", Type2 = SettingType.OptionList, Settings = new List<FlagAction>()
-				{
-					new FlagAction() { Setting = "StartingGold", Action = FlagActions.ReadOption, Type = typeof(StartingGold) },
-				} }
-			}
-		};*/
+
 	}
 }

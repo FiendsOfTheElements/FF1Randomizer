@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using RomUtilities;
+using System.ComponentModel;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -58,7 +60,20 @@ namespace FF1Lib
 		Phantom = 982
 	}
 
-	public partial class FF1Rom : NesRom
+
+	public partial class TileSM
+	{
+		private const int FirstBossEncounterIndex = 0x73;
+		private const int LastBossEncounterIndex = 0x7F;
+
+		public bool IsBattleTile => PropertyType == 0x0A;
+		public bool IsRandomBattleTile => IsBattleTile && ((PropertyValue & 0x80) != 0x00);
+		public bool IsNonBossTrapTile => IsBattleTile && PropertyValue > 0 && PropertyValue < FirstBossEncounterIndex;
+		public bool IsNonBossTrapTileEx => IsBattleTile && ((PropertyValue > 0 && PropertyValue < FirstBossEncounterIndex) || PropertyValue > LastBossEncounterIndex);
+		public bool IsBossTrapTile => IsBattleTile && PropertyValue <= LastBossEncounterIndex && PropertyValue >= FirstBossEncounterIndex;
+
+	}
+	public partial class TileSetsData
 	{
 		public static readonly Dictionary<TrapTileOffsets, List<MapId>> TrapTileMapId = new Dictionary<TrapTileOffsets, List<MapId>>
 		{
@@ -95,36 +110,61 @@ namespace FF1Lib
 			{TrapTileOffsets.GargoyleToF2,  new List<MapId>{MapId.TempleOfFiends} },
 			{TrapTileOffsets.Phantom,  new List<MapId>{MapId.TempleOfFiendsRevisited1F, MapId.TempleOfFiendsRevisited2F, MapId.TempleOfFiendsRevisited3F, MapId.TempleOfFiendsRevisitedEarth, MapId.TempleOfFiendsRevisitedFire, MapId.TempleOfFiendsRevisitedWater, MapId.TempleOfFiendsRevisitedAir}}
 		};
+		public void UpdateTrapTiles(FF1Rom rom, ZoneFormations zoneformations, Settings settings, MT19337 rng)
+		{
+			UpdateTrapTilesCode(rom);
+			TrapTileMode mode = (TrapTileMode)settings.GetInt("EnemyTrapTiles");
+			if (mode == TrapTileMode.Vanilla)
+			{
+				return;
+			}
+			else if (mode == TrapTileMode.Remove)
+			{
+				RemoveTrapTiles(true);
+			}
+			else
+			{
+				ShuffleTrapTiles(zoneformations, rng, mode, settings.GetBool("FightBahamut"));
+			}
 
-		bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
-		bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
-		bool IsNonBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] > 0 && tuple[1] < FirstBossEncounterIndex;
-		bool IsNonBossTrapTileEx(Blob tuple) => IsBattleTile(tuple) && ((tuple[1] > 0 && tuple[1] < FirstBossEncounterIndex) || tuple[1] > LastBossEncounterIndex);
-		bool IsBossTrapTile(Blob tuple) => IsBattleTile(tuple) && tuple[1] <= LastBossEncounterIndex && tuple[1] >= FirstBossEncounterIndex;
+		}
+		public void UpdateTrapTilesCode(FF1Rom rom)
+		{
+			// This is magic BNE code that enables formation 1 trap tiles but we have to change
+			// all the 0x0A 0x80 into 0x0A 0x00 and use 0x00 for random encounters instead of 0x80.
+			rom.Put(0x7CDC5, Blob.FromHex("D0"));
+
+			foreach (var tileset in tileSets)
+			{
+				tileset.Tiles.ForEach(tile =>
+				{
+					if (tile.IsRandomBattleTile)
+					{
+						tile.PropertyValue = 0x00;
+					}
+				});
+			}
+		}
 
 		public void RemoveTrapTiles(bool extendedtraptiles)
 		{
 			// This must be called before shuffle trap tiles since it uses the vanilla format for random encounters
-			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
-			tilesets.ForEach(tile =>
+			//var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
+			foreach (var tileset in tileSets)
 			{
-
-				if (extendedtraptiles ? IsNonBossTrapTileEx(tile) : IsNonBossTrapTile(tile))
+				tileset.Tiles.ForEach(tile =>
 				{
-					tile[1] = (byte)(extendedtraptiles ? 0x00 : 0x80);
-				}
-			});
-			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
+					if (extendedtraptiles ? tile.IsNonBossTrapTileEx : tile.IsNonBossTrapTile)
+					{
+						tile.PropertyValue = (byte)(extendedtraptiles ? 0x00 : 0x80);
+					}
+				});
+			}
 		}
 
-		public void ShuffleTrapTiles(MT19337 rng, TrapTileMode mode, bool fightBahamut)
-		{
-			// This is magic BNE code that enables formation 1 trap tiles but we have to change
-			// all the 0x0A 0x80 into 0x0A 0x00 and use 0x00 for random encounters instead of 0x80.
-			Data[0x7CDC5] = 0xD0;
-			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
-
-			if(mode == TrapTileMode.LocalFormations)
+		public void ShuffleTrapTiles(ZoneFormations zoneformations, MT19337 rng, TrapTileMode mode, bool fightBahamut)
+		{ 
+			if (mode == TrapTileMode.LocalFormations)
 			{
 				//code from local formations MIAB
 				// Formations List for Vanilla Spikes & Local Formations
@@ -132,8 +172,7 @@ namespace FF1Lib
 				List<byte> caveEncounters = new() { 0x9D, 0x9C, 0x95, 0x97 };
 				List<byte> cardiaEncounters = new() { 0xAA, 0xB0, 0xCB, 0xCE, 0xD9 };
 
-				List<List<byte>> encountersGroup = new();
-				encountersGroup = Get(ZoneFormationsOffset + (8 * 0x40), 8 * 0x40).Chunk(0x08).Select(x => x.ToBytes().Select(y => (byte)(y)).ToList()).ToList();
+				List<List<byte>> encountersGroup = zoneformations.GetBytes();
 
 				encountersGroup[(int)MapId.ConeriaCastle1F] = castleEncounters;
 				encountersGroup[(int)MapId.ElflandCastle] = castleEncounters;
@@ -149,19 +188,18 @@ namespace FF1Lib
 				encountersGroup[(int)MapId.MatoyasCave] = caveEncounters;
 
 				//use index to lookup tileset data to mapid
-				Blob tile;
+				//Blob tile;
 				MapId pickedMap;
-				for (int i = 0; i < tilesets.Count; i++)
-                {
-					tile = tilesets[i];
-					if (IsNonBossTrapTile(tile) && TrapTileMapId.ContainsKey((TrapTileOffsets)i))
+				foreach (var tileset in tileSets)
+				{
+					foreach (var tile in tileset.Tiles)
 					{
-						pickedMap = TrapTileMapId[(TrapTileOffsets)i].PickRandom(rng);
-						tile[1] = encountersGroup[(int)pickedMap].SpliceRandom(rng);
-					}
-					else if (IsRandomBattleTile(tile))
-					{
-						tile[1] = 0x00;
+						TrapTileOffsets traptileindex = (TrapTileOffsets)(tile.Index + 128 * tileset.Index);
+						if (tile.IsNonBossTrapTile && TrapTileMapId.ContainsKey(traptileindex))
+						{
+							pickedMap = TrapTileMapId[traptileindex].PickRandom(rng);
+							tile.PropertyValue = encountersGroup[(int)pickedMap].SpliceRandom(rng);
+						}
 					}
 				}
 			}
@@ -170,48 +208,40 @@ namespace FF1Lib
 				List<byte> encounters;
 				if (mode == TrapTileMode.Shuffle)
 				{
-					var traps = tilesets.Where(IsNonBossTrapTile).ToList();
-					encounters = traps.Select(trap => trap[1]).ToList();
+					var traps = tileSets.SelectMany(t => t.Tiles).Where(t => t.IsNonBossTrapTile).ToList();
+					encounters = traps.Select(trap => trap.PropertyValue).ToList();
 				}
 				else if (mode == TrapTileMode.ASideFormations)
 				{
 					//all random
-					encounters = Enumerable.Range(0, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
-					encounters.Remove(WarMECHFormationIndex);
+					encounters = FormationLists.ASideEncounters;
 					if (fightBahamut)
 					{
-						encounters.Remove(0x71); // ANKYLO (used for Bahamut)
+						encounters = encounters.Except(FormationLists.BahamutEncounter).ToList();
 					}
 				}
 				else if (mode == TrapTileMode.BSideFormations)
 				{
-					encounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
-					encounters.Add(0xFF); // IronGOL
+					encounters = FormationLists.BSideEncounters;
 					if (fightBahamut)
 					{
-						encounters.Remove(0x80 + 0x71); // ANKYLO (used for Bahamut)
+						encounters = encounters.Except(FormationLists.BahamutEncounter).ToList();
 					}
 				}
 				else if (mode == TrapTileMode.Random)
 				{
 					//all random
-					encounters = Enumerable.Range(0, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
-					encounters.Concat(Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList());
-					encounters.Remove(WarMECHFormationIndex);
-					encounters.Add(0xFF); // IronGOL
+					encounters = FormationLists.AllRandomEncounters;
 					if (fightBahamut)
 					{
-						encounters.Remove(0x80 + 0x71); // ANKYLO (used for Bahamut)
-						encounters.Remove(0x71); // ANKYLO (used for Bahamut)
+						encounters = encounters.Except(FormationLists.BahamutEncounter).ToList();
 					}
 				}
 				else
 				{
 					//balanced/curated mode
 					//this mode is really just in here so tournament organizers know that it's possible
-					encounters = Enumerable.Range(0, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
-					encounters.Concat(Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList());
-					encounters.Remove(WarMECHFormationIndex);
+					encounters = FormationLists.AllRandomEncounters;
 
 					//remove the god grinds
 					encounters.Remove(0x69);        //1 eye tile.
@@ -243,20 +273,18 @@ namespace FF1Lib
 					}
 				}
 
-				tilesets.ForEach(tile =>
-				{
-					if (IsNonBossTrapTile(tile))
-					{
-						tile[1] = encounters.SpliceRandom(rng);
-					}
-					else if (IsRandomBattleTile(tile))
-					{
-						tile[1] = 0x00;
-					}
-				});
-			}
 
-			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
+				foreach (var tileset in tileSets)
+				{
+					tileset.Tiles.ForEach(tile =>
+					{
+						if (tile.IsNonBossTrapTileEx)
+						{
+							tile.PropertyValue = encounters.SpliceRandom(rng);
+						}
+					});
+				}
+			}
 		}
 	}
 }
