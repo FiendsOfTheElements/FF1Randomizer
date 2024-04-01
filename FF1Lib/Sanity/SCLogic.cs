@@ -296,7 +296,7 @@ namespace FF1Lib.Sanity
 
 					foreach (var shop in dungeon.PointsOfInterest.Where(p => p.Type == SCPointOfInterestType.Shop))
 					{
-						if (shopslot.ShopIndex == shop.ShopId)
+						if (shopslot.ShopIndex == (shop.ShopId - 1))
 						{
 							if (rewardSourceDic.TryGetValue(shopslot.Address, out var x))
 							{
@@ -316,7 +316,7 @@ namespace FF1Lib.Sanity
 
 				foreach (var shop in area.PointsOfInterest.Where(p => p.Type == SCPointOfInterestType.Shop))
 				{
-					if (shopslot.ShopIndex == shop.ShopId)
+					if (shopslot.ShopIndex == (shop.ShopId - 1))
 					{
 						if (rewardSourceDic.TryGetValue(shopslot.Address, out var x))
 						{
