@@ -59,8 +59,7 @@
 
 		private void ProcessTiles()
 		{
-			var compresedMap = map.GetCompressedMapRows();
-			var decompressedMap = map.DecompressMapRows(compresedMap);
+			var decompressedMap = map.MapBytes;
 
 			Tiles = new SCOwTile[Size, Size];
 

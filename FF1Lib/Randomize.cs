@@ -40,6 +40,9 @@ public partial class FF1Rom : NesRom
 
 	public DeepDungeon DeepDungeon;
 
+	public OwMapExchange OverworldMapData;
+	public TeleportShuffle Teleporters;
+	public Overworld Overworld;
 
 	private SanityCheckerV2 sanityChecker = null;
 	private IncentiveData incentivesData = null;
@@ -81,6 +84,8 @@ public partial class FF1Rom : NesRom
 		RngTables = new(this);
 		TileSetsData = new(this);
 		ZoneFormations = new(this);
+		OverworldMapData = new(;
+		Teleporters = new TeleportShuffle(this, )
 
 		Settings = new(true);
 		Settings.GenerateFlagstring();
@@ -138,8 +143,8 @@ public partial class FF1Rom : NesRom
 
 		flags = Flags.ConvertAllTriState(flags, rng);
 
-		var palettes = OverworldMap.GeneratePalettes(Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
-		var overworldMap = new OverworldMap(this, flags, palettes);
+		
+		//var overworldMap = new OverworldMap(this, flags);
 
 		var owMapExchange = await OwMapExchange.FromFlags(this, overworldMap, flags, rng);
 		owMapExchange?.ExecuteStep1();
@@ -536,7 +541,7 @@ public partial class FF1Rom : NesRom
 				enterBackup.StoreData();
 				normBackup.StoreData();
 
-				overworldMap = new OverworldMap(this, flags, palettes);
+				overworldMap = new OverworldMap(this, flags);
 				overworldMap.Teleporters = teleporters;
 
 				if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && flags.GameMode == GameModes.Standard)

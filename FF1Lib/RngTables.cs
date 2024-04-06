@@ -25,16 +25,19 @@ namespace FF1Lib
 			BattleRNG = rom.GetFromBank(RngBank, BattleRngOffset, RngSize, false).ToBytes().ToList();
 			EncounterRNG = rom.GetFromBank(RngBank, RngOffset, RngSize, false).ToBytes().ToList();
 		}
-		public void Update(Settings settings, MT19337 rng)
+		//public void Update(Settings settings, MT19337 rng)
+		public void Update(Flags flags, MT19337 rng)
 		{
-			if (settings.GetBool("FixMissingBattleRngEntry"))
+			//if (settings.GetBool("FixMissingBattleRngEntry"))
+			if ((bool)flags.FixMissingBattleRngEntry)
 			{
 				// of the 256 entries in the battle RNG table, the 98th entry (index 97) is a duplicate '00' where '95' hex / 149 int is absent.
 				// you could arbitrarily choose the other '00', the 111th entry (index 110), to replace instead
 				BattleRNG[97] = 0x95;
 			}
 
-			if (settings.GetBool("ShuffleRng"))
+			//if (settings.GetBool("ShuffleRng"))
+			if ((bool)flags.Rng)
 			{
 				BattleRNG.Shuffle(rng);
 				EncounterRNG.Shuffle(rng);

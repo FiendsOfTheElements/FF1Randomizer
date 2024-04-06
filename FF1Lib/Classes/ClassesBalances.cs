@@ -100,57 +100,68 @@ namespace FF1Lib
 	}
 	public partial class FF1Rom
 	{
-		public void ClassesBalances(Settings settings, MT19337 rng)
+		//public void ClassesBalances(Settings settings, MT19337 rng)
+		public void ClassesBalances(Flags flags, MT19337 rng)
 		{
 
 			// Stats
 			// Move to ClassesData
-			if (settings.GetBool("ReducedLuck"))
+			//if (settings.GetBool("ReducedLuck"))
+			if ((bool)flags.ReducedLuck)
 			{
 				ReducedLuck();
 			}
 
 			// MDef
 			// Put into classesData
-			var mdefgrowth = (MDEFGrowthMode)settings.GetInt("MDefMode");
+			//var mdefgrowth = (MDEFGrowthMode)settings.GetInt("MDefMode");
+			var mdefgrowth = flags.MDefMode;
 			if (mdefgrowth != MDEFGrowthMode.None)
 			{
 				MDefChanges(mdefgrowth);
 			}
 
 			// Classes specific
-			if (settings.GetBool("DontDoubleBBCritRates"))
+			//if (settings.GetBool("DontDoubleBBCritRates"))
+			if ((bool)flags.BBCritRate)
 			{
 				DontDoubleBBCritRates();
 			}
 
-			if (settings.GetBool("WhiteMageHarmEveryone"))
+			//if (settings.GetBool("WhiteMageHarmEveryone"))
+			if ((bool)flags.WhiteMageHarmEveryone)
 			{
 				WhiteMageHarmEveryone();
 			}
 
-			if (settings.GetBool("ThiefLockpicking"))
+			//if (settings.GetBool("ThiefLockpicking"))
+			if ((bool)flags.Lockpicking)
 			{
 				EnableLockpicking();
-				SetLockpickingLevel(settings.GetInt("ThiefLockpickingLevel"));
+				//SetLockpickingLevel(settings.GetInt("ThiefLockpickingLevel"));
+				SetLockpickingLevel((int)flags.LockpickingLevelRequirement);
 			}
 
 			// MP Growth
-			if (settings.GetBool("KnightNinjaChargesForAllLevels"))
+			//if (settings.GetBool("KnightNinjaChargesForAllLevels"))
+			if ((bool)flags.AllSpellLevelsForKnightNinja)
 			{
 				KnightNinjaChargesForAllLevels();
 			}
 
-			new ChanceToRun(this, settings).FixChanceToRun();
+			//new ChanceToRun(this, settings).FixChanceToRun();
+			new ChanceToRun(this, flags).FixChanceToRun();
 
 			MoveLoadPlayerIBStats();
 
 			// XP
 			SetupClassAltXp();
 
-			new StartingLevels(this, settings).SetStartingLevels();
+			//new StartingLevels(this, settings).SetStartingLevels();
+			new StartingLevels(this, flags).SetStartingLevels();
 
-			SetMaxLevel(settings.GetInt("MaxLevel"), StartingLevels.GetLevelNumber((StartingLevel)settings.GetInt("StartingLevel")));
+			//SetMaxLevel(settings.GetInt("MaxLevel"), StartingLevels.GetLevelNumber((StartingLevel)settings.GetInt("StartingLevel")));
+			SetMaxLevel(rng.Between(flags.MaxLevelLow, flags.MaxLevelHigh), StartingLevels.GetLevelNumber(flags.StartingLevel));
 		}
 
 		public void DontDoubleBBCritRates()

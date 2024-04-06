@@ -23,35 +23,44 @@ namespace FF1Lib
 	{
 
 
-		private void Bugfixes(Settings settings)
+		//private void Bugfixes(Settings settings)
+		private void Bugfixes(Flags flags)
 		{
-			bool fixhousemp = settings.GetBool("FixHouseMP");
-			bool fixhousehp = settings.GetBool("FixHouseHP");
-			bool ether = settings.GetBool("Etherizer");
+			//bool fixhousemp = settings.GetBool("FixHouseMP");
+			//bool fixhousehp = settings.GetBool("FixHouseHP");
+			//bool ether = settings.GetBool("Etherizer");
+
+			bool fixhousemp = (bool)flags.HouseMPRestoration;
+			bool fixhousehp = (bool)flags.HousesFillHp;
+			bool ether = (bool)flags.Etherizer;
 
 			if (!ether)
 			{
 				FixHouse(fixhousehp, fixhousemp);
 			}
 
-			if (settings.GetBool("FixWeaponStats"))
+			//if (settings.GetBool("FixWeaponStats"))
+			if ((bool)flags.WeaponStats)
 			{
 				FixWeaponStats();
 			}
 
-			if (settings.GetBool("FixSpellBugs"))
+			//if (settings.GetBool("FixSpellBugs"))
+			if ((bool)flags.SpellBugs)
 			{
 				FixSpellBugs();
 				FixEnemyAOESpells();
 				FixEnemyElementalResistances();
 			}
 
-			if (settings.GetBool("FixEnemyStatusAttack"))
+			//if (settings.GetBool("FixEnemyStatusAttack"))
+			if ((bool)flags.EnemyStatusAttackBug)
 			{
 				FixEnemyStatusAttackBug();
 			}
 
-			if (settings.GetBool("FixBBAbsorbBug"))
+			//if (settings.GetBool("FixBBAbsorbBug"))
+			if ((bool)flags.BlackBeltAbsorb)
 			{
 				FixBBAbsorbBug();
 			}

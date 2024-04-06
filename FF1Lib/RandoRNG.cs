@@ -16,10 +16,12 @@ namespace FF1Lib
 		private MT19337 funRng;
 		//private MT19337 asyncRng;
 
-		private void GenerateRng(Settings settings, Blob seed)
+		//private void GenerateRng(Settings settings, Blob seed)
+		private void GenerateRng(Flags flags, Blob seed)
 		{
 			// to review 
-			if (settings.GetInt("OwMapExchange") == (int)OwMapExchanges.GenerateNewOverworld || settings.GetInt("OwMapExchange") == (int)OwMapExchanges.LostWoods)
+			//if (settings.GetInt("OwMapExchange") == (int)OwMapExchanges.GenerateNewOverworld || settings.GetInt("OwMapExchange") == (int)OwMapExchanges.LostWoods)
+			if (flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld || flags.OwMapExchange == OwMapExchanges.LostWoods)
 			{
 				// Procgen maps can be either
 				// generated or imported.  All else
@@ -32,7 +34,8 @@ namespace FF1Lib
 				// purposes of initializing the RNG
 				// consider them all to be
 				// "ImportCustomMap".
-				settings.UpdateSetting("OwMapExchange", (int)OwMapExchanges.ImportCustomMap);
+				//settings.UpdateSetting("OwMapExchange", (int)OwMapExchanges.ImportCustomMap);
+				flags.OwMapExchange = OwMapExchanges.ImportCustomMap;
 				/*
 				flagsForRng = flags.ShallowCopy();
 				flagsForRng.OwMapExchange = OwMapExchanges.ImportCustomMap;*/
@@ -43,7 +46,7 @@ namespace FF1Lib
 			using (SHA256 hasher = SHA256.Create())
 			{
 				// review resourcepack too
-				/*
+				
 				if (flags.ResourcePack != null)
 				{
 					var rp = new MemoryStream(Convert.FromBase64String(flags.ResourcePack));
@@ -52,9 +55,10 @@ namespace FF1Lib
 						rp.Seek(0, SeekOrigin.Begin);
 						resourcesPackHash = hasher.ComputeHash(rp).ToArray();
 					}
-				}*/
+				}
 
-				Blob FlagsBlob = Encoding.UTF8.GetBytes(settings.GenerateFlagstring());
+				//Blob FlagsBlob = Encoding.UTF8.GetBytes(settings.GenerateFlagstring());
+				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flags));
 				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed, resourcesPackHash });
 				Blob hash = hasher.ComputeHash(SeedAndFlags);
 				rng = new MT19337(BitConverter.ToUInt32(hash, 0));

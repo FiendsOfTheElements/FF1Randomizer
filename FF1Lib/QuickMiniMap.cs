@@ -86,8 +86,7 @@ namespace FF1Lib
 
 		private void BuildCHR()
 		{
-			var compresedMap = overworldMap.GetCompressedMapRows();
-			var decompressedMap = overworldMap.DecompressMapRows(compresedMap);
+			var decompressedMap = overworldMap.MapBytes;
 
 			entrances = new List<(int x, int y)>();
 

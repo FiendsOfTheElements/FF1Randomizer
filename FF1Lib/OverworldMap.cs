@@ -43,16 +43,21 @@ namespace FF1Lib
 		}
 
 		private List<string> _log;
+		private List<List<byte>> _decompressedMap;
 
 		public const int MapPaletteOffset = 0x2000;
 		public const int MapPaletteSize = 48;
 		public const int MapCount = 64;
 
-		public OverworldMap(FF1Rom rom, IMapEditFlags flags, Dictionary<Palette, Blob> palettes)
+		public List<List<byte>> MapBytes { get => _decompressedMap; }
+
+		public OverworldMap(FF1Rom rom, IMapEditFlags flags)
 		{
 			_rom = rom;
-			_palettes = palettes;
+			_palettes = GeneratePalettes(rom.Get(MapPaletteOffset, MapCount * MapPaletteSize).Chunk(MapPaletteSize));
 			_log = new List<string>();
+
+			_decompressedMap = DecompressMapRows(GetCompressedMapRows());
 
 			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value.ToList());
 			var floorLocationRequirements = ItemLocations.MapLocationFloorRequirements.ToDictionary(x => x.Key, x => x.Value);
@@ -1583,25 +1588,29 @@ namespace FF1Lib
 			SwapMap(decompressedRows);
 		}
 
-	    public void SwapMap(List<List<byte>> decompressedRows) {
+	    public void SwapMap(List<List<byte>> decompressedRows)
+		{
+			_decompressedMap = decompressedRows;
 			var recompressedMap = CompressMapRows(decompressedRows);
 			PutCompressedMapRows(recompressedMap);
 	    }
 
-	    public void SwapMap(List<string> decompressedRows) {
-		var rows = new List<List<byte>>();
+	    public void SwapMap(List<string> decompressedRows)
+		{
+			var rows = new List<List<byte>>();
 			foreach (var c in decompressedRows) {
 			    rows.Add(new List<byte>(Convert.FromBase64String(c)));
 			}
+			_decompressedMap = rows;
 			var recompressedMap = CompressMapRows(rows);
 			PutCompressedMapRows(recompressedMap);
 	    }
 
 		public void ApplyMapEdits()
 		{
-			var compresedMap = GetCompressedMapRows();
-			var decompressedMap = DecompressMapRows(compresedMap);
-			var editedMap = decompressedMap;
+			/*var compresedMap = GetCompressedMapRows();
+			var decompressedMap = DecompressMapRows(compresedMap);*/
+			var editedMap = _decompressedMap;
 			foreach (var mapEdit in MapEditsToApply)
 			{
 				editedMap = ApplyMapEdits(editedMap, mapEdit);

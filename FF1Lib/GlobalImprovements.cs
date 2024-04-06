@@ -32,51 +32,66 @@ namespace FF1Lib
 		public const int PartyShuffleOffset = 0x312E0;
 		public const int PartyShuffleSize = 3;
 
-		public void GlobalImprovements(Settings settings, Preferences preferences)
+		//public void GlobalImprovements(Settings settings, Preferences preferences)
+		public void GlobalImprovements(Flags flags, Preferences preferences)
 		{
-			if (settings.GetBool("NoPartyShuffle"))
+			//if (settings.GetBool("NoPartyShuffle"))
+			if ((bool)flags.NoPartyShuffle)
 			{
 				DisablePartyShuffle();
 			}
 
-			if (settings.GetBool("IdentifyTreasures"))
+			//if (settings.GetBool("IdentifyTreasures"))
+			if ((bool)flags.IdentifyTreasures)
 			{
 				EnableIdentifyTreasures();
 			}
 
-			if (settings.GetBool("EnableBuyQuantity") || settings.GetBool("ArchipelagoEnabled"))
+			//if (settings.GetBool("EnableBuyQuantity") || settings.GetBool("ArchipelagoEnabled"))
+			if ((bool)flags.BuyTen || (bool)flags.Archipelago)
 			{
-				EnableBuyQuantity(settings.GetBool("ArchipelagoEnabled"));
+				//EnableBuyQuantity(settings.GetBool("ArchipelagoEnabled"));
+				EnableBuyQuantity((bool)flags.Archipelago);
 			}
 
-			if (settings.GetBool("WaitWhenUnrunnable"))
+
+			//if (settings.GetBool("WaitWhenUnrunnable"))
+			if ((bool)flags.WaitWhenUnrunnable)
 			{
 				ChangeUnrunnableRunToWait();
 			}
 
-			if (settings.GetBool("SpeedHacks") && settings.GetBool("EnableCritNumberDisplay"))
+			//if (settings.GetBool("SpeedHacks") && settings.GetBool("EnableCritNumberDisplay"))
+			if ((bool)flags.SpeedHacks && (bool)flags.EnableCritNumberDisplay)
 			{
 				EnableCritNumberDisplay();
 			}
 
-			if (settings.GetBool("InventoryAutosort") && !(preferences.RenounceAutosort))
+			//if (settings.GetBool("InventoryAutosort") && !(preferences.RenounceAutosort))
+			if ((bool)flags.InventoryAutosort && !preferences.RenounceAutosort)
 			{
-				EnableInventoryAutosort(settings.GetInt("GameMode") == (int)GameModes.NoOverworld);
+				//EnableInventoryAutosort(settings.GetInt("GameMode") == (int)GameModes.NoOverworld);
+				EnableInventoryAutosort(flags.GameMode == GameModes.NoOverworld);
 			}
 
-			if (settings.GetBool("SpeedHacks"))
+			//if (settings.GetBool("SpeedHacks"))
+			if ((bool)flags.SpeedHacks)
 			{
 				EnableSpeedHacks(preferences);
 			}
 
-			if (settings.GetBool("EnableDash") || settings.GetBool("SpeedBoat"))
+			//if (settings.GetBool("EnableDash") || settings.GetBool("SpeedBoat"))
+			if ((bool)flags.Dash || (bool)flags.SpeedBoat)
 			{
-				EnableDash(settings.GetBool("SpeedBoat"), preferences.OptOutSpeedHackDash);
+				//EnableDash(settings.GetBool("SpeedBoat"), preferences.OptOutSpeedHackDash);
+				EnableDash((bool)flags.SpeedBoat, preferences.OptOutSpeedHackDash);
 			}
 
-			if (settings.GetBool("SpeedHacks"))
+			//if (settings.GetBool("SpeedHacks"))
+			if ((bool)flags.SpeedHacks)
 			{
-				SpeedHacksMoveNpcs(!settings.GetBool("ProcgenEarth"));
+				//SpeedHacksMoveNpcs(!settings.GetBool("ProcgenEarth"));
+				SpeedHacksMoveNpcs((bool)flags.ProcgenEarth);
 			}
 
 		}

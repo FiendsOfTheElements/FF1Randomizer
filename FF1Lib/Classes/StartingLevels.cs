@@ -32,12 +32,14 @@ namespace FF1Lib
 	public class StartingLevels
 	{
 		FF1Rom rom;
-		Settings settings;
+		//Settings settings;
+		Flags flags;
 
-		public StartingLevels(FF1Rom _rom, Settings _settings)
+		//public StartingLevels(FF1Rom _rom, Settings _settings)
+		public StartingLevels(FF1Rom _rom, Flags _flags)
 		{
 			rom = _rom;
-			settings = _settings;
+			flags = _flags;
 		}
 
 		public void SetStartingLevels()
@@ -57,9 +59,11 @@ namespace FF1Lib
 			//JSR to the routine above instead of LvlUp_Display
 			rom.PutInBank(0x1B, 0x8853, Blob.FromHex("200885"));
 
-			var exp = (int)(GetExp() / settings.GetFloat("ExpMultiplier")) / 16 + 1;
+			//var exp = (int)(GetExp() / settings.GetFloat("ExpMultiplier")) / 16 + 1;
+			var exp = (int)(GetExp() / flags.ExpMultiplier) / 16 + 1;
 
-			if (settings.GetInt("StartingLevel") == (int)StartingLevel.Level01) exp = 0;
+			//if (settings.GetInt("StartingLevel") == (int)StartingLevel.Level01) exp = 0;
+			if (flags.StartingLevel == (int)StartingLevel.Level01) exp = 0;
 
 			//Fill in Exp divided by 16 LowByte
 			rom.PutInBank(0x1B, 0x84A4, new byte[] { (byte)(exp & 0xFF) });
@@ -70,7 +74,8 @@ namespace FF1Lib
 
 		private double GetExp()
 		{
-			switch (settings.GetEnum("StartingLevel", typeof(StartingLevel)))
+			//switch (settings.GetEnum("StartingLevel", typeof(StartingLevel)))
+			switch (flags.StartingLevel)
 			{
 				case StartingLevel.Level01:
 					return 0;
