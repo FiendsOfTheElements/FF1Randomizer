@@ -14,11 +14,16 @@ namespace FF1Lib
 		private readonly short _identityValue;
 		public readonly byte X;
 		public readonly byte Y;
+		public readonly CoordinateLocale Context;
+		public readonly byte ValueX { get => Context == CoordinateLocale.StandardInRoom ? (byte)(X | 0x80) : X; }
+		public readonly byte ValueY { get => Context == CoordinateLocale.Overworld ? (byte)(Y | 0x80) : Y; }
+		//public CoordinateLocale Context { get => ((X & 0x80) > 0) ? CoordinateLocale.StandardInRoom : (((Y & 0x80) > 0) ? CoordinateLocale.Overworld : CoordinateLocale.Standard); }
 		public Coordinate(byte x, byte y, CoordinateLocale context)
 		{
 			X = x;
 			Y = y;
-
+			Context = context;
+			/*
 			if (context > CoordinateLocale.Overworld)
 			{
 				Y |= 0x80;
@@ -27,7 +32,7 @@ namespace FF1Lib
 				{
 					X |= 0x80;
 				}
-			}
+			}*/
 
 			_identityValue = (short)(x * 256 + y);
 		}
@@ -73,10 +78,10 @@ namespace FF1Lib
 		public readonly MapIndex Index;
 
 	    [JsonProperty(Order=3)]
-		public byte CoordinateX { get; private set; }
+		public byte CoordinateX { get => Coordinates.ValueX; }
 
 	    [JsonProperty(Order=4)]
-		public byte CoordinateY { get; private set; }
+		public byte CoordinateY { get => Coordinates.ValueY; }
 
 	    [JsonProperty(Order=5, ItemConverterType = typeof(StringEnumConverter))]
 		public readonly IEnumerable<TeleportIndex> Teleports;
@@ -85,6 +90,7 @@ namespace FF1Lib
 	    [JsonConverter(typeof(StringEnumConverter))]
 		public readonly ExitTeleportIndex Exit;
 
+		public Coordinate Coordinates { get; set; }
 		public string SpoilerText =>
 		$"{Enum.GetName(typeof(MapLocation), Destination)}" +
 		$"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 30 - Enum.GetName(typeof(MapLocation), Destination).Length)).ToList())}";
@@ -110,8 +116,9 @@ namespace FF1Lib
 
 			Destination = destination;
 			Index = index;
-			CoordinateX = coordinates.X;
-			CoordinateY = coordinates.Y;
+			//CoordinateX = coordinates.X;
+			//CoordinateY = coordinates.Y;
+			Coordinates = coordinates;
 			Teleports = teleports?.ToList() ?? new List<TeleportIndex>();
 			Exit = exits;
 		}
@@ -125,13 +132,17 @@ namespace FF1Lib
 		}
 		public void SetEntrance(Coordinate coordinate)
 		{
-			CoordinateX = coordinate.X;
-			CoordinateY = coordinate.Y;
+			Coordinates = coordinate;
 		}
 
 		public void FlipXcoordinate()
 		{
-			CoordinateX = (byte)(64 - CoordinateX - 1);
+			Coordinates = new Coordinate((byte)(64 - Coordinates.X - 1), Coordinates.Y, Coordinates.Context);
+		}
+
+		public void FlipYcoordinate()
+		{
+			Coordinates = new Coordinate(Coordinates.X, (byte)(64 - Coordinates.Y - 1), Coordinates.Context);
 		}
 	}
 }

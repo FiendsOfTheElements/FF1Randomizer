@@ -9,8 +9,8 @@ namespace FF1Lib
 		Flags flags;
 		FF1Rom rom;
 		List<Map> maps;
-		List<MapId> flippedMaps;
-		List<MapId> vflippedMaps;
+		List<MapIndex> flippedMaps;
+		List<MapIndex> vflippedMaps;
 
 		MapTileSets MapTileSets;
 		ShopData ShopData;
@@ -22,18 +22,18 @@ namespace FF1Lib
 		List<SpellInfo> SpellInfos;
 		TreasureData treasureData;
 
-		//MapId, X, Y, UL Tile, UR Tile, BL Tile, BR Tile, Pallette
-		private List<(MapId, int, int, byte, byte, byte, byte, byte)> Locations = new List<(MapId, int, int, byte, byte, byte, byte, byte)>
+		//MapIndex, X, Y, UL Tile, UR Tile, BL Tile, BR Tile, Pallette
+		private List<(MapIndex, int, int, byte, byte, byte, byte, byte)> Locations = new List<(MapIndex, int, int, byte, byte, byte, byte, byte)>
 		{
-			(MapId.EarthCaveB2, 20, 34, 0x22, 0x23, 0x32, 0x33, 0xFF),
-			(MapId.MarshCaveB2, 13, 44, 0x22, 0x23, 0x32, 0x33, 0xAA),
-			(MapId.DwarfCave, 12, 50, 0x22, 0x23, 0x32, 0x33, 0xFF),
-			(MapId.MirageTower1F, 23, 02, 0x22, 0x23, 0x32, 0x33, 0xAA),
-			(MapId.IceCaveB1, 25, 24, 0x22, 0x23, 0x32, 0x33, 0xFF),
-			(MapId.SeaShrineB4, 27, 40, 0x22, 0x23, 0x32, 0x33, 0xAA)
+			(MapIndex.EarthCaveB2, 20, 34, 0x22, 0x23, 0x32, 0x33, 0xFF),
+			(MapIndex.MarshCaveB2, 13, 44, 0x22, 0x23, 0x32, 0x33, 0xAA),
+			(MapIndex.DwarfCave, 12, 50, 0x22, 0x23, 0x32, 0x33, 0xFF),
+			(MapIndex.MirageTower1F, 23, 02, 0x22, 0x23, 0x32, 0x33, 0xAA),
+			(MapIndex.IceCaveB1, 25, 24, 0x22, 0x23, 0x32, 0x33, 0xFF),
+			(MapIndex.SeaShrineB4, 27, 40, 0x22, 0x23, 0x32, 0x33, 0xAA)
 		};
 
-		public LegendaryShops(MT19337 _rng, Flags _flags, List<Map> _maps, List<MapId> _flippedMaps, List<MapId> _vflippedMaps, ShopData _shopdata, FF1Rom _rom)
+		public LegendaryShops(MT19337 _rng, Flags _flags, List<Map> _maps, List<MapIndex> _flippedMaps, List<MapIndex> _vflippedMaps, ShopData _shopdata, FF1Rom _rom)
 		{
 			rng = _rng;
 			flags = _flags;
@@ -56,7 +56,7 @@ namespace FF1Lib
 			// Remove Closed door tile, since it's not used in the map, but still needed
 			possibleTileIds[0x37] = 0;
 
-			UnusedTilesbyTileSet = Enum.GetValues<MapId>()
+			UnusedTilesbyTileSet = Enum.GetValues<MapIndex>()
 				.GroupBy(m => MapTileSets[m])
 				.Select(t => (t.Key, t.Select(m => maps[(int)m]
 						.Select(e => e.Value))
@@ -105,14 +105,14 @@ namespace FF1Lib
 
 		private void PrepareMaps()
 		{
-			maps[(int)MapId.DwarfCave][51, 12] = maps[(int)MapId.DwarfCave][51, 13];
+			maps[(int)MapIndex.DwarfCave][51, 12] = maps[(int)MapIndex.DwarfCave][51, 13];
 		}
 
-		private void CreateWeaponShop(int slots, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
+		private void CreateWeaponShop(int slots, List<(MapIndex, int, int, byte, byte, byte, byte, byte)> pool)
 		{
 			if (slots <= 0) return;
 
-			Shop shop = new Shop(6, ShopType.Weapon, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetWeaponShopInventory(slots));
+			Shop shop = new Shop(6, ShopType.Weapon, MapLocation.Coneria, MapIndex.ConeriaTown, 0, string.Empty, GetWeaponShopInventory(slots));
 
 			if (flags.ExclusiveLegendaryWeaponShop)
 			{
@@ -127,11 +127,11 @@ namespace FF1Lib
 			}
 		}
 
-		private void CreateArmorShop(int slots, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
+		private void CreateArmorShop(int slots, List<(MapIndex, int, int, byte, byte, byte, byte, byte)> pool)
 		{
 			if (slots <= 0) return;
 
-			Shop shop = new Shop(16, ShopType.Armor, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetArmorShopInventory(slots));
+			Shop shop = new Shop(16, ShopType.Armor, MapLocation.Coneria, MapIndex.ConeriaTown, 0, string.Empty, GetArmorShopInventory(slots));
 
 			if (flags.ExclusiveLegendaryArmorShop)
 			{
@@ -146,11 +146,11 @@ namespace FF1Lib
 			}
 		}
 
-		private void CreateBlackShop(int slots, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
+		private void CreateBlackShop(int slots, List<(MapIndex, int, int, byte, byte, byte, byte, byte)> pool)
 		{
 			if (slots <= 0) return;
 
-			Shop shop = new Shop(7, ShopType.Black, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetBlackShopInventory(slots));
+			Shop shop = new Shop(7, ShopType.Black, MapLocation.Coneria, MapIndex.ConeriaTown, 0, string.Empty, GetBlackShopInventory(slots));
 
 			if (flags.ExclusiveLegendaryBlackShop)
 			{
@@ -164,11 +164,11 @@ namespace FF1Lib
 			}
 		}
 
-		private void CreateWhiteShop(int slots, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
+		private void CreateWhiteShop(int slots, List<(MapIndex, int, int, byte, byte, byte, byte, byte)> pool)
 		{
 			if (slots <= 0) return;
 
-			Shop shop = new Shop(17, ShopType.White, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetWhiteShopInventory(slots));
+			Shop shop = new Shop(17, ShopType.White, MapLocation.Coneria, MapIndex.ConeriaTown, 0, string.Empty, GetWhiteShopInventory(slots));
 
 			if (flags.ExclusiveLegendaryWhiteShop)
 			{
@@ -182,11 +182,11 @@ namespace FF1Lib
 			}
 		}
 
-		private void CreateItemShop(int slots, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
+		private void CreateItemShop(int slots, List<(MapIndex, int, int, byte, byte, byte, byte, byte)> pool)
 		{
 			if (slots <= 0) return;
 
-			Shop shop = new Shop(66, ShopType.Item, MapLocation.Coneria, MapId.Coneria, 0, string.Empty, GetItemShopInventory(slots));
+			Shop shop = new Shop(66, ShopType.Item, MapLocation.Coneria, MapIndex.ConeriaTown, 0, string.Empty, GetItemShopInventory(slots));
 
 			if (flags.ExclusiveLegendaryItemShop)
 			{
@@ -200,7 +200,7 @@ namespace FF1Lib
 			}
 		}
 
-		private void PlaceShop(int index, List<(MapId, int, int, byte, byte, byte, byte, byte)> pool)
+		private void PlaceShop(int index, List<(MapIndex, int, int, byte, byte, byte, byte, byte)> pool)
 		{
 			var locidx = rng.Between(0, pool.Count - 1);
 			var loc = pool[locidx];
@@ -214,11 +214,11 @@ namespace FF1Lib
 			maps[(int)loc.Item1][loc.Item3, loc.Item2] = tile;
 		}
 
-		private byte CreateTile(MapId mapId, int ShopId, byte ul, byte ur, byte bl, byte br, byte pi)
+		private byte CreateTile(MapIndex MapIndex, int ShopId, byte ul, byte ur, byte bl, byte br, byte pi)
 		{
-			var tileSet = TileSets[MapTileSets[mapId]];
-			var tile = UnusedTilesbyTileSet[MapTileSets[mapId]][0];
-			UnusedTilesbyTileSet[MapTileSets[mapId]].RemoveAt(0);
+			var tileSet = TileSets[MapTileSets[MapIndex]];
+			var tile = UnusedTilesbyTileSet[MapTileSets[MapIndex]][0];
+			UnusedTilesbyTileSet[MapTileSets[MapIndex]].RemoveAt(0);
 
 			tileSet.TileAttributes[tile] = pi;
 			tileSet.TileProperties[tile] = new TileProp(3, (byte)ShopId);

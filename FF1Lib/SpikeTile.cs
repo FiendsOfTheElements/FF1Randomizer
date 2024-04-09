@@ -75,40 +75,40 @@ namespace FF1Lib
 	}
 	public partial class TileSetsData
 	{
-		public static readonly Dictionary<TrapTileOffsets, List<MapId>> TrapTileMapId = new Dictionary<TrapTileOffsets, List<MapId>>
+		public static readonly Dictionary<TrapTileOffsets, List<MapIndex>> TrapTileMapIndex = new Dictionary<TrapTileOffsets, List<MapIndex>>
 		{
-			{TrapTileOffsets.NWCastleMummy, new List<MapId>{MapId.NorthwestCastle} },
-			{TrapTileOffsets.NWCastleImage, new List<MapId>{MapId.NorthwestCastle} },
-			{TrapTileOffsets.OrdealsMudGol, new List<MapId>{MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals3F} },
-			{TrapTileOffsets.OrdealsNightmare, new List<MapId>{MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals3F} },
-			{TrapTileOffsets.OrdealsZombieD, new List<MapId>{MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals3F} },
-			{TrapTileOffsets.HallOfGiants1, new List<MapId>{MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5} },
-			{TrapTileOffsets.HallOfGiants2, new List<MapId>{MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5}},
-			{TrapTileOffsets.EarthElemental, new List<MapId>{MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5} },
-			{TrapTileOffsets.WzOgreEarth, new List<MapId>{MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5} },
-			{TrapTileOffsets.EarthSphinx, new List<MapId>{MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5} },
-			{TrapTileOffsets.VolcanoFireElemental, new List<MapId>{MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5} },
-			{TrapTileOffsets.VolcanoGreyWorm, new List<MapId>{MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5} },
-			{TrapTileOffsets.VolcanoAgama, new List<MapId>{MapId.GurguVolcanoB4, MapId.GurguVolcanoB5} },
-			{TrapTileOffsets.VolcanoRedD, new List<MapId>{MapId.GurguVolcanoB4, MapId.GurguVolcanoB5} },
-			{TrapTileOffsets.IceUndeadPack, new List<MapId>{MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3} },
-			{TrapTileOffsets.IceFrWolfPack, new List<MapId>{MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3} },
-			{TrapTileOffsets.FrGiantWolfPack, new List<MapId>{MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3} },
-			{TrapTileOffsets.IceMagePack, new List<MapId>{MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3} },
-			{TrapTileOffsets.IceFrostDPack, new List<MapId>{MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3} },
-			{TrapTileOffsets.IceEyeTile, new List<MapId>{MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3} },
-			{TrapTileOffsets.WaterfallMummyPack, new List<MapId>{MapId.Waterfall} },
-			{TrapTileOffsets.WizardMarshMajor, new List<MapId>{MapId.MarshCaveB1, MapId.MarshCaveB2, MapId.MarshCaveB3 } },
-			{TrapTileOffsets.WizardMarshKey, new List<MapId>{MapId.MarshCaveB1, MapId.MarshCaveB2, MapId.MarshCaveB3 } },
-			{TrapTileOffsets.CobraMarshKey, new List<MapId>{MapId.MarshCaveB1, MapId.MarshCaveB2, MapId.MarshCaveB3 } },
-			{TrapTileOffsets.BlueD, new List<MapId>{MapId.MirageTower1F, MapId.MirageTower2F, MapId.MirageTower3F, MapId.SkyPalace1F, MapId.SkyPalace2F, MapId.SkyPalace3F, MapId.SkyPalace4F, MapId.SkyPalace5F } },
-			{TrapTileOffsets.GargoyleToF, new List<MapId>{MapId.TempleOfFiends}},
-			{TrapTileOffsets.SeaPartyPack, new List<MapId>{MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 } },
-			{TrapTileOffsets.Sharknado, new List<MapId>{MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 }},
-			{TrapTileOffsets.SeaWaterElemental, new List<MapId>{MapId.SeaShrineB4, MapId.SeaShrineB5 } },
-			{TrapTileOffsets.SeaMummy, new List<MapId>{MapId.SeaShrineB4, MapId.SeaShrineB5 } },
-			{TrapTileOffsets.GargoyleToF2,  new List<MapId>{MapId.TempleOfFiends} },
-			{TrapTileOffsets.Phantom,  new List<MapId>{MapId.TempleOfFiendsRevisited1F, MapId.TempleOfFiendsRevisited2F, MapId.TempleOfFiendsRevisited3F, MapId.TempleOfFiendsRevisitedEarth, MapId.TempleOfFiendsRevisitedFire, MapId.TempleOfFiendsRevisitedWater, MapId.TempleOfFiendsRevisitedAir}}
+			{TrapTileOffsets.NWCastleMummy, new List<MapIndex>{MapIndex.NorthwestCastle} },
+			{TrapTileOffsets.NWCastleImage, new List<MapIndex>{MapIndex.NorthwestCastle} },
+			{TrapTileOffsets.OrdealsMudGol, new List<MapIndex>{MapIndex.CastleOrdeals2F, MapIndex.CastleOrdeals3F} },
+			{TrapTileOffsets.OrdealsNightmare, new List<MapIndex>{MapIndex.CastleOrdeals2F, MapIndex.CastleOrdeals3F} },
+			{TrapTileOffsets.OrdealsZombieD, new List<MapIndex>{MapIndex.CastleOrdeals2F, MapIndex.CastleOrdeals3F} },
+			{TrapTileOffsets.HallOfGiants1, new List<MapIndex>{MapIndex.EarthCaveB1, MapIndex.EarthCaveB2, MapIndex.EarthCaveB3, MapIndex.EarthCaveB4, MapIndex.EarthCaveB5} },
+			{TrapTileOffsets.HallOfGiants2, new List<MapIndex>{MapIndex.EarthCaveB1, MapIndex.EarthCaveB2, MapIndex.EarthCaveB3, MapIndex.EarthCaveB4, MapIndex.EarthCaveB5}},
+			{TrapTileOffsets.EarthElemental, new List<MapIndex>{MapIndex.EarthCaveB1, MapIndex.EarthCaveB2, MapIndex.EarthCaveB3, MapIndex.EarthCaveB4, MapIndex.EarthCaveB5} },
+			{TrapTileOffsets.WzOgreEarth, new List<MapIndex>{MapIndex.EarthCaveB1, MapIndex.EarthCaveB2, MapIndex.EarthCaveB3, MapIndex.EarthCaveB4, MapIndex.EarthCaveB5} },
+			{TrapTileOffsets.EarthSphinx, new List<MapIndex>{MapIndex.EarthCaveB1, MapIndex.EarthCaveB2, MapIndex.EarthCaveB3, MapIndex.EarthCaveB4, MapIndex.EarthCaveB5} },
+			{TrapTileOffsets.VolcanoFireElemental, new List<MapIndex>{MapIndex.GurguVolcanoB1, MapIndex.GurguVolcanoB2, MapIndex.GurguVolcanoB3, MapIndex.GurguVolcanoB4, MapIndex.GurguVolcanoB5} },
+			{TrapTileOffsets.VolcanoGreyWorm, new List<MapIndex>{MapIndex.GurguVolcanoB1, MapIndex.GurguVolcanoB2, MapIndex.GurguVolcanoB3, MapIndex.GurguVolcanoB4, MapIndex.GurguVolcanoB5} },
+			{TrapTileOffsets.VolcanoAgama, new List<MapIndex>{MapIndex.GurguVolcanoB4, MapIndex.GurguVolcanoB5} },
+			{TrapTileOffsets.VolcanoRedD, new List<MapIndex>{MapIndex.GurguVolcanoB4, MapIndex.GurguVolcanoB5} },
+			{TrapTileOffsets.IceUndeadPack, new List<MapIndex>{MapIndex.IceCaveB1, MapIndex.IceCaveB2, MapIndex.IceCaveB3} },
+			{TrapTileOffsets.IceFrWolfPack, new List<MapIndex>{MapIndex.IceCaveB1, MapIndex.IceCaveB2, MapIndex.IceCaveB3} },
+			{TrapTileOffsets.FrGiantWolfPack, new List<MapIndex>{MapIndex.IceCaveB1, MapIndex.IceCaveB2, MapIndex.IceCaveB3} },
+			{TrapTileOffsets.IceMagePack, new List<MapIndex>{MapIndex.IceCaveB1, MapIndex.IceCaveB2, MapIndex.IceCaveB3} },
+			{TrapTileOffsets.IceFrostDPack, new List<MapIndex>{MapIndex.IceCaveB1, MapIndex.IceCaveB2, MapIndex.IceCaveB3} },
+			{TrapTileOffsets.IceEyeTile, new List<MapIndex>{MapIndex.IceCaveB1, MapIndex.IceCaveB2, MapIndex.IceCaveB3} },
+			{TrapTileOffsets.WaterfallMummyPack, new List<MapIndex>{MapIndex.Waterfall} },
+			{TrapTileOffsets.WizardMarshMajor, new List<MapIndex>{MapIndex.MarshCaveB1, MapIndex.MarshCaveB2, MapIndex.MarshCaveB3 } },
+			{TrapTileOffsets.WizardMarshKey, new List<MapIndex>{MapIndex.MarshCaveB1, MapIndex.MarshCaveB2, MapIndex.MarshCaveB3 } },
+			{TrapTileOffsets.CobraMarshKey, new List<MapIndex>{MapIndex.MarshCaveB1, MapIndex.MarshCaveB2, MapIndex.MarshCaveB3 } },
+			{TrapTileOffsets.BlueD, new List<MapIndex>{MapIndex.MirageTower1F, MapIndex.MirageTower2F, MapIndex.MirageTower3F, MapIndex.SkyPalace1F, MapIndex.SkyPalace2F, MapIndex.SkyPalace3F, MapIndex.SkyPalace4F, MapIndex.SkyPalace5F } },
+			{TrapTileOffsets.GargoyleToF, new List<MapIndex>{MapIndex.TempleOfFiends}},
+			{TrapTileOffsets.SeaPartyPack, new List<MapIndex>{MapIndex.SeaShrineB2, MapIndex.SeaShrineB3, MapIndex.SeaShrineB4, MapIndex.SeaShrineB5 } },
+			{TrapTileOffsets.Sharknado, new List<MapIndex>{MapIndex.SeaShrineB2, MapIndex.SeaShrineB3, MapIndex.SeaShrineB4, MapIndex.SeaShrineB5 }},
+			{TrapTileOffsets.SeaWaterElemental, new List<MapIndex>{MapIndex.SeaShrineB4, MapIndex.SeaShrineB5 } },
+			{TrapTileOffsets.SeaMummy, new List<MapIndex>{MapIndex.SeaShrineB4, MapIndex.SeaShrineB5 } },
+			{TrapTileOffsets.GargoyleToF2,  new List<MapIndex>{MapIndex.TempleOfFiends} },
+			{TrapTileOffsets.Phantom,  new List<MapIndex>{MapIndex.TempleOfFiendsRevisited1F, MapIndex.TempleOfFiendsRevisited2F, MapIndex.TempleOfFiendsRevisited3F, MapIndex.TempleOfFiendsRevisitedEarth, MapIndex.TempleOfFiendsRevisitedFire, MapIndex.TempleOfFiendsRevisitedWater, MapIndex.TempleOfFiendsRevisitedAir}}
 		};
 		public void UpdateTrapTiles(FF1Rom rom, ZoneFormations zoneformations, Settings settings, MT19337 rng)
 		{
@@ -174,30 +174,30 @@ namespace FF1Lib
 
 				List<List<byte>> encountersGroup = zoneformations.GetBytes();
 
-				encountersGroup[(int)MapId.ConeriaCastle1F] = castleEncounters;
-				encountersGroup[(int)MapId.ElflandCastle] = castleEncounters;
-				encountersGroup[(int)MapId.NorthwestCastle] = castleEncounters;
-				encountersGroup[(int)MapId.CastleOfOrdeals1F] = castleEncounters;
+				encountersGroup[(int)MapIndex.ConeriaCastle1F] = castleEncounters;
+				encountersGroup[(int)MapIndex.ElflandCastle] = castleEncounters;
+				encountersGroup[(int)MapIndex.NorthwestCastle] = castleEncounters;
+				encountersGroup[(int)MapIndex.CastleOrdeals1F] = castleEncounters;
 
-				encountersGroup[(int)MapId.Cardia] = cardiaEncounters;
-				encountersGroup[(int)MapId.BahamutsRoomB1] = cardiaEncounters;
-				encountersGroup[(int)MapId.BahamutsRoomB2] = cardiaEncounters;
+				encountersGroup[(int)MapIndex.Cardia] = cardiaEncounters;
+				encountersGroup[(int)MapIndex.BahamutCaveB1] = cardiaEncounters;
+				encountersGroup[(int)MapIndex.BahamutCaveB2] = cardiaEncounters;
 
-				encountersGroup[(int)MapId.DwarfCave] = caveEncounters;
-				encountersGroup[(int)MapId.SardasCave] = caveEncounters;
-				encountersGroup[(int)MapId.MatoyasCave] = caveEncounters;
+				encountersGroup[(int)MapIndex.DwarfCave] = caveEncounters;
+				encountersGroup[(int)MapIndex.SardasCave] = caveEncounters;
+				encountersGroup[(int)MapIndex.MatoyasCave] = caveEncounters;
 
-				//use index to lookup tileset data to mapid
+				//use index to lookup tileset data to MapIndex
 				//Blob tile;
-				MapId pickedMap;
+				MapIndex pickedMap;
 				foreach (var tileset in tileSets)
 				{
 					foreach (var tile in tileset.Tiles)
 					{
 						TrapTileOffsets traptileindex = (TrapTileOffsets)(tile.Index + 128 * tileset.Index);
-						if (tile.IsNonBossTrapTile && TrapTileMapId.ContainsKey(traptileindex))
+						if (tile.IsNonBossTrapTile && TrapTileMapIndex.ContainsKey(traptileindex))
 						{
-							pickedMap = TrapTileMapId[traptileindex].PickRandom(rng);
+							pickedMap = TrapTileMapIndex[traptileindex].PickRandom(rng);
 							tile.PropertyValue = encountersGroup[(int)pickedMap].SpliceRandom(rng);
 						}
 					}

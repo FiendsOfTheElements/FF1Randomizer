@@ -267,24 +267,24 @@ namespace FF1Lib
 
 		private void WriteV2SpoilerArea(Sanity.SCArea a, string tab, int depth)
 		{
-			Utilities.WriteSpoilerLine(tab + a.Map.MapId.ToString());
+			Utilities.WriteSpoilerLine(tab + a.Map.MapIndex.ToString());
 
-			//if (a.Map.MapId == MapId.TempleOfFiends && depth < 15) throw new RerollException();
+			//if (a.Map.MapIndex == MapIndex.TempleOfFiends && depth < 15) throw new RerollException();
 
 			foreach (var p in a.PointsOfInterest)
 			{
 				switch (p.Type)
 				{
 					case Sanity.SCPointOfInterestType.Orb:
-						Utilities.WriteSpoilerLine(tab + " - " + a.Map.MapId.ToString() + " - " + p.Type.ToString() + " - " + p.BitFlagSet);
+						Utilities.WriteSpoilerLine(tab + " - " + a.Map.MapIndex.ToString() + " - " + p.Type.ToString() + " - " + p.BitFlagSet);
 						break;
 					case Sanity.SCPointOfInterestType.Shop:
 						var shop = shopData.Shops.First(x => x.Index == p.ShopId - 1);
-						Utilities.WriteSpoilerLine(tab + " - " + a.Map.MapId.ToString() + " - " + p.Type.ToString() + " - " + shop.Type + "." + shop.Location + "." + p.ShopId.ToString() + " - " + p.BitFlagSet);
+						Utilities.WriteSpoilerLine(tab + " - " + a.Map.MapIndex.ToString() + " - " + p.Type.ToString() + " - " + shop.Type + "." + shop.Location + "." + p.ShopId.ToString() + " - " + p.BitFlagSet);
 						break;
 					case Sanity.SCPointOfInterestType.Treasure:
 						var item = (Item)rom.Get(0x3100 + p.TreasureId, 1)[0];
-						Utilities.WriteSpoilerLine(tab + " - " + a.Map.MapId.ToString() + " - " + p.Type.ToString() + " - " + GetItemName(item) + " - " + p.BitFlagSet);
+						Utilities.WriteSpoilerLine(tab + " - " + a.Map.MapIndex.ToString() + " - " + p.Type.ToString() + " - " + GetItemName(item) + " - " + p.BitFlagSet);
 						break;
 				}
 			}

@@ -899,8 +899,13 @@
 			return mapData;
 		}
 
-		public static void ApplyDesertModifications(FF1Rom rom, ZoneFormations zoneformations, OwMapExchange owMapExchange, FF1Rom.NPCdata npcdata)
+		public static void ApplyDesertModifications(bool enabled, FF1Rom rom, ZoneFormations zoneformations, OwMapExchange owMapExchange, FF1Rom.NPCdata npcdata)
 		{
+			if (!enabled)
+			{
+				return;
+			}
+
 			(int, int) startDomain = ((owMapExchange.StartingLocation.X / 32) - 1, (owMapExchange.StartingLocation.Y / 32) - 1);
 
 			// Update tiles and palette

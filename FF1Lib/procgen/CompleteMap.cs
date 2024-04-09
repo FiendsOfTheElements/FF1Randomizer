@@ -8,7 +8,7 @@ namespace FF1Lib.Procgen
 	{
 	    [JsonProperty(Order=1)]
 	    [JsonConverter(typeof(StringEnumConverter))]
-	        public MapId MapId;
+	        public MapIndex MapIndex;
 
 		public Map Map;
 
@@ -75,7 +75,7 @@ namespace FF1Lib.Procgen
 			// just letters obviously. someone smart can come up with a better idea.
 			var otherChars = new Stack<char>("ABCDFGHIJKLMNPRSTUVWYZxabcdefghijklmnopqrstuwvz");
 
-			sb.Append($"Map {Requirements.MapId}\n");
+			sb.Append($"Map {Requirements.MapIndex}\n");
 
 			for (y = 0; y < MapRequirements.Height; y++)
 			{

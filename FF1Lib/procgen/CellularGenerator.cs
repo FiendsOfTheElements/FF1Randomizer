@@ -39,7 +39,7 @@
 							{
 								npc.Coord.x += coord.x;
 								npc.Coord.y += coord.y;
-								reqs.Rom.SetNpc(reqs.MapId, npc);
+								reqs.Rom.SetNpc(reqs.MapIndex, npc);
 							});
 						});
 					}

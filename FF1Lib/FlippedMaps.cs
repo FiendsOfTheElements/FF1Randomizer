@@ -3,76 +3,115 @@ using System;
 using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace FF1Lib
 {
+	// Should be merged with dungeonmaps class
+	public class RestructuredMaps
+	{
+		FF1Rom rom;
+		List<Map> maps;
+		Flags flags;
+		MT19337 rng;
+		Teleporters teleporters;
+
+		public List<MapIndex> VerticalFlippedMaps { get; private set;  }
+		public List<MapIndex> HorizontalFlippedMaps { get; private set; }
+
+		public RestructuredMaps(FF1Rom _rom, List<Map> _maps, Flags _flags, Teleporters _teleporters, MT19337 _rng)
+		{
+			rom = _rom;
+			maps = _maps;
+			flags = _flags;
+			rng = _rng;
+			teleporters = _teleporters;
+		}
+		public void Process()
+		{
+			var mapFlipper = new FlippedMaps(rom, maps, flags, teleporters, rng);
+			VerticalFlippedMaps = mapFlipper.VerticalFlipStep1();
+
+			if ((bool)flags.ReversedFloors) new ReversedFloors(rom, maps, rng, teleporters, VerticalFlippedMaps).Work();
+
+			mapFlipper.VerticalFlipStep2();
+
+			if ((bool)flags.FlipDungeons)
+			{
+				HorizontalFlippedMaps = mapFlipper.HorizontalFlip(rng, maps, teleporters);
+			}
+		}
+
+	}
 	public class FlippedMaps
 	{
 		FF1Rom rom;
 		List<Map> maps;
 		Flags flags;
 		MT19337 rng;
-		NormTeleData tele;
-		EnterTeleData enter;
+		Teleporters teleporters;
+		//NormTeleData tele;
+		//EnterTeleData enter;
 
-		List<MapId> ValidMaps_Horizontal = new List<MapId>
+		List<MapIndex> ValidMaps_Horizontal = new List<MapIndex>
 		{
-			MapId.TempleOfFiends,
-			MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5,
-			MapId.MarshCaveB1, MapId.MarshCaveB2, MapId.MarshCaveB3,
-			MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3,
-			MapId.MirageTower1F, MapId.MirageTower2F,
-			MapId.SkyPalace1F, MapId.SkyPalace2F, MapId.SkyPalace3F,
-			MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5,
-			MapId.Waterfall,
-			MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5
+			MapIndex.TempleOfFiends,
+			MapIndex.EarthCaveB1, MapIndex.EarthCaveB2, MapIndex.EarthCaveB3, MapIndex.EarthCaveB4, MapIndex.EarthCaveB5,
+			MapIndex.MarshCaveB1, MapIndex.MarshCaveB2, MapIndex.MarshCaveB3,
+			MapIndex.IceCaveB1, MapIndex.IceCaveB2, MapIndex.IceCaveB3,
+			MapIndex.MirageTower1F, MapIndex.MirageTower2F,
+			MapIndex.SkyPalace1F, MapIndex.SkyPalace2F, MapIndex.SkyPalace3F,
+			MapIndex.SeaShrineB1, MapIndex.SeaShrineB2, MapIndex.SeaShrineB3, MapIndex.SeaShrineB4, MapIndex.SeaShrineB5,
+			MapIndex.Waterfall,
+			MapIndex.GurguVolcanoB1, MapIndex.GurguVolcanoB2, MapIndex.GurguVolcanoB3, MapIndex.GurguVolcanoB4, MapIndex.GurguVolcanoB5
 
 		};
 
-		List<MapId> ValidMaps_Vertical = new List<MapId>
+		List<MapIndex> ValidMaps_Vertical = new List<MapIndex>
 		{
-			MapId.TempleOfFiends,
-			MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB4, MapId.EarthCaveB3, MapId.EarthCaveB5,
-			MapId.MarshCaveB1, MapId.MarshCaveB2, MapId.MarshCaveB3,
-			MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3,
-			MapId.MirageTower1F, MapId.MirageTower2F,
-			MapId.SkyPalace1F, MapId.SkyPalace2F, MapId.SkyPalace3F,
-			MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5,
-			MapId.Waterfall,
-			MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5
+			MapIndex.TempleOfFiends,
+			MapIndex.EarthCaveB1, MapIndex.EarthCaveB2, MapIndex.EarthCaveB4, MapIndex.EarthCaveB3, MapIndex.EarthCaveB5,
+			MapIndex.MarshCaveB1, MapIndex.MarshCaveB2, MapIndex.MarshCaveB3,
+			MapIndex.IceCaveB1, MapIndex.IceCaveB2, MapIndex.IceCaveB3,
+			MapIndex.MirageTower1F, MapIndex.MirageTower2F,
+			MapIndex.SkyPalace1F, MapIndex.SkyPalace2F, MapIndex.SkyPalace3F,
+			MapIndex.SeaShrineB1, MapIndex.SeaShrineB2, MapIndex.SeaShrineB3, MapIndex.SeaShrineB4, MapIndex.SeaShrineB5,
+			MapIndex.Waterfall,
+			MapIndex.GurguVolcanoB1, MapIndex.GurguVolcanoB2, MapIndex.GurguVolcanoB3, MapIndex.GurguVolcanoB4, MapIndex.GurguVolcanoB5
 		};
 
-		List<MapId> mapsToFlipVertically;
+		List<MapIndex> mapsToFlipVertically;
 
-		public FlippedMaps(FF1Rom _rom, List<Map> _maps, Flags _flags, MT19337 _rng)
+		public FlippedMaps(FF1Rom _rom, List<Map> _maps, Flags _flags, Teleporters _teleporters, MT19337 _rng)
 		{
 			rom = _rom;
 			maps = _maps;
 			flags = _flags;
 			rng = _rng;
-			tele = new NormTeleData(rom);
-			enter = new EnterTeleData(rom);
+			teleporters = _teleporters;
+			//tele = new NormTeleData(rom);
+			//enter = new EnterTeleData(rom);
 		}
 
-		public List<MapId> VerticalFlipStep1()
+		public List<MapIndex> VerticalFlipStep1()
 		{
 			if (!flags.VerticallyFlipDungeons ?? false || flags.GameMode != GameModes.Standard)
 			{
-				mapsToFlipVertically = new List<MapId>();
+				mapsToFlipVertically = new List<MapIndex>();
 				return mapsToFlipVertically;
 			}
 
 			ValidMaps_Vertical.Shuffle(rng);
 			mapsToFlipVertically = ValidMaps_Vertical.GetRange(0, rng.Between((int)(ValidMaps_Vertical.Count * 0.33), (int)(ValidMaps_Vertical.Count * 0.75)));
-			if (flags.EFGWaterfall) mapsToFlipVertically.Remove(MapId.Waterfall);
+			if (flags.EFGWaterfall) mapsToFlipVertically.Remove(MapIndex.Waterfall);
 
 			/*
-			foreach (var mapId in mapsToFlipVertically)
+			foreach (var MapIndex in mapsToFlipVertically)
 			{
-				var map = maps[(int)mapId];
-				var fileName = @"d:\FFR\vfmaps\" + mapId.ToString() + ".ffm";
+				var map = maps[(int)MapIndex];
+				var fileName = @"d:\FFR\vfmaps\" + MapIndex.ToString() + ".ffm";
 				using var stream = new FileStream(fileName, FileMode.Create);
 				map.Save(stream);
 				stream.Close();
@@ -86,11 +125,11 @@ namespace FF1Lib
 
 			var archive = new ZipArchive(stream);
 
-			foreach (var mapId in mapsToFlipVertically)
+			foreach (var MapIndex in mapsToFlipVertically)
 			{
-				var map = maps[(int)mapId];
+				var map = maps[(int)MapIndex];
 
-				var entry = archive.GetEntry(mapId.ToString() + ".ffm");
+				var entry = archive.GetEntry(MapIndex.ToString() + ".ffm");
 
 				using var stream2 = entry.Open();
 				map.Load(stream2);
@@ -101,40 +140,40 @@ namespace FF1Lib
 
 		public void VerticalFlipStep2()
 		{
-			tele.LoadData();
-			enter.LoadData();
+			//tele.LoadData();
+			//enter.LoadData();
 
-			foreach (MapId mapId in mapsToFlipVertically)
+			foreach (MapIndex mapindex in mapsToFlipVertically)
 			{
-				var map = maps[(int)mapId];
+				var map = maps[(int)mapindex];
 
-				if (mapId == MapId.GurguVolcanoB5)
+				if (mapindex == MapIndex.GurguVolcanoB5)
 				{
 					FlipVolcanoB5(map);
 				}
-				else if (mapId == MapId.GurguVolcanoB2)
+				else if (mapindex == MapIndex.GurguVolcanoB2)
 				{
-					FlipVolcanoB2(mapId, map);
+					FlipVolcanoB2(mapindex, map);
 				}
-				else if (mapId == MapId.Waterfall || mapId == MapId.GurguVolcanoB3 || mapId == MapId.GurguVolcanoB4)
+				else if (mapindex == MapIndex.Waterfall || mapindex == MapIndex.GurguVolcanoB3 || mapindex == MapIndex.GurguVolcanoB4)
 				{
 					map.FlipVertical();
 
-					FlipNormalTele(mapId);
-					FlipEnterTele(mapId);
+					FlipNormalTele(mapindex);
+					FlipEnterTele(mapindex);
 
-					FixFullRoomMap(mapId, map);
+					FixFullRoomMap(mapindex, map);
 
-					FlipNPCs(mapId);
+					FlipNPCs(mapindex);
 
-					if (mapId == MapId.Waterfall)
+					if (mapindex == MapIndex.Waterfall)
 					{
-						var npc = rom.GetNpc(mapId, 0);
+						var npc = rom.GetNpc(mapindex, 0);
 						npc.Coord.y = npc.Coord.y + 2;
-						rom.SetNpc(mapId, npc);
+						rom.SetNpc(mapindex, npc);
 					}
 
-					if (mapId == MapId.GurguVolcanoB4)
+					if (mapindex == MapIndex.GurguVolcanoB4)
 					{
 						for (int x = 0; x < 64; x++)
 						{
@@ -142,7 +181,7 @@ namespace FF1Lib
 						}
 					}
 
-					if (mapId == MapId.GurguVolcanoB3 || mapId == MapId.Waterfall)
+					if (mapindex == MapIndex.GurguVolcanoB3 || mapindex == MapIndex.Waterfall)
 					{
 						for (int x = 0; x < 64; x++)
 						{
@@ -154,18 +193,18 @@ namespace FF1Lib
 				{
 					map.FlipVertical();
 
-					FlipNormalTele(mapId);
-					FlipEnterTele(mapId);
+					FlipNormalTele(mapindex);
+					FlipEnterTele(mapindex);
 
-					FixRooms(mapId, map);
-					FixWalls(mapId, map);
+					FixRooms(mapindex, map);
+					FixWalls(mapindex, map);
 
-					FlipNPCs(mapId);
+					FlipNPCs(mapindex);
 				}
 			}
 
-			tele.StoreData();
-			enter.StoreData();
+			//tele.StoreData();
+			//enter.StoreData();
 		}
 
 		private void FlipVolcanoB5(Map map)
@@ -174,12 +213,12 @@ namespace FF1Lib
 
 			for (int x = 4; x <= 0x0D; x++) map[4, x] = 48;
 
-			var npc = rom.GetNpc(MapId.GurguVolcanoB5, 0);
+			var npc = rom.GetNpc(MapIndex.GurguVolcanoB5, 0);
 			npc.Coord.y = npc.Coord.y - 0x2E;
-			rom.SetNpc(MapId.GurguVolcanoB5, npc);
+			rom.SetNpc(MapIndex.GurguVolcanoB5, npc);
 		}
 
-		private void FlipVolcanoB2(MapId mapId, Map map)
+		private void FlipVolcanoB2(MapIndex mapindex, Map map)
 		{
 			map.FlipSectionVertical(0x01, 0x20, 0x1E, 0x21);
 			map.FlipSectionVertical(0x00, 0x00, 0x1F, 0x1E);
@@ -214,49 +253,54 @@ namespace FF1Lib
 					if (y == 1 && map[y, x] > 8) map[y, x] = 46;
 				}
 
-			SwapTele(mapId, 0x1E, 0x20, 0x1E, 0x21);
+			SwapTele(mapindex, 0x1E, 0x20, 0x1E, 0x21);
 		}
 
-		private void FlipNormalTele(MapId mapId)
+		private void FlipNormalTele(MapIndex mapindex)
 		{
+			teleporters.GetByMap(mapindex).ForEach(t => t.FlipYcoordinate());
+
+			/*
 			for (int i = 0; i < 64; i++)
 			{
 				var t = tele[i];
-				if (t.Map == mapId)
+				if (t.Map == MapIndex)
 				{
 					t.FlipYcoordinate();
 					tele[i] = t;
 				}
-			}
+			}*/
 		}
 
-		private void FlipEnterTele(MapId mapId)
+		private void FlipEnterTele(MapIndex mapindex)
 		{
+			teleporters.GetByMap(mapindex).ForEach(t => t.FlipYcoordinate());
+			/*
 			for (int i = 0; i < 32; i++)
 			{
 				var t = enter[i];
-				if (t.Map == mapId)
+				if (t.Map == MapIndex)
 				{
 					t.FlipYcoordinate();
 					enter[i] = t;
 				}
-			}
+			}*/
 		}
 
-		private void FlipNPCs(MapId mapId)
+		private void FlipNPCs(MapIndex mapindex)
 		{
 			for (int i = 0; i < 16; i++)
 			{
-				var tempNpc = rom.GetNpc(mapId, i);
+				var tempNpc = rom.GetNpc(mapindex, i);
 				if (tempNpc.Coord != (0, 0))
 				{
 					tempNpc.Coord.y = 64 - tempNpc.Coord.y - 1 + (tempNpc.InRoom ? -1 : 0);
-					rom.SetNpc(mapId, tempNpc);
+					rom.SetNpc(mapindex, tempNpc);
 				}
 			}
 		}
 
-		private void FixRooms(MapId mapId, Map map)
+		private void FixRooms(MapIndex mapindex, Map map)
 		{
 			for(int x = 0; x < 64; x++)
 			{
@@ -271,7 +315,7 @@ namespace FF1Lib
 							{
 								var yend = y;
 
-								ProcessRoomColumn(mapId, map, x, ybegin, yend);
+								ProcessRoomColumn(mapindex, map, x, ybegin, yend);
 								y--;
 								break;
 							}
@@ -281,7 +325,7 @@ namespace FF1Lib
 			}
 		}
 
-		private void ProcessRoomColumn(MapId mapId, Map map, int x, int ybegin, int yend)
+		private void ProcessRoomColumn(MapIndex mapindex, Map map, int x, int ybegin, int yend)
 		{
 			bool door = map[yend - 1, x] == 54;
 			bool lockeddoor = map[yend - 1, x] == 59;
@@ -296,7 +340,7 @@ namespace FF1Lib
 
 				map[y - 1, x] = t;
 
-				SwapTele(mapId, x, y, x, y - 1);
+				SwapTele(mapindex, x, y, x, y - 1);
 			}
 
 			if (specialtile > 8) map[yend - 1, x] = 1;
@@ -322,7 +366,7 @@ namespace FF1Lib
 			}
 		}
 
-		private void FixWalls(MapId mapId, Map map)
+		private void FixWalls(MapIndex mapindex, Map map)
 		{
 			for (int y = 0; y < 63; y++)
 				for (int x = 0; x < 64; x++)
@@ -338,7 +382,7 @@ namespace FF1Lib
 				}
 		}
 
-		private void FixFullRoomMap(MapId mapId, Map map)
+		private void FixFullRoomMap(MapIndex mapindex, Map map)
 		{
 			for (int x = 0; x < 64; x++)
 			{
@@ -406,18 +450,30 @@ namespace FF1Lib
 					{
 						map[y, x] = t2;
 
-						SwapTele(mapId, x, y + 1, x, y);
+						SwapTele(mapindex, x, y + 1, x, y);
 					}
 				}
 			}
 		}
 
-		private void SwapTele(MapId mapId, int x1, int y1, int x2, int y2)
+		private void SwapTele(MapIndex mapindex, int x1, int y1, int x2, int y2)
 		{
+
+			var teletoswap = teleporters.GetByMap(mapindex).Where(t => t.Coordinates.X == x1 && t.Coordinates.Y == y1).ToList();
+			teletoswap.ForEach(t => t.SetEntrance(new Coordinate((byte)x2, (byte)y2, t.Coordinates.Context)));
+
+			/*
+			foreach (var tele in teletoswap)
+			{
+				tele.SetEntrance
+				tele = new .CoordinateX = x2;
+
+
+			}
 			for (int i = 0; i < 64; i++)
 			{
 				var t = tele[i];
-				if (t.Map == mapId && t.X == x1 && t.Y == y1)
+				if (t.Map == mapindex && t.X == x1 && t.Y == y1)
 				{
 					t.X = (byte)(x2 & 0x3F | t.X & 0xC0);
 					t.Y = (byte)(y2 & 0x3F | t.Y & 0xC0);
@@ -429,24 +485,24 @@ namespace FF1Lib
 			for (int i = 0; i < 32; i++)
 			{
 				var t = enter[i];
-				if (t.Map == mapId && t.X == x1 && t.Y == y1)
+				if (t.Map == mapindex && t.X == x1 && t.Y == y1)
 				{
 					t.X = (byte)(x2 & 0x3F | t.X & 0xC0);
 					t.Y = (byte)(y2 & 0x3F | t.Y & 0xC0);
 					enter[i] = t;
 					break;
 				}
-			}
+			}*/
 		}
 
-		public List<MapId> HorizontalFlip(MT19337 rng, List<Map> maps, TeleportShuffle teleporters, OverworldMap overworld)
+		public List<MapIndex> HorizontalFlip(MT19337 rng, List<Map> maps, Teleporters teleporters)
 		{
 			// Select maps to flip
 			ValidMaps_Horizontal.Shuffle(rng);
 			var mapsToFlip = ValidMaps_Horizontal.GetRange(0, rng.Between((int)(ValidMaps_Horizontal.Count * 0.33), (int)(ValidMaps_Horizontal.Count * 0.75)));
-			if (flags.EFGWaterfall) mapsToFlip.Remove(MapId.Waterfall);
+			if (flags.EFGWaterfall) mapsToFlip.Remove(MapIndex.Waterfall);
 
-			foreach (MapId map in mapsToFlip)
+			foreach (MapIndex map in mapsToFlip)
 			{
 				maps[(int)map].FlipHorizontal();
 
@@ -484,93 +540,96 @@ namespace FF1Lib
 			}
 
 			// Update entrance and teleporters coordinate, it has to be done manually for entrance/floor shuffles
-			if (mapsToFlip.Contains(MapId.EarthCaveB1)) teleporters.EarthCave1.FlipXcoordinate(); overworld.PutOverworldTeleport(OverworldTeleportIndex.EarthCave1, teleporters.EarthCave1);
-			if (mapsToFlip.Contains(MapId.EarthCaveB2)) teleporters.EarthCave2.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.EarthCave2, teleporters.EarthCave2, OverworldTeleportIndex.EarthCave1);
-			if (mapsToFlip.Contains(MapId.EarthCaveB3)) teleporters.EarthCaveVampire.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.EarthCaveVampire, teleporters.EarthCaveVampire, OverworldTeleportIndex.EarthCave1);
-			if (mapsToFlip.Contains(MapId.EarthCaveB4)) teleporters.EarthCave4.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.EarthCave4, teleporters.EarthCave4, OverworldTeleportIndex.EarthCave1);
-			if (mapsToFlip.Contains(MapId.EarthCaveB5)) teleporters.EarthCaveLich.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.EarthCaveLich, teleporters.EarthCaveLich, OverworldTeleportIndex.EarthCave1);
+			if (mapsToFlip.Contains(MapIndex.EarthCaveB1)) teleporters.EarthCave1.FlipXcoordinate(); 
+			if (mapsToFlip.Contains(MapIndex.EarthCaveB2)) teleporters.EarthCave2.FlipXcoordinate();
+			if (mapsToFlip.Contains(MapIndex.EarthCaveB3)) teleporters.EarthCaveVampire.FlipXcoordinate(); 
+			if (mapsToFlip.Contains(MapIndex.EarthCaveB4)) teleporters.EarthCave4.FlipXcoordinate();
+			if (mapsToFlip.Contains(MapIndex.EarthCaveB5)) teleporters.EarthCaveLich.FlipXcoordinate();
 
-			if (mapsToFlip.Contains(MapId.GurguVolcanoB1)) teleporters.GurguVolcano1.FlipXcoordinate(); overworld.PutOverworldTeleport(OverworldTeleportIndex.GurguVolcano1, teleporters.GurguVolcano1);
-			if (mapsToFlip.Contains(MapId.GurguVolcanoB2)) teleporters.GurguVolcano2.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.GurguVolcano2, teleporters.GurguVolcano2, OverworldTeleportIndex.GurguVolcano1);
-			if (mapsToFlip.Contains(MapId.GurguVolcanoB3))
+			if (mapsToFlip.Contains(MapIndex.GurguVolcanoB1)) teleporters.GurguVolcano1.FlipXcoordinate(); 
+			if (mapsToFlip.Contains(MapIndex.GurguVolcanoB2)) teleporters.GurguVolcano2.FlipXcoordinate(); 
+			if (mapsToFlip.Contains(MapIndex.GurguVolcanoB3))
 			{
-				teleporters.GurguVolcano3.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.GurguVolcano3, teleporters.GurguVolcano3, OverworldTeleportIndex.GurguVolcano1);
-				teleporters.GurguVolcano5.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.GurguVolcano5, teleporters.GurguVolcano5, OverworldTeleportIndex.GurguVolcano1);
+				teleporters.GurguVolcano3.FlipXcoordinate(); 
+				teleporters.GurguVolcano5.FlipXcoordinate(); 
 			}
-			if (mapsToFlip.Contains(MapId.GurguVolcanoB4))
+			if (mapsToFlip.Contains(MapIndex.GurguVolcanoB4))
 			{
-				teleporters.GurguVolcano4.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.GurguVolcano4, teleporters.GurguVolcano4, OverworldTeleportIndex.GurguVolcano1);
-				teleporters.GurguVolcano6.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.GurguVolcano6, teleporters.GurguVolcano6, OverworldTeleportIndex.GurguVolcano1);
+				teleporters.GurguVolcano4.FlipXcoordinate(); 
+				teleporters.GurguVolcano6.FlipXcoordinate(); 
 			}
-			if (mapsToFlip.Contains(MapId.GurguVolcanoB5)) teleporters.GurguVolcanoKary.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.GurguVolcanoKary, teleporters.GurguVolcanoKary, OverworldTeleportIndex.GurguVolcano1);
+			if (mapsToFlip.Contains(MapIndex.GurguVolcanoB5)) teleporters.GurguVolcanoKary.FlipXcoordinate(); 
 
-			if (mapsToFlip.Contains(MapId.IceCaveB1))
+			if (mapsToFlip.Contains(MapIndex.IceCaveB1))
 			{
-				teleporters.IceCave1.FlipXcoordinate(); overworld.PutOverworldTeleport(OverworldTeleportIndex.IceCave1, teleporters.IceCave1);
+				teleporters.IceCave1.FlipXcoordinate();
+				teleporters.IceCave6.FlipXcoordinate();
+				//teleporters.IceCavePitRoom.FlipXcoordinate();
 
-				var t = teleporters.NormalTele[(int)TeleportIndex.IceCave5];
+				/*
+				var t = teleporters.OverworldTeleporters[(int)TeleportIndex.IceCave5];
 				t.FlipXcoordinate();
-				overworld.PutStandardTeleport(TeleportIndex.IceCave5, new TeleportDestination(MapLocation.IceCaveBackExit, MapIndex.IceCaveB1, new Coordinate(t.X, t.Y, CoordinateLocale.Standard), TeleportIndex.IceCave5), OverworldTeleportIndex.IceCave1);
+				overworld.PutStandardTeleport(TeleportIndex.IceCave5, new TeleportDestination(MapLocation.IceCaveBackExit, MapIndex.IceCaveB1, new Coordinate(t.X, t.Y, CoordinateLocale.Standard), TeleportIndex.IceCave5), OverworldTeleportIndex.IceCave1);*/
 			}
-			if (mapsToFlip.Contains(MapId.IceCaveB2))
+			if (mapsToFlip.Contains(MapIndex.IceCaveB2))
 			{
-				teleporters.IceCave2.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.IceCave2, teleporters.IceCave2, OverworldTeleportIndex.IceCave1);
-				teleporters.IceCavePitRoom.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.IceCavePitRoom, teleporters.IceCavePitRoom, OverworldTeleportIndex.IceCave1);
-
-				var t = teleporters.NormalTele[(int)TeleportIndex.IceCave7];
-				t.FlipXcoordinate();
-				overworld.PutStandardTeleport(TeleportIndex.IceCave7, new TeleportDestination(MapLocation.IceCaveFloater, MapIndex.IceCaveB2, new Coordinate(t.X, t.Y, CoordinateLocale.StandardInRoom), TeleportIndex.IceCave7), OverworldTeleportIndex.IceCave1);
+				teleporters.IceCave2.FlipXcoordinate();
+				teleporters.IceCavePitRoom.FlipXcoordinate();
+				teleporters.IceCave8.FlipXcoordinate();
 			}
-			if (mapsToFlip.Contains(MapId.IceCaveB3))
+			if (mapsToFlip.Contains(MapIndex.IceCaveB3))
 			{
-				teleporters.IceCave3.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.IceCave3, teleporters.IceCave3, OverworldTeleportIndex.IceCave1);
+				teleporters.IceCave3.FlipXcoordinate();
+				teleporters.IceCave5.FlipXcoordinate();
+				teleporters.IceCave7.FlipXcoordinate();
 
-				var t1 = teleporters.NormalTele[(int)TeleportIndex.IceCave4];
+				/*
+				var t1 = teleporters.OverworldTeleporters[(int)TeleportIndex.IceCave5];
 				t1.FlipXcoordinate();
-				overworld.PutStandardTeleport(TeleportIndex.IceCave4, new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(t1.X, t1.Y, CoordinateLocale.StandardInRoom), TeleportIndex.IceCave4), OverworldTeleportIndex.IceCave1);
+				overworld.PutStandardTeleport(TeleportIndex.IceCave5, new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(t1.X, t1.Y, CoordinateLocale.StandardInRoom), TeleportIndex.IceCave5), OverworldTeleportIndex.IceCave1);
 
-				var t2 = teleporters.NormalTele[(int)TeleportIndex.IceCave6];
+				var t2 = teleporters.OverworldTeleporters[(int)TeleportIndex.IceCave6];
 				t2.FlipXcoordinate();
-				overworld.PutStandardTeleport(TeleportIndex.IceCave6, new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(t2.X, t2.Y, CoordinateLocale.Standard), TeleportIndex.IceCave6), OverworldTeleportIndex.IceCave1);
+				overworld.PutStandardTeleport(TeleportIndex.IceCave6, new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(t2.X, t2.Y, CoordinateLocale.Standard), TeleportIndex.IceCave6), OverworldTeleportIndex.IceCave1);*/
 			}
 
-			if (mapsToFlip.Contains(MapId.MarshCaveB1)) teleporters.MarshCave1.FlipXcoordinate(); overworld.PutOverworldTeleport(OverworldTeleportIndex.MarshCave1, teleporters.MarshCave1);
-			if (mapsToFlip.Contains(MapId.MarshCaveB2))
+			if (mapsToFlip.Contains(MapIndex.MarshCaveB1)) teleporters.MarshCave1.FlipXcoordinate();
+			if (mapsToFlip.Contains(MapIndex.MarshCaveB2))
 			{
-				teleporters.MarshCaveTop.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.MarshCaveTop, teleporters.MarshCaveTop, OverworldTeleportIndex.MarshCave1);
-				teleporters.MarshCave3.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.MarshCave3, teleporters.MarshCave3, OverworldTeleportIndex.MarshCave1);
+				teleporters.MarshCaveTop.FlipXcoordinate();
+				teleporters.MarshCave3.FlipXcoordinate();
 			}
-			if (mapsToFlip.Contains(MapId.MarshCaveB3)) teleporters.MarshCaveBottom.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.MarshCaveBottom, teleporters.MarshCaveBottom, OverworldTeleportIndex.MarshCave1);
+			if (mapsToFlip.Contains(MapIndex.MarshCaveB3)) teleporters.MarshCaveBottom.FlipXcoordinate();
 
-			if (mapsToFlip.Contains(MapId.MirageTower1F)) teleporters.MirageTower1.FlipXcoordinate(); overworld.PutOverworldTeleport(OverworldTeleportIndex.MirageTower1, teleporters.MirageTower1);
-			if (mapsToFlip.Contains(MapId.MirageTower2F)) teleporters.MirageTower2.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.MirageTower2, teleporters.MirageTower2, OverworldTeleportIndex.MirageTower1);
+			if (mapsToFlip.Contains(MapIndex.MirageTower1F)) teleporters.MirageTower1.FlipXcoordinate();
+			if (mapsToFlip.Contains(MapIndex.MirageTower2F)) teleporters.MirageTower2.FlipXcoordinate();
 
-			if (mapsToFlip.Contains(MapId.SeaShrineB1)) teleporters.SeaShrineMermaids.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.SeaShrineMermaids, teleporters.SeaShrineMermaids, OverworldTeleportIndex.Onrac);
-			if (mapsToFlip.Contains(MapId.SeaShrineB2))
+			if (mapsToFlip.Contains(MapIndex.SeaShrineB1)) teleporters.SeaShrineMermaids.FlipXcoordinate();
+			if (mapsToFlip.Contains(MapIndex.SeaShrineB2))
 			{
-				teleporters.SeaShrine2.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.SeaShrine2, teleporters.SeaShrine2, OverworldTeleportIndex.Onrac);
-				teleporters.SeaShrine6.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.SeaShrine6, teleporters.SeaShrine6, OverworldTeleportIndex.Onrac);
+				teleporters.SeaShrine2.FlipXcoordinate();
+				teleporters.SeaShrine6.FlipXcoordinate();
 			}
-			if (mapsToFlip.Contains(MapId.SeaShrineB3))
+			if (mapsToFlip.Contains(MapIndex.SeaShrineB3))
 			{
-				teleporters.SeaShrine1.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.SeaShrine1, teleporters.SeaShrine1, OverworldTeleportIndex.Onrac);
-				teleporters.SeaShrine5.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.SeaShrine5, teleporters.SeaShrine5, OverworldTeleportIndex.Onrac);
-				teleporters.SeaShrine7.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.SeaShrine7, teleporters.SeaShrine7, OverworldTeleportIndex.Onrac);
+				teleporters.SeaShrine1.FlipXcoordinate();
+				teleporters.SeaShrine5.FlipXcoordinate();
+				teleporters.SeaShrine7.FlipXcoordinate();
 			}
-			if (mapsToFlip.Contains(MapId.SeaShrineB4))
+			if (mapsToFlip.Contains(MapIndex.SeaShrineB4))
 			{
-				teleporters.SeaShrine4.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.SeaShrine4, teleporters.SeaShrine4, OverworldTeleportIndex.Onrac);
-				teleporters.SeaShrine8.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.SeaShrine8, teleporters.SeaShrine8, OverworldTeleportIndex.Onrac);
+				teleporters.SeaShrine4.FlipXcoordinate();
+				teleporters.SeaShrine8.FlipXcoordinate();
 			}
-			if (mapsToFlip.Contains(MapId.SeaShrineB5)) teleporters.SeaShrineKraken.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.SeaShrineKraken, teleporters.SeaShrineKraken, OverworldTeleportIndex.Onrac);
+			if (mapsToFlip.Contains(MapIndex.SeaShrineB5)) teleporters.SeaShrineKraken.FlipXcoordinate();
 
-			if (mapsToFlip.Contains(MapId.SkyPalace1F)) teleporters.SkyPalace1.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.SkyPalace1, teleporters.SkyPalace1, OverworldTeleportIndex.MirageTower1);
-			if (mapsToFlip.Contains(MapId.SkyPalace2F)) teleporters.SkyPalace2.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.SkyPalace2, teleporters.SkyPalace2, OverworldTeleportIndex.MirageTower1);
-			if (mapsToFlip.Contains(MapId.SkyPalace3F)) teleporters.SkyPalace3.FlipXcoordinate(); overworld.PutStandardTeleport(TeleportIndex.SkyPalace3, teleporters.SkyPalace3, OverworldTeleportIndex.MirageTower1);
+			if (mapsToFlip.Contains(MapIndex.SkyPalace1F)) teleporters.SkyPalace1.FlipXcoordinate();
+			if (mapsToFlip.Contains(MapIndex.SkyPalace2F)) teleporters.SkyPalace2.FlipXcoordinate();
+			if (mapsToFlip.Contains(MapIndex.SkyPalace3F)) teleporters.SkyPalace3.FlipXcoordinate();
 
-			if (mapsToFlip.Contains(MapId.TempleOfFiends)) teleporters.TempleOfFiends.FlipXcoordinate(); overworld.PutOverworldTeleport(OverworldTeleportIndex.TempleOfFiends1, teleporters.TempleOfFiends);
+			if (mapsToFlip.Contains(MapIndex.TempleOfFiends)) teleporters.TempleOfFiends.FlipXcoordinate(); 
 
-			if (mapsToFlip.Contains(MapId.Waterfall)) teleporters.Waterfall.FlipXcoordinate(); overworld.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
+			if (mapsToFlip.Contains(MapIndex.Waterfall)) teleporters.Waterfall.FlipXcoordinate();
 
 			return mapsToFlip;
 		}

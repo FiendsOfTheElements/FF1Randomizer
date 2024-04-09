@@ -20,9 +20,9 @@ namespace FF1Lib
 		private Dictionary<MapLocation, List<MapChange>> MapLocationRequirements;
 		private Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> FloorLocationRequirements;
 
-		private TeleportShuffle _teleporters;
+		private Teleporters _teleporters;
 
-		public TeleportShuffle Teleporters { get { return _teleporters; } set { _teleporters = value; } }
+		public Teleporters Teleporters { get { return _teleporters; } set { _teleporters = value; } }
 
 		private enum WalkableRegion
 		{
@@ -488,7 +488,7 @@ namespace FF1Lib
 			}
 		}
 
-        void UpdatePalettes(OverworldTeleportIndex oti, TeleportDestination teleport)
+        public void UpdatePalettes(OverworldTeleportIndex oti, TeleportDestination teleport)
 		{
             if (teleport.OwnsPalette)
 			{
@@ -531,9 +531,18 @@ namespace FF1Lib
 			}
 		}
 
-		public void ShuffleEntrancesAndFloors(MT19337 rng, IFloorShuffleFlags flags)
+		public void ShuffleEntrancesAndFloors(MT19337 rng, Teleporters teleporters, Flags flags)
 		{
-			_teleporters.LoadData();
+			if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && flags.GameMode == GameModes.Standard)
+			{
+				// Yeah amazing coding, we'll fix it in post
+			}
+			else
+			{
+				return;
+			}
+
+			_teleporters = teleporters;
 
 			OverriddenOverworldLocations = new Dictionary<MapLocation, OverworldTeleportIndex>
 			{
@@ -1395,9 +1404,9 @@ namespace FF1Lib
 				{ MapIndex.ConeriaCastle1F, new List<MapIndex> { MapIndex.ConeriaCastle2F } },
 				{ MapIndex.CastleOrdeals1F, new List<MapIndex> { MapIndex.CastleOrdeals2F, MapIndex.CastleOrdeals3F } },
 				{ MapIndex.IceCaveB2, new List<MapIndex> { MapIndex.IceCaveB3 } },
-				{ MapIndex.TempleOfFiends, new List<MapIndex> { MapIndex.TempleOfFiends1F, MapIndex.TempleOfFiends2F,
-					MapIndex.TempleOfFiends3F, MapIndex.TempleOfFiendsEarth, MapIndex.TempleOfFiendsFire,
-					MapIndex.TempleOfFiendsWater, MapIndex.TempleOfFiendsAir, MapIndex.TempleOfFiendsChaos } }
+				{ MapIndex.TempleOfFiends, new List<MapIndex> { MapIndex.TempleOfFiendsRevisited1F, MapIndex.TempleOfFiendsRevisited2F,
+					MapIndex.TempleOfFiendsRevisited3F, MapIndex.TempleOfFiendsRevisitedEarth, MapIndex.TempleOfFiendsRevisitedFire,
+					MapIndex.TempleOfFiendsRevisitedWater, MapIndex.TempleOfFiendsRevisitedAir, MapIndex.TempleOfFiendsRevisitedChaos } }
 			};
 		public static Dictionary<MapLocation, List<MapLocation>> ConnectedMapLocations =
             new Dictionary<MapLocation, List<MapLocation>>
@@ -1453,11 +1462,11 @@ namespace FF1Lib
 			{ MapLocation.ElflandCastle, (0x09, 0x05) },
 		};
 
-		private static readonly Dictionary<MapLocation, MapId> ObjectiveNPCMapIds = new Dictionary<MapLocation, MapId>
+		private static readonly Dictionary<MapLocation, MapIndex> ObjectiveNPCMapIndexs = new Dictionary<MapLocation, MapIndex>
 		{
-			{ MapLocation.BahamutCave2, MapId.BahamutsRoomB2 },
-			{ MapLocation.Melmond, MapId.Melmond },
-			{ MapLocation.ElflandCastle, MapId.ElflandCastle },
+			{ MapLocation.BahamutCave2, MapIndex.BahamutCaveB2 },
+			{ MapLocation.Melmond, MapIndex.Melmond },
+			{ MapLocation.ElflandCastle, MapIndex.ElflandCastle },
 		};
 
 		public enum Palette
@@ -1697,7 +1706,7 @@ namespace FF1Lib
 				var inRoom = location != MapLocation.Melmond;
 				var stationary = npc == ObjectId.Bahamut || (npc == ObjectId.ElfDoc && location == MapLocation.ElflandCastle);
 
-				_rom.SetNpc(ObjectiveNPCMapIds[location], 0, npc, x, y, inRoom, stationary);
+				_rom.SetNpc(ObjectiveNPCMapIndexs[location], 0, npc, x, y, inRoom, stationary);
 			}
 		}
 

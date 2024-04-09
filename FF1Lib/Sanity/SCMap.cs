@@ -6,7 +6,7 @@ namespace FF1Lib.Sanity
 	{
 		public const int Size = 0x40;
 
-		public MapId MapId { get; private set; }
+		public MapIndex MapIndex { get; private set; }
 
 		public SCMapCheckFlags CFlags { get; private set; }
 
@@ -29,9 +29,9 @@ namespace FF1Lib.Sanity
 		NormTeleData tele;
 		NPCdata npcdata;
 
-		public SCMap(MapId _mapid, Map _map, SCMapCheckFlags cflags, FF1Rom _rom, NPCdata _npcData, SCTileSet _tileSet, EnterTeleData _enter, ExitTeleData _exit, NormTeleData _tele)
+		public SCMap(MapIndex _MapIndex, Map _map, SCMapCheckFlags cflags, FF1Rom _rom, NPCdata _npcData, SCTileSet _tileSet, EnterTeleData _enter, ExitTeleData _exit, NormTeleData _tele)
 		{
-			MapId = _mapid;
+			MapIndex = _MapIndex;
 			CFlags = cflags;
 
 			map = _map;
@@ -152,7 +152,7 @@ namespace FF1Lib.Sanity
 		{
 			for (int i = 0; i < 16; i++)
 			{
-				NPC npc = rom.GetNpc(MapId, i);
+				NPC npc = rom.GetNpc(MapIndex, i);
 
 				ProcessNPC(ref npc);
 			}
@@ -252,7 +252,7 @@ namespace FF1Lib.Sanity
 			if (tileSet.Tiles[map[y, x - 1]].SpBitFlags == check) return;
 			if (tileSet.Tiles[map[y, x + 1]].SpBitFlags == check) return;
 
-			throw new NopeException(MapId, "There is no " + check.ToString() + " tile next to " + plate.ToString());
+			throw new NopeException(MapIndex, "There is no " + check.ToString() + " tile next to " + plate.ToString());
 		}
 
 		private void ProcessTeleporters()
@@ -265,7 +265,7 @@ namespace FF1Lib.Sanity
 		{
 			foreach (var t in enter)
 			{
-				if (t.Map == MapId)
+				if (t.Map == MapIndex)
 				{
 					PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.X, Y = t.Y }.SmClamp, Type = SCPointOfInterestType.OwEntrance });
 				}
@@ -276,7 +276,7 @@ namespace FF1Lib.Sanity
 		{
 			foreach (var t in tele)
 			{
-				if (t.Map == MapId)
+				if (t.Map == MapIndex)
 				{
 					PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.X, Y = t.Y }.SmClamp, Type = SCPointOfInterestType.SmEntrance });
 				}
@@ -285,10 +285,10 @@ namespace FF1Lib.Sanity
 
 		private void ProcessPointsOfInterest()
 		{
-			if (PointsOfInterest.Count > 250) throw new NoYouDon_LowerCaseT_Exception(MapId, "Excess PointsOfInterest found.");
+			if (PointsOfInterest.Count > 250) throw new NoYouDon_LowerCaseT_Exception(MapIndex, "Excess PointsOfInterest found.");
 
 			var conflicts = PointsOfInterest.Where(p => p.Type < SCPointOfInterestType.OwEntrance).GroupBy(p => p.Coords, new SCCoordsEqualityComparer()).Where(g => g.Count() > 1);
-			if (conflicts.Any()) throw new NopeException(MapId, "There is a PointOfInterest conflict.");
+			if (conflicts.Any()) throw new NopeException(MapIndex, "There is a PointOfInterest conflict.");
 
 			PointsOfInterest = PointsOfInterest.Distinct(new SCPointOfInterestEqualityComparer()).ToList();
 

@@ -4,12 +4,19 @@ namespace FF1Lib
 {
 	public struct TeleData
 	{
-	    public TeleData(MapId m, byte x, byte y) {
+	    public TeleData(MapIndex m, byte x, byte y) {
 		Map = m;
 		X = x;
 		Y = y;
 	    }
-		public MapId Map;
+
+		public TeleData(TeleportDestination teleport)
+		{
+			Map = (MapIndex)teleport.Index;
+			X = teleport.CoordinateX;
+			Y = teleport.CoordinateY;
+		}
+		public MapIndex Map;
 		public byte X;
 		public byte Y;
 
@@ -35,7 +42,7 @@ namespace FF1Lib
 		FF1Rom rom;
 		MemTable<byte> TeleX;
 		MemTable<byte> TeleY;
-		MemTable<MapId> TeleMap;
+		MemTable<MapIndex> TeleMap;
 
 		public NormTeleData(FF1Rom _rom)
 		{
@@ -43,7 +50,7 @@ namespace FF1Lib
 
 			TeleX = new MemTable<byte>(rom, 0x3F000, 256);
 			TeleY = new MemTable<byte>(rom, 0x3F100, 256);
-			TeleMap = new MemTable<MapId>(rom, 0x3F200, 256);
+			TeleMap = new MemTable<MapIndex>(rom, 0x3F200, 256);
 		}
 
 		public void LoadData()

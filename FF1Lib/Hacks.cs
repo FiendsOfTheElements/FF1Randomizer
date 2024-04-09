@@ -34,7 +34,7 @@ namespace FF1Lib
 			coords.Shuffle(rng);
 
 			List<int> sages = Enumerable.Range(0, 12).ToList(); // But the 12th Sage is actually id 12, not 11.
-			sages.ForEach(sage => MoveNpc(MapId.CrescentLake, sage < 11 ? sage : 12, coords[sage].Item1, coords[sage].Item2, inRoom: false, stationary: false));
+			sages.ForEach(sage => MoveNpc(MapIndex.CrescentLake, sage < 11 ? sage : 12, coords[sage].Item1, coords[sage].Item2, inRoom: false, stationary: false));
 		}
 		public void EnableSaveOnDeath(Flags flags, OwMapExchange owMapExchange)
 		{
@@ -598,8 +598,8 @@ namespace FF1Lib
 				npcdata.GetTalkArray(ObjectId.CardiaDragon12)[(int)TalkArrayPos.battle_id] = encBlueD;
 				npcdata.SetRoutine(ObjectId.CardiaDragon12, newTalkRoutines.Talk_fight);
 
-				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 1, ObjectId.CardiaDragon11, 20, 4, inRoom: true, stationary: true);
-				SetNpc(MapId.BahamutsRoomB2, mapNpcIndex: 2, ObjectId.CardiaDragon12, 22, 4, inRoom: true, stationary: true);
+				SetNpc(MapIndex.BahamutCaveB2, mapNpcIndex: 1, ObjectId.CardiaDragon11, 20, 4, inRoom: true, stationary: true);
+				SetNpc(MapIndex.BahamutCaveB2, mapNpcIndex: 2, ObjectId.CardiaDragon12, 22, 4, inRoom: true, stationary: true);
 			}
 		}
 
@@ -814,17 +814,17 @@ namespace FF1Lib
 			var teledata = new ExitTeleData(this);
 			teledata.LoadData();
 
-			var tpsReport = new TeleportShuffle(this, flags.ReplacementMap);
+			var tpsReport = new Teleporters(this, flags.ReplacementMap);
 
 			var tofCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.TempleOfFiends1];
 			var mirageCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.MirageTower1];
 			var volcanoCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.GurguVolcano1];
 			var ordealCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.CastleOrdeals1];
 
-			teledata[(byte)ExitTeleportIndex.ExitCastleOrdeals] = new TeleData { X = tofCoord.X, Y = tofCoord.Y, Map = (MapId)0xFF }; // ordeals exit to ToF location
-			teledata[(byte)ExitTeleportIndex.ExitCastleConeria] = new TeleData { X = ordealCoord.X, Y = ordealCoord.Y, Map = (MapId)0xFF }; // coneria exit to ordeal location
-			teledata[(byte)ExitTeleportIndex.ExitGurguVolcano] = new TeleData { X = mirageCoord.X, Y = mirageCoord.Y, Map = (MapId)0xFF }; // volcano exit to mirage location
-			teledata[(byte)ExitTeleportIndex.ExitSkyPalace] = new TeleData { X = volcanoCoord.X, Y = volcanoCoord.Y, Map = (MapId)0xFF }; // mirage exit to volcano location
+			teledata[(byte)ExitTeleportIndex.ExitCastleOrdeals] = new TeleData { X = tofCoord.X, Y = tofCoord.Y, Map = (MapIndex)0xFF }; // ordeals exit to ToF location
+			teledata[(byte)ExitTeleportIndex.ExitCastleConeria] = new TeleData { X = ordealCoord.X, Y = ordealCoord.Y, Map = (MapIndex)0xFF }; // coneria exit to ordeal location
+			teledata[(byte)ExitTeleportIndex.ExitGurguVolcano] = new TeleData { X = mirageCoord.X, Y = mirageCoord.Y, Map = (MapIndex)0xFF }; // volcano exit to mirage location
+			teledata[(byte)ExitTeleportIndex.ExitSkyPalace] = new TeleData { X = volcanoCoord.X, Y = volcanoCoord.Y, Map = (MapIndex)0xFF }; // mirage exit to volcano location
 
 			teledata.StoreData();
 		}
@@ -882,11 +882,11 @@ namespace FF1Lib
 		}
 
 		public void MoveToFBats() {
-		    MoveNpc(MapId.TempleOfFiends, 2, 0x0C, 0x0D, inRoom: false, stationary: false);
-		    MoveNpc(MapId.TempleOfFiends, 3, 0x1D, 0x0B, inRoom: false, stationary: false);
-		    MoveNpc(MapId.TempleOfFiends, 4, 0x1A, 0x19, inRoom: false, stationary: false);
-		    MoveNpc(MapId.TempleOfFiends, 5, 0x0F, 0x18, inRoom: false, stationary: false);
-		    MoveNpc(MapId.TempleOfFiends, 6, 0x14, 0x0C, inRoom: false, stationary: false);
+		    MoveNpc(MapIndex.TempleOfFiends, 2, 0x0C, 0x0D, inRoom: false, stationary: false);
+		    MoveNpc(MapIndex.TempleOfFiends, 3, 0x1D, 0x0B, inRoom: false, stationary: false);
+		    MoveNpc(MapIndex.TempleOfFiends, 4, 0x1A, 0x19, inRoom: false, stationary: false);
+		    MoveNpc(MapIndex.TempleOfFiends, 5, 0x0F, 0x18, inRoom: false, stationary: false);
+		    MoveNpc(MapIndex.TempleOfFiends, 6, 0x14, 0x0C, inRoom: false, stationary: false);
 		}
 	}
 }

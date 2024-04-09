@@ -77,32 +77,32 @@ namespace FF1Lib
 		public void SpeedHacksMoveNpcs(bool moveEarthBats)
 		{
 			// Move NPCs out of the way.
-			MoveNpc(MapId.Coneria, 0, 0x11, 0x02, inRoom: false, stationary: true); // North Coneria Soldier
-			MoveNpc(MapId.Coneria, 4, 0x12, 0x14, inRoom: false, stationary: true); // South Coneria Gal
-			MoveNpc(MapId.Coneria, 7, 0x1E, 0x0B, inRoom: false, stationary: true); // East Coneria Guy
-			MoveNpc(MapId.Elfland, 0, 0x24, 0x19, inRoom: false, stationary: true); // Efland Entrance Elf
-			MoveNpc(MapId.Onrac, 13, 0x29, 0x1B, inRoom: false, stationary: true); // Onrac Guy
-			MoveNpc(MapId.Lefein, 3, 0x21, 0x07, inRoom: false, stationary: true); // Lefein Guy
-																				   //MoveNpc(MapId.Waterfall, 1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
+			MoveNpc(MapIndex.ConeriaTown, 0, 0x11, 0x02, inRoom: false, stationary: true); // North Coneria Soldier
+			MoveNpc(MapIndex.ConeriaTown, 4, 0x12, 0x14, inRoom: false, stationary: true); // South Coneria Gal
+			MoveNpc(MapIndex.ConeriaTown, 7, 0x1E, 0x0B, inRoom: false, stationary: true); // East Coneria Guy
+			MoveNpc(MapIndex.Elfland, 0, 0x24, 0x19, inRoom: false, stationary: true); // Efland Entrance Elf
+			MoveNpc(MapIndex.Onrac, 13, 0x29, 0x1B, inRoom: false, stationary: true); // Onrac Guy
+			MoveNpc(MapIndex.Lefein, 3, 0x21, 0x07, inRoom: false, stationary: true); // Lefein Guy
+																				   //MoveNpc(MapIndex.Waterfall, 1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
 			if (moveEarthBats)
 			{
-				MoveNpc(MapId.EarthCaveB3, 10, 0x32, 0x0C, inRoom: false, stationary: false); // Earth Cave Bat B3
-				MoveNpc(MapId.EarthCaveB3, 7, 0x31, 0x1A, inRoom: true, stationary: false); // Earth Cave Bat B3
-				MoveNpc(MapId.EarthCaveB3, 8, 0x1D, 0x0E, inRoom: true, stationary: false); // Earth Cave Bat B3
+				MoveNpc(MapIndex.EarthCaveB3, 10, 0x32, 0x0C, inRoom: false, stationary: false); // Earth Cave Bat B3
+				MoveNpc(MapIndex.EarthCaveB3, 7, 0x31, 0x1A, inRoom: true, stationary: false); // Earth Cave Bat B3
+				MoveNpc(MapIndex.EarthCaveB3, 8, 0x1D, 0x0E, inRoom: true, stationary: false); // Earth Cave Bat B3
 
-				MoveNpc(MapId.EarthCaveB3, 2, 0x0B, 0x0A, inRoom: true, stationary: false); // Earth Cave Bat B3
-				MoveNpc(MapId.EarthCaveB3, 3, 0x0A, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
-				MoveNpc(MapId.EarthCaveB3, 4, 0x09, 0x0A, inRoom: true, stationary: false); // Earth Cave Bat B3
+				MoveNpc(MapIndex.EarthCaveB3, 2, 0x0B, 0x0A, inRoom: true, stationary: false); // Earth Cave Bat B3
+				MoveNpc(MapIndex.EarthCaveB3, 3, 0x0A, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
+				MoveNpc(MapIndex.EarthCaveB3, 4, 0x09, 0x0A, inRoom: true, stationary: false); // Earth Cave Bat B3
 
-				MoveNpc(MapId.EarthCaveB3, 9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
+				MoveNpc(MapIndex.EarthCaveB3, 9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
 
-				MoveNpc(MapId.EarthCaveB5, 1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
+				MoveNpc(MapIndex.EarthCaveB5, 1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
 			}
 
-			MoveNpc(MapId.ConeriaCastle1F, 5, 0x07, 0x0F, inRoom: false, stationary: true); // Coneria Ghost Lady
+			MoveNpc(MapIndex.ConeriaCastle1F, 5, 0x07, 0x0F, inRoom: false, stationary: true); // Coneria Ghost Lady
 
-			MoveNpc(MapId.Pravoka, 4, 0x1F, 0x05, inRoom: false, stationary: true); // Pravoka Old Man
-			MoveNpc(MapId.Pravoka, 5, 0x08, 0x0E, inRoom: false, stationary: true); // Pravoka Woman
+			MoveNpc(MapIndex.Pravoka, 4, 0x1F, 0x05, inRoom: false, stationary: true); // Pravoka Old Man
+			MoveNpc(MapIndex.Pravoka, 5, 0x08, 0x0E, inRoom: false, stationary: true); // Pravoka Woman
 		}
 
 		public void EnableDash(bool speedboat, bool slowMapMove)

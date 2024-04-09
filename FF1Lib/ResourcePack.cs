@@ -245,8 +245,8 @@ namespace FF1Lib
 			SetBridgeStory(pages);
 		}
 
-		void LoadResourcePackMaps(Stream stream, List<Map> maps, TeleportShuffle teleporters,
-					    OverworldMap overworldMap, NPCdata npcdata)
+		void LoadResourcePackMaps(Stream stream, List<Map> maps, Teleporters teleporters,
+					    NPCdata npcdata)
 		{
 			var resourcePackArchive = new ZipArchive(stream);
 
@@ -259,7 +259,7 @@ namespace FF1Lib
 				    using (StreamReader reader = new StreamReader(s)) {
 					var newmaps = FF1Lib.Procgen.CompleteMap.LoadJson(reader);
 					foreach (var newmap in newmaps) {
-					    this.ImportCustomMap(maps, teleporters, overworldMap, npcdata, newmap);
+					    this.ImportCustomMap(maps, teleporters, npcdata, newmap);
 					}
 				    }
 				}

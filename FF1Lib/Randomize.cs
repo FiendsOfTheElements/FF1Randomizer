@@ -36,12 +36,12 @@ public partial class FF1Rom : NesRom
 	public RngTables RngTables;
 	public TileSetsData TileSetsData;
 	public ZoneFormations ZoneFormations;
-	public ShipLocations ShipLocations;
+	//public ShipLocations ShipLocations;
 
 	public DeepDungeon DeepDungeon;
 
 	public OwMapExchange OverworldMapData;
-	public TeleportShuffle Teleporters;
+	public Teleporters Teleporters;
 	public Overworld Overworld;
 
 	private SanityCheckerV2 sanityChecker = null;
@@ -81,12 +81,6 @@ public partial class FF1Rom : NesRom
 	    Flags flagsForRng = flags;
 		Flags unmodifiedFlags = flags.ShallowCopy();
 
-		RngTables = new(this);
-		TileSetsData = new(this);
-		ZoneFormations = new(this);
-		OverworldMapData = new(;
-		Teleporters = new TeleportShuffle(this, )
-
 		Settings = new(true);
 		Settings.GenerateFlagstring();
 
@@ -94,7 +88,14 @@ public partial class FF1Rom : NesRom
 
 		if (flags.TournamentSafe) AssureSafe();
 
-		GenerateRng(Settings, seed);
+		GenerateRng(flags, seed);
+
+		RngTables = new(this);
+		TileSetsData = new(this);
+		ZoneFormations = new(this);
+		Overworld = new(this, flags, Settings, rng);
+		Overworld.LoadMapExchange();
+		Teleporters = new Teleporters(this, Overworld.MapExchangeData);
 
 		Settings.CollapseRandomSettings(rng);
 		Settings.ProcessStandardFlags();
@@ -106,24 +107,25 @@ public partial class FF1Rom : NesRom
 		var npcdata = new NPCdata(this);
 		LoadSharedDataTables();
 		GlobalHacks();
-		ClassesBalances(Settings, rng);
-		Bugfixes(Settings);
-		GlobalImprovements(Settings, preferences);
+		ClassesBalances(flags, rng);
+		Bugfixes(flags);
+		GlobalImprovements(flags, preferences);
 
 
 
 		DynamicWindowColor(preferences.MenuColor);
 
 		TileSetsData.UpdateTrapTiles(this, ZoneFormations, Settings, rng);
-		RngTables.Update(Settings, rng);
-		ZoneFormations.ShuffleEnemyFormations(rng, (FormationShuffleMode)Settings.GetInt("FormationShuffleMode"), Settings.GetBool("RandomizeFormationEnemizer") | Settings.GetBool("RandomizeEnemizer"));
-		ZoneFormations.UnleashWarMECH((WarMECHMode)Settings.GetInt("WarMechMode") == WarMECHMode.Unleashed || (WarMECHMode)Settings.GetInt("WarMechMode") == WarMECHMode.All);
+		RngTables.Update(flags, rng);
+		//ZoneFormations.ShuffleEnemyFormations(rng, (FormationShuffleMode)Settings.GetInt("FormationShuffleMode"), Settings.GetBool("RandomizeFormationEnemizer") | Settings.GetBool("RandomizeEnemizer"));
+		//ZoneFormations.UnleashWarMECH((WarMECHMode)Settings.GetInt("WarMechMode") == WarMECHMode.Unleashed || (WarMECHMode)Settings.GetInt("WarMechMode") == WarMECHMode.All);
 		Spooky(talkroutines, npcdata, ZoneFormations, rng, Settings);
 		NPCShuffleDialogs(Settings);
 
 		TileSetsData.Write();
 		ZoneFormations.Write(this);
 		RngTables.Write(this);
+		Teleporters.Write();
 
 		//Bugfixes(settings);
 		//ClassesBalance(settings, rng);
@@ -146,32 +148,21 @@ public partial class FF1Rom : NesRom
 		
 		//var overworldMap = new OverworldMap(this, flags);
 
-		var owMapExchange = await OwMapExchange.FromFlags(this, overworldMap, flags, rng);
-		owMapExchange?.ExecuteStep1();
+		//var owMapExchange = await OwMapExchange.FromFlags(this, overworldMap, flags, rng);
+		//owMapExchange?.ExecuteStep1();
 
 		await this.Progress();
 
-		TeleportShuffle teleporters = new TeleportShuffle(this, owMapExchange?.Data);
-		overworldMap.Teleporters = teleporters;
+		//Teleporters teleporters = new Teleporters(this, owMapExchange?.Data);
+		//overworldMap.Teleporters = teleporters;
 
-		ShipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(this);
-
-		// Ships found at Matoya's need to spawn at Coneria when Matoya's Dock no longer exists
-		if ((bool)flags.MapBridgeLefein == true) {
-			var ChangeDockLocation = shipLocations.GetShipLocation((int)OverworldTeleportIndex.MatoyasCave);
-			ChangeDockLocation.X = Dock.Coneria[0];
-			ChangeDockLocation.Y = Dock.Coneria[1];
-			ItemLocations.ShipLocations[MapLocation.MatoyasCave] = Dock.Coneria;
-		}
+		//ShipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(this);
 
 		var maps = ReadMaps();
 		var shopItemLocation = ItemLocations.CaravanItemShop1;
 		var oldItemNames = ItemsText.ToList();
 
-		if (flags.DesertOfDeath)
-		{
-			DesertOfDeath.ApplyDesertModifications(this, ZoneFormations, owMapExchange, npcdata);
-		}
+		DesertOfDeath.ApplyDesertModifications((bool)flags.DesertOfDeath, this, ZoneFormations, Overworld.MapExchange, npcdata);
 
 		await this.Progress();
 
@@ -183,33 +174,33 @@ public partial class FF1Rom : NesRom
 
 			reqs = new MapRequirements
 			{
-				MapId = MapId.Waterfall,
+				MapIndex = MapIndex.Waterfall,
 				Rom = this,
 			};
 			strategy = MapGeneratorStrategy.WaterfallClone;
 			CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
 
 			// Should add more into the reqs so that this can be done inside the generator.
-			teleporters.Waterfall.SetEntrance(waterfall.Entrance);
-			overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, teleporters.Waterfall);
-			maps[(int)MapId.Waterfall] = waterfall.Map;
+			Teleporters.Waterfall.SetEntrance(waterfall.Entrance);
+			//overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, Teleporters.Waterfall);
+			maps[(int)MapIndex.Waterfall] = waterfall.Map;
 		}
 
 		if (flags.ResourcePack != null)
 		{
 		    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack)))
 		    {
-			this.LoadResourcePackMaps(stream, maps, teleporters, overworldMap, npcdata);
+			this.LoadResourcePackMaps(stream, maps, Teleporters, npcdata);
 		    }
 		}
 
 		if ((bool)flags.ProcgenEarth) {
-		    this.LoadPregenDungeon(rng, maps, teleporters, overworldMap, npcdata, "earthcaves.zip");
+		    this.LoadPregenDungeon(rng, maps, Teleporters, npcdata, "earthcaves.zip");
 
 		    // Here's the code to generate from scratch, but it takes too long in the browser.
 		    // So we get one from the pregen pack above.
 		    //
-		    // var newmaps = await NewDungeon.GenerateNewDungeon(rng, this, MapId.EarthCaveB1, maps, npcdata, this.Progress);
+		    // var newmaps = await NewDungeon.GenerateNewDungeon(rng, this, MapIndex.EarthCaveB1, maps, npcdata, this.Progress);
 		    // foreach (var newmap in newmaps) {
 		    //   this.ImportCustomMap(maps, teleporters, overworldMap, npcdata, newmap);
 		    //  }
@@ -235,21 +226,8 @@ public partial class FF1Rom : NesRom
 		    MoveToFBats();
 		}
 
-		var mapFlipper = new FlippedMaps(this, maps, flags, rng);
-		var vflippedMaps = mapFlipper.VerticalFlipStep1();
-
-		if ((bool)flags.ReversedFloors) new ReversedFloors(this, maps, rng, vflippedMaps).Work();
-
-		var flippedMaps = new List<MapId>();
-
-		mapFlipper.VerticalFlipStep2();
-
-		teleporters.LoadData();
-
-		if ((bool)flags.FlipDungeons)
-		{
-			flippedMaps = mapFlipper.HorizontalFlip(rng, maps, teleporters, overworldMap);
-		}
+		var restructuredMaps = new RestructuredMaps(this, maps, flags, Teleporters, rng);
+		restructuredMaps.Process();
 
 		if ((bool)flags.RandomizeFormationEnemizer)
 		{
@@ -272,7 +250,7 @@ public partial class FF1Rom : NesRom
 		{
 			await this.Progress("Generating Deep Dungeon's Floors...", 2);
 
-			DeepDungeon.Generate(rng, overworldMap, maps, flags);
+			DeepDungeon.Generate(rng, Overworld.OverworldMap, Teleporters, maps, flags);
 			DeepDungeonFloorIndicator();
 			UnusedGoldItems = new List<int> { };
 
@@ -291,13 +269,13 @@ public partial class FF1Rom : NesRom
             EnableMelmondClinic(maps);
         }
 
-		MapId attackedTown = MapId.Melmond;
+		MapIndex attackedTown = MapIndex.Melmond;
 		if ((bool)flags.RandomVampAttack)
 		{
 			attackedTown = RandomVampireAttack(maps, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
 		}
 
-		ShufflePravoka(flags, rng, maps, attackedTown == MapId.Pravoka);
+		ShufflePravoka(flags, rng, maps, attackedTown == MapIndex.Pravoka);
 
 		if ((bool)flags.GaiaShortcut)
 		{
@@ -480,16 +458,12 @@ public partial class FF1Rom : NesRom
 		var extConsumables = new ExtConsumables(this, flags, rng, shopData);
 		extConsumables.AddNormalShopEntries();
 
-		overworldMap.ApplyMapEdits();
-
-		if ((bool)flags.ShuffleChimeAccess) {
-		    overworldMap.ShuffleChime(rng, (bool)flags.ShuffleChimeIncludeTowns);
-		}
+		Overworld.Update();
 
 		if (flags.NoOverworld)
 		{
 			await this.Progress("Linking NoOverworld's Map", 1);
-			NoOverworld(overworldMap, maps, talkroutines, npcdata, flippedMaps, flags, rng);
+			NoOverworld(overworldMap, maps, talkroutines, npcdata, restructuredMaps.HorizontalFlippedMaps, flags, rng);
 		}
 
 		if (flags.DraculasFlag)
@@ -502,7 +476,7 @@ public partial class FF1Rom : NesRom
 
 		if ((bool)flags.ClassAsNpcFiends || (bool)flags.ClassAsNpcKeyNPC)
 		{
-			ClassAsNPC(flags, talkroutines, npcdata, flippedMaps, vflippedMaps, rng);
+			ClassAsNPC(flags, talkroutines, npcdata, restructuredMaps.HorizontalFlippedMaps, restructuredMaps.VerticalFlippedMaps, rng);
 		}
 
 		if (flags.NPCSwatter)
@@ -525,11 +499,11 @@ public partial class FF1Rom : NesRom
 		    await this.RandomlyRelocateChests(rng, maps, npcdata, flags);
 		}
 
-		EnterTeleData enterBackup = new EnterTeleData(this);
-		NormTeleData normBackup = new NormTeleData(this);
+		//EnterTeleData enterBackup = new EnterTeleData(this);
+		//NormTeleData normBackup = new NormTeleData(this);
 
-		enterBackup.LoadData();
-		normBackup.LoadData();
+		//enterBackup.LoadData();
+		//normBackup.LoadData();
 
 		var maxRetries = 3;
 		for (var i = 0; i < maxRetries; i++)
@@ -538,11 +512,11 @@ public partial class FF1Rom : NesRom
 			{
 				await this.Progress((bool)flags.Treasures ? "Shuffling Treasures - Retries: " + i : "Placing Treasures", 3);
 
-				enterBackup.StoreData();
-				normBackup.StoreData();
+				//enterBackup.StoreData();
+				//normBackup.StoreData();
 
-				overworldMap = new OverworldMap(this, flags);
-				overworldMap.Teleporters = teleporters;
+				//overworldMap = new OverworldMap(this, flags);
+				//overworldMap.Teleporters = teleporters;
 
 				if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && flags.GameMode == GameModes.Standard)
 				{
@@ -682,7 +656,7 @@ public partial class FF1Rom : NesRom
 
 		shopData.LoadData();
 
-		new LegendaryShops(rng, flags, maps, flippedMaps, vflippedMaps, shopData, this).PlaceShops();
+		new LegendaryShops(rng, flags, maps, restructuredMaps.HorizontalFlippedMaps, restructuredMaps.VerticalFlippedMaps, shopData, this).PlaceShops();
 
 		if (flags.GameMode == GameModes.DeepDungeon)
 		{
@@ -791,7 +765,7 @@ public partial class FF1Rom : NesRom
 		// After unrunnable shuffle and before formation shuffle. Perfect!
 		if (flags.WarMECHMode != WarMECHMode.Vanilla)
 		{
-			WarMECHNpc(flags.WarMECHMode, npcdata, ZoneFormations, rng, maps, flags.GameMode == GameModes.DeepDungeon, (MapId)warmMechFloor);
+			WarMECHNpc(flags.WarMECHMode, npcdata, ZoneFormations, rng, maps, flags.GameMode == GameModes.DeepDungeon, (MapIndex)warmMechFloor);
 		}
 
 

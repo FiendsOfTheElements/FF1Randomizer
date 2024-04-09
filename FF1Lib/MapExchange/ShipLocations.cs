@@ -50,5 +50,15 @@ namespace FF1Lib
 				changeDockLocation.Y = Dock.Coneria[1];
 			}
 		}
+		public void UpdateDocks(Flags flags)
+		{
+			// Ships found at Matoya's need to spawn at Coneria when Matoya's Dock no longer exists
+			if ((bool)flags.MapBridgeLefein)
+			{
+				var changeDockLocation = GetShipLocation((int)OverworldTeleportIndex.MatoyasCave);
+				changeDockLocation.X = Dock.Coneria[0];
+				changeDockLocation.Y = Dock.Coneria[1];
+			}
+		}
 	}
 }

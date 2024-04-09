@@ -19,7 +19,7 @@ namespace FF1Lib.Sanity
 		NormTeleData tele;
 		NPCdata npcdata;
 
-		Dictionary<MapId, SCMap> scmaps;
+		Dictionary<MapIndex, SCMap> scmaps;
 
 		public List<SCDungeon> Dungeons { get; private set; } = new List<SCDungeon>();
 
@@ -49,11 +49,11 @@ namespace FF1Lib.Sanity
 			Stopwatch w = Stopwatch.StartNew();
 
 			List<SCMap> tmpscmaps = new List<SCMap>();
-			//Parallel.ForEach(Enum.GetValues<MapId>(), mapid => ProcessMap(mapid, tmpscmaps));
+			//Parallel.ForEach(Enum.GetValues<MapIndex>(), MapIndex => ProcessMap(MapIndex, tmpscmaps));
 
-			foreach(var mapid in Enum.GetValues<MapId>()) ProcessMap(mapid, tmpscmaps);
+			foreach(var MapIndex in Enum.GetValues<MapIndex>()) ProcessMap(MapIndex, tmpscmaps);
 
-			scmaps = tmpscmaps.ToDictionary(m => m.MapId);
+			scmaps = tmpscmaps.ToDictionary(m => m.MapIndex);
 
 			ComposeDungeons();
 
@@ -64,16 +64,16 @@ namespace FF1Lib.Sanity
 			w.Stop();
 		}
 
-		private void ProcessMap(MapId mapid, List<SCMap> tmpscmaps)
+		private void ProcessMap(MapIndex MapIndex, List<SCMap> tmpscmaps)
 		{
-			var e1 = maps[(int)mapid];
-			var ts = tileSets[mapTileSets[mapid]];
+			var e1 = maps[(int)MapIndex];
+			var ts = tileSets[mapTileSets[MapIndex]];
 
 			SCMapCheckFlags cflags = SCMapCheckFlags.None;
-			if (mapid <= MapId.CastleOfOrdeals1F) cflags |= SCMapCheckFlags.NoWarp;
-			if (mapid == MapId.SkyPalace2F) cflags |= SCMapCheckFlags.NoUseTiles;
+			if (MapIndex <= MapIndex.CastleOrdeals1F) cflags |= SCMapCheckFlags.NoWarp;
+			if (MapIndex == MapIndex.SkyPalace2F) cflags |= SCMapCheckFlags.NoUseTiles;
 
-			SCMap scmap = new SCMap(mapid, e1, cflags, rom, npcdata, ts, enter, exit, tele);
+			SCMap scmap = new SCMap(MapIndex, e1, cflags, rom, npcdata, ts, enter, exit, tele);
 			tmpscmaps.Add(scmap);
 		}
 

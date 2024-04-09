@@ -1,14 +1,25 @@
-﻿namespace FF1Lib
+﻿using System.Xml.Linq;
+
+namespace FF1Lib
 {
-	public class TeleportShuffle
+	public class Teleporters
 	{
 		FF1Rom rom;
+		public EnterTeleData OverworldTeleporters { get; }
+		public NormTeleData StandardMapTeleporters { get; }
+		public ExitTeleData ExitTeleporters { get; }
 
-		public NormTeleData NormalTele { get; set; }
-
-		public TeleportShuffle(FF1Rom _rom, OwMapExchangeData data)
+		public Teleporters(FF1Rom _rom, OwMapExchangeData data)
 		{
 			rom = _rom;
+
+			OverworldTeleporters = new EnterTeleData(rom);
+			StandardMapTeleporters = new NormTeleData(rom);
+			ExitTeleporters = new ExitTeleData(rom);
+
+			OverworldTeleporters.LoadData();
+			StandardMapTeleporters.LoadData();
+			ExitTeleporters.LoadData();
 
 			if (data?.OverworldCoordinates != null)
 			{
@@ -19,40 +30,55 @@
 				OverworldCoordinates = VanillaOverworldCoordinates;
 			}
 		}
-
-		public void LoadData()
+		public void Write()
 		{
-			var enter = new EnterTeleData(rom);
-			var tele = new NormTeleData(rom);
-
-			enter.LoadData();
-			tele.LoadData();
-
-			NormalTele = tele;
-
 			foreach (var e in EnterMapping)
 			{
 				var x = Get(e.Value);
-				x.SetEntrance(new Coordinate(enter[(int)e.Key].X, enter[(int)e.Key].Y, CoordinateLocale.Standard));
+				OverworldTeleporters[(int)e.Key] = new TeleData(x);
+			}
+
+			foreach (var t in TeleMapping)
+			{
+				var x = Get(t.Value);
+				StandardMapTeleporters[(int)t.Key] = new TeleData(x);
+			}
+
+			OverworldTeleporters.StoreData();
+			StandardMapTeleporters.StoreData();
+			ExitTeleporters.StoreData();
+		}
+		public void LoadData()
+		{
+			foreach (var e in EnterMapping)
+			{
+				var x = Get(e.Value);
+				x.SetEntrance(new Coordinate(OverworldTeleporters[(int)e.Key].X, OverworldTeleporters[(int)e.Key].Y, CoordinateLocale.Standard));
 				Set(e.Value, x);
 			}
 
 			foreach (var t in TeleMapping)
 			{
 				var x = Get(t.Value);
-				x.SetEntrance(new Coordinate((byte)(tele[(int)t.Key].X | (x.CoordinateX & 0x80)), tele[(int)t.Key].Y, CoordinateLocale.Standard));
+				x.SetEntrance(new Coordinate((byte)(StandardMapTeleporters[(int)t.Key].X | (x.CoordinateX & 0x80)), StandardMapTeleporters[(int)t.Key].Y, CoordinateLocale.Standard));
 				Set(t.Value, x);
 			}
 		}
 
 		public TeleportDestination Get(string name)
 		{
-			return (TeleportDestination)typeof(TeleportShuffle).GetField(name).GetValue(this);
+			return (TeleportDestination)typeof(Teleporters).GetField(name).GetValue(this);
+		}
+		public List<TeleportDestination> GetByMap(MapIndex mapindex)
+		{
+			List<TeleportDestination> teleportset = typeof(Teleporters).GetProperties().Where(p => p.GetType() == typeof(TeleportDestination)).Select(p => (TeleportDestination)p.GetValue(this)).ToList();
+				
+			return teleportset.Where(t => t.Index == mapindex).ToList();
 		}
 
 		public void Set(string name, TeleportDestination tele)
 		{
-			typeof(TeleportShuffle).GetField(name).SetValue(this, tele);
+			typeof(Teleporters).GetField(name).SetValue(this, tele);
 		}
 
 		private Dictionary<OverworldTeleportIndex, string> EnterMapping => new Dictionary<OverworldTeleportIndex, string>
@@ -158,7 +184,13 @@
 		public TeleportDestination IceCave1 = new TeleportDestination(MapLocation.IceCave1, MapIndex.IceCaveB1, new Coordinate(7, 1, CoordinateLocale.Standard), TeleportIndex.IceCave2);
 		public TeleportDestination IceCave2 = new TeleportDestination(MapLocation.IceCave2, MapIndex.IceCaveB2, new Coordinate(30, 2, CoordinateLocale.Standard), TeleportIndex.IceCave3);
 		public TeleportDestination IceCave3 = new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(3, 2, CoordinateLocale.Standard), TeleportIndex.IceCavePitRoom);
-		public TeleportDestination IceCavePitRoom = new TeleportDestination(MapLocation.IceCavePitRoom, MapIndex.IceCaveB2, new Coordinate(55, 5, CoordinateLocale.Standard), ExitTeleportIndex.ExitIceCave);
+		public TeleportDestination IceCavePitRoom = new TeleportDestination(MapLocation.IceCavePitRoom, MapIndex.IceCaveB2, new Coordinate(55, 5, CoordinateLocale.Standard), TeleportIndex.IceCave5);
+		public TeleportDestination IceCave5 = new TeleportDestination(MapLocation.IceCave5, MapIndex.IceCaveB3, new Coordinate(39, 6, CoordinateLocale.StandardInRoom), TeleportIndex.IceCave6);
+		public TeleportDestination IceCave6 = new TeleportDestination(MapLocation.IceCaveBackExit, MapIndex.IceCaveB1, new Coordinate(6, 15, CoordinateLocale.Standard), new List<TeleportIndex> { TeleportIndex.IceCave7, TeleportIndex.IceCave8 });
+		public TeleportDestination IceCave7 = new TeleportDestination(MapLocation.IceCave5, MapIndex.IceCaveB3, new Coordinate(59, 33, CoordinateLocale.Standard), TeleportIndex.IceCave6 );
+		// Might not work
+		public TeleportDestination IceCave8 = new TeleportDestination(MapLocation.IceCaveFloater, MapIndex.IceCaveB2, new Coordinate(51, 11, CoordinateLocale.StandardInRoom), new List<TeleportIndex> { TeleportIndex.IceCavePitRoom }, ExitTeleportIndex.ExitIceCave);
+		//public TeleportDestination IceCavePitRoom = new TeleportDestination(MapLocation.IceCavePitRoom, MapIndex.IceCaveB2, new Coordinate(55, 5, CoordinateLocale.Standard), ExitTeleportIndex.ExitIceCave);
 		public TeleportDestination Waterfall = new TeleportDestination(MapLocation.Waterfall, MapIndex.Waterfall, new Coordinate(57, 56, CoordinateLocale.Standard));
 		public TeleportDestination TitansTunnelEast = new TeleportDestination(MapLocation.TitansTunnelEast, MapIndex.TitansTunnel, new Coordinate(11, 14, CoordinateLocale.Standard), ExitTeleportIndex.ExitTitanE);
 		public TeleportDestination TitansTunnelWest = new TeleportDestination(MapLocation.TitansTunnelWest, MapIndex.TitansTunnel, new Coordinate(5, 3, CoordinateLocale.Standard), ExitTeleportIndex.ExitTitanW);

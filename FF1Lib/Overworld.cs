@@ -10,40 +10,58 @@ namespace FF1Lib
 {
 	public class Overworld
 	{
-		private OverworldMap _overworldMap;
-		private OwMapExchange _owMapExchange;
-		private OwMapExchangeData _owMapExchangeData;
-		private OwLocationData _locations;
-		private ShipLocations _shipLocations;
+		private OverworldMap overworldMap;
+		private OwMapExchange owMapExchange;
+		private OwMapExchangeData owMapExchangeData;
+		private OwLocationData locations;
+		private ShipLocations shipLocations;
 
-		private Flags _flags;
-		private FF1Rom _rom;
+		private Flags flags;
+		private FF1Rom rom;
+		private MT19337 rng;
 
-		public List<List<byte>> DecompressedMap { get => _overworldMap.MapBytes; }
-		public Overworld(FF1Rom rom, Flags flags, Settings settings)
+		public List<List<byte>> DecompressedMap { get => overworldMap.MapBytes; }
+		public OwMapExchangeData MapExchangeData { get => owMapExchange.Data; }
+		public OwMapExchange MapExchange { get => owMapExchange; }
+		public OverworldMap OverworldMap { get => overworldMap; }
+		public Overworld(FF1Rom _rom, Flags _flags, Settings _settings, MT19337 _rng)
 		{
-			_flags = flags;
-			_rom = rom;
+			flags = _flags;
+			rom = _rom;
+			rng = _rng;
 
-			_locations = new OwLocationData(rom);
-			_overworldMap = new OverworldMap(rom, flags);
-			_locations = new OwLocationData(_rom);
-			_shipLocations = OwMapExchange.GetDefaultShipLocations(_rom);
+			locations = new OwLocationData(rom);
+			overworldMap = new OverworldMap(rom, flags);
+			//locations = new OwLocationData(_rom);
+			shipLocations = OwMapExchange.GetDefaultShipLocations(_rom);
 			//_owMapExchange = await OwMapExchange.FromFlags(this, _overworldMap, flags, rng);
 
 
 		}
-		public async void LoadMapExchange(MT19337 rng)
+		public async void LoadMapExchange()
 		{
-			_owMapExchange = await OwMapExchange.FromFlags(_rom, _overworldMap, _flags, rng);
-			_owMapExchange?.ExecuteStep1();
-			_shipLocations = _owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(_rom);
+			owMapExchange = await OwMapExchange.FromFlags(rom, overworldMap, flags, rng);
+			owMapExchange?.ExecuteStep1();
+			shipLocations = owMapExchange?.ShipLocations ?? OwMapExchange.GetDefaultShipLocations(rom);
 		}
 		public void Update(Settings settings)
 		{
-			_shipLocations.UpdateDocks(settings);
+			shipLocations.UpdateDocks(settings);
 		}
+		public void Update(Teleporters teleporters)
+		{
+			shipLocations.UpdateDocks(flags);
 
+			overworldMap.ApplyMapEdits();
+
+			if ((bool)flags.ShuffleChimeAccess)
+			{
+				overworldMap.ShuffleChime(rng, (bool)flags.ShuffleChimeIncludeTowns);
+			}
+
+			// we just want to upadte palette here, so this should be a teleporter thing
+			overworldMap.ShuffleEntrancesAndFloors(rng, teleporters, flags);
+		}
 
 	}
 }

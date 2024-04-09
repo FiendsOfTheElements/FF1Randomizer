@@ -371,7 +371,7 @@ namespace FF1Lib
 				Data[MapObjGfxOffset + 0x19] = 0x0F;
 
 				// Update Chaos' Palette
-				PutInBank(0x00, 0xA000 + ((byte)MapId.TempleOfFiendsRevisitedChaos * 0x30) + 0x18, Blob.FromHex("0F0F13300F0F1530"));
+				PutInBank(0x00, 0xA000 + ((byte)MapIndex.TempleOfFiendsRevisitedChaos * 0x30) + 0x18, Blob.FromHex("0F0F13300F0F1530"));
 
 				// Add Lich? fight
 				npcdata.GetTalkArray((ObjectId)0x19)[0] = 0x2F;
@@ -393,53 +393,53 @@ namespace FF1Lib
 			npcdata.GetTalkArray(ObjectId.WarMECH)[(int)TalkArrayPos.battle_id] = bossLichMech;
 
 			// Switch princess
-			Data[MapSpriteOffset + ((byte)MapId.TempleOfFiends * MapSpriteCount + 1) * MapSpriteSize] = (byte)ObjectId.Princess2;
-			Data[MapSpriteOffset + ((byte)MapId.ConeriaCastle2F * MapSpriteCount + 1) * MapSpriteSize] = (byte)ObjectId.None;
+			Data[MapSpriteOffset + ((byte)MapIndex.TempleOfFiends * MapSpriteCount + 1) * MapSpriteSize] = (byte)ObjectId.Princess2;
+			Data[MapSpriteOffset + ((byte)MapIndex.ConeriaCastle2F * MapSpriteCount + 1) * MapSpriteSize] = (byte)ObjectId.None;
 			Put(0x2F00 + 0x12, Blob.FromHex("01"));
 			Put(0x2F00 + 0x03, Blob.FromHex("02"));
 
 			// Change NPC's color
-			Data[0x2000 + ((byte)MapId.Coneria * 0x30) + 0x18 + 0x03] = 0x3A;
-			Data[0x2000 + ((byte)MapId.Coneria * 0x30) + 0x18 + 0x07] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.ConeriaTown * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.ConeriaTown * 0x30) + 0x18 + 0x07] = 0x3A;
 
-			Data[0x2000 + ((byte)MapId.ConeriaCastle1F * 0x30) + 0x18 + 0x03] = 0x3A;
-			Data[0x2000 + ((byte)MapId.ConeriaCastle1F * 0x30) + 0x18 + 0x07] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.ConeriaCastle1F * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.ConeriaCastle1F * 0x30) + 0x18 + 0x07] = 0x3A;
 
-			Data[0x2000 + ((byte)MapId.ConeriaCastle2F * 0x30) + 0x18 + 0x03] = 0x3A;
-			Data[0x2000 + ((byte)MapId.ConeriaCastle2F * 0x30) + 0x18 + 0x07] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.ConeriaCastle2F * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.ConeriaCastle2F * 0x30) + 0x18 + 0x07] = 0x3A;
 
-			Data[0x2000 + ((byte)MapId.Pravoka * 0x30) + 0x18 + 0x03] = 0x3A;
-			Data[0x2000 + ((byte)MapId.Pravoka * 0x30) + 0x18 + 0x07] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.Pravoka * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.Pravoka * 0x30) + 0x18 + 0x07] = 0x3A;
 
-			Data[0x2000 + ((byte)MapId.Elfland * 0x30) + 0x18 + 0x03] = 0x3A;
-			Data[0x2000 + ((byte)MapId.Elfland * 0x30) + 0x18 + 0x07] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.Elfland * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.Elfland * 0x30) + 0x18 + 0x07] = 0x3A;
 
-			Data[0x2000 + ((byte)MapId.ElflandCastle * 0x30) + 0x18 + 0x03] = 0x3A;
-			Data[0x2000 + ((byte)MapId.ElflandCastle * 0x30) + 0x18 + 0x07] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.ElflandCastle * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.ElflandCastle * 0x30) + 0x18 + 0x07] = 0x3A;
 
-			Data[0x2000 + ((byte)MapId.DwarfCave * 0x30) + 0x18 + 0x03] = 0x3A;
-			Data[0x2000 + ((byte)MapId.DwarfCave * 0x30) + 0x18 + 0x07] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.DwarfCave * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.DwarfCave * 0x30) + 0x18 + 0x07] = 0x3A;
 
-			Data[0x2000 + ((byte)MapId.Melmond * 0x30) + 0x18 + 0x03] = 0x3A;
-			Data[0x2000 + ((byte)MapId.Melmond * 0x30) + 0x18 + 0x07] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.Melmond * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.Melmond * 0x30) + 0x18 + 0x07] = 0x3A;
 
-			Data[0x2000 + ((byte)MapId.CrescentLake * 0x30) + 0x18 + 0x03] = 0x3A;
-			Data[0x2000 + ((byte)MapId.CrescentLake * 0x30) + 0x18 + 0x07] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.CrescentLake * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.CrescentLake * 0x30) + 0x18 + 0x07] = 0x3A;
 
-			Data[0x2000 + ((byte)MapId.Gaia * 0x30) + 0x18 + 0x03] = 0x3A;
-			Data[0x2000 + ((byte)MapId.Gaia * 0x30) + 0x18 + 0x07] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.Gaia * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.Gaia * 0x30) + 0x18 + 0x07] = 0x3A;
 
-			Data[0x2000 + ((byte)MapId.Onrac * 0x30) + 0x18 + 0x03] = 0x3A;
-			Data[0x2000 + ((byte)MapId.Onrac * 0x30) + 0x18 + 0x07] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.Onrac * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.Onrac * 0x30) + 0x18 + 0x07] = 0x3A;
 
-			Data[0x2000 + ((byte)MapId.SeaShrineB1 * 0x30) + 0x18 + 0x03] = 0x3A;
-			Data[0x2000 + ((byte)MapId.SeaShrineB1 * 0x30) + 0x18 + 0x07] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.SeaShrineB1 * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.SeaShrineB1 * 0x30) + 0x18 + 0x07] = 0x3A;
 
-			Data[0x2000 + ((byte)MapId.Lefein * 0x30) + 0x18 + 0x03] = 0x3A;
-			Data[0x2000 + ((byte)MapId.Lefein * 0x30) + 0x18 + 0x07] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.Lefein * 0x30) + 0x18 + 0x03] = 0x3A;
+			Data[0x2000 + ((byte)MapIndex.Lefein * 0x30) + 0x18 + 0x07] = 0x3A;
 
 			// Let zombies roam free
-			var npcMap = new List<MapId> { MapId.Cardia, MapId.BahamutsRoomB2, MapId.Coneria, MapId.ConeriaCastle1F, MapId.ConeriaCastle2F, MapId.CrescentLake, MapId.DwarfCave, MapId.Elfland, MapId.ElflandCastle, MapId.Gaia, MapId.Lefein, MapId.Melmond, MapId.Onrac, MapId.Pravoka };
+			var npcMap = new List<MapIndex> { MapIndex.Cardia, MapIndex.BahamutCaveB2, MapIndex.ConeriaTown, MapIndex.ConeriaCastle1F, MapIndex.ConeriaCastle2F, MapIndex.CrescentLake, MapIndex.DwarfCave, MapIndex.Elfland, MapIndex.ElflandCastle, MapIndex.Gaia, MapIndex.Lefein, MapIndex.Melmond, MapIndex.Onrac, MapIndex.Pravoka };
 
 			foreach (var map in npcMap)
 			{

@@ -27,11 +27,11 @@ namespace FF1Lib
 													IncentiveData incentivesData,
 													ItemShopSlot caravanItemLocation,
 													OverworldMap overworldMap,
-													TeleportShuffle teleporters,
+													Teleporters teleporters,
 													ISanityChecker checker)
 		{
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements = overworldMap.FullLocationRequirements;
-			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
+			//Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
 
 			var vanillaNPCs = !(flags.NPCItems ?? false) && !(flags.NPCFetchItems ?? false);
 

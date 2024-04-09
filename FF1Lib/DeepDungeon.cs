@@ -918,7 +918,7 @@ namespace FF1Lib
 			}
 
 		}
-		public void Generate(MT19337 rng, OverworldMap overworldMap, List<Map> maps, Flags flags)
+		public void Generate(MT19337 rng, OverworldMap overworldMap, Teleporters teleporters, List<Map> maps, Flags flags)
 		{
 
 			if (!(bool)flags.Treasures)
@@ -943,8 +943,9 @@ namespace FF1Lib
 
 			// Change the destination for Coneria Castle overworld teleporter so it puts us on the
 			// "back" stairs for floor 1 of the Deep Dungeon.
-			//overworldMap.PutOverworldTeleport(OverworldTeleportIndex.ConeriaCastle1, new TeleportDestination(MapLocation.ConeriaCastle1, MapIndex.ConeriaCastle1F, new Coordinate(0x20, 0x20, CoordinateLocale.Standard)));
-			overworldMap.PutOverworldTeleport(OverworldTeleportIndex.ConeriaCastle1, new TeleportDestination(MapLocation.ConeriaCastle1, MapIndex.TitansTunnel, new Coordinate(0x20, 0x20, CoordinateLocale.Standard)));
+			teleporters.ConeriaCastle1 = new TeleportDestination(MapLocation.ConeriaCastle1, MapIndex.TitansTunnel, new Coordinate(0x20, 0x20, CoordinateLocale.Standard));
+			/*
+			overworldMap.PutOverworldTeleport(OverworldTeleportIndex.ConeriaCastle1, new TeleportDestination(MapLocation.ConeriaCastle1, MapIndex.TitansTunnel, new Coordinate(0x20, 0x20, CoordinateLocale.Standard)));*/
 
 			// Kill all the NPCs.
 			KillNPCs();
@@ -1019,11 +1020,11 @@ namespace FF1Lib
 				_rom.Put(0x3F100 + 4, Blob.FromHex("A0"));
 				_rom.Put(0x3F200 + 4, Blob.FromHex("2F")); // Floor 40
 				// Put the fiend orbs as guards in front of the other entrances
-				_rom.SetNpc((MapId)60, 0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
-				_rom.SetNpc((MapId)60, 1, (ObjectId)0x1B, 0x19, 0x1D, false, true);
-				_rom.SetNpc((MapId)60, 2, (ObjectId)0x1C, 0x27, 0x1D, false, true);
-				_rom.SetNpc((MapId)60, 3, (ObjectId)0x1D, 0x19, 0x23, false, true);
-				_rom.SetNpc((MapId)60, 4, (ObjectId)0x1E, 0x27, 0x23, false, true);
+				_rom.SetNpc((MapIndex)60, 0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
+				_rom.SetNpc((MapIndex)60, 1, (ObjectId)0x1B, 0x19, 0x1D, false, true);
+				_rom.SetNpc((MapIndex)60, 2, (ObjectId)0x1C, 0x27, 0x1D, false, true);
+				_rom.SetNpc((MapIndex)60, 3, (ObjectId)0x1D, 0x19, 0x23, false, true);
+				_rom.SetNpc((MapIndex)60, 4, (ObjectId)0x1E, 0x27, 0x23, false, true);
 				_rom.InsertDialogs(0x2D, "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nIf you can defeat the\nfiends, you can skip\nahead. GOOD LUCK!");
 				//InsertDialogs(0x13, "Bring me TNT if you wish\nto skip to floor 8.");
 				//InsertDialogs(0x29, "Bring me a RUBY if\nyou wish to skip to\nfloor 22.");
@@ -1063,10 +1064,10 @@ namespace FF1Lib
 				// The "tnt dwarf" will guard the entrance for 8
 				// The "titan" will be in front of the entrance for 22
 				// The "submarine girl" will be in front of the entrance for 36
-				_rom.SetNpc((MapId)60, 0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
-				_rom.SetNpc((MapId)60, 1, ObjectId.Nerrick, 0x20, 0x26, false, true);
-				_rom.SetNpc((MapId)60, 2, ObjectId.Titan, 0x1A, 0x20, false, true);
-				_rom.SetNpc((MapId)60, 3, ObjectId.SubEngineer, 0x26, 0x20, false, true);
+				_rom.SetNpc((MapIndex)60, 0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
+				_rom.SetNpc((MapIndex)60, 1, ObjectId.Nerrick, 0x20, 0x26, false, true);
+				_rom.SetNpc((MapIndex)60, 2, ObjectId.Titan, 0x1A, 0x20, false, true);
+				_rom.SetNpc((MapIndex)60, 3, ObjectId.SubEngineer, 0x26, 0x20, false, true);
 				_rom.InsertDialogs(0x2D, "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nBring these other folks\nthe items they need to\nskip ahead. GOOD LUCK!");
 				_rom.InsertDialogs(0x13, "Bring me TNT if you wish\nto skip to floor 8.");
 				_rom.InsertDialogs(0x29, "Bring me a RUBY if\nyou wish to skip to\nfloor 22.");
@@ -1076,9 +1077,9 @@ namespace FF1Lib
 
 			// Construct the Chaos floor
 			// Put Chaos NPCs back (the initial NPC genocide would have removed them)
-			_rom.SetNpc((MapId)59, 0, (ObjectId)0x18, 0x0F, 0x13, true, true);
-			_rom.SetNpc((MapId)59, 1, (ObjectId)0x19, 0x0F, 0x12, true, true);
-			_rom.SetNpc((MapId)59, 2, (ObjectId)0x1A, 0x0F, 0x11, true, true);
+			_rom.SetNpc((MapIndex)59, 0, (ObjectId)0x18, 0x0F, 0x13, true, true);
+			_rom.SetNpc((MapIndex)59, 1, (ObjectId)0x19, 0x0F, 0x12, true, true);
+			_rom.SetNpc((MapIndex)59, 2, (ObjectId)0x1A, 0x0F, 0x11, true, true);
 			// No encounters (the +1 is there because the whole encounter table is apparently off by 1 in the code)
 			_rom.Put(0x2CC00 + 59 + 1, Blob.FromHex("00"));
 
@@ -1460,7 +1461,7 @@ namespace FF1Lib
 			{
 				for (int j = 0; j < 16; j++)
 				{
-					_rom.SetNpc((MapId)i, j, 0, 0, 0, false, true);
+					_rom.SetNpc((MapIndex)i, j, 0, 0, 0, false, true);
 				}
 			}
 		}
@@ -1861,9 +1862,9 @@ namespace FF1Lib
 				}
 			}
 			c = candidates.SpliceRandom(rng);
-			_rom.SetNpc((MapId)59, 0, (ObjectId)0x18, c.x, c.y, true, true);
-			_rom.SetNpc((MapId)59, 1, (ObjectId)0x19, c.x, c.y, true, true);
-			_rom.SetNpc((MapId)59, 2, (ObjectId)0x1A, c.x, c.y, true, true);
+			_rom.SetNpc((MapIndex)59, 0, (ObjectId)0x18, c.x, c.y, true, true);
+			_rom.SetNpc((MapIndex)59, 1, (ObjectId)0x19, c.x, c.y, true, true);
+			_rom.SetNpc((MapIndex)59, 2, (ObjectId)0x1A, c.x, c.y, true, true);
 		}
 		private void PlaceWarMech(MT19337 rng, List<Map> maps, Flags flags)
 		{
@@ -1883,7 +1884,7 @@ namespace FF1Lib
 			{
 				warmechfloor = 59;
 				warmechstationary = true;
-				_rom.SetNpc((MapId)warmechfloor, 4, ObjectId.WarMECH, 0x0F, 0x16, false, warmechstationary);
+				_rom.SetNpc((MapIndex)warmechfloor, 4, ObjectId.WarMECH, 0x0F, 0x16, false, warmechstationary);
 			}
 			// This needs to be second because the floor information needs to be passed on later
 			if (flags.WarMECHMode == WarMECHMode.Patrolling || flags.WarMECHMode == WarMECHMode.All)
@@ -1907,7 +1908,7 @@ namespace FF1Lib
 			
 			WarMechFloor = warmechfloor;
 			c = candidates.SpliceRandom(rng);
-			_rom.SetNpc((MapId)warmechfloor, 4, ObjectId.WarMECH, c.x, c.y, false, warmechstationary);
+			_rom.SetNpc((MapIndex)warmechfloor, 4, ObjectId.WarMECH, c.x, c.y, false, warmechstationary);
 		}
 		private void PlaceBahamut(MT19337 rng, List<Map> maps, Flags flags)
 		{
@@ -1961,7 +1962,7 @@ namespace FF1Lib
 				}
 			}
 			c = candidates.SpliceRandom(rng);
-			_rom.SetNpc((MapId)bahamutfloor, 0, ObjectId.Bahamut, c.x, c.y, true, true);
+			_rom.SetNpc((MapIndex)bahamutfloor, 0, ObjectId.Bahamut, c.x, c.y, true, true);
 		}
 		private void GenerateMapBoxStyle(MT19337 rng, Map m, Tileset t)
 		{
