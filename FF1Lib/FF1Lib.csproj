@@ -19,6 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="archipelago\locations.json" />
     <None Remove="maps\crescent_start.ffm" />
     <None Remove="maps\crescent_start.json" />
     <None Remove="maps\default.json" />
@@ -37,6 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
+		<Resource Include="archipelago\locations.json" />
 		<EmbeddedResource Include="maps\crescent_start.ffm" />
     <EmbeddedResource Include="maps\crescent_start.json" />
     <EmbeddedResource Include="maps\default.json" />
@@ -103,6 +105,21 @@
   <ItemGroup>
     <Resource Include="maps\crescent_start.ffm" />
     <EmbeddedResource Include="maps\normal256.zip" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="archipelago\ApResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ApResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="archipelago\ApResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ApResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
