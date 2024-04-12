@@ -36,7 +36,7 @@ namespace FF1Lib
 			List<int> sages = Enumerable.Range(0, 12).ToList(); // But the 12th Sage is actually id 12, not 11.
 			sages.ForEach(sage => MoveNpc(MapIndex.CrescentLake, sage < 11 ? sage : 12, coords[sage].Item1, coords[sage].Item2, inRoom: false, stationary: false));
 		}
-		public void EnableSaveOnDeath(Flags flags, OwMapExchange owMapExchange)
+		public void EnableSaveOnDeath(Flags flags, Overworld overworld)
 		{
 			// rewrite rando's GameOver routine to jump to a new section that will save the game data
 			PutInBank(0x1B, 0x801A, Blob.FromHex("4CF58F"));
@@ -53,16 +53,16 @@ namespace FF1Lib
 				coneria_y = 0x9B;
 			}
 
-			if (owMapExchange != null && flags.GameMode == GameModes.Standard)
+			if (overworld.MapExchange != null && flags.GameMode == GameModes.Standard)
 			{
-				coneria_x = (byte)(owMapExchange.StartingLocation.X - 0x07);
-				coneria_y = (byte)(owMapExchange.StartingLocation.Y - 0x07);
+				coneria_x = (byte)(overworld.Locations.StartingLocation.X - 0x07);
+				coneria_y = (byte)(overworld.Locations.StartingLocation.Y - 0x07);
 
-				airship_x = owMapExchange.StartingLocation.X;
-				airship_y = owMapExchange.StartingLocation.Y;
+				airship_x = overworld.Locations.StartingLocation.X;
+				airship_y = overworld.Locations.StartingLocation.Y;
 
-				ship_x = owMapExchange.ShipLocations.GetShipLocation((int)OverworldTeleportIndex.Coneria).X;
-				ship_y = owMapExchange.ShipLocations.GetShipLocation((int)OverworldTeleportIndex.Coneria).Y;
+				ship_x = overworld.GetShipLocation((int)OverworldTeleportIndex.Coneria).X;
+				ship_y = overworld.GetShipLocation((int)OverworldTeleportIndex.Coneria).Y;
 			}
 
 			// write new routine to save data at game over (the game will save when you clear the final textbox and not before), see 1B_8FF5_GameOverAndRestart.asm

@@ -623,10 +623,12 @@ namespace FF1Lib
 			// Insert dialogs
 			Put(dialogsPointerOffset, Blob.FromUShorts(pointers) + generatedText);
 		}
-		public void NPCShuffleDialogs(Settings settings)
+		//public void NPCShuffleDialogs(Settings settings)
+		public void NPCShuffleDialogs(Flags flags)
 		{
 			// Merge into dialogues class
-			if (!settings.GetBool("NPCItems") && !settings.GetBool("NPCFetchItems"))
+			//if (!settings.GetBool("NPCItems") && !settings.GetBool("NPCFetchItems"))
+			if (!(bool)flags.NPCItems && !(bool)flags.NPCFetchItems)
 			{
 				return;
 			}

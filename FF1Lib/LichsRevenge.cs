@@ -10,9 +10,12 @@ namespace FF1Lib
 {
 	public partial class FF1Rom
 	{
-		public void Spooky(TalkRoutines talkroutines, NPCdata npcdata, ZoneFormations zoneformations, MT19337 rng, Settings settings)
+		//public void Spooky(TalkRoutines talkroutines, NPCdata npcdata, ZoneFormations zoneformations, MT19337 rng, Settings settings)
+		public void Spooky(TalkRoutines talkroutines, NPCdata npcdata, ZoneFormations zoneformations, MT19337 rng, Flags flags)
 		{
-			if (!settings.GetBool("Spooky") || !settings.GetBool("RandomizeFormationEnemizer"))
+			
+			//if (!settings.GetBool("Spooky") || !settings.GetBool("RandomizeFormationEnemizer"))
+			if(!flags.SpookyFlag || (bool)flags.RandomizeFormationEnemizer)
 			{
 				return;
 			}
@@ -195,7 +198,8 @@ namespace FF1Lib
 			Put(EnemyTextPointerOffset + 120 * 2, lich2name);
 
 			// Scale Undeads
-			int evadeCap = GetEvadeIntFromFlag((EvadeCapValues)settings.GetInt("EvadeCap"));
+			//int evadeCap = GetEvadeIntFromFlag((EvadeCapValues)settings.GetInt("EvadeCap"));
+			int evadeCap = GetEvadeIntFromFlag(flags.EvadeCap);
 			ScaleSingleEnemyStats(0x15, 125, 125, false, null, false, 125, 125, evadeCap); // Bone
 			ScaleSingleEnemyStats(0x16, 125, 125, false, null, false, 125, 125, evadeCap); // R.Bone
 			ScaleSingleEnemyStats(0x24, 125, 125, false, null, false, 125, 125, evadeCap); // ZomBull
@@ -242,8 +246,11 @@ namespace FF1Lib
 			var invalidZombie = new List<ObjectId> { ObjectId.Bat, ObjectId.GaiaBroom, ObjectId.MatoyaBroom1, ObjectId.MatoyaBroom2, ObjectId.MatoyaBroom3, ObjectId.MatoyaBroom4, ObjectId.MirageRobot1, ObjectId.MirageRobot2, ObjectId.MirageRobot3, ObjectId.SkyRobot, ObjectId.LutePlate, ObjectId.RodPlate, ObjectId.SkyWarrior1, ObjectId.SkyWarrior2, ObjectId.SkyWarrior3, ObjectId.SkyWarrior4, ObjectId.SkyWarrior5, (ObjectId)0x18, (ObjectId)0x19, (ObjectId)0x1A };
 			var validZombie = new List<ObjectId>();
 
-			if (settings.GetBool("HintNPCs"))
+			//if (settings.GetBool("HintNPCs"))
+			if ((bool)flags.HintsVillage)
+			{
 				invalidZombie.AddRange(new List<ObjectId> { ObjectId.ConeriaOldMan, ObjectId.PravokaOldMan, ObjectId.ElflandScholar1, ObjectId.MelmondOldMan2, ObjectId.CrescentSage11, ObjectId.OnracOldMan2, ObjectId.GaiaWitch, ObjectId.LefeinMan12 });
+			}
 
 			// Change base NPCs' scripts to Talk_fight
 			for (int i = 0; i < 0xD0; i++)
@@ -355,7 +362,8 @@ namespace FF1Lib
 
 			evilDialogs.Add(0xFA, "Sorry, LIGHT WARRIORS,\nbut your LICH is in\nanother castle!\n\nMwahahahaha!");
 
-			if (!settings.GetBool("TrappedChaos"))
+			//if (!settings.GetBool("TrappedChaos"))
+			if (!(bool)flags.TrappedChaos)
 			{
 				// Add new Chaos dialogues
 				evilDialogs.Add(0x2F, "You did well fighting\nmy Army of Darkness,\nLIGHT WARRIORS! But it\nis for naught!\nI am UNSTOPPABLE!\nThis time, YOU are\nthe SPEEDBUMP!");

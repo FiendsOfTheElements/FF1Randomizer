@@ -5,7 +5,7 @@ namespace FF1Lib
 	public class QuickMiniMap
 	{
 		FF1Rom rom;
-		OverworldMap overworldMap;
+		List<List<byte>> overworldMap;
 
 		byte[] lut_MinimapTileset;
 		List<Blob> chr_MinimapDecor;
@@ -27,10 +27,10 @@ namespace FF1Lib
 
 		byte[] lut_MinimapBGPal;
 
-		public QuickMiniMap(FF1Rom _rom, OverworldMap _overworldMap)
+		public QuickMiniMap(FF1Rom _rom, List<List<byte>> decompressedMap)
 		{
 			rom = _rom;
-			overworldMap = _overworldMap;
+			overworldMap = decompressedMap;
 		}
 
 		public void EnableQuickMinimap()
@@ -86,7 +86,7 @@ namespace FF1Lib
 
 		private void BuildCHR()
 		{
-			var decompressedMap = overworldMap.MapBytes;
+			var decompressedMap = overworldMap;
 
 			entrances = new List<(int x, int y)>();
 

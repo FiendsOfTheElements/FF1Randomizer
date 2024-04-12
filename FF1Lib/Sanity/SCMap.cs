@@ -24,12 +24,13 @@ namespace FF1Lib.Sanity
 		Map map;
 		SCTileSet tileSet;
 
-		EnterTeleData enter;
-		ExitTeleData exit;
-		NormTeleData tele;
+		//EnterTeleData enter;
+		//ExitTeleData exit;
+		//NormTeleData tele;
+		Teleporters teleporters;
 		NPCdata npcdata;
 
-		public SCMap(MapIndex _MapIndex, Map _map, SCMapCheckFlags cflags, FF1Rom _rom, NPCdata _npcData, SCTileSet _tileSet, EnterTeleData _enter, ExitTeleData _exit, NormTeleData _tele)
+		public SCMap(MapIndex _MapIndex, Map _map, SCMapCheckFlags cflags, FF1Rom _rom, NPCdata _npcData, SCTileSet _tileSet, Teleporters _teleporters)
 		{
 			MapIndex = _MapIndex;
 			CFlags = cflags;
@@ -37,10 +38,11 @@ namespace FF1Lib.Sanity
 			map = _map;
 			rom = _rom;
 			tileSet = _tileSet;
+			teleporters = _teleporters;
 
-			enter = _enter;
-			exit = _exit;
-			tele = _tele;
+			//enter = _enter;
+			//exit = _exit;
+			//tele = _tele;
 
 			npcdata = _npcData;
 
@@ -96,7 +98,8 @@ namespace FF1Lib.Sanity
 			}
 			else if (tileDef.SpBitFlags == SCBitFlags.Teleport)
 			{
-				var teleDef = tele[tileDef.TileProp.Byte2];
+				var teleDef = new TeleData(teleporters.StandardMapTeleporters[(TeleportIndex)tileDef.TileProp.Byte2]);
+				//var teleDef = tele[tileDef.TileProp.Byte2];
 				var t = new SCTeleport { Coords = poi.Coords, Type = SCPointOfInterestType.Tele, TargetMap = teleDef.Map, TargetCoords = new SCCoords { X = teleDef.X, Y = teleDef.Y }.SmClamp };
 				Exits.Add(t);
 
@@ -106,7 +109,8 @@ namespace FF1Lib.Sanity
 			}
 			else if ((tileDef.SpBitFlags & SCBitFlags.Exit) == SCBitFlags.Exit)
 			{
-				var teleDef = exit[tileDef.TileProp.Byte2];
+				var teleDef = new TeleData(teleporters.ExitTeleporters[(ExitTeleportIndex)tileDef.TileProp.Byte2]);
+				//var teleDef = exit[tileDef.TileProp.Byte2];
 				var t = new SCTeleport { Coords = poi.Coords, Type = SCPointOfInterestType.Exit, TargetMap = teleDef.Map, TargetCoords = new SCCoords { X = teleDef.X, Y = teleDef.Y } };
 				Exits.Add(t);
 
@@ -263,22 +267,22 @@ namespace FF1Lib.Sanity
 
 		private void ProcessEntranceTeleporters()
 		{
-			foreach (var t in enter)
+			foreach (var t in teleporters.OverworldTeleporters)
 			{
-				if (t.Map == MapIndex)
+				if (t.Value.Index == MapIndex)
 				{
-					PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.X, Y = t.Y }.SmClamp, Type = SCPointOfInterestType.OwEntrance });
+					PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.Value.Coordinates.X, Y = t.Value.Coordinates.Y }.SmClamp, Type = SCPointOfInterestType.OwEntrance });
 				}
 			}
 		}
 
 		private void ProcessNormalTeleporters()
 		{
-			foreach (var t in tele)
+			foreach (var t in teleporters.StandardMapTeleporters)
 			{
-				if (t.Map == MapIndex)
+				if (t.Value.Index == MapIndex)
 				{
-					PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.X, Y = t.Y }.SmClamp, Type = SCPointOfInterestType.SmEntrance });
+					PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.Value.Coordinates.X, Y = t.Value.Coordinates.Y }.SmClamp, Type = SCPointOfInterestType.SmEntrance });
 				}
 			}
 		}

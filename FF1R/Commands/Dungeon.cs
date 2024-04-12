@@ -95,7 +95,7 @@ namespace FF1R.Commands
 	[Option("-a")]
 	public bool All { get; } = false;
 
-	int OnExecute(IConsole console)
+	async Task<int> OnExecute(IConsole console)
 	{
 	    var rom = new FF1Rom(RomPath);
 
@@ -116,7 +116,7 @@ namespace FF1R.Commands
 	    flags.IncentivizeMarshKeyLocked = true;
 	    flags.SpeedHacks = true;
 
-	    rom.Randomize(new byte[]{(byte)Seed}, flags, new Preferences());
+	    await rom.Randomize(new byte[]{(byte)Seed}, flags, new Preferences());
 
 	    int start = Map;
 	    int end = Map;

@@ -258,7 +258,7 @@ namespace FF1Lib
 
 		private void FlipNormalTele(MapIndex mapindex)
 		{
-			teleporters.GetByMap(mapindex).ForEach(t => t.FlipYcoordinate());
+			teleporters.StandardMapTeleporters.Where(t => t.Value.Index == mapindex).ToList().ForEach(t => t.Value.FlipYcoordinate());
 
 			/*
 			for (int i = 0; i < 64; i++)
@@ -274,7 +274,7 @@ namespace FF1Lib
 
 		private void FlipEnterTele(MapIndex mapindex)
 		{
-			teleporters.GetByMap(mapindex).ForEach(t => t.FlipYcoordinate());
+			teleporters.OverworldTeleporters.Where(t => t.Value.Index == mapindex).ToList().ForEach(t => t.Value.FlipYcoordinate());
 			/*
 			for (int i = 0; i < 32; i++)
 			{
@@ -459,8 +459,11 @@ namespace FF1Lib
 		private void SwapTele(MapIndex mapindex, int x1, int y1, int x2, int y2)
 		{
 
-			var teletoswap = teleporters.GetByMap(mapindex).Where(t => t.Coordinates.X == x1 && t.Coordinates.Y == y1).ToList();
-			teletoswap.ForEach(t => t.SetEntrance(new Coordinate((byte)x2, (byte)y2, t.Coordinates.Context)));
+			var overtoswap = teleporters.OverworldTeleporters.Where(t => t.Value.Index == mapindex && t.Value.Coordinates.X == x1 && t.Value.Coordinates.Y == y1).ToList();
+			overtoswap.ForEach(t => t.Value.SetTeleporter(new Coordinate((byte)x2, (byte)y2, t.Value.Coordinates.Context)));
+
+			var teletoswap = teleporters.StandardMapTeleporters.Where(t => t.Value.Index == mapindex && t.Value.Coordinates.X == x1 && t.Value.Coordinates.Y == y1).ToList();
+			teletoswap.ForEach(t => t.Value.SetTeleporter(new Coordinate((byte)x2, (byte)y2, t.Value.Coordinates.Context)));
 
 			/*
 			foreach (var tele in teletoswap)

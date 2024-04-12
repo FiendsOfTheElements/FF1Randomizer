@@ -1,4 +1,6 @@
-﻿namespace FF1Lib
+﻿using FF1Lib.Sanity;
+
+namespace FF1Lib
 {
 	public partial class FF1Rom
 	{
@@ -899,14 +901,14 @@
 			return mapData;
 		}
 
-		public static void ApplyDesertModifications(bool enabled, FF1Rom rom, ZoneFormations zoneformations, OwMapExchange owMapExchange, FF1Rom.NPCdata npcdata)
+		public static void ApplyDesertModifications(bool enabled, FF1Rom rom, ZoneFormations zoneformations, SCCoords startinglocation, FF1Rom.NPCdata npcdata)
 		{
 			if (!enabled)
 			{
 				return;
 			}
 
-			(int, int) startDomain = ((owMapExchange.StartingLocation.X / 32) - 1, (owMapExchange.StartingLocation.Y / 32) - 1);
+			(int, int) startDomain = ((startinglocation.X / 32) - 1, (startinglocation.Y / 32) - 1);
 
 			// Update tiles and palette
 			for (int i = 1; i < 16; i += 4)

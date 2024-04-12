@@ -7,7 +7,7 @@ namespace FF1Lib.Sanity
 		private FF1Rom rom;
 		private SCMain main;
 		List<IRewardSource> itemPlacement;
-		OwLocationData locations;
+		private OwLocationData locations;
 		IVictoryConditionFlags victoryConditions;
 		bool excludeBridge;
 
@@ -23,7 +23,7 @@ namespace FF1Lib.Sanity
 
 		Dictionary<int, SCLogicRewardSource> rewardSourceDic = new Dictionary<int, SCLogicRewardSource>();
 
-		public SCLogic(FF1Rom _rom, SCMain _main, List<IRewardSource> _itemPlacement, IVictoryConditionFlags _victoryConditions, bool _excludeBridge)
+		public SCLogic(FF1Rom _rom, SCMain _main, List<IRewardSource> _itemPlacement, OwLocationData _locations, IVictoryConditionFlags _victoryConditions, bool _excludeBridge)
 		{
 			rom = _rom;
 			main = _main;
@@ -31,8 +31,8 @@ namespace FF1Lib.Sanity
 			victoryConditions = _victoryConditions;
 			excludeBridge = _excludeBridge;
 
-			locations = new OwLocationData(rom);
-			locations.LoadData();
+			locations = _locations;
+			//locations.LoadData();
 
 			GetShipDockArea();
 

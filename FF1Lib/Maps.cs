@@ -260,7 +260,7 @@ namespace FF1Lib
 			public List<(int, int)> Teleporters;
 		}
 
-		public void ShuffleOrdeals(MT19337 rng, List<Map> maps)
+		public void ShuffleOrdeals(MT19337 rng, Teleporters teleporters, List<Map> maps)
 		{
 			// Here are all the teleporter rooms except the one you start in.
 			// The last one is not normally accessible in the game.  We'll rewrite the teleporter located in that
@@ -381,9 +381,12 @@ namespace FF1Lib
 
 			// Now let's rewrite that teleporter.  The X coordinates are packed together, followed by the Y coordinates,
 			// followed by the map indices.  Maybe we'll make a data structure for that someday soon.
-			const byte LostTeleportIndex = 0x3C;
-			Put(TeleportOffset + LostTeleportIndex, new byte[] { 0x10 });
-			Put(TeleportOffset + TeleportCount + LostTeleportIndex, new byte[] { 0x12 });
+			// We did!
+			//const byte LostTeleportIndex = 0x3C;
+			teleporters.StandardMapTeleporters[TeleportIndex.CastleOrdeals12] = new TeleportDestination(teleporters.StandardMapTeleporters[TeleportIndex.CastleOrdeals12], new Coordinate(0x10, 0x12, CoordinateLocale.Standard));
+
+			//Put(TeleportOffset + LostTeleportIndex, new byte[] { 0x10 });
+			//Put(TeleportOffset + TeleportCount + LostTeleportIndex, new byte[] { 0x12 });
 		}
 
 		public void DoSkyCastle4FMaze(MT19337 rng, List<Map> maps)
@@ -1789,15 +1792,16 @@ namespace FF1Lib
 					    CompleteMap newmap) {
 		    maps[(int)newmap.MapIndex] = newmap.Map;
 		    foreach (var dest in newmap.MapDestinations) {
-			// Update the teleport information, this
-			// consists of the corresponding map location
-			// (this is a walkable area of the map,
-			// because some dungeons have multiple parts
-			// that are actually on the same map), the map
-			// index, where the teleport puts the player,
-			// and what teleports (but not warps) are
-			// accessible in this map location.
-			teleporters.Set(dest.Value.Destination.ToString(), dest.Value);
+				// Update the teleport information, this
+				// consists of the corresponding map location
+				// (this is a walkable area of the map,
+				// because some dungeons have multiple parts
+				// that are actually on the same map), the map
+				// index, where the teleport puts the player,
+				// and what teleports (but not warps) are
+				// accessible in this map location.
+				teleporters.StandardMapTeleporters[dest.Key] = dest.Value;
+				//teleporters.Set(dest.Value.Destination.ToString(), dest.Value);
 			/*
 			if (dest.Key != TeleportIndex.Overworld) {
 			    overworldMap.PutStandardTeleport(dest.Key, dest.Value, OverworldTeleportIndex.None);

@@ -73,9 +73,9 @@ namespace FF1Lib
 		protected ISanityChecker _checker;
 		protected FF1Rom _rom;
 
-		protected abstract ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx);
+		protected abstract ItemPlacementResult DoSanePlacement(MT19337 rng, OwLocationData locations, ItemPlacementContext ctx);
 
-		public List<IRewardSource> PlaceSaneItems(MT19337 rng, FF1Rom rom)
+		public List<IRewardSource> PlaceSaneItems(MT19337 rng, OwLocationData locations, FF1Rom rom)
 		{
 			_rom = rom;
 
@@ -141,7 +141,7 @@ namespace FF1Lib
 				AllTreasures = treasurePool.ToList(),
 			};
 
-			ItemPlacementResult result = DoSanePlacement(rng, ctx);
+			ItemPlacementResult result = DoSanePlacement(rng, locations, ctx);
 			List<IRewardSource> placedItems = result.PlacedItems;
 
 			treasurePool = result.RemainingTreasures;

@@ -1,71 +1,181 @@
 ﻿using System.Xml.Linq;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
 	public class Teleporters
 	{
 		FF1Rom rom;
-		public EnterTeleData OverworldTeleporters { get; }
-		public NormTeleData StandardMapTeleporters { get; }
-		public ExitTeleData ExitTeleporters { get; }
+		private EnterTeleData overworldTeleporters { get; }
+		private NormTeleData standardMapTeleporters { get; }
+		private ExitTeleData exitTeleporters { get; }
+
+		public Dictionary<OverworldTeleportIndex, TeleportDestination> OverworldTeleporters { get; set; }
+		public Dictionary<TeleportIndex, TeleportDestination> StandardMapTeleporters { get; set; }
+		public Dictionary<ExitTeleportIndex, TeleportDestination> ExitTeleporters { get; set;  }
 
 		public Teleporters(FF1Rom _rom, OwMapExchangeData data)
 		{
 			rom = _rom;
 
-			OverworldTeleporters = new EnterTeleData(rom);
-			StandardMapTeleporters = new NormTeleData(rom);
-			ExitTeleporters = new ExitTeleData(rom);
+			overworldTeleporters = new EnterTeleData(rom);
+			standardMapTeleporters = new NormTeleData(rom);
+			exitTeleporters = new ExitTeleData(rom);
 
-			OverworldTeleporters.LoadData();
-			StandardMapTeleporters.LoadData();
-			ExitTeleporters.LoadData();
+			OverworldTeleporters = new();
+			StandardMapTeleporters = new();
+			ExitTeleporters = new();
 
-			if (data?.OverworldCoordinates != null)
+			overworldTeleporters.LoadData();
+			standardMapTeleporters.LoadData();
+			exitTeleporters.LoadData();
+
+			LoadData2();
+
+			OverworldCoordinates = VanillaOverworldCoordinates;
+
+			if (data != null)
 			{
-				OverworldCoordinates = data.OverworldCoordinates.Select(kv => (Enum.Parse<OverworldTeleportIndex>(kv.Key), new Coordinate(kv.Value.X, kv.Value.Y, CoordinateLocale.Overworld))).ToDictionary(kv => kv.Item1, kv => kv.Item2);
-			}
-			else
-			{
-				OverworldCoordinates = VanillaOverworldCoordinates;
+				foreach (var tf in data.TeleporterFixups) ExitTeleporters[(ExitTeleportIndex)tf.Index.Value] = new TeleportDestination(tf.To, CoordinateLocale.Overworld);
+
+				if (data.OverworldCoordinates != null)
+				{
+					OverworldCoordinates = data.OverworldCoordinates.Select(kv => (Enum.Parse<OverworldTeleportIndex>(kv.Key), new Coordinate(kv.Value.X, kv.Value.Y, CoordinateLocale.Overworld))).ToDictionary(kv => kv.Item1, kv => kv.Item2);
+					/*
+					foreach (var coord in OverworldCoordinates)
+					{
+						if (OverworldTeleporters.TryGetValue(coord.Key, out var newdest))
+						{
+							newdest.SetTeleporter(coord.Value);
+						}
+					}*/
+				}
+
+
 			}
 		}
 		public void Write()
 		{
-			foreach (var e in EnterMapping)
+			foreach (var owtele in OverworldTeleporters)
 			{
-				var x = Get(e.Value);
-				OverworldTeleporters[(int)e.Key] = new TeleData(x);
+				overworldTeleporters[(int)owtele.Key] = new TeleData(owtele.Value);
 			}
 
-			foreach (var t in TeleMapping)
+			foreach (var owtele in StandardMapTeleporters)
 			{
-				var x = Get(t.Value);
-				StandardMapTeleporters[(int)t.Key] = new TeleData(x);
+				standardMapTeleporters[(int)owtele.Key] = new TeleData(owtele.Value);
 			}
 
-			OverworldTeleporters.StoreData();
-			StandardMapTeleporters.StoreData();
-			ExitTeleporters.StoreData();
+			foreach (var owtele in ExitTeleporters)
+			{
+				exitTeleporters[(int)owtele.Key] = new TeleData(owtele.Value);
+			}
+
+			overworldTeleporters.StoreData();
+			standardMapTeleporters.StoreData();
+			exitTeleporters.StoreData();
 		}
-		public void LoadData()
+		public void LoadData2()
 		{
+			for (int i = 0; i < overworldTeleporters.Count(); i++)
+			{
+				if (EnterMapping.TryGetValue((OverworldTeleportIndex)i, out var teleporter))
+				{
+					var x = Get(teleporter);
+					x.SetTeleporter(new Coordinate(overworldTeleporters[i].X, overworldTeleporters[i].Y, CoordinateLocale.Standard));
+					OverworldTeleporters.Add((OverworldTeleportIndex)i, x);
+				}
+				else
+				{
+					OverworldTeleporters.Add((OverworldTeleportIndex)i, new TeleportDestination(overworldTeleporters[i], CoordinateLocale.Standard));
+				}
+			}
+
+			for (int i = 0; i < standardMapTeleporters.Count(); i++)
+			{
+				if (TeleMapping.TryGetValue((TeleportIndex)i, out var teleporter))
+				{
+					var x = Get(teleporter);
+					x.SetTeleporter(new Coordinate(standardMapTeleporters[i].X, standardMapTeleporters[i].Y, x.Coordinates.Context));
+					StandardMapTeleporters.Add((TeleportIndex)i, x);
+				}
+				else
+				{
+					StandardMapTeleporters.Add((TeleportIndex)i, new TeleportDestination(standardMapTeleporters[i], CoordinateLocale.Standard ));
+				}
+			}
+
+			for (int i = 0; i < exitTeleporters.Count(); i++)
+			{
+				if (ExitMapping.TryGetValue((ExitTeleportIndex)i, out var teleporter))
+				{
+					var x = Get(teleporter);
+					x.SetTeleporter(new Coordinate(exitTeleporters[i].X, exitTeleporters[i].Y, x.Coordinates.Context));
+					ExitTeleporters.Add((ExitTeleportIndex)i, x);
+				}
+				else
+				{
+					ExitTeleporters.Add((ExitTeleportIndex)i, new TeleportDestination(overworldTeleporters[i], CoordinateLocale.Overworld));
+				}
+			}
+			/*
 			foreach (var e in EnterMapping)
 			{
+				
+
 				var x = Get(e.Value);
-				x.SetEntrance(new Coordinate(OverworldTeleporters[(int)e.Key].X, OverworldTeleporters[(int)e.Key].Y, CoordinateLocale.Standard));
+				x.SetTeleporter(new Coordinate(overworldTeleporters[(int)e.Key].X, overworldTeleporters[(int)e.Key].Y, CoordinateLocale.Standard));
+				OverworldTeleporters.Add(e.Key, x);
+				//x.SetEntrance(new Coordinate(OverworldTeleporters[(int)e.Key].X, OverworldTeleporters[(int)e.Key].Y, CoordinateLocale.Standard));
 				Set(e.Value, x);
 			}
 
 			foreach (var t in TeleMapping)
 			{
 				var x = Get(t.Value);
-				x.SetEntrance(new Coordinate((byte)(StandardMapTeleporters[(int)t.Key].X | (x.CoordinateX & 0x80)), StandardMapTeleporters[(int)t.Key].Y, CoordinateLocale.Standard));
+				x.SetTeleporter(new Coordinate(standardMapTeleporters[(int)t.Key].X, standardMapTeleporters[(int)t.Key].Y, x.Coordinates.Context));
+				StandardMapTeleporters.Add(t.Key, x);
+				//x.SetEntrance(new Coordinate((byte)(StandardMapTeleporters[(int)t.Key].X | (x.CoordinateX & 0x80)), StandardMapTeleporters[(int)t.Key].Y, CoordinateLocale.Standard));
 				Set(t.Value, x);
+			}
+
+			foreach (var e in ExitMapping)
+			{
+				var x = Get(e.Value);
+				x.SetEntrance(new Coordinate(exitTeleporters[(int)e.Key].X, exitTeleporters[(int)e.Key].Y, CoordinateLocale.Overworld));
+				ExitTeleporters.Add(e.Key, x);
+				Set(e.Value, x);
+			}*/
+		}
+		public void LoadData()
+		{
+
+
+			foreach (var e in EnterMapping)
+			{
+				var x = Get(e.Value);
+				x.SetTeleporter(new Coordinate(overworldTeleporters[(int)e.Key].X, overworldTeleporters[(int)e.Key].Y, ((overworldTeleporters[(int)e.Key].X & 0x80) > 0) ? CoordinateLocale.StandardInRoom : CoordinateLocale.Standard));
+				//x.SetEntrance(new Coordinate(OverworldTeleporters[(int)e.Key].X, OverworldTeleporters[(int)e.Key].Y, CoordinateLocale.Standard));
+				Set(e.Value, x);
+			}
+
+			foreach (var t in TeleMapping)
+			{
+				var x = Get(t.Value);
+				x.SetTeleporter(new Coordinate(standardMapTeleporters[(int)t.Key].X, standardMapTeleporters[(int)t.Key].Y, ((standardMapTeleporters[(int)t.Key].X & 0x80) > 0) ? CoordinateLocale.StandardInRoom : CoordinateLocale.Standard));
+				//x.SetEntrance(new Coordinate((byte)(StandardMapTeleporters[(int)t.Key].X | (x.CoordinateX & 0x80)), StandardMapTeleporters[(int)t.Key].Y, CoordinateLocale.Standard));
+				Set(t.Value, x);
+			}
+
+			foreach (var e in ExitMapping)
+			{
+				var x = Get(e.Value);
+				x.SetEntrance(new Coordinate(exitTeleporters[(int)e.Key].X, exitTeleporters[(int)e.Key].Y, CoordinateLocale.Overworld));
+				Set(e.Value, x);
 			}
 		}
 
-		public TeleportDestination Get(string name)
+		private TeleportDestination Get(string name)
 		{
 			return (TeleportDestination)typeof(Teleporters).GetField(name).GetValue(this);
 		}
@@ -73,7 +183,7 @@ namespace FF1Lib
 		{
 			List<TeleportDestination> teleportset = typeof(Teleporters).GetProperties().Where(p => p.GetType() == typeof(TeleportDestination)).Select(p => (TeleportDestination)p.GetValue(this)).ToList();
 				
-			return teleportset.Where(t => t.Index == mapindex).ToList();
+			return teleportset.Where(t => t.Index == mapindex && t.Coordinates.Context != CoordinateLocale.Overworld).ToList();
 		}
 
 		public void Set(string name, TeleportDestination tele)
@@ -117,6 +227,7 @@ namespace FF1Lib
 
 		private Dictionary<TeleportIndex, string> TeleMapping => new Dictionary<TeleportIndex, string>
 		{
+			{TeleportIndex.RescuePrincess, "SavePrincess"},
 			{TeleportIndex.ConeriaCastle2, "ConeriaCastle2"},
 			{TeleportIndex.CastleOrdealsMaze, "CastleOrdealsMaze"},
 			{TeleportIndex.CastleOrdealsTop, "CastleOrdealsTop"},
@@ -124,6 +235,10 @@ namespace FF1Lib
 			{TeleportIndex.IceCave2, "IceCave2"},
 			{TeleportIndex.IceCave3, "IceCave3"},
 			{TeleportIndex.IceCavePitRoom, "IceCavePitRoom"},
+			{TeleportIndex.IceCave5, "IceCave5"},
+			{TeleportIndex.IceCave6, "IceCave6"},
+			{TeleportIndex.IceCave7, "IceCave7"},
+			{TeleportIndex.IceCave8, "IceCave8"},
 			{TeleportIndex.EarthCave2, "EarthCave2"},
 			{TeleportIndex.EarthCaveVampire, "EarthCaveVampire"},
 			{TeleportIndex.EarthCave4, "EarthCave4"},
@@ -155,6 +270,20 @@ namespace FF1Lib
 			{TeleportIndex.SkyPalaceTiamat, "SkyPalaceTiamat"}
 		};
 
+		private Dictionary<ExitTeleportIndex, string> ExitMapping => new Dictionary<ExitTeleportIndex, string>
+		{
+			{ExitTeleportIndex.ExitTitanE, "ExitTitanEast"},
+			{ExitTeleportIndex.ExitTitanW, "ExitTitanWest"},
+			{ExitTeleportIndex.ExitIceCave, "ExitIceCave"},
+			{ExitTeleportIndex.ExitCastleOrdeals, "ExitCastleOrdeals"},
+			{ExitTeleportIndex.ExitCastleConeria, "ExitConeriaCastle"},
+			{ExitTeleportIndex.ExitEarthCave, "ExitEarthCave"},
+			{ExitTeleportIndex.ExitGurguVolcano, "ExitGurguVolcano"},
+			{ExitTeleportIndex.ExitSeaShrine, "ExitSeaShrine"},
+			{ExitTeleportIndex.ExitSkyPalace, "ExitSkyPalace"},
+		};
+
+		public TeleportDestination SavePrincess = new TeleportDestination(MapLocation.ConeriaCastle2, MapIndex.ConeriaCastle2F, new Coordinate(12, 7, CoordinateLocale.StandardInRoom));
 		public TeleportDestination Coneria = new TeleportDestination(MapLocation.Coneria, MapIndex.ConeriaTown, new Coordinate(16, 23, CoordinateLocale.Standard));
 		public TeleportDestination Pravoka = new TeleportDestination(MapLocation.Pravoka, MapIndex.Pravoka, new Coordinate(19, 32, CoordinateLocale.Standard));
 		public TeleportDestination Elfland = new TeleportDestination(MapLocation.Elfland, MapIndex.Elfland, new Coordinate(41, 22, CoordinateLocale.Standard));
@@ -186,10 +315,10 @@ namespace FF1Lib
 		public TeleportDestination IceCave3 = new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(3, 2, CoordinateLocale.Standard), TeleportIndex.IceCavePitRoom);
 		public TeleportDestination IceCavePitRoom = new TeleportDestination(MapLocation.IceCavePitRoom, MapIndex.IceCaveB2, new Coordinate(55, 5, CoordinateLocale.Standard), TeleportIndex.IceCave5);
 		public TeleportDestination IceCave5 = new TeleportDestination(MapLocation.IceCave5, MapIndex.IceCaveB3, new Coordinate(39, 6, CoordinateLocale.StandardInRoom), TeleportIndex.IceCave6);
-		public TeleportDestination IceCave6 = new TeleportDestination(MapLocation.IceCaveBackExit, MapIndex.IceCaveB1, new Coordinate(6, 15, CoordinateLocale.Standard), new List<TeleportIndex> { TeleportIndex.IceCave7, TeleportIndex.IceCave8 });
-		public TeleportDestination IceCave7 = new TeleportDestination(MapLocation.IceCave5, MapIndex.IceCaveB3, new Coordinate(59, 33, CoordinateLocale.Standard), TeleportIndex.IceCave6 );
+		public TeleportDestination IceCave6 = new TeleportDestination(MapLocation.IceCaveBackExit, MapIndex.IceCaveB1, new Coordinate(6, 15, CoordinateLocale.Standard), TeleportIndex.IceCave7 );
+		public TeleportDestination IceCave7 = new TeleportDestination(MapLocation.IceCave5, MapIndex.IceCaveB3, new Coordinate(59, 33, CoordinateLocale.Standard), TeleportIndex.IceCave8 );
 		// Might not work
-		public TeleportDestination IceCave8 = new TeleportDestination(MapLocation.IceCaveFloater, MapIndex.IceCaveB2, new Coordinate(51, 11, CoordinateLocale.StandardInRoom), new List<TeleportIndex> { TeleportIndex.IceCavePitRoom }, ExitTeleportIndex.ExitIceCave);
+		public TeleportDestination IceCave8 = new TeleportDestination(MapLocation.IceCaveFloater, MapIndex.IceCaveB2, new Coordinate(51, 11, CoordinateLocale.StandardInRoom), ExitTeleportIndex.ExitIceCave);
 		//public TeleportDestination IceCavePitRoom = new TeleportDestination(MapLocation.IceCavePitRoom, MapIndex.IceCaveB2, new Coordinate(55, 5, CoordinateLocale.Standard), ExitTeleportIndex.ExitIceCave);
 		public TeleportDestination Waterfall = new TeleportDestination(MapLocation.Waterfall, MapIndex.Waterfall, new Coordinate(57, 56, CoordinateLocale.Standard));
 		public TeleportDestination TitansTunnelEast = new TeleportDestination(MapLocation.TitansTunnelEast, MapIndex.TitansTunnel, new Coordinate(11, 14, CoordinateLocale.Standard), ExitTeleportIndex.ExitTitanE);
@@ -227,6 +356,15 @@ namespace FF1Lib
 		public TeleportDestination SkyPalace3 = new TeleportDestination(MapLocation.SkyPalace3, MapIndex.SkyPalace3F, new Coordinate(24, 23, CoordinateLocale.Standard), TeleportIndex.SkyPalaceMaze);
 		public TeleportDestination SkyPalaceMaze = new TeleportDestination(MapLocation.SkyPalaceMaze, MapIndex.SkyPalace4F, new Coordinate(3, 3, CoordinateLocale.Standard), TeleportIndex.SkyPalaceTiamat);
 		public TeleportDestination SkyPalaceTiamat = new TeleportDestination(MapLocation.SkyPalaceTiamat, MapIndex.SkyPalace5F, new Coordinate(7, 54, CoordinateLocale.Standard), ExitTeleportIndex.ExitSkyPalace);
+		public TeleportDestination ExitTitanEast = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0x2A, 0xAE, CoordinateLocale.Overworld));
+		public TeleportDestination ExitTitanWest = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0x1E, 0xAF, CoordinateLocale.Overworld));
+		public TeleportDestination ExitIceCave = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0xC5, 0xB7, CoordinateLocale.Overworld));
+		public TeleportDestination ExitCastleOrdeals = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0x82, 0x2D, CoordinateLocale.Overworld));
+		public TeleportDestination ExitConeriaCastle = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0x99, 0x9F, CoordinateLocale.Overworld));
+		public TeleportDestination ExitEarthCave = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0x41, 0xBB, CoordinateLocale.Overworld));
+		public TeleportDestination ExitGurguVolcano = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0xBC, 0xDD, CoordinateLocale.Overworld));
+		public TeleportDestination ExitSeaShrine = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0x3E, 0x38, CoordinateLocale.Overworld));
+		public TeleportDestination ExitSkyPalace = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0xC2, 0x3B, CoordinateLocale.Overworld));
 		public List<MapIndex> InRoomMaps = new List<MapIndex> { MapIndex.SkyPalace1F, MapIndex.MarshCaveB3, MapIndex.CastleOrdeals2F };
 		public Dictionary<TeleportIndex, AccessRequirement> TeleportRestrictions =
 			new Dictionary<TeleportIndex, AccessRequirement>
@@ -242,26 +380,77 @@ namespace FF1Lib
 		public List<TeleportDestination> NonTownForcedTopFloors =>
 		 	new List<TeleportDestination>
 			{
-				TitansTunnelEast, TitansTunnelWest, ConeriaCastle1, CastleOrdeals1, TempleOfFiends
+				new(OverworldTeleporters[OverworldTeleportIndex.TitansTunnelEast]),
+				new(OverworldTeleporters[OverworldTeleportIndex.TitansTunnelWest]),
+				new(OverworldTeleporters[OverworldTeleportIndex.ConeriaCastle1]),
+				new(OverworldTeleporters[OverworldTeleportIndex.CastleOrdeals1]),
+				new(OverworldTeleporters[OverworldTeleportIndex.TempleOfFiends1]),
 			};
 		public List<TeleportDestination> TownTeleports =>
 		 	new List<TeleportDestination>
 			{
-				Coneria, Pravoka, Elfland, Melmond, CrescentLake, Gaia, Onrac, Lefein
+				new(OverworldTeleporters[OverworldTeleportIndex.Coneria]),
+				new(OverworldTeleporters[OverworldTeleportIndex.Pravoka]),
+				new(OverworldTeleporters[OverworldTeleportIndex.Elfland]),
+				new(OverworldTeleporters[OverworldTeleportIndex.Melmond]),
+				new(OverworldTeleporters[OverworldTeleportIndex.CrescentLake]),
+				new(OverworldTeleporters[OverworldTeleportIndex.Gaia]),
+				new(OverworldTeleporters[OverworldTeleportIndex.Onrac]),
+				new(OverworldTeleporters[OverworldTeleportIndex.Lefein]),
 			};
 		public List<TeleportDestination> FreePlacementFloors =>
 			new List<TeleportDestination>
 			{
-				ElflandCastle, NorthwestCastle,
-				DwarfCave, MatoyasCave, SardasCave, Cardia1, Cardia2, BahamutCave1, BahamutsRoom, Cardia4, Cardia5, Cardia6,
-				IceCave1, IceCave2, IceCave3, IceCavePitRoom,
-				Waterfall,
-				EarthCave1, EarthCave2, EarthCaveVampire, EarthCave4, EarthCaveLich,
-				GurguVolcano1, GurguVolcano2, GurguVolcano3, GurguVolcano4, GurguVolcano5, GurguVolcano6, GurguVolcanoKary,
-				MarshCave1, MarshCaveTop, MarshCave3, MarshCaveBottom,
-				MirageTower1, MirageTower2, MirageTower3,
-				SeaShrineMermaids, SeaShrine2, SeaShrine1, SeaShrine4, SeaShrine5, SeaShrine6, SeaShrine7, SeaShrine8, SeaShrineKraken,
-				SkyPalace1, SkyPalace2, SkyPalace3, SkyPalaceMaze, SkyPalaceTiamat
+				new(OverworldTeleporters[OverworldTeleportIndex.ElflandCastle]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.NorthwestCastle]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.DwarfCave]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.MatoyasCave]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.SardasCave]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.Cardia1]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.Cardia2]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.BahamutCave1]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.BahamutsRoom]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.Cardia4]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.Cardia5]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.Cardia6]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.IceCave1]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.IceCave2]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.IceCave3]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.IceCavePitRoom]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.Waterfall]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.EarthCave1]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.EarthCave2]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.EarthCaveVampire]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.EarthCave4]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.EarthCaveLich]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.GurguVolcano1]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.GurguVolcano2]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.GurguVolcano3]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.GurguVolcano4]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.GurguVolcano5]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.GurguVolcano6]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.GurguVolcanoKary]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.MarshCave1]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.MarshCave3]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.MarshCaveBottom]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.MarshCaveTop]),
+				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.MirageTower1]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.MirageTower2]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.MirageTower3]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SkyPalace1]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SkyPalace2]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SkyPalace3]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SkyPalaceMaze]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SkyPalaceTiamat]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrineMermaids]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrine1]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrine2]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrine4]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrine5]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrine6]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrine7]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrine8]),
+				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrineKraken])
 			};
 		public List<OverworldTeleportIndex> TownEntrances =>
 			new List<OverworldTeleportIndex>
@@ -363,6 +552,10 @@ namespace FF1Lib
 				{TeleportIndex.IceCave2, MapLocation.IceCave2},
 				{TeleportIndex.IceCave3, MapLocation.IceCave3},
 				{TeleportIndex.IceCavePitRoom, MapLocation.IceCavePitRoom},
+				{TeleportIndex.IceCave5, MapLocation.IceCave5},
+				{TeleportIndex.IceCave6, MapLocation.IceCaveBackExit},
+				{TeleportIndex.IceCave7, MapLocation.IceCaveDummy},
+				{TeleportIndex.IceCave8, MapLocation.IceCaveFloater},
 				{TeleportIndex.CastleOrdealsMaze, MapLocation.CastleOrdealsMaze},
 				{TeleportIndex.CastleOrdealsTop, MapLocation.CastleOrdealsTop},
 				{TeleportIndex.CastleOrdealsBack, MapLocation.CastleOrdeals1},
@@ -387,12 +580,12 @@ namespace FF1Lib
 		public Dictionary<OverworldTeleportIndex, TeleportDestination> VanillaOverworldTeleports =>
 			new Dictionary<OverworldTeleportIndex, TeleportDestination>
 			{
-				{OverworldTeleportIndex.Coneria,Coneria},
-				{OverworldTeleportIndex.Pravoka,Pravoka},
-				{OverworldTeleportIndex.Elfland,Elfland},
-				{OverworldTeleportIndex.Melmond,Melmond},
-				{OverworldTeleportIndex.CrescentLake,CrescentLake},
-				{OverworldTeleportIndex.Gaia,Gaia},
+				{OverworldTeleportIndex.Coneria,new(OverworldTeleporters[OverworldTeleportIndex.Coneria])},
+				{OverworldTeleportIndex.Pravoka,new(OverworldTeleporters[OverworldTeleportIndex.Pravoka])},
+				{OverworldTeleportIndex.Elfland,new(OverworldTeleporters[OverworldTeleportIndex.Elfland])},
+				{OverworldTeleportIndex.Melmond,new(OverworldTeleporters[OverworldTeleportIndex.Melmond])},
+				{OverworldTeleportIndex.CrescentLake,new(OverworldTeleporters[OverworldTeleportIndex.CrescentLake])},
+				{OverworldTeleportIndex.Gaia,new(OverworldTeleporters[OverworldTeleportIndex.Gaia])},
 				{OverworldTeleportIndex.Onrac,Onrac},
 				{OverworldTeleportIndex.Lefein,Lefein},
 				{OverworldTeleportIndex.ConeriaCastle1,ConeriaCastle1},
@@ -439,6 +632,10 @@ namespace FF1Lib
 				{TeleportIndex.IceCave2, IceCave2},
 				{TeleportIndex.IceCave3, IceCave3},
 				{TeleportIndex.IceCavePitRoom, IceCavePitRoom},
+				{TeleportIndex.IceCave5, IceCave5},
+				{TeleportIndex.IceCave6, IceCave6},
+				{TeleportIndex.IceCave7, IceCave7},
+				{TeleportIndex.IceCave8, IceCave8},
 				{TeleportIndex.CastleOrdealsMaze, CastleOrdealsMaze},
 				{TeleportIndex.CastleOrdealsTop, CastleOrdealsTop},
 				//{TeleportIndex.CastleOrdealsBack, CastleOrdealsBack},
@@ -459,6 +656,14 @@ namespace FF1Lib
 				{TeleportIndex.SkyPalace3, SkyPalace3},
 				{TeleportIndex.SkyPalaceMaze, SkyPalaceMaze},
 				{TeleportIndex.SkyPalaceTiamat, SkyPalaceTiamat}
+			};
+		public Dictionary<TeleportIndex, TeleportDestination> IceCaveLoopTeleporters =>
+			new Dictionary<TeleportIndex, TeleportDestination>
+			{
+				{TeleportIndex.IceCave5, new TeleportDestination(StandardMapTeleporters[TeleportIndex.IceCave5])},
+				{TeleportIndex.IceCave6, new TeleportDestination(StandardMapTeleporters[TeleportIndex.IceCave6])},
+				{TeleportIndex.IceCave7, new TeleportDestination(StandardMapTeleporters[TeleportIndex.IceCave7])},
+				{TeleportIndex.IceCave8, new TeleportDestination(StandardMapTeleporters[TeleportIndex.IceCave8])},
 			};
 	}
 }

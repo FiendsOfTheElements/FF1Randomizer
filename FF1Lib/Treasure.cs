@@ -26,11 +26,11 @@ namespace FF1Lib
 													IItemPlacementFlags flags,
 													IncentiveData incentivesData,
 													ItemShopSlot caravanItemLocation,
-													OverworldMap overworldMap,
+													Overworld overworld,
 													Teleporters teleporters,
 													ISanityChecker checker)
 		{
-			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements = overworldMap.FullLocationRequirements;
+			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements = overworld.OverworldMap.FullLocationRequirements;
 			//Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
 
 			var vanillaNPCs = !(flags.NPCItems ?? false) && !(flags.NPCFetchItems ?? false);
@@ -46,8 +46,8 @@ namespace FF1Lib
 				Debug.Assert(shardsAdded == TotalOrbsToInsert);
 			}
 
-			ItemPlacement placement = ItemPlacement.Create(flags, incentivesData, treasurePool, caravanItemLocation, overworldMap, checker);
-			var placedItems = placement.PlaceSaneItems(rng, this);
+			ItemPlacement placement = ItemPlacement.Create(flags, incentivesData, treasurePool, caravanItemLocation, overworld.OverworldMap, checker);
+			var placedItems = placement.PlaceSaneItems(rng, overworld.Locations, this);
 			
 			// Output the results to the ROM
 			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && (!vanillaNPCs || x is TreasureChest)))

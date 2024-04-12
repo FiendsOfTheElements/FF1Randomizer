@@ -44,12 +44,12 @@
 			return UnusedTilesbyTileSet;
 		}
 
-		public void NoOverworld(OverworldMap overworldmap, List<Map> maps, TalkRoutines talkroutines, NPCdata npcdata, List<MapIndex> flippedmaps, Flags flags, MT19337 rng)
+		public void NoOverworld(List<List<byte>> decompressedMap, List<Map> maps, TalkRoutines talkroutines, NPCdata npcdata, List<MapIndex> flippedmaps, Flags flags, MT19337 rng)
 		{
 			// Exclude Waterfall, since it doesn't matter if it's flipped or not
 			flippedmaps = flippedmaps.Where(x => x != MapIndex.Waterfall).ToList();
 
-			LoadInTown(overworldmap);
+			LoadInTown(decompressedMap);
 			ApplyMapMods(maps, flippedmaps, (bool)flags.LefeinSuperStore);
 			UpdateInRoomTeleporters();
 			CreateTeleporters(maps, flippedmaps, rng);
@@ -57,16 +57,16 @@
 			UpdateBackgrounds();
 			if ((bool)flags.Entrances || (bool)flags.Towns)
 			{
-				ShuffleFloor(maps, flags, overworldmap, npcdata, flippedmaps, rng);
+				ShuffleFloor(maps, flags, npcdata, flippedmaps, rng);
 			}
 		}
 
-		public void LoadInTown(OverworldMap overworldmap)
+		public void LoadInTown(List<List<byte>> decompressedMap)
 		{
 			var townTileList = new List<byte> { 0x49, 0x4A, 0x4C, 0x4D, 0x4E, 0x5A, 0x5D, 0x6D, 0x02 };
 			var townPosList = new List<(byte, byte)> { (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00) };
 
-			var decompressedMap = overworldmap.MapBytes;
+			//var decompressedMap = overworldmap.MapBytes;
 
 			for (int x = 0; x < decompressedMap[0].Count; x++)
 			{
@@ -970,7 +970,7 @@
 			PutInBank(lut_BtlBackdrops_Bank, lut_BtlBackdrops, backgroundList.Select(x => (byte)x.Item2).ToArray());
 		}
 
-		public void ShuffleFloor(List<Map> maps, Flags flags, OverworldMap overworldmap, NPCdata npcdata, List<MapIndex> flippedmaps, MT19337 rng)
+		public void ShuffleFloor(List<Map> maps, Flags flags, NPCdata npcdata, List<MapIndex> flippedmaps, MT19337 rng)
 		{
 			int FlippedX(MapIndex map, int pos) => flippedmaps.Contains(map) ? 0x3F - pos : pos;
 

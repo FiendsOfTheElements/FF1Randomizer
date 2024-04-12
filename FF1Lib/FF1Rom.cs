@@ -449,6 +449,7 @@ public partial class FF1Rom : NesRom
 	}
 
 
+	//public void WriteSeedAndFlags(string seed, Flags flags, Flags flagsforrng, Flags umodifiedflags, string resourcepackhash, uint last_rng_value)
 	public void WriteSeedAndFlags(string seed, Flags flags, Flags flagsforrng, Flags umodifiedflags, string resourcepackhash, uint last_rng_value)
 	{
 

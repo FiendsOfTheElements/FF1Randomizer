@@ -110,10 +110,12 @@ namespace FF1Lib
 			{TrapTileOffsets.GargoyleToF2,  new List<MapIndex>{MapIndex.TempleOfFiends} },
 			{TrapTileOffsets.Phantom,  new List<MapIndex>{MapIndex.TempleOfFiendsRevisited1F, MapIndex.TempleOfFiendsRevisited2F, MapIndex.TempleOfFiendsRevisited3F, MapIndex.TempleOfFiendsRevisitedEarth, MapIndex.TempleOfFiendsRevisitedFire, MapIndex.TempleOfFiendsRevisitedWater, MapIndex.TempleOfFiendsRevisitedAir}}
 		};
-		public void UpdateTrapTiles(FF1Rom rom, ZoneFormations zoneformations, Settings settings, MT19337 rng)
+		//public void UpdateTrapTiles(FF1Rom rom, ZoneFormations zoneformations, Settings settings, MT19337 rng)
+		public void UpdateTrapTiles(FF1Rom rom, ZoneFormations zoneformations, Flags flags, MT19337 rng)
 		{
 			UpdateTrapTilesCode(rom);
-			TrapTileMode mode = (TrapTileMode)settings.GetInt("EnemyTrapTiles");
+			//TrapTileMode mode = (TrapTileMode)settings.GetInt("EnemyTrapTiles");
+			TrapTileMode mode = flags.EnemyTrapTiles;
 			if (mode == TrapTileMode.Vanilla)
 			{
 				return;
@@ -124,7 +126,8 @@ namespace FF1Lib
 			}
 			else
 			{
-				ShuffleTrapTiles(zoneformations, rng, mode, settings.GetBool("FightBahamut"));
+				//ShuffleTrapTiles(zoneformations, rng, mode, settings.GetBool("FightBahamut"));
+				ShuffleTrapTiles(zoneformations, rng, mode, (bool)flags.FightBahamut);
 			}
 
 		}

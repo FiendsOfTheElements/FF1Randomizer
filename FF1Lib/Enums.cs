@@ -161,6 +161,7 @@ namespace FF1Lib
 		TitansTunnelEast,
 		TitansTunnelWest,
 		TitansTunnelRoom,
+		IceCaveDummy,
 		None
 	}
 	public enum ExitTeleportIndex : byte

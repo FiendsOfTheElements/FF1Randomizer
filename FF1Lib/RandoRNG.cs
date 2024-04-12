@@ -17,7 +17,7 @@ namespace FF1Lib
 		//private MT19337 asyncRng;
 
 		//private void GenerateRng(Settings settings, Blob seed)
-		private void GenerateRng(Flags flags, Blob seed)
+		private Blob GenerateRng(Flags flags, Blob seed)
 		{
 			// to review 
 			//if (settings.GetInt("OwMapExchange") == (int)OwMapExchanges.GenerateNewOverworld || settings.GetInt("OwMapExchange") == (int)OwMapExchanges.LostWoods)
@@ -69,7 +69,7 @@ namespace FF1Lib
 			// Back up Rng so that fun flags are uniform when different ones are selected
 			//funRng = rng.Next();
 
-
+			return resourcesPackHash;
 		}
 
 	}

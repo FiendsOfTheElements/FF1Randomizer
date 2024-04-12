@@ -118,11 +118,15 @@ namespace FF1Lib
 		Dictionary<Item, int> minAccessibility;
 
 		SCLogic logic;
+		OwLocationData locations;
 		Dictionary<int, SCLogicRewardSource> logicSources;
 		SCRequirements freeRequirements;
+		bool test = false;
 
-		protected override ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx)
+		protected override ItemPlacementResult DoSanePlacement(MT19337 rng, OwLocationData _locations, ItemPlacementContext ctx)
 		{
+			locations = _locations;
+
 			exceptionWeights = _flags.AllowUnsafePlacement || (_flags.Entrances ?? false) ? UnsafeExceptionWeights : SafeExceptionWeights;
 			exceptionMinCycles = _flags.AllowUnsafePlacement || (_flags.Entrances ?? false) ? UnsafeExceptioMinCycles : SafeExceptioMinCycles;
 			minAccessibility = _flags.AllowUnsafePlacement || (_flags.Entrances ?? false) ? UnsafeMinAccessibility : SafeMinAccessibility;
@@ -146,7 +150,7 @@ namespace FF1Lib
 			bool placementFailed;
 			do
 			{
-				((SanityCheckerV2)_checker).Shiplocations.SetShipLocation(255);
+				((SanityCheckerV2)_checker).SetShipLocation(255);
 
 				BuildLogic(allRewardSources);
 
@@ -534,8 +538,13 @@ namespace FF1Lib
 
 		private void BuildLogic(List<IRewardSource> preBlackOrbLocationPool)
 		{
-			logic = new SCLogic(base._rom, ((SanityCheckerV2)base._checker).Main, preBlackOrbLocationPool, base._flags, false);
+			logic = new SCLogic(base._rom, ((SanityCheckerV2)base._checker).Main, preBlackOrbLocationPool, locations, base._flags, false);
 			logicSources = logic.RewardSources.ToDictionary(r => r.RewardSource.Address);
+			var missingsources = preBlackOrbLocationPool.Where(i => !logicSources.TryGetValue(i.Address, out var l)).ToList();
+			if (test)
+			{
+
+			}
 		}
 
 		//retrieve all accessible RewardSources(with no item in them) from the SanityChecker

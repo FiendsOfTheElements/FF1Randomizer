@@ -9,6 +9,8 @@ namespace FF1Lib
 		FF1Rom rom;
 		List<Map> maps;
 		OverworldMap overworldMap;
+		Overworld overworld;
+		Teleporters teleporters;
 
 		NPCdata npcdata;
 
@@ -40,23 +42,25 @@ namespace FF1Lib
 		ItemShopSlot declaredShopSlot;
 
 		OwLocationData locations;
-		public ShipLocations Shiplocations { get; private set; }
+		//public ShipLocations Shiplocations { get; private set; }
 
 		int maxqueue = 0;
 
 		public SCMain Main { get; private set; }
 
-		public SanityCheckerV2(List<Map> _maps, OverworldMap _overworldMap, NPCdata _npcdata, FF1Rom _rom, ItemShopSlot _declaredShopSlot, ShipLocations _shiplocations)
+		public SanityCheckerV2(List<Map> _maps, Overworld _overworld, NPCdata _npcdata, Teleporters _teleporters, FF1Rom _rom, ItemShopSlot _declaredShopSlot)
 		{
 			rom = _rom;
-			overworldMap = _overworldMap;
+			overworld = _overworld;
+			overworldMap = _overworld.OverworldMap;
 			maps = _maps;
 			npcdata = _npcdata;
+			teleporters = _teleporters;
 
-			locations = new OwLocationData(rom);
-			locations.LoadData();
+			locations = overworld.Locations;
+			//locations.LoadData();
 
-			Shiplocations = _shiplocations;
+			//Shiplocations = _shiplocations;
 
 			allTreasures = ItemLocations.AllTreasures.Select(r => r as TreasureChest).Where(r => r != null).ToDictionary(r => (byte)(r.Address - 0x3100));
 			allQuestNpcs = ItemLocations.AllNPCItemLocations.Select(r => r as MapObject).Where(r => r != null).ToDictionary(r => r.ObjectId);
@@ -64,7 +68,11 @@ namespace FF1Lib
 
 			UpdateNpcRequirements();
 
-			Main = new SCMain(_maps, _overworldMap, _npcdata, locations, _rom);
+			Main = new SCMain(_maps, overworldMap, _npcdata, teleporters, locations, _rom);
+		}
+		public void SetShipLocation(int dungeonindex)
+		{
+			overworld.SetShipLocation(dungeonindex);
 		}
 
 		private void UpdateNpcRequirements()
@@ -428,7 +436,7 @@ namespace FF1Lib
 
 		private void SetShipDock(byte dungeonIndex)
 		{
-			var coords = Shiplocations.SetShipLocation(dungeonIndex);
+			var coords = overworld.SetShipLocation(dungeonIndex);
 
 			SetShipDock(coords.OwLeft);
 			SetShipDock(coords.OwRight);
@@ -456,10 +464,12 @@ namespace FF1Lib
 			if (shopslot != null && shopslot.ShopIndex == poi.ShopId - 1)
 			{
 				ProcessItem(shopslot.Item, dungeonIndex);
+				shopslot.Entrance = (OverworldTeleportIndex)dungeonIndex;
 				rewardSources.Add(shopslot);
 			}
 			else if (declaredShopSlot.ShopIndex == poi.ShopId - 1)
 			{
+				declaredShopSlot.Entrance = (OverworldTeleportIndex)dungeonIndex;
 				rewardSources.Add(declaredShopSlot);
 				poi.Done = true;
 			}
@@ -470,11 +480,13 @@ namespace FF1Lib
 			if (chests.TryGetValue(poi.TreasureId, out var chest))
 			{
 				ProcessItem(chest.Item, dungeonIndex);
+				chest.Entrance = (OverworldTeleportIndex)dungeonIndex;
 				rewardSources.Add(chest);
 				poi.Done = true;
 			}
 			else if (allTreasures.TryGetValue(poi.TreasureId, out var chest1))
 			{
+				chest1.Entrance = (OverworldTeleportIndex)dungeonIndex;
 				rewardSources.Add(chest1);
 				poi.Done = true;
 			}
@@ -601,6 +613,7 @@ namespace FF1Lib
 				if (requirements.HasFlag(AccessRequirement.Bottle))
 				{
 					if (giveItem) ProcessItem(npc.Item, dungeonIndex);
+					npc.Entrance = (OverworldTeleportIndex)dungeonIndex;
 					rewardSources.Add(npc);
 					poi.Done = true;
 					return true;
@@ -611,6 +624,7 @@ namespace FF1Lib
 				if (princessRescued)
 				{
 					if (giveItem) ProcessItem(npc.Item, dungeonIndex);
+					npc.Entrance = (OverworldTeleportIndex)dungeonIndex;
 					rewardSources.Add(npc);
 					poi.Done = true;
 					return true;
@@ -621,6 +635,7 @@ namespace FF1Lib
 				if (slabTranslated)
 				{
 					if (giveItem) ProcessItem(npc.Item, dungeonIndex);
+					npc.Entrance = (OverworldTeleportIndex)dungeonIndex;
 					rewardSources.Add(npc);
 					poi.Done = true;
 					return true;
@@ -631,6 +646,7 @@ namespace FF1Lib
 				if (herbCheckedIn)
 				{
 					if (giveItem) ProcessItem(npc.Item, dungeonIndex);
+					npc.Entrance = (OverworldTeleportIndex)dungeonIndex;
 					rewardSources.Add(npc);
 					poi.Done = true;
 					return true;
@@ -641,6 +657,7 @@ namespace FF1Lib
 				if (princessRescued)
 				{
 					if (giveItem) ProcessItem(npc.Item, dungeonIndex);
+					npc.Entrance = (OverworldTeleportIndex)dungeonIndex;
 					rewardSources.Add(npc);
 					poi.Done = true;
 					return true;
@@ -651,6 +668,7 @@ namespace FF1Lib
 				if (vampireAccessible)
 				{
 					if (giveItem) ProcessItem(npc.Item, dungeonIndex);
+					npc.Entrance = (OverworldTeleportIndex)dungeonIndex;
 					rewardSources.Add(npc);
 					poi.Done = true;
 					return true;
@@ -659,6 +677,7 @@ namespace FF1Lib
 			else if (flag == ObjectId.None)
 			{
 				if (giveItem) ProcessItem(npc.Item, dungeonIndex);
+				npc.Entrance = (OverworldTeleportIndex)dungeonIndex;
 				rewardSources.Add(npc);
 				poi.Done = true;
 				return true;
