@@ -6,71 +6,6 @@ using System.IO.Compression;
 
 namespace FF1Lib
 {
-	public enum MapId : byte
-	{
-		Coneria = 0,
-		Pravoka,
-		Elfland,
-		Melmond,
-		CrescentLake,
-		Gaia,
-		Onrac,
-		Lefein,
-		ConeriaCastle1F,
-		ElflandCastle,
-		NorthwestCastle,
-		CastleOfOrdeals1F,
-		TempleOfFiends,
-		EarthCaveB1,
-		GurguVolcanoB1,
-		IceCaveB1,
-		Cardia,
-		BahamutsRoomB1,
-		Waterfall,
-		DwarfCave,
-		MatoyasCave,
-		SardasCave,
-		MarshCaveB1,
-		MirageTower1F,
-		ConeriaCastle2F,
-		CastleOfOrdeals2F,
-		CastleOfOrdeals3F,
-		MarshCaveB2,
-		MarshCaveB3,
-		EarthCaveB2,
-		EarthCaveB3,
-		EarthCaveB4,
-		EarthCaveB5,
-		GurguVolcanoB2,
-		GurguVolcanoB3,
-		GurguVolcanoB4,
-		GurguVolcanoB5,
-		IceCaveB2,
-		IceCaveB3,
-		BahamutsRoomB2,
-		MirageTower2F,
-		MirageTower3F,
-		SeaShrineB5,
-		SeaShrineB4,
-		SeaShrineB3,
-		SeaShrineB2,
-		SeaShrineB1,
-		SkyPalace1F,
-		SkyPalace2F,
-		SkyPalace3F,
-		SkyPalace4F,
-		SkyPalace5F,
-		TempleOfFiendsRevisited1F,
-		TempleOfFiendsRevisited2F,
-		TempleOfFiendsRevisited3F,
-		TempleOfFiendsRevisitedEarth,
-		TempleOfFiendsRevisitedFire,
-		TempleOfFiendsRevisitedWater,
-		TempleOfFiendsRevisitedAir,
-		TempleOfFiendsRevisitedChaos,
-		TitansTunnel
-	}
-
 	public enum Tile
 	{
 		RoomBackLeft = 0x00,
@@ -317,9 +252,6 @@ namespace FF1Lib
 		public const int MapObjSize = 4;
 		public const int MapObjCount = 0xD0;
 
-		public const int FirstBossEncounterIndex = 0x73;
-		public const int LastBossEncounterIndex = 0x7F;
-
 		const ushort TalkFight = 0x94AA;
 
 		private struct OrdealsRoom
@@ -328,7 +260,7 @@ namespace FF1Lib
 			public List<(int, int)> Teleporters;
 		}
 
-		public void ShuffleOrdeals(MT19337 rng, List<Map> maps)
+		public void ShuffleOrdeals(MT19337 rng, Teleporters teleporters, List<Map> maps)
 		{
 			// Here are all the teleporter rooms except the one you start in.
 			// The last one is not normally accessible in the game.  We'll rewrite the teleporter located in that
@@ -393,7 +325,7 @@ namespace FF1Lib
 
 			// First we choose a teleporter to link to the next room.
 			byte exit = 0x55;
-			var map = maps[(byte)MapId.CastleOfOrdeals2F];
+			var map = maps[(byte)MapIndex.CastleOrdeals2F];
 			for (int i = 0; i < rooms.Count; i++)
 			{
 				int teleporter = rng.Between(0, rooms[i].Teleporters.Count - 1);
@@ -449,14 +381,64 @@ namespace FF1Lib
 
 			// Now let's rewrite that teleporter.  The X coordinates are packed together, followed by the Y coordinates,
 			// followed by the map indices.  Maybe we'll make a data structure for that someday soon.
-			const byte LostTeleportIndex = 0x3C;
-			Put(TeleportOffset + LostTeleportIndex, new byte[] { 0x10 });
-			Put(TeleportOffset + TeleportCount + LostTeleportIndex, new byte[] { 0x12 });
+			// We did!
+			//const byte LostTeleportIndex = 0x3C;
+			teleporters.StandardMapTeleporters[TeleportIndex.CastleOrdeals12] = new TeleportDestination(teleporters.StandardMapTeleporters[TeleportIndex.CastleOrdeals12], new Coordinate(0x10, 0x12, CoordinateLocale.Standard));
+
+			//Put(TeleportOffset + LostTeleportIndex, new byte[] { 0x10 });
+			//Put(TeleportOffset + TeleportCount + LostTeleportIndex, new byte[] { 0x12 });
+		}
+		public void ShuffleLavaTiles(MT19337 rng, List<Map> maps)
+		{
+			List<MapIndex> lavaMaps = new() { MapIndex.GurguVolcanoB1, MapIndex.GurguVolcanoB2, MapIndex.GurguVolcanoB3, MapIndex.GurguVolcanoB4, MapIndex.GurguVolcanoB5 };
+
+			byte lavaTile = 0x3D;
+			byte encounterTile = 0x41;
+
+			foreach (var map in lavaMaps)
+			{
+				int lavacount = 0;
+				int enccount = 0;
+
+				List<SCCoords> tileCoords = new();
+				List<SCCoords> lavaCoords = new();
+				List<SCCoords> encounterCoords = new();
+
+				for (int x = 0; x < 0x40; x++)
+				{
+					for (int y = 0; y < 0x40; y++)
+					{
+						byte currentile = maps[(int)map].MapBytes[x, y];
+						if (currentile == lavaTile)
+						{
+							tileCoords.Add(new SCCoords(x, y));
+							lavacount++;
+						}
+						else if (currentile == encounterTile)
+						{
+							tileCoords.Add(new SCCoords(x, y));
+							enccount++;
+						}
+					}
+				}
+
+				for (int i = 0; i < lavacount; i++)
+				{
+					var lavatilecoord = tileCoords.SpliceRandom(rng);
+					maps[(int)map].MapBytes[lavatilecoord.X, lavatilecoord.Y] = lavaTile;
+				}
+
+				foreach (var coordleft in tileCoords)
+				{
+					maps[(int)map].MapBytes[coordleft.X, coordleft.Y] = encounterTile;
+				}
+			}
+
 		}
 
 		public void DoSkyCastle4FMaze(MT19337 rng, List<Map> maps)
 		{
-			var map = maps[(int)MapId.SkyPalace4F];
+			var map = maps[(int)MapIndex.SkyPalace4F];
 			var walls = Maze.DoSkyCastle4FMaze(rng);
 
 			// We make two passes and do vertical walls, then horizontal walls, because it works
@@ -509,7 +491,7 @@ namespace FF1Lib
 		public void ShuffleSkyCastle4F(MT19337 rng, List<Map> maps)
 		{
 			// Don't shuffle the return teleporter as Floor and Entrance shuffle might want to edit it.
-			var map = maps[(byte)MapId.SkyPalace4F];
+			var map = maps[(byte)MapIndex.SkyPalace4F];
 			var upTeleporter = (x: 0x23, y: 0x23);
 			var dest = GetSkyCastleFloorTile(rng, map);
 			SwapTiles(map, upTeleporter, dest);
@@ -553,8 +535,8 @@ namespace FF1Lib
 
 		public void EnableTitansTrove(List<Map> maps)
 		{
-			MoveNpc(MapId.TitansTunnel, 0, 4, 8, inRoom: false, stationary: true); // Move the Titan
-			maps[(byte)MapId.TitansTunnel][9, 3] = 0x3F; // Block the tunnel
+			MoveNpc(MapIndex.TitansTunnel, 0, 4, 8, inRoom: false, stationary: true); // Move the Titan
+			maps[(byte)MapIndex.TitansTunnel][9, 3] = 0x3F; // Block the tunnel
 		}
 
 		public void EnableGaiaShortcut(List<Map> maps)
@@ -564,29 +546,29 @@ namespace FF1Lib
 			{
 				for (int y = 36; y <= 47; y++)
 				{
-					maps[(byte)MapId.Gaia][y, x] = (byte)Tile.TownGrass;
+					maps[(byte)MapIndex.Gaia][y, x] = (byte)Tile.TownGrass;
 				}
 			}
 			for (int y = 44; y <= 47; y++)
 			{
-				maps[(byte)MapId.Gaia][y, 40] = (byte)Tile.TownGrass;
+				maps[(byte)MapIndex.Gaia][y, 40] = (byte)Tile.TownGrass;
 			}
 
 			// Restore building shadow
-			maps[(byte)MapId.Gaia][39, 41] = (byte)Tile.TownGrassShadow;
-			maps[(byte)MapId.Gaia][40, 41] = (byte)Tile.TownGrassShadowDiagonal;
+			maps[(byte)MapIndex.Gaia][39, 41] = (byte)Tile.TownGrassShadow;
+			maps[(byte)MapIndex.Gaia][40, 41] = (byte)Tile.TownGrassShadowDiagonal;
 
 			// In the spirit of Gaia's original landscaping, add some trees
 			// (Without these it looked like a too perfectly trimmed pathway)
 			for (int y = 41; y <= 44; y++)
 			{
-				maps[(byte)MapId.Gaia][y, 43] = (byte)Tile.TownBushes;
+				maps[(byte)MapIndex.Gaia][y, 43] = (byte)Tile.TownBushes;
 			}
-			maps[(byte)MapId.Gaia][36, 41] = (byte)Tile.TownTree;
-			maps[(byte)MapId.Gaia][38, 43] = (byte)Tile.TownTree;
-			maps[(byte)MapId.Gaia][45, 43] = (byte)Tile.TownTree;
-			maps[(byte)MapId.Gaia][45, 40] = (byte)Tile.TownBushes;
-			maps[(byte)MapId.Gaia][46, 40] = (byte)Tile.TownTree;
+			maps[(byte)MapIndex.Gaia][36, 41] = (byte)Tile.TownTree;
+			maps[(byte)MapIndex.Gaia][38, 43] = (byte)Tile.TownTree;
+			maps[(byte)MapIndex.Gaia][45, 43] = (byte)Tile.TownTree;
+			maps[(byte)MapIndex.Gaia][45, 40] = (byte)Tile.TownBushes;
+			maps[(byte)MapIndex.Gaia][46, 40] = (byte)Tile.TownTree;
 		}
 
 		public void MoveGaiaItemShop(List<Map> maps, MT19337 rng)
@@ -600,7 +582,7 @@ namespace FF1Lib
 			int xDisplacement = 33;
 
 			// place a tree in the old Item Shop grid first, it often looks better in the moved location
-			maps[(byte)MapId.Gaia][yItemShop, xItemShop + 4] = (byte)Tile.TownTree;
+			maps[(byte)MapIndex.Gaia][yItemShop, xItemShop + 4] = (byte)Tile.TownTree;
 
 			// something to put in place of the old item shop
 			var replacementTileOptions = new List<Tile> { Tile.TownWaterway, Tile.TownFlowers, Tile.TownGrass, Tile.TownStonePath, Tile.TownSand, Tile.TownTomb1, Tile.TownTree };
@@ -611,8 +593,8 @@ namespace FF1Lib
 				for (int x = xItemShop; x <= xItemShop + 4; x++)
 				{
 					// lift and shift
-					maps[(byte)MapId.Gaia][y + yDisplacement, x + xDisplacement] = maps[(byte)MapId.Gaia][y, x];
-					maps[(byte)MapId.Gaia][y, x] = (byte)replacementTile;
+					maps[(byte)MapIndex.Gaia][y + yDisplacement, x + xDisplacement] = maps[(byte)MapIndex.Gaia][y, x];
+					maps[(byte)MapIndex.Gaia][y, x] = (byte)replacementTile;
 				}
 			}
 		}
@@ -628,14 +610,14 @@ namespace FF1Lib
 				Blob.FromHex("1D4F5051541D525357581D021D595A5B5E1D5C5D61621D02"),
 			};
 			// place
-			maps[(int)MapId.Lefein].Put((0x28, 0x01), superStore.ToArray());
+			maps[(int)MapIndex.Lefein].Put((0x28, 0x01), superStore.ToArray());
 			// cleanup (removes single tree)
-			maps[(int)MapId.Lefein][0x00, 0x34] = (byte)Tile.TownGrass;
+			maps[(int)MapIndex.Lefein][0x00, 0x34] = (byte)Tile.TownGrass;
 		}
 
 		public void EnableLefeinShops(List<Map> maps)
 		{
-			var lefein = maps[(byte)MapId.Lefein];
+			var lefein = maps[(byte)MapIndex.Lefein];
 			lefein[0x05, 0x11] = 0x25; // Inn Sign
 			lefein[0x06, 0x11] = 0x71; // Crescent Lake Inn
 			lefein[0x05, 0x15] = 0x1A; // Clinic Sign
@@ -644,7 +626,7 @@ namespace FF1Lib
 
 		public void EnableMelmondClinic(List<Map> maps)
 		{
-			var melmond = maps[(byte)MapId.Melmond];
+			var melmond = maps[(byte)MapIndex.Melmond];
 			melmond[0x09, 0x1A] = 0x17; // Roof top
 			melmond[0x09, 0x1B] = 0x17;
 			melmond[0x09, 0x1C] = 0x17;
@@ -657,7 +639,7 @@ namespace FF1Lib
 			melmond[0x0B, 0x1C] = 0x1D;
 			melmond[0x0B, 0x1D] = 0x02; // Corner shadow
 		}
-		public MapId RandomVampireAttack(List<Map> maps, bool lefeinHospitality, bool includeConeria, MT19337 rng)
+		public MapIndex RandomVampireAttack(List<Map> maps, bool lefeinHospitality, bool includeConeria, MT19337 rng)
 		{
 			// Essentially picks a random town to have the vampire attack rather than Melmond.
 			// I mean, it could randomly pick Melmond in which case it's just vanilla.
@@ -674,52 +656,52 @@ namespace FF1Lib
 			const string blighted_gaia = "474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747470F0F0F0F0F0F47474747474747474747474747474747474747474747474747474747474747474747474747470047474747474747474730303030474747470F0F0F0F0F0F0F0F0F0F0F474747474747470F0F0F0F0F0F0F0F0F0F0F0F4747474747474747474747474747474747474747474747474747474747474747470F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F00000000000000004747474747474747474747474747474747470F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0000303030000047474747474747474747474730303030300F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F00000047474747474747474747474747470F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F00474747474747474747473030300F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F4747474747474747474747470F0F0F0F0F0E0E0E0E0E0E0E0E0E0E0E0E0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F474747474747474747470F0F0F0F0F0F0E3030303030323210103230300E0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0E0E0E0E0E0E0F0F0F0F0F0F0F0F0F0F4747474747474747470F0F0F0F0F0F0F000F31000E0E32101815180E0F000E0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0E2727272727270E0F0F0F0F0F0F0F0F0F4747474747474747470F0F0F0F0F0F0E000F00000032101018181B010F00000E0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F27272727272727270F0F0F0F0F0F0F0F0F4747474747474747470F0F0F0F0F0E00000F00000000321C161C1C020F000E000E0F0F0F0F0F0F0F0F0F0F0F0F0F0F27272727272727270F0F0F0F0F0F0F0F0F4747474747474747470F0F0F0F0E00000030300F00000F0F100F0F000F000000000E0F0F0E0E0E0E0F0F0F0F0F0F0F27272727272727270F0F0F0F0F0F0F0F0F4747474747474747470E0F0F0F0000000000320F00000000100000003200000000000E0E2F2F2F2F0F0F0F0F0F0F0F0E2727272727270F0F0F0F0F0F0F0F0F0F474747474747474747320E0E0F0000003200003030303030113030323000000E000E00002F2F2F2F0F0F0F0F0F0F0F0F0E000000000E0F0F0F0F0F0F0F0F0F0F4747474747474747470000000E0000323200000000000000100000000000000000000032000000000E0F0F0F0F0F0F0F0F0E000E000F0E0F0F0F0F0F0F0F0F0F47474747474747474700320032000000000000000000320010000000000F323200000E0000000E00000E0F0F0F0F0F0F0E0000000E0E0F0F0F0F0F0F0F0F0F0F4747474747474747470F3200000000000000000000000000320000000F0F0F0F320000000F0F000000000F0F0F0F0F0F000E000E000F0F0F0F0F0F0F0F0F0F0E4747474747474747470F0F0000003200001110101010101032320F0F0F0F0F0F0F0F0F0F0F0F000000000F0F0F0F0F0E00000000000E0F0F0F0F0E0E0E0E0E004747474747474747470F0F0F00323200323200000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0E00000F0F0F0F0F0F0000000E0000000E0E0E0E00000E0000004747474747474747470F0F0F0F0F0F320032000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F00000E0F0F0F0F0F0F00000E0000000000000000000000000E004747474747474747470F0F0F0F0F0F0F00100F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0E0000000F0F0F0F0F0F0F00000000000E000F0F0F0F0F0F0F0F004747474747474747470F0F0F0F0F0F0F00100F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0E0000000F0F0F0F0F0F0F0F0F00000E00000F0F0F0F0F0F0F0F0F0F4747474747474747470F0F0F0F0E0E0F0F100F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000E00000F0F0F0F0F0F0F0F0F0F000000000F0F0F0F0F0F0F0F0F0F4747474747474747470F0F0F0E32000E0F100F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000000000F0F0F0F0F0F0F0F0F0E0000000F0F0F0F0F0F0F0F0F0F0F4747474747474747470F0F0E000000000E100F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F00000E0E0E0F0F0F0F0E0E0E00000F0F0F0F0F0F0F0F0F0F0F0F0F4747474747474747470F0E323232101010100F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F00000000000E0E0E0E000000000F0F0F0F0F0F0F0F0F0F0F0F0F0F4747474747474747470F32320E10171532100F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F00000000000E0000000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F4747474747474747470F0E103232181801100F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000E000000000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F4747474747474747470F00320E101D1D02100F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000000000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F4747474747474747470F0E323210303030100F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0E0F0F0E0E0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0E4747474747474747470F0E131032101010140F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000E0E00000E0E0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0E0E0E004747474747474747470F0F00001000320F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0E001717171717000E0F0F0F0F0F0F0F0F0F0F0F0F0F0F0E000000004747474747474747470F0F0F0010000F0F0F0F0F0F0F0E0E0E0F0F0F0F0F0F0F0F0E0E0E000E182318241801000F0F0F0F0F0F0F0F0F0F0F0F0E0E00000000004747474747474747470F0F0F0F10000F0F0F0F0F0E0E2F2F2F0E0F0F0F0F0F0F0E00000000321D561D601D020E0F0F0F0F0F0F0F0F0F0F0F0E000000000000004747474747474747470F0F0E0E10000F0F0F0F0E0000000000000E0E0E0E0E0E00320E0E0E00003900390000320F0F0F0F0F0F0F0F0F0F0E000000000E0E0E0E4747474747474747470F0F3200100F0F0F0E0E0000000000000000000000003232320032000000320E0E0E00000F0F0F0F0F0F0F0E0E0E000000000E000000004747474747474747470F0F3232320F0F0E000000002F2F2F2F2F000000000032003200320E0E0E0E000000320F0F0F0F0F0F0F0E0000000000000000000000004747474747474747470F0F0F00100E0E00000F0F0F2F2F2F2F2F0F0F0F0F0F0F3200000032000E0000000F0F0F0F0F0F0F0F0E000000000000000000000000004747474747474747470E0F0F32103200000F0F0F0F0F2F322F0E0E0F0F0F0F0F0F000032000000000F320F0F0F0F0F0F0F0E00000000000E0E0E320E320E0000474747474747474747000F0F0F100000000F0F0F0F0E00320000000E0E0E0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0E0E0E000000000000003200323200000E00474747474747474747000E0F0F1000320F0F0E0E0E003232320000000000320E0E0E0E0E0E0E0E0E0E0E0E0E0E0E00320000000000000000003200000000000E47474747474747474700000F0E3232320F0F1010101010323232101032323210101010101010101010101010101032101010101032321032101010101010101247474747474747474700000F001032000F0F1010101010101010321010321010171717171717171010321010103232101010103210321010101010101010101047474747474747474700000E0010000F0E0E1010171717171717171717000A031818181B181818050B001010102F0E0E171717172F2F0F301717171730300F104747474747474747470000000010000E00001010182118181818182218010A0F1C1C1C251C1C1C010C001010102F000018231818012F0F111818241815120F1047474747474747474730300000103030303010101D3E1D1C1D1C1D4A1D020A0E1D1D1D721D1D1D020C001010102F00001D551D1D02320F131C1C5F1C16140F1047474747474747474700000000103200000010102F3C2F2F2F2F323800000607070709380607070709003210100E0E0E0E380E0E0E0E0E303030383030300E104747474747474747471010323210323210321010101010101032321010101032101010101032101010101010101010101010101010101010101032101032101047474747474747474732101032101032101010101032101032101010101010103210101010101010103210321010101010101010101010323232101010323214474747474747474747000000000000003200000032320000000032000000000000000000000000003232000000000000000000000010100032000000000000004747474747474747473030303030303030303030303200000000000000000000000032003030303030303030303030303030303000101000303030303030300047474747474747474700000000000000000000000000320000003200000000000000323200000000000000000000000000000000001010000000000000000000474747474747474747000000000000000000000E0E0E0E0E0E0E0E00000000000032000000000000000E0E0E0E0E0E0000000000001010101010101010101012474747474747474747000000000000000000000000000000000000000000000000000000000000000000000000000000000000000013101010101010101010104747474747474747470000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000101047474747474747474700004700003030303030303000000030303030303030303000000000303030303000000000303030303030303030303030303030001314474747474747474747474747474747474747474747474747474747474747470047474747474747474747474747474747474747474747474747474747474747474747";
 			const string blighted_lefein = "000000000000000000000000000000000000000000000047474747474747474700000000000000000000000000000000000000000E0000000000000000000000000000000000000000000000000000000000000000000047474747474747474700000E000E000000000000000000000000000E0E0017171717000E000000000047000A040404040504040404040404040B47474747470A040404040404040404040E0E0E0E0E00000000000000000000000E0E0E001A23241A010E0E0000000047000A10101010101010101010101010030404040404051010101010101010101010100E0E32320000000000000000000E000E00001C58621C020E000000000047000A1010171510171717171717171017171517151715101717171010171510171717103232323200320000000000000000000000000000000000000000000000000A10101818151B181B181B181B151B181818161818151B181B15101818151B181B150E00323232000032320000000000000E0E000E00000E0E000000000000000A101D161C161C1D1C1D1C1D1C161D161C161D161C161C1D1C161D161C161C1D1C160B0000000000000032323232323200000E0E0000000E00000000000000000A102F002F102F002F002F002F1032322F102F002F102F002F102F002F102F002F100E00000000000000323232320000000000000000000000000000000000000A1010103232101010101010323232323232101010101010101010101010101010100E0E000000320000320000000000000000000000000000000000000000000A103232320E0E0E0E0E0E0E0E0E0E0E1032320E0E0E0E0E0E0E0E0E0E0E0E1032100B0E0E3232003200000000000000000000000000000000000000000000000A323232100E0304040404040405100E1010100E10030404040404040405323232100C0E2F2F2F2F002F2F2F2F002F2F2F2F002F2F2F2F002F2F2F2F000000000A10282727272727272727272727100E1010100E10282727272727272727272727100C002F2F2F2F002F2F2F2F002F2F2F2F002F2F2F2F002F2F2F2F000000000A32283232321010101010101028100E1010100E10283232321010321010101028100C002F2F2F2F002F2F2F2F002F2F2F2F002F2F2F2F002F2F2F2F000000000A3228101010103232103232102810101010101010281010323232103232101028100C002F2F2F2F002F2F2F2F002F2F2F2F002F2F2F2F002F2F2F2F000047470A102A2A2A2A32322A2A10323228103232320E1010281010102A2A2A2A2A2A2A2A100C00000000000000000000000000000000000000000000000000000000000A1028272732321010103232102832323210100E10283210101010323232282727100C00000000000000000000000047000000000000000000000000000047470A1028272732323210323232322810101032101010283232101032321010282727320C47474747474747474747474747000000000000000000000000000000000A102A2A2A2A2A2A2A2A10323228320E323232321028323232322A2A2A32282727320C47474747474747474747474747000000000000000000000000000000000A1028272727271010101010102810100E10323232283232321010102827272727320C47474747474747474747474747000000000000000000000000000000000A3228272727271032323232102810101010101010281010101010102827272727100C47474747474747474747474747000000000000000000000000000000000A32282727272732323210101028100E1010100E10283232102A2A2A2A2A2A2A2A100C47474747474747474747474747000000000000000000000000000000000A32282727272727272710101029100E1032320E10281032322827272727272727100C47474747474747474747474747470000000000000000000000000000000A32282727272727272727272727100E1010320E10282727272727272727272727100C4747474747474747474747474747000000000000000000000000000000060707070707070707070707070813101010101014060707070707070707070707070947474747474747474747474747470000000000000000000000000000004747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474700000000000000000000000000000047474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747000000000000000000000000000000474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747470000000000000000000000000000004747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474700000000000000000000000000000047474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747000000000000000000000000000000474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747470000000000000000000000000000004747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474700000000000000000000000000000047474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747000000000000000000000000004700474747474747474747474747474747004747474747474747474747474747470047474747474747474747474747474700474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747004747474747474747474747474747470047474747474747474747474747474700474747474747474747474747474747004747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747";
 
-			MapId selectedMap = MapId.Melmond;
+			MapIndex selectedMap = MapIndex.Melmond;
 
 			// Roll 1d8 to see which town was destroyed.
 			int start = includeConeria ? 1 : 2;
 			switch (Rng.Between(rng, start, 8))
 			{
 				case 1:
-					maps[(byte)MapId.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
-					maps[(byte)MapId.Coneria] = new Map(Blob.FromHex(blighted_coneria).ToBytes());
-					selectedMap = MapId.Coneria;
+					maps[(byte)MapIndex.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
+					maps[(byte)MapIndex.ConeriaTown] = new Map(Blob.FromHex(blighted_coneria).ToBytes());
+					selectedMap = MapIndex.ConeriaTown;
 					// The "repaired Melmond" map defaults to having Coneria's item shop.
 					break;
 				case 2:
-					maps[(byte)MapId.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
-					maps[(byte)MapId.Pravoka] = new Map(Blob.FromHex(blighted_pravoka).ToBytes());
+					maps[(byte)MapIndex.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
+					maps[(byte)MapIndex.Pravoka] = new Map(Blob.FromHex(blighted_pravoka).ToBytes());
 					// Replace the item shop in "repaired Melmond" with the blighted town's item shop.
-					maps[(byte)MapId.Melmond][0x0F, 0x1B] = 0x78;
-					selectedMap = MapId.Pravoka;
+					maps[(byte)MapIndex.Melmond][0x0F, 0x1B] = 0x78;
+					selectedMap = MapIndex.Pravoka;
 					break;
 				case 3:
-					maps[(byte)MapId.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
-					maps[(byte)MapId.Elfland] = new Map(Blob.FromHex(blighted_elfland).ToBytes());
-					maps[(byte)MapId.Melmond][0x0F, 0x1B] = 0x79;
-					selectedMap = MapId.Elfland;
+					maps[(byte)MapIndex.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
+					maps[(byte)MapIndex.Elfland] = new Map(Blob.FromHex(blighted_elfland).ToBytes());
+					maps[(byte)MapIndex.Melmond][0x0F, 0x1B] = 0x79;
+					selectedMap = MapIndex.Elfland;
 					break;
 				case 4:
-					maps[(byte)MapId.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
-					maps[(byte)MapId.CrescentLake] = new Map(Blob.FromHex(blighted_crescent).ToBytes());
-					maps[(byte)MapId.Melmond][0x0F, 0x1B] = 0x7A;
-					selectedMap = MapId.CrescentLake;
+					maps[(byte)MapIndex.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
+					maps[(byte)MapIndex.CrescentLake] = new Map(Blob.FromHex(blighted_crescent).ToBytes());
+					maps[(byte)MapIndex.Melmond][0x0F, 0x1B] = 0x7A;
+					selectedMap = MapIndex.CrescentLake;
 					break;
 				case 5:
-					maps[(byte)MapId.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
-					maps[(byte)MapId.Gaia] = new Map(Blob.FromHex(blighted_gaia).ToBytes());
-					maps[(byte)MapId.Melmond][0x0F, 0x1B] = 0x7B;
-					selectedMap = MapId.Gaia;
+					maps[(byte)MapIndex.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
+					maps[(byte)MapIndex.Gaia] = new Map(Blob.FromHex(blighted_gaia).ToBytes());
+					maps[(byte)MapIndex.Melmond][0x0F, 0x1B] = 0x7B;
+					selectedMap = MapIndex.Gaia;
 					break;
 				case 6:
-					maps[(byte)MapId.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
-					maps[(byte)MapId.Onrac] = new Map(Blob.FromHex(blighted_onrac).ToBytes());
-					maps[(byte)MapId.Melmond][0x0F, 0x1B] = 0x7C;
-					selectedMap = MapId.Onrac;
+					maps[(byte)MapIndex.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
+					maps[(byte)MapIndex.Onrac] = new Map(Blob.FromHex(blighted_onrac).ToBytes());
+					maps[(byte)MapIndex.Melmond][0x0F, 0x1B] = 0x7C;
+					selectedMap = MapIndex.Onrac;
 					break;
 				case 7:
-					maps[(byte)MapId.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
-					maps[(byte)MapId.Lefein] = new Map(Blob.FromHex(blighted_lefein).ToBytes());
+					maps[(byte)MapIndex.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
+					maps[(byte)MapIndex.Lefein] = new Map(Blob.FromHex(blighted_lefein).ToBytes());
 					// If Lefein is attacked when Hospitality is active, restore the Inn (Clinic is still destroyed)
 					if (lefeinHospitality)
 					{
@@ -729,13 +711,13 @@ namespace FF1Lib
 							Blob.FromHex("1B251B"),
 							Blob.FromHex("1C711C"),
 						};
-						maps[(int)MapId.Lefein].Put((0x10, 0x04), restoredInn.ToArray());
+						maps[(int)MapIndex.Lefein].Put((0x10, 0x04), restoredInn.ToArray());
 					}
-					selectedMap = MapId.Lefein;
+					selectedMap = MapIndex.Lefein;
 					// Lefein never had an item shop so we fall back on the default Coneria.
 					break;
 				case 8:
-					selectedMap = MapId.Melmond;
+					selectedMap = MapIndex.Melmond;
 					break;
 					// Case 8 is that Melmond stays the blighted one so nothing needs to be done.
 			}
@@ -787,7 +769,7 @@ namespace FF1Lib
 
 				// Clinic
 				highWallTiles.Add((0x1A, 0x09));
-				maps[(int)MapId.Pravoka][0x08, 0x1A] = 0x1B;
+				maps[(int)MapIndex.Pravoka][0x08, 0x1A] = 0x1B;
 
 				// Item Shop
 				roofTiles.Add((0x05, 0x016));
@@ -806,29 +788,29 @@ namespace FF1Lib
 			// wipe the map first
 			foreach (var coord in roofTiles)
 			{
-				maps[(int)MapId.Pravoka][coord.y, coord.x] = 0x18;
+				maps[(int)MapIndex.Pravoka][coord.y, coord.x] = 0x18;
 			}
 
 			foreach (var coord in wallTiles)
 			{
-				maps[(int)MapId.Pravoka].Put(coord, new List<Blob> { Blob.FromHex("1D1D1D") }.ToArray());
+				maps[(int)MapIndex.Pravoka].Put(coord, new List<Blob> { Blob.FromHex("1D1D1D") }.ToArray());
 			}
 
 			foreach (var coord in highWallTiles)
 			{
-				maps[(int)MapId.Pravoka].Put(coord, new List<Blob> { Blob.FromHex("1D"), Blob.FromHex("16") }.ToArray());
+				maps[(int)MapIndex.Pravoka].Put(coord, new List<Blob> { Blob.FromHex("1D"), Blob.FromHex("16") }.ToArray());
 			}
 
 			// then place the shops
 			foreach (var shop in shopTiles)
 			{
 				var coord = validLocations.SpliceRandom(rng);
-				maps[(int)MapId.Pravoka][coord.y, coord.x] = shop.sign;
-				maps[(int)MapId.Pravoka][coord.y + 1, coord.x] = shop.door;
+				maps[(int)MapIndex.Pravoka][coord.y, coord.x] = shop.sign;
+				maps[(int)MapIndex.Pravoka][coord.y + 1, coord.x] = shop.door;
 			}
 		}
 
-		public void WarMECHNpc(WarMECHMode mode, NPCdata npcpdata, MT19337 rng, List<Map> maps, bool deepDungeon, MapId warmechDDmap)
+		public void WarMECHNpc(WarMECHMode mode, NPCdata npcpdata, ZoneFormations zoneformations, MT19337 rng, List<Map> maps, bool deepDungeon, MapIndex warmechDDmap)
 		{
 			const byte UnusedTextPointer = 0xF7;
 			const byte WarMECHEncounter = 0x56;
@@ -859,10 +841,8 @@ namespace FF1Lib
 			InsertDialogs(UnusedTextPointer, dialogueStrings.PickRandom(rng));
 
 			// Get rid of random WarMECH encounters.  Group 8 is now also group 7.
-			var formationOffset = ZoneFormationsOffset + ZoneFormationsSize * (64 + (byte)MapId.SkyPalace5F);
-			var formations = Get(formationOffset, ZoneFormationsSize);
-			formations[6] = formations[7];
-			Put(formationOffset, formations);
+			var formation = zoneformations[64 + (byte)MapIndex.SkyPalace5F];
+			formation.Formations[6] = formation.Formations[7];
 
 			if (mode != WarMECHMode.Unleashed && mode != WarMECHMode.All)
 				MakeWarMECHUnrunnable();
@@ -870,18 +850,18 @@ namespace FF1Lib
 			if ((mode == WarMECHMode.Required || mode == WarMECHMode.All) && !deepDungeon)
 			{
 				// Can't use mapNpcIndex 0, that's the Wind ORB.
-				SetNpc(MapId.SkyPalace5F, 1, ObjectId.WarMECH, 0x07, 0x0E, inRoom: false, stationary: true);
+				SetNpc(MapIndex.SkyPalace5F, 1, ObjectId.WarMECH, 0x07, 0x0E, inRoom: false, stationary: true);
 
 				Data[0x029AB] = 0x14; // we can only change one color without messing up the Wind ORB.
 			}
 			if (mode == WarMECHMode.Patrolling || mode == WarMECHMode.All)
 			{
-				byte warmechMap = (byte)MapId.SkyPalace4F;
+				byte warmechMap = (byte)MapIndex.SkyPalace4F;
 
 				if (!deepDungeon)
 				{
 					var (x, y) = GetSkyCastleFloorTile(rng, maps[warmechMap]);
-					SetNpc((MapId)warmechMap, 0, ObjectId.WarMECH, x, y, inRoom: false, stationary: false);
+					SetNpc((MapIndex)warmechMap, 0, ObjectId.WarMECH, x, y, inRoom: false, stationary: false);
 				}
 				else
 				{
@@ -893,14 +873,14 @@ namespace FF1Lib
 			}
 		}
 
-		public void SetNpc(MapId mapId, NPC npc)
+		public void SetNpc(MapIndex MapIndex, NPC npc)
 		{
-		    SetNpc(mapId, npc.Index, npc.ObjectId, npc.Coord.x, npc.Coord.y, npc.InRoom, npc.Stationary);
+		    SetNpc(MapIndex, npc.Index, npc.ObjectId, npc.Coord.x, npc.Coord.y, npc.InRoom, npc.Stationary);
 		}
 
-		public void MoveNpc(MapId mapId, int mapNpcIndex, int x, int y, bool inRoom, bool stationary)
+		public void MoveNpc(MapIndex MapIndex, int mapNpcIndex, int x, int y, bool inRoom, bool stationary)
 		{
-			int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + mapNpcIndex) * MapSpriteSize;
+			int offset = MapSpriteOffset + ((byte)MapIndex * MapSpriteCount + mapNpcIndex) * MapSpriteSize;
 
 			byte firstByte = (byte)x;
 			firstByte |= (byte)(inRoom ? 0x80 : 0x00);
@@ -910,9 +890,9 @@ namespace FF1Lib
 			Data[offset + 2] = (byte)y;
 		}
 
-		public void SetNpc(MapId mapId, int mapNpcIndex, ObjectId mapObjId, int x, int y, bool inRoom, bool stationary)
+		public void SetNpc(MapIndex MapIndex, int mapNpcIndex, ObjectId mapObjId, int x, int y, bool inRoom, bool stationary)
 		{
-			int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + mapNpcIndex) * MapSpriteSize;
+			int offset = MapSpriteOffset + ((byte)MapIndex * MapSpriteCount + mapNpcIndex) * MapSpriteSize;
 
 			byte firstByte = (byte)x;
 			firstByte |= (byte)(inRoom ? 0x80 : 0x00);
@@ -923,13 +903,13 @@ namespace FF1Lib
 			Data[offset + 2] = (byte)y;
 		}
 
-		public NPC FindNpc(MapId mapId, ObjectId mapObjId)
+		public NPC FindNpc(MapIndex MapIndex, ObjectId mapObjId)
 		{
 			var tempNPC = new NPC();
 
 			for (int i = 0; i < MapSpriteCount; i++)
 			{
-				int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + i) * MapSpriteSize;
+				int offset = MapSpriteOffset + ((byte)MapIndex * MapSpriteCount + i) * MapSpriteSize;
 
 				if (Data[offset] == (byte)mapObjId)
 				{
@@ -944,12 +924,12 @@ namespace FF1Lib
 			return tempNPC;
 		}
 
-		public IEnumerable<(MapId, NPC)> FindNpc(ObjectId mapObjId)
+		public IEnumerable<(MapIndex, NPC)> FindNpc(ObjectId mapObjId)
 		{
 			var tempNPC = new NPC();
 
 			//not good, but quick
-			foreach (var mid in Enum.GetValues<MapId>())
+			foreach (var mid in Enum.GetValues<MapIndex>())
 			{
 				for (int i = 0; i < MapSpriteCount; i++)
 				{
@@ -970,11 +950,11 @@ namespace FF1Lib
 		}
 
 
-		public NPC GetNpc(MapId mapId, int position)
+		public NPC GetNpc(MapIndex MapIndex, int position)
 		{
 			var tempNPC = new NPC();
 
-			int offset = MapSpriteOffset + ((byte)mapId * MapSpriteCount + position) * MapSpriteSize;
+			int offset = MapSpriteOffset + ((byte)MapIndex * MapSpriteCount + position) * MapSpriteSize;
 
 			tempNPC.ObjectId = (ObjectId)Data[offset];
 			tempNPC.Index = position;
@@ -985,7 +965,7 @@ namespace FF1Lib
 			return tempNPC;
 		}
 
-		public List<NPC> GetNpcs(MapId mid, NPCdata npcdata)
+		public List<NPC> GetNpcs(MapIndex mid, NPCdata npcdata)
 		{
 		    var tempNPC = new NPC();
 		    var npcs = new List<NPC>();
@@ -1030,77 +1010,46 @@ namespace FF1Lib
 			}
 		}
 
-		public void ExpandNormalTeleporters()
-		{
-			// Code for extension is included in ExtraTrackingAndInitCode() in FF1Rom.cs
-			//  see 0F_9200_TeleportXYInroom.asm
-			const int BANK_TELEPORTINFO = 0x00;
-			const int BANK_EXTTELEPORTINFO = 0x0F;
-
-			const int lut_NormTele_X = 0xAD00;
-			const int lut_NormTele_Y = 0xAD40;
-			const int lut_NormTele_Map = 0xAD80;
-			const int NormTele_qty = 0x40;
-
-			const int lut_NormTele_X_ext = 0xB000;
-			const int lut_NormTele_Y_ext = 0xB100;
-			const int lut_NormTele_Map_ext = 0xB200;
-			//const int NormTele_ext_qty = 0x100;
-
-			var NormTele_X = GetFromBank(BANK_TELEPORTINFO, lut_NormTele_X, NormTele_qty);
-			var NormTele_Y = GetFromBank(BANK_TELEPORTINFO, lut_NormTele_Y, NormTele_qty);
-			var NormTele_Map = GetFromBank(BANK_TELEPORTINFO, lut_NormTele_Map, NormTele_qty);
-
-			PutInBank(BANK_EXTTELEPORTINFO, lut_NormTele_X_ext, NormTele_X);
-			PutInBank(BANK_EXTTELEPORTINFO, lut_NormTele_Y_ext, NormTele_Y);
-			PutInBank(BANK_EXTTELEPORTINFO, lut_NormTele_Map_ext, NormTele_Map);
-
-
-
-		}
-
-		public void BahamutB1Encounters(List<Map> maps)
+		public void BahamutB1Encounters(List<Map> maps, ZoneFormations zoneformations)
 		{
 			// Adds dragon-themed encounters to the long
 			// hallway to Bahamut's room
+			var formation = zoneformations[64 + (int)MapIndex.BahamutCaveB1];
 
-			var bahamutB1ZoneOffset = ZoneFormationsOffset + (ZoneFormationsSize * (64 + (int)MapId.BahamutsRoomB1));
-			var formation = Get(bahamutB1ZoneOffset, ZoneFormationsSize);
-			formation[0] = 0x2A + 0x80; // 2-4 Red D
-			formation[1] = 0x30 + 0x80; // 3-4 Frost D
-			formation[2] = 0x4B + 0x80; // 2-4 Zombie D
-			formation[3] = 0x4E + 0x80; // 2-3 Blue D
-			formation[4] = 0x59 + 0x80; // 2-4 Gas D
-			formation[5] = 0x4E + 0x80; // 2-3 Blue D
-			formation[6] = 0x59 + 0x80; // 2-4 Gas D
-			formation[7] = 0x77; // Tiamat 1 (!)
-			Put(bahamutB1ZoneOffset, formation);
+			formation.Formations[0] = 0x2A + 0x80; // 2-4 Red D
+			formation.Formations[1] = 0x30 + 0x80; // 3-4 Frost D
+			formation.Formations[2] = 0x4B + 0x80; // 2-4 Zombie D
+			formation.Formations[3] = 0x4E + 0x80; // 2-3 Blue D
+			formation.Formations[4] = 0x59 + 0x80; // 2-4 Gas D
+			formation.Formations[5] = 0x4E + 0x80; // 2-3 Blue D
+			formation.Formations[6] = 0x59 + 0x80; // 2-4 Gas D
+			formation.Formations[7] = 0x77; // Tiamat 1 (!)
 
-			Put(ThreatLevelsOffset + (int)MapId.BahamutsRoomB1 + 1, Blob.FromHex("18"));
+			Put(ThreatLevelsOffset + (int)MapIndex.BahamutCaveB1 + 1, Blob.FromHex("18"));
 
-			maps[(byte)MapId.BahamutsRoomB1][1, 1] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][1, 2] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][1, 3] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][2, 1] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][2, 3] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][3, 1] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][3, 2] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][3, 3] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][1, 1] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][1, 2] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][1, 3] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][2, 1] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][2, 3] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][3, 1] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][3, 2] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][3, 3] = (byte)Tile.CardiaEncounters;
 			for (int i = 4; i <= 0x32; i++)
 			{
-				maps[(byte)MapId.BahamutsRoomB1][i, 2] = (byte)Tile.CardiaEncounters;
+				maps[(byte)MapIndex.BahamutCaveB1][i, 2] = (byte)Tile.CardiaEncounters;
 			}
-			maps[(byte)MapId.BahamutsRoomB1][0x33, 1] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][0x33, 2] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][0x33, 3] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][0x34, 1] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][0x34, 2] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][0x34, 3] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][0x35, 1] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][0x35, 3] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][0x36, 1] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][0x36, 2] = (byte)Tile.CardiaEncounters;
-			maps[(byte)MapId.BahamutsRoomB1][0x36, 3] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][0x33, 1] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][0x33, 2] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][0x33, 3] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][0x34, 1] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][0x34, 2] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][0x34, 3] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][0x35, 1] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][0x35, 3] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][0x36, 1] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][0x36, 2] = (byte)Tile.CardiaEncounters;
+			maps[(byte)MapIndex.BahamutCaveB1][0x36, 3] = (byte)Tile.CardiaEncounters;
 		}
 
 		public void DragonsHoard(List<Map> maps, bool enable)
@@ -1111,45 +1060,45 @@ namespace FF1Lib
 
 			if (enable)
 			{
-				maps[(byte)MapId.BahamutsRoomB2][1, 17] = (byte)Tile.CardiaCandles;
-				maps[(byte)MapId.BahamutsRoomB2][1, 18] = (byte)Tile.CardiaChest1;
-				maps[(byte)MapId.BahamutsRoomB2][1, 19] = (byte)Tile.CardiaChest2;
-				maps[(byte)MapId.BahamutsRoomB2][1, 20] = (byte)Tile.CardiaChest3;
-				maps[(byte)MapId.BahamutsRoomB2][1, 21] = (byte)Tile.CardiaChest4;
-				maps[(byte)MapId.BahamutsRoomB2][1, 22] = (byte)Tile.CardiaChest5;
-				maps[(byte)MapId.BahamutsRoomB2][1, 23] = (byte)Tile.CardiaChest6;
-				maps[(byte)MapId.BahamutsRoomB2][1, 24] = (byte)Tile.CardiaChest7;
-				maps[(byte)MapId.BahamutsRoomB2][1, 25] = (byte)Tile.CardiaCandles;
+				maps[(byte)MapIndex.BahamutCaveB2][1, 17] = (byte)Tile.CardiaCandles;
+				maps[(byte)MapIndex.BahamutCaveB2][1, 18] = (byte)Tile.CardiaChest1;
+				maps[(byte)MapIndex.BahamutCaveB2][1, 19] = (byte)Tile.CardiaChest2;
+				maps[(byte)MapIndex.BahamutCaveB2][1, 20] = (byte)Tile.CardiaChest3;
+				maps[(byte)MapIndex.BahamutCaveB2][1, 21] = (byte)Tile.CardiaChest4;
+				maps[(byte)MapIndex.BahamutCaveB2][1, 22] = (byte)Tile.CardiaChest5;
+				maps[(byte)MapIndex.BahamutCaveB2][1, 23] = (byte)Tile.CardiaChest6;
+				maps[(byte)MapIndex.BahamutCaveB2][1, 24] = (byte)Tile.CardiaChest7;
+				maps[(byte)MapIndex.BahamutCaveB2][1, 25] = (byte)Tile.CardiaCandles;
 
-				maps[(byte)MapId.BahamutsRoomB2][2, 17] = (byte)Tile.CardiaChest8;
-				maps[(byte)MapId.BahamutsRoomB2][2, 18] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][2, 19] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][2, 20] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][2, 21] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][2, 22] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][2, 23] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][2, 24] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][2, 25] = (byte)Tile.CardiaChest9;
+				maps[(byte)MapIndex.BahamutCaveB2][2, 17] = (byte)Tile.CardiaChest8;
+				maps[(byte)MapIndex.BahamutCaveB2][2, 18] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][2, 19] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][2, 20] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][2, 21] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][2, 22] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][2, 23] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][2, 24] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][2, 25] = (byte)Tile.CardiaChest9;
 
-				maps[(byte)MapId.BahamutsRoomB2][3, 17] = (byte)Tile.CardiaCandles;
-				maps[(byte)MapId.BahamutsRoomB2][3, 18] = (byte)Tile.CardiaChest10;
-				maps[(byte)MapId.BahamutsRoomB2][3, 19] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][3, 20] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][3, 21] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][3, 22] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][3, 23] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][3, 24] = (byte)Tile.CardiaChest11;
-				maps[(byte)MapId.BahamutsRoomB2][3, 25] = (byte)Tile.CardiaCandles;
+				maps[(byte)MapIndex.BahamutCaveB2][3, 17] = (byte)Tile.CardiaCandles;
+				maps[(byte)MapIndex.BahamutCaveB2][3, 18] = (byte)Tile.CardiaChest10;
+				maps[(byte)MapIndex.BahamutCaveB2][3, 19] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][3, 20] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][3, 21] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][3, 22] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][3, 23] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][3, 24] = (byte)Tile.CardiaChest11;
+				maps[(byte)MapIndex.BahamutCaveB2][3, 25] = (byte)Tile.CardiaCandles;
 
-				maps[(byte)MapId.BahamutsRoomB2][4, 17] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][4, 18] = (byte)Tile.CardiaCandles;
-				maps[(byte)MapId.BahamutsRoomB2][4, 19] = (byte)Tile.CardiaChest12;
-				maps[(byte)MapId.BahamutsRoomB2][4, 20] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][4, 21] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][4, 22] = (byte)Tile.CardiaFloor;
-				maps[(byte)MapId.BahamutsRoomB2][4, 23] = (byte)Tile.CardiaChest13;
-				maps[(byte)MapId.BahamutsRoomB2][4, 24] = (byte)Tile.CardiaCandles;
-				maps[(byte)MapId.BahamutsRoomB2][4, 25] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][4, 17] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][4, 18] = (byte)Tile.CardiaCandles;
+				maps[(byte)MapIndex.BahamutCaveB2][4, 19] = (byte)Tile.CardiaChest12;
+				maps[(byte)MapIndex.BahamutCaveB2][4, 20] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][4, 21] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][4, 22] = (byte)Tile.CardiaFloor;
+				maps[(byte)MapIndex.BahamutCaveB2][4, 23] = (byte)Tile.CardiaChest13;
+				maps[(byte)MapIndex.BahamutCaveB2][4, 24] = (byte)Tile.CardiaCandles;
+				maps[(byte)MapIndex.BahamutCaveB2][4, 25] = (byte)Tile.CardiaFloor;
 
 				ItemLocations.Cardia1.ChangeMapLocation(MapLocation.BahamutCave2);
 				ItemLocations.Cardia2.ChangeMapLocation(MapLocation.BahamutCave2);
@@ -1193,7 +1142,7 @@ namespace FF1Lib
 				for (int y = 0; y < 64; y++)
 					for (int x = 0; x < 64; x++)
 					{
-						if (maps[(byte)MapId.SeaShrineB1][x, y] == (byte)Tile.Door) maps[(byte)MapId.SeaShrineB1][x, y] = (byte)Tile.DoorLocked;
+						if (maps[(byte)MapIndex.SeaShrineB1][x, y] == (byte)Tile.Door) maps[(byte)MapIndex.SeaShrineB1][x, y] = (byte)Tile.DoorLocked;
 					}
 
 				// Have locked rooms draw inside NPCs, instead of outside NPCs
@@ -1202,7 +1151,7 @@ namespace FF1Lib
 		}
 
 		public class Room {
-		    public MapId mapId;
+		    public MapIndex MapIndex;
 		    public MapElement start;
 		    public List<MapElement> floor = new();
 		    public List<MapElement> doors = new ();
@@ -1214,7 +1163,7 @@ namespace FF1Lib
 		    public bool hasBattles = false;
 		    public Room() { }
 		    public Room(Room copyfrom) {
-			mapId = copyfrom.mapId;
+			MapIndex = copyfrom.MapIndex;
 			start = copyfrom.start;
 			floor = new List<MapElement>(copyfrom.floor);
 			doors = new List<MapElement>(copyfrom.doors);
@@ -1226,7 +1175,7 @@ namespace FF1Lib
 			hasBattles = copyfrom.hasBattles;
 		    }
 		    public void Replace(Room copyfrom) {
-			mapId = copyfrom.mapId;
+			MapIndex = copyfrom.MapIndex;
 			start = copyfrom.start;
 			floor.Clear();
 			floor.AddRange(copyfrom.floor);
@@ -1360,7 +1309,7 @@ namespace FF1Lib
 
 		}
 
-		public async Task shuffleChestLocations(MT19337 rng, List<Map> maps, MapId[] ids, List<(MapId,byte)> preserveChests,
+		public async Task shuffleChestLocations(MT19337 rng, List<Map> maps, MapIndex[] ids, List<(MapIndex,byte)> preserveChests,
 							NPCdata npcdata, byte randomEncounter, bool spreadPlacement, bool markSpikeTiles,
 							List<byte> chestPool, List<byte> spikePool) {
 		    // For a tileset, I need to determine:
@@ -1404,10 +1353,10 @@ namespace FF1Lib
 
 		    List<Room> rooms = new();
 
-		    foreach (var mapId in ids) {
-			if (debug) Console.WriteLine($"\nFinding rooms for map {mapId}");
+		    foreach (var MapIndex in ids) {
+			if (debug) Console.WriteLine($"\nFinding rooms for map {MapIndex}");
 
-			var map = maps[(int)mapId];
+			var map = maps[(int)MapIndex];
 
 			List<SCCoords> startCoords = new();
 			for (int y = 0; y < 64; y++) {
@@ -1418,7 +1367,7 @@ namespace FF1Lib
 				if (tf.TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE)) {
 				    bool skip = false;
 				    foreach (var pc in preserveChests) {
-					if (mapId == pc.Item1 && pc.Item2 == map[y, x]) {
+					if (MapIndex == pc.Item1 && pc.Item2 == map[y, x]) {
 					    skip = true;
 					}
 				    }
@@ -1447,7 +1396,7 @@ namespace FF1Lib
 			}
 
 			foreach (var t in teleporters) {
-			    if (t.Destination == (byte)mapId &&
+			    if (t.Destination == (byte)MapIndex &&
 				(floorTiles.Contains(map[t.Y,t.X]) || battleTiles.Contains(map[t.Y,t.X])))
 			    {
 				startCoords.Add(new SCCoords(t.X, t.Y));
@@ -1457,7 +1406,7 @@ namespace FF1Lib
 			List<(int x, int y)> searched = new();
 			foreach (var st in startCoords) {
 			    var room = new Room();
-			    room.mapId = mapId;
+			    room.MapIndex = MapIndex;
 			    room.start = map[(st.X, st.Y)];
 			    bool newRoom = true;
 			    if (debug) Console.WriteLine($"Searching from {st}");
@@ -1473,7 +1422,7 @@ namespace FF1Lib
 				bool hasNpc = false;
 				bool hasKillableNpc = false;
 				for (int i = 0; i < 16; i++) {
-				    var npc = GetNpc(mapId, i);
+				    var npc = GetNpc(MapIndex, i);
 				    if (npc.Coord == me.Coord) {
 					hasNpc = true;
 					if (npcdata != null) {
@@ -1524,7 +1473,7 @@ namespace FF1Lib
 
 				bool teleporterTarget = false;
 				foreach (var t in teleporters) {
-				    if (t.Destination == (byte)mapId && me.Coord == (t.X, t.Y)) {
+				    if (t.Destination == (byte)MapIndex && me.Coord == (t.X, t.Y)) {
 					if (debug) Console.WriteLine($"Found teleport in {me.Coord}");
 					room.teleIn.Add(me);
 					teleporterTarget = true;
@@ -1671,7 +1620,7 @@ namespace FF1Lib
 				return (tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0;
 			    });
 			    if (r.doors.Count > 0 || r.chests.Count > 0 || r.teleOut.Count > 0 || r.npcs.Count > 0) {
-				if (debug) Console.WriteLine($"Room at {r.mapId} {r.start.X}, {r.start.Y} failed sanity check: {r.doors.Count} {r.chests.Count} {r.teleOut.Count} {r.npcs.Count}");
+				if (debug) Console.WriteLine($"Room at {r.MapIndex} {r.start.X}, {r.start.Y} failed sanity check: {r.doors.Count} {r.chests.Count} {r.teleOut.Count} {r.npcs.Count}");
 				needRetry = true;
 				break;
 			    }
@@ -1733,88 +1682,88 @@ namespace FF1Lib
 		    // Groups of maps that make up a shuffle pool
 		    // They need to all use the same tileset.
 
-		    List<MapId[]> dungeons = new() {
-			new MapId[] { MapId.ConeriaCastle1F, MapId.ConeriaCastle2F, MapId.ElflandCastle, MapId.NorthwestCastle },
+		    List<MapIndex[]> dungeons = new() {
+			new MapIndex[] { MapIndex.ConeriaCastle1F, MapIndex.ConeriaCastle2F, MapIndex.ElflandCastle, MapIndex.NorthwestCastle },
 
-			new MapId[] { MapId.MarshCaveB1, MapId.MarshCaveB2, MapId.MarshCaveB3 }, // Marsh
-			new MapId[] { MapId.IceCaveB1, MapId.IceCaveB2, MapId.IceCaveB3 }, // Ice Cave
-			new MapId[] { MapId.CastleOfOrdeals1F, MapId.CastleOfOrdeals2F, MapId.CastleOfOrdeals3F }, // Ordeals
-			new MapId[] { MapId.MirageTower1F, MapId.MirageTower2F, MapId.MirageTower3F }, // Mirage
-			new MapId[] { MapId.TempleOfFiendsRevisited1F,
-			    MapId.TempleOfFiendsRevisited2F,
-			    MapId.TempleOfFiendsRevisited3F,
-			    MapId.TempleOfFiendsRevisitedEarth,
-			    MapId.TempleOfFiendsRevisitedFire,
-			    MapId.TempleOfFiendsRevisitedWater,
-			    MapId.TempleOfFiendsRevisitedAir }, // ToFR
+			new MapIndex[] { MapIndex.MarshCaveB1, MapIndex.MarshCaveB2, MapIndex.MarshCaveB3 }, // Marsh
+			new MapIndex[] { MapIndex.IceCaveB1, MapIndex.IceCaveB2, MapIndex.IceCaveB3 }, // Ice Cave
+			new MapIndex[] { MapIndex.CastleOrdeals1F, MapIndex.CastleOrdeals2F, MapIndex.CastleOrdeals3F }, // Ordeals
+			new MapIndex[] { MapIndex.MirageTower1F, MapIndex.MirageTower2F, MapIndex.MirageTower3F }, // Mirage
+			new MapIndex[] { MapIndex.TempleOfFiendsRevisited1F,
+			    MapIndex.TempleOfFiendsRevisited2F,
+			    MapIndex.TempleOfFiendsRevisited3F,
+			    MapIndex.TempleOfFiendsRevisitedEarth,
+			    MapIndex.TempleOfFiendsRevisitedFire,
+			    MapIndex.TempleOfFiendsRevisitedWater,
+			    MapIndex.TempleOfFiendsRevisitedAir }, // ToFR
 
-			// new MapId[] { MapId.TitansTunnel }, // Titan
+			// new MapIndex[] { MapIndex.TitansTunnel }, // Titan
 		    };
 
-		    List<MapId[]> spreadPlacementDungeons = new() {
-			new MapId[] { MapId.Waterfall, MapId.DwarfCave, MapId.MatoyasCave, MapId.SardasCave },
-			new MapId[] { MapId.Cardia, MapId.BahamutsRoomB1, MapId.BahamutsRoomB2 }, // Cardia
-			new MapId[] { MapId.SkyPalace1F, MapId.SkyPalace2F, MapId.SkyPalace3F, MapId.SkyPalace4F, MapId.SkyPalace5F }, // Sky Castle
-			new MapId[] { MapId.TempleOfFiends }, // ToF
+		    List<MapIndex[]> spreadPlacementDungeons = new() {
+			new MapIndex[] { MapIndex.Waterfall, MapIndex.DwarfCave, MapIndex.MatoyasCave, MapIndex.SardasCave },
+			new MapIndex[] { MapIndex.Cardia, MapIndex.BahamutCaveB1, MapIndex.BahamutCaveB2 }, // Cardia
+			new MapIndex[] { MapIndex.SkyPalace1F, MapIndex.SkyPalace2F, MapIndex.SkyPalace3F, MapIndex.SkyPalace4F, MapIndex.SkyPalace5F }, // Sky Castle
+			new MapIndex[] { MapIndex.TempleOfFiends }, // ToF
 		    };
 
-		    List<(MapId,byte)> preserveChests = new();
+		    List<(MapIndex,byte)> preserveChests = new();
 
 		    if ((bool)flags.IncentivizeMarsh && flags.MarshIncentivePlacementType == IncentivePlacementType.Vanilla) {
-			preserveChests.Add((MapId.MarshCaveB3, 0x49));
+			preserveChests.Add((MapIndex.MarshCaveB3, 0x49));
 		    }
 
 		    bool addearth = true;
 		    if ((bool)flags.IncentivizeEarth) {
 			if (flags.EarthIncentivePlacementType == IncentivePlacementTypeEarth.Vanilla) {
-			    preserveChests.Add((MapId.EarthCaveB3, 0x51));
+			    preserveChests.Add((MapIndex.EarthCaveB3, 0x51));
 			}
 
 			if (flags.EarthIncentivePlacementType == IncentivePlacementTypeEarth.RandomPreRod ||
 			    flags.EarthIncentivePlacementType == IncentivePlacementTypeEarth.RandomPostRod)
 			{
 			    // Split shuffle before/after gating
-			    dungeons.Add(new MapId[] { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3 });
-			    dungeons.Add(new MapId[] { MapId.EarthCaveB4, MapId.EarthCaveB5 });
+			    dungeons.Add(new MapIndex[] { MapIndex.EarthCaveB1, MapIndex.EarthCaveB2, MapIndex.EarthCaveB3 });
+			    dungeons.Add(new MapIndex[] { MapIndex.EarthCaveB4, MapIndex.EarthCaveB5 });
 			    addearth = false;
 			}
 		    }
 		    if (addearth) {
-			dungeons.Add(new MapId[] { MapId.EarthCaveB1, MapId.EarthCaveB2, MapId.EarthCaveB3, MapId.EarthCaveB4, MapId.EarthCaveB5 });
+			dungeons.Add(new MapIndex[] { MapIndex.EarthCaveB1, MapIndex.EarthCaveB2, MapIndex.EarthCaveB3, MapIndex.EarthCaveB4, MapIndex.EarthCaveB5 });
 		    }
 
 
 
 			bool addvolcano = true;
 			if ((bool)flags.IncentivizeVolcano && flags.VolcanoIncentivePlacementType == IncentivePlacementTypeVolcano.Vanilla) {
-				preserveChests.Add((MapId.GurguVolcanoB5, 0x7E));
+				preserveChests.Add((MapIndex.GurguVolcanoB5, 0x7E));
 			}
 			else if (flags.VolcanoIncentivePlacementType == IncentivePlacementTypeVolcano.RandomShallow ||
 					 flags.VolcanoIncentivePlacementType == IncentivePlacementTypeVolcano.RandomDeep)
 			{
 				// Split shuffle before/after gating
-				dungeons.Add(new MapId[] { MapId.GurguVolcanoB1, MapId.GurguVolcanoB2 });
-				dungeons.Add(new MapId[] { MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5 });
+				dungeons.Add(new MapIndex[] { MapIndex.GurguVolcanoB1, MapIndex.GurguVolcanoB2 });
+				dungeons.Add(new MapIndex[] { MapIndex.GurguVolcanoB3, MapIndex.GurguVolcanoB4, MapIndex.GurguVolcanoB5 });
 				addvolcano = false;
 			}
 			if (addvolcano) {
-				dungeons.Add(new MapId[] { MapId.GurguVolcanoB1, MapId.GurguVolcanoB2, MapId.GurguVolcanoB3, MapId.GurguVolcanoB4, MapId.GurguVolcanoB5 });
+				dungeons.Add(new MapIndex[] { MapIndex.GurguVolcanoB1, MapIndex.GurguVolcanoB2, MapIndex.GurguVolcanoB3, MapIndex.GurguVolcanoB4, MapIndex.GurguVolcanoB5 });
 			}
 
 
 			if ((bool)flags.IncentivizeIceCave && flags.IceCaveIncentivePlacementType == IncentivePlacementType.Vanilla) {
-				preserveChests.Add((MapId.IceCaveB2, 0x5F));
+				preserveChests.Add((MapIndex.IceCaveB2, 0x5F));
 		    }
 
 		    if ((bool)flags.IncentivizeOrdeals && flags.OrdealsIncentivePlacementType == IncentivePlacementType.Vanilla) {
-				preserveChests.Add((MapId.CastleOfOrdeals3F, 0x78));
+				preserveChests.Add((MapIndex.CastleOrdeals3F, 0x78));
 		    }
 
 			bool addsea = true;
 		    if ((bool)flags.IncentivizeSeaShrine) {
 				if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeSea.Vanilla)
 				{
-					preserveChests.Add((MapId.SeaShrineB1, 0x7B));
+					preserveChests.Add((MapIndex.SeaShrineB1, 0x7B));
 				}
 
 				if (flags.SeaShrineIncentivePlacementType == IncentivePlacementTypeSea.RandomUnlocked||
@@ -1822,62 +1771,62 @@ namespace FF1Lib
 				{
 					if ((bool)flags.MermaidPrison) {
 						// Split shuffle before/after gating
-						dungeons.Add(new MapId[] { MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 });
-						dungeons.Add(new MapId[] { MapId.SeaShrineB1 }); //Mermaid Floor
-						preserveChests.Add((MapId.SeaShrineB2, 0x6C));
+						dungeons.Add(new MapIndex[] { MapIndex.SeaShrineB2, MapIndex.SeaShrineB3, MapIndex.SeaShrineB4, MapIndex.SeaShrineB5 });
+						dungeons.Add(new MapIndex[] { MapIndex.SeaShrineB1 }); //Mermaid Floor
+						preserveChests.Add((MapIndex.SeaShrineB2, 0x6C));
 						addsea = false;
 					}
 					else {
-						preserveChests.Add((MapId.SeaShrineB2, 0x6C)); // TFC
+						preserveChests.Add((MapIndex.SeaShrineB2, 0x6C)); // TFC
 					}
 				}
 		    }
 			if (addsea)
 			{
-				dungeons.Add(new MapId[] { MapId.SeaShrineB1, MapId.SeaShrineB2, MapId.SeaShrineB3, MapId.SeaShrineB4, MapId.SeaShrineB5 });
+				dungeons.Add(new MapIndex[] { MapIndex.SeaShrineB1, MapIndex.SeaShrineB2, MapIndex.SeaShrineB3, MapIndex.SeaShrineB4, MapIndex.SeaShrineB5 });
 			}
 
 			if ((bool)flags.IncentivizeConeria) {
 			if (flags.CorneriaIncentivePlacementType == IncentivePlacementType.Vanilla) {
-			    preserveChests.Add((MapId.ConeriaCastle1F, 0x65));
+			    preserveChests.Add((MapIndex.ConeriaCastle1F, 0x65));
 			}
 			if (flags.CorneriaIncentivePlacementType == IncentivePlacementType.RandomAtLocation) {
-			    preserveChests.Add((MapId.ConeriaCastle1F, 0x63));
-			    preserveChests.Add((MapId.ConeriaCastle1F, 0x64));
-			    preserveChests.Add((MapId.ConeriaCastle1F, 0x65));
-			    preserveChests.Add((MapId.ConeriaCastle1F, 0x66));
-			    preserveChests.Add((MapId.ConeriaCastle1F, 0x67));
-			    preserveChests.Add((MapId.ConeriaCastle1F, 0x68));
+			    preserveChests.Add((MapIndex.ConeriaCastle1F, 0x63));
+			    preserveChests.Add((MapIndex.ConeriaCastle1F, 0x64));
+			    preserveChests.Add((MapIndex.ConeriaCastle1F, 0x65));
+			    preserveChests.Add((MapIndex.ConeriaCastle1F, 0x66));
+			    preserveChests.Add((MapIndex.ConeriaCastle1F, 0x67));
+			    preserveChests.Add((MapIndex.ConeriaCastle1F, 0x68));
 			}
 		    }
 
 		    if ((bool)flags.IncentivizeMarshKeyLocked) {
 			if (flags.MarshLockedIncentivePlacementType == IncentivePlacementType.Vanilla) {
-			    preserveChests.Add((MapId.MarshCaveB3, 0x4D));
+			    preserveChests.Add((MapIndex.MarshCaveB3, 0x4D));
 			}
 			if (flags.MarshLockedIncentivePlacementType == IncentivePlacementType.RandomAtLocation) {
-			    preserveChests.Add((MapId.MarshCaveB3, 0x4B));
-			    preserveChests.Add((MapId.MarshCaveB3, 0x4C));
-			    preserveChests.Add((MapId.MarshCaveB3, 0x4D));
+			    preserveChests.Add((MapIndex.MarshCaveB3, 0x4B));
+			    preserveChests.Add((MapIndex.MarshCaveB3, 0x4C));
+			    preserveChests.Add((MapIndex.MarshCaveB3, 0x4D));
 			}
 		    }
 
 		    if ((bool)flags.IncentivizeSkyPalace && flags.SkyPalaceIncentivePlacementType == IncentivePlacementTypeSky.Vanilla) {
-			preserveChests.Add((MapId.SkyPalace2F, 0x5F));
+			preserveChests.Add((MapIndex.SkyPalace2F, 0x5F));
 		    }
 
 		    if ((bool)flags.IncentivizeCardia && flags.CardiaIncentivePlacementType == IncentivePlacementType.Vanilla) {
-			preserveChests.Add((MapId.Cardia, 0x6B));
+			preserveChests.Add((MapIndex.Cardia, 0x6B));
 		    }
 
-		    foreach (MapId[] b in dungeons) {
+		    foreach (MapIndex[] b in dungeons) {
 			await shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
 					      (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
 						    false, flags.RelocateChestsTrapIndicator,
 						    null, null);
 		    }
 
-		    foreach (MapId[] b in spreadPlacementDungeons) {
+		    foreach (MapIndex[] b in spreadPlacementDungeons) {
 			await shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
 					      (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
 						    true, flags.RelocateChestsTrapIndicator,
@@ -1885,35 +1834,37 @@ namespace FF1Lib
 		    }
 		}
 
-		public void ImportCustomMap(List<Map> maps, TeleportShuffle teleporters,
-					    OverworldMap overworldMap, NPCdata npcdata,
+		public void ImportCustomMap(List<Map> maps, Teleporters teleporters,
+					    NPCdata npcdata,
 					    CompleteMap newmap) {
-		    maps[(int)newmap.MapId] = newmap.Map;
+		    maps[(int)newmap.MapIndex] = newmap.Map;
 		    foreach (var dest in newmap.MapDestinations) {
-			// Update the teleport information, this
-			// consists of the corresponding map location
-			// (this is a walkable area of the map,
-			// because some dungeons have multiple parts
-			// that are actually on the same map), the map
-			// index, where the teleport puts the player,
-			// and what teleports (but not warps) are
-			// accessible in this map location.
-			teleporters.Set(dest.Value.Destination.ToString(), dest.Value);
+				// Update the teleport information, this
+				// consists of the corresponding map location
+				// (this is a walkable area of the map,
+				// because some dungeons have multiple parts
+				// that are actually on the same map), the map
+				// index, where the teleport puts the player,
+				// and what teleports (but not warps) are
+				// accessible in this map location.
+				teleporters.StandardMapTeleporters[dest.Key] = dest.Value;
+				//teleporters.Set(dest.Value.Destination.ToString(), dest.Value);
+			/*
 			if (dest.Key != TeleportIndex.Overworld) {
 			    overworldMap.PutStandardTeleport(dest.Key, dest.Value, OverworldTeleportIndex.None);
-			}
+			}*/
 		    }
-		    foreach (var kv in newmap.OverworldEntrances) {
+		   /*foreach (var kv in newmap.OverworldEntrances) {
 			overworldMap.PutOverworldTeleport(kv.Key, kv.Value);
-		    }
+		    }*/
 		    foreach (var npc in newmap.NPCs) {
-			this.SetNpc(newmap.MapId, npc);
+			this.SetNpc(newmap.MapIndex, npc);
 		    }
 		}
 
 		void LoadPregenDungeon(MT19337 rng,
-				       List<Map> maps, TeleportShuffle teleporters,
-				       OverworldMap overworldMap, NPCdata npcdata,
+				       List<Map> maps, Teleporters teleporters,
+				       NPCdata npcdata,
 				       string name) {
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith(name));
@@ -1929,7 +1880,7 @@ namespace FF1Lib
 			var loadedmaps = CompleteMap.LoadJson(archive.GetEntry(map).Open());
 
 			foreach (var m in loadedmaps) {
-			    ImportCustomMap(maps, teleporters, overworldMap, npcdata, m);
+			    ImportCustomMap(maps, teleporters, npcdata, m);
 			}
 		}
 	}

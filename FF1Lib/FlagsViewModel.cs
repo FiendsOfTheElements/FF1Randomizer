@@ -1100,6 +1100,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SkyCastle4FMazeMode"));
 			}
 		}
+		public bool? ShuffleLavaTiles
+		{
+			get => Flags.ShuffleLavaTiles;
+			set
+			{
+				Flags.ShuffleLavaTiles = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleLavaTiles"));
+			}
+		}
 		public bool? TitansTrove
 		{
 			get => Flags.TitansTrove;

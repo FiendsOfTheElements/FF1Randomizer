@@ -2,7 +2,7 @@
 {
 	public class GuidedItemPlacement : ItemPlacement
 	{
-		protected override ItemPlacementResult DoSanePlacement(MT19337 rng, ItemPlacementContext ctx)
+		protected override ItemPlacementResult DoSanePlacement(MT19337 rng, OwLocationData locations, ItemPlacementContext ctx)
 		{
 			_sanityCounter = 0;
 			var incentiveLocationPool = _incentivesData.IncentiveLocations.ToList();
@@ -12,7 +12,7 @@
 				preBlackOrbUnincentivizedLocationPool = IncentivizedDungeons(preBlackOrbUnincentivizedLocationPool);
 
 			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = _overworldMap.FullLocationRequirements;
-			Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = _overworldMap.OverriddenOverworldLocations;
+			//Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = _overworldMap.OverriddenOverworldLocations;
 
 			List<IRewardSource> placedItems = null;
 			List<Item> treasurePool = null;

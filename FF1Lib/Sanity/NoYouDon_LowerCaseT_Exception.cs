@@ -5,15 +5,15 @@ namespace FF1Lib.Sanity
 	[Serializable]
 	internal class NoYouDon_LowerCaseT_Exception : Exception
 	{
-		private MapId mapId;
+		private MapIndex MapIndex;
 
 		public NoYouDon_LowerCaseT_Exception()
 		{
 		}
 
-		public NoYouDon_LowerCaseT_Exception(MapId mapid, string message) : base(message)
+		public NoYouDon_LowerCaseT_Exception(MapIndex MapIndex, string message) : base(message)
 		{
-			this.mapId = mapid;
+			this.MapIndex = MapIndex;
 		}
 
 		public NoYouDon_LowerCaseT_Exception(string message, Exception innerException) : base(message, innerException)

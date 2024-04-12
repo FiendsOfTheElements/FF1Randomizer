@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using FF1Lib.Sanity;
 using FF1Lib.Procgen;
+using System;
 
 namespace FF1Lib
 {
@@ -20,9 +21,9 @@ namespace FF1Lib
 		private Dictionary<MapLocation, List<MapChange>> MapLocationRequirements;
 		private Dictionary<MapLocation, Tuple<MapLocation, AccessRequirement>> FloorLocationRequirements;
 
-		private TeleportShuffle _teleporters;
+		private Teleporters _teleporters;
 
-		public TeleportShuffle Teleporters { get { return _teleporters; } set { _teleporters = value; } }
+		public Teleporters Teleporters { get { return _teleporters; } set { _teleporters = value; } }
 
 		private enum WalkableRegion
 		{
@@ -43,16 +44,21 @@ namespace FF1Lib
 		}
 
 		private List<string> _log;
+		private List<List<byte>> _decompressedMap;
 
 		public const int MapPaletteOffset = 0x2000;
 		public const int MapPaletteSize = 48;
 		public const int MapCount = 64;
 
-		public OverworldMap(FF1Rom rom, IMapEditFlags flags, Dictionary<Palette, Blob> palettes)
+		public List<List<byte>> MapBytes { get => _decompressedMap; }
+
+		public OverworldMap(FF1Rom rom, IMapEditFlags flags)
 		{
 			_rom = rom;
-			_palettes = palettes;
+			_palettes = GeneratePalettes(rom.Get(MapPaletteOffset, MapCount * MapPaletteSize).Chunk(MapPaletteSize));
 			_log = new List<string>();
+
+			_decompressedMap = DecompressMapRows(GetCompressedMapRows());
 
 			var mapLocationRequirements = ItemLocations.MapLocationRequirements.ToDictionary(x => x.Key, x => x.Value.ToList());
 			var floorLocationRequirements = ItemLocations.MapLocationFloorRequirements.ToDictionary(x => x.Key, x => x.Value);
@@ -483,7 +489,7 @@ namespace FF1Lib
 			}
 		}
 
-        void UpdatePalettes(OverworldTeleportIndex oti, TeleportDestination teleport)
+        public void UpdatePalettes(OverworldTeleportIndex oti, TeleportDestination teleport)
 		{
             if (teleport.OwnsPalette)
 			{
@@ -526,9 +532,18 @@ namespace FF1Lib
 			}
 		}
 
-		public void ShuffleEntrancesAndFloors(MT19337 rng, IFloorShuffleFlags flags)
+		public void ShuffleEntrancesAndFloors(MT19337 rng, Teleporters teleporters, Flags flags)
 		{
-			_teleporters.LoadData();
+			if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && flags.GameMode == GameModes.Standard)
+			{
+				// Yeah amazing coding, we'll fix it in post
+			}
+			else
+			{
+				return;
+			}
+
+			_teleporters = teleporters;
 
 			OverriddenOverworldLocations = new Dictionary<MapLocation, OverworldTeleportIndex>
 			{
@@ -603,14 +618,15 @@ namespace FF1Lib
 				    keepers.Add(OverworldTeleportIndex.TitansTunnelWest);
 				}
 
-				placedMaps = placedMaps .Where(x => keepers.Contains(x.Key)) .ToDictionary(x => x.Key, x => x.Value);
+				placedMaps = placedMaps.Where(x => keepers.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
 				placedFloors.Remove(TeleportIndex.SeaShrine1);
 				FixUnusedDefaultBackdrops();
 			}
 			if ((bool)flags.Floors && (bool)flags.Entrances)
 			{
-				placedFloors = new Dictionary<TeleportIndex, TeleportDestination>();
-			}
+				//placedFloors = new Dictionary<TeleportIndex, TeleportDestination>();
+				placedFloors = _teleporters.IceCaveLoopTeleporters;
+			};
 
 			// All the finished destinations. We don't ever want to make anything new target one of these since some fixed map or floor already does.
 			var placedDestinations = placedMaps.Values.Select(x => x.Destination).Concat(placedFloors.Values.Select(x => x.Destination)).ToList();
@@ -621,9 +637,9 @@ namespace FF1Lib
 			var shuffledOverworldCount = townEntrances.Count(x => !placedMaps.ContainsKey(x)) + nonTownEntrances.Count(x => !placedMaps.ContainsKey(x));
 
 			// Grab a list of floors we haven't placed yet that can be shuffled. i.e. not including bottom of ice cave or ordeals.
-			var towns = _teleporters.TownTeleports.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
-			var topfloors = _teleporters.NonTownForcedTopFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
-			var subfloors = _teleporters.FreePlacementFloors.Where(x => !placedDestinations.Contains(x.Destination)).ToList();
+			var towns = _teleporters.TownTeleports.Where(x => !placedDestinations.Contains(x.Destination)).Select(x => new TeleportDestination(x)).ToList();
+			var topfloors = _teleporters.NonTownForcedTopFloors.Where(x => !placedDestinations.Contains(x.Destination)).Select(x => new TeleportDestination(x)).ToList();
+			var subfloors = _teleporters.FreePlacementFloors.Where(x => !placedDestinations.Contains(x.Destination)).Select(x => new TeleportDestination(x)).ToList();
 			var deadEnds = new List<TeleportDestination>();
 
 			towns.Shuffle(rng);
@@ -652,8 +668,8 @@ namespace FF1Lib
 			// Ordeals is a candidate but it would require map edits - it has an EXIT not a WARP due to its internal teleports.
 			if ((bool)flags.DeepCastlesPossible && (bool)flags.AllowDeepCastles)
 			{
-				topfloors = topfloors.Where(floor => floor.Destination != _teleporters.TempleOfFiends.Destination).ToList();
-				deadEnds.Add(_teleporters.TempleOfFiends);
+				topfloors = topfloors.Where(floor => floor.Destination != _teleporters.OverworldTeleporters[OverworldTeleportIndex.TempleOfFiends1].Destination).ToList();
+				deadEnds.Add(_teleporters.OverworldTeleporters[OverworldTeleportIndex.TempleOfFiends1]);
 			}
 
 			if ((bool)flags.DeepTownsPossible && (bool)flags.AllowDeepTowns)
@@ -735,11 +751,12 @@ namespace FF1Lib
 
 					var destination = placedMaps.ContainsKey(owti) ? placedMaps[owti] : destinations[i++];
 					shuffled[owti] = destination;
-					UpdateOverworldOverride(destination.Destination, owti);
+					//UpdateOverworldOverride(destination.Destination, owti);
 
 					if (destination.Exit != ExitTeleportIndex.None)
 					{
 						// Exiting floors like Fiend Orb Teleporters need to be updated to new OW coords.
+
 						shuffledExits.Add(destination.Exit, _teleporters.OverworldCoordinates[owti]);
 					}
 
@@ -752,7 +769,7 @@ namespace FF1Lib
 						var floor = placedFloors.ContainsKey(teleport) ? placedFloors[teleport] : destinations[shuffledOverworldCount + j++];
 						teleports.AddRange(floor.Teleports); // Keep looping until a dead end.
 						shuffledFloors[teleport] = floor;
-						UpdateOverworldOverride(floor.Destination, owti);
+						//UpdateOverworldOverride(floor.Destination, owti);
 						if (floor.Exit != ExitTeleportIndex.None)
 						{
 							// Exiting floors like Fiend Orb Teleporters need to be updated to new OW coords.
@@ -777,7 +794,10 @@ namespace FF1Lib
 			// Pretty print map data
 			foreach (var map in shuffled.OrderBy(x => x.Key))
 			{
-				PutOverworldTeleport(map.Key, map.Value);
+				//PutOverworldTeleport(map.Key, map.Value);
+				_teleporters.OverworldTeleporters[map.Key] = new TeleportDestination(map.Value);
+				UpdatePalettes(map.Key, map.Value);
+
 				_log.Add($"{map.Key.ToString().PadRight(30)}{map.Value.SpoilerText}");
 				var teleports = map.Value.Teleports.ToList();
 
@@ -786,7 +806,13 @@ namespace FF1Lib
 					var teleport = teleports.SpliceRandom(rng);
 					var innerMap = shuffledFloors[teleport];
 					teleports.AddRange(innerMap.Teleports);
-					PutStandardTeleport(teleport, innerMap, map.Key);
+					//_teleporters.StandardMapTeleporters[teleport].SetTeleporter(innerMap.Index, innerMap.Coordinates);
+					_teleporters.StandardMapTeleporters[teleport] = new TeleportDestination(innerMap);
+					if (map.Key != OverworldTeleportIndex.None)
+					{
+						UpdatePalettes(map.Key, innerMap);
+					}
+					//PutStandardTeleport(teleport, innerMap, map.Key);
 					_log.Add($"\t{teleport.ToString().PadRight(30)}{innerMap.SpoilerText.Trim()} ({OverworldToPalette[map.Key]} tint)");
 				}
 			}
@@ -794,8 +820,10 @@ namespace FF1Lib
 			// Write Exit teleport coords back to the ROM
 			foreach (var exit in shuffledExits)
 			{
+				_teleporters.ExitTeleporters[exit.Key] = new TeleportDestination(MapIndex.Cardia, exit.Value);
+				/*
 				_rom[teleportExitXOffset + (byte)exit.Key] = exit.Value.X;
-				_rom[teleportExitYOffset + (byte)exit.Key] = exit.Value.Y;
+				_rom[teleportExitYOffset + (byte)exit.Key] = exit.Value.Y;*/
 			}
 
 			// Now it's time to update all the requirements for treasure sanity checking.
@@ -867,6 +895,7 @@ namespace FF1Lib
 			// Titan's Tunnel adjustments. The Titan Fed requirement implies access to one side of the tunnel,
 			// so it is sufficient to say feeding the titan will grant access to all walkable and canoeable nodes
 			// from either entrance.
+			/*
 			foreach (var key in titanWalkLocations)
 			{
 				MapLocationRequirements[key].Add(MapChange.TitanFed);
@@ -876,7 +905,7 @@ namespace FF1Lib
 				MapLocationRequirements[key].Add(MapChange.TitanFed | MapChange.Canoe);
 			}
 
-			UpdateFullLocationRequirements();
+			UpdateFullLocationRequirements();*/
 		}
 
 		private void UpdateFullLocationRequirements()
@@ -1390,9 +1419,9 @@ namespace FF1Lib
 				{ MapIndex.ConeriaCastle1F, new List<MapIndex> { MapIndex.ConeriaCastle2F } },
 				{ MapIndex.CastleOrdeals1F, new List<MapIndex> { MapIndex.CastleOrdeals2F, MapIndex.CastleOrdeals3F } },
 				{ MapIndex.IceCaveB2, new List<MapIndex> { MapIndex.IceCaveB3 } },
-				{ MapIndex.TempleOfFiends, new List<MapIndex> { MapIndex.TempleOfFiends1F, MapIndex.TempleOfFiends2F,
-					MapIndex.TempleOfFiends3F, MapIndex.TempleOfFiendsEarth, MapIndex.TempleOfFiendsFire,
-					MapIndex.TempleOfFiendsWater, MapIndex.TempleOfFiendsAir, MapIndex.TempleOfFiendsChaos } }
+				{ MapIndex.TempleOfFiends, new List<MapIndex> { MapIndex.TempleOfFiendsRevisited1F, MapIndex.TempleOfFiendsRevisited2F,
+					MapIndex.TempleOfFiendsRevisited3F, MapIndex.TempleOfFiendsRevisitedEarth, MapIndex.TempleOfFiendsRevisitedFire,
+					MapIndex.TempleOfFiendsRevisitedWater, MapIndex.TempleOfFiendsRevisitedAir, MapIndex.TempleOfFiendsRevisitedChaos } }
 			};
 		public static Dictionary<MapLocation, List<MapLocation>> ConnectedMapLocations =
             new Dictionary<MapLocation, List<MapLocation>>
@@ -1448,11 +1477,11 @@ namespace FF1Lib
 			{ MapLocation.ElflandCastle, (0x09, 0x05) },
 		};
 
-		private static readonly Dictionary<MapLocation, MapId> ObjectiveNPCMapIds = new Dictionary<MapLocation, MapId>
+		private static readonly Dictionary<MapLocation, MapIndex> ObjectiveNPCMapIndexs = new Dictionary<MapLocation, MapIndex>
 		{
-			{ MapLocation.BahamutCave2, MapId.BahamutsRoomB2 },
-			{ MapLocation.Melmond, MapId.Melmond },
-			{ MapLocation.ElflandCastle, MapId.ElflandCastle },
+			{ MapLocation.BahamutCave2, MapIndex.BahamutCaveB2 },
+			{ MapLocation.Melmond, MapIndex.Melmond },
+			{ MapLocation.ElflandCastle, MapIndex.ElflandCastle },
 		};
 
 		public enum Palette
@@ -1583,25 +1612,29 @@ namespace FF1Lib
 			SwapMap(decompressedRows);
 		}
 
-	    public void SwapMap(List<List<byte>> decompressedRows) {
+	    public void SwapMap(List<List<byte>> decompressedRows)
+		{
+			_decompressedMap = decompressedRows;
 			var recompressedMap = CompressMapRows(decompressedRows);
 			PutCompressedMapRows(recompressedMap);
 	    }
 
-	    public void SwapMap(List<string> decompressedRows) {
-		var rows = new List<List<byte>>();
+	    public void SwapMap(List<string> decompressedRows)
+		{
+			var rows = new List<List<byte>>();
 			foreach (var c in decompressedRows) {
 			    rows.Add(new List<byte>(Convert.FromBase64String(c)));
 			}
+			_decompressedMap = rows;
 			var recompressedMap = CompressMapRows(rows);
 			PutCompressedMapRows(recompressedMap);
 	    }
 
 		public void ApplyMapEdits()
 		{
-			var compresedMap = GetCompressedMapRows();
-			var decompressedMap = DecompressMapRows(compresedMap);
-			var editedMap = decompressedMap;
+			/*var compresedMap = GetCompressedMapRows();
+			var decompressedMap = DecompressMapRows(compresedMap);*/
+			var editedMap = _decompressedMap;
 			foreach (var mapEdit in MapEditsToApply)
 			{
 				editedMap = ApplyMapEdits(editedMap, mapEdit);
@@ -1673,7 +1706,7 @@ namespace FF1Lib
 			if (outputOffset > MaximumMapDataSize)
 				throw new InvalidOperationException($"Modified map was too large by {outputOffset - MaximumMapDataSize} bytes to recompress and fit into {MaximumMapDataSize} bytes of available space.");
 		}
-
+		//  Should be in NPC class
 		public void ShuffleObjectiveNPCs(MT19337 rng)
 		{
 			var locations = ObjectiveNPCs.Values.ToList();
@@ -1688,7 +1721,7 @@ namespace FF1Lib
 				var inRoom = location != MapLocation.Melmond;
 				var stationary = npc == ObjectId.Bahamut || (npc == ObjectId.ElfDoc && location == MapLocation.ElflandCastle);
 
-				_rom.SetNpc(ObjectiveNPCMapIds[location], 0, npc, x, y, inRoom, stationary);
+				_rom.SetNpc(ObjectiveNPCMapIndexs[location], 0, npc, x, y, inRoom, stationary);
 			}
 		}
 

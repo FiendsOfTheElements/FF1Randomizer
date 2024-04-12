@@ -247,6 +247,7 @@ namespace FF1Lib
 
 		public WarMECHMode WarMECHMode { get; set; } = WarMECHMode.Vanilla;
 		public bool? OrdealsPillars { get; set; } = false;
+		public bool? ShuffleLavaTiles { get; set; } = false;
 		public SkyCastle4FMazeMode SkyCastle4FMazeMode { get; set; } = SkyCastle4FMazeMode.Vanilla;
 		public bool? TitansTrove { get; set; } = false;
 		public bool? LefeinSuperStore { get; set; } = false;
@@ -379,6 +380,7 @@ namespace FF1Lib
 		public bool WaitWhenUnrunnable { get; set; } = false;
 		public bool ImprovedClinic { get; set; } = false;
 		public bool Etherizer { get; set; } = false;
+		// Done
 		public bool HouseMPRestoration { get; set; } = false;
 		public bool WeaponStats { get; set; } = false;
 		public bool BBCritRate { get; set; } = false;
@@ -674,7 +676,7 @@ namespace FF1Lib
 		public MpGainOnMaxGain MpGainOnMaxGainMode { get; set; } = MpGainOnMaxGain.None;
 
 		public LockHitMode LockMode { get; set; } = LockHitMode.Vanilla;
-
+		// Done
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
 		public FormationShuffleMode FormationShuffleMode { get; set; } = FormationShuffleMode.None;
@@ -693,7 +695,7 @@ namespace FF1Lib
 		public bool? TouchIncludeBosses { get; set; } = false;
 
 		public bool? Lockpicking { get; set; } = false;
-
+		// Done
 		public bool? ReducedLuck { get; set; } = false;
 
 		[IntegerFlag(1, 50)]

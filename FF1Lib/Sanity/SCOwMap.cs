@@ -24,24 +24,26 @@
 		OverworldMap map;
 		SCTileSet tileSet;
 
-		EnterTeleData enter;
-		ExitTeleData exit;
+		//EnterTeleData enter;
+		//ExitTeleData exit;
+		Teleporters teleporters;
 
 
 		public List<SCOwArea> areadic;
 		Queue<SCOwTileQueueEntry> immediatequeue = new Queue<SCOwTileQueueEntry>(256);
 		Queue<SCOwTileQueueEntry> deferredqueue = new Queue<SCOwTileQueueEntry>(1024);
 
-		public SCOwMap(OverworldMap _map, SCMapCheckFlags cflags, FF1Rom _rom, SCTileSet _tileSet, EnterTeleData _enter, ExitTeleData _exit, SCCoords bridge, SCCoords canal)
+		public SCOwMap(OverworldMap _map, SCMapCheckFlags cflags, FF1Rom _rom, SCTileSet _tileSet, Teleporters _teleporters, SCCoords bridge, SCCoords canal)
 		{
 			CFlags = cflags;
 
 			map = _map;
 			rom = _rom;
 			tileSet = _tileSet;
+			teleporters = _teleporters;
 
-			enter = _enter;
-			exit = _exit;
+			//enter = _enter;
+			//exit = _exit;
 
 			Bridge = bridge;
 			Canal = canal;
@@ -59,8 +61,7 @@
 
 		private void ProcessTiles()
 		{
-			var compresedMap = map.GetCompressedMapRows();
-			var decompressedMap = map.DecompressMapRows(compresedMap);
+			var decompressedMap = map.MapBytes;
 
 			Tiles = new SCOwTile[Size, Size];
 
@@ -88,7 +89,8 @@
 			if ((tileDef.OWBitFlags & SCBitFlags.Enter) > 0)
 			{
 				var overworldTeleport = (OverworldTeleportIndex)(tileDef.TileProp.Byte2 & 0x3F);
-				var teleDef = enter[(int)overworldTeleport];
+				//var teleDef = enter[(int)overworldTeleport];
+				var teleDef = new TeleData(teleporters.OverworldTeleporters[overworldTeleport]);
 				var t = new SCTeleport { Coords = poi.Coords, Type = SCPointOfInterestType.OwEntrance, TargetMap = teleDef.Map, TargetCoords = new SCCoords { X = teleDef.X, Y = teleDef.Y }, OverworldTeleport = overworldTeleport };
 				Exits.Add(t);
 
@@ -106,9 +108,9 @@
 
 		private void ProcessTeleporters()
 		{
-			foreach (var t in exit)
+			foreach (var t in teleporters.ExitTeleporters)
 			{
-				PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.X, Y = t.Y }, Type = SCPointOfInterestType.Exit });
+				PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.Value.Coordinates.X, Y = t.Value.Coordinates.Y }, Type = SCPointOfInterestType.Exit });
 			}
 		}
 

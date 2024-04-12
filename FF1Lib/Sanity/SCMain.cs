@@ -14,33 +14,35 @@ namespace FF1Lib.Sanity
 		SCTileSet[] tileSets = new SCTileSet[8];
 		SCTileSet owtileset;
 
-		EnterTeleData enter;
-		ExitTeleData exit;
-		NormTeleData tele;
+		//EnterTeleData enter;
+		//ExitTeleData exit;
+		//NormTeleData tele;
+		Teleporters teleporters;
 		NPCdata npcdata;
 
-		Dictionary<MapId, SCMap> scmaps;
+		Dictionary<MapIndex, SCMap> scmaps;
 
 		public List<SCDungeon> Dungeons { get; private set; } = new List<SCDungeon>();
 
 		public SCOwMap Overworld { get; private set; }
 
-		public SCMain(List<Map> _maps, OverworldMap _overworldMap, NPCdata _npcdata, OwLocationData locations, FF1Rom _rom)
+		public SCMain(List<Map> _maps, OverworldMap _overworldMap, NPCdata _npcdata, Teleporters _teleporters, OwLocationData locations, FF1Rom _rom)
 		{
 			maps = _maps;
 			overworldMap = _overworldMap;
 			rom = _rom;
 			npcdata = _npcdata;
+			teleporters = _teleporters;
 
 			mapTileSets = new MapTileSets(rom);
-			enter = new EnterTeleData(rom);
-			tele = new NormTeleData(rom);
-			exit = new ExitTeleData(rom);
+			//enter = new EnterTeleData(rom);
+			//tele = new NormTeleData(rom);
+			//exit = new ExitTeleData(rom);
 
 			mapTileSets.LoadTable();
-			enter.LoadData();
-			tele.LoadData();
-			exit.LoadData();
+			//enter.LoadData();
+			//tele.LoadData();
+			//exit.LoadData();
 
 			for (int i = 0; i < 8; i++) tileSets[i] = new SCTileSet(rom, (byte)i);
 
@@ -49,31 +51,31 @@ namespace FF1Lib.Sanity
 			Stopwatch w = Stopwatch.StartNew();
 
 			List<SCMap> tmpscmaps = new List<SCMap>();
-			//Parallel.ForEach(Enum.GetValues<MapId>(), mapid => ProcessMap(mapid, tmpscmaps));
+			//Parallel.ForEach(Enum.GetValues<MapIndex>(), MapIndex => ProcessMap(MapIndex, tmpscmaps));
 
-			foreach(var mapid in Enum.GetValues<MapId>()) ProcessMap(mapid, tmpscmaps);
+			foreach(var MapIndex in Enum.GetValues<MapIndex>()) ProcessMap(MapIndex, tmpscmaps);
 
-			scmaps = tmpscmaps.ToDictionary(m => m.MapId);
+			scmaps = tmpscmaps.ToDictionary(m => m.MapIndex);
 
 			ComposeDungeons();
 
 			//SCCoords bridge = new SCCoords(0x98, 0x98);
 			//SCCoords canal = new SCCoords(0x66, 0xA4);
-			Overworld = new SCOwMap(overworldMap, SCMapCheckFlags.None, _rom, owtileset, enter, exit, locations.BridgeLocation, locations.CanalLocation);
+			Overworld = new SCOwMap(overworldMap, SCMapCheckFlags.None, _rom, owtileset, teleporters, locations.BridgeLocation, locations.CanalLocation);
 
 			w.Stop();
 		}
 
-		private void ProcessMap(MapId mapid, List<SCMap> tmpscmaps)
+		private void ProcessMap(MapIndex MapIndex, List<SCMap> tmpscmaps)
 		{
-			var e1 = maps[(int)mapid];
-			var ts = tileSets[mapTileSets[mapid]];
+			var e1 = maps[(int)MapIndex];
+			var ts = tileSets[mapTileSets[MapIndex]];
 
 			SCMapCheckFlags cflags = SCMapCheckFlags.None;
-			if (mapid <= MapId.CastleOfOrdeals1F) cflags |= SCMapCheckFlags.NoWarp;
-			if (mapid == MapId.SkyPalace2F) cflags |= SCMapCheckFlags.NoUseTiles;
+			if (MapIndex <= MapIndex.CastleOrdeals1F) cflags |= SCMapCheckFlags.NoWarp;
+			if (MapIndex == MapIndex.SkyPalace2F) cflags |= SCMapCheckFlags.NoUseTiles;
 
-			SCMap scmap = new SCMap(mapid, e1, cflags, rom, npcdata, ts, enter, exit, tele);
+			SCMap scmap = new SCMap(MapIndex, e1, cflags, rom, npcdata, ts, teleporters);
 			tmpscmaps.Add(scmap);
 		}
 
@@ -81,7 +83,7 @@ namespace FF1Lib.Sanity
 		{
 			int teleportindex = -1;
 			HashSet<SCTeleport> usedEnterTeles = new HashSet<SCTeleport>(new SCTEleportTargetEqualityComparer());
-			foreach (var et in enter.Select(e => new SCTeleport(e, SCPointOfInterestType.OwEntrance)))
+			foreach (var et in teleporters.OverworldTeleporters.Select(e => new SCTeleport(new TeleData(e.Value), SCPointOfInterestType.OwEntrance)))
 			{
 				teleportindex++;
 				if (usedEnterTeles.Contains(et)) continue;

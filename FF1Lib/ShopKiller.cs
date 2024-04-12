@@ -207,7 +207,7 @@ namespace FF1Lib
 			//Caravan
 			if (shop.Index == 69) return;
 
-			var map = maps[(int)shop.MapId];
+			var map = maps[(int)shop.MapIndex];
 
 			if (map.FindFirst(shop.TileId, out var x, out var y))
 			{

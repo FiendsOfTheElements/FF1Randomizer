@@ -54,7 +54,7 @@ namespace FF1Lib
 		}
 		private void GenerateNoOW()
 		{
-			var entranceArea = checker.Main.Dungeons.Find(x => x.Areas.FirstOrDefault(a => a != null).Map.MapId == MapId.ConeriaCastle1F).Areas.FirstOrDefault(a => a != null);
+			var entranceArea = checker.Main.Dungeons.Find(x => x.Areas.FirstOrDefault(a => a != null).Map.MapIndex == MapIndex.ConeriaCastle1F).Areas.FirstOrDefault(a => a != null);
 
 			CrawlAreaNoOW(OverworldTeleportIndex.ConeriaCastle1, entranceArea, 1, "");
 		}
@@ -68,7 +68,7 @@ namespace FF1Lib
 						var shop = shopData.Shops.First(x => x.Index == p.ShopId - 1);
 						if (shop != null && shop.Entries != null && shop.Entries.Where(x => x <= Item.Oxyale).Any())
 						{
-							var newshophint = new LocationHintsInfo(overworld, a.Map.MapId, p.Type, depth, split, p.ShopId, shop.Entries.Find(x => x <= Item.Oxyale));
+							var newshophint = new LocationHintsInfo(overworld, a.Map.MapIndex, p.Type, depth, split, p.ShopId, shop.Entries.Find(x => x <= Item.Oxyale));
 
 							if (!hints.Where(x => x.type == newshophint.type && x.id == newshophint.id).Any())
 							{
@@ -78,7 +78,7 @@ namespace FF1Lib
 						break;
 					case Sanity.SCPointOfInterestType.Treasure:
 						var item = (Item)rom.Get(0x3100 + p.TreasureId, 1)[0];
-						var newchesthint = new LocationHintsInfo(overworld, a.Map.MapId, p.Type, depth, split, p.TreasureId, item);
+						var newchesthint = new LocationHintsInfo(overworld, a.Map.MapIndex, p.Type, depth, split, p.TreasureId, item);
 						if (!hints.Where(x => x.type == newchesthint.type && x.id == newchesthint.id).Any())
 						{
 							hints.Add(newchesthint);
@@ -86,7 +86,7 @@ namespace FF1Lib
 						break;
 					case Sanity.SCPointOfInterestType.QuestNpc:
 						var npcitem = (Item)npcData.GetTalkArray(p.Npc.ObjectId)[(int)FF1Rom.TalkArrayPos.item_id];
-						var newnpchint = new LocationHintsInfo(overworld, a.Map.MapId, p.Type, depth, split, (int)p.Npc.ObjectId, npcitem);
+						var newnpchint = new LocationHintsInfo(overworld, a.Map.MapIndex, p.Type, depth, split, (int)p.Npc.ObjectId, npcitem);
 						if (!hints.Where(x => x.type == newnpchint.type && x.id == newnpchint.id).Any())
 						{
 							hints.Add(newnpchint);
@@ -117,7 +117,7 @@ namespace FF1Lib
 			{
 				string cardinalstext = split;
 
-				if (a.ChildAreas.Count > 1 && a.Map.MapId != MapId.CastleOfOrdeals2F)	
+				if (a.ChildAreas.Count > 1 && a.Map.MapIndex != MapIndex.CastleOrdeals2F)	
 				{
 					List<string> cardinals = new();
 
@@ -160,13 +160,13 @@ namespace FF1Lib
 	public class LocationHintsInfo
 	{
 		public OverworldTeleportIndex overworldlocation { get; }
-		public MapId map { get; }
+		public MapIndex map { get; }
 		public Sanity.SCPointOfInterestType type { get; }
 		public int floor { get;  }
 		public string splitPosition { get; }
 		public int id { get; }
 		public Item item { get; }
-		public LocationHintsInfo(OverworldTeleportIndex _overworldlocation, MapId _map, Sanity.SCPointOfInterestType _type, int _floor, string _split, int _value, Item _item)
+		public LocationHintsInfo(OverworldTeleportIndex _overworldlocation, MapIndex _map, Sanity.SCPointOfInterestType _type, int _floor, string _split, int _value, Item _item)
 		{
 			overworldlocation = _overworldlocation;
 			map = _map;
@@ -233,69 +233,69 @@ namespace FF1Lib
 				{OverworldTeleportIndex.TitansTunnelWest,"the Titan's tunnel"},
 			};
 
-			Dictionary<MapId, string> LocationMapNames = new Dictionary<MapId, string>
+			Dictionary<MapIndex, string> LocationMapNames = new Dictionary<MapIndex, string>
 			{
-				{MapId.Coneria,"in Coneria"},
-				{MapId.Pravoka,"in Pravoka"},
-				{MapId.Elfland,"in Elfland"},
-				{MapId.Melmond,"in Melmond"},
-				{MapId.CrescentLake,"in Crescent Lake"},
-				{MapId.Gaia,"in Gaia"},
-				{MapId.Onrac,"in Onrac"},
-				{MapId.Lefein,"in Lefein"},
-				{MapId.ConeriaCastle1F,"on floor 1 of Coneria Castle"},
-				{MapId.ConeriaCastle2F,"on floor 2 of Coneria Castle"},
-				{MapId.ElflandCastle,"on the Castle of Efland"},
-				{MapId.NorthwestCastle,"in Northwest Castle"},
-				{MapId.CastleOfOrdeals1F,"on floor 1 of the Castle of Ordeals"},
-				{MapId.CastleOfOrdeals2F,"on floor 2 of the Castle of Ordeals"},
-				{MapId.CastleOfOrdeals3F,"on floor 3 of the Castle of Ordeals"},
-				{MapId.TempleOfFiends,"on floor 1 of the Temple of Fiends"},
-				{MapId.TempleOfFiendsRevisited1F,"on floor 2 of the Temple of Fiends"},
-				{MapId.TempleOfFiendsRevisited2F,"on floor 3 of the Temple of Fiends"},
-				{MapId.TempleOfFiendsRevisited3F,"on floor 4 of the Temple of Fiends"},
-				{MapId.TempleOfFiendsRevisitedEarth,"on floor 5 of the Temple of Fiends"},
-				{MapId.TempleOfFiendsRevisitedFire,"on floor 6 of the Temple of Fiends"},
-				{MapId.TempleOfFiendsRevisitedWater,"on floor 7 of the Temple of Fiends"},
-				{MapId.TempleOfFiendsRevisitedAir,"on floor 8 of the Temple of Fiends"},
-				{MapId.TempleOfFiendsRevisitedChaos,"on floor 9 of the Temple of Fiends"},
-				{MapId.EarthCaveB1,"on floor 1 of the Earth Cave"},
-				{MapId.EarthCaveB2,"on floor 2 of the Earth Cave"},
-				{MapId.EarthCaveB3,"on floor 3 of the Earth Cave"},
-				{MapId.EarthCaveB4,"on floor 4 of the Earth Cave"},
-				{MapId.EarthCaveB5,"on floor 5 of the Earth Cave"},
-				{MapId.GurguVolcanoB1,"on floor 1 of the Gurgu Volcano"},
-				{MapId.GurguVolcanoB2,"on floor 2 of the Gurgu Volcano"},
-				{MapId.GurguVolcanoB3,"on floor 3 of the Gurgu Volcano"},
-				{MapId.GurguVolcanoB4,"on floor 4 of the Gurgu Volcano"},
-				{MapId.GurguVolcanoB5,"on floor 5 of the Gurgu Volcano"},
-				{MapId.IceCaveB1,"on floor 1 of the Ice Cave"},
-				{MapId.IceCaveB2,"on floor 2 of the Ice Cave"},
-				{MapId.IceCaveB3,"on floor 3 of the Ice Cave"},
-				{MapId.Cardia, "in the Cardias"},
-				{MapId.BahamutsRoomB1, "on floor 1 of Bahamut's Cave"},
-				{MapId.BahamutsRoomB2, "on floor 2 of Bahamut's Cave"},
-				{MapId.SeaShrineB1, "on floor 1 of the Sea Shrine"},
-				{MapId.SeaShrineB2, "on floor 2 of the Sea Shrine"},
-				{MapId.SeaShrineB3, "on floor 3 of the Sea Shrine"},
-				{MapId.SeaShrineB4, "on floor 4 of the Sea Shrine"},
-				{MapId.SeaShrineB5, "on floor 5 of the Sea Shrine"},
-				{MapId.Waterfall,"in the Waterfall"},
-				{MapId.DwarfCave,"in the Dwarves' Cave"},
-				{MapId.MatoyasCave,"in Matoya's Cave"},
-				{MapId.SardasCave,"in Sarda's Cave"},
-				{MapId.MarshCaveB1,"on floor 1 of the Marsh Cave"},
-				{MapId.MarshCaveB2,"on floor 2 of the Marsh Cave"},
-				{MapId.MarshCaveB3,"on floor 3 of the Marsh Cave"},
-				{MapId.MirageTower1F,"on floor 1 of the Mirage Tower"},
-				{MapId.MirageTower2F,"on floor 2 of the Mirage Tower"},
-				{MapId.MirageTower3F,"on floor 3 of the Mirage Tower"},
-				{MapId.SkyPalace1F,"on floor 1 of the Sky Palace"},
-				{MapId.SkyPalace2F,"on floor 2 of the Sky Palace"},
-				{MapId.SkyPalace3F,"on floor 3 of the Sky Palace"},
-				{MapId.SkyPalace4F,"on floor 4 of the Sky Palace"},
-				{MapId.SkyPalace5F,"on floor 5 of the Sky Palace"},
-				{MapId.TitansTunnel,"in the Titan's tunnel"}
+				{MapIndex.ConeriaTown,"in Coneria"},
+				{MapIndex.Pravoka,"in Pravoka"},
+				{MapIndex.Elfland,"in Elfland"},
+				{MapIndex.Melmond,"in Melmond"},
+				{MapIndex.CrescentLake,"in Crescent Lake"},
+				{MapIndex.Gaia,"in Gaia"},
+				{MapIndex.Onrac,"in Onrac"},
+				{MapIndex.Lefein,"in Lefein"},
+				{MapIndex.ConeriaCastle1F,"on floor 1 of Coneria Castle"},
+				{MapIndex.ConeriaCastle2F,"on floor 2 of Coneria Castle"},
+				{MapIndex.ElflandCastle,"on the Castle of Efland"},
+				{MapIndex.NorthwestCastle,"in Northwest Castle"},
+				{MapIndex.CastleOrdeals1F,"on floor 1 of the Castle of Ordeals"},
+				{MapIndex.CastleOrdeals2F,"on floor 2 of the Castle of Ordeals"},
+				{MapIndex.CastleOrdeals3F,"on floor 3 of the Castle of Ordeals"},
+				{MapIndex.TempleOfFiends,"on floor 1 of the Temple of Fiends"},
+				{MapIndex.TempleOfFiendsRevisited1F,"on floor 2 of the Temple of Fiends"},
+				{MapIndex.TempleOfFiendsRevisited2F,"on floor 3 of the Temple of Fiends"},
+				{MapIndex.TempleOfFiendsRevisited3F,"on floor 4 of the Temple of Fiends"},
+				{MapIndex.TempleOfFiendsRevisitedEarth,"on floor 5 of the Temple of Fiends"},
+				{MapIndex.TempleOfFiendsRevisitedFire,"on floor 6 of the Temple of Fiends"},
+				{MapIndex.TempleOfFiendsRevisitedWater,"on floor 7 of the Temple of Fiends"},
+				{MapIndex.TempleOfFiendsRevisitedAir,"on floor 8 of the Temple of Fiends"},
+				{MapIndex.TempleOfFiendsRevisitedChaos,"on floor 9 of the Temple of Fiends"},
+				{MapIndex.EarthCaveB1,"on floor 1 of the Earth Cave"},
+				{MapIndex.EarthCaveB2,"on floor 2 of the Earth Cave"},
+				{MapIndex.EarthCaveB3,"on floor 3 of the Earth Cave"},
+				{MapIndex.EarthCaveB4,"on floor 4 of the Earth Cave"},
+				{MapIndex.EarthCaveB5,"on floor 5 of the Earth Cave"},
+				{MapIndex.GurguVolcanoB1,"on floor 1 of the Gurgu Volcano"},
+				{MapIndex.GurguVolcanoB2,"on floor 2 of the Gurgu Volcano"},
+				{MapIndex.GurguVolcanoB3,"on floor 3 of the Gurgu Volcano"},
+				{MapIndex.GurguVolcanoB4,"on floor 4 of the Gurgu Volcano"},
+				{MapIndex.GurguVolcanoB5,"on floor 5 of the Gurgu Volcano"},
+				{MapIndex.IceCaveB1,"on floor 1 of the Ice Cave"},
+				{MapIndex.IceCaveB2,"on floor 2 of the Ice Cave"},
+				{MapIndex.IceCaveB3,"on floor 3 of the Ice Cave"},
+				{MapIndex.Cardia, "in the Cardias"},
+				{MapIndex.BahamutCaveB1, "on floor 1 of Bahamut's Cave"},
+				{MapIndex.BahamutCaveB2, "on floor 2 of Bahamut's Cave"},
+				{MapIndex.SeaShrineB1, "on floor 1 of the Sea Shrine"},
+				{MapIndex.SeaShrineB2, "on floor 2 of the Sea Shrine"},
+				{MapIndex.SeaShrineB3, "on floor 3 of the Sea Shrine"},
+				{MapIndex.SeaShrineB4, "on floor 4 of the Sea Shrine"},
+				{MapIndex.SeaShrineB5, "on floor 5 of the Sea Shrine"},
+				{MapIndex.Waterfall,"in the Waterfall"},
+				{MapIndex.DwarfCave,"in the Dwarves' Cave"},
+				{MapIndex.MatoyasCave,"in Matoya's Cave"},
+				{MapIndex.SardasCave,"in Sarda's Cave"},
+				{MapIndex.MarshCaveB1,"on floor 1 of the Marsh Cave"},
+				{MapIndex.MarshCaveB2,"on floor 2 of the Marsh Cave"},
+				{MapIndex.MarshCaveB3,"on floor 3 of the Marsh Cave"},
+				{MapIndex.MirageTower1F,"on floor 1 of the Mirage Tower"},
+				{MapIndex.MirageTower2F,"on floor 2 of the Mirage Tower"},
+				{MapIndex.MirageTower3F,"on floor 3 of the Mirage Tower"},
+				{MapIndex.SkyPalace1F,"on floor 1 of the Sky Palace"},
+				{MapIndex.SkyPalace2F,"on floor 2 of the Sky Palace"},
+				{MapIndex.SkyPalace3F,"on floor 3 of the Sky Palace"},
+				{MapIndex.SkyPalace4F,"on floor 4 of the Sky Palace"},
+				{MapIndex.SkyPalace5F,"on floor 5 of the Sky Palace"},
+				{MapIndex.TitansTunnel,"in the Titan's tunnel"}
 			};
 
 			bool includefloor = false;
@@ -449,7 +449,7 @@ namespace FF1Lib
 
 			npcSelected.AddRange(new List<ObjectId> { ObjectId.ConeriaOldMan, ObjectId.PravokaOldMan, ObjectId.ElflandScholar1, ObjectId.MelmondOldMan2, ObjectId.CrescentSage11, ObjectId.OnracOldMan2, ObjectId.GaiaWitch, ObjectId.LefeinMan12 });
 			dialogueID.AddRange(new List<byte> { 0x45, 0x53, 0x69, 0x82, 0xA0, 0xAA, 0xCB, 0xDC });
-			MoveNpc(MapId.Lefein, 0x0C, 0x0E, 0x15, false, true);
+			MoveNpc(MapIndex.Lefein, 0x0C, 0x0E, 0x15, false, true);
 
 			var hintedItems = new List<LocationHintsInfo>();
 			var incentivizedHintItems = new List<LocationHintsInfo>();

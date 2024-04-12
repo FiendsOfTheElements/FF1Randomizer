@@ -34,6 +34,7 @@ namespace FF1Lib
 		MapLocation MapLocation { get; }
 		Item Item { get; }
 		AccessRequirement AccessRequirement { get; }
+		OverworldTeleportIndex Entrance { get; }
 		bool IsUnused { get; }
 		string SpoilerText { get; }
 
@@ -46,6 +47,7 @@ namespace FF1Lib
 		public MapLocation MapLocation { get; protected set; }
 		public Item Item { get; protected set; }
 		public AccessRequirement AccessRequirement { get; set; }
+		public OverworldTeleportIndex Entrance { get; set; }
 		public bool IsUnused { get; protected set; }
 
 		public virtual bool IsTreasure => false;
@@ -71,6 +73,7 @@ namespace FF1Lib
 			Item = item;
 			MapLocation = copyFromRewardSource.MapLocation;
 			AccessRequirement = copyFromRewardSource.AccessRequirement;
+			Entrance = copyFromRewardSource.Entrance;
 			IsUnused = false;
 		}
 		public override int GetHashCode() => Address.GetHashCode();

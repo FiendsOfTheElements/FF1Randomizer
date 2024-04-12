@@ -50,10 +50,6 @@ namespace FF1Lib
 		public const int ScriptSize = 16;
 		public const int ScriptCount = 44;
 
-		public const int ZoneFormationsOffset = 0x2C000;
-		public const int ZoneFormationsSize = 8;
-		public const int ZoneCount = 128;
-
 		public const int FormationDataOffset = 0x2C400;
 		public const int FormationDataSize = 16;
 		public const int FormationDataCount = 128;
@@ -89,158 +85,6 @@ namespace FF1Lib
 			public const int Chaos = 127;
 		}
 		public byte[] StartingZones = { 0x1B, 0x1C, 0x24, 0x2C };
-
-		public void ShuffleEnemyFormations(MT19337 rng, FormationShuffleMode shuffleMode)
-		{
-
-			if (shuffleMode == FormationShuffleMode.Intrazone)
-			{
-				// intra-zone shuffle, does not change which formations are in zones.
-				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
-				var newFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
-
-				for (int i = 0; i < ZoneCount; i++)
-				{
-
-					var lowFormations = oldFormations[i].Chunk(4)[0].Chunk(1); // shuffle the first 4 formations first
-					lowFormations.Shuffle(rng);
-					newFormations[i][0] = lowFormations[0][0];
-					newFormations[i][1] = lowFormations[1][0];
-					newFormations[i][2] = lowFormations[2][0];
-					newFormations[i][3] = lowFormations[3][0];
-
-					var shuffleFormations = newFormations[i].SubBlob(2, 6).Chunk(1); // get formations 2-8
-					shuffleFormations.Shuffle(rng);
-					for (int j = 2; j < 8; j++)
-					{
-						newFormations[i][j] = shuffleFormations[j - 2][0];
-					}
-
-				}
-
-				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
-			}
-			if(shuffleMode == FormationShuffleMode.ShuffleRarityTiered) {
-				// intra-zone shuffle, does not change which formations are in zones.
-				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
-				var newFormations = new List<Blob>();
-
-				for (int i = 0; i < ZoneCount; i++)
-				{
-					var currentEncounterZone = oldFormations[i].Chunk(1);
-
-					List<(Blob, int)> weightedEncounterPool = new List<(Blob, int)>();
-
-					//3 tiers
-					//encounter groups 1-4 in highest frequency
-					//5-6 in mid
-					//7-8 in low
-
-					weightedEncounterPool.Add((currentEncounterZone[0], 48));
-					weightedEncounterPool.Add((currentEncounterZone[1], 48));
-					weightedEncounterPool.Add((currentEncounterZone[2], 48));
-					weightedEncounterPool.Add((currentEncounterZone[3], 48));
-					weightedEncounterPool.Add((currentEncounterZone[4], 24));
-					weightedEncounterPool.Add((currentEncounterZone[5], 24));
-					weightedEncounterPool.Add((currentEncounterZone[6], 8));
-					weightedEncounterPool.Add((currentEncounterZone[7], 8));
-
-					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
-					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
-					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
-					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
-					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
-					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
-					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
-					newFormations.Add(weightedEncounterPool.SpliceRandomItemWeighted(rng));
-				}
-
-				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
-			}
-			if (shuffleMode == FormationShuffleMode.InterZone)
-			{
-				// Inter-zone shuffle
-				// Get all encounters from zones not surrounding starting area
-				List<Blob> newFormations = new List<Blob>();
-				SortedSet<byte> exclusionZones = new SortedSet<byte>();
-				exclusionZones.UnionWith(StartingZones);
-
-				for (byte i = 0; i < ZoneCount; i++)
-				{
-					if (StartingZones.Contains(i))
-					{
-						continue;
-					}
-					var zone = Get(ZoneFormationsOffset + (i * ZoneFormationsSize), ZoneFormationsSize);
-					if (zone.ToLongs()[0] == 0)
-					{
-						//some unused overworld zones are zero filled so we catch them here to not pollute the formations list
-						exclusionZones.Add(i);
-					}
-					else
-					{
-						newFormations.AddRange(zone.Chunk(1));
-					}
-				}
-
-				newFormations.Shuffle(rng);
-				// after shuffling, put original starting zones in so only one write is required
-				foreach (byte i in exclusionZones)
-				{
-					var startZone = Get(ZoneFormationsOffset + (i * ZoneFormationsSize), ZoneFormationsSize).Chunk(1);
-					newFormations.InsertRange(i * ZoneFormationsSize, startZone);
-				}
-				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
-			}
-
-			if (shuffleMode == FormationShuffleMode.Randomize)
-			{
-				// no-pants mode
-				var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
-				var newFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
-				var allowableEncounters = Enumerable.Range(0, 256).ToList();
-				var unallowableEncounters = new List<int>() { 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x7F, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD };
-				allowableEncounters.RemoveAll(x => unallowableEncounters.Contains(x));
-				for (byte i = 0; i < ZoneCount; i++)
-				{
-					if (StartingZones.Contains(i))
-					{
-						continue;
-					}
-					for (int j = 0; j < ZoneFormationsSize; j++)
-					{
-						newFormations[i][j] = (byte)allowableEncounters.PickRandom(rng);
-					}
-				}
-				Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
-			}
-		}
-
-		private void UnleashWarMECH()
-		{
-			const int WarMECHsToAdd = 1;
-			const int WarMECHIndex = 6;
-			const byte WarMECHEncounter = 0x56;
-			var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
-			var newFormations = new List<byte>();
-
-			foreach(var zone in oldFormations)
-			{
-				var bytes = zone.ToBytes().ToList();
-				if (!bytes.Any(x => x > 0))
-				{
-					newFormations.AddRange(bytes);
-					continue;
-				}
-				bytes = bytes.Skip(WarMECHsToAdd).ToList();
-				newFormations.AddRange(bytes.Take(WarMECHIndex));
-				newFormations.AddRange(Enumerable.Repeat(WarMECHEncounter, WarMECHsToAdd));
-				newFormations.AddRange(bytes.Skip(WarMECHIndex));
-			}
-
-			Put(ZoneFormationsOffset, newFormations.ToArray());
-		}
-
 		public void ShuffleEnemyScripts(MT19337 rng, Flags flags)
 		{
 
@@ -1372,24 +1216,6 @@ namespace FF1Lib
 				Put(EnemyTextPointerOffset + (120 + (i * 2)) * 2, namepointer);
 			}
 		}
-
-		public void SubstituteFormationTableEncounter(byte oldEncounter, byte newEncounter)
-		{
-			var oldFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
-			var newFormations = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount).Chunk(ZoneFormationsSize);
-			for (byte i = 0; i < ZoneCount; i++)
-			{
-				for (int j = 0; j < ZoneFormationsSize; j++)
-				{
-					if (newFormations[i][j].Equals(oldEncounter))
-					{
-						newFormations[i][j] = newEncounter;
-					}
-				}
-			}
-			Put(ZoneFormationsOffset, newFormations.SelectMany(formation => formation.ToBytes()).ToArray());
-		}
-
 		public void TranceHasStatusElement() {
 		    // TRANCE is slot 81, give is "status" element so
 		    // it can be resisted with a ribbon, ARUB, or

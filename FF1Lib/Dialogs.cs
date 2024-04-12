@@ -623,8 +623,16 @@ namespace FF1Lib
 			// Insert dialogs
 			Put(dialogsPointerOffset, Blob.FromUShorts(pointers) + generatedText);
 		}
-		public void NPCShuffleDialogs()
+		//public void NPCShuffleDialogs(Settings settings)
+		public void NPCShuffleDialogs(Flags flags)
 		{
+			// Merge into dialogues class
+			//if (!settings.GetBool("NPCItems") && !settings.GetBool("NPCFetchItems"))
+			if (!(bool)flags.NPCItems && !(bool)flags.NPCFetchItems)
+			{
+				return;
+			}
+
 			// Update all NPC dialogs for NPC shuffle so we can show what item they're giving.
 			Dictionary<int, string> NPCShuffleDialogs = new Dictionary<int, string>();
 
@@ -915,7 +923,7 @@ namespace FF1Lib
 
 			// Chime Lefein man is moved to ID 15 to keep him with all the other NPCs
 			Put(MapObjGfxOffset + 0x0F, Blob.FromHex("0E"));
-			Put(0x03400 + (int)MapId.Lefein * 48 + 0, Blob.FromHex("0F"));
+			Put(0x03400 + (int)MapIndex.Lefein * 48 + 0, Blob.FromHex("0F"));
 			npcdata.SetRoutine((ObjectId)0x0F, newTalkRoutines.Talk_GiveItemOnFlag);
 			npcdata.GetTalkArray((ObjectId)0x0F)[(int)TalkArrayPos.dialogue_1] = 0xD0;
 			npcdata.GetTalkArray((ObjectId)0x0F)[(int)TalkArrayPos.dialogue_2] = 0xCE;

@@ -68,6 +68,8 @@
 
     <EmbeddedResource Include="customclasses\*.png" />
 
+    <Compile Remove="Template.cs" />
+
     <EmbeddedResource Include="bosses\ASTAROTH.png" />
     <EmbeddedResource Include="bosses\ASURA.png" />
     <EmbeddedResource Include="bosses\BARBRICA.png" />
@@ -118,6 +120,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ApResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Template.cs" />
   </ItemGroup>
 
   <ItemGroup>

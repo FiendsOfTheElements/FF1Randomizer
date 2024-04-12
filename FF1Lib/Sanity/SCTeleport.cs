@@ -8,7 +8,7 @@ namespace FF1Lib.Sanity
 
 		public SCPointOfInterestType Type { get; set; }
 
-		public MapId TargetMap { get; set; }
+		public MapIndex TargetMap { get; set; }
 
 		public SCCoords TargetCoords { get; set; }
 

@@ -48,7 +48,7 @@ namespace FF1Lib
 
 	public partial class FF1Rom : NesRom
 	{
-		public void MonsterInABox(MT19337 rng, Flags flags)
+		public void MonsterInABox(ZoneFormations zoneformations, MT19337 rng, Flags flags)
 		{
 			const int lut_TreasureOffset = 0x3100;
 			const int BANK_SMINFO = 0x00;
@@ -129,7 +129,7 @@ namespace FF1Lib
 			const byte spookyZombieD = 0xCB;
 			const byte fightBahamut = 0xF1;
 
-			List<byte> altEncountersList = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
+			List<byte> altEncountersList = FormationLists.BSideEncounters;
 			altEncountersList.Add(0xFF); // IronGol
 
 			if ((bool)flags.SpookyFlag)
@@ -184,20 +184,20 @@ namespace FF1Lib
 					encounters = altEncountersList;
 					break;
 				case FormationPool.LocalFormations:
-					encountersGroup = Get(ZoneFormationsOffset + (8 * 0x40), 8 * 0x40).Chunk(0x08).Select(x => x.ToBytes().Select(y => (byte)(y | 0x80)).ToList()).ToList();
+					encountersGroup = zoneformations.GetBytes();
 
-					encountersGroup[(int)MapId.ConeriaCastle1F] = castleEncounters;
-					encountersGroup[(int)MapId.ElflandCastle] = castleEncounters;
-					encountersGroup[(int)MapId.NorthwestCastle] = castleEncounters;
-					encountersGroup[(int)MapId.CastleOfOrdeals1F] = castleEncounters;
+					encountersGroup[(int)MapIndex.ConeriaCastle1F] = castleEncounters;
+					encountersGroup[(int)MapIndex.ElflandCastle] = castleEncounters;
+					encountersGroup[(int)MapIndex.NorthwestCastle] = castleEncounters;
+					encountersGroup[(int)MapIndex.CastleOrdeals1F] = castleEncounters;
 
-					encountersGroup[(int)MapId.Cardia] = cardiaEncounters;
-					encountersGroup[(int)MapId.BahamutsRoomB1] = cardiaEncounters;
-					encountersGroup[(int)MapId.BahamutsRoomB2] = cardiaEncounters;
+					encountersGroup[(int)MapIndex.Cardia] = cardiaEncounters;
+					encountersGroup[(int)MapIndex.BahamutCaveB1] = cardiaEncounters;
+					encountersGroup[(int)MapIndex.BahamutCaveB2] = cardiaEncounters;
 
-					encountersGroup[(int)MapId.DwarfCave] = caveEncounters;
-					encountersGroup[(int)MapId.SardasCave] = caveEncounters;
-					encountersGroup[(int)MapId.MatoyasCave] = caveEncounters;
+					encountersGroup[(int)MapIndex.DwarfCave] = caveEncounters;
+					encountersGroup[(int)MapIndex.SardasCave] = caveEncounters;
+					encountersGroup[(int)MapIndex.MatoyasCave] = caveEncounters;
 
 					break;
 				case FormationPool.VanillaSpikes:
@@ -274,7 +274,7 @@ namespace FF1Lib
 			}
 
 			int altFormationPosition = 0;
-			var chestsMapLocations = ItemLocations.GetTreasuresMapLocation().ToDictionary(x => x.Key, x => ItemLocations.MapLocationToMapId[x.Value]);
+			var chestsMapLocations = ItemLocations.GetTreasuresMapLocation().ToDictionary(x => x.Key, x => ItemLocations.MapLocationToMapIndex[x.Value]);
 
 			byte GetEncounter(int i)
 			{
@@ -408,7 +408,7 @@ namespace FF1Lib
 			Data[MapObjGfxOffset + 0x18] = 0xF4;
 			Data[MapObjGfxOffset + 0x19] = 0xF4;
 			Data[MapObjGfxOffset + 0x1A] = 0xF4;
-			PutInBank(0x00, 0xA000 + ((byte)MapId.TempleOfFiendsRevisitedChaos * 0x30) + 0x18, Blob.FromHex("000F1636000F1636"));
+			PutInBank(0x00, 0xA000 + ((byte)MapIndex.TempleOfFiendsRevisitedChaos * 0x30) + 0x18, Blob.FromHex("000F1636000F1636"));
 
 			Dictionary<int, string> newgarlanddialogue = new Dictionary<int, string>();
 

@@ -8,7 +8,7 @@ namespace FF1Lib.Procgen
 		public const int Width = Map.RowLength;
 		public const int Height = Map.RowCount;
 
-		public MapId MapId;
+		public MapIndex MapIndex;
 		public Tile Floor;
 		public Tile InRoomFloor;
 		public Tile OutOfBounds;
@@ -47,7 +47,7 @@ namespace FF1Lib.Procgen
 		{
 			CompleteMap map = null;
 
-			if (reqs.MapId == MapId.Waterfall)
+			if (reqs.MapIndex == MapIndex.Waterfall)
 			{
 				reqs.Floor = Tile.WaterfallRandomEncounters;
 				reqs.InRoomFloor = Tile.WaterfallInside;
@@ -81,7 +81,7 @@ namespace FF1Lib.Procgen
 				int iterations = 0;
 				while (iterations < MAX_MAP_ITERATIONS && map == null)
 				{
-					Console.WriteLine($"Generating {reqs.MapId} - iteration #{iterations}");
+					Console.WriteLine($"Generating {reqs.MapIndex} - iteration #{iterations}");
 					map = engine.Generate(rng, reqs);
 					iterations++;
 				}
@@ -94,7 +94,7 @@ namespace FF1Lib.Procgen
 				// add the reqs we used
 				map.Requirements = reqs;
 			}
-			else if (reqs.MapId == MapId.EarthCaveB1)
+			else if (reqs.MapIndex == MapIndex.EarthCaveB1)
 			{
 				reqs.Floor = Tile.EarthCaveRandomEncounters;
 				reqs.InRoomFloor = Tile.EarthCaveInside;
@@ -112,7 +112,7 @@ namespace FF1Lib.Procgen
 				// add the reqs we used
 				map.Requirements = reqs;
 			}
-			else if (reqs.MapId == MapId.EarthCaveB2)
+			else if (reqs.MapIndex == MapIndex.EarthCaveB2)
 			{
 				reqs.Floor = Tile.EarthCaveRandomEncounters;
 				reqs.InRoomFloor = Tile.EarthCaveInside;
@@ -140,7 +140,7 @@ namespace FF1Lib.Procgen
 			reqs.FreeNPCs.ToList().ForEach(npc =>
 			{
 				var location = locations.SpliceRandom(rng);
-				reqs.Rom.MoveNpc(reqs.MapId, npc, location.X, location.Y, false, false);
+				reqs.Rom.MoveNpc(reqs.MapIndex, npc, location.X, location.Y, false, false);
 			});
 
 			if (Debugger.IsAttached)

@@ -184,7 +184,7 @@
 
 		// Additions for variables in chests
 		Ship = 224,
-		//Airship = 228,
+		Airship = 228,
 		Bridge = 232,
 		Canal = 236,
 		Canoe = 242

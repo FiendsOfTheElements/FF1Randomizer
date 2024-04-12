@@ -6,7 +6,7 @@ namespace FF1Lib.Sanity
 	{
 		public const int Size = 0x40;
 
-		public MapId MapId { get; private set; }
+		public MapIndex MapIndex { get; private set; }
 
 		public SCMapCheckFlags CFlags { get; private set; }
 
@@ -24,23 +24,25 @@ namespace FF1Lib.Sanity
 		Map map;
 		SCTileSet tileSet;
 
-		EnterTeleData enter;
-		ExitTeleData exit;
-		NormTeleData tele;
+		//EnterTeleData enter;
+		//ExitTeleData exit;
+		//NormTeleData tele;
+		Teleporters teleporters;
 		NPCdata npcdata;
 
-		public SCMap(MapId _mapid, Map _map, SCMapCheckFlags cflags, FF1Rom _rom, NPCdata _npcData, SCTileSet _tileSet, EnterTeleData _enter, ExitTeleData _exit, NormTeleData _tele)
+		public SCMap(MapIndex _MapIndex, Map _map, SCMapCheckFlags cflags, FF1Rom _rom, NPCdata _npcData, SCTileSet _tileSet, Teleporters _teleporters)
 		{
-			MapId = _mapid;
+			MapIndex = _MapIndex;
 			CFlags = cflags;
 
 			map = _map;
 			rom = _rom;
 			tileSet = _tileSet;
+			teleporters = _teleporters;
 
-			enter = _enter;
-			exit = _exit;
-			tele = _tele;
+			//enter = _enter;
+			//exit = _exit;
+			//tele = _tele;
 
 			npcdata = _npcData;
 
@@ -96,7 +98,8 @@ namespace FF1Lib.Sanity
 			}
 			else if (tileDef.SpBitFlags == SCBitFlags.Teleport)
 			{
-				var teleDef = tele[tileDef.TileProp.Byte2];
+				var teleDef = new TeleData(teleporters.StandardMapTeleporters[(TeleportIndex)tileDef.TileProp.Byte2]);
+				//var teleDef = tele[tileDef.TileProp.Byte2];
 				var t = new SCTeleport { Coords = poi.Coords, Type = SCPointOfInterestType.Tele, TargetMap = teleDef.Map, TargetCoords = new SCCoords { X = teleDef.X, Y = teleDef.Y }.SmClamp };
 				Exits.Add(t);
 
@@ -106,7 +109,8 @@ namespace FF1Lib.Sanity
 			}
 			else if ((tileDef.SpBitFlags & SCBitFlags.Exit) == SCBitFlags.Exit)
 			{
-				var teleDef = exit[tileDef.TileProp.Byte2];
+				var teleDef = new TeleData(teleporters.ExitTeleporters[(ExitTeleportIndex)tileDef.TileProp.Byte2]);
+				//var teleDef = exit[tileDef.TileProp.Byte2];
 				var t = new SCTeleport { Coords = poi.Coords, Type = SCPointOfInterestType.Exit, TargetMap = teleDef.Map, TargetCoords = new SCCoords { X = teleDef.X, Y = teleDef.Y } };
 				Exits.Add(t);
 
@@ -152,7 +156,7 @@ namespace FF1Lib.Sanity
 		{
 			for (int i = 0; i < 16; i++)
 			{
-				NPC npc = rom.GetNpc(MapId, i);
+				NPC npc = rom.GetNpc(MapIndex, i);
 
 				ProcessNPC(ref npc);
 			}
@@ -252,7 +256,7 @@ namespace FF1Lib.Sanity
 			if (tileSet.Tiles[map[y, x - 1]].SpBitFlags == check) return;
 			if (tileSet.Tiles[map[y, x + 1]].SpBitFlags == check) return;
 
-			throw new NopeException(MapId, "There is no " + check.ToString() + " tile next to " + plate.ToString());
+			throw new NopeException(MapIndex, "There is no " + check.ToString() + " tile next to " + plate.ToString());
 		}
 
 		private void ProcessTeleporters()
@@ -263,32 +267,32 @@ namespace FF1Lib.Sanity
 
 		private void ProcessEntranceTeleporters()
 		{
-			foreach (var t in enter)
+			foreach (var t in teleporters.OverworldTeleporters)
 			{
-				if (t.Map == MapId)
+				if (t.Value.Index == MapIndex)
 				{
-					PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.X, Y = t.Y }.SmClamp, Type = SCPointOfInterestType.OwEntrance });
+					PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.Value.Coordinates.X, Y = t.Value.Coordinates.Y }.SmClamp, Type = SCPointOfInterestType.OwEntrance });
 				}
 			}
 		}
 
 		private void ProcessNormalTeleporters()
 		{
-			foreach (var t in tele)
+			foreach (var t in teleporters.StandardMapTeleporters)
 			{
-				if (t.Map == MapId)
+				if (t.Value.Index == MapIndex)
 				{
-					PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.X, Y = t.Y }.SmClamp, Type = SCPointOfInterestType.SmEntrance });
+					PointsOfInterest.Add(new SCPointOfInterest { Coords = new SCCoords { X = t.Value.Coordinates.X, Y = t.Value.Coordinates.Y }.SmClamp, Type = SCPointOfInterestType.SmEntrance });
 				}
 			}
 		}
 
 		private void ProcessPointsOfInterest()
 		{
-			if (PointsOfInterest.Count > 250) throw new NoYouDon_LowerCaseT_Exception(MapId, "Excess PointsOfInterest found.");
+			if (PointsOfInterest.Count > 250) throw new NoYouDon_LowerCaseT_Exception(MapIndex, "Excess PointsOfInterest found.");
 
 			var conflicts = PointsOfInterest.Where(p => p.Type < SCPointOfInterestType.OwEntrance).GroupBy(p => p.Coords, new SCCoordsEqualityComparer()).Where(g => g.Count() > 1);
-			if (conflicts.Any()) throw new NopeException(MapId, "There is a PointOfInterest conflict.");
+			if (conflicts.Any()) throw new NopeException(MapIndex, "There is a PointOfInterest conflict.");
 
 			PointsOfInterest = PointsOfInterest.Distinct(new SCPointOfInterestEqualityComparer()).ToList();
 

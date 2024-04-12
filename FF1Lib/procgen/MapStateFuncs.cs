@@ -959,7 +959,7 @@ namespace FF1Lib.Procgen
 	    return await this.NextStep();
 	}
 
-	public async Task<MapResult> PlaceChests(FF1Rom rom, List<Map> maps, List<(MapId,byte)> preserveChests) {
+	public async Task<MapResult> PlaceChests(FF1Rom rom, List<Map> maps, List<(MapIndex,byte)> preserveChests) {
 	    this.OwnTilemap();
             this.OwnFeatures();
 
@@ -969,9 +969,9 @@ namespace FF1Lib.Procgen
 	    }
 
 	    maps = new List<Map>(maps);
-	    maps[(int)mapId] = this.Tilemap;
+	    maps[(int)MapIndex] = this.Tilemap;
 	    try {
-		await rom.shuffleChestLocations(this.rng, maps, new MapId[] { this.mapId },
+		await rom.shuffleChestLocations(this.rng, maps, new MapIndex[] { this.MapIndex },
 						preserveChests, null, 0x80, true, false,
 						chestsToPlace, this.Traps);
 	    } catch (Exception) {
@@ -1065,7 +1065,7 @@ namespace FF1Lib.Procgen
 	    this.RoomBattleTiles = new();
 	    byte randomEncounter = 0x80;
 
-	    this.NPCs = rom.GetNpcs(this.mapId, npcdata);
+	    this.NPCs = rom.GetNpcs(this.MapIndex, npcdata);
 
 	    FF1Rom.FindRoomTiles(this.tileSet,
 				 this.RoomFloorTiles,

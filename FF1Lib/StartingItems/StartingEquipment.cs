@@ -41,10 +41,10 @@ namespace FF1Lib
 			for (int i = 0; i < 4; i++)
 			{
 				byte[] buffer1 = new byte[4];
-				Buffer.BlockCopy(items.Weapons, 4 * i, buffer1, 0,  4);
+				Buffer.BlockCopy(items.Weapons, 4 * i, buffer1, 0, 4);
 
 				byte[] buffer2 = new byte[4];
-				Buffer.BlockCopy(items.Armor, 4 * i, buffer2, 0,  4);
+				Buffer.BlockCopy(items.Armor, 4 * i, buffer2, 0, 4);
 
 				rom.PutInBank(0x1B, 0x8520 + 0x08 * i, buffer1);
 				rom.PutInBank(0x1B, 0x8524 + 0x08 * i, buffer2);
@@ -137,21 +137,21 @@ namespace FF1Lib
 
 		private void GetRandomAoe(List<Item> items)
 		{
-				var damageAoes = spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).Select(s => s.Id);
-				var instaAoes = spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.AllEnemies, SpellElement.Any, SpellStatus.Death).Select(s => s.Id);
-				var powerWordAoes = spellHelper.FindSpells(SpellRoutine.PowerWord, SpellTargeting.AllEnemies, SpellElement.Any, SpellStatus.Death).Select(s => s.Id);
+			var damageAoes = spellHelper.FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies).Select(s => s.Id);
+			var instaAoes = spellHelper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.AllEnemies, SpellElement.Any, SpellStatus.Death).Select(s => s.Id);
+			var powerWordAoes = spellHelper.FindSpells(SpellRoutine.PowerWord, SpellTargeting.AllEnemies, SpellElement.Any, SpellStatus.Death).Select(s => s.Id);
 
-				var spells = new HashSet<Spell>(damageAoes.Concat(instaAoes).Concat(powerWordAoes));
+			var spells = new HashSet<Spell>(damageAoes.Concat(instaAoes).Concat(powerWordAoes));
 
-				var weaps = weapons.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
-				var arms = armors.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
+			var weaps = weapons.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
+			var arms = armors.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
 
-				var pool = weaps.Concat(arms).ToList();
+			var pool = weaps.Concat(arms).ToList();
 
-				var names = weapons.Where(w => spells.Contains(w.Spell)).Select(w => w.Name).Concat(armors.Where(w => spells.Contains(w.Spell)).Select(a => a.Name)).ToList();
+			var names = weapons.Where(w => spells.Contains(w.Spell)).Select(w => w.Name).Concat(armors.Where(w => spells.Contains(w.Spell)).Select(a => a.Name)).ToList();
 
-				if (flags.StartingEquipmentNoDuplicates) pool.RemoveAll(i => items.Contains(i));
-				if (pool.Count > 0) items.Add(pool.PickRandom(rng));
+			if (flags.StartingEquipmentNoDuplicates) pool.RemoveAll(i => items.Contains(i));
+			if (pool.Count > 0) items.Add(pool.PickRandom(rng));
 		}
 
 		private void GetRandomCasterItem(List<Item> items)
@@ -271,7 +271,7 @@ namespace FF1Lib
 
 			for (int i = 0; i < 16; i++)
 			{
-				if (flags.StartingEquipmentNoDuplicates)armor.RemoveAll(i => itemSet.Contains(i) && hqPool.Contains(i));
+				if (flags.StartingEquipmentNoDuplicates) armor.RemoveAll(i => itemSet.Contains(i) && hqPool.Contains(i));
 
 				var item = armor.PickRandom(rng);
 
@@ -319,17 +319,17 @@ namespace FF1Lib
 		{
 			//testing each weapon to see if it has a weakness, lets this flag work with weaponizer
 			List<Item> weaponPool = new List<Item>();
-			for(int i = 0; i < 40; i++)
+			for (int i = 0; i < 40; i++)
 			{
 				Weapon weapon = new Weapon(i, rom);
-				if((weapon.ElementalWeakness > 0x00 && weapon.ElementalWeakness < 0xff) || (weapon.TypeWeakness > 0x00 && weapon.TypeWeakness < 0xff)) //exclude xcal type weapons
+				if (weapon.ElementalWeakness > 0x00 && weapon.ElementalWeakness < 0xff || weapon.TypeWeakness > 0x00 && weapon.TypeWeakness < 0xff) //exclude xcal type weapons
 				{
 					//weapons start at item 28
 					weaponPool.Add((Item)weapon.WeaponIndex + 28);
 				}
 			}
 
-			if(weaponPool.Count > 0)
+			if (weaponPool.Count > 0)
 			{
 				items.Add(weaponPool.PickRandom(rng));
 			}

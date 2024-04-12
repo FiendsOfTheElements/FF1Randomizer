@@ -46,10 +46,10 @@ namespace FF1Lib
 			// Update Fiends Refights
 			if (fiendsrefights == FiendsRefights.None)
 			{
-				maps[(int)MapId.TempleOfFiendsRevisitedEarth][0x1E, 0x24] = 0x5C;
-				maps[(int)MapId.TempleOfFiendsRevisitedFire][0x16, 0x10] = 0x5C;
-				maps[(int)MapId.TempleOfFiendsRevisitedWater][0x1C, 0x18] = 0x5C;
-				maps[(int)MapId.TempleOfFiendsRevisitedAir][0x08, 0x10] = 0x5C;
+				maps[(int)MapIndex.TempleOfFiendsRevisitedEarth][0x1E, 0x24] = 0x5C;
+				maps[(int)MapIndex.TempleOfFiendsRevisitedFire][0x16, 0x10] = 0x5C;
+				maps[(int)MapIndex.TempleOfFiendsRevisitedWater][0x1C, 0x18] = 0x5C;
+				maps[(int)MapIndex.TempleOfFiendsRevisitedAir][0x08, 0x10] = 0x5C;
 			}
 			else if(fiendsrefights == FiendsRefights.TwoPaths)
 			{
@@ -84,13 +84,13 @@ namespace FF1Lib
 				Blob.FromHex("2020202020202020"),
 			};
 
-			maps[(int)MapId.TempleOfFiendsRevisited1F].Put((0x10, 0x13), entrance1F.ToArray());
-			maps[(int)MapId.TempleOfFiendsRevisited1F][0x16, 0x14] = 0x3B; // Lock Door
-			maps[(int)MapId.TempleOfFiendsRevisited1F][0x1C, 0x15] = 0x39; // Block passages to Stairs B
-			maps[(int)MapId.TempleOfFiendsRevisited1F][0x11, 0x20] = 0x39;
-			maps[(int)MapId.TempleOfFiendsRevisited1F][0x10, 0x10] = 0x62; // Move Lute Chests
-			maps[(int)MapId.TempleOfFiendsRevisited1F][0x10, 0x18] = 0x63;
-			maps[(int)MapId.TempleOfFiendsRevisited1F][0x23, 0x01] = 0x52; // Left stairs point to Earth floor
+			maps[(int)MapIndex.TempleOfFiendsRevisited1F].Put((0x10, 0x13), entrance1F.ToArray());
+			maps[(int)MapIndex.TempleOfFiendsRevisited1F][0x16, 0x14] = 0x3B; // Lock Door
+			maps[(int)MapIndex.TempleOfFiendsRevisited1F][0x1C, 0x15] = 0x39; // Block passages to Stairs B
+			maps[(int)MapIndex.TempleOfFiendsRevisited1F][0x11, 0x20] = 0x39;
+			maps[(int)MapIndex.TempleOfFiendsRevisited1F][0x10, 0x10] = 0x62; // Move Lute Chests
+			maps[(int)MapIndex.TempleOfFiendsRevisited1F][0x10, 0x18] = 0x63;
+			maps[(int)MapIndex.TempleOfFiendsRevisited1F][0x23, 0x01] = 0x52; // Left stairs point to Earth floor
 
 			AddLutePlateToFloor1F(maps);
 
@@ -102,9 +102,9 @@ namespace FF1Lib
 				Blob.FromHex("5C5C5C5C"),
 			};
 
-			maps[(int)MapId.TempleOfFiendsRevisitedEarth].Put((0x07, 0x1A), eraseLichStairs.ToArray()); // Open lower corridor
-			maps[(int)MapId.TempleOfFiendsRevisitedEarth][0x10, 0x10] = 0x5F; // Move Kary Chests
-			maps[(int)MapId.TempleOfFiendsRevisitedEarth][0x11, 0x16] = 0x5E;
+			maps[(int)MapIndex.TempleOfFiendsRevisitedEarth].Put((0x07, 0x1A), eraseLichStairs.ToArray()); // Open lower corridor
+			maps[(int)MapIndex.TempleOfFiendsRevisitedEarth][0x10, 0x10] = 0x5F; // Move Kary Chests
+			maps[(int)MapIndex.TempleOfFiendsRevisitedEarth][0x11, 0x16] = 0x5E;
 
 			// Kary Floor
 			List<Blob> openKaryLowerFloors = new List<Blob> 
@@ -113,12 +113,12 @@ namespace FF1Lib
 				Blob.FromHex("5C5C5C5C5C5C"),
 			};
 
-			maps[(int)MapId.TempleOfFiendsRevisitedFire].Put((0x0C, 0x1B), openKaryLowerFloors.ToArray()); // Open lower corridor
+			maps[(int)MapIndex.TempleOfFiendsRevisitedFire].Put((0x0C, 0x1B), openKaryLowerFloors.ToArray()); // Open lower corridor
 
 			// Kraken Floor
-			maps[(int)MapId.TempleOfFiendsRevisitedWater][0x1B, 0x08] = 0x5C; // Open direct access to bottom
-			maps[(int)MapId.TempleOfFiendsRevisitedWater][0x1B, 0x16] = 0x5C;
-			maps[(int)MapId.TempleOfFiendsRevisitedWater][0x0F, 0x0F] = 0x5D; // Move Masa Chest
+			maps[(int)MapIndex.TempleOfFiendsRevisitedWater][0x1B, 0x08] = 0x5C; // Open direct access to bottom
+			maps[(int)MapIndex.TempleOfFiendsRevisitedWater][0x1B, 0x16] = 0x5C;
+			maps[(int)MapIndex.TempleOfFiendsRevisitedWater][0x0F, 0x0F] = 0x5D; // Move Masa Chest
 		}
 		private void ShortenToFR(List<Map> maps, FiendsRefights fiendsrefights, MT19337 rng)
 		{
@@ -153,7 +153,7 @@ namespace FF1Lib
 				battles.Shuffle(rng);
 				landingArea.Add(Blob.FromHex($"31{battles[0]:X2}3131{battles[1]:X2}31{battles[2]:X2}3131{battles[3]:X2}31"));
 			}
-			maps[(int)MapId.TempleOfFiendsRevisitedChaos].Put((0x0A, 0x00), landingArea.ToArray());
+			maps[(int)MapIndex.TempleOfFiendsRevisitedChaos].Put((0x0A, 0x00), landingArea.ToArray());
 
 			AddLutePlateToChaosFloor(maps);
 		}
@@ -161,7 +161,7 @@ namespace FF1Lib
 		private void AddLutePlateToChaosFloor(List<Map> maps)
 		{
 			// add lute plate (can't use mapNpcIndex 0-2, those belong to Garland)
-			SetNpc(MapId.TempleOfFiendsRevisitedChaos, mapNpcIndex: 3, ObjectId.LutePlate, 15, 5, inRoom: true, stationary: true);
+			SetNpc(MapIndex.TempleOfFiendsRevisitedChaos, mapNpcIndex: 3, ObjectId.LutePlate, 15, 5, inRoom: true, stationary: true);
 
 			// replace "The tune plays,\nrevealing a stairway." text (0x385BA) originally "9DAB1AB7B8B11AB3AFA4BCB6BF05B5A8B92BAF1FAA2024B7A4ACB55DBCC000"
 			Put(0x385BA, FF1Text.TextToBytes("The tune plays,\nopening the pathway.", useDTE: true));
@@ -174,13 +174,13 @@ namespace FF1Lib
 		private void AddLutePlateToFloor1F(List<Map> maps)
 		{
 			// add lute plate (can't use mapNpcIndex 0-2, those belong to Garland)
-			SetNpc(MapId.TempleOfFiendsRevisited1F, mapNpcIndex: 0, ObjectId.LutePlate, 0x14, 0x15, inRoom: true, stationary: true);
+			SetNpc(MapIndex.TempleOfFiendsRevisited1F, mapNpcIndex: 0, ObjectId.LutePlate, 0x14, 0x15, inRoom: true, stationary: true);
 
 			// replace "The tune plays,\nrevealing a stairway." text (0x385BA) originally "9DAB1AB7B8B11AB3AFA4BCB6BF05B5A8B92BAF1FAA2024B7A4ACB55DBCC000"
 			Put(0x385BA, FF1Text.TextToBytes("The tune plays,\nopening the pathway.", useDTE: true));
 
 			// make lute plate a single color
-			PutInBank(0x00, 0xA000 + ((int)MapId.TempleOfFiendsRevisited1F * 0x30) + 0x18, Blob.FromHex("3000001030000010"));
+			PutInBank(0x00, 0xA000 + ((int)MapIndex.TempleOfFiendsRevisited1F * 0x30) + 0x18, Blob.FromHex("3000001030000010"));
 		}
 
 		private void MakeGarlandsBorderTransparent()
@@ -199,9 +199,9 @@ namespace FF1Lib
 			{
 				for (int y = 0; y < 32; y++)
 				{
-					if (maps[(byte)MapId.TempleOfFiendsRevisitedChaos][x, y] == (byte)Tile.ToFRNoEncounter)
+					if (maps[(byte)MapIndex.TempleOfFiendsRevisitedChaos][x, y] == (byte)Tile.ToFRNoEncounter)
 					{
-						maps[(byte)MapId.TempleOfFiendsRevisitedChaos][x, y] = (byte)Tile.ToFREncounter;
+						maps[(byte)MapIndex.TempleOfFiendsRevisitedChaos][x, y] = (byte)Tile.ToFREncounter;
 					}
 				}
 			}
@@ -215,12 +215,12 @@ namespace FF1Lib
 			if (mode == ToFRMode.Short)
 			{
 				// add warp portal to alternate map, allowing player to Exit ToFR
-				maps[(byte)MapId.TempleOfFiendsRevisitedChaos][3, 15] = (byte)Tile.PortalWarp;
+				maps[(byte)MapIndex.TempleOfFiendsRevisitedChaos][3, 15] = (byte)Tile.PortalWarp;
 			}
 			else
 			{
 				// add warp portal to ToFR 1st floor
-				maps[(byte)MapId.TempleOfFiendsRevisited1F][17, 20] = (byte)Tile.PortalWarp;
+				maps[(byte)MapIndex.TempleOfFiendsRevisited1F][17, 20] = (byte)Tile.PortalWarp;
 			}
 		}
 
@@ -228,11 +228,11 @@ namespace FF1Lib
 		{
 			byte toChaosStairs = 0x4B;
 
-			List<(MapId map, (int x, int y) coord, byte stairs)> stairsLocations = new() {
-				(MapId.TempleOfFiendsRevisitedEarth, (0x24, 0x1F), 0x52),
-				(MapId.TempleOfFiendsRevisitedFire, (0x10, 0x15), 0x53),
-				(MapId.TempleOfFiendsRevisitedWater, (0x1D, 0x1D), 0x4D),
-				(MapId.TempleOfFiendsRevisitedAir, (0x1C, 0x03), 0x4C),
+			List<(MapIndex map, (int x, int y) coord, byte stairs)> stairsLocations = new() {
+				(MapIndex.TempleOfFiendsRevisitedEarth, (0x24, 0x1F), 0x52),
+				(MapIndex.TempleOfFiendsRevisitedFire, (0x10, 0x15), 0x53),
+				(MapIndex.TempleOfFiendsRevisitedWater, (0x1D, 0x1D), 0x4D),
+				(MapIndex.TempleOfFiendsRevisitedAir, (0x1C, 0x03), 0x4C),
 			};
 
 			var floorleft1 = stairsLocations.SpliceRandom(rng);
@@ -246,17 +246,17 @@ namespace FF1Lib
 			}
 			else if (mode == ToFRMode.Mid)
 			{
-				maps[(int)MapId.TempleOfFiendsRevisited1F][0x1C, 0x15] = 0x5C;
+				maps[(int)MapIndex.TempleOfFiendsRevisited1F][0x1C, 0x15] = 0x5C;
 
-				maps[(int)MapId.TempleOfFiendsRevisited1F][0x23, 0x01] = floorleft1.stairs;
-				maps[(int)MapId.TempleOfFiendsRevisited1F][0x23, 0x28] = floorright1.stairs;
+				maps[(int)MapIndex.TempleOfFiendsRevisited1F][0x23, 0x01] = floorleft1.stairs;
+				maps[(int)MapIndex.TempleOfFiendsRevisited1F][0x23, 0x28] = floorright1.stairs;
 			}
 			else if (mode == ToFRMode.Long)
 			{
-				maps[(int)MapId.TempleOfFiendsRevisited1F][0x01, 0x01] = 0x5C;
+				maps[(int)MapIndex.TempleOfFiendsRevisited1F][0x01, 0x01] = 0x5C;
 
-				maps[(int)MapId.TempleOfFiendsRevisited1F][0x04, 0x01] = floorleft1.stairs;
-				maps[(int)MapId.TempleOfFiendsRevisited1F][0x01, 0x04] = floorright1.stairs;
+				maps[(int)MapIndex.TempleOfFiendsRevisited1F][0x04, 0x01] = floorleft1.stairs;
+				maps[(int)MapIndex.TempleOfFiendsRevisited1F][0x01, 0x04] = floorright1.stairs;
 			}
 
 			maps[(int)floorleft1.map][floorleft1.coord.y, floorleft1.coord.x] = floorleft2.stairs;

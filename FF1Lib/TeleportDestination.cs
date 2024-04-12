@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System;
 
 namespace FF1Lib
 {
@@ -14,11 +15,16 @@ namespace FF1Lib
 		private readonly short _identityValue;
 		public readonly byte X;
 		public readonly byte Y;
+		public readonly CoordinateLocale Context;
+		public readonly byte ValueX { get => Context == CoordinateLocale.StandardInRoom ? (byte)(X | 0x80) : X; }
+		public readonly byte ValueY { get => Context > CoordinateLocale.Overworld ? (byte)(Y | 0x80) : Y; }
+		//public CoordinateLocale Context { get => ((X & 0x80) > 0) ? CoordinateLocale.StandardInRoom : (((Y & 0x80) > 0) ? CoordinateLocale.Overworld : CoordinateLocale.Standard); }
 		public Coordinate(byte x, byte y, CoordinateLocale context)
 		{
 			X = x;
 			Y = y;
-
+			Context = context;
+			/*
 			if (context > CoordinateLocale.Overworld)
 			{
 				Y |= 0x80;
@@ -27,7 +33,7 @@ namespace FF1Lib
 				{
 					X |= 0x80;
 				}
-			}
+			}*/
 
 			_identityValue = (short)(x * 256 + y);
 		}
@@ -70,13 +76,13 @@ namespace FF1Lib
 
 	    [JsonProperty(Order=2)]
 	    [JsonConverter(typeof(StringEnumConverter))]
-		public readonly MapIndex Index;
+		public MapIndex Index;
 
 	    [JsonProperty(Order=3)]
-		public byte CoordinateX { get; private set; }
+		public byte CoordinateX { get => Coordinates.ValueX; }
 
 	    [JsonProperty(Order=4)]
-		public byte CoordinateY { get; private set; }
+		public byte CoordinateY { get => Coordinates.ValueY; }
 
 	    [JsonProperty(Order=5, ItemConverterType = typeof(StringEnumConverter))]
 		public readonly IEnumerable<TeleportIndex> Teleports;
@@ -85,6 +91,7 @@ namespace FF1Lib
 	    [JsonConverter(typeof(StringEnumConverter))]
 		public readonly ExitTeleportIndex Exit;
 
+		public Coordinate Coordinates { get; set; }
 		public string SpoilerText =>
 		$"{Enum.GetName(typeof(MapLocation), Destination)}" +
 		$"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 30 - Enum.GetName(typeof(MapLocation), Destination).Length)).ToList())}";
@@ -110,8 +117,9 @@ namespace FF1Lib
 
 			Destination = destination;
 			Index = index;
-			CoordinateX = coordinates.X;
-			CoordinateY = coordinates.Y;
+			//CoordinateX = coordinates.X;
+			//CoordinateY = coordinates.Y;
+			Coordinates = coordinates;
 			Teleports = teleports?.ToList() ?? new List<TeleportIndex>();
 			Exit = exits;
 		}
@@ -123,15 +131,66 @@ namespace FF1Lib
 			: this(destination, index, coordinates, exits: exit)
 		{
 		}
+		public TeleportDestination(TeleData teledata, CoordinateLocale context)
+		{
+			Destination = MapLocation.None;
+			Index = teledata.Map;
+			Coordinates = new();
+			Teleports = null;
+			Exit = new();
+			SetTeleporter(new Coordinate(teledata.X, teledata.Y, context));
+		}
+		public TeleportDestination(MapIndex index, Coordinate newcoord)
+		{
+			Destination = MapLocation.None;
+			Index = index;
+			Coordinates = newcoord;
+			Teleports = null;
+			Exit = new();
+		}
+		public TeleportDestination(TeleportDestination newdest)
+		{
+			Destination = newdest.Destination;
+			Index = newdest.Index;
+			Coordinates = new Coordinate(newdest.Coordinates.X, newdest.CoordinateY, newdest.Coordinates.Context);
+			Teleports = newdest.Teleports?.ToList();
+			Exit = newdest.Exit;
+		}
+		public TeleportDestination(TeleportDestination newdest, Coordinate newcoords)
+		{
+			Destination = newdest.Destination;
+			Index = newdest.Index;
+			Coordinates = new Coordinate(newcoords.X, newcoords.Y, newcoords.Context);
+			Teleports = newdest.Teleports?.ToList();
+			Exit = newdest.Exit;
+		}
 		public void SetEntrance(Coordinate coordinate)
 		{
-			CoordinateX = coordinate.X;
-			CoordinateY = coordinate.Y;
+			Coordinates = coordinate;
+		}
+		public void SetTeleporter(Coordinate coordinate)
+		{
+			int mask = (coordinate.Context == CoordinateLocale.Overworld) ? 0xFF : 0x3F;
+			Coordinates = new Coordinate((byte)(coordinate.X & mask), (byte)(coordinate.Y & mask), coordinate.Context);
+		}
+		public void SetTeleporter(MapIndex index, Coordinate coordinate)
+		{
+			SetTeleporter(coordinate);
+			Index = index;
+		}
+		public void SetTeleporter(TeleData data)
+		{
+			SetTeleporter(new Coordinate(data.X, data.Y, CoordinateLocale.Overworld));
 		}
 
 		public void FlipXcoordinate()
 		{
-			CoordinateX = (byte)(64 - CoordinateX - 1);
+			Coordinates = new Coordinate((byte)(64 - Coordinates.X - 1), Coordinates.Y, Coordinates.Context);
+		}
+
+		public void FlipYcoordinate()
+		{
+			Coordinates = new Coordinate(Coordinates.X, (byte)(64 - Coordinates.Y - 1), Coordinates.Context);
 		}
 	}
 }

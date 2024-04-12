@@ -12,12 +12,11 @@ namespace FF1Lib
 		{
 			locations = _locations;
 			data = _data;
+			SetShipLocation(255);
 		}
-
-		
 		public SCCoords SetShipLocation(int dungeonIndex)
 		{
-			locations.LoadData();
+			//locations.LoadData();
 
 			var shiplocation = data.FirstOrDefault(s => s.TeleporterIndex == dungeonIndex);
 
@@ -28,11 +27,10 @@ namespace FF1Lib
 				locations.ShipLocation = new SCCoords(shiplocation.X, shiplocation.Y);
 			}
 
-			locations.StoreData();
+			//locations.StoreData();
 
 			return locations.ShipLocation;
 		}
-
 		public ShipLocation GetShipLocation(int dungeonIndex)
 		{
 			var shiplocation = data.FirstOrDefault(s => s.TeleporterIndex == dungeonIndex);
@@ -40,6 +38,29 @@ namespace FF1Lib
 			if (shiplocation == null) shiplocation = data.FirstOrDefault(s => s.TeleporterIndex == 255);
 
 			return shiplocation;
+		}
+		public void UpdateDocks(Settings settings)
+		{
+			// Ships found at Matoya's need to spawn at Coneria when Matoya's Dock no longer exists
+			if (settings.GetBool("BridgeToLefein"))
+			{
+				var changeDockLocation = GetShipLocation((int)OverworldTeleportIndex.MatoyasCave);
+				changeDockLocation.X = Dock.Coneria[0];
+				changeDockLocation.Y = Dock.Coneria[1];
+			}
+		}
+		public void UpdateDocks(Flags flags)
+		{
+			// Ships found at Matoya's need to spawn at Coneria when Matoya's Dock no longer exists
+			if ((bool)flags.MapBridgeLefein)
+			{
+				var changeDockLocation = GetShipLocation((int)OverworldTeleportIndex.MatoyasCave);
+				if (changeDockLocation.TeleporterIndex != 255)
+				{
+					changeDockLocation.X = Dock.Coneria[0];
+					changeDockLocation.Y = Dock.Coneria[1];
+				}
+			}
 		}
 	}
 }

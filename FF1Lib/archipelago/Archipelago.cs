@@ -21,11 +21,12 @@ namespace FF1Lib
 		Preferences preferences;
 		ExpChests expChests;
 		IncentiveData incentivesData;
+		OwLocationData locations;
 		Blob seed;
 
 		public string Json { get; private set; }
 
-		public Archipelago(FF1Rom _rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, ExpChests _expChests, IncentiveData _incentivesData, Blob _seed, Flags _flags, Flags _originflags, Preferences _preferences)
+		public Archipelago(FF1Rom _rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, ExpChests _expChests, IncentiveData _incentivesData, OwLocationData _locations, Blob _seed, Flags _flags, Flags _originflags, Preferences _preferences)
 		{
 			rom = _rom;
 			expChests = _expChests;
@@ -33,6 +34,7 @@ namespace FF1Lib
 			flags = _flags;
 			originalFlags = _originflags;
 			seed = _seed;
+			locations = _locations;
 			preferences = _preferences;
 
 			var kiPlacement = generatedPlacement.Where(r => ItemLists.AllQuestItems.Contains(r.Item) && r.Item != Item.Bridge).ToList();
@@ -87,7 +89,7 @@ namespace FF1Lib
 			//Remove ToFr and distinct by address to remove duplicates
 			kiPlacement = kiPlacement.Where(r => !ItemLocations.ToFR.Any(l => l.Address == r.Address)).GroupBy(r => r.Address).Select(g => g.First()).ToList();
 
-			logic = new SCLogic(rom, checker.Main, kiPlacement, flags, true);
+			logic = new SCLogic(rom, checker.Main, kiPlacement, locations, flags, true);
 		}
 
 		private void AddCommonEquipment(List<IRewardSource> kiPlacement, List<IRewardSource> generatedPlacement)
