@@ -388,6 +388,53 @@ namespace FF1Lib
 			//Put(TeleportOffset + LostTeleportIndex, new byte[] { 0x10 });
 			//Put(TeleportOffset + TeleportCount + LostTeleportIndex, new byte[] { 0x12 });
 		}
+		public void ShuffleLavaTiles(MT19337 rng, List<Map> maps)
+		{
+			List<MapIndex> lavaMaps = new() { MapIndex.GurguVolcanoB1, MapIndex.GurguVolcanoB2, MapIndex.GurguVolcanoB3, MapIndex.GurguVolcanoB4, MapIndex.GurguVolcanoB5 };
+
+			byte lavaTile = 0x3D;
+			byte encounterTile = 0x41;
+
+			foreach (var map in lavaMaps)
+			{
+				int lavacount = 0;
+				int enccount = 0;
+
+				List<SCCoords> tileCoords = new();
+				List<SCCoords> lavaCoords = new();
+				List<SCCoords> encounterCoords = new();
+
+				for (int x = 0; x < 0x40; x++)
+				{
+					for (int y = 0; y < 0x40; y++)
+					{
+						byte currentile = maps[(int)map].MapBytes[x, y];
+						if (currentile == lavaTile)
+						{
+							tileCoords.Add(new SCCoords(x, y));
+							lavacount++;
+						}
+						else if (currentile == encounterTile)
+						{
+							tileCoords.Add(new SCCoords(x, y));
+							enccount++;
+						}
+					}
+				}
+
+				for (int i = 0; i < lavacount; i++)
+				{
+					var lavatilecoord = tileCoords.SpliceRandom(rng);
+					maps[(int)map].MapBytes[lavatilecoord.X, lavatilecoord.Y] = lavaTile;
+				}
+
+				foreach (var coordleft in tileCoords)
+				{
+					maps[(int)map].MapBytes[coordleft.X, coordleft.Y] = encounterTile;
+				}
+			}
+
+		}
 
 		public void DoSkyCastle4FMaze(MT19337 rng, List<Map> maps)
 		{

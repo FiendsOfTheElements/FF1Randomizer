@@ -247,6 +247,7 @@ namespace FF1Lib
 
 		public WarMECHMode WarMECHMode { get; set; } = WarMECHMode.Vanilla;
 		public bool? OrdealsPillars { get; set; } = false;
+		public bool? ShuffleLavaTiles { get; set; } = false;
 		public SkyCastle4FMazeMode SkyCastle4FMazeMode { get; set; } = SkyCastle4FMazeMode.Vanilla;
 		public bool? TitansTrove { get; set; } = false;
 		public bool? LefeinSuperStore { get; set; } = false;

@@ -390,6 +390,10 @@ public partial class FF1Rom : NesRom
 		{
 			ShuffleSkyCastle4F(rng, maps);
 		}
+		if ((bool)flags.ShuffleLavaTiles)
+		{
+			ShuffleLavaTiles(rng, maps);
+		}
 
 		await this.Progress();
 

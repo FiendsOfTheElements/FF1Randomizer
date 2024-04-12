@@ -11,6 +11,7 @@
 		<div class="col1">
 			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@((Flags.Treasures != false) && !Flags.Archipelago)" Id="OpenChestsInOrder" @bind-Value="Flags.OpenChestsInOrder">Open Chests in Order</CheckBox>
             <CheckBox UpdateToolTip="@UpdateToolTipID" Id="SetRNG" @bind-Value="Flags.SetRNG">Set RNG</CheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ShuffleLavaTiles" @bind-Value="Flags.ShuffleLavaTiles">Shuffle Lava Tiles</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 		</div>
 		<div class="col2">
