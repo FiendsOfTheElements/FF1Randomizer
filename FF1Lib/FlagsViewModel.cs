@@ -1218,6 +1218,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DamageTilesKill"));
 			}
 		}
+		public bool? ArmorResistsDamageTileDamage
+		{
+			get => Flags.ArmorResistsDamageTileDamage;
+			set
+			{
+				Flags.ArmorResistsDamageTileDamage = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ArmorResistsDamageTileDamage"));
+			}
+		}
 		public bool? MoveGaiaItemShop
 		{
 			get => Flags.MoveGaiaItemShop;
