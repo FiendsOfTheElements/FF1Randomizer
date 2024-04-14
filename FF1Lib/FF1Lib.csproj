@@ -91,14 +91,18 @@
 	  <EmbeddedResource Include="bosses\GILGAMSH.png" />
 	  <EmbeddedResource Include="bosses\GOLDOR.png" />
 	  <EmbeddedResource Include="bosses\GOTUS.png" />
+	  <EmbeddedResource Include="bosses\HECATON.png" />
 	  <EmbeddedResource Include="bosses\GUARDIN.png" />
 	  <EmbeddedResource Include="bosses\GUTSCO.png" />
 	  <EmbeddedResource Include="bosses\IFRIT.png" />
 	  <EmbeddedResource Include="bosses\IROGIANT.png" />
+	  <EmbeddedResource Include="bosses\KUNOICHI.png" />
 	  <EmbeddedResource Include="bosses\LAMQUEEN.png" />
 	  <EmbeddedResource Include="bosses\LEVIATHN.png" />
 	  <EmbeddedResource Include="bosses\LUCIFER.png" />
 	  <EmbeddedResource Include="bosses\MEDUSAE.png" />
+	  <EmbeddedResource Include="bosses\NEP.DRGN.png" />
+	  <EmbeddedResource Include="bosses\NINJA.png" />	  
 	  <EmbeddedResource Include="bosses\ODIN.png" />
 	  <EmbeddedResource Include="bosses\RNDWORM.png" />
 	  <EmbeddedResource Include="bosses\RUBICANT.png" />
@@ -109,6 +113,8 @@
 	  <EmbeddedResource Include="bosses\SHIVA.png" />
 	  <EmbeddedResource Include="bosses\TITAN.png" />
 	  <EmbeddedResource Include="bosses\TWHD.DRG.png" />
+	  <EmbeddedResource Include="bosses\UNNE.png" />
+	  <EmbeddedResource Include="bosses\ZANDE.png" />	  
 	  <EmbeddedResource Include="maps\vfmaps.zip" />
   </ItemGroup>
 
