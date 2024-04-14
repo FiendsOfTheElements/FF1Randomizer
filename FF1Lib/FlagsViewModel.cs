@@ -4294,6 +4294,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlternateFiends"));
 			}
 		}
+		public AltFiendPool AltFiendPool
+		{
+			get => Flags.AltFiendPool;
+			set
+			{
+				Flags.AltFiendPool = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlternateFiendPool"));
+			}
+		}
 		public bool? ShuffleScriptsBosses
 		{
 			get => Flags.ShuffleScriptsBosses;

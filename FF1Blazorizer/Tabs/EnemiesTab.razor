@@ -60,6 +60,7 @@
 			<h4>Fiends</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fiendShuffleCheckBox" @bind-Value="Flags.FiendShuffle">Shuffle</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.AlternateFiends">Alternate</TriStateCheckBox>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" id="AltFiendPoolDropDown" TItem="AltFiendPool" @bind-value="Flags.AltFiendPool">AltFiend Pool:</EnumDropDown>
 			<div class="checkbox-cell"></div>
 
 			<h4>Bahamut</h4>

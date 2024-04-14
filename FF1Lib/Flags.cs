@@ -632,6 +632,7 @@ namespace FF1Lib
 		public bool? RandomizeClassChaos { get; set; } = false;
 		public bool? RandomizeClassIncludeXpBonus { get; set; } = false;
 		public bool? AlternateFiends { get; set; } = false;
+		public AltFiendPool AltFiendPool { get; set; } = AltFiendPool.Random;
 		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 
 		public bool? Transmooglifier { get; set; } = false;
