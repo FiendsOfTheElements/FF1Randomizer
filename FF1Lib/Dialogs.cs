@@ -264,7 +264,7 @@ namespace FF1Lib
 				if (itemplacement == null) // Return if vanilla placement
 					return;
 
-				var targetnpc = itemplacement.Where(x => x.GetType().Equals(typeof(MapObject)));
+				var targetnpc = itemplacement.Where(x => x.GetType().Equals(typeof(NpcReward)));
 
 				foreach (var item in targetnpc)
 				{

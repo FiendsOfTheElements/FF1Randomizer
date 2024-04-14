@@ -122,7 +122,16 @@ namespace FF1Lib
 			}
 			return map;
 		}
-
+		public void CopyFrom(Map map)
+		{
+			for (int y = 0; y < RowCount; ++y)
+			{
+				for (int x = 0; x < RowLength; ++x)
+				{
+					_map[y, x] = map[y, x];
+				}
+			}
+		}
 		public void Save(Stream stream)
 		{
 			var buffer = new byte[4096];

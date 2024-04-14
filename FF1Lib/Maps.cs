@@ -232,11 +232,6 @@ namespace FF1Lib
 
 	public partial class FF1Rom : NesRom
 	{
-		public const int MapPointerOffset = 0x10000;
-		public const int MapPointerSize = 2;
-		public const int MapCount = 61;
-		public const int MapDataOffset = 0x10080;
-
 		public const int TeleportOffset = 0x3F000;
 		public const int TeleportCount = 256;
 
@@ -983,31 +978,6 @@ namespace FF1Lib
 			npcs.Add(tempNPC);
 		    }
 		    return npcs;
-		}
-
-		public List<Map> ReadMaps()
-		{
-			var pointers = Get(MapPointerOffset, MapCount * MapPointerSize).ToUShorts();
-
-			return pointers.Select(pointer => new Map(Get(MapPointerOffset + pointer, Map.RowCount * Map.RowLength))).ToList();
-		}
-
-		public void WriteMaps(List<Map> maps)
-		{
-			var data = maps.Select(map => map.GetCompressedData()).ToList();
-
-			var pointers = new ushort[MapCount];
-			pointers[0] = MapDataOffset - MapPointerOffset;
-			for (int i = 1; i < MapCount; i++)
-			{
-				pointers[i] = (ushort)(pointers[i - 1] + data[i - 1].Length);
-			}
-
-			Put(MapPointerOffset, Blob.FromUShorts(pointers));
-			for (int i = 0; i < MapCount; i++)
-			{
-				Put(MapPointerOffset + pointers[i], data[i]);
-			}
 		}
 
 		public void BahamutB1Encounters(List<Map> maps, ZoneFormations zoneformations)
@@ -1832,56 +1802,6 @@ namespace FF1Lib
 						    true, flags.RelocateChestsTrapIndicator,
 						    null, null);
 		    }
-		}
-
-		public void ImportCustomMap(List<Map> maps, Teleporters teleporters,
-					    NPCdata npcdata,
-					    CompleteMap newmap) {
-		    maps[(int)newmap.MapIndex] = newmap.Map;
-		    foreach (var dest in newmap.MapDestinations) {
-				// Update the teleport information, this
-				// consists of the corresponding map location
-				// (this is a walkable area of the map,
-				// because some dungeons have multiple parts
-				// that are actually on the same map), the map
-				// index, where the teleport puts the player,
-				// and what teleports (but not warps) are
-				// accessible in this map location.
-				teleporters.StandardMapTeleporters[dest.Key] = dest.Value;
-				//teleporters.Set(dest.Value.Destination.ToString(), dest.Value);
-			/*
-			if (dest.Key != TeleportIndex.Overworld) {
-			    overworldMap.PutStandardTeleport(dest.Key, dest.Value, OverworldTeleportIndex.None);
-			}*/
-		    }
-		   /*foreach (var kv in newmap.OverworldEntrances) {
-			overworldMap.PutOverworldTeleport(kv.Key, kv.Value);
-		    }*/
-		    foreach (var npc in newmap.NPCs) {
-			this.SetNpc(newmap.MapIndex, npc);
-		    }
-		}
-
-		void LoadPregenDungeon(MT19337 rng,
-				       List<Map> maps, Teleporters teleporters,
-				       NPCdata npcdata,
-				       string name) {
-			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-			var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith(name));
-
-			using Stream stream = assembly.GetManifestResourceStream(resourcePath);
-
-			var archive = new ZipArchive(stream);
-
-			var maplist = archive.Entries.Where(e => e.Name.EndsWith(".json")).Select(e => e.Name).ToList();
-
-			var map = maplist.PickRandom(rng);
-
-			var loadedmaps = CompleteMap.LoadJson(archive.GetEntry(map).Open());
-
-			foreach (var m in loadedmaps) {
-			    ImportCustomMap(maps, teleporters, npcdata, m);
-			}
 		}
 	}
 }

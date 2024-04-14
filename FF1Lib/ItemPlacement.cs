@@ -312,9 +312,9 @@ namespace FF1Lib
 
 		public static IRewardSource NewItemPlacement(IRewardSource copyFromSource, Item newItem)
 		{
-			if (copyFromSource is MapObject)
+			if (copyFromSource is NpcReward)
 			{
-				return new MapObject(copyFromSource as MapObject, newItem);
+				return new NpcReward(copyFromSource as NpcReward, newItem);
 			}
 			else if (copyFromSource is ItemShopSlot)
 			{

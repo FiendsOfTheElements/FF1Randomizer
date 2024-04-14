@@ -269,9 +269,9 @@ namespace FF1Lib
 				spunitem = picked.index;
 			}
 
-			if (_chestList[_currentChest] is MapObject)
+			if (_chestList[_currentChest] is NpcReward)
 			{
-				_placedItems.Add(new MapObject((MapObject)_chestList[_currentChest], (Item)spunitem));
+				_placedItems.Add(new NpcReward((NpcReward)_chestList[_currentChest], (Item)spunitem));
 			}
 			else if (_chestList[_currentChest] is ItemShopSlot)
 			{

@@ -213,7 +213,7 @@ namespace FF1Lib
 			{
 				return r.RewardSource.Address - 0x3100 + ChestOffset;
 			}
-			else if (r.RewardSource is MapObject npc)
+			else if (r.RewardSource is NpcReward npc)
 			{
 				return (int)npc.ObjectId + NpcOffset;
 			}

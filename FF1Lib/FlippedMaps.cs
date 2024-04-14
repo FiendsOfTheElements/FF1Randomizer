@@ -9,46 +9,10 @@ using System.Threading.Tasks;
 
 namespace FF1Lib
 {
-	// Should be merged with dungeonmaps class
-	public class RestructuredMaps
-	{
-		FF1Rom rom;
-		List<Map> maps;
-		Flags flags;
-		MT19337 rng;
-		Teleporters teleporters;
-
-		public List<MapIndex> VerticalFlippedMaps { get; private set;  }
-		public List<MapIndex> HorizontalFlippedMaps { get; private set; }
-
-		public RestructuredMaps(FF1Rom _rom, List<Map> _maps, Flags _flags, Teleporters _teleporters, MT19337 _rng)
-		{
-			rom = _rom;
-			maps = _maps;
-			flags = _flags;
-			rng = _rng;
-			teleporters = _teleporters;
-		}
-		public void Process()
-		{
-			var mapFlipper = new FlippedMaps(rom, maps, flags, teleporters, rng);
-			VerticalFlippedMaps = mapFlipper.VerticalFlipStep1();
-
-			if ((bool)flags.ReversedFloors) new ReversedFloors(rom, maps, rng, teleporters, VerticalFlippedMaps).Work();
-
-			mapFlipper.VerticalFlipStep2();
-
-			if ((bool)flags.FlipDungeons)
-			{
-				HorizontalFlippedMaps = mapFlipper.HorizontalFlip(rng, maps, teleporters);
-			}
-		}
-
-	}
 	public class FlippedMaps
 	{
 		FF1Rom rom;
-		List<Map> maps;
+		StandardMaps maps;
 		Flags flags;
 		MT19337 rng;
 		Teleporters teleporters;
@@ -84,7 +48,7 @@ namespace FF1Lib
 
 		List<MapIndex> mapsToFlipVertically;
 
-		public FlippedMaps(FF1Rom _rom, List<Map> _maps, Flags _flags, Teleporters _teleporters, MT19337 _rng)
+		public FlippedMaps(FF1Rom _rom, StandardMaps _maps, Flags _flags, Teleporters _teleporters, MT19337 _rng)
 		{
 			rom = _rom;
 			maps = _maps;
@@ -127,12 +91,12 @@ namespace FF1Lib
 
 			foreach (var MapIndex in mapsToFlipVertically)
 			{
-				var map = maps[(int)MapIndex];
+				var map = maps[MapIndex];
 
 				var entry = archive.GetEntry(MapIndex.ToString() + ".ffm");
 
 				using var stream2 = entry.Open();
-				map.Load(stream2);
+				map.Map.Load(stream2);
 			}
 
 			return mapsToFlipVertically;
@@ -145,39 +109,37 @@ namespace FF1Lib
 
 			foreach (MapIndex mapindex in mapsToFlipVertically)
 			{
-				var map = maps[(int)mapindex];
+				var map = maps[mapindex];
 
 				if (mapindex == MapIndex.GurguVolcanoB5)
 				{
-					FlipVolcanoB5(map);
+					FlipVolcanoB5(map.Map);
 				}
 				else if (mapindex == MapIndex.GurguVolcanoB2)
 				{
-					FlipVolcanoB2(mapindex, map);
+					FlipVolcanoB2(mapindex, map.Map);
 				}
 				else if (mapindex == MapIndex.Waterfall || mapindex == MapIndex.GurguVolcanoB3 || mapindex == MapIndex.GurguVolcanoB4)
 				{
-					map.FlipVertical();
+					map.Map.FlipVertical();
 
 					FlipNormalTele(mapindex);
 					FlipEnterTele(mapindex);
 
-					FixFullRoomMap(mapindex, map);
+					FixFullRoomMap(mapindex, map.Map);
 
 					FlipNPCs(mapindex);
 
 					if (mapindex == MapIndex.Waterfall)
 					{
-						var npc = rom.GetNpc(mapindex, 0);
-						npc.Coord.y = npc.Coord.y + 2;
-						rom.SetNpc(mapindex, npc);
+						map.MapObjects[0].Offset(0, 2);
 					}
 
 					if (mapindex == MapIndex.GurguVolcanoB4)
 					{
 						for (int x = 0; x < 64; x++)
 						{
-							if (map[1, x] == 48) map[1, x] = 65;
+							if (map.Map[1, x] == 48) map.Map[1, x] = 65;
 						}
 					}
 
@@ -185,26 +147,23 @@ namespace FF1Lib
 					{
 						for (int x = 0; x < 64; x++)
 						{
-							if (map[63, x] == 7) map[63, x] = 46;
+							if (map.Map[63, x] == 7) map.Map[63, x] = 46;
 						}
 					}
 				}
 				else
 				{
-					map.FlipVertical();
+					map.Map.FlipVertical();
 
 					FlipNormalTele(mapindex);
 					FlipEnterTele(mapindex);
 
-					FixRooms(mapindex, map);
-					FixWalls(mapindex, map);
+					FixRooms(mapindex, map.Map);
+					FixWalls(mapindex, map.Map);
 
 					FlipNPCs(mapindex);
 				}
 			}
-
-			//tele.StoreData();
-			//enter.StoreData();
 		}
 
 		private void FlipVolcanoB5(Map map)
@@ -259,43 +218,21 @@ namespace FF1Lib
 		private void FlipNormalTele(MapIndex mapindex)
 		{
 			teleporters.StandardMapTeleporters.Where(t => t.Value.Index == mapindex).ToList().ForEach(t => t.Value.FlipYcoordinate());
-
-			/*
-			for (int i = 0; i < 64; i++)
-			{
-				var t = tele[i];
-				if (t.Map == MapIndex)
-				{
-					t.FlipYcoordinate();
-					tele[i] = t;
-				}
-			}*/
 		}
 
 		private void FlipEnterTele(MapIndex mapindex)
 		{
 			teleporters.OverworldTeleporters.Where(t => t.Value.Index == mapindex).ToList().ForEach(t => t.Value.FlipYcoordinate());
-			/*
-			for (int i = 0; i < 32; i++)
-			{
-				var t = enter[i];
-				if (t.Map == MapIndex)
-				{
-					t.FlipYcoordinate();
-					enter[i] = t;
-				}
-			}*/
 		}
 
 		private void FlipNPCs(MapIndex mapindex)
 		{
-			for (int i = 0; i < 16; i++)
+			foreach (var npc in maps[mapindex].MapObjects)
 			{
-				var tempNpc = rom.GetNpc(mapindex, i);
-				if (tempNpc.Coord != (0, 0))
+				npc.Flip(false, true);
+				if (npc.InRoom)
 				{
-					tempNpc.Coord.y = 64 - tempNpc.Coord.y - 1 + (tempNpc.InRoom ? -1 : 0);
-					rom.SetNpc(mapindex, tempNpc);
+					npc.Offset(0, -1);
 				}
 			}
 		}

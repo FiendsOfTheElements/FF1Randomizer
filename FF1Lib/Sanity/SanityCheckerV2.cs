@@ -32,13 +32,13 @@ namespace FF1Lib
 		Queue<SCPointOfInterest> deferredPointOfInterests;
 
 		Dictionary<byte, TreasureChest> chests;
-		Dictionary<ObjectId, MapObject> npcs;
+		Dictionary<ObjectId, NpcReward> npcs;
 		ItemShopSlot shopslot;
 
 		List<IRewardSource> treasurePlacements;
 
 		Dictionary<byte, TreasureChest> allTreasures;
-		Dictionary<ObjectId, MapObject> allQuestNpcs;
+		Dictionary<ObjectId, NpcReward> allQuestNpcs;
 		ItemShopSlot declaredShopSlot;
 
 		OwLocationData locations;
@@ -63,7 +63,7 @@ namespace FF1Lib
 			//Shiplocations = _shiplocations;
 
 			allTreasures = ItemLocations.AllTreasures.Select(r => r as TreasureChest).Where(r => r != null).ToDictionary(r => (byte)(r.Address - 0x3100));
-			allQuestNpcs = ItemLocations.AllNPCItemLocations.Select(r => r as MapObject).Where(r => r != null).ToDictionary(r => r.ObjectId);
+			allQuestNpcs = ItemLocations.AllNPCItemLocations.Select(r => r as NpcReward).Where(r => r != null).ToDictionary(r => r.ObjectId);
 			declaredShopSlot = _declaredShopSlot;
 
 			UpdateNpcRequirements();
@@ -86,7 +86,7 @@ namespace FF1Lib
 			}
 		}
 
-		private void UpdateNpcRequirements(MapObject npc, byte[] talkarray, newTalkRoutines routine)
+		private void UpdateNpcRequirements(NpcReward npc, byte[] talkarray, newTalkRoutines routine)
 		{
 			if (routine == newTalkRoutines.Talk_Nerrick)
 			{
@@ -115,7 +115,7 @@ namespace FF1Lib
 
 			//kids, don't try this at home. Calculating an index from an address is usually not the way to go.
 			chests = treasurePlacements.Select(r => r as TreasureChest).Where(r => r != null).ToDictionary(r => (byte)(r.Address - 0x3100));
-			npcs = treasurePlacements.Select(r => r as MapObject).Where(r => r != null).ToDictionary(r => r.ObjectId);
+			npcs = treasurePlacements.Select(r => r as NpcReward).Where(r => r != null).ToDictionary(r => r.ObjectId);
 			shopslot = (ItemShopSlot)treasurePlacements.FirstOrDefault(r => r is ItemShopSlot);
 
 			var result = Crawl(victoryConditions);
@@ -604,7 +604,7 @@ namespace FF1Lib
 			return false;
 		}
 
-		private bool ProcessItemOnFlag(SCPointOfInterest poi, MapObject npc, byte dungeonIndex, bool giveItem = true)
+		private bool ProcessItemOnFlag(SCPointOfInterest poi, NpcReward npc, byte dungeonIndex, bool giveItem = true)
 		{
 			var flag = (ObjectId)poi.TalkArray[(int)TalkArrayPos.requirement_id];
 

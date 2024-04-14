@@ -263,21 +263,21 @@ namespace FF1Lib
 		public static TreasureChest ToFRevisited7 = new TreasureChest(0x31FE, nameof(ToFRevisited7), MapLocation.TempleOfFiendsPhantom, Item.Gold65000);
 		public static TreasureChest Unused15 = new TreasureChest(0x31FF, nameof(Unused15), 0, 0, isUnused: true);
 
-		public static MapObject KingConeria = new MapObject(ObjectId.King, MapLocation.ConeriaCastle2, Item.Bridge, requiredGameEventFlag: ObjectId.Princess2, requiredSecondLocation: MapLocation.TempleOfFiends1);
-		public static MapObject Princess = new MapObject(ObjectId.Princess2, MapLocation.ConeriaCastle2, Item.Lute, requiredSecondLocation: MapLocation.TempleOfFiends1);
-		public static MapObject Matoya = new MapObject(ObjectId.Matoya, MapLocation.MatoyasCave, Item.Herb, AccessRequirement.Crystal, requiredItemTrade: Item.Crystal);
-		public static MapObject Bikke = new MapObject(ObjectId.Bikke, MapLocation.Pravoka, Item.Ship);
+		public static NpcReward KingConeria = new NpcReward(ObjectId.King, MapLocation.ConeriaCastle2, Item.Bridge, requiredGameEventFlag: ObjectId.Princess2, requiredSecondLocation: MapLocation.TempleOfFiends1);
+		public static NpcReward Princess = new NpcReward(ObjectId.Princess2, MapLocation.ConeriaCastle2, Item.Lute, requiredSecondLocation: MapLocation.TempleOfFiends1);
+		public static NpcReward Matoya = new NpcReward(ObjectId.Matoya, MapLocation.MatoyasCave, Item.Herb, AccessRequirement.Crystal, requiredItemTrade: Item.Crystal);
+		public static NpcReward Bikke = new NpcReward(ObjectId.Bikke, MapLocation.Pravoka, Item.Ship);
 		// Assumption is made that if you have access to the Elf Prince you also have access to the Elf Doc
-		public static MapObject ElfPrince = new MapObject(ObjectId.ElfPrince, MapLocation.ElflandCastle, Item.Key, AccessRequirement.Herb, ObjectId.ElfDoc);
-		public static MapObject Astos = new MapObject(ObjectId.Astos, MapLocation.NorthwestCastle, Item.Crystal, AccessRequirement.Crown);
-		public static MapObject Sarda = new MapObject(ObjectId.Sarda, MapLocation.SardasCave, Item.Rod, requiredGameEventFlag: ObjectId.Vampire, requiredSecondLocation: MapLocation.EarthCaveVampire);
-		public static MapObject CanoeSage = new MapObject(ObjectId.CanoeSage, MapLocation.CrescentLake, Item.Canoe, AccessRequirement.EarthOrb, requiredItemTrade: Item.EarthOrb);
-		public static MapObject CubeBot = new MapObject(ObjectId.CubeBot, MapLocation.Waterfall, Item.Cube);
-		public static MapObject Fairy = new MapObject(ObjectId.Fairy, MapLocation.Gaia, Item.Oxyale, AccessRequirement.Bottle);
+		public static NpcReward ElfPrince = new NpcReward(ObjectId.ElfPrince, MapLocation.ElflandCastle, Item.Key, AccessRequirement.Herb, ObjectId.ElfDoc);
+		public static NpcReward Astos = new NpcReward(ObjectId.Astos, MapLocation.NorthwestCastle, Item.Crystal, AccessRequirement.Crown);
+		public static NpcReward Sarda = new NpcReward(ObjectId.Sarda, MapLocation.SardasCave, Item.Rod, requiredGameEventFlag: ObjectId.Vampire, requiredSecondLocation: MapLocation.EarthCaveVampire);
+		public static NpcReward CanoeSage = new NpcReward(ObjectId.CanoeSage, MapLocation.CrescentLake, Item.Canoe, AccessRequirement.EarthOrb, requiredItemTrade: Item.EarthOrb);
+		public static NpcReward CubeBot = new NpcReward(ObjectId.CubeBot, MapLocation.Waterfall, Item.Cube);
+		public static NpcReward Fairy = new NpcReward(ObjectId.Fairy, MapLocation.Gaia, Item.Oxyale, AccessRequirement.Bottle);
 		// Assumption is made that if you have the slab and access to Lefein then you also have access to Unne
-		public static MapObject Lefein = new MapObject(ObjectId.Lefein, MapLocation.Lefein, Item.Chime, AccessRequirement.Slab, ObjectId.Unne, requiredSecondLocation: MapLocation.Melmond);
-		public static MapObject Nerrick = new MapObject(ObjectId.Nerrick, MapLocation.DwarfCave, Item.Canal, AccessRequirement.Tnt, requiredItemTrade: Item.Tnt);
-		public static MapObject Smith = new MapObject(ObjectId.Smith, MapLocation.DwarfCave, Item.Xcalber, AccessRequirement.Adamant, requiredItemTrade: Item.Adamant);
+		public static NpcReward Lefein = new NpcReward(ObjectId.Lefein, MapLocation.Lefein, Item.Chime, AccessRequirement.Slab, ObjectId.Unne, requiredSecondLocation: MapLocation.Melmond);
+		public static NpcReward Nerrick = new NpcReward(ObjectId.Nerrick, MapLocation.DwarfCave, Item.Canal, AccessRequirement.Tnt, requiredItemTrade: Item.Tnt);
+		public static NpcReward Smith = new NpcReward(ObjectId.Smith, MapLocation.DwarfCave, Item.Xcalber, AccessRequirement.Adamant, requiredItemTrade: Item.Adamant);
 
 		public static ItemShopSlot CaravanItemShop1 =
 			new ItemShopSlot(0x38461, nameof(CaravanItemShop1), MapLocation.Caravan, Item.Bottle, 69);

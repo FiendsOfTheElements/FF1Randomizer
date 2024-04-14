@@ -210,7 +210,7 @@ namespace FF1Lib
 				{OverworldTeleportIndex.Onrac,"Onrac"},
 				{OverworldTeleportIndex.Lefein,"Lefein"},
 				{OverworldTeleportIndex.ConeriaCastle1,"Coneria Castle"},
-				{OverworldTeleportIndex.ElflandCastle,"the Castle of Efland"},
+				{OverworldTeleportIndex.ElflandCastle,"the Castle of Elfland"},
 				{OverworldTeleportIndex.NorthwestCastle,"Northwest Castle"},
 				{OverworldTeleportIndex.CastleOrdeals1,"the Castle of Ordeals"},
 				{OverworldTeleportIndex.TempleOfFiends1,"the Temple of Fiends"},
@@ -477,7 +477,7 @@ namespace FF1Lib
 						}
 						else if (loc.type == Sanity.SCPointOfInterestType.QuestNpc)
 						{
-							if (incentivedata.IncentiveLocations.Where(x => x.GetType().Equals(typeof(MapObject)) && ((MapObject)x).ObjectId == (ObjectId)loc.id).Any())
+							if (incentivedata.IncentiveLocations.Where(x => x.GetType().Equals(typeof(NpcReward)) && ((NpcReward)x).ObjectId == (ObjectId)loc.id).Any())
 							{
 								incentivizedHintItems.Add(loc);
 							}

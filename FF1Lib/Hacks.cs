@@ -885,12 +885,6 @@ namespace FF1Lib
 			// already updated
 		}
 
-		public void MoveToFBats() {
-		    MoveNpc(MapIndex.TempleOfFiends, 2, 0x0C, 0x0D, inRoom: false, stationary: false);
-		    MoveNpc(MapIndex.TempleOfFiends, 3, 0x1D, 0x0B, inRoom: false, stationary: false);
-		    MoveNpc(MapIndex.TempleOfFiends, 4, 0x1A, 0x19, inRoom: false, stationary: false);
-		    MoveNpc(MapIndex.TempleOfFiends, 5, 0x0F, 0x18, inRoom: false, stationary: false);
-		    MoveNpc(MapIndex.TempleOfFiends, 6, 0x14, 0x0C, inRoom: false, stationary: false);
-		}
+
 	}
 }

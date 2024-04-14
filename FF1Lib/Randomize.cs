@@ -36,6 +36,7 @@ public partial class FF1Rom : NesRom
 	public RngTables RngTables;
 	public TileSetsData TileSetsData;
 	public ZoneFormations ZoneFormations;
+	public StandardMaps Maps;
 	//public ShipLocations ShipLocations;
 
 	public DeepDungeon DeepDungeon;
@@ -116,6 +117,7 @@ public partial class FF1Rom : NesRom
 		GlobalImprovements(flags, preferences);
 
 		Teleporters = new Teleporters(this, Overworld.MapExchangeData);
+		Maps = new StandardMaps(this, Teleporters, flags);
 
 		DynamicWindowColor(preferences.MenuColor);
 
@@ -151,7 +153,7 @@ public partial class FF1Rom : NesRom
 
 		//Overworld.Update(Teleporters);
 
-		var maps = ReadMaps();
+		//var maps = ReadMaps();
 		var shopItemLocation = ItemLocations.CaravanItemShop1;
 		var oldItemNames = ItemsText.ToList();
 
@@ -187,7 +189,7 @@ public partial class FF1Rom : NesRom
 			// Should add more into the reqs so that this can be done inside the generator.
 			Teleporters.Waterfall.SetEntrance(waterfall.Entrance);
 			//overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, Teleporters.Waterfall);
-			maps[(int)MapIndex.Waterfall] = waterfall.Map;
+			Maps[MapIndex.Waterfall].Map.CopyFrom(waterfall.Map);
 		}
 
 		if (flags.ResourcePack != null)
@@ -198,17 +200,6 @@ public partial class FF1Rom : NesRom
 		    }
 		}
 
-		if ((bool)flags.ProcgenEarth) {
-		    this.LoadPregenDungeon(rng, maps, Teleporters, npcdata, "earthcaves.zip");
-
-		    // Here's the code to generate from scratch, but it takes too long in the browser.
-		    // So we get one from the pregen pack above.
-		    //
-		    // var newmaps = await NewDungeon.GenerateNewDungeon(rng, this, MapIndex.EarthCaveB1, maps, npcdata, this.Progress);
-		    // foreach (var newmap in newmaps) {
-		    //   this.ImportCustomMap(maps, teleporters, overworldMap, npcdata, newmap);
-		    //  }
-		}
 
 			if((bool)flags.OWDamageTiles || flags.DesertOfDeath)
 			{
@@ -231,12 +222,10 @@ public partial class FF1Rom : NesRom
 				AdjustDamageTileDamage(DamageTileAmount, (bool)flags.DamageTilesKill, (bool)flags.ArmorResistsDamageTileDamage);
 			}
 
-		if ((bool)flags.MoveToFBats) {
-		    MoveToFBats();
-		}
+		Maps.Update(rng);
 
-		var restructuredMaps = new RestructuredMaps(this, maps, flags, Teleporters, rng);
-		restructuredMaps.Process();
+		//var restructuredMaps = new RestructuredMaps(this, maps, flags, Teleporters, rng);
+		//restructuredMaps.Process();
 
 		if ((bool)flags.RandomizeFormationEnemizer)
 		{
@@ -918,7 +907,7 @@ public partial class FF1Rom : NesRom
 		ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.ImprovedClinic);
 		ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
 
-		WriteMaps(maps);
+		//WriteMaps(maps);
 
 		extConsumables.AddExtConsumables();
 
@@ -1022,9 +1011,6 @@ public partial class FF1Rom : NesRom
 		    // Update after dialogue is loaded
 		    SkyWarriorSpoilerBats(rng, flags, npcdata);
 		}
-
-		// Can't have any map edits after this!
-		WriteMaps(maps);
 
 		RollCredits(rng);
 		StatsTrackingScreen();
@@ -1140,6 +1126,7 @@ public partial class FF1Rom : NesRom
 		talkroutines.WriteRoutines(this);
 		talkroutines.UpdateNPCRoutines(this, npcdata);
 
+		Maps.Write();
 		TileSetsData.Write();
 		ZoneFormations.Write(this);
 		RngTables.Write(this);

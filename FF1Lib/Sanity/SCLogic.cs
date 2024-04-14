@@ -337,7 +337,7 @@ namespace FF1Lib.Sanity
 
 		private void ProcessNPCs()
 		{
-			var npcRewardSources = itemPlacement.Select(r => r as MapObject).Where(r => r != null).ToDictionary(r => r.ObjectId);
+			var npcRewardSources = itemPlacement.Select(r => r as NpcReward).Where(r => r != null).ToDictionary(r => r.ObjectId);
 
 			Dictionary<ObjectId, SCRequirementsSet> allNpcs = new Dictionary<ObjectId, SCRequirementsSet>();
 
@@ -421,7 +421,7 @@ namespace FF1Lib.Sanity
 			}
 		}
 
-		private SCRequirementsSet GetSecondaryRequirements(SCPointOfInterest poi, MapObject rewardSource, Dictionary<ObjectId, SCRequirementsSet> allNpcs, Dictionary<Item, SCRequirementsSet> allOrbs)
+		private SCRequirementsSet GetSecondaryRequirements(SCPointOfInterest poi, NpcReward rewardSource, Dictionary<ObjectId, SCRequirementsSet> allNpcs, Dictionary<Item, SCRequirementsSet> allOrbs)
 		{
 			if (poi.TalkRoutine == newTalkRoutines.Talk_ElfDocUnne)
 			{
@@ -453,7 +453,7 @@ namespace FF1Lib.Sanity
 			throw new NotSupportedException();
 		}
 
-		private SCRequirementsSet ProcessItemOnItem(SCPointOfInterest poi, MapObject rewardSource, Dictionary<ObjectId, SCRequirementsSet> allNpcs, Dictionary<Item, SCRequirementsSet> allOrbs)
+		private SCRequirementsSet ProcessItemOnItem(SCPointOfInterest poi, NpcReward rewardSource, Dictionary<ObjectId, SCRequirementsSet> allNpcs, Dictionary<Item, SCRequirementsSet> allOrbs)
 		{
 			if (rewardSource.AccessRequirement == AccessRequirement.EarthOrb)
 			{
@@ -475,7 +475,7 @@ namespace FF1Lib.Sanity
 			return new SCRequirementsSet(rewardSource.AccessRequirement);
 		}
 
-		private SCRequirementsSet ProcessItemOnFlag(SCPointOfInterest poi, MapObject rewardSource, Dictionary<ObjectId, SCRequirementsSet> allNpcs)
+		private SCRequirementsSet ProcessItemOnFlag(SCPointOfInterest poi, NpcReward rewardSource, Dictionary<ObjectId, SCRequirementsSet> allNpcs)
 		{
 			var flag = (ObjectId)poi.TalkArray[(int)TalkArrayPos.requirement_id];
 
