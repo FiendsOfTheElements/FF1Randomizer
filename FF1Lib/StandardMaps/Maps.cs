@@ -192,16 +192,6 @@ namespace FF1Lib
 		CardiaEncounters = 0x49,
 	}
 
-	public enum WarMECHMode
-	{
-		Vanilla,
-		Patrolling,
-		Required,
-		Unleashed,
-		All,
-		Random
-	}
-
 	public enum SkyCastle4FMazeMode
 	{
 		Vanilla,

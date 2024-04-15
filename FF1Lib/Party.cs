@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -494,8 +495,16 @@ namespace FF1Lib
 
 		public readonly List<string> ClassNames = new List<string> { "Fighter", "Thief", "Black Belt", "Red Mage", "White Mage", "Black Mage", "Knight", "Ninja", "Master", "Red Wizard", "White Wizard", "Black Wizard" };
 
-		public void ClassAsNPC(Flags flags, TalkRoutines talkroutines, NPCdata npcdata, List<MapIndex> flippedmaps, List<MapIndex> vflippedmaps, MT19337 rng)
+		public void ClassAsNPC(Flags flags, TalkRoutines talkroutines, NpcObjectData npcdata, DialogueData dialogues, StandardMaps maps, MT19337 rng)
 		{
+			if (!(bool)flags.ClassAsNpcFiends && !(bool)flags.ClassAsNpcKeyNPC)
+			{
+				return;
+			}
+
+			var flippedmaps = maps.HorizontalFlippedMaps;
+			var vflippedmaps = maps.VerticalFlippedMaps;
+
 			var crescentSages = new List<ObjectId> { ObjectId.CrescentSage2, ObjectId.CrescentSage3, ObjectId.CrescentSage4, ObjectId.CrescentSage5, ObjectId.CrescentSage6, ObjectId.CrescentSage7, ObjectId.CrescentSage8, ObjectId.CrescentSage9, ObjectId.CrescentSage10 };
 			var keyNpc = new List<TargetNpc> {
 				new TargetNpc(ObjectId.Princess1, MapIndex.ConeriaCastle2F, (0x0D, 0x05), true, true, "I won't rest until\nthe Princess is rescued!\n\n..What? Me?"),
@@ -552,7 +561,7 @@ namespace FF1Lib
 			var talk_class = talkroutines.Add(Blob.FromHex("A470F005207990903DA571203D9620A49FC000D02BA5739D0061A9009D26619D01619D0B619D0D6120649F20509FA00E207990900320C59520879FA4762073922018964C4396A57260"));
 
 			// Routines to switch the class (clear stats, equipment, new stats, levelup)
-			PutInBank(newTalkRoutinesBank, 0x9F50, Blob.FromHex("A91148A9FE48A90648A9C748A98248A9004C03FEA0188610A9618511B110297F9110C8C020D0F5A000A9638511A9009110C8C030D0F960A91148A9FE48A90648A9B548A9FF488A4A4A4A4A4A4A8510A91B4C03FEA91148A9FE48A90648A99948A91048A9008565A90E4C03FE"));
+			PutInBank(0x11, 0x9F50, Blob.FromHex("A91148A9FE48A90648A9C748A98248A9004C03FEA0188610A9618511B110297F9110C8C020D0F5A000A9638511A9009110C8C030D0F960A91148A9FE48A90648A9B548A9FF488A4A4A4A4A4A4A8510A91B4C03FEA91148A9FE48A90648A99948A91048A9008565A90E4C03FE"));
 
 			var totalKeyNPC = (bool)flags.ClassAsNpcKeyNPC ? Math.Min(flags.ClassAsNpcCount, 12) : 0;
 			var totalAllNPC = ((bool)flags.ClassAsNpcFiends ? 4 : 0) + totalKeyNPC;
@@ -612,9 +621,9 @@ namespace FF1Lib
 						targetCoord = tempNpc.Coord;
 						targetInRoom = tempNpc.InRoom;
 						targetStationary = tempNpc.Stationary;
-						var tempdiagid = npcdata.GetTalkArray(targetNpc)[1];
-						npcdata.GetTalkArray(targetNpc)[1] = npcdata.GetTalkArray(targetNpc)[2];
-						npcdata.GetTalkArray(targetNpc)[2] = tempdiagid;
+						var tempdiagid = npcdata[targetNpc].Dialogue2;
+						npcdata[targetNpc].Dialogue2 = npcdata[targetNpc].Dialogue3;
+						npcdata[targetNpc].Dialogue3 = tempdiagid;
 					}
 					else if (npc.linkedNPC == ObjectId.CanoeSage)
 					{
@@ -636,18 +645,18 @@ namespace FF1Lib
 						targetCoord = npc.newPosition;
 						targetInRoom = npc.inRoom;
 						targetStationary = npc.stationary;
-						SetNpc(originMap, tempNpc.Index, ObjectId.None, 0x00, 0x00, false, false);
+						maps[originMap].MapObjects.SetNpc(tempNpc.Index, ObjectId.None, 0x00, 0x00, false, false);
 					}
 
-					SetNpc(npc.targetMap, targetIndex, targetNpc, targetCoord.Item1, targetCoord.Item2, targetInRoom, targetStationary);
-					npcdata.GetTalkArray(targetNpc)[0] = (byte)npc.linkedNPC;
-					npcdata.GetTalkArray(targetNpc)[3] = (byte)classList.First();
+					maps[npc.targetMap].MapObjects.SetNpc(targetIndex, targetNpc, targetCoord.Item1, targetCoord.Item2, targetInRoom, targetStationary);
+					npcdata[targetNpc].Dialogue1 = (byte)npc.linkedNPC;
+					npcdata[targetNpc].Item = (byte)classList.First();
 
-					npcdata.SetRoutine(targetNpc, (newTalkRoutines)talk_class);
-					Data[MapObjGfxOffset + (byte)targetNpc] = classSprite[(int)classList.First()];
+					npcdata[targetNpc].Script = (TalkScripts)talk_class;
+					npcdata[targetNpc].Sprite = (ObjectSprites)classSprite[(int)classList.First()];
 
-					newDialogs.Add(npcdata.GetTalkArray(targetNpc)[1], readyString.SpliceRandom(rng) + "\n\n" + ClassNames[(int)classList.First()] + " joined.");
-					newDialogs.Add(npcdata.GetTalkArray(targetNpc)[2], npc.newDialogue);
+					newDialogs.Add(npcdata[targetNpc].Dialogue2, readyString.SpliceRandom(rng) + "\n\n" + ClassNames[(int)classList.First()] + " joined.");
+					newDialogs.Add(npcdata[targetNpc].Dialogue3, npc.newDialogue);
 
 					classList.RemoveRange(0, 1);
 				}
@@ -666,10 +675,11 @@ namespace FF1Lib
 
 				var dungeonNpc = new List<ObjectId> { ObjectId.MelmondMan6, ObjectId.GaiaMan4, ObjectId.OnracPunk1, ObjectId.GaiaMan1 };
 
-				SetNpc(MapIndex.Melmond, 8, ObjectId.None, 0x12, 0x18, false, false);
-				SetNpc(MapIndex.Gaia, FindNpc(MapIndex.Gaia, ObjectId.GaiaMan4).Index, ObjectId.None, 0x12, 0x18, false, false);
-				SetNpc(MapIndex.Onrac, 6, ObjectId.None, 0x12, 0x18, false, false);
-				SetNpc(MapIndex.Gaia, 1, ObjectId.None, 0x12, 0x18, false, false);
+				maps[MapIndex.Melmond].MapObjects.SetNpc(8, ObjectId.None, 0x12, 0x18, false, false);
+				var gaianpc = maps[MapIndex.Melmond].MapObjects.FindNpc(ObjectId.GaiaMan4).Index;
+				maps[MapIndex.Gaia].MapObjects.SetNpc(gaianpc, ObjectId.None, 0x12, 0x18, false, false);
+				maps[MapIndex.Onrac].MapObjects.SetNpc(6, ObjectId.None, 0x12, 0x18, false, false);
+				maps[MapIndex.Gaia].MapObjects.SetNpc(1, ObjectId.None, 0x12, 0x18, false, false);
 
 				var earthX = earthB5flipped ? (0x3F - ((bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0D)) : ((bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0D);
 				var volcanoX = volcanoB5flipped ? (0x3F - ((bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x05)) : ((bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x05);
@@ -679,25 +689,25 @@ namespace FF1Lib
 				var volcanoY = volcanoB5vflipped ? 0x0A : 0x35;
 				var seaY = seaB5vflipped ? 0x38  : 0x07;
 
-				SetNpc(MapIndex.EarthCaveB5, 0x0C, ObjectId.MelmondMan6, earthX, earthY, true, true);
-				SetNpc(MapIndex.GurguVolcanoB5, 0x02, ObjectId.GaiaMan4, volcanoX, volcanoY, true, true);
-				SetNpc(MapIndex.SeaShrineB5, 0x01, ObjectId.OnracPunk1, seaX, seaY, true, true);
-				SetNpc(MapIndex.SkyPalace5F, 0x02, ObjectId.GaiaMan1, (bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x09, 0x03, true, true);
+				maps[MapIndex.EarthCaveB5].MapObjects.SetNpc(0x0C, ObjectId.MelmondMan6, earthX, earthY, true, true);
+				maps[MapIndex.GurguVolcanoB5].MapObjects.SetNpc(0x02, ObjectId.GaiaMan4, volcanoX, volcanoY, true, true);
+				maps[MapIndex.SeaShrineB5].MapObjects.SetNpc(0x01, ObjectId.OnracPunk1, seaX, seaY, true, true);
+				maps[MapIndex.SkyPalace5F].MapObjects.SetNpc(0x02, ObjectId.GaiaMan1, (bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x09, 0x03, true, true);
 
 				// Restore the default color if Required WarMech is enabled so Tiamat's NPC don't look too weird
 				Data[0x029AB] = 0x30;
 
 				for (int i = 0; i < 4; i++)
 				{
-					newDialogs.Add(npcdata.GetTalkArray(dungeonNpc[i])[1], readyString.SpliceRandom(rng) + "\n\n" + ClassNames[(int)classList[i]] + " joined.");
-					npcdata.GetTalkArray(dungeonNpc[i])[0] = 0x00;
-					npcdata.GetTalkArray(dungeonNpc[i])[3] = (byte)(classList[i]);
-					npcdata.SetRoutine(dungeonNpc[i], (newTalkRoutines)talk_class);
-					Data[MapObjGfxOffset + (byte)dungeonNpc[i]] = classSprite[(int)classList[i]];
+					newDialogs.Add(npcdata[dungeonNpc[i]].Dialogue2, readyString.SpliceRandom(rng) + "\n\n" + ClassNames[(int)classList[i]] + " joined.");
+					npcdata[dungeonNpc[i]].Dialogue1 = 0x00;
+					npcdata[dungeonNpc[i]].Item = (byte)(classList[i]);
+					npcdata[dungeonNpc[i]].Script = (TalkScripts)talk_class;
+					npcdata[dungeonNpc[i]].Sprite = (ObjectSprites)classSprite[(int)classList[i]];
 				}
 			}
 
-			InsertDialogs(newDialogs);
+			dialogues.InsertDialogues(newDialogs);
 		}
 	}
 }

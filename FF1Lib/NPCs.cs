@@ -230,7 +230,7 @@ namespace FF1Lib
 			npcObjects[(int)ObjectId.Nerrick].Dialogue1 = 0x13;
 			npcObjects[(int)ObjectId.Nerrick].Dialogue2 = 0x00;
 			npcObjects[(int)ObjectId.Nerrick].Dialogue3 = 0x14;
-			npcObjects[(int)ObjectId.Nerrick].Item = (bool)flags.NPCItems ? (byte)Item.Canal : (byte)Item.Cabin;
+			npcObjects[(int)ObjectId.Nerrick].Item = (!(bool)flags.NPCItems && (bool)flags.IsCanalFree) ? (byte)Item.Canal : (byte)Item.Cabin;
 			npcObjects[(int)ObjectId.Nerrick].Requirement = (byte)Item.Tnt;
 
 			npcObjects[(int)ObjectId.Smith].Dialogue1 = 0x15;

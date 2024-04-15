@@ -263,7 +263,6 @@ namespace FF1Lib
 		}
 		public void UpdateNPCDialogues(Flags flags)
 		{
-
 			// Dialogue for Sarda if Early sarda is off
 			dialogues[0xB3]  = "I shall help only\nthe true LIGHT WARRIORS.\nProve yourself by\ndefeating the Vampire.";
 
@@ -284,7 +283,6 @@ namespace FF1Lib
 
 			// Update all NPC dialogs for NPC shuffle so we can show what item they're giving.
 			dialogues[0x02] = (bool)flags.EarlyKing ? "To aid you on your\nquest, please take this.\n\n\n\nReceived #" : "Thank you for saving the\nPrincess. To aid your\nquest, please take this.\n\n\nReceived #";
-
 			dialogues[0x06] = "This heirloom has been\npassed down from Queen\nto Princess for 2000\nyears. Please take it.\n\nReceived #";
 			dialogues[0x09] = "Okay, you got me.\nTake this.\n\n\n\nReceived #";
 			dialogues[0x0E] = "Is this a dream?.. Are\nyou the LIGHT WARRIORS?\nSo, as legend says,\nI give you this.\n\nReceived #";

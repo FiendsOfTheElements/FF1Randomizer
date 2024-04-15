@@ -174,7 +174,7 @@ public partial class FF1Rom : NesRom
 		//ZoneFormations.ShuffleEnemyFormations(rng, (FormationShuffleMode)Settings.GetInt("FormationShuffleMode"), Settings.GetBool("RandomizeFormationEnemizer") | Settings.GetBool("RandomizeEnemizer"));
 		ZoneFormations.ShuffleEnemyFormations(rng, flags.FormationShuffleMode, flags.EnemizerEnabled);
 		//ZoneFormations.UnleashWarMECH((WarMECHMode)Settings.GetInt("WarMechMode") == WarMECHMode.Unleashed || (WarMECHMode)Settings.GetInt("WarMechMode") == WarMECHMode.All);
-		ZoneFormations.UnleashWarMECH(flags.WarMECHMode == WarMECHMode.Unleashed || flags.WarMECHMode == WarMECHMode.All);
+		
 		Spooky(talkroutines, npcdata, ZoneFormations, rng, flags);
 
 		await this.Progress();
@@ -261,7 +261,7 @@ public partial class FF1Rom : NesRom
 			await this.Progress("Generating Deep Dungeon's Floors... Done!");
 		}
 
-			int warmMechFloor = DeepDungeon.WarMechFloor;
+		MapIndex warmMechFloor = (MapIndex)DeepDungeon.WarMechFloor;
 
 		await this.Progress();
 
@@ -404,18 +404,8 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		if ((bool)flags.ClassAsNpcFiends || (bool)flags.ClassAsNpcKeyNPC)
-		{
-			ClassAsNPC(flags, talkroutines, npcdata, Maps.HorizontalFlippedMaps, Maps.VerticalFlippedMaps, rng);
-		}
-
-		if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
-		{
-			FightBahamut(talkroutines, npcdata, ZoneFormations, (bool)flags.NoTail, (bool)flags.SwoleBahamut, (flags.GameMode == GameModes.DeepDungeon), flags.EvadeCap, rng);
-		}
-
 		// NPC Stuff
-
+		ClassAsNPC(flags, talkroutines, npcdata, Maps.HorizontalFlippedMaps, Maps.VerticalFlippedMaps, rng);
 
 
 		// NOTE: logic checking for relocated chests
@@ -668,30 +658,9 @@ public partial class FF1Rom : NesRom
 			ShuffleSurpriseBonus(rng);
 		}
 
-
-		// Weighted; Vanilla, Unleashed, and All are less likely
-		if (flags.WarMECHMode == WarMECHMode.Random)
-		{
-			int RandWarMECHMode = rng.Between(1, 100);
-
-			if (RandWarMECHMode <= 15)
-				flags.WarMECHMode = WarMECHMode.Vanilla;	// 15%
-			else if (RandWarMECHMode <= 45)
-				flags.WarMECHMode = WarMECHMode.Patrolling;	// 30%
-			else if (RandWarMECHMode <= 75)
-				flags.WarMECHMode = WarMECHMode.Required;	// 30%
-			else if (RandWarMECHMode <= 90)
-				flags.WarMECHMode = WarMECHMode.Unleashed;	// 15%
-			else
-				flags.WarMECHMode = WarMECHMode.All;		// 10%
-
-		}
 		// After unrunnable shuffle and before formation shuffle. Perfect!
-		if (flags.WarMECHMode != WarMECHMode.Vanilla)
-		{
-			WarMECHNpc(flags.WarMECHMode, npcdata, ZoneFormations, rng, maps, flags.GameMode == GameModes.DeepDungeon, (MapIndex)warmMechFloor);
-		}
-
+		WarMechMode.Process(this, flags, NpcData, ZoneFormations, Dialogues, rng, Maps, warmMechFloor);
+		FightBahamut(flags, talkroutines, npcdata, ZoneFormations, rng);
 
 		if ((bool)flags.FiendShuffle)
 		{
@@ -699,11 +668,6 @@ public partial class FF1Rom : NesRom
 		}
 
 		await this.Progress();
-
-		if ((bool)flags.ConfusedOldMen)
-		{
-			EnableConfusedOldMen(rng);
-		}
 
 		if (flags.DisableMinimap)
 		{
