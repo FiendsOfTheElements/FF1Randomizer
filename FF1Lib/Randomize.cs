@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using FF1Lib.Procgen;
 using FF1Lib.Assembly;
 using System.Numerics;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib;
 
@@ -37,6 +38,8 @@ public partial class FF1Rom : NesRom
 	public TileSetsData TileSetsData;
 	public ZoneFormations ZoneFormations;
 	public StandardMaps Maps;
+	public NpcObjectData NpcData;
+	public DialogueData Dialogues;
 	//public ShipLocations ShipLocations;
 
 	public DeepDungeon DeepDungeon;
@@ -113,11 +116,15 @@ public partial class FF1Rom : NesRom
 		GlobalHacks();
 		ClassesBalances(flags, rng);
 		Bugfixes(flags);
-		UpdateDialogs(npcdata, flags);
 		GlobalImprovements(flags, preferences);
 
 		Teleporters = new Teleporters(this, Overworld.MapExchangeData);
 		Maps = new StandardMaps(this, Teleporters, flags);
+		NpcData = new NpcObjectData(this);
+		Dialogues = new DialogueData(this);
+
+		EncounterRate encounterRate = new(this);
+
 
 		DynamicWindowColor(preferences.MenuColor);
 
@@ -131,8 +138,10 @@ public partial class FF1Rom : NesRom
 
 		DeepDungeon = new DeepDungeon(this);
 
+		talkroutines.TransferTalkRoutines(this, flags);
+		Dialogues.UpdateNPCDialogues(flags);
 
-
+		NpcData.Update(Maps, flags);
 		PacifistBat(talkroutines, npcdata);
 		FF1Text.AddNewIcons(this, flags);
 
@@ -167,8 +176,6 @@ public partial class FF1Rom : NesRom
 		//ZoneFormations.UnleashWarMECH((WarMECHMode)Settings.GetInt("WarMechMode") == WarMECHMode.Unleashed || (WarMECHMode)Settings.GetInt("WarMechMode") == WarMECHMode.All);
 		ZoneFormations.UnleashWarMECH(flags.WarMECHMode == WarMECHMode.Unleashed || flags.WarMECHMode == WarMECHMode.All);
 		Spooky(talkroutines, npcdata, ZoneFormations, rng, flags);
-		//NPCShuffleDialogs(Settings);
-		NPCShuffleDialogs(flags);
 
 		await this.Progress();
 
@@ -222,7 +229,10 @@ public partial class FF1Rom : NesRom
 				AdjustDamageTileDamage(DamageTileAmount, (bool)flags.DamageTilesKill, (bool)flags.ArmorResistsDamageTileDamage);
 			}
 
-		Maps.Update(rng);
+		Maps.Update(ZoneFormations, rng);
+		UpdateToFR(Maps, Teleporters, TileSetsData, flags, rng);
+		GeneralMapHacks(flags, Overworld, Maps, ZoneFormations, TileSetsData, rng);
+		TileSetsData.Update(flags, rng);
 
 		//var restructuredMaps = new RestructuredMaps(this, maps, flags, Teleporters, rng);
 		//restructuredMaps.Process();
@@ -240,16 +250,11 @@ public partial class FF1Rom : NesRom
 		}
 
 		// NPC
-		if ((bool)flags.TitansTrove)
-		{
-			EnableTitansTrove(maps);
-		}
-
 		if (flags.GameMode == GameModes.DeepDungeon)
 		{
 			await this.Progress("Generating Deep Dungeon's Floors...", 2);
 
-			DeepDungeon.Generate(rng, Overworld.OverworldMap, Teleporters, maps, flags);
+			DeepDungeon.Generate(rng, Overworld.OverworldMap, Teleporters, Maps.GetMapList(), flags);
 			DeepDungeonFloorIndicator();
 			UnusedGoldItems = new List<int> { };
 
@@ -257,38 +262,6 @@ public partial class FF1Rom : NesRom
 		}
 
 			int warmMechFloor = DeepDungeon.WarMechFloor;
-
-			if ((bool)flags.LefeinShops)
-			{
-				EnableLefeinShops(maps);
-			}
-
-        if ((bool)flags.MelmondClinic)
-        {
-            EnableMelmondClinic(maps);
-        }
-
-		MapIndex attackedTown = MapIndex.Melmond;
-		if ((bool)flags.RandomVampAttack)
-		{
-			attackedTown = RandomVampireAttack(maps, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
-		}
-
-		ShufflePravoka(flags, rng, maps, attackedTown == MapIndex.Pravoka);
-
-		if ((bool)flags.GaiaShortcut)
-		{
-			EnableGaiaShortcut(maps);
-			if ((bool)flags.MoveGaiaItemShop)
-			{
-				MoveGaiaItemShop(maps, rng);
-			}
-		}
-
-		if ((bool)flags.LefeinSuperStore && (flags.ShopKillMode_White == ShopKillMode.None && flags.ShopKillMode_Black == ShopKillMode.None))
-		{
-			EnableLefeinSuperStore(maps);
-		}
 
 		await this.Progress();
 
@@ -348,8 +321,6 @@ public partial class FF1Rom : NesRom
 
 		new RibbonShuffle(this, rng, flags, ItemsText, ArmorPermissions).Work();
 
-		UpdateToFR(maps, flags, rng);
-
 		if (((bool)flags.Treasures) && flags.ShardHunt)
 		{
 			EnableShardHunt(rng, talkroutines, flags.ShardCount, preferences.randomShardNames, new MT19337(funRng.Next()));
@@ -365,46 +336,7 @@ public partial class FF1Rom : NesRom
 			TransformFinalFormation(flags.TransformFinalFormation, flags.EvadeCap, rng);
 		}
 
-		if ((bool)flags.EarlyOrdeals)
-		{
-			EnableEarlyOrdeals();
-		}
-
-		if ((bool)flags.OrdealsPillars)
-		{
-			// Maps
-			ShuffleOrdeals(rng, Teleporters, maps);
-		}
-
-		if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Maze && flags.GameMode != GameModes.DeepDungeon)
-		{
-			DoSkyCastle4FMaze(rng, maps);
-		}
-		else if (flags.SkyCastle4FMazeMode == SkyCastle4FMazeMode.Teleporters && flags.GameMode != GameModes.DeepDungeon)
-		{
-			ShuffleSkyCastle4F(rng, maps);
-		}
-		if ((bool)flags.ShuffleLavaTiles)
-		{
-			ShuffleLavaTiles(rng, maps);
-		}
-
 		await this.Progress();
-
-		if ((bool)flags.EarlyKing)
-		{
-			EnableEarlyKing(npcdata);
-		}
-
-		if ((bool)flags.EarlySarda)
-		{
-			EnableEarlySarda(npcdata);
-		}
-
-		if ((bool)flags.EarlySage)
-		{
-			EnableEarlySage(npcdata);
-		}
 
 		if ((bool)flags.IsBridgeFree && (!flags.DesertOfDeath))
 		{
@@ -448,13 +380,7 @@ public partial class FF1Rom : NesRom
 			EnableFreeRod();
 		}
 
-		if ((bool)flags.MapHallOfDragons) {
-		    BahamutB1Encounters(maps, ZoneFormations);
-		}
-
-		DragonsHoard(maps, (bool)flags.MapDragonsHoard);
-
-		MermaidPrison(maps, (bool)flags.MermaidPrison);
+		encounterRate.ScaleEncounterRate(flags);
 
 		var shopData = new ShopData(this);
 		shopData.LoadData();
@@ -467,7 +393,7 @@ public partial class FF1Rom : NesRom
 		if (flags.NoOverworld)
 		{
 			await this.Progress("Linking NoOverworld's Map", 1);
-			NoOverworld(Overworld.DecompressedMap, maps, talkroutines, npcdata, restructuredMaps.HorizontalFlippedMaps, flags, rng);
+			NoOverworld(Overworld.DecompressedMap, maps, talkroutines, npcdata, Maps.HorizontalFlippedMaps, flags, rng);
 		}
 
 		if (flags.DraculasFlag)
@@ -480,12 +406,7 @@ public partial class FF1Rom : NesRom
 
 		if ((bool)flags.ClassAsNpcFiends || (bool)flags.ClassAsNpcKeyNPC)
 		{
-			ClassAsNPC(flags, talkroutines, npcdata, restructuredMaps.HorizontalFlippedMaps, restructuredMaps.VerticalFlippedMaps, rng);
-		}
-
-		if (flags.NPCSwatter)
-		{
-			EnableNPCSwatter(npcdata);
+			ClassAsNPC(flags, talkroutines, npcdata, Maps.HorizontalFlippedMaps, Maps.VerticalFlippedMaps, rng);
 		}
 
 		if ((bool)flags.FightBahamut && !flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
@@ -582,17 +503,17 @@ public partial class FF1Rom : NesRom
 
 				if (flags.GameMode == GameModes.DeepDungeon)
 				{
-					sanityChecker = new SanityCheckerV2(maps, Overworld, npcdata, Teleporters, this, shopItemLocation);
+					sanityChecker = new SanityCheckerV2(Maps, Overworld, npcdata, Teleporters, this, shopItemLocation);
 					generatedPlacement = DeepDungeon.ShuffleTreasures(flags, incentivesData, rng);
 				}
 				else if ((bool)flags.Treasures)
 				{
-					sanityChecker = new SanityCheckerV2(maps, Overworld, npcdata, Teleporters, this, shopItemLocation);
+					sanityChecker = new SanityCheckerV2(Maps, Overworld, npcdata, Teleporters, this, shopItemLocation);
 					generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, Overworld, Teleporters, sanityChecker);
 				}
 				else if (Overworld.MapExchange != null)
 				{
-					sanityChecker = new SanityCheckerV2(maps, Overworld, npcdata, Teleporters, this, shopItemLocation);
+					sanityChecker = new SanityCheckerV2(Maps, Overworld, npcdata, Teleporters, this, shopItemLocation);
 					if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags).Complete) throw new InsaneException("Not Completable");
 				}
 
@@ -664,7 +585,7 @@ public partial class FF1Rom : NesRom
 
 		shopData.LoadData();
 
-		new LegendaryShops(rng, flags, maps, restructuredMaps.HorizontalFlippedMaps, restructuredMaps.VerticalFlippedMaps, shopData, this).PlaceShops();
+		new LegendaryShops(rng, flags, maps, Maps.HorizontalFlippedMaps, Maps.VerticalFlippedMaps, shopData, this).PlaceShops();
 
 		if (flags.GameMode == GameModes.DeepDungeon)
 		{
@@ -747,11 +668,6 @@ public partial class FF1Rom : NesRom
 			ShuffleSurpriseBonus(rng);
 		}
 
-		// Put this before other encounter / trap tile edits.
-		if ((bool)flags.AllowUnsafeMelmond)
-		{
-			EnableMelmondGhetto(flags.EnemizerEnabled);
-		}
 
 		// Weighted; Vanilla, Unleashed, and All are less likely
 		if (flags.WarMECHMode == WarMECHMode.Random)
@@ -792,11 +708,6 @@ public partial class FF1Rom : NesRom
 		if (flags.DisableMinimap)
 		{
 			DisableMinimap();
-		}
-
-		if (flags.EasyMode)
-		{
-			EnableEasyMode();
 		}
 
 		new TreasureStacks(this, flags).SetTreasureStacks();
@@ -905,9 +816,6 @@ public partial class FF1Rom : NesRom
 		}
 
 		ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.ImprovedClinic);
-		ScaleEncounterRate(flags.EncounterRate / 30.0, flags.DungeonEncounterRate / 30.0);
-
-		//WriteMaps(maps);
 
 		extConsumables.AddExtConsumables();
 
@@ -932,11 +840,7 @@ public partial class FF1Rom : NesRom
 		}
 
 		PartyGeneration(rng, flags, preferences);
-
-		if (((bool)flags.RecruitmentMode))
-		{
-			PubReplaceClinic(rng, attackedTown, flags);
-		}
+		PubReplaceClinic(rng, Maps.AttackedTown, flags);
 
 		if ((bool)flags.ShuffleAstos)
 		{
@@ -991,11 +895,6 @@ public partial class FF1Rom : NesRom
 		}
 
 		await this.Progress();
-
-		if (flags.SpookyFlag && !(bool)flags.RandomizeFormationEnemizer)
-		{
-			
-		}
 
 		if (flags.ResourcePack != null)
 		{
@@ -1122,9 +1021,13 @@ public partial class FF1Rom : NesRom
 		}
 
 		// Write back everything
+		talkroutines.Write(this);
+		NpcData.Write(talkroutines.ScriptPointers);
+		Dialogues.Write();
+
 		npcdata.WriteNPCdata(this);
-		talkroutines.WriteRoutines(this);
-		talkroutines.UpdateNPCRoutines(this, npcdata);
+		
+		encounterRate.Write();
 
 		Maps.Write();
 		TileSetsData.Write();

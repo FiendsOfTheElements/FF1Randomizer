@@ -1206,7 +1206,7 @@ namespace FF1Lib
 		public void SpinPalettes(MT19337 rng, List<Map> maps)
 		{
 			// Assigns the inner map with the given index a random palette.
-			var palettes = OverworldMap.GeneratePalettes(_rom.Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
+			var palettes = OverworldMap.GeneratePalettes(_rom.Get(OverworldMap.MapPaletteOffset, OverworldMap.MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
 			for (int i = 8; i < 61; i++)
 			{
 				var pal = palettes[(OverworldMap.Palette)rng.Between(1, palettes.Count() - 1)];

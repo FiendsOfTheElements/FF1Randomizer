@@ -194,6 +194,11 @@ namespace FF1Lib
 
 		public void PubReplaceClinic(MT19337 rng, MapIndex attackedTown, Flags flags)
 		{
+			if (!(bool)flags.RecruitmentMode)
+			{
+				return;
+			}
+
 			// Copy some CHR data to make the Tavern look more like one.
 			const int ShopTileDataOffet = 0x24000;
 			const int TileSize = 16;
@@ -278,8 +283,6 @@ namespace FF1Lib
 			{
 				PutInBank(0x0E, 0x9DAA, Blob.FromHex("A90060"));
 			}
-
-
 		}
 
 		public void EnableTwelveClasses()
@@ -303,10 +306,10 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xC7CA, Blob.FromHex("B940B0"));
 
 			// New promotion routine to not bug out with already promoted classes and allow random promotion; works with Nones; see 11_95AE_DoClassChange.asm
-			PutInBank(newTalkRoutinesBank, 0x95AE, Blob.FromHex("A20020C595A24020C595A28020C595A2C020C595E65660BC00613006B9F09D9D006160"));
+			PutInBank(0x11, 0x95AE, Blob.FromHex("A20020C595A24020C595A28020C595A2C020C595E65660BC00613006B9F09D9D006160"));
 
 			// lut for standard promotion, can be modified or randomized
-			PutInBank(newTalkRoutinesBank, 0x9DF0, Blob.FromHex("060708090A0B060708090A0B"));
+			PutInBank(0x11, 0x9DF0, Blob.FromHex("060708090A0B060708090A0B"));
 		}
 
 		public void EnableRandomPromotions(Flags flags, MT19337 rng)
@@ -355,7 +358,7 @@ namespace FF1Lib
 			}
 
 			// Insert randomized promotions
-			PutInBank(newTalkRoutinesBank, 0x9DF0, Blob.FromSBytes(promotions.ToArray()));
+			PutInBank(0x11, 0x9DF0, Blob.FromSBytes(promotions.ToArray()));
 
 			// Change class names to spoil to what they randomly promote
 			if (flags.RandomPromotionsSpoilers ?? false)
@@ -365,8 +368,8 @@ namespace FF1Lib
 			}
 
 			// Modify DoClassChange, see 1B_910F_ResetMP.asm
-			PutInBank(newTalkRoutinesBank, 0x95C8, Blob.FromHex("3009B9F09D9D006120D09D60"));
-			PutInBank(newTalkRoutinesBank, 0x9DD0, Blob.FromHex("A91148A9FE48A90648A99148A90F48A91B4C03FE"));
+			PutInBank(0x11, 0x95C8, Blob.FromHex("3009B9F09D9D006120D09D60"));
+			PutInBank(0x11, 0x9DD0, Blob.FromHex("A91148A9FE48A90648A99148A90F48A91B4C03FE"));
 
 			// MP Recomp Routine, see 1B_910F_ResetMP.asm
 			PutInBank(0x1B, 0x910F, Blob.FromHex("60BD0061A8B90091F0F6A96385858684A9281865848584A000A9029184C8A9009184C8C008D0F9BD00610AA8B9718A8582B9728A8583A9018510BD26618511E6118612BD0061AAA001B182A00048B184DD02899005684A4C7691684A900948B184186901918468C8C008D0E118A90265828582A90065838583E610A510C511D0C6A612A96385118610A9201865108510A000B1844A9110C8C008D0F660"));

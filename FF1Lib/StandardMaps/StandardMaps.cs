@@ -3,6 +3,18 @@ using System.IO.Compression;
 
 namespace FF1Lib
 {
+	public class MapDataGroup
+	{
+		public Map Map;
+		public MapObjects MapObjects;
+
+		public MapDataGroup(Map map, MapObjects mapobjects)
+		{
+			Map = map;
+			MapObjects = mapobjects;
+		}
+	}
+
 	public partial class StandardMaps
 	{
 		private const int MapPointerOffset = 0x10000;
@@ -12,12 +24,13 @@ namespace FF1Lib
 
 		private FF1Rom rom;
 		private Teleporters teleporters;
-		private List<Map> maps;
-		private List<MapObjects> mapObjects;
-		private List<(Map Map, MapObjects MapObjects)> mapAndMapObjects;
+		private List<Map> maps { get => mapDataGroups.Select(m => m.Map).ToList(); }
+		private List<MapObjects> mapObjects { get => mapDataGroups.Select(m => m.MapObjects).ToList(); }
+		private List<MapDataGroup> mapDataGroups;
 		private Flags flags;
 		public List<MapIndex> VerticalFlippedMaps { get; private set; }
 		public List<MapIndex> HorizontalFlippedMaps { get; private set; }
+		public MapIndex AttackedTown { get; private set; }
 
 		public StandardMaps(FF1Rom _rom, Teleporters _teleporters, Flags _flags)
 		{
@@ -25,19 +38,29 @@ namespace FF1Lib
 			teleporters = _teleporters;
 			flags = _flags;
 
+			VerticalFlippedMaps = new();
+			HorizontalFlippedMaps = new();
+			AttackedTown = MapIndex.Melmond;
+
 			LoadMapsFromRom();
-			mapAndMapObjects = maps.Select((m, i) => (m, mapObjects[i])).ToList();
+			//mapDataGroups = maps.Select((m, i) => (m, mapObjects[i])).ToList();
 		}
 		private void LoadMapsFromRom()
 		{
 			var pointers = rom.Get(MapPointerOffset, MapCount * MapPointerSize).ToUShorts();
-			maps = pointers.Select(pointer => new Map(rom.Get(MapPointerOffset + pointer, Map.RowCount * Map.RowLength))).ToList();
+			var tempMaps = pointers.Select(pointer => new Map(rom.Get(MapPointerOffset + pointer, Map.RowCount * Map.RowLength))).ToList();
+			var tempMapObjects = Enumerable.Range(0, MapCount).Select(m => new MapObjects(rom, (MapIndex)m)).ToList();
+			//var tempBackrops = rom.GetFromBank(lut_BtlBackdrops_Bank, lut_BtlBackdrops, 0x80).ToBytes();
+			mapDataGroups = tempMaps.Select((m, i) => new MapDataGroup(m, tempMapObjects[i])).ToList();
 
-			mapObjects = Enumerable.Range(0, MapCount).Select(m => new MapObjects(rom, (MapIndex)m)).ToList();
 		}
-		public (Map Map, MapObjects MapObjects) this[MapIndex index]
+		public MapDataGroup this[MapIndex index]
 		{
-			get => mapAndMapObjects[(int)index];
+			get => mapDataGroups[(int)index];
+		}
+		public List<Map> GetMapList()
+		{
+			return maps;
 		}
 		public void ImportCustomMap(Teleporters teleporters, CompleteMap newmap)
 		{

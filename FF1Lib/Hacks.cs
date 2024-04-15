@@ -12,30 +12,6 @@ namespace FF1Lib
 		public const int MapSpriteSize = 3;
 		public const int MapSpriteCount = 16;
 
-
-
-		public void EnableEarlySarda(NPCdata npcdata)
-		{
-			npcdata.GetTalkArray(ObjectId.Sarda)[(int)TalkArrayPos.requirement_id] = 0x00;
-		}
-
-		public void EnableEarlySage(NPCdata npcdata)
-		{
-			npcdata.GetTalkArray(ObjectId.CanoeSage)[(int)TalkArrayPos.requirement_id] = 0x00;
-			InsertDialogs(0x2B, "The FIENDS are waking.\nTake this and go defeat\nthem!\n\n\nReceived #");
-		}
-
-		public void EnableConfusedOldMen(MT19337 rng)
-		{
-			List<(byte, byte)> coords = new List<(byte, byte)> {
-				( 0x2A, 0x0A ), ( 0x28, 0x0B ), ( 0x26, 0x0B ), ( 0x24, 0x0A ), ( 0x23, 0x08 ), ( 0x23, 0x06 ),
-				( 0x24, 0x04 ), ( 0x26, 0x03 ), ( 0x28, 0x03 ), ( 0x28, 0x04 ), ( 0x2B, 0x06 ), ( 0x2B, 0x08 )
-			};
-			coords.Shuffle(rng);
-
-			List<int> sages = Enumerable.Range(0, 12).ToList(); // But the 12th Sage is actually id 12, not 11.
-			sages.ForEach(sage => MoveNpc(MapIndex.CrescentLake, sage < 11 ? sage : 12, coords[sage].Item1, coords[sage].Item2, inRoom: false, stationary: false));
-		}
 		public void EnableSaveOnDeath(Flags flags, Overworld overworld)
 		{
 			// rewrite rando's GameOver routine to jump to a new section that will save the game data
@@ -92,7 +68,7 @@ namespace FF1Lib
 			// Extend Orb Box
 			PutInBank(0x0E, 0xBAA2, Blob.FromHex("02010809"));
 		}
-		public void ShuffleAstos(Flags flags, NPCdata npcdata, TalkRoutines talkroutines, MT19337 rng)
+		public void ShuffleAstos(Flags flags, NpcObjectData npcdata, DialogueData dialogues, TalkRoutines talkroutines, MT19337 rng)
 		{
 			// NPC pool to swap Astos with
 			List<ObjectId> npcpool = new List<ObjectId> { ObjectId.Astos, ObjectId.Bahamut, ObjectId.CanoeSage, ObjectId.CubeBot, ObjectId.ElfDoc,
@@ -117,94 +93,86 @@ namespace FF1Lib
 			if (newastos == ObjectId.Astos) return;
 
 			// If not get NPC talk routine, get NPC object
-			var talkscript = npcdata.GetRoutine(newastos);
+			var talkscript = npcdata[newastos].Script;
 
 			// Switch astos to Talk_GiveItemOnItem;
-			npcdata.SetRoutine(ObjectId.Astos, newTalkRoutines.Talk_GiveItemOnItem);
+			npcdata[ObjectId.Astos].Script = TalkScripts.Talk_GiveItemOnItem;
 
 			// Get items name
-			var newastositem = FormattedItemName((Item)npcdata.GetTalkArray(newastos)[(int)TalkArrayPos.item_id]);
-			var nwkingitem = FormattedItemName((Item)npcdata.GetTalkArray(ObjectId.Astos)[(int)TalkArrayPos.item_id]);
+			//var newastositem = FormattedItemName((Item)npcdata.GetTalkArray(newastos)[(int)TalkArrayPos.item_id]);
+			//var nwkingitem = FormattedItemName((Item)npcdata.GetTalkArray(ObjectId.Astos)[(int)TalkArrayPos.item_id]);
+			// so why don't we use the item id? it should be set by the time we get the dialogues (since we check if there's inventory space)
 
 			// Custom dialogs for Astos NPC and the Kindly Old King
 			List<(byte, string)> astosdialogs = new List<(byte, string)>
 			{
 				(0x00, ""),
-				(0x02, "You have ruined my plans\nto steal this " + newastositem + "!\nThe princess will see\nthrough my disguise.\nTremble before the might\nof Astos, the Dark King!"),
+				//(0x02, "You have ruined my plans\nto steal this " + newastositem + "!\nThe princess will see\nthrough my disguise.\nTremble before the might\nof Astos, the Dark King!"),
+				(0x02, "You have ruined my plans\nto steal this #!\nThe princess will see\nthrough my disguise.\nTremble before the might\nof Astos, the Dark King!"),
 				(0x00, ""),(0x00, ""),(0x00, ""),
 				(0x0C, "You found the HERB?\nCurses! The Elf Prince\nmust never awaken.\nOnly then shall I,\nAstos, become\nthe King of ALL Elves!"),
-				(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my " + newastositem + "!"),
-				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this also!\n\nReceived " + nwkingitem),
-				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe " + newastositem + " will\nbelong to Astos,\nKing of Dark Dwarves!"),
-				(0x16, "ADAMANT!! Now let me\nmake this " + newastositem + "..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
-				(0x19, "You found my CRYSTAL and\nwant my " + newastositem + "? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
+				//(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my " + newastositem + "!"),
+				(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my #!"),
+				//(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this also!\n\nReceived " + nwkingitem),
+				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this also!\n\nReceived #"),
+//				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe " + newastositem + " will\nbelong to Astos,\nKing of Dark Dwarves!"),
+				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe # will\nbelong to Astos,\nKing of Dark Dwarves!"),
+				//(0x16, "ADAMANT!! Now let me\nmake this " + newastositem + "..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
+				(0x16, "ADAMANT!! Now let me\nmake this #..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
+				//(0x19, "You found my CRYSTAL and\nwant my " + newastositem + "? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
+				(0x19, "You found my CRYSTAL and\nwant my #? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
 				(0x1C, "Finally! With this SLAB,\nI shall conquer Lefein\nand her secrets will\nbelong to Astos,\nthe Dark Scholar!"),
 				(0x00, ""),
-				(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my " + newastositem + "!\nI even paid a Titan to\nguard the path! Fine.\nNow you face Astos,\nKing of the Hermits!"),
+				//(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my " + newastositem + "!\nI even paid a Titan to\nguard the path! Fine.\nNow you face Astos,\nKing of the Hermits!"),
+				(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my #!\nI even paid a Titan to\nguard the path! Fine.\nNow you face Astos,\nKing of the Hermits!"),
 				(0x20, "Really, a rat TAIL?\nYou think this is what\nwould impress me?\nIf you want to prove\nyourself, face off with\nAstos, the Dark Dragon!"),
-				(0xCD, "Kupo?.. Lali ho?..\nMugu mugu?.. Fine! You\nare in the presence of\nAstos, the Dark Thief!\nI stole their " + newastositem + "\nfair and square!"),
+				//(0xCD, "Kupo?.. Lali ho?..\nMugu mugu?.. Fine! You\nare in the presence of\nAstos, the Dark Thief!\nI stole their " + newastositem + "\nfair and square!"),
+				(0xCD, "Kupo?.. Lali ho?..\nMugu mugu?.. Fine! You\nare in the presence of\nAstos, the Dark Thief!\nI stole their #\nfair and square!"),
 				(0x00, ""),
-				(0x27, "Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis " + newastositem + "!"),
-				(0x06, "This " + newastositem + " has passed\nfrom Queen to Princess\nfor 2000 years. It would\nhave been mine if you\nhadn't rescued me! Now\nyou face Astos, the\nDark Queen!"),
-				(0x23, "I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this " + newastositem + " in\nthanks, but I would\nrather just kill you."),
+				//(0x27, "Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis " + newastositem + "!"),
+				(0x27, "Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis #!"),
+				//(0x06, "This " + newastositem + " has passed\nfrom Queen to Princess\nfor 2000 years. It would\nhave been mine if you\nhadn't rescued me! Now\nyou face Astos, the\nDark Queen!"),
+				(0x06, "This # has passed\nfrom Queen to Princess\nfor 2000 years. It would\nhave been mine if you\nhadn't rescued me! Now\nyou face Astos, the\nDark Queen!"),
+				//(0x23, "I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this " + newastositem + " in\nthanks, but I would\nrather just kill you."),
+				(0x23, "I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this # in\nthanks, but I would\nrather just kill you."),
 				(0x2A, "If you want pass, give\nme the RUBY..\nHa, it mine! Now, you in\ntrouble. Me am Astos,\nKing of the Titans!"),
-				(0x2B, "Curses! Do you know how\nlong it took me to\ninfiltrate these grumpy\nold men and steal\nthe " + newastositem + "?\nNow feel the wrath of\nAstos, the Dark Sage!")
+				//(0x2B, "Curses! Do you know how\nlong it took me to\ninfiltrate these grumpy\nold men and steal\nthe " + newastositem + "?\nNow feel the wrath of\nAstos, the Dark Sage!")
+				(0x2B, "Curses! Do you know how\nlong it took me to\ninfiltrate these grumpy\nold men and steal\nthe #?\nNow feel the wrath of\nAstos, the Dark Sage!")
 			};
 
-			InsertDialogs(astosdialogs[(int)newastos].Item1, astosdialogs[(int)newastos].Item2);
-			InsertDialogs(astosdialogs[(int)ObjectId.Astos].Item1, astosdialogs[(int)ObjectId.Astos].Item2);
+			dialogues[astosdialogs[(int)newastos].Item1] = astosdialogs[(int)newastos].Item2;
+			dialogues[astosdialogs[(int)ObjectId.Astos].Item1] = astosdialogs[(int)ObjectId.Astos].Item2;
 
-			if (talkscript == newTalkRoutines.Talk_Titan || talkscript == newTalkRoutines.Talk_ElfDocUnne)
+			if (talkscript == TalkScripts.Talk_Titan || talkscript == TalkScripts.Talk_ElfDocUnne)
 			{
 				// Skip giving item for Titan, ElfDoc or Unne
 				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("20109F"), Blob.FromHex("EAEAEA"));
 				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("A9F060"), Blob.FromHex("4C4396"));
-				npcdata.SetRoutine(newastos, newTalkRoutines.Talk_Astos);
+				npcdata[newastos].Script = TalkScripts.Talk_Astos;
 			}
-			else if (talkscript == newTalkRoutines.Talk_GiveItemOnFlag)
+			else if (talkscript == TalkScripts.Talk_GiveItemOnFlag)
 			{
 				// Check for a flag instead of an item
 				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F0"), Blob.FromHex("A474F00520799090"));
-				npcdata.SetRoutine(newastos, newTalkRoutines.Talk_Astos);
+				npcdata[newastos].Script = TalkScripts.Talk_Astos;
 			}
-			else if (talkscript == newTalkRoutines.Talk_Nerrick || talkscript == newTalkRoutines.Talk_GiveItemOnItem || talkscript == newTalkRoutines.Talk_TradeItems)
+			else if (talkscript == TalkScripts.Talk_Nerrick || talkscript == TalkScripts.Talk_GiveItemOnItem || talkscript == TalkScripts.Talk_TradeItems)
 			{
 				// Just set NPC to Astos routine
-				npcdata.SetRoutine(newastos, newTalkRoutines.Talk_Astos);
+				npcdata[newastos].Script = TalkScripts.Talk_Astos;
 			}
-			else if (talkscript == newTalkRoutines.Talk_Bahamut)
+			else if (talkscript == TalkScripts.Talk_Bahamut)
 			{
 				// Change routine to check for Tail, give promotion and trigger the battle at the same time, see 11_8200_TalkRoutines.asm
 				talkroutines.Replace(newTalkRoutines.Talk_Bahamut, Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660"));
 			}
 
 			// Set battle
-			npcdata.GetTalkArray(newastos)[(int)TalkArrayPos.battle_id] = 0x7D;
-		}
-
-		private void EnableEasyMode()
-		{
-			ScaleEncounterRate(0.20, 0.20);
-			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
-			foreach (var enemy in enemies)
-			{
-				var hp = BitConverter.ToUInt16(enemy, 4);
-				hp = (ushort)(hp * 0.1);
-				var hpBytes = BitConverter.GetBytes(hp);
-				Array.Copy(hpBytes, 0, enemy, 4, 2);
-			}
-
-			Put(EnemyOffset, enemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
+			npcdata[newastos].Battle = 0x7D;
 		}
 		/// <summary>
 		/// Unused method, but this would allow a non-npc shuffle king to build bridge without rescuing princess
 		/// </summary>
-		public void EnableEarlyKing(NPCdata npcdata)
-		{
-			npcdata.GetTalkArray(ObjectId.King)[(int)TalkArrayPos.requirement_id] = 0x00;
-			InsertDialogs(0x02, "To aid you on your\nquest, please take this.\n\n\n\nReceived #");
-		}
-
 		public void EnableFreeBridge()
 		{
 			// Set the default bridge_vis byte on game start to true. It's a mother beautiful bridge - and it's gonna be there.
@@ -225,13 +193,9 @@ namespace FF1Lib
 			Data[0x3006] = 165;
 		}
 
-		public void EnableFreeCanal(bool npcShuffleEnabled, NPCdata npcdata)
+		public void EnableFreeCanal(bool npcShuffleEnabled)
 		{
 			Data[0x300C] = 0;
-
-			// Put safeguard to prevent softlock if TNT is turned in (as it will remove the Canal)
-			if (!npcShuffleEnabled)
-				npcdata.GetTalkArray(ObjectId.Nerrick)[(int)TalkArrayPos.item_id] = (byte)Item.Cabin;
 		}
 
 		public void EnableFreeCanoe()
@@ -318,21 +282,6 @@ namespace FF1Lib
 
 			// Rewrite turn order shuffle to Fisher-Yates.
 			Put(0x3217A, Blob.FromHex("A90C8D8E68A900AE8E68205DAEA8AE8E68EAEAEAEAEAEA"));
-		}
-
-
-		public void EnableMelmondGhetto(bool enemizerOn)
-		{
-			// Set town desert tile to random encounters.
-			// If enabled, trap tile shuffle will change that second byte to 0x00 afterward.
-			Data[0x00864] = 0x0A;
-			Data[0x00865] = enemizerOn ? (byte)0x00 : (byte)0x80;
-
-			// Give Melmond Desert backdrop
-			Data[0x0334D] = (byte)Backdrop.Desert;
-
-			if (!enemizerOn) // if enemizer formation shuffle is on, it will have assigned battles to Melmond already
-				Put(0x2C218, Blob.FromHex("0F0F8F2CACAC7E7C"));
 		}
 
 		public void XpAdmissibility(bool nonesGainXp, bool deadsGainXp)

@@ -1,13 +1,4 @@
 ﻿using FF1Lib.Sanity;
-using Newtonsoft.Json;
-using RomUtilities;
-using System;
-using System.Collections.Generic;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -35,7 +26,7 @@ namespace FF1Lib
 			Stationary = stationary;
 			Coords = new SCCoords(x, y).SmClamp;
 		}
-		// This is bad, but it's probably need to keep compatibility with map import, we'll see if we can remove NPC struct easily
+		// This is bad, but it's probably needed to keep compatibility with map import, we'll see if we can remove NPC struct easily
 		public void CopyFrom(NPC newobject)
 		{
 			ObjectId = newobject.ObjectId;
@@ -114,6 +105,10 @@ namespace FF1Lib
 			{
 				return null;
 			}
+		}
+		public void ConfusedOldMen(bool enable)
+		{
+
 		}
 		public void Write(FF1Rom rom)
 		{

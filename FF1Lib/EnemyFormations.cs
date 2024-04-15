@@ -247,11 +247,11 @@ namespace FF1Lib
 
 			Put(FormationsOffset + ChaosFormationIndex * FormationSize, finalBattle);
 		}
-		public void PacifistBat(TalkRoutines talkroutines, NPCdata npcdata)
+		public void PacifistBat(TalkRoutines talkroutines, NpcObjectData npcdata)
 		{
 			// Add Script
 			var Talk_Ending = talkroutines.Add(Blob.FromHex("4C38C9"));
-			npcdata.SetRoutine(ObjectId.MatoyaBroom4, (newTalkRoutines)Talk_Ending);
+			npcdata[ObjectId.MatoyaBroom4].Script = (TalkScripts)Talk_Ending;
 			var broom4 = GetNpc(MapIndex.MatoyasCave, 4);
 			var bat3 = GetNpc(MapIndex.MarshCaveB1, 3);
 			SetNpc(MapIndex.MatoyasCave, 4, ObjectId.MatoyaBroom3, broom4.Coord.x, broom4.Coord.y, true, false);

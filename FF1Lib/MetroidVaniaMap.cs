@@ -44,7 +44,7 @@
 			return UnusedTilesbyTileSet;
 		}
 
-		public void NoOverworld(List<List<byte>> decompressedMap, List<Map> maps, TalkRoutines talkroutines, NPCdata npcdata, List<MapIndex> flippedmaps, Flags flags, MT19337 rng)
+		public void NoOverworld(List<List<byte>> decompressedMap, List<Map> maps, TalkRoutines talkroutines, DialogueData dialogues, NpcObjectData npcdata, List<MapIndex> flippedmaps, Flags flags, MT19337 rng)
 		{
 			// Exclude Waterfall, since it doesn't matter if it's flipped or not
 			flippedmaps = flippedmaps.Where(x => x != MapIndex.Waterfall).ToList();
@@ -53,7 +53,7 @@
 			ApplyMapMods(maps, flippedmaps, (bool)flags.LefeinSuperStore);
 			UpdateInRoomTeleporters();
 			CreateTeleporters(maps, flippedmaps, rng);
-			PrepNPCs(talkroutines, npcdata, flippedmaps, flags, rng);
+			PrepNPCs(talkroutines, dialogues, npcdata, flippedmaps, flags, rng);
 			UpdateBackgrounds();
 			if ((bool)flags.Entrances || (bool)flags.Towns)
 			{
@@ -784,7 +784,7 @@
 
 		}
 
-		public void PrepNPCs(TalkRoutines talkroutines, NPCdata npcdata, List<MapIndex> flippedmaps, Flags flags, MT19337 rng)
+		public void PrepNPCs(TalkRoutines talkroutines, DialogueData dialogues, NpcObjectData npcdata, List<MapIndex> flippedmaps, Flags flags, MT19337 rng)
 		{
 			// Orbs
 			SetNpc(MapIndex.ConeriaCastle1F, 0x02, ObjectId.ConeriaCastle1FWoman1, 0x02, 0x08, true, true); // Dialog+Routine
@@ -970,7 +970,7 @@
 			PutInBank(lut_BtlBackdrops_Bank, lut_BtlBackdrops, backgroundList.Select(x => (byte)x.Item2).ToArray());
 		}
 
-		public void ShuffleFloor(List<Map> maps, Flags flags, NPCdata npcdata, List<MapIndex> flippedmaps, MT19337 rng)
+		public void ShuffleFloor(List<Map> maps, Flags flags, NpcObjectData npcdata, List<MapIndex> flippedmaps, MT19337 rng)
 		{
 			int FlippedX(MapIndex map, int pos) => flippedmaps.Contains(map) ? 0x3F - pos : pos;
 
@@ -1810,18 +1810,6 @@
 			RoomPalette2 = 0x55,
 			OutPalette1 = 0xAA,
 			OutPalette2 = 0xFF,
-		}
-
-		public enum TileSets
-		{
-			Town = 0,
-			Castle,
-			EarthTitanVolcano,
-			MatoyaDwarfCardiaIceWaterfall,
-			MarshMirage,
-			ToFSeaShrine,
-			SkyCastle,
-			ToFR
 		}
 
 		public static Dictionary<TeleporterGraphic, List<List<byte>>> TeleportTilesGraphics = new()

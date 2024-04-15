@@ -12,7 +12,7 @@ namespace FF1Lib
 		Overworld overworld;
 		Teleporters teleporters;
 
-		NPCdata npcdata;
+		NpcObjectData npcdata;
 
 		short shipDockAreaIndex;
 		bool airShipLocationAccessible;
@@ -48,12 +48,12 @@ namespace FF1Lib
 
 		public SCMain Main { get; private set; }
 
-		public SanityCheckerV2(List<Map> _maps, Overworld _overworld, NPCdata _npcdata, Teleporters _teleporters, FF1Rom _rom, ItemShopSlot _declaredShopSlot)
+		public SanityCheckerV2(StandardMaps _maps, Overworld _overworld, NpcObjectData _npcdata, Teleporters _teleporters, FF1Rom _rom, ItemShopSlot _declaredShopSlot)
 		{
 			rom = _rom;
 			overworld = _overworld;
 			overworldMap = _overworld.OverworldMap;
-			maps = _maps;
+			maps = _maps.GetMapList();
 			npcdata = _npcdata;
 			teleporters = _teleporters;
 
@@ -68,7 +68,7 @@ namespace FF1Lib
 
 			UpdateNpcRequirements();
 
-			Main = new SCMain(_maps, overworldMap, _npcdata, teleporters, locations, _rom);
+			Main = new SCMain(maps, overworldMap, _npcdata, teleporters, locations, _rom);
 		}
 		public void SetShipLocation(int dungeonindex)
 		{
@@ -79,26 +79,23 @@ namespace FF1Lib
 		{
 			foreach (var npc in allQuestNpcs.Values)
 			{
-				var talkarray = npcdata.GetTalkArray(npc.ObjectId);
-				var routine = npcdata.GetRoutine(npc.ObjectId);
-
-				UpdateNpcRequirements(npc, talkarray, routine);
+				UpdateNpcRequirements(npc, npcdata[npc.ObjectId]);
 			}
 		}
 
-		private void UpdateNpcRequirements(NpcReward npc, byte[] talkarray, newTalkRoutines routine)
+		private void UpdateNpcRequirements(NpcReward npc, NpcObject npcdata)
 		{
-			if (routine == newTalkRoutines.Talk_Nerrick)
+			if (npcdata.Script == TalkScripts.Talk_Nerrick)
 			{
 				npc.AccessRequirement = AccessRequirement.Tnt;
 			}
-			else if (routine == newTalkRoutines.Talk_Astos)
+			else if (npcdata.Script == TalkScripts.Talk_Astos)
 			{
 				npc.AccessRequirement = AccessRequirement.Crown;
 			}
-			else if (routine == newTalkRoutines.Talk_TradeItems || routine == newTalkRoutines.Talk_GiveItemOnItem)
+			else if (npcdata.Script == TalkScripts.Talk_TradeItems || npcdata.Script == TalkScripts.Talk_GiveItemOnItem)
 			{
-				var req = (Item)talkarray[(int)TalkArrayPos.requirement_id];
+				var req = (Item)npcdata.Requirement;
 
 				npc.AccessRequirement = req.ToAccessRequirement();
 			}
