@@ -7,11 +7,13 @@ namespace FF1Lib
 	{
 		public Map Map;
 		public MapObjects MapObjects;
+		public TileSets MapTileSet;
 
-		public MapDataGroup(Map map, MapObjects mapobjects)
+		public MapDataGroup(Map _map, MapObjects _mapobjects, TileSets _tileset)
 		{
-			Map = map;
-			MapObjects = mapobjects;
+			Map = _map;
+			MapObjects = _mapobjects;
+			MapTileSet = _tileset;
 		}
 	}
 
@@ -26,6 +28,7 @@ namespace FF1Lib
 		private Teleporters teleporters;
 		private List<Map> maps { get => mapDataGroups.Select(m => m.Map).ToList(); }
 		private List<MapObjects> mapObjects { get => mapDataGroups.Select(m => m.MapObjects).ToList(); }
+		public List<TileSets> MapTileSets { get => mapDataGroups.Select(m => m.MapTileSet).ToList(); }
 		private List<MapDataGroup> mapDataGroups;
 		private Flags flags;
 		public List<MapIndex> VerticalFlippedMaps { get; private set; }
@@ -50,8 +53,11 @@ namespace FF1Lib
 			var pointers = rom.Get(MapPointerOffset, MapCount * MapPointerSize).ToUShorts();
 			var tempMaps = pointers.Select(pointer => new Map(rom.Get(MapPointerOffset + pointer, Map.RowCount * Map.RowLength))).ToList();
 			var tempMapObjects = Enumerable.Range(0, MapCount).Select(m => new MapObjects(rom, (MapIndex)m)).ToList();
+			var tempMapTileSets = new MapTileSets(rom);
+			tempMapTileSets.LoadTable();
+
 			//var tempBackrops = rom.GetFromBank(lut_BtlBackdrops_Bank, lut_BtlBackdrops, 0x80).ToBytes();
-			mapDataGroups = tempMaps.Select((m, i) => new MapDataGroup(m, tempMapObjects[i])).ToList();
+			mapDataGroups = tempMaps.Select((m, i) => new MapDataGroup(m, tempMapObjects[i], (TileSets)tempMapTileSets[(MapIndex)i])).ToList();
 
 		}
 		public MapDataGroup this[MapIndex index]
@@ -132,6 +138,14 @@ namespace FF1Lib
 			{
 				mapobject.Write(rom);
 			}
+
+			MapTileSets tempTileSets = new(rom);
+			tempTileSets.LoadTable();
+			for (int i = 0; i < MapTileSets.Count; i++)
+			{
+				tempTileSets[i] = (byte)MapTileSets[i];
+			}
+			tempTileSets.StoreTable();
 		}
 	}
 }

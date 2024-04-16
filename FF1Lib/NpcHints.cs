@@ -18,11 +18,11 @@ namespace FF1Lib
 		SanityCheckerV2 checker;
 		FF1Rom rom;
 		ShopData shopData;
-		FF1Rom.NPCdata npcData;
+		NpcObjectData npcData;
 		bool noOverworld;
 		public List<LocationHintsInfo> hints { get; }
 
-		public LocationHints(SanityCheckerV2 _checker, FF1Rom _rom, ShopData _shopdata, FF1Rom.NPCdata _npcdata, bool _nooverworld)
+		public LocationHints(SanityCheckerV2 _checker, FF1Rom _rom, ShopData _shopdata, NpcObjectData _npcdata, bool _nooverworld)
 		{
 			checker = _checker;
 			rom = _rom;
@@ -85,7 +85,7 @@ namespace FF1Lib
 						}
 						break;
 					case Sanity.SCPointOfInterestType.QuestNpc:
-						var npcitem = (Item)npcData.GetTalkArray(p.Npc.ObjectId)[(int)FF1Rom.TalkArrayPos.item_id];
+						var npcitem = (Item)npcData[p.Npc.ObjectId].Item;
 						var newnpchint = new LocationHintsInfo(overworld, a.Map.MapIndex, p.Type, depth, split, (int)p.Npc.ObjectId, npcitem);
 						if (!hints.Where(x => x.type == newnpchint.type && x.id == newnpchint.id).Any())
 						{
@@ -420,7 +420,7 @@ namespace FF1Lib
 
 			return wrapped;
 	    }
-		public void NPCHints(MT19337 rng, NPCdata npcdata, Flags flags, IncentiveData incentivedata, SanityCheckerV2 sanitychecker, ShopData shopdata)
+		public void NPCHints(MT19337 rng, NpcObjectData npcdata, DialogueData dialogues, Flags flags, IncentiveData incentivedata, SanityCheckerV2 sanitychecker, ShopData shopdata)
 		{
 			if (!(bool)flags.HintsVillage || flags.GameMode == GameModes.DeepDungeon || !(bool)flags.Treasures || flags.Archipelago )
 			{
@@ -563,8 +563,8 @@ namespace FF1Lib
 				// Set NPCs new dialogs
 				for (int i = 0; i < npcSelected.Count; i++)
 				{
-					npcdata.GetTalkArray(npcSelected[i])[(int)TalkArrayPos.dialogue_2] = dialogueID[i];
-					npcdata.SetRoutine(npcSelected[i], newTalkRoutines.Talk_norm);
+					npcdata[npcSelected[i]].Dialogue2 = dialogueID[i];
+					npcdata[npcSelected[i]].Script = TalkScripts.Talk_norm;
 
 					hintDialogues.Add(dialogueID[i], hintsList.First());
 					hintsList.RemoveRange(0, 1);
@@ -572,7 +572,7 @@ namespace FF1Lib
 
 				try
 				{
-					InsertDialogs(hintDialogues);
+					dialogues.InsertDialogues(hintDialogues);
 				}
 				catch (Exception e)
 				{
@@ -604,7 +604,11 @@ namespace FF1Lib
 		return descriptions[tr];
 	    }
 
-	    public void SkyWarriorSpoilerBats(MT19337 rng, Flags flags, NPCdata npcdata) {
+	    public void SkyWarriorSpoilerBats(MT19337 rng, Flags flags, NpcObjectData npcdata, DialogueData dialogues) {
+			if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Vanilla)
+			{
+				return;
+			}
 		List<MagicSpell> spellList = GetSpells();
 		var enemies = GetAllEnemyStats();
 		var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
@@ -867,17 +871,18 @@ namespace FF1Lib
 		    }
 
 			dialogtext = dialogtext.Replace("_", String.Empty);
-			InsertDialogs(b.dialog, dialogtext);
+			dialogues[b.dialog] = dialogtext;
 		}
 
-		if ((bool)flags.SpoilerBatsDontCheckOrbs) {
-		    // Tweak the bat's dialog script
-		    npcdata.SetRoutine(ObjectId.SkyWarrior1, newTalkRoutines.Talk_norm);
-		    npcdata.SetRoutine(ObjectId.SkyWarrior2, newTalkRoutines.Talk_norm);
-		    npcdata.SetRoutine(ObjectId.SkyWarrior3, newTalkRoutines.Talk_norm);
-		    npcdata.SetRoutine(ObjectId.SkyWarrior4, newTalkRoutines.Talk_norm);
-		    npcdata.SetRoutine(ObjectId.SkyWarrior5, newTalkRoutines.Talk_norm);
-		}
+			if ((bool)flags.SpoilerBatsDontCheckOrbs)
+			{
+				// Tweak the bat's dialog script
+				npcdata[ObjectId.SkyWarrior1].Script = TalkScripts.Talk_norm;
+				npcdata[ObjectId.SkyWarrior2].Script = TalkScripts.Talk_norm;
+				npcdata[ObjectId.SkyWarrior3].Script = TalkScripts.Talk_norm;
+				npcdata[ObjectId.SkyWarrior4].Script = TalkScripts.Talk_norm;
+				npcdata[ObjectId.SkyWarrior5].Script = TalkScripts.Talk_norm;
+			}
 	    }
 	}
 }
