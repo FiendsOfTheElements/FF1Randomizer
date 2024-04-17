@@ -69,7 +69,7 @@ namespace FF1Lib
 		{
 			Sprite = sprite;
 			OldScript = oldscript;
-			Script = NpcScriptsLists.NewToOldScripts[oldscript];
+			Script = NpcScriptsLists.NewToOldScripts[oldscript.ToUShorts()[0]];
 			Dialogue1 = data[0];
 			Dialogue2 = data[1];
 			Dialogue3 = data[2];

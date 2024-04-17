@@ -19,12 +19,12 @@
 			Rotate3Orphans,
 			Switch2Orphans
 		}
-		private Dictionary<byte, List<byte>> LoadUnusedTileIds(List<Map> maps, FF1Rom rom)
+		private Dictionary<byte, List<byte>> LoadUnusedTileIds(StandardMaps maps, FF1Rom rom)
 		{
-			MapTileSets MapTileSets;
+			var mapTileSets = maps.MapTileSets.Select((m, i) => (i, (byte)m)).ToDictionary(m => (MapIndex)m.i, m => m.Item2);
 			Dictionary<byte, List<byte>> UnusedTilesbyTileSet;
 
-			MapTileSets = new MapTileSets(rom);
+			//MapTileSets = new MapTileSets(rom);
 			byte[] possibleTileIds = new byte[128];
 			for (byte i = 0; i < 128; i++) possibleTileIds[i] = i;
 
@@ -32,8 +32,8 @@
 			possibleTileIds[0x37] = 0;  
 
 			UnusedTilesbyTileSet = Enum.GetValues<MapIndex>()
-				.GroupBy(m => MapTileSets[m])
-				.Select(t => (t.Key, t.Select(m => maps[(int)m]
+				.GroupBy(m => mapTileSets[m])
+				.Select(t => (t.Key, t.Select(m => maps[m].Map
 						.Select(e => e.Value))
 					.SelectMany(x => x)
 					.Distinct()
@@ -44,20 +44,25 @@
 			return UnusedTilesbyTileSet;
 		}
 
-		public void NoOverworld(List<List<byte>> decompressedMap, List<Map> maps, TalkRoutines talkroutines, DialogueData dialogues, NpcObjectData npcdata, List<MapIndex> flippedmaps, Flags flags, MT19337 rng)
+		public void NoOverworld(List<List<byte>> decompressedMap, StandardMaps maps, Teleporters teleporters, TalkRoutines talkroutines, DialogueData dialogues, NpcObjectData npcdata, Flags flags, MT19337 rng)
 		{
+			if (!flags.NoOverworld)
+			{
+				return;
+			}
+
 			// Exclude Waterfall, since it doesn't matter if it's flipped or not
-			flippedmaps = flippedmaps.Where(x => x != MapIndex.Waterfall).ToList();
+			var flippedmaps = maps.HorizontalFlippedMaps.Where(x => x != MapIndex.Waterfall).ToList();
 
 			LoadInTown(decompressedMap);
 			ApplyMapMods(maps, flippedmaps, (bool)flags.LefeinSuperStore);
 			UpdateInRoomTeleporters();
 			CreateTeleporters(maps, flippedmaps, rng);
-			PrepNPCs(talkroutines, dialogues, npcdata, flippedmaps, flags, rng);
+			PrepNPCs(maps, talkroutines, dialogues, npcdata, flippedmaps, flags, rng);
 			UpdateBackgrounds();
 			if ((bool)flags.Entrances || (bool)flags.Towns)
 			{
-				ShuffleFloor(maps, flags, npcdata, flippedmaps, rng);
+				ShuffleFloor(maps, teleporters, flags, npcdata, flippedmaps, rng);
 			}
 		}
 
@@ -102,15 +107,15 @@
 			PutInBank(0x0E, 0x9DC0, townPosList.Select(x => x.Item1).ToArray());
 			PutInBank(0x0E, 0x9DD0, townPosList.Select(x => x.Item2).ToArray());
 		}
-		public void ApplyMapMods(List<Map> maps, List<MapIndex> flippedmaps, bool lefeinmart)
+		public void ApplyMapMods(StandardMaps maps, List<MapIndex> flippedmaps, bool lefeinmart)
 		{
 			// Coneria
 			var coneriaNorthwall = new List<Blob> { Blob.FromHex("0404040404") };
 			var coneriaSouthwall = new List<Blob> { Blob.FromHex("0E0E0E0E0E") };
 
-			maps[(int)MapIndex.ConeriaTown].Put((0x0E, 0x00), coneriaNorthwall.ToArray());
-			maps[(int)MapIndex.ConeriaTown].Put((0x0E, 0x17), coneriaSouthwall.ToArray());
-			maps[(int)MapIndex.ConeriaTown][0x0C, 0x1F] = 0x0E;
+			maps[MapIndex.ConeriaTown].Map.Put((0x0E, 0x00), coneriaNorthwall.ToArray());
+			maps[MapIndex.ConeriaTown].Map.Put((0x0E, 0x17), coneriaSouthwall.ToArray());
+			maps[MapIndex.ConeriaTown].Map[0x0C, 0x1F] = 0x0E;
 
 			// Pravoka
 			var pravokaSouthwall = new List<Blob> {
@@ -118,7 +123,7 @@
 				Blob.FromHex("0304040404040404040405")
 			};
 
-			maps[(int)MapIndex.Pravoka].Put((0x0E, 0x1F), pravokaSouthwall.ToArray());
+			maps[MapIndex.Pravoka].Map.Put((0x0E, 0x1F), pravokaSouthwall.ToArray());
 
 			// Elfland
 			var elflandEastwall = new List<Blob> {
@@ -164,11 +169,11 @@
 				Blob.FromHex("0F"),
 			};
 
-			maps[(int)MapIndex.Elfland].Put((0x27, 0x16), elflandEastwall.ToArray());
-			maps[(int)MapIndex.Elfland].Put((0x29, 0x00), elflandEastwall2.ToArray());
-			maps[(int)MapIndex.Elfland].Put((0x10, 0x00), elflandNorthwall.ToArray());
-			maps[(int)MapIndex.Elfland].Put((0x00, 0x04), elflandWestwall.ToArray());
-			maps[(int)MapIndex.Elfland][0x05, 0x04] = 0x00;
+			maps[MapIndex.Elfland].Map.Put((0x27, 0x16), elflandEastwall.ToArray());
+			maps[MapIndex.Elfland].Map.Put((0x29, 0x00), elflandEastwall2.ToArray());
+			maps[MapIndex.Elfland].Map.Put((0x10, 0x00), elflandNorthwall.ToArray());
+			maps[MapIndex.Elfland].Map.Put((0x00, 0x04), elflandWestwall.ToArray());
+			maps[MapIndex.Elfland].Map[0x05, 0x04] = 0x00;
 
 			// Melmond
 			var melmondWestwall = new List<Blob> {
@@ -192,18 +197,18 @@
 				Blob.FromHex("040404040404"),
 			};
 
-			maps[(int)MapIndex.Melmond].Put((0x01, 0x05), melmondWestwall.ToArray());
-			maps[(int)MapIndex.Melmond].Put((0x0E, 0x1B), melmondSouthwall.ToArray());
+			maps[MapIndex.Melmond].Map.Put((0x01, 0x05), melmondWestwall.ToArray());
+			maps[MapIndex.Melmond].Map.Put((0x0E, 0x1B), melmondSouthwall.ToArray());
 
 			// Crescent Lake
 			var crescentSouthwall = new List<Blob> {
 				Blob.FromHex("070707"),
 			};
-			maps[(int)MapIndex.CrescentLake].Put((0x0A, 0x17), crescentSouthwall.ToArray());
-			maps[(int)MapIndex.CrescentLake][0x00, 0x13] = 0x0E;
+			maps[MapIndex.CrescentLake].Map.Put((0x0A, 0x17), crescentSouthwall.ToArray());
+			maps[MapIndex.CrescentLake].Map[0x00, 0x13] = 0x0E;
 
 			// Gaia
-			maps[(int)MapIndex.Gaia].Replace(0x47, 0x0F);
+			maps[MapIndex.Gaia].Map.Replace(0x47, 0x0F);
 
 			// Onrac
 			var onracWestwall = new List<Blob> {
@@ -223,8 +228,8 @@
 				Blob.FromHex("0E0E"),
 			};
 
-			maps[(int)MapIndex.Onrac].Put((0x00, 0x08), onracWestwall.ToArray());
-			maps[(int)MapIndex.Onrac].Put((0x10, 0x25), onracSouthwall.ToArray());
+			maps[MapIndex.Onrac].Map.Put((0x00, 0x08), onracWestwall.ToArray());
+			maps[MapIndex.Onrac].Map.Put((0x10, 0x25), onracSouthwall.ToArray());
 
 			// Lefein
 			var lefeinSouthwall = new List<Blob> {
@@ -249,27 +254,27 @@
 				Blob.FromHex("0000"),
 			};
 
-			maps[(int)MapIndex.Lefein].Put((0x0F, 0x17), lefeinSouthwall.ToArray());
-			maps[(int)MapIndex.Lefein].Put((0x27, 0x09), lefeinSouthedge.ToArray());
-			maps[(int)MapIndex.Lefein].Put((0x00, 0x09), lefeinSouthedge2.ToArray());
+			maps[MapIndex.Lefein].Map.Put((0x0F, 0x17), lefeinSouthwall.ToArray());
+			maps[MapIndex.Lefein].Map.Put((0x27, 0x09), lefeinSouthedge.ToArray());
+			maps[MapIndex.Lefein].Map.Put((0x00, 0x09), lefeinSouthedge2.ToArray());
 			if (lefeinmart)
 			{
-				maps[(int)MapIndex.Lefein].Put((0x24, 0x02), lefeinNorthedge2.ToArray());
-				maps[(int)MapIndex.Lefein].Put((0x00, 0x01), lefeinSouthedge2.ToArray());
-				maps[(int)MapIndex.Lefein].Put((0x00, 0x02), lefeinNonteleport.ToArray());
-				maps[(int)MapIndex.Lefein][0x01, 0x33] = 0x0E;
-				maps[(int)MapIndex.Lefein][0x01, 0x3F] = 0x0E;
+				maps[MapIndex.Lefein].Map.Put((0x24, 0x02), lefeinNorthedge2.ToArray());
+				maps[MapIndex.Lefein].Map.Put((0x00, 0x01), lefeinSouthedge2.ToArray());
+				maps[MapIndex.Lefein].Map.Put((0x00, 0x02), lefeinNonteleport.ToArray());
+				maps[MapIndex.Lefein].Map[0x01, 0x33] = 0x0E;
+				maps[MapIndex.Lefein].Map[0x01, 0x3F] = 0x0E;
 			}
 			else
 			{
-				maps[(int)MapIndex.Lefein].Put((0x26, 0x02), lefeinNorthedge.ToArray());
-				maps[(int)MapIndex.Lefein].Put((0x3C, 0x02), lefeinNorthedge2.ToArray());
-				maps[(int)MapIndex.Lefein].Put((0x00, 0x02), lefeinSouthedge2.ToArray());
-				maps[(int)MapIndex.Lefein][0x01, 0x39] = 0x0E;
+				maps[MapIndex.Lefein].Map.Put((0x26, 0x02), lefeinNorthedge.ToArray());
+				maps[MapIndex.Lefein].Map.Put((0x3C, 0x02), lefeinNorthedge2.ToArray());
+				maps[MapIndex.Lefein].Map.Put((0x00, 0x02), lefeinSouthedge2.ToArray());
+				maps[MapIndex.Lefein].Map[0x01, 0x39] = 0x0E;
 			}
 
-			maps[(int)MapIndex.Lefein][0x03, 0x00] = 0x00;
-			maps[(int)MapIndex.Lefein][0x04, 0x00] = 0x00;
+			maps[MapIndex.Lefein].Map[0x03, 0x00] = 0x00;
+			maps[MapIndex.Lefein].Map[0x04, 0x00] = 0x00;
 
 			// Coneria Castle
 			var coneriacastleMarshBox = new List<Blob> {
@@ -290,10 +295,10 @@
 			};
 			var coneriacastleNorthwall = new List<Blob> { Blob.FromHex("303030") };
 
-			maps[(int)MapIndex.ConeriaCastle1F].Put((0x14, 0x1B), coneriacastleMarshBox.ToArray());
-			maps[(int)MapIndex.ConeriaCastle1F].Put((0x00, 0x07), coneriacastleWaterfallBox.ToArray());
-			maps[(int)MapIndex.ConeriaCastle1F].Put((0x0B, 0x05), coneriacastleNorthwall.ToArray());
-			maps[(int)MapIndex.ConeriaCastle1F][0x23, 0x0C] = 0x30;
+			maps[MapIndex.ConeriaCastle1F].Map.Put((0x14, 0x1B), coneriacastleMarshBox.ToArray());
+			maps[MapIndex.ConeriaCastle1F].Map.Put((0x00, 0x07), coneriacastleWaterfallBox.ToArray());
+			maps[MapIndex.ConeriaCastle1F].Map.Put((0x0B, 0x05), coneriacastleNorthwall.ToArray());
+			maps[MapIndex.ConeriaCastle1F].Map[0x23, 0x0C] = 0x30;
 
 			// Elfland Castle
 			var elflandcastleSouthwall = new List<Blob> {
@@ -318,11 +323,11 @@
 				Blob.FromHex("33"),
 			};
 
-			maps[(int)MapIndex.ElflandCastle][0x07, 0x17] = 0x31;
-			maps[(int)MapIndex.ElflandCastle][0x10, 0x02] = 0x30;
-			maps[(int)MapIndex.ElflandCastle].Put((0x0E, 0x1B), elflandcastleSouthwall.ToArray());
-			maps[(int)MapIndex.ElflandCastle].Put((0x11, 0x00), elflandcastleNorthbox.ToArray());
-			maps[(int)MapIndex.ElflandCastle].Put((0x19, 0x03), elflandcastleEastwall.ToArray());
+			maps[MapIndex.ElflandCastle].Map[0x07, 0x17] = 0x31;
+			maps[MapIndex.ElflandCastle].Map[0x10, 0x02] = 0x30;
+			maps[MapIndex.ElflandCastle].Map.Put((0x0E, 0x1B), elflandcastleSouthwall.ToArray());
+			maps[MapIndex.ElflandCastle].Map.Put((0x11, 0x00), elflandcastleNorthbox.ToArray());
+			maps[MapIndex.ElflandCastle].Map.Put((0x19, 0x03), elflandcastleEastwall.ToArray());
 
 			// Northwest Castle
 			var northwestcastleEastwall = new List<Blob> {
@@ -335,11 +340,11 @@
 				Blob.FromHex("33"),
 			};
 
-			maps[(int)MapIndex.NorthwestCastle][0x18, 0x16] = 0x30;
-			maps[(int)MapIndex.NorthwestCastle][0x17, 0x1C] = 0x30;
-			maps[(int)MapIndex.NorthwestCastle][0x0A, 0x07] = 0x30;
-			maps[(int)MapIndex.NorthwestCastle].Put((0x09, 0x15), coneriacastleNorthwall.ToArray());
-			maps[(int)MapIndex.NorthwestCastle].Put((0x1D, 0x0A), northwestcastleEastwall.ToArray());
+			maps[MapIndex.NorthwestCastle].Map[0x18, 0x16] = 0x30;
+			maps[MapIndex.NorthwestCastle].Map[0x17, 0x1C] = 0x30;
+			maps[MapIndex.NorthwestCastle].Map[0x0A, 0x07] = 0x30;
+			maps[MapIndex.NorthwestCastle].Map.Put((0x09, 0x15), coneriacastleNorthwall.ToArray());
+			maps[MapIndex.NorthwestCastle].Map.Put((0x1D, 0x0A), northwestcastleEastwall.ToArray());
 
 			// Ordeals
 			var ordealsRoom = new List<Blob> {
@@ -351,10 +356,10 @@
 				Blob.FromHex("212121"),
 			};
 
-			maps[(int)MapIndex.CastleOrdeals1F][0x05, 0x14] = 0x36;
-			maps[(int)MapIndex.CastleOrdeals1F][0x06, 0x14] = 0x3A;
-			maps[(int)MapIndex.CastleOrdeals1F].Put((0x15, 0x02), ordealsRoom.ToArray());
-			maps[(int)MapIndex.CastleOrdeals1F].Put((0x0B, 0x15), ordealsSouthwall.ToArray());
+			maps[MapIndex.CastleOrdeals1F].Map[0x05, 0x14] = 0x36;
+			maps[MapIndex.CastleOrdeals1F].Map[0x06, 0x14] = 0x3A;
+			maps[MapIndex.CastleOrdeals1F].Map.Put((0x15, 0x02), ordealsRoom.ToArray());
+			maps[MapIndex.CastleOrdeals1F].Map.Put((0x0B, 0x15), ordealsSouthwall.ToArray());
 
 			// Ice Cave B1
 			var iceOnracroom = new List<Blob> {
@@ -366,25 +371,25 @@
 
 			if (flippedmaps.Contains(MapIndex.IceCaveB1))
 			{
-				maps[(int)MapIndex.IceCaveB1].Put((0x3F - 0x04, 0x00), iceOnracroom.ToArray());
-				maps[(int)MapIndex.IceCaveB1][0x04, 0x3F - 0x03] = 0x3A;
+				maps[MapIndex.IceCaveB1].Map.Put((0x3F - 0x04, 0x00), iceOnracroom.ToArray());
+				maps[MapIndex.IceCaveB1].Map[0x04, 0x3F - 0x03] = 0x3A;
 			}
 			else
 			{
-				maps[(int)MapIndex.IceCaveB1].Put((0x00, 0x00), iceOnracroom.ToArray());
-				maps[(int)MapIndex.IceCaveB1][0x04, 0x03] = 0x3A;
+				maps[MapIndex.IceCaveB1].Map.Put((0x00, 0x00), iceOnracroom.ToArray());
+				maps[MapIndex.IceCaveB1].Map[0x04, 0x03] = 0x3A;
 			}
 
 			// Dwarf's Cave
 			var dwarfTunnel1 = new List<Blob> { Blob.FromHex("3D3D3D313D") };
 			var dwarfTunnel2 = new List<Blob> { Blob.FromHex("31313131313131313131") };
 
-			maps[(int)MapIndex.DwarfCave].Put((0x0C, 0x2F), dwarfTunnel1.ToArray());
-			maps[(int)MapIndex.DwarfCave].Put((0x10, 0x36), dwarfTunnel2.ToArray());
+			maps[MapIndex.DwarfCave].Map.Put((0x0C, 0x2F), dwarfTunnel1.ToArray());
+			maps[MapIndex.DwarfCave].Map.Put((0x10, 0x36), dwarfTunnel2.ToArray());
 
 			// Matoya's Cave
 			var matoyaTileReclaim = new List<Blob> { Blob.FromHex("3C3C3C3C") };
-			maps[(int)MapIndex.MatoyasCave].Put((0x14, 0x0D), matoyaTileReclaim.ToArray());
+			maps[MapIndex.MatoyasCave].Map.Put((0x14, 0x0D), matoyaTileReclaim.ToArray());
 
 			// Marsh Cave B1
 			var marshConeriaBox = new List<Blob> {
@@ -398,13 +403,13 @@
 			if (flippedmaps.Contains(MapIndex.MarshCaveB1))
 			{
 
-				maps[(int)MapIndex.MarshCaveB1].Put((0x3F - (0x02 + 0x14), 0x18), marshConeriaBox.ToArray());
-				maps[(int)MapIndex.MarshCaveB1].Put((0x3F - (0x02 + 0x2A), 0x16), marshConeriaBox.ToArray());
+				maps[MapIndex.MarshCaveB1].Map.Put((0x3F - (0x02 + 0x14), 0x18), marshConeriaBox.ToArray());
+				maps[MapIndex.MarshCaveB1].Map.Put((0x3F - (0x02 + 0x2A), 0x16), marshConeriaBox.ToArray());
 			}
 			else
 			{
-				maps[(int)MapIndex.MarshCaveB1].Put((0x14, 0x18), marshConeriaBox.ToArray());
-				maps[(int)MapIndex.MarshCaveB1].Put((0x2A, 0x16), marshConeriaBox.ToArray());
+				maps[MapIndex.MarshCaveB1].Map.Put((0x14, 0x18), marshConeriaBox.ToArray());
+				maps[MapIndex.MarshCaveB1].Map.Put((0x2A, 0x16), marshConeriaBox.ToArray());
 			}
 
 			// Cardia - Kraken Chest
@@ -424,8 +429,8 @@
 				Blob.FromHex("343030303A31"),
 			};
 
-			maps[(int)MapIndex.Cardia].Put((0x24, 0x1A), cardiaCaravan.ToArray());
-			maps[(int)MapIndex.Cardia].Put((0x2A, 0x07), cardiaKrakenChest.ToArray());
+			maps[MapIndex.Cardia].Map.Put((0x24, 0x1A), cardiaCaravan.ToArray());
+			maps[MapIndex.Cardia].Map.Put((0x2A, 0x07), cardiaKrakenChest.ToArray());
 		}
 		public void UpdateInRoomTeleporters()
 		{
@@ -450,7 +455,7 @@
 
 
 		}
-		public void CreateTeleporters(List<Map> maps, List<MapIndex> flippedmaps, MT19337 rng)
+		public void CreateTeleporters(StandardMaps maps, List<MapIndex> flippedmaps, MT19337 rng)
 		{
 			// Teleporter creation
 			// New function from here
@@ -458,12 +463,12 @@
 			List<TeleporterTileSM> newTeleporterTiles = new();
 
 			int FlippedX(MapIndex map, int pos) => flippedmaps.Contains(map) ? 0x3F - pos : pos;
-			void UpdateMapTile(MapIndex map, int x, int y, byte tile) => maps[(int)map][y, FlippedX(map, x)] = tile;
+			void UpdateMapTile(MapIndex map, int x, int y, byte tile) => maps[map].Map[y, FlippedX(map, x)] = tile;
 
 			// Find valid tiles for Waterfall
-			var waterfallValidTiles = maps[(int)MapIndex.Waterfall].Where(x => x.Tile == (Tile)0x49).ToList();
+			var waterfallValidTiles = maps[MapIndex.Waterfall].Map.Where(x => x.Tile == (Tile)0x49).ToList();
 			var waterfallLefeinStairs = waterfallValidTiles.SpliceRandom(rng);
-			var waterfallStairs = maps[(int)MapIndex.Waterfall].Where(x => x.Tile == (Tile)0x18).First();
+			var waterfallStairs = maps[MapIndex.Waterfall].Map.Where(x => x.Tile == (Tile)0x18).First();
 
 			byte teleportIDtracker = 0x41;
 
@@ -784,77 +789,70 @@
 
 		}
 
-		public void PrepNPCs(TalkRoutines talkroutines, DialogueData dialogues, NpcObjectData npcdata, List<MapIndex> flippedmaps, Flags flags, MT19337 rng)
+		public void PrepNPCs(StandardMaps maps, TalkRoutines talkroutines, DialogueData dialogues, NpcObjectData npcdata, List<MapIndex> flippedmaps, Flags flags, MT19337 rng)
 		{
 			// Orbs
-			SetNpc(MapIndex.ConeriaCastle1F, 0x02, ObjectId.ConeriaCastle1FWoman1, 0x02, 0x08, true, true); // Dialog+Routine
-			Data[MapObjGfxOffset + (byte)ObjectId.ConeriaCastle1FWoman1] = 0x04;
-			npcdata.SetRoutine(ObjectId.ConeriaCastle1FWoman1, newTalkRoutines.NoOW_Floater);
-			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FWoman1)[(int)TalkArrayPos.dialogue_2] = 0x37;
-			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FWoman1)[(int)TalkArrayPos.dialogue_3] = 0x36;
+			maps[MapIndex.ConeriaCastle1F].MapObjects.SetNpc(0x02, ObjectId.ConeriaCastle1FWoman1, 0x02, 0x08, true, true); // Dialog+Routine
+			npcdata[ObjectId.ConeriaCastle1FWoman1].Sprite = ObjectSprites.Orb;
+			npcdata[ObjectId.ConeriaCastle1FWoman1].Script = TalkScripts.NoOW_Floater;
+			npcdata[ObjectId.ConeriaCastle1FWoman1].Dialogue2 = 0x37;
+			npcdata[ObjectId.ConeriaCastle1FWoman1].Dialogue3 = 0x36;
 
-			SetNpc(MapIndex.CastleOrdeals1F, 0x01, ObjectId.LefeinMan10, 0x16, 0x02, true, true); //Dialog+Routine
-			SetNpc(MapIndex.Lefein, 0x0A, 0x00, 0x16, 0x02, true, true);
-			Data[MapObjGfxOffset + (byte)ObjectId.LefeinMan10] = 0x04;
-			npcdata.SetRoutine(ObjectId.LefeinMan10, newTalkRoutines.NoOW_Floater);
-			npcdata.GetTalkArray(ObjectId.LefeinMan10)[(int)TalkArrayPos.dialogue_2] = 0x37;
-			npcdata.GetTalkArray(ObjectId.LefeinMan10)[(int)TalkArrayPos.dialogue_3] = 0x36;
+			maps[MapIndex.CastleOrdeals1F].MapObjects.SetNpc(0x01, ObjectId.LefeinMan10, 0x16, 0x02, true, true); //Dialog+Routine
+			maps[MapIndex.Lefein].MapObjects.SetNpc(0x0A, 0x00, 0x16, 0x02, true, true);
+			npcdata[ObjectId.LefeinMan10].Sprite = ObjectSprites.Orb;
+			npcdata[ObjectId.LefeinMan10].Script = TalkScripts.NoOW_Floater;
+			npcdata[ObjectId.LefeinMan10].Dialogue2 = 0x37;
+			npcdata[ObjectId.LefeinMan10].Dialogue3 = 0x36;
 
-			SetNpc(MapIndex.IceCaveB1, 0x01, ObjectId.LefeinMan6, flippedmaps.Contains(MapIndex.IceCaveB1) ? 0x3F - 0x02 : 0x02, 0x01, true, true); //Dialog+Routine
-			SetNpc(MapIndex.Lefein, 0x06, 0x00, 0x16, 0x02, true, true);
-			Data[MapObjGfxOffset + (byte)ObjectId.LefeinMan6] = 0x04;
-			npcdata.SetRoutine(ObjectId.LefeinMan6, newTalkRoutines.NoOW_Floater);
-			npcdata.GetTalkArray(ObjectId.LefeinMan6)[(int)TalkArrayPos.dialogue_2] = 0x37;
-			npcdata.GetTalkArray(ObjectId.LefeinMan6)[(int)TalkArrayPos.dialogue_3] = 0x36;
+			maps[MapIndex.IceCaveB1].MapObjects.SetNpc(0x01, ObjectId.LefeinMan6, flippedmaps.Contains(MapIndex.IceCaveB1) ? 0x3F - 0x02 : 0x02, 0x01, true, true); //Dialog+Routine
+			maps[MapIndex.Lefein].MapObjects.SetNpc(0x06, 0x00, 0x16, 0x02, true, true);
+			npcdata[ObjectId.LefeinMan6].Sprite = ObjectSprites.Orb;
+			npcdata[ObjectId.LefeinMan6].Script = TalkScripts.NoOW_Floater;
+			npcdata[ObjectId.LefeinMan6].Dialogue2 = 0x37;
+			npcdata[ObjectId.LefeinMan6].Dialogue3 = 0x36;
 
 			// Canoe people
-			SetNpc(MapIndex.CrescentLake, 0x0D, ObjectId.CrescentWoman, 0x25, 0x02, false, true); // Dialog+Routine
-			npcdata.SetRoutine(ObjectId.CrescentWoman, newTalkRoutines.NoOW_Canoe);
-			npcdata.GetTalkArray(ObjectId.CrescentWoman)[(int)TalkArrayPos.dialogue_2] = 0x5C;
-			npcdata.GetTalkArray(ObjectId.CrescentWoman)[(int)TalkArrayPos.dialogue_3] = 0xC2;
+			maps[MapIndex.CrescentLake].MapObjects.SetNpc(0x0D, ObjectId.CrescentWoman, 0x25, 0x02, false, true); // Dialog+Routine
+			npcdata[ObjectId.CrescentWoman].Script = TalkScripts.NoOW_Canoe;
+			npcdata[ObjectId.CrescentWoman].Dialogue2 = 0x5C;
+			npcdata[ObjectId.CrescentWoman].Dialogue3 = 0xC2;
 
-			SetNpc(MapIndex.ElflandCastle, 0x03, ObjectId.ElflandCastleElf2, 0x0E, 0x11, false, true); // Dialog+Routine
-			npcdata.SetRoutine(ObjectId.ElflandCastleElf2, newTalkRoutines.NoOW_Canoe);
-			npcdata.GetTalkArray(ObjectId.ElflandCastleElf2)[(int)TalkArrayPos.dialogue_2] = 0x5C;
-			npcdata.GetTalkArray(ObjectId.ElflandCastleElf2)[(int)TalkArrayPos.dialogue_3] = 0xC2;
+			maps[MapIndex.ElflandCastle].MapObjects.SetNpc(0x03, ObjectId.ElflandCastleElf2, 0x0E, 0x11, false, true); // Dialog+Routine
+			npcdata[ObjectId.ElflandCastleElf2].Script = TalkScripts.NoOW_Canoe;
+			npcdata[ObjectId.ElflandCastleElf2].Dialogue2 = 0x5C;
+			npcdata[ObjectId.ElflandCastleElf2].Dialogue3 = 0xC2;
 
-			SetNpc(MapIndex.CastleOrdeals1F, 0x00, ObjectId.CastleOrdealsOldMan, 0x02, 0x02, true, true); //Dialog+Routine.
-			npcdata.SetRoutine(ObjectId.CastleOrdealsOldMan, newTalkRoutines.NoOW_Canoe);
-			npcdata.GetTalkArray(ObjectId.CastleOrdealsOldMan)[(int)TalkArrayPos.dialogue_2] = 0x5C;
-			if ((bool)flags.EarlyOrdeals)
-			{
-				npcdata.GetTalkArray(ObjectId.CastleOrdealsOldMan)[(int)TalkArrayPos.dialogue_3] = 0xC2;
-			}
-			else
-			{
-				npcdata.GetTalkArray(ObjectId.CastleOrdealsOldMan)[(int)TalkArrayPos.dialogue_3] = 0x2D;
-			}
+			maps[MapIndex.CastleOrdeals1F].MapObjects.SetNpc(0x00, ObjectId.CastleOrdealsOldMan, 0x02, 0x02, true, true); //Dialog+Routine.
+			npcdata[ObjectId.CastleOrdealsOldMan].Script = TalkScripts.NoOW_Canoe;
+			npcdata[ObjectId.CastleOrdealsOldMan].Dialogue2 = 0x5C;
+			npcdata[ObjectId.CastleOrdealsOldMan].Dialogue3 = (bool)flags.EarlyOrdeals ? (byte)0xC2 : (byte)0x2D;
 
 			// Coneria Castle
-			SetNpc(MapIndex.ConeriaCastle1F, 0x04, ObjectId.ConeriaCastle1FGuard2, 0x15, 0x1F, false, true); // Dialog+Routine
-			npcdata.SetRoutine(ObjectId.ConeriaCastle1FGuard2, newTalkRoutines.Talk_norm);
-			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FGuard2)[(int)TalkArrayPos.dialogue_2] = 0x35;
+			maps[MapIndex.ConeriaCastle1F].MapObjects.SetNpc(0x04, ObjectId.ConeriaCastle1FGuard2, 0x15, 0x1F, false, true); // Dialog+Routine
+			npcdata[ObjectId.ConeriaCastle1FGuard2].Script = TalkScripts.Talk_norm;
+			npcdata[ObjectId.ConeriaCastle1FGuard2].Dialogue2 = 0x35;
 
-			SetNpc(MapIndex.Cardia, 0x09, ObjectId.ConeriaCastle1FScholar, 0x26, 0x1B, true, true); // No check
-			npcdata.SetRoutine(ObjectId.ConeriaCastle1FScholar, newTalkRoutines.Talk_norm);
-			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FScholar)[(int)TalkArrayPos.dialogue_2] = 0xA1;
+			maps[MapIndex.Cardia].MapObjects.SetNpc(0x09, ObjectId.ConeriaCastle1FScholar, 0x26, 0x1B, true, true); // No check
+			npcdata[ObjectId.ConeriaCastle1FScholar].Script = TalkScripts.Talk_norm;
+			npcdata[ObjectId.ConeriaCastle1FScholar].Dialogue2 = 0xA1;
 
 			// Chime bot
-			SetNpc(MapIndex.Gaia, 0x03, ObjectId.GaiaScholar2, 0x35, 0x1A, false, true); //Dialog+Routine
-			Data[MapObjGfxOffset + (byte)ObjectId.GaiaScholar2] = 0x15;
-			npcdata.SetRoutine(ObjectId.GaiaScholar2, newTalkRoutines.NoOW_Chime);
-			npcdata.GetTalkArray(ObjectId.GaiaScholar2)[(int)TalkArrayPos.dialogue_2] = 0xD5;
-			npcdata.GetTalkArray(ObjectId.GaiaScholar2)[(int)TalkArrayPos.dialogue_3] = 0xD9;
+			maps[MapIndex.Gaia].MapObjects.SetNpc(0x03, ObjectId.GaiaScholar2, 0x35, 0x1A, false, true); //Dialog+Routine
+			npcdata[ObjectId.GaiaScholar2].Sprite = ObjectSprites.Robot;
+			npcdata[ObjectId.GaiaScholar2].Script = TalkScripts.NoOW_Chime;
+			npcdata[ObjectId.GaiaScholar2].Dialogue2 = 0xD5;
+			npcdata[ObjectId.GaiaScholar2].Dialogue3 = 0xD9;
 
 			// Nerrick
 			//npcdata.SetRoutine(ObjectId.Nerrick, newTalkRoutines.NoOW_Nerrick);
 
 			// Switch Key dialogue
-			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FOldMan2)[(int)TalkArrayPos.dialogue_2] = 0x40;
+			npcdata[ObjectId.ConeriaCastle1FOldMan2].Dialogue2 = 0x40;
 
-			MoveNpc(MapIndex.DwarfCave, 0x00, 0x0F, 0x2F, false, true);
-			MoveNpc(MapIndex.NorthwestCastle, 0x02, 0x1C, 0x01, false, false);
-			MoveNpc(MapIndex.Onrac, 0x09, 0x11, 0x23, false, false);
+			maps[MapIndex.DwarfCave].MapObjects.MoveNpc(0x00, 0x0F, 0x2F, false, true);
+			maps[MapIndex.NorthwestCastle].MapObjects.MoveNpc(0x02, 0x1C, 0x01, false, false);
+			maps[MapIndex.Onrac].MapObjects.MoveNpc(0x09, 0x11, 0x23, false, false);
 
 			ItemsText[(int)Item.Floater] = "SIGIL  ";
 			ItemsText[(int)Item.EarthOrb] = "MARK   ";
@@ -889,7 +887,7 @@
 				newDialogues.Add(0x2B, "Great job vanquishing\nthe Earth FIEND. Now,\nthe Fire FIEND wakes.\nWith my blessing; go to\nthe VOLCANO, and defeat\nthat FIEND also!");
 			}
 
-			InsertDialogs(newDialogues);
+			dialogues.InsertDialogues(newDialogues);
 
 			// Palettes changes
 			PutInBank(0x00, 0xA000 + ((byte)MapIndex.IceCaveB1 * 0x30) + 0x18, Blob.FromHex("0031000100003101"));
@@ -970,7 +968,7 @@
 			PutInBank(lut_BtlBackdrops_Bank, lut_BtlBackdrops, backgroundList.Select(x => (byte)x.Item2).ToArray());
 		}
 
-		public void ShuffleFloor(List<Map> maps, Flags flags, NpcObjectData npcdata, List<MapIndex> flippedmaps, MT19337 rng)
+		public void ShuffleFloor(StandardMaps maps, Teleporters teleportersdata, Flags flags, NpcObjectData npcdata, List<MapIndex> flippedmaps, MT19337 rng)
 		{
 			int FlippedX(MapIndex map, int pos) => flippedmaps.Contains(map) ? 0x3F - pos : pos;
 
@@ -1181,11 +1179,11 @@
 
 			List<(byte, MapLocation, MapLocation)> teleportersLocDest = new();
 
-			for (int i = 0; i < maps.Count(); i++)
+			for (int i = 0; i < maps.MapTileSets.Count(); i++)
 			{
 				foreach (var teleporttile in TilesetTeleportTiles[(int)tilesetList[i].Item2])
 				{
-					if (maps[i].FindFirst(teleporttile.ID, out var x, out var y))
+					if (maps[(MapIndex)i].Map.FindFirst(teleporttile.ID, out var x, out var y))
 					{
 						var targetteleporter = teleporters[teleporttile.PropertyValue];
 
@@ -1443,7 +1441,7 @@
 					// Because orphan don't have a twin teleporter, we need to find it's position and update the switch in teleporter
 					foreach (var MapIndex in tilesetList.Where(x => x.Item2 == (TileSets)teleporterB.Item1.TileSet))
 					{
-						if (maps[(int)MapIndex.Item1].FindFirst(teleporterB.Item1.ID, out var x, out var y))
+						if (maps[MapIndex.Item1].Map.FindFirst(teleporterB.Item1.ID, out var x, out var y))
 						{
 							teleporters[teleporterA2.Item2.ID] = new TeleporterSM(teleporterA2.Item2.ID, (byte)x, (byte)y, (byte)MapIndex.Item1, (teleporterB.Item1.Palette <= TilePalette.RoomPalette2));
 							break;
@@ -1542,7 +1540,8 @@
 
 			foreach (var teleport in teleporters)
 			{
-				teleport.Write(this);
+				teleportersdata.StandardMapTeleporters[(TeleportIndex)teleport.ID] = new TeleportDestination(teleport.Raw(), teleport.InRoom ? CoordinateLocale.StandardInRoom : CoordinateLocale.Standard);
+				//teleport.Write(this);
 			}
 
 			// Set Orbs over stairs to avoid softlocks, altho it shouldn't happen anyway, no need for Mark npcs since you can always go back
@@ -1550,16 +1549,16 @@
 
 			foreach (var source in orbLocations)
 			{
-				var targetile = maps[(int)source.Item1][(source.Item2, source.Item3)].Tile;
+				var targetile = maps[source.Item1].Map[(source.Item2, source.Item3)].Tile;
 
 				var originTile = TeleportersTiles.Find(x => x.Item1.ID == (byte)targetile && x.Item1.TileSet == (int)tilesetList[(int)source.Item1].Item2);
 				var originTeleporter = teleporters.Find(x => x.ID == originTile.Item1.PropertyValue);
 
-				var freenpc = FindNpc((MapIndex)originTeleporter.Destination, (ObjectId.None));
+				var freenpc = maps[(MapIndex)originTeleporter.Destination].MapObjects.FindNpc(ObjectId.None);
 
-				if (freenpc.Index > 0 || (freenpc.Index == 0 && freenpc.Coord == (0, 0)))
+				if (freenpc.Index > 0 || (freenpc.Index == 0 && freenpc.Coords == new Sanity.SCCoords(0, 0)))
 				{
-					SetNpc((MapIndex)originTeleporter.Destination, freenpc.Index, source.Item4, originTeleporter.X, originTeleporter.Y, originTeleporter.InRoom, true);
+					maps[(MapIndex)originTeleporter.Destination].MapObjects.SetNpc(freenpc.Index, source.Item4, originTeleporter.X, originTeleporter.Y, originTeleporter.InRoom, true);
 					var sprite_palette = GetFromBank(0x00, 0xA000 + (originTeleporter.Destination * 0x30) + 0x18, 8);
 					if (sprite_palette == Blob.FromHex("0F0000000F000000"))
 					{

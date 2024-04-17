@@ -89,6 +89,10 @@ namespace FF1Lib
 				yield return mapobject;
 			}
 		}*/
+		public List<MapObject> ToList()
+		{
+			return mapObjects;
+		}
 		public IEnumerator<MapObject> GetEnumerator()
 		{
 			return mapObjects.GetEnumerator();
@@ -105,10 +109,6 @@ namespace FF1Lib
 			{
 				return null;
 			}
-		}
-		public void ConfusedOldMen(bool enable)
-		{
-
 		}
 		public void Write(FF1Rom rom)
 		{

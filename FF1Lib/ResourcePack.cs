@@ -13,31 +13,38 @@ namespace FF1Lib
 		return false;
 	    }
 
-	    async Task LoadResourcePack(Stream stream)
+		//async Task LoadResourcePack(Stream stream, DialogueData dialogues)
+		async Task LoadResourcePack(string resourcepack, DialogueData dialogues)
 		{
-			var resourcePackArchive = new ZipArchive(stream);
-
-			var maptiles = resourcePackArchive.GetEntry("maptiles.png");
-			if (maptiles != null)
+			if (resourcepack == null)
 			{
-				using (var s = maptiles.Open())
-				{
-					await SetCustomMapGraphics(s, 245, 4,
-							 new int[] { OVERWORLDPALETTE_OFFSET },
-							 OVERWORLDPALETTE_ASSIGNMENT,
-							 OVERWORLDPATTERNTABLE_OFFSET,
-							 OVERWORLDPATTERNTABLE_ASSIGNMENT);
-				}
+				return;
 			}
-
-			var towntiles = resourcePackArchive.GetEntry("towntiles.png");
-			if (towntiles != null)
+			using (var stream = new MemoryStream(Convert.FromBase64String(resourcepack)))
 			{
-				using (var s = towntiles.Open())
+				var resourcePackArchive = new ZipArchive(stream);
+
+				var maptiles = resourcePackArchive.GetEntry("maptiles.png");
+				if (maptiles != null)
 				{
-					int cur_tileset = 0;
-					await SetCustomMapGraphics(s, 128, 4,
-							 new int[] {
+					using (var s = maptiles.Open())
+					{
+						await SetCustomMapGraphics(s, 245, 4,
+								 new int[] { OVERWORLDPALETTE_OFFSET },
+								 OVERWORLDPALETTE_ASSIGNMENT,
+								 OVERWORLDPATTERNTABLE_OFFSET,
+								 OVERWORLDPATTERNTABLE_ASSIGNMENT);
+					}
+				}
+
+				var towntiles = resourcePackArchive.GetEntry("towntiles.png");
+				if (towntiles != null)
+				{
+					using (var s = towntiles.Open())
+					{
+						int cur_tileset = 0;
+						await SetCustomMapGraphics(s, 128, 4,
+								 new int[] {
 						 MAPPALETTE_OFFSET + (0 * 0x30),
 						 MAPPALETTE_OFFSET + (1 * 0x30),
 						 MAPPALETTE_OFFSET + (2 * 0x30),
@@ -46,109 +53,111 @@ namespace FF1Lib
 						 MAPPALETTE_OFFSET + (5 * 0x30),
 						 MAPPALETTE_OFFSET + (6 * 0x30),
 						 MAPPALETTE_OFFSET + (7 * 0x30),
-							 },
-							 TILESETPALETTE_ASSIGNMENT + (cur_tileset << 7),
-							 TILESETPATTERNTABLE_OFFSET + (cur_tileset << 11),
-							 TILESETPATTERNTABLE_ASSIGNMENT + (cur_tileset << 9));
+								 },
+								 TILESETPALETTE_ASSIGNMENT + (cur_tileset << 7),
+								 TILESETPATTERNTABLE_OFFSET + (cur_tileset << 11),
+								 TILESETPATTERNTABLE_ASSIGNMENT + (cur_tileset << 9));
+					}
 				}
-			}
 
-			var spritesheet = resourcePackArchive.GetEntry("heroes.png");
-			if (spritesheet != null)
-			{
-				using (var s = spritesheet.Open())
+				var spritesheet = resourcePackArchive.GetEntry("heroes.png");
+				if (spritesheet != null)
 				{
-					await SetCustomPlayerSprites(s, true);
+					using (var s = spritesheet.Open())
+					{
+						await SetCustomPlayerSprites(s, true);
+					}
 				}
-			}
 
-			var fiends = resourcePackArchive.GetEntry("fiends.png");
-			if (fiends != null)
-			{
-				using (var s = fiends.Open())
+				var fiends = resourcePackArchive.GetEntry("fiends.png");
+				if (fiends != null)
 				{
-					await SetCustomFiendGraphics(s);
+					using (var s = fiends.Open())
+					{
+						await SetCustomFiendGraphics(s);
+					}
 				}
-			}
 
-			var chaos = resourcePackArchive.GetEntry("chaos.png");
-			if (chaos != null)
-			{
-				using (var s = chaos.Open())
+				var chaos = resourcePackArchive.GetEntry("chaos.png");
+				if (chaos != null)
 				{
-					await SetCustomChaosGraphics(s);
+					using (var s = chaos.Open())
+					{
+						await SetCustomChaosGraphics(s);
+					}
 				}
-			}
 
-			var backdrop = resourcePackArchive.GetEntry("battle_backdrops.png");
-			if (backdrop != null)
-			{
-				using (var s = backdrop.Open())
+				var backdrop = resourcePackArchive.GetEntry("battle_backdrops.png");
+				if (backdrop != null)
 				{
-					await SetCustomBattleBackdrop(s);
+					using (var s = backdrop.Open())
+					{
+						await SetCustomBattleBackdrop(s);
+					}
 				}
-			}
 
-			var weapons = resourcePackArchive.GetEntry("weapons.png");
-			if (weapons != null)
-			{
-				using (var s = weapons.Open())
+				var weapons = resourcePackArchive.GetEntry("weapons.png");
+				if (weapons != null)
 				{
-					SetCustomWeaponGraphics(s);
+					using (var s = weapons.Open())
+					{
+						SetCustomWeaponGraphics(s);
+					}
 				}
-			}
 
-			var gear = resourcePackArchive.GetEntry("gear_icons.png");
-			if (gear != null)
-			{
-				using (var s = gear.Open())
+				var gear = resourcePackArchive.GetEntry("gear_icons.png");
+				if (gear != null)
 				{
-					SetCustomGearIcons(s);
+					using (var s = gear.Open())
+					{
+						SetCustomGearIcons(s);
+					}
 				}
-			}
 
-			var dialogue = resourcePackArchive.GetEntry("dialogue.txt");
-			if (dialogue != null)
-			{
-				using (var s = dialogue.Open())
+				var dialogue = resourcePackArchive.GetEntry("dialogue.txt");
+				if (dialogue != null)
 				{
-					LoadDialogue(s);
+					using (var s = dialogue.Open())
+					{
+						LoadDialogue(s, dialogues);
+					}
 				}
-			}
 
-			var intro = resourcePackArchive.GetEntry("intro.txt");
-			if (intro != null)
-			{
-				using (var s = intro.Open())
+				var intro = resourcePackArchive.GetEntry("intro.txt");
+				if (intro != null)
 				{
-					LoadIntro(s);
+					using (var s = intro.Open())
+					{
+						LoadIntro(s);
+					}
 				}
-			}
 
-			var bridgeStory = resourcePackArchive.GetEntry("bridge.txt");
-			if (bridgeStory != null)
-			{
-				using (var s = bridgeStory.Open())
+				var bridgeStory = resourcePackArchive.GetEntry("bridge.txt");
+				if (bridgeStory != null)
 				{
-					LoadBridgeStory(s);
+					using (var s = bridgeStory.Open())
+					{
+						LoadBridgeStory(s);
+					}
 				}
-			}
 
-			var spellbook = resourcePackArchive.GetEntry("spellbook.json");
-			if (spellbook != null)
-			{
-				using (var s = spellbook.Open())
+				var spellbook = resourcePackArchive.GetEntry("spellbook.json");
+				if (spellbook != null)
 				{
-				    using (StreamReader reader = new StreamReader(s)) {
-					var allSpells = JsonConvert.DeserializeObject<List<MagicSpell>>(reader.ReadToEnd());
-					this.PutSpells(allSpells);
-				    }
+					using (var s = spellbook.Open())
+					{
+						using (StreamReader reader = new StreamReader(s))
+						{
+							var allSpells = JsonConvert.DeserializeObject<List<MagicSpell>>(reader.ReadToEnd());
+							this.PutSpells(allSpells);
+						}
+					}
 				}
 			}
 
 		}
 
-		public void LoadDialogue(Stream stream)
+		public void LoadDialogue(Stream stream, DialogueData dialogues)
 		{
 			var dialogsdict = new Dictionary<int, string>();
 			string speech = null;
@@ -181,7 +190,7 @@ namespace FF1Lib
 			{
 				dialogsdict[dlg] = speech.Trim();
 			}
-			InsertDialogs(dialogsdict);
+			dialogues.InsertDialogues(dialogsdict);
 		}
 
 		public void LoadIntro(Stream stream)
@@ -244,28 +253,36 @@ namespace FF1Lib
 
 			SetBridgeStory(pages);
 		}
-
-		void LoadResourcePackMaps(Stream stream, List<Map> maps, Teleporters teleporters,
-					    NPCdata npcdata)
+		void LoadResourcePackMaps(string resourcepack, StandardMaps maps, Teleporters teleporters)
 		{
-			var resourcePackArchive = new ZipArchive(stream);
-
-			for (int i = 0; i <= 60; i++) {
-			    var newdungeon = resourcePackArchive.GetEntry($"dungeonmap{i}.json");
-			    if (newdungeon != null)
-			    {
-				using (var s = newdungeon.Open())
-				{
-				    using (StreamReader reader = new StreamReader(s)) {
-					var newmaps = FF1Lib.Procgen.CompleteMap.LoadJson(reader);
-					foreach (var newmap in newmaps) {
-					    this.ImportCustomMap(maps, teleporters, npcdata, newmap);
-					}
-				    }
-				}
-			    }
+			if (resourcepack == null)
+			{
+				return;
 			}
+			using (var stream = new MemoryStream(Convert.FromBase64String(resourcepack)))
+			{
 
+				var resourcePackArchive = new ZipArchive(stream);
+
+				for (int i = 0; i <= 60; i++)
+				{
+					var newdungeon = resourcePackArchive.GetEntry($"dungeonmap{i}.json");
+					if (newdungeon != null)
+					{
+						using (var s = newdungeon.Open())
+						{
+							using (StreamReader reader = new StreamReader(s))
+							{
+								var newmaps = FF1Lib.Procgen.CompleteMap.LoadJson(reader);
+								foreach (var newmap in newmaps)
+								{
+									maps.ImportCustomMap(teleporters, newmap);
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 }

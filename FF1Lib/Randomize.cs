@@ -64,7 +64,6 @@ public partial class FF1Rom : NesRom
 		await ProgressCallback(currentStep, maxSteps, message);
 	    }
 	}
-
 	public async Task Randomize(Blob seed, Flags flags, Preferences preferences)
 	{
 		if (flags.TournamentSafe) AssureSafe();
@@ -96,16 +95,21 @@ public partial class FF1Rom : NesRom
 		//Settings.SetValue();
 
 		var talkroutines = new TalkRoutines();
+
+
 		LoadSharedDataTables();
 		GlobalHacks();
-		ClassesBalances(flags, rng);
-		Bugfixes(flags);
-		GlobalImprovements(flags, preferences);
 
 		Teleporters = new Teleporters(this, Overworld.MapExchangeData);
 		Maps = new StandardMaps(this, Teleporters, flags);
 		NpcData = new NpcObjectData(this);
 		Dialogues = new DialogueData(this);
+
+		ClassesBalances(flags, rng);
+		Bugfixes(flags);
+		GlobalImprovements(flags, preferences);
+
+
 
 		EncounterRate encounterRate = new(this);
 
@@ -126,7 +130,7 @@ public partial class FF1Rom : NesRom
 		Dialogues.UpdateNPCDialogues(flags);
 
 		NpcData.Update(Maps, flags);
-		PacifistBat(talkroutines, NpcData);
+		PacifistBat(Maps, talkroutines, NpcData);
 		FF1Text.AddNewIcons(this, flags);
 
 		if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
@@ -162,34 +166,7 @@ public partial class FF1Rom : NesRom
 		Spooky(talkroutines, NpcData, Dialogues, ZoneFormations, Maps, rng, flags);
 
 		await this.Progress();
-
-		if (flags.EFGWaterfall)
-		{
-			MapRequirements reqs;
-			MapGeneratorStrategy strategy;
-			MapGenerator generator = new MapGenerator();
-
-			reqs = new MapRequirements
-			{
-				MapIndex = MapIndex.Waterfall,
-				Rom = this,
-			};
-			strategy = MapGeneratorStrategy.WaterfallClone;
-			CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
-
-			// Should add more into the reqs so that this can be done inside the generator.
-			Teleporters.Waterfall.SetEntrance(waterfall.Entrance);
-			//overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, Teleporters.Waterfall);
-			Maps[MapIndex.Waterfall].Map.CopyFrom(waterfall.Map);
-		}
-
-		if (flags.ResourcePack != null)
-		{
-		    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack)))
-		    {
-			this.LoadResourcePackMaps(stream, maps, Teleporters, npcdata);
-		    }
-		}
+		LoadResourcePackMaps(flags.ResourcePack, Maps, Teleporters);
 
 
 			if((bool)flags.OWDamageTiles || flags.DesertOfDeath)
@@ -238,7 +215,7 @@ public partial class FF1Rom : NesRom
 		{
 			await this.Progress("Generating Deep Dungeon's Floors...", 2);
 
-			DeepDungeon.Generate(rng, Overworld.OverworldMap, Teleporters, Maps.GetMapList(), flags);
+			DeepDungeon.Generate(rng, Overworld.OverworldMap, Teleporters, Dialogues, Maps.GetMapList(), flags);
 			DeepDungeonFloorIndicator();
 			UnusedGoldItems = new List<int> { };
 
@@ -307,12 +284,12 @@ public partial class FF1Rom : NesRom
 
 		if (((bool)flags.Treasures) && flags.ShardHunt)
 		{
-			EnableShardHunt(rng, talkroutines, flags.ShardCount, preferences.randomShardNames, new MT19337(funRng.Next()));
+			EnableShardHunt(rng, talkroutines, Dialogues, flags.ShardCount, preferences.randomShardNames, new MT19337(funRng.Next()));
 		}
 
 		if (!flags.ShardHunt && (flags.GameMode != GameModes.DeepDungeon))
 		{
-			SetOrbRequirement(rng, talkroutines, flags.OrbsRequiredCount, flags.OrbsRequiredMode, (bool)flags.OrbsRequiredSpoilers);
+			SetOrbRequirement(rng, talkroutines, Dialogues, flags.OrbsRequiredCount, flags.OrbsRequiredMode, (bool)flags.OrbsRequiredSpoilers);
 		}
 
 		if (flags.TransformFinalFormation != FinalFormation.None && !flags.SpookyFlag)
@@ -374,17 +351,10 @@ public partial class FF1Rom : NesRom
 
 		Overworld.Update(Teleporters);
 
-		if (flags.NoOverworld)
-		{
-			await this.Progress("Linking NoOverworld's Map", 1);
-			NoOverworld(Overworld.DecompressedMap, maps, talkroutines, NpcData, Maps.HorizontalFlippedMaps, flags, rng);
-		}
+		if(flags.NoOverworld) await this.Progress("Linking NoOverworld's Map", 1);
+		NoOverworld(Overworld.DecompressedMap, Maps, Teleporters, talkroutines, Dialogues, NpcData, flags, rng);
 
-		if (flags.DraculasFlag)
-		{
-		    // Needs to happen before item placement because it swaps some entrances around.
-			DraculasCurse(talkroutines, npcdata, rng, flags);
-		}
+		DraculasCurse(Overworld, Teleporters, rng, flags);
 
 		await this.Progress();
 
@@ -397,10 +367,8 @@ public partial class FF1Rom : NesRom
 		// are fightable/killable, so it needs to
 		// happen after anything that adds, removes or
 		// relocates NPCs or changes their routines.
-		if ((bool)flags.RelocateChests && flags.GameMode != GameModes.DeepDungeon)
-		{
-		    await this.RandomlyRelocateChests(rng, maps, npcdata, flags);
-		}
+
+		await new RelocateChests(this).RandomlyRelocateChests(rng, Maps, TileSetsData, Teleporters, NpcData, flags);
 
 		//EnterTeleData enterBackup = new EnterTeleData(this);
 		//NormTeleData normBackup = new NormTeleData(this);
@@ -559,7 +527,7 @@ public partial class FF1Rom : NesRom
 
 		shopData.LoadData();
 
-		new LegendaryShops(rng, flags, maps, Maps.HorizontalFlippedMaps, Maps.VerticalFlippedMaps, shopData, this).PlaceShops();
+		new LegendaryShops(rng, flags, Maps, shopData, this).PlaceShops();
 
 		if (flags.GameMode == GameModes.DeepDungeon)
 		{
@@ -827,21 +795,12 @@ public partial class FF1Rom : NesRom
 
 		if (flags.ShopInfo)
 		{
-			ShopUpgrade(flags, preferences);
+			ShopUpgrade(flags, Dialogues, preferences);
 		}
 
 		await this.Progress();
 
-		if (flags.ResourcePack != null)
-		{
-		    using (var stream = new MemoryStream(Convert.FromBase64String(flags.ResourcePack)))
-			{
-			    await this.LoadResourcePack(stream);
-		    }
-		    preferences.ThirdBattlePalette = true;
-		}
-
-
+		await this.LoadResourcePack(flags.ResourcePack, Dialogues);
 
 		RollCredits(rng);
 		StatsTrackingScreen();
@@ -855,7 +814,7 @@ public partial class FF1Rom : NesRom
 			DisableDamageTileSFX();
 		}
 
-		if (preferences.ThirdBattlePalette)
+		if (preferences.ThirdBattlePalette || flags.ResourcePack != null)
 		{
 			UseVariablePaletteForCursorAndStone();
 		}

@@ -676,7 +676,7 @@ namespace FF1Lib
 				var dungeonNpc = new List<ObjectId> { ObjectId.MelmondMan6, ObjectId.GaiaMan4, ObjectId.OnracPunk1, ObjectId.GaiaMan1 };
 
 				maps[MapIndex.Melmond].MapObjects.SetNpc(8, ObjectId.None, 0x12, 0x18, false, false);
-				var gaianpc = maps[MapIndex.Melmond].MapObjects.FindNpc(ObjectId.GaiaMan4).Index;
+				var gaianpc = maps[MapIndex.Gaia].MapObjects.FindNpc(ObjectId.GaiaMan4).Index;
 				maps[MapIndex.Gaia].MapObjects.SetNpc(gaianpc, ObjectId.None, 0x12, 0x18, false, false);
 				maps[MapIndex.Onrac].MapObjects.SetNpc(6, ObjectId.None, 0x12, 0x18, false, false);
 				maps[MapIndex.Gaia].MapObjects.SetNpc(1, ObjectId.None, 0x12, 0x18, false, false);

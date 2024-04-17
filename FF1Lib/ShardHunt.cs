@@ -40,7 +40,7 @@ namespace FF1Lib
 			PutInBank(bank, address, Blob.FromHex("001C22414141221CFFE3DDBEBEBEDDE3001C3E7F7F7F3E1CFFFFE3CFDFDFFFFF"));
 		}
 
-		public void EnableShardHunt(MT19337 rng, TalkRoutines talkroutines, ShardCount count, bool RandomShardNames, MT19337 funRngSeed)
+		public void EnableShardHunt(MT19337 rng, TalkRoutines talkroutines, DialogueData dialogues, ShardCount count, bool RandomShardNames, MT19337 funRngSeed)
 		{
 			int goal = 16;
 			switch (count) {
@@ -90,7 +90,7 @@ namespace FF1Lib
 			System.Diagnostics.Debug.Assert(intro.Length <= 208);
 			Put(0x37F20, intro);
 
-			InsertDialogs(new Dictionary<int, string>() {
+			dialogues.InsertDialogues(new Dictionary<int, string>() {
 				{ 0x21, $"The {shardName}S coalesce to\nrestore the Black ORB.\n\nBrave Light Warriors....\nDestroy the Evil within!" }, // Black Orb Text
 				{ 0x2E, $"Ah, the Light Warriors!\n\nSo you have collected\nthe {shardName}S and restored\nthe BLACK ORB." },
 				{ 0x2F, "Thus you've travelled\n2000 years into the past\nto try to stop me?\n\nStep forward then,\nto your peril!" },
@@ -114,7 +114,7 @@ namespace FF1Lib
 			Random,
 		}
 
-		public void SetOrbRequirement(MT19337 rng, TalkRoutines talkroutines, int orbsRequiredCount, OrbsRequiredMode mode, bool spoilersEnabled)
+		public void SetOrbRequirement(MT19337 rng, TalkRoutines talkroutines, DialogueData dialogues, int orbsRequiredCount, OrbsRequiredMode mode, bool spoilersEnabled)
 		{
 			int goal = 0;
 			switch (orbsRequiredCount)
@@ -191,7 +191,7 @@ namespace FF1Lib
 					updatedBlackOrbDialogue.Add(0x22, $"The black ORB\n{hintLine1}\n{hintLine2}");
 				}
 			}
-			InsertDialogs(updatedBlackOrbDialogue);
+			dialogues.InsertDialogues(updatedBlackOrbDialogue);
 		}
 
 		private void BlackOrbChecksShardsCountFor(int goal, TalkRoutines talkroutines)

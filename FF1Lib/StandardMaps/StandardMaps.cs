@@ -48,6 +48,19 @@ namespace FF1Lib
 			LoadMapsFromRom();
 			//mapDataGroups = maps.Select((m, i) => (m, mapObjects[i])).ToList();
 		}
+		public StandardMaps(FF1Rom _rom)
+		{
+			rom = _rom;
+			teleporters = new Teleporters(rom, null);
+			flags = new Flags();
+
+			VerticalFlippedMaps = new();
+			HorizontalFlippedMaps = new();
+			AttackedTown = MapIndex.Melmond;
+
+			LoadMapsFromRom();
+			//mapDataGroups = maps.Select((m, i) => (m, mapObjects[i])).ToList();
+		}
 		private void LoadMapsFromRom()
 		{
 			var pointers = rom.Get(MapPointerOffset, MapCount * MapPointerSize).ToUShorts();

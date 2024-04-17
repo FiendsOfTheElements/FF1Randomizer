@@ -120,14 +120,14 @@ namespace FF1Lib.Procgen
 
     public static class NewDungeon {
 
-	public async static Task<CompleteMap> GenerateMap(MT19337 rng, FF1Rom rom, List<Map> maps, MapIndex MapIndex,
+	public async static Task<CompleteMap> GenerateMap(MT19337 rng, FF1Rom rom, StandardMaps maps, MapIndex mapindex,
 							  List<MapGenerationStep> mapGenSteps, DungeonTiles dt, FF1Rom.ReportProgress progress) {
-	    var tileset = new TileSet(rom, rom.GetMapTilesetIndex(MapIndex));
-	    var blankState = new MapState(rng, mapGenSteps, MapIndex, maps[(int)MapIndex], dt, tileset, progress);
+	    var tileset = new TileSet(rom, rom.GetMapTilesetIndex(mapindex));
+	    var blankState = new MapState(rng, mapGenSteps, mapindex, maps[mapindex].Map, dt, tileset, progress);
 	    var worldState = await ProgenFramework.RunSteps<MapState, MapResult, MapGenerationStep>(blankState, 2000, progress);
 	    if (worldState != null) {
 		return new CompleteMap {
-		    MapIndex = MapIndex,
+		    MapIndex = mapindex,
 		    Map = worldState.Tilemap,
 		    OverworldEntrances = worldState.OverworldEntrances,
 		    MapDestinations = worldState.MapDestinations,
@@ -138,7 +138,7 @@ namespace FF1Lib.Procgen
 	    }
 	}
 
-	public async static Task<List<CompleteMap>> GenerateEarthCave(MT19337 rng, FF1Rom rom, List<Map> maps, FF1Rom.NPCdata npcdata, FF1Rom.ReportProgress progress) {
+	public async static Task<List<CompleteMap>> GenerateEarthCave(MT19337 rng, FF1Rom rom, StandardMaps maps, NpcObjectData npcdata, FF1Rom.ReportProgress progress) {
 	    var dt = new DungeonTiles();
 
 	    List<CompleteMap> newmaps = new();
@@ -319,8 +319,8 @@ namespace FF1Lib.Procgen
 	    return newmaps;
 	}
 
-	public async static Task<List<CompleteMap>> GenerateNewDungeon(MT19337 rng, FF1Rom rom, MapIndex MapIndex, List<Map> maps,
-								       FF1Rom.NPCdata npcdata, FF1Rom.ReportProgress progress) {
+	public async static Task<List<CompleteMap>> GenerateNewDungeon(MT19337 rng, FF1Rom rom, MapIndex MapIndex, StandardMaps maps,
+								       NpcObjectData npcdata, FF1Rom.ReportProgress progress) {
 	    switch (MapIndex) {
 		case MapIndex.EarthCaveB1:
 		    var v = await GenerateEarthCave(rng, rom, maps, npcdata, progress);

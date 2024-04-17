@@ -12,8 +12,13 @@ namespace FF1Lib
 {
 	public class RelocateChests
 	{
+		private const int TILESETPATTERNTABLE_OFFSET = 0xC000;
+		private FF1Rom rom;
 
-		//public class
+		public RelocateChests(FF1Rom _rom)
+		{
+			rom = _rom;
+		}
 
 		public class Room
 		{
@@ -69,7 +74,6 @@ namespace FF1Lib
 				hasBattles = copyfrom.hasBattles;
 			}
 		}
-
 		public static void FindRoomTiles(TileSet tileset,
 						List<byte> floorTiles,
 						List<byte> spikeTiles,
@@ -191,8 +195,8 @@ namespace FF1Lib
 
 		}
 
-		public async Task shuffleChestLocations(MT19337 rng, List<Map> maps, MapIndex[] ids, List<(MapIndex, byte)> preserveChests,
-							NPCdata npcdata, byte randomEncounter, bool spreadPlacement, bool markSpikeTiles,
+		public async Task shuffleChestLocations(MT19337 rng, StandardMaps maps, TileSetsData tilesets, Teleporters teleporters, MapIndex[] ids, List<(MapIndex, byte)> preserveChests,
+							NpcObjectData npcdata, byte randomEncounter, bool spreadPlacement, bool markSpikeTiles,
 							List<byte> chestPool, List<byte> spikePool)
 		{
 			// For a tileset, I need to determine:
@@ -206,7 +210,8 @@ namespace FF1Lib
 
 			bool keepLinkedChests = false;
 
-			var tileset = new TileSet(this, GetMapTilesetIndex(ids[0]));
+			var tileset = tilesets[(int)maps[ids[0]].MapTileSet];
+			//var tileset = new TileSet(this, GetMapTilesetIndex(ids[0]));
 
 			// Go through the all the map tiles and find ones
 			// with certain properties.
@@ -218,11 +223,13 @@ namespace FF1Lib
 			FindRoomTiles(tileset, floorTiles, spikeTiles, battleTiles, randomEncounter);
 
 			byte vanillaTeleporters = 0x41;
+			var smTeleporters = teleporters.StandardMapTeleporters.Where(t => (int)t.Key < vanillaTeleporters).Select(t => t.Value).ToList();
+			/*
 			List<TeleporterSM> teleporters = new();
 			for (int i = 0; i < vanillaTeleporters; i++)
 			{
 				teleporters.Add(new TeleporterSM(this, i));
-			}
+			}*/
 
 			if (chestPool == null) chestPool = new();
 			if (spikePool == null) spikePool = new();
@@ -241,7 +248,7 @@ namespace FF1Lib
 			{
 				if (debug) Console.WriteLine($"\nFinding rooms for map {MapIndex}");
 
-				var map = maps[(int)MapIndex];
+				var map = maps[MapIndex].Map;
 
 				List<SCCoords> startCoords = new();
 				for (int y = 0; y < 64; y++)
@@ -290,12 +297,12 @@ namespace FF1Lib
 					}
 				}
 
-				foreach (var t in teleporters)
+				foreach (var t in smTeleporters)
 				{
-					if (t.Destination == (byte)MapIndex &&
-					(floorTiles.Contains(map[t.Y, t.X]) || battleTiles.Contains(map[t.Y, t.X])))
+					if (t.Index == MapIndex &&
+					(floorTiles.Contains(map[t.Coordinates.Y, t.Coordinates.X]) || battleTiles.Contains(map[t.Coordinates.Y, t.Coordinates.X])))
 					{
-						startCoords.Add(new SCCoords(t.X, t.Y));
+						startCoords.Add(new SCCoords(t.Coordinates.X, t.Coordinates.Y));
 					}
 				}
 
@@ -321,14 +328,14 @@ namespace FF1Lib
 						bool hasKillableNpc = false;
 						for (int i = 0; i < 16; i++)
 						{
-							var npc = GetNpc(MapIndex, i);
-							if (npc.Coord == me.Coord)
+							var npc = maps[MapIndex].MapObjects[i];
+							if ((npc.Coords.X, npc.Coords.Y) == me.Coord)
 							{
 								hasNpc = true;
 								if (npcdata != null)
 								{
-									hasKillableNpc = (npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_fight ||
-											  npcdata.GetRoutine(npc.ObjectId) == newTalkRoutines.Talk_kill);
+									hasKillableNpc = (npcdata[npc.ObjectId].Script == TalkScripts.Talk_fight ||
+											  npcdata[npc.ObjectId].Script == TalkScripts.Talk_kill);
 								}
 								room.npcs.Add(me);
 								if (hasKillableNpc)
@@ -381,9 +388,9 @@ namespace FF1Lib
 						}
 
 						bool teleporterTarget = false;
-						foreach (var t in teleporters)
+						foreach (var t in smTeleporters)
 						{
-							if (t.Destination == (byte)MapIndex && me.Coord == (t.X, t.Y))
+							if (t.Index == MapIndex && me.Coord == (t.Coordinates.X, t.Coordinates.Y))
 							{
 								if (debug) Console.WriteLine($"Found teleport in {me.Coord}");
 								room.teleIn.Add(me);
@@ -467,12 +474,12 @@ namespace FF1Lib
 			List<(Room, MapElement)> allCandidates = new();
 
 			int attempts;
-			await this.Progress($"Relocating chests for group of floors containing {ids[0]}", 1);
+			await rom.Progress($"Relocating chests for group of floors containing {ids[0]}", 1);
 			for (attempts = 0; needRetry && attempts < 800; attempts++)
 			{
 				if (attempts % 10 == 0)
 				{
-					await this.Progress("", 1);
+					await rom.Progress("", 1);
 					System.GC.Collect(System.GC.MaxGeneration);
 				}
 
@@ -611,12 +618,12 @@ namespace FF1Lib
 
 			if (markSpikeTiles)
 			{
-				var ts = GetMapTilesetIndex(ids[0]);
+				var ts = tilesets[(int)maps[ids[0]].MapTileSet];
 				foreach (var sp in spikePool)
 				{
 					tileset.TopRightTiles[sp] = 0x7D;
 				}
-				tileset.TopRightTiles.StoreTable();
+				//tileset.TopRightTiles.StoreTable();
 			}
 
 			PlaceSpikeTiles(rng, spikePool,
@@ -631,8 +638,14 @@ namespace FF1Lib
 			// * Finally, sanity check each room that we can reach all chests, doors, teleports and NPCs in the room
 		}
 
-		public async Task RandomlyRelocateChests(MT19337 rng, List<Map> maps, NPCdata npcdata, Flags flags)
+		public async Task RandomlyRelocateChests(MT19337 rng, StandardMaps maps, TileSetsData tilesets, Teleporters teleporters,  NpcObjectData npcdata, Flags flags)
 		{
+			if (!(bool)flags.RelocateChests || flags.GameMode == GameModes.DeepDungeon)
+			{
+				return;
+			}
+
+
 			// Groups of maps that make up a shuffle pool
 			// They need to all use the same tileset.
 
@@ -794,7 +807,7 @@ namespace FF1Lib
 
 			foreach (MapIndex[] b in dungeons)
 			{
-				await shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
+				await shuffleChestLocations(rng, maps, tilesets, teleporters, b, preserveChests, npcdata,
 							  (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
 								false, flags.RelocateChestsTrapIndicator,
 								null, null);
@@ -802,7 +815,7 @@ namespace FF1Lib
 
 			foreach (MapIndex[] b in spreadPlacementDungeons)
 			{
-				await shuffleChestLocations(rng, maps, b, preserveChests, npcdata,
+				await shuffleChestLocations(rng, maps, tilesets, teleporters, b, preserveChests, npcdata,
 							  (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
 								true, flags.RelocateChestsTrapIndicator,
 								null, null);

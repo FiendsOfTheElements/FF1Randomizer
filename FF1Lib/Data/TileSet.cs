@@ -124,6 +124,15 @@ namespace FF1Lib
 				_property2 = value;
 			}
 		}
+		public TileProp Properties
+		{
+			get { return new TileProp() { Byte1 = _property1, Byte2 = _property2 }; }
+			set
+			{
+				_property1 = value.Byte1;
+				_property2 = value.Byte2;
+			}
+		}
 		public byte Index
 		{
 			get { return _tileSetID; }

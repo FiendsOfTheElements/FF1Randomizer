@@ -113,7 +113,7 @@ namespace FF1Lib
 
 				if (mapindex == MapIndex.GurguVolcanoB5)
 				{
-					FlipVolcanoB5(map.Map);
+					FlipVolcanoB5(map);
 				}
 				else if (mapindex == MapIndex.GurguVolcanoB2)
 				{
@@ -166,15 +166,15 @@ namespace FF1Lib
 			}
 		}
 
-		private void FlipVolcanoB5(Map map)
+		private void FlipVolcanoB5(MapDataGroup map)
 		{
-			map.SwapSections(0x04, 0x32, 0x0B, 0x3A, 0x04, 0x04);
+			map.Map.SwapSections(0x04, 0x32, 0x0B, 0x3A, 0x04, 0x04);
 
-			for (int x = 4; x <= 0x0D; x++) map[4, x] = 48;
+			for (int x = 4; x <= 0x0D; x++) map.Map[4, x] = 48;
+			
 
-			var npc = rom.GetNpc(MapIndex.GurguVolcanoB5, 0);
-			npc.Coord.y = npc.Coord.y - 0x2E;
-			rom.SetNpc(MapIndex.GurguVolcanoB5, npc);
+			var npc = map.MapObjects[0];
+			map.MapObjects.MoveNpc(0, npc.Coords.X, npc.Coords.Y - 0x2E, npc.InRoom, npc.Stationary);
 		}
 
 		private void FlipVolcanoB2(MapIndex mapindex, Map map)
@@ -435,7 +435,7 @@ namespace FF1Lib
 			}*/
 		}
 
-		public List<MapIndex> HorizontalFlip(MT19337 rng, List<Map> maps, Teleporters teleporters)
+		public List<MapIndex> HorizontalFlip(MT19337 rng, StandardMaps maps, Teleporters teleporters)
 		{
 			// Select maps to flip
 			ValidMaps_Horizontal.Shuffle(rng);
@@ -444,37 +444,36 @@ namespace FF1Lib
 
 			foreach (MapIndex map in mapsToFlip)
 			{
-				maps[(int)map].FlipHorizontal();
+				maps[map].Map.FlipHorizontal();
 
 				// Switch room wall tiles and some other wall tiles for look
-				maps[(int)map].Replace(0x00, 0xFF);
-				maps[(int)map].Replace(0x02, 0x00);
-				maps[(int)map].Replace(0xFF, 0x02);
+				maps[map].Map.Replace(0x00, 0xFF);
+				maps[map].Map.Replace(0x02, 0x00);
+				maps[map].Map.Replace(0xFF, 0x02);
 
-				maps[(int)map].Replace(0x03, 0xFF);
-				maps[(int)map].Replace(0x05, 0x03);
-				maps[(int)map].Replace(0xFF, 0x05);
+				maps[map].Map.Replace(0x03, 0xFF);
+				maps[map].Map.Replace(0x05, 0x03);
+				maps[map].Map.Replace(0xFF, 0x05);
 
-				maps[(int)map].Replace(0x06, 0xFF);
-				maps[(int)map].Replace(0x08, 0x06);
-				maps[(int)map].Replace(0xFF, 0x08);
+				maps[map].Map.Replace(0x06, 0xFF);
+				maps[map].Map.Replace(0x08, 0x06);
+				maps[map].Map.Replace(0xFF, 0x08);
 
-				maps[(int)map].Replace(0x32, 0xFF);
-				maps[(int)map].Replace(0x33, 0x32);
-				maps[(int)map].Replace(0xFF, 0x33);
+				maps[map].Map.Replace(0x32, 0xFF);
+				maps[map].Map.Replace(0x33, 0x32);
+				maps[map].Map.Replace(0xFF, 0x33);
 
-				maps[(int)map].Replace(0x34, 0xFF);
-				maps[(int)map].Replace(0x35, 0x34);
-				maps[(int)map].Replace(0xFF, 0x35);
+				maps[map].Map.Replace(0x34, 0xFF);
+				maps[map].Map.Replace(0x35, 0x34);
+				maps[map].Map.Replace(0xFF, 0x35);
 
 				// Flip NPCs position
 				for (int i = 0; i < 16; i++)
 				{
-					var tempNpc = rom.GetNpc(map, i);
-					if (tempNpc.Coord != (0, 0))
+					var tempNpc = maps[map].MapObjects[i];
+					if (tempNpc.ObjectId != 0x00)
 					{
-						tempNpc.Coord.x = 64 - tempNpc.Coord.x - 1;
-						rom.SetNpc(map, tempNpc);
+						maps[map].MapObjects[i].Flip(true, false);
 					}
 				}
 			}

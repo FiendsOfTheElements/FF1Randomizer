@@ -7,7 +7,7 @@ namespace FF1Lib
 	public class SanityCheckerV2 : ISanityChecker
 	{
 		FF1Rom rom;
-		List<Map> maps;
+		StandardMaps maps;
 		OverworldMap overworldMap;
 		Overworld overworld;
 		Teleporters teleporters;
@@ -53,7 +53,7 @@ namespace FF1Lib
 			rom = _rom;
 			overworld = _overworld;
 			overworldMap = _overworld.OverworldMap;
-			maps = _maps.GetMapList();
+			maps = _maps;
 			npcdata = _npcdata;
 			teleporters = _teleporters;
 
@@ -524,9 +524,9 @@ namespace FF1Lib
 				poi.Done = true;
 				return true;
 			}
-			else if (poi.TalkRoutine == newTalkRoutines.Talk_ElfDocUnne)
+			else if (poi.TalkRoutine == TalkScripts.Talk_ElfDocUnne)
 			{
-				if (poi.TalkArray[(int)TalkArrayPos.requirement_id] == (byte)Item.Herb)
+				if (poi.NpcRequirement == (byte)Item.Herb)
 				{
 					if (requirements.HasFlag(AccessRequirement.Herb))
 					{
@@ -535,7 +535,7 @@ namespace FF1Lib
 						return true;
 					}
 				}
-				else if (poi.TalkArray[(int)TalkArrayPos.requirement_id] == (byte)Item.Slab)
+				else if (poi.NpcRequirement == (byte)Item.Slab)
 				{
 					if (requirements.HasFlag(AccessRequirement.Slab))
 					{
@@ -549,17 +549,17 @@ namespace FF1Lib
 			{
 				switch (poi.TalkRoutine)
 				{
-					case newTalkRoutines.Talk_Bikke:
+					case TalkScripts.Talk_Bikke:
 						ProcessItem(npc.Item, dungeonIndex);
 						rewardSources.Add(npc);
 						poi.Done = true;
 						return true;
-					case newTalkRoutines.Talk_GiveItemOnFlag:
+					case TalkScripts.Talk_GiveItemOnFlag:
 						return ProcessItemOnFlag(poi, npc, dungeonIndex);
-					case newTalkRoutines.Talk_Nerrick:
-					case newTalkRoutines.Talk_TradeItems:
-					case newTalkRoutines.Talk_GiveItemOnItem:
-					case newTalkRoutines.Talk_Astos:
+					case TalkScripts.Talk_Nerrick:
+					case TalkScripts.Talk_TradeItems:
+					case TalkScripts.Talk_GiveItemOnItem:
+					case TalkScripts.Talk_Astos:
 						if (requirements.HasFlag(npc.AccessRequirement))
 						{
 							ProcessItem(npc.Item, dungeonIndex);
@@ -576,16 +576,16 @@ namespace FF1Lib
 			{
 				switch (poi.TalkRoutine)
 				{
-					case newTalkRoutines.Talk_Bikke:
+					case TalkScripts.Talk_Bikke:
 						rewardSources.Add(npc1);
 						poi.Done = true;
 						return true;
-					case newTalkRoutines.Talk_GiveItemOnFlag:
+					case TalkScripts.Talk_GiveItemOnFlag:
 						return ProcessItemOnFlag(poi, npc1, dungeonIndex, false);
-					case newTalkRoutines.Talk_Nerrick:
-					case newTalkRoutines.Talk_TradeItems:
-					case newTalkRoutines.Talk_GiveItemOnItem:
-					case newTalkRoutines.Talk_Astos:
+					case TalkScripts.Talk_Nerrick:
+					case TalkScripts.Talk_TradeItems:
+					case TalkScripts.Talk_GiveItemOnItem:
+					case TalkScripts.Talk_Astos:
 						if (requirements.HasFlag(npc1.AccessRequirement))
 						{
 							rewardSources.Add(npc1);
@@ -603,7 +603,7 @@ namespace FF1Lib
 
 		private bool ProcessItemOnFlag(SCPointOfInterest poi, NpcReward npc, byte dungeonIndex, bool giveItem = true)
 		{
-			var flag = (ObjectId)poi.TalkArray[(int)TalkArrayPos.requirement_id];
+			var flag = (ObjectId)poi.NpcRequirement;
 
 			if(npc.ObjectId == ObjectId.Fairy)
 			{

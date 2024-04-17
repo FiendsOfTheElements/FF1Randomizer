@@ -23,6 +23,7 @@ namespace FF1Lib
 				//  }
 			}
 
+			ProcgenWaterfall((bool)flags.EFGWaterfall, teleporters, rng);
 			MoveToFBats((bool)flags.MoveToFBats);
 			FlipMaps(rng);
 			EnableTitansTrove((bool)flags.TitansTrove);
@@ -40,7 +41,6 @@ namespace FF1Lib
 			DragonsHoard((bool)flags.MapDragonsHoard);
 			MermaidPrison((bool)flags.MermaidPrison);
 			ConfusedOldMen((bool)flags.ConfusedOldMen, rng);
-
 		}
 
 		private void MoveToFBats(bool movebats)
@@ -81,7 +81,7 @@ namespace FF1Lib
 
 			if ((bool)flags.FlipDungeons)
 			{
-				HorizontalFlippedMaps = mapFlipper.HorizontalFlip(rng, maps, teleporters);
+				HorizontalFlippedMaps = mapFlipper.HorizontalFlip(rng, this, teleporters);
 			}
 		}
 		private void EnableTitansTrove(bool movetitan)
@@ -575,6 +575,30 @@ namespace FF1Lib
 				// Have locked rooms draw inside NPCs, instead of outside NPCs
 				rom.PutInBank(0x1F, 0xCEDE, new byte[] { 0x81 });
 			}
+		}
+		private void ProcgenWaterfall(bool procgenwaterfall, Teleporters teleporters, MT19337 rng)
+		{
+			if (!procgenwaterfall)
+			{
+				return;
+			}
+
+			MapRequirements reqs;
+			MapGeneratorStrategy strategy;
+			MapGenerator generator = new MapGenerator();
+
+			reqs = new MapRequirements
+			{
+				MapIndex = MapIndex.Waterfall,
+				Rom = rom,
+			};
+			strategy = MapGeneratorStrategy.WaterfallClone;
+			CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
+
+			// Should add more into the reqs so that this can be done inside the generator.
+			teleporters.Waterfall.SetTeleporter(waterfall.Entrance);
+			//overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, Teleporters.Waterfall);
+			maps[(int)MapIndex.Waterfall].CopyFrom(waterfall.Map);
 		}
 	}
 }

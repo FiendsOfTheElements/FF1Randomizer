@@ -44,7 +44,7 @@ namespace FF1Lib
 			//if (settings.GetBool("IdentifyTreasures"))
 			if ((bool)flags.IdentifyTreasures)
 			{
-				EnableIdentifyTreasures();
+				EnableIdentifyTreasures(Dialogues);
 			}
 
 			//if (settings.GetBool("EnableBuyQuantity") || settings.GetBool("ArchipelagoEnabled"))
@@ -115,10 +115,10 @@ namespace FF1Lib
 		}
 
 		// Dialogues class
-		public void EnableIdentifyTreasures()
+		public void EnableIdentifyTreasures(DialogueData dialogues)
 		{
-			InsertDialogs(0xF1 + 0x50, "Can't hold\n#");
-			InsertDialogs(0xF1, "Can't hold\n#");
+			dialogues[0xF1 + 0x50] =  "Can't hold\n#";
+			dialogues[0xF1] = "Can't hold\n#";
 		}
 
 		public void EnableBuyQuantity(bool archipelagoenabled)

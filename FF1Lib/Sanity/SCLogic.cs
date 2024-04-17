@@ -423,13 +423,13 @@ namespace FF1Lib.Sanity
 
 		private SCRequirementsSet GetSecondaryRequirements(SCPointOfInterest poi, NpcReward rewardSource, Dictionary<ObjectId, SCRequirementsSet> allNpcs, Dictionary<Item, SCRequirementsSet> allOrbs)
 		{
-			if (poi.TalkRoutine == newTalkRoutines.Talk_ElfDocUnne)
+			if (poi.TalkRoutine == TalkScripts.Talk_ElfDocUnne)
 			{
-				if (poi.TalkArray[(int)TalkArrayPos.requirement_id] == (byte)Item.Herb)
+				if (poi.NpcRequirement == (byte)Item.Herb)
 				{
 					return new SCRequirementsSet(SCRequirements.Herb);
 				}
-				else if (poi.TalkArray[(int)TalkArrayPos.requirement_id] == (byte)Item.Slab)
+				else if (poi.NpcRequirement == (byte)Item.Slab)
 				{
 					return new SCRequirementsSet(SCRequirements.Herb);
 				}
@@ -438,14 +438,14 @@ namespace FF1Lib.Sanity
 			{
 				switch(poi.TalkRoutine)
 				{
-					case newTalkRoutines.Talk_Bikke:
+					case TalkScripts.Talk_Bikke:
 						return new SCRequirementsSet(SCRequirements.None);
-					case newTalkRoutines.Talk_GiveItemOnFlag:
+					case TalkScripts.Talk_GiveItemOnFlag:
 						return ProcessItemOnFlag(poi, rewardSource, allNpcs);
-					case newTalkRoutines.Talk_Nerrick:
-					case newTalkRoutines.Talk_TradeItems:
-					case newTalkRoutines.Talk_GiveItemOnItem:
-					case newTalkRoutines.Talk_Astos:
+					case TalkScripts.Talk_Nerrick:
+					case TalkScripts.Talk_TradeItems:
+					case TalkScripts.Talk_GiveItemOnItem:
+					case TalkScripts.Talk_Astos:
 						return ProcessItemOnItem(poi, rewardSource, allNpcs, allOrbs);
 				}
 			}

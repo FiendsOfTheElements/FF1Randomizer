@@ -12,7 +12,7 @@ namespace FF1Lib
 		List<MapIndex> flippedMaps;
 		List<MapIndex> vflippedMaps;
 
-		MapTileSets MapTileSets;
+		Dictionary<MapIndex, byte> MapTileSets;
 		ShopData ShopData;
 		TileSet[] TileSets = new TileSet[8];
 
@@ -42,7 +42,7 @@ namespace FF1Lib
 			flippedMaps = maps.HorizontalFlippedMaps;
 			vflippedMaps = maps.VerticalFlippedMaps;
 
-			MapTileSets = maps.MapTileSets.Select(t => (byte)t).ToList();
+			MapTileSets = maps.MapTileSets.Select((t,i) => (i, (byte)t)).ToDictionary(t => (MapIndex)t.i, t => t.Item2);
 			ShopData = _shopdata;
 			SpellInfos = rom.LoadSpells().ToList();
 			treasureData = new TreasureData(rom);
@@ -72,7 +72,6 @@ namespace FF1Lib
 			PrepareMaps();
 
 			Spells = rom.GetSpells().ToDictionary(s => s.Name.ToLowerInvariant());
-			MapTileSets.LoadTable();
 
 			for (int i = 0; i < 8; i++)
 			{

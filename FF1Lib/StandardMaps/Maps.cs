@@ -367,25 +367,5 @@ namespace FF1Lib
 
 			return tempNPC;
 		}
-
-		public List<NPC> GetNpcs(MapIndex mid, NPCdata npcdata)
-		{
-		    var tempNPC = new NPC();
-		    var npcs = new List<NPC>();
-		    for (int i = 0; i < MapSpriteCount; i++)
-		    {
-			int offset = MapSpriteOffset + ((byte)mid * MapSpriteCount + i) * MapSpriteSize;
-
-			tempNPC.ObjectId = (ObjectId)Data[offset];
-			tempNPC.Index = i;
-			tempNPC.Coord = (Data[offset + 1] & 0x3F, Data[offset + 2]);
-			tempNPC.InRoom = (Data[offset + 1] & 0x80) > 0;
-			tempNPC.Stationary = (Data[offset + 1] & 0x40) > 0;
-			tempNPC.General = npcdata.GetNPC(tempNPC.ObjectId);
-
-			npcs.Add(tempNPC);
-		    }
-		    return npcs;
-		}
 	}
 }

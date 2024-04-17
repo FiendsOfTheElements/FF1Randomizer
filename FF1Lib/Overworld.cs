@@ -22,13 +22,14 @@ namespace FF1Lib
 		private OwLocationData locations;
 		private ShipLocations shipLocations;
 		private DomainData domains;
+		private TileSet owTileSet;
 
 		private Flags flags;
 		private FF1Rom rom;
 		private MT19337 rng;
 
 		public List<Backdrop> BattleBackdrops { get; private set; }
-
+		public TileSet TileSet { get; private set; }
 		public List<List<byte>> DecompressedMap { get => overworldMap.MapBytes; }
 		public OwMapExchangeData MapExchangeData { get => owMapExchange?.Data; }
 		public OwMapExchange MapExchange { get => owMapExchange; }
@@ -44,6 +45,7 @@ namespace FF1Lib
 			locations = new OwLocationData(rom);
 			overworldMap = new OverworldMap(rom, flags);
 			domains = new DomainData(rom);
+			owTileSet = new TileSet(rom, 0xFF);
 			domains.LoadTable();
 			//owMapExchange = new(rom, );
 			//locations = new OwLocationData(_rom);
@@ -57,9 +59,9 @@ namespace FF1Lib
 		{
 			domains.StoreTable();
 			locations.StoreData();
+			owTileSet.StoreData();
 			rom.PutInBank(lut_BtlBackdrops_Bank, lut_BtlBackdrops, BattleBackdrops.Select(b => (byte)b).ToArray());
 			//overworldMap.
-
 		}
 		public async void LoadMapExchange()
 		{
