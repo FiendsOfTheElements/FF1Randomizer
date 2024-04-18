@@ -7,12 +7,12 @@ namespace FF1Lib
 	public class SanityCheckerV2 : ISanityChecker
 	{
 		FF1Rom rom;
-		List<Map> maps;
+		StandardMaps maps;
 		OverworldMap overworldMap;
 		Overworld overworld;
 		Teleporters teleporters;
 
-		NPCdata npcdata;
+		NpcObjectData npcdata;
 
 		short shipDockAreaIndex;
 		bool airShipLocationAccessible;
@@ -32,13 +32,13 @@ namespace FF1Lib
 		Queue<SCPointOfInterest> deferredPointOfInterests;
 
 		Dictionary<byte, TreasureChest> chests;
-		Dictionary<ObjectId, MapObject> npcs;
+		Dictionary<ObjectId, NpcReward> npcs;
 		ItemShopSlot shopslot;
 
 		List<IRewardSource> treasurePlacements;
 
 		Dictionary<byte, TreasureChest> allTreasures;
-		Dictionary<ObjectId, MapObject> allQuestNpcs;
+		Dictionary<ObjectId, NpcReward> allQuestNpcs;
 		ItemShopSlot declaredShopSlot;
 
 		OwLocationData locations;
@@ -48,7 +48,7 @@ namespace FF1Lib
 
 		public SCMain Main { get; private set; }
 
-		public SanityCheckerV2(List<Map> _maps, Overworld _overworld, NPCdata _npcdata, Teleporters _teleporters, FF1Rom _rom, ItemShopSlot _declaredShopSlot)
+		public SanityCheckerV2(StandardMaps _maps, Overworld _overworld, NpcObjectData _npcdata, Teleporters _teleporters, FF1Rom _rom, ItemShopSlot _declaredShopSlot)
 		{
 			rom = _rom;
 			overworld = _overworld;
@@ -63,12 +63,12 @@ namespace FF1Lib
 			//Shiplocations = _shiplocations;
 
 			allTreasures = ItemLocations.AllTreasures.Select(r => r as TreasureChest).Where(r => r != null).ToDictionary(r => (byte)(r.Address - 0x3100));
-			allQuestNpcs = ItemLocations.AllNPCItemLocations.Select(r => r as MapObject).Where(r => r != null).ToDictionary(r => r.ObjectId);
+			allQuestNpcs = ItemLocations.AllNPCItemLocations.Select(r => r as NpcReward).Where(r => r != null).ToDictionary(r => r.ObjectId);
 			declaredShopSlot = _declaredShopSlot;
 
 			UpdateNpcRequirements();
 
-			Main = new SCMain(_maps, overworldMap, _npcdata, teleporters, locations, _rom);
+			Main = new SCMain(maps, overworldMap, _npcdata, teleporters, locations, _rom);
 		}
 		public void SetShipLocation(int dungeonindex)
 		{
@@ -79,26 +79,23 @@ namespace FF1Lib
 		{
 			foreach (var npc in allQuestNpcs.Values)
 			{
-				var talkarray = npcdata.GetTalkArray(npc.ObjectId);
-				var routine = npcdata.GetRoutine(npc.ObjectId);
-
-				UpdateNpcRequirements(npc, talkarray, routine);
+				UpdateNpcRequirements(npc, npcdata[npc.ObjectId]);
 			}
 		}
 
-		private void UpdateNpcRequirements(MapObject npc, byte[] talkarray, newTalkRoutines routine)
+		private void UpdateNpcRequirements(NpcReward npc, NpcObject npcdata)
 		{
-			if (routine == newTalkRoutines.Talk_Nerrick)
+			if (npcdata.Script == TalkScripts.Talk_Nerrick)
 			{
 				npc.AccessRequirement = AccessRequirement.Tnt;
 			}
-			else if (routine == newTalkRoutines.Talk_Astos)
+			else if (npcdata.Script == TalkScripts.Talk_Astos)
 			{
 				npc.AccessRequirement = AccessRequirement.Crown;
 			}
-			else if (routine == newTalkRoutines.Talk_TradeItems || routine == newTalkRoutines.Talk_GiveItemOnItem)
+			else if (npcdata.Script == TalkScripts.Talk_TradeItems || npcdata.Script == TalkScripts.Talk_GiveItemOnItem)
 			{
-				var req = (Item)talkarray[(int)TalkArrayPos.requirement_id];
+				var req = (Item)npcdata.Requirement;
 
 				npc.AccessRequirement = req.ToAccessRequirement();
 			}
@@ -115,7 +112,7 @@ namespace FF1Lib
 
 			//kids, don't try this at home. Calculating an index from an address is usually not the way to go.
 			chests = treasurePlacements.Select(r => r as TreasureChest).Where(r => r != null).ToDictionary(r => (byte)(r.Address - 0x3100));
-			npcs = treasurePlacements.Select(r => r as MapObject).Where(r => r != null).ToDictionary(r => r.ObjectId);
+			npcs = treasurePlacements.Select(r => r as NpcReward).Where(r => r != null).ToDictionary(r => r.ObjectId);
 			shopslot = (ItemShopSlot)treasurePlacements.FirstOrDefault(r => r is ItemShopSlot);
 
 			var result = Crawl(victoryConditions);
@@ -527,9 +524,9 @@ namespace FF1Lib
 				poi.Done = true;
 				return true;
 			}
-			else if (poi.TalkRoutine == newTalkRoutines.Talk_ElfDocUnne)
+			else if (poi.TalkRoutine == TalkScripts.Talk_ElfDocUnne)
 			{
-				if (poi.TalkArray[(int)TalkArrayPos.requirement_id] == (byte)Item.Herb)
+				if (poi.NpcRequirement == (byte)Item.Herb)
 				{
 					if (requirements.HasFlag(AccessRequirement.Herb))
 					{
@@ -538,7 +535,7 @@ namespace FF1Lib
 						return true;
 					}
 				}
-				else if (poi.TalkArray[(int)TalkArrayPos.requirement_id] == (byte)Item.Slab)
+				else if (poi.NpcRequirement == (byte)Item.Slab)
 				{
 					if (requirements.HasFlag(AccessRequirement.Slab))
 					{
@@ -552,17 +549,17 @@ namespace FF1Lib
 			{
 				switch (poi.TalkRoutine)
 				{
-					case newTalkRoutines.Talk_Bikke:
+					case TalkScripts.Talk_Bikke:
 						ProcessItem(npc.Item, dungeonIndex);
 						rewardSources.Add(npc);
 						poi.Done = true;
 						return true;
-					case newTalkRoutines.Talk_GiveItemOnFlag:
+					case TalkScripts.Talk_GiveItemOnFlag:
 						return ProcessItemOnFlag(poi, npc, dungeonIndex);
-					case newTalkRoutines.Talk_Nerrick:
-					case newTalkRoutines.Talk_TradeItems:
-					case newTalkRoutines.Talk_GiveItemOnItem:
-					case newTalkRoutines.Talk_Astos:
+					case TalkScripts.Talk_Nerrick:
+					case TalkScripts.Talk_TradeItems:
+					case TalkScripts.Talk_GiveItemOnItem:
+					case TalkScripts.Talk_Astos:
 						if (requirements.HasFlag(npc.AccessRequirement))
 						{
 							ProcessItem(npc.Item, dungeonIndex);
@@ -579,16 +576,16 @@ namespace FF1Lib
 			{
 				switch (poi.TalkRoutine)
 				{
-					case newTalkRoutines.Talk_Bikke:
+					case TalkScripts.Talk_Bikke:
 						rewardSources.Add(npc1);
 						poi.Done = true;
 						return true;
-					case newTalkRoutines.Talk_GiveItemOnFlag:
+					case TalkScripts.Talk_GiveItemOnFlag:
 						return ProcessItemOnFlag(poi, npc1, dungeonIndex, false);
-					case newTalkRoutines.Talk_Nerrick:
-					case newTalkRoutines.Talk_TradeItems:
-					case newTalkRoutines.Talk_GiveItemOnItem:
-					case newTalkRoutines.Talk_Astos:
+					case TalkScripts.Talk_Nerrick:
+					case TalkScripts.Talk_TradeItems:
+					case TalkScripts.Talk_GiveItemOnItem:
+					case TalkScripts.Talk_Astos:
 						if (requirements.HasFlag(npc1.AccessRequirement))
 						{
 							rewardSources.Add(npc1);
@@ -604,9 +601,9 @@ namespace FF1Lib
 			return false;
 		}
 
-		private bool ProcessItemOnFlag(SCPointOfInterest poi, MapObject npc, byte dungeonIndex, bool giveItem = true)
+		private bool ProcessItemOnFlag(SCPointOfInterest poi, NpcReward npc, byte dungeonIndex, bool giveItem = true)
 		{
-			var flag = (ObjectId)poi.TalkArray[(int)TalkArrayPos.requirement_id];
+			var flag = (ObjectId)poi.NpcRequirement;
 
 			if(npc.ObjectId == ObjectId.Fairy)
 			{

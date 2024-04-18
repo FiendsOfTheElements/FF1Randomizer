@@ -1763,20 +1763,20 @@ namespace FF1Lib
 		tileset.LoadData();
 
 		// clear existing
-		for (int i = 0; i < tileset.TileProperties.Count; i++) {
-		    var tp = tileset.TileProperties[i];
+		for (int i = 0; i < tileset.Tiles.Count; i++) {
+		    var tp = tileset.Tiles[i].Properties;
 		    if ((tp.TilePropFunc & TilePropFunc.OWTP_SPEC_MASK) == TilePropFunc.OWTP_SPEC_CHIME) {
 			tp.TilePropFunc &= ~TilePropFunc.OWTP_SPEC_CHIME;
-			tileset.TileProperties[i] = tp;
+			tileset.Tiles[i].Properties = tp;
 		    }
 		}
 
 		var chime = candidates.SpliceRandom(rng);
 
 		foreach (var i in chime) {
-		    var tp = tileset.TileProperties[i];
+		    var tp = tileset.Tiles[i].Properties;
 		    tp.TilePropFunc |= TilePropFunc.OWTP_SPEC_CHIME;
-		    tileset.TileProperties[i] = tp;
+		    tileset.Tiles[i].Properties = tp;
 		}
 
 		tileset.StoreData();

@@ -1,30 +1,29 @@
-﻿namespace FF1Lib
+﻿using System.Reflection.Metadata.Ecma335;
+using static FF1Lib.FF1Rom;
+
+namespace FF1Lib
 {
 	public class ReversedFloors
 	{
 		FF1Rom rom;
-		List<Map> maps;
+		StandardMaps maps;
 		MT19337 rng;
 		//NormTeleData tele;
 		//EnterTeleData enter;
 		Teleporters teleporters;
 		List<MapIndex> vflippedMaps;
 
-		public ReversedFloors(FF1Rom _rom, List<Map> _maps, MT19337 _rng, Teleporters _teleporters, List<MapIndex> _vflippedMaps)
+		public ReversedFloors(FF1Rom _rom, StandardMaps _maps, MT19337 _rng, Teleporters _teleporters, List<MapIndex> _vflippedMaps)
 		{
 			rom = _rom;
 			maps = _maps;
 			rng = _rng;
 			vflippedMaps = _vflippedMaps;
 			teleporters = _teleporters;
-			//tele = new NormTeleData(rom);
-			//enter = new EnterTeleData(rom);
 		}
 
 		public void Work()
 		{
-			//tele.LoadData();
-			//enter.LoadData();
 
 			SwapTilesAndTele(MapIndex.TempleOfFiends, 0x14, 0x1E, 0x14, 0x06);
 
@@ -106,16 +105,13 @@
 			SwapTilesAndTele(MapIndex.SeaShrineB3, 0x2F, 0x27, 0x31, 0x25);
 
 			SwapMirage3F();
-
-			//tele.StoreData();
-			//enter.StoreData();
 		}
 
 		private void SwapMirage3F()
 		{
 			if (rng.Between(0, 1) == 0) return;
 
-			var map = maps[(int)MapIndex.MirageTower3F];
+			var map = maps[MapIndex.MirageTower3F].Map;
 
 			SwapTiles(map, 0x08, 0x01, 0x0E, 0x08);
 			SwapTele(MapIndex.MirageTower3F, 0x08, 0x01, 0x0E, 0x08);
@@ -151,7 +147,7 @@
 
 		private void SwapSky1F(MapIndex mapindex, int x1, int y1, int x2, int y2, int x3, int y3)
 		{
-			var map = maps[(int)mapindex];
+			var map = maps[mapindex].Map;
 
 			int tx;
 			int ty;
@@ -188,7 +184,7 @@
 
 			if (vflippedMaps.Contains(mapindex)) y3 = 0x23;
 
-			var map = maps[(int)mapindex];
+			var map = maps[mapindex].Map;
 
 			int tx;
 			int ty;
@@ -220,50 +216,50 @@
 			}
 		}
 
-		private void SwapVolcanoB3(MapIndex MapIndex, int x1, int y1, int x2, int y2)
+		private void SwapVolcanoB3(MapIndex mapindex, int x1, int y1, int x2, int y2)
 		{
 			if (rng.Between(0, 1) == 0) return;
-			SwapTiles(maps[(int)MapIndex], x1, y1, x2, y2);
-			SwapTele(MapIndex, x1, y1, x2, y2);
+			SwapTiles(maps[mapindex].Map, x1, y1, x2, y2);
+			SwapTele(mapindex, x1, y1, x2, y2);
 		}
 
-		private void DuplicateTile(MapIndex MapIndex, int x1, int y1, int x2, int y2)
+		private void DuplicateTile(MapIndex mapindex, int x1, int y1, int x2, int y2)
 		{
-			var map = maps[(int)MapIndex];
+			var map = maps[mapindex].Map;
 			map[y2, x2] = map[y1, x1];
 		}
 
-		private void SwapTwoTilesAndTele(MapIndex MapIndex, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4)
+		private void SwapTwoTilesAndTele(MapIndex mapindex, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4)
 		{
 			if (rng.Between(0, 1) == 0) return;
-			SwapTiles(maps[(int)MapIndex], x1, y1, x2, y2);
-			SwapTiles(maps[(int)MapIndex], x3, y3, x4, y4);
-			SwapTele(MapIndex, x1, y1, x2, y2);
-			SwapTele(MapIndex, x3, y3, x4, y4);
+			SwapTiles(maps[mapindex].Map, x1, y1, x2, y2);
+			SwapTiles(maps[mapindex].Map, x3, y3, x4, y4);
+			SwapTele(mapindex, x1, y1, x2, y2);
+			SwapTele(mapindex, x3, y3, x4, y4);
 		}
 
-		private void SwapTilesAndTele(MapIndex MapIndex, int x1, int y1, int x2, int y2, int x3, int y3)
+		private void SwapTilesAndTele(MapIndex mapindex, int x1, int y1, int x2, int y2, int x3, int y3)
 		{
 			switch (rng.Between(0, 2))
 			{
 				case 1:
-					SwapTiles(maps[(int)MapIndex], x1, y1, x2, y2);
-					SwapTele(MapIndex, x1, y1, x2, y2);
+					SwapTiles(maps[mapindex].Map, x1, y1, x2, y2);
+					SwapTele(mapindex, x1, y1, x2, y2);
 					return;
 				case 2:
-					SwapTiles(maps[(int)MapIndex], x1, y1, x3, y3);
-					SwapTele(MapIndex, x1, y1, x3, y3);
+					SwapTiles(maps[mapindex].Map, x1, y1, x3, y3);
+					SwapTele(mapindex, x1, y1, x3, y3);
 					return;
 				default:
 					return;
 			}
 		}
 
-		private void SwapTilesAndTele(MapIndex MapIndex, int x1, int y1, int x2, int y2)
+		private void SwapTilesAndTele(MapIndex mapindex, int x1, int y1, int x2, int y2)
 		{
 			if (rng.Between(0, 1) == 0) return;
-			SwapTiles(maps[(int)MapIndex], x1, y1, x2, y2);
-			SwapTele(MapIndex, x1, y1, x2, y2);
+			SwapTiles(maps[mapindex].Map, x1, y1, x2, y2);
+			SwapTele(mapindex, x1, y1, x2, y2);
 		}
 
 		private void SwapTiles(Map map, int x1, int y1, int x2, int y2)
@@ -276,10 +272,17 @@
 		private void SwapTele(MapIndex mapindex, int x1, int y1, int x2, int y2)
 		{
 			var overtoswap = teleporters.OverworldTeleporters.Where(t => t.Value.Index == mapindex && t.Value.Coordinates.X == x1 && t.Value.Coordinates.Y == y1).ToList();
-			overtoswap.ForEach(t => t.Value.SetTeleporter(new Coordinate((byte)x2, (byte)y2, t.Value.Coordinates.Context)));
+			foreach (var t in overtoswap)
+			{
+				teleporters.OverworldTeleporters[t.Key] = new TeleportDestination(t.Value, new Coordinate((byte)x2, (byte)y2, t.Value.Coordinates.Context));
+			}
 
 			var teletoswap = teleporters.StandardMapTeleporters.Where(t => t.Value.Index == mapindex && t.Value.Coordinates.X == x1 && t.Value.Coordinates.Y == y1).ToList();
-			teletoswap.ForEach(t => t.Value.SetTeleporter(new Coordinate((byte)x2, (byte)y2, t.Value.Coordinates.Context)));
+			foreach (var t in teletoswap)
+			{
+				teleporters.StandardMapTeleporters[t.Key] = new TeleportDestination(t.Value, new Coordinate((byte)x2, (byte)y2, t.Value.Coordinates.Context));
+			}
+
 			/*
 
 			for (int i = 0; i < 64; i++)

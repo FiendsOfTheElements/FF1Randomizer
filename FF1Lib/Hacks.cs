@@ -12,30 +12,6 @@ namespace FF1Lib
 		public const int MapSpriteSize = 3;
 		public const int MapSpriteCount = 16;
 
-
-
-		public void EnableEarlySarda(NPCdata npcdata)
-		{
-			npcdata.GetTalkArray(ObjectId.Sarda)[(int)TalkArrayPos.requirement_id] = 0x00;
-		}
-
-		public void EnableEarlySage(NPCdata npcdata)
-		{
-			npcdata.GetTalkArray(ObjectId.CanoeSage)[(int)TalkArrayPos.requirement_id] = 0x00;
-			InsertDialogs(0x2B, "The FIENDS are waking.\nTake this and go defeat\nthem!\n\n\nReceived #");
-		}
-
-		public void EnableConfusedOldMen(MT19337 rng)
-		{
-			List<(byte, byte)> coords = new List<(byte, byte)> {
-				( 0x2A, 0x0A ), ( 0x28, 0x0B ), ( 0x26, 0x0B ), ( 0x24, 0x0A ), ( 0x23, 0x08 ), ( 0x23, 0x06 ),
-				( 0x24, 0x04 ), ( 0x26, 0x03 ), ( 0x28, 0x03 ), ( 0x28, 0x04 ), ( 0x2B, 0x06 ), ( 0x2B, 0x08 )
-			};
-			coords.Shuffle(rng);
-
-			List<int> sages = Enumerable.Range(0, 12).ToList(); // But the 12th Sage is actually id 12, not 11.
-			sages.ForEach(sage => MoveNpc(MapIndex.CrescentLake, sage < 11 ? sage : 12, coords[sage].Item1, coords[sage].Item2, inRoom: false, stationary: false));
-		}
 		public void EnableSaveOnDeath(Flags flags, Overworld overworld)
 		{
 			// rewrite rando's GameOver routine to jump to a new section that will save the game data
@@ -92,8 +68,13 @@ namespace FF1Lib
 			// Extend Orb Box
 			PutInBank(0x0E, 0xBAA2, Blob.FromHex("02010809"));
 		}
-		public void ShuffleAstos(Flags flags, NPCdata npcdata, TalkRoutines talkroutines, MT19337 rng)
+		public void ShuffleAstos(Flags flags, NpcObjectData npcdata, DialogueData dialogues, TalkRoutines talkroutines, MT19337 rng)
 		{
+			if (!(bool)flags.ShuffleAstos)
+			{
+				return;
+			}
+
 			// NPC pool to swap Astos with
 			List<ObjectId> npcpool = new List<ObjectId> { ObjectId.Astos, ObjectId.Bahamut, ObjectId.CanoeSage, ObjectId.CubeBot, ObjectId.ElfDoc,
 			ObjectId.Fairy, ObjectId.Matoya, ObjectId.Nerrick, ObjectId.Smith,
@@ -117,94 +98,86 @@ namespace FF1Lib
 			if (newastos == ObjectId.Astos) return;
 
 			// If not get NPC talk routine, get NPC object
-			var talkscript = npcdata.GetRoutine(newastos);
+			var talkscript = npcdata[newastos].Script;
 
 			// Switch astos to Talk_GiveItemOnItem;
-			npcdata.SetRoutine(ObjectId.Astos, newTalkRoutines.Talk_GiveItemOnItem);
+			npcdata[ObjectId.Astos].Script = TalkScripts.Talk_GiveItemOnItem;
 
 			// Get items name
-			var newastositem = FormattedItemName((Item)npcdata.GetTalkArray(newastos)[(int)TalkArrayPos.item_id]);
-			var nwkingitem = FormattedItemName((Item)npcdata.GetTalkArray(ObjectId.Astos)[(int)TalkArrayPos.item_id]);
+			//var newastositem = FormattedItemName((Item)npcdata.GetTalkArray(newastos)[(int)TalkArrayPos.item_id]);
+			//var nwkingitem = FormattedItemName((Item)npcdata.GetTalkArray(ObjectId.Astos)[(int)TalkArrayPos.item_id]);
+			// so why don't we use the item id? it should be set by the time we get the dialogues (since we check if there's inventory space)
 
 			// Custom dialogs for Astos NPC and the Kindly Old King
 			List<(byte, string)> astosdialogs = new List<(byte, string)>
 			{
 				(0x00, ""),
-				(0x02, "You have ruined my plans\nto steal this " + newastositem + "!\nThe princess will see\nthrough my disguise.\nTremble before the might\nof Astos, the Dark King!"),
+				//(0x02, "You have ruined my plans\nto steal this " + newastositem + "!\nThe princess will see\nthrough my disguise.\nTremble before the might\nof Astos, the Dark King!"),
+				(0x02, "You have ruined my plans\nto steal this #!\nThe princess will see\nthrough my disguise.\nTremble before the might\nof Astos, the Dark King!"),
 				(0x00, ""),(0x00, ""),(0x00, ""),
 				(0x0C, "You found the HERB?\nCurses! The Elf Prince\nmust never awaken.\nOnly then shall I,\nAstos, become\nthe King of ALL Elves!"),
-				(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my " + newastositem + "!"),
-				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this also!\n\nReceived " + nwkingitem),
-				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe " + newastositem + " will\nbelong to Astos,\nKing of Dark Dwarves!"),
-				(0x16, "ADAMANT!! Now let me\nmake this " + newastositem + "..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
-				(0x19, "You found my CRYSTAL and\nwant my " + newastositem + "? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
+				//(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my " + newastositem + "!"),
+				(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my #!"),
+				//(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this also!\n\nReceived " + nwkingitem),
+				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this also!\n\nReceived #"),
+//				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe " + newastositem + " will\nbelong to Astos,\nKing of Dark Dwarves!"),
+				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe # will\nbelong to Astos,\nKing of Dark Dwarves!"),
+				//(0x16, "ADAMANT!! Now let me\nmake this " + newastositem + "..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
+				(0x16, "ADAMANT!! Now let me\nmake this #..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
+				//(0x19, "You found my CRYSTAL and\nwant my " + newastositem + "? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
+				(0x19, "You found my CRYSTAL and\nwant my #? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
 				(0x1C, "Finally! With this SLAB,\nI shall conquer Lefein\nand her secrets will\nbelong to Astos,\nthe Dark Scholar!"),
 				(0x00, ""),
-				(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my " + newastositem + "!\nI even paid a Titan to\nguard the path! Fine.\nNow you face Astos,\nKing of the Hermits!"),
+				//(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my " + newastositem + "!\nI even paid a Titan to\nguard the path! Fine.\nNow you face Astos,\nKing of the Hermits!"),
+				(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my #!\nI even paid a Titan to\nguard the path! Fine.\nNow you face Astos,\nKing of the Hermits!"),
 				(0x20, "Really, a rat TAIL?\nYou think this is what\nwould impress me?\nIf you want to prove\nyourself, face off with\nAstos, the Dark Dragon!"),
-				(0xCD, "Kupo?.. Lali ho?..\nMugu mugu?.. Fine! You\nare in the presence of\nAstos, the Dark Thief!\nI stole their " + newastositem + "\nfair and square!"),
+				//(0xCD, "Kupo?.. Lali ho?..\nMugu mugu?.. Fine! You\nare in the presence of\nAstos, the Dark Thief!\nI stole their " + newastositem + "\nfair and square!"),
+				(0xCD, "Kupo?.. Lali ho?..\nMugu mugu?.. Fine! You\nare in the presence of\nAstos, the Dark Thief!\nI stole their #\nfair and square!"),
 				(0x00, ""),
-				(0x27, "Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis " + newastositem + "!"),
-				(0x06, "This " + newastositem + " has passed\nfrom Queen to Princess\nfor 2000 years. It would\nhave been mine if you\nhadn't rescued me! Now\nyou face Astos, the\nDark Queen!"),
-				(0x23, "I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this " + newastositem + " in\nthanks, but I would\nrather just kill you."),
+				//(0x27, "Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis " + newastositem + "!"),
+				(0x27, "Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis #!"),
+				//(0x06, "This " + newastositem + " has passed\nfrom Queen to Princess\nfor 2000 years. It would\nhave been mine if you\nhadn't rescued me! Now\nyou face Astos, the\nDark Queen!"),
+				(0x06, "This # has passed\nfrom Queen to Princess\nfor 2000 years. It would\nhave been mine if you\nhadn't rescued me! Now\nyou face Astos, the\nDark Queen!"),
+				//(0x23, "I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this " + newastositem + " in\nthanks, but I would\nrather just kill you."),
+				(0x23, "I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this # in\nthanks, but I would\nrather just kill you."),
 				(0x2A, "If you want pass, give\nme the RUBY..\nHa, it mine! Now, you in\ntrouble. Me am Astos,\nKing of the Titans!"),
-				(0x2B, "Curses! Do you know how\nlong it took me to\ninfiltrate these grumpy\nold men and steal\nthe " + newastositem + "?\nNow feel the wrath of\nAstos, the Dark Sage!")
+				//(0x2B, "Curses! Do you know how\nlong it took me to\ninfiltrate these grumpy\nold men and steal\nthe " + newastositem + "?\nNow feel the wrath of\nAstos, the Dark Sage!")
+				(0x2B, "Curses! Do you know how\nlong it took me to\ninfiltrate these grumpy\nold men and steal\nthe #?\nNow feel the wrath of\nAstos, the Dark Sage!")
 			};
 
-			InsertDialogs(astosdialogs[(int)newastos].Item1, astosdialogs[(int)newastos].Item2);
-			InsertDialogs(astosdialogs[(int)ObjectId.Astos].Item1, astosdialogs[(int)ObjectId.Astos].Item2);
+			dialogues[astosdialogs[(int)newastos].Item1] = astosdialogs[(int)newastos].Item2;
+			dialogues[astosdialogs[(int)ObjectId.Astos].Item1] = astosdialogs[(int)ObjectId.Astos].Item2;
 
-			if (talkscript == newTalkRoutines.Talk_Titan || talkscript == newTalkRoutines.Talk_ElfDocUnne)
+			if (talkscript == TalkScripts.Talk_Titan || talkscript == TalkScripts.Talk_ElfDocUnne)
 			{
 				// Skip giving item for Titan, ElfDoc or Unne
 				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("20109F"), Blob.FromHex("EAEAEA"));
 				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("A9F060"), Blob.FromHex("4C4396"));
-				npcdata.SetRoutine(newastos, newTalkRoutines.Talk_Astos);
+				npcdata[newastos].Script = TalkScripts.Talk_Astos;
 			}
-			else if (talkscript == newTalkRoutines.Talk_GiveItemOnFlag)
+			else if (talkscript == TalkScripts.Talk_GiveItemOnFlag)
 			{
 				// Check for a flag instead of an item
 				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F0"), Blob.FromHex("A474F00520799090"));
-				npcdata.SetRoutine(newastos, newTalkRoutines.Talk_Astos);
+				npcdata[newastos].Script = TalkScripts.Talk_Astos;
 			}
-			else if (talkscript == newTalkRoutines.Talk_Nerrick || talkscript == newTalkRoutines.Talk_GiveItemOnItem || talkscript == newTalkRoutines.Talk_TradeItems)
+			else if (talkscript == TalkScripts.Talk_Nerrick || talkscript == TalkScripts.Talk_GiveItemOnItem || talkscript == TalkScripts.Talk_TradeItems)
 			{
 				// Just set NPC to Astos routine
-				npcdata.SetRoutine(newastos, newTalkRoutines.Talk_Astos);
+				npcdata[newastos].Script = TalkScripts.Talk_Astos;
 			}
-			else if (talkscript == newTalkRoutines.Talk_Bahamut)
+			else if (talkscript == TalkScripts.Talk_Bahamut)
 			{
 				// Change routine to check for Tail, give promotion and trigger the battle at the same time, see 11_8200_TalkRoutines.asm
 				talkroutines.Replace(newTalkRoutines.Talk_Bahamut, Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660"));
 			}
 
 			// Set battle
-			npcdata.GetTalkArray(newastos)[(int)TalkArrayPos.battle_id] = 0x7D;
-		}
-
-		private void EnableEasyMode()
-		{
-			ScaleEncounterRate(0.20, 0.20);
-			var enemies = Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
-			foreach (var enemy in enemies)
-			{
-				var hp = BitConverter.ToUInt16(enemy, 4);
-				hp = (ushort)(hp * 0.1);
-				var hpBytes = BitConverter.GetBytes(hp);
-				Array.Copy(hpBytes, 0, enemy, 4, 2);
-			}
-
-			Put(EnemyOffset, enemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
+			npcdata[newastos].Battle = 0x7D;
 		}
 		/// <summary>
 		/// Unused method, but this would allow a non-npc shuffle king to build bridge without rescuing princess
 		/// </summary>
-		public void EnableEarlyKing(NPCdata npcdata)
-		{
-			npcdata.GetTalkArray(ObjectId.King)[(int)TalkArrayPos.requirement_id] = 0x00;
-			InsertDialogs(0x02, "To aid you on your\nquest, please take this.\n\n\n\nReceived #");
-		}
-
 		public void EnableFreeBridge()
 		{
 			// Set the default bridge_vis byte on game start to true. It's a mother beautiful bridge - and it's gonna be there.
@@ -225,13 +198,9 @@ namespace FF1Lib
 			Data[0x3006] = 165;
 		}
 
-		public void EnableFreeCanal(bool npcShuffleEnabled, NPCdata npcdata)
+		public void EnableFreeCanal(bool npcShuffleEnabled)
 		{
 			Data[0x300C] = 0;
-
-			// Put safeguard to prevent softlock if TNT is turned in (as it will remove the Canal)
-			if (!npcShuffleEnabled)
-				npcdata.GetTalkArray(ObjectId.Nerrick)[(int)TalkArrayPos.item_id] = (byte)Item.Cabin;
 		}
 
 		public void EnableFreeCanoe()
@@ -318,21 +287,6 @@ namespace FF1Lib
 
 			// Rewrite turn order shuffle to Fisher-Yates.
 			Put(0x3217A, Blob.FromHex("A90C8D8E68A900AE8E68205DAEA8AE8E68EAEAEAEAEAEA"));
-		}
-
-
-		public void EnableMelmondGhetto(bool enemizerOn)
-		{
-			// Set town desert tile to random encounters.
-			// If enabled, trap tile shuffle will change that second byte to 0x00 afterward.
-			Data[0x00864] = 0x0A;
-			Data[0x00865] = enemizerOn ? (byte)0x00 : (byte)0x80;
-
-			// Give Melmond Desert backdrop
-			Data[0x0334D] = (byte)Backdrop.Desert;
-
-			if (!enemizerOn) // if enemizer formation shuffle is on, it will have assigned battles to Melmond already
-				Put(0x2C218, Blob.FromHex("0F0F8F2CACAC7E7C"));
 		}
 
 		public void XpAdmissibility(bool nonesGainXp, bool deadsGainXp)
@@ -445,168 +399,6 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x81DC, FF1Text.TextToBytes("Don't\nforget\n.."));
 			PutInBank(0x0E, 0x81FC, FF1Text.TextToBytes("Your\ngame\nhasn't\nbeen\nsaved."));
 		}
-		public void FightBahamut(TalkRoutines talkroutines, NPCdata npcdata, ZoneFormations zoneformations, bool removeTail, bool swoleBahamut, bool deepDungeon, EvadeCapValues evadeClampFlag, MT19337 rng)
-		{
-			const byte offsetAtoB = 0x80; // diff between A side and B side
-
-			const byte encAnkylo = 0x71; // ANKYLO FORMATION
-			const byte idAnkylo = 0x4E; // ANKYLO ENEMY #
-			const byte encCerbWzOgre = 0x22; // CEREBUS + WzOGRE
-			const byte encTyroWyvern = 0x3D + offsetAtoB; // TYRO + WYVERN
-			const byte encGasD = 0x59; // GAS DRAGON
-			const byte encBlueD = 0x4E; // BLUE DRAGON
-
-			// Turn Ankylo into Bahamut
-			var encountersData = new Encounters(this);
-			encountersData.formations[encAnkylo].pattern = FormationPattern.Large4;
-			encountersData.formations[encAnkylo].spriteSheet = FormationSpriteSheet.WizardGarlandDragon2Golem;
-			encountersData.formations[encAnkylo].gfxOffset1 = (int)FormationGFX.Sprite3;
-			encountersData.formations[encAnkylo].palette1 = 0x1C;
-			encountersData.formations[encAnkylo].paletteAssign1 = 0;
-			encountersData.formations[encAnkylo].minmax1 = (1, 1);
-			encountersData.formations[encAnkylo].unrunnableA = true;
-			encountersData.Write(this);
-
-			EnemyInfo bahamutInfo = new EnemyInfo();
-			bahamutInfo.decompressData(Get(EnemyOffset + (idAnkylo * EnemySize), EnemySize));
-			bahamutInfo.morale = 255; // always prevent running away, whether swole or not
-			bahamutInfo.monster_type = (byte)MonsterType.DRAGON;
-			bahamutInfo.exp = 3000;
-			bahamutInfo.gp = 1;
-			bahamutInfo.hp = 525;      // subject to additional boss HP scaling
-			bahamutInfo.num_hits = 1;
-
-			// These stats are based on the ankylo base stats increased to about 120%
-			// stats will be further scaled based on boss stat scaling
-			bahamutInfo.damage = 118;
-			bahamutInfo.absorb = 58;
-			bahamutInfo.mdef = 188;
-			bahamutInfo.accuracy = 106;
-			bahamutInfo.critrate = 1;
-			bahamutInfo.agility = 58;
-			bahamutInfo.elem_weakness = (byte)SpellElement.None;
-
-			if (swoleBahamut)
-			{
-				bahamutInfo.exp = 16000; // increase exp for swole bahamut, either mode
-				bahamutInfo.hp = 700; // subject to additional boss HP scaling
-				bahamutInfo.elem_resist = (byte)SpellElement.Poison; // no longer susceptible to BANE or BRAK
-
-				int availableScript = bahamutInfo.AIscript;
-				if (availableScript == 0xFF) {
-				    availableScript = searchForNoSpellNoAbilityEnemyScript();
-				}
-
-				if (availableScript >= 0 && Rng.Between(rng, 0, 3) > 0) // because spells and skills shuffle is common, allow RNG to also make physical bahamut (1 in 4)
-				{
-					// spells and skills were shuffled in a way that a script exists with NONES for all magic and skills
-					// find and borrow that script to make a bahamut AI
-					// (magical bahamut mode)
-
-					// assign any enemies using the availabe script to use true NONE script
-					setAIScriptToNoneForEnemiesUsing(availableScript);
-
-					// pick skills from this list
-					List<byte> potentialSkills = new List<byte> {
-					    (byte)EnemySkills.Snorting,
-					    (byte)EnemySkills.Stinger,
-					    (byte)EnemySkills.Cremate,
-					    (byte)EnemySkills.Blizzard,
-					    (byte)EnemySkills.Blaze,
-					    (byte)EnemySkills.Inferno,
-					    (byte)EnemySkills.Poison_Damage,
-					    (byte)EnemySkills.Thunder,
-					    (byte)EnemySkills.Tornado,
-					    (byte)EnemySkills.Nuclear,
-					    (byte)EnemySkills.Swirl,
-					};
-					potentialSkills.Shuffle(rng);
-
-					// create and assign script
-					defineNewAI(availableScript,
-						spellChance: 0x00,
-						skillChance: 0x40,
-						spells: new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE,
-							(byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
-						skills: new List<byte> { potentialSkills[0], potentialSkills[1], potentialSkills[2], potentialSkills[3] }
-						);
-					bahamutInfo.AIscript = (byte)availableScript;
-					bahamutInfo.mdef = 215; // swole magical bahamut has increased MDEF
-				} else
-				{
-					// no script is available: spells and skills aren't shuffled or we got unlucky
-					// (physical bahamut mode)
-					bahamutInfo.critrate = 20;
-					bahamutInfo.num_hits = 2;
-					bahamutInfo.AIscript = 0xFF;
-				}
-			}
-			Put(EnemyOffset + (idAnkylo * EnemySize), bahamutInfo.compressData());
-
-			// Update name
-			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
-			enemyText[78] = "BAHAMUT"; // +1 byte compared to ANKYLO, is this an issue?
-			WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
-
-			// Remove Ankylo from the Overworld, with appropriate substitutions
-			zoneformations.ReplaceEncounter(encAnkylo, encCerbWzOgre); // handle Ankylo A side (single Ankylo)
-			zoneformations.ReplaceEncounter(encAnkylo + offsetAtoB, encTyroWyvern); // handle Ankylo B side (two Ankylos)
-
-			// Update Bahamut behavior
-			String asmNoTailPromote = "EE7D00AD7200203D96AD75002020B1AC7600207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : ClassChange_bB
-			String asmTailRequiredPromote = "AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660"; // 11_820 LichsRevenge ASM : Talk_battleBahamut
-			String asm = "";
-			String bahamutDialogue = "";
-			if (removeTail)
-			{
-				asm = asmNoTailPromote;
-				bahamutDialogue = "To prove your worth..\nYou must show me your\nstrength..\n\nCome at me WARRIORS,\nor die by my claws!";
-			}
-			else
-			{
-				asm = asmTailRequiredPromote;
-				bahamutDialogue = "The TAIL! Impressive..\nNow show me your true\nstrength..\n\nCome at me WARRIORS,\nor die by my claws!";
-			}
-			var fightBahamut = talkroutines.Add(Blob.FromHex(asm));
-			npcdata.GetTalkArray(ObjectId.Bahamut)[(int)TalkArrayPos.battle_id] = encAnkylo;
-			npcdata.SetRoutine(ObjectId.Bahamut, (newTalkRoutines)fightBahamut);
-
-			// Fun Minion dialogue pairings
-			var minionDialogs = new List<string> {
-				"For the king!;For the master!",
-				"No one approaches\nthe master and lives!;Who goes there!?\nYou are not worthy!",
-				"Weaklings!\nYou will die here!;NOW you DIE!",
-				"PFFT!;PEW..PEW..PEW!",
-				"ROOOOAAR!!;HIIISSSS!!",
-				"No! You are not welcome\nhere!;Get out get out get out!",
-			};
-			string[] minions = minionDialogs.PickRandom(rng).Split(";");
-
-			// Update Dragon dialogs
-			Dictionary<int, string> dialogs = new Dictionary<int, string>();
-			dialogs.Add(0x20, bahamutDialogue);
-			dialogs.Add(0xEC, minions[0]); // (CardiaDragon11 / Left) "This is BAHAMUT's room."
-			dialogs.Add(0xED, minions[1]); // (CardiaDragon12 / Right) "BAHAMUT verifies the\ntrue courage of all."
-			dialogs.Add(0xE9, "Have you met BAHAMUT,\nthe Dragon King? He\nfights those with\ncourage as true\nwarriors."); // Cardia Tiny
-			dialogs.Add(0xE5, "You are not afraid of\nBAHAMUT??\nYou will be!"); // Cardia Forest
-			dialogs.Add(0xAB, "Many have searched\nfor BAHAMUT, but,\nnone that found him\nsurvived."); // Onrac Pre-Promo
-			dialogs.Add(0xAC, "Well, well..\nI see you have\nslayed the dragon."); // Onrac Post-Promo
-			InsertDialogs(dialogs);
-
-			// Change Bahamut Dragon NPCs (Left/Right Minions)
-			if (!deepDungeon)
-			{
-				npcdata.GetTalkArray(ObjectId.CardiaDragon11)[(int)TalkArrayPos.battle_id] = encGasD;
-				npcdata.SetRoutine(ObjectId.CardiaDragon11, newTalkRoutines.Talk_fight);
-
-				npcdata.GetTalkArray(ObjectId.CardiaDragon12)[(int)TalkArrayPos.battle_id] = encBlueD;
-				npcdata.SetRoutine(ObjectId.CardiaDragon12, newTalkRoutines.Talk_fight);
-
-				SetNpc(MapIndex.BahamutCaveB2, mapNpcIndex: 1, ObjectId.CardiaDragon11, 20, 4, inRoom: true, stationary: true);
-				SetNpc(MapIndex.BahamutCaveB2, mapNpcIndex: 2, ObjectId.CardiaDragon12, 22, 4, inRoom: true, stationary: true);
-			}
-		}
-
 		private void defineNewAI(int availableScript, byte spellChance, byte skillChance, List<byte> spells, List<byte> skills)
 		{
 			EnemyScriptInfo newAI = new EnemyScriptInfo();
@@ -744,27 +536,33 @@ namespace FF1Lib
 		}
 
 
-		public void DraculasCurse(TalkRoutines talkroutines, NPCdata npcdata, MT19337 rng, Flags flags) {
-		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
-		    enemyText[119] = "Twin D";  //  +2
-		    enemyText[120] = "Twin D";  //  +2
-		    enemyText[121] = "CARMILLA"; // +4
-		    enemyText[122] = "CARMILLA"; // +4
-		    enemyText[123] = "GrREAPER"; // +2
-		    enemyText[124] = "GrREAPER"; // +2
-		    enemyText[125] = "FRANKEN";  // +1
-		    enemyText[126] = "FRANKEN";  // +1
-		    enemyText[127] = "VLAD";     // -1
+		public void DraculasCurse(Overworld overworld, Teleporters teleporters, MT19337 rng, Flags flags)
+		{
+			if (!flags.DraculasFlag)
+			{
+				return;
+			}
 
-		    // Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes, of which I'm using 17.
-		    var enemyTextPart1 = enemyText.Take(2).ToArray();
-		    var enemyTextPart2 = enemyText.Skip(2).ToArray();
-		    WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
-		    WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			enemyText[119] = "Twin D";  //  +2
+			enemyText[120] = "Twin D";  //  +2
+			enemyText[121] = "CARMILLA"; // +4
+			enemyText[122] = "CARMILLA"; // +4
+			enemyText[123] = "GrREAPER"; // +2
+			enemyText[124] = "GrREAPER"; // +2
+			enemyText[125] = "FRANKEN";  // +1
+			enemyText[126] = "FRANKEN";  // +1
+			enemyText[127] = "VLAD";     // -1
+
+			// Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes, of which I'm using 17.
+			var enemyTextPart1 = enemyText.Take(2).ToArray();
+			var enemyTextPart2 = enemyText.Skip(2).ToArray();
+			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
+			WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
 
 			// Change Orbs to Dracula's relics
 			PutInBank(0x0E, 0xAD78, Blob.FromHex("0F050130")); // Update Orbs palette
-			// Lit Orbs
+															   // Lit Orbs
 			PutInBank(0x0D, 0xB640, Blob.FromHex("0003030303020303F8FBFAFAFAFAFAFA00808080800080803FBF3F3F3F3F3F3F0302030301010000FAFAFAFBFDFDFEFF80008080808080003F3F3F3F3FBFBF3F"));
 			PutInBank(0x0D, 0xB680, Blob.FromHex("0000000201030307FFFFF9F8FCF8FBF20000008080C0E0E0FFFF3F3F3F1F0F0F0F0F0F0700000000E4E0E3F0F8FFFFFFE0E0C080000000000F8F1F3F7FFFFFFF"));
 			PutInBank(0x0D, 0xB6C0, Blob.FromHex("00000000070F1F1FFFFFFFF8F7E9D4D0000000000080C0C0FFFFFFFF7FBFDFDF1F0F070000000000D9EFF7F8FFFFFFFFC080000000000000DFBF7FFFFFFFFFFF"));
@@ -772,34 +570,29 @@ namespace FF1Lib
 			// Unlit Orbs
 			PutInBank(0x0D, 0xB760, Blob.FromHex("0003010000061F3FFCFBFDFCF8E6DFBF0080F0F8000000C07F8FF7FB071F3F9F3F7F7F3F3F1F0000BF7F7FBFBFD0E0FFE0F0F0F0E0C000008FC7C787070103FF"));
 
-			var tileprop = new TilePropTable(this, 0xff);
-			tileprop.LoadData();
-
 			// Coneria castle entrance goes to ToF
-			tileprop[0x01] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.TempleOfFiends + 1);
-			tileprop[0x02] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.TempleOfFiends + 1);
+			overworld.TileSet.Tiles[0x01].Properties = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.TempleOfFiends + 1);
+			overworld.TileSet.Tiles[0x02].Properties = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.TempleOfFiends + 1);
 
 			// ToF entrance goes to Ordeals
-			tileprop[0x57] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.CastleOrdeals1F + 1);
-			tileprop[0x58] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.CastleOrdeals1F + 1);
+			overworld.TileSet.Tiles[0x57].Properties = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.CastleOrdeals1F + 1);
+			overworld.TileSet.Tiles[0x58].Properties = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.CastleOrdeals1F + 1);
 
 			// Ordeals entrance goes to Coneria castle
-			tileprop[0x38] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.ConeriaCastle1F + 1);
-			tileprop[0x39] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.ConeriaCastle1F + 1);
+			overworld.TileSet.Tiles[0x38].Properties = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.ConeriaCastle1F + 1);
+			overworld.TileSet.Tiles[0x39].Properties = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.ConeriaCastle1F + 1);
 
 			// Volcano entrance (evil tree) goes to Mirage
-			tileprop[0x64] = new TileProp((byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN, 0);
-			tileprop[0x65] = new TileProp((byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN, 0);
-			tileprop[0x74] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.MirageTower1F + 1);
-			tileprop[0x75] = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.MirageTower1F + 1);
+			overworld.TileSet.Tiles[0x64].Properties = new TileProp((byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN, 0);
+			overworld.TileSet.Tiles[0x64].Properties = new TileProp((byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN, 0);
+			overworld.TileSet.Tiles[0x74].Properties = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.MirageTower1F + 1);
+			overworld.TileSet.Tiles[0x75].Properties = new TileProp(0, (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.MirageTower1F + 1);
 
 			// Mirage entrance (Desert mountain) goes to Volcano (still requires Chime)
-			tileprop[0x1D] = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME | (byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN,
-						      (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
-			tileprop[0x1E] = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME | (byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN,
-						      (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
-
-			tileprop.StoreData();
+			overworld.TileSet.Tiles[0x1D].Properties = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME | (byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN,
+							  (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
+			overworld.TileSet.Tiles[0x1E].Properties = new TileProp((byte)TilePropFunc.OWTP_SPEC_CHIME | (byte)TilePropFunc.OWTP_RIVER | (byte)TilePropFunc.OWTP_OCEAN,
+							  (byte)TilePropFunc.TP_TELE_NORM | (byte)MapIndex.GurguVolcanoB1 + 1);
 
 			const int BATTLEBACKDROPASSIGNMENT_OFFSET =		0x3300;
 
@@ -815,22 +608,20 @@ namespace FF1Lib
 			// fix up battle backdrop on volcano tiles
 			Put(BATTLEBACKDROPASSIGNMENT_OFFSET + 0x1D, new byte[] { 14, 14});
 
-			var teledata = new ExitTeleData(this);
-			teledata.LoadData();
+			//var teledata = new ExitTeleData(this);
+			//teledata.LoadData();
 
-			var tpsReport = new Teleporters(this, flags.ReplacementMap);
+			//var tpsReport = new Teleporters(this, flags.ReplacementMap);
 
-			var tofCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.TempleOfFiends1];
-			var mirageCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.MirageTower1];
-			var volcanoCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.GurguVolcano1];
-			var ordealCoord = tpsReport.OverworldCoordinates[OverworldTeleportIndex.CastleOrdeals1];
+			var tofCoord = teleporters.OverworldCoordinates[OverworldTeleportIndex.TempleOfFiends1];
+			var mirageCoord = teleporters.OverworldCoordinates[OverworldTeleportIndex.MirageTower1];
+			var volcanoCoord = teleporters.OverworldCoordinates[OverworldTeleportIndex.GurguVolcano1];
+			var ordealCoord = teleporters.OverworldCoordinates[OverworldTeleportIndex.CastleOrdeals1];
 
-			teledata[(byte)ExitTeleportIndex.ExitCastleOrdeals] = new TeleData { X = tofCoord.X, Y = tofCoord.Y, Map = (MapIndex)0xFF }; // ordeals exit to ToF location
-			teledata[(byte)ExitTeleportIndex.ExitCastleConeria] = new TeleData { X = ordealCoord.X, Y = ordealCoord.Y, Map = (MapIndex)0xFF }; // coneria exit to ordeal location
-			teledata[(byte)ExitTeleportIndex.ExitGurguVolcano] = new TeleData { X = mirageCoord.X, Y = mirageCoord.Y, Map = (MapIndex)0xFF }; // volcano exit to mirage location
-			teledata[(byte)ExitTeleportIndex.ExitSkyPalace] = new TeleData { X = volcanoCoord.X, Y = volcanoCoord.Y, Map = (MapIndex)0xFF }; // mirage exit to volcano location
-
-			teledata.StoreData();
+			teleporters.ExitTeleporters[ExitTeleportIndex.ExitCastleOrdeals] = new TeleportDestination(MapIndex.ConeriaTown, new Coordinate(tofCoord.X, tofCoord.Y, CoordinateLocale.Overworld)); // ordeals exit to ToF location
+			teleporters.ExitTeleporters[ExitTeleportIndex.ExitCastleConeria] = new TeleportDestination(MapIndex.ConeriaTown, new Coordinate(ordealCoord.X, ordealCoord.Y, CoordinateLocale.Overworld)); // coneria exit to ordeal location
+			teleporters.ExitTeleporters[ExitTeleportIndex.ExitGurguVolcano] = new TeleportDestination(MapIndex.ConeriaTown, new Coordinate(mirageCoord.X, mirageCoord.Y, CoordinateLocale.Overworld)); // volcano exit to mirage location
+			teleporters.ExitTeleporters[ExitTeleportIndex.ExitSkyPalace] = new TeleportDestination(MapIndex.ConeriaTown, new Coordinate(volcanoCoord.X, volcanoCoord.Y, CoordinateLocale.Overworld)); // mirage exit to volcano location
 		}
 
 		public void OpenChestsInOrder(bool enabled)
@@ -885,12 +676,6 @@ namespace FF1Lib
 			// already updated
 		}
 
-		public void MoveToFBats() {
-		    MoveNpc(MapIndex.TempleOfFiends, 2, 0x0C, 0x0D, inRoom: false, stationary: false);
-		    MoveNpc(MapIndex.TempleOfFiends, 3, 0x1D, 0x0B, inRoom: false, stationary: false);
-		    MoveNpc(MapIndex.TempleOfFiends, 4, 0x1A, 0x19, inRoom: false, stationary: false);
-		    MoveNpc(MapIndex.TempleOfFiends, 5, 0x0F, 0x18, inRoom: false, stationary: false);
-		    MoveNpc(MapIndex.TempleOfFiends, 6, 0x14, 0x0C, inRoom: false, stationary: false);
-		}
+
 	}
 }

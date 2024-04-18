@@ -269,9 +269,9 @@ namespace FF1Lib
 				spunitem = picked.index;
 			}
 
-			if (_chestList[_currentChest] is MapObject)
+			if (_chestList[_currentChest] is NpcReward)
 			{
-				_placedItems.Add(new MapObject((MapObject)_chestList[_currentChest], (Item)spunitem));
+				_placedItems.Add(new NpcReward((NpcReward)_chestList[_currentChest], (Item)spunitem));
 			}
 			else if (_chestList[_currentChest] is ItemShopSlot)
 			{
@@ -918,7 +918,7 @@ namespace FF1Lib
 			}
 
 		}
-		public void Generate(MT19337 rng, OverworldMap overworldMap, Teleporters teleporters, List<Map> maps, Flags flags)
+		public void Generate(MT19337 rng, OverworldMap overworldMap, Teleporters teleporters, DialogueData dialogues, List<Map> maps, Flags flags)
 		{
 
 			if (!(bool)flags.Treasures)
@@ -943,7 +943,7 @@ namespace FF1Lib
 
 			// Change the destination for Coneria Castle overworld teleporter so it puts us on the
 			// "back" stairs for floor 1 of the Deep Dungeon.
-			teleporters.ConeriaCastle1 = new TeleportDestination(MapLocation.ConeriaCastle1, MapIndex.TitansTunnel, new Coordinate(0x20, 0x20, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.ConeriaCastle1] = new TeleportDestination(MapLocation.ConeriaCastle1, MapIndex.TitansTunnel, new Coordinate(0x20, 0x20, CoordinateLocale.Standard));
 			/*
 			overworldMap.PutOverworldTeleport(OverworldTeleportIndex.ConeriaCastle1, new TeleportDestination(MapLocation.ConeriaCastle1, MapIndex.TitansTunnel, new Coordinate(0x20, 0x20, CoordinateLocale.Standard)));*/
 
@@ -1025,7 +1025,7 @@ namespace FF1Lib
 				_rom.SetNpc((MapIndex)60, 2, (ObjectId)0x1C, 0x27, 0x1D, false, true);
 				_rom.SetNpc((MapIndex)60, 3, (ObjectId)0x1D, 0x19, 0x23, false, true);
 				_rom.SetNpc((MapIndex)60, 4, (ObjectId)0x1E, 0x27, 0x23, false, true);
-				_rom.InsertDialogs(0x2D, "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nIf you can defeat the\nfiends, you can skip\nahead. GOOD LUCK!");
+				dialogues[0x2D] = "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nIf you can defeat the\nfiends, you can skip\nahead. GOOD LUCK!";
 				//InsertDialogs(0x13, "Bring me TNT if you wish\nto skip to floor 8.");
 				//InsertDialogs(0x29, "Bring me a RUBY if\nyou wish to skip to\nfloor 22.");
 				//InsertDialogs(0x25, "Bring me OXYALE if you\nwish to skip to floor 36.");
@@ -1068,10 +1068,10 @@ namespace FF1Lib
 				_rom.SetNpc((MapIndex)60, 1, ObjectId.Nerrick, 0x20, 0x26, false, true);
 				_rom.SetNpc((MapIndex)60, 2, ObjectId.Titan, 0x1A, 0x20, false, true);
 				_rom.SetNpc((MapIndex)60, 3, ObjectId.SubEngineer, 0x26, 0x20, false, true);
-				_rom.InsertDialogs(0x2D, "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nBring these other folks\nthe items they need to\nskip ahead. GOOD LUCK!");
-				_rom.InsertDialogs(0x13, "Bring me TNT if you wish\nto skip to floor 8.");
-				_rom.InsertDialogs(0x29, "Bring me a RUBY if\nyou wish to skip to\nfloor 22.");
-				_rom.InsertDialogs(0x25, "Bring me OXYALE if you\nwish to skip to floor 36.");
+				dialogues[0x2D] = "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nBring these other folks\nthe items they need to\nskip ahead. GOOD LUCK!";
+				dialogues[0x13] = "Bring me TNT if you wish\nto skip to floor 8.";
+				dialogues[0x29] = "Bring me a RUBY if\nyou wish to skip to\nfloor 22.";
+				dialogues[0x25] = "Bring me OXYALE if you\nwish to skip to floor 36.";
 			}
 
 
@@ -1206,7 +1206,7 @@ namespace FF1Lib
 		public void SpinPalettes(MT19337 rng, List<Map> maps)
 		{
 			// Assigns the inner map with the given index a random palette.
-			var palettes = OverworldMap.GeneratePalettes(_rom.Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
+			var palettes = OverworldMap.GeneratePalettes(_rom.Get(OverworldMap.MapPaletteOffset, OverworldMap.MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
 			for (int i = 8; i < 61; i++)
 			{
 				var pal = palettes[(OverworldMap.Palette)rng.Between(1, palettes.Count() - 1)];

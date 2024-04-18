@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using static System.Math;
 using FF1Lib.Helpers;
+using RomUtilities;
 
 namespace FF1Lib
 {
@@ -77,8 +78,67 @@ namespace FF1Lib
 		[Description("Random (0-65,535 GP)")]
 		RandomHigh,
 	}
+	public class EncounterRate
+	{
+		private const int ThreatLevelsOffset = 0x2CC01; // +1 because first entry is for overworld [unused]
+		private const int ThreatLevelsSize = 63; // -1 because of overworld offset
+		private const int OverworldThreatLevelOffset = 0x7C4FE;
+		private const int OceanThreatLevelOffset = 0x7C506;
 
+		private FF1Rom rom;
+		private byte[] dungeonEncounterRate;
+		private byte overworldEncounterRate;
+		private byte oceanEncounterRate;
+		public EncounterRate(FF1Rom _rom)
+		{
+			rom = _rom;
+			dungeonEncounterRate = _rom.Get(ThreatLevelsOffset, ThreatLevelsSize).ToBytes();
+			overworldEncounterRate = _rom[OverworldThreatLevelOffset];
+			oceanEncounterRate = _rom[OceanThreatLevelOffset];
+		}
+		public void ScaleEncounterRate(Flags flags)
+		{
+			var overworldMultiplier = flags.EncounterRate / 30.0;
+			var dungeonMultiplier = flags.DungeonEncounterRate / 30.0;
 
+			if ((bool)flags.MapHallOfDragons)
+			{
+				dungeonEncounterRate[(int)MapIndex.BahamutCaveB1] = 0x18;
+			}
+
+			// threat level reference for comparison: 08 = most dungeon floors; 18 = sky bridge; 09 = ToFR earth; 0A = ToFR fire; 0B = ToFR water; 0C = ToFR air; 01 = ToFR chaos
+			if ((bool)flags.ChaosFloorEncounters)
+			{
+				dungeonEncounterRate[(int)MapIndex.TempleOfFiendsRevisitedChaos] = 0x0D;
+			}
+
+			if (overworldMultiplier == 0)
+			{
+				rom.PutInBank(0x1F, 0xC50E, Blob.FromHex("EAEA"));
+			}
+			else
+			{
+				overworldEncounterRate = (byte)Math.Ceiling(overworldEncounterRate * overworldMultiplier);
+				oceanEncounterRate = (byte)Math.Ceiling(oceanEncounterRate * overworldMultiplier);
+			}
+
+			if (dungeonMultiplier == 0)
+			{
+				rom.PutInBank(0x1F, 0xCDCC, Blob.FromHex("1860"));
+			}
+			else
+			{
+				dungeonEncounterRate = dungeonEncounterRate.Select(x => (byte)Math.Ceiling(x * dungeonMultiplier)).ToArray();
+			}
+		}
+		public void Write()
+		{
+			rom[OverworldThreatLevelOffset] = overworldEncounterRate;
+			rom[OceanThreatLevelOffset] = oceanEncounterRate;
+			rom.Put(ThreatLevelsOffset, dungeonEncounterRate);
+		}
+
+	}
 	public partial class FF1Rom : NesRom
 	{
 		public static readonly List<int> Bosses = new List<int> { Enemy.Garland, Enemy.Astos, Enemy.Pirate, Enemy.WarMech,
@@ -89,11 +149,6 @@ namespace FF1Lib
 		public const int PriceOffset = 0x37C00;
 		public const int PriceSize = 2;
 		public const int PriceCount = 240;
-
-		public const int ThreatLevelsOffset = 0x2CC00;
-		public const int ThreatLevelsSize = 64;
-		public const int OverworldThreatLevelOffset = 0x7C4FE;
-		public const int OceanThreatLevelOffset = 0x7C506;
 
 		public const int LevelRequirementsOffsetThief = 0x6D535;
 		public const int LevelRequirementsOffsetBlackBelt = 0x6D5C8;
@@ -439,33 +494,6 @@ namespace FF1Lib
 			//Inject into end-of-battle code
 			PutInBank(0x1B, 0x806D, Blob.FromHex("20CBCFEAEAEAEAEA"));
 		}
-
-		private void ScaleEncounterRate(double overworldMultiplier, double dungeonMultiplier)
-		{
-			if (overworldMultiplier == 0)
-			{
-				PutInBank(0x1F, 0xC50E, Blob.FromHex("EAEA"));
-			}
-			else
-			{
-				byte[] threats = new byte[] { Data[OverworldThreatLevelOffset], Data[OceanThreatLevelOffset] };
-				threats = threats.Select(x => (byte)Math.Ceiling(x * overworldMultiplier)).ToArray();
-				Data[OverworldThreatLevelOffset] = threats[0];
-				Data[OceanThreatLevelOffset] = threats[1];
-			}
-
-			if (dungeonMultiplier == 0)
-			{
-				PutInBank(0x1F, 0xCDCC, Blob.FromHex("1860"));
-			}
-			else
-			{
-				var threats = Get(ThreatLevelsOffset, ThreatLevelsSize).ToBytes();
-				threats = threats.Select(x => (byte)Math.Ceiling(x * dungeonMultiplier)).ToArray();
-				Put(ThreatLevelsOffset, threats);
-			}
-		}
-
 		public void ExpGoldBoost(Flags flags)
 		{
 			var enemyBlob = Get(EnemyOffset, EnemySize * EnemyCount);

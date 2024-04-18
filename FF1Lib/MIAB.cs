@@ -48,8 +48,13 @@ namespace FF1Lib
 
 	public partial class FF1Rom : NesRom
 	{
-		public void MonsterInABox(ZoneFormations zoneformations, MT19337 rng, Flags flags)
+		public void MonsterInABox(ZoneFormations zoneformations, NpcObjectData npcdata, DialogueData dialogues, MT19337 rng, Flags flags)
 		{
+			if (!(bool)flags.TrappedChestsEnabled)
+			{
+				return;
+			}
+
 			const int lut_TreasureOffset = 0x3100;
 			const int BANK_SMINFO = 0x00;
 			const int lut_TileSMsetProp = 0x8800; // BANK_SMINFO - page                        - 0x100 bytes x 8  (2 bytes per)
@@ -63,7 +68,7 @@ namespace FF1Lib
 			// InTalkBattleNoRun to trigger fight
 			PutInBank(0x11, 0x8E80, Blob.FromHex("856A8D410320CDD8A9008D01208D1540A002204A96A001204A9660"));
 
-			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
+			dialogues[0x110] = "Monster-in-a-box!"; // 0xC0
 
 			List<IRewardSource> validChests = new();
 			var chestMonsterList = new byte[0x100];
@@ -359,6 +364,8 @@ namespace FF1Lib
 				}
 
 				chestMonsterList[validChests.SpliceRandom(rng).Address - lut_TreasureOffset] = ChaosFormationIndex;
+
+				SetChaosForMIAB(npcdata, dialogues);
 			}
 
 
@@ -399,15 +406,16 @@ namespace FF1Lib
 			// Insert trapped chest list
 			PutInBank(0x11, 0x8F00, chestMonsterList);
 		}
-		public void SetChaosForMIAB(NPCdata npcdata)
+		public void SetChaosForMIAB(NpcObjectData npcdata, DialogueData dialogues)
 		{
-			npcdata.SetRoutine((ObjectId)0x1A, newTalkRoutines.Talk_4Orb);
-			npcdata.GetTalkArray((ObjectId)0x1A)[(int)TalkArrayPos.dialogue_1] = 0x30;
-			npcdata.GetTalkArray((ObjectId)0x1A)[(int)TalkArrayPos.dialogue_2] = 0x30;
-			npcdata.GetTalkArray((ObjectId)0x1A)[(int)TalkArrayPos.dialogue_3] = 0x30;
-			Data[MapObjGfxOffset + 0x18] = 0xF4;
-			Data[MapObjGfxOffset + 0x19] = 0xF4;
-			Data[MapObjGfxOffset + 0x1A] = 0xF4;
+			npcdata[ObjectId.Chaos3].Script = TalkScripts.Talk_4Orb;
+			npcdata[ObjectId.Chaos3].Dialogue1 = 0x30;
+			npcdata[ObjectId.Chaos3].Dialogue2 = 0x30;
+			npcdata[ObjectId.Chaos3].Dialogue3 = 0x30;
+
+			npcdata[ObjectId.Chaos1].Sprite = (ObjectSprites)0xF4;
+			npcdata[ObjectId.Chaos2].Sprite = (ObjectSprites)0xF4;
+			npcdata[ObjectId.Chaos3].Sprite = (ObjectSprites)0xF4;
 			PutInBank(0x00, 0xA000 + ((byte)MapIndex.TempleOfFiendsRevisitedChaos * 0x30) + 0x18, Blob.FromHex("000F1636000F1636"));
 
 			Dictionary<int, string> newgarlanddialogue = new Dictionary<int, string>();
@@ -416,7 +424,7 @@ namespace FF1Lib
 			newgarlanddialogue.Add(0x2F, "Many moons ago I managed\nto run away from Chaos.\nAnd lo and behold,\nI BECAME Chaos. I took\nhis place.");
 			newgarlanddialogue.Add(0x30, "Okay, I won't fight you.\nSome say you can find\nthe other Chaos hidden\nsomewhere in a chest.\nGood luck!");
 
-			InsertDialogs(newgarlanddialogue);
+			dialogues.InsertDialogues(newgarlanddialogue);
 		}
 		public static List<Item> GetIncentiveList(Flags flags)
 		{

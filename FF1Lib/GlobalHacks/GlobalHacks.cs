@@ -27,6 +27,7 @@ namespace FF1Lib
 			SeparateUnrunnables();
 			DrawCanoeUnderBridge();
 			BattleMagicMenuWrapAround();
+			AddNewChars();
 		}
 		public void UpgradeToMMC3()
 		{
@@ -233,6 +234,51 @@ namespace FF1Lib
 			PutInBank(BANK_EXTTELEPORTINFO, lut_NormTele_X_ext, NormTele_X);
 			PutInBank(BANK_EXTTELEPORTINFO, lut_NormTele_Y_ext, NormTele_Y);
 			PutInBank(BANK_EXTTELEPORTINFO, lut_NormTele_Map_ext, NormTele_Map);
+		}
+
+		public void AddNewChars()
+		{
+			const int statusCharOffset = 0x37000;
+			const int tilesetOffset = 0x0C000;
+			const int tilesetSize = 0x800;
+			const int tilesetCount = 8;
+			const int battleTilesetOffset = 0x1C000;
+			const int battleTilesetSize = 0x800;
+			const int battleTilesetCount = 16;
+			const int shopTilesetOffset = 0x24000;
+
+			// There's 5 unused characters available on every tileset, 0x7B to 0x7F
+			//  new chars must be added to the BytesByText list in FF1Text.cs
+			var newChars = new List<(byte, string)>
+			{
+				(0x7B, "000008083E080800FFFFFFFFFFFFFFFF"), // + sign
+				(0x7C, "FFFFFF7F3DFFFFFFFFFF99C2E6C299FE"),  // Trapped chest (standard)
+				(0x7D, "FFFF99C3E7C399FF0000663C183C6600")  // Trap tile
+			};
+
+			foreach (var newchar in newChars)
+			{
+				// Menu screen tilset
+				Put(statusCharOffset + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+				// Shop tileset
+				Put(shopTilesetOffset + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+
+				// Map tilesets
+				for (int i = 0; i < tilesetCount; i++)
+				{
+					Put(tilesetOffset + tilesetSize * i + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+				}
+
+				// Battle tilesets
+				for (int i = 0; i < battleTilesetCount; i++)
+				{
+					Put(battleTilesetOffset + battleTilesetSize * i + newchar.Item1 * 0x10, Blob.FromHex(newchar.Item2));
+				}
+			}
+
+			// Hack this one in, because chests in sky have different graphics from other chests
+			var trappedChestSky = "FFFFFF7F3DFFFF7FFF6699C2E64299EE";
+			Put(tilesetOffset + tilesetSize * (int)TileSets.SkyCastle + 0x7C * 0x10, Blob.FromHex(trappedChestSky));
 		}
 	}
 }

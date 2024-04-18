@@ -2130,8 +2130,8 @@
 		"description": "If a character is at 1 HP, stepping on damage tiles will kill them. If all characters are dead, game over will be triggered."
 	},
 	{
-		"Id": "ArmorResistsDamageTileDamagfeCheckBox",
-		"title": "Armor Resists Damage Tile Damage,
+		"Id": "ArmorResistsDamageTileDamageCheckBox",
+		"title": "Armor Resists Damage Tile Damage",
 		"screenshot": null,
 		"description": "If a character is equipped with Ice armor they will not take damage from lava tiles.\n\nIf a character is equipped with Flame armor they will not take damage from ice tiles."
 	},

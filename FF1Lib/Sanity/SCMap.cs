@@ -21,16 +21,16 @@ namespace FF1Lib.Sanity
 		public List<SCArea> Areas { get; private set; } = new List<SCArea>();
 
 		FF1Rom rom;
-		Map map;
+		MapDataGroup map;
 		SCTileSet tileSet;
 
 		//EnterTeleData enter;
 		//ExitTeleData exit;
 		//NormTeleData tele;
 		Teleporters teleporters;
-		NPCdata npcdata;
+		NpcObjectData npcdata;
 
-		public SCMap(MapIndex _MapIndex, Map _map, SCMapCheckFlags cflags, FF1Rom _rom, NPCdata _npcData, SCTileSet _tileSet, Teleporters _teleporters)
+		public SCMap(MapIndex _MapIndex, MapDataGroup _map, SCMapCheckFlags cflags, FF1Rom _rom, NpcObjectData _npcData, SCTileSet _tileSet, Teleporters _teleporters)
 		{
 			MapIndex = _MapIndex;
 			CFlags = cflags;
@@ -61,7 +61,7 @@ namespace FF1Lib.Sanity
 				for (int y = 0; y < Size; y++)
 				{
 					//The map is organized the other way around. I don't care about the cache inefficiency here. My sanity comes first.
-					var tileId = map[y, x];
+					var tileId = map.Map[y, x];
 					var tileDef = tileSet.Tiles[tileId];
 
 					Tiles[x, y] = new SCTile(tileDef.BitFlags);
@@ -156,32 +156,34 @@ namespace FF1Lib.Sanity
 		{
 			for (int i = 0; i < 16; i++)
 			{
-				NPC npc = rom.GetNpc(MapIndex, i);
+				
+
+				MapObject npc = map.MapObjects[i];
 
 				ProcessNPC(ref npc);
 			}
 		}
 
-		private void ProcessNPC(ref NPC npc)
+		private void ProcessNPC(ref MapObject npc)
 		{
 			switch(npc.ObjectId)
 			{
 				case ObjectId.SubEngineer:
-					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Oxyale;
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Oxyale;
 					break;
 				case ObjectId.Titan:
-					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Ruby;
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Ruby;
 					break;
 				case ObjectId.BlackOrb:
-					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Orbs;
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Orbs;
 					break;
 				case ObjectId.LutePlate:
-					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Lute;
-					CheckUseLuteRodSanity(npc.Coord.x, npc.Coord.y, SCBitFlags.UseLute, ObjectId.LutePlate);
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Lute;
+					CheckUseLuteRodSanity(npc.Coords.X, npc.Coords.Y, SCBitFlags.UseLute, ObjectId.LutePlate);
 					break;
 				case ObjectId.RodPlate:
-					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Rod;
-					CheckUseLuteRodSanity(npc.Coord.x, npc.Coord.y, SCBitFlags.UseRod, ObjectId.RodPlate);
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Rod;
+					CheckUseLuteRodSanity(npc.Coords.X, npc.Coords.Y, SCBitFlags.UseRod, ObjectId.RodPlate);
 					break;
 				default:
 					ProcessDefaultNPCs(ref npc);
@@ -189,35 +191,35 @@ namespace FF1Lib.Sanity
 			}
 		}
 
-		private void ProcessDefaultNPCs(ref NPC npc)
+		private void ProcessDefaultNPCs(ref MapObject npc)
 		{
-			var routine = npcdata.GetRoutine(npc.ObjectId);
+			var routine = npcdata[npc.ObjectId].Script;
 
 			switch (routine)
 			{
-				case newTalkRoutines.Talk_Princess1:
-				case newTalkRoutines.Talk_Bikke:
-				case newTalkRoutines.Talk_Bahamut:
-				case newTalkRoutines.Talk_ElfDocUnne:
-				case newTalkRoutines.Talk_GiveItemOnFlag:
-				case newTalkRoutines.Talk_TradeItems:
-				case newTalkRoutines.Talk_GiveItemOnItem:
-				case newTalkRoutines.Talk_Astos:
-				case newTalkRoutines.Talk_Chaos:
+				case TalkScripts.Talk_Princess1:
+				case TalkScripts.Talk_Bikke:
+				case TalkScripts.Talk_Bahamut:
+				case TalkScripts.Talk_ElfDocUnne:
+				case TalkScripts.Talk_GiveItemOnFlag:
+				case TalkScripts.Talk_TradeItems:
+				case TalkScripts.Talk_GiveItemOnItem:
+				case TalkScripts.Talk_Astos:
+				case TalkScripts.Talk_Chaos:
 					ProcessQuestNpc(ref npc);
 					break;
-				case newTalkRoutines.Talk_Nerrick:
-					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Tnt;
+				case TalkScripts.Talk_Nerrick:
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Tnt;
 					ProcessQuestNpc(ref npc);
 					break;
-				case newTalkRoutines.NoOW_Floater:
-					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Floater;
+				case TalkScripts.NoOW_Floater:
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Floater;
 					break;
-				case newTalkRoutines.NoOW_Chime:
-					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Chime;
+				case TalkScripts.NoOW_Chime:
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Chime;
 					break;
-				case newTalkRoutines.NoOW_Canoe:
-					Tiles[npc.Coord.x, npc.Coord.y].Tile = SCBitFlags.Canoe;
+				case TalkScripts.NoOW_Canoe:
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Canoe;
 					break;
 				default:
 					if (npc.ObjectId == ObjectId.Princess1 || npc.ObjectId == ObjectId.Vampire || npc.ObjectId == ObjectId.ElfDoc || npc.ObjectId == ObjectId.Unne)
@@ -228,18 +230,19 @@ namespace FF1Lib.Sanity
 			}
 		}
 
-		private void ProcessQuestNpc(ref NPC npc)
+		private void ProcessQuestNpc(ref MapObject npc)
 		{
-			var routine = npcdata.GetRoutine(npc.ObjectId);
-			var talkArray = npcdata.GetTalkArray(npc.ObjectId);
+			var routine = npcdata[npc.ObjectId].Script;
+			var requirement = npcdata[npc.ObjectId].Requirement;
 
 			var poi = new SCPointOfInterest
 			{
-				Coords = new SCCoords(npc.Coord.x, npc.Coord.y),
+				Coords = new SCCoords(npc.Coords.X, npc.Coords.Y),
 				Type = SCPointOfInterestType.QuestNpc,
 				Npc = npc,
 				TalkRoutine = routine,
-				TalkArray = talkArray
+				//TalkArray = talkArray
+				NpcRequirement = requirement
 			};
 
 			PointsOfInterest.Add(poi);
@@ -251,10 +254,10 @@ namespace FF1Lib.Sanity
 		{
 			if ((CFlags & SCMapCheckFlags.NoUseTiles) > 0) return;
 
-			if (tileSet.Tiles[map[y - 1, x]].SpBitFlags == check) return;
-			if (tileSet.Tiles[map[y + 1, x]].SpBitFlags == check) return;
-			if (tileSet.Tiles[map[y, x - 1]].SpBitFlags == check) return;
-			if (tileSet.Tiles[map[y, x + 1]].SpBitFlags == check) return;
+			if (tileSet.Tiles[map.Map[y - 1, x]].SpBitFlags == check) return;
+			if (tileSet.Tiles[map.Map[y + 1, x]].SpBitFlags == check) return;
+			if (tileSet.Tiles[map.Map[y, x - 1]].SpBitFlags == check) return;
+			if (tileSet.Tiles[map.Map[y, x + 1]].SpBitFlags == check) return;
 
 			throw new NopeException(MapIndex, "There is no " + check.ToString() + " tile next to " + plate.ToString());
 		}
