@@ -98,7 +98,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Patcher6502" Version="0.3.0" />
     <PackageReference Include="RomUtilities" Version="3.1.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="2.1.7" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
   </ItemGroup>
 

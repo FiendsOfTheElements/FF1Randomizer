@@ -484,7 +484,7 @@ namespace FF1Lib
 			
 
 			// Load icons from images. Make your own if you'd like! Don't forget to add them to the icon dictionary
-			IImageFormat format;
+			//IImageFormat format;
 
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 			var weaponiconsPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("weapon_icons.png"));
@@ -511,7 +511,7 @@ namespace FF1Lib
 			offset += 16 * 32 + 16; // Left the first line blank for silly reasons. If more icons get added, clean this up
 
 			// Weapons
-			Image<Rgba32> image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(weaponiconsPath), out format);
+			Image<Rgba32> image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(weaponiconsPath));
 			for (int w = 0; w < 6; w++)
 			{
 				rom.PutInBank(0x12, offset, rom.EncodeForPPU(getTile(w, index, image)));
@@ -520,7 +520,7 @@ namespace FF1Lib
 			}
 
 			// Spells
-			image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(spelliconsPath), out format);
+			image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(spelliconsPath));
 			for (int w = 0; w < 13; w++)
 			{
 				rom.PutInBank(0x12, offset, rom.EncodeForPPU(getTile(w, index, image)));
@@ -528,7 +528,7 @@ namespace FF1Lib
 			}
 
 			// These are the old icons, no images for these only THE BLOB
-			image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(elementstatusiconsPath), out format);
+			image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(elementstatusiconsPath));
 			for (int w = 0; w < 16; w++)
 			{
 				rom.PutInBank(0x12, offset, rom.EncodeForPPU(getTile(w, index, image)));			// Non Shop Icons

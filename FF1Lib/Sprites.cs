@@ -547,8 +547,8 @@ namespace FF1Lib
 
 		public async Task SetCustomPlayerSprites(Stream readStream, bool threePalettes)
 		{
-			IImageFormat format;
-			Image<Rgba32> image = Image.Load<Rgba32>(readStream, out format);
+			//IImageFormat format;
+			Image<Rgba32> image = Image.Load<Rgba32>(readStream);
 
 
 			var battlePals = new List<List<byte>>();
@@ -774,8 +774,8 @@ namespace FF1Lib
 						 int PATTERNTABLE_OFFSET,
 						 int PATTERNTABLE_ASSIGNMENT)
 		{
-			IImageFormat format;
-			Image<Rgba32> image = Image.Load<Rgba32>(readStream, out format);
+			//IImageFormat format;
+			Image<Rgba32> image = Image.Load<Rgba32>(readStream);
 
 			// palette for each terrain tile stored 0-127, each value is 0-3
 			// starting from OVERWORLDPALETTE_ASSIGNMENT
@@ -1036,9 +1036,9 @@ namespace FF1Lib
 	    //public async Task<bool> SetLichKaryGraphics(Stream lich, Stream kary) {
 		public bool SetLichKaryGraphics(Stream lich, Stream kary) {
 		var formations = LoadFormations();
-		IImageFormat format;
-		Image<Rgba32> lichImage = Image.Load<Rgba32>(lich, out format);
-		Image<Rgba32> karyImage = Image.Load<Rgba32>(kary, out format);
+		//IImageFormat format;
+		Image<Rgba32> lichImage = Image.Load<Rgba32>(lich);
+		Image<Rgba32> karyImage = Image.Load<Rgba32>(kary);
 		List<byte[]> CHR = new List<byte[]>();
 		/*
 		await FiendImport(lichImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[LICH1].pal2 * 4));
@@ -1058,9 +1058,9 @@ namespace FF1Lib
 	    //public async Task<bool> SetKrakenTiamatGraphics(Stream kraken, Stream tiamat) {
 		public bool SetKrakenTiamatGraphics(Stream kraken, Stream tiamat) {
 		var formations = LoadFormations();
-		IImageFormat format;
-		Image<Rgba32> krakenImage = Image.Load<Rgba32>(kraken, out format);
-		Image<Rgba32> tiamatImage = Image.Load<Rgba32>(tiamat, out format);
+		//IImageFormat format;
+		Image<Rgba32> krakenImage = Image.Load<Rgba32>(kraken);
+		Image<Rgba32> tiamatImage = Image.Load<Rgba32>(tiamat);
 		List<byte[]> CHR = new List<byte[]>();
 			/*
 		await FiendImport(krakenImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal2 * 4));
@@ -1092,9 +1092,9 @@ namespace FF1Lib
 
 		var formations = LoadFormations();
 
-		IImageFormat format;
+		//IImageFormat format;
 
-		Image<Rgba32> image = Image.Load<Rgba32>(fiends, out format);
+		Image<Rgba32> image = Image.Load<Rgba32>(fiends);
 		{
 		    List<byte[]> CHR = new List<byte[]>();
 				/*
@@ -1133,9 +1133,9 @@ namespace FF1Lib
 
 	    public async Task SetCustomChaosGraphics(Stream chaos) {
 		var formations = LoadFormations();
-		IImageFormat format;
+		//IImageFormat format;
 		const int CHAOS = 0x7B;
-		Image<Rgba32> image = Image.Load<Rgba32>(chaos, out format);
+		Image<Rgba32> image = Image.Load<Rgba32>(chaos);
 		List<byte[]> CHR = new List<byte[]>();
 		//await FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
 		FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
@@ -1153,8 +1153,8 @@ namespace FF1Lib
 		//const int BATTLEBACKDROPASSIGNMENT_OFFSET =		0x3310;
 		const int BATTLEBACKDROPPALETTE_OFFSET =		0x3200;
 
-		IImageFormat format;
-		Image<Rgba32> image = Image.Load<Rgba32>(backdrop, out format);
+		//IImageFormat format;
+		Image<Rgba32> image = Image.Load<Rgba32>(backdrop);
 		var toNEScolor = new Dictionary<Rgba32, byte>();
 
 		for (int count = 0; count < 16; count++) {
@@ -1199,8 +1199,8 @@ namespace FF1Lib
 	    }
 
 	    public void SetCustomWeaponGraphics(Stream stream) {
-		IImageFormat format;
-		Image<Rgba32> image = Image.Load<Rgba32>(stream, out format);
+		//IImageFormat format;
+		Image<Rgba32> image = Image.Load<Rgba32>(stream);
 
 		const int WEAPONMAGICGRAPHIC_OFFSET =			0x26800;
 
@@ -1224,8 +1224,8 @@ namespace FF1Lib
 	    }
 
 	    public void SetCustomGearIcons(Stream stream) {
-		IImageFormat format;
-		Image<Rgba32> image = Image.Load<Rgba32>(stream, out format);
+		//IImageFormat format;
+		Image<Rgba32> image = Image.Load<Rgba32>(stream);
 
 		// 0 = black
 		// 1 = grey

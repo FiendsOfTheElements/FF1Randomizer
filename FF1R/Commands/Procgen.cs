@@ -134,8 +134,8 @@ namespace FF1R.Commands
 	    var resourcePath = assembly.GetManifestResourceNames().First(str => str.EndsWith("maptiles.png"));
 
 	    using (Stream stream = assembly.GetManifestResourceStream(resourcePath)) {
-		IImageFormat format;
-		var tiles = Image.Load(stream, out format);
+		//IImageFormat format;
+		var tiles = Image.Load(stream);
 
 		using (StreamReader file = new StreamReader(mapfile)) {
 		    JsonSerializer serializer = new JsonSerializer();
