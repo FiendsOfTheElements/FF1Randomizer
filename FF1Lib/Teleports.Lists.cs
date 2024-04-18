@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Linq;
+using System.Xml.Linq;
 using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
@@ -377,81 +378,82 @@ namespace FF1Lib
 				{TeleportIndex.TempleOfFiends4, AccessRequirement.Lute} // needs to be verified
 			};
 
-		public List<TeleportDestination> NonTownForcedTopFloors =>
-		 	new List<TeleportDestination>
+		public List<TeleportDestination> NonTownForcedTopFloors => OverworldTeleporters.Where(t => NonTownForcedTopFloorsIndex.Contains(t.Key)).Select(t => new TeleportDestination(t.Value)).ToList();
+		public static List<OverworldTeleportIndex> NonTownForcedTopFloorsIndex =
+		 	new List<OverworldTeleportIndex>
 			{
-				new(OverworldTeleporters[OverworldTeleportIndex.TitansTunnelEast]),
-				new(OverworldTeleporters[OverworldTeleportIndex.TitansTunnelWest]),
-				new(OverworldTeleporters[OverworldTeleportIndex.ConeriaCastle1]),
-				new(OverworldTeleporters[OverworldTeleportIndex.CastleOrdeals1]),
-				new(OverworldTeleporters[OverworldTeleportIndex.TempleOfFiends1]),
+				OverworldTeleportIndex.TitansTunnelEast,
+				OverworldTeleportIndex.TitansTunnelWest,
+				OverworldTeleportIndex.ConeriaCastle1,
+				OverworldTeleportIndex.CastleOrdeals1,
+				OverworldTeleportIndex.TempleOfFiends1,
 			};
-		public List<TeleportDestination> TownTeleports =>
-		 	new List<TeleportDestination>
-			{
-				new(OverworldTeleporters[OverworldTeleportIndex.Coneria]),
-				new(OverworldTeleporters[OverworldTeleportIndex.Pravoka]),
-				new(OverworldTeleporters[OverworldTeleportIndex.Elfland]),
-				new(OverworldTeleporters[OverworldTeleportIndex.Melmond]),
-				new(OverworldTeleporters[OverworldTeleportIndex.CrescentLake]),
-				new(OverworldTeleporters[OverworldTeleportIndex.Gaia]),
-				new(OverworldTeleporters[OverworldTeleportIndex.Onrac]),
-				new(OverworldTeleporters[OverworldTeleportIndex.Lefein]),
-			};
+		public List<TeleportDestination> TownTeleports => OverworldTeleporters.Where(t => TownEntrances.Contains(t.Key)).Select(t => new TeleportDestination(t.Value)).ToList();
+		public static List<OverworldTeleportIndex> FreePlacementFloorsOw = new()
+		{
+			OverworldTeleportIndex.ElflandCastle,
+			OverworldTeleportIndex.NorthwestCastle,
+			OverworldTeleportIndex.DwarfCave,
+			OverworldTeleportIndex.MatoyasCave,
+			OverworldTeleportIndex.SardasCave,
+			OverworldTeleportIndex.Cardia1,
+			OverworldTeleportIndex.Cardia2,
+			OverworldTeleportIndex.BahamutCave1,
+			OverworldTeleportIndex.Cardia4,
+			OverworldTeleportIndex.Cardia5,
+			OverworldTeleportIndex.Cardia6,
+			OverworldTeleportIndex.IceCave1,
+			OverworldTeleportIndex.Waterfall,
+			OverworldTeleportIndex.EarthCave1,
+			OverworldTeleportIndex.GurguVolcano1,
+			OverworldTeleportIndex.MarshCave1,
+			OverworldTeleportIndex.MirageTower1,
+		};
+		public static List<TeleportIndex> FreePlacementFloorsSm = new()
+		{
+				TeleportIndex.BahamutsRoom,
+				TeleportIndex.IceCave2,
+				TeleportIndex.IceCave3,
+				TeleportIndex.IceCavePitRoom,
+				TeleportIndex.EarthCave2,
+				TeleportIndex.EarthCaveVampire,
+				TeleportIndex.EarthCave4,
+				TeleportIndex.EarthCaveLich,
+				TeleportIndex.GurguVolcano2,
+				TeleportIndex.GurguVolcano3,
+				TeleportIndex.GurguVolcano4,
+				TeleportIndex.GurguVolcano5,
+				TeleportIndex.GurguVolcano6,
+				TeleportIndex.GurguVolcanoKary,
+				TeleportIndex.MarshCave3,
+				TeleportIndex.MarshCaveBottom,
+				TeleportIndex.MarshCaveTop,
+				TeleportIndex.MirageTower2,
+				TeleportIndex.MirageTower3,
+				TeleportIndex.SkyPalace1,
+				TeleportIndex.SkyPalace2,
+				TeleportIndex.SkyPalace3,
+				TeleportIndex.SkyPalaceMaze,
+				TeleportIndex.SkyPalaceTiamat,
+				TeleportIndex.SeaShrineMermaids,
+				TeleportIndex.SeaShrine1,
+				TeleportIndex.SeaShrine2,
+				TeleportIndex.SeaShrine4,
+				TeleportIndex.SeaShrine5,
+				TeleportIndex.SeaShrine6,
+				TeleportIndex.SeaShrine7,
+				TeleportIndex.SeaShrine8,
+				TeleportIndex.SeaShrineKraken
+		};
 		public List<TeleportDestination> FreePlacementFloors =>
-			new List<TeleportDestination>
-			{
-				new(OverworldTeleporters[OverworldTeleportIndex.ElflandCastle]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.NorthwestCastle]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.DwarfCave]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.MatoyasCave]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.SardasCave]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.Cardia1]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.Cardia2]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.BahamutCave1]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.BahamutsRoom]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.Cardia4]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.Cardia5]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.Cardia6]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.IceCave1]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.IceCave2]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.IceCave3]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.IceCavePitRoom]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.Waterfall]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.EarthCave1]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.EarthCave2]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.EarthCaveVampire]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.EarthCave4]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.EarthCaveLich]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.GurguVolcano1]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.GurguVolcano2]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.GurguVolcano3]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.GurguVolcano4]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.GurguVolcano5]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.GurguVolcano6]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.GurguVolcanoKary]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.MarshCave1]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.MarshCave3]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.MarshCaveBottom]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.MarshCaveTop]),
-				new TeleportDestination(OverworldTeleporters[OverworldTeleportIndex.MirageTower1]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.MirageTower2]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.MirageTower3]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SkyPalace1]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SkyPalace2]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SkyPalace3]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SkyPalaceMaze]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SkyPalaceTiamat]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrineMermaids]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrine1]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrine2]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrine4]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrine5]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrine6]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrine7]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrine8]),
-				new TeleportDestination(StandardMapTeleporters[TeleportIndex.SeaShrineKraken])
-			};
+			OverworldTeleporters
+				.Where(t => FreePlacementFloorsOw.Contains(t.Key))
+				.Select(t => new TeleportDestination(t.Value))
+				.ToList()
+				.Concat(StandardMapTeleporters
+					.Where(t => FreePlacementFloorsSm.Contains(t.Key))
+					.Select(t => new TeleportDestination(t.Value))).ToList();
+
 		public List<OverworldTeleportIndex> TownEntrances =>
 			new List<OverworldTeleportIndex>
 			{
@@ -577,93 +579,92 @@ namespace FF1Lib
 				{TeleportIndex.SkyPalaceMaze, MapLocation.SkyPalaceMaze},
 				{TeleportIndex.SkyPalaceTiamat, MapLocation.SkyPalaceTiamat}
 			};
-		public Dictionary<OverworldTeleportIndex, TeleportDestination> VanillaOverworldTeleports =>
-			new Dictionary<OverworldTeleportIndex, TeleportDestination>
-			{
-				{OverworldTeleportIndex.Coneria,new(OverworldTeleporters[OverworldTeleportIndex.Coneria])},
-				{OverworldTeleportIndex.Pravoka,new(OverworldTeleporters[OverworldTeleportIndex.Pravoka])},
-				{OverworldTeleportIndex.Elfland,new(OverworldTeleporters[OverworldTeleportIndex.Elfland])},
-				{OverworldTeleportIndex.Melmond,new(OverworldTeleporters[OverworldTeleportIndex.Melmond])},
-				{OverworldTeleportIndex.CrescentLake,new(OverworldTeleporters[OverworldTeleportIndex.CrescentLake])},
-				{OverworldTeleportIndex.Gaia,new(OverworldTeleporters[OverworldTeleportIndex.Gaia])},
-				{OverworldTeleportIndex.Onrac,Onrac},
-				{OverworldTeleportIndex.Lefein,Lefein},
-				{OverworldTeleportIndex.ConeriaCastle1,ConeriaCastle1},
-				{OverworldTeleportIndex.ElflandCastle,ElflandCastle},
-				{OverworldTeleportIndex.NorthwestCastle,NorthwestCastle},
-				{OverworldTeleportIndex.CastleOrdeals1,CastleOrdeals1},
-				{OverworldTeleportIndex.TempleOfFiends1,TempleOfFiends},
-				{OverworldTeleportIndex.EarthCave1,EarthCave1},
-				{OverworldTeleportIndex.GurguVolcano1,GurguVolcano1},
-				{OverworldTeleportIndex.IceCave1,IceCave1},
-				{OverworldTeleportIndex.Cardia1,Cardia1},
-				{OverworldTeleportIndex.Cardia2,Cardia2},
-				{OverworldTeleportIndex.BahamutCave1,BahamutCave1},
-				{OverworldTeleportIndex.Cardia4,Cardia4},
-				{OverworldTeleportIndex.Cardia5,Cardia5},
-				{OverworldTeleportIndex.Cardia6,Cardia6},
-				{OverworldTeleportIndex.Waterfall,Waterfall},
-				{OverworldTeleportIndex.DwarfCave,DwarfCave},
-				{OverworldTeleportIndex.MatoyasCave,MatoyasCave},
-				{OverworldTeleportIndex.SardasCave,SardasCave},
-				{OverworldTeleportIndex.MarshCave1,MarshCave1},
-				{OverworldTeleportIndex.MirageTower1,MirageTower1},
-				{OverworldTeleportIndex.TitansTunnelEast,TitansTunnelEast},
-				{OverworldTeleportIndex.TitansTunnelWest,TitansTunnelWest},
-			};
-		public Dictionary<TeleportIndex, TeleportDestination> VanillaStandardTeleports =>
-			new Dictionary<TeleportIndex, TeleportDestination>
-			{
-				{TeleportIndex.ConeriaCastle2, ConeriaCastle2},
-				//{TeleportIndex.TempleOfFiends2, TempleOfFiends2},
-				{TeleportIndex.MarshCaveTop, MarshCaveTop},
-				{TeleportIndex.MarshCave3, MarshCave3},
-				{TeleportIndex.MarshCaveBottom, MarshCaveBottom},
-				{TeleportIndex.EarthCave2, EarthCave2},
-				{TeleportIndex.EarthCaveVampire, EarthCaveVampire},
-				{TeleportIndex.EarthCave4, EarthCave4},
-				{TeleportIndex.EarthCaveLich, EarthCaveLich},
-				{TeleportIndex.GurguVolcano2, GurguVolcano2},
-				{TeleportIndex.GurguVolcano3, GurguVolcano3},
-				{TeleportIndex.GurguVolcano4, GurguVolcano4},
-				{TeleportIndex.GurguVolcano5, GurguVolcano5},
-				{TeleportIndex.GurguVolcano6, GurguVolcano6},
-				{TeleportIndex.GurguVolcanoKary, GurguVolcanoKary},
-				{TeleportIndex.IceCave2, IceCave2},
-				{TeleportIndex.IceCave3, IceCave3},
-				{TeleportIndex.IceCavePitRoom, IceCavePitRoom},
-				{TeleportIndex.IceCave5, IceCave5},
-				{TeleportIndex.IceCave6, IceCave6},
-				{TeleportIndex.IceCave7, IceCave7},
-				{TeleportIndex.IceCave8, IceCave8},
-				{TeleportIndex.CastleOrdealsMaze, CastleOrdealsMaze},
-				{TeleportIndex.CastleOrdealsTop, CastleOrdealsTop},
-				//{TeleportIndex.CastleOrdealsBack, CastleOrdealsBack},
-				{TeleportIndex.BahamutsRoom, BahamutsRoom},
-				{TeleportIndex.SeaShrine1, SeaShrine1},
-				{TeleportIndex.SeaShrine2, SeaShrine2},
-				{TeleportIndex.SeaShrineMermaids, SeaShrineMermaids},
-				{TeleportIndex.SeaShrine4, SeaShrine4},
-				{TeleportIndex.SeaShrine5, SeaShrine5},
-				{TeleportIndex.SeaShrine6, SeaShrine6},
-				{TeleportIndex.SeaShrine7, SeaShrine7},
-				{TeleportIndex.SeaShrine8, SeaShrine8},
-				{TeleportIndex.SeaShrineKraken, SeaShrineKraken},
-				{TeleportIndex.MirageTower2, MirageTower2},
-				{TeleportIndex.MirageTower3, MirageTower3},
-				{TeleportIndex.SkyPalace1, SkyPalace1},
-				{TeleportIndex.SkyPalace2, SkyPalace2},
-				{TeleportIndex.SkyPalace3, SkyPalace3},
-				{TeleportIndex.SkyPalaceMaze, SkyPalaceMaze},
-				{TeleportIndex.SkyPalaceTiamat, SkyPalaceTiamat}
-			};
-		public Dictionary<TeleportIndex, TeleportDestination> IceCaveLoopTeleporters =>
-			new Dictionary<TeleportIndex, TeleportDestination>
-			{
-				{TeleportIndex.IceCave5, new TeleportDestination(StandardMapTeleporters[TeleportIndex.IceCave5])},
-				{TeleportIndex.IceCave6, new TeleportDestination(StandardMapTeleporters[TeleportIndex.IceCave6])},
-				{TeleportIndex.IceCave7, new TeleportDestination(StandardMapTeleporters[TeleportIndex.IceCave7])},
-				{TeleportIndex.IceCave8, new TeleportDestination(StandardMapTeleporters[TeleportIndex.IceCave8])},
-			};
+		public Dictionary<OverworldTeleportIndex, TeleportDestination> VanillaOverworldTeleports => OverworldTeleporters.Where(t => VanillaOverworldTeleList.Contains(t.Key)).ToDictionary(t => t.Key, t => new TeleportDestination(t.Value));
+
+		public static List<OverworldTeleportIndex> VanillaOverworldTeleList = new()
+		{
+			OverworldTeleportIndex.Coneria,
+			OverworldTeleportIndex.Pravoka,
+			OverworldTeleportIndex.Elfland,
+			OverworldTeleportIndex.Melmond,
+			OverworldTeleportIndex.CrescentLake,
+			OverworldTeleportIndex.Gaia,
+			OverworldTeleportIndex.Onrac,
+			OverworldTeleportIndex.Lefein,
+			OverworldTeleportIndex.ConeriaCastle1,
+			OverworldTeleportIndex.ElflandCastle,
+			OverworldTeleportIndex.NorthwestCastle,
+			OverworldTeleportIndex.CastleOrdeals1,
+			OverworldTeleportIndex.TempleOfFiends1,
+			OverworldTeleportIndex.EarthCave1,
+			OverworldTeleportIndex.GurguVolcano1,
+			OverworldTeleportIndex.IceCave1,
+			OverworldTeleportIndex.Cardia1,
+			OverworldTeleportIndex.Cardia2,
+			OverworldTeleportIndex.BahamutCave1,
+			OverworldTeleportIndex.Cardia4,
+			OverworldTeleportIndex.Cardia5,
+			OverworldTeleportIndex.Cardia6,
+			OverworldTeleportIndex.Waterfall,
+			OverworldTeleportIndex.DwarfCave,
+			OverworldTeleportIndex.MatoyasCave,
+			OverworldTeleportIndex.SardasCave,
+			OverworldTeleportIndex.MarshCave1,
+			OverworldTeleportIndex.MirageTower1,
+			OverworldTeleportIndex.TitansTunnelEast,
+			OverworldTeleportIndex.TitansTunnelWest,
+		};
+		public Dictionary<TeleportIndex, TeleportDestination> VanillaStandardTeleports => StandardMapTeleporters.Where(t => VanillaStandardTeleList.Contains(t.Key)).ToDictionary(t => t.Key, t => new TeleportDestination(t.Value));
+		public static List<TeleportIndex> VanillaStandardTeleList = new()
+		{
+			TeleportIndex.ConeriaCastle2,
+			TeleportIndex.MarshCaveTop,
+			TeleportIndex.MarshCave3,
+			TeleportIndex.MarshCaveBottom,
+			TeleportIndex.EarthCave2,
+			TeleportIndex.EarthCaveVampire,
+			TeleportIndex.EarthCave4,
+			TeleportIndex.EarthCaveLich,
+			TeleportIndex.GurguVolcano2,
+			TeleportIndex.GurguVolcano3,
+			TeleportIndex.GurguVolcano4,
+			TeleportIndex.GurguVolcano5,
+			TeleportIndex.GurguVolcano6,
+			TeleportIndex.GurguVolcanoKary,
+			TeleportIndex.IceCave2,
+			TeleportIndex.IceCave3,
+			TeleportIndex.IceCavePitRoom,
+			TeleportIndex.IceCave5,
+			TeleportIndex.IceCave6,
+			TeleportIndex.IceCave7,
+			TeleportIndex.IceCave8,
+			TeleportIndex.CastleOrdealsMaze,
+			TeleportIndex.CastleOrdealsTop,
+			TeleportIndex.BahamutsRoom,
+			TeleportIndex.SeaShrine1,
+			TeleportIndex.SeaShrine2,
+			TeleportIndex.SeaShrineMermaids,
+			TeleportIndex.SeaShrine4,
+			TeleportIndex.SeaShrine5,
+			TeleportIndex.SeaShrine6,
+			TeleportIndex.SeaShrine7,
+			TeleportIndex.SeaShrine8,
+			TeleportIndex.SeaShrineKraken,
+			TeleportIndex.MirageTower2,
+			TeleportIndex.MirageTower3,
+			TeleportIndex.SkyPalace1,
+			TeleportIndex.SkyPalace2,
+			TeleportIndex.SkyPalace3,
+			TeleportIndex.SkyPalaceMaze,
+			TeleportIndex.SkyPalaceTiamat,
+		};
+		public Dictionary<TeleportIndex, TeleportDestination> IceCaveLoopTeleporters => StandardMapTeleporters.Where(t => IceCaveLoopTeleList.Contains(t.Key)).ToDictionary(t => t.Key, t => new TeleportDestination(t.Value));
+		public static List<TeleportIndex> IceCaveLoopTeleList = new()
+		{
+			TeleportIndex.IceCave5,
+			TeleportIndex.IceCave6,
+			TeleportIndex.IceCave7,
+			TeleportIndex.IceCave8,
+		};
 	}
 }

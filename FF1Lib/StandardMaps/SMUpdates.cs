@@ -25,7 +25,7 @@ namespace FF1Lib
 
 			ProcgenWaterfall((bool)flags.EFGWaterfall, teleporters, rng);
 			MoveToFBats((bool)flags.MoveToFBats);
-			FlipMaps(rng);
+			FlipMaps(flags, rng);
 			EnableTitansTrove((bool)flags.TitansTrove);
 			EnableLefeinShops((bool)flags.LefeinShops);
 			EnableMelmondClinic((bool)flags.MelmondClinic);
@@ -70,14 +70,14 @@ namespace FF1Lib
 			List<int> sages = Enumerable.Range(0, 12).ToList(); // But the 12th Sage is actually id 12, not 11.
 			sages.ForEach(sage => mapObjects[(int)MapIndex.CrescentLake].MoveNpc(sage < 11 ? sage : 12, coords[sage].Item1, coords[sage].Item2, false, false));
 		}
-		private void FlipMaps(MT19337 rng)
+		private void FlipMaps(Flags flags, MT19337 rng)
 		{
 			var mapFlipper = new FlippedMaps(rom, this, flags, teleporters, rng);
 			VerticalFlippedMaps = mapFlipper.VerticalFlipStep1();
 
 			if ((bool)flags.ReversedFloors) new ReversedFloors(rom, this, rng, teleporters, VerticalFlippedMaps).Work();
 
-			mapFlipper.VerticalFlipStep2();
+			if((bool)flags.VerticallyFlipDungeons) mapFlipper.VerticalFlipStep2();
 
 			if ((bool)flags.FlipDungeons)
 			{

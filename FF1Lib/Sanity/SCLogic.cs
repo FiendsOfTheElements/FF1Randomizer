@@ -477,7 +477,7 @@ namespace FF1Lib.Sanity
 
 		private SCRequirementsSet ProcessItemOnFlag(SCPointOfInterest poi, NpcReward rewardSource, Dictionary<ObjectId, SCRequirementsSet> allNpcs)
 		{
-			var flag = (ObjectId)poi.TalkArray[(int)TalkArrayPos.requirement_id];
+			var flag = (ObjectId)poi.NpcRequirement;
 
 			if (poi.Npc.ObjectId == ObjectId.Fairy)
 			{

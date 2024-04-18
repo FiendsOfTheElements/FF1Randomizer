@@ -14,7 +14,8 @@ namespace FF1Lib
 
 		Dictionary<MapIndex, byte> MapTileSets;
 		ShopData ShopData;
-		TileSet[] TileSets = new TileSet[8];
+		//TileSet[] TileSets = new TileSet[8];
+		TileSetsData TileSets;
 
 		Dictionary<byte, List<byte>> UnusedTilesbyTileSet;
 		Dictionary<string, MagicSpell> Spells;
@@ -33,7 +34,7 @@ namespace FF1Lib
 			(MapIndex.SeaShrineB4, 27, 40, 0x22, 0x23, 0x32, 0x33, 0xAA)
 		};
 
-		public LegendaryShops(MT19337 _rng, Flags _flags, StandardMaps _maps, ShopData _shopdata, FF1Rom _rom)
+		public LegendaryShops(MT19337 _rng, Flags _flags, StandardMaps _maps, ShopData _shopdata, TileSetsData _tilesets, FF1Rom _rom)
 		{
 			rng = _rng;
 			flags = _flags;
@@ -41,6 +42,7 @@ namespace FF1Lib
 			maps = _maps;
 			flippedMaps = maps.HorizontalFlippedMaps;
 			vflippedMaps = maps.VerticalFlippedMaps;
+			TileSets = _tilesets;
 
 			MapTileSets = maps.MapTileSets.Select((t,i) => (i, (byte)t)).ToDictionary(t => (MapIndex)t.i, t => t.Item2);
 			ShopData = _shopdata;
@@ -72,12 +74,12 @@ namespace FF1Lib
 			PrepareMaps();
 
 			Spells = rom.GetSpells().ToDictionary(s => s.Name.ToLowerInvariant());
-
+			/*
 			for (int i = 0; i < 8; i++)
 			{
 				TileSets[i] = new TileSet(rom, (byte)i);
 				TileSets[i].LoadData();
-			}
+			}*/
 
 			LoadUnusedTileIds();
 
@@ -96,7 +98,7 @@ namespace FF1Lib
 			ShopData.StoreData();
 			treasureData.StoreTable();
 
-			for (int i = 0; i < 8; i++) TileSets[i].StoreData();
+			//for (int i = 0; i < 8; i++) TileSets[i].StoreData();
 
 			rom.PutInBank(0x1F, 0xEBBD, Blob.FromHex("03"));//Set ShopType
 			rom.PutInBank(0x1F, 0xEBC7, Blob.FromHex("02"));//Set ShopType
@@ -213,18 +215,20 @@ namespace FF1Lib
 			maps[loc.Item1].Map[loc.Item3, loc.Item2] = tile;
 		}
 
-		private byte CreateTile(MapIndex MapIndex, int ShopId, byte ul, byte ur, byte bl, byte br, byte pi)
+		private byte CreateTile(MapIndex mapindex, int ShopId, byte ul, byte ur, byte bl, byte br, byte pi)
 		{
-			var tileSet = TileSets[MapTileSets[MapIndex]];
-			var tile = UnusedTilesbyTileSet[MapTileSets[MapIndex]][0];
-			UnusedTilesbyTileSet[MapTileSets[MapIndex]].RemoveAt(0);
+			var tileSet = TileSets[MapTileSets[mapindex]];
+			var tile = UnusedTilesbyTileSet[MapTileSets[mapindex]][0];
+			UnusedTilesbyTileSet[MapTileSets[mapindex]].RemoveAt(0);
 
+			tileSet.Tiles[tile] = new TileSM(tile, tileSet.Index, (TilePalette)pi, new() { ul, ur, bl, br }, 3, (byte)ShopId);
+			/*
 			tileSet.TileAttributes[tile] = pi;
 			tileSet.TileProperties[tile] = new TileProp(3, (byte)ShopId);
 			tileSet.TopLeftTiles[tile] = ul;
 			tileSet.TopRightTiles[tile] = ur;
 			tileSet.BottomLeftTiles[tile] = bl;
-			tileSet.BottomRightTiles[tile] = br;
+			tileSet.BottomRightTiles[tile] = br;*/
 
 			return tile;
 		}

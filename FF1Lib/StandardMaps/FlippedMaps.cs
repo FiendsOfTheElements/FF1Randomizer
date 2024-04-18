@@ -61,7 +61,7 @@ namespace FF1Lib
 
 		public List<MapIndex> VerticalFlipStep1()
 		{
-			if (!flags.VerticallyFlipDungeons ?? false || flags.GameMode != GameModes.Standard)
+			if (!(bool)flags.VerticallyFlipDungeons || flags.GameMode != GameModes.Standard)
 			{
 				mapsToFlipVertically = new List<MapIndex>();
 				return mapsToFlipVertically;
@@ -123,8 +123,8 @@ namespace FF1Lib
 				{
 					map.Map.FlipVertical();
 
-					FlipNormalTele(mapindex);
-					FlipEnterTele(mapindex);
+					FlipNormalTele(mapindex, true);
+					FlipEnterTele(mapindex, true);
 
 					FixFullRoomMap(mapindex, map.Map);
 
@@ -155,8 +155,8 @@ namespace FF1Lib
 				{
 					map.Map.FlipVertical();
 
-					FlipNormalTele(mapindex);
-					FlipEnterTele(mapindex);
+					FlipNormalTele(mapindex, true);
+					FlipEnterTele(mapindex, true);
 
 					FixRooms(mapindex, map.Map);
 					FixWalls(mapindex, map.Map);
@@ -215,14 +215,23 @@ namespace FF1Lib
 			SwapTele(mapindex, 0x1E, 0x20, 0x1E, 0x21);
 		}
 
-		private void FlipNormalTele(MapIndex mapindex)
+		private void FlipNormalTele(MapIndex mapindex, bool yaxis)
 		{
-			teleporters.StandardMapTeleporters.Where(t => t.Value.Index == mapindex).ToList().ForEach(t => t.Value.FlipYcoordinate());
+			var teletoflip = teleporters.StandardMapTeleporters.Where(t => t.Value.Index == mapindex).ToList();
+
+			foreach (var tele in teletoflip)
+			{
+				teleporters.StandardMapTeleporters[tele.Key] = new TeleportDestination(tele.Value, yaxis ? tele.Value.FlipYcoordinate() : tele.Value.FlipXcoordinate());
+			}
 		}
 
-		private void FlipEnterTele(MapIndex mapindex)
+		private void FlipEnterTele(MapIndex mapindex, bool yaxis)
 		{
-			teleporters.OverworldTeleporters.Where(t => t.Value.Index == mapindex).ToList().ForEach(t => t.Value.FlipYcoordinate());
+			var teletoflip = teleporters.OverworldTeleporters.Where(t => t.Value.Index == mapindex).ToList();
+			foreach (var tele in teletoflip)
+			{
+				teleporters.OverworldTeleporters[tele.Key] = new TeleportDestination(tele.Value, yaxis ? tele.Value.FlipYcoordinate() : tele.Value.FlipXcoordinate());
+			}
 		}
 
 		private void FlipNPCs(MapIndex mapindex)
@@ -479,6 +488,12 @@ namespace FF1Lib
 			}
 
 			// Update entrance and teleporters coordinate, it has to be done manually for entrance/floor shuffles
+			foreach (var maptoflip in mapsToFlip)
+			{
+				FlipNormalTele(maptoflip, false);
+				FlipEnterTele(maptoflip, false);
+			}
+			/*
 			if (mapsToFlip.Contains(MapIndex.EarthCaveB1)) teleporters.EarthCave1.FlipXcoordinate(); 
 			if (mapsToFlip.Contains(MapIndex.EarthCaveB2)) teleporters.EarthCave2.FlipXcoordinate();
 			if (mapsToFlip.Contains(MapIndex.EarthCaveB3)) teleporters.EarthCaveVampire.FlipXcoordinate(); 
@@ -503,13 +518,13 @@ namespace FF1Lib
 			{
 				teleporters.IceCave1.FlipXcoordinate();
 				teleporters.IceCave6.FlipXcoordinate();
-				//teleporters.IceCavePitRoom.FlipXcoordinate();
+				//teleporters.IceCavePitRoom.FlipXcoordinate();*/
 
 				/*
 				var t = teleporters.OverworldTeleporters[(int)TeleportIndex.IceCave5];
 				t.FlipXcoordinate();
 				overworld.PutStandardTeleport(TeleportIndex.IceCave5, new TeleportDestination(MapLocation.IceCaveBackExit, MapIndex.IceCaveB1, new Coordinate(t.X, t.Y, CoordinateLocale.Standard), TeleportIndex.IceCave5), OverworldTeleportIndex.IceCave1);*/
-			}
+			/*}
 			if (mapsToFlip.Contains(MapIndex.IceCaveB2))
 			{
 				teleporters.IceCave2.FlipXcoordinate();
@@ -520,7 +535,7 @@ namespace FF1Lib
 			{
 				teleporters.IceCave3.FlipXcoordinate();
 				teleporters.IceCave5.FlipXcoordinate();
-				teleporters.IceCave7.FlipXcoordinate();
+				teleporters.IceCave7.FlipXcoordinate();*/
 
 				/*
 				var t1 = teleporters.OverworldTeleporters[(int)TeleportIndex.IceCave5];
@@ -530,7 +545,7 @@ namespace FF1Lib
 				var t2 = teleporters.OverworldTeleporters[(int)TeleportIndex.IceCave6];
 				t2.FlipXcoordinate();
 				overworld.PutStandardTeleport(TeleportIndex.IceCave6, new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(t2.X, t2.Y, CoordinateLocale.Standard), TeleportIndex.IceCave6), OverworldTeleportIndex.IceCave1);*/
-			}
+			/*}
 
 			if (mapsToFlip.Contains(MapIndex.MarshCaveB1)) teleporters.MarshCave1.FlipXcoordinate();
 			if (mapsToFlip.Contains(MapIndex.MarshCaveB2))
@@ -569,7 +584,7 @@ namespace FF1Lib
 			if (mapsToFlip.Contains(MapIndex.TempleOfFiends)) teleporters.TempleOfFiends.FlipXcoordinate(); 
 
 			if (mapsToFlip.Contains(MapIndex.Waterfall)) teleporters.Waterfall.FlipXcoordinate();
-
+			*/
 			return mapsToFlip;
 		}
 	}

@@ -1285,12 +1285,12 @@ namespace FF1Lib
 			var output = new Image<Rgba32>(16 * 16, 8 * 16);
 			for (int imagecount = 0; imagecount < 128; imagecount += 1)
 			{
-				var pal = tilesetProps.TileAttributes[imagecount];
+				var pal = (int)tilesetProps.Tiles[imagecount].Palette;
 
-				var pt1 = tilesetProps.TopLeftTiles[imagecount];
-				var pt2 = tilesetProps.TopRightTiles[imagecount];
-				var pt3 = tilesetProps.BottomLeftTiles[imagecount];
-				var pt4 = tilesetProps.BottomRightTiles[imagecount];
+				var pt1 = tilesetProps.Tiles[imagecount].TopLeftTile;
+				var pt2 = tilesetProps.Tiles[imagecount].TopRightTile;
+				var pt3 = tilesetProps.Tiles[imagecount].BottomLeftTile;
+				var pt4 = tilesetProps.Tiles[imagecount].BottomRightTile;
 
 				var chr1 = Get(PATTERNTABLE_OFFSET + (tileset << 11) + (pt1 * 16), 16);
 				var chr2 = Get(PATTERNTABLE_OFFSET + (tileset << 11) + (pt2 * 16), 16);

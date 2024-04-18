@@ -1,4 +1,5 @@
 ﻿using System.Reflection.Metadata.Ecma335;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -271,10 +272,17 @@ namespace FF1Lib
 		private void SwapTele(MapIndex mapindex, int x1, int y1, int x2, int y2)
 		{
 			var overtoswap = teleporters.OverworldTeleporters.Where(t => t.Value.Index == mapindex && t.Value.Coordinates.X == x1 && t.Value.Coordinates.Y == y1).ToList();
-			overtoswap.ForEach(t => t.Value.SetTeleporter(new Coordinate((byte)x2, (byte)y2, t.Value.Coordinates.Context)));
+			foreach (var t in overtoswap)
+			{
+				teleporters.OverworldTeleporters[t.Key] = new TeleportDestination(t.Value, new Coordinate((byte)x2, (byte)y2, t.Value.Coordinates.Context));
+			}
 
 			var teletoswap = teleporters.StandardMapTeleporters.Where(t => t.Value.Index == mapindex && t.Value.Coordinates.X == x1 && t.Value.Coordinates.Y == y1).ToList();
-			teletoswap.ForEach(t => t.Value.SetTeleporter(new Coordinate((byte)x2, (byte)y2, t.Value.Coordinates.Context)));
+			foreach (var t in teletoswap)
+			{
+				teleporters.StandardMapTeleporters[t.Key] = new TeleportDestination(t.Value, new Coordinate((byte)x2, (byte)y2, t.Value.Coordinates.Context));
+			}
+
 			/*
 
 			for (int i = 0; i < 64; i++)

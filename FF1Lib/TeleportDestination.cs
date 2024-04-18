@@ -13,16 +13,18 @@ namespace FF1Lib
 	public struct Coordinate
 	{
 		private readonly short _identityValue;
-		public readonly byte X;
-		public readonly byte Y;
+		public readonly byte X { get => Context > CoordinateLocale.Overworld ? (byte)(x & 0x3F) : x; }
+		public readonly byte Y { get => Context > CoordinateLocale.Overworld ? (byte)(y & 0x3F) : y; }
+		private byte x;
+		private byte y;
 		public readonly CoordinateLocale Context;
 		public readonly byte ValueX { get => Context == CoordinateLocale.StandardInRoom ? (byte)(X | 0x80) : X; }
 		public readonly byte ValueY { get => Context > CoordinateLocale.Overworld ? (byte)(Y | 0x80) : Y; }
 		//public CoordinateLocale Context { get => ((X & 0x80) > 0) ? CoordinateLocale.StandardInRoom : (((Y & 0x80) > 0) ? CoordinateLocale.Overworld : CoordinateLocale.Standard); }
-		public Coordinate(byte x, byte y, CoordinateLocale context)
+		public Coordinate(byte _x, byte _y, CoordinateLocale context)
 		{
-			X = x;
-			Y = y;
+			x = _x;
+			y = _y;
 			Context = context;
 			/*
 			if (context > CoordinateLocale.Overworld)
@@ -183,14 +185,14 @@ namespace FF1Lib
 			SetTeleporter(new Coordinate(data.X, data.Y, CoordinateLocale.Overworld));
 		}
 
-		public void FlipXcoordinate()
+		public Coordinate FlipXcoordinate()
 		{
-			Coordinates = new Coordinate((byte)(64 - Coordinates.X - 1), Coordinates.Y, Coordinates.Context);
+			return new Coordinate((byte)(64 - Coordinates.X - 1), Coordinates.Y, Coordinates.Context);
 		}
 
-		public void FlipYcoordinate()
+		public Coordinate FlipYcoordinate()
 		{
-			Coordinates = new Coordinate(Coordinates.X, (byte)(64 - Coordinates.Y - 1), Coordinates.Context);
+			return new Coordinate(Coordinates.X, (byte)(64 - Coordinates.Y - 1), Coordinates.Context);
 		}
 	}
 }

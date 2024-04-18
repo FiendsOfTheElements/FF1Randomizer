@@ -219,7 +219,7 @@ namespace FF1Lib
 			npcObjects[(int)ObjectId.Sarda].Requirement = (bool)flags.EarlySarda ? (byte)0x00 : (byte)ObjectId.Vampire;
 
 			npcObjects[(int)ObjectId.Titan].Dialogue1 = 0x29;
-			npcObjects[(int)ObjectId.Sarda].Requirement = (byte)Item.Ruby;
+			npcObjects[(int)ObjectId.Titan].Requirement = (byte)Item.Ruby;
 
 			npcObjects[(int)ObjectId.Unne].Dialogue1 = 0x1B;
 			npcObjects[(int)ObjectId.Unne].Dialogue2 = 0x18;

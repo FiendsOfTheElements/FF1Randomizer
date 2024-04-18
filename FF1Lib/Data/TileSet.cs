@@ -97,6 +97,11 @@ namespace FF1Lib
 			get { return (TilePalette)_attribute; }
 			set { _attribute = (byte)value; }
 		}
+		public byte Attribute
+		{
+			get { return _attribute; }
+			set { _attribute = value; }
+		}
 		public List<byte> TileGraphic
 		{
 			get { return new List<byte> { _TSAul, _TSAur, _TSAdl, _TSAdr }; }
@@ -108,21 +113,35 @@ namespace FF1Lib
 				_TSAdr = value[3];
 			}
 		}
+		public byte TopLeftTile
+		{
+			get { return _TSAul; }
+			set { _TSAul = value; }
+		}
+		public byte TopRightTile
+		{
+			get { return _TSAur; }
+			set { _TSAur = value; }
+		}
+		public byte BottomLeftTile
+		{
+			get { return _TSAdl; }
+			set { _TSAdl = value; }
+		}
+		public byte BottomRightTile
+		{
+			get { return _TSAdr; }
+			set { _TSAdr = value; }
+		}
 		public byte PropertyType
 		{
 			get { return _property1; }
-			set
-			{
-				_property1 = value;
-			}
+			set { _property1 = value; }
 		}
 		public byte PropertyValue
 		{
 			get { return _property2; }
-			set
-			{
-				_property2 = value;
-			}
+			set	{ _property2 = value; }
 		}
 		public TileProp Properties
 		{
@@ -136,18 +155,12 @@ namespace FF1Lib
 		public byte Index
 		{
 			get { return _tileSetID; }
-			set
-			{
-				_tileSetID = value;
-			}
+			set	{ _tileSetID = value; }
 		}
 		public int TileSet
 		{
 			get { return _tileSetOrigin; }
-			set
-			{
-				_tileSetOrigin = value;
-			}
+			set	{ _tileSetOrigin = value; }
 		}
 		public TileSM(byte id, int tileset, TilePalette palette, List<byte> tilegraphics, byte property1, byte property2)
 		{
@@ -164,10 +177,6 @@ namespace FF1Lib
 		public TileSM(byte id, int tileset, FF1Rom rom)
 		{
 			Read(id, tileset, rom);
-		}
-		public TileProp RawProperties()
-		{
-			return new TileProp { Byte1 = _property1, Byte2 = _property2 };
 		}
 		public void Write(FF1Rom rom)
 		{
@@ -197,14 +206,14 @@ namespace FF1Lib
 		public List<TileSM> Tiles { get; set; }
 		public const byte OverworldIndex = 0xFF;
 
-		public MemTable<TileProp> TileProperties;
-		public MemTable<byte> TileAttributes;
-		public MemTable<byte> TopLeftTiles;
-		public MemTable<byte> TopRightTiles;
-		public MemTable<byte> BottomLeftTiles;
-		public MemTable<byte> BottomRightTiles;
+		private MemTable<TileProp> TileProperties;
+		private MemTable<byte> TileAttributes;
+		private MemTable<byte> TopLeftTiles;
+		private MemTable<byte> TopRightTiles;
+		private MemTable<byte> BottomLeftTiles;
+		private MemTable<byte> BottomRightTiles;
 		public byte Index;
-		public FF1Rom Rom;
+		private FF1Rom Rom;
 
 		public TileSet(FF1Rom _rom, byte idx)
 		{
@@ -253,7 +262,7 @@ namespace FF1Lib
 		{
 			foreach (var tile in Tiles)
 			{
-				TileProperties[tile.Index] = tile.RawProperties();
+				TileProperties[tile.Index] = tile.Properties;
 				TileAttributes[tile.Index] = (byte)tile.Palette;
 				TopLeftTiles[tile.Index] = tile.TileGraphic[0];
 				TopRightTiles[tile.Index] = tile.TileGraphic[1];

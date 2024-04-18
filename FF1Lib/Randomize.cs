@@ -527,7 +527,7 @@ public partial class FF1Rom : NesRom
 
 		shopData.LoadData();
 
-		new LegendaryShops(rng, flags, Maps, shopData, this).PlaceShops();
+		new LegendaryShops(rng, flags, Maps, shopData, TileSetsData, this).PlaceShops();
 
 		if (flags.GameMode == GameModes.DeepDungeon)
 		{

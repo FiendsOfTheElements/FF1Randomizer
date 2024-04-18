@@ -74,7 +74,7 @@ namespace FF1Lib
 				hasBattles = copyfrom.hasBattles;
 			}
 		}
-		public static void FindRoomTiles(TileSet tileset,
+		public static void FindRoomTiles(FF1Rom rom, TileSet tileset,
 						List<byte> floorTiles,
 						List<byte> spikeTiles,
 						List<byte> battleTiles,
@@ -89,7 +89,7 @@ namespace FF1Lib
 				// Go through the pattern table, and find the CHR which
 				// is entirely color 1.
 
-				var chr = tileset.Rom.Get(TILESETPATTERNTABLE_OFFSET + (tileset.Index << 11) + (i * 16), 16);
+				var chr = rom.Get(TILESETPATTERNTABLE_OFFSET + (tileset.Index << 11) + (i * 16), 16);
 				var dec = DecodePPU(chr);
 
 				bool blank = true;
@@ -110,23 +110,23 @@ namespace FF1Lib
 
 			for (byte i = 0; i < 128; i++)
 			{
-				if ((tileset.TileProperties[i].TilePropFunc & TilePropFunc.TP_NOMOVE) != 0)
+				if ((tileset.Tiles[i].Properties.TilePropFunc & TilePropFunc.TP_NOMOVE) != 0)
 				{
 					continue;
 				}
 				// Allowed to walk onto this tile
 
-				if ((tileset.TileAttributes[i] & 3) != 1 &&
-					(tileset.TileAttributes[i] & 3) != 2)
+				if ((tileset.Tiles[i].Attribute & 3) != 1 &&
+					(tileset.Tiles[i].Attribute & 3) != 2)
 				{
 					continue;
 				}
 				// This tile has the "room" palette
 
-				if (!blankPPUTiles.Contains(tileset.TopLeftTiles[i]) ||
-					!blankPPUTiles.Contains(tileset.TopRightTiles[i]) ||
-					!blankPPUTiles.Contains(tileset.BottomLeftTiles[i]) ||
-					!blankPPUTiles.Contains(tileset.BottomRightTiles[i]))
+				if (!blankPPUTiles.Contains(tileset.Tiles[i].TopLeftTile) ||
+					!blankPPUTiles.Contains(tileset.Tiles[i].TopRightTile) ||
+					!blankPPUTiles.Contains(tileset.Tiles[i].BottomLeftTile) ||
+					!blankPPUTiles.Contains(tileset.Tiles[i].BottomRightTile))
 				{
 					continue;
 				}
@@ -134,13 +134,13 @@ namespace FF1Lib
 				// floor color (black) and ceiling color
 				// (generally white/off white).
 
-				if (tileset.TileProperties[i].TilePropFunc == TilePropFunc.TP_SPEC_BATTLE)
+				if (tileset.Tiles[i].Properties.TilePropFunc == TilePropFunc.TP_SPEC_BATTLE)
 				{
-					if (tileset.TileProperties[i].BattleId != randomEncounter)
+					if (tileset.Tiles[i].Properties.BattleId != randomEncounter)
 					{
 						// This is a spike tile
 						spikeTiles.Add(i);
-						if (debug) Console.WriteLine($"spike tile {i:X} BattleId {tileset.TileProperties[i].BattleId:X}");
+						if (debug) Console.WriteLine($"spike tile {i:X} BattleId {tileset.Tiles[i].Properties.BattleId:X}");
 					}
 					else
 					{
@@ -219,8 +219,9 @@ namespace FF1Lib
 			List<byte> floorTiles = new();
 			List<byte> spikeTiles = new();
 			List<byte> battleTiles = new();
-
-			FindRoomTiles(tileset, floorTiles, spikeTiles, battleTiles, randomEncounter);
+			List<SCCoords> excludeFloors = new();
+				
+			FindRoomTiles(rom, tileset, floorTiles, spikeTiles, battleTiles, randomEncounter);
 
 			byte vanillaTeleporters = 0x41;
 			var smTeleporters = teleporters.StandardMapTeleporters.Where(t => (int)t.Key < vanillaTeleporters).Select(t => t.Value).ToList();
@@ -244,18 +245,30 @@ namespace FF1Lib
 
 			List<Room> rooms = new();
 
-			foreach (var MapIndex in ids)
+			foreach (var mapindex in ids)
 			{
-				if (debug) Console.WriteLine($"\nFinding rooms for map {MapIndex}");
+				if (debug) Console.WriteLine($"\nFinding rooms for map {mapindex}");
 
-				var map = maps[MapIndex].Map;
+				var map = maps[mapindex].Map;
+				if (mapindex == MapIndex.IceCaveB1)
+				{
+					excludeFloors = new()
+					{
+						new SCCoords(0x08, 0x12),
+						new SCCoords(0x09, 0x12),
+						new SCCoords(0x09, 0x13),
+						new SCCoords(0x09, 0x14),
+						new SCCoords(0x09, 0x15),
+						new SCCoords(0x09, 0x16),
+					};
+				}
 
 				List<SCCoords> startCoords = new();
 				for (int y = 0; y < 64; y++)
 				{
 					for (int x = 0; x < 64; x++)
 					{
-						var tf = tileset.TileProperties[map[y, x]];
+						var tf = tileset.Tiles[map[y, x]].Properties;
 						bool wipe = false;
 
 						if (tf.TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE))
@@ -263,7 +276,7 @@ namespace FF1Lib
 							bool skip = false;
 							foreach (var pc in preserveChests)
 							{
-								if (MapIndex == pc.Item1 && pc.Item2 == map[y, x])
+								if (mapindex == pc.Item1 && pc.Item2 == map[y, x])
 								{
 									skip = true;
 								}
@@ -299,7 +312,7 @@ namespace FF1Lib
 
 				foreach (var t in smTeleporters)
 				{
-					if (t.Index == MapIndex &&
+					if (t.Index == mapindex &&
 					(floorTiles.Contains(map[t.Coordinates.Y, t.Coordinates.X]) || battleTiles.Contains(map[t.Coordinates.Y, t.Coordinates.X])))
 					{
 						startCoords.Add(new SCCoords(t.Coordinates.X, t.Coordinates.Y));
@@ -310,7 +323,7 @@ namespace FF1Lib
 				foreach (var st in startCoords)
 				{
 					var room = new Room();
-					room.MapIndex = MapIndex;
+					room.MapIndex = mapindex;
 					room.start = map[(st.X, st.Y)];
 					bool newRoom = true;
 					if (debug) Console.WriteLine($"Searching from {st}");
@@ -328,7 +341,7 @@ namespace FF1Lib
 						bool hasKillableNpc = false;
 						for (int i = 0; i < 16; i++)
 						{
-							var npc = maps[MapIndex].MapObjects[i];
+							var npc = maps[mapindex].MapObjects[i];
 							if ((npc.Coords.X, npc.Coords.Y) == me.Coord)
 							{
 								hasNpc = true;
@@ -359,7 +372,7 @@ namespace FF1Lib
 							return hasKillableNpc;
 						}
 
-						if (tileset.TileProperties[me.Value].TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE))
+						if (tileset.Tiles[me.Value].Properties.TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE))
 						{
 							// A preserved chest (vanilla
 							// incentive location) needs to be
@@ -390,7 +403,7 @@ namespace FF1Lib
 						bool teleporterTarget = false;
 						foreach (var t in smTeleporters)
 						{
-							if (t.Index == MapIndex && me.Coord == (t.Coordinates.X, t.Coordinates.Y))
+							if (t.Index == mapindex && me.Coord == (t.Coordinates.X, t.Coordinates.Y))
 							{
 								if (debug) Console.WriteLine($"Found teleport in {me.Coord}");
 								room.teleIn.Add(me);
@@ -398,19 +411,19 @@ namespace FF1Lib
 							}
 						}
 
-						if (tileset.TileProperties[me.Value].TilePropFunc == TilePropFunc.TP_SPEC_BATTLE &&
-							tileset.TileProperties[me.Value].BattleId == randomEncounter)
+						if (tileset.Tiles[me.Value].Properties.TilePropFunc == TilePropFunc.TP_SPEC_BATTLE &&
+							tileset.Tiles[me.Value].Properties.BattleId == randomEncounter)
 						{
 							room.hasBattles = true;
 						}
 
 						if (!hasNpc && !teleporterTarget && (floorTiles.Contains(me.Value) || battleTiles.Contains(me.Value) || spikeTiles.Contains(me.Value)) &&
-							(me.Coord != (st.X, st.Y)))
+							(me.Coord != (st.X, st.Y)) && !excludeFloors.Contains(new SCCoords(me.X, me.Y)))
 						{
 							room.floor.Add(me);
 						}
 
-						if ((tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_TELE_MASK) != 0)
+						if ((tileset.Tiles[me.Value].Properties.TilePropFunc & TilePropFunc.TP_TELE_MASK) != 0)
 						{
 							if (debug) Console.WriteLine($"Found teleport out {me.Coord}");
 							room.teleOut.Add(me);
@@ -418,7 +431,7 @@ namespace FF1Lib
 						}
 
 						return (!hasNpc || hasKillableNpc) &&
-							(tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0;
+							(tileset.Tiles[me.Value].Properties.TilePropFunc & TilePropFunc.TP_NOMOVE) == 0;
 					});
 					if (newRoom)
 					{
@@ -566,7 +579,7 @@ namespace FF1Lib
 							}
 						}
 						r.teleIn.Remove(me);
-						return (tileset.TileProperties[me.Value].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0;
+						return (tileset.Tiles[me.Value].Properties.TilePropFunc & TilePropFunc.TP_NOMOVE) == 0;
 					});
 					if (r.doors.Count > 0 || r.chests.Count > 0 || r.teleOut.Count > 0 || r.npcs.Count > 0)
 					{
@@ -621,7 +634,7 @@ namespace FF1Lib
 				var ts = tilesets[(int)maps[ids[0]].MapTileSet];
 				foreach (var sp in spikePool)
 				{
-					tileset.TopRightTiles[sp] = 0x7D;
+					tileset.Tiles[sp].TopRightTile = 0x7D;
 				}
 				//tileset.TopRightTiles.StoreTable();
 			}
