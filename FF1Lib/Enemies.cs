@@ -42,7 +42,7 @@ namespace FF1Lib
 		[Description("Random")]
 		Random
 	}
-	public enum AltFiendPool
+	public enum AltFiendPool 
 	{
 		[Description("All Fiends in Pool")]
 		Random,
@@ -51,9 +51,10 @@ namespace FF1Lib
 		[Description("Final Fantasy 3 Fiends")]
 		FinalFantasy3,
 		[Description("Final Fantasy 4 Fiends")]
-		FinalFantasy4
-		/*[Description("Final Fantasy 5 Fiends")]
-		FinalFantasy5*/  // Disabled until we have enough fiends to fill out the roster, will move all of those fiends into FinalFantasy4 until then
+		FinalFantasy4,
+		[Description("Final Fantasy 5 Fiends")]
+		FinalFantasy5
+
 	}
 	public partial class FF1Rom : NesRom
 	{
@@ -733,6 +734,89 @@ namespace FF1Lib
 			const int FiendsScriptIndex = 0x22;
 			var fiendsFormationOrder = new List<int> { 0x7A, 0x73, 0x79, 0x74, 0x78, 0x75, 0x77, 0x76 };
 
+			var FF1MasterFiendList = new List<AlternateFiends>
+			{
+					new AlternateFiends {
+					Name = "LICH",
+					SpriteSheet = FormationSpriteSheet.KaryLich,
+					FormationPattern = FormationPattern.Fiends,
+					GFXOffset = FormationGFX.Sprite3,
+					Palette1 = 0x23,
+					Palette2 = 0x25,
+					ElementalWeakness = SpellElement.Fire,
+					MonsterType = MonsterType.UNDEAD,
+					FiendPool = FiendPool.FinalFantasy2,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.SLP2, (byte)SpellByte.FAST, (byte)SpellByte.LIT2, (byte)SpellByte.HOLD, (byte)SpellByte.FIR2, (byte)SpellByte.SLOW, (byte)SpellByte.SLEP },
+					SkillChance1 = 0x00,
+					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.NUKE, (byte)SpellByte.STOP, (byte)SpellByte.ZAP, (byte)SpellByte.XXXX, (byte)SpellByte.NUKE, (byte)SpellByte.STOP, (byte)SpellByte.ZAP, (byte)SpellByte.XXXX },
+					SkillChance2 = 0x00,
+					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
+					},
+
+					new AlternateFiends {
+					Name = "KARY",
+					SpriteSheet = FormationSpriteSheet.KrakenTiamat,
+					FormationPattern = FormationPattern.Fiends,
+					GFXOffset = FormationGFX.Sprite1,
+					Palette1 = 0x23,
+					Palette2 = 0x25,
+					ElementalWeakness = SpellElement.Status,
+					MonsterType = MonsterType.MAGE,
+					FiendPool = FiendPool.FinalFantasy2,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.DARK, (byte)SpellByte.FIR2, (byte)SpellByte.DARK, (byte)SpellByte.FIR2, (byte)SpellByte.HOLD, (byte)SpellByte.FIR2, (byte)SpellByte.HOLD },
+					SkillChance1 = 0x00,
+					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.RUB, (byte)SpellByte.FIR3, (byte)SpellByte.RUB, (byte)SpellByte.FIR3, (byte)SpellByte.STUN, (byte)SpellByte.FIR3, (byte)SpellByte.STUN },
+					SkillChance2 = 0x00,
+					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
+					},
+
+					new AlternateFiends {
+					Name = "KRAKEN",
+					SpriteSheet = FormationSpriteSheet.KaryLich,
+					FormationPattern = FormationPattern.Fiends,
+					GFXOffset = FormationGFX.Sprite2,
+					Palette1 = 0x23,
+					Palette2 = 0x25,
+					ElementalWeakness = SpellElement.Lightning,
+					MonsterType = MonsterType.AQUATIC,
+					FiendPool = FiendPool.FinalFantasy2,
+					SpellChance1 = 0x00,
+					Spells1 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					SkillChance1 = 0x40,
+					Skills1 = new List<byte> { (byte)EnemySkills.Ink, (byte)EnemySkills.Ink, (byte)EnemySkills.Ink, (byte)EnemySkills.Ink },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.LIT2, (byte)SpellByte.LIT2, (byte)SpellByte.LIT2, (byte)SpellByte.LIT2, (byte)SpellByte.LIT2, (byte)SpellByte.LIT2, (byte)SpellByte.LIT2 },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Ink, (byte)EnemySkills.Ink, (byte)EnemySkills.Ink, (byte)EnemySkills.Ink },
+					},
+
+					new AlternateFiends {
+					Name = "TIAMAT",
+					SpriteSheet = FormationSpriteSheet.KrakenTiamat,
+					FormationPattern = FormationPattern.Fiends,
+					GFXOffset = FormationGFX.Sprite4,
+					Palette1 = 0x23,
+					Palette2 = 0x25,
+					ElementalWeakness = SpellElement.Poison,
+					MonsterType = MonsterType.DRAGON,
+					FiendPool = FiendPool.FinalFantasy2,
+					SpellChance1 = 0x00,
+					Spells1 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					SkillChance1 = 0x40,
+					Skills1 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Blaze },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.BANE, (byte)SpellByte.ICE2, (byte)SpellByte.LIT2, (byte)SpellByte.FIR2, (byte)SpellByte.BANE, (byte)SpellByte.ICE2, (byte)SpellByte.LIT2, (byte)SpellByte.FIR2 },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Blaze },
+					},
+
+			};
 			var FF2AltFiendslist = new List<AlternateFiends> //fiend pool for FF2
 			{
 					new AlternateFiends {
@@ -1617,6 +1701,10 @@ namespace FF1Lib
 					Skills2 = new List<byte> { (byte)EnemySkills.Swirl, (byte)EnemySkills.Scorch, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Tornado },
 				},
 			};
+			var FFBonusFiendsList = new List<AlternateFiends>
+			{
+
+			};
 			var alternateFiendsList = new List<AlternateFiends>
 						{
 
@@ -1628,18 +1716,22 @@ namespace FF1Lib
 				alternateFiendsList.AddRange(FF2AltFiendslist);
 			}
 
-			if((bool)flags.FinalFantasy3Fiends)
+			if((bool) flags.FinalFantasy3Fiends)
 
 			{
 				alternateFiendsList.AddRange(FF3AltFiendslist);
 			}
 
-			if((bool)flags.FinalFantasy4Fiends)
+			if((bool) flags.FinalFantasy4Fiends)
 
 			{
 				alternateFiendsList.AddRange(FF4AltFiendsList);
 			}
 
+			if((bool) !flags.FinalFantasy2Fiends && (bool) !flags.FinalFantasy3Fiends && (bool) !flags.FinalFantasy4Fiends)
+			{
+				alternateFiendsList.AddRange(FF1MasterFiendList);
+			}
 
 			var encountersData = new Encounters(this);
 

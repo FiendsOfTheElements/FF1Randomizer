@@ -96,9 +96,12 @@
 	  <EmbeddedResource Include="bosses\GUTSCO.png" />
 	  <EmbeddedResource Include="bosses\IFRIT.png" />
 	  <EmbeddedResource Include="bosses\IROGIANT.png" />
+	  <EmbeddedResource Include="bosses\KARY.png" />
+	  <EmbeddedResource Include="bosses\KRAKEN.png" />
 	  <EmbeddedResource Include="bosses\KUNOICHI.png" />
 	  <EmbeddedResource Include="bosses\LAMQUEEN.png" />
 	  <EmbeddedResource Include="bosses\LEVIATHN.png" />
+	  <EmbeddedResource Include="bosses\LICH.png" />
 	  <EmbeddedResource Include="bosses\LUCIFER.png" />
 	  <EmbeddedResource Include="bosses\MEDUSAE.png" />
 	  <EmbeddedResource Include="bosses\NEP.DRGN.png" />
@@ -111,6 +114,7 @@
 	  <EmbeddedResource Include="bosses\SERGEANT.png" />
 	  <EmbeddedResource Include="bosses\SCYLLA.png" />
 	  <EmbeddedResource Include="bosses\SHIVA.png" />
+	  <EmbeddedResource Include="bosses\TIAMAT.png" />
 	  <EmbeddedResource Include="bosses\TITAN.png" />
 	  <EmbeddedResource Include="bosses\TWHD.DRG.png" />
 	  <EmbeddedResource Include="bosses\UNNE.png" />
