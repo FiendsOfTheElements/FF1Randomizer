@@ -1378,7 +1378,12 @@
 		"screenshot": "AlternateFiends.png",
 		"description": "Replace all four Fiends with new Fiends, from a pool of about 20, each with their own weaknesses and skill/spell lists.\nNote that the new Alternate Fiend spells & skills will still be shuffled unless \"Shuffle Scripts\" and \"Shuffle Skills & Spells\" are turned off for Bosses.\nSee also: \"Alternate Final Boss\", under the Goal tab."
 	},
-
+	{
+		"Id": "AltFiendPoolDropDown",
+		"title": "Alternate Fiend Pool",
+		"screenshot": null,
+		"description": "Allows a choice of which fiend pools that the randomizer will pick alternate fiends from. \nRandom: Will include all 45 Alternate fiends in the pool. \nFinal Fantasy 2: Will pull from the list of Final Fantasy 2 bosses. \nFinal Fantasy 3: Will pull from the list of Final Fantasy 3 bosses. \nFinal Fantasy 4: Will pull from the list of Final Fantasy 4 bosses, will also include the Final Fantasy 5 bosses."
+	},
 	{
 		"Id": "fightBahamutCheckBox",
 		"title": "Fight Bahamut",
