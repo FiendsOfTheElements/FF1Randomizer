@@ -1382,25 +1382,25 @@
 		"Id": "FinalFantasy1pool",
 		"title": "Final Fantasy 1 Bonus Pool",
 		"screenshot": null,
-		"description": "Will add 13 Final Fantasy 1 Bonus Fiends to the Alternate Fiend Pool."
+		"description": "Will add 14 Final Fantasy 1 Bonus Fiends to the Alternate Fiend Pool."
 	},
 	{
 		"Id": "finalfanstay2pool",
 		"title": "Final Fantasy 2 Pool",
 		"screenshot": null,
-		"description": "Will add 12 Final Fantasy 2 Fiends to the Alternate Fiend Pool."
+		"description": "Will add 13 Final Fantasy 2 Fiends to the Alternate Fiend Pool."
 	},
 	{
 		"Id": "finalfanstay3pool",
 		"title": "Final Fantasy 3 Pool",
 		"screenshot": null,
-		"description": "Will add 23 Final Fantasy 3 Fiends to the Alternate Fiend Pool."
+		"description": "Will add 22 Final Fantasy 3 Fiends to the Alternate Fiend Pool."
 	},
 	{
 		"Id": "finalfanstay4pool",
 		"title": "Final Fantasy 4 Pool",
 		"screenshot": null,
-		"description": "Will add 10 Final Fantasy 4 Fiends to the Alternate Fiend Pool."
+		"description": "Will add 32 Final Fantasy 4 Fiends to the Alternate Fiend Pool."
 	},
 	{
 		"Id": "fightBahamutCheckBox",
