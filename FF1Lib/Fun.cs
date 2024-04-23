@@ -590,21 +590,26 @@ namespace FF1Lib
 			Put(0x7C7E7, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 		}		
 
-		public void ChangeLute(MT19337 rng)
+		public void ChangeLute(bool changelute, DialogueData dialogues, MT19337 rng)
 		{
+			if (!changelute)
+			{
+				return;
+			}
+
 			var newInstruments = new List<string> {"BASS", "LYRE", "HARP", "VIOLA", "CELLO", "PIANO", "ORGAN", "FLUTE", "OBOE", "PICCOLO", "FLUTE", "WHISTLE", "HORN", "TRUMPET",
 				"BAGPIPE", "DRUM", "VIOLIN", "DBLBASS", "GUITAR", "BANJO", "FIDDLE", "MNDOLIN", "CLARNET", "BASSOON", "TROMBON", "TUBA", "BUGLE", "MARIMBA", "XYLOPHN","SNARE D",
 				"BASSDRM", "TMBRINE", "CYMBALS", "TRIANGL", "COWBELL", "GONG", "TRUMPET", "SAX", "TIMPANI", "B GRAND", "HRDYGRD", "FLUGEL", "SONG", "KAZOO", "FOGHORN", "AIRHORN",
 				"VUVUZLA", "OCARINA", "PANFLUT", "SITAR", "HRMNICA", "UKULELE", "THREMIN", "DITTY", "JINGLE", "LIMRICK", "POEM", "HAIKU", "OCTBASS", "HRPSCRD", "FLUBA", "AEOLUS",
 				"TESLA", "STLDRUM", "DGERIDO", "WNDCHIM" };
 
-			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
+			//var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
 
 			var newLute = newInstruments.PickRandom(rng);
 			// handle extra dialogues that might contain the LUTE if the NPChints flag is enabled or if Astos Shuffle is enabled
-			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("LUTE", newLute, dialogs); ;
-			var princessDialogue = dialogs[0x06].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
-			var monkDialogue = dialogs[0x35].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
+			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("LUTE", newLute, dialogues); ;
+			var princessDialogue = dialogues[0x06].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
+			var monkDialogue = dialogues[0x35].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
 
 			if (princessDialogue.Length > 1)
 				dialogsUpdate.Add(0x06, princessDialogue[0] + newLute + princessDialogue[1]);
@@ -613,22 +618,22 @@ namespace FF1Lib
 				dialogsUpdate.Add(0x35, monkDialogue[0] + newLute + monkDialogue[1].Substring(0,14) + "\n" + monkDialogue[1].Substring(15, 10).Replace('\n',' '));
 
 			if (dialogsUpdate.Count > 0)
-				InsertDialogs(dialogsUpdate);
+				dialogues.InsertDialogues(dialogsUpdate);
 
 			ItemsText[(int)Item.Lute] = newLute;
 		}
 
-		public void HurrayDwarfFate(Fate fate, NPCdata npcdata, MT19337 rng)
+		public void HurrayDwarfFate(Fate fate, NpcObjectData npcdata, DialogueData dialogues, MT19337 rng)
 		{
 			if (fate == Fate.Spare)
 			{
 				// Protect Hurray Dwarf from NPC guillotine
-				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, newTalkRoutines.Talk_norm);
+				npcdata[ObjectId.DwarfcaveDwarfHurray].Script = TalkScripts.Talk_norm;
 			}
 			else
 			{
 				// Whether NPC guillotine is on or not, kill Hurray Dwarf
-				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, newTalkRoutines.Talk_kill);
+				npcdata[ObjectId.DwarfcaveDwarfHurray].Script = TalkScripts.Talk_kill;
 
 				// Change the dialogue
 				var dialogueStrings = new List<string>
@@ -649,14 +654,14 @@ namespace FF1Lib
 				};
 
 				//Put new dialogue to E6 since another Dwarf also says hurray
-				InsertDialogs(0xE6, dialogueStrings.PickRandom(rng));
-				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_1] = 0xE6;
-				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_2] = 0xE6;
-				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_3] = 0xE6;
+				dialogues[0xE6] = dialogueStrings.PickRandom(rng);
+				npcdata[ObjectId.DwarfcaveDwarfHurray].Dialogue1 = 0xE6;
+				npcdata[ObjectId.DwarfcaveDwarfHurray].Dialogue2 = 0xE6;
+				npcdata[ObjectId.DwarfcaveDwarfHurray].Dialogue3 = 0xE6;
 			}
 		}
 
-		public void TitanSnack(TitanSnack snack, NPCdata npcdata, MT19337 rng)
+		public void TitanSnack(TitanSnack snack, NpcObjectData npcdata, DialogueData dialogues, MT19337 rng)
 		{
 			if (snack == FF1Lib.TitanSnack.Ruby)
 			{
@@ -693,9 +698,6 @@ namespace FF1Lib
 				default:
 					return;
 			}
-
-			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
-
 			var randomRuby = snackOptions.PickRandom(rng);
 
 			var newRubyItemDescription = "A tasty treat."; // Replaces "A large red stone." (can't be too long else it'll overwrite next phrase: "The plate shatters,")
@@ -733,12 +735,12 @@ namespace FF1Lib
 			}
 
 			// handle extra dialogues that might contain the RUBY if the NPChints flag is enabled
-			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("RUBY", newRuby, dialogs);
+			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("RUBY", newRuby, dialogues);
 
 			// begin substitute phrase parts
-			var titanDeepDungeon = dialogs[0x29].Split(new string[] { "a RUBY" }, System.StringSplitOptions.RemoveEmptyEntries);
-			var titanDialogue = dialogs[0x2A].Split(new string[] { "RUBY", "Crunch, crunch, crunch,", "sweet", "Rubies are" }, System.StringSplitOptions.RemoveEmptyEntries);
-			var melmondManDialogue = dialogs[0x7B].Split(new string[] { "eats gems.", "RUBIES" }, System.StringSplitOptions.RemoveEmptyEntries);
+			var titanDeepDungeon = dialogues[0x29].Split(new string[] { "a RUBY" }, System.StringSplitOptions.RemoveEmptyEntries);
+			var titanDialogue = dialogues[0x2A].Split(new string[] { "RUBY", "Crunch, crunch, crunch,", "sweet", "Rubies are" }, System.StringSplitOptions.RemoveEmptyEntries);
+			var melmondManDialogue = dialogues[0x7B].Split(new string[] { "eats gems.", "RUBIES" }, System.StringSplitOptions.RemoveEmptyEntries);
 
 			// Bring me a {newRuby} if you
 			// wish to skip to floor 22.
@@ -772,13 +774,13 @@ namespace FF1Lib
 			// end substitute phrase parts
 
 			if (dialogsUpdate.Count > 0)
-				InsertDialogs(dialogsUpdate);
+				dialogues.InsertDialogues(dialogsUpdate);
 
 			// substitute key item
 			ItemsText[(int)Item.Ruby] = newRuby;
 		}
 
-		private Dictionary <int,String> SubstituteKeyItemInExtraNPCDialogues(string original, string replacement, string[] dialogs)
+		private Dictionary <int,String> SubstituteKeyItemInExtraNPCDialogues(string original, string replacement, DialogueData dialogues)
 		{
 			var dialogsUpdate = new Dictionary<int, string>();
 			// Add extra dialogues that might contain the {original} if the NPChints flag is enabled or if Astos Shuffle is enabled
@@ -789,7 +791,7 @@ namespace FF1Lib
 
 			for (int i = 0; i < otherNPCs.Count(); i++)
 			{
-				var tempDialogue = dialogs[otherNPCs[i]].Split(new string[] { original.ToUpper().Trim() }, System.StringSplitOptions.RemoveEmptyEntries);
+				var tempDialogue = dialogues[otherNPCs[i]].Split(new string[] { original.ToUpper().Trim() }, System.StringSplitOptions.RemoveEmptyEntries);
 				if (tempDialogue.Length > 1)
 					dialogsUpdate.Add(otherNPCs[i], tempDialogue[0] + replacement.ToUpper().Trim() + tempDialogue[1]);
 			}

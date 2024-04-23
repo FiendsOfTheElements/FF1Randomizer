@@ -101,7 +101,7 @@
 			"Full Recover", "Raise Evade", "Void Resist.", "PW Status", "Heal Poison", "Revive", "Full Revive", "Go one floor\n back",
 			"Heal Stoned", "Teleport out\n of dungeons", "Magical", "Dragon", "Giant", "Undead", "Were", "Water", "Mage", "Regen"
 		};
-		public void ShopUpgrade(Flags flags, Preferences preferences)
+		public void ShopUpgrade(Flags flags, DialogueData dialogues, Preferences preferences)
 		{
 			// Modify DrawShopPartySprites to use new DrawOBSprite routines, see 0E_9500_ShopUpgrade.asm
 			PutInBank(0x0E, 0xAA04, Blob.FromHex("205795"));
@@ -117,8 +117,8 @@
 			if (flags.ChestInfo && flags.IdentifyTreasures && !preferences.RenounceChestInfo)
 			{
 				// Shorten TreasureChest Dialog
-				InsertDialogs(320, "You found.. #");
-				InsertDialogs(321, "Can't hold.. #");
+				dialogues[320] = "You found.. #";
+				dialogues[321] = "Can't hold.. #";
 
 				PutInBank(0x1F, 0xD536, Blob.FromHex("68482064DB4CD0DD"));
 				PutInBank(0x1F, 0xDDD0, Blob.FromHex("A9B648A9FF48A9114C03FE8A20DA8760"));

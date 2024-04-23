@@ -98,20 +98,6 @@ public partial class FF1Rom : NesRom
 
 		return rom;
 	}
-
-	private void EnableNPCSwatter(NPCdata npcdata)
-	{
-		for (int i = 0; i < npcdata.GetNPCCount(); i++)
-		{
-			if (npcdata.GetRoutine((ObjectId)i) == newTalkRoutines.Talk_norm)
-				npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_kill);
-		}
-
-		// Protect Lute and Rod Plate
-		npcdata.SetRoutine(ObjectId.LutePlate, newTalkRoutines.Talk_norm);
-		npcdata.SetRoutine(ObjectId.RodPlate, newTalkRoutines.Talk_norm);
-	}
-
 	public void AssureSafe()
 	{
 		using (SHA256 hasher = SHA256.Create())

@@ -6,7 +6,7 @@ namespace FF1Lib.Sanity
 	public class SCMain
 	{
 		FF1Rom rom;
-		List<Map> maps;
+		StandardMaps maps;
 		OverworldMap overworldMap;
 
 
@@ -18,7 +18,7 @@ namespace FF1Lib.Sanity
 		//ExitTeleData exit;
 		//NormTeleData tele;
 		Teleporters teleporters;
-		NPCdata npcdata;
+		NpcObjectData npcdata;
 
 		Dictionary<MapIndex, SCMap> scmaps;
 
@@ -26,7 +26,7 @@ namespace FF1Lib.Sanity
 
 		public SCOwMap Overworld { get; private set; }
 
-		public SCMain(List<Map> _maps, OverworldMap _overworldMap, NPCdata _npcdata, Teleporters _teleporters, OwLocationData locations, FF1Rom _rom)
+		public SCMain(StandardMaps _maps, OverworldMap _overworldMap, NpcObjectData _npcdata, Teleporters _teleporters, OwLocationData locations, FF1Rom _rom)
 		{
 			maps = _maps;
 			overworldMap = _overworldMap;
@@ -66,16 +66,16 @@ namespace FF1Lib.Sanity
 			w.Stop();
 		}
 
-		private void ProcessMap(MapIndex MapIndex, List<SCMap> tmpscmaps)
+		private void ProcessMap(MapIndex mapindex, List<SCMap> tmpscmaps)
 		{
-			var e1 = maps[(int)MapIndex];
-			var ts = tileSets[mapTileSets[MapIndex]];
+			var e1 = maps[mapindex];
+			var ts = tileSets[mapTileSets[mapindex]];
 
 			SCMapCheckFlags cflags = SCMapCheckFlags.None;
-			if (MapIndex <= MapIndex.CastleOrdeals1F) cflags |= SCMapCheckFlags.NoWarp;
-			if (MapIndex == MapIndex.SkyPalace2F) cflags |= SCMapCheckFlags.NoUseTiles;
+			if (mapindex <= MapIndex.CastleOrdeals1F) cflags |= SCMapCheckFlags.NoWarp;
+			if (mapindex == MapIndex.SkyPalace2F) cflags |= SCMapCheckFlags.NoUseTiles;
 
-			SCMap scmap = new SCMap(MapIndex, e1, cflags, rom, npcdata, ts, teleporters);
+			SCMap scmap = new SCMap(mapindex, e1, cflags, rom, npcdata, ts, teleporters);
 			tmpscmaps.Add(scmap);
 		}
 

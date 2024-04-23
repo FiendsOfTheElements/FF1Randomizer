@@ -104,7 +104,7 @@ namespace FF1Lib
 		}
 
 	}
-	public class MapObject : RewardSourceBase
+	public class NpcReward : RewardSourceBase
 	{
 		//private const int _mapObjectTalkDataAddress = 0x395D5;
 		private const int _mapObjectTalkDataAddress = 0x47A00;
@@ -126,7 +126,7 @@ namespace FF1Lib
 
 		public MapLocation SecondLocation { get; protected set; } = MapLocation.StartingLocation;
 
-		public MapObject(ObjectId objectId, MapLocation mapLocation, Item item,
+		public NpcReward(ObjectId objectId, MapLocation mapLocation, Item item,
 						 AccessRequirement accessRequirement = AccessRequirement.None,
 						 ObjectId requiredGameEventFlag = ObjectId.None,
 						 Item requiredItemTrade = Item.None,
@@ -151,10 +151,10 @@ namespace FF1Lib
 					$"Attempted to Put invalid npc item placement: \n{SpoilerText}");
 		}
 
-		public MapObject(MapObject copyFromRewardSource, Item item)
+		public NpcReward(NpcReward copyFromRewardSource, Item item)
 			: base(copyFromRewardSource, item)
 		{
-			if (!(copyFromRewardSource is MapObject copyFromMapObject))
+			if (!(copyFromRewardSource is NpcReward copyFromMapObject))
 				return;
 
 

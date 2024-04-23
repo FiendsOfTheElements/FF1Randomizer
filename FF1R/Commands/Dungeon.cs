@@ -40,7 +40,7 @@ namespace FF1R.Commands
 	    var rom = new FF1Rom(RomPath);
 	    rom.LoadSharedDataTables();
 
-	    var maps = rom.ReadMaps();
+		var maps = new StandardMaps(rom);
 
 	    int start = Map;
 	    int end = Map;
@@ -58,15 +58,14 @@ namespace FF1R.Commands
 		    output = rom.ExportMapTiles((FF1Lib.MapIndex)i, Inside);
 		    name = $"dungeontiles{i}.png";
 		} else {
-		    output = rom.RenderMap(maps, (FF1Lib.MapIndex)i, Inside);
+		    output = rom.RenderMap(maps.GetMapList(), (FF1Lib.MapIndex)i, Inside);
 		    name = $"dungeonmap{i}.png";
 		}
 		output.Save(name);
 		Console.WriteLine($"Wrote {name}");
 
 		name = $"dungeon{i}-npcs.json";
-		var npcdata = new FF1Rom.NPCdata(rom);
-		var npcs = rom.GetNpcs((FF1Lib.MapIndex)i, npcdata);
+		var npcs = maps[(MapIndex)i].MapObjects.ToList();
 		using (StreamWriter file = File.CreateText(name)) {
 		    JsonSerializer serializer = new JsonSerializer();
 		    serializer.Formatting = Formatting.Indented;
@@ -126,7 +125,8 @@ namespace FF1R.Commands
 		end = 60;
 	    }
 
-	    var maps = rom.ReadMaps();
+
+	    var maps = rom.Maps.GetMapList();
 
 	    for (int i = start; i <= end; i++) {
 		Image<Rgba32> output;
@@ -177,13 +177,13 @@ namespace FF1R.Commands
 	    var rom = new FF1Rom(RomPath);
 	    rom.LoadSharedDataTables();
 
-	    var maps = rom.ReadMaps();
+	    var maps = new StandardMaps(rom);
 
 	    FF1Lib.MapIndex mapid = Enum.Parse<MapIndex>(Map);
 
 	    var rng = new MT19337((uint)Seed);
 
-	    var npcdata = new FF1Rom.NPCdata(rom);
+	    var npcdata = new NpcObjectData(rom);
 
 	    var numberOfMapsToGenerate = this.Pack;
 	    List<int> seeds = null;
@@ -209,19 +209,19 @@ namespace FF1R.Commands
 		Image<Rgba32> output;
 		string name;
 
-		var mapsCopy = new List<Map>(maps);
+		var mapsCopy = new StandardMaps(rom);
 		var replacementMaps = Task.Run<List<FF1Lib.Procgen.CompleteMap>>(async () => await FF1Lib.Procgen.NewDungeon.GenerateNewDungeon(rng, rom, mapid,
 																		mapsCopy, npcdata, this.Progress)).Result;
 
 		foreach (var replacementMap in replacementMaps) {
-		    mapsCopy[(int)replacementMap.MapIndex] = replacementMap.Map;
+		    mapsCopy[replacementMap.MapIndex].Map = replacementMap.Map;
 		    if (DoRender) {
-			output = rom.RenderMap(mapsCopy, replacementMap.MapIndex, false);
+			output = rom.RenderMap(mapsCopy.GetMapList(), replacementMap.MapIndex, false);
 			name = $"{effectiveSeed,8:X8}-dungeonmap{(int)replacementMap.MapIndex}-outside.png";
 			output.Save(name);
 			Console.WriteLine($"Wrote {name}");
 
-			output = rom.RenderMap(mapsCopy, replacementMap.MapIndex, true);
+			output = rom.RenderMap(mapsCopy.GetMapList(), replacementMap.MapIndex, true);
 			name = $"{effectiveSeed,8:X8}-dungeonmap{(int)replacementMap.MapIndex}-inside.png";
 			output.Save(name);
 			Console.WriteLine($"Wrote {name}");

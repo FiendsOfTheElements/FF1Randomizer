@@ -23,11 +23,12 @@ namespace FF1Lib.Sanity
 
 		public SCTeleport Teleport { get; set; }
 
-		public NPC Npc { get; set; }
+		public MapObject Npc { get; set; }
 
-		public newTalkRoutines TalkRoutine { get; set; }
+		public TalkScripts TalkRoutine { get; set; }
 
 		public byte[] TalkArray { get; set; }
+		public byte NpcRequirement { get; set; }
 
 		public SCBitFlagSet BitFlagSet { get;  set; }
 
@@ -48,7 +49,8 @@ namespace FF1Lib.Sanity
 				Teleport = Teleport,
 				Npc = Npc,
 				TalkRoutine = TalkRoutine,
-				TalkArray = TalkArray
+				TalkArray = TalkArray,
+				NpcRequirement = NpcRequirement
 			};
 		}
 

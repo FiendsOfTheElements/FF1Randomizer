@@ -52,12 +52,12 @@ namespace FF1Lib
 		MT19337 rng;
 		Flags flags;
 		FF1Rom rom;
-		List<Map> maps;
+		StandardMaps maps;
 
 		ShopData ShopData;
 		HashSet<Item> QuestItems;
 
-		public ShopKiller(MT19337 _rng, Flags _flags, List<Map> _maps, FF1Rom _rom)
+		public ShopKiller(MT19337 _rng, Flags _flags, StandardMaps _maps, FF1Rom _rom)
 		{
 			rng = _rng;
 			flags = _flags;
@@ -207,11 +207,11 @@ namespace FF1Lib
 			//Caravan
 			if (shop.Index == 69) return;
 
-			var map = maps[(int)shop.MapIndex];
+			var map = maps[shop.MapIndex];
 
-			if (map.FindFirst(shop.TileId, out var x, out var y))
+			if (map.Map.FindFirst(shop.TileId, out var x, out var y))
 			{
-				map[y, x] = DoorReplacementTile;
+				map.Map[y, x] = DoorReplacementTile;
 				//map[y - 1, x] = SignReplacementTile;
 			}
 		}

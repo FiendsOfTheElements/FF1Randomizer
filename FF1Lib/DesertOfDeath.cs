@@ -469,7 +469,7 @@ namespace FF1Lib
 
 			rom.WriteText(enemyText, FF1Rom.EnemyTextPointerOffset, FF1Rom.EnemyTextPointerBase, FF1Rom.EnemyTextOffset);
 		}
-		public static void DoDUpdateDialogues(FF1Rom rom, FF1Rom.NPCdata npcdata)
+		public static void DoDUpdateDialogues(FF1Rom rom, NpcObjectData npcdata, DialogueData dialogues)
 		{
 			Dictionary<int, string> coneriaDialogues = new();
 
@@ -477,12 +477,12 @@ namespace FF1Lib
 			coneriaDialogues.Add(0x43, "The Desert is a harsh\nenvironment, each step\ntaken will deplete\nyour strength.");
 			coneriaDialogues.Add(0x4B, "The key to not get lost\nin the Desert is to take\nnotes of the landmarks\nthat cross your journey.");
 
-			rom.InsertDialogs(coneriaDialogues);
+			dialogues.InsertDialogues(coneriaDialogues);
 
-			npcdata.SetRoutine((ObjectId)0x37, FF1Rom.newTalkRoutines.Talk_norm);
-			npcdata.GetTalkArray((ObjectId)0x37)[(int)FF1Rom.TalkArrayPos.dialogue_1] = 0x49;
-			npcdata.GetTalkArray((ObjectId)0x37)[(int)FF1Rom.TalkArrayPos.dialogue_2] = 0x49;
-			npcdata.GetTalkArray((ObjectId)0x37)[(int)FF1Rom.TalkArrayPos.dialogue_3] = 0x49;
+			npcdata[(ObjectId)0x37].Script = TalkScripts.Talk_norm;
+			npcdata[(ObjectId)0x37].Dialogue1 = 0x49;
+			npcdata[(ObjectId)0x37].Dialogue2 = 0x49;
+			npcdata[(ObjectId)0x37].Dialogue3 = 0x49;
 		}
 		public List<MapEdit> ConvertTileArrayToMapEdit(List<List<byte>> mapedit, int target_x, int target_y)
 		{
@@ -917,7 +917,7 @@ namespace FF1Lib
 			return mapData;
 		}
 
-		public static void ApplyDesertModifications(bool enabled, FF1Rom rom, ZoneFormations zoneformations, SCCoords startinglocation, FF1Rom.NPCdata npcdata)
+		public static void ApplyDesertModifications(bool enabled, FF1Rom rom, ZoneFormations zoneformations, SCCoords startinglocation, NpcObjectData npcdata, DialogueData dialogues)
 		{
 			if (!enabled)
 			{
@@ -1042,7 +1042,7 @@ namespace FF1Lib
 			rom.PutInBank(0x1F, 0xC1A9, Blob.FromHex("00"));
 
 			UpdateOWFormations(rom, zoneformations, startDomain.Item1, startDomain.Item2);
-			DoDUpdateDialogues(rom, npcdata);
+			DoDUpdateDialogues(rom, npcdata, dialogues);
 		}
 		public static MapLocation SelectWeightedDoodads(List<int> weight, MT19337 rng)
 		{

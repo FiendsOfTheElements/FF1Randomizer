@@ -11,7 +11,7 @@ namespace FF1Lib
 	public partial class FF1Rom
 	{
 		//public void Spooky(TalkRoutines talkroutines, NPCdata npcdata, ZoneFormations zoneformations, MT19337 rng, Settings settings)
-		public void Spooky(TalkRoutines talkroutines, NPCdata npcdata, ZoneFormations zoneformations, MT19337 rng, Flags flags)
+		public void Spooky(TalkRoutines talkroutines, NpcObjectData npcdata, DialogueData dialogues, ZoneFormations zoneformations, StandardMaps maps, MT19337 rng, Flags flags)
 		{
 			
 			//if (!settings.GetBool("Spooky") || !settings.GetBool("RandomizeFormationEnemizer"))
@@ -242,7 +242,7 @@ namespace FF1Lib
 			System.Diagnostics.Debug.Assert(intro.Length <= 208);
 			Put(0x37F20, intro);
 
-			var validTalk = new List<newTalkRoutines> { newTalkRoutines.Talk_norm, newTalkRoutines.Talk_GoBridge, newTalkRoutines.Talk_ifearthfire, newTalkRoutines.Talk_ifearthvamp, newTalkRoutines.Talk_ifevent, newTalkRoutines.Talk_ifitem, newTalkRoutines.Talk_ifkeytnt, newTalkRoutines.Talk_ifvis, newTalkRoutines.Talk_Invis, newTalkRoutines.Talk_4Orb, newTalkRoutines.Talk_kill };
+			var validTalk = new List<TalkScripts> { TalkScripts.Talk_norm, TalkScripts.Talk_GoBridge, TalkScripts.Talk_ifearthfire, TalkScripts.Talk_ifearthvamp, TalkScripts.Talk_ifevent, TalkScripts.Talk_ifitem, TalkScripts.Talk_ifkeytnt, TalkScripts.Talk_ifvis, TalkScripts.Talk_Invis, TalkScripts.Talk_4Orb, TalkScripts.Talk_kill };
 			var invalidZombie = new List<ObjectId> { ObjectId.Bat, ObjectId.GaiaBroom, ObjectId.MatoyaBroom1, ObjectId.MatoyaBroom2, ObjectId.MatoyaBroom3, ObjectId.MatoyaBroom4, ObjectId.MirageRobot1, ObjectId.MirageRobot2, ObjectId.MirageRobot3, ObjectId.SkyRobot, ObjectId.LutePlate, ObjectId.RodPlate, ObjectId.SkyWarrior1, ObjectId.SkyWarrior2, ObjectId.SkyWarrior3, ObjectId.SkyWarrior4, ObjectId.SkyWarrior5, (ObjectId)0x18, (ObjectId)0x19, (ObjectId)0x1A };
 			var validZombie = new List<ObjectId>();
 
@@ -255,15 +255,19 @@ namespace FF1Lib
 			// Change base NPCs' scripts to Talk_fight
 			for (int i = 0; i < 0xD0; i++)
 			{
-				if (validTalk.Contains(npcdata.GetRoutine((ObjectId)i)) && !(invalidZombie.Contains((ObjectId)i)))
+				if (validTalk.Contains(npcdata[(ObjectId)i].Script) && !(invalidZombie.Contains((ObjectId)i)))
 				{
-					npcdata.SetRoutine((ObjectId)i, newTalkRoutines.Talk_fight);
+					npcdata[(ObjectId)i].Script = TalkScripts.Talk_fight;
 					if ((i >= 0x85 && i <= 0x90) || i == 0x9B)
-						npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.battle_id] = bossZombieD;
+					{
+						npcdata[(ObjectId)i].Battle = bossZombieD;
+					}
 					else
-						npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.battle_id] = bossZombie;
+					{
+						npcdata[(ObjectId)i].Battle = bossZombie;
+					}
 
-					npcdata.GetTalkArray((ObjectId)i)[(int)TalkArrayPos.dialogue_2] = zombieDialog.PickRandom(rng);
+					npcdata[(ObjectId)i].Dialogue2 = zombieDialog.PickRandom(rng);
 					validZombie.Add((ObjectId)i);
 				}
 			}
@@ -278,7 +282,7 @@ namespace FF1Lib
 			var lichReplace = talkroutines.Add(Blob.FromHex("A572203D96A5752020B1A476207F90207392A47320A4902018964C4396"));
 
 			// Update Garland's script
-			npcdata.SetRoutine(ObjectId.Garland, newTalkRoutines.Talk_CoOGuy);
+			npcdata[ObjectId.Garland].Script = TalkScripts.Talk_CoOGuy;
 
 			// Change dialogues
 			evilDialogs.Add(0x32, "Braaaaain!");
@@ -289,76 +293,77 @@ namespace FF1Lib
 			evilDialogs.Add(0x04, "What the hell!?\nThat princess is crazy,\nshe tried to bite me!\n\nThat's it. Screw that.\nI'm going home.");
 
 			evilDialogs.Add(0x02, "What is going on!? My\nguard tried to kill me!\nUgh.. this is a deep\nwound.. I don't feel so\nwell..\nGwooorrrgl!\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.King)[(int)TalkArrayPos.battle_id] = bossZombie;
-			npcdata.SetRoutine(ObjectId.King, (newTalkRoutines)battleGiveOnFlag);
+
+			npcdata[ObjectId.King].Battle = bossZombie;
+			npcdata[ObjectId.King].Script = (TalkScripts)battleGiveOnFlag;
 
 			evilDialogs.Add(0x06, "So, you are.. the..\nLIGHTarrgaar..\nWarglb..\n\nBraaaain..\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.Princess2)[(int)TalkArrayPos.battle_id] = bossZombie;
-			npcdata.SetRoutine(ObjectId.Princess2, (newTalkRoutines)battleGiveOnItem);
+			npcdata[ObjectId.Princess2].Battle = bossZombie;
+			npcdata[ObjectId.Princess2].Script = (TalkScripts)battleGiveOnItem;
 
 			evilDialogs.Add(0x08, "Aaaaarrr! The LIGHT\nWARRIORS have been\ncursed too!\n\nGet 'em, boys!");
 			evilDialogs.Add(0x09, "Okay then, guess I'll go\nto the pub, have a nice\ncold pint, and wait for\nall this to blow over.\n\nReceived #");
 
 			evilDialogs.Add(0x0E, "At last I wake up from\nmy eternal slumber.\nCome, LIGHT WARRIORS,\nembrace the darkness,\njoin me in death..\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.ElfPrince)[(int)TalkArrayPos.battle_id] = bossVamp;
-			npcdata.SetRoutine(ObjectId.ElfPrince, (newTalkRoutines)battleGiveOnFlag);
+			npcdata[ObjectId.ElfPrince].Battle = bossVamp;
+			npcdata[ObjectId.ElfPrince].Script = (TalkScripts)battleGiveOnFlag;
 
 			evilDialogs.Add(0x0C, "Yes, yes, the master\nwill be pleased. Let's\nclean this place up\nbefore he wakes.\nStarting with you!");
-			npcdata.GetTalkArray(ObjectId.ElfDoc)[(int)TalkArrayPos.battle_id] = bossGeist;
-			npcdata.SetRoutine(ObjectId.ElfDoc, (newTalkRoutines)battleUnne);
+			npcdata[ObjectId.ElfDoc].Battle = bossGeist;
+			npcdata[ObjectId.ElfDoc].Script = (TalkScripts)battleUnne;
 
-			if (npcdata.GetRoutine(ObjectId.Astos) != newTalkRoutines.Talk_Astos)
+			if (npcdata[ObjectId.Astos].Script != TalkScripts.Talk_Astos)
 			{
 				evilDialogs.Add(0x12, "Did you ever dance with\nthe devil in the pale\nmoonlight?\n\nReceived #");
-				npcdata.GetTalkArray(ObjectId.Astos)[(int)TalkArrayPos.battle_id] = bossVamp;
-				npcdata.SetRoutine(ObjectId.Astos, (newTalkRoutines)battleGiveOnItem);
+				npcdata[ObjectId.Astos].Battle = bossVamp;
+				npcdata[ObjectId.Astos].Script = (TalkScripts)battleGiveOnItem;
 			}
 
 			evilDialogs.Add(0x13, "The world is going to\nhell, but this won't\nstop me from digging\nmy canal!");
 			evilDialogs.Add(0x14, "Excellent! Finally,\nnow Lich's undead army\ncan flow through the\nrest of the world!\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.Nerrick)[(int)TalkArrayPos.battle_id] = bossVamp;
-			npcdata.SetRoutine(ObjectId.Nerrick, (newTalkRoutines)battleGiveOnItem);
+			npcdata[ObjectId.Nerrick].Battle = bossVamp;
+			npcdata[ObjectId.Nerrick].Script = (TalkScripts)battleGiveOnItem;
 
 			evilDialogs.Add(0x15, "I never thought I'd\nhave to forge the\nweapon that would slay\nmy brothers. Bring me\nADAMANT, quick!");
 			evilDialogs.Add(0x16, "You were too slow,\nLIGHT WARRIORS. You have\nforsaken me!\nJoin my damned soul in\nthe afterworld!\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.Smith)[(int)TalkArrayPos.battle_id] = bossGhost;
-			npcdata.SetRoutine(ObjectId.Smith, (newTalkRoutines)battleGiveOnItem);
+			npcdata[ObjectId.Smith].Battle = bossGhost;
+			npcdata[ObjectId.Smith].Script = (TalkScripts)battleGiveOnItem;
 
 			evilDialogs.Add(0x17, "Pfah! Everyone else can\nrot in Hell for all\nI care, I'm  perfectly\nsafe here!");
-			evilDialogs.Add(0x19, "SCRIIIIIIIIIIIIIIIIIIII!\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.Matoya)[(int)TalkArrayPos.battle_id] = bossGeist;
-			npcdata.SetRoutine(ObjectId.Matoya, (newTalkRoutines)battleGiveOnItem);
+			evilDialogs.Add(0x19, "SCREEEEEEEEEEEEEEEEEEEEE!\n\nReceived #");
+			npcdata[ObjectId.Matoya].Battle = bossGeist;
+			npcdata[ObjectId.Matoya].Script = (TalkScripts)battleGiveOnItem;
 
 			evilDialogs.Add(0x1C, "Now, listen to me, a\nbasic word from\nLeifeinish is Lu..\nHack! Cough! Sorry,\nLu..lu..paaaargh!");
-			npcdata.GetTalkArray(ObjectId.Unne)[(int)TalkArrayPos.battle_id] = bossGeist;
-			npcdata.SetRoutine(ObjectId.Unne, (newTalkRoutines)battleUnne);
+			npcdata[ObjectId.Unne].Battle = bossGeist;
+			npcdata[ObjectId.Unne].Script = (TalkScripts)battleUnne;
 
 			evilDialogs.Add(0x1D, "Ah, humans who wish to\npay me tribute. What?\nYou miserable little\npile of secrets!\nEnough talk! Have at you!");
 
 			evilDialogs.Add(0x1E, "I.. HUNGER!\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.Sarda)[(int)TalkArrayPos.battle_id] = bossZomBull;
-			npcdata.SetRoutine(ObjectId.Sarda, (newTalkRoutines)battleGiveOnFlag);
+			npcdata[ObjectId.Sarda].Battle = bossZomBull;
+			npcdata[ObjectId.Sarda].Script = (TalkScripts)battleGiveOnFlag;
 
 			evilDialogs.Add(0x20, "The TAIL! Impressive..\nYes, yes, you are indeed\nworthy..\n\nWorthy of dying by my\nown claws!");
-			npcdata.GetTalkArray(ObjectId.Bahamut)[(int)TalkArrayPos.battle_id] = bossDracolich;
-			npcdata.GetTalkArray(ObjectId.Bahamut)[3] = 0x1F;
-			npcdata.SetRoutine(ObjectId.Bahamut, (newTalkRoutines)battleBahamut);
+			npcdata[ObjectId.Bahamut].Battle = bossDracolich;
+			npcdata[ObjectId.Bahamut].Item = 0x1F;
+			npcdata[ObjectId.Bahamut].Script = (TalkScripts)battleBahamut;
 
 			evilDialogs.Add(0x23, "Come play with me,\nLIGHT WARRIORS.\nFor ever and ever\nand ever..\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.Fairy)[(int)TalkArrayPos.battle_id] = bossGhost;
-			npcdata.SetRoutine(ObjectId.Fairy, (newTalkRoutines)battleGiveOnItem);
+			npcdata[ObjectId.Fairy].Battle = bossGhost;
+			npcdata[ObjectId.Fairy].Script = (TalkScripts)battleGiveOnItem;
 
 			evilDialogs.Add(0x27, "Exterminate.\n\n\n\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.CubeBot)[(int)TalkArrayPos.battle_id] = bossSentinel;
-			npcdata.SetRoutine(ObjectId.CubeBot, (newTalkRoutines)battleGiveOnItem);
+			npcdata[ObjectId.CubeBot].Battle = bossSentinel;
+			npcdata[ObjectId.CubeBot].Script = (TalkScripts)battleGiveOnItem;
 
 			evilDialogs.Add(0x2B, "My friends..\nMy colleagues..\nNow.. I join them..\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.CanoeSage)[(int)TalkArrayPos.battle_id] = bossZomBull;
-			npcdata.SetRoutine(ObjectId.CanoeSage, (newTalkRoutines)battleGiveOnItem);
+			npcdata[ObjectId.CanoeSage].Battle = bossZomBull;
+			npcdata[ObjectId.CanoeSage].Script = (TalkScripts)battleGiveOnItem;
 
 			evilDialogs.Add(0xCD, "Luuuuu.. paaaargh!\n\n\n\nReceived #");
-			npcdata.GetTalkArray(ObjectId.Lefein)[(int)TalkArrayPos.battle_id] = bossZomBull;
-			npcdata.SetRoutine(ObjectId.Lefein, (newTalkRoutines)battleGiveOnFlag);
+			npcdata[ObjectId.Lefein].Battle = bossZomBull;
+			npcdata[ObjectId.Lefein].Script = (TalkScripts)battleGiveOnFlag;
 
 			evilDialogs.Add(0xFA, "Sorry, LIGHT WARRIORS,\nbut your LICH is in\nanother castle!\n\nMwahahahaha!");
 
@@ -375,34 +380,32 @@ namespace FF1Lib
 				Put(0x2F00 + 0x1A, Blob.FromHex("00"));
 
 				// Update Chaos' Sprite
-				Data[MapObjGfxOffset + 0x1A] = 0x0F;
-				Data[MapObjGfxOffset + 0x19] = 0x0F;
+				npcdata[ObjectId.Chaos2].Sprite = ObjectSprites.King;
+				npcdata[ObjectId.Chaos3].Sprite = ObjectSprites.King;
 
 				// Update Chaos' Palette
 				PutInBank(0x00, 0xA000 + ((byte)MapIndex.TempleOfFiendsRevisitedChaos * 0x30) + 0x18, Blob.FromHex("0F0F13300F0F1530"));
 
 				// Add Lich? fight
-				npcdata.GetTalkArray((ObjectId)0x19)[0] = 0x2F;
-				npcdata.GetTalkArray((ObjectId)0x19)[(int)TalkArrayPos.battle_id] = bossLichMech;
-				npcdata.GetTalkArray((ObjectId)0x19)[2] = 0x2F;
-				npcdata.GetTalkArray((ObjectId)0x19)[3] = 0x1A;
-
-				// Real Lich fight
-				npcdata.SetRoutine((ObjectId)0x19, (newTalkRoutines)lichReplace);
+				npcdata[ObjectId.Chaos2].Dialogue1 = 0x2F;
+				npcdata[ObjectId.Chaos2].Dialogue3 = 0x2F;
+				npcdata[ObjectId.Chaos2].Item = 0x1A;
+				npcdata[ObjectId.Chaos2].Battle = bossLichMech;
+				npcdata[ObjectId.Chaos2].Script = (TalkScripts)lichReplace;
 			}
 
-			InsertDialogs(evilDialogs);
+			dialogues.InsertDialogues(evilDialogs);
 
 			for (int i = 0; i < 4; i++)
 			{
-				if (npcdata.GetTalkArray((ObjectId)(0x1B + i))[(int)TalkArrayPos.battle_id] == encLich1)
-					npcdata.GetTalkArray((ObjectId)(0x1B + i))[(int)TalkArrayPos.battle_id] = encLich2 + 0x80;
+				if (npcdata[(ObjectId)(0x1B + i)].Battle == encLich1)
+					npcdata[(ObjectId)(0x1B + i)].Battle = encLich2 + 0x80;
 			}
-			npcdata.GetTalkArray(ObjectId.WarMECH)[(int)TalkArrayPos.battle_id] = bossLichMech;
+			npcdata[ObjectId.WarMECH].Battle = bossLichMech;
 
 			// Switch princess
-			Data[MapSpriteOffset + ((byte)MapIndex.TempleOfFiends * MapSpriteCount + 1) * MapSpriteSize] = (byte)ObjectId.Princess2;
-			Data[MapSpriteOffset + ((byte)MapIndex.ConeriaCastle2F * MapSpriteCount + 1) * MapSpriteSize] = (byte)ObjectId.None;
+			maps[MapIndex.TempleOfFiends].MapObjects[1].ObjectId = ObjectId.Princess2;
+			maps[MapIndex.ConeriaCastle2F].MapObjects[1].ObjectId = ObjectId.None;
 			Put(0x2F00 + 0x12, Blob.FromHex("01"));
 			Put(0x2F00 + 0x03, Blob.FromHex("02"));
 
@@ -453,9 +456,10 @@ namespace FF1Lib
 			{
 				for (var i = 0; i < 0x10; i++)
 				{
-					int offset = MapSpriteOffset + ((byte)map * MapSpriteCount + i) * MapSpriteSize;
-					if (validZombie.Contains((ObjectId)Data[offset]))
-						Data[offset + 1] &= 0b10111111;
+					if (validZombie.Contains(maps[map].MapObjects[i].ObjectId))
+					{
+						maps[map].MapObjects[i].Stationary = false;
+					}
 				}
 			}
 		}

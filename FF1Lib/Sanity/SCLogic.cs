@@ -337,7 +337,7 @@ namespace FF1Lib.Sanity
 
 		private void ProcessNPCs()
 		{
-			var npcRewardSources = itemPlacement.Select(r => r as MapObject).Where(r => r != null).ToDictionary(r => r.ObjectId);
+			var npcRewardSources = itemPlacement.Select(r => r as NpcReward).Where(r => r != null).ToDictionary(r => r.ObjectId);
 
 			Dictionary<ObjectId, SCRequirementsSet> allNpcs = new Dictionary<ObjectId, SCRequirementsSet>();
 
@@ -421,15 +421,15 @@ namespace FF1Lib.Sanity
 			}
 		}
 
-		private SCRequirementsSet GetSecondaryRequirements(SCPointOfInterest poi, MapObject rewardSource, Dictionary<ObjectId, SCRequirementsSet> allNpcs, Dictionary<Item, SCRequirementsSet> allOrbs)
+		private SCRequirementsSet GetSecondaryRequirements(SCPointOfInterest poi, NpcReward rewardSource, Dictionary<ObjectId, SCRequirementsSet> allNpcs, Dictionary<Item, SCRequirementsSet> allOrbs)
 		{
-			if (poi.TalkRoutine == newTalkRoutines.Talk_ElfDocUnne)
+			if (poi.TalkRoutine == TalkScripts.Talk_ElfDocUnne)
 			{
-				if (poi.TalkArray[(int)TalkArrayPos.requirement_id] == (byte)Item.Herb)
+				if (poi.NpcRequirement == (byte)Item.Herb)
 				{
 					return new SCRequirementsSet(SCRequirements.Herb);
 				}
-				else if (poi.TalkArray[(int)TalkArrayPos.requirement_id] == (byte)Item.Slab)
+				else if (poi.NpcRequirement == (byte)Item.Slab)
 				{
 					return new SCRequirementsSet(SCRequirements.Herb);
 				}
@@ -438,14 +438,14 @@ namespace FF1Lib.Sanity
 			{
 				switch(poi.TalkRoutine)
 				{
-					case newTalkRoutines.Talk_Bikke:
+					case TalkScripts.Talk_Bikke:
 						return new SCRequirementsSet(SCRequirements.None);
-					case newTalkRoutines.Talk_GiveItemOnFlag:
+					case TalkScripts.Talk_GiveItemOnFlag:
 						return ProcessItemOnFlag(poi, rewardSource, allNpcs);
-					case newTalkRoutines.Talk_Nerrick:
-					case newTalkRoutines.Talk_TradeItems:
-					case newTalkRoutines.Talk_GiveItemOnItem:
-					case newTalkRoutines.Talk_Astos:
+					case TalkScripts.Talk_Nerrick:
+					case TalkScripts.Talk_TradeItems:
+					case TalkScripts.Talk_GiveItemOnItem:
+					case TalkScripts.Talk_Astos:
 						return ProcessItemOnItem(poi, rewardSource, allNpcs, allOrbs);
 				}
 			}
@@ -453,7 +453,7 @@ namespace FF1Lib.Sanity
 			throw new NotSupportedException();
 		}
 
-		private SCRequirementsSet ProcessItemOnItem(SCPointOfInterest poi, MapObject rewardSource, Dictionary<ObjectId, SCRequirementsSet> allNpcs, Dictionary<Item, SCRequirementsSet> allOrbs)
+		private SCRequirementsSet ProcessItemOnItem(SCPointOfInterest poi, NpcReward rewardSource, Dictionary<ObjectId, SCRequirementsSet> allNpcs, Dictionary<Item, SCRequirementsSet> allOrbs)
 		{
 			if (rewardSource.AccessRequirement == AccessRequirement.EarthOrb)
 			{
@@ -475,9 +475,9 @@ namespace FF1Lib.Sanity
 			return new SCRequirementsSet(rewardSource.AccessRequirement);
 		}
 
-		private SCRequirementsSet ProcessItemOnFlag(SCPointOfInterest poi, MapObject rewardSource, Dictionary<ObjectId, SCRequirementsSet> allNpcs)
+		private SCRequirementsSet ProcessItemOnFlag(SCPointOfInterest poi, NpcReward rewardSource, Dictionary<ObjectId, SCRequirementsSet> allNpcs)
 		{
-			var flag = (ObjectId)poi.TalkArray[(int)TalkArrayPos.requirement_id];
+			var flag = (ObjectId)poi.NpcRequirement;
 
 			if (poi.Npc.ObjectId == ObjectId.Fairy)
 			{

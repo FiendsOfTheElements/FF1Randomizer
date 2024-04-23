@@ -213,17 +213,17 @@ namespace FF1Lib
 				forcedItemPlacements =
 						forcedItemPlacements
 							.Select(x => x.Address == ItemLocations.KingConeria.Address
-									? new MapObject(ObjectId.King, MapLocation.ConeriaCastle2, x.Item)
+									? new NpcReward(ObjectId.King, MapLocation.ConeriaCastle2, x.Item)
 									: x).ToList();
 				itemLocationPool =
 						itemLocationPool
 							.Select(x => x.Address == ItemLocations.KingConeria.Address
-									? new MapObject(ObjectId.King, MapLocation.ConeriaCastle2, x.Item)
+									? new NpcReward(ObjectId.King, MapLocation.ConeriaCastle2, x.Item)
 									: x).ToList();
 				incentiveLocationPool =
 						incentiveLocationPool
 							.Select(x => x.Address == ItemLocations.KingConeria.Address
-									? new MapObject(ObjectId.King, MapLocation.ConeriaCastle2, x.Item)
+									? new NpcReward(ObjectId.King, MapLocation.ConeriaCastle2, x.Item)
 									: x).ToList();
 			}
 			if ((bool)flags.EarlySage)
@@ -231,17 +231,17 @@ namespace FF1Lib
 				forcedItemPlacements =
 						forcedItemPlacements
 							.Select(x => x.Address == ItemLocations.CanoeSage.Address
-									? new MapObject(ObjectId.CanoeSage, MapLocation.CrescentLake, x.Item)
+									? new NpcReward(ObjectId.CanoeSage, MapLocation.CrescentLake, x.Item)
 									: x).ToList();
 				itemLocationPool =
 						itemLocationPool
 							.Select(x => x.Address == ItemLocations.CanoeSage.Address
-									? new MapObject(ObjectId.CanoeSage, MapLocation.CrescentLake, x.Item)
+									? new NpcReward(ObjectId.CanoeSage, MapLocation.CrescentLake, x.Item)
 									: x).ToList();
 				incentiveLocationPool =
 						incentiveLocationPool
 							.Select(x => x.Address == ItemLocations.CanoeSage.Address
-									? new MapObject(ObjectId.CanoeSage, MapLocation.CrescentLake, x.Item)
+									? new NpcReward(ObjectId.CanoeSage, MapLocation.CrescentLake, x.Item)
 									: x).ToList();
 			}
 			if ((bool)flags.EarlySarda)
@@ -249,17 +249,17 @@ namespace FF1Lib
 				forcedItemPlacements =
 					forcedItemPlacements
 						.Select(x => x.Address == ItemLocations.Sarda.Address
-								? new MapObject(ObjectId.Sarda, MapLocation.SardasCave, x.Item)
+								? new NpcReward(ObjectId.Sarda, MapLocation.SardasCave, x.Item)
 								: x).ToList();
 				itemLocationPool =
 					itemLocationPool
 						.Select(x => x.Address == ItemLocations.Sarda.Address
-								? new MapObject(ObjectId.Sarda, MapLocation.SardasCave, x.Item)
+								? new NpcReward(ObjectId.Sarda, MapLocation.SardasCave, x.Item)
 								: x).ToList();
 				incentiveLocationPool =
 					incentiveLocationPool
 						.Select(x => x.Address == ItemLocations.Sarda.Address
-								? new MapObject(ObjectId.Sarda, MapLocation.SardasCave, x.Item)
+								? new NpcReward(ObjectId.Sarda, MapLocation.SardasCave, x.Item)
 								: x).ToList();
 			}
 
@@ -269,17 +269,17 @@ namespace FF1Lib
 				forcedItemPlacements =
 					forcedItemPlacements
 						.Select(x => x.Address == ItemLocations.ElfPrince.Address
-								? new MapObject(ObjectId.ElfPrince, MapLocation.ElflandCastle, x.Item, AccessRequirement.Herb, ObjectId.ElfDoc, requiredSecondLocation: elfDoctorLocation)
+								? new NpcReward(ObjectId.ElfPrince, MapLocation.ElflandCastle, x.Item, AccessRequirement.Herb, ObjectId.ElfDoc, requiredSecondLocation: elfDoctorLocation)
 								: x).ToList();
 				itemLocationPool =
 					itemLocationPool
 						.Select(x => x.Address == ItemLocations.ElfPrince.Address
-								? new MapObject(ObjectId.ElfPrince, MapLocation.ElflandCastle, x.Item, AccessRequirement.Herb, ObjectId.ElfDoc, requiredSecondLocation: elfDoctorLocation)
+								? new NpcReward(ObjectId.ElfPrince, MapLocation.ElflandCastle, x.Item, AccessRequirement.Herb, ObjectId.ElfDoc, requiredSecondLocation: elfDoctorLocation)
 								: x).ToList();
 				incentiveLocationPool =
 					incentiveLocationPool
 						.Select(x => x.Address == ItemLocations.ElfPrince.Address
-								? new MapObject(ObjectId.ElfPrince, MapLocation.ElflandCastle, x.Item, AccessRequirement.Herb, ObjectId.ElfDoc, requiredSecondLocation: elfDoctorLocation)
+								? new NpcReward(ObjectId.ElfPrince, MapLocation.ElflandCastle, x.Item, AccessRequirement.Herb, ObjectId.ElfDoc, requiredSecondLocation: elfDoctorLocation)
 								: x).ToList();
 			}
 
@@ -289,17 +289,17 @@ namespace FF1Lib
 				forcedItemPlacements =
 					forcedItemPlacements
 						.Select(x => x.Address == ItemLocations.Lefein.Address
-								? new MapObject(ObjectId.Lefein, MapLocation.Lefein, x.Item, AccessRequirement.Slab, ObjectId.Unne, requiredSecondLocation: unneLocation)
+								? new NpcReward(ObjectId.Lefein, MapLocation.Lefein, x.Item, AccessRequirement.Slab, ObjectId.Unne, requiredSecondLocation: unneLocation)
 								: x).ToList();
 				itemLocationPool =
 					itemLocationPool
 						.Select(x => x.Address == ItemLocations.Lefein.Address
-								? new MapObject(ObjectId.Lefein, MapLocation.Lefein, x.Item, AccessRequirement.Slab, ObjectId.Unne, requiredSecondLocation: unneLocation)
+								? new NpcReward(ObjectId.Lefein, MapLocation.Lefein, x.Item, AccessRequirement.Slab, ObjectId.Unne, requiredSecondLocation: unneLocation)
 								: x).ToList();
 				incentiveLocationPool =
 					incentiveLocationPool
 						.Select(x => x.Address == ItemLocations.Lefein.Address
-								? new MapObject(ObjectId.Lefein, MapLocation.Lefein, x.Item, AccessRequirement.Slab, ObjectId.Unne, requiredSecondLocation: unneLocation)
+								? new NpcReward(ObjectId.Lefein, MapLocation.Lefein, x.Item, AccessRequirement.Slab, ObjectId.Unne, requiredSecondLocation: unneLocation)
 								: x).ToList();
 			}
 
@@ -330,10 +330,10 @@ namespace FF1Lib
 
 			AllValidItemLocations = itemLocationPool.ToList();
 			AllValidPreBlackOrbItemLocations = AllValidItemLocations
-							 .Where(x => nonEndgameMapLocations.Contains(x.MapLocation) && nonEndgameMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation))
+							 .Where(x => nonEndgameMapLocations.Contains(x.MapLocation) && nonEndgameMapLocations.Contains((x as NpcReward)?.SecondLocation ?? MapLocation.StartingLocation))
 							 .ToList();
 			AllValidPreBlackOrbItemLocationsPlusForced = itemLocationPool.Concat(forcedItemPlacements)
-							 .Where(x => nonEndgameMapLocations.Contains(x.MapLocation) && nonEndgameMapLocations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation))
+							 .Where(x => nonEndgameMapLocations.Contains(x.MapLocation) && nonEndgameMapLocations.Contains((x as NpcReward)?.SecondLocation ?? MapLocation.StartingLocation))
 							 .ToList();
 		}
 

@@ -8,13 +8,14 @@ namespace FF1Lib
 		MT19337 rng;
 		Flags flags;
 		FF1Rom rom;
-		List<Map> maps;
+		StandardMaps maps;
 		List<MapIndex> flippedMaps;
 		List<MapIndex> vflippedMaps;
 
-		MapTileSets MapTileSets;
+		Dictionary<MapIndex, byte> MapTileSets;
 		ShopData ShopData;
-		TileSet[] TileSets = new TileSet[8];
+		//TileSet[] TileSets = new TileSet[8];
+		TileSetsData TileSets;
 
 		Dictionary<byte, List<byte>> UnusedTilesbyTileSet;
 		Dictionary<string, MagicSpell> Spells;
@@ -33,16 +34,17 @@ namespace FF1Lib
 			(MapIndex.SeaShrineB4, 27, 40, 0x22, 0x23, 0x32, 0x33, 0xAA)
 		};
 
-		public LegendaryShops(MT19337 _rng, Flags _flags, List<Map> _maps, List<MapIndex> _flippedMaps, List<MapIndex> _vflippedMaps, ShopData _shopdata, FF1Rom _rom)
+		public LegendaryShops(MT19337 _rng, Flags _flags, StandardMaps _maps, ShopData _shopdata, TileSetsData _tilesets, FF1Rom _rom)
 		{
 			rng = _rng;
 			flags = _flags;
 			rom = _rom;
 			maps = _maps;
-			flippedMaps = _flippedMaps;
-			vflippedMaps = _vflippedMaps;
+			flippedMaps = maps.HorizontalFlippedMaps;
+			vflippedMaps = maps.VerticalFlippedMaps;
+			TileSets = _tilesets;
 
-			MapTileSets = new MapTileSets(rom);
+			MapTileSets = maps.MapTileSets.Select((t,i) => (i, (byte)t)).ToDictionary(t => (MapIndex)t.i, t => t.Item2);
 			ShopData = _shopdata;
 			SpellInfos = rom.LoadSpells().ToList();
 			treasureData = new TreasureData(rom);
@@ -58,7 +60,7 @@ namespace FF1Lib
 
 			UnusedTilesbyTileSet = Enum.GetValues<MapIndex>()
 				.GroupBy(m => MapTileSets[m])
-				.Select(t => (t.Key, t.Select(m => maps[(int)m]
+				.Select(t => (t.Key, t.Select(m => maps[m].Map
 						.Select(e => e.Value))
 					.SelectMany(x => x)
 					.Distinct()
@@ -72,13 +74,12 @@ namespace FF1Lib
 			PrepareMaps();
 
 			Spells = rom.GetSpells().ToDictionary(s => s.Name.ToLowerInvariant());
-			MapTileSets.LoadTable();
-
+			/*
 			for (int i = 0; i < 8; i++)
 			{
 				TileSets[i] = new TileSet(rom, (byte)i);
 				TileSets[i].LoadData();
-			}
+			}*/
 
 			LoadUnusedTileIds();
 
@@ -97,7 +98,7 @@ namespace FF1Lib
 			ShopData.StoreData();
 			treasureData.StoreTable();
 
-			for (int i = 0; i < 8; i++) TileSets[i].StoreData();
+			//for (int i = 0; i < 8; i++) TileSets[i].StoreData();
 
 			rom.PutInBank(0x1F, 0xEBBD, Blob.FromHex("03"));//Set ShopType
 			rom.PutInBank(0x1F, 0xEBC7, Blob.FromHex("02"));//Set ShopType
@@ -105,7 +106,7 @@ namespace FF1Lib
 
 		private void PrepareMaps()
 		{
-			maps[(int)MapIndex.DwarfCave][51, 12] = maps[(int)MapIndex.DwarfCave][51, 13];
+			maps[MapIndex.DwarfCave].Map[51, 12] = maps[MapIndex.DwarfCave].Map[51, 13];
 		}
 
 		private void CreateWeaponShop(int slots, List<(MapIndex, int, int, byte, byte, byte, byte, byte)> pool)
@@ -211,21 +212,23 @@ namespace FF1Lib
 			if (flippedMaps.Contains(loc.Item1)) loc.Item2 = Map.RowLength - loc.Item2 - 1;
 			if (vflippedMaps.Contains(loc.Item1)) loc.Item3 = Map.RowLength - loc.Item3 - 1;
 
-			maps[(int)loc.Item1][loc.Item3, loc.Item2] = tile;
+			maps[loc.Item1].Map[loc.Item3, loc.Item2] = tile;
 		}
 
-		private byte CreateTile(MapIndex MapIndex, int ShopId, byte ul, byte ur, byte bl, byte br, byte pi)
+		private byte CreateTile(MapIndex mapindex, int ShopId, byte ul, byte ur, byte bl, byte br, byte pi)
 		{
-			var tileSet = TileSets[MapTileSets[MapIndex]];
-			var tile = UnusedTilesbyTileSet[MapTileSets[MapIndex]][0];
-			UnusedTilesbyTileSet[MapTileSets[MapIndex]].RemoveAt(0);
+			var tileSet = TileSets[MapTileSets[mapindex]];
+			var tile = UnusedTilesbyTileSet[MapTileSets[mapindex]][0];
+			UnusedTilesbyTileSet[MapTileSets[mapindex]].RemoveAt(0);
 
+			tileSet.Tiles[tile] = new TileSM(tile, tileSet.Index, (TilePalette)pi, new() { ul, ur, bl, br }, 3, (byte)ShopId);
+			/*
 			tileSet.TileAttributes[tile] = pi;
 			tileSet.TileProperties[tile] = new TileProp(3, (byte)ShopId);
 			tileSet.TopLeftTiles[tile] = ul;
 			tileSet.TopRightTiles[tile] = ur;
 			tileSet.BottomLeftTiles[tile] = bl;
-			tileSet.BottomRightTiles[tile] = br;
+			tileSet.BottomRightTiles[tile] = br;*/
 
 			return tile;
 		}
