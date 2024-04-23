@@ -1991,7 +1991,7 @@ namespace FF1Lib
 
 				new AlternateFiends {
 					Name = "RAMUH",
-					SpriteSheet = FormationSpriteSheet.AspLobsterBullTroll.,
+					SpriteSheet = FormationSpriteSheet.AspLobsterBullTroll,
 					FormationPattern = FormationPattern.Mixed,
 					GFXOffset = FormationGFX.Sprite1,
 					Palette1 = 0x26,
