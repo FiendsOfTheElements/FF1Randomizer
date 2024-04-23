@@ -57,14 +57,10 @@ namespace FF1Lib
 
 	public class IncentiveData
 	{
-		public OverworldMap OverworldMap { get; private set; }
-
-		ISanityChecker _checker;
-
-		public IncentiveData(MT19337 rng, IIncentiveFlags flags, OverworldMap map, ItemShopSlot shopSlot, ISanityChecker checker)
+		public ItemShopSlot ShopSlot { get; set; }
+		public IncentiveData(MT19337 rng, Flags flags)
 		{
-			OverworldMap = map;
-			_checker = checker;
+			ShopSlot = ItemLocations.CaravanItemShop1;
 
 			List<(bool, Item)> incentivizedItemsFlags = new() {
 				((bool)flags.IncentivizeBridge, Item.Bridge),
@@ -152,13 +148,12 @@ namespace FF1Lib
 				((bool)flags.IsCanalFree, ItemLocations.Nerrick),
 			};
 
-			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements = map.FullLocationRequirements;
 			var forcedItemPlacements = ItemLocations.AllOtherItemLocations.ToList();
 
 			if (!(flags.NPCItems ?? false))
 			{
 				forcedItemPlacements.AddRange(ItemLocations.AllNPCFreeItemLocationsExcludingVendor.Except(removedNPCItemsLocations.Where(x => x.Item1 == true).Select(x => x.Item2).ToList()));
-				forcedItemPlacements.Add(shopSlot);
+				forcedItemPlacements.Add(ShopSlot);
 			}
 
 			if (!(flags.NPCFetchItems ?? false))
@@ -190,119 +185,6 @@ namespace FF1Lib
 						  .Where(x => !x.IsUnused && !forcedItemPlacements.Any(y => y.Address == x.Address))
 						  .ToList();
 
-			if ((bool)flags.EarlyOrdeals)
-			{
-				forcedItemPlacements =
-					forcedItemPlacements
-						.Select(x => ((x as TreasureChest)?.AccessRequirement.HasFlag(AccessRequirement.Crown) ?? false)
-								? new TreasureChest(x, x.Item, x.AccessRequirement & ~AccessRequirement.Crown)
-								: x).ToList();
-				itemLocationPool =
-					itemLocationPool
-						.Select(x => ((x as TreasureChest)?.AccessRequirement.HasFlag(AccessRequirement.Crown) ?? false)
-								? new TreasureChest(x, x.Item, x.AccessRequirement & ~AccessRequirement.Crown)
-								: x).ToList();
-				incentiveLocationPool =
-					incentiveLocationPool
-						.Select(x => ((x as TreasureChest)?.AccessRequirement.HasFlag(AccessRequirement.Crown) ?? false)
-							? new TreasureChest(x, x.Item, x.AccessRequirement & ~AccessRequirement.Crown)
-							: x).ToList();
-			}
-			if ((bool)flags.EarlyKing)
-			{
-				forcedItemPlacements =
-						forcedItemPlacements
-							.Select(x => x.Address == ItemLocations.KingConeria.Address
-									? new NpcReward(ObjectId.King, MapLocation.ConeriaCastle2, x.Item)
-									: x).ToList();
-				itemLocationPool =
-						itemLocationPool
-							.Select(x => x.Address == ItemLocations.KingConeria.Address
-									? new NpcReward(ObjectId.King, MapLocation.ConeriaCastle2, x.Item)
-									: x).ToList();
-				incentiveLocationPool =
-						incentiveLocationPool
-							.Select(x => x.Address == ItemLocations.KingConeria.Address
-									? new NpcReward(ObjectId.King, MapLocation.ConeriaCastle2, x.Item)
-									: x).ToList();
-			}
-			if ((bool)flags.EarlySage)
-			{
-				forcedItemPlacements =
-						forcedItemPlacements
-							.Select(x => x.Address == ItemLocations.CanoeSage.Address
-									? new NpcReward(ObjectId.CanoeSage, MapLocation.CrescentLake, x.Item)
-									: x).ToList();
-				itemLocationPool =
-						itemLocationPool
-							.Select(x => x.Address == ItemLocations.CanoeSage.Address
-									? new NpcReward(ObjectId.CanoeSage, MapLocation.CrescentLake, x.Item)
-									: x).ToList();
-				incentiveLocationPool =
-						incentiveLocationPool
-							.Select(x => x.Address == ItemLocations.CanoeSage.Address
-									? new NpcReward(ObjectId.CanoeSage, MapLocation.CrescentLake, x.Item)
-									: x).ToList();
-			}
-			if ((bool)flags.EarlySarda)
-			{
-				forcedItemPlacements =
-					forcedItemPlacements
-						.Select(x => x.Address == ItemLocations.Sarda.Address
-								? new NpcReward(ObjectId.Sarda, MapLocation.SardasCave, x.Item)
-								: x).ToList();
-				itemLocationPool =
-					itemLocationPool
-						.Select(x => x.Address == ItemLocations.Sarda.Address
-								? new NpcReward(ObjectId.Sarda, MapLocation.SardasCave, x.Item)
-								: x).ToList();
-				incentiveLocationPool =
-					incentiveLocationPool
-						.Select(x => x.Address == ItemLocations.Sarda.Address
-								? new NpcReward(ObjectId.Sarda, MapLocation.SardasCave, x.Item)
-								: x).ToList();
-			}
-
-			MapLocation elfDoctorLocation = map.ObjectiveNPCs[ObjectId.ElfDoc];
-			if (elfDoctorLocation != MapLocation.ElflandCastle)
-			{
-				forcedItemPlacements =
-					forcedItemPlacements
-						.Select(x => x.Address == ItemLocations.ElfPrince.Address
-								? new NpcReward(ObjectId.ElfPrince, MapLocation.ElflandCastle, x.Item, AccessRequirement.Herb, ObjectId.ElfDoc, requiredSecondLocation: elfDoctorLocation)
-								: x).ToList();
-				itemLocationPool =
-					itemLocationPool
-						.Select(x => x.Address == ItemLocations.ElfPrince.Address
-								? new NpcReward(ObjectId.ElfPrince, MapLocation.ElflandCastle, x.Item, AccessRequirement.Herb, ObjectId.ElfDoc, requiredSecondLocation: elfDoctorLocation)
-								: x).ToList();
-				incentiveLocationPool =
-					incentiveLocationPool
-						.Select(x => x.Address == ItemLocations.ElfPrince.Address
-								? new NpcReward(ObjectId.ElfPrince, MapLocation.ElflandCastle, x.Item, AccessRequirement.Herb, ObjectId.ElfDoc, requiredSecondLocation: elfDoctorLocation)
-								: x).ToList();
-			}
-
-			MapLocation unneLocation = map.ObjectiveNPCs[ObjectId.Unne];
-			if (unneLocation != MapLocation.Melmond)
-			{
-				forcedItemPlacements =
-					forcedItemPlacements
-						.Select(x => x.Address == ItemLocations.Lefein.Address
-								? new NpcReward(ObjectId.Lefein, MapLocation.Lefein, x.Item, AccessRequirement.Slab, ObjectId.Unne, requiredSecondLocation: unneLocation)
-								: x).ToList();
-				itemLocationPool =
-					itemLocationPool
-						.Select(x => x.Address == ItemLocations.Lefein.Address
-								? new NpcReward(ObjectId.Lefein, MapLocation.Lefein, x.Item, AccessRequirement.Slab, ObjectId.Unne, requiredSecondLocation: unneLocation)
-								: x).ToList();
-				incentiveLocationPool =
-					incentiveLocationPool
-						.Select(x => x.Address == ItemLocations.Lefein.Address
-								? new NpcReward(ObjectId.Lefein, MapLocation.Lefein, x.Item, AccessRequirement.Slab, ObjectId.Unne, requiredSecondLocation: unneLocation)
-								: x).ToList();
-			}
-
 			foreach (var item in forcedItemPlacements.Select(x => x.Item))
 			{
 				if ((bool)flags.GuaranteedMasamune && item == Item.Masamune)
@@ -317,7 +199,8 @@ namespace FF1Lib
 				incentivePool.Remove(item);
 			}
 
-			var nonEndgameMapLocations = _checker.AccessibleMapLocations(~AccessRequirement.BlackOrb, MapChange.All, fullLocationRequirements);
+			List<MapLocation> endgameMapLocations = new() { MapLocation.TempleOfFiends2, MapLocation.TempleOfFiends3, MapLocation.TempleOfFiendsAir, MapLocation.TempleOfFiendsChaos, MapLocation.TempleOfFiendsEarth, MapLocation.TempleOfFiendsFire, MapLocation.TempleOfFiendsPhantom, MapLocation.TempleOfFiendsWater };
+			List<MapLocation> nonEndgameMapLocations = Enum.GetValues<MapLocation>().Except(endgameMapLocations).ToList();
 
 			ForcedItemPlacements = forcedItemPlacements.ToList();
 			IncentiveItems = incentivePool.ToList();
@@ -335,6 +218,40 @@ namespace FF1Lib
 			AllValidPreBlackOrbItemLocationsPlusForced = itemLocationPool.Concat(forcedItemPlacements)
 							 .Where(x => nonEndgameMapLocations.Contains(x.MapLocation) && nonEndgameMapLocations.Contains((x as NpcReward)?.SecondLocation ?? MapLocation.StartingLocation))
 							 .ToList();
+
+			var excludeItemsFromRandomShops = new List<Item>();
+
+			if ((bool)flags.Shops)
+			{
+				if ((bool)flags.Treasures)
+				{
+					excludeItemsFromRandomShops = ForcedItemPlacements.Select(x => x.Item).Concat(IncentiveItems).ToList();
+				}
+
+				if (!((bool)flags.RandomWaresIncludesSpecialGear))
+				{
+					excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
+
+					if (flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
+						excludeItemsFromRandomShops.Add(Item.PowerRod);
+
+					if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
+						excludeItemsFromRandomShops.Add(Item.PowerGauntlets);
+				}
+
+				if ((bool)flags.NoMasamune)
+				{
+					excludeItemsFromRandomShops.Add(Item.Masamune);
+				}
+
+				if ((bool)flags.NoXcalber)
+				{
+					excludeItemsFromRandomShops.Add(Item.Xcalber);
+				}
+			}
+
+			ExcludedItemsFromShops = excludeItemsFromRandomShops;
+
 		}
 
 		private List<IRewardSource> SelectIncentivizedChests(IIncentiveFlags flags, MT19337 rng)
@@ -520,5 +437,6 @@ namespace FF1Lib
 		public IEnumerable<IRewardSource> IncentiveLocations { get; }
 		public IEnumerable<Item> IncentiveItems { get; }
 		public IEnumerable<Item> RemovedItems { get; }
+		public IEnumerable<Item> ExcludedItemsFromShops { get; }
 	}
 }

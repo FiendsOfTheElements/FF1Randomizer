@@ -151,7 +151,6 @@ public partial class FF1Rom : NesRom
 		//Overworld.Update(Teleporters);
 
 		//var maps = ReadMaps();
-		var shopItemLocation = ItemLocations.CaravanItemShop1;
 		var oldItemNames = ItemsText.ToList();
 
 		DesertOfDeath.ApplyDesertModifications((bool)flags.DesertOfDeath, this, ZoneFormations, Overworld.Locations.StartingLocation, NpcData, Dialogues);
@@ -361,20 +360,23 @@ public partial class FF1Rom : NesRom
 		// NPC Stuff
 		ClassAsNPC(flags, talkroutines, NpcData, Dialogues, Maps, rng);
 
-
 		// NOTE: logic checking for relocated chests
 		// accounts for NPC locations and whether they
 		// are fightable/killable, so it needs to
 		// happen after anything that adds, removes or
 		// relocates NPCs or changes their routines.
-
 		await new RelocateChests(this).RandomlyRelocateChests(rng, Maps, TileSetsData, Teleporters, NpcData, flags);
 
-		//EnterTeleData enterBackup = new EnterTeleData(this);
-		//NormTeleData normBackup = new NormTeleData(this);
+		talkroutines.Update(flags);
+		incentivesData = new IncentiveData(rng, flags);
 
-		//enterBackup.LoadData();
-		//normBackup.LoadData();
+		if (((bool)flags.Shops))
+		{
+			incentivesData.ShopSlot = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), incentivesData.ExcludedItemsFromShops, flags.WorldWealth, Overworld.OverworldMap.ConeriaTownEntranceItemShopIndex);
+		}
+
+		sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, this, incentivesData.ShopSlot);
+		if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags).Complete) throw new InsaneException("Not Completable");
 
 		var maxRetries = 3;
 		for (var i = 0; i < maxRetries; i++)
@@ -383,82 +385,14 @@ public partial class FF1Rom : NesRom
 			{
 				await this.Progress((bool)flags.Treasures ? "Shuffling Treasures - Retries: " + i : "Placing Treasures", 3);
 
-				//enterBackup.StoreData();
-				//normBackup.StoreData();
-
-				//overworldMap = new OverworldMap(this, flags);
-				//overworldMap.Teleporters = teleporters;
-				/*
-				if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && flags.GameMode == GameModes.Standard)
-				{
-					overworldMap.ShuffleEntrancesAndFloors(rng, flags);
-				}*/
-
-				// Disable the Princess Warp back to Castle Coneria
-				if ((bool)flags.Entrances || (bool)flags.Floors || (flags.GameMode == GameModes.Standard && flags.OwMapExchange != OwMapExchanges.None) || (flags.OrbsRequiredCount == 0 && !flags.ShardHunt))
-					talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
-				/*
-				if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && (flags.GameMode != GameModes.DeepDungeon))
-				{
-					overworldMap.ShuffleObjectiveNPCs(rng);
-				}*/
-
-				incentivesData = new IncentiveData(rng, flags, Overworld.OverworldMap, shopItemLocation, new SanityCheckerV1());
-
-				await this.Progress();
-
-				if (((bool)flags.Shops))
-				{
-					var excludeItemsFromRandomShops = new List<Item>();
-					if ((bool)flags.Treasures)
-					{
-						excludeItemsFromRandomShops = incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList();
-					}
-
-					if (!((bool)flags.RandomWaresIncludesSpecialGear))
-					{
-						excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
-
-						if (flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
-							excludeItemsFromRandomShops.Add(Item.PowerRod);
-
-						if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
-							excludeItemsFromRandomShops.Add(Item.PowerGauntlets);
-					}
-
-					if ((bool)flags.NoMasamune)
-					{
-						excludeItemsFromRandomShops.Add(Item.Masamune);
-					}
-
-					if ((bool)flags.NoXcalber)
-					{
-						excludeItemsFromRandomShops.Add(Item.Xcalber);
-					}
-
-					shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth, Overworld.OverworldMap.ConeriaTownEntranceItemShopIndex);
-
-					incentivesData = new IncentiveData(rng, flags, Overworld.OverworldMap, shopItemLocation, new SanityCheckerV1());
-				}
-
-			        await this.Progress();
-
 				if (flags.GameMode == GameModes.DeepDungeon)
 				{
-					sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, this, shopItemLocation);
 					generatedPlacement = DeepDungeon.ShuffleTreasures(flags, incentivesData, rng);
 				}
 				else if ((bool)flags.Treasures)
 				{
-					sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, this, shopItemLocation);
-					generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, Overworld, Teleporters, sanityChecker);
+					generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, incentivesData.ShopSlot, Overworld, Teleporters, sanityChecker);
 				}
-				else if (Overworld.MapExchange != null)
-				{
-					sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, this, shopItemLocation);
-					if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags).Complete) throw new InsaneException("Not Completable");
-				}
-
 				break;
 			}
 			catch (InsaneException e)
@@ -499,9 +433,7 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress(funMessages.PickRandom(rng));
 
-		// Change Astos routine so item isn't lost in wall of text
-		if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems || (bool)flags.ShuffleAstos)
-			talkroutines.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A57385612080B1B020A572203D96A5752020B1A476207F90207392A5611820109F201896A9F060A57060"));
+
 
 		NpcData.UpdateItemPlacement(generatedPlacement);
 
@@ -725,7 +657,7 @@ public partial class FF1Rom : NesRom
 			ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
 		}
 
-		ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.ImprovedClinic);
+		ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), incentivesData.ShopSlot, flags.ImprovedClinic);
 
 		extConsumables.AddExtConsumables();
 

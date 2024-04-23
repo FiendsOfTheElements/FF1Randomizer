@@ -13,7 +13,7 @@ namespace FF1Lib
 	{
 		private const Item ReplacementItem = Item.Cabin;
 
-		private List<IRewardSource> TrapChests = new List<IRewardSource>()
+		private static List<IRewardSource> TrapChests = new List<IRewardSource>()
 		{
 			ItemLocations.ToFTopRight2, // In-Out trap tile forced
 			ItemLocations.ToFBottomRight, // Locked trap tile
@@ -32,6 +32,8 @@ namespace FF1Lib
 			ItemLocations.SeaShrine3, // In-Out trap Sharknado chest
 			ItemLocations.SkyPalace33, // Top chest B3, vanilla Pro-Ring
 		};
+		public ItemPlacement(Flags flags, IncentiveData incentiveData)
+
 
 		public static ItemPlacement Create(IItemPlacementFlags flags, IncentiveData incentivesData, List<Item> allTreasures, ItemShopSlot caravanItemLocation, OverworldMap overworldMap, ISanityChecker checker)
 		{

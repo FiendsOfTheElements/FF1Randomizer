@@ -1,5 +1,83 @@
 ﻿namespace FF1Lib
 {
+	public struct ItemLogic
+	{
+		public ItemType Type { get; private set; }
+		public ItemQuality Quality { get; private set; }
+		public Item Index { get; private set; }
+
+		public ItemLogic(Item _index, ItemType _type, ItemQuality _quality)
+		{
+			Index = _index;
+			Type = _type;
+			Quality = _quality;
+		}
+		public ItemLogic(ItemLogic newItem)
+		{
+			Index = newItem.Index;
+			Type = newItem.Type;
+			Quality = newItem.Quality;
+		}
+	}
+	public class ItemsLogicData
+	{
+		private List<ItemLogic> items;
+		private FF1Rom rom;
+		private List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
+
+		private const int TreasureOffset = 0x03100;
+		private const int TreasureSize = 1;
+		private const int TreasurePoolCount = 256;
+		private const int TreasureCount = 256;
+		public ItemsLogicData(FF1Rom _rom)
+		{
+			rom = _rom;
+			var pricevalue = new();
+			var name = new();
+
+
+			var treasureBlob = rom.Get(TreasureOffset, TreasureSize * TreasureCount);
+
+
+			// list of items, and then we reference the actual values
+			// all items have a name, an id, a price value
+
+			// weapon
+			//  
+			// armor
+			// spells
+
+
+
+
+		}
+
+
+
+
+
+	}
+
+	public enum ItemType
+	{
+		None,
+		Consumable,
+		ExtConsumable,
+		KeyItem,
+		Orb,
+		Shard,
+		Gold,
+		Xp,
+		Weapon,
+		Armor,
+	}
+	public enum ItemQuality
+	{
+		Common,
+		Rare,
+		Legendary,
+		Unique
+	}
 	public enum Item : byte
 	{
 		None = 0,
@@ -182,12 +260,20 @@
 		Gold45000 = 174,
 		Gold65000 = 175,
 
-		// Additions for variables in chests
+		// Extra Items, these IDs must be process before being written
+		Xp = 0xB0,
+		ApItem = 0xB2,
+		NewConsumable1 = 0xC0,
+		NewConsumable2 = 0xC1,
+		NewConsumable3 = 0xC2,
+		NewConsumable4 = 0xC3,
+
+		// Additions for variables in chests / 0xE0
 		Ship = 224,
 		Airship = 228,
 		Bridge = 232,
 		Canal = 236,
-		Canoe = 242
+		Canoe = 242,
 	}
 
 	public enum Spell : byte

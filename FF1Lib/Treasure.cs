@@ -12,7 +12,7 @@ namespace FF1Lib
 		public const int TreasureCount = 256;
 
 		public const int lut_MapObjTalkJumpTblAddress = 0x390D3;
-		public const string giveRewardRoutineAddress = "10B4";
+		//public const string giveRewardRoutineAddress = "10B4";
 		public static readonly List<int> UnusedTreasureIndices =
 			Enumerable.Range(0, 1).Concat(
 			Enumerable.Range(145, 4)).Concat(
@@ -30,7 +30,7 @@ namespace FF1Lib
 													Teleporters teleporters,
 													ISanityChecker checker)
 		{
-			Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements = overworld.OverworldMap.FullLocationRequirements;
+			//Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullFloorRequirements = overworld.OverworldMap.FullLocationRequirements;
 			//Dictionary<MapLocation, OverworldTeleportIndex> overridenOverworld = overworldMap.OverriddenOverworldLocations;
 
 			var vanillaNPCs = !(flags.NPCItems ?? false) && !(flags.NPCFetchItems ?? false);
@@ -58,5 +58,7 @@ namespace FF1Lib
 
 			return placedItems;
 		}
+
+
 	}
 }
