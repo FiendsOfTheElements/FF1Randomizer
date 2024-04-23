@@ -3,6 +3,7 @@ using System.Reflection;
 using Newtonsoft.Json;
 using System.IO.Compression;
 using static FF1Lib.FF1Rom;
+using FF1Lib.Sanity;
 
 namespace FF1Lib
 {
@@ -632,7 +633,11 @@ namespace FF1Lib
 		public bool? RandomizeClassChaos { get; set; } = false;
 		public bool? RandomizeClassIncludeXpBonus { get; set; } = false;
 		public bool? AlternateFiends { get; set; } = false;
-		public bool? NoBossSkillScriptShuffle { get; set; } = false;
+		public bool? FinalFantasy2Fiends { get; set; } = false;
+		public bool? FinalFantasy3Fiends { get; set; } = false;
+		public bool? FinalFantasy4Fiends { get; set; } = false;
+		public bool? FinalFantasy1BonusFiends { get; set; } = false;
+ 		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 
 		public bool? Transmooglifier { get; set; } = false;
 		public bool? MooglieWeaponBalance { get; set; } = false;
