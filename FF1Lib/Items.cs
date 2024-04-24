@@ -35,8 +35,16 @@
 			var pricevalue = new();
 			var name = new();
 
+			//var test = new List<int>
 
-			var treasureBlob = rom.Get(TreasureOffset, TreasureSize * TreasureCount);
+
+			var treasureBlob = rom.Get(TreasureOffset, TreasureSize * TreasureCount).ToBytes().Select(t => (Item)t).ToList();
+			Item shopItem = Item.Bottle;
+			List<Item> npcItems = new() { Item.Lute, Item.Bridge, Item.Ship, Item.Crystal, Item.Herb, Item.Key, Item.Canal, Item.Rod, Item.Canoe, Item.Oxyale, Item.Cube, Item.Chime, Item.Xcalber };
+
+
+
+
 
 
 			// list of items, and then we reference the actual values
