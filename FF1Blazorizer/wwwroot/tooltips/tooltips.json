@@ -1376,9 +1376,32 @@
 		"Id": "alternateFiendsCheckBox",
 		"title": "Alternate Fiends",
 		"screenshot": "AlternateFiends.png",
-		"description": "Replace all four Fiends with new Fiends, from a pool of about 20, each with their own weaknesses and skill/spell lists.\nNote that the new Alternate Fiend spells & skills will still be shuffled unless \"Shuffle Scripts\" and \"Shuffle Skills & Spells\" are turned off for Bosses.\nSee also: \"Alternate Final Boss\", under the Goal tab."
+		"description": "Replace all four Fiends with new Fiends, chosen from the selected pools below, each with their own weaknesses and skill/spell lists.\nNote that the new Alternate Fiend spells & skills will still be shuffled unless \"Shuffle Scripts\" and \"Shuffle Skills & Spells\" are turned off for Bosses.\n If no pools are selected then the original fiends will be used and their location will be shuffled.\nSee also: \"Alternate Final Boss\", under the Goal tab."
 	},
-
+	{
+		"Id": "FinalFantasy1pool",
+		"title": "Final Fantasy 1 Bonus Pool",
+		"screenshot": null,
+		"description": "Will add 14 Final Fantasy 1 Bonus Fiends to the Alternate Fiend Pool."
+	},
+	{
+		"Id": "finalfanstay2pool",
+		"title": "Final Fantasy 2 Pool",
+		"screenshot": null,
+		"description": "Will add 13 Final Fantasy 2 Fiends to the Alternate Fiend Pool."
+	},
+	{
+		"Id": "finalfanstay3pool",
+		"title": "Final Fantasy 3 Pool",
+		"screenshot": null,
+		"description": "Will add 22 Final Fantasy 3 Fiends to the Alternate Fiend Pool."
+	},
+	{
+		"Id": "finalfanstay4pool",
+		"title": "Final Fantasy 4 Pool",
+		"screenshot": null,
+		"description": "Will add 32 Final Fantasy 4 Fiends to the Alternate Fiend Pool."
+	},
 	{
 		"Id": "fightBahamutCheckBox",
 		"title": "Fight Bahamut",
@@ -2387,10 +2410,10 @@
 		"title": "Shuffle Chime includes Towns",
 		"description": "Include towns (except Coneria) in the pool of entrances that may require CHIME to enter."
 	},
-        {
-                "Id": "procGenEarth",
-                "title": "Procedurally Generated Earth Cave",
-                "screenshot": "procgenEarth.png",
-                "description": "Randomly selects new Earth Cave maps from a set of procedurally generated maps."
-        }
+	{
+		"Id": "procGenEarth",
+		"title": "Procedurally Generated Earth Cave",
+		"screenshot": "procgenEarth.png",
+		"description": "Randomly selects new Earth Cave maps from a set of procedurally generated maps."
+	}
 ]

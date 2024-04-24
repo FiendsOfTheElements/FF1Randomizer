@@ -234,7 +234,7 @@ public partial class FF1Rom : NesRom
 		if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
 		{
 			await this.Progress("Creating new Fiends", 1);
-			AlternativeFiends(rng);
+			AlternativeFiends(rng, flags);
 		}
 
 		if (flags.BuffTier1DamageSpells)

@@ -4294,6 +4294,42 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlternateFiends"));
 			}
 		}
+		public bool? FinalFantasy2Fiends
+		{
+			get => Flags.FinalFantasy2Fiends;
+			set
+			{
+				Flags.FinalFantasy2Fiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FinalFantasy2Fiends"));
+			}
+		}
+		public bool? FinalFantasy3Fiends
+		{
+			get => Flags.FinalFantasy3Fiends;
+			set
+			{
+				Flags.FinalFantasy3Fiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FinalFantasy3Fiends"));
+			}
+		}
+		public bool? FinalFantasy4Fiends
+		{
+			get => Flags.FinalFantasy4Fiends;
+			set
+			{
+				Flags.FinalFantasy4Fiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FinalFantasy4Fiends"));
+			}
+		}
+		public bool? FinalFantasy1BonusFiends
+		{
+			get => Flags.FinalFantasy1BonusFiends;
+			set
+			{
+				Flags.FinalFantasy1BonusFiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FinalFantasy1BonusFiends"));
+			}
+		}
 		public bool? ShuffleScriptsBosses
 		{
 			get => Flags.ShuffleScriptsBosses;
