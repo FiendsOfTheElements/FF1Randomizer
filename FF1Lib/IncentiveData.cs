@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using RomUtilities;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace FF1Lib
 {
@@ -58,10 +60,17 @@ namespace FF1Lib
 	public class IncentiveData
 	{
 		public ItemShopSlot ShopSlot { get; set; }
-		public IncentiveData(MT19337 rng, Flags flags)
+		public IncentiveData(FF1Rom rom, MT19337 rng, List<(string, Item)> plandoItems, Flags flags)
 		{
 			ShopSlot = ItemLocations.CaravanItemShop1;
 
+			ProcessIncentiveData(plandoItems, rng, flags);
+			ProcessShopData(flags);
+			ProcessTreasurePool(rom, rng, flags);
+		}
+		private void ProcessIncentiveData(List<(string, Item)> plandoItems, MT19337 rng, Flags flags)
+		{
+			// Process flags
 			List<(bool, Item)> incentivizedItemsFlags = new() {
 				((bool)flags.IncentivizeBridge, Item.Bridge),
 				((bool)flags.IncentivizeShip, Item.Ship),
@@ -124,6 +133,17 @@ namespace FF1Lib
 				((bool)flags.NoXcalber, Item.Xcalber),
 				((bool)flags.NoTail, Item.Tail),
 				((bool)flags.IsFloaterRemoved, Item.Floater),
+				//((bool)flags.IsCanoeFree, Item.Canoe),
+				//((bool)flags.FreeLute, Item.Lute),
+				//((bool)flags.FreeRod, Item.Rod),
+				//((bool)flags.FreeTail, Item.Tail),
+				//((bool)flags.IsBridgeFree, Item.Bridge),
+				//((bool)flags.IsCanalFree, Item.Canal),
+				//((bool)flags.IsShipFree, Item.Ship),
+			};
+
+			List<(bool, Item)> freeItemsFlags = new()
+			{
 				((bool)flags.IsCanoeFree, Item.Canoe),
 				((bool)flags.FreeLute, Item.Lute),
 				((bool)flags.FreeRod, Item.Rod),
@@ -148,17 +168,34 @@ namespace FF1Lib
 				((bool)flags.IsCanalFree, ItemLocations.Nerrick),
 			};
 
+			List<(Item item, IRewardSource source)> removedItemsLocations = new()
+			{
+				(Item.Canoe, ItemLocations.CanoeSage),
+				(Item.Lute, ItemLocations.Princess),
+				(Item.Rod, ItemLocations.Sarda),
+				(Item.Bridge, ItemLocations.KingConeria),
+				(Item.Ship, ItemLocations.Bikke),
+				(Item.Xcalber, ItemLocations.Smith),
+				(Item.Canal, ItemLocations.Nerrick),
+			};
+
+			RemovedItems = removedItemsFlags.Where(i => i.Item1).Select(i => i.Item2).ToList();
+			FreeItems = freeItemsFlags.Where(i => i.Item1).Select(i => i.Item2).ToList();
+
+			List<Item> itemsToNotPlace = RemovedItems.Concat(FreeItems).ToList();
+
+			// Process Plando/Forced placements
 			var forcedItemPlacements = ItemLocations.AllOtherItemLocations.ToList();
 
 			if (!(flags.NPCItems ?? false))
 			{
-				forcedItemPlacements.AddRange(ItemLocations.AllNPCFreeItemLocationsExcludingVendor.Except(removedNPCItemsLocations.Where(x => x.Item1 == true).Select(x => x.Item2).ToList()));
+				forcedItemPlacements.AddRange(ItemLocations.AllNPCFreeItemLocationsExcludingVendor.Except(removedItemsLocations.Where(x => itemsToNotPlace.Contains(x.item)).Select(x => x.source).ToList()));
 				forcedItemPlacements.Add(ShopSlot);
 			}
 
 			if (!(flags.NPCFetchItems ?? false))
 			{
-				forcedItemPlacements.AddRange(ItemLocations.AllNPCFetchItemLocations.Except(removedNPCFetchItemsLocations.Where(x => x.Item1 == true).Select(x => x.Item2).ToList()));
+				forcedItemPlacements.AddRange(ItemLocations.AllNPCFetchItemLocations.Except(removedItemsLocations.Where(x => itemsToNotPlace.Contains(x.item)).Select(x => x.source).ToList()));
 			}
 			else if (flags.NoOverworld)
 			{
@@ -172,7 +209,7 @@ namespace FF1Lib
 				forcedItemPlacements.Add(ItemLocations.ToFRMasmune);
 			}
 
-			List<Item> removedItems = removedItemsFlags.Where(x => x.Item1 == true).Select(x => x.Item2).ToList();
+			//List<Item> removedItems = removedItemsFlags.Where(x => x.Item1 == true).Select(x => x.Item2).ToList();
 
 			List<Item> incentivePool = incentivizedItemsFlags.Where(x => x.Item1 == true).Select(x => x.Item2).ToList();
 
@@ -180,11 +217,40 @@ namespace FF1Lib
 
 			incentiveLocationPool.AddRange(SelectIncentivizedChests(flags, rng));
 
+			forcedItemPlacements.RemoveAll(i => plandoItems.Select(p => p.Item1).Contains(i.Name));
+
+			Dictionary<string, IRewardSource> rewardSourceDict = typeof(ItemLocations)
+				.GetFields()
+				.Where(t => t.FieldType.BaseType == typeof(RewardSourceBase))
+				.ToDictionary(t => t.Name, t => (IRewardSource)t.GetValue(null));
+
+			foreach (var item in plandoItems)
+			{
+				forcedItemPlacements.Add(ItemPlacement.NewItemPlacement(rewardSourceDict[item.Item1], item.Item2));
+			}
+
 			var itemLocationPool =
 				ItemLocations.AllTreasures.Concat(ItemLocations.AllNPCItemLocations)
 						  .Where(x => !x.IsUnused && !forcedItemPlacements.Any(y => y.Address == x.Address))
 						  .ToList();
 
+
+
+			/*
+			var test1 = typeof(ItemLocations).GetFields();
+			var test2 = test1.Where(t => t.GetType() == typeof(TreasureChest) || t.FieldType.DeclaringType == typeof(NpcReward) || t.FieldType.DeclaringType == typeof(ItemShopSlot)).ToList();
+			var test3 = test1.Where(t => t.FieldType.BaseType == typeof(RewardSourceBase)).ToList();
+			var test4 = test3.ToDictionary(t => t.Name, t => (IRewardSource)t.GetValue(null));
+			*/
+
+
+			incentivePool = incentivePool
+				.Except(RemovedItems)
+				.Except(FreeItems)
+				.Except(forcedItemPlacements.Select(x => x.Item).Where(x => x != Item.Masamune || !(bool)flags.GuaranteedMasamune))
+				.ToList();
+
+			/*
 			foreach (var item in forcedItemPlacements.Select(x => x.Item))
 			{
 				if ((bool)flags.GuaranteedMasamune && item == Item.Masamune)
@@ -197,7 +263,13 @@ namespace FF1Lib
 			foreach (var item in removedItems)
 			{
 				incentivePool.Remove(item);
-			}
+			}*/
+
+			KeyItemsToPlace = KeyItems
+				.Except(RemovedItems)
+				.Except(FreeItems)
+				.Except(forcedItemPlacements.Select(f => f.Item)
+				.ToList());
 
 			List<MapLocation> endgameMapLocations = new() { MapLocation.TempleOfFiends2, MapLocation.TempleOfFiends3, MapLocation.TempleOfFiendsAir, MapLocation.TempleOfFiendsChaos, MapLocation.TempleOfFiendsEarth, MapLocation.TempleOfFiendsFire, MapLocation.TempleOfFiendsPhantom, MapLocation.TempleOfFiendsWater };
 			List<MapLocation> nonEndgameMapLocations = Enum.GetValues<MapLocation>().Except(endgameMapLocations).ToList();
@@ -205,7 +277,7 @@ namespace FF1Lib
 			ForcedItemPlacements = forcedItemPlacements.ToList();
 			IncentiveItems = incentivePool.ToList();
 
-			RemovedItems = removedItems.ToList();
+			//RemovedItems = removedItems.ToList();
 
 			IncentiveLocations = incentiveLocationPool
 							 .Where(x => !forcedItemPlacements.Any(y => y.Address == x.Address))
@@ -218,7 +290,10 @@ namespace FF1Lib
 			AllValidPreBlackOrbItemLocationsPlusForced = itemLocationPool.Concat(forcedItemPlacements)
 							 .Where(x => nonEndgameMapLocations.Contains(x.MapLocation) && nonEndgameMapLocations.Contains((x as NpcReward)?.SecondLocation ?? MapLocation.StartingLocation))
 							 .ToList();
-
+		}
+		private void ProcessShopData(Flags flags)
+		{
+			// Process Shop Flags
 			var excludeItemsFromRandomShops = new List<Item>();
 
 			if ((bool)flags.Shops)
@@ -251,6 +326,10 @@ namespace FF1Lib
 			}
 
 			ExcludedItemsFromShops = excludeItemsFromRandomShops;
+		}
+		private void ProcessTreasurePool()
+		{
+
 
 		}
 
@@ -429,14 +508,18 @@ namespace FF1Lib
 
 			return incentiveLocationPool;
 		}
-
-		public IEnumerable<IRewardSource> ForcedItemPlacements { get; }
-		public IEnumerable<IRewardSource> AllValidItemLocations { get; }
-		public IEnumerable<IRewardSource> AllValidPreBlackOrbItemLocations { get; }
-		public IEnumerable<IRewardSource> AllValidPreBlackOrbItemLocationsPlusForced { get; }
-		public IEnumerable<IRewardSource> IncentiveLocations { get; }
-		public IEnumerable<Item> IncentiveItems { get; }
-		public IEnumerable<Item> RemovedItems { get; }
-		public IEnumerable<Item> ExcludedItemsFromShops { get; }
+		private List<Item> KeyItems = new() { Item.Lute, Item.Bridge, Item.Ship, Item.Crown, Item.Crystal, Item.Herb, Item.Crystal, Item.Key, Item.Tnt, Item.Canal, Item.Ruby, Item.Rod, Item.Canoe, Item.Floater, Item.Tail, Item.Bottle, Item.Oxyale, Item.Cube, Item.Slab, Item.Chime };
+		public IEnumerable<IRewardSource> ForcedItemPlacements { get; private set; }
+		public IEnumerable<IRewardSource> AllValidItemLocations { get; private set; }
+		public IEnumerable<IRewardSource> AllValidPreBlackOrbItemLocations { get; private set; }
+		public IEnumerable<IRewardSource> AllValidPreBlackOrbItemLocationsPlusForced { get; private set; }
+		public IEnumerable<IRewardSource> IncentiveLocations { get; private set; }
+		public IEnumerable<Item> IncentiveItems { get; private set; }
+		public IEnumerable<Item> UnincentiveKeyItems { get => KeyItems.Except(IncentiveItems).Except(FreeItems).Except(RemovedItems); }
+		public IEnumerable<Item> KeyItemsToPlace { get; private set; }
+		public IEnumerable<Item> RemovedItems { get; private set; }
+		public IEnumerable<Item> FreeItems { get; private set; }
+		public IEnumerable<Item> TreasurePool { get; private set; }
+		public IEnumerable<Item> ExcludedItemsFromShops { get; private set; }
 	}
 }

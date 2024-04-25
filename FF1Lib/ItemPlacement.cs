@@ -32,7 +32,7 @@ namespace FF1Lib
 			ItemLocations.SeaShrine3, // In-Out trap Sharknado chest
 			ItemLocations.SkyPalace33, // Top chest B3, vanilla Pro-Ring
 		};
-		public ItemPlacement(Flags flags, IncentiveData incentiveData)
+		//public ItemPlacement(Flags flags, IncentiveData incentiveData)
 
 
 		public static ItemPlacement Create(IItemPlacementFlags flags, IncentiveData incentivesData, List<Item> allTreasures, ItemShopSlot caravanItemLocation, OverworldMap overworldMap, ISanityChecker checker)
@@ -57,6 +57,7 @@ namespace FF1Lib
 			public List<Item> Unincentivized;
 			public List<Item> Shards;
 			public List<Item> Removed;
+			public List<Item> KeyItemsToPlace;
 			public IReadOnlyCollection<Item> AllTreasures;
 		}
 
@@ -141,6 +142,7 @@ namespace FF1Lib
 				Shards = shards,
 				Removed = removedItems,
 				AllTreasures = treasurePool.ToList(),
+				KeyItemsToPlace = _incentivesData.KeyItemsToPlace.ToList(),
 			};
 
 			ItemPlacementResult result = DoSanePlacement(rng, locations, ctx);

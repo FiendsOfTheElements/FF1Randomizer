@@ -19,7 +19,7 @@
 			Quality = newItem.Quality;
 		}
 	}
-	public class ItemsLogicData
+	/*public class ItemsLogicData
 	{
 		private List<ItemLogic> items;
 		private FF1Rom rom;
@@ -32,14 +32,14 @@
 		public ItemsLogicData(FF1Rom _rom)
 		{
 			rom = _rom;
-			var pricevalue = new();
-			var name = new();
+			//var pricevalue = new();
+			//var name = new();
 
 			//var test = new List<int>
 
 
 			var treasureBlob = rom.Get(TreasureOffset, TreasureSize * TreasureCount).ToBytes().Select(t => (Item)t).ToList();
-			Item shopItem = Item.Bottle;
+			//Item shopItem = Item.Bottle;
 			List<Item> npcItems = new() { Item.Lute, Item.Bridge, Item.Ship, Item.Crystal, Item.Herb, Item.Key, Item.Canal, Item.Rod, Item.Canoe, Item.Oxyale, Item.Cube, Item.Chime, Item.Xcalber };
 
 
@@ -64,7 +64,7 @@
 
 
 
-	}
+	}*/
 
 	public enum ItemType
 	{
@@ -271,10 +271,18 @@
 		// Extra Items, these IDs must be process before being written
 		Xp = 0xB0,
 		ApItem = 0xB2,
-		NewConsumable1 = 0xC0,
-		NewConsumable2 = 0xC1,
-		NewConsumable3 = 0xC2,
-		NewConsumable4 = 0xC3,
+		FullCure = 0xC0,
+		PhoenixDown = 0xC1,
+		Blast = 0xC2,
+		Smoke = 0xC3,
+		Refresh = 0xC4,
+		Flare = 0xC5,
+		Black = 0xC6,
+		Guard = 0xC7,
+		Quick = 0xC8,
+		High = 0xC9,
+		Wizard = 0xCA,
+		Cloak = 0xCB,
 
 		// Additions for variables in chests / 0xE0
 		Ship = 224,

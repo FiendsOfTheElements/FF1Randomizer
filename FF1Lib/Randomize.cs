@@ -368,7 +368,7 @@ public partial class FF1Rom : NesRom
 		await new RelocateChests(this).RandomlyRelocateChests(rng, Maps, TileSetsData, Teleporters, NpcData, flags);
 
 		talkroutines.Update(flags);
-		incentivesData = new IncentiveData(rng, flags);
+		incentivesData = new IncentiveData(rng, new() { ("Coneria1", Item.Key), ("MarshCave1", Item.Oxyale) }, flags);
 
 		if (((bool)flags.Shops))
 		{

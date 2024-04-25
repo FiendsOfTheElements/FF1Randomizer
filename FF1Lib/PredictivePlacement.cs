@@ -176,12 +176,14 @@ namespace FF1Lib
 				if (nonincentives.Concat(incentives).Any())
 				{
 					HashSet<Item> allPlacements = new HashSet<Item>(nonincentives.Concat(incentives));
-					HashSet<Item> allKeyItems = new HashSet<Item>(MapChangeItems.Concat(FetchQuestItems).Concat(GatingItems).Intersect(allPlacements));
+					//HashSet<Item> allKeyItems = new HashSet<Item>(MapChangeItems.Concat(FetchQuestItems).Concat(GatingItems).Intersect(allPlacements));
+					HashSet<Item> allKeyItems = ctx.KeyItemsToPlace.ToHashSet();
 
+					/*
 					if ((bool)_flags.IsFloaterRemoved)
 					{
 						allKeyItems.Remove(Item.Floater);
-					}
+					}*/
 
 					//The sanity checker currently doesn't allow tracking which shops are available
 					//It could be easily added, but a little randomnes can't hurt(or so I'm thinking)
