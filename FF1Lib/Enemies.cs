@@ -1407,10 +1407,10 @@ namespace FF1Lib
 					SpellChance2 = 0x00,
 					Spells2 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Nuclear, (byte)EnemySkills.Toxic, (byte)EnemySkills.Inferno, (byte)EnemySkills.Tornado },
+					Skills2 = new List<byte> { (byte)EnemySkills.Tornado, (byte)EnemySkills.Toxic, (byte)EnemySkills.Inferno, (byte)EnemySkills.Tornado },
 				},
 				new AlternateFiends{
-					Name = "NINJA",
+					Name = "NINJI",
 					SpriteSheet = FormationSpriteSheet.MummyCoctricWyvernTyro,
 					FormationPattern = FormationPattern.Mixed,
 					GFXOffset = FormationGFX.Sprite4,
@@ -1572,7 +1572,7 @@ namespace FF1Lib
 
 				new AlternateFiends {
 					Name = "BALNAB",
-					SpriteSheet = FormationSpriteSheet.SlimeSpiderManticorAnkylo,
+					SpriteSheet = FormationSpriteSheet.ImpWolfIguanaGiant,
 					FormationPattern = FormationPattern.Small9,
 					GFXOffset = FormationGFX.Sprite4,
 					Palette1 = 0x3A,
@@ -1611,7 +1611,7 @@ namespace FF1Lib
 				},
 				new AlternateFiends {
 					Name = "CAGNAZZO",
-					SpriteSheet = FormationSpriteSheet.SlimeSpiderManticorAnkylo,
+					SpriteSheet = FormationSpriteSheet.MummyCoctricWyvernTyro,
 					FormationPattern = FormationPattern.Large4,
 					GFXOffset = FormationGFX.Sprite4,
 					Palette1 = 0x14, // Blue/Purple
@@ -1671,7 +1671,7 @@ namespace FF1Lib
 
 				new AlternateFiends {
 					Name = "D.STORM",
-					SpriteSheet = FormationSpriteSheet.ImpWolfIguanaGiant,
+					SpriteSheet = FormationSpriteSheet.SahagPirateSharkBigEye,
 					FormationPattern = FormationPattern.Large4,
 					GFXOffset = FormationGFX.Sprite1,
 					Palette1 = 0x36,

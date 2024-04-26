@@ -61,6 +61,15 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="AllSpellLevelsForKnightNinja" @bind-Value="Flags.AllSpellLevelsForKnightNinja">Knight and Ninja Gain Charges in All Levels</CheckBox>
 
 	<div class="checkbox-cell"></div>
+@*
+	<h4>Magic Adjustments</h4>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="Knightlvl4" @bind-Value="Flags.Knightlvl4">Knight Level 4 Spell</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="PinkMage" @bind-Value="Flags.PinkMage">Pink Mage</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="BlackKnight" @bind-Value="Flags.BlackKnight">Black Knight</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="WhiteNinja" @bind-Value="Flags.WhiteNinja">White Ninja</TriStateCheckBox>
+	<div class="checkbox-cell"></div>
+*@
+
 	<div class="row">
 		<h4>Class XP Bonus</h4>
 		<ToolTipBox id="ClassXpBonus" UpdateToolTip="@UpdateToolTipID"></ToolTipBox>

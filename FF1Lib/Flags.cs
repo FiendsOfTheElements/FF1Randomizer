@@ -678,6 +678,11 @@ namespace FF1Lib
 		[IntegerFlag(0, 9)]
 		public int NinjaMaxMP { get; set; } = 4;
 
+		public bool? Knightlvl4 { get; set; } = false;
+		public bool? PinkMage { get; set; } = false;
+		public bool? BlackKnight { get; set; } = false;
+		public bool? WhiteNinja { get; set; } = false;
+
 		public MpGainOnMaxGain MpGainOnMaxGainMode { get; set; } = MpGainOnMaxGain.None;
 
 		public LockHitMode LockMode { get; set; } = LockHitMode.Vanilla;
