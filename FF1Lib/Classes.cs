@@ -180,10 +180,10 @@ namespace FF1Lib
 
 			// Addresses
 			var startingStats = rom.Get(StartingStatsOffset, 0x60).Chunk(0x10);
-			var levelUpStats = rom.Get(old_NewLevelUpDataOffset, 588).Chunk(49 * 2);
-			var hitGrowth = rom.Get(old_lut_LvlUpHitRateBonus, 12).ToBytes().ToList();
-			var mdefGrowthBase = rom.Get(old_lut_LvlUpMagDefBonus, 6).ToBytes().ToList();
-			var mdefGrowthPromo = rom.Get(old_lut_LvlUpMagDefBonus + 6, 6).ToBytes().ToList();
+			var levelUpStats = rom.Get(NewLevelUpDataOffset, 588).Chunk(49 * 2);
+			var hitGrowth = rom.Get(lut_LvlUpHitRateBonus, 12).ToBytes().ToList();
+			var mdefGrowthBase = rom.Get(lut_LvlUpMagDefBonus, 6).ToBytes().ToList();
+			var mdefGrowthPromo = rom.Get(lut_LvlUpMagDefBonus + 6, 6).ToBytes().ToList();
 			var maxChargeList = new byte[] { 0x00, 0x00, 0x00, 0x09, 0x09, 0x09, 0x04, 0x04, 0x00, 0x09, 0x09, 0x09 };
 
 			// Populate stats

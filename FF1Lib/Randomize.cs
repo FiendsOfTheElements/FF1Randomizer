@@ -95,10 +95,9 @@ public partial class FF1Rom : NesRom
 		//Settings.SetValue();
 
 		var talkroutines = new TalkRoutines();
-
-
-		LoadSharedDataTables();
+	
 		GlobalHacks();
+		LoadSharedDataTables();
 
 		Teleporters = new Teleporters(this, Overworld.MapExchangeData);
 		Maps = new StandardMaps(this, Teleporters, flags);
