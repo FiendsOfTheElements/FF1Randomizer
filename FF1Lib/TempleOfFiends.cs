@@ -35,9 +35,9 @@ namespace FF1Lib
 
 			// Update inRoom teleporters since these aren't manually defined in Teleporters
 			var tof2tele = teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends2];
-			teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends2] = new TeleportDestination(MapIndex.TempleOfFiendsRevisited1F, new Coordinate(tof2tele.Coordinates.X, tof2tele.Coordinates.Y, CoordinateLocale.StandardInRoom));
-			var tof4tele = teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends4];
-			teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends4] = new TeleportDestination(MapIndex.TempleOfFiendsRevisited1F, new Coordinate(tof4tele.Coordinates.X, tof4tele.Coordinates.Y, CoordinateLocale.StandardInRoom));
+			teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends2] = new TeleportDestination(tof2tele, new Coordinate(tof2tele.Coordinates.X, tof2tele.Coordinates.Y, CoordinateLocale.StandardInRoom));
+			var tof6tele = teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends6];
+			teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends6] = new TeleportDestination(tof6tele, new Coordinate(tof6tele.Coordinates.X, tof6tele.Coordinates.Y, CoordinateLocale.StandardInRoom));
 
 			// Change the warp tile requirements from 4_ORBS to None, global change, ToFR access is always blocked by the Black orb
 			tilesets[5].Tiles[0x40].PropertyType = 0x80;
