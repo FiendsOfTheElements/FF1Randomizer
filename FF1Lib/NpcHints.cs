@@ -420,7 +420,7 @@ namespace FF1Lib
 
 			return wrapped;
 	    }
-		public void NPCHints(MT19337 rng, NpcObjectData npcdata, DialogueData dialogues, Flags flags, IncentiveData incentivedata, SanityCheckerV2 sanitychecker, ShopData shopdata)
+		public void NPCHints(MT19337 rng, NpcObjectData npcdata, StandardMaps maps, DialogueData dialogues, Flags flags, IncentiveData incentivedata, SanityCheckerV2 sanitychecker, ShopData shopdata)
 		{
 			if (!(bool)flags.HintsVillage || flags.GameMode == GameModes.DeepDungeon || !(bool)flags.Treasures || flags.Archipelago )
 			{
@@ -449,7 +449,7 @@ namespace FF1Lib
 
 			npcSelected.AddRange(new List<ObjectId> { ObjectId.ConeriaOldMan, ObjectId.PravokaOldMan, ObjectId.ElflandScholar1, ObjectId.MelmondOldMan2, ObjectId.CrescentSage11, ObjectId.OnracOldMan2, ObjectId.GaiaWitch, ObjectId.LefeinMan12 });
 			dialogueID.AddRange(new List<byte> { 0x45, 0x53, 0x69, 0x82, 0xA0, 0xAA, 0xCB, 0xDC });
-			MoveNpc(MapIndex.Lefein, 0x0C, 0x0E, 0x15, false, true);
+			maps[MapIndex.Lefein].MapObjects.MoveNpc(0x0C, 0x0E, 0x15, false, true);
 
 			var hintedItems = new List<LocationHintsInfo>();
 			var incentivizedHintItems = new List<LocationHintsInfo>();

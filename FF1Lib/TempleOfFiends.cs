@@ -75,7 +75,7 @@ namespace FF1Lib
 			// Unlock ToFR
 			if ((bool)flags.ChaosRush)
 			{
-				EnableChaosRush();
+				EnableChaosRush(tilesets);
 			}
 		}
 
@@ -263,11 +263,11 @@ namespace FF1Lib
 			maps[floorright2.map].Map[floorright2.coord.y, floorright2.coord.x] = toChaosStairs;
 		}
 
-		public void EnableChaosRush()
+		public void EnableChaosRush(TileSetsData tileSetsData)
 		{
 			// MapTilesets
 			// Overwrite Keylocked door in ToFR tileset with normal door.
-			Put(0x0F76, Blob.FromHex("0300"));
+			tileSetsData[(int)TileSets.ToFR].Tiles[0x3B].Properties = new TileProp(0x03, 0x00);
 		}
 	}
 }
