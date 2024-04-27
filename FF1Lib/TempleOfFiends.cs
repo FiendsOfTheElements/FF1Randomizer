@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -32,9 +33,13 @@ namespace FF1Lib
 			ToFRMode mode = flags.ToFRMode == ToFRMode.Random ? (ToFRMode)rng.Between(0, (Enum.GetNames(typeof(ToFRMode)).Length - 2)) : flags.ToFRMode;
 			FiendsRefights fiendsrefights = flags.FiendsRefights == FiendsRefights.Random ? (FiendsRefights)rng.Between(0, (Enum.GetNames(typeof(FiendsRefights)).Length - 2)) : flags.FiendsRefights;
 
+			// Update inRoom teleporters since these aren't manually defined in Teleporters
+			var tof2tele = teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends2];
+			teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends2] = new TeleportDestination(MapIndex.TempleOfFiendsRevisited1F, new Coordinate(tof2tele.Coordinates.X, tof2tele.Coordinates.Y, CoordinateLocale.StandardInRoom));
+			var tof4tele = teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends4];
+			teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends4] = new TeleportDestination(MapIndex.TempleOfFiendsRevisited1F, new Coordinate(tof4tele.Coordinates.X, tof4tele.Coordinates.Y, CoordinateLocale.StandardInRoom));
 
 			// Change the warp tile requirements from 4_ORBS to None, global change, ToFR access is always blocked by the Black orb
-			//Data[0x00D80] = 0x80; // Map edits
 			tilesets[5].Tiles[0x40].PropertyType = 0x80;
 
 			// Update ToFR Maps
