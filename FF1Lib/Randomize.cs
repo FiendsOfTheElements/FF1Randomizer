@@ -584,6 +584,8 @@ public partial class FF1Rom : NesRom
 			EnableSaveOnDeath(flags, Overworld);
 		}
 
+		Console.WriteLine("588");
+
 		ShuffleEnemyScripts(rng, flags);
 
 		ShuffleEnemySkillsSpells(rng, flags);
