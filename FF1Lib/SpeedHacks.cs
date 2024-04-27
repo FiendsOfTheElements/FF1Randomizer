@@ -74,35 +74,35 @@ namespace FF1Lib
 			animationOffsets.ForEach(addr => Data[addr] = 0x04);
 		}
 		// Move this one to npc class
-		public void SpeedHacksMoveNpcs(bool moveEarthBats)
+		public void SpeedHacksMoveNpcs(bool moveEarthBats, StandardMaps maps)
 		{
 			// Move NPCs out of the way.
-			MoveNpc(MapIndex.ConeriaTown, 0, 0x11, 0x02, inRoom: false, stationary: true); // North Coneria Soldier
-			MoveNpc(MapIndex.ConeriaTown, 4, 0x12, 0x14, inRoom: false, stationary: true); // South Coneria Gal
-			MoveNpc(MapIndex.ConeriaTown, 7, 0x1E, 0x0B, inRoom: false, stationary: true); // East Coneria Guy
-			MoveNpc(MapIndex.Elfland, 0, 0x24, 0x19, inRoom: false, stationary: true); // Efland Entrance Elf
-			MoveNpc(MapIndex.Onrac, 13, 0x29, 0x1B, inRoom: false, stationary: true); // Onrac Guy
-			MoveNpc(MapIndex.Lefein, 3, 0x21, 0x07, inRoom: false, stationary: true); // Lefein Guy
+			maps[MapIndex.ConeriaTown].MapObjects.MoveNpc(0, 0x11, 0x02, inRoom: false, stationary: true); // North Coneria Soldier
+			maps[MapIndex.ConeriaTown].MapObjects.MoveNpc(4, 0x12, 0x14, inRoom: false, stationary: true); // South Coneria Gal
+			maps[MapIndex.ConeriaTown].MapObjects.MoveNpc(7, 0x1E, 0x0B, inRoom: false, stationary: true); // East Coneria Guy
+			maps[MapIndex.Elfland].MapObjects.MoveNpc(0, 0x24, 0x19, inRoom: false, stationary: true); // Efland Entrance Elf
+			maps[MapIndex.Onrac].MapObjects.MoveNpc(13, 0x29, 0x1B, inRoom: false, stationary: true); // Onrac Guy
+			maps[MapIndex.Lefein].MapObjects.MoveNpc(3, 0x21, 0x07, inRoom: false, stationary: true); // Lefein Guy
 																				   //MoveNpc(MapIndex.Waterfall, 1, 0x0C, 0x34, inRoom: false, stationary: false); // OoB Bat!
 			if (moveEarthBats)
 			{
-				MoveNpc(MapIndex.EarthCaveB3, 10, 0x32, 0x0C, inRoom: false, stationary: false); // Earth Cave Bat B3
-				MoveNpc(MapIndex.EarthCaveB3, 7, 0x31, 0x1A, inRoom: true, stationary: false); // Earth Cave Bat B3
-				MoveNpc(MapIndex.EarthCaveB3, 8, 0x1D, 0x0E, inRoom: true, stationary: false); // Earth Cave Bat B3
+				maps[MapIndex.EarthCaveB3].MapObjects.MoveNpc(10, 0x32, 0x0C, inRoom: false, stationary: false); // Earth Cave Bat B3
+				maps[MapIndex.EarthCaveB3].MapObjects.MoveNpc(7, 0x31, 0x1A, inRoom: true, stationary: false); // Earth Cave Bat B3
+				maps[MapIndex.EarthCaveB3].MapObjects.MoveNpc(8, 0x1D, 0x0E, inRoom: true, stationary: false); // Earth Cave Bat B3
 
-				MoveNpc(MapIndex.EarthCaveB3, 2, 0x0B, 0x0A, inRoom: true, stationary: false); // Earth Cave Bat B3
-				MoveNpc(MapIndex.EarthCaveB3, 3, 0x0A, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
-				MoveNpc(MapIndex.EarthCaveB3, 4, 0x09, 0x0A, inRoom: true, stationary: false); // Earth Cave Bat B3
+				maps[MapIndex.EarthCaveB3].MapObjects.MoveNpc(2, 0x0B, 0x0A, inRoom: true, stationary: false); // Earth Cave Bat B3
+				maps[MapIndex.EarthCaveB3].MapObjects.MoveNpc(3, 0x0A, 0x0B, inRoom: true, stationary: false); // Earth Cave Bat B3
+				maps[MapIndex.EarthCaveB3].MapObjects.MoveNpc(4, 0x09, 0x0A, inRoom: true, stationary: false); // Earth Cave Bat B3
 
-				MoveNpc(MapIndex.EarthCaveB3, 9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
+				maps[MapIndex.EarthCaveB3].MapObjects.MoveNpc(9, 0x09, 0x25, inRoom: false, stationary: false); // Earth Cave Bat B3
 
-				MoveNpc(MapIndex.EarthCaveB5, 1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
+				maps[MapIndex.EarthCaveB5].MapObjects.MoveNpc(1, 0x22, 0x34, inRoom: false, stationary: false); // Earth Cave Bat B5
 			}
 
-			MoveNpc(MapIndex.ConeriaCastle1F, 5, 0x07, 0x0F, inRoom: false, stationary: true); // Coneria Ghost Lady
+			maps[MapIndex.ConeriaCastle1F].MapObjects.MoveNpc(5, 0x07, 0x0F, inRoom: false, stationary: true); // Coneria Ghost Lady
 
-			MoveNpc(MapIndex.Pravoka, 4, 0x1F, 0x05, inRoom: false, stationary: true); // Pravoka Old Man
-			MoveNpc(MapIndex.Pravoka, 5, 0x08, 0x0E, inRoom: false, stationary: true); // Pravoka Woman
+			maps[MapIndex.Pravoka].MapObjects.MoveNpc(4, 0x1F, 0x05, inRoom: false, stationary: true); // Pravoka Old Man
+			maps[MapIndex.Pravoka].MapObjects.MoveNpc(5, 0x08, 0x0E, inRoom: false, stationary: true); // Pravoka Woman
 		}
 
 		public void EnableDash(bool speedboat, bool slowMapMove)

@@ -4051,6 +4051,49 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlierHighTierMagic"));
 			}
 		}
+		public bool? Knightlvl4
+		{
+			get => Flags.Knightlvl4;
+			set
+			{
+				Flags.Knightlvl4 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Knightlvl4"));
+			}
+
+
+		}
+		
+		public bool? PinkMage
+		{
+			get => Flags.PinkMage;
+			set
+			{
+				Flags.PinkMage = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PinkMage"));
+			}
+			
+
+		}
+
+		public bool? BlackKnight
+		{
+			get => Flags.BlackKnight;
+			set
+			{
+				Flags.BlackKnight = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlackKnight"));
+			}
+		}
+
+		public bool? WhiteNinja
+		{
+			get => Flags.WhiteNinja;
+			set
+			{
+				Flags.WhiteNinja = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WhiteNinja"));
+			}
+		}
 
 		public bool? ChangeMaxMP
 		{
