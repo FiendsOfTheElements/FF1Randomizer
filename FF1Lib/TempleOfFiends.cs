@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -32,9 +33,13 @@ namespace FF1Lib
 			ToFRMode mode = flags.ToFRMode == ToFRMode.Random ? (ToFRMode)rng.Between(0, (Enum.GetNames(typeof(ToFRMode)).Length - 2)) : flags.ToFRMode;
 			FiendsRefights fiendsrefights = flags.FiendsRefights == FiendsRefights.Random ? (FiendsRefights)rng.Between(0, (Enum.GetNames(typeof(FiendsRefights)).Length - 2)) : flags.FiendsRefights;
 
+			// Update inRoom teleporters since these aren't manually defined in Teleporters
+			var tof2tele = teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends2];
+			teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends2] = new TeleportDestination(tof2tele, new Coordinate(tof2tele.Coordinates.X, tof2tele.Coordinates.Y, CoordinateLocale.StandardInRoom));
+			var tof6tele = teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends6];
+			teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends6] = new TeleportDestination(tof6tele, new Coordinate(tof6tele.Coordinates.X, tof6tele.Coordinates.Y, CoordinateLocale.StandardInRoom));
 
 			// Change the warp tile requirements from 4_ORBS to None, global change, ToFR access is always blocked by the Black orb
-			//Data[0x00D80] = 0x80; // Map edits
 			tilesets[5].Tiles[0x40].PropertyType = 0x80;
 
 			// Update ToFR Maps
@@ -75,7 +80,7 @@ namespace FF1Lib
 			// Unlock ToFR
 			if ((bool)flags.ChaosRush)
 			{
-				EnableChaosRush();
+				EnableChaosRush(tilesets);
 			}
 		}
 
@@ -263,11 +268,11 @@ namespace FF1Lib
 			maps[floorright2.map].Map[floorright2.coord.y, floorright2.coord.x] = toChaosStairs;
 		}
 
-		public void EnableChaosRush()
+		public void EnableChaosRush(TileSetsData tileSetsData)
 		{
 			// MapTilesets
 			// Overwrite Keylocked door in ToFR tileset with normal door.
-			Put(0x0F76, Blob.FromHex("0300"));
+			tileSetsData[(int)TileSets.ToFR].Tiles[0x3B].Properties = new TileProp(0x03, 0x00);
 		}
 	}
 }

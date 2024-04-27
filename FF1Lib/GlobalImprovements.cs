@@ -33,7 +33,7 @@ namespace FF1Lib
 		public const int PartyShuffleSize = 3;
 
 		//public void GlobalImprovements(Settings settings, Preferences preferences)
-		public void GlobalImprovements(Flags flags, Preferences preferences)
+		public void GlobalImprovements(Flags flags, StandardMaps maps, Preferences preferences)
 		{
 			//if (settings.GetBool("NoPartyShuffle"))
 			if ((bool)flags.NoPartyShuffle)
@@ -91,7 +91,7 @@ namespace FF1Lib
 			if ((bool)flags.SpeedHacks)
 			{
 				//SpeedHacksMoveNpcs(!settings.GetBool("ProcgenEarth"));
-				SpeedHacksMoveNpcs((bool)flags.ProcgenEarth);
+				SpeedHacksMoveNpcs((bool)flags.ProcgenEarth, maps);
 			}
 
 		}

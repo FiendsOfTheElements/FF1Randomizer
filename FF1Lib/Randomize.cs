@@ -95,10 +95,9 @@ public partial class FF1Rom : NesRom
 		//Settings.SetValue();
 
 		var talkroutines = new TalkRoutines();
-
-
-		LoadSharedDataTables();
+	
 		GlobalHacks();
+		LoadSharedDataTables();
 
 		Teleporters = new Teleporters(this, Overworld.MapExchangeData);
 		Maps = new StandardMaps(this, Teleporters, flags);
@@ -107,7 +106,7 @@ public partial class FF1Rom : NesRom
 
 		ClassesBalances(flags, rng);
 		Bugfixes(flags);
-		GlobalImprovements(flags, preferences);
+		GlobalImprovements(flags, Maps, preferences);
 
 
 
@@ -692,7 +691,7 @@ public partial class FF1Rom : NesRom
 			ItemsText[(int)Item.House] = "XETH@p";
 		}
 
-		NPCHints(rng, NpcData, Dialogues, flags, incentivesData, sanityChecker, shopData);
+		NPCHints(rng, NpcData, Maps, Dialogues, flags, incentivesData, sanityChecker, shopData);
 		SkyWarriorSpoilerBats(rng, flags, NpcData, Dialogues);
 
 		MonsterInABox(ZoneFormations, NpcData, Dialogues, rng, flags);
