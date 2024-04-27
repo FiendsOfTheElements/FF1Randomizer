@@ -327,8 +327,49 @@ namespace FF1Lib
 
 			ExcludedItemsFromShops = excludeItemsFromRandomShops;
 		}
-		private void ProcessTreasurePool()
+		private void ProcessTreasurePool(FF1Rom rom, MT19337 rng, Flags flags)
 		{
+			TreasurePool = typeof(ItemLocations)
+				.GetFields()
+				.Where(t => t.FieldType.BaseType == typeof(TreasureChest))
+				.Select(t => (TreasureChest)t.GetValue(null))
+				.Select(t => t.Item)
+				.Except(KeyItems)
+				.ToList();
+
+
+
+			// Process Item Generation Here
+
+
+			// We need to kick stuff out for shards, extconsumable, xpchests
+			// We'll do a full item > quality thingy, but for now a simple list will suffice
+			List<(Item, ItemQuality)> itemRanking = new();
+			itemRanking.AddRange(Enumerable.Range((int)Item.Tent, 6).Select(i => ((Item)i, ItemQuality.Common)));
+			itemRanking.AddRange(Enumerable.Range((int)Item.WoodenNunchucks, 19).Select(i => ((Item)i, ItemQuality.Common)));
+			itemRanking.AddRange(Enumerable.Range((int)Item.FlameSword, 14).Select(i => ((Item)i, ItemQuality.Rare)));
+			itemRanking.AddRange(Enumerable.Range((int)Item.CatClaw, 3).Select(i => ((Item)i, ItemQuality.Rare)));
+			itemRanking.AddRange(new List<(Item, ItemQuality)> { (Item.Vorpal, ItemQuality.Legendary), (Item.Xcalber, ItemQuality.Legendary), (Item.Katana, ItemQuality.Legendary) });
+			itemRanking.Add((Item.Masamune, ItemQuality.Legendary));
+			itemRanking.AddRange(ItemLists.CommonArmorTier.Select(i => ((Item)i, ItemQuality.Common)));
+			itemRanking.AddRange(ItemLists.RareArmorTier.Select(i => ((Item)i, ItemQuality.Rare)));
+			itemRanking.AddRange(ItemLists.LegendaryArmorTier.Select(i => ((Item)i, ItemQuality.Legendary)));
+			itemRanking.AddRange(Enumerable.Range((int)Item.Gold10, 31).Select(i => ((Item)i, ItemQuality.Common)));
+			itemRanking.AddRange(Enumerable.Range((int)Item.Gold1020, 22).Select(i => ((Item)i, ItemQuality.Rare)));
+			itemRanking.AddRange(Enumerable.Range((int)Item.Gold10000, 15).Select(i => ((Item)i, ItemQuality.Legendary)));
+
+			// So we have all the available treasure chests
+			// Get our difference
+			var reserved = IncentiveItems.Except(KeyItems).Count() + KeyItemsToPlace.Count();
+			var
+
+
+			// 2 chests + 1 chest incentive + 1 npc incentive, 2 key items
+			// treasure give us 3 items, minus KI = 2 items
+			// i incentive npc only, but the 2 ki
+			// so 1 - 2 => -1
+			var incentiveDiff = IncentiveLocations.Count() - IncentiveItems.Count();
+
 
 
 		}
@@ -520,6 +561,7 @@ namespace FF1Lib
 		public IEnumerable<Item> RemovedItems { get; private set; }
 		public IEnumerable<Item> FreeItems { get; private set; }
 		public IEnumerable<Item> TreasurePool { get; private set; }
+		public IEnumerable<Item> Shards { get; private set; }
 		public IEnumerable<Item> ExcludedItemsFromShops { get; private set; }
 	}
 }
