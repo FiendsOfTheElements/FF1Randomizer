@@ -774,6 +774,12 @@ public partial class FF1Rom : NesRom
 		ClassData.Randomize(flags, Settings, rng, oldItemNames, ItemsText, this);
 		ClassData.ProcessStartWithRoutines(flags, blursesValues, this);;
 
+		ClassData.Knightlvl4(flags, rng);
+		ClassData.PinkMage(flags);
+		ClassData.BlackKnight(flags);
+		ClassData.WhiteNinja(flags);
+
+		
 		if ((bool)flags.EnableRandomPromotions)
 		{
 			EnableRandomPromotions(flags, rng);

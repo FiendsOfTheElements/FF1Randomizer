@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using FF1Lib.Helpers;
+using RomUtilities;
 
 namespace FF1Lib
 {
@@ -329,37 +330,183 @@ namespace FF1Lib
 
 	public void PinkMage(Flags flags)
 		{
-			if(flags.PinkMage != false)
+			if (!(bool)flags.PinkMage)
 			{
+				return;
+				
+			}
 
-						
-			var lv1White = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv2White = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv3White = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv4White = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv5White = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).Skip(1).Skip(2).ToList();
-			var lv1Black = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).Skip(2).Skip(4).ToList();
-			var lv2Black = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv3Black = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).Skip(2).Skip(4).ToList();
-			var lv4Black = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).Skip(2).Skip(4).ToList();
-			var lv5Black = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).Skip(1).Skip(2).Skip(3).ToList();
-			var lv1WhiteU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv2WhiteU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv3WhiteU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv4WhiteU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv5WhiteU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv6WhiteU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).Skip(1).Skip(2).Skip(3).ToList();
-			var lv7WhiteU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).Skip(0).Skip(1).Skip(3).ToList();
-			var lv1BlackU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv2BlackU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv3BlackU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).Skip(2).Skip(4).ToList();
-			var lv4BlackU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).Skip(1).ToList();
-			var lv5BlackU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).Skip(2).Skip(3).ToList();
-			var lv6BLackU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).Skip(0).ToList();
-			var lv7BlackU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).Skip(1).Skip(2).Skip(3).ToList();
+			_spellPermissions.ClearPermissions(Classes.RedMage);
+			_spellPermissions.ClearPermissions(Classes.RedWizard);
+
+
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White1Slot1);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White1Slot2);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White1Slot3);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White1Slot4);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White2Slot1);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White2Slot2);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White2Slot3);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White2Slot4);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White3Slot1);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White3Slot2);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White3Slot3);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White3Slot4);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White4Slot1);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White4Slot2);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White4Slot3);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White4Slot4);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White5Slot1);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.White5Slot4);
+
+
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.Black1Slot1);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.Black1Slot3);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.Black2Slot1);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.Black2Slot2);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.Black2Slot3);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.Black2Slot4);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.Black3Slot1);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.Black3Slot3);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.Black4Slot1);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.Black4Slot3);
+			_spellPermissions.AddPermission(Classes.RedMage, SpellSlots.Black5Slot1);
+
+
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White1Slot1);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White1Slot2);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White1Slot3);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White1Slot4);
+
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White2Slot1);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White2Slot2);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White2Slot3);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White2Slot4);
+
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White3Slot1);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White3Slot2);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White3Slot3);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White3Slot4);
+
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White4Slot1);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White4Slot2);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White4Slot3);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White4Slot4);
+
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White5Slot1);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White5Slot2);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White5Slot3);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White5Slot4);
+
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White6Slot1);
+
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.White7Slot3);
+
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black1Slot1);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black1Slot3);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black1Slot4);
+
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black2Slot1);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black2Slot2);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black2Slot3);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black2Slot4);
+
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black3Slot1);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black3Slot3);
+
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black4Slot1);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black4Slot3);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black4Slot4);
+
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black5Slot1);
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black5Slot2);
+
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black6Slot1);
+
+			_spellPermissions.AddPermission(Classes.RedWizard, SpellSlots.Black7Slot1);
+		}
+
+	public void BlackKnight(Flags flags)
+		{
+			if (!(bool)flags.BlackKnight)
+			{
+				return;
 
 			}
 
+			_spellPermissions.ClearPermissions(Classes.Knight);
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black1Slot1);
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black1Slot2);
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black1Slot3);
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black1Slot4);
+
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black2Slot1);
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black2Slot2);
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black2Slot3);
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black2Slot4);
+
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black3Slot1);
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black3Slot2);
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black3Slot3);
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black3Slot4);
+
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black4Slot1);
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black4Slot2);
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black4Slot3);
+			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black4Slot4);
+		}
+
+	public void WhiteNinja(Flags flags)
+		{
+			if (!(bool)flags.WhiteNinja)
+			{
+				return;
+
+			}
+
+			_spellPermissions.ClearPermissions(Classes.Ninja);
+			_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White1Slot1);
+			_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White1Slot3);
+
+			_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White2Slot1);
+			_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White2Slot2);
+			_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White2Slot3);
+			_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White2Slot4);
+
+			_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White3Slot1);
+			_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White3Slot3);
+
+
+		}
+
+	public void Knightlvl4(Flags flags, MT19337 rng)
+		{
+			if (!(bool)flags.Knightlvl4)
+			{
+				return;
+
+			}
+			var kilvl4 = rng.Between(0, 3);
+
+			if(kilvl4 == 0)
+			{
+				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot1);
+			}
+
+			if (kilvl4 == 1)
+			{
+				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot2);
+			}
+
+			if (kilvl4 == 2)
+			{
+				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot3);
+			}
+
+			if (kilvl4 == 3)
+			{
+				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot4);
+			}
 		}
 
 		public void SetMpGainOnMaxGain(Flags flags, FF1Rom rom)
