@@ -1,5 +1,6 @@
 ﻿using FF1Lib.Data;
 using FF1Lib.Helpers;
+using System.Collections.Generic;
 
 namespace FF1Lib
 {
@@ -12,6 +13,7 @@ namespace FF1Lib
 		SpellHelper spellHelper;
 		List<Weapon> weapons;
 		List<Armor> armors;
+		(Item[] Weapons, Item[] Armors) itemsToAdd;
 
 		public StartingEquipment(MT19337 _rng, Flags _flags, FF1Rom _rom)
 		{
@@ -19,9 +21,48 @@ namespace FF1Lib
 			flags = _flags;
 			rom = _rom;
 
+			itemsToAdd = new();
 			spellHelper = new SpellHelper(rom);
+			// change for ItemData
 			weapons = Weapon.LoadAllWeapons(rom, flags).ToList();
 			armors = Armor.LoadAllArmors(rom, flags).ToList();
+		}
+		public Dictionary<Item, int> GetStartingEquipment()
+		{
+			var items = GetEquipment();
+			ExtConsumables.ExtConsumableStartingEquipmentFix(items.Weapons, flags);
+
+			return items.Weapons.Concat(items.Armor).GroupBy(i => i).ToDictionary(i => i.Key, i => i.Count());
+		}
+		public void Process(Dictionary<Item, int> gearList, bool extendedConsomable)
+		{
+			var weapons = gearList.Where(g => g.Key >= (extendedConsomable ? Item.IronHammer : Item.WoodenNunchucks) && g.Key <= Item.Masamune).SelectMany(g => Enumerable.Repeat(g.Key, g.Value)).ToList();
+			var armors = gearList.Where(g => g.Key >= Item.Cloth && g.Key <= Item.ProRing).SelectMany(g => Enumerable.Repeat(g.Key, g.Value)).ToList();
+
+			itemsToAdd = (weapons.ToArray(), armors.ToArray());
+		}
+
+		public void Write()
+		{
+			for (int i = 0; i < 16; i++)
+			{
+				if (itemsToAdd.Weapons[i] > 0) itemsToAdd.Weapons[i] -= Item.Soft;
+				if (itemsToAdd.Armors[i] > 0) itemsToAdd.Armors[i] -= Item.Masamune;
+			}
+
+			for (int i = 0; i < 4; i++)
+			{
+				byte[] buffer1 = new byte[4];
+				Buffer.BlockCopy(itemsToAdd.Weapons, 4 * i, buffer1, 0, 4);
+
+				byte[] buffer2 = new byte[4];
+				Buffer.BlockCopy(itemsToAdd.Armors, 4 * i, buffer2, 0, 4);
+
+				rom.PutInBank(0x1B, 0x8520 + 0x08 * i, buffer1);
+				rom.PutInBank(0x1B, 0x8524 + 0x08 * i, buffer2);
+			}
+
+			rom.PutInBank(0x1B, 0x8540, Blob.FromHex("A200A000205785A040205785A080205785A0C020578560BD2085991861E8C898290FC908D0F160"));
 		}
 
 		public void SetStartingEquipment()
@@ -334,8 +375,32 @@ namespace FF1Lib
 				items.Add(weaponPool.PickRandom(rng));
 			}
 		}
+		public void ReplaceTreasures(List<Item> treasurePool, bool replaceItems)
+		{
+			if (!replaceItems)
+			{
+				return;
+			}
 
+			var pool1 = GetLegendaryPool();
+			var pool2 = ItemLists.RareWeaponTier.Concat(ItemLists.RareArmorTier).Where(i => !pool1.Contains(i)).ToList();
+			var pool3 = ItemLists.CommonArmorTier.Concat(ItemLists.CommonWeaponTier).ToList();
 
+			var hqPool = new HashSet<Item>(pool1.Concat(pool2));
+			var items = itemsToAdd.Weapons.Concat(itemsToAdd.Armors);
+			items = items.Where(i => hqPool.Contains(i)).ToArray();
+
+			foreach (var i in items)
+			{
+				var indices = treasurePool.Where(e => e == i).ToList();
+				if (indices.Any())
+				{
+					treasurePool.Remove(i);
+					treasurePool.Add(ExtConsumables.ExtConsumableStartingEquipmentFix(pool3.PickRandom(rng), flags));
+				}
+			}
+
+		}
 		private void ReplaceTreasures(IEnumerable<Item> items)
 		{
 			var treasures = new TreasureData(rom);

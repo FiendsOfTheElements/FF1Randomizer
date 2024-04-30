@@ -8,8 +8,6 @@ public partial class FF1Rom : NesRom
 	public const int LevelRequirementsSize = 3;
 	public const int LevelRequirementsCount = 49;
 
-	public const int StartingGoldOffset = 0x0301C;
-
 	public const int GoldItemOffset = 108; // 108 items before gold chests
 	public const int GoldItemCount = 68;
 	public List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
@@ -25,6 +23,7 @@ public partial class FF1Rom : NesRom
 	public StandardMaps Maps;
 	public NpcObjectData NpcData;
 	public DialogueData Dialogues;
+	public StartingItems StartingItems;
 	//public ShipLocations ShipLocations;
 
 	public DeepDungeon DeepDungeon;
@@ -297,48 +296,6 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		if ((bool)flags.IsBridgeFree && (!flags.DesertOfDeath))
-		{
-			EnableFreeBridge();
-		}
-
-		if ((bool)flags.IsAirshipFree)
-		{
-			EnableFreeAirship();
-		}
-
-		if ((bool)flags.IsShipFree)
-		{
-				EnableFreeShip();
-		}
-
-		if ((bool)flags.IsCanalFree)
-		{
-			EnableFreeCanal((bool)flags.NPCItems);
-		}
-
-		await this.Progress();
-
-		if ((bool)flags.IsCanoeFree)
-		{
-			EnableFreeCanoe();
-		}
-
-		if ((bool)flags.FreeLute)
-		{
-			EnableFreeLute();
-		}
-
-		if ((bool)flags.FreeTail && !(bool)flags.NoTail)
-		{
-			EnableFreeTail();
-		}
-
-		if ((bool)flags.FreeRod)
-		{
-			EnableFreeRod();
-		}
-
 		encounterRate.ScaleEncounterRate(flags);
 
 		var shopData = new ShopData(this);
@@ -358,6 +315,8 @@ public partial class FF1Rom : NesRom
 
 		// NPC Stuff
 		ClassAsNPC(flags, talkroutines, NpcData, Dialogues, Maps, rng);
+		talkroutines.Update(flags);
+
 
 		// NOTE: logic checking for relocated chests
 		// accounts for NPC locations and whether they
@@ -366,8 +325,26 @@ public partial class FF1Rom : NesRom
 		// relocates NPCs or changes their routines.
 		await new RelocateChests(this).RandomlyRelocateChests(rng, Maps, TileSetsData, Teleporters, NpcData, flags);
 
-		talkroutines.Update(flags);
-		incentivesData = new IncentiveData(rng, new() { ("Coneria1", Item.Key), ("MarshCave1", Item.Oxyale) }, flags);
+
+
+		// Spells
+
+
+		// Create items
+
+
+		// Starting Inventory
+		StartingItems = new StartingItems(new() { }, rng, flags, this);
+
+		// Shop stuff
+
+
+
+		// Placement Context
+
+
+		//incentivesData = new IncentiveData(rng, new() { ("Coneria1", Item.Key), ("MarshCave1", Item.Oxyale) }, flags);
+		incentivesData = new IncentiveData(StartingItems, new() { }, rng, flags);
 
 		if (((bool)flags.Shops))
 		{
@@ -450,9 +427,6 @@ public partial class FF1Rom : NesRom
 		{
 			ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 		}
-
-		new StartingInventory(rng, flags, this).SetStartingInventory();
-		new StartingEquipment(rng, flags, this).SetStartingEquipment();
 
 		new ShopKiller(rng, flags, Maps, this).KillShops();
 
@@ -849,6 +823,7 @@ public partial class FF1Rom : NesRom
 		Maps.Write();
 		TileSetsData.Write();
 		ZoneFormations.Write(this);
+		StartingItems.Write();
 		RngTables.Write(this);
 		Teleporters.Write();
 		Overworld.Write();

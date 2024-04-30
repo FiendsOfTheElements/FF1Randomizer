@@ -1,5 +1,6 @@
 ﻿using RomUtilities;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace FF1Lib
@@ -60,13 +61,17 @@ namespace FF1Lib
 	public class IncentiveData
 	{
 		public ItemShopSlot ShopSlot { get; set; }
-		public IncentiveData(FF1Rom rom, MT19337 rng, List<(string, Item)> plandoItems, Flags flags)
+		private StartingItems startingItems;
+		public IncentiveData(StartingItems _startingItems, List<(string, Item)> plandoItems, MT19337 rng, Flags flags)
 		{
 			ShopSlot = ItemLocations.CaravanItemShop1;
+			startingItems = _startingItems;
 
 			ProcessIncentiveData(plandoItems, rng, flags);
 			ProcessShopData(flags);
-			ProcessTreasurePool(rom, rng, flags);
+			ProcessTreasurePool(rng, flags);
+
+			FreeItems = startingItems.StartingKeyItems;
 		}
 		private void ProcessIncentiveData(List<(string, Item)> plandoItems, MT19337 rng, Flags flags)
 		{
@@ -141,7 +146,7 @@ namespace FF1Lib
 				//((bool)flags.IsCanalFree, Item.Canal),
 				//((bool)flags.IsShipFree, Item.Ship),
 			};
-
+			/*
 			List<(bool, Item)> freeItemsFlags = new()
 			{
 				((bool)flags.IsCanoeFree, Item.Canoe),
@@ -151,7 +156,7 @@ namespace FF1Lib
 				((bool)flags.IsBridgeFree, Item.Bridge),
 				((bool)flags.IsCanalFree, Item.Canal),
 				((bool)flags.IsShipFree, Item.Ship),
-			};
+			};*/
 
 			List<(bool, IRewardSource)> removedNPCItemsLocations = new()
 			{
@@ -180,7 +185,7 @@ namespace FF1Lib
 			};
 
 			RemovedItems = removedItemsFlags.Where(i => i.Item1).Select(i => i.Item2).ToList();
-			FreeItems = freeItemsFlags.Where(i => i.Item1).Select(i => i.Item2).ToList();
+			//FreeItems = freeItemsFlags.Where(i => i.Item1).Select(i => i.Item2).ToList();
 
 			List<Item> itemsToNotPlace = RemovedItems.Concat(FreeItems).ToList();
 
@@ -327,17 +332,51 @@ namespace FF1Lib
 
 			ExcludedItemsFromShops = excludeItemsFromRandomShops;
 		}
-		private void ProcessTreasurePool(FF1Rom rom, MT19337 rng, Flags flags)
+		private void ProcessTreasurePool(MT19337 rng, Flags flags)
 		{
-			TreasurePool = typeof(ItemLocations)
+			var workingTreasurePool = typeof(ItemLocations)
 				.GetFields()
-				.Where(t => t.FieldType.BaseType == typeof(TreasureChest))
-				.Select(t => (TreasureChest)t.GetValue(null))
+				.Where(t => t.FieldType.BaseType == typeof(RewardSourceBase))
+				.Select(t => (RewardSourceBase)t.GetValue(null))
+				.Where(t => !t.IsUnused)
 				.Select(t => t.Item)
-				.Except(KeyItems)
+				//.Where(t => !KeyItems.Contains(t))
 				.ToList();
 
+			// Remove initial items
+			foreach (var item in IncentiveItems.Except(KeyItems))
+			{
+				workingTreasurePool.Remove(item);
+			}
 
+			foreach (var item in KeyItems)
+			{
+				workingTreasurePool.Remove(item);
+			}
+
+			foreach (var item in FreeItems)
+			{
+				workingTreasurePool.Remove(item);
+			}
+
+			foreach (var item in RemovedItems)
+			{
+				workingTreasurePool.Remove(item);
+			}
+
+			foreach (var source in ForcedItemPlacements)
+			{
+				workingTreasurePool.Remove(source.Item);
+			}
+
+
+			var test1 = typeof(ItemLocations)
+				.GetFields()
+				.Where(t => t.FieldType == typeof(TreasureChest)).ToList();
+
+			var test2 = test1.Select(t => (TreasureChest)t.GetValue(null)).ToList();
+			var test3 = test2.Select(t => t.Item);
+			var test4 = test3.Where(t => !KeyItems.Contains(t)).ToList();
 
 			// Process Item Generation Here
 
@@ -351,27 +390,86 @@ namespace FF1Lib
 			itemRanking.AddRange(Enumerable.Range((int)Item.CatClaw, 3).Select(i => ((Item)i, ItemQuality.Rare)));
 			itemRanking.AddRange(new List<(Item, ItemQuality)> { (Item.Vorpal, ItemQuality.Legendary), (Item.Xcalber, ItemQuality.Legendary), (Item.Katana, ItemQuality.Legendary) });
 			itemRanking.Add((Item.Masamune, ItemQuality.Legendary));
-			itemRanking.AddRange(ItemLists.CommonArmorTier.Select(i => ((Item)i, ItemQuality.Common)));
-			itemRanking.AddRange(ItemLists.RareArmorTier.Select(i => ((Item)i, ItemQuality.Rare)));
-			itemRanking.AddRange(ItemLists.LegendaryArmorTier.Select(i => ((Item)i, ItemQuality.Legendary)));
+			itemRanking.AddRange(ItemLists.CommonArmorTier.Distinct().Select(i => ((Item)i, ItemQuality.Common)));
+			itemRanking.AddRange(ItemLists.RareArmorTier.Distinct().Select(i => ((Item)i, ItemQuality.Rare)));
+			itemRanking.AddRange(ItemLists.LegendaryArmorTier.Distinct().Select(i => ((Item)i, ItemQuality.Legendary)));
 			itemRanking.AddRange(Enumerable.Range((int)Item.Gold10, 31).Select(i => ((Item)i, ItemQuality.Common)));
 			itemRanking.AddRange(Enumerable.Range((int)Item.Gold1020, 22).Select(i => ((Item)i, ItemQuality.Rare)));
 			itemRanking.AddRange(Enumerable.Range((int)Item.Gold10000, 15).Select(i => ((Item)i, ItemQuality.Legendary)));
 
+			Dictionary<Item, ItemQuality> itemRankingDic = itemRanking.ToDictionary(i => i.Item1, i => i.Item2);
+
+			if ((bool)flags.GuaranteedMasamune && !IncentiveItems.Contains(Item.Masamune) && (bool)flags.SendMasamuneHome)
+			{
+				// Remove Masamune from treasure pool (This will also causes Masamune to not be placed by RandomLoot)
+				workingTreasurePool.RemoveAll(t => t == Item.Masamune);
+			}
+
 			// So we have all the available treasure chests
-			// Get our difference
+			// Get the difference and fill/remove to equalize
 			var reserved = IncentiveItems.Except(KeyItems).Count() + KeyItemsToPlace.Count();
-			var
+			var treasureLocationsCount = AllValidItemLocations.Count() - reserved + 1; // add 1 because we have the shop item, but not the shop location
 
+			var treasureDifference = AllValidItemLocations.Count() - (TreasurePool.Count() + reserved);
 
-			// 2 chests + 1 chest incentive + 1 npc incentive, 2 key items
-			// treasure give us 3 items, minus KI = 2 items
-			// i incentive npc only, but the 2 ki
-			// so 1 - 2 => -1
-			var incentiveDiff = IncentiveLocations.Count() - IncentiveItems.Count();
+			if (treasureDifference > 0)
+			{
+				workingTreasurePool = workingTreasurePool.Concat(Enumerable.Repeat(Item.Cabin, treasureDifference)).ToList();
+			}
+			else if (treasureDifference < 0)
+			{
+				for (int i = 0; i < -treasureDifference; i++)
+				{
+					RemoveRandomWeightedItem(workingTreasurePool, rng, itemRankingDic);
+				}
+			}
 
+			// Starting Equipment No Duplicate Switch
+			startingItems.ReplaceGear(workingTreasurePool);
 
+			// Add Shards
+			if (flags.ShardHunt)
+			{
+				Shards = Enumerable.Repeat(Item.Shard, 32);
 
+				for (int i = 0; i < 32; i++)
+				{
+					RemoveRandomWeightedItem(workingTreasurePool, rng, itemRankingDic);
+				}
+			}
+
+			// Add Consumabe Chests
+			MoreConsumableChests.Work(flags, workingTreasurePool, rng);
+
+			TreasurePool = workingTreasurePool;
+		}
+
+		private void RemoveRandomWeightedItem(List<Item> itemList, MT19337 rng, Dictionary<Item, ItemQuality> ranking)
+		{
+			var commonItems = itemList.Where(i => ranking.TryGetValue(i, out var result) ? result == ItemQuality.Common : false).ToList();
+			var rareItems = itemList.Where(i => ranking.TryGetValue(i, out var result) ? result == ItemQuality.Rare : false).ToList();
+			var legendaryItems = itemList.Where(i => ranking.TryGetValue(i, out var result) ? result == ItemQuality.Legendary : false).ToList();
+
+			Item itemToRemove = Item.None;
+
+			if (commonItems.Any())
+			{
+				itemToRemove = commonItems.PickRandom(rng);
+			}
+			else if (rareItems.Any())
+			{
+				itemToRemove = rareItems.PickRandom(rng);
+			}
+			else if (legendaryItems.Any())
+			{
+				itemToRemove = legendaryItems.PickRandom(rng);
+			}
+			else
+			{
+				throw new Exception("No item left to remove from treasure pool.");
+			}
+
+			itemList.Remove(itemToRemove);
 		}
 
 		private List<IRewardSource> SelectIncentivizedChests(IIncentiveFlags flags, MT19337 rng)

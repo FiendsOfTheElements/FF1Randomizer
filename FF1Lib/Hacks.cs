@@ -178,36 +178,6 @@ namespace FF1Lib
 		/// <summary>
 		/// Unused method, but this would allow a non-npc shuffle king to build bridge without rescuing princess
 		/// </summary>
-		public void EnableFreeBridge()
-		{
-			// Set the default bridge_vis byte on game start to true. It's a mother beautiful bridge - and it's gonna be there.
-			Data[0x3008] = 0x01;
-		}
-
-		public void EnableFreeShip()
-		{
-			Data[0x3000] = 1;
-			Data[0x3001] = 152;
-			Data[0x3002] = 169;
-		}
-
-		public void EnableFreeAirship()
-		{
-			Data[0x3004] = 1;
-			Data[0x3005] = 153;
-			Data[0x3006] = 165;
-		}
-
-		public void EnableFreeCanal(bool npcShuffleEnabled)
-		{
-			Data[0x300C] = 0;
-		}
-
-		public void EnableFreeCanoe()
-		{
-			Data[0x3012] = 0x01;
-		}
-
 		public void EnableCanalBridge()
 		{
 			// Inline edit to draw the isthmus or the bridge, but never the open canal anymore.
@@ -230,20 +200,6 @@ namespace FF1Lib
 				RTS
 			**/
 			Put(0x7C64D, Blob.FromHex("ADFC6048A90F2003FE20808768082003FE2860"));
-		}
-		public void EnableFreeLute()
-		{
-			Data[0x3020 + (int)Item.Lute] = 0x01;
-		}
-
-		public void EnableFreeRod()
-		{
-			Data[0x3020 + (int)Item.Rod] = 0x01;
-		}
-
-		public void EnableFreeTail()
-		{
-			Data[0x3020 + (int)Item.Tail] = 0x01;
 		}
 		public void EnableAirBoat(bool freeAirship, bool freeShip)
 		{
