@@ -4085,6 +4085,17 @@ namespace FF1Lib
 			}
 		}
 
+		public bool? BlackKnightkeep
+		{
+			get => Flags.BlackKnightKeep;
+			set
+			{
+				Flags.BlackKnightKeep = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlackKnightKeep"));
+			}
+		}
+
+
 		public bool? WhiteNinja
 		{
 			get => Flags.WhiteNinja;
@@ -4094,6 +4105,17 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WhiteNinja"));
 			}
 		}
+
+		public bool? WhiteNinjaKeep
+		{
+			get => Flags.WhiteNinjaKeep;
+			set
+			{
+				Flags.WhiteNinjaKeep = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WhiteNinjaKeep"));
+			}
+		}
+
 
 		public bool? ChangeMaxMP
 		{

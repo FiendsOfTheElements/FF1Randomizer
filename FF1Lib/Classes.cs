@@ -434,6 +434,25 @@ namespace FF1Lib
 
 			}
 
+			if ((bool)flags.BlackKnightKeep)
+			{
+				_spellPermissions.ClearPermissions(Classes.Knight);
+				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black1Slot1);
+				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black1Slot3);
+
+				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black2Slot1);
+				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black2Slot2);
+				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black2Slot3);
+				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black2Slot4);
+
+				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black3Slot1);
+				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black3Slot3);
+
+			}
+
+			if(!(bool)flags.BlackKnightKeep)
+			{ 
+
 			_spellPermissions.ClearPermissions(Classes.Knight);
 			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black1Slot1);
 			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black1Slot2);
@@ -454,8 +473,10 @@ namespace FF1Lib
 			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black4Slot2);
 			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black4Slot3);
 			_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black4Slot4);
-		}
 
+			}
+		}
+	
 	public void WhiteNinja(Flags flags)
 		{
 			if (!(bool)flags.WhiteNinja)
@@ -463,6 +484,8 @@ namespace FF1Lib
 				return;
 
 			}
+			if (!(bool)flags.WhiteNinjaKeep)
+			{
 
 			_spellPermissions.ClearPermissions(Classes.Ninja);
 			_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White1Slot1);
@@ -476,40 +499,100 @@ namespace FF1Lib
 			_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White3Slot1);
 			_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White3Slot3);
 
+			}
+
+			if((bool)flags.WhiteNinjaKeep)
+			{
+				_spellPermissions.ClearPermissions(Classes.Ninja);
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White1Slot1);
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White1Slot2);
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White1Slot3);
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White1Slot4);
+
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White2Slot1);
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White2Slot2);
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White2Slot3);
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White2Slot4);
+
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White3Slot1);
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White3Slot2);
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White3Slot3);
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White3Slot4);
+
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White4Slot1);
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White4Slot2);
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White4Slot3);
+				_spellPermissions.AddPermission(Classes.Ninja, SpellSlots.White4Slot4);
+
+
+			}
+
 
 		}
-
-	public void Knightlvl4(Flags flags, MT19337 rng)
+		//add in the keep permissions section for the Ninja spells slots
+		public void Knightlvl4(Flags flags, MT19337 rng)
 		{
 			if (!(bool)flags.Knightlvl4)
 			{
 				return;
 
 			}
-			var kilvl4 = rng.Between(0, 3);
 
-			if(kilvl4 == 0)
+
+			if (!(bool)flags.BlackKnight)
 			{
-				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot1);
+				var kilvl4 = rng.Between(0, 3);
+
+				if (kilvl4 == 0)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot1);
+				}
+
+				if (kilvl4 == 1)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot2);
+				}
+
+				if (kilvl4 == 2)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot3);
+				}
+
+				if (kilvl4 == 3)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot4);
+				}
 			}
 
-			if (kilvl4 == 1)
+			if ((bool)flags.BlackKnight && (bool)flags.BlackKnightKeep) 
+			  
 			{
-				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot2);
+				var kilvl4B = rng.Between(0, 3);
+
+				if (kilvl4B == 0)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black4Slot1);
+				}
+
+				if (kilvl4B == 1)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black4Slot2);
+				}
+
+				if (kilvl4B == 2)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black4Slot3);
+				}
+
+				if (kilvl4B == 3)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black4Slot4);
+				}
 			}
 
-			if (kilvl4 == 2)
-			{
-				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot3);
-			}
-
-			if (kilvl4 == 3)
-			{
-				_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot4);
-			}
 		}
 
-		public void SetMpGainOnMaxGain(Flags flags, FF1Rom rom)
+				public void SetMpGainOnMaxGain(Flags flags, FF1Rom rom)
 		{
 			if(flags.MpGainOnMaxGainMode != MpGainOnMaxGain.None)
 			{

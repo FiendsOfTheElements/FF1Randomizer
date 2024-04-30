@@ -66,7 +66,9 @@
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="Knightlvl4" @bind-Value="Flags.Knightlvl4">Knight Level 4 Spell</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="PinkMage" @bind-Value="Flags.PinkMage">Pink Mage</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="BlackKnight" @bind-Value="Flags.BlackKnight">Black Knight</TriStateCheckBox>
+        <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.BlackKnight)" Id="BlackKnightKeep" @bind-Value="Flags.BlackKnightkeep">Keep Permissions</TriStateCheckBox>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(Flags.Transmooglifier == false)" Id="WhiteNinja" @bind-Value="Flags.WhiteNinja">White Ninja</TriStateCheckBox>
+            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.WhiteNinja)" Id="WhiteNinjaKeep" @bind-Value="Flags.WhiteNinjaKeep">Keep Permissions</TriStateCheckBox>
 	<div class="checkbox-cell"></div>
 
 

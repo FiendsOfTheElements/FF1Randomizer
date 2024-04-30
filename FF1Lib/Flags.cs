@@ -681,7 +681,9 @@ namespace FF1Lib
 		public bool? Knightlvl4 { get; set; } = false;
 		public bool? PinkMage { get; set; } = false;
 		public bool? BlackKnight { get; set; } = false;
+		public bool? BlackKnightKeep { get; set; } = false;
 		public bool? WhiteNinja { get; set; } = false;
+		public bool? WhiteNinjaKeep { get; set; } = false;
 
 		public MpGainOnMaxGain MpGainOnMaxGainMode { get; set; } = MpGainOnMaxGain.None;
 
