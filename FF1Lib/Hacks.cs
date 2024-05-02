@@ -12,8 +12,19 @@ namespace FF1Lib
 		public const int MapSpriteSize = 3;
 		public const int MapSpriteCount = 16;
 
+		private void MiscHacks(Flags flags, MT19337 rng)
+		{
+			EnableCanalBridge((bool)flags.MapCanalBridge);
+		}
+
+
 		public void EnableSaveOnDeath(Flags flags, Overworld overworld)
 		{
+			if (!flags.SaveGameWhenGameOver)
+			{
+				return;
+			}
+
 			// rewrite rando's GameOver routine to jump to a new section that will save the game data
 			PutInBank(0x1B, 0x801A, Blob.FromHex("4CF58F"));
 
@@ -178,8 +189,13 @@ namespace FF1Lib
 		/// <summary>
 		/// Unused method, but this would allow a non-npc shuffle king to build bridge without rescuing princess
 		/// </summary>
-		public void EnableCanalBridge()
+		public void EnableCanalBridge(bool enable)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			// Inline edit to draw the isthmus or the bridge, but never the open canal anymore.
 			// See 0F_8780_IsOnEitherBridge for this and the IsOnBridge replacement called from below.
 			Put(0x7E3B8, Blob.FromHex("20CEE3AE0D60AC0E6020DFE3B0DFA908AE0C60F0010A"));
@@ -247,6 +263,11 @@ namespace FF1Lib
 
 		public void XpAdmissibility(bool nonesGainXp, bool deadsGainXp)
 		{
+			if (!nonesGainXp && !deadsGainXp)
+			{
+				return;
+			}
+
 			// New routine to see if character can get XP LvlUp_AwardExp
 			if (nonesGainXp && !deadsGainXp)
 			{
@@ -599,6 +620,11 @@ namespace FF1Lib
 
 		public void SetRNG(Flags flags)
 		{
+			if (!flags.SetRNG)
+			{
+				return;
+			}
+
 			//see 1B_9900_SetRNG.asm for details
 			//take into consideration if disable music is on:
 			//had to move the battle prep function which included loading the music track

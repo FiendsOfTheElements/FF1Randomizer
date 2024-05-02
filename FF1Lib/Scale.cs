@@ -505,6 +505,33 @@ namespace FF1Lib
 			Data[0x7C04B] = firstLevelRequirement;
 		}
 
+		private void ScaleAllAltExp(Flags flags)
+		{
+			if (flags.ExpMultiplierFighter != 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierFighter, FF1Class.Fighter);
+			}
+			if (flags.ExpMultiplierThief != 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierThief, FF1Class.Thief);
+			}
+			if (flags.ExpMultiplierBlackBelt != 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierBlackBelt, FF1Class.BlackBelt);
+			}
+			if (flags.ExpMultiplierRedMage != 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierRedMage, FF1Class.RedMage);
+			}
+			if (flags.ExpMultiplierWhiteMage != 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierWhiteMage, FF1Class.WhiteMage);
+			}
+			if (flags.ExpMultiplierBlackMage != 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
+			}
+		}
 		public void ScaleAltExp(double scale, FF1Class characterClass)
 		{
 			int offset = LevelRequirementsOffset;

@@ -11,8 +11,8 @@ namespace FF1Lib
 		FF1Rom rom;
 
 		SpellHelper spellHelper;
-		List<Weapon> weapons;
-		List<Armor> armors;
+		List<Weapon> weaponsList;
+		List<Armor> armorsList;
 		(Item[] Weapons, Item[] Armors) itemsToAdd;
 
 		public StartingEquipment(MT19337 _rng, Flags _flags, FF1Rom _rom)
@@ -24,8 +24,8 @@ namespace FF1Lib
 			itemsToAdd = new();
 			spellHelper = new SpellHelper(rom);
 			// change for ItemData
-			weapons = Weapon.LoadAllWeapons(rom, flags).ToList();
-			armors = Armor.LoadAllArmors(rom, flags).ToList();
+			weaponsList = Weapon.LoadAllWeapons(rom, flags).ToList();
+			armorsList = Armor.LoadAllArmors(rom, flags).ToList();
 		}
 		public Dictionary<Item, int> GetStartingEquipment()
 		{
@@ -36,10 +36,13 @@ namespace FF1Lib
 		}
 		public void Process(Dictionary<Item, int> gearList, bool extendedConsomable)
 		{
-			var weapons = gearList.Where(g => g.Key >= (extendedConsomable ? Item.IronHammer : Item.WoodenNunchucks) && g.Key <= Item.Masamune).SelectMany(g => Enumerable.Repeat(g.Key, g.Value)).ToList();
-			var armors = gearList.Where(g => g.Key >= Item.Cloth && g.Key <= Item.ProRing).SelectMany(g => Enumerable.Repeat(g.Key, g.Value)).ToList();
+			var weapons = gearList.Where(g => g.Key >= (extendedConsomable ? Item.IronHammer : Item.WoodenNunchucks) && g.Key <= Item.Masamune).SelectMany(g => Enumerable.Repeat(g.Key, g.Value)).ToArray();
+			var armors = gearList.Where(g => g.Key >= Item.Cloth && g.Key <= Item.ProRing).SelectMany(g => Enumerable.Repeat(g.Key, g.Value)).ToArray();
 
-			itemsToAdd = (weapons.ToArray(), armors.ToArray());
+			Array.Resize(ref weapons, 16);
+			Array.Resize(ref armors, 16);
+
+			itemsToAdd = (weapons, armors);
 		}
 
 		public void Write()
@@ -154,7 +157,7 @@ namespace FF1Lib
 			else
 			{
 				var spells = new HashSet<Spell>(spellHelper.FindSpells(SpellRoutine.Heal, SpellTargeting.AllCharacters).Where(s => s.Info.effect <= 32).Select(s => s.Id));
-				var weapon = weapons.FirstOrDefault(w => w.Damage < 20 && spells.Contains(w.Spell));
+				var weapon = weaponsList.FirstOrDefault(w => w.Damage < 20 && spells.Contains(w.Spell));
 
 				if (weapon != null)
 				{
@@ -184,12 +187,12 @@ namespace FF1Lib
 
 			var spells = new HashSet<Spell>(damageAoes.Concat(instaAoes).Concat(powerWordAoes));
 
-			var weaps = weapons.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
-			var arms = armors.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
+			var weaps = weaponsList.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
+			var arms = armorsList.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
 
 			var pool = weaps.Concat(arms).ToList();
 
-			var names = weapons.Where(w => spells.Contains(w.Spell)).Select(w => w.Name).Concat(armors.Where(w => spells.Contains(w.Spell)).Select(a => a.Name)).ToList();
+			var names = weaponsList.Where(w => spells.Contains(w.Spell)).Select(w => w.Name).Concat(armorsList.Where(w => spells.Contains(w.Spell)).Select(a => a.Name)).ToList();
 
 			if (flags.StartingEquipmentNoDuplicates) pool.RemoveAll(i => items.Contains(i));
 			if (pool.Count > 0) items.Add(pool.PickRandom(rng));
@@ -221,10 +224,10 @@ namespace FF1Lib
 				s.Info.routine == SpellRoutine.Ruse ||
 				s.Info.routine == SpellRoutine.Sabr).Select(s => s.Id));
 
-			var weaps = weapons.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
-			var arms = armors.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
+			var weaps = weaponsList.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
+			var arms = armorsList.Where(w => spells.Contains(w.Spell)).Select(w => w.Id);
 
-			var names = weapons.Where(w => spells.Contains(w.Spell)).Select(w => w.Name).Concat(armors.Where(w => spells.Contains(w.Spell)).Select(a => a.Name)).ToList();
+			var names = weaponsList.Where(w => spells.Contains(w.Spell)).Select(w => w.Name).Concat(armorsList.Where(w => spells.Contains(w.Spell)).Select(a => a.Name)).ToList();
 
 			return weaps.Concat(arms).ToList();
 		}

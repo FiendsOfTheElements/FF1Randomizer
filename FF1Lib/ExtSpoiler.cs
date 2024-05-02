@@ -12,7 +12,7 @@ namespace FF1Lib
 		private ItemNames itemsText;
 		private List<IRewardSource> itemPlacement;
 		private OverworldMap overworldMap;
-		private IncentiveData incentivesData;
+		private PlacementContext incentivesData;
 		private Overworld overworld;
 		private GearPermissions weaponPermissions;
 		private GearPermissions armorPermissions;
@@ -23,7 +23,7 @@ namespace FF1Lib
 		private List<Armor> armors;
 		private List<MagicSpell> magicSpells;
 
-		public ExtSpoiler(FF1Rom _rom, SanityCheckerV2 _checker, ShopData _shopData, ItemNames _itemsText, List<IRewardSource> _itemPlacement, Overworld _overworld, IncentiveData _incentivesData, GearPermissions _weaponPermissions, GearPermissions _armorPermissions, Flags _flags)
+		public ExtSpoiler(FF1Rom _rom, SanityCheckerV2 _checker, ShopData _shopData, ItemNames _itemsText, List<IRewardSource> _itemPlacement, Overworld _overworld, PlacementContext _incentivesData, GearPermissions _weaponPermissions, GearPermissions _armorPermissions, Flags _flags)
 		{
 			rom = _rom;
 			checker = _checker;

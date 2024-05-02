@@ -1313,8 +1313,11 @@ namespace FF1Lib
 				}
 			}
 		}
-		public List<IRewardSource> ShuffleTreasures(Flags flags, IncentiveData incentiveData, MT19337 rng)
+		public List<IRewardSource> ShuffleTreasures(Flags flags, PlacementContext incentiveData, MT19337 rng)
 		{
+			int TreasureOffset = 0x03100;
+			int TreasureSize = 1;
+			int TreasureCount = 256;
 
 			List<IRewardSource> placedItems = new();
 
@@ -1387,7 +1390,7 @@ namespace FF1Lib
 			// Fill pool with cabins to account for removed items
 			var locationCount = chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).Count();
 
-			if (locationCount > treasurePool.Count)
+			if (locationCount > treasurePool.Count())
 			{
 				treasurePool.AddRange(Enumerable.Repeat(Item.Heal, locationCount - treasurePool.Count()));
 			}

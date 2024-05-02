@@ -58,20 +58,20 @@ namespace FF1Lib
 		RandomShallow
 	}
 
-	public class IncentiveData
+	public class PlacementContext
 	{
 		public ItemShopSlot ShopSlot { get; set; }
 		private StartingItems startingItems;
-		public IncentiveData(StartingItems _startingItems, List<(string, Item)> plandoItems, MT19337 rng, Flags flags)
+		public PlacementContext(StartingItems _startingItems, List<(string, Item)> plandoItems, MT19337 rng, Flags flags)
 		{
 			ShopSlot = ItemLocations.CaravanItemShop1;
 			startingItems = _startingItems;
 
+			FreeItems = startingItems.StartingKeyItems;
+
 			ProcessIncentiveData(plandoItems, rng, flags);
 			ProcessShopData(flags);
 			ProcessTreasurePool(rng, flags);
-
-			FreeItems = startingItems.StartingKeyItems;
 		}
 		private void ProcessIncentiveData(List<(string, Item)> plandoItems, MT19337 rng, Flags flags)
 		{
@@ -410,7 +410,7 @@ namespace FF1Lib
 			var reserved = IncentiveItems.Except(KeyItems).Count() + KeyItemsToPlace.Count();
 			var treasureLocationsCount = AllValidItemLocations.Count() - reserved + 1; // add 1 because we have the shop item, but not the shop location
 
-			var treasureDifference = AllValidItemLocations.Count() - (TreasurePool.Count() + reserved);
+			var treasureDifference = AllValidItemLocations.Count() - (workingTreasurePool.Count() + reserved);
 
 			if (treasureDifference > 0)
 			{
@@ -436,6 +436,10 @@ namespace FF1Lib
 				{
 					RemoveRandomWeightedItem(workingTreasurePool, rng, itemRankingDic);
 				}
+			}
+			else
+			{
+				Shards = new List<Item>();
 			}
 
 			// Add Consumabe Chests

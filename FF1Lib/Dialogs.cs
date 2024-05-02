@@ -352,7 +352,6 @@ namespace FF1Lib
 		public const int lut_MapObjTalkJumpTbl = 0x90D3;
 		public const int lut_MapObjTalkData = 0x95D5;
 
-		public List<IRewardSource> generatedPlacement;
 		// All original talk scripts for reference
 		public enum newTalkRoutines
 		{

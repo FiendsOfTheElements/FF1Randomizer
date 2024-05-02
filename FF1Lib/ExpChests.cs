@@ -167,7 +167,11 @@ namespace FF1Lib
 			//sort ascending
 			expChests.Sort((x, y) => x.Item1.CompareTo(y.Item1));
 			currentChestIndex = 0;
-			byte[] treasurePlacementData = rom.Get(FF1Rom.TreasureOffset, FF1Rom.TreasureCount);
+
+			int TreasureOffset = 0x03100;
+			int TreasureCount = 256;
+
+			byte[] treasurePlacementData = rom.Get(TreasureOffset, TreasureCount);
 			for (int i = 0; i < expChests.Count; i++)
 			{
 				//find out how many of these chests exist, there could be more than one of each, put them in order

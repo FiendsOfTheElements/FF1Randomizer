@@ -24,9 +24,14 @@
 			Inn = 50,
 			Item = 60
 		}
-
-		public ItemShopSlot ShuffleShops(MT19337 rng, bool earlyAilments, bool randomizeWeaponsAndArmor, IEnumerable<Item> excludeItemsFromRandomShops, WorldWealthMode wealth, int coneriaEntranceShopIndex)
+		// Add to Shop class
+		public ItemShopSlot ShuffleShops(MT19337 rng, bool enabled, bool earlyAilments, bool randomizeWeaponsAndArmor, IEnumerable<Item> excludeItemsFromRandomShops, WorldWealthMode wealth, int coneriaEntranceShopIndex)
 		{
+			if (!enabled)
+			{
+				return null;
+			}
+
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
 
 			RepackShops(pointers);
