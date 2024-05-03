@@ -198,7 +198,7 @@
 						indeces.Remove(exclusion);
 					}
 
-					ShopItemGenerator generator = new ShopItemGenerator(indeces, UnusedGoldItems, new List<Item>());
+					ShopItemGenerator generator = new ShopItemGenerator(indeces, ItemLists.UnusedGoldItems.ToList(), new List<Item>());
 					for (int i = 0; i < newShops.Length; i++)
 					{
 						newShops[i] = newShops[i].Select(x => (byte)generator.GetItem(rng)).ToList();

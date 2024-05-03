@@ -1,4 +1,5 @@
 using FF1Lib.Procgen;
+using RomUtilities;
 namespace FF1Lib;
 
 // ReSharper disable once InconsistentNaming
@@ -10,7 +11,7 @@ public partial class FF1Rom : NesRom
 
 	public const int GoldItemOffset = 108; // 108 items before gold chests
 	public const int GoldItemCount = 68;
-	public List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
+	//public List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
 
 	public ItemNames ItemsText;
 	public GearPermissions ArmorPermissions;
@@ -85,7 +86,7 @@ public partial class FF1Rom : NesRom
 		RngTables = new(this);
 		TileSetsData = new(this);
 		ZoneFormations = new(this);
-		Overworld = new(this, flags, Settings, rng);
+		Overworld = new(this, flags, ZoneFormations, Settings, rng);
 		Overworld.LoadMapExchange();
 		//Settings.CollapseRandomSettings(rng);
 		//Settings.ProcessStandardFlags();
@@ -196,7 +197,6 @@ public partial class FF1Rom : NesRom
 
 			DeepDungeon.Generate(rng, Overworld.OverworldMap, Teleporters, Dialogues, Maps.GetMapList(), flags);
 			DeepDungeonFloorIndicator();
-			UnusedGoldItems = new List<int> { };
 
 			await this.Progress("Generating Deep Dungeon's Floors... Done!");
 		}
@@ -365,7 +365,8 @@ public partial class FF1Rom : NesRom
 
 
 		// Placement Context
-		PlacementContext = new PlacementContext(StartingItems, new() { }, rng, flags);
+		var priceList = Get(0x37C00, 0x200).ToUShorts().Select(x => (int)x).ToList(); // Temprorary until we extract price
+		PlacementContext = new PlacementContext(StartingItems, new() { }, priceList, rng, flags);
 
 		// ShopSlot should be managed by shop class, right? Maybe, probably, we'll know for sure with Shop Class
 		PlacementContext.ShopSlot = ShuffleShops(rng, (bool)flags.Shops, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), PlacementContext.ExcludedItemsFromShops, flags.WorldWealth, Overworld.OverworldMap.ConeriaTownEntranceItemShopIndex);
@@ -409,8 +410,6 @@ public partial class FF1Rom : NesRom
 		funMessages.AddRange(Enumerable.Repeat("Finalizing", funMessages.Count * 4).ToList());
 
 		await this.Progress(funMessages.PickRandom(rng));
-
-		NpcData.UpdateItemPlacement(itemPlacement.PlacedItems);
 
 		if ((bool)flags.MagicShopLocs)
 		{
@@ -707,8 +706,10 @@ public partial class FF1Rom : NesRom
 
 		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
-		var expChests = new ExpChests(this, flags, rng);
+		var expChests = new ExpChests(itemPlacement.PlacedItems, this, flags, rng);
 		expChests.BuildExpChests();
+
+		NpcData.UpdateItemPlacement(itemPlacement.PlacedItems);
 
 		if (flags.Archipelago)
 		{
@@ -718,7 +719,7 @@ public partial class FF1Rom : NesRom
 			Utilities.ArchipelagoCache = exporter.Work();
 		}
 
-		ItemsText.Write(this, UnusedGoldItems);
+		ItemsText.Write(this, flags.GameMode == GameModes.DeepDungeon ? new List<Item>() : ItemLists.UnusedGoldItems.ToList());
 
 		if (flags.Spoilers && sanityChecker != null) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, itemPlacement.PlacedItems, Overworld, PlacementContext, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
 

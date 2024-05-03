@@ -62,10 +62,12 @@ namespace FF1Lib
 	{
 		public ItemShopSlot ShopSlot { get; set; }
 		private StartingItems startingItems;
-		public PlacementContext(StartingItems _startingItems, List<(string, Item)> plandoItems, MT19337 rng, Flags flags)
+		private List<int> priceList;
+		public PlacementContext(StartingItems _startingItems, List<(string, Item)> plandoItems, List<int> _priceList, MT19337 rng, Flags flags)
 		{
 			ShopSlot = ItemLocations.CaravanItemShop1;
 			startingItems = _startingItems;
+			priceList = _priceList;
 
 			FreeItems = startingItems.StartingKeyItems;
 
@@ -138,25 +140,7 @@ namespace FF1Lib
 				((bool)flags.NoXcalber, Item.Xcalber),
 				((bool)flags.NoTail, Item.Tail),
 				((bool)flags.IsFloaterRemoved, Item.Floater),
-				//((bool)flags.IsCanoeFree, Item.Canoe),
-				//((bool)flags.FreeLute, Item.Lute),
-				//((bool)flags.FreeRod, Item.Rod),
-				//((bool)flags.FreeTail, Item.Tail),
-				//((bool)flags.IsBridgeFree, Item.Bridge),
-				//((bool)flags.IsCanalFree, Item.Canal),
-				//((bool)flags.IsShipFree, Item.Ship),
 			};
-			/*
-			List<(bool, Item)> freeItemsFlags = new()
-			{
-				((bool)flags.IsCanoeFree, Item.Canoe),
-				((bool)flags.FreeLute, Item.Lute),
-				((bool)flags.FreeRod, Item.Rod),
-				((bool)flags.FreeTail, Item.Tail),
-				((bool)flags.IsBridgeFree, Item.Bridge),
-				((bool)flags.IsCanalFree, Item.Canal),
-				((bool)flags.IsShipFree, Item.Ship),
-			};*/
 
 			List<(bool, IRewardSource)> removedNPCItemsLocations = new()
 			{
@@ -239,36 +223,11 @@ namespace FF1Lib
 						  .Where(x => !x.IsUnused && !forcedItemPlacements.Any(y => y.Address == x.Address))
 						  .ToList();
 
-
-
-			/*
-			var test1 = typeof(ItemLocations).GetFields();
-			var test2 = test1.Where(t => t.GetType() == typeof(TreasureChest) || t.FieldType.DeclaringType == typeof(NpcReward) || t.FieldType.DeclaringType == typeof(ItemShopSlot)).ToList();
-			var test3 = test1.Where(t => t.FieldType.BaseType == typeof(RewardSourceBase)).ToList();
-			var test4 = test3.ToDictionary(t => t.Name, t => (IRewardSource)t.GetValue(null));
-			*/
-
-
 			incentivePool = incentivePool
 				.Except(RemovedItems)
 				.Except(FreeItems)
 				.Except(forcedItemPlacements.Select(x => x.Item).Where(x => x != Item.Masamune || !(bool)flags.GuaranteedMasamune))
 				.ToList();
-
-			/*
-			foreach (var item in forcedItemPlacements.Select(x => x.Item))
-			{
-				if ((bool)flags.GuaranteedMasamune && item == Item.Masamune)
-				{
-					continue;
-				}
-				incentivePool.Remove(item);
-			}
-
-			foreach (var item in removedItems)
-			{
-				incentivePool.Remove(item);
-			}*/
 
 			KeyItemsToPlace = KeyItems
 				.Except(RemovedItems)
@@ -369,16 +328,33 @@ namespace FF1Lib
 				workingTreasurePool.Remove(source.Item);
 			}
 
-
-			var test1 = typeof(ItemLocations)
-				.GetFields()
-				.Where(t => t.FieldType == typeof(TreasureChest)).ToList();
-
-			var test2 = test1.Select(t => (TreasureChest)t.GetValue(null)).ToList();
-			var test3 = test2.Select(t => t.Item);
-			var test4 = test3.Where(t => !KeyItems.Contains(t)).ToList();
-
 			// Process Item Generation Here
+			var randomizeTreasureMode = (flags.RandomizeTreasure == RandomizeTreasureMode.Random) ? (RandomizeTreasureMode)rng.Between(0, 2) : flags.RandomizeTreasure;
+
+			WeightedFloors = new();
+
+			if (randomizeTreasureMode != RandomizeTreasureMode.None)
+			{
+				IItemGenerator generator;
+
+
+				WeightedFloors = FloorsWeightSelector.GetWeights(AllValidItemLocations.ToList(), flags);
+
+				// We want to leave out anything incentivized (and thus already placed), but
+				// add all the other stuff that you can't find in vanilla.
+				var randomTreasure = workingTreasurePool.ToList();
+
+				if (randomizeTreasureMode == RandomizeTreasureMode.DeepDungeon)
+				{
+					generator = new DeepDungeonItemGenerator(AllValidItemLocations.ToList(), ItemLists.UnusedGoldItems.ToList(), RemovedItems.ToList(), ForcedItemPlacements.ToList(), WeightedFloors, priceList, (flags.GameMode == GameModes.DeepDungeon), flags.Etherizer);
+				}
+				else
+				{
+					generator = new ItemGenerator(randomTreasure, ItemLists.UnusedGoldItems.ToList(), RemovedItems.ToList(), flags.WorldWealth);
+				}
+
+				workingTreasurePool = workingTreasurePool.Select(treasure => generator.GetItem(rng)).ToList();
+			}
 
 
 			// We need to kick stuff out for shards, extconsumable, xpchests
@@ -397,7 +373,7 @@ namespace FF1Lib
 			itemRanking.AddRange(Enumerable.Range((int)Item.Gold1020, 22).Select(i => ((Item)i, ItemQuality.Rare)));
 			itemRanking.AddRange(Enumerable.Range((int)Item.Gold10000, 15).Select(i => ((Item)i, ItemQuality.Legendary)));
 
-			Dictionary<Item, ItemQuality> itemRankingDic = itemRanking.ToDictionary(i => i.Item1, i => i.Item2);
+			ItemsQuality = itemRanking.ToDictionary(i => i.Item1, i => i.Item2);
 
 			if ((bool)flags.GuaranteedMasamune && !IncentiveItems.Contains(Item.Masamune) && (bool)flags.SendMasamuneHome)
 			{
@@ -410,7 +386,7 @@ namespace FF1Lib
 			var reserved = IncentiveItems.Except(KeyItems).Count() + KeyItemsToPlace.Count();
 			var treasureLocationsCount = AllValidItemLocations.Count() - reserved + 1; // add 1 because we have the shop item, but not the shop location
 
-			var treasureDifference = AllValidItemLocations.Count() - (workingTreasurePool.Count() + reserved);
+			var treasureDifference = AllValidItemLocations.Count() - (workingTreasurePool.Count() + reserved - 1);
 
 			if (treasureDifference > 0)
 			{
@@ -420,7 +396,7 @@ namespace FF1Lib
 			{
 				for (int i = 0; i < -treasureDifference; i++)
 				{
-					RemoveRandomWeightedItem(workingTreasurePool, rng, itemRankingDic);
+					RemoveRandomWeightedItem(workingTreasurePool, rng, ItemsQuality);
 				}
 			}
 
@@ -434,7 +410,7 @@ namespace FF1Lib
 
 				for (int i = 0; i < 32; i++)
 				{
-					RemoveRandomWeightedItem(workingTreasurePool, rng, itemRankingDic);
+					RemoveRandomWeightedItem(workingTreasurePool, rng, ItemsQuality);
 				}
 			}
 			else
@@ -665,5 +641,7 @@ namespace FF1Lib
 		public IEnumerable<Item> TreasurePool { get; private set; }
 		public IEnumerable<Item> Shards { get; private set; }
 		public IEnumerable<Item> ExcludedItemsFromShops { get; private set; }
+		public Dictionary<MapLocation, int> WeightedFloors { get; private set; }
+		public Dictionary<Item, ItemQuality> ItemsQuality { get; private set; }
 	}
 }

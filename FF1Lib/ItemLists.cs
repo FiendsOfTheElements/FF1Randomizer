@@ -144,6 +144,14 @@
 				.Where(x => x >= Item.Gold5000 && x <= Item.Gold65000)
 				.ToList();
 
+		public static readonly IReadOnlyCollection<Item> UnusedGoldItems =
+			new List<Item>
+			{
+				Item.Gold25, Item.Gold30, Item.Gold55, Item.Gold70, Item.Gold85, Item.Gold135,
+				Item.Gold240, Item.Gold255, Item.Gold260, Item.Gold300, Item.Gold315, Item.Gold350,
+				Item.Gold530, Item.Gold9300, Item.Gold14050, Item.Gold14720, Item.Gold15000,
+				Item.Gold17490, Item.Gold19990, Item.Gold20000, Item.Gold20010
+			};
 
 		public static readonly IReadOnlyCollection<Item> AllMagicItem =
 			new List<Item> {
@@ -157,65 +165,5 @@
 				.Cast<byte>()
 				.ToDictionary(x => x,
 							  x => Enum.GetName(typeof(Item), x));
-
-		public static List<Item> GetIncentivePool(Flags flags)
-		{
-			var incentivePool = new List<Item>();
-
-			if (flags.IncentivizeMasamune ?? false) incentivePool.Add(Item.Masamune);
-			if (flags.IncentivizeKatana ?? false) incentivePool.Add(Item.Katana);
-			if (flags.IncentivizeVorpal ?? false) incentivePool.Add(Item.Vorpal);
-			if (flags.IncentivizeDefCastWeapon ?? false) incentivePool.Add(Item.Defense);
-			if (flags.IncentivizeOffCastWeapon ?? false) incentivePool.Add(Item.ThorHammer);
-			if (flags.IncentivizeOpal ?? false) incentivePool.Add(Item.Opal);
-			if (flags.IncentivizeOtherCastArmor ?? false) incentivePool.Add(Item.PowerGauntlets);
-			if (flags.IncentivizePowerRod ?? false) incentivePool.Add(Item.PowerRod);
-			if (flags.IncentivizeDefCastArmor ?? false) incentivePool.Add(Item.WhiteShirt);
-			if (flags.IncentivizeOffCastArmor ?? false) incentivePool.Add(Item.BlackShirt);
-			if (flags.IncentivizeRibbon ?? false) incentivePool.Add(Item.Ribbon);
-			if (flags.IncentivizeSlab ?? false) incentivePool.Add(Item.Slab);
-			if (flags.IncentivizeRuby ?? false) incentivePool.Add(Item.Ruby);
-			if (flags.IncentivizeFloater ?? false) incentivePool.Add(Item.Floater);
-			if (flags.IncentivizeTnt ?? false) incentivePool.Add(Item.Tnt);
-			if (flags.IncentivizeCrown ?? false) incentivePool.Add(Item.Crown);
-			if (flags.IncentivizeTail ?? false) incentivePool.Add(Item.Tail);
-			if (flags.IncentivizeAdamant ?? false) incentivePool.Add(Item.Adamant);
-
-			if (flags.IncentivizeBridge ?? false) incentivePool.Add(Item.Bridge);
-			if (flags.IncentivizeLute ?? false) incentivePool.Add(Item.Lute);
-			if (flags.IncentivizeShip ?? false) incentivePool.Add(Item.Ship);
-			if (flags.IncentivizeRod ?? false) incentivePool.Add(Item.Rod);
-			if (flags.IncentivizeCanoe ?? false) incentivePool.Add(Item.Canoe);
-			if (flags.IncentivizeCube ?? false) incentivePool.Add(Item.Cube);
-			if (flags.IncentivizeBottle ?? false) incentivePool.Add(Item.Bottle);
-
-			if (flags.IncentivizeKey ?? false) incentivePool.Add(Item.Key);
-			if (flags.IncentivizeCrystal ?? false) incentivePool.Add(Item.Crystal);
-			if (flags.IncentivizeOxyale ?? false) incentivePool.Add(Item.Oxyale);
-			if (flags.IncentivizeCanal ?? false) incentivePool.Add(Item.Canal);
-			if (flags.IncentivizeHerb ?? false) incentivePool.Add(Item.Herb);
-			if (flags.IncentivizeChime ?? false) incentivePool.Add(Item.Chime);
-			if (flags.IncentivizeXcalber ?? false) incentivePool.Add(Item.Xcalber);
-
-			return incentivePool.Concat(ItemLists.AllQuestItems).Distinct().ToList();
-		}
-
-		public static List<string> GetIncentiveChests(Flags flags)
-		{
-			var incentivizedChests = new List<string>();
-
-			if (flags.IncentivizeEarth ?? false) incentivizedChests.Add(ItemLocations.EarthCaveMajor.Name);
-			if (flags.IncentivizeIceCave ?? false) incentivizedChests.Add(ItemLocations.IceCaveMajor.Name);
-			if (flags.IncentivizeMarsh ?? false) incentivizedChests.Add(ItemLocations.MarshCaveMajor.Name);
-			if (flags.IncentivizeMarshKeyLocked ?? false) incentivizedChests.Add(ItemLocations.MarshCave13.Name);
-			if (flags.IncentivizeOrdeals ?? false) incentivizedChests.Add(ItemLocations.OrdealsMajor.Name);
-			if (flags.IncentivizeSeaShrine ?? false) incentivizedChests.Add(ItemLocations.SeaShrineMajor.Name);
-			if (flags.IncentivizeSkyPalace ?? false) incentivizedChests.Add(ItemLocations.SkyPalaceMajor.Name);
-			if (flags.IncentivizeTitansTrove ?? false) incentivizedChests.Add(ItemLocations.TitansTunnel1.Name);
-			if (flags.IncentivizeVolcano ?? false) incentivizedChests.Add(ItemLocations.VolcanoMajor.Name);
-			if (flags.IncentivizeConeria ?? false) incentivizedChests.Add(ItemLocations.ConeriaMajor.Name);
-
-			return incentivizedChests;
-		}
 	}
 }

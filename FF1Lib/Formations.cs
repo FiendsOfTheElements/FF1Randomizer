@@ -49,6 +49,12 @@ namespace FF1Lib
 		{
 			return formations.Select(z => z.Formations.ToList()).ToList();
 		}
+		public void SwapDomains(int from, int to)
+		{
+			var tmp = formations[to];
+			formations[to] = new ZoneFormation() { Index = formations[from].Index, Formations = formations[from].Formations };
+			formations[from] = new ZoneFormation() { Index = tmp.Index, Formations = tmp.Formations };
+		}
 		public void ReplaceEncounter(byte originalencounter, byte newencounter)
 		{
 			foreach (var formation in formations)

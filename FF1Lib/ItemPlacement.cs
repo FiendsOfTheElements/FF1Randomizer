@@ -144,8 +144,18 @@ namespace FF1Lib
 
 					if (randomizeTreasureMode == RandomizeTreasureMode.DeepDungeon && flags.DeepDungeonGenerator == DeepDungeonGeneratorMode.Progressive)
 					{
-						// rewrite this
-						//placedItems.AddRange(normalTreasures);
+						itemLocationPool = itemLocationPool.OrderBy(l => placementContext.WeightedFloors.TryGetValue(l.MapLocation, out var result) ? result : 0).ToList();
+						treasurePool.Shuffle(rng);
+						treasurePool = treasurePool.OrderBy(t => placementContext.ItemsQuality.TryGetValue(t, out var quality) ? quality : 0).ToList();
+
+						foreach (var location in itemLocationPool)
+						{
+							var itemRange = treasurePool.GetRange(0, Math.Min(20, treasurePool.Count)).ToList();
+							var selectedItem = itemRange.PickRandom(rng);
+
+							placedItems.Add(NewItemPlacement(location, selectedItem));
+							treasurePool.Remove(selectedItem);
+						}
 					}
 					else
 					{

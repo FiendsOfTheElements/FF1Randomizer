@@ -28,13 +28,15 @@ namespace FF1Lib
 		TreasureData treasureData;
 		ItemPrices itemPrices;
 		ItemNames itemNames;
+		List<IRewardSource> placedItems;
 
-		public ExpChests(FF1Rom _rom, Flags _flags, MT19337 _rng)
+		public ExpChests(List<IRewardSource> _placedItems, FF1Rom _rom, Flags _flags, MT19337 _rng)
 		{
 			rom = _rom;
 			flags = _flags;
 			rng = _rng;
 
+			placedItems = _placedItems;
 			treasureData = new TreasureData(rom);
 			itemPrices = new ItemPrices(rom);
 		}
@@ -45,7 +47,9 @@ namespace FF1Lib
 
 			int expChestCountPercent = rng.Between(flags.ExpChestConversionMin, flags.ExpChestConversionMax);
 
-			int expChestCount = treasureData.Data.Where(g => g >= Item.Gold10).Count() * expChestCountPercent / 100;
+			var goldChests = placedItems.Where(g => g.Item >= Item.Gold10 && g.Item <= Item.Gold65000 && g.GetType() == typeof(TreasureChest)).Select(g => g.Item).ToList();
+			int expChestCount = goldChests.Count() * expChestCountPercent / 100;
+			//int expChestCount = treasureData.Data.Where(g => g >= Item.Gold10).Count() * expChestCountPercent / 100;
 			double lowScale = (double)flags.ExpChestMinReward / (double)BaseExp;
 			double highScale = (double)flags.ExpChestMaxReward / (double)BaseExp;
 
@@ -53,14 +57,14 @@ namespace FF1Lib
 
 			LoadData();
 
-			var unusedGoldDic = new HashSet<int>(rom.UnusedGoldItems.Cast<int>());
+			var unusedGoldDic = new HashSet<int>(ItemLists.UnusedGoldItems.Select(x => (int)x));
 
 			// construct a dictionary and get a shuffled index into it.
 			var goldItems = ItemLists.AllGoldTreasure.Select(g => (item: g, price: itemPrices[g], name: itemNames[(int)g])).ToList();
 			goldItems.Shuffle(rng);
 			var goldItemsDic = goldItems.Select((g, i) => (shuffleindex: i, item: g.item, price: g.price, name: g.name)).ToDictionary(g => g.item);
 
-			var expItems = new HashSet<Item>(treasureData.Data
+			var expItems = new HashSet<Item>(goldChests
 				.Where(g => goldItemsDic.ContainsKey(g) &&  !unusedGoldDic.Contains((int)g))
 				.Select(g => (item: g, shuffleindex: goldItemsDic[g].shuffleindex))
 				.OrderBy(g => g.shuffleindex)
@@ -113,7 +117,7 @@ namespace FF1Lib
 
 			LoadData();
 
-			var unusedGoldDic = new HashSet<int>(rom.UnusedGoldItems.Cast<int>());
+			var unusedGoldDic = new HashSet<int>(ItemLists.UnusedGoldItems.Cast<int>());
 
 			// construct a dictionary and get a shuffled index into it.
 			var goldItems = ItemLists.AllGoldTreasure.Select(g => (item: g, price: itemPrices[g], name: itemNames[(int)g])).ToList();
@@ -245,9 +249,19 @@ namespace FF1Lib
 							.ToDictionary(x => x.oldId, x => x.newId);
 			*/
 
-			for (int i = 0; i < treasureData.Data.Length; i++)
+			for (int i = 0; i < placedItems.Count; i++)
 			{
-				if (repackDic.TryGetValue(treasureData[i], out var newId)) treasureData[i] = newId;
+				if (repackDic.TryGetValue(placedItems[i].Item, out var newId))
+				{
+					if (placedItems[i].GetType() == typeof(TreasureChest))
+					{
+						placedItems[i] = new TreasureChest(placedItems[i], newId);
+					}
+					else if (placedItems[i].GetType() == typeof(NpcReward))
+					{
+						placedItems[i] = new NpcReward(placedItems[i], newId);
+					}
+				}
 			}
 
 			var firstExpItem = (Item)176;
@@ -265,14 +279,14 @@ namespace FF1Lib
 		private void LoadData()
 		{
 			itemPrices.LoadTable();
-			treasureData.LoadTable();
+			//treasureData.LoadTable();
 			itemNames = rom.ItemsText;
 		}
 
 		private void StoreData()
 		{
 			itemPrices.StoreTable();
-			treasureData.StoreTable();
+			//treasureData.StoreTable();
 		}
 	}
 }
