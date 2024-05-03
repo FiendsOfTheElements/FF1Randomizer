@@ -22,6 +22,7 @@ namespace FF1Lib
 		private OwLocationData locations;
 		private ShipLocations shipLocations;
 		private DomainData domains;
+		private ZoneFormations zoneFormations;
 		private TileSet owTileSet;
 
 		private Flags flags;
@@ -36,7 +37,7 @@ namespace FF1Lib
 		public OverworldMap OverworldMap { get => overworldMap; }
 		public OwLocationData Locations { get => locations; }
 		public ShipLocations ShipLocations { get => shipLocations; }
-		public Overworld(FF1Rom _rom, Flags _flags, Settings _settings, MT19337 _rng)
+		public Overworld(FF1Rom _rom, Flags _flags, ZoneFormations _zoneFormations, Settings _settings, MT19337 _rng)
 		{
 			flags = _flags;
 			rom = _rom;
@@ -45,8 +46,9 @@ namespace FF1Lib
 			locations = new OwLocationData(rom);
 			overworldMap = new OverworldMap(rom, flags);
 			domains = new DomainData(rom);
+			zoneFormations = _zoneFormations;
 			owTileSet = new TileSet(rom, 0xFF);
-			domains.LoadTable();
+			//domains.LoadTable();
 			//owMapExchange = new(rom, );
 			//locations = new OwLocationData(_rom);
 			shipLocations = OwMapExchange.GetDefaultShipLocations(locations);
@@ -57,7 +59,7 @@ namespace FF1Lib
 		}
 		public void Write()
 		{
-			domains.StoreTable();
+			//domains.StoreTable();
 			locations.StoreData();
 			owTileSet.StoreData();
 			rom.PutInBank(lut_BtlBackdrops_Bank, lut_BtlBackdrops, BattleBackdrops.Select(b => (byte)b).ToArray());
@@ -88,7 +90,7 @@ namespace FF1Lib
 
 			locations.GetFrom(owdata.Data);
 
-			owdata.UpdateDomains(domains);
+			owdata.UpdateDomains(zoneFormations);
 		}
 		public void Update(Settings settings)
 		{

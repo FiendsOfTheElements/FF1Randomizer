@@ -613,11 +613,11 @@ namespace FF1Lib
 		{
 			return new List<string>(_itemsTexts);
 		}
-		public void Write(FF1Rom rom, List<int> unusedGoldItems)
+		public void Write(FF1Rom rom, List<Item> unusedGoldItems)
 		{
 			foreach (var golditem in unusedGoldItems)
 			{
-				_itemsTexts[golditem] = "";
+				_itemsTexts[(int)golditem] = "";
 			}
 
 			var duplicates = _itemsTexts.GroupBy(x => x)

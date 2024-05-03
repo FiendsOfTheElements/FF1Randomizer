@@ -20,13 +20,13 @@ namespace FF1Lib
 		Flags originalFlags;
 		Preferences preferences;
 		ExpChests expChests;
-		IncentiveData incentivesData;
+		PlacementContext incentivesData;
 		OwLocationData locations;
 		Blob seed;
 
 		public string Json { get; private set; }
 
-		public Archipelago(FF1Rom _rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, ExpChests _expChests, IncentiveData _incentivesData, OwLocationData _locations, Blob _seed, Flags _flags, Flags _originflags, Preferences _preferences)
+		public Archipelago(FF1Rom _rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, ExpChests _expChests, PlacementContext _incentivesData, OwLocationData _locations, Blob _seed, Flags _flags, Flags _originflags, Preferences _preferences)
 		{
 			rom = _rom;
 			expChests = _expChests;

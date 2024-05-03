@@ -51,7 +51,7 @@ namespace FF1Lib
 
 		private List<List<Item>> _pool;
 
-		public ItemGenerator(List<Item> seedPool, List<int> unusedGoldItems, List<Item> removedItems, WorldWealthMode wealth)
+		public ItemGenerator(List<Item> seedPool, List<Item> unusedGoldItems, List<Item> removedItems, WorldWealthMode wealth)
 		{
 			// Make a copy
 			var treasurePool = seedPool.ToList();
@@ -67,7 +67,7 @@ namespace FF1Lib
 				ItemLists.CommonWeaponTier.ToList(),
 				ItemLists.CommonArmorTier.ToList(),
 				ItemLists.AllConsumables.ToList(),
-				ItemLists.AllGoldTreasure.Where(x => !unusedGoldItems.Contains((int)x)).ToList(),
+				ItemLists.AllGoldTreasure.Where(x => !unusedGoldItems.Contains(x)).ToList(),
 			};
 
 			List<int> ratios = RelativeRatios[(int)wealth].ToList();
@@ -124,7 +124,7 @@ namespace FF1Lib
 
 		private List<List<Item>> _pool;
 
-		public ShopItemGenerator(List<Item> seedPool, List<int> unusedGoldItems, List<Item> removedItems)
+		public ShopItemGenerator(List<Item> seedPool, List<Item> unusedGoldItems, List<Item> removedItems)
 		{
 			// Make a copy
 			var treasurePool = seedPool.Where(x => !removedItems.Contains(x)).ToList();
@@ -140,7 +140,7 @@ namespace FF1Lib
 				ItemLists.CommonWeaponTier.Where(item => treasurePool.Remove(item)).ToList(),
 				ItemLists.CommonArmorTier.Where(item => treasurePool.Remove(item)).ToList(),
 				ItemLists.AllConsumables.Where(item => treasurePool.Remove(item)).ToList(),
-				ItemLists.AllGoldTreasure.Where(x => !unusedGoldItems.Contains((int)x)).Where(item => treasurePool.Remove(item)).ToList(),
+				ItemLists.AllGoldTreasure.Where(x => !unusedGoldItems.Contains(x)).Where(item => treasurePool.Remove(item)).ToList(),
 			};
 
 			List<int> ratios = Ratios;
