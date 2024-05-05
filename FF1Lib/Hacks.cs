@@ -12,8 +12,19 @@ namespace FF1Lib
 		public const int MapSpriteSize = 3;
 		public const int MapSpriteCount = 16;
 
+		private void MiscHacks(Flags flags, MT19337 rng)
+		{
+			EnableCanalBridge((bool)flags.MapCanalBridge);
+		}
+
+
 		public void EnableSaveOnDeath(Flags flags, Overworld overworld)
 		{
+			if (!flags.SaveGameWhenGameOver)
+			{
+				return;
+			}
+
 			// rewrite rando's GameOver routine to jump to a new section that will save the game data
 			PutInBank(0x1B, 0x801A, Blob.FromHex("4CF58F"));
 
@@ -178,38 +189,13 @@ namespace FF1Lib
 		/// <summary>
 		/// Unused method, but this would allow a non-npc shuffle king to build bridge without rescuing princess
 		/// </summary>
-		public void EnableFreeBridge()
+		public void EnableCanalBridge(bool enable)
 		{
-			// Set the default bridge_vis byte on game start to true. It's a mother beautiful bridge - and it's gonna be there.
-			Data[0x3008] = 0x01;
-		}
+			if (!enable)
+			{
+				return;
+			}
 
-		public void EnableFreeShip()
-		{
-			Data[0x3000] = 1;
-			Data[0x3001] = 152;
-			Data[0x3002] = 169;
-		}
-
-		public void EnableFreeAirship()
-		{
-			Data[0x3004] = 1;
-			Data[0x3005] = 153;
-			Data[0x3006] = 165;
-		}
-
-		public void EnableFreeCanal(bool npcShuffleEnabled)
-		{
-			Data[0x300C] = 0;
-		}
-
-		public void EnableFreeCanoe()
-		{
-			Data[0x3012] = 0x01;
-		}
-
-		public void EnableCanalBridge()
-		{
 			// Inline edit to draw the isthmus or the bridge, but never the open canal anymore.
 			// See 0F_8780_IsOnEitherBridge for this and the IsOnBridge replacement called from below.
 			Put(0x7E3B8, Blob.FromHex("20CEE3AE0D60AC0E6020DFE3B0DFA908AE0C60F0010A"));
@@ -230,20 +216,6 @@ namespace FF1Lib
 				RTS
 			**/
 			Put(0x7C64D, Blob.FromHex("ADFC6048A90F2003FE20808768082003FE2860"));
-		}
-		public void EnableFreeLute()
-		{
-			Data[0x3020 + (int)Item.Lute] = 0x01;
-		}
-
-		public void EnableFreeRod()
-		{
-			Data[0x3020 + (int)Item.Rod] = 0x01;
-		}
-
-		public void EnableFreeTail()
-		{
-			Data[0x3020 + (int)Item.Tail] = 0x01;
 		}
 		public void EnableAirBoat(bool freeAirship, bool freeShip)
 		{
@@ -291,6 +263,11 @@ namespace FF1Lib
 
 		public void XpAdmissibility(bool nonesGainXp, bool deadsGainXp)
 		{
+			if (!nonesGainXp && !deadsGainXp)
+			{
+				return;
+			}
+
 			// New routine to see if character can get XP LvlUp_AwardExp
 			if (nonesGainXp && !deadsGainXp)
 			{
@@ -643,6 +620,11 @@ namespace FF1Lib
 
 		public void SetRNG(Flags flags)
 		{
+			if (!flags.SetRNG)
+			{
+				return;
+			}
+
 			//see 1B_9900_SetRNG.asm for details
 			//take into consideration if disable music is on:
 			//had to move the battle prep function which included loading the music track

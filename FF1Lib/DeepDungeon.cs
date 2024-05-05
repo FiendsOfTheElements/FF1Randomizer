@@ -22,79 +22,19 @@ namespace FF1Lib
 		[Description("Chaotic")]
 		Chaotic,
 	}
-
-	public class DeepDungeonItemGenerator : IItemGenerator
+	public static class FloorsWeightSelector
 	{
-		private List<IRewardSource> _chestList;
-		private List<IRewardSource> _placedItems;
-		private Dictionary<MapLocation, int> _floorsWeight;
-		private List<Treasure> treasures = new List<Treasure>();
-		private FF1Rom _rom;
-		private int _currentChest;
-		private List<Item> potionspinner0 = new List<Item>()
-			{
-				Item.Heal, Item.Pure, Item.Soft
-			};
-		private List<Item> potionspinner1 = new List<Item>()
-			{
-				Item.Heal, Item.Heal, Item.Heal, Item.Heal,
-				Item.Pure, Item.Pure, Item.Pure,
-				Item.Soft
-			};
-		private List<Item> potionspinner2 = new List<Item>()
-			{
-				Item.Pure, Item.Pure, Item.Pure, Item.Pure,
-				Item.Heal, Item.Heal, Item.Heal,
-				Item.Soft
-			};
-		private List<Item> potionspinner3 = new List<Item>()
-			{
-				Item.Soft, Item.Soft, Item.Soft, Item.Soft,
-				Item.Pure, Item.Pure, Item.Pure,
-				Item.Heal
-			};
-
-		private struct Treasure
+		public static Dictionary<MapLocation, int> GetWeights(List<IRewardSource> chestList, Flags flags)
 		{
-			public int value;
-			public byte index;
+			Dictionary<MapLocation, int> weightedFloors = new();
 
-			public Treasure(int v, byte id)
+			if (flags.GameMode == GameModes.DeepDungeon)
 			{
-				value = v;
-				index = id;
-				if (index == (byte)Item.WhiteShirt || index == (byte)Item.BlackShirt || index == (byte)Item.Ribbon)
-				{
-					value = 50000;
-				}
-			}
-		}
-
-		public int RollDice(MT19337 rng, int dice, int sides)
-		{
-			// Roll a number of dice and add up their results.
-			int result = 0;
-			for (int i = 0; i < dice; i++)
-			{
-				result += rng.Between(1, sides);
-			}
-			return result;
-		}
-
-		public DeepDungeonItemGenerator(List<IRewardSource> chestList, List<int> unusedGoldItems, List<Item> removedItems, List<IRewardSource> placedItems, bool deepDungeonEnabled, bool etherizerEnabled, FF1Rom rom)
-		{
-			_placedItems = placedItems;
-			_chestList = chestList;
-			_rom = rom;
-			_currentChest = 0;
-
-			if (deepDungeonEnabled)
-			{
-				_floorsWeight = Enumerable.Range(0, (int)chestList.OrderByDescending(x => x.MapLocation).First().MapLocation + 1).Select(x => ((MapLocation)x, x)).ToDictionary(x => x.Item1, x => x.Item2);
+				weightedFloors = Enumerable.Range(0, (int)chestList.OrderByDescending(x => x.MapLocation).First().MapLocation + 1).Select(x => ((MapLocation)x, x)).ToDictionary(x => x.Item1, x => x.Item2);
 			}
 			else
 			{
-				_floorsWeight = new()
+				weightedFloors = new()
 				{
 					{ MapLocation.StartingLocation, 0 },
 					{ MapLocation.AirshipLocation, 0 },
@@ -193,6 +133,80 @@ namespace FF1Lib
 				};
 			}
 
+			return weightedFloors;
+		}
+	}
+
+	public class DeepDungeonItemGenerator : IItemGenerator
+	{
+		private List<IRewardSource> _chestList;
+		private List<IRewardSource> _placedItems;
+		private Dictionary<MapLocation, int> _floorsWeight;
+		private List<Treasure> treasures = new List<Treasure>();
+		private List<int> _priceList;
+		//private FF1Rom _rom;
+		private int _currentChest;
+		private List<Item> potionspinner0 = new List<Item>()
+			{
+				Item.Heal, Item.Pure, Item.Soft
+			};
+		private List<Item> potionspinner1 = new List<Item>()
+			{
+				Item.Heal, Item.Heal, Item.Heal, Item.Heal,
+				Item.Pure, Item.Pure, Item.Pure,
+				Item.Soft
+			};
+		private List<Item> potionspinner2 = new List<Item>()
+			{
+				Item.Pure, Item.Pure, Item.Pure, Item.Pure,
+				Item.Heal, Item.Heal, Item.Heal,
+				Item.Soft
+			};
+		private List<Item> potionspinner3 = new List<Item>()
+			{
+				Item.Soft, Item.Soft, Item.Soft, Item.Soft,
+				Item.Pure, Item.Pure, Item.Pure,
+				Item.Heal
+			};
+
+		private struct Treasure
+		{
+			public int value;
+			public byte index;
+
+			public Treasure(int v, byte id)
+			{
+				value = v;
+				index = id;
+				if (index == (byte)Item.WhiteShirt || index == (byte)Item.BlackShirt || index == (byte)Item.Ribbon)
+				{
+					value = 50000;
+				}
+			}
+		}
+
+		public int RollDice(MT19337 rng, int dice, int sides)
+		{
+			// Roll a number of dice and add up their results.
+			int result = 0;
+			for (int i = 0; i < dice; i++)
+			{
+				result += rng.Between(1, sides);
+			}
+			return result;
+		}
+
+		public DeepDungeonItemGenerator(List<IRewardSource> chestList, List<Item> unusedGoldItems, List<Item> removedItems, List<IRewardSource> placedItems, Dictionary<MapLocation, int> weightedFloors, List<int> priceList, bool deepDungeonEnabled, bool etherizerEnabled)
+		{
+			_placedItems = placedItems;
+			_chestList = chestList;
+			//_rom = rom;
+			_priceList = priceList;
+			_currentChest = 0;
+
+			_floorsWeight = weightedFloors;
+
+
 			// The shelters are placeholders for ethers.
 			// It will only include those if the ether flag is checked.
 			if (etherizerEnabled)
@@ -214,17 +228,19 @@ namespace FF1Lib
 			// set the price scaling to whatever you want without having to worry about if you made
 			// something cost 2 GP and thus end up in late game chests the way the standalone
 			// executable version does.
-			var v = _rom.Get(0x37C00, 0x200).Chunk(2);
+			//var v = _rom.Get(0x37C00, 0x200).ToUShorts().Chunk(2);
+
 			// People have been getting some kind of blank key item in chests on or near the final
 			// floor. I suspect there's an off-by-one error somewhere, hopefully this was it?
 			//for (int i = 0x1C; i < 0xAF; i++)
 			for (int i = 0x1C; i < 0xAE; i++)
 			{
-				treasures.Add(new Treasure(v[i][0] + v[i][1] * 0x100, (byte)i));
+				//treasures.Add(new Treasure(v[i][0] + v[i][1] * 0x100, (byte)i));
+				treasures.Add(new Treasure(_priceList[i], (byte)i));
 			}
 			foreach (var golditem in unusedGoldItems)
 			{
-				treasures.RemoveAll(x => x.index == golditem);
+				treasures.RemoveAll(x => x.index == (int)golditem);
 			}
 			foreach (var removeitem in removedItems)
 			{
@@ -1313,15 +1329,18 @@ namespace FF1Lib
 				}
 			}
 		}
-		public List<IRewardSource> ShuffleTreasures(Flags flags, IncentiveData incentiveData, MT19337 rng)
+		public List<IRewardSource> ShuffleTreasures(Flags flags, PlacementContext incentiveData, MT19337 rng)
 		{
+			int TreasureOffset = 0x03100;
+			int TreasureSize = 1;
+			int TreasureCount = 256;
 
 			List<IRewardSource> placedItems = new();
 
 			var treasureBlob = _rom.Get(TreasureOffset, TreasureSize * TreasureCount);
 			var treasurePool = UsedTreasureIndices.Select(x => (Item)treasureBlob[x])
 							.Concat(ItemLists.AllNonTreasureChestItems).Where(x => !ItemLists.AllQuestItems.Contains(x)).ToList();
-
+			var priceList = _rom.Get(0x37C00, 0x200).ToUShorts().Select(x => (int)x).ToList(); // Temprorary until we extract price
 			int shardsAdded = 0;
 
 			if (flags.ShardHunt)
@@ -1387,7 +1406,7 @@ namespace FF1Lib
 			// Fill pool with cabins to account for removed items
 			var locationCount = chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).Count();
 
-			if (locationCount > treasurePool.Count)
+			if (locationCount > treasurePool.Count())
 			{
 				treasurePool.AddRange(Enumerable.Repeat(Item.Heal, locationCount - treasurePool.Count()));
 			}
@@ -1403,11 +1422,13 @@ namespace FF1Lib
 				// add all the other stuff that you can't find in vanilla.
 				if (randomizeTreasureMode == RandomizeTreasureMode.DeepDungeon)
 				{
-					generator = new DeepDungeonItemGenerator(chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList(), _rom.UnusedGoldItems, incentiveData.RemovedItems.ToList(), normalTreasures, (flags.GameMode == GameModes.DeepDungeon), flags.Etherizer, _rom);
+					var validchests = chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+
+					generator = new DeepDungeonItemGenerator(chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList(), ItemLists.UnusedGoldItems.ToList(), incentiveData.RemovedItems.ToList(), normalTreasures, FloorsWeightSelector.GetWeights(validchests, flags), priceList, (flags.GameMode == GameModes.DeepDungeon), flags.Etherizer);
 				}
 				else
 				{
-					generator = new ItemGenerator(treasurePool.ToList(), _rom.UnusedGoldItems, incentiveData.RemovedItems.ToList(), flags.WorldWealth);
+					generator = new ItemGenerator(treasurePool.ToList(), ItemLists.UnusedGoldItems.ToList(), incentiveData.RemovedItems.ToList(), flags.WorldWealth);
 				}
 
 				treasurePool = treasurePool.Select(treasure => generator.GetItem(rng)).ToList();

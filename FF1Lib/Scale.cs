@@ -55,29 +55,7 @@ namespace FF1Lib
 		insane,
 	}
 
-	public enum StartingGold
-	{ 
-		[Description("0 GP")]
-		None,
-		[Description("100 GP")]
-		Gp100,
-		[Description("200 GP")]
-		Gp200,
-		[Description("400 GP (Vanilla)")]
-		Gp400,
-		[Description("800 GP")]
-		Gp800,
-		[Description("2500 GP")]
-		Gp2500,
-		[Description("9999 GP")]
-		Gp9999,
-		[Description("65,535 GP")]
-		Gp65535,
-		[Description("Random (0-800 GP)")]
-		RandomLow,
-		[Description("Random (0-65,535 GP)")]
-		RandomHigh,
-	}
+
 	public class EncounterRate
 	{
 		private const int ThreatLevelsOffset = 0x2CC01; // +1 because first entry is for overworld [unused]
@@ -234,22 +212,6 @@ namespace FF1Lib
 					Put(ShopPointerBase + pointers[i], priceBytes);
 				}
 			}
-
-			List<(StartingGold, ushort)> startingGold = new()
-			{
-				(StartingGold.None, 0),
-				(StartingGold.Gp100, 100),
-				(StartingGold.Gp200, 200),
-				(StartingGold.Gp400, 400),
-				(StartingGold.Gp800, 800),
-				(StartingGold.Gp2500, 2500),
-				(StartingGold.Gp9999, 9999),
-				(StartingGold.Gp65535, 65535),
-				(StartingGold.RandomLow, (ushort)rng.Between(0, 800)),
-				(StartingGold.RandomHigh, (ushort)rng.Between(0, 65535)),
-			};
-
-			Put(StartingGoldOffset, BitConverter.GetBytes(startingGold[(int)flags.StartingGold].Item2));
 		}
 
 		public int GetEvadeIntFromFlag(EvadeCapValues evadeCapFlag)
@@ -543,6 +505,33 @@ namespace FF1Lib
 			Data[0x7C04B] = firstLevelRequirement;
 		}
 
+		private void ScaleAllAltExp(Flags flags)
+		{
+			if (flags.ExpMultiplierFighter != 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierFighter, FF1Class.Fighter);
+			}
+			if (flags.ExpMultiplierThief != 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierThief, FF1Class.Thief);
+			}
+			if (flags.ExpMultiplierBlackBelt != 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierBlackBelt, FF1Class.BlackBelt);
+			}
+			if (flags.ExpMultiplierRedMage != 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierRedMage, FF1Class.RedMage);
+			}
+			if (flags.ExpMultiplierWhiteMage != 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierWhiteMage, FF1Class.WhiteMage);
+			}
+			if (flags.ExpMultiplierBlackMage != 1.0)
+			{
+				ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
+			}
+		}
 		public void ScaleAltExp(double scale, FF1Class characterClass)
 		{
 			int offset = LevelRequirementsOffset;

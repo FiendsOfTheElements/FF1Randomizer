@@ -1,5 +1,5 @@
 ﻿namespace FF1Lib
-{
+{/*
 	public class GuidedItemPlacement : ItemPlacement
 	{
 		protected override ItemPlacementResult DoSanePlacement(MT19337 rng, OwLocationData locations, ItemPlacementContext ctx)
@@ -238,5 +238,5 @@
 
 			return new ItemPlacementResult { PlacedItems = placedItems, RemainingTreasures = treasurePool };
 		}
-	}
+	}*/
 }

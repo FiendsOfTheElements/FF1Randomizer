@@ -304,6 +304,13 @@ namespace FF1Lib
 			//domains.StoreTable();
 			//locations.StoreData();
 		}
+		public void UpdateDomains(ZoneFormations domains)
+		{
+			ZoneFormations originalDomains = new ZoneFormations(rom);
+
+			if (data.DomainFixups != null) foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
+			if (data.DomainUpdates != null) foreach (var df in data.DomainUpdates) domains[df.To] = originalDomains[df.From];
+		}
 
 		private static OwMapExchangeData LoadJson(string _name)
 		{

@@ -1,4 +1,5 @@
 using FF1Lib.Procgen;
+using RomUtilities;
 namespace FF1Lib;
 
 // ReSharper disable once InconsistentNaming
@@ -8,11 +9,9 @@ public partial class FF1Rom : NesRom
 	public const int LevelRequirementsSize = 3;
 	public const int LevelRequirementsCount = 49;
 
-	public const int StartingGoldOffset = 0x0301C;
-
 	public const int GoldItemOffset = 108; // 108 items before gold chests
 	public const int GoldItemCount = 68;
-	public List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
+	//public List<int> UnusedGoldItems = new List<int> { 110, 111, 112, 113, 114, 116, 120, 121, 122, 124, 125, 127, 132, 158, 165, 166, 167, 168, 170, 171, 172 };
 
 	public ItemNames ItemsText;
 	public GearPermissions ArmorPermissions;
@@ -25,6 +24,7 @@ public partial class FF1Rom : NesRom
 	public StandardMaps Maps;
 	public NpcObjectData NpcData;
 	public DialogueData Dialogues;
+	public StartingItems StartingItems;
 	//public ShipLocations ShipLocations;
 
 	public DeepDungeon DeepDungeon;
@@ -34,7 +34,7 @@ public partial class FF1Rom : NesRom
 	public Overworld Overworld;
 
 	private SanityCheckerV2 sanityChecker = null;
-	private IncentiveData incentivesData = null;
+	private PlacementContext PlacementContext = null;
 
 	private Blob SavedHash;
 	public Settings Settings;
@@ -86,7 +86,7 @@ public partial class FF1Rom : NesRom
 		RngTables = new(this);
 		TileSetsData = new(this);
 		ZoneFormations = new(this);
-		Overworld = new(this, flags, Settings, rng);
+		Overworld = new(this, flags, ZoneFormations, Settings, rng);
 		Overworld.LoadMapExchange();
 		//Settings.CollapseRandomSettings(rng);
 		//Settings.ProcessStandardFlags();
@@ -107,8 +107,7 @@ public partial class FF1Rom : NesRom
 		ClassesBalances(flags, rng);
 		Bugfixes(flags);
 		GlobalImprovements(flags, Maps, preferences);
-
-
+		MiscHacks(flags, rng);
 
 		EncounterRate encounterRate = new(this);
 
@@ -150,7 +149,6 @@ public partial class FF1Rom : NesRom
 		//Overworld.Update(Teleporters);
 
 		//var maps = ReadMaps();
-		var shopItemLocation = ItemLocations.CaravanItemShop1;
 		var oldItemNames = ItemsText.ToList();
 
 		DesertOfDeath.ApplyDesertModifications((bool)flags.DesertOfDeath, this, ZoneFormations, Overworld.Locations.StartingLocation, NpcData, Dialogues);
@@ -160,34 +158,20 @@ public partial class FF1Rom : NesRom
 		RngTables.Update(flags, rng);
 		//ZoneFormations.ShuffleEnemyFormations(rng, (FormationShuffleMode)Settings.GetInt("FormationShuffleMode"), Settings.GetBool("RandomizeFormationEnemizer") | Settings.GetBool("RandomizeEnemizer"));
 		ZoneFormations.ShuffleEnemyFormations(rng, flags.FormationShuffleMode, flags.EnemizerEnabled);
+		ZoneFormations.UnleashWarMECH(flags.WarMECHMode == WarMECHMode.Unleashed || flags.WarMECHMode == WarMECHMode.All);
+
 		//ZoneFormations.UnleashWarMECH((WarMECHMode)Settings.GetInt("WarMechMode") == WarMECHMode.Unleashed || (WarMECHMode)Settings.GetInt("WarMechMode") == WarMECHMode.All);
-		
+
 		Spooky(talkroutines, NpcData, Dialogues, ZoneFormations, Maps, rng, flags);
 
 		await this.Progress();
 		LoadResourcePackMaps(flags.ResourcePack, Maps, Teleporters);
 
 
-			if((bool)flags.OWDamageTiles || flags.DesertOfDeath)
-			{
-				EnableDamageTile();
-			}
-			if ((bool)flags.DamageTilesKill)
-			{
-				DamageTilesKill(flags.SaveGameWhenGameOver);
-			}
+		// TileSet stuff?
 
-			if ((bool)flags.ArmorResistsDamageTileDamage && !(bool)flags.ArmorCrafter)
-			{
-				EnableArmorDamageTileResist((bool)flags.DamageTilesKill);
-			}
 
-		// Adjustable lava damage - run if anything other than the default of 1 damage
-		if ((int)flags.DamageTileLow != 1 || (int)flags.DamageTileHigh != 1)
-			{
-				int DamageTileAmount = rng.Between(flags.DamageTileLow, flags.DamageTileHigh);
-				AdjustDamageTileDamage(DamageTileAmount, (bool)flags.DamageTilesKill, (bool)flags.ArmorResistsDamageTileDamage);
-			}
+		DamageTilesHack(flags, Overworld);
 
 		Maps.Update(ZoneFormations, rng);
 		UpdateToFR(Maps, Teleporters, TileSetsData, flags, rng);
@@ -197,10 +181,7 @@ public partial class FF1Rom : NesRom
 		//var restructuredMaps = new RestructuredMaps(this, maps, flags, Teleporters, rng);
 		//restructuredMaps.Process();
 
-		if ((bool)flags.RandomizeFormationEnemizer)
-		{
-			DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
-		}
+
 
 		await this.Progress();
 
@@ -216,7 +197,6 @@ public partial class FF1Rom : NesRom
 
 			DeepDungeon.Generate(rng, Overworld.OverworldMap, Teleporters, Dialogues, Maps.GetMapList(), flags);
 			DeepDungeonFloorIndicator();
-			UnusedGoldItems = new List<int> { };
 
 			await this.Progress("Generating Deep Dungeon's Floors... Done!");
 		}
@@ -225,16 +205,72 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		//must be done before spells get shuffled around otherwise we'd be changing a spell that isnt lock
-		if (flags.LockMode != LockHitMode.Vanilla)
+		if (((bool)flags.Treasures) && flags.ShardHunt)
 		{
-			ChangeLockMode(flags.LockMode);
+			EnableShardHunt(rng, talkroutines, Dialogues, flags.ShardCount, preferences.randomShardNames, new MT19337(funRng.Next()));
 		}
 
+		if (!flags.ShardHunt && (flags.GameMode != GameModes.DeepDungeon))
+		{
+			SetOrbRequirement(rng, talkroutines, Dialogues, flags.OrbsRequiredCount, flags.OrbsRequiredMode, (bool)flags.OrbsRequiredSpoilers);
+		}
+
+		await this.Progress();
+
+		encounterRate.ScaleEncounterRate(flags);
+
+		var shopData = new ShopData(this);
+		shopData.LoadData();
+
+		var extConsumables = new ExtConsumables(this, flags, rng, shopData);
+		extConsumables.AddNormalShopEntries();
+
+		Overworld.Update(Teleporters);
+
+		if(flags.NoOverworld) await this.Progress("Linking NoOverworld's Map", 1);
+		NoOverworld(Overworld.DecompressedMap, Maps, Teleporters, talkroutines, Dialogues, NpcData, flags, rng);
+
+		DraculasCurse(Overworld, Teleporters, rng, flags);
+
+		await this.Progress();
+
+		// NPC Stuff
+		ClassAsNPC(flags, talkroutines, NpcData, Dialogues, Maps, rng);
+		talkroutines.Update(flags);
+
+
+		// NOTE: logic checking for relocated chests
+		// accounts for NPC locations and whether they
+		// are fightable/killable, so it needs to
+		// happen after anything that adds, removes or
+		// relocates NPCs or changes their routines.
+		await new RelocateChests(this).RandomlyRelocateChests(rng, Maps, TileSetsData, Teleporters, NpcData, flags);
+
+		// Encounters
+
+		// Enemies
 		if ((bool)flags.AlternateFiends && !flags.SpookyFlag)
 		{
 			await this.Progress("Creating new Fiends", 1);
 			AlternativeFiends(rng, flags);
+		}
+
+		if (flags.TransformFinalFormation != FinalFormation.None && !flags.SpookyFlag)
+		{
+			TransformFinalFormation(flags.TransformFinalFormation, flags.EvadeCap, rng);
+		}
+
+		if ((bool)flags.RandomizeFormationEnemizer)
+		{
+			DoEnemizer(rng, (bool)flags.RandomizeEnemizer, (bool)flags.RandomizeFormationEnemizer, flags.EnemizerDontMakeNewScripts);
+		}
+
+
+		// Spells
+		//must be done before spells get shuffled around otherwise we'd be changing a spell that isnt lock
+		if (flags.LockMode != LockHitMode.Vanilla)
+		{
+			ChangeLockMode(flags.LockMode);
 		}
 
 		if (flags.BuffTier1DamageSpells)
@@ -254,12 +290,20 @@ public partial class FF1Rom : NesRom
 			CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
 		}
 
-		if ((bool)flags.Weaponizer) {
-		    Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers, flags.ItemMagicMode == ItemMagicMode.None);
+		if (flags.TranceHasStatusElement)
+		{
+			TranceHasStatusElement();
 		}
 
-		if ((bool)flags.ArmorCrafter) {
-		    ArmorCrafter(rng, flags.ItemMagicMode == ItemMagicMode.None, flags.RibbonMode == RibbonMode.Split);
+		// Create items
+		if ((bool)flags.Weaponizer)
+		{
+			Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers, flags.ItemMagicMode == ItemMagicMode.None);
+		}
+
+		if ((bool)flags.ArmorCrafter)
+		{
+			ArmorCrafter(rng, flags.ItemMagicMode == ItemMagicMode.None, flags.RibbonMode == RibbonMode.Split);
 		}
 
 		if (flags.ItemMagicMode != ItemMagicMode.None && flags.ItemMagicMode != ItemMagicMode.Vanilla)
@@ -281,192 +325,61 @@ public partial class FF1Rom : NesRom
 
 		new RibbonShuffle(this, rng, flags, ItemsText, ArmorPermissions).Work();
 
-		if (((bool)flags.Treasures) && flags.ShardHunt)
+
+		if (flags.WeaponCritRate)
 		{
-			EnableShardHunt(rng, talkroutines, Dialogues, flags.ShardCount, preferences.randomShardNames, new MT19337(funRng.Next()));
+			DoubleWeaponCritRates();
 		}
 
-		if (!flags.ShardHunt && (flags.GameMode != GameModes.DeepDungeon))
+		List<int> blursesValues = Enumerable.Repeat(0, 40).ToList();
+
+		//needs to go after item magic, moved after double weapon crit to have more control over the actual number of crit gained.
+		if ((bool)flags.RandomWeaponBonus)
 		{
-			SetOrbRequirement(rng, talkroutines, Dialogues, flags.OrbsRequiredCount, flags.OrbsRequiredMode, (bool)flags.OrbsRequiredSpoilers);
+			blursesValues = RandomWeaponBonus(rng, flags.RandomWeaponBonusLow, flags.RandomWeaponBonusHigh, (bool)flags.RandomWeaponBonusExcludeMasa, preferences.CleanBlursedEquipmentNames);
 		}
 
-		if (flags.TransformFinalFormation != FinalFormation.None && !flags.SpookyFlag)
+		if ((bool)flags.RandomArmorBonus)
 		{
-			TransformFinalFormation(flags.TransformFinalFormation, flags.EvadeCap, rng);
+			RandomArmorBonus(rng, flags.RandomArmorBonusLow, flags.RandomArmorBonusHigh, preferences.CleanBlursedEquipmentNames);
 		}
 
-		await this.Progress();
-
-		if ((bool)flags.IsBridgeFree && (!flags.DesertOfDeath))
+		if (flags.WeaponBonuses)
 		{
-			EnableFreeBridge();
+			IncreaseWeaponBonus(flags.WeaponTypeBonusValue);
 		}
 
-		if ((bool)flags.IsAirshipFree)
+		if (flags.Etherizer)
 		{
-			EnableFreeAirship();
+			Etherizer();
+			ItemsText[(int)Item.Tent] = "ETHR@p";
+			ItemsText[(int)Item.Cabin] = "DRY@p ";
+			ItemsText[(int)Item.House] = "XETH@p";
 		}
 
-		if ((bool)flags.IsShipFree)
-		{
-				EnableFreeShip();
-		}
-
-		if ((bool)flags.IsCanalFree)
-		{
-			EnableFreeCanal((bool)flags.NPCItems);
-		}
-
-		await this.Progress();
-
-		if ((bool)flags.IsCanoeFree)
-		{
-			EnableFreeCanoe();
-		}
-
-		if ((bool)flags.FreeLute)
-		{
-			EnableFreeLute();
-		}
-
-		if ((bool)flags.FreeTail && !(bool)flags.NoTail)
-		{
-			EnableFreeTail();
-		}
-
-		if ((bool)flags.FreeRod)
-		{
-			EnableFreeRod();
-		}
-
-		encounterRate.ScaleEncounterRate(flags);
-
-		var shopData = new ShopData(this);
-		shopData.LoadData();
-
-		var extConsumables = new ExtConsumables(this, flags, rng, shopData);
-		extConsumables.AddNormalShopEntries();
-
-		Overworld.Update(Teleporters);
-
-		if(flags.NoOverworld) await this.Progress("Linking NoOverworld's Map", 1);
-		NoOverworld(Overworld.DecompressedMap, Maps, Teleporters, talkroutines, Dialogues, NpcData, flags, rng);
-
-		DraculasCurse(Overworld, Teleporters, rng, flags);
-
-		await this.Progress();
-
-		// NPC Stuff
-		ClassAsNPC(flags, talkroutines, NpcData, Dialogues, Maps, rng);
+		// Starting Inventory
+		StartingItems = new StartingItems(new() { }, rng, flags, this);
 
 
-		// NOTE: logic checking for relocated chests
-		// accounts for NPC locations and whether they
-		// are fightable/killable, so it needs to
-		// happen after anything that adds, removes or
-		// relocates NPCs or changes their routines.
+		// Shop stuff
 
-		await new RelocateChests(this).RandomlyRelocateChests(rng, Maps, TileSetsData, Teleporters, NpcData, flags);
 
-		//EnterTeleData enterBackup = new EnterTeleData(this);
-		//NormTeleData normBackup = new NormTeleData(this);
+		// Placement Context
+		var priceList = Get(0x37C00, 0x200).ToUShorts().Select(x => (int)x).ToList(); // Temprorary until we extract price
+		PlacementContext = new PlacementContext(StartingItems, new() { }, priceList, rng, flags);
 
-		//enterBackup.LoadData();
-		//normBackup.LoadData();
+		// ShopSlot should be managed by shop class, right? Maybe, probably, we'll know for sure with Shop Class
+		PlacementContext.ShopSlot = ShuffleShops(rng, (bool)flags.Shops, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), PlacementContext.ExcludedItemsFromShops, flags.WorldWealth, Overworld.OverworldMap.ConeriaTownEntranceItemShopIndex);
 
-		var maxRetries = 3;
-		for (var i = 0; i < maxRetries; i++)
-		{
-			try
-			{
-				await this.Progress((bool)flags.Treasures ? "Shuffling Treasures - Retries: " + i : "Placing Treasures", 3);
 
-				//enterBackup.StoreData();
-				//normBackup.StoreData();
+		// Sanity + Actual Placement
+		sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, this, PlacementContext.ShopSlot);
+		if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags).Complete) throw new InsaneException("Not Completable");
 
-				//overworldMap = new OverworldMap(this, flags);
-				//overworldMap.Teleporters = teleporters;
-				/*
-				if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && flags.GameMode == GameModes.Standard)
-				{
-					overworldMap.ShuffleEntrancesAndFloors(rng, flags);
-				}*/
+		await this.Progress((bool)flags.Treasures ? "Shuffling Treasures" : "Placing Treasures", 1);
 
-				// Disable the Princess Warp back to Castle Coneria
-				if ((bool)flags.Entrances || (bool)flags.Floors || (flags.GameMode == GameModes.Standard && flags.OwMapExchange != OwMapExchanges.None) || (flags.OrbsRequiredCount == 0 && !flags.ShardHunt))
-					talkroutines.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
-				/*
-				if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && (flags.GameMode != GameModes.DeepDungeon))
-				{
-					overworldMap.ShuffleObjectiveNPCs(rng);
-				}*/
-
-				incentivesData = new IncentiveData(rng, flags, Overworld.OverworldMap, shopItemLocation, new SanityCheckerV1());
-
-				await this.Progress();
-
-				if (((bool)flags.Shops))
-				{
-					var excludeItemsFromRandomShops = new List<Item>();
-					if ((bool)flags.Treasures)
-					{
-						excludeItemsFromRandomShops = incentivesData.ForcedItemPlacements.Select(x => x.Item).Concat(incentivesData.IncentiveItems).ToList();
-					}
-
-					if (!((bool)flags.RandomWaresIncludesSpecialGear))
-					{
-						excludeItemsFromRandomShops.AddRange(ItemLists.SpecialGear);
-
-						if (flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
-							excludeItemsFromRandomShops.Add(Item.PowerRod);
-
-						if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
-							excludeItemsFromRandomShops.Add(Item.PowerGauntlets);
-					}
-
-					if ((bool)flags.NoMasamune)
-					{
-						excludeItemsFromRandomShops.Add(Item.Masamune);
-					}
-
-					if ((bool)flags.NoXcalber)
-					{
-						excludeItemsFromRandomShops.Add(Item.Xcalber);
-					}
-
-					shopItemLocation = ShuffleShops(rng, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), excludeItemsFromRandomShops, flags.WorldWealth, Overworld.OverworldMap.ConeriaTownEntranceItemShopIndex);
-
-					incentivesData = new IncentiveData(rng, flags, Overworld.OverworldMap, shopItemLocation, new SanityCheckerV1());
-				}
-
-			        await this.Progress();
-
-				if (flags.GameMode == GameModes.DeepDungeon)
-				{
-					sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, this, shopItemLocation);
-					generatedPlacement = DeepDungeon.ShuffleTreasures(flags, incentivesData, rng);
-				}
-				else if ((bool)flags.Treasures)
-				{
-					sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, this, shopItemLocation);
-					generatedPlacement = ShuffleTreasures(rng, flags, incentivesData, shopItemLocation, Overworld, Teleporters, sanityChecker);
-				}
-				else if (Overworld.MapExchange != null)
-				{
-					sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, this, shopItemLocation);
-					if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags).Complete) throw new InsaneException("Not Completable");
-				}
-
-				break;
-			}
-			catch (InsaneException e)
-			{
-				Console.WriteLine(e.Message);
-				if (maxRetries > (i + 1)) continue;
-				throw new InvalidOperationException(e.Message);
-			}
-		}
+		ItemPlacement itemPlacement = ItemPlacement.Create(this, flags, PlacementContext, PlacementContext.ShopSlot, Overworld, sanityChecker);
+		itemPlacement.PlaceItems(rng);
 
 		List<string> funMessages = new()
 		{
@@ -498,12 +411,6 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress(funMessages.PickRandom(rng));
 
-		// Change Astos routine so item isn't lost in wall of text
-		if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems || (bool)flags.ShuffleAstos)
-			talkroutines.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A57385612080B1B020A572203D96A5752020B1A476207F90207392A5611820109F201896A9F060A57060"));
-
-		NpcData.UpdateItemPlacement(generatedPlacement);
-
 		if ((bool)flags.MagicShopLocs)
 		{
 			ShuffleMagicLocations(rng, (bool)flags.MagicShopLocationPairs);
@@ -519,9 +426,6 @@ public partial class FF1Rom : NesRom
 			ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 		}
 
-		new StartingInventory(rng, flags, this).SetStartingInventory();
-		new StartingEquipment(rng, flags, this).SetStartingEquipment();
-
 		new ShopKiller(rng, flags, Maps, this).KillShops();
 
 		shopData.LoadData();
@@ -535,7 +439,7 @@ public partial class FF1Rom : NesRom
 		}
 
 		// This need to be after the last modification of shopData 
-		shopData.UpdateShopSlotPlacement(generatedPlacement);
+		shopData.UpdateShopSlotPlacement(itemPlacement.PlacedItems);
 		
 		//has to be done before modifying itemnames and after modifying spellnames...
 		extConsumables.LoadSpells();
@@ -562,29 +466,7 @@ public partial class FF1Rom : NesRom
 			EnableLifeInBattle(flags);
 		}
 
-		if (flags.TranceHasStatusElement)
-		{
-			TranceHasStatusElement();
-		}
-
-		/*
-		if (flags.WeaponPermissions)
-		{
-			ShuffleWeaponPermissions(rng);
-		}
-
-		if (flags.ArmorPermissions)
-		{
-			ShuffleArmorPermissions(rng);
-		}
-		*/
-
-		if (flags.SaveGameWhenGameOver)
-		{
-			EnableSaveOnDeath(flags, Overworld);
-		}
-
-		Console.WriteLine("588");
+		EnableSaveOnDeath(flags, Overworld);
 
 		ShuffleEnemyScripts(rng, flags);
 
@@ -630,29 +512,6 @@ public partial class FF1Rom : NesRom
 
 		new TreasureStacks(this, flags).SetTreasureStacks();
 
-		if (flags.WeaponCritRate)
-		{
-			DoubleWeaponCritRates();
-		}
-
-		List<int> blursesValues = Enumerable.Repeat(0, 40).ToList();
-
-			//needs to go after item magic, moved after double weapon crit to have more control over the actual number of crit gained.
-			if ((bool)flags.RandomWeaponBonus)
-			{
-				blursesValues = RandomWeaponBonus(rng, flags.RandomWeaponBonusLow, flags.RandomWeaponBonusHigh, (bool)flags.RandomWeaponBonusExcludeMasa, preferences.CleanBlursedEquipmentNames);
-			}
-
-			if ((bool)flags.RandomArmorBonus)
-			{
-				RandomArmorBonus(rng, flags.RandomArmorBonusLow, flags.RandomArmorBonusHigh, preferences.CleanBlursedEquipmentNames);
-			}
-
-		if (flags.WeaponBonuses)
-		{
-			IncreaseWeaponBonus(flags.WeaponTypeBonusValue);
-		}
-
 		await this.Progress();
 
 		if (flags.ImproveTurnOrderRandomization)
@@ -683,50 +542,18 @@ public partial class FF1Rom : NesRom
 			ImprovedClinic();
 		}
 
-		if (flags.Etherizer)
-		{
-			Etherizer();
-			ItemsText[(int)Item.Tent] = "ETHR@p";
-			ItemsText[(int)Item.Cabin] = "DRY@p ";
-			ItemsText[(int)Item.House] = "XETH@p";
-		}
-
-		NPCHints(rng, NpcData, Maps, Dialogues, flags, incentivesData, sanityChecker, shopData);
+		NPCHints(rng, NpcData, Maps, Dialogues, flags, PlacementContext, sanityChecker, shopData);
 		SkyWarriorSpoilerBats(rng, flags, NpcData, Dialogues);
 
 		MonsterInABox(ZoneFormations, NpcData, Dialogues, rng, flags);
 
 		ExpGoldBoost(flags);
 
-		if(flags.ExpMultiplierFighter != 1.0)
-		{
-			ScaleAltExp(flags.ExpMultiplierFighter, FF1Class.Fighter);
-		}
-		if (flags.ExpMultiplierThief != 1.0)
-		{
-			ScaleAltExp(flags.ExpMultiplierThief, FF1Class.Thief);
-		}
-		if (flags.ExpMultiplierBlackBelt != 1.0)
-		{
-			ScaleAltExp(flags.ExpMultiplierBlackBelt, FF1Class.BlackBelt);
-		}
-		if (flags.ExpMultiplierRedMage != 1.0)
-		{
-			ScaleAltExp(flags.ExpMultiplierRedMage, FF1Class.RedMage);
-		}
+		ScaleAllAltExp(flags);
 
 		await this.Progress();
 
-		if (flags.ExpMultiplierWhiteMage != 1.0)
-		{
-			ScaleAltExp(flags.ExpMultiplierWhiteMage, FF1Class.WhiteMage);
-		}
-		if (flags.ExpMultiplierBlackMage != 1.0)
-		{
-			ScaleAltExp(flags.ExpMultiplierBlackMage, FF1Class.BlackMage);
-		}
-
-		ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), shopItemLocation, flags.ImprovedClinic);
+		ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), PlacementContext.ShopSlot, flags.ImprovedClinic);
 
 		extConsumables.AddExtConsumables();
 
@@ -754,15 +581,7 @@ public partial class FF1Rom : NesRom
 		PubReplaceClinic(rng, Maps.AttackedTown, flags);
 		await this.Progress();
 
-		if ((bool)flags.MapCanalBridge)
-		{
-			EnableCanalBridge();
-		}
-
-		if (flags.NonesGainXP || flags.DeadsGainXP)
-		{
-			XpAdmissibility((bool)flags.NonesGainXP, flags.DeadsGainXP);
-		}
+		XpAdmissibility((bool)flags.NonesGainXP, flags.DeadsGainXP);
 
 		SetProgressiveScaleMode(flags);
 
@@ -799,13 +618,19 @@ public partial class FF1Rom : NesRom
 			ShopUpgrade(flags, Dialogues, preferences);
 		}
 
+		if ((bool)flags.AirBoat)
+		{
+			EnableAirBoat((bool)flags.IsAirshipFree, (bool)flags.IsShipFree);
+		}
+
+
 		await this.Progress();
 
 		await this.LoadResourcePack(flags.ResourcePack, Dialogues);
 
 		RollCredits(rng);
-		StatsTrackingScreen();
 
+		// Quality of Life Stuff
 		if (preferences.DisableDamageTileFlicker || flags.TournamentSafe)
 		{
 			DisableDamageTileFlicker();
@@ -819,34 +644,6 @@ public partial class FF1Rom : NesRom
 		{
 			UseVariablePaletteForCursorAndStone();
 		}
-
-		if (preferences.PaletteSwap && !flags.EnemizerEnabled)
-		{
-			PaletteSwap(new MT19337(funRng.Next()));
-		}
-
-		if (preferences.TeamSteak && !(bool)flags.RandomizeEnemizer)
-		{
-			TeamSteak();
-		}
-
-
-		ChangeLute(preferences.ChangeLute, Dialogues, new MT19337(funRng.Next()));
-		TitanSnack(preferences.TitanSnack, NpcData, Dialogues, new MT19337(funRng.Next()));
-		HurrayDwarfFate(preferences.HurrayDwarfFate, NpcData, Dialogues, new MT19337(funRng.Next()));
-
-		await this.Progress();
-
-		if (preferences.Music != MusicShuffle.None)
-		{
-			ShuffleMusic(preferences.Music, new MT19337(funRng.Next()));
-		}
-
-		if ((bool)flags.AirBoat)
-		{
-			EnableAirBoat((bool)flags.IsAirshipFree, (bool)flags.IsShipFree);
-		}
-
 		if (preferences.DisableSpellCastFlash || flags.TournamentSafe)
 		{
 			DisableSpellCastScreenFlash();
@@ -860,6 +657,30 @@ public partial class FF1Rom : NesRom
 		if (preferences.UninterruptedMusic)
 		{
 			UninterruptedMusic();
+		}
+
+
+
+		// Fun Stuff
+
+		ChangeLute(preferences.ChangeLute, Dialogues, new MT19337(funRng.Next()));
+		TitanSnack(preferences.TitanSnack, NpcData, Dialogues, new MT19337(funRng.Next()));
+		HurrayDwarfFate(preferences.HurrayDwarfFate, NpcData, Dialogues, new MT19337(funRng.Next()));
+		if (preferences.PaletteSwap && !flags.EnemizerEnabled)
+		{
+			PaletteSwap(new MT19337(funRng.Next()));
+		}
+
+		if (preferences.TeamSteak && !(bool)flags.RandomizeEnemizer)
+		{
+			TeamSteak();
+		}
+
+		await this.Progress();
+
+		if (preferences.Music != MusicShuffle.None)
+		{
+			ShuffleMusic(preferences.Music, new MT19337(funRng.Next()));
 		}
 
 		if (preferences.SpriteSheet != null)
@@ -885,27 +706,25 @@ public partial class FF1Rom : NesRom
 
 		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
-		var expChests = new ExpChests(this, flags, rng);
+		var expChests = new ExpChests(itemPlacement.PlacedItems, this, flags, rng);
 		expChests.BuildExpChests();
+
+		NpcData.UpdateItemPlacement(itemPlacement.PlacedItems);
 
 		if (flags.Archipelago)
 		{
 			Overworld.SetShipLocation(255);
 
-			Archipelago exporter = new Archipelago(this, generatedPlacement, sanityChecker, expChests, incentivesData, Overworld.Locations, seed, flags, unmodifiedFlags, preferences);
+			Archipelago exporter = new Archipelago(this, itemPlacement.PlacedItems, sanityChecker, expChests, PlacementContext, Overworld.Locations, seed, flags, unmodifiedFlags, preferences);
 			Utilities.ArchipelagoCache = exporter.Work();
 		}
 
-		ItemsText.Write(this, UnusedGoldItems);
+		ItemsText.Write(this, flags.GameMode == GameModes.DeepDungeon ? new List<Item>() : ItemLists.UnusedGoldItems.ToList());
 
-		if (flags.Spoilers && sanityChecker != null) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, generatedPlacement, Overworld, incentivesData, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
+		if (flags.Spoilers && sanityChecker != null) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, itemPlacement.PlacedItems, Overworld, PlacementContext, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
 
 		OpenChestsInOrder(flags.OpenChestsInOrder && !flags.Archipelago);
-
-		if (flags.SetRNG)
-		{
-			SetRNG(flags);
-		}
+		SetRNG(flags);
 
 		// Write back everything
 		talkroutines.Write(this);
@@ -913,10 +732,12 @@ public partial class FF1Rom : NesRom
 		Dialogues.Write();
 
 		encounterRate.Write();
+		itemPlacement.Write();
 
 		Maps.Write();
 		TileSetsData.Write();
 		ZoneFormations.Write(this);
+		StartingItems.Write();
 		RngTables.Write(this);
 		Teleporters.Write();
 		Overworld.Write();
@@ -932,7 +753,7 @@ public partial class FF1Rom : NesRom
 
 		//WriteSeedAndFlags(seed.ToHex(), flags, flagsForRng, unmodifiedFlags, "ressourcePackHash", last_rng_value);
 		WriteSeedAndFlags(seed.ToHex(), flags, flagsForRng, unmodifiedFlags, resourcesPackHash.ToHex(), last_rng_value);
-		ExtraTrackingAndInitCode(flags, preferences);
+		StatsTrackingHacks(flags, preferences);
 
 		await this.Progress("Randomization Completed");
 	}

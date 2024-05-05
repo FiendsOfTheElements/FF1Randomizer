@@ -164,6 +164,21 @@ namespace FF1Lib
 			ComputePointers();
 			rom.PutInBank(newTalkRoutinesBank, TalkRoutinesOffset, _talkroutines.SelectMany(talk => talk.ToBytes()).ToArray());
 		}
+		public void Update(Flags flags)
+		{
+			// Disable the Princess Warp back to Castle Coneria
+			if ((bool)flags.Entrances || (bool)flags.Floors || (flags.GameMode == GameModes.Standard && flags.OwMapExchange != OwMapExchanges.None) || (flags.OrbsRequiredCount == 0 && !flags.ShardHunt))
+			{ 
+				this.ReplaceChunk(newTalkRoutines.Talk_Princess1, Blob.FromHex("20CC90"), Blob.FromHex("EAEAEA"));
+			}
+
+			// Change Astos routine so item isn't lost in wall of text
+			if ((bool)flags.NPCItems || (bool)flags.NPCFetchItems || (bool)flags.ShuffleAstos)
+			{ 
+				this.Replace(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F027A57385612080B1B020A572203D96A5752020B1A476207F90207392A5611820109F201896A9F060A57060"));
+			}
+
+		}
 	}
 	public class DialogueData
 	{
@@ -337,7 +352,6 @@ namespace FF1Lib
 		public const int lut_MapObjTalkJumpTbl = 0x90D3;
 		public const int lut_MapObjTalkData = 0x95D5;
 
-		public List<IRewardSource> generatedPlacement;
 		// All original talk scripts for reference
 		public enum newTalkRoutines
 		{

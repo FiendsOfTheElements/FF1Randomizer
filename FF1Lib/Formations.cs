@@ -19,7 +19,7 @@ namespace FF1Lib
 		public static List<byte> WarMechEncounter = new List<byte>() { WarMECHFormationIndex };
 		public static List<byte> IronGolEncounter = new List<byte>() { IrongGol };
 		public static List<byte> BahamutEncounter = new List<byte>() { Bahamut, Bahamut + 0x80 };
-		public static List<byte> ASideEncounters = Enumerable.Range(0, FirstBossEncounterIndex).Select(value => (byte)value).Except(WarMechEncounter).ToList();
+		public static List<byte> ASideEncounters = Enumerable.Range(1, FirstBossEncounterIndex).Select(value => (byte)value).Except(WarMechEncounter).ToList();
 		public static List<byte> BSideEncounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).Concat(IronGolEncounter).ToList();
 		public static List<byte> AllRandomEncounters = ASideEncounters.Concat(BSideEncounters).ToList();
 
@@ -48,6 +48,12 @@ namespace FF1Lib
 		public List<List<byte>> GetBytes()
 		{
 			return formations.Select(z => z.Formations.ToList()).ToList();
+		}
+		public void SwapDomains(int from, int to)
+		{
+			var tmp = formations[to];
+			formations[to] = new ZoneFormation() { Index = formations[from].Index, Formations = formations[from].Formations };
+			formations[from] = new ZoneFormation() { Index = tmp.Index, Formations = tmp.Formations };
 		}
 		public void ReplaceEncounter(byte originalencounter, byte newencounter)
 		{
