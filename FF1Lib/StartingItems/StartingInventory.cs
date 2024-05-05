@@ -98,26 +98,45 @@ namespace FF1Lib
 		Flags flags;
 		FF1Rom rom;
 
-		StartingItems ItemData;
-
+		MemTable<byte, Item> itemData;
 		public StartingInventory(MT19337 _rng, Flags _flags, FF1Rom _rom)
 		{
 			rng = _rng;
 			flags = _flags;
 			rom = _rom;
 
-			ItemData = new StartingItems(rom);
+			itemData = new MemTable<byte, Item>(_rom, 0x3020, 0x32);
+			itemData.LoadTable();
+		}
+		public void Process(Dictionary<Item, int> items, bool extconsumable)
+		{
+			List<Item> keyItems = items.Where(i => i.Key >= Item.Lute && i.Key <= Item.AirOrb).Select(i => i.Key).ToList();
+			List<(Item item, int qty)> qtyItems = items.Where(i => i.Key >= Item.Shard && (extconsumable ? i.Key <= Item.Rapier : i.Key <= Item.Soft)).Select(i => (i.Key, i.Value)).ToList();
+
+			foreach (var ki in keyItems)
+			{
+				itemData[ki] = 0x01;
+			}
+
+			foreach (var qtyItem in qtyItems)
+			{
+				itemData[qtyItem.item] = (byte)qtyItem.qty;
+			}
+		}
+		public void Write()
+		{
+			itemData.StoreTable();
 		}
 
 		public void SetStartingInventory()
 		{
-			ItemData.LoadTable();
+			
 
 			foreach (var e in StartingItemSetDic[flags.StartingItemSet])
 			{
 				if (e.Cnt.HasValue)
 				{
-					ItemData[e.Item] = (byte)e.Cnt;
+					itemData[e.Item] = (byte)e.Cnt;
 				}
 				else
 				{
@@ -126,7 +145,7 @@ namespace FF1Lib
 					var rmin = e.RMin ?? min;
 					var rmax = e.RMax ?? max;
 
-					ItemData[e.Item] = (byte)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max);
+					itemData[e.Item] = (byte)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max);
 				}
 			}
 
@@ -136,7 +155,7 @@ namespace FF1Lib
 				{
 					if (e.Cnt.HasValue)
 					{
-						ItemData[e.Item] = (byte)e.Cnt;
+						itemData[e.Item] = (byte)e.Cnt;
 					}
 					else
 					{
@@ -145,12 +164,12 @@ namespace FF1Lib
 						var rmin = e.RMin ?? min;
 						var rmax = e.RMax ?? max;
 
-						ItemData[e.Item] = (byte)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max);
+						itemData[e.Item] = (byte)Math.Min(Math.Max(rng.Between(rmin, rmax), min), max);
 					}
 				}
 			}
 
-			ItemData.StoreTable();
+			itemData.StoreTable();
 		}
 
 		public List<(Item item, int qty)> ReturnStartingInventory()
