@@ -3552,8 +3552,17 @@ namespace FF1Lib
 			return true;
 		}
 
-		public void DoEnemizer(MT19337 rng, bool doEnemies, bool doFormations, bool shuffledSkillsOn)
+		public void DoEnemizer(Flags flags, MT19337 rng)
 		{
+			if (!(bool)flags.RandomizeFormationEnemizer)
+			{
+				return;
+			}
+
+			bool doEnemies = (bool)flags.RandomizeEnemizer;
+			bool doFormations = (bool)flags.RandomizeFormationEnemizer;
+			bool shuffledSkillsOn = flags.EnemizerDontMakeNewScripts;
+
 			// code modification to allow any formation except 0x00 to be a trap (lifted from ShuffleTrapTiles)
 			//Data[0x7CDC5] = 0xD0; // changes the game's programming
 			//bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;

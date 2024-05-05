@@ -17,60 +17,6 @@ namespace FF1Lib
 			EnableCanalBridge((bool)flags.MapCanalBridge);
 		}
 
-
-		public void EnableSaveOnDeath(Flags flags, Overworld overworld)
-		{
-			if (!flags.SaveGameWhenGameOver)
-			{
-				return;
-			}
-
-			// rewrite rando's GameOver routine to jump to a new section that will save the game data
-			PutInBank(0x1B, 0x801A, Blob.FromHex("4CF58F"));
-
-			byte coneria_x = 0x92;
-			byte coneria_y = 0x9E;
-			byte airship_x = 0x99;
-			byte airship_y = 0xA5;
-			byte ship_x = 0x98;
-			byte ship_y = 0xA9;
-
-			if (flags.GameMode == GameModes.DeepDungeon)
-			{
-				coneria_y = 0x9B;
-			}
-
-			if (overworld.MapExchange != null && flags.GameMode == GameModes.Standard)
-			{
-				coneria_x = (byte)(overworld.Locations.StartingLocation.X - 0x07);
-				coneria_y = (byte)(overworld.Locations.StartingLocation.Y - 0x07);
-
-				airship_x = overworld.Locations.StartingLocation.X;
-				airship_y = overworld.Locations.StartingLocation.Y;
-
-				ship_x = overworld.GetShipLocation((int)OverworldTeleportIndex.Coneria).X;
-				ship_y = overworld.GetShipLocation((int)OverworldTeleportIndex.Coneria).Y;
-			}
-
-			// write new routine to save data at game over (the game will save when you clear the final textbox and not before), see 1B_8FF5_GameOverAndRestart.asm
-			var saveondeath_standardmid = $"AD0460D02EAD0060F04FAD0160CD0164D008AD0260CD0264F03FAD016038E9078D1060AD026038E9078D1160A9048D1460D026AD056038E9078D1060AD066038E9078D1160A9018D1460AD0060F00AA9{ship_x:X2}8D0160A9{ship_y:X2}8D0260";
-			var saveondeath_dwmodemid = $"AD0460F00AA9{airship_x:X2}8D0560A9{airship_y:X2}8D0660AD0060F00AA9{ship_x:X2}8D0160A9{ship_y:X2}8D0260A9{coneria_x:X2}8D1060A9{coneria_y:X2}8D11604E1E606E1D606E1C60A9018D1460EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
-			var saveondeath_part1 = "20E38BA200BD0061C9FFF041BD0C619D0A61BD0D619D0B61BD28639D2063BD29639D2163BD2A639D2263BD2B639D2363BD2C639D2463BD2D639D2563BD2E639D2663BD2F639D2763A9009D01618A186940AAD0B1";
-			var saveondeath_part2 = "A200BD00609D0064BD00619D0065BD00629D0066BD00639D0067E8D0E5A9558DFE64A9AA8DFF64A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD644C1D80";
-
-			// Since we want to spawn inside with No Overworld and not at transport, update coordinate to Coneria Castle
-			if (flags.NoOverworld)
-			{
-				coneria_x = GetFromBank(0x0E, 0x9DC0+0x08, 1)[0];
-				coneria_y = GetFromBank(0x0E, 0x9DD0+0x08, 1)[0];
-
-				saveondeath_standardmid = "EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
-				saveondeath_dwmodemid = $"AD0460F00AA9998D0560A9A58D0660AD0060F00AA9988D0160A9A98D0260A9{coneria_x:X2}8D1060A9{coneria_y:X2}8D11604E1E606E1D606E1C60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
-			}
-			var saveondeath = saveondeath_part1 + (flags.SaveGameDWMode ? saveondeath_dwmodemid : saveondeath_standardmid) + saveondeath_part2;
-
-			PutInBank(0x1B, 0x8FF5, Blob.FromHex(saveondeath));
-		}
 		public void DeepDungeonFloorIndicator()
 		{
 			// Add Current Floor indicator above orbs, see 0E_9850_DrawOrbFloor.asm
@@ -79,113 +25,7 @@ namespace FF1Lib
 			// Extend Orb Box
 			PutInBank(0x0E, 0xBAA2, Blob.FromHex("02010809"));
 		}
-		public void ShuffleAstos(Flags flags, NpcObjectData npcdata, DialogueData dialogues, TalkRoutines talkroutines, MT19337 rng)
-		{
-			if (!(bool)flags.ShuffleAstos)
-			{
-				return;
-			}
 
-			// NPC pool to swap Astos with
-			List<ObjectId> npcpool = new List<ObjectId> { ObjectId.Astos, ObjectId.Bahamut, ObjectId.CanoeSage, ObjectId.CubeBot, ObjectId.ElfDoc,
-			ObjectId.Fairy, ObjectId.Matoya, ObjectId.Nerrick, ObjectId.Smith,
-			ObjectId.Titan, ObjectId.Unne, ObjectId.Sarda, ObjectId.ElfPrince, ObjectId.Lefein };
-
-			if ((bool)flags.FightBahamut)
-			{
-				npcpool.Remove(ObjectId.Bahamut);
-			}
-
-			if ((bool)flags.UnsafeAstos)
-			{
-				npcpool.Add(ObjectId.King);
-				npcpool.Add(ObjectId.Princess2);
-			}
-
-			// Select random npc
-			ObjectId newastos = npcpool.PickRandom(rng);
-
-			// If Astos, we're done here
-			if (newastos == ObjectId.Astos) return;
-
-			// If not get NPC talk routine, get NPC object
-			var talkscript = npcdata[newastos].Script;
-
-			// Switch astos to Talk_GiveItemOnItem;
-			npcdata[ObjectId.Astos].Script = TalkScripts.Talk_GiveItemOnItem;
-
-			// Get items name
-			//var newastositem = FormattedItemName((Item)npcdata.GetTalkArray(newastos)[(int)TalkArrayPos.item_id]);
-			//var nwkingitem = FormattedItemName((Item)npcdata.GetTalkArray(ObjectId.Astos)[(int)TalkArrayPos.item_id]);
-			// so why don't we use the item id? it should be set by the time we get the dialogues (since we check if there's inventory space)
-
-			// Custom dialogs for Astos NPC and the Kindly Old King
-			List<(byte, string)> astosdialogs = new List<(byte, string)>
-			{
-				(0x00, ""),
-				//(0x02, "You have ruined my plans\nto steal this " + newastositem + "!\nThe princess will see\nthrough my disguise.\nTremble before the might\nof Astos, the Dark King!"),
-				(0x02, "You have ruined my plans\nto steal this #!\nThe princess will see\nthrough my disguise.\nTremble before the might\nof Astos, the Dark King!"),
-				(0x00, ""),(0x00, ""),(0x00, ""),
-				(0x0C, "You found the HERB?\nCurses! The Elf Prince\nmust never awaken.\nOnly then shall I,\nAstos, become\nthe King of ALL Elves!"),
-				//(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my " + newastositem + "!"),
-				(0x0E, "Is this a dream?.. Are\nyou, the LIGHT WARRIORS?\nHA! Thank you for waking\nme! I am actually Astos,\nKing of ALL Elves! You\nwon't take my #!"),
-				//(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this also!\n\nReceived " + nwkingitem),
-				(0x12, "My CROWN! Oh, but it\ndoesn't go with this\noutfit at all. You keep\nit. But thanks! Here,\ntake this also!\n\nReceived #"),
-//				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe " + newastositem + " will\nbelong to Astos,\nKing of Dark Dwarves!"),
-				(0x14, "Oh, wonderful!\nNice work! Yes, this TNT\nis just what I need to\nblow open the vault.\nSoon more than\nthe # will\nbelong to Astos,\nKing of Dark Dwarves!"),
-				//(0x16, "ADAMANT!! Now let me\nmake this " + newastositem + "..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
-				(0x16, "ADAMANT!! Now let me\nmake this #..\nAnd now that I have\nthis, you shall take a\nbeating from Astos,\nthe Dark Blacksmith!"),
-				//(0x19, "You found my CRYSTAL and\nwant my " + newastositem + "? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
-				(0x19, "You found my CRYSTAL and\nwant my #? Oh!\nI can see!! And now, you\nwill see the wrath of\nAstos, the Dark Witch!"),
-				(0x1C, "Finally! With this SLAB,\nI shall conquer Lefein\nand her secrets will\nbelong to Astos,\nthe Dark Scholar!"),
-				(0x00, ""),
-				//(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my " + newastositem + "!\nI even paid a Titan to\nguard the path! Fine.\nNow you face Astos,\nKing of the Hermits!"),
-				(0x1E, "Can't you take a hint?\nI just want to be left\nalone with my #!\nI even paid a Titan to\nguard the path! Fine.\nNow you face Astos,\nKing of the Hermits!"),
-				(0x20, "Really, a rat TAIL?\nYou think this is what\nwould impress me?\nIf you want to prove\nyourself, face off with\nAstos, the Dark Dragon!"),
-				//(0xCD, "Kupo?.. Lali ho?..\nMugu mugu?.. Fine! You\nare in the presence of\nAstos, the Dark Thief!\nI stole their " + newastositem + "\nfair and square!"),
-				(0xCD, "Kupo?.. Lali ho?..\nMugu mugu?.. Fine! You\nare in the presence of\nAstos, the Dark Thief!\nI stole their #\nfair and square!"),
-				(0x00, ""),
-				//(0x27, "Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis " + newastositem + "!"),
-				(0x27, "Boop Beep Boop..\nError! Malfunction!..\nI see you are not\nfooled. It is I, Astos,\nKing of the Dark Robots!\nYou shall never have\nthis #!"),
-				//(0x06, "This " + newastositem + " has passed\nfrom Queen to Princess\nfor 2000 years. It would\nhave been mine if you\nhadn't rescued me! Now\nyou face Astos, the\nDark Queen!"),
-				(0x06, "This # has passed\nfrom Queen to Princess\nfor 2000 years. It would\nhave been mine if you\nhadn't rescued me! Now\nyou face Astos, the\nDark Queen!"),
-				//(0x23, "I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this " + newastositem + " in\nthanks, but I would\nrather just kill you."),
-				(0x23, "I, Astos the Dark Fairy,\nam free! The other\nfairies trapped me in\nthat BOTTLE! I'd give\nyou this # in\nthanks, but I would\nrather just kill you."),
-				(0x2A, "If you want pass, give\nme the RUBY..\nHa, it mine! Now, you in\ntrouble. Me am Astos,\nKing of the Titans!"),
-				//(0x2B, "Curses! Do you know how\nlong it took me to\ninfiltrate these grumpy\nold men and steal\nthe " + newastositem + "?\nNow feel the wrath of\nAstos, the Dark Sage!")
-				(0x2B, "Curses! Do you know how\nlong it took me to\ninfiltrate these grumpy\nold men and steal\nthe #?\nNow feel the wrath of\nAstos, the Dark Sage!")
-			};
-
-			dialogues[astosdialogs[(int)newastos].Item1] = astosdialogs[(int)newastos].Item2;
-			dialogues[astosdialogs[(int)ObjectId.Astos].Item1] = astosdialogs[(int)ObjectId.Astos].Item2;
-
-			if (talkscript == TalkScripts.Talk_Titan || talkscript == TalkScripts.Talk_ElfDocUnne)
-			{
-				// Skip giving item for Titan, ElfDoc or Unne
-				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("20109F"), Blob.FromHex("EAEAEA"));
-				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("A9F060"), Blob.FromHex("4C4396"));
-				npcdata[newastos].Script = TalkScripts.Talk_Astos;
-			}
-			else if (talkscript == TalkScripts.Talk_GiveItemOnFlag)
-			{
-				// Check for a flag instead of an item
-				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F0"), Blob.FromHex("A474F00520799090"));
-				npcdata[newastos].Script = TalkScripts.Talk_Astos;
-			}
-			else if (talkscript == TalkScripts.Talk_Nerrick || talkscript == TalkScripts.Talk_GiveItemOnItem || talkscript == TalkScripts.Talk_TradeItems)
-			{
-				// Just set NPC to Astos routine
-				npcdata[newastos].Script = TalkScripts.Talk_Astos;
-			}
-			else if (talkscript == TalkScripts.Talk_Bahamut)
-			{
-				// Change routine to check for Tail, give promotion and trigger the battle at the same time, see 11_8200_TalkRoutines.asm
-				talkroutines.Replace(newTalkRoutines.Talk_Bahamut, Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660"));
-			}
-
-			// Set battle
-			npcdata[newastos].Battle = 0x7D;
-		}
 		/// <summary>
 		/// Unused method, but this would allow a non-npc shuffle king to build bridge without rescuing princess
 		/// </summary>
@@ -217,8 +57,16 @@ namespace FF1Lib
 			**/
 			Put(0x7C64D, Blob.FromHex("ADFC6048A90F2003FE20808768082003FE2860"));
 		}
-		public void EnableAirBoat(bool freeAirship, bool freeShip)
+		public void EnableAirBoat(Flags flags)
 		{
+			if (!(bool)flags.AirBoat)
+			{
+				return;
+			}
+
+			bool freeAirship = (bool)flags.IsAirshipFree;
+			bool freeShip = (bool)flags.IsShipFree;
+
 			if (freeAirship)
 			{
 				Data[0x3020 + (int)Item.Floater] = 0x01;
@@ -250,8 +98,12 @@ namespace FF1Lib
 			PutInBank(0x0D, 0x8028, Blob.FromHex("00B641B66EB6"));
 		}
 
-		public void ImproveTurnOrderRandomization(MT19337 rng)
+		public void ImproveTurnOrderRandomization(bool enable, MT19337 rng)
 		{
+			if (!enable)
+			{
+				return;
+			}
 			// Shuffle the initial bias so enemies are no longer always at the start initially.
 			List<byte> turnOrder = new List<byte> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x80, 0x81, 0x82, 0x83 };
 			turnOrder.Shuffle(rng);
@@ -355,26 +207,6 @@ namespace FF1Lib
 			room[1, 1] = 0x76;
 			cardia.Put((0x26, 0x1C), room);
 			cardia[0x20, 0x27] = (byte)Tile.Doorway;
-		}
-
-		public void CannotSaveOnOverworld()
-		{
-			// Hacks the game to disallow saving on the overworld with Tents, Cabins, or Houses
-			Put(0x3B2F9, Blob.FromHex("1860"));
-			// Change Item using text to avoid confusion
-			PutInBank(0x0E, 0x87B0, FF1Text.TextToBytes("\n\nSAVING DISABLED!"));
-			PutInBank(0x0E, 0x87E7, FF1Text.TextToBytes("\n\nSAVING DISABLED!"));
-			PutInBank(0x0E, 0x8825, FF1Text.TextToBytes("\n\nSAVING DISABLED!"));
-		}
-
-		public void CannotSaveAtInns()
-		{
-			// Hacks the game so that Inns do not save the game
-			Put(0x3A53D, Blob.FromHex("EAEAEA"));
-			// Change Inn text to avoid confusion
-			PutInBank(0x0E, 0x81BB, FF1Text.TextToBytes("Welcome\n  ..\nStay to\nheal\nyour\nwounds?"));
-			PutInBank(0x0E, 0x81DC, FF1Text.TextToBytes("Don't\nforget\n.."));
-			PutInBank(0x0E, 0x81FC, FF1Text.TextToBytes("Your\ngame\nhasn't\nbeen\nsaved."));
 		}
 		private void defineNewAI(int availableScript, byte spellChance, byte skillChance, List<byte> spells, List<byte> skills)
 		{
@@ -492,13 +324,22 @@ namespace FF1Lib
 		    return 0;
 		}
 
-		public void DisableMinimap()
+		public void DisableMinimap(bool enable)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			PutInBank(0x1F, 0xC1A6, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 		}
 
-		public void IncreaseDarkPenalty()
+		public void IncreaseDarkPenalty(bool enable)
 		{
+			if (!enable)
+			{
+				return;
+			}
 			/* :: Original::                        :: Modified ::
 			 * LDA math_hitchance                   LDA #0
 			 * SEC                                  STA math_hitchance
