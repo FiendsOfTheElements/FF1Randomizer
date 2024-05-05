@@ -527,9 +527,7 @@ namespace FF1Lib
 
 			}
 
-
 		}
-		//add in the keep permissions section for the Ninja spells slots
 		public void Knightlvl4(Flags flags, MT19337 rng)
 		{
 			if (!(bool)flags.Knightlvl4)
