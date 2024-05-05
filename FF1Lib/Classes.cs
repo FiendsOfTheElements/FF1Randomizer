@@ -592,7 +592,7 @@ namespace FF1Lib
 
 		}
 
-				public void SetMpGainOnMaxGain(Flags flags, FF1Rom rom)
+			public void SetMpGainOnMaxGain(Flags flags, FF1Rom rom)
 		{
 			if(flags.MpGainOnMaxGainMode != MpGainOnMaxGain.None)
 			{
