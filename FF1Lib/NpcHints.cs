@@ -420,7 +420,7 @@ namespace FF1Lib
 
 			return wrapped;
 	    }
-		public void NPCHints(MT19337 rng, NpcObjectData npcdata, StandardMaps maps, DialogueData dialogues, Flags flags, IncentiveData incentivedata, SanityCheckerV2 sanitychecker, ShopData shopdata)
+		public void NPCHints(MT19337 rng, NpcObjectData npcdata, StandardMaps maps, DialogueData dialogues, Flags flags, PlacementContext incentivedata, SanityCheckerV2 sanitychecker, ShopData shopdata)
 		{
 			if (!(bool)flags.HintsVillage || flags.GameMode == GameModes.DeepDungeon || !(bool)flags.Treasures || flags.Archipelago )
 			{

@@ -151,7 +151,7 @@ namespace FF1Lib
 					$"Attempted to Put invalid npc item placement: \n{SpoilerText}");
 		}
 
-		public NpcReward(NpcReward copyFromRewardSource, Item item)
+		public NpcReward(IRewardSource copyFromRewardSource, Item item)
 			: base(copyFromRewardSource, item)
 		{
 			if (!(copyFromRewardSource is NpcReward copyFromMapObject))
