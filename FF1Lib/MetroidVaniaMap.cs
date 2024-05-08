@@ -44,7 +44,7 @@
 			return UnusedTilesbyTileSet;
 		}
 
-		public void NoOverworld(List<List<byte>> decompressedMap, StandardMaps maps, Teleporters teleporters, TalkRoutines talkroutines, DialogueData dialogues, NpcObjectData npcdata, Flags flags, MT19337 rng)
+		public void NoOverworld(List<List<byte>> decompressedMap, StandardMaps maps, Teleporters teleporters, TileSetsData tileSets, TalkRoutines talkroutines, DialogueData dialogues, NpcObjectData npcdata, Flags flags, MT19337 rng)
 		{
 			if (!flags.NoOverworld)
 			{
@@ -57,12 +57,12 @@
 			LoadInTown(decompressedMap);
 			ApplyMapMods(maps, flippedmaps, (bool)flags.LefeinSuperStore);
 			UpdateInRoomTeleporters();
-			CreateTeleporters(maps, flippedmaps, rng);
+			CreateTeleporters(maps, flippedmaps, tileSets, teleporters, rng);
 			PrepNPCs(maps, talkroutines, dialogues, npcdata, flippedmaps, flags, rng);
 			UpdateBackgrounds();
 			if ((bool)flags.Entrances || (bool)flags.Towns)
 			{
-				ShuffleFloor(maps, teleporters, flags, npcdata, flippedmaps, rng);
+				ShuffleFloor(maps, teleporters, tileSets, flags, npcdata, flippedmaps, rng);
 			}
 		}
 
@@ -455,10 +455,11 @@
 
 
 		}
-		public void CreateTeleporters(StandardMaps maps, List<MapIndex> flippedmaps, MT19337 rng)
+		public void CreateTeleporters(StandardMaps maps, List<MapIndex> flippedmaps, TileSetsData tileSets, Teleporters teleporters, MT19337 rng)
 		{
 			// Teleporter creation
 			// New function from here
+			
 			var availableTiles = LoadUnusedTileIds(maps, this);
 			List<TeleporterTileSM> newTeleporterTiles = new();
 
@@ -736,57 +737,42 @@
 
 			foreach (var teleport in newTeleporterTiles)
 			{
-				teleport.Write(this);
+				teleport.Write(tileSets, teleporters);
 			}
 
 			// Caravan Door
 			TileSM CaravanDoor = new TileSM(availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].First(), (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleportTilesGraphics[TeleporterGraphic.Door][(int)TileSets.MatoyaDwarfCardiaIceWaterfall], (byte)(TilePropFunc.TP_SPEC_DOOR), 0x46);
-			UpdateMapTile(MapIndex.Cardia, 0x28, 0x1C, CaravanDoor.ID);
+			UpdateMapTile(MapIndex.Cardia, 0x28, 0x1C, CaravanDoor.Index);
 			availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].RemoveRange(0, 1);
 
-			CaravanDoor.Write(this);
+			tileSets[CaravanDoor.TileSet].Tiles[CaravanDoor.Index] = CaravanDoor;
 
 			// ToFR Chest in Sky and Sea as a reward 
 			List<byte> ToFRchestsList = new() { 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE };
 			TileSM ExtraChest = new TileSM(availableTiles[(byte)TileSets.SkyCastle].First(), (int)TileSets.SkyCastle, TilePalette.RoomPalette1, new List<byte> { 0x2A, 0x2B, 0x3A, 0x3B }, (byte)(TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE), ToFRchestsList.SpliceRandom(rng));
-			UpdateMapTile(MapIndex.SkyPalace5F, 0x07, 0x01, ExtraChest.ID);
+			UpdateMapTile(MapIndex.SkyPalace5F, 0x07, 0x01, ExtraChest.Index);
 			availableTiles[(byte)TileSets.SkyCastle].RemoveRange(0, 1);
 
 			TileSM ExtraChest2 = new TileSM(availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].First(), (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, new List<byte> { 0x2A, 0x2B, 0x3A, 0x3B }, (byte)(TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE), ToFRchestsList.SpliceRandom(rng));
-			UpdateMapTile(MapIndex.Cardia, 0x2C, 0x08, ExtraChest2.ID);
+			UpdateMapTile(MapIndex.Cardia, 0x2C, 0x08, ExtraChest2.Index);
 			availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].RemoveRange(0, 1);
 
+			tileSets[ExtraChest.TileSet].Tiles[ExtraChest.Index] = ExtraChest;
+			tileSets[ExtraChest2.TileSet].Tiles[ExtraChest2.Index] = ExtraChest2;
+			/*
 			ExtraChest.Write(this);
-			ExtraChest2.Write(this);
+			ExtraChest2.Write(this);*/
 
 			// Reset spawning position for Coneria Castle and towns
-			Data[0x02C01 + (int)MapIndex.ConeriaCastle1F] = 0x0C;
-			Data[0x02C21 + (int)MapIndex.ConeriaCastle1F] = 0x1E;
-
-			Data[0x02C01 + (int)MapIndex.ConeriaTown] = 0x0B;
-			Data[0x02C21 + (int)MapIndex.ConeriaTown] = 0x13;
-
-			Data[0x02C01 + (int)MapIndex.Pravoka] = 0x13;
-			Data[0x02C21 + (int)MapIndex.Pravoka] = 0x05;
-
-			Data[0x02C01 + (int)MapIndex.Elfland] = 0x24;
-			Data[0x02C21 + (int)MapIndex.Elfland] = 0x15;
-
-			Data[0x02C01 + (int)MapIndex.Melmond] = 0x09;
-			Data[0x02C21 + (int)MapIndex.Melmond] = 0x0E;
-
-			Data[0x02C01 + (int)MapIndex.CrescentLake] = 0x0B;
-			Data[0x02C21 + (int)MapIndex.CrescentLake] = 0x14;
-
-			Data[0x02C01 + (int)MapIndex.Gaia] = 0x21;
-			Data[0x02C21 + (int)MapIndex.Gaia] = 0x35;
-
-			Data[0x02C01 + (int)MapIndex.Onrac] = 0x06;
-			Data[0x02C21 + (int)MapIndex.Onrac] = 0x15;
-
-			Data[0x02C01 + (int)MapIndex.Lefein] = 0x11;
-			Data[0x02C21 + (int)MapIndex.Lefein] = 0x07;
-
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.ConeriaCastle1] = new TeleportDestination(MapIndex.ConeriaCastle1F, new Coordinate(0x0C, 0x01E, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.Coneria] = new TeleportDestination(MapIndex.ConeriaTown, new Coordinate(0x0B, 0x013, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.Pravoka] = new TeleportDestination(MapIndex.Pravoka, new Coordinate(0x13, 0x05, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.Elfland] = new TeleportDestination(MapIndex.Elfland, new Coordinate(0x24, 0x15, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.Melmond] = new TeleportDestination(MapIndex.Melmond, new Coordinate(0x09, 0x0E, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.CrescentLake] = new TeleportDestination(MapIndex.CrescentLake, new Coordinate(0x0B, 0x14, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.Gaia] = new TeleportDestination(MapIndex.Gaia, new Coordinate(0x21, 0x35, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.Onrac] = new TeleportDestination(MapIndex.Onrac, new Coordinate(0x06, 0x15, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.Lefein] = new TeleportDestination(MapIndex.Lefein, new Coordinate(0x11, 0x07, CoordinateLocale.Standard));
 		}
 
 		public void PrepNPCs(StandardMaps maps, TalkRoutines talkroutines, DialogueData dialogues, NpcObjectData npcdata, List<MapIndex> flippedmaps, Flags flags, MT19337 rng)
@@ -845,6 +831,7 @@
 			npcdata[ObjectId.GaiaScholar2].Dialogue3 = 0xD9;
 
 			// Nerrick
+			//npcdata[ObjectId.Nerrick].Script = TalkScripts.NoOW_Nerrick;
 			//npcdata.SetRoutine(ObjectId.Nerrick, newTalkRoutines.NoOW_Nerrick);
 
 			// Switch Key dialogue
@@ -968,11 +955,11 @@
 			PutInBank(lut_BtlBackdrops_Bank, lut_BtlBackdrops, backgroundList.Select(x => (byte)x.Item2).ToArray());
 		}
 
-		public void ShuffleFloor(StandardMaps maps, Teleporters teleportersdata, Flags flags, NpcObjectData npcdata, List<MapIndex> flippedmaps, MT19337 rng)
+		public void ShuffleFloor(StandardMaps maps, Teleporters teleportersdata, TileSetsData tileSets, Flags flags, NpcObjectData npcdata, List<MapIndex> flippedmaps, MT19337 rng)
 		{
 			int FlippedX(MapIndex map, int pos) => flippedmaps.Contains(map) ? 0x3F - pos : pos;
-
-			var Tilesets = new List<List<TileSM>>();
+			
+			/*var Tilesets = new List<List<TileSM>>();
 
 			for (int i = 0; i < 8; i++)
 			{
@@ -982,14 +969,14 @@
 				{
 					Tilesets.Last().Add(new TileSM((byte)j, i, this));
 				}
-			}
+			}*/
 
-			List<TeleporterSM> teleporters = new();
-
+			List<TeleporterSM> teleporters = teleportersdata.StandardMapTeleporters.Select(t => new TeleporterSM((int)t.Key, t.Value)).ToList();
+			/*
 			for (int i = 0; i < 256; i++)
 			{
 				teleporters.Add(new TeleporterSM(this, i));
-			}
+			}*/
 
 			// All valid locations that can be shuffled, with coordinates; exclude ToFR so it isn't shuffled
 			List<MapArea> maparea = new()
@@ -1174,8 +1161,17 @@
 			}
 
 			// Generate teleporters info
-			var TeleportTiles = Tilesets.SelectMany(x => x.Where(y => (y.PropertyType & 0b1100_0000) == 0b1000_0000));
-			var TilesetTeleportTiles = Tilesets.Select(x => x.Where(y => (y.PropertyType & 0b1100_0000) == 0b1000_0000).ToList()).ToList();
+			var TeleportTiles = new List<TileSM>();
+			var TilesetTeleportTiles = new List<List<TileSM>>();
+
+			foreach (var tileset in Enum.GetValues<TileSets>())
+			{
+				TeleportTiles.AddRange(tileSets[(int)tileset].Tiles.Where(y => (y.PropertyType & 0b1100_0000) == 0b1000_0000));
+				TilesetTeleportTiles.Add(tileSets[(int)tileset].Tiles.Where(y => (y.PropertyType & 0b1100_0000) == 0b1000_0000).ToList());
+			}
+
+			//tileSets[] .SelectMany(x => x.Where(y => (y.PropertyType & 0b1100_0000) == 0b1000_0000));
+			//var TilesetTeleportTiles = Tilesets.Select(x => x.Where(y => (y.PropertyType & 0b1100_0000) == 0b1000_0000).ToList()).ToList();
 
 			List<(byte, MapLocation, MapLocation)> teleportersLocDest = new();
 
@@ -1183,9 +1179,10 @@
 			{
 				foreach (var teleporttile in TilesetTeleportTiles[(int)tilesetList[i].Item2])
 				{
-					if (maps[(MapIndex)i].Map.FindFirst(teleporttile.ID, out var x, out var y))
+					if (maps[(MapIndex)i].Map.FindFirst(teleporttile.Index, out var x, out var y))
 					{
 						var targetteleporter = teleporters[teleporttile.PropertyValue];
+						//var targetteleporter = teleportersdata.StandardMapTeleporters[(TeleportIndex)teleporttile.PropertyValue];
 
 						teleportersLocDest.Add((
 							teleporttile.PropertyValue,
@@ -1441,7 +1438,7 @@
 					// Because orphan don't have a twin teleporter, we need to find it's position and update the switch in teleporter
 					foreach (var MapIndex in tilesetList.Where(x => x.Item2 == (TileSets)teleporterB.Item1.TileSet))
 					{
-						if (maps[MapIndex.Item1].Map.FindFirst(teleporterB.Item1.ID, out var x, out var y))
+						if (maps[MapIndex.Item1].Map.FindFirst(teleporterB.Item1.Index, out var x, out var y))
 						{
 							teleporters[teleporterA2.Item2.ID] = new TeleporterSM(teleporterA2.Item2.ID, (byte)x, (byte)y, (byte)MapIndex.Item1, (teleporterB.Item1.Palette <= TilePalette.RoomPalette2));
 							break;
@@ -1535,7 +1532,8 @@
 			// Write the new tiles and teleporters to rom
 			foreach (var tile in TeleportTiles)
 			{
-				tile.Write(this);
+				tileSets[tile.TileSet].Tiles[tile.Index] = tile;
+				//tile.Write(this);
 			}
 
 			foreach (var teleport in teleporters)
@@ -1551,7 +1549,7 @@
 			{
 				var targetile = maps[source.Item1].Map[(source.Item2, source.Item3)].Tile;
 
-				var originTile = TeleportersTiles.Find(x => x.Item1.ID == (byte)targetile && x.Item1.TileSet == (int)tilesetList[(int)source.Item1].Item2);
+				var originTile = TeleportersTiles.Find(x => x.Item1.Index == (byte)targetile && x.Item1.TileSet == (int)tilesetList[(int)source.Item1].Item2);
 				var originTeleporter = teleporters.Find(x => x.ID == originTile.Item1.PropertyValue);
 
 				var freenpc = maps[(MapIndex)originTeleporter.Destination].MapObjects.FindNpc(ObjectId.None);
@@ -1577,6 +1575,7 @@
 			public MapIndex map;
 			public MapLocation location;
 		}
+		/*
 		public class TileSM
 		{
 			private byte _attribute;
@@ -1685,7 +1684,7 @@
 				_TSAdr = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x180 + _tileSetID, 1)[0];
 			}
 		}
-
+		*/
 		public class TeleporterSM
 		{
 			private byte _x;
@@ -1740,6 +1739,10 @@
 					_id = value;
 				}
 			}
+			public CoordinateLocale Context
+			{
+				get { return _inroom ? CoordinateLocale.StandardInRoom : CoordinateLocale.Standard; }
+			}
 			public TeleData Raw()
 			{
 				return new TeleData { Map = (MapIndex)_target, X = (byte)(_x | (_inroom ? 0b1000_0000 : 0b0000_0000)), Y = (byte)(_y | 0b1000_0000) };
@@ -1751,6 +1754,14 @@
 				_x = (byte)(x | (_inroom ? 0b10000000 : 0b00000000));
 				_y = (byte)(y | 0b10000000);
 				_target = destination;
+			}
+			public TeleporterSM(int id, TeleportDestination telportDestination)
+			{
+				_id = id;
+				_inroom = telportDestination.Coordinates.Context == CoordinateLocale.StandardInRoom;
+				_x = (byte)(telportDestination.Coordinates.X | (_inroom ? 0b10000000 : 0b00000000));
+				_y = (byte)(telportDestination.Coordinates.Y | 0b10000000);
+				_target = (byte)telportDestination.Index;
 			}
 			public TeleporterSM(FF1Rom rom, int id)
 			{
@@ -1794,12 +1805,17 @@
 			}
 			public byte TileID
 			{
-				get { return _tile.ID; }
+				get { return _tile.Index; }
 			}
 			public void Write(FF1Rom rom)
 			{
 				_teleporter.Write(rom);
 				_tile.Write(rom);
+			}
+			public void Write(TileSetsData tileSets, Teleporters teleporters)
+			{
+				teleporters.StandardMapTeleporters[(TeleportIndex)_teleporter.ID] = new TeleportDestination(MapLocation.Cardia1, (MapIndex)_teleporter.Destination, new Coordinate((byte)(_teleporter.X & 0x3F), (byte)(_teleporter.Y & 0x3F), _teleporter.Context));
+				tileSets[_tile.TileSet].Tiles[_tile.Index] = _tile;
 			}
 		}
 

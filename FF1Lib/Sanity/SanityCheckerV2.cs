@@ -11,6 +11,7 @@ namespace FF1Lib
 		OverworldMap overworldMap;
 		Overworld overworld;
 		Teleporters teleporters;
+		TileSetsData tileSets;
 
 		NpcObjectData npcdata;
 
@@ -48,11 +49,12 @@ namespace FF1Lib
 
 		public SCMain Main { get; private set; }
 
-		public SanityCheckerV2(StandardMaps _maps, Overworld _overworld, NpcObjectData _npcdata, Teleporters _teleporters, FF1Rom _rom, ItemShopSlot _declaredShopSlot)
+		public SanityCheckerV2(StandardMaps _maps, Overworld _overworld, NpcObjectData _npcdata, Teleporters _teleporters, TileSetsData _tileSets, FF1Rom _rom, ItemShopSlot _declaredShopSlot)
 		{
 			rom = _rom;
 			overworld = _overworld;
 			overworldMap = _overworld.OverworldMap;
+			tileSets = _tileSets;
 			maps = _maps;
 			npcdata = _npcdata;
 			teleporters = _teleporters;
@@ -68,7 +70,7 @@ namespace FF1Lib
 
 			UpdateNpcRequirements();
 
-			Main = new SCMain(maps, overworldMap, _npcdata, teleporters, locations, _rom);
+			Main = new SCMain(maps, overworld, _npcdata, tileSets, teleporters, locations, _rom);
 		}
 		public void SetShipLocation(int dungeonindex)
 		{
@@ -466,6 +468,7 @@ namespace FF1Lib
 			}
 			else if (declaredShopSlot.ShopIndex == poi.ShopId - 1)
 			{
+				ProcessItem(declaredShopSlot.Item, dungeonIndex);
 				declaredShopSlot.Entrance = (OverworldTeleportIndex)dungeonIndex;
 				rewardSources.Add(declaredShopSlot);
 				poi.Done = true;
