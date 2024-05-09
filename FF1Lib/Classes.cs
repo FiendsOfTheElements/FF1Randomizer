@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using FF1Lib.Helpers;
+using RomUtilities;
 
 namespace FF1Lib
 {
@@ -329,40 +330,158 @@ namespace FF1Lib
 
 	public void PinkMage(Flags flags)
 		{
-			if(flags.PinkMage != false)
+			if (!(bool)flags.PinkMage)
+			{
+				return;
+				
+			}
+
+		
+
+
+			var whiteSlots = _spellPermissions[Classes.RedMage].Where(s => ((int)s % 8) < 4).ToList();  
+			var blackSlots = _spellPermissions[Classes.RedMage].Where(s => ((int)s % 8) >= 4).ToList(); 
+
+			var whitetoblackslots = whiteSlots.Select(s => (s + 4)).ToList();
+			var blacktowhiteslots = blackSlots.Select(s => (s - 4)).ToList();
+			_spellPermissions.ClearPermissions(Classes.RedMage);
+			var allRMslots = whitetoblackslots.Concat(blacktowhiteslots).ToList();
+			_spellPermissions.AddPermissionsRange(allRMslots.Select(x => (Classes.RedMage, x)).ToList());
+
+			var whiteSlotW = _spellPermissions[Classes.RedWizard].Where(s => ((int)s % 8) < 4).ToList();
+			var BlackSlotW = _spellPermissions[Classes.RedWizard].Where(s => ((int)s % 8) >= 4).ToList();
+
+			var whitetoblackW = whiteSlotW.Select(s => (s + 4)).ToList();
+			var blacktowhiteW = BlackSlotW.Select(s => (s - 4)).ToList();
+			_spellPermissions.ClearPermissions(Classes.RedWizard);
+			var allRWslots = whitetoblackW.Concat(blacktowhiteW).ToList();
+			_spellPermissions.AddPermissionsRange(allRWslots.Select(x => (Classes.RedWizard, x)).ToList());
+
+
+		}
+
+	public void BlackKnight(Flags flags)
+		{
+			if (!(bool)flags.BlackKnight)
+			{
+				return;
+
+			}
+
+			if ((bool)flags.BlackKnightKeep)
 			{
 
-						
-			var lv1White = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv2White = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv3White = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv4White = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv5White = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).Skip(1).Skip(2).ToList();
-			var lv1Black = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).Skip(2).Skip(4).ToList();
-			var lv2Black = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv3Black = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).Skip(2).Skip(4).ToList();
-			var lv4Black = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).Skip(2).Skip(4).ToList();
-			var lv5Black = _spellPermissions[Classes.RedMage].OrderBy(x => x).ToList().GetRange(0, 4).Skip(1).Skip(2).Skip(3).ToList();
-			var lv1WhiteU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv2WhiteU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv3WhiteU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv4WhiteU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv5WhiteU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv6WhiteU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).Skip(1).Skip(2).Skip(3).ToList();
-			var lv7WhiteU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).Skip(0).Skip(1).Skip(3).ToList();
-			var lv1BlackU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv2BlackU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).ToList();
-			var lv3BlackU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).Skip(2).Skip(4).ToList();
-			var lv4BlackU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).Skip(1).ToList();
-			var lv5BlackU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).Skip(2).Skip(3).ToList();
-			var lv6BLackU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).Skip(0).ToList();
-			var lv7BlackU = _spellPermissions[Classes.RedWizard].OrderBy(x => x).ToList().GetRange(0, 4).Skip(1).Skip(2).Skip(3).ToList();
+				var whiteslotsK = _spellPermissions[Classes.Knight].Where(s => ((int)s % 8) < 4).ToList();
+			
+				var whitetoblackslotsK = whiteslotsK.Select(s => (s + 4)).ToList();
+
+				var knightslots = whitetoblackslotsK.ToList();
+				_spellPermissions.ClearPermissions(Classes.Knight);
+				_spellPermissions.AddPermissionsRange(knightslots.Select(x => (Classes.Knight, x)).ToList());
+
+			}
+
+			if(!(bool)flags.BlackKnightKeep)
+			{ 
+
+				_spellPermissions.ClearPermissions(Classes.Knight);
+				var ninjaPer = _spellPermissions[Classes.Ninja].ToList();
+				_spellPermissions.AddPermissionsRange(ninjaPer.Select(x => (Classes.Knight, x)).ToList());
+
+
+			}
+		}
+	
+	public void WhiteNinja(Flags flags)
+		{
+			if (!(bool)flags.WhiteNinja)
+			{
+				return;
+
+			}
+			if (!(bool)flags.WhiteNinjaKeep)
+			{
+
+				_spellPermissions.ClearPermissions(Classes.Ninja);
+				var knighPer = _spellPermissions[Classes.Knight].ToList();
+				_spellPermissions.AddPermissionsRange(knighPer.Select(x => (Classes.Ninja, x)).ToList());
+
+			}
+
+			if((bool)flags.WhiteNinjaKeep)
+			{
+
+				var blackNinja = _spellPermissions[Classes.Ninja].Where(s => ((int)s % 8) >= 4).ToList();
+				var whitetoblackN = blackNinja.Select(s => (s - 4)).ToList();
+				_spellPermissions.ClearPermissions(Classes.Ninja);
+				_spellPermissions.AddPermissionsRange(whitetoblackN.Select(x => (Classes.Ninja, x)).ToList());
 
 			}
 
 		}
+		public void Knightlvl4(Flags flags, MT19337 rng)
+		{
+			if (!(bool)flags.Knightlvl4)
+			{
+				return;
 
-		public void SetMpGainOnMaxGain(Flags flags, FF1Rom rom)
+			}
+
+
+			if (!(bool)flags.BlackKnight)
+			{
+				var kilvl4 = rng.Between(0, 3);
+
+				if (kilvl4 == 0)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot1);
+				}
+
+				if (kilvl4 == 1)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot2);
+				}
+
+				if (kilvl4 == 2)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot3);
+				}
+
+				if (kilvl4 == 3)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot4);
+				}
+			}
+
+			if ((bool)flags.BlackKnight && (bool)flags.BlackKnightKeep) 
+			  
+			{
+				var kilvl4B = rng.Between(0, 3);
+
+				if (kilvl4B == 0)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black4Slot1);
+				}
+
+				if (kilvl4B == 1)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black4Slot2);
+				}
+
+				if (kilvl4B == 2)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black4Slot3);
+				}
+
+				if (kilvl4B == 3)
+				{
+					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.Black4Slot4);
+				}
+			}
+
+		}
+
+			public void SetMpGainOnMaxGain(Flags flags, FF1Rom rom)
 		{
 			if(flags.MpGainOnMaxGainMode != MpGainOnMaxGain.None)
 			{
