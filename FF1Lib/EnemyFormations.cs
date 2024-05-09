@@ -104,8 +104,13 @@ namespace FF1Lib
 			lastFormations.ForEach(formation => formation[UnrunnableOffset] |= 0x02);
 			Put(FormationsOffset + FormationSize * 0x7E, lastFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
-		private void FiendShuffle(MT19337 rng)
+		private void FiendShuffle(bool enable, MT19337 rng)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			//Shuffle the four Fiend1 fights.
 			//Specifically, shuffle what fight triggers during dialog with each of the Elemental Orbs
 			int Fiend1Offset = 119;

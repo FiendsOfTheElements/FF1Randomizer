@@ -58,18 +58,13 @@ public partial class FF1Rom : NesRom
 	int maxSteps = 0;
 	public ProgressMessage ProgressCallback;
 
-	public async Task Progress(string message="", int addMax=0, bool enable=true)
+	public async Task Progress(string message="", int addMax=0)
 	{
-		if (!enable)
-		{
-			return;
-		}
-
 		maxSteps += addMax;
-	    currentStep += 1;
-	    if (ProgressCallback != null) {
-		await ProgressCallback(currentStep, maxSteps, message);
-	    }
+		currentStep += 1;
+		if (ProgressCallback != null) {
+			await ProgressCallback(currentStep, maxSteps, message);
+		}
 	}
 	public async Task Randomize(Blob seed, Flags flags, Preferences preferences)
 	{
@@ -89,7 +84,7 @@ public partial class FF1Rom : NesRom
 		Settings = new(true);
 		//Settings.GenerateFlagstring();
 
-		await this.Progress("Beginning Randomization", 22);
+		await this.Progress("Beginning Randomization", 18);
 
 		// Load Initial Data
 		RngTables = new(this);
@@ -148,7 +143,7 @@ public partial class FF1Rom : NesRom
 		DesertOfDeath.ApplyDesertModifications((bool)flags.DesertOfDeath, this, ZoneFormations, Overworld.Locations.StartingLocation, NpcData, Dialogues);
 		Spooky(TalkRoutines, NpcData, Dialogues, ZoneFormations, Maps, rng, flags);
 		BlackOrbMode(TalkRoutines, Dialogues, flags, preferences, rng, new MT19337(funRng.Next()));
-		await this.Progress("Linking NoOverworld's Map", 1, flags.NoOverworld);
+		if(flags.NoOverworld) await this.Progress("Linking NoOverworld's Map", 1);
 		NoOverworld(Overworld.DecompressedMap, Maps, Teleporters, TileSetsData, TalkRoutines, Dialogues, NpcData, flags, rng);
 		DraculasCurse(Overworld, Teleporters, rng, flags);
 
@@ -179,8 +174,6 @@ public partial class FF1Rom : NesRom
 		var extConsumables = new ExtConsumables(this, flags, rng, shopData);
 		extConsumables.AddNormalShopEntries();
 
-
-
 		await this.Progress();
 
 		// NPC Stuff
@@ -197,7 +190,6 @@ public partial class FF1Rom : NesRom
 		// relocates NPCs or changes their routines.
 		await new RelocateChests(this).RandomlyRelocateChests(rng, Maps, TileSetsData, Teleporters, NpcData, flags);
 
-
 		// Spells
 		//must be done before spells get shuffled around otherwise we'd be changing a spell that isnt lock
 		SpellBalanceHacks(flags, rng);
@@ -213,6 +205,8 @@ public partial class FF1Rom : NesRom
 		}
 
 		// Create items
+		Etherizer(flags.Etherizer, ItemsText);
+
 		if ((bool)flags.Weaponizer)
 		{
 			Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers, flags.ItemMagicMode == ItemMagicMode.None);
@@ -242,7 +236,6 @@ public partial class FF1Rom : NesRom
 
 		new RibbonShuffle(this, rng, flags, ItemsText, ArmorPermissions).Work();
 
-
 		if (flags.WeaponCritRate)
 		{
 			DoubleWeaponCritRates();
@@ -265,22 +258,10 @@ public partial class FF1Rom : NesRom
 			RandomArmorBonus(rng, flags.RandomArmorBonusLow, flags.RandomArmorBonusHigh, preferences.CleanBlursedEquipmentNames);
 		}
 
-		if (flags.WeaponBonuses)
-		{
-			IncreaseWeaponBonus(flags.WeaponTypeBonusValue);
-		}
-
-		if (flags.Etherizer)
-		{
-			Etherizer();
-			ItemsText[(int)Item.Tent] = "ETHR@p";
-			ItemsText[(int)Item.Cabin] = "DRY@p ";
-			ItemsText[(int)Item.House] = "XETH@p";
-		}
+		IncreaseWeaponBonus(flags.WeaponBonuses, flags.WeaponTypeBonusValue);
 
 		// Starting Inventory
 		StartingItems = new StartingItems(new() { }, rng, flags, this);
-
 
 		// Shop stuff
 
@@ -401,22 +382,15 @@ public partial class FF1Rom : NesRom
 		Astos(NpcData, Dialogues, TalkRoutines, flags, rng);
 		EnableSwolePirates((bool)flags.SwolePirates);
 
-		await this.Progress("Creating new Fiends", 1, (bool)flags.AlternateFiends && !flags.SpookyFlag);
+		if((bool)flags.AlternateFiends && !flags.SpookyFlag) await this.Progress("Creating new Fiends", 1);
 		AlternativeFiends(rng, flags);
 		TransformFinalFormation(flags, rng);
 		DoEnemizer(flags, rng);
-
+		FiendShuffle((bool)flags.FiendShuffle, rng);
 		ScaleEnemyStats(rng, flags);
 		ScaleBossStats(rng, flags);
 
-		if ((bool)flags.FiendShuffle)
-		{
-			FiendShuffle(rng);
-		}
-
-
 		await this.Progress();
-
 
 		// Misc
 		RngTables.Update(flags, rng);
