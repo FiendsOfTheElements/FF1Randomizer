@@ -58,9 +58,14 @@ public partial class FF1Rom : NesRom
 	int maxSteps = 0;
 	public ProgressMessage ProgressCallback;
 
-	public async Task Progress(string message="", int addMax=0)
+	public async Task Progress(string message="", int addMax=0, bool enable=true)
 	{
-	    maxSteps += addMax;
+		if (!enable)
+		{
+			return;
+		}
+
+		maxSteps += addMax;
 	    currentStep += 1;
 	    if (ProgressCallback != null) {
 		await ProgressCallback(currentStep, maxSteps, message);
@@ -103,7 +108,7 @@ public partial class FF1Rom : NesRom
 		// We should apply Global Hacks after loading everything, but some data classes assume data has been moved already, so we call it in the middle -- To fix
 		GlobalHacks();
 
-		// Finis Loading Initial Data
+		// Finish Loading Initial Data
 		ItemsText = new ItemNames(this);
 		ArmorPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, this);
 		WeaponPermissions = new GearPermissions(0x3BF50, (int)Item.WoodenNunchucks, this);
@@ -121,18 +126,29 @@ public partial class FF1Rom : NesRom
 		Bugfixes(flags);
 		GlobalImprovements(flags, Maps, preferences);
 		MiscHacks(flags, rng);
+		MapIndex warmMechFloor = MapIndex.SkyPalace4F;
 
-		// Ressources Packs
+		// Load Ressources Packs Maps
 		LoadResourcePackMaps(flags.ResourcePack, Maps, Teleporters);
 
 		await this.Progress();
 
 		// Game Modes
 		DeepDungeon = new DeepDungeon(this);
+		if (flags.GameMode == GameModes.DeepDungeon)
+		{
+			await this.Progress("Generating Deep Dungeon's Floors...", 2);
+
+			DeepDungeon.Generate(rng, Overworld.OverworldMap, Teleporters, Dialogues, Maps.GetMapList(), flags);
+			DeepDungeonFloorIndicator();
+			warmMechFloor = (MapIndex)DeepDungeon.WarMechFloor;
+
+			await this.Progress("Generating Deep Dungeon's Floors... Done!");
+		}
 		DesertOfDeath.ApplyDesertModifications((bool)flags.DesertOfDeath, this, ZoneFormations, Overworld.Locations.StartingLocation, NpcData, Dialogues);
 		Spooky(TalkRoutines, NpcData, Dialogues, ZoneFormations, Maps, rng, flags);
 		BlackOrbMode(TalkRoutines, Dialogues, flags, preferences, rng, new MT19337(funRng.Next()));
-		if (flags.NoOverworld) await this.Progress("Linking NoOverworld's Map", 1);
+		await this.Progress("Linking NoOverworld's Map", 1, flags.NoOverworld);
 		NoOverworld(Overworld.DecompressedMap, Maps, Teleporters, TileSetsData, TalkRoutines, Dialogues, NpcData, flags, rng);
 		DraculasCurse(Overworld, Teleporters, rng, flags);
 
@@ -152,25 +168,6 @@ public partial class FF1Rom : NesRom
 		TileSetsData.Update(flags, rng);
 		TileSetsData.UpdateTrapTiles(this, ZoneFormations, flags, rng);
 		DamageTilesHack(flags, Overworld);
-
-		await this.Progress();
-
-		// NPC
-		if (flags.GameMode == GameModes.DeepDungeon)
-		{
-			await this.Progress("Generating Deep Dungeon's Floors...", 2);
-
-			DeepDungeon.Generate(rng, Overworld.OverworldMap, Teleporters, Dialogues, Maps.GetMapList(), flags);
-			DeepDungeonFloorIndicator();
-
-			await this.Progress("Generating Deep Dungeon's Floors... Done!");
-		}
-
-		MapIndex warmMechFloor = (MapIndex)DeepDungeon.WarMechFloor;
-
-		await this.Progress();
-
-
 
 		await this.Progress();
 
@@ -404,7 +401,7 @@ public partial class FF1Rom : NesRom
 		Astos(NpcData, Dialogues, TalkRoutines, flags, rng);
 		EnableSwolePirates((bool)flags.SwolePirates);
 
-		if ((bool)flags.AlternateFiends && !flags.SpookyFlag) await this.Progress("Creating new Fiends", 1);
+		await this.Progress("Creating new Fiends", 1, (bool)flags.AlternateFiends && !flags.SpookyFlag);
 		AlternativeFiends(rng, flags);
 		TransformFinalFormation(flags, rng);
 		DoEnemizer(flags, rng);
