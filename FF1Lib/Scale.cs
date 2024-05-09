@@ -254,6 +254,12 @@ namespace FF1Lib
 
 		public void ScaleEnemyStats(MT19337 rng, Flags flags)
 		{
+			if ((flags.EnemyScaleStatsHigh == 100 && flags.EnemyScaleStatsLow == 100 && !(bool)flags.SeparateEnemyHPScaling) ||
+				(flags.EnemyScaleStatsHigh == 100 && flags.EnemyScaleStatsLow == 100 && (bool)flags.SeparateEnemyHPScaling && flags.EnemyScaleHpLow == 100 && flags.EnemyScaleHpHigh == 100))
+			{
+				return;
+			}
+
 			int minStats = (bool)flags.ClampMinimumStatScale ? 100 : flags.EnemyScaleStatsLow;
 			int highStats = (bool)flags.ClampMinimumStatScale ? Math.Max(100, flags.EnemyScaleStatsHigh) : flags.EnemyScaleStatsHigh;
 			int minHp = (bool)flags.ClampEnemyHpScaling ? 100 : flags.EnemyScaleHpLow;
@@ -266,6 +272,13 @@ namespace FF1Lib
 
 		public void ScaleBossStats(MT19337 rng, Flags flags)
 		{
+			if ((flags.BossScaleStatsHigh == 100 && flags.BossScaleStatsLow == 100 && !(bool)flags.SeparateBossHPScaling) ||
+				(flags.BossScaleStatsHigh == 100 && flags.BossScaleStatsLow == 100 && (bool)flags.SeparateBossHPScaling && flags.BossScaleHpLow == 100 && flags.BossScaleHpHigh == 100))
+			{
+				return;
+			}
+
+
 			int minStats = (bool)flags.ClampMinimumBossStatScale ? 100 : flags.BossScaleStatsLow;
 			int highStats = (bool)flags.ClampMinimumBossStatScale ? Math.Max(100, flags.BossScaleStatsHigh) : flags.BossScaleStatsHigh;
 			int minHp = (bool)flags.ClampBossHPScaling ? 100 : flags.BossScaleHpLow;
@@ -569,8 +582,13 @@ namespace FF1Lib
 			Put(offset, Blob.Concat(altLevelRequirementsBytes.Select(bytes => (Blob)new byte[] { bytes[0], bytes[1], bytes[2] })));
 		}
 
-		public void EnableSwolePirates()
+		public void EnableSwolePirates(bool enable)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			EnemyInfo newPirate = new EnemyInfo();
 			newPirate.decompressData(Get(EnemyOffset + EnemySize * Enemy.Pirate, EnemySize));
 			newPirate.exp = 800;
@@ -585,60 +603,6 @@ namespace FF1Lib
 			newPirate.agility = 24;
 			Put(EnemyOffset + EnemySize * Enemy.Pirate, newPirate.compressData());
 		}
-
-		public void EnableSwoleAstos(MT19337 rng)
-		{
-			EnemyInfo newAstos = new EnemyInfo();
-			newAstos.decompressData(Get(EnemyOffset + EnemySize * Enemy.Astos, EnemySize));
-
-			newAstos.morale = 255;
-			newAstos.monster_type = (byte)MonsterType.MAGE;
-			newAstos.exp = 12800;
-			newAstos.gp = 8000;
-			newAstos.hp = 850;
-			newAstos.num_hits = 2;
-			newAstos.damage = 45;
-			newAstos.absorb = 60;
-			newAstos.mdef = 180;
-			newAstos.accuracy = 42;
-			newAstos.critrate = 1;
-			newAstos.agility = 250;
-			newAstos.elem_weakness = (byte)SpellElement.Status | (byte)SpellElement.Death;
-			newAstos.elem_resist = (byte)SpellElement.None;
-
-			if (newAstos.AIscript == 0xFF) {
-			    var i = searchForNoSpellNoAbilityEnemyScript();
-			    if (i == -1) { return; }
-			    newAstos.AIscript = (byte)i;
-			}
-			Put(EnemyOffset + EnemySize * Enemy.Astos, newAstos.compressData());
-
-			var astosScript = new EnemyScriptInfo();
-			astosScript.decompressData(Get(ScriptOffset + newAstos.AIscript * ScriptSize, ScriptSize));
-			astosScript.spell_chance = 96;
-			astosScript.skill_chance = 96;
-
-			// use "find spell by effect" to be compatible with spell shuffle and spell crafter.
-			var helper = new SpellHelper(this);
-			var spells = helper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Mute).ToList();
-			spells.AddRange(helper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Stun));
-			spells.AddRange(helper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Sleep));
-			spells.AddRange(helper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Stone));
-			spells.AddRange(helper.FindSpells(SpellRoutine.InflictStatus, SpellTargeting.Any, SpellElement.Any, SpellStatus.Death));
-
-			spells.Shuffle(rng);
-
-			astosScript.spell_list = new byte[8];
-			for (int i = 0; i < 8; i++) {
-			    astosScript.spell_list[i] = (byte)(spells[i % spells.Count].Id - Spell.CURE);
-			}
-
-			var skills = new List<byte> { (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Crack, (byte)EnemySkills.Trance, (byte)EnemySkills.Toxic };
-			skills.Shuffle(rng);
-			astosScript.skill_list = skills.ToArray();
-			Put(ScriptOffset + newAstos.AIscript * ScriptSize, astosScript.compressData());
-		}
-
 		public void BoostEnemyMorale(byte index)
 		{
 			EnemyInfo enemy = new EnemyInfo();

@@ -11,6 +11,7 @@ namespace FF1Lib
 		OverworldMap overworldMap;
 		Overworld overworld;
 		Teleporters teleporters;
+		TileSetsData tileSets;
 
 		NpcObjectData npcdata;
 
@@ -48,11 +49,12 @@ namespace FF1Lib
 
 		public SCMain Main { get; private set; }
 
-		public SanityCheckerV2(StandardMaps _maps, Overworld _overworld, NpcObjectData _npcdata, Teleporters _teleporters, FF1Rom _rom, ItemShopSlot _declaredShopSlot)
+		public SanityCheckerV2(StandardMaps _maps, Overworld _overworld, NpcObjectData _npcdata, Teleporters _teleporters, TileSetsData _tileSets, FF1Rom _rom, ItemShopSlot _declaredShopSlot)
 		{
 			rom = _rom;
 			overworld = _overworld;
 			overworldMap = _overworld.OverworldMap;
+			tileSets = _tileSets;
 			maps = _maps;
 			npcdata = _npcdata;
 			teleporters = _teleporters;
@@ -68,7 +70,7 @@ namespace FF1Lib
 
 			UpdateNpcRequirements();
 
-			Main = new SCMain(maps, overworldMap, _npcdata, teleporters, locations, _rom);
+			Main = new SCMain(maps, overworld, _npcdata, tileSets, teleporters, locations, _rom);
 		}
 		public void SetShipLocation(int dungeonindex)
 		{
@@ -106,7 +108,7 @@ namespace FF1Lib
 			throw new NotSupportedException("not needed?");
 		}
 
-		public (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> _treasurePlacements, Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements, IVictoryConditionFlags victoryConditions)
+		public (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> _treasurePlacements, Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements, IVictoryConditionFlags victoryConditions, bool layoutcheck)
 		{
 			treasurePlacements = _treasurePlacements;
 
@@ -115,7 +117,7 @@ namespace FF1Lib
 			npcs = treasurePlacements.Select(r => r as NpcReward).Where(r => r != null).ToDictionary(r => r.ObjectId);
 			shopslot = (ItemShopSlot)treasurePlacements.FirstOrDefault(r => r is ItemShopSlot);
 
-			var result = Crawl(victoryConditions);
+			var result = Crawl(victoryConditions, layoutcheck);
 
 			var mapLocations = result.rewardSources.Select(r => r.MapLocation).Distinct().ToList();
 
@@ -129,7 +131,7 @@ namespace FF1Lib
 			return rewardSources.Contains(source);
 		}
 
-		public (bool complete, IEnumerable<IRewardSource> rewardSources, AccessRequirement requirements, MapChange changes) Crawl(IVictoryConditionFlags victoryConditions)
+		public (bool complete, IEnumerable<IRewardSource> rewardSources, AccessRequirement requirements, MapChange changes) Crawl(IVictoryConditionFlags victoryConditions, bool layoutcheck)
 		{
 			Stopwatch w = Stopwatch.StartNew();
 
@@ -147,7 +149,7 @@ namespace FF1Lib
 			vampireAccessible = false;
 			airShipLiftOff = false;
 
-			BuildInitialRequirements(victoryConditions);
+			BuildInitialRequirements(victoryConditions, layoutcheck);
 
 			SetAirShipPoi();
 
@@ -466,6 +468,7 @@ namespace FF1Lib
 			}
 			else if (declaredShopSlot.ShopIndex == poi.ShopId - 1)
 			{
+				ProcessItem(declaredShopSlot.Item, dungeonIndex);
 				declaredShopSlot.Entrance = (OverworldTeleportIndex)dungeonIndex;
 				rewardSources.Add(declaredShopSlot);
 				poi.Done = true;
@@ -749,11 +752,21 @@ namespace FF1Lib
 			}
 		}
 
-		private void BuildInitialRequirements(IVictoryConditionFlags victoryConditions)
+		private void BuildInitialRequirements(IVictoryConditionFlags victoryConditions, bool layoutcheck)
 		{
 			airShipLocationAccessible = false;
 
-			requirements = AccessRequirement.None;
+			if (layoutcheck)
+			{
+				requirements = AccessRequirement.AllExceptEnding;
+				changes = MapChange.All;
+			}
+			else
+			{
+				requirements = AccessRequirement.None;
+				changes = MapChange.None;
+			}
+
 			if ((bool)victoryConditions.FreeLute)
 			{
 				requirements |= AccessRequirement.Lute;
@@ -763,7 +776,6 @@ namespace FF1Lib
 				requirements |= AccessRequirement.Rod;
 			}
 
-			changes = MapChange.None;
 			if (victoryConditions.IsBridgeFree ?? false)
 			{
 				changes |= MapChange.Bridge;

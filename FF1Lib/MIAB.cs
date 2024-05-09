@@ -48,7 +48,7 @@ namespace FF1Lib
 
 	public partial class FF1Rom : NesRom
 	{
-		public void MonsterInABox(ZoneFormations zoneformations, NpcObjectData npcdata, DialogueData dialogues, MT19337 rng, Flags flags)
+		public void MonsterInABox(ItemPlacement itemPlacement, ZoneFormations zoneformations, TileSetsData tileSetsData, NpcObjectData npcdata, DialogueData dialogues, MT19337 rng, Flags flags)
 		{
 			if (!(bool)flags.TrappedChestsEnabled)
 			{
@@ -56,8 +56,8 @@ namespace FF1Lib
 			}
 
 			const int lut_TreasureOffset = 0x3100;
-			const int BANK_SMINFO = 0x00;
-			const int lut_TileSMsetProp = 0x8800; // BANK_SMINFO - page                        - 0x100 bytes x 8  (2 bytes per)
+			//const int BANK_SMINFO = 0x00;
+			//const int lut_TileSMsetProp = 0x8800; // BANK_SMINFO - page                        - 0x100 bytes x 8  (2 bytes per)
 
 			// Replace OpenTreasureChest routine, see 11_8EC0_CheckTrap.asm
 			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20A08E8A60"));
@@ -72,7 +72,21 @@ namespace FF1Lib
 
 			List<IRewardSource> validChests = new();
 			var chestMonsterList = new byte[0x100];
-			var treasureList = Get(lut_TreasureOffset, 0x100);
+
+			List<int> treasureList = new();
+
+			for (int i = 0; i < 0x100; i++)
+			{
+				var index = itemPlacement.PlacedItems.FindIndex(r => (r.Address - 0x3100) == i);
+				if (index > -1)
+				{
+					treasureList.Add((int)itemPlacement.PlacedItems[index].Item);
+				}
+				else
+				{
+					treasureList.Add((int)Item.Cabin);
+				}
+			}
 
 			// Select treasures			
 			var betterEquipmentList = ItemLists.UberTier.Concat(ItemLists.LegendaryArmorTier).Concat(ItemLists.LegendaryWeaponTier).Concat(ItemLists.RareArmorTier).Concat(ItemLists.RareWeaponTier);
@@ -389,14 +403,18 @@ namespace FF1Lib
 				{
 					for (int j = 0; j < 0x80; j++)
 					{
-						var tempTileProperties = GetFromBank(BANK_SMINFO, lut_TileSMsetProp + (i * 0x100) + (j * 2), 2);
-						if ((tempTileProperties[0] & (byte)TilePropFunc.TP_SPEC_TREASURE) > 0 && (tempTileProperties[0] & (byte)TilePropFunc.TP_NOMOVE) > 0)
+
+
+						var tempTileProperties = tileSetsData[i].Tiles[j].Properties;
+						//var tempTileProperties = GetFromBank(BANK_SMINFO, lut_TileSMsetProp + (i * 0x100) + (j * 2), 2);
+						if ((tempTileProperties.Byte1 & (byte)TilePropFunc.TP_SPEC_TREASURE) > 0 && (tempTileProperties.Byte1 & (byte)TilePropFunc.TP_NOMOVE) > 0)
 						{
-							if (chestMonsterList[(int)tempTileProperties[1]] > 0)
+							if (chestMonsterList[(int)tempTileProperties.Byte2] > 0)
 							{
-								TileSM temptile = new((byte)j, i, this);
-								temptile.TileGraphic = new List<byte> { 0x2A, 0x7C, 0x3A, 0x3B };
-								temptile.Write(this);
+								tileSetsData[i].Tiles[j].TileGraphic = new List<byte> { 0x2A, 0x7C, 0x3A, 0x3B };
+								//TileSM temptile = new((byte)j, i, this);
+								//temptile.TileGraphic = new List<byte> { 0x2A, 0x7C, 0x3A, 0x3B };
+								//temptile.Write(this);
 							}
 						}
 					}

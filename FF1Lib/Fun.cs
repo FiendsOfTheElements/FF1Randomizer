@@ -87,8 +87,16 @@ namespace FF1Lib
 		public const int PaletteSize = 4;
 		public const int PaletteCount = 64;
 
-	    public void FunEnemyNames(bool teamSteak, bool altFiends, MT19337 rng)
+	    public void FunEnemyNames(Flags flags, Preferences preferences, MT19337 rng)
 		{
+			bool teamSteak = preferences.TeamSteak;
+			bool altFiends = (bool)flags.AlternateFiends;
+
+			if (!preferences.FunEnemyNames || flags.EnemizerEnabled)
+			{
+				return;
+			}
+
 			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 
 			enemyText[1] = "GrUMP";    // +0  GrIMP
@@ -147,8 +155,13 @@ namespace FF1Lib
 			WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
 		}
 
-		public void PaletteSwap(MT19337 rng)
+		public void PaletteSwap(bool enable, MT19337 rng)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			var palettes = Get(PaletteOffset, PaletteSize * PaletteCount).Chunk(PaletteSize);
 
 			palettes.Shuffle(rng);
@@ -156,8 +169,13 @@ namespace FF1Lib
 			Put(PaletteOffset, Blob.Concat(palettes));
 		}
 
-		public void TeamSteak()
+		public void TeamSteak(bool enable)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			Put(TyroPaletteOffset, Blob.FromHex("302505"));
 			Put(TyroSpriteOffset, Blob.FromHex(
 				"00000000000000000000000000000000" + "00000000000103060000000000000001" + "001f3f60cf9f3f7f0000001f3f7fffff" + "0080c07f7f87c7e60000008080f8f8f9" + "00000080c0e0f0780000000000000080" + "00000000000000000000000000000000" +
@@ -166,60 +184,6 @@ namespace FF1Lib
 				"00000000000000000000000000000000" + "07070706060707070100000101010101" + "ffffff793080c0f0fffc3086cfffffff" + "e7fefcf9f26469e3f80103070f9f9e1c" + "264c983060c08000f8f0e0c080000000" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "07070706060301010101010101000000" + "f9f9f9797366ece8fefefefefcf97377" + "c68c98981830606038706060e0c08080" + "00000000000000000000000000000000" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "01010101010000000000000000000000" + "fb9b9b9b98ff7f006767676767000000" + "6060606060c080008080808080000000" + "00000000000000000000000000000000" + "00000000000000000000000000000000"));
-		}
-
-		public void DisableSpellCastScreenFlash()
-		{
-			//just load the original battleground background in place of the flash color, it will still use the same number of frames
-			Put(0x32051, Blob.FromHex("AD446D"));
-		}
-
-		public void LockRespondRate(int respondRate)
-		{
-			// original title screen behavior
-			/*
-			C9 01     CMP #RIGHT              ; did they press Right?
-            D0 04     BNE @Left               ;  if not, they must've pressed Left
-            A9 01     LDA #1                  ; add +1 to rate if right
-            D0        BNE :+
-            02        @Left:
-            A9 FF     LDA #-1                 ; or -1 if left
-            18    :   CLC
-            65 FA     ADC respondrate         ; add/subtract 1 from respond rate
-            29 07     AND #7                  ; mask to wrap it from 0<->7
-            85 FA     STA respondrate
-			 */
-
-			// MODIFIED behavior
-			/*
-			C9 01     CMP #RIGHT              ; did they press Right?
-            D0 04     BNE @Left               ;  if not, they must've pressed Left
-            A9 00     LDA #0                  ; MODIFIED (adds nothing instead of 1)
-            D0        BNE :+
-            02        @Left:
-            A9 00     LDA #0                  ; MODIFIED (adds nothing instead of -1)
-            18    :   CLC
-            65 FA     ADC respondrate         ; add/subtract 1 from respond rate
-            29 07     AND #7                  ; mask to wrap it from 0<->7
-            85 FA     STA respondrate
-			 */
-
-			Put(0x3A1FD, Blob.FromHex("C901D004A900D002A9001865FA290785FA"));
-
-			// Override the read of the respond rate address so that it always reports a hardcoded value
-			PutInBank(0x0B, 0x99C8, Blob.FromHex("A0001A"));
-			PutInBank(0x0B, 0x99C9, Blob.FromHex($"{respondRate - 1:X2}")); // respondrate is 0-based
-		}
-
-		public void UninterruptedMusic()
-		{
-			// Full commented Assembly code can be seen in "UninterruptedMusic-QoLFlag.asm"
-			// These 3 replace existing code for processing the old Treasure Chest sound chime, jumping out to the new code
-			PutInBank(0x1F, 0xD62B, Blob.FromHex("A90F2003FE2065A0EAEA"));
-			PutInBank(0x1F, 0xD675, Blob.FromHex("A90F2003FE2073A04C88D6A90F2003FE4C00A0EA"));
-			PutInBank(0x1F, 0xD6C4, Blob.FromHex("4C80D6"));
-			// New code generating a new sound that no longer interrupts the music but otherwise works the same (plays for 27 frames)
-			PutInBank(0x0F, 0xA000, Blob.FromHex("A57DC90A905CC67DC963904CC97DB017C96A903FC96F9036C974902DC978F01FC97890204C3AA0A91B857EA97F8D0440A97F8D0540A9098D0740A91C4C5FA0A9088D0740A9E14C5FA0A9C94C5FA0A98E4C5FA0A9704C5FA0A932857D4C09C08D06404C09C0A57DC901F005A97E857D60A254864B60A57DC932F014A54BC981F00AA90F855720A1D64C75A0A57C854BA900857D60"));
 		}
 
 		public void ShuffleLeader(MT19337 rng)
@@ -233,6 +197,8 @@ namespace FF1Lib
 		{
 			switch (mode)
 			{
+				case MusicShuffle.None:
+					return;
 				case MusicShuffle.Standard:
 					List<byte> overworldTracks = new List<byte> { 0x41, 0x42, 0x44, 0x45, 0x46, 0x47, 0x4A, 0x4F };
 					List<byte> townTracks = new List<byte> { 0x41, 0x42, 0x45, 0x46, 0x47, 0x48, 0x4A, 0x4F, 0x51 };
@@ -442,8 +408,13 @@ namespace FF1Lib
 			Data[0x03A2D3] = (byte)menuColor;
 		}
 
-		public void EnableModernBattlefield()
+		public void EnableModernBattlefield(bool enable)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			// Since we're changing the window color in the battle scene we need to ensure that
 			// $FF tile remains opaque like in the menu screen. That battle init code
 			// overwrites it with transparent so we skip that code here. Since this is fast
@@ -546,8 +517,13 @@ namespace FF1Lib
 			}
 		}
 
-		public void UseVariablePaletteForCursorAndStone()
+		public void UseVariablePaletteForCursorAndStone(bool enable)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			// The masamune uses the same palette as the cursor and stone characters
 			// so we can free up a whole palette if we reset the varies palette to
 			// the masamune palette after every swing and magic annimation. The only
@@ -578,18 +554,6 @@ namespace FF1Lib
 			// Enable this feature by rewriting the JSR BattleFrame inside UpdateSprites_BattleFrame
 			Put(0x31904, Blob.FromHex("20F1FD207CA060"));
 		}
-
-		public void DisableDamageTileFlicker()
-		{
-			Data[0x7C7E2] = 0xA9;
-		}
-		
-		// Overwrites the lava SFX Assembly Code with a bunch of NOPs
-		public void DisableDamageTileSFX()
-		{
-			Put(0x7C7E7, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-		}		
-
 		public void ChangeLute(bool changelute, DialogueData dialogues, MT19337 rng)
 		{
 			if (!changelute)

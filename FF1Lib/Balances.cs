@@ -16,8 +16,12 @@ namespace FF1Lib
 			Put(WeaponOffset, weapons.SelectMany(weapon => weapon.ToBytes()).ToArray());
 		}
 
-		public void IncreaseWeaponBonus(int weaponBonusValue)
+		public void IncreaseWeaponBonus(bool enable, int weaponBonusValue)
 		{
+			if (!enable)
+			{
+				return;
+			}
 			//change the weapon bonus from +4 to +X
 			Put(0x326F5, new byte[] { (byte) weaponBonusValue });
 		}

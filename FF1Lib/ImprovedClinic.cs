@@ -2,8 +2,13 @@
 {
 	public partial class FF1Rom
 	{
-		public void ImprovedClinic()
+		public void ImprovedClinic(bool enable)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			// See improved-clinic.asm
 
 			// List characters that have ANY statuses, not just Dead
