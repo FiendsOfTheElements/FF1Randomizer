@@ -142,11 +142,6 @@ public partial class FF1Rom : NesRom
 
 		var oldItemNames = ItemsText.ToList();
 
-
-
-		ZoneFormations.ShuffleEnemyFormations(rng, flags.FormationShuffleMode, flags.EnemizerEnabled);
-		ZoneFormations.UnleashWarMECH(flags.WarMECHMode == WarMECHMode.Unleashed || flags.WarMECHMode == WarMECHMode.All);
-
 		// Maps
 		Overworld.Update(Teleporters);
 		GeneralMapHacks(flags, Overworld, Maps, ZoneFormations, TileSetsData, rng);
@@ -204,11 +199,6 @@ public partial class FF1Rom : NesRom
 		// happen after anything that adds, removes or
 		// relocates NPCs or changes their routines.
 		await new RelocateChests(this).RandomlyRelocateChests(rng, Maps, TileSetsData, Teleporters, NpcData, flags);
-
-		// Encounters
-
-		// Enemies
-
 
 
 		// Spells
@@ -394,6 +384,10 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
+		// Encounters
+		ZoneFormations.ShuffleEnemyFormations(rng, flags.FormationShuffleMode, flags.EnemizerEnabled);
+		ZoneFormations.UnleashWarMECH(flags.WarMECHMode == WarMECHMode.Unleashed || flags.WarMECHMode == WarMECHMode.All);
+
 		// Enemies
 		ShuffleEnemyScripts(rng, flags);
 		ShuffleEnemySkillsSpells(rng, flags);
@@ -424,9 +418,6 @@ public partial class FF1Rom : NesRom
 		}
 
 
-
-
-
 		await this.Progress();
 
 
@@ -440,24 +431,17 @@ public partial class FF1Rom : NesRom
 		new QuickMiniMap(this, Overworld.DecompressedMap).EnableQuickMinimap(flags.SpeedHacks || Overworld.MapExchange != null);
 		ShopUpgrade(flags, Dialogues, preferences);
 		EnableAirBoat(flags);
+		OpenChestsInOrder(flags.OpenChestsInOrder && !flags.Archipelago);
+		SetRNG(flags);
 
 		new TreasureStacks(this, flags).SetTreasureStacks();
 
-
 		await this.Progress();
-
-		if (ItemsText[(int)Item.Ribbon].Length > 7
-		    && ItemsText[(int)Item.Ribbon][7] == ' ')
-		    {
-			ItemsText[(int)Item.Ribbon] = ItemsText[(int)Item.Ribbon].Remove(7);
-		    }
-
-
 
 		NPCHints(rng, NpcData, Maps, Dialogues, flags, PlacementContext, sanityChecker, shopData);
 		SkyWarriorSpoilerBats(rng, flags, NpcData, Dialogues);
 
-		MonsterInABox(ZoneFormations, NpcData, Dialogues, rng, flags);
+		MonsterInABox(itemPlacement, ZoneFormations, TileSetsData, NpcData, Dialogues, rng, flags);
 
 		ExpGoldBoost(flags);
 
@@ -470,7 +454,6 @@ public partial class FF1Rom : NesRom
 		// Party
 		PartyGeneration(rng, flags, preferences);
 		PubReplaceClinic(rng, Maps.AttackedTown, flags);
-
 
 		await this.Progress();
 
@@ -496,7 +479,10 @@ public partial class FF1Rom : NesRom
 
 		await this.LoadResourcePack(flags.ResourcePack, Dialogues);
 
+		StatsTrackingHacks(flags, preferences);
 		RollCredits(rng);
+		if ((bool)flags.IsShipFree) Overworld.SetShipLocation(255);
+		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
 		// Quality of Life Stuff
 		QualityOfLifeHacks(flags, preferences);
@@ -524,20 +510,7 @@ public partial class FF1Rom : NesRom
 		    }
 		}
 
-
-
-		if ((bool)flags.IsShipFree)
-		{
-			Overworld.SetShipLocation(255);
-		}
-
-
-
-
-		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
-
-
-
+		// Archipelago
 		if (flags.Archipelago)
 		{
 			Overworld.SetShipLocation(255);
@@ -546,14 +519,11 @@ public partial class FF1Rom : NesRom
 			Utilities.ArchipelagoCache = exporter.Work();
 		}
 
-		ItemsText.Write(this, flags.GameMode == GameModes.DeepDungeon ? new List<Item>() : ItemLists.UnusedGoldItems.ToList());
-
+		// Spoilers
 		if (flags.Spoilers && sanityChecker != null) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, itemPlacement.PlacedItems, Overworld, PlacementContext, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
 
-		OpenChestsInOrder(flags.OpenChestsInOrder && !flags.Archipelago);
-		SetRNG(flags);
-
 		// Write back everything
+		ItemsText.Write(this, flags.GameMode == GameModes.DeepDungeon ? new List<Item>() : ItemLists.UnusedGoldItems.ToList());
 		TalkRoutines.Write(this);
 		NpcData.Write(TalkRoutines.ScriptPointers);
 		Dialogues.Write();
@@ -575,12 +545,11 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-
 		uint last_rng_value = rng.Next();
 
+		// Final ROM writes
 		//WriteSeedAndFlags(seed.ToHex(), flags, flagsForRng, unmodifiedFlags, "ressourcePackHash", last_rng_value);
 		WriteSeedAndFlags(seed.ToHex(), flags, flagsForRng, unmodifiedFlags, resourcesPackHash.ToHex(), last_rng_value);
-		StatsTrackingHacks(flags, preferences);
 		if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 
 		await this.Progress("Randomization Completed");
