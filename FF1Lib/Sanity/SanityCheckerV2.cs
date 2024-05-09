@@ -108,7 +108,7 @@ namespace FF1Lib
 			throw new NotSupportedException("not needed?");
 		}
 
-		public (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> _treasurePlacements, Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements, IVictoryConditionFlags victoryConditions)
+		public (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> _treasurePlacements, Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements, IVictoryConditionFlags victoryConditions, bool layoutcheck)
 		{
 			treasurePlacements = _treasurePlacements;
 
@@ -117,7 +117,7 @@ namespace FF1Lib
 			npcs = treasurePlacements.Select(r => r as NpcReward).Where(r => r != null).ToDictionary(r => r.ObjectId);
 			shopslot = (ItemShopSlot)treasurePlacements.FirstOrDefault(r => r is ItemShopSlot);
 
-			var result = Crawl(victoryConditions);
+			var result = Crawl(victoryConditions, layoutcheck);
 
 			var mapLocations = result.rewardSources.Select(r => r.MapLocation).Distinct().ToList();
 
@@ -131,7 +131,7 @@ namespace FF1Lib
 			return rewardSources.Contains(source);
 		}
 
-		public (bool complete, IEnumerable<IRewardSource> rewardSources, AccessRequirement requirements, MapChange changes) Crawl(IVictoryConditionFlags victoryConditions)
+		public (bool complete, IEnumerable<IRewardSource> rewardSources, AccessRequirement requirements, MapChange changes) Crawl(IVictoryConditionFlags victoryConditions, bool layoutcheck)
 		{
 			Stopwatch w = Stopwatch.StartNew();
 
@@ -149,7 +149,7 @@ namespace FF1Lib
 			vampireAccessible = false;
 			airShipLiftOff = false;
 
-			BuildInitialRequirements(victoryConditions);
+			BuildInitialRequirements(victoryConditions, layoutcheck);
 
 			SetAirShipPoi();
 
@@ -752,11 +752,21 @@ namespace FF1Lib
 			}
 		}
 
-		private void BuildInitialRequirements(IVictoryConditionFlags victoryConditions)
+		private void BuildInitialRequirements(IVictoryConditionFlags victoryConditions, bool layoutcheck)
 		{
 			airShipLocationAccessible = false;
 
-			requirements = AccessRequirement.None;
+			if (layoutcheck)
+			{
+				requirements = AccessRequirement.AllExceptEnding;
+				changes = MapChange.All;
+			}
+			else
+			{
+				requirements = AccessRequirement.None;
+				changes = MapChange.None;
+			}
+
 			if ((bool)victoryConditions.FreeLute)
 			{
 				requirements |= AccessRequirement.Lute;
@@ -766,7 +776,6 @@ namespace FF1Lib
 				requirements |= AccessRequirement.Rod;
 			}
 
-			changes = MapChange.None;
 			if (victoryConditions.IsBridgeFree ?? false)
 			{
 				changes |= MapChange.Bridge;

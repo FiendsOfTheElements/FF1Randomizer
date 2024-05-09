@@ -56,7 +56,7 @@
 
 			LoadInTown(decompressedMap);
 			ApplyMapMods(maps, flippedmaps, (bool)flags.LefeinSuperStore);
-			UpdateInRoomTeleporters();
+			//UpdateInRoomTeleporters();
 			CreateTeleporters(maps, flippedmaps, tileSets, teleporters, rng);
 			PrepNPCs(maps, talkroutines, dialogues, npcdata, flippedmaps, flags, rng);
 			UpdateBackgrounds();
@@ -70,8 +70,6 @@
 		{
 			var townTileList = new List<byte> { 0x49, 0x4A, 0x4C, 0x4D, 0x4E, 0x5A, 0x5D, 0x6D, 0x02 };
 			var townPosList = new List<(byte, byte)> { (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00) };
-
-			//var decompressedMap = overworldmap.MapBytes;
 
 			for (int x = 0; x < decompressedMap[0].Count; x++)
 			{
@@ -1170,9 +1168,6 @@
 				TilesetTeleportTiles.Add(tileSets[(int)tileset].Tiles.Where(y => (y.PropertyType & 0b1100_0000) == 0b1000_0000).ToList());
 			}
 
-			//tileSets[] .SelectMany(x => x.Where(y => (y.PropertyType & 0b1100_0000) == 0b1000_0000));
-			//var TilesetTeleportTiles = Tilesets.Select(x => x.Where(y => (y.PropertyType & 0b1100_0000) == 0b1000_0000).ToList()).ToList();
-
 			List<(byte, MapLocation, MapLocation)> teleportersLocDest = new();
 
 			for (int i = 0; i < maps.MapTileSets.Count(); i++)
@@ -1182,7 +1177,6 @@
 					if (maps[(MapIndex)i].Map.FindFirst(teleporttile.Index, out var x, out var y))
 					{
 						var targetteleporter = teleporters[teleporttile.PropertyValue];
-						//var targetteleporter = teleportersdata.StandardMapTeleporters[(TeleportIndex)teleporttile.PropertyValue];
 
 						teleportersLocDest.Add((
 							teleporttile.PropertyValue,
@@ -1309,7 +1303,7 @@
 				}
 
 				// Shuffle Towns amongst themselves, only if entrances aren't mixed
-				// If impair number, do a 3 way shuffle first, then switch pairs for the rest
+				// If odd number, do a 3 way shuffle first, then switch pairs for the rest
 				if (TownsArray.Count % 2 != 0)
 				{
 					var pairA = TownTeleporters[TownsArray.SpliceRandom(rng)];
@@ -1340,7 +1334,7 @@
 				}
 
 				// Shuffle pairs amongst themselves
-				// If impair number, do a 3 way shuffle first, then switch pairs for the rest
+				// If odd number, do a 3 way shuffle first, then switch pairs for the rest
 				if (ComboArray.Count % 2 != 0)
 				{
 					var pairA = ComboTeleporters[ComboArray.SpliceRandom(rng)];
@@ -1371,7 +1365,7 @@
 				}
 
 				// Shuffle orphans amongst themselves
-				// If impair number, do a 3 way shuffle first, then switch pairs for the rest
+				// If odd number, do a 3 way shuffle first, then switch pairs for the rest
 				if (OrphansArray.Count % 2 != 0)
 				{
 					var pairA = OrphanTeleporters[OrphansArray.SpliceRandom(rng)];
@@ -1533,13 +1527,11 @@
 			foreach (var tile in TeleportTiles)
 			{
 				tileSets[tile.TileSet].Tiles[tile.Index] = tile;
-				//tile.Write(this);
 			}
 
 			foreach (var teleport in teleporters)
 			{
 				teleportersdata.StandardMapTeleporters[(TeleportIndex)teleport.ID] = new TeleportDestination(teleport.Raw(), teleport.InRoom ? CoordinateLocale.StandardInRoom : CoordinateLocale.Standard);
-				//teleport.Write(this);
 			}
 
 			// Set Orbs over stairs to avoid softlocks, altho it shouldn't happen anyway, no need for Mark npcs since you can always go back
@@ -1575,116 +1567,6 @@
 			public MapIndex map;
 			public MapLocation location;
 		}
-		/*
-		public class TileSM
-		{
-			private byte _attribute;
-			private byte _TSAul;
-			private byte _TSAur;
-			private byte _TSAdl;
-			private byte _TSAdr;
-			private byte _property1;
-			private byte _property2;
-			private int _tileSetOrigin;
-			private byte _tileSetID;
-
-			const int BANK_SMINFO = 0x00;
-			const int lut_TileSMsetAttr = 0x8400; // BANK_SMINFO - must be on $400 byte bound  - 0x80 x8
-			const int lut_TileSMsetProp = 0x8800; // BANK_SMINFO - page                        - 0x100 bytes x 8  (2 bytes per)
-			const int lut_TileSMsetTSA = 0x9000;  // BANK_SMINFO - page                        - 0x80 bytes x4 x8 => ul, ur, dl, dr
-			//const int lut_SMPalettes = 0xA000;    // BANK_SMINFO - $1000 byte bound            - 0x30 bytes x8?
-
-			public TilePalette Palette
-			{
-				get { return (TilePalette)_attribute; }
-				set { _attribute = (byte)value; }
-			}
-			public List<byte> TileGraphic
-			{
-				get { return new List<byte> { _TSAul, _TSAur, _TSAdl, _TSAdr }; }
-				set
-				{
-					_TSAul = value[0];
-					_TSAur = value[1];
-					_TSAdl = value[2];
-					_TSAdr = value[3];
-				}
-			}
-			public byte PropertyType
-			{
-				get { return _property1; }
-				set
-				{
-					_property1 = value;
-				}
-			}
-			public byte PropertyValue
-			{
-				get { return _property2; }
-				set
-				{
-					_property2 = value;
-				}
-			}
-			public byte ID
-			{
-				get { return _tileSetID; }
-				set
-				{
-					_tileSetID = value;
-				}
-			}
-			public int TileSet
-			{
-				get { return _tileSetOrigin; }
-				set
-				{
-					_tileSetOrigin = value;
-				}
-			}
-			public TileSM(byte id, int tileset, TilePalette palette, List<byte> tilegraphics, byte property1, byte property2)
-			{
-				_tileSetID = id;
-				_tileSetOrigin = tileset;
-				_attribute = (byte)palette;
-				_property1 = property1;
-				_property2 = property2;
-				_TSAul = tilegraphics[0];
-				_TSAur = tilegraphics[1];
-				_TSAdl = tilegraphics[2];
-				_TSAdr = tilegraphics[3];
-			}
-			public TileSM(byte id, int tileset, FF1Rom rom)
-			{
-				Read(id, tileset, rom);
-			}
-			public TileProp RawProperties()
-			{
-				return new TileProp { Byte1 = _property1, Byte2 = _property2 };
-			}
-			public void Write(FF1Rom rom)
-			{
-				rom.PutInBank(BANK_SMINFO, lut_TileSMsetAttr + (_tileSetOrigin * 0x80) + _tileSetID, new byte[] { _attribute });
-				rom.PutInBank(BANK_SMINFO, lut_TileSMsetProp + (_tileSetOrigin * 0x100) + (_tileSetID * 2), new byte[] { _property1, _property2 });
-				rom.PutInBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + _tileSetID, new byte[] { _TSAul });
-				rom.PutInBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x80 + _tileSetID, new byte[] { _TSAur });
-				rom.PutInBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x100 + _tileSetID, new byte[] { _TSAdl });
-				rom.PutInBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x180 + _tileSetID, new byte[] { _TSAdr });
-			}
-			public void Read(byte id, int tileset, FF1Rom rom)
-			{
-				_tileSetID = id;
-				_tileSetOrigin = tileset;
-				_attribute = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetAttr + (_tileSetOrigin * 0x80) + _tileSetID, 1)[0];
-				_property1 = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetProp + (_tileSetOrigin * 0x100) + (_tileSetID * 2), 2)[0];
-				_property2 = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetProp + (_tileSetOrigin * 0x100) + (_tileSetID * 2), 2)[1];
-				_TSAul = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + _tileSetID, 1)[0];
-				_TSAur = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x80 + _tileSetID, 1)[0];
-				_TSAdl = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x100 + _tileSetID, 1)[0];
-				_TSAdr = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x180 + _tileSetID, 1)[0];
-			}
-		}
-		*/
 		public class TeleporterSM
 		{
 			private byte _x;
