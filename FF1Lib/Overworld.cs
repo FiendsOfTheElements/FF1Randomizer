@@ -30,7 +30,7 @@ namespace FF1Lib
 		private MT19337 rng;
 
 		public List<Backdrop> BattleBackdrops { get; private set; }
-		public TileSet TileSet { get; private set; }
+		public TileSet TileSet { get => owTileSet; }
 		public List<List<byte>> DecompressedMap { get => overworldMap.MapBytes; }
 		public OwMapExchangeData MapExchangeData { get => owMapExchange?.Data; }
 		public OwMapExchange MapExchange { get => owMapExchange; }

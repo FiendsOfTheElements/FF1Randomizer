@@ -46,8 +46,21 @@ namespace FF1Lib
 		private const byte UnrunnableOffset = 0x0D;       // no run flag (in low bit)
 		private const byte QuantityBOffset = 0x0E;        // enemy quantities for B formation (2 bytes)
 
-		public void ShuffleUnrunnable(MT19337 rng, Flags flags, int unrunnablePercent)
+		public void ShuffleUnrunnable(MT19337 rng, Flags flags)
 		{
+			int unrunnablePercent = rng.Between(flags.UnrunnablesLow, flags.UnrunnablesHigh);
+
+			if (!(bool)flags.UnrunnableShuffle)
+			{
+				return;
+			}
+			else if(unrunnablePercent >= 100)
+			{
+				// This is separate because the basic Imp formation is not otherwise included in the possible unrunnable formations
+				CompletelyUnrunnable();
+				return;
+			}
+
 			// Load a list of formations from ROM
 			List<Blob> formations = Get(FormationsOffset, FormationSize * FormationCount).Chunk(FormationSize);
 			// First we mark all formations as runnable except for fiends/chaos (both sides) or the other boss fights (on a-side only)
@@ -91,21 +104,13 @@ namespace FF1Lib
 			lastFormations.ForEach(formation => formation[UnrunnableOffset] |= 0x02);
 			Put(FormationsOffset + FormationSize * 0x7E, lastFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
-
-		// Should be obsolete, leaving here just in case
-		/*public void CompletelyRunnable()
+		private void FiendShuffle(bool enable, MT19337 rng)
 		{
-			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
-			formations.ForEach(formation => formation[UnrunnableOffset] &= 0xFC);
-			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
+			if (!enable)
+			{
+				return;
+			}
 
-			List<Blob> lastFormations = Get(FormationsOffset + FormationSize * 0x7E, FormationSize * 2).Chunk(FormationSize);
-			lastFormations.ForEach(formation => formation[UnrunnableOffset] &= 0xFD);
-			Put(FormationsOffset + FormationSize * 0x7E, lastFormations.SelectMany(formation => formation.ToBytes()).ToArray());
-		}*/
-
-		private void FiendShuffle(MT19337 rng)
-		{
 			//Shuffle the four Fiend1 fights.
 			//Specifically, shuffle what fight triggers during dialog with each of the Elemental Orbs
 			int Fiend1Offset = 119;
@@ -114,8 +119,13 @@ namespace FF1Lib
 			Put(FormationsOffset + FormationSize * Fiend1Offset, fiendFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
-		public void ShuffleSurpriseBonus(MT19337 rng)
+		public void ShuffleSurpriseBonus(bool enable, MT19337 rng)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			// Just like the vanilla game this doesn't care if a high surprise enemy is unrunnable
 			// and therefore incapable of surprise or first strike. It just shuffles indiscriminately.
 			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
@@ -143,9 +153,12 @@ namespace FF1Lib
 			Put(FormationsOffset + FormationSize * WarMECHFormationIndex, warMECHFormation);
 		}
 
-		public void TransformFinalFormation(FinalFormation formation, EvadeCapValues evadeClampFlag, MT19337 rng)
+		public void TransformFinalFormation(Flags flags, MT19337 rng)
 		{
-			if (formation == FinalFormation.None) // This shouldnt be possible, but we are still checking anyways to be safe.
+			FinalFormation formation = flags.TransformFinalFormation;
+			EvadeCapValues evadeClampFlag = flags.EvadeCap;
+
+			if (formation == FinalFormation.None || (bool)flags.SpookyFlag) 
 			{
 				return;
 			}

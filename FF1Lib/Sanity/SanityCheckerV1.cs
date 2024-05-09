@@ -18,7 +18,7 @@
 
 		public (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> treasurePlacements,
 										Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements,
-										IVictoryConditionFlags victoryConditions)
+										IVictoryConditionFlags victoryConditions, bool layoutcheck)
 
 		{
 			const int maxIterations = 20;

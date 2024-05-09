@@ -33,8 +33,13 @@ namespace FF1Lib
 			overworldMap = decompressedMap;
 		}
 
-		public void EnableQuickMinimap()
+		public void EnableQuickMinimap(bool enable)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			LoadData();
 
 			BuildCHR();

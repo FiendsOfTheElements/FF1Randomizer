@@ -107,13 +107,14 @@ namespace FF1Lib
 
 		private FF1Rom rom;
 
-		public NpcObjectData(FF1Rom _rom)
+		public NpcObjectData(StandardMaps maps, Flags flags, FF1Rom _rom)
 		{
 			rom = _rom;
 			var sprites = rom.Get(MapObjGfxOffset, npcObjectQty).ToBytes();
 			var talkroutines = rom.GetFromBank(oldTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcObjectQty * 2).Chunk(2);
 			var talkarrays = rom.GetFromBank(oldTalkRoutinesBank, lut_MapObjTalkData, npcObjectQty * 4).Chunk(4);
 			npcObjects = sprites.Select((s, i) => new NpcObject((ObjectSprites)s, talkroutines[i], talkarrays[i].ToBytes())).ToList();
+			Update(maps, flags);
 		}
 		public NpcObject this[ObjectId index]
 		{
