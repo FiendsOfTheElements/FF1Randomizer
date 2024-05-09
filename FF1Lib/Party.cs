@@ -315,6 +315,11 @@ namespace FF1Lib
 
 		public void EnableRandomPromotions(Flags flags, MT19337 rng)
 		{
+			if (!(bool)flags.EnableRandomPromotions)
+			{
+				return;
+			}
+
 			// Need EnableTwelveClasses()
 			// Promotions list & class names list
 			List<sbyte> promotions = new List<sbyte> { 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B };

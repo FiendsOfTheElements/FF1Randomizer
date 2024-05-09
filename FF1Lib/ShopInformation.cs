@@ -103,6 +103,11 @@
 		};
 		public void ShopUpgrade(Flags flags, DialogueData dialogues, Preferences preferences)
 		{
+			if (!flags.ShopInfo)
+			{
+				return;
+			}
+
 			// Modify DrawShopPartySprites to use new DrawOBSprite routines, see 0E_9500_ShopUpgrade.asm
 			PutInBank(0x0E, 0xAA04, Blob.FromHex("205795"));
 			PutInBank(0x0E, 0xAA0D, Blob.FromHex("205795"));

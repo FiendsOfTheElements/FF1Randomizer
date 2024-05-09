@@ -498,7 +498,7 @@ namespace FF1Lib
 				}
 
 				//finally check the placement(if we arrive here, it's safe, but let's do it anyway in case something goes wrong)
-			} while (placementFailed || !checker.CheckSanity(placedItems, null, flags).Complete);
+			} while (placementFailed || !checker.CheckSanity(placedItems, null, flags, false).Complete);
 
 			return new ItemPlacementResult { PlacedItems = placedItems, RemainingTreasures = treasurePool };
 		}

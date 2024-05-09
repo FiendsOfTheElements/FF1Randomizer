@@ -11,7 +11,7 @@
 
 		(bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> treasurePlacements,
 										Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements,
-										IVictoryConditionFlags victoryConditions);
+										IVictoryConditionFlags victoryConditions, bool layoutcheck);
 
 		IEnumerable<IRewardSource> GetNearRewardSources(IEnumerable<IRewardSource> sources, IRewardSource source);
 	}

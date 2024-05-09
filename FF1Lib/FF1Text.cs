@@ -613,8 +613,17 @@ namespace FF1Lib
 		{
 			return new List<string>(_itemsTexts);
 		}
+		private void FixRibbonSpace()
+		{
+			if (_itemsTexts[(int)Item.Ribbon].Length > 7 && _itemsTexts[(int)Item.Ribbon][7] == ' ')
+			{
+				_itemsTexts[(int)Item.Ribbon] = _itemsTexts[(int)Item.Ribbon].Remove(7);
+			}
+		}
 		public void Write(FF1Rom rom, List<Item> unusedGoldItems)
 		{
+			FixRibbonSpace();
+
 			foreach (var golditem in unusedGoldItems)
 			{
 				_itemsTexts[(int)golditem] = "";
