@@ -443,7 +443,11 @@ public partial class FF1Rom : NesRom
 		ClassData.BuffThiefAGI(flags);
 		ClassData.EarlierHighTierMagicCharges(flags);
 		ClassData.Randomize(flags, Settings, rng, oldItemNames, ItemsText, this);
-		ClassData.ProcessStartWithRoutines(flags, blursesValues, this);;
+		ClassData.ProcessStartWithRoutines(flags, blursesValues, this);
+		ClassData.PinkMage(flags);
+		ClassData.BlackKnight(flags);
+		ClassData.WhiteNinja(flags);
+		ClassData.Knightlvl4(flags, rng);
 		EnableRandomPromotions(flags, rng);
 
 		await this.Progress();
