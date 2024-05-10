@@ -136,7 +136,7 @@ namespace FF1Lib
 
 		// Scale is the geometric scale factor used with RNG.  Multiplier is where we make everything cheaper
 		// instead of enemies giving more gold, so we don't overflow.
-		public void ScalePrices(IScaleFlags flags, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation, bool FreeClinic = false)
+		public void ScalePrices(ShopData shopData, IScaleFlags flags, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation, bool FreeClinic = false)
 		{
 			IEnumerable<Item> tmpExcludedItems = Array.Empty<Item>() ;
 			if (flags.ExcludeGoldFromScaling ?? false) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllGoldTreasure);
@@ -196,21 +196,15 @@ namespace FF1Lib
 				ItemsText[i] = prices[i].ToString() + " G";
 			}
 
+			/*
 			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
-			RepackShops(pointers);
+			RepackShops(pointers);*/
 
-			for (int i = (int)ShopType.Clinic; i < (int)ShopType.Inn + ShopSectionSize; i++)
+			foreach (var shop in shopData.Shops.Where(s => s.Type == ShopType.Inn || s.Type == ShopType.Clinic).ToList())
 			{
-				if (pointers[i] != ShopNullPointer)
-				{
-					var priceBytes = Get(ShopPointerBase + pointers[i], 2);
-					var priceValue = BitConverter.ToUInt16(priceBytes, 0);
-
-					priceValue = (ushort)RangeScale(priceValue / multiplier, scaleLow, scaleHigh, 1, rng);
-					if (FreeClinic && i < (int)ShopType.Clinic + ShopSectionSize) priceValue = 0;
-					priceBytes = BitConverter.GetBytes(priceValue);
-					Put(ShopPointerBase + pointers[i], priceBytes);
-				}
+				var priceValue = (ushort)RangeScale(shop.Price / multiplier, scaleLow, scaleHigh, 1, rng);
+				if (FreeClinic && shop.Type == ShopType.Clinic) priceValue = 0;
+				shop.Price = priceValue;
 			}
 		}
 

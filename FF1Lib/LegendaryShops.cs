@@ -95,7 +95,7 @@ namespace FF1Lib
 			CreateWhiteShop(allocatedslots[3], pool);
 			CreateItemShop(allocatedslots[4], pool);
 
-			ShopData.StoreData();
+			//ShopData.StoreData();
 			treasureData.StoreTable();
 
 			//for (int i = 0; i < 8; i++) TileSets[i].StoreData();
@@ -235,7 +235,7 @@ namespace FF1Lib
 
 		private int[] AllocateSlots()
 		{
-			int slots = ShopData.StoreData();
+			int slots = ShopData.GetAvailableSlots();
 
 			int[] result = new int[] { 0, 0, 0, 0, 0 };
 

@@ -1,268 +1,178 @@
-﻿namespace FF1Lib
+﻿using System.Reflection;
+
+namespace FF1Lib
 {
-	public partial class FF1Rom : NesRom
+	public partial class ShopData
 	{
-		public const int ShopPointerOffset = 0x38302; // 0x38300 technically, but the first one is unused.
-		public const int ShopPointerBase = 0x30000;
-		public const int ShopPointerSize = 2;
-		public const int ShopPointerCount = 70;
-		public const int ShopSectionSize = 10;
-		public const ushort ShopNullPointer = 0x838E;
-        private List<MapLocation> ShopMapLocationsByIndex = new List<MapLocation>{
-                MapLocation.Coneria, MapLocation.Pravoka, MapLocation.Elfland,
-                MapLocation.CrescentLake, MapLocation.Gaia, MapLocation.Onrac,
-                MapLocation.Gaia, MapLocation.Gaia, MapLocation.Gaia,
-                MapLocation.Caravan
-            };
-		private enum ShopType
+		private int coneriaEntranceShopIndex = 0;
+		public void ShuffleShops(MT19337 rng, IEnumerable<Item> excludeItemsFromRandomShops, int _coneriaEntranceShopIndex)
 		{
-			Weapon = 0,
-			Armor = 10,
-			White = 20,
-			Black = 30,
-			Clinic = 40,
-			Inn = 50,
-			Item = 60
-		}
-		// Add to Shop class
-		public ItemShopSlot ShuffleShops(MT19337 rng, bool enabled, bool earlyAilments, bool randomizeWeaponsAndArmor, IEnumerable<Item> excludeItemsFromRandomShops, WorldWealthMode wealth, int coneriaEntranceShopIndex)
-		{
+			bool enabled = (bool)flags.Shops;
+			bool randomizeWeaponsAndArmor = (bool)flags.RandomWares;
+			WorldWealthMode wealth = flags.WorldWealth;
+			coneriaEntranceShopIndex = _coneriaEntranceShopIndex;
+
 			if (!enabled)
 			{
-				return null;
+				return;
 			}
 
-			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
-
-			RepackShops(pointers);
-
-			ShuffleShopType(ShopType.Weapon, pointers, rng, randomizeWeaponsAndArmor, excludeItemsFromRandomShops, wealth);
-			ShuffleShopType(ShopType.Armor, pointers, rng, randomizeWeaponsAndArmor, excludeItemsFromRandomShops, wealth);
-            ItemShopSlot result = null;
-			do
-			{
-				result = ShuffleShopType(ShopType.Item, pointers, rng);
-			} while (earlyAilments && !AilmentsCovered(pointers, coneriaEntranceShopIndex));
-            if (result == null)
-                throw new InvalidOperationException("Shop Location for Bottle was not set");
-
-			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
-            return result;
+			ShuffleShopType(ShopType.Weapon, rng, randomizeWeaponsAndArmor, excludeItemsFromRandomShops, wealth);
+			ShuffleShopType(ShopType.Armor, rng, randomizeWeaponsAndArmor, excludeItemsFromRandomShops, wealth);
+			ShuffleShopType(ShopType.Item, rng);
 		}
-
-		public void ShuffleMagicShops(MT19337 rng)
+		public void ShuffleMagicShops(bool enable, MT19337 rng)
 		{
-			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
-
-			RepackShops(pointers);
-
-			ShuffleShopType(ShopType.White, pointers, rng);
-			ShuffleShopType(ShopType.Black, pointers, rng);
-
-			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
-		}
-
-		private void ShuffleMagicLocations(MT19337 rng, bool keepPairs)
-		{
-			var pointers = Get(ShopPointerOffset, ShopPointerCount * ShopPointerSize).ToUShorts();
-
-			RepackShops(pointers);
-
-			List<ushort> WhitePointers = new List<ushort>(9);
-			List<ushort> BlackPointers = new List<ushort>(9);
-			for (int i = 0; i < 9; i++)
+			if (!enable)
 			{
-				WhitePointers.Add(pointers[(int)ShopType.White + i + 1]);
-				BlackPointers.Add(pointers[(int)ShopType.Black + i + 1]);
+				return;
 			}
 
-			WhitePointers.Shuffle(rng);
-			BlackPointers.Shuffle(rng);
-
-			// calc offset for White and Black Magic Shops of the same town/level for pairing
-			int whiteToBlackOffset = pointers[(int)ShopType.Black] - pointers[(int)ShopType.White];
-
-			for (int i = 0; i < 9; i++)
+			ShuffleShopType(ShopType.White, rng);
+			ShuffleShopType(ShopType.Black, rng);
+		}
+		public void ShuffleMagicLocations(bool enable, bool keepPairs, MT19337 rng)
+		{
+			if(!enable)
 			{
-				pointers[(int)ShopType.White + i + 1] = WhitePointers[i];
-				if (keepPairs)
+				return;
+			}
+
+			/*
+			List<int> whiteShops = Shops.Where(s => s.Type == ShopType.White).Select(s => s.Index).ToList();
+			List<int> blackShops = Shops.Where(s => s.Type == ShopType.Black).Select(s => s.Index).ToList();
+			List<(int white, int black)> pairedShops = whiteShops.Select((s, i) => (s, blackShops[i])).ToList();
+
+			whiteShops.Shuffle(rng);
+			blackShops.Shuffle(rng);
+			pairedShops.Shuffle(rng);
+			*/
+
+			List<List<Item>> whiteShops = Shops.Where(s => s.Type == ShopType.White).Select(s => s.Entries.ToList()).ToList();
+			List<List<Item>> blackShops = Shops.Where(s => s.Type == ShopType.Black).Select(s => s.Entries.ToList()).ToList();
+			List<(List<Item> white, List<Item> black)> pairedShops = whiteShops.Select((s, i) => (s, blackShops[i])).ToList();
+
+			whiteShops.Shuffle(rng);
+			blackShops.Shuffle(rng);
+			pairedShops.Shuffle(rng);
+
+			if (keepPairs)
+			{
+				for (int i = 0; i < pairedShops.Count; i++)
 				{
-					// Black Magic Shop Locations are calculated from WhitePointers shuffle
-					pointers[(int)ShopType.Black + i + 1] = (ushort)(WhitePointers[i] + whiteToBlackOffset);
-				}
-				else
-				{
-					// use BlackPointers shuffle
-					pointers[(int)ShopType.Black + i + 1] = BlackPointers[i];
+					Shops.Find(s => s.Index == i + 20).Entries = pairedShops[i].white;
+					Shops.Find(s => s.Index == i + 30).Entries = pairedShops[i].black;
 				}
 			}
-
-			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
-		}
-
-		private bool AilmentsCovered(ushort[] pointers, int coneriaEntraceShopIndex)
-		{
-			var shops = GetShops(ShopType.Item, pointers);
-
-			const byte Pure = 0x1A;
-			const byte Soft = 0x1B;
-			return shops[coneriaEntraceShopIndex].Contains(Pure) && shops[coneriaEntraceShopIndex].Contains(Soft);
-		}
-
-		private void RepackShops(ushort[] pointers)
-		{
-			var allEntries = new List<byte>();
-			var pointer = pointers[0];
-			for (int shopType = 0; shopType < (int)ShopType.Item + ShopSectionSize; shopType += ShopSectionSize)
+			else
 			{
-				var sectionShops = GetShops((ShopType)shopType, pointers);
-				allEntries.AddRange(sectionShops.SelectMany(list =>
+				for (int i = 0; i < whiteShops.Count; i++)
 				{
-					if (list.Any())
-					{
-						list.Add(0);
-					}
-
-					return list;
-				}));
-
-				for (int i = 0; i < ShopSectionSize; i++)
-				{
-					if (pointers[shopType + i] != ShopNullPointer)
-					{
-						pointers[shopType + i] = pointer;
-						pointer += (ushort)sectionShops[i].Count;
-					}
+					Shops.Find(s => s.Index == i + 20).Entries = whiteShops[i];
+					Shops.Find(s => s.Index == i + 30).Entries = blackShops[i];
 				}
 			}
-
-			Put(ShopPointerOffset, Blob.FromUShorts(pointers));
-			Put(ShopPointerBase + pointers[0], allEntries.ToArray());
 		}
-
-		private ItemShopSlot ShuffleShopType(ShopType shopType, ushort[] pointers, MT19337 rng, bool randomize = false, IEnumerable<Item> excludeItemsFromRandomShops = null, WorldWealthMode wealth = WorldWealthMode.Standard)
+		private void ShuffleShopType(ShopType shopType, MT19337 rng, bool randomize = false, IEnumerable<Item> excludeItemsFromRandomShops = null, WorldWealthMode wealth = WorldWealthMode.Standard)
 		{
-			var shops = GetShops(shopType, pointers);
-
+			var shops = Shops.Where(s => s.Type == shopType).ToList();
+			var newShopEntries = shops.ToDictionary(s => s.Index, s => new List<Item>());
 			bool shopsBlocked;
-			List<byte>[] newShops;
+
 			do
 			{
 				shopsBlocked = false;
-				newShops = new List<byte>[ShopSectionSize];
 
-				var allEntries = shops.SelectMany(list => list).ToList();
+				// Get Shop Items
+				var allEntries = shops.SelectMany(s => s.Entries).ToList();
 				allEntries.Shuffle(rng);
 
-				int entry = 0;
-				for (int i = 0; i < ShopSectionSize; i++)
+				// Insert guaranteed items
+				if (shopType == ShopType.Item && (bool)flags.ImmediatePureAndSoftRequired)
 				{
-					newShops[i] = new List<byte>();
-					if (pointers[(int)shopType + i] != ShopNullPointer)
-					{
-						newShops[i].Add(allEntries[entry++]);
-					}
+					allEntries.Remove(Item.Pure);
+					allEntries.Remove(Item.Soft);
+
+					newShopEntries[60 + coneriaEntranceShopIndex].AddRange(new List<Item>(){ Item.Pure, Item.Soft });
+				}
+
+				int entry = 0;
+				foreach (var shop in newShopEntries)
+				{
+					shop.Value.Add(allEntries[entry++]);
 				}
 
 				while (entry < allEntries.Count)
 				{
-					var eligibleShops = new List<int>();
-					for (int i = 0; i < newShops.Length; i++)
-					{
-						if (newShops[i].Count > 0 && newShops[i].Count < 5 && !newShops[i].Contains(allEntries[entry]))
-						{
-							eligibleShops.Add(i);
-						}
-					}
+					var eligibleShops = newShopEntries.Where(s => s.Value.Count < 5 && !s.Value.Contains(allEntries[entry])).ToList();
 
 					// We might be unable to place an item in any shop because they're all full, or they already have that item.  Start over.
-					if (eligibleShops.Count == 0)
+					if (!eligibleShops.Any())
 					{
 						shopsBlocked = true;
 						break;
 					}
 
-					int shopIndex = eligibleShops[rng.Between(0, eligibleShops.Count - 1)];
-					newShops[shopIndex].Add(allEntries[entry++]);
+					eligibleShops.PickRandom(rng).Value.Add(allEntries[entry++]);
 				}
 			} while (shopsBlocked);
 
 			if (randomize)
 			{
-				if (shopType == ShopType.Weapon || shopType == ShopType.Armor) {
+				if (shopType == ShopType.Weapon || shopType == ShopType.Armor)
+				{
 					// Shuffle up a byte array of random weapons or armor and assign them in place of the existing items.
 					var baseIndex = shopType == ShopType.Armor ? Item.Cloth : Item.WoodenNunchucks;
-					var indeces = Enumerable.Range((int)baseIndex, 40).Select(i => (Item)i).ToList();
-					foreach (var exclusion in excludeItemsFromRandomShops ?? new List<Item>()) 
-					{ 
-						indeces.Remove(exclusion);
+					var indices = Enumerable.Range((int)baseIndex, 40).Select(i => (Item)i).ToList();
+					foreach (var exclusion in excludeItemsFromRandomShops ?? new List<Item>())
+					{
+						indices.Remove(exclusion);
 					}
 
-					ShopItemGenerator generator = new ShopItemGenerator(indeces, ItemLists.UnusedGoldItems.ToList(), new List<Item>());
-					for (int i = 0; i < newShops.Length; i++)
+					ShopItemGenerator generator = new ShopItemGenerator(indices, ItemLists.UnusedGoldItems.ToList(), new List<Item>());
+					foreach (var shop in newShopEntries)
 					{
-						newShops[i] = newShops[i].Select(x => (byte)generator.GetItem(rng)).ToList();
+						newShopEntries[shop.Key] = newShopEntries[shop.Key].Select(x => generator.GetItem(rng)).ToList();
 					}
 				}
 			}
-			// Zero-terminate the new shops.
-			foreach (var newShop in newShops)
-			{
-				newShop.Add(0);
-			}
 
-            ItemShopSlot result = null;
-			var pointer = pointers[(int)shopType];
-			for (int i = 0; i < ShopSectionSize; i++)
+			if (shopType == ShopType.Item)
 			{
-				if (newShops[i].Count > 1)
+				var bottleshops = newShopEntries.Where(s => s.Value.Contains(Item.Bottle));
+				if (!bottleshops.Any())
 				{
-                    var bottle = 
-                        newShops[i]
-                            .Select((item, index) => new { item, index })
-                            .FirstOrDefault(x => ((Item)x.item) == Item.Bottle);
-                    if (bottle != null)
-                    {
-                        var location = ShopMapLocationsByIndex[i];
-                        result = new ItemShopSlot(ShopPointerBase + pointer + bottle.index,
-                                                  $"{Enum.GetName(typeof(MapLocation), location)}Shop{bottle.index + 1}",
-                                                  location,
-                                                  Item.Bottle,
-												  (byte)(60 + i));
-                    }
-					Put(ShopPointerBase + pointer, newShops[i].ToArray());
-
-					pointers[(int)shopType + i] = pointer;
-					pointer += (ushort)newShops[i].Count;
+					throw new InvalidOperationException("Shop Location for Bottle was not set");
 				}
+				var bottleshop = bottleshops.First();
+				var location = ShopPrototypes[bottleshop.Key].Location;
+				ItemShopSlot = new ItemShopSlot(0,
+					$"{Enum.GetName(typeof(MapLocation), location)}Shop{bottleshop.Value.FindIndex(x => x == Item.Bottle) + 1}",
+					location,
+					Item.Bottle,
+					(byte)bottleshop.Key);
 			}
-            return result;
-		}
 
-		private List<byte>[] GetShops(ShopType shopType, ushort[] pointers)
-		{
-			var shops = new List<byte>[ShopSectionSize];
-			for (int i = 0; i < ShopSectionSize; i++)
+			foreach (var shop in newShopEntries)
 			{
-				shops[i] = new List<byte>();
-				if (pointers[(int)shopType + i] != ShopNullPointer)
+				var shopIndex = Shops.FindIndex(s => s.Index == shop.Key);
+				if (shopIndex > -1)
 				{
-					if (shopType == ShopType.Clinic || shopType == ShopType.Inn)
-					{
-						shops[i].AddRange(Get(ShopPointerBase + pointers[(int)shopType + i], 2).ToBytes());
-					}
-					else
-					{
-						var shopEntries = Get(ShopPointerBase + pointers[(int)shopType + i], 5);
-						for (int j = 0; j < 5 && shopEntries[j] != 0; j++)
-						{
-							shops[i].Add(shopEntries[j]);
-						}
-					}
+					Shops[shopIndex].Entries = shop.Value;
 				}
 			}
-
-			return shops;
 		}
+	}
+
+
+	public partial class FF1Rom : NesRom
+	{
+		/*
+		public const int ShopPointerOffset = 0x38302; // 0x38300 technically, but the first one is unused.
+		public const int ShopPointerBase = 0x30000;
+		public const int ShopPointerSize = 2;
+		public const int ShopPointerCount = 70;
+		public const int ShopSectionSize = 10;
+		public const ushort ShopNullPointer = 0x838E;*/
 	}
 }

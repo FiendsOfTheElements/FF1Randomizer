@@ -59,7 +59,7 @@
 		}
 	}
 
-	public class ShopData
+	public partial class ShopData
 	{
 		public const int ShopPointerOffset = 0x38302; // 0x38300 technically, but the first one is unused.
 		public const int ShopPointerBase = 0x30000;
@@ -67,6 +67,8 @@
 		public const int ShopPointerCount = 70;
 		public const int ShopSectionSize = 10;
 		public const ushort ShopNullPointer = 0x838E;
+
+		public ItemShopSlot ItemShopSlot { get; private set; }
 
 		private Dictionary<int, Shop> ShopPrototypes = new Dictionary<int, Shop>
 		{
@@ -127,12 +129,15 @@
 		public List<Shop> Shops { get; private set; }
 
 		FF1Rom rom;
+		Flags flags;
 		MemTable<ushort> Index;
 
-		public ShopData(FF1Rom _rom)
+		public ShopData(Flags _flags, FF1Rom _rom)
 		{
 			rom = _rom;
+			flags = _flags;
 			Index = new MemTable<ushort>(rom, ShopPointerOffset, ShopPointerCount);
+			LoadData();
 		}
 
 		public void LoadData()
@@ -145,7 +150,12 @@
 				Shops.AddRange(GetShops(shopType));
 			}
 		}
-
+		public int GetAvailableSlots()
+		{
+			var itemShopsCount = Shops.Where(s => s.Type != ShopType.Inn && s.Type != ShopType.Clinic).Select(s => s.Entries.Count + 1).Sum();
+			var innClinicsCount = Shops.Where(s => s.Type == ShopType.Inn || s.Type == ShopType.Clinic).Count() * 3;
+			return 241 - (itemShopsCount + innClinicsCount);
+		}
 		public int StoreData()
 		{
 			var shopdic = Shops.ToDictionary(s => s.Index);

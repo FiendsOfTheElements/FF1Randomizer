@@ -27,6 +27,7 @@ public partial class FF1Rom : NesRom
 	public TalkRoutines TalkRoutines;
 	public StartingItems StartingItems;
 	public EncounterRate EncounterRates;
+	public ShopData ShopData;
 	//public ShipLocations ShipLocations;
 
 	public DeepDungeon DeepDungeon;
@@ -113,6 +114,7 @@ public partial class FF1Rom : NesRom
 		Maps = new StandardMaps(this, Teleporters, flags);
 		NpcData = new NpcObjectData(Maps, flags, this);
 		Dialogues = new DialogueData(this);
+		ShopData = new ShopData(flags, this);
 		EncounterRates = new(this);
 
 		await this.Progress();
@@ -167,13 +169,7 @@ public partial class FF1Rom : NesRom
 		await this.Progress();
 
 		EncounterRates.ScaleEncounterRate(flags);
-
-		var shopData = new ShopData(this);
-		shopData.LoadData();
-
-		var extConsumables = new ExtConsumables(this, flags, rng, shopData);
-		extConsumables.AddNormalShopEntries();
-
+		var extConsumables = new ExtConsumables(ShopData, this, flags, rng);
 		await this.Progress();
 
 		// NPC Stuff
@@ -203,6 +199,9 @@ public partial class FF1Rom : NesRom
 		{
 			TranceHasStatusElement();
 		}
+
+		//has to be done before modifying itemnames and after modifying spellnames...
+		extConsumables.LoadSpells();
 
 		// Create items
 		Etherizer(flags.Etherizer, ItemsText);
@@ -263,23 +262,28 @@ public partial class FF1Rom : NesRom
 		// Starting Inventory
 		StartingItems = new StartingItems(new() { }, rng, flags, this);
 
-		// Shop stuff
-
-
 		// Placement Context
-		var priceList = Get(0x37C00, 0x200).ToUShorts().Select(x => (int)x).ToList(); // Temprorary until we extract price
+		var priceList = Get(0x37C00, 0x200).ToUShorts().Select(x => (int)x).ToList(); // Temporary until we extract price
 		PlacementContext = new PlacementContext(StartingItems, new() { }, priceList, rng, flags);
 
+		// Shop stuff
+		ShopData.ShuffleShops(rng, PlacementContext.ExcludedItemsFromShops, Overworld.OverworldMap.ConeriaTownEntranceItemShopIndex);
+		ShopData.ShuffleMagicLocations((bool)flags.MagicShopLocs, (bool)flags.MagicShopLocationPairs, rng);
+		ShopData.ShuffleMagicShops((bool)flags.MagicShops, rng);
+		extConsumables.AddNormalShopEntries();
+		new ShopKiller(Maps, ShopData, rng, flags, this).KillShops();
+		new LegendaryShops(rng, flags, Maps, ShopData, TileSetsData, this).PlaceShops();
+
 		// ShopSlot should be managed by shop class, right? Maybe, probably, we'll know for sure with Shop Class
-		PlacementContext.ShopSlot = ShuffleShops(rng, (bool)flags.Shops, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), PlacementContext.ExcludedItemsFromShops, flags.WorldWealth, Overworld.OverworldMap.ConeriaTownEntranceItemShopIndex);
+		//PlacementContext.ShopSlot = ShuffleShops(rng, (bool)flags.Shops, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), PlacementContext.ExcludedItemsFromShops, flags.WorldWealth, Overworld.OverworldMap.ConeriaTownEntranceItemShopIndex);
 
 		// Sanity + Actual Placement
-		sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, TileSetsData, this, PlacementContext.ShopSlot);
+		sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, TileSetsData, this, ShopData.ItemShopSlot);
 		if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags, true).Complete) throw new InsaneException("Not Completable");
 
 		await this.Progress((bool)flags.Treasures ? "Shuffling Treasures" : "Placing Treasures", 1);
 
-		ItemPlacement itemPlacement = ItemPlacement.Create(this, flags, PlacementContext, PlacementContext.ShopSlot, Overworld, sanityChecker);
+		ItemPlacement itemPlacement = ItemPlacement.Create(this, flags, PlacementContext, ShopData.ItemShopSlot, Overworld, sanityChecker);
 		itemPlacement.PlaceItems(rng);
 
 		NpcData.UpdateItemPlacement(itemPlacement.PlacedItems);
@@ -314,38 +318,18 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress(funMessages.PickRandom(rng));
 
-		if ((bool)flags.MagicShopLocs)
-		{
-			ShuffleMagicLocations(rng, (bool)flags.MagicShopLocationPairs);
-		}
-
-		if (((bool)flags.MagicShops))
-		{
-			ShuffleMagicShops(rng);
-		}
-
 		if (((bool)flags.MagicLevels))
 		{
 			ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 		}
 
-		new ShopKiller(rng, flags, Maps, this).KillShops();
-
-		shopData.LoadData();
-
-		new LegendaryShops(rng, flags, Maps, shopData, TileSetsData, this).PlaceShops();
-
 		if (flags.GameMode == GameModes.DeepDungeon)
 		{
-			shopData.Shops.Find(x => x.Type == FF1Lib.ShopType.Item && x.Entries.Contains(Item.Bottle)).Entries.Remove(Item.Bottle);
-			shopData.StoreData();
+			ShopData.Shops.Find(x => x.Type == FF1Lib.ShopType.Item && x.Entries.Contains(Item.Bottle)).Entries.Remove(Item.Bottle);
 		}
 
 		// This need to be after the last modification of shopData 
-		shopData.UpdateShopSlotPlacement(itemPlacement.PlacedItems);
-		
-		//has to be done before modifying itemnames and after modifying spellnames...
-		extConsumables.LoadSpells();
+		ShopData.UpdateShopSlotPlacement(itemPlacement.PlacedItems);
 
 		await this.Progress();
 
@@ -409,7 +393,7 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		NPCHints(rng, NpcData, Maps, Dialogues, flags, PlacementContext, sanityChecker, shopData);
+		NPCHints(rng, NpcData, Maps, Dialogues, flags, PlacementContext, sanityChecker, ShopData);
 		SkyWarriorSpoilerBats(rng, flags, NpcData, Dialogues);
 
 		MonsterInABox(itemPlacement, ZoneFormations, TileSetsData, NpcData, Dialogues, rng, flags);
@@ -418,7 +402,7 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), PlacementContext.ShopSlot, flags.ImprovedClinic);
+		ScalePrices(ShopData, flags, rng, ((bool)flags.ClampMinimumPriceScale), ShopData.ItemShopSlot, flags.ImprovedClinic);
 
 		extConsumables.AddExtConsumables();
 
@@ -495,13 +479,14 @@ public partial class FF1Rom : NesRom
 		}
 
 		// Spoilers
-		if (flags.Spoilers && sanityChecker != null) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, itemPlacement.PlacedItems, Overworld, PlacementContext, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
+		if (flags.Spoilers && sanityChecker != null) new ExtSpoiler(this, sanityChecker, ShopData, ItemsText, itemPlacement.PlacedItems, Overworld, PlacementContext, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
 
 		// Write back everything
 		ItemsText.Write(this, flags.GameMode == GameModes.DeepDungeon ? new List<Item>() : ItemLists.UnusedGoldItems.ToList());
 		TalkRoutines.Write(this);
 		NpcData.Write(TalkRoutines.ScriptPointers);
 		Dialogues.Write();
+		ShopData.StoreData();
 
 		EncounterRates.Write();
 		itemPlacement.Write();
