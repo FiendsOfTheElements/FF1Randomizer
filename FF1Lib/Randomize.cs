@@ -112,7 +112,7 @@ public partial class FF1Rom : NesRom
 		ClassData = new GameClasses(WeaponPermissions, ArmorPermissions, SpellPermissions, this);
 		Teleporters = new Teleporters(this, Overworld.MapExchangeData);
 		Maps = new StandardMaps(this, Teleporters, flags);
-		NpcData = new NpcObjectData(Maps, flags, this);
+		NpcData = new NpcObjectData(Maps, flags, rng, this);
 		Dialogues = new DialogueData(this);
 		ShopData = new ShopData(flags, this);
 		EncounterRates = new(this);
@@ -156,6 +156,7 @@ public partial class FF1Rom : NesRom
 		var oldItemNames = ItemsText.ToList();
 
 		// Maps
+		Teleporters.ShuffleEntrancesAndFloors(Overworld.OverworldMap, rng, flags);
 		Overworld.Update(Teleporters);
 		GeneralMapHacks(flags, Overworld, Maps, ZoneFormations, TileSetsData, rng);
 		Maps.Update(ZoneFormations, rng);
@@ -267,7 +268,7 @@ public partial class FF1Rom : NesRom
 		PlacementContext = new PlacementContext(StartingItems, new() { }, priceList, rng, flags);
 
 		// Shop stuff
-		ShopData.ShuffleShops(rng, PlacementContext.ExcludedItemsFromShops, Overworld.OverworldMap.ConeriaTownEntranceItemShopIndex);
+		ShopData.ShuffleShops(rng, PlacementContext.ExcludedItemsFromShops, Teleporters.ConeriaTownEntranceItemShopIndex);
 		ShopData.ShuffleMagicLocations((bool)flags.MagicShopLocs, (bool)flags.MagicShopLocationPairs, rng);
 		ShopData.ShuffleMagicShops((bool)flags.MagicShops, rng);
 		extConsumables.AddNormalShopEntries();
@@ -468,6 +469,8 @@ public partial class FF1Rom : NesRom
 				await SetCustomPlayerSprites(stream, preferences.ThirdBattlePalette);
 		    }
 		}
+
+		
 
 		// Archipelago
 		if (flags.Archipelago)

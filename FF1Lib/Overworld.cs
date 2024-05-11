@@ -116,14 +116,14 @@ namespace FF1Lib
 			// we just want to upadte palette here, so this should be a teleporter thing
 			overworldMap.ShuffleEntrancesAndFloors(rng, teleporters, flags);
 
-			if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && (flags.GameMode != GameModes.DeepDungeon))
-			{
-				overworldMap.ShuffleObjectiveNPCs(rng);
-			}
-
 			if ((bool)flags.IsAirshipFree)
 			{
 				locations.AirShipLocation = locations.StartingLocation;
+			}
+
+			if ((bool)flags.MapBridgeLefein && !flags.DisableOWMapModifications)
+			{
+				locations.BridgeLocation = new SCCoords(230, 123);
 			}
 
 			overworldMap.ApplyMapEdits();
