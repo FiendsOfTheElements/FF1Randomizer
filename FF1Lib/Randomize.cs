@@ -275,9 +275,6 @@ public partial class FF1Rom : NesRom
 		new ShopKiller(Maps, ShopData, rng, flags, this).KillShops();
 		new LegendaryShops(rng, flags, Maps, ShopData, TileSetsData, this).PlaceShops();
 
-		// ShopSlot should be managed by shop class, right? Maybe, probably, we'll know for sure with Shop Class
-		//PlacementContext.ShopSlot = ShuffleShops(rng, (bool)flags.Shops, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), PlacementContext.ExcludedItemsFromShops, flags.WorldWealth, Overworld.OverworldMap.ConeriaTownEntranceItemShopIndex);
-
 		// Sanity + Actual Placement
 		sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, TileSetsData, this, ShopData.ItemShopSlot);
 		if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags, true).Complete) throw new InsaneException("Not Completable");
@@ -469,8 +466,6 @@ public partial class FF1Rom : NesRom
 				await SetCustomPlayerSprites(stream, preferences.ThirdBattlePalette);
 		    }
 		}
-
-		
 
 		// Archipelago
 		if (flags.Archipelago)

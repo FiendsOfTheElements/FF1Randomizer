@@ -113,9 +113,6 @@ namespace FF1Lib
 				overworldMap.ShuffleChime(rng, (bool)flags.ShuffleChimeIncludeTowns);
 			}
 
-			// we just want to upadte palette here, so this should be a teleporter thing
-			overworldMap.ShuffleEntrancesAndFloors(rng, teleporters, flags);
-
 			if ((bool)flags.IsAirshipFree)
 			{
 				locations.AirShipLocation = locations.StartingLocation;

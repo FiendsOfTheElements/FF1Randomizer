@@ -112,7 +112,7 @@ namespace FF1Lib
 		}
 		private TeleportDestination Get(string name)
 		{
-			return (TeleportDestination)typeof(Teleporters).GetField(name).GetValue(this);
+			return (TeleportDestination)typeof(TeleportersList).GetField(name).GetValue(this);
 		}
 		public List<TeleportDestination> GetByMap(MapIndex mapindex)
 		{
@@ -217,6 +217,12 @@ namespace FF1Lib
 			{ExitTeleportIndex.ExitSeaShrine, "ExitSeaShrine"},
 			{ExitTeleportIndex.ExitSkyPalace, "ExitSkyPalace"},
 		};
+		/*
+		private static Dictionary<TeleportIndex, TeleportDestination> TeleportersDefinition  = new()
+		{
+			{ TeleportIndex.RescuePrincess, new TeleportDestination(MapLocation.ConeriaCastle2, MapIndex.ConeriaCastle2F, new Coordinate(12, 7, CoordinateLocale.StandardInRoom)) },
+			{ TeleportIndex.Con, new TeleportDestination(MapLocation.ConeriaCastle2, MapIndex.ConeriaCastle2F, new Coordinate(12, 7, CoordinateLocale.StandardInRoom)) },
+		}*/
 
 		private TeleportDestination SavePrincess = new TeleportDestination(MapLocation.ConeriaCastle2, MapIndex.ConeriaCastle2F, new Coordinate(12, 7, CoordinateLocale.StandardInRoom));
 		private TeleportDestination Coneria = new TeleportDestination(MapLocation.Coneria, MapIndex.ConeriaTown, new Coordinate(16, 23, CoordinateLocale.Standard));
@@ -600,5 +606,92 @@ namespace FF1Lib
 			TeleportIndex.IceCave7,
 			TeleportIndex.IceCave8,
 		};
+	}
+
+	public static class TeleportersList
+	{
+		public static TeleportDestination SavePrincess = new TeleportDestination(MapLocation.ConeriaCastle2, MapIndex.ConeriaCastle2F, new Coordinate(12, 7, CoordinateLocale.StandardInRoom));
+		public static TeleportDestination Coneria = new TeleportDestination(MapLocation.Coneria, MapIndex.ConeriaTown, new Coordinate(16, 23, CoordinateLocale.Standard));
+		public static TeleportDestination Pravoka = new TeleportDestination(MapLocation.Pravoka, MapIndex.Pravoka, new Coordinate(19, 32, CoordinateLocale.Standard));
+		public static TeleportDestination Elfland = new TeleportDestination(MapLocation.Elfland, MapIndex.Elfland, new Coordinate(41, 22, CoordinateLocale.Standard));
+		public static TeleportDestination Melmond = new TeleportDestination(MapLocation.Melmond, MapIndex.Melmond, new Coordinate(1, 16, CoordinateLocale.Standard));
+		public static TeleportDestination CrescentLake = new TeleportDestination(MapLocation.CrescentLake, MapIndex.CrescentLake, new Coordinate(11, 23, CoordinateLocale.Standard));
+		public static TeleportDestination Gaia = new TeleportDestination(MapLocation.Gaia, MapIndex.Gaia, new Coordinate(61, 61, CoordinateLocale.Standard));
+		public static TeleportDestination Onrac = new TeleportDestination(MapLocation.Onrac, MapIndex.Onrac, new Coordinate(1, 12, CoordinateLocale.Standard), TeleportIndex.SeaShrine1);
+		public static TeleportDestination Lefein = new TeleportDestination(MapLocation.Lefein, MapIndex.Lefein, new Coordinate(19, 23, CoordinateLocale.Standard));
+		public static TeleportDestination ConeriaCastle1 = new TeleportDestination(MapLocation.ConeriaCastle1, MapIndex.ConeriaCastle1F, new Coordinate(12, 35, CoordinateLocale.Standard), ExitTeleportIndex.ExitCastleConeria);
+		public static TeleportDestination ConeriaCastle2 = new TeleportDestination(MapLocation.ConeriaCastle2, MapIndex.ConeriaCastle2F, new Coordinate(12, 18, CoordinateLocale.Standard)); // Could be used if the teleporter here is turned into warp stairs
+		public static TeleportDestination ElflandCastle = new TeleportDestination(MapLocation.ElflandCastle, MapIndex.ElflandCastle, new Coordinate(16, 31, CoordinateLocale.Standard));
+		public static TeleportDestination NorthwestCastle = new TeleportDestination(MapLocation.NorthwestCastle, MapIndex.NorthwestCastle, new Coordinate(22, 24, CoordinateLocale.Standard));
+		public static TeleportDestination CastleOrdeals1 = new TeleportDestination(MapLocation.CastleOrdeals1, MapIndex.CastleOrdeals1F, new Coordinate(12, 21, CoordinateLocale.Standard), ExitTeleportIndex.ExitCastleOrdeals);
+		public static TeleportDestination CastleOrdealsMaze = new TeleportDestination(MapLocation.CastleOrdealsMaze, MapIndex.CastleOrdeals2F, new Coordinate(12, 12, CoordinateLocale.Standard), TeleportIndex.CastleOrdealsTop);
+		public static TeleportDestination CastleOrdealsTop = new TeleportDestination(MapLocation.CastleOrdealsTop, MapIndex.CastleOrdeals3F, new Coordinate(22, 22, CoordinateLocale.Standard), TeleportIndex.CastleOrdealsBack);
+		public static TeleportDestination TempleOfFiends = new TeleportDestination(MapLocation.TempleOfFiends1, MapIndex.TempleOfFiends, new Coordinate(20, 30, CoordinateLocale.Standard));
+		public static TeleportDestination DwarfCave = new TeleportDestination(MapLocation.DwarfCave, MapIndex.DwarfCave, new Coordinate(22, 11, CoordinateLocale.Standard));
+		public static TeleportDestination MatoyasCave = new TeleportDestination(MapLocation.MatoyasCave, MapIndex.MatoyasCave, new Coordinate(15, 11, CoordinateLocale.Standard));
+		public static TeleportDestination SardasCave = new TeleportDestination(MapLocation.SardasCave, MapIndex.SardasCave, new Coordinate(18, 13, CoordinateLocale.Standard));
+		public static TeleportDestination Cardia1 = new TeleportDestination(MapLocation.Cardia1, MapIndex.Cardia, new Coordinate(30, 18, CoordinateLocale.Standard));
+		public static TeleportDestination Cardia2 = new TeleportDestination(MapLocation.Cardia2, MapIndex.Cardia, new Coordinate(12, 15, CoordinateLocale.Standard));
+		public static TeleportDestination BahamutCave1 = new TeleportDestination(MapLocation.BahamutCave1, MapIndex.BahamutCaveB1, new Coordinate(2, 2, CoordinateLocale.Standard), TeleportIndex.BahamutsRoom);
+		public static TeleportDestination BahamutsRoom = new TeleportDestination(MapLocation.BahamutCave2, MapIndex.BahamutCaveB2, new Coordinate(23, 55, CoordinateLocale.Standard));
+		public static TeleportDestination Cardia4 = new TeleportDestination(MapLocation.Cardia4, MapIndex.Cardia, new Coordinate(19, 36, CoordinateLocale.Standard));
+		public static TeleportDestination Cardia5 = new TeleportDestination(MapLocation.Cardia5, MapIndex.Cardia, new Coordinate(43, 29, CoordinateLocale.Standard));
+		public static TeleportDestination Cardia6 = new TeleportDestination(MapLocation.Cardia6, MapIndex.Cardia, new Coordinate(58, 55, CoordinateLocale.Standard));
+		public static TeleportDestination IceCave1 = new TeleportDestination(MapLocation.IceCave1, MapIndex.IceCaveB1, new Coordinate(7, 1, CoordinateLocale.Standard), TeleportIndex.IceCave2);
+		public static TeleportDestination IceCave2 = new TeleportDestination(MapLocation.IceCave2, MapIndex.IceCaveB2, new Coordinate(30, 2, CoordinateLocale.Standard), TeleportIndex.IceCave3);
+		public static TeleportDestination IceCave3 = new TeleportDestination(MapLocation.IceCave3, MapIndex.IceCaveB3, new Coordinate(3, 2, CoordinateLocale.Standard), TeleportIndex.IceCavePitRoom);
+		public static TeleportDestination IceCavePitRoom = new TeleportDestination(MapLocation.IceCavePitRoom, MapIndex.IceCaveB2, new Coordinate(55, 5, CoordinateLocale.Standard), TeleportIndex.IceCave5);
+		public static TeleportDestination IceCave5 = new TeleportDestination(MapLocation.IceCave5, MapIndex.IceCaveB3, new Coordinate(39, 6, CoordinateLocale.StandardInRoom), TeleportIndex.IceCave6);
+		public static TeleportDestination IceCave6 = new TeleportDestination(MapLocation.IceCaveBackExit, MapIndex.IceCaveB1, new Coordinate(6, 15, CoordinateLocale.Standard), TeleportIndex.IceCave7);
+		public static TeleportDestination IceCave7 = new TeleportDestination(MapLocation.IceCave5, MapIndex.IceCaveB3, new Coordinate(59, 33, CoordinateLocale.Standard), TeleportIndex.IceCave8);
+		// Might not work
+		public static TeleportDestination IceCave8 = new TeleportDestination(MapLocation.IceCaveFloater, MapIndex.IceCaveB2, new Coordinate(51, 11, CoordinateLocale.StandardInRoom), ExitTeleportIndex.ExitIceCave);
+		//public TeleportDestination IceCavePitRoom = new TeleportDestination(MapLocation.IceCavePitRoom, MapIndex.IceCaveB2, new Coordinate(55, 5, CoordinateLocale.Standard), ExitTeleportIndex.ExitIceCave);
+		public static TeleportDestination Waterfall = new TeleportDestination(MapLocation.Waterfall, MapIndex.Waterfall, new Coordinate(57, 56, CoordinateLocale.Standard));
+		public static TeleportDestination TitansTunnelEast = new TeleportDestination(MapLocation.TitansTunnelEast, MapIndex.TitansTunnel, new Coordinate(11, 14, CoordinateLocale.Standard), ExitTeleportIndex.ExitTitanE);
+		public static TeleportDestination TitansTunnelWest = new TeleportDestination(MapLocation.TitansTunnelWest, MapIndex.TitansTunnel, new Coordinate(5, 3, CoordinateLocale.Standard), ExitTeleportIndex.ExitTitanW);
+		public static TeleportDestination EarthCave1 = new TeleportDestination(MapLocation.EarthCave1, MapIndex.EarthCaveB1, new Coordinate(23, 24, CoordinateLocale.Standard), TeleportIndex.EarthCave2);
+		public static TeleportDestination EarthCave2 = new TeleportDestination(MapLocation.EarthCave2, MapIndex.EarthCaveB2, new Coordinate(10, 9, CoordinateLocale.Standard), TeleportIndex.EarthCaveVampire);
+		public static TeleportDestination EarthCaveVampire = new TeleportDestination(MapLocation.EarthCaveVampire, MapIndex.EarthCaveB3, new Coordinate(27, 45, CoordinateLocale.Standard), TeleportIndex.EarthCave4);
+		public static TeleportDestination EarthCave4 = new TeleportDestination(MapLocation.EarthCave4, MapIndex.EarthCaveB4, new Coordinate(61, 33, CoordinateLocale.Standard), TeleportIndex.EarthCaveLich);
+		public static TeleportDestination EarthCaveLich = new TeleportDestination(MapLocation.EarthCaveLich, MapIndex.EarthCaveB5, new Coordinate(25, 53, CoordinateLocale.Standard), ExitTeleportIndex.ExitEarthCave);
+		public static TeleportDestination GurguVolcano1 = new TeleportDestination(MapLocation.GurguVolcano1, MapIndex.GurguVolcanoB1, new Coordinate(27, 15, CoordinateLocale.Standard), TeleportIndex.GurguVolcano2);
+		public static TeleportDestination GurguVolcano2 = new TeleportDestination(MapLocation.GurguVolcano2, MapIndex.GurguVolcanoB2, new Coordinate(30, 32, CoordinateLocale.Standard), TeleportIndex.GurguVolcano3);
+		public static TeleportDestination GurguVolcano3 = new TeleportDestination(MapLocation.GurguVolcano3, MapIndex.GurguVolcanoB3, new Coordinate(18, 2, CoordinateLocale.Standard), TeleportIndex.GurguVolcano4);
+		public static TeleportDestination GurguVolcano4 = new TeleportDestination(MapLocation.GurguVolcano4, MapIndex.GurguVolcanoB4, new Coordinate(3, 23, CoordinateLocale.Standard), TeleportIndex.GurguVolcano5);
+		public static TeleportDestination GurguVolcano5 = new TeleportDestination(MapLocation.GurguVolcano5, MapIndex.GurguVolcanoB3, new Coordinate(46, 23, CoordinateLocale.Standard), TeleportIndex.GurguVolcano6);
+		public static TeleportDestination GurguVolcano6 = new TeleportDestination(MapLocation.GurguVolcano6, MapIndex.GurguVolcanoB4, new Coordinate(35, 6, CoordinateLocale.Standard), TeleportIndex.GurguVolcanoKary);
+		public static TeleportDestination GurguVolcanoKary = new TeleportDestination(MapLocation.GurguVolcanoKary, MapIndex.GurguVolcanoB5, new Coordinate(32, 31, CoordinateLocale.Standard), ExitTeleportIndex.ExitGurguVolcano);
+		public static TeleportDestination MarshCave1 = new TeleportDestination(MapLocation.MarshCave1, MapIndex.MarshCaveB1, new Coordinate(21, 27, CoordinateLocale.Standard), new List<TeleportIndex> { TeleportIndex.MarshCaveTop, TeleportIndex.MarshCave3 });
+		public static TeleportDestination MarshCaveTop = new TeleportDestination(MapLocation.MarshCaveTop, MapIndex.MarshCaveB2, new Coordinate(18, 16, CoordinateLocale.Standard));
+		public static TeleportDestination MarshCave3 = new TeleportDestination(MapLocation.MarshCave3, MapIndex.MarshCaveB2, new Coordinate(34, 37, CoordinateLocale.StandardInRoom), TeleportIndex.MarshCaveBottom);
+		public static TeleportDestination MarshCaveBottom = new TeleportDestination(MapLocation.MarshCaveBottom, MapIndex.MarshCaveB3, new Coordinate(5, 6, CoordinateLocale.Standard));
+		public static TeleportDestination MirageTower1 = new TeleportDestination(MapLocation.MirageTower1, MapIndex.MirageTower1F, new Coordinate(17, 31, CoordinateLocale.Standard), TeleportIndex.MirageTower2);
+		public static TeleportDestination MirageTower2 = new TeleportDestination(MapLocation.MirageTower2, MapIndex.MirageTower2F, new Coordinate(16, 31, CoordinateLocale.Standard), TeleportIndex.MirageTower3);
+		public static TeleportDestination MirageTower3 = new TeleportDestination(MapLocation.MirageTower3, MapIndex.MirageTower3F, new Coordinate(8, 1, CoordinateLocale.Standard), TeleportIndex.SkyPalace1);
+		public static TeleportDestination SeaShrineMermaids = new TeleportDestination(MapLocation.SeaShrineMermaids, MapIndex.SeaShrineB1, new Coordinate(12, 26, CoordinateLocale.Standard));
+		public static TeleportDestination SeaShrine2 = new TeleportDestination(MapLocation.SeaShrine2, MapIndex.SeaShrineB2, new Coordinate(45, 8, CoordinateLocale.Standard), TeleportIndex.SeaShrineMermaids);
+		public static TeleportDestination SeaShrine1 = new TeleportDestination(MapLocation.SeaShrine1, MapIndex.SeaShrineB3, new Coordinate(21, 42, CoordinateLocale.Standard), new List<TeleportIndex> { TeleportIndex.SeaShrine2, TeleportIndex.SeaShrine4 });
+		public static TeleportDestination SeaShrine4 = new TeleportDestination(MapLocation.SeaShrine4, MapIndex.SeaShrineB4, new Coordinate(61, 49, CoordinateLocale.Standard), TeleportIndex.SeaShrine5);
+		public static TeleportDestination SeaShrine5 = new TeleportDestination(MapLocation.SeaShrine5, MapIndex.SeaShrineB3, new Coordinate(47, 39, CoordinateLocale.Standard), TeleportIndex.SeaShrine6);
+		public static TeleportDestination SeaShrine6 = new TeleportDestination(MapLocation.SeaShrine6, MapIndex.SeaShrineB2, new Coordinate(54, 41, CoordinateLocale.Standard), TeleportIndex.SeaShrine7);
+		public static TeleportDestination SeaShrine7 = new TeleportDestination(MapLocation.SeaShrine7, MapIndex.SeaShrineB3, new Coordinate(48, 10, CoordinateLocale.Standard), TeleportIndex.SeaShrine8);
+		public static TeleportDestination SeaShrine8 = new TeleportDestination(MapLocation.SeaShrine8, MapIndex.SeaShrineB4, new Coordinate(45, 20, CoordinateLocale.Standard), TeleportIndex.SeaShrineKraken);
+		public static TeleportDestination SeaShrineKraken = new TeleportDestination(MapLocation.SeaShrineKraken, MapIndex.SeaShrineB5, new Coordinate(50, 48, CoordinateLocale.Standard), ExitTeleportIndex.ExitSeaShrine);
+		public static TeleportDestination SkyPalace1 = new TeleportDestination(MapLocation.SkyPalace1, MapIndex.SkyPalace1F, new Coordinate(19, 21, CoordinateLocale.StandardInRoom), TeleportIndex.SkyPalace2); // X high bit means inroom
+		public static TeleportDestination SkyPalace2 = new TeleportDestination(MapLocation.SkyPalace2, MapIndex.SkyPalace2F, new Coordinate(19, 4, CoordinateLocale.Standard), TeleportIndex.SkyPalace3);
+		public static TeleportDestination SkyPalace3 = new TeleportDestination(MapLocation.SkyPalace3, MapIndex.SkyPalace3F, new Coordinate(24, 23, CoordinateLocale.Standard), TeleportIndex.SkyPalaceMaze);
+		public static TeleportDestination SkyPalaceMaze = new TeleportDestination(MapLocation.SkyPalaceMaze, MapIndex.SkyPalace4F, new Coordinate(3, 3, CoordinateLocale.Standard), TeleportIndex.SkyPalaceTiamat);
+		public static TeleportDestination SkyPalaceTiamat = new TeleportDestination(MapLocation.SkyPalaceTiamat, MapIndex.SkyPalace5F, new Coordinate(7, 54, CoordinateLocale.Standard), ExitTeleportIndex.ExitSkyPalace);
+		public static TeleportDestination ExitTitanEast = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0x2A, 0xAE, CoordinateLocale.Overworld));
+		public static TeleportDestination ExitTitanWest = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0x1E, 0xAF, CoordinateLocale.Overworld));
+		public static TeleportDestination ExitIceCave = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0xC5, 0xB7, CoordinateLocale.Overworld));
+		public static TeleportDestination ExitCastleOrdeals = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0x82, 0x2D, CoordinateLocale.Overworld));
+		public static TeleportDestination ExitConeriaCastle = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0x99, 0x9F, CoordinateLocale.Overworld));
+		public static TeleportDestination ExitEarthCave = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0x41, 0xBB, CoordinateLocale.Overworld));
+		public static TeleportDestination ExitGurguVolcano = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0xBC, 0xDD, CoordinateLocale.Overworld));
+		public static TeleportDestination ExitSeaShrine = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0x3E, 0x38, CoordinateLocale.Overworld));
+		public static TeleportDestination ExitSkyPalace = new TeleportDestination(MapLocation.None, MapIndex.ConeriaTown, new Coordinate(0xC2, 0x3B, CoordinateLocale.Overworld));
+
 	}
 }

@@ -596,7 +596,8 @@ namespace FF1Lib
 			CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
 
 			// Should add more into the reqs so that this can be done inside the generator.
-			teleporters.Waterfall.SetTeleporter(waterfall.Entrance);
+			//teleporters.Waterfall.SetTeleporter(waterfall.Entrance);
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.Waterfall] = new TeleportDestination(teleporters.OverworldTeleporters[OverworldTeleportIndex.Waterfall], waterfall.Entrance);
 			//overworldMap.PutOverworldTeleport(OverworldTeleportIndex.Waterfall, Teleporters.Waterfall);
 			maps[(int)MapIndex.Waterfall].CopyFrom(waterfall.Map);
 		}
