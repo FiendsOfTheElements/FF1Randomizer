@@ -1664,6 +1664,42 @@
 		"description": "Sets the Knight and Ninja magic charge growth to give a charge in all levels whenever those classes gain a charge in any level, giving Knight and Ninja tier 4-8 charges. This alleviates an issue with \"Keep Permissions\" where the Knight and Ninja could never cast spells they could learn, but is useless otherwise."
 	},
 	{
+		"Id": "Knightlvl4",
+		"title": "Knight Level 4 Spell",
+		"screenshot": null,
+		"description": "Give the knight a random learnable level 4 spell slot. If no other flags are set this will be a level 4 white magic spell. If the Black Knight and Keep Permissions are both on then this will give a random level 4 black magic spell."
+	},
+	{
+		"Id": "PinkMage",
+		"title": "Pink Mage",
+		"screenshot": null,
+		"description": "Flips the spell permissions for white and black magic creating a red mage (and wizard) with more white magic and less black magic."
+	},
+	{
+		"Id": "BlackKnight",
+		"title": "Black Knight",
+		"screenshot": null,
+		"description": "Gives the Knight the Ninja Black magic permissions and removes all white magic permissions."
+	},
+	{
+		"Id": "BlackKnightKeep",
+		"title": "Black Knight Keep Permissions",
+		"screenshot": null,
+		"description": "Keeps the Knights normal white magic spell slot permissions but changes the magic to black magic, if the Knight level 4 spell flag is on this will also give the Knight a random level 4 black magic spell slot."
+	},
+	{
+		"Id": "WhiteNinja",
+		"title": "White Ninja",
+		"screenshot": null,
+		"description": "Gives the Ninja Knight white magic permissions and removed all black magic permissions."
+	},
+	{
+		"Id": "WhiteNinjaKeep",
+		"title": "White Ninja Keep Permissions",
+		"screenshot":  null,
+		"description": "Keeps the normal black magic permissions but changes the magic to white magic."
+	},
+	{
 		"Id": "startingEquipmentHealStaff",
 		"title": "Starting Equipment - Heal Staff",
 		"screenshot": "startingEquipmentHealStaff.png",
