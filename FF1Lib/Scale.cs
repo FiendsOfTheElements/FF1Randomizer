@@ -54,14 +54,20 @@ namespace FF1Lib
 		[Description("Uncapped: 255")]
 		insane,
 	}
-
-
 	public class EncounterRate
 	{
 		private const int ThreatLevelsOffset = 0x2CC01; // +1 because first entry is for overworld [unused]
 		private const int ThreatLevelsSize = 63; // -1 because of overworld offset
-		private const int OverworldThreatLevelOffset = 0x7C4FE;
-		private const int OceanThreatLevelOffset = 0x7C506;
+
+		private const int overworldThreatLevelBank = 0x0F;
+		//private const int OverworldThreatLevelOffset = 0x7C4FE;
+		//private const int OceanThreatLevelOffset = 0x7C506;
+		private const int OverworldThreatLevelOffset = 0xC4FE;
+		private const int OceanThreatLevelOffset = 0xC506;
+
+		private const int newOverworldThreatLevelBank = 0x1F;
+		private const int newOverworldThreatLevelOffset = 0x7C4FE;
+		private const int newOceanThreatLevelOffset = 0x7C506;
 
 		private FF1Rom rom;
 		private byte[] dungeonEncounterRate;
@@ -71,8 +77,12 @@ namespace FF1Lib
 		{
 			rom = _rom;
 			dungeonEncounterRate = _rom.Get(ThreatLevelsOffset, ThreatLevelsSize).ToBytes();
-			overworldEncounterRate = _rom[OverworldThreatLevelOffset];
-			oceanEncounterRate = _rom[OceanThreatLevelOffset];
+			overworldEncounterRate = _rom.GetFromBank(overworldThreatLevelBank, OverworldThreatLevelOffset, 1, false)[0];
+			oceanEncounterRate = _rom.GetFromBank(overworldThreatLevelBank, OceanThreatLevelOffset, 1, false)[0];
+		}
+		public void UpdateRate(MapIndex map, int rate)
+		{
+			dungeonEncounterRate[(int)map] = (byte)rate;
 		}
 		public void ScaleEncounterRate(Flags flags)
 		{
@@ -111,8 +121,8 @@ namespace FF1Lib
 		}
 		public void Write()
 		{
-			rom[OverworldThreatLevelOffset] = overworldEncounterRate;
-			rom[OceanThreatLevelOffset] = oceanEncounterRate;
+			rom.PutInBank(newOverworldThreatLevelBank, OverworldThreatLevelOffset, new byte[] { overworldEncounterRate });
+			rom.PutInBank(newOverworldThreatLevelBank, OceanThreatLevelOffset, new byte[] { oceanEncounterRate });
 			rom.Put(ThreatLevelsOffset, dungeonEncounterRate);
 		}
 

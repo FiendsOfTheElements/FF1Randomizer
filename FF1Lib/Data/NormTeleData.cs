@@ -48,11 +48,19 @@ namespace FF1Lib
 		{
 			rom = _rom;
 
-			TeleX = new MemTable<byte>(rom, 0x3F000, 256);
-			TeleY = new MemTable<byte>(rom, 0x3F100, 256);
-			TeleMap = new MemTable<MapIndex>(rom, 0x3F200, 256);
+			//TeleX = new MemTable<byte>(rom, 0x3F000, 256);
+			//TeleY = new MemTable<byte>(rom, 0x3F100, 256);
+			//TeleMap = new MemTable<MapIndex>(rom, 0x3F200, 256);
+			TeleX = new MemTable<byte>(rom, 0x2D00, 256);
+			TeleY = new MemTable<byte>(rom, 0x2D40, 256);
+			TeleMap = new MemTable<MapIndex>(rom, 0x2D80, 256);
 		}
-
+		public void Expand()
+		{
+			TeleX.UpdateAddress(0x3F000);
+			TeleY.UpdateAddress(0x3F100);
+			TeleMap.UpdateAddress(0x3F200);
+		}
 		public void LoadData()
 		{
 			TeleX.LoadTable();

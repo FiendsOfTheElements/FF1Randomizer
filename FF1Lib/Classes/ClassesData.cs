@@ -68,19 +68,33 @@ namespace FF1Lib
 		private GearPermissions _armorPermissions;
 		private SpellPermissions _spellPermissions;
 
-		const int lut_LvlUpHitRateBonus = 0x6CA59;
-		const int lut_LvlUpMagDefBonus = 0x6CA65;
+		//const int lut_LvlUpHitRateBonus = 0x6CA59;
+		//const int lut_LvlUpMagDefBonus = 0x6CA65;
 		const int lut_InnateResist = 0x6D400;
 		const int lut_MaxMP = 0x6C902;
 		const int lut_MpGainOnMaxMpGainClasses = 0x6D830;
 		const int NewLevelUpDataOffset = 0x6CDA9;
 		const int old_lut_LvlUpHitRateBonus = 0x2CA59;
 		const int old_lut_LvlUpMagDefBonus = 0x2CA65;
-		const int old_lut_InnateResist = 0x2D400;
-		const int old_lut_MaxMP = 0x2C902;
-		const int old_lut_MpGainOnMaxMpGainClasses = 0x2D830;
-		const int old_NewLevelUpDataOffset = 0x2CDA9;
+		//const int old_lut_InnateResist = 0x2D400;
+		//const int old_lut_MaxMP = 0x2C902;
+		//const int old_lut_MpGainOnMaxMpGainClasses = 0x2D830;
+		const int old_LevelUpDataOffset = 0x2CDA9;
 		const int StartingStatsOffset = 0x3040;
+
+		const int startingStatsBank = 0x00;
+		const int startingStatsOffset = 0xB040;
+
+		const int classesDataBank = 0x0B;
+		const int lut_LvlUpHitRateBonus = 0x9DDC;
+		const int lut_LvlUpMagDefBonus = 0x9DE8;
+		const int levelUpDataOffset = 0x9094;
+
+
+		const int newClassesDataBank = 0x1B;
+		const int new_lut_LvlUpHitRateBonus = 0x8A59;
+		const int new_lut_LvlUpMagDefBonus = 0x8A65;
+		const int new_levelUpDataOffset = 0x8DA9;
 
 
 		public enum BonusMalusAction
@@ -143,11 +157,11 @@ namespace FF1Lib
 			_spellPermissions = spellPerm;
 
 			// Addresses
-			var startingStats = rom.Get(StartingStatsOffset, 0x60).Chunk(0x10);
-			var levelUpStats = rom.Get(NewLevelUpDataOffset, 588).Chunk(49 * 2);
-			var hitGrowth = rom.Get(lut_LvlUpHitRateBonus, 12).ToBytes().ToList();
-			var mdefGrowthBase = rom.Get(lut_LvlUpMagDefBonus, 6).ToBytes().ToList();
-			var mdefGrowthPromo = rom.Get(lut_LvlUpMagDefBonus + 6, 6).ToBytes().ToList();
+			var startingStats = rom.GetFromBank(startingStatsBank, startingStatsOffset, 0x60).Chunk(0x10);
+			var levelUpStats = rom.GetFromBank(classesDataBank, levelUpDataOffset, 588).Chunk(49 * 2);
+			var hitGrowth = rom.GetFromBank(classesDataBank, lut_LvlUpHitRateBonus, 12).ToBytes().ToList();
+			var mdefGrowthBase = rom.GetFromBank(classesDataBank, lut_LvlUpMagDefBonus, 6).ToBytes().ToList();
+			var mdefGrowthPromo = rom.GetFromBank(classesDataBank, lut_LvlUpMagDefBonus + 6, 6).ToBytes().ToList();
 			var maxChargeList = new byte[] { 0x00, 0x00, 0x00, 0x09, 0x09, 0x09, 0x04, 0x04, 0x00, 0x09, 0x09, 0x09 };
 
 			// Populate stats
@@ -171,14 +185,14 @@ namespace FF1Lib
 			}
 
 			// Insert starting stats
-			rom.Put(0x3040, _classes.GetRange(0, 6).SelectMany(x => x.StartingStatsArray()).ToArray());
+			rom.PutInBank(startingStatsBank, startingStatsOffset, _classes.GetRange(0, 6).SelectMany(x => x.StartingStatsArray()).ToArray());
 
 			// Insert level up data
-			rom.Put(NewLevelUpDataOffset, _classes.GetRange(0, 6).SelectMany(x => x.LevelUpArray()).ToArray());
+			rom.PutInBank(newClassesDataBank, new_levelUpDataOffset, _classes.GetRange(0, 6).SelectMany(x => x.LevelUpArray()).ToArray());
 
 			// Insert hit% and mdef growth rate
-			rom.Put(lut_LvlUpHitRateBonus, _classes.Select(x => x.HitGrowth).ToArray());
-			rom.Put(lut_LvlUpMagDefBonus, _classes.Select(x => x.MDefGrowth).ToArray());
+			rom.PutInBank(newClassesDataBank, new_lut_LvlUpHitRateBonus, _classes.Select(x => x.HitGrowth).ToArray());
+			rom.PutInBank(newClassesDataBank, new_lut_LvlUpMagDefBonus, _classes.Select(x => x.MDefGrowth).ToArray());
 
 			// Insert max spell charges array
 			rom.Put(lut_MaxMP, _classes.Select(x => x.MaxSpC).ToArray());

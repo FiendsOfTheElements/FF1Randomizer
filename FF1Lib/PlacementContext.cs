@@ -63,17 +63,81 @@ namespace FF1Lib
 		public ItemShopSlot ShopSlot { get; set; }
 		private StartingItems startingItems;
 		private List<int> priceList;
+		//private List<IRewardSource> ddForcedItems;
 		public PlacementContext(StartingItems _startingItems, List<(string, Item)> plandoItems, List<int> _priceList, MT19337 rng, Flags flags)
 		{
 			ShopSlot = ItemLocations.CaravanItemShop1;
 			startingItems = _startingItems;
 			priceList = _priceList;
+			//ddForcedItems = _ddForcedItems;
 
 			FreeItems = startingItems.StartingKeyItems;
 
 			ProcessIncentiveData(plandoItems, rng, flags);
 			ProcessShopData(flags);
 			ProcessTreasurePool(rng, flags);
+		}
+		public PlacementContext(StartingItems _startingItems, List<(string, Item)> plandoItems, List<IRewardSource> _ddForcedItems, List<IRewardSource> _ddLocations, List<int> _priceList, MT19337 rng, Flags flags)
+		{
+			ShopSlot = ItemLocations.CaravanItemShop1;
+			startingItems = _startingItems;
+			priceList = _priceList;
+			//ddForcedItems = _ddForcedItems;
+
+			FreeItems = startingItems.StartingKeyItems;
+
+			ProcessDDIncentiveData(plandoItems, _ddForcedItems, _ddLocations, rng, flags);
+			ProcessShopData(flags);
+			ProcessTreasurePool(rng, flags);
+		}
+		private void ProcessDDIncentiveData(List<(string, Item)> plandoItems, List<IRewardSource> ddForcedItems, List<IRewardSource> ddLocations, MT19337 rng, Flags flags)
+		{
+			List<(bool, Item)> removedItemsFlags = new()
+			{
+				((bool)flags.NoMasamune, Item.Masamune),
+				((bool)flags.NoXcalber, Item.Xcalber),
+				((bool)flags.NoTail, Item.Tail),
+				((bool)flags.IsFloaterRemoved, Item.Floater),
+			};
+
+			RemovedItems = KeyItems.Concat(removedItemsFlags.Where(i => i.Item1).Select(i => i.Item2)).ToList();
+
+			// Process Plando/Forced placements
+			var forcedItemPlacements = ItemLocations.AllOtherItemLocations.ToList();
+			forcedItemPlacements.AddRange(ddForcedItems);
+
+			Dictionary<string, IRewardSource> rewardSourceDict = typeof(ItemLocations)
+				.GetFields()
+				.Where(t => t.FieldType.BaseType == typeof(RewardSourceBase))
+				.ToDictionary(t => t.Name, t => (IRewardSource)t.GetValue(null));
+
+			foreach (var item in plandoItems)
+			{
+				forcedItemPlacements.Add(ItemPlacement.NewItemPlacement(rewardSourceDict[item.Item1], item.Item2));
+			}
+
+			var itemLocationPool =
+				ItemLocations.AllTreasures.Concat(ItemLocations.AllNPCItemLocations)
+						  .Where(x => !x.IsUnused && !forcedItemPlacements.Any(y => y.Address == x.Address))
+						  .ToList();
+
+			List<MapLocation> endgameMapLocations = new() { MapLocation.TempleOfFiends2, MapLocation.TempleOfFiends3, MapLocation.TempleOfFiendsAir, MapLocation.TempleOfFiendsChaos, MapLocation.TempleOfFiendsEarth, MapLocation.TempleOfFiendsFire, MapLocation.TempleOfFiendsPhantom, MapLocation.TempleOfFiendsWater };
+			List<MapLocation> nonEndgameMapLocations = Enum.GetValues<MapLocation>().Except(endgameMapLocations).ToList();
+
+			ForcedItemPlacements = forcedItemPlacements.ToList();
+			KeyItemsToPlace = new List<Item>();
+			IncentiveItems = new List<Item>();
+			IncentiveLocations = new List<IRewardSource>();
+
+			//RemovedItems = removedItems.ToList();
+			/*
+			IncentiveLocations = incentiveLocationPool
+							 .Where(x => !forcedItemPlacements.Any(y => y.Address == x.Address))
+							 .ToList();*/
+
+			AllValidItemLocations = ddLocations.ToList();
+			AllValidPreBlackOrbItemLocations = AllValidItemLocations.ToList();
+			AllValidPreBlackOrbItemLocationsPlusForced = ddLocations.Concat(forcedItemPlacements).ToList();
 		}
 		private void ProcessIncentiveData(List<(string, Item)> plandoItems, MT19337 rng, Flags flags)
 		{
@@ -302,6 +366,14 @@ namespace FF1Lib
 				//.Where(t => !KeyItems.Contains(t))
 				.ToList();
 
+			if (flags.GameMode == GameModes.DeepDungeon)
+			{
+				workingTreasurePool = workingTreasurePool.Where(t => !KeyItems.Contains(t)).ToList();
+				workingTreasurePool.Remove(Item.Ribbon);
+				workingTreasurePool.Remove(Item.Ribbon);
+				workingTreasurePool.Remove(Item.Ribbon);
+			}
+
 			// Remove initial items
 			foreach (var item in IncentiveItems.Except(KeyItems))
 			{
@@ -336,7 +408,6 @@ namespace FF1Lib
 			if (randomizeTreasureMode != RandomizeTreasureMode.None)
 			{
 				IItemGenerator generator;
-
 
 				WeightedFloors = FloorsWeightSelector.GetWeights(AllValidItemLocations.ToList(), flags);
 

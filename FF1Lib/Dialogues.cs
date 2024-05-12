@@ -193,29 +193,26 @@ namespace FF1Lib
 		public DialogueData(FF1Rom _rom)
 		{
 			rom = _rom;
-			TransferDialogs();
+			LoadDialogues();
 		}
 		public string this[int index]
 		{
 			get => dialogues[index];
 			set => dialogues[index] = value;
 		}
-		private void TransferDialogs()
+		private void LoadDialogues()
 		{
-			// Get dialogs from bank A and put them in bank 10
-			rom.PutInBank(0x10, 0x8000, rom.Get(0x28000, 0x3600));
-
-			// Clear most of bank 10 up to 0x2B600 where monster skills and items are, this space is now free to use
-			rom.PutInBank(0x0A, 0x8000, new byte[0x3600]);
-
 			// Get dialogs
-			dialogues = rom.ReadText(0x40000, 0x38000, 0x150).ToList();
+			dialogues = rom.ReadText(0x28000, 0x20000, 0x100).ToList();
+
+			// Add 0x50 extra dialogues
+			dialogues.AddRange(Enumerable.Repeat("", 0x50));
 
 			// Zero out the 0x50 extra dialogs we added
-			for (int i = 0x0; i < 0x50; i++)
+			/*for (int i = 0x0; i < 0x50; i++)
 			{
 				dialogues[0x100 + i] = "";
-			}
+			}*/
 
 			// Move all tile dialogs to > 0x100, this frees a few spot so we don't have to write over standard dialogs
 			// Sarda get B3, Astos BF, WarMech F7 - leaving DB, E6, EE, EF, F0, F2, F3, F4, F5, F6, F7, F8, F9 free (13 total)
@@ -253,6 +250,17 @@ namespace FF1Lib
 			dialogues[0xF9] = "";
 			dialogues[0xDB] = dialogues[0x50]; // One of the sky warriors (ToF bat)
 			dialogues[0x50] = dialogues[0];    // Nothing here
+		}
+		public void TransferDialogues()
+		{
+			// Get dialogs from bank A and put them in bank 10
+			//rom.PutInBank(0x10, 0x8000, rom.Get(0x28000, 0x3600));
+
+			// Clear most of bank 10 up to 0x2B600 where monster skills and items are, this space is now free to use
+			rom.PutInBank(0x0A, 0x8000, new byte[0x3600]);
+
+			// Get dialogs
+			//dialogues = rom.ReadText(0x40000, 0x38000, 0x150).ToList();
 
 			// SHIP, BRIDGE, CANAL, CANOE and AIRSHIP text so they can be given by NPCs
 			var gameVariableText =

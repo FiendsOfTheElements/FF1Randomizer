@@ -45,6 +45,10 @@ namespace FF1Lib
 				}
 			}
 		}
+		public void ExpandNormalTeleporters()
+		{
+			standardMapTeleporters.Expand();
+		}
 		public void Write()
 		{
 			foreach (var owtele in OverworldTeleporters)

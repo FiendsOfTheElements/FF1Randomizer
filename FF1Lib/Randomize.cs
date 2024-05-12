@@ -93,18 +93,6 @@ public partial class FF1Rom : NesRom
 		ZoneFormations = new(this);
 		Overworld = new(this, flags, ZoneFormations, Settings, rng);
 		Overworld.LoadMapExchange();
-		TalkRoutines = new();
-
-		//Settings.CollapseRandomSettings(rng);
-		//Settings.ProcessStandardFlags();
-		//FlagRules.ProcessBaseFlags(settingstest);
-
-		//Settings.SetValue();
-
-		// We should apply Global Hacks after loading everything, but some data classes assume data has been moved already, so we call it in the middle -- To fix
-		GlobalHacks();
-
-		// Finish Loading Initial Data
 		ItemsText = new ItemNames(this);
 		ArmorPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, this);
 		WeaponPermissions = new GearPermissions(0x3BF50, (int)Item.WoodenNunchucks, this);
@@ -113,11 +101,23 @@ public partial class FF1Rom : NesRom
 		Teleporters = new Teleporters(this, Overworld.MapExchangeData);
 		Maps = new StandardMaps(this, Teleporters, flags);
 		NpcData = new NpcObjectData(Maps, flags, rng, this);
+		TalkRoutines = new TalkRoutines();
 		Dialogues = new DialogueData(this);
 		ShopData = new ShopData(flags, this);
-		EncounterRates = new(this);
+		EncounterRates = new EncounterRate(this);
 
 		await this.Progress();
+
+		//Settings.CollapseRandomSettings(rng);
+		//Settings.ProcessStandardFlags();
+		//FlagRules.ProcessBaseFlags(settingstest);
+
+		//Settings.SetValue();
+
+		// Expand ROM, move data around
+		GlobalHacks();
+		TalkRoutines.TransferTalkRoutines(this, flags);
+		Dialogues.TransferDialogues();
 
 		// Apply general fixes and hacks
 		Bugfixes(flags);
@@ -131,12 +131,12 @@ public partial class FF1Rom : NesRom
 		await this.Progress();
 
 		// Game Modes
-		DeepDungeon = new DeepDungeon(this);
+		DeepDungeon = new DeepDungeon(Maps, Teleporters, NpcData, TileSetsData, flags, this);
 		if (flags.GameMode == GameModes.DeepDungeon)
 		{
 			await this.Progress("Generating Deep Dungeon's Floors...", 2);
 
-			DeepDungeon.Generate(rng, Overworld.OverworldMap, Teleporters, Dialogues, Maps.GetMapList(), flags);
+			DeepDungeon.Generate(rng, Overworld, EncounterRates, Dialogues);
 			DeepDungeonFloorIndicator();
 			warmMechFloor = (MapIndex)DeepDungeon.WarMechFloor;
 
@@ -174,7 +174,6 @@ public partial class FF1Rom : NesRom
 		await this.Progress();
 
 		// NPC Stuff
-		TalkRoutines.TransferTalkRoutines(this, flags);
 		Dialogues.UpdateNPCDialogues(flags);
 		PacifistBat(Maps, TalkRoutines, NpcData);
 		TalkRoutines.Update(flags);
@@ -265,7 +264,9 @@ public partial class FF1Rom : NesRom
 
 		// Placement Context
 		var priceList = Get(0x37C00, 0x200).ToUShorts().Select(x => (int)x).ToList(); // Temporary until we extract price
-		PlacementContext = new PlacementContext(StartingItems, new() { }, priceList, rng, flags);
+		PlacementContext = (flags.GameMode != GameModes.DeepDungeon) ?
+			new PlacementContext(StartingItems, new() { }, priceList, rng, flags) :
+			new PlacementContext(StartingItems, new() { }, DeepDungeon.PlacedItems, DeepDungeon.ChestLocations, priceList, rng, flags);
 
 		// Shop stuff
 		ShopData.ShuffleShops(rng, PlacementContext.ExcludedItemsFromShops, Teleporters.ConeriaTownEntranceItemShopIndex);

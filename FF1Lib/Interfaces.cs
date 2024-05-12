@@ -140,7 +140,7 @@
 		bool LooseItemsNpcBalance { get; }
 		bool? Entrances { get; }
 		OwMapExchanges OwMapExchange { get; }
-		GameModes GameMode { get;  }
+		//GameModes GameMode { get;  }
 		bool Archipelago { get; }
 		bool PredictivePlacement { get;}
 		bool AllowUnsafePlacement { get; }
@@ -206,5 +206,6 @@
 		bool? LooseExcludePlacedDungeons { get; }
 		bool NoOverworld { get; }
 		bool DesertOfDeath { get; }
+		GameModes GameMode { get; }
 	}
 }
