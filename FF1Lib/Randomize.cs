@@ -325,11 +325,6 @@ public partial class FF1Rom : NesRom
 			ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
 		}
 
-		if (flags.GameMode == GameModes.DeepDungeon)
-		{
-			ShopData.Shops.Find(x => x.Type == FF1Lib.ShopType.Item && x.Entries.Contains(Item.Bottle)).Entries.Remove(Item.Bottle);
-		}
-
 		// This need to be after the last modification of shopData 
 		ShopData.UpdateShopSlotPlacement(itemPlacement.PlacedItems);
 

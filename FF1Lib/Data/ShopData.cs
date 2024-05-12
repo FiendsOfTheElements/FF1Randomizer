@@ -240,13 +240,16 @@
 		public ItemShopSlot UpdateShopSlotAddress(ItemShopSlot itemShop)
 		{
 			var targetShop = Shops.Find(s => s.Index == itemShop.ShopIndex);
-			var itemSlot = targetShop.Entries.FindIndex(e => e == itemShop.Item);
+			var itemSlot = targetShop.Entries.FindIndex(e => e == Item.Bottle);
 
 			// If the slot was removed by ShopKiller, remove slot from placement
 			if (itemSlot < 0 || (itemShop.Item == Item.Soft && targetShop.Entries.Count == 1))
 			{
 				return null;
 			}
+
+			// Update Shop with the placed item
+			targetShop.Entries[itemSlot] = itemShop.Item;
 
 			return new(GetShopEntryPointer(targetShop, itemSlot), itemShop.Name, itemShop.MapLocation, itemShop.Item, (byte)targetShop.Index);
 		}
@@ -257,11 +260,20 @@
 				return;
 			}
 
+			// Simply remove the bottle with Deep Dungeon
+			if (flags.GameMode == GameModes.DeepDungeon)
+			{
+				Shops.Find(x => x.Type == ShopType.Item && x.Entries.Contains(Item.Bottle)).Entries.Remove(Item.Bottle);
+				return;
+			}
+
 			var placedshops = placement.Where(s => s.GetType() == typeof(ItemShopSlot));
 			if (!placedshops.Any())
 			{
 				return;
 			}
+
+
 
 			ItemShopSlot placedShopSlot = (ItemShopSlot)placedshops.First();
 

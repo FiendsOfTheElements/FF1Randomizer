@@ -108,6 +108,10 @@ namespace FF1Lib
 						_pool.Add(tiers[i]);
 				}
 			}
+			while (_pool.Count < treasurePool.Count)
+			{
+				_pool.Add(tiers[7]);
+			}
 
 			System.Diagnostics.Debug.Assert(treasurePool.Count == _pool.Count);
 		}
