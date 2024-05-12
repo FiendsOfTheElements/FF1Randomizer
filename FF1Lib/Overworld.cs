@@ -65,7 +65,7 @@ namespace FF1Lib
 			rom.PutInBank(lut_BtlBackdrops_Bank, lut_BtlBackdrops, BattleBackdrops.Select(b => (byte)b).ToArray());
 			//overworldMap.
 		}
-		public async void LoadMapExchange()
+		public async Task LoadMapExchange()
 		{
 			owMapExchange = await OwMapExchange.FromFlags(rom, overworldMap, flags, rng);
 			owMapExchange?.UpdateBridgeSprite();

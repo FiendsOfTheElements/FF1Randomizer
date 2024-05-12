@@ -92,7 +92,7 @@ public partial class FF1Rom : NesRom
 		TileSetsData = new(this);
 		ZoneFormations = new(this);
 		Overworld = new(this, flags, ZoneFormations, Settings, rng);
-		Overworld.LoadMapExchange();
+		await Overworld.LoadMapExchange();
 		ItemsText = new ItemNames(this);
 		ArmorPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, this);
 		WeaponPermissions = new GearPermissions(0x3BF50, (int)Item.WoodenNunchucks, this);
