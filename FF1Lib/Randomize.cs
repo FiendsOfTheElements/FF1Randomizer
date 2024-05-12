@@ -28,6 +28,7 @@ public partial class FF1Rom : NesRom
 	public StartingItems StartingItems;
 	public EncounterRate EncounterRates;
 	public ShopData ShopData;
+	public MusicTracks Music;
 	//public ShipLocations ShipLocations;
 
 	public DeepDungeon DeepDungeon;
@@ -105,6 +106,7 @@ public partial class FF1Rom : NesRom
 		Dialogues = new DialogueData(this);
 		ShopData = new ShopData(flags, this);
 		EncounterRates = new EncounterRate(this);
+		Music = new MusicTracks();
 
 		await this.Progress();
 
@@ -120,6 +122,7 @@ public partial class FF1Rom : NesRom
 		Dialogues.TransferDialogues();
 
 		// Apply general fixes and hacks
+		Music.ShuffleMusic(preferences.Music, new MT19337(funRng.Next()));
 		Bugfixes(flags);
 		GlobalImprovements(flags, Maps, preferences);
 		MiscHacks(flags, rng);
@@ -142,7 +145,7 @@ public partial class FF1Rom : NesRom
 
 			await this.Progress("Generating Deep Dungeon's Floors... Done!");
 		}
-		DesertOfDeath.ApplyDesertModifications((bool)flags.DesertOfDeath, this, ZoneFormations, Overworld.Locations.StartingLocation, NpcData, Dialogues);
+		DesertOfDeath.ApplyDesertModifications((bool)flags.DesertOfDeath, this, ZoneFormations, Overworld.Locations.StartingLocation, NpcData, Dialogues, Music);
 		Spooky(TalkRoutines, NpcData, Dialogues, ZoneFormations, Maps, rng, flags);
 		BlackOrbMode(TalkRoutines, Dialogues, flags, preferences, rng, new MT19337(funRng.Next()));
 		if(flags.NoOverworld) await this.Progress("Linking NoOverworld's Map", 1);
@@ -382,7 +385,7 @@ public partial class FF1Rom : NesRom
 		SavingHacks(Overworld, flags);
 		ImprovedClinic(flags.ImprovedClinic && !(bool)flags.RecruitmentMode);
 		IncreaseDarkPenalty((bool)flags.IncreaseDarkPenalty);
-		new QuickMiniMap(this, Overworld.DecompressedMap).EnableQuickMinimap(flags.SpeedHacks || Overworld.MapExchange != null);
+		new QuickMiniMap(this, Overworld.DecompressedMap).EnableQuickMinimap(flags.SpeedHacks || Overworld.MapExchange != null, Music);
 		ShopUpgrade(flags, Dialogues, preferences);
 		EnableAirBoat(flags);
 		OpenChestsInOrder(flags.OpenChestsInOrder && !flags.Archipelago);
@@ -455,7 +458,6 @@ public partial class FF1Rom : NesRom
 		PaletteSwap(preferences.PaletteSwap && !flags.EnemizerEnabled, new MT19337(funRng.Next()));
 		TeamSteak(preferences.TeamSteak && !(bool)flags.RandomizeEnemizer);
 		FunEnemyNames(flags, preferences, new MT19337(funRng.Next()));
-		ShuffleMusic(preferences.Music, new MT19337(funRng.Next()));
 
 		await this.Progress();
 
@@ -501,6 +503,7 @@ public partial class FF1Rom : NesRom
 		WeaponPermissions.Write(this);
 		SpellPermissions.Write(this);
 		ClassData.Write(this);
+		Music.Write(this);
 
 		await this.Progress();
 
