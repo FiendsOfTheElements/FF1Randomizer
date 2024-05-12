@@ -22,6 +22,7 @@ namespace FF1Lib
 		bool princessRescued;
 		bool vampireAccessible;
 		bool airShipLiftOff;
+		bool airBoat;
 
 		HashSet<short> processedAreas;
 		HashSet<OverworldTeleportIndex> processedDungeons;
@@ -148,6 +149,7 @@ namespace FF1Lib
 			princessRescued = false;
 			vampireAccessible = false;
 			airShipLiftOff = false;
+			airBoat = (bool)victoryConditions.AirBoat;
 
 			BuildInitialRequirements(victoryConditions, layoutcheck);
 
@@ -176,6 +178,12 @@ namespace FF1Lib
 			if ((bool)victoryConditions.IsFloaterRemoved)
 			{
 				requiredMapChanges &= ~MapChange.Airship;
+			}
+
+			if (victoryConditions.GameMode == GameModes.DeepDungeon)
+			{
+				requiredMapChanges = MapChange.None;
+				requiredAccess = AccessRequirement.Tnt | AccessRequirement.Ruby | AccessRequirement.Oxyale;
 			}
 
 			bool complete = changes.HasFlag(requiredMapChanges) && requirements.HasFlag(requiredAccess);
@@ -723,6 +731,10 @@ namespace FF1Lib
 					break;
 				case Item.Floater:
 					changes |= MapChange.Airship;
+					if (airBoat && ((changes & MapChange.Ship) > 0))
+					{
+						LiftOff();
+					}
 					break;
 				case Item.Chime:
 					changes |= MapChange.Chime;
@@ -739,6 +751,10 @@ namespace FF1Lib
 				case Item.Ship:
 					changes |= MapChange.Ship;
 					SetShipDock(dungeonIndex);
+					if (airBoat && ((changes & MapChange.Airship) > 0))
+					{
+						LiftOff();
+					}
 					break;
 				case Item.Bridge:
 					changes |= MapChange.Bridge;

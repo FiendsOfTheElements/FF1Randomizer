@@ -53,8 +53,6 @@ namespace FF1Lib
 			PutInBank(bank, address, Blob.FromHex("001C22414141221CFFE3DDBEBEBEDDE3001C3E7F7F7F3E1CFFFFE3CFDFDFFFFF"));
 		}
 
-
-
 		public void EnableShardHunt(MT19337 rng, TalkRoutines talkroutines, DialogueData dialogues, ShardCount count, bool RandomShardNames, MT19337 funRngSeed)
 		{
 			int goal = 16;
@@ -213,7 +211,7 @@ namespace FF1Lib
 		{
 			// black orb typically checks for earth($6031) fire($6032) water ($6033) wind ($6034)
 			// ShiftEarthOrbDown() creates a count at $6035, and this NPC talkroutine compares the $6035 value to goal
-			talkroutines.Replace(newTalkRoutines.Talk_BlackOrb, Blob.FromHex($"AD3560C9{goal:X2}300CA0CA209690E67DE67DA57160A57260"));
+			talkroutines.Replace(TalkScripts.Talk_BlackOrb, Blob.FromHex($"AD3560C9{goal:X2}300CA0CA209690E67DE67DA57160A57260"));
 
 			// make portal under Black Orb walkable
 			Remove4OrbRequirementForToFRPortal();
@@ -272,7 +270,7 @@ namespace FF1Lib
 			}
 			asm.Remove(24, 2); // removes unneeded trailing "2D" from appends above
 			asm.Append("F00CA0CA209690E67DE67DA57160A57260"); // trailing asm from original talkroutine
-			talkroutines.Replace(newTalkRoutines.Talk_BlackOrb, Blob.FromHex(asm.ToString()));
+			talkroutines.Replace(TalkScripts.Talk_BlackOrb, Blob.FromHex(asm.ToString()));
 
 			// make portal under Black Orb walkable
 			Remove4OrbRequirementForToFRPortal();

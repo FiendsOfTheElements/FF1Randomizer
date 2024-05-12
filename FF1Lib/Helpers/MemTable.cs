@@ -24,7 +24,10 @@
 
 			LoadTable();
 		}
-
+		public void UpdateAddress(int _address)
+		{
+			address = _address;
+		}
 		public unsafe void LoadTable()
 		{
 			Data = new T[count];

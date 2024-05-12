@@ -160,14 +160,14 @@ namespace FF1Lib
 			if (talkscript == TalkScripts.Talk_Titan || talkscript == TalkScripts.Talk_ElfDocUnne)
 			{
 				// Skip giving item for Titan, ElfDoc or Unne
-				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("20109F"), Blob.FromHex("EAEAEA"));
-				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("A9F060"), Blob.FromHex("4C4396"));
+				talkroutines.ReplaceChunk(TalkScripts.Talk_Astos, Blob.FromHex("20109F"), Blob.FromHex("EAEAEA"));
+				talkroutines.ReplaceChunk(TalkScripts.Talk_Astos, Blob.FromHex("A9F060"), Blob.FromHex("4C4396"));
 				npcdata[newastos].Script = TalkScripts.Talk_Astos;
 			}
 			else if (talkscript == TalkScripts.Talk_GiveItemOnFlag)
 			{
 				// Check for a flag instead of an item
-				talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, Blob.FromHex("A674F005BD2060F0"), Blob.FromHex("A474F00520799090"));
+				talkroutines.ReplaceChunk(TalkScripts.Talk_Astos, Blob.FromHex("A674F005BD2060F0"), Blob.FromHex("A474F00520799090"));
 				npcdata[newastos].Script = TalkScripts.Talk_Astos;
 			}
 			else if (talkscript == TalkScripts.Talk_Nerrick || talkscript == TalkScripts.Talk_GiveItemOnItem || talkscript == TalkScripts.Talk_TradeItems)
@@ -178,7 +178,7 @@ namespace FF1Lib
 			else if (talkscript == TalkScripts.Talk_Bahamut)
 			{
 				// Change routine to check for Tail, give promotion and trigger the battle at the same time, see 11_8200_TalkRoutines.asm
-				talkroutines.Replace(newTalkRoutines.Talk_Bahamut, Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660"));
+				talkroutines.Replace(TalkScripts.Talk_Bahamut, Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660"));
 			}
 
 			// Set battle

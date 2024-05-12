@@ -311,7 +311,7 @@ namespace FF1Lib
 			    bool isEmpty = true;
 			    for (int x = 0; isEmpty && x < 8; x++) {
 				for (int y = 0; isEmpty && y < 8; y++) {
-				    if (decompressedMap[i*8+y][j*8+x] != OverworldMap.OceanTile) {
+				    if (decompressedMap[i*8+y][j*8+x] != (byte)OwTiles.OceanTile) {
 					isEmpty = false;
 				    }
 				}

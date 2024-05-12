@@ -17,9 +17,6 @@ namespace FF1Lib
 		private const int TreasureJingleOffset = 0x47600;
 		private const int TreasureOffset = 0x03100;
 		private const int TreasureChestOrderOffset = 0x47F00;
-		private const int TreasureSize = 1;
-		private const int TreasurePoolCount = 256;
-		private const int TreasureCount = 256;
 
 		private static List<IRewardSource> TrapChests = new List<IRewardSource>()
 		{
@@ -191,222 +188,6 @@ namespace FF1Lib
 				item.Put(rom);
 			}
 		}
-
-
-		/*
-		public List<IRewardSource> PlaceSaneItems(MT19337 rng, OwLocationData locations, FF1Rom rom)
-		{
-			_rom = rom;
-
-			var incentivePool = _incentivesData.IncentiveItems.Where(x => _allTreasures.Contains(x)).ToList();
-			var forcedItems = _incentivesData.ForcedItemPlacements.ToList();
-			var removedItems = _incentivesData.RemovedItems.ToList();
-
-			var unincentivizedQuestItems =
-				ItemLists.AllQuestItems
-					.Where(x => !incentivePool.Contains(x) &&
-								_allTreasures.Contains(x) &&
-								!forcedItems.Any(y => y.Item == x) &&
-								!removedItems.Contains(x))
-								.ToList();
-
-			var shards = new List<Item>();
-
-			var treasurePool = _allTreasures.ToList();
-
-			bool jingleGuaranteedDefenseItem = true;
-			bool jingleGuaranteedPowerItem = true;
-
-			if (_flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(_flags.ItemMagicMode == ItemMagicMode.None) && !incentivePool.Contains(Item.PowerRod))
-			{
-				unincentivizedQuestItems.Add(Item.PowerRod);
-				jingleGuaranteedDefenseItem = false;
-			}
-
-			if (_flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(_flags.ItemMagicMode == ItemMagicMode.None) && !incentivePool.Contains(Item.PowerGauntlets))
-			{
-				unincentivizedQuestItems.Add(Item.PowerGauntlets);
-				jingleGuaranteedPowerItem = false;
-			}
-
-			foreach (var incentive in incentivePool)
-			{
-				treasurePool.Remove(incentive);
-			}
-			foreach (var placement in forcedItems)
-			{
-				treasurePool.Remove(placement.Item);
-			}
-			foreach (var questItem in unincentivizedQuestItems)
-			{
-				treasurePool.Remove(questItem);
-			}
-			foreach (var item in removedItems)
-			{
-				treasurePool.Remove(item);
-			}
-			while (treasurePool.Remove(Item.Shard))
-			{
-				shards.Add(Item.Shard);
-			}
-
-			ItemPlacementContext ctx = new ItemPlacementContext
-			{
-				Forced = forcedItems,
-				Incentivized = incentivePool,
-				Unincentivized = unincentivizedQuestItems,
-				Shards = shards,
-				Removed = removedItems,
-				AllTreasures = treasurePool.ToList(),
-				KeyItemsToPlace = _incentivesData.KeyItemsToPlace.ToList(),
-			};
-
-			ItemPlacementResult result = DoSanePlacement(rng, locations);
-			List<IRewardSource> placedItems = result.PlacedItems;
-
-			treasurePool = result.RemainingTreasures;
-
-			//setup jingle for "incentive treasures", the placed items should just be key items, loose incentive items
-			if (_flags.IncentiveChestItemsFanfare)
-			{
-				foreach (var placedItem in placedItems)
-				{
-					//dont make shards jingle that'd be annoying
-					//dont make free items that get replaced, aka cabins, jingle
-					if (placedItem is TreasureChest && placedItem.Item != Item.Shard &&
-						placedItem.Item != ReplacementItem)
-					{
-						if ((placedItem.Item == Item.PowerGauntlets && !jingleGuaranteedPowerItem) || (placedItem.Item == Item.PowerRod && !jingleGuaranteedDefenseItem))
-						{
-							continue;
-						}
-
-						rom.Put(placedItem.Address - FF1Rom.TreasureOffset + FF1Rom.TreasureJingleOffset, new byte[] { (byte)placedItem.Item });
-					}
-				}
-			}			
-
-			// 8. Place all remaining unincentivized treasures or incentivized non-quest items that weren't placed
-			var itemLocationPool = _incentivesData.AllValidItemLocations.ToList();
-			itemLocationPool = itemLocationPool.Where(x => !x.IsUnused && !placedItems.Any(y => y.Address == x.Address)).ToList();
-
-			MoreConsumableChests.Work(_flags, treasurePool, rng);
-
-			if((bool)_flags.GuaranteedMasamune && !incentivePool.Contains(Item.Masamune) && (bool)_flags.SendMasamuneHome)
-			{
-				// Remove Masamune from treasure pool (This will also causes Masamune to not be placed by RandomLoot)
-				treasurePool.Remove(Item.Masamune);
-			}
-
-			// Use cabins to balance item population
-			int poolDifference = itemLocationPool.Count() - treasurePool.Count();
-			if (poolDifference < 0)
-			{
-				for (int i = 0; i > poolDifference; i--)
-				{
-					treasurePool.Remove(Item.Cabin);
-				}
-			}
-			else if (poolDifference > 0)
-			{
-				treasurePool.AddRange(Enumerable.Repeat(Item.Cabin, poolDifference));
-			}
-
-			Debug.Assert(treasurePool.Count() == itemLocationPool.Count());
-
-			
-			List<IRewardSource> normalTreasures = new();
-
-			var randomizeTreasureMode = (_flags.RandomizeTreasure == RandomizeTreasureMode.Random) ? (RandomizeTreasureMode)rng.Between(0, 2) : _flags.RandomizeTreasure;
-
-			if (randomizeTreasureMode != RandomizeTreasureMode.None)
-			{
-				IItemGenerator generator;
-
-				// We want to leave out anything incentivized (and thus already placed), but
-				// add all the other stuff that you can't find in vanilla.
-				var randomTreasure = treasurePool.ToList();
-				
-				if (randomizeTreasureMode == RandomizeTreasureMode.DeepDungeon)
-				{
-					generator = new DeepDungeonItemGenerator(itemLocationPool, rom.UnusedGoldItems, removedItems, normalTreasures, (_flags.GameMode == GameModes.DeepDungeon), _flags.Etherizer, rom);
-				}
-				else
-				{
-					generator = new ItemGenerator(randomTreasure, rom.UnusedGoldItems, removedItems, _flags.WorldWealth);
-				}
-
-				treasurePool = treasurePool.Select(treasure => generator.GetItem(rng)).ToList();
-			}
-
-			if ((bool)_flags.BetterTrapChests && randomizeTreasureMode != RandomizeTreasureMode.DeepDungeon)
-			{
-				// First we'll make a list of all 'notable' treasure.
-				var notableTreasureList = new List<Item>()
-					.Concat(ItemLists.UberTier)
-					.Concat(ItemLists.LegendaryWeaponTier)
-					.Concat(ItemLists.LegendaryArmorTier)
-					.Concat(ItemLists.RareWeaponTier)
-					.Concat(ItemLists.RareArmorTier);
-				// Convert the list to a HashSet since we'll be doing lookups in it.
-				var notableTreasure = new HashSet<Item>(notableTreasureList);
-
-				// We sort the treasure pool based on value (sort of) and pull out the highest ranked ones to put
-				// in the trap chests we picked out.
-				var notableTreasurePool = treasurePool.Where(item => notableTreasure.Contains(item)).ToList();
-
-				// Since some chests might be incentivized, remove those that aren't in the pool.
-				var trapChestPool = TrapChests.Where(chest => itemLocationPool.Contains(chest));
-
-				foreach (var chest in trapChestPool)
-				{
-					// It seems unlikely that is possible, but just in case.
-					if (!notableTreasurePool.Any()) break;
-
-					// Pick a random treasure and place it.
-					var treasure = notableTreasurePool.SpliceRandom(rng);
-					placedItems.Add(NewItemPlacement(chest, treasure));
-
-					// Since it was placed, remove both the item and location from the remaining pool.
-					treasurePool.Remove(treasure);
-					itemLocationPool.Remove(chest);
-				}
-
-				// This should still be true at the end, so make sure it is
-				Debug.Assert(treasurePool.Count() == itemLocationPool.Count());
-			}
-
-			if (randomizeTreasureMode == RandomizeTreasureMode.DeepDungeon && _flags.DeepDungeonGenerator == DeepDungeonGeneratorMode.Progressive)
-			{
-				placedItems.AddRange(normalTreasures);
-			}
-			else
-			{
-				treasurePool.Shuffle(rng);
-				itemLocationPool.Shuffle(rng);
-
-				var leftovers = treasurePool.Zip(itemLocationPool, (treasure, location) => NewItemPlacement(location, treasure));
-				placedItems.AddRange(leftovers);
-			}
-
-			//chest order placement
-			var chestOrderPool = treasurePool;
-			if (_flags.ShardHunt)
-			{
-				//add the shards back into the chest order pool
-				chestOrderPool = chestOrderPool.Concat(shards).ToList();
-			}
-
-			chestOrderPool.Shuffle(rng);
-
-			for (int i = 0; i < chestOrderPool.Count; i++)
-			{	
-				rom.Put(FF1Rom.TreasureChestOrderOffset + i, new byte[] { (byte)chestOrderPool[i] });
-			}
-
-			return placedItems;
-		}
-		*/
 		private void SetIncentiveChestItemsFanfare()
 		{
 			if (!flags.IncentiveChestItemsFanfare)
@@ -441,8 +222,6 @@ namespace FF1Lib
 				rom.Put(TreasureChestOrderOffset + i, new byte[] { (byte)chestOrderPool[i] });
 			}
 		}
-		
-
 		public Item SelectVendorItem(List<Item> incentives, List<Item> nonincentives, List<Item> treasurePool, IEnumerable<IRewardSource> incentiveLocationPool, MT19337 rng)
 		{
 			if (!(bool)flags.NPCItems) return Item.Bottle;
@@ -465,7 +244,6 @@ namespace FF1Lib
 
 			return itemShopItem;
 		}
-
 		public static IRewardSource NewItemPlacement(IRewardSource copyFromSource, Item newItem)
 		{
 			if (copyFromSource is NpcReward)
