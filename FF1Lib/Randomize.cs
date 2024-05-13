@@ -29,7 +29,6 @@ public partial class FF1Rom : NesRom
 	public EncounterRate EncounterRates;
 	public ShopData ShopData;
 	public MusicTracks Music;
-	//public ShipLocations ShipLocations;
 
 	public DeepDungeon DeepDungeon;
 
@@ -86,7 +85,7 @@ public partial class FF1Rom : NesRom
 		Settings = new(true);
 		//Settings.GenerateFlagstring();
 
-		await this.Progress("Beginning Randomization", 18);
+		await this.Progress("Beginning Randomization", 16);
 
 		// Load Initial Data
 		RngTables = new(this);
@@ -126,6 +125,8 @@ public partial class FF1Rom : NesRom
 		Bugfixes(flags);
 		GlobalImprovements(flags, Maps, preferences);
 		MiscHacks(flags, rng);
+		FF1Text.AddNewIcons(this, flags);
+		var oldItemNames = ItemsText.ToList();
 		MapIndex warmMechFloor = MapIndex.SkyPalace4F;
 
 		// Load Ressources Packs Maps
@@ -152,11 +153,7 @@ public partial class FF1Rom : NesRom
 		NoOverworld(Overworld.DecompressedMap, Maps, Teleporters, TileSetsData, TalkRoutines, Dialogues, NpcData, flags, rng);
 		DraculasCurse(Overworld, Teleporters, rng, flags);
 
-		FF1Text.AddNewIcons(this, flags);
-
 		await this.Progress();
-
-		var oldItemNames = ItemsText.ToList();
 
 		// Maps
 		Teleporters.ShuffleEntrancesAndFloors(Overworld.OverworldMap, rng, flags);
@@ -164,16 +161,13 @@ public partial class FF1Rom : NesRom
 		GeneralMapHacks(flags, Overworld, Maps, ZoneFormations, TileSetsData, rng);
 		Maps.Update(ZoneFormations, rng);
 		UpdateToFR(Maps, Teleporters, TileSetsData, flags, rng);
+		EncounterRates.ScaleEncounterRate(flags);
 
 		// Tile Sets 
 		TileSetsData.Update(flags, rng);
 		TileSetsData.UpdateTrapTiles(this, ZoneFormations, flags, rng);
 		DamageTilesHack(flags, Overworld);
 
-		await this.Progress();
-
-		EncounterRates.ScaleEncounterRate(flags);
-		var extConsumables = new ExtConsumables(ShopData, this, flags, rng);
 		await this.Progress();
 
 		// NPC Stuff
@@ -203,7 +197,13 @@ public partial class FF1Rom : NesRom
 			TranceHasStatusElement();
 		}
 
+		if (((bool)flags.MagicLevels))
+		{
+			ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
+		}
+
 		//has to be done before modifying itemnames and after modifying spellnames...
+		var extConsumables = new ExtConsumables(ShopData, this, flags, rng);
 		extConsumables.LoadSpells();
 
 		// Create items
@@ -228,8 +228,6 @@ public partial class FF1Rom : NesRom
 		{
 			CraftDefenseItem(flags);
 		}
-
-		await this.Progress();
 
 		if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
 		{
@@ -279,16 +277,20 @@ public partial class FF1Rom : NesRom
 		new ShopKiller(Maps, ShopData, rng, flags, this).KillShops();
 		new LegendaryShops(rng, flags, Maps, ShopData, TileSetsData, this).PlaceShops();
 
-		// Sanity + Actual Placement
+		await this.Progress("Building Placement Logic");
+
+		// Create Logic Checker
 		sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, TileSetsData, this, ShopData.ItemShopSlot);
 		if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags, true).Complete) throw new InsaneException("Not Completable");
 
-		await this.Progress((bool)flags.Treasures ? "Shuffling Treasures" : "Placing Treasures", 1);
+		await this.Progress((bool)flags.Treasures ? "Shuffling Treasures" : "Placing Treasures");
 
+		// Item Placement
 		ItemPlacement itemPlacement = ItemPlacement.Create(this, flags, PlacementContext, ShopData.ItemShopSlot, Overworld, sanityChecker);
 		itemPlacement.PlaceItems(rng);
 
 		NpcData.UpdateItemPlacement(itemPlacement.PlacedItems);
+		ShopData.UpdateShopSlotPlacement(itemPlacement.PlacedItems);
 
 		List<string> funMessages = new()
 		{
@@ -320,16 +322,6 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress(funMessages.PickRandom(rng));
 
-		if (((bool)flags.MagicLevels))
-		{
-			ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
-		}
-
-		// This need to be after the last modification of shopData 
-		ShopData.UpdateShopSlotPlacement(itemPlacement.PlacedItems);
-
-		await this.Progress();
-
 		// Should be in spell class
 		if (preferences.AccessibleSpellNames)
 		{
@@ -343,17 +335,11 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		// Encounters
-		ZoneFormations.ShuffleEnemyFormations(rng, flags.FormationShuffleMode, flags.EnemizerEnabled);
-		ZoneFormations.UnleashWarMECH(flags.WarMECHMode == WarMECHMode.Unleashed || flags.WarMECHMode == WarMECHMode.All);
-
 		// Enemies
 		ShuffleEnemyScripts(rng, flags);
 		ShuffleEnemySkillsSpells(rng, flags);
 		StatusAttacks(flags, rng);
 		ShuffleUnrunnable(rng, flags);
-
-		// Always on to supply the correct changes for WaitWhenUnrunnable
 		AllowStrikeFirstAndSurprise(flags.WaitWhenUnrunnable, (bool)flags.UnrunnablesStrikeFirstAndSurprise);
 		ShuffleSurpriseBonus((bool)flags.EnemyFormationsSurprise, rng);
 
@@ -363,13 +349,17 @@ public partial class FF1Rom : NesRom
 		Astos(NpcData, Dialogues, TalkRoutines, flags, rng);
 		EnableSwolePirates((bool)flags.SwolePirates);
 
-		if((bool)flags.AlternateFiends && !flags.SpookyFlag) await this.Progress("Creating new Fiends", 1);
+		if ((bool)flags.AlternateFiends && !flags.SpookyFlag) await this.Progress("Creating new Fiends", 1);
 		AlternativeFiends(rng, flags);
 		TransformFinalFormation(flags, rng);
 		DoEnemizer(flags, rng);
 		FiendShuffle((bool)flags.FiendShuffle, rng);
 		ScaleEnemyStats(rng, flags);
 		ScaleBossStats(rng, flags);
+
+		// Encounters
+		ZoneFormations.ShuffleEnemyFormations(rng, flags.FormationShuffleMode, flags.EnemizerEnabled);
+		ZoneFormations.UnleashWarMECH(flags.WarMECHMode == WarMECHMode.Unleashed || flags.WarMECHMode == WarMECHMode.All);
 
 		await this.Progress();
 
@@ -396,18 +386,14 @@ public partial class FF1Rom : NesRom
 		MonsterInABox(itemPlacement, ZoneFormations, TileSetsData, NpcData, Dialogues, rng, flags);
 
 		ExpGoldBoost(flags);
+		ScalePrices(ShopData, flags, rng, ((bool)flags.ClampMinimumPriceScale), ShopData.ItemShopSlot, flags.ImprovedClinic);
+		extConsumables.AddExtConsumables();
 
 		await this.Progress();
-
-		ScalePrices(ShopData, flags, rng, ((bool)flags.ClampMinimumPriceScale), ShopData.ItemShopSlot, flags.ImprovedClinic);
-
-		extConsumables.AddExtConsumables();
 
 		// Party
 		PartyGeneration(rng, flags, preferences);
 		PubReplaceClinic(rng, Maps.AttackedTown, flags);
-
-		await this.Progress();
 
 		// Experience
 		ScaleAllAltExp(flags);
