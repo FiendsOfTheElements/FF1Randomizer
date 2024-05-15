@@ -57,28 +57,24 @@ namespace FF1Lib
 		ShopData ShopData;
 		HashSet<Item> QuestItems;
 
-		public ShopKiller(MT19337 _rng, Flags _flags, StandardMaps _maps, FF1Rom _rom)
+		public ShopKiller(StandardMaps _maps, ShopData _shopdata, MT19337 _rng, Flags _flags, FF1Rom _rom)
 		{
 			rng = _rng;
 			flags = _flags;
 			rom = _rom;
 			maps = _maps;
 
-			ShopData = new ShopData(rom);
+			ShopData = _shopdata;
 			QuestItems = new HashSet<Item>(ItemLists.AllQuestItems.Where(i => i <= Item.Gold65000));
 		}
 
 		public void KillShops()
 		{
-			ShopData.LoadData();
-
 			KillShops(ShopType.Weapon, flags.ShopKillMode_Weapons, flags.ShopKillFactor_Weapons, flags.ShopKillExcludeConeria_Weapons);
 			KillShops(ShopType.Armor, flags.ShopKillMode_Armor, flags.ShopKillFactor_Armor, flags.ShopKillExcludeConeria_Armor);
 			KillShops(ShopType.Item, flags.ShopKillMode_Item, flags.ShopKillFactor_Item, flags.ShopKillExcludeConeria_Item);
 			KillShops(ShopType.Black, flags.ShopKillMode_Black, flags.ShopKillFactor_Black, flags.ShopKillExcludeConeria_Black);
 			KillShops(ShopType.White, flags.ShopKillMode_White, flags.ShopKillFactor_White, flags.ShopKillExcludeConeria_White);
-
-			ShopData.StoreData();
 		}
 
 		private void KillShops(ShopType shopType, ShopKillMode mode, ShopKillFactor factor, bool excludeConeria)

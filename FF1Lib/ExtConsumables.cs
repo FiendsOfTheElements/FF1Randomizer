@@ -30,7 +30,7 @@ namespace FF1Lib
 
 		ShopData ShopData;
 
-		public ExtConsumables(FF1Rom _rom, Flags _flags, MT19337 _rng, ShopData _shopData)
+		public ExtConsumables(ShopData _shopData, FF1Rom _rom, Flags _flags, MT19337 _rng)
 		{
 			rom = _rom;
 			flags = _flags;
@@ -530,8 +530,6 @@ namespace FF1Lib
 					}
 				}
 			}
-
-			ShopData.StoreData();
 		}
 
 		public void AddNormalShopEntries()
@@ -542,8 +540,6 @@ namespace FF1Lib
 			ReplaceShopEntry(Item.Heal, Item.SmallKnife);
 			ReplaceShopEntry(Item.Pure, Item.WoodenRod);
 			ReplaceShopEntry(Item.Soft, Item.Rapier);
-
-			ShopData.StoreData();
 		}
 
 		private void ReplaceShopEntry(Item item1, Item item2)

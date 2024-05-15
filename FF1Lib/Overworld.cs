@@ -65,7 +65,7 @@ namespace FF1Lib
 			rom.PutInBank(lut_BtlBackdrops_Bank, lut_BtlBackdrops, BattleBackdrops.Select(b => (byte)b).ToArray());
 			//overworldMap.
 		}
-		public async void LoadMapExchange()
+		public async Task LoadMapExchange()
 		{
 			owMapExchange = await OwMapExchange.FromFlags(rom, overworldMap, flags, rng);
 			owMapExchange?.UpdateBridgeSprite();
@@ -113,17 +113,14 @@ namespace FF1Lib
 				overworldMap.ShuffleChime(rng, (bool)flags.ShuffleChimeIncludeTowns);
 			}
 
-			// we just want to upadte palette here, so this should be a teleporter thing
-			overworldMap.ShuffleEntrancesAndFloors(rng, teleporters, flags);
-
-			if ((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && (flags.GameMode != GameModes.DeepDungeon))
-			{
-				overworldMap.ShuffleObjectiveNPCs(rng);
-			}
-
 			if ((bool)flags.IsAirshipFree)
 			{
 				locations.AirShipLocation = locations.StartingLocation;
+			}
+
+			if ((bool)flags.MapBridgeLefein && !flags.DisableOWMapModifications)
+			{
+				locations.BridgeLocation = new SCCoords(230, 123);
 			}
 
 			overworldMap.ApplyMapEdits();

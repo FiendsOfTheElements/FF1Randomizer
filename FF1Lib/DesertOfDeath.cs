@@ -847,7 +847,7 @@ namespace FF1Lib
 			return mapData;
 		}
 
-		public static void ApplyDesertModifications(bool enabled, FF1Rom rom, ZoneFormations zoneformations, SCCoords startinglocation, NpcObjectData npcdata, DialogueData dialogues)
+		public static void ApplyDesertModifications(bool enabled, FF1Rom rom, ZoneFormations zoneformations, SCCoords startinglocation, NpcObjectData npcdata, DialogueData dialogues, MusicTracks music)
 		{
 			if (!enabled)
 			{
@@ -936,7 +936,7 @@ namespace FF1Lib
 			rom.PutInBank(0x1F, 0xC220, Blob.FromHex("01")); // Ship X
 			rom.PutInBank(0x1F, 0xC22A, Blob.FromHex("02")); // Ship Y
 			rom.PutInBank(0x1F, 0xC22F, Blob.FromHex("04"));
-			rom.PutInBank(0x1F, 0xC235, Blob.FromHex("44")); //Music track
+			//rom.PutInBank(0x1F, 0xC235, Blob.FromHex("44")); //Music track
 			rom.PutInBank(0x1F, 0xC238, Blob.FromHex("EAEAEA")); // Airship animation
 
 			// ProcessOWInput - check for ship
@@ -946,7 +946,7 @@ namespace FF1Lib
 			rom.PutInBank(0x1F, 0xC6BC, Blob.FromHex("4CE2C6"));
 			rom.PutInBank(0x1F, 0xC6E8, Blob.FromHex("01")); // Ship X
 			rom.PutInBank(0x1F, 0xC6F0, Blob.FromHex("02")); // Ship Y
-			rom.PutInBank(0x1F, 0xC6F9, Blob.FromHex("4E")); // Ship Y
+			//rom.PutInBank(0x1F, 0xC6F9, Blob.FromHex("4E")); // Ship Y
 
 			// OWCanMove
 			rom.PutInBank(0x1F, 0xC506, Blob.FromHex("00")); // No battle in Ship
@@ -956,6 +956,13 @@ namespace FF1Lib
 			rom.PutInBank(0x1F, 0xE28E, Blob.FromHex("A900"));
 
 			// Update music
+			if (!music.MusicShuffled)
+			{
+				music.Tracks[SongTracks.Overworld] = SongTracks.TempleOfFiendRevisited;
+				music.Tracks[SongTracks.Ship] = SongTracks.Overworld;
+				music.Tracks[SongTracks.Airship] = SongTracks.Overworld;
+			}
+
 			rom.PutInBank(0x1F, 0xC759, Blob.FromHex("4E4E4E4E4444444444"));
 
 			// Remove Wave sound

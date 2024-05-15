@@ -107,14 +107,14 @@ namespace FF1Lib
 
 		private FF1Rom rom;
 
-		public NpcObjectData(StandardMaps maps, Flags flags, FF1Rom _rom)
+		public NpcObjectData(StandardMaps maps, Flags flags, MT19337 rng, FF1Rom _rom)
 		{
 			rom = _rom;
 			var sprites = rom.Get(MapObjGfxOffset, npcObjectQty).ToBytes();
 			var talkroutines = rom.GetFromBank(oldTalkRoutinesBank, lut_MapObjTalkJumpTbl, npcObjectQty * 2).Chunk(2);
 			var talkarrays = rom.GetFromBank(oldTalkRoutinesBank, lut_MapObjTalkData, npcObjectQty * 4).Chunk(4);
 			npcObjects = sprites.Select((s, i) => new NpcObject((ObjectSprites)s, talkroutines[i], talkarrays[i].ToBytes())).ToList();
-			Update(maps, flags);
+			Update(maps, flags, rng);
 		}
 		public NpcObject this[ObjectId index]
 		{
@@ -128,10 +128,11 @@ namespace FF1Lib
 			Blob.FromUShorts(npcObjects.Select(o => pointers[(int)o.Script]).ToArray());
 			rom.PutInBank(newTalkRoutinesBank, lut_MapObjTalkJumpTbl_new, Blob.FromUShorts(npcObjects.Select(o => pointers[(int)o.Script]).ToArray()));
 		}
-		public void Update(StandardMaps maps, Flags flags)
+		public void Update(StandardMaps maps, Flags flags, MT19337 rng)
 		{
 			UpdateScripts(flags, maps);
 			EnableNPCSwatter((bool)flags.NPCSwatter);
+			ShuffleObjectiveNPCs((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && (flags.GameMode != GameModes.DeepDungeon), maps, rng);
 		}
 		private void UpdateScripts(Flags flags, StandardMaps maps)
 		{
@@ -271,6 +272,49 @@ namespace FF1Lib
 			// Protect Lute and Rod Plate
 			npcObjects[(int)ObjectId.LutePlate].Script = TalkScripts.Talk_norm;
 			npcObjects[(int)ObjectId.RodPlate].Script = TalkScripts.Talk_norm;
+		}
+		public void ShuffleObjectiveNPCs(bool enable, StandardMaps maps, MT19337 rng)
+		{
+			if (!enable)
+			{
+				return;
+			}
+
+			var objectiveNPCs = new Dictionary<ObjectId, MapLocation>
+			{
+				{ ObjectId.Bahamut, MapLocation.BahamutCave2 },
+				{ ObjectId.Unne, MapLocation.Melmond },
+				{ ObjectId.ElfDoc, MapLocation.ElflandCastle },
+			};
+
+			Dictionary<MapLocation, (int x, int y)> objectiveNPCPositions = new Dictionary<MapLocation, (int x, int y)>
+			{
+				{ MapLocation.BahamutCave2, (0x15, 0x03) },
+				{ MapLocation.Melmond, (0x1A, 0x01) },
+				{ MapLocation.ElflandCastle, (0x09, 0x05) },
+			};
+
+			Dictionary<MapLocation, MapIndex> objectiveNPCMapIndexs = new Dictionary<MapLocation, MapIndex>
+			{
+				{ MapLocation.BahamutCave2, MapIndex.BahamutCaveB2 },
+				{ MapLocation.Melmond, MapIndex.Melmond },
+				{ MapLocation.ElflandCastle, MapIndex.ElflandCastle },
+			};
+
+			var locations = objectiveNPCs.Values.ToList();
+			foreach (var npc in objectiveNPCs.Keys.ToList())
+			{
+				var location = locations.SpliceRandom(rng);
+				objectiveNPCs[npc] = location;
+
+				var (x, y) = objectiveNPCPositions[location];
+				y += (location == MapLocation.ElflandCastle && npc == ObjectId.Bahamut) ? 1 : 0;
+
+				var inRoom = location != MapLocation.Melmond;
+				var stationary = npc == ObjectId.Bahamut || (npc == ObjectId.ElfDoc && location == MapLocation.ElflandCastle);
+
+				maps[objectiveNPCMapIndexs[location]].MapObjects.SetNpc(0, npc, x, y, inRoom, stationary);
+			}
 		}
 		public void UpdateItemPlacement(List<IRewardSource> itemplacement)
 		{
