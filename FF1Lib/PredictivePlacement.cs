@@ -159,7 +159,7 @@ namespace FF1Lib
 				var balancedPicker = new RewardSourcePicker(0.5, flags.LooseItemsNpcBalance ? 7.0 : 1.0, checker);
 
 				sanityCounter++;
-				if (sanityCounter > 2) throw new InsaneException("Item Placement could not meet incentivization requirements!");
+				if (sanityCounter > 3) throw new InsaneException("Item Placement could not meet incentivization requirements!");
 
 				placedItems = placementContext.ForcedItemPlacements.ToList();
 				var incentives = new HashSet<Item>(placementContext.IncentiveItems);
@@ -167,6 +167,12 @@ namespace FF1Lib
 				var shards = placementContext.Shards.ToList();
 				treasurePool = placementContext.TreasurePool.ToList();
 				var state = PlacementState.Normal;
+
+				// Check if Ship was plandoed, set appropriate dock if so
+				if (placedItems.TryFind(s => s.Item == Item.Ship, out var result))
+				{
+					((SanityCheckerV2)checker).SetShipLocation((int)logic.GetShipIndex(currentRequirements, result));
+				}
 
 				while (incentives.Count() > incentiveLocationPool.Count())
 				{
@@ -178,12 +184,6 @@ namespace FF1Lib
 					HashSet<Item> allPlacements = new HashSet<Item>(nonincentives.Concat(incentives));
 					//HashSet<Item> allKeyItems = new HashSet<Item>(MapChangeItems.Concat(FetchQuestItems).Concat(GatingItems).Intersect(allPlacements));
 					HashSet<Item> allKeyItems = placementContext.KeyItemsToPlace.ToHashSet();
-
-					/*
-					if ((bool)_flags.IsFloaterRemoved)
-					{
-						allKeyItems.Remove(Item.Floater);
-					}*/
 
 					//The sanity checker currently doesn't allow tracking which shops are available
 					//It could be easily added, but a little randomnes can't hurt(or so I'm thinking)
@@ -464,8 +464,7 @@ namespace FF1Lib
 						allPlacements.Remove(nextPlacment);
 						allKeyItems.Remove(nextPlacment);
 
-						//if (nextPlacment == Item.Ship) BuildLogic(allRewardSources);
-						if (nextPlacment == Item.Ship) ((SanityCheckerV2)_checker).Shiplocations.SetShipLocation((int)logic.GetShipIndex(currentRequirements, placedItems.Last()));
+						if (nextPlacment == Item.Ship) ((SanityCheckerV2)checker).SetShipLocation((int)logic.GetShipIndex(currentRequirements, placedItems.Last()));
 
 						//we placed an item so we should randomly select incentive/nonincentive next cycle
 						state = PlacementState.Normal;
@@ -544,11 +543,7 @@ namespace FF1Lib
 		{
 			logic = new SCLogic(base.rom, ((SanityCheckerV2)base.checker).Main, preBlackOrbLocationPool, locations, base.flags, false);
 			logicSources = logic.RewardSources.ToDictionary(r => r.RewardSource.Address);
-			var missingsources = preBlackOrbLocationPool.Where(i => !logicSources.TryGetValue(i.Address, out var l)).ToList();
-			if (test)
-			{
-
-			}
+			//var missingsources = preBlackOrbLocationPool.Where(i => !logicSources.TryGetValue(i.Address, out var l)).ToList();
 		}
 
 		//retrieve all accessible RewardSources(with no item in them) from the SanityChecker

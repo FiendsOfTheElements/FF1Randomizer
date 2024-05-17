@@ -443,7 +443,7 @@ namespace FF1Lib
 
 		private void SetShipDock()
 		{
-			var coords = overworld.SetShipLocation(dungeonIndex);
+			var coords = overworld.Locations.ShipLocation;
 
 			SetShipDock(coords.OwLeft);
 			SetShipDock(coords.OwRight);
@@ -750,7 +750,7 @@ namespace FF1Lib
 					break;
 				case Item.Ship:
 					changes |= MapChange.Ship;
-					SetShipDock(dungeonIndex);
+					SetShipDock();
 					if (airBoat && ((changes & MapChange.Airship) > 0))
 					{
 						LiftOff();

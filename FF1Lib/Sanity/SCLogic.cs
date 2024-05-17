@@ -383,7 +383,19 @@ namespace FF1Lib.Sanity
 
 			var accessibleDungeons = owTeleportReqs.Where(t => validDungeons.Contains(t.Key) && t.Value.IsAccessible(requirements)).ToList();
 
-			return accessibleDungeons.First().Key;
+			OverworldTeleportIndex accessibleDungeon = OverworldTeleportIndex.None;
+
+			// If there's no access yet that means that the Ship was plandoed somewhere, just return the most accessible location and logic will take it from there
+			if (!accessibleDungeons.Any())
+			{
+				accessibleDungeon = owTeleportReqs.Where(t => validDungeons.Contains(t.Key)).OrderBy(t => t.Value).First().Key;
+			}
+			else
+			{
+				accessibleDungeon = accessibleDungeons.First().Key;
+			}
+
+			return accessibleDungeon;
 		}
 
 		private void ProcessNPCs()
