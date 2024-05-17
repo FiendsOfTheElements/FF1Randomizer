@@ -121,7 +121,7 @@ namespace FF1Lib
 		OwLocationData locations;
 		Dictionary<int, SCLogicRewardSource> logicSources;
 		SCRequirements freeRequirements;
-		bool test = false;
+		SCRequirements currentRequirements;
 
 		protected override ItemPlacementResult DoSanePlacement(MT19337 rng, OwLocationData _locations)
 		{
@@ -464,7 +464,8 @@ namespace FF1Lib
 						allPlacements.Remove(nextPlacment);
 						allKeyItems.Remove(nextPlacment);
 
-						if (nextPlacment == Item.Ship) BuildLogic(allRewardSources);
+						//if (nextPlacment == Item.Ship) BuildLogic(allRewardSources);
+						if (nextPlacment == Item.Ship) ((SanityCheckerV2)_checker).Shiplocations.SetShipLocation((int)logic.GetShipIndex(currentRequirements, placedItems.Last()));
 
 						//we placed an item so we should randomly select incentive/nonincentive next cycle
 						state = PlacementState.Normal;
@@ -577,6 +578,11 @@ namespace FF1Lib
 				if (placedItems2.Count == 0) break;
 
 				toRemove.Clear();
+			}
+
+			if (item1 == Item.None && item2 == Item.None)
+			{
+				currentRequirements = requirements;
 			}
 
 			return preBlackOrbLocationPool.Where(i => logicSources.TryGetValue(i.Address, out var l) && l.Requirements.IsAccessible(requirements)).Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
