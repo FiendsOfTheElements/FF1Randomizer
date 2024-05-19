@@ -170,6 +170,7 @@ namespace FF1Lib
 			{TeleportIndex.ConeriaCastle2, "ConeriaCastle2"},
 			{TeleportIndex.CastleOrdealsMaze, "CastleOrdealsMaze"},
 			{TeleportIndex.CastleOrdealsTop, "CastleOrdealsTop"},
+			{TeleportIndex.CastleOrdealsBack, "CastleOrdealsBack"},
 			{TeleportIndex.BahamutsRoom, "BahamutsRoom"},
 			{TeleportIndex.IceCave2, "IceCave2"},
 			{TeleportIndex.IceCave3, "IceCave3"},
@@ -628,8 +629,9 @@ namespace FF1Lib
 		public static TeleportDestination ElflandCastle = new TeleportDestination(MapLocation.ElflandCastle, MapIndex.ElflandCastle, new Coordinate(16, 31, CoordinateLocale.Standard));
 		public static TeleportDestination NorthwestCastle = new TeleportDestination(MapLocation.NorthwestCastle, MapIndex.NorthwestCastle, new Coordinate(22, 24, CoordinateLocale.Standard));
 		public static TeleportDestination CastleOrdeals1 = new TeleportDestination(MapLocation.CastleOrdeals1, MapIndex.CastleOrdeals1F, new Coordinate(12, 21, CoordinateLocale.Standard), ExitTeleportIndex.ExitCastleOrdeals);
-		public static TeleportDestination CastleOrdealsMaze = new TeleportDestination(MapLocation.CastleOrdealsMaze, MapIndex.CastleOrdeals2F, new Coordinate(12, 12, CoordinateLocale.Standard), TeleportIndex.CastleOrdealsTop);
+		public static TeleportDestination CastleOrdealsMaze = new TeleportDestination(MapLocation.CastleOrdealsMaze, MapIndex.CastleOrdeals2F, new Coordinate(12, 12, CoordinateLocale.StandardInRoom), TeleportIndex.CastleOrdealsTop);
 		public static TeleportDestination CastleOrdealsTop = new TeleportDestination(MapLocation.CastleOrdealsTop, MapIndex.CastleOrdeals3F, new Coordinate(22, 22, CoordinateLocale.Standard), TeleportIndex.CastleOrdealsBack);
+		public static TeleportDestination CastleOrdealsBack = new TeleportDestination(MapLocation.CastleOrdeals1, MapIndex.CastleOrdeals1F, new Coordinate(2, 2, CoordinateLocale.StandardInRoom));
 		public static TeleportDestination TempleOfFiends = new TeleportDestination(MapLocation.TempleOfFiends1, MapIndex.TempleOfFiends, new Coordinate(20, 30, CoordinateLocale.Standard));
 		public static TeleportDestination DwarfCave = new TeleportDestination(MapLocation.DwarfCave, MapIndex.DwarfCave, new Coordinate(22, 11, CoordinateLocale.Standard));
 		public static TeleportDestination MatoyasCave = new TeleportDestination(MapLocation.MatoyasCave, MapIndex.MatoyasCave, new Coordinate(15, 11, CoordinateLocale.Standard));

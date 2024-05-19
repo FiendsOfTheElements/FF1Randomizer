@@ -363,7 +363,7 @@ namespace FF1Lib.Sanity
 
 			foreach (var dungeon in main.Dungeons)
 			{
-				if (placedShip.GetType() == typeof(MapObject))
+				if (placedShip.GetType() == typeof(NpcReward))
 				{
 					var poi = dungeon.PointsOfInterest.Where(p => p.Type == SCPointOfInterestType.QuestNpc && p.Npc.ObjectId.ToString() == placedShip.Name).ToList();
 					if (poi.Any())
