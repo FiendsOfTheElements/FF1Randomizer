@@ -39,7 +39,7 @@ namespace FF1Lib
 			ShuffleLavaTiles((bool)flags.ShuffleLavaTiles, rng);
 			BahamutB1Encounters((bool)flags.MapHallOfDragons, formations);
 			DragonsHoard((bool)flags.MapDragonsHoard);
-			MermaidPrison((bool)flags.MermaidPrison);
+			MermaidPrison((bool)flags.MermaidPrison && (flags.GameMode != GameModes.DeepDungeon));
 			ConfusedOldMen((bool)flags.ConfusedOldMen, rng);
 		}
 
