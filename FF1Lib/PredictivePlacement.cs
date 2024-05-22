@@ -264,19 +264,19 @@ namespace FF1Lib
 							candidates.Remove(shipCandidate);
 							candidates.Remove(canalCandidate);
 
-							//half of the opened up incentive locations and nonincentive locations hould go to either item(rounded down)
+							//half of the opened up incentive locations and nonincentive locations should go to either item(rounded down)
 							//In order to continue the seed, Ship and Canal must open up 2 incentive locations, since they may take up 2
 							//it's not an exact estimate, since it doesn'T differentiate between them beeing incentive or nonincentive items
 							incCount /= 2;
 							nonCount /= 2;
 
-							if (shipCandidate.incCount < incCount && canalCandidate.incCount < incCount)
+							if (shipCandidate.incCount < incCount && canalCandidate.incCount < incCount && incSourceCount > 1)
 							{
 								shipCandidate.incCount = incCount;
 								canalCandidate.incCount = incCount;
 							}
 
-							if (shipCandidate.nonCount < nonCount && canalCandidate.nonCount < nonCount)
+							if (shipCandidate.nonCount < nonCount && canalCandidate.nonCount < nonCount && nonSourceCount > 1)
 							{
 								shipCandidate.nonCount = nonCount;
 								canalCandidate.nonCount = nonCount;

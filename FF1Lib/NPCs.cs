@@ -137,6 +137,7 @@ namespace FF1Lib
 		private void UpdateScripts(Flags flags, StandardMaps maps)
 		{
 			// Update all NPC's dialogues script, default behaviours are maintained
+			// Dialogue 1 is usually initial dialogue, 2 is after item given, 3 is give item
 			npcObjects[(int)ObjectId.Astos].Dialogue1 = npcObjects[(int)ObjectId.Astos].Dialogue2;
 			npcObjects[(int)ObjectId.Astos].Dialogue2 = 0x18;
 			npcObjects[(int)ObjectId.Astos].Item = (byte)Item.Crystal;
@@ -147,9 +148,9 @@ namespace FF1Lib
 			npcObjects[(int)ObjectId.Bikke].Item = (byte)Item.Ship;
 			npcObjects[(int)ObjectId.Bikke].Battle = 0x7E;
 
-			npcObjects[(int)ObjectId.CanoeSage].Dialogue2 = npcObjects[(int)ObjectId.CanoeSage].Dialogue1;
 			npcObjects[(int)ObjectId.CanoeSage].Dialogue1 = npcObjects[(int)ObjectId.CanoeSage].Dialogue3;
 			npcObjects[(int)ObjectId.CanoeSage].Dialogue3 = npcObjects[(int)ObjectId.CanoeSage].Dialogue2;
+			npcObjects[(int)ObjectId.CanoeSage].Dialogue2 = npcObjects[(int)ObjectId.CanoeSage].Dialogue1;
 			npcObjects[(int)ObjectId.CanoeSage].Item = (byte)Item.Canoe;
 			npcObjects[(int)ObjectId.CanoeSage].Requirement = (bool)flags.EarlySage ? (byte)0x00 : (byte)Item.EarthOrb;
 

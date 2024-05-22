@@ -23,7 +23,7 @@ namespace FF1Lib
 				//  }
 			}
 
-			ProcgenWaterfall((bool)flags.EFGWaterfall, teleporters, rng);
+			ProcgenWaterfall((bool)flags.EFGWaterfall, teleporters, mapObjects[(int)MapIndex.Waterfall], rng);
 			MoveToFBats((bool)flags.MoveToFBats);
 			FlipMaps(flags, rng);
 			EnableTitansTrove((bool)flags.TitansTrove);
@@ -576,7 +576,7 @@ namespace FF1Lib
 				rom.PutInBank(0x1F, 0xCEDE, new byte[] { 0x81 });
 			}
 		}
-		private void ProcgenWaterfall(bool procgenwaterfall, Teleporters teleporters, MT19337 rng)
+		private void ProcgenWaterfall(bool procgenwaterfall, Teleporters teleporters, MapObjects waterfallObjects, MT19337 rng)
 		{
 			if (!procgenwaterfall)
 			{
@@ -591,6 +591,7 @@ namespace FF1Lib
 			{
 				MapIndex = MapIndex.Waterfall,
 				Rom = rom,
+				MapObjects = waterfallObjects,
 			};
 			strategy = MapGeneratorStrategy.WaterfallClone;
 			CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
