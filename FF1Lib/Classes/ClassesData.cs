@@ -265,7 +265,7 @@ namespace FF1Lib
 			{
 				return;
 			}
-													  // Right-most bits are Tier-1 Charges, Left-most are Tier-8; each byte is a Level Up (Now maxes at L45 for WM/BM)
+			// Right-most bits are Tier-1 Charges, Left-most are Tier-8; each byte is a Level Up (Now maxes at L45 for WM/BM)
 			var EarlierHighTierMP_WMBMByteList = new List<byte> { 0b00000011, 0b00000010, 0b00000001, 0b00000110, 0b00000100, 0b00000001, 0b00001100, 0b00001010, 0b00000001,
 													  0b00011100, 0b00000010, 0b00010000, 0b00101001, 0b00010100, 0b00100000, 0b01010010, 0b00101000, 0b01000001, 0b10100100,
 													  0b00010000, 0b11000000, 0b00101000, 0b10000011, 0b01000000, 0b00010100, 0b10000010, 0b01101000, 0b00000100, 0b10010000,
@@ -305,19 +305,19 @@ namespace FF1Lib
 			_classes[(int)Classes.Ninja].MaxSpC = (byte)flags.NinjaMaxMP;
 		}
 
-	public void PinkMage(Flags flags)
+		public void PinkMage(Flags flags)
 		{
 			if (!(bool)flags.PinkMage)
 			{
 				return;
-				
+
 			}
 
-		
 
 
-			var whiteSlots = _spellPermissions[Classes.RedMage].Where(s => ((int)s % 8) < 4).ToList();  
-			var blackSlots = _spellPermissions[Classes.RedMage].Where(s => ((int)s % 8) >= 4).ToList(); 
+
+			var whiteSlots = _spellPermissions[Classes.RedMage].Where(s => ((int)s % 8) < 4).ToList();
+			var blackSlots = _spellPermissions[Classes.RedMage].Where(s => ((int)s % 8) >= 4).ToList();
 
 			var whitetoblackslots = whiteSlots.Select(s => (s + 4)).ToList();
 			var blacktowhiteslots = blackSlots.Select(s => (s - 4)).ToList();
@@ -337,7 +337,7 @@ namespace FF1Lib
 
 		}
 
-	public void BlackKnight(Flags flags)
+		public void BlackKnight(Flags flags)
 		{
 			if (!(bool)flags.BlackKnight)
 			{
@@ -349,27 +349,39 @@ namespace FF1Lib
 			{
 
 				var whiteslotsK = _spellPermissions[Classes.Knight].Where(s => ((int)s % 8) < 4).ToList();
-			
 				var whitetoblackslotsK = whiteslotsK.Select(s => (s + 4)).ToList();
-
 				var knightslots = whitetoblackslotsK.ToList();
 				_spellPermissions.ClearPermissions(Classes.Knight);
 				_spellPermissions.AddPermissionsRange(knightslots.Select(x => (Classes.Knight, x)).ToList());
-
+				var KnightLvl4Charge = new List<byte> { 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
+														0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111,
+														0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000,
+														0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111,
+														0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000,
+														0b00001111, 0b00000000, 0b00001111, 0b00000000 };
+				_classes[(int)Classes.Knight].SpCGrowth = KnightLvl4Charge;
+				_classes[(int)Classes.Fighter].SpCGrowth = KnightLvl4Charge;
 			}
 
-			if(!(bool)flags.BlackKnightKeep)
-			{ 
+			if (!(bool)flags.BlackKnightKeep)
+			{
 
 				_spellPermissions.ClearPermissions(Classes.Knight);
 				var ninjaPer = _spellPermissions[Classes.Ninja].ToList();
 				_spellPermissions.AddPermissionsRange(ninjaPer.Select(x => (Classes.Knight, x)).ToList());
-
+				var KnightLvl4Charge = new List<byte> { 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
+														0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111,
+														0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000,
+														0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111,
+														0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000,
+														0b00001111, 0b00000000, 0b00001111, 0b00000000 };
+				_classes[(int)Classes.Knight].SpCGrowth = KnightLvl4Charge;
+				_classes[(int)Classes.Fighter].SpCGrowth = KnightLvl4Charge;
 
 			}
 		}
-	
-	public void WhiteNinja(Flags flags)
+
+		public void WhiteNinja(Flags flags)
 		{
 			if (!(bool)flags.WhiteNinja)
 			{
@@ -385,13 +397,12 @@ namespace FF1Lib
 
 			}
 
-			if((bool)flags.WhiteNinjaKeep)
+			if ((bool)flags.WhiteNinjaKeep)
 			{
 
 				var blackNinja = _spellPermissions[Classes.Ninja].Where(s => ((int)s % 8) >= 4).ToList();
 				var whitetoblackN = blackNinja.Select(s => (s - 4)).ToList();
 				_spellPermissions.ClearPermissions(Classes.Ninja);
-				_spellPermissions.AddPermissionsRange(whitetoblackN.Select(x => (Classes.Ninja, x)).ToList());
 
 			}
 
@@ -403,7 +414,6 @@ namespace FF1Lib
 				return;
 
 			}
-
 
 			if (!(bool)flags.BlackKnight)
 			{
@@ -428,10 +438,17 @@ namespace FF1Lib
 				{
 					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot4);
 				}
+				var KnightLvl4Charge = new List<byte> { 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
+														0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111,
+														0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000,
+														0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111,
+														0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000,
+														0b00001111, 0b00000000, 0b00001111, 0b00000000 };
+				_classes[(int)Classes.Knight].SpCGrowth = KnightLvl4Charge;
+				_classes[(int)Classes.Fighter].SpCGrowth = KnightLvl4Charge;
 			}
+			if ((bool)flags.BlackKnight && (bool)flags.BlackKnightKeep)
 
-			if ((bool)flags.BlackKnight && (bool)flags.BlackKnightKeep) 
-			  
 			{
 				var kilvl4B = rng.Between(0, 3);
 
