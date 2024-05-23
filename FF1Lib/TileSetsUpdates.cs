@@ -37,10 +37,7 @@ namespace FF1Lib
 			// which normally indicate that the CROWN is required to use them.
 			const byte specialMask = 0b1110_0001;
 			tileSets[(int)TileSets.Castle].Tiles[0x61].PropertyType &= specialMask;
+			tileSets[(int)TileSets.Castle].Tiles[0x62].PropertyType &= specialMask;
 		}
-
-
-
-
 	}
 }

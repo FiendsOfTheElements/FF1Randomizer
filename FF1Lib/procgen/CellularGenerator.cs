@@ -39,7 +39,9 @@
 							{
 								npc.Coord.x += coord.x;
 								npc.Coord.y += coord.y;
-								reqs.Rom.SetNpc(reqs.MapIndex, npc);
+								//reqs.Rom.SetNpc(reqs.MapIndex, npc);
+								reqs.MapObjects.SetNpc(npc.Index, npc.ObjectId, npc.Coord.x, npc.Coord.y, npc.InRoom, npc.Stationary);
+
 							});
 						});
 					}

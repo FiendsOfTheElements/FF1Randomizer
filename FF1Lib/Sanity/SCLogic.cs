@@ -10,6 +10,7 @@ namespace FF1Lib.Sanity
 		private OwLocationData locations;
 		IVictoryConditionFlags victoryConditions;
 		bool excludeBridge;
+		private Dictionary<OverworldTeleportIndex, SCRequirementsSet> owTeleportReqs;
 
 		Dictionary<short, SCLogicArea> processedAreas = new Dictionary<short, SCLogicArea>();
 
@@ -49,6 +50,8 @@ namespace FF1Lib.Sanity
 			ProcessShopSlot();
 
 			ProcessNPCs();
+
+			ProcessEntrances();
 
 			RewardSources = rewardSourceDic.Values.ToList();
 
@@ -333,6 +336,66 @@ namespace FF1Lib.Sanity
 					}
 				}
 			}
+		}
+		private void ProcessEntrances()
+		{
+			owTeleportReqs = new();
+
+			foreach (var logicArea in processedAreas.Values)
+			{
+				var area = logicArea.Area;
+
+				foreach (var enter in area.PointsOfInterest.Where(p => p.Type == SCPointOfInterestType.Tele))
+				{
+					var dungeon = main.Dungeons.First(d => d.OverworldTeleport == enter.Teleport.OverworldTeleport);
+
+					if (!owTeleportReqs.TryGetValue(dungeon.OverworldTeleport, out var result))
+					{
+						owTeleportReqs.Add(dungeon.OverworldTeleport, new SCRequirementsSet(logicArea.Requirements.ToList()));
+					}
+				}
+			}
+		}
+
+		public OverworldTeleportIndex GetShipIndex(SCRequirements requirements, IRewardSource placedShip)
+		{
+			List<OverworldTeleportIndex> validDungeons = new();
+
+			foreach (var dungeon in main.Dungeons)
+			{
+				if (placedShip.GetType() == typeof(NpcReward))
+				{
+					var poi = dungeon.PointsOfInterest.Where(p => p.Type == SCPointOfInterestType.QuestNpc && p.Npc.ObjectId.ToString() == placedShip.Name).ToList();
+					if (poi.Any())
+					{
+						validDungeons.Add(dungeon.OverworldTeleport);
+					}
+				}
+				else if (placedShip.GetType() == typeof(TreasureChest))
+				{
+					var poi = dungeon.PointsOfInterest.Where(p => p.Type == SCPointOfInterestType.Treasure && p.TreasureId == (placedShip.Address - 0x3100)).ToList();
+					if (poi.Any())
+					{
+						validDungeons.Add(dungeon.OverworldTeleport);
+					}
+				}
+			}
+
+			var accessibleDungeons = owTeleportReqs.Where(t => validDungeons.Contains(t.Key) && t.Value.IsAccessible(requirements)).ToList();
+
+			OverworldTeleportIndex accessibleDungeon = OverworldTeleportIndex.None;
+
+			// If there's no access yet that means that the Ship was plandoed somewhere, just return the most accessible location and logic will take it from there
+			if (!accessibleDungeons.Any())
+			{
+				accessibleDungeon = owTeleportReqs.Where(t => validDungeons.Contains(t.Key)).OrderBy(t => t.Value).First().Key;
+			}
+			else
+			{
+				accessibleDungeon = accessibleDungeons.First().Key;
+			}
+
+			return accessibleDungeon;
 		}
 
 		private void ProcessNPCs()

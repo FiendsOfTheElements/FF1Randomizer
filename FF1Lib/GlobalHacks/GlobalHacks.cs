@@ -23,7 +23,8 @@ namespace FF1Lib
 			ShiftEarthOrbDown();
 			CastableItemTargeting();
 			UnifySpellSystem();
-			ExpandNormalTeleporters();
+			//ExpandNormalTeleporters();
+			Teleporters.ExpandNormalTeleporters();
 			SeparateUnrunnables();
 			DrawCanoeUnderBridge();
 			BattleMagicMenuWrapAround();

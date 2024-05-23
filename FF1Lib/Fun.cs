@@ -195,6 +195,8 @@ namespace FF1Lib
 
 		public void ShuffleMusic(MusicShuffle mode, MT19337 rng)
 		{
+			// Need some fixes, some of the music offsets are wrong and can cause crashes, maybe there's a better way of keeping tracks of harcoded songtracks
+			// Ideally the game would always refer to a lut or something
 			switch (mode)
 			{
 				case MusicShuffle.None:
@@ -238,7 +240,7 @@ namespace FF1Lib
 					Data[0x3A597] = townTracks[2];
 
 					//Menu
-					Data[0x3ADB4] = townTracks[3];
+					//Data[0x3ADB4] = townTracks[3];
 					Data[0x3B677] = townTracks[3];
 					Data[0x3997F] = townTracks[3]; //Lineup menu
 
@@ -293,7 +295,7 @@ namespace FF1Lib
 					Data[0x3A597] = tracks[12];
 
 					//Menu
-					Data[0x3ADB4] = tracks[13];
+					//Data[0x3ADB4] = tracks[13];
 					Data[0x3B677] = tracks[13];
 					Data[0x3997F] = tracks[13]; //Lineup menu
 
@@ -314,7 +316,7 @@ namespace FF1Lib
 
 					//Mini Things
 					Data[0x36E86] = tracks[rng.Between(0, tracks.Count - 1)]; //minigame
-					Data[0x27C0D] = tracks[rng.Between(0, tracks.Count - 1)]; //minimap
+					//Data[0x27C0D] = tracks[rng.Between(0, tracks.Count - 1)]; //minimap
 
 					break;
 

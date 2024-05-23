@@ -51,7 +51,10 @@ namespace FF1Lib
 			WriteArmorSpoiler();
 			WriteSpellSpoiler();
 			WriteShopSpoiler();
-			WriteV2Spoiler();
+			if (flags.GameMode != GameModes.DeepDungeon)
+			{
+				WriteV2Spoiler();
+			}
 		}
 
 		private void WriteWeaponSpoiler()

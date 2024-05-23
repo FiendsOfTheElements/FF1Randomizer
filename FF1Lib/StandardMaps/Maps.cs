@@ -217,7 +217,6 @@ namespace FF1Lib
 
 	    [JsonProperty]
 		public bool Stationary;
-	        public FF1Rom.generalNPC General;
 	}
 
 	public partial class FF1Rom : NesRom

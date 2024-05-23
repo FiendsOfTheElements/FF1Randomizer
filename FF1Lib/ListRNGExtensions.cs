@@ -66,6 +66,21 @@ namespace FF1Lib
 			
 			return picked.Item;
 		}
+		[DebuggerStepThrough]
+		public static bool TryFind<T>(this IList<T> fromList, Predicate<T> query, out T result)
+		{
+			int resultIndex = fromList.ToList().FindIndex(query);
+			if (resultIndex < 0)
+			{
+				result = default;
+				return false;
+			}
+			else
+			{
+				result = fromList[resultIndex];
+				return true;
+			}
+		}
 	}
 
 }

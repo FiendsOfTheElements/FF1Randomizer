@@ -27,7 +27,8 @@ public partial class FF1Rom : NesRom
 	public TalkRoutines TalkRoutines;
 	public StartingItems StartingItems;
 	public EncounterRate EncounterRates;
-	//public ShipLocations ShipLocations;
+	public ShopData ShopData;
+	public MusicTracks Music;
 
 	public DeepDungeon DeepDungeon;
 
@@ -84,26 +85,14 @@ public partial class FF1Rom : NesRom
 		Settings = new(true);
 		//Settings.GenerateFlagstring();
 
-		await this.Progress("Beginning Randomization", 18);
+		await this.Progress("Beginning Randomization", 16);
 
 		// Load Initial Data
 		RngTables = new(this);
 		TileSetsData = new(this);
 		ZoneFormations = new(this);
 		Overworld = new(this, flags, ZoneFormations, Settings, rng);
-		Overworld.LoadMapExchange();
-		TalkRoutines = new();
-
-		//Settings.CollapseRandomSettings(rng);
-		//Settings.ProcessStandardFlags();
-		//FlagRules.ProcessBaseFlags(settingstest);
-
-		//Settings.SetValue();
-
-		// We should apply Global Hacks after loading everything, but some data classes assume data has been moved already, so we call it in the middle -- To fix
-		GlobalHacks();
-
-		// Finish Loading Initial Data
+		await Overworld.LoadMapExchange();
 		ItemsText = new ItemNames(this);
 		ArmorPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, this);
 		WeaponPermissions = new GearPermissions(0x3BF50, (int)Item.WoodenNunchucks, this);
@@ -111,16 +100,33 @@ public partial class FF1Rom : NesRom
 		ClassData = new GameClasses(WeaponPermissions, ArmorPermissions, SpellPermissions, this);
 		Teleporters = new Teleporters(this, Overworld.MapExchangeData);
 		Maps = new StandardMaps(this, Teleporters, flags);
-		NpcData = new NpcObjectData(Maps, flags, this);
+		NpcData = new NpcObjectData(Maps, flags, rng, this);
+		TalkRoutines = new TalkRoutines();
 		Dialogues = new DialogueData(this);
-		EncounterRates = new(this);
+		ShopData = new ShopData(flags, this);
+		EncounterRates = new EncounterRate(this);
+		Music = new MusicTracks();
 
 		await this.Progress();
 
+		//Settings.CollapseRandomSettings(rng);
+		//Settings.ProcessStandardFlags();
+		//FlagRules.ProcessBaseFlags(settingstest);
+
+		//Settings.SetValue();
+
+		// Expand ROM, move data around
+		GlobalHacks();
+		TalkRoutines.TransferTalkRoutines(this, flags);
+		Dialogues.TransferDialogues();
+
 		// Apply general fixes and hacks
+		Music.ShuffleMusic(preferences.Music, new MT19337(funRng.Next()));
 		Bugfixes(flags);
 		GlobalImprovements(flags, Maps, preferences);
 		MiscHacks(flags, rng);
+		FF1Text.AddNewIcons(this, flags);
+		var oldItemNames = ItemsText.ToList();
 		MapIndex warmMechFloor = MapIndex.SkyPalace4F;
 
 		// Load Ressources Packs Maps
@@ -129,35 +135,33 @@ public partial class FF1Rom : NesRom
 		await this.Progress();
 
 		// Game Modes
-		DeepDungeon = new DeepDungeon(this);
+		DeepDungeon = new DeepDungeon(Maps, Teleporters, NpcData, TileSetsData, flags, this);
 		if (flags.GameMode == GameModes.DeepDungeon)
 		{
 			await this.Progress("Generating Deep Dungeon's Floors...", 2);
 
-			DeepDungeon.Generate(rng, Overworld.OverworldMap, Teleporters, Dialogues, Maps.GetMapList(), flags);
+			DeepDungeon.Generate(rng, Overworld, EncounterRates, Dialogues);
 			DeepDungeonFloorIndicator();
 			warmMechFloor = (MapIndex)DeepDungeon.WarMechFloor;
 
 			await this.Progress("Generating Deep Dungeon's Floors... Done!");
 		}
-		DesertOfDeath.ApplyDesertModifications((bool)flags.DesertOfDeath, this, ZoneFormations, Overworld.Locations.StartingLocation, NpcData, Dialogues);
+		DesertOfDeath.ApplyDesertModifications((bool)flags.DesertOfDeath, this, ZoneFormations, Overworld.Locations.StartingLocation, NpcData, Dialogues, Music);
 		Spooky(TalkRoutines, NpcData, Dialogues, ZoneFormations, Maps, rng, flags);
 		BlackOrbMode(TalkRoutines, Dialogues, flags, preferences, rng, new MT19337(funRng.Next()));
 		if(flags.NoOverworld) await this.Progress("Linking NoOverworld's Map", 1);
 		NoOverworld(Overworld.DecompressedMap, Maps, Teleporters, TileSetsData, TalkRoutines, Dialogues, NpcData, flags, rng);
 		DraculasCurse(Overworld, Teleporters, rng, flags);
 
-		FF1Text.AddNewIcons(this, flags);
-
 		await this.Progress();
-
-		var oldItemNames = ItemsText.ToList();
 
 		// Maps
 		Overworld.Update(Teleporters);
 		GeneralMapHacks(flags, Overworld, Maps, ZoneFormations, TileSetsData, rng);
 		Maps.Update(ZoneFormations, rng);
 		UpdateToFR(Maps, Teleporters, TileSetsData, flags, rng);
+		Teleporters.ShuffleEntrancesAndFloors(Overworld.OverworldMap, rng, flags);
+		EncounterRates.ScaleEncounterRate(flags);
 
 		// Tile Sets 
 		TileSetsData.Update(flags, rng);
@@ -166,18 +170,7 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		EncounterRates.ScaleEncounterRate(flags);
-
-		var shopData = new ShopData(this);
-		shopData.LoadData();
-
-		var extConsumables = new ExtConsumables(this, flags, rng, shopData);
-		extConsumables.AddNormalShopEntries();
-
-		await this.Progress();
-
 		// NPC Stuff
-		TalkRoutines.TransferTalkRoutines(this, flags);
 		Dialogues.UpdateNPCDialogues(flags);
 		PacifistBat(Maps, TalkRoutines, NpcData);
 		TalkRoutines.Update(flags);
@@ -204,6 +197,15 @@ public partial class FF1Rom : NesRom
 			TranceHasStatusElement();
 		}
 
+		if (((bool)flags.MagicLevels))
+		{
+			ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
+		}
+
+		//has to be done before modifying itemnames and after modifying spellnames...
+		var extConsumables = new ExtConsumables(ShopData, this, flags, rng);
+		extConsumables.LoadSpells();
+
 		// Create items
 		Etherizer(flags.Etherizer, ItemsText);
 
@@ -226,8 +228,6 @@ public partial class FF1Rom : NesRom
 		{
 			CraftDefenseItem(flags);
 		}
-
-		await this.Progress();
 
 		if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
 		{
@@ -263,26 +263,34 @@ public partial class FF1Rom : NesRom
 		// Starting Inventory
 		StartingItems = new StartingItems(new() { }, rng, flags, this);
 
-		// Shop stuff
-
-
 		// Placement Context
-		var priceList = Get(0x37C00, 0x200).ToUShorts().Select(x => (int)x).ToList(); // Temprorary until we extract price
-		PlacementContext = new PlacementContext(StartingItems, new() { }, priceList, rng, flags);
+		var priceList = Get(0x37C00, 0x200).ToUShorts().Select(x => (int)x).ToList(); // Temporary until we extract price
+		PlacementContext = (flags.GameMode != GameModes.DeepDungeon) ?
+			new PlacementContext(StartingItems, new() { }, priceList, rng, flags) :
+			new PlacementContext(StartingItems, new() { }, DeepDungeon.PlacedItems, DeepDungeon.ChestLocations, priceList, rng, flags);
 
-		// ShopSlot should be managed by shop class, right? Maybe, probably, we'll know for sure with Shop Class
-		PlacementContext.ShopSlot = ShuffleShops(rng, (bool)flags.Shops, (bool)flags.ImmediatePureAndSoftRequired, ((bool)flags.RandomWares), PlacementContext.ExcludedItemsFromShops, flags.WorldWealth, Overworld.OverworldMap.ConeriaTownEntranceItemShopIndex);
+		// Shop stuff
+		ShopData.ShuffleShops(rng, PlacementContext.ExcludedItemsFromShops, Teleporters.ConeriaTownEntranceItemShopIndex);
+		ShopData.ShuffleMagicLocations((bool)flags.MagicShopLocs, (bool)flags.MagicShopLocationPairs, rng);
+		ShopData.ShuffleMagicShops((bool)flags.MagicShops, rng);
+		extConsumables.AddNormalShopEntries();
+		new ShopKiller(Maps, ShopData, rng, flags, this).KillShops();
+		new LegendaryShops(rng, flags, Maps, ShopData, TileSetsData, this).PlaceShops();
 
-		// Sanity + Actual Placement
-		sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, TileSetsData, this, PlacementContext.ShopSlot);
+		await this.Progress("Building Placement Logic");
+
+		// Create Logic Checker
+		sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, TileSetsData, this, ShopData.ItemShopSlot);
 		if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags, true).Complete) throw new InsaneException("Not Completable");
 
-		await this.Progress((bool)flags.Treasures ? "Shuffling Treasures" : "Placing Treasures", 1);
+		await this.Progress((bool)flags.Treasures ? "Shuffling Treasures" : "Placing Treasures");
 
-		ItemPlacement itemPlacement = ItemPlacement.Create(this, flags, PlacementContext, PlacementContext.ShopSlot, Overworld, sanityChecker);
+		// Item Placement
+		ItemPlacement itemPlacement = ItemPlacement.Create(this, flags, PlacementContext, ShopData.ItemShopSlot, Overworld, sanityChecker);
 		itemPlacement.PlaceItems(rng);
 
 		NpcData.UpdateItemPlacement(itemPlacement.PlacedItems);
+		ShopData.UpdateShopSlotPlacement(itemPlacement.PlacedItems);
 
 		List<string> funMessages = new()
 		{
@@ -314,41 +322,6 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress(funMessages.PickRandom(rng));
 
-		if ((bool)flags.MagicShopLocs)
-		{
-			ShuffleMagicLocations(rng, (bool)flags.MagicShopLocationPairs);
-		}
-
-		if (((bool)flags.MagicShops))
-		{
-			ShuffleMagicShops(rng);
-		}
-
-		if (((bool)flags.MagicLevels))
-		{
-			ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
-		}
-
-		new ShopKiller(rng, flags, Maps, this).KillShops();
-
-		shopData.LoadData();
-
-		new LegendaryShops(rng, flags, Maps, shopData, TileSetsData, this).PlaceShops();
-
-		if (flags.GameMode == GameModes.DeepDungeon)
-		{
-			shopData.Shops.Find(x => x.Type == FF1Lib.ShopType.Item && x.Entries.Contains(Item.Bottle)).Entries.Remove(Item.Bottle);
-			shopData.StoreData();
-		}
-
-		// This need to be after the last modification of shopData 
-		shopData.UpdateShopSlotPlacement(itemPlacement.PlacedItems);
-		
-		//has to be done before modifying itemnames and after modifying spellnames...
-		extConsumables.LoadSpells();
-
-		await this.Progress();
-
 		// Should be in spell class
 		if (preferences.AccessibleSpellNames)
 		{
@@ -362,17 +335,11 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		// Encounters
-		ZoneFormations.ShuffleEnemyFormations(rng, flags.FormationShuffleMode, flags.EnemizerEnabled);
-		ZoneFormations.UnleashWarMECH(flags.WarMECHMode == WarMECHMode.Unleashed || flags.WarMECHMode == WarMECHMode.All);
-
 		// Enemies
 		ShuffleEnemyScripts(rng, flags);
 		ShuffleEnemySkillsSpells(rng, flags);
 		StatusAttacks(flags, rng);
 		ShuffleUnrunnable(rng, flags);
-
-		// Always on to supply the correct changes for WaitWhenUnrunnable
 		AllowStrikeFirstAndSurprise(flags.WaitWhenUnrunnable, (bool)flags.UnrunnablesStrikeFirstAndSurprise);
 		ShuffleSurpriseBonus((bool)flags.EnemyFormationsSurprise, rng);
 
@@ -382,13 +349,17 @@ public partial class FF1Rom : NesRom
 		Astos(NpcData, Dialogues, TalkRoutines, flags, rng);
 		EnableSwolePirates((bool)flags.SwolePirates);
 
-		if((bool)flags.AlternateFiends && !flags.SpookyFlag) await this.Progress("Creating new Fiends", 1);
+		if ((bool)flags.AlternateFiends && !flags.SpookyFlag) await this.Progress("Creating new Fiends", 1);
 		AlternativeFiends(rng, flags);
 		TransformFinalFormation(flags, rng);
 		DoEnemizer(flags, rng);
 		FiendShuffle((bool)flags.FiendShuffle, rng);
 		ScaleEnemyStats(rng, flags);
 		ScaleBossStats(rng, flags);
+
+		// Encounters
+		ZoneFormations.ShuffleEnemyFormations(rng, flags.FormationShuffleMode, flags.EnemizerEnabled);
+		ZoneFormations.UnleashWarMECH(flags.WarMECHMode == WarMECHMode.Unleashed || flags.WarMECHMode == WarMECHMode.All);
 
 		await this.Progress();
 
@@ -399,7 +370,7 @@ public partial class FF1Rom : NesRom
 		SavingHacks(Overworld, flags);
 		ImprovedClinic(flags.ImprovedClinic && !(bool)flags.RecruitmentMode);
 		IncreaseDarkPenalty((bool)flags.IncreaseDarkPenalty);
-		new QuickMiniMap(this, Overworld.DecompressedMap).EnableQuickMinimap(flags.SpeedHacks || Overworld.MapExchange != null);
+		new QuickMiniMap(this, Overworld.DecompressedMap).EnableQuickMinimap(flags.SpeedHacks || Overworld.MapExchange != null, Music);
 		ShopUpgrade(flags, Dialogues, preferences);
 		EnableAirBoat(flags);
 		OpenChestsInOrder(flags.OpenChestsInOrder && !flags.Archipelago);
@@ -409,24 +380,20 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		NPCHints(rng, NpcData, Maps, Dialogues, flags, PlacementContext, sanityChecker, shopData);
+		NPCHints(rng, NpcData, Maps, Dialogues, flags, PlacementContext, sanityChecker, ShopData);
 		SkyWarriorSpoilerBats(rng, flags, NpcData, Dialogues);
 
 		MonsterInABox(itemPlacement, ZoneFormations, TileSetsData, NpcData, Dialogues, rng, flags);
 
 		ExpGoldBoost(flags);
+		ScalePrices(ShopData, flags, rng, ((bool)flags.ClampMinimumPriceScale), ShopData.ItemShopSlot, flags.ImprovedClinic);
+		extConsumables.AddExtConsumables();
 
 		await this.Progress();
-
-		ScalePrices(flags, rng, ((bool)flags.ClampMinimumPriceScale), PlacementContext.ShopSlot, flags.ImprovedClinic);
-
-		extConsumables.AddExtConsumables();
 
 		// Party
 		PartyGeneration(rng, flags, preferences);
 		PubReplaceClinic(rng, Maps.AttackedTown, flags);
-
-		await this.Progress();
 
 		// Experience
 		ScaleAllAltExp(flags);
@@ -472,7 +439,6 @@ public partial class FF1Rom : NesRom
 		PaletteSwap(preferences.PaletteSwap && !flags.EnemizerEnabled, new MT19337(funRng.Next()));
 		TeamSteak(preferences.TeamSteak && !(bool)flags.RandomizeEnemizer);
 		FunEnemyNames(flags, preferences, new MT19337(funRng.Next()));
-		ShuffleMusic(preferences.Music, new MT19337(funRng.Next()));
 
 		await this.Progress();
 
@@ -495,13 +461,14 @@ public partial class FF1Rom : NesRom
 		}
 
 		// Spoilers
-		if (flags.Spoilers && sanityChecker != null) new ExtSpoiler(this, sanityChecker, shopData, ItemsText, itemPlacement.PlacedItems, Overworld, PlacementContext, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
+		if (flags.Spoilers && sanityChecker != null) new ExtSpoiler(this, sanityChecker, ShopData, ItemsText, itemPlacement.PlacedItems, Overworld, PlacementContext, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
 
 		// Write back everything
 		ItemsText.Write(this, flags.GameMode == GameModes.DeepDungeon ? new List<Item>() : ItemLists.UnusedGoldItems.ToList());
 		TalkRoutines.Write(this);
 		NpcData.Write(TalkRoutines.ScriptPointers);
 		Dialogues.Write();
+		ShopData.StoreData();
 
 		EncounterRates.Write();
 		itemPlacement.Write();
@@ -517,6 +484,7 @@ public partial class FF1Rom : NesRom
 		WeaponPermissions.Write(this);
 		SpellPermissions.Write(this);
 		ClassData.Write(this);
+		Music.Write(this);
 
 		await this.Progress();
 
