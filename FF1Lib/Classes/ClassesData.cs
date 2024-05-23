@@ -337,6 +337,14 @@ namespace FF1Lib
 
 		}
 
+		private static List<byte> KnightLvl4Charge = new() { 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
+														0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111,
+														0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000,
+														0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111,
+														0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000,
+														0b00001111, 0b00000000, 0b00001111, 0b00000000 };
+
+
 		public void BlackKnight(Flags flags)
 		{
 			if (!(bool)flags.BlackKnight)
@@ -353,12 +361,6 @@ namespace FF1Lib
 				var knightslots = whitetoblackslotsK.ToList();
 				_spellPermissions.ClearPermissions(Classes.Knight);
 				_spellPermissions.AddPermissionsRange(knightslots.Select(x => (Classes.Knight, x)).ToList());
-				var KnightLvl4Charge = new List<byte> { 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
-														0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111,
-														0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000,
-														0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111,
-														0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000,
-														0b00001111, 0b00000000, 0b00001111, 0b00000000 };
 				_classes[(int)Classes.Knight].SpCGrowth = KnightLvl4Charge;
 				_classes[(int)Classes.Fighter].SpCGrowth = KnightLvl4Charge;
 			}
@@ -369,12 +371,6 @@ namespace FF1Lib
 				_spellPermissions.ClearPermissions(Classes.Knight);
 				var ninjaPer = _spellPermissions[Classes.Ninja].ToList();
 				_spellPermissions.AddPermissionsRange(ninjaPer.Select(x => (Classes.Knight, x)).ToList());
-				var KnightLvl4Charge = new List<byte> { 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
-														0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111,
-														0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000,
-														0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111,
-														0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000,
-														0b00001111, 0b00000000, 0b00001111, 0b00000000 };
 				_classes[(int)Classes.Knight].SpCGrowth = KnightLvl4Charge;
 				_classes[(int)Classes.Fighter].SpCGrowth = KnightLvl4Charge;
 
@@ -403,7 +399,7 @@ namespace FF1Lib
 				var blackNinja = _spellPermissions[Classes.Ninja].Where(s => ((int)s % 8) >= 4).ToList();
 				var whitetoblackN = blackNinja.Select(s => (s - 4)).ToList();
 				_spellPermissions.ClearPermissions(Classes.Ninja);
-
+				_spellPermissions.AddPermissionsRange(whitetoblackN.Select(x => (Classes.Ninja, x)).ToList());
 			}
 
 		}
@@ -438,12 +434,6 @@ namespace FF1Lib
 				{
 					_spellPermissions.AddPermission(Classes.Knight, SpellSlots.White4Slot4);
 				}
-				var KnightLvl4Charge = new List<byte> { 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000,
-														0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111,
-														0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000,
-														0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111,
-														0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000, 0b00001111, 0b00000000,
-														0b00001111, 0b00000000, 0b00001111, 0b00000000 };
 				_classes[(int)Classes.Knight].SpCGrowth = KnightLvl4Charge;
 				_classes[(int)Classes.Fighter].SpCGrowth = KnightLvl4Charge;
 			}
