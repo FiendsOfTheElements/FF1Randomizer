@@ -1667,7 +1667,7 @@
 		"Id": "Knightlvl4",
 		"title": "Knight Level 4 Spell",
 		"screenshot": null,
-		"description": "Give the knight a random learnable level 4 spell slot. If no other flags are set this will be a level 4 white magic spell. If the Black Knight and Keep Permissions are both on then this will give a random level 4 black magic spell."
+		"description": "Give the knight a random learnable level 4 spell slot. If no other flags are set this will be a level 4 white magic spell. If the Black Knight and Keep Permissions are both on then this will give a random level 4 black magic spell. This will also give the Knight level 4 spell charges."
 	},
 	{
 		"Id": "PinkMage",
@@ -1679,7 +1679,7 @@
 		"Id": "BlackKnight",
 		"title": "Black Knight",
 		"screenshot": null,
-		"description": "Gives the Knight the Ninja Black magic permissions and removes all white magic permissions."
+		"description": "Gives the Knight the Ninja Black magic permissions and removes all white magic permissions. This will also give the Knight level 4 spell charges."
 	},
 	{
 		"Id": "BlackKnightKeep",
