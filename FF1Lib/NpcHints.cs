@@ -16,16 +16,16 @@ namespace FF1Lib
 	public class LocationHints
 	{
 		SanityCheckerV2 checker;
-		FF1Rom rom;
 		ShopData shopData;
 		NpcObjectData npcData;
+		ItemPlacement itemPlacement;
 		bool noOverworld;
 		public List<LocationHintsInfo> hints { get; }
 
-		public LocationHints(SanityCheckerV2 _checker, FF1Rom _rom, ShopData _shopdata, NpcObjectData _npcdata, bool _nooverworld)
+		public LocationHints(SanityCheckerV2 _checker, ItemPlacement _itemPlacement, ShopData _shopdata, NpcObjectData _npcdata, bool _nooverworld)
 		{
 			checker = _checker;
-			rom = _rom;
+			itemPlacement = _itemPlacement;
 			shopData = _shopdata;
 			npcData = _npcdata;
 			hints = new();
@@ -77,11 +77,13 @@ namespace FF1Lib
 						}
 						break;
 					case Sanity.SCPointOfInterestType.Treasure:
-						var item = (Item)rom.Get(0x3100 + p.TreasureId, 1)[0];
-						var newchesthint = new LocationHintsInfo(overworld, a.Map.MapIndex, p.Type, depth, split, p.TreasureId, item);
-						if (!hints.Where(x => x.type == newchesthint.type && x.id == newchesthint.id).Any())
+						if (itemPlacement.PlacedItems.TryFind(t => t.Address == 0x3100 + p.TreasureId, out var chest))
 						{
-							hints.Add(newchesthint);
+							var newchesthint = new LocationHintsInfo(overworld, a.Map.MapIndex, p.Type, depth, split, p.TreasureId, chest.Item);
+							if (!hints.Where(x => x.type == newchesthint.type && x.id == newchesthint.id).Any())
+							{
+								hints.Add(newchesthint);
+							}
 						}
 						break;
 					case Sanity.SCPointOfInterestType.QuestNpc:
@@ -420,14 +422,14 @@ namespace FF1Lib
 
 			return wrapped;
 	    }
-		public void NPCHints(MT19337 rng, NpcObjectData npcdata, StandardMaps maps, DialogueData dialogues, Flags flags, PlacementContext incentivedata, SanityCheckerV2 sanitychecker, ShopData shopdata)
+		public void NPCHints(MT19337 rng, NpcObjectData npcdata, StandardMaps maps, DialogueData dialogues, Flags flags, PlacementContext incentivedata, SanityCheckerV2 sanitychecker, ItemPlacement itemPlacement, ShopData shopdata)
 		{
 			if (!(bool)flags.HintsVillage || flags.GameMode == GameModes.DeepDungeon || !(bool)flags.Treasures || flags.Archipelago )
 			{
 				return;
 			}
 
-			var locationshints = new LocationHints(sanitychecker, this, shopdata, npcdata, flags.NoOverworld);
+			var locationshints = new LocationHints(sanitychecker, itemPlacement, shopdata, npcdata, flags.NoOverworld);
 
 			// Het all game dialogs, get all item names, set dialog templates
 			var hintschests = new List<string>() { "The $ is #.", "The $? It's # I believe.", "Did you know that the $ is #?", "My grandpa used to say 'The $ is #'.", "Did you hear? The $ is #!", "Wanna hear a secret? The $ is #!", "I've read somewhere that the $ is #.", "I used to have the $. I lost it #!", "I've hidden the $ #, can you find it?", "Interesting! This book says the $ is #!", "Duh, everyone knows that the $ is #!", "I saw the $ while I was #." };
