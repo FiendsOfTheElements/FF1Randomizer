@@ -20,14 +20,14 @@
 			NUM_OOB_SPELLS
 		}
 
-		public void CraftNewSpellbook(MT19337 rng, bool mixWhiteBlack, LockHitMode lockMode, bool levelShuffle, bool keepPermissions) // generates a new spellbook and does all necessary steps to ensure that the new spells are assigned where they need to be for the game to work properly
+		public void CraftNewSpellbook(EnemyScripts enemyScripts, MT19337 rng, bool mixWhiteBlack, LockHitMode lockMode, bool levelShuffle, bool keepPermissions) // generates a new spellbook and does all necessary steps to ensure that the new spells are assigned where they need to be for the game to work properly
 		{
 			bool WhiteSpell(int id) => mixWhiteBlack || id % 8 < 4;
 			bool BlackSpell(int id) => mixWhiteBlack || id % 8 > 3;
 			int SpellTier(int id) => id / 8;
 
 			SpellInfo[] spell = new SpellInfo[MagicCount]; // the spells we are creating.  every 4 indices split between white magic and black magic.
-			EnemyScriptInfo[] script = new EnemyScriptInfo[ScriptCount]; // enemy scripts (we will need to modify these after the spell list has been created)
+			//EnemyScriptInfo[] script = new EnemyScriptInfo[ScriptCount]; // enemy scripts (we will need to modify these after the spell list has been created)
 			string[] spellNames = new string[MagicCount + 1];
 			byte[] spellMessages = new byte[MagicCount];
 			byte[] spellPermissions = new byte[MagicPermissionsSize * MagicPermissionsCount]; // we store the permissions in a giant array
@@ -65,11 +65,6 @@
 					spellPermissions[i] = 0xF0; // black wizard can learn all black magic spells
 				else
 					spellPermissions[i] = 0XFF; // all others can not learn any magic (fighter, thief, black belt, master)
-			}
-			for(int i = 0; i < ScriptCount; ++i)
-			{
-				script[i] = new EnemyScriptInfo();
-				script[i].decompressData(Get(ScriptOffset + ScriptSize * i, ScriptSize));
 			}
 				
 			List<int> spellindex = Enumerable.Range(0, 64).ToList(); // a list of spell indexes (0-63)
@@ -1703,14 +1698,14 @@
 			// fill enemy scripts with tier-equivalent skills (using enemizer's calc_Enemy_SpellTier feature)
 			// we use special rules for Warmech, Fiend, and Astos scripts
 
-			for (int i = 0; i < ScriptCount - 10; ++i) // exclude the last 10 scripts
+			for (int i = 0; i < enemyScripts.Count() - 10; ++i) // exclude the last 10 scripts
 			{
 				// start replacing each spell with another spell from the same tier
 				for (byte j = 0; j < 8; ++j)
 				{
-					if (script[i].spell_list[j] == 0xFF)
+					if (enemyScripts[i].spell_list[j] == 0xFF)
 						continue; // skip blank spells
-					int whichTier = oldTiers[script[i].spell_list[j]];
+					int whichTier = oldTiers[enemyScripts[i].spell_list[j]];
 					if (whichTier == 0)
 						whichTier = 1; // don't allow tier 0s to exist
 					List<byte> eligibleSpellIDs = new List<byte> { };
@@ -1725,7 +1720,7 @@
 					}
 					if (eligibleSpellIDs.Count == 0)
 						eligibleSpellIDs.Add(4); // force FIRE if no other spell is available for some reason
-					script[i].spell_list[j] = eligibleSpellIDs.PickRandom(rng);
+					enemyScripts[i].spell_list[j] = eligibleSpellIDs.PickRandom(rng);
 				}
 			}
 			spellindex = Enumerable.Range(0, 64).ToList(); // refilling the spell indexes to include all spells again
@@ -1760,73 +1755,70 @@
 			var slowingspell = spellindex.Where(id => spell[id].routine == 0x04).ToList(); // this will always include the guaranteed slow spell
 
 			// Lich 1 script
-			script[34].spell_list[0] = (byte)middamagespells.PickRandom(rng);
-			script[34].spell_list[1] = (byte)statusspells.PickRandom(rng);
-			script[34].spell_list[2] = (byte)fastspell;
-			script[34].spell_list[3] = (byte)middamagespells.PickRandom(rng);
-			script[34].spell_list[4] = (byte)statusspells.PickRandom(rng);
-			script[34].spell_list[5] = (byte)middamagespells.PickRandom(rng);
-			script[34].spell_list[6] = (byte)slowingspell.PickRandom(rng);
-			script[34].spell_list[7] = (byte)statusspells.PickRandom(rng);
+			enemyScripts[34].spell_list[0] = (byte)middamagespells.PickRandom(rng);
+			enemyScripts[34].spell_list[1] = (byte)statusspells.PickRandom(rng);
+			enemyScripts[34].spell_list[2] = (byte)fastspell;
+			enemyScripts[34].spell_list[3] = (byte)middamagespells.PickRandom(rng);
+			enemyScripts[34].spell_list[4] = (byte)statusspells.PickRandom(rng);
+			enemyScripts[34].spell_list[5] = (byte)middamagespells.PickRandom(rng);
+			enemyScripts[34].spell_list[6] = (byte)slowingspell.PickRandom(rng);
+			enemyScripts[34].spell_list[7] = (byte)statusspells.PickRandom(rng);
 			// Lich 2 script
-			script[35].spell_list[0] = (byte)tier5.PickRandom(rng);
-			script[35].spell_list[1] = (byte)toptierblack.PickRandom(rng);
-			script[35].spell_list[2] = (byte)toptierblack.PickRandom(rng);
-			script[35].spell_list[3] = (byte)toptierblack.PickRandom(rng);
-			script[35].spell_list[4] = (byte)tier5.PickRandom(rng);
-			script[35].spell_list[5] = (byte)toptierblack.PickRandom(rng);
-			script[35].spell_list[6] = (byte)toptierblack.PickRandom(rng);
-			script[35].spell_list[7] = (byte)toptierblack.PickRandom(rng);
+			enemyScripts[35].spell_list[0] = (byte)tier5.PickRandom(rng);
+			enemyScripts[35].spell_list[1] = (byte)toptierblack.PickRandom(rng);
+			enemyScripts[35].spell_list[2] = (byte)toptierblack.PickRandom(rng);
+			enemyScripts[35].spell_list[3] = (byte)toptierblack.PickRandom(rng);
+			enemyScripts[35].spell_list[4] = (byte)tier5.PickRandom(rng);
+			enemyScripts[35].spell_list[5] = (byte)toptierblack.PickRandom(rng);
+			enemyScripts[35].spell_list[6] = (byte)toptierblack.PickRandom(rng);
+			enemyScripts[35].spell_list[7] = (byte)toptierblack.PickRandom(rng);
 			// Kary 1 script
-			script[36].spell_list[0] = (byte)middamagespells.PickRandom(rng);
-			script[36].spell_list[1] = (byte)statusspells.PickRandom(rng);
-			script[36].spell_list[2] = (byte)middamagespells.PickRandom(rng);
-			script[36].spell_list[3] = (byte)statusspells.PickRandom(rng);
-			script[36].spell_list[4] = (byte)middamagespells.PickRandom(rng);
-			script[36].spell_list[5] = (byte)statusspells.PickRandom(rng);
-			script[36].spell_list[6] = (byte)middamagespells.PickRandom(rng);
-			script[36].spell_list[7] = (byte)statusspells.PickRandom(rng);
+			enemyScripts[36].spell_list[0] = (byte)middamagespells.PickRandom(rng);
+			enemyScripts[36].spell_list[1] = (byte)statusspells.PickRandom(rng);
+			enemyScripts[36].spell_list[2] = (byte)middamagespells.PickRandom(rng);
+			enemyScripts[36].spell_list[3] = (byte)statusspells.PickRandom(rng);
+			enemyScripts[36].spell_list[4] = (byte)middamagespells.PickRandom(rng);
+			enemyScripts[36].spell_list[5] = (byte)statusspells.PickRandom(rng);
+			enemyScripts[36].spell_list[6] = (byte)middamagespells.PickRandom(rng);
+			enemyScripts[36].spell_list[7] = (byte)statusspells.PickRandom(rng);
 			// Kary 2 script
-			script[37].spell_list[0] = (byte)highdamagespells.PickRandom(rng);
-			script[37].spell_list[1] = (byte)single_instas.PickRandom(rng);
-			script[37].spell_list[2] = (byte)highdamagespells.PickRandom(rng);
-			script[37].spell_list[3] = (byte)statusspells.PickRandom(rng);
-			script[37].spell_list[4] = (byte)highdamagespells.PickRandom(rng);
-			script[37].spell_list[5] = (byte)single_instas.PickRandom(rng);
-			script[37].spell_list[6] = (byte)highdamagespells.PickRandom(rng);
-			script[37].spell_list[7] = (byte)statusspells.PickRandom(rng);
+			enemyScripts[37].spell_list[0] = (byte)highdamagespells.PickRandom(rng);
+			enemyScripts[37].spell_list[1] = (byte)single_instas.PickRandom(rng);
+			enemyScripts[37].spell_list[2] = (byte)highdamagespells.PickRandom(rng);
+			enemyScripts[37].spell_list[3] = (byte)statusspells.PickRandom(rng);
+			enemyScripts[37].spell_list[4] = (byte)highdamagespells.PickRandom(rng);
+			enemyScripts[37].spell_list[5] = (byte)single_instas.PickRandom(rng);
+			enemyScripts[37].spell_list[6] = (byte)highdamagespells.PickRandom(rng);
+			enemyScripts[37].spell_list[7] = (byte)statusspells.PickRandom(rng);
 			// Kraken 2 script
 			for (int i = 0; i < 8; ++i)
-				script[39].spell_list[i] = (byte)middamagespells.PickRandom(rng);
+				enemyScripts[39].spell_list[i] = (byte)middamagespells.PickRandom(rng);
 			// Tiamat 2 script
 			for (int i = 0; i < 8; i += 4)
 			{
-				script[41].spell_list[i] = (byte)multi_instas.PickRandom(rng);
-				script[41].spell_list[i + 1] = (byte)highdamagespells.PickRandom(rng);
-				script[41].spell_list[i + 2] = (byte)highdamagespells.PickRandom(rng);
-				script[41].spell_list[i + 3] = (byte)highdamagespells.PickRandom(rng);
+				enemyScripts[41].spell_list[i] = (byte)multi_instas.PickRandom(rng);
+				enemyScripts[41].spell_list[i + 1] = (byte)highdamagespells.PickRandom(rng);
+				enemyScripts[41].spell_list[i + 2] = (byte)highdamagespells.PickRandom(rng);
+				enemyScripts[41].spell_list[i + 3] = (byte)highdamagespells.PickRandom(rng);
 			}
 			// Chaos script
-			script[42].spell_list[0] = (byte)highdamagespells.PickRandom(rng);
-			script[42].spell_list[1] = (byte)highdamagespells.PickRandom(rng);
-			script[42].spell_list[2] = (byte)slowspell;
-			script[42].spell_list[3] = (byte)cur4spell;
-			script[42].spell_list[4] = (byte)highdamagespells.PickRandom(rng);
-			script[42].spell_list[5] = (byte)highdamagespells.PickRandom(rng);
-			script[42].spell_list[6] = (byte)fastspell;
-			script[42].spell_list[7] = (byte)tier5.PickRandom(rng);
+			enemyScripts[42].spell_list[0] = (byte)highdamagespells.PickRandom(rng);
+			enemyScripts[42].spell_list[1] = (byte)highdamagespells.PickRandom(rng);
+			enemyScripts[42].spell_list[2] = (byte)slowspell;
+			enemyScripts[42].spell_list[3] = (byte)cur4spell;
+			enemyScripts[42].spell_list[4] = (byte)highdamagespells.PickRandom(rng);
+			enemyScripts[42].spell_list[5] = (byte)highdamagespells.PickRandom(rng);
+			enemyScripts[42].spell_list[6] = (byte)fastspell;
+			enemyScripts[42].spell_list[7] = (byte)tier5.PickRandom(rng);
 			// Astos script
-			script[43].spell_list[0] = (byte)single_instas.PickRandom(rng);
-			script[43].spell_list[1] = (byte)slowspell;
-			script[43].spell_list[2] = (byte)fastspell;
-			script[43].spell_list[3] = (byte)middamagespells.PickRandom(rng);
-			script[43].spell_list[4] = (byte)middamagespells.PickRandom(rng);
-			script[43].spell_list[5] = (byte)statusspells.PickRandom(rng);
-			script[43].spell_list[6] = (byte)statusspells.PickRandom(rng);
-			script[43].spell_list[7] = (byte)statusspells.PickRandom(rng);
-
-			for (int i = 0; i < ScriptCount; ++i) // write the new scripts to ROM
-				Put(ScriptOffset + ScriptSize * i, script[i].compressData());
+			enemyScripts[43].spell_list[0] = (byte)single_instas.PickRandom(rng);
+			enemyScripts[43].spell_list[1] = (byte)slowspell;
+			enemyScripts[43].spell_list[2] = (byte)fastspell;
+			enemyScripts[43].spell_list[3] = (byte)middamagespells.PickRandom(rng);
+			enemyScripts[43].spell_list[4] = (byte)middamagespells.PickRandom(rng);
+			enemyScripts[43].spell_list[5] = (byte)statusspells.PickRandom(rng);
+			enemyScripts[43].spell_list[6] = (byte)statusspells.PickRandom(rng);
+			enemyScripts[43].spell_list[7] = (byte)statusspells.PickRandom(rng);
 		}
 
 		private void SPCR_SetName(string[] spellnames, int index, string initialname, string altname)

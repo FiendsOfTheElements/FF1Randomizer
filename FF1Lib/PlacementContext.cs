@@ -296,6 +296,7 @@ namespace FF1Lib
 			KeyItemsToPlace = KeyItems
 				.Except(RemovedItems)
 				.Except(FreeItems)
+				.Except(new List<Item>() { Item.Tail })
 				.Except(forcedItemPlacements.Select(f => f.Item)
 				.ToList());
 
@@ -698,7 +699,7 @@ namespace FF1Lib
 
 			return incentiveLocationPool;
 		}
-		private List<Item> KeyItems = new() { Item.Lute, Item.Bridge, Item.Ship, Item.Crown, Item.Crystal, Item.Herb, Item.Crystal, Item.Key, Item.Tnt, Item.Canal, Item.Ruby, Item.Rod, Item.Canoe, Item.Floater, Item.Tail, Item.Bottle, Item.Oxyale, Item.Cube, Item.Slab, Item.Chime };
+		private List<Item> KeyItems = new() { Item.Lute, Item.Bridge, Item.Ship, Item.Adamant, Item.Crown, Item.Crystal, Item.Herb, Item.Crystal, Item.Key, Item.Tnt, Item.Canal, Item.Ruby, Item.Rod, Item.Canoe, Item.Floater, Item.Tail, Item.Bottle, Item.Oxyale, Item.Cube, Item.Slab, Item.Chime };
 		public IEnumerable<IRewardSource> ForcedItemPlacements { get; private set; }
 		public IEnumerable<IRewardSource> AllValidItemLocations { get; private set; }
 		public IEnumerable<IRewardSource> AllValidPreBlackOrbItemLocations { get; private set; }

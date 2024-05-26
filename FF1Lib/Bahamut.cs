@@ -10,7 +10,7 @@ namespace FF1Lib
 {
 	public partial class FF1Rom
 	{
-		public void FightBahamut(Flags flags, TalkRoutines talkroutines, NpcObjectData npcdata, ZoneFormations zoneformations, DialogueData dialogues, StandardMaps maps, MT19337 rng)
+		public void FightBahamut(Flags flags, TalkRoutines talkroutines, NpcObjectData npcdata, ZoneFormations zoneformations, DialogueData dialogues, StandardMaps maps, EnemyScripts enemyScripts, MT19337 rng)
 		{
 			if (!(bool)flags.FightBahamut || flags.SpookyFlag || (bool)flags.RandomizeFormationEnemizer)
 			{
@@ -72,7 +72,7 @@ namespace FF1Lib
 				int availableScript = bahamutInfo.AIscript;
 				if (availableScript == 0xFF)
 				{
-					availableScript = searchForNoSpellNoAbilityEnemyScript();
+					availableScript = enemyScripts.SearchForNoSpellNoAbilityEnemyScript();
 				}
 
 				if (availableScript >= 0 && Rng.Between(rng, 0, 3) > 0) // because spells and skills shuffle is common, allow RNG to also make physical bahamut (1 in 4)
@@ -101,13 +101,12 @@ namespace FF1Lib
 					potentialSkills.Shuffle(rng);
 
 					// create and assign script
-					defineNewAI(availableScript,
-						spellChance: 0x00,
-						skillChance: 0x40,
-						spells: new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE,
-							(byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
-						skills: new List<byte> { potentialSkills[0], potentialSkills[1], potentialSkills[2], potentialSkills[3] }
-						);
+					enemyScripts[availableScript].spell_chance = 0x00;
+					enemyScripts[availableScript].skill_chance = 0x40;
+					enemyScripts[availableScript].spell_list = new byte[] { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE,
+							(byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE };
+					enemyScripts[availableScript].skill_list = new byte[] { potentialSkills[0], potentialSkills[1], potentialSkills[2], potentialSkills[3] };
+
 					bahamutInfo.AIscript = (byte)availableScript;
 					bahamutInfo.mdef = 215; // swole magical bahamut has increased MDEF
 				}

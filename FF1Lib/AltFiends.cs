@@ -53,7 +53,7 @@ namespace FF1Lib
 			public FormationGFX GFXOffset;
 			public FiendPool FiendPool;
 		}
-		public void AlternativeFiends(MT19337 rng, Flags flags)
+		public void AlternativeFiends(EnemyScripts enemyScripts, MT19337 rng, Flags flags)
 		{
 			if (!(bool)flags.AlternateFiends || flags.SpookyFlag)
 			{
@@ -1798,14 +1798,12 @@ namespace FF1Lib
 			var encountersData = new Encounters(this);
 
 			EnemyInfo[] fiends = new EnemyInfo[8];
-			EnemyScriptInfo[] fiendsScript = new EnemyScriptInfo[8];
+			EnemyScriptInfo[] fiendsScript = enemyScripts.GetList().Where(s => s.index >= FiendsScriptIndex && s.index <= (FiendsScriptIndex + 7)).ToArray();
 
 			for (int i = 0; i < 8; i++)
 			{
 				fiends[i] = new EnemyInfo();
 				fiends[i].decompressData(Get(EnemyOffset + (FiendsIndex + i) * EnemySize, EnemySize));
-				fiendsScript[i] = new EnemyScriptInfo();
-				fiendsScript[i].decompressData(Get(ScriptOffset + (FiendsScriptIndex + i) * ScriptSize, ScriptSize));
 			}
 
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
@@ -1866,6 +1864,8 @@ namespace FF1Lib
 			// Replace the 4 fiends and their 2nd version at the same time
 			for (int i = 0; i < 4; i++)
 			{
+				var scriptIndex = FiendsScriptIndex + (i * 2);
+
 				fiends[(i * 2)].monster_type = (byte)alternateFiendsList[i].MonsterType;
 				fiends[(i * 2) + 1].monster_type = (byte)alternateFiendsList[i].MonsterType;
 				fiends[(i * 2)].elem_weakness = (byte)alternateFiendsList[i].ElementalWeakness;
@@ -1873,37 +1873,23 @@ namespace FF1Lib
 				fiends[(i * 2)].elem_resist = (byte)(fiends[(i * 2)].elem_resist & ~(byte)alternateFiendsList[i].ElementalWeakness);
 				fiends[(i * 2) + 1].elem_resist = (byte)(fiends[(i * 2) + 1].elem_resist & ~(byte)alternateFiendsList[i].ElementalWeakness);
 
-				if (fiendsScript[(i * 2)].skill_chance == 0x00 || alternateFiendsList[i].SkillChance1 == 0x00)
-					fiendsScript[(i * 2)].skill_chance = alternateFiendsList[i].SkillChance1;
+				if (enemyScripts[scriptIndex].skill_chance == 0x00 || alternateFiendsList[i].SkillChance1 == 0x00)
+					enemyScripts[scriptIndex].skill_chance = alternateFiendsList[i].SkillChance1;
 
-				if (fiendsScript[(i * 2) + 1].skill_chance == 0x00 || alternateFiendsList[i].SkillChance2 == 0x00)
-					fiendsScript[(i * 2) + 1].skill_chance = alternateFiendsList[i].SkillChance2;
+				if (enemyScripts[scriptIndex + 1].skill_chance == 0x00 || alternateFiendsList[i].SkillChance2 == 0x00)
+					enemyScripts[scriptIndex + 1].skill_chance = alternateFiendsList[i].SkillChance2;
 
-				fiendsScript[(i * 2)].skill_list = alternateFiendsList[i].Skills1.ToArray();
-				fiendsScript[(i * 2) + 1].skill_list = alternateFiendsList[i].Skills2.ToArray();
+				enemyScripts[scriptIndex].skill_list = alternateFiendsList[i].Skills1.ToArray();
+				enemyScripts[scriptIndex + 1].skill_list = alternateFiendsList[i].Skills2.ToArray();
 
-				if (fiendsScript[(i * 2)].spell_chance == 0x00 || alternateFiendsList[i].SpellChance1 == 0x00)
-					fiendsScript[(i * 2)].spell_chance = alternateFiendsList[i].SpellChance1;
+				if (enemyScripts[scriptIndex].spell_chance == 0x00 || alternateFiendsList[i].SpellChance1 == 0x00)
+					enemyScripts[scriptIndex].spell_chance = alternateFiendsList[i].SpellChance1;
 
-				if (fiendsScript[(i * 2) + 1].spell_chance == 0x00 || alternateFiendsList[i].SpellChance2 == 0x00)
-					fiendsScript[(i * 2) + 1].spell_chance = alternateFiendsList[i].SpellChance2;
+				if (enemyScripts[scriptIndex + 1].spell_chance == 0x00 || alternateFiendsList[i].SpellChance2 == 0x00)
+					enemyScripts[scriptIndex + 1].spell_chance = alternateFiendsList[i].SpellChance2;
 
-				fiendsScript[(i * 2)].spell_list = alternateFiendsList[i].Spells1.ToArray();
-				fiendsScript[(i * 2) + 1].spell_list = alternateFiendsList[i].Spells2.ToArray();
-
-				/*
-				encountersData.formations[fiendsFormationOrder[(i * 2)]].pattern = alternateFiendsList[i].FormationPattern;
-				encountersData.formations[fiendsFormationOrder[(i * 2)]].spriteSheet = alternateFiendsList[i].SpriteSheet;
-				encountersData.formations[fiendsFormationOrder[(i * 2)]].gfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
-				encountersData.formations[fiendsFormationOrder[(i * 2)]].palette1 = alternateFiendsList[i].Palette1;
-				encountersData.formations[fiendsFormationOrder[(i * 2)]].palette2 = alternateFiendsList[i].Palette2;
-
-				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].pattern = alternateFiendsList[i].FormationPattern;
-				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].spriteSheet = alternateFiendsList[i].SpriteSheet;
-				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].gfxOffset1 = (int)alternateFiendsList[i].GFXOffset;
-				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].palette1 = alternateFiendsList[i].Palette1;
-				encountersData.formations[fiendsFormationOrder[(i * 2) + 1]].palette2 = alternateFiendsList[i].Palette2;
-				*/
+				enemyScripts.ImportVanillaSpellList(scriptIndex, alternateFiendsList[i].Spells1);
+				enemyScripts.ImportVanillaSpellList(scriptIndex + 1, alternateFiendsList[i].Spells2);
 			}
 
 			encountersData.Write(this);
@@ -1911,7 +1897,6 @@ namespace FF1Lib
 			for (int i = 0; i < 8; i++)
 			{
 				Put(EnemyOffset + (FiendsIndex + i) * EnemySize, fiends[i].compressData());
-				Put(ScriptOffset + (FiendsScriptIndex + i) * ScriptSize, fiendsScript[i].compressData());
 			}
 
 			//Update fiends names, we stack Fiend1 and Fiend2's names to get more space for names

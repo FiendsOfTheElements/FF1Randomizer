@@ -604,14 +604,13 @@ namespace FF1Lib
 		return descriptions[tr];
 	    }
 
-	    public void SkyWarriorSpoilerBats(MT19337 rng, Flags flags, NpcObjectData npcdata, DialogueData dialogues) {
+	    public void SkyWarriorSpoilerBats(MT19337 rng, Flags flags, NpcObjectData npcdata, DialogueData dialogues, EnemyScripts enemyScripts) {
 			if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Vanilla)
 			{
 				return;
 			}
 		List<MagicSpell> spellList = GetSpells();
 		var enemies = GetAllEnemyStats();
-		var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
 		var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 		var bosses = new[] { new { index = Enemy.Lich2, dialog=0x4D },
 				     new { index = Enemy.Kary2, dialog=0x4E },
@@ -705,8 +704,8 @@ namespace FF1Lib
 		    int hp = (int)BitConverter.ToUInt16(enemies[b.index], EnemyStat.HP);
 		    var enemy = enemies[b.index];
 		    var scriptIndex = enemy[EnemyStat.Scripts];
-		    var spells = scriptBytes[scriptIndex].SubBlob(2, 8).ToBytes().Where(b => b != 0xFF).ToList();
-		    var skills = scriptBytes[scriptIndex].SubBlob(11, 4).ToBytes().Where(b => b != 0xFF).ToList();
+		    var spells = enemyScripts[scriptIndex].spell_list.Where(s => s != 0xFF).ToList();
+		    var skills = enemyScripts[scriptIndex].skill_list.Where(s => s != 0xFF).ToList();
 		    string enemyName;
 		    if (b.index == Enemy.Chaos) {
 			enemyName = enemyText[b.index].PadRight(8, '_');

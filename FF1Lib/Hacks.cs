@@ -208,6 +208,7 @@ namespace FF1Lib
 			cardia.Put((0x26, 0x1C), room);
 			cardia[0x20, 0x27] = (byte)Tile.Doorway;
 		}
+		/*
 		private void defineNewAI(int availableScript, byte spellChance, byte skillChance, List<byte> spells, List<byte> skills)
 		{
 			EnemyScriptInfo newAI = new EnemyScriptInfo();
@@ -216,7 +217,7 @@ namespace FF1Lib
 			newAI.spell_list = spells.ToArray();
 			newAI.skill_list = skills.ToArray();
 			Put(ScriptOffset + (availableScript * ScriptSize), newAI.compressData());
-		}
+		}*/
 
 		private void setAIScriptToNoneForEnemiesUsing(int availableScript)
 		{
@@ -231,41 +232,6 @@ namespace FF1Lib
 				}
 			}
 		}
-
-		/// <summary>
-		/// Returns index of first occurrence where an enemy AI script has NONE for all spells and skills
-		/// Returns -1 if none exist
-		/// </summary>
-		/// <returns>int</returns>
-		private int searchForNoSpellNoAbilityEnemyScript()
-		{
-			int firstResult = -1;
-
-			for (int i = 0; i < ScriptCount; i++)
-			{
-				EnemyScriptInfo enemyScriptInfo = new EnemyScriptInfo();
-				enemyScriptInfo.decompressData(Get(ScriptOffset + (i * ScriptSize), ScriptSize));
-				if (enemyScriptInfo.skill_list[0] == 255 &&
-					enemyScriptInfo.skill_list[1] == 255 &&
-					enemyScriptInfo.skill_list[2] == 255 &&
-					enemyScriptInfo.skill_list[3] == 255 &&
-
-					enemyScriptInfo.spell_list[0] == 255 &&
-					enemyScriptInfo.spell_list[1] == 255 &&
-					enemyScriptInfo.spell_list[2] == 255 &&
-					enemyScriptInfo.spell_list[3] == 255 &&
-					enemyScriptInfo.spell_list[4] == 255 &&
-					enemyScriptInfo.spell_list[5] == 255 &&
-					enemyScriptInfo.spell_list[6] == 255 &&
-					enemyScriptInfo.spell_list[7] == 255)
-				{
-					firstResult = i;
-					break;
-				}
-			}
-			return firstResult;
-		}
-
 		public void NoItemMagic(Flags flags)
 		{
 			var weapons = Weapon.LoadAllWeapons(this, flags).ToList();

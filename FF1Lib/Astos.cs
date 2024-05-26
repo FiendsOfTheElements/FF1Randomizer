@@ -11,18 +11,18 @@ namespace FF1Lib
 {
 	public partial class FF1Rom
 	{
-		private void Astos(NpcObjectData npcdata, DialogueData dialogues, TalkRoutines talkroutines, Flags flags, MT19337 rng)
+		private void Astos(NpcObjectData npcdata, DialogueData dialogues, TalkRoutines talkroutines, EnemyScripts enemyScripts, Flags flags, MT19337 rng)
 		{
 			ShuffleAstos(flags, npcdata, dialogues, talkroutines, rng);
 
 			if ((bool)flags.SwoleAstos)
 			{
-				EnableSwoleAstos(rng);
+				EnableSwoleAstos(enemyScripts, rng);
 			}
 		}
 
 
-		public void EnableSwoleAstos(MT19337 rng)
+		public void EnableSwoleAstos(EnemyScripts enemyScripts, MT19337 rng)
 		{
 			EnemyInfo newAstos = new EnemyInfo();
 			newAstos.decompressData(Get(EnemyOffset + EnemySize * Enemy.Astos, EnemySize));
@@ -44,14 +44,13 @@ namespace FF1Lib
 
 			if (newAstos.AIscript == 0xFF)
 			{
-				var i = searchForNoSpellNoAbilityEnemyScript();
+				var i = enemyScripts.SearchForNoSpellNoAbilityEnemyScript();
 				if (i == -1) { return; }
 				newAstos.AIscript = (byte)i;
 			}
 			Put(EnemyOffset + EnemySize * Enemy.Astos, newAstos.compressData());
 
-			var astosScript = new EnemyScriptInfo();
-			astosScript.decompressData(Get(ScriptOffset + newAstos.AIscript * ScriptSize, ScriptSize));
+			var astosScript = enemyScripts[newAstos.AIscript];
 			astosScript.spell_chance = 96;
 			astosScript.skill_chance = 96;
 
@@ -74,7 +73,6 @@ namespace FF1Lib
 			var skills = new List<byte> { (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Crack, (byte)EnemySkills.Trance, (byte)EnemySkills.Toxic };
 			skills.Shuffle(rng);
 			astosScript.skill_list = skills.ToArray();
-			Put(ScriptOffset + newAstos.AIscript * ScriptSize, astosScript.compressData());
 		}
 
 		public void ShuffleAstos(Flags flags, NpcObjectData npcdata, DialogueData dialogues, TalkRoutines talkroutines, MT19337 rng)

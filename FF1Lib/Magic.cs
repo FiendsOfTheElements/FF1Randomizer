@@ -445,8 +445,13 @@ namespace FF1Lib
 		public const int ArmorSize = 4;
 		public const int ArmorCount = 40;
 
-		public void ShuffleMagicLevels(MT19337 rng, bool keepPermissions, bool tieredShuffle, bool mixSpellbooks, bool noSpellcrafter)
+		public void ShuffleMagicLevels(EnemyScripts enemyScripts, MT19337 rng, bool enable, bool keepPermissions, bool tieredShuffle, bool mixSpellbooks)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			var magicSpells = GetSpells();
 
 			// First we have to un-interleave white and black spells.
@@ -760,19 +765,7 @@ namespace FF1Lib
 			}
 
 			// Fix enemy spell pointers to point to where the spells are now.
-			var scripts = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
-			foreach (var script in scripts)
-			{
-				// Bytes 2-9 are magic spells.
-				for (int i = 2; i < 10; i++)
-				{
-					if (script[i] != 0xFF)
-					{
-						script[i] = newIndices[script[i]];
-					}
-				}
-			}
-			Put(ScriptOffset, scripts.SelectMany(script => script.ToBytes()).ToArray());
+			enemyScripts.UpdateSpellsIndices(newIndices.Select((s, i) => (i, s)).ToDictionary(s => (SpellByte)s.i, s => (SpellByte)s.s));
 
 			// Fix weapon and armor spell pointers to point to where the spells are now.
 			var weapons = Get(WeaponOffset, WeaponSize * WeaponCount).Chunk(WeaponSize);
@@ -830,7 +823,7 @@ namespace FF1Lib
 			return spellsList;
 		}
 
-		public void PutSpells(List<MagicSpell> spellsList) {
+		public void PutSpells(List<MagicSpell> spellsList, EnemyScripts enemyScripts) {
 
 		    spellsList.Sort(delegate(MagicSpell a, MagicSpell b) { return a.Index.CompareTo(b.Index); });
 
@@ -966,23 +959,15 @@ namespace FF1Lib
 			}
 		    }
 
-		    /*
+			/*
 		    foreach (var kv in oldToNew) {
 			Console.WriteLine($"{(int)kv.Key - (int)Spell.CURE} -> {(int)kv.Value - (int)Spell.CURE}");
 			Console.WriteLine($"{oldSpells[(int)kv.Key - (int)Spell.CURE]} -> {spellsList[(int)kv.Value - (int)Spell.CURE]}");
 		    }
 		    */
 
-		    // Fix enemy spell pointers to point to where the spells are now.
-		    var scripts = GetEnemyScripts();
-		    foreach (var sc in scripts) {
-			for (int i = 0; i < 8; i++) {
-			    if (sc.spell_list[i] != 0xff) {
-				sc.spell_list[i] = (byte)((byte)oldToNew[(Spell)(sc.spell_list[i]+(byte)Spell.CURE)] - (byte)Spell.CURE);
-			    }
-			}
-			sc.writeData(this);
-		    }
+			// Fix enemy spell pointers to point to where the spells are now.
+			enemyScripts.UpdateSpellsIndices(oldToNew.ToDictionary(s => (SpellByte)(s.Key - (byte)Spell.CURE), s => (SpellByte)(s.Value - (byte)Spell.CURE)));
 
 		    // Fix weapon and armor spell pointers to point to where the spells are now.
 		    foreach (var wep in Weapon.LoadAllWeapons(this, null)) {
