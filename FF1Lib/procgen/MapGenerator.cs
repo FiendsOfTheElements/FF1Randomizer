@@ -21,6 +21,7 @@ namespace FF1Lib.Procgen
 		public IEnumerable<int> FreeNPCs;   // Random extra NPCs outside of rooms. (Coords can be ignored)
 
 		public FF1Rom Rom;
+		public MapObjects MapObjects;
 	}
 
 	public enum MapGeneratorStrategy
@@ -140,7 +141,7 @@ namespace FF1Lib.Procgen
 			reqs.FreeNPCs.ToList().ForEach(npc =>
 			{
 				var location = locations.SpliceRandom(rng);
-				reqs.Rom.MoveNpc(reqs.MapIndex, npc, location.X, location.Y, false, false);
+				reqs.MapObjects.MoveNpc(npc, location.X, location.Y, false, false);
 			});
 
 			if (Debugger.IsAttached)

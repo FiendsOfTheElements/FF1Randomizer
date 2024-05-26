@@ -705,7 +705,7 @@ namespace FF1Lib
 		public IEnumerable<IRewardSource> AllValidPreBlackOrbItemLocationsPlusForced { get; private set; }
 		public IEnumerable<IRewardSource> IncentiveLocations { get; private set; }
 		public IEnumerable<Item> IncentiveItems { get; private set; }
-		public IEnumerable<Item> UnincentiveKeyItems { get => KeyItems.Except(IncentiveItems).Except(FreeItems).Except(RemovedItems); }
+		public IEnumerable<Item> UnincentiveKeyItems { get => KeyItems.Except(IncentiveItems).Except(FreeItems).Except(RemovedItems).Except(ForcedItemPlacements.Select(i => i.Item)); }
 		public IEnumerable<Item> KeyItemsToPlace { get; private set; }
 		public IEnumerable<Item> RemovedItems { get; private set; }
 		public IEnumerable<Item> FreeItems { get; private set; }

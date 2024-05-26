@@ -441,9 +441,9 @@ namespace FF1Lib
 			area.PointsOfInterest.Add(new SCPointOfInterest { Coords = locations.AirShipLocation, Type = SCPointOfInterestType.AirShip });
 		}
 
-		private void SetShipDock(byte dungeonIndex)
+		private void SetShipDock()
 		{
-			var coords = overworld.SetShipLocation(dungeonIndex);
+			var coords = overworld.Locations.ShipLocation;
 
 			SetShipDock(coords.OwLeft);
 			SetShipDock(coords.OwRight);
@@ -750,7 +750,7 @@ namespace FF1Lib
 					break;
 				case Item.Ship:
 					changes |= MapChange.Ship;
-					SetShipDock(dungeonIndex);
+					SetShipDock();
 					if (airBoat && ((changes & MapChange.Airship) > 0))
 					{
 						LiftOff();
@@ -799,7 +799,7 @@ namespace FF1Lib
 			if (victoryConditions.IsShipFree ?? false)
 			{
 				changes |= MapChange.Ship;
-				SetShipDock(255);
+				SetShipDock();
 			}
 			if (victoryConditions.IsAirshipFree ?? false)
 			{

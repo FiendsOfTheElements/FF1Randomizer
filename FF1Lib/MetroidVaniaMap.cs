@@ -739,7 +739,7 @@
 			}
 
 			// Caravan Door
-			TileSM CaravanDoor = new TileSM(availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].First(), (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleportTilesGraphics[TeleporterGraphic.Door][(int)TileSets.MatoyaDwarfCardiaIceWaterfall], (byte)(TilePropFunc.TP_SPEC_DOOR), 0x46);
+			TileSM CaravanDoor = new TileSM(availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].First(), (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleportTilesGraphics[TeleporterGraphic.Door][(int)TileSets.MatoyaDwarfCardiaIceWaterfall], (byte)(TilePropFunc.TP_NOMOVE | TilePropFunc.TP_SPEC_DOOR), 0x46);
 			UpdateMapTile(MapIndex.Cardia, 0x28, 0x1C, CaravanDoor.Index);
 			availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].RemoveRange(0, 1);
 
