@@ -42,15 +42,80 @@ namespace FF1Lib
 		[Description("Random")]
 		Random
 	}
+	public enum SpellByte : byte
+	{
+		CURE = 0x00,
+		HARM = 0x01,
+		FOG = 0x02,
+		RUSE = 0x03,
+		FIRE = 0x04,
+		SLEP = 0x05,
+		LOCK = 0x06,
+		LIT = 0x07,
+		LAMP = 0x08,
+		MUTE = 0x09,
+		ALIT = 0x0A,
+		INVS = 0x0B,
+		ICE = 0x0C,
+		DARK = 0x0D,
+		TMPR = 0x0E,
+		SLOW = 0x0F,
+		CUR2 = 0x10,
+		HRM2 = 0x11,
+		AFIR = 0x12,
+		HEAL = 0x13,
+		FIR2 = 0x14,
+		HOLD = 0x15,
+		LIT2 = 0x16,
+		LOK2 = 0x17,
+		PURE = 0x18,
+		FEAR = 0x19,
+		AICE = 0x1A,
+		AMUT = 0x1B,
+		SLP2 = 0x1C,
+		FAST = 0x1D,
+		CONF = 0x1E,
+		ICE2 = 0x1F,
+		CUR3 = 0x20,
+		LIFE = 0x21,
+		HRM3 = 0x22,
+		HEL2 = 0x23,
+		FIR3 = 0x24,
+		BANE = 0x25,
+		WARP = 0x26,
+		SLO2 = 0x27,
+		SOFT = 0x28,
+		EXIT = 0x29,
+		FOG2 = 0x2A,
+		INV2 = 0x2B,
+		LIT3 = 0x2C,
+		RUB = 0x2D,
+		QAKE = 0x2E,
+		STUN = 0x2F,
+		CUR4 = 0x30,
+		HRM4 = 0x31,
+		ARUB = 0x32,
+		HEL3 = 0x33,
+		ICE3 = 0x34,
+		BRAK = 0x35,
+		SABR = 0x36,
+		BLND = 0x37,
+		LIF2 = 0x38,
+		FADE = 0x39,
+		WALL = 0x3A,
+		XFER = 0x3B,
+		NUKE = 0x3C,
+		STOP = 0x3D,
+		ZAP = 0x3E,
+		XXXX = 0x3F,
+		NONE = 0xFF
+	}
+
 	public partial class FF1Rom : NesRom
 	{
 		public const int EnemyOffset = 0x30520;
 		public const int EnemySize = 20;
 		public const int EnemyCount = 128;
-
-		public const int ScriptOffset = 0x31020;
-		public const int ScriptSize = 16;
-		public const int ScriptCount = 44;
 
 		public const int FormationDataOffset = 0x2C400;
 		public const int FormationDataSize = 16;
@@ -204,221 +269,6 @@ namespace FF1Lib
 			}
 
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
-		}
-
-		public void ShuffleEnemySkillsSpells(MT19337 rng, Flags flags)
-		{
-			bool shuffleNormalEnemies = (bool)flags.ShuffleSkillsSpellsEnemies;
-			bool shuffleBosses = (bool)flags.ShuffleSkillsSpellsBosses;
-			bool noConsecutiveNukes = (bool)flags.NoConsecutiveNukes;
-			bool nonEmpty = (bool)flags.NoEmptyScripts;
-			bool buffedPirates = (bool)flags.SwolePirates;
-			bool generateBalancedscript = (bool)flags.EnemySkillsSpellsTiered && shuffleNormalEnemies;
-
-			if (!shuffleBosses && !shuffleNormalEnemies)
-			{
-				return;
-			}
-
-			if (generateBalancedscript)
-			{
-				GenerateBalancedEnemyScripts(rng, buffedPirates);
-			}
-
-			var scriptBytes = Get(ScriptOffset, ScriptSize * ScriptCount).Chunk(ScriptSize);
-
-			// Remove two instances each of CRACK and TOXIC since they're likely to get spread out to several enemies.
-			const int SandW = 7; // CRACK
-			const int IronGol = 27; // TOXIC
-			scriptBytes[SandW][13] = 0xFF;
-			scriptBytes[SandW][14] = 0xFF;
-			scriptBytes[IronGol][13] = 0xFF;
-			scriptBytes[IronGol][14] = 0xFF;
-
-			var normalIndices = Enumerable.Range(0, 32).Concat(new[] { 33, 43 }).ToList();
-			var bossIndices = new List<int> { 34, 36, 38, 40 };
-			var bigBossIndices = new List<int> { 32, 35, 37, 39, 41, 42 };
-
-			if (shuffleNormalEnemies)
-			{
-			    ShuffleIndexedSkillsSpells(scriptBytes, normalIndices, noConsecutiveNukes, nonEmpty, rng);
-			}
-
-			if (shuffleBosses)
-			{
-			    ShuffleIndexedSkillsSpells(scriptBytes, bossIndices, noConsecutiveNukes, false, rng);
-			    ShuffleIndexedSkillsSpells(scriptBytes, bigBossIndices, noConsecutiveNukes, false, rng);
-			}
-
-			Put(ScriptOffset, scriptBytes.SelectMany(script => script.ToBytes()).ToArray());
-		}
-
-		private void ShuffleIndexedSkillsSpells(List<Blob> scriptBytes, List<int> indices, bool noConsecutiveNukes, bool nonEmpty, MT19337 rng)
-		{
-			var scripts = indices.Select(i => scriptBytes[i]).ToList();
-
-			var spellBytes = scripts.SelectMany(script => script.SubBlob(2, 8).ToBytes()).Where(b => b != 0xFF).ToList();
-			var skillBytes = scripts.SelectMany(script => script.SubBlob(11, 4).ToBytes()).Where(b => b != 0xFF).ToList();
-
-			List<List<byte>> spellBuckets;
-			List<List<byte>> skillBuckets;
-
-			// Spellcrafter compatability, search for
-			// nuke/nuclear-equivalent spells (AoE
-			// non-elemental damage with a base damage of
-			// 80 or greater).  In the normal game this
-			// matches NUKE and FADE -- in the normal
-			// game, no monsters cast FADE, but with spell
-			// crafter, anything can happen.
-			var nukes = new SpellHelper(this).FindSpells(SpellRoutine.Damage, SpellTargeting.AllEnemies, SpellElement.None, SpellStatus.Any).Where(
-			    spell => spell.Item2.effect >= 80).Select(n => ((byte)n.Item1-(byte)Spell.CURE)).ToList();
-
-			var reroll = false;
-			do {
-			    reroll = false;
-				spellBytes.Shuffle(rng);
-				skillBytes.Shuffle(rng);
-				spellBuckets = Bucketize(spellBytes, scripts.Count(script => script[0] != 0), 8, nonEmpty, rng);
-			    skillBuckets = Bucketize(skillBytes, scripts.Count(script => script[1] != 0), 4, false, rng);
-
-				var spellChances = scripts.Select(script => script[0]).ToList();
-				var skillChances = scripts.Select(script => script[1]).ToList();
-
-				if (nonEmpty)
-				{
-					var spellChancesZero = spellChances.Where(c => c == 0);
-					var skillChancesZero = skillChances.Where(c => c == 0);
-					var spellChancesNonZero = spellChances.Where(c => c != 0).ToList();
-					var skillChancesNonZero = skillChances.Where(c => c != 0).ToList();
-
-					spellChancesNonZero.Shuffle(rng);
-					spellChances = spellChancesZero.Concat(spellChancesNonZero).ToList();
-
-					skillChancesNonZero.Shuffle(rng);
-					skillChances = skillChancesNonZero.Concat(skillChancesZero).ToList();
-
-					var combinedChances = spellChances.Select((c, i) => (spell: c, skill: skillChances[i])).ToList();
-					combinedChances.Shuffle(rng);
-
-					spellChances = combinedChances.Select(c => c.spell).ToList();
-					skillChances = combinedChances.Select(c => c.skill).ToList();
-				}
-				else
-				{
-					spellChances.Shuffle(rng);
-					skillChances.Shuffle(rng);
-				}
-
-			    int spellBucketIndex = 0, skillBucketIndex = 0;
-			    for (int i = 0; i < scripts.Count; i++)
-			    {
-				var script = scriptBytes[indices[i]];
-				script[0] = spellChances[i];
-				script[1] = skillChances[i];
-
-				for (int j = 2; j < 16; j++)
-				{
-				    script[j] = 0xFF;
-				}
-
-				// Check for a few cases of bad
-				// scripts to re-roll: two consecutive
-				// casts of NUKE, two consecutive
-				// casts of NUCLEAR, or having both a
-				// NUKE and a NUCLEAR in the starting
-				// slots.
-				//
-				// Because non-elemental damage can't
-				// be resisted, the player is always
-				// in for a bad time when one of these
-				// spells comes out.  The goal is to
-				// greatly decrease (although doesn't
-				// totally eliminate) the chance of
-				// slot machine party wipe situations
-				// where the player is hit twice in a
-				// row with the most powerful spells
-				// in the game with no chance to heal
-				// up or counter attack in between.
-
-				bool startingNuke = false;
-				bool startingNuclear = false;
-				if (spellChances[i] != 0)
-				{
-				    startingNuke = nukes.Contains(spellBuckets[spellBucketIndex][0]);
-				    bool previousWasNuke = false;
-				    for (int j = 0; j < spellBuckets[spellBucketIndex].Count; j++)
-				    {
-					if (nukes.Contains(spellBuckets[spellBucketIndex][j])) {
-					    if (previousWasNuke) {
-						reroll = true;
-					    } else {
-						previousWasNuke = true;
-					    }
-					} else {
-					    previousWasNuke = false;
-					}
-					script[j + 2] = spellBuckets[spellBucketIndex][j];
-				    }
-				    spellBucketIndex++;
-				}
-				if (skillChances[i] != 0)
-				{
-				    startingNuclear = (skillBuckets[skillBucketIndex][0] == (byte)EnemySkills.Nuclear);
-				    bool previousWasNuclear = false;
-				    for (int j = 0; j < skillBuckets[skillBucketIndex].Count; j++)
-				    {
-					if (skillBuckets[skillBucketIndex][j] == (byte)EnemySkills.Nuclear) {
-					    if (previousWasNuclear) {
-						reroll = true;
-					    } else {
-						previousWasNuclear = true;
-					    }
-					} else {
-					    previousWasNuclear = false;
-					}
-					script[j + 11] = skillBuckets[skillBucketIndex][j];
-				    }
-				    skillBucketIndex++;
-				}
-				if (startingNuke && startingNuclear) {
-				    reroll = true;
-				}
-			    }
-			} while (noConsecutiveNukes && reroll);
-		}
-
-		private List<List<byte>> Bucketize(List<byte> bytes, int bucketCount, int bucketSize, bool min2, MT19337 rng)
-		{
-			var buckets = new List<List<byte>>();
-			for (int i = 0; i < bucketCount; i++)
-			{
-				buckets.Add(new List<byte>());
-			}
-
-			int index = 0;
-			while (index < bucketCount)
-			{
-				buckets[index].Add(bytes[index++]);
-			}
-
-			if (min2)
-			{
-				while (index < 2 * bucketCount)
-				{
-					buckets[index - bucketCount].Add(bytes[index++]);
-				}
-			}
-
-			while (index < bytes.Count)
-			{
-				var bucket = rng.Between(0, buckets.Count - 1);
-				if (buckets[bucket].Count < bucketSize)
-				{
-					buckets[bucket].Add(bytes[index++]);
-				}
-			}
-
-			return buckets;
 		}
 		public void StatusAttacks(Flags flags, MT19337 rng)
 		{
@@ -616,75 +466,6 @@ namespace FF1Lib
 			Tornado = 0x19,
 			None = 0xFF
 		}
-
-		public enum SpellByte : byte
-		{
-			CURE = 0x00,
-			HARM = 0x01,
-			FOG = 0x02,
-			RUSE = 0x03,
-			FIRE = 0x04,
-			SLEP = 0x05,
-			LOCK = 0x06,
-			LIT = 0x07,
-			LAMP = 0x08,
-			MUTE = 0x09,
-			ALIT = 0x0A,
-			INVS = 0x0B,
-			ICE = 0x0C,
-			DARK = 0x0D,
-			TMPR = 0x0E,
-			SLOW = 0x0F,
-			CUR2 = 0x10,
-			HRM2 = 0x11,
-			AFIR = 0x12,
-			HEAL = 0x13,
-			FIR2 = 0x14,
-			HOLD = 0x15,
-			LIT2 = 0x16,
-			LOK2 = 0x17,
-			PURE = 0x18,
-			FEAR = 0x19,
-			AICE = 0x1A,
-			AMUT = 0x1B,
-			SLP2 = 0x1C,
-			FAST = 0x1D,
-			CONF = 0x1E,
-			ICE2 = 0x1F,
-			CUR3 = 0x20,
-			LIFE = 0x21,
-			HRM3 = 0x22,
-			HEL2 = 0x23,
-			FIR3 = 0x24,
-			BANE = 0x25,
-			WARP = 0x26,
-			SLO2 = 0x27,
-			SOFT = 0x28,
-			EXIT = 0x29,
-			FOG2 = 0x2A,
-			INV2 = 0x2B,
-			LIT3 = 0x2C,
-			RUB = 0x2D,
-			QAKE = 0x2E,
-			STUN = 0x2F,
-			CUR4 = 0x30,
-			HRM4 = 0x31,
-			ARUB = 0x32,
-			HEL3 = 0x33,
-			ICE3 = 0x34,
-			BRAK = 0x35,
-			SABR = 0x36,
-			BLND = 0x37,
-			LIF2 = 0x38,
-			FADE = 0x39,
-			WALL = 0x3A,
-			XFER = 0x3B,
-			NUKE = 0x3C,
-			STOP = 0x3D,
-			ZAP = 0x3E,
-			XXXX = 0x3F,
-			NONE = 0xFF
-		}
 		public void TranceHasStatusElement() {
 		    // TRANCE is slot 81, give is "status" element so
 		    // it can be resisted with a ribbon, ARUB, or
@@ -720,16 +501,7 @@ namespace FF1Lib
 		public List<EnemyScriptInfo> GetEnemyScripts() {
 		    var spells = this.GetSpells();
 		    var skills = this.GetEnemySkills();
-		    var scripts = new List<EnemyScriptInfo>();
-		    for (int i = 0; i < ScriptCount; ++i)
-		    {
-			var script = new EnemyScriptInfo();
-			script.index = (byte)i;
-			script.allGameSpells = spells;
-			script.allEnemySkills = skills;
-			script.decompressData(Get(ScriptOffset + i * ScriptSize, ScriptSize));
-			scripts.Add(script);
-		    }
+		    var scripts = new EnemyScripts(this).GetList();
 		    return scripts;
 		}
 

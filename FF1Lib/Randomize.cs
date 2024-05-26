@@ -27,6 +27,7 @@ public partial class FF1Rom : NesRom
 	public TalkRoutines TalkRoutines;
 	public StartingItems StartingItems;
 	public EncounterRate EncounterRates;
+	public EnemyScripts EnemyScripts;
 	public ShopData ShopData;
 	public MusicTracks Music;
 
@@ -105,6 +106,7 @@ public partial class FF1Rom : NesRom
 		Dialogues = new DialogueData(this);
 		ShopData = new ShopData(flags, this);
 		EncounterRates = new EncounterRate(this);
+		EnemyScripts = new EnemyScripts(this);
 		Music = new MusicTracks();
 
 		await this.Progress();
@@ -189,7 +191,7 @@ public partial class FF1Rom : NesRom
 
 		if ((bool)flags.GenerateNewSpellbook)
 		{
-			CraftNewSpellbook(rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
+			CraftNewSpellbook(EnemyScripts, rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
 		}
 
 		if (flags.TranceHasStatusElement)
@@ -197,10 +199,7 @@ public partial class FF1Rom : NesRom
 			TranceHasStatusElement();
 		}
 
-		if (((bool)flags.MagicLevels))
-		{
-			ShuffleMagicLevels(rng, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed, (bool)!flags.GenerateNewSpellbook);
-		}
+		ShuffleMagicLevels(EnemyScripts, rng, (bool)flags.MagicLevels && !(bool)flags.GenerateNewSpellbook, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed);
 
 		//has to be done before modifying itemnames and after modifying spellnames...
 		var extConsumables = new ExtConsumables(ShopData, this, flags, rng);
@@ -336,8 +335,11 @@ public partial class FF1Rom : NesRom
 		await this.Progress();
 
 		// Enemies
+		if ((bool)flags.AlternateFiends && !flags.SpookyFlag) await this.Progress("Creating new Fiends", 1);
+		AlternativeFiends(EnemyScripts, rng, flags);
+
 		ShuffleEnemyScripts(rng, flags);
-		ShuffleEnemySkillsSpells(rng, flags);
+		EnemyScripts.ShuffleEnemySkillsSpells(this, rng, flags);
 		StatusAttacks(flags, rng);
 		ShuffleUnrunnable(rng, flags);
 		AllowStrikeFirstAndSurprise(flags.WaitWhenUnrunnable, (bool)flags.UnrunnablesStrikeFirstAndSurprise);
@@ -345,14 +347,12 @@ public partial class FF1Rom : NesRom
 
 		// After unrunnable shuffle and before formation shuffle. Perfect!
 		WarMechMode.Process(this, flags, NpcData, ZoneFormations, Dialogues, rng, Maps, warmMechFloor);
-		FightBahamut(flags, TalkRoutines, NpcData, ZoneFormations, Dialogues, Maps, rng);
-		Astos(NpcData, Dialogues, TalkRoutines, flags, rng);
+		FightBahamut(flags, TalkRoutines, NpcData, ZoneFormations, Dialogues, Maps, EnemyScripts, rng);
+		Astos(NpcData, Dialogues, TalkRoutines, EnemyScripts, flags, rng);
 		EnableSwolePirates((bool)flags.SwolePirates);
 
-		if ((bool)flags.AlternateFiends && !flags.SpookyFlag) await this.Progress("Creating new Fiends", 1);
-		AlternativeFiends(rng, flags);
 		TransformFinalFormation(flags, rng);
-		DoEnemizer(flags, rng);
+		DoEnemizer(EnemyScripts, flags, rng);
 		FiendShuffle((bool)flags.FiendShuffle, rng);
 		ScaleEnemyStats(rng, flags);
 		ScaleBossStats(rng, flags);
@@ -381,7 +381,7 @@ public partial class FF1Rom : NesRom
 		await this.Progress();
 
 		NPCHints(rng, NpcData, Maps, Dialogues, flags, PlacementContext, sanityChecker, ShopData);
-		SkyWarriorSpoilerBats(rng, flags, NpcData, Dialogues);
+		SkyWarriorSpoilerBats(rng, flags, NpcData, Dialogues, EnemyScripts);
 
 		MonsterInABox(itemPlacement, ZoneFormations, TileSetsData, NpcData, Dialogues, rng, flags);
 
@@ -419,7 +419,7 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		await this.LoadResourcePack(flags.ResourcePack, Dialogues);
+		await this.LoadResourcePack(flags.ResourcePack, Dialogues, EnemyScripts);
 
 		StatsTrackingHacks(flags, preferences);
 		RollCredits(rng);
@@ -470,6 +470,7 @@ public partial class FF1Rom : NesRom
 		Dialogues.Write();
 		ShopData.StoreData();
 
+		EnemyScripts.Write(this);
 		EncounterRates.Write();
 		itemPlacement.Write();
 

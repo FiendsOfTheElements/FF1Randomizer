@@ -14,7 +14,7 @@ namespace FF1Lib
 	    }
 
 		//async Task LoadResourcePack(Stream stream, DialogueData dialogues)
-		async Task LoadResourcePack(string resourcepack, DialogueData dialogues)
+		async Task LoadResourcePack(string resourcepack, DialogueData dialogues, EnemyScripts enemyScripts)
 		{
 			if (resourcepack == null)
 			{
@@ -149,7 +149,7 @@ namespace FF1Lib
 						using (StreamReader reader = new StreamReader(s))
 						{
 							var allSpells = JsonConvert.DeserializeObject<List<MagicSpell>>(reader.ReadToEnd());
-							this.PutSpells(allSpells);
+							this.PutSpells(allSpells, enemyScripts);
 						}
 					}
 				}
