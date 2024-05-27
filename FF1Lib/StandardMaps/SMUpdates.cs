@@ -75,7 +75,7 @@ namespace FF1Lib
 			var mapFlipper = new FlippedMaps(rom, this, flags, teleporters, rng);
 			VerticalFlippedMaps = mapFlipper.VerticalFlipStep1();
 
-			if ((bool)flags.ReversedFloors) new ReversedFloors(rom, this, rng, teleporters, VerticalFlippedMaps).Work();
+			if ((bool)flags.ReversedFloors) new ReversedFloors(rom, this, rng, teleporters, VerticalFlippedMaps).Work((bool)flags.ProcgenEarth);
 
 			if((bool)flags.VerticallyFlipDungeons) mapFlipper.VerticalFlipStep2();
 
