@@ -99,7 +99,10 @@ namespace FF1Lib
 				int entry = 0;
 				foreach (var shop in newShopEntries)
 				{
-					shop.Value.Add(allEntries[entry++]);
+					if (!shop.Value.Any())
+					{
+						shop.Value.Add(allEntries[entry++]);
+					}
 				}
 
 				while (entry < allEntries.Count)
@@ -139,6 +142,10 @@ namespace FF1Lib
 
 			if (shopType == ShopType.Item)
 			{
+				// Reshuffle the guaranteed pure+soft item shop
+				newShopEntries[60 + coneriaEntranceShopIndex].Shuffle(rng);
+
+				// Update bottle location
 				var bottleshops = newShopEntries.Where(s => s.Value.Contains(Item.Bottle));
 				if (!bottleshops.Any())
 				{
