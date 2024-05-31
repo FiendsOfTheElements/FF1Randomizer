@@ -1061,6 +1061,7 @@ namespace FF1Lib.Procgen
 	    this.OwnFeatures();
 
 	    List<byte> spikeTiles = new();
+		List<byte> walkableTiles = new();
 	    this.Traps = new();
 	    this.RoomFloorTiles = new();
 	    this.RoomBattleTiles = new();
@@ -1070,6 +1071,7 @@ namespace FF1Lib.Procgen
 
 	    RelocateChests.FindRoomTiles(rom, this.tileSet,
 				 this.RoomFloorTiles,
+				 walkableTiles,
 				 spikeTiles,
 				 this.RoomBattleTiles,
 				 randomEncounter);
