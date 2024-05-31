@@ -114,11 +114,31 @@ namespace FF1Lib
 		public class RoomContext
 		{
 			public List<TileCandidate> Candidates;
+			//public List<int[,]> Candidates2;
+			private const int Walkable = 0b0000_0001;
+			private const int Placeable = 0b0000_0010;
+			private const int Placed = 0b0000_0100;
+			public Dictionary<MapIndex, int[,]> Candidates2;
 
 			public RoomContext()
 			{
 				Candidates = new();
+				Candidates2 = new();
+			}
+			public void Init()
+			{
+				foreach (var candidate in Candidates)
+				{
+					var mapindex = candidate.Room.MapIndex;
+					if (!Candidates2.ContainsKey(mapindex))
+					{
+						Candidates2.Add(mapindex, new int[64, 64]);
+					}
 
+					if (candidate.Walkable) Candidates2[mapindex][candidate.Tile.X, candidate.Tile.Y] |= Walkable;
+					if (candidate.Placeable) Candidates2[mapindex][candidate.Tile.X, candidate.Tile.Y] |= Placeable;
+					if (candidate.Placed) Candidates2[mapindex][candidate.Tile.X, candidate.Tile.Y] |= Placed;
+				}
 			}
 			private void CrawlNeighbours(TileCandidate originaltile, TileCandidate candidate, List<TileCandidate> crawledCandidates)
 			{
@@ -143,44 +163,168 @@ namespace FF1Lib
 					CrawlNeighbours(originaltile, neighbour, crawledCandidates);
 				}
 			}
+			private List<(int x, int y)> offsets = new() { (0, 1), (0, -1), (1, 0), (-1, 0) };
+			private void CrawlNeighbours2(TileCandidate originaltile, (int x, int y) candidate, List<(int x, int y)> crawledCandidates)
+			{
+				List<TileCandidate> neighbourToCrawl = new();
+				crawledCandidates.Add(candidate);
+
+				foreach (var offset in offsets)
+				{
+					int x = candidate.x + offset.x;
+					int y = candidate.y + offset.y;
+
+					if (crawledCandidates.Contains((x, y)))
+					{
+						continue;
+					}
+
+					if (x >= 0 && x < 64 && y >=0 && y < 64)
+					{
+						if (originaltile.Tile.X == x && originaltile.Tile.Y == y)
+						{
+							crawledCandidates.Add((x, y));
+						}
+						else if ((Candidates2[originaltile.Room.MapIndex][x, y] & Walkable) > 0)
+						{
+							crawledCandidates.Add((x, y));
+							CrawlNeighbours2(originaltile, (x, y), crawledCandidates);
+						}
+
+					}
+
+				}
+			}
 			public (Room, MapElement) GetSpreadCandidate(List<Room> pendingRooms, List<Room> workingRooms, int chestCount, MT19337 rng)
 			{
-				List<TileCandidate> validCandidates = new();
+				//List<TileCandidate> validCandidates = new();
+				TileCandidate pickedCandidate;
+
 				do
 				{
 					if (pendingRooms.Count > 0)
 					{
 						// Make sure every room gets a chest
-						validCandidates = GetCandidateList(pendingRooms.SpliceRandom(rng), chestCount);
+						//validCandidates = GetCandidateList(pendingRooms.SpliceRandom(rng), chestCount);
+						pickedCandidate = TestCandidate(pendingRooms.SpliceRandom(rng), chestCount, rng);
 					}
 					else
 					{
 						// Every room has a chest so allocate the remaining chests.
-						validCandidates = GetCandidateList(workingRooms.PickRandom(rng), chestCount);
+						//validCandidates = GetCandidateList(workingRooms.PickRandom(rng), chestCount);
+						pickedCandidate = TestCandidate(workingRooms.PickRandom(rng), chestCount, rng);
 					}
 					// If we drew a room with no available floor spaces
-				} while (!validCandidates.Any());
+				} while (pickedCandidate == null);
 
-				var pickedCandidate = validCandidates.PickRandom(rng);
-				pickedCandidate.Placed = true;
-				pickedCandidate.Placeable = false;
-				pickedCandidate.Walkable = false;
+				//var pickedCandidate = validCandidates.PickRandom(rng);
+				if (pickedCandidate != null)
+				{
+					pickedCandidate.Placed = true;
+					pickedCandidate.Placeable = false;
+					pickedCandidate.Walkable = false;
+				}
+				else
+				{
+					throw new Exception("Couldn't find anything after 800 attempts!");
+				}
 				return (pickedCandidate.Room, pickedCandidate.Tile);
 			}
 			public (Room, MapElement) GetCandidate(int chestCount, MT19337 rng)
 			{
-				List<TileCandidate> validCandidates = GetCandidateList(null, chestCount);
+				//List<TileCandidate> validCandidates = GetCandidateList(null, chestCount);
 
-				var pickedCandidate = validCandidates.PickRandom(rng);
-				pickedCandidate.Placed = true;
-				pickedCandidate.Placeable = false;
-				pickedCandidate.Walkable = false;
+				//var pickedCandidate = validCandidates.PickRandom(rng);
+				var pickedCandidate = TestCandidate(null, chestCount, rng);
+
+				if (pickedCandidate != null)
+				{
+					pickedCandidate.Placed = true;
+					pickedCandidate.Placeable = false;
+					pickedCandidate.Walkable = false;
+				}
+				else
+				{
+					throw new Exception("Couldn't find anything after 800 attempts!");
+				}
+
 				return (pickedCandidate.Room, pickedCandidate.Tile);
+			}
+			public TileCandidate TestCandidate(Room room, int chestCount, MT19337 rng)
+			{
+				var toSeek = Candidates.Where(p => !p.Placed && p.Placeable && ((room != null) ? room.floor.Contains(p.Tile) : true)).ToList();
+				List<TileCandidate> potentialUnreachable = new();
+
+				int seekLoop = room != null ? 10 : 800;
+				int loop = 0;
+
+				TileCandidate candidate = null;
+				bool candidateFound = false;
+
+				while (loop < seekLoop)
+				{
+					loop++;
+
+					if (!toSeek.Any())
+					{
+						return null;
+					}
+
+					candidate = toSeek.PickRandom(rng);
+
+					List<TileCandidate> reachedCandidates = new();
+					int candidateRoomIndex = candidate.Room.RoomIndex;
+					MapIndex candidateMapIndex = candidate.Room.MapIndex;
+
+					potentialUnreachable = toSeek.Where(p => p.Placeable && p.Room.MapIndex == candidateMapIndex && p.Room.RoomIndex == candidateRoomIndex).ToList();
+
+					if (candidate.Neighbours.Count(n => n.Walkable) == 0 ||
+						candidate.Neighbours.Where(n => n.Placed && n.Neighbours.Count(n => n.Walkable) == 1).Any())
+					{
+						candidate.Placeable = false;
+						continue;
+					}
+
+					CrawlNeighbours(candidate, Candidates.Find(c => c.Tile == candidate.Room.start), reachedCandidates);
+					var totalPoi = Candidates.Where(c => c.Room.RoomIndex == candidateRoomIndex && c.Room.MapIndex == candidateMapIndex && c.Placed).ToList();
+					//var totalPoiC2 = totalPo;
+					var totalPoiCount = Candidates.Where(c => c.Room.RoomIndex == candidateRoomIndex && c.Room.MapIndex == candidateMapIndex).Count(c => c.Placed);
+					var reachedPoiCount = reachedCandidates.Count(c => c.Placed);
+
+					var validTiles = Candidates.Where(c => (c.Room.MapIndex == candidateMapIndex && c.Room.RoomIndex != candidateRoomIndex) || c.Room.MapIndex != candidateMapIndex).Count(c => c.Placeable);
+					var reachedTiles = reachedCandidates.Count(c => c.Placeable);
+
+					if (totalPoiCount != reachedPoiCount)
+					{
+						candidate.Placeable = false;
+						toSeek.Remove(candidate);
+					}
+					else
+					{
+						if ((validTiles + reachedTiles) >= chestCount)
+						{
+							potentialUnreachable = potentialUnreachable.Except(reachedCandidates.Where(c => c.Placeable)).ToList();
+							candidateFound = true;
+							break;
+						}
+					}
+				}
+
+				if (candidateFound)
+				{
+					potentialUnreachable.ForEach(c => c.Placeable = false);
+					return candidate;
+				}
+				else
+				{
+					return null;
+				}
 			}
 			private List<TileCandidate> GetCandidateList(Room room, int chestCount)
 			{
 				List<TileCandidate> validCandidates = new();
-				var toSeek = Candidates.Where(p => !p.Placed && p.Walkable && p.Placeable && ((room != null) ? room.floor.Contains(p.Tile) : true)).ToList();
+				var toSeek = Candidates.Where(p => !p.Placed && p.Placeable && ((room != null) ? room.floor.Contains(p.Tile) : true)).ToList();
+				//var toSeek = Candidates.Where(p => !p.Placed && p.Walkable && p.Placeable && ((room != null) ? room.floor.Contains(p.Tile) : true)).ToList();
 				var potentialUnreachable = toSeek.ToList();
 
 				foreach (var candidate in toSeek)
