@@ -380,7 +380,7 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		NPCHints(rng, NpcData, Maps, Dialogues, flags, PlacementContext, sanityChecker, ShopData);
+		NPCHints(rng, NpcData, Maps, Dialogues, flags, PlacementContext, sanityChecker, itemPlacement, ShopData);
 		SkyWarriorSpoilerBats(rng, flags, NpcData, Dialogues, EnemyScripts);
 
 		MonsterInABox(itemPlacement, ZoneFormations, TileSetsData, NpcData, Dialogues, rng, flags);
