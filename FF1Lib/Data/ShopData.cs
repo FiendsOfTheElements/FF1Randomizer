@@ -137,6 +137,7 @@
 			rom = _rom;
 			flags = _flags;
 			Index = new MemTable<ushort>(rom, ShopPointerOffset, ShopPointerCount);
+			ItemShopSlot = ItemLocations.CaravanItemShop1;
 			LoadData();
 		}
 
