@@ -10,6 +10,7 @@ namespace FF1R.Commands
 
 	using FF1Lib;
 	using FFR.Common;
+	using System.Linq;
 
 	[Command("importmagic", Description = "Import magic tables into ROM")]
 	class ImportMagicStats
@@ -33,13 +34,15 @@ namespace FF1R.Commands
 		    List<MagicSpell> allSpells;
 		    allSpells = JsonConvert.DeserializeObject<List<MagicSpell>>(File.ReadAllText(MagicJson));
 
-		    rom.PutSpells(allSpells);
-		    rom.ItemsText.Write(rom, rom.UnusedGoldItems);
+			EnemyScripts enemyScripts = new(rom);
+		    rom.PutSpells(allSpells, enemyScripts);
+		    rom.ItemsText.Write(rom, ItemLists.UnusedGoldItems.ToList());
+			enemyScripts.Write(rom);
 
-		    allSpells = rom.GetSpells();
+			allSpells = rom.GetSpells();
 		    Console.WriteLine(JsonConvert.SerializeObject(allSpells, Formatting.Indented));
 
-		    rom.Save(OutputFilename);
+			rom.Save(OutputFilename);
 
 		    return 0;
 

@@ -183,8 +183,6 @@ namespace FF1R.Commands
 
 	    var rng = new MT19337((uint)Seed);
 
-	    var npcdata = new NpcObjectData(rom);
-
 	    var numberOfMapsToGenerate = this.Pack;
 	    List<int> seeds = null;
 	    if (this.SeedFile != null) {
@@ -211,7 +209,7 @@ namespace FF1R.Commands
 
 		var mapsCopy = new StandardMaps(rom);
 		var replacementMaps = Task.Run<List<FF1Lib.Procgen.CompleteMap>>(async () => await FF1Lib.Procgen.NewDungeon.GenerateNewDungeon(rng, rom, mapid,
-																		mapsCopy, npcdata, this.Progress)).Result;
+																		mapsCopy, this.Progress)).Result;
 
 		foreach (var replacementMap in replacementMaps) {
 		    mapsCopy[replacementMap.MapIndex].Map = replacementMap.Map;

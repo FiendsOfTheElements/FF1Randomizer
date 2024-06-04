@@ -16,7 +16,7 @@ using static FF1Lib.RelocateChests;
 
 namespace FF1Lib
 {
-	public class RelocateChests
+	public partial class RelocateChests
 	{
 		private const int TILESETPATTERNTABLE_OFFSET = 0xC000;
 		private FF1Rom rom;
@@ -88,435 +88,11 @@ namespace FF1Lib
 				hasBattles = copyfrom.hasBattles;
 			}
 		}
-		public class TileCandidate
-		{
-			public MapElement Tile;
-			public SCCoords Coords;
-			public Room Room;
-			public List<TileCandidate> Neighbours;
-			public List<TileCandidate> FreeNeighbours => Neighbours.Where(n => !n.Blocked && !n.Placed).ToList();
-			public List<TileCandidate> SimulatedFreeNeighbours => Neighbours.Where(n => !n.SimulatedBlocked && !n.SimulatedPlaced && !n.Blocked && !n.Placed).ToList();
-			//private List<TileCandidate> blockedNeighbours
-			public bool Walkable;
-			public bool Placeable;
-			public bool Placed;
-
-			public bool Blocked;
-			public bool Removed;
-			public bool Valid;
-			public bool SimulatedBlocked;
-			public bool SimulatedPlaced;
-			public TileCandidate(MapElement _tile, Room _room)
-			{
-				Tile = _tile;
-				Room = _room;
-				Coords = new SCCoords(_tile.X, _tile.Y);
-				
-				Neighbours = new();
-				Placed = false;
-				Walkable = false;
-				Placeable = false;
-			}
-			public TileCandidate(Room _room, int x, int y)
-			{
-				Tile = null;
-				Room = _room;
-				Coords = new SCCoords(x, y);
-
-				Neighbours = new();
-				Placed = false;
-				Walkable = false;
-				Placeable = false;
-			}
-			public bool TriggerBlock()
-			{
-				if (Neighbours.Where(n => n.Placed).Any())
-				{
-					return true;
-				}
-				else
-				{
-					bool[,] walkArray = new bool[3, 3];
-
-					walkArray[1, 1] = false;
-					bool ulcorner = false;
-					bool urcorner = false;
-					bool llcorner = false;
-					bool lrcorner = false;
-
-					TileCandidate foundNeighbor;
-					foreach (var neighbor in Neighbours)
-					{
-						walkArray[1 + neighbor.Tile.X - Tile.X, 1 + neighbor.Tile.Y - Tile.Y] = neighbor.Walkable;
-						if (!ulcorner && neighbor.Neighbours.TryFind(n => n.Tile.X == Tile.X - 1 && n.Tile.Y == Tile.Y - 1, out foundNeighbor))
-						{
-							walkArray[0, 0] = foundNeighbor.Walkable;
-							ulcorner = true;
-						}
-
-						if (!urcorner && neighbor.Neighbours.TryFind(n => n.Tile.X == Tile.X + 1 && n.Tile.Y == Tile.Y - 1, out foundNeighbor))
-						{
-							walkArray[2, 0] = foundNeighbor.Walkable;
-							urcorner = true;
-						}
-
-						if (!llcorner && neighbor.Neighbours.TryFind(n => n.Tile.X == Tile.X - 1 && n.Tile.Y == Tile.Y + 1, out foundNeighbor))
-						{
-							walkArray[0, 2] = foundNeighbor.Walkable;
-							llcorner = true;
-						}
-						if (!lrcorner && neighbor.Neighbours.TryFind(n => n.Tile.X == Tile.X + 1 && n.Tile.Y == Tile.Y + 1, out foundNeighbor))
-						{
-							walkArray[2, 2] = foundNeighbor.Walkable;
-							lrcorner = true;
-						}
-					}
-
-					if (walkArray[1, 0] && walkArray[1, 2] &&
-						!((walkArray[0, 0] && walkArray[0, 1] && walkArray[0, 2]) || (walkArray[2, 0] && walkArray[2, 1] && walkArray[2, 2])))
-						{
-							return true;
-						}
-
-					if (walkArray[0, 1] && walkArray[2, 1] &&
-						!((walkArray[0, 0] && walkArray[1, 0] && walkArray[2, 0]) || (walkArray[0, 2] && walkArray[1, 2] && walkArray[2, 2])))
-					{
-						return true;
-					}
-
-					if (walkArray[1, 0] && walkArray[0, 1] && !walkArray[0,0])
-					{
-						return true;
-					}
-
-					if (walkArray[1, 0] && walkArray[2, 1] && !walkArray[2, 0])
-					{
-						return true;
-					}
-
-					if (walkArray[1, 2] && walkArray[2, 1] && !walkArray[2, 2])
-					{
-						return true;
-					}
-
-					if (walkArray[1, 2] && walkArray[0, 1] && !walkArray[0, 2])
-					{
-						return true;
-					}
-
-
-					return false;
-				}
-
-			}
-		}
-		public class RoomContext
-		{
-			public List<TileCandidate> Candidates;
-			//public List<int[,]> Candidates2;
-			private const int Walkable = 0b0000_0001;
-			private const int Placeable = 0b0000_0010;
-			private const int Placed = 0b0000_0100;
-			public Dictionary<MapIndex, int[,]> Candidates2;
-			public Dictionary<MapIndex, TileCandidate[,]> Candidates3;
-
-			public RoomContext()
-			{
-				Candidates = new();
-				Candidates2 = new();
-			}
-			public void Init()
-			{
-				foreach (var candidate in Candidates)
-				{
-					var mapindex = candidate.Room.MapIndex;
-					if (!Candidates2.ContainsKey(mapindex))
-					{
-						Candidates2.Add(mapindex, new int[64, 64]);
-					}
-
-					if (candidate.Walkable) Candidates2[mapindex][candidate.Tile.X, candidate.Tile.Y] |= Walkable;
-					if (candidate.Placeable) Candidates2[mapindex][candidate.Tile.X, candidate.Tile.Y] |= Placeable;
-					if (candidate.Placed) Candidates2[mapindex][candidate.Tile.X, candidate.Tile.Y] |= Placed;
-				}
-			}
-			private void CrawlNeighbours(TileCandidate originaltile, TileCandidate candidate, List<TileCandidate> crawledCandidates)
-			{
-				//List<TileCandidate> neighbourToCrawl = new();
-
-				crawledCandidates.Add(candidate);
-
-				foreach (var neighbour in candidate.Neighbours.Where(n => !crawledCandidates.Contains(n)))
-				{
-					if (neighbour != originaltile && neighbour.Walkable)
-					{
-						CrawlNeighbours(originaltile, neighbour, crawledCandidates);
-					}
-					else
-					{
-						crawledCandidates.Add(neighbour);
-					}
-				}
-			}
-			private List<(int x, int y)> offsets = new() { (0, 1), (0, -1), (1, 0), (-1, 0) };
-			private void CrawlNeighbours2(TileCandidate originaltile, (int x, int y) candidate, List<(int x, int y)> crawledCandidates)
-			{
-				List<TileCandidate> neighbourToCrawl = new();
-				crawledCandidates.Add(candidate);
-
-				foreach (var offset in offsets)
-				{
-					int x = candidate.x + offset.x;
-					int y = candidate.y + offset.y;
-
-					if (crawledCandidates.Contains((x, y)))
-					{
-						continue;
-					}
-
-					if (x >= 0 && x < 64 && y >=0 && y < 64)
-					{
-						if (originaltile.Tile.X == x && originaltile.Tile.Y == y)
-						{
-							crawledCandidates.Add((x, y));
-						}
-						else if ((Candidates2[originaltile.Room.MapIndex][x, y] & Walkable) > 0)
-						{
-							crawledCandidates.Add((x, y));
-							CrawlNeighbours2(originaltile, (x, y), crawledCandidates);
-						}
-
-					}
-
-				}
-			}
-			public (Room, MapElement) GetSpreadCandidate(List<Room> pendingRooms, List<Room> workingRooms, int chestCount, MT19337 rng)
-			{
-				//List<TileCandidate> validCandidates = new();
-				TileCandidate pickedCandidate;
-
-				do
-				{
-					if (pendingRooms.Count > 0)
-					{
-						// Make sure every room gets a chest
-						//validCandidates = GetCandidateList(pendingRooms.SpliceRandom(rng), chestCount);
-						pickedCandidate = TestCandidate(pendingRooms.SpliceRandom(rng), chestCount, rng);
-					}
-					else
-					{
-						// Every room has a chest so allocate the remaining chests.
-						//validCandidates = GetCandidateList(workingRooms.PickRandom(rng), chestCount);
-						pickedCandidate = TestCandidate(workingRooms.PickRandom(rng), chestCount, rng);
-					}
-					// If we drew a room with no available floor spaces
-				} while (pickedCandidate == null);
-
-				//var pickedCandidate = validCandidates.PickRandom(rng);
-				if (pickedCandidate != null)
-				{
-					pickedCandidate.Placed = true;
-					pickedCandidate.Placeable = false;
-					pickedCandidate.Walkable = false;
-				}
-				else
-				{
-					throw new Exception("Couldn't find anything after 800 attempts!");
-				}
-				return (pickedCandidate.Room, pickedCandidate.Tile);
-			}
-			public (Room, MapElement) GetCandidate(int chestCount, MT19337 rng)
-			{
-				//List<TileCandidate> validCandidates = GetCandidateList(null, chestCount);
-
-				//var pickedCandidate = validCandidates.PickRandom(rng);
-				var pickedCandidate = TestCandidate(null, chestCount, rng);
-
-				if (pickedCandidate != null)
-				{
-					pickedCandidate.Placed = true;
-					pickedCandidate.Placeable = false;
-					pickedCandidate.Walkable = false;
-				}
-				else
-				{
-					throw new Exception("Couldn't find anything after 800 attempts!");
-				}
-
-				return (pickedCandidate.Room, pickedCandidate.Tile);
-			}
-			public void CrawlCorridor(TileCandidate currentTile, List<TileCandidate> singleaccessTiles)
-			{
-				singleaccessTiles.Add(currentTile);
-
-				var walkableNeighbours = currentTile.Neighbours.Except(singleaccessTiles).Where(t => t.Walkable).ToList();
-				if (walkableNeighbours.Count == 1)
-				{
-					CrawlCorridor(walkableNeighbours.First(), singleaccessTiles);
-				}
-			}
-			public TileCandidate TestCandidate(Room room, int chestCount, MT19337 rng)
-			{
-				var toSeek = Candidates.Where(p => !p.Placed && p.Placeable && ((room != null) ? room.floor.Contains(p.Tile) : true)).ToList();
-				List<TileCandidate> potentialUnreachable = new();
-				List<TileCandidate> corridorTiles = new();
-
-				int seekLoop = room != null ? 10 : 800;
-				int loop = 0;
-
-				TileCandidate candidate = null;
-				bool candidateFound = false;
-
-				while (loop < seekLoop)
-				{
-					loop++;
-
-					if (!toSeek.Where(n => n.Placeable).Any())
-					{
-						return null;
-					}
-
-					candidate = toSeek.PickRandom(rng);
-
-					List<TileCandidate> reachedCandidates = new();
-					int candidateRoomIndex = candidate.Room.RoomIndex;
-					MapIndex candidateMapIndex = candidate.Room.MapIndex;
-
-					if (candidateMapIndex == MapIndex.TempleOfFiends)
-					{
-						candidateMapIndex = MapIndex.TempleOfFiends;
-					}
-
-					potentialUnreachable = toSeek.Where(p => p.Placeable && p.Room.MapIndex == candidateMapIndex && p.Room.RoomIndex == candidateRoomIndex).ToList();
-
-					if (candidate.Neighbours.Count(n => n.Walkable) == 0 ||
-						candidate.Neighbours.Where(n => n.Placed && n.Neighbours.Count(n => n.Walkable) == 1).Any())
-					{
-						candidate.Placeable = false;
-						continue;
-					}
-
-					var timer = new Stopwatch();
-					timer.Start();
-
-					if (candidate.TriggerBlock())
-					{
-						CrawlNeighbours(candidate, Candidates.Find(c => c.Tile == candidate.Room.start), reachedCandidates);
-					}
-					else
-					{
-						reachedCandidates = Candidates.Where(p => (p.Placed || p.Placeable) && p.Room.MapIndex == candidateMapIndex && p.Room.RoomIndex == candidateRoomIndex).ToList();
-					}
-
-					var test = reachedCandidates.Distinct().Count();
-
-					timer.Stop();
-					Console.WriteLine("Crawl Delay:" + timer.ElapsedMilliseconds);
-					if (timer.ElapsedTicks > 5000)
-					{
-						timer.Restart();
-					}
-
-					var totalPoi = Candidates.Where(c => c.Room.RoomIndex == candidateRoomIndex && c.Room.MapIndex == candidateMapIndex && c.Placed).ToList();
-					//var totalPoiC2 = totalPo;
-					var totalPoiCount = Candidates.Where(c => c.Room.RoomIndex == candidateRoomIndex && c.Room.MapIndex == candidateMapIndex).Count(c => c.Placed);
-					var reachedPoiCount = reachedCandidates.Count(c => c.Placed);
-
-					var validTiles = Candidates.Where(c => (c.Room.MapIndex == candidateMapIndex && c.Room.RoomIndex != candidateRoomIndex) || c.Room.MapIndex != candidateMapIndex).Count(c => c.Placeable);
-					var reachedTiles = reachedCandidates.Count(c => c.Placeable);
-
-					if (totalPoiCount != reachedPoiCount)
-					{
-						candidate.Placeable = false;
-						toSeek.Remove(candidate);
-					}
-					else
-					{
-						var walkablesNeighbours = candidate.Neighbours.Intersect(reachedCandidates).Where(n => n.Walkable).ToList();
-						corridorTiles = new();
-
-						if (walkablesNeighbours.Count == 1)
-						{
-							CrawlCorridor(walkablesNeighbours.First(), corridorTiles);
-						}
-
-						if ((validTiles + reachedTiles - corridorTiles.Where(n => n.Placeable).Count()) >= chestCount)
-						{
-							potentialUnreachable = potentialUnreachable.Except(reachedCandidates.Where(c => c.Placeable)).ToList();
-							candidateFound = true;
-							break;
-						}
-					}
-				}
-
-				//Console.WriteLine("Loop:" + loop);
-
-				if (candidateFound)
-				{
-					potentialUnreachable.ForEach(c => c.Placeable = false);
-					potentialUnreachable.ForEach(c => c.Walkable = false);
-					corridorTiles.ForEach(c => c.Placeable = false);
-					return candidate;
-				}
-				else
-				{
-					return null;
-				}
-			}
-			private List<TileCandidate> GetCandidateList(Room room, int chestCount)
-			{
-				List<TileCandidate> validCandidates = new();
-				var toSeek = Candidates.Where(p => !p.Placed && p.Placeable && ((room != null) ? room.floor.Contains(p.Tile) : true)).ToList();
-				//var toSeek = Candidates.Where(p => !p.Placed && p.Walkable && p.Placeable && ((room != null) ? room.floor.Contains(p.Tile) : true)).ToList();
-				var potentialUnreachable = toSeek.ToList();
-
-				foreach (var candidate in toSeek)
-				{
-					//candidate.SimulatedPlaced = true;
-					List<TileCandidate> reachedCandidates = new();
-					int candidateRoomIndex = candidate.Room.RoomIndex;
-					MapIndex candidateMapIndex = candidate.Room.MapIndex;
-
-					if (candidate.Neighbours.Count(n => n.Walkable) == 0 ||
-						candidate.Neighbours.Where(n => n.Placed && n.Neighbours.Count(n => n.Walkable) == 1).Any())
-					{
-						candidate.Placeable = false;
-						continue;
-					}
-
-					CrawlNeighbours(candidate, Candidates.Find(c => c.Tile == candidate.Room.start), reachedCandidates);
-					var totalPoi = Candidates.Where(c => c.Room.RoomIndex == candidateRoomIndex && c.Room.MapIndex == candidateMapIndex && c.Placed).ToList();
-					//var totalPoiC2 = totalPo;
-					var totalPoiCount = Candidates.Where(c => c.Room.RoomIndex == candidateRoomIndex && c.Room.MapIndex == candidateMapIndex).Count(c => c.Placed);
-					var reachedPoiCount = reachedCandidates.Count(c => c.Placed);
-
-					var validTiles = Candidates.Where(c => (c.Room.MapIndex == candidateMapIndex && c.Room.RoomIndex != candidateRoomIndex) || c.Room.MapIndex != candidateMapIndex).Count(c => c.Placeable);
-					var reachedTiles = reachedCandidates.Count(c => c.Placeable);
-					potentialUnreachable = potentialUnreachable.Except(reachedCandidates.Where(c => c.Placeable)).ToList();
-
-					if (totalPoiCount != reachedPoiCount)
-					{
-						candidate.Placeable = false;
-					}
-					else
-					{
-						if ((validTiles + reachedTiles) >= chestCount)
-						{
-							validCandidates.Add(candidate);
-						}
-					}
-				}
-
-				potentialUnreachable.ForEach(c => c.Placeable = false);
-				validCandidates = validCandidates.Except(potentialUnreachable).ToList();
-
-				return validCandidates;
-			}
-		}
 		public static void FindRoomTiles(FF1Rom rom, TileSet tileset,
 						List<byte> floorTiles,
 						List<byte> walkableTiles,
 						List<byte> spikeTiles,
+						List<byte> doorSpikeTiles,
 						List<byte> battleTiles,
 						byte randomEncounter)
 		{
@@ -565,6 +141,31 @@ namespace FF1Lib
 				}
 				// This tile has the "room" palette
 
+				if (tileset.Tiles[i].Properties.TilePropFunc == TilePropFunc.TP_SPEC_BATTLE)
+				{
+					if (tileset.Tiles[i].Properties.BattleId != randomEncounter)
+					{
+						// This is a spike tile
+						if (!blankPPUTiles.Contains(tileset.Tiles[i].BottomLeftTile) && !blankPPUTiles.Contains(tileset.Tiles[i].BottomRightTile))
+						{
+							doorSpikeTiles.Add(i);
+						}
+						else
+						{
+							spikeTiles.Add(i);
+						}
+						
+						if (debug) Console.WriteLine($"spike tile {i:X} BattleId {tileset.Tiles[i].Properties.BattleId:X}");
+					}
+					else
+					{
+						// This is random battle tile
+						battleTiles.Add(i);
+						if (debug) Console.WriteLine($"battle tile {i:X}");
+					}
+					continue;
+				}
+
 				if (!blankPPUTiles.Contains(tileset.Tiles[i].TopLeftTile) ||
 					!blankPPUTiles.Contains(tileset.Tiles[i].TopRightTile) ||
 					!blankPPUTiles.Contains(tileset.Tiles[i].BottomLeftTile) ||
@@ -577,23 +178,6 @@ namespace FF1Lib
 				// floor color (black) and ceiling color
 				// (generally white/off white).
 
-				if (tileset.Tiles[i].Properties.TilePropFunc == TilePropFunc.TP_SPEC_BATTLE)
-				{
-					if (tileset.Tiles[i].Properties.BattleId != randomEncounter)
-					{
-						// This is a spike tile
-						spikeTiles.Add(i);
-						if (debug) Console.WriteLine($"spike tile {i:X} BattleId {tileset.Tiles[i].Properties.BattleId:X}");
-					}
-					else
-					{
-						// This is random battle tile
-						battleTiles.Add(i);
-						if (debug) Console.WriteLine($"battle tile {i:X}");
-					}
-					continue;
-				}
-
 				// Found a plain, no-encounter floor tile
 				floorTiles.Add(i);
 				if (debug) Console.WriteLine($"floor tile {i:X}");
@@ -603,6 +187,7 @@ namespace FF1Lib
 
 		public static void PlaceSpikeTiles(MT19337 rng,
 						   List<byte> spikePool,
+						   List<byte> doorSpikePool,
 						   List<MapElement> placedChests,
 						   List<byte> floorTiles,
 						   List<byte> battleTiles,
@@ -636,11 +221,17 @@ namespace FF1Lib
 				tries--;
 			}
 
+			foreach (var spike in doorSpikePool)
+			{
+				var rm = roomsToSanityCheck.SpliceRandom(rng);
+				var me = rm.start;
+				me.Value = spike;
+			}
 		}
 
 		public async Task shuffleChestLocations(MT19337 rng, StandardMaps maps, TileSetsData tilesets, Teleporters teleporters, MapIndex[] ids, List<(MapIndex, byte)> preserveChests,
 							NpcObjectData npcdata, byte randomEncounter, bool spreadPlacement, bool markSpikeTiles,
-							List<byte> chestPool, List<byte> spikePool)
+							List<byte> chestPool, List<byte> spikePool, List<byte> doorSpikePool)
 		{
 			// For a tileset, I need to determine:
 			//
@@ -654,30 +245,25 @@ namespace FF1Lib
 			bool keepLinkedChests = false;
 
 			var tileset = tilesets[(int)maps[ids[0]].MapTileSet];
-			//var tileset = new TileSet(this, GetMapTilesetIndex(ids[0]));
 
 			// Go through the all the map tiles and find ones
 			// with certain properties.
 			List<byte> doorTiles = new() { 0x36, 0x37, 0x3B };
+			byte doorNonSpikeTile = 0x07;
 			List<byte> floorTiles = new();
 			List<byte> walkableTiles = new();
 			List<byte> spikeTiles = new();
+			List<byte> doorSpikeTiles = new();
 			List<byte> battleTiles = new();
-			List<SCCoords> excludeFloors = new();
 				
-			FindRoomTiles(rom, tileset, floorTiles, walkableTiles, spikeTiles, battleTiles, randomEncounter);
+			FindRoomTiles(rom, tileset, floorTiles, walkableTiles, spikeTiles, doorSpikeTiles, battleTiles, randomEncounter);
 
 			byte vanillaTeleporters = 0x41;
 			var smTeleporters = teleporters.StandardMapTeleporters.Where(t => (int)t.Key < vanillaTeleporters).Select(t => t.Value).ToList();
-			/*
-			List<TeleporterSM> teleporters = new();
-			for (int i = 0; i < vanillaTeleporters; i++)
-			{
-				teleporters.Add(new TeleporterSM(this, i));
-			}*/
 
 			if (chestPool == null) chestPool = new();
 			if (spikePool == null) spikePool = new();
+			if (doorSpikePool == null) doorSpikePool = new();
 
 			// To relocate chests in a dungeon (a group of maps)
 			//
@@ -694,18 +280,6 @@ namespace FF1Lib
 				if (debug) Console.WriteLine($"\nFinding rooms for map {mapindex}");
 
 				var map = maps[mapindex].Map;
-				if (mapindex == MapIndex.IceCaveB1)
-				{
-					excludeFloors = new()
-					{
-						new SCCoords(0x08, 0x12),
-						new SCCoords(0x09, 0x12),
-						new SCCoords(0x09, 0x13),
-						new SCCoords(0x09, 0x14),
-						new SCCoords(0x09, 0x15),
-						new SCCoords(0x09, 0x16),
-					};
-				}
 
 				List<SCCoords> startCoords = new();
 				for (int y = 0; y < 64; y++)
@@ -714,6 +288,7 @@ namespace FF1Lib
 					{
 						var tf = tileset.Tiles[map[y, x]].Properties;
 						bool wipe = false;
+						bool setDoor = false;
 
 						if (tf.TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE))
 						{
@@ -741,6 +316,12 @@ namespace FF1Lib
 							if (debug) Console.WriteLine($"add {map[y, x]:X} to spike pool");
 							wipe = true;
 						}
+						if (doorSpikeTiles.Contains(map[y, x]))
+						{
+							doorSpikePool.Add(map[y, x]);
+							if (debug) Console.WriteLine($"add {map[y, x]:X} to spike pool");
+							setDoor = true;
+						}
 						if (doorTiles.Contains(map[y, x]))
 						{
 							startCoords.Add(new SCCoords(x, y - 1));
@@ -750,6 +331,11 @@ namespace FF1Lib
 						if (wipe)
 						{
 							map[y, x] = 0xff;
+						}
+
+						if (setDoor)
+						{
+							map[y, x] = doorNonSpikeTile;
 						}
 					}
 				}
@@ -870,7 +456,7 @@ namespace FF1Lib
 						}
 
 						if (!hasNpc && !teleporterTarget && (floorTiles.Contains(me.Value) || battleTiles.Contains(me.Value) || spikeTiles.Contains(me.Value)) &&
-							(me.Coord != (st.X, st.Y)) && !excludeFloors.Contains(new SCCoords(me.X, me.Y)))
+							(me.Coord != (st.X, st.Y)))
 						{
 							room.floor.Add(me);
 						}
@@ -928,28 +514,18 @@ namespace FF1Lib
 
 			// make a copy of the rooms
 			List<Room> workingrooms = new(rooms.Count);
-			RoomContext roomContext = new();
+			ChestPicker chestPicker = new();
 
 			foreach (var r in rooms)
 			{
 				workingrooms.Add(new Room());
-				InitCrawlRoom(r, roomContext);
+				chestPicker.AddRoom(r);
 			}
-
-			foreach (var r in rooms)
-			{
-				Console.WriteLine(r.MapIndex + ": " + roomContext.Candidates.Count(c => c.Room.MapIndex == r.MapIndex && c.Room.RoomIndex == r.RoomIndex));
-
-			}
-
 
 			bool needRetry = true;
 			List<(Room, MapElement)> placedChests = new();
 			List<Room> roomsToSanityCheck = new();
 			List<(Room, MapElement)> allCandidates = new();
-
-			//roomContext.Initialize();
-
 
 			int attempts;
 			await rom.Progress($"Relocating chests for group of floors containing {ids[0]}", 1);
@@ -996,19 +572,16 @@ namespace FF1Lib
 				var chestCount = chestPool.Count;
 				foreach (var c in chestPool)
 				{
-					
 
 					(Room, MapElement) me;
 					if (spreadPlacement)
 					{
-						me = roomContext.GetSpreadCandidate(pendingRooms, workingrooms, chestCount, rng);
+						me = chestPicker.GetSpreadCandidate(pendingRooms, workingrooms, chestCount, rng);
 					}
 					else
 					{
 						// full random
-						//me = allCandidates.SpliceRandom(rng);
-						//var r = workingrooms.PickRandom(rng);
-						me = roomContext.GetCandidate(chestCount, rng);
+						me = chestPicker.GetPooledCandidate(chestCount, rng);
 					}
 					me.Item2.Value = c;
 					me.Item1.chests.Add(me.Item2);
@@ -1021,7 +594,7 @@ namespace FF1Lib
 				}
 
 				if (debug) Console.WriteLine($"did chest placement");
-
+				/*
 				foreach (var r in roomsToSanityCheck)
 				{
 					r.start.Map.Flood((r.start.X, r.start.Y), (MapElement me) => {
@@ -1058,7 +631,7 @@ namespace FF1Lib
 							ch.Item2.Value = floorTiles[0];
 						}
 					}
-				}
+				}*/
 			}
 
 			if (!needRetry)
@@ -1091,10 +664,14 @@ namespace FF1Lib
 				{
 					tileset.Tiles[sp].TopRightTile = 0x7D;
 				}
-				//tileset.TopRightTiles.StoreTable();
+
+				foreach (var sp in doorSpikePool)
+				{
+					tileset.Tiles[sp].TopRightTile = 0x7D;
+				}
 			}
 
-			PlaceSpikeTiles(rng, spikePool,
+			PlaceSpikeTiles(rng, spikePool, doorSpikePool,
 					placedChests.Select((pc) => pc.Item2).ToList(),
 					floorTiles,
 					battleTiles, roomsToSanityCheck);
@@ -1105,156 +682,6 @@ namespace FF1Lib
 			// ** Weighting 40% below chest, 20% left/right/top
 			// * Finally, sanity check each room that we can reach all chests, doors, teleports and NPCs in the room
 		}
-
-		private void InitCrawlRoom(Room room, RoomContext roomContext)
-		{
-			//var currentTile = new TileCandidate(room.start, room);
-			List<List<MapElement>> paths = new();
-			List<List<MapElement>> poiPaths = new();
-			List<TileCandidate> candidates = new();
-
-			if (!roomContext.Candidates3.ContainsKey(room.MapIndex))
-			{
-				var newTileArray = new TileCandidate[64, 64];
-
-				for (int x = 0; x < 64; x++)
-				{
-					for (int y = 0; y < 64; y++)
-					{
-						newTileArray[x, y] = new TileCandidate(room, x, y);
-					}
-				}
-
-				roomContext.Candidates3.Add(room.MapIndex, newTileArray);
-			}
-			//List<MapElement> currentPath = new() { currentTile };
-
-			//CrawlRoom(room, currentTile, currentPath, paths, poiPaths);
-
-			var startElement = new TileCandidate(room.start, room);
-			startElement.Placed = false;
-			startElement.Placeable = false;
-			startElement.Walkable = true;
-
-			candidates.Add(startElement);
-			roomContext.Candidates3[room.MapIndex][startElement.Tile.X, startElement.Tile.Y] = startElement;
-
-			var poiElement = room.chests.Concat(room.npcs.Except(room.killablenpcs)).Concat(room.teleOut).Concat(room.doors).ToList();
-
-			foreach (var element in poiElement)
-			{
-				var newCandidate = new TileCandidate(element, room);
-				newCandidate.Placed = true;
-				newCandidate.Placeable = false;
-				newCandidate.Walkable = false;
-
-				candidates.Add(newCandidate);
-				roomContext.Candidates3[room.MapIndex][newCandidate.Tile.X, newCandidate.Tile.Y] = newCandidate;
-			}
-
-			poiElement.Add(room.start);
-
-			foreach (var element in room.killablenpcs.Except(poiElement))
-			{
-				var newCandidate = new TileCandidate(element, room);
-				newCandidate.Placed = false;
-				newCandidate.Placeable = false;
-				newCandidate.Walkable = true;
-
-				candidates.Add(newCandidate);
-				roomContext.Candidates3[room.MapIndex][newCandidate.Tile.X, newCandidate.Tile.Y] = newCandidate;
-			}
-
-			poiElement.AddRange(room.killablenpcs);
-
-			foreach (var element in room.walkable.Except(poiElement))
-			{
-				var newCandidate = new TileCandidate(element, room);
-				newCandidate.Placed = false;
-				newCandidate.Placeable = false;
-				newCandidate.Walkable = true;
-
-				candidates.Add(newCandidate);
-				roomContext.Candidates3[room.MapIndex][newCandidate.Tile.X, newCandidate.Tile.Y] = newCandidate;
-			}
-
-			foreach (var element in room.floor.Except(poiElement))
-			{
-				var newCandidate = new TileCandidate(element, room);
-				newCandidate.Placed = false;
-				newCandidate.Placeable = true;
-				newCandidate.Walkable = true;
-
-				candidates.Add(newCandidate);
-				roomContext.Candidates3[room.MapIndex][newCandidate.Tile.X, newCandidate.Tile.Y] = newCandidate;
-			}
-
-			foreach (var candidate in candidates)
-			{
-				CrawlRoom2(candidate, candidates);
-			}
-
-			roomContext.Candidates.AddRange(candidates);
-
-			//roomContext.Paths.AddRange(paths);
-			//roomContext.PoiPaths.AddRange(poiPaths);
-
-			//var candidate = paths.Select(t => t.Last()).Distinct().ToList();
-			//var count = candidate.Count;
-		}
-		private void CrawlRoom2(TileCandidate currentTile, List<TileCandidate> candidates)
-		{
-			List<(int x, int y)> offsets = new() { (0, 1), (0, -1), (1, 0), (-1, 0) };
-			foreach (var offset in offsets)
-			{
-				if (candidates.TryFind(c => c.Tile.X == currentTile.Tile.X + offset.x && c.Tile.Y == currentTile.Tile.Y + offset.y && c.Tile.Map == currentTile.Tile.Map, out var foundneighbour))
-				{
-					currentTile.Neighbours.Add(foundneighbour);
-				}
-			}
-		}
-		private void CrawlRoom(Room room, MapElement currentTile, List<MapElement> currentPath, List<List<MapElement>> paths, List<List<MapElement>> poiPaths)
-		{
-			List<(int x, int y)> offsets = new() { (0, 1), (0, -1), (1, 0), (-1, 0) };
-			foreach (var offset in offsets)
-			{
-				if (room.chests.TryFind(t => (t.X == currentTile.X + offset.x) && (t.Y == currentTile.Y + offset.y), out var foundchest))
-				{
-					poiPaths.Add(new(currentPath.Append(foundchest)));
-				}
-				else if (room.npcs.TryFind(t => (t.X == currentTile.X + offset.x) && (t.Y == currentTile.Y + offset.y), out var foundnpc))
-				{
-					poiPaths.Add(new(currentPath.Append(foundnpc)));
-					continue;
-				}
-				else if (room.teleIn.TryFind(t => (t.X == currentTile.X + offset.x) && (t.Y == currentTile.Y + offset.y), out var foundtelein))
-				{
-					poiPaths.Add(new(currentPath.Append(foundtelein)));
-					continue;
-				}
-				else if (room.teleOut.TryFind(t => (t.X == currentTile.X + offset.x) && (t.Y == currentTile.Y + offset.y), out var foundteleOut))
-				{
-					poiPaths.Add(new(currentPath.Append(foundtelein)));
-				}
-				else if (room.walkable.TryFind(t => (t.X == currentTile.X + offset.x) && (t.Y == currentTile.Y + offset.y), out var foundwalkable))
-				{
-					if (!currentPath.Contains(foundwalkable))
-					{
-						//currentPath.Add(foundwalkable);
-						CrawlRoom(room, foundwalkable, currentPath.Append(foundwalkable).ToList(), paths, poiPaths);
-					}
-				}
-				else if (room.floor.TryFind(t => (t.X == currentTile.X + offset.x) && (t.Y == currentTile.Y + offset.y), out var foundfloor))
-				{
-					if (!currentPath.Contains(foundfloor))
-					{
-						//currentPath.Add(foundfloor);
-						paths.Add(new(currentPath.Append(foundfloor)));
-						CrawlRoom(room, foundfloor, currentPath.Append(foundfloor).ToList(), paths, poiPaths);
-					}
-				}
-			}
-		}
 		public async Task RandomlyRelocateChests(MT19337 rng, StandardMaps maps, TileSetsData tilesets, Teleporters teleporters,  NpcObjectData npcdata, Flags flags)
 		{
 			if (!(bool)flags.RelocateChests || flags.GameMode == GameModes.DeepDungeon)
@@ -1262,10 +689,8 @@ namespace FF1Lib
 				return;
 			}
 
-
 			// Groups of maps that make up a shuffle pool
 			// They need to all use the same tileset.
-
 			List<MapIndex[]> dungeons = new() {
 			new MapIndex[] { MapIndex.ConeriaCastle1F, MapIndex.ConeriaCastle2F, MapIndex.ElflandCastle, MapIndex.NorthwestCastle },
 
@@ -1425,22 +850,18 @@ namespace FF1Lib
 			foreach (MapIndex[] b in dungeons)
 			{
 				await shuffleChestLocations(rng, maps, tilesets, teleporters, b, preserveChests, npcdata,
-							  (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
+							  0x00,
 								false, flags.RelocateChestsTrapIndicator,
-								null, null);
+								null, null, null);
 			}
 
 			foreach (MapIndex[] b in spreadPlacementDungeons)
 			{
 				await shuffleChestLocations(rng, maps, tilesets, teleporters, b, preserveChests, npcdata,
-							  (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
+							  0x00,
 								true, flags.RelocateChestsTrapIndicator,
-								null, null);
+								null, null, null);
 			}
 		}
-
-
-
 	}
-
 }
