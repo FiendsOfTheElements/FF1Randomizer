@@ -161,10 +161,7 @@ namespace FF1Lib
 		{
 			foreach (var script in scripts)
 			{
-				for (int i = 0; i < 8; i++)
-				{
-					script.spell_list = script.spell_list.Select(s => (byte)SwitchedSpells[(SpellByte)s]).ToArray();
-				}
+				script.spell_list = script.spell_list.Select(s => (byte)SwitchedSpells[(SpellByte)s]).ToArray();
 			}
 		}
 		/// <summary>
