@@ -1,16 +1,22 @@
 ﻿using FF1Lib.Sanity;
 using RomUtilities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using static FF1Lib.FF1Rom;
+using static FF1Lib.NpcScriptsLists;
+using static FF1Lib.RelocateChests;
 
 namespace FF1Lib
 {
-	public class RelocateChests
+	public partial class RelocateChests
 	{
 		private const int TILESETPATTERNTABLE_OFFSET = 0xC000;
 		private FF1Rom rom;
@@ -23,8 +29,10 @@ namespace FF1Lib
 		public class Room
 		{
 			public MapIndex MapIndex;
+			public int RoomIndex;
 			public MapElement start;
 			public List<MapElement> floor = new();
+			public List<MapElement> walkable = new();
 			public List<MapElement> doors = new();
 			public List<MapElement> chests = new();
 			public List<MapElement> teleIn = new();
@@ -36,8 +44,10 @@ namespace FF1Lib
 			public Room(Room copyfrom)
 			{
 				MapIndex = copyfrom.MapIndex;
+				RoomIndex = copyfrom.RoomIndex;
 				start = copyfrom.start;
 				floor = new List<MapElement>(copyfrom.floor);
+				walkable = new List<MapElement>(copyfrom.walkable);
 				doors = new List<MapElement>(copyfrom.doors);
 				chests = new List<MapElement>(copyfrom.chests);
 				teleIn = new List<MapElement>(copyfrom.teleIn);
@@ -50,8 +60,12 @@ namespace FF1Lib
 			{
 				MapIndex = copyfrom.MapIndex;
 				start = copyfrom.start;
+				RoomIndex = copyfrom.RoomIndex;
 				floor.Clear();
 				floor.AddRange(copyfrom.floor);
+
+				walkable.Clear();
+				walkable.AddRange(copyfrom.walkable);
 
 				doors.Clear();
 				doors.AddRange(copyfrom.doors);
@@ -76,7 +90,9 @@ namespace FF1Lib
 		}
 		public static void FindRoomTiles(FF1Rom rom, TileSet tileset,
 						List<byte> floorTiles,
+						List<byte> walkableTiles,
 						List<byte> spikeTiles,
+						List<byte> doorSpikeTiles,
 						List<byte> battleTiles,
 						byte randomEncounter)
 		{
@@ -108,6 +124,9 @@ namespace FF1Lib
 				}
 			}
 
+			// Add trap indicator tile
+			blankPPUTiles.Add(0x7D);
+
 			for (byte i = 0; i < 128; i++)
 			{
 				if ((tileset.Tiles[i].Properties.TilePropFunc & TilePropFunc.TP_NOMOVE) != 0)
@@ -116,30 +135,26 @@ namespace FF1Lib
 				}
 				// Allowed to walk onto this tile
 
-				if ((tileset.Tiles[i].Attribute & 3) != 1 &&
-					(tileset.Tiles[i].Attribute & 3) != 2)
+				if (tileset.Tiles[i].Palette != TilePalette.RoomPalette1 && tileset.Tiles[i].Palette != TilePalette.RoomPalette2)
 				{
 					continue;
 				}
 				// This tile has the "room" palette
-
-				if (!blankPPUTiles.Contains(tileset.Tiles[i].TopLeftTile) ||
-					!blankPPUTiles.Contains(tileset.Tiles[i].TopRightTile) ||
-					!blankPPUTiles.Contains(tileset.Tiles[i].BottomLeftTile) ||
-					!blankPPUTiles.Contains(tileset.Tiles[i].BottomRightTile))
-				{
-					continue;
-				}
-				// The visual tile is "blank" (flips between
-				// floor color (black) and ceiling color
-				// (generally white/off white).
 
 				if (tileset.Tiles[i].Properties.TilePropFunc == TilePropFunc.TP_SPEC_BATTLE)
 				{
 					if (tileset.Tiles[i].Properties.BattleId != randomEncounter)
 					{
 						// This is a spike tile
-						spikeTiles.Add(i);
+						if (!blankPPUTiles.Contains(tileset.Tiles[i].BottomLeftTile) && !blankPPUTiles.Contains(tileset.Tiles[i].BottomRightTile))
+						{
+							doorSpikeTiles.Add(i);
+						}
+						else
+						{
+							spikeTiles.Add(i);
+						}
+						
 						if (debug) Console.WriteLine($"spike tile {i:X} BattleId {tileset.Tiles[i].Properties.BattleId:X}");
 					}
 					else
@@ -151,6 +166,18 @@ namespace FF1Lib
 					continue;
 				}
 
+				if (!blankPPUTiles.Contains(tileset.Tiles[i].TopLeftTile) ||
+					!blankPPUTiles.Contains(tileset.Tiles[i].TopRightTile) ||
+					!blankPPUTiles.Contains(tileset.Tiles[i].BottomLeftTile) ||
+					!blankPPUTiles.Contains(tileset.Tiles[i].BottomRightTile))
+				{
+					walkableTiles.Add(i);
+					continue;
+				}
+				// The visual tile is "blank" (flips between
+				// floor color (black) and ceiling color
+				// (generally white/off white).
+
 				// Found a plain, no-encounter floor tile
 				floorTiles.Add(i);
 				if (debug) Console.WriteLine($"floor tile {i:X}");
@@ -160,6 +187,7 @@ namespace FF1Lib
 
 		public static void PlaceSpikeTiles(MT19337 rng,
 						   List<byte> spikePool,
+						   List<byte> doorSpikePool,
 						   List<MapElement> placedChests,
 						   List<byte> floorTiles,
 						   List<byte> battleTiles,
@@ -193,11 +221,17 @@ namespace FF1Lib
 				tries--;
 			}
 
+			foreach (var spike in doorSpikePool)
+			{
+				var rm = roomsToSanityCheck.SpliceRandom(rng);
+				var me = rm.start;
+				me.Value = spike;
+			}
 		}
 
 		public async Task shuffleChestLocations(MT19337 rng, StandardMaps maps, TileSetsData tilesets, Teleporters teleporters, MapIndex[] ids, List<(MapIndex, byte)> preserveChests,
 							NpcObjectData npcdata, byte randomEncounter, bool spreadPlacement, bool markSpikeTiles,
-							List<byte> chestPool, List<byte> spikePool)
+							List<byte> chestPool, List<byte> spikePool, List<byte> doorSpikePool)
 		{
 			// For a tileset, I need to determine:
 			//
@@ -211,29 +245,25 @@ namespace FF1Lib
 			bool keepLinkedChests = false;
 
 			var tileset = tilesets[(int)maps[ids[0]].MapTileSet];
-			//var tileset = new TileSet(this, GetMapTilesetIndex(ids[0]));
 
 			// Go through the all the map tiles and find ones
 			// with certain properties.
 			List<byte> doorTiles = new() { 0x36, 0x37, 0x3B };
+			byte doorNonSpikeTile = 0x07;
 			List<byte> floorTiles = new();
+			List<byte> walkableTiles = new();
 			List<byte> spikeTiles = new();
+			List<byte> doorSpikeTiles = new();
 			List<byte> battleTiles = new();
-			List<SCCoords> excludeFloors = new();
 				
-			FindRoomTiles(rom, tileset, floorTiles, spikeTiles, battleTiles, randomEncounter);
+			FindRoomTiles(rom, tileset, floorTiles, walkableTiles, spikeTiles, doorSpikeTiles, battleTiles, randomEncounter);
 
 			byte vanillaTeleporters = 0x41;
 			var smTeleporters = teleporters.StandardMapTeleporters.Where(t => (int)t.Key < vanillaTeleporters).Select(t => t.Value).ToList();
-			/*
-			List<TeleporterSM> teleporters = new();
-			for (int i = 0; i < vanillaTeleporters; i++)
-			{
-				teleporters.Add(new TeleporterSM(this, i));
-			}*/
 
 			if (chestPool == null) chestPool = new();
 			if (spikePool == null) spikePool = new();
+			if (doorSpikePool == null) doorSpikePool = new();
 
 			// To relocate chests in a dungeon (a group of maps)
 			//
@@ -250,18 +280,6 @@ namespace FF1Lib
 				if (debug) Console.WriteLine($"\nFinding rooms for map {mapindex}");
 
 				var map = maps[mapindex].Map;
-				if (mapindex == MapIndex.IceCaveB1)
-				{
-					excludeFloors = new()
-					{
-						new SCCoords(0x08, 0x12),
-						new SCCoords(0x09, 0x12),
-						new SCCoords(0x09, 0x13),
-						new SCCoords(0x09, 0x14),
-						new SCCoords(0x09, 0x15),
-						new SCCoords(0x09, 0x16),
-					};
-				}
 
 				List<SCCoords> startCoords = new();
 				for (int y = 0; y < 64; y++)
@@ -270,6 +288,7 @@ namespace FF1Lib
 					{
 						var tf = tileset.Tiles[map[y, x]].Properties;
 						bool wipe = false;
+						bool setDoor = false;
 
 						if (tf.TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE))
 						{
@@ -297,6 +316,12 @@ namespace FF1Lib
 							if (debug) Console.WriteLine($"add {map[y, x]:X} to spike pool");
 							wipe = true;
 						}
+						if (doorSpikeTiles.Contains(map[y, x]))
+						{
+							doorSpikePool.Add(map[y, x]);
+							if (debug) Console.WriteLine($"add {map[y, x]:X} to spike pool");
+							setDoor = true;
+						}
 						if (doorTiles.Contains(map[y, x]))
 						{
 							startCoords.Add(new SCCoords(x, y - 1));
@@ -306,6 +331,11 @@ namespace FF1Lib
 						if (wipe)
 						{
 							map[y, x] = 0xff;
+						}
+
+						if (setDoor)
+						{
+							map[y, x] = doorNonSpikeTile;
 						}
 					}
 				}
@@ -320,10 +350,13 @@ namespace FF1Lib
 				}
 
 				List<(int x, int y)> searched = new();
+				int roomCount = 0;
 				foreach (var st in startCoords)
 				{
 					var room = new Room();
 					room.MapIndex = mapindex;
+					room.RoomIndex = roomCount;
+					roomCount++;
 					room.start = map[(st.X, st.Y)];
 					bool newRoom = true;
 					if (debug) Console.WriteLine($"Searching from {st}");
@@ -400,6 +433,11 @@ namespace FF1Lib
 							return false;
 						}
 
+						if (walkableTiles.Contains(me.Value))
+						{
+							room.walkable.Add(me);
+						}
+
 						bool teleporterTarget = false;
 						foreach (var t in smTeleporters)
 						{
@@ -418,7 +456,7 @@ namespace FF1Lib
 						}
 
 						if (!hasNpc && !teleporterTarget && (floorTiles.Contains(me.Value) || battleTiles.Contains(me.Value) || spikeTiles.Contains(me.Value)) &&
-							(me.Coord != (st.X, st.Y)) && !excludeFloors.Contains(new SCCoords(me.X, me.Y)))
+							(me.Coord != (st.X, st.Y)))
 						{
 							room.floor.Add(me);
 						}
@@ -476,9 +514,12 @@ namespace FF1Lib
 
 			// make a copy of the rooms
 			List<Room> workingrooms = new(rooms.Count);
+			ChestPicker chestPicker = new();
+
 			foreach (var r in rooms)
 			{
 				workingrooms.Add(new Room());
+				chestPicker.AddRoom(r);
 			}
 
 			bool needRetry = true;
@@ -528,37 +569,24 @@ namespace FF1Lib
 
 				List<Room> pendingRooms = new(workingrooms);
 
+				var chestCount = chestPool.Count;
 				foreach (var c in chestPool)
 				{
+
 					(Room, MapElement) me;
 					if (spreadPlacement)
 					{
-						Room r;
-						do
-						{
-							if (pendingRooms.Count > 0)
-							{
-								// Make sure every room gets a chest
-								r = pendingRooms.SpliceRandom(rng);
-							}
-							else
-							{
-								// Every room has a chest so allocate the remaining chests.
-								r = workingrooms.PickRandom(rng);
-							}
-							// If we drew a room with no available floor spaces
-							// (r.floor.Count == 0), try again.
-						} while (r.floor.Count == 0);
-						me = (r, r.floor.SpliceRandom(rng));
+						me = chestPicker.GetSpreadCandidate(pendingRooms, workingrooms, chestCount, rng);
 					}
 					else
 					{
 						// full random
-						me = allCandidates.SpliceRandom(rng);
+						me = chestPicker.GetPooledCandidate(chestCount, rng);
 					}
 					me.Item2.Value = c;
 					me.Item1.chests.Add(me.Item2);
 					placedChests.Add((me.Item1, me.Item2));
+					chestCount--;
 					if (!roomsToSanityCheck.Contains(me.Item1))
 					{
 						roomsToSanityCheck.Add(me.Item1);
@@ -566,7 +594,7 @@ namespace FF1Lib
 				}
 
 				if (debug) Console.WriteLine($"did chest placement");
-
+				/*
 				foreach (var r in roomsToSanityCheck)
 				{
 					r.start.Map.Flood((r.start.X, r.start.Y), (MapElement me) => {
@@ -584,7 +612,7 @@ namespace FF1Lib
 					if (r.doors.Count > 0 || r.chests.Count > 0 || r.teleOut.Count > 0 || r.npcs.Count > 0)
 					{
 						if (debug) Console.WriteLine($"Room at {r.MapIndex} {r.start.X}, {r.start.Y} failed sanity check: {r.doors.Count} {r.chests.Count} {r.teleOut.Count} {r.npcs.Count}");
-						needRetry = true;
+						//needRetry = true;
 						break;
 					}
 				}
@@ -603,7 +631,7 @@ namespace FF1Lib
 							ch.Item2.Value = floorTiles[0];
 						}
 					}
-				}
+				}*/
 			}
 
 			if (!needRetry)
@@ -636,10 +664,14 @@ namespace FF1Lib
 				{
 					tileset.Tiles[sp].TopRightTile = 0x7D;
 				}
-				//tileset.TopRightTiles.StoreTable();
+
+				foreach (var sp in doorSpikePool)
+				{
+					tileset.Tiles[sp].TopRightTile = 0x7D;
+				}
 			}
 
-			PlaceSpikeTiles(rng, spikePool,
+			PlaceSpikeTiles(rng, spikePool, doorSpikePool,
 					placedChests.Select((pc) => pc.Item2).ToList(),
 					floorTiles,
 					battleTiles, roomsToSanityCheck);
@@ -650,7 +682,6 @@ namespace FF1Lib
 			// ** Weighting 40% below chest, 20% left/right/top
 			// * Finally, sanity check each room that we can reach all chests, doors, teleports and NPCs in the room
 		}
-
 		public async Task RandomlyRelocateChests(MT19337 rng, StandardMaps maps, TileSetsData tilesets, Teleporters teleporters,  NpcObjectData npcdata, Flags flags)
 		{
 			if (!(bool)flags.RelocateChests || flags.GameMode == GameModes.DeepDungeon)
@@ -658,10 +689,8 @@ namespace FF1Lib
 				return;
 			}
 
-
 			// Groups of maps that make up a shuffle pool
 			// They need to all use the same tileset.
-
 			List<MapIndex[]> dungeons = new() {
 			new MapIndex[] { MapIndex.ConeriaCastle1F, MapIndex.ConeriaCastle2F, MapIndex.ElflandCastle, MapIndex.NorthwestCastle },
 
@@ -821,22 +850,18 @@ namespace FF1Lib
 			foreach (MapIndex[] b in dungeons)
 			{
 				await shuffleChestLocations(rng, maps, tilesets, teleporters, b, preserveChests, npcdata,
-							  (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
+							  0x00,
 								false, flags.RelocateChestsTrapIndicator,
-								null, null);
+								null, null, null);
 			}
 
 			foreach (MapIndex[] b in spreadPlacementDungeons)
 			{
 				await shuffleChestLocations(rng, maps, tilesets, teleporters, b, preserveChests, npcdata,
-							  (byte)(flags.EnemizerEnabled ? 0x00 : 0x80),
+							  0x00,
 								true, flags.RelocateChestsTrapIndicator,
-								null, null);
+								null, null, null);
 			}
 		}
-
-
-
 	}
-
 }
