@@ -1478,6 +1478,10 @@ namespace FF1Lib
 				},
 
 			};
+			var FF5AltFiendsList = new List<AlternateFiends>
+			{
+
+			};
 			var FF1BonusFiendsList = new List<AlternateFiends>
 			{
 
@@ -1785,12 +1789,18 @@ namespace FF1Lib
 				alternateFiendsList.AddRange(FF4AltFiendsList);
 			}
 
+			if ((bool)flags.FinalFantasy5Fiends)
+
+			{
+				alternateFiendsList.AddRange(FF5AltFiendsList);
+			}
+
 			if ((bool)flags.FinalFantasy1BonusFiends)
 			{
 				alternateFiendsList.AddRange(FF1BonusFiendsList);
 			}
 
-			if ((bool)!flags.FinalFantasy2Fiends && (bool)!flags.FinalFantasy3Fiends && (bool)!flags.FinalFantasy4Fiends && (bool)!flags.FinalFantasy1BonusFiends)
+			if ((bool)!flags.FinalFantasy2Fiends && (bool)!flags.FinalFantasy3Fiends && (bool)!flags.FinalFantasy4Fiends && (bool)!flags.FinalFantasy5Fiends && (bool)!flags.FinalFantasy1BonusFiends)
 			{
 				alternateFiendsList.AddRange(FF1MasterFiendList);
 			}

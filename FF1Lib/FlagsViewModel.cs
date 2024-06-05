@@ -4386,6 +4386,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FinalFantasy4Fiends"));
 			}
 		}
+		public bool? FinalFantasy5Fiends
+		{
+			get => Flags.FinalFantasy5Fiends;
+			set
+			{
+				Flags.FinalFantasy5Fiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FinalFantasy5Fiends"));
+			}
+		}
 		public bool? FinalFantasy1BonusFiends
 		{
 			get => Flags.FinalFantasy1BonusFiends;
