@@ -13,31 +13,50 @@ namespace FF1Lib
 	public struct Coordinate
 	{
 		private readonly short _identityValue;
-		public readonly byte X { get => Context > CoordinateLocale.Overworld ? (byte)(x & 0x3F) : x; }
-		public readonly byte Y { get => Context > CoordinateLocale.Overworld ? (byte)(y & 0x3F) : y; }
-		private byte x;
-		private byte y;
+		//public readonly byte X { get => Context > CoordinateLocale.Overworld ? (byte)(x & 0x3F) : x; }
+		//public readonly byte Y { get => Context > CoordinateLocale.Overworld ? (byte)(y & 0x3F) : y; }
+		public readonly byte X;
+		public readonly byte Y;
 		public readonly CoordinateLocale Context;
-		public readonly byte ValueX { get => Context == CoordinateLocale.StandardInRoom ? (byte)(X | 0x80) : X; }
-		public readonly byte ValueY { get => Context > CoordinateLocale.Overworld ? (byte)(Y | 0x80) : Y; }
+		public readonly byte RawX { get => Context == CoordinateLocale.StandardInRoom ? (byte)(X | 0x80) : X; }
+		public readonly byte RawY { get => Context > CoordinateLocale.Overworld ? (byte)(Y | 0x80) : Y; }
 		//public CoordinateLocale Context { get => ((X & 0x80) > 0) ? CoordinateLocale.StandardInRoom : (((Y & 0x80) > 0) ? CoordinateLocale.Overworld : CoordinateLocale.Standard); }
 		public Coordinate(byte _x, byte _y, CoordinateLocale context)
 		{
-			x = _x;
-			y = _y;
+			X = _x;
+			Y = _y;
+
 			Context = context;
-			/*
+
 			if (context > CoordinateLocale.Overworld)
 			{
-				Y |= 0x80;
+				Y &= 0x3F;
+				X &= 0x3F;
+			}
 
-				if (context == CoordinateLocale.StandardInRoom)
-				{
-					X |= 0x80;
-				}
-			}*/
+			_identityValue = (short)(X * 256 + Y);
+		}
+		public Coordinate(byte _x, byte _y)
+		{
+			X = _x;
+			Y = _y;
 
-			_identityValue = (short)(x * 256 + y);
+			if ((_x & 0x80) > 1)
+			{
+				Context = CoordinateLocale.StandardInRoom;
+			}
+			else
+			{
+				Context = CoordinateLocale.Standard;
+			}
+
+			if (Context > CoordinateLocale.Overworld)
+			{
+				Y &= 0x3F;
+				X &= 0x3F;
+			}
+
+			_identityValue = (short)(X * 256 + Y);
 		}
 	}
 	public struct LocationRequirement
@@ -81,10 +100,10 @@ namespace FF1Lib
 		public MapIndex Index;
 
 	    [JsonProperty(Order=3)]
-		public byte CoordinateX { get => Coordinates.ValueX; }
+		public byte CoordinateX { get; private set; }
 
 	    [JsonProperty(Order=4)]
-		public byte CoordinateY { get => Coordinates.ValueY; }
+		public byte CoordinateY { get; private set; }
 
 	    [JsonProperty(Order=5, ItemConverterType = typeof(StringEnumConverter))]
 		public readonly IEnumerable<TeleportIndex> Teleports;
@@ -119,9 +138,9 @@ namespace FF1Lib
 
 			Destination = destination;
 			Index = index;
-			//CoordinateX = coordinates.X;
-			//CoordinateY = coordinates.Y;
 			Coordinates = coordinates;
+			CoordinateX = coordinates.X;
+			CoordinateY = coordinates.Y;
 			Teleports = teleports?.ToList() ?? new List<TeleportIndex>();
 			Exit = exits;
 		}
@@ -138,6 +157,8 @@ namespace FF1Lib
 			Destination = MapLocation.None;
 			Index = teledata.Map;
 			Coordinates = new();
+			CoordinateX = 0;
+			CoordinateY = 0;
 			Teleports = null;
 			Exit = new();
 			SetTeleporter(new Coordinate(teledata.X, teledata.Y, context));
@@ -147,6 +168,8 @@ namespace FF1Lib
 			Destination = MapLocation.None;
 			Index = index;
 			Coordinates = newcoord;
+			CoordinateX = Coordinates.X;
+			CoordinateY = Coordinates.Y;
 			Teleports = null;
 			Exit = new();
 		}
@@ -154,7 +177,9 @@ namespace FF1Lib
 		{
 			Destination = newdest.Destination;
 			Index = newdest.Index;
-			Coordinates = new Coordinate(newdest.Coordinates.X, newdest.CoordinateY, newdest.Coordinates.Context);
+			Coordinates = new Coordinate(newdest.Coordinates.X, newdest.Coordinates.Y, newdest.Coordinates.Context);
+			CoordinateX = Coordinates.X;
+			CoordinateY = Coordinates.Y;
 			Teleports = newdest.Teleports?.ToList();
 			Exit = newdest.Exit;
 		}
@@ -163,6 +188,8 @@ namespace FF1Lib
 			Destination = newdest.Destination;
 			Index = newdest.Index;
 			Coordinates = new Coordinate(newcoords.X, newcoords.Y, newcoords.Context);
+			CoordinateX = Coordinates.X;
+			CoordinateY = Coordinates.Y;
 			Teleports = newdest.Teleports?.ToList();
 			Exit = newdest.Exit;
 		}
@@ -174,6 +201,8 @@ namespace FF1Lib
 		{
 			int mask = (coordinate.Context == CoordinateLocale.Overworld) ? 0xFF : 0x3F;
 			Coordinates = new Coordinate((byte)(coordinate.X & mask), (byte)(coordinate.Y & mask), coordinate.Context);
+			CoordinateX = Coordinates.X;
+			CoordinateY = Coordinates.Y;
 		}
 		public void SetTeleporter(MapIndex index, Coordinate coordinate)
 		{
@@ -184,7 +213,6 @@ namespace FF1Lib
 		{
 			SetTeleporter(new Coordinate(data.X, data.Y, CoordinateLocale.Overworld));
 		}
-
 		public Coordinate FlipXcoordinate()
 		{
 			return new Coordinate((byte)(64 - Coordinates.X - 1), Coordinates.Y, Coordinates.Context);
