@@ -77,6 +77,8 @@
 	  <EmbeddedResource Include="bosses\AMON.png" />
 	  <EmbeddedResource Include="bosses\ANTLION.png" />
       <EmbeddedResource Include="bosses\ASTAROTH.png" />
+	  <EmbeddedResource Include="bosses\APANDA.png" />
+	  <EmbeddedResource Include="bosses\ARCHAVIS.png" />
 	  <EmbeddedResource Include="bosses\ASURA.png" />
 	  <EmbeddedResource Include="bosses\BARBRICA.png" />
 	  <EmbeddedResource Include="bosses\BEHEMOTH.png" />

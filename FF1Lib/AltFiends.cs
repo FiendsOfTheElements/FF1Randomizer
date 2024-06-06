@@ -147,7 +147,7 @@ namespace FF1Lib
 					},
 
 			};
-			var FF2AltFiendslist = new List<AlternateFiends> 
+			var FF2AltFiendslist = new List<AlternateFiends>
 			{
 					new AlternateFiends {
 					Name = "ADMNTOSE",
@@ -1515,11 +1515,50 @@ namespace FF1Lib
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					Spells2 = new List<byte> { (byte)SpellByte.ZAP, (byte)SpellByte.ICE3, (byte)SpellByte.LIT3, (byte)SpellByte.XXXX, (byte)SpellByte.CUR3, (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.LIT3 },
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 				},
+					new AlternateFiends {
+					Name = "APANDA",
+					SpriteSheet = FormationSpriteSheet.SentryWaterNagaChimera,
+					FormationPattern = FormationPattern.Large4,
+					GFXOffset = FormationGFX.Sprite3,
+					Palette1 = 0x3A,
+					Palette2 = 0x3A,
+					ElementalWeakness = SpellElement.Fire,
+					MonsterType = MonsterType.MAGICAL,
+					FiendPool = FiendPool.FinalFantasy4,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.SLOW, (byte)SpellByte.CUR2, (byte)SpellByte.LIT2, (byte)SpellByte.LIT2, (byte)SpellByte.FOG, (byte)SpellByte.FOG, (byte)SpellByte.CUR2, (byte)SpellByte.SLOW },
+					SkillChance1 = 0x40,
+					Skills1 = new List<byte> { (byte)EnemySkills.Trance, (byte)EnemySkills.Stinger, (byte)EnemySkills.Frost, (byte)EnemySkills.Flash },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.FOG2, (byte)SpellByte.CUR3, (byte)SpellByte.LOK2, (byte)SpellByte.LIT3, (byte)SpellByte.FOG2, (byte)SpellByte.CUR3, (byte)SpellByte.LIT3 },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Tornado, (byte)EnemySkills.Nuclear, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Glare },
+				},
+			new AlternateFiends {
+					Name = "ARCHAVIS",
+					SpriteSheet = FormationSpriteSheet.SlimeSpiderManticorAnkylo,
+					FormationPattern = FormationPattern.Large4,
+					GFXOffset = FormationGFX.Sprite2,
+					Palette1 = 0x3A,
+					Palette2 = 0x3A,
+					ElementalWeakness = SpellElement.Lightning,
+					MonsterType = MonsterType.DRAGON,
+					FiendPool = FiendPool.FinalFantasy4,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.BANE, (byte)SpellByte.FAST, (byte)SpellByte.HOLD, (byte)SpellByte.FIR2, (byte)SpellByte.SLEP, (byte)SpellByte.FIR2, (byte)SpellByte.MUTE, (byte)SpellByte.FIR2 },
+					SkillChance1 = 0x00,
+					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
+					SpellChance2 = 0x00,
+					Spells2 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Tornado, (byte)EnemySkills.Toxic, (byte)EnemySkills.Glance, (byte)EnemySkills.Thunder },
+				},
 			};
+
 			var FF1BonusFiendsList = new List<AlternateFiends>
 			{
 
