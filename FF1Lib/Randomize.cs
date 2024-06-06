@@ -423,7 +423,7 @@ public partial class FF1Rom : NesRom
 
 		StatsTrackingHacks(flags, preferences);
 		RollCredits(rng);
-		if ((bool)flags.IsShipFree) Overworld.SetShipLocation(255);
+		if ((bool)flags.IsShipFree || flags.Archipelago) Overworld.SetShipLocation(255);
 		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
 		// Quality of Life Stuff
@@ -454,9 +454,7 @@ public partial class FF1Rom : NesRom
 		// Archipelago
 		if (flags.Archipelago)
 		{
-			Overworld.SetShipLocation(255);
-
-			Archipelago exporter = new Archipelago(this, itemPlacement.PlacedItems, sanityChecker, expChests, PlacementContext, Overworld.Locations, seed, flags, unmodifiedFlags, preferences);
+			Archipelago exporter = new Archipelago(this, itemPlacement, sanityChecker, expChests, PlacementContext, Overworld.Locations, seed, flags, unmodifiedFlags, preferences);
 			Utilities.ArchipelagoCache = exporter.Work();
 		}
 
@@ -492,6 +490,7 @@ public partial class FF1Rom : NesRom
 		uint last_rng_value = rng.Next();
 
 		// Final ROM writes
+
 		//WriteSeedAndFlags(seed.ToHex(), flags, flagsForRng, unmodifiedFlags, "ressourcePackHash", last_rng_value);
 		WriteSeedAndFlags(seed.ToHex(), flags, flagsForRng, unmodifiedFlags, resourcesPackHash.ToHex(), last_rng_value);
 		if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
