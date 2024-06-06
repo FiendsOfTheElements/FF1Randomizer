@@ -70,7 +70,9 @@
 
     <Compile Remove="Template.cs" />
 
+	  <EmbeddedResource Include="bosses\ABDUCTOR.png" />
 	  <EmbeddedResource Include="bosses\ADMNTOSE.png" />
+	  <EmbeddedResource Include="bosses\ALTAROIT.png" />
 	  <EmbeddedResource Include="bosses\AHRIMAN.png" />
 	  <EmbeddedResource Include="bosses\AMON.png" />
 	  <EmbeddedResource Include="bosses\ANTLION.png" />
@@ -108,6 +110,7 @@
 	  <EmbeddedResource Include="bosses\GOLDOR.png" />
 	  <EmbeddedResource Include="bosses\GOTUS.png" />
 	  <EmbeddedResource Include="bosses\HECATON.png" />
+	  <EmbeddedResource Include="bosses\HURRAY.png" />
 	  <EmbeddedResource Include="bosses\GUARDIN.png" />
 	  <EmbeddedResource Include="bosses\GUTSCO.png" />
 	  <EmbeddedResource Include="bosses\HAFGUFA.png" />
