@@ -33,6 +33,23 @@ namespace FF1Lib
 			ToFRMode mode = flags.ToFRMode == ToFRMode.Random ? (ToFRMode)rng.Between(0, (Enum.GetNames(typeof(ToFRMode)).Length - 2)) : flags.ToFRMode;
 			FiendsRefights fiendsrefights = flags.FiendsRefights == FiendsRefights.Random ? (FiendsRefights)rng.Between(0, (Enum.GetNames(typeof(FiendsRefights)).Length - 2)) : flags.FiendsRefights;
 
+			if (flags.GameMode == GameModes.DeepDungeon)
+			{
+				if (mode == ToFRMode.Short)
+				{
+					UpdateDeepDungeonToFR(maps, teleporters, tilesets, fiendsrefights, (bool)flags.ChaosFloorEncounters, rng);
+					return;
+				}
+				else
+				{
+					if ((bool)flags.ChaosFloorEncounters)
+					{
+						EnableChaosFloorEncounters(maps);
+					}
+					return;
+				}
+			}
+
 			// Update inRoom teleporters since these aren't manually defined in Teleporters
 			var tof2tele = teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends2];
 			teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends2] = new TeleportDestination(tof2tele, new Coordinate(tof2tele.Coordinates.X, tof2tele.Coordinates.Y, CoordinateLocale.StandardInRoom));
@@ -49,7 +66,7 @@ namespace FF1Lib
 			}
 			else if (mode == ToFRMode.Short)
 			{
-				ShortenToFR(maps, teleporters, fiendsrefights, rng);
+				ShortenToFR(maps, teleporters, fiendsrefights, true, rng);
 			}
 
 			// Update Fiends Refights
@@ -82,6 +99,20 @@ namespace FF1Lib
 			{
 				EnableChaosRush(tilesets);
 			}
+		}
+		private void UpdateDeepDungeonToFR(StandardMaps maps, Teleporters teleporters, TileSetsData tilesets, FiendsRefights fiendsRefights, bool chaosfloorsencouters, MT19337 rng)
+		{
+			teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends10] = new TeleportDestination(MapIndex.TempleOfFiendsRevisitedChaos, new Coordinate(0x0F, 0x03, CoordinateLocale.StandardInRoom));
+
+			ShortenToFR(maps, teleporters, fiendsRefights, false, rng);
+
+			// Add Encounters to Chaos' Floor
+			if (chaosfloorsencouters)
+			{
+				EnableChaosFloorEncounters(maps);
+			}
+
+			EnableChaosRush(tilesets);
 		}
 
 		private void MidToFR(StandardMaps maps)
@@ -129,7 +160,7 @@ namespace FF1Lib
 			maps[MapIndex.TempleOfFiendsRevisitedWater].Map[0x1B, 0x16] = 0x5C;
 			maps[MapIndex.TempleOfFiendsRevisitedWater].Map[0x0F, 0x0F] = 0x5D; // Move Masa Chest
 		}
-		private void ShortenToFR(StandardMaps maps, Teleporters teleporters, FiendsRefights fiendsrefights, MT19337 rng)
+		private void ShortenToFR(StandardMaps maps, Teleporters teleporters, FiendsRefights fiendsrefights, bool addLutePlate, MT19337 rng)
 		{
 			// Black Orb tile Warp destination change straight to an edit Chaos floor with all the ToFR Chests.
 			teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends2] = new TeleportDestination(MapIndex.TempleOfFiendsRevisitedChaos, new Coordinate(0x0F, 0x03, CoordinateLocale.StandardInRoom));
@@ -161,9 +192,11 @@ namespace FF1Lib
 			}
 			maps[MapIndex.TempleOfFiendsRevisitedChaos].Map.Put((0x0A, 0x00), landingArea.ToArray());
 
-			AddLutePlateToChaosFloor(maps);
+			if (addLutePlate)
+			{
+				AddLutePlateToChaosFloor(maps);
+			}
 		}
-
 		private void AddLutePlateToChaosFloor(StandardMaps maps)
 		{
 			// add lute plate (can't use mapNpcIndex 0-2, those belong to Garland)
