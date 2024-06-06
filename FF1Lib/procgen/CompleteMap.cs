@@ -7,8 +7,10 @@ namespace FF1Lib.Procgen
 	public class CompleteMap
 	{
 	    [JsonProperty(Order=1)]
-	    [JsonConverter(typeof(StringEnumConverter))]
-	        public MapIndex MapIndex;
+	    //[JsonConverter(typeof(StringEnumConverter))]
+	        public string MapId;
+
+		public MapIndex MapIndex;
 
 		public Map Map;
 
@@ -16,7 +18,8 @@ namespace FF1Lib.Procgen
 	        public List<string> DecompressedMapRows { get; set; }
 
 		public MapRequirements Requirements;
-	        public Coordinate Entrance;
+
+		public Coordinate Entrance;
 
 	    [JsonProperty(Order = 4)]
 	        public Dictionary<OverworldTeleportIndex, TeleportDestination> OverworldEntrances;
@@ -137,22 +140,38 @@ namespace FF1Lib.Procgen
 	    }
 
 	    public static List<CompleteMap> LoadJson(StreamReader rd) {
-		    var objs = JsonConvert.DeserializeObject<List<CompleteMap>>(rd.ReadToEnd());
+			var objs = JsonConvert.DeserializeObject<List<CompleteMap>>(rd.ReadToEnd());
 
-		    foreach (CompleteMap obj in objs) {
-			obj.Map = new Map(0);
-
-			for (int y = 0; y < 64; y++)
+		    foreach (CompleteMap obj in objs)
 			{
-			    byte[] row = Convert.FromBase64String(obj.DecompressedMapRows[y]);
-			    for (int x = 0; x < 64; x++) {
-				obj.Map[y, x] = row[x];
-			    }
-			}
-			obj.DecompressedMapRows = null;
-		    }
+				obj.MapIndex = (MapIndex)Enum.Parse(typeof(MapIndex), obj.MapId);
 
-		    return objs;
+				obj.Map = new Map(0);
+
+				for (int y = 0; y < 64; y++)
+				{
+					byte[] row = Convert.FromBase64String(obj.DecompressedMapRows[y]);
+					for (int x = 0; x < 64; x++) {
+					obj.Map[y, x] = row[x];
+					}
+				}
+				obj.DecompressedMapRows = null;
+
+				foreach (var destination in obj.MapDestinations)
+				{
+					var oldDestination = obj.MapDestinations[destination.Key];
+					obj.MapDestinations[destination.Key] = new TeleportDestination(oldDestination, new Coordinate(oldDestination.CoordinateX, oldDestination.CoordinateY));
+				}
+
+				foreach (var entrance in obj.OverworldEntrances)
+				{
+					var oldEntrance = obj.OverworldEntrances[entrance.Key];
+					obj.OverworldEntrances[entrance.Key] = new TeleportDestination(oldEntrance, new Coordinate(oldEntrance.CoordinateX, oldEntrance.CoordinateY));
+				}
+
+			}
+
+			return objs;
 	    }
 
 	    public void SaveJson(StreamWriter stream) {

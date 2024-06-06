@@ -67,6 +67,15 @@ namespace FF1Lib
 				return mapsToFlipVertically;
 			}
 
+			if ((bool)flags.ProcgenEarth)
+			{
+				ValidMaps_Vertical.Remove(MapIndex.EarthCaveB1);
+				ValidMaps_Vertical.Remove(MapIndex.EarthCaveB2);
+				ValidMaps_Vertical.Remove(MapIndex.EarthCaveB3);
+				ValidMaps_Vertical.Remove(MapIndex.EarthCaveB4);
+				ValidMaps_Vertical.Remove(MapIndex.EarthCaveB5);
+			}
+
 			ValidMaps_Vertical.Shuffle(rng);
 			mapsToFlipVertically = ValidMaps_Vertical.GetRange(0, rng.Between((int)(ValidMaps_Vertical.Count * 0.33), (int)(ValidMaps_Vertical.Count * 0.75)));
 			if (flags.EFGWaterfall) mapsToFlipVertically.Remove(MapIndex.Waterfall);
@@ -447,6 +456,15 @@ namespace FF1Lib
 		public List<MapIndex> HorizontalFlip(MT19337 rng, StandardMaps maps, Teleporters teleporters)
 		{
 			// Select maps to flip
+			if ((bool)flags.ProcgenEarth)
+			{
+				ValidMaps_Horizontal.Remove(MapIndex.EarthCaveB1);
+				ValidMaps_Horizontal.Remove(MapIndex.EarthCaveB2);
+				ValidMaps_Horizontal.Remove(MapIndex.EarthCaveB3);
+				ValidMaps_Horizontal.Remove(MapIndex.EarthCaveB4);
+				ValidMaps_Horizontal.Remove(MapIndex.EarthCaveB5);
+			}
+
 			ValidMaps_Horizontal.Shuffle(rng);
 			var mapsToFlip = ValidMaps_Horizontal.GetRange(0, rng.Between((int)(ValidMaps_Horizontal.Count * 0.33), (int)(ValidMaps_Horizontal.Count * 0.75)));
 			if (flags.EFGWaterfall) mapsToFlip.Remove(MapIndex.Waterfall);

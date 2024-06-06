@@ -83,7 +83,14 @@ namespace FF1Lib
 		}
 		public void ImportCustomMap(Teleporters teleporters, CompleteMap newmap)
 		{
-			maps[(int)newmap.MapIndex] = newmap.Map;
+			for(int x = 0; x < 64; x++)
+			{
+				for (int y = 0; y < 64; y++)
+				{
+					maps[(int)newmap.MapIndex][(x, y)] = newmap.Map[(x, y)];
+				}
+			}
+
 			foreach (var dest in newmap.MapDestinations)
 			{
 				// Update the teleport information, this
@@ -94,16 +101,14 @@ namespace FF1Lib
 				// index, where the teleport puts the player,
 				// and what teleports (but not warps) are
 				// accessible in this map location.
-				teleporters.StandardMapTeleporters[dest.Key] = dest.Value;
-				//teleporters.Set(dest.Value.Destination.ToString(), dest.Value);
-				/*
 				if (dest.Key != TeleportIndex.Overworld) {
-					overworldMap.PutStandardTeleport(dest.Key, dest.Value, OverworldTeleportIndex.None);
-				}*/
+					teleporters.StandardMapTeleporters[dest.Key] = dest.Value;
+				}
 			}
-			/*foreach (var kv in newmap.OverworldEntrances) {
-			 overworldMap.PutOverworldTeleport(kv.Key, kv.Value);
-			 }*/
+
+			foreach (var kv in newmap.OverworldEntrances) {
+				teleporters.OverworldTeleporters[kv.Key] = kv.Value;
+			 }
 			foreach (var npc in newmap.NPCs)
 			{
 				mapObjects[(int)newmap.MapIndex][npc.Index].CopyFrom(npc);
@@ -123,7 +128,10 @@ namespace FF1Lib
 
 			var map = maplist.PickRandom(rng);
 
-			var loadedmaps = CompleteMap.LoadJson(archive.GetEntry(map).Open());
+			var test = archive.GetEntry(map);
+			var test2 = test.Open();
+
+			var loadedmaps = CompleteMap.LoadJson(test2);
 
 			foreach (var m in loadedmaps)
 			{

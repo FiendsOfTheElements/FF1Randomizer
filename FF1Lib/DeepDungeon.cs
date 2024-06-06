@@ -1238,7 +1238,7 @@ _rom.Put(0x800 + 0x100 + 2 * skipentrance3, Blob.FromHex("8003"));*/
 					_rom.Put(0x3F100 + i - 3, Blob.FromHex("87"));*/
 					if (flags.ToFRMode == ToFRMode.Short)
 					{
-						teleporters.StandardMapTeleporters[(TeleportIndex)(i - 3)] = new TeleportDestination((MapIndex)(i + 1), new Coordinate(0x0F, 0x89, CoordinateLocale.StandardInRoom));
+						//teleporters.StandardMapTeleporters[(TeleportIndex)(i - 3)] = new TeleportDestination((MapIndex)(i + 1), new Coordinate(0x0F, 0x83, CoordinateLocale.StandardInRoom));
 
 						//_rom.Put(0x3F100 + i - 3, Blob.FromHex("89"));
 						standardMaps[(MapIndex)59].Map[0x07, 0x0F] = tilesets[7].doortile;
