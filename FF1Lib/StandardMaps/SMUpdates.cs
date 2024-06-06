@@ -8,7 +8,7 @@ namespace FF1Lib
 {
 	public partial class StandardMaps
 	{
-		public void Update(ZoneFormations formations, MT19337 rng)
+		public void ProcgenDungeons(MT19337 rng)
 		{
 			if ((bool)flags.ProcgenEarth)
 			{
@@ -24,8 +24,11 @@ namespace FF1Lib
 			}
 
 			ProcgenWaterfall((bool)flags.EFGWaterfall, teleporters, mapObjects[(int)MapIndex.Waterfall], rng);
-			MoveToFBats((bool)flags.MoveToFBats);
 			FlipMaps(flags, rng);
+		}
+		public void Update(ZoneFormations formations, MT19337 rng)
+		{
+			MoveToFBats((bool)flags.MoveToFBats);
 			EnableTitansTrove((bool)flags.TitansTrove);
 			EnableLefeinShops((bool)flags.LefeinShops);
 			EnableMelmondClinic((bool)flags.MelmondClinic);

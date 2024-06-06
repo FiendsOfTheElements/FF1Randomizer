@@ -772,7 +772,7 @@ namespace FF1Lib
 		{
 			airShipLocationAccessible = false;
 
-			if (layoutcheck)
+			if (layoutcheck || victoryConditions.GameMode == GameModes.DeepDungeon)
 			{
 				requirements = AccessRequirement.AllExceptEnding;
 				changes = MapChange.All;

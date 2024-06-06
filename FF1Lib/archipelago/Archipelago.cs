@@ -22,20 +22,23 @@ namespace FF1Lib
 		ExpChests expChests;
 		PlacementContext incentivesData;
 		OwLocationData locations;
+		ItemPlacement itemPlacement;
 		Blob seed;
 
 		public string Json { get; private set; }
 
-		public Archipelago(FF1Rom _rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, ExpChests _expChests, PlacementContext _incentivesData, OwLocationData _locations, Blob _seed, Flags _flags, Flags _originflags, Preferences _preferences)
+		public Archipelago(FF1Rom _rom, ItemPlacement _itemPlacement, SanityCheckerV2 checker, ExpChests _expChests, PlacementContext _incentivesData, OwLocationData _locations, Blob _seed, Flags _flags, Flags _originflags, Preferences _preferences)
 		{
 			rom = _rom;
 			expChests = _expChests;
 			incentivesData = _incentivesData;
+			itemPlacement = _itemPlacement;
 			flags = _flags;
 			originalFlags = _originflags;
 			seed = _seed;
 			locations = _locations;
 			preferences = _preferences;
+			var generatedPlacement = itemPlacement.PlacedItems;
 
 			var kiPlacement = generatedPlacement.Where(r => ItemLists.AllQuestItems.Contains(r.Item) && r.Item != Item.Bridge).ToList();
 
@@ -151,7 +154,26 @@ namespace FF1Lib
 				.ToObject<Dictionary<string, int>>()
 				.ToDictionary(l => l.Value, l => l.Key);
 
-			foreach (var rewardSource in logic.RewardSources) rom.Put(rewardSource.RewardSource.Address, new byte[] { 18 });
+			foreach (var rewardSource in logic.RewardSources)
+			{
+				if (itemPlacement.PlacedItems.TryFind(r => r.Address == rewardSource.RewardSource.Address, out var placeditem))
+				{
+					var index = itemPlacement.PlacedItems.FindIndex(r => r.Address == rewardSource.RewardSource.Address);
+
+					if (placeditem.GetType() == typeof(TreasureChest))
+					{
+						itemPlacement.PlacedItems[index] = new TreasureChest(placeditem, Item.FireOrb);
+					}
+					else if (placeditem.GetType() == typeof(NpcReward))
+					{
+						itemPlacement.PlacedItems[index] = new NpcReward(placeditem, Item.FireOrb);
+					}
+					else if (placeditem.GetType() == typeof(ItemShopSlot))
+					{
+						itemPlacement.PlacedItems[index] = new ItemShopSlot((ItemShopSlot)placeditem, Item.FireOrb);
+					}
+				}
+			}
 
 			var data = new ArchipelagoOptions
 			{

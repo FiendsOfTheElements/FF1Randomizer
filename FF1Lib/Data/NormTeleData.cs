@@ -13,8 +13,8 @@ namespace FF1Lib
 		public TeleData(TeleportDestination teleport)
 		{
 			Map = (MapIndex)teleport.Index;
-			X = teleport.CoordinateX;
-			Y = teleport.CoordinateY;
+			X = teleport.Coordinates.RawX;
+			Y = teleport.Coordinates.RawY;
 		}
 		public MapIndex Map;
 		public byte X;
