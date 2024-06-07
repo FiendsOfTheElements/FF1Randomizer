@@ -97,7 +97,11 @@
 	  <EmbeddedResource Include="bosses\C.BRAIN.png" />
 	  <EmbeddedResource Include="bosses\CAGNAZZO.png" />
 	  <EmbeddedResource Include="bosses\CALCABRN.png" />
+	  <EmbeddedResource Include="bosses\CALOFIST.png" />
 	  <EmbeddedResource Include="bosses\CARBUNCL.png" />
+	  <EmbeddedResource Include="bosses\CATOBLEP.png" />
+	  <EmbeddedResource Include="bosses\CRAYCLAW.png" />
+	  <EmbeddedResource Include="bosses\CTSTRPHE.png" />
 	  <EmbeddedResource Include="bosses\D.MIST.png" />
 	  <EmbeddedResource Include="bosses\D.STORM.png" />
 	  <EmbeddedResource Include="bosses\DARKELF.png" />
