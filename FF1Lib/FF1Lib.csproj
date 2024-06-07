@@ -79,7 +79,10 @@
       <EmbeddedResource Include="bosses\ASTAROTH.png" />
 	  <EmbeddedResource Include="bosses\APANDA.png" />
 	  <EmbeddedResource Include="bosses\ARCHAVIS.png" />
+	  <EmbeddedResource Include="bosses\ARCHDEMN.png" />
 	  <EmbeddedResource Include="bosses\ASURA.png" />
+	  <EmbeddedResource Include="bosses\ATMOS.png" />
+	  <EmbeddedResource Include="bosses\AZULMAGE.png" />
 	  <EmbeddedResource Include="bosses\BARBRICA.png" />
 	  <EmbeddedResource Include="bosses\BEHEMOTH.png" />
 	  <EmbeddedResource Include="bosses\BELZEBUB.png" />
@@ -90,6 +93,8 @@
 	  <EmbeddedResource Include="bosses\B.KNIGHT.png" />
 	  <EmbeddedResource Include="bosses\BAIGAN.png" />
 	  <EmbeddedResource Include="bosses\BALNAB.png" />
+	  <EmbeddedResource Include="bosses\BYBLOS.png" />
+	  <EmbeddedResource Include="bosses\C.BRAIN.png" />
 	  <EmbeddedResource Include="bosses\CAGNAZZO.png" />
 	  <EmbeddedResource Include="bosses\CALCABRN.png" />
 	  <EmbeddedResource Include="bosses\CARBUNCL.png" />
