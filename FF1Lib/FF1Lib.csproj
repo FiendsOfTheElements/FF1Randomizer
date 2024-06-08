@@ -103,6 +103,7 @@
 	  <EmbeddedResource Include="bosses\CRAYCLAW.png" />
 	  <EmbeddedResource Include="bosses\CTSTRPHE.png" />
 	  <EmbeddedResource Include="bosses\D.MIST.png" />
+	  <EmbeddedResource Include="bosses\D.POD.png" />
 	  <EmbeddedResource Include="bosses\D.STORM.png" />
 	  <EmbeddedResource Include="bosses\DARKELF.png" />
 	  <EmbeddedResource Include="bosses\DETHMACH.png" />
@@ -110,10 +111,14 @@
 	  <EmbeddedResource Include="bosses\DOGA.png" />
 	  <EmbeddedResource Include="bosses\DR.UNNE.png" />
 	  <EmbeddedResource Include="bosses\ECHIDNA.png" />
+	  <EmbeddedResource Include="bosses\ENKIDU.png" />
 	  <EmbeddedResource Include="bosses\EVILELF.png" />
+	  <EmbeddedResource Include="bosses\EXDEATH.png" />
 	  <EmbeddedResource Include="bosses\EVILWALL.png" />
 	  <EmbeddedResource Include="bosses\FLANMAST.png" />
+	  <EmbeddedResource Include="bosses\FORZA.png" />
 	  <EmbeddedResource Include="bosses\GARUDA.png" />
+	  <EmbeddedResource Include="bosses\GARULA.png" />
 	  <EmbeddedResource Include="bosses\GENERAL.png" />
 	  <EmbeddedResource Include="bosses\GIGAWORM.png" />
 	  <EmbeddedResource Include="bosses\GILGAMSH.png" />
