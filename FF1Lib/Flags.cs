@@ -636,6 +636,7 @@ namespace FF1Lib
 		public bool? FinalFantasy2Fiends { get; set; } = false;
 		public bool? FinalFantasy3Fiends { get; set; } = false;
 		public bool? FinalFantasy4Fiends { get; set; } = false;
+		public bool? FinalFantasy5Fiends { get; set; } = false;
 		public bool? FinalFantasy1BonusFiends { get; set; } = false;
  		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 

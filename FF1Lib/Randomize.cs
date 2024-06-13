@@ -338,6 +338,8 @@ public partial class FF1Rom : NesRom
 		// Enemies
 		if ((bool)flags.AlternateFiends && !flags.SpookyFlag) await this.Progress("Creating new Fiends", 1);
 		AlternativeFiends(EnemyScripts, rng, flags);
+		TransformFinalFormation(flags, rng);
+		DoEnemizer(EnemyScripts, flags, rng);
 
 		ShuffleEnemyScripts(rng, flags);
 		EnemyScripts.ShuffleEnemySkillsSpells(this, rng, flags);
@@ -352,8 +354,6 @@ public partial class FF1Rom : NesRom
 		Astos(NpcData, Dialogues, TalkRoutines, EnemyScripts, flags, rng);
 		EnableSwolePirates((bool)flags.SwolePirates);
 
-		TransformFinalFormation(flags, rng);
-		DoEnemizer(EnemyScripts, flags, rng);
 		FiendShuffle((bool)flags.FiendShuffle, rng);
 		ScaleEnemyStats(rng, flags);
 		ScaleBossStats(rng, flags);

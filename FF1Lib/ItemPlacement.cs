@@ -182,7 +182,7 @@ namespace FF1Lib
 		public void Write()
 		{
 			// Output the results to the ROM
-			foreach (var item in PlacedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && (x is TreasureChest)))
+			foreach (var item in PlacedItems.Where(x => !x.IsUnused && (x is not StaticItemLocation))) //&& x.Address < 0x80000 && (x is TreasureChest)))
 			{
 				//Debug.WriteLine(item.SpoilerText);
 				item.Put(rom);
