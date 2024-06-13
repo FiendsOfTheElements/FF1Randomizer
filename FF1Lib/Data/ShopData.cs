@@ -157,7 +157,7 @@
 			var innClinicsCount = Shops.Where(s => s.Type == ShopType.Inn || s.Type == ShopType.Clinic).Count() * 3;
 			return 241 - (itemShopsCount + innClinicsCount);
 		}
-		public int StoreData()
+		private List<byte> UpdatePointers()
 		{
 			var shopdic = Shops.ToDictionary(s => s.Index);
 			var shopdata = new List<byte>();
@@ -184,10 +184,16 @@
 				{
 					Index.Data[i] = ShopNullPointer;
 				}
-
-				Index.StoreTable();
-				rom.Put(ShopPointerBase + ShopNullPointer + 1, shopdata.Cast<byte>().ToArray());
 			}
+
+			return shopdata;
+		}
+		public int StoreData()
+		{
+			var shopdata = UpdatePointers();
+
+			Index.StoreTable();
+			rom.Put(ShopPointerBase + ShopNullPointer + 1, shopdata.Cast<byte>().ToArray());
 
 			return 241 - shopdata.Count();
 		}
@@ -274,7 +280,7 @@
 				return;
 			}
 
-
+			UpdatePointers();
 
 			ItemShopSlot placedShopSlot = (ItemShopSlot)placedshops.First();
 
