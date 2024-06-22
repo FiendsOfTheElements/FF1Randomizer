@@ -7,6 +7,7 @@
 		public bool ModernBattlefield { get; set; }
 		public bool ThirdBattlePalette { get; set; }
 		public bool TeamSteak { get; set; }
+		public bool AlternateAirshipTheme { get; set; }
 		public MusicShuffle Music { get; set; }
 		public bool DisableDamageTileFlicker { get; set; } = true;
 		public bool DisableDamageTileSFX { get; set; }
