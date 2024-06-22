@@ -64,19 +64,6 @@ namespace FF1Lib
 				return;
 			}
 
-			bool freeAirship = (bool)flags.IsAirshipFree;
-			bool freeShip = (bool)flags.IsShipFree;
-
-			if (freeAirship)
-			{
-				Data[0x3020 + (int)Item.Floater] = 0x01;
-			}
-
-			if (freeAirship && freeShip)
-			{
-				Data[0x3000] = 0x81;
-			}
-
 			byte overworldtrack = (byte)Music.Tracks[SongTracks.Overworld];
 			byte shiptrack = (byte)Music.Tracks[SongTracks.Ship];
 			byte airshiptrack = (byte)Music.Tracks[SongTracks.Airship];

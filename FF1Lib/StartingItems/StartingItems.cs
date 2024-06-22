@@ -34,7 +34,7 @@ namespace FF1Lib
 
 			// Distribute Items to handlers
 			startingInventory.Process(initialItems, flags.ExtConsumablesEnabled);
-			startingOwItems.Process(initialItems.Where(i => i.Key >= Item.Ship).Select(i => i.Key).ToList());
+			startingOwItems.Process(initialItems.Where(i => i.Key >= Item.Ship).Select(i => i.Key).ToList(), (bool)flags.IsAirshipFree && (bool)flags.IsShipFree);
 			startingEquipement.Process(initialItems, flags.ExtConsumablesEnabled);
 
 			StartingKeyItems = initialItems.Where(i => (i.Key >= Item.Lute && i.Key <= Item.AirOrb) || (i.Key >= Item.Ship)).Select(i => i.Key).ToList();
@@ -58,6 +58,7 @@ namespace FF1Lib
 			{
 				((bool)flags.FreeLute, Item.Lute),
 				((bool)flags.FreeRod, Item.Rod),
+				((bool)flags.AirBoat && (bool)flags.IsAirshipFree, Item.Floater),
 				((bool)flags.FreeTail && !(bool)flags.NoTail, Item.Tail),
 			};
 
