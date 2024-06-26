@@ -2079,6 +2079,11 @@
 		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items (TENTs, CABINs, and HOUSEs) on the second row, then all other key items in your inventory.\nNote: if \"New Consumables\" is on, these consumable items will be placed in the third row, with Key Items flowing after."
 	},
 	{
+		"Id": "autoRetargetingCheckBox",
+		"title": "Auto Retargeting",
+		"description": "If enabled, melee attacks against dead enemies will be retargeted to an enemy that is still alive, instead of displaying the 'Ineffective' message"
+	},
+	{
 		"Id": "shopInfoCheckBox",
 		"title": "Shop Information",
 		"screenshot": "ShopInfoFlag.png",

@@ -2127,6 +2127,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InventoryAutosort"));
 			}
 		}
+		public bool AutoRetargeting
+		{
+			get => Flags.AutoRetargeting;
+			set
+			{
+				Flags.AutoRetargeting = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AutoRetargeting"));
+			}
+		}
 		public bool RenounceAutosort
 		{
 			get => Preferences.RenounceAutosort;

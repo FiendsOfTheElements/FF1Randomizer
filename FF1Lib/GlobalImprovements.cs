@@ -74,6 +74,11 @@ namespace FF1Lib
 				EnableInventoryAutosort(flags.GameMode == GameModes.NoOverworld);
 			}
 
+			if ((bool)flags.AutoRetargeting)
+			{
+				EnableAutoRetargeting();
+			}
+
 			//if (settings.GetBool("SpeedHacks"))
 			if ((bool)flags.SpeedHacks)
 			{
@@ -161,6 +166,14 @@ namespace FF1Lib
 			//see 0F_8670_SortInventory.asm
 			Put(0x7EF58, Blob.FromHex("A90F2003FE20008DEAEAEA"));
 			PutInBank(0x0F, 0x8D00, Blob.FromHex("8663A9009D0003A900856218A000A219BD2060F0058A990003C8E8E01CD0F1A216BD2060F0058A990003C8E8E019D0F1A21CBD2060F0058A990003C8E8E020D0F1A200BD2060F0058A990003C8E8E011D0F1" + finalChunk));
+		}
+
+		public void EnableAutoRetargeting()
+		{
+			//see 1C_A250_AutoRetargeting.asm
+			Put(0x324C2, Blob.FromHex("4CF492EAEAEA"));
+			Put(0x312F4, Blob.FromHex("A9A248A94F48A91C4C03FE"));
+			Put(0x72250, Blob.FromHex("BDB76BC9FFD00DA209BDB66BC9FFD003CAD0F6CA8E85688E8A6CA9A448A9C748A90C4C03FE"));
 		}
 
 		public void EnableCritNumberDisplay()

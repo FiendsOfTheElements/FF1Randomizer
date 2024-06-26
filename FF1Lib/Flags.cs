@@ -402,6 +402,7 @@ namespace FF1Lib
 		public bool NPCSwatter { get; set; } = false;
 		public bool BattleMagicMenuWrapAround { get; set; } = false;
 		public bool InventoryAutosort { get; set; } = false;
+		public bool AutoRetargeting { get; set; } = false;
 		public bool EnemyStatusAttackBug { get; set; } = false;
 		public bool ImproveTurnOrderRandomization { get; set; } = false;
 		public bool FixHitChanceCap { get; set; } = false;
