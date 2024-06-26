@@ -2817,6 +2817,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("randomShardNames"));
 			}
 		}
+		public bool AlternateAirshipTheme
+		{
+			get => Preferences.AlternateAirshipTheme;
+			set
+			{
+				Preferences.AlternateAirshipTheme = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlternateAirshipTheme"));
+			}
+		}
 		public MusicShuffle Music
 		{
 			get => Preferences.Music;

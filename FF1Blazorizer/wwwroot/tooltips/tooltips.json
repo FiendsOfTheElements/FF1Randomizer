@@ -193,6 +193,12 @@
 		"description": "Adjusts the behavior of background music during play.\n None leaves all tracks in their normal place.\n Standard music shuffle operates only from the pool of dungeon tracks, along with the overworld theme.\n Nonsensical music shuffle mixes every song in the game into one pool, including shorter tunes that can loop very quickly.\n Disable Music mutes all music, although sound effects, and some very short jingles, will still play. "
 	},
 	{
+		"Id": "alternateAirshipThemeCheckBox",
+		"title": "Alternate Airship Theme",
+		"screenshot": "alternateAirshipThemeCheckBox.png",
+		"description": "Sets alternate background music when riding the Airship (or AirBoat).\n If Music is Shuffled, the alternate theme will be heard somewhere else, not necessarily when riding the Airship."
+	},
+	{
 		"Id": "disableDamageTileFlickerCheckBox",
 		"title": "Disable Damage Tile Flicker",
 		"screenshot": "disableDamageTileFlickerCheckBox.gif",
