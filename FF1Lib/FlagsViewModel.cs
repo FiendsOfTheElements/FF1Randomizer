@@ -3904,6 +3904,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BuffHealingSpells"));
 			}
 		}
+		public bool IntAffectsSpells
+		{
+			get => Flags.IntAffectsSpells;
+			set
+			{
+				Flags.IntAffectsSpells = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IntAffectsSpells"));
+			}
+		}
 		public bool BuffTier1DamageSpells
 		{
 			get => Flags.BuffTier1DamageSpells;

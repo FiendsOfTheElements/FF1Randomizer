@@ -72,7 +72,12 @@ namespace FF1Lib
 				BuffHealingSpells();
 			}
 
-			UpdateMagicAutohitThreshold(rng, flags.MagicAutohitThreshold);
+			if (flags.IntAffectsSpells)
+			{
+				IntAffectsSpells();
+			}
+
+			UpdateMagicAutohitThreshold(rng, flags.MagicAutohitThreshold, flags.IntAffectsSpells);
 
 			if (flags.EnableSoftInBattle)
 			{
@@ -121,6 +126,36 @@ namespace FF1Lib
 																	   // AMUT
 			Put(MagicOffset + MagicSize * 27 + 1, new byte[] { 0x50 }); // AMUT heals paralysis as well as silence
 		}
+		public void IntAffectsSpells()
+		{
+			//see 1C_A290_IntAffectsMagic.asm
+			//jumptable_MagicEffect overrides
+			Put(0x33809, Blob.FromHex("00BA"));
+			Put(0x3380B, Blob.FromHex("00BA"));
+			Put(0x3380D, Blob.FromHex("00BA"));
+			Put(0x3380F, Blob.FromHex("00BA"));
+			Put(0x33811, Blob.FromHex("00BA"));
+			Put(0x33813, Blob.FromHex("00BA"));
+			Put(0x33815, Blob.FromHex("00BA"));
+			Put(0x33823, Blob.FromHex("00BA"));
+			Put(0x33829, Blob.FromHex("00BA"));
+			Put(0x3382B, Blob.FromHex("00BA"));
+
+			//jump target in bank 0B
+			Put(0x33A00, Blob.FromHex("A9A248A98F48A91C4C03FE"));
+
+			//new bank 1C routines
+			Put(0x72290, Blob.FromHex("AD6E680AAABDA3A28596BDA4A28597186C960090A2C9A2EBA208A31CA330A349A349A30000000000000000000000008DA300000000" +
+				"A1A3C3A3A9018D5C68203AA4AD896C2980F008202BA4A5002085A4A9B848A99E48A90C4C03FE203AA4AD896C2980F008202BA4A5002085A4A9B948A90748A90C" +
+				"4C03FE20F2A3A9B948A93148A9B848A92C48A90C4C03FE20F2A3A9B948A96048A9B848A92C48A90C4C03FE20F2A3A9B948A97B48A9B848A92C48A90C4C03FEA9" +
+				"0C4C03FEA9018D5C68AD6D682901D0EFAD74688590AD896C2980F00E202BA48A6D74689002A9FF8D7468AAA9002045A41865909002A9FFAAA9122085A4A9B948" +
+				"A9B948A90C4C03FE20F2A3A9BA48A94848A9B848A92C48A90C4C03FE203AA4AD896C2980F008202BA4A5002085A4A9BA48A99648A90C4C03FEA90C4C03FEAD78" +
+				"682D7768D0F3A92C8D5A68A9018D5B68AD896C2980F00B202BA48A0AAAA9022085A4A9BA48A9E848A90C4C03FE203AA4AD78682D7768F00BA9008D56688D5768" +
+				"4C26A4AD896C2980F008202BA4A9002085A4AD78682D7668F007A900A2282085A460004080C0AD896C2903AABD27A4AABD1261AA60A9948D5668A9008D576860" +
+				"8DAF68E88EB0688A38EDAF688DB6682027F2AEB6682063A48A186DAF68608DB3688EB468A208A9008DB5684EB3689004186DB4686A6EB568CAD0F0AAADB56860" +
+				"8DCF6B488A489848ADCF6B0AA88A18795668995668A9007957689957689008A9FF99566899576868A868AA6860"));
+		}
+
 		public void ChangeLockMode(LockHitMode lockHitMode)
 		{
 			if (lockHitMode == LockHitMode.Accuracy107)
@@ -139,7 +174,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void UpdateMagicAutohitThreshold(MT19337 rng, AutohitThreshold threshold)
+		public void UpdateMagicAutohitThreshold(MT19337 rng, AutohitThreshold threshold, bool intAffectsSpells)
 		{
 			short limit = 300;
 			switch (threshold)
@@ -163,6 +198,16 @@ namespace FF1Lib
 			// Set the low and high bytes of the limit which are then loaded and compared to the targets hp.
 			Data[0x33AE0] = (byte)(limit & 0x00ff);
 			Data[0x33AE5] = (byte)((limit >> 8) & 0x00ff);
+
+			if (intAffectsSpells)
+			{
+				if (limit == short.MaxValue)
+				{
+					limit = short.MaxValue - 512; //prevent overflow when INT is added
+				}
+				Data[0x723CC] = (byte)(limit & 0x00ff);
+				Data[0x723D1] = (byte)((limit >> 8) & 0x00ff);
+			}
 		}
 
 		public void EnableSoftInBattle()

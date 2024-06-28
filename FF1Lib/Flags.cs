@@ -599,6 +599,7 @@ namespace FF1Lib
 		public bool ThiefHitRate { get; set; } = false;
 		public bool AllSpellLevelsForKnightNinja { get; set; } = false;
 		public bool BuffHealingSpells { get; set; } = false;
+		public bool IntAffectsSpells { get; set; } = false;
 		public bool? FreeTail { get; set; } = false;
 		public bool? HintsVillage { get; set; } = false;
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
