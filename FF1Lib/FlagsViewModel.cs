@@ -2127,6 +2127,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InventoryAutosort"));
 			}
 		}
+		public bool AutoRetargeting
+		{
+			get => Flags.AutoRetargeting;
+			set
+			{
+				Flags.AutoRetargeting = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AutoRetargeting"));
+			}
+		}
 		public bool RenounceAutosort
 		{
 			get => Preferences.RenounceAutosort;
@@ -2806,6 +2815,15 @@ namespace FF1Lib
 			{
 				Preferences.randomShardNames = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("randomShardNames"));
+			}
+		}
+		public bool AlternateAirshipTheme
+		{
+			get => Preferences.AlternateAirshipTheme;
+			set
+			{
+				Preferences.AlternateAirshipTheme = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlternateAirshipTheme"));
 			}
 		}
 		public MusicShuffle Music
@@ -3884,6 +3902,15 @@ namespace FF1Lib
 			{
 				Flags.BuffHealingSpells = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BuffHealingSpells"));
+			}
+		}
+		public bool IntAffectsSpells
+		{
+			get => Flags.IntAffectsSpells;
+			set
+			{
+				Flags.IntAffectsSpells = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IntAffectsSpells"));
 			}
 		}
 		public bool BuffTier1DamageSpells
