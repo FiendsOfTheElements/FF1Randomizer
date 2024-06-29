@@ -257,7 +257,7 @@ namespace FF1Lib
 
 			if ((!flags.Treasures ?? false)) forcedItemPlacements.AddRange(ItemLocations.AllTreasures);
 
-			if (flags.GuaranteedMasamune ?? false)
+			if ((flags.GuaranteedMasamune ?? false) && (bool)flags.Treasures)
 			{
 				forcedItemPlacements.Add(ItemLocations.ToFRMasmune);
 			}

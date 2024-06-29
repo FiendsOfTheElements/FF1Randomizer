@@ -193,6 +193,12 @@
 		"description": "Adjusts the behavior of background music during play.\n None leaves all tracks in their normal place.\n Standard music shuffle operates only from the pool of dungeon tracks, along with the overworld theme.\n Nonsensical music shuffle mixes every song in the game into one pool, including shorter tunes that can loop very quickly.\n Disable Music mutes all music, although sound effects, and some very short jingles, will still play. "
 	},
 	{
+		"Id": "alternateAirshipThemeCheckBox",
+		"title": "Alternate Airship Theme",
+		"screenshot": "alternateAirshipThemeCheckBox.png",
+		"description": "Sets alternate background music when riding the Airship (or AirBoat).\n If Music is Shuffled, the alternate theme will be heard somewhere else, not necessarily when riding the Airship."
+	},
+	{
 		"Id": "disableDamageTileFlickerCheckBox",
 		"title": "Disable Damage Tile Flicker",
 		"screenshot": "disableDamageTileFlickerCheckBox.gif",
@@ -2079,6 +2085,11 @@
 		"description": "If enabled, HEAL, PURE, and SOFT potions are automatically moved to the first row of the item menu, followed by saving items (TENTs, CABINs, and HOUSEs) on the second row, then all other key items in your inventory.\nNote: if \"New Consumables\" is on, these consumable items will be placed in the third row, with Key Items flowing after."
 	},
 	{
+		"Id": "autoRetargetingCheckBox",
+		"title": "Auto Retargeting",
+		"description": "If enabled, melee attacks against dead enemies will be retargeted to an enemy that is still alive, instead of displaying the 'Ineffective' message"
+	},
+	{
 		"Id": "shopInfoCheckBox",
 		"title": "Shop Information",
 		"screenshot": "ShopInfoFlag.png",
@@ -2435,6 +2446,11 @@
 		"title": "AirBoat",
 		"screenshot": "airboat.gif",
 		"description": "The Ship and the Airship are fused together. Getting the FLOATER allows the Ship to transform into the Airship, and the Airship can land on water. You can't raise the Airship from the desert anymore."
+	},
+	{
+		"Id": "IntAffectsSpells",
+		"title": "INT Affects Spells",
+		"description": "Makes character's INT stat affect spells in various ways.\nDamage spells get a bonus to crit chance based on INT.\nPower word spells get a bonus to their threshold.\nDebuff spells get a boost to their chance to hit.\nHeal spells (in battle) get a boost to the maximum they can roll (minimum is unchanged).'"
 	},
 	{
 		"Id": "moveToFBats",
