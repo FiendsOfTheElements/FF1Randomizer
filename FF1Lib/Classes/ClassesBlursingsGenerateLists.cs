@@ -48,7 +48,7 @@ namespace FF1Lib
 		}
 
 
-		public void GenerateLists(List<BonusMalus> blessingsTier1, List<BonusMalus> blessingsTier2, List<BonusMalus> blessingsTier3, List<BonusMalus> maluses, List<string> olditemnames, ItemNames itemnames, Flags flags, MT19337 rng, FF1Rom rom)
+		public void GenerateLists(List<BonusMalus> baseTier, List<BonusMalus> highTier, List<BonusMalus> blessingsTier3, List<BonusMalus> maluses, List<string> olditemnames, ItemNames itemnames, Flags flags, MT19337 rng, FF1Rom rom)
 		{
 			// Equipment lists
 			List<Item> braceletList = new();
@@ -153,8 +153,8 @@ namespace FF1Lib
 				0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00 };
 
 
-			// Base Tier 1 list
-			blessingsTier1.AddRange(new List<BonusMalus>()
+			// Base Tier list
+			baseTier.AddRange(new List<BonusMalus>()
 			{
 				new BonusMalus(BonusMalusAction.StrMod, "+10 Str.", mod: 10),
 				new BonusMalus(BonusMalusAction.AgiMod, "+15 Agi.", mod: 15),
@@ -169,13 +169,6 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.ArmorAdd, "+Equip @G+@h", equipment: equipGauntletsHelmets, Classes: new List<Classes> { Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.WeaponAdd, "+Thief @S", equipment: equipThiefWeapon, Classes: new List<Classes> { Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage } ),
 				new BonusMalus(BonusMalusAction.SpcMod, "+2 Lv1 MP", mod: 2, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }),
-				CreateRandomResistBonusMalus(rng),
-				CreateRandomResistBonusMalus(rng)
-			});
-
-			// Base Tier 2 list
-			blessingsTier2.AddRange(new List<BonusMalus>()
-			{
 				new BonusMalus(BonusMalusAction.StrMod, "+20 Str.", mod: 20),
 				new BonusMalus(BonusMalusAction.AgiMod, "+25 Agi.", mod: 25),
 				new BonusMalus(BonusMalusAction.VitMod, "+20 Vit.", mod: 20),
@@ -189,11 +182,13 @@ namespace FF1Lib
 				new BonusMalus(BonusMalusAction.ThorMaster, "Improved\n Thor@H", equipment: new List<Item>() { Item.ThorHammer }, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.WhiteMage }),
 				new BonusMalus(BonusMalusAction.Hunter, "Hurt Undead", mod: 0x18),
 				new BonusMalus(BonusMalusAction.Hunter, "Hurt Dragon", mod: 0x02),
-				new BonusMalus(BonusMalusAction.InnateResist, "Res. PEDTS", mod: (int)(SpellElement.Poison | SpellElement.Earth | SpellElement.Death | SpellElement.Time | SpellElement.Status), Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage })
+				new BonusMalus(BonusMalusAction.InnateResist, "Res. PEDTS", mod: (int)(SpellElement.Poison | SpellElement.Earth | SpellElement.Death | SpellElement.Time | SpellElement.Status), Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }),
+				CreateRandomResistBonusMalus(rng),
+				CreateRandomResistBonusMalus(rng),
 			});
 
-			// Base Tier 3 list
-			blessingsTier3.AddRange(new List<BonusMalus>()
+			// High tier list, should be kept at around 10 blessings or so
+			highTier.AddRange(new List<BonusMalus>()
 			{
 				new BonusMalus(BonusMalusAction.StrMod, "+40 Str.", mod: 40),
 				new BonusMalus(BonusMalusAction.AgiMod, "+50 Agi.", mod: 50),
@@ -236,50 +231,50 @@ namespace FF1Lib
 			// Conditional Blursings
 			if (!(bool)flags.Weaponizer)
 			{
-				blessingsTier2.Add(new BonusMalus(BonusMalusAction.CatClawMaster, "Improved\n CatClaw", equipment: new List<Item>() { Item.CatClaw }, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage }));
+				baseTier.Add(new BonusMalus(BonusMalusAction.CatClawMaster, "Improved\n CatClaw", equipment: new List<Item>() { Item.CatClaw }, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage }));
 			}
 
 			// Negative amounts are processed separately in ProcessStartWithRoutines, because they affect the Assembly code
 			// If changing the Malus gold labels below, change those as well to alter the actual number used
 			if (flags.StartingGold == StartingGold.None)
 			{
-				blessingsTier1.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+200 GP", mod: 2));
-				blessingsTier3.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+1400 GP", mod: 14, Classes: new List<Classes> { Classes.Thief }));
+				baseTier.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+200 GP", mod: 2));
+				highTier.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+1400 GP", mod: 14, Classes: new List<Classes> { Classes.Thief }));
 			}
 
 			else if (flags.StartingGold == StartingGold.Gp100)
 			{
-				blessingsTier1.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+400 GP", mod: 4));
-				blessingsTier3.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+2000 GP", mod: 20, Classes: new List<Classes> { Classes.Thief }));
+				baseTier.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+400 GP", mod: 4));
+				highTier.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+2000 GP", mod: 20, Classes: new List<Classes> { Classes.Thief }));
 				maluses.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-50 GP", mod: -1));
 			}
 			else if (flags.StartingGold == StartingGold.Gp200)
 			{
-				blessingsTier1.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+600 GP", mod: 6));
-				blessingsTier3.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+3000 GP", mod: 30, Classes: new List<Classes> { Classes.Thief }));
+				baseTier.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+600 GP", mod: 6));
+				highTier.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+3000 GP", mod: 30, Classes: new List<Classes> { Classes.Thief }));
 				maluses.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-100 GP", mod: -1));
 			}
 			else if (flags.StartingGold == StartingGold.Gp400 || flags.StartingGold == StartingGold.RandomLow)
 			{
-				blessingsTier1.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+800 GP", mod: 8));
-				blessingsTier3.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+4000 GP", mod: 40, Classes: new List<Classes> { Classes.Thief }));
+				baseTier.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+800 GP", mod: 8));
+				highTier.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+4000 GP", mod: 40, Classes: new List<Classes> { Classes.Thief }));
 				maluses.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-150 GP", mod: -1));
 			}
 			else if (flags.StartingGold == StartingGold.Gp800)
 			{
-				blessingsTier1.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+1500 GP", mod: 15));
-				blessingsTier3.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+6000 GP", mod: 60, Classes: new List<Classes> { Classes.Thief }));
+				baseTier.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+1500 GP", mod: 15));
+				highTier.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+6000 GP", mod: 60, Classes: new List<Classes> { Classes.Thief }));
 				maluses.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-350 GP", mod: -1));
 			}
 			else if (flags.StartingGold == StartingGold.Gp2500)
 			{
-				blessingsTier1.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+5000 GP", mod: 50));
-				blessingsTier3.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+20,000 GP", mod: 200, Classes: new List<Classes> { Classes.Thief }));
+				baseTier.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+5000 GP", mod: 50));
+				highTier.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+20,000 GP", mod: 200, Classes: new List<Classes> { Classes.Thief }));
 				maluses.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-1100 GP", mod: -1));
 			}
 			else if (flags.StartingGold == StartingGold.Gp9999)
 			{
-				blessingsTier1.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+20,000 GP", mod: 200));
+				baseTier.Add(new BonusMalus(BonusMalusAction.StartWithGold, "+20,000 GP", mod: 200));
 				// Strong bonus doesn't make sense with gold already so high, so isn't created
 				maluses.Add(new BonusMalus(BonusMalusAction.StartWithGold, "-4500 GP", mod: -1));
 			}
@@ -299,8 +294,8 @@ namespace FF1Lib
 			// Do not add Promo-based blursings if there is no ability to promote
 			if (!((bool)flags.NoTail && !(bool)flags.FightBahamut))
 			{
-				blessingsTier1.Add(new BonusMalus(BonusMalusAction.ArmorAdd, "Promo FI @A", mod: 99, equipment: equipFighterArmor, Classes: new List<Classes> { Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage, Classes.RedMage }));
-				blessingsTier2.Add(new BonusMalus(BonusMalusAction.PowerRW, "Promo Sage", mod: 0, spelllist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), Classes: new List<Classes> { Classes.RedMage }));
+				baseTier.Add(new BonusMalus(BonusMalusAction.ArmorAdd, "Promo FI @A", mod: 99, equipment: equipFighterArmor, Classes: new List<Classes> { Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage, Classes.RedMage }));
+				baseTier.Add(new BonusMalus(BonusMalusAction.PowerRW, "Promo Sage", mod: 0, spelllist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), Classes: new List<Classes> { Classes.RedMage }));
 
 				maluses.Add(new BonusMalus(BonusMalusAction.ArmorReplace, "No Promo @A", mod: 99, equipment: equipFighterArmorFull, Classes: new List<Classes> { Classes.Fighter }));
 				maluses.Add(new BonusMalus(BonusMalusAction.ArmorReplace, "Promo RW @A", mod: 99, equipment: equipRedWizardArmorFull, Classes: new List<Classes> { Classes.Thief }));
@@ -309,21 +304,21 @@ namespace FF1Lib
 
 			if (!(bool)flags.ArmorCrafter)
 			{
-				blessingsTier2.Add(new BonusMalus(BonusMalusAction.WoodAdept, "Wood@A@s@h Set\n Add Evade"));
-				blessingsTier3.Add(new BonusMalus(BonusMalusAction.SteelLord, "Steel@A\n Cast Fast", Classes: new List<Classes> { Classes.Fighter }));
+				baseTier.Add(new BonusMalus(BonusMalusAction.WoodAdept, "Wood@A@s@h Set\n Add Evade"));
+				highTier.Add(new BonusMalus(BonusMalusAction.SteelLord, "Steel@A\n Cast Fast", Classes: new List<Classes> { Classes.Fighter }));
 				maluses.Add(new BonusMalus(BonusMalusAction.ArmorRemove, "-" + olditemnames[(int)Item.ProRing], equipment: new List<Item> { Item.ProRing }));
 			}
 
 			// Single Spells Bonus/Malus
-			blessingsTier2.AddRange(CreateSpellBonuses(rom, rng, flags));
+			baseTier.AddRange(CreateSpellBonuses(rom, rng, flags));
 			maluses.AddRange(CreateSpellMaluses(rom, rng, flags));
 
 			if ((bool)flags.RandomizeClassCasting)
 			{
 				var magicBonuses = CreateMagicBonuses(rom, rng, flags);
 
-				blessingsTier2.AddRange(magicBonuses.Item1);
-				blessingsTier3.AddRange(magicBonuses.Item2);
+				baseTier.AddRange(magicBonuses.Item1);
+				highTier.AddRange(magicBonuses.Item2); // +2
 			}
 
 			// Add Lockpicking Bonus/Malus
@@ -334,24 +329,23 @@ namespace FF1Lib
 
 			if ((bool)flags.Lockpicking && flags.LockpickingLevelRequirement > 1)
 			{
-				blessingsTier2.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "EarlyLokpik", mod: -10, Classes: new List<Classes> { Classes.Thief }));
+				highTier.Add(new BonusMalus(BonusMalusAction.LockpickingLevel, "EarlyLokpik", mod: -10, Classes: new List<Classes> { Classes.Thief }));
 			}
-
 
 			// Add XP Bonuses
 			if ((bool)flags.RandomizeClassIncludeXpBonus)
 			{
-				blessingsTier3.Add(new BonusMalus(BonusMalusAction.BonusXp, "+50% XP", mod: 150, Classes: new List<Classes> { Classes.Fighter, Classes.BlackBelt }));
-				blessingsTier3.Add(new BonusMalus(BonusMalusAction.BonusXp, "+100% XP", mod: 200, Classes: new List<Classes> { Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
+				highTier.Add(new BonusMalus(BonusMalusAction.BonusXp, "+50% XP", mod: 150, Classes: new List<Classes> { Classes.Fighter, Classes.BlackBelt }));
+				highTier.Add(new BonusMalus(BonusMalusAction.BonusXp, "+100% XP", mod: 200, Classes: new List<Classes> { Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
 
-				blessingsTier2.Add(new BonusMalus(BonusMalusAction.BonusXp, "+50% XP", mod: 150, Classes: new List<Classes> { Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
-				blessingsTier2.Add(new BonusMalus(BonusMalusAction.BonusXp, "+50% XP", mod: 150, Classes: new List<Classes> { Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
+				baseTier.Add(new BonusMalus(BonusMalusAction.BonusXp, "+50% XP", mod: 150, Classes: new List<Classes> { Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
+				baseTier.Add(new BonusMalus(BonusMalusAction.BonusXp, "+50% XP", mod: 150, Classes: new List<Classes> { Classes.Thief, Classes.RedMage, Classes.BlackMage, Classes.WhiteMage }));
 			}
 
 			// Add Max MP on MP Gain Bonus
 			if (flags.MpGainOnMaxGainMode == MpGainOnMaxGain.Blursed)
 			{
-				blessingsTier1.Add(new BonusMalus(BonusMalusAction.MpGainOnMaxMpGain, "Max+Mp+", Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
+				baseTier.Add(new BonusMalus(BonusMalusAction.MpGainOnMaxMpGain, "Max+Mp+", Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
 			}
 		}
 		public BonusMalus CreateRandomResistBonusMalus(MT19337 rng)
@@ -533,6 +527,8 @@ namespace FF1Lib
 
 			SpellHelper spellHelper = new(rom);
 
+			SpellSlotInfo emptySlot = new();
+
 			List<List<byte>> blackSpellList = new();
 			List<List<byte>> whiteSpellList = new();
 
@@ -563,122 +559,141 @@ namespace FF1Lib
 
 				if (spellId != null)
 				{
-					spellBlursingsStrong.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Nuke Magic", spellsmod: new List<SpellSlotInfo> { spellId, spellId, spellId }, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
+					spellBlursingsStrong.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Nuke Magic", spellsmod: new List<SpellSlotInfo> { spellId, spellId, emptySlot }, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
 				}
 			}
 
-			if (spellElem3.Count >= 3)
+			if (spellElem3.Count >= 2)
 			{
 				List<SpellSlotInfo> spells = new();
 
-				for (int i = 0; i < 3; i++)
+				while (spells.Count < 2 && spellElem3.Any())
 				{
 					var selectedSpell = spellElem3.SpliceRandom(rng);
-					var spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == selectedSpell);
-
-					if (spellId != null)
+					if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == selectedSpell, out var spellId))
 					{
 						spells.Add(spellId);
 					}
 				}
 
-				if (spells.Count == 3)
+				if (spells.Count >= 2)
 				{
-					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Elem+ Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], spells[2] }, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
+					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Elem+ Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
 
-					spellBlursingsStrong.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Elem+ Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], spells[2] }, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.BlackBelt }));
+					spellBlursingsStrong.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Elem+ Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.BlackBelt }));
 				}
 			}
 
-			if (spellElem2.Count >= 3)
+			if (spellElem2.Count >= 2)
 			{
 				List<SpellSlotInfo> spells = new();
 
-				for (int i = 0; i < 3; i++)
+				while (spells.Count < 2 && spellElem2.Any())
 				{
 					var selectedSpell = spellElem2.SpliceRandom(rng);
-					var spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == selectedSpell);
-
-					if (spellId != null)
+					if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == selectedSpell, out var spellId))
 					{
 						spells.Add(spellId);
 					}
 				}
 
-				if (spells.Count == 3)
+				if (spells.Count >= 2)
 				{
-					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Elem Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], spells[2] }));
+					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Elem Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }));
 				}
 			}
 
-			if (spellCleaning.Count >= 3)
+			if (spellCleaning.Count >= 2)
 			{
 				List<SpellSlotInfo> spells = new();
 
-				for (int i = 0; i < 3; i++)
+				while (spells.Count < 2 && spellCleaning.Any())
 				{
 					var selectedSpell = spellCleaning.SpliceRandom(rng);
-					var spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == selectedSpell);
-
-					if (spellId != null)
+					if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == selectedSpell, out var spellId))
 					{
 						spells.Add(spellId);
 					}
 				}
 
-				if (spells.Count == 3)
+				if (spells.Count >= 2)
 				{
-					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Clean Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], spells[2] }));
+					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Clean Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }));
 				}
 			}
 
-			if (spellDoom.Count >= 3)
+			if (spellDoom.Count >= 2)
 			{
 				List<SpellSlotInfo> spells = new();
 
-				for (int i = 0; i < 3; i++)
+				while (spells.Count < 2 && spellDoom.Any())
 				{
 					var selectedSpell = spellDoom.SpliceRandom(rng);
-					var spellId = SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == selectedSpell);
-
-					if (spellId != null)
+					if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == selectedSpell, out var spellId))
 					{
 						spells.Add(spellId);
 					}
 				}
-				if (spells.Count == 3)
+
+				if (spells.Count >= 2)
 				{
-					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Doom Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], spells[2] }, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
+					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Doom Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
 				}
 			}
 
 			if (spellCur3.Any() && spellHel2.Any() && spellLife.Any())
 			{
 				List<SpellSlotInfo> spells = new();
+				SpellSlotInfo spellId = new();
 
-				spells.Add(SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellCur3.PickRandom(rng)));
-				spells.Add(SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellHel2.PickRandom(rng)));
-				spells.Add(SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellLife.PickRandom(rng)));
-
-				if (spells.Where(x => x != null).Count() == 3)
+				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellCur3.PickRandom(rng), out spellId))
 				{
-					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Heal Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], spells[2] }));
+					spells.Add(spellId);
+				}
+
+				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellHel2.PickRandom(rng), out spellId))
+				{
+					spells.Add(spellId);
+				}
+
+				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellLife.PickRandom(rng), out spellId))
+				{
+					spells.Add(spellId);
+				}
+
+				spells.Shuffle(rng);
+
+				if (spells.Count >= 2)
+				{
+					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Heal Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }));
 				}
 			}
 
 			if (spellCur4.Any() && spellHel3.Any() && spellLife.Any())
 			{
 				List<SpellSlotInfo> spells = new();
+				SpellSlotInfo spellId = new();
 
-				spells.Add(SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellCur4.PickRandom(rng)));
-				spells.Add(SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellHel3.PickRandom(rng)));
-				spells.Add(SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellLife.PickRandom(rng)));
-
-				if (spells.Where(x => x != null).Count() == 3)
+				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellCur4.PickRandom(rng), out spellId))
 				{
-					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Heal+ Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], spells[2] }, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
+					spells.Add(spellId);
+				}
 
-					spellBlursingsStrong.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Heal+ Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], spells[2] }, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.BlackBelt }));
+				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellHel3.PickRandom(rng), out spellId))
+				{
+					spells.Add(spellId);
+				}
+
+				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellLife.PickRandom(rng), out spellId))
+				{
+					spells.Add(spellId);
+				}
+
+				if (spells.Count >= 3)
+				{
+					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Heal+ Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
+
+					spellBlursingsStrong.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Heal+ Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.BlackBelt }));
 
 				}
 			}
@@ -686,46 +701,76 @@ namespace FF1Lib
 			if (spellRuse.Any() && spellSabr.Any())
 			{
 				List<SpellSlotInfo> spells = new();
+				SpellSlotInfo spellId = new();
 
-				spells.Add(SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellRuse.PickRandom(rng)));
-				spells.Add(SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellSabr.PickRandom(rng)));
-				spells.Add(new SpellSlotInfo());
-
-				if (spells.Where(x => x != null).Count() == 3)
+				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellRuse.PickRandom(rng), out spellId))
 				{
-					spellBlursingsStrong.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Self Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], spells[2] }, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.BlackBelt }));
+					spells.Add(spellId);
+				}
+
+				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellSabr.PickRandom(rng), out spellId))
+				{
+					spells.Add(spellId);
+				}
+
+				if (spells.Count >= 2)
+				{
+					spellBlursingsStrong.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Self Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.BlackBelt }));
 				}
 			}
 
 			if (spellTmpr.Any() && spellFast.Any() && spellInv2.Any())
 			{
 				List<SpellSlotInfo> spells = new();
+				SpellSlotInfo spellId = new();
 
-				spells.Add(SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellTmpr.PickRandom(rng)));
-				spells.Add(SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellFast.PickRandom(rng)));
-				spells.Add(SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellInv2.PickRandom(rng)));
-
-				if (spells.Where(x => x != null).Count() == 3)
+				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellTmpr.PickRandom(rng), out spellId))
 				{
-					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Buff Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], spells[2] }, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
+					spells.Add(spellId);
+				}
 
-					spellBlursingsStrong.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Buff Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], spells[2] }, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.BlackBelt }));
+				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellFast.PickRandom(rng), out spellId))
+				{
+					spells.Add(spellId);
+				}
+
+				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellInv2.PickRandom(rng), out spellId))
+				{
+					spells.Add(spellId);
+				}
+
+				spells.Shuffle(rng);
+
+				if (spells.Count >= 2)
+				{
+					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Buff Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
+
+					spellBlursingsStrong.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Buff Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.BlackBelt }));
 				}
 			}
 
 			if (spellWarp.Any() && spellExit.Any())
 			{
 				List<SpellSlotInfo> spells = new();
+				SpellSlotInfo spellId = new();
 
-				spells.Add(SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellWarp.PickRandom(rng)));
-				spells.Add(SpellSlotStructure.GetSpellSlots().Find(x => x.NameId == spellExit.PickRandom(rng)));
-				spells.Add(new SpellSlotInfo());
-
-				if (spells.Where(x => x != null).Count() == 3)
+				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellWarp.PickRandom(rng), out spellId))
 				{
-					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Tele Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], spells[2] }));
+					spells.Add(spellId);
+				}
+
+				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellExit.PickRandom(rng), out spellId))
+				{
+					spells.Add(spellId);
+				}
+
+				if (spells.Count == 2)
+				{
+					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Tele Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }));
 				}
 			}
+			spellBlursingsStrong.Shuffle(rng);
+			spellBlursingsStrong = spellBlursingsStrong.GetRange(0, 2);
 
 			return (spellBlursingsNormal, spellBlursingsStrong);
 		}
