@@ -196,7 +196,7 @@ SpellEffectRecoverHP:
         AND #AIL_DEAD
         BNE SpellEffectRecoverHP_RTS      ; If they're dead, do nothing
         LDA btlmag_effectivity
-        STA btltmp ;save original effectivity
+        STA btltmp+6 ;save original effectivity
 
         LDA btl_attacker ;check if attacker is player
         AND #$80
@@ -214,7 +214,7 @@ SpellEffectRecoverHP:
         LDA #0
         JSR RandAX                      ;   random between [0,effectivity+int]
         CLC
-        ADC btltmp          ;   add back original effectivity, random becomes between [effectivity, (effectivity*2)+int]
+        ADC btltmp+6          ;   add back original effectivity, random becomes between [effectivity, (effectivity*2)+int]
         BCC :+
         LDA #$FF                      ;   (cap at 255)
         :   
