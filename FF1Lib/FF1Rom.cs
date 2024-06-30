@@ -28,7 +28,7 @@ public partial class FF1Rom : NesRom
 	{
 		if (bank == 0x1F)
 		{
-			if ((address - 0xC000) + data.Length >= 0x4000)
+			if ((address - 0xC000) + data.Length > 0x4000)
 			{
 				throw new Exception("Data is too large to fit within its bank.");
 			}
@@ -37,7 +37,7 @@ public partial class FF1Rom : NesRom
 		}
 		else
 		{
-			if ((address - 0x8000) + data.Length >= 0x4000)
+			if ((address - 0x8000) + data.Length > 0x4000)
 			{
 				throw new Exception("Data is too large to fit within its bank.");
 			}
