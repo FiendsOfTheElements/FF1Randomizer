@@ -2073,6 +2073,12 @@
 		"description": "If enabled, allows the player to \"wrap\" up and down in the battle magic menu, making navigating to the upper level magic much faster in combat."
 	},
 	{
+		"Id": "magicMenuSpellReordering",
+		"title": "Magic Menu Spell Reordering",
+		"screenshot":  "magicMenuSpellReordering.gif",
+		"description": "If enabled, allows the player to rearrange the order of spells.\nPlace the cursor on a spell and press Start to swap that spell with the one to its right. Selected spell must have a valid spell to its right (does not work on 3rd column or if spell is next to a blank slot)."
+	},
+	{
 		"Id": "npcSwatterCheckBox",
 		"title": "NPC Guillotine",
 		"screenshot": "npcSwatterCheckBox.gif",

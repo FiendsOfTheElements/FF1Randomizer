@@ -401,6 +401,7 @@ namespace FF1Lib
 		public bool BlackBeltAbsorb { get; set; } = false;
 		public bool NPCSwatter { get; set; } = false;
 		public bool BattleMagicMenuWrapAround { get; set; } = false;
+		public bool MagicMenuSpellReordering { get; set; } = false;
 		public bool InventoryAutosort { get; set; } = false;
 		public bool AutoRetargeting { get; set; } = false;
 		public bool EnemyStatusAttackBug { get; set; } = false;

@@ -2375,6 +2375,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BattleMagicMenuWrapAround"));
 			}
 		}
+		public bool MagicMenuSpellReordering
+		{
+			get => Flags.MagicMenuSpellReordering;
+			set
+			{
+				Flags.MagicMenuSpellReordering = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicMenuSpellReordering"));
+			}
+		}
 		public bool EnemyStatusAttackBug
 		{
 			get => Flags.EnemyStatusAttackBug;
