@@ -707,6 +707,7 @@ namespace FF1Lib
 		public bool? AllowUnsafeStartArea { get; set; } = false;
 
 		public bool? IncreaseDarkPenalty { get; set; } = false;
+		public PoisonModeOptions PoisonMode { get; set; } = PoisonModeOptions.Vanilla;
 
 		public bool? TouchIncludeBosses { get; set; } = false;
 

@@ -2,6 +2,31 @@
 
 namespace FF1Lib
 {
+	public enum PoisonModeOptions
+	{
+		[Description("Vanilla (2 Damage)")]
+		Vanilla,
+		[Description("20 Damage")]
+		Constant20,
+		[Description("50 Damage")]
+		Constant50,
+		[Description("100 Damage")]
+		Constant100,
+		[Description("50% of Max HP")]
+		Halved1,
+		[Description("25% of Max HP")]
+		Halved2,
+		[Description("12.5% of Max HP")]
+		Halved3,
+		[Description("50% of Current HP")]
+		Dimishing1,
+		[Description("25% of Current HP")]
+		Dimishing2,
+		[Description("12.5% of Current HP")]
+		Dimishing3,
+		[Description("20 Less Than Max HP")]
+		NearlyAll
+	}
 	public partial class FF1Rom : NesRom
 	{
 		public const int SardaOffset = 0x393E9;
@@ -11,6 +36,8 @@ namespace FF1Lib
 		public const int MapSpriteOffset = 0x03400;
 		public const int MapSpriteSize = 3;
 		public const int MapSpriteCount = 16;
+
+		
 
 		private void MiscHacks(Flags flags, MT19337 rng)
 		{
@@ -300,6 +327,48 @@ namespace FF1Lib
 
 			// replace asm, set hitchance and critchance to 0
 			Put(0x326A7, Blob.FromHex("A9008D56688D62681A"));
+		}
+
+		public void SetPoisonMode(PoisonModeOptions poisonMode)
+		{
+			//see 1C_A670_ImprovedPoison.asm
+			//PutInBank(0x1B, 0x9A00, Blob.FromHex($"A9008DB7688DB868A9{musicTrack:X2}8D4B008DA76B60"));
+			byte mode = 0;
+			byte loopcount = 3;
+			short constantValue = 16383;
+
+			switch (poisonMode)
+			{
+				case PoisonModeOptions.Vanilla:
+					mode = 0; constantValue = 2; break;
+				case PoisonModeOptions.Constant20:
+					mode = 0; constantValue = 20; break;
+				case PoisonModeOptions.Constant50:
+					mode = 0; constantValue = 50; break;
+				case PoisonModeOptions.Constant100:
+					mode = 0; constantValue = 100; break;
+				case PoisonModeOptions.Halved1:
+					mode = 1; loopcount = 1; break;
+				case PoisonModeOptions.Halved2:
+					mode = 1; loopcount = 2; break;
+				case PoisonModeOptions.Halved3:
+					mode = 1; loopcount = 3; break;
+				case PoisonModeOptions.Dimishing1:
+					mode = 2; loopcount = 1; break;
+				case PoisonModeOptions.Dimishing2:
+					mode = 2; loopcount = 2; break;
+				case PoisonModeOptions.Dimishing3:
+					mode = 2; loopcount = 3; break;
+				case PoisonModeOptions.NearlyAll:
+					mode = 3; constantValue = 20; break;
+			}
+
+
+			PutInBank(0x0C, 0xA2D7, Blob.FromHex("A9A648A96F48A91C4C03FE"));
+			PutInBank(0x1C, 0xA670, Blob.FromHex("AEAD6BBD0C618D5868BD0D618D5968BD0A618D5668BD0B618D5768AC21A7F00988F02188F01288F02" +
+				"BAD23A78D5868AD24A78D59684CD9A6BD0A618D5868BD0B618D5968AC22A7186E59686E586888D0F64CD9A6AD23A78D5A68AD24A78D5B68A90" +
+				"1A201A00220EDA6A900A200A00120EDA6A9A248A9E948A90C4C03FE488A0AAA980AA8BD566838F956688DCF6BBD5768F957688DD06BB008A90" +
+				$"08DCF6B8DD06B680AAAADCF6B9D5668ADD06B9D576860{mode:X2}{loopcount:X2}{(constantValue % 0x100):X2}{((constantValue / 0x100) % 0x100)}"));
 		}
 
 

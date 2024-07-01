@@ -5091,6 +5091,15 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+		public PoisonModeOptions PoisonMode
+		{
+			get => Flags.PoisonMode;
+			set
+			{
+				Flags.PoisonMode = value;
+				RaisePropertyChanged();
+			}
+		}
 
 		public bool? TouchIncludeBosses
 		{
