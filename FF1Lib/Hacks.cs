@@ -332,7 +332,6 @@ namespace FF1Lib
 		public void SetPoisonMode(PoisonModeOptions poisonMode)
 		{
 			//see 1C_A670_ImprovedPoison.asm
-			//PutInBank(0x1B, 0x9A00, Blob.FromHex($"A9008DB7688DB868A9{musicTrack:X2}8D4B008DA76B60"));
 			byte mode = 0;
 			byte loopcount = 3;
 			short constantValue = 16383;
