@@ -401,6 +401,7 @@ namespace FF1Lib
 		public bool BlackBeltAbsorb { get; set; } = false;
 		public bool NPCSwatter { get; set; } = false;
 		public bool BattleMagicMenuWrapAround { get; set; } = false;
+		public bool MagicMenuSpellReordering { get; set; } = false;
 		public bool InventoryAutosort { get; set; } = false;
 		public bool AutoRetargeting { get; set; } = false;
 		public bool EnemyStatusAttackBug { get; set; } = false;
@@ -599,6 +600,7 @@ namespace FF1Lib
 		public bool ThiefHitRate { get; set; } = false;
 		public bool AllSpellLevelsForKnightNinja { get; set; } = false;
 		public bool BuffHealingSpells { get; set; } = false;
+		public bool IntAffectsSpells { get; set; } = false;
 		public bool? FreeTail { get; set; } = false;
 		public bool? HintsVillage { get; set; } = false;
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
@@ -705,6 +707,7 @@ namespace FF1Lib
 		public bool? AllowUnsafeStartArea { get; set; } = false;
 
 		public bool? IncreaseDarkPenalty { get; set; } = false;
+		public PoisonModeOptions PoisonMode { get; set; } = PoisonModeOptions.Vanilla;
 
 		public bool? TouchIncludeBosses { get; set; } = false;
 

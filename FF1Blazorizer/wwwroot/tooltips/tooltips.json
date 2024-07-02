@@ -2073,6 +2073,12 @@
 		"description": "If enabled, allows the player to \"wrap\" up and down in the battle magic menu, making navigating to the upper level magic much faster in combat."
 	},
 	{
+		"Id": "magicMenuSpellReordering",
+		"title": "Magic Menu Spell Reordering",
+		"screenshot": "magicMenuSpellReordering.gif",
+		"description": "If enabled, allows the player to rearrange the order of spells.\nPlace the cursor on a spell and press Start to swap that spell with the one to its right. Selected spell must have a valid spell to its right (does not work on 3rd column or if spell is next to a blank slot)."
+	},
+	{
 		"Id": "npcSwatterCheckBox",
 		"title": "NPC Guillotine",
 		"screenshot": "npcSwatterCheckBox.gif",
@@ -2309,6 +2315,11 @@
 		"description": "If enabled, \"Dark\" status severely decreases an attacker's chance to hit or crit an enemy: their crit chance is set to 0%, and they lose all of their base hit chance (this effectively makes the penalty -168 instead of the normal -40), leaving them with only their Hit% vs the defender's Evasion.\nAffects both players and enemies inflicted with \"Dark\" status."
 	},
 	{
+		"Id": "poisonModeDropDown",
+		"title": "In-Battle Poison Damage",
+		"description": "Changes how much damage players take at the end of each turn if poisoned."
+	},
+	{
 		"Id": "OrbsRequiredModeDropDown",
 		"title": "Total Orbs Required",
 		"screenshot": "orbsRequiredDropDown.png",
@@ -2446,6 +2457,11 @@
 		"title": "AirBoat",
 		"screenshot": "airboat.gif",
 		"description": "The Ship and the Airship are fused together. Getting the FLOATER allows the Ship to transform into the Airship, and the Airship can land on water. You can't raise the Airship from the desert anymore."
+	},
+	{
+		"Id": "IntAffectsSpells",
+		"title": "INT Affects Spells",
+		"description": "Makes character's INT stat affect spells in various ways.\nDamage spells get a bonus to crit chance based on INT.\nPower word spells get a bonus to their threshold.\nDebuff spells get a boost to their chance to hit.\nHeal spells (in battle) get a boost to the maximum they can roll (minimum is unchanged).'"
 	},
 	{
 		"Id": "moveToFBats",
