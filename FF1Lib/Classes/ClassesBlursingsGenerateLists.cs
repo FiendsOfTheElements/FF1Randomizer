@@ -230,6 +230,16 @@ namespace FF1Lib
 			});
 
 			// Conditional Blursings
+			if ((bool)flags.IntAffectsSpells)
+			{
+				baseTier.Add(new BonusMalus(BonusMalusAction.IntMod, "+10 Int.", mod: 10, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
+				baseTier.Add(new BonusMalus(BonusMalusAction.IntMod, "+20 Int.", mod: 20, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
+				highTier.Add(new BonusMalus(BonusMalusAction.IntMod, "+40 Int.", mod: 40, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
+
+				maluses.Add(new BonusMalus(BonusMalusAction.IntMod, "-10 Int.", mod: -10, Classes: new List<Classes> { Classes.Thief, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
+				maluses.Add(new BonusMalus(BonusMalusAction.IntMod, "-20 Int.", mod: -20, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
+			}
+
 			if (!(bool)flags.Weaponizer)
 			{
 				baseTier.Add(new BonusMalus(BonusMalusAction.CatClawMaster, "Improved\n CatClaw", equipment: new List<Item>() { Item.CatClaw }, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage }));
