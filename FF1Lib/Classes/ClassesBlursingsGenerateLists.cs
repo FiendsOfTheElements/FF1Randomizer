@@ -48,7 +48,7 @@ namespace FF1Lib
 		}
 
 
-		public void GenerateLists(List<BonusMalus> baseTier, List<BonusMalus> highTier, List<BonusMalus> blessingsTier3, List<BonusMalus> maluses, List<string> olditemnames, ItemNames itemnames, Flags flags, MT19337 rng, FF1Rom rom)
+		public void GenerateLists(List<BonusMalus> baseTier, Dictionary<Classes, List<BonusMalus>> classesBlessingsLists, List<BonusMalus> maluses, List<string> olditemnames, ItemNames itemnames, Flags flags, MT19337 rng, FF1Rom rom)
 		{
 			// Equipment lists
 			List<Item> braceletList = new();
@@ -152,7 +152,6 @@ namespace FF1Lib
 			var exNinjaMPlist = new List<byte> { 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F,
 				0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00 };
 
-
 			// Base Tier list
 			baseTier.AddRange(new List<BonusMalus>()
 			{
@@ -187,7 +186,9 @@ namespace FF1Lib
 				CreateRandomResistBonusMalus(rng),
 			});
 
-			// High tier list, should be kept at around 10 blessings or so
+			// High tier list, should be kept at max 20 blessings or so
+			List<BonusMalus> highTier = new();
+
 			highTier.AddRange(new List<BonusMalus>()
 			{
 				new BonusMalus(BonusMalusAction.StrMod, "+40 Str.", mod: 40),
@@ -295,7 +296,7 @@ namespace FF1Lib
 			if (!((bool)flags.NoTail && !(bool)flags.FightBahamut))
 			{
 				baseTier.Add(new BonusMalus(BonusMalusAction.ArmorAdd, "Promo FI @A", mod: 99, equipment: equipFighterArmor, Classes: new List<Classes> { Classes.BlackBelt, Classes.WhiteMage, Classes.BlackMage, Classes.RedMage }));
-				baseTier.Add(new BonusMalus(BonusMalusAction.PowerRW, "Promo Sage", mod: 0, spelllist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), Classes: new List<Classes> { Classes.RedMage }));
+				highTier.Add(new BonusMalus(BonusMalusAction.PowerRW, "Promo Sage", mod: 0, spelllist: wmWhiteSpells.Concat(bmBlackSpells).Concat(wwWhiteSpells).Concat(bwBlackSpells).ToList(), Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
 
 				maluses.Add(new BonusMalus(BonusMalusAction.ArmorReplace, "No Promo @A", mod: 99, equipment: equipFighterArmorFull, Classes: new List<Classes> { Classes.Fighter }));
 				maluses.Add(new BonusMalus(BonusMalusAction.ArmorReplace, "Promo RW @A", mod: 99, equipment: equipRedWizardArmorFull, Classes: new List<Classes> { Classes.Thief }));
@@ -347,6 +348,58 @@ namespace FF1Lib
 			{
 				baseTier.Add(new BonusMalus(BonusMalusAction.MpGainOnMaxMpGain, "Max+Mp+", Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
 			}
+
+			// Distribute the class high tier blessings, we control probabilites (should be 5% per blessing in this list)
+			highTier.Shuffle(rng);
+
+			// Pick class exclusive blessings first
+			foreach (var gameclass in classesBlessingsLists.Select(x => x.Key).ToList())
+			{
+				var classExclusives = highTier.Where(b => b.ClassList.Count == 1 && b.ClassList.Contains(gameclass)).ToList();
+
+				// We should avoid such a scenario, in which case blursings distribution need updating again, but just in case
+				if (classExclusives.Count >= 5)
+				{
+					classExclusives = classExclusives.GetRange(0, 5);
+				}
+
+				classesBlessingsLists[gameclass].AddRange(classExclusives);
+				highTier = highTier.Except(classExclusives).ToList();
+			}
+
+			var gameClasses = classesBlessingsLists.Select(x => x.Key).ToList();
+
+			// Then high but not class exclusive blessings
+			while(gameClasses.Any())
+			{
+				var currentClass = gameClasses.PickRandom(rng);
+
+				if (classesBlessingsLists[currentClass].Count >= 5)
+				{
+					gameClasses.Remove(currentClass);
+					continue;
+				}
+				else
+				{
+					BonusMalus currentBlessing;
+					var validHighTier = highTier.Where(b => b.ClassList.Contains(currentClass)).ToList();
+					if (validHighTier.Any())
+					{
+						currentBlessing = validHighTier.PickRandom(rng);
+						highTier.Remove(currentBlessing);
+					}
+					else
+					{
+						currentBlessing = baseTier.Where(b => b.ClassList.Contains(currentClass)).ToList().PickRandom(rng);
+						baseTier.Remove(currentBlessing);
+					}
+
+					classesBlessingsLists[currentClass].Add(currentBlessing);
+				}
+			}
+
+			// Dump anything left in baseTier
+			baseTier = baseTier.Concat(highTier).ToList();
 		}
 		public BonusMalus CreateRandomResistBonusMalus(MT19337 rng)
 		{

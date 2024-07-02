@@ -11,55 +11,6 @@ namespace FF1Lib
 {
 	public partial class GameClasses
 	{
-		public enum BlursingsTiers
-		{
-			Tier1,
-			Tier2,
-			Tier3
-		}
-		public class BlursingsWeight
-		{
-			public Dictionary<BlursingsTiers, int> Weights;
-
-
-			public int TierBase => Weights.Sum(t => t.Value);
-			public int BlessingsToPick;
-			public int MalusesToPick;
-			public BlursingsWeight(int _blessingsQty, int _malusesQty)
-			{
-				Weights = new()
-				{
-					{ BlursingsTiers.Tier1, 10 },
-					{ BlursingsTiers.Tier2, 10 },
-					{ BlursingsTiers.Tier3, 5 },
-				};
-;
-				BlessingsToPick = _blessingsQty;
-				MalusesToPick = _malusesQty;
-			}
-			public BlursingsTiers PickWeightedTier(MT19337 rng)
-			{
-				var pick = rng.Between(1, TierBase);
-				if (pick <= Weights[BlursingsTiers.Tier1])
-				{
-					BlessingsToPick--;
-					Weights[BlursingsTiers.Tier1] = Weights[BlursingsTiers.Tier1] / 2;
-					return BlursingsTiers.Tier1;
-				}
-				else if (pick <= Weights[BlursingsTiers.Tier1] + Weights[BlursingsTiers.Tier2])
-				{
-					BlessingsToPick--;
-					Weights[BlursingsTiers.Tier2] = Weights[BlursingsTiers.Tier2] / 2;
-					return BlursingsTiers.Tier2;
-				}
-				else
-				{
-					BlessingsToPick--;
-					Weights[BlursingsTiers.Tier3] = 0;
-					return BlursingsTiers.Tier3;
-				}
-			}
-		}
 		public List<string> DoRandomizeClassNormalMode(MT19337 rng, List<string> olditemnames, ItemNames itemnames, Flags flags, FF1Rom rom)
 		{
 			// Hardcoded spell lists and MP Growth lists for trickier blessings
@@ -74,19 +25,25 @@ namespace FF1Lib
 			var exNinjaMPlist = new List<byte> { 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F,
 				0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x0F, 0x00 };
 
-
-			Dictionary<BlursingsTiers, List<BonusMalus>> tieredBlessings = new()
+			// Blursings List
+			List<BonusMalus> baseTierBlessings = new();
+			Dictionary<Classes, List<BonusMalus>> classBlessings = new()
 			{
-				{ BlursingsTiers.Tier1, new() },
-				{ BlursingsTiers.Tier2, new() },
-				{ BlursingsTiers.Tier3, new() },
+				{ Classes.Fighter, new() },
+				{ Classes.Thief, new() },
+				{ Classes.BlackBelt, new() },
+				{ Classes.RedMage, new() },
+				{ Classes.WhiteMage, new() },
+				{ Classes.BlackMage, new() },
 			};
-
 			List<BonusMalus> maluses = new();
 
-			GenerateLists(tieredBlessings[BlursingsTiers.Tier1], tieredBlessings[BlursingsTiers.Tier2], tieredBlessings[BlursingsTiers.Tier3], maluses, olditemnames, itemnames, flags, rng, rom);
-
+			int maxbonuses = flags.RandomizeClassMaxBonus;
+			int maxmaluses = flags.RandomizeClassMaxMalus;
 			var descriptionList = new List<string>();
+
+			// Generate Blursings List
+			GenerateLists(baseTierBlessings, classBlessings, maluses, olditemnames, itemnames, flags, rng, rom);
 
 			// Distribute bonuses and maluses
 			bool validBlursingsDistribution = false;
@@ -95,105 +52,81 @@ namespace FF1Lib
 
 			Dictionary<Classes, List<BonusMalus>> assignedBlessings = new();
 			Dictionary<Classes, List<BonusMalus>> assignedMaluses = new();
-			List<Classes> validClasses = new();
 
-			List<BlursingsTiers> blursingsTiers = new() { BlursingsTiers.Tier1, BlursingsTiers.Tier2, BlursingsTiers.Tier3 };
+			List<Classes> classList = Enumerable.Range(0, 6).Select(c => (Classes)c).ToList();
+			List<Classes> validClasses = new();
 
 			while (!validBlursingsDistribution)
 			{
 				validBlursingsDistribution = true;
-				List<BonusMalus> placedBlursings = new();
 
-				Dictionary<Classes, BlursingsWeight> blursingsWeight = new()
-				{
-					{ Classes.Fighter, new BlursingsWeight(flags.RandomizeClassMaxBonus, flags.RandomizeClassMaxMalus) },
-					{ Classes.Thief, new BlursingsWeight(flags.RandomizeClassMaxBonus, flags.RandomizeClassMaxMalus) },
-					{ Classes.BlackBelt, new BlursingsWeight(flags.RandomizeClassMaxBonus, flags.RandomizeClassMaxMalus) },
-					{ Classes.RedMage, new BlursingsWeight(flags.RandomizeClassMaxBonus, flags.RandomizeClassMaxMalus) },
-					{ Classes.WhiteMage, new BlursingsWeight(flags.RandomizeClassMaxBonus, flags.RandomizeClassMaxMalus) },
-					{ Classes.BlackMage, new BlursingsWeight(flags.RandomizeClassMaxBonus, flags.RandomizeClassMaxMalus) },
-				};
+				Dictionary<Classes, bool> classBlessingsAvailable = classList.ToDictionary(c => c, c => true);
+				assignedBlessings = classList.ToDictionary(c => c, c => new List<BonusMalus>());
+				assignedMaluses = classList.ToDictionary(c => c, c => new List<BonusMalus>());
 
-				assignedBlessings = new()
-				{
-					{ Classes.Fighter, new() },
-					{ Classes.Thief, new() },
-					{ Classes.BlackBelt, new() },
-					{ Classes.RedMage, new() },
-					{ Classes.WhiteMage, new() },
-					{ Classes.BlackMage, new() },
-				};
+				validClasses = new(classList);
 
-				assignedMaluses = new()
-				{
-					{ Classes.Fighter, new() },
-					{ Classes.Thief, new() },
-					{ Classes.BlackBelt, new() },
-					{ Classes.RedMage, new() },
-					{ Classes.WhiteMage, new() },
-					{ Classes.BlackMage, new() },
-				};
-
-				validClasses = new() { Classes.Fighter, Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage };
-
+				// Apply Start With Key Items blessings, doesn't count toward the max number of blessings
 				if ((bool)flags.RandomizeClassKeyItems)
 				{
 					foreach (var gameclass in validClasses)
 					{
-						var pickedBlursing = startWithKiBlurses.Except(placedBlursings).ToList().PickRandom(rng);
-						placedBlursings.Add(pickedBlursing);
+						var pickedBlursing = startWithKiBlurses.ToList().PickRandom(rng);
 						assignedBlessings[gameclass].Add(pickedBlursing);
 					}
 				}
 
-				while (validClasses.Any())
+				// Apply all other blessings
+				while (maxbonuses > 0 && validClasses.Any())
 				{
+					// pick a random class for fairness
 					var currentClass = validClasses.PickRandom(rng);
 
-					Dictionary<BlursingsTiers, List<BonusMalus>> tieredValidBlessings = new()
-					{
-						{ BlursingsTiers.Tier1, tieredBlessings[BlursingsTiers.Tier1].Except(placedBlursings).Where(x => x.ClassList.Contains(currentClass) && !assignedBlessings[currentClass].Select(y => y.Action).ToList().Contains(x.Action)).ToList()   },
-						{ BlursingsTiers.Tier2, tieredBlessings[BlursingsTiers.Tier2].Except(placedBlursings).Where(x => x.ClassList.Contains(currentClass) && !assignedBlessings[currentClass].Select(y => y.Action).ToList().Contains(x.Action)).ToList() },
-						{ BlursingsTiers.Tier3, tieredBlessings[BlursingsTiers.Tier3].Except(placedBlursings).Where(x => x.ClassList.Contains(currentClass) && !assignedBlessings[currentClass].Select(y => y.Action).ToList().Contains(x.Action)).ToList() }
-					};
+					// 25% to pick from the 5 exlclusive blessing list, giving a 5% chance per seed per blessing
+					bool pickClassBlessing = classBlessingsAvailable[currentClass] && rng.Between(1, 4) == 1;
 
-					foreach (var tier in blursingsTiers)
+					if (pickClassBlessing)
 					{
-						if (!tieredValidBlessings[tier].Any())
+						var pickedBlursing = classBlessings[currentClass].PickRandom(rng);
+						assignedBlessings[currentClass].Add(pickedBlursing);
+						classBlessingsAvailable[currentClass] = false;
+					}
+					else
+					{
+						var validBlessings = baseTierBlessings.Where(x => x.ClassList.Contains(currentClass) && !assignedBlessings[currentClass].Select(y => y.Action).ToList().Contains(x.Action)).ToList();
+
+						// There's no good blessings left for this class, reset and try again
+						if (!validBlessings.Any())
 						{
-							blursingsWeight[currentClass].Weights[tier] = 0;
+							validBlursingsDistribution = false;
+							continue;
 						}
+
+						var pickedBlursing = validBlessings.PickRandom(rng);
+						assignedBlessings[currentClass].Add(pickedBlursing);
+						baseTierBlessings.Remove(pickedBlursing);
 					}
 
-					if (blursingsWeight[currentClass].TierBase == 0)
-					{
-						validBlursingsDistribution = false;
-						break;
-					}
-
-					var pickedTier = blursingsWeight[currentClass].PickWeightedTier(rng);
-					var pickedBlursing = tieredValidBlessings[pickedTier].PickRandom(rng);
-					placedBlursings.Add(pickedBlursing);
-					assignedBlessings[currentClass].Add(pickedBlursing);
-
-					if (blursingsWeight[currentClass].BlessingsToPick <= 0)
+					if (assignedBlessings[currentClass].Count >= maxbonuses)
 					{
 						validClasses.Remove(currentClass);
 					}
 				}
 
+				// No need to continue to maluses if we don't have a valid distribution
 				if (!validBlursingsDistribution)
 				{
 					continue;
 				}
 
-				validClasses = new() { Classes.Fighter, Classes.Thief, Classes.BlackBelt, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage };
+				validClasses = new(classList);
 
-				while (validClasses.Any())
+				// Distribute maluses
+				while (maxmaluses > 0 && validClasses.Any())
 				{
 					var currentClass = validClasses.PickRandom(rng);
 
-					var validMaluses = maluses.Except(placedBlursings).Where(x => x.ClassList.Contains(currentClass) && !assignedBlessings[currentClass].Select(y => y.Action).ToList().Contains(x.Action) && !assignedMaluses[currentClass].Select(y => y.Action).ToList().Contains(x.Action)).ToList();
+					var validMaluses = maluses.Where(x => x.ClassList.Contains(currentClass) && !assignedBlessings[currentClass].Select(y => y.Action).ToList().Contains(x.Action) && !assignedMaluses[currentClass].Select(y => y.Action).ToList().Contains(x.Action)).ToList();
 
 					if (!validMaluses.Any())
 					{
@@ -202,11 +135,9 @@ namespace FF1Lib
 					}
 
 					var pickedBlursing = validMaluses.PickRandom(rng);
-					placedBlursings.Add(pickedBlursing);
 					assignedMaluses[currentClass].Add(pickedBlursing);
-					blursingsWeight[currentClass].MalusesToPick--;
 
-					if (blursingsWeight[currentClass].MalusesToPick <= 0)
+					if (assignedMaluses[currentClass].Count >= maxmaluses)
 					{
 						validClasses.Remove(currentClass);
 					}
