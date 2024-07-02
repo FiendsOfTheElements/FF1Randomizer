@@ -108,7 +108,7 @@ SpellEffectDamage:
         BEQ RetFromDamage ;if not, we're done
 
         JSR GetIntInX 
-        LDA MATHBUF_HITCHANCE
+        LDA #MATHBUF_HITCHANCE
         JSR MathBuf_Add ;add int to hit chance math buffer
         ;swap bank back and return into BtlMag_Effect_Damage
     RetFromDamage:
@@ -128,7 +128,7 @@ SpellEffectDamageUndead:
         BEQ RetFromDamageUndead ;if not, we're done
 
         JSR GetIntInX 
-        LDA MATHBUF_HITCHANCE
+        LDA #MATHBUF_HITCHANCE
         JSR MathBuf_Add ;add int to hit chance math buffer
     RetFromDamageUndead:
         LDA #>(BtlMag_Effect_DamageUndead_Return-1)
@@ -253,7 +253,7 @@ SpellEffectRemoveResist:
         BEQ RetFromRemoveResist ;if not, we're done
 
         JSR GetIntInX 
-        LDA MATHBUF_HITCHANCE
+        LDA #MATHBUF_HITCHANCE
         JSR MathBuf_Add ;add int to hit chance math buffer
     RetFromRemoveResist:
         ;return to the rest of the remove resist routine
