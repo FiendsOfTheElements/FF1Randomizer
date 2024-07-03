@@ -371,6 +371,7 @@ public partial class FF1Rom : NesRom
 		SavingHacks(Overworld, flags);
 		ImprovedClinic(flags.ImprovedClinic && !(bool)flags.RecruitmentMode);
 		IncreaseDarkPenalty((bool)flags.IncreaseDarkPenalty);
+		SetPoisonMode(flags.PoisonMode);
 		new QuickMiniMap(this, Overworld.DecompressedMap).EnableQuickMinimap(flags.SpeedHacks || Overworld.MapExchange != null, Music);
 		ShopUpgrade(flags, Dialogues, preferences);
 		EnableAirBoat(flags);
@@ -422,8 +423,8 @@ public partial class FF1Rom : NesRom
 
 		await this.LoadResourcePack(flags.ResourcePack, Dialogues, EnemyScripts);
 
-		StatsTrackingHacks(flags, preferences);
 		RollCredits(rng);
+		StatsTrackingHacks(flags, preferences);
 		if ((bool)flags.IsShipFree || flags.Archipelago) Overworld.SetShipLocation(255);
 		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
