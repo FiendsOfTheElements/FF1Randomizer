@@ -2,7 +2,7 @@
 ; Routines to modify stats at the start of the game, after partygen
 ;  and at the start of the battle.
 ;
-; Last Update: 2022-09-05
+; Last Update: 2024-07-03
 ;
 
 tmp = $10
@@ -53,6 +53,8 @@ ch_mp           = ch_magicdata + $20
 ch_curmp        = ch_mp + $00
 ch_maxmp        = ch_mp + $08
 
+btlch_elemresist  = $680A
+
 NewGamePartyGeneration = $8000
 ;NewGame_LoadStartingStats = $C76D
 NewGame_LoadStartingLevels = $DD9A
@@ -94,8 +96,34 @@ NotANone2:
   PHP
   LDY tmp
   PLP
-  RTS 
-   
+  RTS
+
+; Routine to find if the current character as learned a specific spell
+;  A = spell index
+FindSpell:
+  TAX                         ; save spell index
+ 
+  LDA btl_ob_charstat_ptr     ; get ob stats pointer
+  STA tmp+1                   ; and convert it to 
+  LDA btl_ob_charstat_ptr+1   ; ob spells pointer
+  CLC
+  ADC #$02
+  STA tmp+2
+  
+  TXA                         ; restore spell index
+  LDY #$00
+FS_SeekLoop:
+  CMP (tmp+1), Y              ; compare it with all spell slots
+  BEQ FS_SpellFound
+  INY
+  CPY #$20
+  BCC FS_SeekLoop
+    CLC                       ; if not found, clear carry
+    RTS
+FS_SpellFound:
+    SEC                       ; if found, set carry
+    RTS
+  
 
  .ORG $B080
  
@@ -110,6 +138,14 @@ IsBattle:
   JSR Hunter
   JSR SteelArmor
   JSR WoodArmors
+  JSR KnifeDualWield
+  JSR LampResist
+  JSR ASpellAutoCast
+  JSR DarkEvade
+  JSR SlowAbsorb
+  JSR SleepMDef
+  JSR RibbonCurse
+  JSR MasaCurse
   JMP UnarmedAttack
 
 ; Give Black Belt Unarmed Attack
@@ -258,7 +294,7 @@ Wo_NoEquip:
       CLC
       LDY #$07 ; Evade
       LDA (btl_ib_charstat_ptr), Y
-      ADC #$78
+      ADC #$B4
       BCC Wo_StoreValue
         LDA #$FF
 Wo_StoreValue:     
@@ -301,56 +337,292 @@ Hunter:
     STA (btl_ib_charstat_ptr), Y
 Hu_NotClass:
   RTS
-  NOP
-  NOP
-  NOP
-  NOP
-  NOP
-  NOP
-  NOP
-;NOPs added because I couldnt rebuild the entire start with asm file.
-;Had to swap the bugged hunter function, and maintain instruction length to perserve addressing.
-;A0 00 B1 82 AA BD 27 B2 F0 06 A0 0D 11 80 91 80 60 EA EA EA EA EA EA EA     
-  
-; Always start battle asleep
-Sleepy:
-  LDA #<lut_Sleepy 
-  STA class_lut_a                 
-  LDA #>lut_Sleepy
-  STA class_lut_b
- 
-  LDY #$00
-  LDA (btl_ob_charstat_ptr), Y
-  JSR CheckIfClassQuick
-  BNE Slp_NotClass
-    LDY #$01 ; ailment
-    LDA (btl_ob_charstat_ptr), Y
-    ORA #$20 ; sleep
-    STA (btl_ob_charstat_ptr), Y
-Slp_NotClass:  
-  RTS  
 
-; 25% chance to start battle poisoned
-Sick:
-  LDA #<lut_Sick 
-  STA class_lut_a                 
-  LDA #>lut_Sick
-  STA class_lut_b
- 
+ .ORG $B700
+
+; Dual Wield Knife
+KnifeDualWield:
+  LDY #$00
+  STY tmp
+  STY tmp+1
+  STY tmp+2
+
+  LDA (btl_ob_charstat_ptr), Y
+  TAX
+  LDA lut_KnifeDualWield, X 
+  BEQ DW_NotDual
+    LDY #$18 ; weapons
+DW_Loop:    
+    LDA (btl_ob_charstat_ptr), Y
+    BPL DW_NoEquip
+    AND #$7F
+    TAX
+    CPX #$02
+    BEQ DW_IsKnife
+    CPX #$0A
+    BEQ DW_IsKnife
+    CPX #$10
+    BEQ DW_IsKnife
+    CPX #$23
+    BEQ DW_IsKnife
+    CPX #$26
+    BNE DW_NextSlot
+DW_IsKnife:
+    INC tmp   ; A knife is equiped
+    INC tmp+1 ; Increase knife count
+    JMP DW_NextSlot
+DW_NoEquip:
+    AND #$7F
+    TAX
+    CPX #$02
+    BEQ DW_SmallKnife
+    CPX #$0A
+    BEQ DW_SmallKnife
+    CPX #$10
+    BEQ DW_SmallKnife
+    CPX #$23
+    BEQ DW_BigKnife
+    CPX #$26
+    BNE DW_NextSlot
+DW_BigKnife:
+    INC tmp+1 ; Increase knife count
+    INC tmp+2 ; Best knife is big knife
+    JMP DW_NextSlot    
+DW_SmallKnife:
+    INC tmp+1 ; Increase knife count
+DW_NextSlot:
+    INY
+    CPY #$1C
+    BNE DW_Loop
+DW_Process:
+    LDA tmp   ; Is a Knife equipped?
+    BEQ DW_NotDual
+    LDA tmp+1 ; More than 2 knifes?
+    CMP #$02
+    BCC DW_NotDual
+    LDA tmp+2
+    BEQ DW_SmallHit
+    LDA #$02 ; Two extra hits
+    JMP DW_BoostHit
+DW_SmallHit:
+    LDA #$01
+DW_BoostHit:
+    STA tmp
+    LDY #$0C ; number of hits
+    LDA (btl_ib_charstat_ptr), Y
+    CLC
+    ADC tmp
+    STA (btl_ib_charstat_ptr), Y
+DW_NotDual:
+  RTS
+
+; Lamp Resists All
+LampResist:
   LDY #$00
   LDA (btl_ob_charstat_ptr), Y
-  JSR CheckIfClassQuick
-  BNE Sik_NotClass
-   JSR BattleRNG
-   AND #$03 ; 25% chance of being sick
-   BNE Sik_NotClass
-     LDY #$01 ; ailment
-     LDA (btl_ob_charstat_ptr), Y
-     ORA #$04 ; poison
-     STA (btl_ob_charstat_ptr), Y
-Sik_NotClass:  
-  RTS  
- 
+  TAX
+  LDA lut_LampResist, X 
+  BEQ LR_NoResist
+    LDA #$FF ; harcoded LAMP id
+    JSR FindSpell
+    BCC LR_NoResist
+      LDY #$0A ; resist
+      LDA #$FF
+      STA (btl_ib_charstat_ptr), Y
+LR_NoResist:
+  RTS
+
+; Autocast AFir, AIce, ALit and ARub
+ASpellAutoCast:
+  LDY #$00
+  STY tmp
+  LDA (btl_ob_charstat_ptr), Y
+  TAX
+  LDA lut_ASpellAutoCast, X 
+  BEQ AS_NoASpell
+    LDA #$FF ; harcoded AFir id
+    JSR FindSpell
+    BCC AS_NoAFir
+      LDA tmp
+      ORA #$10 ; Fire Element
+      STA tmp
+AS_NoAFir:
+    LDA #$FF ; harcoded AIce id
+    JSR FindSpell
+    BCC AS_NoAIce
+      LDA tmp
+      ORA #$20 ; Fire Element
+      STA tmp
+AS_NoAIce:
+    LDA #$FF ; harcoded ALit id
+    JSR FindSpell
+    BCC AS_NoALit
+      LDA tmp
+      ORA #$40 ; Fire Element
+      STA tmp
+AS_NoALit:
+    LDA #$FF ; harcoded ARub id
+    JSR FindSpell
+    BCC AS_NoARub
+      LDA tmp
+      ORA #$89 ;  Status, Death, Earth Element
+      STA tmp
+AS_NoARub:
+    LDA #$FF ; harcoded AMut id
+    JSR FindSpell
+    BCC AS_NoAMut
+      LDA tmp
+      ORA #$01 ;  Status Element
+      STA tmp
+AS_NoAMut:
+    LDA btlch_elemresist
+    ORA tmp
+    STA btlch_elemresist
+    LDA btlch_elemresist+$12
+    ORA tmp
+    STA btlch_elemresist+$12    
+    LDA btlch_elemresist+$24
+    ORA tmp
+    STA btlch_elemresist+$24
+    LDA btlch_elemresist+$36
+    ORA tmp
+    STA btlch_elemresist+$36    
+AS_NoASpell:
+  RTS
+  
+; Learning Dark give +80 evade
+DarkEvade:
+  LDY #$00
+  LDA (btl_ob_charstat_ptr), Y
+  TAX
+  LDA lut_DarkEvade, X 
+  BEQ DA_NoSpell
+    LDA #$FF ; harcoded Dark id
+    JSR FindSpell
+    BCC DA_NoSpell
+      CLC
+      LDY #$07 ; Evade
+      LDA (btl_ib_charstat_ptr), Y
+      ADC #$50
+      BCC DA_StoreValue
+        LDA #$FF
+DA_StoreValue:
+      STA (btl_ib_charstat_ptr), Y
+DA_NoSpell:
+  RTS
+
+; Learning Slow give +40 absorb
+SlowAbsorb:
+  LDY #$00
+  LDA (btl_ob_charstat_ptr), Y
+  TAX
+  LDA lut_SlowAbsorb, X 
+  BEQ SA_NoSpell
+    LDA #$FF ; harcoded Slow id
+    JSR FindSpell
+    BCS SA_SlowFound
+    LDA #$FF ; harcoded Slow2 id
+    JSR FindSpell
+    BCC SA_NoSpell
+SA_SlowFound:
+      CLC
+      LDY #$08 ; Absorb
+      LDA (btl_ib_charstat_ptr), Y
+      ADC #$28
+      BCC SA_StoreValue
+        LDA #$FF
+SA_StoreValue:
+      STA (btl_ib_charstat_ptr), Y
+SA_NoSpell:
+  RTS
+
+; Learning Sleep give +80 MDef
+SleepMDef:
+  LDY #$00
+  LDA (btl_ob_charstat_ptr), Y
+  TAX
+  LDA lut_SleepMDef, X 
+  BEQ SM_NoSpell
+    LDA #$FF ; harcoded Sleep id
+    JSR FindSpell
+    BCS SM_SleepFound
+    LDA #$FF ; harcoded Sleep2 id
+    JSR FindSpell
+    BCC SM_NoSpell
+SM_SleepFound:
+      CLC
+      LDY #$06 ; MDef
+      LDA (btl_ib_charstat_ptr), Y
+      ADC #$50
+      BCC SM_StoreValue
+        LDA #$FF
+SM_StoreValue:
+      STA (btl_ib_charstat_ptr), Y
+SM_NoSpell:
+  RTS
+
+; Ribbon Curse
+RibbonCurse:
+  LDY #$00
+  LDA (btl_ob_charstat_ptr), Y
+  TAX
+  LDA lut_RibbonCurse, X 
+  BEQ RC_NoCurse
+    STA tmp  ; store ailment
+    LDY #$1C ; armors
+RC_Loop:    
+    LDA (btl_ob_charstat_ptr), Y
+    BPL RC_NoEquip
+    JSR RC_IsEquipArmor
+RC_NoEquip:    
+    INY
+    CPY #$20
+    BNE RC_Loop
+    RTS
+RC_IsEquipArmor:
+    AND #$7F
+    CMP #$20 ; Ribbon Id
+    BNE RC_NoCurse
+      TYA
+      PHA
+      LDY #$01 ; ailment
+      LDA (btl_ob_charstat_ptr), Y
+      ORA tmp ; apply ailment
+      STA (btl_ob_charstat_ptr), Y
+      PLA
+      TAY
+RC_NoCurse:
+  RTS
+
+; Masa Curse
+MasaCurse:
+  LDY #$00
+  LDA (btl_ob_charstat_ptr), Y
+  TAX
+  LDA lut_MasaCurse, X 
+  BEQ MC_NoCurse
+    STA tmp  ; store ailment
+    LDY #$18 ; weapons
+MC_Loop:    
+    LDA (btl_ob_charstat_ptr), Y
+    BPL MC_NoEquip
+      JMP MC_IsEquipWeapon
+MC_NoEquip:    
+    INY
+    CPY #$1C
+    BNE MC_Loop
+    RTS
+MC_IsEquipWeapon:
+    AND #$7F
+    CMP #$28 ; Masas Id
+    BNE MC_NoCurse
+      LDY #$01 ; ailment
+      LDA (btl_ob_charstat_ptr), Y
+      ORA tmp ; apply ailment
+      STA (btl_ob_charstat_ptr), Y    
+MC_NoCurse:
+  RTS
+  
  .ORG $B200
 
 lut_Blackbelts:
@@ -373,25 +645,56 @@ lut_Hunter:
  .BYTE $00, $00, $00, $00, $00, $00 
  .BYTE $00  
 
-lut_Sleepy:
- .BYTE $00, $00, $00, $00, $00, $00
- .BYTE $00, $00, $00, $00, $00, $00 
- .BYTE $00   
-  
-lut_Sick:
- .BYTE $00, $00, $00, $00, $00, $00
- .BYTE $00, $00, $00, $00, $00, $00 
- .BYTE $00   
-
 lut_SteelArmor:
  .BYTE $00, $00, $00, $00, $00, $00
  .BYTE $00, $00, $00, $00, $00, $00 
- .BYTE $00  
+ .BYTE $00
+
+lut_KnifeDualWield:
+ .BYTE $00, $00, $00, $00, $00, $00
+ .BYTE $00, $00, $00, $00, $00, $00 
+ .BYTE $00 
+
+lut_LampResist:
+ .BYTE $00, $00, $00, $00, $00, $00
+ .BYTE $00, $00, $00, $00, $00, $00 
+ .BYTE $00
+
+lut_ASpellAutoCast:
+ .BYTE $00, $00, $00, $00, $00, $00
+ .BYTE $00, $00, $00, $00, $00, $00 
+ .BYTE $00
+
+lut_DarkEvade:
+ .BYTE $00, $00, $00, $00, $00, $00
+ .BYTE $00, $00, $00, $00, $00, $00 
+ .BYTE $00
+
+lut_SlowAbsorb:
+ .BYTE $00, $00, $00, $00, $00, $00
+ .BYTE $00, $00, $00, $00, $00, $00 
+ .BYTE $00 
+
+lut_SleepMDef:
+ .BYTE $00, $00, $00, $00, $00, $00
+ .BYTE $00, $00, $00, $00, $00, $00 
+ .BYTE $00
+ 
+lut_RibbonCurse:
+ .BYTE $00, $00, $00, $00, $00, $00
+ .BYTE $00, $00, $00, $00, $00, $00 
+ .BYTE $00
+
+lut_MasaCurse:
+ .BYTE $00, $00, $00, $00, $00, $00
+ .BYTE $00, $00, $00, $00, $00, $00 
+ .BYTE $00 
 
 lut_WoodArmors:
  .BYTE $00, $00, $00, $00, $00, $00
  .BYTE $00, $00, $00, $00, $00, $00 
- .BYTE $FF  
+ .BYTE $FF
+ 
 
  .ORG $B300
 

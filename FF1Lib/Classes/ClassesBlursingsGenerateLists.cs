@@ -243,6 +243,13 @@ namespace FF1Lib
 			if (!(bool)flags.Weaponizer)
 			{
 				baseTier.Add(new BonusMalus(BonusMalusAction.CatClawMaster, "Improved\n CatClaw", equipment: new List<Item>() { Item.CatClaw }, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.BlackMage }));
+				highTier.Add(new BonusMalus(BonusMalusAction.DualWieldKnife, "DualWield @K", Classes: new List<Classes> { Classes.Thief }));
+			}
+
+			// Ceate Spell Learning Blessings
+			if (!(bool)flags.GenerateNewSpellbook)
+			{
+				highTier.AddRange(CreateSpellLearningBlessings(rom));
 			}
 
 			// Negative amounts are processed separately in ProcessStartWithRoutines, because they affect the Assembly code
@@ -292,15 +299,27 @@ namespace FF1Lib
 			// These are so much starting gold that bonuses for it no longer make sense
 			//else if (flags.StartingGold == StartingGold.Gp65535 || flags.StartingGold == StartingGold.RandomHigh)
 
+			List<(string name, byte value)> ailments = new()
+			{
+				("Poison", 0x04),
+				("Stun", 0x10),
+				("Sleep", 0x20),
+				("Mute", 0x40),
+			};
+
 			if (!(bool)flags.NoMasamune)
 			{
-				maluses.Add(new BonusMalus(BonusMalusAction.WeaponRemove, "No " + olditemnames[(int)Item.Masamune], equipment: new List<Item> { Item.Masamune }));
+				var masastatus = ailments.PickRandom(rng);
+				maluses.Add(new BonusMalus(BonusMalusAction.MasaCurse, "Masa Curse\n " + masastatus.name, mod: masastatus.value));
 			}
 
 			if (flags.RibbonMode == RibbonMode.Vanilla)
 			{
-				maluses.Add(new BonusMalus(BonusMalusAction.ArmorRemove, "No " + olditemnames[(int)Item.Ribbon], equipment: new List<Item> { Item.Ribbon }));
+				var ribbonstatus = ailments.PickRandom(rng);
+				maluses.Add(new BonusMalus(BonusMalusAction.RibbonCurse, "Ribbn Curse\n " + ribbonstatus.name, mod: ribbonstatus.value));
 			}
+
+
 
 			// Do not add Promo-based blursings if there is no ability to promote
 			if (!((bool)flags.NoTail && !(bool)flags.FightBahamut))
@@ -311,6 +330,12 @@ namespace FF1Lib
 				maluses.Add(new BonusMalus(BonusMalusAction.ArmorReplace, "No Promo @A", mod: 99, equipment: equipFighterArmorFull, Classes: new List<Classes> { Classes.Fighter }));
 				maluses.Add(new BonusMalus(BonusMalusAction.ArmorReplace, "Promo RW @A", mod: 99, equipment: equipRedWizardArmorFull, Classes: new List<Classes> { Classes.Thief }));
 				maluses.Add(new BonusMalus(BonusMalusAction.NoPromoMagic, "No Promo Sp", mod: 0, mod2: 0, binarylist: nullSpells, Classes: new List<Classes> { Classes.Fighter, Classes.Thief }));
+				maluses.Add(new BonusMalus(BonusMalusAction.UnarmedAttack, "Promo\n Unarmed", mod: 99, Classes: new List<Classes> { Classes.BlackBelt }));
+
+				if (flags.MDefMode == MDEFGrowthMode.None)
+				{
+					highTier.Add(new BonusMalus(BonusMalusAction.MDefGrowth, "Promo\n +3 MDef", mod: 3, mod2: 99, Classes: new List<Classes> { Classes.BlackBelt }));
+				}
 			}
 
 			if (!(bool)flags.ArmorCrafter)

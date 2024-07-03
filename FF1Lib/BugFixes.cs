@@ -157,10 +157,10 @@ namespace FF1Lib
 			PutInBank(0x1B, 0x874A, Blob.FromHex("A90085EDA9B285EEA000B1862003B0"));
 
 			// Overwrite UnadjustBBEquipStats
-			PutInBank(0x1F, 0xEEBF, Blob.FromHex("A91B2003FE2040B098F0"));
-			PutInBank(0x1F, 0xEEDD, Blob.FromHex("A91B2003FE2040B098F0"));
+			PutInBank(0x1F, 0xEEBF, Blob.FromHex("A91B2003FE2080AF98F0"));
+			PutInBank(0x1F, 0xEEDD, Blob.FromHex("A91B2003FE2080AF98F0"));
 
-			PutInBank(0x1B, 0xB040, Blob.FromHex("A90085EDA9B285EEBD00612003B0A8A90C4C03FE"));
+			PutInBank(0x1B, 0xAF80, Blob.FromHex("A90085EDA9B285EEBD00612003B0A8A90C4C03FE"));
 		}
 
 		public void FixEnemyElementalResistances()

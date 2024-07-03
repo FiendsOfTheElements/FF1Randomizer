@@ -148,7 +148,7 @@ namespace FF1Lib
 			const byte spookyZombieD = 0xCB;
 			const byte fightBahamut = 0xF1;
 
-			List<byte> altEncountersList = FormationLists.BSideEncounters;
+			List<byte> altEncountersList = new(FormationLists.BSideEncounters);
 			altEncountersList.Add(0xFF); // IronGol
 
 			if ((bool)flags.SpookyFlag)

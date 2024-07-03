@@ -1408,13 +1408,13 @@ namespace FF1Lib
 			}
 
 			// Special abilities from Blursings
-			if (rom.ClassData[(Classes)classIndex].CatClawMaster)
+			if (rom.ClassData[(Classes)classIndex].ToggleBlursings.Contains(BonusMalusAction.CatClawMaster))
 				description += "CatClaw Ace\n";
-			if (rom.ClassData[(Classes)classIndex].ThorMaster)
+			if (rom.ClassData[(Classes)classIndex].ToggleBlursings.Contains(BonusMalusAction.ThorMaster))
 				description += "Thor Master\n";
-			if (rom.ClassData[(Classes)classIndex].SteelLord)
+			if (rom.ClassData[(Classes)classIndex].ToggleBlursings.Contains(BonusMalusAction.SteelLord))
 				description += "Steel Lord\n";
-			if (rom.ClassData[(Classes)classIndex].WoodAdept)
+			if (rom.ClassData[(Classes)classIndex].ToggleBlursings.Contains(BonusMalusAction.WoodAdept))
 				description += "Wood Adept\n";
 
 			if (Lockpicker)
@@ -1897,31 +1897,31 @@ namespace FF1Lib
 
 			if (Rng.Between(rng, 0, 100) <= (int)(CatClawMaster * 100))
 			{
-				rom.ClassData[c].CatClawMaster = rom.ClassData[c].CatClawMaster = true;
-				rom.ClassData[c].CatClawMaster = rom.ClassData[p].CatClawMaster = true;
+				rom.ClassData[c].ToggleBlursings.Add(BonusMalusAction.CatClawMaster);
+				rom.ClassData[p].ToggleBlursings.Add(BonusMalusAction.CatClawMaster);
 				rom.WeaponPermissions.AddPermission(c, Item.CatClaw);
 				rom.WeaponPermissions.AddPermission(p, Item.CatClaw);
 			}
 
 			if (Rng.Between(rng, 0, 100) <= (int)(ThorMaster * 100))
 			{
-				rom.ClassData[c].ThorMaster = rom.ClassData[c].ThorMaster = true;
-				rom.ClassData[c].ThorMaster = rom.ClassData[p].ThorMaster = true;
+				rom.ClassData[c].ToggleBlursings.Add(BonusMalusAction.ThorMaster);
+				rom.ClassData[p].ToggleBlursings.Add(BonusMalusAction.ThorMaster);
 				rom.WeaponPermissions.AddPermission(c, Item.ThorHammer);
 				rom.WeaponPermissions.AddPermission(p, Item.ThorHammer);
 			}
 
 			if (Rng.Between(rng, 0, 100) <= (int)(WoodAdept * 100))
 			{
-				rom.ClassData[c].WoodAdept = rom.ClassData[c].WoodAdept = true;
-				rom.ClassData[c].WoodAdept = rom.ClassData[p].WoodAdept = true;
+				rom.ClassData[c].ToggleBlursings.Add(BonusMalusAction.WoodAdept);
+				rom.ClassData[p].ToggleBlursings.Add(BonusMalusAction.WoodAdept);
 				newPermissions.AddPermissionsRange(new List<(Classes, Item)> { (c, Item.WoodenArmor), (c, Item.WoodenHelm), (c, Item.WoodenShield), (p, Item.WoodenArmor), (p, Item.WoodenHelm), (p, Item.WoodenShield) });
 			}
 
 			if (Rng.Between(rng, 0, 100) <= (int)(SteelLord * 100))
 			{
-				rom.ClassData[c].SteelLord = rom.ClassData[c].SteelLord = true;
-				rom.ClassData[c].SteelLord = rom.ClassData[p].SteelLord = true;
+				rom.ClassData[c].ToggleBlursings.Add(BonusMalusAction.SteelLord);
+				rom.ClassData[p].ToggleBlursings.Add(BonusMalusAction.SteelLord);
 				newPermissions.AddPermission(c, Item.SteelArmor);
 				newPermissions.AddPermission(p, Item.SteelArmor);
 			}
