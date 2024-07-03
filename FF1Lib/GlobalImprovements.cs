@@ -24,6 +24,7 @@ namespace FF1Lib
 					new FlagAction() { Setting = "InventoryAutosort", Action = FlagActions.Enable },
 					new FlagAction() { Setting = "EnableDash", Action = FlagActions.Enable },
 					new FlagAction() { Setting = "SpeedBoat", Action = FlagActions.Enable },
+					new FlagAction() { Setting = "MagicMenuSpellReordering", Action = FlagActions.Enable },
 				}
 		};
 	}
@@ -97,6 +98,10 @@ namespace FF1Lib
 			{
 				//SpeedHacksMoveNpcs(!settings.GetBool("ProcgenEarth"));
 				SpeedHacksMoveNpcs((bool)flags.ProcgenEarth, maps);
+			}
+			if ((bool)flags.MagicMenuSpellReordering && (bool)flags.ShopInfo)
+			{
+				MagicMenuSpellReordering();
 			}
 
 		}
@@ -192,7 +197,13 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xDDE0, Blob.FromHex("20B9EAA9038DD00360"));
 		}
 
-
+		private void MagicMenuSpellReordering()
+		{
+			//see 1C_A600_MagicMenuSpellReordering.asm
+			PutInBank(0x0E, 0xAECD, Blob.FromHex("4CF5BF"));
+			PutInBank(0x0E, 0xBFF5, Blob.FromHex("A9A548A9FF48A91C4C03FE"));
+			PutInBank(0x1C, 0xA600, Blob.FromHex("A523F039A9008523A5622502D02FA5662A2A2A2A2A2A6562AABD0063F01FA8E8BD0063F018CA9D006398E89D0063A9008523A9AE48A99648A90E4C03FEA99148A92548A90E4C03FE"));
+		}
 
 	}
 }

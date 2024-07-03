@@ -1,4 +1,5 @@
 ; Changed slightly from the original on July 2022 for compatibility with adjustable lava damage
+; Include Armor Resist flag
 
 tmp             = $10 ; 16 bytes
 palcyc_mode     = tmp+$C  ; shared tmp
@@ -46,7 +47,7 @@ Loop:
 	BNE AssignDamage
 	LDA location            ; see if we're on the overworld, or in a standard map
 	CMP #$03
-	BCC AssignDamage        ; if we're on the overworld, skip the armor check
+	BEQ AssignDamage        ; if we're on the overworld, skip the armor check
 
 	@VolcanoCheck:
 		LDA cur_map				; get the current map
@@ -76,13 +77,13 @@ Loop:
 		CMP #$26
 		BEQ @Ice
 		CMP #$27
-		BEQ @Ice
+		BNE @AssignDamage
 
 	@Ice:
 		LDA #$87 ; Flame Armor ID
 		JSR ArmorCheck
-		BEQ AssignDamage
-			JMP AliveOrDying
+		BNE AssignDamage
+		JMP AliveOrDying
 
   AssignDamage:
     LDA ch_curhp+1, X     ; check high byte of HP

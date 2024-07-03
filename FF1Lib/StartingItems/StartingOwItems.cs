@@ -5,36 +5,34 @@ namespace FF1Lib
 	public class StartingOverworldItems
 	{
 		private FF1Rom rom;
-		private byte ShipValue;
 		private List<(int address, byte value)> addressesToSet;
 		public StartingOverworldItems(FF1Rom _rom)
 		{
 			rom = _rom;
 			addressesToSet = new();
-			ShipValue = 0x01;
 		}
 		public void Process(List<Item> items, bool freeairboat)
 		{
 			if (freeairboat)
 			{
-				ShipValue = 0x81;
+				owItemAddresses[Item.Ship] = (owItemAddresses[Item.Ship].address, 0x81);
 			}
 
 			foreach (var item in items)
 			{
 				if (owItemAddresses.TryGetValue(item, out var result))
 				{
-					addressesToSet.Add((result, (item == Item.Ship) ? ShipValue : (byte)0x01));
+					addressesToSet.Add(result);
 				}
 			}
 		}
-		private static Dictionary<Item, int> owItemAddresses = new()
+		private Dictionary<Item, (int address, byte value)> owItemAddresses = new()
 		{
-			{ Item.Bridge, 0x3008 },
-			{ Item.Ship, 0x3000 },
-			{ Item.Canal, 0x300C },
-			{ Item.Canoe, 0x3012 },
-			{ Item.Airship, 0x3004 },
+			{ Item.Bridge, (0x3008, 0x01) },
+			{ Item.Ship, (0x3000, 0x01) },
+			{ Item.Canal, (0x300C, 0x00) },
+			{ Item.Canoe, (0x3012, 0x01) },
+			{ Item.Airship, (0x3004, 0x01) },
 		};
 		public void Write()
 		{
