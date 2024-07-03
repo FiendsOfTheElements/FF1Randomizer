@@ -222,7 +222,10 @@ SpellEffectRecoverHP:
         TAX
         LDA #MATHBUF_MAGDEFENDERHP      ; Add X to defender's HP
         JSR MathBuf_Add
-    
+        
+        LDA btltmp+6                    ;restore original effectivity
+        STA btlmag_effectivity          ;AOE heal spells do not reload their effectivity per character so we need to restore it
+
     ;return to LDX #MATHBUF_MAGDEFENDERMAXHP
         LDA #>(BtlMag_Effect_RecoverHP_Return-1)
         PHA

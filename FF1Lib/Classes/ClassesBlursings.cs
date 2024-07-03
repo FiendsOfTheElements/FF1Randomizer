@@ -87,8 +87,13 @@ namespace FF1Lib
 
 					if (pickClassBlessing)
 					{
-						var pickedBlursing = classBlessings[currentClass].PickRandom(rng);
-						assignedBlessings[currentClass].Add(pickedBlursing);
+						var validBlessings = classBlessings[currentClass].Where(x => !assignedBlessings[currentClass].Select(y => y.Action).ToList().Contains(x.Action)).ToList();
+
+						if (validBlessings.Any())
+						{
+							var pickedBlursing = validBlessings.PickRandom(rng);
+							assignedBlessings[currentClass].Add(pickedBlursing);
+						}
 						classBlessingsAvailable[currentClass] = false;
 					}
 					else
@@ -223,7 +228,10 @@ namespace FF1Lib
 							_classes[i + 6].HitGrowth = (byte)Math.Max(_classes[i + 6].HitGrowth + bonusmalus.StatMod, 0);
 							break;
 						case BonusMalusAction.MDefGrowth:
-							_classes[i].MDefGrowth = (byte)Math.Max(_classes[i].MDefGrowth + bonusmalus.StatMod, 0);
+							if (bonusmalus.StatMod2 != 99)
+							{
+								_classes[i].MDefGrowth = (byte)Math.Max(_classes[i].MDefGrowth + bonusmalus.StatMod, 0);
+							}
 							_classes[i + 6].MDefGrowth = (byte)Math.Max(_classes[i + 6].MDefGrowth + bonusmalus.StatMod, 0);
 							break;
 						case BonusMalusAction.WeaponAdd:
@@ -351,45 +359,44 @@ namespace FF1Lib
 							_classes[i + 6].StartWithGold = (BlursesStartWithGold)bonusmalus.StatMod;
 							break;
 						case BonusMalusAction.StartWithMp:
-							_classes[i].StartWithMp = true;
-							_classes[i + 6].StartWithMp = true;
+							_classes[i].ToggleBlursings.Add(BonusMalusAction.StartWithMp);
+							_classes[i + 6].ToggleBlursings.Add(BonusMalusAction.StartWithMp);
 							break;
 						case BonusMalusAction.Hunter:
 							_classes[i].HurtType |= (byte)bonusmalus.StatMod;
 							_classes[i + 6].HurtType |= (byte)bonusmalus.StatMod;
 							break;
 						case BonusMalusAction.UnarmedAttack:
-							_classes[i].UnarmedAttack = true;
+							if (bonusmalus.StatMod == 99)
+							{
+								_classes[i].UnarmedAttack = false;
+							}
+							else
+							{
+								_classes[i].UnarmedAttack = true;
+							}
 							_classes[i + 6].UnarmedAttack = true;
 							break;
 						case BonusMalusAction.ThorMaster:
-							_classes[i].ThorMaster = true;
-							_classes[i + 6].ThorMaster = true;
+							_classes[i].ToggleBlursings.Add(BonusMalusAction.ThorMaster);
+							_classes[i + 6].ToggleBlursings.Add(BonusMalusAction.ThorMaster);
 							_weaponPermissions.AddPermissionsRange(new List<(Classes, Item)> { ((Classes)(i), Item.ThorHammer) });
 							_weaponPermissions.AddPermissionsRange(new List<(Classes, Item)> { ((Classes)(i + 6), Item.ThorHammer) });
 							break;
 						case BonusMalusAction.CatClawMaster:
-							_classes[i].CatClawMaster = true;
-							_classes[i + 6].CatClawMaster = true;
+							_classes[i].ToggleBlursings.Add(BonusMalusAction.CatClawMaster);
+							_classes[i + 6].ToggleBlursings.Add(BonusMalusAction.CatClawMaster);
 							_weaponPermissions.AddPermissionsRange(new List<(Classes, Item)> { ((Classes)(i), Item.CatClaw) });
 							_weaponPermissions.AddPermissionsRange(new List<(Classes, Item)> { ((Classes)(i + 6), Item.CatClaw) });
 							break;
 						case BonusMalusAction.SteelLord:
-							_classes[i].SteelLord = true;
-							_classes[i + 6].SteelLord = true;
+							_classes[i].ToggleBlursings.Add(BonusMalusAction.SteelLord);
+							_classes[i + 6].ToggleBlursings.Add(BonusMalusAction.SteelLord);
 							break;
 						case BonusMalusAction.WoodAdept:
-							_classes[i].WoodAdept = true;
-							_classes[i + 6].WoodAdept = true;
+							_classes[i].ToggleBlursings.Add(BonusMalusAction.WoodAdept);
+							_classes[i + 6].ToggleBlursings.Add(BonusMalusAction.WoodAdept);
 							_armorPermissions.AddPermissionsRange(new List<(Classes, Item)> { ((Classes)i, Item.WoodenArmor), ((Classes)i, Item.WoodenHelm), ((Classes)i, Item.WoodenShield), ((Classes)(i + 6), Item.WoodenArmor), ((Classes)(i + 6), Item.WoodenHelm), ((Classes)(i + 6), Item.WoodenShield) });
-							break;
-						case BonusMalusAction.Sick:
-							_classes[i].Sick = true;
-							_classes[i + 6].Sick = true;
-							break;
-						case BonusMalusAction.Sleepy:
-							_classes[i].Sleepy = true;
-							_classes[i + 6].Sleepy = true;
 							break;
 						case BonusMalusAction.StartWithKI:
 							_classes[i].StartingKeyItem = (Item)bonusmalus.StatMod;
@@ -398,6 +405,38 @@ namespace FF1Lib
 						case BonusMalusAction.InnateSpells:
 							_classes[i].InnateSpells = bonusmalus.SpellsMod.ToList();
 							_classes[i + 6].InnateSpells = bonusmalus.SpellsMod.ToList();
+							break;
+						case BonusMalusAction.DualWieldKnife:
+							_classes[i].ToggleBlursings.Add(BonusMalusAction.DualWieldKnife);
+							_classes[i + 6].ToggleBlursings.Add(BonusMalusAction.DualWieldKnife);
+							break;
+						case BonusMalusAction.LearnLampRibbon:
+							_classes[i].ToggleBlursings.Add(BonusMalusAction.LearnLampRibbon);
+							_classes[i + 6].ToggleBlursings.Add(BonusMalusAction.LearnLampRibbon);
+							break;
+						case BonusMalusAction.LearDarkEvade:
+							_classes[i].ToggleBlursings.Add(BonusMalusAction.LearDarkEvade);
+							_classes[i + 6].ToggleBlursings.Add(BonusMalusAction.LearDarkEvade);
+							break;
+						case BonusMalusAction.LearnSleepMDef:
+							_classes[i].ToggleBlursings.Add(BonusMalusAction.LearnSleepMDef);
+							_classes[i + 6].ToggleBlursings.Add(BonusMalusAction.LearnSleepMDef);
+							break;
+						case BonusMalusAction.LearnSlowAbsorb:
+							_classes[i].ToggleBlursings.Add(BonusMalusAction.LearnSlowAbsorb);
+							_classes[i + 6].ToggleBlursings.Add(BonusMalusAction.LearnSlowAbsorb);
+							break;
+						case BonusMalusAction.ASpellsAutocast:
+							_classes[i].ToggleBlursings.Add(BonusMalusAction.ASpellsAutocast);
+							_classes[i + 6].ToggleBlursings.Add(BonusMalusAction.ASpellsAutocast);
+							break;
+						case BonusMalusAction.MasaCurse:
+							_classes[i].MasaCurse = (byte)bonusmalus.StatMod;
+							_classes[i + 6].MasaCurse = (byte)bonusmalus.StatMod;
+							break;
+						case BonusMalusAction.RibbonCurse:
+							_classes[i].RibbonCurse = (byte)bonusmalus.StatMod;
+							_classes[i + 6].RibbonCurse = (byte)bonusmalus.StatMod;
 							break;
 					}
 				}

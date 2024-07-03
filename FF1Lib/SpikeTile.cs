@@ -217,7 +217,7 @@ namespace FF1Lib
 				else if (mode == TrapTileMode.ASideFormations)
 				{
 					//all random
-					encounters = FormationLists.ASideEncounters;
+					encounters = new(FormationLists.ASideEncounters);
 					if (fightBahamut)
 					{
 						encounters = encounters.Except(FormationLists.BahamutEncounter).ToList();
@@ -225,7 +225,7 @@ namespace FF1Lib
 				}
 				else if (mode == TrapTileMode.BSideFormations)
 				{
-					encounters = FormationLists.BSideEncounters;
+					encounters = new(FormationLists.BSideEncounters);
 					if (fightBahamut)
 					{
 						encounters = encounters.Except(FormationLists.BahamutEncounter).ToList();
@@ -234,7 +234,7 @@ namespace FF1Lib
 				else if (mode == TrapTileMode.Random)
 				{
 					//all random
-					encounters = FormationLists.AllRandomEncounters;
+					encounters = new(FormationLists.AllRandomEncounters);
 					if (fightBahamut)
 					{
 						encounters = encounters.Except(FormationLists.BahamutEncounter).ToList();
@@ -244,7 +244,7 @@ namespace FF1Lib
 				{
 					//balanced/curated mode
 					//this mode is really just in here so tournament organizers know that it's possible
-					encounters = FormationLists.AllRandomEncounters;
+					encounters = new(FormationLists.AllRandomEncounters);
 
 					//remove the god grinds
 					encounters.Remove(0x69);        //1 eye tile.
