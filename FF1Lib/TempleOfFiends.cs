@@ -66,7 +66,7 @@ namespace FF1Lib
 			}
 			else if (mode == ToFRMode.Short)
 			{
-				ShortenToFR(maps, teleporters, fiendsrefights, true, rng);
+				ShortenToFR(maps, teleporters, fiendsrefights, true, false, rng);
 			}
 
 			// Update Fiends Refights
@@ -104,7 +104,7 @@ namespace FF1Lib
 		{
 			teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends10] = new TeleportDestination(MapIndex.TempleOfFiendsRevisitedChaos, new Coordinate(0x0F, 0x03, CoordinateLocale.StandardInRoom));
 
-			ShortenToFR(maps, teleporters, fiendsRefights, false, rng);
+			ShortenToFR(maps, teleporters, fiendsRefights, false, true, rng);
 
 			// Add Encounters to Chaos' Floor
 			if (chaosfloorsencouters)
@@ -160,10 +160,13 @@ namespace FF1Lib
 			maps[MapIndex.TempleOfFiendsRevisitedWater].Map[0x1B, 0x16] = 0x5C;
 			maps[MapIndex.TempleOfFiendsRevisitedWater].Map[0x0F, 0x0F] = 0x5D; // Move Masa Chest
 		}
-		private void ShortenToFR(StandardMaps maps, Teleporters teleporters, FiendsRefights fiendsrefights, bool addLutePlate, MT19337 rng)
+		private void ShortenToFR(StandardMaps maps, Teleporters teleporters, FiendsRefights fiendsrefights, bool addLutePlate, bool deepdungeon, MT19337 rng)
 		{
 			// Black Orb tile Warp destination change straight to an edit Chaos floor with all the ToFR Chests.
-			teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends2] = new TeleportDestination(MapIndex.TempleOfFiendsRevisitedChaos, new Coordinate(0x0F, 0x03, CoordinateLocale.StandardInRoom));
+			if (!deepdungeon)
+			{
+				teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends2] = new TeleportDestination(MapIndex.TempleOfFiendsRevisitedChaos, new Coordinate(0x0F, 0x03, CoordinateLocale.StandardInRoom));
+			}
 
 			// ToFR Map Hack
 			List<Blob> landingArea = new List<Blob>

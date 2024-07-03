@@ -401,6 +401,7 @@ namespace FF1Lib
 		public bool BlackBeltAbsorb { get; set; } = false;
 		public bool NPCSwatter { get; set; } = false;
 		public bool BattleMagicMenuWrapAround { get; set; } = false;
+		public bool MagicMenuSpellReordering { get; set; } = false;
 		public bool InventoryAutosort { get; set; } = false;
 		public bool AutoRetargeting { get; set; } = false;
 		public bool EnemyStatusAttackBug { get; set; } = false;
@@ -706,6 +707,7 @@ namespace FF1Lib
 		public bool? AllowUnsafeStartArea { get; set; } = false;
 
 		public bool? IncreaseDarkPenalty { get; set; } = false;
+		public PoisonModeOptions PoisonMode { get; set; } = PoisonModeOptions.Vanilla;
 
 		public bool? TouchIncludeBosses { get; set; } = false;
 
