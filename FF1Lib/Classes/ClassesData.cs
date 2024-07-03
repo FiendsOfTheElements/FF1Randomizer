@@ -61,6 +61,65 @@ namespace FF1Lib
 		Blursed
 	}
 
+
+	public enum BonusMalusAction
+	{
+		None = 0,
+		StrMod = 1,
+		AgiMod = 2,
+		IntMod = 3,
+		VitMod = 4,
+		LckMod = 5,
+		HpMod = 6,
+		HitMod = 7,
+		MDefMod = 8,
+		StrGrowth = 9,
+		AgiGrowth = 10,
+		IntGrowth = 11,
+		VitGrowth = 12,
+		LckGrowth = 13,
+		HpGrowth = 14,
+		HitGrowth = 15,
+		MDefGrowth = 16,
+		SpcMod = 17,
+		SpcGrowth = 18,
+		WeaponAdd = 19,
+		WeaponRemove = 20,
+		WeaponReplace = 21,
+		ArmorAdd = 22,
+		ArmorRemove = 23,
+		ArmorReplace = 24,
+		WhiteSpellcaster = 25,
+		BlackSpellcaster = 27,
+		SpcMax = 29,
+		PowerRW = 30,
+		NoPromoMagic = 31,
+		LockpickingLevel = 32,
+		InnateResist = 33,
+		BonusXp = 34,
+		MpGainOnMaxMpGain = 35,
+		StartWithSpell,
+		CantLearnSpell,
+		StartWithGold,
+		StartWithMp,
+		UnarmedAttack,
+		CatClawMaster,
+		ThorMaster,
+		SteelLord,
+		WoodAdept,
+		Hunter,
+		StartWithKI,
+		InnateSpells,
+		LearnLampRibbon,
+		ASpellsAutocast,
+		LearDarkEvade,
+		LearnSleepMDef,
+		LearnSlowAbsorb,
+		MasaCurse,
+		RibbonCurse,
+		DualWieldKnife,
+	}
+
 	public partial class GameClasses
 	{
 		private List<ClassData> _classes;
@@ -95,59 +154,6 @@ namespace FF1Lib
 		const int new_lut_LvlUpHitRateBonus = 0x8A59;
 		const int new_lut_LvlUpMagDefBonus = 0x8A65;
 		const int new_levelUpDataOffset = 0x8DA9;
-
-
-		public enum BonusMalusAction
-		{
-			None = 0,
-			StrMod = 1,
-			AgiMod = 2,
-			IntMod = 3,
-			VitMod = 4,
-			LckMod = 5,
-			HpMod = 6,
-			HitMod = 7,
-			MDefMod = 8,
-			StrGrowth = 9,
-			AgiGrowth = 10,
-			IntGrowth = 11,
-			VitGrowth = 12,
-			LckGrowth = 13,
-			HpGrowth = 14,
-			HitGrowth = 15,
-			MDefGrowth = 16,
-			SpcMod = 17,
-			SpcGrowth = 18,
-			WeaponAdd = 19,
-			WeaponRemove = 20,
-			WeaponReplace = 21,
-			ArmorAdd = 22,
-			ArmorRemove = 23,
-			ArmorReplace = 24,
-			WhiteSpellcaster = 25,
-			BlackSpellcaster = 27,
-			SpcMax = 29,
-			PowerRW = 30,
-			NoPromoMagic = 31,
-			LockpickingLevel = 32,
-			InnateResist = 33,
-			BonusXp = 34,
-			MpGainOnMaxMpGain = 35,
-			StartWithSpell,
-			CantLearnSpell,
-			StartWithGold,
-			StartWithMp,
-			UnarmedAttack,
-			CatClawMaster,
-			ThorMaster,
-			SteelLord,
-			WoodAdept,
-			Hunter,
-			Sleepy,
-			Sick,
-			StartWithKI,
-			InnateSpells
-		}
 		public GameClasses(GearPermissions weapPerm, GearPermissions armorPerm, SpellPermissions spellPerm, FF1Rom rom)
 		{
 			_classes = new List<ClassData>();
@@ -605,7 +611,6 @@ namespace FF1Lib
 			// Party Initial Setup Hijack
 			rom.PutInBank(0x1F, 0xC0AC, Blob.FromHex("2012D828EAEAEAEAEAEAEA"));
 			rom.PutInBank(0x1F, 0xD812, rom.CreateLongJumpTableEntry(0x1B, 0xB080));
-
 			
 			// The labels for the Malus Gold Amounts are processed separately in Randomize -
 			// Change those as well when changing the numbers below
@@ -641,7 +646,7 @@ namespace FF1Lib
 			Blob lut_InnateSpells02 = _classes.Select(x => (byte)(x.InnateSpells[1].Level > 0 ? x.InnateSpells[1].BattleId + 1 : 0x00)).ToArray();
 			Blob lut_InnateSpells03 = _classes.Select(x => (byte)(x.InnateSpells[2].Level > 0 ? x.InnateSpells[2].BattleId + 1 : 0x00)).ToArray();
 			Blob lut_StartSpellsSpell = _classes.Select(x => (byte)x.StartingSpell.MenuId).ToArray();
-			Blob lut_MpStart = _classes.Select(x => (byte)(x.StartWithMp ? 0x01 : 0x00)).ToArray();
+			Blob lut_MpStart = _classes.Select(x => (byte)(x.ToggleBlursings.Contains(BonusMalusAction.StartWithMp) ? 0x01 : 0x00)).ToArray();
 			Blob lut_StartingKeyItems = _classes.Select(x => x.StartingKeyItem == Item.Canoe ? (byte)0x12 : (x.StartingKeyItem == Item.None ? (byte)0x00 : (byte)(x.StartingKeyItem + 0x20))).ToArray();
 
 			rom.PutInBank(0x1B, 0xB480, lut_IncreaseGP + new byte[] { 0x00 } +
@@ -666,83 +671,44 @@ namespace FF1Lib
 			//rom.PutInBank(0x1F, 0xC271, rom.CreateLongJumpTableEntry(0x1B, 0xB080));
 
 			// Battle StartWith
-			rom.PutInBank(0x1B, 0xB080, Blob.FromHex($"A908C5F2F0034C00B320B4B020E9B0209FB12020B12051B12000B6207AB62092B64CA4B0A90085EDA9B285EEA000B1822003B060A90D85EDA9B285EEA000B1822003B0D023A018B1823011C8B182300CC8B1823007C8B1823002A900297FC923D006A00FA9FF918060A91A85EDA9B285EEA000B1822003B0D025A018B1823011C8B182300CC8B1823007C8B1823002A900297FC924D008A009B180180A918060A94E85EDA9B285EEA000B1822003B0D01FA01CB18210032040B1C8C020D0F460297FC905D00A9848A00BA902918068A860A98285EDA9B285EE8A48A200A000B1822003B0D036A01CB18210032088B1C8C020D0F4E003D02418A007B18069789002A9FF918068AA60297FC902D002E860C91BD002E860C911D001E86068AA60A000B182AABD27B2F006A00D1180918060A93485EDA9B285EEA000B1822003B0D008A001B1820920918260A94185EDA9B285EEA000B1822003B0D00F20E7FC2903D008A001B1820904918260"));
-			/*
-			rom.PutInBank(0x1B, 0xB080, Blob.FromHex($"A908C5F2F0034C00B320AEB020E3B02099B1201AB1204BB12000B64C9EB0A90085EDA9B285EEA000B1822003B060A90D85EDA9B285EEA000B1822003B0D023A018B1823011C8B182300CC8B1823007C8B1823002A900297FC923D006A00FA9{catclawcrit:X2}918060A91A85EDA9B285EEA000B1822003B0D025A018B1823011C8B182300CC8B1823007C8B1823002A900297FC924D008A009B180180A918060A94E85EDA9B285EEA000B1822003B0D01FA01CB1821003203AB1C8C020D0F460297FC905D00A9848A00BA902918068A860A96885EDA9B285EE8A48A200A000B1822003B0D036A01CB18210032082B1C8C020D0F4E003D02418A007B18069789002A9FF918068AA60297FC902D002E860C91BD002E860C911D001E86068AA60A000B182AABD27B2F006A00D1180918060A93485EDA9B285EEA000B1822003B0D008A001B1820920918260A94185EDA9B285EEA000B1822003B0D00F20E7FC2903D008A001B1820904918260"));*/
-
-			SpellHelper spellHelper = new(rom);
-			var lampCandidates = spellHelper.FindSpells(SpellRoutine.CureAilment, SpellTargeting.Any).Where(s => (s.Info.effect & 0x08) > 0).Select(x => (byte)x.Id).ToList();
-
-			byte lampId = 0xFF;
-			if (lampCandidates.Any())
-			{
-				lampId = (byte)(lampCandidates.First() - 0xB0 + 1);
-			}
+			rom.PutInBank(0x1B, 0xB080, Blob.FromHex($"A908C5F2F0034C00B320C3B020F8B020AEB1202FB12060B12000B7207AB72092B72000B8201FB82045B8206BB82099B84CB3B0A90085EDA9B285EEA000B1822003B060A90D85EDA9B285EEA000B1822003B0D023A018B1823011C8B182300CC8B1823007C8B1823002A900297FC923D006A00FA9{catclawcrit:X2}918060A91A85EDA9B285EEA000B1822003B0D025A018B1823011C8B182300CC8B1823007C8B1823002A900297FC924D008A009B180180A918060A93485EDA9B285EEA000B1822003B0D01FA01CB1821003204FB1C8C020D0F460297FC905D00A9848A00BA902918068A860A9A985EDA9B285EE8A48A200A000B1822003B0D036A01CB18210032097B1C8C020D0F4E003D02418A007B18069B49002A9FF918068AA60297FC902D002E860C91BD002E860C911D001E86068AA60A000B182AABD27B2F006A00D1180918060"));
 
 
-			var aSpellsCandidates = spellHelper.FindSpells(SpellRoutine.DefElement, SpellTargeting.AllCharacters).ToList();
-
-			byte afirId = 0xFF;
-			if (aSpellsCandidates.TryFind(s => (s.Info.effect & 0x10) > 0, out var afirespell))
-			{
-				afirId = (byte)(afirespell.Id - 0xB0 + 1);
-			};
-
-			byte aiceId = 0xFF;
-			if (aSpellsCandidates.TryFind(s => (s.Info.effect & 0x20) > 0, out var aicespell))
-			{
-				aiceId = (byte)(aicespell.Id - 0xB0 + 1);
-			};
-
-			byte alitId = 0xFF;
-			if (aSpellsCandidates.TryFind(s => (s.Info.effect & 0x40) > 0, out var alitspell))
-			{
-				alitId = (byte)(alitspell.Id - 0xB0 + 1);
-			};
-
-			byte arubId = 0xFF;
-			if (aSpellsCandidates.TryFind(s => (s.Info.effect & 0x80) > 0, out var arubspell))
-			{
-				arubId = (byte)(arubspell.Id - 0xB0 + 1);
-			};
-
-			var aMuteCandidates = spellHelper.FindSpells(SpellRoutine.CureAilment, SpellTargeting.Any).Where(s => (s.Info.effect & 0x40) > 0).Select(x => (byte)x.Id).ToList();
-
-			byte amutId = 0xFF;
-			if (aMuteCandidates.Any())
-			{
-				amutId = (byte)(aMuteCandidates.First() - 0xB0 + 1);
-			}
-
-			rom.PutInBank(0x1B, 0xB600, Blob.FromHex($"A000841084118412B182AABD5BB2F069A018B182101E297FAAE002F010E00AF00CE010F008E023F004E026D027E610E6114C54B6297FAAE002F017E00AF013E010F00FE023F004E026D009E611E6124C54B6E611C8C01CD0B9A510F01CA511C9029016A512F005A9024C6EB6A9018510A00CB180186510918060A000B182AABD68B2F00DA9{lampId:X2}2028B09006A00AA9FF918060A0008410B182AABD75B2F061A9{afirId:X2}2028B09006A51009108510A9{aiceId:X2}2028B09006A51009208510A9{alitId:X2}2028B09006A51009408510A9{arubId:X2}2028B09006A51009898510A9{amutId:X2}2028B09006A51009018510AD0A6805108D0A68AD1C6805108D1C68AD2E6805108D2E68AD406805108D406860"));
+			rom.PutInBank(0x1B, 0xB700, Blob.FromHex(	$"A000841084118412B182AABD41B2F069A018B182101E297FAAE002F010E00AF00CE010F008E023F004E026D027E610E6114C54B7297FAAE002F017E00AF013E010F00FE023F004E026D009E611E6124C54B7E611C8C01CD0B9A510F01CA511C9029016A512F005A9024C6EB7A9018510A00CB180186510918060A000B182AABD4EB2F00DA9{spellsLearning[Spell.LAMP].Id:X2}2028B09006A00AA9FF918060A0008410B182AABD5BB2F061A9{spellsLearning[Spell.AFIR].Id:X2}2028B09006A51009108510A9{spellsLearning[Spell.AICE].Id:X2}2028B09006A51009208510A9{spellsLearning[Spell.ALIT].Id:X2}2028B09006A51009408510A9{spellsLearning[Spell.ARUB].Id:X2}2028B09006A51009898510A9{spellsLearning[Spell.AMUT].Id:X2}2028B09006A51009018510AD0A6805108D0A68AD1C6805108D1C68AD2E6805108D2E68AD406805108D406860A000B182AABD68B2F014A9{spellsLearning[Spell.DARK].Id:X2}2028B0900D18A007B18069509002A9FF918060A000B182AABD75B2F01BA9{spellsLearning[Spell.SLOW].Id:X2}2028B0B007A9{spellsLearning[Spell.SLO2].Id:X2}2028B0900D18A008B18069289002A9FF918060A000B182AABD82B2F01BA9{spellsLearning[Spell.SLEP].Id:X2}2028B0B007A9{spellsLearning[Spell.SLP2].Id:X2}2028B0900D18A006B18069509002A9FF918060A000B182AABD8FB2F0238510A01CB18210032086B8C8C020D0F460297FC920D00C9848A001B1820510918268A860A000B182AABD9CB2F01F8510A018B18210034CB4B8C8C01CD0F460297FC928D008A001B1820510918260"));
 
 			// Insert luts
 			Blob lut_Blackbelts = _classes.Select(x => (byte)(x.UnarmedAttack ? 0x01 : 0x00)).ToArray();
-			Blob lut_CatClaws = _classes.Select(x => (byte)(x.CatClawMaster ? 0x01 : 0x00)).ToArray();
-			Blob lut_ThorHammer = _classes.Select(x => (byte)(x.ThorMaster ? 0x01 : 0x00)).ToArray();
+			Blob lut_CatClaws = _classes.Select(x => (byte)(x.ToggleBlursings.Contains(BonusMalusAction.CatClawMaster) ? 0x01 : 0x00)).ToArray();
+			Blob lut_ThorHammer = _classes.Select(x => (byte)(x.ToggleBlursings.Contains(BonusMalusAction.ThorMaster) ? 0x01 : 0x00)).ToArray();
 			Blob lut_Hunter = _classes.Select(x => (byte)x.HurtType).ToArray();
-			Blob lut_Sleepy = _classes.Select(x => (byte)(x.Sleepy ? 0x01 : 0x00)).ToArray();
-			Blob lut_Sick = _classes.Select(x => (byte)(x.Sick ? 0x01 : 0x00)).ToArray();
-			Blob lut_SteelArmor = _classes.Select(x => (byte)(x.SteelLord ? 0x01 : 0x00)).ToArray();
-			Blob lut_KnifeDualWield = Blob.FromHex("000100000000000100000000");
-			Blob lut_LampResist = Blob.FromHex("000000000100000000000000");
-			Blob lut_ASpellAutoCast = Blob.FromHex("000000000100000000000000");
-			Blob lut_WoodArmors = _classes.Select(x => (byte)(x.WoodAdept ? 0x01 : 0x00)).ToArray();
+			Blob lut_SteelArmor = _classes.Select(x => (byte)(x.ToggleBlursings.Contains(BonusMalusAction.SteelLord) ? 0x01 : 0x00)).ToArray();
+			Blob lut_KnifeDualWield = _classes.Select(x => (byte)(x.ToggleBlursings.Contains(BonusMalusAction.DualWieldKnife) ? 0x01 : 0x00)).ToArray();
+			Blob lut_LampResist = _classes.Select(x => (byte)(x.ToggleBlursings.Contains(BonusMalusAction.LearnLampRibbon) ? 0x01 : 0x00)).ToArray();
+			Blob lut_ASpellAutoCast = _classes.Select(x => (byte)(x.ToggleBlursings.Contains(BonusMalusAction.ASpellsAutocast) ? 0x01 : 0x00)).ToArray();
+			Blob lut_DarkEvade = _classes.Select(x => (byte)(x.ToggleBlursings.Contains(BonusMalusAction.LearDarkEvade) ? 0x01 : 0x00)).ToArray();
+			Blob lut_SlowAbsorb = _classes.Select(x => (byte)(x.ToggleBlursings.Contains(BonusMalusAction.LearnSlowAbsorb) ? 0x01 : 0x00)).ToArray();
+			Blob lut_SleepMDef = _classes.Select(x => (byte)(x.ToggleBlursings.Contains(BonusMalusAction.LearnSleepMDef) ? 0x01 : 0x00)).ToArray();
+			Blob lut_RibbonCurse = _classes.Select(x => (byte)x.RibbonCurse).ToArray();
+			Blob lut_MasaCurse = _classes.Select(x => (byte)x.MasaCurse).ToArray();
+			Blob lut_WoodArmors = _classes.Select(x => (byte)(x.ToggleBlursings.Contains(BonusMalusAction.WoodAdept) ? 0x01 : 0x00)).ToArray();
 
 			rom.PutInBank(0x1B, 0xB200, lut_Blackbelts + new byte[] { 0x00 } +
 				lut_CatClaws + new byte[] { 0x00 } +
 				lut_ThorHammer + new byte[] { 0x00 } +
 				lut_Hunter + new byte[] { 0x00 } +
-				lut_Sleepy + new byte[] { 0x00 } +
-				lut_Sick + new byte[] { 0x00 } +
 				lut_SteelArmor + new byte[] { 0x00 } +
 				lut_KnifeDualWield + new byte[] { 0x00 } +
 				lut_LampResist + new byte[] { 0x00 } +
 				lut_ASpellAutoCast + new byte[] { 0x00 } +
+				lut_DarkEvade + new byte[] { 0x00 } +
+				lut_SlowAbsorb + new byte[] { 0x00 } +
+				lut_SleepMDef + new byte[] { 0x00 } +
+				lut_RibbonCurse + new byte[] { 0x00 } +
+				lut_MasaCurse + new byte[] { 0x00 } +
 				lut_WoodArmors + new byte[] { 0x00 });
 
-			// Recruit Mode Switcher // previous B600, don't forget to change
-			rom.PutInBank(0x1B, 0xBF00, Blob.FromHex("A5108513A8B913B6A8202EB3A51385104CAA87004080C0"));
+			// Recruit Mode Switcher
+			rom.PutInBank(0x1B, 0xB600, Blob.FromHex("A5108513A8B913B6A8202EB3A51385104CAA87004080C0"));
 		}
 	}
 	public class ClassData
@@ -779,15 +745,11 @@ namespace FF1Lib
 		public byte InnateResist { get; set; }
 		public SpellSlotInfo StartingSpell { get; set; }
 		public BlursesStartWithGold StartWithGold { get; set; }
-		public bool StartWithMp { get; set; }
+		public List<BonusMalusAction> ToggleBlursings { get; set; }
 		public bool UnarmedAttack { get; set; }
-		public bool CatClawMaster { get; set; }
-		public bool ThorMaster { get; set; }
 		public byte HurtType { get; set; }
-		public bool Sleepy { get; set; }
-		public bool Sick { get; set; }
-		public bool WoodAdept { get; set; }
-		public bool SteelLord { get; set; }
+		public byte MasaCurse { get; set; }
+		public byte RibbonCurse { get; set; }
 		public List<SpellSlotInfo> InnateSpells { get; set; }
 		public Item StartingKeyItem { get; set; }
 
@@ -811,17 +773,13 @@ namespace FF1Lib
 			InnateResist = 0;
 			StartingSpell = new SpellSlotInfo();
 			StartWithGold = BlursesStartWithGold.None;
-			StartWithMp = false;
 			UnarmedAttack = (classid == 2 || classid == 8);
-			CatClawMaster = false;
-			ThorMaster = false;
 			HurtType = 0x00;
-			Sleepy = false;
-			Sick = false;
-			WoodAdept = false;
-			SteelLord = false;
+			MasaCurse = 0x00;
+			RibbonCurse = 0x00;
 			StartingKeyItem = Item.None;
 			InnateSpells = new() { new SpellSlotInfo(), new SpellSlotInfo(), new SpellSlotInfo() };
+			ToggleBlursings = new();
 		}
 
 		public byte[] StartingStatsArray()
