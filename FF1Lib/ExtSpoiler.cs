@@ -192,14 +192,6 @@ namespace FF1Lib
 			{
 
 				var overworldLocation = source.RewardSource.Entrance.ToString();
-				/*
-				var overworldLocation = source.RewardSource.MapLocation.ToString();
-
-				if (overworldMap.OverriddenOverworldLocations != null && overworldMap.OverriddenOverworldLocations.TryGetValue(source.RewardSource.MapLocation, out var overriden))
-				{
-					overworldLocation = overriden.ToString();
-				}*/
-
 				var itemStr = source.RewardSource.Item.ToString().PadRight(12);
 				var locStr = $"{overworldLocation} -> {source.RewardSource.MapLocation} -> {source.RewardSource.Name} ".PadRight(60);
 				var reqs = BuildRequirements(source);

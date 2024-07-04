@@ -273,7 +273,7 @@ namespace FF1Lib.Sanity
 								rewardSourceDic.Add(rewardSource.Address, new SCLogicRewardSource
 								{
 									Requirements = logicArea.Requirements.Restrict(treasure.Requirements),
-									RewardSource = rewardSource
+									RewardSource = new TreasureChest(rewardSource, dungeon.OverworldTeleport)
 								});
 							}
 						}
@@ -310,7 +310,7 @@ namespace FF1Lib.Sanity
 								rewardSourceDic.Add(shopslot.Address, new SCLogicRewardSource
 								{
 									Requirements = logicArea.Requirements.Restrict(shop.Requirements),
-									RewardSource = shopslot
+									RewardSource = new ItemShopSlot(shopslot, dungeon.OverworldTeleport)
 								});
 							}
 						}
@@ -475,7 +475,7 @@ namespace FF1Lib.Sanity
 								rewardSourceDic.Add(rewardSource.Address, new SCLogicRewardSource
 								{
 									Requirements = requirements.Restrict(secondaryRequirements),
-									RewardSource = rewardSource
+									RewardSource = new NpcReward(rewardSource, dungeon.OverworldTeleport)
 								});
 							}
 						}

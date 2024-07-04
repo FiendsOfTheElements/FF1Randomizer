@@ -41,7 +41,6 @@ public partial class FF1Rom : NesRom
 	private PlacementContext PlacementContext = null;
 
 	private Blob SavedHash;
-	public Settings Settings;
 
 	public void LoadSharedDataTables()
 	{
@@ -83,16 +82,13 @@ public partial class FF1Rom : NesRom
 		// Collapse tristate flags
 		flags = Flags.ConvertAllTriState(flags, rng);
 
-		Settings = new(true);
-		//Settings.GenerateFlagstring();
-
 		await this.Progress("Beginning Randomization", 16);
 
 		// Load Initial Data
 		RngTables = new(this);
 		TileSetsData = new(this);
 		ZoneFormations = new(this);
-		Overworld = new(this, flags, ZoneFormations, Settings, rng);
+		Overworld = new(this, flags, ZoneFormations, rng);
 		await Overworld.LoadMapExchange();
 		ItemsText = new ItemNames(this);
 		ArmorPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, this);
@@ -110,12 +106,6 @@ public partial class FF1Rom : NesRom
 		Music = new MusicTracks();
 
 		await this.Progress();
-
-		//Settings.CollapseRandomSettings(rng);
-		//Settings.ProcessStandardFlags();
-		//FlagRules.ProcessBaseFlags(settingstest);
-
-		//Settings.SetValue();
 
 		// Expand ROM, move data around
 		GlobalHacks();
@@ -411,7 +401,7 @@ public partial class FF1Rom : NesRom
 		ClassData.RaiseThiefHitRate(flags);
 		ClassData.BuffThiefAGI(flags);
 		ClassData.EarlierHighTierMagicCharges(flags);
-		ClassData.Randomize(flags, Settings, rng, oldItemNames, ItemsText, this);
+		ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);
 		ClassData.ProcessStartWithRoutines(flags, blursesValues, this);
 		ClassData.PinkMage(flags);
 		ClassData.BlackKnight(flags);

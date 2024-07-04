@@ -119,12 +119,12 @@
 
 			<div class="checkbox-cell"></div>
 			<h4>Key Items Placement</h4>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="kiPlacementMode" IsEnabled="@(Flags.Treasures != false)" TItem="KeyItemPlacementMode" @bind-Value="Flags.KeyItemPlacementMode"></EnumDropDown>
-            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="shipCanalBeforeFloater" IsEnabled="@(Flags.Treasures != false & Flags.KeyItemPlacementMode != KeyItemPlacementMode.Vanilla)" @bind-Value="Flags.ShipCanalBeforeFloater">Ship & Canal Before Floater</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="kiPlacementMode" IsEnabled="@(Flags.Treasures != false)" @bind-Value="Flags.AllowUnsafePlacement">Unsafe Placement</CheckBox>
+            <CheckBox UpdateToolTip="@UpdateToolTipID" Id="shipCanalBeforeFloater" IsEnabled="@(Flags.Treasures != false)" @bind-Value="Flags.ShipCanalBeforeFloater">Ship & Canal Before Floater</CheckBox>
             <div class="checkbox-cell"></div>
 			<h4>Loose Placement</h4>
 			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="loosePlacementMode" IsEnabled="@(Flags.Treasures != false && Flags.IsAnythingLoose)" TItem="LoosePlacementMode" @bind-Value="Flags.LoosePlacementMode"></EnumDropDown>
-			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="laterLoose" IsEnabled="@(Flags.Treasures != false & Flags.KeyItemPlacementMode != KeyItemPlacementMode.Vanilla && Flags.IsAnythingLoose)" @bind-Value="Flags.LaterLoose">Later Loose</CheckBox>
+			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="laterLoose" IsEnabled="@(Flags.Treasures != false && Flags.IsAnythingLoose)" @bind-Value="Flags.LaterLoose">Later Loose</CheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Id="looseNpcBalance" IsEnabled="@(Flags.Treasures != false && (Flags.IncentivizeFreeNPCs != true || Flags.IncentivizeFetchNPCs != true) && Flags.IsAnythingLoose)" @bind-Value="Flags.LooseItemsNpcBalance">Favor NPCs</CheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="LooseExcludePlacedDungeonsCheckBox" IsEnabled="@(Flags.Treasures != false && Flags.IsAnythingLoose)" @bind-Value="Flags.LooseExcludePlacedDungeons">No Loose Items in Incentivized Dungeons</TriStateCheckBox>
 		</div>

@@ -142,7 +142,6 @@
 		OwMapExchanges OwMapExchange { get; }
 		//GameModes GameMode { get;  }
 		bool Archipelago { get; }
-		bool PredictivePlacement { get;}
 		bool AllowUnsafePlacement { get; }
 		bool Etherizer { get; }
 		bool ShipCanalBeforeFloater { get; }

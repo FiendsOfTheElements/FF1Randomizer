@@ -15,12 +15,9 @@ namespace FF1Lib
 		private MT19337 rng;
 		private MT19337 funRng;
 		//private MT19337 asyncRng;
-
-		//private void GenerateRng(Settings settings, Blob seed)
 		private Blob GenerateRng(Flags flags, Blob seed)
 		{
 			// to review 
-			//if (settings.GetInt("OwMapExchange") == (int)OwMapExchanges.GenerateNewOverworld || settings.GetInt("OwMapExchange") == (int)OwMapExchanges.LostWoods)
 			if (flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld || flags.OwMapExchange == OwMapExchanges.LostWoods)
 			{
 				// Procgen maps can be either
@@ -34,7 +31,6 @@ namespace FF1Lib
 				// purposes of initializing the RNG
 				// consider them all to be
 				// "ImportCustomMap".
-				//settings.UpdateSetting("OwMapExchange", (int)OwMapExchanges.ImportCustomMap);
 				flags.OwMapExchange = OwMapExchanges.ImportCustomMap;
 				/*
 				flagsForRng = flags.ShallowCopy();
@@ -57,7 +53,6 @@ namespace FF1Lib
 					}
 				}
 
-				//Blob FlagsBlob = Encoding.UTF8.GetBytes(settings.GenerateFlagstring());
 				Blob FlagsBlob = Encoding.UTF8.GetBytes(Flags.EncodeFlagsText(flags));
 				Blob SeedAndFlags = Blob.Concat(new Blob[] { FlagsBlob, seed, resourcesPackHash });
 				Blob hash = hasher.ComputeHash(SeedAndFlags);

@@ -61,6 +61,17 @@ namespace FF1Lib
 		Blursed
 	}
 
+	public enum ClassRandomizationMode
+	{
+		[Description("None")]
+		None = 0,
+		[Description("Blursings")]
+		Blursings,
+		[Description("Transmooglifier")]
+		Transmooglifier,
+		[Description("Chaos")]
+		Chaos
+	}
 
 	public enum BonusMalusAction
 	{
@@ -492,25 +503,25 @@ namespace FF1Lib
 			}
 		}
 
-		public void Randomize(Flags flags, Settings settings, MT19337 rng, List<string> olditemnames, ItemNames itemnames, FF1Rom rom)
+		public void Randomize(Flags flags, MT19337 rng, List<string> olditemnames, ItemNames itemnames, FF1Rom rom)
 		{
-			if (!(bool)flags.RandomizeClass && !(bool)flags.Transmooglifier && !(bool)flags.RandomizeClassChaos)
+			if (flags.RandomizeClassMode == ClassRandomizationMode.None)
 				return;
 
 			RandomizeClassHacks(flags, rom);
 
-			if ((bool)flags.Transmooglifier)
-				Transmooglify(flags, settings, rng, rom);
-			else if ((bool)flags.RandomizeClass)
+			if (flags.RandomizeClassMode == ClassRandomizationMode.Transmooglifier)
+				Transmooglify(flags, rng, rom);
+			else if (flags.RandomizeClassMode == ClassRandomizationMode.Blursings)
 				RandomizeClassBlursings(flags, rng, olditemnames, itemnames, rom);
-			else if ((bool)flags.RandomizeClassChaos)
+			else if (flags.RandomizeClassMode == ClassRandomizationMode.Chaos)
 				RandomizeClassChaos(flags, rng, rom);
 		}
-		public void Transmooglify(Flags flags, Settings settings, MT19337 rng, FF1Rom rom)
+		public void Transmooglify(Flags flags, MT19337 rng, FF1Rom rom)
 		{
 			// The MEAT
 			Transmooglifier transmooglifier = new Transmooglifier();
-			transmooglifier.Transmooglify(flags, settings, rng, rom);
+			transmooglifier.Transmooglify(flags, rng, rom);
 
 			// Description screen
 			List<string> dataScreen = new List<string>();
@@ -553,7 +564,7 @@ namespace FF1Lib
 			// EnterInfoMenu, see 1E_8800_DrawInfoBox.asm
 			//rom.PutInBank(0x1E, 0x8800, Blob.FromHex("203CC4A5674A4A4A4A4AB015A200205B83A220205B83A9118538A90285394C3388A210205B83A230205B83A9038538A9028539A667BD0003C9FFD002A90C0AAA207188A98048A9C0484C1A85A9118538A9028539A667BD0061C9FFD002A90C0AAA207188A9B648A91248A90E85574C03FEA90D853CA91A853DA9008D0120A90085378A482063E0A970853EA989853FA538853AE63AA539853BE63BA91E855785582036DE68AABD5089853EBD5189853FA53B186902853B2036DE205E8560"));
 			string InfoMenuHeight = "02";
-			if ((bool)flags.Transmooglifier)
+			if (flags.RandomizeClassMode == ClassRandomizationMode.Transmooglifier)
 			{
 				InfoMenuHeight = "00";
 			}
@@ -604,6 +615,11 @@ namespace FF1Lib
 		}
 		public void ProcessStartWithRoutines(Flags flags, List<int> blursesValues, FF1Rom rom)
 		{
+			if (!spellsLearning.Any())
+			{
+				BuildSpellIdDict(rom);
+			}
+
 			// See 1B_B000_StartWithRoutines.asm
 			// Utilities
 			rom.PutInBank(0x1B, 0xB000, Blob.FromHex("B90061C90C9002A90C8410A8B1EDC90108A4102860B90061C90C9002A90C8410A8B1ED08A4102860AAA5828511A58318690285128AA000D111F007C8C02090F718603860"));

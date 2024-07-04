@@ -37,7 +37,7 @@ namespace FF1Lib
 		public OverworldMap OverworldMap { get => overworldMap; }
 		public OwLocationData Locations { get => locations; }
 		public ShipLocations ShipLocations { get => shipLocations; }
-		public Overworld(FF1Rom _rom, Flags _flags, ZoneFormations _zoneFormations, Settings _settings, MT19337 _rng)
+		public Overworld(FF1Rom _rom, Flags _flags, ZoneFormations _zoneFormations, MT19337 _rng)
 		{
 			flags = _flags;
 			rom = _rom;
@@ -91,10 +91,6 @@ namespace FF1Lib
 			locations.GetFrom(owdata.Data);
 
 			owdata.UpdateDomains(zoneFormations);
-		}
-		public void Update(Settings settings)
-		{
-			shipLocations.UpdateDocks(settings);
 		}
 		public SCCoords SetShipLocation(int dungeonindex)
 		{

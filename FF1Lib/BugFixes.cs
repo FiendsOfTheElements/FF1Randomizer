@@ -2,34 +2,10 @@
 
 namespace FF1Lib
 {
-	public static partial class FlagRules
-	{
-		public static FlagRule BugFixes { get; set; } = new FlagRule()
-		{
-			Conditions = new() { new() { new FlagCondition() { Name = "Bugfixes", Type = SettingType.Toggle, Value = 1 } } },
-			Actions = new List<FlagAction>()
-				{
-					new FlagAction() { Setting = "FixHouseMP", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "FixHouseHP", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "FixWeaponStats", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "FixSpellBugs", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "FixEnemyStatusAttack", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "FixBBAbsorbBug", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "ChanceToRun", Action = FlagActions.SetValue, Value = (int)ChanceToRunMode.Fixed },
-				}
-		};
-	}
 	public partial class FF1Rom
 	{
-
-
-		//private void Bugfixes(Settings settings)
 		private void Bugfixes(Flags flags)
 		{
-			//bool fixhousemp = settings.GetBool("FixHouseMP");
-			//bool fixhousehp = settings.GetBool("FixHouseHP");
-			//bool ether = settings.GetBool("Etherizer");
-
 			bool fixhousemp = (bool)flags.HouseMPRestoration;
 			bool fixhousehp = (bool)flags.HousesFillHp;
 			bool ether = (bool)flags.Etherizer;
@@ -39,13 +15,11 @@ namespace FF1Lib
 				FixHouse(fixhousehp, fixhousemp);
 			}
 
-			//if (settings.GetBool("FixWeaponStats"))
 			if ((bool)flags.WeaponStats)
 			{
 				FixWeaponStats();
 			}
 
-			//if (settings.GetBool("FixSpellBugs"))
 			if ((bool)flags.SpellBugs)
 			{
 				FixSpellBugs();
@@ -53,13 +27,11 @@ namespace FF1Lib
 				FixEnemyElementalResistances();
 			}
 
-			//if (settings.GetBool("FixEnemyStatusAttack"))
 			if ((bool)flags.EnemyStatusAttackBug)
 			{
 				FixEnemyStatusAttackBug();
 			}
 
-			//if (settings.GetBool("FixBBAbsorbBug"))
 			if ((bool)flags.BlackBeltAbsorb)
 			{
 				FixBBAbsorbBug();

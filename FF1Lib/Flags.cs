@@ -82,8 +82,6 @@ namespace FF1Lib
 		public bool LooseItemsSpreadPlacement { get; set; } = false;
 
 		public bool LooseItemsNpcBalance { get; set; } = false;
-
-		public bool PredictivePlacement { get; set; } = false;
 		public bool AllowUnsafePlacement { get; set; } = false;
 		public bool ShipCanalBeforeFloater { get; set; } = false;
 
@@ -403,6 +401,7 @@ namespace FF1Lib
 		public bool BattleMagicMenuWrapAround { get; set; } = false;
 		public bool MagicMenuSpellReordering { get; set; } = false;
 		public bool InventoryAutosort { get; set; } = false;
+		public bool RepeatedHealPotionUse { get; set; } = false;
 		public bool AutoRetargeting { get; set; } = false;
 		public bool EnemyStatusAttackBug { get; set; } = false;
 		public bool ImproveTurnOrderRandomization { get; set; } = false;
@@ -630,10 +629,8 @@ namespace FF1Lib
 		public bool? EnableRandomPromotions { get; set; } = false;
 		public bool? IncludeBaseClasses { get; set; } = false;
 		public bool? RandomPromotionsSpoilers { get; set; } = false;
-		public bool? RandomizeClass { get; set; } = false;
 		public bool? RandomizeClassCasting { get; set; } = false;
 		public bool? RandomizeClassKeyItems { get; set; } = false;
-		public bool? RandomizeClassChaos { get; set; } = false;
 		public bool? RandomizeClassIncludeXpBonus { get; set; } = false;
 		public bool? AlternateFiends { get; set; } = false;
 		public bool? FinalFantasy2Fiends { get; set; } = false;
@@ -643,7 +640,6 @@ namespace FF1Lib
 		public bool? FinalFantasy1BonusFiends { get; set; } = false;
  		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 
-		public bool? Transmooglifier { get; set; } = false;
 		public bool? MooglieWeaponBalance { get; set; } = false;
 		public bool? GuaranteeCustomClassComposition { get; set; } = false;
 
@@ -658,6 +654,7 @@ namespace FF1Lib
 		public bool ExclusiveLegendaryBlackShop { get; set; } = false;
 		public bool ExclusiveLegendaryWhiteShop { get; set; } = false;
 		public bool ExclusiveLegendaryItemShop { get; set; } = false;
+		public ClassRandomizationMode RandomizeClassMode { get; set; } = ClassRandomizationMode.None;
 
 		[IntegerFlag(0, 3)]
 		public int RandomizeClassMaxBonus { get; set; } = 2;
