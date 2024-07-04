@@ -8,71 +8,40 @@ using System.Threading.Tasks;
 
 namespace FF1Lib
 {
-	public static partial class FlagRules
-	{
-		public static FlagRule GlobalImprovements { get; set; } = new FlagRule()
-		{
-			Conditions = new() { new() { new FlagCondition() { Name = "GlobalImprovements", Type = SettingType.Toggle, Value = 1 } } },
-			Actions = new List<FlagAction>()
-				{
-					new FlagAction() { Setting = "NoPartyShuffle", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "IdentifyTreasures", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "EnableBuyQuantity", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "WaitWhenUnrunnable", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "EnableCritNumberDisplay", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "SpeedHacks", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "InventoryAutosort", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "EnableDash", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "SpeedBoat", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "MagicMenuSpellReordering", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "RepeatedHealPotionUse", Action = FlagActions.Enable },
-				}
-		};
-	}
 	public partial class FF1Rom
 	{
 		public const int PartyShuffleOffset = 0x312E0;
 		public const int PartyShuffleSize = 3;
 
-		//public void GlobalImprovements(Settings settings, Preferences preferences)
 		public void GlobalImprovements(Flags flags, StandardMaps maps, Preferences preferences)
 		{
-			//if (settings.GetBool("NoPartyShuffle"))
 			if ((bool)flags.NoPartyShuffle)
 			{
 				DisablePartyShuffle();
 			}
 
-			//if (settings.GetBool("IdentifyTreasures"))
 			if ((bool)flags.IdentifyTreasures)
 			{
 				EnableIdentifyTreasures(Dialogues);
 			}
 
-			//if (settings.GetBool("EnableBuyQuantity") || settings.GetBool("ArchipelagoEnabled"))
 			if ((bool)flags.BuyTen || (bool)flags.Archipelago)
 			{
-				//EnableBuyQuantity(settings.GetBool("ArchipelagoEnabled"));
 				EnableBuyQuantity((bool)flags.Archipelago);
 			}
 
-
-			//if (settings.GetBool("WaitWhenUnrunnable"))
 			if ((bool)flags.WaitWhenUnrunnable)
 			{
 				ChangeUnrunnableRunToWait();
 			}
 
-			//if (settings.GetBool("SpeedHacks") && settings.GetBool("EnableCritNumberDisplay"))
 			if ((bool)flags.SpeedHacks && (bool)flags.EnableCritNumberDisplay)
 			{
 				EnableCritNumberDisplay();
 			}
 
-			//if (settings.GetBool("InventoryAutosort") && !(preferences.RenounceAutosort))
 			if ((bool)flags.InventoryAutosort && !preferences.RenounceAutosort)
 			{
-				//EnableInventoryAutosort(settings.GetInt("GameMode") == (int)GameModes.NoOverworld);
 				EnableInventoryAutosort(flags.GameMode == GameModes.NoOverworld);
 			}
 
@@ -81,23 +50,18 @@ namespace FF1Lib
 				EnableAutoRetargeting();
 			}
 
-			//if (settings.GetBool("SpeedHacks"))
 			if ((bool)flags.SpeedHacks)
 			{
 				EnableSpeedHacks(preferences);
 			}
 
-			//if (settings.GetBool("EnableDash") || settings.GetBool("SpeedBoat"))
 			if ((bool)flags.Dash || (bool)flags.SpeedBoat)
 			{
-				//EnableDash(settings.GetBool("SpeedBoat"), preferences.OptOutSpeedHackDash);
 				EnableDash((bool)flags.SpeedBoat, preferences.OptOutSpeedHackDash);
 			}
 
-			//if (settings.GetBool("SpeedHacks"))
 			if ((bool)flags.SpeedHacks)
 			{
-				//SpeedHacksMoveNpcs(!settings.GetBool("ProcgenEarth"));
 				SpeedHacksMoveNpcs((bool)flags.ProcgenEarth, maps);
 			}
 			if ((bool)flags.MagicMenuSpellReordering && (bool)flags.ShopInfo)

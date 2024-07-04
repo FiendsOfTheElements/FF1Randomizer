@@ -492,7 +492,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void Randomize(Flags flags, Settings settings, MT19337 rng, List<string> olditemnames, ItemNames itemnames, FF1Rom rom)
+		public void Randomize(Flags flags, MT19337 rng, List<string> olditemnames, ItemNames itemnames, FF1Rom rom)
 		{
 			if (!(bool)flags.RandomizeClass && !(bool)flags.Transmooglifier && !(bool)flags.RandomizeClassChaos)
 				return;
@@ -500,17 +500,17 @@ namespace FF1Lib
 			RandomizeClassHacks(flags, rom);
 
 			if ((bool)flags.Transmooglifier)
-				Transmooglify(flags, settings, rng, rom);
+				Transmooglify(flags, rng, rom);
 			else if ((bool)flags.RandomizeClass)
 				RandomizeClassBlursings(flags, rng, olditemnames, itemnames, rom);
 			else if ((bool)flags.RandomizeClassChaos)
 				RandomizeClassChaos(flags, rng, rom);
 		}
-		public void Transmooglify(Flags flags, Settings settings, MT19337 rng, FF1Rom rom)
+		public void Transmooglify(Flags flags, MT19337 rng, FF1Rom rom)
 		{
 			// The MEAT
 			Transmooglifier transmooglifier = new Transmooglifier();
-			transmooglifier.Transmooglify(flags, settings, rng, rom);
+			transmooglifier.Transmooglify(flags, rng, rom);
 
 			// Description screen
 			List<string> dataScreen = new List<string>();

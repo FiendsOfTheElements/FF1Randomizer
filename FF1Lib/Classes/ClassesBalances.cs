@@ -51,62 +51,13 @@ namespace FF1Lib
 		[Description("Harm Hurts All Type")]
 		ImprovedHarm,
 	}
-
-	public static partial class FlagRules
-	{
-		public static FlagRule ThiefModeStandard { get; set; } = new FlagRule()
-		{
-			Conditions = new() { new() { new FlagCondition() { Name = "ThiefMode", Type = SettingType.OptionList, Value = (int)ThiefOptions.None } } },
-			Actions = new List<FlagAction>()
-				{
-					new FlagAction() { Setting = "ThiefAgilityBuff", Action = FlagActions.SetValue, Value = (int)ThiefAGI.Vanilla },
-				}
-		};
-		public static FlagRule ThiefModeDoubleHit { get; set; } = new FlagRule()
-		{
-			Conditions = new() { new() { new FlagCondition() { Name = "ThiefMode", Type = SettingType.OptionList, Value = (int)ThiefOptions.DoubleHit } } },
-			Actions = new List<FlagAction>()
-				{
-					new FlagAction() { Setting = "ThieHitRate", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "ThiefAgilityBuff", Action = FlagActions.SetValue, Value = (int)ThiefAGI.Vanilla },
-				}
-		};
-		public static FlagRule ThiefModeAgiBuff { get; set; } = new FlagRule()
-		{
-			Conditions = new() { new() { new FlagCondition() { Name = "ThiefMode", Type = SettingType.OptionList, Value = (int)ThiefOptions.RaisedAgility } } },
-			Actions = new List<FlagAction>()
-				{
-					new FlagAction() { Setting = "ThiefAgilityBuff", Action = FlagActions.SetValue, Value = (int)ThiefAGI.Agi80 },
-				}
-		};
-		public static FlagRule ThiefModeLockpicking { get; set; } = new FlagRule()
-		{
-			Conditions = new() { new() { new FlagCondition() { Name = "ThiefMode", Type = SettingType.OptionList, Value = (int)ThiefOptions.Lockpicking } } },
-			Actions = new List<FlagAction>()
-				{
-					new FlagAction() { Setting = "ThiefAgilityBuff", Action = FlagActions.SetValue, Value = (int)ThiefAGI.Vanilla },
-					new FlagAction() { Setting = "ThiefLockpicking", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "LockpickingLevelRequirement", Action = FlagActions.SetValue, Value = 15 },
-				}
-		};
-		public static FlagRule WhiteMageModeImprovedHarm { get; set; } = new FlagRule()
-		{
-			Conditions = new() { new() { new FlagCondition() { Name = "WhiteMageMode", Type = SettingType.OptionList, Value = (int)WhiteMageOptions.ImprovedHarm } } },
-			Actions = new List<FlagAction>()
-				{
-					new FlagAction() { Setting = "WhiteMageHarmEveryone", Action = FlagActions.Enable },
-				}
-		};
-	}
 	public partial class FF1Rom
 	{
-		//public void ClassesBalances(Settings settings, MT19337 rng)
 		public void ClassesBalances(Flags flags, MT19337 rng)
 		{
 
 			// Stats
 			// Move to ClassesData
-			//if (settings.GetBool("ReducedLuck"))
 			if ((bool)flags.ReducedLuck)
 			{
 				ReducedLuck();
@@ -114,7 +65,6 @@ namespace FF1Lib
 
 			// MDef
 			// Put into classesData
-			//var mdefgrowth = (MDEFGrowthMode)settings.GetInt("MDefMode");
 			var mdefgrowth = flags.MDefMode;
 			if (mdefgrowth != MDEFGrowthMode.None)
 			{
@@ -122,34 +72,28 @@ namespace FF1Lib
 			}
 
 			// Classes specific
-			//if (settings.GetBool("DontDoubleBBCritRates"))
 			if ((bool)flags.BBCritRate)
 			{
 				DontDoubleBBCritRates();
 			}
 
-			//if (settings.GetBool("WhiteMageHarmEveryone"))
 			if ((bool)flags.WhiteMageHarmEveryone)
 			{
 				WhiteMageHarmEveryone();
 			}
 
-			//if (settings.GetBool("ThiefLockpicking"))
 			if ((bool)flags.Lockpicking)
 			{
 				EnableLockpicking();
-				//SetLockpickingLevel(settings.GetInt("ThiefLockpickingLevel"));
 				SetLockpickingLevel((int)flags.LockpickingLevelRequirement);
 			}
 
 			// MP Growth
-			//if (settings.GetBool("KnightNinjaChargesForAllLevels"))
 			if ((bool)flags.AllSpellLevelsForKnightNinja)
 			{
 				KnightNinjaChargesForAllLevels();
 			}
 
-			//new ChanceToRun(this, settings).FixChanceToRun();
 			new ChanceToRun(this, flags).FixChanceToRun();
 
 			MoveLoadPlayerIBStats();
@@ -157,10 +101,8 @@ namespace FF1Lib
 			// XP
 			SetupClassAltXp();
 
-			//new StartingLevels(this, settings).SetStartingLevels();
 			new StartingLevels(this, flags).SetStartingLevels();
 
-			//SetMaxLevel(settings.GetInt("MaxLevel"), StartingLevels.GetLevelNumber((StartingLevel)settings.GetInt("StartingLevel")));
 			SetMaxLevel(rng.Between(flags.MaxLevelLow, flags.MaxLevelHigh), StartingLevels.GetLevelNumber(flags.StartingLevel));
 		}
 

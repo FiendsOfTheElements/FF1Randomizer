@@ -298,7 +298,6 @@ namespace FF1Lib
 				dialogues[0x11] = "Astos double-crossed us.\nFind where they stashed\nthe CROWN. Then bring it\ndirectly back to me!";
 			}
 
-			//if (!settings.GetBool("NPCItems") && !settings.GetBool("NPCFetchItems"))
 			if (!(bool)flags.NPCItems && !(bool)flags.NPCFetchItems)
 			{
 				return;
