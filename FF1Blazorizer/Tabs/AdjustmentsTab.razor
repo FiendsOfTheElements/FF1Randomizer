@@ -48,7 +48,7 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="autoRetargetingCheckBox" @bind-Value="Flags.AutoRetargeting">Auto Retargeting</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shopInfoCheckBox" @bind-Value="Flags.ShopInfo">Shop Information</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chestInfoCheckBox" Indent IsEnabled="@(Flags.ShopInfo && Flags.IdentifyTreasures)" @bind-Value="Flags.ChestInfo">Chest Information</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="magicMenuSpellReordering" Indent IsEnabled="@(Flags.ShopInfo)" @bind-Value="Flags.MagicMenuSpellReordering">Magic Menu Spell Reordering</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="magicMenuSpellReorderingCheckBox" Indent IsEnabled="@(Flags.ShopInfo)" @bind-Value="Flags.MagicMenuSpellReordering">Magic Menu Spell Reordering</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="incentiveChestItemsFanfareCheckBox" @bind-Value="Flags.IncentiveChestItemsFanfare">All Incentive Chest Fanfare</CheckBox>
 
     <div class="checkbox-cell"></div>
