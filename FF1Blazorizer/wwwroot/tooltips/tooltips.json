@@ -2093,6 +2093,7 @@
 	{
 		"Id": "autoRetargetingCheckBox",
 		"title": "Auto Retargeting",
+		"screenshot": "autoRetargeting.gif",
 		"description": "If enabled, melee attacks against dead enemies will be retargeted to an enemy that is still alive, instead of displaying the 'Ineffective' message"
 	},
 	{
@@ -2317,6 +2318,7 @@
 	{
 		"Id": "poisonModeDropDown",
 		"title": "In-Battle Poison Damage",
+		"screenshot": "inBattlePoisonDamage.gif",
 		"description": "Changes how much damage players take at the end of each turn if poisoned."
 	},
 	{
@@ -2461,6 +2463,7 @@
 	{
 		"Id": "IntAffectsSpells",
 		"title": "INT Affects Spells",
+		"screenshot":  "intAffectsSpells.gif",
 		"description": "Makes character's INT stat affect spells in various ways.\nDamage spells get a bonus to crit chance based on INT.\nPower word spells get a bonus to their threshold.\nDebuff spells get a boost to their chance to hit.\nHeal spells (in battle) get a boost to the maximum they can roll (minimum is unchanged).'"
 	},
 	{
