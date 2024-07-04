@@ -163,21 +163,16 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		// NPC Stuff
+		// NPCs
 		Dialogues.UpdateNPCDialogues(flags);
 		PacifistBat(Maps, TalkRoutines, NpcData);
 		TalkRoutines.Update(flags);
 		ClassAsNPC(flags, TalkRoutines, NpcData, Dialogues, Maps, rng);
 
-		// NOTE: logic checking for relocated chests
-		// accounts for NPC locations and whether they
-		// are fightable/killable, so it needs to
-		// happen after anything that adds, removes or
-		// relocates NPCs or changes their routines.
+		// Relocate chests need to happen after NPCs, before logic
 		await new RelocateChests(this).RandomlyRelocateChests(rng, Maps, TileSetsData, Teleporters, NpcData, flags);
 
 		// Spells
-		//must be done before spells get shuffled around otherwise we'd be changing a spell that isnt lock
 		SpellBalanceHacks(flags, rng);
 
 		if ((bool)flags.GenerateNewSpellbook)
@@ -185,11 +180,7 @@ public partial class FF1Rom : NesRom
 			CraftNewSpellbook(EnemyScripts, rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
 		}
 
-		if (flags.TranceHasStatusElement)
-		{
-			TranceHasStatusElement();
-		}
-
+		TranceHasStatusElement(flags.TranceHasStatusElement);
 		ShuffleMagicLevels(EnemyScripts, rng, (bool)flags.MagicLevels && !(bool)flags.GenerateNewSpellbook, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed);
 
 		//has to be done before modifying itemnames and after modifying spellnames...
@@ -259,7 +250,7 @@ public partial class FF1Rom : NesRom
 			new PlacementContext(StartingItems, new() { }, priceList, rng, flags) :
 			new PlacementContext(StartingItems, new() { }, DeepDungeon.PlacedItems, DeepDungeon.ChestLocations, priceList, rng, flags);
 
-		// Shop stuff
+		// Shops
 		ShopData.ShuffleShops(rng, PlacementContext.ExcludedItemsFromShops, Teleporters.ConeriaTownEntranceItemShopIndex);
 		ShopData.ShuffleMagicLocations((bool)flags.MagicShopLocs, (bool)flags.MagicShopLocationPairs, rng);
 		ShopData.ShuffleMagicShops((bool)flags.MagicShops, rng);
@@ -338,7 +329,7 @@ public partial class FF1Rom : NesRom
 		AllowStrikeFirstAndSurprise(flags.WaitWhenUnrunnable, (bool)flags.UnrunnablesStrikeFirstAndSurprise);
 		ShuffleSurpriseBonus((bool)flags.EnemyFormationsSurprise, rng);
 
-		// After unrunnable shuffle and before formation shuffle. Perfect!
+		// After unrunnable shuffle and before formation shuffle
 		WarMechMode.Process(this, flags, NpcData, ZoneFormations, Dialogues, rng, Maps, warmMechFloor);
 		FightBahamut(flags, TalkRoutines, NpcData, ZoneFormations, Dialogues, Maps, EnemyScripts, rng);
 		Astos(NpcData, Dialogues, TalkRoutines, EnemyScripts, flags, rng);
@@ -482,8 +473,6 @@ public partial class FF1Rom : NesRom
 		uint last_rng_value = rng.Next();
 
 		// Final ROM writes
-
-		//WriteSeedAndFlags(seed.ToHex(), flags, flagsForRng, unmodifiedFlags, "ressourcePackHash", last_rng_value);
 		WriteSeedAndFlags(seed.ToHex(), flags, flagsForRng, unmodifiedFlags, resourcesPackHash.ToHex(), last_rng_value);
 		if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 
