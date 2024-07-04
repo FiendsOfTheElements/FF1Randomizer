@@ -403,6 +403,7 @@ namespace FF1Lib
 		public bool BattleMagicMenuWrapAround { get; set; } = false;
 		public bool MagicMenuSpellReordering { get; set; } = false;
 		public bool InventoryAutosort { get; set; } = false;
+		public bool RepeatedHealPotionUse { get; set; } = false;
 		public bool AutoRetargeting { get; set; } = false;
 		public bool EnemyStatusAttackBug { get; set; } = false;
 		public bool ImproveTurnOrderRandomization { get; set; } = false;

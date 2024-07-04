@@ -247,6 +247,12 @@
 		"description": "Forgo the \"Autosort Inventory\" flag (found under the Conveniences tab) if it is enabled. This will revert the game to it's standard item menu behavior (Key Items up top, potions at the bottom) no matter what flags are selected."
 	},
 	{
+		"Id": "repeatedHealPotionUseCheckBox",
+		"title": "Repeated Heal Potion Use",
+		"screenshot": "repeatedHealPotionUse.gif",
+		"description": "If Enabled, allows multiple heal potions to be used in a row without having to re-select them."
+	},
+	{
 		"Id": "renounceChestInfoCheckBox",
 		"title": "Renounce Chest Info",
 		"screenshot": "incentivizeOpalCheckBox.png",
@@ -2463,7 +2469,7 @@
 	{
 		"Id": "IntAffectsSpells",
 		"title": "INT Affects Spells",
-		"screenshot":  "intAffectsSpells.gif",
+		"screenshot": "intAffectsSpells.gif",
 		"description": "Makes character's INT stat affect spells in various ways.\nDamage spells get a bonus to crit chance based on INT.\nPower word spells get a bonus to their threshold.\nDebuff spells get a boost to their chance to hit.\nHeal spells (in battle) get a boost to the maximum they can roll (minimum is unchanged).'"
 	},
 	{

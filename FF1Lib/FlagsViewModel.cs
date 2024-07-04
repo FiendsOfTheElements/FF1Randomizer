@@ -2127,6 +2127,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InventoryAutosort"));
 			}
 		}
+		public bool RepeatedHealPotionUse
+		{
+			get => Flags.RepeatedHealPotionUse;
+			set
+			{
+				Flags.RepeatedHealPotionUse = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RepeatedHealPotionUse"));
+			}
+		}
 		public bool AutoRetargeting
 		{
 			get => Flags.AutoRetargeting;
