@@ -262,8 +262,8 @@ namespace FF1Lib
 			// Clinic_InitialText followed by ShouldSkipChar followed by "Hire a\n" text
 			PutInBank(0x0E, 0x9D58, Blob.FromHex("205BAAA0FFC8B9B09D991003D0F7A902991003C8A648BD0A9D69F0991003C8A905991003C8A9C5991003C8A900991003A9108D3E00A9038D3F004C32AAAD0D03D010BD0061C9FFD003A90160BD0161C90160BD0061C9FF6091AC23FFA40100"));
 
-			int levelUpTargetA = (bool)flags.RandomizeClass ? 0xB5 : 0x87;
-			int levelUpTargetB = (bool)flags.RandomizeClass ? 0xFF : 0xA9;
+			int levelUpTargetA = flags.RandomizeClassMode == ClassRandomizationMode.Blursings ? 0xB5 : 0x87;
+			int levelUpTargetB = flags.RandomizeClassMode == ClassRandomizationMode.Blursings ? 0xFF : 0xA9;
 			
 			// New routine to level up replaced character and zero some stuff, needs new level up stuff in bank 1B
 			PutInBank(0x0E, 0x9D34, Blob.FromHex($"AD0D03F018A99D48A95048A9{levelUpTargetA:X2}48A9{levelUpTargetB:X2}488A182A2A2A8510A91B4C03FE4C0098"));
@@ -388,7 +388,7 @@ namespace FF1Lib
 		{
 			string selectButtonCode = "EAEAEAEAEA";
 
-			if ((bool)flags.RandomizeClass || (bool)flags.Transmooglifier || (bool)flags.RandomizeClassChaos)
+			if (flags.RandomizeClassMode != ClassRandomizationMode.None)
 			{
 				selectButtonCode = "F0034C0088";
 			}

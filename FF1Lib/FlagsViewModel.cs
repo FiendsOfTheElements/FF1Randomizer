@@ -4305,24 +4305,6 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? RandomizeClass
-		{
-			get => Flags.RandomizeClass;
-			set
-			{
-				Flags.RandomizeClass = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClass"));
-			}
-		}
-		public bool? RandomizeClassChaos
-		{
-			get => Flags.RandomizeClassChaos;
-			set
-			{
-				Flags.RandomizeClassChaos = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassChaos"));
-			}
-		}
 		public bool? MooglieWeaponBalance
 		{
 			get => Flags.MooglieWeaponBalance;
@@ -4332,12 +4314,12 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MooglieWeaponBalance"));
 			}
 		}
-		public bool? Transmooglifier
+		public ClassRandomizationMode RandomizeClassMode
 		{
-			get => Flags.Transmooglifier;
+			get => Flags.RandomizeClassMode;
 			set
 			{
-				Flags.Transmooglifier = value;
+				Flags.RandomizeClassMode = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Transmooglifier"));
 			}
 		}
@@ -5612,37 +5594,15 @@ namespace FF1Lib
 		    Flags.LoadResourcePackFlags(stream);
 		    RaisePropertyChanged();
 		}
-
-		public KeyItemPlacementMode KeyItemPlacementMode
+		public bool AllowUnsafePlacement
 		{
-			get
-			{
-				if (Flags.PredictivePlacement == false) return KeyItemPlacementMode.Vanilla;
-				if (Flags.PredictivePlacement == true && Flags.AllowUnsafePlacement == false) return KeyItemPlacementMode.Predictive;
-				return KeyItemPlacementMode.PredictiveUnsafe;
-			}
+			get => Flags.AllowUnsafePlacement;
 			set
 			{
-				switch (value)
-				{
-					case KeyItemPlacementMode.Vanilla:
-						Flags.PredictivePlacement = false;
-						Flags.AllowUnsafePlacement = false;
-						break;
-					case KeyItemPlacementMode.Predictive:
-						Flags.PredictivePlacement = true;
-						Flags.AllowUnsafePlacement = false;
-						break;
-					case KeyItemPlacementMode.PredictiveUnsafe:
-						Flags.PredictivePlacement = true;
-						Flags.AllowUnsafePlacement = true;
-						break;
-				}
-
+				Flags.AllowUnsafePlacement = value;
 				RaisePropertyChanged();
 			}
 		}
-
 		public LoosePlacementMode LoosePlacementMode
 		{
 			get

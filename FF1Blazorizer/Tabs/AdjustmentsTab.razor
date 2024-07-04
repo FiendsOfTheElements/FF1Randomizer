@@ -23,6 +23,7 @@
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="rngCheckBox" @bind-Value="Flags.Rng">RNG Tables</TriStateCheckBox>
     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="improveTurnOrderRandomizationCheckBox" @bind-Value="Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" @bind-Value="Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="SetRNG" @bind-Value="Flags.SetRNG">Set RNG</CheckBox>
 
 	<div class="checkbox-cell"></div>
 	<h4>Saving</h4>
@@ -30,6 +31,10 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" @bind-Value="Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" @bind-Value="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="saveGameDWModeCheckBox" IsEnabled="@Flags.SaveGameWhenGameOver" @bind-Value="Flags.SaveGameDWMode">Dragon Warrior Mode</CheckBox>
+
+	<div class="checkbox-cell"></div>
+	<h4>Transport</h4>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="AirBoatCheckBox" @bind-Value="Flags.AirBoat">AirBoat</TriStateCheckBox>
 </div>
 
 <div class="col2">

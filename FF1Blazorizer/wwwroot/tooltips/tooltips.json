@@ -109,9 +109,9 @@
 	},
 	{
 		"Id": "kiPlacementMode",
-		"title": "Key Item Placement",
+		"title": "Unsafe Key Item Placement",
 		"screenshot": "kiPlacementMode.png",
-		"description": "Guided: This algorithm uses a semifixed placement order that will always open up the seed with an early SHIP and CANAL.\n\nPredictive: More powerful algorithm that does not rely on a fixed item order. This allows for more flexibility like allowing early fetch quests or opening a seed up with the CANOE instead of the SHIP. It can better handle alternate overworlds and Floor Entrance seeds.\n\nPredictive Unsafe: Removes Safety Checks that prevent the Predictive Algorithm from forcing you into high level dungeons early."
+		"description": "Removes Safety Checks that prevent the Predictive Algorithm from forcing you into high level dungeons early."
 	},
 	{
 		"Id": "loosePlacementMode",
@@ -1574,28 +1574,16 @@
 	},
 
 	{
-		"Id": "RandomizeClassCheckBox",
-		"title": "Blursed Classes",
-		"screenshot": "RandomizeClassCheckBox.png",
-		"description": "\"Blursed\" Classes (as in classes with \"blessings\" and \"curses\") give bonuses and maluses at random to each of the selectable classes in the game. These can change how desirable a given class will be and are not necessarily balanced with each other.\nPress Select at the Party Selection screen (and A at Status Screen) to reveal the modifiers applied to a given class.\nCheck \"Class Blursings\" on the Wiki (under Randomizer Documentation) for a breakdown of the possible blursings."
+		"Id": "randomizeClassDropDown",
+		"title": "Class Randomization",
+		"screenshot": "transmooglifier.gif",
+		"description": "Randomly modify classes. \nPress Select at the Party Selection screen (and A at Status Screen) to reveal the modifiers applied to a given class.\n\nNone: No random modifications.\n\nBlursings: Give bonuses and maluses at random to each of the selectable classes in the game.\n\nTransmooglifier: Procedurally generates six custom classes from a set of 26. Each class corresponds to heuristically randomized spell permissions, stats, equipment sets, abilities, and blursings - this means the classes will have unique properties every time.\nThis also disables most specific balance options. Character specific buffs will refer to character slot. For example, Fighter XP will now refer to 'Slot 0 character class XP Bonus'.\nIt is recommended to disable any custom sprites when using Transmooglifier, since Transmooglifier also uses custom sprites.\n\nChaos: Shuffles all the stats, spellcasting abilities, and equipment permissions between all the classes, making for classes with very different abilities from the vanilla game. Only for experienced players."
 	},
 	{
 		"Id": "RandomizeClassCastingCheckBox",
 		"title": "Add Spellcasting Bonuses",
 		"screenshot": "RandomizeClassCasting.png",
 		"description": "Add bonuses granting spellcasting abilities."
-	},
-	{
-		"Id": "RandomizeClassChaosCheckBox",
-		"title": "Chaos Mode",
-		"screenshot": "RandomizeClassChaosCheckBox.png",
-		"description": "Chaos Mode shuffles all the stats, spellcasting abilities, and equipment permissions between all the classes, making for classes with very different abilities from the vanilla game. Only for experienced players."
-	},
-	{
-		"Id": "TransmooglifierCheckBox",
-		"title": "Transmooglifier",
-		"screenshot": "transmooglifier.gif",
-		"description": "Procedurally generates six custom classes from a set of 26. Each class corresponds to heuristically randomized spell permissions, stats, equipment sets, abilities, and blursings - this means the classes will have unique properties every time. They can be described as \"What you might expect from a class named X\".\nThis also disables most specific balance options. Character specific buffs will refer to character slot. Example: Fighter XP will now refer to 'Slot 0 character class XP Bonus'.\nNote: It is recommended to disable any custom sprites when using Transmooglifier, since Transmooglifier also uses custom sprites."
 	},
 	{
 		"Id": "transmooglifierVariance",
