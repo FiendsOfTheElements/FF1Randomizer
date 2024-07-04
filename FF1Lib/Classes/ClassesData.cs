@@ -615,6 +615,11 @@ namespace FF1Lib
 		}
 		public void ProcessStartWithRoutines(Flags flags, List<int> blursesValues, FF1Rom rom)
 		{
+			if (!spellsLearning.Any())
+			{
+				BuildSpellIdDict(rom);
+			}
+
 			// See 1B_B000_StartWithRoutines.asm
 			// Utilities
 			rom.PutInBank(0x1B, 0xB000, Blob.FromHex("B90061C90C9002A90C8410A8B1EDC90108A4102860B90061C90C9002A90C8410A8B1ED08A4102860AAA5828511A58318690285128AA000D111F007C8C02090F718603860"));
