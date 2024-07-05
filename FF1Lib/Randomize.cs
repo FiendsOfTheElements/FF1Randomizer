@@ -82,7 +82,7 @@ public partial class FF1Rom : NesRom
 		// Collapse tristate flags
 		flags = Flags.ConvertAllTriState(flags, rng);
 
-		await this.Progress("Beginning Randomization", 16);
+		await this.Progress("Beginning Randomization", 15);
 
 		// Load Initial Data
 		RngTables = new(this);
@@ -174,71 +174,26 @@ public partial class FF1Rom : NesRom
 
 		// Spells
 		SpellBalanceHacks(flags, rng);
-
-		if ((bool)flags.GenerateNewSpellbook)
-		{
-			CraftNewSpellbook(EnemyScripts, rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
-		}
-
+		CraftNewSpellbook(EnemyScripts, flags, rng);
 		TranceHasStatusElement(flags.TranceHasStatusElement);
 		ShuffleMagicLevels(EnemyScripts, rng, (bool)flags.MagicLevels && !(bool)flags.GenerateNewSpellbook, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed);
-
-		//has to be done before modifying itemnames and after modifying spellnames...
+		SpellNames(flags, preferences, rng);
 		var extConsumables = new ExtConsumables(ShopData, this, flags, rng);
 		extConsumables.LoadSpells();
 
 		// Create items
 		Etherizer(flags.Etherizer, ItemsText);
 
-		if ((bool)flags.Weaponizer)
-		{
-			Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers, flags.ItemMagicMode == ItemMagicMode.None);
-		}
-
-		if ((bool)flags.ArmorCrafter)
-		{
-			ArmorCrafter(rng, flags.ItemMagicMode == ItemMagicMode.None, flags.RibbonMode == RibbonMode.Split);
-		}
-
-		if (flags.ItemMagicMode != ItemMagicMode.None && flags.ItemMagicMode != ItemMagicMode.Vanilla)
-		{
-			ShuffleItemMagic(rng, flags);
-		}
-
-		if (flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
-		{
-			CraftDefenseItem(flags);
-		}
-
-		if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
-		{
-			CraftPowerItem(flags);
-		}
-
+		Weaponizer(flags, rng);
+		ArmorCrafter(flags, rng);
 		new RibbonShuffle(this, rng, flags, ItemsText, ArmorPermissions).Work();
 
-		if (flags.WeaponCritRate)
-		{
-			DoubleWeaponCritRates();
-		}
-		if (flags.ItemMagicMode == ItemMagicMode.None)
-		{
-			NoItemMagic(flags);
-		}
+		ItemMagic(flags, rng);
 
-		List<int> blursesValues = Enumerable.Repeat(0, 40).ToList();
-
-		//needs to go after item magic, moved after double weapon crit to have more control over the actual number of crit gained.
-		if ((bool)flags.RandomWeaponBonus)
-		{
-			blursesValues = RandomWeaponBonus(rng, flags.RandomWeaponBonusLow, flags.RandomWeaponBonusHigh, (bool)flags.RandomWeaponBonusExcludeMasa, preferences.CleanBlursedEquipmentNames);
-		}
-
-		if ((bool)flags.RandomArmorBonus)
-		{
-			RandomArmorBonus(rng, flags.RandomArmorBonusLow, flags.RandomArmorBonusHigh, preferences.CleanBlursedEquipmentNames);
-		}
-
+		DoubleWeaponCritRates(flags.WeaponCritRate);
+		List<int> weaponBlursesValues = Enumerable.Repeat(0, 40).ToList();
+		RandomWeaponBonus(flags, preferences.CleanBlursedEquipmentNames, weaponBlursesValues, rng);
+		RandomArmorBonus(flags, preferences.CleanBlursedEquipmentNames, rng);
 		IncreaseWeaponBonus(flags.WeaponBonuses, flags.WeaponTypeBonusValue);
 
 		// Starting Inventory
@@ -302,19 +257,6 @@ public partial class FF1Rom : NesRom
 		funMessages.AddRange(Enumerable.Repeat("Finalizing", funMessages.Count * 4).ToList());
 
 		await this.Progress(funMessages.PickRandom(rng));
-
-		// Should be in spell class
-		if (preferences.AccessibleSpellNames)
-		{
-			AccessibleSpellNames(flags);
-		}
-
-		if (flags.SpellNameMadness != SpellNameMadness.None)
-		{
-			MixUpSpellNames(flags.SpellNameMadness, rng);
-		}
-
-		await this.Progress();
 
 		// Enemies
 		if ((bool)flags.AlternateFiends && !flags.SpookyFlag) await this.Progress("Creating new Fiends", 1);
@@ -393,7 +335,7 @@ public partial class FF1Rom : NesRom
 		ClassData.BuffThiefAGI(flags);
 		ClassData.EarlierHighTierMagicCharges(flags);
 		ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);
-		ClassData.ProcessStartWithRoutines(flags, blursesValues, this);
+		ClassData.ProcessStartWithRoutines(flags, weaponBlursesValues, this);
 		ClassData.PinkMage(flags);
 		ClassData.BlackKnight(flags);
 		ClassData.WhiteNinja(flags);

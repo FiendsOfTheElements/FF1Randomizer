@@ -5,8 +5,13 @@ namespace FF1Lib
 	public partial class FF1Rom
 	{
 		// Move to Gear Class
-		public void DoubleWeaponCritRates()
+		public void DoubleWeaponCritRates(bool enable)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			// Increase crit rate of all weapons
 			var weapons = Get(WeaponOffset, WeaponSize * WeaponCount).Chunk(WeaponSize);
 			foreach (var weapon in weapons)
