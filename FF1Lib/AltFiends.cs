@@ -2549,7 +2549,7 @@ namespace FF1Lib
 				alternateFiendsList.AddRange(FF1BonusFiendsList);
 			}
 
-			if ((bool)!flags.FinalFantasy2Fiends && (bool)!flags.FinalFantasy3Fiends && (bool)!flags.FinalFantasy4Fiends && (bool)!flags.FinalFantasy5Fiends && (bool)!flags.FinalFantasy1BonusFiends && (bool)!flags.FinalFantasy6Fiends)
+			if ((bool)!flags.FinalFantasy2Fiends && (bool)!flags.FinalFantasy3Fiends && (bool)!flags.FinalFantasy4Fiends && (bool)!flags.FinalFantasy5Fiends && (bool)!flags.FinalFantasy6Fiends && (bool)!flags.FinalFantasy1BonusFiends)
 			{
 				alternateFiendsList.AddRange(FF1MasterFiendList);
 			}
