@@ -41,7 +41,6 @@ public partial class FF1Rom : NesRom
 	private PlacementContext PlacementContext = null;
 
 	private Blob SavedHash;
-	public Settings Settings;
 
 	public void LoadSharedDataTables()
 	{
@@ -83,16 +82,13 @@ public partial class FF1Rom : NesRom
 		// Collapse tristate flags
 		flags = Flags.ConvertAllTriState(flags, rng);
 
-		Settings = new(true);
-		//Settings.GenerateFlagstring();
-
-		await this.Progress("Beginning Randomization", 16);
+		await this.Progress("Beginning Randomization", 15);
 
 		// Load Initial Data
 		RngTables = new(this);
 		TileSetsData = new(this);
 		ZoneFormations = new(this);
-		Overworld = new(this, flags, ZoneFormations, Settings, rng);
+		Overworld = new(this, flags, ZoneFormations, rng);
 		await Overworld.LoadMapExchange();
 		ItemsText = new ItemNames(this);
 		ArmorPermissions = new GearPermissions(0x3BFA0, (int)Item.Cloth, this);
@@ -110,12 +106,6 @@ public partial class FF1Rom : NesRom
 		Music = new MusicTracks();
 
 		await this.Progress();
-
-		//Settings.CollapseRandomSettings(rng);
-		//Settings.ProcessStandardFlags();
-		//FlagRules.ProcessBaseFlags(settingstest);
-
-		//Settings.SetValue();
 
 		// Expand ROM, move data around
 		GlobalHacks();
@@ -173,91 +163,37 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		// NPC Stuff
+		// NPCs
 		Dialogues.UpdateNPCDialogues(flags);
 		PacifistBat(Maps, TalkRoutines, NpcData);
 		TalkRoutines.Update(flags);
 		ClassAsNPC(flags, TalkRoutines, NpcData, Dialogues, Maps, rng);
 
-		// NOTE: logic checking for relocated chests
-		// accounts for NPC locations and whether they
-		// are fightable/killable, so it needs to
-		// happen after anything that adds, removes or
-		// relocates NPCs or changes their routines.
+		// Relocate chests need to happen after NPCs, before logic
 		await new RelocateChests(this).RandomlyRelocateChests(rng, Maps, TileSetsData, Teleporters, NpcData, flags);
 
 		// Spells
-		//must be done before spells get shuffled around otherwise we'd be changing a spell that isnt lock
 		SpellBalanceHacks(flags, rng);
-
-		if ((bool)flags.GenerateNewSpellbook)
-		{
-			CraftNewSpellbook(EnemyScripts, rng, (bool)flags.SpellcrafterMixSpells, flags.LockMode, (bool)flags.MagicLevels, (bool)flags.SpellcrafterRetainPermissions);
-		}
-
-		if (flags.TranceHasStatusElement)
-		{
-			TranceHasStatusElement();
-		}
-
+		CraftNewSpellbook(EnemyScripts, flags, rng);
+		TranceHasStatusElement(flags.TranceHasStatusElement);
 		ShuffleMagicLevels(EnemyScripts, rng, (bool)flags.MagicLevels && !(bool)flags.GenerateNewSpellbook, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed);
-
-		//has to be done before modifying itemnames and after modifying spellnames...
+		SpellNames(flags, preferences, rng);
 		var extConsumables = new ExtConsumables(ShopData, this, flags, rng);
 		extConsumables.LoadSpells();
 
 		// Create items
 		Etherizer(flags.Etherizer, ItemsText);
 
-		if ((bool)flags.Weaponizer)
-		{
-			Weaponizer(rng, (bool)flags.WeaponizerNamesUseQualityOnly, (bool)flags.WeaponizerCommonWeaponsHavePowers, flags.ItemMagicMode == ItemMagicMode.None);
-		}
-
-		if ((bool)flags.ArmorCrafter)
-		{
-			ArmorCrafter(rng, flags.ItemMagicMode == ItemMagicMode.None, flags.RibbonMode == RibbonMode.Split);
-		}
-
-		if (flags.ItemMagicMode != ItemMagicMode.None && flags.ItemMagicMode != ItemMagicMode.Vanilla)
-		{
-			ShuffleItemMagic(rng, flags);
-		}
-
-		if (flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
-		{
-			CraftDefenseItem(flags);
-		}
-
-		if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
-		{
-			CraftPowerItem(flags);
-		}
-
+		Weaponizer(flags, rng);
+		ArmorCrafter(flags, rng);
 		new RibbonShuffle(this, rng, flags, ItemsText, ArmorPermissions).Work();
 
-		if (flags.WeaponCritRate)
-		{
-			DoubleWeaponCritRates();
-		}
-		if (flags.ItemMagicMode == ItemMagicMode.None)
-		{
-			NoItemMagic(flags);
-		}
+		ItemMagic(flags, rng);
 
-		List<int> blursesValues = Enumerable.Repeat(0, 40).ToList();
-
-		//needs to go after item magic, moved after double weapon crit to have more control over the actual number of crit gained.
-		if ((bool)flags.RandomWeaponBonus)
-		{
-			blursesValues = RandomWeaponBonus(rng, flags.RandomWeaponBonusLow, flags.RandomWeaponBonusHigh, (bool)flags.RandomWeaponBonusExcludeMasa, preferences.CleanBlursedEquipmentNames);
-		}
-
-		if ((bool)flags.RandomArmorBonus)
-		{
-			RandomArmorBonus(rng, flags.RandomArmorBonusLow, flags.RandomArmorBonusHigh, preferences.CleanBlursedEquipmentNames);
-		}
-
+		DoubleWeaponCritRates(flags.WeaponCritRate);
+		List<int> weaponBlursesValues = Enumerable.Repeat(0, 40).ToList();
+		RandomWeaponBonus(flags, preferences.CleanBlursedEquipmentNames, weaponBlursesValues, rng);
+		RandomArmorBonus(flags, preferences.CleanBlursedEquipmentNames, rng);
 		IncreaseWeaponBonus(flags.WeaponBonuses, flags.WeaponTypeBonusValue);
 
 		// Starting Inventory
@@ -269,7 +205,7 @@ public partial class FF1Rom : NesRom
 			new PlacementContext(StartingItems, new() { }, priceList, rng, flags) :
 			new PlacementContext(StartingItems, new() { }, DeepDungeon.PlacedItems, DeepDungeon.ChestLocations, priceList, rng, flags);
 
-		// Shop stuff
+		// Shops
 		ShopData.ShuffleShops(rng, PlacementContext.ExcludedItemsFromShops, Teleporters.ConeriaTownEntranceItemShopIndex);
 		ShopData.ShuffleMagicLocations((bool)flags.MagicShopLocs, (bool)flags.MagicShopLocationPairs, rng);
 		ShopData.ShuffleMagicShops((bool)flags.MagicShops, rng);
@@ -322,19 +258,6 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress(funMessages.PickRandom(rng));
 
-		// Should be in spell class
-		if (preferences.AccessibleSpellNames)
-		{
-			AccessibleSpellNames(flags);
-		}
-
-		if (flags.SpellNameMadness != SpellNameMadness.None)
-		{
-			MixUpSpellNames(flags.SpellNameMadness, rng);
-		}
-
-		await this.Progress();
-
 		// Enemies
 		if ((bool)flags.AlternateFiends && !flags.SpookyFlag) await this.Progress("Creating new Fiends", 1);
 		AlternativeFiends(EnemyScripts, rng, flags);
@@ -348,7 +271,7 @@ public partial class FF1Rom : NesRom
 		AllowStrikeFirstAndSurprise(flags.WaitWhenUnrunnable, (bool)flags.UnrunnablesStrikeFirstAndSurprise);
 		ShuffleSurpriseBonus((bool)flags.EnemyFormationsSurprise, rng);
 
-		// After unrunnable shuffle and before formation shuffle. Perfect!
+		// After unrunnable shuffle and before formation shuffle
 		WarMechMode.Process(this, flags, NpcData, ZoneFormations, Dialogues, rng, Maps, warmMechFloor);
 		FightBahamut(flags, TalkRoutines, NpcData, ZoneFormations, Dialogues, Maps, EnemyScripts, rng);
 		Astos(NpcData, Dialogues, TalkRoutines, EnemyScripts, flags, rng);
@@ -411,8 +334,8 @@ public partial class FF1Rom : NesRom
 		ClassData.RaiseThiefHitRate(flags);
 		ClassData.BuffThiefAGI(flags);
 		ClassData.EarlierHighTierMagicCharges(flags);
-		ClassData.Randomize(flags, Settings, rng, oldItemNames, ItemsText, this);
-		ClassData.ProcessStartWithRoutines(flags, blursesValues, this);
+		ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);
+		ClassData.ProcessStartWithRoutines(flags, weaponBlursesValues, this);
 		ClassData.PinkMage(flags);
 		ClassData.BlackKnight(flags);
 		ClassData.WhiteNinja(flags);
@@ -492,8 +415,6 @@ public partial class FF1Rom : NesRom
 		uint last_rng_value = rng.Next();
 
 		// Final ROM writes
-
-		//WriteSeedAndFlags(seed.ToHex(), flags, flagsForRng, unmodifiedFlags, "ressourcePackHash", last_rng_value);
 		WriteSeedAndFlags(seed.ToHex(), flags, flagsForRng, unmodifiedFlags, resourcesPackHash.ToHex(), last_rng_value);
 		if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 

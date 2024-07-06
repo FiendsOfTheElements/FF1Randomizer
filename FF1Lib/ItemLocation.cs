@@ -76,6 +76,16 @@ namespace FF1Lib
 			Entrance = copyFromRewardSource.Entrance;
 			IsUnused = false;
 		}
+		protected RewardSourceBase(IRewardSource copyFromRewardSource, OverworldTeleportIndex entrance)
+		{
+			Address = copyFromRewardSource.Address;
+			Name = copyFromRewardSource.Name;
+			Item = copyFromRewardSource.Item;
+			MapLocation = copyFromRewardSource.MapLocation;
+			AccessRequirement = copyFromRewardSource.AccessRequirement;
+			Entrance = entrance;
+			IsUnused = false;
+		}
 		public override int GetHashCode() => Address.GetHashCode();
 
 		public virtual void Put(FF1Rom rom) => rom.Put(Address, new[] { (byte)Item });
@@ -92,6 +102,9 @@ namespace FF1Lib
 
 		public TreasureChest(IRewardSource copyFromRewardSource, Item item)
 			: base(copyFromRewardSource, item) { }
+
+		public TreasureChest(IRewardSource copyFromRewardSource, OverworldTeleportIndex entrance)
+			: base(copyFromRewardSource, entrance) { }
 
 		public TreasureChest(IRewardSource copyFromRewardSource, Item item, AccessRequirement access)
 			: base(copyFromRewardSource, item)
@@ -150,6 +163,11 @@ namespace FF1Lib
 				throw new InvalidOperationException(
 					$"Attempted to Put invalid npc item placement: \n{SpoilerText}");
 		}
+		public NpcReward(IRewardSource copyFromRewardSource, OverworldTeleportIndex entrance)
+			: base(copyFromRewardSource, entrance)
+		{
+			ObjectId = ((NpcReward)copyFromRewardSource).ObjectId;
+		}
 
 		public NpcReward(IRewardSource copyFromRewardSource, Item item)
 			: base(copyFromRewardSource, item)
@@ -205,6 +223,12 @@ namespace FF1Lib
 
 		public ItemShopSlot(ItemShopSlot copyFromRewardSource, Item item)
 			: base(copyFromRewardSource, item)
+		{
+			ShopIndex = copyFromRewardSource.ShopIndex;
+		}
+
+		public ItemShopSlot(ItemShopSlot copyFromRewardSource, OverworldTeleportIndex entrance)
+			: base(copyFromRewardSource, entrance)
 		{
 			ShopIndex = copyFromRewardSource.ShopIndex;
 		}

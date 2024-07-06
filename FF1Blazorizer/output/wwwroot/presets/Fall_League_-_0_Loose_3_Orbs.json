@@ -451,7 +451,7 @@
 		"EnableRandomPromotions": false,
 		"IncludeBaseClasses": false,
 		"RandomPromotionsSpoilers": false,
-		"RandomizeClass": true,
+		"RandomizeClassMode": 1,
 		"RandomizeClassCasting": false,
 		"RandomizeClassKeyItems": false,
 		"RandomizeClassChaos": false,

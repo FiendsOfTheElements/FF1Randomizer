@@ -109,9 +109,9 @@
 	},
 	{
 		"Id": "kiPlacementMode",
-		"title": "Key Item Placement",
+		"title": "Unsafe Key Item Placement",
 		"screenshot": "kiPlacementMode.png",
-		"description": "Guided: This algorithm uses a semifixed placement order that will always open up the seed with an early SHIP and CANAL.\n\nPredictive: More powerful algorithm that does not rely on a fixed item order. This allows for more flexibility like allowing early fetch quests or opening a seed up with the CANOE instead of the SHIP. It can better handle alternate overworlds and Floor Entrance seeds.\n\nPredictive Unsafe: Removes Safety Checks that prevent the Predictive Algorithm from forcing you into high level dungeons early."
+		"description": "Removes Safety Checks that prevent the Predictive Algorithm from forcing you into high level dungeons early."
 	},
 	{
 		"Id": "loosePlacementMode",
@@ -245,6 +245,12 @@
 		"title": "Renounce Autosort",
 		"screenshot": "renounceAutosortCheckBox.png",
 		"description": "Forgo the \"Autosort Inventory\" flag (found under the Conveniences tab) if it is enabled. This will revert the game to it's standard item menu behavior (Key Items up top, potions at the bottom) no matter what flags are selected."
+	},
+	{
+		"Id": "repeatedHealPotionUseCheckBox",
+		"title": "Repeated Heal Potion Use",
+		"screenshot": "repeatedHealPotionUse.gif",
+		"description": "If Enabled, allows multiple heal potions to be used in a row without having to re-select them."
 	},
 	{
 		"Id": "renounceChestInfoCheckBox",
@@ -1568,28 +1574,16 @@
 	},
 
 	{
-		"Id": "RandomizeClassCheckBox",
-		"title": "Blursed Classes",
-		"screenshot": "RandomizeClassCheckBox.png",
-		"description": "\"Blursed\" Classes (as in classes with \"blessings\" and \"curses\") give bonuses and maluses at random to each of the selectable classes in the game. These can change how desirable a given class will be and are not necessarily balanced with each other.\nPress Select at the Party Selection screen (and A at Status Screen) to reveal the modifiers applied to a given class.\nCheck \"Class Blursings\" on the Wiki (under Randomizer Documentation) for a breakdown of the possible blursings."
+		"Id": "randomizeClassDropDown",
+		"title": "Class Randomization",
+		"screenshot": "transmooglifier.gif",
+		"description": "Randomly modify classes. \nPress Select at the Party Selection screen (and A at Status Screen) to reveal the modifiers applied to a given class.\n\nNone: No random modifications.\n\nBlursings: Give bonuses and maluses at random to each of the selectable classes in the game.\n\nTransmooglifier: Procedurally generates six custom classes from a set of 26. Each class corresponds to heuristically randomized spell permissions, stats, equipment sets, abilities, and blursings - this means the classes will have unique properties every time.\nThis also disables most specific balance options. Character specific buffs will refer to character slot. For example, Fighter XP will now refer to 'Slot 0 character class XP Bonus'.\nIt is recommended to disable any custom sprites when using Transmooglifier, since Transmooglifier also uses custom sprites.\n\nChaos: Shuffles all the stats, spellcasting abilities, and equipment permissions between all the classes, making for classes with very different abilities from the vanilla game. Only for experienced players."
 	},
 	{
 		"Id": "RandomizeClassCastingCheckBox",
 		"title": "Add Spellcasting Bonuses",
 		"screenshot": "RandomizeClassCasting.png",
 		"description": "Add bonuses granting spellcasting abilities."
-	},
-	{
-		"Id": "RandomizeClassChaosCheckBox",
-		"title": "Chaos Mode",
-		"screenshot": "RandomizeClassChaosCheckBox.png",
-		"description": "Chaos Mode shuffles all the stats, spellcasting abilities, and equipment permissions between all the classes, making for classes with very different abilities from the vanilla game. Only for experienced players."
-	},
-	{
-		"Id": "TransmooglifierCheckBox",
-		"title": "Transmooglifier",
-		"screenshot": "transmooglifier.gif",
-		"description": "Procedurally generates six custom classes from a set of 26. Each class corresponds to heuristically randomized spell permissions, stats, equipment sets, abilities, and blursings - this means the classes will have unique properties every time. They can be described as \"What you might expect from a class named X\".\nThis also disables most specific balance options. Character specific buffs will refer to character slot. Example: Fighter XP will now refer to 'Slot 0 character class XP Bonus'.\nNote: It is recommended to disable any custom sprites when using Transmooglifier, since Transmooglifier also uses custom sprites."
 	},
 	{
 		"Id": "transmooglifierVariance",
@@ -2073,7 +2067,7 @@
 		"description": "If enabled, allows the player to \"wrap\" up and down in the battle magic menu, making navigating to the upper level magic much faster in combat."
 	},
 	{
-		"Id": "magicMenuSpellReordering",
+		"Id": "magicMenuSpellReorderingCheckBox",
 		"title": "Magic Menu Spell Reordering",
 		"screenshot": "magicMenuSpellReordering.gif",
 		"description": "If enabled, allows the player to rearrange the order of spells.\nPlace the cursor on a spell and press Start to swap that spell with the one to its right. Selected spell must have a valid spell to its right (does not work on 3rd column or if spell is next to a blank slot)."
@@ -2093,6 +2087,7 @@
 	{
 		"Id": "autoRetargetingCheckBox",
 		"title": "Auto Retargeting",
+		"screenshot": "autoRetargeting.gif",
 		"description": "If enabled, melee attacks against dead enemies will be retargeted to an enemy that is still alive, instead of displaying the 'Ineffective' message"
 	},
 	{
@@ -2317,6 +2312,7 @@
 	{
 		"Id": "poisonModeDropDown",
 		"title": "In-Battle Poison Damage",
+		"screenshot": "inBattlePoisonDamage.gif",
 		"description": "Changes how much damage players take at the end of each turn if poisoned."
 	},
 	{
@@ -2459,8 +2455,9 @@
 		"description": "The Ship and the Airship are fused together. Getting the FLOATER allows the Ship to transform into the Airship, and the Airship can land on water. You can't raise the Airship from the desert anymore."
 	},
 	{
-		"Id": "IntAffectsSpells",
+		"Id": "intAffectsSpellsCheckBox",
 		"title": "INT Affects Spells",
+		"screenshot": "intAffectsSpells.gif",
 		"description": "Makes character's INT stat affect spells in various ways.\nDamage spells get a bonus to crit chance based on INT.\nPower word spells get a bonus to their threshold.\nDebuff spells get a boost to their chance to hit.\nHeal spells (in battle) get a boost to the maximum they can roll (minimum is unchanged).'"
 	},
 	{

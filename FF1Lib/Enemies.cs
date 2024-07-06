@@ -466,7 +466,12 @@ namespace FF1Lib
 			Tornado = 0x19,
 			None = 0xFF
 		}
-		public void TranceHasStatusElement() {
+		public void TranceHasStatusElement(bool enable) {
+			if (!enable)
+			{
+				return;
+			}
+
 		    // TRANCE is slot 81, give is "status" element so
 		    // it can be resisted with a ribbon, ARUB, or
 		    // armor crafter gear.

@@ -178,6 +178,7 @@ namespace FF1Lib
 
 			rom[0x78546] = (byte)Tracks[SongTracks.Menu]; // Moved for stats tracking, not sure about this one?
 			rom[0x7BB71] = (byte)Tracks[SongTracks.Menu]; // Previously 0x3ADB4, moved by stats tracking
+			rom[0x687B1] = (byte)Tracks[SongTracks.Menu]; // Moved menu code for repeated heal potion use
 
 			//Ending
 			rom[0x7BBB1] = (byte)Tracks[SongTracks.Ending]; // Previously 0x37804, moved by stats tracking

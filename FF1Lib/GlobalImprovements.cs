@@ -8,70 +8,40 @@ using System.Threading.Tasks;
 
 namespace FF1Lib
 {
-	public static partial class FlagRules
-	{
-		public static FlagRule GlobalImprovements { get; set; } = new FlagRule()
-		{
-			Conditions = new() { new() { new FlagCondition() { Name = "GlobalImprovements", Type = SettingType.Toggle, Value = 1 } } },
-			Actions = new List<FlagAction>()
-				{
-					new FlagAction() { Setting = "NoPartyShuffle", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "IdentifyTreasures", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "EnableBuyQuantity", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "WaitWhenUnrunnable", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "EnableCritNumberDisplay", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "SpeedHacks", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "InventoryAutosort", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "EnableDash", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "SpeedBoat", Action = FlagActions.Enable },
-					new FlagAction() { Setting = "MagicMenuSpellReordering", Action = FlagActions.Enable },
-				}
-		};
-	}
 	public partial class FF1Rom
 	{
 		public const int PartyShuffleOffset = 0x312E0;
 		public const int PartyShuffleSize = 3;
 
-		//public void GlobalImprovements(Settings settings, Preferences preferences)
 		public void GlobalImprovements(Flags flags, StandardMaps maps, Preferences preferences)
 		{
-			//if (settings.GetBool("NoPartyShuffle"))
 			if ((bool)flags.NoPartyShuffle)
 			{
 				DisablePartyShuffle();
 			}
 
-			//if (settings.GetBool("IdentifyTreasures"))
 			if ((bool)flags.IdentifyTreasures)
 			{
 				EnableIdentifyTreasures(Dialogues);
 			}
 
-			//if (settings.GetBool("EnableBuyQuantity") || settings.GetBool("ArchipelagoEnabled"))
 			if ((bool)flags.BuyTen || (bool)flags.Archipelago)
 			{
-				//EnableBuyQuantity(settings.GetBool("ArchipelagoEnabled"));
 				EnableBuyQuantity((bool)flags.Archipelago);
 			}
 
-
-			//if (settings.GetBool("WaitWhenUnrunnable"))
 			if ((bool)flags.WaitWhenUnrunnable)
 			{
 				ChangeUnrunnableRunToWait();
 			}
 
-			//if (settings.GetBool("SpeedHacks") && settings.GetBool("EnableCritNumberDisplay"))
 			if ((bool)flags.SpeedHacks && (bool)flags.EnableCritNumberDisplay)
 			{
 				EnableCritNumberDisplay();
 			}
 
-			//if (settings.GetBool("InventoryAutosort") && !(preferences.RenounceAutosort))
 			if ((bool)flags.InventoryAutosort && !preferences.RenounceAutosort)
 			{
-				//EnableInventoryAutosort(settings.GetInt("GameMode") == (int)GameModes.NoOverworld);
 				EnableInventoryAutosort(flags.GameMode == GameModes.NoOverworld);
 			}
 
@@ -80,28 +50,27 @@ namespace FF1Lib
 				EnableAutoRetargeting();
 			}
 
-			//if (settings.GetBool("SpeedHacks"))
 			if ((bool)flags.SpeedHacks)
 			{
 				EnableSpeedHacks(preferences);
 			}
 
-			//if (settings.GetBool("EnableDash") || settings.GetBool("SpeedBoat"))
 			if ((bool)flags.Dash || (bool)flags.SpeedBoat)
 			{
-				//EnableDash(settings.GetBool("SpeedBoat"), preferences.OptOutSpeedHackDash);
 				EnableDash((bool)flags.SpeedBoat, preferences.OptOutSpeedHackDash);
 			}
 
-			//if (settings.GetBool("SpeedHacks"))
 			if ((bool)flags.SpeedHacks)
 			{
-				//SpeedHacksMoveNpcs(!settings.GetBool("ProcgenEarth"));
 				SpeedHacksMoveNpcs((bool)flags.ProcgenEarth, maps);
 			}
 			if ((bool)flags.MagicMenuSpellReordering && (bool)flags.ShopInfo)
 			{
 				MagicMenuSpellReordering();
+			}
+			if ((bool)flags.RepeatedHealPotionUse)
+			{
+				RepeatedHealPotionUse();
 			}
 
 		}
@@ -203,6 +172,23 @@ namespace FF1Lib
 			PutInBank(0x0E, 0xAECD, Blob.FromHex("4CF5BF"));
 			PutInBank(0x0E, 0xBFF5, Blob.FromHex("A9A548A9FF48A91C4C03FE"));
 			PutInBank(0x1C, 0xA600, Blob.FromHex("A523F039A9008523A5622502D02FA5662A2A2A2A2A2A6562AABD0063F01FA8E8BD0063F018CA9D006398E89D0063A9008523A9AE48A99648A90E4C03FEA99148A92548A90E4C03FE"));
+		}
+
+		private void RepeatedHealPotionUse()
+		{
+			//see 1A_8600_RepeatedHealPotionUse.asm
+			PutInBank(0x0E, 0xB321, Blob.FromHex("A98548A9FF48A91A4C03FE"));
+			PutInBank(0x1A, 0x84FB, Blob.FromHex("4C4EE0"));
+			PutInBank(0x1A, 0x8600, Blob.FromHex("A91E20428620B886CE3960F01B20C687B00BA9B348A90D48A90E4C03FEA9B348A92E48A90E4C03FE209787A5240525F0F7A9" +
+				"0085248525A9B348A92E48A90E4C03FE8510187D0A619D0A61BD0B6169009D0B61DD0D61F01BB023A957854BA9308D0440A97F8D0540A9008D06408D0740A51060BD0" +
+				"A61DD0C61B00290DDBD0C619D0A61BD0D619D0B614C5A86AD0220A9208D0620A9008D0620A00098A2038D0720C8D0FACAD0F78D0720C8C0C090F8A9FF8D0720C8D0FA" +
+				"60A9008D01208537208C86A90B8539A9018538A91E853CA908853D2063E020DC864C658760A200A904853AA911853B20FD86C63BA20220FD86C63BA20420FD86C63BC" +
+				"63BA206BD0A87853EBD0B87853F4C8E87128728873E8753877A1006FFFFFF7A1106FFFFFF7A1206FFFFFF7A130600FF1005FFFFFFFF1105FFFFFFFF1205FFFFFFFF13" +
+				"05001002FFFFFFFF1102FFFFFFFF1202FFFFFFFF1302001000FFFFFF1100FFFFFF1200FFFFFF130000203CC420A8FEA9028D14402050D8A90885FF8D0020A91E8D012" +
+				"0A9008D05208D0520A91A85574C89C6A91A855785584C36DE20A8FEA9028D1440A5FF8D0020A9008D05208D0520A54B1004A951854BA91A85572089C6E6F0A9008524" +
+				"85254CC2D7A90085248525203CC4201088209787A524D02DA525D02EA5202903C561F0E18561C900F0DBC901D008A5621869014CFC87A56238E901290385622023884" +
+				"CC68720398818602039883860A662BD1F888540A96885414C95EC60104880B8A97A8D0440A99B8D0540A9208D06404A8D0740857E60A9BA8D0440A9BA8D0540A9408D" +
+				"0640A9008D0740A91F857E60"));
 		}
 
 	}

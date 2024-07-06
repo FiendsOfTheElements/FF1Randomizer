@@ -34,20 +34,15 @@ namespace FF1Lib
 	public class ChanceToRun
 	{
 		FF1Rom rom;
-		//Settings settings;
 		Flags flags;
-
-		//public ChanceToRun(FF1Rom _rom, Settings _settings)
 		public ChanceToRun(FF1Rom _rom, Flags _flags)
 		{
 			rom = _rom;
-			//settings = _settings;
 			flags = _flags;
 		}
 
 		public void FixChanceToRun()
 		{
-			//switch (settings.GetEnum("ChanceToRun", typeof(ChanceToRunMode)))
 			switch (flags.ChanceToRun)
 			{
 				case ChanceToRunMode.Vanilla:
