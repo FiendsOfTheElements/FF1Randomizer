@@ -102,6 +102,7 @@
 	  <EmbeddedResource Include="bosses\CARBUNCL.png" />
 	  <EmbeddedResource Include="bosses\CATOBLEP.png" />
 	  <EmbeddedResource Include="bosses\CHDRNOOK.png" />
+	  <EmbeddedResource Include="bosses\CRANE.png" />
 	  <EmbeddedResource Include="bosses\CRAYCLAW.png" />
 	  <EmbeddedResource Include="bosses\CTSTRPHE.png" />
 	  <EmbeddedResource Include="bosses\D.MIST.png" />

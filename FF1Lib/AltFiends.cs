@@ -2182,6 +2182,24 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Squint, (byte)EnemySkills.Glare, (byte)EnemySkills.Thunder },
 				},
+					new AlternateFiends {
+					Name = "CRANE",
+					SpriteSheet = FormationSpriteSheet.BoneCreepHyenaOgre,
+					FormationPattern = FormationPattern.Mixed,
+					GFXOffset = FormationGFX.Sprite1,
+					Palette1 = 0x3A,
+					Palette2 = 0x3A,
+					ElementalWeakness = SpellElement.Ice,
+					MonsterType = MonsterType.NONE,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.FOG, (byte)SpellByte.LIT2, (byte)SpellByte.INVS, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.FOG, (byte)SpellByte.LIT },
+					SkillChance1 = 0x40,
+					Skills1 = new List<byte> { (byte)EnemySkills.Trance, (byte)EnemySkills.Gaze, (byte)EnemySkills.Trance, (byte)EnemySkills.Gaze },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.FOG2, (byte)SpellByte.LIT3, (byte)SpellByte.WALL, (byte)SpellByte.LIT3, (byte)SpellByte.RUB, (byte)SpellByte.LIT3, (byte)SpellByte.STOP, (byte)SpellByte.LIT3 },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Dazzle, (byte)EnemySkills.Thunder, (byte)EnemySkills.Toxic, (byte)EnemySkills.Tornado },
+				},
 			};
 			var FF1BonusFiendsList = new List<AlternateFiends>
 			{
