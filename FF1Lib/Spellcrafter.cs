@@ -1,4 +1,6 @@
-﻿namespace FF1Lib
+﻿using System.Threading;
+
+namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
 	{
@@ -20,8 +22,19 @@
 			NUM_OOB_SPELLS
 		}
 
-		public void CraftNewSpellbook(EnemyScripts enemyScripts, MT19337 rng, bool mixWhiteBlack, LockHitMode lockMode, bool levelShuffle, bool keepPermissions) // generates a new spellbook and does all necessary steps to ensure that the new spells are assigned where they need to be for the game to work properly
+		public void CraftNewSpellbook(EnemyScripts enemyScripts, Flags flags, MT19337 rng) // generates a new spellbook and does all necessary steps to ensure that the new spells are assigned where they need to be for the game to work properly
 		{
+			bool enableSpellcrafter = (bool)flags.GenerateNewSpellbook;
+			bool mixWhiteBlack = (bool)flags.SpellcrafterMixSpells;
+			LockHitMode lockMode = flags.LockMode;
+			bool levelShuffle = (bool)flags.MagicLevels;
+			bool keepPermissions = (bool)flags.SpellcrafterRetainPermissions;
+
+			if (!enableSpellcrafter)
+			{
+				return;
+			}
+
 			bool WhiteSpell(int id) => mixWhiteBlack || id % 8 < 4;
 			bool BlackSpell(int id) => mixWhiteBlack || id % 8 > 3;
 			int SpellTier(int id) => id / 8;

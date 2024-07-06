@@ -14,6 +14,29 @@ namespace FF1Lib
 		private int WeaponStart = (byte)ItemLists.AllWeapons.ElementAt(0);
 		private int ArmorStart = (byte)ItemLists.AllArmor.ElementAt(0);
 
+		public void ItemMagic(Flags flags, MT19337 rng)
+		{
+			if (flags.ItemMagicMode != ItemMagicMode.None && flags.ItemMagicMode != ItemMagicMode.Vanilla)
+			{
+				ShuffleItemMagic(rng, flags);
+			}
+
+			if (flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
+			{
+				CraftDefenseItem(flags);
+			}
+
+			if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
+			{
+				CraftPowerItem(flags);
+			}
+
+			if (flags.ItemMagicMode == ItemMagicMode.None)
+			{
+				NoItemMagic(flags);
+			}
+		}
+
 		public void ShuffleItemMagic(MT19337 rng, Flags flags)
 		{
 			IEnumerable<Item> magicWeapons;

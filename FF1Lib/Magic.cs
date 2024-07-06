@@ -1002,10 +1002,16 @@ namespace FF1Lib
 			}
 		}
 
-		public void AccessibleSpellNames(Flags flags)
+		public void SpellNames(Flags flags, Preferences preferences, MT19337 rng)
+		{
+			AccessibleSpellNames(preferences.AccessibleSpellNames && !(bool)flags.GenerateNewSpellbook);
+			MixUpSpellNames(flags.SpellNameMadness, rng);
+		}
+
+		public void AccessibleSpellNames(bool enable)
 		{
 			// If Spellcrafter mode is on, abort. We need a check here as the setting on the site can be in a random state.
-			if ((bool)flags.GenerateNewSpellbook)
+			if (!enable)
 			{
 				return;
 			}

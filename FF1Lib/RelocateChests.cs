@@ -684,6 +684,12 @@ namespace FF1Lib
 		}
 		public async Task RandomlyRelocateChests(MT19337 rng, StandardMaps maps, TileSetsData tilesets, Teleporters teleporters,  NpcObjectData npcdata, Flags flags)
 		{
+			// NOTE: logic checking for relocated chests
+			// accounts for NPC locations and whether they
+			// are fightable/killable, so it needs to
+			// happen after anything that adds, removes or
+			// relocates NPCs or changes their routines.
+
 			if (!(bool)flags.RelocateChests || flags.GameMode == GameModes.DeepDungeon)
 			{
 				return;

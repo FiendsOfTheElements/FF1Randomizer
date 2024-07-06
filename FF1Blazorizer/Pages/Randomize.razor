@@ -9,10 +9,7 @@
 	<div id="main-content" class="@(Flags.BlandSite ? "" : "content px-4 tinted")">
 	<ToolTip @ref="ToolTipElement" ToolTipId="@ToolTipId" />
 	<aside id="left-column">
-		@if (!hideAnnouncement)
-		{
-			<AnnouncementBox SetHideAnnouncement="@SetHideAnnouncement" />
-		}
+
 		<FileTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" UpdateToolTipID="@UpdateToolTipID" showChaos="@showChaos" />
 
 		<a class="nav-item nav-link fun @(FunEnabled ? "active" : "")" @onclick="(() => FunEnabled = true)" href="javascript:void(0);">Fun%</a>
@@ -159,16 +156,12 @@
 	[CascadingParameter] public bool showChaos { get; set; }
 	[CascadingParameter(Name="SetBlandSite")] public MainLayout.ShowModalT SetBlandSite { get; set; }
 
-
-
 	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
 	private string ToolTipId = "unupdated";
 	private ToolTip ToolTipElement;
 	private string StatusMessage = "";
 	private bool loadDefault = true;
 	private bool noTabLayout = false;
-	private bool noAnnoucement = true;  // set to false if there's an announcement
-	private bool hideAnnouncement = false;
 	private string presetName = "Untitled";
 	private bool FunEnabled = true;
 	private string SpriteSheetMessage { get; set; } = "Load custom player sprites:";
@@ -185,16 +178,6 @@
 
 		noTabLayout = await LocalStorage.GetItemAsync<bool>("tablayout");
 
-		if (noAnnoucement)
-		{
-			hideAnnouncement = true;
-		}
-		else
-		{
-			// Announcement ID needs to be changed for each new events, also need to be changed in AnnouncementBox.razor
-			//  both need to match, comment out for no announcement
-			hideAnnouncement = await LocalStorage.GetItemAsync<bool>("announcement_st2021f");
-		}
 		Flags.PropertyChanged += (sender, args) => StateHasChanged();
 
 		Flags.Preferences = new Preferences();
@@ -244,12 +227,6 @@
 	void SetTabLayout(bool notab)
 	{
 		noTabLayout = notab;
-		StateHasChanged();
-	}
-
-	void SetHideAnnouncement(bool switchannouncement)
-	{
-		hideAnnouncement = switchannouncement;
 		StateHasChanged();
 	}
 
