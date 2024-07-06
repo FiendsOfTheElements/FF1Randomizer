@@ -68,6 +68,7 @@
 
     <EmbeddedResource Include="customclasses\*.png" />
 
+	  <EmbeddedResource Include="bosses\A.WORM.png" />
 	  <EmbeddedResource Include="bosses\ABDUCTOR.png" />
 	  <EmbeddedResource Include="bosses\ADMNTOSE.png" />
 	  <EmbeddedResource Include="bosses\ALTAROIT.png" />
@@ -79,8 +80,10 @@
 	  <EmbeddedResource Include="bosses\ARCHAVIS.png" />
 	  <EmbeddedResource Include="bosses\ARCHDEMN.png" />
 	  <EmbeddedResource Include="bosses\ASURA.png" />
+	  <EmbeddedResource Include="bosses\ATMA.png" />
 	  <EmbeddedResource Include="bosses\ATMOS.png" />
 	  <EmbeddedResource Include="bosses\AZULMAGE.png" />
+	  <EmbeddedResource Include="bosses\B.DRAGON.png" />
 	  <EmbeddedResource Include="bosses\BARBRICA.png" />
 	  <EmbeddedResource Include="bosses\BEHEMOTH.png" />
 	  <EmbeddedResource Include="bosses\BELZEBUB.png" />
@@ -98,6 +101,7 @@
 	  <EmbeddedResource Include="bosses\CALOFIST.png" />
 	  <EmbeddedResource Include="bosses\CARBUNCL.png" />
 	  <EmbeddedResource Include="bosses\CATOBLEP.png" />
+	  <EmbeddedResource Include="bosses\CHDRNOOK.png" />
 	  <EmbeddedResource Include="bosses\CRAYCLAW.png" />
 	  <EmbeddedResource Include="bosses\CTSTRPHE.png" />
 	  <EmbeddedResource Include="bosses\D.MIST.png" />
