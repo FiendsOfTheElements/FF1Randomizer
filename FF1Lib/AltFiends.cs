@@ -2110,7 +2110,7 @@ namespace FF1Lib
 			};
 			var FF6AltFiendsList = new List<AlternateFiends>
 			{
-			new AlternateFiends {			
+					new AlternateFiends {			
 					Name = "A.WORM",
 					SpriteSheet = FormationSpriteSheet.ImageGeistWormEye,
 					FormationPattern = FormationPattern.Large4,
@@ -2118,7 +2118,7 @@ namespace FF1Lib
 					Palette1 = 0x3A,
 					Palette2 = 0x3A,
 					ElementalWeakness = SpellElement.None,
-					MonsterType = MonsterType.NONE,
+					MonsterType = MonsterType.GIANT,
 					FiendPool = FiendPool.FinalFantasy2,
 					SpellChance1 = 0x00,
 					Spells1 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
@@ -2128,8 +2128,9 @@ namespace FF1Lib
 					Spells2 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Tornado, (byte)EnemySkills.Crack, (byte)EnemySkills.Glance },
-				},
-			new AlternateFiends {
+					},
+
+					new AlternateFiends {
 					Name = "ATMA",
 					SpriteSheet = FormationSpriteSheet.KaryLich,
 					FormationPattern = FormationPattern.Fiends,
@@ -2147,11 +2148,12 @@ namespace FF1Lib
 					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.QAKE, (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.LIT3, (byte)SpellByte.XXXX, (byte)SpellByte.FADE, (byte)SpellByte.WALL },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Blizzard, (byte)EnemySkills.Inferno, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Nuclear },
-				},
+					},
+
 					new AlternateFiends {
 					Name = "B.DRAGON",
 					SpriteSheet = FormationSpriteSheet.SahagPirateSharkBigEye,
-					FormationPattern = FormationPattern.Large4,
+					FormationPattern = FormationPattern.Mixed,
 					GFXOffset = FormationGFX.Sprite3,
 					Palette1 = 0x3A,
 					Palette2 = 0x3A,
@@ -2166,11 +2168,12 @@ namespace FF1Lib
 					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.XXXX, (byte)SpellByte.SLO2, (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.MUTE, (byte)SpellByte.LOCK, (byte)SpellByte.ICE3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Toxic, (byte)EnemySkills.Swirl },
-				},
+					},
+
 					new AlternateFiends {
 					Name = "CHDRNOOK",
 					SpriteSheet = FormationSpriteSheet.SentryWaterNagaChimera,
-					FormationPattern = FormationPattern.Large4,
+					FormationPattern = FormationPattern.Fiends,
 					GFXOffset = FormationGFX.Sprite4,
 					Palette1 = 0x3A,
 					Palette2 = 0x3A,
@@ -2185,7 +2188,8 @@ namespace FF1Lib
 					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.FAST, (byte)SpellByte.LIT3, (byte)SpellByte.SLP2, (byte)SpellByte.LIT3, (byte)SpellByte.CUR3, (byte)SpellByte.LIT3, (byte)SpellByte.RUB },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Squint, (byte)EnemySkills.Glare, (byte)EnemySkills.Thunder },
-				},
+					},
+
 					new AlternateFiends {
 					Name = "CRANE",
 					SpriteSheet = FormationSpriteSheet.BoneCreepHyenaOgre,
@@ -2204,7 +2208,8 @@ namespace FF1Lib
 					Spells2 = new List<byte> { (byte)SpellByte.FOG2, (byte)SpellByte.LIT3, (byte)SpellByte.WALL, (byte)SpellByte.LIT3, (byte)SpellByte.RUB, (byte)SpellByte.LIT3, (byte)SpellByte.STOP, (byte)SpellByte.LIT3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Dazzle, (byte)EnemySkills.Thunder, (byte)EnemySkills.Toxic, (byte)EnemySkills.Tornado },
-				},
+					},
+
 			};
 			var FF1BonusFiendsList = new List<AlternateFiends>
 			{
@@ -2538,6 +2543,7 @@ namespace FF1Lib
 			{
 				alternateFiendsList.AddRange(FF5AltFiendsList);
 			}
+
 			if ((bool)flags.FinalFantasy6Fiends)
 
 			{
