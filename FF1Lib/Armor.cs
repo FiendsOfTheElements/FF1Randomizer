@@ -27,8 +27,17 @@ namespace FF1Lib
 		public const int ArmorTypeOffset        = 0x3BCD1;
 		public const int ArmorPermissionsCount = 40;
 
-		public void RandomArmorBonus(MT19337 rng, int min, int max, bool cleanNames)
+		public void RandomArmorBonus(Flags flags, bool cleanNames, MT19337 rng)
 		{
+			bool enable = (bool)flags.RandomArmorBonus;
+			int min = flags.RandomArmorBonusLow;
+			int max = flags.RandomArmorBonusHigh;
+
+			if (!enable)
+			{
+				return;
+			}
+
 			//get base stats
 			Armor currentArmor;
 			for (int i = 0; i < ArmorCount; i++)
@@ -117,8 +126,18 @@ namespace FF1Lib
 			platinumBracelet.writeArmorMemory(this);
 		}
 
-		public void ArmorCrafter(MT19337 rng, bool noItemMagic, bool noResists) {
-		    var commonArmor = new List<Item>(ItemLists.CommonArmorTier);
+		public void ArmorCrafter(Flags flags, MT19337 rng) {
+
+			bool enableArmocrafter = (bool)flags.ArmorCrafter;
+			bool noItemMagic = flags.ItemMagicMode == ItemMagicMode.None;
+			bool noResists = flags.RibbonMode == RibbonMode.Split;
+
+			if (!enableArmocrafter)
+			{
+				return;
+			}
+
+			var commonArmor = new List<Item>(ItemLists.CommonArmorTier);
 		    var rareArmor = new List<Item>(ItemLists.RareArmorTier);
 		    var legendaryArmor = new List<Item>(ItemLists.LegendaryArmorTier);
 

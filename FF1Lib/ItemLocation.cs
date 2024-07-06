@@ -164,7 +164,10 @@ namespace FF1Lib
 					$"Attempted to Put invalid npc item placement: \n{SpoilerText}");
 		}
 		public NpcReward(IRewardSource copyFromRewardSource, OverworldTeleportIndex entrance)
-			: base(copyFromRewardSource, entrance) { }
+			: base(copyFromRewardSource, entrance)
+		{
+			ObjectId = ((NpcReward)copyFromRewardSource).ObjectId;
+		}
 
 		public NpcReward(IRewardSource copyFromRewardSource, Item item)
 			: base(copyFromRewardSource, item)
