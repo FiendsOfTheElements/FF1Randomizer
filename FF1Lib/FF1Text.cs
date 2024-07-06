@@ -470,7 +470,7 @@ namespace FF1Lib
 				rom.addShardIcon(0x12, 0x8800 + 0x760);			        // If we're shard hunt, add the shard to tiles 0x76 and 0x77 because we missed em
 
 			// Change where the ORBS are loaded from and to so we can piggyback our icons - Now we load 8 lines from Bank 12 into 0000 of the PPU
-			rom.PutInBank(0x1F, 0xEAA2, Blob.FromHex("A9122003FEA208A9008510A9888511A900"));
+			rom.PutInBank(0x1F, 0xEA9F, Blob.FromHex("2002EAA9122003FEA208A9008510A9888511A900"));
 
 			// The code below handles loading in icons into the shop, since the shop doesn't have as much free space
 			tileset = rom.GetFromBank(0x09, 0x8800, 0x0800);
@@ -515,7 +515,6 @@ namespace FF1Lib
 			for (int w = 0; w < 6; w++)
 			{
 				rom.PutInBank(0x12, offset, rom.EncodeForPPU(getTile(w, index, image)));
-				rom.PutInBank(0x12, 0x84E0 + w * 16, rom.EncodeForPPU(getTile(w, index, image)));     // Shop Icons
 				offset += 16;
 			}
 
