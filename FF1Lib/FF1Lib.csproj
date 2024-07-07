@@ -185,8 +185,11 @@
 	  <EmbeddedResource Include="bosses\OGOPOGO.png" />
 	  <EmbeddedResource Include="bosses\OMEGA.png" />
 	  <EmbeddedResource Include="bosses\OMNISENT.png" />
+	  <EmbeddedResource Include="bosses\P.TRAIN.png" />
 	  <EmbeddedResource Include="bosses\PALEDIM.png" />
+	  <EmbeddedResource Include="bosses\PHUNBABA.png" />
 	  <EmbeddedResource Include="bosses\PLAGUE.png" />
+	  <EmbeddedResource Include="bosses\POLTRGST.png" />
 	  <EmbeddedResource Include="bosses\R.MEDUSA.png" />
 	  <EmbeddedResource Include="bosses\RAMUH.png" />
 	  <EmbeddedResource Include="bosses\REVENANT.png" />
