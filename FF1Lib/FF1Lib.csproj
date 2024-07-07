@@ -123,7 +123,9 @@
 	  <EmbeddedResource Include="bosses\EVILWALL.png" />
 	  <EmbeddedResource Include="bosses\EXDEATH.png" />
 	  <EmbeddedResource Include="bosses\F.EATER.png" />
+	  <EmbeddedResource Include="bosses\FIEND.png" />
 	  <EmbeddedResource Include="bosses\FLANMAST.png" />
+	  <EmbeddedResource Include="bosses\FLANPRIN.png" />
 	  <EmbeddedResource Include="bosses\FORZA.png" />
 	  <EmbeddedResource Include="bosses\GARUDA.png" />
 	  <EmbeddedResource Include="bosses\GARULA.png" />
