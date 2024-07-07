@@ -151,8 +151,12 @@
 	  <EmbeddedResource Include="bosses\IFRIT.png" />
 	  <EmbeddedResource Include="bosses\IPOOH.png" />
 	  <EmbeddedResource Include="bosses\IROGIANT.png" />
+	  <EmbeddedResource Include="bosses\K.BEHEM.png" />
+	  <EmbeddedResource Include="bosses\K.DRAGON.png" />
 	  <EmbeddedResource Include="bosses\KARLABOS.png" />
 	  <EmbeddedResource Include="bosses\KARY.png" />
+	  <EmbeddedResource Include="bosses\KATNSOUL.png" />
+	  <EmbeddedResource Include="bosses\KEFKA.png" />
 	  <EmbeddedResource Include="bosses\KOPE.png" />
 	  <EmbeddedResource Include="bosses\KRAKEN.png" />
 	  <EmbeddedResource Include="bosses\KUNOICHI.png" />
