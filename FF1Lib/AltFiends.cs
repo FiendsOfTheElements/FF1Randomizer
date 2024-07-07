@@ -2112,7 +2112,7 @@ namespace FF1Lib
 			};
 			var FF6AltFiendsList = new List<AlternateFiends>
 			{
-					new AlternateFiends {			
+				/*	new AlternateFiends {			
 					Name = "A.WORM",
 					SpriteSheet = FormationSpriteSheet.ImageGeistWormEye,
 					FormationPattern = FormationPattern.Large4,
@@ -2448,7 +2448,7 @@ namespace FF1Lib
 					Spells2 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Nuclear, (byte)EnemySkills.Squint, (byte)EnemySkills.Toxic },
-					},
+					},*/
 
 			new AlternateFiends {
 					Name = "I.DRAGON",
@@ -2568,6 +2568,46 @@ namespace FF1Lib
 					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.LIT3, (byte)SpellByte.SLO2, (byte)SpellByte.RUSE, (byte)SpellByte.NUKE, (byte)SpellByte.XXXX, (byte)SpellByte.XFER, (byte)SpellByte.ICE3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Tornado, (byte)EnemySkills.Swirl, (byte)EnemySkills.Crack, (byte)EnemySkills.Poison_Damage },
+					},
+
+			new AlternateFiends {
+					Name = "NERAPA",
+					SpriteSheet = FormationSpriteSheet.BadmanAstosMadponyWarmech,
+					FormationPattern = FormationPattern.Large4,
+					GFXOffset = FormationGFX.Sprite4,
+					Palette1 = 0x3A,
+					Palette2 = 0x3A,
+					ElementalWeakness = SpellElement.Lightning,
+					MonsterType = MonsterType.MAGICAL,
+					FiendPool = FiendPool.FinalFantasy2,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.RUB, (byte)SpellByte.ALIT, (byte)SpellByte.FIR2, (byte)SpellByte.SLOW, (byte)SpellByte.FIR2, (byte)SpellByte.SLEP, (byte)SpellByte.FIR2 },
+					SkillChance1 = 0x40,
+					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Frost, (byte)EnemySkills.Trance, (byte)EnemySkills.Ink },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.FIR3, (byte)SpellByte.RUSE, (byte)SpellByte.FIR3, (byte)SpellByte.XXXX, (byte)SpellByte.SLP2, (byte)SpellByte.FIR3, (byte)SpellByte.BRAK },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Cremate, (byte)EnemySkills.Inferno, (byte)EnemySkills.Inferno, (byte)EnemySkills.Glance },
+					},
+
+			new AlternateFiends {
+					Name = "NO128",
+					SpriteSheet = FormationSpriteSheet.SahagPirateSharkBigEye,
+					FormationPattern = FormationPattern.Large4,
+					GFXOffset = FormationGFX.Sprite1,
+					Palette1 = 0x3A,
+					Palette2 = 0x3A,
+					ElementalWeakness = SpellElement.Fire,
+					MonsterType = MonsterType.WERE,
+					FiendPool = FiendPool.FinalFantasy2,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.HOLD, (byte)SpellByte.ICE2, (byte)SpellByte.FAST, (byte)SpellByte.ICE2, (byte)SpellByte.CUR2, (byte)SpellByte.ICE2, (byte)SpellByte.BRAK, (byte)SpellByte.ICE2 },
+					SkillChance1 = 0x40,
+					Skills1 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Ink, (byte)EnemySkills.Trance, (byte)EnemySkills.Frost },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.RUSE, (byte)SpellByte.ICE3, (byte)SpellByte.STOP, (byte)SpellByte.ICE3, (byte)SpellByte.STUN, (byte)SpellByte.ICE3, (byte)SpellByte.FAST, (byte)SpellByte.BANE },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Blaze, (byte)EnemySkills.Tornado, (byte)EnemySkills.Crack, (byte)EnemySkills.Toxic },
 					},
 			};
 			var FF1BonusFiendsList = new List<AlternateFiends>
