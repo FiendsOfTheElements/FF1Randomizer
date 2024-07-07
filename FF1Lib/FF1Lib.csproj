@@ -147,7 +147,9 @@
 	  <EmbeddedResource Include="bosses\GUARDIN.png" />
 	  <EmbeddedResource Include="bosses\GUTSCO.png" />
 	  <EmbeddedResource Include="bosses\HAFGUFA.png" />
+	  <EmbeddedResource Include="bosses\I.DRAGON.png" />
 	  <EmbeddedResource Include="bosses\IFRIT.png" />
+	  <EmbeddedResource Include="bosses\IPOOH.png" />
 	  <EmbeddedResource Include="bosses\IROGIANT.png" />
 	  <EmbeddedResource Include="bosses\KARLABOS.png" />
 	  <EmbeddedResource Include="bosses\KARY.png" />
