@@ -262,7 +262,7 @@ public partial class FF1Rom : NesRom
 		if ((bool)flags.AlternateFiends && !flags.SpookyFlag) await this.Progress("Creating new Fiends", 1);
 		AlternativeFiends(EnemyScripts, rng, flags);
 		TransformFinalFormation(flags, rng);
-		DoEnemizer(EnemyScripts, flags, rng);
+		DoEnemizer(EnemyScripts, ZoneFormations, flags, rng);
 
 		ShuffleEnemyScripts(rng, flags);
 		EnemyScripts.ShuffleEnemySkillsSpells(this, rng, flags);
