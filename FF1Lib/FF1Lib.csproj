@@ -167,6 +167,7 @@
 	  <EmbeddedResource Include="bosses\LOTAN.png" />
 	  <EmbeddedResource Include="bosses\LUCIFER.png" />
 	  <EmbeddedResource Include="bosses\LUGAE.png" />
+	  <EmbeddedResource Include="bosses\M.MASTER.png" />
 	  <EmbeddedResource Include="bosses\MAGISSA.png" />
 	  <EmbeddedResource Include="bosses\MASTVAMP.png" />
 	  <EmbeddedResource Include="bosses\MATOYA.png" />
@@ -190,9 +191,11 @@
 	  <EmbeddedResource Include="bosses\PHUNBABA.png" />
 	  <EmbeddedResource Include="bosses\PLAGUE.png" />
 	  <EmbeddedResource Include="bosses\POLTRGST.png" />
+	  <EmbeddedResource Include="bosses\R.DRAGON.png" />
 	  <EmbeddedResource Include="bosses\R.MEDUSA.png" />
 	  <EmbeddedResource Include="bosses\RAMUH.png" />
 	  <EmbeddedResource Include="bosses\REVENANT.png" />
+	  <EmbeddedResource Include="bosses\RIZOPAS.png" />
 	  <EmbeddedResource Include="bosses\RNDWORM.png" />
 	  <EmbeddedResource Include="bosses\RUBICANT.png" />
 	  <EmbeddedResource Include="bosses\S.CANNON.png" />
