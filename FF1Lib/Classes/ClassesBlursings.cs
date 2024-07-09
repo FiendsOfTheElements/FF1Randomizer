@@ -64,6 +64,7 @@ namespace FF1Lib
 				assignedBlessings = classList.ToDictionary(c => c, c => new List<BonusMalus>());
 				assignedMaluses = classList.ToDictionary(c => c, c => new List<BonusMalus>());
 
+				List<BonusMalus> placedBlursings = new();
 				validClasses = new(classList);
 
 				// Apply Start With Key Items blessings, doesn't count toward the max number of blessings
@@ -98,18 +99,18 @@ namespace FF1Lib
 					}
 					else
 					{
-						var validBlessings = baseTierBlessings.Where(x => x.ClassList.Contains(currentClass) && !assignedBlessings[currentClass].Select(y => y.Action).ToList().Contains(x.Action)).ToList();
+						var validBlessings = baseTierBlessings.Where(x => !placedBlursings.Contains(x) && x.ClassList.Contains(currentClass) && !assignedBlessings[currentClass].Select(y => y.Action).ToList().Contains(x.Action)).ToList();
 
 						// There's no good blessings left for this class, reset and try again
 						if (!validBlessings.Any())
 						{
 							validBlursingsDistribution = false;
-							continue;
+							break;
 						}
 
 						var pickedBlursing = validBlessings.PickRandom(rng);
 						assignedBlessings[currentClass].Add(pickedBlursing);
-						baseTierBlessings.Remove(pickedBlursing);
+						placedBlursings.Add(pickedBlursing);
 					}
 
 					if (assignedBlessings[currentClass].Count >= maxbonuses)
@@ -131,7 +132,7 @@ namespace FF1Lib
 				{
 					var currentClass = validClasses.PickRandom(rng);
 
-					var validMaluses = maluses.Where(x => x.ClassList.Contains(currentClass) && !assignedBlessings[currentClass].Select(y => y.Action).ToList().Contains(x.Action) && !assignedMaluses[currentClass].Select(y => y.Action).ToList().Contains(x.Action)).ToList();
+					var validMaluses = maluses.Where(x => !placedBlursings.Contains(x) && x.ClassList.Contains(currentClass) && !assignedBlessings[currentClass].Select(y => y.Action).ToList().Contains(x.Action) && !assignedMaluses[currentClass].Select(y => y.Action).ToList().Contains(x.Action)).ToList();
 
 					if (!validMaluses.Any())
 					{
@@ -141,6 +142,7 @@ namespace FF1Lib
 
 					var pickedBlursing = validMaluses.PickRandom(rng);
 					assignedMaluses[currentClass].Add(pickedBlursing);
+					placedBlursings.Add(pickedBlursing);
 
 					if (assignedMaluses[currentClass].Count >= maxmaluses)
 					{
