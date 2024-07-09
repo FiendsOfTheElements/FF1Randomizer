@@ -176,7 +176,7 @@ public partial class FF1Rom : NesRom
 		SpellBalanceHacks(flags, rng);
 		CraftNewSpellbook(EnemyScripts, flags, rng);
 		TranceHasStatusElement(flags.TranceHasStatusElement);
-		ShuffleMagicLevels(EnemyScripts, rng, (bool)flags.MagicLevels && !(bool)flags.GenerateNewSpellbook, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed);
+		ShuffleMagicLevels(EnemyScripts, rng, (bool)flags.MagicLevels, (bool)flags.MagicPermissions, (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed);
 		SpellNames(flags, preferences, rng);
 		var extConsumables = new ExtConsumables(ShopData, this, flags, rng);
 		extConsumables.LoadSpells();

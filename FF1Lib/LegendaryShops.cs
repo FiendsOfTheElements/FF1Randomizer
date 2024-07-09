@@ -213,6 +213,11 @@ namespace FF1Lib
 			if (vflippedMaps.Contains(loc.Item1)) loc.Item3 = Map.RowLength - loc.Item3 - 1;
 
 			maps[loc.Item1].Map[loc.Item3, loc.Item2] = tile;
+
+			if (loc.Item1 == MapIndex.MarshCaveB2 && rng.Between(1,3) == 1)
+			{
+				maps[MapIndex.MarshCaveB1].Map[0x18, 0x28] = tile;
+			}
 		}
 
 		private byte CreateTile(MapIndex mapindex, int ShopId, byte ul, byte ur, byte bl, byte br, byte pi)
