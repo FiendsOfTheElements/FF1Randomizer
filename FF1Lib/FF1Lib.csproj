@@ -208,6 +208,8 @@
 	  <EmbeddedResource Include="bosses\SCYLLA.png" />
 	  <EmbeddedResource Include="bosses\SHIVA.png" />
 	  <EmbeddedResource Include="bosses\SIREN.png" />
+	  <EmbeddedResource Include="bosses\SKDRAGON.png" />
+	  <EmbeddedResource Include="bosses\STDRAGON.png" />
 	  <EmbeddedResource Include="bosses\TIAMAT.png" />
 	  <EmbeddedResource Include="bosses\TITAN.png" />
 	  <EmbeddedResource Include="bosses\TWHD.DRG.png" />
