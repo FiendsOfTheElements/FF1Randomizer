@@ -2088,7 +2088,7 @@
 		"Id": "autoRetargetingCheckBox",
 		"title": "Auto Retargeting",
 		"screenshot": "autoRetargeting.gif",
-		"description": "If enabled, melee attacks against dead enemies will be retargeted to an enemy that is still alive, instead of displaying the 'Ineffective' message"
+		"description": "If enabled, melee attacks and spells against dead enemies will be retargeted to an enemy that is still alive, instead of displaying the 'Ineffective' message"
 	},
 	{
 		"Id": "shopInfoCheckBox",
