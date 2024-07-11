@@ -9,6 +9,7 @@
 		public bool TeamSteak { get; set; }
 		public bool AlternateAirshipTheme { get; set; }
 		public MusicShuffle Music { get; set; }
+		public bool ChaosBattleMusic { get; set; }
 		public bool DisableDamageTileFlicker { get; set; } = true;
 		public bool DisableDamageTileSFX { get; set; }
 		public MenuColor MenuColor { get; set; } = MenuColor.Blue;

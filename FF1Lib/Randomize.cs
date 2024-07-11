@@ -113,7 +113,7 @@ public partial class FF1Rom : NesRom
 		Dialogues.TransferDialogues();
 
 		// Apply general fixes and hacks
-		Music.ShuffleMusic(this, preferences.Music, preferences.AlternateAirshipTheme, new MT19337(funRng.Next()));
+		Music.ShuffleMusic(this, preferences.Music, preferences.AlternateAirshipTheme, preferences.ChaosBattleMusic, new MT19337(funRng.Next()));
 		Bugfixes(flags);
 		GlobalImprovements(flags, Maps, preferences);
 		MiscHacks(flags, rng);

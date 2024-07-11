@@ -10,8 +10,6 @@ namespace FF1Lib
 		Standard,
 		[Description("Nonsensical")]
 		Nonsensical,
-		[Description("Alt Chaos Battle Music")]
-		ChaosBattleMusic,
 		[Description("Disable Music")]
 		MusicDisabled
 	}

@@ -43,6 +43,7 @@ namespace FF1Lib
 	{
 		public Dictionary<SongTracks, SongTracks> Tracks { get; private set; }
 		public bool SkipMinimap = false;
+		private bool chaosBattleMusic = false;
 		private MusicShuffle mode;
 		public bool MusicShuffled { get; private set; }
 
@@ -53,12 +54,15 @@ namespace FF1Lib
 			MusicShuffled = false;
 		}
 
-		public void ShuffleMusic(FF1Rom rom, MusicShuffle _mode, bool alternateAirshipTheme, MT19337 rng)
+		public void ShuffleMusic(FF1Rom rom, MusicShuffle _mode, bool alternateAirshipTheme, bool chaosBattleMusic, MT19337 rng)
 		{
 			if (alternateAirshipTheme) {
 				rom.PutInBank(0x0D, 0xB600, Blob.FromHex("FDF804E2D897D9477797DA07D977974777274777D104B6D897D9477797DA07D977974777274777D517B6D90777A7DA07572747D9A7DA07D95777A7D52AB6D017B6FDF803E2D897979797D546B6979797979797979797979797D54DB6070707070707070707070707D55CB6D04DB6FDF809E7C0C0D994DA27477794DB07DAB77794DB07DAB7779475B744240527D9B577D174B6DA045777A7DB045747DAA7DB045747DAA7DB04DAA5DB27DA7454457725D9A7DA045777A7DB045747DAA7DB045747DAA7DB04A7975770D074B6"));
 				rom.PutInBank(0x0D, 0x8028, Blob.FromHex("00B641B66EB6"));
 			}
+
+			this.chaosBattleMusic = chaosBattleMusic;
+			
 
 			mode = _mode;
 			// Need some fixes, some of the music offsets are wrong and can cause crashes, maybe there's a better way of keeping tracks of harcoded songtracks
@@ -210,7 +214,7 @@ namespace FF1Lib
 				//Overwrite beginning of crystal theme with a song that initializes properly but plays no notes
 				rom.Put(0x340C0, Blob.FromHex("FDF805E0D8C7D0C480"));
 			}
-			if (mode == MusicShuffle.ChaosBattleMusic)
+			if (chaosBattleMusic)
 			{
 				//move music data and code to bank 1D
 				rom.PutInBank(0x1D, 0x8000, rom.GetFromBank(0x0D, 0x8000, 0x1DA0));
