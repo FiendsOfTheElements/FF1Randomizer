@@ -215,8 +215,10 @@
 	  <EmbeddedResource Include="bosses\TIAMAT.png" />
 	  <EmbeddedResource Include="bosses\TITAN.png" />
 	  <EmbeddedResource Include="bosses\TONBERRY.png" />
+	  <EmbeddedResource Include="bosses\TRITOCH.png" />
 	  <EmbeddedResource Include="bosses\TWHD.DRG.png" />
 	  <EmbeddedResource Include="bosses\TWINTANI.png" />
+	  <EmbeddedResource Include="bosses\TYPHON.png" />
 	  <EmbeddedResource Include="bosses\UNNE.png" />
 	  <EmbeddedResource Include="bosses\VAMAKALI.png" />
 	  <EmbeddedResource Include="bosses\W.RAPTOR.png" />
