@@ -190,7 +190,12 @@
 		"Id": "musicDropDown",
 		"title": "Music Shuffle",
 		"screenshot": "musicDropDown.png",
-		"description": "Adjusts the behavior of background music during play.\n None leaves all tracks in their normal place.\n Standard music shuffle operates only from the pool of dungeon tracks, along with the overworld theme.\n Nonsensical music shuffle mixes every song in the game into one pool, including shorter tunes that can loop very quickly.\n Disable Music mutes all music, although sound effects, and some very short jingles, will still play. "
+		"description": "Adjusts the behavior of background music during play.\n None leaves all tracks in their normal place.\n Standard music shuffle operates only from the pool of dungeon tracks, along with the overworld theme.\n Nonsensical music shuffle mixes every song in the game into one pool, including shorter tunes that can loop very quickly.\nDisable Music mutes all music, although sound effects, and some very short jingles, will still play. "
+	},
+	{
+		"Id": "chaosBattleMusicCheckBox",
+		"title": "Alt Chaos Battle Music",
+		"description": "Alt Chaos Battle Music adds a new final battle song. "
 	},
 	{
 		"Id": "alternateAirshipThemeCheckBox",
@@ -1421,6 +1426,12 @@
 		"description": "Will add 36 Final Fantasy 5 Fiends to the Alternate Fiend Pool."
 	},
 	{
+		"Id": "finalfanstay6pool",
+		"title": "Final Fantasy 6 Pool",
+		"screenshot": null,
+		"description": "Will add 45 Final Fantasy 6 Fiends to the Alternate Fiend Pool."
+	},
+	{
 		"Id": "fightBahamutCheckBox",
 		"title": "Fight Bahamut",
 		"screenshot": "fightBahamutCheckBox.gif",
@@ -2088,7 +2099,7 @@
 		"Id": "autoRetargetingCheckBox",
 		"title": "Auto Retargeting",
 		"screenshot": "autoRetargeting.gif",
-		"description": "If enabled, melee attacks against dead enemies will be retargeted to an enemy that is still alive, instead of displaying the 'Ineffective' message"
+		"description": "If enabled, melee attacks and spells against dead enemies will be retargeted to an enemy that is still alive, instead of displaying the 'Ineffective' message"
 	},
 	{
 		"Id": "shopInfoCheckBox",

@@ -75,7 +75,7 @@ namespace FF1Lib
 			// Replace unused CANOE string and EarthOrb pointer with whatever we're calling the scavenged item.
 			ItemsText[(int)Item.Shard] = shardName;
 
-			addShardIcon(0xD, 0xB760);
+			//addShardIcon(0xD, 0xB760);
 
 			int ppu = 0x2043;
 			ppu = ppu + (goal <= 24 ? 0x20 : 0x00);

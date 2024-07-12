@@ -152,7 +152,13 @@ namespace FF1Lib
 			// Enable 3 palettes in battle
 			PutInBank(0x1F, 0xFDF1, CreateLongJumpTableEntry(0x0F, 0x9380));
 			PutInBank(0x0F, 0x9380, Blob.FromHex("ADD16A2910F00BA020B9336D99866B88D0F7ADD16A290F8DD16A20A1F4AD0220A9028D1440A93F8D0620A9008D0620A000B9876B8D0720C8C020D0F5A93F8D0620A9008D06208D06208D062060"));
-		}
+
+
+			// Move ClearZeroPage out of bank, also fixes noise channel battle bug
+			// See 1C_A4F0_ClearZeroPageAndMore.asm
+			PutInBank(0x1F, 0xC454, Blob.FromHex("A9A448A9EF48A91C4C03FEEAEAEAEAEA"));
+			PutInBank(0x1C, 0xA4F0, Blob.FromHex("A2EFA9009500CAD0FBA91B05F485F4A20FA9009D976DCA10FAA91F4C03FE"));
+}
 
 		public void GameScreenTracking()
 		{
