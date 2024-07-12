@@ -5632,5 +5632,14 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+		public bool ChaosBattleMusic
+		{
+			get => Preferences.ChaosBattleMusic;
+			set
+			{
+				Preferences.ChaosBattleMusic = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }
