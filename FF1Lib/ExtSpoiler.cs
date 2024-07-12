@@ -12,7 +12,8 @@ namespace FF1Lib
 		private ItemNames itemsText;
 		private List<IRewardSource> itemPlacement;
 		private OverworldMap overworldMap;
-		private IncentiveData incentivesData;
+		private PlacementContext incentivesData;
+		private Overworld overworld;
 		private GearPermissions weaponPermissions;
 		private GearPermissions armorPermissions;
 		private Flags flags;
@@ -22,20 +23,21 @@ namespace FF1Lib
 		private List<Armor> armors;
 		private List<MagicSpell> magicSpells;
 
-		public ExtSpoiler(FF1Rom _rom, SanityCheckerV2 _checker, ShopData _shopData, ItemNames _itemsText, List<IRewardSource> _itemPlacement, OverworldMap _overworldMap, IncentiveData _incentivesData, GearPermissions _weaponPermissions, GearPermissions _armorPermissions, Flags _flags)
+		public ExtSpoiler(FF1Rom _rom, SanityCheckerV2 _checker, ShopData _shopData, ItemNames _itemsText, List<IRewardSource> _itemPlacement, Overworld _overworld, PlacementContext _incentivesData, GearPermissions _weaponPermissions, GearPermissions _armorPermissions, Flags _flags)
 		{
 			rom = _rom;
 			checker = _checker;
 			shopData = _shopData;
 			itemsText = _itemsText;
 			itemPlacement = _itemPlacement;
-			overworldMap = _overworldMap;
+			overworld = _overworld;
+			overworldMap = _overworld.OverworldMap;
 			incentivesData = _incentivesData;
 			weaponPermissions = _weaponPermissions;
 			armorPermissions = _armorPermissions;
 			flags = _flags;
 
-			logic = new SCLogic(rom, checker.Main, itemPlacement, flags, false);
+			logic = new SCLogic(rom, checker.Main, itemPlacement, overworld.Locations, flags, false);
 			weapons = Weapon.LoadAllWeapons(rom, flags).ToList();
 			armors = Armor.LoadAllArmors(rom, flags).ToList();
 			magicSpells = rom.GetSpells();
@@ -49,7 +51,10 @@ namespace FF1Lib
 			WriteArmorSpoiler();
 			WriteSpellSpoiler();
 			WriteShopSpoiler();
-			WriteV2Spoiler();
+			if (flags.GameMode != GameModes.DeepDungeon)
+			{
+				WriteV2Spoiler();
+			}
 		}
 
 		private void WriteWeaponSpoiler()
@@ -185,13 +190,8 @@ namespace FF1Lib
 
 			sorted.ForEach(source =>
 			{
-				var overworldLocation = source.RewardSource.MapLocation.ToString();
 
-				if (overworldMap.OverriddenOverworldLocations != null && overworldMap.OverriddenOverworldLocations.TryGetValue(source.RewardSource.MapLocation, out var overriden))
-				{
-					overworldLocation = overriden.ToString();
-				}
-
+				var overworldLocation = source.RewardSource.Entrance.ToString();
 				var itemStr = source.RewardSource.Item.ToString().PadRight(12);
 				var locStr = $"{overworldLocation} -> {source.RewardSource.MapLocation} -> {source.RewardSource.Name} ".PadRight(60);
 				var reqs = BuildRequirements(source);
@@ -267,24 +267,24 @@ namespace FF1Lib
 
 		private void WriteV2SpoilerArea(Sanity.SCArea a, string tab, int depth)
 		{
-			Utilities.WriteSpoilerLine(tab + a.Map.MapId.ToString());
+			Utilities.WriteSpoilerLine(tab + a.Map.MapIndex.ToString());
 
-			//if (a.Map.MapId == MapId.TempleOfFiends && depth < 15) throw new RerollException();
+			//if (a.Map.MapIndex == MapIndex.TempleOfFiends && depth < 15) throw new RerollException();
 
 			foreach (var p in a.PointsOfInterest)
 			{
 				switch (p.Type)
 				{
 					case Sanity.SCPointOfInterestType.Orb:
-						Utilities.WriteSpoilerLine(tab + " - " + a.Map.MapId.ToString() + " - " + p.Type.ToString() + " - " + p.BitFlagSet);
+						Utilities.WriteSpoilerLine(tab + " - " + a.Map.MapIndex.ToString() + " - " + p.Type.ToString() + " - " + p.BitFlagSet);
 						break;
 					case Sanity.SCPointOfInterestType.Shop:
 						var shop = shopData.Shops.First(x => x.Index == p.ShopId - 1);
-						Utilities.WriteSpoilerLine(tab + " - " + a.Map.MapId.ToString() + " - " + p.Type.ToString() + " - " + shop.Type + "." + shop.Location + "." + p.ShopId.ToString() + " - " + p.BitFlagSet);
+						Utilities.WriteSpoilerLine(tab + " - " + a.Map.MapIndex.ToString() + " - " + p.Type.ToString() + " - " + shop.Type + "." + shop.Location + "." + p.ShopId.ToString() + " - " + p.BitFlagSet);
 						break;
 					case Sanity.SCPointOfInterestType.Treasure:
 						var item = (Item)rom.Get(0x3100 + p.TreasureId, 1)[0];
-						Utilities.WriteSpoilerLine(tab + " - " + a.Map.MapId.ToString() + " - " + p.Type.ToString() + " - " + GetItemName(item) + " - " + p.BitFlagSet);
+						Utilities.WriteSpoilerLine(tab + " - " + a.Map.MapIndex.ToString() + " - " + p.Type.ToString() + " - " + GetItemName(item) + " - " + p.BitFlagSet);
 						break;
 				}
 			}

@@ -9,7 +9,7 @@
 		public HashSet<SCArea> Areas { get; private set; } = new HashSet<SCArea>();
 
 		HashSet<SCTeleport> usedEnterTeles;
-		Dictionary<MapId, SCMap> scmaps;
+		Dictionary<MapIndex, SCMap> scmaps;
 
 		Dictionary<SCPointOfInterest, SCPointOfInterest> poiDic = new Dictionary<SCPointOfInterest, SCPointOfInterest>(new SCPointOfInterestIdentityComparer());
 		HashSet<SCTeleport> entrances = new HashSet<SCTeleport>();
@@ -17,7 +17,7 @@
 
 		public bool Done { get; set; }
 
-		public SCDungeon(SCTeleport et, OverworldTeleportIndex overworldTeleport, Dictionary<MapId, SCMap> _scmaps, HashSet<SCTeleport> _usedEnterTeles)
+		public SCDungeon(SCTeleport et, OverworldTeleportIndex overworldTeleport, Dictionary<MapIndex, SCMap> _scmaps, HashSet<SCTeleport> _usedEnterTeles)
 		{
 			scmaps = _scmaps;
 			usedEnterTeles = _usedEnterTeles;
@@ -62,7 +62,7 @@
 		{
 			foreach (var poi in entrance.PointsOfInterest.Where(p => p.BitFlagSet.Count > 0))
 			{
-				poi.MapId = entrance.Map.MapId;
+				poi.MapIndex = entrance.Map.MapIndex;
 				SCPointOfInterest dungeonpoi;
 				if (!poiDic.TryGetValue(poi, out dungeonpoi))
 				{
@@ -93,7 +93,7 @@
 
 		public override string ToString()
 		{
-			return OverworldTeleport.ToString() + "->" + Areas.First().Map.MapId.ToString() + (Done ? " - Done" : "");
+			return OverworldTeleport.ToString() + "->" + Areas.First().Map.MapIndex.ToString() + (Done ? " - Done" : "");
 		}
 	}
 }

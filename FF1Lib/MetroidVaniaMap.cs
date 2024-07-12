@@ -19,21 +19,21 @@
 			Rotate3Orphans,
 			Switch2Orphans
 		}
-		private Dictionary<byte, List<byte>> LoadUnusedTileIds(List<Map> maps, FF1Rom rom)
+		private Dictionary<byte, List<byte>> LoadUnusedTileIds(StandardMaps maps, FF1Rom rom)
 		{
-			MapTileSets MapTileSets;
+			var mapTileSets = maps.MapTileSets.Select((m, i) => (i, (byte)m)).ToDictionary(m => (MapIndex)m.i, m => m.Item2);
 			Dictionary<byte, List<byte>> UnusedTilesbyTileSet;
 
-			MapTileSets = new MapTileSets(rom);
+			//MapTileSets = new MapTileSets(rom);
 			byte[] possibleTileIds = new byte[128];
 			for (byte i = 0; i < 128; i++) possibleTileIds[i] = i;
 
 			// Remove Closed door tile, since it's not used in the map, but still needed
 			possibleTileIds[0x37] = 0;  
 
-			UnusedTilesbyTileSet = Enum.GetValues<MapId>()
-				.GroupBy(m => MapTileSets[m])
-				.Select(t => (t.Key, t.Select(m => maps[(int)m]
+			UnusedTilesbyTileSet = Enum.GetValues<MapIndex>()
+				.GroupBy(m => mapTileSets[m])
+				.Select(t => (t.Key, t.Select(m => maps[m].Map
 						.Select(e => e.Value))
 					.SelectMany(x => x)
 					.Distinct()
@@ -44,30 +44,32 @@
 			return UnusedTilesbyTileSet;
 		}
 
-		public void NoOverworld(OverworldMap overworldmap, List<Map> maps, TalkRoutines talkroutines, NPCdata npcdata, List<MapId> flippedmaps, Flags flags, MT19337 rng)
+		public void NoOverworld(List<List<byte>> decompressedMap, StandardMaps maps, Teleporters teleporters, TileSetsData tileSets, TalkRoutines talkroutines, DialogueData dialogues, NpcObjectData npcdata, Flags flags, MT19337 rng)
 		{
-			// Exclude Waterfall, since it doesn't matter if it's flipped or not
-			flippedmaps = flippedmaps.Where(x => x != MapId.Waterfall).ToList();
+			if (!flags.NoOverworld)
+			{
+				return;
+			}
 
-			LoadInTown(overworldmap);
+			// Exclude Waterfall, since it doesn't matter if it's flipped or not
+			var flippedmaps = maps.HorizontalFlippedMaps.Where(x => x != MapIndex.Waterfall).ToList();
+
+			LoadInTown(decompressedMap);
 			ApplyMapMods(maps, flippedmaps, (bool)flags.LefeinSuperStore);
-			UpdateInRoomTeleporters();
-			CreateTeleporters(maps, flippedmaps, rng);
-			PrepNPCs(talkroutines, npcdata, flippedmaps, flags, rng);
+			//UpdateInRoomTeleporters();
+			CreateTeleporters(maps, flippedmaps, tileSets, teleporters, rng);
+			PrepNPCs(maps, talkroutines, dialogues, npcdata, flippedmaps, flags, rng);
 			UpdateBackgrounds();
 			if ((bool)flags.Entrances || (bool)flags.Towns)
 			{
-				ShuffleFloor(maps, flags, overworldmap, npcdata, flippedmaps, rng);
+				ShuffleFloor(maps, teleporters, tileSets, flags, npcdata, flippedmaps, rng);
 			}
 		}
 
-		public void LoadInTown(OverworldMap overworldmap)
+		public void LoadInTown(List<List<byte>> decompressedMap)
 		{
 			var townTileList = new List<byte> { 0x49, 0x4A, 0x4C, 0x4D, 0x4E, 0x5A, 0x5D, 0x6D, 0x02 };
 			var townPosList = new List<(byte, byte)> { (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00), (0x00, 0x00) };
-
-			var compresedMap = overworldmap.GetCompressedMapRows();
-			var decompressedMap = overworldmap.DecompressMapRows(compresedMap);
 
 			for (int x = 0; x < decompressedMap[0].Count; x++)
 			{
@@ -103,15 +105,15 @@
 			PutInBank(0x0E, 0x9DC0, townPosList.Select(x => x.Item1).ToArray());
 			PutInBank(0x0E, 0x9DD0, townPosList.Select(x => x.Item2).ToArray());
 		}
-		public void ApplyMapMods(List<Map> maps, List<MapId> flippedmaps, bool lefeinmart)
+		public void ApplyMapMods(StandardMaps maps, List<MapIndex> flippedmaps, bool lefeinmart)
 		{
 			// Coneria
 			var coneriaNorthwall = new List<Blob> { Blob.FromHex("0404040404") };
 			var coneriaSouthwall = new List<Blob> { Blob.FromHex("0E0E0E0E0E") };
 
-			maps[(int)MapId.Coneria].Put((0x0E, 0x00), coneriaNorthwall.ToArray());
-			maps[(int)MapId.Coneria].Put((0x0E, 0x17), coneriaSouthwall.ToArray());
-			maps[(int)MapId.Coneria][0x0C, 0x1F] = 0x0E;
+			maps[MapIndex.ConeriaTown].Map.Put((0x0E, 0x00), coneriaNorthwall.ToArray());
+			maps[MapIndex.ConeriaTown].Map.Put((0x0E, 0x17), coneriaSouthwall.ToArray());
+			maps[MapIndex.ConeriaTown].Map[0x0C, 0x1F] = 0x0E;
 
 			// Pravoka
 			var pravokaSouthwall = new List<Blob> {
@@ -119,7 +121,7 @@
 				Blob.FromHex("0304040404040404040405")
 			};
 
-			maps[(int)MapId.Pravoka].Put((0x0E, 0x1F), pravokaSouthwall.ToArray());
+			maps[MapIndex.Pravoka].Map.Put((0x0E, 0x1F), pravokaSouthwall.ToArray());
 
 			// Elfland
 			var elflandEastwall = new List<Blob> {
@@ -165,11 +167,11 @@
 				Blob.FromHex("0F"),
 			};
 
-			maps[(int)MapId.Elfland].Put((0x27, 0x16), elflandEastwall.ToArray());
-			maps[(int)MapId.Elfland].Put((0x29, 0x00), elflandEastwall2.ToArray());
-			maps[(int)MapId.Elfland].Put((0x10, 0x00), elflandNorthwall.ToArray());
-			maps[(int)MapId.Elfland].Put((0x00, 0x04), elflandWestwall.ToArray());
-			maps[(int)MapId.Elfland][0x05, 0x04] = 0x00;
+			maps[MapIndex.Elfland].Map.Put((0x27, 0x16), elflandEastwall.ToArray());
+			maps[MapIndex.Elfland].Map.Put((0x29, 0x00), elflandEastwall2.ToArray());
+			maps[MapIndex.Elfland].Map.Put((0x10, 0x00), elflandNorthwall.ToArray());
+			maps[MapIndex.Elfland].Map.Put((0x00, 0x04), elflandWestwall.ToArray());
+			maps[MapIndex.Elfland].Map[0x05, 0x04] = 0x00;
 
 			// Melmond
 			var melmondWestwall = new List<Blob> {
@@ -193,18 +195,18 @@
 				Blob.FromHex("040404040404"),
 			};
 
-			maps[(int)MapId.Melmond].Put((0x01, 0x05), melmondWestwall.ToArray());
-			maps[(int)MapId.Melmond].Put((0x0E, 0x1B), melmondSouthwall.ToArray());
+			maps[MapIndex.Melmond].Map.Put((0x01, 0x05), melmondWestwall.ToArray());
+			maps[MapIndex.Melmond].Map.Put((0x0E, 0x1B), melmondSouthwall.ToArray());
 
 			// Crescent Lake
 			var crescentSouthwall = new List<Blob> {
 				Blob.FromHex("070707"),
 			};
-			maps[(int)MapId.CrescentLake].Put((0x0A, 0x17), crescentSouthwall.ToArray());
-			maps[(int)MapId.CrescentLake][0x00, 0x13] = 0x0E;
+			maps[MapIndex.CrescentLake].Map.Put((0x0A, 0x17), crescentSouthwall.ToArray());
+			maps[MapIndex.CrescentLake].Map[0x00, 0x13] = 0x0E;
 
 			// Gaia
-			maps[(int)MapId.Gaia].Replace(0x47, 0x0F);
+			maps[MapIndex.Gaia].Map.Replace(0x47, 0x0F);
 
 			// Onrac
 			var onracWestwall = new List<Blob> {
@@ -224,8 +226,8 @@
 				Blob.FromHex("0E0E"),
 			};
 
-			maps[(int)MapId.Onrac].Put((0x00, 0x08), onracWestwall.ToArray());
-			maps[(int)MapId.Onrac].Put((0x10, 0x25), onracSouthwall.ToArray());
+			maps[MapIndex.Onrac].Map.Put((0x00, 0x08), onracWestwall.ToArray());
+			maps[MapIndex.Onrac].Map.Put((0x10, 0x25), onracSouthwall.ToArray());
 
 			// Lefein
 			var lefeinSouthwall = new List<Blob> {
@@ -250,27 +252,27 @@
 				Blob.FromHex("0000"),
 			};
 
-			maps[(int)MapId.Lefein].Put((0x0F, 0x17), lefeinSouthwall.ToArray());
-			maps[(int)MapId.Lefein].Put((0x27, 0x09), lefeinSouthedge.ToArray());
-			maps[(int)MapId.Lefein].Put((0x00, 0x09), lefeinSouthedge2.ToArray());
+			maps[MapIndex.Lefein].Map.Put((0x0F, 0x17), lefeinSouthwall.ToArray());
+			maps[MapIndex.Lefein].Map.Put((0x27, 0x09), lefeinSouthedge.ToArray());
+			maps[MapIndex.Lefein].Map.Put((0x00, 0x09), lefeinSouthedge2.ToArray());
 			if (lefeinmart)
 			{
-				maps[(int)MapId.Lefein].Put((0x24, 0x02), lefeinNorthedge2.ToArray());
-				maps[(int)MapId.Lefein].Put((0x00, 0x01), lefeinSouthedge2.ToArray());
-				maps[(int)MapId.Lefein].Put((0x00, 0x02), lefeinNonteleport.ToArray());
-				maps[(int)MapId.Lefein][0x01, 0x33] = 0x0E;
-				maps[(int)MapId.Lefein][0x01, 0x3F] = 0x0E;
+				maps[MapIndex.Lefein].Map.Put((0x24, 0x02), lefeinNorthedge2.ToArray());
+				maps[MapIndex.Lefein].Map.Put((0x00, 0x01), lefeinSouthedge2.ToArray());
+				maps[MapIndex.Lefein].Map.Put((0x00, 0x02), lefeinNonteleport.ToArray());
+				maps[MapIndex.Lefein].Map[0x01, 0x33] = 0x0E;
+				maps[MapIndex.Lefein].Map[0x01, 0x3F] = 0x0E;
 			}
 			else
 			{
-				maps[(int)MapId.Lefein].Put((0x26, 0x02), lefeinNorthedge.ToArray());
-				maps[(int)MapId.Lefein].Put((0x3C, 0x02), lefeinNorthedge2.ToArray());
-				maps[(int)MapId.Lefein].Put((0x00, 0x02), lefeinSouthedge2.ToArray());
-				maps[(int)MapId.Lefein][0x01, 0x39] = 0x0E;
+				maps[MapIndex.Lefein].Map.Put((0x26, 0x02), lefeinNorthedge.ToArray());
+				maps[MapIndex.Lefein].Map.Put((0x3C, 0x02), lefeinNorthedge2.ToArray());
+				maps[MapIndex.Lefein].Map.Put((0x00, 0x02), lefeinSouthedge2.ToArray());
+				maps[MapIndex.Lefein].Map[0x01, 0x39] = 0x0E;
 			}
 
-			maps[(int)MapId.Lefein][0x03, 0x00] = 0x00;
-			maps[(int)MapId.Lefein][0x04, 0x00] = 0x00;
+			maps[MapIndex.Lefein].Map[0x03, 0x00] = 0x00;
+			maps[MapIndex.Lefein].Map[0x04, 0x00] = 0x00;
 
 			// Coneria Castle
 			var coneriacastleMarshBox = new List<Blob> {
@@ -291,10 +293,10 @@
 			};
 			var coneriacastleNorthwall = new List<Blob> { Blob.FromHex("303030") };
 
-			maps[(int)MapId.ConeriaCastle1F].Put((0x14, 0x1B), coneriacastleMarshBox.ToArray());
-			maps[(int)MapId.ConeriaCastle1F].Put((0x00, 0x07), coneriacastleWaterfallBox.ToArray());
-			maps[(int)MapId.ConeriaCastle1F].Put((0x0B, 0x05), coneriacastleNorthwall.ToArray());
-			maps[(int)MapId.ConeriaCastle1F][0x23, 0x0C] = 0x30;
+			maps[MapIndex.ConeriaCastle1F].Map.Put((0x14, 0x1B), coneriacastleMarshBox.ToArray());
+			maps[MapIndex.ConeriaCastle1F].Map.Put((0x00, 0x07), coneriacastleWaterfallBox.ToArray());
+			maps[MapIndex.ConeriaCastle1F].Map.Put((0x0B, 0x05), coneriacastleNorthwall.ToArray());
+			maps[MapIndex.ConeriaCastle1F].Map[0x23, 0x0C] = 0x30;
 
 			// Elfland Castle
 			var elflandcastleSouthwall = new List<Blob> {
@@ -319,11 +321,11 @@
 				Blob.FromHex("33"),
 			};
 
-			maps[(int)MapId.ElflandCastle][0x07, 0x17] = 0x31;
-			maps[(int)MapId.ElflandCastle][0x10, 0x02] = 0x30;
-			maps[(int)MapId.ElflandCastle].Put((0x0E, 0x1B), elflandcastleSouthwall.ToArray());
-			maps[(int)MapId.ElflandCastle].Put((0x11, 0x00), elflandcastleNorthbox.ToArray());
-			maps[(int)MapId.ElflandCastle].Put((0x19, 0x03), elflandcastleEastwall.ToArray());
+			maps[MapIndex.ElflandCastle].Map[0x07, 0x17] = 0x31;
+			maps[MapIndex.ElflandCastle].Map[0x10, 0x02] = 0x30;
+			maps[MapIndex.ElflandCastle].Map.Put((0x0E, 0x1B), elflandcastleSouthwall.ToArray());
+			maps[MapIndex.ElflandCastle].Map.Put((0x11, 0x00), elflandcastleNorthbox.ToArray());
+			maps[MapIndex.ElflandCastle].Map.Put((0x19, 0x03), elflandcastleEastwall.ToArray());
 
 			// Northwest Castle
 			var northwestcastleEastwall = new List<Blob> {
@@ -336,11 +338,11 @@
 				Blob.FromHex("33"),
 			};
 
-			maps[(int)MapId.NorthwestCastle][0x18, 0x16] = 0x30;
-			maps[(int)MapId.NorthwestCastle][0x17, 0x1C] = 0x30;
-			maps[(int)MapId.NorthwestCastle][0x0A, 0x07] = 0x30;
-			maps[(int)MapId.NorthwestCastle].Put((0x09, 0x15), coneriacastleNorthwall.ToArray());
-			maps[(int)MapId.NorthwestCastle].Put((0x1D, 0x0A), northwestcastleEastwall.ToArray());
+			maps[MapIndex.NorthwestCastle].Map[0x18, 0x16] = 0x30;
+			maps[MapIndex.NorthwestCastle].Map[0x17, 0x1C] = 0x30;
+			maps[MapIndex.NorthwestCastle].Map[0x0A, 0x07] = 0x30;
+			maps[MapIndex.NorthwestCastle].Map.Put((0x09, 0x15), coneriacastleNorthwall.ToArray());
+			maps[MapIndex.NorthwestCastle].Map.Put((0x1D, 0x0A), northwestcastleEastwall.ToArray());
 
 			// Ordeals
 			var ordealsRoom = new List<Blob> {
@@ -352,40 +354,40 @@
 				Blob.FromHex("212121"),
 			};
 
-			maps[(int)MapId.CastleOfOrdeals1F][0x05, 0x14] = 0x36;
-			maps[(int)MapId.CastleOfOrdeals1F][0x06, 0x14] = 0x3A;
-			maps[(int)MapId.CastleOfOrdeals1F].Put((0x15, 0x02), ordealsRoom.ToArray());
-			maps[(int)MapId.CastleOfOrdeals1F].Put((0x0B, 0x15), ordealsSouthwall.ToArray());
+			maps[MapIndex.CastleOrdeals1F].Map[0x05, 0x14] = 0x36;
+			maps[MapIndex.CastleOrdeals1F].Map[0x06, 0x14] = 0x3A;
+			maps[MapIndex.CastleOrdeals1F].Map.Put((0x15, 0x02), ordealsRoom.ToArray());
+			maps[MapIndex.CastleOrdeals1F].Map.Put((0x0B, 0x15), ordealsSouthwall.ToArray());
 
 			// Ice Cave B1
 			var iceOnracroom = new List<Blob> {
 				Blob.FromHex("0001010102"),
 				Blob.FromHex("0313041305"),
 				Blob.FromHex("0607070708"),
-				flippedmaps.Contains(MapId.IceCaveB1) ? Blob.FromHex("3036303030") : Blob.FromHex("3030303630"),
+				flippedmaps.Contains(MapIndex.IceCaveB1) ? Blob.FromHex("3036303030") : Blob.FromHex("3030303630"),
 			};
 
-			if (flippedmaps.Contains(MapId.IceCaveB1))
+			if (flippedmaps.Contains(MapIndex.IceCaveB1))
 			{
-				maps[(int)MapId.IceCaveB1].Put((0x3F - 0x04, 0x00), iceOnracroom.ToArray());
-				maps[(int)MapId.IceCaveB1][0x04, 0x3F - 0x03] = 0x3A;
+				maps[MapIndex.IceCaveB1].Map.Put((0x3F - 0x04, 0x00), iceOnracroom.ToArray());
+				maps[MapIndex.IceCaveB1].Map[0x04, 0x3F - 0x03] = 0x3A;
 			}
 			else
 			{
-				maps[(int)MapId.IceCaveB1].Put((0x00, 0x00), iceOnracroom.ToArray());
-				maps[(int)MapId.IceCaveB1][0x04, 0x03] = 0x3A;
+				maps[MapIndex.IceCaveB1].Map.Put((0x00, 0x00), iceOnracroom.ToArray());
+				maps[MapIndex.IceCaveB1].Map[0x04, 0x03] = 0x3A;
 			}
 
 			// Dwarf's Cave
 			var dwarfTunnel1 = new List<Blob> { Blob.FromHex("3D3D3D313D") };
 			var dwarfTunnel2 = new List<Blob> { Blob.FromHex("31313131313131313131") };
 
-			maps[(int)MapId.DwarfCave].Put((0x0C, 0x2F), dwarfTunnel1.ToArray());
-			maps[(int)MapId.DwarfCave].Put((0x10, 0x36), dwarfTunnel2.ToArray());
+			maps[MapIndex.DwarfCave].Map.Put((0x0C, 0x2F), dwarfTunnel1.ToArray());
+			maps[MapIndex.DwarfCave].Map.Put((0x10, 0x36), dwarfTunnel2.ToArray());
 
 			// Matoya's Cave
 			var matoyaTileReclaim = new List<Blob> { Blob.FromHex("3C3C3C3C") };
-			maps[(int)MapId.MatoyasCave].Put((0x14, 0x0D), matoyaTileReclaim.ToArray());
+			maps[MapIndex.MatoyasCave].Map.Put((0x14, 0x0D), matoyaTileReclaim.ToArray());
 
 			// Marsh Cave B1
 			var marshConeriaBox = new List<Blob> {
@@ -396,16 +398,16 @@
 				Blob.FromHex("403A40"),
 			};
 
-			if (flippedmaps.Contains(MapId.MarshCaveB1))
+			if (flippedmaps.Contains(MapIndex.MarshCaveB1))
 			{
 
-				maps[(int)MapId.MarshCaveB1].Put((0x3F - (0x02 + 0x14), 0x18), marshConeriaBox.ToArray());
-				maps[(int)MapId.MarshCaveB1].Put((0x3F - (0x02 + 0x2A), 0x16), marshConeriaBox.ToArray());
+				maps[MapIndex.MarshCaveB1].Map.Put((0x3F - (0x02 + 0x14), 0x18), marshConeriaBox.ToArray());
+				maps[MapIndex.MarshCaveB1].Map.Put((0x3F - (0x02 + 0x2A), 0x16), marshConeriaBox.ToArray());
 			}
 			else
 			{
-				maps[(int)MapId.MarshCaveB1].Put((0x14, 0x18), marshConeriaBox.ToArray());
-				maps[(int)MapId.MarshCaveB1].Put((0x2A, 0x16), marshConeriaBox.ToArray());
+				maps[MapIndex.MarshCaveB1].Map.Put((0x14, 0x18), marshConeriaBox.ToArray());
+				maps[MapIndex.MarshCaveB1].Map.Put((0x2A, 0x16), marshConeriaBox.ToArray());
 			}
 
 			// Cardia - Kraken Chest
@@ -425,15 +427,15 @@
 				Blob.FromHex("343030303A31"),
 			};
 
-			maps[(int)MapId.Cardia].Put((0x24, 0x1A), cardiaCaravan.ToArray());
-			maps[(int)MapId.Cardia].Put((0x2A, 0x07), cardiaKrakenChest.ToArray());
+			maps[MapIndex.Cardia].Map.Put((0x24, 0x1A), cardiaCaravan.ToArray());
+			maps[MapIndex.Cardia].Map.Put((0x2A, 0x07), cardiaKrakenChest.ToArray());
 		}
 		public void UpdateInRoomTeleporters()
 		{
 			byte vanillaTeleporters = 0x41;
 
 			List<TeleporterSM> teleporters = new();
-			List<TeleportIndex> inroomTeleporter = new() { TeleportIndex.CastleOrdealsBack, TeleportIndex.CastleOrdealsMaze, TeleportIndex.RescuePrincess, TeleportIndex.SkyPalace1, TeleportIndex.TempleOfFiends2, TeleportIndex.TempleOfFiends6, TeleportIndex.MarshCave3, TeleportIndex.IceCave4, TeleportIndex.IceCave7 };
+			List<TeleportIndex> inroomTeleporter = new() { TeleportIndex.CastleOrdealsBack, TeleportIndex.CastleOrdealsMaze, TeleportIndex.RescuePrincess, TeleportIndex.SkyPalace1, TeleportIndex.TempleOfFiends2, TeleportIndex.TempleOfFiends6, TeleportIndex.MarshCave3, TeleportIndex.IceCave5, TeleportIndex.IceCave8 };
 
 			for (int i = 0; i < vanillaTeleporters; i++)
 			{
@@ -451,411 +453,391 @@
 
 
 		}
-		public void CreateTeleporters(List<Map> maps, List<MapId> flippedmaps, MT19337 rng)
+		public void CreateTeleporters(StandardMaps maps, List<MapIndex> flippedmaps, TileSetsData tileSets, Teleporters teleporters, MT19337 rng)
 		{
 			// Teleporter creation
 			// New function from here
+			
 			var availableTiles = LoadUnusedTileIds(maps, this);
 			List<TeleporterTileSM> newTeleporterTiles = new();
 
-			int FlippedX(MapId map, int pos) => flippedmaps.Contains(map) ? 0x3F - pos : pos;
-			void UpdateMapTile(MapId map, int x, int y, byte tile) => maps[(int)map][y, FlippedX(map, x)] = tile;
+			int FlippedX(MapIndex map, int pos) => flippedmaps.Contains(map) ? 0x3F - pos : pos;
+			void UpdateMapTile(MapIndex map, int x, int y, byte tile) => maps[map].Map[y, FlippedX(map, x)] = tile;
 
 			// Find valid tiles for Waterfall
-			var waterfallValidTiles = maps[(int)MapId.Waterfall].Where(x => x.Tile == (Tile)0x49).ToList();
+			var waterfallValidTiles = maps[MapIndex.Waterfall].Map.Where(x => x.Tile == (Tile)0x49).ToList();
 			var waterfallLefeinStairs = waterfallValidTiles.SpliceRandom(rng);
-			var waterfallStairs = maps[(int)MapId.Waterfall].Where(x => x.Tile == (Tile)0x18).First();
+			var waterfallStairs = maps[MapIndex.Waterfall].Map.Where(x => x.Tile == (Tile)0x18).First();
 
 			byte teleportIDtracker = 0x41;
 
 			// Coneria
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0C, 0x22, (byte)MapId.ConeriaCastle1F, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.Coneria, 0x10, 0x16, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0C, 0x22, (byte)MapIndex.ConeriaCastle1F, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.ConeriaTown, 0x10, 0x16, newTeleporterTiles.Last().TileID);
 
 			// Pravoka
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x01, 0x0B, (byte)MapId.MatoyasCave, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.Pravoka, 0x13, 0x1E, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x01, 0x0B, (byte)MapIndex.MatoyasCave, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.Pravoka, 0x13, 0x1E, newTeleporterTiles.Last().TileID);
 
 			// Elfland
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x10, 0x17, (byte)MapId.ElflandCastle, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.Elfland, 0x28, 0x16, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x10, 0x17, (byte)MapIndex.ElflandCastle, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.Elfland, 0x28, 0x16, newTeleporterTiles.Last().TileID);
 
 			// Melmond
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x15, 0x0D, (byte)MapId.SardasCave, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.Melmond, 0x03, 0x10, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x15, 0x0D, (byte)MapIndex.SardasCave, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.Melmond, 0x03, 0x10, newTeleporterTiles.Last().TileID);
 
 			// Crescent Lake
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x19, 0x36, (byte)MapId.DwarfCave, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.CrescentLake, 0x0B, 0x16, newTeleporterTiles.Last().TileID);
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x1B, 0x0F, (byte)MapId.GurguVolcanoB1, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.CrescentLake, 0x25, 0x00, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x19, 0x36, (byte)MapIndex.DwarfCave, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.CrescentLake, 0x0B, 0x16, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x1B, 0x0F, (byte)MapIndex.GurguVolcanoB1, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.CrescentLake, 0x25, 0x00, newTeleporterTiles.Last().TileID);
 
 			// Gaia
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x16, 0x02, (byte)MapId.CastleOfOrdeals1F, true, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.Gaia, 0x29, 0x34, newTeleporterTiles.Last().TileID);
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x11, 0x1F, (byte)MapId.MirageTower1F, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.Gaia, 0x3D, 0x18, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x16, 0x02, (byte)MapIndex.CastleOrdeals1F, true, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.Gaia, 0x29, 0x34, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x11, 0x1F, (byte)MapIndex.MirageTower1F, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.Gaia, 0x3D, 0x18, newTeleporterTiles.Last().TileID);
 
 			// Onrac
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x02, 0x01, (byte)MapId.IceCaveB1, true, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.Onrac, 0x01, 0x0C, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x02, 0x01, (byte)MapIndex.IceCaveB1, true, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.Onrac, 0x01, 0x0C, newTeleporterTiles.Last().TileID);
 
 			// Lefein
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, (byte)waterfallLefeinStairs.X, (byte)waterfallLefeinStairs.Y, (byte)MapId.Waterfall, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.Lefein, 0x13, 0x15, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, (byte)waterfallLefeinStairs.X, (byte)waterfallLefeinStairs.Y, (byte)MapIndex.Waterfall, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.Lefein, 0x13, 0x15, newTeleporterTiles.Last().TileID);
 
 			// Coneria Castle
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x10, 0x16, (byte)MapId.Coneria, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.ConeriaCastle1F, 0x0C, 0x22, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x10, 0x16, (byte)MapIndex.ConeriaTown, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.ConeriaCastle1F, 0x0C, 0x22, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x15, 0x19, (byte)MapId.MarshCaveB1, true, (int)TileSets.Castle, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.ConeriaCastle1F, 0x17, 0x1D, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x15, 0x19, (byte)MapIndex.MarshCaveB1, true, (int)TileSets.Castle, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.ConeriaCastle1F, 0x17, 0x1D, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x14, 0x1E, (byte)MapId.TempleOfFiends, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.ConeriaCastle1F, 0x02, 0x1D, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x14, 0x1E, (byte)MapIndex.TempleOfFiends, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.ConeriaCastle1F, 0x02, 0x1D, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, (byte)waterfallStairs.X, (byte)waterfallStairs.Y, (byte)MapId.Waterfall, false, (int)TileSets.Castle, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.ConeriaCastle1F, 0x02, 0x08, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, (byte)waterfallStairs.X, (byte)waterfallStairs.Y, (byte)MapIndex.Waterfall, false, (int)TileSets.Castle, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.ConeriaCastle1F, 0x02, 0x08, newTeleporterTiles.Last().TileID);
 
 			// Elfland Castle
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x28, 0x16, (byte)MapId.Elfland, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.ElflandCastle, 0x10, 0x17, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x28, 0x16, (byte)MapIndex.Elfland, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.ElflandCastle, 0x10, 0x17, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x2B, 0x17, (byte)MapId.MarshCaveB1, true, (int)TileSets.Castle, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.ElflandCastle, 0x14, 0x01, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x2B, 0x17, (byte)MapIndex.MarshCaveB1, true, (int)TileSets.Castle, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.ElflandCastle, 0x14, 0x01, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0A, 0x14, (byte)MapId.NorthwestCastle, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.ElflandCastle, 0x02, 0x02, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0A, 0x14, (byte)MapIndex.NorthwestCastle, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.ElflandCastle, 0x02, 0x02, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x07, 0x01, (byte)MapId.IceCaveB1, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.ElflandCastle, 0x0C, 0x11, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x07, 0x01, (byte)MapIndex.IceCaveB1, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.ElflandCastle, 0x0C, 0x11, newTeleporterTiles.Last().TileID);
 
 			// Northwest Castle
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x2D, 0x30, (byte)MapId.MarshCaveB3, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.NorthwestCastle, 0x16, 0x17, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x2D, 0x30, (byte)MapIndex.MarshCaveB3, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.NorthwestCastle, 0x16, 0x17, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x02, 0x02, (byte)MapId.ElflandCastle, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.NorthwestCastle, 0x0A, 0x14, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x02, 0x02, (byte)MapIndex.ElflandCastle, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.NorthwestCastle, 0x0A, 0x14, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x07, 0x13, (byte)MapId.CastleOfOrdeals1F, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.NorthwestCastle, 0x1C, 0x03, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x07, 0x13, (byte)MapIndex.CastleOrdeals1F, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.NorthwestCastle, 0x1C, 0x03, newTeleporterTiles.Last().TileID);
 
 			// Ordeals
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x29, 0x34, (byte)MapId.Gaia, false, (int)TileSets.Castle, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.CastleOfOrdeals1F, 0x16, 0x02, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x29, 0x34, (byte)MapIndex.Gaia, false, (int)TileSets.Castle, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.CastleOrdeals1F, 0x16, 0x02, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0B, 0x0E, (byte)MapId.TitansTunnel, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.CastleOfOrdeals1F, 0x11, 0x13, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0B, 0x0E, (byte)MapIndex.TitansTunnel, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.CastleOrdeals1F, 0x11, 0x13, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x1C, 0x03, (byte)MapId.NorthwestCastle, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.CastleOfOrdeals1F, 0x07, 0x13, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x1C, 0x03, (byte)MapIndex.NorthwestCastle, false, (int)TileSets.Castle, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.CastleOrdeals1F, 0x07, 0x13, newTeleporterTiles.Last().TileID);
 
 			// Temple of Fiends
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x02, 0x1D, (byte)MapId.ConeriaCastle1F, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.TempleOfFiends, 0x14, 0x1E, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x02, 0x1D, (byte)MapIndex.ConeriaCastle1F, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.TempleOfFiends, 0x14, 0x1E, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x16, 0x0B, (byte)MapId.DwarfCave, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.TempleOfFiends, 0x14, 0x06, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x16, 0x0B, (byte)MapIndex.DwarfCave, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.TempleOfFiends, 0x14, 0x06, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0F, 0x0B, (byte)MapId.MatoyasCave, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.TempleOfFiends, 0x08, 0x1B, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0F, 0x0B, (byte)MapIndex.MatoyasCave, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.TempleOfFiends, 0x08, 0x1B, newTeleporterTiles.Last().TileID);
 
 			// Volcano B1
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x25, 0x00, (byte)MapId.CrescentLake, false, (int)TileSets.EarthTitanVolcano, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.GurguVolcanoB1, 0x1B, 0x0F, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x25, 0x00, (byte)MapIndex.CrescentLake, false, (int)TileSets.EarthTitanVolcano, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.GurguVolcanoB1, 0x1B, 0x0F, newTeleporterTiles.Last().TileID);
 
 			// Ice Cave B1
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0C, 0x11, (byte)MapId.ElflandCastle, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.IceCaveB1, 0x07, 0x01, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0C, 0x11, (byte)MapIndex.ElflandCastle, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.IceCaveB1, 0x07, 0x01, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x01, 0x0C, (byte)MapId.Onrac, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, TeleporterGraphic.Hole, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.IceCaveB1, 0x02, 0x01, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x01, 0x0C, (byte)MapIndex.Onrac, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, TeleporterGraphic.Hole, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.IceCaveB1, 0x02, 0x01, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x34, 0x01, (byte)MapId.IceCaveB2, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, TeleporterGraphic.Hole, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.IceCaveB1, 0x06, 0x1B, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x34, 0x01, (byte)MapIndex.IceCaveB2, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, TeleporterGraphic.Hole, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.IceCaveB1, 0x06, 0x1B, newTeleporterTiles.Last().TileID);
 
 			// Waterfall
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x13, 0x15, (byte)MapId.Lefein, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.Waterfall, waterfallLefeinStairs.X, waterfallLefeinStairs.Y, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x13, 0x15, (byte)MapIndex.Lefein, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.Waterfall, waterfallLefeinStairs.X, waterfallLefeinStairs.Y, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x02, 0x08, (byte)MapId.ConeriaCastle1F, true, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.Waterfall, waterfallStairs.X, waterfallStairs.Y, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x02, 0x08, (byte)MapIndex.ConeriaCastle1F, true, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.Waterfall, waterfallStairs.X, waterfallStairs.Y, newTeleporterTiles.Last().TileID);
 
 			// Dwarf's Cave
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x14, 0x06, (byte)MapId.TempleOfFiends, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.DwarfCave, 0x16, 0x0B, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x14, 0x06, (byte)MapIndex.TempleOfFiends, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.DwarfCave, 0x16, 0x0B, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x12, 0x0D, (byte)MapId.SardasCave, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.DwarfCave, 0x0C, 0x30, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x12, 0x0D, (byte)MapIndex.SardasCave, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.DwarfCave, 0x0C, 0x30, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0B, 0x16, (byte)MapId.CrescentLake, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.DwarfCave, 0x19, 0x36, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0B, 0x16, (byte)MapIndex.CrescentLake, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.DwarfCave, 0x19, 0x36, newTeleporterTiles.Last().TileID);
 
 			// Matoya
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x13, 0x1E, (byte)MapId.Pravoka, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.MatoyasCave, 0x01, 0x0B, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x13, 0x1E, (byte)MapIndex.Pravoka, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.MatoyasCave, 0x01, 0x0B, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x08, 0x1B, (byte)MapId.TempleOfFiends, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.MatoyasCave, 0x0F, 0x0B, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x08, 0x1B, (byte)MapIndex.TempleOfFiends, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.MatoyasCave, 0x0F, 0x0B, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x07, 0x07, (byte)MapId.MarshCaveB2, true, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.MatoyasCave, 0x0E, 0x02, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x07, 0x07, (byte)MapIndex.MarshCaveB2, true, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.MatoyasCave, 0x0E, 0x02, newTeleporterTiles.Last().TileID);
 
 			// Sarda
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0C, 0x30, (byte)MapId.DwarfCave, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.SardasCave, 0x12, 0x0D, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0C, 0x30, (byte)MapIndex.DwarfCave, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.SardasCave, 0x12, 0x0D, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x03, 0x10, (byte)MapId.Melmond, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.SardasCave, 0x15, 0x0D, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x03, 0x10, (byte)MapIndex.Melmond, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.SardasCave, 0x15, 0x0D, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x05, 0x03, (byte)MapId.TitansTunnel, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.SardasCave, 0x02, 0x0A, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x05, 0x03, (byte)MapIndex.TitansTunnel, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.SardasCave, 0x02, 0x0A, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x17, 0x18, (byte)MapId.EarthCaveB1, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.SardasCave, 0x15, 0x02, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x17, 0x18, (byte)MapIndex.EarthCaveB1, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.SardasCave, 0x15, 0x02, newTeleporterTiles.Last().TileID);
 
 			// Marsh Cave B1
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x17, 0x1D, (byte)MapId.ConeriaCastle1F, true, (int)TileSets.MarshMirage, TilePalette.RoomPalette1, TeleporterGraphic.LadderUp, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.MarshCaveB1, 0x15, 0x19, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x17, 0x1D, (byte)MapIndex.ConeriaCastle1F, true, (int)TileSets.MarshMirage, TilePalette.RoomPalette1, TeleporterGraphic.LadderUp, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.MarshCaveB1, 0x15, 0x19, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x14, 0x01, (byte)MapId.ElflandCastle, true, (int)TileSets.MarshMirage, TilePalette.RoomPalette1, TeleporterGraphic.LadderUp, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.MarshCaveB1, 0x2B, 0x17, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x14, 0x01, (byte)MapIndex.ElflandCastle, true, (int)TileSets.MarshMirage, TilePalette.RoomPalette1, TeleporterGraphic.LadderUp, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.MarshCaveB1, 0x2B, 0x17, newTeleporterTiles.Last().TileID);
 
 			// Mirage 1F [0x18, 0x3D]
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x3D, 0x18, (byte)MapId.Gaia, false, (int)TileSets.MarshMirage, TilePalette.OutPalette1, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.MirageTower1F, 0x11, 0x1F, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x3D, 0x18, (byte)MapIndex.Gaia, false, (int)TileSets.MarshMirage, TilePalette.OutPalette1, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.MirageTower1F, 0x11, 0x1F, newTeleporterTiles.Last().TileID);
 
 			// Marsh Cave B2
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0E, 0x02, (byte)MapId.MatoyasCave, true, (int)TileSets.MarshMirage, TilePalette.RoomPalette1, TeleporterGraphic.LadderUp, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.MarshCaveB2, 0x07, 0x07, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0E, 0x02, (byte)MapIndex.MatoyasCave, true, (int)TileSets.MarshMirage, TilePalette.RoomPalette1, TeleporterGraphic.LadderUp, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.MarshCaveB2, 0x07, 0x07, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x01, 0x07, (byte)MapId.MarshCaveB1, false, (int)TileSets.MarshMirage, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.MarshCaveB2, 0x12, 0x10, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x01, 0x07, (byte)MapIndex.MarshCaveB1, false, (int)TileSets.MarshMirage, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.MarshCaveB2, 0x12, 0x10, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x20, 0x34, (byte)MapId.MarshCaveB1, true, (int)TileSets.MarshMirage, TilePalette.RoomPalette1, TeleporterGraphic.LadderUp, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.MarshCaveB2, 0x22, 0x25, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x20, 0x34, (byte)MapIndex.MarshCaveB1, true, (int)TileSets.MarshMirage, TilePalette.RoomPalette1, TeleporterGraphic.LadderUp, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.MarshCaveB2, 0x22, 0x25, newTeleporterTiles.Last().TileID);
 
 			// Marsh Cave B3
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x3A, 0x3A, (byte)MapId.MarshCaveB2, false, (int)TileSets.MarshMirage, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.MarshCaveB3, 0x05, 0x06, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x3A, 0x3A, (byte)MapIndex.MarshCaveB2, false, (int)TileSets.MarshMirage, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.MarshCaveB3, 0x05, 0x06, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x16, 0x17, (byte)MapId.NorthwestCastle, false, (int)TileSets.MarshMirage, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.MarshCaveB3, 0x2D, 0x30, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x16, 0x17, (byte)MapIndex.NorthwestCastle, false, (int)TileSets.MarshMirage, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.MarshCaveB3, 0x2D, 0x30, newTeleporterTiles.Last().TileID);
 
 			// Earth B5
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x13, 0x24, (byte)MapId.Cardia, false, (int)TileSets.EarthTitanVolcano, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps, 0x0F));
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x13, 0x24, (byte)MapIndex.Cardia, false, (int)TileSets.EarthTitanVolcano, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps, 0x0F));
 
 			// Volcano B2
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0C, 0x08, (byte)MapId.GurguVolcanoB1, false, (int)TileSets.EarthTitanVolcano, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.GurguVolcanoB2, 0x1E, 0x20, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0C, 0x08, (byte)MapIndex.GurguVolcanoB1, false, (int)TileSets.EarthTitanVolcano, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.GurguVolcanoB2, 0x1E, 0x20, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x31, 0x06, (byte)MapId.IceCaveB2, true, (int)TileSets.EarthTitanVolcano, TilePalette.RoomPalette1, TeleporterGraphic.LadderUp, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.GurguVolcanoB2, 0x05, 0x02, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x31, 0x06, (byte)MapIndex.IceCaveB2, true, (int)TileSets.EarthTitanVolcano, TilePalette.RoomPalette1, TeleporterGraphic.LadderUp, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.GurguVolcanoB2, 0x05, 0x02, newTeleporterTiles.Last().TileID);
 
 			// Volcano B5
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0C, 0x0F, (byte)MapId.Cardia, false, (int)TileSets.EarthTitanVolcano, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps, 0x1F));
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0C, 0x0F, (byte)MapIndex.Cardia, false, (int)TileSets.EarthTitanVolcano, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps, 0x1F));
 
 			// Ice Cave B2
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x1E, 0x0B, (byte)MapId.IceCaveB1, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.IceCaveB2, 0x1E, 0x02, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x1E, 0x0B, (byte)MapIndex.IceCaveB1, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.IceCaveB2, 0x1E, 0x02, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x05, 0x04, (byte)MapId.IceCaveB3, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.IceCaveB2, 0x37, 0x05, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x05, 0x04, (byte)MapIndex.IceCaveB3, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.IceCaveB2, 0x37, 0x05, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x05, 0x02, (byte)MapId.GurguVolcanoB2, true, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.IceCaveB2, 0x31, 0x06, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x05, 0x02, (byte)MapIndex.GurguVolcanoB2, true, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.IceCaveB2, 0x31, 0x06, newTeleporterTiles.Last().TileID);
 
 			// Ice Cave B3
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x01, 0x1E, (byte)MapId.IceCaveB2, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.IceCaveB3, 0x03, 0x02, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x01, 0x1E, (byte)MapIndex.IceCaveB2, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.IceCaveB3, 0x03, 0x02, newTeleporterTiles.Last().TileID);
 
 			// Mirage 2F
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0E, 0x1F, (byte)MapId.MirageTower1F, false, (int)TileSets.MarshMirage, TilePalette.OutPalette1, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.MirageTower2F, 0x10, 0x1F, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x0E, 0x1F, (byte)MapIndex.MirageTower1F, false, (int)TileSets.MarshMirage, TilePalette.OutPalette1, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.MirageTower2F, 0x10, 0x1F, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x25, 0x20, (byte)MapId.SeaShrineB5, true, (int)TileSets.MarshMirage, TilePalette.RoomPalette1, TeleporterGraphic.LadderUp, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.MirageTower2F, 0x10, 0x09, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x25, 0x20, (byte)MapIndex.SeaShrineB5, true, (int)TileSets.MarshMirage, TilePalette.RoomPalette1, TeleporterGraphic.LadderUp, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.MirageTower2F, 0x10, 0x09, newTeleporterTiles.Last().TileID);
 
 			// Sea Shrine B2
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x31, 0x25, (byte)MapId.SeaShrineB3, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.SeaShrineB2, 0x36, 0x29, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x31, 0x25, (byte)MapIndex.SeaShrineB3, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.SeaShrineB2, 0x36, 0x29, newTeleporterTiles.Last().TileID);
 
 			// Sea Shrine B3
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x3D, 0x31, (byte)MapId.SeaShrineB2, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.SeaShrineB3, 0x30, 0x0A, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x3D, 0x31, (byte)MapIndex.SeaShrineB2, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.SeaShrineB3, 0x30, 0x0A, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x3F, 0x06, (byte)MapId.SeaShrineB4, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.SeaShrineB3, 0x2F, 0x27, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x3F, 0x06, (byte)MapIndex.SeaShrineB4, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.SeaShrineB3, 0x2F, 0x27, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x2E, 0x1E, (byte)MapId.Onrac, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Well, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps, 0x41));
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x2E, 0x1E, (byte)MapIndex.Onrac, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Well, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps, 0x41));
 
 			// Sea Shrine B4
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x2F, 0x1D, (byte)MapId.SeaShrineB3, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.SeaShrineB4, 0x2D, 0x14, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x2F, 0x1D, (byte)MapIndex.SeaShrineB3, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.SeaShrineB4, 0x2D, 0x14, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x02, 0x02, (byte)MapId.SeaShrineB3, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.SeaShrineB4, 0x3D, 0x31, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x02, 0x02, (byte)MapIndex.SeaShrineB3, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.SeaShrineB4, 0x3D, 0x31, newTeleporterTiles.Last().TileID);
 
 			// Sea Shrine B5
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x10, 0x09, (byte)MapId.MirageTower2F, true, (int)TileSets.ToFSeaShrine, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.SeaShrineB5, 0x25, 0x20, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x10, 0x09, (byte)MapIndex.MirageTower2F, true, (int)TileSets.ToFSeaShrine, TilePalette.RoomPalette1, TeleporterGraphic.LadderDown, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.SeaShrineB5, 0x25, 0x20, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x12, 0x03, (byte)MapId.SeaShrineB4, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.SeaShrineB5, 0x32, 0x30, newTeleporterTiles.Last().TileID);
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x12, 0x03, (byte)MapIndex.SeaShrineB4, false, (int)TileSets.ToFSeaShrine, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
+			UpdateMapTile(MapIndex.SeaShrineB5, 0x32, 0x30, newTeleporterTiles.Last().TileID);
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x1E, 0x12, (byte)MapId.Cardia, false, (int)TileSets.ToFSeaShrine, TilePalette.RoomPalette1, TeleporterGraphic.Teleporter, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps, 0x0F));
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x1E, 0x12, (byte)MapIndex.Cardia, false, (int)TileSets.ToFSeaShrine, TilePalette.RoomPalette1, TeleporterGraphic.Teleporter, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps, 0x0F));
 
 			// Titan
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x11, 0x13, (byte)MapId.CastleOfOrdeals1F, false, (int)TileSets.EarthTitanVolcano, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps, 0x15));
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x11, 0x13, (byte)MapIndex.CastleOrdeals1F, false, (int)TileSets.EarthTitanVolcano, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps, 0x15));
 
-			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x02, 0x0A, (byte)MapId.SardasCave, false, (int)TileSets.EarthTitanVolcano, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps, 0x16));
+			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, 0x02, 0x0A, (byte)MapIndex.SardasCave, false, (int)TileSets.EarthTitanVolcano, TilePalette.OutPalette1, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps, 0x16));
 
 			// Random Cardia
 			List<TeleporterSM> cardiaTeleporters = new();
 			List<(byte, byte, byte)> cardiaCoordList = new() {
-				(0x3A, 0x37, (byte)MapId.Cardia),
-				(0x2B, 0x1D, (byte)MapId.Cardia),
-				(0x02, 0x02, (byte)MapId.BahamutsRoomB1),
+				(0x3A, 0x37, (byte)MapIndex.Cardia),
+				(0x2B, 0x1D, (byte)MapIndex.Cardia),
+				(0x02, 0x02, (byte)MapIndex.BahamutCaveB1),
 			};
 
 			cardiaCoordList.Shuffle(rng);
 
 			var waterfallCardiaStairs = waterfallValidTiles.SpliceRandom(rng);
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, cardiaCoordList[0].Item1, cardiaCoordList[0].Item2, cardiaCoordList[0].Item3, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.Waterfall, waterfallCardiaStairs.X, waterfallCardiaStairs.Y, newTeleporterTiles.Last().TileID);
+			UpdateMapTile(MapIndex.Waterfall, waterfallCardiaStairs.X, waterfallCardiaStairs.Y, newTeleporterTiles.Last().TileID);
 
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, cardiaCoordList[1].Item1, cardiaCoordList[1].Item2, cardiaCoordList[1].Item3, false, (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleporterGraphic.Upstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.IceCaveB1, 0x19, 0x12, newTeleporterTiles.Last().TileID);
+			UpdateMapTile(MapIndex.IceCaveB1, 0x19, 0x12, newTeleporterTiles.Last().TileID);
 
 			newTeleporterTiles.Add(new TeleporterTileSM(teleportIDtracker++, cardiaCoordList[2].Item1, cardiaCoordList[2].Item2, cardiaCoordList[2].Item3, false, (int)TileSets.Town, TilePalette.OutPalette2, TeleporterGraphic.Downstairs, (byte)TilePropFunc.TP_TELE_NORM, availableTiles, flippedmaps));
-			UpdateMapTile(MapId.Gaia, 0x3D, 0x3E, newTeleporterTiles.Last().TileID);
+			UpdateMapTile(MapIndex.Gaia, 0x3D, 0x3E, newTeleporterTiles.Last().TileID);
 
 			foreach (var teleport in newTeleporterTiles)
 			{
-				teleport.Write(this);
+				teleport.Write(tileSets, teleporters);
 			}
 
 			// Caravan Door
-			TileSM CaravanDoor = new TileSM(availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].First(), (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleportTilesGraphics[TeleporterGraphic.Door][(int)TileSets.MatoyaDwarfCardiaIceWaterfall], (byte)(TilePropFunc.TP_SPEC_DOOR), 0x46);
-			UpdateMapTile(MapId.Cardia, 0x28, 0x1C, CaravanDoor.ID);
+			TileSM CaravanDoor = new TileSM(availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].First(), (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.OutPalette2, TeleportTilesGraphics[TeleporterGraphic.Door][(int)TileSets.MatoyaDwarfCardiaIceWaterfall], (byte)(TilePropFunc.TP_NOMOVE | TilePropFunc.TP_SPEC_DOOR), 0x46);
+			UpdateMapTile(MapIndex.Cardia, 0x28, 0x1C, CaravanDoor.Index);
 			availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].RemoveRange(0, 1);
 
-			CaravanDoor.Write(this);
+			tileSets[CaravanDoor.TileSet].Tiles[CaravanDoor.Index] = CaravanDoor;
 
 			// ToFR Chest in Sky and Sea as a reward 
 			List<byte> ToFRchestsList = new() { 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE };
 			TileSM ExtraChest = new TileSM(availableTiles[(byte)TileSets.SkyCastle].First(), (int)TileSets.SkyCastle, TilePalette.RoomPalette1, new List<byte> { 0x2A, 0x2B, 0x3A, 0x3B }, (byte)(TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE), ToFRchestsList.SpliceRandom(rng));
-			UpdateMapTile(MapId.SkyPalace5F, 0x07, 0x01, ExtraChest.ID);
+			UpdateMapTile(MapIndex.SkyPalace5F, 0x07, 0x01, ExtraChest.Index);
 			availableTiles[(byte)TileSets.SkyCastle].RemoveRange(0, 1);
 
 			TileSM ExtraChest2 = new TileSM(availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].First(), (int)TileSets.MatoyaDwarfCardiaIceWaterfall, TilePalette.RoomPalette1, new List<byte> { 0x2A, 0x2B, 0x3A, 0x3B }, (byte)(TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE), ToFRchestsList.SpliceRandom(rng));
-			UpdateMapTile(MapId.Cardia, 0x2C, 0x08, ExtraChest2.ID);
+			UpdateMapTile(MapIndex.Cardia, 0x2C, 0x08, ExtraChest2.Index);
 			availableTiles[(byte)TileSets.MatoyaDwarfCardiaIceWaterfall].RemoveRange(0, 1);
 
+			tileSets[ExtraChest.TileSet].Tiles[ExtraChest.Index] = ExtraChest;
+			tileSets[ExtraChest2.TileSet].Tiles[ExtraChest2.Index] = ExtraChest2;
+			/*
 			ExtraChest.Write(this);
-			ExtraChest2.Write(this);
+			ExtraChest2.Write(this);*/
 
 			// Reset spawning position for Coneria Castle and towns
-			Data[0x02C01 + (int)MapId.ConeriaCastle1F] = 0x0C;
-			Data[0x02C21 + (int)MapId.ConeriaCastle1F] = 0x1E;
-
-			Data[0x02C01 + (int)MapId.Coneria] = 0x0B;
-			Data[0x02C21 + (int)MapId.Coneria] = 0x13;
-
-			Data[0x02C01 + (int)MapId.Pravoka] = 0x13;
-			Data[0x02C21 + (int)MapId.Pravoka] = 0x05;
-
-			Data[0x02C01 + (int)MapId.Elfland] = 0x24;
-			Data[0x02C21 + (int)MapId.Elfland] = 0x15;
-
-			Data[0x02C01 + (int)MapId.Melmond] = 0x09;
-			Data[0x02C21 + (int)MapId.Melmond] = 0x0E;
-
-			Data[0x02C01 + (int)MapId.CrescentLake] = 0x0B;
-			Data[0x02C21 + (int)MapId.CrescentLake] = 0x14;
-
-			Data[0x02C01 + (int)MapId.Gaia] = 0x21;
-			Data[0x02C21 + (int)MapId.Gaia] = 0x35;
-
-			Data[0x02C01 + (int)MapId.Onrac] = 0x06;
-			Data[0x02C21 + (int)MapId.Onrac] = 0x15;
-
-			Data[0x02C01 + (int)MapId.Lefein] = 0x11;
-			Data[0x02C21 + (int)MapId.Lefein] = 0x07;
-
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.ConeriaCastle1] = new TeleportDestination(MapIndex.ConeriaCastle1F, new Coordinate(0x0C, 0x01E, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.Coneria] = new TeleportDestination(MapIndex.ConeriaTown, new Coordinate(0x0B, 0x013, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.Pravoka] = new TeleportDestination(MapIndex.Pravoka, new Coordinate(0x13, 0x05, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.Elfland] = new TeleportDestination(MapIndex.Elfland, new Coordinate(0x24, 0x15, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.Melmond] = new TeleportDestination(MapIndex.Melmond, new Coordinate(0x09, 0x0E, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.CrescentLake] = new TeleportDestination(MapIndex.CrescentLake, new Coordinate(0x0B, 0x14, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.Gaia] = new TeleportDestination(MapIndex.Gaia, new Coordinate(0x21, 0x35, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.Onrac] = new TeleportDestination(MapIndex.Onrac, new Coordinate(0x06, 0x15, CoordinateLocale.Standard));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.Lefein] = new TeleportDestination(MapIndex.Lefein, new Coordinate(0x11, 0x07, CoordinateLocale.Standard));
 		}
 
-		public void PrepNPCs(TalkRoutines talkroutines, NPCdata npcdata, List<MapId> flippedmaps, Flags flags, MT19337 rng)
+		public void PrepNPCs(StandardMaps maps, TalkRoutines talkroutines, DialogueData dialogues, NpcObjectData npcdata, List<MapIndex> flippedmaps, Flags flags, MT19337 rng)
 		{
 			// Orbs
-			SetNpc(MapId.ConeriaCastle1F, 0x02, ObjectId.ConeriaCastle1FWoman1, 0x02, 0x08, true, true); // Dialog+Routine
-			Data[MapObjGfxOffset + (byte)ObjectId.ConeriaCastle1FWoman1] = 0x04;
-			npcdata.SetRoutine(ObjectId.ConeriaCastle1FWoman1, newTalkRoutines.NoOW_Floater);
-			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FWoman1)[(int)TalkArrayPos.dialogue_2] = 0x37;
-			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FWoman1)[(int)TalkArrayPos.dialogue_3] = 0x36;
+			maps[MapIndex.ConeriaCastle1F].MapObjects.SetNpc(0x02, ObjectId.ConeriaCastle1FWoman1, 0x02, 0x08, true, true); // Dialog+Routine
+			npcdata[ObjectId.ConeriaCastle1FWoman1].Sprite = ObjectSprites.Orb;
+			npcdata[ObjectId.ConeriaCastle1FWoman1].Script = TalkScripts.NoOW_Floater;
+			npcdata[ObjectId.ConeriaCastle1FWoman1].Dialogue2 = 0x37;
+			npcdata[ObjectId.ConeriaCastle1FWoman1].Dialogue3 = 0x36;
 
-			SetNpc(MapId.CastleOfOrdeals1F, 0x01, ObjectId.LefeinMan10, 0x16, 0x02, true, true); //Dialog+Routine
-			SetNpc(MapId.Lefein, 0x0A, 0x00, 0x16, 0x02, true, true);
-			Data[MapObjGfxOffset + (byte)ObjectId.LefeinMan10] = 0x04;
-			npcdata.SetRoutine(ObjectId.LefeinMan10, newTalkRoutines.NoOW_Floater);
-			npcdata.GetTalkArray(ObjectId.LefeinMan10)[(int)TalkArrayPos.dialogue_2] = 0x37;
-			npcdata.GetTalkArray(ObjectId.LefeinMan10)[(int)TalkArrayPos.dialogue_3] = 0x36;
+			maps[MapIndex.CastleOrdeals1F].MapObjects.SetNpc(0x01, ObjectId.LefeinMan10, 0x16, 0x02, true, true); //Dialog+Routine
+			maps[MapIndex.Lefein].MapObjects.SetNpc(0x0A, 0x00, 0x16, 0x02, true, true);
+			npcdata[ObjectId.LefeinMan10].Sprite = ObjectSprites.Orb;
+			npcdata[ObjectId.LefeinMan10].Script = TalkScripts.NoOW_Floater;
+			npcdata[ObjectId.LefeinMan10].Dialogue2 = 0x37;
+			npcdata[ObjectId.LefeinMan10].Dialogue3 = 0x36;
 
-			SetNpc(MapId.IceCaveB1, 0x01, ObjectId.LefeinMan6, flippedmaps.Contains(MapId.IceCaveB1) ? 0x3F - 0x02 : 0x02, 0x01, true, true); //Dialog+Routine
-			SetNpc(MapId.Lefein, 0x06, 0x00, 0x16, 0x02, true, true);
-			Data[MapObjGfxOffset + (byte)ObjectId.LefeinMan6] = 0x04;
-			npcdata.SetRoutine(ObjectId.LefeinMan6, newTalkRoutines.NoOW_Floater);
-			npcdata.GetTalkArray(ObjectId.LefeinMan6)[(int)TalkArrayPos.dialogue_2] = 0x37;
-			npcdata.GetTalkArray(ObjectId.LefeinMan6)[(int)TalkArrayPos.dialogue_3] = 0x36;
+			maps[MapIndex.IceCaveB1].MapObjects.SetNpc(0x01, ObjectId.LefeinMan6, flippedmaps.Contains(MapIndex.IceCaveB1) ? 0x3F - 0x02 : 0x02, 0x01, true, true); //Dialog+Routine
+			maps[MapIndex.Lefein].MapObjects.SetNpc(0x06, 0x00, 0x16, 0x02, true, true);
+			npcdata[ObjectId.LefeinMan6].Sprite = ObjectSprites.Orb;
+			npcdata[ObjectId.LefeinMan6].Script = TalkScripts.NoOW_Floater;
+			npcdata[ObjectId.LefeinMan6].Dialogue2 = 0x37;
+			npcdata[ObjectId.LefeinMan6].Dialogue3 = 0x36;
 
 			// Canoe people
-			SetNpc(MapId.CrescentLake, 0x0D, ObjectId.CrescentWoman, 0x25, 0x02, false, true); // Dialog+Routine
-			npcdata.SetRoutine(ObjectId.CrescentWoman, newTalkRoutines.NoOW_Canoe);
-			npcdata.GetTalkArray(ObjectId.CrescentWoman)[(int)TalkArrayPos.dialogue_2] = 0x5C;
-			npcdata.GetTalkArray(ObjectId.CrescentWoman)[(int)TalkArrayPos.dialogue_3] = 0xC2;
+			maps[MapIndex.CrescentLake].MapObjects.SetNpc(0x0D, ObjectId.CrescentWoman, 0x25, 0x02, false, true); // Dialog+Routine
+			npcdata[ObjectId.CrescentWoman].Script = TalkScripts.NoOW_Canoe;
+			npcdata[ObjectId.CrescentWoman].Dialogue2 = 0x5C;
+			npcdata[ObjectId.CrescentWoman].Dialogue3 = 0xC2;
 
-			SetNpc(MapId.ElflandCastle, 0x03, ObjectId.ElflandCastleElf2, 0x0E, 0x11, false, true); // Dialog+Routine
-			npcdata.SetRoutine(ObjectId.ElflandCastleElf2, newTalkRoutines.NoOW_Canoe);
-			npcdata.GetTalkArray(ObjectId.ElflandCastleElf2)[(int)TalkArrayPos.dialogue_2] = 0x5C;
-			npcdata.GetTalkArray(ObjectId.ElflandCastleElf2)[(int)TalkArrayPos.dialogue_3] = 0xC2;
+			maps[MapIndex.ElflandCastle].MapObjects.SetNpc(0x03, ObjectId.ElflandCastleElf2, 0x0E, 0x11, false, true); // Dialog+Routine
+			npcdata[ObjectId.ElflandCastleElf2].Script = TalkScripts.NoOW_Canoe;
+			npcdata[ObjectId.ElflandCastleElf2].Dialogue2 = 0x5C;
+			npcdata[ObjectId.ElflandCastleElf2].Dialogue3 = 0xC2;
 
-			SetNpc(MapId.CastleOfOrdeals1F, 0x00, ObjectId.CastleOrdealsOldMan, 0x02, 0x02, true, true); //Dialog+Routine.
-			npcdata.SetRoutine(ObjectId.CastleOrdealsOldMan, newTalkRoutines.NoOW_Canoe);
-			npcdata.GetTalkArray(ObjectId.CastleOrdealsOldMan)[(int)TalkArrayPos.dialogue_2] = 0x5C;
-			if ((bool)flags.EarlyOrdeals)
-			{
-				npcdata.GetTalkArray(ObjectId.CastleOrdealsOldMan)[(int)TalkArrayPos.dialogue_3] = 0xC2;
-			}
-			else
-			{
-				npcdata.GetTalkArray(ObjectId.CastleOrdealsOldMan)[(int)TalkArrayPos.dialogue_3] = 0x2D;
-			}
+			maps[MapIndex.CastleOrdeals1F].MapObjects.SetNpc(0x00, ObjectId.CastleOrdealsOldMan, 0x02, 0x02, true, true); //Dialog+Routine.
+			npcdata[ObjectId.CastleOrdealsOldMan].Script = TalkScripts.NoOW_Canoe;
+			npcdata[ObjectId.CastleOrdealsOldMan].Dialogue2 = 0x5C;
+			npcdata[ObjectId.CastleOrdealsOldMan].Dialogue3 = (bool)flags.EarlyOrdeals ? (byte)0xC2 : (byte)0x2D;
 
 			// Coneria Castle
-			SetNpc(MapId.ConeriaCastle1F, 0x04, ObjectId.ConeriaCastle1FGuard2, 0x15, 0x1F, false, true); // Dialog+Routine
-			npcdata.SetRoutine(ObjectId.ConeriaCastle1FGuard2, newTalkRoutines.Talk_norm);
-			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FGuard2)[(int)TalkArrayPos.dialogue_2] = 0x35;
+			maps[MapIndex.ConeriaCastle1F].MapObjects.SetNpc(0x04, ObjectId.ConeriaCastle1FGuard2, 0x15, 0x1F, false, true); // Dialog+Routine
+			npcdata[ObjectId.ConeriaCastle1FGuard2].Script = TalkScripts.Talk_norm;
+			npcdata[ObjectId.ConeriaCastle1FGuard2].Dialogue2 = 0x35;
 
-			SetNpc(MapId.Cardia, 0x09, ObjectId.ConeriaCastle1FScholar, 0x26, 0x1B, true, true); // No check
-			npcdata.SetRoutine(ObjectId.ConeriaCastle1FScholar, newTalkRoutines.Talk_norm);
-			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FScholar)[(int)TalkArrayPos.dialogue_2] = 0xA1;
+			maps[MapIndex.Cardia].MapObjects.SetNpc(0x09, ObjectId.ConeriaCastle1FScholar, 0x26, 0x1B, true, true); // No check
+			npcdata[ObjectId.ConeriaCastle1FScholar].Script = TalkScripts.Talk_norm;
+			npcdata[ObjectId.ConeriaCastle1FScholar].Dialogue2 = 0xA1;
 
 			// Chime bot
-			SetNpc(MapId.Gaia, 0x03, ObjectId.GaiaScholar2, 0x35, 0x1A, false, true); //Dialog+Routine
-			Data[MapObjGfxOffset + (byte)ObjectId.GaiaScholar2] = 0x15;
-			npcdata.SetRoutine(ObjectId.GaiaScholar2, newTalkRoutines.NoOW_Chime);
-			npcdata.GetTalkArray(ObjectId.GaiaScholar2)[(int)TalkArrayPos.dialogue_2] = 0xD5;
-			npcdata.GetTalkArray(ObjectId.GaiaScholar2)[(int)TalkArrayPos.dialogue_3] = 0xD9;
+			maps[MapIndex.Gaia].MapObjects.SetNpc(0x03, ObjectId.GaiaScholar2, 0x35, 0x1A, false, true); //Dialog+Routine
+			npcdata[ObjectId.GaiaScholar2].Sprite = ObjectSprites.Robot;
+			npcdata[ObjectId.GaiaScholar2].Script = TalkScripts.NoOW_Chime;
+			npcdata[ObjectId.GaiaScholar2].Dialogue2 = 0xD5;
+			npcdata[ObjectId.GaiaScholar2].Dialogue3 = 0xD9;
 
 			// Nerrick
+			//npcdata[ObjectId.Nerrick].Script = TalkScripts.NoOW_Nerrick;
 			//npcdata.SetRoutine(ObjectId.Nerrick, newTalkRoutines.NoOW_Nerrick);
 
 			// Switch Key dialogue
-			npcdata.GetTalkArray(ObjectId.ConeriaCastle1FOldMan2)[(int)TalkArrayPos.dialogue_2] = 0x40;
+			npcdata[ObjectId.ConeriaCastle1FOldMan2].Dialogue2 = 0x40;
 
-			MoveNpc(MapId.DwarfCave, 0x00, 0x0F, 0x2F, false, true);
-			MoveNpc(MapId.NorthwestCastle, 0x02, 0x1C, 0x01, false, false);
-			MoveNpc(MapId.Onrac, 0x09, 0x11, 0x23, false, false);
+			maps[MapIndex.DwarfCave].MapObjects.MoveNpc(0x00, 0x0F, 0x2F, false, true);
+			maps[MapIndex.NorthwestCastle].MapObjects.MoveNpc(0x02, 0x1C, 0x01, false, false);
+			maps[MapIndex.Onrac].MapObjects.MoveNpc(0x09, 0x11, 0x23, false, false);
 
 			ItemsText[(int)Item.Floater] = "SIGIL  ";
 			ItemsText[(int)Item.EarthOrb] = "MARK   ";
@@ -890,10 +872,10 @@
 				newDialogues.Add(0x2B, "Great job vanquishing\nthe Earth FIEND. Now,\nthe Fire FIEND wakes.\nWith my blessing; go to\nthe VOLCANO, and defeat\nthat FIEND also!");
 			}
 
-			InsertDialogs(newDialogues);
+			dialogues.InsertDialogues(newDialogues);
 
 			// Palettes changes
-			PutInBank(0x00, 0xA000 + ((byte)MapId.IceCaveB1 * 0x30) + 0x18, Blob.FromHex("0031000100003101"));
+			PutInBank(0x00, 0xA000 + ((byte)MapIndex.IceCaveB1 * 0x30) + 0x18, Blob.FromHex("0031000100003101"));
 		}
 
 		public void UpdateBackgrounds()
@@ -901,69 +883,69 @@
 			var lut_BtlBackdrops = 0xB300;
 			var lut_BtlBackdrops_Bank = 0x00;
 
-			List<(MapId, Backdrop)> backgroundList = new()
+			List<(MapIndex, Backdrop)> backgroundList = new()
 			{
-				(MapId.Coneria, Backdrop.Grass),
-				(MapId.Pravoka, Backdrop.Water),
-				(MapId.Elfland, Backdrop.Grass),
-				(MapId.Melmond, Backdrop.Grass),
-				(MapId.CrescentLake, Backdrop.Grass),
-				(MapId.Gaia, Backdrop.Grass),
-				(MapId.Onrac, Backdrop.Forest),
-				(MapId.Lefein, Backdrop.Forest),
-				(MapId.ConeriaCastle1F, Backdrop.Castle),
-				(MapId.ElflandCastle, Backdrop.Castle),
-				(MapId.NorthwestCastle, Backdrop.Castle),
-				(MapId.CastleOfOrdeals1F, Backdrop.Castle),
-				(MapId.TempleOfFiends, Backdrop.TempleOfFiends),
-				(MapId.EarthCaveB1, Backdrop.EarthCave),
-				(MapId.GurguVolcanoB1, Backdrop.Volcano),
-				(MapId.IceCaveB1, Backdrop.IceCave),
-				(MapId.Cardia, Backdrop.Cave),
-				(MapId.BahamutsRoomB1, Backdrop.Cave),
-				(MapId.Waterfall, Backdrop.Waterfall),
-				(MapId.DwarfCave, Backdrop.MarshCave),
-				(MapId.MatoyasCave, Backdrop.Cave),
-				(MapId.SardasCave, Backdrop.Cave),
-				(MapId.MarshCaveB1, Backdrop.MarshCave),
-				(MapId.MirageTower1F, Backdrop.Tower),
-				(MapId.ConeriaCastle2F, Backdrop.Castle),
-				(MapId.CastleOfOrdeals2F, Backdrop.Castle),
-				(MapId.CastleOfOrdeals3F, Backdrop.Castle),
-				(MapId.MarshCaveB2, Backdrop.MarshCave),
-				(MapId.MarshCaveB3, Backdrop.MarshCave),
-				(MapId.EarthCaveB2, Backdrop.EarthCave),
-				(MapId.EarthCaveB3, Backdrop.EarthCave),
-				(MapId.EarthCaveB4, Backdrop.EarthCave),
-				(MapId.EarthCaveB5, Backdrop.EarthCave),
-				(MapId.GurguVolcanoB2, Backdrop.Volcano),
-				(MapId.GurguVolcanoB3, Backdrop.Volcano),
-				(MapId.GurguVolcanoB4, Backdrop.Volcano),
-				(MapId.GurguVolcanoB5, Backdrop.Volcano),
-				(MapId.IceCaveB2, Backdrop.IceCave),
-				(MapId.IceCaveB3, Backdrop.IceCave),
-				(MapId.BahamutsRoomB2, Backdrop.Cave),
-				(MapId.MirageTower2F, Backdrop.Tower),
-				(MapId.MirageTower3F, Backdrop.Tower),
-				(MapId.SeaShrineB5, Backdrop.SeaShrine),
-				(MapId.SeaShrineB4, Backdrop.SeaShrine),
-				(MapId.SeaShrineB3, Backdrop.SeaShrine),
-				(MapId.SeaShrineB2, Backdrop.SeaShrine),
-				(MapId.SeaShrineB1, Backdrop.SeaShrine),
-				(MapId.SkyPalace1F, Backdrop.Tower),
-				(MapId.SkyPalace2F, Backdrop.Tower),
-				(MapId.SkyPalace3F, Backdrop.Tower),
-				(MapId.SkyPalace4F, Backdrop.Tower),
-				(MapId.SkyPalace5F, Backdrop.Tower),
-				(MapId.TempleOfFiendsRevisited1F, Backdrop.TempleOfFiends),
-				(MapId.TempleOfFiendsRevisited2F, Backdrop.TempleOfFiends),
-				(MapId.TempleOfFiendsRevisited3F, Backdrop.TempleOfFiends),
-				(MapId.TempleOfFiendsRevisitedEarth, Backdrop.TempleOfFiends),
-				(MapId.TempleOfFiendsRevisitedFire, Backdrop.TempleOfFiends),
-				(MapId.TempleOfFiendsRevisitedWater, Backdrop.TempleOfFiends),
-				(MapId.TempleOfFiendsRevisitedAir, Backdrop.TempleOfFiends),
-				(MapId.TempleOfFiendsRevisitedChaos, Backdrop.TempleOfFiends),
-				(MapId.TitansTunnel, Backdrop.Cave),
+				(MapIndex.ConeriaTown, Backdrop.Grass),
+				(MapIndex.Pravoka, Backdrop.Water),
+				(MapIndex.Elfland, Backdrop.Grass),
+				(MapIndex.Melmond, Backdrop.Grass),
+				(MapIndex.CrescentLake, Backdrop.Grass),
+				(MapIndex.Gaia, Backdrop.Grass),
+				(MapIndex.Onrac, Backdrop.Forest),
+				(MapIndex.Lefein, Backdrop.Forest),
+				(MapIndex.ConeriaCastle1F, Backdrop.Castle),
+				(MapIndex.ElflandCastle, Backdrop.Castle),
+				(MapIndex.NorthwestCastle, Backdrop.Castle),
+				(MapIndex.CastleOrdeals1F, Backdrop.Castle),
+				(MapIndex.TempleOfFiends, Backdrop.TempleOfFiends),
+				(MapIndex.EarthCaveB1, Backdrop.EarthCave),
+				(MapIndex.GurguVolcanoB1, Backdrop.Volcano),
+				(MapIndex.IceCaveB1, Backdrop.IceCave),
+				(MapIndex.Cardia, Backdrop.Cave),
+				(MapIndex.BahamutCaveB1, Backdrop.Cave),
+				(MapIndex.Waterfall, Backdrop.Waterfall),
+				(MapIndex.DwarfCave, Backdrop.MarshCave),
+				(MapIndex.MatoyasCave, Backdrop.Cave),
+				(MapIndex.SardasCave, Backdrop.Cave),
+				(MapIndex.MarshCaveB1, Backdrop.MarshCave),
+				(MapIndex.MirageTower1F, Backdrop.Tower),
+				(MapIndex.ConeriaCastle2F, Backdrop.Castle),
+				(MapIndex.CastleOrdeals2F, Backdrop.Castle),
+				(MapIndex.CastleOrdeals3F, Backdrop.Castle),
+				(MapIndex.MarshCaveB2, Backdrop.MarshCave),
+				(MapIndex.MarshCaveB3, Backdrop.MarshCave),
+				(MapIndex.EarthCaveB2, Backdrop.EarthCave),
+				(MapIndex.EarthCaveB3, Backdrop.EarthCave),
+				(MapIndex.EarthCaveB4, Backdrop.EarthCave),
+				(MapIndex.EarthCaveB5, Backdrop.EarthCave),
+				(MapIndex.GurguVolcanoB2, Backdrop.Volcano),
+				(MapIndex.GurguVolcanoB3, Backdrop.Volcano),
+				(MapIndex.GurguVolcanoB4, Backdrop.Volcano),
+				(MapIndex.GurguVolcanoB5, Backdrop.Volcano),
+				(MapIndex.IceCaveB2, Backdrop.IceCave),
+				(MapIndex.IceCaveB3, Backdrop.IceCave),
+				(MapIndex.BahamutCaveB2, Backdrop.Cave),
+				(MapIndex.MirageTower2F, Backdrop.Tower),
+				(MapIndex.MirageTower3F, Backdrop.Tower),
+				(MapIndex.SeaShrineB5, Backdrop.SeaShrine),
+				(MapIndex.SeaShrineB4, Backdrop.SeaShrine),
+				(MapIndex.SeaShrineB3, Backdrop.SeaShrine),
+				(MapIndex.SeaShrineB2, Backdrop.SeaShrine),
+				(MapIndex.SeaShrineB1, Backdrop.SeaShrine),
+				(MapIndex.SkyPalace1F, Backdrop.Tower),
+				(MapIndex.SkyPalace2F, Backdrop.Tower),
+				(MapIndex.SkyPalace3F, Backdrop.Tower),
+				(MapIndex.SkyPalace4F, Backdrop.Tower),
+				(MapIndex.SkyPalace5F, Backdrop.Tower),
+				(MapIndex.TempleOfFiendsRevisited1F, Backdrop.TempleOfFiends),
+				(MapIndex.TempleOfFiendsRevisited2F, Backdrop.TempleOfFiends),
+				(MapIndex.TempleOfFiendsRevisited3F, Backdrop.TempleOfFiends),
+				(MapIndex.TempleOfFiendsRevisitedEarth, Backdrop.TempleOfFiends),
+				(MapIndex.TempleOfFiendsRevisitedFire, Backdrop.TempleOfFiends),
+				(MapIndex.TempleOfFiendsRevisitedWater, Backdrop.TempleOfFiends),
+				(MapIndex.TempleOfFiendsRevisitedAir, Backdrop.TempleOfFiends),
+				(MapIndex.TempleOfFiendsRevisitedChaos, Backdrop.TempleOfFiends),
+				(MapIndex.TitansTunnel, Backdrop.Cave),
 			};
 
 			PutInBank(0x1F, 0xEA2D, Blob.FromHex("A648")); // Use current map as ID for loading background, instead of ow tile
@@ -971,11 +953,11 @@
 			PutInBank(lut_BtlBackdrops_Bank, lut_BtlBackdrops, backgroundList.Select(x => (byte)x.Item2).ToArray());
 		}
 
-		public void ShuffleFloor(List<Map> maps, Flags flags, OverworldMap overworldmap, NPCdata npcdata, List<MapId> flippedmaps, MT19337 rng)
+		public void ShuffleFloor(StandardMaps maps, Teleporters teleportersdata, TileSetsData tileSets, Flags flags, NpcObjectData npcdata, List<MapIndex> flippedmaps, MT19337 rng)
 		{
-			int FlippedX(MapId map, int pos) => flippedmaps.Contains(map) ? 0x3F - pos : pos;
-
-			var Tilesets = new List<List<TileSM>>();
+			int FlippedX(MapIndex map, int pos) => flippedmaps.Contains(map) ? 0x3F - pos : pos;
+			
+			/*var Tilesets = new List<List<TileSM>>();
 
 			for (int i = 0; i < 8; i++)
 			{
@@ -985,151 +967,151 @@
 				{
 					Tilesets.Last().Add(new TileSM((byte)j, i, this));
 				}
-			}
+			}*/
 
-			List<TeleporterSM> teleporters = new();
-
+			List<TeleporterSM> teleporters = teleportersdata.StandardMapTeleporters.Select(t => new TeleporterSM((int)t.Key, t.Value)).ToList();
+			/*
 			for (int i = 0; i < 256; i++)
 			{
 				teleporters.Add(new TeleporterSM(this, i));
-			}
+			}*/
 
 			// All valid locations that can be shuffled, with coordinates; exclude ToFR so it isn't shuffled
 			List<MapArea> maparea = new()
 			{
-				new MapArea { location = MapLocation.Coneria, map = MapId.Coneria, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.Pravoka, map = MapId.Pravoka, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.Elfland, map = MapId.Elfland, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.Melmond, map = MapId.Melmond, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.CrescentLake, map = MapId.CrescentLake, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.Gaia, map = MapId.Gaia, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.Onrac, map = MapId.Onrac, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.Lefein, map = MapId.Lefein, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.ConeriaCastle1, map = MapId.ConeriaCastle1F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.ElflandCastle, map = MapId.ElflandCastle, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.NorthwestCastle, map = MapId.NorthwestCastle, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.CastleOrdeals1, map = MapId.CastleOfOrdeals1F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.TempleOfFiends1, map = MapId.TempleOfFiends, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.EarthCave1, map = MapId.EarthCaveB1, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.GurguVolcano1, map = MapId.GurguVolcanoB1, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.IceCave1, map = MapId.IceCaveB1, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 15), lr_corner = (64, 15) },
-				new MapArea { location = MapLocation.IceCaveBackExit, map = MapId.IceCaveB1, ul_corner = (0, 16), ur_corner = (26, 16), ll_corner = (0, 64), lr_corner = (26, 64) },
-				new MapArea { location = MapLocation.Cardia1, map = MapId.Cardia, ul_corner = (26, 5), ur_corner = (46, 5), ll_corner = (26, 23), lr_corner = (46, 23) }, // Empty reverse horshoe
-				new MapArea { location = MapLocation.Cardia2, map = MapId.Cardia, ul_corner = (5, 5), ur_corner = (20, 5), ll_corner = (5, 26), lr_corner = (20, 26) }, // L 3 chests
-				new MapArea { location = MapLocation.Cardia4, map = MapId.Cardia, ul_corner = (11, 30), ur_corner = (26, 30), ll_corner = (11, 45), lr_corner = (26, 45) }, // Well
-				new MapArea { location = MapLocation.Cardia5, map = MapId.Cardia, ul_corner = (35, 26), ur_corner = (44, 26), ll_corner = (35, 42), lr_corner = (44, 42) }, // Caravan
-				new MapArea { location = MapLocation.Cardia6, map = MapId.Cardia, ul_corner = (46, 38), ur_corner = (59, 38), ll_corner = (46, 57), lr_corner = (59, 57) }, // 7 chests
-				new MapArea { location = MapLocation.BahamutCave1, map = MapId.BahamutsRoomB1, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.Waterfall, map = MapId.Waterfall, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.DwarfCave, map = MapId.DwarfCave, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.MatoyasCave, map = MapId.MatoyasCave, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.SardasCave, map = MapId.SardasCave, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.MarshCave1, map = MapId.MarshCaveB1, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.MirageTower1, map = MapId.MirageTower1F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.ConeriaCastle2, map = MapId.ConeriaCastle2F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.CastleOrdealsMaze, map = MapId.CastleOfOrdeals2F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.CastleOrdealsTop, map = MapId.CastleOfOrdeals3F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.MarshCaveTop, map = MapId.MarshCaveB2, ul_corner = (0, 0), ur_corner = (29, 0), ll_corner = (0, 26), lr_corner = (29, 26) },
-				new MapArea { location = MapLocation.MarshCave3, map = MapId.MarshCaveB2, ul_corner = (28, 32), ur_corner = (60, 32), ll_corner = (28, 60), lr_corner = (60, 60) },
-				new MapArea { location = MapLocation.MarshCaveBottom, map = MapId.MarshCaveB3, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.EarthCave2, map = MapId.EarthCaveB2, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.EarthCaveVampire, map = MapId.EarthCaveB3, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.EarthCave4, map = MapId.EarthCaveB4, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.EarthCaveLich, map = MapId.EarthCaveB5, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.GurguVolcano2, map = MapId.GurguVolcanoB2, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.GurguVolcano3, map = MapId.GurguVolcanoB3, ul_corner = (0, 0), ur_corner = (52, 0), ll_corner = (0, 12), lr_corner = (52, 12) },
-				new MapArea { location = MapLocation.GurguVolcano4, map = MapId.GurguVolcanoB3, ul_corner = (0, 17), ur_corner = (64, 17), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.GurguVolcano5, map = MapId.GurguVolcanoB4, ul_corner = (0, 19), ur_corner = (24, 19), ll_corner = (0, 48), lr_corner = (24, 48) },
-				new MapArea { location = MapLocation.GurguVolcano6, map = MapId.GurguVolcanoB4, ul_corner = (25, 0), ur_corner = (64, 0), ll_corner = (25, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.GurguVolcanoKary, map = MapId.GurguVolcanoB5, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.IceCave2, map = MapId.IceCaveB2, ul_corner = (0, 0), ur_corner = (32, 0), ll_corner = (0, 32), lr_corner = (32, 32) },
-				new MapArea { location = MapLocation.IceCavePitRoom, map = MapId.IceCaveB2, ul_corner = (38, 0), ur_corner = (64, 0), ll_corner = (38, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.IceCave3, map = MapId.IceCaveB3, ul_corner = (0, 0), ur_corner = (10, 0), ll_corner = (0, 10), lr_corner = (10, 10) },
-				new MapArea { location = MapLocation.IceCave5, map = MapId.IceCaveB3, ul_corner = (16, 0), ur_corner = (64, 0), ll_corner = (16, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.BahamutCave2, map = MapId.BahamutsRoomB2, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.MirageTower2, map = MapId.MirageTower2F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.MirageTower3, map = MapId.MirageTower3F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.SeaShrineKraken, map = MapId.SeaShrineB5, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.SeaShrine8, map = MapId.SeaShrineB4, ul_corner = (0, 0), ur_corner = (46, 0), ll_corner = (0, 30), lr_corner = (46, 30) },
-				new MapArea { location = MapLocation.SeaShrine4, map = MapId.SeaShrineB4, ul_corner = (48, 0), ur_corner = (64, 0), ll_corner = (48, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.SeaShrine5, map = MapId.SeaShrineB3, ul_corner = (45, 36), ur_corner = (51, 36), ll_corner = (45, 40), lr_corner = (51, 40) },
-				new MapArea { location = MapLocation.SeaShrine7, map = MapId.SeaShrineB3, ul_corner = (46, 3), ur_corner = (53, 3), ll_corner = (46, 30), lr_corner = (53, 30) },
-				new MapArea { location = MapLocation.SeaShrine1, map = MapId.SeaShrineB3, ul_corner = (0, 0), ur_corner = (43, 0), ll_corner = (0, 64), lr_corner = (43, 64) },
-				new MapArea { location = MapLocation.SeaShrine2, map = MapId.SeaShrineB2, ul_corner = (0, 0), ur_corner = (48, 0), ll_corner = (0, 64), lr_corner = (48, 64) },
-				new MapArea { location = MapLocation.SeaShrine6, map = MapId.SeaShrineB2, ul_corner = (51, 39), ur_corner = (64, 39), ll_corner = (51, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.SeaShrineMermaids, map = MapId.SeaShrineB1, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.SkyPalace1, map = MapId.SkyPalace1F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.SkyPalace2, map = MapId.SkyPalace2F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.SkyPalace3, map = MapId.SkyPalace3F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.SkyPalaceMaze, map = MapId.SkyPalace4F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.SkyPalaceTiamat, map = MapId.SkyPalace5F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
-				new MapArea { location = MapLocation.TitansTunnelEast, map = MapId.TitansTunnel, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.Coneria, map = MapIndex.ConeriaTown, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.Pravoka, map = MapIndex.Pravoka, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.Elfland, map = MapIndex.Elfland, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.Melmond, map = MapIndex.Melmond, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.CrescentLake, map = MapIndex.CrescentLake, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.Gaia, map = MapIndex.Gaia, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.Onrac, map = MapIndex.Onrac, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.Lefein, map = MapIndex.Lefein, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.ConeriaCastle1, map = MapIndex.ConeriaCastle1F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.ElflandCastle, map = MapIndex.ElflandCastle, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.NorthwestCastle, map = MapIndex.NorthwestCastle, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.CastleOrdeals1, map = MapIndex.CastleOrdeals1F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.TempleOfFiends1, map = MapIndex.TempleOfFiends, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.EarthCave1, map = MapIndex.EarthCaveB1, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.GurguVolcano1, map = MapIndex.GurguVolcanoB1, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.IceCave1, map = MapIndex.IceCaveB1, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 15), lr_corner = (64, 15) },
+				new MapArea { location = MapLocation.IceCaveBackExit, map = MapIndex.IceCaveB1, ul_corner = (0, 16), ur_corner = (26, 16), ll_corner = (0, 64), lr_corner = (26, 64) },
+				new MapArea { location = MapLocation.Cardia1, map = MapIndex.Cardia, ul_corner = (26, 5), ur_corner = (46, 5), ll_corner = (26, 23), lr_corner = (46, 23) }, // Empty reverse horshoe
+				new MapArea { location = MapLocation.Cardia2, map = MapIndex.Cardia, ul_corner = (5, 5), ur_corner = (20, 5), ll_corner = (5, 26), lr_corner = (20, 26) }, // L 3 chests
+				new MapArea { location = MapLocation.Cardia4, map = MapIndex.Cardia, ul_corner = (11, 30), ur_corner = (26, 30), ll_corner = (11, 45), lr_corner = (26, 45) }, // Well
+				new MapArea { location = MapLocation.Cardia5, map = MapIndex.Cardia, ul_corner = (35, 26), ur_corner = (44, 26), ll_corner = (35, 42), lr_corner = (44, 42) }, // Caravan
+				new MapArea { location = MapLocation.Cardia6, map = MapIndex.Cardia, ul_corner = (46, 38), ur_corner = (59, 38), ll_corner = (46, 57), lr_corner = (59, 57) }, // 7 chests
+				new MapArea { location = MapLocation.BahamutCave1, map = MapIndex.BahamutCaveB1, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.Waterfall, map = MapIndex.Waterfall, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.DwarfCave, map = MapIndex.DwarfCave, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.MatoyasCave, map = MapIndex.MatoyasCave, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.SardasCave, map = MapIndex.SardasCave, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.MarshCave1, map = MapIndex.MarshCaveB1, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.MirageTower1, map = MapIndex.MirageTower1F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.ConeriaCastle2, map = MapIndex.ConeriaCastle2F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.CastleOrdealsMaze, map = MapIndex.CastleOrdeals2F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.CastleOrdealsTop, map = MapIndex.CastleOrdeals3F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.MarshCaveTop, map = MapIndex.MarshCaveB2, ul_corner = (0, 0), ur_corner = (29, 0), ll_corner = (0, 26), lr_corner = (29, 26) },
+				new MapArea { location = MapLocation.MarshCave3, map = MapIndex.MarshCaveB2, ul_corner = (28, 32), ur_corner = (60, 32), ll_corner = (28, 60), lr_corner = (60, 60) },
+				new MapArea { location = MapLocation.MarshCaveBottom, map = MapIndex.MarshCaveB3, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.EarthCave2, map = MapIndex.EarthCaveB2, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.EarthCaveVampire, map = MapIndex.EarthCaveB3, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.EarthCave4, map = MapIndex.EarthCaveB4, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.EarthCaveLich, map = MapIndex.EarthCaveB5, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.GurguVolcano2, map = MapIndex.GurguVolcanoB2, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.GurguVolcano3, map = MapIndex.GurguVolcanoB3, ul_corner = (0, 0), ur_corner = (52, 0), ll_corner = (0, 12), lr_corner = (52, 12) },
+				new MapArea { location = MapLocation.GurguVolcano4, map = MapIndex.GurguVolcanoB3, ul_corner = (0, 17), ur_corner = (64, 17), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.GurguVolcano5, map = MapIndex.GurguVolcanoB4, ul_corner = (0, 19), ur_corner = (24, 19), ll_corner = (0, 48), lr_corner = (24, 48) },
+				new MapArea { location = MapLocation.GurguVolcano6, map = MapIndex.GurguVolcanoB4, ul_corner = (25, 0), ur_corner = (64, 0), ll_corner = (25, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.GurguVolcanoKary, map = MapIndex.GurguVolcanoB5, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.IceCave2, map = MapIndex.IceCaveB2, ul_corner = (0, 0), ur_corner = (32, 0), ll_corner = (0, 32), lr_corner = (32, 32) },
+				new MapArea { location = MapLocation.IceCavePitRoom, map = MapIndex.IceCaveB2, ul_corner = (38, 0), ur_corner = (64, 0), ll_corner = (38, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.IceCave3, map = MapIndex.IceCaveB3, ul_corner = (0, 0), ur_corner = (10, 0), ll_corner = (0, 10), lr_corner = (10, 10) },
+				new MapArea { location = MapLocation.IceCave5, map = MapIndex.IceCaveB3, ul_corner = (16, 0), ur_corner = (64, 0), ll_corner = (16, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.BahamutCave2, map = MapIndex.BahamutCaveB2, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.MirageTower2, map = MapIndex.MirageTower2F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.MirageTower3, map = MapIndex.MirageTower3F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.SeaShrineKraken, map = MapIndex.SeaShrineB5, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.SeaShrine8, map = MapIndex.SeaShrineB4, ul_corner = (0, 0), ur_corner = (46, 0), ll_corner = (0, 30), lr_corner = (46, 30) },
+				new MapArea { location = MapLocation.SeaShrine4, map = MapIndex.SeaShrineB4, ul_corner = (48, 0), ur_corner = (64, 0), ll_corner = (48, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.SeaShrine5, map = MapIndex.SeaShrineB3, ul_corner = (45, 36), ur_corner = (51, 36), ll_corner = (45, 40), lr_corner = (51, 40) },
+				new MapArea { location = MapLocation.SeaShrine7, map = MapIndex.SeaShrineB3, ul_corner = (46, 3), ur_corner = (53, 3), ll_corner = (46, 30), lr_corner = (53, 30) },
+				new MapArea { location = MapLocation.SeaShrine1, map = MapIndex.SeaShrineB3, ul_corner = (0, 0), ur_corner = (43, 0), ll_corner = (0, 64), lr_corner = (43, 64) },
+				new MapArea { location = MapLocation.SeaShrine2, map = MapIndex.SeaShrineB2, ul_corner = (0, 0), ur_corner = (48, 0), ll_corner = (0, 64), lr_corner = (48, 64) },
+				new MapArea { location = MapLocation.SeaShrine6, map = MapIndex.SeaShrineB2, ul_corner = (51, 39), ur_corner = (64, 39), ll_corner = (51, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.SeaShrineMermaids, map = MapIndex.SeaShrineB1, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.SkyPalace1, map = MapIndex.SkyPalace1F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.SkyPalace2, map = MapIndex.SkyPalace2F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.SkyPalace3, map = MapIndex.SkyPalace3F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.SkyPalaceMaze, map = MapIndex.SkyPalace4F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.SkyPalaceTiamat, map = MapIndex.SkyPalace5F, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
+				new MapArea { location = MapLocation.TitansTunnelEast, map = MapIndex.TitansTunnel, ul_corner = (0, 0), ur_corner = (64, 0), ll_corner = (0, 64), lr_corner = (64, 64) },
 			};
 
 			//
-			List<(MapId, TileSets)> tilesetList = new()
+			List<(MapIndex, TileSets)> tilesetList = new()
 			{
-				(MapId.Coneria, TileSets.Town),
-				(MapId.Pravoka, TileSets.Town),
-				(MapId.Elfland, TileSets.Town),
-				(MapId.Melmond, TileSets.Town),
-				(MapId.CrescentLake, TileSets.Town),
-				(MapId.Gaia, TileSets.Town),
-				(MapId.Onrac, TileSets.Town),
-				(MapId.Lefein, TileSets.Town),
-				(MapId.ConeriaCastle1F, TileSets.Castle),
-				(MapId.ElflandCastle, TileSets.Castle),
-				(MapId.NorthwestCastle, TileSets.Castle),
-				(MapId.CastleOfOrdeals1F, TileSets.Castle),
-				(MapId.TempleOfFiends, TileSets.ToFSeaShrine),
-				(MapId.EarthCaveB1, TileSets.EarthTitanVolcano),
-				(MapId.GurguVolcanoB1, TileSets.EarthTitanVolcano),
-				(MapId.IceCaveB1, TileSets.MatoyaDwarfCardiaIceWaterfall),
-				(MapId.Cardia, TileSets.MatoyaDwarfCardiaIceWaterfall),
-				(MapId.BahamutsRoomB1, TileSets.MatoyaDwarfCardiaIceWaterfall),
-				(MapId.Waterfall, TileSets.MatoyaDwarfCardiaIceWaterfall),
-				(MapId.DwarfCave, TileSets.MatoyaDwarfCardiaIceWaterfall),
-				(MapId.MatoyasCave, TileSets.MatoyaDwarfCardiaIceWaterfall),
-				(MapId.SardasCave, TileSets.MatoyaDwarfCardiaIceWaterfall),
-				(MapId.MarshCaveB1, TileSets.MarshMirage),
-				(MapId.MirageTower1F, TileSets.MarshMirage),
-				(MapId.ConeriaCastle2F, TileSets.Castle),
-				(MapId.CastleOfOrdeals2F, TileSets.Castle),
-				(MapId.CastleOfOrdeals3F, TileSets.Castle),
-				(MapId.MarshCaveB2, TileSets.MarshMirage),
-				(MapId.MarshCaveB3, TileSets.MarshMirage),
-				(MapId.EarthCaveB2, TileSets.EarthTitanVolcano),
-				(MapId.EarthCaveB3, TileSets.EarthTitanVolcano),
-				(MapId.EarthCaveB4, TileSets.EarthTitanVolcano),
-				(MapId.EarthCaveB5, TileSets.EarthTitanVolcano),
-				(MapId.GurguVolcanoB2, TileSets.EarthTitanVolcano),
-				(MapId.GurguVolcanoB3, TileSets.EarthTitanVolcano),
-				(MapId.GurguVolcanoB4, TileSets.EarthTitanVolcano),
-				(MapId.GurguVolcanoB5, TileSets.EarthTitanVolcano),
-				(MapId.IceCaveB2, TileSets.MatoyaDwarfCardiaIceWaterfall),
-				(MapId.IceCaveB3, TileSets.MatoyaDwarfCardiaIceWaterfall),
-				(MapId.BahamutsRoomB2, TileSets.MatoyaDwarfCardiaIceWaterfall),
-				(MapId.MirageTower2F, TileSets.MarshMirage),
-				(MapId.MirageTower3F, TileSets.MarshMirage),
-				(MapId.SeaShrineB5, TileSets.ToFSeaShrine),
-				(MapId.SeaShrineB4, TileSets.ToFSeaShrine),
-				(MapId.SeaShrineB3, TileSets.ToFSeaShrine),
-				(MapId.SeaShrineB2, TileSets.ToFSeaShrine),
-				(MapId.SeaShrineB1, TileSets.ToFSeaShrine),
-				(MapId.SkyPalace1F, TileSets.SkyCastle),
-				(MapId.SkyPalace2F, TileSets.SkyCastle),
-				(MapId.SkyPalace3F, TileSets.SkyCastle),
-				(MapId.SkyPalace4F, TileSets.SkyCastle),
-				(MapId.SkyPalace5F, TileSets.SkyCastle),
-				(MapId.TempleOfFiendsRevisited1F, TileSets.ToFR),
-				(MapId.TempleOfFiendsRevisited2F, TileSets.ToFR),
-				(MapId.TempleOfFiendsRevisited3F, TileSets.ToFR),
-				(MapId.TempleOfFiendsRevisitedEarth, TileSets.ToFR),
-				(MapId.TempleOfFiendsRevisitedFire, TileSets.ToFR),
-				(MapId.TempleOfFiendsRevisitedWater, TileSets.ToFR),
-				(MapId.TempleOfFiendsRevisitedAir, TileSets.ToFR),
-				(MapId.TempleOfFiendsRevisitedChaos, TileSets.ToFR),
-				(MapId.TitansTunnel, TileSets.EarthTitanVolcano),
+				(MapIndex.ConeriaTown, TileSets.Town),
+				(MapIndex.Pravoka, TileSets.Town),
+				(MapIndex.Elfland, TileSets.Town),
+				(MapIndex.Melmond, TileSets.Town),
+				(MapIndex.CrescentLake, TileSets.Town),
+				(MapIndex.Gaia, TileSets.Town),
+				(MapIndex.Onrac, TileSets.Town),
+				(MapIndex.Lefein, TileSets.Town),
+				(MapIndex.ConeriaCastle1F, TileSets.Castle),
+				(MapIndex.ElflandCastle, TileSets.Castle),
+				(MapIndex.NorthwestCastle, TileSets.Castle),
+				(MapIndex.CastleOrdeals1F, TileSets.Castle),
+				(MapIndex.TempleOfFiends, TileSets.ToFSeaShrine),
+				(MapIndex.EarthCaveB1, TileSets.EarthTitanVolcano),
+				(MapIndex.GurguVolcanoB1, TileSets.EarthTitanVolcano),
+				(MapIndex.IceCaveB1, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapIndex.Cardia, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapIndex.BahamutCaveB1, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapIndex.Waterfall, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapIndex.DwarfCave, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapIndex.MatoyasCave, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapIndex.SardasCave, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapIndex.MarshCaveB1, TileSets.MarshMirage),
+				(MapIndex.MirageTower1F, TileSets.MarshMirage),
+				(MapIndex.ConeriaCastle2F, TileSets.Castle),
+				(MapIndex.CastleOrdeals2F, TileSets.Castle),
+				(MapIndex.CastleOrdeals3F, TileSets.Castle),
+				(MapIndex.MarshCaveB2, TileSets.MarshMirage),
+				(MapIndex.MarshCaveB3, TileSets.MarshMirage),
+				(MapIndex.EarthCaveB2, TileSets.EarthTitanVolcano),
+				(MapIndex.EarthCaveB3, TileSets.EarthTitanVolcano),
+				(MapIndex.EarthCaveB4, TileSets.EarthTitanVolcano),
+				(MapIndex.EarthCaveB5, TileSets.EarthTitanVolcano),
+				(MapIndex.GurguVolcanoB2, TileSets.EarthTitanVolcano),
+				(MapIndex.GurguVolcanoB3, TileSets.EarthTitanVolcano),
+				(MapIndex.GurguVolcanoB4, TileSets.EarthTitanVolcano),
+				(MapIndex.GurguVolcanoB5, TileSets.EarthTitanVolcano),
+				(MapIndex.IceCaveB2, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapIndex.IceCaveB3, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapIndex.BahamutCaveB2, TileSets.MatoyaDwarfCardiaIceWaterfall),
+				(MapIndex.MirageTower2F, TileSets.MarshMirage),
+				(MapIndex.MirageTower3F, TileSets.MarshMirage),
+				(MapIndex.SeaShrineB5, TileSets.ToFSeaShrine),
+				(MapIndex.SeaShrineB4, TileSets.ToFSeaShrine),
+				(MapIndex.SeaShrineB3, TileSets.ToFSeaShrine),
+				(MapIndex.SeaShrineB2, TileSets.ToFSeaShrine),
+				(MapIndex.SeaShrineB1, TileSets.ToFSeaShrine),
+				(MapIndex.SkyPalace1F, TileSets.SkyCastle),
+				(MapIndex.SkyPalace2F, TileSets.SkyCastle),
+				(MapIndex.SkyPalace3F, TileSets.SkyCastle),
+				(MapIndex.SkyPalace4F, TileSets.SkyCastle),
+				(MapIndex.SkyPalace5F, TileSets.SkyCastle),
+				(MapIndex.TempleOfFiendsRevisited1F, TileSets.ToFR),
+				(MapIndex.TempleOfFiendsRevisited2F, TileSets.ToFR),
+				(MapIndex.TempleOfFiendsRevisited3F, TileSets.ToFR),
+				(MapIndex.TempleOfFiendsRevisitedEarth, TileSets.ToFR),
+				(MapIndex.TempleOfFiendsRevisitedFire, TileSets.ToFR),
+				(MapIndex.TempleOfFiendsRevisitedWater, TileSets.ToFR),
+				(MapIndex.TempleOfFiendsRevisitedAir, TileSets.ToFR),
+				(MapIndex.TempleOfFiendsRevisitedChaos, TileSets.ToFR),
+				(MapIndex.TitansTunnel, TileSets.EarthTitanVolcano),
 			};
 
 			List<(MapLocation, MapLocation)> TownEntrances = new() { };
@@ -1177,23 +1159,29 @@
 			}
 
 			// Generate teleporters info
-			var TeleportTiles = Tilesets.SelectMany(x => x.Where(y => (y.PropertyType & 0b1100_0000) == 0b1000_0000));
-			var TilesetTeleportTiles = Tilesets.Select(x => x.Where(y => (y.PropertyType & 0b1100_0000) == 0b1000_0000).ToList()).ToList();
+			var TeleportTiles = new List<TileSM>();
+			var TilesetTeleportTiles = new List<List<TileSM>>();
+
+			foreach (var tileset in Enum.GetValues<TileSets>())
+			{
+				TeleportTiles.AddRange(tileSets[(int)tileset].Tiles.Where(y => (y.PropertyType & 0b1100_0000) == 0b1000_0000));
+				TilesetTeleportTiles.Add(tileSets[(int)tileset].Tiles.Where(y => (y.PropertyType & 0b1100_0000) == 0b1000_0000).ToList());
+			}
 
 			List<(byte, MapLocation, MapLocation)> teleportersLocDest = new();
 
-			for (int i = 0; i < maps.Count(); i++)
+			for (int i = 0; i < maps.MapTileSets.Count(); i++)
 			{
 				foreach (var teleporttile in TilesetTeleportTiles[(int)tilesetList[i].Item2])
 				{
-					if (maps[i].FindFirst(teleporttile.ID, out var x, out var y))
+					if (maps[(MapIndex)i].Map.FindFirst(teleporttile.Index, out var x, out var y))
 					{
 						var targetteleporter = teleporters[teleporttile.PropertyValue];
 
 						teleportersLocDest.Add((
 							teleporttile.PropertyValue,
-							maparea.Find(area => area.map == (MapId)i && area.ul_corner.Item1 <= FlippedX((MapId)i, x) && area.lr_corner.Item1 >= FlippedX((MapId)i, x) && area.ul_corner.Item2 <= y && area.lr_corner.Item2 >= y).location,
-							maparea.Find(area => area.map == (MapId)targetteleporter.Destination && area.ul_corner.Item1 <= FlippedX((MapId)targetteleporter.Destination, targetteleporter.X) && area.lr_corner.Item1 >= FlippedX((MapId)targetteleporter.Destination, targetteleporter.X) && area.ul_corner.Item2 <= targetteleporter.Y && area.lr_corner.Item2 >= targetteleporter.Y).location));
+							maparea.Find(area => area.map == (MapIndex)i && area.ul_corner.Item1 <= FlippedX((MapIndex)i, x) && area.lr_corner.Item1 >= FlippedX((MapIndex)i, x) && area.ul_corner.Item2 <= y && area.lr_corner.Item2 >= y).location,
+							maparea.Find(area => area.map == (MapIndex)targetteleporter.Destination && area.ul_corner.Item1 <= FlippedX((MapIndex)targetteleporter.Destination, targetteleporter.X) && area.lr_corner.Item1 >= FlippedX((MapIndex)targetteleporter.Destination, targetteleporter.X) && area.ul_corner.Item2 <= targetteleporter.Y && area.lr_corner.Item2 >= targetteleporter.Y).location));
 					}
 				}
 			}
@@ -1315,7 +1303,7 @@
 				}
 
 				// Shuffle Towns amongst themselves, only if entrances aren't mixed
-				// If impair number, do a 3 way shuffle first, then switch pairs for the rest
+				// If odd number, do a 3 way shuffle first, then switch pairs for the rest
 				if (TownsArray.Count % 2 != 0)
 				{
 					var pairA = TownTeleporters[TownsArray.SpliceRandom(rng)];
@@ -1346,7 +1334,7 @@
 				}
 
 				// Shuffle pairs amongst themselves
-				// If impair number, do a 3 way shuffle first, then switch pairs for the rest
+				// If odd number, do a 3 way shuffle first, then switch pairs for the rest
 				if (ComboArray.Count % 2 != 0)
 				{
 					var pairA = ComboTeleporters[ComboArray.SpliceRandom(rng)];
@@ -1377,7 +1365,7 @@
 				}
 
 				// Shuffle orphans amongst themselves
-				// If impair number, do a 3 way shuffle first, then switch pairs for the rest
+				// If odd number, do a 3 way shuffle first, then switch pairs for the rest
 				if (OrphansArray.Count % 2 != 0)
 				{
 					var pairA = OrphanTeleporters[OrphansArray.SpliceRandom(rng)];
@@ -1442,11 +1430,11 @@
 					var tempTeleporter1 = teleporterA1.Item2;
 
 					// Because orphan don't have a twin teleporter, we need to find it's position and update the switch in teleporter
-					foreach (var mapid in tilesetList.Where(x => x.Item2 == (TileSets)teleporterB.Item1.TileSet))
+					foreach (var MapIndex in tilesetList.Where(x => x.Item2 == (TileSets)teleporterB.Item1.TileSet))
 					{
-						if (maps[(int)mapid.Item1].FindFirst(teleporterB.Item1.ID, out var x, out var y))
+						if (maps[MapIndex.Item1].Map.FindFirst(teleporterB.Item1.Index, out var x, out var y))
 						{
-							teleporters[teleporterA2.Item2.ID] = new TeleporterSM(teleporterA2.Item2.ID, (byte)x, (byte)y, (byte)mapid.Item1, (teleporterB.Item1.Palette <= TilePalette.RoomPalette2));
+							teleporters[teleporterA2.Item2.ID] = new TeleporterSM(teleporterA2.Item2.ID, (byte)x, (byte)y, (byte)MapIndex.Item1, (teleporterB.Item1.Palette <= TilePalette.RoomPalette2));
 							break;
 						}
 					}
@@ -1538,29 +1526,29 @@
 			// Write the new tiles and teleporters to rom
 			foreach (var tile in TeleportTiles)
 			{
-				tile.Write(this);
+				tileSets[tile.TileSet].Tiles[tile.Index] = tile;
 			}
 
 			foreach (var teleport in teleporters)
 			{
-				teleport.Write(this);
+				teleportersdata.StandardMapTeleporters[(TeleportIndex)teleport.ID] = new TeleportDestination(teleport.Raw(), teleport.InRoom ? CoordinateLocale.StandardInRoom : CoordinateLocale.Standard);
 			}
 
 			// Set Orbs over stairs to avoid softlocks, altho it shouldn't happen anyway, no need for Mark npcs since you can always go back
-			List<(MapId, byte, byte, ObjectId)> orbLocations = new() { (MapId.ConeriaCastle1F, 0x02, 0x08, ObjectId.ConeriaCastle1FWoman1), (MapId.CastleOfOrdeals1F, 0x16, 0x02, ObjectId.LefeinMan10), (MapId.IceCaveB1, (byte)FlippedX(MapId.IceCaveB1, 0x02), 0x01, ObjectId.LefeinMan6) };
+			List<(MapIndex, byte, byte, ObjectId)> orbLocations = new() { (MapIndex.ConeriaCastle1F, 0x02, 0x08, ObjectId.ConeriaCastle1FWoman1), (MapIndex.CastleOrdeals1F, 0x16, 0x02, ObjectId.LefeinMan10), (MapIndex.IceCaveB1, (byte)FlippedX(MapIndex.IceCaveB1, 0x02), 0x01, ObjectId.LefeinMan6) };
 
 			foreach (var source in orbLocations)
 			{
-				var targetile = maps[(int)source.Item1][(source.Item2, source.Item3)].Tile;
+				var targetile = maps[source.Item1].Map[(source.Item2, source.Item3)].Tile;
 
-				var originTile = TeleportersTiles.Find(x => x.Item1.ID == (byte)targetile && x.Item1.TileSet == (int)tilesetList[(int)source.Item1].Item2);
+				var originTile = TeleportersTiles.Find(x => x.Item1.Index == (byte)targetile && x.Item1.TileSet == (int)tilesetList[(int)source.Item1].Item2);
 				var originTeleporter = teleporters.Find(x => x.ID == originTile.Item1.PropertyValue);
 
-				var freenpc = FindNpc((MapId)originTeleporter.Destination, (ObjectId.None));
+				var freenpc = maps[(MapIndex)originTeleporter.Destination].MapObjects.FindNpc(ObjectId.None);
 
-				if (freenpc.Index > 0 || (freenpc.Index == 0 && freenpc.Coord == (0, 0)))
+				if (freenpc.Index > 0 || (freenpc.Index == 0 && freenpc.Coords == new Sanity.SCCoords(0, 0)))
 				{
-					SetNpc((MapId)originTeleporter.Destination, freenpc.Index, source.Item4, originTeleporter.X, originTeleporter.Y, originTeleporter.InRoom, true);
+					maps[(MapIndex)originTeleporter.Destination].MapObjects.SetNpc(freenpc.Index, source.Item4, originTeleporter.X, originTeleporter.Y, originTeleporter.InRoom, true);
 					var sprite_palette = GetFromBank(0x00, 0xA000 + (originTeleporter.Destination * 0x30) + 0x18, 8);
 					if (sprite_palette == Blob.FromHex("0F0000000F000000"))
 					{
@@ -1576,118 +1564,9 @@
 			public (int, int) ul_corner;
 			public (int, int) lr_corner;
 			public (int, int) ll_corner;
-			public MapId map;
+			public MapIndex map;
 			public MapLocation location;
 		}
-		public class TileSM
-		{
-			private byte _attribute;
-			private byte _TSAul;
-			private byte _TSAur;
-			private byte _TSAdl;
-			private byte _TSAdr;
-			private byte _property1;
-			private byte _property2;
-			private int _tileSetOrigin;
-			private byte _tileSetID;
-
-			const int BANK_SMINFO = 0x00;
-			const int lut_TileSMsetAttr = 0x8400; // BANK_SMINFO - must be on $400 byte bound  - 0x80 x8
-			const int lut_TileSMsetProp = 0x8800; // BANK_SMINFO - page                        - 0x100 bytes x 8  (2 bytes per)
-			const int lut_TileSMsetTSA = 0x9000;  // BANK_SMINFO - page                        - 0x80 bytes x4 x8 => ul, ur, dl, dr
-			//const int lut_SMPalettes = 0xA000;    // BANK_SMINFO - $1000 byte bound            - 0x30 bytes x8?
-
-			public TilePalette Palette
-			{
-				get { return (TilePalette)_attribute; }
-				set { _attribute = (byte)value; }
-			}
-			public List<byte> TileGraphic
-			{
-				get { return new List<byte> { _TSAul, _TSAur, _TSAdl, _TSAdr }; }
-				set
-				{
-					_TSAul = value[0];
-					_TSAur = value[1];
-					_TSAdl = value[2];
-					_TSAdr = value[3];
-				}
-			}
-			public byte PropertyType
-			{
-				get { return _property1; }
-				set
-				{
-					_property1 = value;
-				}
-			}
-			public byte PropertyValue
-			{
-				get { return _property2; }
-				set
-				{
-					_property2 = value;
-				}
-			}
-			public byte ID
-			{
-				get { return _tileSetID; }
-				set
-				{
-					_tileSetID = value;
-				}
-			}
-			public int TileSet
-			{
-				get { return _tileSetOrigin; }
-				set
-				{
-					_tileSetOrigin = value;
-				}
-			}
-			public TileSM(byte id, int tileset, TilePalette palette, List<byte> tilegraphics, byte property1, byte property2)
-			{
-				_tileSetID = id;
-				_tileSetOrigin = tileset;
-				_attribute = (byte)palette;
-				_property1 = property1;
-				_property2 = property2;
-				_TSAul = tilegraphics[0];
-				_TSAur = tilegraphics[1];
-				_TSAdl = tilegraphics[2];
-				_TSAdr = tilegraphics[3];
-			}
-			public TileSM(byte id, int tileset, FF1Rom rom)
-			{
-				Read(id, tileset, rom);
-			}
-			public TileProp RawProperties()
-			{
-				return new TileProp { Byte1 = _property1, Byte2 = _property2 };
-			}
-			public void Write(FF1Rom rom)
-			{
-				rom.PutInBank(BANK_SMINFO, lut_TileSMsetAttr + (_tileSetOrigin * 0x80) + _tileSetID, new byte[] { _attribute });
-				rom.PutInBank(BANK_SMINFO, lut_TileSMsetProp + (_tileSetOrigin * 0x100) + (_tileSetID * 2), new byte[] { _property1, _property2 });
-				rom.PutInBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + _tileSetID, new byte[] { _TSAul });
-				rom.PutInBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x80 + _tileSetID, new byte[] { _TSAur });
-				rom.PutInBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x100 + _tileSetID, new byte[] { _TSAdl });
-				rom.PutInBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x180 + _tileSetID, new byte[] { _TSAdr });
-			}
-			public void Read(byte id, int tileset, FF1Rom rom)
-			{
-				_tileSetID = id;
-				_tileSetOrigin = tileset;
-				_attribute = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetAttr + (_tileSetOrigin * 0x80) + _tileSetID, 1)[0];
-				_property1 = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetProp + (_tileSetOrigin * 0x100) + (_tileSetID * 2), 2)[0];
-				_property2 = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetProp + (_tileSetOrigin * 0x100) + (_tileSetID * 2), 2)[1];
-				_TSAul = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + _tileSetID, 1)[0];
-				_TSAur = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x80 + _tileSetID, 1)[0];
-				_TSAdl = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x100 + _tileSetID, 1)[0];
-				_TSAdr = rom.GetFromBank(BANK_SMINFO, lut_TileSMsetTSA + (_tileSetOrigin * 0x200) + 0x180 + _tileSetID, 1)[0];
-			}
-		}
-
 		public class TeleporterSM
 		{
 			private byte _x;
@@ -1742,9 +1621,13 @@
 					_id = value;
 				}
 			}
+			public CoordinateLocale Context
+			{
+				get { return _inroom ? CoordinateLocale.StandardInRoom : CoordinateLocale.Standard; }
+			}
 			public TeleData Raw()
 			{
-				return new TeleData { Map = (MapId)_target, X = (byte)(_x | (_inroom ? 0b1000_0000 : 0b0000_0000)), Y = (byte)(_y | 0b1000_0000) };
+				return new TeleData { Map = (MapIndex)_target, X = (byte)(_x | (_inroom ? 0b1000_0000 : 0b0000_0000)), Y = (byte)(_y | 0b1000_0000) };
 			}
 			public TeleporterSM(int id, byte x, byte y, byte destination, bool inroom)
 			{
@@ -1753,6 +1636,14 @@
 				_x = (byte)(x | (_inroom ? 0b10000000 : 0b00000000));
 				_y = (byte)(y | 0b10000000);
 				_target = destination;
+			}
+			public TeleporterSM(int id, TeleportDestination telportDestination)
+			{
+				_id = id;
+				_inroom = telportDestination.Coordinates.Context == CoordinateLocale.StandardInRoom;
+				_x = (byte)(telportDestination.Coordinates.X | (_inroom ? 0b10000000 : 0b00000000));
+				_y = (byte)(telportDestination.Coordinates.Y | 0b10000000);
+				_target = (byte)telportDestination.Index;
 			}
 			public TeleporterSM(FF1Rom rom, int id)
 			{
@@ -1781,9 +1672,9 @@
 			private TeleporterSM _teleporter;
 			private TileSM _tile;
 
-			public TeleporterTileSM(int teleporter_id, byte target_x, byte target_y, byte destination, bool inroom, int tileset, TilePalette palette, TeleporterGraphic graphic, byte property1, Dictionary<byte, List<byte>> freetiles, List<MapId> flippedmaps, byte tile_id = 0x00)
+			public TeleporterTileSM(int teleporter_id, byte target_x, byte target_y, byte destination, bool inroom, int tileset, TilePalette palette, TeleporterGraphic graphic, byte property1, Dictionary<byte, List<byte>> freetiles, List<MapIndex> flippedmaps, byte tile_id = 0x00)
 			{
-				_teleporter = new TeleporterSM(teleporter_id, flippedmaps.Contains((MapId)destination) ? (byte)(0x3F - target_x) : target_x, target_y, destination, inroom);
+				_teleporter = new TeleporterSM(teleporter_id, flippedmaps.Contains((MapIndex)destination) ? (byte)(0x3F - target_x) : target_x, target_y, destination, inroom);
 				if (tile_id > 0)
 				{
 					_tile = new TileSM(tile_id, tileset, palette, TeleportTilesGraphics[graphic][tileset], property1, (byte)teleporter_id);
@@ -1796,12 +1687,17 @@
 			}
 			public byte TileID
 			{
-				get { return _tile.ID; }
+				get { return _tile.Index; }
 			}
 			public void Write(FF1Rom rom)
 			{
 				_teleporter.Write(rom);
 				_tile.Write(rom);
+			}
+			public void Write(TileSetsData tileSets, Teleporters teleporters)
+			{
+				teleporters.StandardMapTeleporters[(TeleportIndex)_teleporter.ID] = new TeleportDestination(MapLocation.Cardia1, (MapIndex)_teleporter.Destination, new Coordinate((byte)(_teleporter.X & 0x3F), (byte)(_teleporter.Y & 0x3F), _teleporter.Context));
+				tileSets[_tile.TileSet].Tiles[_tile.Index] = _tile;
 			}
 		}
 
@@ -1811,18 +1707,6 @@
 			RoomPalette2 = 0x55,
 			OutPalette1 = 0xAA,
 			OutPalette2 = 0xFF,
-		}
-
-		public enum TileSets
-		{
-			Town = 0,
-			Castle,
-			EarthTitanVolcano,
-			MatoyaDwarfCardiaIceWaterfall,
-			MarshMirage,
-			ToFSeaShrine,
-			SkyCastle,
-			ToFR
 		}
 
 		public static Dictionary<TeleporterGraphic, List<List<byte>>> TeleportTilesGraphics = new()

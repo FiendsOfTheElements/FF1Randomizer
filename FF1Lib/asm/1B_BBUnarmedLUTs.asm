@@ -56,11 +56,11 @@ was changed to:
 `
 LDA #BANK_CLASSMOD ($1B)
 JSR SwapPRG_L
-JSR $B040
+JSR $AF80
 TYA
 BEQ
 
-@$B040:
+@$AF80:
 LDA #<lut_Blackbelts          
 STA class_lut_a
 LDA #>lut_Blackbelts

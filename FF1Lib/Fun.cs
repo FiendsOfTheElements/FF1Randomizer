@@ -87,8 +87,16 @@ namespace FF1Lib
 		public const int PaletteSize = 4;
 		public const int PaletteCount = 64;
 
-	    public void FunEnemyNames(bool teamSteak, bool altFiends, MT19337 rng)
+	    public void FunEnemyNames(Flags flags, Preferences preferences, MT19337 rng)
 		{
+			bool teamSteak = preferences.TeamSteak;
+			bool altFiends = (bool)flags.AlternateFiends;
+
+			if (!preferences.FunEnemyNames || flags.EnemizerEnabled)
+			{
+				return;
+			}
+
 			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 
 			enemyText[1] = "GrUMP";    // +0  GrIMP
@@ -147,8 +155,13 @@ namespace FF1Lib
 			WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
 		}
 
-		public void PaletteSwap(MT19337 rng)
+		public void PaletteSwap(bool enable, MT19337 rng)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			var palettes = Get(PaletteOffset, PaletteSize * PaletteCount).Chunk(PaletteSize);
 
 			palettes.Shuffle(rng);
@@ -156,8 +169,13 @@ namespace FF1Lib
 			Put(PaletteOffset, Blob.Concat(palettes));
 		}
 
-		public void TeamSteak()
+		public void TeamSteak(bool enable)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			Put(TyroPaletteOffset, Blob.FromHex("302505"));
 			Put(TyroSpriteOffset, Blob.FromHex(
 				"00000000000000000000000000000000" + "00000000000103060000000000000001" + "001f3f60cf9f3f7f0000001f3f7fffff" + "0080c07f7f87c7e60000008080f8f8f9" + "00000080c0e0f0780000000000000080" + "00000000000000000000000000000000" +
@@ -166,214 +184,6 @@ namespace FF1Lib
 				"00000000000000000000000000000000" + "07070706060707070100000101010101" + "ffffff793080c0f0fffc3086cfffffff" + "e7fefcf9f26469e3f80103070f9f9e1c" + "264c983060c08000f8f0e0c080000000" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "07070706060301010101010101000000" + "f9f9f9797366ece8fefefefefcf97377" + "c68c98981830606038706060e0c08080" + "00000000000000000000000000000000" + "00000000000000000000000000000000" +
 				"00000000000000000000000000000000" + "01010101010000000000000000000000" + "fb9b9b9b98ff7f006767676767000000" + "6060606060c080008080808080000000" + "00000000000000000000000000000000" + "00000000000000000000000000000000"));
-		}
-
-		public void DisableSpellCastScreenFlash()
-		{
-			//just load the original battleground background in place of the flash color, it will still use the same number of frames
-			Put(0x32051, Blob.FromHex("AD446D"));
-		}
-
-		public void LockRespondRate(int respondRate)
-		{
-			// original title screen behavior
-			/*
-			C9 01     CMP #RIGHT              ; did they press Right?
-            D0 04     BNE @Left               ;  if not, they must've pressed Left
-            A9 01     LDA #1                  ; add +1 to rate if right
-            D0        BNE :+
-            02        @Left:
-            A9 FF     LDA #-1                 ; or -1 if left
-            18    :   CLC
-            65 FA     ADC respondrate         ; add/subtract 1 from respond rate
-            29 07     AND #7                  ; mask to wrap it from 0<->7
-            85 FA     STA respondrate
-			 */
-
-			// MODIFIED behavior
-			/*
-			C9 01     CMP #RIGHT              ; did they press Right?
-            D0 04     BNE @Left               ;  if not, they must've pressed Left
-            A9 00     LDA #0                  ; MODIFIED (adds nothing instead of 1)
-            D0        BNE :+
-            02        @Left:
-            A9 00     LDA #0                  ; MODIFIED (adds nothing instead of -1)
-            18    :   CLC
-            65 FA     ADC respondrate         ; add/subtract 1 from respond rate
-            29 07     AND #7                  ; mask to wrap it from 0<->7
-            85 FA     STA respondrate
-			 */
-
-			Put(0x3A1FD, Blob.FromHex("C901D004A900D002A9001865FA290785FA"));
-
-			// Override the read of the respond rate address so that it always reports a hardcoded value
-			PutInBank(0x0B, 0x99C8, Blob.FromHex("A0001A"));
-			PutInBank(0x0B, 0x99C9, Blob.FromHex($"{respondRate - 1:X2}")); // respondrate is 0-based
-		}
-
-		public void UninterruptedMusic()
-		{
-			// Full commented Assembly code can be seen in "UninterruptedMusic-QoLFlag.asm"
-			// These 3 replace existing code for processing the old Treasure Chest sound chime, jumping out to the new code
-			PutInBank(0x1F, 0xD62B, Blob.FromHex("A90F2003FE2065A0EAEA"));
-			PutInBank(0x1F, 0xD675, Blob.FromHex("A90F2003FE2073A04C88D6A90F2003FE4C00A0EA"));
-			PutInBank(0x1F, 0xD6C4, Blob.FromHex("4C80D6"));
-			// New code generating a new sound that no longer interrupts the music but otherwise works the same (plays for 27 frames)
-			PutInBank(0x0F, 0xA000, Blob.FromHex("A57DC90A905CC67DC963904CC97DB017C96A903FC96F9036C974902DC978F01FC97890204C3AA0A91B857EA97F8D0440A97F8D0540A9098D0740A91C4C5FA0A9088D0740A9E14C5FA0A9C94C5FA0A98E4C5FA0A9704C5FA0A932857D4C09C08D06404C09C0A57DC901F005A97E857D60A254864B60A57DC932F014A54BC981F00AA90F855720A1D64C75A0A57C854BA900857D60"));
-		}
-
-		public void ShuffleLeader(MT19337 rng)
-		{
-			byte leader = (byte)(rng.Between(0, 3) << 6);
-			Data[0x7D8BC] = leader;
-			Data[0x7E933] = leader;
-		}
-
-		public void ShuffleMusic(MusicShuffle mode, MT19337 rng)
-		{
-			switch (mode)
-			{
-				case MusicShuffle.Standard:
-					List<byte> overworldTracks = new List<byte> { 0x41, 0x42, 0x44, 0x45, 0x46, 0x47, 0x4A, 0x4F };
-					List<byte> townTracks = new List<byte> { 0x41, 0x42, 0x45, 0x46, 0x47, 0x48, 0x4A, 0x4F, 0x51 };
-					List<byte> dungeonTracks = new List<byte> { 0x41, 0x42, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x52, 0x53 };
-
-					overworldTracks.Shuffle(rng);
-					townTracks.Shuffle(rng);
-					dungeonTracks.Shuffle(rng);
-
-					//Overworld
-					Data[0x7C649] = overworldTracks[0];
-					Data[0x7C6F9] = overworldTracks[0];
-					Data[0x7C75A] = overworldTracks[0];
-					Data[0x7C75B] = overworldTracks[0];
-
-					//Ship
-					Data[0x7C62D] = overworldTracks[1];
-					Data[0x7C75D] = overworldTracks[1];
-
-					//Airship
-					Data[0x7C235] = overworldTracks[2];
-					Data[0x7C761] = overworldTracks[2];
-
-					//Remove used songs from other pools
-					var usedTracks = overworldTracks.Take(3).ToList();
-					townTracks = townTracks.Except(usedTracks).ToList();
-
-					//Town
-					Data[0x7CFC3] = townTracks[0];
-
-					//Castle
-					Data[0x7CFC4] = townTracks[1];
-
-					//Shop
-					Data[0x3A351] = townTracks[2];
-					Data[0x3A56E] = townTracks[2];
-					Data[0x3A597] = townTracks[2];
-
-					//Menu
-					Data[0x3ADB4] = townTracks[3];
-					Data[0x3B677] = townTracks[3];
-					Data[0x3997F] = townTracks[3]; //Lineup menu
-
-					//Remove used songs from other pools
-					usedTracks.AddRange(townTracks.Take(4));
-					dungeonTracks = dungeonTracks.Except(usedTracks).ToList();
-
-					//Dungeons
-					Data[0x7CFC5] = dungeonTracks[0];
-					Data[0x7CFC6] = dungeonTracks[1];
-					Data[0x7CFC7] = dungeonTracks[2];
-					Data[0x7CFC8] = dungeonTracks[3];
-					Data[0x7CFC9] = dungeonTracks[4];
-					Data[0x7CFCA] = dungeonTracks[5];
-
-					break;
-
-				case MusicShuffle.Nonsensical: //They asked for it...
-					List<byte> tracks = new List<byte> { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x51, 0x52, 0x53, 0x55 };
-					tracks.Shuffle(rng);
-
-					//Overworld
-					Data[0x7C649] = tracks[0];
-					Data[0x7C6F9] = tracks[0];
-					Data[0x7C75A] = tracks[0];
-					Data[0x7C75B] = tracks[0];
-
-					//Ship
-					Data[0x7C62D] = tracks[1];
-					Data[0x7C75D] = tracks[1];
-
-					//Airship
-					Data[0x7C235] = tracks[2];
-					Data[0x7C761] = tracks[2];
-
-					//Tilesets 1-8
-					Data[0x7CFC3] = tracks[3]; //Town
-					Data[0x7CFC4] = tracks[4]; //Castle
-					Data[0x7CFC5] = tracks[5];
-					Data[0x7CFC6] = tracks[6];
-					Data[0x7CFC7] = tracks[7];
-					Data[0x7CFC8] = tracks[8];
-					Data[0x7CFC9] = tracks[9];
-					Data[0x7CFCA] = tracks[10];
-
-					//Title
-					Data[0x3A226] = tracks[11];
-
-					//Shop
-					Data[0x3A351] = tracks[12];
-					Data[0x3A56E] = tracks[12];
-					Data[0x3A597] = tracks[12];
-
-					//Menu
-					Data[0x3ADB4] = tracks[13];
-					Data[0x3B677] = tracks[13];
-					Data[0x3997F] = tracks[13]; //Lineup menu
-
-					//Ending
-					Data[0x37804] = tracks[14];
-
-					//Bridge Cutscene
-					Data[0x3784E] = tracks[15];
-
-					//Battle Fanfare
-					Data[0x31E44] = tracks[16];
-
-					//Gameover
-					Data[0x3C5EF] = tracks[17];
-
-					//Battle
-					//Data[0x2D9C1] = Songs[rng.Between(0, Songs.Count - 1)];
-
-					//Mini Things
-					Data[0x36E86] = tracks[rng.Between(0, tracks.Count - 1)]; //minigame
-					Data[0x27C0D] = tracks[rng.Between(0, tracks.Count - 1)]; //minimap
-
-					break;
-
-				case MusicShuffle.MusicDisabled:
-					//Set Sq1, Sq2, and Tri channels for crystal theme all point to the same music data
-					Put(0x34000, Blob.FromHex("C080C080C080"));
-					//Overwrite beginning of crystal theme with a song that initializes properly but plays no notes
-					Put(0x340C0, Blob.FromHex("FDF805E0D8C7D0C480"));
-
-					List<int> AllSongs = new List<int>
-					{
-						0x7C649, 0x7C6F9, 0x7C75A, 0x7C75B, 0x7C62D, 0x7C75D,
-						0x7C235, 0x7C761, 0x7CFC3, 0x7CFC4, 0x7CFC5, 0x7CFC6,
-						0x7CFC7, 0x7CFC8, 0x7CFC9, 0x7CFCA, 0x3A226, 0x3A351,
-						0x3A56E, 0x3A597, 0x3ADB4, 0x3B677, 0x3997F, 0x37804,
-						0x3784E, 0x31E44, 0x3C5EF, 0x2D9C1, 0x36E86, 0x27C0D
-					};
-					//Set all music playback calls to play the new empty song
-					foreach (int address in AllSongs)
-					{
-						Data[address] = 0x41;
-					}
-
-					break;
-			}
 		}
 
 		public void DynamicWindowColor(MenuColor menuColor)
@@ -442,8 +252,13 @@ namespace FF1Lib
 			Data[0x03A2D3] = (byte)menuColor;
 		}
 
-		public void EnableModernBattlefield()
+		public void EnableModernBattlefield(bool enable)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			// Since we're changing the window color in the battle scene we need to ensure that
 			// $FF tile remains opaque like in the menu screen. That battle init code
 			// overwrites it with transparent so we skip that code here. Since this is fast
@@ -546,8 +361,13 @@ namespace FF1Lib
 			}
 		}
 
-		public void UseVariablePaletteForCursorAndStone()
+		public void UseVariablePaletteForCursorAndStone(bool enable)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			// The masamune uses the same palette as the cursor and stone characters
 			// so we can free up a whole palette if we reset the varies palette to
 			// the masamune palette after every swing and magic annimation. The only
@@ -578,33 +398,26 @@ namespace FF1Lib
 			// Enable this feature by rewriting the JSR BattleFrame inside UpdateSprites_BattleFrame
 			Put(0x31904, Blob.FromHex("20F1FD207CA060"));
 		}
+		public void ChangeLute(bool changelute, DialogueData dialogues, MT19337 rng)
+		{
+			if (!changelute)
+			{
+				return;
+			}
 
-		public void DisableDamageTileFlicker()
-		{
-			Data[0x7C7E2] = 0xA9;
-		}
-		
-		// Overwrites the lava SFX Assembly Code with a bunch of NOPs
-		public void DisableDamageTileSFX()
-		{
-			Put(0x7C7E7, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-		}		
-
-		public void ChangeLute(MT19337 rng)
-		{
 			var newInstruments = new List<string> {"BASS", "LYRE", "HARP", "VIOLA", "CELLO", "PIANO", "ORGAN", "FLUTE", "OBOE", "PICCOLO", "FLUTE", "WHISTLE", "HORN", "TRUMPET",
 				"BAGPIPE", "DRUM", "VIOLIN", "DBLBASS", "GUITAR", "BANJO", "FIDDLE", "MNDOLIN", "CLARNET", "BASSOON", "TROMBON", "TUBA", "BUGLE", "MARIMBA", "XYLOPHN","SNARE D",
 				"BASSDRM", "TMBRINE", "CYMBALS", "TRIANGL", "COWBELL", "GONG", "TRUMPET", "SAX", "TIMPANI", "B GRAND", "HRDYGRD", "FLUGEL", "SONG", "KAZOO", "FOGHORN", "AIRHORN",
 				"VUVUZLA", "OCARINA", "PANFLUT", "SITAR", "HRMNICA", "UKULELE", "THREMIN", "DITTY", "JINGLE", "LIMRICK", "POEM", "HAIKU", "OCTBASS", "HRPSCRD", "FLUBA", "AEOLUS",
 				"TESLA", "STLDRUM", "DGERIDO", "WNDCHIM" };
 
-			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
+			//var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
 
 			var newLute = newInstruments.PickRandom(rng);
 			// handle extra dialogues that might contain the LUTE if the NPChints flag is enabled or if Astos Shuffle is enabled
-			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("LUTE", newLute, dialogs); ;
-			var princessDialogue = dialogs[0x06].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
-			var monkDialogue = dialogs[0x35].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
+			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("LUTE", newLute, dialogues); ;
+			var princessDialogue = dialogues[0x06].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
+			var monkDialogue = dialogues[0x35].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);
 
 			if (princessDialogue.Length > 1)
 				dialogsUpdate.Add(0x06, princessDialogue[0] + newLute + princessDialogue[1]);
@@ -613,22 +426,22 @@ namespace FF1Lib
 				dialogsUpdate.Add(0x35, monkDialogue[0] + newLute + monkDialogue[1].Substring(0,14) + "\n" + monkDialogue[1].Substring(15, 10).Replace('\n',' '));
 
 			if (dialogsUpdate.Count > 0)
-				InsertDialogs(dialogsUpdate);
+				dialogues.InsertDialogues(dialogsUpdate);
 
 			ItemsText[(int)Item.Lute] = newLute;
 		}
 
-		public void HurrayDwarfFate(Fate fate, NPCdata npcdata, MT19337 rng)
+		public void HurrayDwarfFate(Fate fate, NpcObjectData npcdata, DialogueData dialogues, MT19337 rng)
 		{
 			if (fate == Fate.Spare)
 			{
 				// Protect Hurray Dwarf from NPC guillotine
-				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, newTalkRoutines.Talk_norm);
+				npcdata[ObjectId.DwarfcaveDwarfHurray].Script = TalkScripts.Talk_norm;
 			}
 			else
 			{
 				// Whether NPC guillotine is on or not, kill Hurray Dwarf
-				npcdata.SetRoutine(ObjectId.DwarfcaveDwarfHurray, newTalkRoutines.Talk_kill);
+				npcdata[ObjectId.DwarfcaveDwarfHurray].Script = TalkScripts.Talk_kill;
 
 				// Change the dialogue
 				var dialogueStrings = new List<string>
@@ -649,14 +462,14 @@ namespace FF1Lib
 				};
 
 				//Put new dialogue to E6 since another Dwarf also says hurray
-				InsertDialogs(0xE6, dialogueStrings.PickRandom(rng));
-				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_1] = 0xE6;
-				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_2] = 0xE6;
-				npcdata.GetTalkArray(ObjectId.DwarfcaveDwarfHurray)[(int)TalkArrayPos.dialogue_3] = 0xE6;
+				dialogues[0xE6] = dialogueStrings.PickRandom(rng);
+				npcdata[ObjectId.DwarfcaveDwarfHurray].Dialogue1 = 0xE6;
+				npcdata[ObjectId.DwarfcaveDwarfHurray].Dialogue2 = 0xE6;
+				npcdata[ObjectId.DwarfcaveDwarfHurray].Dialogue3 = 0xE6;
 			}
 		}
 
-		public void TitanSnack(TitanSnack snack, NPCdata npcdata, MT19337 rng)
+		public void TitanSnack(TitanSnack snack, NpcObjectData npcdata, DialogueData dialogues, MT19337 rng)
 		{
 			if (snack == FF1Lib.TitanSnack.Ruby)
 			{
@@ -665,7 +478,7 @@ namespace FF1Lib
 
 			var snackOptions = new List<string>(); // { "NEWRUBY(max 7 characters);NEWRUBYPLURALIZED(max 8 characters);IS/ARE(relating to plural form);DESCRIPTOR(max 6 characters);ONOMATOPOEIA(max 6 chars, how ingestion sounds)" }
 			var mineralSnacks = new List<string> { "DIAMOND;DIAMONDS;ARE;SWEET;CRUNCH", "GEODE;GEODES;ARE;SWEET;CRUNCH", "COAL;COAL;IS;SMOKY;CRUNCH", "PEARL;PEARLS;ARE;SWEET;CRUNCH", "FOSSIL;FOSSILS;ARE;SWEET;CRUNCH", "EMERALD;EMERALDS;ARE;SWEET;CRUNCH", "TOPAZ;TOPAZ;IS;SWEET;CRUNCH", "QUARTZ;QUARTZ;IS;SWEET;CRUNCH", "ONYX;ONYXES;ARE;SWEET;CRUNCH", "MARBLE;MARBLE;IS;SWEET;CRUNCH", "AMETHST;AMETHST;IS;SWEET;CRUNCH", "JADE;JADES;ARE;SWEET;CRUNCH", "SAPHIRE;SAPHIRE;IS;SWEET;CRUNCH", "GRANITE;GRANITE;IS;SWEET;CRUNCH", "OBSDIAN;OBSDIAN;IS;SWEET;CRUNCH", "CONCRET;CONCRET;IS;SALTY;CRUNCH", "ASPHALT;ASPHALT;IS;SALTY;CRUNCH", "PUMICE;PUMICE;IS;SWEET;CRUNCH", "LIMESTN;LIMESTN;IS;SOUR;CRUNCH", "SNDSTON;SNDSTON;IS;SALTY;CRUNCH", "MYTHRL;MYTHRL;IS;SWEET;CRUNCH" };
-			var junkFoodSnacks = new List<string> { "DANISH;DANISHES;ARE;SWEET;MUNCH", "HOT DOG;HOT DOGS;ARE;GREAT;MUNCH", "TACO;TACOS;ARE;GREAT;MUNCH", "SUB;SUBS;ARE;GREAT;MUNCH", "PIZZA;PIZZA;IS;YUMMY;MUNCH", "BURGER;BURGERS;ARE;YUMMY;MUNCH", "EGGROLL;EGGROLLS;ARE;YUMMY;MUNCH", "BISCUIT;BISCUITS;ARE;YUMMY;MUNCH", "WAFFLE;WAFFLES;ARE;YUMMY;MUNCH", "CAKE;CAKE;IS;SWEET;MUNCH", "PIE;PIE;IS;SWEET;MUNCH", "DONUT;DONUTS;ARE;SWEET;MUNCH", "FRIES;FRIES;ARE;SALTY;MUNCH", "CHIPS;CHIPS;ARE;SALTY;CRUNCH", "CANDY;CANDY;IS;SWEET;MUNCH", "PANCAKE;PANCAKES;ARE;SWEET;MUNCH", "ICE CRM;ICE CRM;IS;CREAMY;MUNCH", "PUDDING;PUDDING;IS;YUMMY;MUNCH", "BROWNIE;BROWNIES;ARE;SWEET;MUNCH", "CRAYON;CRAYONS;ARE;WEIRD;MUNCH", "GLUE;GLUE;IS;WEIRD;MUNCH", "PASTE;PASTE;IS;WEIRD;MUNCH", "LASAGNA;LASAGNA;IS;YUMMY;MUNCH", "POUTINE;POUTINE;IS;GREAT;MUNCH", "PASTA;PASTA;IS;YUMMY;MUNCH", "RAMEN;RAMEN;IS;GREAT;MUNCH", "STEAK;STEAK;IS;GREAT;MUNCH", "NACHOS;NACHOS;ARE;SALTY;CRUNCH", "BACON;BACON;IS;SALTY;MUNCH", "MUTTON;MUTTON;IS;GREAT;MUNCH", "BAGEL;BAGELS;ARE;GREAT;MUNCH", "CHEESE;CHEESE;IS;GREAT;MUNCH", "POPCORN;POPCORN;IS;SALTY;MUNCH", "CHICKEN;CHICKEN;IS;GREAT;MUNCH", "BEEF;BEEF;IS;GREAT;MUNCH", "HAM;HAM;IS;GREAT;MUNCH", "BOLOGNA;BOLOGNA;IS;GREAT;MUNCH", "HOAGIE;HOAGIES;ARE;GREAT;MUNCH", "FILET;FILET;IS;DIVINE;MUNCH", "LOBSTER;LOBSTER;IS;DIVINE;MUNCH" };
+			var junkFoodSnacks = new List<string> { "DANISH;DANISHES;ARE;SWEET;MUNCH", "HOT DOG;HOT DOGS;ARE;GREAT;MUNCH", "TACO;TACOS;ARE;GREAT;MUNCH", "SUB;SUBS;ARE;GREAT;MUNCH", "PIZZA;PIZZA;IS;YUMMY;MUNCH", "BURGER;BURGERS;ARE;YUMMY;MUNCH", "EGGROLL;EGGROLLS;ARE;YUMMY;MUNCH", "BISCUIT;BISCUITS;ARE;YUMMY;MUNCH", "WAFFLE;WAFFLES;ARE;YUMMY;MUNCH", "CAKE;CAKE;IS;SWEET;MUNCH", "PIE;PIE;IS;SWEET;MUNCH", "DONUT;DONUTS;ARE;SWEET;MUNCH", "FRIES;FRIES;ARE;SALTY;MUNCH", "CHIPS;CHIPS;ARE;SALTY;CRUNCH", "CANDY;CANDY;IS;SWEET;MUNCH", "PANCAKE;PANCAKES;ARE;SWEET;MUNCH", "ICE CRM;ICE CRM;IS;CREAMY;MUNCH", "PUDDING;PUDDING;IS;YUMMY;MUNCH", "BROWNIE;BROWNIES;ARE;SWEET;MUNCH", "CRAYON;CRAYONS;ARE;WEIRD;MUNCH", "GLUE;GLUE;IS;WEIRD;MUNCH", "PASTE;PASTE;IS;WEIRD;MUNCH", "LASAGNA;LASAGNA;IS;YUMMY;MUNCH", "POUTINE;POUTINE;IS;GREAT;MUNCH", "PASTA;PASTA;IS;YUMMY;MUNCH", "RAMEN;RAMEN;IS;GREAT;MUNCH", "STEAK;STEAK;IS;GREAT;MUNCH", "NACHOS;NACHOS;ARE;SALTY;CRUNCH", "BACON;BACON;IS;SALTY;MUNCH", "MUTTON;MUTTON;IS;GREAT;MUNCH", "BAGEL;BAGELS;ARE;GREAT;MUNCH", "CHEESE;CHEESE;IS;GREAT;MUNCH", "POPCORN;POPCORN;IS;SALTY;MUNCH", "CHICKEN;CHICKEN;IS;GREAT;MUNCH", "BEEF;BEEF;IS;GREAT;MUNCH", "HAM;HAM;IS;GREAT;MUNCH", "BOLOGNA;BOLOGNA;IS;GREAT;MUNCH", "HOAGIE;HOAGIES;ARE;GREAT;MUNCH", "FILET;FILET;IS;DIVINE;MUNCH", "LOBSTER;LOBSTER;IS;DIVINE;MUNCH", "SHEPPIE;SHEPPIE;IS;SAVORY;MUNCH", "MEATLOF;MEATLOF;IS;SAVORY;MUNCH", "ENCHLDA;ENCHLDAS;ARE;CHEESY;MUNCH" };
 			var healthySnacks = new List<string> { "EDAMAME;EDAMAME;IS;SALTY;MUNCH", "SALAD;SALAD;IS;GREAT;MUNCH", "APPLE;APPLES;ARE;SWEET;CRUNCH", "PEAR;PEARS;ARE;SWEET;MUNCH", "MELON;MELONS;ARE;SWEET;MUNCH", "ORANGE;ORANGES;ARE;SWEET;MUNCH", "LEMON;LEMONS;ARE;SOUR;MUNCH", "YOGURT;YOGURT;IS;GREAT;MUNCH", "GRANOLA;GRANOLA;IS;GREAT;CRUNCH", "SPINACH;SPINACH;IS;YUMMY;MUNCH", "EGG;EGGS;ARE;YUMMY;MUNCH", "GRAPES;GRAPES;ARE;YUMMY;MUNCH", "OATMEAL;OATMEAL;IS;GREAT;MUNCH", "TOFU;TOFU;IS;WEIRD;MUNCH", "CABBAGE;CABBAGE;IS;FRESH;MUNCH", "LETTUCE;LETTUCE;IS;FRESH;MUNCH", "TOMATO;TOMATOES;ARE;YUMMY;MUNCH", "SUSHI;SUSHI;IS;FISHY;MUNCH", "TUNA;TUNA;IS;FISHY;MUNCH", "SALMON;SALMON;IS;FISHY;MUNCH", "FISH;FISH;IS;FRESH;MUNCH", "BEANS;BEANS;ARE;YUMMY;MUNCH", "CEREAL;CEREAL;IS;GREAT;MUNCH", "PRETZEL;PRETZELS;ARE;SALTY;MUNCH", "EGGSALD;EGGSALAD;IS;GREAT;MUNCH", "RICE;RICE;IS;PLAIN;MUNCH", "CAVIAR;CAVIAR;IS;DIVINE;MUNCH" };
 			var beverages = new List<string> { "BEER;BEER;IS;SMOOTH;GULP", "WINE;WINE;IS;RICH;GULP", "TEA;TEA;IS;FRESH;GULP", "COFFEE;COFFEE;IS;FRESH;GULP", "COLA;COLA;IS;SWEET;GULP", "COCOA;COCOA;IS;SWEET;GULP", "ICEDTEA;ICEDTEA;IS;SWEET;GULP", "LMONADE;LEMONADE;IS;SWEET;GULP", "MILK;MILK;IS;GREAT;GULP", "LATTE;LATTES;ARE;CREAMY;GULP", "WATER;WATER;IS;FRESH;GULP", "TEQUILA;TEQUILA;IS;SMOOTH;GULP" };
 
@@ -693,9 +506,6 @@ namespace FF1Lib
 				default:
 					return;
 			}
-
-			var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
-
 			var randomRuby = snackOptions.PickRandom(rng);
 
 			var newRubyItemDescription = "A tasty treat."; // Replaces "A large red stone." (can't be too long else it'll overwrite next phrase: "The plate shatters,")
@@ -733,12 +543,12 @@ namespace FF1Lib
 			}
 
 			// handle extra dialogues that might contain the RUBY if the NPChints flag is enabled
-			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("RUBY", newRuby, dialogs);
+			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("RUBY", newRuby, dialogues);
 
 			// begin substitute phrase parts
-			var titanDeepDungeon = dialogs[0x29].Split(new string[] { "a RUBY" }, System.StringSplitOptions.RemoveEmptyEntries);
-			var titanDialogue = dialogs[0x2A].Split(new string[] { "RUBY", "Crunch, crunch, crunch,", "sweet", "Rubies are" }, System.StringSplitOptions.RemoveEmptyEntries);
-			var melmondManDialogue = dialogs[0x7B].Split(new string[] { "eats gems.", "RUBIES" }, System.StringSplitOptions.RemoveEmptyEntries);
+			var titanDeepDungeon = dialogues[0x29].Split(new string[] { "a RUBY" }, System.StringSplitOptions.RemoveEmptyEntries);
+			var titanDialogue = dialogues[0x2A].Split(new string[] { "RUBY", "Crunch, crunch, crunch,", "sweet", "Rubies are" }, System.StringSplitOptions.RemoveEmptyEntries);
+			var melmondManDialogue = dialogues[0x7B].Split(new string[] { "eats gems.", "RUBIES" }, System.StringSplitOptions.RemoveEmptyEntries);
 
 			// Bring me a {newRuby} if you
 			// wish to skip to floor 22.
@@ -772,13 +582,13 @@ namespace FF1Lib
 			// end substitute phrase parts
 
 			if (dialogsUpdate.Count > 0)
-				InsertDialogs(dialogsUpdate);
+				dialogues.InsertDialogues(dialogsUpdate);
 
 			// substitute key item
 			ItemsText[(int)Item.Ruby] = newRuby;
 		}
 
-		private Dictionary <int,String> SubstituteKeyItemInExtraNPCDialogues(string original, string replacement, string[] dialogs)
+		private Dictionary <int,String> SubstituteKeyItemInExtraNPCDialogues(string original, string replacement, DialogueData dialogues)
 		{
 			var dialogsUpdate = new Dictionary<int, string>();
 			// Add extra dialogues that might contain the {original} if the NPChints flag is enabled or if Astos Shuffle is enabled
@@ -789,7 +599,7 @@ namespace FF1Lib
 
 			for (int i = 0; i < otherNPCs.Count(); i++)
 			{
-				var tempDialogue = dialogs[otherNPCs[i]].Split(new string[] { original.ToUpper().Trim() }, System.StringSplitOptions.RemoveEmptyEntries);
+				var tempDialogue = dialogues[otherNPCs[i]].Split(new string[] { original.ToUpper().Trim() }, System.StringSplitOptions.RemoveEmptyEntries);
 				if (tempDialogue.Length > 1)
 					dialogsUpdate.Add(otherNPCs[i], tempDialogue[0] + replacement.ToUpper().Trim() + tempDialogue[1]);
 			}

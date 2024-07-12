@@ -48,11 +48,16 @@ namespace FF1Lib
 
 	public partial class FF1Rom : NesRom
 	{
-		public void MonsterInABox(MT19337 rng, Flags flags)
+		public void MonsterInABox(ItemPlacement itemPlacement, ZoneFormations zoneformations, TileSetsData tileSetsData, NpcObjectData npcdata, DialogueData dialogues, MT19337 rng, Flags flags)
 		{
+			if (!(bool)flags.TrappedChestsEnabled)
+			{
+				return;
+			}
+
 			const int lut_TreasureOffset = 0x3100;
-			const int BANK_SMINFO = 0x00;
-			const int lut_TileSMsetProp = 0x8800; // BANK_SMINFO - page                        - 0x100 bytes x 8  (2 bytes per)
+			//const int BANK_SMINFO = 0x00;
+			//const int lut_TileSMsetProp = 0x8800; // BANK_SMINFO - page                        - 0x100 bytes x 8  (2 bytes per)
 
 			// Replace OpenTreasureChest routine, see 11_8EC0_CheckTrap.asm
 			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9002003FEA645BD00B18561A9112003FE20A08E8A60"));
@@ -63,11 +68,25 @@ namespace FF1Lib
 			// InTalkBattleNoRun to trigger fight
 			PutInBank(0x11, 0x8E80, Blob.FromHex("856A8D410320CDD8A9008D01208D1540A002204A96A001204A9660"));
 
-			InsertDialogs(0x110, "Monster-in-a-box!"); // 0xC0
+			dialogues[0x110] = "Monster-in-a-box!"; // 0xC0
 
 			List<IRewardSource> validChests = new();
 			var chestMonsterList = new byte[0x100];
-			var treasureList = Get(lut_TreasureOffset, 0x100);
+
+			List<int> treasureList = new();
+
+			for (int i = 0; i < 0x100; i++)
+			{
+				var index = itemPlacement.PlacedItems.FindIndex(r => (r.Address - 0x3100) == i);
+				if (index > -1)
+				{
+					treasureList.Add((int)itemPlacement.PlacedItems[index].Item);
+				}
+				else
+				{
+					treasureList.Add((int)Item.Cabin);
+				}
+			}
 
 			// Select treasures			
 			var betterEquipmentList = ItemLists.UberTier.Concat(ItemLists.LegendaryArmorTier).Concat(ItemLists.LegendaryWeaponTier).Concat(ItemLists.RareArmorTier).Concat(ItemLists.RareWeaponTier);
@@ -129,7 +148,7 @@ namespace FF1Lib
 			const byte spookyZombieD = 0xCB;
 			const byte fightBahamut = 0xF1;
 
-			List<byte> altEncountersList = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).ToList();
+			List<byte> altEncountersList = new(FormationLists.BSideEncounters);
 			altEncountersList.Add(0xFF); // IronGol
 
 			if ((bool)flags.SpookyFlag)
@@ -184,20 +203,20 @@ namespace FF1Lib
 					encounters = altEncountersList;
 					break;
 				case FormationPool.LocalFormations:
-					encountersGroup = Get(ZoneFormationsOffset + (8 * 0x40), 8 * 0x40).Chunk(0x08).Select(x => x.ToBytes().Select(y => (byte)(y | 0x80)).ToList()).ToList();
+					encountersGroup = zoneformations.GetBytes();
 
-					encountersGroup[(int)MapId.ConeriaCastle1F] = castleEncounters;
-					encountersGroup[(int)MapId.ElflandCastle] = castleEncounters;
-					encountersGroup[(int)MapId.NorthwestCastle] = castleEncounters;
-					encountersGroup[(int)MapId.CastleOfOrdeals1F] = castleEncounters;
+					encountersGroup[(int)MapIndex.ConeriaCastle1F] = castleEncounters;
+					encountersGroup[(int)MapIndex.ElflandCastle] = castleEncounters;
+					encountersGroup[(int)MapIndex.NorthwestCastle] = castleEncounters;
+					encountersGroup[(int)MapIndex.CastleOrdeals1F] = castleEncounters;
 
-					encountersGroup[(int)MapId.Cardia] = cardiaEncounters;
-					encountersGroup[(int)MapId.BahamutsRoomB1] = cardiaEncounters;
-					encountersGroup[(int)MapId.BahamutsRoomB2] = cardiaEncounters;
+					encountersGroup[(int)MapIndex.Cardia] = cardiaEncounters;
+					encountersGroup[(int)MapIndex.BahamutCaveB1] = cardiaEncounters;
+					encountersGroup[(int)MapIndex.BahamutCaveB2] = cardiaEncounters;
 
-					encountersGroup[(int)MapId.DwarfCave] = caveEncounters;
-					encountersGroup[(int)MapId.SardasCave] = caveEncounters;
-					encountersGroup[(int)MapId.MatoyasCave] = caveEncounters;
+					encountersGroup[(int)MapIndex.DwarfCave] = caveEncounters;
+					encountersGroup[(int)MapIndex.SardasCave] = caveEncounters;
+					encountersGroup[(int)MapIndex.MatoyasCave] = caveEncounters;
 
 					break;
 				case FormationPool.VanillaSpikes:
@@ -274,7 +293,7 @@ namespace FF1Lib
 			}
 
 			int altFormationPosition = 0;
-			var chestsMapLocations = ItemLocations.GetTreasuresMapLocation().ToDictionary(x => x.Key, x => ItemLocations.MapLocationToMapId[x.Value]);
+			var chestsMapLocations = ItemLocations.GetTreasuresMapLocation().ToDictionary(x => x.Key, x => ItemLocations.MapLocationToMapIndex[x.Value]);
 
 			byte GetEncounter(int i)
 			{
@@ -358,7 +377,15 @@ namespace FF1Lib
 					validChests.RemoveAll(x => disallowedLocations.Contains(x.MapLocation) || ((bool)flags.TCMasaGuardian == true && treasureList[x.Address - lut_TreasureOffset] == (int)Item.Masamune) || ((bool)flags.TCProtectIncentives == true && GetIncentiveList(flags).Contains((Item)treasureList[x.Address - lut_TreasureOffset])));
 				}
 
-				chestMonsterList[validChests.SpliceRandom(rng).Address - lut_TreasureOffset] = ChaosFormationIndex;
+				var chaosChest = validChests.SpliceRandom(rng);
+				itemPlacement.PlacedItems.RemoveAll(c => c.Address == chaosChest.Address);
+
+				// Change Chaos item for none so the chest always open and stays local for AP
+				itemPlacement.PlacedItems.Add(new TreasureChest(chaosChest, Item.None));
+
+				chestMonsterList[chaosChest.Address - lut_TreasureOffset] = ChaosFormationIndex;
+
+				SetChaosForMIAB(npcdata, dialogues);
 			}
 
 
@@ -382,14 +409,18 @@ namespace FF1Lib
 				{
 					for (int j = 0; j < 0x80; j++)
 					{
-						var tempTileProperties = GetFromBank(BANK_SMINFO, lut_TileSMsetProp + (i * 0x100) + (j * 2), 2);
-						if ((tempTileProperties[0] & (byte)TilePropFunc.TP_SPEC_TREASURE) > 0 && (tempTileProperties[0] & (byte)TilePropFunc.TP_NOMOVE) > 0)
+
+
+						var tempTileProperties = tileSetsData[i].Tiles[j].Properties;
+						//var tempTileProperties = GetFromBank(BANK_SMINFO, lut_TileSMsetProp + (i * 0x100) + (j * 2), 2);
+						if ((tempTileProperties.Byte1 & (byte)TilePropFunc.TP_SPEC_TREASURE) > 0 && (tempTileProperties.Byte1 & (byte)TilePropFunc.TP_NOMOVE) > 0)
 						{
-							if (chestMonsterList[(int)tempTileProperties[1]] > 0)
+							if (chestMonsterList[(int)tempTileProperties.Byte2] > 0)
 							{
-								TileSM temptile = new((byte)j, i, this);
-								temptile.TileGraphic = new List<byte> { 0x2A, 0x7C, 0x3A, 0x3B };
-								temptile.Write(this);
+								tileSetsData[i].Tiles[j].TileGraphic = new List<byte> { 0x2A, 0x7C, 0x3A, 0x3B };
+								//TileSM temptile = new((byte)j, i, this);
+								//temptile.TileGraphic = new List<byte> { 0x2A, 0x7C, 0x3A, 0x3B };
+								//temptile.Write(this);
 							}
 						}
 					}
@@ -399,16 +430,17 @@ namespace FF1Lib
 			// Insert trapped chest list
 			PutInBank(0x11, 0x8F00, chestMonsterList);
 		}
-		public void SetChaosForMIAB(NPCdata npcdata)
+		public void SetChaosForMIAB(NpcObjectData npcdata, DialogueData dialogues)
 		{
-			npcdata.SetRoutine((ObjectId)0x1A, newTalkRoutines.Talk_4Orb);
-			npcdata.GetTalkArray((ObjectId)0x1A)[(int)TalkArrayPos.dialogue_1] = 0x30;
-			npcdata.GetTalkArray((ObjectId)0x1A)[(int)TalkArrayPos.dialogue_2] = 0x30;
-			npcdata.GetTalkArray((ObjectId)0x1A)[(int)TalkArrayPos.dialogue_3] = 0x30;
-			Data[MapObjGfxOffset + 0x18] = 0xF4;
-			Data[MapObjGfxOffset + 0x19] = 0xF4;
-			Data[MapObjGfxOffset + 0x1A] = 0xF4;
-			PutInBank(0x00, 0xA000 + ((byte)MapId.TempleOfFiendsRevisitedChaos * 0x30) + 0x18, Blob.FromHex("000F1636000F1636"));
+			npcdata[ObjectId.Chaos3].Script = TalkScripts.Talk_4Orb;
+			npcdata[ObjectId.Chaos3].Dialogue1 = 0x30;
+			npcdata[ObjectId.Chaos3].Dialogue2 = 0x30;
+			npcdata[ObjectId.Chaos3].Dialogue3 = 0x30;
+
+			npcdata[ObjectId.Chaos1].Sprite = (ObjectSprites)0xF4;
+			npcdata[ObjectId.Chaos2].Sprite = (ObjectSprites)0xF4;
+			npcdata[ObjectId.Chaos3].Sprite = (ObjectSprites)0xF4;
+			PutInBank(0x00, 0xA000 + ((byte)MapIndex.TempleOfFiendsRevisitedChaos * 0x30) + 0x18, Blob.FromHex("000F1636000F1636"));
 
 			Dictionary<int, string> newgarlanddialogue = new Dictionary<int, string>();
 
@@ -416,7 +448,7 @@ namespace FF1Lib
 			newgarlanddialogue.Add(0x2F, "Many moons ago I managed\nto run away from Chaos.\nAnd lo and behold,\nI BECAME Chaos. I took\nhis place.");
 			newgarlanddialogue.Add(0x30, "Okay, I won't fight you.\nSome say you can find\nthe other Chaos hidden\nsomewhere in a chest.\nGood luck!");
 
-			InsertDialogs(newgarlanddialogue);
+			dialogues.InsertDialogues(newgarlanddialogue);
 		}
 		public static List<Item> GetIncentiveList(Flags flags)
 		{

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System;
 
 namespace FF1Lib
 {
@@ -12,24 +13,50 @@ namespace FF1Lib
 	public struct Coordinate
 	{
 		private readonly short _identityValue;
+		//public readonly byte X { get => Context > CoordinateLocale.Overworld ? (byte)(x & 0x3F) : x; }
+		//public readonly byte Y { get => Context > CoordinateLocale.Overworld ? (byte)(y & 0x3F) : y; }
 		public readonly byte X;
 		public readonly byte Y;
-		public Coordinate(byte x, byte y, CoordinateLocale context)
+		public readonly CoordinateLocale Context;
+		public readonly byte RawX { get => Context == CoordinateLocale.StandardInRoom ? (byte)(X | 0x80) : X; }
+		public readonly byte RawY { get => Context > CoordinateLocale.Overworld ? (byte)(Y | 0x80) : Y; }
+		//public CoordinateLocale Context { get => ((X & 0x80) > 0) ? CoordinateLocale.StandardInRoom : (((Y & 0x80) > 0) ? CoordinateLocale.Overworld : CoordinateLocale.Standard); }
+		public Coordinate(byte _x, byte _y, CoordinateLocale context)
 		{
-			X = x;
-			Y = y;
+			X = _x;
+			Y = _y;
+
+			Context = context;
 
 			if (context > CoordinateLocale.Overworld)
 			{
-				Y |= 0x80;
-
-				if (context == CoordinateLocale.StandardInRoom)
-				{
-					X |= 0x80;
-				}
+				Y &= 0x3F;
+				X &= 0x3F;
 			}
 
-			_identityValue = (short)(x * 256 + y);
+			_identityValue = (short)(X * 256 + Y);
+		}
+		public Coordinate(byte _x, byte _y)
+		{
+			X = _x;
+			Y = _y;
+
+			if ((_x & 0x80) > 1)
+			{
+				Context = CoordinateLocale.StandardInRoom;
+			}
+			else
+			{
+				Context = CoordinateLocale.Standard;
+			}
+
+			if (Context > CoordinateLocale.Overworld)
+			{
+				Y &= 0x3F;
+				X &= 0x3F;
+			}
+
+			_identityValue = (short)(X * 256 + Y);
 		}
 	}
 	public struct LocationRequirement
@@ -70,7 +97,7 @@ namespace FF1Lib
 
 	    [JsonProperty(Order=2)]
 	    [JsonConverter(typeof(StringEnumConverter))]
-		public readonly MapIndex Index;
+		public MapIndex Index;
 
 	    [JsonProperty(Order=3)]
 		public byte CoordinateX { get; private set; }
@@ -85,6 +112,7 @@ namespace FF1Lib
 	    [JsonConverter(typeof(StringEnumConverter))]
 		public readonly ExitTeleportIndex Exit;
 
+		public Coordinate Coordinates { get; set; }
 		public string SpoilerText =>
 		$"{Enum.GetName(typeof(MapLocation), Destination)}" +
 		$"{string.Join("", Enumerable.Repeat(" ", Math.Max(1, 30 - Enum.GetName(typeof(MapLocation), Destination).Length)).ToList())}";
@@ -110,6 +138,7 @@ namespace FF1Lib
 
 			Destination = destination;
 			Index = index;
+			Coordinates = coordinates;
 			CoordinateX = coordinates.X;
 			CoordinateY = coordinates.Y;
 			Teleports = teleports?.ToList() ?? new List<TeleportIndex>();
@@ -123,15 +152,75 @@ namespace FF1Lib
 			: this(destination, index, coordinates, exits: exit)
 		{
 		}
+		public TeleportDestination(TeleData teledata, CoordinateLocale context)
+		{
+			Destination = MapLocation.None;
+			Index = teledata.Map;
+			Coordinates = new();
+			CoordinateX = 0;
+			CoordinateY = 0;
+			Teleports = null;
+			Exit = new();
+			SetTeleporter(new Coordinate(teledata.X, teledata.Y, context));
+		}
+		public TeleportDestination(MapIndex index, Coordinate newcoord)
+		{
+			Destination = MapLocation.None;
+			Index = index;
+			Coordinates = newcoord;
+			CoordinateX = Coordinates.X;
+			CoordinateY = Coordinates.Y;
+			Teleports = null;
+			Exit = new();
+		}
+		public TeleportDestination(TeleportDestination newdest)
+		{
+			Destination = newdest.Destination;
+			Index = newdest.Index;
+			Coordinates = new Coordinate(newdest.Coordinates.X, newdest.Coordinates.Y, newdest.Coordinates.Context);
+			CoordinateX = Coordinates.X;
+			CoordinateY = Coordinates.Y;
+			Teleports = newdest.Teleports?.ToList();
+			Exit = newdest.Exit;
+		}
+		public TeleportDestination(TeleportDestination newdest, Coordinate newcoords)
+		{
+			Destination = newdest.Destination;
+			Index = newdest.Index;
+			Coordinates = new Coordinate(newcoords.X, newcoords.Y, newcoords.Context);
+			CoordinateX = Coordinates.X;
+			CoordinateY = Coordinates.Y;
+			Teleports = newdest.Teleports?.ToList();
+			Exit = newdest.Exit;
+		}
 		public void SetEntrance(Coordinate coordinate)
 		{
-			CoordinateX = coordinate.X;
-			CoordinateY = coordinate.Y;
+			Coordinates = coordinate;
+		}
+		public void SetTeleporter(Coordinate coordinate)
+		{
+			int mask = (coordinate.Context == CoordinateLocale.Overworld) ? 0xFF : 0x3F;
+			Coordinates = new Coordinate((byte)(coordinate.X & mask), (byte)(coordinate.Y & mask), coordinate.Context);
+			CoordinateX = Coordinates.X;
+			CoordinateY = Coordinates.Y;
+		}
+		public void SetTeleporter(MapIndex index, Coordinate coordinate)
+		{
+			SetTeleporter(coordinate);
+			Index = index;
+		}
+		public void SetTeleporter(TeleData data)
+		{
+			SetTeleporter(new Coordinate(data.X, data.Y, CoordinateLocale.Overworld));
+		}
+		public Coordinate FlipXcoordinate()
+		{
+			return new Coordinate((byte)(64 - Coordinates.X - 1), Coordinates.Y, Coordinates.Context);
 		}
 
-		public void FlipXcoordinate()
+		public Coordinate FlipYcoordinate()
 		{
-			CoordinateX = (byte)(64 - CoordinateX - 1);
+			return new Coordinate(Coordinates.X, (byte)(64 - Coordinates.Y - 1), Coordinates.Context);
 		}
 	}
 }

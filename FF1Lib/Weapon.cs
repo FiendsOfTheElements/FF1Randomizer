@@ -80,11 +80,20 @@ namespace FF1Lib
 		//6 - weapon type sprite
 		//7 - weapon sprite palette color
 
-		public List<int> RandomWeaponBonus(MT19337 rng, int min, int max, bool excludeMasa, bool cleanNames)
+		public void RandomWeaponBonus(Flags flags, bool cleanNames, List<int> blurseValues, MT19337 rng)
 		{
+			bool enable = flags.WeaponBonuses;
+			int min = flags.RandomWeaponBonusLow;
+			int max = flags.RandomWeaponBonusHigh;
+			bool excludeMasa = (bool)flags.RandomWeaponBonusExcludeMasa;
+
+			if (!enable)
+			{
+				return;
+			}
+
 			//get base stats
 			Weapon currentWeapon;
-			List<int> blurseValues = new();
 
 			for (int i = 0; i < WeaponCount; i++)
 			{
@@ -92,7 +101,7 @@ namespace FF1Lib
 				{
 					currentWeapon = new Weapon(i, this);
 					int bonus = rng.Between(min, max);
-					blurseValues.Add(bonus);
+					blurseValues[i] = bonus;
 					if (bonus != 0)
 					{
 						//adjust stats
@@ -148,7 +157,7 @@ namespace FF1Lib
 				}
 			}
 
-			return blurseValues;
+			return;
 		}
 
 		//sample function for creating new weapons
@@ -159,8 +168,19 @@ namespace FF1Lib
 			flameChucks.writeWeaponMemory(this);
 		}
 
-		public void Weaponizer(MT19337 rng, bool useQualityNamesOnly, bool commonWeaponsHavePowers, bool noItemMagic) {
-		    var tierList = new List<IReadOnlyList<Item>> { ItemLists.CommonWeaponTier, ItemLists.RareWeaponTier,
+		public void Weaponizer(Flags flags, MT19337 rng) {
+
+			bool enableWeaponizer = (bool)flags.Weaponizer;
+			bool useQualityNamesOnly = (bool)flags.WeaponizerNamesUseQualityOnly;
+			bool commonWeaponsHavePowers = (bool)flags.WeaponizerCommonWeaponsHavePowers;
+			bool noItemMagic = flags.ItemMagicMode == ItemMagicMode.None;
+
+			if (!enableWeaponizer)
+			{
+				return;
+			}
+
+			var tierList = new List<IReadOnlyList<Item>> { ItemLists.CommonWeaponTier, ItemLists.RareWeaponTier,
 							  ItemLists.LegendaryWeaponTier, ItemLists.UberTier};
 		    var damageBases = new int[]      { 10, 18, 26, 36, 52 };
 		    var critPercentBases = new int[] {  5, 10, 20, 30, 45 };

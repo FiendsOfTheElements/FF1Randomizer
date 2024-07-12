@@ -16,7 +16,18 @@
 
 			LoadTable();
 		}
+		public MemTable(FF1Rom _rom, int _bank, int _address, int _count)
+		{
+			rom = _rom;
+			address = _bank * 0x4000 + (_address - 0x8000);
+			count = _count;
 
+			LoadTable();
+		}
+		public void UpdateAddress(int _address)
+		{
+			address = _address;
+		}
 		public unsafe void LoadTable()
 		{
 			Data = new T[count];

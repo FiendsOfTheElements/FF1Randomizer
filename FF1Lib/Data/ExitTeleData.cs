@@ -32,7 +32,7 @@ namespace FF1Lib
 		{
 			get
 			{
-				return new TeleData { X = TeleX[i], Y = TeleY[i], Map = (MapId)0xFF };
+				return new TeleData { X = TeleX[i], Y = TeleY[i], Map = (MapIndex)0xFF };
 			}
 			set
 			{

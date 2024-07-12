@@ -470,7 +470,7 @@ namespace FF1Lib
 				rom.addShardIcon(0x12, 0x8800 + 0x760);			        // If we're shard hunt, add the shard to tiles 0x76 and 0x77 because we missed em
 
 			// Change where the ORBS are loaded from and to so we can piggyback our icons - Now we load 8 lines from Bank 12 into 0000 of the PPU
-			rom.PutInBank(0x1F, 0xEAA2, Blob.FromHex("A9122003FEA208A9008510A9888511A900"));
+			rom.PutInBank(0x1F, 0xEA9F, Blob.FromHex("2002EAA9122003FEA208A9008510A9888511A900"));
 
 			// The code below handles loading in icons into the shop, since the shop doesn't have as much free space
 			tileset = rom.GetFromBank(0x09, 0x8800, 0x0800);
@@ -484,7 +484,7 @@ namespace FF1Lib
 			
 
 			// Load icons from images. Make your own if you'd like! Don't forget to add them to the icon dictionary
-			IImageFormat format;
+			//IImageFormat format;
 
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 			var weaponiconsPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("weapon_icons.png"));
@@ -511,16 +511,15 @@ namespace FF1Lib
 			offset += 16 * 32 + 16; // Left the first line blank for silly reasons. If more icons get added, clean this up
 
 			// Weapons
-			Image<Rgba32> image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(weaponiconsPath), out format);
+			Image<Rgba32> image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(weaponiconsPath));
 			for (int w = 0; w < 6; w++)
 			{
 				rom.PutInBank(0x12, offset, rom.EncodeForPPU(getTile(w, index, image)));
-				rom.PutInBank(0x12, 0x84E0 + w * 16, rom.EncodeForPPU(getTile(w, index, image)));     // Shop Icons
 				offset += 16;
 			}
 
 			// Spells
-			image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(spelliconsPath), out format);
+			image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(spelliconsPath));
 			for (int w = 0; w < 13; w++)
 			{
 				rom.PutInBank(0x12, offset, rom.EncodeForPPU(getTile(w, index, image)));
@@ -528,7 +527,7 @@ namespace FF1Lib
 			}
 
 			// These are the old icons, no images for these only THE BLOB
-			image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(elementstatusiconsPath), out format);
+			image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(elementstatusiconsPath));
 			for (int w = 0; w < 16; w++)
 			{
 				rom.PutInBank(0x12, offset, rom.EncodeForPPU(getTile(w, index, image)));			// Non Shop Icons
@@ -613,11 +612,20 @@ namespace FF1Lib
 		{
 			return new List<string>(_itemsTexts);
 		}
-		public void Write(FF1Rom rom, List<int> unusedGoldItems)
+		private void FixRibbonSpace()
 		{
+			if (_itemsTexts[(int)Item.Ribbon].Length > 7 && _itemsTexts[(int)Item.Ribbon][7] == ' ')
+			{
+				_itemsTexts[(int)Item.Ribbon] = _itemsTexts[(int)Item.Ribbon].Remove(7);
+			}
+		}
+		public void Write(FF1Rom rom, List<Item> unusedGoldItems)
+		{
+			FixRibbonSpace();
+
 			foreach (var golditem in unusedGoldItems)
 			{
-				_itemsTexts[golditem] = "";
+				_itemsTexts[(int)golditem] = "";
 			}
 
 			var duplicates = _itemsTexts.GroupBy(x => x)

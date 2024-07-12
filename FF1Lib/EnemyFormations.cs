@@ -46,8 +46,21 @@ namespace FF1Lib
 		private const byte UnrunnableOffset = 0x0D;       // no run flag (in low bit)
 		private const byte QuantityBOffset = 0x0E;        // enemy quantities for B formation (2 bytes)
 
-		public void ShuffleUnrunnable(MT19337 rng, Flags flags, int unrunnablePercent)
+		public void ShuffleUnrunnable(MT19337 rng, Flags flags)
 		{
+			int unrunnablePercent = rng.Between(flags.UnrunnablesLow, flags.UnrunnablesHigh);
+
+			if (!(bool)flags.UnrunnableShuffle)
+			{
+				return;
+			}
+			else if(unrunnablePercent >= 100)
+			{
+				// This is separate because the basic Imp formation is not otherwise included in the possible unrunnable formations
+				CompletelyUnrunnable();
+				return;
+			}
+
 			// Load a list of formations from ROM
 			List<Blob> formations = Get(FormationsOffset, FormationSize * FormationCount).Chunk(FormationSize);
 			// First we mark all formations as runnable except for fiends/chaos (both sides) or the other boss fights (on a-side only)
@@ -91,21 +104,13 @@ namespace FF1Lib
 			lastFormations.ForEach(formation => formation[UnrunnableOffset] |= 0x02);
 			Put(FormationsOffset + FormationSize * 0x7E, lastFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
-
-		// Should be obsolete, leaving here just in case
-		/*public void CompletelyRunnable()
+		private void FiendShuffle(bool enable, MT19337 rng)
 		{
-			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
-			formations.ForEach(formation => formation[UnrunnableOffset] &= 0xFC);
-			Put(FormationsOffset, formations.SelectMany(formation => formation.ToBytes()).ToArray());
+			if (!enable)
+			{
+				return;
+			}
 
-			List<Blob> lastFormations = Get(FormationsOffset + FormationSize * 0x7E, FormationSize * 2).Chunk(FormationSize);
-			lastFormations.ForEach(formation => formation[UnrunnableOffset] &= 0xFD);
-			Put(FormationsOffset + FormationSize * 0x7E, lastFormations.SelectMany(formation => formation.ToBytes()).ToArray());
-		}*/
-
-		private void FiendShuffle(MT19337 rng)
-		{
 			//Shuffle the four Fiend1 fights.
 			//Specifically, shuffle what fight triggers during dialog with each of the Elemental Orbs
 			int Fiend1Offset = 119;
@@ -114,8 +119,13 @@ namespace FF1Lib
 			Put(FormationsOffset + FormationSize * Fiend1Offset, fiendFormations.SelectMany(formation => formation.ToBytes()).ToArray());
 		}
 
-		public void ShuffleSurpriseBonus(MT19337 rng)
+		public void ShuffleSurpriseBonus(bool enable, MT19337 rng)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			// Just like the vanilla game this doesn't care if a high surprise enemy is unrunnable
 			// and therefore incapable of surprise or first strike. It just shuffles indiscriminately.
 			List<Blob> formations = Get(FormationsOffset, FormationSize * NormalFormationCount).Chunk(FormationSize);
@@ -143,9 +153,12 @@ namespace FF1Lib
 			Put(FormationsOffset + FormationSize * WarMECHFormationIndex, warMECHFormation);
 		}
 
-		public void TransformFinalFormation(FinalFormation formation, EvadeCapValues evadeClampFlag, MT19337 rng)
+		public void TransformFinalFormation(Flags flags, MT19337 rng)
 		{
-			if (formation == FinalFormation.None) // This shouldnt be possible, but we are still checking anyways to be safe.
+			FinalFormation formation = flags.TransformFinalFormation;
+			EvadeCapValues evadeClampFlag = flags.EvadeCap;
+
+			if (formation == FinalFormation.None || (bool)flags.SpookyFlag) 
 			{
 				return;
 			}
@@ -247,44 +260,16 @@ namespace FF1Lib
 
 			Put(FormationsOffset + ChaosFormationIndex * FormationSize, finalBattle);
 		}
-
-		public void PacifistEnd(TalkRoutines talkroutines, NPCdata npcdata, bool extendedtraptiles)
-		{
-			// Remove ToFR Fiends tiles
-			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
-			tilesets.ForEach(tile =>
-			{
-				if (IsBossTrapTile(tile))
-				{
-					tile[1] = (byte)(extendedtraptiles ? 0x00 : 0x80);
-				}
-			});
-			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());
-
-			// Update Chaos script
-			var Talk_Ending = talkroutines.Add(Blob.FromHex("4C38C9"));
-			npcdata.SetRoutine((ObjectId)0x1A, (newTalkRoutines)Talk_Ending);
-
-			//Update Fiends, Garland, Vampire, Astos and Bikke
-			var battleJump = Blob.FromHex("2020B1");
-			var mapreload = Blob.FromHex("201896");
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_fight, battleJump, Blob.FromHex("EAEAEA"));
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_fight, mapreload, Blob.FromHex("EAEAEA"));
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, battleJump, Blob.FromHex("EAEAEA"));
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Bikke, mapreload, Blob.FromHex("EAEAEA"));
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, battleJump, Blob.FromHex("EAEAEA"));
-			talkroutines.ReplaceChunk(newTalkRoutines.Talk_Astos, mapreload, Blob.FromHex("EAEAEA"));
-		}
-		public void PacifistBat(TalkRoutines talkroutines, NPCdata npcdata)
+		public void PacifistBat(StandardMaps maps, TalkRoutines talkroutines, NpcObjectData npcdata)
 		{
 			// Add Script
 			var Talk_Ending = talkroutines.Add(Blob.FromHex("4C38C9"));
-			npcdata.SetRoutine(ObjectId.MatoyaBroom4, (newTalkRoutines)Talk_Ending);
-			var broom4 = GetNpc(MapId.MatoyasCave, 4);
-			var bat3 = GetNpc(MapId.MarshCaveB1, 3);
-			SetNpc(MapId.MatoyasCave, 4, ObjectId.MatoyaBroom3, broom4.Coord.x, broom4.Coord.y, true, false);
-			SetNpc(MapId.MarshCaveB1, 3, ObjectId.MatoyaBroom4, bat3.Coord.x, bat3.Coord.y, false, false);
-			Data[MapObjGfxOffset + (int)ObjectId.MatoyaBroom4] = 0x11;
+			npcdata[ObjectId.MatoyaBroom4].Script = (TalkScripts)Talk_Ending;
+			npcdata[ObjectId.MatoyaBroom4].Sprite = ObjectSprites.Bat;
+			var broom4 = maps[MapIndex.MatoyasCave].MapObjects[4];
+			var bat3 = maps[MapIndex.MarshCaveB1].MapObjects[3];
+			maps[MapIndex.MatoyasCave].MapObjects.SetNpc(4, ObjectId.MatoyaBroom3, broom4.Coords.X, broom4.Coords.Y, true, false);
+			maps[MapIndex.MarshCaveB1].MapObjects.SetNpc(3, ObjectId.MatoyaBroom4, bat3.Coords.X, bat3.Coords.Y, false, false);
 		}
 
 		public enum FormationPattern

@@ -17,7 +17,17 @@
 			TileSet = new TileSet(rom, (byte)i);
 			TileSet.LoadData();
 
-			for (int j = 0; j < 128; j++) Tiles[j] = new SCTileDef(TileSet.TileProperties[j]);
+			for (int j = 0; j < 128; j++) Tiles[j] = new SCTileDef(TileSet.Tiles[j].Properties);
+		}
+		public SCTileSet(TileSet tileSets, int i)
+		{
+			//rom = _rom;
+			Index = i;
+
+			TileSet = tileSets;
+			//TileSet.LoadData();
+
+			for (int j = 0; j < 128; j++) Tiles[j] = new SCTileDef(TileSet.Tiles[j].Properties);
 		}
 	}
 }

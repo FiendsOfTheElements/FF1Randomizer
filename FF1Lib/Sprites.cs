@@ -547,9 +547,12 @@ namespace FF1Lib
 
 		public async Task SetCustomPlayerSprites(Stream readStream, bool threePalettes)
 		{
-			IImageFormat format;
-			Image<Rgba32> image = Image.Load<Rgba32>(readStream, out format);
-
+			//IImageFormat format;
+			Image<Rgba32> image = Image.Load<Rgba32>(readStream);
+			if (image.Width != 208 || image.Height != 240)
+			{
+				await this.Progress($"WARNING: Custom player sprites have dimensions {image.Width}x{image.Height}, expected 208x240");
+			}
 
 			var battlePals = new List<List<byte>>();
 			battlePals.Add(new List<byte>());
@@ -774,8 +777,8 @@ namespace FF1Lib
 						 int PATTERNTABLE_OFFSET,
 						 int PATTERNTABLE_ASSIGNMENT)
 		{
-			IImageFormat format;
-			Image<Rgba32> image = Image.Load<Rgba32>(readStream, out format);
+			//IImageFormat format;
+			Image<Rgba32> image = Image.Load<Rgba32>(readStream);
 
 			// palette for each terrain tile stored 0-127, each value is 0-3
 			// starting from OVERWORLDPALETTE_ASSIGNMENT
@@ -1036,9 +1039,9 @@ namespace FF1Lib
 	    //public async Task<bool> SetLichKaryGraphics(Stream lich, Stream kary) {
 		public bool SetLichKaryGraphics(Stream lich, Stream kary) {
 		var formations = LoadFormations();
-		IImageFormat format;
-		Image<Rgba32> lichImage = Image.Load<Rgba32>(lich, out format);
-		Image<Rgba32> karyImage = Image.Load<Rgba32>(kary, out format);
+		//IImageFormat format;
+		Image<Rgba32> lichImage = Image.Load<Rgba32>(lich);
+		Image<Rgba32> karyImage = Image.Load<Rgba32>(kary);
 		List<byte[]> CHR = new List<byte[]>();
 		/*
 		await FiendImport(lichImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[LICH1].pal2 * 4));
@@ -1058,9 +1061,9 @@ namespace FF1Lib
 	    //public async Task<bool> SetKrakenTiamatGraphics(Stream kraken, Stream tiamat) {
 		public bool SetKrakenTiamatGraphics(Stream kraken, Stream tiamat) {
 		var formations = LoadFormations();
-		IImageFormat format;
-		Image<Rgba32> krakenImage = Image.Load<Rgba32>(kraken, out format);
-		Image<Rgba32> tiamatImage = Image.Load<Rgba32>(tiamat, out format);
+		//IImageFormat format;
+		Image<Rgba32> krakenImage = Image.Load<Rgba32>(kraken);
+		Image<Rgba32> tiamatImage = Image.Load<Rgba32>(tiamat);
 		List<byte[]> CHR = new List<byte[]>();
 			/*
 		await FiendImport(krakenImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal2 * 4));
@@ -1092,9 +1095,9 @@ namespace FF1Lib
 
 		var formations = LoadFormations();
 
-		IImageFormat format;
+		//IImageFormat format;
 
-		Image<Rgba32> image = Image.Load<Rgba32>(fiends, out format);
+		Image<Rgba32> image = Image.Load<Rgba32>(fiends);
 		{
 		    List<byte[]> CHR = new List<byte[]>();
 				/*
@@ -1133,9 +1136,9 @@ namespace FF1Lib
 
 	    public async Task SetCustomChaosGraphics(Stream chaos) {
 		var formations = LoadFormations();
-		IImageFormat format;
+		//IImageFormat format;
 		const int CHAOS = 0x7B;
-		Image<Rgba32> image = Image.Load<Rgba32>(chaos, out format);
+		Image<Rgba32> image = Image.Load<Rgba32>(chaos);
 		List<byte[]> CHR = new List<byte[]>();
 		//await FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
 		FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
@@ -1153,8 +1156,8 @@ namespace FF1Lib
 		//const int BATTLEBACKDROPASSIGNMENT_OFFSET =		0x3310;
 		const int BATTLEBACKDROPPALETTE_OFFSET =		0x3200;
 
-		IImageFormat format;
-		Image<Rgba32> image = Image.Load<Rgba32>(backdrop, out format);
+		//IImageFormat format;
+		Image<Rgba32> image = Image.Load<Rgba32>(backdrop);
 		var toNEScolor = new Dictionary<Rgba32, byte>();
 
 		for (int count = 0; count < 16; count++) {
@@ -1199,8 +1202,8 @@ namespace FF1Lib
 	    }
 
 	    public void SetCustomWeaponGraphics(Stream stream) {
-		IImageFormat format;
-		Image<Rgba32> image = Image.Load<Rgba32>(stream, out format);
+		//IImageFormat format;
+		Image<Rgba32> image = Image.Load<Rgba32>(stream);
 
 		const int WEAPONMAGICGRAPHIC_OFFSET =			0x26800;
 
@@ -1224,8 +1227,8 @@ namespace FF1Lib
 	    }
 
 	    public void SetCustomGearIcons(Stream stream) {
-		IImageFormat format;
-		Image<Rgba32> image = Image.Load<Rgba32>(stream, out format);
+		//IImageFormat format;
+		Image<Rgba32> image = Image.Load<Rgba32>(stream);
 
 		// 0 = black
 		// 1 = grey
@@ -1254,43 +1257,43 @@ namespace FF1Lib
 		}
 	    }
 
-	    public byte GetMapTilesetIndex(MapId mapId) {
-		return Get(MAPTILESET_ASSIGNMENT + (int)mapId, 1)[0];
+	    public byte GetMapTilesetIndex(MapIndex MapIndex) {
+		return Get(MAPTILESET_ASSIGNMENT + (int)MapIndex, 1)[0];
 	    }
 
-	    Image<Rgba32> exportMapTiles(MapId mapId,
+	    Image<Rgba32> exportMapTiles(MapIndex MapIndex,
 					 bool inside,
 					 int PATTERNTABLE_OFFSET,
 					 int PATTERNTABLE_ASSIGNMENT)
 		{
-			var tileset = GetMapTilesetIndex(mapId);
+			var tileset = GetMapTilesetIndex(MapIndex);
 			var tilesetProps = new TileSet(this, tileset);
 
 			List<byte[]> palette = new();
 			if (!inside)
 			{
-				palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 0, 4));
-				palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 4, 4));
-				palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 8, 4));
-				palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 12, 4));
+				palette.Add(Get(MAPPALETTE_OFFSET + ((int)MapIndex * 0x30) + 0, 4));
+				palette.Add(Get(MAPPALETTE_OFFSET + ((int)MapIndex * 0x30) + 4, 4));
+				palette.Add(Get(MAPPALETTE_OFFSET + ((int)MapIndex * 0x30) + 8, 4));
+				palette.Add(Get(MAPPALETTE_OFFSET + ((int)MapIndex * 0x30) + 12, 4));
 			}
 			else
 			{
-				palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 0x20 + 0, 4));
-				palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 0x20 + 4, 4));
-				palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 0x20 + 8, 4));
-				palette.Add(Get(MAPPALETTE_OFFSET + ((int)mapId * 0x30) + 0x20 + 12, 4));
+				palette.Add(Get(MAPPALETTE_OFFSET + ((int)MapIndex * 0x30) + 0x20 + 0, 4));
+				palette.Add(Get(MAPPALETTE_OFFSET + ((int)MapIndex * 0x30) + 0x20 + 4, 4));
+				palette.Add(Get(MAPPALETTE_OFFSET + ((int)MapIndex * 0x30) + 0x20 + 8, 4));
+				palette.Add(Get(MAPPALETTE_OFFSET + ((int)MapIndex * 0x30) + 0x20 + 12, 4));
 			}
 
 			var output = new Image<Rgba32>(16 * 16, 8 * 16);
 			for (int imagecount = 0; imagecount < 128; imagecount += 1)
 			{
-				var pal = tilesetProps.TileAttributes[imagecount];
+				var pal = (int)tilesetProps.Tiles[imagecount].Palette;
 
-				var pt1 = tilesetProps.TopLeftTiles[imagecount];
-				var pt2 = tilesetProps.TopRightTiles[imagecount];
-				var pt3 = tilesetProps.BottomLeftTiles[imagecount];
-				var pt4 = tilesetProps.BottomRightTiles[imagecount];
+				var pt1 = tilesetProps.Tiles[imagecount].TopLeftTile;
+				var pt2 = tilesetProps.Tiles[imagecount].TopRightTile;
+				var pt3 = tilesetProps.Tiles[imagecount].BottomLeftTile;
+				var pt4 = tilesetProps.Tiles[imagecount].BottomRightTile;
 
 				var chr1 = Get(PATTERNTABLE_OFFSET + (tileset << 11) + (pt1 * 16), 16);
 				var chr2 = Get(PATTERNTABLE_OFFSET + (tileset << 11) + (pt2 * 16), 16);
@@ -1311,16 +1314,16 @@ namespace FF1Lib
 			return output;
 		}
 
-		public Image<Rgba32> ExportMapTiles(MapId mapId, bool inside)
+		public Image<Rgba32> ExportMapTiles(MapIndex MapIndex, bool inside)
 		{
-			return exportMapTiles(mapId, inside,
+			return exportMapTiles(MapIndex, inside,
 						 TILESETPATTERNTABLE_OFFSET,
 						 TILESETPATTERNTABLE_ASSIGNMENT);
 		}
 
-		public Image<Rgba32> RenderMap(List<Map> maps, MapId mapId, bool inside)
+		public Image<Rgba32> RenderMap(List<Map> maps, MapIndex MapIndex, bool inside)
 		{
-			var tiles = ExportMapTiles(mapId, inside);
+			var tiles = ExportMapTiles(MapIndex, inside);
 
 			var output = new Image<Rgba32>(64 * 16, 64 * 16);
 
@@ -1328,7 +1331,7 @@ namespace FF1Lib
 			{
 				for (int x = 0; x < 64; x++)
 				{
-					var t = maps[(int)mapId][y, x];
+					var t = maps[(int)MapIndex][y, x];
 					var tile_row = t / 16;
 					var tile_col = t % 16;
 					var src = tiles.Clone(d => d.Crop(new Rectangle(tile_col * 16, tile_row * 16, 16, 16)));

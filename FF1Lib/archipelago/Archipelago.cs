@@ -20,20 +20,25 @@ namespace FF1Lib
 		Flags originalFlags;
 		Preferences preferences;
 		ExpChests expChests;
-		IncentiveData incentivesData;
+		PlacementContext incentivesData;
+		OwLocationData locations;
+		ItemPlacement itemPlacement;
 		Blob seed;
 
 		public string Json { get; private set; }
 
-		public Archipelago(FF1Rom _rom, List<IRewardSource> generatedPlacement, SanityCheckerV2 checker, ExpChests _expChests, IncentiveData _incentivesData, Blob _seed, Flags _flags, Flags _originflags, Preferences _preferences)
+		public Archipelago(FF1Rom _rom, ItemPlacement _itemPlacement, SanityCheckerV2 checker, ExpChests _expChests, PlacementContext _incentivesData, OwLocationData _locations, Blob _seed, Flags _flags, Flags _originflags, Preferences _preferences)
 		{
 			rom = _rom;
 			expChests = _expChests;
 			incentivesData = _incentivesData;
+			itemPlacement = _itemPlacement;
 			flags = _flags;
 			originalFlags = _originflags;
 			seed = _seed;
+			locations = _locations;
 			preferences = _preferences;
+			var generatedPlacement = itemPlacement.PlacedItems;
 
 			var kiPlacement = generatedPlacement.Where(r => ItemLists.AllQuestItems.Contains(r.Item) && r.Item != Item.Bridge).ToList();
 
@@ -87,7 +92,7 @@ namespace FF1Lib
 			//Remove ToFr and distinct by address to remove duplicates
 			kiPlacement = kiPlacement.Where(r => !ItemLocations.ToFR.Any(l => l.Address == r.Address)).GroupBy(r => r.Address).Select(g => g.First()).ToList();
 
-			logic = new SCLogic(rom, checker.Main, kiPlacement, flags, true);
+			logic = new SCLogic(rom, checker.Main, kiPlacement, locations, flags, true);
 		}
 
 		private void AddCommonEquipment(List<IRewardSource> kiPlacement, List<IRewardSource> generatedPlacement)
@@ -149,7 +154,26 @@ namespace FF1Lib
 				.ToObject<Dictionary<string, int>>()
 				.ToDictionary(l => l.Value, l => l.Key);
 
-			foreach (var rewardSource in logic.RewardSources) rom.Put(rewardSource.RewardSource.Address, new byte[] { 18 });
+			foreach (var rewardSource in logic.RewardSources)
+			{
+				if (itemPlacement.PlacedItems.TryFind(r => r.Address == rewardSource.RewardSource.Address, out var placeditem))
+				{
+					var index = itemPlacement.PlacedItems.FindIndex(r => r.Address == rewardSource.RewardSource.Address);
+
+					if (placeditem.GetType() == typeof(TreasureChest))
+					{
+						itemPlacement.PlacedItems[index] = new TreasureChest(placeditem, Item.FireOrb);
+					}
+					else if (placeditem.GetType() == typeof(NpcReward))
+					{
+						itemPlacement.PlacedItems[index] = new NpcReward(placeditem, Item.FireOrb);
+					}
+					else if (placeditem.GetType() == typeof(ItemShopSlot))
+					{
+						itemPlacement.PlacedItems[index] = new ItemShopSlot((ItemShopSlot)placeditem, Item.FireOrb);
+					}
+				}
+			}
 
 			var data = new ArchipelagoOptions
 			{
@@ -160,9 +184,15 @@ namespace FF1Lib
 				options = new ArchipelagoFFROptions
 				{
 					items = logic.RewardSources.GroupBy(r => GetItemId(r.RewardSource.Item)).ToDictionary(r => GetItemName(r.First().RewardSource.Item), r => new ArchipelagoItem { id = r.Key, count = r.Count(), incentive = incentivesData.IncentiveItems.Contains(r.First().RewardSource.Item) }),
-					locations = logic.RewardSources.ToDictionary(r => apLocationNames[GetLocationId(r)], r => GetLocationId(r)),
-					locations2 = logic.RewardSources.ToDictionary(r => apLocationNames[GetLocationId(r)], r => new ArchipelagoLocation { id = GetLocationId(r), incentive = IsLocationIncentivized(r) }),
-					rules = logic.RewardSources.ToDictionary(r => apLocationNames[GetLocationId(r)], r => GetRule(r))
+					locations = logic.RewardSources.ToDictionary(
+						r => apLocationNames.TryGetValue(GetLocationId(r), out var locname) ? locname : r.RewardSource.Name,
+						r => GetLocationId(r)),
+					//locations2 = logic.RewardSources.ToDictionary(
+					//	r => apLocationNames.TryGetValue(GetLocationId(r), out var locname) ? locname : r.RewardSource.Name,
+					//	r => new ArchipelagoLocation { id = GetLocationId(r), incentive = IsLocationIncentivized(r) }),
+					rules = logic.RewardSources.ToDictionary(
+						r => apLocationNames.TryGetValue(GetLocationId(r), out var locname) ? locname : r.RewardSource.Name,
+						r => GetRule(r))
 				}
 			};
 
@@ -211,7 +241,7 @@ namespace FF1Lib
 			{
 				return r.RewardSource.Address - 0x3100 + ChestOffset;
 			}
-			else if (r.RewardSource is MapObject npc)
+			else if (r.RewardSource is NpcReward npc)
 			{
 				return (int)npc.ObjectId + NpcOffset;
 			}
@@ -366,7 +396,7 @@ namespace FF1Lib
 
 		public Dictionary<string, int> locations { get; set; }
 
-		public Dictionary<string, ArchipelagoLocation> locations2 { get; set; }
+		//public Dictionary<string, ArchipelagoLocation> locations2 { get; set; }
 
 		public Dictionary<string, List<List<string>>> rules { get; set; }
 	}

@@ -101,8 +101,13 @@
 			"Full Recover", "Raise Evade", "Void Resist.", "PW Status", "Heal Poison", "Revive", "Full Revive", "Go one floor\n back",
 			"Heal Stoned", "Teleport out\n of dungeons", "Magical", "Dragon", "Giant", "Undead", "Were", "Water", "Mage", "Regen"
 		};
-		public void ShopUpgrade(Flags flags, Preferences preferences)
+		public void ShopUpgrade(Flags flags, DialogueData dialogues, Preferences preferences)
 		{
+			if (!flags.ShopInfo)
+			{
+				return;
+			}
+
 			// Modify DrawShopPartySprites to use new DrawOBSprite routines, see 0E_9500_ShopUpgrade.asm
 			PutInBank(0x0E, 0xAA04, Blob.FromHex("205795"));
 			PutInBank(0x0E, 0xAA0D, Blob.FromHex("205795"));
@@ -117,8 +122,8 @@
 			if (flags.ChestInfo && flags.IdentifyTreasures && !preferences.RenounceChestInfo)
 			{
 				// Shorten TreasureChest Dialog
-				InsertDialogs(320, "You found.. #");
-				InsertDialogs(321, "Can't hold.. #");
+				dialogues[320] = "You found.. #";
+				dialogues[321] = "Can't hold.. #";
 
 				PutInBank(0x1F, 0xD536, Blob.FromHex("68482064DB4CD0DD"));
 				PutInBank(0x1F, 0xDDD0, Blob.FromHex("A9B648A9FF48A9114C03FE8A20DA8760"));
@@ -131,7 +136,11 @@
 			// Patch in the equip menu loop to add gear info
 			PutInBank(0x0E, 0xBB8F, Blob.FromHex("4CE090EA"));
 			// Patch in the magic menu loop to add spell info
-			PutInBank(0x0E, 0xAECD, Blob.FromHex("4C2691EA"));
+			if (!flags.MagicMenuSpellReordering)
+			{
+				//MagicMenuSpellReordering overwrites this jump
+				PutInBank(0x0E, 0xAECD, Blob.FromHex("4C2691EA"));
+			}
 			// the UpgradedEquipMenu and UpgradedMagicMenu code that the above patches jump to
 			PutInBank(0x0E, 0x90E0, Blob.FromHex("A525D007A522D0044C93BB60A662BD0003F030297FA466C018D005691A4C029169428514203CC4205E9620F9BCA520C561F0F7A9008D0120853720F3BD2083B720DAEC4C93BBA525D007A522D0044CD1AE60A9018537A5664A6A6A0562AA0A2900187D00631869AF8514205E962080B72025B6A9008D01208537857F20029CA56248206DBA688562A90720EFB8A9292059B92080B74CD1AE"));
 
