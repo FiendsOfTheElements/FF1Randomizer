@@ -206,8 +206,8 @@ namespace FF1Lib
 				{
 					limit = short.MaxValue - 512; //prevent overflow when INT is added
 				}
-				Data[0x723CC] = (byte)(limit & 0x00ff);
-				Data[0x723D1] = (byte)((limit >> 8) & 0x00ff);
+				Data[0x723D1] = (byte)(limit & 0x00ff);
+				Data[0x723D6] = (byte)((limit >> 8) & 0x00ff);
 			}
 		}
 

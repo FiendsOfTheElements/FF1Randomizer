@@ -857,8 +857,8 @@ namespace FF1Lib
 					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Tele Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }));
 				}
 			}
+
 			spellBlursingsStrong.Shuffle(rng);
-			spellBlursingsStrong = spellBlursingsStrong.GetRange(0, 2);
 
 			return (spellBlursingsNormal, spellBlursingsStrong);
 		}

@@ -113,7 +113,7 @@ public partial class FF1Rom : NesRom
 		Dialogues.TransferDialogues();
 
 		// Apply general fixes and hacks
-		Music.ShuffleMusic(this, preferences.Music, preferences.AlternateAirshipTheme, new MT19337(funRng.Next()));
+		Music.ShuffleMusic(this, preferences.Music, preferences.AlternateAirshipTheme, preferences.ChaosBattleMusic, new MT19337(funRng.Next()));
 		Bugfixes(flags);
 		GlobalImprovements(flags, Maps, preferences);
 		MiscHacks(flags, rng);
@@ -176,7 +176,7 @@ public partial class FF1Rom : NesRom
 		SpellBalanceHacks(flags, rng);
 		CraftNewSpellbook(EnemyScripts, flags, rng);
 		TranceHasStatusElement(flags.TranceHasStatusElement);
-		ShuffleMagicLevels(EnemyScripts, rng, (bool)flags.MagicLevels && !(bool)flags.GenerateNewSpellbook, ((bool)flags.MagicPermissions), (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed);
+		ShuffleMagicLevels(EnemyScripts, rng, (bool)flags.MagicLevels, (bool)flags.MagicPermissions, (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed);
 		SpellNames(flags, preferences, rng);
 		var extConsumables = new ExtConsumables(ShopData, this, flags, rng);
 		extConsumables.LoadSpells();
@@ -262,7 +262,7 @@ public partial class FF1Rom : NesRom
 		if ((bool)flags.AlternateFiends && !flags.SpookyFlag) await this.Progress("Creating new Fiends", 1);
 		AlternativeFiends(EnemyScripts, rng, flags);
 		TransformFinalFormation(flags, rng);
-		DoEnemizer(EnemyScripts, flags, rng);
+		DoEnemizer(EnemyScripts, ZoneFormations, flags, rng);
 
 		ShuffleEnemyScripts(rng, flags);
 		EnemyScripts.ShuffleEnemySkillsSpells(this, rng, flags);

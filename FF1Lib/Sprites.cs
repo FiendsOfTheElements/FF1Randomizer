@@ -549,7 +549,10 @@ namespace FF1Lib
 		{
 			//IImageFormat format;
 			Image<Rgba32> image = Image.Load<Rgba32>(readStream);
-
+			if (image.Width != 208 || image.Height != 240)
+			{
+				await this.Progress($"WARNING: Custom player sprites have dimensions {image.Width}x{image.Height}, expected 208x240");
+			}
 
 			var battlePals = new List<List<byte>>();
 			battlePals.Add(new List<byte>());
