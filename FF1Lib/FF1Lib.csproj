@@ -219,12 +219,18 @@
 	  <EmbeddedResource Include="bosses\TWHD.DRG.png" />
 	  <EmbeddedResource Include="bosses\TWINTANI.png" />
 	  <EmbeddedResource Include="bosses\TYPHON.png" />
+	  <EmbeddedResource Include="bosses\ULTROS.png" />
 	  <EmbeddedResource Include="bosses\UNNE.png" />
 	  <EmbeddedResource Include="bosses\VAMAKALI.png" />
+	  <EmbeddedResource Include="bosses\VARGAS.png" />
 	  <EmbeddedResource Include="bosses\W.RAPTOR.png" />
+	  <EmbeddedResource Include="bosses\WELK.png" />
+	  <EmbeddedResource Include="bosses\WREXSOUL.png" />
 	  <EmbeddedResource Include="bosses\WYVERN.png" />
+	  <EmbeddedResource Include="bosses\YETI.png" />
 	  <EmbeddedResource Include="bosses\ZANDE.png" />
 	  <EmbeddedResource Include="bosses\ZEMUS.png" />
+	  <EmbeddedResource Include="bosses\ZIGFRIED.png" />
 	  <EmbeddedResource Include="maps\vfmaps.zip" />
   </ItemGroup>
 

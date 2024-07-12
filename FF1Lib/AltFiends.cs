@@ -2112,7 +2112,7 @@ namespace FF1Lib
 			};
 			var FF6AltFiendsList = new List<AlternateFiends>
 			{
-					/*new AlternateFiends {			
+					new AlternateFiends {			
 					Name = "A.WORM",
 					SpriteSheet = FormationSpriteSheet.ImageGeistWormEye,
 					FormationPattern = FormationPattern.Large4,
@@ -2748,7 +2748,7 @@ namespace FF1Lib
 					Spells2 = new List<byte> { (byte)SpellByte.XXXX, (byte)SpellByte.BANE, (byte)SpellByte.BRAK, (byte)SpellByte.QAKE, (byte)SpellByte.XFER, (byte)SpellByte.RUB, (byte)SpellByte.BANE, (byte)SpellByte.BRAK },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Toxic, (byte)EnemySkills.Squint, (byte)EnemySkills.Glance },
-					},*/
+					},
 
 			new AlternateFiends {
 					Name = "STDRAGON",
@@ -2869,6 +2869,125 @@ namespace FF1Lib
 					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.STOP, (byte)SpellByte.FIR3, (byte)SpellByte.NUKE, (byte)SpellByte.SLO2, (byte)SpellByte.FIR3, (byte)SpellByte.STOP, (byte)SpellByte.SLO2 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Tornado, (byte)EnemySkills.Blaze, (byte)EnemySkills.Squint },
+					},
+
+			new AlternateFiends {
+					Name = "ULTROS",
+					SpriteSheet = FormationSpriteSheet.WizardGarlandDragon2Golem,
+					FormationPattern = FormationPattern.Large4,
+					GFXOffset = FormationGFX.Sprite2,
+					Palette1 = 0x3A,
+					Palette2 = 0x3A,
+					ElementalWeakness = SpellElement.Fire,
+					MonsterType = MonsterType.REGENERATIVE,
+					FiendPool = FiendPool.FinalFantasy2,
+					SpellChance1 = 0x00,
+					Spells1 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					SkillChance1 = 0x40,
+					Skills1 = new List<byte> { (byte)EnemySkills.Ink, (byte)EnemySkills.Ink, (byte)EnemySkills.Trance, (byte)EnemySkills.Ink },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.ICE3, (byte)SpellByte.BRAK, (byte)SpellByte.LIT3, (byte)SpellByte.WALL, (byte)SpellByte.FIR3, (byte)SpellByte.RUSE, (byte)SpellByte.LIT3 },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Swirl, (byte)EnemySkills.Ink, (byte)EnemySkills.Swirl },
+					},
+
+			new AlternateFiends {
+					Name = "VARGAS",
+					SpriteSheet = FormationSpriteSheet.SlimeSpiderManticorAnkylo,
+					FormationPattern = FormationPattern.Large4,
+					GFXOffset = FormationGFX.Sprite3,
+					Palette1 = 0x3A,
+					Palette2 = 0x3A,
+					ElementalWeakness = SpellElement.Poison,
+					MonsterType = MonsterType.GIANT,
+					FiendPool = FiendPool.FinalFantasy2,
+					SpellChance1 = 0x00,
+					Spells1 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					SkillChance1 = 0x00,
+					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
+					SpellChance2 = 0x00,
+					Spells2 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Tornado, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Toxic, (byte)EnemySkills.Tornado },
+					},
+
+			new AlternateFiends {
+					Name = "WELK",
+					SpriteSheet = FormationSpriteSheet.MedusaCatmanPedeTiger,
+					FormationPattern = FormationPattern.Large4,
+					GFXOffset = FormationGFX.Sprite4,
+					Palette1 = 0x3A,
+					Palette2 = 0x3A,
+					ElementalWeakness = SpellElement.None,
+					MonsterType = MonsterType.MAGICAL,
+					FiendPool = FiendPool.FinalFantasy2,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.SLOW, (byte)SpellByte.LIT, (byte)SpellByte.SLOW, (byte)SpellByte.LIT2, (byte)SpellByte.FOG, (byte)SpellByte.LIT2, (byte)SpellByte.INVS, (byte)SpellByte.LIT2 },
+					SkillChance1 = 0x00,
+					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.SLO2, (byte)SpellByte.LIT3, (byte)SpellByte.FOG2, (byte)SpellByte.WALL, (byte)SpellByte.LIT3, (byte)SpellByte.CUR3, (byte)SpellByte.LIT3 },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Glance, (byte)EnemySkills.Thunder },
+					},
+			new AlternateFiends {
+					Name = "WREXSOUL",
+					SpriteSheet = FormationSpriteSheet.MummyCoctricWyvernTyro,
+					FormationPattern = FormationPattern.Large4,
+					GFXOffset = FormationGFX.Sprite1,
+					Palette1 = 0x3A,
+					Palette2 = 0x3A,
+					ElementalWeakness = SpellElement.Ice,
+					MonsterType = MonsterType.UNDEAD,
+					FiendPool = FiendPool.FinalFantasy2,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.RUB, (byte)SpellByte.LIT2, (byte)SpellByte.STUN, (byte)SpellByte.DARK, (byte)SpellByte.LIT2, (byte)SpellByte.LIT2 },
+					SkillChance1 = 0x00,
+					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.XXXX, (byte)SpellByte.SLO2, (byte)SpellByte.LIT3, (byte)SpellByte.BANE, (byte)SpellByte.XXXX, (byte)SpellByte.LIT3, (byte)SpellByte.ZAP },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Toxic, (byte)EnemySkills.Crack, (byte)EnemySkills.Blaze },
+					},
+
+			new AlternateFiends {
+					Name = "YETI",
+					SpriteSheet = FormationSpriteSheet.MummyCoctricWyvernTyro,
+					FormationPattern = FormationPattern.Large4,
+					GFXOffset = FormationGFX.Sprite2,
+					Palette1 = 0x3A,
+					Palette2 = 0x3A,
+					ElementalWeakness = SpellElement.Fire,
+					MonsterType = MonsterType.GIANT,
+					FiendPool = FiendPool.FinalFantasy2,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.CUR2, (byte)SpellByte.ICE2, (byte)SpellByte.TMPR, (byte)SpellByte.CUR2, (byte)SpellByte.ICE2, (byte)SpellByte.ICE2, (byte)SpellByte.TMPR },
+					SkillChance1 = 0x40,
+					Skills1 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Frost, (byte)EnemySkills.Frost, (byte)EnemySkills.Stare },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.CUR4, (byte)SpellByte.FAST, (byte)SpellByte.ICE3, (byte)SpellByte.SABR, (byte)SpellByte.ICE3, (byte)SpellByte.TMPR, (byte)SpellByte.ICE3 },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Blizzard, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Glance, (byte)EnemySkills.Crack },
+					},
+
+			new AlternateFiends {
+					Name = "ZIGFRIED",
+					SpriteSheet = FormationSpriteSheet.SentryWaterNagaChimera,
+					FormationPattern = FormationPattern.Large4,
+					GFXOffset = FormationGFX.Sprite3,
+					Palette1 = 0x3A,
+					Palette2 = 0x3A,
+					ElementalWeakness = SpellElement.Fire,
+					MonsterType = MonsterType.GIANT,
+					FiendPool = FiendPool.FinalFantasy2,
+					SpellChance1 = 0x00,
+					Spells1 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					SkillChance1 = 0x40,
+					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
+					SpellChance2 = 0x00,
+					Spells2 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					},
 
 			};
@@ -3174,6 +3293,8 @@ namespace FF1Lib
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Crack, (byte)EnemySkills.Toxic },
 					},
+
+
 
 			};
 			var alternateFiendsList = new List<AlternateFiends>
