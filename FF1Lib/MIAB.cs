@@ -377,7 +377,13 @@ namespace FF1Lib
 					validChests.RemoveAll(x => disallowedLocations.Contains(x.MapLocation) || ((bool)flags.TCMasaGuardian == true && treasureList[x.Address - lut_TreasureOffset] == (int)Item.Masamune) || ((bool)flags.TCProtectIncentives == true && GetIncentiveList(flags).Contains((Item)treasureList[x.Address - lut_TreasureOffset])));
 				}
 
-				chestMonsterList[validChests.SpliceRandom(rng).Address - lut_TreasureOffset] = ChaosFormationIndex;
+				var chaosChest = validChests.SpliceRandom(rng);
+				itemPlacement.PlacedItems.RemoveAll(c => c.Address == chaosChest.Address);
+
+				// Change Chaos item for none so the chest always open and stays local for AP
+				itemPlacement.PlacedItems.Add(new TreasureChest(chaosChest, Item.None));
+
+				chestMonsterList[chaosChest.Address - lut_TreasureOffset] = ChaosFormationIndex;
 
 				SetChaosForMIAB(npcdata, dialogues);
 			}
