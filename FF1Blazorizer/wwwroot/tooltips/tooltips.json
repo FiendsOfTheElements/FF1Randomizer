@@ -1426,6 +1426,12 @@
 		"description": "Will add 36 Final Fantasy 5 Fiends to the Alternate Fiend Pool."
 	},
 	{
+		"Id": "finalfanstay6pool",
+		"title": "Final Fantasy 6 Pool",
+		"screenshot": null,
+		"description": "Will add 45 Final Fantasy 6 Fiends to the Alternate Fiend Pool."
+	},
+	{
 		"Id": "fightBahamutCheckBox",
 		"title": "Fight Bahamut",
 		"screenshot": "fightBahamutCheckBox.gif",
