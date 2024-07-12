@@ -1,59 +1,7 @@
-﻿namespace FF1Lib
+﻿using FF1Lib.Sanity;
+
+namespace FF1Lib
 {
-	public partial class FF1Rom
-	{
-		public void EnableDamageTile()
-		{
-			// Allow tiles to do Walk Damage, see 1E_B000_DoWalkDamage.asm
-			PutInBank(0x1E, 0xB000, Blob.FromHex("A542C901D00E20FBC7A54429E0C9E0D0034CDEC760"));
-			PutInBank(0x1F, 0xC33C, Blob.FromHex("A91E2003FE4C00B0"));
-
-			PutInBank(0x0E, 0xB267, Blob.FromHex("E0")); // Expand OWTP_SPEC_MASK to 0b1110_0000
-			PutInBank(0x1F, 0xC4DA, Blob.FromHex("E0"));
-			PutInBank(0x1F, 0xC6B4, Blob.FromHex("E0"));
-
-			PutInBank(0x1F, 0xC2EC, Blob.FromHex("E1")); // Update mask for docking
-
-			List<int> owDamageTileList = new() { 0x45, 0x55, 0x62, 0x63, 0x72, 0x73 };
-
-			foreach (var tile in owDamageTileList)
-			{
-				var tileProperty = Get(0x0000 + tile * 2, 1);
-				Put(0x0000 + tile * 2, new byte[] { (byte)(tileProperty[0] | 0b1110_0000) });
-			}
-		}
-
-		public void DamageTilesKill(bool saveonDeath)
-		{
-			// See 1E_B100_DamageTilesKill.asm
-			string saveOnDeathJump = "4C12C0";
-			if (saveonDeath)
-			{
-				saveOnDeathJump = "EAEAEA";
-			}
-
-			  PutInBank(0x1E, 0xB100, Blob.FromHex($"A200A000BD0161C901F02DBD0B61D014BD0A61C902B00DA9019D0161A9009D0A614C38B1BD0A6138E9019D0A61BD0B61E9009D0B614C39B1C88A186940AAD0C4C004F00160A980854BA91E8557A52D6AA9009002A902851C2000FE2082D920B3D9A9064820EFD968A88898D0F6A0402000FE2018D92082D9A91E8D01202089C688D0ECA952854B20A8B1A9008D00208D0120{saveOnDeathJump}A9C048A91148A98F48A9F748A91B85574C03FE2028D8482000FE2089C668F0F360"));
-			//Original code below - above edit is to prevent a bug with adjustable lava damage (spaces added to line up cleanly with the new code for comparison)
-			//PutInBank(0x1E, 0xB100, Blob.FromHex($"A200A000BD0161C901F026BD0B61D00DBD0A61C902B006A9019D0161    C8          BD0A6138E9019D0A61BD0B61E9009D0B614C32B1C88A186940AAD0CBC004F00160A980854BA91E8557A52D6AA9009002A902851C2000FE2082D920B3D9A9064820EFD968A88898D0F6A0402000FE2018D92082D9A91E8D01202089C688D0ECA952854B20A1B1A9008D00208D0120{saveOnDeathJump}A9C048A91148A98F48A9F748A91B85574C03FE2028D8482000FE2089C668F0F360"));
-			PutInBank(0x1F, 0xC861, Blob.FromHex("A91E2003FE4C00B1"));
-		}
-
-		public void AdjustDamageTileDamage(int DamageTileAmount, bool isDamageTilesKillOn)
-		{
-			// Overwrites a bit of the newly created DamageTilesKill assembly code to account for the adjustable damage
-			if (isDamageTilesKillOn) {
-				PutInBank(0x1E, 0xB114, Blob.FromHex($"{DamageTileAmount + 1:X2}"));
-				PutInBank(0x1E, 0xB129, Blob.FromHex($"{DamageTileAmount:X2}"));
-			}
-			// No Lethal Damage Tiles Flag, overwrite normal rom code instead
-			else {
-				Data[0x7C86C] = (byte)(DamageTileAmount + 1); //"HP Less than" check so it doesn't kill
-				Data[0x7C874] = (byte)(DamageTileAmount);
-			}
-			
-		}
-	}
-
 	public class DesertOfDeath
 	{
 		
@@ -315,7 +263,7 @@
 			}),
 		};
 
-		public static void UpdateOWFormations(FF1Rom rom, int safeX, int safeY )
+		public static void UpdateOWFormations(FF1Rom rom, ZoneFormations zoneformations, int safeX, int safeY )
 		{
 			var encountersData = new FF1Rom.Encounters(rom);
 
@@ -429,19 +377,18 @@
 				((safeX + 2) + (safeY + 2) * 8),
 			};
 
+
 			for (int i = 0; i < DomainCount; i++)
 			{
 				if (safeDomain.Contains(i))
 				{
-					newFormations.AddRange(easyDomain);
+					zoneformations[i] = new ZoneFormation() { Index = i, Formations = easyDomain };
 				}
 				else
 				{
-					newFormations.AddRange(hardDomain);
+					zoneformations[i] = new ZoneFormation() { Index = i, Formations = hardDomain };
 				}
 			}
-
-			rom.Put(FF1Rom.ZoneFormationsOffset, newFormations.ToArray());
 
 			//Update enemies names
 			var enemyText = rom.ReadText(FF1Rom.EnemyTextPointerOffset, FF1Rom.EnemyTextPointerBase, FF1Rom.EnemyCount);
@@ -452,7 +399,7 @@
 
 			rom.WriteText(enemyText, FF1Rom.EnemyTextPointerOffset, FF1Rom.EnemyTextPointerBase, FF1Rom.EnemyTextOffset);
 		}
-		public static void DoDUpdateDialogues(FF1Rom rom, FF1Rom.NPCdata npcdata)
+		public static void DoDUpdateDialogues(FF1Rom rom, NpcObjectData npcdata, DialogueData dialogues)
 		{
 			Dictionary<int, string> coneriaDialogues = new();
 
@@ -460,12 +407,12 @@
 			coneriaDialogues.Add(0x43, "The Desert is a harsh\nenvironment, each step\ntaken will deplete\nyour strength.");
 			coneriaDialogues.Add(0x4B, "The key to not get lost\nin the Desert is to take\nnotes of the landmarks\nthat cross your journey.");
 
-			rom.InsertDialogs(coneriaDialogues);
+			dialogues.InsertDialogues(coneriaDialogues);
 
-			npcdata.SetRoutine((ObjectId)0x37, FF1Rom.newTalkRoutines.Talk_norm);
-			npcdata.GetTalkArray((ObjectId)0x37)[(int)FF1Rom.TalkArrayPos.dialogue_1] = 0x49;
-			npcdata.GetTalkArray((ObjectId)0x37)[(int)FF1Rom.TalkArrayPos.dialogue_2] = 0x49;
-			npcdata.GetTalkArray((ObjectId)0x37)[(int)FF1Rom.TalkArrayPos.dialogue_3] = 0x49;
+			npcdata[(ObjectId)0x37].Script = TalkScripts.Talk_norm;
+			npcdata[(ObjectId)0x37].Dialogue1 = 0x49;
+			npcdata[(ObjectId)0x37].Dialogue2 = 0x49;
+			npcdata[(ObjectId)0x37].Dialogue3 = 0x49;
 		}
 		public List<MapEdit> ConvertTileArrayToMapEdit(List<List<byte>> mapedit, int target_x, int target_y)
 		{
@@ -900,9 +847,14 @@
 			return mapData;
 		}
 
-		public static void ApplyDesertModifications(FF1Rom rom, OwMapExchange owMapExchange, FF1Rom.NPCdata npcdata)
+		public static void ApplyDesertModifications(bool enabled, FF1Rom rom, ZoneFormations zoneformations, SCCoords startinglocation, NpcObjectData npcdata, DialogueData dialogues, MusicTracks music)
 		{
-			(int, int) startDomain = ((owMapExchange.StartingLocation.X / 32) - 1, (owMapExchange.StartingLocation.Y / 32) - 1);
+			if (!enabled)
+			{
+				return;
+			}
+
+			(int, int) startDomain = ((startinglocation.X / 32) - 1, (startinglocation.Y / 32) - 1);
 
 			// Update tiles and palette
 			for (int i = 1; i < 16; i += 4)
@@ -984,7 +936,7 @@
 			rom.PutInBank(0x1F, 0xC220, Blob.FromHex("01")); // Ship X
 			rom.PutInBank(0x1F, 0xC22A, Blob.FromHex("02")); // Ship Y
 			rom.PutInBank(0x1F, 0xC22F, Blob.FromHex("04"));
-			rom.PutInBank(0x1F, 0xC235, Blob.FromHex("44")); //Music track
+			//rom.PutInBank(0x1F, 0xC235, Blob.FromHex("44")); //Music track
 			rom.PutInBank(0x1F, 0xC238, Blob.FromHex("EAEAEA")); // Airship animation
 
 			// ProcessOWInput - check for ship
@@ -994,7 +946,7 @@
 			rom.PutInBank(0x1F, 0xC6BC, Blob.FromHex("4CE2C6"));
 			rom.PutInBank(0x1F, 0xC6E8, Blob.FromHex("01")); // Ship X
 			rom.PutInBank(0x1F, 0xC6F0, Blob.FromHex("02")); // Ship Y
-			rom.PutInBank(0x1F, 0xC6F9, Blob.FromHex("4E")); // Ship Y
+			//rom.PutInBank(0x1F, 0xC6F9, Blob.FromHex("4E")); // Ship Y
 
 			// OWCanMove
 			rom.PutInBank(0x1F, 0xC506, Blob.FromHex("00")); // No battle in Ship
@@ -1004,6 +956,13 @@
 			rom.PutInBank(0x1F, 0xE28E, Blob.FromHex("A900"));
 
 			// Update music
+			if (!music.MusicShuffled)
+			{
+				music.Tracks[SongTracks.Overworld] = SongTracks.TempleOfFiendRevisited;
+				music.Tracks[SongTracks.Ship] = SongTracks.Overworld;
+				music.Tracks[SongTracks.Airship] = SongTracks.Overworld;
+			}
+
 			rom.PutInBank(0x1F, 0xC759, Blob.FromHex("4E4E4E4E4444444444"));
 
 			// Remove Wave sound
@@ -1019,8 +978,8 @@
 			// Disable Minimap
 			rom.PutInBank(0x1F, 0xC1A9, Blob.FromHex("00"));
 
-			UpdateOWFormations(rom, startDomain.Item1, startDomain.Item2);
-			DoDUpdateDialogues(rom, npcdata);
+			UpdateOWFormations(rom, zoneformations, startDomain.Item1, startDomain.Item2);
+			DoDUpdateDialogues(rom, npcdata, dialogues);
 		}
 		public static MapLocation SelectWeightedDoodads(List<int> weight, MT19337 rng)
 		{

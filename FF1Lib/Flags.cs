@@ -3,6 +3,7 @@ using System.Reflection;
 using Newtonsoft.Json;
 using System.IO.Compression;
 using static FF1Lib.FF1Rom;
+using FF1Lib.Sanity;
 
 namespace FF1Lib
 {
@@ -81,8 +82,6 @@ namespace FF1Lib
 		public bool LooseItemsSpreadPlacement { get; set; } = false;
 
 		public bool LooseItemsNpcBalance { get; set; } = false;
-
-		public bool PredictivePlacement { get; set; } = false;
 		public bool AllowUnsafePlacement { get; set; } = false;
 		public bool ShipCanalBeforeFloater { get; set; } = false;
 
@@ -247,6 +246,7 @@ namespace FF1Lib
 
 		public WarMECHMode WarMECHMode { get; set; } = WarMECHMode.Vanilla;
 		public bool? OrdealsPillars { get; set; } = false;
+		public bool? ShuffleLavaTiles { get; set; } = false;
 		public SkyCastle4FMazeMode SkyCastle4FMazeMode { get; set; } = SkyCastle4FMazeMode.Vanilla;
 		public bool? TitansTrove { get; set; } = false;
 		public bool? LefeinSuperStore { get; set; } = false;
@@ -265,6 +265,7 @@ namespace FF1Lib
 		public int DamageTileHigh { get; set; } = 1;
 		public bool? OWDamageTiles { get; set; } = false;
 		public bool? DamageTilesKill { get; set; } = false;
+		public bool? ArmorResistsDamageTileDamage { get; set; } = false;
 
 		public bool? MoveGaiaItemShop { get; set; } = false;
 		public bool? ShufflePravokaShops { get; set; } = false;
@@ -378,6 +379,7 @@ namespace FF1Lib
 		public bool WaitWhenUnrunnable { get; set; } = false;
 		public bool ImprovedClinic { get; set; } = false;
 		public bool Etherizer { get; set; } = false;
+		// Done
 		public bool HouseMPRestoration { get; set; } = false;
 		public bool WeaponStats { get; set; } = false;
 		public bool BBCritRate { get; set; } = false;
@@ -397,7 +399,10 @@ namespace FF1Lib
 		public bool BlackBeltAbsorb { get; set; } = false;
 		public bool NPCSwatter { get; set; } = false;
 		public bool BattleMagicMenuWrapAround { get; set; } = false;
+		public bool MagicMenuSpellReordering { get; set; } = false;
 		public bool InventoryAutosort { get; set; } = false;
+		public bool RepeatedHealPotionUse { get; set; } = false;
+		public bool AutoRetargeting { get; set; } = false;
 		public bool EnemyStatusAttackBug { get; set; } = false;
 		public bool ImproveTurnOrderRandomization { get; set; } = false;
 		public bool FixHitChanceCap { get; set; } = false;
@@ -594,6 +599,7 @@ namespace FF1Lib
 		public bool ThiefHitRate { get; set; } = false;
 		public bool AllSpellLevelsForKnightNinja { get; set; } = false;
 		public bool BuffHealingSpells { get; set; } = false;
+		public bool IntAffectsSpells { get; set; } = false;
 		public bool? FreeTail { get; set; } = false;
 		public bool? HintsVillage { get; set; } = false;
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
@@ -623,15 +629,18 @@ namespace FF1Lib
 		public bool? EnableRandomPromotions { get; set; } = false;
 		public bool? IncludeBaseClasses { get; set; } = false;
 		public bool? RandomPromotionsSpoilers { get; set; } = false;
-		public bool? RandomizeClass { get; set; } = false;
 		public bool? RandomizeClassCasting { get; set; } = false;
 		public bool? RandomizeClassKeyItems { get; set; } = false;
-		public bool? RandomizeClassChaos { get; set; } = false;
 		public bool? RandomizeClassIncludeXpBonus { get; set; } = false;
 		public bool? AlternateFiends { get; set; } = false;
-		public bool? NoBossSkillScriptShuffle { get; set; } = false;
+		public bool? FinalFantasy2Fiends { get; set; } = false;
+		public bool? FinalFantasy3Fiends { get; set; } = false;
+		public bool? FinalFantasy4Fiends { get; set; } = false;
+		public bool? FinalFantasy5Fiends { get; set; } = false;
+		public bool? FinalFantasy6Fiends { get; set; } = false;
+		public bool? FinalFantasy1BonusFiends { get; set; } = false;
+ 		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 
-		public bool? Transmooglifier { get; set; } = false;
 		public bool? MooglieWeaponBalance { get; set; } = false;
 		public bool? GuaranteeCustomClassComposition { get; set; } = false;
 
@@ -646,6 +655,7 @@ namespace FF1Lib
 		public bool ExclusiveLegendaryBlackShop { get; set; } = false;
 		public bool ExclusiveLegendaryWhiteShop { get; set; } = false;
 		public bool ExclusiveLegendaryItemShop { get; set; } = false;
+		public ClassRandomizationMode RandomizeClassMode { get; set; } = ClassRandomizationMode.None;
 
 		[IntegerFlag(0, 3)]
 		public int RandomizeClassMaxBonus { get; set; } = 2;
@@ -670,10 +680,17 @@ namespace FF1Lib
 		[IntegerFlag(0, 9)]
 		public int NinjaMaxMP { get; set; } = 4;
 
+		public bool? Knightlvl4 { get; set; } = false;
+		public bool? PinkMage { get; set; } = false;
+		public bool? BlackKnight { get; set; } = false;
+		public bool? BlackKnightKeep { get; set; } = false;
+		public bool? WhiteNinja { get; set; } = false;
+		public bool? WhiteNinjaKeep { get; set; } = false;
+
 		public MpGainOnMaxGain MpGainOnMaxGainMode { get; set; } = MpGainOnMaxGain.None;
 
 		public LockHitMode LockMode { get; set; } = LockHitMode.Vanilla;
-
+		// Done
 		public MDEFGrowthMode MDefMode { get; set; } = MDEFGrowthMode.None;
 
 		public FormationShuffleMode FormationShuffleMode { get; set; } = FormationShuffleMode.None;
@@ -688,11 +705,12 @@ namespace FF1Lib
 		public bool? AllowUnsafeStartArea { get; set; } = false;
 
 		public bool? IncreaseDarkPenalty { get; set; } = false;
+		public PoisonModeOptions PoisonMode { get; set; } = PoisonModeOptions.Vanilla;
 
 		public bool? TouchIncludeBosses { get; set; } = false;
 
 		public bool? Lockpicking { get; set; } = false;
-
+		// Done
 		public bool? ReducedLuck { get; set; } = false;
 
 		[IntegerFlag(1, 50)]

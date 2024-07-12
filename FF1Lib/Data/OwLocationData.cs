@@ -1,4 +1,5 @@
 ﻿using FF1Lib.Sanity;
+using System.Xml.Linq;
 
 namespace FF1Lib
 {
@@ -19,6 +20,7 @@ namespace FF1Lib
 		public OwLocationData(FF1Rom _rom)
 		{
 			rom = _rom;
+			LoadData();
 		}
 
 		public void LoadData()
@@ -29,7 +31,13 @@ namespace FF1Lib
 			BridgeLocation = LoadCoords2(0x3000 + UnsramIndex.BridgeX);
 			CanalLocation = LoadCoords2(0x3000 + UnsramIndex.CanalX);
 		}
-
+		public void GetFrom(OwMapExchangeData data)
+		{
+			if (data.StartingLocation.HasValue) StartingLocation = data.StartingLocation.Value;
+			if (data.AirShipLocation.HasValue) AirShipLocation = data.AirShipLocation.Value;
+			if (data.BridgeLocation.HasValue) BridgeLocation = data.BridgeLocation.Value;
+			if (data.CanalLocation.HasValue) CanalLocation = data.CanalLocation.Value;
+		}
 		private SCCoords LoadCoords(int address)
 		{
 			byte[] data = rom.Get(address, 2);

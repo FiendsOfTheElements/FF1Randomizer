@@ -34,6 +34,7 @@ namespace FF1Lib
 		MapLocation MapLocation { get; }
 		Item Item { get; }
 		AccessRequirement AccessRequirement { get; }
+		OverworldTeleportIndex Entrance { get; }
 		bool IsUnused { get; }
 		string SpoilerText { get; }
 
@@ -46,6 +47,7 @@ namespace FF1Lib
 		public MapLocation MapLocation { get; protected set; }
 		public Item Item { get; protected set; }
 		public AccessRequirement AccessRequirement { get; set; }
+		public OverworldTeleportIndex Entrance { get; set; }
 		public bool IsUnused { get; protected set; }
 
 		public virtual bool IsTreasure => false;
@@ -71,6 +73,17 @@ namespace FF1Lib
 			Item = item;
 			MapLocation = copyFromRewardSource.MapLocation;
 			AccessRequirement = copyFromRewardSource.AccessRequirement;
+			Entrance = copyFromRewardSource.Entrance;
+			IsUnused = false;
+		}
+		protected RewardSourceBase(IRewardSource copyFromRewardSource, OverworldTeleportIndex entrance)
+		{
+			Address = copyFromRewardSource.Address;
+			Name = copyFromRewardSource.Name;
+			Item = copyFromRewardSource.Item;
+			MapLocation = copyFromRewardSource.MapLocation;
+			AccessRequirement = copyFromRewardSource.AccessRequirement;
+			Entrance = entrance;
 			IsUnused = false;
 		}
 		public override int GetHashCode() => Address.GetHashCode();
@@ -90,6 +103,9 @@ namespace FF1Lib
 		public TreasureChest(IRewardSource copyFromRewardSource, Item item)
 			: base(copyFromRewardSource, item) { }
 
+		public TreasureChest(IRewardSource copyFromRewardSource, OverworldTeleportIndex entrance)
+			: base(copyFromRewardSource, entrance) { }
+
 		public TreasureChest(IRewardSource copyFromRewardSource, Item item, AccessRequirement access)
 			: base(copyFromRewardSource, item)
 		{
@@ -101,7 +117,7 @@ namespace FF1Lib
 		}
 
 	}
-	public class MapObject : RewardSourceBase
+	public class NpcReward : RewardSourceBase
 	{
 		//private const int _mapObjectTalkDataAddress = 0x395D5;
 		private const int _mapObjectTalkDataAddress = 0x47A00;
@@ -123,7 +139,7 @@ namespace FF1Lib
 
 		public MapLocation SecondLocation { get; protected set; } = MapLocation.StartingLocation;
 
-		public MapObject(ObjectId objectId, MapLocation mapLocation, Item item,
+		public NpcReward(ObjectId objectId, MapLocation mapLocation, Item item,
 						 AccessRequirement accessRequirement = AccessRequirement.None,
 						 ObjectId requiredGameEventFlag = ObjectId.None,
 						 Item requiredItemTrade = Item.None,
@@ -147,11 +163,16 @@ namespace FF1Lib
 				throw new InvalidOperationException(
 					$"Attempted to Put invalid npc item placement: \n{SpoilerText}");
 		}
+		public NpcReward(IRewardSource copyFromRewardSource, OverworldTeleportIndex entrance)
+			: base(copyFromRewardSource, entrance)
+		{
+			ObjectId = ((NpcReward)copyFromRewardSource).ObjectId;
+		}
 
-		public MapObject(MapObject copyFromRewardSource, Item item)
+		public NpcReward(IRewardSource copyFromRewardSource, Item item)
 			: base(copyFromRewardSource, item)
 		{
-			if (!(copyFromRewardSource is MapObject copyFromMapObject))
+			if (!(copyFromRewardSource is NpcReward copyFromMapObject))
 				return;
 
 
@@ -202,6 +223,12 @@ namespace FF1Lib
 
 		public ItemShopSlot(ItemShopSlot copyFromRewardSource, Item item)
 			: base(copyFromRewardSource, item)
+		{
+			ShopIndex = copyFromRewardSource.ShopIndex;
+		}
+
+		public ItemShopSlot(ItemShopSlot copyFromRewardSource, OverworldTeleportIndex entrance)
+			: base(copyFromRewardSource, entrance)
 		{
 			ShopIndex = copyFromRewardSource.ShopIndex;
 		}

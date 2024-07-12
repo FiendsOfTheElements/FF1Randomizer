@@ -60,6 +60,12 @@
 			<h4>Fiends</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fiendShuffleCheckBox" @bind-Value="Flags.FiendShuffle">Shuffle</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.AlternateFiends">Alternate</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="FinalFantasy1pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy1BonusFiends">Final Fantasy 1 Bonus</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="finalfanstay2pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy2Fiends">Final Fantasy 2</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="finalfanstay3pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy3Fiends">Final Fantasy 3</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="finalfanstay4pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy4Fiends">Final Fantasy 4</TriStateCheckBox>
+            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="finalfanstay5pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy5Fiends">Final Fantasy 5</TriStateCheckBox>
+            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="finalfanstay6pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy6Fiends">Final Fantasy 6</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 
 			<h4>Bahamut</h4>
@@ -77,6 +83,7 @@
 
 		</div>
 		</div>
+        
 
 		<div class="clear-it"></div>
 		}

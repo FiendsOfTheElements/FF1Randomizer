@@ -959,7 +959,7 @@ namespace FF1Lib.Procgen
 	    return await this.NextStep();
 	}
 
-	public async Task<MapResult> PlaceChests(FF1Rom rom, List<Map> maps, List<(MapId,byte)> preserveChests) {
+	public async Task<MapResult> PlaceChests(FF1Rom rom, StandardMaps maps, List<(MapIndex,byte)> preserveChests) {
 	    this.OwnTilemap();
             this.OwnFeatures();
 
@@ -968,12 +968,13 @@ namespace FF1Lib.Procgen
 		chestsToPlace.Remove(i.Item2);
 	    }
 
-	    maps = new List<Map>(maps);
-	    maps[(int)mapId] = this.Tilemap;
+			//maps = new List<Map>(maps);
+			//maps[(int)MapIndex] = this.Tilemap;
+			maps[this.MapIndex].Map = this.Tilemap;
 	    try {
-		await rom.shuffleChestLocations(this.rng, maps, new MapId[] { this.mapId },
+		await new RelocateChests(rom).shuffleChestLocations(this.rng, maps, new TileSetsData(rom), new Teleporters(rom, null), new MapIndex[] { this.MapIndex },
 						preserveChests, null, 0x80, true, false,
-						chestsToPlace, this.Traps);
+						chestsToPlace, this.Traps, null);
 	    } catch (Exception) {
 		return new MapResult(false);
 	    }
@@ -1056,27 +1057,31 @@ namespace FF1Lib.Procgen
 	    return new MapResult(false);
 	}
 
-	public async Task<MapResult> CollectInfo(FF1Rom rom, FF1Rom.NPCdata npcdata) {
+	public async Task<MapResult> CollectInfo(FF1Rom rom, StandardMaps maps) {
 	    this.OwnFeatures();
 
 	    List<byte> spikeTiles = new();
+		List<byte> doorSpikeTiles = new();
+		List<byte> walkableTiles = new();
 	    this.Traps = new();
 	    this.RoomFloorTiles = new();
 	    this.RoomBattleTiles = new();
 	    byte randomEncounter = 0x80;
 
-	    this.NPCs = rom.GetNpcs(this.mapId, npcdata);
+	    this.NPCs = maps[this.MapIndex].MapObjects.ToList().Select(o => new NPC() { Index = o.Index, ObjectId = o.ObjectId, Coord = (o.Coords.X, o.Coords.Y), InRoom = o.InRoom, Stationary = o.Stationary }).ToList();
 
-	    FF1Rom.FindRoomTiles(this.tileSet,
+	    RelocateChests.FindRoomTiles(rom, this.tileSet,
 				 this.RoomFloorTiles,
+				 walkableTiles,
 				 spikeTiles,
+				 doorSpikeTiles,
 				 this.RoomBattleTiles,
 				 randomEncounter);
 
 	    for (int y = 0; y < MAPSIZE; y++) {
 		for (int x = 0; x < MAPSIZE; x++) {
 		    byte t = this.Tilemap[y, x];
-		    var tp = this.tileSet.TileProperties[t];
+		    var tp = this.tileSet.Tiles[t].Properties;
 
 		    if (tp.TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE)) {
 			this.Chests.Add(t);
@@ -1136,7 +1141,7 @@ namespace FF1Lib.Procgen
 	    var sanityError = new List<string>();
 
 	    this.Tilemap.Flood((this.Entrance.X, this.Entrance.Y), (MapElement me) => {
-		var tileProp = this.tileSet.TileProperties[me.Value];
+		var tileProp = this.tileSet.Tiles[me.Value].Properties;
 
 		if (tileProp.TilePropFunc == (TilePropFunc.TP_SPEC_TREASURE | TilePropFunc.TP_NOMOVE)) {
 		    if (this.Chests.Contains(me.Value)) {
@@ -1200,9 +1205,9 @@ namespace FF1Lib.Procgen
 			visited.Add(nextPos);
 			var t = this.Tilemap[nextPos.Y, nextPos.X];
 			if (nonWalkable != null && nonWalkable.Contains(t)) { continue; }
-			if ((this.tileSet.TileProperties[t].TilePropFunc & TilePropFunc.TP_NOMOVE) == 0 ||
-			    (this.tileSet.TileProperties[t].TilePropFunc & TilePropFunc.TP_SPEC_DOOR) == TilePropFunc.TP_SPEC_DOOR ||
-			    (this.tileSet.TileProperties[t].TilePropFunc & TilePropFunc.TP_SPEC_CLOSEROOM) == TilePropFunc.TP_SPEC_CLOSEROOM)
+			if ((this.tileSet.Tiles[t].Properties.TilePropFunc & TilePropFunc.TP_NOMOVE) == 0 ||
+			    (this.tileSet.Tiles[t].Properties.TilePropFunc & TilePropFunc.TP_SPEC_DOOR) == TilePropFunc.TP_SPEC_DOOR ||
+			    (this.tileSet.Tiles[t].Properties.TilePropFunc & TilePropFunc.TP_SPEC_CLOSEROOM) == TilePropFunc.TP_SPEC_CLOSEROOM)
 			{
 			    var nextPath = new List<SCCoords>(path);
 			    nextPath.Add(nextPos);

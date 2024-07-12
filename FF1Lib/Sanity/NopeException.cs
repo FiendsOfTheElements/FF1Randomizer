@@ -3,15 +3,15 @@
 	[Serializable]
 	public class NopeException : Exception
 	{
-		public MapId mapId { get; private set; }
+		public MapIndex MapIndex { get; private set; }
 
 		public NopeException()
 		{
 		}
 
-		public NopeException(MapId _mapId, string message) : base(message)
+		public NopeException(MapIndex _MapIndex, string message) : base(message)
 		{
-			mapId = _mapId;
+			MapIndex = _MapIndex;
 		}
 	}
 }

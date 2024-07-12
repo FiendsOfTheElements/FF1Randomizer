@@ -40,7 +40,7 @@ namespace FF1R.Commands
 	    var rom = new FF1Rom(RomPath);
 	    rom.LoadSharedDataTables();
 
-	    var maps = rom.ReadMaps();
+		var maps = new StandardMaps(rom);
 
 	    int start = Map;
 	    int end = Map;
@@ -55,18 +55,17 @@ namespace FF1R.Commands
 		string name;
 
 		if (Tiles) {
-		    output = rom.ExportMapTiles((FF1Lib.MapId)i, Inside);
+		    output = rom.ExportMapTiles((FF1Lib.MapIndex)i, Inside);
 		    name = $"dungeontiles{i}.png";
 		} else {
-		    output = rom.RenderMap(maps, (FF1Lib.MapId)i, Inside);
+		    output = rom.RenderMap(maps.GetMapList(), (FF1Lib.MapIndex)i, Inside);
 		    name = $"dungeonmap{i}.png";
 		}
 		output.Save(name);
 		Console.WriteLine($"Wrote {name}");
 
 		name = $"dungeon{i}-npcs.json";
-		var npcdata = new FF1Rom.NPCdata(rom);
-		var npcs = rom.GetNpcs((FF1Lib.MapId)i, npcdata);
+		var npcs = maps[(MapIndex)i].MapObjects.ToList();
 		using (StreamWriter file = File.CreateText(name)) {
 		    JsonSerializer serializer = new JsonSerializer();
 		    serializer.Formatting = Formatting.Indented;
@@ -95,7 +94,7 @@ namespace FF1R.Commands
 	[Option("-a")]
 	public bool All { get; } = false;
 
-	int OnExecute(IConsole console)
+	async Task<int> OnExecute(IConsole console)
 	{
 	    var rom = new FF1Rom(RomPath);
 
@@ -116,7 +115,7 @@ namespace FF1R.Commands
 	    flags.IncentivizeMarshKeyLocked = true;
 	    flags.SpeedHacks = true;
 
-	    rom.Randomize(new byte[]{(byte)Seed}, flags, new Preferences());
+	    await rom.Randomize(new byte[]{(byte)Seed}, flags, new Preferences());
 
 	    int start = Map;
 	    int end = Map;
@@ -126,12 +125,13 @@ namespace FF1R.Commands
 		end = 60;
 	    }
 
-	    var maps = rom.ReadMaps();
+
+	    var maps = rom.Maps.GetMapList();
 
 	    for (int i = start; i <= end; i++) {
 		Image<Rgba32> output;
 		string name;
-		output = rom.RenderMap(maps, (MapId)i, true);
+		output = rom.RenderMap(maps, (MapIndex)i, true);
 		name = $"dungeonmap{i}.png";
 		output.Save(name);
 		Console.WriteLine($"Wrote {name}");
@@ -177,13 +177,11 @@ namespace FF1R.Commands
 	    var rom = new FF1Rom(RomPath);
 	    rom.LoadSharedDataTables();
 
-	    var maps = rom.ReadMaps();
+	    var maps = new StandardMaps(rom);
 
-	    FF1Lib.MapId mapid = Enum.Parse<MapId>(Map);
+	    FF1Lib.MapIndex mapid = Enum.Parse<MapIndex>(Map);
 
 	    var rng = new MT19337((uint)Seed);
-
-	    var npcdata = new FF1Rom.NPCdata(rom);
 
 	    var numberOfMapsToGenerate = this.Pack;
 	    List<int> seeds = null;
@@ -209,20 +207,20 @@ namespace FF1R.Commands
 		Image<Rgba32> output;
 		string name;
 
-		var mapsCopy = new List<Map>(maps);
+		var mapsCopy = new StandardMaps(rom);
 		var replacementMaps = Task.Run<List<FF1Lib.Procgen.CompleteMap>>(async () => await FF1Lib.Procgen.NewDungeon.GenerateNewDungeon(rng, rom, mapid,
-																		mapsCopy, npcdata, this.Progress)).Result;
+																		mapsCopy, this.Progress)).Result;
 
 		foreach (var replacementMap in replacementMaps) {
-		    mapsCopy[(int)replacementMap.MapId] = replacementMap.Map;
+		    mapsCopy[replacementMap.MapIndex].Map = replacementMap.Map;
 		    if (DoRender) {
-			output = rom.RenderMap(mapsCopy, replacementMap.MapId, false);
-			name = $"{effectiveSeed,8:X8}-dungeonmap{(int)replacementMap.MapId}-outside.png";
+			output = rom.RenderMap(mapsCopy.GetMapList(), replacementMap.MapIndex, false);
+			name = $"{effectiveSeed,8:X8}-dungeonmap{(int)replacementMap.MapIndex}-outside.png";
 			output.Save(name);
 			Console.WriteLine($"Wrote {name}");
 
-			output = rom.RenderMap(mapsCopy, replacementMap.MapId, true);
-			name = $"{effectiveSeed,8:X8}-dungeonmap{(int)replacementMap.MapId}-inside.png";
+			output = rom.RenderMap(mapsCopy.GetMapList(), replacementMap.MapIndex, true);
+			name = $"{effectiveSeed,8:X8}-dungeonmap{(int)replacementMap.MapIndex}-inside.png";
 			output.Save(name);
 			Console.WriteLine($"Wrote {name}");
 		    }

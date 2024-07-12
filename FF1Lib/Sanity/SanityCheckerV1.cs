@@ -5,7 +5,7 @@
 		public bool IsRewardSourceAccessible(IRewardSource source, AccessRequirement currentAccess, List<MapLocation> locations)
 		{
 			return locations.Contains(source.MapLocation) && currentAccess.HasFlag(source.AccessRequirement) &&
-					locations.Contains((source as MapObject)?.SecondLocation ?? MapLocation.StartingLocation);
+					locations.Contains((source as NpcReward)?.SecondLocation ?? MapLocation.StartingLocation);
 		}
 
 		public List<MapLocation> AccessibleMapLocations(
@@ -18,7 +18,7 @@
 
 		public (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> treasurePlacements,
 										Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements,
-										IVictoryConditionFlags victoryConditions)
+										IVictoryConditionFlags victoryConditions, bool layoutcheck)
 
 		{
 			const int maxIterations = 20;
@@ -65,7 +65,7 @@
 				return treasurePlacements.Where(x =>
 				{
 					return locations.Contains(x.MapLocation) && currentAccess.HasFlag(x.AccessRequirement) &&
-						locations.Contains((x as MapObject)?.SecondLocation ?? MapLocation.StartingLocation);
+						locations.Contains((x as NpcReward)?.SecondLocation ?? MapLocation.StartingLocation);
 				});
 			}
 

@@ -22,79 +22,19 @@ namespace FF1Lib
 		[Description("Chaotic")]
 		Chaotic,
 	}
-
-	public class DeepDungeonItemGenerator : IItemGenerator
+	public static class FloorsWeightSelector
 	{
-		private List<IRewardSource> _chestList;
-		private List<IRewardSource> _placedItems;
-		private Dictionary<MapLocation, int> _floorsWeight;
-		private List<Treasure> treasures = new List<Treasure>();
-		private FF1Rom _rom;
-		private int _currentChest;
-		private List<Item> potionspinner0 = new List<Item>()
-			{
-				Item.Heal, Item.Pure, Item.Soft
-			};
-		private List<Item> potionspinner1 = new List<Item>()
-			{
-				Item.Heal, Item.Heal, Item.Heal, Item.Heal,
-				Item.Pure, Item.Pure, Item.Pure,
-				Item.Soft
-			};
-		private List<Item> potionspinner2 = new List<Item>()
-			{
-				Item.Pure, Item.Pure, Item.Pure, Item.Pure,
-				Item.Heal, Item.Heal, Item.Heal,
-				Item.Soft
-			};
-		private List<Item> potionspinner3 = new List<Item>()
-			{
-				Item.Soft, Item.Soft, Item.Soft, Item.Soft,
-				Item.Pure, Item.Pure, Item.Pure,
-				Item.Heal
-			};
-
-		private struct Treasure
+		public static Dictionary<MapLocation, int> GetWeights(List<IRewardSource> chestList, Flags flags)
 		{
-			public int value;
-			public byte index;
+			Dictionary<MapLocation, int> weightedFloors = new();
 
-			public Treasure(int v, byte id)
+			if (flags.GameMode == GameModes.DeepDungeon)
 			{
-				value = v;
-				index = id;
-				if (index == (byte)Item.WhiteShirt || index == (byte)Item.BlackShirt || index == (byte)Item.Ribbon)
-				{
-					value = 50000;
-				}
-			}
-		}
-
-		public int RollDice(MT19337 rng, int dice, int sides)
-		{
-			// Roll a number of dice and add up their results.
-			int result = 0;
-			for (int i = 0; i < dice; i++)
-			{
-				result += rng.Between(1, sides);
-			}
-			return result;
-		}
-
-		public DeepDungeonItemGenerator(List<IRewardSource> chestList, List<int> unusedGoldItems, List<Item> removedItems, List<IRewardSource> placedItems, bool deepDungeonEnabled, bool etherizerEnabled, FF1Rom rom)
-		{
-			_placedItems = placedItems;
-			_chestList = chestList;
-			_rom = rom;
-			_currentChest = 0;
-
-			if (deepDungeonEnabled)
-			{
-				_floorsWeight = Enumerable.Range(0, (int)chestList.OrderByDescending(x => x.MapLocation).First().MapLocation + 1).Select(x => ((MapLocation)x, x)).ToDictionary(x => x.Item1, x => x.Item2);
+				weightedFloors = Enumerable.Range(0, (int)chestList.OrderByDescending(x => x.MapLocation).First().MapLocation + 1).Select(x => ((MapLocation)x, x)).ToDictionary(x => x.Item1, x => x.Item2);
 			}
 			else
 			{
-				_floorsWeight = new()
+				weightedFloors = new()
 				{
 					{ MapLocation.StartingLocation, 0 },
 					{ MapLocation.AirshipLocation, 0 },
@@ -193,6 +133,80 @@ namespace FF1Lib
 				};
 			}
 
+			return weightedFloors;
+		}
+	}
+
+	public class DeepDungeonItemGenerator : IItemGenerator
+	{
+		private List<IRewardSource> _chestList;
+		private List<IRewardSource> _placedItems;
+		private Dictionary<MapLocation, int> _floorsWeight;
+		private List<Treasure> treasures = new List<Treasure>();
+		private List<int> _priceList;
+		//private FF1Rom _rom;
+		private int _currentChest;
+		private List<Item> potionspinner0 = new List<Item>()
+			{
+				Item.Heal, Item.Pure, Item.Soft
+			};
+		private List<Item> potionspinner1 = new List<Item>()
+			{
+				Item.Heal, Item.Heal, Item.Heal, Item.Heal,
+				Item.Pure, Item.Pure, Item.Pure,
+				Item.Soft
+			};
+		private List<Item> potionspinner2 = new List<Item>()
+			{
+				Item.Pure, Item.Pure, Item.Pure, Item.Pure,
+				Item.Heal, Item.Heal, Item.Heal,
+				Item.Soft
+			};
+		private List<Item> potionspinner3 = new List<Item>()
+			{
+				Item.Soft, Item.Soft, Item.Soft, Item.Soft,
+				Item.Pure, Item.Pure, Item.Pure,
+				Item.Heal
+			};
+
+		private struct Treasure
+		{
+			public int value;
+			public byte index;
+
+			public Treasure(int v, byte id)
+			{
+				value = v;
+				index = id;
+				if (index == (byte)Item.WhiteShirt || index == (byte)Item.BlackShirt || index == (byte)Item.Ribbon)
+				{
+					value = 50000;
+				}
+			}
+		}
+
+		public int RollDice(MT19337 rng, int dice, int sides)
+		{
+			// Roll a number of dice and add up their results.
+			int result = 0;
+			for (int i = 0; i < dice; i++)
+			{
+				result += rng.Between(1, sides);
+			}
+			return result;
+		}
+
+		public DeepDungeonItemGenerator(List<IRewardSource> chestList, List<Item> unusedGoldItems, List<Item> removedItems, List<IRewardSource> placedItems, Dictionary<MapLocation, int> weightedFloors, List<int> priceList, bool deepDungeonEnabled, bool etherizerEnabled)
+		{
+			_placedItems = placedItems;
+			_chestList = chestList;
+			//_rom = rom;
+			_priceList = priceList;
+			_currentChest = 0;
+
+			_floorsWeight = weightedFloors;
+
+
 			// The shelters are placeholders for ethers.
 			// It will only include those if the ether flag is checked.
 			if (etherizerEnabled)
@@ -214,17 +228,19 @@ namespace FF1Lib
 			// set the price scaling to whatever you want without having to worry about if you made
 			// something cost 2 GP and thus end up in late game chests the way the standalone
 			// executable version does.
-			var v = _rom.Get(0x37C00, 0x200).Chunk(2);
+			//var v = _rom.Get(0x37C00, 0x200).ToUShorts().Chunk(2);
+
 			// People have been getting some kind of blank key item in chests on or near the final
 			// floor. I suspect there's an off-by-one error somewhere, hopefully this was it?
 			//for (int i = 0x1C; i < 0xAF; i++)
 			for (int i = 0x1C; i < 0xAE; i++)
 			{
-				treasures.Add(new Treasure(v[i][0] + v[i][1] * 0x100, (byte)i));
+				//treasures.Add(new Treasure(v[i][0] + v[i][1] * 0x100, (byte)i));
+				treasures.Add(new Treasure(_priceList[i], (byte)i));
 			}
 			foreach (var golditem in unusedGoldItems)
 			{
-				treasures.RemoveAll(x => x.index == golditem);
+				treasures.RemoveAll(x => x.index == (int)golditem);
 			}
 			foreach (var removeitem in removedItems)
 			{
@@ -269,9 +285,9 @@ namespace FF1Lib
 				spunitem = picked.index;
 			}
 
-			if (_chestList[_currentChest] is MapObject)
+			if (_chestList[_currentChest] is NpcReward)
 			{
-				_placedItems.Add(new MapObject((MapObject)_chestList[_currentChest], (Item)spunitem));
+				_placedItems.Add(new NpcReward((NpcReward)_chestList[_currentChest], (Item)spunitem));
 			}
 			else if (_chestList[_currentChest] is ItemShopSlot)
 			{
@@ -309,12 +325,21 @@ namespace FF1Lib
 		private List<IRewardSource> chests = new();
 		private int bahamutfloor = 0;
 		private int tailfloor = 0;
+
 		private FF1Rom _rom;
+		private StandardMaps standardMaps;
+		private Teleporters teleporters;
+		private NpcObjectData npcData;
+		private TileSetsData tileSetsData;
+		private List<TileSets> mapTileSets;
+		private Flags flags;
 
 		private int tntfloor = 8 + 7;
 		private int rubyfloor = 22 + 7;
 		private int oxyfloor = 36 + 7;
 		public int WarMechFloor { get; set; }
+		public List<IRewardSource> PlacedItems { get; private set;}
+		public List<IRewardSource> ChestLocations { get; private set; }
 
 		private struct Treasure
 		{
@@ -463,9 +488,16 @@ namespace FF1Lib
 
 		}
 
-		public DeepDungeon(FF1Rom rom)
+		public DeepDungeon(StandardMaps _maps, Teleporters _teleporters, NpcObjectData _npcs, TileSetsData _tilesets, Flags _flags, FF1Rom rom)
 		{
 			_rom = rom;
+			standardMaps = _maps;
+			teleporters = _teleporters;
+			npcData = _npcs;
+			tileSetsData = _tilesets;
+			mapTileSets = standardMaps.MapTileSets;
+			flags = _flags;
+			PlacedItems = new();
 		}
 		private long MonsterLevel(EnemyInfo monster)
 		{
@@ -833,31 +865,38 @@ namespace FF1Lib
 			}
 
 			// Read which maps have which tilesets
-			tilesetmappings = _rom.Get(0x2CC0, 61).ToBytes();
+			tilesetmappings = mapTileSets.Select(x => (byte)x).ToArray();
 
 			// Correct the tile graphics so that "back" stairs look like they go up and
 			// "forward" stairs look like they go down.
 			for (int i = 1; i < 8; i++)
 			{
+				tileSetsData[i].Tiles[tilesets[i].warptile].TileGraphic = new() { tilesets[i].warpgraphic.topleft, tilesets[i].warpgraphic.topright, tilesets[i].warpgraphic.botleft, tilesets[i].warpgraphic.botright };
+
+				/*
 				_rom.Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x000, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.topleft })));
 				_rom.Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x080, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.topright })));
 				_rom.Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x100, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.botleft })));
-				_rom.Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x180, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.botright })));
+				_rom.Put(0x1000 + i * 0x200 + tilesets[i].warptile + 0x180, Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].warpgraphic.botright })));*/
 				for (int j = 0; j < tilesets[i].teleportdeck.Count(); j++)
 				{
 					if (tilesets[i].teleportdeck[j] >= 0x80)
 					{
+						tileSetsData[i].Tiles[tilesets[i].teleportdeck[j] % 0x80].TileGraphic = new() { tilesets[i].laddergraphic.topleft, tilesets[i].laddergraphic.topright, tilesets[i].laddergraphic.botleft, tilesets[i].laddergraphic.botright };
+/*
 						_rom.Put(0x1000 + i * 0x200 + 0x000 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.topleft })));
 						_rom.Put(0x1000 + i * 0x200 + 0x080 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.topright })));
 						_rom.Put(0x1000 + i * 0x200 + 0x100 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.botleft })));
-						_rom.Put(0x1000 + i * 0x200 + 0x180 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.botright })));
+						_rom.Put(0x1000 + i * 0x200 + 0x180 + (tilesets[i].teleportdeck[j] % 0x80), Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].laddergraphic.botright })));*/
 					}
 					else
 					{
+						tileSetsData[i].Tiles[tilesets[i].teleportdeck[j]].TileGraphic = new() { tilesets[i].teleportgraphic.topleft, tilesets[i].teleportgraphic.topright, tilesets[i].teleportgraphic.botleft, tilesets[i].teleportgraphic.botright };
+						/*
 						_rom.Put(0x1000 + i * 0x200 + 0x000 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topleft })));
 						_rom.Put(0x1000 + i * 0x200 + 0x080 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.topright })));
 						_rom.Put(0x1000 + i * 0x200 + 0x100 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botleft })));
-						_rom.Put(0x1000 + i * 0x200 + 0x180 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botright })));
+						_rom.Put(0x1000 + i * 0x200 + 0x180 + tilesets[i].teleportdeck[j], Blob.FromHex(Convert.ToHexString(new byte[] { tilesets[i].teleportgraphic.botright })));*/
 					}
 				}
 			}
@@ -867,7 +906,7 @@ namespace FF1Lib
 				tilesetspinner.Add((byte)i);
 			}
 		}
-		public void CreateDomains(MT19337 rng, List<Map> maps)
+		public void CreateDomains(MT19337 rng)
 		{
 			// It's 0x72 because we want to exclude the "boss battles".
 			FormationLevel[] formationlevels = new FormationLevel[0x72 * 2];
@@ -918,15 +957,16 @@ namespace FF1Lib
 			}
 
 		}
-		public void Generate(MT19337 rng, OverworldMap overworldMap, List<Map> maps, Flags flags)
+		public void Generate(MT19337 rng, Overworld overworld, EncounterRate encounterRates, DialogueData dialogues)
 		{
-
+			/*
 			if (!(bool)flags.Treasures)
 			{
 				throw new Exception("Treasures Shuffle must be enabled with Deep Dungeon.");
-			}
+			}*/
 
 			InitializeTilesets();
+			var overworldMap = overworld.OverworldMap;
 
 			// Close the city wall around Coneria to prevent exploring the world normally, as that
 			// breaks things horribly.
@@ -939,24 +979,23 @@ namespace FF1Lib
 			});
 
 			// Move the player's starting location up so that they're within the city wall.
-			_rom.Put(0x3011, Blob.FromHex("9B"));
+			overworld.Locations.StartingLocation = new Sanity.SCCoords(overworld.Locations.StartingLocation.X, 0xA2);
 
 			// Change the destination for Coneria Castle overworld teleporter so it puts us on the
 			// "back" stairs for floor 1 of the Deep Dungeon.
-			//overworldMap.PutOverworldTeleport(OverworldTeleportIndex.ConeriaCastle1, new TeleportDestination(MapLocation.ConeriaCastle1, MapIndex.ConeriaCastle1F, new Coordinate(0x20, 0x20, CoordinateLocale.Standard)));
-			overworldMap.PutOverworldTeleport(OverworldTeleportIndex.ConeriaCastle1, new TeleportDestination(MapLocation.ConeriaCastle1, MapIndex.TitansTunnel, new Coordinate(0x20, 0x20, CoordinateLocale.Standard)));
+			teleporters.OverworldTeleporters[OverworldTeleportIndex.ConeriaCastle1] = new TeleportDestination(MapLocation.ConeriaCastle1, MapIndex.TitansTunnel, new Coordinate(0x20, 0x20, CoordinateLocale.Standard));
 
 			// Kill all the NPCs.
 			KillNPCs();
 
 			// Generate new monster domains based on "estimated power level".
-			CreateDomains(rng, maps);
+			CreateDomains(rng);
 
 			// Gaia and Onrac should really be encountered in the other order.
 			byte[] dungeontowns = { 1, 2, 3, 4, 6, 5, 7 };
 
 			// Speaking of Onrac, let's get rid of the submarine, as that breaks things horribly too.
-			maps[6][0x1E, 0x2E] = 0x27;
+			standardMaps[MapIndex.Onrac].Map[0x1E, 0x2E] = 0x27;
 
 			// Pre-determine what floors will have town branches
 			int[] townfloors = new int[7];
@@ -986,18 +1025,31 @@ namespace FF1Lib
 			if (flags.DDFiendOrbs)
 			{
 				deepdungeonentrance = "3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C34303030303030303030303030303030303030303030353C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313831313138313131313131313138383131313831333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32383831313831383131313131313131313831383138333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313831313831383131343035313131383131383138333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313831313831383131324C33313138313131383138333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32383838313138313131323133313138383831313831333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313134303531313131323133313131313430353131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C323131324D333131313132313331313131324E333131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313132313331313131303130313131313231333131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313132313331313131313131313131313231333131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313132313030303031313131313030303231333131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313132313131313131314831313131313131333131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313132313530303031313131313030303231333131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313132313331313131313131313131313231333131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313132313331313131313131313131313231333131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3231313250333131313131313131313131324F333131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313130303031313131313131313131313030303131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32383831313138313131313131313138313831313831333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313138313831383131313131313138313831383138333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313831313831383131313131313138383831383138333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313138313831383131313131313131313831383138333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32383831313138313131313131313131313831313831333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C30303030303030303030303030303030303030303030303C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C";
-				maps[60] = new Map(Blob.FromHex(deepdungeonentrance).ToBytes());
+				standardMaps[(MapIndex)60].Map = new Map(Blob.FromHex(deepdungeonentrance).ToBytes());
 				var mainentrance = tilesets[1].teleportdeck.SpliceRandom(rng);
 				var skipentrance1 = tilesets[1].teleportdeck.SpliceRandom(rng);
 				var skipentrance2 = tilesets[1].teleportdeck.SpliceRandom(rng);
 				var skipentrance3 = tilesets[1].teleportdeck.SpliceRandom(rng);
 				var skipentrance4 = tilesets[1].teleportdeck.SpliceRandom(rng);
-				maps[60][0x19, 0x20] = mainentrance;
-				maps[60][0x1C, 0x19] = skipentrance1;
-				maps[60][0x1C, 0x27] = skipentrance2;
-				maps[60][0x24, 0x19] = skipentrance3;
-				maps[60][0x24, 0x27] = skipentrance4;
-				_rom.Put(0x2CC0 + 60, Blob.FromHex("01"));
+				standardMaps[(MapIndex)60].Map[0x19, 0x20] = mainentrance;
+				standardMaps[(MapIndex)60].Map[0x1C, 0x19] = skipentrance1;
+				standardMaps[(MapIndex)60].Map[0x1C, 0x27] = skipentrance2;
+				standardMaps[(MapIndex)60].Map[0x24, 0x19] = skipentrance3;
+				standardMaps[(MapIndex)60].Map[0x24, 0x27] = skipentrance4;
+
+				standardMaps[(MapIndex)60].MapTileSet = TileSets.Castle;
+				tileSetsData[1].Tiles[mainentrance].Properties = new TileProp(0x80, 0x00);
+				tileSetsData[1].Tiles[skipentrance1].Properties = new TileProp(0x80, 0x01);
+				tileSetsData[1].Tiles[skipentrance2].Properties = new TileProp(0x80, 0x02);
+				tileSetsData[1].Tiles[skipentrance3].Properties = new TileProp(0x80, 0x03);
+				tileSetsData[1].Tiles[skipentrance4].Properties = new TileProp(0x80, 0x04);
+
+				teleporters.StandardMapTeleporters[(TeleportIndex)0x00] = new TeleportDestination((MapIndex)0x08, new Coordinate(0x20, 0xA0, CoordinateLocale.Standard)); // Floor 1
+				teleporters.StandardMapTeleporters[(TeleportIndex)0x01] = new TeleportDestination((MapIndex)0x11, new Coordinate(0x20, 0xA0, CoordinateLocale.Standard)); // Floor 10
+				teleporters.StandardMapTeleporters[(TeleportIndex)0x02] = new TeleportDestination((MapIndex)0x1B, new Coordinate(0x20, 0xA0, CoordinateLocale.Standard)); // Floor 20
+				teleporters.StandardMapTeleporters[(TeleportIndex)0x03] = new TeleportDestination((MapIndex)0x25, new Coordinate(0x20, 0xA0, CoordinateLocale.Standard)); // Floor 30
+				teleporters.StandardMapTeleporters[(TeleportIndex)0x04] = new TeleportDestination((MapIndex)0x2F, new Coordinate(0x20, 0xA0, CoordinateLocale.Standard)); // Floor 40
+				/*
 				_rom.Put(0x800 + 0x100 + 2 * mainentrance, Blob.FromHex("8000"));
 				_rom.Put(0x800 + 0x100 + 2 * skipentrance1, Blob.FromHex("8001"));
 				_rom.Put(0x800 + 0x100 + 2 * skipentrance2, Blob.FromHex("8002"));
@@ -1017,35 +1069,46 @@ namespace FF1Lib
 				_rom.Put(0x3F200 + 3, Blob.FromHex("25")); // Floor 30
 				_rom.Put(0x3F000 + 4, Blob.FromHex("20"));
 				_rom.Put(0x3F100 + 4, Blob.FromHex("A0"));
-				_rom.Put(0x3F200 + 4, Blob.FromHex("2F")); // Floor 40
+				_rom.Put(0x3F200 + 4, Blob.FromHex("2F")); // Floor 40*/
 				// Put the fiend orbs as guards in front of the other entrances
-				_rom.SetNpc((MapId)60, 0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
-				_rom.SetNpc((MapId)60, 1, (ObjectId)0x1B, 0x19, 0x1D, false, true);
-				_rom.SetNpc((MapId)60, 2, (ObjectId)0x1C, 0x27, 0x1D, false, true);
-				_rom.SetNpc((MapId)60, 3, (ObjectId)0x1D, 0x19, 0x23, false, true);
-				_rom.SetNpc((MapId)60, 4, (ObjectId)0x1E, 0x27, 0x23, false, true);
-				_rom.InsertDialogs(0x2D, "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nIf you can defeat the\nfiends, you can skip\nahead. GOOD LUCK!");
-				//InsertDialogs(0x13, "Bring me TNT if you wish\nto skip to floor 8.");
-				//InsertDialogs(0x29, "Bring me a RUBY if\nyou wish to skip to\nfloor 22.");
-				//InsertDialogs(0x25, "Bring me OXYALE if you\nwish to skip to floor 36.");
+				standardMaps[(MapIndex)60].MapObjects.SetNpc(0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
+				standardMaps[(MapIndex)60].MapObjects.SetNpc(1, (ObjectId)0x1B, 0x19, 0x1D, false, true);
+				standardMaps[(MapIndex)60].MapObjects.SetNpc(2, (ObjectId)0x1C, 0x27, 0x1D, false, true);
+				standardMaps[(MapIndex)60].MapObjects.SetNpc(3, (ObjectId)0x1D, 0x19, 0x23, false, true);
+				standardMaps[(MapIndex)60].MapObjects.SetNpc(4, (ObjectId)0x1E, 0x27, 0x23, false, true);
+				dialogues[0x2D] = "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nIf you can defeat the\nfiends, you can skip\nahead. GOOD LUCK!";
 			}
 			else
 			{
 				deepdungeonentrance = "3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C34303030303030303030353C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131313131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131313131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131313131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131315831313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131585831313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131315831313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C34303030303030303032313131315831313131333030303030303030353C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131313131313131313131585858313131313131313131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131313131313131313131343035313131313131313131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131315858313158583131324C33315858313131585831313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131313131583131315831323133313131583158313131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131313158313131583131323133315858313158585831313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131315831313158313131323133313131583158315831313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131315858583158585834303130355858313131583131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131313131313131313132313131333131313131313131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131313134303030303030313131303030303030353131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C323131313131324D313131313131483131313131314E333131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131313130303030303032313131333030303030303131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131313131313131313132313131333131313131313131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131313131313131313130343135303131313131313131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C30303030303030303032313131323133313131333030303030303030303C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131323133313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131323133313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131324F33313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131303030313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131383838313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313138313131383131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131383838313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313138313131383131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131383838313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131313131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131313131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C32313131313131313131333C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C30303030303030303030303C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C3C";
-				maps[60] = new Map(Blob.FromHex(deepdungeonentrance).ToBytes());
+				standardMaps[(MapIndex)60].Map = new Map(Blob.FromHex(deepdungeonentrance).ToBytes());
 				var mainentrance = tilesets[1].teleportdeck.SpliceRandom(rng);
 				var skipentrance1 = tilesets[1].teleportdeck.SpliceRandom(rng);
 				var skipentrance2 = tilesets[1].teleportdeck.SpliceRandom(rng);
 				var skipentrance3 = tilesets[1].teleportdeck.SpliceRandom(rng);
-				maps[60][0x19, 0x20] = mainentrance;
-				maps[60][0x27, 0x20] = skipentrance1;
-				maps[60][0x20, 0x19] = skipentrance2;
-				maps[60][0x20, 0x27] = skipentrance3;
-				_rom.Put(0x2CC0 + 60, Blob.FromHex("01"));
-				_rom.Put(0x800 + 0x100 + 2 * mainentrance, Blob.FromHex("8000"));
-				_rom.Put(0x800 + 0x100 + 2 * skipentrance1, Blob.FromHex("8001"));
-				_rom.Put(0x800 + 0x100 + 2 * skipentrance2, Blob.FromHex("8002"));
-				_rom.Put(0x800 + 0x100 + 2 * skipentrance3, Blob.FromHex("8003"));
+				standardMaps[(MapIndex)60].Map[0x19, 0x20] = mainentrance;
+				standardMaps[(MapIndex)60].Map[0x27, 0x20] = skipentrance1;
+				standardMaps[(MapIndex)60].Map[0x20, 0x19] = skipentrance2;
+				standardMaps[(MapIndex)60].Map[0x20, 0x27] = skipentrance3;
+
+				standardMaps[(MapIndex)60].MapTileSet = TileSets.Castle;
+				tileSetsData[1].Tiles[mainentrance].Properties = new TileProp(0x80, 0x00);
+				tileSetsData[1].Tiles[skipentrance1].Properties = new TileProp(0x80, 0x01);
+				tileSetsData[1].Tiles[skipentrance2].Properties = new TileProp(0x80, 0x02);
+				tileSetsData[1].Tiles[skipentrance3].Properties = new TileProp(0x80, 0x03);
+
+
+				teleporters.StandardMapTeleporters[(TeleportIndex)0x00] = new TeleportDestination((MapIndex)0x08, new Coordinate(0x20, 0xA0, CoordinateLocale.Standard)); // Floor 1
+				teleporters.StandardMapTeleporters[(TeleportIndex)0x01] = new TeleportDestination((MapIndex)0x0F, new Coordinate(0x20, 0xA0, CoordinateLocale.Standard)); // Floor 8
+				teleporters.StandardMapTeleporters[(TeleportIndex)0x02] = new TeleportDestination((MapIndex)0x1D, new Coordinate(0x20, 0xA0, CoordinateLocale.Standard)); // Floor 22
+				teleporters.StandardMapTeleporters[(TeleportIndex)0x03] = new TeleportDestination((MapIndex)0x2B, new Coordinate(0x20, 0xA0, CoordinateLocale.Standard)); // Floor 36
+				/*
+_rom.Put(0x800 + 0x100 + 2 * mainentrance, Blob.FromHex("8000"));
+_rom.Put(0x800 + 0x100 + 2 * skipentrance1, Blob.FromHex("8001"));
+_rom.Put(0x800 + 0x100 + 2 * skipentrance2, Blob.FromHex("8002"));
+_rom.Put(0x800 + 0x100 + 2 * skipentrance3, Blob.FromHex("8003"));*/
+
+				/*
 				_rom.Put(0x3F000 + 0, Blob.FromHex("20"));
 				_rom.Put(0x3F100 + 0, Blob.FromHex("A0"));
 				_rom.Put(0x3F200 + 0, Blob.FromHex("08")); // Floor 1
@@ -1057,36 +1120,38 @@ namespace FF1Lib
 				_rom.Put(0x3F200 + 2, Blob.FromHex("1D")); // Floor 22
 				_rom.Put(0x3F000 + 3, Blob.FromHex("20"));
 				_rom.Put(0x3F100 + 3, Blob.FromHex("A0"));
-				_rom.Put(0x3F200 + 3, Blob.FromHex("2B")); // Floor 36
+				_rom.Put(0x3F200 + 3, Blob.FromHex("2B")); // Floor 36*/
 				// Put some guards in front of the other entrances
 				// The "ordeals man" will be in front of 1, explaining what's going on and then vanishing
 				// The "tnt dwarf" will guard the entrance for 8
 				// The "titan" will be in front of the entrance for 22
 				// The "submarine girl" will be in front of the entrance for 36
-				_rom.SetNpc((MapId)60, 0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
-				_rom.SetNpc((MapId)60, 1, ObjectId.Nerrick, 0x20, 0x26, false, true);
-				_rom.SetNpc((MapId)60, 2, ObjectId.Titan, 0x1A, 0x20, false, true);
-				_rom.SetNpc((MapId)60, 3, ObjectId.SubEngineer, 0x26, 0x20, false, true);
-				_rom.InsertDialogs(0x2D, "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nBring these other folks\nthe items they need to\nskip ahead. GOOD LUCK!");
-				_rom.InsertDialogs(0x13, "Bring me TNT if you wish\nto skip to floor 8.");
-				_rom.InsertDialogs(0x29, "Bring me a RUBY if\nyou wish to skip to\nfloor 22.");
-				_rom.InsertDialogs(0x25, "Bring me OXYALE if you\nwish to skip to floor 36.");
+				standardMaps[(MapIndex)60].MapObjects.SetNpc(0, ObjectId.CastleOrdealsOldMan, 0x20, 0x1D, false, true);
+				standardMaps[(MapIndex)60].MapObjects.SetNpc(1, ObjectId.Nerrick, 0x20, 0x26, false, true);
+				standardMaps[(MapIndex)60].MapObjects.SetNpc(2, ObjectId.Titan, 0x1A, 0x20, false, true);
+				standardMaps[(MapIndex)60].MapObjects.SetNpc(3, ObjectId.SubEngineer, 0x26, 0x20, false, true);
+
+				dialogues[0x2D] = "Welcome to Deep Dungeon.\nThis entrance takes you\nto the first floor.\nBring these other folks\nthe items they need to\nskip ahead. GOOD LUCK!";
+				dialogues[0x13] = "Bring me TNT if you wish\nto skip to floor 8.";
+				dialogues[0x29] = "Bring me a RUBY if\nyou wish to skip to\nfloor 22.";
+				dialogues[0x25] = "Bring me OXYALE if you\nwish to skip to floor 36.";
 			}
 
 
 			// Construct the Chaos floor
 			// Put Chaos NPCs back (the initial NPC genocide would have removed them)
-			_rom.SetNpc((MapId)59, 0, (ObjectId)0x18, 0x0F, 0x13, true, true);
-			_rom.SetNpc((MapId)59, 1, (ObjectId)0x19, 0x0F, 0x12, true, true);
-			_rom.SetNpc((MapId)59, 2, (ObjectId)0x1A, 0x0F, 0x11, true, true);
-			// No encounters (the +1 is there because the whole encounter table is apparently off by 1 in the code)
-			_rom.Put(0x2CC00 + 59 + 1, Blob.FromHex("00"));
+			standardMaps[(MapIndex)59].MapObjects.SetNpc(0, (ObjectId)0x18, 0x0F, 0x13, true, true);
+			standardMaps[(MapIndex)59].MapObjects.SetNpc(1, (ObjectId)0x19, 0x0F, 0x12, true, true);
+			standardMaps[(MapIndex)59].MapObjects.SetNpc(2, (ObjectId)0x1A, 0x0F, 0x11, true, true);
+
+			// No encounters
+			encounterRates.UpdateRate((MapIndex)59, 0);
 
 			// Generate the map layouts.
 			for (int i = 8; i < 59; i++)
 			{
-				// Set the encounter rate (the +1 is there because the whole encounter table is apparently off by 1 in the code).
-				_rom.Put(0x2CC00 + i + 1, Blob.FromHex("08"));
+				// Set the encounter rate
+				encounterRates.UpdateRate((MapIndex)i, 8);
 
 				// Pick a tileset with unused exit tiles.
 				if (flags.DDProgressiveTilesets)
@@ -1106,10 +1171,10 @@ namespace FF1Lib
 						townfloors[nexttown]++;
 					}
 				}
-				_rom.Put(0x2CC0 + i, Blob.FromHex(Convert.ToHexString(new byte[] { tilesetmappings[i] })));
+				standardMaps[(MapIndex)i].MapTileSet = (TileSets)tilesetmappings[i];
 
 				// Start from a clean slate.
-				WipeMap(maps[i], tilesets[tilesetmappings[i]]);
+				WipeMap(standardMaps[(MapIndex)i].Map, tilesets[tilesetmappings[i]]);
 
 				// Which layout generation algorithm to use:
 				//  "Box Style" looks a bit like earth/volcano lower floors where you have
@@ -1125,50 +1190,62 @@ namespace FF1Lib
 				switch (RollDice(rng, 1, 10))
 				{
 					case 1:
-						GenerateMapGridStyle(rng, maps[i], tilesets[tilesetmappings[i]]);
+						GenerateMapGridStyle(rng, standardMaps[(MapIndex)i].Map, tilesets[tilesetmappings[i]]);
 						break;
 					case 2:
 					case 3:
 					case 4:
-						GenerateMapSnakeStyle(rng, maps[i], tilesets[tilesetmappings[i]]);
+						GenerateMapSnakeStyle(rng, standardMaps[(MapIndex)i].Map, tilesets[tilesetmappings[i]]);
 						break;
 					default:
-						GenerateMapBoxStyle(rng, maps[i], tilesets[tilesetmappings[i]]);
+						GenerateMapBoxStyle(rng, standardMaps[(MapIndex)i].Map, tilesets[tilesetmappings[i]]);
 						break;
 				}
 
 				// Make the tiles look right.
-				Beautify(maps[i], tilesets[tilesetmappings[i]]);
+				Beautify(standardMaps[(MapIndex)i].Map, tilesets[tilesetmappings[i]]);
 
 				// Connect it to the next map.
 				if (i < 58)
 				{
+					tileSetsData[tilesetmappings[i]].Tiles[PlaceExit(rng, standardMaps[(MapIndex)i].Map, tilesets[tilesetmappings[i]])].Properties = new TileProp(0x80, (byte)(i - 3));
+					teleporters.StandardMapTeleporters[(TeleportIndex)(i - 3)] = new TeleportDestination((MapIndex)(i + 1), new Coordinate(0x20, 0xA0, CoordinateLocale.Standard));
+
+					/*
 					_rom.Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(i - 3) })));
 					_rom.Put(0x3F000 + i - 3, Blob.FromHex("20"));
 					_rom.Put(0x3F100 + i - 3, Blob.FromHex("A0"));
-					_rom.Put(0x3F200 + i - 3, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(i + 1) })));
+					_rom.Put(0x3F200 + i - 3, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(i + 1) })));*/
 					if (townfloors[nexttown] == i)
 					{
+						tileSetsData[tilesetmappings[i]].Tiles[PlaceExit(rng, standardMaps[(MapIndex)i].Map, tilesets[tilesetmappings[i]])].Properties = new TileProp(0x80, (byte)(nexttown + 57));
+						teleporters.StandardMapTeleporters[(TeleportIndex)(nexttown + 57)] = new TeleportDestination((MapIndex)dungeontowns[nexttown], new Coordinate((byte)towndestinations[nexttown].x, (byte)(towndestinations[nexttown].y + 0x80), CoordinateLocale.Standard));
+						/*
 						_rom.Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(nexttown + 57) })));
 						_rom.Put(0x3F000 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)towndestinations[nexttown].x })));
 						_rom.Put(0x3F100 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(towndestinations[nexttown].y + 0x80) })));
-						_rom.Put(0x3F200 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { dungeontowns[nexttown] })));
+						_rom.Put(0x3F200 + nexttown + 57, Blob.FromHex(Convert.ToHexString(new byte[] { dungeontowns[nexttown] })));*/
 						if (nexttown < 6) nexttown++;
 					}
 				}
 				else
 				{
+					tileSetsData[tilesetmappings[i]].Tiles[PlaceExit(rng, standardMaps[(MapIndex)i].Map, tilesets[tilesetmappings[i]])].Properties = new TileProp(0x80, (byte)(i - 3));
+					teleporters.StandardMapTeleporters[(TeleportIndex)(i - 3)] = new TeleportDestination((MapIndex)(i + 1), new Coordinate(0x0F, 0x87, CoordinateLocale.Standard));
+					/*
 					_rom.Put(0x800 + tilesetmappings[i] * 0x100 + 2 * PlaceExit(rng, maps[i], tilesets[tilesetmappings[i]]), Blob.FromHex("80" + Convert.ToHexString(new byte[] { (byte)(i - 3) })));
 					_rom.Put(0x3F000 + i - 3, Blob.FromHex("0F"));
-					_rom.Put(0x3F100 + i - 3, Blob.FromHex("87"));
+					_rom.Put(0x3F100 + i - 3, Blob.FromHex("87"));*/
 					if (flags.ToFRMode == ToFRMode.Short)
 					{
-						_rom.Put(0x3F100 + i - 3, Blob.FromHex("89"));
-						maps[59][0x07, 0x0F] = tilesets[7].doortile;
-						maps[59][0x09, 0x0F] = tilesets[7].warptile;
-						maps[59][0x04, 0x0F] = tilesets[7].roomtile;
+						//teleporters.StandardMapTeleporters[(TeleportIndex)(i - 3)] = new TeleportDestination((MapIndex)(i + 1), new Coordinate(0x0F, 0x83, CoordinateLocale.StandardInRoom));
+
+						//_rom.Put(0x3F100 + i - 3, Blob.FromHex("89"));
+						standardMaps[(MapIndex)59].Map[0x07, 0x0F] = tilesets[7].doortile;
+						standardMaps[(MapIndex)59].Map[0x09, 0x0F] = tilesets[7].warptile;
+						standardMaps[(MapIndex)59].Map[0x04, 0x0F] = tilesets[7].roomtile;
 					}
-					_rom.Put(0x3F200 + i - 3, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(i + 1) })));
+					//_rom.Put(0x3F200 + i - 3, Blob.FromHex(Convert.ToHexString(new byte[] { (byte)(i + 1) })));
 					//PlaceChaos(rng, maps[i], tilesets[tilesetmappings[i]]);
 				}
 
@@ -1180,32 +1257,31 @@ namespace FF1Lib
 			}
 
 			// Distribute chests, but don't put treasure in them.
-			DistributeTreasure(rng, maps, flags);
+			DistributeTreasure(rng, flags);
 
 			// Put Bahamut and a TAIL somewhere in the dungeon.
-			PlaceBahamut(rng, maps, flags);
+			PlaceBahamut(rng, flags);
 
 			// Placce WarMech if it's enabled
-			PlaceWarMech(rng, maps, flags);
+			PlaceWarMech(rng, flags);
 
 			// Assign random palettes to the maps.
-			SpinPalettes(rng, maps);
+			SpinPalettes(rng);
+
+			PlacedItems = PlaceTreasures(flags, rng);
+			ChestLocations = chests.Where(c => !PlacedItems.Select(p => p.Address).Contains(c.Address)).ToList();
 
 			// Debug information
 			for (int i = 0; i < tilesetspinner.Count; i++)
 			{
 				Console.WriteLine("Tileset " + tilesetspinner[i] + " has teleports remaining: " + tilesets[tilesetspinner[i]].teleportdeck.Count);
 			}
-
-			// Commit the overworld edits.
-			overworldMap.ApplyMapEdits();
-
 		}
 
-		public void SpinPalettes(MT19337 rng, List<Map> maps)
+		public void SpinPalettes(MT19337 rng)
 		{
 			// Assigns the inner map with the given index a random palette.
-			var palettes = OverworldMap.GeneratePalettes(_rom.Get(OverworldMap.MapPaletteOffset, MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
+			var palettes = OverworldMap.GeneratePalettes(_rom.Get(OverworldMap.MapPaletteOffset, OverworldMap.MapCount * OverworldMap.MapPaletteSize).Chunk(OverworldMap.MapPaletteSize));
 			for (int i = 8; i < 61; i++)
 			{
 				var pal = palettes[(OverworldMap.Palette)rng.Between(1, palettes.Count() - 1)];
@@ -1224,7 +1300,7 @@ namespace FF1Lib
 				_rom.Put(OverworldMap.MapPaletteOffset + i * OverworldMap.MapPaletteSize + 24, Blob.FromHex("0F0F27360F0F1436"));
 			}
 		}
-		public void DistributeTreasure(MT19337 rng, List<Map> maps, Flags flags)
+		public void DistributeTreasure(MT19337 rng, Flags flags)
 		{
 			List<byte> mapspinner;
 			List<Candidate> candidates;
@@ -1270,17 +1346,17 @@ namespace FF1Lib
 					{
 						for (int k = 1; k < 63; k++)
 						{
-							if (maps[currentmap][k, j] == tilesets[i].roomtile)
+							if (standardMaps[(MapIndex)currentmap].Map[k, j] == tilesets[i].roomtile)
 							{
 								// To be a viable candidate, the spot has to not only not block
 								// the path, but also be accessible by one of the cardinal directions.
-								if (accessibleroomtiles.Contains(maps[currentmap][k - 1, j]) ||
-									accessibleroomtiles.Contains(maps[currentmap][k + 1, j]) ||
-									accessibleroomtiles.Contains(maps[currentmap][k, j - 1]) ||
-									accessibleroomtiles.Contains(maps[currentmap][k, j + 1]))
+								if (accessibleroomtiles.Contains(standardMaps[(MapIndex)currentmap].Map[k - 1, j]) ||
+									accessibleroomtiles.Contains(standardMaps[(MapIndex)currentmap].Map[k + 1, j]) ||
+									accessibleroomtiles.Contains(standardMaps[(MapIndex)currentmap].Map[k, j - 1]) ||
+									accessibleroomtiles.Contains(standardMaps[(MapIndex)currentmap].Map[k, j + 1]))
 								{
 									c = new Candidate(j, k);
-									if (Traversible(maps[currentmap], tilesets[i], j, k, 1, 1, true))
+									if (Traversible(standardMaps[(MapIndex)currentmap].Map, tilesets[i], j, k, 1, 1, true))
 									{
 										candidates.Add(c);
 									}
@@ -1297,7 +1373,7 @@ namespace FF1Lib
 					else
 					{
 						c = candidates.SpliceRandom(rng);
-						maps[currentmap][c.y, c.x] = currentdeck.SpliceRandom(rng);
+						standardMaps[(MapIndex)currentmap].Map[c.y, c.x] = currentdeck.SpliceRandom(rng);
 						chests.Add(new TreasureChest(chestAddress + chestCount,
 							"DeepDungeon" + (currentmap - 7) + "B" + "_Chest" + chestCount,
 							(MapLocation)currentmap,
@@ -1306,21 +1382,145 @@ namespace FF1Lib
 							((currentmap > tntfloor ? AccessRequirement.Tnt : AccessRequirement.None) |
 							(currentmap > rubyfloor ? AccessRequirement.Ruby : AccessRequirement.None) |
 							(currentmap > oxyfloor ? AccessRequirement.Oxyale : AccessRequirement.None))));
-						_rom.Put(0x800 + tilesetmappings[currentmap] * 0x100 + maps[currentmap][c.y, c.x] * 2, Blob.FromHex("09" + Convert.ToHexString(new byte[] { (byte)(chestCount + 1) })));
+						tileSetsData[tilesetmappings[currentmap]].Tiles[standardMaps[(MapIndex)currentmap].Map[c.y, c.x]].Properties = new TileProp(0x09, (byte)(chestCount + 1));
+						//_rom.Put(0x800 + tilesetmappings[currentmap] * 0x100 + maps[currentmap][c.y, c.x] * 2, Blob.FromHex("09" + Convert.ToHexString(new byte[] { (byte)(chestCount + 1) })));
 						chestCount++;
 					}
 				}
 			}
 		}
-		public List<IRewardSource> ShuffleTreasures(Flags flags, IncentiveData incentiveData, MT19337 rng)
+		public List<IRewardSource> PlaceTreasures(Flags flags, MT19337 rng)
 		{
+			/*
+			int TreasureOffset = 0x03100;
+			int TreasureSize = 1;
+			int TreasureCount = 256;*/
+
+			List<IRewardSource> placedItems = new();
+
+				if (!flags.DDFiendOrbs)
+			{
+				// Place TNT
+				var postTNTchests = chests.Where(x => (int)x.MapLocation >= tntfloor && !placedItems.Any(y => y.Address == x.Address)).ToList();
+				postTNTchests.Shuffle(rng);
+				placedItems.Add(new TreasureChest(postTNTchests.OrderBy(x => x.MapLocation).First(), Item.Tnt));
+
+				// Place Ruby
+				var postRubyChests = chests.Where(x => (int)x.MapLocation >= rubyfloor && !placedItems.Any(y => y.Address == x.Address)).ToList();
+				postRubyChests.Shuffle(rng);
+				placedItems.Add(new TreasureChest(postRubyChests.OrderBy(x => x.MapLocation).First(), Item.Ruby));
+
+				// Place Oxyale
+				var postOxyaleChests = chests.Where(x => (int)x.MapLocation >= oxyfloor && !placedItems.Any(y => y.Address == x.Address)).ToList();
+				postOxyaleChests.Shuffle(rng);
+				placedItems.Add(new TreasureChest(postOxyaleChests.OrderBy(x => x.MapLocation).First(), Item.Oxyale));
+			}
+
+			// Place Tail
+			var postTailChests = chests.Where(x => (int)x.MapLocation >= tailfloor && !placedItems.Any(y => y.Address == x.Address)).ToList();
+			postTailChests.Shuffle(rng);
+			placedItems.Add(new TreasureChest(postTailChests.OrderBy(x => x.MapLocation).First(), Item.Tail));
+
+			// Three chests in three disjoint parts of the dungeon are replaced with Ribbon.
+			for (int i = 1; i <= 3; i++)
+			{
+				var ribbonfloor = RollDice(rng, 1, 8) + 8 + i * 8;
+				var postRibbonChests = chests.Where(x => (int)x.MapLocation >= ribbonfloor && !placedItems.Any(y => y.Address == x.Address)).ToList();
+				postRibbonChests.Shuffle(rng);
+				placedItems.Add(new TreasureChest(postRibbonChests.OrderBy(x => x.MapLocation).First(), Item.Ribbon));
+				//treasurePool.Remove(Item.Ribbon);
+			}
+
+			/*
+			// Place guaranteed casting items
+			if (flags.GuaranteedDefenseItem != GuaranteedDefenseItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
+			{
+				var postGuaranttedChests = chests.Where(x => (int)x.MapLocation >= 33 && !placedItems.Any(y => y.Address == x.Address)).ToList();
+				placedItems.Add(new TreasureChest(postGuaranttedChests.PickRandom(rng), Item.PowerRod));
+			}
+
+			if (flags.GuaranteedPowerItem != GuaranteedPowerItem.None && !(flags.ItemMagicMode == ItemMagicMode.None))
+			{
+				var postGuaranttedChests = chests.Where(x => (int)x.MapLocation >= 33 && !placedItems.Any(y => y.Address == x.Address)).ToList();
+				placedItems.Add(new TreasureChest(postGuaranttedChests.PickRandom(rng), Item.PowerGauntlets));
+			}
+
+			// Place Shards
+			for (int i = 0; i < shardsAdded; i++)
+			{
+				var validShardsLocations = chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+				treasurePool.Remove(Item.Shard);
+				placedItems.Add(new TreasureChest(validShardsLocations.PickRandom(rng), Item.Shard));
+			}
+
+			// Fill pool with cabins to account for removed items
+			var locationCount = chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).Count();
+
+			if (locationCount > treasurePool.Count())
+			{
+				treasurePool.AddRange(Enumerable.Repeat(Item.Heal, locationCount - treasurePool.Count()));
+			}
+
+			List<IRewardSource> normalTreasures = new();
+
+			var randomizeTreasureMode = (flags.RandomizeTreasure == RandomizeTreasureMode.Random) ? (RandomizeTreasureMode)rng.Between(0, 2) : flags.RandomizeTreasure;
+
+			if (randomizeTreasureMode != RandomizeTreasureMode.None)
+			{
+				IItemGenerator generator;
+				// We want to leave out anything incentivized (and thus already placed), but
+				// add all the other stuff that you can't find in vanilla.
+				if (randomizeTreasureMode == RandomizeTreasureMode.DeepDungeon)
+				{
+					var validchests = chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+
+					generator = new DeepDungeonItemGenerator(chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList(), ItemLists.UnusedGoldItems.ToList(), incentiveData.RemovedItems.ToList(), normalTreasures, FloorsWeightSelector.GetWeights(validchests, flags), priceList, (flags.GameMode == GameModes.DeepDungeon), flags.Etherizer);
+				}
+				else
+				{
+					generator = new ItemGenerator(treasurePool.ToList(), ItemLists.UnusedGoldItems.ToList(), incentiveData.RemovedItems.ToList(), flags.WorldWealth);
+				}
+
+				treasurePool = treasurePool.Select(treasure => generator.GetItem(rng)).ToList();
+			}
+
+			// Place treasures
+			if (randomizeTreasureMode == RandomizeTreasureMode.DeepDungeon && flags.DeepDungeonGenerator == DeepDungeonGeneratorMode.Progressive)
+			{
+				placedItems.AddRange(normalTreasures);
+			}
+			else
+			{
+				var itemLocationPool = chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+				itemLocationPool.Shuffle(rng);
+				treasurePool.Shuffle(rng);
+
+				var leftovers = treasurePool.Zip(itemLocationPool, (treasure, location) => new TreasureChest(location, treasure));
+				placedItems.AddRange(leftovers);
+			}
+
+			// Output the results to the ROM
+			foreach (var item in placedItems.Where(x => !x.IsUnused && x.Address < 0x80000 && (x is TreasureChest)))
+			{
+				//Debug.WriteLine(item.SpoilerText);
+				item.Put(_rom);
+			}
+			*/
+			return placedItems;
+		}
+		/*
+		public List<IRewardSource> PlaceTreasures(Flags flags, PlacementContext incentiveData, MT19337 rng)
+		{
+			int TreasureOffset = 0x03100;
+			int TreasureSize = 1;
+			int TreasureCount = 256;
 
 			List<IRewardSource> placedItems = new();
 
 			var treasureBlob = _rom.Get(TreasureOffset, TreasureSize * TreasureCount);
 			var treasurePool = UsedTreasureIndices.Select(x => (Item)treasureBlob[x])
 							.Concat(ItemLists.AllNonTreasureChestItems).Where(x => !ItemLists.AllQuestItems.Contains(x)).ToList();
-
+			var priceList = _rom.Get(0x37C00, 0x200).ToUShorts().Select(x => (int)x).ToList(); // Temprorary until we extract price
 			int shardsAdded = 0;
 
 			if (flags.ShardHunt)
@@ -1386,7 +1586,7 @@ namespace FF1Lib
 			// Fill pool with cabins to account for removed items
 			var locationCount = chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).Count();
 
-			if (locationCount > treasurePool.Count)
+			if (locationCount > treasurePool.Count())
 			{
 				treasurePool.AddRange(Enumerable.Repeat(Item.Heal, locationCount - treasurePool.Count()));
 			}
@@ -1402,11 +1602,13 @@ namespace FF1Lib
 				// add all the other stuff that you can't find in vanilla.
 				if (randomizeTreasureMode == RandomizeTreasureMode.DeepDungeon)
 				{
-					generator = new DeepDungeonItemGenerator(chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList(), _rom.UnusedGoldItems, incentiveData.RemovedItems.ToList(), normalTreasures, (flags.GameMode == GameModes.DeepDungeon), flags.Etherizer, _rom);
+					var validchests = chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList();
+
+					generator = new DeepDungeonItemGenerator(chests.Where(x => !placedItems.Any(y => y.Address == x.Address)).ToList(), ItemLists.UnusedGoldItems.ToList(), incentiveData.RemovedItems.ToList(), normalTreasures, FloorsWeightSelector.GetWeights(validchests, flags), priceList, (flags.GameMode == GameModes.DeepDungeon), flags.Etherizer);
 				}
 				else
 				{
-					generator = new ItemGenerator(treasurePool.ToList(), _rom.UnusedGoldItems, incentiveData.RemovedItems.ToList(), flags.WorldWealth);
+					generator = new ItemGenerator(treasurePool.ToList(), ItemLists.UnusedGoldItems.ToList(), incentiveData.RemovedItems.ToList(), flags.WorldWealth);
 				}
 
 				treasurePool = treasurePool.Select(treasure => generator.GetItem(rng)).ToList();
@@ -1436,7 +1638,7 @@ namespace FF1Lib
 
 			return placedItems;
 		}
-
+		*/
 		public int RollDice(MT19337 rng, int dice, int sides)
 		{
 			// Roll a number of dice and add up their results.
@@ -1460,7 +1662,7 @@ namespace FF1Lib
 			{
 				for (int j = 0; j < 16; j++)
 				{
-					_rom.SetNpc((MapId)i, j, 0, 0, 0, false, true);
+					standardMaps[(MapIndex)i].MapObjects.SetNpc(j, 0, 0, 0, false, true);
 				}
 			}
 		}
@@ -1861,11 +2063,11 @@ namespace FF1Lib
 				}
 			}
 			c = candidates.SpliceRandom(rng);
-			_rom.SetNpc((MapId)59, 0, (ObjectId)0x18, c.x, c.y, true, true);
-			_rom.SetNpc((MapId)59, 1, (ObjectId)0x19, c.x, c.y, true, true);
-			_rom.SetNpc((MapId)59, 2, (ObjectId)0x1A, c.x, c.y, true, true);
+			_rom.SetNpc((MapIndex)59, 0, (ObjectId)0x18, c.x, c.y, true, true);
+			_rom.SetNpc((MapIndex)59, 1, (ObjectId)0x19, c.x, c.y, true, true);
+			_rom.SetNpc((MapIndex)59, 2, (ObjectId)0x1A, c.x, c.y, true, true);
 		}
-		private void PlaceWarMech(MT19337 rng, List<Map> maps, Flags flags)
+		private void PlaceWarMech(MT19337 rng, Flags flags)
 		{
 			List<Candidate> candidates = new List<Candidate>();
 			Candidate c;
@@ -1883,14 +2085,14 @@ namespace FF1Lib
 			{
 				warmechfloor = 59;
 				warmechstationary = true;
-				_rom.SetNpc((MapId)warmechfloor, 4, ObjectId.WarMECH, 0x0F, 0x16, false, warmechstationary);
+				standardMaps[(MapIndex)warmechfloor].MapObjects.SetNpc(4, ObjectId.WarMECH, 0x0F, 0x16, false, warmechstationary);
 			}
 			// This needs to be second because the floor information needs to be passed on later
 			if (flags.WarMECHMode == WarMECHMode.Patrolling || flags.WarMECHMode == WarMECHMode.All)
 			{
 				warmechfloor = RollDice(rng, 1, 6) + 45 + 7;
 				warmechstationary = false;
-				m = maps[warmechfloor];
+				m = standardMaps[(MapIndex)warmechfloor].Map;
 				t = tilesets[tilesetmappings[warmechfloor]];
 
 				for (int i = 1; i < 63; i++)
@@ -1907,9 +2109,9 @@ namespace FF1Lib
 			
 			WarMechFloor = warmechfloor;
 			c = candidates.SpliceRandom(rng);
-			_rom.SetNpc((MapId)warmechfloor, 4, ObjectId.WarMECH, c.x, c.y, false, warmechstationary);
+			standardMaps[(MapIndex)warmechfloor].MapObjects.SetNpc(4, ObjectId.WarMECH, c.x, c.y, false, warmechstationary);
 		}
-		private void PlaceBahamut(MT19337 rng, List<Map> maps, Flags flags)
+		private void PlaceBahamut(MT19337 rng, Flags flags)
 		{
 			// Puts Bahamut in a room somewhere and the TAIL in a random chest.
 			// The floor for each is 4d6 + 6, rolled independently.
@@ -1941,7 +2143,7 @@ namespace FF1Lib
 					tailfloor = bahamutfloor;
 					break;
 			}
-			Map m = maps[bahamutfloor];
+			Map m = standardMaps[(MapIndex)bahamutfloor].Map;
 			Tileset t = tilesets[tilesetmappings[bahamutfloor]];
 			for (int i = 1; i < 63; i++)
 			{
@@ -1961,7 +2163,7 @@ namespace FF1Lib
 				}
 			}
 			c = candidates.SpliceRandom(rng);
-			_rom.SetNpc((MapId)bahamutfloor, 0, ObjectId.Bahamut, c.x, c.y, true, true);
+			standardMaps[(MapIndex)bahamutfloor].MapObjects.SetNpc(0, ObjectId.Bahamut, c.x, c.y, true, true);
 		}
 		private void GenerateMapBoxStyle(MT19337 rng, Map m, Tileset t)
 		{

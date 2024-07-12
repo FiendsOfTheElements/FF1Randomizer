@@ -1100,6 +1100,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SkyCastle4FMazeMode"));
 			}
 		}
+		public bool? ShuffleLavaTiles
+		{
+			get => Flags.ShuffleLavaTiles;
+			set
+			{
+				Flags.ShuffleLavaTiles = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleLavaTiles"));
+			}
+		}
 		public bool? TitansTrove
 		{
 			get => Flags.TitansTrove;
@@ -1216,6 +1225,15 @@ namespace FF1Lib
 			{
 				Flags.DamageTilesKill = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DamageTilesKill"));
+			}
+		}
+		public bool? ArmorResistsDamageTileDamage
+		{
+			get => Flags.ArmorResistsDamageTileDamage;
+			set
+			{
+				Flags.ArmorResistsDamageTileDamage = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ArmorResistsDamageTileDamage"));
 			}
 		}
 		public bool? MoveGaiaItemShop
@@ -2109,6 +2127,24 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InventoryAutosort"));
 			}
 		}
+		public bool RepeatedHealPotionUse
+		{
+			get => Flags.RepeatedHealPotionUse;
+			set
+			{
+				Flags.RepeatedHealPotionUse = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RepeatedHealPotionUse"));
+			}
+		}
+		public bool AutoRetargeting
+		{
+			get => Flags.AutoRetargeting;
+			set
+			{
+				Flags.AutoRetargeting = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AutoRetargeting"));
+			}
+		}
 		public bool RenounceAutosort
 		{
 			get => Preferences.RenounceAutosort;
@@ -2346,6 +2382,15 @@ namespace FF1Lib
 			{
 				Flags.BattleMagicMenuWrapAround = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BattleMagicMenuWrapAround"));
+			}
+		}
+		public bool MagicMenuSpellReordering
+		{
+			get => Flags.MagicMenuSpellReordering;
+			set
+			{
+				Flags.MagicMenuSpellReordering = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MagicMenuSpellReordering"));
 			}
 		}
 		public bool EnemyStatusAttackBug
@@ -2788,6 +2833,15 @@ namespace FF1Lib
 			{
 				Preferences.randomShardNames = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("randomShardNames"));
+			}
+		}
+		public bool AlternateAirshipTheme
+		{
+			get => Preferences.AlternateAirshipTheme;
+			set
+			{
+				Preferences.AlternateAirshipTheme = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlternateAirshipTheme"));
 			}
 		}
 		public MusicShuffle Music
@@ -3868,6 +3922,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BuffHealingSpells"));
 			}
 		}
+		public bool IntAffectsSpells
+		{
+			get => Flags.IntAffectsSpells;
+			set
+			{
+				Flags.IntAffectsSpells = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IntAffectsSpells"));
+			}
+		}
 		public bool BuffTier1DamageSpells
 		{
 			get => Flags.BuffTier1DamageSpells;
@@ -4033,6 +4096,71 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EarlierHighTierMagic"));
 			}
 		}
+		public bool? Knightlvl4
+		{
+			get => Flags.Knightlvl4;
+			set
+			{
+				Flags.Knightlvl4 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Knightlvl4"));
+			}
+
+
+		}
+		
+		public bool? PinkMage
+		{
+			get => Flags.PinkMage;
+			set
+			{
+				Flags.PinkMage = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PinkMage"));
+			}
+			
+
+		}
+
+		public bool? BlackKnight
+		{
+			get => Flags.BlackKnight;
+			set
+			{
+				Flags.BlackKnight = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlackKnight"));
+			}
+		}
+
+		public bool? BlackKnightkeep
+		{
+			get => Flags.BlackKnightKeep;
+			set
+			{
+				Flags.BlackKnightKeep = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlackKnightKeep"));
+			}
+		}
+
+
+		public bool? WhiteNinja
+		{
+			get => Flags.WhiteNinja;
+			set
+			{
+				Flags.WhiteNinja = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WhiteNinja"));
+			}
+		}
+
+		public bool? WhiteNinjaKeep
+		{
+			get => Flags.WhiteNinjaKeep;
+			set
+			{
+				Flags.WhiteNinjaKeep = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WhiteNinjaKeep"));
+			}
+		}
+
 
 		public bool? ChangeMaxMP
 		{
@@ -4177,24 +4305,6 @@ namespace FF1Lib
 			}
 		}
 
-		public bool? RandomizeClass
-		{
-			get => Flags.RandomizeClass;
-			set
-			{
-				Flags.RandomizeClass = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClass"));
-			}
-		}
-		public bool? RandomizeClassChaos
-		{
-			get => Flags.RandomizeClassChaos;
-			set
-			{
-				Flags.RandomizeClassChaos = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RandomizeClassChaos"));
-			}
-		}
 		public bool? MooglieWeaponBalance
 		{
 			get => Flags.MooglieWeaponBalance;
@@ -4204,12 +4314,12 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MooglieWeaponBalance"));
 			}
 		}
-		public bool? Transmooglifier
+		public ClassRandomizationMode RandomizeClassMode
 		{
-			get => Flags.Transmooglifier;
+			get => Flags.RandomizeClassMode;
 			set
 			{
-				Flags.Transmooglifier = value;
+				Flags.RandomizeClassMode = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Transmooglifier"));
 			}
 		}
@@ -4274,6 +4384,60 @@ namespace FF1Lib
 			{
 				Flags.AlternateFiends = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlternateFiends"));
+			}
+		}
+		public bool? FinalFantasy2Fiends
+		{
+			get => Flags.FinalFantasy2Fiends;
+			set
+			{
+				Flags.FinalFantasy2Fiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FinalFantasy2Fiends"));
+			}
+		}
+		public bool? FinalFantasy3Fiends
+		{
+			get => Flags.FinalFantasy3Fiends;
+			set
+			{
+				Flags.FinalFantasy3Fiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FinalFantasy3Fiends"));
+			}
+		}
+		public bool? FinalFantasy4Fiends
+		{
+			get => Flags.FinalFantasy4Fiends;
+			set
+			{
+				Flags.FinalFantasy4Fiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FinalFantasy4Fiends"));
+			}
+		}
+		public bool? FinalFantasy5Fiends
+		{
+			get => Flags.FinalFantasy5Fiends;
+			set
+			{
+				Flags.FinalFantasy5Fiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FinalFantasy5Fiends"));
+			}
+		}
+		public bool? FinalFantasy6Fiends
+		{
+			get => Flags.FinalFantasy6Fiends;
+			set
+			{
+				Flags.FinalFantasy6Fiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FinalFantasy6Fiends"));
+			}
+		}
+		public bool? FinalFantasy1BonusFiends
+		{
+			get => Flags.FinalFantasy1BonusFiends;
+			set
+			{
+				Flags.FinalFantasy1BonusFiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FinalFantasy1BonusFiends"));
 			}
 		}
 		public bool? ShuffleScriptsBosses
@@ -4927,6 +5091,15 @@ namespace FF1Lib
 				RaisePropertyChanged();
 			}
 		}
+		public PoisonModeOptions PoisonMode
+		{
+			get => Flags.PoisonMode;
+			set
+			{
+				Flags.PoisonMode = value;
+				RaisePropertyChanged();
+			}
+		}
 
 		public bool? TouchIncludeBosses
 		{
@@ -5430,37 +5603,15 @@ namespace FF1Lib
 		    Flags.LoadResourcePackFlags(stream);
 		    RaisePropertyChanged();
 		}
-
-		public KeyItemPlacementMode KeyItemPlacementMode
+		public bool AllowUnsafePlacement
 		{
-			get
-			{
-				if (Flags.PredictivePlacement == false) return KeyItemPlacementMode.Vanilla;
-				if (Flags.PredictivePlacement == true && Flags.AllowUnsafePlacement == false) return KeyItemPlacementMode.Predictive;
-				return KeyItemPlacementMode.PredictiveUnsafe;
-			}
+			get => Flags.AllowUnsafePlacement;
 			set
 			{
-				switch (value)
-				{
-					case KeyItemPlacementMode.Vanilla:
-						Flags.PredictivePlacement = false;
-						Flags.AllowUnsafePlacement = false;
-						break;
-					case KeyItemPlacementMode.Predictive:
-						Flags.PredictivePlacement = true;
-						Flags.AllowUnsafePlacement = false;
-						break;
-					case KeyItemPlacementMode.PredictiveUnsafe:
-						Flags.PredictivePlacement = true;
-						Flags.AllowUnsafePlacement = true;
-						break;
-				}
-
+				Flags.AllowUnsafePlacement = value;
 				RaisePropertyChanged();
 			}
 		}
-
 		public LoosePlacementMode LoosePlacementMode
 		{
 			get
@@ -5487,6 +5638,15 @@ namespace FF1Lib
 						break;
 				}
 
+				RaisePropertyChanged();
+			}
+		}
+		public bool ChaosBattleMusic
+		{
+			get => Preferences.ChaosBattleMusic;
+			set
+			{
+				Preferences.ChaosBattleMusic = value;
 				RaisePropertyChanged();
 			}
 		}

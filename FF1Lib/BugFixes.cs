@@ -2,41 +2,52 @@
 
 namespace FF1Lib
 {
-	public enum MDEFGrowthMode
-	{
-		[Description("Vanilla")]
-		None = 0,
-		[Description("BB/Master +3/+4")]
-		BBFix,
-		[Description("Invert All")]
-		Invert
-	}
-
-	public enum ThiefAGI
-	{
-	    [Description("10 (Vanilla)")]
-	    Vanilla = 0,
-
-		[Description("30")]
-		Agi30 = 4,
-
-		[Description("50")]
-		Agi50 = 5,
-
-	    [Description("80")]
-	    Agi80 = 1,
-
-	    [Description("100")]
-	    Agi100 = 2,
-
-	    [Description("120")]
-	    Agi120 = 3
-	}
-
 	public partial class FF1Rom
 	{
+		private void Bugfixes(Flags flags)
+		{
+			bool fixhousemp = (bool)flags.HouseMPRestoration;
+			bool fixhousehp = (bool)flags.HousesFillHp;
+			bool ether = (bool)flags.Etherizer;
+
+			if (!ether)
+			{
+				FixHouse(fixhousehp, fixhousemp);
+			}
+
+			if ((bool)flags.WeaponStats)
+			{
+				FixWeaponStats();
+			}
+
+			if ((bool)flags.SpellBugs)
+			{
+				FixSpellBugs();
+				FixEnemyAOESpells();
+				FixEnemyElementalResistances();
+			}
+
+			if ((bool)flags.EnemyStatusAttackBug)
+			{
+				FixEnemyStatusAttackBug();
+			}
+
+			if ((bool)flags.BlackBeltAbsorb)
+			{
+				FixBBAbsorbBug();
+			}
+			
+			FixWarpBug(); // The warp bug must be fixed for magic level shuffle and spellcrafter
+			FixEnemyPalettes(); // fixes a bug in the original game's programming that causes third enemy slot's palette to render incorrectly
+			Fix3DigitStats();
+		}
 		public void FixHouse(bool MPfix, bool HPfix)
 		{
+			if (!MPfix && !HPfix)
+			{
+				return;
+			}
+
 			Put(0x03B2BE, Blob.FromHex("A52D4AB018CE3860A978203FB5EAEAEAA91E20E0B2900320F3AB4C1DB1A91F4CB8B2"));
 
 			if (MPfix)
@@ -64,30 +75,6 @@ namespace FF1Lib
 			Put(0x33618, Blob.FromHex("A900"));
 			Put(0x33655, Blob.FromHex("A900"));
 		}
-
-		public void DontDoubleBBCritRates()
-		{
-			// Don't double BB crit
-			Put(0x32DDD, new byte[] { 0xEA });
-		}
-
-		public void DoubleWeaponCritRates()
-		{
-			// Increase crit rate of all weapons
-			var weapons = Get(WeaponOffset, WeaponSize * WeaponCount).Chunk(WeaponSize);
-			foreach (var weapon in weapons)
-			{
-				weapon[2] *= 2;
-			}
-			Put(WeaponOffset, weapons.SelectMany(weapon => weapon.ToBytes()).ToArray());
-		}
-
-		public void IncreaseWeaponBonus(int weaponBonusValue)
-		{
-			//change the weapon bonus from +4 to +X
-			Put(0x326F5, new byte[] { (byte) weaponBonusValue });
-		}
-
 		public void FixWarpBug()
 		{
 			Put(0x3AEF3, Blob.FromHex("187D0063")); // Allows last slot in a spell level to be used outside of battle
@@ -142,10 +129,10 @@ namespace FF1Lib
 			PutInBank(0x1B, 0x874A, Blob.FromHex("A90085EDA9B285EEA000B1862003B0"));
 
 			// Overwrite UnadjustBBEquipStats
-			PutInBank(0x1F, 0xEEBF, Blob.FromHex("A91B2003FE2040B098F0"));
-			PutInBank(0x1F, 0xEEDD, Blob.FromHex("A91B2003FE2040B098F0"));
+			PutInBank(0x1F, 0xEEBF, Blob.FromHex("A91B2003FE2080AF98F0"));
+			PutInBank(0x1F, 0xEEDD, Blob.FromHex("A91B2003FE2080AF98F0"));
 
-			PutInBank(0x1B, 0xB040, Blob.FromHex("A90085EDA9B285EEBD00612003B0A8A90C4C03FE"));
+			PutInBank(0x1B, 0xAF80, Blob.FromHex("A90085EDA9B285EEBD00612003B0A8A90C4C03FE"));
 		}
 
 		public void FixEnemyElementalResistances()
@@ -180,58 +167,17 @@ namespace FF1Lib
 			Put(0x38AB3, Blob.FromHex("95B237C5FF972E5D4B26B7C5FF9EB61A1C3005B6B3A84E1B2EA8BB5BC40599B8B6ABFF8BFF2820A53521")); // Text
 			Put(0x38BAA, Blob.FromHex("95B2B6B7C5FF97B2FFBAA4BCFFB2B8B7C5059EB6A8FFB7ABACB605B6B3A8AFAFFFB7B2FFA8BBACB7C4FF99B8B6ABFF8BFFB7B2FFA4A5B2B5B7"));
 		}
-
-		public void MDefChanges(MDEFGrowthMode mode)
-		{
-			if (mode == MDEFGrowthMode.BBFix)
-			{
-				RemakeStyleMasterMDEF();
-			}
-			if (mode == MDEFGrowthMode.Invert)
-			{
-				InvertedMDEF();
-			}
-		}
-
-		public void KnightNinjaChargesForAllLevels()
-		{
-			for(int cur_pointer = NewLevelUpDataOffset; cur_pointer < NewLevelUpDataOffset + 196; cur_pointer += 2) // we need to cycle through the 49 levelups for Fighter and the 49 levelups for Thief, each are two bytes
-			{
-				if (Data[cur_pointer + 1] != 0)
-					Data[cur_pointer + 1] = 0xFF; // every spell charge gain that isn't equal to 0 is changed to FF, so each spell level will gain a charge instead of just the first three / four
-			}
-		}
-
-		public void RemakeStyleMasterMDEF()
-		{
-			//Black Belt & Master growth rates are separate
-			ClassData[Classes.BlackBelt].MDefGrowth = 3;
-			ClassData[Classes.Master].MDefGrowth = 4;
-		}
-
-		public void InvertedMDEF()
-		{
-		    for (int i = 0; i < 12; i++) {
-			ClassData[(Classes)i].MDefGrowth = (byte)(5 - ClassData[(Classes)i].MDefGrowth);
-		    }
-		}
-
-		public void FixHitChanceCap()
-		{
-			Put(0x6CA9A, Blob.FromHex("FB"));
-			Put(0x6CA9E, Blob.FromHex("FA"));
-		}
-
 		public void FixEnemyPalettes()
 		{
 			Data[0x2E382] = 0xEA; // remove an extraneous LSR A when drawing monsters in a Large-Small mixed formation, so that the enemy in the third monster slot in such formations uses the correct palette
 		}
 
-	    public void Fix3DigitStats() {
-		// Fix character stat rendering so basic stats are
-		// rendered properly for values over 99
-		// See 0E_8DE4_FixPrintCharStat.asm
-		PutInBank(0x0E, 0x8DE4, Blob.FromHex("A910D010A911D00CA925D008A913D004A914D000186567AABD00618510A90085114C708EEAEAEAEAEAEAEAEA"));
+	    public void Fix3DigitStats()
+		{
+			// Fix character stat rendering so basic stats are
+			// rendered properly for values over 99
+			// See 0E_8DE4_FixPrintCharStat.asm
+			PutInBank(0x0E, 0x8DE4, Blob.FromHex("A910D010A911D00CA925D008A913D004A914D000186567AABD00618510A90085114C708EEAEAEAEAEAEAEAEA"));
 	    }
 	}
 }

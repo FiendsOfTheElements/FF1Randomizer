@@ -5,7 +5,7 @@ namespace FF1Lib.Sanity
 {
 	public class SCPointOfInterest
 	{
-		public MapId MapId { get; set; }
+		public MapIndex MapIndex { get; set; }
 
 		public SCCoords Coords { get; set; }
 
@@ -23,11 +23,12 @@ namespace FF1Lib.Sanity
 
 		public SCTeleport Teleport { get; set; }
 
-		public NPC Npc { get; set; }
+		public MapObject Npc { get; set; }
 
-		public newTalkRoutines TalkRoutine { get; set; }
+		public TalkScripts TalkRoutine { get; set; }
 
 		public byte[] TalkArray { get; set; }
+		public byte NpcRequirement { get; set; }
 
 		public SCBitFlagSet BitFlagSet { get;  set; }
 
@@ -39,7 +40,7 @@ namespace FF1Lib.Sanity
 		{
 			return new SCPointOfInterest
 			{
-				MapId = MapId,
+				MapIndex = MapIndex,
 				Coords = Coords,
 				Type = Type,
 				ItemId = ItemId,
@@ -48,7 +49,8 @@ namespace FF1Lib.Sanity
 				Teleport = Teleport,
 				Npc = Npc,
 				TalkRoutine = TalkRoutine,
-				TalkArray = TalkArray
+				TalkArray = TalkArray,
+				NpcRequirement = NpcRequirement
 			};
 		}
 
@@ -87,12 +89,12 @@ namespace FF1Lib.Sanity
 
 		public bool Equals(SCPointOfInterest x, SCPointOfInterest y)
 		{
-			return x.MapId == y.MapId && cec.Equals(x, y);
+			return x.MapIndex == y.MapIndex && cec.Equals(x, y);
 		}
 
 		public int GetHashCode([DisallowNull] SCPointOfInterest obj)
 		{
-			return (int)obj.MapId * 524288 + cec.GetHashCode(obj);
+			return (int)obj.MapIndex * 524288 + cec.GetHashCode(obj);
 		}
 	}
 }

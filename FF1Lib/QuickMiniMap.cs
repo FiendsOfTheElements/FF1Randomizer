@@ -5,7 +5,7 @@ namespace FF1Lib
 	public class QuickMiniMap
 	{
 		FF1Rom rom;
-		OverworldMap overworldMap;
+		List<List<byte>> overworldMap;
 
 		byte[] lut_MinimapTileset;
 		List<Blob> chr_MinimapDecor;
@@ -27,14 +27,19 @@ namespace FF1Lib
 
 		byte[] lut_MinimapBGPal;
 
-		public QuickMiniMap(FF1Rom _rom, OverworldMap _overworldMap)
+		public QuickMiniMap(FF1Rom _rom, List<List<byte>> decompressedMap)
 		{
 			rom = _rom;
-			overworldMap = _overworldMap;
+			overworldMap = decompressedMap;
 		}
 
-		public void EnableQuickMinimap()
+		public void EnableQuickMinimap(bool enable, MusicTracks music)
 		{
+			if (!enable)
+			{
+				return;
+			}
+
 			LoadData();
 
 			BuildCHR();
@@ -45,7 +50,8 @@ namespace FF1Lib
 
 			StoreData();
 
-			StoreRoutine();
+			music.SkipMinimap = true;
+			StoreRoutine((byte)music.Tracks[SongTracks.Minimap]);
 		}
 
 		private void LoadData()
@@ -79,15 +85,14 @@ namespace FF1Lib
 			rom.PutInBank(0x09, 0xB520, lut_MinimapBGPal);
 		}
 
-		private void StoreRoutine()
+		private void StoreRoutine(byte minimaptrack)
 		{
-			rom.PutInBank(0x09,0xBC00,Blob.FromHex("A9098557A9068D0080A9328D0180A9008D01208D1540A941854BA90885FF2034BFAE80B4CA8A48BD40B48541BC00B42030BE68AAE000D0ECAD0220A9188D0620A9008D0620A200BD00B58D0720E8E02090F5A9008510A9808511A900A210205AE9A9008510A9B08511A920A204205AE9A20FBD20B59DC003CA10F7ADC0038DD003A90F8DD1038DD2032000FEA9028D14402050D8A5FF8D0020A90A8D0120A9008D0520A9E88D05202049BDA5240525F0F760"));
+			rom.PutInBank(0x09,0xBC00,Blob.FromHex($"A9098557A9068D0080A9328D0180A9008D01208D1540A9{minimaptrack:X2}854BA90885FF2034BFAE80B4CA8A48BD40B48541BC00B42030BE68AAE000D0ECAD0220A9188D0620A9008D0620A200BD00B58D0720E8E02090F5A9008510A9808511A900A210205AE9A9008510A9B08511A920A204205AE9A20FBD20B59DC003CA10F7ADC0038DD003A90F8DD1038DD2032000FEA9028D14402050D8A5FF8D0020A90A8D0120A9008D0520A9E88D05202049BDA5240525F0F760"));
 		}
 
 		private void BuildCHR()
 		{
-			var compresedMap = overworldMap.GetCompressedMapRows();
-			var decompressedMap = overworldMap.DecompressMapRows(compresedMap);
+			var decompressedMap = overworldMap;
 
 			entrances = new List<(int x, int y)>();
 

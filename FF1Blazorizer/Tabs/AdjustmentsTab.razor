@@ -23,6 +23,7 @@
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="rngCheckBox" @bind-Value="Flags.Rng">RNG Tables</TriStateCheckBox>
     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="improveTurnOrderRandomizationCheckBox" @bind-Value="Flags.ImproveTurnOrderRandomization">Improve Turn Order Randomization</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="fixMissingBattleRngEntry" @bind-Value="Flags.FixMissingBattleRngEntry">Fix Missing Battle RNG Entry</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="SetRNG" @bind-Value="Flags.SetRNG">Set RNG</CheckBox>
 
 	<div class="checkbox-cell"></div>
 	<h4>Saving</h4>
@@ -30,6 +31,10 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableInnSaving" @bind-Value="Flags.DisableInnSaving">Disable Inn Saving</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="saveGameWhenGameOverCheckBox" @bind-Value="Flags.SaveGameWhenGameOver">Save Game When Game Over</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="saveGameDWModeCheckBox" IsEnabled="@Flags.SaveGameWhenGameOver" @bind-Value="Flags.SaveGameDWMode">Dragon Warrior Mode</CheckBox>
+
+	<div class="checkbox-cell"></div>
+	<h4>Transport</h4>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="AirBoatCheckBox" @bind-Value="Flags.AirBoat">AirBoat</TriStateCheckBox>
 </div>
 
 <div class="col2">
@@ -45,8 +50,10 @@
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="battleMagicMenuWrapAroundCheckBox" @bind-Value="Flags.BattleMagicMenuWrapAround">Battle Magic Menu Wrap Around</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="npcSwatterCheckBox" @bind-Value="Flags.NPCSwatter">NPC Guillotine</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="inventoryAutosortCheckBox" @bind-Value="Flags.InventoryAutosort">Autosort Inventory</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="autoRetargetingCheckBox" @bind-Value="Flags.AutoRetargeting">Auto Retargeting</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shopInfoCheckBox" @bind-Value="Flags.ShopInfo">Shop Information</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chestInfoCheckBox" Indent IsEnabled="@(Flags.ShopInfo && Flags.IdentifyTreasures)" @bind-Value="Flags.ChestInfo">Chest Information</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="magicMenuSpellReorderingCheckBox" Indent IsEnabled="@(Flags.ShopInfo)" @bind-Value="Flags.MagicMenuSpellReordering">Magic Menu Spell Reordering</CheckBox>
 	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="incentiveChestItemsFanfareCheckBox" @bind-Value="Flags.IncentiveChestItemsFanfare">All Incentive Chest Fanfare</CheckBox>
 
     <div class="checkbox-cell"></div>
@@ -54,6 +61,7 @@
     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="tranceHasStatusElement" @bind-Value="Flags.TranceHasStatusElement">TRANCE is Status Element</CheckBox>
     <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="increaseDarkPenaltyCheckBox" @bind-Value="Flags.IncreaseDarkPenalty">Increase Dark Penalty</TriStateCheckBox>
     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableMinimap" @bind-Value="Flags.DisableMinimap">Disable Minimap</CheckBox>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="poisonModeDropDown" TItem="PoisonModeOptions" @bind-Value="Flags.PoisonMode">In-Battle Poison Damage:</EnumDropDown>
 </div>
 		<div class="clear-it"></div>
 	}

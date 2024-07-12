@@ -25,12 +25,12 @@ namespace FF1Lib.Procgen
 	public List<NPC> NPCs;
 
 	public MapLocation mapLocation;
-	public MapId mapId;
+	public MapIndex MapIndex;
 	public Dictionary<OverworldTeleportIndex, TeleportDestination> OverworldEntrances;
 	public Dictionary<TeleportIndex, TeleportDestination> MapDestinations;
 	public SCCoords Entrance;
 
-        public MapState(MT19337 rng, List<MapGenerationStep> steps, MapId mapId, Map tilemap, DungeonTiles dt, TileSet tileSet, FF1Rom.ReportProgress progress) : base(rng, steps, progress) {
+        public MapState(MT19337 rng, List<MapGenerationStep> steps, MapIndex MapIndex, Map tilemap, DungeonTiles dt, TileSet tileSet, FF1Rom.ReportProgress progress) : base(rng, steps, progress) {
             this.ownTilemap = true;
 	    this.Tilemap = tilemap.Clone();
 	    this.dt = dt;
@@ -44,7 +44,7 @@ namespace FF1Lib.Procgen
 	    this.RoomBattleTiles = new();
 	    this.OverworldEntrances = new();
 	    this.MapDestinations = new();
-	    this.mapId = mapId;
+	    this.MapIndex = MapIndex;
 	}
 
         public MapState(MapState copy) : base(copy) {
@@ -61,7 +61,7 @@ namespace FF1Lib.Procgen
 	    this.RoomFloorTiles = copy.RoomFloorTiles;
 	    this.RoomBattleTiles = copy.RoomBattleTiles;
 	    this.mapLocation = copy.mapLocation;
-	    this.mapId = copy.mapId;
+	    this.MapIndex = copy.MapIndex;
 	    this.OverworldEntrances = copy.OverworldEntrances;
 	    this.MapDestinations = copy.MapDestinations;
 	}
@@ -120,14 +120,14 @@ namespace FF1Lib.Procgen
 
     public static class NewDungeon {
 
-	public async static Task<CompleteMap> GenerateMap(MT19337 rng, FF1Rom rom, List<Map> maps, MapId mapId,
+	public async static Task<CompleteMap> GenerateMap(MT19337 rng, FF1Rom rom, StandardMaps maps, MapIndex mapindex,
 							  List<MapGenerationStep> mapGenSteps, DungeonTiles dt, FF1Rom.ReportProgress progress) {
-	    var tileset = new TileSet(rom, rom.GetMapTilesetIndex(mapId));
-	    var blankState = new MapState(rng, mapGenSteps, mapId, maps[(int)mapId], dt, tileset, progress);
+	    var tileset = new TileSet(rom, rom.GetMapTilesetIndex(mapindex));
+	    var blankState = new MapState(rng, mapGenSteps, mapindex, maps[mapindex].Map, dt, tileset, progress);
 	    var worldState = await ProgenFramework.RunSteps<MapState, MapResult, MapGenerationStep>(blankState, 2000, progress);
 	    if (worldState != null) {
 		return new CompleteMap {
-		    MapId = mapId,
+		    MapIndex = mapindex,
 		    Map = worldState.Tilemap,
 		    OverworldEntrances = worldState.OverworldEntrances,
 		    MapDestinations = worldState.MapDestinations,
@@ -138,7 +138,7 @@ namespace FF1Lib.Procgen
 	    }
 	}
 
-	public async static Task<List<CompleteMap>> GenerateEarthCave(MT19337 rng, FF1Rom rom, List<Map> maps, FF1Rom.NPCdata npcdata, FF1Rom.ReportProgress progress) {
+	public async static Task<List<CompleteMap>> GenerateEarthCave(MT19337 rng, FF1Rom rom, StandardMaps maps, FF1Rom.ReportProgress progress) {
 	    var dt = new DungeonTiles();
 
 	    List<CompleteMap> newmaps = new();
@@ -146,7 +146,7 @@ namespace FF1Lib.Procgen
 	    CompleteMap newmap;
 
 	    mapGenSteps = new () {
-		new MapGenerationStep("CollectInfo", new object[] { rom, npcdata }),
+		new MapGenerationStep("CollectInfo", new object[] { rom, maps }),
 		new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 		new MapGenerationStep("SetEntrance", new object[] { new SCCoords(0x17, 0x18) }),
 		new MapGenerationStep("AddOverworldEntrance", new object[] { OverworldTeleportIndex.EarthCave1,
@@ -165,18 +165,18 @@ namespace FF1Lib.Procgen
 		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
 		new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_corners, DungeonTiles.CAVE_EXIT_TO_EARTH_B2, 16, 12 }),
 		new MapGenerationStep("PlaceHallOfGiants", new object[] { new List<byte> {0x1B, 0x1C} }),
-		new MapGenerationStep("PlaceChests", new object[] { rom, maps, new List<(MapId,byte)> {} }),
+		new MapGenerationStep("PlaceChests", new object[] { rom, maps, new List<(MapIndex,byte)> {} }),
 		new MapGenerationStep("SanityCheck", new object[] { }),
 	    };
 
 	    newmap = null;
 	    do {
-		newmap = await GenerateMap(rng, rom, maps, MapId.EarthCaveB1, mapGenSteps, dt, progress);
+		newmap = await GenerateMap(rng, rom, maps, MapIndex.EarthCaveB1, mapGenSteps, dt, progress);
 	    } while (newmap == null);
 	    newmaps.Add(newmap);
 
 	    mapGenSteps = new () {
-		new MapGenerationStep("CollectInfo", new object[] { rom, npcdata }),
+		new MapGenerationStep("CollectInfo", new object[] { rom, maps }),
 		new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 		new MapGenerationStep("SetEntrance", new object[] { new SCCoords(0x0A, 0x09) }),
 		new MapGenerationStep("AddMapDestination", new object[] { TeleportIndex.EarthCave2,
@@ -198,7 +198,7 @@ namespace FF1Lib.Procgen
 		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls5, false }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
-		new MapGenerationStep("PlaceChests", new object[] { rom, maps, new List<(MapId,byte)> {} }),
+		new MapGenerationStep("PlaceChests", new object[] { rom, maps, new List<(MapIndex,byte)> {} }),
 		new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
 		new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_wall_corners, DungeonTiles.CAVE_EXIT_TO_EARTH_B3, 36, 12 }),
 		new MapGenerationStep("MoveBats", new object[] { }),
@@ -207,12 +207,12 @@ namespace FF1Lib.Procgen
 
 	    newmap = null;
 	    do {
-		newmap = await GenerateMap(rng, rom, maps, MapId.EarthCaveB2, mapGenSteps, dt, progress);
+		newmap = await GenerateMap(rng, rom, maps, MapIndex.EarthCaveB2, mapGenSteps, dt, progress);
 	    } while (newmap == null);
 	    newmaps.Add(newmap);
 
 	    mapGenSteps = new () {
-		new MapGenerationStep("CollectInfo", new object[] { rom, npcdata }),
+		new MapGenerationStep("CollectInfo", new object[] { rom, maps }),
 		new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 		new MapGenerationStep("SetEntrance", new object[] { new SCCoords(0x1B, 0x2D) }),
 		new MapGenerationStep("AddMapDestination", new object[] { TeleportIndex.EarthCaveVampire,
@@ -235,7 +235,7 @@ namespace FF1Lib.Procgen
 		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls5, false }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
-		new MapGenerationStep("PlaceChests", new object[] { rom, maps, new List<(MapId,byte)> { (MapId.EarthCaveB3, DungeonTiles.RUBY_CHEST) } }),
+		new MapGenerationStep("PlaceChests", new object[] { rom, maps, new List<(MapIndex,byte)> { (MapIndex.EarthCaveB3, DungeonTiles.RUBY_CHEST) } }),
 		new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
 		new MapGenerationStep("MoveBats", new object[] { }),
 		new MapGenerationStep("SanityCheck", new object[] { }),
@@ -243,12 +243,12 @@ namespace FF1Lib.Procgen
 
 	    newmap = null;
 	    do {
-		newmap = await GenerateMap(rng, rom, maps, MapId.EarthCaveB3, mapGenSteps, dt, progress);
+		newmap = await GenerateMap(rng, rom, maps, MapIndex.EarthCaveB3, mapGenSteps, dt, progress);
 	    } while (newmap == null);
 	    newmaps.Add(newmap);
 
 	    mapGenSteps = new () {
-		new MapGenerationStep("CollectInfo", new object[] { rom, npcdata }),
+		new MapGenerationStep("CollectInfo", new object[] { rom, maps }),
 		new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 		new MapGenerationStep("SetEntrance", new object[] { new SCCoords(0x36, 0x21) }),
 		new MapGenerationStep("AddMapDestination", new object[] { TeleportIndex.EarthCave4,
@@ -271,7 +271,7 @@ namespace FF1Lib.Procgen
 		new MapGenerationStep("ApplyFilter", new object[] { dt.earth_cave_walls5, false }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls, false }),
 		new MapGenerationStep("ApplyFilter", new object[] { dt.cave_room_walls2, false }),
-		new MapGenerationStep("PlaceChests", new object[] { rom, maps, new List<(MapId,byte)> {} }),
+		new MapGenerationStep("PlaceChests", new object[] { rom, maps, new List<(MapIndex,byte)> {} }),
 		new MapGenerationStep("PlaceEntrance", new object[] { DungeonTiles.CAVE_EARTH_WARP }),
 		new MapGenerationStep("PlaceExitStairs", new object[] { dt.cave_wall_corners, DungeonTiles.CAVE_EXIT_TO_EARTH_B5, 24, 12 }),
 		new MapGenerationStep("MoveBats", new object[] { }),
@@ -279,12 +279,12 @@ namespace FF1Lib.Procgen
 	    };
 
 	    do {
-		newmap = await GenerateMap(rng, rom, maps, MapId.EarthCaveB4, mapGenSteps, dt, progress);
+		newmap = await GenerateMap(rng, rom, maps, MapIndex.EarthCaveB4, mapGenSteps, dt, progress);
 	    } while (newmap == null);
 	    newmaps.Add(newmap);
 
 	    mapGenSteps = new () {
-		new MapGenerationStep("CollectInfo", new object[] { rom, npcdata }),
+		new MapGenerationStep("CollectInfo", new object[] { rom, maps }),
 		new MapGenerationStep("WipeMap", new object[] { DungeonTiles.CAVE_BLANK }),
 		new MapGenerationStep("SetEntrance", new object[] { new SCCoords(0x19, 0x35) }),
 		new MapGenerationStep("AddMapDestination", new object[] { TeleportIndex.EarthCaveLich,
@@ -312,18 +312,18 @@ namespace FF1Lib.Procgen
 	    };
 
 	    do {
-		newmap = await GenerateMap(rng, rom, maps, MapId.EarthCaveB5, mapGenSteps, dt, progress);
+		newmap = await GenerateMap(rng, rom, maps, MapIndex.EarthCaveB5, mapGenSteps, dt, progress);
 	    } while (newmap == null);
 	    newmaps.Add(newmap);
 
 	    return newmaps;
 	}
 
-	public async static Task<List<CompleteMap>> GenerateNewDungeon(MT19337 rng, FF1Rom rom, MapId mapId, List<Map> maps,
-								       FF1Rom.NPCdata npcdata, FF1Rom.ReportProgress progress) {
-	    switch (mapId) {
-		case MapId.EarthCaveB1:
-		    var v = await GenerateEarthCave(rng, rom, maps, npcdata, progress);
+	public async static Task<List<CompleteMap>> GenerateNewDungeon(MT19337 rng, FF1Rom rom, MapIndex MapIndex, StandardMaps maps,
+								       FF1Rom.ReportProgress progress) {
+	    switch (MapIndex) {
+		case MapIndex.EarthCaveB1:
+		    var v = await GenerateEarthCave(rng, rom, maps, progress);
 		    return v;
 		default:
 		    return new List<CompleteMap>();

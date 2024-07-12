@@ -7,10 +7,13 @@ namespace FF1Lib
 	public class SanityCheckerV2 : ISanityChecker
 	{
 		FF1Rom rom;
-		List<Map> maps;
+		StandardMaps maps;
 		OverworldMap overworldMap;
+		Overworld overworld;
+		Teleporters teleporters;
+		TileSetsData tileSets;
 
-		NPCdata npcdata;
+		NpcObjectData npcdata;
 
 		short shipDockAreaIndex;
 		bool airShipLocationAccessible;
@@ -19,6 +22,7 @@ namespace FF1Lib
 		bool princessRescued;
 		bool vampireAccessible;
 		bool airShipLiftOff;
+		bool airBoat;
 
 		HashSet<short> processedAreas;
 		HashSet<OverworldTeleportIndex> processedDungeons;
@@ -30,67 +34,71 @@ namespace FF1Lib
 		Queue<SCPointOfInterest> deferredPointOfInterests;
 
 		Dictionary<byte, TreasureChest> chests;
-		Dictionary<ObjectId, MapObject> npcs;
+		Dictionary<ObjectId, NpcReward> npcs;
 		ItemShopSlot shopslot;
 
 		List<IRewardSource> treasurePlacements;
 
 		Dictionary<byte, TreasureChest> allTreasures;
-		Dictionary<ObjectId, MapObject> allQuestNpcs;
+		Dictionary<ObjectId, NpcReward> allQuestNpcs;
 		ItemShopSlot declaredShopSlot;
 
 		OwLocationData locations;
-		public ShipLocations Shiplocations { get; private set; }
+		//public ShipLocations Shiplocations { get; private set; }
 
 		int maxqueue = 0;
 
 		public SCMain Main { get; private set; }
 
-		public SanityCheckerV2(List<Map> _maps, OverworldMap _overworldMap, NPCdata _npcdata, FF1Rom _rom, ItemShopSlot _declaredShopSlot, ShipLocations _shiplocations)
+		public SanityCheckerV2(StandardMaps _maps, Overworld _overworld, NpcObjectData _npcdata, Teleporters _teleporters, TileSetsData _tileSets, FF1Rom _rom, ItemShopSlot _declaredShopSlot)
 		{
 			rom = _rom;
-			overworldMap = _overworldMap;
+			overworld = _overworld;
+			overworldMap = _overworld.OverworldMap;
+			tileSets = _tileSets;
 			maps = _maps;
 			npcdata = _npcdata;
+			teleporters = _teleporters;
 
-			locations = new OwLocationData(rom);
-			locations.LoadData();
+			locations = overworld.Locations;
+			//locations.LoadData();
 
-			Shiplocations = _shiplocations;
+			//Shiplocations = _shiplocations;
 
 			allTreasures = ItemLocations.AllTreasures.Select(r => r as TreasureChest).Where(r => r != null).ToDictionary(r => (byte)(r.Address - 0x3100));
-			allQuestNpcs = ItemLocations.AllNPCItemLocations.Select(r => r as MapObject).Where(r => r != null).ToDictionary(r => r.ObjectId);
+			allQuestNpcs = ItemLocations.AllNPCItemLocations.Select(r => r as NpcReward).Where(r => r != null).ToDictionary(r => r.ObjectId);
 			declaredShopSlot = _declaredShopSlot;
 
 			UpdateNpcRequirements();
 
-			Main = new SCMain(_maps, _overworldMap, _npcdata, locations, _rom);
+			Main = new SCMain(maps, overworld, _npcdata, tileSets, teleporters, locations, _rom);
+		}
+		public void SetShipLocation(int dungeonindex)
+		{
+			overworld.SetShipLocation(dungeonindex);
 		}
 
 		private void UpdateNpcRequirements()
 		{
 			foreach (var npc in allQuestNpcs.Values)
 			{
-				var talkarray = npcdata.GetTalkArray(npc.ObjectId);
-				var routine = npcdata.GetRoutine(npc.ObjectId);
-
-				UpdateNpcRequirements(npc, talkarray, routine);
+				UpdateNpcRequirements(npc, npcdata[npc.ObjectId]);
 			}
 		}
 
-		private void UpdateNpcRequirements(MapObject npc, byte[] talkarray, newTalkRoutines routine)
+		private void UpdateNpcRequirements(NpcReward npc, NpcObject npcdata)
 		{
-			if (routine == newTalkRoutines.Talk_Nerrick)
+			if (npcdata.Script == TalkScripts.Talk_Nerrick)
 			{
 				npc.AccessRequirement = AccessRequirement.Tnt;
 			}
-			else if (routine == newTalkRoutines.Talk_Astos)
+			else if (npcdata.Script == TalkScripts.Talk_Astos)
 			{
 				npc.AccessRequirement = AccessRequirement.Crown;
 			}
-			else if (routine == newTalkRoutines.Talk_TradeItems || routine == newTalkRoutines.Talk_GiveItemOnItem)
+			else if (npcdata.Script == TalkScripts.Talk_TradeItems || npcdata.Script == TalkScripts.Talk_GiveItemOnItem)
 			{
-				var req = (Item)talkarray[(int)TalkArrayPos.requirement_id];
+				var req = (Item)npcdata.Requirement;
 
 				npc.AccessRequirement = req.ToAccessRequirement();
 			}
@@ -101,16 +109,16 @@ namespace FF1Lib
 			throw new NotSupportedException("not needed?");
 		}
 
-		public (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> _treasurePlacements, Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements, IVictoryConditionFlags victoryConditions)
+		public (bool Complete, List<MapLocation> MapLocations, AccessRequirement Requirements) CheckSanity(List<IRewardSource> _treasurePlacements, Dictionary<MapLocation, Tuple<List<MapChange>, AccessRequirement>> fullLocationRequirements, IVictoryConditionFlags victoryConditions, bool layoutcheck)
 		{
 			treasurePlacements = _treasurePlacements;
 
 			//kids, don't try this at home. Calculating an index from an address is usually not the way to go.
 			chests = treasurePlacements.Select(r => r as TreasureChest).Where(r => r != null).ToDictionary(r => (byte)(r.Address - 0x3100));
-			npcs = treasurePlacements.Select(r => r as MapObject).Where(r => r != null).ToDictionary(r => r.ObjectId);
+			npcs = treasurePlacements.Select(r => r as NpcReward).Where(r => r != null).ToDictionary(r => r.ObjectId);
 			shopslot = (ItemShopSlot)treasurePlacements.FirstOrDefault(r => r is ItemShopSlot);
 
-			var result = Crawl(victoryConditions);
+			var result = Crawl(victoryConditions, layoutcheck);
 
 			var mapLocations = result.rewardSources.Select(r => r.MapLocation).Distinct().ToList();
 
@@ -124,7 +132,7 @@ namespace FF1Lib
 			return rewardSources.Contains(source);
 		}
 
-		public (bool complete, IEnumerable<IRewardSource> rewardSources, AccessRequirement requirements, MapChange changes) Crawl(IVictoryConditionFlags victoryConditions)
+		public (bool complete, IEnumerable<IRewardSource> rewardSources, AccessRequirement requirements, MapChange changes) Crawl(IVictoryConditionFlags victoryConditions, bool layoutcheck)
 		{
 			Stopwatch w = Stopwatch.StartNew();
 
@@ -141,8 +149,9 @@ namespace FF1Lib
 			princessRescued = false;
 			vampireAccessible = false;
 			airShipLiftOff = false;
+			airBoat = (bool)victoryConditions.AirBoat;
 
-			BuildInitialRequirements(victoryConditions);
+			BuildInitialRequirements(victoryConditions, layoutcheck);
 
 			SetAirShipPoi();
 
@@ -169,6 +178,12 @@ namespace FF1Lib
 			if ((bool)victoryConditions.IsFloaterRemoved)
 			{
 				requiredMapChanges &= ~MapChange.Airship;
+			}
+
+			if (victoryConditions.GameMode == GameModes.DeepDungeon)
+			{
+				requiredMapChanges = MapChange.None;
+				requiredAccess = AccessRequirement.Tnt | AccessRequirement.Ruby | AccessRequirement.Oxyale;
 			}
 
 			bool complete = changes.HasFlag(requiredMapChanges) && requirements.HasFlag(requiredAccess);
@@ -426,9 +441,9 @@ namespace FF1Lib
 			area.PointsOfInterest.Add(new SCPointOfInterest { Coords = locations.AirShipLocation, Type = SCPointOfInterestType.AirShip });
 		}
 
-		private void SetShipDock(byte dungeonIndex)
+		private void SetShipDock()
 		{
-			var coords = Shiplocations.SetShipLocation(dungeonIndex);
+			var coords = overworld.Locations.ShipLocation;
 
 			SetShipDock(coords.OwLeft);
 			SetShipDock(coords.OwRight);
@@ -456,10 +471,13 @@ namespace FF1Lib
 			if (shopslot != null && shopslot.ShopIndex == poi.ShopId - 1)
 			{
 				ProcessItem(shopslot.Item, dungeonIndex);
+				shopslot.Entrance = (OverworldTeleportIndex)dungeonIndex;
 				rewardSources.Add(shopslot);
 			}
 			else if (declaredShopSlot.ShopIndex == poi.ShopId - 1)
 			{
+				ProcessItem(declaredShopSlot.Item, dungeonIndex);
+				declaredShopSlot.Entrance = (OverworldTeleportIndex)dungeonIndex;
 				rewardSources.Add(declaredShopSlot);
 				poi.Done = true;
 			}
@@ -470,11 +488,13 @@ namespace FF1Lib
 			if (chests.TryGetValue(poi.TreasureId, out var chest))
 			{
 				ProcessItem(chest.Item, dungeonIndex);
+				chest.Entrance = (OverworldTeleportIndex)dungeonIndex;
 				rewardSources.Add(chest);
 				poi.Done = true;
 			}
 			else if (allTreasures.TryGetValue(poi.TreasureId, out var chest1))
 			{
+				chest1.Entrance = (OverworldTeleportIndex)dungeonIndex;
 				rewardSources.Add(chest1);
 				poi.Done = true;
 			}
@@ -515,9 +535,9 @@ namespace FF1Lib
 				poi.Done = true;
 				return true;
 			}
-			else if (poi.TalkRoutine == newTalkRoutines.Talk_ElfDocUnne)
+			else if (poi.TalkRoutine == TalkScripts.Talk_ElfDocUnne)
 			{
-				if (poi.TalkArray[(int)TalkArrayPos.requirement_id] == (byte)Item.Herb)
+				if (poi.NpcRequirement == (byte)Item.Herb)
 				{
 					if (requirements.HasFlag(AccessRequirement.Herb))
 					{
@@ -526,7 +546,7 @@ namespace FF1Lib
 						return true;
 					}
 				}
-				else if (poi.TalkArray[(int)TalkArrayPos.requirement_id] == (byte)Item.Slab)
+				else if (poi.NpcRequirement == (byte)Item.Slab)
 				{
 					if (requirements.HasFlag(AccessRequirement.Slab))
 					{
@@ -540,17 +560,17 @@ namespace FF1Lib
 			{
 				switch (poi.TalkRoutine)
 				{
-					case newTalkRoutines.Talk_Bikke:
+					case TalkScripts.Talk_Bikke:
 						ProcessItem(npc.Item, dungeonIndex);
 						rewardSources.Add(npc);
 						poi.Done = true;
 						return true;
-					case newTalkRoutines.Talk_GiveItemOnFlag:
+					case TalkScripts.Talk_GiveItemOnFlag:
 						return ProcessItemOnFlag(poi, npc, dungeonIndex);
-					case newTalkRoutines.Talk_Nerrick:
-					case newTalkRoutines.Talk_TradeItems:
-					case newTalkRoutines.Talk_GiveItemOnItem:
-					case newTalkRoutines.Talk_Astos:
+					case TalkScripts.Talk_Nerrick:
+					case TalkScripts.Talk_TradeItems:
+					case TalkScripts.Talk_GiveItemOnItem:
+					case TalkScripts.Talk_Astos:
 						if (requirements.HasFlag(npc.AccessRequirement))
 						{
 							ProcessItem(npc.Item, dungeonIndex);
@@ -567,16 +587,16 @@ namespace FF1Lib
 			{
 				switch (poi.TalkRoutine)
 				{
-					case newTalkRoutines.Talk_Bikke:
+					case TalkScripts.Talk_Bikke:
 						rewardSources.Add(npc1);
 						poi.Done = true;
 						return true;
-					case newTalkRoutines.Talk_GiveItemOnFlag:
+					case TalkScripts.Talk_GiveItemOnFlag:
 						return ProcessItemOnFlag(poi, npc1, dungeonIndex, false);
-					case newTalkRoutines.Talk_Nerrick:
-					case newTalkRoutines.Talk_TradeItems:
-					case newTalkRoutines.Talk_GiveItemOnItem:
-					case newTalkRoutines.Talk_Astos:
+					case TalkScripts.Talk_Nerrick:
+					case TalkScripts.Talk_TradeItems:
+					case TalkScripts.Talk_GiveItemOnItem:
+					case TalkScripts.Talk_Astos:
 						if (requirements.HasFlag(npc1.AccessRequirement))
 						{
 							rewardSources.Add(npc1);
@@ -592,15 +612,16 @@ namespace FF1Lib
 			return false;
 		}
 
-		private bool ProcessItemOnFlag(SCPointOfInterest poi, MapObject npc, byte dungeonIndex, bool giveItem = true)
+		private bool ProcessItemOnFlag(SCPointOfInterest poi, NpcReward npc, byte dungeonIndex, bool giveItem = true)
 		{
-			var flag = (ObjectId)poi.TalkArray[(int)TalkArrayPos.requirement_id];
+			var flag = (ObjectId)poi.NpcRequirement;
 
 			if(npc.ObjectId == ObjectId.Fairy)
 			{
 				if (requirements.HasFlag(AccessRequirement.Bottle))
 				{
 					if (giveItem) ProcessItem(npc.Item, dungeonIndex);
+					npc.Entrance = (OverworldTeleportIndex)dungeonIndex;
 					rewardSources.Add(npc);
 					poi.Done = true;
 					return true;
@@ -611,6 +632,7 @@ namespace FF1Lib
 				if (princessRescued)
 				{
 					if (giveItem) ProcessItem(npc.Item, dungeonIndex);
+					npc.Entrance = (OverworldTeleportIndex)dungeonIndex;
 					rewardSources.Add(npc);
 					poi.Done = true;
 					return true;
@@ -621,6 +643,7 @@ namespace FF1Lib
 				if (slabTranslated)
 				{
 					if (giveItem) ProcessItem(npc.Item, dungeonIndex);
+					npc.Entrance = (OverworldTeleportIndex)dungeonIndex;
 					rewardSources.Add(npc);
 					poi.Done = true;
 					return true;
@@ -631,6 +654,7 @@ namespace FF1Lib
 				if (herbCheckedIn)
 				{
 					if (giveItem) ProcessItem(npc.Item, dungeonIndex);
+					npc.Entrance = (OverworldTeleportIndex)dungeonIndex;
 					rewardSources.Add(npc);
 					poi.Done = true;
 					return true;
@@ -641,6 +665,7 @@ namespace FF1Lib
 				if (princessRescued)
 				{
 					if (giveItem) ProcessItem(npc.Item, dungeonIndex);
+					npc.Entrance = (OverworldTeleportIndex)dungeonIndex;
 					rewardSources.Add(npc);
 					poi.Done = true;
 					return true;
@@ -651,6 +676,7 @@ namespace FF1Lib
 				if (vampireAccessible)
 				{
 					if (giveItem) ProcessItem(npc.Item, dungeonIndex);
+					npc.Entrance = (OverworldTeleportIndex)dungeonIndex;
 					rewardSources.Add(npc);
 					poi.Done = true;
 					return true;
@@ -659,6 +685,7 @@ namespace FF1Lib
 			else if (flag == ObjectId.None)
 			{
 				if (giveItem) ProcessItem(npc.Item, dungeonIndex);
+				npc.Entrance = (OverworldTeleportIndex)dungeonIndex;
 				rewardSources.Add(npc);
 				poi.Done = true;
 				return true;
@@ -704,6 +731,10 @@ namespace FF1Lib
 					break;
 				case Item.Floater:
 					changes |= MapChange.Airship;
+					if (airBoat && ((changes & MapChange.Ship) > 0))
+					{
+						LiftOff();
+					}
 					break;
 				case Item.Chime:
 					changes |= MapChange.Chime;
@@ -719,7 +750,11 @@ namespace FF1Lib
 					break;
 				case Item.Ship:
 					changes |= MapChange.Ship;
-					SetShipDock(dungeonIndex);
+					SetShipDock();
+					if (airBoat && ((changes & MapChange.Airship) > 0))
+					{
+						LiftOff();
+					}
 					break;
 				case Item.Bridge:
 					changes |= MapChange.Bridge;
@@ -733,11 +768,21 @@ namespace FF1Lib
 			}
 		}
 
-		private void BuildInitialRequirements(IVictoryConditionFlags victoryConditions)
+		private void BuildInitialRequirements(IVictoryConditionFlags victoryConditions, bool layoutcheck)
 		{
 			airShipLocationAccessible = false;
 
-			requirements = AccessRequirement.None;
+			if (layoutcheck || victoryConditions.GameMode == GameModes.DeepDungeon)
+			{
+				requirements = AccessRequirement.AllExceptEnding;
+				changes = MapChange.All;
+			}
+			else
+			{
+				requirements = AccessRequirement.None;
+				changes = MapChange.None;
+			}
+
 			if ((bool)victoryConditions.FreeLute)
 			{
 				requirements |= AccessRequirement.Lute;
@@ -747,7 +792,6 @@ namespace FF1Lib
 				requirements |= AccessRequirement.Rod;
 			}
 
-			changes = MapChange.None;
 			if (victoryConditions.IsBridgeFree ?? false)
 			{
 				changes |= MapChange.Bridge;
@@ -755,7 +799,7 @@ namespace FF1Lib
 			if (victoryConditions.IsShipFree ?? false)
 			{
 				changes |= MapChange.Ship;
-				SetShipDock(255);
+				SetShipDock();
 			}
 			if (victoryConditions.IsAirshipFree ?? false)
 			{

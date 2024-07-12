@@ -17,6 +17,10 @@ namespace FF1Lib
 
 		public const int EnemizerUnrunnabilityWeight = 31; // weight given to determine unrunnability.  for the highest level of encounters, this means 8/32 probability of a formation being unrunnable
 
+		private const int ZoneFormationsOffset = 0x2C000;
+		private const int ZoneFormationsSize = 8;
+		private const int ZoneCount = 128;
+
 		enum MonsterPerks
 		{
 			PERK_GAINSTAT10, // increases a minor stat by 10%, +2% XP
@@ -762,91 +766,6 @@ namespace FF1Lib
 		    }
 
 		}
-
-		[JsonObject(MemberSerialization.OptIn)]
-		public class EnemyScriptInfo
-		{
-		        [JsonProperty]
-			public byte index;
-
-		        [JsonProperty]
-			public byte spell_chance;
-
-		        [JsonProperty]
-			public byte skill_chance;
-
-   		        public byte[] spell_list = new byte[8];
-			public byte[] skill_list = new byte[4];
-
-		        public List<MagicSpell> allGameSpells;
-		        public List<MagicSpell> allEnemySkills;
-
-		        [JsonProperty]
-			List<string> SpellList {
-			    get {
-				return spell_list.Where(s => s != 0xff).Select(s => this.allGameSpells[s].Name).ToList();
-			    }
-			    set {
-			    }
-			}
-
-		        [JsonProperty]
-			List<string> SkillList {
-			    get {
-				return skill_list.Where(s => s != 0xff).Select(s => this.allEnemySkills[s].Name).ToList();
-			    }
-			    set {
-			    }
-			}
-
-			public byte[] compressData()
-			{
-				byte[] scriptData = new byte[16];
-				scriptData[0] = spell_chance;
-				scriptData[1] = skill_chance;
-				scriptData[2] = spell_list[0];
-				scriptData[3] = spell_list[1];
-				scriptData[4] = spell_list[2];
-				scriptData[5] = spell_list[3];
-				scriptData[6] = spell_list[4];
-				scriptData[7] = spell_list[5];
-				scriptData[8] = spell_list[6];
-				scriptData[9] = spell_list[7];
-				scriptData[10] = 0xFF;
-				scriptData[11] = skill_list[0];
-				scriptData[12] = skill_list[1];
-				scriptData[13] = skill_list[2];
-				scriptData[14] = skill_list[3];
-				scriptData[15] = 0xFF;
-				return scriptData;
-			}
-
-		    public void writeData(FF1Rom rom) {
-			var d = compressData();
-			rom.Put(ScriptOffset + index * ScriptSize, d);
-		    }
-
-			public void decompressData(byte[] data)
-			{
-				if (data.Length != ScriptSize)
-					return; // don't do anything if this is not a valid script
-				spell_chance = data[0];
-				skill_chance = data[1];
-				spell_list[0] = data[2];
-				spell_list[1] = data[3];
-				spell_list[2] = data[4];
-				spell_list[3] = data[5];
-				spell_list[4] = data[6];
-				spell_list[5] = data[7];
-				spell_list[6] = data[8];
-				spell_list[7] = data[9];
-				skill_list[0] = data[11];
-				skill_list[1] = data[12];
-				skill_list[2] = data[13];
-				skill_list[3] = data[14];
-			}
-		}
-
 		public class FormationInfo
 		{
 			public int shape;
@@ -1127,7 +1046,7 @@ namespace FF1Lib
 			}
 		}
 
-		private bool DoEnemizer_Formations(MT19337 rng, EnemyInfo[] enemy, EnemizerTrackingInfo en)
+		private bool DoEnemizer_Formations(MT19337 rng, ZoneFormations zones, EnemyInfo[] enemy, EnemizerTrackingInfo en)
 		{
 			bool NotFeatured(byte mon) => !en.featured[mon];
 			bool Small(byte mon) => enemy[mon].Small;
@@ -1136,7 +1055,8 @@ namespace FF1Lib
 			bool LargeAndNotFeatured(byte mon, byte id) => Large(mon) && NotFeatured(mon) && mon != id;
 
 			var formationData = Get(FormationDataOffset, FormationDataSize * FormationDataCount).Chunk(FormationDataSize); // load base information from the ROM into chunks we can manipulate
-			var dom = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount); // however, we are going to adjust the domain data directly
+			Blob dom = zones.GetBytes().SelectMany(z => z).ToArray();
+			//var dom = Get(ZoneFormationsOffset, ZoneFormationsSize * ZoneCount); // however, we are going to adjust the domain data directly
 			List<byte> uniqueEnemyIDs = new List<byte> { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19,
 			  0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 0x2F, 0x30, 0x31, 0x32, 0x34,
 			  0x35, 0x36, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E, 0x3F, 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D,
@@ -1558,7 +1478,8 @@ namespace FF1Lib
 			dom[0x39E] = en.warmech_encounter; // replace 7th encounter on sky 5F with warmech
 			for (int i = 0; i < FormationDataCount; ++i) // write formation info to ROM
 				Put(FormationDataOffset + i * FormationDataSize, formationData[i]);
-			Put(ZoneFormationsOffset, dom); // write the domain data as one big chunk
+			zones.UpdateFromBlob(dom);
+			//Put(ZoneFormationsOffset, dom); // write the domain data as one big chunk
 			// write trap tile information
 			for (int i = 0; i < traptile_addresses.Length; ++i)
 			{
@@ -3526,7 +3447,7 @@ namespace FF1Lib
 			// modify scripts
 			// each spell is then selected from a list of spells available for that tier.  it is not possible to promote to a higher tier
 			// skills will remain the same
-			for (int i = 0; i < ScriptCount - 10; ++i) // exclude the last 10 scripts
+			for (int i = 0; i < script.Length - 10; ++i) // exclude the last 10 scripts
 			{
 				// start replacing each spell with another spell from the same tier
 				for (byte j = 0; j < 8; ++j)
@@ -3548,19 +3469,28 @@ namespace FF1Lib
 			return true;
 		}
 
-		public void DoEnemizer(MT19337 rng, bool doEnemies, bool doFormations, bool shuffledSkillsOn)
+		public void DoEnemizer(EnemyScripts enemyScripts, ZoneFormations zones, Flags flags, MT19337 rng)
 		{
+			if (!(bool)flags.RandomizeFormationEnemizer)
+			{
+				return;
+			}
+
+			bool doEnemies = (bool)flags.RandomizeEnemizer;
+			bool doFormations = (bool)flags.RandomizeFormationEnemizer;
+			bool shuffledSkillsOn = flags.EnemizerDontMakeNewScripts;
+
 			// code modification to allow any formation except 0x00 to be a trap (lifted from ShuffleTrapTiles)
-			Data[0x7CDC5] = 0xD0; // changes the game's programming
-			bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
-			bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
-			var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
-			tilesets.ForEach(tile => { if (IsRandomBattleTile(tile)) tile[1] = 0x00; });
-			Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());// set all random battle tiles to zero
+			//Data[0x7CDC5] = 0xD0; // changes the game's programming
+			//bool IsBattleTile(Blob tuple) => tuple[0] == 0x0A;
+			//bool IsRandomBattleTile(Blob tuple) => IsBattleTile(tuple) && (tuple[1] & 0x80) != 0x00;
+			//var tilesets = Get(TilesetDataOffset, TilesetDataCount * TilesetDataSize * TilesetCount).Chunk(TilesetDataSize).ToList();
+			//tilesets.ForEach(tile => { if (IsRandomBattleTile(tile)) tile[1] = 0x00; });
+			//Put(TilesetDataOffset, tilesets.SelectMany(tileset => tileset.ToBytes()).ToArray());// set all random battle tiles to zero
 
 			SpellInfo[] spell = LoadSpells(); // list of spells and their appropriate tiers
 			EnemySkillInfo[] skill = new EnemySkillInfo[EnemySkillCount]; // list of enemy skills and their appropriate tiers
-			EnemyScriptInfo[] script = new EnemyScriptInfo[ScriptCount]; // list of enemy scripts
+			EnemyScripts script = enemyScripts; // list of enemy scripts
 
 			// load vanilla values from ROM into the enemizer
 			byte[] skilltiers_enemy = new byte[]
@@ -3572,11 +3502,6 @@ namespace FF1Lib
 				skill[i] = new EnemySkillInfo();
 				skill[i].decompressData(Get(EnemySkillOffset + i * EnemySkillSize, EnemySkillSize));
 				skill[i].tier = skilltiers_enemy[i];
-			}
-			for (int i = 0; i < ScriptCount; ++i)
-			{
-				script[i] = new EnemyScriptInfo();
-				script[i].decompressData(Get(ScriptOffset + i * ScriptSize, ScriptSize));
 			}
 			EnemyInfo[] enemy = new EnemyInfo[EnemyCount]; // list of enemies, including information that is either inferred from formation inspection or tier lists that I have just made up
 			EnemizerTrackingInfo en = new EnemizerTrackingInfo(); // structure that contains many lists and other information that is helpful for managing formation generation efficiently
@@ -3614,7 +3539,7 @@ namespace FF1Lib
 			{
 				byte[] patterntabledata = Get(EnemyPatternTablesOffset, 0x6800); // each pattern table is 0x800 bytes and there are 13 pattern tables that we will edit
 				// do enemizer stuff
-				if(DoEnemizer_Enemies(rng, enemy, patterntabledata, spell, skill, script, enemyNames, skillNames, shuffledSkillsOn, en))
+				if(DoEnemizer_Enemies(rng, enemy, patterntabledata, spell, skill, script.GetList().ToArray(), enemyNames, skillNames, shuffledSkillsOn, en))
 				{
 					doFormations = true; // must use formation generator with enemizer
 					for (int i = 0; i < EnemyCount; ++i)
@@ -3622,10 +3547,7 @@ namespace FF1Lib
 						Put(EnemyOffset + EnemySize * i, enemy[i].compressData()); // move every entry from the enemizer to the ROM
 					}
 					Put(EnemyPatternTablesOffset, patterntabledata); // write the new pattern tables as a chunk
-					for (int i = 0; i < ScriptCount; ++i)
-					{
-						Put(ScriptOffset + ScriptSize * i, script[i].compressData()); // and move the modified scripts as well
-					}
+
 					var enemyTextPart1 = enemyNames.Take(2).ToArray();
 					var enemyTextPart2 = enemyNames.Skip(2).ToArray();
 					WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
@@ -3647,7 +3569,7 @@ namespace FF1Lib
 					Put(EnemyPatternTablesOffset, patterntabledata); // write the new pattern tables as a chunk
 				}
 
-				if(!DoEnemizer_Formations(rng, enemy, en))
+				if(!DoEnemizer_Formations(rng, zones, enemy, en))
 				{
 					Console.WriteLine("Fission Mailed - Abort Formation Shuffle");
 					throw new InsaneException("Something went wrong with Formation Generation (Enemizer)!");
@@ -3655,11 +3577,11 @@ namespace FF1Lib
 			}
 		}
 
-		public void GenerateBalancedEnemyScripts(MT19337 rng, bool swolePirates)
+		public void GenerateBalancedEnemyScripts(EnemyScripts enemyScripts, MT19337 rng, bool swolePirates)
 		{
 			SpellInfo[] spell = new SpellInfo[MagicCount]; // list of spells and their appropriate tiers
 			EnemySkillInfo[] skill = new EnemySkillInfo[EnemySkillCount]; // list of enemy skills and their appropriate tiers
-			EnemyScriptInfo[] script = new EnemyScriptInfo[ScriptCount]; // list of enemy scripts
+			EnemyScripts script = enemyScripts; // list of enemy scripts
 
 			// load values from the ROM (this can be normal spells or Spellcrafter spells)
 			byte[] skilltiers_enemy = new byte[]
@@ -3678,11 +3600,12 @@ namespace FF1Lib
 				skill[i].decompressData(Get(EnemySkillOffset + i * EnemySkillSize, EnemySkillSize));
 				skill[i].tier = skilltiers_enemy[i];
 			}
+			/*
 			for (int i = 0; i < ScriptCount; ++i)
 			{
 				script[i] = new EnemyScriptInfo();
 				script[i].decompressData(Get(ScriptOffset + i * ScriptSize, ScriptSize));
-			}
+			}*/
 
 			EnemyInfo[] enemy = new EnemyInfo[EnemyCount]; // list of enemies, including information that is either inferred from formation inspection or tier lists that I have just made up
 			// set enemy default tier list.  these tier rankings are different from the enemizer basis, but show the kind of skills/spells that are prioritized
@@ -3704,9 +3627,9 @@ namespace FF1Lib
 				enemy[i].tier = enemyTierList[i];
 			}
 
-			bool[] scriptRepeat = new bool[ScriptCount];
-			int[] scriptLowestTier = new int[ScriptCount];
-			for(int i = 0; i < ScriptCount; ++i)
+			bool[] scriptRepeat = new bool[script.Count()];
+			int[] scriptLowestTier = new int[script.Count()];
+			for(int i = 0; i < script.Count(); ++i)
 			{
 				scriptRepeat[i] = false;
 				scriptLowestTier[i] = 10;
@@ -3841,11 +3764,6 @@ namespace FF1Lib
 					else
 						script[enemy[i].AIscript].spell_list[j] = eligibleSpellIDs.PickRandom(rng);
 				}
-			}
-			// write the modified scripts to ROM
-			for (int i = 0; i < ScriptCount; ++i)
-			{
-				Put(ScriptOffset + ScriptSize * i, script[i].compressData()); // and move the modified scripts as well
 			}
 		}
 

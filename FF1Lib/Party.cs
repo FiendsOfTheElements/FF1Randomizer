@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -192,8 +193,13 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x8BF0, Blob.FromHex("ADCE6BAA6A6A6AA8B90061C9FFF0068A09808D8A6C60"));
 		}
 
-		public void PubReplaceClinic(MT19337 rng, MapId attackedTown, Flags flags)
+		public void PubReplaceClinic(MT19337 rng, MapIndex attackedTown, Flags flags)
 		{
+			if (!(bool)flags.RecruitmentMode)
+			{
+				return;
+			}
+
 			// Copy some CHR data to make the Tavern look more like one.
 			const int ShopTileDataOffet = 0x24000;
 			const int TileSize = 16;
@@ -256,8 +262,8 @@ namespace FF1Lib
 			// Clinic_InitialText followed by ShouldSkipChar followed by "Hire a\n" text
 			PutInBank(0x0E, 0x9D58, Blob.FromHex("205BAAA0FFC8B9B09D991003D0F7A902991003C8A648BD0A9D69F0991003C8A905991003C8A9C5991003C8A900991003A9108D3E00A9038D3F004C32AAAD0D03D010BD0061C9FFD003A90160BD0161C90160BD0061C9FF6091AC23FFA40100"));
 
-			int levelUpTargetA = (bool)flags.RandomizeClass ? 0xB5 : 0x87;
-			int levelUpTargetB = (bool)flags.RandomizeClass ? 0xFF : 0xA9;
+			int levelUpTargetA = flags.RandomizeClassMode == ClassRandomizationMode.Blursings ? 0xB5 : 0x87;
+			int levelUpTargetB = flags.RandomizeClassMode == ClassRandomizationMode.Blursings ? 0xFF : 0xA9;
 			
 			// New routine to level up replaced character and zero some stuff, needs new level up stuff in bank 1B
 			PutInBank(0x0E, 0x9D34, Blob.FromHex($"AD0D03F018A99D48A95048A9{levelUpTargetA:X2}48A9{levelUpTargetB:X2}488A182A2A2A8510A91B4C03FE4C0098"));
@@ -278,8 +284,6 @@ namespace FF1Lib
 			{
 				PutInBank(0x0E, 0x9DAA, Blob.FromHex("A90060"));
 			}
-
-
 		}
 
 		public void EnableTwelveClasses()
@@ -303,14 +307,19 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xC7CA, Blob.FromHex("B940B0"));
 
 			// New promotion routine to not bug out with already promoted classes and allow random promotion; works with Nones; see 11_95AE_DoClassChange.asm
-			PutInBank(newTalkRoutinesBank, 0x95AE, Blob.FromHex("A20020C595A24020C595A28020C595A2C020C595E65660BC00613006B9F09D9D006160"));
+			PutInBank(0x11, 0x95AE, Blob.FromHex("A20020C595A24020C595A28020C595A2C020C595E65660BC00613006B9F09D9D006160"));
 
 			// lut for standard promotion, can be modified or randomized
-			PutInBank(newTalkRoutinesBank, 0x9DF0, Blob.FromHex("060708090A0B060708090A0B"));
+			PutInBank(0x11, 0x9DF0, Blob.FromHex("060708090A0B060708090A0B"));
 		}
 
 		public void EnableRandomPromotions(Flags flags, MT19337 rng)
 		{
+			if (!(bool)flags.EnableRandomPromotions)
+			{
+				return;
+			}
+
 			// Need EnableTwelveClasses()
 			// Promotions list & class names list
 			List<sbyte> promotions = new List<sbyte> { 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B };
@@ -355,7 +364,7 @@ namespace FF1Lib
 			}
 
 			// Insert randomized promotions
-			PutInBank(newTalkRoutinesBank, 0x9DF0, Blob.FromSBytes(promotions.ToArray()));
+			PutInBank(0x11, 0x9DF0, Blob.FromSBytes(promotions.ToArray()));
 
 			// Change class names to spoil to what they randomly promote
 			if (flags.RandomPromotionsSpoilers ?? false)
@@ -365,8 +374,8 @@ namespace FF1Lib
 			}
 
 			// Modify DoClassChange, see 1B_910F_ResetMP.asm
-			PutInBank(newTalkRoutinesBank, 0x95C8, Blob.FromHex("3009B9F09D9D006120D09D60"));
-			PutInBank(newTalkRoutinesBank, 0x9DD0, Blob.FromHex("A91148A9FE48A90648A99148A90F48A91B4C03FE"));
+			PutInBank(0x11, 0x95C8, Blob.FromHex("3009B9F09D9D006120D09D60"));
+			PutInBank(0x11, 0x9DD0, Blob.FromHex("A91148A9FE48A90648A99148A90F48A91B4C03FE"));
 
 			// MP Recomp Routine, see 1B_910F_ResetMP.asm
 			PutInBank(0x1B, 0x910F, Blob.FromHex("60BD0061A8B90091F0F6A96385858684A9281865848584A000A9029184C8A9009184C8C008D0F9BD00610AA8B9718A8582B9728A8583A9018510BD26618511E6118612BD0061AAA001B182A00048B184DD02899005684A4C7691684A900948B184186901918468C8C008D0E118A90265828582A90065838583E610A510C511D0C6A612A96385118610A9201865108510A000B1844A9110C8C008D0F660"));
@@ -379,7 +388,7 @@ namespace FF1Lib
 		{
 			string selectButtonCode = "EAEAEAEAEA";
 
-			if ((bool)flags.RandomizeClass || (bool)flags.Transmooglifier || (bool)flags.RandomizeClassChaos)
+			if (flags.RandomizeClassMode != ClassRandomizationMode.None)
 			{
 				selectButtonCode = "F0034C0088";
 			}
@@ -472,16 +481,16 @@ namespace FF1Lib
 		public class TargetNpc
 		{
 			public ObjectId linkedNPC { get; set; }
-			public MapId targetMap { get; set; }
+			public MapIndex targetMap { get; set; }
 			public (int, int) newPosition { get; set; }
 			public Boolean inRoom { get; set; }
 			public Boolean stationary { get; set; }
 			public String newDialogue { get; set; }
 
-			public TargetNpc(ObjectId objectId, MapId mapid, (int, int) pos, Boolean inroom, Boolean stat, string dialog)
+			public TargetNpc(ObjectId objectId, MapIndex MapIndex, (int, int) pos, Boolean inroom, Boolean stat, string dialog)
 			{
 				linkedNPC = objectId;
-				targetMap = mapid;
+				targetMap = MapIndex;
 				newPosition = pos;
 				inRoom = inroom;
 				stationary = stat;
@@ -491,25 +500,33 @@ namespace FF1Lib
 
 		public readonly List<string> ClassNames = new List<string> { "Fighter", "Thief", "Black Belt", "Red Mage", "White Mage", "Black Mage", "Knight", "Ninja", "Master", "Red Wizard", "White Wizard", "Black Wizard" };
 
-		public void ClassAsNPC(Flags flags, TalkRoutines talkroutines, NPCdata npcdata, List<MapId> flippedmaps, List<MapId> vflippedmaps, MT19337 rng)
+		public void ClassAsNPC(Flags flags, TalkRoutines talkroutines, NpcObjectData npcdata, DialogueData dialogues, StandardMaps maps, MT19337 rng)
 		{
+			if (!(bool)flags.ClassAsNpcFiends && !(bool)flags.ClassAsNpcKeyNPC)
+			{
+				return;
+			}
+
+			var flippedmaps = maps.HorizontalFlippedMaps;
+			var vflippedmaps = maps.VerticalFlippedMaps;
+
 			var crescentSages = new List<ObjectId> { ObjectId.CrescentSage2, ObjectId.CrescentSage3, ObjectId.CrescentSage4, ObjectId.CrescentSage5, ObjectId.CrescentSage6, ObjectId.CrescentSage7, ObjectId.CrescentSage8, ObjectId.CrescentSage9, ObjectId.CrescentSage10 };
 			var keyNpc = new List<TargetNpc> {
-				new TargetNpc(ObjectId.Princess1, MapId.ConeriaCastle2F, (0x0D, 0x05), true, true, "I won't rest until\nthe Princess is rescued!\n\n..What? Me?"),
-				new TargetNpc(ObjectId.Matoya, MapId.MatoyasCave, (0x06,0x03), true, false, "I'm Matoya's apprentice!\n..She only needs me for\nreading her grimoires."),
-				new TargetNpc(ObjectId.Bikke, MapId.Pravoka, (0,0), false, true, "It is an evil voyage.\nIf Captain Bikke has his\nway, I will never see\nhome again.\n\nYet I do not fear Kraken.\nI fear the wrath of God."),
-				new TargetNpc(ObjectId.ElfDoc, MapId.ElflandCastle, (0x07, 0x05), true, false, "I swore to find a cure\nfor the Prince's curse.\nIf only I could find\nthat elusive Astos.."),
-				new TargetNpc(ObjectId.Astos, MapId.NorthwestCastle, (0x11,0x07), true, true, "While the Crown is\nmissing, I can attest\nthat this is indeed\nthe REAL King of\nNorthwest Castle."),
-				new TargetNpc(ObjectId.Unne, MapId.Melmond, (0x1D, 0x02), false, true, "I'm also trying\nto discover the secret\nof Lefeinish!"),
-				new TargetNpc(ObjectId.Unne, MapId.Lefein, (0,0), false, false, "Lu..pa..?\nLu..pa..?"),
-				new TargetNpc(ObjectId.Vampire, MapId.SardasCave, (0x04, 0x02), true, true, "The Vampire put a curse\non me, it will only be\nlifted on his death.\nAnd I can't do anything\nwhile you fight.\nIt's a shame."),
-				new TargetNpc(ObjectId.CanoeSage, MapId.CrescentLake, (0,0), false, true, "I came here to learn\neverything about the\nFiend of Earth. You got\nto respect such a\ndangerous adversary."),
-				new TargetNpc(ObjectId.Fairy, MapId.Gaia, (0x2F, 0x14), false, true, "I'm trying to get\nwhat's at the bottom\nof the pond.\n\nMaybe if I drained it.."),
-				new TargetNpc(ObjectId.Smith, MapId.DwarfCave, (0x08, 0x02), true, false, "I'm sure it will be a\nbadass sword! Like with\na huge blade, and a gun\nas the hilt, and you can\ntrigger it..\nI can't wait!"),
-				new TargetNpc(ObjectId.Nerrick, MapId.DwarfCave, (0x0F, 0x2D), false, true, "Digging a canal is hard\nbut honest work.\n\n..Can't wait to be done\nwith it."),
+				new TargetNpc(ObjectId.Princess1, MapIndex.ConeriaCastle2F, (0x0D, 0x05), true, true, "I won't rest until\nthe Princess is rescued!\n\n..What? Me?"),
+				new TargetNpc(ObjectId.Matoya, MapIndex.MatoyasCave, (0x06,0x03), true, false, "I'm Matoya's apprentice!\n..She only needs me for\nreading her grimoires."),
+				new TargetNpc(ObjectId.Bikke, MapIndex.Pravoka, (0,0), false, true, "It is an evil voyage.\nIf Captain Bikke has his\nway, I will never see\nhome again.\n\nYet I do not fear Kraken.\nI fear the wrath of God."),
+				new TargetNpc(ObjectId.ElfDoc, MapIndex.ElflandCastle, (0x07, 0x05), true, false, "I swore to find a cure\nfor the Prince's curse.\nIf only I could find\nthat elusive Astos.."),
+				new TargetNpc(ObjectId.Astos, MapIndex.NorthwestCastle, (0x11,0x07), true, true, "While the Crown is\nmissing, I can attest\nthat this is indeed\nthe REAL King of\nNorthwest Castle."),
+				new TargetNpc(ObjectId.Unne, MapIndex.Melmond, (0x1D, 0x02), false, true, "I'm also trying\nto discover the secret\nof Lefeinish!"),
+				new TargetNpc(ObjectId.Unne, MapIndex.Lefein, (0,0), false, false, "Lu..pa..?\nLu..pa..?"),
+				new TargetNpc(ObjectId.Vampire, MapIndex.SardasCave, (0x04, 0x02), true, true, "The Vampire put a curse\non me, it will only be\nlifted on his death.\nAnd I can't do anything\nwhile you fight.\nIt's a shame."),
+				new TargetNpc(ObjectId.CanoeSage, MapIndex.CrescentLake, (0,0), false, true, "I came here to learn\neverything about the\nFiend of Earth. You got\nto respect such a\ndangerous adversary."),
+				new TargetNpc(ObjectId.Fairy, MapIndex.Gaia, (0x2F, 0x14), false, true, "I'm trying to get\nwhat's at the bottom\nof the pond.\n\nMaybe if I drained it.."),
+				new TargetNpc(ObjectId.Smith, MapIndex.DwarfCave, (0x08, 0x02), true, false, "I'm sure it will be a\nbadass sword! Like with\na huge blade, and a gun\nas the hilt, and you can\ntrigger it..\nI can't wait!"),
+				new TargetNpc(ObjectId.Nerrick, MapIndex.DwarfCave, (0x0F, 0x2D), false, true, "Digging a canal is hard\nbut honest work.\n\n..Can't wait to be done\nwith it."),
 			};
 
-			var eventNpc = new List<(ObjectId, MapId)> { (ObjectId.ElflandCastleElf3, MapId.ElflandCastle), (ObjectId.MelmondMan1, MapId.Melmond), (ObjectId.MelmondMan3, MapId.Melmond), (ObjectId.MelmondMan4, MapId.Melmond), (ObjectId.MelmondMan8, MapId.Melmond), (ObjectId.DwarfcaveDwarf6, MapId.DwarfCave), (ObjectId.ConeriaCastle1FWoman2, MapId.ConeriaCastle1F), (ObjectId.ElflandElf2, MapId.Elfland), (ObjectId.ElflandElf5, MapId.Elfland) };
+			var eventNpc = new List<(ObjectId, MapIndex)> { (ObjectId.ElflandCastleElf3, MapIndex.ElflandCastle), (ObjectId.MelmondMan1, MapIndex.Melmond), (ObjectId.MelmondMan3, MapIndex.Melmond), (ObjectId.MelmondMan4, MapIndex.Melmond), (ObjectId.MelmondMan8, MapIndex.Melmond), (ObjectId.DwarfcaveDwarf6, MapIndex.DwarfCave), (ObjectId.ConeriaCastle1FWoman2, MapIndex.ConeriaCastle1F), (ObjectId.ElflandElf2, MapIndex.Elfland), (ObjectId.ElflandElf5, MapIndex.Elfland) };
 			var classSprite = new List<byte> { 0xEE, 0xEF, 0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9 };
 
 			var readyString = new List<string> { "Well, that's that.\nLet's go.", "Onward to new\nadventures!", "I knew you'd come back\nfor me!", "......", "I'm the leader now,\nright?", "The Reaper is always\njust a step behind me..", "O.. Okay.. I hope it's\nnot too scary out there.", "Yes!\nI made it on the team!", "A bold choice, let's\nsee if it pays off.", "Alright, let's do this!", "I obey, master.", "They say I'm the best.", "I see, we have the same\ngoal. Let's join forces.", "My.. name? Huh..", "Just don't put me first\nagainst Kraken.", "I'm taking care of the\nGPs from now on!", "It's Saturday night.\nI've got no date, a\nbottle of Shasta, and\nmy all Rush mixtape.\nLet's rock.", "Life insurance?\nNo, I don't have any.\nWhy?", "Let's put an end to\nthis madness.", "Finally, some action!", "You convinced me. I will\njoin your noble cause.", "Evil never rests. I will\nfight by your side.", "Edward wants to join\nthe party." };
@@ -549,7 +566,7 @@ namespace FF1Lib
 			var talk_class = talkroutines.Add(Blob.FromHex("A470F005207990903DA571203D9620A49FC000D02BA5739D0061A9009D26619D01619D0B619D0D6120649F20509FA00E207990900320C59520879FA4762073922018964C4396A57260"));
 
 			// Routines to switch the class (clear stats, equipment, new stats, levelup)
-			PutInBank(newTalkRoutinesBank, 0x9F50, Blob.FromHex("A91148A9FE48A90648A9C748A98248A9004C03FEA0188610A9618511B110297F9110C8C020D0F5A000A9638511A9009110C8C030D0F960A91148A9FE48A90648A9B548A9FF488A4A4A4A4A4A4A8510A91B4C03FEA91148A9FE48A90648A99948A91048A9008565A90E4C03FE"));
+			PutInBank(0x11, 0x9F50, Blob.FromHex("A91148A9FE48A90648A9C748A98248A9004C03FEA0188610A9618511B110297F9110C8C020D0F5A000A9638511A9009110C8C030D0F960A91148A9FE48A90648A9B548A9FF488A4A4A4A4A4A4A8510A91B4C03FEA91148A9FE48A90648A99948A91048A9008565A90E4C03FE"));
 
 			var totalKeyNPC = (bool)flags.ClassAsNpcKeyNPC ? Math.Min(flags.ClassAsNpcCount, 12) : 0;
 			var totalAllNPC = ((bool)flags.ClassAsNpcFiends ? 4 : 0) + totalKeyNPC;
@@ -582,7 +599,7 @@ namespace FF1Lib
 				foreach (var npc in selectedNpc)
 				{
 					ObjectId targetNpc = ObjectId.None;
-					MapId originMap = MapId.Cardia;
+					MapIndex originMap = MapIndex.Cardia;
 					int targetIndex = 16;
 					(int, int) targetCoord = (0, 0);
 					bool targetInRoom = false;
@@ -592,7 +609,7 @@ namespace FF1Lib
 					if (npc.linkedNPC == ObjectId.Bikke)
 					{
 						targetNpc = ObjectId.PravokaMan2;
-						originMap = MapId.Pravoka;
+						originMap = MapIndex.Pravoka;
 						var tempNpc = FindNpc(originMap, targetNpc);
 						var bikkeNpc = FindNpc(originMap, ObjectId.Bikke);
 						targetIndex = tempNpc.Index;
@@ -600,23 +617,23 @@ namespace FF1Lib
 						targetInRoom = tempNpc.InRoom;
 						targetStationary = true;
 					}
-					else if (npc.linkedNPC == ObjectId.Unne && npc.targetMap == MapId.Lefein)
+					else if (npc.linkedNPC == ObjectId.Unne && npc.targetMap == MapIndex.Lefein)
 					{
 						targetNpc = ObjectId.LefeinMan11;
-						originMap = MapId.Lefein;
+						originMap = MapIndex.Lefein;
 						var tempNpc = FindNpc(originMap, targetNpc);
 						targetIndex = tempNpc.Index;
 						targetCoord = tempNpc.Coord;
 						targetInRoom = tempNpc.InRoom;
 						targetStationary = tempNpc.Stationary;
-						var tempdiagid = npcdata.GetTalkArray(targetNpc)[1];
-						npcdata.GetTalkArray(targetNpc)[1] = npcdata.GetTalkArray(targetNpc)[2];
-						npcdata.GetTalkArray(targetNpc)[2] = tempdiagid;
+						var tempdiagid = npcdata[targetNpc].Dialogue2;
+						npcdata[targetNpc].Dialogue2 = npcdata[targetNpc].Dialogue3;
+						npcdata[targetNpc].Dialogue3 = tempdiagid;
 					}
 					else if (npc.linkedNPC == ObjectId.CanoeSage)
 					{
 						targetNpc = crescentSages.PickRandom(rng);
-						originMap = MapId.CrescentLake;
+						originMap = MapIndex.CrescentLake;
 						var tempNpc = FindNpc(originMap, targetNpc);
 						targetIndex = tempNpc.Index;
 						targetCoord = tempNpc.Coord;
@@ -633,18 +650,18 @@ namespace FF1Lib
 						targetCoord = npc.newPosition;
 						targetInRoom = npc.inRoom;
 						targetStationary = npc.stationary;
-						SetNpc(originMap, tempNpc.Index, ObjectId.None, 0x00, 0x00, false, false);
+						maps[originMap].MapObjects.SetNpc(tempNpc.Index, ObjectId.None, 0x00, 0x00, false, false);
 					}
 
-					SetNpc(npc.targetMap, targetIndex, targetNpc, targetCoord.Item1, targetCoord.Item2, targetInRoom, targetStationary);
-					npcdata.GetTalkArray(targetNpc)[0] = (byte)npc.linkedNPC;
-					npcdata.GetTalkArray(targetNpc)[3] = (byte)classList.First();
+					maps[npc.targetMap].MapObjects.SetNpc(targetIndex, targetNpc, targetCoord.Item1, targetCoord.Item2, targetInRoom, targetStationary);
+					npcdata[targetNpc].Dialogue1 = (byte)npc.linkedNPC;
+					npcdata[targetNpc].Item = (byte)classList.First();
 
-					npcdata.SetRoutine(targetNpc, (newTalkRoutines)talk_class);
-					Data[MapObjGfxOffset + (byte)targetNpc] = classSprite[(int)classList.First()];
+					npcdata[targetNpc].Script = (TalkScripts)talk_class;
+					npcdata[targetNpc].Sprite = (ObjectSprites)classSprite[(int)classList.First()];
 
-					newDialogs.Add(npcdata.GetTalkArray(targetNpc)[1], readyString.SpliceRandom(rng) + "\n\n" + ClassNames[(int)classList.First()] + " joined.");
-					newDialogs.Add(npcdata.GetTalkArray(targetNpc)[2], npc.newDialogue);
+					newDialogs.Add(npcdata[targetNpc].Dialogue2, readyString.SpliceRandom(rng) + "\n\n" + ClassNames[(int)classList.First()] + " joined.");
+					newDialogs.Add(npcdata[targetNpc].Dialogue3, npc.newDialogue);
 
 					classList.RemoveRange(0, 1);
 				}
@@ -653,20 +670,21 @@ namespace FF1Lib
 			if ((bool)flags.ClassAsNpcFiends)
 			{
 				// Check if maps are flipped
-				bool earthB5flipped = flippedmaps.Contains(MapId.EarthCaveB5);
-				bool volcanoB5flipped = flippedmaps.Contains(MapId.GurguVolcanoB5);
-				bool seaB5flipped = flippedmaps.Contains(MapId.SeaShrineB5);
+				bool earthB5flipped = flippedmaps.Contains(MapIndex.EarthCaveB5);
+				bool volcanoB5flipped = flippedmaps.Contains(MapIndex.GurguVolcanoB5);
+				bool seaB5flipped = flippedmaps.Contains(MapIndex.SeaShrineB5);
 
-				bool earthB5vflipped = vflippedmaps.Contains(MapId.EarthCaveB5);
-				bool volcanoB5vflipped = vflippedmaps.Contains(MapId.GurguVolcanoB5);
-				bool seaB5vflipped = vflippedmaps.Contains(MapId.SeaShrineB5);
+				bool earthB5vflipped = vflippedmaps.Contains(MapIndex.EarthCaveB5);
+				bool volcanoB5vflipped = vflippedmaps.Contains(MapIndex.GurguVolcanoB5);
+				bool seaB5vflipped = vflippedmaps.Contains(MapIndex.SeaShrineB5);
 
 				var dungeonNpc = new List<ObjectId> { ObjectId.MelmondMan6, ObjectId.GaiaMan4, ObjectId.OnracPunk1, ObjectId.GaiaMan1 };
 
-				SetNpc(MapId.Melmond, 8, ObjectId.None, 0x12, 0x18, false, false);
-				SetNpc(MapId.Gaia, FindNpc(MapId.Gaia, ObjectId.GaiaMan4).Index, ObjectId.None, 0x12, 0x18, false, false);
-				SetNpc(MapId.Onrac, 6, ObjectId.None, 0x12, 0x18, false, false);
-				SetNpc(MapId.Gaia, 1, ObjectId.None, 0x12, 0x18, false, false);
+				maps[MapIndex.Melmond].MapObjects.SetNpc(8, ObjectId.None, 0x12, 0x18, false, false);
+				var gaianpc = maps[MapIndex.Gaia].MapObjects.FindNpc(ObjectId.GaiaMan4).Index;
+				maps[MapIndex.Gaia].MapObjects.SetNpc(gaianpc, ObjectId.None, 0x12, 0x18, false, false);
+				maps[MapIndex.Onrac].MapObjects.SetNpc(6, ObjectId.None, 0x12, 0x18, false, false);
+				maps[MapIndex.Gaia].MapObjects.SetNpc(1, ObjectId.None, 0x12, 0x18, false, false);
 
 				var earthX = earthB5flipped ? (0x3F - ((bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0D)) : ((bool)flags.ClassAsNpcForcedFiends ? 0x0C : 0x0D);
 				var volcanoX = volcanoB5flipped ? (0x3F - ((bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x05)) : ((bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x05);
@@ -676,25 +694,25 @@ namespace FF1Lib
 				var volcanoY = volcanoB5vflipped ? 0x0A : 0x35;
 				var seaY = seaB5vflipped ? 0x38  : 0x07;
 
-				SetNpc(MapId.EarthCaveB5, 0x0C, ObjectId.MelmondMan6, earthX, earthY, true, true);
-				SetNpc(MapId.GurguVolcanoB5, 0x02, ObjectId.GaiaMan4, volcanoX, volcanoY, true, true);
-				SetNpc(MapId.SeaShrineB5, 0x01, ObjectId.OnracPunk1, seaX, seaY, true, true);
-				SetNpc(MapId.SkyPalace5F, 0x02, ObjectId.GaiaMan1, (bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x09, 0x03, true, true);
+				maps[MapIndex.EarthCaveB5].MapObjects.SetNpc(0x0C, ObjectId.MelmondMan6, earthX, earthY, true, true);
+				maps[MapIndex.GurguVolcanoB5].MapObjects.SetNpc(0x02, ObjectId.GaiaMan4, volcanoX, volcanoY, true, true);
+				maps[MapIndex.SeaShrineB5].MapObjects.SetNpc(0x01, ObjectId.OnracPunk1, seaX, seaY, true, true);
+				maps[MapIndex.SkyPalace5F].MapObjects.SetNpc(0x02, ObjectId.GaiaMan1, (bool)flags.ClassAsNpcForcedFiends ? 0x07 : 0x09, 0x03, true, true);
 
 				// Restore the default color if Required WarMech is enabled so Tiamat's NPC don't look too weird
 				Data[0x029AB] = 0x30;
 
 				for (int i = 0; i < 4; i++)
 				{
-					newDialogs.Add(npcdata.GetTalkArray(dungeonNpc[i])[1], readyString.SpliceRandom(rng) + "\n\n" + ClassNames[(int)classList[i]] + " joined.");
-					npcdata.GetTalkArray(dungeonNpc[i])[0] = 0x00;
-					npcdata.GetTalkArray(dungeonNpc[i])[3] = (byte)(classList[i]);
-					npcdata.SetRoutine(dungeonNpc[i], (newTalkRoutines)talk_class);
-					Data[MapObjGfxOffset + (byte)dungeonNpc[i]] = classSprite[(int)classList[i]];
+					newDialogs.Add(npcdata[dungeonNpc[i]].Dialogue2, readyString.SpliceRandom(rng) + "\n\n" + ClassNames[(int)classList[i]] + " joined.");
+					npcdata[dungeonNpc[i]].Dialogue1 = 0x00;
+					npcdata[dungeonNpc[i]].Item = (byte)(classList[i]);
+					npcdata[dungeonNpc[i]].Script = (TalkScripts)talk_class;
+					npcdata[dungeonNpc[i]].Sprite = (ObjectSprites)classSprite[(int)classList[i]];
 				}
 			}
 
-			InsertDialogs(newDialogs);
+			dialogues.InsertDialogues(newDialogs);
 		}
 	}
 }

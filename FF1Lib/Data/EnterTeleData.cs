@@ -7,7 +7,7 @@ namespace FF1Lib
 		FF1Rom rom;
 		MemTable<byte> TeleX;
 		MemTable<byte> TeleY;
-		MemTable<MapId> TeleMap;
+		MemTable<MapIndex> TeleMap;
 
 		public EnterTeleData(FF1Rom _rom)
 		{
@@ -15,7 +15,7 @@ namespace FF1Lib
 
 			TeleX = new MemTable<byte>(rom, 0x2C00, 32);
 			TeleY = new MemTable<byte>(rom, 0x2C20, 32);
-			TeleMap = new MemTable<MapId>(rom, 0x2C40, 32);
+			TeleMap = new MemTable<MapIndex>(rom, 0x2C40, 32);
 		}
 
 		public void LoadData()

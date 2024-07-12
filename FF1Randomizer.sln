@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30011.22
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FF1R", "FF1R\FF1R.csproj", "{20C8C330-152B-406B-9A2C-378D2AA91001}"
 EndProject
@@ -10,8 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sandbox", "Sandbox\Sandbox.csproj", "{137A7AAB-F962-4988-88E6-363CF49A702A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{E8698844-8DA6-44D4-9290-F816B135E44E}"
 	ProjectSection(SolutionItems) = preProject
@@ -38,9 +36,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "netlify", "netlify", "{4734
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FF1Randomizer", "FF1Randomizer\FF1Randomizer.csproj", "{62534BEA-C1A8-4711-A4E8-F89EAC62655E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFR.Common", "FFR.Common\FFR.Common.csproj", "{3889F6E5-223F-4357-8235-B1C61EBD665C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFR.Common", "FFR.Common\FFR.Common.csproj", "{3889F6E5-223F-4357-8235-B1C61EBD665C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FF1Lib", "FF1Lib\FF1Lib.csproj", "{416AE051-B042-41D7-A86C-AA38976D27EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FF1Lib", "FF1Lib\FF1Lib.csproj", "{416AE051-B042-41D7-A86C-AA38976D27EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,10 +50,6 @@ Global
 		{20C8C330-152B-406B-9A2C-378D2AA91001}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20C8C330-152B-406B-9A2C-378D2AA91001}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20C8C330-152B-406B-9A2C-378D2AA91001}.Release|Any CPU.Build.0 = Release|Any CPU
-		{137A7AAB-F962-4988-88E6-363CF49A702A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{137A7AAB-F962-4988-88E6-363CF49A702A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{137A7AAB-F962-4988-88E6-363CF49A702A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{137A7AAB-F962-4988-88E6-363CF49A702A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{43BF489E-8125-430E-8AA2-5BD850CB2567}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{43BF489E-8125-430E-8AA2-5BD850CB2567}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43BF489E-8125-430E-8AA2-5BD850CB2567}.Release|Any CPU.ActiveCfg = Release|Any CPU
