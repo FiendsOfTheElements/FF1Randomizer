@@ -216,7 +216,10 @@ namespace FF1Lib
 
 			if (loc.Item1 == MapIndex.MarshCaveB2 && rng.Between(1,3) == 1)
 			{
-				maps[MapIndex.MarshCaveB1].Map[0x18, 0x28] = tile;
+				int x = flippedMaps.Contains(MapIndex.MarshCaveB1) ? Map.RowLength - 0x28 - 1 : 0x28;
+				int y = vflippedMaps.Contains(MapIndex.MarshCaveB1) ? Map.RowLength - 0x18 - 1 : 0x18;
+
+				maps[MapIndex.MarshCaveB1].Map[y, x] = tile;
 			}
 		}
 
