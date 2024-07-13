@@ -55,13 +55,28 @@ namespace FF1Lib
 			ChangeItemNames();
 			ChangeMenuTexts();
 
-			WriteDrawDrinkBoxBreakoutRoutine();
-			WriteDrawDrinkBoxRoutine();
-			WriteLutDrinkBoxOrder();
-			WriteLutDrinkBoxEffect();
-			WriteLutDrinkBoxTarget();
-			WriteLutDrinkBox();
-			WriteCursorPositions();
+			try
+			{
+				WriteDrawDrinkBoxBreakoutRoutine();
+				WriteDrawDrinkBoxRoutine();
+				WriteLutDrinkBoxOrder();
+				WriteLutDrinkBoxEffect();
+				WriteLutDrinkBoxTarget();
+				WriteLutDrinkBox();
+				WriteCursorPositions();
+			}
+			catch (InvalidOperationException)
+			{
+				if ((bool)this.flags.GenerateNewSpellbook)
+				{
+					_ = rom.Progress("Error generating extended consumables with spellcrafter enabled. Please select a different seed or disable \"Generate New Spellbooks\" and/or \"New Consumables\".");
+					throw;
+				}
+				else
+				{
+					throw;
+				}
+			}
 
 			WriteDrinkBoxMenuRoutine();
 			ModifyBattle_PlMag_TargetOnePlayer();
