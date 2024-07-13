@@ -438,25 +438,25 @@ namespace FF1Lib
 
 		private byte FindBlastSpell()
 		{
-			var spl = SpellInfos.Where(s => s.routine == 0x01 && s.targeting == 0x01 && s.elem != 0).OrderBy(s => -s.tier).First();
+			var spl = SpellInfos.Where(s => s.routine == (byte)SpellRoutine.Damage && s.targeting == (byte)SpellTargeting.AllEnemies && s.elem != (byte)SpellElement.None).OrderBy(s => -s.tier).First();
 			return (byte)(SpellInfos.IndexOf(spl));
 		}
 
 		private byte FindGuardSpell()
 		{
-			var spl = SpellInfos.Where(s => s.routine == 0x09 && s.targeting == 0x08).OrderBy(s => -s.tier).First();
+			var spl = SpellInfos.Where(s => s.routine == (byte)SpellRoutine.ArmorUp && s.targeting == (byte)SpellTargeting.AllCharacters).OrderBy(s => -s.tier).First();
 			return (byte)(SpellInfos.IndexOf(spl));
 		}
 
 		private byte FindConfSpell()
 		{
-			var spl = SpellInfos.Where(s => s.routine == 0x03 && s.effect == 0b10000000 && s.targeting == 0x01).OrderBy(s => -s.tier).First();
+			var spl = SpellInfos.Where(s => s.routine == (byte)SpellRoutine.InflictStatus && s.effect == (byte)SpellStatus.Confuse && s.targeting == (byte)SpellTargeting.AllEnemies).OrderBy(s => -s.tier).First();
 			return (byte)(SpellInfos.IndexOf(spl));
 		}
 
 		private byte FindRuseSpell()
 		{
-			var spl = SpellInfos.Where(s => s.routine == 0x10 && s.targeting == 0x04).OrderBy(s => -s.tier).First();
+			var spl = SpellInfos.Where(s => s.routine == (byte)SpellRoutine.Ruse && s.targeting == (byte)SpellTargeting.Self).OrderBy(s => -s.tier).First();
 			return (byte)(SpellInfos.IndexOf(spl));
 		}
 
@@ -464,9 +464,9 @@ namespace FF1Lib
 		{
 			SpellInfo spell = new SpellInfo
 			{
-				routine = 0x08, //cure ailment
-				effect = 0x01, //death element
-				targeting = 0x10 //single target
+				routine = (byte)SpellRoutine.CureAilment, //cure ailment
+				effect = (byte)SpellStatus.Death, //death element
+				targeting = (byte)SpellTargeting.OneCharacter //single target
 			};
 
 			rom.Put(MagicOffset + 0x40 * MagicSize, spell.compressData());
@@ -476,9 +476,9 @@ namespace FF1Lib
 		{
 			SpellInfo spell = new SpellInfo
 			{
-				routine = 0x08, //cure ailment
-				effect = 0x00, //no element
-				targeting = 0x10 //single target
+				routine = (byte)SpellRoutine.CureAilment, //cure ailment
+				effect = (byte)SpellStatus.None, //no element
+				targeting = (byte)SpellTargeting.OneCharacter //single target
 			};
 
 			rom.Put(MagicOffset + 0x41 * MagicSize, spell.compressData());
@@ -488,9 +488,9 @@ namespace FF1Lib
 		{
 			SpellInfo spell = new SpellInfo
 			{
-				routine = 0x07,
-				effect = 0x60,
-				targeting = 0x10
+				routine = (byte)SpellRoutine.Heal,
+				effect = (byte)SpellStatus.Mute | (byte)SpellStatus.Sleep,
+				targeting = (byte)SpellTargeting.OneCharacter
 			};
 
 			rom.Put(MagicOffset + 0x40 * MagicSize, spell.compressData());
@@ -500,11 +500,11 @@ namespace FF1Lib
 		{
 			SpellInfo spell = new SpellInfo
 			{
-				routine = 0x03,
-				effect = 0b00000001,
-				elem = 0b00000010,
+				routine = (byte)SpellRoutine.InflictStatus,
+				effect = (byte)SpellStatus.Death,
+				elem = (byte)SpellElement.Poison,
 				accuracy = 0x18,
-				targeting = 0x01
+				targeting = (byte)SpellTargeting.AllEnemies
 			};
 
 			rom.Put(MagicOffset + 0x40 * MagicSize, spell.compressData());
