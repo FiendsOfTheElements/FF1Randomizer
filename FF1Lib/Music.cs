@@ -142,7 +142,7 @@ namespace FF1Lib
 					break;
 			}
 		}
-		public void Write(FF1Rom rom)
+		public void Write(FF1Rom rom, Flags flags)
 		{
 			//Overworld
 			rom[0x7C649] = (byte)Tracks[SongTracks.Overworld]; 
@@ -227,6 +227,13 @@ namespace FF1Lib
 				//logic - see 1C_A790_AltChaosBattleMusic.asm
 				rom.PutInBank(0x0B, 0x99B8, Blob.FromHex("A9A748A98F48A91C4C03FE"));
 				rom.PutInBank(0x1C, 0xA790, Blob.FromHex("A9008DB7688DB868A56A297FC97BF005A9504CA7A7A955854B8DA76BA99948A9C748A90B4C03FE"));
+
+				if (flags.SetRNG)
+				{
+					//SetRNG also wants PrepBattleVarsAndEnterBattle as an entry point, so we return to its routine instead of where we came from
+					//Replaces the end of the PutInBank directly above
+					rom.PutInBank(0x1C, 0xA7AC, Blob.FromHex("A99848A9FF48A91B4C03FE"));
+				}
 
 				//song pointer replaces Crystal2
 				rom.PutInBank(0x1D, 0x80A0, Blob.FromHex("70A0A09DB0A20000"));

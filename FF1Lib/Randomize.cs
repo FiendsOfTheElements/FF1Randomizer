@@ -408,7 +408,7 @@ public partial class FF1Rom : NesRom
 		WeaponPermissions.Write(this);
 		SpellPermissions.Write(this);
 		ClassData.Write(this);
-		Music.Write(this);
+		Music.Write(this, flags);
 
 		await this.Progress();
 
