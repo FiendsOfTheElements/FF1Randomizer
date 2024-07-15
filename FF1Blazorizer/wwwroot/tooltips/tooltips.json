@@ -1618,7 +1618,7 @@
 		"Id": "RandomizeClassInnateMagicCheckBox",
 		"title": "Blursed Classes - Innate Magic",
 		"screenshot": "RandomizeClassInnateMagicCheckBox.png",
-		"description": "Adds a set of bonuses that give a set of starting spells at the level 8 slots, regardless of their actual spell level. Also gives 2 MPs of that level to be able to cast them.\n[grid][r]Tele Magic|WARP & EXIT[r]{l}Buff Magic|TMPR, FAST, & INV2[r]{l}Self Magic|RUSE & SABR[r]{l}Heal Magic|CUR3, HEL2, & LIFE[r]{l}Heal+ Magic|CUR4, HEL3, & LIFE[r]{l}Elem Magic|ICE2, FIR2, & LIT2[r]{l}Elem+ Magic|ICE3, FIR3, & LIT3[r]{l}Nuke Magic|NUKE[r]{l}Doom Magic|3 random spells causing instant death/stone[r]{l}Clean Magic|3 random status cures (incl. LIFE/LIF2)\n\nDoom and Nuke Magic are for spellcasters only; Self Magic is melee only. Nuke Magic is rare; Elem+, Heal+, and Buff Magic are rare for melee classes."
+		"description": "Adds a set of bonuses that give two starting spells at the level 8 slots, regardless of their actual spell level. Also gives 2 MPs of that level to be able to cast them.\n[grid][r]Tele Magic|WARP & EXIT[r]{l}Buff Magic|TMPR, FAST, or INV2[r]{l}Self Magic|RUSE & SABR[r]{l}Heal Magic|CUR3, HEL2, or LIFE[r]{l}Heal+ Magic|CUR4, HEL3, or LIFE[r]{l}Elem Magic|ICE2, FIR2, or LIT2[r]{l}Elem+ Magic|ICE3, FIR3, or LIT3[r]{l}Nuke Magic|NUKE[r]{l}Doom Magic|2 random spells causing instant death/stone[r]{l}Clean Magic|2 random status cures (incl. LIFE/LIF2)\n\nDoom and Nuke Magic are for spellcasters only; Self Magic is melee only. Nuke Magic is rare; Elem+, Heal+, and Buff Magic are rare for melee classes."
 	},
 	{
 		"Id": "RandomizeClassIncludeXpBonuxCheckBox",
