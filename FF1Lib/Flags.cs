@@ -7,7 +7,7 @@ using FF1Lib.Sanity;
 
 namespace FF1Lib
 {
-	public class Flags : IIncentiveFlags, IMapEditFlags, IScaleFlags, IFloorShuffleFlags
+	public class Flags : IIncentiveFlags, IScaleFlags, IVictoryConditionFlags, IFloorShuffleFlags, IItemPlacementFlags
 	{
 		#region StartingEquipment
 
@@ -115,8 +115,6 @@ namespace FF1Lib
 		public ExtStartingItemSet ExtStartingItemSet { get; set; } = ExtStartingItemSet.None;
 
 		public ExtConsumableChestSet ExtConsumableChests { get; set; } = ExtConsumableChestSet.None;
-
-		public bool SanityCheckerV2 { get; set; } = true;
 
 		public OwMapExchanges OwMapExchange { get; set; } = OwMapExchanges.None;
 		public bool OwShuffledAccess { get; set; } = false;
@@ -282,7 +280,6 @@ namespace FF1Lib
 		public bool? AllowDeepCastles { get; set; } = false;
 		public bool? AllowDeepTowns { get; set; } = false;
 		public bool? MapOpenProgressionExtended { get; set; } = false;
-		public bool? MapDwarvesNorthwest { get; set; } = false;
 		public bool? MapAirshipDock { get; set; } = false;
 		public bool? MapBahamutCardiaDock  { get; set; } = false;
 		public bool? MapLefeinRiver  { get; set; } = false;
@@ -722,13 +719,7 @@ namespace FF1Lib
 
 		public bool? EarlierRuby { get; set; } = false;
 		public bool? MapCanalBridge => ((NPCItems) | (NPCFetchItems) | MapOpenProgression | MapOpenProgressionExtended) & (!DesertOfDeath);
-		public bool DisableOWMapModifications => SanityCheckerV2 & (GameMode == GameModes.Standard && OwMapExchange != OwMapExchanges.None);
-		public bool? MapOnracDock => MapOpenProgressionDocks & !DisableOWMapModifications;
-		public bool? MapMirageDock => MapOpenProgressionDocks & !DisableOWMapModifications;
-		public bool? MapConeriaDwarves => MapOpenProgression & !DisableOWMapModifications;
-		public bool? MapVolcanoIceRiver => MapOpenProgression & !DisableOWMapModifications;
-		// public bool? MapDwarvesNorthwest => MapOpenProgression;
-		// public bool? MapAirshipDock => MapOpenProgression;
+		public bool DisableOWMapModifications => GameMode == GameModes.Standard && OwMapExchange != OwMapExchanges.None;
 
 		// The philosophy governing item incentivizations works something like this:
 		// 1. If the item is NOT being shuffled to another location it cannot be incentivized. (Duh)
@@ -751,7 +742,7 @@ namespace FF1Lib
 		public bool? IncentivizeCrown => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeSlab => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
 		public bool? IncentivizeBottle => (!(NPCFetchItems ?? false) && (IncentivizeMainItems ?? false)) || ((NPCFetchItems ?? false) && (IncentivizeFetchItems ?? false));
-		public bool NoOverworld => (SanityCheckerV2 & GameMode == GameModes.NoOverworld);
+		public bool NoOverworld => GameMode == GameModes.NoOverworld;
 		public bool DesertOfDeath => (GameMode == GameModes.Standard & OwMapExchange == OwMapExchanges.Desert);
 		public bool? IsShipFree => FreeShip | NoOverworld;
 		public bool? IsCanoeFree => FreeCanoe | DesertOfDeath;
