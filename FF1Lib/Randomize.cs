@@ -149,11 +149,11 @@ public partial class FF1Rom : NesRom
 		await this.Progress();
 
 		// Maps
-		Overworld.Update(Teleporters);
 		GeneralMapHacks(flags, Overworld, Maps, ZoneFormations, TileSetsData, rng);
 		Maps.Update(ZoneFormations, rng);
 		UpdateToFR(Maps, Teleporters, TileSetsData, flags, rng);
 		Teleporters.ShuffleEntrancesAndFloors(Overworld.OverworldMap, rng, flags);
+		Overworld.Update(Teleporters);
 		EncounterRates.ScaleEncounterRate(flags);
 
 		// Tile Sets 
@@ -408,7 +408,7 @@ public partial class FF1Rom : NesRom
 		WeaponPermissions.Write(this);
 		SpellPermissions.Write(this);
 		ClassData.Write(this);
-		Music.Write(this);
+		Music.Write(this, flags);
 
 		await this.Progress();
 
