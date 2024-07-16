@@ -232,7 +232,7 @@ namespace FF1Lib
 				{
 					//SetRNG also wants PrepBattleVarsAndEnterBattle as an entry point, so we return to its routine instead of where we came from
 					//Replaces the end of the PutInBank directly above
-					rom.PutInBank(0x1C, 0xA7AC, Blob.FromHex("A99848A9FF48A91B4C03FE"));
+					rom.PutInBank(0x1C, 0xA7AC, Blob.FromHex("A99948A90248A91B4C03FE"));
 				}
 
 				//song pointer replaces Crystal2
