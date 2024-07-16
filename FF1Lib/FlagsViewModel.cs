@@ -868,6 +868,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleScriptsEnemies"));
 			}
 		}
+		public bool? ShuffleScriptsIncludeFiends
+		{
+			get => Flags.ShuffleScriptsIncludeFiends;
+			set
+			{
+				Flags.ShuffleScriptsIncludeFiends = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleScriptsIncludeFiends"));
+			}
+		}
+
 
 		public bool? ShuffleSkillsSpellsEnemies
 		{

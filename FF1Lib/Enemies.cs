@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel;
+using System.Diagnostics.SymbolStore;
 using System.Security.Cryptography.X509Certificates;
 using FF1Lib.Helpers;
 
@@ -133,7 +134,7 @@ namespace FF1Lib
 			public const int Phantom = 51;
 			public const int Mancat = 55;
 			public const int Vampire = 60;
-		        public const int Ankylo = 78;
+			public const int Ankylo = 78;
 			public const int Coctrice = 81;
 			public const int Sorceror = 104;
 			public const int Garland = 105;
@@ -162,6 +163,7 @@ namespace FF1Lib
 			bool shuffleBosses = (bool)flags.ShuffleScriptsBosses;
 			bool allowUnsafePirates = (bool)flags.AllowUnsafePirates;
 			bool excludeImps = (bool)flags.EnemySkillsSpellsTiered;
+			bool ShuffleScriptsIncludeFiends = (bool)flags.ShuffleScriptsIncludeFiends;
 			ScriptTouchMultiplier scriptMultiplier = flags.ScriptMultiplier;
 
 			if (!shuffleNormalEnemies && !shuffleBosses)
@@ -171,7 +173,114 @@ namespace FF1Lib
 
 			if (shuffleNormalEnemies)
 			{
-				var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
+
+				if (!ShuffleScriptsIncludeFiends)
+				{
+					var normalOldEnemies = oldEnemies.Take(EnemyCount - 10).ToList(); // all but WarMECH, fiends, fiends revisited, and CHAOS
+
+					if (!allowUnsafePirates) normalOldEnemies.RemoveAt(Enemy.Pirate);
+					if (excludeImps) normalOldEnemies.RemoveAt(Enemy.Imp);
+					normalOldEnemies.Shuffle(rng);
+					if (excludeImps) normalOldEnemies.Insert(Enemy.Imp, oldEnemies[Enemy.Imp]);
+					if (!allowUnsafePirates) normalOldEnemies.Insert(Enemy.Pirate, oldEnemies[Enemy.Pirate]);
+
+					var allScripts = normalOldEnemies.Select(e => e[EnemyStat.Scripts]).Distinct().ToList();
+					allScripts.Remove(0xFF);
+
+					if (scriptMultiplier == ScriptTouchMultiplier.Vanilla)
+					{
+						for (int i = 0; i < EnemyCount - 10; i++)
+						{
+							newEnemies[i][EnemyStat.Scripts] = normalOldEnemies[i][EnemyStat.Scripts];
+						}
+					}
+					else
+					{
+						var count = 0;
+						switch (scriptMultiplier)
+						{
+							case ScriptTouchMultiplier.None:
+								count = 0;
+								break;
+							case ScriptTouchMultiplier.Half:
+								count = 18;
+								break;
+							case ScriptTouchMultiplier.Vanilla:
+								count = 36;//should never happen
+								break;
+							case ScriptTouchMultiplier.OneAndHalf:
+								count = 54;
+								break;
+							case ScriptTouchMultiplier.Double:
+								count = 72;
+								break;
+							case ScriptTouchMultiplier.All:
+								count = EnemyCount - 10;
+								break;
+							case ScriptTouchMultiplier.Random:
+								count = rng.Between(18, 90);
+								break;
+						}
+
+						List<int> indices = new List<int>();
+						for (int i = 0; i < EnemyCount - 10; i++)
+						{
+							newEnemies[i][EnemyStat.Scripts] = 0xFF;
+							indices.Add(i);
+						}
+
+						indices.Shuffle(rng);
+
+						foreach (var i in indices.Take(count))
+						{
+							if (i == 15 && !allowUnsafePirates) continue;
+							newEnemies[i][EnemyStat.Scripts] = allScripts.PickRandom(rng);
+						}
+					}
+				}
+
+				if (shuffleBosses)
+				{
+					var oldBosses = new List<Blob>
+				{
+					oldEnemies[Enemy.Lich],
+					oldEnemies[Enemy.Kary],
+					oldEnemies[Enemy.Kraken],
+					oldEnemies[Enemy.Tiamat]
+				};
+					oldBosses.Shuffle(rng);
+
+					newEnemies[Enemy.Lich][EnemyStat.Scripts] = oldBosses[0][EnemyStat.Scripts];
+					newEnemies[Enemy.Kary][EnemyStat.Scripts] = oldBosses[1][EnemyStat.Scripts];
+					newEnemies[Enemy.Kraken][EnemyStat.Scripts] = oldBosses[2][EnemyStat.Scripts];
+					newEnemies[Enemy.Tiamat][EnemyStat.Scripts] = oldBosses[3][EnemyStat.Scripts];
+
+					var oldBigBosses = new List<Blob>
+				{
+					oldEnemies[Enemy.WarMech],
+					oldEnemies[Enemy.Lich2],
+					oldEnemies[Enemy.Kary2],
+					oldEnemies[Enemy.Kraken2],
+					oldEnemies[Enemy.Tiamat2],
+					oldEnemies[Enemy.Chaos]
+				};
+					oldBigBosses.Shuffle(rng);
+
+					newEnemies[Enemy.WarMech][EnemyStat.Scripts] = oldBigBosses[0][EnemyStat.Scripts];
+					newEnemies[Enemy.Lich2][EnemyStat.Scripts] = oldBigBosses[1][EnemyStat.Scripts];
+					newEnemies[Enemy.Kary2][EnemyStat.Scripts] = oldBigBosses[2][EnemyStat.Scripts];
+					newEnemies[Enemy.Kraken2][EnemyStat.Scripts] = oldBigBosses[3][EnemyStat.Scripts];
+					newEnemies[Enemy.Tiamat2][EnemyStat.Scripts] = oldBigBosses[4][EnemyStat.Scripts];
+					newEnemies[Enemy.Chaos][EnemyStat.Scripts] = oldBigBosses[5][EnemyStat.Scripts];
+				}
+
+				Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
+			}
+
+			if (ShuffleScriptsIncludeFiends)
+			{
+				var normalOldEnemies = oldEnemies.Take(EnemyCount).ToList(); 
+
 				if (!allowUnsafePirates) normalOldEnemies.RemoveAt(Enemy.Pirate);
 				if (excludeImps) normalOldEnemies.RemoveAt(Enemy.Imp);
 				normalOldEnemies.Shuffle(rng);
@@ -233,7 +342,7 @@ namespace FF1Lib
 				}
 			}
 
-			if(shuffleBosses)
+			if (shuffleBosses)
 			{
 				var oldBosses = new List<Blob>
 				{
@@ -270,6 +379,8 @@ namespace FF1Lib
 
 			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 		}
+	
+
 		public void StatusAttacks(Flags flags, MT19337 rng)
 		{
 			if (flags.TouchMode == TouchMode.Random)
