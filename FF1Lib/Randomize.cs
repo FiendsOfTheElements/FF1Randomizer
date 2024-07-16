@@ -296,7 +296,6 @@ public partial class FF1Rom : NesRom
 		IncreaseDarkPenalty((bool)flags.IncreaseDarkPenalty);
 		SetPoisonMode(flags.PoisonMode);
 		new QuickMiniMap(this, Overworld.DecompressedMap).EnableQuickMinimap(flags.SpeedHacks || Overworld.MapExchange != null, Music);
-		ShopUpgrade(flags, Dialogues, preferences);
 		EnableAirBoat(flags);
 		OpenChestsInOrder(flags.OpenChestsInOrder && !flags.Archipelago);
 		SetRNG(flags);
@@ -352,6 +351,7 @@ public partial class FF1Rom : NesRom
 		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
 		// Quality of Life Stuff
+		ShopUpgrade(flags, Dialogues, preferences);
 		QualityOfLifeHacks(flags, preferences);
 		UseVariablePaletteForCursorAndStone(preferences.ThirdBattlePalette || flags.ResourcePack != null);
 		EnableModernBattlefield(preferences.ModernBattlefield);
