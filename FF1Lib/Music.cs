@@ -13,31 +13,31 @@ namespace FF1Lib
 {
 	public enum SongTracks
 	{
-		Crystal = 0x41,
-		Intro = 0x42,
-		Ending = 0x43,
-		Overworld = 0x44,
-		Ship = 0x45,
-		Airship = 0x46,
-		Town = 0x47,
-		Castle = 0x48,
-		EarthCave = 0x49,
-		DwarfCave = 0x4A,
-		MarshCave = 0x4B,
-		TempleOfFiend = 0x4C,
-		SkyPalace = 0x4D,
-		TempleOfFiendRevisited = 0x4E,
-		Shop = 0x4F,
-		Battle = 0x50,
-		Menu = 0x51,
-		GameOver = 0x52,
-		Victory = 0x53,
-		ItemJingle = 0x54,
-		Crystal2 = 0x55,
-		Rest = 0x56,
-		Sound1 = 0x57,
-		Sound2 = 0x58,
-		Minimap = 0x99,
+		Crystal = 0x0,
+		Intro = 0x1,
+		Ending = 0x2,
+		Overworld = 0x3,
+		Ship = 0x4,
+		Airship = 0x5,
+		Town = 0x6,
+		Castle = 0x7,
+		EarthCave = 0x8,
+		DwarfCave = 0x9,
+		MarshCave = 0xA,
+		TempleOfFiend = 0xB,
+		SkyPalace = 0xC,
+		TempleOfFiendRevisited = 0xD,
+		Shop = 0xE,
+		Battle = 0xF,
+		Menu = 0x10,
+		GameOver = 0x11,
+		Victory = 0x12,
+		ItemJingle = 0x13,
+		Crystal2 = 0x14,
+		Rest = 0x15,
+		//Sound1 = 0x16,
+		//Sound2 = 0x17,
+		//Minimap = 0x18,  
 	}
 	public class MusicTracks
 	{
@@ -46,27 +46,43 @@ namespace FF1Lib
 		private bool chaosBattleMusic = false;
 		private MusicShuffle mode;
 		public bool MusicShuffled { get; private set; }
+		private Dictionary<int, Blob> MusicPointers = new Dictionary<int, Blob>();
+		private List<int> songsToPreserve;
 
 		public MusicTracks()
 		{
 			Tracks = Enum.GetValues<SongTracks>().ToDictionary(t => t, t => t);
-			Tracks[SongTracks.Minimap] = SongTracks.Crystal;
+			//Tracks[SongTracks.Minimap] = SongTracks.Crystal;
 			MusicShuffled = false;
+			songsToPreserve = new List<int> { 0x13, 0x15, 0x16, 0x17 };
 		}
 
 		public void ShuffleMusic(FF1Rom rom, MusicShuffle _mode, bool alternateAirshipTheme, bool chaosBattleMusic, MT19337 rng)
 		{
+
+			//Read music pointer table from rom
+			for (int i = 0; i < 22; i++)
+			{
+				if (_mode == MusicShuffle.MusicDisabled && !songsToPreserve.Contains(i))
+				{
+					//Set Sq1, Sq2, and Tri channels for every track to all point to the same music data
+					MusicPointers.Add(i, Blob.FromHex("C080C080C0800000"));
+				}
+				else
+				{
+					MusicPointers.Add(i, rom.GetFromBank(0x0D, 0x8000 + (i * 8), 8));
+				}
+			}
+
 			if (alternateAirshipTheme) {
 				rom.PutInBank(0x0D, 0xB600, Blob.FromHex("FDF804E2D897D9477797DA07D977974777274777D104B6D897D9477797DA07D977974777274777D517B6D90777A7DA07572747D9A7DA07D95777A7D52AB6D017B6FDF803E2D897979797D546B6979797979797979797979797D54DB6070707070707070707070707D55CB6D04DB6FDF809E7C0C0D994DA27477794DB07DAB77794DB07DAB7779475B744240527D9B577D174B6DA045777A7DB045747DAA7DB045747DAA7DB04DAA5DB27DA7454457725D9A7DA045777A7DB045747DAA7DB045747DAA7DB04A7975770D074B6"));
 				rom.PutInBank(0x0D, 0x8028, Blob.FromHex("00B641B66EB6"));
 			}
 
 			this.chaosBattleMusic = chaosBattleMusic;
-			
+
 
 			mode = _mode;
-			// Need some fixes, some of the music offsets are wrong and can cause crashes, maybe there's a better way of keeping tracks of harcoded songtracks
-			// Ideally the game would always refer to a lut or something
 			switch (mode)
 			{
 				case MusicShuffle.None:
@@ -74,9 +90,9 @@ namespace FF1Lib
 					return;
 				case MusicShuffle.Standard:
 					MusicShuffled = true;
-					List<byte> overworldTracks = new List<byte> { 0x41, 0x42, 0x44, 0x45, 0x46, 0x47, 0x4A, 0x4F };
-					List<byte> townTracks = new List<byte> { 0x41, 0x42, 0x45, 0x46, 0x47, 0x48, 0x4A, 0x4F, 0x51 };
-					List<byte> dungeonTracks = new List<byte> { 0x41, 0x42, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x52, 0x53 };
+					List<byte> overworldTracks = new List<byte> { 0x0, 0x1, 0x3, 0x4, 0x5, 0x6, 0x9, 0xE };
+					List<byte> townTracks = new List<byte> { 0x0, 0x1, 0x4, 0x5, 0x6, 0x7, 0x9, 0xE, 0x10 };
+					List<byte> dungeonTracks = new List<byte> { 0x0, 0x1, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xA, 0xB, 0xC, 0xD, 0x11, 0x12 };
 
 					overworldTracks.Shuffle(rng);
 					townTracks.Shuffle(rng);
@@ -112,7 +128,7 @@ namespace FF1Lib
 
 				case MusicShuffle.Nonsensical: //They asked for it...
 					MusicShuffled = true;
-					List<byte> tracks = new List<byte> { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x51, 0x52, 0x53, 0x55 };
+					List<byte> tracks = new List<byte> { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xA, 0xB, 0xC, 0xD, 0xE, 0x10, 0x11, 0x12, 0x14 };
 					tracks.Shuffle(rng);
 
 					//Overworld
@@ -134,85 +150,37 @@ namespace FF1Lib
 					Tracks[SongTracks.Intro] = (SongTracks)tracks[15];
 					Tracks[SongTracks.Victory] = (SongTracks)tracks[16];
 					Tracks[SongTracks.GameOver] = (SongTracks)tracks[17];
-					Tracks[SongTracks.Minimap] = (SongTracks)tracks[rng.Between(0, tracks.Count - 1)];
+					//Tracks[SongTracks.Minimap] = (SongTracks)tracks[rng.Between(0, tracks.Count - 1)];
 					break;
 				case MusicShuffle.MusicDisabled:
 					MusicShuffled = true;
-					Tracks = Tracks.ToDictionary(t => t.Key, t => (SongTracks)0x41);
+					Tracks = Tracks.ToDictionary(t => t.Key, t => (SongTracks)0x0);
+					Tracks[SongTracks.ItemJingle] = SongTracks.ItemJingle;
+					Tracks[SongTracks.Rest] = SongTracks.Rest;
 					break;
 			}
 		}
 		public void Write(FF1Rom rom, Flags flags)
 		{
-			//Overworld
-			rom[0x7C649] = (byte)Tracks[SongTracks.Overworld]; 
-			rom[0x7C6F9] = (byte)Tracks[SongTracks.Overworld]; 
-			rom[0x7C75A] = (byte)Tracks[SongTracks.Overworld]; // Transport Track lut
-			rom[0x7C75B] = (byte)Tracks[SongTracks.Overworld]; // Transport Track lut
 
-			//Ship
-			rom[0x7C62D] = (byte)Tracks[SongTracks.Ship];
-			rom[0x7C75D] = (byte)Tracks[SongTracks.Ship]; // Transport Track lut
-
-			//Airship
-			rom[0x7C235] = (byte)Tracks[SongTracks.Airship];
-			rom[0x7C761] = (byte)Tracks[SongTracks.Airship]; // Transport Track lut
-
-			//Tilesets 1-8
-			rom[0x7CFC3] = (byte)Tracks[SongTracks.Town];
-			rom[0x7CFC4] = (byte)Tracks[SongTracks.Castle];
-			rom[0x7CFC5] = (byte)Tracks[SongTracks.EarthCave];
-			rom[0x7CFC6] = (byte)Tracks[SongTracks.DwarfCave];
-			rom[0x7CFC7] = (byte)Tracks[SongTracks.MarshCave];
-			rom[0x7CFC8] = (byte)Tracks[SongTracks.TempleOfFiend];
-			rom[0x7CFC9] = (byte)Tracks[SongTracks.SkyPalace];
-			rom[0x7CFCA] = (byte)Tracks[SongTracks.TempleOfFiendRevisited];
-
-			//Title
-			rom[0x3A226] = (byte)Tracks[SongTracks.Crystal];
-
-			//Shop
-			rom[0x3A351] = (byte)Tracks[SongTracks.Shop];
-			rom[0x3A56E] = (byte)Tracks[SongTracks.Shop];
-			rom[0x3A597] = (byte)Tracks[SongTracks.Shop];
-
-			//Menu
-			rom[0x3B677] = (byte)Tracks[SongTracks.Crystal]; // Lineup menu
-			rom[0x3997F] = (byte)Tracks[SongTracks.Crystal]; // Lineup menu?
-
-			rom[0x78546] = (byte)Tracks[SongTracks.Menu]; // Moved for stats tracking, not sure about this one?
-			rom[0x7BB71] = (byte)Tracks[SongTracks.Menu]; // Previously 0x3ADB4, moved by stats tracking
-			rom[0x687B1] = (byte)Tracks[SongTracks.Menu]; // Moved menu code for repeated heal potion use
-
-			//Ending
-			rom[0x7BBB1] = (byte)Tracks[SongTracks.Ending]; // Previously 0x37804, moved by stats tracking
-
-			//Bridge Cutscene
-			rom[0x7BBD1] = (byte)Tracks[SongTracks.Intro]; // Previously 0x3784E, moved by stats tracking
-
-			//Battle Fanfare
-			rom[0x31E44] = (byte)Tracks[SongTracks.Victory];
-
-			//Gameover
-			rom[0x3C5F0] = (byte)Tracks[SongTracks.GameOver]; // Moved by stats tracking
-
-			//Battle
-			rom[0x2D9C1] = (byte)Tracks[SongTracks.Battle];
-
-			//Mini Things
-			//Data[0x36E86] = tracks[rng.Between(0, tracks.Count - 1)]; //minigame
-			if (!SkipMinimap)
+			//Rewrite music pointer table
+			foreach (var track in Tracks)
 			{
-				rom[0x27C0D] = (byte)Tracks[SongTracks.Minimap];
+				rom.PutInBank(0x0D,
+					0x8000 + ((int)track.Key * 8),
+					MusicPointers[(int)track.Value]
+				);
 			}
+			//if (!SkipMinimap)
+			//{
+			//	rom[0x27C0D] = (byte)Tracks[SongTracks.Minimap];
+			//}
 
 			// assign to address
 			if (mode == MusicShuffle.MusicDisabled)
 			{
-				//Set Sq1, Sq2, and Tri channels for crystal theme all point to the same music data
-				rom.Put(0x34000, Blob.FromHex("C080C080C080"));
 				//Overwrite beginning of crystal theme with a song that initializes properly but plays no notes
-				rom.Put(0x340C0, Blob.FromHex("FDF805E0D8C7D0C480"));
+				rom.PutInBank(0x0D, 0x80C0, Blob.FromHex("FDF805E0D8C7D0C480"));
 			}
 			if (chaosBattleMusic)
 			{
