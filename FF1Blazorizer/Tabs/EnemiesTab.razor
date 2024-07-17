@@ -17,6 +17,7 @@
 
 			<div class="checkbox-cell"></div>
 			<h4>Bosses</h4>
+            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossRemoveFiendScriptsCheckBox" @bind-Value="Flags.RemoveFiendScripts">Remove Boss Scripts</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossScriptsCheckBox" @bind-Value="Flags.ShuffleScriptsBosses">Shuffle Scripts</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossSkillsSpellsCheckBox" @bind-Value="Flags.ShuffleSkillsSpellsBosses">Shuffle Skills & Spells</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsBosses != false)" Id="noConsecutiveNukesCheckBox" @bind-Value="Flags.NoConsecutiveNukes">No Consecutive NUKE or NUCLEAR</TriStateCheckBox>
@@ -24,8 +25,7 @@
 			<div class="checkbox-cell"></div>
 			<h4>Enemies</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" @bind-Value="Flags.ShuffleScriptsEnemies">Shuffle Scripts</TriStateCheckBox>
-            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID"Indent IsEnabled="@(Flags.ShuffleScriptsEnemies != false)" Id="enemyScriptsIncludeFiends" @bind-Value="Flags.ShuffleScriptsIncludeFiends">Incude Fiends</TriStateCheckBox>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleScriptsEnemies != false)" Id="scriptMultiplier" TItem="ScriptTouchMultiplier" @bind-Value="Flags.ScriptMultiplier">Script Count:</EnumDropDown>
+            <EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleScriptsEnemies != false)" Id="scriptMultiplier" TItem="ScriptTouchMultiplier" @bind-Value="Flags.ScriptMultiplier">Script Count:</EnumDropDown>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySkillsSpellsCheckBox" @bind-Value="Flags.ShuffleSkillsSpellsEnemies">Shuffle Skills & Spells</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsEnemies != false)" Id="enemySkillsSpellsTieredCheckBox" @bind-Value="Flags.EnemySkillsSpellsTiered">Generate Balanced Scripts</TriStateCheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsEnemies != false)" Id="noEmptyScripts" @bind-Value="Flags.NoEmptyScripts">No Empty Scripts</CheckBox>

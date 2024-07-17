@@ -1305,6 +1305,12 @@
 		"description": "Shuffles the surprise bonus for enemy formations, changing which groups will (almost) always ambush you."
 	},
 	{
+		"Id": "bossRemoveFiendScriptsCheckBox",
+		"title": "Remove Boss Scripts",
+		"screenshot": null,
+		"description": "Removes the Scripts on all the Bosses, this includes the four fiends, WarMech and Chaos."
+	},
+	{
 		"Id": "bossScriptsCheckBox",
 		"title": "Boss Scripts",
 		"screenshot": "shuffleBossesScripts.png",
