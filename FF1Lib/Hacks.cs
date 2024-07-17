@@ -91,9 +91,9 @@ namespace FF1Lib
 				return;
 			}
 
-			byte overworldtrack = (byte)Music.Tracks[SongTracks.Overworld];
-			byte shiptrack = (byte)Music.Tracks[SongTracks.Ship];
-			byte airshiptrack = (byte)Music.Tracks[SongTracks.Airship];
+			byte overworldtrack = (byte)(SongTracks.Overworld+0x41);
+			byte shiptrack = (byte)(SongTracks.Ship+0x41);
+			byte airshiptrack = (byte)(SongTracks.Airship+0x41);
 
 			// see 1B_A000_AirBoatRoutines.asm
 			PutInBank(0x0E, 0xB25F, Blob.FromHex("EAEA38")); // disable floater raising the airship
