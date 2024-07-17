@@ -611,7 +611,7 @@ namespace FF1Lib
 			{
 				return;
 			}
-			if ((bool)flags.RemoveFiendScripts)
+			if ((bool)flags.RemoveBossScripts)
 			{
 				return;
 			}

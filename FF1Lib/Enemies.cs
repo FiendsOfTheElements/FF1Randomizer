@@ -163,7 +163,7 @@ namespace FF1Lib
 			bool shuffleBosses = (bool)flags.ShuffleScriptsBosses;
 			bool allowUnsafePirates = (bool)flags.AllowUnsafePirates;
 			bool excludeImps = (bool)flags.EnemySkillsSpellsTiered;
-			bool RemoveFiendScripts = (bool)flags.RemoveFiendScripts;
+			bool RemoveBossScripts = (bool)flags.RemoveBossScripts;
 			ScriptTouchMultiplier scriptMultiplier = flags.ScriptMultiplier;
 
 			if (!shuffleNormalEnemies && !shuffleBosses)
@@ -271,7 +271,7 @@ namespace FF1Lib
 					newEnemies[Enemy.Chaos][EnemyStat.Scripts] = oldBigBosses[5][EnemyStat.Scripts];
 				}
 
-				if (RemoveFiendScripts)
+				if (RemoveBossScripts)  
 				{
 					var fiendsandwarmech = new List<Blob>
 					{
