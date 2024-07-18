@@ -16,7 +16,7 @@
 		@if (Flags.GameMode == GameModes.Standard)
 		{
 			<div class="col1 full">
-				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" IsEnabled="Flags.SanityCheckerV2" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
+				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
 				<p>@((MarkupString)StatusMessage)</p>
 				<br>
 			</div>
@@ -30,7 +30,7 @@
 							  @bind-Value="Flags.MapOpenProgression">Early Open Progression</TriStateCheckBox>
 
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDwavesNWCheckBox"
-							  IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" Indent @bind-Value="Flags.MapDwarvesNorthwest">Extended Open Progression</TriStateCheckBox>
+							  IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" Indent @bind-Value="Flags.MapOpenProgressionExtended">Extended Open Progression</TriStateCheckBox>
 
 					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDocksCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
