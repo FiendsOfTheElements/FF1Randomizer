@@ -1307,7 +1307,7 @@
 	{
 		"Id": "bossRemoveBossScripts",
 		"title": "Remove Boss Scripts",
-		"screenshot": null,
+		"screenshot": "BossesNoScripts.gif",
 		"description": "Removes the Scripts from the Four Fiends, WarMech and Chaos. This will also remove the alt fiend scripts as well if enabled"
 	},
 	{
