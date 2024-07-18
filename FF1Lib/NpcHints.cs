@@ -611,6 +611,10 @@ namespace FF1Lib
 			{
 				return;
 			}
+			if ((bool)flags.RemoveBossScripts)
+			{
+				return;
+			}
 		List<MagicSpell> spellList = GetSpells();
 		var enemies = GetAllEnemyStats();
 		var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);

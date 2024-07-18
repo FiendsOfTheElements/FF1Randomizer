@@ -868,6 +868,16 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleScriptsEnemies"));
 			}
 		}
+		public bool? RemoveBossScripts
+		{
+			get => Flags.RemoveBossScripts;
+			set
+			{
+				Flags.RemoveBossScripts = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RemoveBossScripts"));
+			}
+		}
+
 
 		public bool? ShuffleSkillsSpellsEnemies
 		{

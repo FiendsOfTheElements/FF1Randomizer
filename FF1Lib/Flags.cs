@@ -233,6 +233,7 @@ namespace FF1Lib
 		public bool? TCIndicator { get; set; } = false;
 		public bool? SwolePirates { get; set; } = false;
 		public bool? ShuffleScriptsEnemies { get; set; } = false;
+		public bool? RemoveBossScripts { get; set; } = false;
 		public bool? ShuffleScriptsBosses { get; set; } = false;
 		public bool? ShuffleSkillsSpellsEnemies { get; set; } = false;
 		public bool? ShuffleSkillsSpellsBosses { get; set; } = false;
