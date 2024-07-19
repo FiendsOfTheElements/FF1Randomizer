@@ -114,7 +114,7 @@ namespace FF1Lib
 		}
 		public void AddDamageTilesToMaps(Flags flags, MT19337 rng)
 		{
-			if (!(bool)flags.AddDamageTiles || (bool)flags.ShuffleLavaTiles)
+			if (!(bool)flags.AddDamageTiles)
 			{
 				return;
 			}
@@ -240,17 +240,29 @@ namespace FF1Lib
 					SCCoords coords = replacableCoords[i];
 					Maps[mapIndex].Map[coords.Y, coords.X] = damageTile;
 
-					//Preferentially add left/right neighbors
+					//Preferentially add neighbors for a more natural pattern
 					SCCoords left = coords.SmLeft.SmClamp;
-					if (replacableCoords.Contains(left))
+					if (replacableCoords.Contains(left) && rng.Between(0,1) == 1)
 					{
 						Maps[mapIndex].Map[left.Y, left.X] = damageTile;
 						i++;
 					}
 					SCCoords right = coords.SmRight.SmClamp;
-					if (replacableCoords.Contains(right))
+					if (replacableCoords.Contains(right) && rng.Between(0, 1) == 1)
 					{
 						Maps[mapIndex].Map[right.Y, right.X] = damageTile;
+						i++;
+					}
+					SCCoords up = coords.SmUp.SmClamp;
+					if (replacableCoords.Contains(up) && rng.Between(0, 1) == 1)
+					{
+						Maps[mapIndex].Map[up.Y, up.X] = damageTile;
+						i++;
+					}
+					SCCoords down = coords.SmDown.SmClamp;
+					if (replacableCoords.Contains(down) && rng.Between(0, 1) == 1)
+					{
+						Maps[mapIndex].Map[down.Y, down.X] = damageTile;
 						i++;
 					}
 				}
