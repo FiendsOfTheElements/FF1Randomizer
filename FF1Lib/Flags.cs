@@ -598,6 +598,12 @@ namespace FF1Lib
 		public bool AllSpellLevelsForKnightNinja { get; set; } = false;
 		public bool BuffHealingSpells { get; set; } = false;
 		public bool IntAffectsSpells { get; set; } = false;
+		public bool? AddDamageTiles { get; set; } = false;
+		public bool? DamageTilesCastles { get; set; } = false;
+		public bool? DamageTilesDungeons { get; set; } = false;
+		public bool? DamageTilesCaves { get; set; } = false;
+		public bool? DamageTilesTowns { get; set; } = false;
+		public bool? DamageTilesTof { get; set; } = false;
 		public bool? FreeTail { get; set; } = false;
 		public bool? HintsVillage { get; set; } = false;
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;

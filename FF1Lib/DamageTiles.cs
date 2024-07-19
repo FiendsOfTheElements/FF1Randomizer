@@ -1,4 +1,5 @@
-﻿using RomUtilities;
+﻿using FF1Lib.Sanity;
+using RomUtilities;
 using System;
 using System.Collections.Generic;
 using System.IO.Compression;
@@ -27,7 +28,7 @@ namespace FF1Lib
 			{
 				EnableDamageTile(overworld);
 			}
-
+			AddDamageTilesToMaps(flags, rng);
 			DamageTilesKillAndCanBeResisted(damageTileAmount, (bool)flags.ArmorResistsDamageTileDamage && !(bool)flags.ArmorCrafter, (bool)flags.DamageTilesKill, flags.SaveGameWhenGameOver);
 		}
 
@@ -83,6 +84,177 @@ namespace FF1Lib
 				$"2028D8482000FE2089C668F0F360841185108AA8B91C61C510D005A411A90060C8982904C904D0ECA411A90160"));
 
 			PutInBank(0x1F, 0xC861, Blob.FromHex("A91E2003FE4C00B1"));
+		}
+		private struct DamageTileSwapConfig
+		{
+			public List<byte> ReplacableTiles;
+			public byte DamageTile;
+		}
+		Dictionary<TileSets, DamageTileSwapConfig> DamageTileSwapConfigs = new Dictionary<TileSets, DamageTileSwapConfig>()
+		{
+			{ TileSets.Castle,							new DamageTileSwapConfig {ReplacableTiles = new() {0x31, 0x60},	DamageTile = 0x7E} },
+			{ TileSets.MatoyaDwarfCardiaIceWaterfall,	new DamageTileSwapConfig {ReplacableTiles = new() {0x31, 0x49},	DamageTile = 0x39} },
+			{ TileSets.EarthTitanVolcano,				new DamageTileSwapConfig {ReplacableTiles = new() {0x41},		DamageTile = 0x3D} },
+			{ TileSets.SkyCastle,						new DamageTileSwapConfig {ReplacableTiles = new() {0x4B},		DamageTile = 0x7E} },
+			{ TileSets.ToFSeaShrine,					new DamageTileSwapConfig {ReplacableTiles = new() {0x55, 0x32},	DamageTile = 0x7E} },
+			{ TileSets.MarshMirage,						new DamageTileSwapConfig {ReplacableTiles = new() {0x40},		DamageTile = 0x7E} },
+			{ TileSets.ToFR,							new DamageTileSwapConfig {ReplacableTiles = new() {0x5C, 0x31},	DamageTile = 0x7E} },
+			{ TileSets.Town,                            new DamageTileSwapConfig {
+				ReplacableTiles = new() {0x00, 0x01, 0x02, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x2A, 0x2B, 0x2C}, DamageTile = 0x32} },
+		};
+		
+		private void CreateDamageTile(TileSets tileSet, List<byte> tileGraphic, byte attribute)
+		{
+			byte damageTileID = DamageTileSwapConfigs[tileSet].DamageTile;
+			TileSM damageTile = TileSetsData[(int)tileSet].Tiles[damageTileID];
+
+			damageTile.TileGraphic = tileGraphic;  // Indexes (topleft,topright,bottomleft,bottomright) to chr data
+			damageTile.Attribute = attribute;  // change palette for tile
+			damageTile.PropertyType = (byte)TilePropFunc.TP_SPEC_DAMAGE;  // make tile do damage
+		}
+		public void AddDamageTilesToMaps(Flags flags, MT19337 rng)
+		{
+			if (!(bool)flags.AddDamageTiles || (bool)flags.ShuffleLavaTiles)
+			{
+				return;
+			}
+			Dictionary<MapIndex, TileSets> mapsCastles = new()
+			{
+				{ MapIndex.ConeriaCastle1F, TileSets.Castle },
+				{ MapIndex.ConeriaCastle2F, TileSets.Castle },
+				{ MapIndex.CastleOrdeals1F, TileSets.Castle },
+				{ MapIndex.CastleOrdeals2F, TileSets.Castle },
+				{ MapIndex.CastleOrdeals3F, TileSets.Castle },
+				{ MapIndex.ElflandCastle,   TileSets.Castle },
+				{ MapIndex.NorthwestCastle, TileSets.Castle },
+			};
+			Dictionary<MapIndex, TileSets> mapsTowns = new()
+			{
+				{ MapIndex.ConeriaTown,     TileSets.Town },
+				{ MapIndex.Pravoka,         TileSets.Town },
+				{ MapIndex.Elfland,         TileSets.Town },
+				{ MapIndex.CrescentLake,    TileSets.Town },
+				{ MapIndex.Onrac,           TileSets.Town },
+				{ MapIndex.Gaia,            TileSets.Town },
+				{ MapIndex.Lefein,          TileSets.Town },
+			};
+			Dictionary<MapIndex, TileSets> mapsDungeons = new()
+			{
+				{ MapIndex.EarthCaveB1,     TileSets.EarthTitanVolcano },
+				{ MapIndex.EarthCaveB2,     TileSets.EarthTitanVolcano },
+				{ MapIndex.EarthCaveB3,     TileSets.EarthTitanVolcano },
+				{ MapIndex.EarthCaveB4,     TileSets.EarthTitanVolcano },
+				{ MapIndex.EarthCaveB5,     TileSets.EarthTitanVolcano },
+				{ MapIndex.SeaShrineB1,     TileSets.ToFSeaShrine },
+				{ MapIndex.SeaShrineB2,     TileSets.ToFSeaShrine },
+				{ MapIndex.SeaShrineB3,     TileSets.ToFSeaShrine },
+				{ MapIndex.SeaShrineB4,     TileSets.ToFSeaShrine },
+				{ MapIndex.SeaShrineB5,     TileSets.ToFSeaShrine },
+				{ MapIndex.MirageTower1F,   TileSets.MarshMirage },
+				{ MapIndex.MirageTower2F,   TileSets.MarshMirage },
+				{ MapIndex.MirageTower3F,   TileSets.MarshMirage },
+				{ MapIndex.SkyPalace1F,     TileSets.SkyCastle },
+				{ MapIndex.SkyPalace2F,     TileSets.SkyCastle },
+				{ MapIndex.SkyPalace3F,     TileSets.SkyCastle },
+				{ MapIndex.SkyPalace4F,     TileSets.SkyCastle },
+			};
+			Dictionary<MapIndex, TileSets> mapsCaves = new()
+			{
+				{ MapIndex.Cardia,          TileSets.MatoyaDwarfCardiaIceWaterfall },
+				{ MapIndex.BahamutCaveB1,   TileSets.MatoyaDwarfCardiaIceWaterfall },
+				{ MapIndex.BahamutCaveB2,   TileSets.MatoyaDwarfCardiaIceWaterfall },
+				{ MapIndex.Waterfall,       TileSets.MatoyaDwarfCardiaIceWaterfall },
+				{ MapIndex.DwarfCave,       TileSets.MatoyaDwarfCardiaIceWaterfall },
+				{ MapIndex.MatoyasCave,     TileSets.MatoyaDwarfCardiaIceWaterfall },
+				{ MapIndex.SardasCave,      TileSets.MatoyaDwarfCardiaIceWaterfall },
+				{ MapIndex.IceCaveB1,       TileSets.MatoyaDwarfCardiaIceWaterfall },
+				{ MapIndex.IceCaveB2,       TileSets.MatoyaDwarfCardiaIceWaterfall },
+				{ MapIndex.TitansTunnel,    TileSets.EarthTitanVolcano },
+				{ MapIndex.MarshCaveB1,     TileSets.MarshMirage },
+				{ MapIndex.MarshCaveB2,     TileSets.MarshMirage },
+				{ MapIndex.MarshCaveB3,     TileSets.MarshMirage },
+			};
+			Dictionary<MapIndex, TileSets> mapsTof = new()
+			{
+				{ MapIndex.TempleOfFiends,					TileSets.ToFSeaShrine },
+				{ MapIndex.TempleOfFiendsRevisited1F,		TileSets.ToFR },
+				{ MapIndex.TempleOfFiendsRevisited2F,		TileSets.ToFR },
+				{ MapIndex.TempleOfFiendsRevisited3F,		TileSets.ToFR },
+				{ MapIndex.TempleOfFiendsRevisitedEarth,	TileSets.ToFR },
+				{ MapIndex.TempleOfFiendsRevisitedFire,  	TileSets.ToFR },
+				{ MapIndex.TempleOfFiendsRevisitedWater,	TileSets.ToFR },
+				{ MapIndex.TempleOfFiendsRevisitedAir,  	TileSets.ToFR },
+				{ MapIndex.TempleOfFiendsRevisitedChaos,	TileSets.ToFR },
+			};
+
+			Dictionary<MapIndex, TileSets> mapsToDamage = new();
+			if ((bool)flags.DamageTilesCastles)		{ foreach (var kv in mapsCastles)  mapsToDamage.Add(kv.Key, kv.Value); }
+			if ((bool)flags.DamageTilesCaves)		{ foreach (var kv in mapsCaves)    mapsToDamage.Add(kv.Key, kv.Value); }
+			if ((bool)flags.DamageTilesTowns)		{ foreach (var kv in mapsTowns)    mapsToDamage.Add(kv.Key, kv.Value); }
+			if ((bool)flags.DamageTilesDungeons)	{ foreach (var kv in mapsDungeons) mapsToDamage.Add(kv.Key, kv.Value); }
+			if ((bool)flags.DamageTilesTof)			{ foreach (var kv in mapsTof)	   mapsToDamage.Add(kv.Key, kv.Value); }
+
+			CreateDamageTile(TileSets.Castle, new()			{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xFF);
+			CreateDamageTile(TileSets.SkyCastle, new()		{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xFF);
+			CreateDamageTile(TileSets.ToFSeaShrine, new()	{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xAA);
+			CreateDamageTile(TileSets.MarshMirage, new()	{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xAA);
+			CreateDamageTile(TileSets.ToFR, new()			{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xFF);
+			CreateDamageTile(TileSets.Town, new()			{ 0x3A, 0x3A, 0x3A, 0x3A }, 0x00);
+
+			if ((bool)flags.DamageTilesCaves)
+			{
+				TileSetsData[(int)TileSets.MatoyaDwarfCardiaIceWaterfall].Tiles[0x13].PropertyType = 0x0C; //Matoya's skull decorations
+			}
+
+			// overwrite unused tile chr data for use with new damage tiles
+			//Put(0xCFF0, Blob.FromHex("870F1E3C78F0E1C3F9F3E7CF9F3F7EFC"));  // Castle DW style
+			Put(0xCFF0, Blob.FromHex("01004808222010020040000000000200"));  // Castle
+			Put(0xE7F0, Blob.FromHex("01004808222010020040000000000200"));  // Marsh/mirage
+			Put(0xF7F0, Blob.FromHex("01004808222010020040000000000200"));  // Sky
+			Put(0xEFF0, Blob.FromHex("01004808222010020040000000000200"));  // Sea
+			Put(0xFFF0, Blob.FromHex("01004808222010020040000000000200"));  // ToFR
+
+			foreach (var (mapIndex, tileset) in mapsToDamage)
+			{
+
+				//Get list of candidate coordinates to become damage tiles
+				List<SCCoords> replacableCoords = new();
+				List<Byte> candidateTiles = DamageTileSwapConfigs[tileset].ReplacableTiles;
+
+				for (int x = 0; x < 63; x++)
+				{
+					for (int y = 0; y < 63; y++)
+					{
+						if (candidateTiles.Contains(Maps[mapIndex].Map[y, x]))
+						{
+							replacableCoords.Add(new SCCoords(x, y));
+						}
+					}
+				}
+				replacableCoords.Shuffle(rng);
+
+				//Replace a set number of tiles in the map with damage tiles
+				for (int i = 0; i < (replacableCoords.Count / 3) - 1; i++)
+				{
+					byte damageTile = DamageTileSwapConfigs[tileset].DamageTile;
+					SCCoords coords = replacableCoords[i];
+					Maps[mapIndex].Map[coords.Y, coords.X] = damageTile;
+
+					//Preferentially add left/right neighbors
+					SCCoords left = coords.SmLeft.SmClamp;
+					if (replacableCoords.Contains(left))
+					{
+						Maps[mapIndex].Map[left.Y, left.X] = damageTile;
+						i++;
+					}
+					SCCoords right = coords.SmRight.SmClamp;
+					if (replacableCoords.Contains(right))
+					{
+						Maps[mapIndex].Map[right.Y, right.X] = damageTile;
+						i++;
+					}
+				}
+			}
 		}
 	}
 }

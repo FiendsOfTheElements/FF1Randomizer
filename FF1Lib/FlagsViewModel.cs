@@ -3932,6 +3932,60 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IntAffectsSpells"));
 			}
 		}
+		public bool? AddDamageTiles
+		{
+			get => Flags.AddDamageTiles;
+			set
+			{
+				Flags.AddDamageTiles = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AddDamageTiles"));
+			}
+		}
+		public bool? DamageTilesCastles
+		{
+			get => Flags.DamageTilesCastles;
+			set
+			{
+				Flags.DamageTilesCastles = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DamageTilesCastles"));
+			}
+		}
+		public bool? DamageTilesCaves
+		{
+			get => Flags.DamageTilesCaves;
+			set
+			{
+				Flags.DamageTilesCaves = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DamageTilesCaves"));
+			}
+		}
+		public bool? DamageTilesDungeons
+		{
+			get => Flags.DamageTilesDungeons;
+			set
+			{
+				Flags.DamageTilesDungeons = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DamageTilesDungeons"));
+			}
+		}
+		public bool? DamageTilesTowns
+		{
+			get => Flags.DamageTilesTowns;
+			set
+			{
+				Flags.DamageTilesTowns = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DamageTilesTowns"));
+			}
+		}
+		public bool? DamageTilesTof
+		{
+			get => Flags.DamageTilesTof;
+			set
+			{
+				Flags.DamageTilesTof = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DamageTilesTof"));
+			}
+		}
 		public bool BuffTier1DamageSpells
 		{
 			get => Flags.BuffTier1DamageSpells;
