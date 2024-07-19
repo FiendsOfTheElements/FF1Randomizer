@@ -2513,6 +2513,11 @@
 		"description": "Adds damage tiles to Temple of Fiends and Temple of Fiends Revisited."
 	},
 	{
+		"Id": "damageTilesStrategy",
+		"title": "Tile Damage Generation Strategy",
+		"description": "Selects the generation strategy to use for adding damage tiles.\nConditional Neighbors: A tradeoff between quality and speed, creates feature groups that may appear blotchy. Not too slow.\nPerlin Noise: Uses Perlin noise to create natural looking damage tile patterns. SLOW.\nRandom: Add damage tiles completely at random. Usually results in a speckled appearance. Fastest."
+	},
+	{
 		"Id": "moveToFBats",
 		"title": "Move Temple of Fiends Bats",
 		"screenshot": "moveToFBats.png",

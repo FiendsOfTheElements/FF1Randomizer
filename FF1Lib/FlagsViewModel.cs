@@ -3986,6 +3986,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DamageTilesTof"));
 			}
 		}
+		public DamageTileStrategies DamageTileStrategy
+		{
+			get => Flags.DamageTileStrategy;
+			set
+			{
+				Flags.DamageTileStrategy = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DamageTileStrategy"));
+			}
+		}
 		public bool BuffTier1DamageSpells
 		{
 			get => Flags.BuffTier1DamageSpells;

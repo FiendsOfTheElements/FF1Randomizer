@@ -159,7 +159,7 @@ public partial class FF1Rom : NesRom
 		// Tile Sets 
 		TileSetsData.Update(flags, rng);
 		TileSetsData.UpdateTrapTiles(this, ZoneFormations, flags, rng);
-		DamageTilesHack(flags, Overworld);
+		await DamageTilesHack(flags, Overworld);
 
 		await this.Progress();
 

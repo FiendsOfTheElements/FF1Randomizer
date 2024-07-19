@@ -2,6 +2,7 @@
 using RomUtilities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,16 @@ namespace FF1Lib
 {
 	public partial class FF1Rom
 	{
-		private void DamageTilesHack(Flags flags, Overworld overworld)
+		public enum DamageTileStrategies
+		{
+			[Description("Cond. Neighbors")]
+			ConditionalNeighbors,
+			[Description("Perlin Noise")]
+			PerlinNoise,
+			[Description("Random")]
+			Random
+		}
+		private async Task DamageTilesHack(Flags flags, Overworld overworld)
 		{
 			int damageTileAmount = 1;
 
@@ -28,7 +38,7 @@ namespace FF1Lib
 			{
 				EnableDamageTile(overworld);
 			}
-			AddDamageTilesToMaps(flags, rng);
+			await AddDamageTilesToMaps(flags, rng);
 			DamageTilesKillAndCanBeResisted(damageTileAmount, (bool)flags.ArmorResistsDamageTileDamage && !(bool)flags.ArmorCrafter, (bool)flags.DamageTilesKill, flags.SaveGameWhenGameOver);
 		}
 
@@ -96,7 +106,7 @@ namespace FF1Lib
 			{ TileSets.MatoyaDwarfCardiaIceWaterfall,	new DamageTileSwapConfig {ReplacableTiles = new() {0x31, 0x49},	DamageTile = 0x39} },
 			{ TileSets.EarthTitanVolcano,				new DamageTileSwapConfig {ReplacableTiles = new() {0x41},		DamageTile = 0x3D} },
 			{ TileSets.SkyCastle,						new DamageTileSwapConfig {ReplacableTiles = new() {0x4B},		DamageTile = 0x7E} },
-			{ TileSets.ToFSeaShrine,					new DamageTileSwapConfig {ReplacableTiles = new() {0x55, 0x32},	DamageTile = 0x7E} },
+			{ TileSets.ToFSeaShrine,					new DamageTileSwapConfig {ReplacableTiles = new() {0x55, 0x31},	DamageTile = 0x7E} },
 			{ TileSets.MarshMirage,						new DamageTileSwapConfig {ReplacableTiles = new() {0x40},		DamageTile = 0x7E} },
 			{ TileSets.ToFR,							new DamageTileSwapConfig {ReplacableTiles = new() {0x5C, 0x31},	DamageTile = 0x7E} },
 			{ TileSets.Town,                            new DamageTileSwapConfig {
@@ -112,7 +122,7 @@ namespace FF1Lib
 			damageTile.Attribute = attribute;  // change palette for tile
 			damageTile.PropertyType = (byte)TilePropFunc.TP_SPEC_DAMAGE;  // make tile do damage
 		}
-		public void AddDamageTilesToMaps(Flags flags, MT19337 rng)
+		public async Task AddDamageTilesToMaps(Flags flags, MT19337 rng)
 		{
 			if (!(bool)flags.AddDamageTiles)
 			{
@@ -194,12 +204,12 @@ namespace FF1Lib
 			if ((bool)flags.DamageTilesDungeons)	{ foreach (var kv in mapsDungeons) mapsToDamage.Add(kv.Key, kv.Value); }
 			if ((bool)flags.DamageTilesTof)			{ foreach (var kv in mapsTof)	   mapsToDamage.Add(kv.Key, kv.Value); }
 
-			CreateDamageTile(TileSets.Castle, new()			{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xFF);
-			CreateDamageTile(TileSets.SkyCastle, new()		{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xFF);
-			CreateDamageTile(TileSets.ToFSeaShrine, new()	{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xAA);
-			CreateDamageTile(TileSets.MarshMirage, new()	{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xAA);
-			CreateDamageTile(TileSets.ToFR, new()			{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xFF);
-			CreateDamageTile(TileSets.Town, new()			{ 0x3A, 0x3A, 0x3A, 0x3A }, 0x00);
+			if ((bool)flags.DamageTilesCastles)										CreateDamageTile(TileSets.Castle, new()			{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xFF);
+			if ((bool)flags.DamageTilesDungeons)									CreateDamageTile(TileSets.SkyCastle, new()		{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xFF);
+			if ((bool)flags.DamageTilesTof)											CreateDamageTile(TileSets.ToFR, new()			{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xFF);
+			if ((bool)flags.DamageTilesTowns)										CreateDamageTile(TileSets.Town, new()			{ 0x3A, 0x3A, 0x3A, 0x3A }, 0x00);
+			if ((bool)flags.DamageTilesTof || (bool)flags.DamageTilesDungeons)		CreateDamageTile(TileSets.ToFSeaShrine, new()   { 0x7F, 0x7F, 0x7F, 0x7F }, 0xAA);
+			if ((bool)flags.DamageTilesDungeons || (bool)flags.DamageTilesCaves)	CreateDamageTile(TileSets.MarshMirage, new()    { 0x7F, 0x7F, 0x7F, 0x7F }, 0xAA);
 
 			if ((bool)flags.DamageTilesCaves)
 			{
@@ -214,13 +224,12 @@ namespace FF1Lib
 			Put(0xEFF0, Blob.FromHex("01004808222010020040000000000200"));  // Sea
 			Put(0xFFF0, Blob.FromHex("01004808222010020040000000000200"));  // ToFR
 
+
+			Dictionary<MapIndex, List<SCCoords>> ReplacableCoordsPerMap = new Dictionary<MapIndex, List<SCCoords>>();
 			foreach (var (mapIndex, tileset) in mapsToDamage)
 			{
-
-				//Get list of candidate coordinates to become damage tiles
 				List<SCCoords> replacableCoords = new();
 				List<Byte> candidateTiles = DamageTileSwapConfigs[tileset].ReplacableTiles;
-
 				for (int x = 0; x < 63; x++)
 				{
 					for (int y = 0; y < 63; y++)
@@ -231,42 +240,104 @@ namespace FF1Lib
 						}
 					}
 				}
-				replacableCoords.Shuffle(rng);
+				ReplacableCoordsPerMap[mapIndex] = replacableCoords;
+			}
 
-				//Replace a set number of tiles in the map with damage tiles
-				for (int i = 0; i < (replacableCoords.Count / 3) - 1; i++)
+			if (flags.DamageTileStrategy == DamageTileStrategies.Random)
+			{
+				foreach (var (mapIndex, tileset) in mapsToDamage)
 				{
-					byte damageTile = DamageTileSwapConfigs[tileset].DamageTile;
-					SCCoords coords = replacableCoords[i];
-					Maps[mapIndex].Map[coords.Y, coords.X] = damageTile;
+					//Get list of candidate coordinates to become damage tiles
+					List<SCCoords> replacableCoords = ReplacableCoordsPerMap[mapIndex];
+					replacableCoords.Shuffle(rng);
 
-					//Preferentially add neighbors for a more natural pattern
-					SCCoords left = coords.SmLeft.SmClamp;
-					if (replacableCoords.Contains(left) && rng.Between(0,1) == 1)
+					//Replace a set number of tiles in the map with damage tiles
+					for (int i = 0; i < (replacableCoords.Count / 3) - 1; i++)
 					{
-						Maps[mapIndex].Map[left.Y, left.X] = damageTile;
-						i++;
-					}
-					SCCoords right = coords.SmRight.SmClamp;
-					if (replacableCoords.Contains(right) && rng.Between(0, 1) == 1)
-					{
-						Maps[mapIndex].Map[right.Y, right.X] = damageTile;
-						i++;
-					}
-					SCCoords up = coords.SmUp.SmClamp;
-					if (replacableCoords.Contains(up) && rng.Between(0, 1) == 1)
-					{
-						Maps[mapIndex].Map[up.Y, up.X] = damageTile;
-						i++;
-					}
-					SCCoords down = coords.SmDown.SmClamp;
-					if (replacableCoords.Contains(down) && rng.Between(0, 1) == 1)
-					{
-						Maps[mapIndex].Map[down.Y, down.X] = damageTile;
-						i++;
+						byte damageTile = DamageTileSwapConfigs[tileset].DamageTile;
+						SCCoords coords = replacableCoords[i];
+						Maps[mapIndex].Map[coords.Y, coords.X] = damageTile;
 					}
 				}
 			}
+			if (flags.DamageTileStrategy == DamageTileStrategies.PerlinNoise)
+			{
+				await Progress("Adding damage tiles", mapsToDamage.Count+1);
+
+				foreach (var (mapIndex, tileset) in mapsToDamage)
+				{
+					await Progress();
+					List<SCCoords> replacableCoords = ReplacableCoordsPerMap[mapIndex];
+					PerlinNoise perlinNoise = new PerlinNoise(rng);
+					bool[,] noiseMask = await CreatePerlinNoiseMask(perlinNoise);
+
+					for (int x = 0; x < 64; x++)
+					{
+						for (int y = 0; y < 64; y++)
+						{
+							SCCoords xy = new SCCoords(x, y);
+							if (replacableCoords.Contains(xy))
+							{
+								if (noiseMask[x,y])
+								{
+									byte damageTile = DamageTileSwapConfigs[tileset].DamageTile;
+									Maps[mapIndex].Map[xy.Y, xy.X] = damageTile;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if (flags.DamageTileStrategy == DamageTileStrategies.ConditionalNeighbors)
+			{
+				await Progress("Adding damage tiles", (mapsToDamage.Count / 5)+1);
+				int curMap = 1;
+				foreach (var (mapIndex, tileset) in mapsToDamage)
+				{
+					
+					if (curMap % 5 == 0) await Progress();
+					//Get list of candidate coordinates to become damage tiles
+					List<SCCoords> replacableCoords = ReplacableCoordsPerMap[mapIndex];
+					replacableCoords.Shuffle(rng);
+
+					//Replace a set number of tiles in the map with damage tiles
+					for (int i = 0; i < (replacableCoords.Count / 3) - 1; i++)
+					{
+						byte damageTile = DamageTileSwapConfigs[tileset].DamageTile;
+						SCCoords coords = replacableCoords[i];
+						Maps[mapIndex].Map[coords.Y, coords.X] = damageTile;
+
+						//Preferentially add neighbors for a more natural pattern
+						List<SCCoords> neighbors = new() { coords.SmLeft, coords.SmRight, coords.SmUp, coords.SmDown };
+						foreach (SCCoords nCoords in neighbors)
+						{
+							if (replacableCoords.Contains(nCoords) && rng.Between(0, 1) == 1)
+							{
+								Maps[mapIndex].Map[nCoords.Y, nCoords.X] = damageTile;
+								i++;
+							}
+						}
+					}
+					curMap++;
+				}
+			}
+		}
+		private async Task<bool[,]> CreatePerlinNoiseMask(PerlinNoise perlinNoise)
+		{
+			bool[,] mask = new bool[64, 64];
+			await Task.Run(() =>
+			{
+				for (int x = 0; x < 64; x++)
+				{
+					for (int y = 0; y < 64; y++)
+					{
+						// scaling the coordinates by 3 seems to be a good tradeoff between detail and feature coherence
+						mask[x, y] = perlinNoise.GetBool(((float)x) / 3, ((float)y) / 3, 0.5f);
+					}
+				}
+			});
+			return mask;
 		}
 	}
 }
