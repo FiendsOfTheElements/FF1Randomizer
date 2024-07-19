@@ -198,32 +198,45 @@ namespace FF1Lib
 			};
 
 			Dictionary<MapIndex, TileSets> mapsToDamage = new();
-			if ((bool)flags.DamageTilesCastles)		{ foreach (var kv in mapsCastles)  mapsToDamage.Add(kv.Key, kv.Value); }
-			if ((bool)flags.DamageTilesCaves)		{ foreach (var kv in mapsCaves)    mapsToDamage.Add(kv.Key, kv.Value); }
-			if ((bool)flags.DamageTilesTowns)		{ foreach (var kv in mapsTowns)    mapsToDamage.Add(kv.Key, kv.Value); }
-			if ((bool)flags.DamageTilesDungeons)	{ foreach (var kv in mapsDungeons) mapsToDamage.Add(kv.Key, kv.Value); }
-			if ((bool)flags.DamageTilesTof)			{ foreach (var kv in mapsTof)	   mapsToDamage.Add(kv.Key, kv.Value); }
 
-			if ((bool)flags.DamageTilesCastles)										CreateDamageTile(TileSets.Castle, new()			{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xFF);
-			if ((bool)flags.DamageTilesDungeons)									CreateDamageTile(TileSets.SkyCastle, new()		{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xFF);
-			if ((bool)flags.DamageTilesTof)											CreateDamageTile(TileSets.ToFR, new()			{ 0x7F, 0x7F, 0x7F, 0x7F }, 0xFF);
-			if ((bool)flags.DamageTilesTowns)										CreateDamageTile(TileSets.Town, new()			{ 0x3A, 0x3A, 0x3A, 0x3A }, 0x00);
-			if ((bool)flags.DamageTilesTof || (bool)flags.DamageTilesDungeons)		CreateDamageTile(TileSets.ToFSeaShrine, new()   { 0x7F, 0x7F, 0x7F, 0x7F }, 0xAA);
-			if ((bool)flags.DamageTilesDungeons || (bool)flags.DamageTilesCaves)	CreateDamageTile(TileSets.MarshMirage, new()    { 0x7F, 0x7F, 0x7F, 0x7F }, 0xAA);
-
+			if ((bool)flags.DamageTilesCastles)
+			{
+				foreach (var kv in mapsCastles) mapsToDamage.Add(kv.Key, kv.Value);
+				CreateDamageTile(TileSets.Castle, new() { 0x7F, 0x7F, 0x7F, 0x7F }, 0xFF);
+				// overwrite unused tile chr data for use with new damage tiles
+				//Put(0xCFF0, Blob.FromHex("870F1E3C78F0E1C3F9F3E7CF9F3F7EFC"));  // Castle DW style
+				Put(0xCFF0, Blob.FromHex("01004808222010020040000000000200"));  // Castle
+			}
 			if ((bool)flags.DamageTilesCaves)
 			{
+				foreach (var kv in mapsCaves) mapsToDamage.Add(kv.Key, kv.Value);
+				CreateDamageTile(TileSets.MarshMirage, new() { 0x7F, 0x7F, 0x7F, 0x7F }, 0xAA);
 				TileSetsData[(int)TileSets.MatoyaDwarfCardiaIceWaterfall].Tiles[0x13].PropertyType = 0x0C; //Matoya's skull decorations
+				Put(0xE7F0, Blob.FromHex("01004808222010020040000000000200"));  // Marsh/mirage
 			}
-
-			// overwrite unused tile chr data for use with new damage tiles
-			//Put(0xCFF0, Blob.FromHex("870F1E3C78F0E1C3F9F3E7CF9F3F7EFC"));  // Castle DW style
-			Put(0xCFF0, Blob.FromHex("01004808222010020040000000000200"));  // Castle
-			Put(0xE7F0, Blob.FromHex("01004808222010020040000000000200"));  // Marsh/mirage
-			Put(0xF7F0, Blob.FromHex("01004808222010020040000000000200"));  // Sky
-			Put(0xEFF0, Blob.FromHex("01004808222010020040000000000200"));  // Sea
-			Put(0xFFF0, Blob.FromHex("01004808222010020040000000000200"));  // ToFR
-
+			if ((bool)flags.DamageTilesTowns)
+			{
+				foreach (var kv in mapsTowns) mapsToDamage.Add(kv.Key, kv.Value);
+				CreateDamageTile(TileSets.Town, new() { 0x3A, 0x3A, 0x3A, 0x3A }, 0x00);
+			}
+			if ((bool)flags.DamageTilesDungeons)
+			{
+				foreach (var kv in mapsDungeons) mapsToDamage.Add(kv.Key, kv.Value);
+				CreateDamageTile(TileSets.ToFSeaShrine, new() { 0x7F, 0x7F, 0x7F, 0x7F }, 0xAA);
+				CreateDamageTile(TileSets.SkyCastle,	new() { 0x7F, 0x7F, 0x7F, 0x7F }, 0xFF);
+				CreateDamageTile(TileSets.MarshMirage,  new() { 0x7F, 0x7F, 0x7F, 0x7F }, 0xAA);
+				Put(0xE7F0, Blob.FromHex("01004808222010020040000000000200"));  // Marsh/mirage
+				Put(0xF7F0, Blob.FromHex("01004808222010020040000000000200"));  // Sky
+				Put(0xEFF0, Blob.FromHex("01004808222010020040000000000200"));  // Sea
+			}
+			if ((bool)flags.DamageTilesTof)
+			{
+				foreach (var kv in mapsTof) mapsToDamage.Add(kv.Key, kv.Value);
+				CreateDamageTile(TileSets.ToFSeaShrine, new() { 0x7F, 0x7F, 0x7F, 0x7F }, 0xAA);
+				CreateDamageTile(TileSets.ToFR,			new() { 0x7F, 0x7F, 0x7F, 0x7F }, 0xFF);
+				Put(0xEFF0, Blob.FromHex("01004808222010020040000000000200"));  // Sea
+				Put(0xFFF0, Blob.FromHex("01004808222010020040000000000200"));  // ToFR
+			}
 
 			Dictionary<MapIndex, List<SCCoords>> ReplacableCoordsPerMap = new Dictionary<MapIndex, List<SCCoords>>();
 			foreach (var (mapIndex, tileset) in mapsToDamage)
