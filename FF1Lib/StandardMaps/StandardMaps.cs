@@ -149,6 +149,11 @@ namespace FF1Lib
 				pointers[i] = (ushort)(pointers[i - 1] + data[i - 1].Length);
 			}
 
+			if ((MapPointerOffset + pointers[MapCount-1]) + data[MapCount-1].Length >= 0x1C000) //start of monster chr data
+			{
+				throw new InsaneException("Standard map data too large.");
+			}
+
 			rom.Put(MapPointerOffset, Blob.FromUShorts(pointers));
 			for (int i = 0; i < MapCount; i++)
 			{
