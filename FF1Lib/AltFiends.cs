@@ -289,7 +289,7 @@ namespace FF1Lib
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 				},
-				/*
+				
 				new AlternateFiends {
 					Name = "IROGIANT",
 					SpriteSheet = FormationSpriteSheet.KaryLich,
@@ -408,7 +408,7 @@ namespace FF1Lib
 					Spells2 = new List<byte> { (byte)SpellByte.TMPR, (byte)SpellByte.FAST, (byte)SpellByte.XFER, (byte)SpellByte.INVS, (byte)SpellByte.TMPR, (byte)SpellByte.SLO2, (byte)SpellByte.CUR3, (byte)SpellByte.MUTE },
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
-				},*/
+				},
 
 
 			};
