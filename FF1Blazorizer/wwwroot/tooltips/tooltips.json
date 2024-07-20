@@ -2478,6 +2478,46 @@
 		"description": "Makes character's INT stat affect spells in various ways.\nDamage spells get a bonus to crit chance based on INT.\nPower word spells get a bonus to their threshold.\nDebuff spells get a boost to their chance to hit.\nHeal spells (in battle) get a boost to the maximum they can roll (minimum is unchanged).'"
 	},
 	{
+		"Id": "addDamageTiles",
+		"title": "Add Damage Tiles",
+		"description": "Adds damage tiles to locations selected below."
+	},
+	{
+		"Id": "damageTilesTowns",
+		"title": "Add Damage Tiles To Towns",
+		"screenshot": "damageTilesTowns.png",
+		"description": "Adds damage tiles to: Coneria, Provoka, Elfland, Melmond, Crescent Lake, Onrac, Gaia, and Lefein."
+	},
+	{
+		"Id": "damageTilesCastles",
+		"title": "Add Damage Tiles To Castles",
+		"screenshot": "damageTilesCastles.png",
+		"description": "Adds damage tiles to: Coneria Castle, Elfland Castle, Northwest Castle, and Ordeals."
+	},
+	{
+		"Id": "damageTilesDungeons",
+		"title": "Add Damage Tiles To Dungeons",
+		"screenshot": "damageTilesDungeons.png",
+		"description": "Adds damage tiles to: Earth Cave, Sea Shrine, Mirage Tower, and Sky Palace."
+	},
+	{
+		"Id": "damageTilesCaves",
+		"title": "Add Damage Tiles To Caves",
+		"screenshot": "damageTilesCaves.png",
+		"description": "Adds damage tiles to: Dwarf Cave, Matoya's Cave, Marsh Cave, Titan's Tunnel, Sarda's Cave, Ice Cave (upper floors), Cardia Isles, and Bahamut's Cave."
+	},
+	{
+		"Id": "damageTilesTof",
+		"title": "Add Damage Tiles To Temple Of Fiends",
+		"screenshot": "damageTilesTof.png",
+		"description": "Adds damage tiles to Temple of Fiends and Temple of Fiends Revisited."
+	},
+	{
+		"Id": "damageTilesStrategy",
+		"title": "Tile Damage Generation Strategy",
+		"description": "Selects the generation strategy to use for adding damage tiles.\nConditional Neighbors: A tradeoff between quality and speed, creates feature groups that may appear blotchy. Not too slow.\nPerlin Noise: Uses Perlin noise to create natural looking damage tile patterns. SLOW.\nRandom: Add damage tiles completely at random. Usually results in a speckled appearance. Fastest."
+	},
+	{
 		"Id": "moveToFBats",
 		"title": "Move Temple of Fiends Bats",
 		"screenshot": "moveToFBats.png",

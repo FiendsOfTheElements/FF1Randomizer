@@ -140,19 +140,27 @@ namespace FF1Lib
 		}
 		public void Write()
 		{
+			// set offsets to write to bank $14 instead of $04
+			int MapDataOutputOffset = (0x4000 * 0x14) + 0x80;
+			int MapPointerOutputOffset = (0x4000 * 0x14);
+
+			// #BANK_STANDARDMAPS constant references
+			rom.PutInBank(0x1F, 0xD127, Blob.FromHex("14"));
+			rom.PutInBank(0x1F, 0xD145, Blob.FromHex("14"));
+
 			var data = maps.Select(map => map.GetCompressedData()).ToList();
 
 			var pointers = new ushort[MapCount];
-			pointers[0] = MapDataOffset - MapPointerOffset;
+			pointers[0] = (ushort)(MapDataOutputOffset - MapPointerOutputOffset);
 			for (int i = 1; i < MapCount; i++)
 			{
 				pointers[i] = (ushort)(pointers[i - 1] + data[i - 1].Length);
 			}
 
-			rom.Put(MapPointerOffset, Blob.FromUShorts(pointers));
+			rom.Put(MapPointerOutputOffset, Blob.FromUShorts(pointers));
 			for (int i = 0; i < MapCount; i++)
 			{
-				rom.Put(MapPointerOffset + pointers[i], data[i]);
+				rom.Put(MapPointerOutputOffset + pointers[i], data[i]);
 			}
 
 			foreach (var mapobject in mapObjects)
