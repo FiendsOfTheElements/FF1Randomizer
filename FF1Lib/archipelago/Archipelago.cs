@@ -187,6 +187,9 @@ namespace FF1Lib
 					locations = logic.RewardSources.ToDictionary(
 						r => apLocationNames.TryGetValue(GetLocationId(r), out var locname) ? locname : r.RewardSource.Name,
 						r => GetLocationId(r)),
+					priority_locations = logic.RewardSources.Where(r => IsLocationIncentivized(r))
+						.Select(r => apLocationNames.TryGetValue(GetLocationId(r), out var locname) ? locname : r.RewardSource.Name)
+						.ToList(),
 					//locations2 = logic.RewardSources.ToDictionary(
 					//	r => apLocationNames.TryGetValue(GetLocationId(r), out var locname) ? locname : r.RewardSource.Name,
 					//	r => new ArchipelagoLocation { id = GetLocationId(r), incentive = IsLocationIncentivized(r) }),
@@ -399,6 +402,7 @@ namespace FF1Lib
 		//public Dictionary<string, ArchipelagoLocation> locations2 { get; set; }
 
 		public Dictionary<string, List<List<string>>> rules { get; set; }
+		public List<string> priority_locations { get; set; }
 	}
 
 	public class ArchipelagoLocation
