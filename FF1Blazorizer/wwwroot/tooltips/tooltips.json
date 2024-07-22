@@ -1305,6 +1305,12 @@
 		"description": "Shuffles the surprise bonus for enemy formations, changing which groups will (almost) always ambush you."
 	},
 	{
+		"Id": "bossRemoveBossScripts",
+		"title": "Remove Boss Scripts",
+		"screenshot": "BossesNoScripts.gif",
+		"description": "Removes the Scripts from the Four Fiends, WarMech and Chaos. This will also remove the alt fiend scripts as well if enabled. Note: this will also disable the Temple of Fiends Bat Hints"
+	},
+	{
 		"Id": "bossScriptsCheckBox",
 		"title": "Boss Scripts",
 		"screenshot": "shuffleBossesScripts.png",
@@ -1402,31 +1408,31 @@
 		"description": "Will add 14 Final Fantasy 1 Bonus Fiends to the Alternate Fiend Pool."
 	},
 	{
-		"Id": "finalfanstay2pool",
+		"Id": "finalfantasy2pool",
 		"title": "Final Fantasy 2 Pool",
 		"screenshot": null,
 		"description": "Will add 13 Final Fantasy 2 Fiends to the Alternate Fiend Pool."
 	},
 	{
-		"Id": "finalfanstay3pool",
+		"Id": "finalfantasy3pool",
 		"title": "Final Fantasy 3 Pool",
 		"screenshot": null,
 		"description": "Will add 22 Final Fantasy 3 Fiends to the Alternate Fiend Pool."
 	},
 	{
-		"Id": "finalfanstay4pool",
+		"Id": "finalfantasy4pool",
 		"title": "Final Fantasy 4 Pool",
 		"screenshot": null,
 		"description": "Will add 31 Final Fantasy 4 Fiends to the Alternate Fiend Pool."
 	},
 	{
-		"Id": "finalfanstay5pool",
+		"Id": "finalfantasy5pool",
 		"title": "Final Fantasy 5 Pool",
 		"screenshot": null,
 		"description": "Will add 36 Final Fantasy 5 Fiends to the Alternate Fiend Pool."
 	},
 	{
-		"Id": "finalfanstay6pool",
+		"Id": "finalfantasy6pool",
 		"title": "Final Fantasy 6 Pool",
 		"screenshot": null,
 		"description": "Will add 45 Final Fantasy 6 Fiends to the Alternate Fiend Pool."
@@ -1618,7 +1624,7 @@
 		"Id": "RandomizeClassInnateMagicCheckBox",
 		"title": "Blursed Classes - Innate Magic",
 		"screenshot": "RandomizeClassInnateMagicCheckBox.png",
-		"description": "Adds a set of bonuses that give a set of starting spells at the level 8 slots, regardless of their actual spell level. Also gives 2 MPs of that level to be able to cast them.\n[grid][r]Tele Magic|WARP & EXIT[r]{l}Buff Magic|TMPR, FAST, & INV2[r]{l}Self Magic|RUSE & SABR[r]{l}Heal Magic|CUR3, HEL2, & LIFE[r]{l}Heal+ Magic|CUR4, HEL3, & LIFE[r]{l}Elem Magic|ICE2, FIR2, & LIT2[r]{l}Elem+ Magic|ICE3, FIR3, & LIT3[r]{l}Nuke Magic|NUKE[r]{l}Doom Magic|3 random spells causing instant death/stone[r]{l}Clean Magic|3 random status cures (incl. LIFE/LIF2)\n\nDoom and Nuke Magic are for spellcasters only; Self Magic is melee only. Nuke Magic is rare; Elem+, Heal+, and Buff Magic are rare for melee classes."
+		"description": "Adds a set of bonuses that give two starting spells at the level 8 slots, regardless of their actual spell level. Also gives 2 MPs of that level to be able to cast them.\n[grid][r]Tele Magic|WARP & EXIT[r]{l}Buff Magic|TMPR, FAST, or INV2[r]{l}Self Magic|RUSE & SABR[r]{l}Heal Magic|CUR3, HEL2, or LIFE[r]{l}Heal+ Magic|CUR4, HEL3, or LIFE[r]{l}Elem Magic|ICE2, FIR2, or LIT2[r]{l}Elem+ Magic|ICE3, FIR3, or LIT3[r]{l}Nuke Magic|NUKE[r]{l}Doom Magic|2 random spells causing instant death/stone[r]{l}Clean Magic|2 random status cures (incl. LIFE/LIF2)\n\nDoom and Nuke Magic are for spellcasters only; Self Magic is melee only. Nuke Magic is rare; Elem+, Heal+, and Buff Magic are rare for melee classes."
 	},
 	{
 		"Id": "RandomizeClassIncludeXpBonuxCheckBox",
@@ -2470,6 +2476,47 @@
 		"title": "INT Affects Spells",
 		"screenshot": "intAffectsSpells.gif",
 		"description": "Makes character's INT stat affect spells in various ways.\nDamage spells get a bonus to crit chance based on INT.\nPower word spells get a bonus to their threshold.\nDebuff spells get a boost to their chance to hit.\nHeal spells (in battle) get a boost to the maximum they can roll (minimum is unchanged).'"
+	},
+	{
+		"Id": "addDamageTiles",
+		"title": "Add Damage Tiles",
+		"description": "Adds damage tiles to locations selected below."
+	},
+	{
+		"Id": "damageTilesTowns",
+		"title": "Add Damage Tiles To Towns",
+		"screenshot": "damageTilesTowns.png",
+		"description": "Adds damage tiles to: Coneria, Provoka, Elfland, Melmond, Crescent Lake, Onrac, Gaia, and Lefein."
+	},
+	{
+		"Id": "damageTilesCastles",
+		"title": "Add Damage Tiles To Castles",
+		"screenshot": "damageTilesCastles.png",
+		"description": "Adds damage tiles to: Coneria Castle, Elfland Castle, Northwest Castle, and Ordeals."
+	},
+	{
+		"Id": "damageTilesDungeons",
+		"title": "Add Damage Tiles To Dungeons",
+		"screenshot": "damageTilesDungeons.png",
+		"description": "Adds damage tiles to: Earth Cave, Sea Shrine, Mirage Tower, and Sky Palace."
+	},
+	{
+		"Id": "damageTilesCaves",
+		"title": "Add Damage Tiles To Caves",
+		"screenshot": "damageTilesCaves.png",
+		"description": "Adds damage tiles to: Dwarf Cave, Matoya's Cave, Marsh Cave, Titan's Tunnel, Sarda's Cave, Ice Cave (upper floors), Cardia Isles, and Bahamut's Cave."
+	},
+	{
+		"Id": "damageTilesTof",
+		"title": "Add Damage Tiles To Temple Of Fiends",
+		"screenshot": "damageTilesTof.png",
+		"description": "Adds damage tiles to Temple of Fiends and Temple of Fiends Revisited."
+	},
+	{
+		"Id": "damageTilesQuantity",
+		"title": "Damage Tiles Quantity",
+		"screenshot": "damageTilesQuantity.png",
+		"description": "Select the quantity of damage tiles to add."
 	},
 	{
 		"Id": "moveToFBats",

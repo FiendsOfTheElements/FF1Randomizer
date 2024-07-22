@@ -12,6 +12,14 @@
 			<CheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@((Flags.Treasures != false) && !Flags.Archipelago)" Id="OpenChestsInOrder" @bind-Value="Flags.OpenChestsInOrder">Open Chests in Order</CheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ShuffleLavaTiles" @bind-Value="Flags.ShuffleLavaTiles">Shuffle Lava Tiles</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ArmorResistsDamageTileDamageCheckBox" @bind-Value="Flags.ArmorResistsDamageTileDamage" IsEnabled="!Flags.ArmorCrafter">Armor Resists Damage Tiles</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="addDamageTiles" @bind-Value="Flags.AddDamageTiles">Add Damage Tiles</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="damageTilesTowns" IsEnabled=@Flags.AddDamageTiles @bind-Value="Flags.DamageTilesTowns">Towns</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="damageTilesCastles" IsEnabled=@Flags.AddDamageTiles @bind-Value="Flags.DamageTilesCastles">Castles</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="damageTilesDungeons" IsEnabled=@Flags.AddDamageTiles @bind-Value="Flags.DamageTilesDungeons">Dungeons</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="damageTilesCaves" IsEnabled=@Flags.AddDamageTiles @bind-Value="Flags.DamageTilesCaves">Caves</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="damageTilesTof" IsEnabled=@Flags.AddDamageTiles @bind-Value="Flags.DamageTilesTof">Temple of Fiends</TriStateCheckBox>
+			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="damageTilesQuantity" IsEnabled=@Flags.AddDamageTiles TItem="DamageTilesQuantity" @bind-Value="Flags.DamageTilesQuantity">Quantity:</EnumDropDown>
+
 			<div class="checkbox-cell"></div>
 		</div>
 		<div class="col2">

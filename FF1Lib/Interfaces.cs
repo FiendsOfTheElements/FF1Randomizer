@@ -90,32 +90,13 @@
 		bool? GuaranteedMasamune { get; }
 
 	}
-	public interface IMapEditFlags : IItemPlacementFlags
-	{
-		bool? MapAirshipDock { get; }
-		bool? MapOnracDock { get; }
-		bool? MapMirageDock { get; }
-		bool? MapBahamutCardiaDock { get; }
-		bool? MapDragonsHoard { get; }
-		bool? MapLefeinRiver { get; }
-		bool? MapBridgeLefein { get; }
-		bool? MapRiverToMelmond { get; }
-		bool? MapGaiaMountainPass { get; }
-		bool? MapHighwayToOrdeals { get; }
-		bool? TitansTrove { get; }
-		bool? GaiaShortcut { get; }
-		bool? MoveGaiaItemShop { get; }
-		bool DisableOWMapModifications { get; }
-		//OwMapExchanges OwMapExchange { get; }
-	}
 	public interface IItemPlacementFlags : IItemShuffleFlags, IVictoryConditionFlags
 	{
 		bool LaterLoose { get; }
 		bool Spoilers { get; }
 		bool? MapCanalBridge { get; }
-		bool? MapConeriaDwarves { get; }
-		bool? MapVolcanoIceRiver { get; }
-		bool? MapDwarvesNorthwest { get; }
+		bool? MapOpenProgression { get; }
+		bool? MapOpenProgressionExtended { get; }
 		bool? RandomWares { get; }
 		bool? RandomLoot { get; }
 		bool? BetterTrapChests { get; }

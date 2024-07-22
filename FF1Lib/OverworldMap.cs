@@ -25,56 +25,37 @@ namespace FF1Lib
 
 		public List<List<byte>> MapBytes { get => _decompressedMap; }
 
-		public OverworldMap(FF1Rom rom, IMapEditFlags flags)
+		public OverworldMap(FF1Rom rom, Flags flags)
 		{
 			_rom = rom;
 			_palettes = GeneratePalettes(rom.Get(MapPaletteOffset, MapCount * MapPaletteSize).Chunk(MapPaletteSize));
 
 			_decompressedMap = DecompressMapRows(GetCompressedMapRows());
 
-			if (flags.GameMode == GameModes.Standard && flags.OwMapExchange == OwMapExchanges.None) {
-			    // Can only apply map edits to vanilla-ish maps
+			if (!flags.DisableOWMapModifications)
+			{
+				// Can only apply map edits to vanilla-ish maps
+				if ((bool)flags.MapOpenProgression)
+				{
+					MapEditsToApply.Add(VolcanoIceRiver);
+					MapEditsToApply.Add(ConeriaToDwarves);
+				}
 
-			if ((bool)flags.MapOnracDock)
-			{
-				MapEditsToApply.Add(OnracDock);
-			}
-			if ((bool)flags.MapMirageDock)
-			{
-				MapEditsToApply.Add(MirageDock);
-			}
-			if ((bool)flags.MapAirshipDock && !flags.DisableOWMapModifications)
-			{
-				MapEditsToApply.Add(AirshipDock);
-			}
-			if ((bool)flags.MapBahamutCardiaDock && !flags.DisableOWMapModifications)
-			{
-				MapEditsToApply.Add(BahamutCardiaDock);
-			}
-			if ((bool)flags.MapLefeinRiver && !flags.DisableOWMapModifications) {
-			    MapEditsToApply.Add(LefeinRiverDock);
-			}
-			if ((bool)flags.MapBridgeLefein && !flags.DisableOWMapModifications) {
-			    MapEditsToApply.Add(BridgeToLefein);
-			}
-			if ((bool)flags.MapGaiaMountainPass && !flags.DisableOWMapModifications) {
-			    MapEditsToApply.Add(GaiaMountainPass);
-			}
-			if ((bool)flags.MapHighwayToOrdeals && !flags.DisableOWMapModifications)
-			{
-				MapEditsToApply.Add(HighwayToOrdeals);
-			}
-			if ((bool)flags.MapRiverToMelmond && !flags.DisableOWMapModifications) {
-				MapEditsToApply.Add(RiverToMelmond);
-			}
-			if ((bool)flags.MapVolcanoIceRiver)
-			{
-				MapEditsToApply.Add(VolcanoIceRiver);
-			}
-			if ((bool)flags.MapConeriaDwarves)
-			{
-				MapEditsToApply.Add(ConeriaToDwarves);
-			}
+				if ((bool)flags.MapOpenProgressionExtended) MapEditsToApply.Add(DwarvesNorthwestGrass);
+
+				if ((bool)flags.MapOpenProgressionDocks)
+				{
+					MapEditsToApply.Add(OnracDock);
+					MapEditsToApply.Add(MirageDock);
+				}
+
+				if ((bool)flags.MapAirshipDock) MapEditsToApply.Add(AirshipDock);
+				if ((bool)flags.MapBahamutCardiaDock) MapEditsToApply.Add(BahamutCardiaDock);
+				if ((bool)flags.MapLefeinRiver) MapEditsToApply.Add(LefeinRiverDock);
+				if ((bool)flags.MapBridgeLefein) MapEditsToApply.Add(BridgeToLefein);
+				if ((bool)flags.MapGaiaMountainPass) MapEditsToApply.Add(GaiaMountainPass);
+				if ((bool)flags.MapHighwayToOrdeals) MapEditsToApply.Add(HighwayToOrdeals);
+				if ((bool)flags.MapRiverToMelmond) MapEditsToApply.Add(RiverToMelmond);
 			}
 		}
 		public static Dictionary<Palette, Blob> GeneratePalettes(List<Blob> vanillaPalettes)
@@ -148,14 +129,14 @@ namespace FF1Lib
 			}
 		}
 
-        public void UpdatePalettes(OverworldTeleportIndex oti, TeleportDestination teleport)
+		public void UpdatePalettes(OverworldTeleportIndex oti, TeleportDestination teleport)
 		{
 			if (teleport.OwnsPalette)
 			{
 				var mapIndex = teleport.Index;
 				PutPalette(oti, mapIndex);
 
-                if (ContinuedMapIndexForPalettes.TryGetValue(mapIndex, out var list))
+				if (ContinuedMapIndexForPalettes.TryGetValue(mapIndex, out var list))
 				{
 					list.ForEach(map => PutPalette(oti, map));
 				}
@@ -213,8 +194,8 @@ namespace FF1Lib
 				{OverworldTeleportIndex.Unused2,            Palette.Greyscale},
 			};
 		public static Dictionary<MapIndex, List<MapIndex>> ContinuedMapIndexForPalettes =
-            new Dictionary<MapIndex, List<MapIndex>>
-		    {
+			new Dictionary<MapIndex, List<MapIndex>>
+			{
 				{ MapIndex.ConeriaCastle1F, new List<MapIndex> { MapIndex.ConeriaCastle2F } },
 				{ MapIndex.CastleOrdeals1F, new List<MapIndex> { MapIndex.CastleOrdeals2F, MapIndex.CastleOrdeals3F } },
 				{ MapIndex.IceCaveB2, new List<MapIndex> { MapIndex.IceCaveB3 } },
@@ -223,8 +204,8 @@ namespace FF1Lib
 					MapIndex.TempleOfFiendsRevisitedWater, MapIndex.TempleOfFiendsRevisitedAir, MapIndex.TempleOfFiendsRevisitedChaos } }
 			};
 		public static Dictionary<MapLocation, List<MapLocation>> ConnectedMapLocations =
-            new Dictionary<MapLocation, List<MapLocation>>
-		    {
+			new Dictionary<MapLocation, List<MapLocation>>
+			{
 				{ MapLocation.ConeriaCastle1, new List<MapLocation> { MapLocation.ConeriaCastle2, MapLocation.ConeriaCastleRoom1, MapLocation.ConeriaCastleRoom2 } },
 				{ MapLocation.ElflandCastle, new List<MapLocation> { MapLocation.ElflandCastleRoom1 } },
 				{ MapLocation.NorthwestCastle, new List<MapLocation> { MapLocation.NorthwestCastleRoom2 } },
@@ -368,23 +349,23 @@ namespace FF1Lib
 			SwapMap(decompressedRows);
 		}
 
-	    public void SwapMap(List<List<byte>> decompressedRows)
+		public void SwapMap(List<List<byte>> decompressedRows)
 		{
 			_decompressedMap = decompressedRows;
 			var recompressedMap = CompressMapRows(decompressedRows);
 			PutCompressedMapRows(recompressedMap);
-	    }
+		}
 
-	    public void SwapMap(List<string> decompressedRows)
+		public void SwapMap(List<string> decompressedRows)
 		{
 			var rows = new List<List<byte>>();
 			foreach (var c in decompressedRows) {
-			    rows.Add(new List<byte>(Convert.FromBase64String(c)));
+				rows.Add(new List<byte>(Convert.FromBase64String(c)));
 			}
 			_decompressedMap = rows;
 			var recompressedMap = CompressMapRows(rows);
 			PutCompressedMapRows(recompressedMap);
-	    }
+		}
 
 		public void ApplyMapEdits()
 		{
@@ -444,7 +425,7 @@ namespace FF1Lib
 			return outputMap;
 		}
 
-	    public const int MaximumMapDataSize = 0x3E00;
+		public const int MaximumMapDataSize = 0x3E00;
 
 		public void PutCompressedMapRows(List<List<byte>> compressedRows)
 		{
@@ -462,62 +443,5 @@ namespace FF1Lib
 			if (outputOffset > MaximumMapDataSize)
 				throw new InvalidOperationException($"Modified map was too large by {outputOffset - MaximumMapDataSize} bytes to recompress and fit into {MaximumMapDataSize} bytes of available space.");
 		}
-		//  Should be in NPC class
-	    public void ShuffleChime(MT19337 rng, bool includeTowns) {
-		List<byte[]> dungeons = new List<byte[]> {
-		    new byte[] { OverworldTiles.EARTH_CAVE },
-		    new byte[] { OverworldTiles.ELFLAND_CASTLE_W, OverworldTiles.ELFLAND_CASTLE_E },
-		    new byte[] { OverworldTiles.MIRAGE_BOTTOM },
-		    new byte[] { OverworldTiles.ASTOS_CASTLE_W, OverworldTiles.ASTOS_CASTLE_E },
-		    new byte[] { OverworldTiles.ICE_CAVE },
-		    new byte[] { OverworldTiles.DWARF_CAVE },
-		    new byte[] { OverworldTiles.MATOYAS_CAVE },
-		    new byte[] { OverworldTiles.TITAN_CAVE_E, OverworldTiles.TITAN_CAVE_W },
-		    new byte[] { OverworldTiles.ORDEALS_CASTLE_W, OverworldTiles.ORDEALS_CASTLE_E },
-		    new byte[] { OverworldTiles.SARDAS_CAVE },
-		    new byte[] { OverworldTiles.TOF_ENTRANCE_W, OverworldTiles.TOF_ENTRANCE_E },
-		    new byte[] { OverworldTiles.VOLCANO_TOP_W, OverworldTiles.VOLCANO_TOP_E },
-		    new byte[] { OverworldTiles.BAHAMUTS_CAVE },
-		    new byte[] { OverworldTiles.MARSH_CAVE }
-		};
-
-		List<byte[]> towns = new List<byte[]>{
-		    new byte[] { OverworldTiles.PRAVOKA },
-		    new byte[] { OverworldTiles.ELFLAND },
-		    new byte[] { OverworldTiles.MELMOND },
-		    new byte[] { OverworldTiles.CRESCENT_LAKE },
-		    new byte[] { OverworldTiles.GAIA },
-		    new byte[] { OverworldTiles.ONRAC },
-		    new byte[] { OverworldTiles.LEFEIN },
-		};
-
-		var candidates = new List<byte[]>(dungeons);
-
-		if (includeTowns) {
-		    candidates.AddRange(towns);
-		}
-
-		var tileset = new TileSet(this._rom, TileSet.OverworldIndex);
-		tileset.LoadData();
-
-		// clear existing
-		for (int i = 0; i < tileset.Tiles.Count; i++) {
-		    var tp = tileset.Tiles[i].Properties;
-		    if ((tp.TilePropFunc & TilePropFunc.OWTP_SPEC_MASK) == TilePropFunc.OWTP_SPEC_CHIME) {
-			tp.TilePropFunc &= ~TilePropFunc.OWTP_SPEC_CHIME;
-			tileset.Tiles[i].Properties = tp;
-		    }
-		}
-
-		var chime = candidates.SpliceRandom(rng);
-
-		foreach (var i in chime) {
-		    var tp = tileset.Tiles[i].Properties;
-		    tp.TilePropFunc |= TilePropFunc.OWTP_SPEC_CHIME;
-		    tileset.Tiles[i].Properties = tp;
-		}
-
-		tileset.StoreData();
-	    }
 	}
 }
