@@ -2513,6 +2513,12 @@
 		"description": "Adds damage tiles to Temple of Fiends and Temple of Fiends Revisited."
 	},
 	{
+		"Id": "damageTilesQuantity",
+		"title": "Damage Tiles Quantity",
+		"screenshot": "damageTilesQuantity.png",
+		"description": "Select the quantity of damage tiles to add."
+	},
+	{
 		"Id": "moveToFBats",
 		"title": "Move Temple of Fiends Bats",
 		"screenshot": "moveToFBats.png",
