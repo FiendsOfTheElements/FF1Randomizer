@@ -1,4 +1,5 @@
 ﻿using FF1Lib.Sanity;
+using Newtonsoft.Json;
 using RomUtilities;
 using System;
 using System.Collections.Generic;
@@ -7,19 +8,17 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace FF1Lib
 {
 	public partial class FF1Rom
 	{
-		public enum DamageTileStrategies
+		public enum DamageTilesQuantity
 		{
-			[Description("Cond. Neighbors")]
-			ConditionalNeighbors,
-			[Description("Perlin Noise")]
-			PerlinNoise,
-			[Description("Random")]
-			Random
+			Fewer,
+			Normal,
+			Excessive
 		}
 		private async Task DamageTilesHack(Flags flags, Overworld overworld)
 		{
@@ -256,87 +255,44 @@ namespace FF1Lib
 				ReplacableCoordsPerMap[mapIndex] = replacableCoords;
 			}
 
-			if (flags.DamageTileStrategy == DamageTileStrategies.Random)
-			{
-				foreach (var (mapIndex, tileset) in mapsToDamage)
-				{
-					//Get list of candidate coordinates to become damage tiles
-					List<SCCoords> replacableCoords = ReplacableCoordsPerMap[mapIndex];
-					replacableCoords.Shuffle(rng);
+			await Progress("Adding damage tiles", mapsToDamage.Count+1);
 
-					//Replace a set number of tiles in the map with damage tiles
-					for (int i = 0; i < (replacableCoords.Count / 3) - 1; i++)
+			foreach (var (mapIndex, tileset) in mapsToDamage)
+			{
+				bool[,] noiseMask;
+				await Progress();
+				List<SCCoords> replacableCoords = ReplacableCoordsPerMap[mapIndex];
+
+				float threshold = 0f;
+				switch (flags.DamageTilesQuantity)
+				{
+					case DamageTilesQuantity.Fewer:
+						threshold = 0.6f;
+						break;
+					case DamageTilesQuantity.Normal:
+						threshold = 0.5f;
+						break;
+					case DamageTilesQuantity.Excessive:
+						threshold = 0.4f;
+						break;
+				}
+				PerlinNoise perlinNoise = new PerlinNoise(rng);
+				noiseMask = await CreatePerlinNoiseMask(perlinNoise, threshold);
+
+				var curmap = Maps[mapIndex].Map;
+				byte damageTile = DamageTileSwapConfigs[tileset].DamageTile;
+
+				foreach (var curCoords in replacableCoords)
+				{
+					if (noiseMask[curCoords.X, curCoords.Y])
 					{
-						byte damageTile = DamageTileSwapConfigs[tileset].DamageTile;
-						SCCoords coords = replacableCoords[i];
-						Maps[mapIndex].Map[coords.Y, coords.X] = damageTile;
+						curmap[curCoords.Y, curCoords.X] = damageTile;
 					}
 				}
 			}
-			if (flags.DamageTileStrategy == DamageTileStrategies.PerlinNoise)
-			{
-				await Progress("Adding damage tiles", mapsToDamage.Count+1);
-
-				foreach (var (mapIndex, tileset) in mapsToDamage)
-				{
-					await Progress();
-					List<SCCoords> replacableCoords = ReplacableCoordsPerMap[mapIndex];
-					PerlinNoise perlinNoise = new PerlinNoise(rng);
-					bool[,] noiseMask = await CreatePerlinNoiseMask(perlinNoise);
-
-					for (int x = 0; x < 64; x++)
-					{
-						for (int y = 0; y < 64; y++)
-						{
-							SCCoords xy = new SCCoords(x, y);
-							if (replacableCoords.Contains(xy))
-							{
-								if (noiseMask[x,y])
-								{
-									byte damageTile = DamageTileSwapConfigs[tileset].DamageTile;
-									Maps[mapIndex].Map[xy.Y, xy.X] = damageTile;
-								}
-							}
-						}
-					}
-				}
-			}
-
-			if (flags.DamageTileStrategy == DamageTileStrategies.ConditionalNeighbors)
-			{
-				await Progress("Adding damage tiles", (mapsToDamage.Count / 5)+1);
-				int curMap = 1;
-				foreach (var (mapIndex, tileset) in mapsToDamage)
-				{
-					
-					if (curMap % 5 == 0) await Progress();
-					//Get list of candidate coordinates to become damage tiles
-					List<SCCoords> replacableCoords = ReplacableCoordsPerMap[mapIndex];
-					replacableCoords.Shuffle(rng);
-
-					//Replace a set number of tiles in the map with damage tiles
-					for (int i = 0; i < (replacableCoords.Count / 3) - 1; i++)
-					{
-						byte damageTile = DamageTileSwapConfigs[tileset].DamageTile;
-						SCCoords coords = replacableCoords[i];
-						Maps[mapIndex].Map[coords.Y, coords.X] = damageTile;
-
-						//Preferentially add neighbors for a more natural pattern
-						List<SCCoords> neighbors = new() { coords.SmLeft, coords.SmRight, coords.SmUp, coords.SmDown };
-						foreach (SCCoords nCoords in neighbors)
-						{
-							if (replacableCoords.Contains(nCoords) && rng.Between(0, 1) == 1)
-							{
-								Maps[mapIndex].Map[nCoords.Y, nCoords.X] = damageTile;
-								i++;
-							}
-						}
-					}
-					curMap++;
-				}
-			}
+			
 		}
-		private async Task<bool[,]> CreatePerlinNoiseMask(PerlinNoise perlinNoise)
+		private async Task<bool[,]> CreatePerlinNoiseMask(PerlinNoise perlinNoise, float threshold)
 		{
 			bool[,] mask = new bool[64, 64];
 			await Task.Run(() =>
@@ -346,7 +302,7 @@ namespace FF1Lib
 					for (int y = 0; y < 64; y++)
 					{
 						// scaling the coordinates by 3 seems to be a good tradeoff between detail and feature coherence
-						mask[x, y] = perlinNoise.GetBool(((float)x) / 3, ((float)y) / 3, 0.5f);
+						mask[x, y] = perlinNoise.GetBool(((float)x) / 3, ((float)y) / 3, threshold);
 					}
 				}
 			});

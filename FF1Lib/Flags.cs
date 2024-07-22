@@ -604,7 +604,7 @@ namespace FF1Lib
 		public bool? DamageTilesCaves { get; set; } = false;
 		public bool? DamageTilesTowns { get; set; } = false;
 		public bool? DamageTilesTof { get; set; } = false;
-		public DamageTileStrategies DamageTileStrategy { get; set; } = DamageTileStrategies.ConditionalNeighbors;
+		public DamageTilesQuantity DamageTilesQuantity { get; set; } = DamageTilesQuantity.Normal;
 		public bool? FreeTail { get; set; } = false;
 		public bool? HintsVillage { get; set; } = false;
 		public bool? SpellcrafterRetainPermissions { get; set; } = false;
