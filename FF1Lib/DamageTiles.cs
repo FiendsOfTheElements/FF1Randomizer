@@ -38,6 +38,7 @@ namespace FF1Lib
 				EnableDamageTile(overworld);
 			}
 			await AddDamageTilesToMaps(flags, rng);
+			await ShuffleLavaTiles((bool)flags.ShuffleLavaTiles, rng);
 			DamageTilesKillAndCanBeResisted(damageTileAmount, (bool)flags.ArmorResistsDamageTileDamage && !(bool)flags.ArmorCrafter, (bool)flags.DamageTilesKill, flags.SaveGameWhenGameOver);
 		}
 
@@ -291,6 +292,52 @@ namespace FF1Lib
 				}
 			}
 			
+		}
+		private async Task ShuffleLavaTiles(bool shufflelavatiles, MT19337 rng)
+		{
+			if (!shufflelavatiles)
+			{
+				return;
+			}
+
+			List<MapIndex> lavaMaps = new() { MapIndex.GurguVolcanoB1, MapIndex.GurguVolcanoB2, MapIndex.GurguVolcanoB3, MapIndex.GurguVolcanoB4, MapIndex.GurguVolcanoB5 };
+
+			byte lavaTile = 0x3D;
+			byte encounterTile = 0x41;
+
+			foreach (var map in lavaMaps)
+			{
+				byte[,] mapbytes = Maps[map].Map.MapBytes;
+
+				List<SCCoords> tileCoords = new();
+
+				for (int x = 0; x < 0x40; x++)
+				{
+					for (int y = 0; y < 0x40; y++)
+					{
+						byte currentile = mapbytes[y, x];
+						if (currentile == lavaTile || currentile == encounterTile)
+						{
+							tileCoords.Add(new SCCoords(x, y));
+						}
+					}
+				}
+
+				PerlinNoise perlinNoise = new PerlinNoise(rng);
+				bool[,] noiseMask = await CreatePerlinNoiseMask(perlinNoise, 0.45f);
+
+				foreach (var coord in tileCoords)
+				{
+					if (noiseMask[coord.X, coord.Y])
+					{
+						mapbytes[coord.Y, coord.X] = lavaTile;
+					}
+					else
+					{
+						mapbytes[coord.Y, coord.X] = encounterTile;
+					}
+				}
+			}
 		}
 		private async Task<bool[,]> CreatePerlinNoiseMask(PerlinNoise perlinNoise, float threshold)
 		{
