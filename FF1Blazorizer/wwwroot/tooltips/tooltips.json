@@ -2519,6 +2519,12 @@
 		"description": "Select the quantity of damage tiles to add."
 	},
 	{
+		"Id": "shuffleLavaTiles",
+		"title": "Shuffle Lava Tiles",
+		"screenshot": "shuffleLavaTiles.png",
+		"description": "Changes the pattern of lava tiles in Volcano."
+	},
+	{
 		"Id": "moveToFBats",
 		"title": "Move Temple of Fiends Bats",
 		"screenshot": "moveToFBats.png",
