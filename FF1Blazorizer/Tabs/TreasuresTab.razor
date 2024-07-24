@@ -7,11 +7,12 @@
 <div class="col1">
 	<h4>Item Shuffle</h4>
 	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="treasuresCheckBox" @bind-Value="Flags.Treasures">Treasures</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="npcItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.NPCItems">Main NPC Items</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="npcFetchItemsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.NPCFetchItems">Fetch Quest Rewards</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.ShuffleObjectiveNPCs">Objective NPCs</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="betterTrapTreasureCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.BetterTrapTreasure">Better Trap Treasure</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="earlierRubyCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.EarlierRuby">Earlier Ruby</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="betterTrapTreasureCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.BetterTrapChests">Better Trap Treasure</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="chestsKeyItemsCheckBox" @bind-Value="Flags.ChestsKeyItems">Chests Key Items</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@Flags.ChestsKeyItems" @bind-Value="Flags.ShuffleObjectiveNPCs">Objective NPCs</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="npcItemsCheckBox" @bind-Value="Flags.NPCItems">Main NPC Items</TriStateCheckBox>
+	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="npcFetchItemsCheckBox" @bind-Value="Flags.NPCFetchItems">Fetch Quest Rewards</TriStateCheckBox>
+
 
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="randomLootCheckBox" TItem="RandomizeTreasureMode" IsEnabled="@Flags.Treasures" @bind-Value="Flags.RandomizeTreasure">Randomize Treasures:</EnumDropDown>
 	@if(Flags.RandomizeTreasure == RandomizeTreasureMode.RandomizeTreasure || Flags.RandomizeTreasure == RandomizeTreasureMode.Random)
@@ -68,7 +69,7 @@
 </div>
 
 
-@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+@code { [Parameter] public FF1Lib.Flags Flags { get; set; }
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;

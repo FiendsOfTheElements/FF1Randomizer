@@ -166,7 +166,7 @@
 </div>
 
 
-@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+@code { [Parameter] public FF1Lib.Flags Flags { get; set; }
 	[Parameter] public Action<string> SetStatusMessage { get; set; }
 	[Parameter] public Action SetDefaultLoaded { get; set; }
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
@@ -221,7 +221,7 @@
 	{
 		var preset = Flags.FromJson(json);
 
-		Flags.Flags = preset.flags;
+		Flags.ReadFromFlags(preset.flags);
 
 		if (preset.log.Any())
 		{
@@ -253,7 +253,7 @@
 		Flags.Preset preset = new Flags.Preset();
 		preset.Name = presetName;
 		SetPresetName(presetName);
-		preset.Flags = Flags.Flags;
+		preset.Flags = Flags;
 
 		var json = System.Text.Json.JsonSerializer.Serialize(preset, options);
 		var encoded = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
@@ -285,7 +285,7 @@
 
 			var preset = Flags.FromJson(json);
 
-			Flags.Flags = preset.flags;
+			Flags.ReadFromFlags(preset.flags);
 
 			if (preset.log.Any())
 			{

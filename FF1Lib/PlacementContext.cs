@@ -255,7 +255,9 @@ namespace FF1Lib
 				forcedItemPlacements.Add(ItemLocations.Nerrick);
 			}
 
-			if ((!flags.Treasures ?? false)) forcedItemPlacements.AddRange(ItemLocations.AllTreasures);
+			if ((!flags.Treasures ?? false)) forcedItemPlacements.AddRange(ItemLocations.AllTreasuresExceptKeyItemsLocations);
+
+			if ((!flags.ChestsKeyItems ?? false)) forcedItemPlacements.AddRange(ItemLocations.ChestsKeyItemsLocations.Except(removedItemsLocations.Where(x => itemsToNotPlace.Contains(x.item)).Select(x => x.source).ToList()));
 
 			if ((flags.GuaranteedMasamune ?? false) && (bool)flags.Treasures)
 			{

@@ -930,12 +930,17 @@
 		"screenshot": "vampAttackIncludesConeria.png",
 		"description": "Allows the Vampire to potentially attack Coneria."
 	},
-
 	{
 		"Id": "treasuresCheckBox",
 		"title": "Treasures",
 		"screenshot": "treasuresCheckBox.png",
-		"description": "Shuffle all treasures normally available to a random chest. All items are assured to be in a chest somewhere in the game."
+		"description": "Shuffle all treasures normally available to a random chest, except chests containing Key Items. All items are assured to be in a chest somewhere in the game."
+	},
+	{
+		"Id": "chestsKeyItemsCheckBox",
+		"title": "Chests Key Items",
+		"screenshot": "npcItemsCheckBox.png",
+		"description": "Add the chests containing Key Items to Items Shuffle. Include CROWN, TNT, RUBY, FLOATER, TAIL, SLAB, ADAMANT."
 	},
 	{
 		"Id": "randomLootCheckBox",

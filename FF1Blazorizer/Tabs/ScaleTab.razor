@@ -59,10 +59,10 @@
 			<div class="col-lg-4 noleftpadding">Exp. &amp; Gold Boost:
                 <ToolTipBox id="XPGoldBoostTooltip" UpdateToolTip="@UpdateToolTipID"></ToolTipBox>
             </div>
-			<div class="col-lg-4">@Math.Round(Flags.ExpMultiplier * 0.1, 1).ToString("F1")x + @Flags.ExpBonus</div>
+			<div class="col-lg-4">@Flags.ExpMultiplier.ToString("F1")x + @Flags.ExpBonus</div>
 			<div class="col-slider">
-				<Slider @bind-Value="Flags.ExpMultiplier" Min="10" Max="50" Step="1"></Slider>
-				<Slider @bind-Value="Flags.ExpBonus" Min="0" Max="250" Step="25"></Slider>
+				<Slider @bind-Value="Flags.ExpMultiplier" Min="1.0" Max="5.0" Step="0.1"></Slider>
+				<IntSlider DisableTooltip BareMode @bind-Value="Flags.ExpBonus" Min="0" Max="250" Step="25"></IntSlider>
 			</div>
 		</div>
 		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="progressiveScaleModeDropDown" TItem="ProgressiveScaleMode" @bind-Value="Flags.ProgressiveScaleMode">Exp. &amp; Gold Progressive Scaling:</EnumDropDown>
@@ -79,7 +79,7 @@
 	</div>
 
 
-	@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	@code { [Parameter] public FF1Lib.Flags Flags { get; set; }
 			[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 			[Parameter] public bool noTabLayout { get; set; }
 			[Parameter] public bool IsOpen { get; set; } = true;

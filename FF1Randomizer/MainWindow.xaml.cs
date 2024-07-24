@@ -21,7 +21,7 @@ namespace FF1Randomizer
 			InitializeComponent();
 
 			_model = new MainWindowViewModel();
-			_model.Flags.Flags = Flags.FromJson(File.ReadAllText("presets/default.json")).flags;
+			_model.Flags = Flags.FromJson(File.ReadAllText("presets/default.json")).flags;
 			DataContext = _model;
 
 			TryOpenSavedFilename();
@@ -95,7 +95,7 @@ namespace FF1Randomizer
 		private async void GenerateButton_Click(object sender, RoutedEventArgs e)
 		{
 			var rom = new FF1Rom(_model.Filename);
-			await rom.Randomize(Blob.FromHex(_model.Seed), _model.Flags.Flags, _model.Flags.Preferences);
+			await rom.Randomize(Blob.FromHex(_model.Seed), _model.Flags, _model.Preferences);
 
 			var fileRoot = _model.Filename.Substring(0, _model.Filename.LastIndexOf("."));
 			var outputFilename = $"{fileRoot}_{_model.Seed}_{FlagsTextBox.Text}.nes";
@@ -123,7 +123,7 @@ namespace FF1Randomizer
 			}
 
 			_model.Seed = parts[1].Substring(0, 8); // we only take the first 8 characters of the seed provided
-			_model.Flags.Flags = Flags.DecodeFlagsText(parts[2]);
+			_model.Flags = Flags.DecodeFlagsText(parts[2]);
 		}
 
 		private void SetScaleFactorLabel(Slider slider, Label label, CheckBox clamp)
@@ -200,7 +200,7 @@ namespace FF1Randomizer
 			var result = openFileDialog.ShowDialog(this);
 			if (result == true)
 			{
-				_model.Flags.Flags = Flags.FromJson(File.ReadAllText(openFileDialog.FileName)).flags;
+				_model.Flags = Flags.FromJson(File.ReadAllText(openFileDialog.FileName)).flags;
 			}
 		}
 

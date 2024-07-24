@@ -219,7 +219,7 @@ public partial class FF1Rom : NesRom
 		sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, TileSetsData, this, ShopData.ItemShopSlot);
 		if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags, true).Complete) throw new InsaneException("Not Completable");
 
-		await this.Progress((bool)flags.Treasures ? "Shuffling Treasures" : "Placing Treasures");
+		await this.Progress(flags.VanillaPlacement ? "Placing Treasures" : "Shuffling Treasures");
 
 		// Item Placement
 		ItemPlacement itemPlacement = ItemPlacement.Create(this, flags, PlacementContext, ShopData.ItemShopSlot, Overworld, sanityChecker);

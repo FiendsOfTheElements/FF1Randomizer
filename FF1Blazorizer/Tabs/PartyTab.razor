@@ -38,7 +38,7 @@
 						<td class="right-bordered td-party">All</td>
 						<td class="td-party"><TriStateCheckBox DisableTooltip Id="partyForcedAll" @bind-Value="@Flags.AllForced" IsEnabled="@(Flags.EnablePoolParty != true)"></TriStateCheckBox></td>
 						<td class="td-party"><TriStateCheckBox DisableTooltip Id="partyFighterAll" @bind-Value="@Flags.AllFighters"></TriStateCheckBox></td>
-						<td class="td-party"><TriStateCheckBox DisableTooltip Id="partyThiefAll" @bind-Value="@Flags.AllThiefs"></TriStateCheckBox></td>
+						<td class="td-party"><TriStateCheckBox DisableTooltip Id="partyThiefAll" @bind-Value="@Flags.AllThieves"></TriStateCheckBox></td>
 						<td class="td-party"><TriStateCheckBox DisableTooltip Id="partyBlackBeltAll" @bind-Value="@Flags.AllBlackBelts"></TriStateCheckBox></td>
 						<td class="td-party"><TriStateCheckBox DisableTooltip Id="partyRedMageAll" @bind-Value="@Flags.AllRedMages"></TriStateCheckBox></td>
 						<td class="td-party"><TriStateCheckBox DisableTooltip Id="partyWhiteMageAll" @bind-Value="@Flags.AllWhiteMages"></TriStateCheckBox></td>
@@ -202,7 +202,7 @@
 </div>
 
 
-		@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+		@code { [Parameter] public FF1Lib.Flags Flags { get; set; }
 			[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 			[Parameter] public bool noTabLayout { get; set; }
 			[Parameter] public bool IsOpen { get; set; } = true;

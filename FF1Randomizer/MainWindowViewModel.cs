@@ -15,7 +15,8 @@ namespace FF1Randomizer
 	{
 		public MainWindowViewModel()
 		{
-			Flags = new FlagsViewModel();
+			Flags = new Flags();
+			Preferences = new Preferences();
 			Flags.PropertyChanged += (sender, args) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Flags"));
 		}
 
@@ -45,8 +46,8 @@ namespace FF1Randomizer
 			}
 		}
 
-		private FlagsViewModel _flags;
-		public FlagsViewModel Flags
+		private Flags _flags;
+		public Flags Flags
 		{
 			get => _flags;
 			set
@@ -55,11 +56,21 @@ namespace FF1Randomizer
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Flags"));
 			}
 		}
+		private Preferences _preferences;
+		public Preferences Preferences
+		{
+			get => _preferences;
+			set
+			{
+				_preferences = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Preferences"));
+			}
+		}
 	}
 
 	public class FlagsToStringConverter : IValueConverter
 	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => Flags.EncodeFlagsText(((FlagsViewModel)value).Flags);
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => new FlagsViewModel { Flags = Flags.DecodeFlagsText((string)value) };
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => Flags.EncodeFlagsText(((Flags)value));
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => Flags.DecodeFlagsText((string)value);
 	}
 }

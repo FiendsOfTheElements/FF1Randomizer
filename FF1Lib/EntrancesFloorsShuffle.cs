@@ -16,7 +16,10 @@ namespace FF1Lib
 		public int ConeriaTownEntranceItemShopIndex = 0;
 		public void ShuffleEntrancesAndFloors(OverworldMap overworld, MT19337 rng, Flags flags)
 		{
-			if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) && ((bool)flags.Treasures) && ((bool)flags.NPCItems) && flags.GameMode == GameModes.Standard)
+			if (((bool)flags.Entrances || (bool)flags.Floors || (bool)flags.Towns) &&
+				((bool)flags.ChestsKeyItems) &&
+				((bool)flags.NPCItems) &&
+				flags.GameMode == GameModes.Standard)
 			{
 				// Yeah amazing coding, we'll fix it in post
 			}
