@@ -70,7 +70,7 @@ namespace FF1Randomizer
 
 	public class FlagsToStringConverter : IValueConverter
 	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => Flags.EncodeFlagsText(((Flags)value));
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => Flags.EncodeFlagsText((Flags)value);
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => Flags.DecodeFlagsText((string)value);
 	}
 }

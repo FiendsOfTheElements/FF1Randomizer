@@ -27,10 +27,10 @@
 	<p>@RomMessage</p>
 	<input type="file" id="fileInput" accept=".nes" @onchange="@OnFileChanged" />
 	<div class="checkbox-cell"></div>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="rememberCheckBox" @bind-Value="RememberROM">Remember ROM</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tournamentSafeCheckBox" @bind-Value="Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="spoilersCheckBox" @bind-Value="Flags.Spoilers">Generate Spoiler Log!</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="blindseedCheckBox" IsEnabled="@(!Flags.BlindSeed)" @bind-Value="Flags.BlindSeed">Hide Flags</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="rememberCheckBox" @bind-Value="RememberROM">Remember ROM</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="tournamentSafeCheckBox" @bind-Value="Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="spoilersCheckBox" @bind-Value="Flags.Spoilers">Generate Spoiler Log!</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="blindseedCheckBox" IsEnabled="@(!Flags.BlindSeed)" @bind-Value="Flags.BlindSeed">Hide Flags</CheckBox>
 	<p>
 		Seed:
 		<br>
@@ -41,7 +41,7 @@
 	<p>
 		Flags:
 		<br>
-		<input style="width: calc(100% - 80px);" type="text" class="nes-input" value="@Flags.Encoded" @onchange="@OnFlagsInputChanged" />
+		<input style="width: calc(100% - 80px);" type="text" class="nes-input" value="@Flagstring" @onchange="@OnFlagsInputChanged" />
 		<a class="styled-button" @onclick="@OnCopyToClipboard">Export</a>
 	</p>
 	<p>@((MarkupString)StatusMessage)</p>
@@ -50,309 +50,312 @@
 </div>
 
 
-	@code {
-		[Parameter] public FF1Lib.Flags Flags { get; set; }
-		[Parameter] public FF1Lib.Preferences Preferences { get; set; }
-		[Parameter] public Action<string> SetStatusMessage { get; set; }
-		[Parameter] public string StatusMessage { get; set; }
-		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
-		[Parameter] public bool IsOpen { get; set; } = true;
-		[Parameter] public bool showChaos { get; set; }
-		[CascadingParameter(Name="ShowModal")] public MainLayout.ShowModalT ShowModal { get; set; }
-		[CascadingParameter(Name="SetGenerating")] public MainLayout.ShowModalT SetGenerating { get; set; }
-		[CascadingParameter(Name="SetModalContent")] public MainLayout.SetContentT SetModalContent { get; set; }
-		[CascadingParameter(Name="GetCancelled")] public MainLayout.GetCancelledT GetCancelled { get; set; }
+@code {
+	[Parameter] public FF1Lib.Flags Flags { get; set; }
+	[Parameter] public FF1Lib.Preferences Preferences { get; set; }
+	[Parameter] public Action<string> SetStatusMessage { get; set; }
+	[Parameter] public string StatusMessage { get; set; }
+	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter]	public Action<string, string> UpdateAction { get; set; }
+	[Parameter] public bool IsOpen { get; set; } = true;
+	[Parameter] public bool showChaos { get; set; }
+	[Parameter] public string Flagstring { get; set; }
+	[Parameter] public Action<string> UpdateSeed { get; set; }
+	[CascadingParameter(Name="ShowModal")] public MainLayout.ShowModalT ShowModal { get; set; }
+	[CascadingParameter(Name="SetGenerating")] public MainLayout.ShowModalT SetGenerating { get; set; }
+	[CascadingParameter(Name="SetModalContent")] public MainLayout.SetContentT SetModalContent { get; set; }
+	[CascadingParameter(Name="GetCancelled")] public MainLayout.GetCancelledT GetCancelled { get; set; }
 
-		private string RomMessage = "Upload Rom:";
-		private bool RememberROM = false;
+	private string RomMessage = "Upload Rom:";
+	private bool RememberROM = false;
 
-		private byte[] _fileData;
-		private FF1Rom _rom;
+	private byte[] _fileData;
+	private FF1Rom _rom;
 
-		private string _seed;
-		private string _seedInputClass = "";
+	private string _seed;
+	private string _seedInputClass = "";
 
-		protected override async void OnInitialized()
+	protected override async void OnInitialized()
+	{
+		Flags.PropertyChanged += async (sender, args) => await SetQueryString();
+
+		var uri = new Uri(NavigationManager.Uri);
+		if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("s", out var seed))
 		{
-			Flags.PropertyChanged += async (sender, args) => await SetQueryString();
-
-			var uri = new Uri(NavigationManager.Uri);
-			if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("s", out var seed))
-			{
-				_seed = seed.Single();
-			}
-			else
-			{
-				await OnNewSeed(null);
-			}
-
-			if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
-			{
-				TrySetFlags(flags.First());
-			}
-
-			var romfile = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "file");
-			if (romfile != null) {
-				LoadLastROM(romfile);
-			}
+			_seed = seed.Single();
+			UpdateAction?.Invoke("UpdateSeed", _seed);
 		}
-
-		void LoadLastROM(string encoded)
+		else
 		{
-			RememberROM = encoded != null && encoded.Length > 0;
-			if (RememberROM)
-			{
-				SetFileData(encoded);
-				RomMessage = "Using Remembered ROM.";
-				SetStatusMessage(StatusMessage + " Remembered last used ROM.");
-			}
+			await OnNewSeed(null);
 		}
 
-		async Task OnFileChanged(ChangeEventArgs e)
+		if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
 		{
-			var encoded = await JSRuntime.InvokeAsync<string>("handleFileSelect", "fileInput");
-			RomMessage = "Using Selected ROM.";
-			SetFileData(encoded);
-
-			if (RememberROM)
-			{
-				await JSRuntime.InvokeVoidAsync("setFFRPreferences",
-								  "file",
-								  encoded);
-			}
+			TrySetFlags(flags.First());
 		}
 
-		void SetFileData(string encoded)
-		{
-			_fileData = Convert.FromBase64String(encoded);
-			using (var stream = new MemoryStream(_fileData))
-			{
-				FF1Rom temprom = new FF1Rom(stream);
-				if (temprom.HeaderLength != 16)
-				{
-					RomMessage = "ROM header length is incorrect, try a different ROM";
-					return;
-				}
-				try
-				{
-
-					temprom.AssureSafe();
-				}
-				catch (FF1Lib.FF1Rom.TournamentSafeException)
-				{
-					RomMessage = "Detected ROM hash does not match the expected hash.\nResults may vary.";
-				}
-
-			}
+		var romfile = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "file");
+		if (romfile != null) {
+			LoadLastROM(romfile);
 		}
-
-		async Task SetQueryString()
-		{
-			string[] args = new string[2] { _seed, Flags.Encoded };
-
-			await JSRuntime.InvokeAsync<Task>("updateHistory", args);
-		}
-
-		async Task OnSeedInputChanged(ChangeEventArgs e)
-		{
-			await ValidateSeed((string)e.Value);
-		}
-
-		async Task ValidateSeed(string seed)
-		{
-			if (seed == _seed)
-				return;
-
-			if (seed.Length > 8)
-			{
-				_seedInputClass = "is-error";
-				return;
-			}
-
-			_seed = seed;
-			try
-			{
-				Blob.FromHex(_seed);
-				_seed = seed.PadLeft(8, '0');
-				_seedInputClass = "";
-				await SetQueryString();
-			}
-			catch (Exception)
-			{
-				_seedInputClass = "is-error";
-			}
-		}
-
-		async Task OnNewSeed(MouseEventArgs e)
-		{
-			await ValidateSeed(Blob.Random(4).ToHex());
-			StateHasChanged();
-		}
-
-		void OnCopyToClipboard(MouseEventArgs e)
-		{
-			SetStatusMessage("URL Copied To Clipboard.");
-			StateHasChanged();
-
-			JSRuntime.InvokeAsync<object>("copyLocation");
-		}
-
-		void OnFlagsInputChanged(ChangeEventArgs e)
-		{
-			TrySetFlags((string)e.Value);
-		}
-
-		void TrySetFlags(string flags)
-		{
-			try
-			{
-				Flags = FF1Lib.Flags.DecodeFlagsText(flags);
-				SetStatusMessage("Successfully imported Flags.");
-			}
-			catch (Exception)
-			{
-				SetStatusMessage("Invalid Flags String.");
-			}
-		}
-
-		async Task OnRandomize(MouseEventArgs e)
-		{
-			if (_fileData == null)
-			{
-				SetStatusMessage("Generate Failed: No ROM File Selected!");
-				StateHasChanged();
-				return;
-			}
-
-			if (Flags.OwMapExchange == OwMapExchanges.ImportCustomMap && Flags.ReplacementMap == null) {
-				SetStatusMessage("Generate Failed: Must import a map or choose a different overworld option");
-				StateHasChanged();
-				return;
-			}
-
-			using (var stream = new MemoryStream(_fileData))
-			{
-				_rom = new FF1Rom(stream);
-			}
-
-			if (RememberROM)
-			{
-				await LocalStorage.SetItemAsync("file", Convert.ToBase64String(_fileData));
-			}
-			else
-			{
-				await LocalStorage.RemoveItemAsync("file");
-			}
-
-			SetStatusMessage("Generating Final Fantasy Randomizer ROM ... Please Wait ... ");
-			StateHasChanged();
-
-			//await Task.Run(DoRandomize);
-			await DoRandomize();
-		}
-
-		string warnings = "";
-		string lastMessage = "";
-		string modalContent = "";
-
-		async Task Progress(int step, int max, string message) {
-		      if (message.StartsWith("WARNING")) {
-		         warnings = warnings + "<br>" + message;
-			 modalContent = $"Progress: {step}/{max}<br>{warnings}";
-		      } else {
-		         if (message != "") {
-			   lastMessage = message;
-			 }
-		         modalContent = $"Progress: {step}/{max}<br>{warnings}<br>{lastMessage}";
-		      }
-		      SetModalContent(modalContent + "<br>" + StatusMessage);
-		      StateHasChanged();
-		      await Task.Delay(1);
-		      if (GetCancelled()) {
-		         throw new OperationCanceledException();
-		      }
-		}
-
-		async Task DoRandomize()
-		{
-			Blob seed;
-			try
-			{
-				if (_seed.Length != 8)
-				{
-					throw new Exception();
-				}
-				seed = Blob.FromHex(_seed);
-			}
-			catch (Exception)
-			{
-				SetStatusMessage("Generate Failed: Invalid Seed Format");
-				StateHasChanged();
-				return;
-			}
-
-			try
-			{
-				Utilities.SpoilerCache = string.Empty;
-
-				_rom.ProgressCallback = this.Progress;
-
-				this.warnings = "";
-				SetModalContent("");
-				ShowModal(true);
-				SetGenerating(true);
-				await _rom.Randomize(seed, Flags, Preferences);
-
-				var data = new byte[512 * 1024 + 16];
-				using (var stream = new MemoryStream(data, true))
-				{
-					_rom.Save(stream);
-				}
-
-				var encoded = Convert.ToBase64String(data);
-
-				SetStatusMessage(StatusMessage + "SUCCESS!");
-
-				if (Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
-				{
-					SetStatusMessage(StatusMessage + " Downloading ROM and spoiler log.");
-				}
-				else if (Flags.Spoilers && Utilities.SpoilerCache.Length == 0)
-				{
-					SetStatusMessage(StatusMessage + " No spoilers have been generated to download.");
-				}
-
-				StateHasChanged();
-
-				await JSRuntime.InvokeAsync<object>("downloadFile", $"FFR_{_seed}_{_rom.GetHash()}.nes", encoded);
-
-
-				if(Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
-				{
-					var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.SpoilerCache));
-					await JSRuntime.InvokeVoidAsync("downloadFile", $"Spoiler_{_seed}_{_rom.GetHash()}.txt", encodedSpoiler);
-				}
-
-				if (Flags.Archipelago)
-				{
-					var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.ArchipelagoCache));
-					await JSRuntime.InvokeVoidAsync("downloadFile", $"{Preferences.PlayerName}_{_seed}_{_rom.GetHash()}.yaml", encodedSpoiler);
-				}
-
-			} catch (FailedToGenerate e) {
-				SetStatusMessage(StatusMessage + "FAILURE: " + e.Message);
-			}
-			catch (Exception e)
-			{
-				SetStatusMessage(StatusMessage + "FAILURE: " + e.Message);
-				modalContent = $"{modalContent}<br><br>{e.ToString().Replace("\n", "<br>")}<br>";
-				Console.WriteLine(e.ToString());
-			} finally {
-		          SetModalContent(modalContent + "<br>" + StatusMessage);
-			  SetGenerating(false);
-			}
-			StateHasChanged();
-		}
-
-
 	}
+
+	void LoadLastROM(string encoded)
+	{
+		RememberROM = encoded != null && encoded.Length > 0;
+		if (RememberROM)
+		{
+			SetFileData(encoded);
+			RomMessage = "Using Remembered ROM.";
+			SetStatusMessage(StatusMessage + " Remembered last used ROM.");
+		}
+	}
+
+	async Task OnFileChanged(ChangeEventArgs e)
+	{
+		var encoded = await JSRuntime.InvokeAsync<string>("handleFileSelect", "fileInput");
+		RomMessage = "Using Selected ROM.";
+		SetFileData(encoded);
+
+		if (RememberROM)
+		{
+			await JSRuntime.InvokeVoidAsync("setFFRPreferences",
+									"file",
+									encoded);
+		}
+	}
+
+	void SetFileData(string encoded)
+	{
+		_fileData = Convert.FromBase64String(encoded);
+		using (var stream = new MemoryStream(_fileData))
+		{
+			FF1Rom temprom = new FF1Rom(stream);
+			if (temprom.HeaderLength != 16)
+			{
+				RomMessage = "ROM header length is incorrect, try a different ROM";
+				return;
+			}
+			try
+			{
+
+				temprom.AssureSafe();
+			}
+			catch (FF1Lib.FF1Rom.TournamentSafeException)
+			{
+				RomMessage = "Detected ROM hash does not match the expected hash.\nResults may vary.";
+			}
+
+		}
+	}
+
+	async Task SetQueryString()
+	{
+		string[] args = new string[2] { _seed, Flags.Encoded };
+
+		await JSRuntime.InvokeAsync<Task>("updateHistory", args);
+	}
+
+	async Task OnSeedInputChanged(ChangeEventArgs e)
+	{
+		await ValidateSeed((string)e.Value);
+	}
+
+	async Task ValidateSeed(string seed)
+	{
+		if (seed == _seed)
+			return;
+
+		if (seed.Length > 8)
+		{
+			_seedInputClass = "is-error";
+			return;
+		}
+
+		_seed = seed;
+		try
+		{
+			Blob.FromHex(_seed);
+			_seed = seed.PadLeft(8, '0');
+			_seedInputClass = "";
+			UpdateAction?.Invoke("UpdateSeed", _seed);
+			await SetQueryString();
+		}
+		catch (Exception)
+		{
+			_seedInputClass = "is-error";
+		}
+	}
+
+	async Task OnNewSeed(MouseEventArgs e)
+	{
+		await ValidateSeed(Blob.Random(4).ToHex());
+		StateHasChanged();
+	}
+
+	void OnCopyToClipboard(MouseEventArgs e)
+	{
+		SetStatusMessage("URL Copied To Clipboard.");
+		StateHasChanged();
+
+		JSRuntime.InvokeAsync<object>("copyLocation");
+	}
+
+	void OnFlagsInputChanged(ChangeEventArgs e)
+	{
+		TrySetFlags((string)e.Value);
+	}
+
+	void TrySetFlags(string flags)
+	{
+		try
+		{
+			Flags = FF1Lib.Flags.DecodeFlagsText(flags);
+			SetStatusMessage("Successfully imported Flags.");
+		}
+		catch (Exception)
+		{
+			SetStatusMessage("Invalid Flags String.");
+		}
+	}
+
+	async Task OnRandomize(MouseEventArgs e)
+	{
+		if (_fileData == null)
+		{
+			SetStatusMessage("Generate Failed: No ROM File Selected!");
+			StateHasChanged();
+			return;
+		}
+
+		if (Flags.OwMapExchange == OwMapExchanges.ImportCustomMap && Flags.ReplacementMap == null) {
+			SetStatusMessage("Generate Failed: Must import a map or choose a different overworld option");
+			StateHasChanged();
+			return;
+		}
+
+		using (var stream = new MemoryStream(_fileData))
+		{
+			_rom = new FF1Rom(stream);
+		}
+
+		if (RememberROM)
+		{
+			await LocalStorage.SetItemAsync("file", Convert.ToBase64String(_fileData));
+		}
+		else
+		{
+			await LocalStorage.RemoveItemAsync("file");
+		}
+
+		SetStatusMessage("Generating Final Fantasy Randomizer ROM ... Please Wait ... ");
+		StateHasChanged();
+
+		//await Task.Run(DoRandomize);
+		await DoRandomize();
+	}
+
+	string warnings = "";
+	string lastMessage = "";
+	string modalContent = "";
+
+	async Task Progress(int step, int max, string message) {
+		if (message.StartsWith("WARNING")) {
+			warnings = warnings + "<br>" + message;
+			modalContent = $"Progress: {step}/{max}<br>{warnings}";
+		} else {
+			if (message != "") {
+				lastMessage = message;
+			}
+			modalContent = $"Progress: {step}/{max}<br>{warnings}<br>{lastMessage}";
+		}
+		SetModalContent(modalContent + "<br>" + StatusMessage);
+		StateHasChanged();
+		await Task.Delay(1);
+		if (GetCancelled()) {
+			throw new OperationCanceledException();
+		}
+	}
+
+	async Task DoRandomize()
+	{
+		Blob seed;
+		try
+		{
+			if (_seed.Length != 8)
+			{
+				throw new Exception();
+			}
+			seed = Blob.FromHex(_seed);
+		}
+		catch (Exception)
+		{
+			SetStatusMessage("Generate Failed: Invalid Seed Format");
+			StateHasChanged();
+			return;
+		}
+
+		try
+		{
+			Utilities.SpoilerCache = string.Empty;
+
+			_rom.ProgressCallback = this.Progress;
+
+			this.warnings = "";
+			SetModalContent("");
+			ShowModal(true);
+			SetGenerating(true);
+			await _rom.Randomize(seed, Flags, Preferences);
+
+			var data = new byte[512 * 1024 + 16];
+			using (var stream = new MemoryStream(data, true))
+			{
+				_rom.Save(stream);
+			}
+
+			var encoded = Convert.ToBase64String(data);
+
+			SetStatusMessage(StatusMessage + "SUCCESS!");
+
+			if (Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
+			{
+				SetStatusMessage(StatusMessage + " Downloading ROM and spoiler log.");
+			}
+			else if (Flags.Spoilers && Utilities.SpoilerCache.Length == 0)
+			{
+				SetStatusMessage(StatusMessage + " No spoilers have been generated to download.");
+			}
+
+			StateHasChanged();
+
+			await JSRuntime.InvokeAsync<object>("downloadFile", $"FFR_{_seed}_{_rom.GetHash()}.nes", encoded);
+
+
+			if(Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
+			{
+				var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.SpoilerCache));
+				await JSRuntime.InvokeVoidAsync("downloadFile", $"Spoiler_{_seed}_{_rom.GetHash()}.txt", encodedSpoiler);
+			}
+
+			if (Flags.Archipelago)
+			{
+				var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.ArchipelagoCache));
+				await JSRuntime.InvokeVoidAsync("downloadFile", $"{Preferences.PlayerName}_{_seed}_{_rom.GetHash()}.yaml", encodedSpoiler);
+			}
+
+		} catch (FailedToGenerate e) {
+			SetStatusMessage(StatusMessage + "FAILURE: " + e.Message);
+		}
+		catch (Exception e)
+		{
+			SetStatusMessage(StatusMessage + "FAILURE: " + e.Message);
+			modalContent = $"{modalContent}<br><br>{e.ToString().Replace("\n", "<br>")}<br>";
+			Console.WriteLine(e.ToString());
+		} finally {
+			SetModalContent(modalContent + "<br>" + StatusMessage);
+			SetGenerating(false);
+		}
+		StateHasChanged();
+	}
+}

@@ -24,11 +24,12 @@
 	[Parameter]
 	public bool Name { get; set; }
 
-	Task onClick()
+	void onClick()
 	{
 		if (Disabled)
 		{
-			return Task.CompletedTask;
+			//return Task.CompletedTask;
+			return;
 		}
 
 		if (Value == false)
@@ -39,7 +40,9 @@
 		{
 			Value = false;
 		}
-		return ValueChanged.InvokeAsync(Value);
+
+		ValueChanged.InvokeAsync(Value);
+		UpdateAction?.Invoke("UpdateFlagstring", "");
 	}
 
 	// For some reason, using just `@oncontextmenu:preventDefault` or just handling `oncontextmenu` events did nothing to prevent the context menu from appearing!
@@ -51,17 +54,20 @@
 
 	private void ShowToolTip(MouseEventArgs e)
 	{
-		UpdateToolTip?.Invoke(Id, e);
+		UpdateAction?.Invoke("UpdateTooltip", Id);
 	}
 
 	private void HideToolTip(MouseEventArgs e)
 	{
-		UpdateToolTip?.Invoke("", e);
+		UpdateAction?.Invoke("UpdateTooltip", "");
 	}
 
 
 	[Parameter]
 	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
+
+	[Parameter]
+	public Action<string, string> UpdateAction { get; set; }
 
 	[Parameter]
 	public bool Indent { get; set; }
