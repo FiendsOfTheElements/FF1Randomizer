@@ -100,7 +100,6 @@
 		bool? RandomWares { get; }
 		bool? RandomLoot { get; }
 		bool? BetterTrapChests { get; }
-		bool? EarlierRuby { get; }
 		GuaranteedDefenseItem GuaranteedDefenseItem { get; }
 		GuaranteedPowerItem GuaranteedPowerItem { get; }
 		bool? GuaranteedMasamune { get; }
@@ -130,6 +129,7 @@
 	public interface IItemShuffleFlags
 	{
 		bool? Treasures { get; }
+		bool? ChestsKeyItems { get; }
 		bool? NPCItems { get; }
 		bool? NPCFetchItems { get; }
 		bool? EarlyKing { get; }

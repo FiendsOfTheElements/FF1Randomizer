@@ -158,6 +158,11 @@ namespace FF1Lib
 			// See 1C_A4F0_ClearZeroPageAndMore.asm
 			PutInBank(0x1F, 0xC454, Blob.FromHex("A9A448A9EF48A91C4C03FEEAEAEAEAEA"));
 			PutInBank(0x1C, 0xA4F0, Blob.FromHex("A2EFA9009500CAD0FBA91B05F485F4A20FA9009D976DCA10FAA91F4C03FE"));
+			if (flags.NoOverworld)
+			{
+				//Same ClearZeroPage routine but with an RTS at the end instead of SwapPRG
+				PutInBank(0x1E, 0xA040, Blob.FromHex("A2EFA9009500CAD0FBA91B05F485F4A20FA9009D976DCA10FA60"));
+			}
 }
 
 		public void GameScreenTracking()

@@ -7,20 +7,20 @@
 
 <div id="fun" class="framed-content">
 	<p>Fun flags are not part of the standard flags string since they do not impact gameplay. Click on Save Preferences to store your settings.</p>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="funEnemyNamesCheckBox" @bind-Value="Flags.FunEnemyNames">Fun Enemy Names</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="teamSteakCheckBox" @bind-Value="Flags.TeamSteak">Team STEAK</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="changeLuteCheckBox" @bind-Value="Flags.ChangeLute">Multi-instrumentalist Sara</CheckBox>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="titanSnackDropDown" TItem="TitanSnack" @bind-Value="Flags.TitanSnack">Titan's Favorite Snack:</EnumDropDown>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="hurrayDwarfFateDropDown" TItem="Fate" @bind-Value="Flags.HurrayDwarfFate">Hurray Dwarf's Fate:</EnumDropDown>
-    <CheckBox UpdateToolTip="@UpdateToolTipID" Id="randomShardNamesCheckBox" @bind-Value="Flags.randomShardNames">Random Shard Names</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="paletteSwapCheckBox" @bind-Value="Flags.PaletteSwap">Palette Swap</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="modernBattlefieldCheckBox" @bind-Value="Flags.ModernBattlefield">Modern Battlefield</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thirdBattlePaletteCheckBox" @bind-Value="Flags.ThirdBattlePalette">Three Battle Palettes</CheckBox>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="partyMapmanSlotDropDown" TItem="MapmanSlot" @bind-Value="Flags.MapmanSlot">Map Character Slot:</EnumDropDown>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="musicDropDown" TItem="MusicShuffle" @bind-Value="Flags.Music">Music Shuffle:</EnumDropDown>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateAirshipThemeCheckBox" @bind-Value="Flags.AlternateAirshipTheme">Alternate Airship Theme</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosBattleMusicCheckBox" @bind-Value="Flags.ChaosBattleMusic">Alternate Chaos Battle Theme</CheckBox>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="menuColorDropDown" TItem="MenuColor" @bind-Value="Flags.MenuColor">Menu Color:</EnumDropDown>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="funEnemyNamesCheckBox" @bind-Value="Preferences.FunEnemyNames">Fun Enemy Names</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="teamSteakCheckBox" @bind-Value="Preferences.TeamSteak">Team STEAK</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="changeLuteCheckBox" @bind-Value="Preferences.ChangeLute">Multi-instrumentalist Sara</CheckBox>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="titanSnackDropDown" TItem="TitanSnack" @bind-Value="Preferences.TitanSnack">Titan's Favorite Snack:</EnumDropDown>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="hurrayDwarfFateDropDown" TItem="Fate" @bind-Value="Preferences.HurrayDwarfFate">Hurray Dwarf's Fate:</EnumDropDown>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="randomShardNamesCheckBox" @bind-Value="Preferences.randomShardNames">Random Shard Names</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="paletteSwapCheckBox" @bind-Value="Preferences.PaletteSwap">Palette Swap</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="modernBattlefieldCheckBox" @bind-Value="Preferences.ModernBattlefield">Modern Battlefield</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="thirdBattlePaletteCheckBox" @bind-Value="Preferences.ThirdBattlePalette">Three Battle Palettes</CheckBox>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="partyMapmanSlotDropDown" TItem="MapmanSlot" @bind-Value="Preferences.MapmanSlot">Map Character Slot:</EnumDropDown>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="musicDropDown" TItem="MusicShuffle" @bind-Value="Preferences.Music">Music Shuffle:</EnumDropDown>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateAirshipThemeCheckBox" @bind-Value="Preferences.AlternateAirshipTheme">Alternate Airship Theme</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosBattleMusicCheckBox" @bind-Value="Preferences.ChaosBattleMusic">Alternate Chaos Battle Theme</CheckBox>
+	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="menuColorDropDown" TItem="MenuColor" @bind-Value="Preferences.MenuColor">Menu Color:</EnumDropDown>
 
 	<ToolTipBox id="spriteSheetToolTipBox" UpdateToolTip="@UpdateToolTipID">@SpriteMessage</ToolTipBox>
 	<input type="file" id="spriteSheetInput" accept="image/*" @onchange="@OnSpriteSheetChanged" />
@@ -33,7 +33,7 @@
 
 
 @code {
-	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public FF1Lib.Preferences Preferences { get; set; }
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 	[Parameter] public Action<string> SetStatusMessage { get; set; }
 	[Parameter] public Action<string> SetSpriteMessage { get; set; }
@@ -57,7 +57,7 @@
 		var properties = typeof(FF1Lib.Preferences).GetProperties(BindingFlags.Instance | BindingFlags.Public);
 		foreach (var pi in properties)
 		{
-			existingPrefs[pi.Name] = pi.GetValue(Flags.Preferences);
+			existingPrefs[pi.Name] = pi.GetValue(Preferences);
 		}
 		string jsonprefs = JsonConvert.SerializeObject(existingPrefs);
 		await JSRuntime.InvokeVoidAsync("setFFRPreferences", "preferences", jsonprefs);
@@ -67,14 +67,14 @@
 	async Task OnSpriteSheetChanged(ChangeEventArgs e)
 	{
 		Console.WriteLine("OnSpriteSheetChanged");
-		Flags.SpriteSheet = await JSRuntime.InvokeAsync<string>("handleFileSelect", "spriteSheetInput");
+		Preferences.SpriteSheet = await JSRuntime.InvokeAsync<string>("handleFileSelect", "spriteSheetInput");
 		SetSpriteMessage("Using custom sprites.");
 		StateHasChanged();
 	}
 
 	void ClearCustomSprites()
 	{
-		Flags.SpriteSheet = null;
+		Preferences.SpriteSheet = null;
 		SetSpriteMessage("Load custom player sprites:");
 		StateHasChanged();
 	}

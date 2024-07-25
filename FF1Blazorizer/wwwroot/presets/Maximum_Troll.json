@@ -85,6 +85,7 @@
 		"BlindSeed": false,
 		"Shops": true,
 		"Treasures": true,
+		"ChestsKeyItems": true,
 		"NPCItems": true,
 		"NPCFetchItems": true,
 		"RandomWares": false,
@@ -461,7 +462,6 @@
 		"Lockpicking": true,
 		"LockpickingLevelRequirement": 15,
 		"WhiteMageHarmEveryone": true,
-		"EarlierRuby": false,
 		"DisableStunTouch": true
 	}
 }

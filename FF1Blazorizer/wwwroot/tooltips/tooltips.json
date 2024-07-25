@@ -930,12 +930,17 @@
 		"screenshot": "vampAttackIncludesConeria.png",
 		"description": "Allows the Vampire to potentially attack Coneria."
 	},
-
 	{
 		"Id": "treasuresCheckBox",
 		"title": "Treasures",
 		"screenshot": "treasuresCheckBox.png",
-		"description": "Shuffle all treasures normally available to a random chest. All items are assured to be in a chest somewhere in the game."
+		"description": "Shuffle all treasures normally available to a random chest, except chests containing Key Items. All items are assured to be in a chest somewhere in the game."
+	},
+	{
+		"Id": "chestsKeyItemsCheckBox",
+		"title": "Chests Key Items",
+		"screenshot": "npcItemsCheckBox.png",
+		"description": "Add the chests containing Key Items to Items Shuffle. Include CROWN, TNT, RUBY, FLOATER, TAIL, SLAB, ADAMANT."
 	},
 	{
 		"Id": "randomLootCheckBox",
@@ -2513,9 +2518,16 @@
 		"description": "Adds damage tiles to Temple of Fiends and Temple of Fiends Revisited."
 	},
 	{
-		"Id": "damageTilesStrategy",
-		"title": "Tile Damage Generation Strategy",
-		"description": "Selects the generation strategy to use for adding damage tiles.\nConditional Neighbors: A tradeoff between quality and speed, creates feature groups that may appear blotchy. Not too slow.\nPerlin Noise: Uses Perlin noise to create natural looking damage tile patterns. SLOW.\nRandom: Add damage tiles completely at random. Usually results in a speckled appearance. Fastest."
+		"Id": "damageTilesQuantity",
+		"title": "Damage Tiles Quantity",
+		"screenshot": "damageTilesQuantity.png",
+		"description": "Select the quantity of damage tiles to add."
+	},
+	{
+		"Id": "shuffleLavaTiles",
+		"title": "Shuffle Lava Tiles",
+		"screenshot": "shuffleLavaTiles.png",
+		"description": "Changes the pattern of lava tiles in Volcano."
 	},
 	{
 		"Id": "moveToFBats",

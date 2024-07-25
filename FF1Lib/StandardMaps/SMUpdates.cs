@@ -39,7 +39,6 @@ namespace FF1Lib
 			EnableLefeinSuperStore((bool)flags.LefeinSuperStore && (flags.ShopKillMode_White == ShopKillMode.None && flags.ShopKillMode_Black == ShopKillMode.None));
 			ShuffleOrdeals((bool)flags.OrdealsPillars, rng, teleporters);
 			SkyCastle4FMode(flags.SkyCastle4FMazeMode, flags.GameMode == GameModes.DeepDungeon, rng);
-			ShuffleLavaTiles((bool)flags.ShuffleLavaTiles, rng);
 			BahamutB1Encounters((bool)flags.MapHallOfDragons, formations);
 			DragonsHoard((bool)flags.MapDragonsHoard);
 			MermaidPrison((bool)flags.MermaidPrison && (flags.GameMode != GameModes.DeepDungeon));
@@ -388,57 +387,6 @@ namespace FF1Lib
 			return (x, y);
 		}
 
-		private void ShuffleLavaTiles(bool shufflelavatiles, MT19337 rng)
-		{
-			if (!shufflelavatiles)
-			{
-				return;
-			}
-
-			List<MapIndex> lavaMaps = new() { MapIndex.GurguVolcanoB1, MapIndex.GurguVolcanoB2, MapIndex.GurguVolcanoB3, MapIndex.GurguVolcanoB4, MapIndex.GurguVolcanoB5 };
-
-			byte lavaTile = 0x3D;
-			byte encounterTile = 0x41;
-
-			foreach (var map in lavaMaps)
-			{
-				int lavacount = 0;
-				int enccount = 0;
-
-				List<SCCoords> tileCoords = new();
-				List<SCCoords> lavaCoords = new();
-				List<SCCoords> encounterCoords = new();
-
-				for (int x = 0; x < 0x40; x++)
-				{
-					for (int y = 0; y < 0x40; y++)
-					{
-						byte currentile = maps[(int)map].MapBytes[x, y];
-						if (currentile == lavaTile)
-						{
-							tileCoords.Add(new SCCoords(x, y));
-							lavacount++;
-						}
-						else if (currentile == encounterTile)
-						{
-							tileCoords.Add(new SCCoords(x, y));
-							enccount++;
-						}
-					}
-				}
-
-				for (int i = 0; i < lavacount; i++)
-				{
-					var lavatilecoord = tileCoords.SpliceRandom(rng);
-					maps[(int)map].MapBytes[lavatilecoord.X, lavatilecoord.Y] = lavaTile;
-				}
-
-				foreach (var coordleft in tileCoords)
-				{
-					maps[(int)map].MapBytes[coordleft.X, coordleft.Y] = encounterTile;
-				}
-			}
-		}
 		public void BahamutB1Encounters(bool hallofdragons, ZoneFormations zoneformations)
 		{
 			if (!hallofdragons)
