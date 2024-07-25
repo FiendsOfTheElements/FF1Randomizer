@@ -51,7 +51,8 @@
 
 
 	@code {
-		[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+		[Parameter] public FF1Lib.Flags Flags { get; set; }
+		[Parameter] public FF1Lib.Preferences Preferences { get; set; }
 		[Parameter] public Action<string> SetStatusMessage { get; set; }
 		[Parameter] public string StatusMessage { get; set; }
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
@@ -205,7 +206,7 @@
 		{
 			try
 			{
-				Flags.Flags = FF1Lib.Flags.DecodeFlagsText(flags);
+				Flags = FF1Lib.Flags.DecodeFlagsText(flags);
 				SetStatusMessage("Successfully imported Flags.");
 			}
 			catch (Exception)
@@ -300,7 +301,7 @@
 				SetModalContent("");
 				ShowModal(true);
 				SetGenerating(true);
-				await _rom.Randomize(seed, Flags.Flags, Flags.Preferences);
+				await _rom.Randomize(seed, Flags, Preferences);
 
 				var data = new byte[512 * 1024 + 16];
 				using (var stream = new MemoryStream(data, true))
@@ -335,7 +336,7 @@
 				if (Flags.Archipelago)
 				{
 					var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.ArchipelagoCache));
-					await JSRuntime.InvokeVoidAsync("downloadFile", $"{Flags.PlayerName}_{_seed}_{_rom.GetHash()}.yaml", encodedSpoiler);
+					await JSRuntime.InvokeVoidAsync("downloadFile", $"{Preferences.PlayerName}_{_seed}_{_rom.GetHash()}.yaml", encodedSpoiler);
 				}
 
 			} catch (FailedToGenerate e) {

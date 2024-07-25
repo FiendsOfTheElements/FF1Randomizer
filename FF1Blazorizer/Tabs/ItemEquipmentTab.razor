@@ -34,8 +34,8 @@
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="startingItemsDropDown" TItem="StartingItemSet" @bind-Value="Flags.StartingItemSet">Starting Inventory:</EnumDropDown>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="consumableTreasureStackSizeDropDown" TItem="TreasureStackSize" @bind-Value="Flags.ConsumableTreasureStackSize">Treasure Chest Stacks:</EnumDropDown>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="consumableChestSetDropDown" TItem="ConsumableChestSet" @bind-Value="Flags.MoreConsumableChests">Consumable Chests:</EnumDropDown>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" IsEnabled="!Flags.Etherizer" @bind-Value="Flags.HousesFillHP">House Full HP Restoration</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" IsEnabled="!Flags.HousesFillHP" @bind-Value="Flags.Etherizer">Turn Shelters into Ethers</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="housesFillHpCheckBox" IsEnabled="!Flags.Etherizer" @bind-Value="Flags.HousesFillHp">House Full HP Restoration</CheckBox>
+	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="etherizerCheckBox" IsEnabled="!Flags.HousesFillHp" @bind-Value="Flags.Etherizer">Turn Shelters into Ethers</CheckBox>
 
 	<div class="checkbox-cell"></div>			<h4>New Consumables</h4>
 	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="enableExtConsumables" TItem="ExtConsumableSet" @bind-Value="Flags.ExtConsumableSet">Consumables:</EnumDropDown>
@@ -91,7 +91,7 @@
 </div>
 
 		@code {
-			[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+			[Parameter] public FF1Lib.Flags Flags { get; set; }
 			[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 			[Parameter] public bool noTabLayout { get; set; }
 			[Parameter] public bool IsOpen { get; set; } = true;

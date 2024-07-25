@@ -17,14 +17,16 @@
 
 			<div class="checkbox-cell"></div>
 			<h4>Bosses</h4>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossScriptsCheckBox" @bind-Value="Flags.ShuffleScriptsBosses">Shuffle Scripts</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossSkillsSpellsCheckBox" @bind-Value="Flags.ShuffleSkillsSpellsBosses">Shuffle Skills & Spells</TriStateCheckBox>
+            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossRemoveBossScripts" @bind-Value="Flags.RemoveBossScripts">Remove Boss Scripts</TriStateCheckBox>
+            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossScriptsCheckBox" IsEnabled="@(Flags.RemoveBossScripts == false)" @bind-Value="Flags.ShuffleScriptsBosses">Shuffle Scripts</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bossSkillsSpellsCheckBox" IsEnabled="@(Flags.RemoveBossScripts == false)" @bind-Value="Flags.ShuffleSkillsSpellsBosses">Shuffle Skills & Spells</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsBosses != false)" Id="noConsecutiveNukesCheckBox" @bind-Value="Flags.NoConsecutiveNukes">No Consecutive NUKE or NUCLEAR</TriStateCheckBox>
+           
 
 			<div class="checkbox-cell"></div>
 			<h4>Enemies</h4>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemyScriptsCheckBox" @bind-Value="Flags.ShuffleScriptsEnemies">Shuffle Scripts</TriStateCheckBox>
-			<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleScriptsEnemies != false)" Id="scriptMultiplier" TItem="ScriptTouchMultiplier" @bind-Value="Flags.ScriptMultiplier">Script Count:</EnumDropDown>
+            <EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleScriptsEnemies != false)" Id="scriptMultiplier" TItem="ScriptTouchMultiplier" @bind-Value="Flags.ScriptMultiplier">Script Count:</EnumDropDown>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="enemySkillsSpellsCheckBox" @bind-Value="Flags.ShuffleSkillsSpellsEnemies">Shuffle Skills & Spells</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsEnemies != false)" Id="enemySkillsSpellsTieredCheckBox" @bind-Value="Flags.EnemySkillsSpellsTiered">Generate Balanced Scripts</TriStateCheckBox>
 			<CheckBox UpdateToolTip="@UpdateToolTipID" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsEnemies != false)" Id="noEmptyScripts" @bind-Value="Flags.NoEmptyScripts">No Empty Scripts</CheckBox>
@@ -61,11 +63,11 @@
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="fiendShuffleCheckBox" @bind-Value="Flags.FiendShuffle">Shuffle</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="alternateFiendsCheckBox" IsEnabled="@(!Flags.SpookyFlag)" @bind-Value="Flags.AlternateFiends">Alternate</TriStateCheckBox>
 			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="FinalFantasy1pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy1BonusFiends">Final Fantasy 1 Bonus</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="finalfanstay2pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy2Fiends">Final Fantasy 2</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="finalfanstay3pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy3Fiends">Final Fantasy 3</TriStateCheckBox>
-			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="finalfanstay4pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy4Fiends">Final Fantasy 4</TriStateCheckBox>
-            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="finalfanstay5pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy5Fiends">Final Fantasy 5</TriStateCheckBox>
-            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="finalfanstay6pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy6Fiends">Final Fantasy 6</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="finalfantasy2pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy2Fiends">Final Fantasy 2</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="finalfantasy3pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy3Fiends">Final Fantasy 3</TriStateCheckBox>
+			<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="finalfantasy4pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy4Fiends">Final Fantasy 4</TriStateCheckBox>
+            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="finalfantasy5pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy5Fiends">Final Fantasy 5</TriStateCheckBox>
+            <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="finalfantasy6pool" IsEnabled=@Flags.AlternateFiends @bind-Value="Flags.FinalFantasy6Fiends">Final Fantasy 6</TriStateCheckBox>
 			<div class="checkbox-cell"></div>
 
 			<h4>Bahamut</h4>
@@ -91,7 +93,7 @@
 
 
 	@code {
-		[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+		[Parameter] public FF1Lib.Flags Flags { get; set; }
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 		[Parameter] public bool noTabLayout { get; set; }
 		[Parameter] public bool IsOpen { get; set; } = true;

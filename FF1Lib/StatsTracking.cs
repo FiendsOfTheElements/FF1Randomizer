@@ -40,7 +40,7 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x8580, Blob.FromHex($"A0018C1640888C1640A008AD16404AB0014A6EB368AD17402903C901261E88D0EAA51EC9{hardresetbutton:X2}F00BC9{softresetbutton:X2}F004ADB368604C2EFE20A8FE20A8FE20A8FEA2FF9AA900851E9500CAD0FBA6004C12C0"));
 			PutInBank(0x1F, 0xD828, CreateLongJumpTableEntry(0x0F, 0x8580));
 			// PutInBank(0x0B, 0x9A06, Blob.FromHex("4C28D8")); Included in bank 1B changes
-			PutInBank(0x0C, 0x97C7, Blob.FromHex("2027F22028D82029ABADB36860"));
+			PutInBank(0x0C, 0x97CA, Blob.FromHex("2028D82029ABADB36860"));
 
 
 			// Put LongJump routine 6 bytes after UpdateJoy used to be
@@ -158,6 +158,11 @@ namespace FF1Lib
 			// See 1C_A4F0_ClearZeroPageAndMore.asm
 			PutInBank(0x1F, 0xC454, Blob.FromHex("A9A448A9EF48A91C4C03FEEAEAEAEAEA"));
 			PutInBank(0x1C, 0xA4F0, Blob.FromHex("A2EFA9009500CAD0FBA91B05F485F4A20FA9009D976DCA10FAA91F4C03FE"));
+			if (flags.NoOverworld)
+			{
+				//Same ClearZeroPage routine but with an RTS at the end instead of SwapPRG
+				PutInBank(0x1E, 0xA040, Blob.FromHex("A2EFA9009500CAD0FBA91B05F485F4A20FA9009D976DCA10FA60"));
+			}
 }
 
 		public void GameScreenTracking()

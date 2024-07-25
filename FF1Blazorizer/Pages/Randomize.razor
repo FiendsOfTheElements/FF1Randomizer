@@ -6,22 +6,22 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IJSRuntime JSRuntime
 
-	<div id="main-content" class="@(Flags.BlandSite ? "" : "content px-4 tinted")">
+	<div id="main-content" class="@(Preferences.BlandSite ? "" : "content px-4 tinted")">
 	<ToolTip @ref="ToolTipElement" ToolTipId="@ToolTipId" />
 	<aside id="left-column">
 
-		<FileTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" UpdateToolTipID="@UpdateToolTipID" showChaos="@showChaos" />
+		<FileTab Flags="@Flags" Preferences="@Preferences" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" UpdateToolTipID="@UpdateToolTipID" showChaos="@showChaos" />
 
 		<a class="nav-item nav-link fun @(FunEnabled ? "active" : "")" @onclick="(() => FunEnabled = true)" href="javascript:void(0);">Fun%</a>
 		<a class="nav-item nav-link fun @(FunEnabled ? "" : "active")" @onclick="(() => FunEnabled = false)" href="javascript:void(0);">Quality of Life</a>
 
 		@if (FunEnabled)
 		{
-			<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" SetSpriteMessage="@SetSpriteMessage" SpriteMessage="@SpriteSheetMessage"/>
+			<FunTab Preferences="@Preferences" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" SetSpriteMessage="@SetSpriteMessage" SpriteMessage="@SpriteSheetMessage"/>
 		}
 		else
 		{
-			<QoLTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" />
+			<QoLTab Preferences="@Preferences" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" />
 		}
 
 
@@ -37,7 +37,7 @@
 		else if (noTabLayout)
 		{
 			<PresetsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName" />
-			<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<GoalTab Flags="@Flags" Preferences="@Preferences" UpdateToolTipID ="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<IncentivesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 			<OverworldTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
@@ -66,7 +66,7 @@
 						<BSTab>
 							<BSTabLabel>Goal</BSTabLabel>
 							<BSTabContent>
-								<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<GoalTab Flags="@Flags" Preferences="@Preferences" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
@@ -156,7 +156,8 @@
 	[CascadingParameter] public bool showChaos { get; set; }
 	[CascadingParameter(Name="SetBlandSite")] public MainLayout.ShowModalT SetBlandSite { get; set; }
 
-	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
+	private Flags Flags { get; set; } = new Flags();
+	private Preferences Preferences { get; set; } = new Preferences();
 	private string ToolTipId = "unupdated";
 	private ToolTip ToolTipElement;
 	private string StatusMessage = "";
@@ -180,9 +181,9 @@
 
 		Flags.PropertyChanged += (sender, args) => StateHasChanged();
 
-		Flags.Preferences = new Preferences();
+		Preferences = new Preferences();
 		await LoadPreferences();
-		SetBlandSite(Flags.BlandSite);
+		SetBlandSite(Preferences.BlandSite);
 		StateHasChanged();
 	}
 
@@ -190,11 +191,11 @@
 	{
 		string prefs = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "preferences");
 		if (prefs == "" || prefs == null) return;
-		Flags.Preferences = JsonConvert.DeserializeObject<FF1Lib.Preferences>(prefs, new JsonSerializerSettings
+		Preferences = JsonConvert.DeserializeObject<FF1Lib.Preferences>(prefs, new JsonSerializerSettings
 		{
 			Error = (se, ev) => { ev.ErrorContext.Handled = true; }
 		});
-		if (Flags.Preferences.SpriteSheet != null)
+		if (Preferences.SpriteSheet != null)
 		{
 			SpriteSheetMessage = "Using custom sprites.";
 		}

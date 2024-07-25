@@ -58,7 +58,6 @@
 		"ExtConsumableTreasureStackSize": 0,
 		"ExtStartingItemSet": 0,
 		"ExtConsumableChests": 0,
-		"SanityCheckerV2": true,
 		"OwMapExchange": 0,
 		"OwShuffledAccess": false,
 		"OwUnsafeStart": false,
@@ -97,6 +96,8 @@
 		"BlindSeed": false,
 		"Shops": true,
 		"Treasures": true,
+		"ChestsKeyItems": true,
+		"ChestKeyItems": true,
 		"NPCItems": true,
 		"NPCFetchItems": true,
 		"RandomWares": false,
@@ -185,7 +186,6 @@
 		"AllowDeepCastles": false,
 		"AllowDeepTowns": false,
 		"MapOpenProgressionExtended": false,
-		"MapDwarvesNorthwest": false,
 		"MapAirshipDock": false,
 		"MapBahamutCardiaDock": true,
 		"MapLefeinRiver": false,
@@ -497,7 +497,6 @@
 		"ReducedLuck": false,
 		"LockpickingLevelRequirement": 33,
 		"WhiteMageHarmEveryone": true,
-		"ProcgenEarth": false,
-		"EarlierRuby": false
+		"ProcgenEarth": false
 	}
 }

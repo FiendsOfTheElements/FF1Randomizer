@@ -597,7 +597,7 @@ namespace FF1Lib
 		public class EnemyInfo
 		{
 		    public int index;
-		        public string name;
+		    public string name;
 			public int exp;
 			public int gp;
 			public int hp;

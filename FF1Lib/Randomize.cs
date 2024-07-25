@@ -149,17 +149,17 @@ public partial class FF1Rom : NesRom
 		await this.Progress();
 
 		// Maps
-		Overworld.Update(Teleporters);
 		GeneralMapHacks(flags, Overworld, Maps, ZoneFormations, TileSetsData, rng);
 		Maps.Update(ZoneFormations, rng);
 		UpdateToFR(Maps, Teleporters, TileSetsData, flags, rng);
 		Teleporters.ShuffleEntrancesAndFloors(Overworld.OverworldMap, rng, flags);
+		Overworld.Update(Teleporters);
 		EncounterRates.ScaleEncounterRate(flags);
 
 		// Tile Sets 
 		TileSetsData.Update(flags, rng);
 		TileSetsData.UpdateTrapTiles(this, ZoneFormations, flags, rng);
-		DamageTilesHack(flags, Overworld);
+		await DamageTilesHack(flags, Overworld);
 
 		await this.Progress();
 
@@ -219,7 +219,7 @@ public partial class FF1Rom : NesRom
 		sanityChecker = new SanityCheckerV2(Maps, Overworld, NpcData, Teleporters, TileSetsData, this, ShopData.ItemShopSlot);
 		if (!sanityChecker.CheckSanity(ItemLocations.AllQuestItemLocations.ToList(), null, flags, true).Complete) throw new InsaneException("Not Completable");
 
-		await this.Progress((bool)flags.Treasures ? "Shuffling Treasures" : "Placing Treasures");
+		await this.Progress(flags.VanillaPlacement ? "Placing Treasures" : "Shuffling Treasures");
 
 		// Item Placement
 		ItemPlacement itemPlacement = ItemPlacement.Create(this, flags, PlacementContext, ShopData.ItemShopSlot, Overworld, sanityChecker);
@@ -296,7 +296,6 @@ public partial class FF1Rom : NesRom
 		IncreaseDarkPenalty((bool)flags.IncreaseDarkPenalty);
 		SetPoisonMode(flags.PoisonMode);
 		new QuickMiniMap(this, Overworld.DecompressedMap).EnableQuickMinimap(flags.SpeedHacks || Overworld.MapExchange != null, Music);
-		ShopUpgrade(flags, Dialogues, preferences);
 		EnableAirBoat(flags);
 		OpenChestsInOrder(flags.OpenChestsInOrder && !flags.Archipelago);
 		SetRNG(flags);
@@ -352,6 +351,7 @@ public partial class FF1Rom : NesRom
 		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
 
 		// Quality of Life Stuff
+		ShopUpgrade(flags, Dialogues, preferences);
 		QualityOfLifeHacks(flags, preferences);
 		UseVariablePaletteForCursorAndStone(preferences.ThirdBattlePalette || flags.ResourcePack != null);
 		EnableModernBattlefield(preferences.ModernBattlefield);
@@ -408,7 +408,7 @@ public partial class FF1Rom : NesRom
 		WeaponPermissions.Write(this);
 		SpellPermissions.Write(this);
 		ClassData.Write(this);
-		Music.Write(this);
+		Music.Write(this, flags);
 
 		await this.Progress();
 

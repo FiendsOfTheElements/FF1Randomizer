@@ -1,11 +1,15 @@
 ﻿@using Microsoft.AspNetCore.Components.Web
 
-@if(DoubleCol)
+@if (BareMode)
+{
+	<input type="range" value="@Value" @onchange="@onchange" min="@Min" max="@Max" step="@Step" />
+}
+else if(DoubleCol)
 {
 <BSContainer>
 	<BSRow>
 		<BSCol LG="6">
-			<span class="@DisabledClass @IndentClass">@ChildContent @Value</span>
+				<span class="@DisabledClass @IndentClass">@ChildContent @Value</span>
 		</BSCol>
 		<div class="col-slider">
 			<input class="@DisabledClass" type="range" value="@Value" @onchange="@onchange" min="@Min" max="@Max" step="@Step" />
@@ -21,7 +25,7 @@ else
 {
 <BSContainer>
 	<BSRow>
-		<span class="@DisabledClass @IndentClass">@ChildContent @Value</span>
+			<span class="@DisabledClass @IndentClass">@ChildContent @Value</span>
 	</BSRow>
 	<BSRow>
 		<input class="@DisabledClass indent" type="range" value="@Value" @onchange="@onchange" min="@Min" max="@Max" step="@Step" />
@@ -55,6 +59,9 @@ else
 
 	[Parameter]
 	public bool DoubleCol { get; set; }
+
+	[Parameter]
+	public bool BareMode { get; set; } = false;
 
 	[Parameter]
 	public bool? IsEnabled { get; set; } = true;

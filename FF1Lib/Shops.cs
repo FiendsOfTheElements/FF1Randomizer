@@ -78,6 +78,7 @@ namespace FF1Lib
 			var shops = Shops.Where(s => s.Type == shopType).ToList();
 			var newShopEntries = shops.ToDictionary(s => s.Index, s => new List<Item>());
 			bool shopsBlocked;
+			bool requiredAdded = false;
 
 			do
 			{
@@ -88,12 +89,13 @@ namespace FF1Lib
 				allEntries.Shuffle(rng);
 
 				// Insert guaranteed items
-				if (shopType == ShopType.Item && (bool)flags.ImmediatePureAndSoftRequired)
+				if (shopType == ShopType.Item && (bool)flags.ImmediatePureAndSoftRequired && !requiredAdded)
 				{
 					allEntries.Remove(Item.Pure);
 					allEntries.Remove(Item.Soft);
 
 					newShopEntries[60 + coneriaEntranceShopIndex].AddRange(new List<Item>(){ Item.Pure, Item.Soft });
+					requiredAdded = true;
 				}
 
 				int entry = 0;

@@ -40,45 +40,45 @@ namespace FF1Lib
 			switch (Rng.Between(rng, start, 8))
 			{
 				case 1:
-					maps[(byte)MapIndex.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
-					maps[(byte)MapIndex.ConeriaTown] = new Map(Blob.FromHex(blighted_coneria).ToBytes());
+					mapDataGroups[(byte)MapIndex.Melmond].Map = new Map(Blob.FromHex(repaired_melmond).ToBytes());
+					mapDataGroups[(byte)MapIndex.ConeriaTown].Map = new Map(Blob.FromHex(blighted_coneria).ToBytes());
 					selectedMap = MapIndex.ConeriaTown;
 					// The "repaired Melmond" map defaults to having Coneria's item shop.
 					break;
 				case 2:
-					maps[(byte)MapIndex.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
-					maps[(byte)MapIndex.Pravoka] = new Map(Blob.FromHex(blighted_pravoka).ToBytes());
+					mapDataGroups[(byte)MapIndex.Melmond].Map = new Map(Blob.FromHex(repaired_melmond).ToBytes());
+					mapDataGroups[(byte)MapIndex.Pravoka].Map = new Map(Blob.FromHex(blighted_pravoka).ToBytes());
 					// Replace the item shop in "repaired Melmond" with the blighted town's item shop.
-					maps[(byte)MapIndex.Melmond][0x0F, 0x1B] = 0x78;
+					mapDataGroups[(byte)MapIndex.Melmond].Map[0x0F, 0x1B] = 0x78;
 					selectedMap = MapIndex.Pravoka;
 					break;
 				case 3:
-					maps[(byte)MapIndex.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
-					maps[(byte)MapIndex.Elfland] = new Map(Blob.FromHex(blighted_elfland).ToBytes());
-					maps[(byte)MapIndex.Melmond][0x0F, 0x1B] = 0x79;
+					mapDataGroups[(byte)MapIndex.Melmond].Map = new Map(Blob.FromHex(repaired_melmond).ToBytes());
+					mapDataGroups[(byte)MapIndex.Elfland].Map = new Map(Blob.FromHex(blighted_elfland).ToBytes());
+					mapDataGroups[(byte)MapIndex.Melmond].Map[0x0F, 0x1B] = 0x79;
 					selectedMap = MapIndex.Elfland;
 					break;
 				case 4:
-					maps[(byte)MapIndex.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
-					maps[(byte)MapIndex.CrescentLake] = new Map(Blob.FromHex(blighted_crescent).ToBytes());
-					maps[(byte)MapIndex.Melmond][0x0F, 0x1B] = 0x7A;
+					mapDataGroups[(byte)MapIndex.Melmond].Map = new Map(Blob.FromHex(repaired_melmond).ToBytes());
+					mapDataGroups[(byte)MapIndex.CrescentLake].Map = new Map(Blob.FromHex(blighted_crescent).ToBytes());
+					mapDataGroups[(byte)MapIndex.Melmond].Map[0x0F, 0x1B] = 0x7A;
 					selectedMap = MapIndex.CrescentLake;
 					break;
 				case 5:
-					maps[(byte)MapIndex.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
-					maps[(byte)MapIndex.Gaia] = new Map(Blob.FromHex(blighted_gaia).ToBytes());
-					maps[(byte)MapIndex.Melmond][0x0F, 0x1B] = 0x7B;
+					mapDataGroups[(byte)MapIndex.Melmond].Map = new Map(Blob.FromHex(repaired_melmond).ToBytes());
+					mapDataGroups[(byte)MapIndex.Gaia].Map = new Map(Blob.FromHex(blighted_gaia).ToBytes());
+					mapDataGroups[(byte)MapIndex.Melmond].Map[0x0F, 0x1B] = 0x7B;
 					selectedMap = MapIndex.Gaia;
 					break;
 				case 6:
-					maps[(byte)MapIndex.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
-					maps[(byte)MapIndex.Onrac] = new Map(Blob.FromHex(blighted_onrac).ToBytes());
-					maps[(byte)MapIndex.Melmond][0x0F, 0x1B] = 0x7C;
+					mapDataGroups[(byte)MapIndex.Melmond].Map = new Map(Blob.FromHex(repaired_melmond).ToBytes());
+					mapDataGroups[(byte)MapIndex.Onrac].Map = new Map(Blob.FromHex(blighted_onrac).ToBytes());
+					mapDataGroups[(byte)MapIndex.Melmond].Map[0x0F, 0x1B] = 0x7C;
 					selectedMap = MapIndex.Onrac;
 					break;
 				case 7:
-					maps[(byte)MapIndex.Melmond] = new Map(Blob.FromHex(repaired_melmond).ToBytes());
-					maps[(byte)MapIndex.Lefein] = new Map(Blob.FromHex(blighted_lefein).ToBytes());
+					mapDataGroups[(byte)MapIndex.Melmond].Map = new Map(Blob.FromHex(repaired_melmond).ToBytes());
+					mapDataGroups[(byte)MapIndex.Lefein].Map = new Map(Blob.FromHex(blighted_lefein).ToBytes());
 					// If Lefein is attacked when Hospitality is active, restore the Inn (Clinic is still destroyed)
 					if (lefeinHospitality)
 					{
@@ -88,7 +88,7 @@ namespace FF1Lib
 							Blob.FromHex("1B251B"),
 							Blob.FromHex("1C711C"),
 						};
-						maps[(int)MapIndex.Lefein].Put((0x10, 0x04), restoredInn.ToArray());
+						mapDataGroups[(int)MapIndex.Lefein].Map.Put((0x10, 0x04), restoredInn.ToArray());
 					}
 					selectedMap = MapIndex.Lefein;
 					// Lefein never had an item shop so we fall back on the default Coneria.

@@ -8,12 +8,12 @@
 	<div class="col1">
 		<h4>Entrance Shuffle</h4>
 		<p>Try shuffling dungeon entrances, floors, and towns to create a completely new world to explore!</p>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="entrancesCheckBox" IsEnabled="@(Flags.Treasures & Flags.NPCItems & (Flags.GameMode != GameModes.DeepDungeon))" @bind-Value="Flags.Entrances">Entrances</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="entrancesCheckBox" IsEnabled="@(Flags.ChestsKeyItems & Flags.NPCItems & (Flags.GameMode != GameModes.DeepDungeon))" @bind-Value="Flags.Entrances">Entrances</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="allowUnsafeStartAreaCheckBox" IsEnabled="@(Flags.Entrances & Flags.GameMode == GameModes.Standard)" @bind-Value="Flags.AllowUnsafeStartArea">Allow Unsafe Start</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="deadEndsCheckBox" IsEnabled="@(Flags.Entrances & Flags.GameMode == GameModes.Standard)" @bind-Value="Flags.EntrancesIncludesDeadEnds">Include Dead Ends</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="floorsCheckBox" IsEnabled="@(Flags.Entrances)" @bind-Value="Flags.Floors">Floors</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="allowDeepCastlesCheckBox" IsEnabled="@(Flags.DeepCastlesPossible)" @bind-Value="Flags.AllowDeepCastles">Deep ToFR</TriStateCheckBox>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="townsCheckBox" IsEnabled="@(Flags.Treasures & Flags.NPCItems & (Flags.GameMode != GameModes.DeepDungeon))" @bind-Value="Flags.Towns">Towns</TriStateCheckBox>
+		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="townsCheckBox" IsEnabled="@(Flags.NPCItems & (Flags.GameMode != GameModes.DeepDungeon))" @bind-Value="Flags.Towns">Towns</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="includeConeriaCheckBox" IsEnabled="@(Flags.Towns)" @bind-Value="Flags.IncludeConeria">Include Coneria</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="mixEntrancesCheckBox" IsEnabled="@(Flags.Towns & Flags.Entrances)" @bind-Value="Flags.EntrancesMixedWithTowns">Mix All Entrances Together</TriStateCheckBox>
 		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="deepTownsCheckBox" IsEnabled="@(Flags.DeepTownsPossible & Flags.GameMode == GameModes.Standard)" @bind-Value="Flags.AllowDeepTowns">Deep Towns</TriStateCheckBox>
@@ -62,7 +62,7 @@
 
 
 	@code {
-		[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+		[Parameter] public FF1Lib.Flags Flags { get; set; }
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
 		[Parameter] public bool noTabLayout { get; set; }
 		[Parameter] public bool IsOpen { get; set; } = true;

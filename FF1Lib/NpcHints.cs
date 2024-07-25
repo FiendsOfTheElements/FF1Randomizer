@@ -424,7 +424,7 @@ namespace FF1Lib
 	    }
 		public void NPCHints(MT19337 rng, NpcObjectData npcdata, StandardMaps maps, DialogueData dialogues, Flags flags, PlacementContext incentivedata, SanityCheckerV2 sanitychecker, ItemPlacement itemPlacement, ShopData shopdata)
 		{
-			if (!(bool)flags.HintsVillage || flags.GameMode == GameModes.DeepDungeon || !(bool)flags.Treasures || flags.Archipelago )
+			if (!(bool)flags.HintsVillage || flags.GameMode == GameModes.DeepDungeon || flags.Archipelago )
 			{
 				return;
 			}
@@ -608,6 +608,10 @@ namespace FF1Lib
 
 	    public void SkyWarriorSpoilerBats(MT19337 rng, Flags flags, NpcObjectData npcdata, DialogueData dialogues, EnemyScripts enemyScripts) {
 			if (flags.SkyWarriorSpoilerBats == SpoilerBatHints.Vanilla)
+			{
+				return;
+			}
+			if ((bool)flags.RemoveBossScripts)
 			{
 				return;
 			}

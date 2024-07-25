@@ -293,7 +293,7 @@ namespace FF1Lib
 			dialogues[0xF0 + 0x50] = "In the treasure box,\nyou found..\n#";
 
 			// Remove reference to "Cave of Marsh" from Astos dialog, unless Crown not shuffled
-			if (flags.IncentivizeFetchNPCs != false || flags.Treasures != false)
+			if (flags.IncentivizeFetchNPCs != false || flags.ChestsKeyItems != false)
 			{
 				dialogues[0x11] = "Astos double-crossed us.\nFind where they stashed\nthe CROWN. Then bring it\ndirectly back to me!";
 			}
