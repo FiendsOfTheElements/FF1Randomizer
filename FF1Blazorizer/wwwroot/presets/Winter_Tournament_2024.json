@@ -97,7 +97,6 @@
 		"Shops": true,
 		"Treasures": true,
 		"ChestsKeyItems": true,
-		"ChestKeyItems": true,
 		"NPCItems": true,
 		"NPCFetchItems": true,
 		"RandomWares": false,
