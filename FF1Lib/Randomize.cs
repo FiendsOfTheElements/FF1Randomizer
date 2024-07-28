@@ -1,3 +1,4 @@
+using FF1Lib.Music;
 using FF1Lib.Procgen;
 using RomUtilities;
 namespace FF1Lib;
@@ -30,6 +31,7 @@ public partial class FF1Rom : NesRom
 	public EnemyScripts EnemyScripts;
 	public ShopData ShopData;
 	public MusicTracks Music;
+	public NewMusic NewMusic;
 
 	public DeepDungeon DeepDungeon;
 
@@ -104,6 +106,7 @@ public partial class FF1Rom : NesRom
 		EncounterRates = new EncounterRate(this);
 		EnemyScripts = new EnemyScripts(this);
 		Music = new MusicTracks();
+		
 
 		await this.Progress();
 
@@ -114,7 +117,8 @@ public partial class FF1Rom : NesRom
 
 		// Apply general fixes and hacks
 		FF1Text.AddNewIcons(this, flags);
-		Music.ShuffleMusic(this, preferences.Music, preferences.AlternateAirshipTheme, preferences.ChaosBattleMusic, new MT19337(funRng.Next()));
+		Music.ShuffleMusic(this, preferences, new MT19337(funRng.Next()));
+		NewMusic = new NewMusic(this);
 		Bugfixes(flags);
 		GlobalImprovements(flags, Maps, preferences);
 		MiscHacks(flags, rng);
@@ -408,7 +412,8 @@ public partial class FF1Rom : NesRom
 		WeaponPermissions.Write(this);
 		SpellPermissions.Write(this);
 		ClassData.Write(this);
-		Music.Write(this, flags);
+		Music.Write(this, flags, preferences);
+		NewMusic.Write(this, preferences);
 
 		await this.Progress();
 
