@@ -211,7 +211,8 @@
 	{
 		try
 		{
-			Flags = FF1Lib.Flags.DecodeFlagsText(flags);
+			Flags.ReadFromFlags(FF1Lib.Flags.DecodeFlagsText(flags));
+			UpdateAction?.Invoke("UpdateFlagstring", _seed);
 			SetStatusMessage("Successfully imported Flags.");
 		}
 		catch (Exception)
