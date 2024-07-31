@@ -102,7 +102,7 @@ namespace FF1Randomizer
 			await rom.Randomize(Blob.FromHex(_model.Seed), _model.Flags, _model.Preferences);
 
 			var fileRoot = _model.Filename.Substring(0, _model.Filename.LastIndexOf("."));
-			var outputFilename = $"{fileRoot}_{_model.Seed}_{FlagsTextBox.Text}.nes";
+			var outputFilename = $"{fileRoot}_{_model.Seed}_{rom.GetHash()}.nes";
 			rom.Save(outputFilename);
 
 			MessageBox.Show($"Finished generating new ROM: {outputFilename}", "Done");
