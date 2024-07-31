@@ -2,6 +2,8 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
+using Microsoft.VisualBasic;
+using System.Collections.ObjectModel;
 
 namespace FF1Lib
 {
@@ -1202,31 +1204,40 @@ namespace FF1Lib
 	    }
 
 	    public void SetCustomWeaponGraphics(Stream stream) {
-		//IImageFormat format;
-		Image<Rgba32> image = Image.Load<Rgba32>(stream);
+			//IImageFormat format;
+			Image<Rgba32> image = Image.Load<Rgba32>(stream);
 
-		const int WEAPONMAGICGRAPHIC_OFFSET =			0x26800;
+			const int WEAPONMAGICGRAPHIC_OFFSET =			0x26800;
 
-		Dictionary<Rgba32, byte> index = new Dictionary<Rgba32, byte> {
-		    { new Rgba32(0x00, 0x00, 0x00), 0 },
-		    { new Rgba32(0x7b, 0x7b, 0x7b), 1 },
-		    { new Rgba32(0xbd, 0xbd, 0xbd), 2 },
-		    { new Rgba32(0xff, 0xff, 0xff), 3 }
-		};
+			Dictionary<Rgba32, byte> index = new Dictionary<Rgba32, byte> {
+				{ new Rgba32(0x00, 0x00, 0x00), 0 },
+				{ new Rgba32(0x7b, 0x7b, 0x7b), 1 },
+				{ new Rgba32(0xbd, 0xbd, 0xbd), 2 },
+				{ new Rgba32(0xff, 0xff, 0xff), 3 }
+			};
 
-		int n = 0;
-		for (int w = 0; w < 12; w++) {
-		    for (int y = 0; y < 16; y += 8) {
-			for (int x = (w*16); x < (w+1)*16; x += 8) {
-			    var tile = makeTile(image, y, x, index);
-			    Put(WEAPONMAGICGRAPHIC_OFFSET + (n*16), EncodeForPPU(tile));
-			    n++;
+			int n = 0;
+			for (int w = 0; w < 12; w++) {
+				for (int y = 0; y < 16; y += 8) {
+					for (int x = (w*16); x < (w+1)*16; x += 8) {
+						byte[] tile;
+						try
+						{
+							tile = makeTile(image, y, x, index);
+						}
+						catch (KeyNotFoundException)
+						{
+							Task task = Progress("WARNING: weapons.png contains incorrect colors. Quantizing.");
+							tile = makeTileQuantize(image, y, x, index);
+						}
+						Put(WEAPONMAGICGRAPHIC_OFFSET + (n*16), EncodeForPPU(tile));
+						n++;
+					}
+				}
 			}
-		    }
-		}
 	    }
 
-	    public void SetCustomGearIcons(Stream stream) {
+		public void SetCustomGearIcons(Stream stream) {
 		//IImageFormat format;
 		Image<Rgba32> image = Image.Load<Rgba32>(stream);
 
@@ -1517,6 +1528,53 @@ namespace FF1Lib
 				for (int x = left; x < (left + 8); x++)
 				{
 					newtile[px] = index[selectColor(image[x, y], NESpalette)];
+					px++;
+				}
+			}
+			return newtile;
+		}
+
+		// Finds the closest color to a provided list of colors
+		private Rgba32 FindClosestColor(Rgba32 color, List<Rgba32> destColors)
+		{
+			List<double> distances = new List<double>();
+			for (int i = 0; i < destColors.Count; i++)
+			{
+				distances.Add(
+					Math.Sqrt(
+						Math.Pow((color.R - destColors[i].R), 2) +
+						Math.Pow((color.G - destColors[i].G), 2) +
+						Math.Pow((color.B - destColors[i].B), 2)
+						)
+					);
+			}
+			int min = distances.IndexOf(distances.Min());
+			return destColors[min];
+		}
+		private byte[] makeTileQuantize(Image<Rgba32> image, int top, int left, Dictionary<Rgba32, byte> toIndex)
+		{
+			HashSet<Rgba32> srcColors = new HashSet<Rgba32>();
+			for (int y = top; y < (top + 8); y++)
+			{
+				for (int x = left; x < (left + 8); x++)
+				{
+					srcColors.Add(image[x, y]);
+				}
+			}
+			var imageColorToIndexColor = new Dictionary<Rgba32, Rgba32>();
+			foreach (Rgba32 color in srcColors)
+			{
+				imageColorToIndexColor[color] = FindClosestColor(color, toIndex.Keys.ToList());
+			}
+
+			var newtile = new byte[64];
+			int px = 0;
+
+			for (int y = top; y < (top + 8); y++)
+			{
+				for (int x = left; x < (left + 8); x++)
+				{
+					newtile[px] = toIndex[imageColorToIndexColor[image[x, y]]];
 					px++;
 				}
 			}
