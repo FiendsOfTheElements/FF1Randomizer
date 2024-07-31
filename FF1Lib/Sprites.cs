@@ -1211,9 +1211,9 @@ namespace FF1Lib
 
 			Dictionary<Rgba32, byte> index = new Dictionary<Rgba32, byte> {
 				{ new Rgba32(0x00, 0x00, 0x00), 0 },
-				{ new Rgba32(0x7b, 0x7b, 0x7b), 1 },
+				{ new Rgba32(0xff, 0xff, 0xff), 1 },
 				{ new Rgba32(0xbd, 0xbd, 0xbd), 2 },
-				{ new Rgba32(0xff, 0xff, 0xff), 3 }
+				{ new Rgba32(0x7b, 0x7b, 0x7b), 3 }
 			};
 
 			int n = 0;
