@@ -95,7 +95,10 @@ namespace FF1Randomizer
 		private async void GenerateButton_Click(object sender, RoutedEventArgs e)
 		{
 			var rom = new FF1Rom(_model.Filename);
-			_model.Flags.ResourcePack = Convert.ToBase64String(File.ReadAllBytes(ResourcePackTextBox.Text));
+			if (_model.Flags.ResourcePack != null)
+			{
+				_model.Flags.ResourcePack = Convert.ToBase64String(File.ReadAllBytes(ResourcePackTextBox.Text));
+			}
 			await rom.Randomize(Blob.FromHex(_model.Seed), _model.Flags, _model.Preferences);
 
 			var fileRoot = _model.Filename.Substring(0, _model.Filename.LastIndexOf("."));
