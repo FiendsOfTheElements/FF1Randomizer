@@ -95,6 +95,7 @@ namespace FF1Randomizer
 		private async void GenerateButton_Click(object sender, RoutedEventArgs e)
 		{
 			var rom = new FF1Rom(_model.Filename);
+			_model.Flags.ResourcePack = Convert.ToBase64String(File.ReadAllBytes(ResourcePackTextBox.Text));
 			await rom.Randomize(Blob.FromHex(_model.Seed), _model.Flags, _model.Preferences);
 
 			var fileRoot = _model.Filename.Substring(0, _model.Filename.LastIndexOf("."));
@@ -219,5 +220,18 @@ namespace FF1Randomizer
 			SetScaleFactorLabel(BossScaleFactorSlider, BossScaleFactorLabel, ClampBossesCheckBox);
 		}
 
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			var openFileDialog = new OpenFileDialog
+			{
+				Filter = "Zip files (*.zip)|*.zip"
+			};
+
+			var result = openFileDialog.ShowDialog(this);
+			if (result == true)
+			{
+				ResourcePackTextBox.Text = openFileDialog.FileName;
+			}
+		}
 	}
 }

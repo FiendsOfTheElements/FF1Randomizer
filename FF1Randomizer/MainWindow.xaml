@@ -6,804 +6,810 @@
         xmlns:local="clr-namespace:FF1Randomizer"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}" Height="580" Width="900">
-	<Window.Resources>
-		<local:FlagsToStringConverter x:Key="FlagsToStringConverter"/>
-		<Style TargetType="CheckBox">
-			<Setter Property="Margin" Value="10,5,0,0"/>
-		</Style>
-	</Window.Resources>
-	<Grid Margin="0,0,0,0">
-		<TextBox x:Name="RomTextBox" HorizontalAlignment="Left" Height="23" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" IsEnabled="False"/>
-		<Label x:Name="RomLabel" Content="Original ROM" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
-		<Button x:Name="RomButton" Content="Browse..." HorizontalAlignment="Left" Margin="135,36,0,0" VerticalAlignment="Top" Width="75" Click="RomButton_Click"/>
-		<Label x:Name="SeedLabel" Content="Seed" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
-		<TextBox x:Name="SeedTextBox" Text="{Binding Seed}" HorizontalAlignment="Left" Height="23" Margin="10,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-		<Button x:Name="GenerateButton" Content="Generate ROM" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="150" FontSize="20" IsEnabled="False" Click="GenerateButton_Click" Height="46"/>
-		<Button x:Name="AboutButton" Content="About FF1 Randomizer" HorizontalAlignment="Right" Margin="0,61,10,0" VerticalAlignment="Top" Width="150" Height="24" Click="AboutButton_Click"/>
-		<TextBox x:Name="FlagsTextBox" Text="{Binding Path=Flags, Converter={StaticResource FlagsToStringConverter}}" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="229,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="494"/>
-		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="229,64,0,0" VerticalAlignment="Top" FontWeight="Bold" RenderTransformOrigin="-0.359,0.486"/>
-		<Label x:Name="PresetLabel" HorizontalAlignment="Left" Margin="278,64,0,0" VerticalAlignment="Top">
-			<Hyperlink Click="LoadPreset">Load Preset...</Hyperlink>
-		</Label>
-		<Button x:Name="CopyButton" Content="Export" HorizontalAlignment="Left" Margin="728,90,0,0" VerticalAlignment="Top" Width="80" Height="23" Click="CopyButton_Click"/>
-		<Button x:Name="PasteButton" Content="Import" HorizontalAlignment="Left" Margin="813,90,0,0" VerticalAlignment="Top" Width="62" Height="23" Click="PasteButton_Click"/>
-		<Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="135,90,0,0" VerticalAlignment="Top" Width="89" Height="23" Click="SeedButton_Click"/>
-		<TabControl x:Name="tabControl" Margin="10,118,10,10">
-			<TabItem Header="Shuffle">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="77*"/>
-						<ColumnDefinition Width="19*"/>
-						<ColumnDefinition Width="12*"/>
-						<ColumnDefinition Width="132*"/>
-						<ColumnDefinition Width="193*"/>
-						<ColumnDefinition Width="87*"/>
-						<ColumnDefinition Width="346*"/>
-					</Grid.ColumnDefinitions>
-					<StackPanel Orientation="Vertical" Grid.Column="0" Grid.ColumnSpan="6" Margin="0,0,72,0">
-						<CheckBox x:Name="ShopsCheckBox" IsChecked="{Binding Flags.Shops}" IsThreeState="True" Content="Shops" ToolTip="Shop contents (other than magic) are shuffled."/>
-						<CheckBox x:Name="RandomWaresCheckBox" IsChecked="{Binding Flags.RandomWares}" IsThreeState="True" IsEnabled="{Binding Flags.Shops}" Content="Random Weapons and Armor" ToolTip="Shop contents (other than magic) are shuffled." Margin="30,5,0,0"/>
-						<CheckBox x:Name="IncludeCasterItemsCheckBox" IsChecked="{Binding Flags.RandomWaresIncludesSpecialGear}" IsEnabled="{Binding Flags.CanIncludeSpecialGear}" IsThreeState="True" Content="Including Caster Items and Elite Gear" ToolTip="Shuffled shops permits elite gear." Margin="30,5,0,0"/>
-						<CheckBox x:Name="MagicShopsCheckBox" IsChecked="{Binding Flags.MagicShops}" IsThreeState="True" Content="Magic Shops" ToolTip="Magic shop contents are shuffled."/>
-						<CheckBox x:Name="MagicLevelsCheckBox" IsChecked="{Binding Flags.MagicLevels}" IsThreeState="True" Content="Magic Levels" ToolTip="Magic spells have their levels shuffled."/>
-						<CheckBox x:Name="MagicPermissionsCheckBox" IsChecked="{Binding Flags.MagicPermissions}" IsThreeState="True" IsEnabled="{Binding Flags.MagicLevels}" Content="Keep Permissions" ToolTip="Retain the permissions of spells, even if they're shuffled to lower levels." Margin="30,5,0,0"/>
-						<CheckBox x:Name="ItemMagicCheckBox" IsChecked="{Binding Flags.ItemMagic}" IsThreeState="True" Content="Item Magic" ToolTip="Magic items have randomly assigned spells."/>
-						<CheckBox x:Name="SpellcrafterCheckBox" IsChecked="{Binding Flags.GenerateNewSpellbook}" IsThreeState="True" Content="Generate New Spellbook" ToolTip="Generates a new spellbook with spells appropriate to their level placement."/>
-						<CheckBox x:Name="SpellcrafterPermsCheckBox" IsChecked="{Binding Flags.SpellcrafterRetainPermissions}" IsThreeState="True" IsEnabled="{Binding Flags.GenerateNewSpellbook}" Content="Retain Old Permissions" ToolTip="Spell permissions are not altered, i.e. Red Mage has first and third slots of tier 3 white" Margin="30,5,0,0"/>
-						<CheckBox x:Name="MixSpellcrafter" IsChecked="{Binding Flags.SpellcrafterMixSpells}" IsThreeState="True" IsEnabled="{Binding Flags.GenerateNewSpellbook}" Content="Mix Spellbooks" ToolTip="Mixes the spell families when spellcrafter is on." Margin="30,5,0,0"/>
-						<Label Margin="5,5,0,0"/>
-						<CheckBox x:Name="RngCheckBox" IsChecked="{Binding Flags.Rng}" Content="RNG Table" IsThreeState="True" ToolTip="Shuffle the RNG table so that encounters are more difficult to predict."/>
-					</StackPanel>
-					<StackPanel Orientation="Vertical" Grid.Column="5" Grid.ColumnSpan="2">
-						<CheckBox x:Name="EnemyScriptsCheckBox" IsChecked="{Binding Flags.EnemyScripts}" IsThreeState="True" Content="Enemy Scripts" ToolTip="Enemy scripts are shuffled to different enemies."/>
-						<CheckBox x:Name="AllowUnsafePiratesCheckBox" IsChecked="{Binding Flags.AllowUnsafePirates}" IsThreeState="True" IsEnabled="{Binding Flags.EnemyScripts}" Content="Allow Unsafe Pirates" ToolTip="Enemy scripts are shuffled to different enemies." Margin="30,5,0,0"/>
-						<CheckBox x:Name="EnemySkillsSpellsCheckBox" IsChecked="{Binding Flags.EnemySkillsSpells}" IsThreeState="True" Content="Enemy Skills/Spells" ToolTip="Enemy skills and spells are shuffled to other scripts."/>
-						<CheckBox x:Name="EnemyStatusAttacksCheckBox" IsChecked="{Binding Flags.EnemyStatusAttacks}" IsThreeState="True" Content="Enemy Status Attacks" ToolTip="Status attacks such as stun, sleep, and death are shuffled."/>
-						<CheckBox x:Name="EnemyStatusAttacksRandomizedCheckBox" IsChecked="{Binding Flags.RandomStatusAttacks}" IsEnabled="{Binding Flags.EnemyStatusAttacks}" IsThreeState="True" Content="Randomize Status Attacks" ToolTip="Enemies roll random status attacks" Margin="30,5,0,0"/>
-						<CheckBox x:Name="EnemyFormationsUnrunnableCheckBox" IsChecked="{Binding Flags.EnemyFormationsUnrunnable}" IsThreeState="True" Content="Enemy Unrunnable Formations" ToolTip="Enemy Unrunnable Formations"/>
-						<CheckBox x:Name="AllFormationsUnrunnableCheckBox" IsChecked="{Binding Flags.EverythingUnrunnable}" IsEnabled="{Binding Flags.EnemyFormationsUnrunnable}" IsThreeState="True" Content="All Formations Are Unrunnable" ToolTip="All formations are unrunnable" Margin="30,5,0,0"/>
-						<CheckBox x:Name="UnrunnablesCanStrikeFirstAndSurpriseBox" IsChecked="{Binding Flags.UnrunnablesStrikeFirstAndSurprise}" IsThreeState="True" Content="Unrunnables Can Ambush/Be Ambushed" ToolTip="Unrunnable formations can strike first or surprise"/>
-						<CheckBox x:Name="EnemyFormationsSurpriseCheckBox" IsChecked="{Binding Flags.EnemyFormationsSurprise}" IsThreeState="True" Content="Enemy Surprise Bonus" ToolTip="Enemy Surprise Bonus"/>
-						<ComboBox x:Name="EnemyFormationsComboBox" SelectedValue="{Binding Flags.FormationShuffleModeEnum}" Width="220" HorizontalAlignment="Left" Margin="10,5,0,0" SelectedValuePath="Tag">
-							<ComboBoxItem Tag="None">Don't Shuffle Formations</ComboBoxItem>
-							<ComboBoxItem Tag="Intrazone">Shuffle Frequency Within Zones</ComboBoxItem>
-							<ComboBoxItem Tag="Interzone">Shuffle Formations Across Zones</ComboBoxItem>
-							<ComboBoxItem Tag="Randomize">Randomize Formations</ComboBoxItem>
-						</ComboBox>
-						<CheckBox x:Name="EnemyTrapTilesCheckBox" IsChecked="{Binding Flags.EnemyTrapTiles}" IsThreeState="True" Content="Enemy Forced Encounter Tiles" ToolTip="Shuffle trap tile battles amongst one another."/>
-						<CheckBox x:Name="RandomTrapFormationsCheckBox" IsChecked="{Binding Flags.RandomTrapFormations}" IsEnabled="{Binding Flags.EnemyTrapTiles}" IsThreeState="True" Content="Use Random Formations" ToolTip="Trap battles are instead selected at random from formation 2 battles." Margin="30,5,0,0"/>
-						<CheckBox x:Name="EnemizerFormationsCheckBox" IsChecked="{Binding Flags.RandomizeFormationEnemizer}" IsThreeState="True" Content="Generate New Formations (Enemizer)" ToolTip="Generates new formations.  Turns off the ability to shuffle trap tiles or shuffle encounter zones."/>
-						<CheckBox x:Name="EnemizerCheckBox" IsChecked="{Binding Flags.RandomizeEnemizer}" Content="Generate New Enemies (Enemizer)" IsEnabled="{Binding Flags.RandomizeFormationEnemizer}" IsThreeState="True" ToolTip="Generates new enemies procedurally.  Requires generating new formations in order to work." Margin="30,5,0,0"/>
-						<ComboBox x:Name="WarMechModeComboBox" SelectedValue="{Binding Flags.WarMECHMode}" Width="220" HorizontalAlignment="Left" Margin="10,5,0,0" SelectedValuePath="Tag">
-							<ComboBoxItem Tag="Vanilla">WarMECH Vanilla</ComboBoxItem>
-							<ComboBoxItem Tag="Patrolling">WarMECH Patrolling</ComboBoxItem>
-							<ComboBoxItem Tag="Required">WarMECH Required</ComboBoxItem>
-							<ComboBoxItem Tag="Unleashed">WarMECH Unleashed</ComboBoxItem>
-						</ComboBox>
-					</StackPanel>
-				</Grid>
-			</TabItem>
-			<TabItem Header="Treasures">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="239*"/>
-						<ColumnDefinition Width="188*"/>
-						<ColumnDefinition Width="51*"/>
-						<ColumnDefinition Width="239*"/>
-					</Grid.ColumnDefinitions>
-					<StackPanel Orientation="Vertical" Grid.Column="0" Margin="0,0,0.333,0">
-						<Label Margin="5,5,0,0" FontWeight="Bold">Item Shuffle</Label>
-						<CheckBox x:Name="TreasuresCheckBox" IsChecked="{Binding Flags.Treasures}" IsThreeState="True" Content="Treasures" ToolTip="If unchecked, forces vanilla Treasure Chests"/>
-						<CheckBox x:Name="RandomTreasuresCheckBox" IsChecked="{Binding Flags.RandomTreasure}" IsThreeState="True" IsEnabled="{Binding Flags.Treasures}" Content="Randomize Treasures" Margin="30,5,0,0"/>
-						<ComboBox x:Name="WorldWealthComboBox" SelectedValue="{Binding Flags.WorldWealthEnum}" IsEnabled="{Binding Flags.Treasures}" Width="120" HorizontalAlignment="Left" Margin="30,5,0,0" SelectedValuePath="Tag">
-							<ComboBoxItem Tag="High">High Wealth</ComboBoxItem>
-							<ComboBoxItem Tag="Normal">Normal Wealth</ComboBoxItem>
-							<ComboBoxItem Tag="Low">Low Wealth</ComboBoxItem>
-							<ComboBoxItem Tag="Impoverished">Impoverished</ComboBoxItem>
-							<ComboBoxItem Tag="Melmond">Melmond</ComboBoxItem>
-						</ComboBox>
-						<CheckBox x:Name="BetterTrapTreasureCheckBox" IsChecked="{Binding Flags.BetterTrapTreasure}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Better Treasure near Spike Tiles" ToolTip="Better treasures on chests next to spike tile" Margin="30, 5, 0 0"/>
-						<CheckBox x:Name="NPCItemsCheckBox" IsChecked="{Binding Flags.NPCItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Main NPC Items" ToolTip="If unchecked, forces vanilla Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle"/>
-						<CheckBox x:Name="NPCFetchItemsCheckBox" IsChecked="{Binding Flags.NPCFetchItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Fetch Quest Rewards" ToolTip="If unchecked, forces vanilla Crystal, Herb, Key, Canal, Oxyale, Chime, Xcalber"/>
-						<CheckBox x:Name="ObjectiveNPCCheckBox" IsChecked="{Binding Flags.ObjectiveNPCs}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Objective NPCs" ToolTip="Shuffle the locations of Dr. Unne, Elf Doctor, and Bahamut"/>
-						<Label Margin="5,5,0,0"/>
-						<CheckBox x:Name="FreeShipCheckBox" IsChecked="{Binding Flags.FreeShip}" IsThreeState="True" Content="Free Ship" ToolTip="Start the game with a free ship in the Coneria dock."/>
-						<CheckBox x:Name="FreeAirshipCheckBox" IsChecked="{Binding Flags.FreeAirship}" IsThreeState="True" Content="Free Airship" ToolTip="Start the game with a free airship, which spawns near Coneria."/>
-						<CheckBox x:Name="FreeBridgeCheckBox" IsChecked="{Binding Flags.FreeBridge}" IsThreeState="True" Content="Free Bridge" ToolTip="The bridge near Coneria Castle is built at the start of the game."/>
-						<CheckBox x:Name="FreeCanalCheckBox" IsChecked="{Binding Flags.FreeCanal}" IsThreeState="True" Content="Free Canal" ToolTip="The canal connecting the inner sea to the outer sea is available at the start of the game."/>
-						<CheckBox x:Name="FreeTailCheckBox" IsChecked="{Binding Flags.FreeTail}" IsThreeState="True" Content="Free Tail" ToolTip="The rat's tail required for promotion is in your inventory at the start of the game."/>
-						<Label Margin="5,5,0,0"/>
-						<CheckBox x:Name="UseOlderPlacementCheckBox" IsChecked="{Binding Flags.ClassicItemPlacement}" Content="Use v2 logic for placing treasures" ToolTip="Uses an older version of the logic to place items"/>
-						<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-							<Label >Consumable Treasurechest Stacks:</Label>
-							<ComboBox SelectedValue="{Binding Flags.ConsumableTreasureStackSize}" MinWidth="100" HorizontalAlignment="Left" SelectedValuePath="Tag">
-								<ComboBoxItem Tag="Default">Default</ComboBoxItem>
-								<ComboBoxItem Tag="Stingy">Stingy</ComboBoxItem>
-								<ComboBoxItem Tag="Adequat">Adequat</ComboBoxItem>
-								<ComboBoxItem Tag="Generous">Generous</ComboBoxItem>
-								<ComboBoxItem Tag="Ridiculous">Ridiculous</ComboBoxItem>
-							</ComboBox>
-						</StackPanel>
-					</StackPanel>
-					<StackPanel Orientation="Vertical" Grid.ColumnSpan="3" Margin="239,0,0,0">
-						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Locations:</Label>
-						<CheckBox x:Name="IncentivizeFreeNPCsCheckBox" IsChecked="{Binding Flags.IncentivizeFreeNPCs}" IsEnabled="{Binding Flags.IncentivizeFreeNPCsEnabled}" IsThreeState="True" Content="Main NPCs" ToolTip="King, Princess, Bikke, Sarda, Sage, Robot, Caravan"/>
-						<CheckBox x:Name="IncentivizeFetchNPCsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchNPCs}" IsEnabled="{Binding Flags.IncentivizeFetchNPCsEnabled}" IsThreeState="True" Content="Fetch Quest NPCs" ToolTip="Astos, Matoya, Prince, Dwarves, Lefein, Fairy"/>
-						<Label Margin="5,5,0,0"/>
-						<CheckBox x:Name="IncentivizeIceCaveCheckBox" IsChecked="{Binding Flags.IncentivizeIceCave}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Ice Cave" ToolTip="Floater chest"/>
-						<CheckBox x:Name="IncentivizeOrdealsCheckBox" IsChecked="{Binding Flags.IncentivizeOrdeals}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Ordeals" ToolTip="Tail chest"/>
-						<CheckBox x:Name="IncentivizeMarshCheckBox" IsChecked="{Binding Flags.IncentivizeMarsh}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Marsh Cave" ToolTip="Crown chest"/>
-						<CheckBox x:Name="IncentivizeTitansCheckBox" IsChecked="{Binding Flags.IncentivizeTitansTrove}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Titan's Trove" ToolTip="One of the chests in the Titan's Cave"/>
-						<Label Margin="5,5,0,0"/>
-						<CheckBox x:Name="IncentivizeEarthCheckBox" IsChecked="{Binding Flags.IncentivizeEarth}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Earth Cave" ToolTip="Ruby chest (behind Vampire)"/>
-						<CheckBox x:Name="IncentivizeVolcanoCheckBox" IsChecked="{Binding Flags.IncentivizeVolcano}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Volcano" ToolTip="Last Floor West (Red D)"/>
-						<CheckBox x:Name="IncentivizeSeaShrineCheckBox" IsChecked="{Binding Flags.IncentivizeSeaShrine}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Sea Shrine" ToolTip="Slab chest"/>
-						<CheckBox x:Name="IncentivizeSkyPalaceCheckBox" IsChecked="{Binding Flags.IncentivizeSkyPalace}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Sky Palace" ToolTip="Adamant chest"/>
-						<Label Margin="5,5,0,0"/>
-						<CheckBox x:Name="IncentivizeConeriaCheckBox" IsChecked="{Binding Flags.IncentivizeConeria}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Coneria (locked)" ToolTip="TNT chest"/>
-						<CheckBox x:Name="IncentivizeMarshKeyLockedCheckBox" IsChecked="{Binding Flags.IncentivizeMarshKeyLocked}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Marsh (locked)" ToolTip="Bottom Floor South East"/>
-					</StackPanel>
-					<StackPanel Orientation="Vertical" Grid.Column="3" Margin="0,0,0.334,0">
-						<Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Item Pool:</Label>
-						<CheckBox x:Name="IncentivizeMainProgressionCheckBox" IsChecked="{Binding Flags.IncentivizeMainItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Main Progression Items" ToolTip="Lute, Key, Rod, Oxyale, Chime, Cube"/>
-						<CheckBox x:Name="IncentivizeFetchItemsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Other Quest Items" ToolTip="Any other non-required quest items that are shuffled such as Ruby or Adamant"/>
-						<CheckBox x:Name="IncentivizeFloaterCheckBox" IsChecked="{Binding Flags.IncentivizeAirship}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Floater" ToolTip="Floater"/>
-						<CheckBox x:Name="IncentivizeCanoeCheckBox" IsChecked="{Binding Flags.IncentivizeCanoeItem}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Canoe" ToolTip="Canoe"/>
-						<CheckBox x:Name="IncentivizeShipCanalCheckBox" IsChecked="{Binding Flags.IncentivizeShipAndCanal}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Ship + Canal" ToolTip="Ship and Canal"/>
-						<CheckBox x:Name="IncentivizeTailCheckBox" IsChecked="{Binding Flags.IncentivizeTail}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Tail" ToolTip="Tail"/>
-						<CheckBox x:Name="IncentivizeMasamuneCheckBox" IsChecked="{Binding Flags.IncentivizeMasamune}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Masamune" ToolTip="Masamune"/>
-						<CheckBox x:Name="IncentivizeDefCastWeaponCheckBox" IsChecked="{Binding Flags.IncentivizeDefCastWeapon}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Defense" ToolTip="Defense"/>
-						<CheckBox x:Name="IncentivizeVorpalCheckBox" IsChecked="{Binding Flags.IncentivizeVorpal}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Vorpal" ToolTip="The Alleged Sword, or the Game Changer"/>
-						<CheckBox x:Name="IncentivizeOffCastWeaponCheckBox" IsChecked="{Binding Flags.IncentivizeOffCastWeapon}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Thor Hammer" ToolTip="Thor Hammer"/>
-						<CheckBox x:Name="IncentivizeOpalCheckBox" IsChecked="{Binding Flags.IncentivizeOpal}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Opal Bracelet" ToolTip="Opal Bracelet"/>
-						<CheckBox x:Name="IncentivizeOtherCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeOtherCastArmor}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Power Gauntlet" ToolTip="Power Gauntlet"/>
-						<CheckBox x:Name="IncentivizePowerRodCheckBox" IsChecked="{Binding Flags.IncentivizePowerRod}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Power Rod" ToolTip="Power Rod"/>
-						<CheckBox x:Name="IncentivizeDefCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeDefCastArmor}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="White Shirt" ToolTip=">White Shirt"/>
-						<CheckBox x:Name="IncentivizeOffCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeOffCastArmor}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Black Shirt" ToolTip="Black Shirt"/>
-						<CheckBox x:Name="IncentivizeRibbonCheckBox" IsChecked="{Binding Flags.IncentivizeRibbon}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Ribbon" ToolTip="Ribbon"/>
-					</StackPanel>
-				</Grid>
-			</TabItem>
-			<TabItem Header="Goal">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-					</Grid.ColumnDefinitions>
-					<StackPanel Orientation="Vertical" Grid.Column="0">
-						<Label Margin="5,5,0,0" FontWeight="Bold">Quick Races</Label>
-						<CheckBox x:Name="ChaosRushCheckBox" IsChecked="{Binding Flags.ChaosRush}" IsEnabled="{Binding Flags.ChaosRushEnabled}" Content="CHAOS Rush" ToolTip="Enable access to CHAOS without the Mystic KEY and start with the LUTE."/>
-						<CheckBox x:Name="FreeOrbsCheckBox" IsChecked="{Binding Flags.FreeOrbs}" IsEnabled="{Binding Flags.FreeOrbsEnabled}" Content="Free Orbs" ToolTip="Enable access to CHAOS without the Mystic KEY and start with the LUTE."/>
-					</StackPanel>
-					<StackPanel Orientation="Vertical" Grid.Column="1">
-						<Label Margin="5,5,0,0" FontWeight="Bold">Treasure Hunt</Label>
-						<CheckBox x:Name="ShardHuntCheckBox" IsChecked="{Binding Flags.ShardHunt}" IsEnabled="{Binding Flags.ShardHuntEnabled}" Content="Treasure Hunt" ToolTip="Treasure Hunt alternate gameplay mode. Collect 16 of a random Treasure Item to activate the BLACK ORB."/>
-						<ComboBox x:Name="ShardCountComboBox" SelectedValue="{Binding Flags.ShardCount}" IsEnabled="{Binding Flags.ShardHuntEnabled}" Width="120" HorizontalAlignment="Left" Margin="30,5,0,0" SelectedValuePath="Tag">
-							<ComboBoxItem Tag="Count16">Exactly 16</ComboBoxItem>
-							<ComboBoxItem Tag="Count20">Exactly 20</ComboBoxItem>
-							<ComboBoxItem Tag="Count24">Exactly 24</ComboBoxItem>
-							<ComboBoxItem Tag="Count28">Exactly 28</ComboBoxItem>
-							<ComboBoxItem Tag="Count32">Exactly 32</ComboBoxItem>
-							<ComboBoxItem Tag="Count36">Exactly 36</ComboBoxItem>
-							<ComboBoxItem Tag="Range16_24">From 16-24</ComboBoxItem>
-							<ComboBoxItem Tag="Range24_32">From 24-32</ComboBoxItem>
-							<ComboBoxItem Tag="Range16_36">From 16-36</ComboBoxItem>
-						</ComboBox>
-					</StackPanel>
-					<StackPanel Orientation="Vertical" Grid.Column="2">
-						<Label Margin="5,5,0,0" FontWeight="Bold">Extra Challenges</Label>
-						<CheckBox x:Name="TransformFinalFormationCheckBox" IsChecked="{Binding Flags.TransformFinalFormation}" IsThreeState="True" Content="Alternate Final Boss" ToolTip="Replace the Final Battle against Chaos with a different challenge."/>
-						<CheckBox x:Name="ShortenToFRCheckBox" IsChecked="{Binding Flags.ShortToFR}" IsThreeState="True" Content="Shorten ToFR" ToolTip="Squash ToFR down into its final floor with all treasures."/>
-						<CheckBox x:Name="PreserveFiendRefightsCheckBox" IsEnabled="{Binding Flags.ShortToFR}" IsChecked="{Binding Flags.PreserveFiendRefights}" IsThreeState="True" Content="Preserve Fiend Tiles" ToolTip="Add four fiend tiles to the shortened ToFR."/>
-					</StackPanel>
-				</Grid>
-			</TabItem>
-			<TabItem Header="Map">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-					</Grid.ColumnDefinitions>
-					<StackPanel Grid.Column="0">
-						<Label Margin="5,5,0,0" FontWeight="Bold">Entrance Shuffle</Label>
-						<CheckBox x:Name="EntrancesCheckBox" IsChecked="{Binding Flags.Entrances}" IsThreeState="True" Content="Entrances" ToolTip="Overworld entrances now lead to random dungeons."/>
-						<CheckBox x:Name="IncludeDeadEndsCheckBox" IsChecked="{Binding Flags.EntrancesIncludeDeadEnds}" IsEnabled="{Binding Flags.Entrances}" IsThreeState="True" Content="Include Dead Ends" ToolTip="" Margin="30, 5, 0, 0"/>
-						<CheckBox x:Name="FloorsCheckBox" IsEnabled="{Binding Flags.Entrances}" IsChecked="{Binding Flags.Floors}" IsThreeState="True" Content="Floors" ToolTip="All rooms are shuffled up into new sequences, intermixed across the entrances." Margin="30,5,0,0"/>
-						<CheckBox x:Name="DeepToFRCheckBox" IsEnabled="{Binding Flags.DeepCastlesPossible}" IsChecked="{Binding Flags.AllowDeepCastles}" IsThreeState="True" Content="Deep ToFR" ToolTip="Instead of being at ground level, the Temple of Fiends can now be at the bottom of a dungeon." Margin="30,5,0,0"/>
-						<Label Margin="5,5,0,0"/>
-						<CheckBox x:Name="TownsCheckBox" IsChecked="{Binding Flags.Towns}" IsThreeState="True" Content="Towns" ToolTip="Add town entrances into the entrance shuffle."/>
-						<CheckBox x:Name="MixEntrancesAndTownEntrancesCheckBox" IsChecked="{Binding Flags.EntrancesMixedWithTowns}" IsEnabled="{Binding Flags.Entrances}" IsThreeState="True" Content="Mix All Entrances Together" ToolTip="If Entrance Shuffle and Town Shuffle are enabled, yowns can appear in overworld dungeon locations" Margin="30,5,0,0"/>
-						<CheckBox x:Name="DeepTownsCheckBox" IsChecked="{Binding Flags.AllowDeepTowns}" IsEnabled="{Binding Flags.DeepTownsPossible}" IsThreeState="True" Content="Deep Towns" ToolTip="Towns can be inside a dungeon" Margin="30,5,0,0"/>
-					</StackPanel>
-					<StackPanel Grid.Column="1">
-						<Label Margin="5,5,0,0" FontWeight="Bold">Map Edits</Label>
-						<Label Margin="5,5,0,0" FontWeight="Bold">Sky Castle 4F Maze:</Label>
-						<ComboBox x:Name="SkyCastle4FMazeModeComboBox" SelectedValue="{Binding Flags.SkyCastle4FMazeMode}" Width="150" HorizontalAlignment="Left" Margin="10,0,0,0" ToolTip="What kind of Sky Castle Maze?" SelectedValuePath="Tag">
-							<ComboBoxItem Tag="Normal">Normal</ComboBoxItem>
-							<ComboBoxItem Tag="Teleporters">Teleporters Only</ComboBoxItem>
-							<ComboBoxItem Tag="Maze">Full Maze</ComboBoxItem>
-						</ComboBox>
-						<CheckBox x:Name="OrdealsPillarsCheckBox" IsChecked="{Binding Flags.OrdealsPillars}" IsThreeState="True" Content="Castle Ordeals" ToolTip="Teleporters in Castle Ordeals are shuffled."/>
-						<CheckBox x:Name="TitansTroveCheckBox" IsChecked="{Binding Flags.TitansTrove}" IsThreeState="True" Content="Titan's Trove" ToolTip="Titan's Trove"/>
-						<CheckBox x:Name="ZozoMelmondCheckBox" IsChecked="{Binding Flags.AllowUnsafeMelmond}" IsThreeState="True" Content="Zozo Melmond" ToolTip="Monsters can appear on the sand tiles in Melmond"/>
-						<CheckBox x:Name="LefeinishHospitalityCheckBox" IsChecked="{Binding Flags.LefeinShops}" IsThreeState="True" Content="Lefeinish Hospitality" ToolTip="An inn and clinic/tavern will appear in Lefein"/>
-						<CheckBox x:Name="ConfusedOldMenCheckBox" IsChecked="{Binding Flags.ConfusedOldMen}" IsThreeState="True" Content="Confused Old Men" ToolTip="Yoga in the park!"/>
-						<Label Margin="5,5,0,0"/>
-						<CheckBox x:Name="MapOpenProgressionCheckBox" IsChecked="{Binding Flags.MapOpenProgression}" IsThreeState="True" Content="Open Progression" ToolTip="Open Progression"/>
-						<CheckBox x:Name="MapExtendedOpenProgressionCheckBox" IsEnabled="{Binding Flags.MapOpenProgression}" IsChecked="{Binding Flags.MapOpenProgressionExtended}" IsThreeState="True" Content="Extended Open Progression" ToolTip="Extended Open Progression"/>
-						<Label Margin="5,5,0,0"/>
-						<CheckBox x:Name="ShuffleOriginalFiendFights" IsChecked="{Binding Flags.FiendShuffle}" Content="Shuffle Original Fiend Fights" ToolTip="Shuffle the four fiends in the present, so that Kraken can appear in Volcano or Kary in Sky Castle"/>
-					</StackPanel>
-					<StackPanel Grid.Column="2">
-						<Label Margin="5,5,0,0" FontWeight="Bold">Routing Access</Label>
-						<CheckBox x:Name="EarlySardaCheckBox" IsChecked="{Binding Flags.EarlySarda}" IsThreeState="True" Content="Early Sarda Item" ToolTip="Sarda will give you an item without requiring Vampire dead"/>
-						<CheckBox x:Name="EarlySageCheckBox" IsChecked="{Binding Flags.EarlySage}" IsThreeState="True" Content="Early Sage Item" ToolTip="Sage in Cresent Lake will give you an item without requiring Lich dead"/>
-						<CheckBox x:Name="EarlyOrdealsCheckBox" IsChecked="{Binding Flags.EarlyOrdeals}" IsThreeState="True" Content="Early Ordeals" ToolTip="You will be allowed access to Castle Ordeals without the CROWN."/>
-						<Label Margin="5,5,0,0" FontWeight="Bold">Procedural Generation (BETA)</Label>
-						<CheckBox x:Name="EnableProcgenCheckBox" IsChecked="{Binding Flags.ExperimentalFloorGeneration}" Content="Enable Procedural Floor Generation"/>
-						<CheckBox x:Name="ProcGenWaterfallCheckBox" IsChecked="{Binding Flags.EFGWaterfall}" IsEnabled="{Binding Flags.ExperimentalFloorGeneration}" Content="Procgen Waterfall" Margin="30,5,0,0"/>
-						<CheckBox x:Name="ProcGenEarthB1CheckBox" IsChecked="{Binding Flags.EFGEarth1}" IsEnabled="{Binding Flags.ExperimentalFloorGeneration}" Content="Procgen Earth Cave B1" Margin="30,5,0,0"/>
-						<CheckBox x:Name="ProcGenEarthB2CheckBox" IsChecked="{Binding Flags.EFGEarth2}" IsEnabled="{Binding Flags.ExperimentalFloorGeneration}" Content="Procgen Earth Cave B2" Margin="30,5,0,0"/>
-						<Label Margin="5,5,0,0" FontWeight="Bold">Hints</Label>
-						<CheckBox x:Name="hintsVillagerCB" IsChecked="{Binding Flags.HintsVillage}" Content="Enable Procedural Floor Generation"/>
-						<CheckBox x:Name="hintsDungeonCB" IsChecked="{Binding Flags.HintsDungeon}" Content="Procgen Waterfall"/>
-					</StackPanel>
-				</Grid>
-			</TabItem>
-			<TabItem Header="Scale" HorizontalAlignment="Right" Width="43">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="180*"/>
-						<ColumnDefinition Width="40"/>
-						<ColumnDefinition Width="126*"/>
-						<ColumnDefinition Width="200*"/>
-						<ColumnDefinition Width="180*"/>
-						<ColumnDefinition Width="100*"/>
-					</Grid.ColumnDefinitions>
-					<StackPanel Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0.333,0">
-						<Label MinHeight="26" x:Name="PricesLabel" Content="Prices:" ToolTip="Prices of items, weapons, armor, and magic are all scaled, as well as your starting gold and gold chests."/>
-						<Label MinHeight="26" x:Name="EnemyStatsLabel" Content="Enemy Stats:" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Enemy stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, and magic defense."/>
-						<Label MinHeight="26" x:Name="BossStatsLabel" Content="Boss Stats:" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Boss stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, and magic defense."/>
-						<Label MinHeight="26" x:Name="ExpGoldBoostLabel" Content="Exp/Gold Boost:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-						<Label MinHeight="26" Content=""/>
-						<Label MinHeight="26" x:Name="ProgressiveScaleLabel" Content="Progressive Scale:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-						<Label MinHeight="26" x:Name="OverworldEncounterRateLabel" Content="Overworld Encounter Rate:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-						<Label MinHeight="26" x:Name="DungeonEncounterRateLabel" Content="Dungeon Encounter Rate:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-						<Label MinHeight="26" Content="Starting Inventory:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-					</StackPanel>
-					<StackPanel Grid.Column="1">
-						<CheckBox MinHeight="20" x:Name="ClampPricesCheckBox" IsChecked="{Binding Flags.ClampPrices}" ToolTip="Clamp Minimum to 100%" Checked="ClampPricesCheckBox_ValueChanged" Unchecked="ClampPricesCheckBox_ValueChanged"/>
-						<CheckBox MinHeight="20" x:Name="ClampEnemiesCheckBox" IsChecked="{Binding Flags.ClampEnemies}" ToolTip="Clamp Minimum to 100%" Checked="ClampEnemiesCheckBox_ValueChanged" Unchecked="ClampEnemiesCheckBox_ValueChanged"/>
-						<CheckBox MinHeight="20" x:Name="ClampBossesCheckBox" IsChecked="{Binding Flags.ClampBosses}" ToolTip="Clamp Minimum to 100%" Checked="ClampBossesCheckBox_ValueChanged" Unchecked="ClampBossesCheckBox_ValueChanged"/>
-					</StackPanel>
-					<StackPanel Grid.Column="2">
-						<Label MinHeight="26" x:Name="PriceScaleFactorLabel" />
-						<Label MinHeight="26" x:Name="EnemyScaleFactorLabel" Content="" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-						<Label MinHeight="26" x:Name="BossScaleFactorLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-						<Label MinHeight="26" x:Name="ExpScaleFactorLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-						<Label MinHeight="26" Content=""/>
-						<Label MinHeight="26" Content=""/>
-						<Label MinHeight="26" x:Name="EncounterRateFactorLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-						<Label MinHeight="26" x:Name="DungeonEncounterRateFactorLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-					</StackPanel>
-					<StackPanel Grid.Column="3">
-						<Slider MinHeight="20" x:Name="PriceScaleFactorSlider" Value="{Binding Flags.PriceScaleFactor}" HorizontalAlignment="Left" VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" SmallChange="0.1" LargeChange="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="PriceScaleFactorSlider_ValueChanged"/>
-						<Slider MinHeight="20" x:Name="EnemyScaleFactorSlider" Value="{Binding Flags.EnemyScaleFactor}" HorizontalAlignment="Left"  VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="EnemyScaleFactorSlider_ValueChanged"/>
-						<Slider MinHeight="20" x:Name="BossScaleFactorSlider" Value="{Binding Flags.BossScaleFactor}" HorizontalAlignment="Left" VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="BossScaleFactorSlider_ValueChanged"/>
-						<Slider MinHeight="20" x:Name="ExpMultiplierSlider" Value="{Binding Flags.ExpMultiplier}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="5" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="Multiplies enemy exp and gold by this amount." ValueChanged="ExpMultiplierSlider_ValueChanged"/>
-						<Slider MinHeight="20" x:Name="ExpBonusSlider" Value="{Binding Flags.ExpBonus}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="500" TickPlacement="BottomRight" TickFrequency="50" LargeChange="50" SmallChange="10" ToolTip="Adds this amount to enemy exp and gold (after the multiplier)." ValueChanged="ExpBonusSlider_ValueChanged"/>
-						<ComboBox MinHeight="26" x:Name="ProgressiveScaleComboBox" SelectedValue="{Binding Flags.ProgressiveScaleMode}" Width="150" HorizontalAlignment="Left" ToolTip="How do you like your WarMECH?" SelectedValuePath="Tag">
-							<ComboBoxItem Content="Disabled" Tag="Disabled"/>
-							<ComboBoxItem Content="150% at 12" Tag="FiftyPercentAt12"/>
-							<ComboBoxItem Content="150% at 15" Tag="FiftyPercentAt15"/>
-							<ComboBoxItem Content="200% at 12" Tag="DoubledAt12"/>
-							<ComboBoxItem Content="200% at 15" Tag="DoubledAt15"/>
-							<ComboBoxItem Content="5% Per Key Item" Tag="Progressive5Percent"/>
-							<ComboBoxItem Content="10% Per Key Item" Tag="Progressive10Percent"/>
-							<ComboBoxItem Content="20% Per Key Item" Tag="Progressive20Percent"/>
-						</ComboBox>
-						<Slider MinHeight="20" x:Name="EncounterRateSlider" Value="{Binding Flags.EncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="EncounterRate_ValueChanged"/>
-						<Slider MinHeight="20" x:Name="DungeonEncounterRateSlider" Value="{Binding Flags.DungeonEncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="DungeonEncounterRate_ValueChanged"/>
-						<ComboBox MinHeight="26" SelectedValue="{Binding Flags.StartingItemSet}" Width="150" HorizontalAlignment="Left" SelectedValuePath="Tag">
-							<ComboBoxItem Content="None" Tag="None"/>
-							<ComboBoxItem Content="SafetyBit" Tag="SafetyBit"/>
-							<ComboBoxItem Content="BeggarsChoice" Tag="BeggarsChoice"/>
-							<ComboBoxItem Content="JustTents" Tag="JustTents"/>
-							<ComboBoxItem Content="ExplorerStartingPack" Tag="ExplorerStartingPack"/>
-							<ComboBoxItem Content="RealEstate" Tag="RealEstate"/>
-							<ComboBoxItem Content="WarriorsStandard" Tag="WarriorsStandard"/>
-							<ComboBoxItem Content="RoyalPackmule" Tag="RoyalPackmule"/>
-							<ComboBoxItem Content="DucklingBoon" Tag="DucklingBoon"/>
-							<ComboBoxItem Content="R. BeggarsChoice" Tag="RandomizedBeggarsChoice"/>
-							<ComboBoxItem Content="R. ExplorerStartingPack" Tag="RandomizedExplorerStartingPack"/>
-							<ComboBoxItem Content="R. WarriorsStandard" Tag="RandomizedWarriorsStandard"/>
-							<ComboBoxItem Content="R. RoyalPackmule" Tag="RandomizedRoyalPackmule"/>
-							<ComboBoxItem Content="R. HighRolling" Tag="RandomizedHighRolling"/>
-							<ComboBoxItem Content="Randomized" Tag="Randomized"/>
-						</ComboBox>
-					</StackPanel>
-					<StackPanel Grid.Column="4">
-						<CheckBox x:Name="PricesScaleOverflowCheckBox" IsChecked="{Binding Flags.WrapPriceOverflow}" Content="Wrap Overflowing Prices"/>
-						<CheckBox x:Name="EnemyStatScaleOverflowCheckBox" IsChecked="{Binding Flags.WrapStatOverflow}" Content="Wrap Overflowing Stats" />
-						<CheckBox x:Name="IncludeMoraleCheckBox" IsChecked="{Binding Flags.IncludeMorale}" Content="Include Morale" />
-						<CheckBox x:Name="StaticXPGainCheckBox" IsChecked="{Binding Flags.NoDanMode}" Content="Static EXP Gain" ToolTip="XP is always split by 4 even if characters are slain/stoned (fallen characters do not gain any however)"/>
-						<CheckBox x:Name="VanillaStartingGoldCheckBox" IsChecked="{Binding Flags.StartingGold}" Content="Starting Gold" ToolTip="The Bridge is available at the start of the game" Width="296.667"/>
-						<CheckBox x:Name="EasyModeCheckBox" IsChecked="{Binding Flags.EasyMode}" Content="Easy Mode" ToolTip="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"/>
-					</StackPanel>
-				</Grid>
-			</TabItem>
-			<TabItem Header="Party">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="1*"/>
-						<ColumnDefinition Width="1*"/>
-						<ColumnDefinition Width="1*"/>
-						<ColumnDefinition Width="1*"/>
-						<ColumnDefinition Width="1*"/>
-						<ColumnDefinition Width="1*"/>
-						<ColumnDefinition Width="1*"/>
-						<ColumnDefinition Width="1*"/>
-						<ColumnDefinition Width="1*"/>
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-					</Grid.RowDefinitions>
-					<Label MinHeight="26" x:Name="PermittedLabel" Content="Permitted:"/>
-					<Label MinHeight="26" x:Name="Member1Label" Grid.Row="1" Content="Member 1"/>
-					<Label MinHeight="26" x:Name="Member2Label" Grid.Row="2" Content="Member 2"/>
-					<Label MinHeight="26" x:Name="Member3Label" Grid.Row="3" Content="Member 3"/>
-					<Label MinHeight="26" x:Name="Member4Label" Grid.Row="4" Content="Member 4"/>
-					<CheckBox x:Name="TavernModeCheckBox" IsChecked="{Binding Flags.RecruitmentMode}" Grid.Row="5" Grid.ColumnSpan="3" IsThreeState="True" Content="Tavern Mode Enabled" ToolTip="Clinics are replaced with Pubs, which allow you to recruit a character class throughout the game."/>
-					<CheckBox x:Name="DisableRevivingInTavernsCheckBox" IsChecked="{Binding Flags.RecruitmentModeHireOnly}" IsEnabled="{Binding Flags.RecruitmentMode}" Grid.Row="6" Grid.ColumnSpan="3" IsThreeState="True" Content="Disallow Revive In Taverns" ToolTip="Cannot revive characters in taverns" Margin="30,5,0,0"/>
-					<CheckBox x:Name="DisableRevivingNoneNonesInTavernsCheckBox" IsChecked="{Binding Flags.RecruitmentModeReplaceOnlyNone}" IsEnabled="{Binding Flags.RecruitmentMode}" Grid.Row="7" Grid.ColumnSpan="3" IsThreeState="True" Content="Only replace Nones in Taverns" Margin="30,5,0,0"/>
-					<Label MinHeight="26" x:Name="Tavern4Label" Grid.Row="8" Content="Recruitable" ToolTip="If Tavern Mode is enabled, choose which classes can appear in the taverns"/>
-					<Label MinHeight="26" x:Name="ForcedLabel" Grid.Column="1" Content="Forced?"/>
-					<CheckBox MinHeight="20" x:Name="Forced1CheckBox" Grid.Column="1" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.FORCED1}"/>
-					<CheckBox MinHeight="20" x:Name="Forced2CheckBox" Grid.Column="1" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.FORCED2}"/>
-					<CheckBox MinHeight="20" x:Name="Forced3CheckBox" Grid.Column="1" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.FORCED3}"/>
-					<CheckBox MinHeight="20" x:Name="Forced4CheckBox" Grid.Column="1" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.FORCED4}"/>
-					<Label MinHeight="26" x:Name="FighterLabel" Grid.Column="2" Content="Fighter"/>
-					<CheckBox MinHeight="20" x:Name="FighterCheckBox" Grid.Column="2" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.FIGHTER1}"/>
-					<CheckBox MinHeight="20" x:Name="Fighter2CheckBox" Grid.Column="2" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.FIGHTER2}"/>
-					<CheckBox MinHeight="20" x:Name="Fighter3Checkbox" Grid.Column="2" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.FIGHTER3}"/>
-					<CheckBox MinHeight="20" x:Name="Fighter4CheckBox" Grid.Column="2" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.FIGHTER4}"/>
-					<CheckBox MinHeight="20" x:Name="TavernFighterCheckBox" Grid.Column="2" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN1}"/>
-					<Label MinHeight="26" x:Name="ThiefLabel" Grid.Column="3" Content="Thief"/>
-					<CheckBox MinHeight="20" x:Name="Thief1CheckBox" Grid.Column="3" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.THIEF1}"/>
-					<CheckBox MinHeight="20" x:Name="Thief2CheckBox" Grid.Column="3" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.THIEF2}"/>
-					<CheckBox MinHeight="20" x:Name="Thief3Checkbox" Grid.Column="3" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.THIEF3}"/>
-					<CheckBox MinHeight="20" x:Name="Thief4CheckBox" Grid.Column="3" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.THIEF4}"/>
-					<CheckBox MinHeight="20" x:Name="TavernThiefCheckBox" Grid.Column="3" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN2}"/>
-					<Label MinHeight="26" x:Name="BlackBeltLabel" Grid.Column="4" Content="Black Belt"/>
-					<CheckBox MinHeight="20" x:Name="BlackBelt1CheckBox" Grid.Column="4" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.BLACK_BELT1}"/>
-					<CheckBox MinHeight="20" x:Name="BlackBelt2CheckBox" Grid.Column="4" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.BLACK_BELT2}"/>
-					<CheckBox MinHeight="20" x:Name="BlackBelt3Checkbox" Grid.Column="4" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.BLACK_BELT3}"/>
-					<CheckBox MinHeight="20" x:Name="BlackBelt4CheckBox" Grid.Column="4" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.BLACK_BELT4}"/>
-					<CheckBox MinHeight="20" x:Name="TavernBBCheckBox" Grid.Column="4" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN3}"/>
-					<Label MinHeight="26" x:Name="RedMageLabel" Grid.Column="5" Content="Red Mage"/>
-					<CheckBox MinHeight="20" x:Name="RedMake1CheckBox" Grid.Column="5" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.RED_MAGE1}"/>
-					<CheckBox MinHeight="20" x:Name="RedMake2CheckBox" Grid.Column="5" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.RED_MAGE2}"/>
-					<CheckBox MinHeight="20" x:Name="RedMake3CheckBox" Grid.Column="5" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.RED_MAGE3}"/>
-					<CheckBox MinHeight="20" x:Name="RedMake4CheckBox" Grid.Column="5" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.RED_MAGE4}"/>
-					<CheckBox MinHeight="20" x:Name="TavernRMCheckBox" Grid.Column="5" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN4}"/>
-					<Label MinHeight="26" x:Name="WhiteMageLabel" Grid.Column="6" Content="White Mage"/>
-					<CheckBox MinHeight="20" x:Name="WhiteMage1CheckBox" Grid.Column="6" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.WHITE_MAGE1}"/>
-					<CheckBox MinHeight="20" x:Name="WhiteMage2CheckBox" Grid.Column="6" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.WHITE_MAGE2}"/>
-					<CheckBox MinHeight="20" x:Name="WhiteMage3CheckBox" Grid.Column="6" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.WHITE_MAGE3}"/>
-					<CheckBox MinHeight="20" x:Name="WhiteMage4CheckBox" Grid.Column="6" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.WHITE_MAGE4}"/>
-					<CheckBox MinHeight="20" x:Name="TavernWMCheckBox" Grid.Column="6" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN5}"/>
-					<Label MinHeight="26" x:Name="BlackMageLabel" Grid.Column="7" Content="Black Mage"/>
-					<CheckBox MinHeight="20" x:Name="BlackMage1CheckBox" Grid.Column="7" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.BLACK_MAGE1}"/>
-					<CheckBox MinHeight="20" x:Name="BlackMage2CheckBox" Grid.Column="7" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.BLACK_MAGE2}"/>
-					<CheckBox MinHeight="20" x:Name="BlackMage3CheckBox" Grid.Column="7" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.BLACK_MAGE3}"/>
-					<CheckBox MinHeight="20" x:Name="BlackMage4CheckBox" Grid.Column="7" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.BLACK_MAGE4}"/>
-					<CheckBox MinHeight="20" x:Name="TavernBMCheckBox" Grid.Column="7" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN6}"/>
-					<Label MinHeight="26" x:Name="NoneLabel" Grid.Column="8" Content="None"/>
-					<CheckBox MinHeight="20" x:Name="NoneClass1CheckBox" Grid.Column="8" Grid.Row="1" IsEnabled="false"/>
-					<CheckBox MinHeight="20" x:Name="NoneClass2CheckBox" Grid.Column="8" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.NONE_CLASS2}"/>
-					<CheckBox MinHeight="20" x:Name="NoneClass3CheckBox" Grid.Column="8" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.NONE_CLASS3}"/>
-					<CheckBox MinHeight="20" x:Name="NoneClass4CheckBox" Grid.Column="8" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.NONE_CLASS4}"/>
-				</Grid>
-			</TabItem>
-			<TabItem Header="Conveniences and Rebalancing">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-					</Grid.ColumnDefinitions>
-					<StackPanel Orientation="Vertical" Grid.Column="0">
-						<Label Margin="5,5,0,0" FontWeight="Bold">Conveniences</Label>
-						<CheckBox x:Name="NoPartyShuffleCheckBox" IsChecked="{Binding Flags.NoPartyShuffle}" Content="No Party Shuffle" ToolTip="Poisoned, petrified, and slain party members will not be shuffled to the back of the party."/>
-						<CheckBox x:Name="SpeedHacksCheckBox" IsChecked="{Binding Flags.SpeedHacks}" Content="Speed Hacks" ToolTip="Various code hacks to speed up the game."/>
-						<CheckBox x:Name="IdentifyTreasuresCheckBox" IsChecked="{Binding Flags.IdentifyTreasures}" Content="Identify Treasures" ToolTip="Tells you what's in the box when you can't carry anymore."/>
-						<CheckBox x:Name="DashCheckBox" IsChecked="{Binding Flags.Dash}" Content="Enable Dash" ToolTip="Enables walking faster when the B button is held."/>
-						<CheckBox x:Name="BuyTenCheckBox" IsChecked="{Binding Flags.BuyTen}" Content="Buy 10 Items" ToolTip="Allows buying 10 items at once in item shops."/>
-						<CheckBox x:Name="WaitWhenUnrunnableCheckBox" IsChecked="{Binding Flags.WaitWhenUnrunnable}" Content="Change Unrunnable RUN to WAIT" ToolTip="The RUN command becomes WAIT when battles are unrunnable."/>
-						<CheckBox x:Name="CriticalHitDisplayCheckBox" IsChecked="{Binding Flags.EnableCritNumberDisplay}" Content="Critical Hit Count Display" ToolTip="Displays the number of critical hits when multiple hits in an attack critical"/>
-						<CheckBox x:Name="NPCSwatterCheckBox" IsChecked="{Binding Flags.NPCSwatter}" Content="NPC Swatter (BETA)" ToolTip="Standard textbox when talking to characters on the map leads to those characters being removed.  Currently bugged as it allows the player to bypass the ROD and LUTE blocks."/>
-					</StackPanel>
-					<StackPanel Orientation="Vertical" Grid.Column="1">
-						<Label Margin="5,5,0,0" FontWeight="Bold">Rebalancing and Challenges</Label>
-						<CheckBox x:Name="HouseFullHPRestoreCheckBox" IsChecked="{Binding Flags.HousesFillHP}" Content="Houses fill HP to max"/>
-						<CheckBox x:Name="LockAlwaysHitsCheckBox" IsChecked="{Binding Flags.RebalanceSpells}" Content="LOCK spells always hit" ToolTip="Spells which reduce enemy evasion will always hit.  If Spellcrafter is enabled, this will make LOCK spells half as effective."/>
-						<CheckBox x:Name="DoubleThiefHitRateCheckBox" IsChecked="{Binding Flags.ThiefHitRate}" Content="Double Thief and Ninja hit rate growth" ToolTip="Thieves and Ninjas gain 4 hitrate per level instead of 2"/>
-						<CheckBox x:Name="KnightAndNinjaSpellChargesCheckBox" IsChecked="{Binding Flags.AllSpellLevelsForKnightNinja}" Content="Knight and Ninja gain charges in all levels" ToolTip="If a Knight or Ninja gains spell charges in a level, they gain a charge in all spell levels for that Experience Level"/>
-						<Label Content="MDef Growth:" Margin="30,5,0,0"/>
-						<ComboBox x:Name="MDefBalanceComboBox" SelectedValue="{Binding Flags.MDefMode}" Width="150" HorizontalAlignment="Left" Margin="30,5,0,0" SelectedValuePath="Tag">
-							<ComboBoxItem Tag="None" Content="Normal"/>
-							<ComboBoxItem Tag="BBFix" Content="BB/Master +3/+4"/>
-							<ComboBoxItem Tag="Invert" Content="Invert (5-Normal)"/>
-						</ComboBox>
-						<CheckBox x:Name="DisableTentSavingCheckBox" IsChecked="{Binding Flags.DisableTentSaving}" Content="Disable Tent/Cabin/House Saving on Overworld" ToolTip="Tents/Cabins/Houses do not save the game on the overworld (but still restore HP and MP)"/>
-						<CheckBox x:Name="DisableInnSavingCheckBox" IsChecked="{Binding Flags.DisableInnSaving}" Content="Disable Inn Saving" ToolTip="Inns will not save the game."/>
-					</StackPanel>
-				</Grid>
-			</TabItem>
-			<TabItem Header="Bug Fixes">
-				<StackPanel Orientation="Vertical">
-					<!-- ReSharper disable once InconsistentNaming -->
-					<CheckBox x:Name="HouseMPRestorationCheckBox" IsChecked="{Binding Flags.HouseMPRestoration}" Content="House MP Restoration" ToolTip="A HOUSE will restore MP before saving the game instead of after."/>
-					<CheckBox x:Name="WeaponStatsCheckBox" IsChecked="{Binding Flags.WeaponStats}" Content="Weapon Stats" ToolTip="Weapons with elemental or monster category properties will do more damage to enemies with the corresponding weaknesses, and will have the correct critical hit rate.  Black Belts' critical hit rate is halved to be balanced with lower weapon critical hit rates."/>
-					<CheckBox x:Name="ChanceToRunCheckBox" IsChecked="{Binding Flags.ChanceToRun}" Content="Chance to Run" ToolTip="Chance to run will be based on level and luck."/>
-					<CheckBox x:Name="SpellBugsCheckBox" IsChecked="{Binding Flags.SpellBugs}" Content="LOCK, LOK2, HEL2, TMPR, SABR" ToolTip="LOCK, LOK2, HEL2, TMPR, and SABR will function correctly."/>
-					<CheckBox x:Name="EnemyStatusAttackBugCheckBox" IsChecked="{Binding Flags.EnemyStatusAttackBug}" Content="Enemy Status Attacks" ToolTip="Enemy status attacks won't apply to misses after the first hit."/>
-					<CheckBox x:Name="BlackBeltAbsorbCheckBox" IsChecked="{Binding Flags.BlackBeltAbsorb}" Content="Black Belt &amp; Master Absorb Calculation" ToolTip="Black Belt &amp; Master Absorb Calculation"/>
-					<CheckBox x:Name="EnemyElementalResistancesBugCheckBox" IsChecked="{Binding Flags.EnemyElementalResistancesBug}" Content="Enemy Elemental Resistances" ToolTip="Enemy Elemental Resistances"/>
-					<CheckBox x:Name="EnemySpellsTargetingAlliesCheckBox" IsChecked="{Binding Flags.EnemySpellsTargetingAllies}" Content="Enemy Spells Targeting Allies" ToolTip="Enemy Spells Targeting Allies"/>
-					<CheckBox x:Name="ImproveTurnOrderRandomizationCheckBox" IsChecked="{Binding Flags.ImproveTurnOrderRandomization}" Content="Improve Turn Order Randomization" ToolTip="Improve Turn Order Randomization"/>
-					<CheckBox x:Name="FixHitCapBugfixCheckBox" IsChecked="{Binding Flags.FixHitChanceCap}" Content="Fix Hit Chance Cap"/>
-				</StackPanel>
-			</TabItem>
-			<TabItem Header="Fun %">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-					</Grid.ColumnDefinitions>
-					<StackPanel Orientation="Vertical" Grid.Column="0">
-						<CheckBox x:Name="FunEnemyNamesCheckBox" IsChecked="{Binding Flags.FunEnemyNames}" Content="Fun Enemy Names" ToolTip="Replaces enemy names with funny ones."/>
-						<CheckBox x:Name="PaletteSwapCheckBox" IsChecked="{Binding Flags.PaletteSwap}" Content="Palette Swap" ToolTip="Shuffles enemy palettes."/>
-						<CheckBox x:Name="ModernBattlefieldCheckBox" IsChecked="{Binding Flags.ModernBattlefield}" Content="Modern Battlefield" ToolTip="Battlefield layout inspired by subsequent Final Fantasy games."/>
-						<CheckBox x:Name="ThreePalettesCheckBox" IsChecked="{Binding Flags.ThirdBattlePalette}" Content="Three Battle Palettes" ToolTip="Change the battle engine to free up palette 3 for character sprites."/>
-					</StackPanel>
-					<StackPanel Orientation="Vertical" Grid.Column="1">
-						<ComboBox x:Name="TeamTyroComboBox" SelectedValue="{Binding Flags.TeamSteak}" Width="150" HorizontalAlignment="Left" Margin="10,5,0,0" ToolTip="Save the TYROs, or save the STEAKs?" SelectedValuePath="Tag">
-							<ComboBoxItem Tag="False">Team TYRO</ComboBoxItem>
-							<ComboBoxItem Tag="True">Team STEAK</ComboBoxItem>
-						</ComboBox>
-						<ComboBox x:Name="MusicComboBox" SelectedValue="{Binding Flags.Music}" Width="150" HorizontalAlignment="Left" Margin="10,5,0,0" ToolTip="How much to shuffle the game's music." SelectedValuePath="Tag">
-							<ComboBoxItem Tag="None">No Music Shuffle</ComboBoxItem>
-							<ComboBoxItem Tag="Standard">Standard Music Shuffle</ComboBoxItem>
-							<ComboBoxItem Tag="Nonsensical">Nonsensical Music Shuffle</ComboBoxItem>
-							<ComboBoxItem Tag="MusicDisabled">Disable Music</ComboBoxItem>
-						</ComboBox>
-						<CheckBox x:Name="DisableDamageTileFlicker" IsChecked="{Binding Flags.DisableDamageTileFlicker}" Content="Disable Damage Tile Flicker"/>
-					</StackPanel>
-				</Grid>
-			</TabItem>
+    <Window.Resources>
+        <local:FlagsToStringConverter x:Key="FlagsToStringConverter"/>
+        <Style TargetType="CheckBox">
+            <Setter Property="Margin" Value="10,5,0,0"/>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="0,0,0,0">
+        <TextBox x:Name="RomTextBox" HorizontalAlignment="Left" Height="23" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" IsEnabled="False"/>
+        <Label x:Name="RomLabel" Content="Original ROM" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <Button x:Name="RomButton" Content="Browse..." HorizontalAlignment="Left" Margin="135,36,0,0" VerticalAlignment="Top" Width="75" Click="RomButton_Click"/>
+        <Label x:Name="SeedLabel" Content="Seed" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <TextBox x:Name="SeedTextBox" Text="{Binding Seed}" HorizontalAlignment="Left" Height="23" Margin="10,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="GenerateButton" Content="Generate ROM" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="150" FontSize="20" IsEnabled="False" Click="GenerateButton_Click" Height="46"/>
+        <Button x:Name="AboutButton" Content="About FF1 Randomizer" HorizontalAlignment="Right" Margin="0,61,10,0" VerticalAlignment="Top" Width="150" Height="24" Click="AboutButton_Click"/>
+        <TextBox x:Name="FlagsTextBox" Text="{Binding Path=Flags, Converter={StaticResource FlagsToStringConverter}}" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="229,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="494"/>
+        <Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="229,64,0,0" VerticalAlignment="Top" FontWeight="Bold" RenderTransformOrigin="-0.359,0.486"/>
+        <Label x:Name="PresetLabel" HorizontalAlignment="Left" Margin="278,64,0,0" VerticalAlignment="Top">
+            <Hyperlink Click="LoadPreset">Load Preset...</Hyperlink>
+        </Label>
+        <Button x:Name="CopyButton" Content="Export" HorizontalAlignment="Left" Margin="728,90,0,0" VerticalAlignment="Top" Width="80" Height="23" Click="CopyButton_Click"/>
+        <Button x:Name="PasteButton" Content="Import" HorizontalAlignment="Left" Margin="813,90,0,0" VerticalAlignment="Top" Width="62" Height="23" Click="PasteButton_Click"/>
+        <Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="135,90,0,0" VerticalAlignment="Top" Width="89" Height="23" Click="SeedButton_Click"/>
+        <TabControl x:Name="tabControl" Margin="10,118,10,10">
+            <TabItem Header="Shuffle">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="77*"/>
+                        <ColumnDefinition Width="19*"/>
+                        <ColumnDefinition Width="12*"/>
+                        <ColumnDefinition Width="132*"/>
+                        <ColumnDefinition Width="193*"/>
+                        <ColumnDefinition Width="87*"/>
+                        <ColumnDefinition Width="346*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Vertical" Grid.Column="0" Grid.ColumnSpan="6" Margin="0,0,72,0">
+                        <CheckBox x:Name="ShopsCheckBox" IsChecked="{Binding Flags.Shops}" IsThreeState="True" Content="Shops" ToolTip="Shop contents (other than magic) are shuffled."/>
+                        <CheckBox x:Name="RandomWaresCheckBox" IsChecked="{Binding Flags.RandomWares}" IsThreeState="True" IsEnabled="{Binding Flags.Shops}" Content="Random Weapons and Armor" ToolTip="Shop contents (other than magic) are shuffled." Margin="30,5,0,0"/>
+                        <CheckBox x:Name="IncludeCasterItemsCheckBox" IsChecked="{Binding Flags.RandomWaresIncludesSpecialGear}" IsEnabled="{Binding Flags.CanIncludeSpecialGear}" IsThreeState="True" Content="Including Caster Items and Elite Gear" ToolTip="Shuffled shops permits elite gear." Margin="30,5,0,0"/>
+                        <CheckBox x:Name="MagicShopsCheckBox" IsChecked="{Binding Flags.MagicShops}" IsThreeState="True" Content="Magic Shops" ToolTip="Magic shop contents are shuffled."/>
+                        <CheckBox x:Name="MagicLevelsCheckBox" IsChecked="{Binding Flags.MagicLevels}" IsThreeState="True" Content="Magic Levels" ToolTip="Magic spells have their levels shuffled."/>
+                        <CheckBox x:Name="MagicPermissionsCheckBox" IsChecked="{Binding Flags.MagicPermissions}" IsThreeState="True" IsEnabled="{Binding Flags.MagicLevels}" Content="Keep Permissions" ToolTip="Retain the permissions of spells, even if they're shuffled to lower levels." Margin="30,5,0,0"/>
+                        <CheckBox x:Name="ItemMagicCheckBox" IsChecked="{Binding Flags.ItemMagic}" IsThreeState="True" Content="Item Magic" ToolTip="Magic items have randomly assigned spells."/>
+                        <CheckBox x:Name="SpellcrafterCheckBox" IsChecked="{Binding Flags.GenerateNewSpellbook}" IsThreeState="True" Content="Generate New Spellbook" ToolTip="Generates a new spellbook with spells appropriate to their level placement."/>
+                        <CheckBox x:Name="SpellcrafterPermsCheckBox" IsChecked="{Binding Flags.SpellcrafterRetainPermissions}" IsThreeState="True" IsEnabled="{Binding Flags.GenerateNewSpellbook}" Content="Retain Old Permissions" ToolTip="Spell permissions are not altered, i.e. Red Mage has first and third slots of tier 3 white" Margin="30,5,0,0"/>
+                        <CheckBox x:Name="MixSpellcrafter" IsChecked="{Binding Flags.SpellcrafterMixSpells}" IsThreeState="True" IsEnabled="{Binding Flags.GenerateNewSpellbook}" Content="Mix Spellbooks" ToolTip="Mixes the spell families when spellcrafter is on." Margin="30,5,0,0"/>
+                        <Label Margin="5,5,0,0"/>
+                        <CheckBox x:Name="RngCheckBox" IsChecked="{Binding Flags.Rng}" Content="RNG Table" IsThreeState="True" ToolTip="Shuffle the RNG table so that encounters are more difficult to predict."/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Grid.Column="5" Grid.ColumnSpan="2">
+                        <CheckBox x:Name="EnemyScriptsCheckBox" IsChecked="{Binding Flags.EnemyScripts}" IsThreeState="True" Content="Enemy Scripts" ToolTip="Enemy scripts are shuffled to different enemies."/>
+                        <CheckBox x:Name="AllowUnsafePiratesCheckBox" IsChecked="{Binding Flags.AllowUnsafePirates}" IsThreeState="True" IsEnabled="{Binding Flags.EnemyScripts}" Content="Allow Unsafe Pirates" ToolTip="Enemy scripts are shuffled to different enemies." Margin="30,5,0,0"/>
+                        <CheckBox x:Name="EnemySkillsSpellsCheckBox" IsChecked="{Binding Flags.EnemySkillsSpells}" IsThreeState="True" Content="Enemy Skills/Spells" ToolTip="Enemy skills and spells are shuffled to other scripts."/>
+                        <CheckBox x:Name="EnemyStatusAttacksCheckBox" IsChecked="{Binding Flags.EnemyStatusAttacks}" IsThreeState="True" Content="Enemy Status Attacks" ToolTip="Status attacks such as stun, sleep, and death are shuffled."/>
+                        <CheckBox x:Name="EnemyStatusAttacksRandomizedCheckBox" IsChecked="{Binding Flags.RandomStatusAttacks}" IsEnabled="{Binding Flags.EnemyStatusAttacks}" IsThreeState="True" Content="Randomize Status Attacks" ToolTip="Enemies roll random status attacks" Margin="30,5,0,0"/>
+                        <CheckBox x:Name="EnemyFormationsUnrunnableCheckBox" IsChecked="{Binding Flags.EnemyFormationsUnrunnable}" IsThreeState="True" Content="Enemy Unrunnable Formations" ToolTip="Enemy Unrunnable Formations"/>
+                        <CheckBox x:Name="AllFormationsUnrunnableCheckBox" IsChecked="{Binding Flags.EverythingUnrunnable}" IsEnabled="{Binding Flags.EnemyFormationsUnrunnable}" IsThreeState="True" Content="All Formations Are Unrunnable" ToolTip="All formations are unrunnable" Margin="30,5,0,0"/>
+                        <CheckBox x:Name="UnrunnablesCanStrikeFirstAndSurpriseBox" IsChecked="{Binding Flags.UnrunnablesStrikeFirstAndSurprise}" IsThreeState="True" Content="Unrunnables Can Ambush/Be Ambushed" ToolTip="Unrunnable formations can strike first or surprise"/>
+                        <CheckBox x:Name="EnemyFormationsSurpriseCheckBox" IsChecked="{Binding Flags.EnemyFormationsSurprise}" IsThreeState="True" Content="Enemy Surprise Bonus" ToolTip="Enemy Surprise Bonus"/>
+                        <ComboBox x:Name="EnemyFormationsComboBox" SelectedValue="{Binding Flags.FormationShuffleModeEnum}" Width="220" HorizontalAlignment="Left" Margin="10,5,0,0" SelectedValuePath="Tag">
+                            <ComboBoxItem Tag="None">Don't Shuffle Formations</ComboBoxItem>
+                            <ComboBoxItem Tag="Intrazone">Shuffle Frequency Within Zones</ComboBoxItem>
+                            <ComboBoxItem Tag="Interzone">Shuffle Formations Across Zones</ComboBoxItem>
+                            <ComboBoxItem Tag="Randomize">Randomize Formations</ComboBoxItem>
+                        </ComboBox>
+                        <CheckBox x:Name="EnemyTrapTilesCheckBox" IsChecked="{Binding Flags.EnemyTrapTiles}" IsThreeState="True" Content="Enemy Forced Encounter Tiles" ToolTip="Shuffle trap tile battles amongst one another."/>
+                        <CheckBox x:Name="RandomTrapFormationsCheckBox" IsChecked="{Binding Flags.RandomTrapFormations}" IsEnabled="{Binding Flags.EnemyTrapTiles}" IsThreeState="True" Content="Use Random Formations" ToolTip="Trap battles are instead selected at random from formation 2 battles." Margin="30,5,0,0"/>
+                        <CheckBox x:Name="EnemizerFormationsCheckBox" IsChecked="{Binding Flags.RandomizeFormationEnemizer}" IsThreeState="True" Content="Generate New Formations (Enemizer)" ToolTip="Generates new formations.  Turns off the ability to shuffle trap tiles or shuffle encounter zones."/>
+                        <CheckBox x:Name="EnemizerCheckBox" IsChecked="{Binding Flags.RandomizeEnemizer}" Content="Generate New Enemies (Enemizer)" IsEnabled="{Binding Flags.RandomizeFormationEnemizer}" IsThreeState="True" ToolTip="Generates new enemies procedurally.  Requires generating new formations in order to work." Margin="30,5,0,0"/>
+                        <ComboBox x:Name="WarMechModeComboBox" SelectedValue="{Binding Flags.WarMECHMode}" Width="220" HorizontalAlignment="Left" Margin="10,5,0,0" SelectedValuePath="Tag">
+                            <ComboBoxItem Tag="Vanilla">WarMECH Vanilla</ComboBoxItem>
+                            <ComboBoxItem Tag="Patrolling">WarMECH Patrolling</ComboBoxItem>
+                            <ComboBoxItem Tag="Required">WarMECH Required</ComboBoxItem>
+                            <ComboBoxItem Tag="Unleashed">WarMECH Unleashed</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Treasures">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="239*"/>
+                        <ColumnDefinition Width="188*"/>
+                        <ColumnDefinition Width="51*"/>
+                        <ColumnDefinition Width="239*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Vertical" Grid.Column="0" Margin="0,0,0.333,0">
+                        <Label Margin="5,5,0,0" FontWeight="Bold">Item Shuffle</Label>
+                        <CheckBox x:Name="TreasuresCheckBox" IsChecked="{Binding Flags.Treasures}" IsThreeState="True" Content="Treasures" ToolTip="If unchecked, forces vanilla Treasure Chests"/>
+                        <CheckBox x:Name="RandomTreasuresCheckBox" IsChecked="{Binding Flags.RandomTreasure}" IsThreeState="True" IsEnabled="{Binding Flags.Treasures}" Content="Randomize Treasures" Margin="30,5,0,0"/>
+                        <ComboBox x:Name="WorldWealthComboBox" SelectedValue="{Binding Flags.WorldWealthEnum}" IsEnabled="{Binding Flags.Treasures}" Width="120" HorizontalAlignment="Left" Margin="30,5,0,0" SelectedValuePath="Tag">
+                            <ComboBoxItem Tag="High">High Wealth</ComboBoxItem>
+                            <ComboBoxItem Tag="Normal">Normal Wealth</ComboBoxItem>
+                            <ComboBoxItem Tag="Low">Low Wealth</ComboBoxItem>
+                            <ComboBoxItem Tag="Impoverished">Impoverished</ComboBoxItem>
+                            <ComboBoxItem Tag="Melmond">Melmond</ComboBoxItem>
+                        </ComboBox>
+                        <CheckBox x:Name="BetterTrapTreasureCheckBox" IsChecked="{Binding Flags.BetterTrapTreasure}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Better Treasure near Spike Tiles" ToolTip="Better treasures on chests next to spike tile" Margin="30, 5, 0 0"/>
+                        <CheckBox x:Name="NPCItemsCheckBox" IsChecked="{Binding Flags.NPCItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Main NPC Items" ToolTip="If unchecked, forces vanilla Bridge, Lute, Ship, Rod, Canoe, Cube, Bottle"/>
+                        <CheckBox x:Name="NPCFetchItemsCheckBox" IsChecked="{Binding Flags.NPCFetchItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Fetch Quest Rewards" ToolTip="If unchecked, forces vanilla Crystal, Herb, Key, Canal, Oxyale, Chime, Xcalber"/>
+                        <CheckBox x:Name="ObjectiveNPCCheckBox" IsChecked="{Binding Flags.ObjectiveNPCs}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Objective NPCs" ToolTip="Shuffle the locations of Dr. Unne, Elf Doctor, and Bahamut"/>
+                        <Label Margin="5,5,0,0"/>
+                        <CheckBox x:Name="FreeShipCheckBox" IsChecked="{Binding Flags.FreeShip}" IsThreeState="True" Content="Free Ship" ToolTip="Start the game with a free ship in the Coneria dock."/>
+                        <CheckBox x:Name="FreeAirshipCheckBox" IsChecked="{Binding Flags.FreeAirship}" IsThreeState="True" Content="Free Airship" ToolTip="Start the game with a free airship, which spawns near Coneria."/>
+                        <CheckBox x:Name="FreeBridgeCheckBox" IsChecked="{Binding Flags.FreeBridge}" IsThreeState="True" Content="Free Bridge" ToolTip="The bridge near Coneria Castle is built at the start of the game."/>
+                        <CheckBox x:Name="FreeCanalCheckBox" IsChecked="{Binding Flags.FreeCanal}" IsThreeState="True" Content="Free Canal" ToolTip="The canal connecting the inner sea to the outer sea is available at the start of the game."/>
+                        <CheckBox x:Name="FreeTailCheckBox" IsChecked="{Binding Flags.FreeTail}" IsThreeState="True" Content="Free Tail" ToolTip="The rat's tail required for promotion is in your inventory at the start of the game."/>
+                        <Label Margin="5,5,0,0"/>
+                        <CheckBox x:Name="UseOlderPlacementCheckBox" IsChecked="{Binding Flags.ClassicItemPlacement}" Content="Use v2 logic for placing treasures" ToolTip="Uses an older version of the logic to place items"/>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Label >Consumable Treasurechest Stacks:</Label>
+                            <ComboBox SelectedValue="{Binding Flags.ConsumableTreasureStackSize}" MinWidth="100" HorizontalAlignment="Left" SelectedValuePath="Tag">
+                                <ComboBoxItem Tag="Default">Default</ComboBoxItem>
+                                <ComboBoxItem Tag="Stingy">Stingy</ComboBoxItem>
+                                <ComboBoxItem Tag="Adequat">Adequat</ComboBoxItem>
+                                <ComboBoxItem Tag="Generous">Generous</ComboBoxItem>
+                                <ComboBoxItem Tag="Ridiculous">Ridiculous</ComboBoxItem>
+                            </ComboBox>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Grid.ColumnSpan="3" Margin="239,0,0,0">
+                        <Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Locations:</Label>
+                        <CheckBox x:Name="IncentivizeFreeNPCsCheckBox" IsChecked="{Binding Flags.IncentivizeFreeNPCs}" IsEnabled="{Binding Flags.IncentivizeFreeNPCsEnabled}" IsThreeState="True" Content="Main NPCs" ToolTip="King, Princess, Bikke, Sarda, Sage, Robot, Caravan"/>
+                        <CheckBox x:Name="IncentivizeFetchNPCsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchNPCs}" IsEnabled="{Binding Flags.IncentivizeFetchNPCsEnabled}" IsThreeState="True" Content="Fetch Quest NPCs" ToolTip="Astos, Matoya, Prince, Dwarves, Lefein, Fairy"/>
+                        <Label Margin="5,5,0,0"/>
+                        <CheckBox x:Name="IncentivizeIceCaveCheckBox" IsChecked="{Binding Flags.IncentivizeIceCave}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Ice Cave" ToolTip="Floater chest"/>
+                        <CheckBox x:Name="IncentivizeOrdealsCheckBox" IsChecked="{Binding Flags.IncentivizeOrdeals}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Ordeals" ToolTip="Tail chest"/>
+                        <CheckBox x:Name="IncentivizeMarshCheckBox" IsChecked="{Binding Flags.IncentivizeMarsh}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Marsh Cave" ToolTip="Crown chest"/>
+                        <CheckBox x:Name="IncentivizeTitansCheckBox" IsChecked="{Binding Flags.IncentivizeTitansTrove}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Titan's Trove" ToolTip="One of the chests in the Titan's Cave"/>
+                        <Label Margin="5,5,0,0"/>
+                        <CheckBox x:Name="IncentivizeEarthCheckBox" IsChecked="{Binding Flags.IncentivizeEarth}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Earth Cave" ToolTip="Ruby chest (behind Vampire)"/>
+                        <CheckBox x:Name="IncentivizeVolcanoCheckBox" IsChecked="{Binding Flags.IncentivizeVolcano}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Volcano" ToolTip="Last Floor West (Red D)"/>
+                        <CheckBox x:Name="IncentivizeSeaShrineCheckBox" IsChecked="{Binding Flags.IncentivizeSeaShrine}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Sea Shrine" ToolTip="Slab chest"/>
+                        <CheckBox x:Name="IncentivizeSkyPalaceCheckBox" IsChecked="{Binding Flags.IncentivizeSkyPalace}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Sky Palace" ToolTip="Adamant chest"/>
+                        <Label Margin="5,5,0,0"/>
+                        <CheckBox x:Name="IncentivizeConeriaCheckBox" IsChecked="{Binding Flags.IncentivizeConeria}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Coneria (locked)" ToolTip="TNT chest"/>
+                        <CheckBox x:Name="IncentivizeMarshKeyLockedCheckBox" IsChecked="{Binding Flags.IncentivizeMarshKeyLocked}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Marsh (locked)" ToolTip="Bottom Floor South East"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Grid.Column="3" Margin="0,0,0.334,0">
+                        <Label Margin="5,5,0,0" FontWeight="Bold">Incentivized Item Pool:</Label>
+                        <CheckBox x:Name="IncentivizeMainProgressionCheckBox" IsChecked="{Binding Flags.IncentivizeMainItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Main Progression Items" ToolTip="Lute, Key, Rod, Oxyale, Chime, Cube"/>
+                        <CheckBox x:Name="IncentivizeFetchItemsCheckBox" IsChecked="{Binding Flags.IncentivizeFetchItems}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Other Quest Items" ToolTip="Any other non-required quest items that are shuffled such as Ruby or Adamant"/>
+                        <CheckBox x:Name="IncentivizeFloaterCheckBox" IsChecked="{Binding Flags.IncentivizeAirship}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Floater" ToolTip="Floater"/>
+                        <CheckBox x:Name="IncentivizeCanoeCheckBox" IsChecked="{Binding Flags.IncentivizeCanoeItem}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Canoe" ToolTip="Canoe"/>
+                        <CheckBox x:Name="IncentivizeShipCanalCheckBox" IsChecked="{Binding Flags.IncentivizeShipAndCanal}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Ship + Canal" ToolTip="Ship and Canal"/>
+                        <CheckBox x:Name="IncentivizeTailCheckBox" IsChecked="{Binding Flags.IncentivizeTail}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Tail" ToolTip="Tail"/>
+                        <CheckBox x:Name="IncentivizeMasamuneCheckBox" IsChecked="{Binding Flags.IncentivizeMasamune}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Masamune" ToolTip="Masamune"/>
+                        <CheckBox x:Name="IncentivizeDefCastWeaponCheckBox" IsChecked="{Binding Flags.IncentivizeDefCastWeapon}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Defense" ToolTip="Defense"/>
+                        <CheckBox x:Name="IncentivizeVorpalCheckBox" IsChecked="{Binding Flags.IncentivizeVorpal}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Vorpal" ToolTip="The Alleged Sword, or the Game Changer"/>
+                        <CheckBox x:Name="IncentivizeOffCastWeaponCheckBox" IsChecked="{Binding Flags.IncentivizeOffCastWeapon}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Thor Hammer" ToolTip="Thor Hammer"/>
+                        <CheckBox x:Name="IncentivizeOpalCheckBox" IsChecked="{Binding Flags.IncentivizeOpal}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Opal Bracelet" ToolTip="Opal Bracelet"/>
+                        <CheckBox x:Name="IncentivizeOtherCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeOtherCastArmor}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Power Gauntlet" ToolTip="Power Gauntlet"/>
+                        <CheckBox x:Name="IncentivizePowerRodCheckBox" IsChecked="{Binding Flags.IncentivizePowerRod}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Power Rod" ToolTip="Power Rod"/>
+                        <CheckBox x:Name="IncentivizeDefCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeDefCastArmor}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="White Shirt" ToolTip=">White Shirt"/>
+                        <CheckBox x:Name="IncentivizeOffCastArmorCheckBox" IsChecked="{Binding Flags.IncentivizeOffCastArmor}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Black Shirt" ToolTip="Black Shirt"/>
+                        <CheckBox x:Name="IncentivizeRibbonCheckBox" IsChecked="{Binding Flags.IncentivizeRibbon}" IsEnabled="{Binding Flags.Treasures}" IsThreeState="True" Content="Ribbon" ToolTip="Ribbon"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Goal">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Vertical" Grid.Column="0">
+                        <Label Margin="5,5,0,0" FontWeight="Bold">Quick Races</Label>
+                        <CheckBox x:Name="ChaosRushCheckBox" IsChecked="{Binding Flags.ChaosRush}" IsEnabled="{Binding Flags.ChaosRushEnabled}" Content="CHAOS Rush" ToolTip="Enable access to CHAOS without the Mystic KEY and start with the LUTE."/>
+                        <CheckBox x:Name="FreeOrbsCheckBox" IsChecked="{Binding Flags.FreeOrbs}" IsEnabled="{Binding Flags.FreeOrbsEnabled}" Content="Free Orbs" ToolTip="Enable access to CHAOS without the Mystic KEY and start with the LUTE."/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Grid.Column="1">
+                        <Label Margin="5,5,0,0" FontWeight="Bold">Treasure Hunt</Label>
+                        <CheckBox x:Name="ShardHuntCheckBox" IsChecked="{Binding Flags.ShardHunt}" IsEnabled="{Binding Flags.ShardHuntEnabled}" Content="Treasure Hunt" ToolTip="Treasure Hunt alternate gameplay mode. Collect 16 of a random Treasure Item to activate the BLACK ORB."/>
+                        <ComboBox x:Name="ShardCountComboBox" SelectedValue="{Binding Flags.ShardCount}" IsEnabled="{Binding Flags.ShardHuntEnabled}" Width="120" HorizontalAlignment="Left" Margin="30,5,0,0" SelectedValuePath="Tag">
+                            <ComboBoxItem Tag="Count16">Exactly 16</ComboBoxItem>
+                            <ComboBoxItem Tag="Count20">Exactly 20</ComboBoxItem>
+                            <ComboBoxItem Tag="Count24">Exactly 24</ComboBoxItem>
+                            <ComboBoxItem Tag="Count28">Exactly 28</ComboBoxItem>
+                            <ComboBoxItem Tag="Count32">Exactly 32</ComboBoxItem>
+                            <ComboBoxItem Tag="Count36">Exactly 36</ComboBoxItem>
+                            <ComboBoxItem Tag="Range16_24">From 16-24</ComboBoxItem>
+                            <ComboBoxItem Tag="Range24_32">From 24-32</ComboBoxItem>
+                            <ComboBoxItem Tag="Range16_36">From 16-36</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Grid.Column="2">
+                        <Label Margin="5,5,0,0" FontWeight="Bold">Extra Challenges</Label>
+                        <CheckBox x:Name="TransformFinalFormationCheckBox" IsChecked="{Binding Flags.TransformFinalFormation}" IsThreeState="True" Content="Alternate Final Boss" ToolTip="Replace the Final Battle against Chaos with a different challenge."/>
+                        <CheckBox x:Name="ShortenToFRCheckBox" IsChecked="{Binding Flags.ShortToFR}" IsThreeState="True" Content="Shorten ToFR" ToolTip="Squash ToFR down into its final floor with all treasures."/>
+                        <CheckBox x:Name="PreserveFiendRefightsCheckBox" IsEnabled="{Binding Flags.ShortToFR}" IsChecked="{Binding Flags.PreserveFiendRefights}" IsThreeState="True" Content="Preserve Fiend Tiles" ToolTip="Add four fiend tiles to the shortened ToFR."/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Map">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <Label Margin="5,5,0,0" FontWeight="Bold">Entrance Shuffle</Label>
+                        <CheckBox x:Name="EntrancesCheckBox" IsChecked="{Binding Flags.Entrances}" IsThreeState="True" Content="Entrances" ToolTip="Overworld entrances now lead to random dungeons."/>
+                        <CheckBox x:Name="IncludeDeadEndsCheckBox" IsChecked="{Binding Flags.EntrancesIncludeDeadEnds}" IsEnabled="{Binding Flags.Entrances}" IsThreeState="True" Content="Include Dead Ends" ToolTip="" Margin="30, 5, 0, 0"/>
+                        <CheckBox x:Name="FloorsCheckBox" IsEnabled="{Binding Flags.Entrances}" IsChecked="{Binding Flags.Floors}" IsThreeState="True" Content="Floors" ToolTip="All rooms are shuffled up into new sequences, intermixed across the entrances." Margin="30,5,0,0"/>
+                        <CheckBox x:Name="DeepToFRCheckBox" IsEnabled="{Binding Flags.DeepCastlesPossible}" IsChecked="{Binding Flags.AllowDeepCastles}" IsThreeState="True" Content="Deep ToFR" ToolTip="Instead of being at ground level, the Temple of Fiends can now be at the bottom of a dungeon." Margin="30,5,0,0"/>
+                        <Label Margin="5,5,0,0"/>
+                        <CheckBox x:Name="TownsCheckBox" IsChecked="{Binding Flags.Towns}" IsThreeState="True" Content="Towns" ToolTip="Add town entrances into the entrance shuffle."/>
+                        <CheckBox x:Name="MixEntrancesAndTownEntrancesCheckBox" IsChecked="{Binding Flags.EntrancesMixedWithTowns}" IsEnabled="{Binding Flags.Entrances}" IsThreeState="True" Content="Mix All Entrances Together" ToolTip="If Entrance Shuffle and Town Shuffle are enabled, yowns can appear in overworld dungeon locations" Margin="30,5,0,0"/>
+                        <CheckBox x:Name="DeepTownsCheckBox" IsChecked="{Binding Flags.AllowDeepTowns}" IsEnabled="{Binding Flags.DeepTownsPossible}" IsThreeState="True" Content="Deep Towns" ToolTip="Towns can be inside a dungeon" Margin="30,5,0,0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <Label Margin="5,5,0,0" FontWeight="Bold">Map Edits</Label>
+                        <Label Margin="5,5,0,0" FontWeight="Bold">Sky Castle 4F Maze:</Label>
+                        <ComboBox x:Name="SkyCastle4FMazeModeComboBox" SelectedValue="{Binding Flags.SkyCastle4FMazeMode}" Width="150" HorizontalAlignment="Left" Margin="10,0,0,0" ToolTip="What kind of Sky Castle Maze?" SelectedValuePath="Tag">
+                            <ComboBoxItem Tag="Normal">Normal</ComboBoxItem>
+                            <ComboBoxItem Tag="Teleporters">Teleporters Only</ComboBoxItem>
+                            <ComboBoxItem Tag="Maze">Full Maze</ComboBoxItem>
+                        </ComboBox>
+                        <CheckBox x:Name="OrdealsPillarsCheckBox" IsChecked="{Binding Flags.OrdealsPillars}" IsThreeState="True" Content="Castle Ordeals" ToolTip="Teleporters in Castle Ordeals are shuffled."/>
+                        <CheckBox x:Name="TitansTroveCheckBox" IsChecked="{Binding Flags.TitansTrove}" IsThreeState="True" Content="Titan's Trove" ToolTip="Titan's Trove"/>
+                        <CheckBox x:Name="ZozoMelmondCheckBox" IsChecked="{Binding Flags.AllowUnsafeMelmond}" IsThreeState="True" Content="Zozo Melmond" ToolTip="Monsters can appear on the sand tiles in Melmond"/>
+                        <CheckBox x:Name="LefeinishHospitalityCheckBox" IsChecked="{Binding Flags.LefeinShops}" IsThreeState="True" Content="Lefeinish Hospitality" ToolTip="An inn and clinic/tavern will appear in Lefein"/>
+                        <CheckBox x:Name="ConfusedOldMenCheckBox" IsChecked="{Binding Flags.ConfusedOldMen}" IsThreeState="True" Content="Confused Old Men" ToolTip="Yoga in the park!"/>
+                        <Label Margin="5,5,0,0"/>
+                        <CheckBox x:Name="MapOpenProgressionCheckBox" IsChecked="{Binding Flags.MapOpenProgression}" IsThreeState="True" Content="Open Progression" ToolTip="Open Progression"/>
+                        <CheckBox x:Name="MapExtendedOpenProgressionCheckBox" IsEnabled="{Binding Flags.MapOpenProgression}" IsChecked="{Binding Flags.MapOpenProgressionExtended}" IsThreeState="True" Content="Extended Open Progression" ToolTip="Extended Open Progression"/>
+                        <Label Margin="5,5,0,0"/>
+                        <CheckBox x:Name="ShuffleOriginalFiendFights" IsChecked="{Binding Flags.FiendShuffle}" Content="Shuffle Original Fiend Fights" ToolTip="Shuffle the four fiends in the present, so that Kraken can appear in Volcano or Kary in Sky Castle"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <Label Margin="5,5,0,0" FontWeight="Bold">Routing Access</Label>
+                        <CheckBox x:Name="EarlySardaCheckBox" IsChecked="{Binding Flags.EarlySarda}" IsThreeState="True" Content="Early Sarda Item" ToolTip="Sarda will give you an item without requiring Vampire dead"/>
+                        <CheckBox x:Name="EarlySageCheckBox" IsChecked="{Binding Flags.EarlySage}" IsThreeState="True" Content="Early Sage Item" ToolTip="Sage in Cresent Lake will give you an item without requiring Lich dead"/>
+                        <CheckBox x:Name="EarlyOrdealsCheckBox" IsChecked="{Binding Flags.EarlyOrdeals}" IsThreeState="True" Content="Early Ordeals" ToolTip="You will be allowed access to Castle Ordeals without the CROWN."/>
+                        <Label Margin="5,5,0,0" FontWeight="Bold">Procedural Generation (BETA)</Label>
+                        <CheckBox x:Name="EnableProcgenCheckBox" IsChecked="{Binding Flags.ExperimentalFloorGeneration}" Content="Enable Procedural Floor Generation"/>
+                        <CheckBox x:Name="ProcGenWaterfallCheckBox" IsChecked="{Binding Flags.EFGWaterfall}" IsEnabled="{Binding Flags.ExperimentalFloorGeneration}" Content="Procgen Waterfall" Margin="30,5,0,0"/>
+                        <CheckBox x:Name="ProcGenEarthB1CheckBox" IsChecked="{Binding Flags.EFGEarth1}" IsEnabled="{Binding Flags.ExperimentalFloorGeneration}" Content="Procgen Earth Cave B1" Margin="30,5,0,0"/>
+                        <CheckBox x:Name="ProcGenEarthB2CheckBox" IsChecked="{Binding Flags.EFGEarth2}" IsEnabled="{Binding Flags.ExperimentalFloorGeneration}" Content="Procgen Earth Cave B2" Margin="30,5,0,0"/>
+                        <Label Margin="5,5,0,0" FontWeight="Bold">Hints</Label>
+                        <CheckBox x:Name="hintsVillagerCB" IsChecked="{Binding Flags.HintsVillage}" Content="Enable Procedural Floor Generation"/>
+                        <CheckBox x:Name="hintsDungeonCB" IsChecked="{Binding Flags.HintsDungeon}" Content="Procgen Waterfall"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Scale" HorizontalAlignment="Right" Width="43">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180*"/>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="126*"/>
+                        <ColumnDefinition Width="200*"/>
+                        <ColumnDefinition Width="180*"/>
+                        <ColumnDefinition Width="100*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0.333,0">
+                        <Label MinHeight="26" x:Name="PricesLabel" Content="Prices:" ToolTip="Prices of items, weapons, armor, and magic are all scaled, as well as your starting gold and gold chests."/>
+                        <Label MinHeight="26" x:Name="EnemyStatsLabel" Content="Enemy Stats:" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Enemy stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, and magic defense."/>
+                        <Label MinHeight="26" x:Name="BossStatsLabel" Content="Boss Stats:" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Boss stats are scaled: HP, attack power, # of hits, accuracy, critical %, defense, evade, and magic defense."/>
+                        <Label MinHeight="26" x:Name="ExpGoldBoostLabel" Content="Exp/Gold Boost:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label MinHeight="26" Content=""/>
+                        <Label MinHeight="26" x:Name="ProgressiveScaleLabel" Content="Progressive Scale:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label MinHeight="26" x:Name="OverworldEncounterRateLabel" Content="Overworld Encounter Rate:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label MinHeight="26" x:Name="DungeonEncounterRateLabel" Content="Dungeon Encounter Rate:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label MinHeight="26" Content="Starting Inventory:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <CheckBox MinHeight="20" x:Name="ClampPricesCheckBox" IsChecked="{Binding Flags.ClampPrices}" ToolTip="Clamp Minimum to 100%" Checked="ClampPricesCheckBox_ValueChanged" Unchecked="ClampPricesCheckBox_ValueChanged"/>
+                        <CheckBox MinHeight="20" x:Name="ClampEnemiesCheckBox" IsChecked="{Binding Flags.ClampEnemies}" ToolTip="Clamp Minimum to 100%" Checked="ClampEnemiesCheckBox_ValueChanged" Unchecked="ClampEnemiesCheckBox_ValueChanged"/>
+                        <CheckBox MinHeight="20" x:Name="ClampBossesCheckBox" IsChecked="{Binding Flags.ClampBosses}" ToolTip="Clamp Minimum to 100%" Checked="ClampBossesCheckBox_ValueChanged" Unchecked="ClampBossesCheckBox_ValueChanged"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <Label MinHeight="26" x:Name="PriceScaleFactorLabel" />
+                        <Label MinHeight="26" x:Name="EnemyScaleFactorLabel" Content="" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                        <Label MinHeight="26" x:Name="BossScaleFactorLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label MinHeight="26" x:Name="ExpScaleFactorLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label MinHeight="26" Content=""/>
+                        <Label MinHeight="26" Content=""/>
+                        <Label MinHeight="26" x:Name="EncounterRateFactorLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label MinHeight="26" x:Name="DungeonEncounterRateFactorLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="3">
+                        <Slider MinHeight="20" x:Name="PriceScaleFactorSlider" Value="{Binding Flags.PriceScaleFactor}" HorizontalAlignment="Left" VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" SmallChange="0.1" LargeChange="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="PriceScaleFactorSlider_ValueChanged"/>
+                        <Slider MinHeight="20" x:Name="EnemyScaleFactorSlider" Value="{Binding Flags.EnemyScaleFactor}" HorizontalAlignment="Left"  VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="EnemyScaleFactorSlider_ValueChanged"/>
+                        <Slider MinHeight="20" x:Name="BossScaleFactorSlider" Value="{Binding Flags.BossScaleFactor}" HorizontalAlignment="Left" VerticalAlignment="Top" Minimum="1" Maximum="5" Width="100" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="For each value to be scaled, a random exponent is selected between -1 and +1.  The value is scaled by the scale factor raised to that power." ValueChanged="BossScaleFactorSlider_ValueChanged"/>
+                        <Slider MinHeight="20" x:Name="ExpMultiplierSlider" Value="{Binding Flags.ExpMultiplier}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="5" TickPlacement="BottomRight" TickFrequency="0.5" ToolTip="Multiplies enemy exp and gold by this amount." ValueChanged="ExpMultiplierSlider_ValueChanged"/>
+                        <Slider MinHeight="20" x:Name="ExpBonusSlider" Value="{Binding Flags.ExpBonus}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="500" TickPlacement="BottomRight" TickFrequency="50" LargeChange="50" SmallChange="10" ToolTip="Adds this amount to enemy exp and gold (after the multiplier)." ValueChanged="ExpBonusSlider_ValueChanged"/>
+                        <ComboBox MinHeight="26" x:Name="ProgressiveScaleComboBox" SelectedValue="{Binding Flags.ProgressiveScaleMode}" Width="150" HorizontalAlignment="Left" ToolTip="How do you like your WarMECH?" SelectedValuePath="Tag">
+                            <ComboBoxItem Content="Disabled" Tag="Disabled"/>
+                            <ComboBoxItem Content="150% at 12" Tag="FiftyPercentAt12"/>
+                            <ComboBoxItem Content="150% at 15" Tag="FiftyPercentAt15"/>
+                            <ComboBoxItem Content="200% at 12" Tag="DoubledAt12"/>
+                            <ComboBoxItem Content="200% at 15" Tag="DoubledAt15"/>
+                            <ComboBoxItem Content="5% Per Key Item" Tag="Progressive5Percent"/>
+                            <ComboBoxItem Content="10% Per Key Item" Tag="Progressive10Percent"/>
+                            <ComboBoxItem Content="20% Per Key Item" Tag="Progressive20Percent"/>
+                        </ComboBox>
+                        <Slider MinHeight="20" x:Name="EncounterRateSlider" Value="{Binding Flags.EncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="EncounterRate_ValueChanged"/>
+                        <Slider MinHeight="20" x:Name="DungeonEncounterRateSlider" Value="{Binding Flags.DungeonEncounterRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Minimum="0" Maximum="45" TickPlacement="BottomRight" TickFrequency="5" LargeChange="1" SmallChange="1" ValueChanged="DungeonEncounterRate_ValueChanged"/>
+                        <ComboBox MinHeight="26" SelectedValue="{Binding Flags.StartingItemSet}" Width="150" HorizontalAlignment="Left" SelectedValuePath="Tag">
+                            <ComboBoxItem Content="None" Tag="None"/>
+                            <ComboBoxItem Content="SafetyBit" Tag="SafetyBit"/>
+                            <ComboBoxItem Content="BeggarsChoice" Tag="BeggarsChoice"/>
+                            <ComboBoxItem Content="JustTents" Tag="JustTents"/>
+                            <ComboBoxItem Content="ExplorerStartingPack" Tag="ExplorerStartingPack"/>
+                            <ComboBoxItem Content="RealEstate" Tag="RealEstate"/>
+                            <ComboBoxItem Content="WarriorsStandard" Tag="WarriorsStandard"/>
+                            <ComboBoxItem Content="RoyalPackmule" Tag="RoyalPackmule"/>
+                            <ComboBoxItem Content="DucklingBoon" Tag="DucklingBoon"/>
+                            <ComboBoxItem Content="R. BeggarsChoice" Tag="RandomizedBeggarsChoice"/>
+                            <ComboBoxItem Content="R. ExplorerStartingPack" Tag="RandomizedExplorerStartingPack"/>
+                            <ComboBoxItem Content="R. WarriorsStandard" Tag="RandomizedWarriorsStandard"/>
+                            <ComboBoxItem Content="R. RoyalPackmule" Tag="RandomizedRoyalPackmule"/>
+                            <ComboBoxItem Content="R. HighRolling" Tag="RandomizedHighRolling"/>
+                            <ComboBoxItem Content="Randomized" Tag="Randomized"/>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Column="4">
+                        <CheckBox x:Name="PricesScaleOverflowCheckBox" IsChecked="{Binding Flags.WrapPriceOverflow}" Content="Wrap Overflowing Prices"/>
+                        <CheckBox x:Name="EnemyStatScaleOverflowCheckBox" IsChecked="{Binding Flags.WrapStatOverflow}" Content="Wrap Overflowing Stats" />
+                        <CheckBox x:Name="IncludeMoraleCheckBox" IsChecked="{Binding Flags.IncludeMorale}" Content="Include Morale" />
+                        <CheckBox x:Name="StaticXPGainCheckBox" IsChecked="{Binding Flags.NoDanMode}" Content="Static EXP Gain" ToolTip="XP is always split by 4 even if characters are slain/stoned (fallen characters do not gain any however)"/>
+                        <CheckBox x:Name="VanillaStartingGoldCheckBox" IsChecked="{Binding Flags.StartingGold}" Content="Starting Gold" ToolTip="The Bridge is available at the start of the game" Width="296.667"/>
+                        <CheckBox x:Name="EasyModeCheckBox" IsChecked="{Binding Flags.EasyMode}" Content="Easy Mode" ToolTip="Encounter rate cut to 20% and all Enemy HP cut to 10% (after any randomizations)"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Party">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label MinHeight="26" x:Name="PermittedLabel" Content="Permitted:"/>
+                    <Label MinHeight="26" x:Name="Member1Label" Grid.Row="1" Content="Member 1"/>
+                    <Label MinHeight="26" x:Name="Member2Label" Grid.Row="2" Content="Member 2"/>
+                    <Label MinHeight="26" x:Name="Member3Label" Grid.Row="3" Content="Member 3"/>
+                    <Label MinHeight="26" x:Name="Member4Label" Grid.Row="4" Content="Member 4"/>
+                    <CheckBox x:Name="TavernModeCheckBox" IsChecked="{Binding Flags.RecruitmentMode}" Grid.Row="5" Grid.ColumnSpan="3" IsThreeState="True" Content="Tavern Mode Enabled" ToolTip="Clinics are replaced with Pubs, which allow you to recruit a character class throughout the game."/>
+                    <CheckBox x:Name="DisableRevivingInTavernsCheckBox" IsChecked="{Binding Flags.RecruitmentModeHireOnly}" IsEnabled="{Binding Flags.RecruitmentMode}" Grid.Row="6" Grid.ColumnSpan="3" IsThreeState="True" Content="Disallow Revive In Taverns" ToolTip="Cannot revive characters in taverns" Margin="30,5,0,0"/>
+                    <CheckBox x:Name="DisableRevivingNoneNonesInTavernsCheckBox" IsChecked="{Binding Flags.RecruitmentModeReplaceOnlyNone}" IsEnabled="{Binding Flags.RecruitmentMode}" Grid.Row="7" Grid.ColumnSpan="3" IsThreeState="True" Content="Only replace Nones in Taverns" Margin="30,5,0,0"/>
+                    <Label MinHeight="26" x:Name="Tavern4Label" Grid.Row="8" Content="Recruitable" ToolTip="If Tavern Mode is enabled, choose which classes can appear in the taverns"/>
+                    <Label MinHeight="26" x:Name="ForcedLabel" Grid.Column="1" Content="Forced?"/>
+                    <CheckBox MinHeight="20" x:Name="Forced1CheckBox" Grid.Column="1" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.FORCED1}"/>
+                    <CheckBox MinHeight="20" x:Name="Forced2CheckBox" Grid.Column="1" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.FORCED2}"/>
+                    <CheckBox MinHeight="20" x:Name="Forced3CheckBox" Grid.Column="1" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.FORCED3}"/>
+                    <CheckBox MinHeight="20" x:Name="Forced4CheckBox" Grid.Column="1" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.FORCED4}"/>
+                    <Label MinHeight="26" x:Name="FighterLabel" Grid.Column="2" Content="Fighter"/>
+                    <CheckBox MinHeight="20" x:Name="FighterCheckBox" Grid.Column="2" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.FIGHTER1}"/>
+                    <CheckBox MinHeight="20" x:Name="Fighter2CheckBox" Grid.Column="2" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.FIGHTER2}"/>
+                    <CheckBox MinHeight="20" x:Name="Fighter3Checkbox" Grid.Column="2" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.FIGHTER3}"/>
+                    <CheckBox MinHeight="20" x:Name="Fighter4CheckBox" Grid.Column="2" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.FIGHTER4}"/>
+                    <CheckBox MinHeight="20" x:Name="TavernFighterCheckBox" Grid.Column="2" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN1}"/>
+                    <Label MinHeight="26" x:Name="ThiefLabel" Grid.Column="3" Content="Thief"/>
+                    <CheckBox MinHeight="20" x:Name="Thief1CheckBox" Grid.Column="3" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.THIEF1}"/>
+                    <CheckBox MinHeight="20" x:Name="Thief2CheckBox" Grid.Column="3" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.THIEF2}"/>
+                    <CheckBox MinHeight="20" x:Name="Thief3Checkbox" Grid.Column="3" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.THIEF3}"/>
+                    <CheckBox MinHeight="20" x:Name="Thief4CheckBox" Grid.Column="3" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.THIEF4}"/>
+                    <CheckBox MinHeight="20" x:Name="TavernThiefCheckBox" Grid.Column="3" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN2}"/>
+                    <Label MinHeight="26" x:Name="BlackBeltLabel" Grid.Column="4" Content="Black Belt"/>
+                    <CheckBox MinHeight="20" x:Name="BlackBelt1CheckBox" Grid.Column="4" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.BLACK_BELT1}"/>
+                    <CheckBox MinHeight="20" x:Name="BlackBelt2CheckBox" Grid.Column="4" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.BLACK_BELT2}"/>
+                    <CheckBox MinHeight="20" x:Name="BlackBelt3Checkbox" Grid.Column="4" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.BLACK_BELT3}"/>
+                    <CheckBox MinHeight="20" x:Name="BlackBelt4CheckBox" Grid.Column="4" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.BLACK_BELT4}"/>
+                    <CheckBox MinHeight="20" x:Name="TavernBBCheckBox" Grid.Column="4" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN3}"/>
+                    <Label MinHeight="26" x:Name="RedMageLabel" Grid.Column="5" Content="Red Mage"/>
+                    <CheckBox MinHeight="20" x:Name="RedMake1CheckBox" Grid.Column="5" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.RED_MAGE1}"/>
+                    <CheckBox MinHeight="20" x:Name="RedMake2CheckBox" Grid.Column="5" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.RED_MAGE2}"/>
+                    <CheckBox MinHeight="20" x:Name="RedMake3CheckBox" Grid.Column="5" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.RED_MAGE3}"/>
+                    <CheckBox MinHeight="20" x:Name="RedMake4CheckBox" Grid.Column="5" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.RED_MAGE4}"/>
+                    <CheckBox MinHeight="20" x:Name="TavernRMCheckBox" Grid.Column="5" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN4}"/>
+                    <Label MinHeight="26" x:Name="WhiteMageLabel" Grid.Column="6" Content="White Mage"/>
+                    <CheckBox MinHeight="20" x:Name="WhiteMage1CheckBox" Grid.Column="6" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.WHITE_MAGE1}"/>
+                    <CheckBox MinHeight="20" x:Name="WhiteMage2CheckBox" Grid.Column="6" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.WHITE_MAGE2}"/>
+                    <CheckBox MinHeight="20" x:Name="WhiteMage3CheckBox" Grid.Column="6" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.WHITE_MAGE3}"/>
+                    <CheckBox MinHeight="20" x:Name="WhiteMage4CheckBox" Grid.Column="6" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.WHITE_MAGE4}"/>
+                    <CheckBox MinHeight="20" x:Name="TavernWMCheckBox" Grid.Column="6" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN5}"/>
+                    <Label MinHeight="26" x:Name="BlackMageLabel" Grid.Column="7" Content="Black Mage"/>
+                    <CheckBox MinHeight="20" x:Name="BlackMage1CheckBox" Grid.Column="7" Grid.Row="1" IsThreeState="True" IsChecked="{Binding Flags.BLACK_MAGE1}"/>
+                    <CheckBox MinHeight="20" x:Name="BlackMage2CheckBox" Grid.Column="7" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.BLACK_MAGE2}"/>
+                    <CheckBox MinHeight="20" x:Name="BlackMage3CheckBox" Grid.Column="7" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.BLACK_MAGE3}"/>
+                    <CheckBox MinHeight="20" x:Name="BlackMage4CheckBox" Grid.Column="7" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.BLACK_MAGE4}"/>
+                    <CheckBox MinHeight="20" x:Name="TavernBMCheckBox" Grid.Column="7" Grid.Row="8" IsThreeState="True" IsChecked="{Binding Flags.TAVERN6}"/>
+                    <Label MinHeight="26" x:Name="NoneLabel" Grid.Column="8" Content="None"/>
+                    <CheckBox MinHeight="20" x:Name="NoneClass1CheckBox" Grid.Column="8" Grid.Row="1" IsEnabled="false"/>
+                    <CheckBox MinHeight="20" x:Name="NoneClass2CheckBox" Grid.Column="8" Grid.Row="2" IsThreeState="True" IsChecked="{Binding Flags.NONE_CLASS2}"/>
+                    <CheckBox MinHeight="20" x:Name="NoneClass3CheckBox" Grid.Column="8" Grid.Row="3" IsThreeState="True" IsChecked="{Binding Flags.NONE_CLASS3}"/>
+                    <CheckBox MinHeight="20" x:Name="NoneClass4CheckBox" Grid.Column="8" Grid.Row="4" IsThreeState="True" IsChecked="{Binding Flags.NONE_CLASS4}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Conveniences and Rebalancing">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Vertical" Grid.Column="0">
+                        <Label Margin="5,5,0,0" FontWeight="Bold">Conveniences</Label>
+                        <CheckBox x:Name="NoPartyShuffleCheckBox" IsChecked="{Binding Flags.NoPartyShuffle}" Content="No Party Shuffle" ToolTip="Poisoned, petrified, and slain party members will not be shuffled to the back of the party."/>
+                        <CheckBox x:Name="SpeedHacksCheckBox" IsChecked="{Binding Flags.SpeedHacks}" Content="Speed Hacks" ToolTip="Various code hacks to speed up the game."/>
+                        <CheckBox x:Name="IdentifyTreasuresCheckBox" IsChecked="{Binding Flags.IdentifyTreasures}" Content="Identify Treasures" ToolTip="Tells you what's in the box when you can't carry anymore."/>
+                        <CheckBox x:Name="DashCheckBox" IsChecked="{Binding Flags.Dash}" Content="Enable Dash" ToolTip="Enables walking faster when the B button is held."/>
+                        <CheckBox x:Name="BuyTenCheckBox" IsChecked="{Binding Flags.BuyTen}" Content="Buy 10 Items" ToolTip="Allows buying 10 items at once in item shops."/>
+                        <CheckBox x:Name="WaitWhenUnrunnableCheckBox" IsChecked="{Binding Flags.WaitWhenUnrunnable}" Content="Change Unrunnable RUN to WAIT" ToolTip="The RUN command becomes WAIT when battles are unrunnable."/>
+                        <CheckBox x:Name="CriticalHitDisplayCheckBox" IsChecked="{Binding Flags.EnableCritNumberDisplay}" Content="Critical Hit Count Display" ToolTip="Displays the number of critical hits when multiple hits in an attack critical"/>
+                        <CheckBox x:Name="NPCSwatterCheckBox" IsChecked="{Binding Flags.NPCSwatter}" Content="NPC Swatter (BETA)" ToolTip="Standard textbox when talking to characters on the map leads to those characters being removed.  Currently bugged as it allows the player to bypass the ROD and LUTE blocks."/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Grid.Column="1">
+                        <Label Margin="5,5,0,0" FontWeight="Bold">Rebalancing and Challenges</Label>
+                        <CheckBox x:Name="HouseFullHPRestoreCheckBox" IsChecked="{Binding Flags.HousesFillHP}" Content="Houses fill HP to max"/>
+                        <CheckBox x:Name="LockAlwaysHitsCheckBox" IsChecked="{Binding Flags.RebalanceSpells}" Content="LOCK spells always hit" ToolTip="Spells which reduce enemy evasion will always hit.  If Spellcrafter is enabled, this will make LOCK spells half as effective."/>
+                        <CheckBox x:Name="DoubleThiefHitRateCheckBox" IsChecked="{Binding Flags.ThiefHitRate}" Content="Double Thief and Ninja hit rate growth" ToolTip="Thieves and Ninjas gain 4 hitrate per level instead of 2"/>
+                        <CheckBox x:Name="KnightAndNinjaSpellChargesCheckBox" IsChecked="{Binding Flags.AllSpellLevelsForKnightNinja}" Content="Knight and Ninja gain charges in all levels" ToolTip="If a Knight or Ninja gains spell charges in a level, they gain a charge in all spell levels for that Experience Level"/>
+                        <Label Content="MDef Growth:" Margin="30,5,0,0"/>
+                        <ComboBox x:Name="MDefBalanceComboBox" SelectedValue="{Binding Flags.MDefMode}" Width="150" HorizontalAlignment="Left" Margin="30,5,0,0" SelectedValuePath="Tag">
+                            <ComboBoxItem Tag="None" Content="Normal"/>
+                            <ComboBoxItem Tag="BBFix" Content="BB/Master +3/+4"/>
+                            <ComboBoxItem Tag="Invert" Content="Invert (5-Normal)"/>
+                        </ComboBox>
+                        <CheckBox x:Name="DisableTentSavingCheckBox" IsChecked="{Binding Flags.DisableTentSaving}" Content="Disable Tent/Cabin/House Saving on Overworld" ToolTip="Tents/Cabins/Houses do not save the game on the overworld (but still restore HP and MP)"/>
+                        <CheckBox x:Name="DisableInnSavingCheckBox" IsChecked="{Binding Flags.DisableInnSaving}" Content="Disable Inn Saving" ToolTip="Inns will not save the game."/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Bug Fixes">
+                <StackPanel Orientation="Vertical">
+                    <!-- ReSharper disable once InconsistentNaming -->
+                    <CheckBox x:Name="HouseMPRestorationCheckBox" IsChecked="{Binding Flags.HouseMPRestoration}" Content="House MP Restoration" ToolTip="A HOUSE will restore MP before saving the game instead of after."/>
+                    <CheckBox x:Name="WeaponStatsCheckBox" IsChecked="{Binding Flags.WeaponStats}" Content="Weapon Stats" ToolTip="Weapons with elemental or monster category properties will do more damage to enemies with the corresponding weaknesses, and will have the correct critical hit rate.  Black Belts' critical hit rate is halved to be balanced with lower weapon critical hit rates."/>
+                    <CheckBox x:Name="ChanceToRunCheckBox" IsChecked="{Binding Flags.ChanceToRun}" Content="Chance to Run" ToolTip="Chance to run will be based on level and luck."/>
+                    <CheckBox x:Name="SpellBugsCheckBox" IsChecked="{Binding Flags.SpellBugs}" Content="LOCK, LOK2, HEL2, TMPR, SABR" ToolTip="LOCK, LOK2, HEL2, TMPR, and SABR will function correctly."/>
+                    <CheckBox x:Name="EnemyStatusAttackBugCheckBox" IsChecked="{Binding Flags.EnemyStatusAttackBug}" Content="Enemy Status Attacks" ToolTip="Enemy status attacks won't apply to misses after the first hit."/>
+                    <CheckBox x:Name="BlackBeltAbsorbCheckBox" IsChecked="{Binding Flags.BlackBeltAbsorb}" Content="Black Belt &amp; Master Absorb Calculation" ToolTip="Black Belt &amp; Master Absorb Calculation"/>
+                    <CheckBox x:Name="EnemyElementalResistancesBugCheckBox" IsChecked="{Binding Flags.EnemyElementalResistancesBug}" Content="Enemy Elemental Resistances" ToolTip="Enemy Elemental Resistances"/>
+                    <CheckBox x:Name="EnemySpellsTargetingAlliesCheckBox" IsChecked="{Binding Flags.EnemySpellsTargetingAllies}" Content="Enemy Spells Targeting Allies" ToolTip="Enemy Spells Targeting Allies"/>
+                    <CheckBox x:Name="ImproveTurnOrderRandomizationCheckBox" IsChecked="{Binding Flags.ImproveTurnOrderRandomization}" Content="Improve Turn Order Randomization" ToolTip="Improve Turn Order Randomization"/>
+                    <CheckBox x:Name="FixHitCapBugfixCheckBox" IsChecked="{Binding Flags.FixHitChanceCap}" Content="Fix Hit Chance Cap"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Fun %">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Vertical" Grid.Column="0">
+                        <CheckBox x:Name="FunEnemyNamesCheckBox" IsChecked="{Binding Flags.FunEnemyNames}" Content="Fun Enemy Names" ToolTip="Replaces enemy names with funny ones."/>
+                        <CheckBox x:Name="PaletteSwapCheckBox" IsChecked="{Binding Flags.PaletteSwap}" Content="Palette Swap" ToolTip="Shuffles enemy palettes."/>
+                        <CheckBox x:Name="ModernBattlefieldCheckBox" IsChecked="{Binding Flags.ModernBattlefield}" Content="Modern Battlefield" ToolTip="Battlefield layout inspired by subsequent Final Fantasy games."/>
+                        <CheckBox x:Name="ThreePalettesCheckBox" IsChecked="{Binding Flags.ThirdBattlePalette}" Content="Three Battle Palettes" ToolTip="Change the battle engine to free up palette 3 for character sprites."/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Grid.Column="1">
+                        <ComboBox x:Name="TeamTyroComboBox" SelectedValue="{Binding Flags.TeamSteak}" Width="150" HorizontalAlignment="Left" Margin="10,5,0,0" ToolTip="Save the TYROs, or save the STEAKs?" SelectedValuePath="Tag">
+                            <ComboBoxItem Tag="False">Team TYRO</ComboBoxItem>
+                            <ComboBoxItem Tag="True">Team STEAK</ComboBoxItem>
+                        </ComboBox>
+                        <ComboBox x:Name="MusicComboBox" SelectedValue="{Binding Flags.Music}" Width="150" HorizontalAlignment="Left" Margin="10,5,0,0" ToolTip="How much to shuffle the game's music." SelectedValuePath="Tag">
+                            <ComboBoxItem Tag="None">No Music Shuffle</ComboBoxItem>
+                            <ComboBoxItem Tag="Standard">Standard Music Shuffle</ComboBoxItem>
+                            <ComboBoxItem Tag="Nonsensical">Nonsensical Music Shuffle</ComboBoxItem>
+                            <ComboBoxItem Tag="MusicDisabled">Disable Music</ComboBoxItem>
+                        </ComboBox>
+                        <CheckBox x:Name="DisableDamageTileFlicker" IsChecked="{Binding Flags.DisableDamageTileFlicker}" Content="Disable Damage Tile Flicker"/>
+                        <Label Content="Path to Resource Pack:" Padding="5,5,5,0"/>
+                        <StackPanel Height="40" Orientation="Horizontal" Margin="10,10,0,0">
+                            <TextBox x:Name="ResourcePackTextBox" TextWrapping="Wrap" Text="" Width="240" />
+                            <Button Content="Browse for Resource Pack" Width="147" Margin="30,0,0,0" Click="Button_Click"/>
+                        </StackPanel>
 
-			<TabItem Header="Shop Reduction">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="1*"/>
-						<ColumnDefinition Width="1*"/>
-						<ColumnDefinition Width="1*"/>
-						<ColumnDefinition Width="2*"/>
-						<ColumnDefinition Width="4*"/>
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="4*"/>
-					</Grid.RowDefinitions>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
 
-					<Label MinHeight="26" Content="Shops" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
-					<Label MinHeight="26" Content="Mode" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"/>
-					<Label MinHeight="26" Content="Reduction" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"/>
-					<Label MinHeight="26" Content="" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center"/>
+            <TabItem Header="Shop Reduction">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="4*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="4*"/>
+                    </Grid.RowDefinitions>
 
-					<Label MinHeight="26" Content="Weapon Shops" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
-					<Label MinHeight="26" Content="Armor Shops" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
-					<Label MinHeight="26" Content="Item Shops" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
-					<Label MinHeight="26" Content="Black Magic" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
-					<Label MinHeight="26" Content="White Magic" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"/>
+                    <Label MinHeight="26" Content="Shops" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                    <Label MinHeight="26" Content="Mode" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"/>
+                    <Label MinHeight="26" Content="Reduction" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"/>
+                    <Label MinHeight="26" Content="" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center"/>
 
-					<ComboBox SelectedValue="{Binding Flags.ShopKillMode_Weapons}" MaxHeight="26" Grid.Row="1" Grid.Column="1" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="None">None</ComboBoxItem>
-						<ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
-						<ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
-						<ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
-						<ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
-						<ComboBoxItem Tag="Random">Random</ComboBoxItem>
-					</ComboBox>
+                    <Label MinHeight="26" Content="Weapon Shops" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                    <Label MinHeight="26" Content="Armor Shops" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                    <Label MinHeight="26" Content="Item Shops" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+                    <Label MinHeight="26" Content="Black Magic" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
+                    <Label MinHeight="26" Content="White Magic" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"/>
 
-					<ComboBox SelectedValue="{Binding Flags.ShopKillMode_Armor}" MaxHeight="26" Grid.Row="2" Grid.Column="1" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="None">None</ComboBoxItem>
-						<ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
-						<ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
-						<ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
-						<ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
-						<ComboBoxItem Tag="Random">Random</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ShopKillMode_Weapons}" MaxHeight="26" Grid.Row="1" Grid.Column="1" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="None">None</ComboBoxItem>
+                        <ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
+                        <ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
+                        <ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
+                        <ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
+                        <ComboBoxItem Tag="Random">Random</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ShopKillMode_Item}" MaxHeight="26" Grid.Row="3" Grid.Column="1" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="None">None</ComboBoxItem>
-						<ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
-						<ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
-						<ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
-						<ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
-						<ComboBoxItem Tag="Random">Random</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ShopKillMode_Armor}" MaxHeight="26" Grid.Row="2" Grid.Column="1" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="None">None</ComboBoxItem>
+                        <ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
+                        <ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
+                        <ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
+                        <ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
+                        <ComboBoxItem Tag="Random">Random</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ShopKillMode_Black}" MaxHeight="26" Grid.Row="4" Grid.Column="1" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="None">None</ComboBoxItem>
-						<ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
-						<ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
-						<ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
-						<ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
-						<ComboBoxItem Tag="Random">Random</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ShopKillMode_Item}" MaxHeight="26" Grid.Row="3" Grid.Column="1" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="None">None</ComboBoxItem>
+                        <ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
+                        <ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
+                        <ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
+                        <ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
+                        <ComboBoxItem Tag="Random">Random</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ShopKillMode_White}" MaxHeight="26" Grid.Row="5" Grid.Column="1" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="None">None</ComboBoxItem>
-						<ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
-						<ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
-						<ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
-						<ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
-						<ComboBoxItem Tag="Random">Random</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ShopKillMode_Black}" MaxHeight="26" Grid.Row="4" Grid.Column="1" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="None">None</ComboBoxItem>
+                        <ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
+                        <ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
+                        <ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
+                        <ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
+                        <ComboBoxItem Tag="Random">Random</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Weapons}" MaxHeight="26" Grid.Row="1" Grid.Column="2" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
-						<ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
-						<ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
-						<ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
-						<ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
-						<ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ShopKillMode_White}" MaxHeight="26" Grid.Row="5" Grid.Column="1" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="None">None</ComboBoxItem>
+                        <ComboBoxItem Tag="WholeShops">Whole Shops</ComboBoxItem>
+                        <ComboBoxItem Tag="AllItemsOfAKind">All Items of a Kind</ComboBoxItem>
+                        <ComboBoxItem Tag="Spread">Spread</ComboBoxItem>
+                        <ComboBoxItem Tag="Chaos">Unequal</ComboBoxItem>
+                        <ComboBoxItem Tag="Random">Random</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Armor}" MaxHeight="26" Grid.Row="2" Grid.Column="2" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
-						<ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
-						<ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
-						<ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
-						<ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
-						<ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Weapons}" MaxHeight="26" Grid.Row="1" Grid.Column="2" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
+                        <ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
+                        <ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
+                        <ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
+                        <ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
+                        <ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Item}" MaxHeight="26" Grid.Row="3" Grid.Column="2" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
-						<ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
-						<ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
-						<ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
-						<ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
-						<ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Armor}" MaxHeight="26" Grid.Row="2" Grid.Column="2" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
+                        <ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
+                        <ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
+                        <ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
+                        <ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
+                        <ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Black}" MaxHeight="26" Grid.Row="4" Grid.Column="2" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
-						<ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
-						<ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
-						<ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
-						<ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
-						<ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Item}" MaxHeight="26" Grid.Row="3" Grid.Column="2" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
+                        <ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
+                        <ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
+                        <ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
+                        <ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
+                        <ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ShopKillFactor_White}" MaxHeight="26" Grid.Row="5" Grid.Column="2" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
-						<ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
-						<ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
-						<ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
-						<ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
-						<ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ShopKillFactor_Black}" MaxHeight="26" Grid.Row="4" Grid.Column="2" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
+                        <ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
+                        <ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
+                        <ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
+                        <ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
+                        <ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
+                    </ComboBox>
 
-					<CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Weapons}" Content="Exclude Coneria" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center"/>
-					<CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Armor}" Content="Exclude Coneria" Grid.Row="2" Grid.Column="3" VerticalAlignment="Center"/>
-					<CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Item}" Content="Exclude Coneria" Grid.Row="3" Grid.Column="3" VerticalAlignment="Center"/>
-					<CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Black}" Content="Exclude Coneria" Grid.Row="4" Grid.Column="3" VerticalAlignment="Center"/>
-					<CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_White}" Content="Exclude Coneria" Grid.Row="5" Grid.Column="3" VerticalAlignment="Center"/>
-				</Grid>
-			</TabItem>          
+                    <ComboBox SelectedValue="{Binding Flags.ShopKillFactor_White}" MaxHeight="26" Grid.Row="5" Grid.Column="2" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="Kill20Percent">Remove 20%</ComboBoxItem>
+                        <ComboBoxItem Tag="Kill40Percent">Remove 40%</ComboBoxItem>
+                        <ComboBoxItem Tag="Kill60Percent">Remove 60%</ComboBoxItem>
+                        <ComboBoxItem Tag="Kill80Percent">Remove 80%</ComboBoxItem>
+                        <ComboBoxItem Tag="KillAll">Remove All</ComboBoxItem>
+                        <ComboBoxItem Tag="KillRandom">Random</ComboBoxItem>
+                    </ComboBox>
 
-			<TabItem Header="Hints">
+                    <CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Weapons}" Content="Exclude Coneria" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Armor}" Content="Exclude Coneria" Grid.Row="2" Grid.Column="3" VerticalAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Item}" Content="Exclude Coneria" Grid.Row="3" Grid.Column="3" VerticalAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_Black}" Content="Exclude Coneria" Grid.Row="4" Grid.Column="3" VerticalAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding Flags.ShopKillExcludeConeria_White}" Content="Exclude Coneria" Grid.Row="5" Grid.Column="3" VerticalAlignment="Center"/>
+                </Grid>
+            </TabItem>
 
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="1*"/>
-						<ColumnDefinition Width="1*"/>
-						<ColumnDefinition Width="1*"/>          
-						<ColumnDefinition Width="3*"/>
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="26" />
-						<RowDefinition Height="1"/>
-						<RowDefinition Height="26"/>
-						<RowDefinition Height="26"/>
-						<RowDefinition Height="26"/>
-						<RowDefinition Height="26"/>
-						<RowDefinition Height="26"/>
-						<RowDefinition Height="26"/>
-						<RowDefinition Height="26"/>
-					</Grid.RowDefinitions>
+            <TabItem Header="Hints">
 
-					<CheckBox IsChecked="{Binding Flags.ExtensiveHints_Enable}" Content="Enable Extensive Hints" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="26" />
+                        <RowDefinition Height="1"/>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                    </Grid.RowDefinitions>
 
-					<Label MinHeight="26" Content="Hint Coverage" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center"/>
-					<Label MinHeight="26" Content="Hint Placement" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding Flags.ExtensiveHints_Enable}" Content="Enable Extensive Hints" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6"/>
 
-					<Label MinHeight="26" Content="Loose Floor" Grid.Row="3" Grid.Column="0"/>
-					<Label MinHeight="26" Content="Loose Name" Grid.Row="4" Grid.Column="0"/>
-					<Label MinHeight="26" Content="Incentive Name" Grid.Row="5" Grid.Column="0"/>
-					<Label MinHeight="26" Content="Floor Hints" Grid.Row="6" Grid.Column="0"/>
-					<Label MinHeight="26" Content="Equipment Floor" Grid.Row="7" Grid.Column="0"/>
-					<Label MinHeight="26" Content="Equipment Name" Grid.Row="8" Grid.Column="0"/>
-					
-					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemFloorCoverage}" MaxHeight="26" Grid.Row="3" Grid.Column="1" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
-					</ComboBox>
+                    <Label MinHeight="26" Content="Hint Coverage" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center"/>
+                    <Label MinHeight="26" Content="Hint Placement" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center"/>
 
-					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemFloorPlacement}" MaxHeight="26" Grid.Row="3" Grid.Column="2" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
-						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
-						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
-						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
-						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
-						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
-					</ComboBox>
+                    <Label MinHeight="26" Content="Loose Floor" Grid.Row="3" Grid.Column="0"/>
+                    <Label MinHeight="26" Content="Loose Name" Grid.Row="4" Grid.Column="0"/>
+                    <Label MinHeight="26" Content="Incentive Name" Grid.Row="5" Grid.Column="0"/>
+                    <Label MinHeight="26" Content="Floor Hints" Grid.Row="6" Grid.Column="0"/>
+                    <Label MinHeight="26" Content="Equipment Floor" Grid.Row="7" Grid.Column="0"/>
+                    <Label MinHeight="26" Content="Equipment Name" Grid.Row="8" Grid.Column="0"/>
 
-					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemNameCoverage}" MaxHeight="26" Grid.Row="4" Grid.Column="1" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemFloorCoverage}" MaxHeight="26" Grid.Row="3" Grid.Column="1" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemNamePlacement}" MaxHeight="26" Grid.Row="4" Grid.Column="2" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
-						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
-						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
-						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
-						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
-						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemFloorPlacement}" MaxHeight="26" Grid.Row="3" Grid.Column="2" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+                        <ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+                        <ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+                        <ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+                        <ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+                        <ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_IncentiveItemNameCoverage}" MaxHeight="26" Grid.Row="5" Grid.Column="1" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemNameCoverage}" MaxHeight="26" Grid.Row="4" Grid.Column="1" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_IncentiveItemNamePlacement}" MaxHeight="26" Grid.Row="5" Grid.Column="2" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
-						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
-						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
-						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
-						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
-						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ExtensiveHints_LooseItemNamePlacement}" MaxHeight="26" Grid.Row="4" Grid.Column="2" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+                        <ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+                        <ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+                        <ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+                        <ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+                        <ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_FloorHintCoverage}" MaxHeight="26" Grid.Row="6" Grid.Column="1" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ExtensiveHints_IncentiveItemNameCoverage}" MaxHeight="26" Grid.Row="5" Grid.Column="1" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_FloorHintPlacement}" MaxHeight="26" Grid.Row="6" Grid.Column="2" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
-						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
-						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
-						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
-						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
-						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ExtensiveHints_IncentiveItemNamePlacement}" MaxHeight="26" Grid.Row="5" Grid.Column="2" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+                        <ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+                        <ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+                        <ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+                        <ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+                        <ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentFloorCoverage}" MaxHeight="26" Grid.Row="7" Grid.Column="1" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ExtensiveHints_FloorHintCoverage}" MaxHeight="26" Grid.Row="6" Grid.Column="1" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentFloorPlacement}" MaxHeight="26" Grid.Row="7" Grid.Column="2" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
-						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
-						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
-						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
-						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
-						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ExtensiveHints_FloorHintPlacement}" MaxHeight="26" Grid.Row="6" Grid.Column="2" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+                        <ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+                        <ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+                        <ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+                        <ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+                        <ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentNameCoverage}" MaxHeight="26" Grid.Row="8" Grid.Column="1" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
-						<ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
-					</ComboBox>
+                    <ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentFloorCoverage}" MaxHeight="26" Grid.Row="7" Grid.Column="1" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+                    </ComboBox>
 
-					<ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentNamePlacement}" MaxHeight="26" Grid.Row="8" Grid.Column="2" SelectedValuePath="Tag">
-						<ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
-						<ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
-						<ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
-						<ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
-						<ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
-						<ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
-						<ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
-						<ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
-					</ComboBox>
-				</Grid>
-			</TabItem>
-		</TabControl>
-	</Grid>
+                    <ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentFloorPlacement}" MaxHeight="26" Grid.Row="7" Grid.Column="2" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+                        <ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+                        <ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+                        <ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+                        <ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+                        <ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+                    </ComboBox>
+
+                    <ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentNameCoverage}" MaxHeight="26" Grid.Row="8" Grid.Column="1" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="HintCategoryCoverageNone">None - Guaranteed</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage20">20% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage40">40% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage60">60% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverage80">80% - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverageFill">All - Least Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoverageAll">All - Best Effort</ComboBoxItem>
+                        <ComboBoxItem Tag="HintCategoryCoveragePrioritized">All - Prioritized</ComboBoxItem>
+                    </ComboBox>
+
+                    <ComboBox SelectedValue="{Binding Flags.ExtensiveHints_EquipmentNamePlacement}" MaxHeight="26" Grid.Row="8" Grid.Column="2" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="InnerSea">Coneria - DwarfCave</ComboBoxItem>
+                        <ComboBoxItem Tag="ConeriaToCrescent">Coneria - CrescentLake</ComboBoxItem>
+                        <ComboBoxItem Tag="ElflandToCrescent">Elfland - CrescentLake</ComboBoxItem>
+                        <ComboBoxItem Tag="ElflandPlus">Elfland - Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondOnrac">Melmond - Onrac</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondMermaids">Melmond - Mermaids</ComboBoxItem>
+                        <ComboBoxItem Tag="MelmondPlus">Melmond - Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="FloaterRequired">Cardia, Lefane, Gaia</ComboBoxItem>
+                        <ComboBoxItem Tag="Everywhere">Everywhere</ComboBoxItem>
+                        <ComboBoxItem Tag="Tiered">Depending on Dungeon</ComboBoxItem>
+                        <ComboBoxItem Tag="InnerSeaTownsAndDwarfCave">Inner Sea Towns and Dwarf Cave</ComboBoxItem>
+                    </ComboBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
 </Window>
