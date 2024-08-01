@@ -16,6 +16,8 @@ using System.Collections;
 using Microsoft.VisualBasic.FileIO;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Input;
 
 namespace FF1Randomizer
 {
@@ -31,7 +33,7 @@ namespace FF1Randomizer
 		{
 			_model = new MainWindowViewModel();
 			_model.Flags = Flags.FromJson(File.ReadAllText("presets/default.json")).flags;
-			_model.FlagsText = GenerateFlagsView(_model.Flags);
+			_model.Preferences = new Preferences();
 
 			InitializeComponent();
 
@@ -51,6 +53,7 @@ namespace FF1Randomizer
 
 			FlagsList.Items.Filter = new Predicate<object>(FlagsFilter);
 			PrefrencesList.Items.Filter = new Predicate<object>(PreferencesFilter);
+			DeserializePreferences();
 		}
 
 		private bool FlagsFilter(object item)
@@ -68,72 +71,27 @@ namespace FF1Randomizer
 			else
 				return ((item as StackPanel).Name.IndexOf(_model.PreferencesFilter, StringComparison.OrdinalIgnoreCase) >= 0);
 		}
-
-		private string GenerateFlagsView(Flags flags)
-		{
-			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-			var flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).ToList();
-
-			string flagText = "";
-
-			foreach (var p in flagproperties)
-			{
-				if (Nullable.GetUnderlyingType(p.PropertyType) == typeof(bool))
-				{
-					flagText += p.Name + ": " + ((bool?)p.GetValue(flags)).ToString() + "\n";
-				}
-				else if (p.PropertyType == typeof(bool))
-				{
-					flagText += p.Name + ": " + ((bool)p.GetValue(flags)).ToString() + "\n";
-				}
-				else if (p.PropertyType.IsEnum)
-				{
-					flagText += p.Name + ": " + Enum.GetNames(p.PropertyType)[(int)p.GetValue(flags)] + "\n";
-				}
-				else if (p.PropertyType == typeof(int))
-				{
-					IntegerFlagAttribute ia = p.GetCustomAttribute<IntegerFlagAttribute>();
-
-					var radix = (ia.Max - ia.Min) / ia.Step + 1;
-					var val = (int)p.GetValue(flags);
-					var raw_val = (val - ia.Min) / ia.Step;
-
-					flagText += p.Name + ": " + raw_val + "/" + radix + "\n";
-				}
-				else if (p.PropertyType == typeof(double))
-				{
-					DoubleFlagAttribute ia = p.GetCustomAttribute<DoubleFlagAttribute>();
-					var radix = (int)Math.Ceiling((ia.Max - ia.Min) / ia.Step) + 1;
-					var val = (double)p.GetValue(flags);
-					var raw_val = (int)Math.Round((val - ia.Min) / ia.Step);
-
-					flagText += p.Name + ": " + raw_val + "/" + radix + "\n";
-				}
-			}
-
-			return flagText;
-		}
 		private List<StackPanel> GeneratePreferencesList()
 		{
 			var properties = typeof(Preferences).GetProperties(BindingFlags.Instance | BindingFlags.Public);
 			var flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).ToList();
 
-			return GenerateSettingsList(flagproperties);
+			return GenerateSettingsList(flagproperties, "Preferences");
 		}
 		private List<StackPanel> GenerateFlagsList()
 		{
 			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
 			var flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).ToList();
 
-			return GenerateSettingsList(flagproperties);
+			return GenerateSettingsList(flagproperties, "Flags");
 		}
-		private List<StackPanel> GenerateSettingsList(List<PropertyInfo> flagproperties)
+		private List<StackPanel> GenerateSettingsList(List<PropertyInfo> flagproperties, string typeString)
 		{
 			List<StackPanel> panelList = new();
 
 			foreach (var p in flagproperties)
 			{
-				string bindingString = "Flags." + p.Name;
+				string bindingString = typeString + "." + p.Name;
 				Binding myBinding = new Binding();
 				myBinding.Path = new PropertyPath(bindingString);
 
@@ -141,6 +99,10 @@ namespace FF1Randomizer
 				{
 					var checkBox = new CheckBox() { Name = p.Name, IsThreeState = true, ToolTip = p.Name, Margin = new Thickness(20,0,0,0) };
 					checkBox.SetBinding(CheckBox.IsCheckedProperty, myBinding);
+					checkBox.Checked += FlagValueChanged;
+					checkBox.Unchecked += FlagValueChanged;
+					checkBox.Indeterminate += FlagValueChanged;
+
 					var label = new Label() { Name = p.Name + "Label", Content = p.Name };
 					var checkBoxView = new StackPanel() { Name = p.Name + "Stack" };
 
@@ -153,6 +115,10 @@ namespace FF1Randomizer
 				{
 					var checkBox = new CheckBox() { Name = p.Name, ToolTip = p.Name, Margin = new Thickness(20, 0, 0, 0) };
 					checkBox.SetBinding(CheckBox.IsCheckedProperty, myBinding);
+					checkBox.Checked += FlagValueChanged;
+					checkBox.Unchecked += FlagValueChanged;
+					checkBox.Indeterminate += FlagValueChanged;
+
 					var label = new Label() { Name = p.Name + "Label", Content = p.Name };
 					var checkBoxView = new StackPanel() { Name = p.Name + "Stack" };
 
@@ -165,6 +131,8 @@ namespace FF1Randomizer
 				{
 					var dropDown = new ComboBox { Name = p.Name, ToolTip = p.Name, SelectedValuePath = "Tag", Margin = new Thickness(20, 0, 0, 0) };
 					dropDown.SetBinding(ComboBox.SelectedValueProperty, myBinding);
+					dropDown.SelectionChanged += FlagValueChanged;
+
 					var label = new Label() { Name = p.Name + "Label", Content = p.Name };
 
 					var itemValues = Enum.GetValues(p.PropertyType);
@@ -192,9 +160,9 @@ namespace FF1Randomizer
 
 					var slider = new Slider { Name = p.Name, ToolTip = p.Name, Maximum = ia.Max, Minimum = ia.Min, Margin = new Thickness(20, 0, 0, 0) };
 					slider.SetBinding(Slider.ValueProperty, myBinding);
-
-					slider.ValueChanged += new RoutedPropertyChangedEventHandler<double>(Slider_ValueChanged);
-
+					slider.ValueChanged += FlagValueChanged;
+					slider.ValueChanged += Slider_ValueChanged;
+			
 					var label = new Label() { Name = p.Name + "Label", Content = p.Name + ":", Width = 200 };
 
 					var sliderView = new StackPanel() { Name = p.Name + "Stack" };
@@ -209,8 +177,8 @@ namespace FF1Randomizer
 					DoubleFlagAttribute ia = p.GetCustomAttribute<DoubleFlagAttribute>();
 					var slider = new Slider { Name = p.Name, ToolTip = p.Name, Maximum = ia.Max, Minimum = ia.Min, Margin = new Thickness(20, 0, 0, 0) };
 					slider.SetBinding(Slider.ValueProperty, myBinding);
-
-					slider.ValueChanged += new RoutedPropertyChangedEventHandler<double>(Slider_ValueChanged);
+					slider.ValueChanged += FlagValueChanged;
+					slider.ValueChanged += Slider_ValueChanged;
 
 					var label = new Label() { Name = p.Name + "Label", Content = p.Name + ":", Width = 200 };
 
@@ -226,6 +194,19 @@ namespace FF1Randomizer
 			return panelList;
 		}
 
+		private void FlagValueChanged(object sender, RoutedEventArgs e)
+		{
+			if ((((sender as Control).Parent as StackPanel).Parent as ListView).Name == "FlagsList")
+			{
+				_model.FlagsString = _model.Flags.Encoded;
+			}
+			else
+			{
+				SerializePreferences();
+			}
+			
+			return;
+		}
 		private void TryOpenSavedFilename()
 		{
 			if (String.IsNullOrEmpty(Settings.Default.RomFilename))
@@ -352,7 +333,7 @@ namespace FF1Randomizer
 
 		private void PreferencesFilter_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			_model.PreferencesFilter = (sender as TextBox).Text;
+		_model.PreferencesFilter = (sender as TextBox).Text;
 			PrefrencesList.Items.Filter = PrefrencesList.Items.Filter; // seesh
 		}
 
@@ -390,6 +371,36 @@ namespace FF1Randomizer
 			{
 				ResourcePackTextBox.Text = openFileDialog.FileName;
 			}
+		}
+		private void SerializePreferences()
+		{
+			System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(_model.Preferences.GetType());
+			using (StringWriter textWriter = new StringWriter())
+			{
+				serializer.Serialize(textWriter, _model.Preferences);
+				var result = textWriter.ToString();
+				Settings.Default.GamePreferences = textWriter.ToString();
+				Settings.Default.Save();
+			}
+		}
+		private void DeserializePreferences()
+		{
+
+			if (String.IsNullOrEmpty(Settings.Default.GamePreferences))
+			{
+				return;
+			}
+
+			System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(_model.Preferences.GetType());
+			using (StringReader textReader = new StringReader(Settings.Default.GamePreferences))
+			{
+				_model.Preferences = (Preferences)serializer.Deserialize(textReader);
+			}
+		}
+
+		private void PrefrencesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			SerializePreferences();
 		}
 	}
 }

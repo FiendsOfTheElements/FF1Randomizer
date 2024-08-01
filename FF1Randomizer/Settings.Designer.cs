@@ -46,5 +46,20 @@ namespace FF1Randomizer {
                 this["ResourcePackFilename"] = value;
             }
         }
-    }
+
+		[global::System.Configuration.UserScopedSettingAttribute()]
+		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+		[global::System.Configuration.DefaultSettingValueAttribute("")]
+		public string GamePreferences
+		{
+			get
+			{
+				return ((string)(this["GamePreferences"]));
+			}
+			set
+			{
+				this["GamePreferences"] = value;
+			}
+		}
+	}
 }

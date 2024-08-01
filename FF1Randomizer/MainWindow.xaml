@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FF1Randomizer"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle}" Height="600" Width="900">
+        Title="{Binding WindowTitle}" Height="620" Width="900">
 	<Window.Resources>
 		<local:FlagsToStringConverter x:Key="FlagsToStringConverter"/>
 		<Style TargetType="CheckBox">
@@ -20,7 +20,7 @@
 		<TextBox x:Name="SeedTextBox" Text="{Binding Seed}" HorizontalAlignment="Left" Height="23" Margin="10,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 		<Button x:Name="GenerateButton" Content="Generate ROM" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="150" FontSize="20" IsEnabled="False" Click="GenerateButton_Click" Height="46"/>
 		<Button x:Name="AboutButton" Content="About FF1 Randomizer" HorizontalAlignment="Right" Margin="0,61,10,0" VerticalAlignment="Top" Width="150" Height="24" Click="AboutButton_Click"/>
-		<TextBox x:Name="FlagsTextBox" Text="{Binding Path=Flags, Converter={StaticResource FlagsToStringConverter}}" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="229,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="494"/>
+		<TextBox x:Name="FlagsTextBox" Text="{Binding FlagsString}" IsReadOnly="True" HorizontalAlignment="Left" Height="69" Margin="229,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="494"/>
 		<Label x:Name="FlagsLabel" Content="Flags" HorizontalAlignment="Left" Margin="229,64,0,0" VerticalAlignment="Top" FontWeight="Bold" RenderTransformOrigin="-0.359,0.486"/>
 		<Label x:Name="PresetLabel" HorizontalAlignment="Left" Margin="278,64,0,0" VerticalAlignment="Top">
 			<Hyperlink Click="LoadPreset">Load Preset...</Hyperlink>
@@ -35,9 +35,9 @@
 			<Button Content="Browse..." Width="87" Margin="10,0,0,0" Click="Button_Click"/>
 		</StackPanel>
 		
-		<Label x:Name="FlagsListLabel" Content="Flags" HorizontalAlignment="Left" Margin="10,149,0,0" VerticalAlignment="Top" FontWeight="Bold" RenderTransformOrigin="-0.359,0.486"/>
-		<TextBox x:Name="FlagListFilter" Text="{Binding FlagsFilter}" TextChanged="FlagsFilter_TextChanged" HorizontalAlignment="Left" Height="23" Margin="10,175,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="400" />
-		<ListView Name="FlagsList" Width="400" Height="340" Margin="10,203,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
+		<Label x:Name="FlagsListLabel" Content="Flags" HorizontalAlignment="Left" Margin="10,169,0,0" VerticalAlignment="Top" FontWeight="Bold" RenderTransformOrigin="-0.359,0.486"/>
+		<TextBox x:Name="FlagListFilter" Text="{Binding FlagsFilter}" TextChanged="FlagsFilter_TextChanged" HorizontalAlignment="Left" Height="23" Margin="10,195,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="400" />
+		<ListView Name="FlagsList" Width="400" Height="340" Margin="10,223,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
 			<ListView.View>
 				<GridView>
 					<GridViewColumn Width="360"/>
@@ -50,9 +50,9 @@
 			</ListView.View>
 		</ListView>
 
-		<Label x:Name="PreferencesListLabel" Content="Preferences" HorizontalAlignment="Left" Margin="440,149,0,0" VerticalAlignment="Top" FontWeight="Bold" />
-		<TextBox x:Name="PrefrencesListFilter" Text="{Binding FlagsFilter}" TextChanged="PreferencesFilter_TextChanged" HorizontalAlignment="Left" Height="23" Margin="440,175,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="400" />
-		<ListView Name="PrefrencesList" Width="400" Height="340" Margin="440,203,10,0" VerticalAlignment="Top" HorizontalAlignment="Left">
+		<Label x:Name="PreferencesListLabel" Content="Preferences" HorizontalAlignment="Left" Margin="440,169,0,0" VerticalAlignment="Top" FontWeight="Bold" />
+		<TextBox x:Name="PrefrencesListFilter" Text="{Binding PreferencesFilter}" TextChanged="PreferencesFilter_TextChanged" HorizontalAlignment="Left" Height="23" Margin="440,195,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="400" />
+		<ListView Name="PrefrencesList" Width="400" Height="340" Margin="440,223,10,0" VerticalAlignment="Top" HorizontalAlignment="Left">
 			<ListView.View>
 				<GridView>
 					<GridViewColumn Width="360"/>

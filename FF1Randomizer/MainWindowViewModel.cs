@@ -90,6 +90,16 @@ namespace FF1Randomizer
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FlagsFilter"));
 			}
 		}
+		private string _flagsString;
+		public string FlagsString
+		{
+			get => _flagsString;
+			set
+			{
+				_flagsString = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FlagsString"));
+			}
+		}
 		private string _preferencesFilter;
 		public string PreferencesFilter
 		{
