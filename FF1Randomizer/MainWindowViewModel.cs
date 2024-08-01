@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Data;
 using FF1Lib;
 
@@ -18,6 +19,7 @@ namespace FF1Randomizer
 			Flags = new Flags();
 			Preferences = new Preferences();
 			Flags.PropertyChanged += (sender, args) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Flags"));
+			FlagsFilter = "";
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -46,6 +48,17 @@ namespace FF1Randomizer
 			}
 		}
 
+		private string _flagstext;
+		public string FlagsText
+		{
+			get => _flagstext;
+			set
+			{
+				_flagstext = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FlagsText"));
+			}
+		}
+
 		private Flags _flags;
 		public Flags Flags
 		{
@@ -64,6 +77,37 @@ namespace FF1Randomizer
 			{
 				_preferences = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Preferences"));
+			}
+		}
+
+		private string _flagsFilter;
+		public string FlagsFilter
+		{
+			get => _flagsFilter;
+			set
+			{
+				_flagsFilter = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FlagsFilter"));
+			}
+		}
+		private string _flagsString;
+		public string FlagsString
+		{
+			get => _flagsString;
+			set
+			{
+				_flagsString = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FlagsString"));
+			}
+		}
+		private string _preferencesFilter;
+		public string PreferencesFilter
+		{
+			get => _preferencesFilter;
+			set
+			{
+				_preferencesFilter = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PreferencesFilter"));
 			}
 		}
 	}

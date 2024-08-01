@@ -6,9 +6,22 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Numerics;
+using System.Reflection;
+using Newtonsoft.Json.Linq;
+using System.Windows.Data;
+using System.ComponentModel;
+using System.Collections;
+using Microsoft.VisualBasic.FileIO;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Input;
 
 namespace FF1Randomizer
 {
+
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
@@ -18,21 +31,182 @@ namespace FF1Randomizer
 
 		public MainWindow()
 		{
-			InitializeComponent();
-
 			_model = new MainWindowViewModel();
 			_model.Flags = Flags.FromJson(File.ReadAllText("presets/default.json")).flags;
+			_model.Preferences = new Preferences();
+
+			InitializeComponent();
+
 			DataContext = _model;
 
 			TryOpenSavedFilename();
 			GenerateSeed();
+			foreach (var panel in GenerateFlagsList())
+			{
+				FlagsList.Items.Add(panel);
+			};
 
-			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel, ClampPricesCheckBox);
-			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel, ClampEnemiesCheckBox);
-			SetScaleFactorLabel(BossScaleFactorSlider, BossScaleFactorLabel, ClampBossesCheckBox);
-			SetExpLabel();
+			foreach (var panel in GeneratePreferencesList())
+			{
+				PrefrencesList.Items.Add(panel);
+			};
+
+			FlagsList.Items.Filter = new Predicate<object>(FlagsFilter);
+			PrefrencesList.Items.Filter = new Predicate<object>(PreferencesFilter);
+			DeserializePreferences();
 		}
 
+		private bool FlagsFilter(object item)
+		{
+			if (String.IsNullOrEmpty(_model.FlagsFilter))
+				return true;
+			else
+				return ((item as StackPanel).Name.IndexOf(_model.FlagsFilter, StringComparison.OrdinalIgnoreCase) >= 0);
+		}
+
+		private bool PreferencesFilter(object item)
+		{
+			if (String.IsNullOrEmpty(_model.PreferencesFilter))
+				return true;
+			else
+				return ((item as StackPanel).Name.IndexOf(_model.PreferencesFilter, StringComparison.OrdinalIgnoreCase) >= 0);
+		}
+		private List<StackPanel> GeneratePreferencesList()
+		{
+			var properties = typeof(Preferences).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+			var flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).ToList();
+
+			return GenerateSettingsList(flagproperties, "Preferences");
+		}
+		private List<StackPanel> GenerateFlagsList()
+		{
+			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+			var flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).ToList();
+
+			return GenerateSettingsList(flagproperties, "Flags");
+		}
+		private List<StackPanel> GenerateSettingsList(List<PropertyInfo> flagproperties, string typeString)
+		{
+			List<StackPanel> panelList = new();
+
+			foreach (var p in flagproperties)
+			{
+				string bindingString = typeString + "." + p.Name;
+				Binding myBinding = new Binding();
+				myBinding.Path = new PropertyPath(bindingString);
+
+				if (Nullable.GetUnderlyingType(p.PropertyType) == typeof(bool))
+				{
+					var checkBox = new CheckBox() { Name = p.Name, IsThreeState = true, ToolTip = p.Name, Margin = new Thickness(20,0,0,0) };
+					checkBox.SetBinding(CheckBox.IsCheckedProperty, myBinding);
+					checkBox.Checked += FlagValueChanged;
+					checkBox.Unchecked += FlagValueChanged;
+					checkBox.Indeterminate += FlagValueChanged;
+
+					var label = new Label() { Name = p.Name + "Label", Content = p.Name };
+					var checkBoxView = new StackPanel() { Name = p.Name + "Stack" };
+
+					checkBoxView.Children.Add(label);
+					checkBoxView.Children.Add(checkBox);
+
+					panelList.Add(checkBoxView);
+				}
+				else if (p.PropertyType == typeof(bool))
+				{
+					var checkBox = new CheckBox() { Name = p.Name, ToolTip = p.Name, Margin = new Thickness(20, 0, 0, 0) };
+					checkBox.SetBinding(CheckBox.IsCheckedProperty, myBinding);
+					checkBox.Checked += FlagValueChanged;
+					checkBox.Unchecked += FlagValueChanged;
+					checkBox.Indeterminate += FlagValueChanged;
+
+					var label = new Label() { Name = p.Name + "Label", Content = p.Name };
+					var checkBoxView = new StackPanel() { Name = p.Name + "Stack" };
+
+					checkBoxView.Children.Add(label);
+					checkBoxView.Children.Add(checkBox);
+
+					panelList.Add(checkBoxView);
+				}
+				else if (p.PropertyType.IsEnum)
+				{
+					var dropDown = new ComboBox { Name = p.Name, ToolTip = p.Name, SelectedValuePath = "Tag", Margin = new Thickness(20, 0, 0, 0) };
+					dropDown.SetBinding(ComboBox.SelectedValueProperty, myBinding);
+					dropDown.SelectionChanged += FlagValueChanged;
+
+					var label = new Label() { Name = p.Name + "Label", Content = p.Name };
+
+					var itemValues = Enum.GetValues(p.PropertyType);
+
+					foreach (var item in itemValues)
+					{
+						var type = item.GetType();
+						var memberInfo = type.GetMember(item.ToString());
+						var attributes = memberInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+						var description = attributes.Length > 0 ? ((DescriptionAttribute)attributes[0]).Description : item.ToString();
+
+						dropDown.Items.Add(new ComboBoxItem() { Tag = item, Content = description });
+					}
+
+					var dropDownView = new StackPanel() { Name = p.Name + "Stack" };
+
+					dropDownView.Children.Add(label);
+					dropDownView.Children.Add(dropDown);
+
+					panelList.Add(dropDownView);
+				}
+				else if (p.PropertyType == typeof(int))
+				{
+					IntegerFlagAttribute ia = p.GetCustomAttribute<IntegerFlagAttribute>();
+
+					var slider = new Slider { Name = p.Name, ToolTip = p.Name, Maximum = ia.Max, Minimum = ia.Min, Margin = new Thickness(20, 0, 0, 0) };
+					slider.SetBinding(Slider.ValueProperty, myBinding);
+					slider.ValueChanged += FlagValueChanged;
+					slider.ValueChanged += Slider_ValueChanged;
+			
+					var label = new Label() { Name = p.Name + "Label", Content = p.Name + ":", Width = 200 };
+
+					var sliderView = new StackPanel() { Name = p.Name + "Stack" };
+
+					sliderView.Children.Add(label);
+					sliderView.Children.Add(slider);
+
+					panelList.Add(sliderView);
+				}
+				else if (p.PropertyType == typeof(double))
+				{
+					DoubleFlagAttribute ia = p.GetCustomAttribute<DoubleFlagAttribute>();
+					var slider = new Slider { Name = p.Name, ToolTip = p.Name, Maximum = ia.Max, Minimum = ia.Min, Margin = new Thickness(20, 0, 0, 0) };
+					slider.SetBinding(Slider.ValueProperty, myBinding);
+					slider.ValueChanged += FlagValueChanged;
+					slider.ValueChanged += Slider_ValueChanged;
+
+					var label = new Label() { Name = p.Name + "Label", Content = p.Name + ":", Width = 200 };
+
+					var sliderView = new StackPanel() { Name = p.Name + "Stack" };
+
+					sliderView.Children.Add(label);
+					sliderView.Children.Add(slider);
+
+					panelList.Add(sliderView);
+				}
+			}
+
+			return panelList;
+		}
+
+		private void FlagValueChanged(object sender, RoutedEventArgs e)
+		{
+			if ((((sender as Control).Parent as StackPanel).Parent as ListView).Name == "FlagsList")
+			{
+				_model.FlagsString = _model.Flags.Encoded;
+			}
+			else
+			{
+				SerializePreferences();
+			}
+			
+			return;
+		}
 		private void TryOpenSavedFilename()
 		{
 			if (String.IsNullOrEmpty(Settings.Default.RomFilename))
@@ -130,20 +304,37 @@ namespace FF1Randomizer
 			_model.Flags = Flags.DecodeFlagsText(parts[2]);
 		}
 
-		private void SetScaleFactorLabel(Slider slider, Label label, CheckBox clamp)
+		private void SetSliderDisplayValue(Slider slider, Label label)
 		{
-			var lower = (bool)clamp.IsChecked ? 100 : Math.Round(100 / slider.Value);
-			var upper = Math.Round(100 * slider.Value);
+			var labelName = label.Content.ToString().Split(':')[0];
 
-			label.Content = $"{lower}% - {upper}%";
+			label.Content = labelName + ": " + $"{slider.Value}";
 		}
 
-		private void SetExpLabel()
+		private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
-			if (ExpMultiplierSlider != null && ExpBonusSlider != null && ExpScaleFactorLabel != null)
-			{
-				ExpScaleFactorLabel.Content = $"{ExpMultiplierSlider.Value}x + {ExpBonusSlider.Value}";
-			}
+			var objectName = ((Slider)sender).Name;
+			var stackObject = (StackPanel)((Slider)sender).Parent;
+			var labelName = objectName + "Label";
+			var stackName = objectName + "Stack";
+
+			if (stackObject == null) return;
+
+			var labelObject = stackObject.Children.OfType<Label>().First();
+
+			if (labelObject != null) SetSliderDisplayValue((Slider)sender, labelObject);
+		}
+
+		private void FlagsFilter_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			_model.FlagsFilter = (sender as TextBox).Text;
+			FlagsList.Items.Filter = FlagsList.Items.Filter; // seesh
+		}
+
+		private void PreferencesFilter_TextChanged(object sender, TextChangedEventArgs e)
+		{
+		_model.PreferencesFilter = (sender as TextBox).Text;
+			PrefrencesList.Items.Filter = PrefrencesList.Items.Filter; // seesh
 		}
 
 		private void AboutButton_Click(object sender, RoutedEventArgs e)
@@ -151,46 +342,6 @@ namespace FF1Randomizer
 			var aboutWindow = new AboutWindow(FFRVersion.Version) { Owner = this };
 
 			aboutWindow.ShowDialog();
-		}
-
-		private void PriceScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			((Slider)sender).Value = Math.Round(e.NewValue, 1);
-			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel, ClampPricesCheckBox);
-		}
-
-		private void EnemyScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			((Slider)sender).Value = Math.Round(e.NewValue, 1);
-			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel, ClampEnemiesCheckBox);
-		}
-
-		private void BossScaleFactorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			((Slider)sender).Value = Math.Round(e.NewValue, 1);
-			SetScaleFactorLabel(BossScaleFactorSlider, BossScaleFactorLabel, ClampBossesCheckBox);
-		}
-
-		private void ExpMultiplierSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			((Slider)sender).Value = Math.Round(e.NewValue, 1);
-			SetExpLabel();
-		}
-
-		private void ExpBonusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			((Slider)sender).Value = Math.Round(e.NewValue / 10.0) * 10.0;
-			SetExpLabel();
-		}
-		private void EncounterRate_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			((Slider)sender).Value = Math.Round(e.NewValue);
-			EncounterRateFactorLabel.Content = $"{Math.Round(EncounterRateSlider.Value / 30.0, 2)}x";
-		}
-		private void DungeonEncounterRate_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			((Slider)sender).Value = Math.Round(e.NewValue);
-			DungeonEncounterRateFactorLabel.Content = $"{Math.Round(DungeonEncounterRateSlider.Value / 30.0, 2)}x";
 		}
 
 		private void LoadPreset(object sender, RoutedEventArgs e)
@@ -208,21 +359,6 @@ namespace FF1Randomizer
 			}
 		}
 
-		private void ClampPricesCheckBox_ValueChanged(object sender, RoutedEventArgs e)
-		{
-			SetScaleFactorLabel(PriceScaleFactorSlider, PriceScaleFactorLabel, ClampPricesCheckBox);
-		}
-
-		private void ClampEnemiesCheckBox_ValueChanged(object sender, RoutedEventArgs e)
-		{
-			SetScaleFactorLabel(EnemyScaleFactorSlider, EnemyScaleFactorLabel, ClampEnemiesCheckBox);
-		}
-
-		private void ClampBossesCheckBox_ValueChanged(object sender, RoutedEventArgs e)
-		{
-			SetScaleFactorLabel(BossScaleFactorSlider, BossScaleFactorLabel, ClampBossesCheckBox);
-		}
-
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
 			var openFileDialog = new OpenFileDialog
@@ -235,6 +371,36 @@ namespace FF1Randomizer
 			{
 				ResourcePackTextBox.Text = openFileDialog.FileName;
 			}
+		}
+		private void SerializePreferences()
+		{
+			System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(_model.Preferences.GetType());
+			using (StringWriter textWriter = new StringWriter())
+			{
+				serializer.Serialize(textWriter, _model.Preferences);
+				var result = textWriter.ToString();
+				Settings.Default.GamePreferences = textWriter.ToString();
+				Settings.Default.Save();
+			}
+		}
+		private void DeserializePreferences()
+		{
+
+			if (String.IsNullOrEmpty(Settings.Default.GamePreferences))
+			{
+				return;
+			}
+
+			System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(_model.Preferences.GetType());
+			using (StringReader textReader = new StringReader(Settings.Default.GamePreferences))
+			{
+				_model.Preferences = (Preferences)serializer.Deserialize(textReader);
+			}
+		}
+
+		private void PrefrencesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			SerializePreferences();
 		}
 	}
 }
