@@ -288,10 +288,14 @@ namespace FF1Randomizer
 		private async void GenerateButton_Click(object sender, RoutedEventArgs e)
 		{
 			var rom = new FF1Rom(_model.Filename);
+			if (_model.Flags.ResourcePack != null)
+			{
+				_model.Flags.ResourcePack = Convert.ToBase64String(File.ReadAllBytes(ResourcePackTextBox.Text));
+			}
 			await rom.Randomize(Blob.FromHex(_model.Seed), _model.Flags, _model.Preferences);
 
 			var fileRoot = _model.Filename.Substring(0, _model.Filename.LastIndexOf("."));
-			var outputFilename = $"{fileRoot}_{_model.Seed}_{FlagsTextBox.Text}.nes";
+			var outputFilename = $"{fileRoot}_{_model.Seed}_{rom.GetHash()}.nes";
 			rom.Save(outputFilename);
 
 			MessageBox.Show($"Finished generating new ROM: {outputFilename}", "Done");
@@ -371,6 +375,20 @@ namespace FF1Randomizer
 			if (result == true)
 			{
 				_model.Flags = Flags.FromJson(File.ReadAllText(openFileDialog.FileName)).flags;
+			}
+		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			var openFileDialog = new OpenFileDialog
+			{
+				Filter = "Zip files (*.zip)|*.zip"
+			};
+
+			var result = openFileDialog.ShowDialog(this);
+			if (result == true)
+			{
+				ResourcePackTextBox.Text = openFileDialog.FileName;
 			}
 		}
 	}
