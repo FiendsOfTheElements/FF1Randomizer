@@ -29,6 +29,12 @@
 		<Button x:Name="PasteButton" Content="Import" HorizontalAlignment="Left" Margin="813,90,0,0" VerticalAlignment="Top" Width="62" Height="23" Click="PasteButton_Click"/>
 		<Button x:Name="SeedButton" Content="New Seed" HorizontalAlignment="Left" Margin="135,90,0,0" VerticalAlignment="Top" Width="89" Height="23" Click="SeedButton_Click"/>
 
+		<Label x:Name="ResPackLabel" Content="Resource Pack" HorizontalAlignment="Left" Margin="229,10,0,0" VerticalAlignment="Top" FontWeight="Bold" RenderTransformOrigin="-0.359,0.486"/>
+		<StackPanel Height="23" Orientation="Horizontal" Margin="229,36,-219,0" VerticalAlignment="Top">
+			<TextBox x:Name="ResourcePackTextBox" TextWrapping="Wrap" Text="" Width="240" />
+			<Button Content="Browse..." Width="87" Margin="10,0,0,0" Click="Button_Click"/>
+		</StackPanel>
+		
 		<Label x:Name="FlagsListLabel" Content="Flags" HorizontalAlignment="Left" Margin="10,149,0,0" VerticalAlignment="Top" FontWeight="Bold" RenderTransformOrigin="-0.359,0.486"/>
 		<TextBox x:Name="FlagListFilter" Text="{Binding FlagsFilter}" TextChanged="FlagsFilter_TextChanged" HorizontalAlignment="Left" Height="23" Margin="10,175,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="400" />
 		<ListView Name="FlagsList" Width="400" Height="340" Margin="10,203,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
