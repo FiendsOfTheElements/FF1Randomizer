@@ -207,6 +207,7 @@ namespace FF1Lib.Music
 					{
 						songsToWrite[i] = newMusicData.Silence;
 					}
+					songsToWrite[(int)SongNames.Rest] = OriginalSongs[(int)SongNames.Rest];
 				}
 				WriteSongs(rom, songsToWrite);
 			}
@@ -252,7 +253,6 @@ namespace FF1Lib.Music
 			songs[(int)SongNames.ItemJingle] = OriginalSongs[(int)SongNames.ItemJingle];
 			songs[(int)SongNames.UseItemSFX] = OriginalSongs[(int)SongNames.UseItemSFX];
 			songs[(int)SongNames.ItemGetSFX] = OriginalSongs[(int)SongNames.ItemGetSFX];
-			songs[(int)SongNames.Rest] = OriginalSongs[(int)SongNames.Rest];
 
 
 			int lastLocation = 0x8100;
