@@ -520,7 +520,7 @@ namespace FF1Lib
 				newRubyItemDescription = "Feels heavy.";
 			}
 			// replace "A red stone." item description (0x38671) originally "8AFFAF2FAA1A23A724285AC000"
-			Put(0x38671, FF1Text.TextToBytes(newRubyItemDescription, useDTE: true));
+			MenuText.MenuStrings[(int)FF1Text.MenuString.UseRuby] = FF1Text.TextToBytes(newRubyItemDescription, useDTE: true);
 
 			// phrase parts
 			var newRubyContent = randomRuby.Split(";");

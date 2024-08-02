@@ -114,9 +114,24 @@ namespace FF1Lib
 			Put(0x7C956, Blob.FromHex("A90F2003FE4C008B"));
 			PutInBank(0x0F, 0x8B00, Blob.FromHex("BAE030B01E8A8D1001A9F4AAA9FBA8BD0001990001CA88E010D0F4AD1001186907AA9AA52948A52A48A50D48A54848A549484C65C9"));
 
-			// Change INT to MDEF in the Status screen
-			Put(0x388F5, Blob.FromHex("968D8E8F"));
-			Data[0x38DED] = 0x25;
+			// Adds MDEF to the Status screen
+			MenuText.MenuStrings[(int)FF1Text.MenuString.StatusRightPanel] =
+				FF1Text.TextToBytesStats(" DAMAGE   {stat}{damage}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" HIT %    {stat}{hit%}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" ABSORB   {stat}{absorb}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" EVADE %  {stat}{luck}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" MDEF     {stat}{mdef}", delimiter: FF1Text.Delimiter.Null);
+
+			//Rewrite left status panel with one fewer space to match spacing with right panel
+			MenuText.MenuStrings[(int)FF1Text.MenuString.StatusLeftPanel] =
+				FF1Text.TextToBytesStats(" STR.   {stat}{str}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" AGI.   {stat}{agi}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" INT.   {stat}{int}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" VIT.   {stat}{vit}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" LUCK   {stat}{luck}", delimiter: FF1Text.Delimiter.Null);
+
+			//Change PrintCharStat to support an MDEF stat code (0x50), see 0E_8D83_MDEFSupport.asm
+			PutInBank(0x0E, 0x8D83, Blob.FromHex("C950D004E92BD06DC90D10086909D065EAEAEAEA"));
 
 			//Key Items + Progressive Scaling
 			if (flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveSlow || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveMedium || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveFast || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveVFast)

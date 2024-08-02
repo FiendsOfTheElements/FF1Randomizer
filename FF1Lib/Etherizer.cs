@@ -16,10 +16,8 @@
 			// The pointers to the item use code for CABIN and HOUSE (TENT remains the same)
 			Put(0x3B1A5, Blob.FromHex("89B28EB2"));
 
-			// The item targeting prompt "Who will recover MP?"
-			// It's not using ReadText and WriteText because this area of text contains a lot
-			// of control codes that mess up when those functions are used.
-			Put(0x387CC, Blob.FromHex("A0AB2E5A40B61B2E23A6B2B925FF9699C500"));
+			// All new ether items replace the Tent use string
+			MenuText.MenuStrings[(int)FF1Text.MenuString.UseTent] = FF1Text.TextToBytes("Who needs to recover MP?", useDTE: true, delimiter: FF1Text.Delimiter.Null);
 
 			// Update the item names
 			itemsText[(int)Item.Tent] = "ETHR@p";

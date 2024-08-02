@@ -25,6 +25,7 @@ public partial class FF1Rom : NesRom
 	public StandardMaps Maps;
 	public NpcObjectData NpcData;
 	public DialogueData Dialogues;
+	public MenuText MenuText;
 	public TalkRoutines TalkRoutines;
 	public StartingItems StartingItems;
 	public EncounterRate EncounterRates;
@@ -102,6 +103,7 @@ public partial class FF1Rom : NesRom
 		NpcData = new NpcObjectData(Maps, flags, rng, this);
 		TalkRoutines = new TalkRoutines();
 		Dialogues = new DialogueData(this);
+		MenuText = new MenuText(this);
 		ShopData = new ShopData(flags, this);
 		EncounterRates = new EncounterRate(this);
 		EnemyScripts = new EnemyScripts(this);
@@ -412,6 +414,7 @@ public partial class FF1Rom : NesRom
 		WeaponPermissions.Write(this);
 		SpellPermissions.Write(this);
 		ClassData.Write(this);
+		MenuText.Write(this);
 		Music.Write(this, flags, preferences);
 		NewMusic.Write(this, preferences);
 
