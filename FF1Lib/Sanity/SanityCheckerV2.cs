@@ -162,7 +162,7 @@ namespace FF1Lib
 
 			ProcessImmediateAreas();
 
-			while (ProcessDeferredAreas())
+			while (ProcessDeferredAreas() || immediateAreas.Any())
 			{
 				ProcessImmediateAreas();
 			}
