@@ -16,6 +16,7 @@ namespace FF1Lib
 		public bool IncentivizeBad => false;
 		public bool OrbsRequiredEnabled => !ShardHunt && (GameMode != GameModes.DeepDungeon);
 		public bool OrbsRequiredOptionsEnabled => OrbsRequiredEnabled && (OrbsRequiredCount != 4 && OrbsRequiredCount != 0);
+		public bool PoisonConstantValueEnabled => PoisonMode == PoisonModeOptions.Constant;
 		public LoosePlacementMode LoosePlacementMode
 		{
 			get

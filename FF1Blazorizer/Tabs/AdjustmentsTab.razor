@@ -62,6 +62,7 @@
     <TriStateCheckBox UpdateAction="@UpdateAction" Id="increaseDarkPenaltyCheckBox" @bind-Value="Flags.IncreaseDarkPenalty">Increase Dark Penalty</TriStateCheckBox>
     <CheckBox UpdateAction="@UpdateAction" Id="disableMinimap" @bind-Value="Flags.DisableMinimap">Disable Minimap</CheckBox>
 	<EnumDropDown UpdateAction="@UpdateAction" Id="poisonModeDropDown" TItem="PoisonModeOptions" @bind-Value="Flags.PoisonMode">In-Battle Poison Damage:</EnumDropDown>
+	<IntSlider Min="1" Max="500" UpdateAction="@UpdateAction" Id="poisonModeValueSlider" @bind-Value="Flags.PoisonSetDamageValue" IsEnabled="@Flags.PoisonConstantValueEnabled">Damage: </IntSlider>
 </div>
 		<div class="clear-it"></div>
 	}
