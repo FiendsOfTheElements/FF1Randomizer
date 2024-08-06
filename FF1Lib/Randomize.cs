@@ -349,7 +349,7 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		await this.LoadResourcePack(flags.ResourcePack, Dialogues, EnemyScripts);
+		await this.LoadResourcePack(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
 
 		RollCredits(rng);
 		StatsTrackingHacks(flags, preferences);
@@ -378,7 +378,7 @@ public partial class FF1Rom : NesRom
 		{
 		    using (var stream = new MemoryStream(Convert.FromBase64String(preferences.SpriteSheet)))
 		    {
-				await SetCustomPlayerSprites(stream, preferences.ThirdBattlePalette);
+				await SetCustomPlayerSprites(stream, preferences.ThirdBattlePalette, preferences.MapmanSlot);
 		    }
 		}
 

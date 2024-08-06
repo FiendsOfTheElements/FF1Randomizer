@@ -14,7 +14,7 @@ namespace FF1Lib
 	    }
 
 		//async Task LoadResourcePack(Stream stream, DialogueData dialogues)
-		async Task LoadResourcePack(string resourcepack, DialogueData dialogues, EnemyScripts enemyScripts)
+		async Task LoadResourcePack(string resourcepack, DialogueData dialogues, EnemyScripts enemyScripts, Preferences preferences)
 		{
 			if (resourcepack == null)
 			{
@@ -65,7 +65,7 @@ namespace FF1Lib
 				{
 					using (var s = spritesheet.Open())
 					{
-						await SetCustomPlayerSprites(s, true);
+						await SetCustomPlayerSprites(s, true, preferences.MapmanSlot);
 					}
 				}
 

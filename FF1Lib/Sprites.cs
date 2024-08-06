@@ -547,7 +547,7 @@ namespace FF1Lib
 		new Rgba32(0x00, 0x00, 0x00)
 		};
 
-		public async Task SetCustomPlayerSprites(Stream readStream, bool threePalettes)
+		public async Task SetCustomPlayerSprites(Stream readStream, bool threePalettes, MapmanSlot mapmanLeader = MapmanSlot.Leader)
 		{
 			//IImageFormat format;
 			Image<Rgba32> image = Image.Load<Rgba32>(readStream);
@@ -586,8 +586,9 @@ namespace FF1Lib
 			// leaves the blank and "skin tone" alone)
 			// With a jump to a new routine in bank 0F which loads
 			// two complete 4 color palettes.
+			byte leader = (byte)((byte)mapmanLeader << 6);
 			PutInBank(0x1F, 0xD8B6, Blob.FromHex("A90F2003FE4CC081EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-			PutInBank(0x0F, 0x81C0, Blob.FromHex("AD0061C9FFD002A90D0A0A0A6908AAA008BD508199D003CA8810F660"));
+			PutInBank(0x0F, 0x81C0, Blob.FromHex($"AD{leader:X02}61C9FFD002A90D0A0A0A6908AAA008BD508199D003CA8810F660"));
 		}
 
 		byte chrIndex(byte[] tile, List<byte[]> chrEntries, int maxEntries)
