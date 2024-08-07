@@ -129,7 +129,8 @@ namespace FF1Lib.Music
 			UseItemSFX = 0x16,
 			ItemGetSFX = 0x17,
 			SeaShrine = 0x18,
-			ChaosBattle = 0x19
+			ChaosBattle = 0x19,
+			Mermaids = 0x1A
 		}
 		private List<Song> OriginalSongs = new List<Song>();
 
@@ -171,7 +172,7 @@ namespace FF1Lib.Music
 			rom.PutInBank(0x1D, 0xBAB2, Blob.FromHex("A0B9"));  
 			//Routine for selecting alternate music in certain situations
 			//See 1D_B9A0_AlternateMusicSelector.asm
-			rom.PutInBank(0x1D, 0xB9A0, Blob.FromHex("C94CD011AAA548C90CD005A94C4CCBB9A9594CCBB9C950D012A56A297FC97BD005A95A4CCBB9A9504CCBB9854B4C03BA"));
+			rom.PutInBank(0x1D, 0xB9A0, Blob.FromHex("C94CD01AAAA548C90CD005A94C4CD4B9C92ED005A95B4CD4B9A9594CD4B9C950D012A56A297FC97BD005A95A4CD4B9A9504CD4B9854B4C03BA"));
 
 		}
 		public NewMusic(FF1Rom rom)
@@ -185,9 +186,12 @@ namespace FF1Lib.Music
 				MoveMusicEngine(rom);
 				List<Song> songsToWrite = new List<Song>();
 				NewMusicData newMusicData = new NewMusicData();
+
 				songsToWrite.InsertRange(0, OriginalSongs);
+				// Add default tracks for the 3 additional we add
 				songsToWrite.Add(OriginalSongs[(int)SongNames.TempleOfFiend]);
 				songsToWrite.Add(OriginalSongs[(int)SongNames.Battle]);
+				songsToWrite.Add(OriginalSongs[(int)SongNames.TempleOfFiend]);
 
 				if (preferences.AlternateAirshipTheme)
 				{
@@ -216,6 +220,7 @@ namespace FF1Lib.Music
 		public void LoadOriginalMusicData(FF1Rom rom)
 		{
 			List<FF1Pointer> sortedPointers = new List<FF1Pointer>();
+			// Song pointer LUT is groups of 4 pointers (8 bytes) per track, with the 4th always being $0000
 			for (int i = 0; i < SongNameStrings.Count; i++)
 			{
 				var tmp = rom.GetFromBank(0x0D, 0x8000 + (i * 8), 6).ToBytes();
