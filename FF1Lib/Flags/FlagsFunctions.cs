@@ -59,7 +59,10 @@ namespace FF1Lib
 		public static string EncodeFlagsText(Flags flags)
 		{
 			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-			var flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).ToList();
+			var flagproperties = properties.Where(p => p.CanWrite &&
+			((p.GetCustomAttributes(typeof(FlagsAttribute), true).Length > 0) ? !((FlagsAttribute)p.GetCustomAttributes(typeof(FlagsAttribute), true)[0]).IsAllClasses : true))
+				.OrderBy(p => p.Name)
+				.ToList();
 
 			BigInteger sum = 0;
 			sum = AddString(sum, 7, (FFRVersion.Sha.Length >= 7) ? FFRVersion.Sha.Substring(0, 7) : FFRVersion.Sha.PadRight(7, 'X'));
@@ -101,7 +104,11 @@ namespace FF1Lib
 		public void ReadFromFlags(Flags newflags)
 		{
 			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-			var flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).Reverse().ToList();
+			var flagproperties = properties.Where(p => p.CanWrite &&
+			((p.GetCustomAttributes(typeof(FlagsAttribute), true).Length > 0) ? !((FlagsAttribute)p.GetCustomAttributes(typeof(FlagsAttribute), true)[0]).IsAllClasses : true))
+				.OrderBy(p => p.Name)
+				.Reverse()
+				.ToList();
 
 			foreach (var p in flagproperties)
 			{
@@ -131,7 +138,11 @@ namespace FF1Lib
 		public static Flags DecodeFlagsText(string text)
 		{
 			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-			var flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).Reverse().ToList();
+			var flagproperties = properties.Where(p => p.CanWrite &&
+			((p.GetCustomAttributes(typeof(FlagsAttribute), true).Length > 0) ? !((FlagsAttribute)p.GetCustomAttributes(typeof(FlagsAttribute), true)[0]).IsAllClasses : true))
+				.OrderBy(p => p.Name)
+				.Reverse()
+				.ToList();
 
 			var sum = StringToBigInteger(text);
 			var flags = new Flags();
