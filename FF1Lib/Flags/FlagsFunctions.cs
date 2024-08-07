@@ -59,8 +59,7 @@ namespace FF1Lib
 		public static string EncodeFlagsText(Flags flags)
 		{
 			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-			var flagproperties = properties.Where(p => p.CanWrite &&
-			((p.GetCustomAttributes(typeof(FlagsAttribute), true).Length > 0) ? !((FlagsAttribute)p.GetCustomAttributes(typeof(FlagsAttribute), true)[0]).IsAllClasses : true))
+			var flagproperties = properties.Where(p => p.CanWrite && !Attribute.IsDefined(p, typeof(FlagIsAllClasses)))
 				.OrderBy(p => p.Name)
 				.ToList();
 
@@ -104,8 +103,7 @@ namespace FF1Lib
 		public void ReadFromFlags(Flags newflags)
 		{
 			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-			var flagproperties = properties.Where(p => p.CanWrite &&
-			((p.GetCustomAttributes(typeof(FlagsAttribute), true).Length > 0) ? !((FlagsAttribute)p.GetCustomAttributes(typeof(FlagsAttribute), true)[0]).IsAllClasses : true))
+			var flagproperties = properties.Where(p => p.CanWrite && !Attribute.IsDefined(p, typeof(FlagIsAllClasses)))
 				.OrderBy(p => p.Name)
 				.Reverse()
 				.ToList();
@@ -138,8 +136,7 @@ namespace FF1Lib
 		public static Flags DecodeFlagsText(string text)
 		{
 			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-			var flagproperties = properties.Where(p => p.CanWrite &&
-			((p.GetCustomAttributes(typeof(FlagsAttribute), true).Length > 0) ? !((FlagsAttribute)p.GetCustomAttributes(typeof(FlagsAttribute), true)[0]).IsAllClasses : true))
+			var flagproperties = properties.Where(p => p.CanWrite && !Attribute.IsDefined(p, typeof(FlagIsAllClasses)))
 				.OrderBy(p => p.Name)
 				.Reverse()
 				.ToList();
