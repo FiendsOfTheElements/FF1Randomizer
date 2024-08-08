@@ -1206,6 +1206,11 @@ namespace FF1Lib
 
 			//IImageFormat format;
 			Image<Rgba32> image = Image.Load<Rgba32>(backdrop);
+			if (image.Size.Width < 32 || image.Size.Height < 512)
+			{
+				await this.Progress($"WARNING: Invalid battle backdrops image size.  Expected 32x512, got {image.Size.Width}x{image.Size.Height}. Skipping import...");
+				return;
+			}
 			var toNEScolor = new Dictionary<Rgba32, byte>();
 
 			for (int count = 0; count < 16; count++)
