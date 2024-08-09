@@ -87,6 +87,8 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress("Beginning Randomization", 15);
 
+		await this.LoadResourcePack(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
+
 		// Load Initial Data
 		RngTables = new(this);
 		TileSetsData = new(this);
@@ -349,7 +351,7 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		await this.LoadResourcePack(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
+		//await this.LoadResourcePack(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
 
 		RollCredits(rng);
 		StatsTrackingHacks(flags, preferences);
