@@ -12,7 +12,7 @@ namespace FF1Lib
 
 			if (!ether)
 			{
-				FixHouse(fixhousehp, fixhousemp);
+				FixHouse(fixhousemp, fixhousehp);
 			}
 
 			if ((bool)flags.WeaponStats)
