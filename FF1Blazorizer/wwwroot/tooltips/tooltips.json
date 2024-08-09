@@ -2555,5 +2555,11 @@
 		"title": "Procedurally Generated Earth Cave",
 		"screenshot": "procgenEarth.png",
 		"description": "Randomly selects new Earth Cave maps from a set of procedurally generated maps."
+	},
+	{
+		"Id": "mapDerpCheckBox",
+		"title": "Map Derp",
+		"screenshot": "mapDerp.png",
+		"description": "Derp."
 	}
 ]
