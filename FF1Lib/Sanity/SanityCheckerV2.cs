@@ -780,6 +780,7 @@ namespace FF1Lib
 			{
 				requirements = AccessRequirement.AllExceptEnding;
 				changes = MapChange.All;
+				SetShipDock();
 			}
 			else
 			{
