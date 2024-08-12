@@ -206,18 +206,28 @@ namespace FF1Lib
 				"  tetron",
 				"  lifereboot",
 				"  Twinge",
-				"  Chronometrics",
 			},
 			new []
 			{
 				" Contributors",
 				"",
-				" artea, pinkpuff",
-				" drcat, bdjeffyp",
-				" ofd, Darkmoon",
+				"  artea",
+				"  drcatdoctor",
 				" leggystarscream",
-				" nic0lette",
-				" splitpunched",
+				"  nic0lette",
+				"  splitpunched",
+				"  onefineday",
+			},
+			new []
+			{
+				" Contributors",
+				"",
+				"  Darkmoon",
+				"  pinkpuff",
+				"  bdjeffyp",
+				"  jat2980",
+				"  Chronometrics",
+				"  Oslodo"
 			},
 			new []
 			{
