@@ -195,6 +195,7 @@
 	{
 		"Id": "chaosBattleMusicCheckBox",
 		"title": "Alt Chaos Battle Music",
+		"screenshot": "altChaosMusic.png",
 		"description": "Alt Chaos Battle Music adds a new final battle song. "
 	},
 	{
@@ -202,6 +203,12 @@
 		"title": "Alternate Airship Theme",
 		"screenshot": "alternateAirshipThemeCheckBox.png",
 		"description": "Sets alternate background music when riding the Airship (or AirBoat).\n If Music is Shuffled, the alternate theme will be heard somewhere else, not necessarily when riding the Airship."
+	},
+	{
+		"Id": "newMusicCheckBox",
+		"title": "New Music",
+		"screenshot":  "newMusic.png",
+		"description": "Replaces all music in the game (except for item fanfare) with new tracks."
 	},
 	{
 		"Id": "disableDamageTileFlickerCheckBox",
@@ -2550,5 +2557,11 @@
 		"title": "Procedurally Generated Earth Cave",
 		"screenshot": "procgenEarth.png",
 		"description": "Randomly selects new Earth Cave maps from a set of procedurally generated maps."
+	},
+	{
+		"Id": "mapDerpCheckBox",
+		"title": "Map Derp",
+		"screenshot": "mapDerp.png",
+		"description": "Derp."
 	}
 ]

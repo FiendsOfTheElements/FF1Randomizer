@@ -29,20 +29,23 @@
 	{
 		Value = (TItem)Enum.Parse(typeof(TItem), e.Value.ToString());
 		ValueChanged.InvokeAsync(Value);
+		UpdateAction?.Invoke("UpdateFlagstring", "");
 	}
 
 	private void ShowToolTip(MouseEventArgs e)
 	{
-		UpdateToolTip?.Invoke(Id, e);
+		UpdateAction?.Invoke("UpdateTooltip", Id);
 	}
 
 	private void HideToolTip(MouseEventArgs e)
 	{
-		UpdateToolTip?.Invoke("", e);
+		UpdateAction?.Invoke("UpdateTooltip", "");
 	}
 
 	[Parameter]
 	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
+	[Parameter]
+	public Action<string, string> UpdateAction { get; set; }
 
 
 	[Parameter]

@@ -39,5 +39,7 @@
 
 		public string PlayerName { get; set; } = "Player 01";
 		public bool BlandSite { get; set; } = false;
+		public bool NewMusic { get; set; } = false;
+		public bool MapDerp { get; set; } = false;
 	}
 }

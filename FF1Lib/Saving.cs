@@ -86,9 +86,9 @@ namespace FF1Lib
 			// Hacks the game to disallow saving on the overworld with Tents, Cabins, or Houses
 			Put(0x3B2F9, Blob.FromHex("1860"));
 			// Change Item using text to avoid confusion
-			PutInBank(0x0E, 0x87B0, FF1Text.TextToBytes("\n\nSAVING DISABLED!"));
-			PutInBank(0x0E, 0x87E7, FF1Text.TextToBytes("\n\nSAVING DISABLED!"));
-			PutInBank(0x0E, 0x8825, FF1Text.TextToBytes("\n\nSAVING DISABLED!"));
+			MenuText.MenuStrings[(int)FF1Text.MenuString.UseTentSuccess] = FF1Text.TextToBytes("HP recovered.\n\nSAVING DISABLED!\n", useDTE: true, delimiter: FF1Text.Delimiter.Null);
+			MenuText.MenuStrings[(int)FF1Text.MenuString.UseCabinSuccess] = FF1Text.TextToBytes("HP recovered.\n\nSAVING DISABLED!\n", useDTE: true, delimiter: FF1Text.Delimiter.Null);
+			MenuText.MenuStrings[(int)FF1Text.MenuString.UseHouseSuccess] = FF1Text.TextToBytes("HP and magic recovered.\n\nSAVING DISABLED!\n", useDTE: true, delimiter: FF1Text.Delimiter.Null);
 		}
 
 		public void CannotSaveAtInns()

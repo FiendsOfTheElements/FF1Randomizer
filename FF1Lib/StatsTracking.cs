@@ -81,8 +81,8 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xCBED, Blob.FromHex("4C34D860"));
 
 			// Add select button handler on game start menu to change color
-			PutInBank(0x0F, 0x8620, Blob.FromHex("203CC4A662A9488540ADFB60D003EEFB60A522F022EEFB60ADFB60C90D300EF007A9018DFB60D005A90F8DFB60A90085222029EBA90060A90160"));
-			PutInBank(0x1F, 0xD840, CreateLongJumpTableEntry(0x0F, 0x8620));
+			PutInBank(0x0F, 0x861C, Blob.FromHex("A9008522203CC4A662A9488540ADFB60D003EEFB60A522F022EEFB60ADFB60C90D300EF007A9018DFB60D005A90F8DFB60A90085222029EBA90060A90160"));
+			PutInBank(0x1F, 0xD840, CreateLongJumpTableEntry(0x0F, 0x861C));
 			Put(0x3A1B5, Blob.FromHex("2040D8D0034C56A1EA"));
 			// Move Most of LoadBorderPalette_Blue out of the way to do a dynamic version.
 			PutInBank(0x0F, 0x8700, Blob.FromHex("988DCE038DEE03A90F8DCC03A9008DCD03A9308DCF0360"));
@@ -114,9 +114,24 @@ namespace FF1Lib
 			Put(0x7C956, Blob.FromHex("A90F2003FE4C008B"));
 			PutInBank(0x0F, 0x8B00, Blob.FromHex("BAE030B01E8A8D1001A9F4AAA9FBA8BD0001990001CA88E010D0F4AD1001186907AA9AA52948A52A48A50D48A54848A549484C65C9"));
 
-			// Change INT to MDEF in the Status screen
-			Put(0x388F5, Blob.FromHex("968D8E8F"));
-			Data[0x38DED] = 0x25;
+			// Adds MDEF to the Status screen
+			MenuText.MenuStrings[(int)FF1Text.MenuString.StatusRightPanel] =
+				FF1Text.TextToBytesStats(" DAMAGE   {stat}{damage}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" HIT %    {stat}{hit%}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" ABSORB   {stat}{absorb}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" EVADE %  {stat}{luck}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" MDEF     {stat}{mdef}", delimiter: FF1Text.Delimiter.Null);
+
+			//Rewrite left status panel with one fewer space to match spacing with right panel
+			MenuText.MenuStrings[(int)FF1Text.MenuString.StatusLeftPanel] =
+				FF1Text.TextToBytesStats(" STR.   {stat}{str}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" AGI.   {stat}{agi}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" INT.   {stat}{int}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" VIT.   {stat}{vit}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" LUCK   {stat}{luck}", delimiter: FF1Text.Delimiter.Null);
+
+			//Change PrintCharStat to support an MDEF stat code (0x50), see 0E_8D83_MDEFSupport.asm
+			PutInBank(0x0E, 0x8D83, Blob.FromHex("C950D004E92BD06DC90D10086909D065EAEAEAEA"));
 
 			//Key Items + Progressive Scaling
 			if (flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveSlow || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveMedium || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveFast || flags.ProgressiveScaleMode == ProgressiveScaleMode.OrbProgressiveVFast)

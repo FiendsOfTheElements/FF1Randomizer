@@ -121,6 +121,8 @@
 						{
 							_valueLow = value;
 						}
+
+						UpdateAction?.Invoke("UpdateFlagstring", "");
 						ValueLowChanged.InvokeAsync(_valueLow);
 					}
 				}
@@ -141,6 +143,8 @@
 						{
 							_valueHigh = value;
 						}
+
+						UpdateAction?.Invoke("UpdateFlagstring", "");
 						ValueHighChanged.InvokeAsync(_valueHigh);
 					}
 				}
@@ -155,14 +159,18 @@
 
 				private void ShowToolTip(MouseEventArgs e)
 				{
-					UpdateToolTip?.Invoke(Id, e);
+					UpdateAction?.Invoke("UpdateTooltip", Id);
 				}
 
 				private void HideToolTip(MouseEventArgs e)
 				{
-					UpdateToolTip?.Invoke("", e);
+					UpdateAction?.Invoke("UpdateTooltip", "");
 				}
 
 
 				[Parameter]
-				public Action<string, MouseEventArgs> UpdateToolTip { get; set; } }
+				public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
+
+	[Parameter]
+	public Action<string, string> UpdateAction { get; set; }
+ }

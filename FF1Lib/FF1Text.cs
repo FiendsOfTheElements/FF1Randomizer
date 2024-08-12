@@ -15,6 +15,73 @@ namespace FF1Lib
 			Segment = 0x01,
 			Line = 0x05
 		}
+		public enum MenuString
+		{
+			None = 0,
+			CurrentGold,
+			ItemMagicWeaponArmorStatus,
+			MenuItemTitle,
+			EmptyInventory,
+			UseLuteSuccess,
+			UseLute,
+			UseCrown,
+			UseCrystal,
+			UseHerb,
+			UseKey,
+			UseTNT,
+			UseAdamant,
+			UseSlab,
+			UseRuby,
+			UseRodSuccess,
+			UseRod,
+			UseFloaterSuccess,
+			UseFloater,
+			UseChime,
+			UseTail,
+			UseCube,
+			UseBottleSuccess,
+			UseBottle,
+			UseOxyale,
+			UseCanoe,
+			UseTentSuccess,
+			UseTent,
+			UseCabinSuccess,
+			UseCabin,
+			UseHouseSuccess,
+			UseHouse,
+			PotionHeal,
+			PotionPure,
+			PotionSoft,
+			StatusName,
+			StatusClass,
+			StatusLevel,
+			StatusExp,
+			StatusLeftPanel,
+			StatusRightPanel,
+			MenuMagicName,
+			MenuMagicLevels,
+			MagicCure,
+			MagicHeal,
+			MagicPure,
+			MagicLife,
+			MagicWarp,
+			MagicSoft,
+			MagicExit,
+			MagicOutOfMP,
+			MagicCantUseHere,
+			MenuWeaponTitle,
+			MenuEquipTradeDrop,
+			MenuEquipmentName1,
+			Unknown55,
+			MenuEquipmentName2,
+			Unknown57,
+			MenuEquipmentName3,
+			Unknown59,
+			MenuEquipmentName4,
+			Unknown61,
+			MenuArmorTitle,
+			UseLodgingSave
+		}
 
 		private static readonly string[] TextByBytes;
 		private static readonly Dictionary<string, byte> BytesByText = new Dictionary<string, byte>
@@ -270,6 +337,21 @@ namespace FF1Lib
 
 		};
 
+		private static readonly Dictionary<string, byte> StatCodes = new Dictionary<string, byte>
+		{
+			{"stat", 0x10 },
+			{"str", 0x07 },
+			{"agi", 0x08 },
+			{"int", 0x09 },
+			{"vit", 0x0A },
+			{"luck", 0x0B },
+			{"damage", 0x3C },
+			{"hit%", 0x3D },
+			{"absorb", 0x3E },
+			{"evade", 0x3F },
+			{"mdef", 0x50 }
+		};
+
 		static FF1Text()
 		{
 			TextByBytes = new string[256];
@@ -332,6 +414,34 @@ namespace FF1Lib
 			}
 
 			return bytes.SubBlob(0, j);
+		}
+		public static Blob TextToBytesStats(string text, bool useDTE = true, Delimiter delimiter = Delimiter.Null)
+		{
+			//Convert strings containing control codes in curly braces, eg. "STR.   {stat}{str}"
+			List<byte> bytes = new List<byte>();
+			int textIndex = 0;
+			while (textIndex < text.Length)
+			{
+				if (text[textIndex] == '{')
+				{
+					string code = text.Substring(textIndex+1, text.IndexOf('}', textIndex+1) - textIndex - 1);
+					
+					bytes.Add(StatCodes[code]);
+					textIndex += code.Length + 2;
+				}
+				else
+				{
+					bytes.Add(BytesByText[text[textIndex].ToString()]);
+					textIndex++;
+				}
+			}
+
+			if (delimiter != Delimiter.Empty)
+			{
+				bytes.Add((byte)delimiter);
+			}
+
+			return bytes.ToArray();
 		}
 
 		public static Blob TextToBytesInfo(string text, bool useDTE = true, Delimiter delimiter = Delimiter.Null, bool useExtraIcons = false)
@@ -569,6 +679,42 @@ namespace FF1Lib
 			return newtile;
 		}
 
+	}
+
+	public class MenuText
+	{
+		public Blob[] MenuStrings { get; set; }
+		private int stringCount = 0x40;
+		private int pointerOffset = 0x38500;
+		private int textOffset = 0x38580;
+		private int pointerBase = 0x30000;
+		public MenuText(FF1Rom rom)
+		{
+			MenuStrings = new Blob[stringCount];
+			List<ushort> pointers = rom.Get(pointerOffset, 2 * stringCount).ToUShorts().ToList();
+
+			for (int i = 0; i < pointers.Count - 1; i++)
+			{
+				//Use next pointer to determine length, strange bugs occur if we just look for null terminators for all strings
+				MenuStrings[i] = rom.Get(pointerBase + pointers[i], pointers[i + 1] - pointers[i]);
+			}
+			//No next pointer, so look for null terminator for length of final string
+			MenuStrings[stringCount-1] = rom.ReadUntil(pointerBase + pointers[stringCount-1], 0x00);
+		}
+		public void Write(FF1Rom rom)
+		{
+			int offset = textOffset;
+			var plainstrings = from m in MenuStrings select FF1Text.BytesToText(m);
+			ushort[] pointers = new ushort[stringCount];
+			for (int i = 0; i < stringCount; i++)
+			{
+				rom.Put(offset, MenuStrings[i]);
+
+				pointers[i] = (ushort)(offset - pointerBase);
+				offset += MenuStrings[i].Length;
+			}
+			rom.Put(pointerOffset, Blob.FromUShorts(pointers.ToArray()));
+		}
 	}
 
 	public class ItemNames

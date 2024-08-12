@@ -82,7 +82,7 @@ namespace FF1Lib
 
 		public void RandomWeaponBonus(Flags flags, bool cleanNames, List<int> blurseValues, MT19337 rng)
 		{
-			bool enable = flags.WeaponBonuses;
+			bool enable = (bool)flags.RandomWeaponBonus;
 			int min = flags.RandomWeaponBonusLow;
 			int max = flags.RandomWeaponBonusHigh;
 			bool excludeMasa = (bool)flags.RandomWeaponBonusExcludeMasa;
