@@ -195,6 +195,7 @@
 	{
 		"Id": "chaosBattleMusicCheckBox",
 		"title": "Alt Chaos Battle Music",
+		"screenshot": "altChaosMusic.png",
 		"description": "Alt Chaos Battle Music adds a new final battle song. "
 	},
 	{
@@ -206,6 +207,7 @@
 	{
 		"Id": "newMusicCheckBox",
 		"title": "New Music",
+		"screenshot":  "newMusic.png",
 		"description": "Replaces all music in the game (except for item fanfare) with new tracks."
 	},
 	{
