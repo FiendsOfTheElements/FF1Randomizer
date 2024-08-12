@@ -43,7 +43,6 @@
 		"LooseItemsForwardPlacement": false,
 		"LooseItemsSpreadPlacement": false,
 		"LooseItemsNpcBalance": false,
-		"PredictivePlacement": false,
 		"AllowUnsafePlacement": false,
 		"ShipCanalBeforeFloater": false,
 		"ExpChestConversionMin": 20,
@@ -97,6 +96,7 @@
 		"BlindSeed": false,
 		"Shops": true,
 		"Treasures": true,
+		"ChestsKeyItems": true,
 		"NPCItems": true,
 		"NPCFetchItems": true,
 		"RandomWares": false,
@@ -496,7 +496,6 @@
 		"ReducedLuck": false,
 		"LockpickingLevelRequirement": 15,
 		"WhiteMageHarmEveryone": true,
-		"ProcgenEarth": false,
-		"EarlierRuby": false
+		"ProcgenEarth": false
 	}
 }

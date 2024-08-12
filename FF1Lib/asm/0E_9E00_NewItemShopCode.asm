@@ -30,7 +30,7 @@ BuyQuantityInputLoop:
 	AND #$0F		; we are interested in up/down/left/right
 	STA $61			; $61 stores the joypad's previous direction
 MoveDone:
-	JSR $9E00	; this is the PrintQuantity subroutine we created above
+	JSR $9F70	; Clamp quantity (below), then call the PrintQuantity subroutine we created above
 	JSR $AA32	; and draw the complex string that is the quantity
 Loop:
 	JSR $A743		; call ShopFrameNoCursor
@@ -193,6 +193,45 @@ NewShopPayPrice:
 PrintTotalCost:
 	JMP $8E8E	; this just jumps to PrintNumber_6Digit, which will RTS for us
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+PrintQuantity = $9E00
+shop_items = $300
+cursor = $62
+char_items = $6020
+temp   = $6AEF  ;used for in battle target list
+.org $9F70
+ClampQuantity:            ;checks which item we're trying to buy, and then limit
+						  ;  the number to how many we can hold
+    LDA cursor   ;get cursor
+    ASL
+    ASL
+    ASL
+    CLC
+    ADC #$16
+    TAY
+    LDX shop_items,Y    ;get ID of selected shop item
+    LDY char_items,X    ;Use that to index into inventory to get quantity of that item
+    LDA $30A            ;load set quantity
+
+    STY temp            ;can't Add/subtract from a register 
+    CLC
+    ADC temp            ;add quantity owned to quantity purchasing
+    SBC #99
+    BMI QuantityOk      ;branch if quantity is valid
+    ;otherwise set quantity to max
+    LDA #99
+    SBC temp            ;99 - owned quantity
+    BEQ CantHold      ;set quantity to 1 if we can't hold anymore
+    BPL StoreNew      ;otherwise 99-owned is ok
+    
+CantHold:
+    LDA #1     ;set quantity to 1 for message displaying purposes
+StoreNew:
+    STA $30A   ;buy quantity
+QuantityOk:
+    JMP PrintQuantity    ;this is where the code originally expected to go
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; here is the rewritten ItemShop_Loop found in the old location, starting with ItemShop_Exit
 ; A471

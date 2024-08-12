@@ -16,24 +16,24 @@
 
 		<a class="preset-button styled-button @((selectedPresetId == "Beginner") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Beginner"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="beginnerPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Beginner</strong></ToolTipBox>
+		<ToolTipBox id="beginnerPresetToolTipBox" UpdateAction="@UpdateAction"><strong>Beginner</strong></ToolTipBox>
 		Introduction to the randomizer, and the basis for most of the other presets.</p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "Oops_All_Loose") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Oops_All_Loose"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="oopsAllLooseToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Oops, All Loose!</strong></ToolTipBox>
+		<ToolTipBox id="oopsAllLooseToolTipBox" UpdateAction="@UpdateAction"><strong>Oops, All Loose!</strong></ToolTipBox>
 		All key items are loose, which means they can be found in any chest.
 		</p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "Shard_Hunt") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Shard_Hunt"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="shardHuntPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Shard Hunt</strong></ToolTipBox>
+		<ToolTipBox id="shardHuntPresetToolTipBox" UpdateAction="@UpdateAction"><strong>Shard Hunt</strong></ToolTipBox>
 		Instead of lighting 4 Orbs, you must find 28 Shards to unlock the Temple of Fiends.
 		</p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "Floaterless") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Floaterless"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="floaterlessPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Floaterless</strong></ToolTipBox>
+		<ToolTipBox id="floaterlessPresetToolTipBox" UpdateAction="@UpdateAction"><strong>Floaterless</strong></ToolTipBox>
 		Removes the Floater from the game, so you can't get the airship, but adds new docks so you can get everywhere you need to go.
 		</p>
 
@@ -43,19 +43,19 @@
 
 		<a class="preset-button styled-button @((selectedPresetId == "Improved_Vanilla") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Improved_Vanilla"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="improvedVanillaPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Improved Vanilla</strong></ToolTipBox>
+		<ToolTipBox id="improvedVanillaPresetToolTipBox" UpdateAction="@UpdateAction"><strong>Improved Vanilla</strong></ToolTipBox>
 		Applies the bugfixes and quality-of-life improvements to the base game, but does not randomize anything.
 		</p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "Entrance_Floor_Shuffle") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Entrance_Floor_Shuffle"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="entranceFloorShufflePresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Entrance and Floor Shuffle</strong></ToolTipBox>
+		<ToolTipBox id="entranceFloorShufflePresetToolTipBox" UpdateAction="@UpdateAction"><strong>Entrance and Floor Shuffle</strong></ToolTipBox>
 		Overworld entrances (except for towns) are shuffled together, as are cave and dungeon floors.
 		</p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "Procgen_Overworld") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Procgen_Overworld"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="procgenOWPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Procedurally Generated Overworld</strong></ToolTipBox>
+		<ToolTipBox id="procgenOWPresetToolTipBox" UpdateAction="@UpdateAction"><strong>Procedurally Generated Overworld</strong></ToolTipBox>
 		Explore a completely new, randomly generated overworld.
 		</p>
 
@@ -70,26 +70,26 @@
 
 		<a class="preset-button styled-button @((selectedPresetId == "Chaos_Rush") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Chaos_Rush"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="chaosRushToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Chaos Rush</strong></ToolTipBox>
+		<ToolTipBox id="chaosRushToolTipBox" UpdateAction="@UpdateAction"><strong>Chaos Rush</strong></ToolTipBox>
 		You can enter the final dungeon immediately at the start of the game.
 		</p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "Free_Enterprise") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Free_Enterprise"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="freeEnterpriseToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Free Enterprise</strong>
+		<ToolTipBox id="freeEnterpriseToolTipBox" UpdateAction="@UpdateAction"><strong>Free Enterprise</strong>
 		</ToolTipBox>
 		All bosses rush modeled after the open world gameplay style of <a href="http://ff4fe.com/">FF4: Free Enterprise</a>.
 		</p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "Hidden_Chaos") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Hidden_Chaos"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="hiddenChaosToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Hidden Chaos</strong></ToolTipBox>
+		<ToolTipBox id="hiddenChaosToolTipBox" UpdateAction="@UpdateAction"><strong>Hidden Chaos</strong></ToolTipBox>
 		Chaos is hidden in a random chest and must be found to be defeated.
 		</p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "NOverworld") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("NOverworld"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="noverworldShufflePresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>NOverworld</strong></ToolTipBox>
+		<ToolTipBox id="noverworldShufflePresetToolTipBox" UpdateAction="@UpdateAction"><strong>NOverworld</strong></ToolTipBox>
 		Removes the overworld from the game - towns and dungeons are connected directly by stairs and warps.
 		</p>
 
@@ -98,19 +98,19 @@
 
 		<a class="preset-button styled-button @((selectedPresetId == "Deep_Dungeon") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Deep_Dungeon"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="deepDungeonPresetToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Deep Dungeon</strong></ToolTipBox>
+		<ToolTipBox id="deepDungeonPresetToolTipBox" UpdateAction="@UpdateAction"><strong>Deep Dungeon</strong></ToolTipBox>
 		Turn Coneria Castle into a 52-floor completely procedurally generated dungeon, leading to Chaos.
 		</p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "Over_Randomizer") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Over_Randomizer"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="overRandomizerToolTipBox" UpdateToolTip="@UpdateToolTipID"><strong>Over Randomizer</strong></ToolTipBox>
+		<ToolTipBox id="overRandomizerToolTipBox" UpdateAction="@UpdateAction"><strong>Over Randomizer</strong></ToolTipBox>
 		The randomizer will give you entirely new weapons, armor, spells, enemies, and bosses.
 		</p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "Lichs_Revenge") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Lichs_Revenge"))">Select</a>
 		<p class="preset-paragraph">
-		<ToolTipBox id="lichRevengePresetCheckBox" UpdateToolTip="@UpdateToolTipID"><strong>Lich's Revenge</strong></ToolTipBox>
+		<ToolTipBox id="lichRevengePresetCheckBox" UpdateAction="@UpdateAction"><strong>Lich's Revenge</strong></ToolTipBox>
 		Lich is having his revenge, unleashing his undead hordes upon the world!
 		</p>
 
@@ -156,7 +156,7 @@
 
 		<h3></h3>
 
-		<ToolTipBox UpdateToolTip="@UpdateToolTipID" Id="importResourcePack"><h4>Import Resource Pack</h4></ToolTipBox>
+		<ToolTipBox UpdateAction="@UpdateAction" Id="importResourcePack"><h4>Import Resource Pack</h4></ToolTipBox>
 		<input type="file" id="importResourcePackInput" accept=".zip" @onchange="@OnImportResourcePack" />
 
 		</div>
@@ -166,10 +166,11 @@
 </div>
 
 
-@code { [Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+@code { [Parameter] public FF1Lib.Flags Flags { get; set; }
 	[Parameter] public Action<string> SetStatusMessage { get; set; }
 	[Parameter] public Action SetDefaultLoaded { get; set; }
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter]	public Action<string, string> UpdateAction { get; set; }
 	[Parameter] public string StatusMessage { get; set; }
 	[Parameter] public bool loadDefault { get; set; }
 	[Parameter] public string[] localPresets { get; set; } = { };
@@ -208,6 +209,7 @@
 		selectedPresetId = name;
 		var json = await JSRuntime.InvokeAsync<string>("computePreset", name);
 		LoadFromJson(json);
+		UpdateAction?.Invoke("UpdateFlagstring", "");
 	}
 
 	async Task LoadLocalPreset(string name)
@@ -215,13 +217,14 @@
 		selectedPresetId = name;
 		var json = await JSRuntime.InvokeAsync<string>("loadLocalPreset", name);
 		LoadFromJson(json);
+		UpdateAction?.Invoke("UpdateFlagstring", "");
 	}
 
 	public void LoadFromJson(string json)
 	{
 		var preset = Flags.FromJson(json);
 
-		Flags.Flags = preset.flags;
+		Flags.ReadFromFlags(preset.flags);
 
 		if (preset.log.Any())
 		{
@@ -253,7 +256,7 @@
 		Flags.Preset preset = new Flags.Preset();
 		preset.Name = presetName;
 		SetPresetName(presetName);
-		preset.Flags = Flags.Flags;
+		preset.Flags = Flags;
 
 		var json = System.Text.Json.JsonSerializer.Serialize(preset, options);
 		var encoded = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
@@ -285,7 +288,7 @@
 
 			var preset = Flags.FromJson(json);
 
-			Flags.Flags = preset.flags;
+			Flags.ReadFromFlags(preset.flags);
 
 			if (preset.log.Any())
 			{

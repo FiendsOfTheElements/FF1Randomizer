@@ -384,39 +384,29 @@ namespace FF1Lib
 
 		private void ChangeMenuTexts()
 		{
-			var pointers = rom.GetFromBank(0x0E, 0x8500, 128).ToUShorts();
 
 			if (flags.ExtConsumableSet == ExtConsumableSet.SetA)
 			{
-				pointers[0x09] = ChangeMenuText(pointers[0x08], "Who needs a full cure?");
-				pointers[0x0A] = ChangeMenuText(pointers[0x09], "Who needs a new life?");
-				pointers[0x0B] = ChangeMenuText(pointers[0x0A], "Take a sip and blast away.");
-				ChangeMenuText(pointers[0x0B], "Useful when you need to run.");
+				rom.MenuText.MenuStrings[(int)FF1Text.MenuString.UseCrystal] = FF1Text.TextToBytes("Who needs a full cure?");
+				rom.MenuText.MenuStrings[(int)FF1Text.MenuString.UseHerb] = FF1Text.TextToBytes("Who needs a new life?");
+				rom.MenuText.MenuStrings[(int)FF1Text.MenuString.UseKey] = FF1Text.TextToBytes("Take a sip and blast away.");
+				rom.MenuText.MenuStrings[(int)FF1Text.MenuString.UseTNT] = FF1Text.TextToBytes("Useful when you need to run.");
 			}
 			else if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
 			{
-				pointers[0x09] = ChangeMenuText(pointers[0x08], "Need a party heal?");
-				pointers[0x0A] = ChangeMenuText(pointers[0x09], "The nuclear option.");
-				pointers[0x0B] = ChangeMenuText(pointers[0x0A], "Who needs a little love?");
-				ChangeMenuText(pointers[0x0B], "Not enough armor?");
+				rom.MenuText.MenuStrings[(int)FF1Text.MenuString.UseCrystal] = FF1Text.TextToBytes("Need a party heal?");
+				rom.MenuText.MenuStrings[(int)FF1Text.MenuString.UseHerb] = FF1Text.TextToBytes("The nuclear option.");
+				rom.MenuText.MenuStrings[(int)FF1Text.MenuString.UseKey] = FF1Text.TextToBytes("Who needs a little love?");
+				rom.MenuText.MenuStrings[(int)FF1Text.MenuString.UseTNT] = FF1Text.TextToBytes("Not enough armor?");
 			}
 			else if (flags.ExtConsumableSet == ExtConsumableSet.SetC)
 			{
-				pointers[0x09] = ChangeMenuText(pointers[0x08], "Too slow?");
-				pointers[0x0A] = ChangeMenuText(pointers[0x09], "Who needs to recover?");
-				pointers[0x0B] = ChangeMenuText(pointers[0x0A], "The original stuff.");
-				ChangeMenuText(pointers[0x0B], "Need to hide?");
+				rom.MenuText.MenuStrings[(int)FF1Text.MenuString.UseCrystal] = FF1Text.TextToBytes("Too slow?");
+				rom.MenuText.MenuStrings[(int)FF1Text.MenuString.UseHerb] = FF1Text.TextToBytes("Who needs to recover?");
+				rom.MenuText.MenuStrings[(int)FF1Text.MenuString.UseKey] = FF1Text.TextToBytes("The original stuff.");
+				rom.MenuText.MenuStrings[(int)FF1Text.MenuString.UseTNT] = FF1Text.TextToBytes("Need to hide?");
 			}
 
-			rom.PutInBank(0x0E, 0x8500, Blob.FromUShorts(pointers));
-		}
-
-		private ushort ChangeMenuText(ushort p, string text)
-		{
-			var textblob = FF1Text.TextToBytes(text);
-			rom.PutInBank(0x0E, p, textblob);
-
-			return (ushort)(p + textblob.Length);
 		}
 
 		private byte FindLowSpell(string name, string altname)

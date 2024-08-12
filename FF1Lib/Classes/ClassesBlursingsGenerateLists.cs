@@ -733,6 +733,9 @@ namespace FF1Lib
 			{
 				List<SpellSlotInfo> spells = new();
 				SpellSlotInfo spellId = new();
+				SpellSlotInfo lifespell;
+
+				SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellLife.PickRandom(rng), out lifespell);
 
 				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellCur3.PickRandom(rng), out spellId))
 				{
@@ -744,15 +747,11 @@ namespace FF1Lib
 					spells.Add(spellId);
 				}
 
-				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellLife.PickRandom(rng), out spellId))
+				if (spells.Count >= 2 || (lifespell != null && spells.Count >= 1))
 				{
-					spells.Add(spellId);
-				}
+					spells = new() { spells.SpliceRandom(rng), lifespell ?? spells.SpliceRandom(rng) };
+					spells.Shuffle(rng);
 
-				spells.Shuffle(rng);
-
-				if (spells.Count >= 2)
-				{
 					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Heal Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }));
 				}
 			}
@@ -761,6 +760,9 @@ namespace FF1Lib
 			{
 				List<SpellSlotInfo> spells = new();
 				SpellSlotInfo spellId = new();
+				SpellSlotInfo lifespell;
+
+				SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellLife.PickRandom(rng), out lifespell);
 
 				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellCur4.PickRandom(rng), out spellId))
 				{
@@ -772,17 +774,14 @@ namespace FF1Lib
 					spells.Add(spellId);
 				}
 
-				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellLife.PickRandom(rng), out spellId))
+				if (spells.Count >= 2 || (lifespell != null && spells.Count >= 1))
 				{
-					spells.Add(spellId);
-				}
+					spells = new() { spells.SpliceRandom(rng), lifespell ?? spells.SpliceRandom(rng) };
+					spells.Shuffle(rng);
 
-				if (spells.Count >= 3)
-				{
 					spellBlursingsNormal.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Heal+ Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }, Classes: new List<Classes> { Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
 
 					spellBlursingsStrong.Add(new BonusMalus(BonusMalusAction.InnateSpells, "Heal+ Magic", spellsmod: new List<SpellSlotInfo> { spells[0], spells[1], emptySlot }, Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.BlackBelt }));
-
 				}
 			}
 
@@ -807,7 +806,7 @@ namespace FF1Lib
 				}
 			}
 
-			if (spellTmpr.Any() && spellFast.Any() && spellInv2.Any())
+			if (spellTmpr.Any() && spellFast.Any())
 			{
 				List<SpellSlotInfo> spells = new();
 				SpellSlotInfo spellId = new();
@@ -818,11 +817,6 @@ namespace FF1Lib
 				}
 
 				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellFast.PickRandom(rng), out spellId))
-				{
-					spells.Add(spellId);
-				}
-
-				if (SpellSlotStructure.GetSpellSlots().TryFind(x => x.NameId == spellInv2.PickRandom(rng), out spellId))
 				{
 					spells.Add(spellId);
 				}

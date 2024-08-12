@@ -176,6 +176,14 @@
 		public static readonly IReadOnlyCollection<IRewardSource> AllQuestItemLocations =
 			AllTreasures.Concat(AllNonTreasureItemLocations).Where(x => !x.IsUnused).ToList();
 
+		public static readonly IReadOnlyCollection<IRewardSource> ChestsKeyItemsLocations =
+			new List<IRewardSource> {
+			MarshCaveMajor, ConeriaMajor, EarthCaveMajor, IceCaveMajor, OrdealsMajor, SeaShrineMajor, SkyPalaceMajor
+		};
+
+		public static readonly IReadOnlyCollection<IRewardSource> AllTreasuresExceptKeyItemsLocations =
+			AllTreasures.Except(ChestsKeyItemsLocations).ToList();
+
 		public static readonly IReadOnlyCollection<IRewardSource> CardiaBonusItemLocations =
 			new List<IRewardSource> { Unused2, Unused3 };
 	}

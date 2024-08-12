@@ -96,6 +96,7 @@
 		"BlindSeed": false,
 		"Shops": false,
 		"Treasures": false,
+		"ChestsKeyItems": false,
 		"NPCItems": false,
 		"NPCFetchItems": false,
 		"RandomWares": false,
@@ -495,7 +496,6 @@
 		"ReducedLuck": false,
 		"LockpickingLevelRequirement": 15,
 		"WhiteMageHarmEveryone": false,
-		"ProcgenEarth": false,
-		"EarlierRuby": false
+		"ProcgenEarth": false
 	}
 }

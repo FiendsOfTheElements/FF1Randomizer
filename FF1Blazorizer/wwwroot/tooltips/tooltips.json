@@ -195,6 +195,7 @@
 	{
 		"Id": "chaosBattleMusicCheckBox",
 		"title": "Alt Chaos Battle Music",
+		"screenshot": "altChaosMusic.png",
 		"description": "Alt Chaos Battle Music adds a new final battle song. "
 	},
 	{
@@ -202,6 +203,12 @@
 		"title": "Alternate Airship Theme",
 		"screenshot": "alternateAirshipThemeCheckBox.png",
 		"description": "Sets alternate background music when riding the Airship (or AirBoat).\n If Music is Shuffled, the alternate theme will be heard somewhere else, not necessarily when riding the Airship."
+	},
+	{
+		"Id": "newMusicCheckBox",
+		"title": "New Music",
+		"screenshot":  "newMusic.png",
+		"description": "Replaces all music in the game (except for item fanfare) with new tracks."
 	},
 	{
 		"Id": "disableDamageTileFlickerCheckBox",
@@ -930,12 +937,17 @@
 		"screenshot": "vampAttackIncludesConeria.png",
 		"description": "Allows the Vampire to potentially attack Coneria."
 	},
-
 	{
 		"Id": "treasuresCheckBox",
 		"title": "Treasures",
 		"screenshot": "treasuresCheckBox.png",
-		"description": "Shuffle all treasures normally available to a random chest. All items are assured to be in a chest somewhere in the game."
+		"description": "Shuffle all treasures normally available to a random chest, except chests containing Key Items. All items are assured to be in a chest somewhere in the game."
+	},
+	{
+		"Id": "chestsKeyItemsCheckBox",
+		"title": "Chests Key Items",
+		"screenshot": "npcItemsCheckBox.png",
+		"description": "Add the chests containing Key Items to Items Shuffle. Include CROWN, TNT, RUBY, FLOATER, TAIL, SLAB, ADAMANT."
 	},
 	{
 		"Id": "randomLootCheckBox",
@@ -2519,6 +2531,12 @@
 		"description": "Select the quantity of damage tiles to add."
 	},
 	{
+		"Id": "shuffleLavaTiles",
+		"title": "Shuffle Lava Tiles",
+		"screenshot": "shuffleLavaTiles.png",
+		"description": "Changes the pattern of lava tiles in Volcano."
+	},
+	{
 		"Id": "moveToFBats",
 		"title": "Move Temple of Fiends Bats",
 		"screenshot": "moveToFBats.png",
@@ -2539,5 +2557,11 @@
 		"title": "Procedurally Generated Earth Cave",
 		"screenshot": "procgenEarth.png",
 		"description": "Randomly selects new Earth Cave maps from a set of procedurally generated maps."
+	},
+	{
+		"Id": "mapDerpCheckBox",
+		"title": "Map Derp",
+		"screenshot": "mapDerp.png",
+		"description": "Derp."
 	}
 ]

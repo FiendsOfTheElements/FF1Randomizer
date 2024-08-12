@@ -6,22 +6,22 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IJSRuntime JSRuntime
 
-	<div id="main-content" class="@(Flags.BlandSite ? "" : "content px-4 tinted")">
+	<div id="main-content" class="@(Preferences.BlandSite ? "" : "content px-4 tinted")">
 	<ToolTip @ref="ToolTipElement" ToolTipId="@ToolTipId" />
 	<aside id="left-column">
 
-		<FileTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" UpdateToolTipID="@UpdateToolTipID" showChaos="@showChaos" />
+		<FileTab Flags="@Flags" Preferences="@Preferences" Flagstring="@flagstring" UpdateAction="@UpdateAction" UpdateSeed="@UpdateSeed" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" UpdateToolTipID="@UpdateToolTipID" showChaos="@showChaos" />
 
 		<a class="nav-item nav-link fun @(FunEnabled ? "active" : "")" @onclick="(() => FunEnabled = true)" href="javascript:void(0);">Fun%</a>
 		<a class="nav-item nav-link fun @(FunEnabled ? "" : "active")" @onclick="(() => FunEnabled = false)" href="javascript:void(0);">Quality of Life</a>
 
 		@if (FunEnabled)
 		{
-			<FunTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" SetSpriteMessage="@SetSpriteMessage" SpriteMessage="@SpriteSheetMessage"/>
+			<FunTab Preferences="@Preferences" UpdateAction="@UpdateAction" SetStatusMessage="@SetStatusMessage" SetSpriteMessage="@SetSpriteMessage" SpriteMessage="@SpriteSheetMessage" />
 		}
 		else
 		{
-			<QoLTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" />
+			<QoLTab Preferences="@Preferences" UpdateAction="@UpdateAction" SetStatusMessage="@SetStatusMessage" />
 		}
 
 
@@ -32,24 +32,24 @@
 		<h1>Final Fantasy Randomizer</h1>
 		@if (Flags.BlindSeed)
 		{
-			<BlindSeedTab Flags="@Flags" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" noTabLayout="@true" />
+			<BlindSeedTab Flags="@Flags" UpdateAction="@UpdateAction" StatusMessage="@StatusMessage" SetStatusMessage="@SetStatusMessage" noTabLayout="@true" />
 		}
 		else if (noTabLayout)
 		{
-			<PresetsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName" />
-			<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<IncentivesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<OverworldTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<DungeonsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<ClassesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<ItemEquipmentTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<AdjustmentsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
-			<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+			<PresetsTab Flags="@Flags" UpdateAction="@UpdateAction" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName" />
+			<GoalTab Flags="@Flags" UpdateAction="@UpdateAction" Preferences="@Preferences" noTabLayout="@noTabLayout" />
+			<ScaleTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
+			<IncentivesTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
+			<OverworldTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
+			<DungeonsTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
+			<TreasuresTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
+			<ShopsTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
+			<EnemiesTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
+			<PartyTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
+			<ClassesTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
+			<ItemEquipmentTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
+			<AdjustmentsTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
+			<ExperimentalTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
 			<ExpandArrow noTabLayout="@noTabLayout" SetTabLayout="@SetTabLayout" />
 		}
 		else
@@ -60,86 +60,86 @@
 						<BSTab>
 							<BSTabLabel>Presets</BSTabLabel>
 							<BSTabContent>
-								<PresetsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName" />
+								<PresetsTab Flags="@Flags" UpdateAction="@UpdateAction" SetStatusMessage="@SetStatusMessage" loadDefault="@loadDefault" SetDefaultLoaded="@SetDefaultLoaded" noTabLayout="@noTabLayout" presetName="@presetName" SetPresetName="@SetPresetName" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
 							<BSTabLabel>Goal</BSTabLabel>
 							<BSTabContent>
-								<GoalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<GoalTab Flags="@Flags" Preferences="@Preferences" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
 							<BSTabLabel>Scale</BSTabLabel>
 							<BSTabContent>
-								<ScaleTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<ScaleTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
 							<BSTabLabel>Incentives</BSTabLabel>
 							<BSTabContent>
-								<IncentivesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<IncentivesTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
 							<BSTabLabel>Mode &amp; World</BSTabLabel>
 							<BSTabContent>
-								<OverworldTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<OverworldTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
 							<BSTabLabel>Maps</BSTabLabel>
 							<BSTabContent>
-								<DungeonsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<DungeonsTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 
 						<BSTab>
 							<BSTabLabel>Treasures</BSTabLabel>
 							<BSTabContent>
-								<TreasuresTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<TreasuresTab UpdateAction="@UpdateAction" Flags="@Flags"  noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
 							<BSTabLabel>Shops &amp; Magic</BSTabLabel>
 							<BSTabContent>
-								<ShopsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<ShopsTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
 							<BSTabLabel>Enemies</BSTabLabel>
 							<BSTabContent>
-								<EnemiesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<EnemiesTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
 							<BSTabLabel>Party</BSTabLabel>
 							<BSTabContent>
-								<PartyTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<PartyTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
 							<BSTabLabel>Classes</BSTabLabel>
 							<BSTabContent>
-								<ClassesTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<ClassesTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
 							<BSTabLabel>Gear &amp; Items</BSTabLabel>
 							<BSTabContent>
-								<ItemEquipmentTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<ItemEquipmentTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
 							<BSTabLabel>Adjustments</BSTabLabel>
 							<BSTabContent>
-								<AdjustmentsTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<AdjustmentsTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 						<BSTab>
 							<BSTabLabel>Experimental</BSTabLabel>
 							<BSTabContent>
-								<ExperimentalTab Flags="@Flags" UpdateToolTipID="@UpdateToolTipID" noTabLayout="@noTabLayout" />
+								<ExperimentalTab Flags="@Flags" UpdateAction="@UpdateAction" noTabLayout="@noTabLayout" />
 							</BSTabContent>
 						</BSTab>
 					</BSTabList>
@@ -156,7 +156,8 @@
 	[CascadingParameter] public bool showChaos { get; set; }
 	[CascadingParameter(Name="SetBlandSite")] public MainLayout.ShowModalT SetBlandSite { get; set; }
 
-	private FlagsViewModel Flags { get; set; } = new FlagsViewModel();
+	private Flags Flags { get; set; } = new Flags();
+	private Preferences Preferences { get; set; } = new Preferences();
 	private string ToolTipId = "unupdated";
 	private ToolTip ToolTipElement;
 	private string StatusMessage = "";
@@ -165,6 +166,8 @@
 	private string presetName = "Untitled";
 	private bool FunEnabled = true;
 	private string SpriteSheetMessage { get; set; } = "Load custom player sprites:";
+	private string flagstring = "";
+	private string seed = "";
 
 	protected override async void OnInitialized()
 	{
@@ -180,9 +183,10 @@
 
 		Flags.PropertyChanged += (sender, args) => StateHasChanged();
 
-		Flags.Preferences = new Preferences();
+		Preferences = new Preferences();
 		await LoadPreferences();
-		SetBlandSite(Flags.BlandSite);
+		SetBlandSite(Preferences.BlandSite);
+		UpdateFlagstring();
 		StateHasChanged();
 	}
 
@@ -190,15 +194,33 @@
 	{
 		string prefs = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "preferences");
 		if (prefs == "" || prefs == null) return;
-		Flags.Preferences = JsonConvert.DeserializeObject<FF1Lib.Preferences>(prefs, new JsonSerializerSettings
+		Preferences = JsonConvert.DeserializeObject<FF1Lib.Preferences>(prefs, new JsonSerializerSettings
 		{
 			Error = (se, ev) => { ev.ErrorContext.Handled = true; }
 		});
-		if (Flags.Preferences.SpriteSheet != null)
+		if (Preferences.SpriteSheet != null)
 		{
 			SpriteSheetMessage = "Using custom sprites.";
 		}
 		StateHasChanged();
+	}
+	private void UpdateAction(string action, string id)
+	{
+		if (action == "UpdateFlagstring")
+		{
+			UpdateFlagstring();
+		}
+		else if (action == "UpdateSeed")
+		{
+			UpdateSeed(id);
+			StateHasChanged();
+		}
+		else if (action == "UpdateTooltip")
+		{
+			ToolTipId = id;
+			ToolTipElement.UpdatePos(ToolTipId, null);
+			StateHasChanged();
+		}
 	}
 	private void UpdateToolTipID(string Id, MouseEventArgs e)
 	{
@@ -250,5 +272,20 @@
 	private void Hidden(BSTabEvent e)
 	{
 		//Console.WriteLine($"Hidden -> Activated: {e.Activated?.Id.ToString()} , Deactivated: {e.Deactivated?.Id.ToString()}");
-	} 
+	}
+
+	private async void UpdateFlagstring()
+	{
+		flagstring = Flags.Encoded;
+		string[] args = new string[2] { seed, Flags.Encoded };
+		await JSRuntime.InvokeAsync<Task>("updateHistory", args);
+		StateHasChanged();
+	}
+
+	private void UpdateSeed(string value)
+	{
+		seed = value;
+		StateHasChanged();
+	}
+
 }
