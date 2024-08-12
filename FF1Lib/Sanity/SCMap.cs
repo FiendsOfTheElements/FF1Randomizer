@@ -201,9 +201,12 @@ namespace FF1Lib.Sanity
 				case TalkScripts.Talk_Bikke:
 				case TalkScripts.Talk_Bahamut:
 				case TalkScripts.Talk_ElfDocUnne:
+				case TalkScripts.Spooky_Unne:
 				case TalkScripts.Talk_GiveItemOnFlag:
 				case TalkScripts.Talk_TradeItems:
 				case TalkScripts.Talk_GiveItemOnItem:
+				case TalkScripts.Spooky_GiveOnItem:
+				case TalkScripts.Spooky_GiveOnFlag:
 				case TalkScripts.Talk_Astos:
 				case TalkScripts.Talk_Chaos:
 					ProcessQuestNpc(ref npc);

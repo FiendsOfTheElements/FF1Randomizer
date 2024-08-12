@@ -8,24 +8,24 @@
 	{
 <div class="col1">
 	<h4>Final Boss</h4>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="trappedChaosCheckBox" @bind-Value="Flags.TrappedChaos">Hidden Chaos</TriStateCheckBox>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="transformFinalFormationCheckBox" TItem="FinalFormation" IsEnabled="@(Flags.SpookyFlag != true)" @bind-Value="Flags.TransformFinalFormation">Alternate Final Boss</EnumDropDown>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="trappedChaosCheckBox" @bind-Value="Flags.TrappedChaos">Hidden Chaos</TriStateCheckBox>
+	<EnumDropDown UpdateAction="@UpdateAction" Id="transformFinalFormationCheckBox" TItem="FinalFormation" IsEnabled="@(Flags.SpookyFlag != true)" @bind-Value="Flags.TransformFinalFormation">Alternate Final Boss</EnumDropDown>
 
 	<div class="checkbox-cell"></div>
 	<h4>Temple of Fiends</h4>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tofrModeDropDown" TItem="ToFRMode" @bind-Value="Flags.ToFRMode">Mode</EnumDropDown>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="fiendsRefightsDropDown" TItem="FiendsRefights" @bind-Value="Flags.FiendsRefights">Fiends Refights</EnumDropDown>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosRushCheckBox" @bind-Value="Flags.ChaosRush">Unlocked ToFR</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="exitToFRCheckBox" @bind-Value="Flags.ExitToFR">Add ToFR Exit</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="chaosFloorEncountersCheckBox" @bind-Value="Flags.ChaosFloorEncounters">Add Chaos Floor Encounters</TriStateCheckBox>
+	<EnumDropDown UpdateAction="@UpdateAction" Id="tofrModeDropDown" TItem="ToFRMode" @bind-Value="Flags.ToFRMode">Mode</EnumDropDown>
+	<EnumDropDown UpdateAction="@UpdateAction" Id="fiendsRefightsDropDown" TItem="FiendsRefights" @bind-Value="Flags.FiendsRefights">Fiends Refights</EnumDropDown>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="chaosRushCheckBox" @bind-Value="Flags.ChaosRush">Unlocked ToFR</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="exitToFRCheckBox" @bind-Value="Flags.ExitToFR">Add ToFR Exit</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="chaosFloorEncountersCheckBox" @bind-Value="Flags.ChaosFloorEncounters">Add Chaos Floor Encounters</TriStateCheckBox>
 
     <div class="checkbox-cell"></div>
     <h4>Archipelago</h4>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="enableArchipelago" @bind-Value="Flags.Archipelago">Enable</CheckBox>
-		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoShards" @bind-Value="Flags.ArchipelagoShards">Shards</CheckBox>
-		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoGold" @bind-Value="Flags.ArchipelagoGold">Gold</CheckBox>
-		<CheckBox Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoConsumables" @bind-Value="Flags.ArchipelagoConsumables">Consumables</CheckBox>
-		<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoEquipment" TItem="ArchipelagoEquipment" @bind-Value="Flags.ArchipelagoEquipment">Equipment:</EnumDropDown>
+		<CheckBox UpdateAction="@UpdateAction" Id="enableArchipelago" @bind-Value="Flags.Archipelago">Enable</CheckBox>
+		<CheckBox Indent UpdateAction="@UpdateAction" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoShards" @bind-Value="Flags.ArchipelagoShards">Shards</CheckBox>
+		<CheckBox Indent UpdateAction="@UpdateAction" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoGold" @bind-Value="Flags.ArchipelagoGold">Gold</CheckBox>
+		<CheckBox Indent UpdateAction="@UpdateAction" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoConsumables" @bind-Value="Flags.ArchipelagoConsumables">Consumables</CheckBox>
+		<EnumDropDown Indent UpdateAction="@UpdateAction" IsEnabled="@Flags.Archipelago" Id="enableArchipelagoEquipment" TItem="ArchipelagoEquipment" @bind-Value="Flags.ArchipelagoEquipment">Equipment:</EnumDropDown>
 		<p>
 			Player Name:
 			<br>
@@ -35,16 +35,16 @@
 
 	<div class="col2">
 		<h4>Orbs of Light</h4>
-		<IntSliderRng DisableTooltip="true" Min="0" Max="5" Step="1" IsEnabled="@Flags.OrbsRequiredEnabled" UpdateToolTip="@UpdateToolTipID" Id="OrbsRequiredCount" @bind-Value="@Flags.OrbsRequiredCount">Total Orbs Required:</IntSliderRng>
-		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="OrbsRequiredModeDropDown" IsEnabled="@(Flags.OrbsRequiredOptionsEnabled)" TItem="OrbsRequiredMode" @bind-Value="Flags.OrbsRequiredMode">Mode:</EnumDropDown>
-		<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="orbsRequiredSpoilersCheckbox" IsEnabled="@(Flags.OrbsRequiredOptionsEnabled)" @bind-Value="Flags.OrbsRequiredSpoilers">Orb Spoilers</TriStateCheckBox>
+		<IntSliderRng UpdateAction="@UpdateAction" DisableTooltip Min="0" Max="5" Step="1" IsEnabled="@Flags.OrbsRequiredEnabled" Id="OrbsRequiredCount" @bind-Value="@Flags.OrbsRequiredCount">Total Orbs Required:</IntSliderRng>
+		<EnumDropDown UpdateAction="@UpdateAction" Indent Id="OrbsRequiredModeDropDown" IsEnabled="@(Flags.OrbsRequiredOptionsEnabled)" TItem="OrbsRequiredMode" @bind-Value="Flags.OrbsRequiredMode">Mode:</EnumDropDown>
+		<TriStateCheckBox UpdateAction="@UpdateAction" Indent Id="orbsRequiredSpoilersCheckbox" IsEnabled="@(Flags.OrbsRequiredOptionsEnabled)" @bind-Value="Flags.OrbsRequiredSpoilers">Orb Spoilers</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
-		<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shardHuntCheckBox" @bind-Value="Flags.ShardHunt">Shard Hunt</CheckBox>
-		<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="shardCountDropDown" TItem="ShardCount" @bind-Value="Flags.ShardCount">Goal:</EnumDropDown>
+		<CheckBox UpdateAction="@UpdateAction" Id="shardHuntCheckBox" @bind-Value="Flags.ShardHunt">Shard Hunt</CheckBox>
+		<EnumDropDown UpdateAction="@UpdateAction" Id="shardCountDropDown" TItem="ShardCount" @bind-Value="Flags.ShardCount">Goal:</EnumDropDown>
 
 	     <div class="checkbox-cell"></div>
 	     <h4>Events</h4>
-	     <CheckBox UpdateToolTip="@UpdateToolTipID" Id="lichRevengeCheckBox" IsEnabled="@(Flags.RandomizeFormationEnemizer != true)" @bind-Value="Flags.SpookyFlag">Lich's Revenge</CheckBox>
+	     <CheckBox UpdateAction="@UpdateAction" Id="lichRevengeCheckBox" IsEnabled="@(Flags.RandomizeFormationEnemizer != true)" @bind-Value="Flags.SpookyFlag">Lich's Revenge</CheckBox>
 	</div>
 
 		<div class="clear-it"></div>
@@ -56,6 +56,7 @@
 	[Parameter] public FF1Lib.Flags Flags { get; set; }
 	[Parameter] public FF1Lib.Preferences Preferences { get; set; }
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter]	public Action<string, string> UpdateAction { get; set; }
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
 

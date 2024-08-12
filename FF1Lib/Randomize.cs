@@ -1,3 +1,4 @@
+using FF1Lib.Music;
 using FF1Lib.Procgen;
 using RomUtilities;
 namespace FF1Lib;
@@ -24,12 +25,14 @@ public partial class FF1Rom : NesRom
 	public StandardMaps Maps;
 	public NpcObjectData NpcData;
 	public DialogueData Dialogues;
+	public MenuText MenuText;
 	public TalkRoutines TalkRoutines;
 	public StartingItems StartingItems;
 	public EncounterRate EncounterRates;
 	public EnemyScripts EnemyScripts;
 	public ShopData ShopData;
 	public MusicTracks Music;
+	public NewMusic NewMusic;
 
 	public DeepDungeon DeepDungeon;
 
@@ -84,6 +87,9 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress("Beginning Randomization", 15);
 
+		await this.LoadResourcePack(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
+		await this.LoadFunTiles(preferences);
+
 		// Load Initial Data
 		RngTables = new(this);
 		TileSetsData = new(this);
@@ -100,10 +106,12 @@ public partial class FF1Rom : NesRom
 		NpcData = new NpcObjectData(Maps, flags, rng, this);
 		TalkRoutines = new TalkRoutines();
 		Dialogues = new DialogueData(this);
+		MenuText = new MenuText(this);
 		ShopData = new ShopData(flags, this);
 		EncounterRates = new EncounterRate(this);
 		EnemyScripts = new EnemyScripts(this);
 		Music = new MusicTracks();
+		
 
 		await this.Progress();
 
@@ -114,7 +122,8 @@ public partial class FF1Rom : NesRom
 
 		// Apply general fixes and hacks
 		FF1Text.AddNewIcons(this, flags);
-		Music.ShuffleMusic(this, preferences.Music, preferences.AlternateAirshipTheme, preferences.ChaosBattleMusic, new MT19337(funRng.Next()));
+		Music.ShuffleMusic(this, preferences, new MT19337(funRng.Next()));
+		NewMusic = new NewMusic(this);
 		Bugfixes(flags);
 		GlobalImprovements(flags, Maps, preferences);
 		MiscHacks(flags, rng);
@@ -294,7 +303,7 @@ public partial class FF1Rom : NesRom
 		SavingHacks(Overworld, flags);
 		ImprovedClinic(flags.ImprovedClinic && !(bool)flags.RecruitmentMode);
 		IncreaseDarkPenalty((bool)flags.IncreaseDarkPenalty);
-		SetPoisonMode(flags.PoisonMode);
+		SetPoisonMode(flags.PoisonMode, flags.PoisonSetDamageValue);
 		new QuickMiniMap(this, Overworld.DecompressedMap).EnableQuickMinimap(flags.SpeedHacks || Overworld.MapExchange != null, Music);
 		EnableAirBoat(flags);
 		OpenChestsInOrder(flags.OpenChestsInOrder && !flags.Archipelago);
@@ -343,7 +352,7 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		await this.LoadResourcePack(flags.ResourcePack, Dialogues, EnemyScripts);
+		//await this.LoadResourcePack(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
 
 		RollCredits(rng);
 		StatsTrackingHacks(flags, preferences);
@@ -372,7 +381,7 @@ public partial class FF1Rom : NesRom
 		{
 		    using (var stream = new MemoryStream(Convert.FromBase64String(preferences.SpriteSheet)))
 		    {
-				await SetCustomPlayerSprites(stream, preferences.ThirdBattlePalette);
+				await SetCustomPlayerSprites(stream, preferences.ThirdBattlePalette, preferences.MapmanSlot);
 		    }
 		}
 
@@ -408,7 +417,9 @@ public partial class FF1Rom : NesRom
 		WeaponPermissions.Write(this);
 		SpellPermissions.Write(this);
 		ClassData.Write(this);
-		Music.Write(this, flags);
+		MenuText.Write(this);
+		Music.Write(this, flags, preferences);
+		NewMusic.Write(this, preferences);
 
 		await this.Progress();
 

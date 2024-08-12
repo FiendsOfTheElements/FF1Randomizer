@@ -10,7 +10,11 @@
 	{
 		Value = double.Parse((string)e.Value);
 		ValueChanged.InvokeAsync(Value);
+		UpdateAction?.Invoke("UpdateFlagstring", "");
 	}
+
+	[Parameter]
+	public Action<string, string> UpdateAction { get; set; }
 
 	[Parameter]
 	public double Min { get; set; }

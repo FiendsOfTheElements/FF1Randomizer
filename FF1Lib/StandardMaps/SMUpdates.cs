@@ -36,7 +36,7 @@ namespace FF1Lib
 			ShufflePravoka((bool)flags.ShufflePravokaShops, AttackedTown == MapIndex.Pravoka, rng);
 			EnableGaiaShortcut((bool)flags.GaiaShortcut);
 			MoveGaiaItemShop((bool)flags.MoveGaiaItemShop && (bool)flags.GaiaShortcut, rng);
-			EnableLefeinSuperStore((bool)flags.LefeinSuperStore && (flags.ShopKillMode_White == ShopKillMode.None && flags.ShopKillMode_Black == ShopKillMode.None));
+			EnableLefeinSuperStore((bool)flags.LefeinSuperStore && (flags.ShopKillMode_White == ShopKillMode.None && flags.ShopKillMode_Black == ShopKillMode.None), flags.NoOverworld);
 			ShuffleOrdeals((bool)flags.OrdealsPillars, rng, teleporters);
 			SkyCastle4FMode(flags.SkyCastle4FMazeMode, flags.GameMode == GameModes.DeepDungeon, rng);
 			BahamutB1Encounters((bool)flags.MapHallOfDragons, formations);
@@ -278,7 +278,7 @@ namespace FF1Lib
 				}
 			}
 		}
-		public void EnableLefeinSuperStore(bool lefeinsuperstore)
+		public void EnableLefeinSuperStore(bool lefeinsuperstore, bool nooverworld)
 		{
 			if (!lefeinsuperstore)
 			{
@@ -296,6 +296,12 @@ namespace FF1Lib
 			maps[(int)MapIndex.Lefein].Put((0x28, 0x01), superStore.ToArray());
 			// cleanup (removes single tree)
 			maps[(int)MapIndex.Lefein][0x00, 0x34] = (byte)Tile.TownGrass;
+
+			if (nooverworld)
+			{
+				maps[(int)MapIndex.Lefein][0x01, 0x33] = (byte)Tile.TownTree;
+				maps[(int)MapIndex.Lefein][0x01, 0x3F] = (byte)Tile.TownTree;
+			}
 		}
 		private void SkyCastle4FMode(SkyCastle4FMazeMode mode, bool deepdungeon, MT19337 rng)
 		{

@@ -6,62 +6,62 @@
 	{
 <div class="col1">
 	<h4>Item Shuffle</h4>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="treasuresCheckBox" @bind-Value="Flags.Treasures">Treasures</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="betterTrapTreasureCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.BetterTrapChests">Better Trap Treasure</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="chestsKeyItemsCheckBox" @bind-Value="Flags.ChestsKeyItems">Chests Key Items</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@Flags.ChestsKeyItems" @bind-Value="Flags.ShuffleObjectiveNPCs">Objective NPCs</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="npcItemsCheckBox" @bind-Value="Flags.NPCItems">Main NPC Items</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="npcFetchItemsCheckBox" @bind-Value="Flags.NPCFetchItems">Fetch Quest Rewards</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="treasuresCheckBox" @bind-Value="Flags.Treasures">Treasures</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Indent Id="betterTrapTreasureCheckBox" IsEnabled="@Flags.Treasures" @bind-Value="Flags.BetterTrapChests">Better Trap Treasure</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="chestsKeyItemsCheckBox" @bind-Value="Flags.ChestsKeyItems">Chests Key Items</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Indent Id="shuffleObjectiveNPCsCheckBox" IsEnabled="@Flags.ChestsKeyItems" @bind-Value="Flags.ShuffleObjectiveNPCs">Objective NPCs</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="npcItemsCheckBox" @bind-Value="Flags.NPCItems">Main NPC Items</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="npcFetchItemsCheckBox" @bind-Value="Flags.NPCFetchItems">Fetch Quest Rewards</TriStateCheckBox>
 
 
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="randomLootCheckBox" TItem="RandomizeTreasureMode" IsEnabled="@Flags.Treasures" @bind-Value="Flags.RandomizeTreasure">Randomize Treasures:</EnumDropDown>
+	<EnumDropDown UpdateAction="@UpdateAction" Id="randomLootCheckBox" TItem="RandomizeTreasureMode" IsEnabled="@Flags.Treasures" @bind-Value="Flags.RandomizeTreasure">Randomize Treasures:</EnumDropDown>
 	@if(Flags.RandomizeTreasure == RandomizeTreasureMode.RandomizeTreasure || Flags.RandomizeTreasure == RandomizeTreasureMode.Random)
 	{
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="worldWealthDropDown" TItem="WorldWealthMode" @bind-Value="Flags.WorldWealth">Wealth:</EnumDropDown>
+	<EnumDropDown UpdateAction="@UpdateAction" Indent Id="worldWealthDropDown" TItem="WorldWealthMode" @bind-Value="Flags.WorldWealth">Wealth:</EnumDropDown>
 	}
 
 	@if(Flags.RandomizeTreasure == RandomizeTreasureMode.DeepDungeon || Flags.RandomizeTreasure == RandomizeTreasureMode.Random)
 	{
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="deepDungeonItemModeDropDown" TItem="DeepDungeonGeneratorMode" @bind-Value="Flags.DeepDungeonGenerator">Mode:</EnumDropDown>
+	<EnumDropDown UpdateAction="@UpdateAction" Indent Id="deepDungeonItemModeDropDown" TItem="DeepDungeonGeneratorMode" @bind-Value="Flags.DeepDungeonGenerator">Mode:</EnumDropDown>
 	}
 
 	<div class="checkbox-cell"></div>
 	<h4>Trapped Chests</h4>
-	<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="tcFormationPoolDropDown" TItem="FormationPool" @bind-Value="Flags.TCFormations">Formations:</EnumDropDown>
-	<IntSliderRng Min="0" Max="260" Step="20" UpdateToolTip="@UpdateToolTipID" Id="tcChestCountSlider" @bind-Value="@Flags.TCChestCount">Trapped Chests:</IntSliderRng>
-	<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" Id="tcBetterTreasuresDropDown" TItem="TCOptions" @bind-Value="Flags.TCBetterTreasure">Rare Treasures:</EnumDropDown>
-	<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" Id="tcKeyItemsDropDown" TItem="TCOptions" @bind-Value="Flags.TCKeyItems">Key Items:</EnumDropDown>
-	<EnumDropDown Indent UpdateToolTip="@UpdateToolTipID" Id="tcShardsDropDown" TItem="TCOptions" IsEnabled="@Flags.ShardHunt" @bind-Value="Flags.TCShards">Shards:</EnumDropDown>
+	<EnumDropDown UpdateAction="@UpdateAction" Id="tcFormationPoolDropDown" TItem="FormationPool" @bind-Value="Flags.TCFormations">Formations:</EnumDropDown>
+	<IntSliderRng Min="0" Max="260" Step="20" UpdateAction="@UpdateAction" Id="tcChestCountSlider" @bind-Value="@Flags.TCChestCount">Trapped Chests:</IntSliderRng>
+	<EnumDropDown Indent UpdateAction="@UpdateAction" Id="tcBetterTreasuresDropDown" TItem="TCOptions" @bind-Value="Flags.TCBetterTreasure">Rare Treasures:</EnumDropDown>
+	<EnumDropDown Indent UpdateAction="@UpdateAction" Id="tcKeyItemsDropDown" TItem="TCOptions" @bind-Value="Flags.TCKeyItems">Key Items:</EnumDropDown>
+	<EnumDropDown Indent UpdateAction="@UpdateAction" Id="tcShardsDropDown" TItem="TCOptions" IsEnabled="@Flags.ShardHunt" @bind-Value="Flags.TCShards">Shards:</EnumDropDown>
 
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tcExcludeCommonCheckBox" @bind-Value="Flags.TCExcludeCommons">Exclude Common Treasures</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="tcProtectIncentivesCheckBox" @bind-Value="Flags.TCProtectIncentives">Exclude Incentivized Items</CheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="trappedMarkCheckBox" @bind-Value="Flags.TCIndicator">Trapped Chests are Marked</TriStateCheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="tcExcludeCommonCheckBox" @bind-Value="Flags.TCExcludeCommons">Exclude Common Treasures</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="tcProtectIncentivesCheckBox" @bind-Value="Flags.TCProtectIncentives">Exclude Incentivized Items</CheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="trappedMarkCheckBox" @bind-Value="Flags.TCIndicator">Trapped Chests are Marked</TriStateCheckBox>
 	<div class="checkbox-cell"></div>
 </div>
 <div class="col2">
 	<h4>Freebies</h4>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="freeShipCheckBox" @bind-Value="Flags.FreeShip">Free Ship</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="freeAirshipCheckBox" @bind-Value="Flags.FreeAirship">Free Airship</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="freeBridgeCheckBox" @bind-Value="Flags.FreeBridge">Free Bridge</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="freeCanalCheckBox" @bind-Value="Flags.FreeCanal">Free Canal</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="freeCanoeCheckBox" @bind-Value="Flags.FreeCanoe">Free Canoe</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="freeShipCheckBox" @bind-Value="Flags.FreeShip">Free Ship</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="freeAirshipCheckBox" @bind-Value="Flags.FreeAirship">Free Airship</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="freeBridgeCheckBox" @bind-Value="Flags.FreeBridge">Free Bridge</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="freeCanalCheckBox" @bind-Value="Flags.FreeCanal">Free Canal</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="freeCanoeCheckBox" @bind-Value="Flags.FreeCanoe">Free Canoe</TriStateCheckBox>
 	<div class="checkbox-cell"></div>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeLute" @bind-Value="Flags.FreeLute">Free Lute</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeTail" IsEnabled="@(Flags.NoTail != true)" @bind-Value="Flags.FreeTail">Free Tail</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="FreeRod" @bind-Value="Flags.FreeRod">Free Rod</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="FreeLute" @bind-Value="Flags.FreeLute">Free Lute</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="FreeTail" IsEnabled="@(Flags.NoTail != true)" @bind-Value="Flags.FreeTail">Free Tail</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="FreeRod" @bind-Value="Flags.FreeRod">Free Rod</TriStateCheckBox>
 
 	<div class="checkbox-cell"></div>
 	<h4>Bans</h4>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@(!Flags.FreeTail)" Id="NoTailCheckBox" @bind-Value="Flags.NoTail">Remove Tail</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="NoMasamuneCheckBox" @bind-Value="Flags.NoMasamune">Remove Masamune</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" IsEnabled="@Flags.Treasures" Id="NoXcalberCheckBox" @bind-Value="Flags.NoXcalber">Remove Xcalber</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="noFloaterCheckBox" IsEnabled="@(Flags.MapOpenProgressionDocks == true)" @bind-Value="Flags.NoFloater">Remove Floater</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" IsEnabled="@(!Flags.FreeTail)" Id="NoTailCheckBox" @bind-Value="Flags.NoTail">Remove Tail</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" IsEnabled="@Flags.Treasures" Id="NoMasamuneCheckBox" @bind-Value="Flags.NoMasamune">Remove Masamune</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" IsEnabled="@Flags.Treasures" Id="NoXcalberCheckBox" @bind-Value="Flags.NoXcalber">Remove Xcalber</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="noFloaterCheckBox" IsEnabled="@(Flags.MapOpenProgressionDocks == true)" @bind-Value="Flags.NoFloater">Remove Floater</TriStateCheckBox>
 
 	<div class="checkbox-cell"></div>
 	<h4>Masamune</h4>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="GuaranteedMasamuneCheckBox" IsEnabled="@(Flags.NoMasamune != true)" @bind-Value="Flags.GuaranteedMasamune">Guaranteed Endgame Masamune</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="SendMasamuneHomeCheckBox" IsEnabled="@((Flags.NoMasamune != true) && Flags.GuaranteedMasamune != false && Flags.IncentivizeMasamune == false)" @bind-Value="Flags.SendMasamuneHome">Send Masamune Home</TriStateCheckBox>
-	<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="masaGuardianCheckBox" @bind-Value="Flags.TCMasaGuardian">WarMech, Guardian of Masamune</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="GuaranteedMasamuneCheckBox" IsEnabled="@(Flags.NoMasamune != true)" @bind-Value="Flags.GuaranteedMasamune">Guaranteed Endgame Masamune</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Indent Id="SendMasamuneHomeCheckBox" IsEnabled="@((Flags.NoMasamune != true) && Flags.GuaranteedMasamune != false && Flags.IncentivizeMasamune == false)" @bind-Value="Flags.SendMasamuneHome">Send Masamune Home</TriStateCheckBox>
+	<TriStateCheckBox UpdateAction="@UpdateAction" Id="masaGuardianCheckBox" @bind-Value="Flags.TCMasaGuardian">WarMech, Guardian of Masamune</TriStateCheckBox>
 
 </div>
 	<div class="clear-it"></div>
@@ -69,8 +69,9 @@
 </div>
 
 
-@code { [Parameter] public FF1Lib.Flags Flags { get; set; }
-	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+@code {
+	[Parameter] public FF1Lib.Flags Flags { get; set; }
+	[Parameter] public Action<string, string> UpdateAction { get; set; }
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public bool IsOpen { get; set; } = true;
 }

@@ -43,7 +43,6 @@
 		"LooseItemsForwardPlacement": false,
 		"LooseItemsSpreadPlacement": false,
 		"LooseItemsNpcBalance": false,
-		"PredictivePlacement": false,
 		"AllowUnsafePlacement": false,
 		"ShipCanalBeforeFloater": false,
 		"ExpChestConversionMin": 20,
