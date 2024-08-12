@@ -22,6 +22,7 @@
 	<CheckBox UpdateAction="@UpdateAction" Id="chaosBattleMusicCheckBox" @bind-Value="Preferences.ChaosBattleMusic">Alternate Chaos Battle Theme</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="newMusicCheckBox" IsEnabled=@(!Preferences.ChaosBattleMusic && !Preferences.AlternateAirshipTheme && Preferences.Music == MusicShuffle.None) @bind-Value="Preferences.NewMusic">New Music</CheckBox>
 	<EnumDropDown UpdateAction="@UpdateAction" Id="menuColorDropDown" TItem="MenuColor" @bind-Value="Preferences.MenuColor">Menu Color:</EnumDropDown>
+	<CheckBox UpdateAction="@UpdateAction" Id="mapDerpCheckBox" @bind-Value="Preferences.MapDerp">Map Derp</CheckBox>
 
 	<ToolTipBox id="spriteSheetToolTipBox" UpdateAction="@UpdateAction">@SpriteMessage</ToolTipBox>
 	<input type="file" id="spriteSheetInput" accept="image/*" @onchange="@OnSpriteSheetChanged" />

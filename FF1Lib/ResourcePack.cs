@@ -13,6 +13,21 @@ namespace FF1Lib
 		return false;
 	    }
 
+		async Task LoadFunTiles(Preferences preferences)
+		{
+			if (preferences.MapDerp)
+			{
+				var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+				var mapderpPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("mapderp.png"));
+				var mapderpStream = assembly.GetManifestResourceStream(mapderpPath);
+				await SetCustomMapGraphics(mapderpStream, 245, 4,
+							new int[] { OVERWORLDPALETTE_OFFSET },
+							OVERWORLDPALETTE_ASSIGNMENT,
+							OVERWORLDPATTERNTABLE_OFFSET,
+							OVERWORLDPATTERNTABLE_ASSIGNMENT);
+			}
+		}
+
 		//async Task LoadResourcePack(Stream stream, DialogueData dialogues)
 		async Task LoadResourcePack(string resourcepack, DialogueData dialogues, EnemyScripts enemyScripts, Preferences preferences)
 		{
