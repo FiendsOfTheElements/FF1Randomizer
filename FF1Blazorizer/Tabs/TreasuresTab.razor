@@ -28,7 +28,7 @@
 	<div class="checkbox-cell"></div>
 	<h4>Trapped Chests</h4>
 	<EnumDropDown UpdateAction="@UpdateAction" Id="tcFormationPoolDropDown" TItem="FormationPool" @bind-Value="Flags.TCFormations">Formations:</EnumDropDown>
-	<IntSliderRng Min="0" Max="260" Step="20" UpdateAction="@UpdateAction" Id="tcChestCountSlider" @bind-Value="@Flags.TCChestCount">Trapped Chests:</IntSliderRng>
+	<IntSliderRng Min="0" Max="260" Step="20" UpdateAction="@UpdateAction" Id="tcChestCountSlider" @bind-Value="@Flags.TCChestCount" Floor="@Flags.TrappedChestsFloor">Trapped Chests:</IntSliderRng>
 	<EnumDropDown Indent UpdateAction="@UpdateAction" Id="tcBetterTreasuresDropDown" TItem="TCOptions" @bind-Value="Flags.TCBetterTreasure">Rare Treasures:</EnumDropDown>
 	<EnumDropDown Indent UpdateAction="@UpdateAction" Id="tcKeyItemsDropDown" TItem="TCOptions" @bind-Value="Flags.TCKeyItems">Key Items:</EnumDropDown>
 	<EnumDropDown Indent UpdateAction="@UpdateAction" Id="tcShardsDropDown" TItem="TCOptions" IsEnabled="@Flags.ShardHunt" @bind-Value="Flags.TCShards">Shards:</EnumDropDown>

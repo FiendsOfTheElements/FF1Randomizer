@@ -46,7 +46,7 @@ else
 		UpdateAction?.Invoke("UpdateTooltip", "");
 	}
 
-	public string RngCompatibleValue => (Value < Max) ? Value.ToString() : "Random";
+	public string RngCompatibleValue => (Value < Max) ? (Value < Floor ? Floor : Value).ToString() : "Random";
 
 	[Parameter]
 	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
@@ -86,6 +86,8 @@ else
 	public int Max { get; set; }
 	[Parameter]
 	public int Step { get; set; }
+	[Parameter]
+	public int Floor { get; set; } = 0;
 
 	[Parameter]
 	public RenderFragment ChildContent { get; set; }
