@@ -57,17 +57,17 @@ namespace FF1Lib
 		public void SpellBalanceHacks(Flags flags, MT19337 rng)
 		{
 			// Most of this should be moved into a spell class
-			if (flags.LockMode != LockHitMode.Vanilla)
+			if (flags.LockMode != LockHitMode.Vanilla && !(bool)flags.GenerateNewSpellbook)
 			{
 				ChangeLockMode(flags.LockMode);
 			}
 
-			if (flags.BuffTier1DamageSpells)
+			if (flags.BuffTier1DamageSpells && !(bool)flags.GenerateNewSpellbook)
 			{
 				BuffTier1DamageSpells();
 			}
 
-			if (flags.BuffHealingSpells)
+			if (flags.BuffHealingSpells && !(bool)flags.GenerateNewSpellbook)
 			{
 				BuffHealingSpells();
 			}
