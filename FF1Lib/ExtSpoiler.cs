@@ -283,8 +283,10 @@ namespace FF1Lib
 						Utilities.WriteSpoilerLine(tab + " - " + a.Map.MapIndex.ToString() + " - " + p.Type.ToString() + " - " + shop.Type + "." + shop.Location + "." + p.ShopId.ToString() + " - " + p.BitFlagSet);
 						break;
 					case Sanity.SCPointOfInterestType.Treasure:
-						var item = (Item)rom.Get(0x3100 + p.TreasureId, 1)[0];
-						Utilities.WriteSpoilerLine(tab + " - " + a.Map.MapIndex.ToString() + " - " + p.Type.ToString() + " - " + GetItemName(item) + " - " + p.BitFlagSet);
+						if (logic.RewardSources.TryFind(r => r.RewardSource.Address - 0x3100 == p.TreasureId, out var location))
+						{
+							Utilities.WriteSpoilerLine(tab + " - " + a.Map.MapIndex.ToString() + " - " + p.Type.ToString() + " - " + GetItemName(location.RewardSource.Item) + " - " + p.BitFlagSet);
+						}
 						break;
 				}
 			}
