@@ -141,7 +141,7 @@ public partial class FF1Rom : NesRom
 		{
 			await this.Progress("Generating Deep Dungeon's Floors...", 2);
 
-			DeepDungeon.Generate(rng, Overworld, EncounterRates, Dialogues);
+			DeepDungeon.Generate(rng, Overworld, EncounterRates, ZoneFormations, Dialogues);
 			DeepDungeonFloorIndicator();
 			warmMechFloor = (MapIndex)DeepDungeon.WarMechFloor;
 

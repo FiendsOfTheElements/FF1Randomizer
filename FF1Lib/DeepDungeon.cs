@@ -906,7 +906,7 @@ namespace FF1Lib
 				tilesetspinner.Add((byte)i);
 			}
 		}
-		public void CreateDomains(MT19337 rng)
+		public void CreateDomains(ZoneFormations zoneFormations, MT19337 rng)
 		{
 			// It's 0x72 because we want to exclude the "boss battles".
 			FormationLevel[] formationlevels = new FormationLevel[0x72 * 2];
@@ -950,14 +950,17 @@ namespace FF1Lib
 				lowest = (i - 8) * ((0x72 * 2 - 8) / 52);
 				FormationLevel[] spinner = new FormationLevel[12];
 				Array.Copy(formationlevels, lowest, spinner, 0, 12);
+
+				List<byte> newFormations = new();
 				for (int j = 0; j < 8; j++)
 				{
-					_rom.Put(0x2C200 + i * 8 + j, Blob.FromHex(Convert.ToHexString(new byte[] { spinner.PickRandom(rng).index })));
+					newFormations.Add(spinner.PickRandom(rng).index);
 				}
+				zoneFormations[64 + i] = new ZoneFormation() { Index = 64 + i, Formations = newFormations };
 			}
 
 		}
-		public void Generate(MT19337 rng, Overworld overworld, EncounterRate encounterRates, DialogueData dialogues)
+		public void Generate(MT19337 rng, Overworld overworld, EncounterRate encounterRates, ZoneFormations zoneFormations,  DialogueData dialogues)
 		{
 			/*
 			if (!(bool)flags.Treasures)
@@ -989,7 +992,7 @@ namespace FF1Lib
 			KillNPCs();
 
 			// Generate new monster domains based on "estimated power level".
-			CreateDomains(rng);
+			CreateDomains(zoneFormations, rng);
 
 			// Gaia and Onrac should really be encountered in the other order.
 			byte[] dungeontowns = { 1, 2, 3, 4, 6, 5, 7 };
