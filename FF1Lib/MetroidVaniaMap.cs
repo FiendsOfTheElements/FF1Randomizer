@@ -1500,9 +1500,9 @@
 
 					var tempTeleporter1 = teleporterA.Item2;
 
-					teleporterA.Item2 = teleporterB.Item2;
-					teleporterB.Item2 = teleporterC.Item2;
-					teleporterC.Item2 = tempTeleporter1;
+					teleporterA.Item2 = teleporterC.Item2;
+					teleporterC.Item2 = teleporterB.Item2;
+					teleporterB.Item2 = tempTeleporter1;
 
 					teleporterA.Item1.PropertyValue = (byte)teleporterA.Item2.ID;
 					teleporterB.Item1.PropertyValue = (byte)teleporterB.Item2.ID;
