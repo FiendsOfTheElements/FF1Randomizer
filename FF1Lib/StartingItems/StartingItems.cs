@@ -58,7 +58,7 @@ namespace FF1Lib
 			{
 				((bool)flags.FreeLute, Item.Lute),
 				((bool)flags.FreeRod, Item.Rod),
-				((bool)flags.AirBoat && (bool)flags.IsAirshipFree, Item.Floater),
+				((bool)flags.IsAirshipFree, Item.Floater),
 				((bool)flags.FreeTail && !(bool)flags.NoTail, Item.Tail),
 			};
 
