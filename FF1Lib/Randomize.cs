@@ -419,7 +419,7 @@ public partial class FF1Rom : NesRom
 		ClassData.Write(this);
 		MenuText.Write(this);
 		Music.Write(this, flags, preferences);
-		NewMusic.Write(this, preferences, new MT19337(funRng.Next()));
+		NewMusic.Write(this, preferences, flags, new MT19337(funRng.Next()));
 
 		await this.Progress();
 

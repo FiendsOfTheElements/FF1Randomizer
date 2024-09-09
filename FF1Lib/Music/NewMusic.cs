@@ -209,7 +209,7 @@ namespace FF1Lib.Music
 		{
 			LoadOriginalMusicData(rom);
 		}
-		public void Write(FF1Rom rom, Preferences preferences, MT19337 rng)
+		public void Write(FF1Rom rom, Preferences preferences, Flags flags, MT19337 rng)
 		{
 			if (preferences.Music == MusicShuffle.None || preferences.Music == MusicShuffle.MusicDisabled)
 			{
@@ -234,7 +234,7 @@ namespace FF1Lib.Music
 				if (preferences.NewMusic)
 				{
 					//songsToWrite = newMusicData.NewSongs;
-					songsToWrite = SelectMusic(newMusicData, preferences, rng);
+					songsToWrite = SelectMusic(newMusicData, preferences, flags, rng);
 				}
 				if (preferences.Music == MusicShuffle.MusicDisabled)
 				{
@@ -249,8 +249,18 @@ namespace FF1Lib.Music
 			
 		}
 
-		private List<Song> SelectMusic(NewMusicData newMusicData, Preferences preferences, MT19337 rng)
+		private List<Song> SelectMusic(NewMusicData newMusicData, Preferences preferences, Flags flags, MT19337 rng)
 		{
+			if (preferences.NewMusicStreamSafe || flags.TournamentSafe)
+			{
+				newMusicData.NewSongs.Remove(newMusicData.NewSongs.Where(x => x.Name == "UnderTheSea").First());
+				newMusicData.NewSongs.Remove(newMusicData.NewSongs.Where(x => x.Name == "JeopardyThink").First());
+
+				Song tmp = OriginalSongs[(int)SongNames.TempleOfFiend];
+				tmp.ReplacementCandidates = new List<ReplacableSongs>() { ReplacableSongs.Mermaids };
+				newMusicData.NewSongs.Add(tmp);
+			}
+
 			List<Song> SongsToWrite = new List<Song>();
 			for (int i = 0; i < Enum.GetValues(typeof(SongNames)).Length; i++)
 			{

@@ -207,8 +207,13 @@
 	{
 		"Id": "newMusicCheckBox",
 		"title": "New Music",
-		"screenshot":  "newMusic.png",
+		"screenshot": "newMusic.png",
 		"description": "Replaces all music in the game (except for item fanfare) with new tracks."
+	},
+	{
+		"Id": "newMusicStreamSafeCheckBox",
+		"title": "Stream Safe Music",
+		"description": "Exclude new music that may not be safe for streaming. This is enabled automatically if 'Tournament Safe Rom' is on."
 	},
 	{
 		"Id": "disableDamageTileFlickerCheckBox",
