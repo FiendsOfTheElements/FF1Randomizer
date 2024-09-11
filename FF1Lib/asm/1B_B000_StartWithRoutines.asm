@@ -402,10 +402,10 @@ DW_Process:
     BCC DW_NotDual
     LDA tmp+2
     BEQ DW_SmallHit
-    LDA #$02 ; Two extra hits
+    LDA #$04 ; Four extra hits
     JMP DW_BoostHit
 DW_SmallHit:
-    LDA #$01
+    LDA #$02 ; Two extra hits
 DW_BoostHit:
     STA tmp
     LDY #$0C ; number of hits
