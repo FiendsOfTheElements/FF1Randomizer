@@ -98,6 +98,8 @@ namespace FF1Lib
 			Put(0x3369E, Blob.FromHex("60A007AD85689190A009AD82689190A005AD8468919060"));
 			// Call new loading code from BtlMag_LoadPlayerDefenderStats
 			Put(0x33661, Blob.FromHex("2030B7EAEAEAEA"));
+			// Prevent BtlMag_SavePlayerDefenderStats from saving mdef
+			PutInBank(0x0C, 0xB7A2, Blob.FromHex("EAEA"));
 			// Call new saving code from BtlMag_SavePlayerDefenderStats
 			Put(0x337C5, Blob.FromHex("209FB6EAEAEAEA"));
 			// SABR's hit% bonus

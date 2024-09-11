@@ -225,7 +225,7 @@ namespace FF1Lib
 		public TCOptions TCShards { get; set; } = TCOptions.None;
 		public bool TCExcludeCommons { get; set; } = false;
 
-		[IntegerFlag(0, 13)]
+		[IntegerFlag(0, 260, 20)]
 		public int TCChestCount { get; set; } = 0;
 		public bool TCProtectIncentives { get; set; } = false;
 		public bool? TCMasaGuardian { get; set; } = false;

@@ -141,7 +141,7 @@ public partial class FF1Rom : NesRom
 		{
 			await this.Progress("Generating Deep Dungeon's Floors...", 2);
 
-			DeepDungeon.Generate(rng, Overworld, EncounterRates, Dialogues);
+			DeepDungeon.Generate(rng, Overworld, EncounterRates, ZoneFormations, Dialogues);
 			DeepDungeonFloorIndicator();
 			warmMechFloor = (MapIndex)DeepDungeon.WarMechFloor;
 
@@ -182,8 +182,8 @@ public partial class FF1Rom : NesRom
 		await new RelocateChests(this).RandomlyRelocateChests(rng, Maps, TileSetsData, Teleporters, NpcData, flags);
 
 		// Spells
-		SpellBalanceHacks(flags, rng);
 		CraftNewSpellbook(EnemyScripts, flags, rng);
+		SpellBalanceHacks(flags, rng);
 		TranceHasStatusElement(flags.TranceHasStatusElement);
 		ShuffleMagicLevels(EnemyScripts, rng, (bool)flags.MagicLevels, (bool)flags.MagicPermissions, (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed);
 		SpellNames(flags, preferences, rng);
@@ -419,7 +419,7 @@ public partial class FF1Rom : NesRom
 		ClassData.Write(this);
 		MenuText.Write(this);
 		Music.Write(this, flags, preferences);
-		NewMusic.Write(this, preferences);
+		NewMusic.Write(this, preferences, flags, new MT19337(funRng.Next()));
 
 		await this.Progress();
 

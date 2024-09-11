@@ -255,7 +255,7 @@ namespace FF1Lib
 			}
 
 			//not sure, but helps
-			if (airShipLocationAccessible && (changes & MapChange.Airship) > 0 && !airShipLiftOff)
+			if (airShipLocationAccessible && (changes & MapChange.Airship) > 0 && !airShipLiftOff && !airBoat)
 			{
 				LiftOff();
 			}
@@ -275,7 +275,7 @@ namespace FF1Lib
 				if(!CheckLink(area, link)) deferredAreas.Add(new SCDeferredAreaQueueEntry(area.Index, link));
 			}
 
-			if (airShipLocationAccessible && (changes & MapChange.Airship) > 0 && !airShipLiftOff)
+			if (airShipLocationAccessible && (changes & MapChange.Airship) > 0 && !airShipLiftOff && !airBoat)
 			{
 				LiftOff();
 			}

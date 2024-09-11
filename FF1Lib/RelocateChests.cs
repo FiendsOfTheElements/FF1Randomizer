@@ -159,8 +159,11 @@ namespace FF1Lib
 					}
 					else
 					{
-						// This is random battle tile
-						battleTiles.Add(i);
+						// This is random battle tile, but make sure it's an empty one in case we removed all trap tiles
+						if (blankPPUTiles.Contains(tileset.Tiles[i].BottomLeftTile) && blankPPUTiles.Contains(tileset.Tiles[i].BottomRightTile))
+						{
+							battleTiles.Add(i);
+						}
 						if (debug) Console.WriteLine($"battle tile {i:X}");
 					}
 					continue;

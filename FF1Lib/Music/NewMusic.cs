@@ -63,14 +63,18 @@ namespace FF1Lib.Music
 		public SongChannel ChannelSq1 { get; set; }
 		public SongChannel ChannelSq2 { get; set; }
 		public SongChannel ChannelTri { get; set; }
+		public List<ReplacableSongs> ReplacementCandidates { get; set; }
 
-		public Song(SongChannel ChannelSq1, SongChannel ChannelSq2, SongChannel ChannelTri, string Name = "Untitled")
+		public Song(SongChannel ChannelSq1, SongChannel ChannelSq2, SongChannel ChannelTri, List<ReplacableSongs> ReplacementCandidates, string Name = "Untitled")
 		{
 			this.ChannelSq1 = ChannelSq1;
 			this.ChannelSq2 = ChannelSq2;
 			this.ChannelTri = ChannelTri;
 			this.Name = Name;
+			this.ReplacementCandidates = ReplacementCandidates;
 		}
+		//public Song(SongChannel ChannelSq1, SongChannel ChannelSq2, SongChannel ChannelTri, string Name = "Untitled") : this(ChannelSq1, ChannelSq2, ChannelTri, new List<ReplacableSongs>(), Name)
+		//{	}
 	}
 	
 	public class NewMusic
@@ -132,6 +136,32 @@ namespace FF1Lib.Music
 			ChaosBattle = 0x19,
 			Mermaids = 0x1A
 		}
+		public enum ReplacableSongs
+		{
+			Crystal = 0x0,
+			Intro = 0x1,
+			Ending = 0x2,
+			Overworld = 0x3,
+			Ship = 0x4,
+			Airship = 0x5,
+			Town = 0x6,
+			Castle = 0x7,
+			EarthCave = 0x8,
+			DwarfCave = 0x9,
+			MarshCave = 0xA,
+			TempleOfFiend = 0xB,
+			SkyPalace = 0xC,
+			TempleOfFiendRevisited = 0xD,
+			Shop = 0xE,
+			Battle = 0xF,
+			Menu = 0x10,
+			GameOver = 0x11,
+			Victory = 0x12,
+			Rest = 0x15,
+			SeaShrine = 0x18,
+			ChaosBattle = 0x19,
+			Mermaids = 0x1A
+		}
 		private List<Song> OriginalSongs = new List<Song>();
 
 		private void MoveMusicEngine(FF1Rom rom)
@@ -179,7 +209,7 @@ namespace FF1Lib.Music
 		{
 			LoadOriginalMusicData(rom);
 		}
-		public void Write(FF1Rom rom, Preferences preferences)
+		public void Write(FF1Rom rom, Preferences preferences, Flags flags, MT19337 rng)
 		{
 			if (preferences.Music == MusicShuffle.None || preferences.Music == MusicShuffle.MusicDisabled)
 			{
@@ -203,7 +233,8 @@ namespace FF1Lib.Music
 				}
 				if (preferences.NewMusic)
 				{
-					songsToWrite = newMusicData.NewSongs;
+					//songsToWrite = newMusicData.NewSongs;
+					songsToWrite = SelectMusic(newMusicData, preferences, flags, rng);
 				}
 				if (preferences.Music == MusicShuffle.MusicDisabled)
 				{
@@ -217,6 +248,46 @@ namespace FF1Lib.Music
 			}
 			
 		}
+
+		private List<Song> SelectMusic(NewMusicData newMusicData, Preferences preferences, Flags flags, MT19337 rng)
+		{
+			if (preferences.NewMusicStreamSafe || flags.TournamentSafe)
+			{
+				newMusicData.NewSongs.Remove(newMusicData.NewSongs.Where(x => x.Name == "UnderTheSea").First());
+				newMusicData.NewSongs.Remove(newMusicData.NewSongs.Where(x => x.Name == "JeopardyThink").First());
+
+				Song tmp = OriginalSongs[(int)SongNames.TempleOfFiend];
+				tmp.ReplacementCandidates = new List<ReplacableSongs>() { ReplacableSongs.Mermaids };
+				newMusicData.NewSongs.Add(tmp);
+			}
+
+			List<Song> SongsToWrite = new List<Song>();
+			for (int i = 0; i < Enum.GetValues(typeof(SongNames)).Length; i++)
+			{
+				SongsToWrite.Add(newMusicData.Silence);
+			}
+
+			List<Song> songPool = newMusicData.NewSongs;
+			List<ReplacableSongs> replacableSongs = Enum.GetValues(typeof(ReplacableSongs)).Cast<ReplacableSongs>().ToList();
+			var candidatesCount = replacableSongs.ToDictionary(
+				x => x,
+				x => songPool.Select(y => y.ReplacementCandidates.Contains(x)).ToList()
+			);
+
+			List<ReplacableSongs> iterOrder = candidatesCount.Keys.OrderBy(x => candidatesCount[x].Count).ToList();
+			foreach (ReplacableSongs song in iterOrder)
+			{
+				var candidates = songPool.Where(x => x.ReplacementCandidates.Contains(song)).ToList();
+				candidates.Shuffle(rng);
+				Song selectedSong = candidates.First();
+				SongsToWrite[(int)song] = selectedSong;
+				songPool.Remove(selectedSong);
+			}
+
+
+			return SongsToWrite;
+		}
+
 		public void LoadOriginalMusicData(FF1Rom rom)
 		{
 			List<FF1Pointer> sortedPointers = new List<FF1Pointer>();
@@ -247,7 +318,7 @@ namespace FF1Lib.Music
 				SongChannel sq1 = new SongChannel(rom.GetFromBank(0x0D, sq1ptr, sq1len), sq1ptr);
 				SongChannel sq2 = new SongChannel(rom.GetFromBank(0x0D, sq2ptr, sq2len), sq2ptr);
 				SongChannel tri = new SongChannel(rom.GetFromBank(0x0D, triptr, trilen), triptr);
-				Song song = new Song(sq1, sq2, tri, SongNameStrings[i]);
+				Song song = new Song(sq1, sq2, tri, new List<ReplacableSongs> (), SongNameStrings[i]);
 				OriginalSongs.Add(song);
 			}
 		}
