@@ -303,6 +303,7 @@ public partial class FF1Rom : NesRom
 		SavingHacks(Overworld, flags);
 		ImprovedClinic(flags.ImprovedClinic && !(bool)flags.RecruitmentMode);
 		IncreaseDarkPenalty((bool)flags.IncreaseDarkPenalty);
+		IncreaseRegeneration((bool)flags.IncreaseRegeneration);
 		SetPoisonMode(flags.PoisonMode, flags.PoisonSetDamageValue);
 		new QuickMiniMap(this, Overworld.DecompressedMap).EnableQuickMinimap(flags.SpeedHacks || Overworld.MapExchange != null, Music);
 		EnableAirBoat(flags);
