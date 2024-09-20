@@ -325,6 +325,16 @@ namespace FF1Lib
 			Put(0x326A7, Blob.FromHex("A9008D56688D62681A"));
 		}
 
+		public void IncreaseRegeneration(bool enable)
+		{
+			if (!enable)
+			{
+				return;
+			}
+
+			PutInBank(0x0C, 0xA26A, Blob.FromHex("39"));
+		}
+		
 		public void SetPoisonMode(PoisonModeOptions poisonMode, int poisonValue)
 		{
 			//see 1C_A670_ImprovedPoison.asm
