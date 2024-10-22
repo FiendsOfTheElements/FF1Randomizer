@@ -45,7 +45,11 @@ namespace FF1Lib
 			const byte encZombieD = 0x4B;
 			const byte encWarMech = 0x56;
 
-			var zombieDialog = new List<byte> { 0x32, 0x33, 0x34, 0x36 };
+			var zombieDialog = new List<byte> { 0x32, 0x33, 0x34 };
+			if (!flags.NoOverworld)
+			{
+				zombieDialog.Add(0x36);
+			}
 
 			Dictionary<int, string> evilDialogs = new Dictionary<int, string>();
 
@@ -284,7 +288,11 @@ namespace FF1Lib
 			evilDialogs.Add(0x32, "Braaaaain!");
 			evilDialogs.Add(0x33, "Barf!");
 			evilDialogs.Add(0x34, "Uaaaaaargh!");
-			evilDialogs.Add(0x36, "Groaaarn!");
+			if (!flags.NoOverworld)
+			{
+				evilDialogs.Add(0x36, "Groaaarn!");
+			}
+			
 
 			evilDialogs.Add(0x04, "What the hell!?\nThat princess is crazy,\nshe tried to bite me!\n\nThat's it. Screw that.\nI'm going home.");
 
