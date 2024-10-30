@@ -32,7 +32,7 @@ namespace FF1Lib
 			EnableTitansTrove((bool)flags.TitansTrove);
 			EnableLefeinShops((bool)flags.LefeinShops);
 			EnableMelmondClinic((bool)flags.MelmondClinic);
-			RandomVampireAttack((bool)flags.RandomVampAttack && !flags.NoOverworld, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
+			RandomVampireAttack((bool)flags.RandomVampAttack, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
 			ShufflePravoka((bool)flags.ShufflePravokaShops, AttackedTown == MapIndex.Pravoka, rng);
 			EnableGaiaShortcut((bool)flags.GaiaShortcut);
 			MoveGaiaItemShop((bool)flags.MoveGaiaItemShop && (bool)flags.GaiaShortcut, rng);

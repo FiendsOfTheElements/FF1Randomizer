@@ -151,8 +151,6 @@ public partial class FF1Rom : NesRom
 		Spooky(TalkRoutines, NpcData, Dialogues, ZoneFormations, Maps, rng, flags);
 		BlackOrbMode(TalkRoutines, Dialogues, flags, preferences, rng, new MT19337(funRng.Next()));
 		Maps.ProcgenDungeons(rng);
-		if (flags.NoOverworld) await this.Progress("Linking NoOverworld's Map", 1);
-		NoOverworld(Overworld.DecompressedMap, Maps, Teleporters, TileSetsData, TalkRoutines, Dialogues, NpcData, flags, rng);
 		DraculasCurse(Overworld, Teleporters, rng, flags);
 
 		await this.Progress();
@@ -160,6 +158,8 @@ public partial class FF1Rom : NesRom
 		// Maps
 		GeneralMapHacks(flags, Overworld, Maps, ZoneFormations, TileSetsData, rng);
 		Maps.Update(ZoneFormations, rng);
+		if (flags.NoOverworld) await this.Progress("Linking NoOverworld's Map", 1);
+		NoOverworld(Overworld.DecompressedMap, Maps, Teleporters, TileSetsData, TalkRoutines, Dialogues, NpcData, flags, rng);
 		UpdateToFR(Maps, Teleporters, TileSetsData, flags, rng);
 		Teleporters.ShuffleEntrancesAndFloors(Overworld.OverworldMap, rng, flags);
 		Overworld.Update(Teleporters);
