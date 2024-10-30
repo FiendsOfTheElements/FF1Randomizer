@@ -52,7 +52,7 @@
 		<TriStateCheckBox UpdateAction="@UpdateAction" Id="lefeinSuperStoreCheckBox" IsEnabled="@Flags.LefeinSuperStoreEnabled" @bind-Value="Flags.LefeinSuperStore">Add Lefein SuperStore</TriStateCheckBox>
 		<TriStateCheckBox UpdateAction="@UpdateAction" Id="shufflePravokaShopsCheckBox" @bind-Value="Flags.ShufflePravokaShops">Shuffle Pravoka's Shops</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
-		<TriStateCheckBox UpdateAction="@UpdateAction" Id="randomVampAttackCheckBox" @bind-Value="Flags.RandomVampAttack">Vampire Attacks Random Town</TriStateCheckBox>
+			<TriStateCheckBox UpdateAction="@UpdateAction" Id="randomVampAttackCheckBox" IsEnabled="@(!Flags.NoOverworld)" @bind-Value="Flags.RandomVampAttack">Vampire Attacks Random Town</TriStateCheckBox>
 		<TriStateCheckBox UpdateAction="@UpdateAction" Indent Id="randomVampAttackIncludesConeriaCheckBox" IsEnabled="@(Flags.RandomVampAttack != false)" @bind-Value="Flags.RandomVampAttackIncludesConeria">Include Coneria</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
 	</div>
