@@ -30,7 +30,7 @@ namespace FF1Lib
 		{
 			if (((bool)flags.Treasures) && flags.ShardHunt)
 			{
-				EnableShardHunt(rng, TalkRoutines, Dialogues, flags.ShardCount, pref.randomShardNames, funRng);
+				EnableShardHunt(rng, TalkRoutines, Dialogues, flags.ShardCount, pref.randomShardNames, flags.SpookyFlag, funRng);
 			}
 
 			if (!flags.ShardHunt && (flags.GameMode != GameModes.DeepDungeon))
@@ -53,7 +53,7 @@ namespace FF1Lib
 			PutInBank(bank, address, Blob.FromHex("001C22414141221CFFE3DDBEBEBEDDE3001C3E7F7F7F3E1CFFFFE3CFDFDFFFFF"));
 		}
 
-		public void EnableShardHunt(MT19337 rng, TalkRoutines talkroutines, DialogueData dialogues, ShardCount count, bool RandomShardNames, MT19337 funRngSeed)
+		public void EnableShardHunt(MT19337 rng, TalkRoutines talkroutines, DialogueData dialogues, ShardCount count, bool RandomShardNames, bool skipFlavorText, MT19337 funRngSeed)
 		{
 			int goal = 16;
 			switch (count) {
@@ -86,29 +86,34 @@ namespace FF1Lib
 			// Black Orb Override to check for shards rather than ORBs.
 			BlackOrbChecksShardsCountFor(goal,talkroutines);
 
-			// A little narrative overhaul.
-			Blob intro = FF1Text.TextToStory(new string[]
-			{
-				"The Time Loop has reopened!", "",
-				"The ORBS have been smashed!", "", "", "",
-				$"The resulting {shardName}S were", "",
-				"stolen and scattered around", "",
-				"the world to distract while", "",
-				"this new evil incubates....", "", "", "",
-				"But The Light Warriors return!", "",
-				$"They will need {goal} {shardName}S", "",
-				"to restore the BLACK ORB and", "",
-				"confront this new malevolence.",
-			});
-			System.Diagnostics.Debug.Assert(intro.Length <= 208);
-			Put(0x37F20, intro);
+			dialogues[0x21] = $"The {shardName}S coalesce to\nrestore the Black ORB.\n\nBrave Light Warriors....\nDestroy the Evil within!"; // Black Orb Text
 
-			dialogues.InsertDialogues(new Dictionary<int, string>() {
-				{ 0x21, $"The {shardName}S coalesce to\nrestore the Black ORB.\n\nBrave Light Warriors....\nDestroy the Evil within!" }, // Black Orb Text
-				{ 0x2E, $"Ah, the Light Warriors!\n\nSo you have collected\nthe {shardName}S and restored\nthe BLACK ORB." },
-				{ 0x2F, "Thus you've travelled\n2000 years into the past\nto try to stop me?\n\nStep forward then,\nto your peril!" },
-				{ 0x30, "Oh, Light Warriors!\nSuch arrogant bravery.\n\nLet us see whom history\nremembers. En Garde!" },
-			});
+			// A little narrative overhaul, skip if something else updated the text
+			// We assume that it has stronger narrative importance than shards only
+			if (!skipFlavorText)
+			{ 
+				Blob intro = FF1Text.TextToStory(new string[]
+				{
+					"The Time Loop has reopened!", "",
+					"The ORBS have been smashed!", "", "", "",
+					$"The resulting {shardName}S were", "",
+					"stolen and scattered around", "",
+					"the world to distract while", "",
+					"this new evil incubates....", "", "", "",
+					"But The Light Warriors return!", "",
+					$"They will need {goal} {shardName}S", "",
+					"to restore the BLACK ORB and", "",
+					"confront this new malevolence.",
+				});
+				System.Diagnostics.Debug.Assert(intro.Length <= 208);
+				Put(0x37F20, intro);
+
+				dialogues.InsertDialogues(new Dictionary<int, string>() {
+					{ 0x2E, $"Ah, the Light Warriors!\n\nSo you have collected\nthe {shardName}S and restored\nthe BLACK ORB." },
+					{ 0x2F, "Thus you've travelled\n2000 years into the past\nto try to stop me?\n\nStep forward then,\nto your peril!" },
+					{ 0x30, "Oh, Light Warriors!\nSuch arrogant bravery.\n\nLet us see whom history\nremembers. En Garde!" },
+				});
+			}
 		}
 
 		public Item ShardHuntTreasureSelector(Item item)

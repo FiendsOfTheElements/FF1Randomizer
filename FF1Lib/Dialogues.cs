@@ -303,6 +303,16 @@ namespace FF1Lib
 			// Update treasure box dialog for new DrawDialogueString routine
 			dialogues[0xF0 + 0x50] = "In the treasure box,\nyou found..\n#";
 
+			// Remove reference to "Cave of Marsh" from Astos dialog, unless Crown/Crystal not shuffled
+			// We do this before returning from Lich's Revenge since that flag modify all other dialogues, but not astos'
+			if (flags.IncentivizeFetchNPCs != false || flags.ChestsKeyItems != false)
+			{
+				dialogues[0x11] = "Astos double-crossed us.\nFind where they stashed\nthe CROWN. Then bring it\ndirectly back to me!";
+				dialogues[0x12] = "HA, HA, HA! I am Astos,\nKing of the Dark Elves.\nI have the #\nand you shall give me\nthat CROWN, now!!!";
+			}
+
+			dialogues[0xF0] = "Received #";
+
 			if (flags.SpookyFlag)
 			{
 				return;
@@ -310,12 +320,6 @@ namespace FF1Lib
 
 			// Dialogue for Sarda if Early sarda is off
 			dialogues[0xB3]  = "I shall help only\nthe true LIGHT WARRIORS.\nProve yourself by\ndefeating the Vampire.";
-
-			// Remove reference to "Cave of Marsh" from Astos dialog, unless Crown not shuffled
-			if (flags.IncentivizeFetchNPCs != false || flags.ChestsKeyItems != false)
-			{
-				dialogues[0x11] = "Astos double-crossed us.\nFind where they stashed\nthe CROWN. Then bring it\ndirectly back to me!";
-			}
 
 			if (!(bool)flags.NPCItems && !(bool)flags.NPCFetchItems)
 			{
@@ -327,7 +331,6 @@ namespace FF1Lib
 			dialogues[0x06] = "This heirloom has been\npassed down from Queen\nto Princess for 2000\nyears. Please take it.\n\nReceived #";
 			dialogues[0x09] = "Okay, you got me.\nTake this.\n\n\n\nReceived #";
 			dialogues[0x0E] = "Is this a dream?.. Are\nyou the LIGHT WARRIORS?\nSo, as legend says,\nI give you this.\n\nReceived #";
-			dialogues[0x12] = "HA, HA, HA! I am Astos,\nKing of the Dark Elves.\nI have the #\nand you shall give me\nthat CROWN, now!!!";
 			dialogues[0x14] = "Yes, yes indeed,\nthis TNT is just what I\nneed to finish my work.\nTake this in return!\n\nReceived #";
 			dialogues[0x16] = "ADAMANT!! Now let me\nforge this for you..\nHere, the best work\nI've ever done.\n\nReceived #";
 			dialogues[0x19] = "I'll trade my most\npowerful charm to get\nmy CRYSTAL back..\nOh! I can see!!\n\nReceived #";
@@ -336,7 +339,6 @@ namespace FF1Lib
 			dialogues[0x27] = "Take this.\n\n\n\n\nReceived #";
 			dialogues[0x2B] = (bool)flags.EarlySage ? "The FIENDS are waking.\nTake this and go defeat\nthem!\n\n\nReceived #" : "Great job vanquishing\nthe Earth FIEND.\nWith this, go and defeat\nthe other FIENDS!\n\nReceived #";
 			dialogues[0xCD] = "With this, you can\navenge the SKY WARRIORS.\n\n\n\nReceived #";
-			dialogues[0xF0] = "Received #";
 		}
 		public void Write()
 		{
