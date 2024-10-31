@@ -4,7 +4,6 @@ using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
 using Microsoft.VisualBasic;
 using System.Collections.ObjectModel;
-using System.Runtime.Versioning;
 
 namespace FF1Lib
 {
@@ -484,75 +483,9 @@ namespace FF1Lib
 		public async Task ImportVehicleSprite(Image<Rgba32> image, int top, int left, Rgba32[] NESpalette)
 		{
 				
-			// in vanilla, all vehicle sprites share a single palette.
-			// we can give canoe a double-palette like mapman head & body,
-			// but the other two still need to share a single palette because they can appear
+			// vehicle sprites share a single palette, primarily because they can all appear
 			// on the screen at the same time.
-			// Spritesheet should be canoe, ship, airship.
 
-
-			// var canoeTopColors = new List<Rgba32>();
-			// var firstUnique = new Dictionary<Rgba32, int>();
-			// for (int y = top; y < (top + 8); y++)
-			// {
-			// 	for (int x = left; x < (left + 96); x++)
-			// 	{
-			// 		if (!canoeTopColors.Contains(image[x, y]))
-			// 		{
-			// 			firstUnique[image[x, y]] = (x << 16 | y);
-			// 			canoeTopColors.Add(image[x, y]);
-			// 		}
-			// 	}
-			// }
-
-			// List<byte> canoeTopPal;
-			// Dictionary<Rgba32, byte> canoeTopIndex;
-			// if (!makeMapmanPalette(canoeTopColors, NESpalette, out canoeTopPal, out canoeTopIndex))
-			// {
-			// 	await this.Progress($"WARNING: Failed importing top half of canoe, too many unique colors (limit 3 unique colors + magenta for transparent):");
-			// 	for (int i = 1; i < canoeTopPal.Count; i++)
-			// 	{
-			// 		await this.Progress($"WARNING: NES palette {i}: ${canoeTopPal[i],2:X}");
-			// 	}
-			// 	foreach (var i in canoeTopIndex)
-			// 	{
-			// 		int c = firstUnique[i.Key];
-			// 		await this.Progress($"WARNING: RGB to index {i.Key}: {i.Value}  first appears at {c >> 16}, {c & 0xFFFF}");
-			// 	}
-			// 	return;
-			// }
-
-			// var canoeBottomColors = new List<Rgba32>();
-			// firstUnique = new Dictionary<Rgba32, int>();
-			// for (int y = top + 8; y < (top + 16); y++)
-			// {
-			// 	for (int x = left; x < (left + 96); x++)
-			// 	{
-			// 		if (!canoeBottomColors.Contains(image[x, y]))
-			// 		{
-			// 			firstUnique[image[x, y]] = (x << 16 | y);
-			// 			canoeBottomColors.Add(image[x, y]);
-			// 		}
-			// 	}
-			// }
-
-			// List<byte> canoeBottomPal;
-			// Dictionary<Rgba32, byte> canoeBottomIndex;
-			// if (!makeMapmanPalette(canoeBottomColors, NESpalette, out canoeBottomPal, out canoeBottomIndex))
-			// {
-			// 	await this.Progress($"WARNING: Failed importing bottom half of canoe, too many unique colors (limit 3 unique colors + magenta for transparent):",
-			// 		  1 + canoeBottomPal.Count + canoeBottomIndex.Count);
-			// 	for (int i = 1; i < canoeBottomPal.Count; i++)
-			// 	{
-			// 		await this.Progress($"WARNING: NES palette {i}: ${canoeBottomPal[i],2:X}");
-			// 	}
-			// 	foreach (var i in canoeBottomIndex)
-			// 	{
-			// 		int c = firstUnique[i.Key];
-			// 		await this.Progress($"WARNING: RGB to index {i.Key}: {i.Value}  first appears at {c >> 16}, {c & 0xFFFF}");
-			// 	}
-			// 	return;
-			// }
 
 			var vehicleColors = new List<Rgba32>();
 			var firstUnique = new Dictionary<Rgba32, int>();
@@ -613,14 +546,7 @@ namespace FF1Lib
 				}
 			}
 
-			//here we write the palettes into their respective LUTs
-			//canoe palettes go just after the mapman palettes in bank $0F, at position 0x60 (96), 
-			// and just before the "none" palette at 0x68 (104) (see below in SetCustomPlayerSprites())
-			//int offsetIntoLut = 0x60;
-			// Write the palettes into a new LUT in bank $0F
-			// Will be read using the code below.
-			//PutInBank(0x0F, lut_MapmanPalettes + offsetIntoLut, canoeTopPal.ToArray());
-			//PutInBank(0x0F, lut_MapmanPalettes + offsetIntoLut + 4, canoeBottomPal.ToArray());
+
 
 			// the vanilla vehicle palette is part of the overworld palette
 			int offsetIntoLut = 0x398;
@@ -727,9 +653,6 @@ namespace FF1Lib
 			}
 
 			
-			// add initial palette for canoe
-			// PutInBank(0x0F, lut_MapmanPalettes + (12 << 3), new byte[] {0x0F, 0x0F, 0x27, 0x30,
-			// 							0x0F, 0x0F, 0x27, 0x30});
 			// add palette for "none" mapman
 			PutInBank(0x0F, lut_MapmanPalettes + (13 << 3), new byte[] {0x0F, 0x0F, 0x12, 0x36,
 										0x0F, 0x0F, 0x21, 0x36});
