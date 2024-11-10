@@ -3521,7 +3521,8 @@ namespace FF1Lib
 				enemy[i].decompressData(Get(EnemyOffset + i * EnemySize, EnemySize));
 				enemy[i].tier = enemyTierList[i];
 			}
-			string[] enemyNames = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount); // load all the enemy names into the array for use by enemizer
+			//string[] enemyNames = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount); // load all the enemy names into the array for use by enemizer
+			string[] enemyNames = ReadEnemyText();
 			string[] skillNames = ReadText(EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillCount); // load all the names of enemy skills
 			for (int i = 0; i < FormationCount; ++i) // we need to scour the formations list for enemy information, and to give the enemizer tracking info construct information it can work with
 			{
@@ -3548,10 +3549,11 @@ namespace FF1Lib
 					}
 					Put(EnemyPatternTablesOffset, patterntabledata); // write the new pattern tables as a chunk
 
-					var enemyTextPart1 = enemyNames.Take(2).ToArray();
-					var enemyTextPart2 = enemyNames.Skip(2).ToArray();
-					WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
-					WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+					// var enemyTextPart1 = enemyNames.Take(2).ToArray();
+					// var enemyTextPart2 = enemyNames.Skip(2).ToArray();
+					// WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
+					// WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+					WriteEnemyText(enemyNames);
 					WriteText(skillNames, EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillTextOffset);
 				}
 				else
@@ -3787,7 +3789,8 @@ namespace FF1Lib
 			if (flagsValue == EnemyObfuscation.Imp || flagsValue == EnemyObfuscation.ImpAll)
 			{
 				List<FormationInfo> formations = LoadFormations();
-				string[] enemyNames = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+				//string[] enemyNames = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+				string[] enemyNames = ReadEnemyText();
 
 				List<string> alphabet = new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
 
@@ -3821,18 +3824,19 @@ namespace FF1Lib
 					}
 				}
 
-				StoreEnemyNames(enemyNames);
+				//StoreEnemyNames(enemyNames);
+				WriteEnemyText(enemyNames);
 				StoreFormations(formations);
 			}
 		}
 
-		private void StoreEnemyNames(string[] enemyNames)
-		{
-			var enemyTextPart1 = enemyNames.Take(2).ToArray();
-			var enemyTextPart2 = enemyNames.Skip(2).ToArray();
-			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
-			WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
-		}
+		// private void StoreEnemyNames(string[] enemyNames)
+		// {
+		// 	var enemyTextPart1 = enemyNames.Take(2).ToArray();
+		// 	var enemyTextPart2 = enemyNames.Skip(2).ToArray();
+		// 	WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
+		// 	WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+		// }
 
 		private void StoreFormations(List<FormationInfo> formations)
 		{
