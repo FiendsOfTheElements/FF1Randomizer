@@ -617,7 +617,8 @@ namespace FF1Lib
 			}
 		List<MagicSpell> spellList = GetSpells();
 		var enemies = GetAllEnemyStats();
-		var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		// var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		var enemyText = ReadEnemyText();
 		var bosses = new[] { new { index = Enemy.Lich2, dialog=0x4D },
 				     new { index = Enemy.Kary2, dialog=0x4E },
 				     new { index = Enemy.Kraken2, dialog=0x4F },

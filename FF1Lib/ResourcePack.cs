@@ -28,8 +28,13 @@ namespace FF1Lib
 			}
 		}
 
-		//async Task LoadResourcePack(Stream stream, DialogueData dialogues)
-		async Task LoadResourcePack(string resourcepack, DialogueData dialogues, EnemyScripts enemyScripts, Preferences preferences)
+		// split Resource Pack loading into two task sets: those which should be done pre ROM expansion
+		// and those which should be done after. This is a little slippery, but has mostly
+		// to do with the order in which things are done in the randomizer itself.
+		// In the future, there may need to be a third set, which applies changes after
+		// randomization. 
+
+		async Task LoadResourcePackPreROM(string resourcepack, Preferences preferences)
 		{
 			if (resourcepack == null)
 			{
@@ -38,6 +43,12 @@ namespace FF1Lib
 			using (var stream = new MemoryStream(Convert.FromBase64String(resourcepack)))
 			{
 				var resourcePackArchive = new ZipArchive(stream);
+
+
+				// before ROM expansion, map data is loaded and stored in
+				// data structures that are easy to read but difficult to edit.
+				// If we want the randomizer to operate on a new tileset for any reason,
+				// those should be loaded into the vanilla ROM
 
 				var maptiles = resourcePackArchive.GetEntry("maptiles.png");
 				if (maptiles != null)
@@ -75,12 +86,42 @@ namespace FF1Lib
 					}
 				}
 
+			}
+
+		}
+		async Task LoadResourcePackPostROM(string resourcepack, DialogueData dialogues, EnemyScripts enemyScripts, Preferences preferences)
+		{
+			if (resourcepack == null)
+			{
+				return;
+			}
+			using (var stream = new MemoryStream(Convert.FromBase64String(resourcepack)))
+			{
+				var resourcePackArchive = new ZipArchive(stream);
+
+				
+				// heroes.png depends on extra ROM space for storing alternate palettes.
+				// The other sprite resources are neutral on the pre vs. post ROM expansion
+				// so it makes sense to just put them all here.
+
 				var spritesheet = resourcePackArchive.GetEntry("heroes.png");
 				if (spritesheet != null)
 				{
 					using (var s = spritesheet.Open())
 					{
+						// the "true" here is for three-palette battle sprites. Why do we assume
+						// this is true? 
 						await SetCustomPlayerSprites(s, true, preferences.MapmanSlot);
+					}
+				}
+
+				//alternative resource name for two-palette battle sprites
+				var spritesheet2 = resourcePackArchive.GetEntry("heroes2.png");
+				if (spritesheet2 != null)
+				{
+					using (var s = spritesheet2.Open())
+					{
+						await SetCustomPlayerSprites(s,false, preferences.MapmanSlot);
 					}
 				}
 
@@ -129,6 +170,9 @@ namespace FF1Lib
 					}
 				}
 
+
+				// dialogues need to go here because they depend on loaded data
+				// from the ROM. We'll keep all the other text stuff here as well.
 				var dialogue = resourcePackArchive.GetEntry("dialogue.txt");
 				if (dialogue != null)
 				{
@@ -152,6 +196,7 @@ namespace FF1Lib
 				{
 					using (var s = bridgeStory.Open())
 					{
+						
 						LoadBridgeStory(s);
 					}
 				}
@@ -234,6 +279,7 @@ namespace FF1Lib
 		}
 		public void LoadBridgeStory(Stream stream)
 		{
+			
 			var pages = new List<string[]>();
 			var bridgeText = new List<string>();
 
@@ -268,6 +314,9 @@ namespace FF1Lib
 
 			SetBridgeStory(pages);
 		}
+
+
+		// this is called independently in Randomize.cs
 		void LoadResourcePackMaps(string resourcepack, StandardMaps maps, Teleporters teleporters)
 		{
 			if (resourcepack == null)

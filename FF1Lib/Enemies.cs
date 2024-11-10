@@ -526,9 +526,52 @@ namespace FF1Lib
 		    Put(MagicOffset + MagicSize * 81, es.compressData());
 		}
 
+
+		// new routines for reading and writing enemy names;
+		// replaces several direct ReadText() and WriteText() calls throughout the randomizer
+
+
+		// this pulls the 128 currently stored names from the ROM data
+		// and stores them in a string[];
+		public string[] ReadEnemyText()
+		{
+			return ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		}
+
+		public void WriteEnemyText(string[] enemyText)
+		{
+			// here we're splitting the enemy names into two parts, each with 64 names
+			// each name can be a maximum of 8 character bytes + 1 null terminator byte = 9 bytes.
+			// each bank of enemy text needs 9 * 64 = 0x240 bytes.
+
+			// this address is 0x240 bytes before the fiend drawing tables at 0x2d2E0,
+			// in the closest empty patch in the current bank.
+			// This replaces the 0x2CFEC address used in some of the enemy text
+			// routines throughout the randomizer.
+			const int EnemyTextOffsetPart1 = 0x2D0A0;
+
+			const int EnemyTextOffsetPart2 = EnemyTextOffset;
+
+			
+			var enemyTextPart1 = enemyText.Take(EnemyCount/2).ToArray();
+			var enemyTextPart2 = enemyText.Skip(EnemyCount/2).ToArray();
+
+
+			// write each bank of texts.
+			// EnemyTextPointerOffset is the absolute address of the table of pointers to each name.
+			// Each of these pointers gives a two-byte address to the text, relative to EnemyTextPointerBase
+			// Therefore the pointers to enemyTextPart2 need to be written to EnemyTextPointerOffset + 64*2
+
+			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase,EnemyTextOffsetPart1);
+			WriteText(enemyTextPart2, EnemyTextPointerOffset + EnemyCount, EnemyTextPointerBase, EnemyTextOffsetPart2);
+			
+		}
+
+
 		public List<EnemyInfo> GetEnemies() {
 		    var enm = new List<EnemyInfo>();
-		    var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		    //var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			var enemyText = ReadEnemyText();
 		    var scripts = GetEnemyScripts();
 		    for (int i = 0; i < EnemyCount; ++i)
 		    {

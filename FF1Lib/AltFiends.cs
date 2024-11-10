@@ -3275,23 +3275,27 @@ namespace FF1Lib
 				Put(EnemyOffset + (FiendsIndex + i) * EnemySize, fiends[i].compressData());
 			}
 
-			//Update fiends names, we stack Fiend1 and Fiend2's names to get more space for names
-			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			
+			// var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			var enemyText = ReadEnemyText();
 
 			for (int i = 0; i < 4; i++)
 			{
 				enemyText[119 + (i * 2)] = alternateFiendsList[i].Name;
-				enemyText[120 + (i * 2)] = "";
+				enemyText[120 + (i * 2)] = alternateFiendsList[i].Name;
 			}
 
-			WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
+			WriteEnemyText(enemyText);
 
-			// Rewrite point so Fiend2's name is Fiend1 name
-			for (int i = 0; i < 4; i++)
-			{
-				var namepointer = Get(EnemyTextPointerOffset + (119 + (i * 2)) * 2, 2);
-				Put(EnemyTextPointerOffset + (120 + (i * 2)) * 2, namepointer);
-			}
+		// 	WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
+		// A bunch of this was for saving space, which we don't need to do anymore.
+		// 	// Rewrite point so Fiend2's name is Fiend1 name
+		// 	for (int i = 0; i < 4; i++)
+		// 	{
+		// 		var namepointer = Get(EnemyTextPointerOffset + (119 + (i * 2)) * 2, 2);
+		// 		Put(EnemyTextPointerOffset + (120 + (i * 2)) * 2, namepointer);
+		// 	}
+		// }
 		}
 	}
 }

@@ -391,13 +391,16 @@ namespace FF1Lib
 			}
 
 			//Update enemies names
-			var enemyText = rom.ReadText(FF1Rom.EnemyTextPointerOffset, FF1Rom.EnemyTextPointerBase, FF1Rom.EnemyCount);
+			//var enemyText = rom.ReadText(FF1Rom.EnemyTextPointerOffset, FF1Rom.EnemyTextPointerBase, FF1Rom.EnemyCount);
 
+			var enemyText = rom.ReadEnemyText();
 			enemyText[0x10] = "SndMAN"; 
 			enemyText[0x11] = "SndSHARK";
 			enemyText[0x21] = "SCORP";
 
-			rom.WriteText(enemyText, FF1Rom.EnemyTextPointerOffset, FF1Rom.EnemyTextPointerBase, FF1Rom.EnemyTextOffset);
+			// rom.WriteText(enemyText, FF1Rom.EnemyTextPointerOffset, FF1Rom.EnemyTextPointerBase, FF1Rom.EnemyTextOffset);
+
+			rom.WriteEnemyText(enemyText);
 		}
 		public static void DoDUpdateDialogues(FF1Rom rom, NpcObjectData npcdata, DialogueData dialogues)
 		{
