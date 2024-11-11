@@ -310,11 +310,8 @@ namespace FF1Lib
 			SetupBridgeCredits();
 		}
 
-		private void SetupStoryPages(MT19337 rng)
+		private async void SetupStoryPages(MT19337 rng)
 		{
-
-			
-
 
 
 			// Setup DrawComplexString hijack for a particular escape sequence. See Credits.asm.
@@ -396,6 +393,22 @@ namespace FF1Lib
 
 
 			Blob storyText = PackageTextBlob(pages, StoryTextAddress);
+
+			// bounds check: 0x885 bytes until the next important thing
+			if (storyText.Length > 0x885)
+			{
+				await Progress($"WARNING: custom credit text is too long by {(storyText.Length - 0x885):X2} bytes. Reverting to default.");
+				pages.Clear();
+				DefaultStory.ForEach(page => pages.Add(FF1Text.TextToStory(page)));
+				pages.Add(victory);
+				StatsPageAddress = StoryTextAddress + pages.Count * 2;
+				pages.Add(Blob.Concat(movementStats));
+				pages.Add(Blob.Concat(battleResults));
+				pages.Add(Blob.Concat(combatStats));
+				ThankYous.ForEach(page => pages.Add(FF1Text.TextToStory(page)));
+
+				storyText = PackageTextBlob(pages, StoryTextAddress);	
+			}
 
 			System.Console.WriteLine($"Credits Saved. 0x{storyText.Length:X2} Bytes used.");
 			// System.Diagnostics.Debug.Assert(storyText.Length <= 0x0500, $"Story text {storyText.Length:X2} too large!");
