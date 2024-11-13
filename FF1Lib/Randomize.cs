@@ -87,7 +87,9 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress("Beginning Randomization", 15);
 
-		await this.LoadResourcePack(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
+		// load resource pack data that needs to go into initial ROM before
+		// data is read
+		await this.LoadResourcePackPreROM(flags.ResourcePack, preferences);
 		await this.LoadFunTiles(preferences);
 
 		// Load Initial Data
@@ -117,6 +119,11 @@ public partial class FF1Rom : NesRom
 
 		// Expand ROM, move data around
 		GlobalHacks();
+		
+		// load resource pack data that requires the ROM expansion that just took place
+		await this.LoadResourcePackPostROM(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
+
+
 		TalkRoutines.TransferTalkRoutines(this, flags);
 		Dialogues.TransferDialogues();
 
@@ -352,9 +359,10 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		//await this.LoadResourcePack(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
 
 		RollCredits(rng);
+
+
 		StatsTrackingHacks(flags, preferences);
 		if ((bool)flags.IsShipFree || flags.Archipelago) Overworld.SetShipLocation(255);
 		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
