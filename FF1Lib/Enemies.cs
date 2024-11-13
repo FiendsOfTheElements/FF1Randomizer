@@ -570,7 +570,6 @@ namespace FF1Lib
 
 		public List<EnemyInfo> GetEnemies() {
 		    var enm = new List<EnemyInfo>();
-		    //var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 			var enemyText = ReadEnemyText();
 		    var scripts = GetEnemyScripts();
 		    for (int i = 0; i < EnemyCount; ++i)

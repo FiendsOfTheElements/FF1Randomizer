@@ -378,8 +378,6 @@ namespace FF1Lib
 			};
 
 			var victory = FF1Text.TextToStory(VictoryMessages[rng.Between(0, VictoryMessages.Count - 1)]); 
-
-			//pages.Add(FF1Text.TextToStory(VictoryMessages[rng.Between(0, VictoryMessages.Count - 1)]));
 			pages.Add(victory);
 
 
@@ -411,7 +409,6 @@ namespace FF1Lib
 			}
 
 			System.Console.WriteLine($"Credits Saved. 0x{storyText.Length:X2} Bytes used.");
-			// System.Diagnostics.Debug.Assert(storyText.Length <= 0x0500, $"Story text {storyText.Length:X2} too large!");
 
 
 			// move some stuff to make room for longer bridge story from resource packs.
@@ -421,22 +418,26 @@ namespace FF1Lib
 			// This would be correct if things stayed in 0x0D:
 			// PutInBank(0x0D,0xB812, Blob.FromHex(AddressToHex(BridgeLastPageAddress)));
 			// We take advantage of an unnecessary clearing of the story_page to load the value instead
-			Data[0x0D * 0x4000 - 0x8000 + 0xB89F] = (byte)BridgeStory.Count;
-			PutInBank(0x0D,0xB85A, Blob.FromHex(AddressToHex(BridgeLastPageAddress)));
-
-			PutInBank(0x0D,0xB819, Blob.FromHex(AddressToHex(EndingLastPageAddress)));
+			PutInBank(0x0D, 0xB89F, (byte)BridgeStory.Count);
 
 
-			PutInBank(0x0D,0xBA64, Blob.FromHex(AddressToHex(StoryTextAddress)));
-			PutInBank(0x0D,0xBA69, Blob.FromHex(AddressToHex(StoryTextAddress+1)));
-			// Put(0x36800, storyText);
+			PutInBank(0x0D,0xB85A, (ushort)BridgeLastPageAddress);
+
+
+			PutInBank(0x0D,0xB819, (ushort)EndingLastPageAddress);
+
+
+			PutInBank(0x0D,0xBA64, (ushort)StoryTextAddress);
+			PutInBank(0x0D,0xBA69, (ushort)(StoryTextAddress+1));
+
+
 			PutInBank(0x0D, StoryTextAddress, storyText);
-			// Data[0x36E00] = (byte)(BridgeStory.Count);
-			// Data[0x36E01] = (byte)(pages.Count - 1);
-			// using Data[] for one-byte edits; using formula for bank address to absolute address
-			Data[0x0D * 0x4000 - 0x8000 + BridgeLastPageAddress] = (byte)(BridgeStory.Count);
+
+			PutInBank(0x0D, BridgeLastPageAddress, (byte)BridgeStory.Count);
+
 			// not sure why pages.Count - 1 here, but it seems to work?
-			Data[0x0D * 0x4000 - 0x8000 + EndingLastPageAddress] = (byte)(pages.Count - 1);
+			PutInBank(0x0D, EndingLastPageAddress, (byte)(pages.Count - 1));
+
 
 
 			

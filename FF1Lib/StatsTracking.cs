@@ -232,7 +232,6 @@ namespace FF1Lib
 
 			// Track Ending Scene
 			// changes here fix bug where the first ending story wasn't properly loaded
-			// PutInBank(0x1E, 0xBBB0, GetFromBank(0x0D, 0xB803, 0x04) + GetFromBank(0x0D, 0xB80D, 0x09) + Blob.FromHex("A90A85F2") + Blob.FromHex("A9B848A91548A90D4C03FE"));
 			// instead of getting 9 bytes from B80D, we only get 4. The remaining 5 set the page in the story to start on
 			// but since this is going in a new bank, it points to a random spot in bank 0x1E instead of in 0x0D
 			// the proper value is loaded in Credits.cs
