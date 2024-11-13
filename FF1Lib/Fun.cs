@@ -97,7 +97,8 @@ namespace FF1Lib
 				return;
 			}
 
-			// var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			// ReadEnemyText() and WriteEnemyText() use some extra room in the ROM,
+			// so no need to worry about the number of bytes in the names now.
 			var enemyText = ReadEnemyText();
 
 			enemyText[1] = "GrUMP";    // +0  GrIMP
@@ -148,13 +149,7 @@ namespace FF1Lib
 			    enemyText[122] = "KELLY";     // +1  KARY
 			}
 
-			//
-			// Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes
-			// We're adding (up to) a net of 18 bytes to enemyTextPart2.
-			// var enemyTextPart1 = enemyText.Take(2).ToArray();
-			// var enemyTextPart2 = enemyText.Skip(2).ToArray();
-			// WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
-			// WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+			
 			WriteEnemyText(enemyText);
 		}
 

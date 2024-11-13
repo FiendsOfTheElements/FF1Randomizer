@@ -3276,7 +3276,6 @@ namespace FF1Lib
 			}
 
 			
-			// var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 			var enemyText = ReadEnemyText();
 
 			for (int i = 0; i < 4; i++)
@@ -3286,16 +3285,6 @@ namespace FF1Lib
 			}
 
 			WriteEnemyText(enemyText);
-
-		// 	WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
-		// A bunch of this was for saving space, which we don't need to do anymore.
-		// 	// Rewrite point so Fiend2's name is Fiend1 name
-		// 	for (int i = 0; i < 4; i++)
-		// 	{
-		// 		var namepointer = Get(EnemyTextPointerOffset + (119 + (i * 2)) * 2, 2);
-		// 		Put(EnemyTextPointerOffset + (120 + (i * 2)) * 2, namepointer);
-		// 	}
-		// }
 		}
 	}
 }

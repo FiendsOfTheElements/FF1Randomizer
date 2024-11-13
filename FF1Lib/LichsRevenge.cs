@@ -187,7 +187,7 @@ namespace FF1Lib
 			Put(EnemyOffset, statsEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 
 			//Update enemies names
-			// var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+
 			var enemyText = ReadEnemyText();
 
 			enemyText[0x33] = "DRACLICH"; //Phantom > to DrakLich?
@@ -195,13 +195,8 @@ namespace FF1Lib
 			enemyText[119] = "PHANTOM"; // Lich1 > Phantom
 			enemyText[120] = "PHANTOM"; // Lich2 > Phantom
 			enemyText[127] = "LICH"; // Chaos > Lich
-			// WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
+
 			WriteEnemyText(enemyText);
-
-
-			// this isn't needed now because WriteEnemyText() uses extra space.
-			// var lich2name = Get(EnemyTextPointerOffset + 119 * 2, 2); // Lich2 point to Phantom1
-			// Put(EnemyTextPointerOffset + 120 * 2, lich2name);
 
 			// Scale Undeads
 			int evadeCap = GetEvadeIntFromFlag(flags.EvadeCap);

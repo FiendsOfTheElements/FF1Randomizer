@@ -122,10 +122,8 @@ namespace FF1Lib
 			Put(EnemyOffset + (idAnkylo * EnemySize), bahamutInfo.compressData());
 
 			// Update name
-			// var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
 			var enemyText = ReadEnemyText();
 			enemyText[78] = "BAHAMUT"; // +1 byte compared to ANKYLO, is this an issue?
-			// WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
 			WriteEnemyText(enemyText);
 
 			// Remove Ankylo from the Overworld, with appropriate substitutions
