@@ -72,7 +72,7 @@ public partial class FF1Rom : NesRom
 	//overlaod for putting a ushort in a bank; converts the ushort to a little-endian pair of bytes
 	public void PutInBank(int bank, int address, ushort usdata)
 	{
-		Blob data = Blob(new byte[] {(byte)(usdata & 0xFF), (byte)(usdata >> 8)});
+		var data = Blob.FromUShorts(new ushort[] {usdata});
 		if (bank == 0x1F)
 		{
 			if ((address - 0xC000) + data.Length > 0x4000)
