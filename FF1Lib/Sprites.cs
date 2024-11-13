@@ -1348,18 +1348,92 @@ namespace FF1Lib
 			}
 	    }
 
+
+		// Grayscale palettes for custom enemy and weapon sprites. Actual palettes will be applied
+		// in-game. In general, FF1 enemy palettes have the following format:
+		// Color 0: black
+		// Color 1: accent color
+		// Color 2: light main color
+		// Color 3; dark main color
+		// Follow the reference enemy sprite sheet for how these map to the Grayscale palette.
+		Dictionary<Rgba32, byte> GrayscaleIndex = new Dictionary<Rgba32, byte> {
+			{ new Rgba32(0x00, 0x00, 0x00), 0 },
+			{ new Rgba32(0xff, 0xff, 0xff), 1 },
+			{ new Rgba32(0xbd, 0xbd, 0xbd), 2 },
+			{ new Rgba32(0x7b, 0x7b, 0x7b), 3 }
+		};
+
+		public void SetCustomEnemyGraphics(Stream stream) {
+			Image<Rgba32> image = Image.Load<Rgba32>(stream);
+
+			const int ENEMYGRAPHIC_OFFSET = 0x1C120;
+			const int ENEMYGRAPHIC_SKIP = 0x800;
+			
+			bool allColorsGood = true;
+			// ep for "enemyPack"
+			// 13 enemy packs total
+			// process each enemy pack one by one
+			for (int ep = 0; ep < 13; ep++)
+			{
+				// epx and epy are the x and y coordinates of successive enemy packs.
+				int epx = (ep % 4) * 96;
+				int epy = (ep / 4) * 80;
+
+				// each enemy pack contains two 32x32 sprites and 2 48x48 sprites.
+				
+				int[] enemyDims = {32,32,48,48};
+				int[] xCoord = {0, 32, 0, 48};
+				int[] yCoord = {0, 0, 32, 32};
+
+				
+				// n is an iterator for successive 8x8 tiles in the ROM -- added to the various offsets.
+				// resets per enemy pack because enemy packs aren't contiguous in the ROM
+				int n = 0;
+				// e is the enemy iterator
+				// process one enemy in the pack at a time
+				for (int e = 0; e < 4; e++)
+				{
+					
+					for (int y = 0; y < enemyDims[e]; y += 8)
+					{
+						for (int x = 0; x < enemyDims[e]; x+=8)
+						{
+							//absolute x and y in image
+							int xAbs = epx + xCoord[e] + x;
+							int yAbs = epy + yCoord[e] + y;
+							byte[] tile;
+							//Console.WriteLine($"All the coordinates are {xAbs}, {yAbs}");
+							try
+							{
+								tile = makeTile(image, yAbs, xAbs, GrayscaleIndex);
+							}
+							catch (KeyNotFoundException)
+							{
+								if (allColorsGood)
+								{
+									Task task = Progress("WARNING: enemies.png contains incorrect colors. Quantizing.");
+									allColorsGood = false;
+								}
+								tile = makeTileQuantize(image, yAbs, xAbs, GrayscaleIndex);
+							}
+							Put(ENEMYGRAPHIC_OFFSET + (ep*ENEMYGRAPHIC_SKIP) + (n*16), EncodeForPPU(tile));
+							n++;
+						}
+					}
+					
+				}
+			}
+		}
+
+
+
+
 	    public void SetCustomWeaponGraphics(Stream stream) {
 			//IImageFormat format;
 			Image<Rgba32> image = Image.Load<Rgba32>(stream);
 
 			const int WEAPONMAGICGRAPHIC_OFFSET = 0x26800;
 
-			Dictionary<Rgba32, byte> index = new Dictionary<Rgba32, byte> {
-				{ new Rgba32(0x00, 0x00, 0x00), 0 },
-				{ new Rgba32(0xff, 0xff, 0xff), 1 },
-				{ new Rgba32(0xbd, 0xbd, 0xbd), 2 },
-				{ new Rgba32(0x7b, 0x7b, 0x7b), 3 }
-			};
 
 			int n = 0;
 			for (int w = 0; w < 12; w++)
@@ -1371,12 +1445,12 @@ namespace FF1Lib
 						byte[] tile;
 						try
 						{
-							tile = makeTile(image, y, x, index);
+							tile = makeTile(image, y, x, GrayscaleIndex);
 						}
 						catch (KeyNotFoundException)
 						{
 							Task task = Progress("WARNING: weapons.png contains incorrect colors. Quantizing.");
-							tile = makeTileQuantize(image, y, x, index);
+							tile = makeTileQuantize(image, y, x, GrayscaleIndex);
 						}
 						Put(WEAPONMAGICGRAPHIC_OFFSET + (n*16), EncodeForPPU(tile));
 						n++;
@@ -1682,6 +1756,9 @@ namespace FF1Lib
 			PutInBank(0x0C, 0xA03C + cur_class, new byte[] { (byte)pal });
 		}
 
+
+		// this makeTile() has a different signature from the one above:
+		// last parameter is Dictionary<byte, byte> rather than Dictionary<Rbga32, byte>
 		byte[] makeTile(Image<Rgba32> image, int top, int left, Dictionary<byte, byte> index)
 		{
 			var newtile = new byte[64];

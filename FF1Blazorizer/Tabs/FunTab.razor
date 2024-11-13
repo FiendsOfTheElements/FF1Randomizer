@@ -9,6 +9,7 @@
 	<p>Fun flags are not part of the standard flags string since they do not impact gameplay. Click on Save Preferences to store your settings.</p>
 	<CheckBox UpdateAction="@UpdateAction" Id="funEnemyNamesCheckBox" @bind-Value="Preferences.FunEnemyNames">Fun Enemy Names</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="teamSteakCheckBox" @bind-Value="Preferences.TeamSteak">Team STEAK</CheckBox>
+	<CheckBox Indent UpdateAction="@UpdateAction" Id="oldTeamSteakCheckBox" IsEnabled=@(Preferences.TeamSteak) @bind-Value="Preferences.OldTeamSteak">Old Team STEAK</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="changeLuteCheckBox" @bind-Value="Preferences.ChangeLute">Multi-instrumentalist Sara</CheckBox>
 	<EnumDropDown UpdateAction="@UpdateAction" Id="titanSnackDropDown" TItem="TitanSnack" @bind-Value="Preferences.TitanSnack">Titan's Favorite Snack:</EnumDropDown>
 	<EnumDropDown UpdateAction="@UpdateAction" Id="hurrayDwarfFateDropDown" TItem="Fate" @bind-Value="Preferences.HurrayDwarfFate">Hurray Dwarf's Fate:</EnumDropDown>

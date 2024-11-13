@@ -90,6 +90,7 @@ namespace FF1Lib
 	    public void FunEnemyNames(Flags flags, Preferences preferences, MT19337 rng)
 		{
 			bool teamSteak = preferences.TeamSteak;
+			bool oldTeamSteak = preferences.OldTeamSteak;
 			bool altFiends = (bool)flags.AlternateFiends;
 
 			if (!preferences.FunEnemyNames || flags.EnemizerEnabled)
@@ -98,12 +99,18 @@ namespace FF1Lib
 			}
 
 			// var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			// this new enemyText function means we don't need to worry about character space
 			var enemyText = ReadEnemyText();
 
 			enemyText[1] = "GrUMP";    // +0  GrIMP
 			enemyText[2] = "RURURU";   // +2  WOLF
 			enemyText[3] = "GrrrWOLF"; // +2  GrWOLF
 			enemyText[5] = "BrrrWOLF"; // +2  FrWOLF
+			if (teamSteak && !oldTeamSteak)
+			{
+				enemyText[23] = "CREPE";
+				enemyText[24] = "CRULLER";
+			}
 			enemyText[28] = "GeORGE";  // +0  GrOGRE
 
 			// "WzOGRE"
@@ -117,6 +124,11 @@ namespace FF1Lib
 			enemyText[31] = "GrSNEK";     // +1  COBRA
 			enemyText[32] = "SeaSNEK";    // -1  SeaSNAKE
 			enemyText[40] = "iMAGE";      // +0  IMAGE
+			if (teamSteak && !oldTeamSteak)
+			{
+				enemyText[47] = "GRUB";		// WORM
+				enemyText[49] = "MealWORM";	// Grey W
+			}
 			enemyText[48] = "SANDWICH";   // +2  Sand W
 			enemyText[51] = "WrongEYE";   //     Phantom
 			enemyText[53] = "SNEKLADY";   // +0  GrMEDUSA
@@ -129,12 +141,22 @@ namespace FF1Lib
 			enemyText[80] = "MOMMY";      // -2  WzMUMMY
 			enemyText[81] = "BIRB";       // -4  COCTRICE
 			enemyText[82] = "R.BIRB";     // -2  PERILISK
-			enemyText[83] = "Y BURN";     // +0  WYVERN
+			if (teamSteak && !oldTeamSteak)
+			{
+				enemyText[83] = "WYNGS"; 	// WYVERN
+				enemyText[84] = "HotWYNGS";	// WYRM
+				enemyText[91] = "GUAC";		// OCHO
+			}
+			else
+			{
+				enemyText[83] = "Y BURN";	// +0  WYVERN
+			}
 			if (teamSteak)
 			{
 				enemyText[85] = "STEAK";  // +1  TYRO
 				enemyText[86] = "T.BONE"; // +1  T REX
 			}
+
 			enemyText[92] = "NACHO";      // -1  NAOCHO
 			enemyText[94] = "HYDRANT";    // +0  R.HYDRA
 			enemyText[100] = "LadySNEK";  // +2  GrNAGA
@@ -172,7 +194,7 @@ namespace FF1Lib
 			Put(PaletteOffset, Blob.Concat(palettes));
 		}
 
-		public void TeamSteak(bool enable)
+		public void OldTeamSteak(bool enable)
 		{
 			if (!enable)
 			{

@@ -28,6 +28,18 @@ namespace FF1Lib
 			}
 		}
 
+		void TeamSteak(Flags flags, Preferences preferences)
+		{
+			if (preferences.TeamSteak && !preferences.OldTeamSteak && !(bool)flags.RandomizeEnemizer)
+			{
+				var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+				var teamSteakPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("teamsteak.png"));
+				var teamSteakStream = assembly.GetManifestResourceStream(teamSteakPath);
+				SetCustomEnemyGraphics(teamSteakStream);
+			}
+
+		}
+
 		// split Resource Pack loading into two task sets: those which should be done pre ROM expansion
 		// and those which should be done after. This is a little slippery, but has mostly
 		// to do with the order in which things are done in the randomizer itself.
@@ -149,6 +161,15 @@ namespace FF1Lib
 					using (var s = backdrop.Open())
 					{
 						await SetCustomBattleBackdrop(s);
+					}
+				}
+
+				var enemysprites = resourcePackArchive.GetEntry("enemies.png");
+				if (enemysprites != null)
+				{
+					using (var s = enemysprites.Open())
+					{
+						SetCustomEnemyGraphics(s);
 					}
 				}
 

@@ -122,6 +122,7 @@ public partial class FF1Rom : NesRom
 		
 		// load resource pack data that requires the ROM expansion that just took place
 		await this.LoadResourcePackPostROM(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
+		this.TeamSteak(flags, preferences);
 
 
 		TalkRoutines.TransferTalkRoutines(this, flags);
@@ -359,7 +360,8 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-
+		// RollCredits MUST go before StatsTrackingHacks() because RollCredits changes a few things
+		// that StatsTrackingHacks then moves to another bank.
 		RollCredits(rng);
 
 
@@ -379,7 +381,7 @@ public partial class FF1Rom : NesRom
 		TitanSnack(preferences.TitanSnack, NpcData, Dialogues, new MT19337(funRng.Next()));
 		HurrayDwarfFate(preferences.HurrayDwarfFate, NpcData, Dialogues, new MT19337(funRng.Next()));
 		PaletteSwap(preferences.PaletteSwap && !flags.EnemizerEnabled, new MT19337(funRng.Next()));
-		TeamSteak(preferences.TeamSteak && !(bool)flags.RandomizeEnemizer);
+		OldTeamSteak(preferences.OldTeamSteak && !(bool)flags.RandomizeEnemizer);
 		FunEnemyNames(flags, preferences, new MT19337(funRng.Next()));
 
 		await this.Progress();
