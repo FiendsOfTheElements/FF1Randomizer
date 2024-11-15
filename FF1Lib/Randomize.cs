@@ -123,6 +123,7 @@ public partial class FF1Rom : NesRom
 		// load resource pack data that requires the ROM expansion that just took place
 		await this.LoadResourcePackPostROM(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
 		this.TeamSteak(flags, preferences);
+		this.SetRobotChickenGraphics(preferences);
 
 
 		TalkRoutines.TransferTalkRoutines(this, flags);

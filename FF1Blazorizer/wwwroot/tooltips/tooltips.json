@@ -135,7 +135,7 @@
 	{
 		"Id": "teamSteakCheckBox",
 		"title": "Team STEAK",
-		"screenshot": "teamSteakCheckBox.png",
+		"screenshot": "teamSteakCheckBox.gif",
 		"description": "Changes several sprites to reflect the community's food-enemy memes. Also changes the names if Fun Enemy Names is selected."
 	},
 	{
@@ -143,6 +143,12 @@
 		"title": "Old Team STEAK",
 		"screenshot": "oldTeamSteakCheckBox.png",
 		"description": "Legacy Team STEAK Still Lives!\nModifies the Tyro/T-Rex sprite to reflect the age old rivalry between two teams.\n Team Tyro believes firmly in the sanctity of Tyro life while Team Steak believes in the sanctity of Tyro meat dinners. Choosing Team Steak will make it clear what you see when confronting these majestic-but-delicious creatures."
+	},
+	{
+		"Id": "robotChickenCheckBox",
+		"title": "Robot Chicken",
+		"screenshot": "robotChickenCheckBox.png",
+		"description": "Modifies the WarMECH sprite to reveal its true identity: a crazed robot chicken.\nAlso changes its name to RoboCHKN or WarBAWK if Fun Enemy Names is selected."
 	},
 	{
 		"Id": "changeLuteCheckBox",

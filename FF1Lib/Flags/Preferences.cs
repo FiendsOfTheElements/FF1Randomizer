@@ -8,6 +8,7 @@
 		public bool ThirdBattlePalette { get; set; }
 		public bool TeamSteak { get; set; }
 		public bool OldTeamSteak {get; set;}
+		public bool RobotChicken {get; set;}
 		public bool AlternateAirshipTheme { get; set; }
 		public MusicShuffle Music { get; set; }
 		public bool ChaosBattleMusic { get; set; }

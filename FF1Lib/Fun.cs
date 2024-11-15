@@ -91,6 +91,7 @@ namespace FF1Lib
 		{
 			bool teamSteak = preferences.TeamSteak;
 			bool oldTeamSteak = preferences.OldTeamSteak;
+			bool robotChicken = preferences.RobotChicken;
 			bool altFiends = (bool)flags.AlternateFiends;
 
 			if (!preferences.FunEnemyNames || flags.EnemizerEnabled)
@@ -163,6 +164,17 @@ namespace FF1Lib
 			enemyText[106] = "Green D";   // +2  Gas D
 			enemyText[111] = "BATMAN";    // +0  BADMAN
 			enemyText[112] = "OKAYMAN";   // +0  EVILMAN
+			if (robotChicken)
+			{
+				if (rng.Between(1, 10) >= 5)
+				{
+					enemyText[118] = "RoboCHKN"; // WarMECH
+				}
+				else
+				{
+					enemyText[118] = "WarBAWK"; // WarMECH
+				}
+			}
 			if (!altFiends) {
 			    enemyText[119] = "S.BUMP";    // +2  LICH
 			    enemyText[120] = "S.BUMP";    // +2  LICH

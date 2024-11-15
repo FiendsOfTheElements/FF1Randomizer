@@ -4,6 +4,7 @@ using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
 using Microsoft.VisualBasic;
 using System.Collections.ObjectModel;
+using SixLabors.ImageSharp.ColorSpaces;
 
 namespace FF1Lib
 {
@@ -1362,6 +1363,34 @@ namespace FF1Lib
 			{ new Rgba32(0xbd, 0xbd, 0xbd), 2 },
 			{ new Rgba32(0x7b, 0x7b, 0x7b), 3 }
 		};
+
+
+		public void SetRobotChickenGraphics(Preferences preferences)
+		{
+			if (preferences.RobotChicken)
+			{
+				const int WARMECHGRAPHIC_OFFSET = 0x22560;
+				var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+				var robochknPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("RoboCHKN.png"));
+				var robochknStream = assembly.GetManifestResourceStream(robochknPath);
+
+				Image<Rgba32> image = Image.Load<Rgba32>(robochknStream);
+
+				int n = 0;
+				for (int y = 0; y < 48; y+=8 )
+				{
+					for (int x=0; x < 48; x+=8)
+					{
+						//Console.WriteLine($"X: {x}, Y: {y}");
+						byte[] tile;
+						tile = makeTile(image,y,x,GrayscaleIndex);
+
+						Put(WARMECHGRAPHIC_OFFSET + (n*16), EncodeForPPU(tile));
+						n++;
+					}
+				}
+			}
+		}
 
 		public void SetCustomEnemyGraphics(Stream stream) {
 			Image<Rgba32> image = Image.Load<Rgba32>(stream);
