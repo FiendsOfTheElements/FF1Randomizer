@@ -87,7 +87,9 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress("Beginning Randomization", 15);
 
-		await this.LoadResourcePack(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
+		// load resource pack data that needs to go into initial ROM before
+		// data is read
+		await this.LoadResourcePackPreROM(flags.ResourcePack, preferences);
 		await this.LoadFunTiles(preferences);
 
 		// Load Initial Data
@@ -117,6 +119,11 @@ public partial class FF1Rom : NesRom
 
 		// Expand ROM, move data around
 		GlobalHacks();
+		
+		// load resource pack data that requires the ROM expansion that just took place
+		await this.LoadResourcePackPostROM(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
+
+
 		TalkRoutines.TransferTalkRoutines(this, flags);
 		Dialogues.TransferDialogues();
 
@@ -151,8 +158,6 @@ public partial class FF1Rom : NesRom
 		Spooky(TalkRoutines, NpcData, Dialogues, ZoneFormations, Maps, rng, flags);
 		BlackOrbMode(TalkRoutines, Dialogues, flags, preferences, rng, new MT19337(funRng.Next()));
 		Maps.ProcgenDungeons(rng);
-		if (flags.NoOverworld) await this.Progress("Linking NoOverworld's Map", 1);
-		NoOverworld(Overworld.DecompressedMap, Maps, Teleporters, TileSetsData, TalkRoutines, Dialogues, NpcData, flags, rng);
 		DraculasCurse(Overworld, Teleporters, rng, flags);
 
 		await this.Progress();
@@ -160,6 +165,8 @@ public partial class FF1Rom : NesRom
 		// Maps
 		GeneralMapHacks(flags, Overworld, Maps, ZoneFormations, TileSetsData, rng);
 		Maps.Update(ZoneFormations, rng);
+		if (flags.NoOverworld) await this.Progress("Linking NoOverworld's Map", 1);
+		NoOverworld(Overworld.DecompressedMap, Maps, Teleporters, TileSetsData, TalkRoutines, Dialogues, NpcData, flags, rng);
 		UpdateToFR(Maps, Teleporters, TileSetsData, flags, rng);
 		Teleporters.ShuffleEntrancesAndFloors(Overworld.OverworldMap, rng, flags);
 		Overworld.Update(Teleporters);
@@ -352,9 +359,10 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		//await this.LoadResourcePack(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
 
 		RollCredits(rng);
+
+
 		StatsTrackingHacks(flags, preferences);
 		if ((bool)flags.IsShipFree || flags.Archipelago) Overworld.SetShipLocation(255);
 		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();

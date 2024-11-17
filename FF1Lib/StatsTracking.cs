@@ -23,7 +23,7 @@ namespace FF1Lib
 			//	- Encounter table emu/hardware fix
 			//	- track hard/soft resets
 			//	- initialize tracking variables if no game is saved
-			PutInBank(0x0F, 0x8000, Blob.FromHex("A9008D00208D012085FEA90885FF85FDA51BC901D00160A901851BA94DC5F9F008A9FF85F585F685F7182088C8B049A94DC5F918F013ADA36469018DA364ADA46469008DA464189010ADA56469018DA564ADA66469008DA664A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD64189010A2A0A9009D00609D0064E8D0F7EEFB64ADFB648DFB6060"));
+			PutInBank(0x0F, 0x8000, Blob.FromHex("A9008D00208D012085FEA90885FF85FDA51BC901D00160A901851BA94DC5F9F008A9FF85F585F685F7182088C8B049A94DC5F918F013ADA36469018DA364ADA46469008DA464189010ADA56469018DA564ADA66469008DA664A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD64189010A2A0A9009D00609D0064E8D0F7EEFB64ADFB648DFB60A9008D40038D410360"));
 			Put(0x7C012, Blob.FromHex("A90F2003FE200080EAEAEAEAEAEAEAEA"));
 
 			int hardresetbutton = preferences.QuickJoy2Reset ? 0x80 : 0x88;
@@ -72,7 +72,14 @@ namespace FF1Lib
 			PutInBank(0x1F, 0xD83A, CreateLongJumpTableEntry(0x0F, 0x8500));
 			PutInBank(0x0C, 0xB8ED, Blob.FromHex("203AD8eaeaea"));
 			// Party Wipes
-			PutInBank(0x0F, 0x85D0, Blob.FromHex("EEB564A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD64A952854B60"));
+
+			// gotta use use different address when Save On Game Over is on.
+			// Normally, a wipe increments a value in sram, which gets copied to
+			// the corresponding place in unsram when game resets and loads values
+			// from sram to unsram. In save on game over, it needs to do the opposite,
+			// because it enters the save routine which copies from unsram to sram
+			string PerishCountAddress = flags.SaveGameWhenGameOver? "B560" : "B564";
+			PutInBank(0x0F, 0x85D0, Blob.FromHex($"EE{PerishCountAddress}A9008DFD64A200187D00647D00657D00667D0067E8D0F149FF8DFD64A952854B60"));
 			PutInBank(0x1F, 0xD82E, CreateLongJumpTableEntry(0x0F, 0x85D0));
 			//PutInBank(0x0B, 0x9AF5, Blob.FromHex("202ED8EAEA")); included in 1B changes
 			// "Nothing Here"s
@@ -224,9 +231,15 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x9915, Blob.FromHex("A9BB48A98F48A91E4C03FE"));
 
 			// Track Ending Scene
-			PutInBank(0x1E, 0xBBB0, GetFromBank(0x0D, 0xB803, 0x04) + GetFromBank(0x0D, 0xB80D, 0x09) + Blob.FromHex("A90A85F2") + Blob.FromHex("A9B848A91548A90D4C03FE"));
+			// changes here fix bug where the first ending story wasn't properly loaded
+			// instead of getting 9 bytes from B80D, we only get 4. The remaining 5 set the page in the story to start on
+			// but since this is going in a new bank, it points to a random spot in bank 0x1E instead of in 0x0D
+			// the proper value is loaded in Credits.cs
+			
+			PutInBank(0x1E, 0xBBB0, GetFromBank(0x0D, 0xB803, 0x04) + GetFromBank(0x0D, 0xB80D, 0x04) + Blob.FromHex("A90A85F2") + Blob.FromHex("A9B848A91548A90D4C03FE"));
 			PutInBank(0x0D, 0xB803, GetFromBank(0x0D, 0xB807, 0x06));
 			PutInBank(0x0D, 0xB809, Blob.FromHex("A9BB48A9AF48A91E4C03FE"));
+
 
 			// Track Bridge Scene - Jump to ending scene because of a lack of space
 			PutInBank(0x1E, 0xBBD0, GetFromBank(0x0D, 0xB84D, 0x0A) + Blob.FromHex("A90985F2") + Blob.FromHex("A9B848A95648A90D4C03FE"));
@@ -239,8 +252,13 @@ namespace FF1Lib
 
 		public void StatsTrackingScreen()
 		{
-			// Get the stats pages created in credits;
-			string statsPageAddresses = GetFromBank(0x0D, 0xA804, 0x06).ToHex();
+			// Get the 3 stats pages (6 bytes) created in Credits.cs;
+			//string statsPageAddresses = GetFromBank(0x0D, 0xA804, 0x06).ToHex();
+			// with update to bridges.txt option in resource packs,
+			// the bank address is no longer static.
+			// StatsPageAddress is calculated in Credits.cs and used here:
+			string statsPageAddresses = GetFromBank(0x0D, StatsPageAddress, 0x06).ToHex();
+			
 
 			// Give access to the tracked game stats from the main menu, by pressing Select; see 1E_BA00_StatsMenu.asm
 			PutInBank(0x1E, 0xBA00, Blob.FromHex($"{statsPageAddresses}010B0C11020D15A522F0034C27BAA524F003A90160A525F004A9003860A90018602040BA203CC420D5BA201A856868A9AD48A9CC48A90E4C03FEA9008D0120A900853720C1BAAD1C608D006EAD1D608D016EAD1E608D026EA9018538A91E853CA902853AA2008614BC06BA8439843BBD07BA853D2063E0A614E8E8E00490E7A2008614BD00BA853EBD01BA853F8A4AAABC0ABA843BA91E8558A90D85572036DEA614E8E8E00690D9AD006E8D1C60AD016E8D1D60AD026E8D1E6060A91E48A9FE48A90648A99C48A90148A90E4C03FEA91E48A9FE48A90648A9B748A97F48A90E4C03FE"));

@@ -301,6 +301,7 @@
 
 			presetName = preset.name;
 			SetPresetName(presetName);
+			UpdateAction?.Invoke("UpdateFlagstring", "");
 		}
 		catch (Exception ex)
 		{
@@ -317,6 +318,7 @@
 		       Flags.LoadResourcePackFlags(stream);
 		    }
 		    Flags.ResourcePack = content;
+			UpdateAction?.Invoke("UpdateFlagstring", "");
 		  } catch (Exception x) {
 			   Console.WriteLine(x.ToString());
 		  }
