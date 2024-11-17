@@ -94,6 +94,7 @@
 	  <EmbeddedResource Include="imagedata\bosses\BORGEN.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BUBBLES.png" />
 	  <EmbeddedResource Include="imagedata\bosses\B.KNIGHT.png" />
+    <EmbeddedResource Include="imagedata\bosses\B.VAMP.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BAIGAN.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BALNAB.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BYBLOS.png" />
@@ -121,6 +122,7 @@
 	  <EmbeddedResource Include="imagedata\bosses\E.DRAGON.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ECHIDNA.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ENKIDU.png" />
+    <EmbeddedResource Include="imagedata\bosses\ENSINGER.png" />
 	  <EmbeddedResource Include="imagedata\bosses\EVILELF.png" />
 	  <EmbeddedResource Include="imagedata\bosses\EVILWALL.png" />
 	  <EmbeddedResource Include="imagedata\bosses\EXDEATH.png" />
