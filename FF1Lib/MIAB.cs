@@ -203,7 +203,7 @@ namespace FF1Lib
 					encounters = altEncountersList;
 					break;
 				case FormationPool.LocalFormations:
-					encountersGroup = zoneformations.GetBytes();
+					encountersGroup = zoneformations.GetBytes().GetRange(64, 64);
 
 					encountersGroup[(int)MapIndex.ConeriaCastle1F] = castleEncounters;
 					encountersGroup[(int)MapIndex.ElflandCastle] = castleEncounters;

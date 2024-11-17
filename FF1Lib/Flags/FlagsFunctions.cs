@@ -286,7 +286,10 @@ namespace FF1Lib
 			var preset_dic = preset.Flags.ToDictionary(kv => kv.Key.ToLower());
 
 			var properties = typeof(Flags).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-			var flagproperties = properties.Where(p => p.CanWrite).OrderBy(p => p.Name).Reverse().ToList();
+			var flagproperties = properties.Where(p => p.CanWrite && !Attribute.IsDefined(p, typeof(FlagIsAllClasses)))
+				.OrderBy(p => p.Name)
+				.Reverse()
+				.ToList();
 
 			List<string> warnings = new List<string>();
 
