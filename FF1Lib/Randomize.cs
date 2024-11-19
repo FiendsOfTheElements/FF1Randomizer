@@ -418,7 +418,7 @@ public partial class FF1Rom : NesRom
 		TileSetsData.Write();
 		ZoneFormations.Write(this);
 		StartingItems.Write();
-		RngTables.Write(this);
+		RngTables.Write(this,flags);
 		Teleporters.Write();
 		Overworld.Write();
 		ArmorPermissions.Write(this);
