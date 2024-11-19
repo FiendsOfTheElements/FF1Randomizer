@@ -210,6 +210,8 @@ namespace FF1Lib
 		public bool? Rng { get; set; } = false;
 		public bool FixMissingBattleRngEntry { get; set; } = false;
 
+		public bool? EncounterPrng { get; set; } = false;
+
 		public bool? UnrunnableShuffle { get; set; } = true;
 		[IntegerFlag(0, 100, 4)]
 		public int UnrunnablesLow { get; set; } = 0;
