@@ -228,6 +228,18 @@
 		"description": "Disables the \"ksssshhh\" sound effect when stepping over lava tiles."
 	},
 	{
+		"Id": "alternatePoisonSFXDropDown",
+		"title": "Change Poison Status SFX",
+		"screenshot": null,
+		"description": "Changes the poison-status alarm sound effect on the map. Options are:\nVanilla: No change.\nSilent: Disables the SFX entirely.\nOuch: Plays the vanilla sound once every 4 steps instead of once every frame.\nBonk: plays a sound similar to the Dragon Warrior \"bonk against a wall\" sound once every 4 steps.\nOops: plays a sound similar to the Mario 1 stomp/swim sound once every 4 steps.\nBeep: plays a sound similar to the Zelda 1 low-health warning once every 4 steps.\nNote: \"Beep\" is not Tournament Safe because it could remind spectators of hospital sounds. If Beep is selected with the Tournament Safe flag on, it will be replaced with \"Ouch.\""
+	},
+	{
+		"Id": "disableAirshipSFXCheckBox",
+		"title": "Disable Airship SFX",
+		"screenshot": null,
+		"description": "Disables the airship propeller sound effects."
+	},
+	{
 		"Id": "disableSpellCastFlashCheckBox",
 		"title": "Disable Spell Cast Flash",
 		"screenshot": "disableSpellCastFlashCheckBox.gif",

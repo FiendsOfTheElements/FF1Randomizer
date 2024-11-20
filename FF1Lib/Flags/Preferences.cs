@@ -12,6 +12,8 @@
 		public bool ChaosBattleMusic { get; set; }
 		public bool DisableDamageTileFlicker { get; set; } = true;
 		public bool DisableDamageTileSFX { get; set; }
+		public PoisonSFX AltPoisonSFX { get; set; } = PoisonSFX.Vanilla;
+		public bool DisableAirshipSFX { get; set; }
 		public MenuColor MenuColor { get; set; } = MenuColor.Blue;
 		public MapmanSlot MapmanSlot { get; set; } = MapmanSlot.Leader;
 		public bool DisableSpellCastFlash { get; set; } = true;

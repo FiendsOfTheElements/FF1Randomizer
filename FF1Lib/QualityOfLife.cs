@@ -1,6 +1,7 @@
 ﻿using RomUtilities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,27 @@ using System.Threading.Tasks;
 
 namespace FF1Lib
 {
+
+	public enum PoisonSFX
+	{
+		[Description("Vanilla")]
+		Vanilla,
+
+		[Description("Silent")]
+		Silent,
+
+		[Description("Ouch")]
+		Ouch,
+
+		[Description("Bonk")]
+		Bonk,
+
+		[Description("Oops")]
+		Oops,
+
+		[Description("Beep")]
+		Beep,
+	}
 	public partial class FF1Rom
 	{
 		public void QualityOfLifeHacks(Flags flags, Preferences preferences)
@@ -19,6 +41,14 @@ namespace FF1Lib
 			if (preferences.DisableDamageTileSFX)
 			{
 				DisableDamageTileSFX();
+			}
+			if (preferences.AltPoisonSFX != PoisonSFX.Vanilla)
+			{
+				SetAltPoisonSFX(flags, preferences.AltPoisonSFX);
+			}
+			if (preferences.DisableAirshipSFX)
+			{
+				DisableAirshipSFX();
 			}
 			if (preferences.DisableSpellCastFlash || flags.TournamentSafe)
 			{
@@ -34,6 +64,8 @@ namespace FF1Lib
 			{
 				UninterruptedMusic();
 			}
+
+			
 		}
 		public void DisableDamageTileFlicker()
 		{
@@ -44,6 +76,75 @@ namespace FF1Lib
 		public void DisableDamageTileSFX()
 		{
 			Put(0x7C7E7, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+		}
+
+		public void SetAltPoisonSFX(Flags flags, PoisonSFX poisonSFX)
+		{
+
+			string SFXCommand;
+			switch (poisonSFX)
+			{
+				case PoisonSFX.Silent:
+				{
+					SFXCommand = "EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
+					break;
+				}
+				case PoisonSFX.Ouch:
+				{
+					// one iteration of the vanilla poison sound
+					SFXCommand = "A93F8D0440A9818D0540A9608D0640A9008D0740A906857E";
+					break;
+				}
+				case PoisonSFX.Beep:
+				{
+					if (flags.TournamentSafe)
+					{
+						// Beep sound was deemed not tournament safe; might remind spectators of hospital sounds
+						// Set to "Ouch" instead.
+						SFXCommand = "A93F8D0440A9818D0540A9608D0640A9008D0740A906857E";
+					}
+					else
+					{
+						// similar to the Zelda 1 low-health alarm
+						SFXCommand = "A9BA8D0440A9008D0540A95E8D0640A9008D0740A906857E";
+					}
+					break;
+				}
+				case PoisonSFX.Bonk:
+				{
+					// similar to the Dragon Warrior "bonk into wall" sound
+					SFXCommand = "A9BF8D0440A9B48D0540A9F08D0640A9028D0740A909857E";
+					break;
+				}
+				case PoisonSFX.Oops:
+				{
+					// similar to the Super Mario Bros. 1 stomp/swim sound
+					SFXCommand = "A9BA8D0440A98C8D0540A9FF8D0640A9008D0740A90A857E";
+					break;
+				}
+				default:
+				{
+					/// not likely ever to end up here, but just in case...
+					SFXCommand = "EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
+					break;
+				}
+
+			}
+
+			// Overwrites the entire MapPoisonDamage subroutine, preserving damage assignment but changing the order
+			// of operations, playing a new sound (or none) once every 4 steps instead of once every frame
+			PutInBank(0x1F, 0xC7FB, Blob.FromHex($"A534F00160A000A200BD0161C903D01FA001BD0B61D007BD0A61C9029011BD0A6138E9019D0A61BD0B61E9009D0B618A186940AAD0D398F01FADA0602903D018{SFXCommand}60EAEAEAEAEAEAEAEAEAEAEAEAEA"));
+		}
+
+		public void DisableAirshipSFX()
+		{
+			// this is very simple, so no .asm saved for this routine
+		
+			// NOP out the sfx during the airship transition animations
+			PutInBank(0x1F,0xE215,Blob.FromHex("60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+
+			// Here, we just don't check to see if we're in airship at all, bypassing the main airship sfx entirely
+			PutInBank(0x1F,0xC112, 0x04);
 		}
 		public void DisableSpellCastScreenFlash()
 		{
