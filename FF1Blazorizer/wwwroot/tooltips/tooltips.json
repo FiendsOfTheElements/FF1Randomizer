@@ -2478,6 +2478,11 @@
 		"description": "Non incentive items are opened in order. \n\nWarning, if your inventory gets full it will block your equipment progress."
 	},
 	{
+		"Id": "EncounterPRNG",
+		"title": "Encounter Table Uses True RNG",
+		"description": "Instead of a 256-step encounter table that resets with a hard reset, the game uses a pseudo-random number generator with a period of 65,535 steps, which does not reset on hard reset."
+	},
+	{
 		"Id": "SetRNG",
 		"title": "Set RNG",
 		"description": "Between two runners playing the same seed, identical battles will start at the same location in the RNG table and the RNG pointer will not progress each frame.\n\nAll bosses and spike tiles will have the same RNG.\n\nThe first through nth random encounter will consume the same RNG values for each battle. If you are facing an issue with a particular random encounter try soft reseting."
