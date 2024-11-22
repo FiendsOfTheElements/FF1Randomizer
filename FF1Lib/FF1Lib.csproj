@@ -88,6 +88,7 @@
 	  <EmbeddedResource Include="imagedata\bosses\B.DRAGON.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BARBRICA.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BEHEMOTH.png" />
+    <EmbeddedResource Include="imagedata\bosses\BEHOLDER.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BELZEBUB.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BIGRAT.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BIKKE.png" />
@@ -230,6 +231,7 @@
 	  <EmbeddedResource Include="imagedata\bosses\W.RAPTOR.png" />
 	  <EmbeddedResource Include="imagedata\bosses\WELK.png" />
 	  <EmbeddedResource Include="imagedata\bosses\WREXSOUL.png" />
+    <EmbeddedResource Include="imagedata\bosses\WRONGEYE.png" />
 	  <EmbeddedResource Include="imagedata\bosses\WYVERN.png" />
 	  <EmbeddedResource Include="imagedata\bosses\YETI.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ZANDE.png" />
