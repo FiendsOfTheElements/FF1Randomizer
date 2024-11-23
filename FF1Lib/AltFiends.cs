@@ -9,21 +9,6 @@ using System.Threading.Tasks;
 
 namespace FF1Lib
 {
-	public enum AltFiendPool
-	{
-		[Description("All Fiends in Pool")]
-		Random,
-		[Description("Final Fantasy 2 Fiends")]
-		FinalFantasy2,
-		[Description("Final Fantasy 3 Fiends")]
-		FinalFantasy3,
-		[Description("Final Fantasy 4 Fiends")]
-		FinalFantasy4,
-		[Description("Final Fantasy 5 Fiends")]
-		FinalFantasy5
-
-	}
-
 	public partial class FF1Rom
 	{
 		public struct AlternateFiends
