@@ -1455,6 +1455,12 @@
 		"description": "Will add 45 Final Fantasy 6 Fiends to the Alternate Fiend Pool."
 	},
 	{
+		"Id": "blackorbrisingpool",
+		"title": "Black Orb Rising Fiends",
+		"screenshot": null,
+		"description": "Will add 8 original Fiends to the Alternate Fiend Pool.\n\nIf only Black Orb Rising is selected, each Fiend will have unique Orb color and dialogues. As well, Fiends will be placed in their exclusive dungeon:\n\nEarth Cave: LAMORTE or KISMET\nVolcano: KALAMIA or INFERNAR\nSea Shrine: MARINE or ANGELA\nSky Palace: BROWLER or WHISPER"
+	},
+	{
 		"Id": "fightBahamutCheckBox",
 		"title": "Fight Bahamut",
 		"screenshot": "fightBahamutCheckBox.gif",

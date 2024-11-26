@@ -43,7 +43,8 @@ namespace FF1Lib
 		Spooky_GiveOnFlag,
 		Spooky_GiveOnItem,
 		Spooky_Bahamut,
-		Spooky_Lich
+		Spooky_Lich,
+		Talk_FightBranched
 
 	}
 	public class TalkRoutines
@@ -97,6 +98,9 @@ namespace FF1Lib
 			_talkroutines.Add(Blob.FromHex("A674F005BD2060F029A57385612080B1B022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060")); // Battle Give On Item
 			_talkroutines.Add(Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660")); // Battle Bahamut
 			_talkroutines.Add(Blob.FromHex("A572203D96A5752020B1A476207F90207392A47320A4902018964C4396")); // Battle Lich
+
+			// AltFiend Routine - TalkFightBranched
+			_talkroutines.Add(Blob.FromHex("A474209190B004A570D002A571203D96A5752020B1A476207F902073922018964C439660")); // Check npc, talk, battle, then vanish
 
 		}
 		public Blob this[int talkid]

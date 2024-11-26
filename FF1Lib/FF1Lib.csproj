@@ -237,7 +237,15 @@
 	  <EmbeddedResource Include="imagedata\bosses\ZANDE.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ZEMUS.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ZIGFRIED.png" />
-	  <EmbeddedResource Include="maps\vfmaps.zip" />
+    <EmbeddedResource Include="imagedata\bosses\ANGELA.png" />
+    <EmbeddedResource Include="imagedata\bosses\BROWLER.png" />
+    <EmbeddedResource Include="imagedata\bosses\INFERNAR.png" />
+    <EmbeddedResource Include="imagedata\bosses\KALAMIA.png" />
+    <EmbeddedResource Include="imagedata\bosses\KISMET.png" />
+    <EmbeddedResource Include="imagedata\bosses\LAMORTE.png" />
+    <EmbeddedResource Include="imagedata\bosses\MARINE.png" />
+    <EmbeddedResource Include="imagedata\bosses\WHISPER.png" />
+    <EmbeddedResource Include="maps\vfmaps.zip" />
   </ItemGroup>
 
   <ItemGroup>
