@@ -2350,6 +2350,12 @@
 		"description": "If enabled, \"Dark\" status severely decreases an attacker's chance to hit or crit an enemy: their crit chance is set to 0%, and they lose all of their base hit chance (this effectively makes the penalty -168 instead of the normal -40), leaving them with only their Hit% vs the defender's Evasion.\nAffects both players and enemies inflicted with \"Dark\" status."
 	},
 	{
+		"Id": "increaseRegenerationCheckBox",
+		"title": "Increase Enemy Regeneration",
+		"screenshot": null,
+		"description": "If enabled, \"Regeneration\" category enemies heal 57HP per turn instead of 3HP."
+	},
+	{
 		"Id": "poisonModeDropDown",
 		"title": "In-Battle Poison Damage",
 		"screenshot": "inBattlePoisonDamage.gif",
