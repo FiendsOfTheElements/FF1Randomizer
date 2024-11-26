@@ -225,11 +225,11 @@ namespace FF1Lib.Music
 
 				if (preferences.AlternateAirshipTheme)
 				{
-					songsToWrite[(int)SongNames.Airship] = newMusicData.NewSongs[(int)SongNames.Airship];
+					songsToWrite[(int)SongNames.ChaosBattle] = newMusicData.NewSongs.Where(x => x.ReplacementCandidates.Contains(ReplacableSongs.Airship)).First();
 				}
 				if (preferences.ChaosBattleMusic)
 				{
-					songsToWrite[(int)SongNames.ChaosBattle] = newMusicData.NewSongs[(int)SongNames.ChaosBattle];
+					songsToWrite[(int)SongNames.ChaosBattle] = newMusicData.NewSongs.Where(x => x.ReplacementCandidates.Contains(ReplacableSongs.ChaosBattle)).First();
 				}
 				if (preferences.NewMusic)
 				{

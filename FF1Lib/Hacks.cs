@@ -376,7 +376,7 @@ namespace FF1Lib
 				return;
 			}
 
-			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			var enemyText = ReadEnemyText();
 			enemyText[119] = "Twin D";  //  +2
 			enemyText[120] = "Twin D";  //  +2
 			enemyText[121] = "CARMILLA"; // +4
@@ -387,11 +387,8 @@ namespace FF1Lib
 			enemyText[126] = "FRANKEN";  // +1
 			enemyText[127] = "VLAD";     // -1
 
-			// Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes, of which I'm using 17.
-			var enemyTextPart1 = enemyText.Take(2).ToArray();
-			var enemyTextPart2 = enemyText.Skip(2).ToArray();
-			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
-			WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+
+			WriteEnemyText(enemyText);
 
 			// Change Orbs to Dracula's relics
 			PutInBank(0x0E, 0xAD78, Blob.FromHex("0F050130")); // Update Orbs palette

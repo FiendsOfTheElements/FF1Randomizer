@@ -45,7 +45,11 @@ namespace FF1Lib
 			const byte encZombieD = 0x4B;
 			const byte encWarMech = 0x56;
 
-			var zombieDialog = new List<byte> { 0x32, 0x33, 0x34, 0x36 };
+			var zombieDialog = new List<byte> { 0x32, 0x33, 0x34 };
+			if (!flags.NoOverworld)
+			{
+				zombieDialog.Add(0x36);
+			}
 
 			Dictionary<int, string> evilDialogs = new Dictionary<int, string>();
 
@@ -183,17 +187,16 @@ namespace FF1Lib
 			Put(EnemyOffset, statsEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 
 			//Update enemies names
-			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+
+			var enemyText = ReadEnemyText();
 
 			enemyText[0x33] = "DRACLICH"; //Phantom > to DrakLich?
 			enemyText[118] = "LICH?"; // WarMech > Lich?
 			enemyText[119] = "PHANTOM"; // Lich1 > Phantom
-			enemyText[120] = ""; // Lich2 > Phantom
+			enemyText[120] = "PHANTOM"; // Lich2 > Phantom
 			enemyText[127] = "LICH"; // Chaos > Lich
-			WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
 
-			var lich2name = Get(EnemyTextPointerOffset + 119 * 2, 2); // Lich2 point to Phantom1
-			Put(EnemyTextPointerOffset + 120 * 2, lich2name);
+			WriteEnemyText(enemyText);
 
 			// Scale Undeads
 			int evadeCap = GetEvadeIntFromFlag(flags.EvadeCap);
@@ -284,7 +287,11 @@ namespace FF1Lib
 			evilDialogs.Add(0x32, "Braaaaain!");
 			evilDialogs.Add(0x33, "Barf!");
 			evilDialogs.Add(0x34, "Uaaaaaargh!");
-			evilDialogs.Add(0x36, "Groaaarn!");
+			if (!flags.NoOverworld)
+			{
+				evilDialogs.Add(0x36, "Groaaarn!");
+			}
+			
 
 			evilDialogs.Add(0x04, "What the hell!?\nThat princess is crazy,\nshe tried to bite me!\n\nThat's it. Screw that.\nI'm going home.");
 

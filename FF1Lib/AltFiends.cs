@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
@@ -9,21 +10,6 @@ using System.Threading.Tasks;
 
 namespace FF1Lib
 {
-	public enum AltFiendPool
-	{
-		[Description("All Fiends in Pool")]
-		Random,
-		[Description("Final Fantasy 2 Fiends")]
-		FinalFantasy2,
-		[Description("Final Fantasy 3 Fiends")]
-		FinalFantasy3,
-		[Description("Final Fantasy 4 Fiends")]
-		FinalFantasy4,
-		[Description("Final Fantasy 5 Fiends")]
-		FinalFantasy5
-
-	}
-
 	public partial class FF1Rom
 	{
 		public struct AlternateFiends
@@ -46,7 +32,7 @@ namespace FF1Lib
 			public FormationGFX GFXOffset;
 
 		}
-		public void AlternativeFiends(EnemyScripts enemyScripts, MT19337 rng, Flags flags)
+		public void AlternativeFiends(ExtAltFiends extAltFiends, EnemyScripts enemyScripts, MT19337 rng, Flags flags)
 		{
 			if (!(bool)flags.AlternateFiends || flags.SpookyFlag)
 			{
@@ -172,7 +158,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Heat, (byte)EnemySkills.Heat, (byte)EnemySkills.Poison_Stone },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.FIR3, (byte)SpellByte.FIR2, (byte)SpellByte.BRAK, (byte)SpellByte.FIR2, (byte)SpellByte.FIR3, (byte)SpellByte.FIR2, (byte)SpellByte.BANE },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.FIR3, (byte)SpellByte.FIR2, (byte)SpellByte.BRAK, (byte)SpellByte.FIR2, (byte)SpellByte.SLOW, (byte)SpellByte.FIR2, (byte)SpellByte.BANE },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Scorch, (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Blaze, (byte)EnemySkills.Poison_Stone },
 					},
@@ -191,7 +177,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Flash, (byte)EnemySkills.Stinger, (byte)EnemySkills.Flash, (byte)EnemySkills.Dazzle },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.FAST, (byte)SpellByte.FIR3, (byte)SpellByte.FOG, (byte)SpellByte.FIR2, (byte)SpellByte.SLO2, (byte)SpellByte.FIR3, (byte)SpellByte.BANE },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.FAST, (byte)SpellByte.FIR3, (byte)SpellByte.FOG, (byte)SpellByte.FIR2, (byte)SpellByte.SLO2, (byte)SpellByte.XFER, (byte)SpellByte.BANE },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Nuclear, (byte)EnemySkills.Flash, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Inferno },
 				},
@@ -210,7 +196,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Stinger, (byte)EnemySkills.Snorting, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Trance },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.NUKE, (byte)SpellByte.FIR3, (byte)SpellByte.HOLD, (byte)SpellByte.XFER, (byte)SpellByte.BANE, (byte)SpellByte.ZAP, (byte)SpellByte.MUTE, (byte)SpellByte.STOP },
+					Spells2 = new List<byte> { (byte)SpellByte.FOG, (byte)SpellByte.FIR3, (byte)SpellByte.HOLD, (byte)SpellByte.XFER, (byte)SpellByte.BANE, (byte)SpellByte.ZAP, (byte)SpellByte.MUTE, (byte)SpellByte.STOP },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Gaze, (byte)EnemySkills.Trance, (byte)EnemySkills.Gaze, (byte)EnemySkills.Blaze },
 				},
@@ -225,11 +211,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.UNDEAD,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.FAST, (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.FAST },
+					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.FIRE, (byte)SpellByte.FAST, (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.FIRE, (byte)SpellByte.FAST },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Snorting, (byte)EnemySkills.Snorting, (byte)EnemySkills.Snorting, (byte)EnemySkills.Snorting },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.STOP, (byte)SpellByte.FIR3, (byte)SpellByte.FAST, (byte)SpellByte.FIR3, (byte)SpellByte.SLO2, (byte)SpellByte.FIR3, (byte)SpellByte.NUKE },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.STOP, (byte)SpellByte.FIR2, (byte)SpellByte.FAST, (byte)SpellByte.FIR3, (byte)SpellByte.SLO2, (byte)SpellByte.FIR2, (byte)SpellByte.NUKE },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Snorting, (byte)EnemySkills.Snorting, (byte)EnemySkills.Snorting, (byte)EnemySkills.Blaze },
 				},
@@ -286,7 +272,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Stinger, (byte)EnemySkills.Flash, (byte)EnemySkills.Trance, (byte)EnemySkills.Stinger },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.NUKE, (byte)SpellByte.XFER, (byte)SpellByte.XXXX, (byte)SpellByte.SLO2, (byte)SpellByte.MUTE, (byte)SpellByte.FIR3, (byte)SpellByte.CUR3 },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.NUKE, (byte)SpellByte.XFER, (byte)SpellByte.XXXX, (byte)SpellByte.SLO2, (byte)SpellByte.MUTE, (byte)SpellByte.FIR2, (byte)SpellByte.CUR3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Blaze, (byte)EnemySkills.Glare, (byte)EnemySkills.Toxic },
 				},
@@ -404,7 +390,7 @@ namespace FF1Lib
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.NUKE, (byte)SpellByte.SLO2, (byte)SpellByte.XXXX, (byte)SpellByte.CUR4, (byte)SpellByte.ICE3, (byte)SpellByte.MUTE, (byte)SpellByte.FIR3, (byte)SpellByte.XFER },
+					Spells2 = new List<byte> { (byte)SpellByte.NUKE, (byte)SpellByte.SLO2, (byte)SpellByte.XXXX, (byte)SpellByte.CUR3, (byte)SpellByte.ICE2, (byte)SpellByte.MUTE, (byte)SpellByte.FIR3, (byte)SpellByte.XFER },
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 				},
@@ -422,7 +408,7 @@ namespace FF1Lib
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.NUKE, (byte)SpellByte.LIT3, (byte)SpellByte.CUR4, (byte)SpellByte.XXXX, (byte)SpellByte.BANE, (byte)SpellByte.QAKE, (byte)SpellByte.SLO2 },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.FOG, (byte)SpellByte.LIT3, (byte)SpellByte.CUR4, (byte)SpellByte.XXXX, (byte)SpellByte.BANE, (byte)SpellByte.QAKE, (byte)SpellByte.SLO2 },
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 				},
@@ -440,9 +426,9 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Ink, (byte)EnemySkills.Stinger, (byte)EnemySkills.Snorting, (byte)EnemySkills.Dazzle },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.ICE3, (byte)SpellByte.XXXX, (byte)SpellByte.LIT3, (byte)SpellByte.INVS, (byte)SpellByte.ICE3, (byte)SpellByte.MUTE, (byte)SpellByte.RUB },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.ICE2, (byte)SpellByte.XXXX, (byte)SpellByte.LIT2, (byte)SpellByte.INVS, (byte)SpellByte.ICE2, (byte)SpellByte.MUTE, (byte)SpellByte.RUB },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Thunder, (byte)EnemySkills.Swirl },
+					Skills2 = new List<byte> { (byte)EnemySkills.Cremate, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Gaze, (byte)EnemySkills.Stare },
 				},
 				new AlternateFiends {
 					Name = "CARBUNCL",
@@ -495,7 +481,7 @@ namespace FF1Lib
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.BRAK, (byte)SpellByte.BRAK, (byte)SpellByte.QAKE, (byte)SpellByte.QAKE, (byte)SpellByte.NUKE, (byte)SpellByte.SLO2, (byte)SpellByte.RUB, (byte)SpellByte.XXXX },
+					Spells2 = new List<byte> { (byte)SpellByte.BRAK, (byte)SpellByte.BRAK, (byte)SpellByte.QAKE, (byte)SpellByte.QAKE, (byte)SpellByte.ZAP, (byte)SpellByte.SLO2, (byte)SpellByte.RUB, (byte)SpellByte.XXXX },
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 				},
@@ -565,11 +551,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.None,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.LIT2, (byte)SpellByte.ICE2, (byte)SpellByte.MUTE, (byte)SpellByte.AFIR, (byte)SpellByte.AICE, (byte)SpellByte.ALIT, (byte)SpellByte.SLOW },
+					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.LIT, (byte)SpellByte.ICE2, (byte)SpellByte.MUTE, (byte)SpellByte.AFIR, (byte)SpellByte.AICE, (byte)SpellByte.ALIT, (byte)SpellByte.SLOW },
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.NUKE, (byte)SpellByte.LIT3, (byte)SpellByte.ICE3, (byte)SpellByte.WALL, (byte)SpellByte.MUTE, (byte)SpellByte.SLO2, (byte)SpellByte.SLO2 },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.CUR3, (byte)SpellByte.LIT2, (byte)SpellByte.ICE2, (byte)SpellByte.WALL, (byte)SpellByte.MUTE, (byte)SpellByte.INVS, (byte)SpellByte.SLO2 },
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 				},
@@ -605,7 +591,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Cremate, (byte)EnemySkills.Heat, (byte)EnemySkills.Stinger, (byte)EnemySkills.Trance },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.FIR3, (byte)SpellByte.FAST, (byte)SpellByte.FOG, (byte)SpellByte.SLO2, (byte)SpellByte.SLP2, (byte)SpellByte.FIR3, (byte)SpellByte.LOK2 },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.FIR2, (byte)SpellByte.FAST, (byte)SpellByte.FOG, (byte)SpellByte.SLO2, (byte)SpellByte.SLP2, (byte)SpellByte.FIR2, (byte)SpellByte.LOK2 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Blaze, (byte)EnemySkills.Nuclear, (byte)EnemySkills.Cremate, (byte)EnemySkills.Squint },
 				},
@@ -659,9 +645,9 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Stinger, (byte)EnemySkills.Flash },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.ICE2, (byte)SpellByte.ICE3, (byte)SpellByte.ICE3, (byte)SpellByte.ICE2, (byte)SpellByte.ICE2, (byte)SpellByte.XFER, (byte)SpellByte.ICE3 },
+					Spells2 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.STUN, (byte)SpellByte.TMPR, (byte)SpellByte.ICE3, (byte)SpellByte.ICE2, (byte)SpellByte.HOLD, (byte)SpellByte.XFER, (byte)SpellByte.ICE3 },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Swirl, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Swirl },
+					Skills2 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Swirl, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Ink },
 				},
 				new AlternateFiends {
 					Name = "LUCIFER",
@@ -677,9 +663,9 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Scorch, (byte)EnemySkills.Trance, (byte)EnemySkills.Glance },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.NUKE, (byte)SpellByte.FIR3, (byte)SpellByte.XFER, (byte)SpellByte.FIR3, (byte)SpellByte.XXXX, (byte)SpellByte.FAST, (byte)SpellByte.FOG2, (byte)SpellByte.TMPR },
+					Spells2 = new List<byte> { (byte)SpellByte.NUKE, (byte)SpellByte.SABR, (byte)SpellByte.XFER, (byte)SpellByte.FIR3, (byte)SpellByte.XXXX, (byte)SpellByte.FAST, (byte)SpellByte.FOG2, (byte)SpellByte.QAKE },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Toxic, (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Squint },
+					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Toxic, (byte)EnemySkills.Stare, (byte)EnemySkills.Squint },
 				},
 				new AlternateFiends{
 					Name = "NEP.DRGN",
@@ -731,7 +717,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Flash, (byte)EnemySkills.Heat, (byte)EnemySkills.Flash, (byte)EnemySkills.Heat },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.FIR3, (byte)SpellByte.FIR3, (byte)SpellByte.NUKE, (byte)SpellByte.FIR2, (byte)SpellByte.FIR2, (byte)SpellByte.FIR3, (byte)SpellByte.DARK },
+					Spells2 = new List<byte> { (byte)SpellByte.XXXX, (byte)SpellByte.FIR2, (byte)SpellByte.FIR3, (byte)SpellByte.NUKE, (byte)SpellByte.FIR2, (byte)SpellByte.FAST, (byte)SpellByte.FIR3, (byte)SpellByte.DARK },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Scorch, (byte)EnemySkills.Blaze, (byte)EnemySkills.Heat, (byte)EnemySkills.Inferno },
 				},
@@ -788,7 +774,7 @@ namespace FF1Lib
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.NUKE, (byte)SpellByte.LIT3, (byte)SpellByte.FIR3, (byte)SpellByte.QAKE, (byte)SpellByte.FIR3, (byte)SpellByte.XXXX, (byte)SpellByte.SLP2, (byte)SpellByte.RUB },
+					Spells2 = new List<byte> { (byte)SpellByte.CUR4, (byte)SpellByte.LIT3, (byte)SpellByte.FIR2, (byte)SpellByte.QAKE, (byte)SpellByte.FIR3, (byte)SpellByte.XXXX, (byte)SpellByte.SLP2, (byte)SpellByte.RUB },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Nuclear, (byte)EnemySkills.Blaze, (byte)EnemySkills.Toxic },
 				},
@@ -822,7 +808,7 @@ namespace FF1Lib
 					Palette1 = 0x3A,
 					Palette2 = 0x3A,
 					ElementalWeakness = SpellElement.None,
-					MonsterType = MonsterType.REGENERATIVE,
+					MonsterType = MonsterType.MAGE, //Changed from REGENERATIVE to MAGE
 					SpellChance1 = 0x40,
 					Spells1 = new List<byte> { (byte)SpellByte.CUR2, (byte)SpellByte.CUR3, (byte)SpellByte.CUR3, (byte)SpellByte.FAST, (byte)SpellByte.CUR2, (byte)SpellByte.CUR3, (byte)SpellByte.CUR3, (byte)SpellByte.FAST },
 					SkillChance1 = 0x00,
@@ -843,11 +829,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Status,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.SLOW, (byte)SpellByte.LIT2, (byte)SpellByte.ICE2, (byte)SpellByte.WALL, (byte)SpellByte.FIR2, (byte)SpellByte.STOP, (byte)SpellByte.TMPR, (byte)SpellByte.FIR2 },
+					Spells1 = new List<byte> { (byte)SpellByte.SLOW, (byte)SpellByte.LIT, (byte)SpellByte.ICE2, (byte)SpellByte.WALL, (byte)SpellByte.FIR2, (byte)SpellByte.STOP, (byte)SpellByte.TMPR, (byte)SpellByte.FIR2 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Stinger, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Cremate, (byte)EnemySkills.Frost },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.WALL, (byte)SpellByte.FAST, (byte)SpellByte.ICE3, (byte)SpellByte.NUKE, (byte)SpellByte.SLO2, (byte)SpellByte.FOG, (byte)SpellByte.LIT3 },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.WALL, (byte)SpellByte.FAST, (byte)SpellByte.ICE3, (byte)SpellByte.SABR, (byte)SpellByte.SLO2, (byte)SpellByte.FOG, (byte)SpellByte.LIT3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Crack, (byte)EnemySkills.Stare, (byte)EnemySkills.Stinger },
 				},
@@ -922,7 +908,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Trance, (byte)EnemySkills.Frost, (byte)EnemySkills.Gaze, (byte)EnemySkills.Stare },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.SABR, (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.INVS, (byte)SpellByte.LIT3, (byte)SpellByte.XXXX, (byte)SpellByte.MUTE, (byte)SpellByte.CUR4 },
+					Spells2 = new List<byte> { (byte)SpellByte.SABR, (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.INVS, (byte)SpellByte.LIT3, (byte)SpellByte.XXXX, (byte)SpellByte.MUTE, (byte)SpellByte.CUR3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Blizzard, (byte)EnemySkills.Crack, (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Squint },
 				},
@@ -941,7 +927,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Snorting, (byte)EnemySkills.Frost, (byte)EnemySkills.Frost, (byte)EnemySkills.Gaze },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.ICE3, (byte)SpellByte.FOG, (byte)SpellByte.INVS, (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.FOG },
+					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.ICE2, (byte)SpellByte.FOG, (byte)SpellByte.INVS, (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.FOG },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Blizzard, (byte)EnemySkills.Tornado, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Squint },
 				},
@@ -960,7 +946,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Glare, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Trance, (byte)EnemySkills.Stare },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.FAST, (byte)SpellByte.LIT3, (byte)SpellByte.SABR, (byte)SpellByte.XXXX, (byte)SpellByte.LIT3, (byte)SpellByte.LOK2, (byte)SpellByte.CUR3 },
+					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.FAST, (byte)SpellByte.HEL3, (byte)SpellByte.SABR, (byte)SpellByte.XXXX, (byte)SpellByte.LIT3, (byte)SpellByte.LOK2, (byte)SpellByte.ZAP },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Tornado, (byte)EnemySkills.Thunder, (byte)EnemySkills.Glare, (byte)EnemySkills.Poison_Stone },
 				},
@@ -975,11 +961,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Poison,
 					MonsterType = MonsterType.GIANT,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.ICE2, (byte)SpellByte.LIT2, (byte)SpellByte.MUTE, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.LIT2, (byte)SpellByte.ICE2 },
+					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.ICE, (byte)SpellByte.LIT2, (byte)SpellByte.MUTE, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.LIT2, (byte)SpellByte.ICE2 },
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.ICE3, (byte)SpellByte.FIR3, (byte)SpellByte.INVS, (byte)SpellByte.XXXX, (byte)SpellByte.NUKE, (byte)SpellByte.CUR3, (byte)SpellByte.SLO2 },
+					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.ICE3, (byte)SpellByte.FIR3, (byte)SpellByte.INVS, (byte)SpellByte.XXXX, (byte)SpellByte.WALL, (byte)SpellByte.CUR3, (byte)SpellByte.SLO2 },
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 				},
@@ -1036,7 +1022,7 @@ namespace FF1Lib
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.NUKE, (byte)SpellByte.XXXX, (byte)SpellByte.FIR3, (byte)SpellByte.SLO2, (byte)SpellByte.BRAK, (byte)SpellByte.WALL, (byte)SpellByte.FIR3, (byte)SpellByte.INVS },
+					Spells2 = new List<byte> { (byte)SpellByte.BANE, (byte)SpellByte.XXXX, (byte)SpellByte.FIR3, (byte)SpellByte.SLO2, (byte)SpellByte.BRAK, (byte)SpellByte.WALL, (byte)SpellByte.FIR3, (byte)SpellByte.INVS },
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 				},
@@ -1093,9 +1079,9 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Scorch, (byte)EnemySkills.Heat, (byte)EnemySkills.Flash },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.FIR3, (byte)SpellByte.XFER, (byte)SpellByte.FIR2, (byte)SpellByte.FIR3, (byte)SpellByte.WALL, (byte)SpellByte.FIR3, (byte)SpellByte.NUKE },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.FIR3, (byte)SpellByte.XFER, (byte)SpellByte.FIR2, (byte)SpellByte.FIR3, (byte)SpellByte.WALL, (byte)SpellByte.FIR3, (byte)SpellByte.BANE },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Flash, (byte)EnemySkills.Blaze, (byte)EnemySkills.Nuclear },
+					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Flash, (byte)EnemySkills.Blaze, (byte)EnemySkills.Cremate },
 				},
 
 				new AlternateFiends {
@@ -1108,13 +1094,13 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.UNDEAD,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.FIR2, (byte)SpellByte.QAKE, (byte)SpellByte.STUN, (byte)SpellByte.MUTE, (byte)SpellByte.LIT2, (byte)SpellByte.FIR2, (byte)SpellByte.RUB },
+					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.FIR2, (byte)SpellByte.QAKE, (byte)SpellByte.STUN, (byte)SpellByte.MUTE, (byte)SpellByte.LIT2, (byte)SpellByte.FIRE, (byte)SpellByte.RUB },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Cremate, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Trance },
 					SpellChance2 = 0x40,
 					Spells2 = new List<byte> { (byte)SpellByte.QAKE, (byte)SpellByte.FAST, (byte)SpellByte.FIR3, (byte)SpellByte.SLP2, (byte)SpellByte.XXXX, (byte)SpellByte.INVS, (byte)SpellByte.FIR3, (byte)SpellByte.SLO2 },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Nuclear, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Blaze, (byte)EnemySkills.Dazzle },
+					Skills2 = new List<byte> { (byte)EnemySkills.Nuclear, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Gaze, (byte)EnemySkills.Dazzle },
 				},
 
 				new AlternateFiends {
@@ -1133,7 +1119,7 @@ namespace FF1Lib
 					SpellChance2 = 0x40,
 					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.NUKE, (byte)SpellByte.MUTE, (byte)SpellByte.RUB, (byte)SpellByte.FIR3, (byte)SpellByte.FAST, (byte)SpellByte.CUR3, (byte)SpellByte.SLOW },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Blaze, (byte)EnemySkills.Cremate, (byte)EnemySkills.Inferno, (byte)EnemySkills.Trance },
+					Skills2 = new List<byte> { (byte)EnemySkills.Glance, (byte)EnemySkills.Cremate, (byte)EnemySkills.Inferno, (byte)EnemySkills.Trance },
 				},
 
 				new AlternateFiends {
@@ -1169,7 +1155,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Gaze, (byte)EnemySkills.Flash, (byte)EnemySkills.Flash, (byte)EnemySkills.Crack },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.CUR3, (byte)SpellByte.XXXX, (byte)SpellByte.SLO2, (byte)SpellByte.CUR3, (byte)SpellByte.STOP, (byte)SpellByte.SLOW, (byte)SpellByte.NUKE },
+					Spells2 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.BANE, (byte)SpellByte.XXXX, (byte)SpellByte.SLO2, (byte)SpellByte.CUR3, (byte)SpellByte.STOP, (byte)SpellByte.SLOW, (byte)SpellByte.ZAP },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Gaze, (byte)EnemySkills.Flash, (byte)EnemySkills.Dazzle },
 				},
@@ -1188,7 +1174,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Ink, (byte)EnemySkills.Frost, (byte)EnemySkills.Ink, (byte)EnemySkills.Frost },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.ICE3, (byte)SpellByte.INVS, (byte)SpellByte.BLND, (byte)SpellByte.ICE3, (byte)SpellByte.BRAK, (byte)SpellByte.WALL, (byte)SpellByte.ICE3 },
+					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.ICE2, (byte)SpellByte.INVS, (byte)SpellByte.BLND, (byte)SpellByte.ICE2, (byte)SpellByte.BRAK, (byte)SpellByte.WALL, (byte)SpellByte.ICE3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Swirl, (byte)EnemySkills.Ink, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Frost },
 				},
@@ -1207,7 +1193,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Frost, (byte)EnemySkills.Cremate, (byte)EnemySkills.Trance },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.FIR3, (byte)SpellByte.LIT3, (byte)SpellByte.SLO2, (byte)SpellByte.ICE3, (byte)SpellByte.LIT3, (byte)SpellByte.FIR3, (byte)SpellByte.SLO2 },
+					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.FIR2, (byte)SpellByte.BRAK, (byte)SpellByte.SLO2, (byte)SpellByte.FOG, (byte)SpellByte.LIT3, (byte)SpellByte.FAST, (byte)SpellByte.SLO2 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Inferno, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Crack },
 				},
@@ -1228,7 +1214,7 @@ namespace FF1Lib
 					SpellChance2 = 0x40,
 					Spells2 = new List<byte> { (byte)SpellByte.XXXX, (byte)SpellByte.BRAK, (byte)SpellByte.QAKE, (byte)SpellByte.SLO2, (byte)SpellByte.INVS, (byte)SpellByte.RUB, (byte)SpellByte.ZAP, (byte)SpellByte.BANE },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Nuclear, (byte)EnemySkills.Toxic, (byte)EnemySkills.Crack },
+					Skills2 = new List<byte> { (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Trance, (byte)EnemySkills.Toxic, (byte)EnemySkills.Crack },
 				},
 
 				new AlternateFiends {
@@ -1245,7 +1231,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Stinger, (byte)EnemySkills.Flash, (byte)EnemySkills.Flash, (byte)EnemySkills.Stinger },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.STUN, (byte)SpellByte.LIT3, (byte)SpellByte.SLOW, (byte)SpellByte.CUR3, (byte)SpellByte.LIT3, (byte)SpellByte.STOP, (byte)SpellByte.LIT3 },
+					Spells2 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.STUN, (byte)SpellByte.LIT3, (byte)SpellByte.SLOW, (byte)SpellByte.CUR3, (byte)SpellByte.LIT2, (byte)SpellByte.STOP, (byte)SpellByte.LIT3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Stinger, (byte)EnemySkills.Flash, (byte)EnemySkills.Tornado },
 				},
@@ -1303,7 +1289,7 @@ namespace FF1Lib
 					SpellChance2 = 0x00,
 					Spells2 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Toxic, (byte)EnemySkills.Nuclear, (byte)EnemySkills.Poison_Stone },
+					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Toxic, (byte)EnemySkills.Tornado, (byte)EnemySkills.Poison_Stone },
 				},
 
 				new AlternateFiends {
@@ -1320,7 +1306,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Flash, (byte)EnemySkills.Gaze, (byte)EnemySkills.Snorting },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.ICE3, (byte)SpellByte.ICE2, (byte)SpellByte.ICE2, (byte)SpellByte.ICE3, (byte)SpellByte.ICE3, (byte)SpellByte.ICE2, (byte)SpellByte.BRAK },
+					Spells2 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.ICE3, (byte)SpellByte.CUR3, (byte)SpellByte.ICE2, (byte)SpellByte.FOG, (byte)SpellByte.ICE3, (byte)SpellByte.STOP, (byte)SpellByte.BRAK },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Flash, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Gaze },
 				},
@@ -1333,14 +1319,14 @@ namespace FF1Lib
 					Palette2 = 0x32,
 					ElementalWeakness = SpellElement.Lightning,
 					MonsterType = MonsterType.GIANT,
-					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT, (byte)SpellByte.LIT },
+					SpellChance1 = 0x00,
+					Spells1 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Dazzle, (byte)EnemySkills.Gaze, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Flash },
-					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.FAST, (byte)SpellByte.LIT3, (byte)SpellByte.SLO2, (byte)SpellByte.STOP, (byte)SpellByte.LIT3, (byte)SpellByte.LIT2, (byte)SpellByte.XFER },
+					SpellChance2 = 0x00,
+					Spells2 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Swirl, (byte)EnemySkills.Scorch, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Tornado },
+					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Crack, (byte)EnemySkills.Stare, (byte)EnemySkills.Glare },
 				},
 
 				new AlternateFiends {
@@ -1357,7 +1343,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Cremate, (byte)EnemySkills.Trance, (byte)EnemySkills.Heat },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.NUKE, (byte)SpellByte.INVS, (byte)SpellByte.FIR3, (byte)SpellByte.FAST, (byte)SpellByte.XXXX, (byte)SpellByte.NUKE, (byte)SpellByte.SLO2, (byte)SpellByte.FIR3 },
+					Spells2 = new List<byte> { (byte)SpellByte.NUKE, (byte)SpellByte.INVS, (byte)SpellByte.FIR3, (byte)SpellByte.FAST, (byte)SpellByte.XXXX, (byte)SpellByte.BANE, (byte)SpellByte.SLO2, (byte)SpellByte.FIR3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Tornado, (byte)EnemySkills.Glare, (byte)EnemySkills.Tornado },
 				},
@@ -1376,7 +1362,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Trance, (byte)EnemySkills.Cremate, (byte)EnemySkills.Frost, (byte)EnemySkills.Stare },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.NUKE, (byte)SpellByte.FIR3, (byte)SpellByte.BANE, (byte)SpellByte.SABR, (byte)SpellByte.SLO2, (byte)SpellByte.NUKE, (byte)SpellByte.CUR4 },
+					Spells2 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.NUKE, (byte)SpellByte.FIR3, (byte)SpellByte.BANE, (byte)SpellByte.SABR, (byte)SpellByte.SLO2, (byte)SpellByte.FOG, (byte)SpellByte.CUR4 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Swirl, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Toxic, (byte)EnemySkills.Nuclear },
 				},
@@ -1417,7 +1403,7 @@ namespace FF1Lib
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ZAP, (byte)SpellByte.ICE3, (byte)SpellByte.LIT3, (byte)SpellByte.XXXX, (byte)SpellByte.CUR3, (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.LIT3 },
+					Spells2 = new List<byte> { (byte)SpellByte.ZAP, (byte)SpellByte.ICE3, (byte)SpellByte.LIT2, (byte)SpellByte.XXXX, (byte)SpellByte.CUR3, (byte)SpellByte.ICE2, (byte)SpellByte.SLO2, (byte)SpellByte.LIT2 },
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 				},
@@ -1431,11 +1417,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.SLOW, (byte)SpellByte.CUR2, (byte)SpellByte.LIT2, (byte)SpellByte.LIT2, (byte)SpellByte.FOG, (byte)SpellByte.FOG, (byte)SpellByte.CUR2, (byte)SpellByte.SLOW },
+					Spells1 = new List<byte> { (byte)SpellByte.SLOW, (byte)SpellByte.CUR2, (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.FOG, (byte)SpellByte.FOG, (byte)SpellByte.CUR2, (byte)SpellByte.SLOW },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Trance, (byte)EnemySkills.Stinger, (byte)EnemySkills.Frost, (byte)EnemySkills.Flash },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.FOG2, (byte)SpellByte.CUR3, (byte)SpellByte.LOK2, (byte)SpellByte.LIT3, (byte)SpellByte.FOG2, (byte)SpellByte.CUR3, (byte)SpellByte.LIT3 },
+					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.FOG2, (byte)SpellByte.CUR3, (byte)SpellByte.LOK2, (byte)SpellByte.LIT2, (byte)SpellByte.FOG2, (byte)SpellByte.CUR3, (byte)SpellByte.LIT3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Tornado, (byte)EnemySkills.Nuclear, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Glare },
 				},
@@ -1509,7 +1495,7 @@ namespace FF1Lib
 					SpellChance2 = 0x40,
 					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.ICE3, (byte)SpellByte.LIT3, (byte)SpellByte.STOP, (byte)SpellByte.LOK2, (byte)SpellByte.ZAP, (byte)SpellByte.CUR4, (byte)SpellByte.INVS },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Nuclear, (byte)EnemySkills.Blaze, (byte)EnemySkills.Trance, (byte)EnemySkills.Stare },
+					Skills2 = new List<byte> { (byte)EnemySkills.Toxic, (byte)EnemySkills.Blaze, (byte)EnemySkills.Trance, (byte)EnemySkills.Stare },
 				},
 			new AlternateFiends {
 					Name = "BYBLOS",
@@ -1539,11 +1525,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Time,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.SLOW, (byte)SpellByte.ICE2, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.TMPR },
+					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.STUN, (byte)SpellByte.FIRE, (byte)SpellByte.SLOW, (byte)SpellByte.ICE2, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.TMPR },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Ink, (byte)EnemySkills.Stinger, (byte)EnemySkills.Dazzle },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.RUB, (byte)SpellByte.FIR3, (byte)SpellByte.SLP2, (byte)SpellByte.ICE3, (byte)SpellByte.XFER, (byte)SpellByte.FIR3, (byte)SpellByte.FAST },
+					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.RUB, (byte)SpellByte.FIR3, (byte)SpellByte.SLP2, (byte)SpellByte.ICE2, (byte)SpellByte.XFER, (byte)SpellByte.FIR2, (byte)SpellByte.FAST },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Stinger, (byte)EnemySkills.Swirl, (byte)EnemySkills.Stare, (byte)EnemySkills.Poison_Stone },
 				},
@@ -1575,7 +1561,7 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Poison,
 					MonsterType = MonsterType.DRAGON,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.SLOW, (byte)SpellByte.FIR2, (byte)SpellByte.BRAK, (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.BRAK },
+					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.SLOW, (byte)SpellByte.FIRE, (byte)SpellByte.BRAK, (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.BRAK },
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x00,
@@ -1647,11 +1633,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Time,
 					MonsterType = MonsterType.GIANT,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.STUN, (byte)SpellByte.LIT2, (byte)SpellByte.SLOW, (byte)SpellByte.LIT2, (byte)SpellByte.TMPR, (byte)SpellByte.INVS, (byte)SpellByte.LIT2 },
+					Spells1 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.STUN, (byte)SpellByte.LIT, (byte)SpellByte.SLOW, (byte)SpellByte.LIT, (byte)SpellByte.TMPR, (byte)SpellByte.INVS, (byte)SpellByte.LIT2 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Glare, (byte)EnemySkills.Trance, (byte)EnemySkills.Flash, (byte)EnemySkills.Dazzle },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.CUR4, (byte)SpellByte.SLO2, (byte)SpellByte.LIT3, (byte)SpellByte.FOG2, (byte)SpellByte.LOK2, (byte)SpellByte.LIT3, (byte)SpellByte.STOP },
+					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.CUR3, (byte)SpellByte.SLO2, (byte)SpellByte.LIT3, (byte)SpellByte.FOG2, (byte)SpellByte.LOK2, (byte)SpellByte.LIT3, (byte)SpellByte.STOP },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Tornado, (byte)EnemySkills.Squint, (byte)EnemySkills.Tornado, (byte)EnemySkills.Glare },
 				},
@@ -1669,7 +1655,7 @@ namespace FF1Lib
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ZAP, (byte)SpellByte.NUKE, (byte)SpellByte.QAKE, (byte)SpellByte.ICE3, (byte)SpellByte.CUR4, (byte)SpellByte.FIR3, (byte)SpellByte.LIT3, (byte)SpellByte.BRAK },
+					Spells2 = new List<byte> { (byte)SpellByte.ZAP, (byte)SpellByte.BRAK, (byte)SpellByte.QAKE, (byte)SpellByte.ICE3, (byte)SpellByte.CUR3, (byte)SpellByte.FIR3, (byte)SpellByte.LIT3, (byte)SpellByte.BRAK },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Blaze, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Poison_Stone },
 				},
@@ -1791,13 +1777,13 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.SLOW, (byte)SpellByte.FIR2, (byte)SpellByte.FIR2, (byte)SpellByte.FIRE, (byte)SpellByte.STUN },
+					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.FIRE, (byte)SpellByte.FIRE, (byte)SpellByte.SLOW, (byte)SpellByte.FOG, (byte)SpellByte.FIR2, (byte)SpellByte.FIRE, (byte)SpellByte.STUN },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Cremate, (byte)EnemySkills.Flash, (byte)EnemySkills.Flash },
 					SpellChance2 = 0x40,
 					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.FOG, (byte)SpellByte.FIR3, (byte)SpellByte.FIR3, (byte)SpellByte.SABR, (byte)SpellByte.HEL3, (byte)SpellByte.FIR3, (byte)SpellByte.FIR3 },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Nuclear, (byte)EnemySkills.Toxic, (byte)EnemySkills.Blaze },
+					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Glare, (byte)EnemySkills.Toxic, (byte)EnemySkills.Blaze },
 				},
 			new AlternateFiends {
 					Name = "MAGISSA",
@@ -1809,11 +1795,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.None,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.CUR2, (byte)SpellByte.FIR2, (byte)SpellByte.ICE2, (byte)SpellByte.LIT2, (byte)SpellByte.FIR2, (byte)SpellByte.CUR2, (byte)SpellByte.LIT2, (byte)SpellByte.ICE2 },
+					Spells1 = new List<byte> { (byte)SpellByte.CUR2, (byte)SpellByte.FIR2, (byte)SpellByte.ICE2, (byte)SpellByte.LIT, (byte)SpellByte.FIRE, (byte)SpellByte.CUR2, (byte)SpellByte.LIT2, (byte)SpellByte.ICE },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Stinger, (byte)EnemySkills.Stinger, (byte)EnemySkills.Stinger, (byte)EnemySkills.Stinger },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.ICE3, (byte)SpellByte.CUR4, (byte)SpellByte.ICE3, (byte)SpellByte.INVS, (byte)SpellByte.HEL3, (byte)SpellByte.NUKE, (byte)SpellByte.LIT3 },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.ICE3, (byte)SpellByte.CUR3, (byte)SpellByte.ICE3, (byte)SpellByte.INVS, (byte)SpellByte.HEL3, (byte)SpellByte.BANE, (byte)SpellByte.LIT3 },
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 				},
@@ -1831,7 +1817,7 @@ namespace FF1Lib
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.SLO2, (byte)SpellByte.LIT3, (byte)SpellByte.WALL, (byte)SpellByte.ICE3, (byte)SpellByte.MUTE, (byte)SpellByte.XXXX, (byte)SpellByte.BANE },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.SLO2, (byte)SpellByte.LIT3, (byte)SpellByte.WALL, (byte)SpellByte.FAST, (byte)SpellByte.MUTE, (byte)SpellByte.XXXX, (byte)SpellByte.BANE },
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 				},
@@ -1867,7 +1853,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Cremate, (byte)EnemySkills.Frost, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Trance },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.WALL, (byte)SpellByte.XXXX, (byte)SpellByte.NUKE, (byte)SpellByte.SLO2, (byte)SpellByte.ICE3, (byte)SpellByte.MUTE, (byte)SpellByte.ZAP },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.WALL, (byte)SpellByte.XXXX, (byte)SpellByte.XFER, (byte)SpellByte.SLO2, (byte)SpellByte.ICE3, (byte)SpellByte.MUTE, (byte)SpellByte.ZAP },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Swirl, (byte)EnemySkills.Inferno, (byte)EnemySkills.Stare },
 				},
@@ -1887,7 +1873,7 @@ namespace FF1Lib
 					SpellChance2 = 0x40,
 					Spells2 = new List<byte> { (byte)SpellByte.NUKE, (byte)SpellByte.XXXX, (byte)SpellByte.LOK2, (byte)SpellByte.ICE3, (byte)SpellByte.CUR3, (byte)SpellByte.FAST, (byte)SpellByte.SLO2, (byte)SpellByte.ICE3 },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Blaze, (byte)EnemySkills.Nuclear, (byte)EnemySkills.Crack },
+					Skills2 = new List<byte> { (byte)EnemySkills.Glance, (byte)EnemySkills.Toxic, (byte)EnemySkills.Nuclear, (byte)EnemySkills.Crack },
 				},
 		new AlternateFiends {
 					Name = "OMNISENT",
@@ -1921,7 +1907,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Cremate, (byte)EnemySkills.Frost, (byte)EnemySkills.Gaze, (byte)EnemySkills.Trance },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.QAKE, (byte)SpellByte.FADE, (byte)SpellByte.CUR4, (byte)SpellByte.FAST, (byte)SpellByte.SLO2, (byte)SpellByte.SABR, (byte)SpellByte.NUKE, (byte)SpellByte.XXXX },
+					Spells2 = new List<byte> { (byte)SpellByte.QAKE, (byte)SpellByte.FADE, (byte)SpellByte.CUR3, (byte)SpellByte.FAST, (byte)SpellByte.SLO2, (byte)SpellByte.SABR, (byte)SpellByte.RUB, (byte)SpellByte.XXXX },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Toxic, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Swirl, (byte)EnemySkills.Crack },
 				},
@@ -1955,11 +1941,11 @@ namespace FF1Lib
 					SpellChance1 = 0x00,
 					Spells1 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
 					SkillChance1 = 0x40,
-					Skills1 = new List<byte> { (byte)EnemySkills.Cremate, (byte)EnemySkills.Crack, (byte)EnemySkills.Glare, (byte)EnemySkills.Trance },
+					Skills1 = new List<byte> { (byte)EnemySkills.Cremate, (byte)EnemySkills.Crack, (byte)EnemySkills.Stare, (byte)EnemySkills.Trance },
 					SpellChance2 = 0x00,
 					Spells2 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Nuclear, (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Tornado, (byte)EnemySkills.Thunder },
+					Skills2 = new List<byte> { (byte)EnemySkills.Glance, (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Tornado, (byte)EnemySkills.Thunder },
 				},
 				new AlternateFiends {
 					Name = "TWINTANI",
@@ -1977,7 +1963,7 @@ namespace FF1Lib
 					SpellChance2 = 0x40,
 					Spells2 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.LIT3, (byte)SpellByte.LOCK, (byte)SpellByte.LOCK, (byte)SpellByte.NUKE, (byte)SpellByte.LIT3, (byte)SpellByte.SLO2, (byte)SpellByte.XXXX },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Swirl, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Crack, (byte)EnemySkills.Blaze },
+					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Squint, (byte)EnemySkills.Blaze },
 				},
 				new AlternateFiends {
 					Name = "W.RAPTOR",
@@ -2029,11 +2015,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.None,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.ICE2, (byte)SpellByte.SLOW, (byte)SpellByte.LIT2, (byte)SpellByte.MUTE, (byte)SpellByte.ZAP, (byte)SpellByte.ICE2 },
+					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.STUN, (byte)SpellByte.ICE2, (byte)SpellByte.SLOW, (byte)SpellByte.LIT, (byte)SpellByte.MUTE, (byte)SpellByte.ZAP, (byte)SpellByte.ICE2 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Heat, (byte)EnemySkills.Trance, (byte)EnemySkills.Stinger },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.QAKE, (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.LIT3, (byte)SpellByte.XXXX, (byte)SpellByte.FADE, (byte)SpellByte.WALL },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.QAKE, (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.FOG, (byte)SpellByte.XXXX, (byte)SpellByte.FADE, (byte)SpellByte.WALL },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Blizzard, (byte)EnemySkills.Inferno, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Nuclear },
 					},
@@ -2052,7 +2038,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Stinger, (byte)EnemySkills.Frost, (byte)EnemySkills.Trance, (byte)EnemySkills.Frost },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.XXXX, (byte)SpellByte.SLO2, (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.MUTE, (byte)SpellByte.LOCK, (byte)SpellByte.ICE3 },
+					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.ICE2, (byte)SpellByte.SLO2, (byte)SpellByte.STOP, (byte)SpellByte.XXXX, (byte)SpellByte.MUTE, (byte)SpellByte.LOCK, (byte)SpellByte.ICE3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Toxic, (byte)EnemySkills.Swirl },
 					},
@@ -2067,11 +2053,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.UNDEAD,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.FOG, (byte)SpellByte.CUR2, (byte)SpellByte.LIT2, (byte)SpellByte.FOG, (byte)SpellByte.LIT2, (byte)SpellByte.LIT },
+					Spells1 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.FOG, (byte)SpellByte.CUR2, (byte)SpellByte.SLEP, (byte)SpellByte.FOG, (byte)SpellByte.LIT2, (byte)SpellByte.LIT },
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.FAST, (byte)SpellByte.LIT3, (byte)SpellByte.SLP2, (byte)SpellByte.LIT3, (byte)SpellByte.CUR3, (byte)SpellByte.LIT3, (byte)SpellByte.RUB },
+					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.FAST, (byte)SpellByte.LIT2, (byte)SpellByte.SLP2, (byte)SpellByte.LIT3, (byte)SpellByte.CUR3, (byte)SpellByte.LIT2, (byte)SpellByte.RUB },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Squint, (byte)EnemySkills.Glare, (byte)EnemySkills.Thunder },
 					},
@@ -2086,11 +2072,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.NONE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.FOG, (byte)SpellByte.LIT2, (byte)SpellByte.INVS, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.FOG, (byte)SpellByte.LIT },
+					Spells1 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.FOG, (byte)SpellByte.LIT, (byte)SpellByte.INVS, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.FOG, (byte)SpellByte.LIT },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Trance, (byte)EnemySkills.Gaze, (byte)EnemySkills.Trance, (byte)EnemySkills.Gaze },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FOG2, (byte)SpellByte.LIT3, (byte)SpellByte.WALL, (byte)SpellByte.LIT3, (byte)SpellByte.RUB, (byte)SpellByte.LIT3, (byte)SpellByte.STOP, (byte)SpellByte.LIT3 },
+					Spells2 = new List<byte> { (byte)SpellByte.FOG2, (byte)SpellByte.LIT3, (byte)SpellByte.WALL, (byte)SpellByte.LIT2, (byte)SpellByte.RUB, (byte)SpellByte.LOK2, (byte)SpellByte.STOP, (byte)SpellByte.LIT3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Dazzle, (byte)EnemySkills.Thunder, (byte)EnemySkills.Toxic, (byte)EnemySkills.Tornado },
 					},
@@ -2105,11 +2091,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Poison,
 					MonsterType = MonsterType.GIANT,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.CURE, (byte)SpellByte.FOG, (byte)SpellByte.HEL2, (byte)SpellByte.FOG, (byte)SpellByte.CURE, (byte)SpellByte.INVS, (byte)SpellByte.HEL2, (byte)SpellByte.INVS },
+					Spells1 = new List<byte> { (byte)SpellByte.CURE, (byte)SpellByte.FOG, (byte)SpellByte.HEL2, (byte)SpellByte.FOG, (byte)SpellByte.CURE, (byte)SpellByte.INVS, (byte)SpellByte.HEL2, (byte)SpellByte.TMPR },
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.CUR3, (byte)SpellByte.FAST, (byte)SpellByte.FOG2, (byte)SpellByte.MUTE, (byte)SpellByte.TMPR, (byte)SpellByte.HEL3, (byte)SpellByte.CUR3, (byte)SpellByte.FOG2 },
+					Spells2 = new List<byte> { (byte)SpellByte.CUR3, (byte)SpellByte.FAST, (byte)SpellByte.FOG2, (byte)SpellByte.MUTE, (byte)SpellByte.SABR, (byte)SpellByte.HEL3, (byte)SpellByte.CUR3, (byte)SpellByte.FOG2 },
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					},
@@ -2130,7 +2116,7 @@ namespace FF1Lib
 					SpellChance2 = 0x40,
 					Spells2 = new List<byte> { (byte)SpellByte.QAKE, (byte)SpellByte.ICE3, (byte)SpellByte.XXXX, (byte)SpellByte.ZAP, (byte)SpellByte.WALL, (byte)SpellByte.ICE3, (byte)SpellByte.BRAK, (byte)SpellByte.BANE },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Toxic, (byte)EnemySkills.Nuclear, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Tornado },
+					Skills2 = new List<byte> { (byte)EnemySkills.Toxic, (byte)EnemySkills.Squint, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Tornado },
 					},
 
 					new AlternateFiends {
@@ -2143,7 +2129,7 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.SLEP, (byte)SpellByte.ICE2, (byte)SpellByte.ICE2, (byte)SpellByte.MUTE, (byte)SpellByte.ICE2, (byte)SpellByte.SLOW, (byte)SpellByte.ICE2, (byte)SpellByte.RUB },
+					Spells1 = new List<byte> { (byte)SpellByte.SLEP, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.MUTE, (byte)SpellByte.ICE2, (byte)SpellByte.SLOW, (byte)SpellByte.ICE, (byte)SpellByte.RUB },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Stinger, (byte)EnemySkills.Frost, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Frost },
 					SpellChance2 = 0x40,
@@ -2166,9 +2152,9 @@ namespace FF1Lib
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.QAKE, (byte)SpellByte.XXXX, (byte)SpellByte.BANE, (byte)SpellByte.LIT3, (byte)SpellByte.BRAK, (byte)SpellByte.LIT3, (byte)SpellByte.QAKE },
+					Spells2 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.QAKE, (byte)SpellByte.XXXX, (byte)SpellByte.BANE, (byte)SpellByte.LIT3, (byte)SpellByte.BRAK, (byte)SpellByte.LIT3, (byte)SpellByte.QAKE },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Thunder, (byte)EnemySkills.Crack, (byte)EnemySkills.Thunder },
+					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Thunder, (byte)EnemySkills.Crack, (byte)EnemySkills.Gaze },
 					},
 
 					new AlternateFiends {
@@ -2185,7 +2171,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Heat, (byte)EnemySkills.Cremate, (byte)EnemySkills.Cremate },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.FOG2, (byte)SpellByte.FIR3, (byte)SpellByte.NUKE, (byte)SpellByte.FOG2, (byte)SpellByte.FIR3, (byte)SpellByte.HEL3, (byte)SpellByte.NUKE },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.FOG2, (byte)SpellByte.FIR3, (byte)SpellByte.FIR2, (byte)SpellByte.FOG2, (byte)SpellByte.FIR3, (byte)SpellByte.HEL3, (byte)SpellByte.NUKE },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Tornado, (byte)EnemySkills.Inferno, (byte)EnemySkills.Tornado },
 					},
@@ -2199,7 +2185,7 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.None,
 					MonsterType = MonsterType.REGENERATIVE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.INVS, (byte)SpellByte.ICE2, (byte)SpellByte.TMPR, (byte)SpellByte.ICE, (byte)SpellByte.FOG, (byte)SpellByte.ICE2, (byte)SpellByte.ICE2 },
+					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.INVS, (byte)SpellByte.ICE2, (byte)SpellByte.TMPR, (byte)SpellByte.ICE, (byte)SpellByte.FOG, (byte)SpellByte.ICE2, (byte)SpellByte.STUN },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Trance, (byte)EnemySkills.Frost },
 					SpellChance2 = 0x40,
@@ -2236,11 +2222,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.DRAGON,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.INVS, (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.SLEP, (byte)SpellByte.LIT2, (byte)SpellByte.LIT2, (byte)SpellByte.STUN, (byte)SpellByte.LIT2 },
+					Spells1 = new List<byte> { (byte)SpellByte.INVS, (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.SLEP, (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.STUN, (byte)SpellByte.LIT2 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Snorting, (byte)EnemySkills.Trance, (byte)EnemySkills.Flash, (byte)EnemySkills.Stare },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.WALL, (byte)SpellByte.LIT3, (byte)SpellByte.FAST, (byte)SpellByte.LIT3, (byte)SpellByte.XXXX, (byte)SpellByte.LIT3, (byte)SpellByte.CUR3 },
+					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.WALL, (byte)SpellByte.LIT2, (byte)SpellByte.FAST, (byte)SpellByte.SLOW, (byte)SpellByte.XXXX, (byte)SpellByte.LIT3, (byte)SpellByte.CUR3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Thunder, (byte)EnemySkills.Squint },
 					},
@@ -2274,11 +2260,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.None,
 					MonsterType = MonsterType.REGENERATIVE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.SLEP, (byte)SpellByte.LIT2, (byte)SpellByte.FOG, (byte)SpellByte.LIT2, (byte)SpellByte.INVS, (byte)SpellByte.LIT2, (byte)SpellByte.SLEP, (byte)SpellByte.LIT2 },
+					Spells1 = new List<byte> { (byte)SpellByte.SLEP, (byte)SpellByte.LIT2, (byte)SpellByte.FOG, (byte)SpellByte.LIT, (byte)SpellByte.INVS, (byte)SpellByte.LIT2, (byte)SpellByte.SLEP, (byte)SpellByte.LIT },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Dazzle, (byte)EnemySkills.Trance, (byte)EnemySkills.Flash, (byte)EnemySkills.Stare },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.SLP2, (byte)SpellByte.LIT3, (byte)SpellByte.FAST, (byte)SpellByte.LIT3, (byte)SpellByte.BANE, (byte)SpellByte.LIT3, (byte)SpellByte.SLO2, (byte)SpellByte.LOCK },
+					Spells2 = new List<byte> { (byte)SpellByte.SLP2, (byte)SpellByte.LIT3, (byte)SpellByte.FAST, (byte)SpellByte.LIT3, (byte)SpellByte.BANE, (byte)SpellByte.CUR3, (byte)SpellByte.SLO2, (byte)SpellByte.LOCK },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Toxic, (byte)EnemySkills.Thunder, (byte)EnemySkills.Crack, (byte)EnemySkills.Poison_Stone },
 					},
@@ -2318,7 +2304,7 @@ namespace FF1Lib
 					SpellChance2 = 0x00,
 					Spells2 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Nuclear, (byte)EnemySkills.Squint, (byte)EnemySkills.Toxic },
+					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Tornado, (byte)EnemySkills.Squint, (byte)EnemySkills.Toxic },
 					},
 
 			new AlternateFiends {
@@ -2331,11 +2317,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.DRAGON,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.STUN, (byte)SpellByte.ICE2, (byte)SpellByte.HOLD, (byte)SpellByte.ICE2, (byte)SpellByte.STUN, (byte)SpellByte.ICE2, (byte)SpellByte.HOLD },
+					Spells1 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.STUN, (byte)SpellByte.ICE, (byte)SpellByte.HOLD, (byte)SpellByte.ICE2, (byte)SpellByte.STUN, (byte)SpellByte.ICE, (byte)SpellByte.HOLD },
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.STOP, (byte)SpellByte.ICE3, (byte)SpellByte.XFER, (byte)SpellByte.ICE3, (byte)SpellByte.STOP, (byte)SpellByte.ICE3, (byte)SpellByte.SLOW },
+					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.STOP, (byte)SpellByte.ICE2, (byte)SpellByte.XFER, (byte)SpellByte.ICE3, (byte)SpellByte.STOP, (byte)SpellByte.ICE3, (byte)SpellByte.SLOW },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Blizzard, (byte)EnemySkills.Trance, (byte)EnemySkills.Frost, (byte)EnemySkills.Blizzard },
 					},
@@ -2369,13 +2355,13 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.REGENERATIVE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.FOG, (byte)SpellByte.ICE2, (byte)SpellByte.ICE2, (byte)SpellByte.SLOW, (byte)SpellByte.SLEP, (byte)SpellByte.ICE2, (byte)SpellByte.ICE2 },
+					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.FOG, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.SLOW, (byte)SpellByte.SLEP, (byte)SpellByte.CUR2, (byte)SpellByte.ICE2 },
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.FAST, (byte)SpellByte.FADE, (byte)SpellByte.SLO2, (byte)SpellByte.ICE3, (byte)SpellByte.FOG, (byte)SpellByte.FADE, (byte)SpellByte.FAST },
+					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.FAST, (byte)SpellByte.WALL, (byte)SpellByte.SLO2, (byte)SpellByte.ICE3, (byte)SpellByte.FOG, (byte)SpellByte.FADE, (byte)SpellByte.FAST },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Nuclear, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Squint },
+					Skills2 = new List<byte> { (byte)EnemySkills.Stare, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Squint },
 					},
 
 			new AlternateFiends {
@@ -2388,13 +2374,13 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.None,
 					MonsterType = MonsterType.DRAGON,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.FIR2, (byte)SpellByte.SLOW, (byte)SpellByte.INVS, (byte)SpellByte.LIT2, (byte)SpellByte.RUB, (byte)SpellByte.ICE2, (byte)SpellByte.FIR2 },
+					Spells1 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.FIRE, (byte)SpellByte.SLOW, (byte)SpellByte.INVS, (byte)SpellByte.LIT2, (byte)SpellByte.RUB, (byte)SpellByte.ICE2, (byte)SpellByte.FIRE },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Dazzle, (byte)EnemySkills.Cremate, (byte)EnemySkills.Frost, (byte)EnemySkills.Stare },
 					SpellChance2 = 0x40,
 					Spells2 = new List<byte> { (byte)SpellByte.NUKE, (byte)SpellByte.XXXX, (byte)SpellByte.FAST, (byte)SpellByte.FIR3, (byte)SpellByte.LIT3, (byte)SpellByte.FOG2, (byte)SpellByte.SABR, (byte)SpellByte.BANE },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Thunder, (byte)EnemySkills.Toxic, (byte)EnemySkills.Crack },
+					Skills2 = new List<byte> { (byte)EnemySkills.Stinger, (byte)EnemySkills.Thunder, (byte)EnemySkills.Toxic, (byte)EnemySkills.Crack },
 					},
 
 			new AlternateFiends {
@@ -2449,7 +2435,7 @@ namespace FF1Lib
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.NUKE, (byte)SpellByte.XXXX, (byte)SpellByte.MUTE, (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.INVS, (byte)SpellByte.LIT3, (byte)SpellByte.BRAK },
+					Spells2 = new List<byte> { (byte)SpellByte.SLO2, (byte)SpellByte.XXXX, (byte)SpellByte.MUTE, (byte)SpellByte.ICE3, (byte)SpellByte.BANE, (byte)SpellByte.INVS, (byte)SpellByte.LIT3, (byte)SpellByte.BRAK },
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					},
@@ -2464,11 +2450,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Lightning,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.RUB, (byte)SpellByte.ALIT, (byte)SpellByte.FIR2, (byte)SpellByte.SLOW, (byte)SpellByte.FIR2, (byte)SpellByte.SLEP, (byte)SpellByte.FIR2 },
+					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.RUB, (byte)SpellByte.ALIT, (byte)SpellByte.FIRE, (byte)SpellByte.SLOW, (byte)SpellByte.FIR2, (byte)SpellByte.SLEP, (byte)SpellByte.FIRE },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Frost, (byte)EnemySkills.Trance, (byte)EnemySkills.Ink },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.FIR3, (byte)SpellByte.SLO2, (byte)SpellByte.FIR3, (byte)SpellByte.XXXX, (byte)SpellByte.SLP2, (byte)SpellByte.FIR3, (byte)SpellByte.BRAK },
+					Spells2 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.FIR3, (byte)SpellByte.SLO2, (byte)SpellByte.FIR2, (byte)SpellByte.XXXX, (byte)SpellByte.SLP2, (byte)SpellByte.FIR3, (byte)SpellByte.BRAK },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Cremate, (byte)EnemySkills.Inferno, (byte)EnemySkills.Inferno, (byte)EnemySkills.Glance },
 					},
@@ -2483,11 +2469,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.WERE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.HOLD, (byte)SpellByte.ICE2, (byte)SpellByte.FAST, (byte)SpellByte.ICE2, (byte)SpellByte.CUR2, (byte)SpellByte.ICE2, (byte)SpellByte.BRAK, (byte)SpellByte.ICE2 },
+					Spells1 = new List<byte> { (byte)SpellByte.HOLD, (byte)SpellByte.ICE2, (byte)SpellByte.FAST, (byte)SpellByte.ICE, (byte)SpellByte.CUR2, (byte)SpellByte.ICE, (byte)SpellByte.BRAK, (byte)SpellByte.ICE2 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Ink, (byte)EnemySkills.Trance, (byte)EnemySkills.Frost },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.INVS, (byte)SpellByte.ICE3, (byte)SpellByte.STOP, (byte)SpellByte.ICE3, (byte)SpellByte.STUN, (byte)SpellByte.ICE3, (byte)SpellByte.FAST, (byte)SpellByte.BANE },
+					Spells2 = new List<byte> { (byte)SpellByte.INVS, (byte)SpellByte.ICE3, (byte)SpellByte.STOP, (byte)SpellByte.ICE3, (byte)SpellByte.STUN, (byte)SpellByte.ICE2, (byte)SpellByte.FAST, (byte)SpellByte.BANE },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Blaze, (byte)EnemySkills.Tornado, (byte)EnemySkills.Crack, (byte)EnemySkills.Toxic },
 					},
@@ -2521,11 +2507,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Poison,
 					MonsterType = MonsterType.GIANT,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.LIT2, (byte)SpellByte.HOLD, (byte)SpellByte.LIT2, (byte)SpellByte.SLOW, (byte)SpellByte.LOCK, (byte)SpellByte.LIT2, (byte)SpellByte.LIT2 },
+					Spells1 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.LIT, (byte)SpellByte.HOLD, (byte)SpellByte.LIT2, (byte)SpellByte.SLOW, (byte)SpellByte.LOCK, (byte)SpellByte.LIT, (byte)SpellByte.LIT2 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Stare, (byte)EnemySkills.Gaze, (byte)EnemySkills.Trance, (byte)EnemySkills.Stinger },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.FAST, (byte)SpellByte.TMPR, (byte)SpellByte.LIT3, (byte)SpellByte.TMPR, (byte)SpellByte.LIT3, (byte)SpellByte.SLO2, (byte)SpellByte.SLP2 },
+					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.FAST, (byte)SpellByte.TMPR, (byte)SpellByte.LIT3, (byte)SpellByte.SABR, (byte)SpellByte.LIT3, (byte)SpellByte.SLO2, (byte)SpellByte.SLP2 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Squint, (byte)EnemySkills.Tornado, (byte)EnemySkills.Swirl, (byte)EnemySkills.Toxic },
 					},
@@ -2540,11 +2526,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Poison,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FOG, (byte)SpellByte.FIR2, (byte)SpellByte.FOG, (byte)SpellByte.FIR2, (byte)SpellByte.ZAP, (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.HOLD },
+					Spells1 = new List<byte> { (byte)SpellByte.FOG, (byte)SpellByte.FIR2, (byte)SpellByte.FOG, (byte)SpellByte.FIRE, (byte)SpellByte.ZAP, (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.HOLD },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Cremate, (byte)EnemySkills.Dazzle, (byte)EnemySkills.Gaze },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FOG2, (byte)SpellByte.BANE, (byte)SpellByte.FIR3, (byte)SpellByte.FIR3, (byte)SpellByte.BRAK, (byte)SpellByte.STOP, (byte)SpellByte.SLP2, (byte)SpellByte.FIR3 },
+					Spells2 = new List<byte> { (byte)SpellByte.FOG2, (byte)SpellByte.BANE, (byte)SpellByte.FIR3, (byte)SpellByte.FIR2, (byte)SpellByte.BRAK, (byte)SpellByte.STOP, (byte)SpellByte.SLP2, (byte)SpellByte.FIR3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Blaze, (byte)EnemySkills.Inferno, (byte)EnemySkills.Toxic, (byte)EnemySkills.Tornado },
 					},
@@ -2559,13 +2545,13 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.DRAGON,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.FOG, (byte)SpellByte.MUTE, (byte)SpellByte.FIR2, (byte)SpellByte.FIR2, (byte)SpellByte.SLOW, (byte)SpellByte.FIR2 },
+					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.FOG, (byte)SpellByte.MUTE, (byte)SpellByte.FIR2, (byte)SpellByte.FIRE, (byte)SpellByte.SLOW, (byte)SpellByte.FIR2 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Cremate, (byte)EnemySkills.Heat, (byte)EnemySkills.Cremate },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.NUKE, (byte)SpellByte.XXXX, (byte)SpellByte.FIR3, (byte)SpellByte.FAST, (byte)SpellByte.FIR3, (byte)SpellByte.SLO2, (byte)SpellByte.XFER },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.NUKE, (byte)SpellByte.XXXX, (byte)SpellByte.FIR3, (byte)SpellByte.FAST, (byte)SpellByte.FIR3, (byte)SpellByte.SLO2, (byte)SpellByte.XFER },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Blaze, (byte)EnemySkills.Squint, (byte)EnemySkills.Toxic },
+					Skills2 = new List<byte> { (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Blaze, (byte)EnemySkills.Squint, (byte)EnemySkills.Toxic },
 					},
 
 			new AlternateFiends {
@@ -2578,11 +2564,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Lightning,
 					MonsterType = MonsterType.AQUATIC,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.LIT2, (byte)SpellByte.INVS, (byte)SpellByte.ICE2, (byte)SpellByte.SLOW, (byte)SpellByte.LOCK, (byte)SpellByte.LIT2 },
+					Spells1 = new List<byte> { (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.LIT2, (byte)SpellByte.INVS, (byte)SpellByte.ICE, (byte)SpellByte.SLOW, (byte)SpellByte.LOCK, (byte)SpellByte.LIT2 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Trance, (byte)EnemySkills.Stinger, (byte)EnemySkills.Dazzle },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.SABR, (byte)SpellByte.LIT3, (byte)SpellByte.SLO2, (byte)SpellByte.ICE3, (byte)SpellByte.XFER, (byte)SpellByte.XXXX, (byte)SpellByte.ICE3 },
+					Spells2 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.SABR, (byte)SpellByte.LIT3, (byte)SpellByte.SLO2, (byte)SpellByte.ICE2, (byte)SpellByte.XFER, (byte)SpellByte.XXXX, (byte)SpellByte.ICE3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Swirl, (byte)EnemySkills.Stinger },
 					},
@@ -2635,11 +2621,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Lightning,
 					MonsterType = MonsterType.REGENERATIVE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.ICE2, (byte)SpellByte.LIT2, (byte)SpellByte.BRAK, (byte)SpellByte.FIR2, (byte)SpellByte.ICE2, (byte)SpellByte.LIT2, (byte)SpellByte.BRAK },
+					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.ICE2, (byte)SpellByte.LIT, (byte)SpellByte.BRAK, (byte)SpellByte.FIR2, (byte)SpellByte.ICE, (byte)SpellByte.LIT2, (byte)SpellByte.BRAK },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Stinger, (byte)EnemySkills.Ink, (byte)EnemySkills.Cremate, (byte)EnemySkills.Frost },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.BANE, (byte)SpellByte.ICE3, (byte)SpellByte.LIT3, (byte)SpellByte.BRAK, (byte)SpellByte.ICE3, (byte)SpellByte.FIR3, (byte)SpellByte.LIT3 },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.BANE, (byte)SpellByte.ICE2, (byte)SpellByte.LIT3, (byte)SpellByte.BRAK, (byte)SpellByte.ICE3, (byte)SpellByte.FIR2, (byte)SpellByte.LIT2 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Toxic, (byte)EnemySkills.Inferno },
 					},
@@ -2693,11 +2679,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.MUTE, (byte)SpellByte.ICE2, (byte)SpellByte.STUN, (byte)SpellByte.ICE2, (byte)SpellByte.MUTE, (byte)SpellByte.ICE2, (byte)SpellByte.SLOW },
+					Spells1 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.MUTE, (byte)SpellByte.ICE, (byte)SpellByte.STUN, (byte)SpellByte.ICE2, (byte)SpellByte.MUTE, (byte)SpellByte.ICE, (byte)SpellByte.SLOW },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Frost, (byte)EnemySkills.Stare, (byte)EnemySkills.Trance },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.ICE3, (byte)SpellByte.CUR3, (byte)SpellByte.ICE3, (byte)SpellByte.QAKE, (byte)SpellByte.ICE3, (byte)SpellByte.SLP2 },
+					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.ICE2, (byte)SpellByte.CUR3, (byte)SpellByte.ICE3, (byte)SpellByte.QAKE, (byte)SpellByte.ICE2, (byte)SpellByte.SLP2 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Blizzard, (byte)EnemySkills.Squint, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Crack },
 					},
@@ -2712,11 +2698,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.SLOW, (byte)SpellByte.FIR2, (byte)SpellByte.INVS, (byte)SpellByte.DARK, (byte)SpellByte.FIR2 },
+					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.FIRE, (byte)SpellByte.SLOW, (byte)SpellByte.FIR2, (byte)SpellByte.INVS, (byte)SpellByte.DARK, (byte)SpellByte.FIRE },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Heat, (byte)EnemySkills.Cremate, (byte)EnemySkills.Stinger, (byte)EnemySkills.Gaze },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.STOP, (byte)SpellByte.FIR3, (byte)SpellByte.NUKE, (byte)SpellByte.SLO2, (byte)SpellByte.FIR3, (byte)SpellByte.STOP, (byte)SpellByte.SLO2 },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.STOP, (byte)SpellByte.FIR2, (byte)SpellByte.FAST, (byte)SpellByte.SLO2, (byte)SpellByte.FIR3, (byte)SpellByte.STOP, (byte)SpellByte.SLO2 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Tornado, (byte)EnemySkills.Blaze, (byte)EnemySkills.Squint },
 					},
@@ -2729,13 +2715,13 @@ namespace FF1Lib
 					Palette1 = 0x3A,
 					Palette2 = 0x3A,
 					ElementalWeakness = SpellElement.Fire,
-					MonsterType = MonsterType.REGENERATIVE,
+					MonsterType = MonsterType.AQUATIC,
 					SpellChance1 = 0x00,
 					Spells1 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Ink, (byte)EnemySkills.Ink, (byte)EnemySkills.Trance, (byte)EnemySkills.Ink },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.ICE3, (byte)SpellByte.BRAK, (byte)SpellByte.LIT3, (byte)SpellByte.WALL, (byte)SpellByte.FIR3, (byte)SpellByte.FOG, (byte)SpellByte.LIT3 },
+					Spells2 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.ICE3, (byte)SpellByte.BRAK, (byte)SpellByte.LIT2, (byte)SpellByte.WALL, (byte)SpellByte.FIR2, (byte)SpellByte.FOG, (byte)SpellByte.LIT3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Crack, (byte)EnemySkills.Swirl, (byte)EnemySkills.Ink, (byte)EnemySkills.Swirl },
 					},
@@ -2769,13 +2755,13 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.None,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.SLOW, (byte)SpellByte.LIT, (byte)SpellByte.SLOW, (byte)SpellByte.LIT2, (byte)SpellByte.FOG, (byte)SpellByte.LIT2, (byte)SpellByte.INVS, (byte)SpellByte.LIT2 },
+					Spells1 = new List<byte> { (byte)SpellByte.SLOW, (byte)SpellByte.LIT, (byte)SpellByte.SLOW, (byte)SpellByte.LIT2, (byte)SpellByte.FOG, (byte)SpellByte.LIT, (byte)SpellByte.INVS, (byte)SpellByte.LIT2 },
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.SLO2, (byte)SpellByte.LIT3, (byte)SpellByte.FOG2, (byte)SpellByte.WALL, (byte)SpellByte.LIT3, (byte)SpellByte.CUR3, (byte)SpellByte.LIT3 },
+					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.SLO2, (byte)SpellByte.LIT2, (byte)SpellByte.FOG2, (byte)SpellByte.WALL, (byte)SpellByte.LIT3, (byte)SpellByte.CUR3, (byte)SpellByte.LIT2 },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Glance, (byte)EnemySkills.Thunder },
+					Skills2 = new List<byte> { (byte)EnemySkills.Gaze, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Glance, (byte)EnemySkills.Thunder },
 					},
 			new AlternateFiends {
 					Name = "WREXSOUL",
@@ -2787,7 +2773,7 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.UNDEAD,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.RUB, (byte)SpellByte.LIT2, (byte)SpellByte.STUN, (byte)SpellByte.DARK, (byte)SpellByte.LIT2, (byte)SpellByte.LIT2 },
+					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.LIT2, (byte)SpellByte.RUB, (byte)SpellByte.LIT2, (byte)SpellByte.STUN, (byte)SpellByte.DARK, (byte)SpellByte.LIT, (byte)SpellByte.LIT2 },
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
@@ -2806,11 +2792,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.GIANT,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.CUR2, (byte)SpellByte.ICE2, (byte)SpellByte.TMPR, (byte)SpellByte.CUR2, (byte)SpellByte.ICE2, (byte)SpellByte.ICE2, (byte)SpellByte.TMPR },
+					Spells1 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.CUR2, (byte)SpellByte.ICE, (byte)SpellByte.TMPR, (byte)SpellByte.CUR2, (byte)SpellByte.ICE2, (byte)SpellByte.ICE, (byte)SpellByte.TMPR },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Frost, (byte)EnemySkills.Frost, (byte)EnemySkills.Stare },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.CUR4, (byte)SpellByte.FAST, (byte)SpellByte.ICE3, (byte)SpellByte.SABR, (byte)SpellByte.ICE3, (byte)SpellByte.TMPR, (byte)SpellByte.ICE3 },
+					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.CUR4, (byte)SpellByte.FAST, (byte)SpellByte.ICE2, (byte)SpellByte.SABR, (byte)SpellByte.ICE2, (byte)SpellByte.TMPR, (byte)SpellByte.ICE3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Blizzard, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Glance, (byte)EnemySkills.Crack },
 					},
@@ -2837,6 +2823,43 @@ namespace FF1Lib
 			};
 			var FF1BonusFiendsList = new List<AlternateFiends>
 			{
+					new AlternateFiends {
+					Name = "B.VAMP",  //Will be Moved to Winner Fiends at a later date
+					SpriteSheet = FormationSpriteSheet.SentryWaterNagaChimera,
+					FormationPattern = FormationPattern.Large4,
+					GFXOffset = FormationGFX.Sprite2,
+					Palette1 = 0x23,
+					Palette2 = 0x25,
+					ElementalWeakness = SpellElement.Lightning,
+					MonsterType = MonsterType.UNDEAD,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.FOG, (byte)SpellByte.FIR2, (byte)SpellByte.INVS, (byte)SpellByte.FIRE, (byte)SpellByte.FIR2, (byte)SpellByte.FOG, (byte)SpellByte.INVS },
+					SkillChance1 = 0x00,
+					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.FOG, (byte)SpellByte.INVS, (byte)SpellByte.NUKE, (byte)SpellByte.FIR3, (byte)SpellByte.FOG, (byte)SpellByte.INVS, (byte)SpellByte.CUR3 },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Blaze, (byte)EnemySkills.Inferno, (byte)EnemySkills.Blaze, (byte)EnemySkills.Inferno },
+					},
+
+					new AlternateFiends {
+					Name = "BEHOLDER",  
+					SpriteSheet = FormationSpriteSheet.SahagPirateSharkBigEye,
+					FormationPattern = FormationPattern.Large4,
+					GFXOffset = FormationGFX.Sprite3,
+					Palette1 = 0x23,
+					Palette2 = 0x25,
+					ElementalWeakness = SpellElement.Fire,
+					MonsterType = MonsterType.MAGICAL,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.DARK, (byte)SpellByte.RUB, (byte)SpellByte.ICE, (byte)SpellByte.LIT, (byte)SpellByte.SLEP, (byte)SpellByte.SLOW, (byte)SpellByte.ICE2, (byte)SpellByte.LIT2 },
+					SkillChance1 = 0x40,
+					Skills1 = new List<byte> { (byte)EnemySkills.Stinger, (byte)EnemySkills.Ink, (byte)EnemySkills.Trance, (byte)EnemySkills.Frost },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.XXXX, (byte)SpellByte.ICE3, (byte)SpellByte.INVS, (byte)SpellByte.LIT2, (byte)SpellByte.QAKE, (byte)SpellByte.LIT3, (byte)SpellByte.SLP2 },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Stare, (byte)EnemySkills.Toxic },
+					},
 
 					new AlternateFiends {
 					Name = "BIKKE",
@@ -2852,7 +2875,7 @@ namespace FF1Lib
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.BRAK, (byte)SpellByte.CUR4, (byte)SpellByte.QAKE, (byte)SpellByte.STUN, (byte)SpellByte.BRAK, (byte)SpellByte.CUR4, (byte)SpellByte.ZAP },
+					Spells2 = new List<byte> { (byte)SpellByte.STUN, (byte)SpellByte.BRAK, (byte)SpellByte.CUR3, (byte)SpellByte.QAKE, (byte)SpellByte.STUN, (byte)SpellByte.BRAK, (byte)SpellByte.CUR3, (byte)SpellByte.ZAP },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Frost, (byte)EnemySkills.Tornado },
 					},
@@ -2871,7 +2894,7 @@ namespace FF1Lib
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.XFER, (byte)SpellByte.FADE, (byte)SpellByte.ZAP, (byte)SpellByte.ICE3, (byte)SpellByte.BRAK, (byte)SpellByte.FADE, (byte)SpellByte.ZAP },
+					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.XFER, (byte)SpellByte.FADE, (byte)SpellByte.ZAP, (byte)SpellByte.ICE2, (byte)SpellByte.BRAK, (byte)SpellByte.FADE, (byte)SpellByte.ZAP },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Frost, (byte)EnemySkills.Blizzard },
 					},
@@ -2886,13 +2909,32 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.UNDEAD,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.DARK, (byte)SpellByte.LIT2, (byte)SpellByte.WALL, (byte)SpellByte.ICE2, (byte)SpellByte.DARK, (byte)SpellByte.LIT2, (byte)SpellByte.INVS },
+					Spells1 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.DARK, (byte)SpellByte.LIT, (byte)SpellByte.WALL, (byte)SpellByte.ICE, (byte)SpellByte.DARK, (byte)SpellByte.LIT2, (byte)SpellByte.INVS },
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.ZAP, (byte)SpellByte.ICE3, (byte)SpellByte.WALL, (byte)SpellByte.ICE3, (byte)SpellByte.HOLD, (byte)SpellByte.ICE3, (byte)SpellByte.MUTE },
+					Spells2 = new List<byte> { (byte)SpellByte.ICE3, (byte)SpellByte.ZAP, (byte)SpellByte.ICE2, (byte)SpellByte.WALL, (byte)SpellByte.ICE2, (byte)SpellByte.HOLD, (byte)SpellByte.ICE3, (byte)SpellByte.MUTE },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Blizzard, (byte)EnemySkills.Nuclear, (byte)EnemySkills.Tornado, (byte)EnemySkills.Toxic },
+					Skills2 = new List<byte> { (byte)EnemySkills.Blizzard, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Tornado, (byte)EnemySkills.Toxic },
+					},
+
+					new AlternateFiends {
+					Name = "ENSINGER", //Will be Moved to Winner Fiends at a later date
+					SpriteSheet = FormationSpriteSheet.BoneCreepHyenaOgre,
+					FormationPattern = FormationPattern.Mixed,
+					GFXOffset = FormationGFX.Sprite4,
+					Palette1 = 0x23,
+					Palette2 = 0x25,
+					ElementalWeakness = SpellElement.Time,
+					MonsterType = MonsterType.MAGE,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.INVS, (byte)SpellByte.LIT2, (byte)SpellByte.HOLD, (byte)SpellByte.ICE2, (byte)SpellByte.RUB, (byte)SpellByte.LIT, (byte)SpellByte.HOLD },
+					SkillChance1 = 0x40,
+					Skills1 = new List<byte> { (byte)EnemySkills.Cremate, (byte)EnemySkills.Glance, (byte)EnemySkills.Trance, (byte)EnemySkills.Frost },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.XFER, (byte)SpellByte.INVS, (byte)SpellByte.LIT3, (byte)SpellByte.XFER, (byte)SpellByte.NUKE, (byte)SpellByte.INVS, (byte)SpellByte.LIT3, (byte)SpellByte.STOP },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Toxic, (byte)EnemySkills.Trance, (byte)EnemySkills.Thunder },
 					},
 
 					new AlternateFiends {
@@ -2905,11 +2947,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Poison,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.FIR2, (byte)SpellByte.ICE2, (byte)SpellByte.CUR2, (byte)SpellByte.LIT2, (byte)SpellByte.FIR2, (byte)SpellByte.ICE2, (byte)SpellByte.CUR3 },
+					Spells1 = new List<byte> { (byte)SpellByte.LIT, (byte)SpellByte.FIRE, (byte)SpellByte.ICE2, (byte)SpellByte.CUR2, (byte)SpellByte.LIT2, (byte)SpellByte.FIR2, (byte)SpellByte.ICE2, (byte)SpellByte.CUR3 },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Ink, (byte)EnemySkills.Ink, (byte)EnemySkills.Ink, (byte)EnemySkills.Ink },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.NUKE, (byte)SpellByte.ICE3, (byte)SpellByte.CUR4, (byte)SpellByte.LIT3, (byte)SpellByte.NUKE, (byte)SpellByte.ICE3, (byte)SpellByte.CUR4 },
+					Spells2 = new List<byte> { (byte)SpellByte.LIT3, (byte)SpellByte.XXXX, (byte)SpellByte.ICE3, (byte)SpellByte.CUR4, (byte)SpellByte.LIT3, (byte)SpellByte.BANE, (byte)SpellByte.ICE3, (byte)SpellByte.HEL3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Ink, (byte)EnemySkills.Ink, (byte)EnemySkills.Ink, (byte)EnemySkills.Tornado },
 					},
@@ -2924,7 +2966,7 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.AQUATIC,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.DARK, (byte)SpellByte.LIT2, (byte)SpellByte.INVS, (byte)SpellByte.LIT2, (byte)SpellByte.DARK, (byte)SpellByte.LIT2, (byte)SpellByte.LOCK },
+					Spells1 = new List<byte> { (byte)SpellByte.LIT2, (byte)SpellByte.DARK, (byte)SpellByte.LIT, (byte)SpellByte.INVS, (byte)SpellByte.LIT2, (byte)SpellByte.DARK, (byte)SpellByte.LIT, (byte)SpellByte.LOCK },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Ink, (byte)EnemySkills.Ink, (byte)EnemySkills.Ink, (byte)EnemySkills.Ink },
 					SpellChance2 = 0x40,
@@ -2947,7 +2989,7 @@ namespace FF1Lib
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.XXXX, (byte)SpellByte.BANE, (byte)SpellByte.BRAK, (byte)SpellByte.NUKE, (byte)SpellByte.XXXX, (byte)SpellByte.ZAP, (byte)SpellByte.BANE, (byte)SpellByte.SLO2 },
+					Spells2 = new List<byte> { (byte)SpellByte.XXXX, (byte)SpellByte.BANE, (byte)SpellByte.BRAK, (byte)SpellByte.FIR3, (byte)SpellByte.XXXX, (byte)SpellByte.ZAP, (byte)SpellByte.BANE, (byte)SpellByte.SLO2 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Glance, (byte)EnemySkills.Crack, (byte)EnemySkills.Squint },
 					},
@@ -2981,11 +3023,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Lightning,
 					MonsterType = MonsterType.AQUATIC,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.BANE, (byte)SpellByte.ICE2, (byte)SpellByte.DARK, (byte)SpellByte.FIR2, (byte)SpellByte.BRAK, (byte)SpellByte.ICE2, (byte)SpellByte.WALL },
+					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.BANE, (byte)SpellByte.ICE, (byte)SpellByte.DARK, (byte)SpellByte.FIRE, (byte)SpellByte.BRAK, (byte)SpellByte.ICE2, (byte)SpellByte.WALL },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Cremate, (byte)EnemySkills.Frost, (byte)EnemySkills.Cremate, (byte)EnemySkills.Thunder },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.WALL, (byte)SpellByte.ICE3, (byte)SpellByte.BANE, (byte)SpellByte.FIR3, (byte)SpellByte.NUKE, (byte)SpellByte.ICE3, (byte)SpellByte.BRAK },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.WALL, (byte)SpellByte.ICE3, (byte)SpellByte.BANE, (byte)SpellByte.FIR3, (byte)SpellByte.STOP, (byte)SpellByte.ICE3, (byte)SpellByte.BRAK },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Blizzard, (byte)EnemySkills.Tornado, (byte)EnemySkills.Thunder },
 					},
@@ -3000,11 +3042,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Fire,
 					MonsterType = MonsterType.UNDEAD,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.SLEP, (byte)SpellByte.LIT2, (byte)SpellByte.STUN, (byte)SpellByte.LIT2, (byte)SpellByte.MUTE, (byte)SpellByte.ICE2, (byte)SpellByte.ICE2, (byte)SpellByte.STUN },
+					Spells1 = new List<byte> { (byte)SpellByte.SLEP, (byte)SpellByte.LIT2, (byte)SpellByte.STUN, (byte)SpellByte.LIT2, (byte)SpellByte.MUTE, (byte)SpellByte.ICE, (byte)SpellByte.ICE2, (byte)SpellByte.STUN },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Dazzle, (byte)EnemySkills.Flash, (byte)EnemySkills.Stare, (byte)EnemySkills.Glare },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.WALL, (byte)SpellByte.LIT3, (byte)SpellByte.XXXX, (byte)SpellByte.XFER, (byte)SpellByte.ICE3, (byte)SpellByte.MUTE, (byte)SpellByte.LIT3, (byte)SpellByte.BANE },
+					Spells2 = new List<byte> { (byte)SpellByte.WALL, (byte)SpellByte.LIT3, (byte)SpellByte.XXXX, (byte)SpellByte.XFER, (byte)SpellByte.ICE3, (byte)SpellByte.MUTE, (byte)SpellByte.LIT2, (byte)SpellByte.BANE },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Tornado, (byte)EnemySkills.Toxic, (byte)EnemySkills.Glance, (byte)EnemySkills.Poison_Stone },
 					},
@@ -3019,11 +3061,11 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Status,
 					MonsterType = MonsterType.MAGE,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.FIR2, (byte)SpellByte.INVS, (byte)SpellByte.LIT2, (byte)SpellByte.MUTE, (byte)SpellByte.STUN, (byte)SpellByte.ICE2, (byte)SpellByte.SLOW },
+					Spells1 = new List<byte> { (byte)SpellByte.ICE2, (byte)SpellByte.FIRE, (byte)SpellByte.INVS, (byte)SpellByte.LIT2, (byte)SpellByte.MUTE, (byte)SpellByte.STUN, (byte)SpellByte.ICE2, (byte)SpellByte.SLOW },
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.NUKE, (byte)SpellByte.XXXX, (byte)SpellByte.XFER, (byte)SpellByte.ICE3, (byte)SpellByte.CUR4, (byte)SpellByte.ZAP, (byte)SpellByte.INVS, (byte)SpellByte.BANE },
+					Spells2 = new List<byte> { (byte)SpellByte.BRAK, (byte)SpellByte.XXXX, (byte)SpellByte.XFER, (byte)SpellByte.ICE3, (byte)SpellByte.CUR4, (byte)SpellByte.ZAP, (byte)SpellByte.FIR3, (byte)SpellByte.BANE },
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					},
@@ -3063,7 +3105,7 @@ namespace FF1Lib
 					SpellChance2 = 0x40,
 					Spells2 = new List<byte> { (byte)SpellByte.NUKE, (byte)SpellByte.INVS, (byte)SpellByte.FAST, (byte)SpellByte.ICE3, (byte)SpellByte.SLO2, (byte)SpellByte.FOG, (byte)SpellByte.MUTE, (byte)SpellByte.ZAP },
 					SkillChance2 = 0x40,
-					Skills2 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Crack, (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Squint },
+					Skills2 = new List<byte> { (byte)EnemySkills.Thunder, (byte)EnemySkills.Crack, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Squint },
 					},
 
 					new AlternateFiends {
@@ -3080,7 +3122,7 @@ namespace FF1Lib
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Trance, (byte)EnemySkills.Blaze, (byte)EnemySkills.Trance, (byte)EnemySkills.Poison_Stone },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.FIR3, (byte)SpellByte.FIR3, (byte)SpellByte.NUKE, (byte)SpellByte.FIR3, (byte)SpellByte.FIR3, (byte)SpellByte.FIR3, (byte)SpellByte.NUKE },
+					Spells2 = new List<byte> { (byte)SpellByte.FIR3, (byte)SpellByte.FIR2, (byte)SpellByte.FIR3, (byte)SpellByte.STOP, (byte)SpellByte.FIR3, (byte)SpellByte.FIR2, (byte)SpellByte.FIR3, (byte)SpellByte.SLO2 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Blaze, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Glance, (byte)EnemySkills.Inferno },
 					},
@@ -3099,7 +3141,7 @@ namespace FF1Lib
 					SkillChance1 = 0x00,
 					Skills1 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.XXXX, (byte)SpellByte.ICE3, (byte)SpellByte.BANE, (byte)SpellByte.NUKE, (byte)SpellByte.SLO2, (byte)SpellByte.SLP2, (byte)SpellByte.FOG, (byte)SpellByte.QAKE },
+					Spells2 = new List<byte> { (byte)SpellByte.XXXX, (byte)SpellByte.ICE3, (byte)SpellByte.BANE, (byte)SpellByte.FADE, (byte)SpellByte.SLO2, (byte)SpellByte.SLP2, (byte)SpellByte.FOG, (byte)SpellByte.QAKE },
 					SkillChance2 = 0x00,
 					Skills2 = new List<byte> { (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None, (byte)EnemySkills.None },
 					},
@@ -3114,16 +3156,33 @@ namespace FF1Lib
 					ElementalWeakness = SpellElement.Ice,
 					MonsterType = MonsterType.MAGICAL,
 					SpellChance1 = 0x40,
-					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.INVS, (byte)SpellByte.SLOW, (byte)SpellByte.FIR2, (byte)SpellByte.MUTE, (byte)SpellByte.RUB },
+					Spells1 = new List<byte> { (byte)SpellByte.FIRE, (byte)SpellByte.STUN, (byte)SpellByte.FIR2, (byte)SpellByte.INVS, (byte)SpellByte.SLOW, (byte)SpellByte.FIRE, (byte)SpellByte.MUTE, (byte)SpellByte.RUB },
 					SkillChance1 = 0x40,
 					Skills1 = new List<byte> { (byte)EnemySkills.Cremate, (byte)EnemySkills.Heat, (byte)EnemySkills.Trance, (byte)EnemySkills.Stinger },
 					SpellChance2 = 0x40,
-					Spells2 = new List<byte> { (byte)SpellByte.XFER, (byte)SpellByte.FIR3, (byte)SpellByte.FAST, (byte)SpellByte.SABR, (byte)SpellByte.BRAK, (byte)SpellByte.SLO2, (byte)SpellByte.FIR3, (byte)SpellByte.FIR3 },
+					Spells2 = new List<byte> { (byte)SpellByte.XFER, (byte)SpellByte.FIR3, (byte)SpellByte.FAST, (byte)SpellByte.SABR, (byte)SpellByte.BRAK, (byte)SpellByte.SLO2, (byte)SpellByte.FIR2, (byte)SpellByte.FIR3 },
 					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Inferno, (byte)EnemySkills.Poison_Stone, (byte)EnemySkills.Crack, (byte)EnemySkills.Toxic },
 					},
 
-
+					new AlternateFiends {
+					Name = "WRONGEYE",
+					SpriteSheet = FormationSpriteSheet.MedusaCatmanPedeTiger,
+					FormationPattern = FormationPattern.Large4,
+					GFXOffset = FormationGFX.Sprite3,
+					Palette1 = 0x23,
+					Palette2 = 0x25,
+					ElementalWeakness = SpellElement.None,
+					MonsterType = MonsterType.REGENERATIVE,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.SLOW, (byte)SpellByte.FIR2, (byte)SpellByte.FOG, (byte)SpellByte.FIRE, (byte)SpellByte.RUB, (byte)SpellByte.SLEP, (byte)SpellByte.DARK, (byte)SpellByte.FIR2 },
+					SkillChance1 = 0x40,
+					Skills1 = new List<byte> { (byte)EnemySkills.Ink, (byte)EnemySkills.Trance, (byte)EnemySkills.Heat, (byte)EnemySkills.Gaze },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.FIR3, (byte)SpellByte.BANE, (byte)SpellByte.XXXX, (byte)SpellByte.LIT3, (byte)SpellByte.SLP2, (byte)SpellByte.XFER, (byte)SpellByte.FIR3 },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Toxic, (byte)EnemySkills.Swirl, (byte)EnemySkills.Stare, (byte)EnemySkills.Poison_Stone },
+					},
 
 			};
 			var alternateFiendsList = new List<AlternateFiends>
@@ -3166,7 +3225,12 @@ namespace FF1Lib
 				alternateFiendsList.AddRange(FF1BonusFiendsList);
 			}
 
-			if ((bool)!flags.FinalFantasy2Fiends && (bool)!flags.FinalFantasy3Fiends && (bool)!flags.FinalFantasy4Fiends && (bool)!flags.FinalFantasy5Fiends && (bool)!flags.FinalFantasy6Fiends && (bool)!flags.FinalFantasy1BonusFiends)
+			if ((bool)flags.BlackOrbFiends)
+			{
+				alternateFiendsList.AddRange(extAltFiends.BlackOrbAltFiends);
+			}
+
+			if ((bool)!flags.FinalFantasy2Fiends && (bool)!flags.FinalFantasy3Fiends && (bool)!flags.FinalFantasy4Fiends && (bool)!flags.FinalFantasy5Fiends && (bool)!flags.FinalFantasy6Fiends && (bool)!flags.FinalFantasy1BonusFiends && (bool)!flags.BlackOrbFiends)
 			{
 				alternateFiendsList.AddRange(FF1MasterFiendList);
 			}
@@ -3182,59 +3246,93 @@ namespace FF1Lib
 				fiends[i].decompressData(Get(EnemyOffset + (FiendsIndex + i) * EnemySize, EnemySize));
 			}
 
+			// Do Graphics
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-
-			while (true)
+						
+			if (extAltFiends.ExtendedFiends)
 			{
-				// Shuffle alternate
-				alternateFiendsList.Shuffle(rng);
+				// These alt fiends all fit together, so they shouldn't trigger a too large graphics error
+				alternateFiendsList = extAltFiends.PickBlackOrbFiends(alternateFiendsList, rng);
 
-				while (alternateFiendsList.Count >= 4)
+				var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[0].Name + ".png"));
+				var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[1].Name + ".png"));
+				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1))
 				{
-					var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[0].Name + ".png"));
-					var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[1].Name + ".png"));
-					using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1))
+					using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2))
 					{
-						using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2))
+						if (!SetLichKaryGraphics(stream1, stream2))
 						{
-							//if (await SetLichKaryGraphics(stream1, stream2)) {
-							if (SetLichKaryGraphics(stream1, stream2))
-							{
-								break;
-							}
-							// The graphics didn't fit, throw out the first element and try the next pair
-							alternateFiendsList.RemoveAt(0);
+							throw new Exception("Extended Alt Fiends LichKary graphics error.");
 						}
 					}
 				}
-				if (alternateFiendsList.Count < 4)
+				resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[2].Name + ".png"));
+				resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[3].Name + ".png"));
+				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1))
 				{
-					// Couldn't find a pair where the graphics fit, reshuffle
-					continue;
-				}
-
-				while (alternateFiendsList.Count >= 4)
-				{
-					var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[2].Name + ".png"));
-					var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[3].Name + ".png"));
-					using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1))
+					using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2))
 					{
-						using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2))
+						if (!SetKrakenTiamatGraphics(stream1, stream2))
 						{
-							//if (await SetKrakenTiamatGraphics(stream1, stream2)) {
-							if (SetKrakenTiamatGraphics(stream1, stream2))
-							{
-								break;
-							}
-							alternateFiendsList.RemoveAt(2);
+							throw new Exception("Extended Alt Fiends KrakenTiamat graphics error.");
 						}
 					}
 				}
-				if (alternateFiendsList.Count < 4)
+			}
+			else
+			{
+				while (true)
 				{
-					continue;
+					// Shuffle alternate
+					alternateFiendsList.Shuffle(rng);
+
+					while (alternateFiendsList.Count >= 4)
+					{
+						var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[0].Name + ".png"));
+						var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[1].Name + ".png"));
+						using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1))
+						{
+							using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2))
+							{
+								//if (await SetLichKaryGraphics(stream1, stream2)) {
+								if (SetLichKaryGraphics(stream1, stream2))
+								{
+									break;
+								}
+								// The graphics didn't fit, throw out the first element and try the next pair
+								alternateFiendsList.RemoveAt(0);
+							}
+						}
+					}
+					if (alternateFiendsList.Count < 4)
+					{
+						// Couldn't find a pair where the graphics fit, reshuffle
+						continue;
+					}
+
+					while (alternateFiendsList.Count >= 4)
+					{
+						var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[2].Name + ".png"));
+						var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[3].Name + ".png"));
+						using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1))
+						{
+							using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2))
+							{
+								//if (await SetKrakenTiamatGraphics(stream1, stream2)) {
+								if (SetKrakenTiamatGraphics(stream1, stream2))
+								{
+									break;
+								}
+								alternateFiendsList.RemoveAt(2);
+							}
+						}
+					}
+					if (alternateFiendsList.Count < 4)
+					{
+						continue;
+					}
+					break;
 				}
-				break;
 			}
 
 			// Replace the 4 fiends and their 2nd version at the same time
@@ -3275,23 +3373,16 @@ namespace FF1Lib
 				Put(EnemyOffset + (FiendsIndex + i) * EnemySize, fiends[i].compressData());
 			}
 
-			//Update fiends names, we stack Fiend1 and Fiend2's names to get more space for names
-			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			
+			var enemyText = ReadEnemyText();
 
 			for (int i = 0; i < 4; i++)
 			{
 				enemyText[119 + (i * 2)] = alternateFiendsList[i].Name;
-				enemyText[120 + (i * 2)] = "";
+				enemyText[120 + (i * 2)] = alternateFiendsList[i].Name;
 			}
 
-			WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
-
-			// Rewrite point so Fiend2's name is Fiend1 name
-			for (int i = 0; i < 4; i++)
-			{
-				var namepointer = Get(EnemyTextPointerOffset + (119 + (i * 2)) * 2, 2);
-				Put(EnemyTextPointerOffset + (120 + (i * 2)) * 2, namepointer);
-			}
+			WriteEnemyText(enemyText);
 		}
 	}
 }

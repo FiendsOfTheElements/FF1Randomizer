@@ -210,6 +210,8 @@ namespace FF1Lib
 		public bool? Rng { get; set; } = false;
 		public bool FixMissingBattleRngEntry { get; set; } = false;
 
+		public bool? EncounterPrng { get; set; } = false;
+
 		public bool? UnrunnableShuffle { get; set; } = true;
 		[IntegerFlag(0, 100, 4)]
 		public int UnrunnablesLow { get; set; } = 0;
@@ -640,7 +642,8 @@ namespace FF1Lib
 		public bool? FinalFantasy5Fiends { get; set; } = false;
 		public bool? FinalFantasy6Fiends { get; set; } = false;
 		public bool? FinalFantasy1BonusFiends { get; set; } = false;
- 		public bool? NoBossSkillScriptShuffle { get; set; } = false;
+		public bool? BlackOrbFiends { get; set; } = false;
+		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 
 		public bool? MooglieWeaponBalance { get; set; } = false;
 		public bool? GuaranteeCustomClassComposition { get; set; } = false;
@@ -706,10 +709,10 @@ namespace FF1Lib
 		public bool? AllowUnsafeStartArea { get; set; } = false;
 
 		public bool? IncreaseDarkPenalty { get; set; } = false;
-
 		public bool? IncreaseRegeneration { get; set; } = false;
 		public PoisonModeOptions PoisonMode { get; set; } = PoisonModeOptions.Constant;
 		[IntegerFlag(1,500)]
+
 		public int PoisonSetDamageValue { get; set; } = 3;
 
 		public bool? TouchIncludeBosses { get; set; } = false;

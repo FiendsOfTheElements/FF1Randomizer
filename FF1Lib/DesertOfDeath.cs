@@ -391,13 +391,12 @@ namespace FF1Lib
 			}
 
 			//Update enemies names
-			var enemyText = rom.ReadText(FF1Rom.EnemyTextPointerOffset, FF1Rom.EnemyTextPointerBase, FF1Rom.EnemyCount);
-
+			var enemyText = rom.ReadEnemyText();
 			enemyText[0x10] = "SndMAN"; 
 			enemyText[0x11] = "SndSHARK";
 			enemyText[0x21] = "SCORP";
 
-			rom.WriteText(enemyText, FF1Rom.EnemyTextPointerOffset, FF1Rom.EnemyTextPointerBase, FF1Rom.EnemyTextOffset);
+			rom.WriteEnemyText(enemyText);
 		}
 		public static void DoDUpdateDialogues(FF1Rom rom, NpcObjectData npcdata, DialogueData dialogues)
 		{
@@ -459,7 +458,7 @@ namespace FF1Lib
 			//List<List<byte>> Map = Enumerable.Repeat(Enumerable.Repeat((byte)OWTile.Desert, 0x100).ToList(), 0x100).ToList();
 
 			OwMapExchangeData mapData = new();
-			
+
 			List<(MapLocation, MapLocation)> NodePairsList = new()
 			{
 				(MapLocation.ConeriaCastle1, MapLocation.TempleOfFiends1),
@@ -818,6 +817,7 @@ namespace FF1Lib
 
 			var entranceList = Enum.GetValues(typeof(OverworldTeleportIndex))
 				.Cast<OverworldTeleportIndex>()
+				.Except(new List<OverworldTeleportIndex>() { OverworldTeleportIndex.Unused1, OverworldTeleportIndex.Unused2, OverworldTeleportIndex.None })
 				.ToList();
 
 			foreach (var exit in exitToUpdate)
@@ -847,12 +847,14 @@ namespace FF1Lib
 			return mapData;
 		}
 
-		public static void ApplyDesertModifications(bool enabled, FF1Rom rom, ZoneFormations zoneformations, SCCoords startinglocation, NpcObjectData npcdata, DialogueData dialogues, MusicTracks music)
+		public static void ApplyDesertModifications(bool enabled, FF1Rom rom, ZoneFormations zoneformations, Overworld overworld, NpcObjectData npcdata, DialogueData dialogues, MusicTracks music)
 		{
 			if (!enabled)
 			{
 				return;
 			}
+
+			SCCoords startinglocation = overworld.Locations.StartingLocation;
 
 			(int, int) startDomain = ((startinglocation.X / 32) - 1, (startinglocation.Y / 32) - 1);
 
@@ -866,14 +868,14 @@ namespace FF1Lib
 
 			foreach (var hole in holes)
 			{
-				rom.Put(0x0300 + hole, Blob.FromHex("55"));
+				overworld.TileSet.Tiles[hole].Palette = FF1Rom.TilePalette.RoomPalette2;
 			}
 
 			List<byte> newTilesPalette = new List<byte> { 0x14, 0x15 };
 
 			foreach (var newtile in newTilesPalette)
 			{
-				rom.Put(0x0300 + newtile, Blob.FromHex("55"));
+				overworld.TileSet.Tiles[newtile].Palette = FF1Rom.TilePalette.RoomPalette2;
 			}
 
 			// New graphic tiles
@@ -912,22 +914,22 @@ namespace FF1Lib
 
 			foreach (var tile in tilesToUpdate)
 			{
-				rom.Put(0x0100 + tile.Item1, new byte[] { tile.Item2 });
-				rom.Put(0x0180 + tile.Item1, new byte[] { tile.Item3 });
-				rom.Put(0x0200 + tile.Item1, new byte[] { tile.Item4 });
-				rom.Put(0x0280 + tile.Item1, new byte[] { tile.Item5 });
+				overworld.TileSet.Tiles[tile.Item1].TopLeftTile = tile.Item2;
+				overworld.TileSet.Tiles[tile.Item1].TopRightTile = tile.Item3;
+				overworld.TileSet.Tiles[tile.Item1].BottomLeftTile = tile.Item4;
+				overworld.TileSet.Tiles[tile.Item1].BottomRightTile = tile.Item5;
 
 				if (tile.Item1 == 0x36)
 				{
 					continue;
 				}
 
-				byte tileprop = 0x0F;     // can't walk over                           
-				rom.Put(0x0000 + tile.Item1 * 2, new byte[] { tileprop });
+				byte tileprop = 0x0F;     // can't walk over
+				overworld.TileSet.Tiles[tile.Item1].PropertyType = tileprop;
 			}
 
-			rom.Put(0x0000 + (int)OWTile.Desert * 2, new byte[] { 0xEA }); // Update desert tile to allow ship
-			rom.Put(0x0000 + (int)0x46 * 2, new byte[] { (byte)(rom.Get(0x0000 + 0x46 * 2, 1)[0] & 0b1111_1110) }); // Update Waterfall tile to not require canoe
+			overworld.TileSet.Tiles[(int)OWTile.Desert].PropertyType = 0xEA;  // Update desert tile to allow ship
+			overworld.TileSet.Tiles[0x46].PropertyType &= 0b1111_1110; // Update Waterfall tile to not require canoe
 
 
 			// Turn Ship into the Yggdrasil

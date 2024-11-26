@@ -319,7 +319,7 @@
 		"Id": "spriteSheetToolTipBox",
 		"title": "Custom Player Sprites",
 		"screenshot": "customHeroSprites.png",
-		"description": "Import custom player sprites. Must use sprite sheets from\nhttp://www.groggy.dog/ffr_sprites/Images/sprites.bmp\nCompatible with Fun % flag Three Battle Palettes.\nNotes for custom sprites:\n1) Use NES colors http://www.groggy.dog/ffr_sprites/Images/NESpalette.png\n2) Maximum of three colors per sprite, plus black (for battle sprites) or transparent (magenta, for mapman sprites)\n3) Mapman can have separate palettes for head and body\n4) All battle sprite postures for a given class must have the same palette\n5) Maximum of two (or three with 'Three Battle Palettes' flag) distinct battle palettes across all classes, classes will need to share palettes, and sprites intended to share a palette need to use exactly same colors in the import image.\n\nImport problems (usually palette problems) will be reported on the Javascript console; use your browser's Web Developer Tools to view the messages.\nSprites are saved when you click 'Save Preferences' in the Fun% menu."
+		"description": "Import custom player (and optionally vehicle) sprites. Sprite sheet guides here:\nhttps://wiki.finalfantasyrandomizer.com/ResourcePacks/sprite-pack-how-to\nand here:\nhttp://www.groggy.dog/ffr_sprites/Images\nCompatible with Fun % flag Three Battle Palettes.\nNotes for custom sprites:\n1) Use NES colors http://www.groggy.dog/ffr_sprites/Images/NESpalette.png\n2) Maximum of three colors per sprite, plus black (for battle sprites) or transparent (magenta, for mapman sprites)\n3) Mapman can have separate palettes for head and body\n4) All battle sprite postures for a given class must have the same palette\n5) Maximum of two (or three with 'Three Battle Palettes' flag) distinct battle palettes across all classes, classes will need to share palettes, and sprites intended to share a palette need to use exactly same colors in the import image.\n6)Vehicle sprites are optional, and must all share one palette, using magenta for transparent.\nImport problems (usually palette problems) will be reported on the Javascript console; use your browser's Web Developer Tools to view the messages.\nSprites are saved when you click 'Save Preferences' in the Fun% menu.\nSee the wiki for reference sprite sheets with and without vehicles."
 	},
 	{
 		"Id": "trappedChaosCheckBox",
@@ -1422,7 +1422,7 @@
 		"Id": "FinalFantasy1pool",
 		"title": "Final Fantasy 1 Bonus Pool",
 		"screenshot": null,
-		"description": "Will add 14 Final Fantasy 1 Bonus Fiends to the Alternate Fiend Pool."
+		"description": "Will add 19 Final Fantasy 1 Bonus Fiends to the Alternate Fiend Pool."
 	},
 	{
 		"Id": "finalfantasy2pool",
@@ -1453,6 +1453,12 @@
 		"title": "Final Fantasy 6 Pool",
 		"screenshot": null,
 		"description": "Will add 45 Final Fantasy 6 Fiends to the Alternate Fiend Pool."
+	},
+	{
+		"Id": "blackorbrisingpool",
+		"title": "Black Orb Rising Fiends",
+		"screenshot": null,
+		"description": "Will add 8 original Fiends to the Alternate Fiend Pool.\n\nIf only Black Orb Rising is selected, each Fiend will have unique Orb color and dialogues. As well, Fiends will be placed in their exclusive dungeon:\n\nEarth Cave: LAMORTE or KISMET\nVolcano: KALAMIA or INFERNAR\nSea Shrine: MARINE or ANGELA\nSky Palace: BROWLER or WHISPER"
 	},
 	{
 		"Id": "fightBahamutCheckBox",
@@ -2482,6 +2488,11 @@
 		"Id": "OpenChestsInOrder",
 		"title": "Open Chests In Order",
 		"description": "Non incentive items are opened in order. \n\nWarning, if your inventory gets full it will block your equipment progress."
+	},
+	{
+		"Id": "EncounterPRNG",
+		"title": "Encounter Table Uses True RNG",
+		"description": "Instead of a 256-step encounter table that resets with a hard reset, the game uses a pseudo-random number generator with a period of 65,535 steps, which does not reset on hard reset."
 	},
 	{
 		"Id": "SetRNG",

@@ -94,6 +94,21 @@ namespace FF1Lib
 				return false;
 			return address == ((FF1Pointer)o).address;
 		}
-		public override int GetHashCode() {return this.address.GetHashCode();}
+		public override int GetHashCode() 
+		{
+			return this.address.GetHashCode();
+		}
 	}
+
+	public partial class FF1Rom
+	{
+		// helper functions for address: lighter than the pointer class
+		//converts an address to its little-endian hex string
+		public string AddressToHex(int address)
+		{
+			address = (address << 8 | address >> 8) & 0xFFFF;
+			return address.ToString("X4");
+		}
+	}
+
 }

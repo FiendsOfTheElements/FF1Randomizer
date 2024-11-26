@@ -55,7 +55,7 @@
 			var flippedmaps = maps.HorizontalFlippedMaps.Where(x => x != MapIndex.Waterfall).ToList();
 
 			LoadInTown(decompressedMap);
-			ApplyMapMods(maps, flippedmaps, (bool)flags.LefeinSuperStore);
+			ApplyMapMods(maps, (bool)flags.LefeinSuperStore);
 			//UpdateInRoomTeleporters();
 			CreateTeleporters(maps, flippedmaps, tileSets, teleporters, rng);
 			PrepNPCs(maps, talkroutines, dialogues, npcdata, flippedmaps, flags, rng);
@@ -105,8 +105,10 @@
 			PutInBank(0x0E, 0x9DC0, townPosList.Select(x => x.Item1).ToArray());
 			PutInBank(0x0E, 0x9DD0, townPosList.Select(x => x.Item2).ToArray());
 		}
-		public void ApplyMapMods(StandardMaps maps, List<MapIndex> flippedmaps, bool lefeinmart)
+		public void ApplyMapMods(StandardMaps maps, bool lefeinmart)
 		{
+			var flippedmaps = maps.HorizontalFlippedMaps.Where(x => x != MapIndex.Waterfall).ToList();
+
 			// Coneria
 			var coneriaNorthwall = new List<Blob> { Blob.FromHex("0404040404") };
 			var coneriaSouthwall = new List<Blob> { Blob.FromHex("0E0E0E0E0E") };
@@ -400,7 +402,6 @@
 
 			if (flippedmaps.Contains(MapIndex.MarshCaveB1))
 			{
-
 				maps[MapIndex.MarshCaveB1].Map.Put((0x3F - (0x02 + 0x14), 0x18), marshConeriaBox.ToArray());
 				maps[MapIndex.MarshCaveB1].Map.Put((0x3F - (0x02 + 0x2A), 0x16), marshConeriaBox.ToArray());
 			}

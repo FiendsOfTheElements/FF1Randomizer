@@ -383,8 +383,8 @@ namespace FF1Lib
 								hasNpc = true;
 								if (npcdata != null)
 								{
-									hasKillableNpc = (npcdata[npc.ObjectId].Script == TalkScripts.Talk_fight ||
-											  npcdata[npc.ObjectId].Script == TalkScripts.Talk_kill);
+									List<TalkScripts> killableTalks = new() { TalkScripts.Talk_fight, TalkScripts.Talk_kill, TalkScripts.Talk_FightBranched };
+									hasKillableNpc = killableTalks.Contains(npcdata[npc.ObjectId].Script);
 								}
 								room.npcs.Add(me);
 								if (hasKillableNpc)
