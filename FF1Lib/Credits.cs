@@ -251,7 +251,7 @@ namespace FF1Lib
 				"  bdjeffyp",
 				"  jat2980",
 				"  Chronometrics",
-				"  Oslodo"
+				"  Oslodo, Barber"
 			},
 			new []
 			{
