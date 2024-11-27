@@ -1,4 +1,6 @@
-﻿namespace FF1Lib
+﻿using System.Diagnostics.Tracing;
+
+namespace FF1Lib
 {
 	public class Preferences
 	{
@@ -6,7 +8,8 @@
 		public bool PaletteSwap { get; set; }
 		public bool ModernBattlefield { get; set; }
 		public bool ThirdBattlePalette { get; set; }
-		public bool TeamSteak { get; set; }
+		public SteakSprite TeamSteak { get; set; } = SteakSprite.None;
+		public bool RobotChicken { get; set; }
 		public bool AlternateAirshipTheme { get; set; }
 		public MusicShuffle Music { get; set; }
 		public bool ChaosBattleMusic { get; set; }

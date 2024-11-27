@@ -133,10 +133,16 @@
 		"description": "Changes enemy names in the generated seed. Most of the name changes in this setting are the result of various community memes over the years and may not make sense to newer players."
 	},
 	{
-		"Id": "teamSteakCheckBox",
+		"Id": "teamSteakDropDown",
 		"title": "Team STEAK",
-		"screenshot": "teamSteakCheckBox.png",
-		"description": "Modifies the Tyro/T-Rex sprite to reflect the age old rivalry between two teams.\n Team Tyro believes firmly in the sanctity of Tyro life while Team Steak believes in the sanctity of Tyro meat dinners. Choosing Team Steak will make it clear what you see when confronting these majestic-but-delicious creatures."
+		"screenshot": "teamSteakDropDown.gif",
+		"description": "Replaces one or more enemy sprites with food, reflecting various community memes. Also replaces name(s) with fun food name(s).\nOptions:\nNone: no change.\nSTEAK and WYNGS: replaces TYRO and T REX with STEAK and T.BONE, and WYVERN and WYRM with WYNGS and HotWYNGS.\nSANDWICHes: replaces Sand W with SANDWICH, Grey W with MealWORM, and WORM with GRUB.\nNACHOs and GUAC: replaces NAOCHO with NACHO and OCHO with GUAC.\nPASTRIES: replaces CREEP with CREPE and CRAWL with CRULLER.\nRandom: chooses one of the above at random.\nAll: replaces all of the above sprites. In order to preserve game legibility for tournament spectators, if the Tournament Safe flag is on, choosing \"All\" will only replace one random sprite.\nOld Team STEAK: preserves the legacy Team STEAK sprite for STEAK and T.BONE.\n"
+	},
+	{
+		"Id": "robotChickenCheckBox",
+		"title": "Robot Chicken",
+		"screenshot": "robotChickenCheckBox.png",
+		"description": "Modifies the WarMECH sprite to reveal its true identity: a crazed robot chicken.\nAlso changes its name to RoboCHKN or WarBAWK if Fun Enemy Names is selected."
 	},
 	{
 		"Id": "changeLuteCheckBox",
