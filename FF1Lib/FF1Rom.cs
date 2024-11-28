@@ -46,6 +46,53 @@ public partial class FF1Rom : NesRom
 		}
 	}
 
+	// overload for putting single byte in a bank
+	public void PutInBank(int bank, int address, byte data)
+	{
+		if (bank == 0x1F)
+		{
+			if ((address - 0xC000) >= 0x4000)
+			{
+				throw new Exception("Address provided is after the end of this bank.");
+			}
+			int offset = (bank * 0x4000) + (address - 0xC000);
+			Data[offset] = data;
+		}
+		else
+		{
+			if ((address - 0x8000) >= 0x4000)
+			{
+				throw new Exception("Address provided is after the end of this bank.");
+			}
+			int offset = (bank * 0x4000) + (address - 0x8000);
+			Data[offset] = data;
+		}
+	}
+
+	//overlaod for putting a ushort in a bank; converts the ushort to a little-endian pair of bytes
+	public void PutInBank(int bank, int address, ushort usdata)
+	{
+		var data = Blob.FromUShorts(new ushort[] {usdata});
+		if (bank == 0x1F)
+		{
+			if ((address - 0xC000) + data.Length > 0x4000)
+			{
+				throw new Exception("Data is too large to fit within its bank.");
+			}
+			int offset = (bank * 0x4000) + (address - 0xC000);
+			this.Put(offset, data);
+		}
+		else
+		{
+			if ((address - 0x8000) + data.Length > 0x4000)
+			{
+				throw new Exception("Data is too large to fit within its bank.");
+			}
+			int offset = (bank * 0x4000) + (address - 0x8000);
+			this.Put(offset, data);
+		}
+	}
+
 	public Blob GetFromBank(int bank, int address, int length, bool extended = true)
 	{
 		int lastbank = extended ? 0x1F : 0x0F;

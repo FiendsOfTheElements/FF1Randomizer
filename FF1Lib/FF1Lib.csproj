@@ -88,12 +88,14 @@
 	  <EmbeddedResource Include="imagedata\bosses\B.DRAGON.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BARBRICA.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BEHEMOTH.png" />
+    <EmbeddedResource Include="imagedata\bosses\BEHOLDER.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BELZEBUB.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BIGRAT.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BIKKE.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BORGEN.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BUBBLES.png" />
 	  <EmbeddedResource Include="imagedata\bosses\B.KNIGHT.png" />
+    <EmbeddedResource Include="imagedata\bosses\B.VAMP.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BAIGAN.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BALNAB.png" />
 	  <EmbeddedResource Include="imagedata\bosses\BYBLOS.png" />
@@ -121,6 +123,7 @@
 	  <EmbeddedResource Include="imagedata\bosses\E.DRAGON.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ECHIDNA.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ENKIDU.png" />
+    <EmbeddedResource Include="imagedata\bosses\ENSINGER.png" />
 	  <EmbeddedResource Include="imagedata\bosses\EVILELF.png" />
 	  <EmbeddedResource Include="imagedata\bosses\EVILWALL.png" />
 	  <EmbeddedResource Include="imagedata\bosses\EXDEATH.png" />
@@ -228,12 +231,21 @@
 	  <EmbeddedResource Include="imagedata\bosses\W.RAPTOR.png" />
 	  <EmbeddedResource Include="imagedata\bosses\WELK.png" />
 	  <EmbeddedResource Include="imagedata\bosses\WREXSOUL.png" />
+    <EmbeddedResource Include="imagedata\bosses\WRONGEYE.png" />
 	  <EmbeddedResource Include="imagedata\bosses\WYVERN.png" />
 	  <EmbeddedResource Include="imagedata\bosses\YETI.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ZANDE.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ZEMUS.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ZIGFRIED.png" />
-	  <EmbeddedResource Include="maps\vfmaps.zip" />
+    <EmbeddedResource Include="imagedata\bosses\ANGELA.png" />
+    <EmbeddedResource Include="imagedata\bosses\BROWLER.png" />
+    <EmbeddedResource Include="imagedata\bosses\INFERNAR.png" />
+    <EmbeddedResource Include="imagedata\bosses\KALAMIA.png" />
+    <EmbeddedResource Include="imagedata\bosses\KISMET.png" />
+    <EmbeddedResource Include="imagedata\bosses\LAMORTE.png" />
+    <EmbeddedResource Include="imagedata\bosses\MARINE.png" />
+    <EmbeddedResource Include="imagedata\bosses\WHISPER.png" />
+    <EmbeddedResource Include="maps\vfmaps.zip" />
   </ItemGroup>
 
   <ItemGroup>

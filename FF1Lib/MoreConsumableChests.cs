@@ -133,10 +133,7 @@ namespace FF1Lib
 
 			if (flags.ExtConsumableSet != ExtConsumableSet.None)
 			{
-				consumableChests.Add(Item.WoodenNunchucks);
-				consumableChests.Add(Item.SmallKnife);
-				consumableChests.Add(Item.WoodenRod);
-				consumableChests.Add(Item.Rapier);
+				consumableChests.AddRange(treasurePool.Where(i => i == Item.WoodenNunchucks || i == Item.SmallKnife || i == Item.WoodenRod || i == Item.Rapier).ToList());
 			}
 
 			foreach (var item in consumableChests)

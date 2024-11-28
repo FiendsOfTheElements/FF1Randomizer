@@ -1,4 +1,6 @@
-﻿namespace FF1Lib
+﻿using System.Diagnostics.Tracing;
+
+namespace FF1Lib
 {
 	public class Preferences
 	{
@@ -6,12 +8,15 @@
 		public bool PaletteSwap { get; set; }
 		public bool ModernBattlefield { get; set; }
 		public bool ThirdBattlePalette { get; set; }
-		public bool TeamSteak { get; set; }
+		public SteakSprite TeamSteak { get; set; } = SteakSprite.None;
+		public bool RobotChicken { get; set; }
 		public bool AlternateAirshipTheme { get; set; }
 		public MusicShuffle Music { get; set; }
 		public bool ChaosBattleMusic { get; set; }
 		public bool DisableDamageTileFlicker { get; set; } = true;
 		public bool DisableDamageTileSFX { get; set; }
+		public PoisonSFX AltPoisonSFX { get; set; } = PoisonSFX.Vanilla;
+		public bool DisableAirshipSFX { get; set; }
 		public MenuColor MenuColor { get; set; } = MenuColor.Blue;
 		public MapmanSlot MapmanSlot { get; set; } = MapmanSlot.Leader;
 		public bool DisableSpellCastFlash { get; set; } = true;

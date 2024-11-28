@@ -907,3 +907,23 @@ HaveFloater:
 
   NOP
   NOP
+
+; AltFiends custom dialogues Fight Routine
+Talk_FightBranched:
+  LDY required_id           ; get fiend orb id
+  JSR IsObjectVisible
+  BCS FiendIsAlive
+    LDA dialogue_1          ; Show dialogue
+    BNE talkandbattle       ; we assume that we're never using dialogue 00 for a bra
+FiendIsAlive:
+    LDA dialogue_2          ; Show dialogue
+TalkAndBattle:    
+    JSR InTalkDialogueBox
+    LDA battle_id
+    JSR InTalkBattle        ; Initiate the fight
+    LDY object_id           ; After the fight,
+    JSR SetGameEventFlag    ;  set object's flag
+    JSR HideMapObject       ;  and hide it
+    JSR InTalkReenterMap    ; Then reenter the map
+    JMP SkipDialogueBox     ; Skip showing a second dialogue box
+    RTS

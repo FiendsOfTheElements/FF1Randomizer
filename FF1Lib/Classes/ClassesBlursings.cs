@@ -70,7 +70,8 @@ namespace FF1Lib
 				// Apply Start With Key Items blessings, doesn't count toward the max number of blessings
 				if ((bool)flags.RandomizeClassKeyItems)
 				{
-					maxbonuses++;
+					maxbonuses = (maxbonuses > 0) ? maxbonuses + 1 : 0;
+					
 					foreach (var gameclass in validClasses)
 					{
 						assignedBlessings[gameclass].Add(startWithKiBlurses[(int)gameclass]);

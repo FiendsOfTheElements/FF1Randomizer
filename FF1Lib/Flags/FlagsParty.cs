@@ -13,7 +13,7 @@ namespace FF1Lib
 	}
 	public partial class Flags : IIncentiveFlags, IScaleFlags, IVictoryConditionFlags, IFloorShuffleFlags, IItemPlacementFlags
 	{
-		[FlagIsAllClasses]
+		[System.Text.Json.Serialization.JsonIgnore, FlagIsAllClasses]
 		public bool? AllFighters
 		{
 			get
@@ -32,7 +32,7 @@ namespace FF1Lib
 				FIGHTER1 = FIGHTER2 = FIGHTER3 = FIGHTER4 = value;
 			}
 		}
-		[FlagIsAllClasses]
+		[System.Text.Json.Serialization.JsonIgnore, FlagIsAllClasses]
 		public bool? AllThieves
 		{
 			get
@@ -51,7 +51,7 @@ namespace FF1Lib
 				THIEF1 = THIEF2 = THIEF3 = THIEF4 = value;
 			}
 		}
-		[FlagIsAllClasses]
+		[System.Text.Json.Serialization.JsonIgnore, FlagIsAllClasses]
 		public bool? AllBlackBelts
 		{
 			get
@@ -70,7 +70,7 @@ namespace FF1Lib
 				BLACK_BELT1 = BLACK_BELT2 = BLACK_BELT3 = BLACK_BELT4 = value;
 			}
 		}
-		[FlagIsAllClasses]
+		[System.Text.Json.Serialization.JsonIgnore, FlagIsAllClasses]
 		public bool? AllRedMages
 		{
 			get
@@ -89,7 +89,7 @@ namespace FF1Lib
 				RED_MAGE1 = RED_MAGE2 = RED_MAGE3 = RED_MAGE4 = value;
 			}
 		}
-		[FlagIsAllClasses]
+		[System.Text.Json.Serialization.JsonIgnore, FlagIsAllClasses]
 		public bool? AllWhiteMages
 		{
 			get
@@ -108,7 +108,7 @@ namespace FF1Lib
 				WHITE_MAGE1 = WHITE_MAGE2 = WHITE_MAGE3 = WHITE_MAGE4 = value;
 			}
 		}
-		[FlagIsAllClasses]
+		[System.Text.Json.Serialization.JsonIgnore, FlagIsAllClasses]
 		public bool? AllBlackMages
 		{
 			get
@@ -127,7 +127,7 @@ namespace FF1Lib
 				BLACK_MAGE1 = BLACK_MAGE2 = BLACK_MAGE3 = BLACK_MAGE4 = value;
 			}
 		}
-		[FlagIsAllClasses]
+		[System.Text.Json.Serialization.JsonIgnore, FlagIsAllClasses]
 		public bool? AllKnights
 		{
 			get
@@ -146,7 +146,7 @@ namespace FF1Lib
 				KNIGHT1 = KNIGHT2 = KNIGHT3 = KNIGHT4 = value;
 			}
 		}
-		[FlagIsAllClasses]
+		[System.Text.Json.Serialization.JsonIgnore, FlagIsAllClasses]
 		public bool? AllNinjas
 		{
 			get
@@ -165,7 +165,7 @@ namespace FF1Lib
 				NINJA1 = NINJA2 = NINJA3 = NINJA4 = value;
 			}
 		}
-		[FlagIsAllClasses]
+		[System.Text.Json.Serialization.JsonIgnore, FlagIsAllClasses]
 		public bool? AllMasters
 		{
 			get
@@ -184,7 +184,7 @@ namespace FF1Lib
 				MASTER1 = MASTER2 = MASTER3 = MASTER4 = value;
 			}
 		}
-		[FlagIsAllClasses]
+		[System.Text.Json.Serialization.JsonIgnore, FlagIsAllClasses]
 		public bool? AllRedWizards
 		{
 			get
@@ -203,7 +203,7 @@ namespace FF1Lib
 				RED_WIZ1 = RED_WIZ2 = RED_WIZ3 = RED_WIZ4 = value;
 			}
 		}
-		[FlagIsAllClasses]
+		[System.Text.Json.Serialization.JsonIgnore, FlagIsAllClasses]
 		public bool? AllWhiteWizards
 		{
 			get
@@ -222,7 +222,7 @@ namespace FF1Lib
 				WHITE_WIZ1 = WHITE_WIZ2 = WHITE_WIZ3 = WHITE_WIZ4 = value;
 			}
 		}
-		[FlagIsAllClasses]
+		[System.Text.Json.Serialization.JsonIgnore, FlagIsAllClasses]
 		public bool? AllBlackWizards
 		{
 			get
@@ -241,7 +241,7 @@ namespace FF1Lib
 				BLACK_WIZ1 = BLACK_WIZ2 = BLACK_WIZ3 = BLACK_WIZ4 = value;
 			}
 		}
-		[FlagIsAllClasses]
+		[System.Text.Json.Serialization.JsonIgnore, FlagIsAllClasses]
 		public bool? AllNones
 		{
 			get
@@ -260,7 +260,7 @@ namespace FF1Lib
 				NONE_CLASS2 = NONE_CLASS3 = NONE_CLASS4 = value;
 			}
 		}
-		[FlagIsAllClasses]
+		[System.Text.Json.Serialization.JsonIgnore, FlagIsAllClasses]
 		public bool? AllForced
 		{
 			get
