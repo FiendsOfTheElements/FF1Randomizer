@@ -383,8 +383,12 @@ public partial class FF1Rom : NesRom
 		TitanSnack(preferences.TitanSnack, NpcData, Dialogues, new MT19337(funRng.Next()));
 		HurrayDwarfFate(preferences.HurrayDwarfFate, NpcData, Dialogues, new MT19337(funRng.Next()));
 		PaletteSwap(preferences.PaletteSwap && !flags.EnemizerEnabled, new MT19337(funRng.Next()));
-		TeamSteak(preferences.TeamSteak && !(bool)flags.RandomizeEnemizer);
+		// TeamSteak() must run before FunEnemyNames() because if "Random" is chosen for preferences.TeamSteak,
+		// that choice is resolved in TeamSteak(), and FunEnemyNames() needs to know which funny name to swap in.
+		TeamSteak(flags, preferences, new MT19337(funRng.Next()));
+		SetRobotChickenGraphics(preferences);
 		FunEnemyNames(flags, preferences, new MT19337(funRng.Next()));
+
 
 		await this.Progress();
 
