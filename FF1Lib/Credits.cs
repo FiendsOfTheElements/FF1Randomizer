@@ -2,6 +2,30 @@ namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
 	{
+
+		// the following addresses in the 0x0D bank are locations to move some of
+		// the luts, pointers, and text data to make room for more flexibility
+		// with resource packs and future bridge/end credit stuff
+		// Also overwrites unused minigame instructions, so win/win
+
+		// one byte at this address stores the number of the page after
+		// the story pages in the bridge scene
+		// previously at 0x0D->0xAE00 == 0x36E00
+		const int BridgeLastPageAddress = 0xA779;
+		// one byte at this address stores the number of the page after
+		// the story pages in the ending scene
+		const int EndingLastPageAddress = 0xA77A;
+
+		// bytes at this address store a pointer table followed by text data
+		// for both the bridge scene and the ending scene. The "pages" described
+		// above are stored here, with line and page delimiter bytes.
+		const int StoryTextAddress = 0xA77B;
+
+		// StatsTracking needs to know about this:
+		int StatsPageAddress;
+
+		
+
 		// A fun list of initial victory pages. Classic mistranslations.
 		private static readonly List<string[]> VictoryMessages = new List<string[]>
 		{
@@ -206,18 +230,29 @@ namespace FF1Lib
 				"  tetron",
 				"  lifereboot",
 				"  Twinge",
-				"  Chronometrics",
 			},
 			new []
 			{
 				" Contributors",
 				"",
-				" artea, pinkpuff",
-				" drcat, bdjeffyp",
-				" ofd, Darkmoon",
+				"  artea",
+				"  drcatdoctor",
 				" leggystarscream",
-				" nic0lette",
-				" splitpunched",
+				"  nic0lette",
+				"  splitpunched",
+				"  onefineday",
+			},
+			new []
+			{
+				" Contributors",
+				"",
+				"  Darkmoon",
+				"  pinkpuff",
+				"  bdjeffyp",
+				"  jat2980",
+				"  Chronometrics",
+				"  Oslodo",
+				"  Barber"
 			},
 			new []
 			{
@@ -276,13 +311,18 @@ namespace FF1Lib
 			SetupBridgeCredits();
 		}
 
-		private void SetupStoryPages(MT19337 rng)
+		private async void SetupStoryPages(MT19337 rng)
 		{
+
+
 			// Setup DrawComplexString hijack for a particular escape sequence. See Credits.asm.
 			Put(0x7DFA8, Blob.FromHex("A000A200B13EE63ED002E63F9510E8E003D0F18C1D608C1E60B111991C60C8C410D0F64C45DE"));
 
 			List<Blob> pages = new List<Blob>();
+
 			BridgeStory.ForEach(story => pages.Add(FF1Text.TextToStory(story)));
+			
+
 
 			// An unused escape code from DrawComplexString is overridden allowing the following:
 			// 1010 XX ADDR, Where 1010 enters the escape sequence, the next byte the the size of
@@ -338,19 +378,70 @@ namespace FF1Lib
 				FF1Text.TextToBytes("        ",     true, FF1Text.Delimiter.Empty), Blob.FromHex("101003B26004919900"),
 			};
 
-			pages.Add(FF1Text.TextToStory(VictoryMessages[rng.Between(0, VictoryMessages.Count - 1)]));
+			var victory = FF1Text.TextToStory(VictoryMessages[rng.Between(0, VictoryMessages.Count - 1)]); 
+			pages.Add(victory);
+
+
+			// this needs to go right before the stats pages; this address is used
+			// in StatsTracking.cs
+			StatsPageAddress = StoryTextAddress + pages.Count * 2;
 			pages.Add(Blob.Concat(movementStats));
 			pages.Add(Blob.Concat(battleResults));
 			pages.Add(Blob.Concat(combatStats));
 			ThankYous.ForEach(page => pages.Add(FF1Text.TextToStory(page)));
 
-			Blob storyText = PackageTextBlob(pages, 0xA800);
-			System.Console.WriteLine($"Credits Saved. 0x{storyText.Length:X2}B of 0x500B used.");
-			System.Diagnostics.Debug.Assert(storyText.Length <= 0x0500, $"Story text {storyText.Length:X2} too large!");
 
-			Put(0x36800, storyText);
-			Data[0x36E00] = (byte)(BridgeStory.Count);
-			Data[0x36E01] = (byte)(pages.Count - 1);
+			Blob storyText = PackageTextBlob(pages, StoryTextAddress);
+
+			// bounds check: 0x885 bytes until the next important thing
+			if (storyText.Length > 0x885)
+			{
+				await Progress($"WARNING: custom credit text is too long by {(storyText.Length - 0x885):X2} bytes. Reverting to default.");
+				pages.Clear();
+				DefaultStory.ForEach(page => pages.Add(FF1Text.TextToStory(page)));
+				pages.Add(victory);
+				StatsPageAddress = StoryTextAddress + pages.Count * 2;
+				pages.Add(Blob.Concat(movementStats));
+				pages.Add(Blob.Concat(battleResults));
+				pages.Add(Blob.Concat(combatStats));
+				ThankYous.ForEach(page => pages.Add(FF1Text.TextToStory(page)));
+
+				storyText = PackageTextBlob(pages, StoryTextAddress);	
+			}
+
+			System.Console.WriteLine($"Credits Saved. 0x{storyText.Length:X2} Bytes used.");
+
+
+			// move some stuff to make room for longer bridge story from resource packs.
+			// To complicate matters, StatsTrackingHacks moves some of these instructions to a new bank,
+			// but still tries to point to bank 0x0D. That bug wasn't noticed because it just pointed to
+			// empty ROM space in 0x1E, giving an extra page of credits at the end.
+			// This would be correct if things stayed in 0x0D:
+			// PutInBank(0x0D,0xB812, Blob.FromHex(AddressToHex(BridgeLastPageAddress)));
+			// We take advantage of an unnecessary clearing of the story_page to load the value instead
+			PutInBank(0x0D, 0xB89F, (byte)BridgeStory.Count);
+
+
+			PutInBank(0x0D,0xB85A, (ushort)BridgeLastPageAddress);
+
+
+			PutInBank(0x0D,0xB819, (ushort)EndingLastPageAddress);
+
+
+			PutInBank(0x0D,0xBA64, (ushort)StoryTextAddress);
+			PutInBank(0x0D,0xBA69, (ushort)(StoryTextAddress+1));
+
+
+			PutInBank(0x0D, StoryTextAddress, storyText);
+
+			PutInBank(0x0D, BridgeLastPageAddress, (byte)BridgeStory.Count);
+
+			// not sure why pages.Count - 1 here, but it seems to work?
+			PutInBank(0x0D, EndingLastPageAddress, (byte)(pages.Count - 1));
+
+
+
+			
 		}
 
 		private void SetupBridgeCredits()

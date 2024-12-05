@@ -133,10 +133,16 @@
 		"description": "Changes enemy names in the generated seed. Most of the name changes in this setting are the result of various community memes over the years and may not make sense to newer players."
 	},
 	{
-		"Id": "teamSteakCheckBox",
+		"Id": "teamSteakDropDown",
 		"title": "Team STEAK",
-		"screenshot": "teamSteakCheckBox.png",
-		"description": "Modifies the Tyro/T-Rex sprite to reflect the age old rivalry between two teams.\n Team Tyro believes firmly in the sanctity of Tyro life while Team Steak believes in the sanctity of Tyro meat dinners. Choosing Team Steak will make it clear what you see when confronting these majestic-but-delicious creatures."
+		"screenshot": "teamSteakDropDown.gif",
+		"description": "Replaces one or more enemy sprites with food, reflecting various community memes. Also replaces name(s) with fun food name(s).\nOptions:\nNone: no change.\nSTEAK and WYNGS: replaces TYRO and T REX with STEAK and T.BONE, and WYVERN and WYRM with WYNGS and HotWYNGS.\nSANDWICHes: replaces Sand W with SANDWICH, Grey W with MealWORM, and WORM with GRUB.\nNACHOs and GUAC: replaces NAOCHO with NACHO and OCHO with GUAC.\nPASTRIES: replaces CREEP with CREPE and CRAWL with CRULLER.\nRandom: chooses one of the above at random.\nAll: replaces all of the above sprites. In order to preserve game legibility for tournament spectators, if the Tournament Safe flag is on, choosing \"All\" will only replace one random sprite.\nOld Team STEAK: preserves the legacy Team STEAK sprite for STEAK and T.BONE.\n"
+	},
+	{
+		"Id": "robotChickenCheckBox",
+		"title": "Robot Chicken",
+		"screenshot": "robotChickenCheckBox.png",
+		"description": "Modifies the WarMECH sprite to reveal its true identity: a crazed robot chicken.\nAlso changes its name to RoboCHKN or WarBAWK if Fun Enemy Names is selected."
 	},
 	{
 		"Id": "changeLuteCheckBox",
@@ -195,6 +201,7 @@
 	{
 		"Id": "chaosBattleMusicCheckBox",
 		"title": "Alt Chaos Battle Music",
+		"screenshot": "altChaosMusic.png",
 		"description": "Alt Chaos Battle Music adds a new final battle song. "
 	},
 	{
@@ -202,6 +209,17 @@
 		"title": "Alternate Airship Theme",
 		"screenshot": "alternateAirshipThemeCheckBox.png",
 		"description": "Sets alternate background music when riding the Airship (or AirBoat).\n If Music is Shuffled, the alternate theme will be heard somewhere else, not necessarily when riding the Airship."
+	},
+	{
+		"Id": "newMusicCheckBox",
+		"title": "New Music",
+		"screenshot": "newMusic.png",
+		"description": "Replaces all music in the game (except for item fanfare) with new tracks."
+	},
+	{
+		"Id": "newMusicStreamSafeCheckBox",
+		"title": "Stream Safe Music",
+		"description": "Exclude new music that may not be safe for streaming. This is enabled automatically if 'Tournament Safe Rom' is on."
 	},
 	{
 		"Id": "disableDamageTileFlickerCheckBox",
@@ -214,6 +232,18 @@
 		"title": "Disable Damage Tile SFX",
 		"screenshot": null,
 		"description": "Disables the \"ksssshhh\" sound effect when stepping over lava tiles."
+	},
+	{
+		"Id": "alternatePoisonSFXDropDown",
+		"title": "Change Poison Status SFX",
+		"screenshot": null,
+		"description": "Changes the poison-status alarm sound effect on the map. Options are:\nVanilla: No change.\nSilent: Disables the SFX entirely.\nOuch: Plays the vanilla sound once every 4 steps instead of once every frame.\nBonk: plays a sound similar to the Dragon Warrior \"bonk against a wall\" sound once every 4 steps.\nOops: plays a sound similar to the Mario 1 stomp/swim sound once every 4 steps.\nBeep: plays a sound similar to the Zelda 1 low-health warning once every 4 steps.\nNote: \"Beep\" is not Tournament Safe because it could remind spectators of hospital sounds. If Beep is selected with the Tournament Safe flag on, it will be replaced with \"Ouch.\""
+	},
+	{
+		"Id": "disableAirshipSFXCheckBox",
+		"title": "Disable Airship SFX",
+		"screenshot": null,
+		"description": "Disables the airship propeller sound effects."
 	},
 	{
 		"Id": "disableSpellCastFlashCheckBox",
@@ -307,7 +337,7 @@
 		"Id": "spriteSheetToolTipBox",
 		"title": "Custom Player Sprites",
 		"screenshot": "customHeroSprites.png",
-		"description": "Import custom player sprites. Must use sprite sheets from\nhttp://www.groggy.dog/ffr_sprites/Images/sprites.bmp\nCompatible with Fun % flag Three Battle Palettes.\nNotes for custom sprites:\n1) Use NES colors http://www.groggy.dog/ffr_sprites/Images/NESpalette.png\n2) Maximum of three colors per sprite, plus black (for battle sprites) or transparent (magenta, for mapman sprites)\n3) Mapman can have separate palettes for head and body\n4) All battle sprite postures for a given class must have the same palette\n5) Maximum of two (or three with 'Three Battle Palettes' flag) distinct battle palettes across all classes, classes will need to share palettes, and sprites intended to share a palette need to use exactly same colors in the import image.\n\nImport problems (usually palette problems) will be reported on the Javascript console; use your browser's Web Developer Tools to view the messages.\nSprites are saved when you click 'Save Preferences' in the Fun% menu."
+		"description": "Import custom player (and optionally vehicle) sprites. Sprite sheet guides here:\nhttps://wiki.finalfantasyrandomizer.com/ResourcePacks/sprite-pack-how-to\nand here:\nhttp://www.groggy.dog/ffr_sprites/Images\nCompatible with Fun % flag Three Battle Palettes.\nNotes for custom sprites:\n1) Use NES colors http://www.groggy.dog/ffr_sprites/Images/NESpalette.png\n2) Maximum of three colors per sprite, plus black (for battle sprites) or transparent (magenta, for mapman sprites)\n3) Mapman can have separate palettes for head and body\n4) All battle sprite postures for a given class must have the same palette\n5) Maximum of two (or three with 'Three Battle Palettes' flag) distinct battle palettes across all classes, classes will need to share palettes, and sprites intended to share a palette need to use exactly same colors in the import image.\n6)Vehicle sprites are optional, and must all share one palette, using magenta for transparent.\nImport problems (usually palette problems) will be reported on the Javascript console; use your browser's Web Developer Tools to view the messages.\nSprites are saved when you click 'Save Preferences' in the Fun% menu.\nSee the wiki for reference sprite sheets with and without vehicles."
 	},
 	{
 		"Id": "trappedChaosCheckBox",
@@ -930,12 +960,17 @@
 		"screenshot": "vampAttackIncludesConeria.png",
 		"description": "Allows the Vampire to potentially attack Coneria."
 	},
-
 	{
 		"Id": "treasuresCheckBox",
 		"title": "Treasures",
 		"screenshot": "treasuresCheckBox.png",
-		"description": "Shuffle all treasures normally available to a random chest. All items are assured to be in a chest somewhere in the game."
+		"description": "Shuffle all treasures normally available to a random chest, except chests containing Key Items. All items are assured to be in a chest somewhere in the game."
+	},
+	{
+		"Id": "chestsKeyItemsCheckBox",
+		"title": "Chests Key Items",
+		"screenshot": "npcItemsCheckBox.png",
+		"description": "Add the chests containing Key Items to Items Shuffle. Include CROWN, TNT, RUBY, FLOATER, TAIL, SLAB, ADAMANT."
 	},
 	{
 		"Id": "randomLootCheckBox",
@@ -1405,7 +1440,7 @@
 		"Id": "FinalFantasy1pool",
 		"title": "Final Fantasy 1 Bonus Pool",
 		"screenshot": null,
-		"description": "Will add 14 Final Fantasy 1 Bonus Fiends to the Alternate Fiend Pool."
+		"description": "Will add 19 Final Fantasy 1 Bonus Fiends to the Alternate Fiend Pool."
 	},
 	{
 		"Id": "finalfantasy2pool",
@@ -1436,6 +1471,12 @@
 		"title": "Final Fantasy 6 Pool",
 		"screenshot": null,
 		"description": "Will add 45 Final Fantasy 6 Fiends to the Alternate Fiend Pool."
+	},
+	{
+		"Id": "blackorbrisingpool",
+		"title": "Black Orb Rising Fiends",
+		"screenshot": null,
+		"description": "Will add 8 original Fiends to the Alternate Fiend Pool.\n\nIf only Black Orb Rising is selected, each Fiend will have unique Orb color and dialogues. As well, Fiends will be placed in their exclusive dungeon:\n\nEarth Cave: LAMORTE or KISMET\nVolcano: KALAMIA or INFERNAR\nSea Shrine: MARINE or ANGELA\nSky Palace: BROWLER or WHISPER"
 	},
 	{
 		"Id": "fightBahamutCheckBox",
@@ -2327,6 +2368,12 @@
 		"description": "If enabled, \"Dark\" status severely decreases an attacker's chance to hit or crit an enemy: their crit chance is set to 0%, and they lose all of their base hit chance (this effectively makes the penalty -168 instead of the normal -40), leaving them with only their Hit% vs the defender's Evasion.\nAffects both players and enemies inflicted with \"Dark\" status."
 	},
 	{
+		"Id": "increaseRegenerationCheckBox",
+		"title": "Increase Enemy Regeneration",
+		"screenshot": null,
+		"description": "If enabled, \"Regeneration\" category enemies heal 57HP per turn instead of 3HP."
+	},
+	{
 		"Id": "poisonModeDropDown",
 		"title": "In-Battle Poison Damage",
 		"screenshot": "inBattlePoisonDamage.gif",
@@ -2461,6 +2508,11 @@
 		"description": "Non incentive items are opened in order. \n\nWarning, if your inventory gets full it will block your equipment progress."
 	},
 	{
+		"Id": "EncounterPRNG",
+		"title": "Encounter Table Uses True RNG",
+		"description": "Instead of a 256-step encounter table that resets with a hard reset, the game uses a pseudo-random number generator with a period of 65,535 steps, which does not reset on hard reset."
+	},
+	{
 		"Id": "SetRNG",
 		"title": "Set RNG",
 		"description": "Between two runners playing the same seed, identical battles will start at the same location in the RNG table and the RNG pointer will not progress each frame.\n\nAll bosses and spike tiles will have the same RNG.\n\nThe first through nth random encounter will consume the same RNG values for each battle. If you are facing an issue with a particular random encounter try soft reseting."
@@ -2476,6 +2528,53 @@
 		"title": "INT Affects Spells",
 		"screenshot": "intAffectsSpells.gif",
 		"description": "Makes character's INT stat affect spells in various ways.\nDamage spells get a bonus to crit chance based on INT.\nPower word spells get a bonus to their threshold.\nDebuff spells get a boost to their chance to hit.\nHeal spells (in battle) get a boost to the maximum they can roll (minimum is unchanged).'"
+	},
+	{
+		"Id": "addDamageTiles",
+		"title": "Add Damage Tiles",
+		"description": "Adds damage tiles to locations selected below."
+	},
+	{
+		"Id": "damageTilesTowns",
+		"title": "Add Damage Tiles To Towns",
+		"screenshot": "damageTilesTowns.png",
+		"description": "Adds damage tiles to: Coneria, Provoka, Elfland, Melmond, Crescent Lake, Onrac, Gaia, and Lefein."
+	},
+	{
+		"Id": "damageTilesCastles",
+		"title": "Add Damage Tiles To Castles",
+		"screenshot": "damageTilesCastles.png",
+		"description": "Adds damage tiles to: Coneria Castle, Elfland Castle, Northwest Castle, and Ordeals."
+	},
+	{
+		"Id": "damageTilesDungeons",
+		"title": "Add Damage Tiles To Dungeons",
+		"screenshot": "damageTilesDungeons.png",
+		"description": "Adds damage tiles to: Earth Cave, Sea Shrine, Mirage Tower, and Sky Palace."
+	},
+	{
+		"Id": "damageTilesCaves",
+		"title": "Add Damage Tiles To Caves",
+		"screenshot": "damageTilesCaves.png",
+		"description": "Adds damage tiles to: Dwarf Cave, Matoya's Cave, Marsh Cave, Titan's Tunnel, Sarda's Cave, Ice Cave (upper floors), Cardia Isles, and Bahamut's Cave."
+	},
+	{
+		"Id": "damageTilesTof",
+		"title": "Add Damage Tiles To Temple Of Fiends",
+		"screenshot": "damageTilesTof.png",
+		"description": "Adds damage tiles to Temple of Fiends and Temple of Fiends Revisited."
+	},
+	{
+		"Id": "damageTilesQuantity",
+		"title": "Damage Tiles Quantity",
+		"screenshot": "damageTilesQuantity.png",
+		"description": "Select the quantity of damage tiles to add."
+	},
+	{
+		"Id": "shuffleLavaTiles",
+		"title": "Shuffle Lava Tiles",
+		"screenshot": "shuffleLavaTiles.png",
+		"description": "Changes the pattern of lava tiles in Volcano."
 	},
 	{
 		"Id": "moveToFBats",
@@ -2498,5 +2597,11 @@
 		"title": "Procedurally Generated Earth Cave",
 		"screenshot": "procgenEarth.png",
 		"description": "Randomly selects new Earth Cave maps from a set of procedurally generated maps."
+	},
+	{
+		"Id": "mapDerpCheckBox",
+		"title": "Map Derp",
+		"screenshot": "mapDerp.png",
+		"description": "Derp."
 	}
 ]

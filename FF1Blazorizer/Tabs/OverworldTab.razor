@@ -10,13 +10,13 @@
 	{
 
 			<div class="col1 full">
-				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="gameMode" TItem="GameModes" @bind-Value="Flags.GameMode">Game Mode:</EnumDropDown>
+				<EnumDropDown UpdateAction="@UpdateAction" Id="gameMode" TItem="GameModes" @bind-Value="Flags.GameMode">Game Mode:</EnumDropDown>
 			</div>
 
 		@if (Flags.GameMode == GameModes.Standard)
 		{
 			<div class="col1 full">
-				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Id="owMapExchange" TItem="OwMapExchanges" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
+				<EnumDropDown UpdateAction="@UpdateAction" Id="owMapExchange" TItem="OwMapExchanges" @bind-Value="Flags.OwMapExchange">Overworld Map:</EnumDropDown>
 				<p>@((MarkupString)StatusMessage)</p>
 				<br>
 			</div>
@@ -25,41 +25,41 @@
 			{
 				<div class="col1">
 					<h4>Overworld Edits</h4>
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionCheckBox"
+					<TriStateCheckBox UpdateAction="@UpdateAction" Id="mapOpenProgressionCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapOpenProgression">Early Open Progression</TriStateCheckBox>
 
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDwavesNWCheckBox"
+					<TriStateCheckBox UpdateAction="@UpdateAction" Id="mapOpenProgressionDwavesNWCheckBox"
 							  IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" Indent @bind-Value="Flags.MapOpenProgressionExtended">Extended Open Progression</TriStateCheckBox>
 
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionDocksCheckBox"
+					<TriStateCheckBox UpdateAction="@UpdateAction" Id="mapOpenProgressionDocksCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapOpenProgressionDocks">Northern Docks</TriStateCheckBox>
 
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="mapOpenProgressionFloaterDockCheckBox"
+					<TriStateCheckBox UpdateAction="@UpdateAction" Id="mapOpenProgressionFloaterDockCheckBox"
 							  IsEnabled="@(Flags.MapOpenProgression == true && Flags.OwMapExchange == OwMapExchanges.None)" @bind-Value="Flags.MapAirshipDock">Ryukahn Desert Dock</TriStateCheckBox>
 
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bahamutCardiaDockCheckBox"
+					<TriStateCheckBox UpdateAction="@UpdateAction" Id="bahamutCardiaDockCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapBahamutCardiaDock">Bahamut Cardia Dock</TriStateCheckBox>
 
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="lefeinRiverDockCheckBox"
+					<TriStateCheckBox UpdateAction="@UpdateAction" Id="lefeinRiverDockCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapLefeinRiver">Lefein River Dock</TriStateCheckBox>
 
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="bridgeToLefeinCheckBox"
+					<TriStateCheckBox UpdateAction="@UpdateAction" Id="bridgeToLefeinCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapBridgeLefein">Bridge to Lefein</TriStateCheckBox>
 
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="gaiaMountainPassCheckBox"
+					<TriStateCheckBox UpdateAction="@UpdateAction" Id="gaiaMountainPassCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapGaiaMountainPass">Gaia Mountain Pass</TriStateCheckBox>
 
-                    <TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="highwayToOrdealsCheckBox"
+                    <TriStateCheckBox UpdateAction="@UpdateAction" Id="highwayToOrdealsCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapHighwayToOrdeals">Highway to Ordeals</TriStateCheckBox>
 
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="riverToMelmondCheckBox"
+					<TriStateCheckBox UpdateAction="@UpdateAction" Id="riverToMelmondCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapRiverToMelmond">River to Melmond</TriStateCheckBox>
 					<div class="checkbox-cell"></div>
@@ -87,9 +87,9 @@
 				{
 					<div class="col2">
 						<h4>Options</h4>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="usePregenCheckBox" @bind-Value="Flags.OwRandomPregen">Use Pregenerated Map</CheckBox>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shuffledAccessCheckBox" @bind-Value="Flags.OwShuffledAccess">Shuffled Access</CheckBox>
-						<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="unsafeStartCheckBox" IsEnabled="@Flags.OwShuffledAccess" @bind-Value="Flags.OwUnsafeStart">Unsafe Start</CheckBox>
+						<CheckBox UpdateAction="@UpdateAction" Id="usePregenCheckBox" @bind-Value="Flags.OwRandomPregen">Use Pregenerated Map</CheckBox>
+						<CheckBox UpdateAction="@UpdateAction" Id="shuffledAccessCheckBox" @bind-Value="Flags.OwShuffledAccess">Shuffled Access</CheckBox>
+						<CheckBox UpdateAction="@UpdateAction" Indent Id="unsafeStartCheckBox" IsEnabled="@Flags.OwShuffledAccess" @bind-Value="Flags.OwUnsafeStart">Unsafe Start</CheckBox>
 						<div class="checkbox-cell"></div>
 					</div>
 				}
@@ -106,13 +106,13 @@
 				<div class="col2">
 					<h4>Other Map Changes</h4>
 
-				<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="ShuffleChimeAccess" @bind-Value="Flags.ShuffleChimeAccess">Shuffle Chime Access</TriStateCheckBox>
-				<TriStateCheckBox Indent UpdateToolTip="@UpdateToolTipID" Id="ShuffleChimeIncludeTowns" @bind-Value="Flags.ShuffleChimeIncludeTowns" IsEnabled="Flags.ShuffleChimeAccess">Include towns</TriStateCheckBox>
+				<TriStateCheckBox UpdateAction="@UpdateAction" Id="ShuffleChimeAccess" @bind-Value="Flags.ShuffleChimeAccess">Shuffle Chime Access</TriStateCheckBox>
+				<TriStateCheckBox Indent UpdateAction="@UpdateAction" Id="ShuffleChimeIncludeTowns" @bind-Value="Flags.ShuffleChimeIncludeTowns" IsEnabled="Flags.ShuffleChimeAccess">Include towns</TriStateCheckBox>
 			@if (Flags.OwMapExchange != OwMapExchanges.Desert)
 			{
-          <DoubleSlider DoubleCol Id="DamageTileDamageSlider" UpdateToolTip="@UpdateToolTipID" MinValue="0" MaxValue="10" Step="1" @bind-ValuesRange="(Flags.DamageTileLow,Flags.DamageTileHigh)">Damage Tile Damage:</DoubleSlider>
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="OWDamageTilesCheckBox" @bind-Value="Flags.OWDamageTiles">Marsh & Desert Tiles Deal Damage</TriStateCheckBox>
-					<TriStateCheckBox UpdateToolTip="@UpdateToolTipID" Id="DamageTilesKillCheckBox" @bind-Value="Flags.DamageTilesKill">Lethal Damage Tiles</TriStateCheckBox>
+					<DoubleSlider DoubleCol Id="DamageTileDamageSlider" UpdateAction="@UpdateAction" MinValue="0" MaxValue="10" Step="1" @bind-ValuesRange="(Flags.DamageTileLow,Flags.DamageTileHigh)">Damage Tile Damage:</DoubleSlider>
+					<TriStateCheckBox UpdateAction="@UpdateAction" Id="OWDamageTilesCheckBox" @bind-Value="Flags.OWDamageTiles">Marsh & Desert Tiles Deal Damage</TriStateCheckBox>
+					<TriStateCheckBox UpdateAction="@UpdateAction" Id="DamageTilesKillCheckBox" @bind-Value="Flags.DamageTilesKill">Lethal Damage Tiles</TriStateCheckBox>
 
 					<div class="clear-it"></div>
 			}
@@ -123,9 +123,9 @@
 			<div class="col1 full">
 				<div class="checkbox-cell"></div>
 				<h4>Deep Dungeon Options</h4>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDProgressiveTilesets" @bind-Value="Flags.DDProgressiveTilesets">Progressive Tilesets</CheckBox>
-				<CheckBox UpdateToolTip="@UpdateToolTipID" Indent Id="DDFiendOrbs" @bind-Value="Flags.DDFiendOrbs">Fiend Orbs</CheckBox>
-				<EnumDropDown UpdateToolTip="@UpdateToolTipID" Indent Id="TailBahamutDropDown" TItem="TailBahamutMode" @bind-Value="Flags.TailBahamutMode">Bahamut and TAIL floors:</EnumDropDown>
+				<CheckBox UpdateAction="@UpdateAction" Indent Id="DDProgressiveTilesets" @bind-Value="Flags.DDProgressiveTilesets">Progressive Tilesets</CheckBox>
+				<CheckBox UpdateAction="@UpdateAction" Indent Id="DDFiendOrbs" @bind-Value="Flags.DDFiendOrbs">Fiend Orbs</CheckBox>
+				<EnumDropDown UpdateAction="@UpdateAction" Indent Id="TailBahamutDropDown" TItem="TailBahamutMode" @bind-Value="Flags.TailBahamutMode">Bahamut and TAIL floors:</EnumDropDown>
 				<div class="clear-it"></div>
 			</div>
 		}
@@ -135,8 +135,9 @@
 
 
 	@code {
-		[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+		[Parameter] public FF1Lib.Flags Flags { get; set; }
 		[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+		[Parameter]	public Action<string, string> UpdateAction { get; set; }
 		[Parameter] public bool noTabLayout { get; set; }
 		[Parameter] public bool IsOpen { get; set; } = true;
 		[CascadingParameter(Name="ShowModal")] public MainLayout.ShowModalT ShowModal { get; set; }
@@ -172,6 +173,7 @@
 				return;
 			}
 			ValidateSeed(Blob.Random(4).ToHex());
+			UpdateAction?.Invoke("UpdateFlagstring", "");
 			StateHasChanged();
 		}
 
@@ -181,12 +183,14 @@
 				return;
 			}
 			ValidateSeed("00000000");
+			UpdateAction?.Invoke("UpdateFlagstring", "");
 			StateHasChanged();
 		}
 
 		void OnSeedInputChanged(ChangeEventArgs e)
 		{
 			ValidateSeed((string)e.Value);
+			UpdateAction?.Invoke("UpdateFlagstring", "");
 		}
 
 		int currentStep;

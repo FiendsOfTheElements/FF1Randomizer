@@ -37,8 +37,8 @@
 					background: var(--track-background);
 				}}
 			</style>"))
-				<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="ValuesRangeLow" @bind:event="onchange" />
-				<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="ValuesRangeHigh" @bind:event="onchange" />
+				<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" value="@ValuesRangeLow" @onchange="@onchangeLow" />
+				<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" value="@ValuesRangeHigh" @onchange="@onchangeHigh" />
 			</div>
 		</BSRow>
 	</BSContainer>
@@ -82,8 +82,8 @@ else
 					background: var(--track-background);
 				}}
 			</style>"))
-				<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="ValuesRangeLow" @bind:event="onchange" />
-				<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" @bind="ValuesRangeHigh" @bind:event="onchange" />
+				<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" value="@ValuesRangeLow" @onchange="@onchangeLow" />
+				<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" value="@ValuesRangeHigh" @onchange="@onchangeHigh" />
 			</div>
 		</BSRow>
 	</BSContainer>
@@ -193,8 +193,6 @@ else
 				_valueLow = value.low;
 				_valueHigh = value.high;
 			}
-
-			ValuesRangeChanged.InvokeAsync((_valueLow,_valueHigh));
 		}
 	}
 
@@ -216,6 +214,20 @@ else
 		}
 	}
 
+	void onchangeLow(ChangeEventArgs e)
+	{
+		ValuesRangeLow = int.Parse((string)e.Value);
+		ValuesRangeChanged.InvokeAsync((_valueLow, _valueHigh));
+		UpdateAction?.Invoke("UpdateFlagstring", "");
+	}
+
+	void onchangeHigh(ChangeEventArgs e)
+	{
+		ValuesRangeHigh = int.Parse((string)e.Value);
+		ValuesRangeChanged.InvokeAsync((_valueLow, _valueHigh));
+		UpdateAction?.Invoke("UpdateFlagstring", "");
+	}
+
 	[Parameter] public EventCallback<(int, int)> ValuesRangeChanged { get; set; }
 	[Parameter]
 	public string Id { get; set; }
@@ -226,15 +238,17 @@ else
 
 	private void ShowToolTip(MouseEventArgs e)
 	{
-		UpdateToolTip?.Invoke(Id, e);
+		UpdateAction?.Invoke("UpdateTooltip", Id);
 	}
 
 	private void HideToolTip(MouseEventArgs e)
 	{
-		UpdateToolTip?.Invoke("", e);
+		UpdateAction?.Invoke("UpdateTooltip", "");
 	}
 
 
 	[Parameter]
 	public Action<string, MouseEventArgs> UpdateToolTip { get; set; }
+	[Parameter]
+	public Action<string, string> UpdateAction { get; set; }
 }

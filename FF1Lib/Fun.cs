@@ -78,6 +78,26 @@ namespace FF1Lib
 		[Description("Kill")]
 		Kill = 2,
 	}
+
+	public enum SteakSprite
+	{
+		[Description("None")]
+		None,
+		[Description("STEAK and WYNGS")]
+		Steak,
+		[Description("SANDWICHes")]
+		Sandwiches,
+		[Description("NACHOs and GUAC")]
+		Nachos,
+		[Description("PASTRIES")]
+		Pastries,
+		[Description("Random")]
+		Random,
+		[Description("All")]
+		All,
+		[Description("Old Team STEAK")]
+		Legacy,
+	}
 	public partial class FF1Rom
 	{
 		public const int TyroPaletteOffset = 0x30FC5;
@@ -87,9 +107,45 @@ namespace FF1Lib
 		public const int PaletteSize = 4;
 		public const int PaletteCount = 64;
 
+		//public SteakSprite teamSteak;
+		
+		public SteakSprite teamSteak;
+		
+		public void TeamSteak(Flags flags, Preferences preferences, MT19337 rng)
+		{
+			teamSteak = preferences.TeamSteak;
+			if (flags.TournamentSafe && teamSteak == SteakSprite.All)
+				teamSteak = SteakSprite.Random;
+			if (teamSteak == SteakSprite.Random)
+				teamSteak = (new List<SteakSprite> {SteakSprite.Steak, SteakSprite.Sandwiches, SteakSprite.Nachos, SteakSprite.Pastries}).PickRandom(rng);
+
+
+			if (teamSteak == SteakSprite.None || (bool)flags.RandomizeEnemizer)
+			{
+				return;
+			}
+
+			if (teamSteak == SteakSprite.Legacy)
+			{
+
+				Put(TyroPaletteOffset, Blob.FromHex("302505"));
+				Put(TyroSpriteOffset, Blob.FromHex(
+					"00000000000000000000000000000000" + "00000000000103060000000000000001" + "001f3f60cf9f3f7f0000001f3f7fffff" + "0080c07f7f87c7e60000008080f8f8f9" + "00000080c0e0f0780000000000000080" + "00000000000000000000000000000000" +
+					"00000000000000000000000000000000" + "0c1933676f6f6f6f03070f1f1f1f1f1f" + "ffffffffffffffffffffffffffffffff" + "e6e6f6fbfdfffffff9f9f9fcfefefefe" + "3c9e4e26b6b6b6b6c0e0f0f878787878" + "00000000000000000000000000000000" +
+					"00000000000000000000000000000000" + "6f6f6f6f673b190f1f1f1f1f1f070701" + "fffffec080f9fbffffffffffff8787ff" + "ff3f1f1f3ffdf9f3fefefefefefefefc" + "b6b6b6b6b6b6b6b67878787878787878" + "00000000000000000000000000000000" +
+					"00000000000000000000000000000000" + "07070706060707070100000101010101" + "ffffff793080c0f0fffc3086cfffffff" + "e7fefcf9f26469e3f80103070f9f9e1c" + "264c983060c08000f8f0e0c080000000" + "00000000000000000000000000000000" +
+					"00000000000000000000000000000000" + "07070706060301010101010101000000" + "f9f9f9797366ece8fefefefefcf97377" + "c68c98981830606038706060e0c08080" + "00000000000000000000000000000000" + "00000000000000000000000000000000" +
+					"00000000000000000000000000000000" + "01010101010000000000000000000000" + "fb9b9b9b98ff7f006767676767000000" + "6060606060c080008080808080000000" + "00000000000000000000000000000000" + "00000000000000000000000000000000"));
+			}
+			else
+			{
+				// in Sprites.cs
+				SetTeamSteakGraphics(teamSteak);
+			}
+		}
 	    public void FunEnemyNames(Flags flags, Preferences preferences, MT19337 rng)
 		{
-			bool teamSteak = preferences.TeamSteak;
+			bool robotChicken = preferences.RobotChicken;
 			bool altFiends = (bool)flags.AlternateFiends;
 
 			if (!preferences.FunEnemyNames || flags.EnemizerEnabled)
@@ -97,12 +153,19 @@ namespace FF1Lib
 				return;
 			}
 
-			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			// ReadEnemyText() and WriteEnemyText() use some extra room in the ROM,
+			// so no need to worry about the number of bytes in the names now.
+			var enemyText = ReadEnemyText();
 
 			enemyText[1] = "GrUMP";    // +0  GrIMP
 			enemyText[2] = "RURURU";   // +2  WOLF
 			enemyText[3] = "GrrrWOLF"; // +2  GrWOLF
 			enemyText[5] = "BrrrWOLF"; // +2  FrWOLF
+			if (teamSteak == SteakSprite.Pastries || teamSteak == SteakSprite.All)
+			{
+				enemyText[23] = "CREPE";
+				enemyText[24] = "CRULLER";
+			}
 			enemyText[28] = "GeORGE";  // +0  GrOGRE
 
 			// "WzOGRE"
@@ -116,6 +179,11 @@ namespace FF1Lib
 			enemyText[31] = "GrSNEK";     // +1  COBRA
 			enemyText[32] = "SeaSNEK";    // -1  SeaSNAKE
 			enemyText[40] = "iMAGE";      // +0  IMAGE
+			if (teamSteak == SteakSprite.Sandwiches || teamSteak == SteakSprite.All)
+			{
+				enemyText[47] = "GRUB";		// WORM
+				enemyText[49] = "MealWORM";	// Grey W
+			}
 			enemyText[48] = "SANDWICH";   // +2  Sand W
 			enemyText[51] = "WrongEYE";   //     Phantom
 			enemyText[53] = "SNEKLADY";   // +0  GrMEDUSA
@@ -128,11 +196,21 @@ namespace FF1Lib
 			enemyText[80] = "MOMMY";      // -2  WzMUMMY
 			enemyText[81] = "BIRB";       // -4  COCTRICE
 			enemyText[82] = "R.BIRB";     // -2  PERILISK
-			enemyText[83] = "Y BURN";     // +0  WYVERN
-			if (teamSteak)
+			if (teamSteak == SteakSprite.Steak || teamSteak == SteakSprite.All)
+			{
+				enemyText[83] = "WYNGS";	// WYVERN
+				enemyText[84] = "HotWYNGS";	// WYRM
+			}
+			else
+				enemyText[83] = "Y BURN";     // +0  WYVERN
+			if (teamSteak == SteakSprite.Steak || teamSteak == SteakSprite.Legacy || teamSteak == SteakSprite.All)
 			{
 				enemyText[85] = "STEAK";  // +1  TYRO
 				enemyText[86] = "T.BONE"; // +1  T REX
+			}
+			if (teamSteak == SteakSprite.Nachos || teamSteak == SteakSprite.All)
+			{
+				enemyText[91] = "GUAC";		// OCHO
 			}
 			enemyText[92] = "NACHO";      // -1  NAOCHO
 			enemyText[94] = "HYDRANT";    // +0  R.HYDRA
@@ -147,12 +225,18 @@ namespace FF1Lib
 			    enemyText[122] = "KELLY";     // +1  KARY
 			}
 
-			// Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes
-			// We're adding (up to) a net of 18 bytes to enemyTextPart2.
-			var enemyTextPart1 = enemyText.Take(2).ToArray();
-			var enemyTextPart2 = enemyText.Skip(2).ToArray();
-			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
-			WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+			if (robotChicken)
+			{
+				if (rng.Between(1, 10) >= 5)
+				{
+					enemyText[118] = "RoboCHKN"; // WarMECH
+				}
+				else
+				{
+					enemyText[118] = "WarBAWK"; // WarMECH
+				}
+			}
+			WriteEnemyText(enemyText);
 		}
 
 		public void PaletteSwap(bool enable, MT19337 rng)
@@ -169,22 +253,7 @@ namespace FF1Lib
 			Put(PaletteOffset, Blob.Concat(palettes));
 		}
 
-		public void TeamSteak(bool enable)
-		{
-			if (!enable)
-			{
-				return;
-			}
-
-			Put(TyroPaletteOffset, Blob.FromHex("302505"));
-			Put(TyroSpriteOffset, Blob.FromHex(
-				"00000000000000000000000000000000" + "00000000000103060000000000000001" + "001f3f60cf9f3f7f0000001f3f7fffff" + "0080c07f7f87c7e60000008080f8f8f9" + "00000080c0e0f0780000000000000080" + "00000000000000000000000000000000" +
-				"00000000000000000000000000000000" + "0c1933676f6f6f6f03070f1f1f1f1f1f" + "ffffffffffffffffffffffffffffffff" + "e6e6f6fbfdfffffff9f9f9fcfefefefe" + "3c9e4e26b6b6b6b6c0e0f0f878787878" + "00000000000000000000000000000000" +
-				"00000000000000000000000000000000" + "6f6f6f6f673b190f1f1f1f1f1f070701" + "fffffec080f9fbffffffffffff8787ff" + "ff3f1f1f3ffdf9f3fefefefefefefefc" + "b6b6b6b6b6b6b6b67878787878787878" + "00000000000000000000000000000000" +
-				"00000000000000000000000000000000" + "07070706060707070100000101010101" + "ffffff793080c0f0fffc3086cfffffff" + "e7fefcf9f26469e3f80103070f9f9e1c" + "264c983060c08000f8f0e0c080000000" + "00000000000000000000000000000000" +
-				"00000000000000000000000000000000" + "07070706060301010101010101000000" + "f9f9f9797366ece8fefefefefcf97377" + "c68c98981830606038706060e0c08080" + "00000000000000000000000000000000" + "00000000000000000000000000000000" +
-				"00000000000000000000000000000000" + "01010101010000000000000000000000" + "fb9b9b9b98ff7f006767676767000000" + "6060606060c080008080808080000000" + "00000000000000000000000000000000" + "00000000000000000000000000000000"));
-		}
+		
 
 		public void DynamicWindowColor(MenuColor menuColor)
 		{
@@ -478,7 +547,7 @@ namespace FF1Lib
 
 			var snackOptions = new List<string>(); // { "NEWRUBY(max 7 characters);NEWRUBYPLURALIZED(max 8 characters);IS/ARE(relating to plural form);DESCRIPTOR(max 6 characters);ONOMATOPOEIA(max 6 chars, how ingestion sounds)" }
 			var mineralSnacks = new List<string> { "DIAMOND;DIAMONDS;ARE;SWEET;CRUNCH", "GEODE;GEODES;ARE;SWEET;CRUNCH", "COAL;COAL;IS;SMOKY;CRUNCH", "PEARL;PEARLS;ARE;SWEET;CRUNCH", "FOSSIL;FOSSILS;ARE;SWEET;CRUNCH", "EMERALD;EMERALDS;ARE;SWEET;CRUNCH", "TOPAZ;TOPAZ;IS;SWEET;CRUNCH", "QUARTZ;QUARTZ;IS;SWEET;CRUNCH", "ONYX;ONYXES;ARE;SWEET;CRUNCH", "MARBLE;MARBLE;IS;SWEET;CRUNCH", "AMETHST;AMETHST;IS;SWEET;CRUNCH", "JADE;JADES;ARE;SWEET;CRUNCH", "SAPHIRE;SAPHIRE;IS;SWEET;CRUNCH", "GRANITE;GRANITE;IS;SWEET;CRUNCH", "OBSDIAN;OBSDIAN;IS;SWEET;CRUNCH", "CONCRET;CONCRET;IS;SALTY;CRUNCH", "ASPHALT;ASPHALT;IS;SALTY;CRUNCH", "PUMICE;PUMICE;IS;SWEET;CRUNCH", "LIMESTN;LIMESTN;IS;SOUR;CRUNCH", "SNDSTON;SNDSTON;IS;SALTY;CRUNCH", "MYTHRL;MYTHRL;IS;SWEET;CRUNCH" };
-			var junkFoodSnacks = new List<string> { "DANISH;DANISHES;ARE;SWEET;MUNCH", "HOT DOG;HOT DOGS;ARE;GREAT;MUNCH", "TACO;TACOS;ARE;GREAT;MUNCH", "SUB;SUBS;ARE;GREAT;MUNCH", "PIZZA;PIZZA;IS;YUMMY;MUNCH", "BURGER;BURGERS;ARE;YUMMY;MUNCH", "EGGROLL;EGGROLLS;ARE;YUMMY;MUNCH", "BISCUIT;BISCUITS;ARE;YUMMY;MUNCH", "WAFFLE;WAFFLES;ARE;YUMMY;MUNCH", "CAKE;CAKE;IS;SWEET;MUNCH", "PIE;PIE;IS;SWEET;MUNCH", "DONUT;DONUTS;ARE;SWEET;MUNCH", "FRIES;FRIES;ARE;SALTY;MUNCH", "CHIPS;CHIPS;ARE;SALTY;CRUNCH", "CANDY;CANDY;IS;SWEET;MUNCH", "PANCAKE;PANCAKES;ARE;SWEET;MUNCH", "ICE CRM;ICE CRM;IS;CREAMY;MUNCH", "PUDDING;PUDDING;IS;YUMMY;MUNCH", "BROWNIE;BROWNIES;ARE;SWEET;MUNCH", "CRAYON;CRAYONS;ARE;WEIRD;MUNCH", "GLUE;GLUE;IS;WEIRD;MUNCH", "PASTE;PASTE;IS;WEIRD;MUNCH", "LASAGNA;LASAGNA;IS;YUMMY;MUNCH", "POUTINE;POUTINE;IS;GREAT;MUNCH", "PASTA;PASTA;IS;YUMMY;MUNCH", "RAMEN;RAMEN;IS;GREAT;MUNCH", "STEAK;STEAK;IS;GREAT;MUNCH", "NACHOS;NACHOS;ARE;SALTY;CRUNCH", "BACON;BACON;IS;SALTY;MUNCH", "MUTTON;MUTTON;IS;GREAT;MUNCH", "BAGEL;BAGELS;ARE;GREAT;MUNCH", "CHEESE;CHEESE;IS;GREAT;MUNCH", "POPCORN;POPCORN;IS;SALTY;MUNCH", "CHICKEN;CHICKEN;IS;GREAT;MUNCH", "BEEF;BEEF;IS;GREAT;MUNCH", "HAM;HAM;IS;GREAT;MUNCH", "BOLOGNA;BOLOGNA;IS;GREAT;MUNCH", "HOAGIE;HOAGIES;ARE;GREAT;MUNCH", "FILET;FILET;IS;DIVINE;MUNCH", "LOBSTER;LOBSTER;IS;DIVINE;MUNCH", "SHEPPIE;SHEPPIE;IS;SAVORY;MUNCH", "MEATLOF;MEATLOF;IS;SAVORY;MUNCH", "ENCHLDA;ENCHLDAS;ARE;CHEESY;MUNCH" };
+			var junkFoodSnacks = new List<string> { "DANISH;DANISHES;ARE;SWEET;MUNCH", "HOT DOG;HOT DOGS;ARE;GREAT;MUNCH", "TACO;TACOS;ARE;GREAT;MUNCH", "SUB;SUBS;ARE;GREAT;MUNCH", "PIZZA;PIZZA;IS;YUMMY;MUNCH", "BURGER;BURGERS;ARE;YUMMY;MUNCH", "EGGROLL;EGGROLLS;ARE;YUMMY;MUNCH", "BISCUIT;BISCUITS;ARE;YUMMY;MUNCH", "WAFFLE;WAFFLES;ARE;YUMMY;MUNCH", "CAKE;CAKE;IS;SWEET;MUNCH", "PIE;PIE;IS;SWEET;MUNCH", "DONUT;DONUTS;ARE;SWEET;MUNCH", "FRIES;FRIES;ARE;SALTY;MUNCH", "CHIPS;CHIPS;ARE;SALTY;CRUNCH", "CANDY;CANDY;IS;SWEET;MUNCH", "PANCAKE;PANCAKES;ARE;SWEET;MUNCH", "ICE CRM;ICE CRM;IS;CREAMY;MUNCH", "PUDDING;PUDDING;IS;YUMMY;MUNCH", "BROWNIE;BROWNIES;ARE;SWEET;MUNCH", "CRAYON;CRAYONS;ARE;WEIRD;MUNCH", "GLUE;GLUE;IS;WEIRD;MUNCH", "PASTE;PASTE;IS;WEIRD;MUNCH", "LASAGNA;LASAGNA;IS;YUMMY;MUNCH", "POUTINE;POUTINE;IS;GREAT;MUNCH", "PASTA;PASTA;IS;YUMMY;MUNCH", "RAMEN;RAMEN;IS;GREAT;MUNCH", "STEAK;STEAK;IS;GREAT;MUNCH", "NACHOS;NACHOS;ARE;SALTY;CRUNCH", "BACON;BACON;IS;SALTY;MUNCH", "MUTTON;MUTTON;IS;GREAT;MUNCH", "BAGEL;BAGELS;ARE;GREAT;MUNCH", "CHEESE;CHEESE;IS;GREAT;MUNCH", "POPCORN;POPCORN;IS;SALTY;MUNCH", "CHICKEN;CHICKEN;IS;GREAT;MUNCH", "BEEF;BEEF;IS;GREAT;MUNCH", "HAM;HAM;IS;GREAT;MUNCH", "BOLOGNA;BOLOGNA;IS;GREAT;MUNCH", "HOAGIE;HOAGIES;ARE;GREAT;MUNCH", "FILET;FILET;IS;DIVINE;MUNCH", "LOBSTER;LOBSTER;IS;DIVINE;MUNCH", "SHEPPIE;SHEPPIE;IS;SAVORY;MUNCH", "MEATLOF;MEATLOF;IS;SAVORY;MUNCH", "ENCHLDA;ENCHLDAS;ARE;CHEESY;MUNCH", "BAKLAVA;BAKLAVAS;ARE;SWEET;MUNCH","CANNOLI;CANNOLI;ARE;SWEET;CRUNCH","TIRMISU;TIRMISU;IS;SWEET;MUNCH","CHZQAKE;CHZQAKE;IS;CREAMY;MUNCH","PIEROGI;PIEROGIES;ARE;YUMMY;MUNCH","KEBAB;KEBABS;ARE;YUMMY;MUNCH","KOFTE;KOFTE;IS;YUMMY;MUNCH" };
 			var healthySnacks = new List<string> { "EDAMAME;EDAMAME;IS;SALTY;MUNCH", "SALAD;SALAD;IS;GREAT;MUNCH", "APPLE;APPLES;ARE;SWEET;CRUNCH", "PEAR;PEARS;ARE;SWEET;MUNCH", "MELON;MELONS;ARE;SWEET;MUNCH", "ORANGE;ORANGES;ARE;SWEET;MUNCH", "LEMON;LEMONS;ARE;SOUR;MUNCH", "YOGURT;YOGURT;IS;GREAT;MUNCH", "GRANOLA;GRANOLA;IS;GREAT;CRUNCH", "SPINACH;SPINACH;IS;YUMMY;MUNCH", "EGG;EGGS;ARE;YUMMY;MUNCH", "GRAPES;GRAPES;ARE;YUMMY;MUNCH", "OATMEAL;OATMEAL;IS;GREAT;MUNCH", "TOFU;TOFU;IS;WEIRD;MUNCH", "CABBAGE;CABBAGE;IS;FRESH;MUNCH", "LETTUCE;LETTUCE;IS;FRESH;MUNCH", "TOMATO;TOMATOES;ARE;YUMMY;MUNCH", "SUSHI;SUSHI;IS;FISHY;MUNCH", "TUNA;TUNA;IS;FISHY;MUNCH", "SALMON;SALMON;IS;FISHY;MUNCH", "FISH;FISH;IS;FRESH;MUNCH", "BEANS;BEANS;ARE;YUMMY;MUNCH", "CEREAL;CEREAL;IS;GREAT;MUNCH", "PRETZEL;PRETZELS;ARE;SALTY;MUNCH", "EGGSALD;EGGSALAD;IS;GREAT;MUNCH", "RICE;RICE;IS;PLAIN;MUNCH", "CAVIAR;CAVIAR;IS;DIVINE;MUNCH" };
 			var beverages = new List<string> { "BEER;BEER;IS;SMOOTH;GULP", "WINE;WINE;IS;RICH;GULP", "TEA;TEA;IS;FRESH;GULP", "COFFEE;COFFEE;IS;FRESH;GULP", "COLA;COLA;IS;SWEET;GULP", "COCOA;COCOA;IS;SWEET;GULP", "ICEDTEA;ICEDTEA;IS;SWEET;GULP", "LMONADE;LEMONADE;IS;SWEET;GULP", "MILK;MILK;IS;GREAT;GULP", "LATTE;LATTES;ARE;CREAMY;GULP", "WATER;WATER;IS;FRESH;GULP", "TEQUILA;TEQUILA;IS;SMOOTH;GULP" };
 
@@ -520,7 +589,7 @@ namespace FF1Lib
 				newRubyItemDescription = "Feels heavy.";
 			}
 			// replace "A red stone." item description (0x38671) originally "8AFFAF2FAA1A23A724285AC000"
-			Put(0x38671, FF1Text.TextToBytes(newRubyItemDescription, useDTE: true));
+			MenuText.MenuStrings[(int)FF1Text.MenuString.UseRuby] = FF1Text.TextToBytes(newRubyItemDescription, useDTE: true);
 
 			// phrase parts
 			var newRubyContent = randomRuby.Split(";");

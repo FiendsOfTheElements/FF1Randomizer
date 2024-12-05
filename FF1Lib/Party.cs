@@ -610,10 +610,10 @@ namespace FF1Lib
 					{
 						targetNpc = ObjectId.PravokaMan2;
 						originMap = MapIndex.Pravoka;
-						var tempNpc = FindNpc(originMap, targetNpc);
-						var bikkeNpc = FindNpc(originMap, ObjectId.Bikke);
+						var tempNpc = maps[originMap].MapObjects.FindNpc(targetNpc);
+						var bikkeNpc = maps[originMap].MapObjects.FindNpc(ObjectId.Bikke);
 						targetIndex = tempNpc.Index;
-						targetCoord = (bikkeNpc.Coord.x - 1, bikkeNpc.Coord.y - 1);
+						targetCoord = (bikkeNpc.Coords.X - 1, bikkeNpc.Coords.Y - 1);
 						targetInRoom = tempNpc.InRoom;
 						targetStationary = true;
 					}
@@ -621,9 +621,9 @@ namespace FF1Lib
 					{
 						targetNpc = ObjectId.LefeinMan11;
 						originMap = MapIndex.Lefein;
-						var tempNpc = FindNpc(originMap, targetNpc);
+						var tempNpc = maps[originMap].MapObjects.FindNpc(targetNpc);
 						targetIndex = tempNpc.Index;
-						targetCoord = tempNpc.Coord;
+						targetCoord = (tempNpc.Coords.X, tempNpc.Coords.Y);
 						targetInRoom = tempNpc.InRoom;
 						targetStationary = tempNpc.Stationary;
 						var tempdiagid = npcdata[targetNpc].Dialogue2;
@@ -634,9 +634,9 @@ namespace FF1Lib
 					{
 						targetNpc = crescentSages.PickRandom(rng);
 						originMap = MapIndex.CrescentLake;
-						var tempNpc = FindNpc(originMap, targetNpc);
+						var tempNpc = maps[originMap].MapObjects.FindNpc(targetNpc);
 						targetIndex = tempNpc.Index;
-						targetCoord = tempNpc.Coord;
+						targetCoord = (tempNpc.Coords.X, tempNpc.Coords.Y);
 						targetInRoom = tempNpc.InRoom;
 						targetStationary = tempNpc.Stationary;
 					}
@@ -645,8 +645,8 @@ namespace FF1Lib
 						var selectTarget = eventNpc.SpliceRandom(rng);
 						targetNpc = selectTarget.Item1;
 						originMap = selectTarget.Item2;
-						var tempNpc = FindNpc(originMap, targetNpc);
-						targetIndex = FindNpc(npc.targetMap, ObjectId.None).Index;
+						var tempNpc = maps[originMap].MapObjects.FindNpc(targetNpc);
+						targetIndex = maps[npc.targetMap].MapObjects.FindNpc(ObjectId.None).Index;
 						targetCoord = npc.newPosition;
 						targetInRoom = npc.inRoom;
 						targetStationary = npc.stationary;

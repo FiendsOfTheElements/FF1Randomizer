@@ -206,7 +206,7 @@ namespace FF1Lib
 			maps[MapIndex.TempleOfFiendsRevisitedChaos].MapObjects.SetNpc(3, ObjectId.LutePlate, 15, 5, inRoom: true, stationary: true);
 
 			// replace "The tune plays,\nrevealing a stairway." text (0x385BA) originally "9DAB1AB7B8B11AB3AFA4BCB6BF05B5A8B92BAF1FAA2024B7A4ACB55DBCC000"
-			Put(0x385BA, FF1Text.TextToBytes("The tune plays,\nopening the pathway.", useDTE: true));
+			MenuText.MenuStrings[(int)FF1Text.MenuString.UseLuteSuccess] = FF1Text.TextToBytes("The tune plays,\nopening the pathway.", useDTE: true);
 
 			// make lute plate a single color
 			MakeGarlandsBorderTransparent(); // so lute plate change doesn't conflict with Garland, he'll look the same on a black background
@@ -219,7 +219,7 @@ namespace FF1Lib
 			maps[MapIndex.TempleOfFiendsRevisited1F].MapObjects.SetNpc(0, ObjectId.LutePlate, 0x14, 0x15, inRoom: true, stationary: true);
 
 			// replace "The tune plays,\nrevealing a stairway." text (0x385BA) originally "9DAB1AB7B8B11AB3AFA4BCB6BF05B5A8B92BAF1FAA2024B7A4ACB55DBCC000"
-			Put(0x385BA, FF1Text.TextToBytes("The tune plays,\nopening the pathway.", useDTE: true));
+			MenuText.MenuStrings[(int)FF1Text.MenuString.UseLuteSuccess] = FF1Text.TextToBytes("The tune plays,\nopening the pathway.", useDTE: true);
 
 			// make lute plate a single color
 			PutInBank(0x00, 0xA000 + ((int)MapIndex.TempleOfFiendsRevisited1F * 0x30) + 0x18, Blob.FromHex("3000001030000010"));

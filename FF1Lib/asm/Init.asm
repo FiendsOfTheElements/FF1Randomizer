@@ -83,6 +83,13 @@ no_sram:
 		STA $6400, X
 		INX      ; loop until $60A0 through $60FF are zeroed
 		BNE Loop ; also $64A0 through $64FF
-
+	;; initialize menu color
+	INC $64FB
+	LDA $64FB
+	STA $60FB
+	;; initialize SetRng variables
+	LDA #$00
+	STA $0340 ; btl_rngstateTurnStart
+	STA $0341 ; btl_SpikeTileFlag
 DoneExtraInit:
 	RTS

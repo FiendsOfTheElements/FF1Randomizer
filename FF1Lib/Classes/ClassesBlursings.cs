@@ -70,10 +70,11 @@ namespace FF1Lib
 				// Apply Start With Key Items blessings, doesn't count toward the max number of blessings
 				if ((bool)flags.RandomizeClassKeyItems)
 				{
+					maxbonuses = (maxbonuses > 0) ? maxbonuses + 1 : 0;
+					
 					foreach (var gameclass in validClasses)
 					{
-						var pickedBlursing = startWithKiBlurses.ToList().PickRandom(rng);
-						assignedBlessings[gameclass].Add(pickedBlursing);
+						assignedBlessings[gameclass].Add(startWithKiBlurses[(int)gameclass]);
 					}
 				}
 
@@ -132,7 +133,14 @@ namespace FF1Lib
 				{
 					var currentClass = validClasses.PickRandom(rng);
 
-					var validMaluses = maluses.Where(x => !placedBlursings.Contains(x) && x.ClassList.Contains(currentClass) && !assignedBlessings[currentClass].Select(y => y.Action).ToList().Contains(x.Action) && !assignedMaluses[currentClass].Select(y => y.Action).ToList().Contains(x.Action)).ToList();
+					var validMaluses = maluses.Where(x => !placedBlursings.Contains(x) &&
+						x.ClassList.Contains(currentClass) &&
+						!assignedBlessings[currentClass].Select(y => y.Action).ToList().Contains(x.Action) &&
+						!assignedMaluses[currentClass].Select(y => y.Action).ToList().Contains(x.Action) &&
+						!(x.Action == BonusMalusAction.CantLearnSpell && assignedBlessings[currentClass].Where(y => y.Action == BonusMalusAction.InnateSpells).SelectMany(x => x.SpellsMod).ToList().Contains(x.SpellSlotMod)) &&
+						!(x.Action == BonusMalusAction.NoPromoMagic && assignedBlessings[currentClass].Where(y => y.Action == BonusMalusAction.MpGainOnMaxMpGain).Any()) &&
+						!(x.Action == BonusMalusAction.RibbonCurse && assignedBlessings[currentClass].Where(y => y.Action == BonusMalusAction.InnateResist && y.StatMod == 0xFF).Any())
+						).ToList();
 
 					if (!validMaluses.Any())
 					{

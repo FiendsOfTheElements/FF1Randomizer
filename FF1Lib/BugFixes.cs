@@ -12,7 +12,7 @@ namespace FF1Lib
 
 			if (!ether)
 			{
-				FixHouse(fixhousehp, fixhousemp);
+				FixHouse(fixhousemp, fixhousehp);
 			}
 
 			if ((bool)flags.WeaponStats)
@@ -53,7 +53,10 @@ namespace FF1Lib
 			if (MPfix)
 			{
 				Put(0x03B2CE, Blob.FromHex("20F3ABA91E20E0B2EAEA"));
-				Put(0x038816, Blob.FromHex("203B42A4AAACA6FF23A6B23223A7C0059C8A9F8EC5FFFFFFFFFFFFFF"));
+
+				//split in 2 so the ".." doesn't become 2 veritically centered dots due to DTE matching
+				MenuText.MenuStrings[(int)FF1Text.MenuString.UseHouseSuccess] = FF1Text.TextToBytes("HP and magic recovered.\nSAVE?\n", useDTE: true, delimiter: FF1Text.Delimiter.Empty);
+				MenuText.MenuStrings[(int)FF1Text.MenuString.UseHouseSuccess] += FF1Text.TextToBytes("PUSH A ..YES PUSH B ..NO", useDTE: false, delimiter: FF1Text.Delimiter.Null);
 			}
 
 			if (HPfix)
@@ -95,6 +98,8 @@ namespace FF1Lib
 			Put(0x3369E, Blob.FromHex("60A007AD85689190A009AD82689190A005AD8468919060"));
 			// Call new loading code from BtlMag_LoadPlayerDefenderStats
 			Put(0x33661, Blob.FromHex("2030B7EAEAEAEA"));
+			// Prevent BtlMag_SavePlayerDefenderStats from saving mdef
+			PutInBank(0x0C, 0xB7A2, Blob.FromHex("EAEA"));
 			// Call new saving code from BtlMag_SavePlayerDefenderStats
 			Put(0x337C5, Blob.FromHex("209FB6EAEAEAEA"));
 			// SABR's hit% bonus
@@ -160,12 +165,12 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x9C54, Blob.FromHex("205DB6AD2400D012AD2500F0F32084AD6868A9008D25004C97AE2084ADA9008D2400AE6500DE006360"));
 
 			Put(0x3B0D6, Blob.FromHex("EAEAEAEAEA20549C")); // Warp
-			Put(0x38A77, Blob.FromHex("A02FB3315EAE36B1A8FFA9AFB2B2B50599B8B6ABFF8BFFB7B2FFA4A5B2B5B7")); // Text
-			Put(0x38B5A, Blob.FromHex("A0A4B5B3FFA5A4A6AEFFB2B1A805A9AFB2B2B5C099B8B6ABFF8BFFB7B2FFA4A5B2B5B700FFFFFFFFFFFFFF"));
+			//MenuText.MenuStrings[47] = Blob.FromHex("A02FB3315EAE36B1A8FFA9AFB2B2B50599B8B6ABFF8BFFB7B2FFA4A5B2B5B7");
+			MenuText.MenuStrings[(int)FF1Text.MenuString.MagicWarp] = FF1Text.TextToBytes("Warp back one floor\nPush B to abort", useDTE: true);
 
 			Put(0x3B0F7, Blob.FromHex("EAEAEAEAEA20549C")); // Exit
-			Put(0x38AB3, Blob.FromHex("95B237C5FF972E5D4B26B7C5FF9EB61A1C3005B6B3A84E1B2EA8BB5BC40599B8B6ABFF8BFF2820A53521")); // Text
-			Put(0x38BAA, Blob.FromHex("95B2B6B7C5FF97B2FFBAA4BCFFB2B8B7C5059EB6A8FFB7ABACB605B6B3A8AFAFFFB7B2FFA8BBACB7C4FF99B8B6ABFF8BFFB7B2FFA4A5B2B5B7"));
+			//MenuText.MenuStrings[49] = Blob.FromHex("95B237C5FF972E5D4B26B7C5FF9EB61A1C3005B6B3A84E1B2EA8BB5BC40599B8B6ABFF8BFF2820A53521");
+			MenuText.MenuStrings[(int)FF1Text.MenuString.MagicExit] = FF1Text.TextToBytes("Lost? No way out? Use this\nspell to exit!\nPush B to abort", useDTE: true);
 		}
 		public void FixEnemyPalettes()
 		{

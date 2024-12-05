@@ -45,7 +45,11 @@ namespace FF1Lib
 			const byte encZombieD = 0x4B;
 			const byte encWarMech = 0x56;
 
-			var zombieDialog = new List<byte> { 0x32, 0x33, 0x34, 0x36 };
+			var zombieDialog = new List<byte> { 0x32, 0x33, 0x34 };
+			if (!flags.NoOverworld)
+			{
+				zombieDialog.Add(0x36);
+			}
 
 			Dictionary<int, string> evilDialogs = new Dictionary<int, string>();
 
@@ -183,17 +187,16 @@ namespace FF1Lib
 			Put(EnemyOffset, statsEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 
 			//Update enemies names
-			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+
+			var enemyText = ReadEnemyText();
 
 			enemyText[0x33] = "DRACLICH"; //Phantom > to DrakLich?
 			enemyText[118] = "LICH?"; // WarMech > Lich?
 			enemyText[119] = "PHANTOM"; // Lich1 > Phantom
-			enemyText[120] = ""; // Lich2 > Phantom
+			enemyText[120] = "PHANTOM"; // Lich2 > Phantom
 			enemyText[127] = "LICH"; // Chaos > Lich
-			WriteText(enemyText, EnemyTextPointerOffset, EnemyTextPointerBase, EnemyTextOffset);
 
-			var lich2name = Get(EnemyTextPointerOffset + 119 * 2, 2); // Lich2 point to Phantom1
-			Put(EnemyTextPointerOffset + 120 * 2, lich2name);
+			WriteEnemyText(enemyText);
 
 			// Scale Undeads
 			int evadeCap = GetEvadeIntFromFlag(flags.EvadeCap);
@@ -269,13 +272,13 @@ namespace FF1Lib
 			}
 
 			// New routines to fight and give item
-			var battleUnne = talkroutines.Add(Blob.FromHex("A674F005BD2060F01AE67DA572203D96A5752020B1A476207F902073922018964C4396A57060"));
-			var battleGiveOnFlag = talkroutines.Add(Blob.FromHex("A474F0052079909029A57385612080B1B022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060"));
-			var battleGiveOnItem = talkroutines.Add(Blob.FromHex("A674F005BD2060F029A57385612080B1B022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060"));
-			var battleBahamut = talkroutines.Add(Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660"));
+			//var battleUnne = talkroutines.Add(Blob.FromHex("A674F005BD2060F01AE67DA572203D96A5752020B1A476207F902073922018964C4396A57060"));
+			//var battleGiveOnFlag = talkroutines.Add(Blob.FromHex("A474F0052079909029A57385612080B1B022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060"));
+			//var battleGiveOnItem = talkroutines.Add(Blob.FromHex("A674F005BD2060F029A57385612080B1B022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060"));
+			//var battleBahamut = talkroutines.Add(Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660"));
 			talkroutines.ReplaceChunk(TalkScripts.Talk_Bikke, Blob.FromHex("A57260A57060"), Blob.FromHex("207392A57260"));
 
-			var lichReplace = talkroutines.Add(Blob.FromHex("A572203D96A5752020B1A476207F90207392A47320A4902018964C4396"));
+			//var lichReplace = talkroutines.Add(Blob.FromHex("A572203D96A5752020B1A476207F90207392A47320A4902018964C4396"));
 
 			// Update Garland's script
 			npcdata[ObjectId.Garland].Script = TalkScripts.Talk_CoOGuy;
@@ -284,82 +287,86 @@ namespace FF1Lib
 			evilDialogs.Add(0x32, "Braaaaain!");
 			evilDialogs.Add(0x33, "Barf!");
 			evilDialogs.Add(0x34, "Uaaaaaargh!");
-			evilDialogs.Add(0x36, "Groaaarn!");
+			if (!flags.NoOverworld)
+			{
+				evilDialogs.Add(0x36, "Groaaarn!");
+			}
+			
 
 			evilDialogs.Add(0x04, "What the hell!?\nThat princess is crazy,\nshe tried to bite me!\n\nThat's it. Screw that.\nI'm going home.");
 
 			evilDialogs.Add(0x02, "What is going on!? My\nguard tried to kill me!\nUgh.. this is a deep\nwound.. I don't feel so\nwell..\nGwooorrrgl!\n\nReceived #");
 
 			npcdata[ObjectId.King].Battle = bossZombie;
-			npcdata[ObjectId.King].Script = (TalkScripts)battleGiveOnFlag;
+			npcdata[ObjectId.King].Script = TalkScripts.Spooky_GiveOnFlag;
 
 			evilDialogs.Add(0x06, "So, you are.. the..\nLIGHTarrgaar..\nWarglb..\n\nBraaaain..\n\nReceived #");
 			npcdata[ObjectId.Princess2].Battle = bossZombie;
-			npcdata[ObjectId.Princess2].Script = (TalkScripts)battleGiveOnItem;
+			npcdata[ObjectId.Princess2].Script = TalkScripts.Spooky_GiveOnItem;
 
 			evilDialogs.Add(0x08, "Aaaaarrr! The LIGHT\nWARRIORS have been\ncursed too!\n\nGet 'em, boys!");
 			evilDialogs.Add(0x09, "Okay then, guess I'll go\nto the pub, have a nice\ncold pint, and wait for\nall this to blow over.\n\nReceived #");
 
 			evilDialogs.Add(0x0E, "At last I wake up from\nmy eternal slumber.\nCome, LIGHT WARRIORS,\nembrace the darkness,\njoin me in death..\n\nReceived #");
 			npcdata[ObjectId.ElfPrince].Battle = bossVamp;
-			npcdata[ObjectId.ElfPrince].Script = (TalkScripts)battleGiveOnFlag;
+			npcdata[ObjectId.ElfPrince].Script = TalkScripts.Spooky_GiveOnFlag;
 
 			evilDialogs.Add(0x0C, "Yes, yes, the master\nwill be pleased. Let's\nclean this place up\nbefore he wakes.\nStarting with you!");
 			npcdata[ObjectId.ElfDoc].Battle = bossGeist;
-			npcdata[ObjectId.ElfDoc].Script = (TalkScripts)battleUnne;
+			npcdata[ObjectId.ElfDoc].Script = TalkScripts.Spooky_Unne;
 
 			if (npcdata[ObjectId.Astos].Script != TalkScripts.Talk_Astos)
 			{
 				evilDialogs.Add(0x12, "Did you ever dance with\nthe devil in the pale\nmoonlight?\n\nReceived #");
 				npcdata[ObjectId.Astos].Battle = bossVamp;
-				npcdata[ObjectId.Astos].Script = (TalkScripts)battleGiveOnItem;
+				npcdata[ObjectId.Astos].Script = TalkScripts.Spooky_GiveOnItem;
 			}
 
 			evilDialogs.Add(0x13, "The world is going to\nhell, but this won't\nstop me from digging\nmy canal!");
 			evilDialogs.Add(0x14, "Excellent! Finally,\nnow Lich's undead army\ncan flow through the\nrest of the world!\n\nReceived #");
 			npcdata[ObjectId.Nerrick].Battle = bossVamp;
-			npcdata[ObjectId.Nerrick].Script = (TalkScripts)battleGiveOnItem;
+			npcdata[ObjectId.Nerrick].Script = TalkScripts.Spooky_GiveOnItem;
 
 			evilDialogs.Add(0x15, "I never thought I'd\nhave to forge the\nweapon that would slay\nmy brothers. Bring me\nADAMANT, quick!");
 			evilDialogs.Add(0x16, "You were too slow,\nLIGHT WARRIORS. You have\nforsaken me!\nJoin my damned soul in\nthe afterworld!\n\nReceived #");
 			npcdata[ObjectId.Smith].Battle = bossGhost;
-			npcdata[ObjectId.Smith].Script = (TalkScripts)battleGiveOnItem;
+			npcdata[ObjectId.Smith].Script = TalkScripts.Spooky_GiveOnItem;
 
 			evilDialogs.Add(0x17, "Pfah! Everyone else can\nrot in Hell for all\nI care, I'm  perfectly\nsafe here!");
 			evilDialogs.Add(0x19, "SCREEEEEEEEEEEEEEEEEEEEE!\n\nReceived #");
 			npcdata[ObjectId.Matoya].Battle = bossGeist;
-			npcdata[ObjectId.Matoya].Script = (TalkScripts)battleGiveOnItem;
+			npcdata[ObjectId.Matoya].Script = TalkScripts.Spooky_GiveOnItem;
 
 			evilDialogs.Add(0x1C, "Now, listen to me, a\nbasic word from\nLeifeinish is Lu..\nHack! Cough! Sorry,\nLu..lu..paaaargh!");
 			npcdata[ObjectId.Unne].Battle = bossGeist;
-			npcdata[ObjectId.Unne].Script = (TalkScripts)battleUnne;
+			npcdata[ObjectId.Unne].Script = TalkScripts.Spooky_Unne;
 
 			evilDialogs.Add(0x1D, "Ah, humans who wish to\npay me tribute. What?\nYou miserable little\npile of secrets!\nEnough talk! Have at you!");
 
 			evilDialogs.Add(0x1E, "I.. HUNGER!\n\nReceived #");
 			npcdata[ObjectId.Sarda].Battle = bossZomBull;
-			npcdata[ObjectId.Sarda].Script = (TalkScripts)battleGiveOnFlag;
+			npcdata[ObjectId.Sarda].Script = TalkScripts.Spooky_GiveOnFlag;
 
 			evilDialogs.Add(0x20, "The TAIL! Impressive..\nYes, yes, you are indeed\nworthy..\n\nWorthy of dying by my\nown claws!");
 			npcdata[ObjectId.Bahamut].Battle = bossDracolich;
 			npcdata[ObjectId.Bahamut].Item = 0x1F;
-			npcdata[ObjectId.Bahamut].Script = (TalkScripts)battleBahamut;
+			npcdata[ObjectId.Bahamut].Script = TalkScripts.Spooky_Bahamut;
 
 			evilDialogs.Add(0x23, "Come play with me,\nLIGHT WARRIORS.\nFor ever and ever\nand ever..\n\nReceived #");
 			npcdata[ObjectId.Fairy].Battle = bossGhost;
-			npcdata[ObjectId.Fairy].Script = (TalkScripts)battleGiveOnItem;
+			npcdata[ObjectId.Fairy].Script = TalkScripts.Spooky_GiveOnItem;
 
 			evilDialogs.Add(0x27, "Exterminate.\n\n\n\n\nReceived #");
 			npcdata[ObjectId.CubeBot].Battle = bossSentinel;
-			npcdata[ObjectId.CubeBot].Script = (TalkScripts)battleGiveOnItem;
+			npcdata[ObjectId.CubeBot].Script = TalkScripts.Spooky_GiveOnItem;
 
 			evilDialogs.Add(0x2B, "My friends..\nMy colleagues..\nNow.. I join them..\n\nReceived #");
 			npcdata[ObjectId.CanoeSage].Battle = bossZomBull;
-			npcdata[ObjectId.CanoeSage].Script = (TalkScripts)battleGiveOnItem;
+			npcdata[ObjectId.CanoeSage].Script = TalkScripts.Spooky_GiveOnItem;
 
 			evilDialogs.Add(0xCD, "Luuuuu.. paaaargh!\n\n\n\nReceived #");
 			npcdata[ObjectId.Lefein].Battle = bossZomBull;
-			npcdata[ObjectId.Lefein].Script = (TalkScripts)battleGiveOnFlag;
+			npcdata[ObjectId.Lefein].Script = TalkScripts.Spooky_GiveOnFlag;
 
 			evilDialogs.Add(0xFA, "Sorry, LIGHT WARRIORS,\nbut your LICH is in\nanother castle!\n\nMwahahahaha!");
 
@@ -386,7 +393,7 @@ namespace FF1Lib
 				npcdata[ObjectId.Chaos2].Dialogue3 = 0x2F;
 				npcdata[ObjectId.Chaos2].Item = 0x1A;
 				npcdata[ObjectId.Chaos2].Battle = bossLichMech;
-				npcdata[ObjectId.Chaos2].Script = (TalkScripts)lichReplace;
+				npcdata[ObjectId.Chaos2].Script = TalkScripts.Spooky_Lich;
 			}
 
 			dialogues.InsertDialogues(evilDialogs);
@@ -401,6 +408,11 @@ namespace FF1Lib
 			// Switch princess
 			maps[MapIndex.TempleOfFiends].MapObjects[1].ObjectId = ObjectId.Princess2;
 			maps[MapIndex.ConeriaCastle2F].MapObjects[1].ObjectId = ObjectId.None;
+			if (npcdata[ObjectId.King].Requirement != 00)
+			{
+				npcdata[ObjectId.King].Requirement = (int)ObjectId.Princess2;
+			}
+			
 			Put(0x2F00 + 0x12, Blob.FromHex("01"));
 			Put(0x2F00 + 0x03, Blob.FromHex("02"));
 

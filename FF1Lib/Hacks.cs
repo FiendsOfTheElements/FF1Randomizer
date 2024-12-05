@@ -4,14 +4,8 @@ namespace FF1Lib
 {
 	public enum PoisonModeOptions
 	{
-		[Description("Vanilla (2 Damage)")]
-		Vanilla,
-		[Description("20 Damage")]
-		Constant20,
-		[Description("50 Damage")]
-		Constant50,
-		[Description("100 Damage")]
-		Constant100,
+		[Description("Set amount")]
+		Constant,
 		[Description("50% of Max HP")]
 		Halved1,
 		[Description("25% of Max HP")]
@@ -23,9 +17,7 @@ namespace FF1Lib
 		[Description("25% of Current HP")]
 		Dimishing2,
 		[Description("12.5% of Current HP")]
-		Dimishing3,
-		[Description("20 Less Than Max HP")]
-		NearlyAll
+		Dimishing3
 	}
 	public partial class FF1Rom : NesRom
 	{
@@ -333,23 +325,27 @@ namespace FF1Lib
 			Put(0x326A7, Blob.FromHex("A9008D56688D62681A"));
 		}
 
-		public void SetPoisonMode(PoisonModeOptions poisonMode)
+		public void IncreaseRegeneration(bool enable)
+		{
+			if (!enable)
+			{
+				return;
+			}
+
+			PutInBank(0x0C, 0xA26A, Blob.FromHex("39"));
+		}
+		
+		public void SetPoisonMode(PoisonModeOptions poisonMode, int poisonValue)
 		{
 			//see 1C_A670_ImprovedPoison.asm
 			byte mode = 0;
 			byte loopcount = 3;
-			short constantValue = 16383;
+			short constantValue = (short)poisonValue;
 
 			switch (poisonMode)
 			{
-				case PoisonModeOptions.Vanilla:
-					mode = 0; constantValue = 2; break;
-				case PoisonModeOptions.Constant20:
-					mode = 0; constantValue = 20; break;
-				case PoisonModeOptions.Constant50:
-					mode = 0; constantValue = 50; break;
-				case PoisonModeOptions.Constant100:
-					mode = 0; constantValue = 100; break;
+				case PoisonModeOptions.Constant:
+					mode = 0; break;
 				case PoisonModeOptions.Halved1:
 					mode = 1; loopcount = 1; break;
 				case PoisonModeOptions.Halved2:
@@ -362,8 +358,6 @@ namespace FF1Lib
 					mode = 2; loopcount = 2; break;
 				case PoisonModeOptions.Dimishing3:
 					mode = 2; loopcount = 3; break;
-				case PoisonModeOptions.NearlyAll:
-					mode = 3; constantValue = 20; break;
 			}
 
 
@@ -382,7 +376,7 @@ namespace FF1Lib
 				return;
 			}
 
-			var enemyText = ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+			var enemyText = ReadEnemyText();
 			enemyText[119] = "Twin D";  //  +2
 			enemyText[120] = "Twin D";  //  +2
 			enemyText[121] = "CARMILLA"; // +4
@@ -393,11 +387,8 @@ namespace FF1Lib
 			enemyText[126] = "FRANKEN";  // +1
 			enemyText[127] = "VLAD";     // -1
 
-			// Moving IMP and GrIMP gives another 10 bytes, for a total of 19 extra bytes, of which I'm using 17.
-			var enemyTextPart1 = enemyText.Take(2).ToArray();
-			var enemyTextPart2 = enemyText.Skip(2).ToArray();
-			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase, 0x2CFEC);
-			WriteText(enemyTextPart2, EnemyTextPointerOffset + 4, EnemyTextPointerBase, EnemyTextOffset);
+
+			WriteEnemyText(enemyText);
 
 			// Change Orbs to Dracula's relics
 			PutInBank(0x0E, 0xAD78, Blob.FromHex("0F050130")); // Update Orbs palette

@@ -486,7 +486,7 @@ namespace FF1Lib.Sanity
 
 		private SCRequirementsSet GetSecondaryRequirements(SCPointOfInterest poi, NpcReward rewardSource, Dictionary<ObjectId, SCRequirementsSet> allNpcs, Dictionary<Item, SCRequirementsSet> allOrbs)
 		{
-			if (poi.TalkRoutine == TalkScripts.Talk_ElfDocUnne)
+			if (poi.TalkRoutine == TalkScripts.Talk_ElfDocUnne || poi.TalkRoutine == TalkScripts.Spooky_Unne)
 			{
 				if (poi.NpcRequirement == (byte)Item.Herb)
 				{
@@ -504,10 +504,12 @@ namespace FF1Lib.Sanity
 					case TalkScripts.Talk_Bikke:
 						return new SCRequirementsSet(SCRequirements.None);
 					case TalkScripts.Talk_GiveItemOnFlag:
+					case TalkScripts.Spooky_GiveOnFlag:
 						return ProcessItemOnFlag(poi, rewardSource, allNpcs);
 					case TalkScripts.Talk_Nerrick:
 					case TalkScripts.Talk_TradeItems:
 					case TalkScripts.Talk_GiveItemOnItem:
+					case TalkScripts.Spooky_GiveOnItem:
 					case TalkScripts.Talk_Astos:
 						return ProcessItemOnItem(poi, rewardSource, allNpcs, allOrbs);
 				}
@@ -561,6 +563,10 @@ namespace FF1Lib.Sanity
 			else if (flag == ObjectId.Princess1)
 			{
 				return allNpcs[ObjectId.Princess1];
+			}
+			else if (flag == ObjectId.Princess2)
+			{
+				return allNpcs[ObjectId.Princess2];
 			}
 			else if (flag == ObjectId.Vampire)
 			{

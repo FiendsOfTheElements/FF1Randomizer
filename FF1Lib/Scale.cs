@@ -110,14 +110,7 @@ namespace FF1Lib
 				oceanEncounterRate = (byte)Math.Ceiling(oceanEncounterRate * overworldMultiplier);
 			}
 
-			if (dungeonMultiplier == 0)
-			{
-				rom.PutInBank(0x1F, 0xCDCC, Blob.FromHex("1860"));
-			}
-			else
-			{
-				dungeonEncounterRate = dungeonEncounterRate.Select(x => (byte)Math.Ceiling(x * dungeonMultiplier)).ToArray();
-			}
+			dungeonEncounterRate = dungeonEncounterRate.Select(x => (byte)Math.Ceiling(x * dungeonMultiplier)).ToArray();
 		}
 		public void Write()
 		{

@@ -36,10 +36,9 @@ namespace FF1Lib
 			ShufflePravoka((bool)flags.ShufflePravokaShops, AttackedTown == MapIndex.Pravoka, rng);
 			EnableGaiaShortcut((bool)flags.GaiaShortcut);
 			MoveGaiaItemShop((bool)flags.MoveGaiaItemShop && (bool)flags.GaiaShortcut, rng);
-			EnableLefeinSuperStore((bool)flags.LefeinSuperStore && (flags.ShopKillMode_White == ShopKillMode.None && flags.ShopKillMode_Black == ShopKillMode.None));
+			EnableLefeinSuperStore((bool)flags.LefeinSuperStore && (flags.ShopKillMode_White == ShopKillMode.None && flags.ShopKillMode_Black == ShopKillMode.None), flags.NoOverworld);
 			ShuffleOrdeals((bool)flags.OrdealsPillars, rng, teleporters);
 			SkyCastle4FMode(flags.SkyCastle4FMazeMode, flags.GameMode == GameModes.DeepDungeon, rng);
-			ShuffleLavaTiles((bool)flags.ShuffleLavaTiles, rng);
 			BahamutB1Encounters((bool)flags.MapHallOfDragons, formations);
 			DragonsHoard((bool)flags.MapDragonsHoard);
 			MermaidPrison((bool)flags.MermaidPrison && (flags.GameMode != GameModes.DeepDungeon));
@@ -279,7 +278,7 @@ namespace FF1Lib
 				}
 			}
 		}
-		public void EnableLefeinSuperStore(bool lefeinsuperstore)
+		public void EnableLefeinSuperStore(bool lefeinsuperstore, bool nooverworld)
 		{
 			if (!lefeinsuperstore)
 			{
@@ -297,6 +296,12 @@ namespace FF1Lib
 			maps[(int)MapIndex.Lefein].Put((0x28, 0x01), superStore.ToArray());
 			// cleanup (removes single tree)
 			maps[(int)MapIndex.Lefein][0x00, 0x34] = (byte)Tile.TownGrass;
+
+			if (nooverworld)
+			{
+				maps[(int)MapIndex.Lefein][0x01, 0x33] = (byte)Tile.TownTree;
+				maps[(int)MapIndex.Lefein][0x01, 0x3F] = (byte)Tile.TownTree;
+			}
 		}
 		private void SkyCastle4FMode(SkyCastle4FMazeMode mode, bool deepdungeon, MT19337 rng)
 		{
@@ -388,57 +393,6 @@ namespace FF1Lib
 			return (x, y);
 		}
 
-		private void ShuffleLavaTiles(bool shufflelavatiles, MT19337 rng)
-		{
-			if (!shufflelavatiles)
-			{
-				return;
-			}
-
-			List<MapIndex> lavaMaps = new() { MapIndex.GurguVolcanoB1, MapIndex.GurguVolcanoB2, MapIndex.GurguVolcanoB3, MapIndex.GurguVolcanoB4, MapIndex.GurguVolcanoB5 };
-
-			byte lavaTile = 0x3D;
-			byte encounterTile = 0x41;
-
-			foreach (var map in lavaMaps)
-			{
-				int lavacount = 0;
-				int enccount = 0;
-
-				List<SCCoords> tileCoords = new();
-				List<SCCoords> lavaCoords = new();
-				List<SCCoords> encounterCoords = new();
-
-				for (int x = 0; x < 0x40; x++)
-				{
-					for (int y = 0; y < 0x40; y++)
-					{
-						byte currentile = maps[(int)map].MapBytes[x, y];
-						if (currentile == lavaTile)
-						{
-							tileCoords.Add(new SCCoords(x, y));
-							lavacount++;
-						}
-						else if (currentile == encounterTile)
-						{
-							tileCoords.Add(new SCCoords(x, y));
-							enccount++;
-						}
-					}
-				}
-
-				for (int i = 0; i < lavacount; i++)
-				{
-					var lavatilecoord = tileCoords.SpliceRandom(rng);
-					maps[(int)map].MapBytes[lavatilecoord.X, lavatilecoord.Y] = lavaTile;
-				}
-
-				foreach (var coordleft in tileCoords)
-				{
-					maps[(int)map].MapBytes[coordleft.X, coordleft.Y] = encounterTile;
-				}
-			}
-		}
 		public void BahamutB1Encounters(bool hallofdragons, ZoneFormations zoneformations)
 		{
 			if (!hallofdragons)

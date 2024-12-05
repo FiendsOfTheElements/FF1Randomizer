@@ -14,8 +14,8 @@
 
 
 @code {
-	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
-	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter] public FF1Lib.Flags Flags { get; set; }
+	[Parameter]	public Action<string, string> UpdateAction { get; set; }
 	[Parameter] public bool noTabLayout { get; set; }
 	[Parameter] public Action<string> SetStatusMessage { get; set; }
 	[Parameter] public string StatusMessage { get; set; }
@@ -25,13 +25,14 @@
 		var json = await JSRuntime.InvokeAsync<string>("computePreset", name);
 		Flags.BlindSeed = false;
 		LoadFromJson(json);
+		UpdateAction?.Invoke("UpdateFlagstring", "");
 	}
 
 	public void LoadFromJson(string json)
 	{
 		var preset = Flags.FromJson(json);
 
-		Flags.Flags = preset.flags;
+		Flags.ReadFromFlags(preset.flags);
 
 		if (preset.log.Any())
 		{

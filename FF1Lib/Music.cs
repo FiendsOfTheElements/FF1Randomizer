@@ -35,9 +35,8 @@ namespace FF1Lib
 		ItemJingle = 0x13,
 		Crystal2 = 0x14,
 		Rest = 0x15,
-		//Sound1 = 0x16,
-		//Sound2 = 0x17,
-		//Minimap = 0x18,  
+		//UseItemSFX = 0x16,
+		//ItemGetSFX = 0x17,
 	}
 	public class MusicTracks
 	{
@@ -57,13 +56,15 @@ namespace FF1Lib
 			songsToPreserve = new List<int> { 0x13, 0x15, 0x16, 0x17 };
 		}
 
-		public void ShuffleMusic(FF1Rom rom, MusicShuffle _mode, bool alternateAirshipTheme, bool chaosBattleMusic, MT19337 rng)
+		public void ShuffleMusic(FF1Rom rom, Preferences preferences, MT19337 rng)
 		{
+			mode = preferences.Music;
+			this.chaosBattleMusic = preferences.ChaosBattleMusic;
 
 			//Read music pointer table from rom
 			for (int i = 0; i < 22; i++)
 			{
-				if (_mode == MusicShuffle.MusicDisabled && !songsToPreserve.Contains(i))
+				if (mode == MusicShuffle.MusicDisabled && !songsToPreserve.Contains(i))
 				{
 					//Set Sq1, Sq2, and Tri channels for every track to all point to the same music data
 					MusicPointers.Add(i, Blob.FromHex("C080C080C0800000"));
@@ -74,15 +75,11 @@ namespace FF1Lib
 				}
 			}
 
-			if (alternateAirshipTheme) {
-				rom.PutInBank(0x0D, 0xB600, Blob.FromHex("FDF804E2D897D9477797DA07D977974777274777D104B6D897D9477797DA07D977974777274777D517B6D90777A7DA07572747D9A7DA07D95777A7D52AB6D017B6FDF803E2D897979797D546B6979797979797979797979797D54DB6070707070707070707070707D55CB6D04DB6FDF809E7C0C0D994DA27477794DB07DAB77794DB07DAB7779475B744240527D9B577D174B6DA045777A7DB045747DAA7DB045747DAA7DB04DAA5DB27DA7454457725D9A7DA045777A7DB045747DAA7DB045747DAA7DB04A7975770D074B6"));
-				rom.PutInBank(0x0D, 0x8028, Blob.FromHex("00B641B66EB6"));
-			}
+			//if (preferences.AlternateAirshipTheme) {
+			//	rom.PutInBank(0x0D, 0xB600, Blob.FromHex("FDF804E2D897D9477797DA07D977974777274777D104B6D897D9477797DA07D977974777274777D517B6D90777A7DA07572747D9A7DA07D95777A7D52AB6D017B6FDF803E2D897979797D546B6979797979797979797979797D54DB6070707070707070707070707D55CB6D04DB6FDF809E7C0C0D994DA27477794DB07DAB77794DB07DAB7779475B744240527D9B577D174B6DA045777A7DB045747DAA7DB045747DAA7DB04DAA5DB27DA7454457725D9A7DA045777A7DB045747DAA7DB045747DAA7DB04A7975770D074B6"));
+			//	rom.PutInBank(0x0D, 0x8028, Blob.FromHex("00B641B66EB6"));
+			//}
 
-			this.chaosBattleMusic = chaosBattleMusic;
-
-
-			mode = _mode;
 			switch (mode)
 			{
 				case MusicShuffle.None:
@@ -160,9 +157,12 @@ namespace FF1Lib
 					break;
 			}
 		}
-		public void Write(FF1Rom rom, Flags flags)
+		public void Write(FF1Rom rom, Flags flags, Preferences preferences)
 		{
-
+			if (preferences.Music == MusicShuffle.None || preferences.Music == MusicShuffle.MusicDisabled)
+			{
+				return;
+			}
 			//Rewrite music pointer table
 			foreach (var track in Tracks)
 			{
@@ -211,7 +211,5 @@ namespace FF1Lib
 				rom.PutInBank(0x1D, 0xA2B0, Blob.FromHex("FBE0F800D900D880B0D9005020700050D8A0D930D880D920305020D880D900D880D93002D872D9607084B4DA2454D8C0C0C070D978DA2808283808D9B8DA08D998DA08D9B8DA0828D9B898B878B898B8DA08D988788858987898B87858783878587888583858285838587838283808382838582808283808D8B8D90828D8B898B8D908382838D858D9280828D838D908D8B8D908D828B898B8D0B0A2"));
 			}
 		}
-
 	}
-
 }

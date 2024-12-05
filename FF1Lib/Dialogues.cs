@@ -38,7 +38,14 @@ namespace FF1Lib
 		NoOW_Floater,
 		NoOW_Chime,
 		NoOW_Canoe,
-		NoOW_Nerrick
+		NoOW_Nerrick,
+		Spooky_Unne,
+		Spooky_GiveOnFlag,
+		Spooky_GiveOnItem,
+		Spooky_Bahamut,
+		Spooky_Lich,
+		Talk_FightBranched
+
 	}
 	public class TalkRoutines
 	{
@@ -84,6 +91,17 @@ namespace FF1Lib
 			_talkroutines.Add(Blob.FromHex("AD2C60D003A57160A476207392A57260"));
 			_talkroutines.Add(Blob.FromHex("AD1260D003A57160A476207392A57260"));
 			_talkroutines.Add(Blob.FromHex("AD2660F018A573F0141820109FB010CE2660A476207F90207392A57260A57060")); // NoOW_Nerrick
+
+			// Lich's Revenge Routines
+			_talkroutines.Add(Blob.FromHex("A674F005BD2060F01AE67DA572203D96A5752020B1A476207F902073922018964C4396A57060")); // Battle Unne
+			_talkroutines.Add(Blob.FromHex("A474F0052079909029A57385612080B1B022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060")); // Battle Give On Flag
+			_talkroutines.Add(Blob.FromHex("A674F005BD2060F029A57385612080B1B022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060")); // Battle Give On Item
+			_talkroutines.Add(Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660")); // Battle Bahamut
+			_talkroutines.Add(Blob.FromHex("A572203D96A5752020B1A476207F90207392A47320A4902018964C4396")); // Battle Lich
+
+			// AltFiend Routine - TalkFightBranched
+			_talkroutines.Add(Blob.FromHex("A474209190B004A570D002A571203D96A5752020B1A476207F902073922018964C439660")); // Check npc, talk, battle, then vanish
+
 		}
 		public Blob this[int talkid]
 		{
@@ -286,17 +304,26 @@ namespace FF1Lib
 		}
 		public void UpdateNPCDialogues(Flags flags)
 		{
-			// Dialogue for Sarda if Early sarda is off
-			dialogues[0xB3]  = "I shall help only\nthe true LIGHT WARRIORS.\nProve yourself by\ndefeating the Vampire.";
-
 			// Update treasure box dialog for new DrawDialogueString routine
 			dialogues[0xF0 + 0x50] = "In the treasure box,\nyou found..\n#";
 
-			// Remove reference to "Cave of Marsh" from Astos dialog, unless Crown not shuffled
-			if (flags.IncentivizeFetchNPCs != false || flags.Treasures != false)
+			// Remove reference to "Cave of Marsh" from Astos dialog, unless Crown/Crystal not shuffled
+			// We do this before returning from Lich's Revenge since that flag modify all other dialogues, but not astos'
+			if (flags.IncentivizeFetchNPCs != false || flags.ChestsKeyItems != false)
 			{
 				dialogues[0x11] = "Astos double-crossed us.\nFind where they stashed\nthe CROWN. Then bring it\ndirectly back to me!";
+				dialogues[0x12] = "HA, HA, HA! I am Astos,\nKing of the Dark Elves.\nI have the #\nand you shall give me\nthat CROWN, now!!!";
 			}
+
+			dialogues[0xF0] = "Received #";
+
+			if (flags.SpookyFlag)
+			{
+				return;
+			}
+
+			// Dialogue for Sarda if Early sarda is off
+			dialogues[0xB3]  = "I shall help only\nthe true LIGHT WARRIORS.\nProve yourself by\ndefeating the Vampire.";
 
 			if (!(bool)flags.NPCItems && !(bool)flags.NPCFetchItems)
 			{
@@ -308,7 +335,6 @@ namespace FF1Lib
 			dialogues[0x06] = "This heirloom has been\npassed down from Queen\nto Princess for 2000\nyears. Please take it.\n\nReceived #";
 			dialogues[0x09] = "Okay, you got me.\nTake this.\n\n\n\nReceived #";
 			dialogues[0x0E] = "Is this a dream?.. Are\nyou the LIGHT WARRIORS?\nSo, as legend says,\nI give you this.\n\nReceived #";
-			dialogues[0x12] = "HA, HA, HA! I am Astos,\nKing of the Dark Elves.\nI have the #\nand you shall give me\nthat CROWN, now!!!";
 			dialogues[0x14] = "Yes, yes indeed,\nthis TNT is just what I\nneed to finish my work.\nTake this in return!\n\nReceived #";
 			dialogues[0x16] = "ADAMANT!! Now let me\nforge this for you..\nHere, the best work\nI've ever done.\n\nReceived #";
 			dialogues[0x19] = "I'll trade my most\npowerful charm to get\nmy CRYSTAL back..\nOh! I can see!!\n\nReceived #";
@@ -317,7 +343,6 @@ namespace FF1Lib
 			dialogues[0x27] = "Take this.\n\n\n\n\nReceived #";
 			dialogues[0x2B] = (bool)flags.EarlySage ? "The FIENDS are waking.\nTake this and go defeat\nthem!\n\n\nReceived #" : "Great job vanquishing\nthe Earth FIEND.\nWith this, go and defeat\nthe other FIENDS!\n\nReceived #";
 			dialogues[0xCD] = "With this, you can\navenge the SKY WARRIORS.\n\n\n\nReceived #";
-			dialogues[0xF0] = "Received #";
 		}
 		public void Write()
 		{

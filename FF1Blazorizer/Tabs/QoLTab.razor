@@ -8,25 +8,27 @@
 <div id="fun" class="framed-content">
 	<p>Quality of Life flags can help players with epilepsy, motion sickness, dyslexia, color blindness, or muscle memory.</p>
 	<p>Note: Some QoL settings can cause potential speed disadvantages.</p>
-    <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableSpellCastFlashCheckBox" @bind-Value="Flags.DisableSpellCastFlash">Disable Spell Cast Flash</CheckBox>
-    <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableDamageTileFlickerCheckBox" @bind-Value="Flags.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
-    <CheckBox UpdateToolTip="@UpdateToolTipID" Id="disableDamageTileSFXCheckBox" @bind-Value="Flags.DisableDamageTileSFX">Disable Damage Tile SFX</CheckBox>
-    <CheckBox UpdateToolTip="@UpdateToolTipID" Id="uninterruptedMusicCheckBox" @bind-Value="Flags.UninterruptedMusic">Uninterrupted Music</CheckBox>
-    <CheckBox UpdateToolTip="@UpdateToolTipID" Id="lockRespondRateCheckBox" @bind-Value="Flags.LockRespondRate">Lock Respond Rate</CheckBox>
-    <IntSlider Indent Min="1" Max="8" Step="1" DisableTooltip UpdateToolTip="@UpdateToolTipID" IsEnabled="Flags.LockRespondRate" Id="respondRate" @bind-Value="@Flags.RespondRate">Respond Rate:</IntSlider>
-    <CheckBox UpdateToolTip="@UpdateToolTipID" Id="accessibleSpellNamesCheckBox" IsEnabled="@(!Flags.GenerateNewSpellbook)" @bind-Value="Flags.AccessibleSpellNames">Accessible Spell Names</CheckBox>
-    <CheckBox UpdateToolTip="@UpdateToolTipID" Id="cleanBlursedEquipmentNamesCheckBox" @bind-Value="Flags.CleanBlursedEquipmentNames">Cleaner Blursed Names</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="shopInfoIconsCheckBox" @bind-Value="Flags.ShopInfoIcons">Shop Information Icons</CheckBox>
-    <CheckBox UpdateToolTip="@UpdateToolTipID" Id="cropScreen" @bind-Value="Flags.CropScreen">Crop Friendly</CheckBox>
-    <CheckBox UpdateToolTip="@UpdateToolTipID" Id="quickJoy2Reset" @bind-Value="Flags.QuickJoy2Reset">Quick Controller 2 Reset</CheckBox>
+    <CheckBox UpdateAction="@UpdateAction" Id="disableSpellCastFlashCheckBox" @bind-Value="Preferences.DisableSpellCastFlash">Disable Spell Cast Flash</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="disableDamageTileFlickerCheckBox" @bind-Value="Preferences.DisableDamageTileFlicker">Disable Damage Tile Flicker</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="disableDamageTileSFXCheckBox" @bind-Value="Preferences.DisableDamageTileSFX">Disable Damage Tile SFX</CheckBox>
+	<EnumDropDown UpdateAction="@UpdateAction" Id="alternatePoisonSFXDropDown" TItem="PoisonSFX" @bind-Value="Preferences.AltPoisonSFX">Change Poison Status SFX:</EnumDropDown>
+	<CheckBox UpdateAction="@UpdateAction" Id="disableAirshipSFXCheckBox" @bind-Value="Preferences.DisableAirshipSFX">Disable Airship SFX</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="uninterruptedMusicCheckBox" @bind-Value="Preferences.UninterruptedMusic">Uninterrupted Music</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="lockRespondRateCheckBox" @bind-Value="Preferences.LockRespondRate">Lock Respond Rate</CheckBox>
+	<IntSlider UpdateAction="@UpdateAction" Indent Min="1" Max="8" Step="1" DisableTooltip IsEnabled="Preferences.LockRespondRate" Id="respondRate" @bind-Value="@Preferences.RespondRate">Respond Rate:</IntSlider>
+	<CheckBox UpdateAction="@UpdateAction" Id="accessibleSpellNamesCheckBox" @bind-Value="Preferences.AccessibleSpellNames">Accessible Spell Names</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="cleanBlursedEquipmentNamesCheckBox" @bind-Value="Preferences.CleanBlursedEquipmentNames">Cleaner Blursed Names</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="shopInfoIconsCheckBox" @bind-Value="Preferences.ShopInfoIcons">Shop Information Icons</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="cropScreen" @bind-Value="Preferences.CropScreen">Crop Friendly</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="quickJoy2Reset" @bind-Value="Preferences.QuickJoy2Reset">Quick Controller 2 Reset</CheckBox>
     <div class="checkbox-cell"></div>
     <h5>Remove Unwanted Features:</h5>
-    <CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceAutosortCheckBox" @bind-Value="Flags.RenounceAutosort">Renounce Autosort</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceChestInfoCheckBox" @bind-Value="Flags.RenounceChestInfo">Renounce Chest Info</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceCantHoldRed" @bind-Value="Flags.RenounceCantHoldRed">Renounce Can't Hold Red</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackWipes" @bind-Value="Flags.OptOutSpeedHackWipes">Slow Screen Wipes</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackMessages" @bind-Value="Flags.OptOutSpeedHackMessages">Slow Battle Messages</CheckBox>
-	<CheckBox UpdateToolTip="@UpdateToolTipID" Id="renounceSpeedHackDash" @bind-Value="Flags.OptOutSpeedHackDash">Slow Map Move</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="renounceAutosortCheckBox" @bind-Value="Preferences.RenounceAutosort">Renounce Autosort</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="renounceChestInfoCheckBox" @bind-Value="Preferences.RenounceChestInfo">Renounce Chest Info</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="renounceCantHoldRed" @bind-Value="Preferences.RenounceCantHoldRed">Renounce Can't Hold Red</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="renounceSpeedHackWipes" @bind-Value="Preferences.OptOutSpeedHackWipes">Slow Screen Wipes</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="renounceSpeedHackMessages" @bind-Value="Preferences.OptOutSpeedHackMessages">Slow Battle Messages</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="renounceSpeedHackDash" @bind-Value="Preferences.OptOutSpeedHackDash">Slow Map Move</CheckBox>
 	<div class="checkbox-cell"></div>
 
 	<a class="styled-button" @onclick="@SavePreferences">Save Preferences</a>
@@ -34,8 +36,9 @@
 
 
 @code {
-	[Parameter] public FF1Lib.FlagsViewModel Flags { get; set; }
+	[Parameter] public FF1Lib.Preferences Preferences { get; set; }
 	[Parameter] public Action<string, MouseEventArgs> UpdateToolTipID { get; set; }
+	[Parameter]	public Action<string, string> UpdateAction { get; set; }
 	[Parameter] public Action<string> SetStatusMessage { get; set; }
 
 	async Task SavePreferences()
@@ -56,7 +59,7 @@
 		var properties = typeof(FF1Lib.Preferences).GetProperties(BindingFlags.Instance | BindingFlags.Public);
 		foreach (var pi in properties)
 		{
-			existingPrefs[pi.Name] = pi.GetValue(Flags.Preferences);
+			existingPrefs[pi.Name] = pi.GetValue(Preferences);
 		}
 		string jsonprefs = JsonConvert.SerializeObject(existingPrefs);
 		await JSRuntime.InvokeVoidAsync("setFFRPreferences", "preferences", jsonprefs);

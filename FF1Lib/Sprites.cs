@@ -2,6 +2,9 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
+using Microsoft.VisualBasic;
+using System.Collections.ObjectModel;
+using SixLabors.ImageSharp.ColorSpaces;
 
 namespace FF1Lib
 {
@@ -11,6 +14,8 @@ namespace FF1Lib
 		const int CHARBATTLEPIC_OFFSET = 0x25000;
 
 		const int MAPMANGRAPHIC_OFFSET = 0x9000;
+
+		const int VEHICLEGRAPHIC_OFFSET = 0x9D00;
 
 		const int BATTLEPATTERNTABLE_OFFSET = 0x1C000;
 
@@ -84,17 +89,17 @@ namespace FF1Lib
 		}
 
 		Dictionary<byte, byte> colorReduction = new Dictionary<byte, byte>() {
-		{ 0x0D, 0x0F },
-		{ 0x1D, 0x0F },
-		{ 0x1E, 0x0F },
-		{ 0x1F, 0x0F },
-		{ 0x2E, 0x0F },
-		{ 0x2F, 0x0F },
-		{ 0x3E, 0x0F },
-		{ 0x3F, 0x0F },
-		{ 0x2D, 0x00 },
-		{ 0x3D, 0x10 },
-		{ 0x20, 0x30 }
+			{ 0x0D, 0x0F },
+			{ 0x1D, 0x0F },
+			{ 0x1E, 0x0F },
+			{ 0x1F, 0x0F },
+			{ 0x2E, 0x0F },
+			{ 0x2F, 0x0F },
+			{ 0x3E, 0x0F },
+			{ 0x3F, 0x0F },
+			{ 0x2D, 0x00 },
+			{ 0x3D, 0x10 },
+			{ 0x20, 0x30 }
 		};
 
 		//
@@ -443,9 +448,10 @@ namespace FF1Lib
 			//     4, 5, 6, 7,12,13,18,19,24,25,29,30,31};
 
 			var ConstPicFormationNoDup = new byte[39] {	//3 x 13 pic formation
-		    0, 1, 255, 255,  8, 9,14,15,20,21,255,255,255,
-			2, 3, 255, 255, 10,11,16,17,22,23,26,27,28,
-			4, 5,   6,   7, 12,13,18,19,24,25,29,30,31};
+				0, 1, 255, 255,  8, 9,14,15,20,21,255,255,255,
+				2, 3, 255, 255, 10,11,16,17,22,23,26,27,28,
+				4, 5,   6,   7, 12,13,18,19,24,25,29,30,31
+			};
 
 			for (int y = 0; y < 3; y++)
 			{
@@ -475,83 +481,157 @@ namespace FF1Lib
 			return usepal;
 		}
 
-		public Rgba32[] NESpalette = new Rgba32[]{
-		new Rgba32(0x7f, 0x7f, 0x7f),
-		new Rgba32(0x00, 0x00, 0xff),
-		new Rgba32(0x00, 0x00, 0xbf),
-		new Rgba32(0x47, 0x2b, 0xbf),
-		new Rgba32(0x97, 0x00, 0x87),
-		new Rgba32(0xab, 0x00, 0x23),
-		new Rgba32(0xab, 0x13, 0x00),
-		new Rgba32(0x8b, 0x17, 0x00),
-		new Rgba32(0x53, 0x30, 0x00),
-		new Rgba32(0x00, 0x78, 0x00),
-		new Rgba32(0x00, 0x6b, 0x00),
-		new Rgba32(0x00, 0x5b, 0x00),
-		new Rgba32(0x00, 0x43, 0x58),
-		new Rgba32(0x00, 0x00, 0x00),
-		new Rgba32(0x00, 0x00, 0x00),
-		new Rgba32(0x00, 0x00, 0x00),
+		public async Task ImportVehicleSprite(Image<Rgba32> image, int top, int left, Rgba32[] NESpalette)
+		{
+				
+			// vehicle sprites share a single palette, primarily because they can all appear
+			// on the screen at the same time.
 
-		new Rgba32(0xbf, 0xbf, 0xbf),
-		new Rgba32(0x00, 0x78, 0xf8),
-		new Rgba32(0x00, 0x58, 0xf8),
-		new Rgba32(0x6b, 0x47, 0xff),
-		new Rgba32(0xdb, 0x00, 0xcd),
-		new Rgba32(0xe7, 0x00, 0x5b),
-		new Rgba32(0xf8, 0x38, 0x00),
-		new Rgba32(0xe7, 0x5f, 0x13),
-		new Rgba32(0xaf, 0x7f, 0x00),
-		new Rgba32(0x00, 0xb8, 0x00),
-		new Rgba32(0x00, 0xab, 0x00),
-		new Rgba32(0x00, 0xab, 0x47),
-		new Rgba32(0x00, 0x8b, 0x8b),
-		new Rgba32(0x00, 0x00, 0x00),
-		new Rgba32(0x00, 0x00, 0x00),
-		new Rgba32(0x00, 0x00, 0x00),
 
-		new Rgba32(0xf8, 0xf8, 0xf8),
-		new Rgba32(0x3f, 0xbf, 0xff),
-		new Rgba32(0x6b, 0x88, 0xff),
-		new Rgba32(0x98, 0x78, 0xf8),
-		new Rgba32(0xf8, 0x78, 0xf8),
-		new Rgba32(0xf8, 0x58, 0x98),
-		new Rgba32(0xf8, 0x78, 0x58),
-		new Rgba32(0xff, 0xa3, 0x47),
-		new Rgba32(0xf8, 0xb8, 0x00),
-		new Rgba32(0xb8, 0xf8, 0x18),
-		new Rgba32(0x5b, 0xdb, 0x57),
-		new Rgba32(0x58, 0xf8, 0x98),
-		new Rgba32(0x00, 0xeb, 0xdb),
-		new Rgba32(0x78, 0x78, 0x78),
-		new Rgba32(0x00, 0x00, 0x00),
-		new Rgba32(0x00, 0x00, 0x00),
+			var vehicleColors = new List<Rgba32>();
+			var firstUnique = new Dictionary<Rgba32, int>();
+			for (int y = top; y < (top + 48); y++)
+			{
+				for (int x = left; x < (left + 96); x++)
+				{
+					if (!vehicleColors.Contains(image[x, y]))
+					{
+						firstUnique[image[x, y]] = (x << 16 | y);
+						vehicleColors.Add(image[x, y]);
+					}
+				}
+			}
 
-		new Rgba32(0xff, 0xff, 0xff),
-		new Rgba32(0xa7, 0xe7, 0xff),
-		new Rgba32(0xb8, 0xb8, 0xf8),
-		new Rgba32(0xd8, 0xb8, 0xf8),
-		new Rgba32(0xf8, 0xb8, 0xf8),
-		new Rgba32(0xfb, 0xa7, 0xc3),
-		new Rgba32(0xf0, 0xd0, 0xb0),
-		new Rgba32(0xff, 0xe3, 0xab),
-		new Rgba32(0xfb, 0xdb, 0x7b),
-		new Rgba32(0xd8, 0xf8, 0x78),
-		new Rgba32(0xb8, 0xf8, 0xb8),
-		new Rgba32(0xb8, 0xf8, 0xd8),
-		new Rgba32(0x00, 0xff, 0xff),
-		new Rgba32(0xf8, 0xd8, 0xf8),
-		new Rgba32(0x00, 0x00, 0x00),
-		new Rgba32(0x00, 0x00, 0x00)
+			List<byte> vehiclePal;
+			Dictionary<Rgba32, byte> vehicleIndex;
+			if (!makeMapmanPalette(vehicleColors, NESpalette, out vehiclePal, out vehicleIndex))
+			{
+				await this.Progress($"WARNING: Failed importing vehicle sprites, too many unique colors (limit 3 unique colors + magenta for transparent):",
+					  1 + vehiclePal.Count + vehicleIndex.Count);
+				for (int i = 1; i < vehiclePal.Count; i++)
+				{
+					await this.Progress($"WARNING: NES palette {i}: ${vehiclePal[i],2:X}");
+				}
+				foreach (var i in vehicleIndex)
+				{
+					int c = firstUnique[i.Key];
+					await this.Progress($"WARNING: RGB to index {i.Key}: {i.Value}  first appears at {c >> 16}, {c & 0xFFFF}");
+				}
+				return;
+			}
+
+
+			
+			for (int cur_vehicle =0; cur_vehicle < 3; cur_vehicle++)
+			{
+			
+
+				for (int vehiclePos = 0; vehiclePos < 6; vehiclePos++)
+				{
+					var newtop = top + (cur_vehicle * 16);
+					var newleft = left + (vehiclePos * 16);
+
+					var tileTopLeft = makeTile(image, newtop, newleft, (vehicleIndex));
+					var tileTopRight = makeTile(image, newtop, newleft + 8, (vehicleIndex));
+
+					var tileBottomLeft = makeTile(image, newtop + 8, newleft, (vehicleIndex));
+					var tileBottomRight = makeTile(image, newtop + 8, newleft + 8, (vehicleIndex));
+
+					// rom sprites are arranged ship, airship, canoe
+					//int[] vehicle_map = {2,0,1};
+
+					Put(VEHICLEGRAPHIC_OFFSET + (cur_vehicle * 384) + (vehiclePos * 16 * 4) + (16 * 0), EncodeForPPU(tileTopLeft));
+					Put(VEHICLEGRAPHIC_OFFSET + (cur_vehicle * 384) + (vehiclePos * 16 * 4) + (16 * 1), EncodeForPPU(tileTopRight));
+					Put(VEHICLEGRAPHIC_OFFSET + (cur_vehicle * 384) + (vehiclePos * 16 * 4) + (16 * 2), EncodeForPPU(tileBottomLeft));
+					Put(VEHICLEGRAPHIC_OFFSET + (cur_vehicle * 384) + (vehiclePos * 16 * 4) + (16 * 3), EncodeForPPU(tileBottomRight));
+				}
+			}
+
+
+
+			// the vanilla vehicle palette is part of the overworld palette
+			int offsetIntoLut = 0x398;
+			Put(offsetIntoLut, vehiclePal.ToArray());
+		}
+
+		public Rgba32[] NESpalette = new Rgba32[]
+		{
+			new Rgba32(0x7f, 0x7f, 0x7f),
+			new Rgba32(0x00, 0x00, 0xff),
+			new Rgba32(0x00, 0x00, 0xbf),
+			new Rgba32(0x47, 0x2b, 0xbf),
+			new Rgba32(0x97, 0x00, 0x87),
+			new Rgba32(0xab, 0x00, 0x23),
+			new Rgba32(0xab, 0x13, 0x00),
+			new Rgba32(0x8b, 0x17, 0x00),
+			new Rgba32(0x53, 0x30, 0x00),
+			new Rgba32(0x00, 0x78, 0x00),
+			new Rgba32(0x00, 0x6b, 0x00),
+			new Rgba32(0x00, 0x5b, 0x00),
+			new Rgba32(0x00, 0x43, 0x58),
+			new Rgba32(0x00, 0x00, 0x00),
+			new Rgba32(0x00, 0x00, 0x00),
+			new Rgba32(0x00, 0x00, 0x00),
+
+			new Rgba32(0xbf, 0xbf, 0xbf),
+			new Rgba32(0x00, 0x78, 0xf8),
+			new Rgba32(0x00, 0x58, 0xf8),
+			new Rgba32(0x6b, 0x47, 0xff),
+			new Rgba32(0xdb, 0x00, 0xcd),
+			new Rgba32(0xe7, 0x00, 0x5b),
+			new Rgba32(0xf8, 0x38, 0x00),
+			new Rgba32(0xe7, 0x5f, 0x13),
+			new Rgba32(0xaf, 0x7f, 0x00),
+			new Rgba32(0x00, 0xb8, 0x00),
+			new Rgba32(0x00, 0xab, 0x00),
+			new Rgba32(0x00, 0xab, 0x47),
+			new Rgba32(0x00, 0x8b, 0x8b),
+			new Rgba32(0x00, 0x00, 0x00),
+			new Rgba32(0x00, 0x00, 0x00),
+			new Rgba32(0x00, 0x00, 0x00),
+
+			new Rgba32(0xf8, 0xf8, 0xf8),
+			new Rgba32(0x3f, 0xbf, 0xff),
+			new Rgba32(0x6b, 0x88, 0xff),
+			new Rgba32(0x98, 0x78, 0xf8),
+			new Rgba32(0xf8, 0x78, 0xf8),
+			new Rgba32(0xf8, 0x58, 0x98),
+			new Rgba32(0xf8, 0x78, 0x58),
+			new Rgba32(0xff, 0xa3, 0x47),
+			new Rgba32(0xf8, 0xb8, 0x00),
+			new Rgba32(0xb8, 0xf8, 0x18),
+			new Rgba32(0x5b, 0xdb, 0x57),
+			new Rgba32(0x58, 0xf8, 0x98),
+			new Rgba32(0x00, 0xeb, 0xdb),
+			new Rgba32(0x78, 0x78, 0x78),
+			new Rgba32(0x00, 0x00, 0x00),
+			new Rgba32(0x00, 0x00, 0x00),
+
+			new Rgba32(0xff, 0xff, 0xff),
+			new Rgba32(0xa7, 0xe7, 0xff),
+			new Rgba32(0xb8, 0xb8, 0xf8),
+			new Rgba32(0xd8, 0xb8, 0xf8),
+			new Rgba32(0xf8, 0xb8, 0xf8),
+			new Rgba32(0xfb, 0xa7, 0xc3),
+			new Rgba32(0xf0, 0xd0, 0xb0),
+			new Rgba32(0xff, 0xe3, 0xab),
+			new Rgba32(0xfb, 0xdb, 0x7b),
+			new Rgba32(0xd8, 0xf8, 0x78),
+			new Rgba32(0xb8, 0xf8, 0xb8),
+			new Rgba32(0xb8, 0xf8, 0xd8),
+			new Rgba32(0x00, 0xff, 0xff),
+			new Rgba32(0xf8, 0xd8, 0xf8),
+			new Rgba32(0x00, 0x00, 0x00),
+			new Rgba32(0x00, 0x00, 0x00)
 		};
 
-		public async Task SetCustomPlayerSprites(Stream readStream, bool threePalettes)
+		public async Task SetCustomPlayerSprites(Stream readStream, bool threePalettes, MapmanSlot mapmanLeader = MapmanSlot.Leader)
 		{
 			//IImageFormat format;
 			Image<Rgba32> image = Image.Load<Rgba32>(readStream);
-			if (image.Width != 208 || image.Height != 240)
+			if (image.Width != 208 || (image.Height != 240 && image.Height != 288))
 			{
-				await this.Progress($"WARNING: Custom player sprites have dimensions {image.Width}x{image.Height}, expected 208x240");
+				await this.Progress($"WARNING: Custom player sprites have dimensions {image.Width}x{image.Height}, expected 208x240 or 208x288");
 			}
 
 			var battlePals = new List<List<byte>>();
@@ -573,9 +653,16 @@ namespace FF1Lib
 				PutInBank(0x1F, 0xEBA5 + (i * 4), battlePals[i].ToArray());
 			}
 
+			
 			// add palette for "none" mapman
 			PutInBank(0x0F, lut_MapmanPalettes + (13 << 3), new byte[] {0x0F, 0x0F, 0x12, 0x36,
 										0x0F, 0x0F, 0x21, 0x36});
+
+			// if the image contains vehicle sprites, process those
+			if (image.Height == 288)
+			{
+				await ImportVehicleSprite(image, 240, 0, NESpalette);
+			}
 
 			// code in asm/0F_8150_MapmanPalette.asm
 
@@ -583,9 +670,14 @@ namespace FF1Lib
 			// "palette" (it actually only changes 2 colors and
 			// leaves the blank and "skin tone" alone)
 			// With a jump to a new routine in bank 0F which loads
-			// two complete 4 color palettes.
+			// two complete 4 color palettes: either the mapman palettes
+			// or the "none" palettes
+			
+
+			byte leader = (byte)((byte)mapmanLeader << 6);
+
 			PutInBank(0x1F, 0xD8B6, Blob.FromHex("A90F2003FE4CC081EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-			PutInBank(0x0F, 0x81C0, Blob.FromHex("AD0061C9FFD002A90D0A0A0A6908AAA008BD508199D003CA8810F660"));
+			PutInBank(0x0F, 0x81C0, Blob.FromHex($"AD{leader:X02}61C9FFD002A90D0A0A0A6908AAA008BD508199D003CA8810F660"));
 		}
 
 		byte chrIndex(byte[] tile, List<byte[]> chrEntries, int maxEntries)
@@ -840,6 +932,7 @@ namespace FF1Lib
 			var mapPals = new List<List<byte>>();
 			if (!mergePalettes(candidateMapPals, mapPals, maxPal))
 			{
+
 			}
 
 			//int maxCHR = 245;
@@ -863,172 +956,192 @@ namespace FF1Lib
 
 				Put(PALETTE_ASSIGNMENT + imagecount, new byte[] { (byte)((usepal << 6) + (usepal << 4) + (usepal << 2) + (usepal)) });
 
-				foreach (var loadchr in new ValueTuple<int, int, int>[] {
-				(0, 0, 0),
-				(8, 0, 128),
-				(0, 8, 256),
-				(8, 8, 384)})
-		    {
-			byte idx = chrIndex(makeTile(image, top+loadchr.Item2, left+loadchr.Item1, index), chrEntries, maxCHR);
-			if (idx == 0xff) {
-			    await this.Progress($"WARNING: Error importing CHR at {left+loadchr.Item1}, {top+loadchr.Item2}, in map tile {imagecount} too many unique CHR");
-			    idx = 0;
-			    excessCHR++;
+				foreach (var loadchr in new ValueTuple<int, int, int>[]
+						{ (0, 0, 0), (8, 0, 128), (0, 8, 256), (8, 8, 384) })
+				{
+					byte idx = chrIndex(makeTile(image, top + loadchr.Item2, left + loadchr.Item1, index), chrEntries, maxCHR);
+					if (idx == 0xff)
+					{
+						await this.Progress($"WARNING: Error importing CHR at {left + loadchr.Item1}, {top + loadchr.Item2}, in map tile {imagecount} too many unique CHR");
+						idx = 0;
+						excessCHR++;
+					}
+					Put(PATTERNTABLE_ASSIGNMENT + loadchr.Item3 + imagecount, new byte[] { idx });
+				}
 			}
-			Put(PATTERNTABLE_ASSIGNMENT + loadchr.Item3 + imagecount, new byte[]{idx});
-		    }
+
+			if (mapPals.Count > 4)
+			{
+				await this.Progress($"WARNING: More than 4 unique 4-color palettes ({mapPals.Count})");
+			}
+			if (excessCHR > 0)
+			{
+				await this.Progress($"WARNING: More than {maxCHR} unique 8x8 tiles, must eliminate {excessCHR} excess tiles");
+			}
+
+			for (int i = 0; i < Math.Min(4, mapPals.Count); i++)
+			{
+				foreach (var j in PALETTE_OFFSET)
+				{
+					Put(j + i * 4, mapPals[i].ToArray());
+				}
+			}
+
+			for (int i = 0; i < chrEntries.Count; i++)
+			{
+				Put(PATTERNTABLE_OFFSET + (i * 16), EncodeForPPU(chrEntries[i]));
+			}
 		}
 
-		if (mapPals.Count > 4) {
-		    await this.Progress($"WARNING: More than 4 unique 4-color palettes ({mapPals.Count})");
-		}
-		if (excessCHR > 0) {
-		    await this.Progress($"WARNING: More than {maxCHR} unique 8x8 tiles, must eliminate {excessCHR} excess tiles");
-		}
-
-		for (int i = 0; i < Math.Min(4, mapPals.Count); i++) {
-		    foreach (var j in PALETTE_OFFSET) {
-			Put(j + i*4, mapPals[i].ToArray());
-		    }
-		}
-
-		for (int i = 0; i < chrEntries.Count; i++) {
-		    Put(PATTERNTABLE_OFFSET + (i * 16), EncodeForPPU(chrEntries[i]));
-		}
-	    }
-
-	    public void FiendImport(Image<Rgba32> image, int sizeX, int sizeY,
+		public void FiendImport(Image<Rgba32> image, int sizeX, int sizeY,
 				    int imageOffsetX, int imageOffsetY, List<byte[]> chrEntries,
 				    int nametableDest, int paletteDest1, int paletteDest2) {
 
-		List<List<byte>> candidatePals = new List<List<byte>>();
-		var toNEScolor = new Dictionary<Rgba32, byte>();
+			List<List<byte>> candidatePals = new List<List<byte>>();
+			var toNEScolor = new Dictionary<Rgba32, byte>();
 
-		for(int areaY = 0; areaY < sizeY/2; areaY += 1) {
-		    for(int areaX = 0; areaX < sizeX/2; areaX += 1) {
-			int top = imageOffsetY + areaY * 16;
-			int left = imageOffsetX + areaX * 16;
+			for(int areaY = 0; areaY < sizeY/2; areaY += 1)
+			{
+				for(int areaX = 0; areaX < sizeX/2; areaX += 1)
+				{
+					int top = imageOffsetY + areaY * 16;
+					int left = imageOffsetX + areaX * 16;
 
-			//Console.WriteLine($"area {areaX} {areaY}    pixel {left} {top}   candpal {candidatePals.Count}");
+					//Console.WriteLine($"area {areaX} {areaY}    pixel {left} {top}   candpal {candidatePals.Count}");
 
-			var firstUnique = new Dictionary<Rgba32, int>();
-			var colors = new List<Rgba32>();
-			for (int y = top; y < (top+16); y++) {
-			    for (int x = left; x < (left+16); x++) {
-				if (!colors.Contains(image[x,y])) {
-				    firstUnique[image[x,y]] = (x<<16 | y);
-				    colors.Add(image[x,y]);
+					var firstUnique = new Dictionary<Rgba32, int>();
+					var colors = new List<Rgba32>();
+					for (int y = top; y < (top+16); y++)
+					{
+						for (int x = left; x < (left+16); x++)
+						{
+							if (!colors.Contains(image[x,y]))
+							{
+								firstUnique[image[x,y]] = (x<<16 | y);
+								colors.Add(image[x,y]);
+							}
+						}
+					}
+					List<byte> pal;
+					if (!makeNTPalette(colors, NESpalette, out pal, toNEScolor)) {
+						//await this.Progress($"WARNING: Failed importing fiend at {left}, {top}, too many unique colors (limit 4 unique colors):", 1+pal.Count);
+						Console.WriteLine($"WARNING: Failed importing fiend at {left}, {top}, too many unique colors (limit 4 unique colors):", 1 + pal.Count);
+						for (int i = 0; i < pal.Count; i++)
+						{
+							//await this.Progress($"WARNING: NES palette {i}: ${pal[i],2:X}");
+							Console.WriteLine($"WARNING: NES palette {i}: ${pal[i],2:X}");
+						}
+						return;
+					}
+					candidatePals.Add(pal);
 				}
-			    }
-			}
-			List<byte> pal;
-			if (!makeNTPalette(colors, NESpalette, out pal, toNEScolor)) {
-			    //await this.Progress($"WARNING: Failed importing fiend at {left}, {top}, too many unique colors (limit 4 unique colors):", 1+pal.Count);
-				Console.WriteLine($"WARNING: Failed importing fiend at {left}, {top}, too many unique colors (limit 4 unique colors):", 1 + pal.Count);
-			    for (int i = 0; i < pal.Count; i++) {
-				//await this.Progress($"WARNING: NES palette {i}: ${pal[i],2:X}");
-				Console.WriteLine($"WARNING: NES palette {i}: ${pal[i],2:X}");
-			    }
-			    return;
-			}
-			candidatePals.Add(pal);
-		    }
-		}
-
-		var fiendPals = new List<List<byte>>();
-		if (!mergePalettes(candidatePals, fiendPals, 2)) {
-		    //await this.Progress($"WARNING: Too many unique 4-color palettes");
-			Console.WriteLine($"WARNING: Too many unique 4-color palettes");
-		}
-
-		byte[] attributeTable = new byte[16];
-		byte[] nametable = new byte[sizeX*sizeY];
-
-		attributeTable[0] = (byte)((3 << 4) | 3);
-		attributeTable[4] = (byte)((3 << 4) | 3);
-		attributeTable[8] = (byte)((3 << 4) | 3);
-		attributeTable[12] = (byte)((3 << 6) | (3 << 4) | 3);
-		attributeTable[13] = (byte)((3 << 6) | (3 << 4));
-		attributeTable[14] = (byte)((3 << 6) | (3 << 4));
-		attributeTable[15] = (byte)((3 << 6) | (3 << 4));
-
-		// iterate on 16x16 "areas"
-		for(int areaY = 0; areaY < sizeY/2; areaY += 1) {
-		    for(int areaX = 0; areaX < sizeX/2; areaX += 1) {
-			var srcPalIdx = areaY * (sizeX/2) + areaX;
-
-			//Console.WriteLine($"area {areaX} {areaY}       candpal {srcPalIdx}");
-
-			int palidx = findPalette(fiendPals, candidatePals[srcPalIdx]);
-			if  (palidx == -1) {
-			    palidx = 0;
-			}
-			var usepal = (byte)palidx;
-
-			Dictionary<Rgba32, byte> index;
-			colorToPaletteIndex(fiendPals[usepal], toNEScolor, out index);
-
-			// Console.WriteLine($"fiendPals[{usepal}]");
-			// foreach (var i in fiendPals[usepal]) {
-			//     Console.WriteLine($"${i,2:X}");
-			// }
-			// Console.WriteLine($"index");
-			// foreach (var i in index) {
-			//     Console.WriteLine($"{i.Key}: {i.Value}");
-			// }
-
-			int aX, aY;
-			if (sizeX == 8) {
-			    aX = areaX + 2;
-			    aY = areaY + 2;
-			} else {
-			    aX = areaX + 1;
-			    aY = areaY + 1;
 			}
 
-			// boss palettes are 2nd and 3rd
-			usepal += 1;
-
-			byte v = 0;
-			if (aY % 2 == 0 && aX % 2 == 0) {
-			    v |= usepal;
-			}
-			if (aY % 2 == 0 && aX % 2 == 1) {
-			    v |= (byte)(usepal << 2);
-			}
-			if (aY % 2 == 1 && aX % 2 == 0) {
-			    v |= (byte)(usepal << 4);
-			}
-			if (aY % 2 == 1 && aX % 2 == 1) {
-			    v |= (byte)(usepal << 6);
-			}
-			int ati = ((aY/2) * 4) + (aX/2);
-			if (ati < attributeTable.Length) {
-			    attributeTable[ati] |= v;
+			var fiendPals = new List<List<byte>>();
+			if (!mergePalettes(candidatePals, fiendPals, 2))
+			{
+				//await this.Progress($"WARNING: Too many unique 4-color palettes");
+				Console.WriteLine($"WARNING: Too many unique 4-color palettes");
 			}
 
-			// put the attribute table
-			for(int tilesY = areaY*2; tilesY < (areaY+1)*2; tilesY += 1) {
-			    for(int tilesX = areaX*2; tilesX < (areaX+1)*2; tilesX += 1) {
-				int top = imageOffsetY + tilesY * 8;
-				int left = imageOffsetX + tilesX * 8;
-				byte idx = chrIndex(makeTile(image, top, left, index), chrEntries, 110);
-				if (idx == 0xff) {
-				    //await this.Progress($"WARNING: Error importing CHR at {left}, {top}, too many unique CHR ");
-				    idx = 0;
+			byte[] attributeTable = new byte[16];
+			byte[] nametable = new byte[sizeX*sizeY];
+
+			attributeTable[0] = (byte)((3 << 4) | 3);
+			attributeTable[4] = (byte)((3 << 4) | 3);
+			attributeTable[8] = (byte)((3 << 4) | 3);
+			attributeTable[12] = (byte)((3 << 6) | (3 << 4) | 3);
+			attributeTable[13] = (byte)((3 << 6) | (3 << 4));
+			attributeTable[14] = (byte)((3 << 6) | (3 << 4));
+			attributeTable[15] = (byte)((3 << 6) | (3 << 4));
+
+			// iterate on 16x16 "areas"
+			for(int areaY = 0; areaY < sizeY/2; areaY += 1)
+			{
+				for(int areaX = 0; areaX < sizeX/2; areaX += 1)
+				{
+					var srcPalIdx = areaY * (sizeX/2) + areaX;
+
+					//Console.WriteLine($"area {areaX} {areaY}       candpal {srcPalIdx}");
+
+					int palidx = findPalette(fiendPals, candidatePals[srcPalIdx]);
+					if  (palidx == -1)
+					{
+						palidx = 0;
+					}
+					var usepal = (byte)palidx;
+
+					Dictionary<Rgba32, byte> index;
+					colorToPaletteIndex(fiendPals[usepal], toNEScolor, out index);
+
+					// Console.WriteLine($"fiendPals[{usepal}]");
+					// foreach (var i in fiendPals[usepal]) {
+					//     Console.WriteLine($"${i,2:X}");
+					// }
+					// Console.WriteLine($"index");
+					// foreach (var i in index) {
+					//     Console.WriteLine($"{i.Key}: {i.Value}");
+					// }
+
+					int aX, aY;
+					if (sizeX == 8)
+					{
+						aX = areaX + 2;
+						aY = areaY + 2;
+					}
+					else
+					{
+						aX = areaX + 1;
+						aY = areaY + 1;
+					}
+
+					// boss palettes are 2nd and 3rd
+					usepal += 1;
+
+					byte v = 0;
+					if (aY % 2 == 0 && aX % 2 == 0) {
+						v |= usepal;
+					}
+					if (aY % 2 == 0 && aX % 2 == 1) {
+						v |= (byte)(usepal << 2);
+					}
+					if (aY % 2 == 1 && aX % 2 == 0) {
+						v |= (byte)(usepal << 4);
+					}
+					if (aY % 2 == 1 && aX % 2 == 1) {
+						v |= (byte)(usepal << 6);
+					}
+					int ati = ((aY/2) * 4) + (aX/2);
+					if (ati < attributeTable.Length) {
+						attributeTable[ati] |= v;
+					}
+
+					// put the attribute table
+					for(int tilesY = areaY*2; tilesY < (areaY+1)*2; tilesY += 1)
+					{
+						for(int tilesX = areaX*2; tilesX < (areaX+1)*2; tilesX += 1)
+						{
+							int top = imageOffsetY + tilesY * 8;
+							int left = imageOffsetX + tilesX * 8;
+							byte idx = chrIndex(makeTile(image, top, left, index), chrEntries, 110);
+							if (idx == 0xff)
+							{
+								//await this.Progress($"WARNING: Error importing CHR at {left}, {top}, too many unique CHR ");
+								idx = 0;
+							}
+							// put the NT
+							nametable[tilesY*sizeX + tilesX] = (byte)(18 + idx);
+						}
+					}
 				}
-				// put the NT
-				nametable[tilesY*sizeX + tilesX] = (byte)(18 + idx);
-			    }
 			}
-		    }
-		}
-		Put(nametableDest, nametable);
-		Put(nametableDest+nametable.Length, attributeTable);
-		Put(paletteDest1, fiendPals[0].ToArray());
-		if (fiendPals.Count == 2) {
-		    Put(paletteDest2, fiendPals[1].ToArray());
-		}
+			Put(nametableDest, nametable);
+			Put(nametableDest+nametable.Length, attributeTable);
+			Put(paletteDest1, fiendPals[0].ToArray());
+			if (fiendPals.Count == 2)
+			{
+				Put(paletteDest2, fiendPals[1].ToArray());
+			}
 	    }
 
 	    const int TIAMAT1 = 0x77;
@@ -1038,233 +1151,459 @@ namespace FF1Lib
 
 	    //public async Task<bool> SetLichKaryGraphics(Stream lich, Stream kary) {
 		public bool SetLichKaryGraphics(Stream lich, Stream kary) {
-		var formations = LoadFormations();
-		//IImageFormat format;
-		Image<Rgba32> lichImage = Image.Load<Rgba32>(lich);
-		Image<Rgba32> karyImage = Image.Load<Rgba32>(kary);
-		List<byte[]> CHR = new List<byte[]>();
-		/*
-		await FiendImport(lichImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[LICH1].pal2 * 4));
-		await FiendImport(karyImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET+(formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KARY1].pal2 * 4));
-		*/
-		FiendImport(lichImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[LICH1].pal2 * 4));
-		FiendImport(karyImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET+(formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KARY1].pal2 * 4));
-		if (CHR.Count < 110) {
-		    int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (18 * 16);
-		    for (int i = 0; i < CHR.Count; i++) {
-			Put(offset + (i*16), EncodeForPPU(CHR[i]));
-		    }
-		    return true;
-		} else return false;
+			var formations = LoadFormations();
+			//IImageFormat format;
+			Image<Rgba32> lichImage = Image.Load<Rgba32>(lich);
+			Image<Rgba32> karyImage = Image.Load<Rgba32>(kary);
+			List<byte[]> CHR = new List<byte[]>();
+			/*
+			await FiendImport(lichImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[LICH1].pal2 * 4));
+			await FiendImport(karyImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET+(formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KARY1].pal2 * 4));
+			*/
+			FiendImport(lichImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[LICH1].pal2 * 4));
+			FiendImport(karyImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET+(formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KARY1].pal2 * 4));
+			if (CHR.Count < 110)
+			{
+				int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (18 * 16);
+				for (int i = 0; i < CHR.Count; i++)
+				{
+					Put(offset + (i * 16), EncodeForPPU(CHR[i]));
+				}
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 	    }
 
 	    //public async Task<bool> SetKrakenTiamatGraphics(Stream kraken, Stream tiamat) {
 		public bool SetKrakenTiamatGraphics(Stream kraken, Stream tiamat) {
-		var formations = LoadFormations();
-		//IImageFormat format;
-		Image<Rgba32> krakenImage = Image.Load<Rgba32>(kraken);
-		Image<Rgba32> tiamatImage = Image.Load<Rgba32>(tiamat);
-		List<byte[]> CHR = new List<byte[]>();
+			var formations = LoadFormations();
+			//IImageFormat format;
+			Image<Rgba32> krakenImage = Image.Load<Rgba32>(kraken);
+			Image<Rgba32> tiamatImage = Image.Load<Rgba32>(tiamat);
+			List<byte[]> CHR = new List<byte[]>();
 			/*
-		await FiendImport(krakenImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal2 * 4));
-		await FiendImport(tiamatImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal2 * 4));
+			await FiendImport(krakenImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal2 * 4));
+			await FiendImport(tiamatImage, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal2 * 4));
 			*/
-		FiendImport(krakenImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal2 * 4));
-		FiendImport(tiamatImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal2 * 4));
-		if (CHR.Count < 110) {
-		    int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (18 * 16);
-		    for (int i = 0; i < CHR.Count; i++) {
-			Put(offset + (i*16), EncodeForPPU(CHR[i]));
-		    }
-		    return true;
-		} else {
-		    return false;
-		}
+			FiendImport(krakenImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal2 * 4));
+			FiendImport(tiamatImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal2 * 4));
+			if (CHR.Count < 110)
+			{
+				int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (18 * 16);
+				for (int i = 0; i < CHR.Count; i++)
+				{
+					Put(offset + (i*16), EncodeForPPU(CHR[i]));
+				}
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 	    }
 
 	    public async Task SetCustomFiendGraphics(Stream fiends) {
-		// 0B_92E0
-		//    $50 bytes of TSA for all 4 fiend graphics (resulting in $140 bytes of data total)
-		//      $40 bytes of NT TSA (8x8 image)
-		//      $10 bytes of attributes  (4x4)
+			// 0B_92E0
+			//    $50 bytes of TSA for all 4 fiend graphics (resulting in $140 bytes of data total)
+			//      $40 bytes of NT TSA (8x8 image)
+			//      $10 bytes of attributes  (4x4)
 
-		// 0B_9420
-		//    $C0 bytes of TSA for chaos
-		//     $A8 bytes of NT TSA (14x12 image)
-		//     $10 bytes of attributes  (4x4x)
+			// 0B_9420
+			//    $C0 bytes of TSA for chaos
+			//     $A8 bytes of NT TSA (14x12 image)
+			//     $10 bytes of attributes  (4x4x)
 
-		var formations = LoadFormations();
+			var formations = LoadFormations();
 
-		//IImageFormat format;
+			//IImageFormat format;
 
-		Image<Rgba32> image = Image.Load<Rgba32>(fiends);
-		{
-		    List<byte[]> CHR = new List<byte[]>();
-				/*
-		    await FiendImport(image, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[LICH1].pal2 * 4));
-		    await FiendImport(image, 8, 8, 64, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET+(formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KARY1].pal2 * 4));
-				*/
-			FiendImport(image, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET + (formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[LICH1].pal2 * 4));
-			FiendImport(image, 8, 8, 64, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET + (formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[KARY1].pal2 * 4));
-				if (CHR.Count < 110) {
-			int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (18 * 16);
-			for (int i = 0; i < CHR.Count; i++) {
-			    Put(offset + (i*16), EncodeForPPU(CHR[i]));
+			Image<Rgba32> image = Image.Load<Rgba32>(fiends);
+			{
+				List<byte[]> CHR = new List<byte[]>();
+					/*
+				await FiendImport(image, 8, 8,  0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET+(formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[LICH1].pal2 * 4));
+				await FiendImport(image, 8, 8, 64, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET+(formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KARY1].pal2 * 4));
+					*/
+				FiendImport(image, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET + (formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[LICH1].pal2 * 4));
+				FiendImport(image, 8, 8, 64, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET + (formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[KARY1].pal2 * 4));
+				if (CHR.Count < 110)
+				{
+					int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (18 * 16);
+					for (int i = 0; i < CHR.Count; i++)
+					{
+						Put(offset + (i*16), EncodeForPPU(CHR[i]));
+					}
+				}
+				else
+				{
+					await this.Progress($"WARNING: Error importing Lich and Kary, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles between both fiends");
+				}
 			}
-		    } else {
-			await this.Progress($"WARNING: Error importing Lich and Kary, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles between both fiends");
-		    }
-		}
-		{
-		    List<byte[]> CHR = new List<byte[]>();
+			{
+				List<byte[]> CHR = new List<byte[]>();
 				/*
-		    await FiendImport(image, 8, 8,  0, 64, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal2 * 4));
-		    await FiendImport(image, 8, 8, 64, 64, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal2 * 4));
+				await FiendImport(image, 8, 8,  0, 64, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[KRAKEN1].pal2 * 4));
+				await FiendImport(image, 8, 8, 64, 64, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[TIAMAT1].pal2 * 4));
 				*/
-			FiendImport(image, 8, 8, 0, 64, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal2 * 4));
-			FiendImport(image, 8, 8, 64, 64, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal2 * 4));
-			if (CHR.Count < 110) {
-			int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (18 * 16);
-			for (int i = 0; i < CHR.Count; i++) {
-			    Put(offset + (i*16), EncodeForPPU(CHR[i]));
+				FiendImport(image, 8, 8, 0, 64, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal2 * 4));
+				FiendImport(image, 8, 8, 64, 64, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal2 * 4));
+				if (CHR.Count < 110)
+				{
+					int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (18 * 16);
+					for (int i = 0; i < CHR.Count; i++)
+					{
+						Put(offset + (i*16), EncodeForPPU(CHR[i]));
+					}
+				}
+				else
+				{
+					await this.Progress($"WARNING: Error importing Kraken and Tiamat, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles between both fiends");
+				}
 			}
-		    } else {
-			await this.Progress($"WARNING: Error importing Kraken and Tiamat, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles between both fiends");
-		    }
-		}
 	    }
 
 	    public async Task SetCustomChaosGraphics(Stream chaos) {
-		var formations = LoadFormations();
-		//IImageFormat format;
-		const int CHAOS = 0x7B;
-		Image<Rgba32> image = Image.Load<Rgba32>(chaos);
-		List<byte[]> CHR = new List<byte[]>();
-		//await FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
-		FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
-		if (CHR.Count < 110) {
-		    int offset = BATTLEPATTERNTABLE_OFFSET + (formations[CHAOS].tileset * 2048) + (18 * 16);
-		    for (int i = 0; i < CHR.Count; i++) {
-			Put(offset + (i*16), EncodeForPPU(CHR[i]));
-		    }
-		} else {
-		    await this.Progress($"WARNING: Error importing Chaos, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles");
-		}
+			var formations = LoadFormations();
+			//IImageFormat format;
+			const int CHAOS = 0x7B;
+			Image<Rgba32> image = Image.Load<Rgba32>(chaos);
+			List<byte[]> CHR = new List<byte[]>();
+			//await FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
+			FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
+			if (CHR.Count < 110)
+			{
+				int offset = BATTLEPATTERNTABLE_OFFSET + (formations[CHAOS].tileset * 2048) + (18 * 16);
+				for (int i = 0; i < CHR.Count; i++)
+				{
+					Put(offset + (i*16), EncodeForPPU(CHR[i]));
+				}
+			}
+			else
+			{
+				await this.Progress($"WARNING: Error importing Chaos, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles");
+			}
 	    }
 
 	    public async Task SetCustomBattleBackdrop(Stream backdrop) {
-		//const int BATTLEBACKDROPASSIGNMENT_OFFSET =		0x3310;
-		const int BATTLEBACKDROPPALETTE_OFFSET =		0x3200;
+			//const int BATTLEBACKDROPASSIGNMENT_OFFSET = 0x3310;
+			const int BATTLEBACKDROPPALETTE_OFFSET = 0x3200;
 
-		//IImageFormat format;
-		Image<Rgba32> image = Image.Load<Rgba32>(backdrop);
-		var toNEScolor = new Dictionary<Rgba32, byte>();
-
-		for (int count = 0; count < 16; count++) {
-		    Console.WriteLine($"Importing backdrop {count}");
-		    int top = count*32;
-		    int left = 0;
-
-		    var firstUnique = new Dictionary<Rgba32, int>();
-		    var colors = new List<Rgba32>();
-		    for (int y = top; y < (top+32); y++) {
-			for (int x = left; x < (left+32); x++) {
-			    if (!colors.Contains(image[x,y])) {
-				firstUnique[image[x,y]] = (x<<16 | y);
-				colors.Add(image[x,y]);
-			    }
+			//IImageFormat format;
+			Image<Rgba32> image = Image.Load<Rgba32>(backdrop);
+			if (image.Size.Width < 32 || image.Size.Height < 512)
+			{
+				await this.Progress($"WARNING: Invalid battle backdrops image size.  Expected 32x512, got {image.Size.Width}x{image.Size.Height}. Skipping import...");
+				return;
 			}
-		    }
-		    List<byte> pal;
-		    if (!makeNTPalette(colors, NESpalette, out pal, toNEScolor)) {
-			await this.Progress($"WARNING: Failed importing battle backdrop at {left}, {top}, too many unique colors (limit 4 unique colors):", 1+pal.Count);
-			for (int i = 0; i < pal.Count; i++) {
-			    await this.Progress($"WARNING: NES palette {i}: ${pal[i],2:X}");
+			var toNEScolor = new Dictionary<Rgba32, byte>();
+
+			for (int count = 0; count < 16; count++)
+			{
+				Console.WriteLine($"Importing backdrop {count}");
+				int top = count*32;
+				int left = 0;
+
+				var firstUnique = new Dictionary<Rgba32, int>();
+				var colors = new List<Rgba32>();
+				for (int y = top; y < (top+32); y++)
+				{
+					for (int x = left; x < (left+32); x++)
+					{
+						if (!colors.Contains(image[x,y]))
+						{
+							firstUnique[image[x,y]] = (x<<16 | y);
+							colors.Add(image[x,y]);
+						}
+					}
+				}
+				List<byte> pal;
+				if (!makeNTPalette(colors, NESpalette, out pal, toNEScolor))
+				{
+					await this.Progress($"WARNING: Failed importing battle backdrop at {left}, {top}, too many unique colors (limit 4 unique colors):", 1+pal.Count);
+					for (int i = 0; i < pal.Count; i++)
+					{
+						await this.Progress($"WARNING: NES palette {i}: ${pal[i],2:X}");
+					}
+					continue;
+				}
+
+				Dictionary<Rgba32, byte> index;
+				colorToPaletteIndex(pal, toNEScolor, out index);
+
+				Put(BATTLEBACKDROPPALETTE_OFFSET + (count * 4), pal.ToArray());
+
+				int n = 1;
+				for (int y = top; y < (top+32); y += 8)
+				{
+					for (int x = left; x < (left+32); x += 8)
+					{
+						var tile = makeTile(image, y, x, index);
+						Put(BATTLEPATTERNTABLE_OFFSET + (count * 2048) + (n*16), EncodeForPPU(tile));
+						n++;
+					}
+				}
+
 			}
-			continue;
-		    }
-
-		    Dictionary<Rgba32, byte> index;
-		    colorToPaletteIndex(pal, toNEScolor, out index);
-
-		    Put(BATTLEBACKDROPPALETTE_OFFSET + (count * 4), pal.ToArray());
-
-		    int n = 1;
-		    for (int y = top; y < (top+32); y += 8) {
-			for (int x = left; x < (left+32); x += 8) {
-			    var tile = makeTile(image, y, x, index);
-			    Put(BATTLEPATTERNTABLE_OFFSET + (count * 2048) + (n*16), EncodeForPPU(tile));
-			    n++;
-			}
-		    }
-
-		}
 	    }
+
+
+		// Grayscale palettes for custom enemy and weapon sprites. Actual palettes will be applied
+		// in-game. In general, FF1 enemy palettes have the following format:
+		// Color 0: black
+		// Color 1: accent color
+		// Color 2: light main color
+		// Color 3; dark main color
+		// Follow the reference enemy sprite sheet for how these map to the Grayscale palette.
+		Dictionary<Rgba32, byte> GrayscaleIndex = new Dictionary<Rgba32, byte> {
+			{ new Rgba32(0x00, 0x00, 0x00), 0 },
+			{ new Rgba32(0xff, 0xff, 0xff), 1 },
+			{ new Rgba32(0xbd, 0xbd, 0xbd), 2 },
+			{ new Rgba32(0x7b, 0x7b, 0x7b), 3 }
+		};
+
+
+		public void SetRobotChickenGraphics(Preferences preferences)
+		{
+			if (preferences.RobotChicken)
+			{
+				const int WARMECHGRAPHIC_OFFSET = 0x22560;
+				var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+				var robochknPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("RoboCHKN.png"));
+				var robochknStream = assembly.GetManifestResourceStream(robochknPath);
+
+				Image<Rgba32> image = Image.Load<Rgba32>(robochknStream);
+
+				int n = 0;
+				for (int y = 0; y < 48; y+=8 )
+				{
+					for (int x=0; x < 48; x+=8)
+					{
+						//Console.WriteLine($"X: {x}, Y: {y}");
+						byte[] tile;
+						tile = makeTile(image,y,x,GrayscaleIndex);
+
+						Put(WARMECHGRAPHIC_OFFSET + (n*16), EncodeForPPU(tile));
+						n++;
+					}
+				}
+			}
+		}
+
+		public void SetTeamSteakGraphics(SteakSprite teamSteak)
+		{
+			// don't need to check team STEAK preferences because this is called in Fun.cs where that check has already been done
+			// arrays contain offset into rom, sprite size in pixels and x,y coords for location of sprite in spritesheet
+			int[] CREEPGRAPHIC_OFFSET_SIZE_XY = new int[] {0x1D220,32,224,0};
+			int[] WORMGRAPHIC_OFFSET_SIZE_XY =  new int[] {0x1E320,48,0,112};
+			int[] WYVERNGRAPHIC_OFFSET_SIZE_XY =  new int[] {0x20320,48,0,192};
+			int[] TYROGRAPHIC_OFFSET_SIZE_XY =  new int[] {0x20560,48,48,192};
+			int[] OCHOGRAPHIC_OFFSET_SIZE_XY =  new int[] {0x20B20,48,96,192};
+			
+
+			var SteakSpriteList = new List<int[]> {};
+
+			if (teamSteak == SteakSprite.Steak || teamSteak == SteakSprite.All)
+			{
+				SteakSpriteList.Add(WYVERNGRAPHIC_OFFSET_SIZE_XY);
+				SteakSpriteList.Add(TYROGRAPHIC_OFFSET_SIZE_XY);
+			}
+			if (teamSteak == SteakSprite.Sandwiches || teamSteak == SteakSprite.All)
+			{
+				SteakSpriteList.Add(WORMGRAPHIC_OFFSET_SIZE_XY);
+			}
+			if (teamSteak == SteakSprite.Nachos || teamSteak == SteakSprite.All)
+			{
+				SteakSpriteList.Add(OCHOGRAPHIC_OFFSET_SIZE_XY);
+			}
+			if (teamSteak == SteakSprite.Pastries || teamSteak == SteakSprite.All)
+			{
+				SteakSpriteList.Add(CREEPGRAPHIC_OFFSET_SIZE_XY);
+			}
+
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var teamSteakPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("teamsteak.png"));
+			var teamSteakStream = assembly.GetManifestResourceStream(teamSteakPath);
+
+			Image<Rgba32> image = Image.Load<Rgba32>(teamSteakStream);
+
+			foreach (int[] offset_size_xy in SteakSpriteList)
+			{
+				int offset = offset_size_xy[0];
+				int size = offset_size_xy[1];
+				int imagex = offset_size_xy[2];
+				int imagey = offset_size_xy[3];
+				int n = 0;
+				for (int y = imagey; y < imagey + size; y+=8 )
+				{
+					for (int x = imagex; x < imagex + size; x+=8)
+					{
+						//Console.WriteLine($"X: {x}, Y: {y}");
+						byte[] tile;
+						tile = makeTile(image,y,x,GrayscaleIndex);
+
+						Put(offset + (n*16), EncodeForPPU(tile));
+						n++;
+					}
+				}
+
+			}
+		}
+
+		public void SetCustomEnemyGraphics(Stream stream) {
+			Image<Rgba32> image = Image.Load<Rgba32>(stream);
+
+			const int ENEMYGRAPHIC_OFFSET = 0x1C120;
+			const int ENEMYGRAPHIC_SKIP = 0x800;
+
+			bool allColorsGood = true;
+			// ep for "enemyPack"
+			// 13 enemy packs total
+			// process each enemy pack one by one
+			for (int ep = 0; ep < 13; ep++)
+			{
+				// epx and epy are the x and y coordinates of successive enemy packs.
+				int epx = (ep % 4) * 96;
+				int epy = (ep / 4) * 80;
+
+				// each enemy pack contains two 32x32 sprites and 2 48x48 sprites.
+
+				int[] enemyDims = {32,32,48,48};
+				int[] xCoord = {0, 32, 0, 48};
+				int[] yCoord = {0, 0, 32, 32};
+
+
+				// n is an iterator for successive 8x8 tiles in the ROM -- added to the various offsets.
+				// resets per enemy pack because enemy packs aren't contiguous in the ROM
+				int n = 0;
+				// e is the enemy iterator
+				// process one enemy in the pack at a time
+				for (int e = 0; e < 4; e++)
+				{
+
+					for (int y = 0; y < enemyDims[e]; y += 8)
+					{
+						for (int x = 0; x < enemyDims[e]; x+=8)
+						{
+							//absolute x and y in image
+							int xAbs = epx + xCoord[e] + x;
+							int yAbs = epy + yCoord[e] + y;
+							byte[] tile;
+							//Console.WriteLine($"All the coordinates are {xAbs}, {yAbs}");
+							try
+							{
+								tile = makeTile(image, yAbs, xAbs, GrayscaleIndex);
+							}
+							catch (KeyNotFoundException)
+							{
+								if (allColorsGood)
+								{
+									Task task = Progress("WARNING: enemies.png contains incorrect colors. Quantizing.");
+									allColorsGood = false;
+								}
+								tile = makeTileQuantize(image, yAbs, xAbs, GrayscaleIndex);
+							}
+							Put(ENEMYGRAPHIC_OFFSET + (ep*ENEMYGRAPHIC_SKIP) + (n*16), EncodeForPPU(tile));
+							n++;
+						}
+					}
+
+				}
+			}
+		}
+
+
+
+
 
 	    public void SetCustomWeaponGraphics(Stream stream) {
-		//IImageFormat format;
-		Image<Rgba32> image = Image.Load<Rgba32>(stream);
+			//IImageFormat format;
+			Image<Rgba32> image = Image.Load<Rgba32>(stream);
 
-		const int WEAPONMAGICGRAPHIC_OFFSET =			0x26800;
+			const int WEAPONMAGICGRAPHIC_OFFSET = 0x26800;
 
-		Dictionary<Rgba32, byte> index = new Dictionary<Rgba32, byte> {
-		    { new Rgba32(0x00, 0x00, 0x00), 0 },
-		    { new Rgba32(0x7b, 0x7b, 0x7b), 1 },
-		    { new Rgba32(0xbd, 0xbd, 0xbd), 2 },
-		    { new Rgba32(0xff, 0xff, 0xff), 3 }
-		};
-
-		int n = 0;
-		for (int w = 0; w < 12; w++) {
-		    for (int y = 0; y < 16; y += 8) {
-			for (int x = (w*16); x < (w+1)*16; x += 8) {
-			    var tile = makeTile(image, y, x, index);
-			    Put(WEAPONMAGICGRAPHIC_OFFSET + (n*16), EncodeForPPU(tile));
-			    n++;
+			int n = 0;
+			for (int w = 0; w < 12; w++)
+			{
+				for (int y = 0; y < 16; y += 8)
+				{
+					for (int x = (w*16); x < (w+1)*16; x += 8)
+					{
+						byte[] tile;
+						try
+						{
+							tile = makeTile(image, y, x, GrayscaleIndex);
+						}
+						catch (KeyNotFoundException)
+						{
+							Task task = Progress("WARNING: weapons.png contains incorrect colors. Quantizing.");
+							tile = makeTileQuantize(image, y, x, GrayscaleIndex);
+						}
+						Put(WEAPONMAGICGRAPHIC_OFFSET + (n*16), EncodeForPPU(tile));
+						n++;
+					}
+				}
 			}
-		    }
-		}
 	    }
 
-	    public void SetCustomGearIcons(Stream stream) {
-		//IImageFormat format;
-		Image<Rgba32> image = Image.Load<Rgba32>(stream);
+		public void SetCustomGearIcons(Stream stream)
+		{
+			//IImageFormat format;
+			Image<Rgba32> image = Image.Load<Rgba32>(stream);
 
-		// 0 = black
-		// 1 = grey
-		// 2 = blue
-		// 3 = white
+			// 0 = black
+			// 1 = grey
+			// 2 = blue
+			// 3 = white
 
-		Dictionary<Rgba32, byte> index = new Dictionary<Rgba32, byte> {
-		    { new Rgba32(0x00, 0x00, 0x00), 0 },
-		    { new Rgba32(0x7f, 0x7f, 0x7f), 1 },
-		    { new Rgba32(116, 116, 116), 1 },
-		    { new Rgba32(0x00, 0x00, 0xff), 2 },
-		    { new Rgba32(36, 24, 140), 2 },
-		    { new Rgba32(0xff, 0xff, 0xff), 3 },
-		    { new Rgba32(252, 252, 252), 3 }
-		};
+			Dictionary<Rgba32, byte> index = new Dictionary<Rgba32, byte>
+			{
+				{ new Rgba32(0x00, 0x00, 0x00), 0 },
+				{ new Rgba32(0x7f, 0x7f, 0x7f), 1 },
+				{ new Rgba32(116, 116, 116), 1 },
+				{ new Rgba32(0x00, 0x00, 0xff), 2 },
+				{ new Rgba32(36, 24, 140), 2 },
+				{ new Rgba32(0xff, 0xff, 0xff), 3 },
+				{ new Rgba32(252, 252, 252), 3 }
+			};
 
-		for (int w = 0; w < 11; w++) {
-		    var tile = makeTile(image, 0, (w*8), index);
-		    PutInBank(0x09, 0x8D40 + (w*16), EncodeForPPU(tile));
-		}
+			for (int w = 0; w < 11; w++)
+			{
+				byte[] tile;
+				try
+				{
+					tile = makeTile(image, 0, (w * 8), index);
+				}
+				catch (KeyNotFoundException)
+				{
+					Task task = Progress("WARNING: gear_icons.png contains incorrect colors. Quantizing.");
+					tile = makeTileQuantize(image, 0, (w * 8), index);
+				}
+				
+				PutInBank(0x09, 0x8D40 + (w * 16), EncodeForPPU(tile));
+				PutInBank(0x12, 0x8540 + (w * 16), EncodeForPPU(tile));
+			}
 	    }
 
-	    void renderTile(Image<Rgba32> img, byte[] tile, byte[] pal, int x, int y) {
-		for (int i = 0; i < 64; i++) {
-		    img[x+(i%8), y+(i/8)] = NESpalette[pal[tile[i]]];
-		}
+	    void renderTile(Image<Rgba32> img, byte[] tile, byte[] pal, int x, int y)
+		{
+			for (int i = 0; i < 64; i++)
+			{
+				img[x+(i%8), y+(i/8)] = NESpalette[pal[tile[i]]];
+			}
 	    }
 
-	    public byte GetMapTilesetIndex(MapIndex MapIndex) {
-		return Get(MAPTILESET_ASSIGNMENT + (int)MapIndex, 1)[0];
+	    public byte GetMapTilesetIndex(MapIndex MapIndex)
+		{
+			return Get(MAPTILESET_ASSIGNMENT + (int)MapIndex, 1)[0];
 	    }
 
 	    Image<Rgba32> exportMapTiles(MapIndex MapIndex,
-					 bool inside,
-					 int PATTERNTABLE_OFFSET,
-					 int PATTERNTABLE_ASSIGNMENT)
+									 bool inside,
+									 int PATTERNTABLE_OFFSET,
+									 int PATTERNTABLE_ASSIGNMENT)
 		{
 			var tileset = GetMapTilesetIndex(MapIndex);
 			var tilesetProps = new TileSet(this, tileset);
@@ -1316,9 +1655,7 @@ namespace FF1Lib
 
 		public Image<Rgba32> ExportMapTiles(MapIndex MapIndex, bool inside)
 		{
-			return exportMapTiles(MapIndex, inside,
-						 TILESETPATTERNTABLE_OFFSET,
-						 TILESETPATTERNTABLE_ASSIGNMENT);
+			return exportMapTiles(MapIndex, inside, TILESETPATTERNTABLE_OFFSET, TILESETPATTERNTABLE_ASSIGNMENT);
 		}
 
 		public Image<Rgba32> RenderMap(List<Map> maps, MapIndex MapIndex, bool inside)
@@ -1480,9 +1817,9 @@ namespace FF1Lib
 			}
 
 			var ConstPicFormationNoDup = new byte[39] {	//3 x 13 pic formation
-		    0, 1, 255, 255,  8, 9,14,15,20,21,255,255,255,
-			2, 3, 255, 255, 10,11,16,17,22,23,26,27,28,
-			4, 5,   6,   7, 12,13,18,19,24,25,29,30,31};
+				0, 1, 255, 255,  8, 9,14,15,20,21,255,255,255,
+				2, 3, 255, 255, 10,11,16,17,22,23,26,27,28,
+				4, 5,   6,   7, 12,13,18,19,24,25,29,30,31};
 
 			for (int y = 0; y < 3; y++)
 			{
@@ -1508,6 +1845,8 @@ namespace FF1Lib
 			PutInBank(0x0C, 0xA03C + cur_class, new byte[] { (byte)pal });
 		}
 
+		// this makeTile() has a different signature from the one above:
+		// last parameter is Dictionary<byte, byte> rather than Dictionary<Rbga32, byte>
 		byte[] makeTile(Image<Rgba32> image, int top, int left, Dictionary<byte, byte> index)
 		{
 			var newtile = new byte[64];
@@ -1517,6 +1856,53 @@ namespace FF1Lib
 				for (int x = left; x < (left + 8); x++)
 				{
 					newtile[px] = index[selectColor(image[x, y], NESpalette)];
+					px++;
+				}
+			}
+			return newtile;
+		}
+
+		// Finds the closest color to a provided list of colors
+		private Rgba32 FindClosestColor(Rgba32 color, List<Rgba32> destColors)
+		{
+			List<double> distances = new List<double>();
+			for (int i = 0; i < destColors.Count; i++)
+			{
+				distances.Add(
+					Math.Sqrt(
+						Math.Pow((color.R - destColors[i].R), 2) +
+						Math.Pow((color.G - destColors[i].G), 2) +
+						Math.Pow((color.B - destColors[i].B), 2)
+					)
+				);
+			}
+			int min = distances.IndexOf(distances.Min());
+			return destColors[min];
+		}
+		private byte[] makeTileQuantize(Image<Rgba32> image, int top, int left, Dictionary<Rgba32, byte> toIndex)
+		{
+			HashSet<Rgba32> srcColors = new HashSet<Rgba32>();
+			for (int y = top; y < (top + 8); y++)
+			{
+				for (int x = left; x < (left + 8); x++)
+				{
+					srcColors.Add(image[x, y]);
+				}
+			}
+			var imageColorToIndexColor = new Dictionary<Rgba32, Rgba32>();
+			foreach (Rgba32 color in srcColors)
+			{
+				imageColorToIndexColor[color] = FindClosestColor(color, toIndex.Keys.ToList());
+			}
+
+			var newtile = new byte[64];
+			int px = 0;
+
+			for (int y = top; y < (top + 8); y++)
+			{
+				for (int x = left; x < (left + 8); x++)
+				{
+					newtile[px] = toIndex[imageColorToIndexColor[image[x, y]]];
 					px++;
 				}
 			}

@@ -130,13 +130,13 @@ namespace FF1Lib
 			int maxChests = 0;
 			int guaranteedChests = ((flags.TCKeyItems == TCOptions.All) ? RangeKeyItems.Count() : 0) + ((flags.TCShards == TCOptions.All) ? RangeShards.Count() : 0) + ((flags.TCBetterTreasure == TCOptions.All) ? RangeBetterTreasure.Count() : 0) + (((bool)flags.TCMasaGuardian) ? RangeMasamune.Count() : 0) + (((bool)flags.TrappedChaos) ? 1 : 0);
 
-			if (flags.TCChestCount == 13)
+			if (flags.TCChestCount == 260)
 			{
 				maxChests = Rng.Between(rng, 20, (240 - guaranteedChests));
 			}
 			else if (flags.TCChestCount > 0)
 			{
-				maxChests = Math.Max(0, (flags.TCChestCount * 20) - guaranteedChests);
+				maxChests = Math.Max(0, flags.TCChestCount - guaranteedChests);
 			}
 			else
 			{
@@ -203,7 +203,7 @@ namespace FF1Lib
 					encounters = altEncountersList;
 					break;
 				case FormationPool.LocalFormations:
-					encountersGroup = zoneformations.GetBytes();
+					encountersGroup = zoneformations.GetBytes().GetRange(64, 64);
 
 					encountersGroup[(int)MapIndex.ConeriaCastle1F] = castleEncounters;
 					encountersGroup[(int)MapIndex.ElflandCastle] = castleEncounters;

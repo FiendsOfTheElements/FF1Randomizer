@@ -159,8 +159,11 @@ namespace FF1Lib
 					}
 					else
 					{
-						// This is random battle tile
-						battleTiles.Add(i);
+						// This is random battle tile, but make sure it's an empty one in case we removed all trap tiles
+						if (blankPPUTiles.Contains(tileset.Tiles[i].BottomLeftTile) && blankPPUTiles.Contains(tileset.Tiles[i].BottomRightTile))
+						{
+							battleTiles.Add(i);
+						}
 						if (debug) Console.WriteLine($"battle tile {i:X}");
 					}
 					continue;
@@ -380,8 +383,8 @@ namespace FF1Lib
 								hasNpc = true;
 								if (npcdata != null)
 								{
-									hasKillableNpc = (npcdata[npc.ObjectId].Script == TalkScripts.Talk_fight ||
-											  npcdata[npc.ObjectId].Script == TalkScripts.Talk_kill);
+									List<TalkScripts> killableTalks = new() { TalkScripts.Talk_fight, TalkScripts.Talk_kill, TalkScripts.Talk_FightBranched };
+									hasKillableNpc = killableTalks.Contains(npcdata[npc.ObjectId].Script);
 								}
 								room.npcs.Add(me);
 								if (hasKillableNpc)

@@ -132,7 +132,7 @@ namespace FF1Lib
 		{
 			UpdateScripts(flags, maps);
 			EnableNPCSwatter((bool)flags.NPCSwatter);
-			ShuffleObjectiveNPCs((bool)flags.Treasures && (bool)flags.ShuffleObjectiveNPCs && (flags.GameMode != GameModes.DeepDungeon), maps, rng);
+			ShuffleObjectiveNPCs((bool)flags.ChestsKeyItems && (bool)flags.ShuffleObjectiveNPCs && (flags.GameMode != GameModes.DeepDungeon), maps, rng);
 		}
 		private void UpdateScripts(Flags flags, StandardMaps maps)
 		{

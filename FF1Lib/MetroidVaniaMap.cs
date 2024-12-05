@@ -55,7 +55,7 @@
 			var flippedmaps = maps.HorizontalFlippedMaps.Where(x => x != MapIndex.Waterfall).ToList();
 
 			LoadInTown(decompressedMap);
-			ApplyMapMods(maps, flippedmaps, (bool)flags.LefeinSuperStore);
+			ApplyMapMods(maps, (bool)flags.LefeinSuperStore);
 			//UpdateInRoomTeleporters();
 			CreateTeleporters(maps, flippedmaps, tileSets, teleporters, rng);
 			PrepNPCs(maps, talkroutines, dialogues, npcdata, flippedmaps, flags, rng);
@@ -87,7 +87,7 @@
 			var coneria_y = townPosList[8].Item2;
 
 			// If saved at Inn, spawn directly in the town
-			PutInBank(0x1E, 0xA000, Blob.FromHex("2054C4AD10608527AD11608528AD1460854685422025A02096C6BD00048544BD0104854560A91E48A9FE48A906484CFDC6"));
+			PutInBank(0x1E, 0xA000, Blob.FromHex("2040A0AD10608527AD11608528AD1460854685422025A02096C6BD00048544BD0104854560A91E48A9FE48A906484CFDC6"));
 			PutInBank(0x1F, 0xC0B7, Blob.FromHex("A91E2003FE2000A0244510034CE2C1EAEAEAEAEA"));
 
 			// Spawn at coneria castle with new game
@@ -105,8 +105,10 @@
 			PutInBank(0x0E, 0x9DC0, townPosList.Select(x => x.Item1).ToArray());
 			PutInBank(0x0E, 0x9DD0, townPosList.Select(x => x.Item2).ToArray());
 		}
-		public void ApplyMapMods(StandardMaps maps, List<MapIndex> flippedmaps, bool lefeinmart)
+		public void ApplyMapMods(StandardMaps maps, bool lefeinmart)
 		{
+			var flippedmaps = maps.HorizontalFlippedMaps.Where(x => x != MapIndex.Waterfall).ToList();
+
 			// Coneria
 			var coneriaNorthwall = new List<Blob> { Blob.FromHex("0404040404") };
 			var coneriaSouthwall = new List<Blob> { Blob.FromHex("0E0E0E0E0E") };
@@ -400,7 +402,6 @@
 
 			if (flippedmaps.Contains(MapIndex.MarshCaveB1))
 			{
-
 				maps[MapIndex.MarshCaveB1].Map.Put((0x3F - (0x02 + 0x14), 0x18), marshConeriaBox.ToArray());
 				maps[MapIndex.MarshCaveB1].Map.Put((0x3F - (0x02 + 0x2A), 0x16), marshConeriaBox.ToArray());
 			}
@@ -1500,9 +1501,9 @@
 
 					var tempTeleporter1 = teleporterA.Item2;
 
-					teleporterA.Item2 = teleporterB.Item2;
-					teleporterB.Item2 = teleporterC.Item2;
-					teleporterC.Item2 = tempTeleporter1;
+					teleporterA.Item2 = teleporterC.Item2;
+					teleporterC.Item2 = teleporterB.Item2;
+					teleporterB.Item2 = tempTeleporter1;
 
 					teleporterA.Item1.PropertyValue = (byte)teleporterA.Item2.ID;
 					teleporterB.Item1.PropertyValue = (byte)teleporterB.Item2.ID;

@@ -96,7 +96,7 @@ namespace FF1Lib
 			{
 				npc.AccessRequirement = AccessRequirement.Crown;
 			}
-			else if (npcdata.Script == TalkScripts.Talk_TradeItems || npcdata.Script == TalkScripts.Talk_GiveItemOnItem)
+			else if (npcdata.Script == TalkScripts.Talk_TradeItems || npcdata.Script == TalkScripts.Talk_GiveItemOnItem || npcdata.Script == TalkScripts.Spooky_GiveOnItem)
 			{
 				var req = (Item)npcdata.Requirement;
 
@@ -162,7 +162,7 @@ namespace FF1Lib
 
 			ProcessImmediateAreas();
 
-			while (ProcessDeferredAreas())
+			while (ProcessDeferredAreas() || immediateAreas.Any())
 			{
 				ProcessImmediateAreas();
 			}
@@ -255,7 +255,7 @@ namespace FF1Lib
 			}
 
 			//not sure, but helps
-			if (airShipLocationAccessible && (changes & MapChange.Airship) > 0 && !airShipLiftOff)
+			if (airShipLocationAccessible && (changes & MapChange.Airship) > 0 && !airShipLiftOff && !airBoat)
 			{
 				LiftOff();
 			}
@@ -275,7 +275,7 @@ namespace FF1Lib
 				if(!CheckLink(area, link)) deferredAreas.Add(new SCDeferredAreaQueueEntry(area.Index, link));
 			}
 
-			if (airShipLocationAccessible && (changes & MapChange.Airship) > 0 && !airShipLiftOff)
+			if (airShipLocationAccessible && (changes & MapChange.Airship) > 0 && !airShipLiftOff && !airBoat)
 			{
 				LiftOff();
 			}
@@ -535,7 +535,7 @@ namespace FF1Lib
 				poi.Done = true;
 				return true;
 			}
-			else if (poi.TalkRoutine == TalkScripts.Talk_ElfDocUnne)
+			else if (poi.TalkRoutine == TalkScripts.Talk_ElfDocUnne || poi.TalkRoutine == TalkScripts.Spooky_Unne)
 			{
 				if (poi.NpcRequirement == (byte)Item.Herb)
 				{
@@ -566,10 +566,12 @@ namespace FF1Lib
 						poi.Done = true;
 						return true;
 					case TalkScripts.Talk_GiveItemOnFlag:
+					case TalkScripts.Spooky_GiveOnFlag:
 						return ProcessItemOnFlag(poi, npc, dungeonIndex);
 					case TalkScripts.Talk_Nerrick:
 					case TalkScripts.Talk_TradeItems:
 					case TalkScripts.Talk_GiveItemOnItem:
+					case TalkScripts.Spooky_GiveOnItem:
 					case TalkScripts.Talk_Astos:
 						if (requirements.HasFlag(npc.AccessRequirement))
 						{
@@ -592,10 +594,12 @@ namespace FF1Lib
 						poi.Done = true;
 						return true;
 					case TalkScripts.Talk_GiveItemOnFlag:
+					case TalkScripts.Spooky_GiveOnFlag:
 						return ProcessItemOnFlag(poi, npc1, dungeonIndex, false);
 					case TalkScripts.Talk_Nerrick:
 					case TalkScripts.Talk_TradeItems:
 					case TalkScripts.Talk_GiveItemOnItem:
+					case TalkScripts.Spooky_GiveOnItem:
 					case TalkScripts.Talk_Astos:
 						if (requirements.HasFlag(npc1.AccessRequirement))
 						{
@@ -776,6 +780,7 @@ namespace FF1Lib
 			{
 				requirements = AccessRequirement.AllExceptEnding;
 				changes = MapChange.All;
+				SetShipDock();
 			}
 			else
 			{

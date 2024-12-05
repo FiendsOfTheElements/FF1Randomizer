@@ -38,18 +38,13 @@ namespace FF1Lib
 				return;
 			}
 
-			/*
-			List<int> whiteShops = Shops.Where(s => s.Type == ShopType.White).Select(s => s.Index).ToList();
-			List<int> blackShops = Shops.Where(s => s.Type == ShopType.Black).Select(s => s.Index).ToList();
-			List<(int white, int black)> pairedShops = whiteShops.Select((s, i) => (s, blackShops[i])).ToList();
-
-			whiteShops.Shuffle(rng);
-			blackShops.Shuffle(rng);
-			pairedShops.Shuffle(rng);
-			*/
-
+			// Get shops
 			List<List<Item>> whiteShops = Shops.Where(s => s.Type == ShopType.White).Select(s => s.Entries.ToList()).ToList();
 			List<List<Item>> blackShops = Shops.Where(s => s.Type == ShopType.Black).Select(s => s.Entries.ToList()).ToList();
+
+			// Exclude Coneria
+			whiteShops.RemoveAt(0);
+			blackShops.RemoveAt(0);
 			List<(List<Item> white, List<Item> black)> pairedShops = whiteShops.Select((s, i) => (s, blackShops[i])).ToList();
 
 			whiteShops.Shuffle(rng);
@@ -60,16 +55,16 @@ namespace FF1Lib
 			{
 				for (int i = 0; i < pairedShops.Count; i++)
 				{
-					Shops.Find(s => s.Index == i + 20).Entries = pairedShops[i].white;
-					Shops.Find(s => s.Index == i + 30).Entries = pairedShops[i].black;
+					Shops.Find(s => s.Index == i + (int)ShopType.White + 1).Entries = pairedShops[i].white;
+					Shops.Find(s => s.Index == i + (int)ShopType.Black + 1).Entries = pairedShops[i].black;
 				}
 			}
 			else
 			{
 				for (int i = 0; i < whiteShops.Count; i++)
 				{
-					Shops.Find(s => s.Index == i + 20).Entries = whiteShops[i];
-					Shops.Find(s => s.Index == i + 30).Entries = blackShops[i];
+					Shops.Find(s => s.Index == i + (int)ShopType.White + 1).Entries = whiteShops[i];
+					Shops.Find(s => s.Index == i + (int)ShopType.Black + 1).Entries = blackShops[i];
 				}
 			}
 		}
@@ -78,6 +73,7 @@ namespace FF1Lib
 			var shops = Shops.Where(s => s.Type == shopType).ToList();
 			var newShopEntries = shops.ToDictionary(s => s.Index, s => new List<Item>());
 			bool shopsBlocked;
+			bool requiredAdded = false;
 
 			do
 			{
@@ -88,12 +84,13 @@ namespace FF1Lib
 				allEntries.Shuffle(rng);
 
 				// Insert guaranteed items
-				if (shopType == ShopType.Item && (bool)flags.ImmediatePureAndSoftRequired)
+				if (shopType == ShopType.Item && (bool)flags.ImmediatePureAndSoftRequired && !requiredAdded)
 				{
 					allEntries.Remove(Item.Pure);
 					allEntries.Remove(Item.Soft);
 
 					newShopEntries[60 + coneriaEntranceShopIndex].AddRange(new List<Item>(){ Item.Pure, Item.Soft });
+					requiredAdded = true;
 				}
 
 				int entry = 0;
