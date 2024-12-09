@@ -191,6 +191,8 @@ namespace FF1Lib
 			bool nonEmpty = (bool)flags.NoEmptyScripts;
 			bool buffedPirates = (bool)flags.SwolePirates;
 			bool generateBalancedscript = (bool)flags.EnemySkillsSpellsTiered && shuffleNormalEnemies;
+			bool OverworldFiendsOnly = (bool)flags.OverworldFiendsOnly;
+			bool TempleOfFiendRefightsOnly = (bool)flags.TempleOfFiendRefightsOnly;
 
 			if (!shuffleBosses && !shuffleNormalEnemies)
 			{
@@ -212,16 +214,27 @@ namespace FF1Lib
 			var normalIndices = Enumerable.Range(0, 32).Concat(new[] { 33, 43 }).ToList();
 			var bossIndices = new List<int> { 34, 36, 38, 40 };
 			var bigBossIndices = new List<int> { 32, 35, 37, 39, 41, 42 };
+			var bigBossExChaosIndices = new List<int> { 32, 35, 37, 39, 41 };
 
 			if (shuffleNormalEnemies)
 			{
 				ShuffleIndexedSkillsSpells(rom, normalIndices, noConsecutiveNukes, nonEmpty, rng);
 			}
 
-			if (shuffleBosses)
+			if (shuffleBosses && !OverworldFiendsOnly && !TempleOfFiendRefightsOnly)
 			{
 				ShuffleIndexedSkillsSpells(rom, bossIndices, noConsecutiveNukes, false, rng);
 				ShuffleIndexedSkillsSpells(rom, bigBossIndices, noConsecutiveNukes, false, rng);
+			}
+
+			if(shuffleBosses && OverworldFiendsOnly)
+			{
+				ShuffleIndexedSkillsSpells(rom, bossIndices, noConsecutiveNukes, false, rng);
+			}
+
+			if(shuffleBosses && TempleOfFiendRefightsOnly)
+			{
+				ShuffleIndexedSkillsSpells(rom, bigBossExChaosIndices, noConsecutiveNukes, false, rng);
 			}
 
 			//Put(ScriptOffset, scriptBytes.SelectMany(script => script.ToBytes()).ToArray());

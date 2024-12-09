@@ -20,7 +20,9 @@
             <TriStateCheckBox UpdateAction="@UpdateAction" Id="bossRemoveBossScripts" @bind-Value="Flags.RemoveBossScripts">Remove Boss Scripts</TriStateCheckBox>
             <TriStateCheckBox UpdateAction="@UpdateAction" Id="bossScriptsCheckBox" IsEnabled="@(Flags.RemoveBossScripts == false)" @bind-Value="Flags.ShuffleScriptsBosses">Shuffle Scripts</TriStateCheckBox>
 			<TriStateCheckBox UpdateAction="@UpdateAction" Id="bossSkillsSpellsCheckBox" IsEnabled="@(Flags.RemoveBossScripts == false)" @bind-Value="Flags.ShuffleSkillsSpellsBosses">Shuffle Skills & Spells</TriStateCheckBox>
-			<TriStateCheckBox UpdateAction="@UpdateAction" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsBosses != false)" Id="noConsecutiveNukesCheckBox" @bind-Value="Flags.NoConsecutiveNukes">No Consecutive NUKE or NUCLEAR</TriStateCheckBox>
+            <TriStateCheckBox UpdateAction="@UpdateAction" Id="templeoffiendrefightsonlyCheckBox" IsEnabled="@(Flags.ShuffleSkillsSpellsBosses)" @bind-Value="Flags.TempleOfFiendRefightsOnly">Temple Of Fiends Only</TriStateCheckBox>
+            <TriStateCheckBox UpdateAction="@UpdateAction" Id="overworldfiendsonlyCheckBox" IsEnabled="@(Flags.ShuffleSkillsSpellsBosses)" @bind-Value="Flags.OverworldFiendsOnly">Overworld Fiends Only</TriStateCheckBox>
+            <TriStateCheckBox UpdateAction="@UpdateAction" Indent IsEnabled="@(Flags.ShuffleSkillsSpellsBosses != false)" Id="noConsecutiveNukesCheckBox" @bind-Value="Flags.NoConsecutiveNukes">No Consecutive NUKE or NUCLEAR</TriStateCheckBox>
            
 
 			<div class="checkbox-cell"></div>

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Diagnostics.SymbolStore;
 using System.Security.Cryptography.X509Certificates;
 using FF1Lib.Helpers;
@@ -164,6 +165,8 @@ namespace FF1Lib
 			bool allowUnsafePirates = (bool)flags.AllowUnsafePirates;
 			bool excludeImps = (bool)flags.EnemySkillsSpellsTiered;
 			bool RemoveBossScripts = (bool)flags.RemoveBossScripts;
+			bool OverworldFiendsOnly = (bool)flags.OverworldFiendsOnly;
+			bool TempleOfFiendRefightsOnly = (bool)flags.TempleOfFiendRefightsOnly;
 			ScriptTouchMultiplier scriptMultiplier = flags.ScriptMultiplier;
 
 			if (!shuffleNormalEnemies && !shuffleBosses)
@@ -236,7 +239,7 @@ namespace FF1Lib
 					}
 				
 
-				if (shuffleBosses)
+				if (shuffleBosses && !OverworldFiendsOnly && !TempleOfFiendRefightsOnly)
 				{
 					var oldBosses = new List<Blob>
 				{
@@ -269,7 +272,9 @@ namespace FF1Lib
 					newEnemies[Enemy.Kraken2][EnemyStat.Scripts] = oldBigBosses[3][EnemyStat.Scripts];
 					newEnemies[Enemy.Tiamat2][EnemyStat.Scripts] = oldBigBosses[4][EnemyStat.Scripts];
 					newEnemies[Enemy.Chaos][EnemyStat.Scripts] = oldBigBosses[5][EnemyStat.Scripts];
-				}
+
+				} 
+		
 
 				if (RemoveBossScripts)  
 				{
@@ -305,6 +310,40 @@ namespace FF1Lib
 
 				}
 
+				if (shuffleBosses && OverworldFiendsOnly)
+				{
+					var outsidefiends = new List<Blob>
+					{
+						oldEnemies[Enemy.Lich],
+						oldEnemies[Enemy.Kary],
+						oldEnemies[Enemy.Kraken],
+						oldEnemies[Enemy.Tiamat]
+					};
+					outsidefiends.Shuffle(rng);
+
+					newEnemies[Enemy.Lich][EnemyStat.Scripts] = outsidefiends[0][EnemyStat.Scripts];
+					newEnemies[Enemy.Kary][EnemyStat.Scripts] = outsidefiends[1][EnemyStat.Scripts];
+					newEnemies[Enemy.Kraken][EnemyStat.Scripts] = outsidefiends[2][EnemyStat.Scripts];
+					newEnemies[Enemy.Tiamat][EnemyStat.Scripts] = outsidefiends[3][EnemyStat.Scripts];
+				}
+
+				if(shuffleBosses && TempleOfFiendRefightsOnly)
+				{
+					var insidefiends = new List<Blob>
+					{
+						oldEnemies[Enemy.Lich2],
+						oldEnemies[Enemy.Kary2],
+						oldEnemies[Enemy.Kraken2],
+						oldEnemies[Enemy.Tiamat2]
+					};
+					insidefiends.Shuffle(rng);
+
+					newEnemies[Enemy.Lich2][EnemyStat.Scripts] = insidefiends[0][EnemyStat.Scripts];
+					newEnemies[Enemy.Kary2][EnemyStat.Scripts] = insidefiends[1][EnemyStat.Scripts];
+					newEnemies[Enemy.Kraken2][EnemyStat.Scripts] = insidefiends[2][EnemyStat.Scripts];
+					newEnemies[Enemy.Tiamat2][EnemyStat.Scripts] = insidefiends[3][EnemyStat.Scripts];
+				}
+				
 				Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 			}
 
