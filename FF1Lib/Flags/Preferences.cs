@@ -4,6 +4,7 @@ namespace FF1Lib
 {
 	public class Preferences
 	{
+		public bool PrintBlursings {get; set; }
 		public bool FunEnemyNames { get; set; }
 		public bool PaletteSwap { get; set; }
 		public bool ModernBattlefield { get; set; }
