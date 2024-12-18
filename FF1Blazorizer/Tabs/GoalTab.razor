@@ -1,4 +1,4 @@
-﻿@using FF1Lib;
+@using FF1Lib;
 @using static FF1Lib.FF1Rom;
 
 
@@ -29,7 +29,7 @@
 		<p>
 			Player Name:
 			<br>
-				<input type="text" style="width: calc(100% - 80px);" class="nes-input" id="seedInput" maxlength="16" @onchange="@OnPlayerNameChanged" value="@(Preferences.PlayerName)" />
+				<input UpdateAction="@UpdateAction" type="text" style="width: calc(100% - 80px);" class="nes-input" id="seedInput" maxlength="16" @onchange="@OnPlayerNameChanged" value="@(Preferences.PlayerName)" />
 		</p>
 </div>
 
@@ -65,5 +65,9 @@
 		string playername = (e.Value as string);
 
 		Preferences.PlayerName = playername.Length > 16 ? playername.Substring(0, 16) : playername;
+
+		UpdateAction?.Invoke("UpdateFlagstring","");
 	}
+
+
 }
