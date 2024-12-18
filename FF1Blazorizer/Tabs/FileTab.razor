@@ -1,4 +1,4 @@
-﻿@using System.ComponentModel;
+@using System.ComponentModel;
 @using System.IO;
 @using System.Web;
 @using RomUtilities;
@@ -44,6 +44,16 @@
 		<input style="width: calc(100% - 80px);" type="text" class="nes-input" value="@Flagstring" @onchange="@OnFlagsInputChanged" />
 		<a class="styled-button" @onclick="@OnCopyToClipboard">Export</a>
 	</p>
+
+	@if (Flags.Archipelago)
+	{
+		<p>
+			Archipelago Player Name:
+			<br>
+				<input type="text" style="width: calc(100% - 80px);" class="nes-input" maxlength="16" @onchange="@OnPlayerNameChanged" value="@(Preferences.PlayerName)" />
+		</p>
+	}
+
 	<p>@((MarkupString)StatusMessage)</p>
 	<div class="row">&nbsp;</div>
 	<a class="styled-button generate-button" @onclick="@OnRandomize">Generate ROM</a>
@@ -219,6 +229,15 @@
 		{
 			SetStatusMessage("Invalid Flags String.");
 		}
+	}
+
+	void OnPlayerNameChanged(ChangeEventArgs e)
+	{
+		string playername = (e.Value as string);
+
+		Preferences.PlayerName = playername.Length > 16 ? playername.Substring(0, 16) : playername;
+
+		UpdateAction?.Invoke("UpdateFlagstring","");
 	}
 
 	async Task OnRandomize(MouseEventArgs e)
