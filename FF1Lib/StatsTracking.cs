@@ -126,7 +126,7 @@ namespace FF1Lib
 				FF1Text.TextToBytesStats(" DAMAGE   {stat}{damage}", delimiter: FF1Text.Delimiter.Segment) +
 				FF1Text.TextToBytesStats(" HIT %    {stat}{hit%}", delimiter: FF1Text.Delimiter.Segment) +
 				FF1Text.TextToBytesStats(" ABSORB   {stat}{absorb}", delimiter: FF1Text.Delimiter.Segment) +
-				FF1Text.TextToBytesStats(" EVADE %  {stat}{luck}", delimiter: FF1Text.Delimiter.Segment) +
+				FF1Text.TextToBytesStats(" EVADE %  {stat}{evade}", delimiter: FF1Text.Delimiter.Segment) +
 				FF1Text.TextToBytesStats(" MDEF     {stat}{mdef}", delimiter: FF1Text.Delimiter.Null);
 
 			//Rewrite left status panel with one fewer space to match spacing with right panel
