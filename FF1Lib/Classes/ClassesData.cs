@@ -322,6 +322,14 @@ namespace FF1Lib
 			_classes[(int)Classes.Ninja].MaxSpC = (byte)flags.NinjaMaxMP;
 		}
 
+		public void CustomSpellPermissions(Flags flags, MT19337 rng)
+		{
+			PinkMage(flags);
+			BlackKnight(flags);
+			WhiteNinja(flags);
+			Knightlvl4(flags, rng);
+		}
+
 		public void PinkMage(Flags flags)
 		{
 			if (!(bool)flags.PinkMage)
