@@ -1363,6 +1363,18 @@
 		"screenshot": "onlyShuffleBossSkillsCheckBox.png",
 		"description": "Shuffles bosses' skills and spells so they can appear in any script. The original Fiends are shuffled between themselves, then the second Fiends, WarMech and Chaos."
 	},
+	{
+		"Id": "templeoffiendrefightsonlyCheckBox",
+		"title": "Shuffle Temple of Fiend Refights Only",
+		"screenshot": null,
+		"description": "Will only shuffle the four fiend refights in the Temple of Fiends Revisted, This option will leave Chaos's script as default."
+	},
+	{
+		"Id": "overworldfiendsonlyCheckBox",
+		"title": "Shuffle the Overworld Fiends",
+		"screenshot": null,
+		"description": "Will only shuffle the four fiends in the overworld."
+	},
 
 	{
 		"Id": "enemyScriptsCheckBox",
