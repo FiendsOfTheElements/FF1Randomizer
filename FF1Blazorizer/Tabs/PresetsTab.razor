@@ -118,13 +118,55 @@
 
 
 		<div class="col1 full">
-		<h4>Tournament Presets</h4>
+		<h4>Winter Tournament 2025 Presets</h4>
 
-        <a class="preset-button styled-button @((selectedPresetId == "Winter_Tournament_2024") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Winter_Tournament_2024"))">Select</a>
+		<div class="col1">
+
+		<a class="preset-button styled-button @((selectedPresetId == "wt2025quals") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("wt2025quals"))">Select</a>
 		<p class="preset-paragraph">
-		<label><strong>Winter Tournament 2024 - Nearly All Loose Shard Hunt, with Prizes</strong></label><br>
+		<label><strong>Qualifiers</strong></label><br>
 		</p>
 
+		<a class="preset-button styled-button @((selectedPresetId == "wt2025r64") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("wt2025r64"))">Select</a>
+		<p class="preset-paragraph">
+		<label><strong>Round of 64</strong></label><br>
+		</p>
+
+			<a class="preset-button styled-button @((selectedPresetId == "wt2025r32") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("wt2025r32"))">Select</a>
+			<p class="preset-paragraph">
+				<label><strong>Round of 32</strong></label><br>
+			</p>
+
+			<a class="preset-button styled-button @((selectedPresetId == "wt2025r16") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("wt2025r16"))">Select</a>
+			<p class="preset-paragraph">
+				<label><strong>Round of 16</strong></label><br>
+			</p>
+		</div>
+
+			<div class="col2">
+
+
+			<a class="preset-button styled-button @((selectedPresetId == "wt2025r8") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("wt2025r8"))">Select</a>
+			<p class="preset-paragraph">
+				<label><strong>Round of 8</strong></label><br>
+			</p>
+
+			<a class="preset-button styled-button @((selectedPresetId == "wt2025qfinals") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("wt2025qfinals"))">Select</a>
+			<p class="preset-paragraph">
+				<label><strong>Quarterfinals</strong></label><br>
+			</p>
+
+			<a class="preset-button styled-button @((selectedPresetId == "wt2025sfinals") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("wt2025sfinals"))">Select</a>
+			<p class="preset-paragraph">
+				<label><strong>Semifinals</strong></label><br>
+			</p>
+
+			<a class="preset-button styled-button @((selectedPresetId == "Winter_Tournament_2024") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Winter_Tournament_2024"))">Select</a>
+			<p class="preset-paragraph">
+				<label><strong>Finals</strong></label><br>
+			</p>
+
+			</div>
         </div>
 
 		<div class="col1 full">
