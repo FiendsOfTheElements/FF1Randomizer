@@ -24,7 +24,7 @@ namespace FF1Lib
 		private const int BattleStepRNGOffset = 0xC571; // Bank 1F
 		private ushort BattleStepSeed;
 		private const int BattleStepSeedOffset = 0xDB09; // two unused bytes in Bank 1F
-		private const int LoadPRNGSeedOnPartyGenOffset = 0x8C00; // Bank 1E
+		private const int LoadPRNGSeedOnPartyGenOffset = 0x86E0; // Bank 1E
 
 		private List<byte> BattleRNG;
 		private List<byte> EncounterRNG;
@@ -72,7 +72,7 @@ namespace FF1Lib
 			{
 				// just after partygen is confirmed, this executes the subroutine to
 				// write the battlestep seed into sram
-				rom.PutInBank(0x1E, 0x806B, Blob.FromHex("EAEA20008C"));
+				rom.PutInBank(0x1E, 0x806B, Blob.FromHex("EAEA20E086"));
 				rom.PutInBank(0x1E, LoadPRNGSeedOnPartyGenOffset, Blob.FromHex("A9008D0120AD09DB8DF06FAD0ADB8DF16F60"));
 
 				// write the prng over the subroutine that followed the encounter table

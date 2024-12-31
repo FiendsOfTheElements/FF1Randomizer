@@ -18,11 +18,11 @@ NewGame_LoadStartingStats = $C76D
     JSR PartyGen_ShutOffPPUAndLoadBattleStepSeed
 
     ;;; assembled bytes 
-    ;;; EAEA20008C
+    ;;; EAEA20E086
 
 
 
-.ORG $8C00
+.ORG $86E0
 PartyGen_ShutOffPPUAndLoadBattleStepSeed:
     ;;; we call this subroutine from bank $1E $806B
     ;;; do the PPU reset that was there
