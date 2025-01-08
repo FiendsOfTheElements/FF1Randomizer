@@ -86,7 +86,18 @@ namespace FF1Lib
 					}
 				}
 
+				var npcs = resourcePackArchive.GetEntry("npcs.png");
+				if (npcs != null)
+				{
+					using (var s = npcs.Open())
+					{
+						SetCustomNPCGraphics(s);
+					}
+				}
+
 			}
+
+			
 
 		}
 		async Task LoadResourcePackPostROM(string resourcepack, DialogueData dialogues, EnemyScripts enemyScripts, Preferences preferences)
@@ -124,6 +135,8 @@ namespace FF1Lib
 						await SetCustomPlayerSprites(s,false, preferences.MapmanSlot);
 					}
 				}
+
+			
 
 				var fiends = resourcePackArchive.GetEntry("fiends.png");
 				if (fiends != null)
