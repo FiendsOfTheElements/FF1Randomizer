@@ -85,6 +85,7 @@ Bank Offset Range Description
 1E   8000-85B0    Moving routines from bank 0E to 1E (PartyGen and menu stuff)
 1E   85B0-85C1    Parry Permissions table
 1E   8680-86A7    New Icons routine
+1E   86E0-B9F1    Encounter Table True PRNG
 1E   8800-8933    Class Info Window
 1E  ~8970-8AF6    [NO MAX SET] Info Window Content
 1E   B100-B21C    Damage Tiles Kill
