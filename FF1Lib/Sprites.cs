@@ -11,11 +11,16 @@ namespace FF1Lib
 	public partial class FF1Rom : NesRom
 	{
 		// Copied from FFHackster.
+		// LATER fix these so they use banks and offsets within banks.
 		const int CHARBATTLEPIC_OFFSET = 0x25000;
 
 		const int MAPMANGRAPHIC_OFFSET = 0x9000;
 
 		const int VEHICLEGRAPHIC_OFFSET = 0x9D00;
+
+		const int NPCGRAPHIC_OFFSET = 0xA200;
+
+		const int SHOPKEEPERGRAPHIC_OFFSET = 0x24080;
 
 		const int BATTLEPATTERNTABLE_OFFSET = 0x1C000;
 
@@ -1358,11 +1363,113 @@ namespace FF1Lib
 		// Color 3; dark main color
 		// Follow the reference enemy sprite sheet for how these map to the Grayscale palette.
 		Dictionary<Rgba32, byte> GrayscaleIndex = new Dictionary<Rgba32, byte> {
-			{ new Rgba32(0x00, 0x00, 0x00), 0 },
-			{ new Rgba32(0xff, 0xff, 0xff), 1 },
-			{ new Rgba32(0xbd, 0xbd, 0xbd), 2 },
-			{ new Rgba32(0x7b, 0x7b, 0x7b), 3 }
+			{ new Rgba32(0x00, 0x00, 0x00), 0 }, //black
+			{ new Rgba32(0xff, 0xff, 0xff), 1 }, // white
+			{ new Rgba32(0xbd, 0xbd, 0xbd), 2 }, //light gray
+			{ new Rgba32(0x7b, 0x7b, 0x7b), 3 }  //dark gray
 		};
+
+		// flip dark and light gray here in order to to make the shades similar to those in vanilla
+		Dictionary<Rgba32, byte> NPCGrayscaleIndex = new Dictionary<Rgba32, byte> {
+			{ new Rgba32(0xff, 0x00, 0xff), 0 }, //magenta as transparent
+			{ new Rgba32(0x00, 0x00, 0x00), 1 }, //black 
+			{ new Rgba32(0x7b, 0x7b, 0x7b), 2 }, //dark gray
+			{ new Rgba32(0xbd, 0xbd, 0xbd), 3 }  //light gray
+		};
+
+
+		public void SetCustomNPCGraphics(Stream stream) {
+			Image<Rgba32> image = Image.Load<Rgba32>(stream);
+
+			const int SHOPKEEPERGRAPHIC_SKIP = 0xE0;
+
+			
+
+
+			bool allColorsGood = true;
+			// n is an iterator for successive 8x8 tiles in the ROM, added to the various offsets.
+			int n = 0;
+			// first process the shopkeepers
+			// sk for x"shopkeeper"
+			for (int sk = 0; sk < 8; sk++)
+			{
+				//skx is the x coordinate of successive shopkeepers
+				int skx = sk * 16;
+				
+				
+				// n needs to be reset for each shopkeeper
+				n = 0;
+
+				for (int y = 0; y < 24; y+=8)
+				{
+					for (int x = 0; x < 16; x+=8)
+					{
+						byte[] tile;
+						try
+						{
+							tile = makeTile(image, y, skx+x, GrayscaleIndex);
+						}
+						catch (KeyNotFoundException)
+						{
+							if (allColorsGood)
+							{
+								Task task = Progress("WARNING: npcs.png contains incorrect colors. Quantizing.");
+								allColorsGood = false;
+							}
+							tile = makeTileQuantize(image, y, skx+x, GrayscaleIndex);
+						}
+						Put(SHOPKEEPERGRAPHIC_OFFSET + sk*SHOPKEEPERGRAPHIC_SKIP + n*16, EncodeForPPU(tile));
+						n++;
+					}
+				}
+			}
+
+			
+			// next process the NPCs. we are leaving out the orb and plate map objects, so we have to skip those in the ROM.
+			// 28 npcs total
+			allColorsGood = true;
+			// n is an iterator for successive 8x8 tiles in the ROM, added to the various offsets.
+			// the NPC sprites are contiguous in ROM, so no need to reset it in this for loop.
+			n = 0;
+
+			for (int npc = 0; npc < 28; npc++)
+			{
+				int side = npc % 2;
+				int row = npc / 2;
+
+				for (int sprite = 0; sprite < 4; sprite++)
+				{
+					for (int y = 0; y < 16; y+=8)
+					{
+						for (int x = 0; x < 16; x+=8)
+						{
+							byte[] tile;
+							try
+							{
+								tile = makeTile(image, row*16 + y + 24, side*64 + sprite*16 + x, NPCGrayscaleIndex);
+							}
+							catch (KeyNotFoundException)
+							{
+								if (allColorsGood)
+								{
+									Task task = Progress("WARNING: npcs.png contains incorrect colors. Quantizing.");
+									allColorsGood = false;
+								}
+								tile = makeTileQuantize(image, row*16 + y + 24, side*64 + sprite*16 + x, NPCGrayscaleIndex);
+							}
+							Put(NPCGRAPHIC_OFFSET + n*16, EncodeForPPU(tile));
+							n++;
+							//each NPC is 16 tiles. In the ROM, orb is NPC 4 and plate is NPC 27; we skip those here.
+							if (n == 4*16 || n == 27*16)
+							{
+								n+=16;
+							}
+							
+						}
+					}
+				}
+			}
+		}
 
 
 		public void SetRobotChickenGraphics(Preferences preferences)
