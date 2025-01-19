@@ -302,6 +302,12 @@ namespace FF1Lib
 				dialogues[d.Key] = d.Value;
 			}
 		}
+		public void TombstoneDialogue()
+		{
+			// EasterEgg
+			dialogues[0x12B] = "Here lies Entroper\n 'IMPs are safe'\n      RIP";
+		}
+
 		public void UpdateNPCDialogues(Flags flags)
 		{
 			// Update treasure box dialog for new DrawDialogueString routine
@@ -343,6 +349,8 @@ namespace FF1Lib
 			dialogues[0x27] = "Take this.\n\n\n\n\nReceived #";
 			dialogues[0x2B] = (bool)flags.EarlySage ? "The FIENDS are waking.\nTake this and go defeat\nthem!\n\n\nReceived #" : "Great job vanquishing\nthe Earth FIEND.\nWith this, go and defeat\nthe other FIENDS!\n\nReceived #";
 			dialogues[0xCD] = "With this, you can\navenge the SKY WARRIORS.\n\n\n\nReceived #";
+
+			TombstoneDialogue();
 		}
 		public void Write()
 		{

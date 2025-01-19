@@ -353,12 +353,9 @@ public partial class FF1Rom : NesRom
 		ClassData.RaiseThiefHitRate(flags);
 		ClassData.BuffThiefAGI(flags);
 		ClassData.EarlierHighTierMagicCharges(flags);
+		ClassData.CustomSpellPermissions(flags, rng);
 		ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);
 		ClassData.ProcessStartWithRoutines(flags, weaponBlursesValues, this);
-		ClassData.PinkMage(flags);
-		ClassData.BlackKnight(flags);
-		ClassData.WhiteNinja(flags);
-		ClassData.Knightlvl4(flags, rng);
 		EnableRandomPromotions(flags, rng);
 
 		await this.Progress();

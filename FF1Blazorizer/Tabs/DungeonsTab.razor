@@ -29,7 +29,7 @@
 		<div class="checkbox-cell"></div>
 		<TriStateCheckBox UpdateAction="@UpdateAction" Id="flipDungeonsCheckBox" @bind-Value="Flags.FlipDungeons">Flip Dungeons Horizontally</TriStateCheckBox>
 		<TriStateCheckBox UpdateAction="@UpdateAction" Id="verticallyFlipDungeons" IsEnabled="@(Flags.GameMode == GameModes.Standard)" @bind-Value="Flags.VerticallyFlipDungeons">Flip Dungeons Vertically</TriStateCheckBox>
-		<TriStateCheckBox UpdateAction="@UpdateAction" Id="reversedFloors" @bind-Value="Flags.ReversedFloors">Swap Stair Locations</TriStateCheckBox>
+		<TriStateCheckBox UpdateAction="@UpdateAction" Id="reversedFloors" IsEnabled="@(Flags.GameMode == GameModes.Standard)" @bind-Value="Flags.ReversedFloors">Swap Stair Locations</TriStateCheckBox>
 		<div class="checkbox-cell"></div>
 		<TriStateCheckBox UpdateAction="@UpdateAction" Id="relocateChests" @bind-Value="Flags.RelocateChests">Relocate Chests and Trap Tiles</TriStateCheckBox>
 		<CheckBox Indent UpdateAction="@UpdateAction" Id="markRelocatedTrapTiles" @bind-Value="Flags.RelocateChestsTrapIndicator" IsEnabled="@(Flags.RelocateChests != false)">Relocated Trap Tiles Are Marked</CheckBox>

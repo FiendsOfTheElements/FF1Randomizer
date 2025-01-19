@@ -291,25 +291,12 @@ namespace FF1Lib
 			ShipLocations.SetShipLocation(255);
 		}*/
 
-		public void UpdateDomains(DomainData domains)
-		{
-			
-			DomainData originalDomains = new DomainData(rom);
-			originalDomains.LoadTable();
-			//domains.LoadTable();
-
-			if (data.DomainFixups != null) foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
-			if (data.DomainUpdates != null) foreach (var df in data.DomainUpdates) domains.Data[df.To] = originalDomains.Data[df.From];
-
-			//domains.StoreTable();
-			//locations.StoreData();
-		}
 		public void UpdateDomains(ZoneFormations domains)
 		{
 			ZoneFormations originalDomains = new ZoneFormations(rom);
 
 			if (data.DomainFixups != null) foreach (var df in data.DomainFixups) domains.SwapDomains(df.From, df.To);
-			if (data.DomainUpdates != null) foreach (var df in data.DomainUpdates) domains[df.To] = originalDomains[df.From];
+			if (data.DomainUpdates != null) foreach (var df in data.DomainUpdates) domains.ReplaceDomain(originalDomains[df.From], df.To);
 		}
 
 		private static OwMapExchangeData LoadJson(string _name)
