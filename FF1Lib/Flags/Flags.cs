@@ -239,6 +239,8 @@ namespace FF1Lib
 		public bool? ShuffleScriptsBosses { get; set; } = false;
 		public bool? ShuffleSkillsSpellsEnemies { get; set; } = false;
 		public bool? ShuffleSkillsSpellsBosses { get; set; } = false;
+		public bool? OverworldFiendsOnly { get; set; } = false;
+		public bool? TempleOfFiendRefightsOnly { get; set; } = false;
 		public bool? NoConsecutiveNukes { get; set; } = false;
 		public bool TranceHasStatusElement { get; set; } = false;
 		public bool? EnemySkillsSpellsTiered { get; set; } = false;
