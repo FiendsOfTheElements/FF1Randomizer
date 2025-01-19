@@ -18,7 +18,6 @@ namespace FF1Lib
 			MakeSpace();
 			Bank1E();
 			Bank1B();
-			EasterEggs();
 			PermanentCaravan();
 			ShiftEarthOrbDown();
 			CastableItemTargeting();
@@ -116,10 +115,6 @@ namespace FF1Lib
 		public void PermanentCaravan()
 		{
 			Put(CaravanFairyCheck, Enumerable.Repeat((byte)Nop, CaravanFairyCheckSize).ToArray());
-		}
-		public void EasterEggs()
-		{
-			Put(0x2ADDE, Blob.FromHex("91251A682CFF8EB1B74DB32505FFBE9296991E2F1AB6A4A9A8BE05FFFFFFFFFFFF9B929900"));
 		}
 		public void DrawCanoeUnderBridge()
 		{
