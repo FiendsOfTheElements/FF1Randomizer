@@ -55,6 +55,10 @@ namespace FF1Lib
 			formations[to] = new ZoneFormation() { Index = formations[from].Index, Formations = formations[from].Formations };
 			formations[from] = new ZoneFormation() { Index = tmp.Index, Formations = tmp.Formations };
 		}
+		public void ReplaceDomain(ZoneFormation newzoneformation, int to)
+		{
+			formations[to] = new ZoneFormation() { Index = to, Formations = newzoneformation.Formations };
+		}
 		public void UpdateFromBlob(Blob zonedata)
 		{
 			formations = zonedata.Chunk(ZoneFormationsSize).Select((z, i) => new ZoneFormation() { Index = i, Formations = z.ToBytes().ToList() }).ToList();
