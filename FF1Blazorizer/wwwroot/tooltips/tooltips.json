@@ -18,6 +18,11 @@
 		"description": "Download a spoiler log for the current seed. The resulting ROM's randomization will be different than if the log had not been generated in order to prevent cheating in races.\nNote: You may be asked by your browser to allow downloading multiple files when using this option."
 	},
 	{
+		"Id": "tristatesCheckBox",
+		"title": "Generate Flags Log!",
+		"description": "Download a flags log for the current seed. \nNote: You may be asked by your browser to allow downloading multiple files when using this option."
+	},
+	{
 		"Id": "printBlursingsCheckBox",
 		"title": "Print Class Blursings",
 		"screenshot": "printBlursingsCheckBox.gif",

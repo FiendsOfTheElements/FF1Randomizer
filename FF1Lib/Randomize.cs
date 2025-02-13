@@ -408,6 +408,9 @@ public partial class FF1Rom : NesRom
 		// Spoilers
 		if (flags.Spoilers && sanityChecker != null) new ExtSpoiler(this, sanityChecker, ShopData, ItemsText, itemPlacement.PlacedItems, Overworld, PlacementContext, WeaponPermissions, ArmorPermissions, flags).WriteSpoiler();
 
+		// Flags
+		if (flags.TriState && sanityChecker != null) new ExtFlags(this, sanityChecker, ShopData, ItemsText, itemPlacement.PlacedItems, Overworld, PlacementContext, WeaponPermissions, ArmorPermissions, flags).WriteFlags();
+
 		// Write back everything
 		ItemsText.Write(this, flags.GameMode == GameModes.DeepDungeon ? new List<Item>() : ItemLists.UnusedGoldItems.ToList());
 		TalkRoutines.Write(this);

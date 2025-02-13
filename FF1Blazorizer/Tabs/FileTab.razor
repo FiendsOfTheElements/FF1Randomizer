@@ -31,6 +31,7 @@
 	<CheckBox UpdateAction="@UpdateAction" Id="tournamentSafeCheckBox" @bind-Value="Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="spoilersCheckBox" @bind-Value="Flags.Spoilers">Generate Spoiler Log!</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="printBlursingsCheckBox" @bind-Value="Preferences.PrintBlursings">Print Class Blursings</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="tristatesCheckBox" @bind-Value="Flags.TriState">Generate Flags Log!</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="blindseedCheckBox" IsEnabled="@(!Flags.BlindSeed)" @bind-Value="Flags.BlindSeed">Hide Flags</CheckBox>
 	<p>
 		Seed:
@@ -321,6 +322,7 @@
 		try
 		{
 			Utilities.SpoilerCache = string.Empty;
+			Utilities.FlagCache = string.Empty;
 
 			_rom.ProgressCallback = this.Progress;
 
@@ -368,11 +370,22 @@
 
 			await JSRuntime.InvokeAsync<object>("downloadFile", $"FFR_{_seed}_{_rom.GetHash()}.nes", encoded);
 
-
-			if(Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
+			if(Flags.TriState && Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
+			{
+				var unencodedFlags = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.FlagCache));
+				await JSRuntime.InvokeVoidAsync("downloadFile", $"Flags_{_seed}_{_rom.GetHash()}.txt", unencodedFlags);
+				var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.SpoilerCache));
+				await JSRuntime.InvokeVoidAsync("downloadFile", $"Spoiler_{_seed}_{_rom.GetHash()}.txt", encodedSpoiler);
+			}
+			else if(Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
 			{
 				var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.SpoilerCache));
 				await JSRuntime.InvokeVoidAsync("downloadFile", $"Spoiler_{_seed}_{_rom.GetHash()}.txt", encodedSpoiler);
+			}
+			else if(Flags.TriState)
+			{
+				var unencodedFlags = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.FlagCache));
+				await JSRuntime.InvokeVoidAsync("downloadFile", $"Flags_{_seed}_{_rom.GetHash()}.txt", unencodedFlags);
 			}
 
 			if (Flags.Archipelago)
