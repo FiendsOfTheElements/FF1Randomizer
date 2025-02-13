@@ -7,6 +7,9 @@
 *.userosscache
 *.sln.docstates
 
+# GIMP
+FF1R/.comments/
+
 # The Usual Suspects
 *.swp
 .DS_Store
@@ -1035,5 +1038,5 @@ FF1Blazorizer/output/presets/full-npc.json
 FF1Blazorizer/output/presets/default.json
 FF1Blazorizer/output/presets/debug.json
 FF1Blazorizer/output/presets/beginner.json
-FF1Lib/FF1Lib.sln
 FF1Blazorizer/output/wwwroot/images/tooltips/transmooglifier.gif
+FF1Lib/FF1Lib.sln
