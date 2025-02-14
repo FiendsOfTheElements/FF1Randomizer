@@ -192,20 +192,38 @@ namespace FF1Lib
 			Utilities.WriteFlagLine(
 				"Game Mode - " + flags.GameMode
 			);
+			// Deep Dungeon Options
+			Utilities.WriteFlagLine("Deep Dungeon Options");
+			Utilities.WriteFlagLine(
+				"Progressive Tilesets - " + flags.DDProgressiveTilesets + " Fiend Orbs - " + flags.DDFiendOrbs + " Bahamut and Tail Floors - " + flags.TailBahamutMode
+			);
+			// Standard  Game Mode Options
 			Utilities.WriteFlagLine(
 				"Overworld Map - " + flags.OwMapExchange
 			);
+			// Vanilla Map
 			Utilities.WriteFlagLine("Overworld Edits");
 			Utilities.WriteFlagLine(
 				"Early Open Progression - " + flags.MapOpenProgression + " Extended Open Progression - " + flags.MapOpenProgressionExtended + " Northern Docks - " + flags.MapOpenProgressionDocks + " Ryukahn Desert Dock - " + flags.MapAirshipDock + " Bahamut Cardia Dock - " + flags.MapBahamutCardiaDock +
 				" Lefein River Dock - " + flags.MapLefeinRiver + " Bridge to Lefein - " + flags.MapBridgeLefein + " Gaia Mountain Pass - " + flags.MapGaiaMountainPass + " Highway to Ordeals - " + flags.MapHighwayToOrdeals + " River to Melmond - " + flags.MapRiverToMelmond
 			);
+			// Gen New Overworld, Lost Woods, Desert of Death
+			Utilities.WriteFlagLine("Map Generation Parameters");
+			Utilities.WriteFlagLine(
+				"Map Generation Seed - " + flags.MapGenSeed
+			);
+			Utilities.WriteFlagLine(
+				"Use Pregenerated Map - " + flags.OwRandomPregen + " Shuffled Access - " + flags.OwShuffledAccess + " Unsafe Start - " flags.OwUnsafeStart
+			);
+			// Import Custom Map
+			Utilities.WriteFlagLine(
+				"Custom Map - " + flags.ReplacementMap
+			);			
 			Utilities.WriteFlagLine("Other Map Changes");
 			Utilities.WriteFlagLine(
 				"Shuffle Chime Access - " + flags.ShuffleChimeAccess + " Include Towns - " + flags.ShuffleChimeIncludeTowns + " Damage Tile Low - " + flags.DamageTileLow +
 				" Damage Tile High - " + flags.DamageTileHigh + " Marsh & Desert Tiles Deal Damage - " + flags.OWDamageTiles + " Lethal Damage Tiles - " + flags.DamageTilesKill
 			);
-
 			Utilities.WriteFlagLine("");
 		}
 
@@ -244,12 +262,14 @@ namespace FF1Lib
 			Utilities.WriteFlagLine("-----------------");
 			Utilities.WriteFlagLine("Item Shuffle");
 			Utilities.WriteFlagLine(
-				"Treasures - " + flags.Treasures + " Better Trap Treasure - " + flags.BetterTrapChests + " Chests Key Items - " + flags.ChestsKeyItems + " Objective NPCs - " + flags.ShuffleObjectiveNPCs + " Main NPC Items - " + flags.NPCItems + " Fetch Quest Rewards - " + flags.NPCFetchItems + " Randomize Treasures - " + flags.RandomizeTreasure
+				"Treasures - " + flags.Treasures + " Better Trap Treasure - " + flags.BetterTrapChests + " Chests Key Items - " + flags.ChestsKeyItems + " Objective NPCs - " + flags.ShuffleObjectiveNPCs +
+				" Main NPC Items - " + flags.NPCItems + " Fetch Quest Rewards - " + flags.NPCFetchItems + " Randomize Treasures - " + flags.RandomizeTreasure + " Wealth - " + flags.WorldWealth
 			);
 			Utilities.WriteFlagLine("Trapped Chests");
 			Utilities.WriteFlagLine(
 				"Formations - " + flags.TCFormations + " Trapped Chests - " + flags.TCChestCount + " Rare Treasures - " + flags.TCBetterTreasure + " Key Items - " + flags.TCKeyItems +
-				" Shards - " + flags.TCShards + " Exclude Common Treasures - " + flags.TCExcludeCommons + " Exclude Incentivized Items - " + flags.TCProtectIncentives + " Trapped Chests are Marked - " + flags.TCIndicator
+				" Shards - " + flags.TCShards + " Exclude Common Treasures - " + flags.TCExcludeCommons + " Exclude Incentivized Items - " + flags.TCProtectIncentives + " Trapped Chests are Marked - " + flags.TCIndicator +
+				" Mode - " + flags.DeepDungeonGenerator
 			);
 			Utilities.WriteFlagLine("Freebies");
 			Utilities.WriteFlagLine(
@@ -353,12 +373,12 @@ namespace FF1Lib
 			);
 			Utilities.WriteFlagLine("Enemies");
 			Utilities.WriteFlagLine(
-				"Shuffle Scripts - " + flags.ShuffleScriptsEnemies + " Script Count - " + " Shuffle Skills & Spells - " + flags.ShuffleSkillsSpellsEnemies + " Generate Balanced Scripts - " + " No Empty Scripts - " + flags.NoEmptyScripts
+				"Shuffle Scripts - " + flags.ShuffleScriptsEnemies + " Script Count - " + flags.ScriptTouchMultiplier " Shuffle Skills & Spells - " + flags.ShuffleSkillsSpellsEnemies + " Generate Balanced Scripts - " + flags.NoBossSkillScriptShuffle + " No Empty Scripts - " + flags.NoEmptyScripts
 			);
 			Utilities.WriteFlagLine("Status Attacks");
-			// Utilities.WriteFlagLine(
-				// "Mode - " ++ " Count - " ++ " Pool - " ++ " Include Bosses - " + 
-			// );
+			Utilities.WriteFlagLine(
+				"Mode - " + flags.TouchMode + " Count - " + flags.TouchMultiplier + " Pool - " + flags.TouchPool + " Include Bosses - " + flags.TouchIncludeBosses
+			);
 			Utilities.WriteFlagLine("Trap Tiles");
 			Utilities.WriteFlagLine(
 				"Pool - " + flags.EnemyTrapTiles
@@ -474,6 +494,15 @@ namespace FF1Lib
 			Utilities.WriteFlagLine("Class Randomization");
 			Utilities.WriteFlagLine(
 				"Mode - " + flags.RandomizeClassMode
+			);
+			// Blursings
+			Utilities.WriteFlagLine(
+				"Bonuses - " + flags.RandomizeClassMaxBonus + " Maluses - " + flags.RandomizeClassMaxMalus + " Add XP Bonuses - " + flags.RandomizeClassIncludeXpBonus +
+				" Add Inate Magic Bonuses - " + flags.RandomizeClassCasting + " Start with Key Items - " + flags.RandomizeClassKeyItems
+			);
+			// Transmooglifier
+			Utilities.WriteFlagLine(
+				"Variance - " + flags.TransmooglifierVariance + " Guarantee Custom Party Composition - " + flags.GuaranteeCustomClassComposition " Balance Weapons for Customs - " + flags.MooglieWeaponBalance
 			);
 			Utilities.WriteFlagLine("Promotion");
 			Utilities.WriteFlagLine(
