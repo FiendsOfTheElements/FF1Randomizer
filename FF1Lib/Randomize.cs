@@ -182,7 +182,7 @@ public partial class FF1Rom : NesRom
 		await this.Progress();
 
 		// NPCs
-		Dialogues.UpdateNPCDialogues(flags);
+		Dialogues.UpdateNPCDialogues(flags, rng);
 		PacifistBat(Maps, TalkRoutines, NpcData);
 		TalkRoutines.Update(flags);
 		ClassAsNPC(flags, TalkRoutines, NpcData, Dialogues, Maps, rng);
