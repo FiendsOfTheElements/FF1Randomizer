@@ -31,7 +31,7 @@
 	<CheckBox UpdateAction="@UpdateAction" Id="tournamentSafeCheckBox" @bind-Value="Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="spoilersCheckBox" @bind-Value="Flags.Spoilers">Generate Spoiler Log!</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="printBlursingsCheckBox" @bind-Value="Preferences.PrintBlursings">Print Class Blursings</CheckBox>
-	<CheckBox UpdateAction="@UpdateAction" Id="tristatesCheckBox" @bind-Value="Flags.TriState">Generate Flags Log!</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="tristatesCheckBox" @bind-Value="Flags.TriState">Save Flags To File!</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="blindseedCheckBox" IsEnabled="@(!Flags.BlindSeed)" @bind-Value="Flags.BlindSeed">Hide Flags</CheckBox>
 	<p>
 		Seed:
@@ -58,6 +58,7 @@
 
 	<p>@((MarkupString)StatusMessage)</p>
 	<div class="row">&nbsp;</div>
+	<a class="styled-button generate-button" style="font-size: medium; margin-bottom: 10px;" @onclick="@CollapseTriStates">Collapse TriStates Flags</a>
 	<a class="styled-button generate-button" @onclick="@OnRandomize">Generate ROM</a>
 </div>
 
@@ -243,6 +244,14 @@
 		UpdateAction?.Invoke("UpdateFlagstring","");
 	}
 
+	public void CollapseTriStates() {
+		Flags flagsForRng = Flags.ShallowCopy();
+		_rom.GenerateRng(flagsForRng, Blob.FromHex(_seed));
+		Flags = FF1Lib.Flags.ConvertAllTriState(flagsForRng, FF1Lib.FF1Rom.rng);
+		//TrySetFlags(Flags.Encoded);
+		//StateHasChanged();
+	}
+
 	async Task OnRandomize(MouseEventArgs e)
 	{
 		if (_fileData == null)
@@ -330,7 +339,14 @@
 			SetModalContent("");
 			ShowModal(true);
 			SetGenerating(true);
-			await _rom.Randomize(seed, Flags, Preferences);
+
+			Flags tempFlags = await _rom.Randomize(seed, Flags, Preferences);
+
+			if (Flags.TriState){
+				Flags = tempFlags;
+				Flagstring = Flags.Encoded;
+			}
+			
 			string BlursingsText = "<details><summary>Class Blursings:</summary><p>" + ("\n\n" + _rom.SpoilBlursings())
 				.Replace("\n\nFighter", "<br><br><b>Fighter</b>")
 				.Replace("\n\nThief", "<br><br><b>Thief</b>")
@@ -406,6 +422,7 @@
 			SetModalContent(modalContent + "<br>" + StatusMessage);
 			SetGenerating(false);
 		}
+
 		StateHasChanged();
 	}
 }

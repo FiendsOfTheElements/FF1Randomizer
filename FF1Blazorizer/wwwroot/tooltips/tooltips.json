@@ -19,8 +19,8 @@
 	},
 	{
 		"Id": "tristatesCheckBox",
-		"title": "Generate Flags Log!",
-		"description": "Download a flags log for the current seed. \nNote: You may be asked by your browser to allow downloading multiple files when using this option."
+		"title": "Save Collapsed TriStates Flags To File!",
+		"description": "Download the resulting flagstring after collaping the TriState flags for the current seed. \nNote: You may be asked by your browser to allow downloading multiple files when using this option."
 	},
 	{
 		"Id": "printBlursingsCheckBox",
