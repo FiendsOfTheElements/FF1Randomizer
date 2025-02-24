@@ -302,16 +302,33 @@ namespace FF1Lib
 				dialogues[d.Key] = d.Value;
 			}
 		}
-		public void TombstoneDialogue()
+		public void TombstoneDialogue(MT19337 rng)
 		{
-			// EasterEgg
-			dialogues[0x12B] = "Here lies Entroper\n 'IMPs are safe'\n      RIP";
+			// Epitaphs for deceased members of the FFR community
+			List<string> epitaphs = new()
+			{
+				"  You stand now on the\n  shoulders of Disch,\n       a titan of\n     Final Fantasy\n      development",				// 2020-06-03
+				"      --Monoci85--\nSage, Mentor, and Friend\n In recaps, he lives on.\n   Rest well, Buzzsaw\n     'Mono, recap!'",	// 2021-05-15
+				"     For HaateXIII,\n    Your Voice Will\n       be Missed\n      Car-Bo-Nate"											// 2025-02-13
+			};
+
+			string epitaph = epitaphs.PickRandom(rng);
+
+			// Most recent epitaph has a ~2 weeks priority, update as appropriate
+			if (DateTime.Today < new DateTime(2025, 03, 01))
+			{
+				epitaph = epitaphs.Last();
+			}
+
+			dialogues[0x12B] = epitaph;
 		}
 
-		public void UpdateNPCDialogues(Flags flags)
+		public void UpdateNPCDialogues(Flags flags, MT19337 rng)
 		{
 			// Update treasure box dialog for new DrawDialogueString routine
 			dialogues[0xF0 + 0x50] = "In the treasure box,\nyou found..\n#";
+
+			TombstoneDialogue(rng);
 
 			// Remove reference to "Cave of Marsh" from Astos dialog, unless Crown/Crystal not shuffled
 			// We do this before returning from Lich's Revenge since that flag modify all other dialogues, but not astos'
@@ -349,8 +366,6 @@ namespace FF1Lib
 			dialogues[0x27] = "Take this.\n\n\n\n\nReceived #";
 			dialogues[0x2B] = (bool)flags.EarlySage ? "The FIENDS are waking.\nTake this and go defeat\nthem!\n\n\nReceived #" : "Great job vanquishing\nthe Earth FIEND.\nWith this, go and defeat\nthe other FIENDS!\n\nReceived #";
 			dialogues[0xCD] = "With this, you can\navenge the SKY WARRIORS.\n\n\n\nReceived #";
-
-			TombstoneDialogue();
 		}
 		public void Write()
 		{
