@@ -58,7 +58,7 @@
 
 	<p>@((MarkupString)StatusMessage)</p>
 	<div class="row">&nbsp;</div>
-	<a class="styled-button generate-button" style="font-size: medium; margin-bottom: 10px;" @onclick="@CollapseTriStates">Collapse TriStates Flags</a>
+	<a class="styled-button generate-button" style="font-size: medium; margin-bottom: 10px;" @onclick="@CollapseTriStates">Reveal TriStates Flags</a>
 	<a class="styled-button generate-button" @onclick="@OnRandomize">Generate ROM</a>
 </div>
 
@@ -245,11 +245,28 @@
 	}
 
 	public void CollapseTriStates() {
+		if (_fileData == null)
+		{
+			SetStatusMessage("Reveal Failed: No ROM File Selected!");
+			StateHasChanged();
+			return;
+		}
+
+		Flags.TriState = true;
+		//All of this is needed to convert the tristate flags.
+		//A better way would probably be to pull the rng initialization out of the rom class.
+		//Update it as flags/seed change then give it back to rom during seed gen.
+		using (var stream = new MemoryStream(_fileData))
+		{
+			_rom = new FF1Rom(stream);
+		}
 		Flags flagsForRng = Flags.ShallowCopy();
 		_rom.GenerateRng(flagsForRng, Blob.FromHex(_seed));
 		Flags = FF1Lib.Flags.ConvertAllTriState(flagsForRng, FF1Lib.FF1Rom.rng);
-		//TrySetFlags(Flags.Encoded);
-		//StateHasChanged();
+		
+		//Reloads page with new flags
+		//Surely there's a better way to do this
+		NavigationManager.NavigateTo(NavigationManager.BaseUri + "?s=" + _seed + "&f=" + Flags.Encoded, true);
 	}
 
 	async Task OnRandomize(MouseEventArgs e)
