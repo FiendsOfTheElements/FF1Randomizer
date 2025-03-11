@@ -810,6 +810,7 @@ namespace FF1Lib
 			{
 				changes |= MapChange.Airship;
 				airShipLocationAccessible = true;
+				LiftOff();
 			}
 			if (victoryConditions.IsCanalFree ?? false)
 			{

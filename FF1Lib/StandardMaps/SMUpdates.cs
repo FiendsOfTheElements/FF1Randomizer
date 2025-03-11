@@ -28,8 +28,7 @@ namespace FF1Lib
 		}
 		public void Update(ZoneFormations formations, MT19337 rng)
 		{
-			MoveToFBats((bool)flags.MoveToFBats);
-			EnableTitansTrove((bool)flags.TitansTrove);
+			// Towns
 			EnableLefeinShops((bool)flags.LefeinShops);
 			EnableMelmondClinic((bool)flags.MelmondClinic);
 			RandomVampireAttack((bool)flags.RandomVampAttack, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
@@ -37,12 +36,19 @@ namespace FF1Lib
 			EnableGaiaShortcut((bool)flags.GaiaShortcut);
 			MoveGaiaItemShop((bool)flags.MoveGaiaItemShop && (bool)flags.GaiaShortcut, rng);
 			EnableLefeinSuperStore((bool)flags.LefeinSuperStore && (flags.ShopKillMode_White == ShopKillMode.None && flags.ShopKillMode_Black == ShopKillMode.None), flags.NoOverworld);
-			ShuffleOrdeals((bool)flags.OrdealsPillars, rng, teleporters);
-			SkyCastle4FMode(flags.SkyCastle4FMazeMode, flags.GameMode == GameModes.DeepDungeon, rng);
-			BahamutB1Encounters((bool)flags.MapHallOfDragons, formations);
-			DragonsHoard((bool)flags.MapDragonsHoard);
-			MermaidPrison((bool)flags.MermaidPrison && (flags.GameMode != GameModes.DeepDungeon));
 			ConfusedOldMen((bool)flags.ConfusedOldMen, rng);
+
+			// Dungeons, disable if dd is enabled
+			if (flags.GameMode != GameModes.DeepDungeon)
+			{
+				MoveToFBats((bool)flags.MoveToFBats);
+				EnableTitansTrove((bool)flags.TitansTrove);
+				ShuffleOrdeals((bool)flags.OrdealsPillars, rng, teleporters);
+				SkyCastle4FMode(flags.SkyCastle4FMazeMode, rng);
+				BahamutB1Encounters((bool)flags.MapHallOfDragons, formations);
+				DragonsHoard((bool)flags.MapDragonsHoard);
+				MermaidPrison((bool)flags.MermaidPrison);
+			}
 		}
 
 		private void MoveToFBats(bool movebats)
@@ -77,7 +83,7 @@ namespace FF1Lib
 			var mapFlipper = new FlippedMaps(rom, this, flags, teleporters, rng);
 			VerticalFlippedMaps = mapFlipper.VerticalFlipStep1();
 
-			if ((bool)flags.ReversedFloors) new ReversedFloors(rom, this, rng, teleporters, VerticalFlippedMaps).Work((bool)flags.ProcgenEarth);
+			if ((bool)flags.ReversedFloors && (flags.GameMode == GameModes.Standard)) new ReversedFloors(rom, this, rng, teleporters, VerticalFlippedMaps).Work((bool)flags.ProcgenEarth);
 
 			if((bool)flags.VerticallyFlipDungeons) mapFlipper.VerticalFlipStep2();
 
@@ -303,9 +309,9 @@ namespace FF1Lib
 				maps[(int)MapIndex.Lefein][0x01, 0x3F] = (byte)Tile.TownTree;
 			}
 		}
-		private void SkyCastle4FMode(SkyCastle4FMazeMode mode, bool deepdungeon, MT19337 rng)
+		private void SkyCastle4FMode(SkyCastle4FMazeMode mode, MT19337 rng)
 		{
-			if (deepdungeon || mode == SkyCastle4FMazeMode.Vanilla)
+			if (mode == SkyCastle4FMazeMode.Vanilla)
 			{
 				return;
 			}

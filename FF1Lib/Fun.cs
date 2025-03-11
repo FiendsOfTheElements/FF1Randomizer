@@ -78,6 +78,26 @@ namespace FF1Lib
 		[Description("Kill")]
 		Kill = 2,
 	}
+
+	public enum SteakSprite
+	{
+		[Description("None")]
+		None,
+		[Description("STEAK and WYNGS")]
+		Steak,
+		[Description("SANDWICHes")]
+		Sandwiches,
+		[Description("NACHOs and GUAC")]
+		Nachos,
+		[Description("PASTRIES")]
+		Pastries,
+		[Description("Random")]
+		Random,
+		[Description("All")]
+		All,
+		[Description("Old Team STEAK")]
+		Legacy,
+	}
 	public partial class FF1Rom
 	{
 		public const int TyroPaletteOffset = 0x30FC5;
@@ -87,9 +107,45 @@ namespace FF1Lib
 		public const int PaletteSize = 4;
 		public const int PaletteCount = 64;
 
+		//public SteakSprite teamSteak;
+		
+		public SteakSprite teamSteak;
+		
+		public void TeamSteak(Flags flags, Preferences preferences, MT19337 rng)
+		{
+			teamSteak = preferences.TeamSteak;
+			if (flags.TournamentSafe && teamSteak == SteakSprite.All)
+				teamSteak = SteakSprite.Random;
+			if (teamSteak == SteakSprite.Random)
+				teamSteak = (new List<SteakSprite> {SteakSprite.Steak, SteakSprite.Sandwiches, SteakSprite.Nachos, SteakSprite.Pastries}).PickRandom(rng);
+
+
+			if (teamSteak == SteakSprite.None || (bool)flags.RandomizeEnemizer)
+			{
+				return;
+			}
+
+			if (teamSteak == SteakSprite.Legacy)
+			{
+
+				Put(TyroPaletteOffset, Blob.FromHex("302505"));
+				Put(TyroSpriteOffset, Blob.FromHex(
+					"00000000000000000000000000000000" + "00000000000103060000000000000001" + "001f3f60cf9f3f7f0000001f3f7fffff" + "0080c07f7f87c7e60000008080f8f8f9" + "00000080c0e0f0780000000000000080" + "00000000000000000000000000000000" +
+					"00000000000000000000000000000000" + "0c1933676f6f6f6f03070f1f1f1f1f1f" + "ffffffffffffffffffffffffffffffff" + "e6e6f6fbfdfffffff9f9f9fcfefefefe" + "3c9e4e26b6b6b6b6c0e0f0f878787878" + "00000000000000000000000000000000" +
+					"00000000000000000000000000000000" + "6f6f6f6f673b190f1f1f1f1f1f070701" + "fffffec080f9fbffffffffffff8787ff" + "ff3f1f1f3ffdf9f3fefefefefefefefc" + "b6b6b6b6b6b6b6b67878787878787878" + "00000000000000000000000000000000" +
+					"00000000000000000000000000000000" + "07070706060707070100000101010101" + "ffffff793080c0f0fffc3086cfffffff" + "e7fefcf9f26469e3f80103070f9f9e1c" + "264c983060c08000f8f0e0c080000000" + "00000000000000000000000000000000" +
+					"00000000000000000000000000000000" + "07070706060301010101010101000000" + "f9f9f9797366ece8fefefefefcf97377" + "c68c98981830606038706060e0c08080" + "00000000000000000000000000000000" + "00000000000000000000000000000000" +
+					"00000000000000000000000000000000" + "01010101010000000000000000000000" + "fb9b9b9b98ff7f006767676767000000" + "6060606060c080008080808080000000" + "00000000000000000000000000000000" + "00000000000000000000000000000000"));
+			}
+			else
+			{
+				// in Sprites.cs
+				SetTeamSteakGraphics(teamSteak);
+			}
+		}
 	    public void FunEnemyNames(Flags flags, Preferences preferences, MT19337 rng)
 		{
-			bool teamSteak = preferences.TeamSteak;
+			bool robotChicken = preferences.RobotChicken;
 			bool altFiends = (bool)flags.AlternateFiends;
 
 			if (!preferences.FunEnemyNames || flags.EnemizerEnabled)
@@ -105,6 +161,11 @@ namespace FF1Lib
 			enemyText[2] = "RURURU";   // +2  WOLF
 			enemyText[3] = "GrrrWOLF"; // +2  GrWOLF
 			enemyText[5] = "BrrrWOLF"; // +2  FrWOLF
+			if (teamSteak == SteakSprite.Pastries || teamSteak == SteakSprite.All)
+			{
+				enemyText[23] = "CREPE";
+				enemyText[24] = "CRULLER";
+			}
 			enemyText[28] = "GeORGE";  // +0  GrOGRE
 
 			// "WzOGRE"
@@ -118,6 +179,11 @@ namespace FF1Lib
 			enemyText[31] = "GrSNEK";     // +1  COBRA
 			enemyText[32] = "SeaSNEK";    // -1  SeaSNAKE
 			enemyText[40] = "iMAGE";      // +0  IMAGE
+			if (teamSteak == SteakSprite.Sandwiches || teamSteak == SteakSprite.All)
+			{
+				enemyText[47] = "GRUB";		// WORM
+				enemyText[49] = "MealWORM";	// Grey W
+			}
 			enemyText[48] = "SANDWICH";   // +2  Sand W
 			enemyText[51] = "WrongEYE";   //     Phantom
 			enemyText[53] = "SNEKLADY";   // +0  GrMEDUSA
@@ -130,11 +196,21 @@ namespace FF1Lib
 			enemyText[80] = "MOMMY";      // -2  WzMUMMY
 			enemyText[81] = "BIRB";       // -4  COCTRICE
 			enemyText[82] = "R.BIRB";     // -2  PERILISK
-			enemyText[83] = "Y BURN";     // +0  WYVERN
-			if (teamSteak)
+			if (teamSteak == SteakSprite.Steak || teamSteak == SteakSprite.All)
+			{
+				enemyText[83] = "WYNGS";	// WYVERN
+				enemyText[84] = "HotWYNGS";	// WYRM
+			}
+			else
+				enemyText[83] = "Y BURN";     // +0  WYVERN
+			if (teamSteak == SteakSprite.Steak || teamSteak == SteakSprite.Legacy || teamSteak == SteakSprite.All)
 			{
 				enemyText[85] = "STEAK";  // +1  TYRO
 				enemyText[86] = "T.BONE"; // +1  T REX
+			}
+			if (teamSteak == SteakSprite.Nachos || teamSteak == SteakSprite.All)
+			{
+				enemyText[91] = "GUAC";		// OCHO
 			}
 			enemyText[92] = "NACHO";      // -1  NAOCHO
 			enemyText[94] = "HYDRANT";    // +0  R.HYDRA
@@ -149,7 +225,17 @@ namespace FF1Lib
 			    enemyText[122] = "KELLY";     // +1  KARY
 			}
 
-			
+			if (robotChicken)
+			{
+				if (rng.Between(1, 10) >= 5)
+				{
+					enemyText[118] = "RoboCHKN"; // WarMECH
+				}
+				else
+				{
+					enemyText[118] = "WarBAWK"; // WarMECH
+				}
+			}
 			WriteEnemyText(enemyText);
 		}
 
@@ -167,22 +253,7 @@ namespace FF1Lib
 			Put(PaletteOffset, Blob.Concat(palettes));
 		}
 
-		public void TeamSteak(bool enable)
-		{
-			if (!enable)
-			{
-				return;
-			}
-
-			Put(TyroPaletteOffset, Blob.FromHex("302505"));
-			Put(TyroSpriteOffset, Blob.FromHex(
-				"00000000000000000000000000000000" + "00000000000103060000000000000001" + "001f3f60cf9f3f7f0000001f3f7fffff" + "0080c07f7f87c7e60000008080f8f8f9" + "00000080c0e0f0780000000000000080" + "00000000000000000000000000000000" +
-				"00000000000000000000000000000000" + "0c1933676f6f6f6f03070f1f1f1f1f1f" + "ffffffffffffffffffffffffffffffff" + "e6e6f6fbfdfffffff9f9f9fcfefefefe" + "3c9e4e26b6b6b6b6c0e0f0f878787878" + "00000000000000000000000000000000" +
-				"00000000000000000000000000000000" + "6f6f6f6f673b190f1f1f1f1f1f070701" + "fffffec080f9fbffffffffffff8787ff" + "ff3f1f1f3ffdf9f3fefefefefefefefc" + "b6b6b6b6b6b6b6b67878787878787878" + "00000000000000000000000000000000" +
-				"00000000000000000000000000000000" + "07070706060707070100000101010101" + "ffffff793080c0f0fffc3086cfffffff" + "e7fefcf9f26469e3f80103070f9f9e1c" + "264c983060c08000f8f0e0c080000000" + "00000000000000000000000000000000" +
-				"00000000000000000000000000000000" + "07070706060301010101010101000000" + "f9f9f9797366ece8fefefefefcf97377" + "c68c98981830606038706060e0c08080" + "00000000000000000000000000000000" + "00000000000000000000000000000000" +
-				"00000000000000000000000000000000" + "01010101010000000000000000000000" + "fb9b9b9b98ff7f006767676767000000" + "6060606060c080008080808080000000" + "00000000000000000000000000000000" + "00000000000000000000000000000000"));
-		}
+		
 
 		public void DynamicWindowColor(MenuColor menuColor)
 		{

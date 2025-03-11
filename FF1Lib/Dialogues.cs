@@ -43,7 +43,8 @@ namespace FF1Lib
 		Spooky_GiveOnFlag,
 		Spooky_GiveOnItem,
 		Spooky_Bahamut,
-		Spooky_Lich
+		Spooky_Lich,
+		Talk_FightBranched
 
 	}
 	public class TalkRoutines
@@ -97,6 +98,9 @@ namespace FF1Lib
 			_talkroutines.Add(Blob.FromHex("A674F005BD2060F029A57385612080B1B022E67DA572203D96A5752020B1A476207F90207392A5611820109F2018964C4396A57060")); // Battle Give On Item
 			_talkroutines.Add(Blob.FromHex("AD2D60D003A57160E67DA572203D96A5752020B1A476207F9020739220AE952018964C439660")); // Battle Bahamut
 			_talkroutines.Add(Blob.FromHex("A572203D96A5752020B1A476207F90207392A47320A4902018964C4396")); // Battle Lich
+
+			// AltFiend Routine - TalkFightBranched
+			_talkroutines.Add(Blob.FromHex("A474209190B004A570D002A571203D96A5752020B1A476207F902073922018964C439660")); // Check npc, talk, battle, then vanish
 
 		}
 		public Blob this[int talkid]
@@ -298,10 +302,33 @@ namespace FF1Lib
 				dialogues[d.Key] = d.Value;
 			}
 		}
-		public void UpdateNPCDialogues(Flags flags)
+		public void TombstoneDialogue(MT19337 rng)
+		{
+			// Epitaphs for deceased members of the FFR community
+			List<string> epitaphs = new()
+			{
+				"  You stand now on the\n  shoulders of Disch,\n       a titan of\n     Final Fantasy\n      development",				// 2020-06-03
+				"      --Monoci85--\nSage, Mentor, and Friend\n In recaps, he lives on.\n   Rest well, Buzzsaw\n     'Mono, recap!'",	// 2021-05-15
+				"     For HaateXIII,\n    Your Voice Will\n       be Missed\n      Car-Bo-Nate"											// 2025-02-13
+			};
+
+			string epitaph = epitaphs.PickRandom(rng);
+
+			// Most recent epitaph has a ~2 weeks priority, update as appropriate
+			if (DateTime.Today < new DateTime(2025, 03, 01))
+			{
+				epitaph = epitaphs.Last();
+			}
+
+			dialogues[0x12B] = epitaph;
+		}
+
+		public void UpdateNPCDialogues(Flags flags, MT19337 rng)
 		{
 			// Update treasure box dialog for new DrawDialogueString routine
 			dialogues[0xF0 + 0x50] = "In the treasure box,\nyou found..\n#";
+
+			TombstoneDialogue(rng);
 
 			// Remove reference to "Cave of Marsh" from Astos dialog, unless Crown/Crystal not shuffled
 			// We do this before returning from Lich's Revenge since that flag modify all other dialogues, but not astos'

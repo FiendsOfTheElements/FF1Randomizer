@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
@@ -31,7 +32,7 @@ namespace FF1Lib
 			public FormationGFX GFXOffset;
 
 		}
-		public void AlternativeFiends(EnemyScripts enemyScripts, MT19337 rng, Flags flags)
+		public void AlternativeFiends(ExtAltFiends extAltFiends, EnemyScripts enemyScripts, MT19337 rng, Flags flags)
 		{
 			if (!(bool)flags.AlternateFiends || flags.SpookyFlag)
 			{
@@ -3224,7 +3225,12 @@ namespace FF1Lib
 				alternateFiendsList.AddRange(FF1BonusFiendsList);
 			}
 
-			if ((bool)!flags.FinalFantasy2Fiends && (bool)!flags.FinalFantasy3Fiends && (bool)!flags.FinalFantasy4Fiends && (bool)!flags.FinalFantasy5Fiends && (bool)!flags.FinalFantasy6Fiends && (bool)!flags.FinalFantasy1BonusFiends)
+			if ((bool)flags.BlackOrbFiends)
+			{
+				alternateFiendsList.AddRange(extAltFiends.BlackOrbAltFiends);
+			}
+
+			if ((bool)!flags.FinalFantasy2Fiends && (bool)!flags.FinalFantasy3Fiends && (bool)!flags.FinalFantasy4Fiends && (bool)!flags.FinalFantasy5Fiends && (bool)!flags.FinalFantasy6Fiends && (bool)!flags.FinalFantasy1BonusFiends && (bool)!flags.BlackOrbFiends)
 			{
 				alternateFiendsList.AddRange(FF1MasterFiendList);
 			}
@@ -3240,59 +3246,93 @@ namespace FF1Lib
 				fiends[i].decompressData(Get(EnemyOffset + (FiendsIndex + i) * EnemySize, EnemySize));
 			}
 
+			// Do Graphics
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-
-			while (true)
+						
+			if (extAltFiends.ExtendedFiends)
 			{
-				// Shuffle alternate
-				alternateFiendsList.Shuffle(rng);
+				// These alt fiends all fit together, so they shouldn't trigger a too large graphics error
+				alternateFiendsList = extAltFiends.PickBlackOrbFiends(alternateFiendsList, rng);
 
-				while (alternateFiendsList.Count >= 4)
+				var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[0].Name + ".png"));
+				var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[1].Name + ".png"));
+				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1))
 				{
-					var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[0].Name + ".png"));
-					var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[1].Name + ".png"));
-					using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1))
+					using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2))
 					{
-						using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2))
+						if (!SetLichKaryGraphics(stream1, stream2))
 						{
-							//if (await SetLichKaryGraphics(stream1, stream2)) {
-							if (SetLichKaryGraphics(stream1, stream2))
-							{
-								break;
-							}
-							// The graphics didn't fit, throw out the first element and try the next pair
-							alternateFiendsList.RemoveAt(0);
+							throw new Exception("Extended Alt Fiends LichKary graphics error.");
 						}
 					}
 				}
-				if (alternateFiendsList.Count < 4)
+				resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[2].Name + ".png"));
+				resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[3].Name + ".png"));
+				using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1))
 				{
-					// Couldn't find a pair where the graphics fit, reshuffle
-					continue;
-				}
-
-				while (alternateFiendsList.Count >= 4)
-				{
-					var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[2].Name + ".png"));
-					var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[3].Name + ".png"));
-					using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1))
+					using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2))
 					{
-						using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2))
+						if (!SetKrakenTiamatGraphics(stream1, stream2))
 						{
-							//if (await SetKrakenTiamatGraphics(stream1, stream2)) {
-							if (SetKrakenTiamatGraphics(stream1, stream2))
-							{
-								break;
-							}
-							alternateFiendsList.RemoveAt(2);
+							throw new Exception("Extended Alt Fiends KrakenTiamat graphics error.");
 						}
 					}
 				}
-				if (alternateFiendsList.Count < 4)
+			}
+			else
+			{
+				while (true)
 				{
-					continue;
+					// Shuffle alternate
+					alternateFiendsList.Shuffle(rng);
+
+					while (alternateFiendsList.Count >= 4)
+					{
+						var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[0].Name + ".png"));
+						var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[1].Name + ".png"));
+						using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1))
+						{
+							using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2))
+							{
+								//if (await SetLichKaryGraphics(stream1, stream2)) {
+								if (SetLichKaryGraphics(stream1, stream2))
+								{
+									break;
+								}
+								// The graphics didn't fit, throw out the first element and try the next pair
+								alternateFiendsList.RemoveAt(0);
+							}
+						}
+					}
+					if (alternateFiendsList.Count < 4)
+					{
+						// Couldn't find a pair where the graphics fit, reshuffle
+						continue;
+					}
+
+					while (alternateFiendsList.Count >= 4)
+					{
+						var resourcePath1 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[2].Name + ".png"));
+						var resourcePath2 = assembly.GetManifestResourceNames().First(str => str.EndsWith(alternateFiendsList[3].Name + ".png"));
+						using (Stream stream1 = assembly.GetManifestResourceStream(resourcePath1))
+						{
+							using (Stream stream2 = assembly.GetManifestResourceStream(resourcePath2))
+							{
+								//if (await SetKrakenTiamatGraphics(stream1, stream2)) {
+								if (SetKrakenTiamatGraphics(stream1, stream2))
+								{
+									break;
+								}
+								alternateFiendsList.RemoveAt(2);
+							}
+						}
+					}
+					if (alternateFiendsList.Count < 4)
+					{
+						continue;
+					}
+					break;
 				}
-				break;
 			}
 
 			// Replace the 4 fiends and their 2nd version at the same time

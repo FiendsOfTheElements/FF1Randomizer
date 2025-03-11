@@ -18,6 +18,12 @@
 		"description": "Download a spoiler log for the current seed. The resulting ROM's randomization will be different than if the log had not been generated in order to prevent cheating in races.\nNote: You may be asked by your browser to allow downloading multiple files when using this option."
 	},
 	{
+		"Id": "printBlursingsCheckBox",
+		"title": "Print Class Blursings",
+		"screenshot": "printBlursingsCheckBox.gif",
+		"description": "Prints class blursings to the ROM generation window. Click \"Class Blursings:\" to expand. If you dismiss the ROM generation window, the class blursings remain at the bottom of this tab."
+	},
+	{
 		"Id": "blindseedCheckBox",
 		"title": "Hide Flags",
 		"screenshot": "blindseed.png",
@@ -133,10 +139,16 @@
 		"description": "Changes enemy names in the generated seed. Most of the name changes in this setting are the result of various community memes over the years and may not make sense to newer players."
 	},
 	{
-		"Id": "teamSteakCheckBox",
+		"Id": "teamSteakDropDown",
 		"title": "Team STEAK",
-		"screenshot": "teamSteakCheckBox.png",
-		"description": "Modifies the Tyro/T-Rex sprite to reflect the age old rivalry between two teams.\n Team Tyro believes firmly in the sanctity of Tyro life while Team Steak believes in the sanctity of Tyro meat dinners. Choosing Team Steak will make it clear what you see when confronting these majestic-but-delicious creatures."
+		"screenshot": "teamSteakDropDown.gif",
+		"description": "Replaces one or more enemy sprites with food, reflecting various community memes. Also replaces name(s) with fun food name(s).\nOptions:\nNone: no change.\nSTEAK and WYNGS: replaces TYRO and T REX with STEAK and T.BONE, and WYVERN and WYRM with WYNGS and HotWYNGS.\nSANDWICHes: replaces Sand W with SANDWICH, Grey W with MealWORM, and WORM with GRUB.\nNACHOs and GUAC: replaces NAOCHO with NACHO and OCHO with GUAC.\nPASTRIES: replaces CREEP with CREPE and CRAWL with CRULLER.\nRandom: chooses one of the above at random.\nAll: replaces all of the above sprites. In order to preserve game legibility for tournament spectators, if the Tournament Safe flag is on, choosing \"All\" will only replace one random sprite.\nOld Team STEAK: preserves the legacy Team STEAK sprite for STEAK and T.BONE.\n"
+	},
+	{
+		"Id": "robotChickenCheckBox",
+		"title": "Robot Chicken",
+		"screenshot": "robotChickenCheckBox.png",
+		"description": "Modifies the WarMECH sprite to reveal its true identity: a crazed robot chicken.\nAlso changes its name to RoboCHKN or WarBAWK if Fun Enemy Names is selected."
 	},
 	{
 		"Id": "changeLuteCheckBox",
@@ -226,6 +238,18 @@
 		"title": "Disable Damage Tile SFX",
 		"screenshot": null,
 		"description": "Disables the \"ksssshhh\" sound effect when stepping over lava tiles."
+	},
+	{
+		"Id": "alternatePoisonSFXDropDown",
+		"title": "Change Poison Status SFX",
+		"screenshot": null,
+		"description": "Changes the poison-status alarm sound effect on the map. Options are:\nVanilla: No change.\nSilent: Disables the SFX entirely.\nOuch: Plays the vanilla sound once every 4 steps instead of once every frame.\nBonk: plays a sound similar to the Dragon Warrior \"bonk against a wall\" sound once every 4 steps.\nOops: plays a sound similar to the Mario 1 stomp/swim sound once every 4 steps.\nBeep: plays a sound similar to the Zelda 1 low-health warning once every 4 steps.\nNote: \"Beep\" is not Tournament Safe because it could remind spectators of hospital sounds. If Beep is selected with the Tournament Safe flag on, it will be replaced with \"Ouch.\""
+	},
+	{
+		"Id": "disableAirshipSFXCheckBox",
+		"title": "Disable Airship SFX",
+		"screenshot": null,
+		"description": "Disables the airship propeller sound effects."
 	},
 	{
 		"Id": "disableSpellCastFlashCheckBox",
@@ -1339,6 +1363,18 @@
 		"screenshot": "onlyShuffleBossSkillsCheckBox.png",
 		"description": "Shuffles bosses' skills and spells so they can appear in any script. The original Fiends are shuffled between themselves, then the second Fiends, WarMech and Chaos."
 	},
+	{
+		"Id": "templeoffiendrefightsonlyCheckBox",
+		"title": "Shuffle Temple of Fiend Refights Only",
+		"screenshot": null,
+		"description": "Will only shuffle the four fiend refights in the Temple of Fiends Revisted, This option will leave Chaos's script as default."
+	},
+	{
+		"Id": "overworldfiendsonlyCheckBox",
+		"title": "Shuffle the Overworld Fiends",
+		"screenshot": null,
+		"description": "Will only shuffle the four fiends in the overworld."
+	},
 
 	{
 		"Id": "enemyScriptsCheckBox",
@@ -1453,6 +1489,12 @@
 		"title": "Final Fantasy 6 Pool",
 		"screenshot": null,
 		"description": "Will add 45 Final Fantasy 6 Fiends to the Alternate Fiend Pool."
+	},
+	{
+		"Id": "blackorbrisingpool",
+		"title": "Black Orb Rising Fiends",
+		"screenshot": null,
+		"description": "Will add 8 original Fiends to the Alternate Fiend Pool.\n\nIf only Black Orb Rising is selected, each Fiend will have unique Orb color and dialogues. As well, Fiends will be placed in their exclusive dungeon:\n\nEarth Cave: LAMORTE or KISMET\nVolcano: KALAMIA or INFERNAR\nSea Shrine: MARINE or ANGELA\nSky Palace: BROWLER or WHISPER"
 	},
 	{
 		"Id": "fightBahamutCheckBox",
@@ -2342,6 +2384,12 @@
 		"title": "Increase Dark Penalty",
 		"screenshot": "increaseDarkPenaltyCheckBox.png",
 		"description": "If enabled, \"Dark\" status severely decreases an attacker's chance to hit or crit an enemy: their crit chance is set to 0%, and they lose all of their base hit chance (this effectively makes the penalty -168 instead of the normal -40), leaving them with only their Hit% vs the defender's Evasion.\nAffects both players and enemies inflicted with \"Dark\" status."
+	},
+	{
+		"Id": "increaseRegenerationCheckBox",
+		"title": "Increase Enemy Regeneration",
+		"screenshot": null,
+		"description": "If enabled, \"Regeneration\" category enemies heal 57HP per turn instead of 3HP."
 	},
 	{
 		"Id": "poisonModeDropDown",

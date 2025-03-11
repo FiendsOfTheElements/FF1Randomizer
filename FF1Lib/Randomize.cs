@@ -33,6 +33,7 @@ public partial class FF1Rom : NesRom
 	public ShopData ShopData;
 	public MusicTracks Music;
 	public NewMusic NewMusic;
+	public ExtAltFiends ExtAltFiends;
 
 	public DeepDungeon DeepDungeon;
 
@@ -113,7 +114,8 @@ public partial class FF1Rom : NesRom
 		EncounterRates = new EncounterRate(this);
 		EnemyScripts = new EnemyScripts(this);
 		Music = new MusicTracks();
-		
+		ExtAltFiends = new ExtAltFiends(flags);
+
 
 		await this.Progress();
 
@@ -154,7 +156,7 @@ public partial class FF1Rom : NesRom
 
 			await this.Progress("Generating Deep Dungeon's Floors... Done!");
 		}
-		DesertOfDeath.ApplyDesertModifications((bool)flags.DesertOfDeath, this, ZoneFormations, Overworld.Locations.StartingLocation, NpcData, Dialogues, Music);
+		DesertOfDeath.ApplyDesertModifications((bool)flags.DesertOfDeath, this, ZoneFormations, Overworld, NpcData, Dialogues, Music);
 		Spooky(TalkRoutines, NpcData, Dialogues, ZoneFormations, Maps, rng, flags);
 		BlackOrbMode(TalkRoutines, Dialogues, flags, preferences, rng, new MT19337(funRng.Next()));
 		Maps.ProcgenDungeons(rng);
@@ -180,7 +182,7 @@ public partial class FF1Rom : NesRom
 		await this.Progress();
 
 		// NPCs
-		Dialogues.UpdateNPCDialogues(flags);
+		Dialogues.UpdateNPCDialogues(flags, rng);
 		PacifistBat(Maps, TalkRoutines, NpcData);
 		TalkRoutines.Update(flags);
 		ClassAsNPC(flags, TalkRoutines, NpcData, Dialogues, Maps, rng);
@@ -276,7 +278,7 @@ public partial class FF1Rom : NesRom
 
 		// Enemies
 		if ((bool)flags.AlternateFiends && !flags.SpookyFlag) await this.Progress("Creating new Fiends", 1);
-		AlternativeFiends(EnemyScripts, rng, flags);
+		AlternativeFiends(ExtAltFiends, EnemyScripts, rng, flags);
 		TransformFinalFormation(flags, rng);
 		DoEnemizer(EnemyScripts, ZoneFormations, flags, rng);
 
@@ -292,6 +294,7 @@ public partial class FF1Rom : NesRom
 		FightBahamut(flags, TalkRoutines, NpcData, ZoneFormations, Dialogues, Maps, EnemyScripts, rng);
 		Astos(NpcData, Dialogues, TalkRoutines, EnemyScripts, flags, rng);
 		EnableSwolePirates((bool)flags.SwolePirates);
+		ExtAltFiends.ExtendedFiendsUpdate(NpcData, Dialogues, this, rng);
 
 		FiendShuffle((bool)flags.FiendShuffle, rng);
 		ScaleEnemyStats(rng, flags);
@@ -310,6 +313,7 @@ public partial class FF1Rom : NesRom
 		SavingHacks(Overworld, flags);
 		ImprovedClinic(flags.ImprovedClinic && !(bool)flags.RecruitmentMode);
 		IncreaseDarkPenalty((bool)flags.IncreaseDarkPenalty);
+		IncreaseRegeneration((bool)flags.IncreaseRegeneration);
 		SetPoisonMode(flags.PoisonMode, flags.PoisonSetDamageValue);
 		new QuickMiniMap(this, Overworld.DecompressedMap).EnableQuickMinimap(flags.SpeedHacks || Overworld.MapExchange != null, Music);
 		EnableAirBoat(flags);
@@ -349,12 +353,9 @@ public partial class FF1Rom : NesRom
 		ClassData.RaiseThiefHitRate(flags);
 		ClassData.BuffThiefAGI(flags);
 		ClassData.EarlierHighTierMagicCharges(flags);
+		ClassData.CustomSpellPermissions(flags, rng);
 		ClassData.Randomize(flags, rng, oldItemNames, ItemsText, this);
 		ClassData.ProcessStartWithRoutines(flags, weaponBlursesValues, this);
-		ClassData.PinkMage(flags);
-		ClassData.BlackKnight(flags);
-		ClassData.WhiteNinja(flags);
-		ClassData.Knightlvl4(flags, rng);
 		EnableRandomPromotions(flags, rng);
 
 		await this.Progress();
@@ -379,8 +380,12 @@ public partial class FF1Rom : NesRom
 		TitanSnack(preferences.TitanSnack, NpcData, Dialogues, new MT19337(funRng.Next()));
 		HurrayDwarfFate(preferences.HurrayDwarfFate, NpcData, Dialogues, new MT19337(funRng.Next()));
 		PaletteSwap(preferences.PaletteSwap && !flags.EnemizerEnabled, new MT19337(funRng.Next()));
-		TeamSteak(preferences.TeamSteak && !(bool)flags.RandomizeEnemizer);
+		// TeamSteak() must run before FunEnemyNames() because if "Random" is chosen for preferences.TeamSteak,
+		// that choice is resolved in TeamSteak(), and FunEnemyNames() needs to know which funny name to swap in.
+		TeamSteak(flags, preferences, new MT19337(funRng.Next()));
+		SetRobotChickenGraphics(preferences);
 		FunEnemyNames(flags, preferences, new MT19337(funRng.Next()));
+
 
 		await this.Progress();
 

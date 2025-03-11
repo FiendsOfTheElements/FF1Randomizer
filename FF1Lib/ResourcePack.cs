@@ -86,7 +86,18 @@ namespace FF1Lib
 					}
 				}
 
+				var npcs = resourcePackArchive.GetEntry("npcs.png");
+				if (npcs != null)
+				{
+					using (var s = npcs.Open())
+					{
+						SetCustomNPCGraphics(s);
+					}
+				}
+
 			}
+
+			
 
 		}
 		async Task LoadResourcePackPostROM(string resourcepack, DialogueData dialogues, EnemyScripts enemyScripts, Preferences preferences)
@@ -124,6 +135,8 @@ namespace FF1Lib
 						await SetCustomPlayerSprites(s,false, preferences.MapmanSlot);
 					}
 				}
+
+			
 
 				var fiends = resourcePackArchive.GetEntry("fiends.png");
 				if (fiends != null)
@@ -170,6 +183,15 @@ namespace FF1Lib
 					}
 				}
 
+				var enemysprites = resourcePackArchive.GetEntry("enemies.png");
+				if (enemysprites != null)
+				{
+					using (var s = enemysprites.Open())
+					{
+						SetCustomEnemyGraphics(s);
+					}
+				}
+
 
 				// dialogues need to go here because they depend on loaded data
 				// from the ROM. We'll keep all the other text stuff here as well.
@@ -198,6 +220,15 @@ namespace FF1Lib
 					{
 						
 						LoadBridgeStory(s);
+					}
+				}
+
+				var enemyNames = resourcePackArchive.GetEntry("enemies.txt");
+				if (enemyNames != null)
+				{
+					using (var s = enemyNames.Open())
+					{
+						await LoadEnemyNames(s);
 					}
 				}
 
@@ -313,6 +344,55 @@ namespace FF1Lib
 			}
 
 			SetBridgeStory(pages);
+		}
+
+		public async Task LoadEnemyNames(Stream stream)
+		{
+			var names = new List<string>();
+			int enemycount = 0;
+
+			using (StreamReader reader = new StreamReader(stream))
+			{
+				while (true)
+				{
+					var line = reader.ReadLine();
+					if (line == null)
+					{
+						break;
+					}
+					line = line.TrimEnd();
+					string[] tokens = line.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
+					int textcount;
+					if (!int.TryParse(tokens[0],out textcount))
+					{
+						await Progress($"WARNING: enemies.txt, line {enemycount} is missing an enemy number. Skipping import.");
+						return;
+					}
+					if (textcount != enemycount)
+					{
+						await Progress($"WARNING: enemies.txt, line {enemycount} has the wrong enemy number. Skipping import.");
+						return;
+					}
+					if (tokens.Length < 2)
+					{
+						await Progress($"WARNING: enemies.txt, line {enemycount} does not have an enemy name. Skipping Import.");
+						return;
+					}
+					string name = String.Join(" ",tokens.Skip(1));
+
+					names.Add(name);
+
+					enemycount++;
+				}
+
+				if (names.Count != 128)
+				{
+					await Progress($"WARNING: enemies.txt needs 128 enemy names, but it had {names.Count} names. Skipping Import.");
+					return;
+				}
+				WriteEnemyText(names.ToArray());
+
+			}
 		}
 
 

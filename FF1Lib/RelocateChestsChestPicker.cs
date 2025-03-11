@@ -261,7 +261,7 @@ namespace FF1Lib
 
 					var totalPlacedCount = Candidates.Where(c => c.RoomIndex == candidate.RoomIndex && c.MapIndex == candidate.MapIndex).Count(c => c.Placed);
 					var reachedPlacedCount = reachedCandidates.Count(c => c.Placed);
-					var validTiles = Candidates.Where(c => (c.RoomIndex == candidate.RoomIndex && c.MapIndex == candidate.MapIndex) || c.MapIndex != candidate.MapIndex).Count(c => c.Placeable);
+					var validTiles = Candidates.Where(c => (c.RoomIndex != candidate.RoomIndex && c.MapIndex == candidate.MapIndex) || c.MapIndex != candidate.MapIndex).Count(c => c.Placeable);
 					var reachedTiles = reachedCandidates.Count(c => c.Placeable);
 
 					// If we couldn't reach all placed tiles, this is a bad tile, mark it and remove it from the pool

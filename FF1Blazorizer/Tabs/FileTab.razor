@@ -1,4 +1,4 @@
-﻿@using System.ComponentModel;
+@using System.ComponentModel;
 @using System.IO;
 @using System.Web;
 @using RomUtilities;
@@ -30,6 +30,7 @@
 	<CheckBox UpdateAction="@UpdateAction" Id="rememberCheckBox" @bind-Value="RememberROM">Remember ROM</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="tournamentSafeCheckBox" @bind-Value="Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="spoilersCheckBox" @bind-Value="Flags.Spoilers">Generate Spoiler Log!</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="printBlursingsCheckBox" @bind-Value="Preferences.PrintBlursings">Print Class Blursings</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="blindseedCheckBox" IsEnabled="@(!Flags.BlindSeed)" @bind-Value="Flags.BlindSeed">Hide Flags</CheckBox>
 	<p>
 		Seed:
@@ -44,6 +45,16 @@
 		<input style="width: calc(100% - 80px);" type="text" class="nes-input" value="@Flagstring" @onchange="@OnFlagsInputChanged" />
 		<a class="styled-button" @onclick="@OnCopyToClipboard">Export</a>
 	</p>
+
+	@if (Flags.Archipelago)
+	{
+		<p>
+			Archipelago Player Name:
+			<br>
+				<input type="text" style="width: calc(100% - 80px);" class="nes-input" maxlength="16" @onchange="@OnPlayerNameChanged" value="@(Preferences.PlayerName)" />
+		</p>
+	}
+
 	<p>@((MarkupString)StatusMessage)</p>
 	<div class="row">&nbsp;</div>
 	<a class="styled-button generate-button" @onclick="@OnRandomize">Generate ROM</a>
@@ -68,6 +79,7 @@
 
 	private string RomMessage = "Upload Rom:";
 	private bool RememberROM = false;
+
 
 	private byte[] _fileData;
 	private FF1Rom _rom;
@@ -221,6 +233,15 @@
 		}
 	}
 
+	void OnPlayerNameChanged(ChangeEventArgs e)
+	{
+		string playername = (e.Value as string);
+
+		Preferences.PlayerName = playername.Length > 16 ? playername.Substring(0, 16) : playername;
+
+		UpdateAction?.Invoke("UpdateFlagstring","");
+	}
+
 	async Task OnRandomize(MouseEventArgs e)
 	{
 		if (_fileData == null)
@@ -308,6 +329,16 @@
 			ShowModal(true);
 			SetGenerating(true);
 			await _rom.Randomize(seed, Flags, Preferences);
+			string BlursingsText = "<details><summary>Class Blursings:</summary><p>" + ("\n\n" + _rom.SpoilBlursings())
+				.Replace("\n\nFighter", "<br><br><b>Fighter</b>")
+				.Replace("\n\nThief", "<br><br><b>Thief</b>")
+				.Replace("\n\nBlack Belt", "<br><br><b>Black Belt</b>")
+				.Replace("\n\nRed Mage", "<br><br><b>Red Mage</b>")
+				.Replace("\n\nWhite Mage", "<br><br><b>White Mage</b>")
+				.Replace("\n\nBlack Mage", "<br><br><b>Black Mage</b>")
+				.Replace("BONUS", "<b>BONUS</b>")
+				.Replace("MALUS", "<b>MALUS</b>")
+				.Replace("\n ","<br>&nbsp;&nbsp;").Replace("\n","<br>")+ "</p></details>";
 
 			var data = new byte[512 * 1024 + 16];
 			using (var stream = new MemoryStream(data, true))
@@ -326,6 +357,11 @@
 			else if (Flags.Spoilers && Utilities.SpoilerCache.Length == 0)
 			{
 				SetStatusMessage(StatusMessage + " No spoilers have been generated to download.");
+			}
+
+			if (Preferences.PrintBlursings)
+			{
+				SetStatusMessage(StatusMessage + "<br><br>" + BlursingsText);
 			}
 
 			StateHasChanged();

@@ -12,16 +12,66 @@ using System.Text.RegularExpressions;
 using FF1Lib.Procgen;
 using FF1Lib.Assembly;
 using System.Numerics;
+using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace FF1Lib;
 
 // ReSharper disable once InconsistentNaming
 public partial class FF1Rom : NesRom
 {
+	public string RomPutsTracker = "";
 	public new void Put(int index, Blob data)
 	{
 		//Debug.Assert(index <= 0x4000 * 0x0E + 0x9F48 - 0x8000 && (index + data.Length) > 0x4000 * 0x0E + 0x9F48 - 0x8000);
 		base.Put(index, data);
+		
+		/*
+		// This is tracking code to register all the Puts to the rom, for debugging only
+		// Get the stack calling the put
+		StackTrace trace = new StackTrace();
+		string stackline = "";
+
+		foreach (var frame in trace.GetFrames())
+		{
+			var name = frame.GetMethod().Name;
+			// Might apply only to blazorizer interface, but if we're at move next, we don't need to go further
+			if (name == "MoveNext")
+			{
+				break;
+			}
+			// no need to write down put/putinbank either
+			else if (name == "Put" || name == "PutInBank")
+			{
+				continue;
+			}
+
+			var origin = frame.GetMethod().DeclaringType.Name;
+			stackline += origin + "-" + name + "/";
+		}
+
+		// if only 0's are written, we're wiping data
+		var sumdata = 1;
+		try
+		{
+			// if it's not 0's, sum() will probably overflow, we skip that error then
+			sumdata = data.ToInts().Sum();
+		}
+		catch
+		{ }
+
+		if (sumdata == 0)
+		{
+			stackline += "[Wipe]";
+		}
+
+		// get the bank, start offset, end offset and write to tracker
+		int bank = index / 0x4000;
+		int offsetstart = bank == 0x1F ? (index % 0x4000) + 0xC000 : (index % 0x4000) + 0x8000;
+		int offsetend = bank == 0x1F ? (index % 0x4000) + 0xC000 + data.Length - 1 : (index % 0x4000) + 0x8000 + data.Length - 1;
+		var fullstring = $"{stackline} - Bank: {bank:X2)}, Address: {offsetstart:X4} - {offsetend:X4}";
+		RomPutsTracker += fullstring + "\n";
+		*/
 	}
 
 	public void PutInBank(int bank, int address, Blob data)

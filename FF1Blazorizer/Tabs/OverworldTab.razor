@@ -173,6 +173,7 @@
 				return;
 			}
 			ValidateSeed(Blob.Random(4).ToHex());
+			UpdateAction?.Invoke("UpdateFlagstring", "");
 			StateHasChanged();
 		}
 
@@ -182,12 +183,14 @@
 				return;
 			}
 			ValidateSeed("00000000");
+			UpdateAction?.Invoke("UpdateFlagstring", "");
 			StateHasChanged();
 		}
 
 		void OnSeedInputChanged(ChangeEventArgs e)
 		{
 			ValidateSeed((string)e.Value);
+			UpdateAction?.Invoke("UpdateFlagstring", "");
 		}
 
 		int currentStep;

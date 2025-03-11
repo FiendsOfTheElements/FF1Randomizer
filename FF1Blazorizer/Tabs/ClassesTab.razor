@@ -10,7 +10,6 @@
 			<CheckBox UpdateAction="@UpdateAction" IsEnabled="@(Flags.RandomizeClassMode != ClassRandomizationMode.Transmooglifier)" Id="doubleBBCritCheckBox" @bind-Value="Flags.BBCritRate">Halve BB Crit Rate</CheckBox>
 			<CheckBox UpdateAction="@UpdateAction" IsEnabled="@(Flags.RandomizeClassMode != ClassRandomizationMode.Transmooglifier)" Id="thiefHitCheckBox" @bind-Value="Flags.ThiefHitRate">Double Thief &amp; Ninja Hit% Growth</CheckBox>
 			<EnumDropDown UpdateAction="@UpdateAction" IsEnabled="@(Flags.RandomizeClassMode != ClassRandomizationMode.Transmooglifier)" Id="thiefAgilityBuffDropDown" TItem="ThiefAGI" @bind-Value="Flags.ThiefAgilityBuff">Better Thief &amp; Ninja Agility</EnumDropDown>
-			<CheckBox UpdateAction="@UpdateAction" IsEnabled="@(Flags.RandomizeClassMode != ClassRandomizationMode.Transmooglifier)" Id="fixHitChanceCapCheckBox" @bind-Value="Flags.FixHitChanceCap">Raise Hit % Cap</CheckBox>
 			<EnumDropDown UpdateAction="@UpdateAction" IsEnabled="@(Flags.RandomizeClassMode != ClassRandomizationMode.Transmooglifier)" Id="MDefModeDropDown" TItem="MDEFGrowthMode" @bind-Value="Flags.MDefMode">MDEF Growth:</EnumDropDown>
 			<CheckBox UpdateAction="@UpdateAction" Id="WhiteMageHarmEveryoneCheckBox" @bind-Value="Flags.WhiteMageHarmEveryone">Improved HARM for White Mage</CheckBox>
 			<TriStateCheckBox UpdateAction="@UpdateAction" Id="Lockpicking" @bind-Value="Flags.Lockpicking">Thief Lockpicking</TriStateCheckBox>
