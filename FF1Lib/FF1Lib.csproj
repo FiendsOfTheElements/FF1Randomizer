@@ -237,6 +237,7 @@
 	  <EmbeddedResource Include="imagedata\bosses\ZANDE.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ZEMUS.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ZIGFRIED.png" />
+    <EmbeddedResource Include="imagedata\bosses\ZINOGRE.png" />
     <EmbeddedResource Include="imagedata\bosses\ANGELA.png" />
     <EmbeddedResource Include="imagedata\bosses\BROWLER.png" />
     <EmbeddedResource Include="imagedata\bosses\INFERNAR.png" />
