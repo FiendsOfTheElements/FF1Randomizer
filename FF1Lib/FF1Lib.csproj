@@ -230,6 +230,7 @@
 	  <EmbeddedResource Include="imagedata\bosses\VARGAS.png" />
 	  <EmbeddedResource Include="imagedata\bosses\W.RAPTOR.png" />
 	  <EmbeddedResource Include="imagedata\bosses\WELK.png" />
+    <EmbeddedResource Include="imagedata\bosses\WHEELS.png" />
 	  <EmbeddedResource Include="imagedata\bosses\WREXSOUL.png" />
     <EmbeddedResource Include="imagedata\bosses\WRONGEYE.png" />
 	  <EmbeddedResource Include="imagedata\bosses\WYVERN.png" />
@@ -237,6 +238,7 @@
 	  <EmbeddedResource Include="imagedata\bosses\ZANDE.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ZEMUS.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ZIGFRIED.png" />
+    <EmbeddedResource Include="imagedata\bosses\ZINOGRE.png" />
     <EmbeddedResource Include="imagedata\bosses\ANGELA.png" />
     <EmbeddedResource Include="imagedata\bosses\BROWLER.png" />
     <EmbeddedResource Include="imagedata\bosses\INFERNAR.png" />
