@@ -1547,7 +1547,13 @@
 
 				var freenpc = maps[(MapIndex)originTeleporter.Destination].MapObjects.FindNpc(ObjectId.None);
 
-				if (freenpc.Index > 0 || (freenpc.Index == 0 && freenpc.Coords == new Sanity.SCCoords(0, 0)))
+				// A few maps have no free npcs, because they're full of bats; so pick a bat instead
+				if (freenpc is null)
+				{
+					freenpc = maps[(MapIndex)originTeleporter.Destination].MapObjects.FindNpc(ObjectId.Bat);
+				}
+
+				if (freenpc is not null && (freenpc.Index > 0 || (freenpc.Index == 0 && freenpc.Coords == new Sanity.SCCoords(0, 0))))
 				{
 					maps[(MapIndex)originTeleporter.Destination].MapObjects.SetNpc(freenpc.Index, source.Item4, originTeleporter.X, originTeleporter.Y, originTeleporter.InRoom, true);
 					var sprite_palette = GetFromBank(0x00, 0xA000 + (originTeleporter.Destination * 0x30) + 0x18, 8);
