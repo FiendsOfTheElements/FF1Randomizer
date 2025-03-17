@@ -90,7 +90,14 @@ namespace FF1Lib
 			}
 
 			//Remove ToFr and distinct by address to remove duplicates
-			kiPlacement = kiPlacement.Where(r => !ItemLocations.ToFR.Any(l => l.Address == r.Address)).GroupBy(r => r.Address).Select(g => g.First()).ToList();
+			if (flags.GameMode != GameModes.DeepDungeon)
+			{
+				kiPlacement = kiPlacement.Where(r => !ItemLocations.ToFR.Any(l => l.Address == r.Address)).GroupBy(r => r.Address).Select(g => g.First()).ToList();
+			}
+			else
+			{
+				kiPlacement = kiPlacement.GroupBy(r => r.Address).Select(g => g.First()).ToList();
+			}
 
 			logic = new SCLogic(rom, checker.Main, kiPlacement, locations, flags, true);
 		}
