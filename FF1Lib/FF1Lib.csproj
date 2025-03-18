@@ -207,6 +207,7 @@
 	  <EmbeddedResource Include="imagedata\bosses\SALAMAND.png" />
 	  <EmbeddedResource Include="imagedata\bosses\SARDA.png" />
 	  <EmbeddedResource Include="imagedata\bosses\SCARMLIO.png" />
+    <EmbeddedResource Include="imagedata\bosses\SEPHROTH.png" />
 	  <EmbeddedResource Include="imagedata\bosses\SERGEANT.png" />
 	  <EmbeddedResource Include="imagedata\bosses\SHADOW.D.png" />
 	  <EmbeddedResource Include="imagedata\bosses\SHINRYU.png" />
