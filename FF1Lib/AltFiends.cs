@@ -3147,6 +3147,25 @@ namespace FF1Lib
 					},
 
 					new AlternateFiends {
+					Name = "SEPHROTH", //Will be Moved to Winner Fiends at a later date
+					SpriteSheet = FormationSpriteSheet.SlimeSpiderManticorAnkylo,
+					FormationPattern = FormationPattern.Large4,
+					GFXOffset = FormationGFX.Sprite4,
+					Palette1 = 0x23,
+					Palette2 = 0x25,
+					ElementalWeakness = SpellElement.Status,
+					MonsterType = MonsterType.MAGE,
+					SpellChance1 = 0x40,
+					Spells1 = new List<byte> { (byte)SpellByte.FIR2, (byte)SpellByte.ICE2, (byte)SpellByte.LIT2, (byte)SpellByte.CUR2, (byte)SpellByte.FIR2, (byte)SpellByte.LIT2, (byte)SpellByte.ICE2, (byte)SpellByte.CUR2 },
+					SkillChance1 = 0x40,
+					Skills1 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Heat, (byte)EnemySkills.Flash, (byte)EnemySkills.Trance },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.XFER, (byte)SpellByte.ICE3, (byte)SpellByte.FIR3, (byte)SpellByte.LIT3, (byte)SpellByte.FAST, (byte)SpellByte.WALL, (byte)SpellByte.CUR4, (byte)SpellByte.SABR },
+					SkillChance2 = 0x00,
+					Skills2 = new List<byte> { (byte)EnemySkills.Nuclear, (byte)EnemySkills.Blaze, (byte)EnemySkills.Thunder, (byte)EnemySkills.Blizzard },
+					},
+
+					new AlternateFiends {
 					Name = "VAMAKALI",
 					SpriteSheet = FormationSpriteSheet.KrakenTiamat,
 					FormationPattern = FormationPattern.Fiends,
