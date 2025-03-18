@@ -31,7 +31,7 @@
 	<CheckBox UpdateAction="@UpdateAction" Id="tournamentSafeCheckBox" @bind-Value="Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="spoilersCheckBox" @bind-Value="Flags.Spoilers">Generate Spoiler Log!</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="printBlursingsCheckBox" @bind-Value="Preferences.PrintBlursings">Print Class Blursings</CheckBox>
-	<CheckBox UpdateAction="@UpdateAction" Id="tristatesCheckBox" @bind-Value="Flags.TriState">Save Flags To File!</CheckBox>
+	@* <CheckBox UpdateAction="@UpdateAction" Id="tristatesCheckBox" @bind-Value="Flags.TriState">Save Flags To File!</CheckBox> *@
 	<CheckBox UpdateAction="@UpdateAction" Id="blindseedCheckBox" IsEnabled="@(!Flags.BlindSeed)" @bind-Value="Flags.BlindSeed">Hide Flags</CheckBox>
 	<p>
 		Seed:
@@ -58,7 +58,7 @@
 
 	<p>@((MarkupString)StatusMessage)</p>
 	<div class="row">&nbsp;</div>
-	<a class="styled-button generate-button" style="font-size: medium; margin-bottom: 10px;" @onclick="@CollapseTriStates">Reveal TriStates Flags</a>
+	<a class="styled-button generate-button" style="font-size: medium; margin-bottom: 10px;" @onclick="@CollapseTriStates">Reveal Randomized State Flags</a>
 	<a class="styled-button generate-button" @onclick="@OnRandomize">Generate ROM</a>
 </div>
 
@@ -252,6 +252,7 @@
 			return;
 		}
 
+		// Flag is still used to prevent cheating in the event blind tri-state flags are used in an event
 		Flags.TriState = true;
 		//All of this is needed to convert the tristate flags.
 		//A better way would probably be to pull the rng initialization out of the rom class.
@@ -403,23 +404,23 @@
 
 			await JSRuntime.InvokeAsync<object>("downloadFile", $"FFR_{_seed}_{_rom.GetHash()}.nes", encoded);
 
-			if(Flags.TriState && Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
+			@* if(Flags.TriState && Flags.Spoilers && Utilities.SpoilerCache.Length > 0) *@
+			@* { *@
+				@* var unencodedFlags = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.FlagCache)); *@
+				@* await JSRuntime.InvokeVoidAsync("downloadFile", $"Flags_{_seed}_{_rom.GetHash()}.txt", unencodedFlags); *@
+				@* var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.SpoilerCache)); *@
+				@* await JSRuntime.InvokeVoidAsync("downloadFile", $"Spoiler_{_seed}_{_rom.GetHash()}.txt", encodedSpoiler); *@
+			@* } *@
+			if(Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
 			{
-				var unencodedFlags = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.FlagCache));
-				await JSRuntime.InvokeVoidAsync("downloadFile", $"Flags_{_seed}_{_rom.GetHash()}.txt", unencodedFlags);
 				var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.SpoilerCache));
 				await JSRuntime.InvokeVoidAsync("downloadFile", $"Spoiler_{_seed}_{_rom.GetHash()}.txt", encodedSpoiler);
 			}
-			else if(Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
-			{
-				var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.SpoilerCache));
-				await JSRuntime.InvokeVoidAsync("downloadFile", $"Spoiler_{_seed}_{_rom.GetHash()}.txt", encodedSpoiler);
-			}
-			else if(Flags.TriState)
-			{
-				var unencodedFlags = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.FlagCache));
-				await JSRuntime.InvokeVoidAsync("downloadFile", $"Flags_{_seed}_{_rom.GetHash()}.txt", unencodedFlags);
-			}
+			@* else if(Flags.TriState) *@
+			@* { *@
+				@* var unencodedFlags = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.FlagCache)); *@
+				@* await JSRuntime.InvokeVoidAsync("downloadFile", $"Flags_{_seed}_{_rom.GetHash()}.txt", unencodedFlags); *@
+			@* } *@
 
 			if (Flags.Archipelago)
 			{

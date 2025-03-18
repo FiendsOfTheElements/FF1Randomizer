@@ -1,67 +1,67 @@
-﻿using FF1Lib.Sanity;
+﻿// using FF1Lib.Sanity;
 
-namespace FF1Lib
-{
-	public class ExtFlags
-	{
-		private static HashSet<int> LegendaryShopIndices = new HashSet<int>(new int[] { 6, 16, 7, 17, 66 });
+// namespace FF1Lib
+// {
+// 	public class ExtFlags
+// 	{
+// 		private static HashSet<int> LegendaryShopIndices = new HashSet<int>(new int[] { 6, 16, 7, 17, 66 });
 
-		private FF1Rom rom;
-		private SanityCheckerV2 checker;
-		private ShopData shopData;
-		private ItemNames itemsText;
-		private List<IRewardSource> itemPlacement;
-		private OverworldMap overworldMap;
-		private PlacementContext incentivesData;
-		private Overworld overworld;
-		private GearPermissions weaponPermissions;
-		private GearPermissions armorPermissions;
-		private Flags flags;
+// 		private FF1Rom rom;
+// 		private SanityCheckerV2 checker;
+// 		private ShopData shopData;
+// 		private ItemNames itemsText;
+// 		private List<IRewardSource> itemPlacement;
+// 		private OverworldMap overworldMap;
+// 		private PlacementContext incentivesData;
+// 		private Overworld overworld;
+// 		private GearPermissions weaponPermissions;
+// 		private GearPermissions armorPermissions;
+// 		private Flags flags;
 
-		private SCLogic logic;
-		private List<Weapon> weapons;
-		private List<Armor> armors;
-		private List<MagicSpell> magicSpells;
+// 		private SCLogic logic;
+// 		private List<Weapon> weapons;
+// 		private List<Armor> armors;
+// 		private List<MagicSpell> magicSpells;
 
-		public ExtFlags(FF1Rom _rom, SanityCheckerV2 _checker, ShopData _shopData, ItemNames _itemsText, List<IRewardSource> _itemPlacement, Overworld _overworld, PlacementContext _incentivesData, GearPermissions _weaponPermissions, GearPermissions _armorPermissions, Flags _flags)
-		{
-			rom = _rom;
-			checker = _checker;
-			shopData = _shopData;
-			itemsText = _itemsText;
-			itemPlacement = _itemPlacement;
-			overworld = _overworld;
-			overworldMap = _overworld.OverworldMap;
-			incentivesData = _incentivesData;
-			weaponPermissions = _weaponPermissions;
-			armorPermissions = _armorPermissions;
-			flags = _flags;
+// 		public ExtFlags(FF1Rom _rom, SanityCheckerV2 _checker, ShopData _shopData, ItemNames _itemsText, List<IRewardSource> _itemPlacement, Overworld _overworld, PlacementContext _incentivesData, GearPermissions _weaponPermissions, GearPermissions _armorPermissions, Flags _flags)
+// 		{
+// 			rom = _rom;
+// 			checker = _checker;
+// 			shopData = _shopData;
+// 			itemsText = _itemsText;
+// 			itemPlacement = _itemPlacement;
+// 			overworld = _overworld;
+// 			overworldMap = _overworld.OverworldMap;
+// 			incentivesData = _incentivesData;
+// 			weaponPermissions = _weaponPermissions;
+// 			armorPermissions = _armorPermissions;
+// 			flags = _flags;
 
-			logic = new SCLogic(rom, checker.Main, itemPlacement, overworld.Locations, flags, false);
-			weapons = Weapon.LoadAllWeapons(rom, flags).ToList();
-			armors = Armor.LoadAllArmors(rom, flags).ToList();
-			magicSpells = rom.GetSpells();
-		}
+// 			logic = new SCLogic(rom, checker.Main, itemPlacement, overworld.Locations, flags, false);
+// 			weapons = Weapon.LoadAllWeapons(rom, flags).ToList();
+// 			armors = Armor.LoadAllArmors(rom, flags).ToList();
+// 			magicSpells = rom.GetSpells();
+// 		}
 
-		public void WriteFlags()
-		{
-			Utilities.WriteFlagLine("Collapsed TriStates:");
-			Utilities.WriteFlagLine(flags.Encoded);
+// 		public void WriteFlags()
+// 		{
+// 			Utilities.WriteFlagLine("Collapsed TriStates:");
+// 			Utilities.WriteFlagLine(flags.Encoded);
 
-			// WriteGoalFlags();
-			// WriteDifficultyFlags();
-			// WriteIncentiveFlags();
-			// WriteModeFlags();
-			// WriteMapFlags();
-			// WriteTreasureFlags();
-			// WriteShopFlags();
-			// WriteEnemyFlags();
-			// WritePartyFlags();
-			// WriteClassFlags();
-			// WriteEquipmentFlags();
-			// WriteAdjustmentFlags();
-			// WriteExperimentalFlags();
-		}
+// 			// WriteGoalFlags();
+// 			// WriteDifficultyFlags();
+// 			// WriteIncentiveFlags();
+// 			// WriteModeFlags();
+// 			// WriteMapFlags();
+// 			// WriteTreasureFlags();
+// 			// WriteShopFlags();
+// 			// WriteEnemyFlags();
+// 			// WritePartyFlags();
+// 			// WriteClassFlags();
+// 			// WriteEquipmentFlags();
+// 			// WriteAdjustmentFlags();
+// 			// WriteExperimentalFlags();
+// 		}
 
 // 		private void WriteGoalFlags()
 // 		{
@@ -964,5 +964,5 @@ namespace FF1Lib
 // 				" Generated Earth Caves - " + flags.ProcgenEarth + " INT Affects Spells - " + flags.IntAffectsSpells + " Repeated Heal Potion Use - " + flags.RepeatedHealPotionUse
 // 			);
 // 		}
-	}
-}
+	// }
+// }
