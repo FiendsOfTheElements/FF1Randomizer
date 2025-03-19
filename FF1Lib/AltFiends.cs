@@ -3161,7 +3161,7 @@ namespace FF1Lib
 					Skills1 = new List<byte> { (byte)EnemySkills.Frost, (byte)EnemySkills.Heat, (byte)EnemySkills.Flash, (byte)EnemySkills.Trance },
 					SpellChance2 = 0x40,
 					Spells2 = new List<byte> { (byte)SpellByte.XFER, (byte)SpellByte.ICE3, (byte)SpellByte.FIR3, (byte)SpellByte.LIT3, (byte)SpellByte.FAST, (byte)SpellByte.WALL, (byte)SpellByte.CUR4, (byte)SpellByte.SABR },
-					SkillChance2 = 0x00,
+					SkillChance2 = 0x40,
 					Skills2 = new List<byte> { (byte)EnemySkills.Nuclear, (byte)EnemySkills.Blaze, (byte)EnemySkills.Thunder, (byte)EnemySkills.Blizzard },
 					},
 
