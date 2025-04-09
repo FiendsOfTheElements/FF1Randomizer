@@ -2900,6 +2900,25 @@ namespace FF1Lib
 					},
 
 					new AlternateFiends {
+					Name = "CARAVAN",
+					SpriteSheet = FormationSpriteSheet.MummyCoctricWyvernTyro,
+					FormationPattern = FormationPattern.Mixed,
+					GFXOffset = FormationGFX.Sprite3,
+					Palette1 = 0x23,
+					Palette2 = 0x25,
+					ElementalWeakness = SpellElement.Earth,
+					MonsterType = MonsterType.REGENERATIVE,
+					SpellChance1 = 0x00,
+					Spells1 = new List<byte> { (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE, (byte)SpellByte.NONE },
+					SkillChance1 = 0x40,
+					Skills1 = new List<byte> { (byte)EnemySkills.Gaze, (byte)EnemySkills.Trance, (byte)EnemySkills.Ink, (byte)EnemySkills.Stare },
+					SpellChance2 = 0x40,
+					Spells2 = new List<byte> { (byte)SpellByte.FAST, (byte)SpellByte.ICE2, (byte)SpellByte.FOG, (byte)SpellByte.FIR2, (byte)SpellByte.CUR3, (byte)SpellByte.LIT2, (byte)SpellByte.SLO2, (byte)SpellByte.SABR },
+					SkillChance2 = 0x40,
+					Skills2 = new List<byte> { (byte)EnemySkills.Poison_Damage, (byte)EnemySkills.Toxic, (byte)EnemySkills.Crack, (byte)EnemySkills.Dazzle },
+					},
+
+					new AlternateFiends {
 					Name = "DR.UNNE",
 					SpriteSheet = FormationSpriteSheet.SlimeSpiderManticorAnkylo,
 					FormationPattern = FormationPattern.Mixed,

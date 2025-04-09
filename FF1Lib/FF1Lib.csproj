@@ -101,6 +101,7 @@
 	  <EmbeddedResource Include="imagedata\bosses\BYBLOS.png" />
 	  <EmbeddedResource Include="imagedata\bosses\C.BRAIN.png" />
 	  <EmbeddedResource Include="imagedata\bosses\CAGNAZZO.png" />
+    <EmbeddedResource Include="imagedata\bosses\CARAVAN.png" />
 	  <EmbeddedResource Include="imagedata\bosses\CALCABRN.png" />
 	  <EmbeddedResource Include="imagedata\bosses\CALOFIST.png" />
 	  <EmbeddedResource Include="imagedata\bosses\CARBUNCL.png" />
