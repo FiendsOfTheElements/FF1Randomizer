@@ -1545,9 +1545,20 @@
 				var originTile = TeleportersTiles.Find(x => x.Item1.Index == (byte)targetile && x.Item1.TileSet == (int)tilesetList[(int)source.Item1].Item2);
 				var originTeleporter = teleporters.Find(x => x.ID == originTile.Item1.PropertyValue);
 
-				var freenpc = maps[(MapIndex)originTeleporter.Destination].MapObjects.FindNpc(ObjectId.None);
 
-				// A few maps have no free npcs, because they're full of bats; so pick a bat instead
+				MapObject freenpc;
+
+				// Onrac has no free npcs, kidnap the old man behind the clinic
+				if ((MapIndex)originTeleporter.Destination == MapIndex.Onrac)
+				{
+					freenpc = maps[(MapIndex)originTeleporter.Destination].MapObjects.FindNpc(ObjectId.OnracOldMan1);
+				}
+				else
+				{
+					freenpc = maps[(MapIndex)originTeleporter.Destination].MapObjects.FindNpc(ObjectId.None);
+				}
+
+				// A few maps are full of bats; so pick a bat instead
 				if (freenpc is null)
 				{
 					freenpc = maps[(MapIndex)originTeleporter.Destination].MapObjects.FindNpc(ObjectId.Bat);
