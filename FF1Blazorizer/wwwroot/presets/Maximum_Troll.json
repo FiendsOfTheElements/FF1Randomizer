@@ -385,7 +385,6 @@
 		"ClampMinimumStatScale": false,
 		"ClampMinimumBossStatScale": false,
 		"ClampMinimumPriceScale": false,
-		"EFGWaterfall": true,
 		"EFGEarth1": false,
 		"EFGEarth2": false,
 		"FiendShuffle": true,

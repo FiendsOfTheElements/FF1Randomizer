@@ -23,7 +23,7 @@ namespace FF1Lib
 				//  }
 			}
 
-			ProcgenWaterfall((bool)flags.EFGWaterfall, teleporters, mapObjects[(int)MapIndex.Waterfall], rng);
+			//ProcgenWaterfall((bool)flags.EFGWaterfall, teleporters, mapObjects[(int)MapIndex.Waterfall], rng);
 			FlipMaps(flags, rng);
 		}
 		public void Update(ZoneFormations formations, MT19337 rng)

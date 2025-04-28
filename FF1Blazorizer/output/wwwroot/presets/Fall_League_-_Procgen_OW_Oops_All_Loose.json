@@ -414,7 +414,7 @@
 		"ClampMinimumStatScale": false,
 		"ClampMinimumBossStatScale": false,
 		"ClampMinimumPriceScale": false,
-		"EFGWaterfall": false,
+
 		"FiendShuffle": false,
 		"DisableTentSaving": false,
 		"DisableInnSaving": false,
