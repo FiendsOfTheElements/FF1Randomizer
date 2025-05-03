@@ -191,6 +191,7 @@ namespace FF1Lib
 		public bool? ChaosRush { get; set; } = false;
 		public ToFRMode ToFRMode { get; set; } = ToFRMode.Long;
 		public FiendsRefights FiendsRefights { get; set; } = FiendsRefights.All;
+		public ShortToFRFiendsRefights ShortToFRFiendsRefights { get; set; } = ShortToFRFiendsRefights.All;
 		public bool? ExitToFR { get; set; } = false;
 		public bool? ChaosFloorEncounters { get; set; } = false;
 		public bool? MagicShops { get; set; } = false;
