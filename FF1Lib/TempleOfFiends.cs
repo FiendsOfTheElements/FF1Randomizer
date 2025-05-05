@@ -25,6 +25,25 @@ namespace FF1Lib
 		[Description("Random")]
 		Random,
 	}
+	public enum ShortToFRFiendsRefights
+	{
+		[Description("All")]
+		All,
+		[Description("Two Paths")]
+		TwoPaths,
+		[Description("Lopsided")]
+		Lopsided,
+		[Description("Progressive")]
+		Progressive,
+		[Description("Anything Goes")]
+		AnythingGoes,
+		[Description("Rude")]
+		Rude,
+		[Description("None")]
+		None,
+		[Description("Random")]
+		Random,
+	}
 	public partial class FF1Rom : NesRom
 	{
 		private void UpdateToFR(StandardMaps maps, Teleporters teleporters, TileSetsData tilesets, Flags flags, MT19337 rng)
@@ -32,12 +51,13 @@ namespace FF1Lib
 			// Collapse Flags
 			ToFRMode mode = flags.ToFRMode == ToFRMode.Random ? (ToFRMode)rng.Between(0, (Enum.GetNames(typeof(ToFRMode)).Length - 2)) : flags.ToFRMode;
 			FiendsRefights fiendsrefights = flags.FiendsRefights == FiendsRefights.Random ? (FiendsRefights)rng.Between(0, (Enum.GetNames(typeof(FiendsRefights)).Length - 2)) : flags.FiendsRefights;
+			ShortToFRFiendsRefights shorttofrfiendsrefights = flags.ShortToFRFiendsRefights == ShortToFRFiendsRefights.Random ? (ShortToFRFiendsRefights)rng.Between(0, (Enum.GetNames(typeof(ShortToFRFiendsRefights)).Length - 2)) : flags.ShortToFRFiendsRefights;
 
 			if (flags.GameMode == GameModes.DeepDungeon)
 			{
 				if (mode == ToFRMode.Short)
 				{
-					UpdateDeepDungeonToFR(maps, teleporters, tilesets, fiendsrefights, (bool)flags.ChaosFloorEncounters, rng);
+					UpdateDeepDungeonToFR(maps, flags, teleporters, tilesets, shorttofrfiendsrefights, (bool)flags.ChaosFloorEncounters, rng);
 					return;
 				}
 				else
@@ -66,7 +86,7 @@ namespace FF1Lib
 			}
 			else if (mode == ToFRMode.Short)
 			{
-				ShortenToFR(maps, teleporters, fiendsrefights, true, false, rng);
+				ShortenToFR(maps, flags, teleporters, shorttofrfiendsrefights, true, false, rng);
 			}
 
 			// Update Fiends Refights
@@ -100,11 +120,11 @@ namespace FF1Lib
 				EnableChaosRush(tilesets);
 			}
 		}
-		private void UpdateDeepDungeonToFR(StandardMaps maps, Teleporters teleporters, TileSetsData tilesets, FiendsRefights fiendsRefights, bool chaosfloorsencouters, MT19337 rng)
+		private void UpdateDeepDungeonToFR(StandardMaps maps, Flags flags, Teleporters teleporters, TileSetsData tilesets, ShortToFRFiendsRefights shorttofrfiendsrefights, bool chaosfloorsencouters, MT19337 rng)
 		{
 			teleporters.StandardMapTeleporters[TeleportIndex.TempleOfFiends10] = new TeleportDestination(MapIndex.TempleOfFiendsRevisitedChaos, new Coordinate(0x0F, 0x03, CoordinateLocale.StandardInRoom));
 
-			ShortenToFR(maps, teleporters, fiendsRefights, false, true, rng);
+			ShortenToFR(maps, flags, teleporters, shorttofrfiendsrefights, false, true, rng);
 
 			// Add Encounters to Chaos' Floor
 			if (chaosfloorsencouters)
@@ -160,7 +180,7 @@ namespace FF1Lib
 			maps[MapIndex.TempleOfFiendsRevisitedWater].Map[0x1B, 0x16] = 0x5C;
 			maps[MapIndex.TempleOfFiendsRevisitedWater].Map[0x0F, 0x0F] = 0x5D; // Move Masa Chest
 		}
-		private void ShortenToFR(StandardMaps maps, Teleporters teleporters, FiendsRefights fiendsrefights, bool addLutePlate, bool deepdungeon, MT19337 rng)
+		private void ShortenToFR(StandardMaps maps, Flags flags, Teleporters teleporters, ShortToFRFiendsRefights shorttofrfiendsrefights, bool addLutePlate, bool deepdungeon, MT19337 rng)
 		{
 			// Black Orb tile Warp destination change straight to an edit Chaos floor with all the ToFR Chests.
 			if (!deepdungeon)
@@ -184,14 +204,133 @@ namespace FF1Lib
 
 			var battles = new List<byte> { 0x57, 0x58, 0x59, 0x5A };
 
-			if (fiendsrefights == FiendsRefights.All)
+			if (shorttofrfiendsrefights == ShortToFRFiendsRefights.All)
 			{
 				landingArea.Add(Blob.FromHex($"31{battles[3]:X2}{battles[2]:X2}{battles[1]:X2}{battles[0]:X2}31{battles[0]:X2}{battles[1]:X2}{battles[2]:X2}{battles[3]:X2}31"));
 			}
-			else if (fiendsrefights == FiendsRefights.TwoPaths)
+			else if (shorttofrfiendsrefights == ShortToFRFiendsRefights.TwoPaths)
 			{
 				battles.Shuffle(rng);
 				landingArea.Add(Blob.FromHex($"31{battles[0]:X2}3131{battles[1]:X2}31{battles[2]:X2}3131{battles[3]:X2}31"));
+			}
+			else if (shorttofrfiendsrefights == ShortToFRFiendsRefights.Lopsided)
+			{
+				// Roll 1d4 to see which fiend gets buffed.
+				int fiend = Rng.Between(rng, 0, 3);
+				byte buffedFiend = 0;
+				byte fiendReference = 0;
+
+				// Roll 1d2 to see which side (left/right) will have the single buffed fiend.
+				bool flipLopsided = Rng.Between(rng, 0, 1) > 0;
+
+				switch(fiend)
+				{
+					case 0:
+						buffedFiend = 0x57;
+						fiendReference = Enemy.Lich2;
+						battles = new List<byte> { 0x58, 0x59, 0x5A };
+						break;
+					case 1:
+						buffedFiend = 0x58;
+						fiendReference = Enemy.Kary2;
+						battles = new List<byte> { 0x57, 0x59, 0x5A };
+						break;
+					case 2:
+						buffedFiend = 0x59;
+						fiendReference = Enemy.Kraken2;
+						battles = new List<byte> { 0x57, 0x58, 0x5A };
+						break;
+					case 3:
+						buffedFiend = 0x5A;
+						fiendReference = Enemy.Tiamat2;
+						battles = new List<byte> { 0x57, 0x58, 0x59 };
+						break;
+				}
+
+				battles.Shuffle(rng);
+				ScaleSingleEnemyStats(fiendReference, flags.BossScaleStatsLow*2, flags.BossScaleStatsHigh*2, flags.IncludeMorale, rng,
+						  (bool)flags.SeparateBossHPScaling, flags.BossScaleHpLow*2, flags.BossScaleHpHigh*2, GetEvadeIntFromFlag(flags.EvadeCap));
+				if (flipLopsided)
+				{
+					landingArea.Add(Blob.FromHex($"31313131{buffedFiend:X2}31{battles[0]:X2}{battles[1]:X2}{battles[2]:X2}3131"));
+				} else
+				{
+					landingArea.Add(Blob.FromHex($"3131{battles[2]:X2}{battles[1]:X2}{battles[0]:X2}31{buffedFiend:X2}31313131"));
+				}
+			}
+			else if (shorttofrfiendsrefights == ShortToFRFiendsRefights.Progressive)
+			{
+				var easyBattles = new List<byte> { 0x57, 0x58 };
+				var hardBattles = new List<byte> { 0x59, 0x5A };
+				easyBattles.Shuffle(rng);
+				hardBattles.Shuffle(rng);
+				landingArea.Add(Blob.FromHex($"31{hardBattles[0]:X2}3131{easyBattles[0]:X2}31{easyBattles[1]:X2}3131{hardBattles[1]:X2}31"));
+			} else if (shorttofrfiendsrefights == ShortToFRFiendsRefights.AnythingGoes)
+			{
+				/** 
+				 * 0 - No encounter
+				 * 1 - Lich2
+				 * 2 - Kary2
+				 * 3 - Kraken2
+				 * 4 - Kraken2
+				 * 5 - Tiamat2
+				 * 6 - Tiamat2 **/
+				String anythingGoesHex = "31";
+				for (int i = 0; i < 8; i++)
+				{
+					int encounter = Rng.Between(rng, 0, 6);
+					switch (encounter)
+					{
+						case 0: // no encounter, 14.3%
+							anythingGoesHex += "31";
+							break;
+						case 1: // lich2, 14.3%
+							anythingGoesHex += $"{0x57:X2}";
+							break;
+						case 2: // kary2, 14.3%
+							anythingGoesHex += $"{0x58:X2}";
+							break;
+						case 3:
+						case 4: // kraken2, 28.6%
+							anythingGoesHex += $"{0x59:X2}";
+							break;
+						case 5:
+						case 6: // tiamat2, 28.6%
+							anythingGoesHex += $"{0x5A:X2}";
+							break;
+					}
+					if (i == 3)
+					{
+						anythingGoesHex += "31"; // center tile
+					}
+				}
+				anythingGoesHex += "31";
+				landingArea.Add(Blob.FromHex(anythingGoesHex));
+			} else if (shorttofrfiendsrefights == ShortToFRFiendsRefights.Rude)
+			{
+				// Mimic "All" option
+				landingArea.Add(Blob.FromHex($"31{battles[3]:X2}{battles[2]:X2}{battles[1]:X2}{battles[0]:X2}31{battles[0]:X2}{battles[1]:X2}{battles[2]:X2}{battles[3]:X2}31"));
+
+				// Add 5th fiend encounter
+				int fiend = Rng.Between(rng, 0, 3);
+				byte extraFiend = 0;
+				extraFiend = 0x57;
+				switch (fiend)
+				{
+					case 0: // lich
+						extraFiend = 0x57;
+						break;
+					case 1: // kary
+						extraFiend = 0x58;
+						break;
+					case 2: // kraken
+						extraFiend = 0x59;
+						break;
+					case 3: // tiamat
+						extraFiend = 0x5A;
+						break;
+				}
+				maps[MapIndex.TempleOfFiendsRevisitedChaos].Map[22, 15] = (byte)extraFiend;
 			}
 			maps[MapIndex.TempleOfFiendsRevisitedChaos].Map.Put((0x0A, 0x00), landingArea.ToArray());
 
