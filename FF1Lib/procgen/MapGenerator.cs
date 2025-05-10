@@ -158,8 +158,6 @@ namespace FF1Lib.Procgen
 			{
 				case MapGeneratorStrategy.Cellular:
 					return new CellularGenerator();
-				case MapGeneratorStrategy.WaterfallClone:
-					return new WaterfallEngine();
 				case MapGeneratorStrategy.Square:
 					return new RectilinearGenerator();
 				case MapGeneratorStrategy.BSPTree:

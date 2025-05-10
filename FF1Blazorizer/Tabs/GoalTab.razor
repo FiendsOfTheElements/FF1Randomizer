@@ -14,7 +14,12 @@
 	<div class="checkbox-cell"></div>
 	<h4>Temple of Fiends</h4>
 	<EnumDropDown UpdateAction="@UpdateAction" Id="tofrModeDropDown" TItem="ToFRMode" @bind-Value="Flags.ToFRMode">Mode</EnumDropDown>
-	<EnumDropDown UpdateAction="@UpdateAction" Id="fiendsRefightsDropDown" TItem="FiendsRefights" @bind-Value="Flags.FiendsRefights">Fiends Refights</EnumDropDown>
+	@if (Flags.ToFRMode == ToFRMode.Short)
+	{
+		<EnumDropDown UpdateAction="@UpdateAction" Id="shortToFRFiendsRefightsDropDown" TItem="ShortToFRFiendsRefights" @bind-Value="Flags.ShortToFRFiendsRefights">Fiends Refights</EnumDropDown>
+	} else {
+		<EnumDropDown UpdateAction="@UpdateAction" Id="fiendsRefightsDropDown" TItem="FiendsRefights" @bind-Value="Flags.FiendsRefights">Fiends Refights</EnumDropDown>
+	}
 	<TriStateCheckBox UpdateAction="@UpdateAction" Id="chaosRushCheckBox" @bind-Value="Flags.ChaosRush">Unlocked ToFR</TriStateCheckBox>
 	<TriStateCheckBox UpdateAction="@UpdateAction" Id="exitToFRCheckBox" @bind-Value="Flags.ExitToFR">Add ToFR Exit</TriStateCheckBox>
 	<TriStateCheckBox UpdateAction="@UpdateAction" Id="chaosFloorEncountersCheckBox" @bind-Value="Flags.ChaosFloorEncounters">Add Chaos Floor Encounters</TriStateCheckBox>

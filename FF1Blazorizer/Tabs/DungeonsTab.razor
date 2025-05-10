@@ -25,7 +25,6 @@
 		<TriStateCheckBox UpdateAction="@UpdateAction" Id="dragonsHoardCheckBox" @bind-Value="Flags.MapDragonsHoard">Bahamut's Hoard</TriStateCheckBox>
 		<TriStateCheckBox UpdateAction="@UpdateAction" Id="hallOfDragonsCheckBox" @bind-Value="Flags.MapHallOfDragons">Hall of Dragons</TriStateCheckBox>
 		<TriStateCheckBox UpdateAction="@UpdateAction" Id="mermaidPrison" @bind-Value="Flags.MermaidPrison">Mermaid Prison</TriStateCheckBox>
-		<CheckBox UpdateAction="@UpdateAction" Id="procGenWaterfall" @bind-Value="Flags.EFGWaterfall">Generated Waterfall Cave</CheckBox>
 		<div class="checkbox-cell"></div>
 		<TriStateCheckBox UpdateAction="@UpdateAction" Id="flipDungeonsCheckBox" @bind-Value="Flags.FlipDungeons">Flip Dungeons Horizontally</TriStateCheckBox>
 		<TriStateCheckBox UpdateAction="@UpdateAction" Id="verticallyFlipDungeons" IsEnabled="@(Flags.GameMode == GameModes.Standard)" @bind-Value="Flags.VerticallyFlipDungeons">Flip Dungeons Vertically</TriStateCheckBox>
