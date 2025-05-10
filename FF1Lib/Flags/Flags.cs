@@ -385,6 +385,8 @@ namespace FF1Lib
 		public bool WeaponCritRate { get; set; } = false;
 		public bool WeaponBonuses { get; set; } = false;
 		public ThiefAGI ThiefAgilityBuff { get; set; } = ThiefAGI.Vanilla;
+		public ThiefHit ThiefHitBuff { get; set; } = ThiefHit.Vanilla;
+		public ThiefHit RedMageHitBuff { get; set; } = ThiefHit.Vanilla;
 		public SpoilerBatHints SkyWarriorSpoilerBats { get; set; } = SpoilerBatHints.Vanilla;
 		public bool? SpoilerBatsDontCheckOrbs { get; set; } = false;
 		public bool? MoveToFBats { get; set; } = false;

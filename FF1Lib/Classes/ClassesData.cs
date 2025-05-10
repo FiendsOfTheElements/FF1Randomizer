@@ -231,13 +231,28 @@ namespace FF1Lib
 		}
 		public void RaiseThiefHitRate(Flags flags)
 		{
-			if (!(bool)flags.ThiefHitRate)
+			if (flags.ThiefHitBuff == ThiefHit.Vanilla)
 			{
 				return;
 			}
 
-			_classes[(int)Classes.Thief].HitGrowth = 4;
-			_classes[(int)Classes.Ninja].HitGrowth = 4;
+			int hits = (int)flags.ThiefHitBuff;
+
+			_classes[(int)Classes.Thief].HitGrowth = (byte)hits;
+			_classes[(int)Classes.Ninja].HitGrowth = (byte)hits;
+		}
+
+		public void RaiseRedMageHitRate(Flags flags)
+		{
+			if (flags.RedMageHitBuff == ThiefHit.Vanilla)
+			{
+				return;
+			}
+
+			int hits = (int)flags.RedMageHitBuff;
+
+			_classes[(int)Classes.RedMage].HitGrowth = (byte)hits;
+			_classes[(int)Classes.RedWizard].HitGrowth = (byte)hits;
 		}
 		public void BuffThiefAGI(Flags flags)
 		{

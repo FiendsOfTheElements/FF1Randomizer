@@ -33,6 +33,24 @@ namespace FF1Lib
 	    [Description("120")]
 	    Agi120 = 3
 	}
+
+	public enum ThiefHit
+	{
+		[Description("2 (Vanilla)")]
+		Vanilla = 2,
+
+		[Description("4 (Double)")]
+		HitDouble = 4,
+
+		[Description("3 (+50%)")]
+		HitBalenced = 3,
+
+		[Description("1 (Useless)")]
+		HitNothing = 1,
+
+		[Description("5 (Ridiculous)")]
+		HitEverything = 5,
+	}
 	public enum ThiefOptions
 	{
 		[Description("None")]
