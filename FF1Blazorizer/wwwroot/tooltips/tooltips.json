@@ -19,8 +19,8 @@
 	},
 	{
 		"Id": "tristatesCheckBox",
-		"title": "Save Collapsed TriStates Flags To File!",
-		"description": "Download the resulting flagstring after collaping the TriState flags for the current seed. \nNote: You may be asked by your browser to allow downloading multiple files when using this option."
+		"title": "Show Reveal Randomized State Flags Button",
+		"description": "Enables the reveal randomized state flags button. Clicking the button allows you to know what any selected tristate flags will become. This is NOT reversible. \nNote: Save your tristate flag string if you don't want remake it."
 	},
 	{
 		"Id": "printBlursingsCheckBox",
