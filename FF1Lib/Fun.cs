@@ -516,12 +516,14 @@ namespace FF1Lib
 				"See your face upon the\nclean water. How nice!\nYou have a pretty face.",
 				"You take a moment to\nlook at the fountain.\nThe sound of rushing\nwater fills you with\nDetermination.",
 				"Are you thirsty?\nTake a moment to drink\nthe endlessly recycled\nwater.",
-				"I am no ordinary well.\nI am a unique fountain,\nblessed by the light\nwariors."
+				"I am no ordinary well.\nI am a unique fountain,\nblessed by the light\nwariors.",
+				"WASH YOUR FACE!!!!",
+				"You may wash your face,\nbut come to the inn to get\na full private bath!"
 			};
 
 			string roast = roasts.PickRandom(rng);
 
-			//roast = roasts[7]; //for testing
+			//roast = roasts[9]; //for testing
 
 			dialogues[0x136] = roast;
 		}
