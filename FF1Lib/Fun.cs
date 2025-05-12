@@ -500,6 +500,27 @@ namespace FF1Lib
 			ItemsText[(int)Item.Lute] = newLute;
 		}
 
+		public void ChangeFountainText(bool changeFountain, DialogueData dialogues, MT19337 rng)
+		{
+			if (!changeFountain)
+			{
+				return;
+			}
+
+			List<string> roasts = new()
+			{
+				"See your face upon the\nclear water. SO DIRTY!\nCome,\n        wash your face.",
+				"See your face upon the\ndirty water. How clean!\nFilter the water.",
+				"Sparkling Water Fountain\n    Brought to you by\n    Bubbles Sodo Co.\n\n      Car-Bo-Nate"
+			};
+
+			string roast = roasts.PickRandom(rng);
+
+			roast = roasts[2];
+
+			dialogues[0x136] = roast;
+		}
+
 		public void HurrayDwarfFate(Fate fate, NpcObjectData npcdata, DialogueData dialogues, MT19337 rng)
 		{
 			if (fate == Fate.Spare)
