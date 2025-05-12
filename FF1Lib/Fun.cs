@@ -511,12 +511,17 @@ namespace FF1Lib
 			{
 				"See your face upon the\nclear water. SO DIRTY!\nCome,\n        wash your face.",
 				"See your face upon the\ndirty water. How clean!\nFilter the water.",
-				"Sparkling Water Fountain\n    Brought to you by\n    Bubbles Sodo Co.\n\n      Car-Bo-Nate"
+				"Sparkling Water Fountain\n    Brought to you by\n    Bubbles Sodo Co.\n\n      Car-Bo-Nate",
+				"Fill your cup. You have\na long journey ahead\nof you.\n\nGood Luck Have Fun!",
+				"See your face upon the\nclean water. How nice!\nYou have a pretty face.",
+				"You take a moment to\nlook at the fountain.\nThe sound of rushing\nwater fills you with\nDetermination.",
+				"Are you thirsty?\nTake a moment to drink\nthe endlessly recycled\nwater.",
+				"I am no ordinary well.\nI am a unique fountain,\nblessed by the light\nwariors."
 			};
 
 			string roast = roasts.PickRandom(rng);
 
-			roast = roasts[2];
+			//roast = roasts[7]; //for testing
 
 			dialogues[0x136] = roast;
 		}
