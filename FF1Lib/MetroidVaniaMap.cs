@@ -1545,9 +1545,26 @@
 				var originTile = TeleportersTiles.Find(x => x.Item1.Index == (byte)targetile && x.Item1.TileSet == (int)tilesetList[(int)source.Item1].Item2);
 				var originTeleporter = teleporters.Find(x => x.ID == originTile.Item1.PropertyValue);
 
-				var freenpc = maps[(MapIndex)originTeleporter.Destination].MapObjects.FindNpc(ObjectId.None);
 
-				if (freenpc.Index > 0 || (freenpc.Index == 0 && freenpc.Coords == new Sanity.SCCoords(0, 0)))
+				MapObject freenpc;
+
+				// Onrac has no free npcs, kidnap the old man behind the clinic
+				if ((MapIndex)originTeleporter.Destination == MapIndex.Onrac)
+				{
+					freenpc = maps[(MapIndex)originTeleporter.Destination].MapObjects.FindNpc(ObjectId.OnracOldMan1);
+				}
+				else
+				{
+					freenpc = maps[(MapIndex)originTeleporter.Destination].MapObjects.FindNpc(ObjectId.None);
+				}
+
+				// A few maps are full of bats; so pick a bat instead
+				if (freenpc is null)
+				{
+					freenpc = maps[(MapIndex)originTeleporter.Destination].MapObjects.FindNpc(ObjectId.Bat);
+				}
+
+				if (freenpc is not null && (freenpc.Index > 0 || (freenpc.Index == 0 && freenpc.Coords == new Sanity.SCCoords(0, 0))))
 				{
 					maps[(MapIndex)originTeleporter.Destination].MapObjects.SetNpc(freenpc.Index, source.Item4, originTeleporter.X, originTeleporter.Y, originTeleporter.InRoom, true);
 					var sprite_palette = GetFromBank(0x00, 0xA000 + (originTeleporter.Destination * 0x30) + 0x18, 8);

@@ -169,20 +169,20 @@ namespace FF1Lib.Sanity
 			switch(npc.ObjectId)
 			{
 				case ObjectId.SubEngineer:
-					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Oxyale;
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile |= SCBitFlags.Oxyale;
 					break;
 				case ObjectId.Titan:
-					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Ruby;
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile |= SCBitFlags.Ruby;
 					break;
 				case ObjectId.BlackOrb:
-					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Orbs;
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile |= SCBitFlags.Orbs;
 					break;
 				case ObjectId.LutePlate:
-					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Lute;
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile |= SCBitFlags.Lute;
 					CheckUseLuteRodSanity(npc.Coords.X, npc.Coords.Y, SCBitFlags.UseLute, ObjectId.LutePlate);
 					break;
 				case ObjectId.RodPlate:
-					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Rod;
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile |= SCBitFlags.Rod;
 					CheckUseLuteRodSanity(npc.Coords.X, npc.Coords.Y, SCBitFlags.UseRod, ObjectId.RodPlate);
 					break;
 				default:
@@ -212,17 +212,17 @@ namespace FF1Lib.Sanity
 					ProcessQuestNpc(ref npc);
 					break;
 				case TalkScripts.Talk_Nerrick:
-					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Tnt;
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile |= SCBitFlags.Tnt;
 					ProcessQuestNpc(ref npc);
 					break;
 				case TalkScripts.NoOW_Floater:
-					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Floater;
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile |= SCBitFlags.Floater;
 					break;
 				case TalkScripts.NoOW_Chime:
-					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Chime;
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile |= SCBitFlags.Chime;
 					break;
 				case TalkScripts.NoOW_Canoe:
-					Tiles[npc.Coords.X, npc.Coords.Y].Tile = SCBitFlags.Canoe;
+					Tiles[npc.Coords.X, npc.Coords.Y].Tile |= SCBitFlags.Canoe;
 					break;
 				default:
 					if (npc.ObjectId == ObjectId.Princess1 || npc.ObjectId == ObjectId.Vampire || npc.ObjectId == ObjectId.ElfDoc || npc.ObjectId == ObjectId.Unne)

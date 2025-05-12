@@ -99,7 +99,8 @@ namespace FF1Lib
 		}
 		public MapObject FindNpc(ObjectId mapObjId)
 		{
-			var validobjects = mapObjects.Where(o => o.ObjectId == mapObjId);
+			// Even if there's 16 objects data, the game only load 15, so ignore any hit on the 16th slot
+			var validobjects = mapObjects.Where(o => o.ObjectId == mapObjId && o.Index < 15);
 
 			if (validobjects.Any())
 			{
