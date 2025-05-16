@@ -282,6 +282,12 @@
 		"description": "When using Shop Information, elements and statuses are shown as icons, allowing for more information to be displayed."
 	},
 	{
+		"Id": "magicShopMenuCheckBox",
+		"title": "Magic Shop Menus Match Equipment Shops Menu",
+		"screenshot": "MagicShopMenuChangeCheckBox.png",
+		"description": "Changes the magic shop menu order to match the equipment shops.\nSelect Spell > Pay > Choose Character."
+	},
+	{
 		"Id": "renounceAutosortCheckBox",
 		"title": "Renounce Autosort",
 		"screenshot": "renounceAutosortCheckBox.png",
