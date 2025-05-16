@@ -22,7 +22,7 @@ namespace FF1Lib
 		public static List<byte> ASideEncounters = Enumerable.Range(1, (FirstBossEncounterIndex - 1)).Select(value => (byte)value).Except(WarMechEncounter).ToList();
 		public static List<byte> BSideEncounters = Enumerable.Range(128, FirstBossEncounterIndex).Select(value => (byte)value).Concat(IronGolEncounter).ToList();
 		public static List<byte> AllRandomEncounters = ASideEncounters.Concat(BSideEncounters).ToList();
-
+		public static List<byte> IncludeWarmechEncounter = AllRandomEncounters.Select(value => (byte)value).Concat(WarMechEncounter).ToList();
 
 	}
 
