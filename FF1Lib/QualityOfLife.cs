@@ -64,8 +64,50 @@ namespace FF1Lib
 			{
 				UninterruptedMusic();
 			}
+			if (preferences.MagicShopMenuChange)
+			{
+				MagicShopsMatchEquipShops();
+			}
+		}
+		public void MagicShopsMatchEquipShops()
+		{
+			// QoS to make magic shop function like weapon/armor shops
+			PutInBank(0x0E, 0xA360, Blob.FromHex("A90D205BAA2089A9B0EDA662BD00038D0C032065AA20C2A8B0DEA562D0DA20EBA49008A910205BAA4C65A320E4A8B0C8A5626A6A6A29C08D0A0320DFAA20CDA4AE0A03AD0B039D00634C60A3"));
 
-			
+			//assembly for QoS
+			//   LDA #$0D	# load 'what do you want' text
+			//   JSR $AA5B	# display ^ text
+			//   JSR $A989	# select spell
+			//   BCS $357	# return to start if B
+			//   LDX $62	# get cursor in register X
+			//   LDA $0300,X	# load item ID from register X
+			//   STA $030C	# store item ID in A
+			//   JSR $AA65	# draw price and buy confirm
+			//   JSR $A8C2	# loop for input
+			//   BCS $A358	# return to start if B
+			//   LDA $62	# get cursor in register A 
+			//   BNE $A358	# return to start if no
+			//   JSR $A4EB	# check can afford
+			//   BCC $A39D  # jump to finalize section; update this address if 'who will learn' message added
+			//   LDA #$10	# load 'can't afford text'
+			//   JSR $AA5B	# display ^ text
+			//   JMP $A365	# return to start
+			//   ;; LDA #$17   # 'Who will learn' message text
+			//   ;; JSR $AA5B  # Display ^ text
+			//   JSR $A8E4	# select character
+			//   BCS $A358	# return to start if B
+			//   LDA $62	# load cursor into register A
+			//   ROR A		# bit shift register A right
+			//   ROR A		# bit shift register A right
+			//   ROR A		# bit shift register A right
+			//   AND #$C0	# bit shift register A right and mask  to get character index
+			//   STA $030A	# store character index in register A
+			//   JSR $AADF	# check if character can learn
+			//   JSR $A4CD	# pay for selection
+			//   LDX $030A	# get empty slot in register X
+			//   LDA $030B	# get adjusted spell ID
+			//   STA $6300,X	# add to characters spell list
+			//   JMP $A360	# return to start of shop
 		}
 		public void DisableDamageTileFlicker()
 		{
