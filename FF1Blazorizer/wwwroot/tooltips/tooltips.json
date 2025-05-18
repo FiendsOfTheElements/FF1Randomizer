@@ -376,16 +376,10 @@
 		"description": "Configure the Temple of Fiends Fiends Refights.\n\nAll: All Fiends must be fought to reach Chaos.\nTwo Paths: Only two fiends must be defeated. On floor 1F, two stairs will lead to two random Fiends floors each. If Short ToFR is selected, going left or right will lead to two different Fiends tiles.\nNone: No Fiends will be encountered in the Temple of Fiends Revisited.\nRandom: One of the previous options at random."
 	},
 	{
-		"Id": "preserveFiendRefightsCheckBox",
-		"title": "Include Fiend Tiles",
-		"screenshot": "preserveFiendRefightsCheckBox.gif",
-		"description": "Adds the four Fiend refights to the Chaos floor. Two trap tiles will be found on either side south of the entrance, with the boss in each tile shuffled for each seed."
-	},
-	{
-		"Id": "preserveAllFiendRefightsCheckBox",
-		"title": "Refight All Fiends",
+		"Id": "shortToFRFiendsRefightsDropDown",
+		"title": "Fiends Refights",
 		"screenshot": "preserveAllFiendRefightsCheckBox.png",
-		"description": "Now all four Fiends are in both directions and they must all be defeated to reach CHAOS."
+		"description": "Configure the Temple of Fiends Fiends Refights.\n\nAll: All Fiends must be fought to reach Chaos.\nTwo Paths: Only two fiends must be defeated. Going left or right will lead to two different Fiends tiles.\nLopsided: Two Paths but one side has one buffed fiend, the other has three normal scaled fiends.\nProgressive: Two Paths but guarantees one easy and one hard fiend will fall on each side.\nAnything Goes: Two Paths but the fiend tiles are random. Possibly 4 Kraken, possibly 4 free steps.\nRude: All plus one extra fifth fiend refight.\nNone: No Fiends will be encountered in the Temple of Fiends Revisited.\nRandom: One of the previous options at random."
 	},
 	{
 		"Id": "exitToFRCheckBox",
