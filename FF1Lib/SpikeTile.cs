@@ -279,8 +279,8 @@ namespace FF1Lib
 				{
 					//UNbalanced/curated mode
 					//this mode is really just in here so we have the option to make spike tiles overpowered
-					encounters = new(FormationLists.IncludeWarmechEncounter);
-
+					encounters = new(FormationLists.AllRandomEncounters);
+					encounters.Add(0x56);
 					/*
 					//keep the god grinds
 					encounters.Remove(0x69);        //1 eye tile.
