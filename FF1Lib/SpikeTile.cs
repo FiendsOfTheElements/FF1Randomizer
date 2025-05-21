@@ -366,11 +366,13 @@ namespace FF1Lib
 											//skip bigeye grshark 0x48
 					encounters.Remove(0x49);//1-3 waters
 											//skip wizMumies 0x4A and Zombie Ds 0x4B
+					encounters.Remove(0x4A);//mummies, wiz mumies, conctrice
 					encounters.Remove(0x80 + 0x4A);
 					for (int i = 0x4C; i < 0x4E; i++) //stop before Blue D 0x4E
 					{
 						encounters.Remove((byte)i);
 					}
+					encounters.Remove(0x80 + 0x4C);
 					encounters.Remove(0x4F);//nitemares
 					encounters.Remove(0x80 + 0x4F);//nitemares
 											//skip slimes 0x50
