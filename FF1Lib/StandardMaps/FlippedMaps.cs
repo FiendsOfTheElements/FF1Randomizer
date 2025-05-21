@@ -78,7 +78,7 @@ namespace FF1Lib
 
 			ValidMaps_Vertical.Shuffle(rng);
 			mapsToFlipVertically = ValidMaps_Vertical.GetRange(0, rng.Between((int)(ValidMaps_Vertical.Count * 0.33), (int)(ValidMaps_Vertical.Count * 0.75)));
-			if (flags.EFGWaterfall) mapsToFlipVertically.Remove(MapIndex.Waterfall);
+			//if (flags.EFGWaterfall) mapsToFlipVertically.Remove(MapIndex.Waterfall);
 
 			/*
 			foreach (var MapIndex in mapsToFlipVertically)
@@ -467,7 +467,7 @@ namespace FF1Lib
 
 			ValidMaps_Horizontal.Shuffle(rng);
 			var mapsToFlip = ValidMaps_Horizontal.GetRange(0, rng.Between((int)(ValidMaps_Horizontal.Count * 0.33), (int)(ValidMaps_Horizontal.Count * 0.75)));
-			if (flags.EFGWaterfall) mapsToFlip.Remove(MapIndex.Waterfall);
+			//if (flags.EFGWaterfall) mapsToFlip.Remove(MapIndex.Waterfall);
 
 			foreach (MapIndex map in mapsToFlip)
 			{

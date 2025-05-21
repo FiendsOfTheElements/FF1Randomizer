@@ -191,6 +191,7 @@ namespace FF1Lib
 		public bool? ChaosRush { get; set; } = false;
 		public ToFRMode ToFRMode { get; set; } = ToFRMode.Long;
 		public FiendsRefights FiendsRefights { get; set; } = FiendsRefights.All;
+		public ShortToFRFiendsRefights ShortToFRFiendsRefights { get; set; } = ShortToFRFiendsRefights.All;
 		public bool? ExitToFR { get; set; } = false;
 		public bool? ChaosFloorEncounters { get; set; } = false;
 		public bool? MagicShops { get; set; } = false;
@@ -582,7 +583,6 @@ namespace FF1Lib
 		public bool? ClampMinimumStatScale { get; set; } = false;
 		public bool? ClampMinimumBossStatScale { get; set; } = false;
 		public bool? ClampMinimumPriceScale { get; set; } = false;
-		public bool EFGWaterfall { get; set; } = false;
 		public bool? FiendShuffle { get; set; } = false;
 		public bool DisableTentSaving { get; set; } = false;
 		public bool DisableInnSaving { get; set; } = false;
