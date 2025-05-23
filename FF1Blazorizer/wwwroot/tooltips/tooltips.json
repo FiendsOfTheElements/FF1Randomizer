@@ -1621,14 +1621,14 @@
 	{
 		"Id": "thiefHitDropDown",
 		"title": "Thief Hit Rate Rebalance",
-		"screenshot": "thiefHitCheckBox.gif",
-		"description": "Increases the hit rate of Thieves and Ninjas from +2 per level to +N per level, making them more effective combatants (helping to balance them in comparison to Fighters and Knights, which will still have significantly more HP and STR).\n[grid][r]{i}Hit% |Lvl 9|Lvl 17|Lvl 25[r]{l}Vanilla Thief|21%|37%|53%[r]{l}Fighter|34%|58%|82%[r]{l}Buffed Thief (Double)|37%|69%|101%"
+		"screenshot": "thiefHitDropDown.gif",
+		"description": "Changes the hit rate of Thieves and Ninjas from +2 per level to +N per level, potentially making them more effective combatants (helping to balance them in comparison to Fighters and Knights, which will still have significantly more HP and STR).\n[grid][r]{i}Hit% |Lvl 9|Lvl 17|Lvl 25[r]{l}Vanilla Thief|21%|37%|53%[r]{l}Fighter|34%|58%|82%[r]{l}Buffed Thief (Double)|37%|69%|101%"
 	},
 	{
 		"Id": "redMageHitDropDown",
 		"title": "Red Mage Hit Rate Rebalance",
-		"screenshot": "RedMageVorpal.png",
-		"description": "Changes the hit rate of Red Mages and Wizards from +2 per level to +N per level, making them more viable as melee. (Or, you can make them as useless at melee as the white and black mages)"
+		"screenshot": "redMageHitDropDown.png",
+		"description": "Changes the hit rate of Red Mages and Wizards from +2 per level to +N per level, making them more or less viable as melee."
 	},
 	{
 		"Id": "thiefAgilityBuffDropDown",

@@ -231,7 +231,7 @@ namespace FF1Lib
 		}
 		public void RaiseThiefHitRate(Flags flags)
 		{
-			if (flags.ThiefHitBuff == ThiefHit.Vanilla)
+			if ((int)flags.ThiefHitBuff == (int)ThiefHit.Vanilla)
 			{
 				return;
 			}
@@ -244,7 +244,7 @@ namespace FF1Lib
 
 		public void RaiseRedMageHitRate(Flags flags)
 		{
-			if (flags.RedMageHitBuff == ThiefHit.Vanilla)
+			if ((int)flags.RedMageHitBuff == (int)RedMageHit.Vanilla)
 			{
 				return;
 			}

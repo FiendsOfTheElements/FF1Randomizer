@@ -13,9 +13,6 @@
 	  <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
-	<ItemGroup>
-	  <None Include="wwwroot\images\tooltips\RedMageVorpal.png" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />

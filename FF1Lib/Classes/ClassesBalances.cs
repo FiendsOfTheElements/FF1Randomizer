@@ -36,17 +36,36 @@ namespace FF1Lib
 
 	public enum ThiefHit
 	{
+		[Description("1 (Useless)")]
+		HitUseless = 1,
+
 		[Description("2 (Vanilla)")]
 		Vanilla = 2,
 
 		[Description("4 (Double)")]
 		HitDouble = 4,
 
-		[Description("3 (+50%)")]
-		HitBalenced = 3,
+		[Description("3 (Moderate)")]
+		HitBalanced = 3,
 
+		[Description("5 (Ridiculous)")]
+		HitEverything = 5,
+	}
+
+	// If someone who knows C# could tell Franklin whether having a seperate RedMageHit enum that is identical to the ThiefHit enum does anything other than make the code more readable that would be appreciated
+	public enum RedMageHit 
+	{
 		[Description("1 (Useless)")]
-		HitNothing = 1,
+		HitUseless = 1,
+
+		[Description("2 (Vanilla)")]
+		Vanilla = 2,
+
+		[Description("4 (Double)")]
+		HitDouble = 4,
+
+		[Description("3 (Moderate)")]
+		HitBalanced = 3,
 
 		[Description("5 (Ridiculous)")]
 		HitEverything = 5,
