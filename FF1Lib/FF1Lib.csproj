@@ -73,6 +73,7 @@
 	  <EmbeddedResource Include="imagedata\bosses\A.WORM.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ABDUCTOR.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ADMNTOSE.png" />
+ 	  <EmbeddedResource Include="imagedata\bosses\AGNEA.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ALTAROIT.png" />
 	  <EmbeddedResource Include="imagedata\bosses\AHRIMAN.png" />
 	  <EmbeddedResource Include="imagedata\bosses\AMON.png" />
@@ -185,6 +186,7 @@
 	  <EmbeddedResource Include="imagedata\bosses\NCROPHBE.png" />
 	  <EmbeddedResource Include="imagedata\bosses\NEP.DRGN.png" />
 	  <EmbeddedResource Include="imagedata\bosses\NERAPA.png" />
+	  <EmbeddedResource Include="imagedata\bosses\NIMBUS.png" />    
 	  <EmbeddedResource Include="imagedata\bosses\NINJI.png" />
 	  <EmbeddedResource Include="imagedata\bosses\NO128.png" />
 	  <EmbeddedResource Include="imagedata\bosses\OCTOMAM.png" />
