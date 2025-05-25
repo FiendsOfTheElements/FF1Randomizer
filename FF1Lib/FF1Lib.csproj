@@ -221,6 +221,7 @@
 	  <EmbeddedResource Include="imagedata\bosses\STDRAGON.png" />
 	  <EmbeddedResource Include="imagedata\bosses\T.ARMOR.png" />
 	  <EmbeddedResource Include="imagedata\bosses\TENTACLE.png" />
+    <EmbeddedResource Include="imagedata\bosses\THNDBIRD.png" />
 	  <EmbeddedResource Include="imagedata\bosses\TIAMAT.png" />
 	  <EmbeddedResource Include="imagedata\bosses\TITAN.png" />
 	  <EmbeddedResource Include="imagedata\bosses\TONBERRY.png" />
