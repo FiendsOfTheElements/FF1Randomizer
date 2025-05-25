@@ -1485,6 +1485,12 @@
 		"description": "Will add 45 Final Fantasy 6 Fiends to the Alternate Fiend Pool."
 	},
 	{
+		"Id": "winnerscirclepool",
+		"title": "Winner Circle",
+		"screenshot": null,
+		"description": "Any winner of a FFR Tournament gets the chance to add a fiend of their choice into the pool, this will add in all of the winner circle fiends to the Alternate Fiend Pool."
+	},
+	{
 		"Id": "blackorbrisingpool",
 		"title": "Black Orb Rising Fiends",
 		"screenshot": null,
