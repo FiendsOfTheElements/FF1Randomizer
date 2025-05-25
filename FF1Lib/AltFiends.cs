@@ -6090,7 +6090,7 @@ new AlternateFiends {
 				alternateFiendsList.AddRange(extAltFiends.BlackOrbAltFiends);
 			}
 
-			if ((bool)!flags.FinalFantasy2Fiends && (bool)!flags.FinalFantasy3Fiends && (bool)!flags.FinalFantasy4Fiends && (bool)!flags.FinalFantasy5Fiends && (bool)!flags.FinalFantasy6Fiends && (bool)!flags.FinalFantasy1BonusFiends && (bool)!flags.BlackOrbFiends)
+			if ((bool)!flags.FinalFantasy2Fiends && (bool)!flags.FinalFantasy3Fiends && (bool)!flags.FinalFantasy4Fiends && (bool)!flags.FinalFantasy5Fiends && (bool)!flags.FinalFantasy6Fiends && (bool)!flags.FinalFantasy1BonusFiends && (bool)!flags.WinnerCircleFiends && (bool)!flags.BlackOrbFiends)
 			{
 				alternateFiendsList.AddRange(FF1MasterFiendList);
 			}
