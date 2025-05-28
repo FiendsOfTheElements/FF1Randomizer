@@ -49,7 +49,8 @@ namespace FF1Lib
 					(bool)flags.FinalFantasy3Fiends ||
 					(bool)flags.FinalFantasy4Fiends ||
 					(bool)flags.FinalFantasy5Fiends ||
-					(bool)flags.FinalFantasy6Fiends;
+					(bool)flags.FinalFantasy6Fiends ||
+					(bool)flags.WinnerCircleFiends;
 
 				if (!NormalAltFiends && (bool)flags.BlackOrbFiends)
 				{
