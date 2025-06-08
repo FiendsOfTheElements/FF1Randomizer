@@ -596,7 +596,6 @@ namespace FF1Lib
 		public bool? RandomizeFormationEnemizer { get; set; } = false;
 		public bool? GenerateNewSpellbook { get; set; } = false;
 		public bool? SpellcrafterMixSpells { get; set; } = false;
-		public bool ThiefHitRate { get; set; } = false;
 		public bool AllSpellLevelsForKnightNinja { get; set; } = false;
 		public bool BuffHealingSpells { get; set; } = false;
 		public bool IntAffectsSpells { get; set; } = false;

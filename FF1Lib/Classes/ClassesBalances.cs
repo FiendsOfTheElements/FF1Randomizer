@@ -42,17 +42,16 @@ namespace FF1Lib
 		[Description("2 (Vanilla)")]
 		Vanilla = 2,
 
-		[Description("4 (Double)")]
-		HitDouble = 4,
-
 		[Description("3 (Moderate)")]
 		HitBalanced = 3,
+
+		[Description("4 (Double)")]
+		HitDouble = 4,
 
 		[Description("5 (Ridiculous)")]
 		HitEverything = 5,
 	}
 
-	// If someone who knows C# could tell Franklin whether having a seperate RedMageHit enum that is identical to the ThiefHit enum does anything other than make the code more readable that would be appreciated
 	public enum RedMageHit 
 	{
 		[Description("1 (Useless)")]
@@ -61,11 +60,11 @@ namespace FF1Lib
 		[Description("2 (Vanilla)")]
 		Vanilla = 2,
 
-		[Description("4 (Double)")]
-		HitDouble = 4,
-
 		[Description("3 (Moderate)")]
 		HitBalanced = 3,
+
+		[Description("4 (Double)")]
+		HitDouble = 4,
 
 		[Description("5 (Ridiculous)")]
 		HitEverything = 5,
