@@ -351,6 +351,7 @@ public partial class FF1Rom : NesRom
 		ClassData.SetMPMax(flags);
 		ClassData.SetMpGainOnMaxGain(flags, this);
 		ClassData.RaiseThiefHitRate(flags);
+		ClassData.RaiseRedMageHitRate(flags);
 		ClassData.BuffThiefAGI(flags);
 		ClassData.EarlierHighTierMagicCharges(flags);
 		ClassData.CustomSpellPermissions(flags, rng);
