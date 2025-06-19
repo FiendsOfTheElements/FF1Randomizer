@@ -639,12 +639,14 @@ namespace FF1Lib
 		public bool? RandomizeClassKeyItems { get; set; } = false;
 		public bool? RandomizeClassIncludeXpBonus { get; set; } = false;
 		public bool? AlternateFiends { get; set; } = false;
+		public bool? HardcoreAltFiends { get; set; } = false;
 		public bool? FinalFantasy2Fiends { get; set; } = false;
 		public bool? FinalFantasy3Fiends { get; set; } = false;
 		public bool? FinalFantasy4Fiends { get; set; } = false;
 		public bool? FinalFantasy5Fiends { get; set; } = false;
 		public bool? FinalFantasy6Fiends { get; set; } = false;
 		public bool? FinalFantasy1BonusFiends { get; set; } = false;
+		public bool? WinnerCircleFiends { get; set; } = false;
 		public bool? BlackOrbFiends { get; set; } = false;
 		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 
