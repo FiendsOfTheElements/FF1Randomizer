@@ -13,6 +13,7 @@
 	  <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
+
 	<ItemGroup>
 		<PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
 		<PackageReference Include="BlazorStrap" Version="1.3.3" />
