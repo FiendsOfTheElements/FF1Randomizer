@@ -33,6 +33,42 @@ namespace FF1Lib
 	    [Description("120")]
 	    Agi120 = 3
 	}
+
+	public enum ThiefHit
+	{
+		[Description("1 (Useless)")]
+		HitUseless = 1,
+
+		[Description("2 (Vanilla)")]
+		Vanilla = 2,
+
+		[Description("3 (Moderate)")]
+		HitBalanced = 3,
+
+		[Description("4 (Double)")]
+		HitDouble = 4,
+
+		[Description("5 (Ridiculous)")]
+		HitEverything = 5,
+	}
+
+	public enum RedMageHit 
+	{
+		[Description("1 (Useless)")]
+		HitUseless = 1,
+
+		[Description("2 (Vanilla)")]
+		Vanilla = 2,
+
+		[Description("3 (Moderate)")]
+		HitBalanced = 3,
+
+		[Description("4 (Double)")]
+		HitDouble = 4,
+
+		[Description("5 (Ridiculous)")]
+		HitEverything = 5,
+	}
 	public enum ThiefOptions
 	{
 		[Description("None")]

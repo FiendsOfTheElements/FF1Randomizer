@@ -386,6 +386,8 @@ namespace FF1Lib
 		public bool WeaponCritRate { get; set; } = false;
 		public bool WeaponBonuses { get; set; } = false;
 		public ThiefAGI ThiefAgilityBuff { get; set; } = ThiefAGI.Vanilla;
+		public ThiefHit ThiefHitBuff { get; set; } = ThiefHit.HitDouble;
+		public RedMageHit RedMageHitBuff { get; set; } = RedMageHit.Vanilla;
 		public SpoilerBatHints SkyWarriorSpoilerBats { get; set; } = SpoilerBatHints.Vanilla;
 		public bool? SpoilerBatsDontCheckOrbs { get; set; } = false;
 		public bool? MoveToFBats { get; set; } = false;
@@ -595,7 +597,6 @@ namespace FF1Lib
 		public bool? RandomizeFormationEnemizer { get; set; } = false;
 		public bool? GenerateNewSpellbook { get; set; } = false;
 		public bool? SpellcrafterMixSpells { get; set; } = false;
-		public bool ThiefHitRate { get; set; } = false;
 		public bool AllSpellLevelsForKnightNinja { get; set; } = false;
 		public bool BuffHealingSpells { get; set; } = false;
 		public bool IntAffectsSpells { get; set; } = false;
@@ -639,12 +640,14 @@ namespace FF1Lib
 		public bool? RandomizeClassKeyItems { get; set; } = false;
 		public bool? RandomizeClassIncludeXpBonus { get; set; } = false;
 		public bool? AlternateFiends { get; set; } = false;
+		public bool? HardcoreAltFiends { get; set; } = false;
 		public bool? FinalFantasy2Fiends { get; set; } = false;
 		public bool? FinalFantasy3Fiends { get; set; } = false;
 		public bool? FinalFantasy4Fiends { get; set; } = false;
 		public bool? FinalFantasy5Fiends { get; set; } = false;
 		public bool? FinalFantasy6Fiends { get; set; } = false;
 		public bool? FinalFantasy1BonusFiends { get; set; } = false;
+		public bool? WinnerCircleFiends { get; set; } = false;
 		public bool? BlackOrbFiends { get; set; } = false;
 		public bool? NoBossSkillScriptShuffle { get; set; } = false;
 
