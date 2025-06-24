@@ -71,29 +71,35 @@ namespace FF1Lib
 		private void ShuffleShopType(ShopType shopType, MT19337 rng, bool randomize = false, IEnumerable<Item> excludeItemsFromRandomShops = null, WorldWealthMode wealth = WorldWealthMode.Standard)
 		{
 			var shops = Shops.Where(s => s.Type == shopType).ToList();
-			var newShopEntries = shops.ToDictionary(s => s.Index, s => new List<Item>());
+			Dictionary<int, List<Item>> newShopEntries;
 			bool shopsBlocked;
-			bool requiredAdded = false;
 
 			do
 			{
 				shopsBlocked = false;
 
+				// Get shops
+				newShopEntries = shops.ToDictionary(s => s.Index, s => new List<Item>());
+
 				// Get Shop Items
 				var allEntries = shops.SelectMany(s => s.Entries).ToList();
 				allEntries.Shuffle(rng);
 
+				int entry = 0;
+
 				// Insert guaranteed items
-				if (shopType == ShopType.Item && (bool)flags.ImmediatePureAndSoftRequired && !requiredAdded)
+				if (shopType == ShopType.Item && (bool)flags.ImmediatePureAndSoftRequired)
 				{
+					// Reorder list so 2 first items are pure and soft
 					allEntries.Remove(Item.Pure);
 					allEntries.Remove(Item.Soft);
+					allEntries = new List<Item>() { Item.Pure, Item.Soft }.Concat(allEntries).ToList();
 
-					newShopEntries[60 + coneriaEntranceShopIndex].AddRange(new List<Item>(){ Item.Pure, Item.Soft });
-					requiredAdded = true;
+					newShopEntries[60 + coneriaEntranceShopIndex].Add(allEntries[entry++]);
+					newShopEntries[60 + coneriaEntranceShopIndex].Add(allEntries[entry++]);
 				}
 
-				int entry = 0;
+				// Each shop contain at least one item
 				foreach (var shop in newShopEntries)
 				{
 					if (!shop.Value.Any())
