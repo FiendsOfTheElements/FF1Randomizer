@@ -931,6 +931,12 @@
 		"description": "Moves the Item Shop next to the Gaia Shortcut.\nThis flag is ignored if \"Add Gaia Shortcut\" is disabled."
 	},
 	{
+		"Id": "lefeinShortcutCheckBox",
+		"title": "Add Lefein Shortcut",
+		"screenshot": "LefienShortcut.png",
+		"description": "Tired of getting Lefeinian Linebacked? This flag adds two bridges that speed up Slab turn-in and talking to the hint giver."
+	},
+	{
 		"Id": "lefeinShopsCheckBox",
 		"title": "Lefeinish Hospitality",
 		"screenshot": "lefeinShopsCheckBox.png",
