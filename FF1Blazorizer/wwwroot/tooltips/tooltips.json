@@ -2627,5 +2627,11 @@
 		"title": "Map Derp",
 		"screenshot": "mapDerp.png",
 		"description": "Derp."
+	},
+	{
+		"Id": "funFountainsCheckBox",
+		"title": "Fun Fountain Text",
+		"screenshot": "FountainText.png",
+		"description": "We all love being told to wash our face, but what if the fountain said other things?"
 	}
 ]

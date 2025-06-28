@@ -378,6 +378,7 @@ public partial class FF1Rom : NesRom
 
 		// Fun Stuff
 		ChangeLute(preferences.ChangeLute, Dialogues, new MT19337(funRng.Next()));
+		ChangeFountainText(preferences.FunFountainText, Dialogues, new MT19337(funRng.Next()));
 		TitanSnack(preferences.TitanSnack, NpcData, Dialogues, new MT19337(funRng.Next()));
 		HurrayDwarfFate(preferences.HurrayDwarfFate, NpcData, Dialogues, new MT19337(funRng.Next()));
 		PaletteSwap(preferences.PaletteSwap && !flags.EnemizerEnabled, new MT19337(funRng.Next()));
