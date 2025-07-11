@@ -112,7 +112,7 @@ NewLandingDrawOWSprites:    ; 13 bytes (10 bytes used)
 ; Check the highest bit; draw ship if 0, don't draw if 1
 CheckShip:       ; called on foot, canoe, in airship
   LDA ship_vis
-  AND #$01       ; do we have ship?
+  AND #$7F       ; do we have ship?
   BNE CS_HaveShip
     RTS
 CS_HaveShip:
@@ -146,7 +146,7 @@ NotAirshipTile:
     RTS
 IsShipTile:
   LDA ship_vis
-  AND #$01
+  AND #$7F
   BNE HaveShip
     LDA #$01
     RTS
@@ -255,4 +255,3 @@ BoardCheck:
 BoardFail:
   LDA #$00
   RTS
-  
