@@ -306,15 +306,15 @@ namespace FF1Lib
 					encounters.Remove(0x6A); //2-5 rgoyles
 					encounters.Remove(0x6A + 0x80); //3-7 rgoyles
 
-					foreach (var tileset in tileSets)
-					{
-						tileset.Tiles.ForEach(tile =>
+					//foreach (var tileset in tileSets)
+					//{
+					//	tileset.Tiles.ForEach(tile =>
 							//if (fightBahamut)
 							//{
-							encounters.Remove(0x80 + 0x71)); // ANKYLO (used for Bahamut)
+						encounters.Remove(0x80 + 0x71); // ANKYLO (used for Bahamut)
 						encounters.Remove(0x71); // ANKYLO (used for Bahamut)
-					}
-												 //these can be not on the list regardless of whether fight Bahamut is on
+					//}
+					//these can be not on the list regardless of whether fight Bahamut is on
 
 					//remove most of the encounters
 					for (int i = 0; i < 0x17; i++) {  //stop before Pedes 0x17
@@ -399,19 +399,6 @@ namespace FF1Lib
 					}
 					encounters.Remove(0x80 + 0x7E);//R + Wiz Sahags
 				}
-
-
-				foreach (var tileset in tileSets)
-				{
-					tileset.Tiles.ForEach(tile =>
-					{
-						if (tile.IsNonBossTrapTileEx)
-						{
-							tile.PropertyValue = encounters.SpliceRandom(rng);
-						}
-					});
-				}
-
 
 				foreach (var tileset in tileSets)
 				{
