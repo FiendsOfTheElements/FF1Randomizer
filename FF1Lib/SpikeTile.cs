@@ -249,11 +249,14 @@ namespace FF1Lib
 					//	encounters = encounters.Except(FormationLists.BahamutEncounter).ToList();
 					//}
 
-					for (int i = encounters.Count; i > 0; i--)
+					for (int i = encounters.Count - 1; i > 4; i--)
 					{
 						//remove all encounters
-						encounters.RemoveAt(i);
+						//encounters.RemoveAt(i);
+						encounters.Remove((byte)i);
 					}
+
+
 
 					encounters.Add(0x01); // Bones
 					// encounters.Add(0x01 + 0x80); // Bones and Crawls
@@ -291,7 +294,7 @@ namespace FF1Lib
 					encounters.Add(0x46); // Phantom
 					encounters.Add(0x46 + 0x80); // Ghosts
 
-					encounters.Add(0x4A); // WzMummies, Mummies, Perilisks
+					encounters.Add(0x4A); // WzMummies, Mummies, Perilisks, Coctrices
 					encounters.Add(0x4A + 0x80); // WzMummies, Mummies
 
 					encounters.Add(0x4B); // ZombieDs
@@ -306,9 +309,17 @@ namespace FF1Lib
 					encounters.Add(0x68 + 0x80); // WzVamp, Vamps
 
 					encounters.Add(0x69); // Eye
-					//encounters.Add(0x69 + 0x80); // Eyes
+										  //encounters.Add(0x69 + 0x80); // Eyes
 
+					
+					//encounters.Remove(0x71); // ANKYLO
+					//encounters.Remove(0x72); // Seasneak
 
+					//encounters.Remove(0x04);
+					//encounters.Remove(0x03);
+					//encounters.Remove(0x02);
+					//encounters.Remove(0x01);
+					//encounters.Remove(0x00);
 				}
 				else
 				{
