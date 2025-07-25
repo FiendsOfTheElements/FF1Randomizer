@@ -259,7 +259,7 @@ namespace FF1Lib
 
 
 					encounters.Add(0x01); // Bones
-					// encounters.Add(0x01 + 0x80); // Bones and Crawls
+					 encounters.Add(0x01 + 0x80); // Bones and Crawls
 
 					encounters.Add(0x04); // Zombies
 					encounters.Add(0x04 + 0x80); // Zombies and Ghouls
@@ -279,17 +279,17 @@ namespace FF1Lib
 					encounters.Add(0x1D); // Mummies
 					encounters.Add(0x1D + 0x80); // Mummies and Wzmummy
 
-					//encounters.Add(0x2B); // Bones, RBone, Crawl
+					encounters.Add(0x2B); // Bones, RBone, Crawl
 					encounters.Add(0x2B + 0x80); // RBones
 
 					encounters.Add(0x2C); // Images, Wraiths, Specters, Geists
 					encounters.Add(0x2C + 0x80); // Wraiths
 
-					//encounters.Add(0x2F); // Mages
-					//encounters.Add(0x2F + 0x80); // Mages and Fighter
+					encounters.Add(0x2F); // Mages
+					encounters.Add(0x2F + 0x80); // Mages and Fighter
 
 					encounters.Add(0x32); // ZomBULLs
-					//encounters.Add(0x32 + 0x80); // ZomBULLs and Trolls
+					encounters.Add(0x32 + 0x80); // ZomBULLs and Trolls
 
 					encounters.Add(0x46); // Phantom
 					encounters.Add(0x46 + 0x80); // Ghosts
@@ -303,7 +303,7 @@ namespace FF1Lib
 					encounters.Add(0x53); // WzVamps
 					encounters.Add(0x53 + 0x80); // WzVamps and ZombieDs
 
-					//encounters.Add(0x56 + 0x80); // Fighters
+					encounters.Add(0x56 + 0x80); // Fighters
 
 					encounters.Add(0x68); // Vamps
 					encounters.Add(0x68 + 0x80); // WzVamp, Vamps
@@ -311,15 +311,15 @@ namespace FF1Lib
 					encounters.Add(0x69); // Eye
 										  //encounters.Add(0x69 + 0x80); // Eyes
 
-					
-					//encounters.Remove(0x71); // ANKYLO
-					//encounters.Remove(0x72); // Seasneak
 
-					//encounters.Remove(0x04);
-					//encounters.Remove(0x03);
-					//encounters.Remove(0x02);
-					//encounters.Remove(0x01);
-					//encounters.Remove(0x00);
+					encounters.Remove(0x71); // ANKYLO
+					encounters.Remove(0x72); // Seasneak
+
+					encounters.Remove(0x04);
+					encounters.Remove(0x03);
+					encounters.Remove(0x02);
+					encounters.Remove(0x01);
+					encounters.Remove(0x00);
 				}
 				else
 				{
