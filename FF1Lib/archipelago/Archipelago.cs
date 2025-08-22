@@ -96,7 +96,9 @@ namespace FF1Lib
 			}
 			else
 			{
-				kiPlacement = kiPlacement.GroupBy(r => r.Address).Select(g => g.First()).ToList();
+				List<int> forbiddenApChests = new() { 145, 146, 147, 148, 187, 188, 189, 190, 191, 192, 193, 194, 195 };
+
+				kiPlacement = kiPlacement.Where(r => !forbiddenApChests.Contains(r.Address - 0x3100)).GroupBy(r => r.Address).Select(g => g.First()).ToList();
 			}
 
 			logic = new SCLogic(rom, checker.Main, kiPlacement, locations, flags, true);

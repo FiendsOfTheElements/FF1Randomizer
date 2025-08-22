@@ -157,6 +157,7 @@
 		"OrdealsPillars": true,
 		"SkyCastle4FMazeMode": 0,
 		"TitansTrove": true,
+		"LefeinShortcut": false,
 		"LefeinSuperStore": true,
 		"LefeinShops": true,
 		"RandomVampAttack": false,
