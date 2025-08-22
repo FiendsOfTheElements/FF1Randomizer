@@ -20,6 +20,8 @@ namespace FF1Lib
 		LocalFormations,
 		[Description("Remove Trap Tiles")]
 		Remove,
+		[Description("Undead Only")]
+		Undead,
 		[Description("Curated")]
 		Curated
 	}
@@ -237,6 +239,87 @@ namespace FF1Lib
 					{
 						encounters = encounters.Except(FormationLists.BahamutEncounter).ToList();
 					}
+				}
+				else if (mode == TrapTileMode.Undead)
+				{
+					//all random
+					encounters = new(FormationLists.ASideEncounters);
+					//if (fightBahamut)
+					//{
+					//	encounters = encounters.Except(FormationLists.BahamutEncounter).ToList();
+					//}
+
+					for (int i = encounters.Count - 1; i > 4; i--)
+					{
+						//remove all encounters
+						//encounters.RemoveAt(i);
+						encounters.Remove((byte)i);
+					}
+
+
+
+					encounters.Add(0x01); // Bones
+					 encounters.Add(0x01 + 0x80); // Bones and Crawls
+
+					encounters.Add(0x04); // Zombies
+					encounters.Add(0x04 + 0x80); // Zombies and Ghouls
+
+					encounters.Add(0x08); // Ghoul
+					encounters.Add(0x08 + 0x80); // Geists and Ghouls
+
+					encounters.Add(0x0A); // Shadows
+					encounters.Add(0x0A + 0x80); // Shadows
+
+					encounters.Add(0x04); // Giests
+					encounters.Add(0x04 + 0x80); // Geists and Specters
+
+					encounters.Add(0x18); // Images
+					encounters.Add(0x18 + 0x80); // Images and Wraiths
+
+					encounters.Add(0x1D); // Mummies
+					encounters.Add(0x1D + 0x80); // Mummies and Wzmummy
+
+					encounters.Add(0x2B); // Bones, RBone, Crawl
+					encounters.Add(0x2B + 0x80); // RBones
+
+					encounters.Add(0x2C); // Images, Wraiths, Specters, Geists
+					encounters.Add(0x2C + 0x80); // Wraiths
+
+					encounters.Add(0x2F); // Mages
+					encounters.Add(0x2F + 0x80); // Mages and Fighter
+
+					encounters.Add(0x32); // ZomBULLs
+					encounters.Add(0x32 + 0x80); // ZomBULLs and Trolls
+
+					encounters.Add(0x46); // Phantom
+					encounters.Add(0x46 + 0x80); // Ghosts
+
+					encounters.Add(0x4A); // WzMummies, Mummies, Perilisks, Coctrices
+					encounters.Add(0x4A + 0x80); // WzMummies, Mummies
+
+					encounters.Add(0x4B); // ZombieDs
+					encounters.Add(0x4B + 0x80); // ZombieDs
+
+					encounters.Add(0x53); // WzVamps
+					encounters.Add(0x53 + 0x80); // WzVamps and ZombieDs
+
+					encounters.Add(0x56 + 0x80); // Fighters
+
+					encounters.Add(0x68); // Vamps
+					encounters.Add(0x68 + 0x80); // WzVamp, Vamps
+
+					encounters.Add(0x69); // Eye
+										  //encounters.Add(0x69 + 0x80); // Eyes
+
+
+					encounters.Remove(0x71); // ANKYLO
+					encounters.Remove(0x72); // Seasneak
+
+					encounters.Remove(0x04);
+					encounters.Remove(0x03);
+					encounters.Remove(0x02);
+					encounters.Remove(0x01);
+					encounters.Remove(0x00);
 				}
 				else
 				{
