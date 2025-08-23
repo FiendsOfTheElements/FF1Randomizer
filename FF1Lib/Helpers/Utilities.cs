@@ -4,6 +4,8 @@
 	{
 		public static string SpoilerCache { get; set; } = "";
 
+		public static string FlagCache { get; set; } = "";
+
 		public static string ArchipelagoCache { get; set; } = "";
 
 		/// <summary>

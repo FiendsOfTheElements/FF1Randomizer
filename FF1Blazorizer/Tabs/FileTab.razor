@@ -31,6 +31,7 @@
 	<CheckBox UpdateAction="@UpdateAction" Id="tournamentSafeCheckBox" @bind-Value="Flags.TournamentSafe">Tournament Safe ROM</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="spoilersCheckBox" @bind-Value="Flags.Spoilers">Generate Spoiler Log!</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="printBlursingsCheckBox" @bind-Value="Preferences.PrintBlursings">Print Class Blursings</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="tristatesCheckBox" @bind-Value="Flags.TriState">Show Reveal Randomized State Flags Button</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="blindseedCheckBox" IsEnabled="@(!Flags.BlindSeed)" @bind-Value="Flags.BlindSeed">Hide Flags</CheckBox>
 	<p>
 		Seed:
@@ -57,6 +58,7 @@
 
 	<p>@((MarkupString)StatusMessage)</p>
 	<div class="row">&nbsp;</div>
+	<a class="styled-button generate-button" hidden="@(!Flags.TriState)" disabled="@(!Flags.TriState)" style="font-size: small; margin-bottom: 10px;" @onclick="@CollapseTriStates">Reveal Randomized State Flags</a>
 	<a class="styled-button generate-button" @onclick="@OnRandomize">Generate ROM</a>
 </div>
 
@@ -242,6 +244,30 @@
 		UpdateAction?.Invoke("UpdateFlagstring","");
 	}
 
+	public void CollapseTriStates() {
+		if (_fileData == null)
+		{
+			SetStatusMessage("Reveal Failed: No ROM File Selected!");
+			StateHasChanged();
+			return;
+		}
+
+		//All of this is needed to convert the tristate flags.
+		//A better way would probably be to pull the rng initialization out of the rom class.
+		//Update it as flags/seed change then give it back to rom during seed gen.
+		using (var stream = new MemoryStream(_fileData))
+		{
+			_rom = new FF1Rom(stream);
+		}
+		Flags flagsForRng = Flags.ShallowCopy();
+		_rom.GenerateRng(flagsForRng, Blob.FromHex(_seed));
+		Flags = FF1Lib.Flags.ConvertAllTriState(flagsForRng, FF1Lib.FF1Rom.rng);
+		
+		//Reloads page with new flags
+		//Surely there's a better way to do this
+		NavigationManager.NavigateTo(NavigationManager.BaseUri + "?s=" + _seed + "&f=" + Flags.Encoded, true);
+	}
+
 	async Task OnRandomize(MouseEventArgs e)
 	{
 		if (_fileData == null)
@@ -321,6 +347,7 @@
 		try
 		{
 			Utilities.SpoilerCache = string.Empty;
+			Utilities.FlagCache = string.Empty;
 
 			_rom.ProgressCallback = this.Progress;
 
@@ -328,7 +355,14 @@
 			SetModalContent("");
 			ShowModal(true);
 			SetGenerating(true);
-			await _rom.Randomize(seed, Flags, Preferences);
+
+			Flags tempFlags = await _rom.Randomize(seed, Flags, Preferences);
+
+			if (Flags.TriState){
+				Flags = tempFlags;
+				Flagstring = Flags.Encoded;
+			}
+			
 			string BlursingsText = "<details><summary>Class Blursings:</summary><p>" + ("\n\n" + _rom.SpoilBlursings())
 				.Replace("\n\nFighter", "<br><br><b>Fighter</b>")
 				.Replace("\n\nThief", "<br><br><b>Thief</b>")
@@ -368,7 +402,6 @@
 
 			await JSRuntime.InvokeAsync<object>("downloadFile", $"FFR_{_seed}_{_rom.GetHash()}.nes", encoded);
 
-
 			if(Flags.Spoilers && Utilities.SpoilerCache.Length > 0)
 			{
 				var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.SpoilerCache));
@@ -393,6 +426,7 @@
 			SetModalContent(modalContent + "<br>" + StatusMessage);
 			SetGenerating(false);
 		}
+
 		StateHasChanged();
 	}
 }

@@ -29,12 +29,14 @@ namespace FF1Lib
 		public TitanSnack TitanSnack { get; set; } = TitanSnack.Ruby;
 		public bool randomShardNames { get; set; } = false;
 		public Fate HurrayDwarfFate { get; set; } = Fate.Spare;
+		public bool FunFountainText { get; set; } = false;
 		public bool RenounceAutosort { get; set; } = false;
 		public bool RenounceChestInfo { get; set; } = false;
 		public bool RenounceCantHoldRed { get; set; } = false;
 		public bool AccessibleSpellNames { get; set; } = false;
 		public bool CleanBlursedEquipmentNames { get; set; } = false;
 		public bool ShopInfoIcons { get; set; } = false;
+		public bool MagicShopMenuChange { get; set; } = false;
 		public bool NoTabLayout { get; set; } = false;
 	  public string SpriteSheet { get; set; } = null;
 		public bool CropScreen { get; set; } = false;

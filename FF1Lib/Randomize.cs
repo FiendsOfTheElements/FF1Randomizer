@@ -71,7 +71,8 @@ public partial class FF1Rom : NesRom
 			await ProgressCallback(currentStep, maxSteps, message);
 		}
 	}
-	public async Task Randomize(Blob seed, Flags flags, Preferences preferences)
+
+	public async Task<Flags> Randomize(Blob seed, Flags flags, Preferences preferences)
 	{
 		// Confirm ROM integrity
 		if (flags.TournamentSafe) AssureSafe();
@@ -378,6 +379,7 @@ public partial class FF1Rom : NesRom
 
 		// Fun Stuff
 		ChangeLute(preferences.ChangeLute, Dialogues, new MT19337(funRng.Next()));
+		ChangeFountainText(preferences.FunFountainText, Dialogues, new MT19337(funRng.Next()));
 		TitanSnack(preferences.TitanSnack, NpcData, Dialogues, new MT19337(funRng.Next()));
 		HurrayDwarfFate(preferences.HurrayDwarfFate, NpcData, Dialogues, new MT19337(funRng.Next()));
 		PaletteSwap(preferences.PaletteSwap && !flags.EnemizerEnabled, new MT19337(funRng.Next()));
@@ -444,5 +446,6 @@ public partial class FF1Rom : NesRom
 		if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 
 		await this.Progress("Randomization Completed");
+		return flags;
 	}
 }
