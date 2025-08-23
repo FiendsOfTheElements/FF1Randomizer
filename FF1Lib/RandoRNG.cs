@@ -12,10 +12,10 @@ namespace FF1Lib
 {
 	public partial class FF1Rom
 	{
-		private MT19337 rng;
+		public static MT19337 rng;
 		private MT19337 funRng;
 		//private MT19337 asyncRng;
-		private Blob GenerateRng(Flags flags, Blob seed)
+		public Blob GenerateRng(Flags flags, Blob seed)
 		{
 			// to review 
 			if (flags.OwMapExchange == OwMapExchanges.GenerateNewOverworld || flags.OwMapExchange == OwMapExchanges.LostWoods)
