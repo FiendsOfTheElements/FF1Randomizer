@@ -936,6 +936,12 @@
 		"description": "Moves the Item Shop next to the Gaia Shortcut.\nThis flag is ignored if \"Add Gaia Shortcut\" is disabled."
 	},
 	{
+		"Id": "lefeinShortcutCheckBox",
+		"title": "Add Lefein Shortcut",
+		"screenshot": "LefienShortcut.png",
+		"description": "Tired of getting Lefeinian Linebacked? This flag adds two bridges that speed up Slab turn-in and talking to the hint giver."
+	},
+	{
 		"Id": "lefeinShopsCheckBox",
 		"title": "Lefeinish Hospitality",
 		"screenshot": "lefeinShopsCheckBox.png",
@@ -1415,7 +1421,7 @@
 		"Id": "EnemyTrapTiles",
 		"title": "Trap Tiles",
 		"screenshot": "enemyTrapTilesCheckBox.gif",
-		"description": "Vanilla: All tiles are their original monster formations.\n\nShuffle: Shuffles all the forced encounter tiles in the game, except the Fiend refights. This doesn't add in any new tiles, instead it simply shuffles the existing encounter tiles among themselves.\n\nA-Side Formations: Trap Tiles are randomly populated from the A-side encounter list.\n\nB-Side Formations: Trap tiles are randomly populated from the B-side encounter list.\n\nA-Side & B-Side: Trap tiles are randomly populated from any of the A-side or B-side encounter formations.\n\nRemove Trap Tiles: Removes all the forced encounter tiles from the game, except the Fiend refights.\n\nLocal Formations: Tiles will use formations from the same dungeon that they appear in (when possible).\n\nCurated: \"A-Side & B-Side\" but with overly punishing encounters removed. To make up for this, the best grind tiles have also been removed. (This is a sample pool. Tournament organizers can request specific enemy formations to be used, contact your local dev for details.)\n\n(None of the randomized pools include bosses.)"
+		"description": "Vanilla: All tiles are their original monster formations.\n\nShuffle: Shuffles all the forced encounter tiles in the game, except the Fiend refights. This doesn't add in any new tiles, instead it simply shuffles the existing encounter tiles among themselves.\n\nA-Side Formations: Trap Tiles are randomly populated from the A-side encounter list.\n\nB-Side Formations: Trap tiles are randomly populated from the B-side encounter list.\n\nA-Side & B-Side: Trap tiles are randomly populated from any of the A-side or B-side encounter formations.\n\nRemove Trap Tiles: Removes all the forced encounter tiles from the game, except the Fiend refights.\n\nLocal Formations: Tiles will use formations from the same dungeon that they appear in (when possible).\n\nUndead Only: Contains undead and some undead adjacent formations. \n\nOverpowered: \"A-Side & B-Side\" but with only the best grinds.\n\nCurated: \"A-Side & B-Side\" but with overly punishing encounters removed. To make up for this, the best grind tiles have also been removed. (This is a sample pool. Tournament organizers can request specific enemy formations to be used, contact your local dev for details.)\n\n(None of the randomized pools include bosses.)"
 	},
 	{
 		"Id": "WarMECHModeDropDown",
@@ -2632,5 +2638,11 @@
 		"title": "Map Derp",
 		"screenshot": "mapDerp.png",
 		"description": "Derp."
+	},
+	{
+		"Id": "funFountainsCheckBox",
+		"title": "Fun Fountain Text",
+		"screenshot": "FountainText.png",
+		"description": "We all love being told to wash our face, but what if the fountain said other things?"
 	}
 ]

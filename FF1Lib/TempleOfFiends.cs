@@ -223,7 +223,7 @@ namespace FF1Lib
 				// Roll 1d2 to see which side (left/right) will have the single buffed fiend.
 				bool flipLopsided = Rng.Between(rng, 0, 1) > 0;
 
-				switch(fiend)
+				switch (fiend)
 				{
 					case 0:
 						buffedFiend = 0x57;
@@ -248,12 +248,13 @@ namespace FF1Lib
 				}
 
 				battles.Shuffle(rng);
-				ScaleSingleEnemyStats(fiendReference, flags.BossScaleStatsLow*2, flags.BossScaleStatsHigh*2, flags.IncludeMorale, rng,
-						  (bool)flags.SeparateBossHPScaling, flags.BossScaleHpLow*2, flags.BossScaleHpHigh*2, GetEvadeIntFromFlag(flags.EvadeCap));
+				ScaleSingleEnemyStats(fiendReference, flags.BossScaleStatsLow * 2, flags.BossScaleStatsHigh * 2, flags.IncludeMorale, rng,
+						  (bool)flags.SeparateBossHPScaling, flags.BossScaleHpLow * 2, flags.BossScaleHpHigh * 2, GetEvadeIntFromFlag(flags.EvadeCap));
 				if (flipLopsided)
 				{
 					landingArea.Add(Blob.FromHex($"31313131{buffedFiend:X2}31{battles[0]:X2}{battles[1]:X2}{battles[2]:X2}3131"));
-				} else
+				}
+				else
 				{
 					landingArea.Add(Blob.FromHex($"3131{battles[2]:X2}{battles[1]:X2}{battles[0]:X2}31{buffedFiend:X2}31313131"));
 				}
@@ -265,7 +266,8 @@ namespace FF1Lib
 				easyBattles.Shuffle(rng);
 				hardBattles.Shuffle(rng);
 				landingArea.Add(Blob.FromHex($"31{hardBattles[0]:X2}3131{easyBattles[0]:X2}31{easyBattles[1]:X2}3131{hardBattles[1]:X2}31"));
-			} else if (shorttofrfiendsrefights == ShortToFRFiendsRefights.AnythingGoes)
+			}
+			else if (shorttofrfiendsrefights == ShortToFRFiendsRefights.AnythingGoes)
 			{
 				/** 
 				 * 0 - No encounter
@@ -306,7 +308,8 @@ namespace FF1Lib
 				}
 				anythingGoesHex += "31";
 				landingArea.Add(Blob.FromHex(anythingGoesHex));
-			} else if (shorttofrfiendsrefights == ShortToFRFiendsRefights.Rude)
+			}
+			else if (shorttofrfiendsrefights == ShortToFRFiendsRefights.Rude)
 			{
 				// Mimic "All" option
 				landingArea.Add(Blob.FromHex($"31{battles[3]:X2}{battles[2]:X2}{battles[1]:X2}{battles[0]:X2}31{battles[0]:X2}{battles[1]:X2}{battles[2]:X2}{battles[3]:X2}31"));
@@ -332,6 +335,11 @@ namespace FF1Lib
 				}
 				maps[MapIndex.TempleOfFiendsRevisitedChaos].Map[22, 15] = (byte)extraFiend;
 			}
+			else
+			{
+				landingArea.Add(Blob.FromHex("3131313131313131313131"));
+			}
+
 			maps[MapIndex.TempleOfFiendsRevisitedChaos].Map.Put((0x0A, 0x00), landingArea.ToArray());
 
 			if (addLutePlate)

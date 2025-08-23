@@ -256,6 +256,7 @@ namespace FF1Lib
 		public bool? TitansTrove { get; set; } = false;
 		public bool? LefeinSuperStore { get; set; } = false;
 		public bool? LefeinShops { get; set; } = false;
+		public bool? LefeinShortcut { get; set; } = false;
 		public bool? RandomVampAttack { get; set; } = false;
 		public bool? RandomVampAttackIncludesConeria { get; set; } = false;
 		public bool? FightBahamut { get; set; } = false;
