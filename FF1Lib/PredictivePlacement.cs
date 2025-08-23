@@ -9,6 +9,8 @@ namespace FF1Lib
 		static HashSet<Item> GatingItems = new HashSet<Item> { Item.Crown, Item.Key, Item.Lute, Item.Rod, Item.Cube, Item.Oxyale, Item.Tnt };
 		static HashSet<Item> KeyItems = new HashSet<Item>(MapChangeItems.Concat(FetchQuestItems).Concat(GatingItems));
 
+		static List<int> forbiddenApChests = new() { 145, 146, 147, 148, 187, 188, 189, 190, 191, 192, 193, 194, 195 };
+
 		//Thy algorithm sllows flexible placement of many items. The average order is set by 3 Factors.
 		//A chance modifier(ExceptionWeights)
 		//A cycle based restriction(ExceptionMinCycled
@@ -483,7 +485,7 @@ namespace FF1Lib
 				//place the shards(almost same code as in GuidedPlacement)
 				if (!placementFailed && shards.Count > 0)
 				{
-					var leftoverItemLocations = GetAllAccessibleRewardSources(preBlackOrbLocationPool, placedItems);
+					var leftoverItemLocations = GetAllAccessibleRewardSources(preBlackOrbLocationPool, placedItems).Where(l => !forbiddenApChests.Contains(l.Address - 0x3100)).ToList();
 
 					foreach (var shard in shards)
 					{

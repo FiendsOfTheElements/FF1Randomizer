@@ -20,8 +20,12 @@ namespace FF1Lib
 		LocalFormations,
 		[Description("Remove Trap Tiles")]
 		Remove,
+		[Description("Undead Only")]
+		Undead,
 		[Description("Curated")]
-		Curated
+		Curated,
+		[Description("Overpowered")]
+		Overpowered
 	}
 
 	public enum TrapTileOffsets : int
@@ -238,42 +242,244 @@ namespace FF1Lib
 						encounters = encounters.Except(FormationLists.BahamutEncounter).ToList();
 					}
 				}
+				else if (mode == TrapTileMode.Curated)
+        {
+				//balanced/curated mode
+				//this mode is really just in here so tournament organizers know that it's possible
+				encounters = new(FormationLists.AllRandomEncounters);
+
+				//remove the god grinds
+				encounters.Remove(0x69);        //1 eye tile.
+				encounters.Remove(0x69 + 0x80); //3 eye tile.
+				encounters.Remove(0x56 + 0x80); //2 fighter.
+				encounters.Remove(0x3C);        //1 sandworm
+				encounters.Remove(0x3C + 0x80); //1-2 sandworm
+
+				//remove the too hard/annoying encounters
+				encounters.Remove(0x21 + 0x80); //2-4 Earth
+				encounters.Remove(0x27 + 0x80); //3-4 Fire
+				encounters.Remove(0x38);        //1-2 rankylo
+				encounters.Remove(0x38 + 0x80); //4 rankylo
+				encounters.Remove(0x4E + 0x80); //3 blue d
+				encounters.Remove(0x3B + 0x80); //3-4 chimera
+				encounters.Remove(0x4D + 0x80); //5-9 badmen
+				encounters.Remove(0x49 + 0x80); //3-6 waters
+				encounters.Remove(0x51 + 0x80); //3-6 airs
+				encounters.Remove(0x57 + 0x80); //3-4 worm
+
+				//remove the worst enemies in the game
+				encounters.Remove(0x6A); //2-5 rgoyles
+				encounters.Remove(0x6A + 0x80); //3-7 rgoyles
+
+          if (fightBahamut)
+          {
+            encounters.Remove(0x80 + 0x71); // ANKYLO (used for Bahamut)
+            encounters.Remove(0x71); // ANKYLO (used for Bahamut)
+          }
+        }
+				else if (mode == TrapTileMode.Undead)
+				{
+					//all random
+					encounters = new(FormationLists.ASideEncounters);
+					//if (fightBahamut)
+					//{
+					//	encounters = encounters.Except(FormationLists.BahamutEncounter).ToList();
+					//}
+
+					for (int i = encounters.Count - 1; i > 4; i--)
+					{
+						//remove all encounters
+						//encounters.RemoveAt(i);
+						encounters.Remove((byte)i);
+					}
+
+					encounters.Add(0x01); // Bones
+					 encounters.Add(0x01 + 0x80); // Bones and Crawls
+
+					encounters.Add(0x04); // Zombies
+					encounters.Add(0x04 + 0x80); // Zombies and Ghouls
+
+					encounters.Add(0x08); // Ghoul
+					encounters.Add(0x08 + 0x80); // Geists and Ghouls
+
+					encounters.Add(0x0A); // Shadows
+					encounters.Add(0x0A + 0x80); // Shadows
+
+					encounters.Add(0x04); // Giests
+					encounters.Add(0x04 + 0x80); // Geists and Specters
+
+					encounters.Add(0x18); // Images
+					encounters.Add(0x18 + 0x80); // Images and Wraiths
+
+					encounters.Add(0x1D); // Mummies
+					encounters.Add(0x1D + 0x80); // Mummies and Wzmummy
+
+					encounters.Add(0x2B); // Bones, RBone, Crawl
+					encounters.Add(0x2B + 0x80); // RBones
+
+					encounters.Add(0x2C); // Images, Wraiths, Specters, Geists
+					encounters.Add(0x2C + 0x80); // Wraiths
+
+					encounters.Add(0x2F); // Mages
+					encounters.Add(0x2F + 0x80); // Mages and Fighter
+
+					encounters.Add(0x32); // ZomBULLs
+					encounters.Add(0x32 + 0x80); // ZomBULLs and Trolls
+
+					encounters.Add(0x46); // Phantom
+					encounters.Add(0x46 + 0x80); // Ghosts
+
+					encounters.Add(0x4A); // WzMummies, Mummies, Perilisks, Coctrices
+					encounters.Add(0x4A + 0x80); // WzMummies, Mummies
+
+					encounters.Add(0x4B); // ZombieDs
+					encounters.Add(0x4B + 0x80); // ZombieDs
+
+					encounters.Add(0x53); // WzVamps
+					encounters.Add(0x53 + 0x80); // WzVamps and ZombieDs
+
+					encounters.Add(0x56 + 0x80); // Fighters
+
+					encounters.Add(0x68); // Vamps
+					encounters.Add(0x68 + 0x80); // WzVamp, Vamps
+
+					encounters.Add(0x69); // Eye
+										  //encounters.Add(0x69 + 0x80); // Eyes
+
+
+					encounters.Remove(0x71); // ANKYLO
+					encounters.Remove(0x72); // Seasneak
+
+					encounters.Remove(0x04);
+					encounters.Remove(0x03);
+					encounters.Remove(0x02);
+					encounters.Remove(0x01);
+					encounters.Remove(0x00);
+				}
 				else
 				{
-					//balanced/curated mode
-					//this mode is really just in here so tournament organizers know that it's possible
+					//UNbalanced/curated mode
+					//this mode is really just in here so we have the option to make spike tiles overpowered
 					encounters = new(FormationLists.AllRandomEncounters);
-
-					//remove the god grinds
+					encounters.Add(0x56);
+					/*
+					//keep the god grinds
 					encounters.Remove(0x69);        //1 eye tile.
 					encounters.Remove(0x69 + 0x80); //3 eye tile.
 					encounters.Remove(0x56 + 0x80); //2 fighter.
 					encounters.Remove(0x3C);        //1 sandworm
 					encounters.Remove(0x3C + 0x80); //1-2 sandworm
+					*/
 
 					//remove the too hard/annoying encounters
 					encounters.Remove(0x21 + 0x80); //2-4 Earth
 					encounters.Remove(0x27 + 0x80); //3-4 Fire
 					encounters.Remove(0x38);        //1-2 rankylo
 					encounters.Remove(0x38 + 0x80); //4 rankylo
-					encounters.Remove(0x4E + 0x80); //3 blue d
-					encounters.Remove(0x3B + 0x80); //3-4 chimera
+													//encounters.Remove(0x4E + 0x80); //3 blue d
+													//encounters.Remove(0x3B + 0x80); //3-4 chimera
 					encounters.Remove(0x4D + 0x80); //5-9 badmen
-					encounters.Remove(0x49 + 0x80); //3-6 waters
+													//encounters.Remove(0x49 + 0x80); //3-6 waters
 					encounters.Remove(0x51 + 0x80); //3-6 airs
-					encounters.Remove(0x57 + 0x80); //3-4 worm
+													//encounters.Remove(0x57 + 0x80); //3-4 worm
 
 					//remove the worst enemies in the game
 					encounters.Remove(0x6A); //2-5 rgoyles
 					encounters.Remove(0x6A + 0x80); //3-7 rgoyles
 
-					if (fightBahamut)
-					{
+					//foreach (var tileset in tileSets)
+					//{
+					//	tileset.Tiles.ForEach(tile =>
+							//if (fightBahamut)
+							//{
 						encounters.Remove(0x80 + 0x71); // ANKYLO (used for Bahamut)
 						encounters.Remove(0x71); // ANKYLO (used for Bahamut)
-					}
-				}
+					//}
+					//these can be not on the list regardless of whether fight Bahamut is on
 
+					//remove most of the encounters
+					for (int i = 0; i < 0x17; i++) {  //stop before Pedes 0x17
+						encounters.Remove((byte)i);
+						encounters.Remove((byte)(0x80 + i));
+					}
+					encounters.Remove(0x80 + 0x17);
+					for (int i = 0x18; i < 0x1E; i++) //stop before Giants 0x1E
+					{
+						encounters.Remove((byte)i);
+						encounters.Remove((byte)(0x80 + i));
+					}
+					encounters.Remove(0x80 + 0x1E);
+					for (int i = 0x1F; i < 0x24; i++) //stop before R.Hydra 0x24 and Ochos 0x25 and R.Giants 0x26
+					{
+						encounters.Remove((byte)i);
+						encounters.Remove((byte)(0x80 + i));
+					}
+					encounters.Remove(0x80 + 0x25);
+					encounters.Remove(0x27); //1-2 fires
+					encounters.Remove(0x28); // grey Worm
+					encounters.Remove(0x80 + 0x28);
+					//skip 0x29 agama and 0x2A Red D
+					encounters.Remove(0x2B);
+					encounters.Remove(0x2C);
+					encounters.Remove(0x80 + 0x2B);
+					encounters.Remove(0x80 + 0x2C);
+					//skip FrWolfs 0x2D
+					encounters.Remove(0x2E); //FrWolfs + FrGiants
+					encounters.Remove(0x80 + 0x2E); //FrWolfs + FrGiants
+													//skip Mages 0x2F
+					for (int i = 0x30; i < 0x3B; i++) //stop before Chimeras 0x3B, sandworm, and both steaks 0x3E
+					{
+						encounters.Remove((byte)i);
+						encounters.Remove((byte)(0x80 + i));
+					}
+					encounters.Remove(0x80 + 0x3E);
+					encounters.Remove(0x3F);//mud gols
+					encounters.Remove(0x08 + 0x3F);//mud gols
+					encounters.Remove(0x40);//grmedusas
+					encounters.Remove(0x80 + 0x40);//grmedusas
+												   //NOACHO skip 0x41
+					for (int i = 0x42; i < 0x45; i++) //stop before GrShark+WizSahag 0x45
+					{
+						encounters.Remove((byte)i);
+					}
+					encounters.Remove(0x80 + 0x45);
+					encounters.Remove(0x46);//Phantom
+					encounters.Remove(0x80 + 0x46);
+					encounters.Remove(0x47);//Naga Water
+											//skip bigeye grshark 0x48
+					encounters.Remove(0x49);//1-3 waters
+											//skip wizMumies 0x4A and Zombie Ds 0x4B
+					encounters.Remove(0x4A);//mummies, wiz mumies, conctrice
+					encounters.Remove(0x80 + 0x4A);
+					for (int i = 0x4C; i < 0x4E; i++) //stop before Blue D 0x4E
+					{
+						encounters.Remove((byte)i);
+					}
+					encounters.Remove(0x80 + 0x4C);
+					encounters.Remove(0x4F);//nitemares
+					encounters.Remove(0x80 + 0x4F);//nitemares
+												   //skip slimes 0x50
+					encounters.Remove(0x51);//2-4 air
+					encounters.Remove(0x80 + 0x51);
+					encounters.Remove(0x52);//Gr Naga + air
+					encounters.Remove(0x80 + 0x52);
+					//skip wz vamps
+					encounters.Remove(0x54);//Nitemares + evilman
+					encounters.Remove(0x80 + 0x54);
+					//skip Jimera, Warmech, Worms, RockGol, Gas D,
+					encounters.Remove(0x80 + 0x55);
+					for (int i = 0x5A; i < 0x69; i++) //stop before Eye 0x69
+					{
+						encounters.Remove((byte)i);
+						encounters.Remove((byte)(0x80 + i));
+					}
+					for (int i = 0x6A; i < 0x73; i++) //stop before Lich 0x73
+					{
+						encounters.Remove((byte)i);
+						encounters.Remove((byte)(0x80 + i));
+					}
+					encounters.Remove(0x80 + 0x7E);//R + Wiz Sahags
+				}
 
 				foreach (var tileset in tileSets)
 				{
