@@ -64,8 +64,58 @@ namespace FF1Lib
 			{
 				UninterruptedMusic();
 			}
+			if (preferences.MagicShopMenuChange)
+			{
+				MagicShopsMatchEquipShops();
+			}
+		}
+		public void MagicShopsMatchEquipShops()
+		{
+			// QoS to make magic shop function like weapon/armor shops
+	 		PutInBank(0x0E, 0xA360, Blob.FromHex("A90D205BAA2089A9B0EDA662BD00038D0C032065AA20C2A8B0DEA562D0DA20EBA49008A910205BAA4C65A320E094A5626A6A6A29C08D0A0320DFAA20CDA4AE0A03AD0B039D00634C60A3"));
 
-			
+			// assembly for QoS
+			// LDA #$0D                 
+			// JSR $AA5B                
+			// JSR $A989                
+			// BCS $A357               
+			// LDX $62                  
+			// LDA $0300,X             
+			// STA $030C                
+			// JSR $AA65                
+			// JSR $A8C2                
+			// BCS $A358                
+			// LDA $62                  
+			// BNE $A358                
+			// JSR $A4EB                
+			// BCC $A38B                
+			// LDA #$10                 
+			// JSR $AA5B                
+			// JMP $A365                
+			// JSR $94E0                
+			// LDA $62                  
+			// ROR A                    
+			// ROR A                    
+			// ROR A                    
+			// AND #$C0                 
+			// STA $030A                
+			// JSR $AADF                
+			// JSR $A4CD                
+			// LDX $030A                
+			// LDA $030B                
+			// STA $6300,X              
+			// JMP $A360                
+
+			PutInBank(0x0E, 0x94E0, Blob.FromHex("A917205BAA20E4A8B0034C8EA34C65A3"));
+
+			// assembly for QoS
+			// LDA #$17
+  			// JSR $AA5B
+			// JSR $A8E4
+			// BCS $94ED
+			// JMP $A38E
+			// JMP $A365
+
 		}
 		public void DisableDamageTileFlicker()
 		{
