@@ -71,7 +71,8 @@ public partial class FF1Rom : NesRom
 			await ProgressCallback(currentStep, maxSteps, message);
 		}
 	}
-	public async Task Randomize(Blob seed, Flags flags, Preferences preferences)
+
+	public async Task<Flags> Randomize(Blob seed, Flags flags, Preferences preferences)
 	{
 		// Confirm ROM integrity
 		if (flags.TournamentSafe) AssureSafe();
@@ -445,5 +446,6 @@ public partial class FF1Rom : NesRom
 		if (flags.TournamentSafe) Put(0x3FFE3, Blob.FromHex("66696E616C2066616E74617379"));
 
 		await this.Progress("Randomization Completed");
+		return flags;
 	}
 }

@@ -92,6 +92,7 @@
 		"MaxLevelLow": 50,
 		"MaxLevelHigh": 50,
 		"Spoilers": false,
+    	"TriState": false,
 		"TournamentSafe": false,
 		"BlindSeed": false,
 		"Shops": true,

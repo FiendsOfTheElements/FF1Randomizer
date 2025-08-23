@@ -18,6 +18,11 @@
 		"description": "Download a spoiler log for the current seed. The resulting ROM's randomization will be different than if the log had not been generated in order to prevent cheating in races.\nNote: You may be asked by your browser to allow downloading multiple files when using this option."
 	},
 	{
+		"Id": "tristatesCheckBox",
+		"title": "Show Reveal Randomized State Flags Button",
+		"description": "Enables the reveal randomized state flags button. Clicking the button allows you to know what any selected tristate flags will become. This is NOT reversible. \nNote: Save your tristate flag string if you don't want remake it."
+	},
+	{
 		"Id": "printBlursingsCheckBox",
 		"title": "Print Class Blursings",
 		"screenshot": "printBlursingsCheckBox.gif",
