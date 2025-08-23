@@ -33,6 +33,7 @@ namespace FF1Lib
 			EnableMelmondClinic((bool)flags.MelmondClinic);
 			RandomVampireAttack((bool)flags.RandomVampAttack, (bool)flags.LefeinShops, (bool)flags.RandomVampAttackIncludesConeria, rng);
 			ShufflePravoka((bool)flags.ShufflePravokaShops, AttackedTown == MapIndex.Pravoka, rng);
+			EnableLefeinShortcut((bool)flags.LefeinShortcut);
 			EnableGaiaShortcut((bool)flags.GaiaShortcut);
 			MoveGaiaItemShop((bool)flags.MoveGaiaItemShop && (bool)flags.GaiaShortcut, rng);
 			EnableLefeinSuperStore((bool)flags.LefeinSuperStore && (flags.ShopKillMode_White == ShopKillMode.None && flags.ShopKillMode_Black == ShopKillMode.None), flags.NoOverworld);
@@ -216,6 +217,16 @@ namespace FF1Lib
 				maps[(int)MapIndex.Pravoka][coord.y, coord.x] = shop.sign;
 				maps[(int)MapIndex.Pravoka][coord.y + 1, coord.x] = shop.door;
 			}
+		}
+		private void EnableLefeinShortcut(bool lefeinshortcut)
+		{
+			if (!lefeinshortcut)
+			{
+				return;
+			}
+
+			maps[(byte)MapIndex.Lefein][21, 23] = (byte)Tile.TownHorizonalBridge;
+			maps[(byte)MapIndex.Lefein][21, 15] = (byte)Tile.TownHorizonalBridge;
 		}
 		private void EnableGaiaShortcut(bool gaiashortcut)
 		{
