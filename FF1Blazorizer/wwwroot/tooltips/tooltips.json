@@ -18,6 +18,11 @@
 		"description": "Download a spoiler log for the current seed. The resulting ROM's randomization will be different than if the log had not been generated in order to prevent cheating in races.\nNote: You may be asked by your browser to allow downloading multiple files when using this option."
 	},
 	{
+		"Id": "tristatesCheckBox",
+		"title": "Show Reveal Randomized State Flags Button",
+		"description": "Enables the reveal randomized state flags button. Clicking the button allows you to know what any selected tristate flags will become. This is NOT reversible. \nNote: Save your tristate flag string if you don't want remake it."
+	},
+	{
 		"Id": "printBlursingsCheckBox",
 		"title": "Print Class Blursings",
 		"screenshot": "printBlursingsCheckBox.gif",
@@ -280,6 +285,12 @@
 		"title": "Shop Information Icons",
 		"screenshot": "shopInfoIconsCheckBox.png",
 		"description": "When using Shop Information, elements and statuses are shown as icons, allowing for more information to be displayed."
+	},
+	{
+		"Id": "magicShopMenuCheckBox",
+		"title": "Magic Shop Menus Match Equipment Shops Menu",
+		"screenshot": "MagicShopMenuChangeCheckBox.png",
+		"description": "Changes the magic shop menu order to match the equipment shops.\nSelect Spell > Pay > Choose Character."
 	},
 	{
 		"Id": "renounceAutosortCheckBox",
