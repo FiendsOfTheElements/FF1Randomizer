@@ -261,6 +261,6 @@ _Pvt_Extensions
 
 FF1/Blazorizer/output/*
 
-FF1Blazorizer/output/*
+FF1Blazorizer/output/
 
 FF1Lib/FF1Lib.sln

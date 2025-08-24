@@ -518,13 +518,15 @@ namespace FF1Lib
 				"Are you thirsty?\nTake a moment to drink\nthe endlessly recycled\nwater.",
 				"I am no ordinary well.\nI am a unique fountain,\nblessed by the light\nwariors.",
 				"WASH YOUR FACE!!!!",
-				"You may wash your face,\nbut come to the inn to get\na full private bath!",
-				"Please go to the\nordinary well to fill\nme back up."
+				"You may wash your face,\nbut come to the inn to\nget a full private bath!",
+				"Please go to the\nordinary well to fill\nme back up.",
+				"Sploosh, Splash.\nThe fountain sprayed\nyour face.",
+				"You examine the fountain.\nIt is only a trickle.\nThe water element\nhas been corrupted."
 			};
 
 			string roast = roasts.PickRandom(rng);
 
-			//roast = roasts[9]; //for testing
+			//roast = roasts[12]; //for testing
 
 			dialogues[0x136] = roast;
 		}
