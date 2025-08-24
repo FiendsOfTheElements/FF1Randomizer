@@ -129,7 +129,7 @@ namespace FF1Lib
 			}
 			else
 			{
-				ShuffleTrapTiles(zoneformations, rng, mode, (bool)flags.FightBahamut);
+				ShuffleTrapTiles(zoneformations, rng, mode, (bool)flags.FightBahamut, flags.AllowUnsafePlacement, flags.WarMECHMode);
 			}
 
 		}
@@ -167,7 +167,7 @@ namespace FF1Lib
 			}
 		}
 
-		public void ShuffleTrapTiles(ZoneFormations zoneformations, MT19337 rng, TrapTileMode mode, bool fightBahamut)
+		public void ShuffleTrapTiles(ZoneFormations zoneformations, MT19337 rng, TrapTileMode mode, bool fightBahamut, bool unsafePlacement, WarMECHMode mechMode)
 		{ 
 			if (mode == TrapTileMode.LocalFormations)
 			{
@@ -243,40 +243,40 @@ namespace FF1Lib
 					}
 				}
 				else if (mode == TrapTileMode.Curated)
-        {
-				//balanced/curated mode
-				//this mode is really just in here so tournament organizers know that it's possible
-				encounters = new(FormationLists.AllRandomEncounters);
+				{
+					//balanced/curated mode
+					//this mode is really just in here so tournament organizers know that it's possible
+					encounters = new(FormationLists.AllRandomEncounters);
 
-				//remove the god grinds
-				encounters.Remove(0x69);        //1 eye tile.
-				encounters.Remove(0x69 + 0x80); //3 eye tile.
-				encounters.Remove(0x56 + 0x80); //2 fighter.
-				encounters.Remove(0x3C);        //1 sandworm
-				encounters.Remove(0x3C + 0x80); //1-2 sandworm
+					//remove the god grinds
+					encounters.Remove(0x69);        //1 eye tile.
+					encounters.Remove(0x69 + 0x80); //3 eye tile.
+					encounters.Remove(0x56 + 0x80); //2 fighter.
+					encounters.Remove(0x3C);        //1 sandworm
+					encounters.Remove(0x3C + 0x80); //1-2 sandworm
 
-				//remove the too hard/annoying encounters
-				encounters.Remove(0x21 + 0x80); //2-4 Earth
-				encounters.Remove(0x27 + 0x80); //3-4 Fire
-				encounters.Remove(0x38);        //1-2 rankylo
-				encounters.Remove(0x38 + 0x80); //4 rankylo
-				encounters.Remove(0x4E + 0x80); //3 blue d
-				encounters.Remove(0x3B + 0x80); //3-4 chimera
-				encounters.Remove(0x4D + 0x80); //5-9 badmen
-				encounters.Remove(0x49 + 0x80); //3-6 waters
-				encounters.Remove(0x51 + 0x80); //3-6 airs
-				encounters.Remove(0x57 + 0x80); //3-4 worm
+					//remove the too hard/annoying encounters
+					encounters.Remove(0x21 + 0x80); //2-4 Earth
+					encounters.Remove(0x27 + 0x80); //3-4 Fire
+					encounters.Remove(0x38);        //1-2 rankylo
+					encounters.Remove(0x38 + 0x80); //4 rankylo
+					encounters.Remove(0x4E + 0x80); //3 blue d
+					encounters.Remove(0x3B + 0x80); //3-4 chimera
+					encounters.Remove(0x4D + 0x80); //5-9 badmen
+					encounters.Remove(0x49 + 0x80); //3-6 waters
+					encounters.Remove(0x51 + 0x80); //3-6 airs
+					encounters.Remove(0x57 + 0x80); //3-4 worm
 
-				//remove the worst enemies in the game
-				encounters.Remove(0x6A); //2-5 rgoyles
-				encounters.Remove(0x6A + 0x80); //3-7 rgoyles
+					//remove the worst enemies in the game
+					encounters.Remove(0x6A); //2-5 rgoyles
+					encounters.Remove(0x6A + 0x80); //3-7 rgoyles
 
-          if (fightBahamut)
-          {
-            encounters.Remove(0x80 + 0x71); // ANKYLO (used for Bahamut)
-            encounters.Remove(0x71); // ANKYLO (used for Bahamut)
-          }
-        }
+					if (fightBahamut)
+					{
+						encounters.Remove(0x80 + 0x71); // ANKYLO (used for Bahamut)
+						encounters.Remove(0x71); // ANKYLO (used for Bahamut)
+					}
+				}
 				else if (mode == TrapTileMode.Undead)
 				{
 					//all random
@@ -294,7 +294,7 @@ namespace FF1Lib
 					}
 
 					encounters.Add(0x01); // Bones
-					 encounters.Add(0x01 + 0x80); // Bones and Crawls
+					encounters.Add(0x01 + 0x80); // Bones and Crawls
 
 					encounters.Add(0x04); // Zombies
 					encounters.Add(0x04 + 0x80); // Zombies and Ghouls
@@ -361,7 +361,12 @@ namespace FF1Lib
 					//UNbalanced/curated mode
 					//this mode is really just in here so we have the option to make spike tiles overpowered
 					encounters = new(FormationLists.AllRandomEncounters);
-					encounters.Add(0x56);
+
+					if (unsafePlacement || mechMode == WarMECHMode.All) { 
+						encounters.Add(0x56);
+					}
+
+
 					/*
 					//keep the god grinds
 					encounters.Remove(0x69);        //1 eye tile.
