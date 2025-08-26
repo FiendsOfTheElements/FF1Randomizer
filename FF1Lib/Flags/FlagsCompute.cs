@@ -257,7 +257,7 @@ namespace FF1Lib
 			+ ((IncentivizeCardia ?? true) ? 1 : 0);
 
 		public int TrappedChestsFloor => 0
-			+ ((TCShards == TCOptions.All) ? 32 : 0)
+			+ ((ShardHunt && TCShards == TCOptions.All) ? 32 : 0)
 			+ ((TCKeyItems == TCOptions.All) ? 20 : 0)
 		    + ((TCBetterTreasure == TCOptions.All) ? 46 : 0)
 		    + ((TCMasaGuardian == true && TCBetterTreasure != TCOptions.All) ? 1 : 0)
