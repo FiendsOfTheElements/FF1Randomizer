@@ -35,15 +35,15 @@ namespace FF1Lib
 
 		List<MapIndex> ValidMaps_Vertical = new List<MapIndex>
 		{
-			MapIndex.TempleOfFiends,
-			MapIndex.EarthCaveB1, MapIndex.EarthCaveB2, MapIndex.EarthCaveB4, MapIndex.EarthCaveB3, MapIndex.EarthCaveB5,
-			MapIndex.MarshCaveB1, MapIndex.MarshCaveB2, MapIndex.MarshCaveB3,
-			MapIndex.IceCaveB1, MapIndex.IceCaveB2, MapIndex.IceCaveB3,
-			MapIndex.MirageTower1F, MapIndex.MirageTower2F,
-			MapIndex.SkyPalace1F, MapIndex.SkyPalace2F, MapIndex.SkyPalace3F,
-			MapIndex.SeaShrineB1, MapIndex.SeaShrineB2, MapIndex.SeaShrineB3, MapIndex.SeaShrineB4, MapIndex.SeaShrineB5,
-			MapIndex.Waterfall,
-			MapIndex.GurguVolcanoB1, MapIndex.GurguVolcanoB2, MapIndex.GurguVolcanoB3, MapIndex.GurguVolcanoB4, MapIndex.GurguVolcanoB5
+				MapIndex.TempleOfFiends,
+				MapIndex.EarthCaveB1, MapIndex.EarthCaveB2, MapIndex.EarthCaveB4, MapIndex.EarthCaveB3, MapIndex.EarthCaveB5,
+				MapIndex.MarshCaveB1, MapIndex.MarshCaveB2, MapIndex.MarshCaveB3,
+				MapIndex.IceCaveB1, MapIndex.IceCaveB2, MapIndex.IceCaveB3,
+				MapIndex.MirageTower1F, MapIndex.MirageTower2F,
+				MapIndex.SkyPalace1F, MapIndex.SkyPalace2F, MapIndex.SkyPalace3F,
+				MapIndex.SeaShrineB1, MapIndex.SeaShrineB2, MapIndex.SeaShrineB3, MapIndex.SeaShrineB4, MapIndex.SeaShrineB5,
+				MapIndex.Waterfall,
+				MapIndex.GurguVolcanoB1, MapIndex.GurguVolcanoB2, MapIndex.GurguVolcanoB3, MapIndex.GurguVolcanoB4, MapIndex.GurguVolcanoB5
 		};
 
 		List<MapIndex> mapsToFlipVertically;
