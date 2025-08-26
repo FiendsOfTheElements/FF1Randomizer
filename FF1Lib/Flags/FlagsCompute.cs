@@ -258,8 +258,8 @@ namespace FF1Lib
 
 		public int TrappedChestsFloor => 0
 			+ ((TCShards == TCOptions.All) ? 32 : 0)
-			+ ((TCKeyItems == TCOptions.All) ? 16 : 0)
-		    + ((TCBetterTreasure == TCOptions.All) ? 50 : 0)
+			+ ((TCKeyItems == TCOptions.All) ? 20 : 0)
+		    + ((TCBetterTreasure == TCOptions.All) ? 46 : 0)
 		    + ((TCMasaGuardian == true && TCBetterTreasure != TCOptions.All) ? 1 : 0)
 			+ ((TrappedChaos == true) ? 1 : 0);
 
