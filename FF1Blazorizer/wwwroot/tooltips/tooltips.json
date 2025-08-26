@@ -1048,7 +1048,7 @@
 		"Id": "tcChestCountSlider",
 		"title": "Trapped Chests Count",
 		"screenshot": "tcChestsPool.png",
-		"description": "Sets the number of chests that will have traps (monsters) in them. Setting the slider to the rightmost position will select a random number of trapped chests.\n\nIn game count may slightly differ for some flags combinations.\nFor best results, use in combination with the sub-flags included in this section."
+		"description": "Sets the number of chests that will have traps (monsters) in them. Setting the slider to the rightmost position will select a random number of trapped chests.\n\nIn game count may slightly differ for some flags combinations.\nThe starting value is the highest minimum number of possible trapped chests. This doesn't take into account free or removed items nor the random selection options.\nFor best results, use in combination with the sub-flags included in this section."
 	},
 	{
 		"Id": "tcBetterTreasuresDropDown",
@@ -1072,7 +1072,7 @@
 		"Id": "tcExcludeCommonCheckBox",
 		"title": "Exclude Common Treasures",
 		"screenshot": "trappedChestsCheckBox.gif",
-		"description": "Common treasures (common equipment, consumables and GP chests) are never trapped."
+		"description": "Common treasures (common equipment, consumables and GP chests) are never trapped.\nThis will result in a lower number of trapped chests if a higher value than the minimum is chosen.\nE.G. shards + key items are set to always for 52 chests, but 60 is selected.\nAt least the extra 8 will be ignored."
 	},
 	{
 		"Id": "tcProtectIncentivesCheckBox",
