@@ -255,6 +255,7 @@ namespace FF1Lib.Music
 			{
 				newMusicData.NewSongs.Remove(newMusicData.NewSongs.Where(x => x.Name == "UnderTheSea").First());
 				newMusicData.NewSongs.Remove(newMusicData.NewSongs.Where(x => x.Name == "JeopardyThink").First());
+				newMusicData.NewSongs.Remove(newMusicData.NewSongs.Where(x => x.Name == "DW1Fanfare").First());
 
 				Song tmp = OriginalSongs[(int)SongNames.TempleOfFiend];
 				tmp.ReplacementCandidates = new List<ReplacableSongs>() { ReplacableSongs.Mermaids };
