@@ -968,6 +968,11 @@ public partial class FF1Rom : NesRom
 			EnableIdentifyTreasures();
 		}
 
+		if (flags.ChestsAppearOpened)
+		{
+			EnableChestsAppearOpened();
+		}
+
 		if ((flags.Dash || flags.SpeedBoat))
 		{
 			EnableDash(flags.SpeedBoat, preferences.OptOutSpeedHackDash);
@@ -1411,7 +1416,7 @@ public partial class FF1Rom : NesRom
 
 		OpenChestsInOrder(flags.OpenChestsInOrder && !flags.Archipelago);
 
-		if(flags.SetRNG)
+		if (flags.SetRNG)
 		{
 			SetRNG(flags);
 		}

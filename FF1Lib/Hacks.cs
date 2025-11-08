@@ -165,6 +165,13 @@ namespace FF1Lib
 			InsertDialogs(0xF1, "Can't hold\n#");
 		}
 
+		public void EnableChestsAppearOpened()
+		{
+			PutInBank(0x1F, 0xCC45, Blob.FromHex("A9112003FE4C40B9"));
+			PutInBank(0x1F, 0xCC62, Blob.FromHex("A9002003FE"));
+			PutInBank(0x11, 0xB940, Blob.FromHex("A000B900042908F017BE0104BD00622904F00D984AAAA97E9D0005A97F9D8005C8C8D0DEA9008511A5480A0A0A26110A26118510A6110610261118651085108A651109A085114C62CC"));
+		}
+
 		public void EnableDash(bool speedboat,  bool slowMapMove)
 		{
 			if (slowMapMove)

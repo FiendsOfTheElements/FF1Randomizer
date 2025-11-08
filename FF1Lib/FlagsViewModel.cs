@@ -2191,6 +2191,15 @@ namespace FF1Lib
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IdentifyTreasures"));
 			}
 		}
+		public bool ChestsAppearOpened
+		{
+			get => Flags.ChestsAppearOpened;
+			set
+			{
+				Flags.ChestsAppearOpened = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ChestsAppearOpened"));
+			}
+		}
 		public bool ShopInfo
 		{
 			get => Flags.ShopInfo;

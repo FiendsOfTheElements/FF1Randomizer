@@ -1,103 +1,123 @@
 ﻿tmp             = $10 ; 16 bytes
 
-lut_SMTilesetTSA   = $9000   ; BANK_SMINFO - page
+cur_map         = $48
 
-tileset_data    = $0400  ; $400 bytes -- must be on page bound
+tileset_data       = $0400
+load_map_pal       = tileset_data+$380
+TP_SPEC_TREASURE   = %00001000
 
-TP_SPEC_TREASURE  = %00001000
+lut_SMPalettes     = $A000   ; BANK_SMINFO - $1000 byte bound
 
-cur_tileset = $49
+unsram             = $6000  ; $400 bytes
+game_flags         = unsram+$0200
+GMFLG_TCOPEN       = %00000100
+
 SwapPRG = $FE03
 Copy256 = $CC74
 
 ; bank 1F
-; Original LoadSMTilesetData @ $CC21
+; Original LoadSMTilesetData @ $CC45
+; load map palettes
 
- ; load tileset TSA
+;    LDA #0
+;    STA tmp+1
+;
+;    LDA cur_map             ; get current map and multiply it by $30, rotating carry into tmp+1
+;    ASL A                   ; first, shift left by 4 to multiply by $10
+;    ASL A
+;    ASL A
+;    ROL tmp+1
+;    ASL A
+;    ROL tmp+1
+;    STA tmp
+;
+;    LDX tmp+1               ; load high byte into X.  Here X and A are *$10
+;
+;    ASL tmp                 ; shift RAM by 1 more to multiply by $20
+;    ROL tmp+1
+;
+;    CLC                     ; add *$10 (in A,X) to the *$20 (in tmp,tmp+1) to get *$30
+;    ADC tmp
+;    STA tmp
+;    TXA
+;    ADC tmp+1
+;    ORA #>lut_SMPalettes    ; OR high byte with high byte of palette LUT
+;    STA tmp+1
 
-    LDA cur_tileset           ; get tileset
-    ASL A                     ; *2 (it's assumed this clears C as well -- tileset is less than $80)
-    ADC #>lut_SMTilesetTSA    ; set high byte of src pointer to lut_SMTilesetTSA+(tileset*512)
-    STA tmp+1                 ;  512 bytes of TSA data per tileset
-
-    JSR Copy256               ; copy the first 256 bytes of tsa data
-    INC tmp+1                 ; inc src pointer
-    JSR Copy256               ; and copy the second 256 bytes of tsa data
-
-    ; at the end of this, tmp+3 = 7, and this is important
-
-; A5 49 0A 69 90 85 11 20 74 CC E6 11 20 74 CC
 ; Patch
 
-.ORG $CC21
-    LDA $11
+.ORG $CC45
+    LDA #$11
     JSR SwapPRG
-    JSR LoadSMTilesetTSACheckChests
-    LDA $00
-    JSR SwapPRG
-    NOP ; fill in
-    NOP
+    JMP ReplaceOpenedChestTSA
 
-; A9 11 20 03 FE 20 40 B9 A9 00 20 03 FE EA EA
+.ORG $CC62
+    LDA #$00 ; BANK_SMINFO
+    JSR SwapPRG
+
+; A9 11 20 03 FE 4C 40 B9
+; A9 00 20 03 FE
 
 .ORG $B940
-LoadSMTilesetTSACheckChests:
-    ; The tileset data has been loaded to $0400, we need to loop over it and
-    ; load the TSA for each tile.  If the tile is a chest, we overwrite the
-    ; top two TSA bytes to make it appear opened.
-
-    ; tmp, tmp+1 points to source TSA data
-    ; tmp+2, tmp+3 points to destination TSA data
+ReplaceOpenedChestTSA:
+    ; The tileset data has been loaded to $0400, we need to loop over it, and
+    ; if a tile is a chest, and the chest is opened, replace the top two TSA
+    ; bytes with the opened chest tile values.
 
     LDY #$00
     @Loop:
-        ; copy 4 bytes of TSA data, unrolled for simplicity
-        LDA (tmp)
-        STA (tmp+2)
-        INC tmp
-        INC tmp+2
-        LDA (tmp)
-        STA (tmp+2)
-        INC tmp
-        INC tmp+2
-        LDA (tmp)
-        STA (tmp+2)
-        INC tmp
-        INC tmp+2
-        LDA (tmp)
-        STA (tmp+2)
-        INC tmp
-        INC tmp+2
+        LDA tileset_data,Y        ; get the first byte of tile properties
+        AND #TP_SPEC_TREASURE     ; see if it's a treasure chest
+        BEQ @EndLoop
+        LDX tileset_data+1,Y      ; get the treasure index
+        LDA game_flags,X          ; get the game flags
+        AND #GMFLG_TCOPEN         ; get the opened flag
+        BEQ @EndLoop
 
-        ; check if this was a chest
+        ; The TSA is stored as all the top left tiles, then all the top right, etc.
+        ; So to change the top left, we just offset into that array by the tile index,
+        ; which is half of Y (since Y is incrementing by 2 bytes per tile).
         TYA
-        STA tmp+5
-        LDA tileset_data,Y
-        AND #TP_SPEC_TREASURE
-        BEQ @RollOver
-
-        DEC tmp+2 ; go back two bytes
-        DEC tmp+2
-        LDA #$7E
-        STA (tmp+2) ; set to opened chest tile
-        INC tmp+2
-        LDA #$7F
-        STA (tmp+2)+1
-        INC tmp+2
-
-        @RollOver:
-        LDA tmp
-        BNE @EndLoop
-        INC tmp+1
-        INC tmp+3
+        LSR A
+        TAX
+        LDA #$7E                  ; opened chest top left tile
+        STA tileset_data+$100,X
+        LDA #$7F                  ; opened chest top right tile
+        STA tileset_data+$180,X
 
         @EndLoop:
         INY
-        CPY $#80
+        INY                       ; advance two bytes
         BNE @Loop
 
-    RTS
+    ; Here we have to replicate a chunk of LoadSMTilesetData that we jumped around.
+    LDA #0
+    STA tmp+1
 
-; A0 00 A5 10 85 12 E6 10 E6 12 A5 10 85 12 E6 10 E6 12 A5 10 85 12 E6 10 E6 12 A5 10 85 12 E6 10
-; E6 12 98 85 15 B9 00 04 29 08 F0 10 C6 12 C6 12 A9 7E 85 12 E6 12 A9 7F 85 13 E6 12 A5 10 D0 04
-; E6 11 E6 13 C8 C0 80 D0 B9 60
+    LDA cur_map             ; get current map and multiply it by $30, rotating carry into tmp+1
+    ASL A                   ; first, shift left by 4 to multiply by $10
+    ASL A
+    ASL A
+    ROL tmp+1
+    ASL A
+    ROL tmp+1
+    STA tmp
+
+    LDX tmp+1               ; load high byte into X.  Here X and A are *$10
+
+    ASL tmp                 ; shift RAM by 1 more to multiply by $20
+    ROL tmp+1
+
+    CLC                     ; add *$10 (in A,X) to the *$20 (in tmp,tmp+1) to get *$30
+    ADC tmp
+    STA tmp
+    TXA
+    ADC tmp+1
+    ORA #>lut_SMPalettes    ; OR high byte with high byte of palette LUT
+    STA tmp+1
+
+    JMP $CC62               ; jump back to LoadSMTilesetData
+
+; A0 00 B9 00 04 29 08 F0 17 BE 01 04 BD 00 62 29 04 F0 0D 98 4A AA A9 7E 9D 00 05 A9 7F 9D 80 05
+; C8 C8 D0 DE A9 00 85 11 A5 48 0A 0A 0A 26 11 0A 26 11 85 10 A6 11 06 10 26 11 18 65 10 85 10 8A
+; 65 11 09 A0 85 11 4C 62 CC
