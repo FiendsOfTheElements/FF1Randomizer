@@ -248,8 +248,10 @@ namespace FF1Lib
 			var newChars = new List<(byte, string)>
 			{
 				(0x7B, "000008083E080800FFFFFFFFFFFFFFFF"), // + sign
-				(0x7C, "FFFFFF7F3DFFFFFFFFFF99C2E6C299FE"),  // Trapped chest (standard)
-				(0x7D, "FFFF99C3E7C399FF0000663C183C6600")  // Trap tile
+				(0x7C, "FFFFFF7F3DFFFFFFFFFF99C2E6C299FE"), // Trapped chest (standard)
+				(0x7D, "FFFF99C3E7C399FF0000663C183C6600"), // Trap tile
+				(0x7E, "FFFFEEC0FFFFFFFFFF807F7F00FFDFBB"), // Opened chest left
+				(0x7F, "FFFF3B97FBFDFFFFFF03EDEE06FAFDFA")  // Opened chest right
 			};
 
 			foreach (var newchar in newChars)
@@ -275,6 +277,10 @@ namespace FF1Lib
 			// Hack this one in, because chests in sky have different graphics from other chests
 			var trappedChestSky = "FFFFFF7F3DFFFF7FFF6699C2E64299EE";
 			Put(tilesetOffset + tilesetSize * (int)TileSets.SkyCastle + 0x7C * 0x10, Blob.FromHex(trappedChestSky));
+			var openedChestSkyLeft = "FFFFFFC0FFFFFFFFFF007F7F00FFDFBF";
+			Put(tilesetOffset + tilesetSize * (int)TileSets.SkyCastle + 0x7E * 0x10, Blob.FromHex(openedChestSkyLeft));
+			var openedChestSkyRight = "FFFFFF17FBFDFFFFFF07EBED06FAFDFA";
+			Put(tilesetOffset + tilesetSize * (int)TileSets.SkyCastle + 0x7F * 0x10, Blob.FromHex(openedChestSkyRight));
 		}
 	}
 }

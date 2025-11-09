@@ -242,6 +242,7 @@ namespace FF1Lib
 			{ "?", 0xC5 },
 
 			// I can put two in 7E, 7F
+			// Not anymore, that's used for opened chests
 
 			// 0xC6 Level icon (it has a sinlge different PIXEL so it's off limits despite being otherwise identical to the regular L...)
 			// 0xC7 Equip icon (ditto but for E)
