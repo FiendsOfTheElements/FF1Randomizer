@@ -15,6 +15,8 @@ lut_NTHi           = $D5F2
 unsram             = $6000  ; $400 bytes
 game_flags         = unsram+$0200
 GMFLG_TCOPEN       = %00000100
+DLGID_TCGET        = $F0   ; "In this chest you find..."
+DLGID_CANTCARRY    = $F1   ; "You can't carry anymore"
 DLGID_EMPTYTC      = $F2   ; "this treasure chest is empty"
 
 SwapPRG           = $FE03
@@ -161,9 +163,9 @@ ReplaceOpenedChestTSA:
     JSR SwapPRG
     JMP WrapOpenTreasureChest
 
-; A9 11 20 03 FE 4C 8C B9
+; A9 11 20 03 FE 4C 8A B9
 
-.ORG $B98C
+.ORG $B98A
 WrapOpenTreasureChest:
     ; Replicate the patched out code
     LDX tileprop+1            ; put the chest ID in X
@@ -175,6 +177,8 @@ WrapOpenTreasureChest:
 
     ; Now we call the original OpenTreasureChest
 :   JSR OpenTreasureChest
+    CMP #DLGID_CANTCARRY
+    BEQ @End
     PHA                       ; save whatever the return value was from OpenTreasureChest
     ; So that we can come back here and draw the new tiles
     LDA scroll_y              ; get the scroll value to see where the player is
@@ -233,9 +237,11 @@ WrapOpenTreasureChest:
 
     JSR SetSMScroll           ; reset the scroll (don't know why this is needed, but it prevents flicker)
     PLA                       ; restore the return value from OpenTreasureChest
+    @End:
     RTS
 
-; A6 45 BD 00 62 29 04 F0 03 A9 F2 60 20 78 DD 48 A5 2F 18 69 07 A8 A5 33 C9 08 D0 04 88 4C B1 B9
-; C9 04 D0 01 C8 98 C9 0F 90 02 E9 0F A8 A5 14 29 1F C9 10 B0 0E 0A 19 E2 D5 85 0E B9 F2 D5 85 0F
-; 4C DE B9 29 0F 0A 19 E2 D5 85 0E B9 F2 D5 09 04 85 0F 20 A8 FE AD 02 20 A5 0F 8D 06 20 A5 0E 8D
-; 06 20 A9 7E 8D 07 20 A9 7F 8D 07 20 20 A1 CC 68 60
+; A6 45 BD 00 62 29 04 F0 03 A9 F2 60 20 78 DD C9 F1 F0 61 48 A5 2F 18 69 07 A8 A5 33 C9 08 D0 04
+; 88 4C B3 B9 C9 04 D0 01 C8 98 C9 0F 90 02 E9 0F A8 A5 14 29 1F C9 10 B0 0E 0A 19 E2 D5 85 0E B9
+; F2 D5 85 0F 4C E0 B9 29 0F 0A 19 E2 D5 85 0E B9 F2 D5 09 04 85 0F 20 A8 FE AD 02 20 A5 0F 8D 06
+; 20 A5 0E 8D 06 20 A9 7E 8D 07 20 A9 7F 8D 07 20 20 A1 CC 68 60
+
