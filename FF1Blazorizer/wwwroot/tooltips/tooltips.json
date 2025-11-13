@@ -2136,6 +2136,12 @@
 		"description": "If enabled, the player can see what item is in a chest if their inventory is full, instead of seeing \"Can't hold any more\"."
 	},
 	{
+		"Id": "chestsAppearOpenedCheckBox",
+		"title": "Chests Appear Opened",
+		"screenshot": "chestsAppearOpened.png",
+		"description": "Treasure chests will have an opened appearance after you open them."
+	},
+	{
 		"Id": "dashCheckBox",
 		"title": "Faster Walking Speed",
 		"screenshot": "dashCheckBox.gif",

@@ -374,6 +374,7 @@ namespace FF1Lib
 		public bool? AirBoat { get; set; } = false;
 		public bool BuyTen { get; set; } = false;
 		public bool IdentifyTreasures { get; set; } = false;
+		public bool ChestsAppearOpened { get; set; } = false;
 		public bool ShopInfo { get; set; } = false;
 		public bool ChestInfo { get; set; } = false;
 		public bool IncentiveChestItemsFanfare { get; set; } = false;
