@@ -461,11 +461,11 @@ namespace FF1Lib
 		[IntegerFlag(0, 500, 10)]
 		public int EnemyScaleHpHigh { get; set; } = 200;
 		
-		[IntegerFlag(0, 255, 1)]
-		public int EnemySleepScaleLow { get; set; } = 0;
+		// [IntegerFlag(0, 255, 1)]
+		// public int EnemySleepScaleLow { get; set; } = 0;
 
-		[IntegerFlag(0, 255, 1)]
-		public int EnemySleepScaleHigh { get; set; } = 80;
+		// [IntegerFlag(0, 255, 1)]
+		// public int EnemySleepScaleHigh { get; set; } = 80;
 		
 		[IntegerFlag(0, 255, 1)]
 		public int PlayerSleepScaleLow { get; set; } = 0;

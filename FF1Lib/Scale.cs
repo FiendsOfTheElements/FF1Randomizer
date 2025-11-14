@@ -250,23 +250,24 @@ namespace FF1Lib
 		}
 		public void ScaleSleep(MT19337 rng, Flags flags)
 		{
-			// fix the enemy sleep buffer
-			PutInBank(0x0C,0xB1E9,Blob.FromHex("A90020AF0AAD68571004A902D007A9DF20B190A90F4CB28E"));
+			// fix the enemy sleep buffer; Currently this hard locks the game :/
+			// PutInBank(0x0C,0xB1E9,Blob.FromHex("A90020AF0AAD68571004A902D007A9DF20B190A90F4CB28E"));
 
-			if (flags.PlayerSleepScaleLow == 0 && flags.PlayerSleepScaleHigh == 80 && flags.EnemySleepScaleLow == 0 && flags.EnemySleepScaleHigh == 80)
+			// if (flags.PlayerSleepScaleLow == 0 && flags.PlayerSleepScaleHigh == 80 && flags.EnemySleepScaleLow == 0 && flags.EnemySleepScaleHigh == 80)
+			if (flags.PlayerSleepScaleLow == 0 && flags.PlayerSleepScaleHigh == 80)
 			{
 				return;
 			}
 
 			string minPlayerSleep = (bool)flags.ClampMinimumStatScale ? 0.ToString("X") : flags.PlayerSleepScaleLow.ToString("X");
 			string highPlayerSleep = (bool)flags.ClampMinimumStatScale ? Math.Max(255, flags.PlayerSleepScaleHigh).ToString("X") : flags.PlayerSleepScaleHigh.ToString("X");
-			string minEnemySleep = (bool)flags.ClampMinimumStatScale ? 0.ToString("X") : flags.EnemySleepScaleLow.ToString("X");
-			string highEnemySleep = (bool)flags.ClampMinimumStatScale ? Math.Max(255, flags.EnemySleepScaleHigh).ToString("X") : flags.EnemySleepScaleHigh.ToString("X");
+			// string minEnemySleep = (bool)flags.ClampMinimumStatScale ? 0.ToString("X") : flags.EnemySleepScaleLow.ToString("X");
+			// string highEnemySleep = (bool)flags.ClampMinimumStatScale ? Math.Max(255, flags.EnemySleepScaleHigh).ToString("X") : flags.EnemySleepScaleHigh.ToString("X");
 
 			PutInBank(0x0C,0xA435,Blob.FromHex(minPlayerSleep));
 			PutInBank(0x0C,0xA437,Blob.FromHex(highPlayerSleep));
-			PutInBank(0x0C,0xB1E2,Blob.FromHex(minEnemySleep));
-			PutInBank(0x0C,0xB1E4,Blob.FromHex(highEnemySleep));
+			// PutInBank(0x0C,0xB1E2,Blob.FromHex(minEnemySleep));
+			// PutInBank(0x0C,0xB1E4,Blob.FromHex(highEnemySleep));
 		}
 
 		public void ScaleEnemyStats(MT19337 rng, Flags flags)

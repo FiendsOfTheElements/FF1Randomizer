@@ -56,7 +56,7 @@
             <EnumDropDown UpdateAction="@UpdateAction" Id="lifeInBattleDropDown" TItem="LifeInBattleSetting" @bind-Value="Flags.EnableLifeInBattle">Life in Battle:</EnumDropDown>
 			<h5>Sleep</h5>
 			<DoubleSlider DoubleCol DisableTooltip Id="sleepDoubleSlider" UpdateAction="@UpdateAction" MinValue="0" MaxValue="255" Step="1" @bind-ValuesRange="(Flags.PlayerSleepScaleLow,Flags.PlayerSleepScaleHigh)">Player Wake HP RNG Range:</DoubleSlider>
-			<DoubleSlider DoubleCol DisableTooltip Id="sleepDoubleSlider" UpdateAction="@UpdateAction" MinValue="0" MaxValue="255" Step="1" @bind-ValuesRange="(Flags.EnemySleepScaleLow,Flags.EnemySleepScaleHigh)">Enemy Wake HP RNG Range:</DoubleSlider>
+			@* <DoubleSlider DoubleCol DisableTooltip Id="sleepDoubleSlider" UpdateAction="@UpdateAction" MinValue="0" MaxValue="255" Step="1" @bind-ValuesRange="(Flags.EnemySleepScaleLow,Flags.EnemySleepScaleHigh)">Enemy Wake HP RNG Range:</DoubleSlider> *@
 
 			<div class="checkbox-cell"></div>
 			<h4>Spell Crafter</h4>
