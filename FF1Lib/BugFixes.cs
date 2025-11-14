@@ -61,7 +61,7 @@ namespace FF1Lib
 
 			if (HPfix)
 			{
-				Put(0x03b2c8, Blob.FromHex("20D2AB2000B4"));
+				Put(0x03B2C8, Blob.FromHex("20D2AB2000B4"));
 			}
 		}
 
