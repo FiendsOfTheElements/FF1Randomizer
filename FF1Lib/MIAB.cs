@@ -128,7 +128,11 @@ namespace FF1Lib
 			}
 
 			int maxChests = 0;
-			int guaranteedChests = ((flags.TCKeyItems == TCOptions.All) ? RangeKeyItems.Count() : 0) + ((flags.TCShards == TCOptions.All) ? RangeShards.Count() : 0) + ((flags.TCBetterTreasure == TCOptions.All) ? RangeBetterTreasure.Count() : 0) + (((bool)flags.TCMasaGuardian) ? RangeMasamune.Count() : 0) + (((bool)flags.TrappedChaos) ? 1 : 0);
+			int guaranteedChests =  ((flags.TCKeyItems == TCOptions.All) ? RangeKeyItems.Count() : 0) +
+									((flags.TCShards == TCOptions.All) ? RangeShards.Count() : 0) +
+									((flags.TCBetterTreasure == TCOptions.All) ? RangeBetterTreasure.Count() : 0) +
+									(((bool)flags.TCMasaGuardian) ? RangeMasamune.Count() : 0) +
+									(((bool)flags.TrappedChaos) ? 1 : 0);
 
 			if (flags.TCChestCount == 260)
 			{

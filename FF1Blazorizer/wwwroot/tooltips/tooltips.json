@@ -1072,7 +1072,7 @@
 		"Id": "tcExcludeCommonCheckBox",
 		"title": "Exclude Common Treasures",
 		"screenshot": "trappedChestsCheckBox.gif",
-		"description": "Common treasures (common equipment, consumables and GP chests) are never trapped.\nThis will result in a lower number of trapped chests if a higher value than the minimum is chosen.\nE.G. shards + key items are set to always for 52 chests, but 60 is selected.\nAt least the extra 8 will be ignored."
+		"description": "Common treasures (common equipment, consumables and GP chests) are never trapped.\nThis will result in a lower number of trapped chests if a higher value than the minimum is chosen.\nE.G. shards + key items are set to always for 53 chests, but 60 is selected.\nAt least the extra 8 will be ignored."
 	},
 	{
 		"Id": "tcProtectIncentivesCheckBox",
