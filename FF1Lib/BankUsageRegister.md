@@ -38,6 +38,8 @@ Bank Offset Range Description
 11   B400-B519    Treasure Stacks
 11   B600-B700    Incentive Chests Item Fanfare LUT
 11   B700-B831    Shop Upgrade routines
+11   B900-B922    Open chests in order
+11   B940-B9FF    Chests appear opened
 11   BA00-BEE0    NPC Objects data
 
 12   8000-8800    Tileset copy
