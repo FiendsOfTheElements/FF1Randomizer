@@ -88,8 +88,8 @@ ReplaceOpenedChestTSA:
     LDY #$00
     @Loop:
         LDA tileset_data,Y        ; get the first byte of tile properties
-        AND #TP_SPEC_TREASURE     ; see if it's a treasure chest
-        BEQ @EndLoop
+        CMP #TP_SPEC_TREASURE     ; see if it's a treasure chest
+        BNE @EndLoop
         LDX tileset_data+1,Y      ; get the treasure index
         LDA game_flags,X          ; get the game flags
         AND #GMFLG_TCOPEN         ; get the opened flag
@@ -139,11 +139,9 @@ ReplaceOpenedChestTSA:
 
     JMP $CC62               ; jump back to LoadSMTilesetData
 
-; A0 00 B9 00 04 29 08 F0 17 BE 01 04 BD 00 62 29 04 F0 0D 98 4A AA A9 7E 9D 00 05 A9 7F 9D 80 05
+; A0 00 B9 00 04 C9 08 D0 17 BE 01 04 BD 00 62 29 04 F0 0D 98 4A AA A9 7E 9D 00 05 A9 7F 9D 80 05
 ; C8 C8 D0 DE A9 00 85 11 A5 48 0A 0A 0A 26 11 0A 26 11 85 10 A6 11 06 10 26 11 18 65 10 85 10 8A
 ; 65 11 09 A0 85 11 4C 62 CC
-
-
 
 ; Original TalkToSMTile @ $CBF9
 
