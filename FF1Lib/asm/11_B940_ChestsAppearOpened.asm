@@ -6,6 +6,7 @@ cur_map         = $48
 
 tileset_data       = $0400
 load_map_pal       = tileset_data+$380
+TP_SPEC_MASK       = %00011110
 TP_SPEC_TREASURE   = %00001000
 
 lut_SMPalettes     = $A000   ; BANK_SMINFO - $1000 byte bound
@@ -88,6 +89,7 @@ ReplaceOpenedChestTSA:
     LDY #$00
     @Loop:
         LDA tileset_data,Y        ; get the first byte of tile properties
+        AND #TP_SPEC_MASK         ; mask off the tile spec
         CMP #TP_SPEC_TREASURE     ; see if it's a treasure chest
         BNE @EndLoop
         LDX tileset_data+1,Y      ; get the treasure index
@@ -139,9 +141,9 @@ ReplaceOpenedChestTSA:
 
     JMP $CC62               ; jump back to LoadSMTilesetData
 
-; A0 00 B9 00 04 C9 08 D0 17 BE 01 04 BD 00 62 29 04 F0 0D 98 4A AA A9 7E 9D 00 05 A9 7F 9D 80 05
-; C8 C8 D0 DE A9 00 85 11 A5 48 0A 0A 0A 26 11 0A 26 11 85 10 A6 11 06 10 26 11 18 65 10 85 10 8A
-; 65 11 09 A0 85 11 4C 62 CC
+; A0 00 B9 00 04 29 1E C9 08 D0 17 BE 01 04 BD 00 62 29 04 F0 0D 98 4A AA A9 7E 9D 00 05 A9 7F 9D
+; 80 05 C8 C8 D0 DC A9 00 85 11 A5 48 0A 0A 0A 26 11 0A 26 11 85 10 A6 11 06 10 26 11 18 65 10 85
+; 10 8A 65 11 09 A0 85 11 4C 62 CC
 
 ; Original TalkToSMTile @ $CBF9
 
@@ -161,9 +163,9 @@ ReplaceOpenedChestTSA:
     JSR SwapPRG
     JMP WrapOpenTreasureChest
 
-; A9 11 20 03 FE 4C 8A B9
+; A9 11 20 03 FE 4C 8B B9
 
-.ORG $B98A
+.ORG $B98B
 WrapOpenTreasureChest:
     ; Replicate the patched out code
     LDX tileprop+1            ; put the chest ID in X
@@ -239,7 +241,7 @@ WrapOpenTreasureChest:
     RTS
 
 ; A6 45 BD 00 62 29 04 F0 03 A9 F2 60 20 78 DD C9 F1 F0 61 48 A5 2F 18 69 07 A8 A5 33 C9 08 D0 04
-; 88 4C B3 B9 C9 04 D0 01 C8 98 C9 0F 90 02 E9 0F A8 A5 14 29 1F C9 10 B0 0E 0A 19 E2 D5 85 0E B9
-; F2 D5 85 0F 4C E0 B9 29 0F 0A 19 E2 D5 85 0E B9 F2 D5 09 04 85 0F 20 A8 FE AD 02 20 A5 0F 8D 06
+; 88 4C B4 B9 C9 04 D0 01 C8 98 C9 0F 90 02 E9 0F A8 A5 14 29 1F C9 10 B0 0E 0A 19 E2 D5 85 0E B9
+; F2 D5 85 0F 4C E1 B9 29 0F 0A 19 E2 D5 85 0E B9 F2 D5 09 04 85 0F 20 A8 FE AD 02 20 A5 0F 8D 06
 ; 20 A5 0E 8D 06 20 A9 7E 8D 07 20 A9 7F 8D 07 20 20 A1 CC 68 60
 
