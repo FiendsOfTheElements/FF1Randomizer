@@ -40,6 +40,11 @@
 		</div>
 
 		<div class="col2">
+        <a class="preset-button styled-button @((selectedPresetId == "default") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("default"))">Select</a>
+        <p class="preset-paragraph">
+                <ToolTipBox id="defaultPresetToolTipBox" UpdateAction="@UpdateAction"><strong>Default</strong></ToolTipBox>
+        Generic flagset to start with when building flagsets. Reflects the current meta in flag making.
+        </p>
 
 		<a class="preset-button styled-button @((selectedPresetId == "Improved_Vanilla") ? "clicked" : "")" @onclick="@(() => LoadStandardPreset("Improved_Vanilla"))">Select</a>
 		<p class="preset-paragraph">

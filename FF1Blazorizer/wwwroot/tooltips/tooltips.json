@@ -2450,6 +2450,11 @@
 		"description": "Introduction to the randomizer, and the basis for most of the other presets."
 	},
 	{
+		"Id": "defaultPresetToolTipBox",
+		"title": "Default Preset",
+		"description": "Generic flagset to start with when building flagsets. Reflects the current meta in flag making.\nGo crazy! Try stuff out! These are generic flags that are not meant to be played without changes.'"
+	},
+	{
 		"Id": "improvedVanillaPresetToolTipBox",
 		"title": "Improved Vanilla Preset",
 		"description": "Applies the bugfixes and quality-of-life improvements to the base game, but does not randomize anything.\nPrices and level up requirements are halved for a less grindy experience - if you would prefer to play with original pricing and XP, move the \"Exp. & Gold Boost\" slider on the Scale tab down to 1.0x (or your desired value)."
