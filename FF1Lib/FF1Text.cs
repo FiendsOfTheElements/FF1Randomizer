@@ -2,6 +2,7 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using RomUtilities;
+using DotNetAsm;
 
 namespace FF1Lib
 {
@@ -850,6 +851,69 @@ namespace FF1Lib
 		{
 			get => _battleTexts[textid];
 			set => _battleTexts[textid] = value;
+		}
+
+	}
+
+	public class EnemyText
+	{
+		public const int EnemyTextPointerOffset = 0x2D4E0;
+	    public const int EnemyTextPointerBase = 0x24000;
+	    public const int EnemyTextOffset = 0x2D5E0;
+		public const int EnemyCount = 128;
+
+		private string[] _enemyTexts;
+
+		public EnemyText(FF1Rom rom)
+		{
+			_enemyTexts = rom.ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		}
+
+		public void Write(FF1Rom rom)
+		{
+				// here we're splitting the enemy names into two parts, each with 64 names
+			// each name can be a maximum of 8 character bytes + 1 null terminator byte = 9 bytes.
+			// each bank of enemy text needs 9 * 64 = 0x240 bytes.
+
+			// this address is 0x240 bytes before the fiend drawing tables at 0x2d2E0,
+			// in the closest empty patch in the current bank.
+			// This replaces the 0x2CFEC address used in some of the enemy text
+			// routines throughout the randomizer.
+			const int EnemyTextOffsetPart1 = 0x2D0A0;
+
+			const int EnemyTextOffsetPart2 = EnemyTextOffset;
+
+			
+			var enemyTextPart1 = _enemyTexts.Take(EnemyCount/2).ToArray();
+			var enemyTextPart2 = _enemyTexts.Skip(EnemyCount/2).ToArray(); 
+
+
+			// write each bank of texts.
+			// EnemyTextPointerOffset is the absolute address of the table of pointers to each name.
+			// Each of these pointers gives a two-byte address to the text, relative to EnemyTextPointerBase
+			// Therefore the pointers to enemyTextPart2 need to be written to EnemyTextPointerOffset + 64*2
+
+			rom.WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase,EnemyTextOffsetPart1);
+			rom.WriteText(enemyTextPart2, EnemyTextPointerOffset + EnemyCount, EnemyTextPointerBase, EnemyTextOffsetPart2);
+		}
+
+		public string[] Get()
+		{
+			return (string[])_enemyTexts.Clone();
+		}
+
+		public void Set(string[] text)
+		{
+			if (text.Length == EnemyCount)
+				_enemyTexts = (string[])text.Clone();
+			else
+				throw new Exception("Incorrect number of strings in enemy text array.");
+		}
+
+		public string this[int textid]
+		{
+			get => _enemyTexts[textid];
+			set => _enemyTexts[textid] = value;
 		}
 
 	}

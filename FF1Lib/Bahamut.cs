@@ -122,9 +122,8 @@ namespace FF1Lib
 			Put(EnemyOffset + (idAnkylo * EnemySize), bahamutInfo.compressData());
 
 			// Update name
-			var enemyText = ReadEnemyText();
-			enemyText[78] = "BAHAMUT"; // +1 byte compared to ANKYLO, is this an issue?
-			WriteEnemyText(enemyText);
+			EnemyText[Enemy.Ankylo] = "BAHAMUT"; // +1 byte compared to ANKYLO, is this an issue?
+
 
 			// Remove Ankylo from the Overworld, with appropriate substitutions
 			zoneformations.ReplaceEncounter(encAnkylo, encCerbWzOgre); // handle Ankylo A side (single Ankylo)

@@ -390,7 +390,7 @@ namespace FF1Lib
 					await Progress($"WARNING: enemies.txt needs 128 enemy names, but it had {names.Count} names. Skipping Import.");
 					return;
 				}
-				WriteEnemyText(names.ToArray());
+				EnemyText.Set(names.ToArray());
 
 			}
 		}

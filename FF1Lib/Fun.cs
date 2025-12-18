@@ -155,88 +155,88 @@ namespace FF1Lib
 
 			// ReadEnemyText() and WriteEnemyText() use some extra room in the ROM,
 			// so no need to worry about the number of bytes in the names now.
-			var enemyText = ReadEnemyText();
 
-			enemyText[1] = "GrUMP";    // +0  GrIMP
-			enemyText[2] = "RURURU";   // +2  WOLF
-			enemyText[3] = "GrrrWOLF"; // +2  GrWOLF
-			enemyText[5] = "BrrrWOLF"; // +2  FrWOLF
+
+			EnemyText[Enemy.GrImp] = "GrUMP";    // +0  GrIMP
+			EnemyText[Enemy.Wolf] = "RURURU";   // +2  WOLF
+			EnemyText[Enemy.GrWolf] = "GrrrWOLF"; // +2  GrWOLF
+			EnemyText[Enemy.FrWolf] = "BrrrWOLF"; // +2  FrWOLF
 			if (teamSteak == SteakSprite.Pastries || teamSteak == SteakSprite.All)
 			{
-				enemyText[23] = "CREPE";
-				enemyText[24] = "CRULLER";
+				EnemyText[Enemy.Creep] = "CREPE";
+				EnemyText[Enemy.Crawl] = "CRULLER";
 			}
-			enemyText[28] = "GeORGE";  // +0  GrOGRE
+			EnemyText[Enemy.GrOgre] = "GeORGE";  // +0  GrOGRE
 
 			// "WzOGRE"
 			if (rng.Between(1, 10) >= 5) {
-			    enemyText[29] = "DIRGE";  // -1
+			    EnemyText[Enemy.WzOgre] = "DIRGE";  // -1
 			} else {
-			    enemyText[29] = "GROVER"; // +0
+			    EnemyText[Enemy.WzOgre] = "GROVER"; // +0
 			}
 
-			enemyText[30] = "R.SNEK";     // +3  ASP
-			enemyText[31] = "GrSNEK";     // +1  COBRA
-			enemyText[32] = "SeaSNEK";    // -1  SeaSNAKE
-			enemyText[40] = "iMAGE";      // +0  IMAGE
+			EnemyText[Enemy.Asp] = "R.SNEK";     // +3  ASP
+			EnemyText[Enemy.Cobra] = "GrSNEK";     // +1  COBRA
+			EnemyText[Enemy.SeaSnake] = "SeaSNEK";    // -1  SeaSNAKE
+			EnemyText[Enemy.Image] = "iMAGE";      // +0  IMAGE
 			if (teamSteak == SteakSprite.Sandwiches || teamSteak == SteakSprite.All)
 			{
-				enemyText[47] = "GRUB";		// WORM
-				enemyText[49] = "MealWORM";	// Grey W
+				EnemyText[Enemy.Worm] = "GRUB";		// WORM
+				EnemyText[Enemy.GreyW] = "MealWORM";	// Grey W
 			}
-			enemyText[48] = "SANDWICH";   // +2  Sand W
-			enemyText[51] = "WrongEYE";   //     Phantom
-			enemyText[53] = "SNEKLADY";   // +0  GrMEDUSA
-			enemyText[56] = "EXPEDE";     // +2  PEDE
-			enemyText[61] = "EDWARD";     // +0  WzVAMP
-			enemyText[63] = "ARGYLE";     // -1  R.GOYLE
-			enemyText[66] = "White D";    // +0  Frost D
-			enemyText[72] = "MtlSLIME";   // +3  SLIME
-			enemyText[77] = "FnPOLICE";   // +0  R.ANKYLO
-			enemyText[80] = "MOMMY";      // -2  WzMUMMY
-			enemyText[81] = "BIRB";       // -4  COCTRICE
-			enemyText[82] = "R.BIRB";     // -2  PERILISK
+			EnemyText[Enemy.SandW] = "SANDWICH";   // +2  Sand W
+			EnemyText[Enemy.Phantom] = "WrongEYE";   //     Phantom
+			EnemyText[Enemy.GrMedusa] = "SNEKLADY";   // +0  GrMEDUSA
+			EnemyText[Enemy.Pede] = "EXPEDE";     // +2  PEDE
+			EnemyText[Enemy.WzVamp] = "EDWARD";     // +0  WzVAMP
+			EnemyText[Enemy.RGoyle] = "ARGYLE";     // -1  R.GOYLE
+			EnemyText[Enemy.FrostD] = "White D";    // +0  Frost D
+			EnemyText[Enemy.Slime] = "MtlSLIME";   // +3  SLIME
+			EnemyText[Enemy.RAnkylo] = "FnPOLICE";   // +0  R.ANKYLO
+			EnemyText[Enemy.WzMummy] = "MOMMY";      // -2  WzMUMMY
+			EnemyText[Enemy.Coctrice] = "BIRB";       // -4  COCTRICE
+			EnemyText[Enemy.Perilisk] = "R.BIRB";     // -2  PERILISK
 			if (teamSteak == SteakSprite.Steak || teamSteak == SteakSprite.All)
 			{
-				enemyText[83] = "WYNGS";	// WYVERN
-				enemyText[84] = "HotWYNGS";	// WYRM
+				EnemyText[Enemy.Wyvern] = "WYNGS";	// WYVERN
+				EnemyText[Enemy.Wyrm] = "HotWYNGS";	// WYRM
 			}
 			else
-				enemyText[83] = "Y BURN";     // +0  WYVERN
+				EnemyText[Enemy.Wyvern] = "Y BURN";     // +0  WYVERN
 			if (teamSteak == SteakSprite.Steak || teamSteak == SteakSprite.Legacy || teamSteak == SteakSprite.All)
 			{
-				enemyText[85] = "STEAK";  // +1  TYRO
-				enemyText[86] = "T.BONE"; // +1  T REX
+				EnemyText[Enemy.Tyro] = "STEAK";  // +1  TYRO
+				EnemyText[Enemy.TRex] = "T.BONE"; // +1  T REX
 			}
 			if (teamSteak == SteakSprite.Nachos || teamSteak == SteakSprite.All)
 			{
-				enemyText[91] = "GUAC";		// OCHO
+				EnemyText[Enemy.Ocho] = "GUAC";		// OCHO
 			}
-			enemyText[92] = "NACHO";      // -1  NAOCHO
-			enemyText[94] = "HYDRANT";    // +0  R.HYDRA
-			enemyText[100] = "LadySNEK";  // +2  GrNAGA
-			enemyText[106] = "Green D";   // +2  Gas D
-			enemyText[111] = "BATMAN";    // +0  BADMAN
-			enemyText[112] = "OKAYMAN";   // +0  EVILMAN
+			EnemyText[Enemy.Naocho] = "NACHO";      // -1  NAOCHO
+			EnemyText[Enemy.Hydra] = "HYDRANT";    // +0  R.HYDRA
+			EnemyText[Enemy.GrNaga] = "LadySNEK";  // +2  GrNAGA
+			EnemyText[Enemy.GasD] = "Green D";   // +2  Gas D
+			EnemyText[Enemy.Badman] = "BATMAN";    // +0  BADMAN
+			EnemyText[Enemy.Evilman] = "OKAYMAN";   // +0  EVILMAN
 			if (!altFiends) {
-			    enemyText[119] = "S.BUMP";    // +2  LICH
-			    enemyText[120] = "S.BUMP";    // +2  LICH
-			    enemyText[121] = "KELLY";     // +1  KARY
-			    enemyText[122] = "KELLY";     // +1  KARY
+			    EnemyText[Enemy.Lich] = "S.BUMP";    // +2  LICH
+			    EnemyText[Enemy.Lich2] = "S.BUMP";    // +2  LICH
+			    EnemyText[Enemy.Kary] = "KELLY";     // +1  KARY
+			    EnemyText[Enemy.Kary2] = "KELLY";     // +1  KARY
 			}
 
 			if (robotChicken)
 			{
 				if (rng.Between(1, 10) >= 5)
 				{
-					enemyText[118] = "RoboCHKN"; // WarMECH
+					EnemyText[Enemy.WarMech] = "RoboCHKN"; // WarMECH
 				}
 				else
 				{
-					enemyText[118] = "WarBAWK"; // WarMECH
+					EnemyText[Enemy.WarMech] = "WarBAWK"; // WarMECH
 				}
 			}
-			WriteEnemyText(enemyText);
+
 		}
 
 		public void PaletteSwap(bool enable, MT19337 rng)

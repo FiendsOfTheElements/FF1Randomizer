@@ -188,15 +188,12 @@ namespace FF1Lib
 
 			//Update enemies names
 
-			var enemyText = ReadEnemyText();
 
-			enemyText[0x33] = "DRACLICH"; //Phantom > to DrakLich?
-			enemyText[118] = "LICH?"; // WarMech > Lich?
-			enemyText[119] = "PHANTOM"; // Lich1 > Phantom
-			enemyText[120] = "PHANTOM"; // Lich2 > Phantom
-			enemyText[127] = "LICH"; // Chaos > Lich
-
-			WriteEnemyText(enemyText);
+			EnemyText[Enemy.Phantom] = "DRACLICH"; //Phantom > to DrakLich?
+			EnemyText[Enemy.WarMech] = "LICH?"; // WarMech > Lich?
+			EnemyText[Enemy.Lich] = "PHANTOM"; // Lich1 > Phantom
+			EnemyText[Enemy.Lich] = "PHANTOM"; // Lich2 > Phantom
+			EnemyText[Enemy.Chaos] = "LICH"; // Chaos > Lich
 
 			// Scale Undeads
 			int evadeCap = GetEvadeIntFromFlag(flags.EvadeCap);
