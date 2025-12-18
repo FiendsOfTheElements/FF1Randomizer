@@ -618,7 +618,7 @@ namespace FF1Lib
 		List<MagicSpell> spellList = GetSpells();
 		var enemies = GetAllEnemyStats();
 
-		var enemyText = ReadEnemyText();
+		//var enemyText = ReadEnemyText();
 		var bosses = new[] { new { index = Enemy.Lich2, dialog=0x4D },
 				     new { index = Enemy.Kary2, dialog=0x4E },
 				     new { index = Enemy.Kraken2, dialog=0x4F },
@@ -715,12 +715,12 @@ namespace FF1Lib
 		    var skills = enemyScripts[scriptIndex].skill_list.Where(s => s != 0xFF).ToList();
 		    string enemyName;
 		    if (b.index == Enemy.Chaos) {
-			enemyName = enemyText[b.index].PadRight(8, '_');
+			enemyName = EnemyText[b.index].PadRight(8, '_');
 		    } else {
 			// alt fiends puts the name in the fiend1 spot
 			// but does not duplicate it in the fiend2
 			// spot.
-			enemyName = enemyText[b.index-1].PadRight(8, '_'); ;
+			enemyName = EnemyText[b.index-1].PadRight(8, '_'); ;
 		    }
 
 		    var bossStats = new[] {

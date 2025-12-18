@@ -112,6 +112,7 @@ namespace FF1Lib
 		XXXX = 0x3F,
 		NONE = 0xFF
 	}
+	
 
 	public partial class FF1Rom : NesRom
 	{
@@ -123,24 +124,126 @@ namespace FF1Lib
 		public const int FormationDataSize = 16;
 		public const int FormationDataCount = 128;
 
-		public abstract class Enemy
+
+		public abstract class Enemy 
 		{
 			public const int Imp = 0;
+			public const int GrImp = 1;
+			public const int Wolf = 2;
+			public const int GrWolf = 3;
+			public const int WrWolf = 4;
+			public const int FrWolf = 5;
+			public const int Iguana = 6;
+			public const int Agama = 7;
+			public const int Sauria = 8;
+			public const int Giant = 9;
+			public const int FrGiant= 10;
+			public const int RGiant = 11;
+			public const int Sahag = 12;
 			public const int RSahag = 13;
 			public const int WzSahag = 14;
 			public const int Pirate = 15;
+			public const int Kyzoku = 16;
+			public const int Shark = 17;
+			public const int GrShark = 18;
+			public const int OddEye = 19;
+			public const int BigEye = 20;
+			public const int Bone = 21;
+			public const int RBone = 22;
+			public const int Creep = 23;
 			public const int Crawl = 24;
+			public const int Hyena = 25;
+			public const int Cerebus = 26;
+			public const int Ogre = 27;
+			public const int GrOgre = 28;
+			public const int WzOgre = 29;
 			public const int Asp = 30;
 			public const int Cobra = 31;
+			public const int SeaSnake = 32;
+			public const int Scorpion = 33;
+			public const int Lobster = 34;
+			public const int Bull = 35;
+			public const int ZomBull = 36;
+			public const int Troll = 37;
+			public const int SeaTroll = 38;
+			public const int Shadow = 39;
+			public const int Image = 40;
+			public const int Wraith = 41;
+			public const int Ghost = 42;
+			public const int Zombie = 43;
+			public const int Ghoul = 44;
+			public const int Geist = 45;
+			public const int Specter = 46;
+			public const int Worm = 47;
+			public const int SandW = 48;
+			public const int GreyW = 49;
+			public const int Eye = 50;
 			public const int Phantom = 51;
+			public const int Medusa = 52;
+			public const int GrMedusa = 53;
+			public const int Catman = 54;
 			public const int Mancat = 55;
+			public const int Pede = 56;
+			public const int GrPede = 57;
+			public const int Tiger = 58;
+			public const int SaberT= 59;
 			public const int Vampire = 60;
+			public const int WzVamp = 61;
+			public const int Gargoyle = 62;
+			public const int RGoyle = 63;
+			public const int Earth = 64;
+			public const int Fire = 65;
+			public const int FrostD = 66;
+			public const int RedD = 67;
+			public const int ZombieD = 68;
+			public const int Scum = 69;
+			public const int Muck = 70;
+			public const int Ooze = 71;
+			public const int Slime = 72;
+			public const int Spider = 73;
+			public const int Arachnid = 74;
+			public const int Manticor = 75;
+			public const int Sphinx = 76;
+			public const int RAnkylo = 77;
 			public const int Ankylo = 78;
+			public const int Mummy = 79;
+			public const int WzMummy = 80;
 			public const int Coctrice = 81;
-			public const int Sorceror = 104;
+			public const int Perilisk = 82;
+			public const int Wyvern = 83;
+			public const int Wyrm = 84;
+			public const int Tyro = 85;
+			public const int TRex = 86;
+			public const int Caribe = 87;
+			public const int RCaribe = 88;
+			public const int Gator = 89;
+			public const int FrGator = 90;
+			public const int Ocho = 91;
+			public const int Naocho = 92;
+			public const int Hydra = 93;
+			public const int RHydra = 94;
+			public const int Guard = 95;
+			public const int Sentry = 96;
+			public const int Water = 97;
+			public const int Air = 98;
+			public const int Naga = 99;
+			public const int GrNaga = 100;
+			public const int Chimera = 101;
+			public const int Jimera = 102;
+			public const int Wizard = 103;
+			public const int Sorcerer = 104;
 			public const int Garland = 105;
+			public const int GasD = 106;
+			public const int BlueD = 107;
+			public const int MudGol = 108;
+			public const int RockGol = 109;
+			public const int IronGol = 110;
+			public const int Badman = 111;
 			public const int Evilman = 112;
 			public const int Astos = 113;
+			public const int Mage = 114;
+			public const int Fighter = 115;
+			public const int Madpony = 116;
 			public const int Nitemare = 117;
 			public const int WarMech = 118;
 			public const int Lich = 119;
@@ -153,6 +256,8 @@ namespace FF1Lib
 			public const int Tiamat2 = 126;
 			public const int Chaos = 127;
 		}
+
+		
 		public byte[] StartingZones = { 0x1B, 0x1C, 0x24, 0x2C };
 		public void ShuffleEnemyScripts(MT19337 rng, Flags flags)
 		{
@@ -572,51 +677,50 @@ namespace FF1Lib
 
 		// this pulls the 128 currently stored names from the ROM data
 		// and stores them in a string[];
-		public string[] ReadEnemyText()
-		{
-			return ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
-		}
+		// public string[] ReadEnemyText()
+		// {
+		// 	return ReadText(EnemyTextPointerOffset, EnemyTextPointerBase, EnemyCount);
+		// }
 
-		public void WriteEnemyText(string[] enemyText)
-		{
-			// here we're splitting the enemy names into two parts, each with 64 names
-			// each name can be a maximum of 8 character bytes + 1 null terminator byte = 9 bytes.
-			// each bank of enemy text needs 9 * 64 = 0x240 bytes.
+		// public void WriteEnemyText(string[] enemyText)
+		// {
+		// 	// here we're splitting the enemy names into two parts, each with 64 names
+		// 	// each name can be a maximum of 8 character bytes + 1 null terminator byte = 9 bytes.
+		// 	// each bank of enemy text needs 9 * 64 = 0x240 bytes.
 
-			// this address is 0x240 bytes before the fiend drawing tables at 0x2d2E0,
-			// in the closest empty patch in the current bank.
-			// This replaces the 0x2CFEC address used in some of the enemy text
-			// routines throughout the randomizer.
-			const int EnemyTextOffsetPart1 = 0x2D0A0;
+		// 	// this address is 0x240 bytes before the fiend drawing tables at 0x2d2E0,
+		// 	// in the closest empty patch in the current bank.
+		// 	// This replaces the 0x2CFEC address used in some of the enemy text
+		// 	// routines throughout the randomizer.
+		// 	const int EnemyTextOffsetPart1 = 0x2D0A0;
 
-			const int EnemyTextOffsetPart2 = EnemyTextOffset;
+		// 	const int EnemyTextOffsetPart2 = EnemyTextOffset;
 
 			
-			var enemyTextPart1 = enemyText.Take(EnemyCount/2).ToArray();
-			var enemyTextPart2 = enemyText.Skip(EnemyCount/2).ToArray();
+		// 	var enemyTextPart1 = enemyText.Take(EnemyCount/2).ToArray();
+		// 	var enemyTextPart2 = enemyText.Skip(EnemyCount/2).ToArray(); 
 
 
-			// write each bank of texts.
-			// EnemyTextPointerOffset is the absolute address of the table of pointers to each name.
-			// Each of these pointers gives a two-byte address to the text, relative to EnemyTextPointerBase
-			// Therefore the pointers to enemyTextPart2 need to be written to EnemyTextPointerOffset + 64*2
+		// 	// write each bank of texts.
+		// 	// EnemyTextPointerOffset is the absolute address of the table of pointers to each name.
+		// 	// Each of these pointers gives a two-byte address to the text, relative to EnemyTextPointerBase
+		// 	// Therefore the pointers to enemyTextPart2 need to be written to EnemyTextPointerOffset + 64*2
 
-			WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase,EnemyTextOffsetPart1);
-			WriteText(enemyTextPart2, EnemyTextPointerOffset + EnemyCount, EnemyTextPointerBase, EnemyTextOffsetPart2);
+		// 	WriteText(enemyTextPart1, EnemyTextPointerOffset, EnemyTextPointerBase,EnemyTextOffsetPart1);
+		// 	WriteText(enemyTextPart2, EnemyTextPointerOffset + EnemyCount, EnemyTextPointerBase, EnemyTextOffsetPart2);
 			
-		}
+		// }
 
 
 		public List<EnemyInfo> GetEnemies() {
 		    var enm = new List<EnemyInfo>();
-			var enemyText = ReadEnemyText();
 		    var scripts = GetEnemyScripts();
 		    for (int i = 0; i < EnemyCount; ++i)
 		    {
 			var enemy = new EnemyInfo();
 			enemy.decompressData(Get(EnemyOffset + i * EnemySize, EnemySize));
 			enemy.allAIScripts = scripts;
-			enemy.name = enemyText[i];
+			enemy.name = EnemyText[i];
 			enemy.index = i;
 			enm.Add(enemy);
 		    }

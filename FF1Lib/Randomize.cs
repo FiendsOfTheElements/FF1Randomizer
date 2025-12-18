@@ -29,6 +29,7 @@ public partial class FF1Rom : NesRom
 	public TalkRoutines TalkRoutines;
 	public StartingItems StartingItems;
 	public EncounterRate EncounterRates;
+	public EnemyText EnemyText;
 	public EnemyScripts EnemyScripts;
 	public ShopData ShopData;
 	public MusicTracks Music;
@@ -114,6 +115,7 @@ public partial class FF1Rom : NesRom
 		ShopData = new ShopData(flags, this);
 		EncounterRates = new EncounterRate(this);
 		EnemyScripts = new EnemyScripts(this);
+		EnemyText = new EnemyText(this);
 		Music = new MusicTracks();
 		ExtAltFiends = new ExtAltFiends(flags);
 
@@ -416,6 +418,7 @@ public partial class FF1Rom : NesRom
 		TalkRoutines.Write(this);
 		NpcData.Write(TalkRoutines.ScriptPointers);
 		Dialogues.Write();
+		EnemyText.Write(this);
 		ShopData.StoreData();
 
 		EnemyScripts.Write(this);
