@@ -274,7 +274,7 @@ namespace FF1Lib
 			bool TempleOfFiendRefightsOnly = (bool)flags.TempleOfFiendRefightsOnly;
 			ScriptTouchMultiplier scriptMultiplier = flags.ScriptMultiplier;
 
-			if (!shuffleNormalEnemies && !shuffleBosses)
+			if (!shuffleNormalEnemies && !shuffleBosses && !RemoveBossScripts)
 			{
 				return;
 			}
@@ -342,26 +342,54 @@ namespace FF1Lib
 							newEnemies[i][EnemyStat.Scripts] = allScripts.PickRandom(rng);
 						}
 					}
+			}
 				
 
-				if (shuffleBosses && !OverworldFiendsOnly && !TempleOfFiendRefightsOnly)
-				{
-					var oldBosses = new List<Blob>
+			if (shuffleBosses && !OverworldFiendsOnly && !TempleOfFiendRefightsOnly)
+			{
+				var oldBosses = new List<Blob>
+			{
+				oldEnemies[Enemy.Lich],
+				oldEnemies[Enemy.Kary],
+				oldEnemies[Enemy.Kraken],
+				oldEnemies[Enemy.Tiamat]
+			};
+				oldBosses.Shuffle(rng);
+
+				newEnemies[Enemy.Lich][EnemyStat.Scripts] = oldBosses[0][EnemyStat.Scripts];
+				newEnemies[Enemy.Kary][EnemyStat.Scripts] = oldBosses[1][EnemyStat.Scripts];
+				newEnemies[Enemy.Kraken][EnemyStat.Scripts] = oldBosses[2][EnemyStat.Scripts];
+				newEnemies[Enemy.Tiamat][EnemyStat.Scripts] = oldBosses[3][EnemyStat.Scripts];
+
+				var oldBigBosses = new List<Blob>
+			{
+				oldEnemies[Enemy.WarMech],
+				oldEnemies[Enemy.Lich2],
+				oldEnemies[Enemy.Kary2],
+				oldEnemies[Enemy.Kraken2],
+				oldEnemies[Enemy.Tiamat2],
+				oldEnemies[Enemy.Chaos]
+			};
+				oldBigBosses.Shuffle(rng);
+
+				newEnemies[Enemy.WarMech][EnemyStat.Scripts] = oldBigBosses[0][EnemyStat.Scripts];
+				newEnemies[Enemy.Lich2][EnemyStat.Scripts] = oldBigBosses[1][EnemyStat.Scripts];
+				newEnemies[Enemy.Kary2][EnemyStat.Scripts] = oldBigBosses[2][EnemyStat.Scripts];
+				newEnemies[Enemy.Kraken2][EnemyStat.Scripts] = oldBigBosses[3][EnemyStat.Scripts];
+				newEnemies[Enemy.Tiamat2][EnemyStat.Scripts] = oldBigBosses[4][EnemyStat.Scripts];
+				newEnemies[Enemy.Chaos][EnemyStat.Scripts] = oldBigBosses[5][EnemyStat.Scripts];
+
+			} 
+	
+
+			if (RemoveBossScripts)  
+			{
+				var fiendsandwarmech = new List<Blob>
 				{
 					oldEnemies[Enemy.Lich],
 					oldEnemies[Enemy.Kary],
 					oldEnemies[Enemy.Kraken],
-					oldEnemies[Enemy.Tiamat]
-				};
-					oldBosses.Shuffle(rng);
-
-					newEnemies[Enemy.Lich][EnemyStat.Scripts] = oldBosses[0][EnemyStat.Scripts];
-					newEnemies[Enemy.Kary][EnemyStat.Scripts] = oldBosses[1][EnemyStat.Scripts];
-					newEnemies[Enemy.Kraken][EnemyStat.Scripts] = oldBosses[2][EnemyStat.Scripts];
-					newEnemies[Enemy.Tiamat][EnemyStat.Scripts] = oldBosses[3][EnemyStat.Scripts];
-
-					var oldBigBosses = new List<Blob>
-				{
+					oldEnemies[Enemy.Tiamat],
 					oldEnemies[Enemy.WarMech],
 					oldEnemies[Enemy.Lich2],
 					oldEnemies[Enemy.Kary2],
@@ -369,88 +397,60 @@ namespace FF1Lib
 					oldEnemies[Enemy.Tiamat2],
 					oldEnemies[Enemy.Chaos]
 				};
-					oldBigBosses.Shuffle(rng);
-
-					newEnemies[Enemy.WarMech][EnemyStat.Scripts] = oldBigBosses[0][EnemyStat.Scripts];
-					newEnemies[Enemy.Lich2][EnemyStat.Scripts] = oldBigBosses[1][EnemyStat.Scripts];
-					newEnemies[Enemy.Kary2][EnemyStat.Scripts] = oldBigBosses[2][EnemyStat.Scripts];
-					newEnemies[Enemy.Kraken2][EnemyStat.Scripts] = oldBigBosses[3][EnemyStat.Scripts];
-					newEnemies[Enemy.Tiamat2][EnemyStat.Scripts] = oldBigBosses[4][EnemyStat.Scripts];
-					newEnemies[Enemy.Chaos][EnemyStat.Scripts] = oldBigBosses[5][EnemyStat.Scripts];
-
-				} 
-		
-
-				if (RemoveBossScripts)  
+				var fiendscripts = fiendsandwarmech.Select(e => e[EnemyStat.Scripts]).Distinct().ToList();
+				for(int i = 0; i < fiendscripts.Count; i++)
 				{
-					var fiendsandwarmech = new List<Blob>
-					{
-						oldEnemies[Enemy.Lich],
-						oldEnemies[Enemy.Kary],
-						oldEnemies[Enemy.Kraken],
-						oldEnemies[Enemy.Tiamat],
-						oldEnemies[Enemy.WarMech],
-						oldEnemies[Enemy.Lich2],
-						oldEnemies[Enemy.Kary2],
-						oldEnemies[Enemy.Kraken2],
-						oldEnemies[Enemy.Tiamat2],
-						oldEnemies[Enemy.Chaos]
-					};
-					var fiendscripts = fiendsandwarmech.Select(e => e[EnemyStat.Scripts]).Distinct().ToList();
-					for(int i = 0; i < fiendscripts.Count; i++)
-					{
-						oldEnemies[i][EnemyStat.Scripts] = 0xFF;
-					}
-					newEnemies[Enemy.Lich][EnemyStat.Scripts] = oldEnemies[0][EnemyStat.Scripts];
-					newEnemies[Enemy.Lich2][EnemyStat.Scripts] = oldEnemies[5][EnemyStat.Scripts];
-					newEnemies[Enemy.Kary][EnemyStat.Scripts] = oldEnemies[1][EnemyStat.Scripts];
-					newEnemies[Enemy.Kary2][EnemyStat.Scripts] = oldEnemies[6][EnemyStat.Scripts];
-					newEnemies[Enemy.Kraken][EnemyStat.Scripts] = oldEnemies[2][EnemyStat.Scripts];
-					newEnemies[Enemy.Kraken2][EnemyStat.Scripts] = oldEnemies[7][EnemyStat.Scripts];
-					newEnemies[Enemy.Tiamat][EnemyStat.Scripts] = oldEnemies[3][EnemyStat.Scripts];
-					newEnemies[Enemy.Tiamat2][EnemyStat.Scripts] = oldEnemies[8][EnemyStat.Scripts];
-					newEnemies[Enemy.WarMech][EnemyStat.Scripts] = oldEnemies[4][EnemyStat.Scripts];
-					newEnemies[Enemy.Chaos][EnemyStat.Scripts] = oldEnemies[9][EnemyStat.Scripts];
-
-
+					oldEnemies[i][EnemyStat.Scripts] = 0xFF;
 				}
+				newEnemies[Enemy.Lich][EnemyStat.Scripts] = oldEnemies[0][EnemyStat.Scripts];
+				newEnemies[Enemy.Lich2][EnemyStat.Scripts] = oldEnemies[5][EnemyStat.Scripts];
+				newEnemies[Enemy.Kary][EnemyStat.Scripts] = oldEnemies[1][EnemyStat.Scripts];
+				newEnemies[Enemy.Kary2][EnemyStat.Scripts] = oldEnemies[6][EnemyStat.Scripts];
+				newEnemies[Enemy.Kraken][EnemyStat.Scripts] = oldEnemies[2][EnemyStat.Scripts];
+				newEnemies[Enemy.Kraken2][EnemyStat.Scripts] = oldEnemies[7][EnemyStat.Scripts];
+				newEnemies[Enemy.Tiamat][EnemyStat.Scripts] = oldEnemies[3][EnemyStat.Scripts];
+				newEnemies[Enemy.Tiamat2][EnemyStat.Scripts] = oldEnemies[8][EnemyStat.Scripts];
+				newEnemies[Enemy.WarMech][EnemyStat.Scripts] = oldEnemies[4][EnemyStat.Scripts];
+				newEnemies[Enemy.Chaos][EnemyStat.Scripts] = oldEnemies[9][EnemyStat.Scripts];
 
-				if (shuffleBosses && OverworldFiendsOnly)
-				{
-					var outsidefiends = new List<Blob>
-					{
-						oldEnemies[Enemy.Lich],
-						oldEnemies[Enemy.Kary],
-						oldEnemies[Enemy.Kraken],
-						oldEnemies[Enemy.Tiamat]
-					};
-					outsidefiends.Shuffle(rng);
 
-					newEnemies[Enemy.Lich][EnemyStat.Scripts] = outsidefiends[0][EnemyStat.Scripts];
-					newEnemies[Enemy.Kary][EnemyStat.Scripts] = outsidefiends[1][EnemyStat.Scripts];
-					newEnemies[Enemy.Kraken][EnemyStat.Scripts] = outsidefiends[2][EnemyStat.Scripts];
-					newEnemies[Enemy.Tiamat][EnemyStat.Scripts] = outsidefiends[3][EnemyStat.Scripts];
-				}
-
-				if(shuffleBosses && TempleOfFiendRefightsOnly)
-				{
-					var insidefiends = new List<Blob>
-					{
-						oldEnemies[Enemy.Lich2],
-						oldEnemies[Enemy.Kary2],
-						oldEnemies[Enemy.Kraken2],
-						oldEnemies[Enemy.Tiamat2]
-					};
-					insidefiends.Shuffle(rng);
-
-					newEnemies[Enemy.Lich2][EnemyStat.Scripts] = insidefiends[0][EnemyStat.Scripts];
-					newEnemies[Enemy.Kary2][EnemyStat.Scripts] = insidefiends[1][EnemyStat.Scripts];
-					newEnemies[Enemy.Kraken2][EnemyStat.Scripts] = insidefiends[2][EnemyStat.Scripts];
-					newEnemies[Enemy.Tiamat2][EnemyStat.Scripts] = insidefiends[3][EnemyStat.Scripts];
-				}
-				
-				Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 			}
+
+			if (shuffleBosses && OverworldFiendsOnly)
+			{
+				var outsidefiends = new List<Blob>
+				{
+					oldEnemies[Enemy.Lich],
+					oldEnemies[Enemy.Kary],
+					oldEnemies[Enemy.Kraken],
+					oldEnemies[Enemy.Tiamat]
+				};
+				outsidefiends.Shuffle(rng);
+
+				newEnemies[Enemy.Lich][EnemyStat.Scripts] = outsidefiends[0][EnemyStat.Scripts];
+				newEnemies[Enemy.Kary][EnemyStat.Scripts] = outsidefiends[1][EnemyStat.Scripts];
+				newEnemies[Enemy.Kraken][EnemyStat.Scripts] = outsidefiends[2][EnemyStat.Scripts];
+				newEnemies[Enemy.Tiamat][EnemyStat.Scripts] = outsidefiends[3][EnemyStat.Scripts];
+			}
+
+			if(shuffleBosses && TempleOfFiendRefightsOnly)
+			{
+				var insidefiends = new List<Blob>
+				{
+					oldEnemies[Enemy.Lich2],
+					oldEnemies[Enemy.Kary2],
+					oldEnemies[Enemy.Kraken2],
+					oldEnemies[Enemy.Tiamat2]
+				};
+				insidefiends.Shuffle(rng);
+
+				newEnemies[Enemy.Lich2][EnemyStat.Scripts] = insidefiends[0][EnemyStat.Scripts];
+				newEnemies[Enemy.Kary2][EnemyStat.Scripts] = insidefiends[1][EnemyStat.Scripts];
+				newEnemies[Enemy.Kraken2][EnemyStat.Scripts] = insidefiends[2][EnemyStat.Scripts];
+				newEnemies[Enemy.Tiamat2][EnemyStat.Scripts] = insidefiends[3][EnemyStat.Scripts];
+			}
+			
+			Put(EnemyOffset, newEnemies.SelectMany(enemy => enemy.ToBytes()).ToArray());
 
 		}
 
