@@ -183,8 +183,6 @@ namespace FF1Lib
 			{
 				m[p.Item2, p.Item1] = BRIDGE_TILE;
 			}
-			Console.WriteLine(DumpMap(m));
-
 
 		}
 	}
