@@ -2646,6 +2646,12 @@
 		"description": "Randomly selects new Earth Cave maps from a set of procedurally generated maps."
 	},
 	{
+		"Id": "procGenSkyBridge",
+		"title": "Procedurally Generated Sky Fortress 5F",
+		"screenshot": "procgenSkyBridge.png",
+		"description": "Randomly generates a new 'Bridge of Destiny' for Sky Fortress 5F."
+	},
+	{
 		"Id": "mapDerpCheckBox",
 		"title": "Map Derp",
 		"screenshot": "mapDerp.png",

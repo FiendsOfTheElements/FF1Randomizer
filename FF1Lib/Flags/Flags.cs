@@ -1,10 +1,10 @@
-﻿using System.Numerics;
-using System.Reflection;
+﻿using FF1Lib.Sanity;
 using Newtonsoft.Json;
-using System.IO.Compression;
-using static FF1Lib.FF1Rom;
-using FF1Lib.Sanity;
 using System.ComponentModel;
+using System.IO.Compression;
+using System.Numerics;
+using System.Reflection;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -735,5 +735,6 @@ namespace FF1Lib
 		public bool WhiteMageHarmEveryone { get; set; } = false;
 
 		public bool? ProcgenEarth { get; set; } = false;
+		public ProcgenSkyBridgeMode ProcgenSkyBridge { get; set; } = ProcgenSkyBridgeMode.Off;
 	}
 }

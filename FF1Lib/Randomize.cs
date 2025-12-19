@@ -162,7 +162,7 @@ public partial class FF1Rom : NesRom
 		DesertOfDeath.ApplyDesertModifications((bool)flags.DesertOfDeath, this, ZoneFormations, Overworld, NpcData, Dialogues, Music);
 		Spooky(TalkRoutines, NpcData, Dialogues, ZoneFormations, Maps, rng, flags);
 		BlackOrbMode(TalkRoutines, Dialogues, flags, preferences, rng, new MT19337(funRng.Next()));
-		Maps.ProcgenDungeons(rng);
+		await Maps.ProcgenDungeons(this, rng);
 		DraculasCurse(Overworld, Teleporters, rng, flags);
 
 		await this.Progress();
