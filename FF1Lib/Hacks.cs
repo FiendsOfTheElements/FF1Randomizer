@@ -380,19 +380,16 @@ namespace FF1Lib
 				return;
 			}
 
-			var enemyText = ReadEnemyText();
-			enemyText[119] = "Twin D";  //  +2
-			enemyText[120] = "Twin D";  //  +2
-			enemyText[121] = "CARMILLA"; // +4
-			enemyText[122] = "CARMILLA"; // +4
-			enemyText[123] = "GrREAPER"; // +2
-			enemyText[124] = "GrREAPER"; // +2
-			enemyText[125] = "FRANKEN";  // +1
-			enemyText[126] = "FRANKEN";  // +1
-			enemyText[127] = "VLAD";     // -1
+			EnemyText[Enemy.Lich] = "Twin D";  //  +2
+			EnemyText[Enemy.Lich2] = "Twin D";  //  +2
+			EnemyText[Enemy.Kary] = "CARMILLA"; // +4
+			EnemyText[Enemy.Kary2] = "CARMILLA"; // +4
+			EnemyText[Enemy.Kraken] = "GrREAPER"; // +2
+			EnemyText[Enemy.Kraken2] = "GrREAPER"; // +2
+			EnemyText[Enemy.Tiamat] = "FRANKEN";  // +1
+			EnemyText[Enemy.Tiamat2] = "FRANKEN";  // +1
+			EnemyText[Enemy.Chaos] = "VLAD";     // -1
 
-
-			WriteEnemyText(enemyText);
 
 			// Change Orbs to Dracula's relics
 			PutInBank(0x0E, 0xAD78, Blob.FromHex("0F050130")); // Update Orbs palette

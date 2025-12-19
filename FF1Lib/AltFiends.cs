@@ -6310,15 +6310,15 @@ new AlternateFiends {
 			}
 
 			
-			var enemyText = ReadEnemyText();
+			//var enemyText = ReadEnemyText();
 
 			for (int i = 0; i < 4; i++)
 			{
-				enemyText[119 + (i * 2)] = alternateFiendsList[i].Name;
-				enemyText[120 + (i * 2)] = alternateFiendsList[i].Name;
+				EnemyText[119 + (i * 2)] = alternateFiendsList[i].Name;
+				EnemyText[120 + (i * 2)] = alternateFiendsList[i].Name;
 			}
 
-			WriteEnemyText(enemyText);
+			//WriteEnemyText(enemyText);
 		}
 	}
 }
