@@ -2097,9 +2097,11 @@ namespace FF1Lib
 				return 0xFF; // invalid tier returns no script
 		}
 
-		private void DoEnemizer_EnemyPatternTablesOnly(MT19337 rng, byte[] patterntabledata, EnemyInfo[] enemy, EnemizerTrackingInfo en)
+
+		private void DoEnemizer_EnemyPatternTablesOnly(MT19337 rng, EnemyInfo[] enemy, EnemizerTrackingInfo en)
 		{
 			// in this function we shuffle the pattern tables and enemy palettes only (we shuffle palettes because otherwise eligible formations would be even more constrained)
+			// smallImages are the even numbers, largeImages are the odd numbers. Not sure why they're in binary...
 			List<byte> smallImages = new List<byte> {   0b00000000, 0b00000010, 0b00000100, 0b00000110, 0b00001000, 0b00001010, 0b00001100, 0b00001110,
 														0b00010000, 0b00010010, 0b00010100, 0b00010110, 0b00011000, 0b00011010, 0b00011100, 0b00011110,
 														0b00100000, 0b00100010, 0b00100100, 0b00100110, 0b00101000, 0b00101010, 0b00101100, 0b00101110,
@@ -2110,8 +2112,8 @@ namespace FF1Lib
 														0b00110001, 0b00110011 };
 			smallImages.Shuffle(rng);
 			largeImages.Shuffle(rng);
-			byte[] newPatternTableData = new byte[0x6800];
-			patterntabledata.CopyTo(newPatternTableData, 0);
+			//byte[] newPatternTableData = new byte[0x6800];
+			//patterntabledata.CopyTo(newPatternTableData, 0);
 			List<byte> newEnemyImageLUT = new List<byte> {  0, 2, 1, 3, 4, 6, 5, 7,
 															8, 10, 9, 11, 12, 14, 13, 15,
 															16, 18, 17, 19, 20, 22, 21, 23,
@@ -2119,34 +2121,29 @@ namespace FF1Lib
 															32, 34, 33, 35, 36, 38, 37, 39,
 															40, 42, 41, 43, 44, 46, 45, 47,
 															48, 50, 49, 51 };
+			
+			byte[][] newEnemySprites = new byte[52][];
 			for (int i = 0; i < 13; ++i)
 			{
-				int small1offset = 0x800 * (smallImages[i * 2] / 4) + (smallImages[i * 2] % 4 == 0 ? 0x120 : 0x220);
-				int small2offset = 0x800 * (smallImages[i * 2 + 1] / 4) + (smallImages[i * 2 + 1] % 4 == 0 ? 0x120 : 0x220);
-				int large1offset = 0x800 * (largeImages[i * 2] / 4) + (largeImages[i * 2] % 4 == 1 ? 0x320 : 0x560);
-				int large2offset = 0x800 * (largeImages[i * 2 + 1] / 4) + (largeImages[i * 2 + 1] % 4 == 1 ? 0x320 : 0x560);
+				// Some hacks to get the enemizer code to work with the EnemyPatternData class (EnemySprites variable).
+				// This preserves the logic used in the original Enemizer code, and could likely be simplified here
+				// or in the class itself. 
+				// Lots of magic numbers to map the enemy image LUT to the order of the images as they appear in the ROM.
+				// All of this appears again below in DoEnemizer_Enemies().
+				
 				newEnemyImageLUT[i * 4] = smallImages[i * 2];
-				for (int j = 0; j < 0x100; ++j)
-				{
-					newPatternTableData[i * 0x800 + 0x120 + j] = patterntabledata[small1offset + j];
-				}
+				newEnemySprites[i * 4] = EnemySprites.GetLUT(smallImages[i * 2]); 
+
 				newEnemyImageLUT[i * 4 + 2] = smallImages[i * 2 + 1];
-				for (int j = 0; j < 0x100; ++j)
-				{
-					newPatternTableData[i * 0x800 + 0x220 + j] = patterntabledata[small2offset + j];
-				}
+				newEnemySprites[i * 4 + 1] = EnemySprites.GetLUT(smallImages[i * 2 + 1]); 
+
 				newEnemyImageLUT[i * 4 + 1] = largeImages[i * 2];
-				for (int j = 0; j < 0x240; ++j)
-				{
-					newPatternTableData[i * 0x800 + 0x320 + j] = patterntabledata[large1offset + j];
-				}
+				newEnemySprites[i * 4 + 2] = EnemySprites.GetLUT(largeImages[i * 2]);
+
 				newEnemyImageLUT[i * 4 + 3] = largeImages[i * 2 + 1];
-				for (int j = 0; j < 0x240; ++j)
-				{
-					newPatternTableData[i * 0x800 + 0x560 + j] = patterntabledata[large2offset + j];
-				}
+				newEnemySprites[i * 4 + 3] = EnemySprites.GetLUT(largeImages[i * 2 + 1]);
 			}
-			newPatternTableData.CopyTo(patterntabledata, 0);
+			EnemySprites.CopyFrom(newEnemySprites);
 
 			for (int i = 0; i < GenericTilesetsCount; ++i) // generate the palettes for each tileset
 			{
@@ -2215,7 +2212,7 @@ namespace FF1Lib
 			}
 		}
 
-		private bool DoEnemizer_Enemies(MT19337 rng, EnemyInfo[] enemy, byte[] patterntabledata, SpellInfo[] spell, EnemySkillInfo[] skill, EnemyScriptInfo[] script, string[] enemyNames, string[] skillNames, bool shuffledSkillsOn, EnemizerTrackingInfo en)
+		private bool DoEnemizer_Enemies(MT19337 rng, EnemyInfo[] enemy, SpellInfo[] spell, EnemySkillInfo[] skill, EnemyScriptInfo[] script, string[] enemyNames, string[] skillNames, bool shuffledSkillsOn, EnemizerTrackingInfo en)
 		{
 			List<byte> enemyImageLUT = new List<byte> { 0b00000000, 0b00000010, 0b00000001, 0b00000011, 0b00000100, 0b00000110, 0b00000101, 0b00000111,
 														0b00001000, 0b00001010, 0b00001001, 0b00001011, 0b00001100, 0b00001110, 0b00001101, 0b00001111,
@@ -2235,8 +2232,8 @@ namespace FF1Lib
 														0b00110001, 0b00110011 };
 			smallImages.Shuffle(rng);
 			largeImages.Shuffle(rng);
-			byte[] newPatternTableData = new byte[0x6800];
-			patterntabledata.CopyTo(newPatternTableData, 0);
+			//byte[] newPatternTableData = new byte[0x6800];
+			//patterntabledata.CopyTo(newPatternTableData, 0);
 			List<byte> newEnemyImageLUT = new List<byte> {	0, 2, 1, 3, 4, 6, 5, 7,
 															8, 10, 9, 11, 12, 14, 13, 15,
 															16, 18, 17, 19, 20, 22, 21, 23,
@@ -2244,37 +2241,29 @@ namespace FF1Lib
 															32, 34, 33, 35, 36, 38, 37, 39,
 															40, 42, 41, 43, 44, 46, 45, 47,
 															48, 50, 49, 51 };
-			for(int i = 0; i < 13; ++i)
+
+			byte[][] newEnemySprites = new byte[52][];
+			for (int i = 0; i < 13; ++i)
 			{
-				int small1offset = 0x800 * (smallImages[i * 2] / 4) + (smallImages[i * 2] % 4 == 0 ? 0x120 : 0x220);
-				int small2offset = 0x800 * (smallImages[i * 2 + 1] / 4) + (smallImages[i * 2 + 1] % 4 == 0 ? 0x120 : 0x220);
-				int large1offset = 0x800 * (largeImages[i * 2] / 4) + (largeImages[i * 2] % 4 == 1 ? 0x320 : 0x560);
-				int large2offset = 0x800 * (largeImages[i * 2 + 1] / 4) + (largeImages[i * 2 + 1] % 4 == 1 ? 0x320 : 0x560);
+
 				newEnemyImageLUT[i * 4] = smallImages[i * 2];
-				for(int j = 0; j < 0x100; ++j)
-				{
-					newPatternTableData[i * 0x800 + 0x120 + j] = patterntabledata[small1offset + j];
-				}
+				newEnemySprites[i * 4] = EnemySprites.GetLUT(smallImages[i * 2]); 
+
 				newEnemyImageLUT[i * 4 + 2] = smallImages[i * 2 + 1];
-				for (int j = 0; j < 0x100; ++j)
-				{
-					newPatternTableData[i * 0x800 + 0x220 + j] = patterntabledata[small2offset + j];
-				}
+				newEnemySprites[i * 4 + 1] = EnemySprites.GetLUT(smallImages[i * 2 + 1]); 
+
 				newEnemyImageLUT[i * 4 + 1] = largeImages[i * 2];
-				for (int j = 0; j < 0x240; ++j)
-				{
-					newPatternTableData[i * 0x800 + 0x320 + j] = patterntabledata[large1offset + j];
-				}
+				newEnemySprites[i * 4 + 2] = EnemySprites.GetLUT(largeImages[i * 2]);
+
 				newEnemyImageLUT[i * 4 + 3] = largeImages[i * 2 + 1];
-				for (int j = 0; j < 0x240; ++j)
-				{
-					newPatternTableData[i * 0x800 + 0x560 + j] = patterntabledata[large2offset + j];
-				}
+				newEnemySprites[i * 4 + 3] = EnemySprites.GetLUT(largeImages[i * 2 + 1]);
+
 			}
-			newPatternTableData.CopyTo(patterntabledata, 0);
+			EnemySprites.CopyFrom(newEnemySprites);
+
 			List<byte> enemyImages = new List<byte> { };
 			for (int i = 0; i < Enemy.Lich; ++i)
-				enemyImages.Add(enemy[i].image); // we are reproducing the iamge array because we only want to shuffle the images, not the monsters themselves
+				enemyImages.Add(enemy[i].image); // we are reproducing the image array because we only want to shuffle the images, not the monsters themselves
 			List<string>[] monsterClassVariants = new List<string>[52]; // monster class modifiers that have effects on stats
 			monsterClassVariants[0] = new List<string> { "Fr", "R.", "Z.", "Wr", "Wz", "Sea" }; // imp variants with special perks
 			monsterClassVariants[1] = new List<string> { "Fr", "R.", "Z.", "Wz", "Sea" }; // iguana variants with special perks
@@ -3537,16 +3526,16 @@ namespace FF1Lib
 			en.PurgeIDFromEnemyTilesetList(Enemy.WarMech); // purging enemies from the generic enemy lists that we don't want to appear outside of set battles
 			if (doEnemies)
 			{
-				byte[] patterntabledata = Get(EnemyPatternTablesOffset, 0x6800); // each pattern table is 0x800 bytes and there are 13 pattern tables that we will edit
+				//byte[] patterntabledata = Get(EnemyPatternTablesOffset, 0x6800); // each pattern table is 0x800 bytes and there are 13 pattern tables that we will edit
 				// do enemizer stuff
-				if(DoEnemizer_Enemies(rng, enemy, patterntabledata, spell, skill, script.GetList().ToArray(), enemyNames, skillNames, shuffledSkillsOn, en))
+				if(DoEnemizer_Enemies(rng, enemy, spell, skill, script.GetList().ToArray(), enemyNames, skillNames, shuffledSkillsOn, en))
 				{
 					doFormations = true; // must use formation generator with enemizer
 					for (int i = 0; i < EnemyCount; ++i)
 					{
 						Put(EnemyOffset + EnemySize * i, enemy[i].compressData()); // move every entry from the enemizer to the ROM
 					}
-					Put(EnemyPatternTablesOffset, patterntabledata); // write the new pattern tables as a chunk
+					//Put(EnemyPatternTablesOffset, patterntabledata); // write the new pattern tables as a chunk
 
 					EnemyText.Set(enemyNames);
 					WriteText(skillNames, EnemySkillTextPointerOffset, EnemySkillTextPointerBase, EnemySkillTextOffset);
@@ -3561,9 +3550,9 @@ namespace FF1Lib
 			{
 				if (!doEnemies)
 				{
-					byte[] patterntabledata = Get(EnemyPatternTablesOffset, 0x6800); // each pattern table is 0x800 bytes and there are 13 pattern tables that we will edit
-					DoEnemizer_EnemyPatternTablesOnly(rng, patterntabledata, enemy, en); // rewrite the pattern tables and enemy palette assignments
-					Put(EnemyPatternTablesOffset, patterntabledata); // write the new pattern tables as a chunk
+					//byte[] patterntabledata = Get(EnemyPatternTablesOffset, 0x6800); // each pattern table is 0x800 bytes and there are 13 pattern tables that we will edit
+					DoEnemizer_EnemyPatternTablesOnly(rng, enemy, en); // rewrite the pattern tables and enemy palette assignments
+					//Put(EnemyPatternTablesOffset, patterntabledata); // write the new pattern tables as a chunk
 				}
 
 				if(!DoEnemizer_Formations(rng, zones, enemy, en))

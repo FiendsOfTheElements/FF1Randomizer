@@ -69,6 +69,7 @@
     <EmbeddedResource Include="imagedata\customclasses\*.png" />
 
     <EmbeddedResource Include="imagedata\fun\*.png" />
+	<EmbeddedResource Include="imagedata\fun\fun_enemy\*.png" />
 
 	  <EmbeddedResource Include="imagedata\bosses\A.WORM.png" />
 	  <EmbeddedResource Include="imagedata\bosses\ABDUCTOR.png" />
