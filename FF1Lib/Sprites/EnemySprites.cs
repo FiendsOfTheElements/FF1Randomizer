@@ -566,6 +566,7 @@ namespace FF1Lib
 				Console.WriteLine($"WARNING: Too many unique 4-color palettes");
 			}
 
+			byte[] blankTile = new byte[16] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 			byte[] attributeTable = new byte[16];
 			byte[] nametable = new byte[sizeX*sizeY];
 
@@ -645,16 +646,27 @@ namespace FF1Lib
 						{
 							int top = imageOffsetY + tilesY * 8;
 							int left = imageOffsetX + tilesX * 8;
-							byte idx = chrIndex(makeTile(image, top, left, index), chrEntries, 110);
+							byte[] tile = makeTile(image,top,left,index);
+							byte idx;
+							// tile 0 -- just before the battle background tiles -- is always blank; 
+							// vanilla uses it to draw blank tiles in fiend and chaos sprites.
+							// We want to do the same thing so that the blank tile doesn't take up space
+							// in our chrEntries.
+							if (Enumerable.SequenceEqual(EncodeForPPU(tile),blankTile))
+							{
+								idx = 0;
+							}
+							else 
+							{
+								idx = (byte)(chrIndex(tile, chrEntries, 110) + 18);
+							}
 							if (idx == 0xff)
 							{
 								//await this.Progress($"WARNING: Error importing CHR at {left}, {top}, too many unique CHR ");
 								idx = 0;
 							}
 							// put the NT
-							// The 17 here used to be 18, but 17 is the same as vanilla and saves a CHR tile.
-							// Fixed to 17 in other cases below as well.
-							nametable[tilesY*sizeX + tilesX] = (byte)(17 + idx);
+							nametable[tilesY*sizeX + tilesX] = idx;
 						}
 					}
 				}
@@ -692,7 +704,7 @@ namespace FF1Lib
 			// We could rotate the locations of these tiles to provide a little more room if needed...
 			if (CHR.Count < 110)
 			{
-				int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (17 * 16);
+				int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (18 * 16);
 				for (int i = 0; i < CHR.Count; i++)
 				{
 					Put(offset + (i * 16), EncodeForPPU(CHR[i]));
@@ -720,7 +732,7 @@ namespace FF1Lib
 			FiendImport(tiamatImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal2 * 4));
 			if (CHR.Count < 110)
 			{
-				int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (17 * 16);
+				int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (18 * 16);
 				for (int i = 0; i < CHR.Count; i++)
 				{
 					Put(offset + (i*16), EncodeForPPU(CHR[i]));
@@ -759,7 +771,7 @@ namespace FF1Lib
 				FiendImport(image, 8, 8, 64, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET + (formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[KARY1].pal2 * 4));
 				if (CHR.Count < 110)
 				{
-					int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (17 * 16);
+					int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (18 * 16);
 					for (int i = 0; i < CHR.Count; i++)
 					{
 						Put(offset + (i*16), EncodeForPPU(CHR[i]));
@@ -780,7 +792,7 @@ namespace FF1Lib
 				FiendImport(image, 8, 8, 64, 64, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal2 * 4));
 				if (CHR.Count < 110)
 				{
-					int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (17 * 16);
+					int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (18 * 16);
 					for (int i = 0; i < CHR.Count; i++)
 					{
 						Put(offset + (i*16), EncodeForPPU(CHR[i]));
@@ -803,7 +815,7 @@ namespace FF1Lib
 			FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
 			if (CHR.Count < 110)
 			{
-				int offset = BATTLEPATTERNTABLE_OFFSET + (formations[CHAOS].tileset * 2048) + (17 * 16);
+				int offset = BATTLEPATTERNTABLE_OFFSET + (formations[CHAOS].tileset * 2048) + (18 * 16);
 				for (int i = 0; i < CHR.Count; i++)
 				{
 					Put(offset + (i*16), EncodeForPPU(CHR[i]));
