@@ -13,6 +13,8 @@ namespace FF1Lib
 		return false;
 	    }
 
+	
+
 		async Task LoadFunTiles(Preferences preferences)
 		{
 			if (preferences.MapDerp)
