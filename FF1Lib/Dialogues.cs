@@ -309,13 +309,14 @@ namespace FF1Lib
 			{
 				"  You stand now on the\n  shoulders of Disch,\n       a titan of\n     Final Fantasy\n      development",				// 2020-06-03
 				"      --Monoci85--\nSage, Mentor, and Friend\n In recaps, he lives on.\n   Rest well, Buzzsaw\n     'Mono, recap!'",	// 2021-05-15
-				"     For HaateXIII,\n    Your Voice Will\n       be Missed\n      Car-Bo-Nate"											// 2025-02-13
+				"     For HaateXIII,\n    Your Voice Will\n       be Missed\n      Car-Bo-Nate",										// 2025-02-13
+				"     tetron, friend.\n     your impact was\n      immeasurable"
 			};
 
 			string epitaph = epitaphs.PickRandom(rng);
 
 			// Most recent epitaph has a ~2 weeks priority, update as appropriate
-			if (DateTime.Today < new DateTime(2025, 03, 01))
+			if (DateTime.Today < new DateTime(2026, 02, 01))
 			{
 				epitaph = epitaphs.Last();
 			}
