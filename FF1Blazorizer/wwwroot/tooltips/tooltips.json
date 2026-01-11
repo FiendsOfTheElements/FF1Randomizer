@@ -136,19 +136,39 @@
 		"screenshot": "looseNpcBalanceCheckBox.png",
 		"description": "Makes it more likely for any loose items to land on NPCs.\nRequires that one (or both) of the \"Main NPCs\" or \"Fetch Quest NPCs\" flags above are not set."
 	},
+	{
+		"Id": "funEnemySpritesDropDown",
+		"title": "Fun Enemy Sprites",
+		"screenshot": "funEnemySpritesDropDown.gif",
+		"description": "Replaces enemy sprites with funny versions.\nThe regular enemy sprites (excepting WarMECH; see Robot Chicken) are split into teams. You can choose a team, have FFR choose a random one for you, or you can choose all of the teams. The original old-recipe Team STEAK sprite is included for purists.\nNOTE 1: if Tournament Safe ROM is selected and you have selected all sprite teams and all sprites, the randomizer will either select one team at random for you, or it will select one sprite from each team.\nNOTE 2: See the Fun Enemy Names tooltip for more information on fun enemy names associated with these sprites.\nTeam Steak: An FFR original; a selection of delicious, dangerous foods.\nTeam FFR: Final Fantasy Randomizer community memes, including Dani's radioactive spiders, Oslodo's Canadian wolves, and more.\nTeam Steamboat: Enemies turned into characters from the classic PUBLIC-DOMAIN toons Steamboat Willie and The Skeleton Dance (Minnie, Pete, the Cow, the Goat, the Parrot, and the Dancing Skeleton).\nTeam Dumpster Fire: FFR's resident metal band Dumpster Fire.\nTeam Glam: Beautified enemies with deadly charms.\nTeam Brillig: Creatures from Lewis Carroll's poem Jabberwocky, modeled on Sir John Tenniel's illustrations ca. 1870 (Slithy Toves, Mimsy Borogoves, Mome Raths, Jubjub Bird, Frumious Bandersnatch, and of course the Manxome Foe, the Jabberwock itself).\nTeam Meme: Final Fantasy enemies mashed up with various internet memes, including Trollface, LOLface, Are You a Wizard, Success Kid, and Baby Shark\nTeam Sports: These enemies give 110% and leave it all on the field.\nTeam Mystaque: Wait, is that \"mistake\" or \"mystique?\" \"My steak?\" Whatever it is, these enemies scream KILL ME!\n Team Toxic: Poison, disease, vice, and invective.\nIn addition, there are two bonus teams:\nTeam Party: Replaces sprites for the formations known in FFR as Steak and Wyngs, Seafood Party Platter, and Twilight Fan Club.\nTeam Grind: Sprites for enemies you're likely to grind on depending on your flag settings. If you're going to spend time with them, they may as well be fun!"
+	},
 
 	{
-		"Id": "funEnemyNamesCheckBox",
+		"Id": "funEnemySpritesModeCheckBox",
+		"title": "One Sprite per Selected Team",
+		"description": "Chooses 1 fun enemy sprite per team selected in the Fun Enemy Sprites Dropdown. If all teams were selected, the randomizer will replace one random sprite from each team."
+	},
+
+	{
+		"Id": "funEnemySpritesExtrasCheckBox",
+		"title": "NPCs and Dialogues",
+		"description": "Companion NPC sprites and/or dialogues are added for the following fun enemy sprites:\nGARLAND: Garlic NPC sprite and ToF dialog.\nPIRATE: Steamboat Mikke NPC sprite replaces Bikke, a steamboat replaces the canoe, and Bikke's dialog mentions parrots.\nGas D: if Fight Bahamut and fun enemy names are on, his dialogue reflects his fun enemy name.\nVAMPIRE: The Vampire's dialogue reflects his sprite (even though no mirror can reflect the Vampire).\nSee the animated gif in the Fun Enemy Sprites tooltip for the NPC sprites."
+	},
+	
+	{
+		"Id": "funEnemyNamesDropDown",
 		"title": "Fun Enemy Names",
 		"screenshot": "funEnemyNamesCheckBox.png",
-		"description": "Changes enemy names in the generated seed. Most of the name changes in this setting are the result of various community memes over the years and may not make sense to newer players."
+		"description": "Changes enemy names in the generated seed. Most of the name changes in this setting are the result of various community memes over the years and may not make sense to newer players.\nThere are two settings.\nSprite Names Only: only replaces the names of enemies whose sprites are replaced in Fun Enemy Sprites.\nAll: uses all of the fun enemy names, plus the fun names of the enemies whose sprites are replaced."
 	},
-	{
-		"Id": "teamSteakDropDown",
-		"title": "Team STEAK",
-		"screenshot": "teamSteakDropDown.gif",
-		"description": "Replaces one or more enemy sprites with food, reflecting various community memes. Also replaces name(s) with fun food name(s).\nOptions:\nNone: no change.\nSTEAK and WYNGS: replaces TYRO and T REX with STEAK and T.BONE, and WYVERN and WYRM with WYNGS and HotWYNGS.\nSANDWICHes: replaces Sand W with SANDWICH, Grey W with MealWORM, and WORM with GRUB.\nNACHOs and GUAC: replaces NAOCHO with NACHO and OCHO with GUAC.\nPASTRIES: replaces CREEP with CREPE and CRAWL with CRULLER.\nRandom: chooses one of the above at random.\nAll: replaces all of the above sprites. In order to preserve game legibility for tournament spectators, if the Tournament Safe flag is on, choosing \"All\" will only replace one random sprite.\nOld Team STEAK: preserves the legacy Team STEAK sprite for STEAK and T.BONE.\n"
+
+	{	"Id": "funFiendSpritesCheckBox",
+		"title": "Fun Fiend Sprites",
+		"screenshot": "funFiendSpritesCheckBox.gif",
+		"description": "Replaces the sprites for LICH, KARY, KRAKEN, TIAMAT, and CHAOS with fun versions, and also updates their names if Fun Enemy Names is on.\nNOTE: this setting is disabled when either the Tournament Safe ROM flag or the Alternate Fiends flag is set."
+
 	},
+	
 	{
 		"Id": "robotChickenCheckBox",
 		"title": "Robot Chicken",

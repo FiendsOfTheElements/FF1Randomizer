@@ -1,4 +1,8 @@
 ﻿using System.ComponentModel;
+using System.Runtime.Versioning;
+using DotNetAsm;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace FF1Lib
 {
@@ -79,25 +83,54 @@ namespace FF1Lib
 		Kill = 2,
 	}
 
-	public enum SteakSprite
+
+	public enum FunEnemySpritesTeam
 	{
 		[Description("None")]
 		None,
-		[Description("STEAK and WYNGS")]
-		Steak,
-		[Description("SANDWICHes")]
-		Sandwiches,
-		[Description("NACHOs and GUAC")]
-		Nachos,
-		[Description("PASTRIES")]
-		Pastries,
-		[Description("Random")]
+		[Description("One Random Team")]
 		Random,
+		[Description("All Teams")]
+		All,
+		[Description("Team Steak")]
+		Steak,
+		[Description("Team FFR")]
+		FFR,
+		[Description("Team Steamboat")]
+		Steamboat,
+		[Description("Team Dumpster Fire")]
+		Dumpster,
+		[Description("Team Glam")]
+		Glam,
+		[Description("Team Brillig")]
+		Brillig,
+		[Description("Team Meme")]
+		Meme,
+		[Description("Team Sports")]
+		Sports,
+		[Description("Team Mystaque")]
+		Mystaque,
+		[Description("Team Toxic")]
+		Toxic,
+		[Description("Team Party")]
+		Party,
+		[Description("Team Grind")]
+		Grind,
+		[Description("Original Team STEAK")]
+		Legacy
+	}
+
+	public enum FunEnemyNames
+	{
+		[Description("None")]
+		None,
 		[Description("All")]
 		All,
-		[Description("Old Team STEAK")]
-		Legacy,
+		[Description("Sprite Names Only")]
+		Sprites
 	}
+
+	
 	public partial class FF1Rom
 	{
 		public const int TyroPaletteOffset = 0x30FC5;
@@ -109,134 +142,534 @@ namespace FF1Lib
 
 		//public SteakSprite teamSteak;
 		
-		public SteakSprite teamSteak;
 		
-		public void TeamSteak(Flags flags, Preferences preferences, MT19337 rng)
+
+		public HashSet<EnemySprite> FunEnemySpritePool;
+
+
+
+		public void FunEnemySprites(Flags flags, Preferences preferences, MT19337 rng)
 		{
-			teamSteak = preferences.TeamSteak;
-			if (flags.TournamentSafe && teamSteak == SteakSprite.All)
-				teamSteak = SteakSprite.Random;
-			if (teamSteak == SteakSprite.Random)
-				teamSteak = (new List<SteakSprite> {SteakSprite.Steak, SteakSprite.Sandwiches, SteakSprite.Nachos, SteakSprite.Pastries}).PickRandom(rng);
+			FunEnemySpritesTeam team = preferences.FunEnemyTeam;
 
+			//bool modeAll = (preferences.FunEnemyMode == FunEnemySpritesMode.All);
 
-			if (teamSteak == SteakSprite.None || (bool)flags.RandomizeEnemizer)
+			bool modeRandom = preferences.FunEnemyMode;
+			bool extras = preferences.FunEnemyExtras;
+
+			Dictionary<FunEnemySpritesTeam, List<EnemySprite>> teamMembers = new()
 			{
-				return;
+				{
+					FunEnemySpritesTeam.Steak,
+					new List<EnemySprite> {EnemySprite.Creep, EnemySprite.Worm, EnemySprite.Wyvern, EnemySprite.Tyro, EnemySprite.Ocho, EnemySprite.Garland}
+				},
+				{
+					FunEnemySpritesTeam.FFR,
+					new List<EnemySprite> {EnemySprite.Wolf, EnemySprite.Sahag, EnemySprite.OddEye, EnemySprite.Spider, EnemySprite.RAnkylo, EnemySprite.Hydra}
+				},
+				{
+					FunEnemySpritesTeam.Steamboat,
+					new List<EnemySprite> {EnemySprite.Iguana, EnemySprite.Pirate, EnemySprite.Bone, EnemySprite.Ogre, EnemySprite.Shadow, EnemySprite.Zombie}
+				},
+				{
+					FunEnemySpritesTeam.Dumpster,
+					new List<EnemySprite> {EnemySprite.Giant, EnemySprite.Earth, EnemySprite.Manticor, EnemySprite.Naga}
+				},
+				{
+					FunEnemySpritesTeam.Glam,
+					new List<EnemySprite> {EnemySprite.Medusa, EnemySprite.Pede, EnemySprite.Tiger, EnemySprite.Vampire, EnemySprite.Badman}
+				},
+				{
+					FunEnemySpritesTeam.Brillig,
+					new List<EnemySprite> {EnemySprite.FrostD, EnemySprite.Mummy, EnemySprite.Coctrice, EnemySprite.Madpony}	
+				},
+				{
+					FunEnemySpritesTeam.Meme,
+					new List<EnemySprite> {EnemySprite.Shark, EnemySprite.Bull, EnemySprite.Troll, EnemySprite.Catman, EnemySprite.Wizard}
+				},
+				{
+					FunEnemySpritesTeam.Sports,
+					new List<EnemySprite> {EnemySprite.Imp, EnemySprite.Hyena, EnemySprite.Gator, EnemySprite.Guard, EnemySprite.Chimera, EnemySprite.MudGol}
+				},
+				{
+					FunEnemySpritesTeam.Mystaque,
+					new List<EnemySprite> {EnemySprite.Asp, EnemySprite.Scorpion, EnemySprite.Eye, EnemySprite.Caribe, EnemySprite.GasD}
+				},
+				{
+					FunEnemySpritesTeam.Toxic,
+					new List<EnemySprite> {EnemySprite.Gargoyle, EnemySprite.Scum, EnemySprite.Water, EnemySprite.Astos}
+				},
+				{
+					FunEnemySpritesTeam.Party,
+					new List<EnemySprite> {EnemySprite.Asp, EnemySprite.Scorpion, EnemySprite.Bull, EnemySprite.Troll, EnemySprite.Vampire, EnemySprite.Wyvern, EnemySprite.Tyro}
+				}
+			};
+
+			FunEnemySpritePool = new();
+
+			
+
+			List<EnemySprite> overworldGrind = new() {EnemySprite.Worm, EnemySprite.Wyvern, EnemySprite.Tyro};
+			List<EnemySprite> vanillaSpike = new() {EnemySprite.Iguana, EnemySprite.Eye, EnemySprite.FrostD};
+			List<EnemySprite> a_SideExtras = new() {EnemySprite.GasD};
+			List<EnemySprite> b_SideExtras = new() {EnemySprite.GasD, EnemySprite.Vampire, EnemySprite.MudGol};
+
+			HashSet<FunEnemySpritesTeam> allTeams = Enum.GetValues<FunEnemySpritesTeam>()
+			   .Except(new FunEnemySpritesTeam[] {FunEnemySpritesTeam.None, FunEnemySpritesTeam.All, FunEnemySpritesTeam.Random, FunEnemySpritesTeam.Legacy})
+			   .ToHashSet();
+
+			if (team == FunEnemySpritesTeam.Random)
+			{
+				team = allTeams.PickRandom(rng);
+			}
+			// For tournament safe, we want to avoid replacing ALL the sprites.
+			// Instead, we'll either choose all the sprites from one team, or one sprite from all the teams.
+			if (flags.TournamentSafe && !modeRandom && team == FunEnemySpritesTeam.All)
+			{
+				if (rng.Between(1,10) > 5)
+				{
+					team = allTeams.PickRandom(rng);
+				}
+				else
+				{
+					modeRandom = true;
+				}
+			}
+			// Team Grind won't work well with Enemizer, and could give hints about settings for blind flags
+			if ((flags.BlindSeed || flags.EnemizerEnabled) && team == FunEnemySpritesTeam.Grind)
+			{
+				allTeams.Remove(FunEnemySpritesTeam.Grind);
+				team = allTeams.PickRandom(rng);
+			}
+			// Build the pool for Team Grind. We care about enemies that could roll in, not about the ones that ACTUALLY roll in
+			if (team == FunEnemySpritesTeam.Grind || team == FunEnemySpritesTeam.All)
+			{
+				List<EnemySprite> grind = new();
+				grind.AddRange(overworldGrind);
+				//if (flags.EnemyTrapTiles == TrapTileMode.Vanilla || flags.EnemyTrapTiles == TrapTileMode.Shuffle)
+				if (new HashSet<TrapTileMode> {TrapTileMode.Vanilla, TrapTileMode.Shuffle, TrapTileMode.Random,
+					TrapTileMode.ASideFormations, TrapTileMode.BSideFormations}.Contains(flags.EnemyTrapTiles))
+				{
+					grind.AddRange(vanillaSpike);
+				}
+				if (flags.EnemyTrapTiles == TrapTileMode.ASideFormations || flags.EnemyTrapTiles == TrapTileMode.Random)
+				{
+					grind.AddRange(a_SideExtras);
+				}
+				if (flags.EnemyTrapTiles == TrapTileMode.BSideFormations || flags.EnemyTrapTiles == TrapTileMode.Random)
+				{
+					grind.AddRange(b_SideExtras);
+				}
+				if (flags.EnemyTrapTiles == TrapTileMode.Overpowered)
+				{
+					grind.AddRange(a_SideExtras);
+					grind.AddRange(b_SideExtras);
+				}
+				teamMembers.Add(FunEnemySpritesTeam.Grind, grind);
+			}
+			HashSet<FunEnemySpritesTeam> teams;
+			if (team == FunEnemySpritesTeam.All)
+			{
+				teams = allTeams;
+			}
+			else
+			{
+				teams = new() {team};
+			}
+			if (team != FunEnemySpritesTeam.None)
+			{
+				foreach (FunEnemySpritesTeam t in teams)
+				{
+					if (modeRandom)
+					{
+						FunEnemySpritePool.Add(teamMembers[t].PickRandom(rng));
+					}
+					else
+					{
+						// foreach (EnemySprite member in teamMembers[t])
+						// {
+						// 	FunEnemySpritePool.Add(member);
+						// }
+						FunEnemySpritePool.UnionWith(teamMembers[t]);
+					}
+				}
 			}
 
-			if (teamSteak == SteakSprite.Legacy)
+			if (preferences.RobotChicken)
 			{
+				FunEnemySpritePool.Add(EnemySprite.WarMech);
+			}
 
-				Put(TyroPaletteOffset, Blob.FromHex("302505"));
-				Put(TyroSpriteOffset, Blob.FromHex(
+			// some pairs that should appear together even if the "one random" mode is on
+			if (FunEnemySpritePool.Contains(EnemySprite.Bull))
+			{
+				FunEnemySpritePool.Add(EnemySprite.Troll);
+			}
+			if (FunEnemySpritePool.Contains(EnemySprite.Troll))
+			{
+				FunEnemySpritePool.Add(EnemySprite.Bull);
+			}
+
+			if (FunEnemySpritePool.Contains(EnemySprite.Shadow))
+			{
+				FunEnemySpritePool.Add(EnemySprite.Zombie);
+			}
+			if (FunEnemySpritePool.Contains(EnemySprite.Zombie))
+			{
+				FunEnemySpritePool.Add(EnemySprite.Shadow);
+			}
+
+			if (FunEnemySpritePool.Contains(EnemySprite.Mummy))
+			{
+				FunEnemySpritePool.Add(EnemySprite.Coctrice);
+			}
+			if (FunEnemySpritePool.Contains(EnemySprite.Coctrice))
+			{
+				FunEnemySpritePool.Add(EnemySprite.Mummy);
+			}
+
+			if (FunEnemySpritePool.Contains(EnemySprite.Wyvern))
+			{
+				FunEnemySpritePool.Add(EnemySprite.Tyro);
+			}
+			if (FunEnemySpritePool.Contains(EnemySprite.Tyro))
+			{
+				FunEnemySpritePool.Add(EnemySprite.Wyvern);
+			}
+
+			foreach (EnemySprite sprite in FunEnemySpritePool)
+			{
+				// Sprites/EnemySprites.cs
+				// Console.WriteLine($"Sprite: {sprite}");
+				ImportFunEnemyImage(sprite);
+			}
+
+			if (team == FunEnemySpritesTeam.Legacy)
+			{
+				byte[] tyro = Blob.FromHex(
 					"00000000000000000000000000000000" + "00000000000103060000000000000001" + "001f3f60cf9f3f7f0000001f3f7fffff" + "0080c07f7f87c7e60000008080f8f8f9" + "00000080c0e0f0780000000000000080" + "00000000000000000000000000000000" +
 					"00000000000000000000000000000000" + "0c1933676f6f6f6f03070f1f1f1f1f1f" + "ffffffffffffffffffffffffffffffff" + "e6e6f6fbfdfffffff9f9f9fcfefefefe" + "3c9e4e26b6b6b6b6c0e0f0f878787878" + "00000000000000000000000000000000" +
 					"00000000000000000000000000000000" + "6f6f6f6f673b190f1f1f1f1f1f070701" + "fffffec080f9fbffffffffffff8787ff" + "ff3f1f1f3ffdf9f3fefefefefefefefc" + "b6b6b6b6b6b6b6b67878787878787878" + "00000000000000000000000000000000" +
 					"00000000000000000000000000000000" + "07070706060707070100000101010101" + "ffffff793080c0f0fffc3086cfffffff" + "e7fefcf9f26469e3f80103070f9f9e1c" + "264c983060c08000f8f0e0c080000000" + "00000000000000000000000000000000" +
 					"00000000000000000000000000000000" + "07070706060301010101010101000000" + "f9f9f9797366ece8fefefefefcf97377" + "c68c98981830606038706060e0c08080" + "00000000000000000000000000000000" + "00000000000000000000000000000000" +
-					"00000000000000000000000000000000" + "01010101010000000000000000000000" + "fb9b9b9b98ff7f006767676767000000" + "6060606060c080008080808080000000" + "00000000000000000000000000000000" + "00000000000000000000000000000000"));
+					"00000000000000000000000000000000" + "01010101010000000000000000000000" + "fb9b9b9b98ff7f006767676767000000" + "6060606060c080008080808080000000" + "00000000000000000000000000000000" + "00000000000000000000000000000000");
+				EnemySprites[EnemySprite.Tyro] = tyro;
 			}
-			else
-			{
-				// in Sprites.cs
-				SetTeamSteakGraphics(teamSteak);
-			}
-		}
-	    public void FunEnemyNames(Flags flags, Preferences preferences, MT19337 rng)
-		{
-			bool robotChicken = preferences.RobotChicken;
-			bool altFiends = (bool)flags.AlternateFiends;
 
-			if (!preferences.FunEnemyNames || flags.EnemizerEnabled)
+		}
+
+		public async Task SetFunFiendSprites(Flags flags, Preferences preferences, MT19337 rng)
+		{
+			
+			if (!preferences.FunFiendSprites || (bool)flags.AlternateFiends || flags.TournamentSafe)
+			{
+				return;
+			}
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var fiends = assembly.GetManifestResourceNames().First(str => str.EndsWith("fiends.png"));
+			var chaos = assembly.GetManifestResourceNames().First(str => str.EndsWith("chaos.png"));
+			var stream = assembly.GetManifestResourceStream(fiends);
+			await SetCustomFiendGraphics(stream);
+			stream = assembly.GetManifestResourceStream(chaos);
+			await SetCustomChaosGraphics(stream);
+		}
+
+		public void SetFunEnemyExtras(Flags flags, Preferences preferences, DialogueData dialogues, MT19337 rng)
+		{
+			if (!preferences.FunEnemyExtras || flags.TournamentSafe || flags.EnemizerEnabled)
+			{
+				return;
+			}
+			// This changes some NPC sprites and dialogues.
+			// Changes to Bahamut's enemy name and dialogue have to go in Bahamut.cs
+
+			// some of this is in Enemies/Sprites.cs; eventually there will be a container class
+			// for NPCs, and that will go in CharacterSprites.cs
+			const int GARLAND_OFFSET = 0x0B400;
+			const int BIKKE_OFFSET = 0x0B500;
+			const int CANOE_OFFSET = 0x0A000;
+
+			const int GARLAND_DIALOGUE = 0x04;
+			const int BIKKE_DIALOGUE = 0x08;
+			const int VAMPIRE_DIALOGUE = 0x1D;
+
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var garland = assembly.GetManifestResourceNames().First(str => str.EndsWith("garlandNPC.png"));
+			var bikke = assembly.GetManifestResourceNames().First(str => str.EndsWith("bikkeNPC.png"));
+			var canoe = assembly.GetManifestResourceNames().First(str => str.EndsWith("canoeNPC.png"));
+
+
+			// COMPLETE hack here; later make more elegant
+			if (FunEnemySpritePool.Contains(EnemySprite.Garland))
+			{
+				var stream = assembly.GetManifestResourceStream(garland);
+				var image = Image.Load<Rgba32>(stream);
+				for (int x = 0; x < 4; x++)
+				{
+					Put(GARLAND_OFFSET + x*64, MakePatternData(image,NPCGrayscaleIndex,0, x*16,2,2));
+				}
+				dialogues[GARLAND_DIALOGUE] = "No one touches my\nPrincess!!\nLIGHT WARRIORS??\nYou impertinent fools.\nI, Garland, smell like I\nlook - GARLIC!!";
+		
+			}
+			if (FunEnemySpritePool.Contains(EnemySprite.Pirate))
+			{
+				var stream = assembly.GetManifestResourceStream(bikke);
+				var image = Image.Load<Rgba32>(stream);
+				for (int x = 0; x < 4; x++)
+				{
+					Put(BIKKE_OFFSET + x*64, MakePatternData(image,NPCGrayscaleIndex,0, x*16,2,2));
+				}
+				stream = assembly.GetManifestResourceStream(canoe);
+				image = Image.Load<Rgba32>(stream);
+				for (int x = 0; x < 6; x++)
+				{
+					Put(CANOE_OFFSET + x*64, MakePatternData(image,NPCGrayscaleIndex,0,x*16,2,2));
+				}
+				dialogues[BIKKE_DIALOGUE] = "Arrr, tis I,\nSteamboat Mikke, and\nsurprised I am that you\nscurvy curs have the\nnerve to face me.\nParrots!\nGet those landlubbers!";
+			}
+			if (FunEnemySpritePool.Contains(EnemySprite.Vampire))
+			{
+				dialogues[VAMPIRE_DIALOGUE] = "All living things were\nborn to slay.\nThe Vampire's flash will\ndazzle you.. SAY CHEESE!";
+			}
+
+		}
+
+	    public void SetFunEnemyNames(Flags flags, Preferences preferences, MT19337 rng)
+		{
+
+			// NOTE: in previous versions, we needed to be careful about the total number of characters
+			// in the enemy name strings. These are now distributed in different parts of the ROM,
+			// so now the only constraint is for names not to exceed 8 characters total.
+
+			// The fun name for Fight Bahamut is set in Bahamut.cs
+
+			FunEnemyNames funNames = preferences.FunEnemyNames;
+			bool altFiends = (bool)flags.AlternateFiends;
+			
+
+			if (funNames == FunEnemyNames.None || flags.EnemizerEnabled)
 			{
 				return;
 			}
 
-			// ReadEnemyText() and WriteEnemyText() use some extra room in the ROM,
-			// so no need to worry about the number of bytes in the names now.
+			Dictionary<int,List<string>> funEnemyNames = new()
+			{	
+				{Enemy.GrImp, 	new List<string> {"GrUMP"}},
+				{Enemy.Wolf, 	new List<string> {"RURURU"}},
+				{Enemy.GrWolf, 	new List<string> {"GrrrWOLF"}},
+				{Enemy.FrWolf, 	new List<string> {"BrrrWOLF"}},
+				{Enemy.FrGiant,	new List<string> {"FROSTY"}},
+				{Enemy.GrOgre, 	new List<string> {"GeORGE"}},
+				{Enemy.WzOgre, 	new List<string> {"DIRGE", "GROVER"}},
+				{Enemy.Asp, 	new List<string> {"R.SNEK"}},
+				{Enemy.Cobra,	new List<string> {"GrSNEK"}},
+				{Enemy.SeaSnake,new List<string> {"SeaSNEK"}},
+				{Enemy.Image,	new List<string> {"iMAGE"}},
+				{Enemy.SandW,	new List<string> {"SANDWICH"}},
+				{Enemy.Phantom, new List<string> {"WrongEYE"}},
+				{Enemy.GrMedusa,new List<string> {"SNEKLADY"}},
+				{Enemy.Pede,	new List<string> {"EXPEDE"}},
+				{Enemy.WzVamp,	new List<string> {"EDWARD"}},
+				{Enemy.RGoyle,	new List<string> {"ARGYLE"}},
+				{Enemy.Slime,	new List<string> {"MtlSLIME"}},
+				{Enemy.RAnkylo,	new List<string> {"FnPOLICE"}},
+				{Enemy.WzMummy,	new List<string> {"MOMMY"}},
+				{Enemy.Coctrice,new List<string> {"BIRB","JerkBIRD"}},
+				{Enemy.Perilisk,new List<string> {"R.BIRB"}},
+				{Enemy.Wyvern,	new List<string> {"Y BURN", "WYNGS"}},
+				{Enemy.Naocho,	new List<string> {"NACHO"}},
+				{Enemy.RHydra,	new List<string> {"HYDRANT"}},
+				{Enemy.GrNaga,	new List<string> {"LadySNEK"}},
+				{Enemy.GasD,	new List<string> {"Green D"}},
+				{Enemy.Badman,	new List<string> {"BATMAN"}},
+				{Enemy.Evilman,	new List<string> {"OKAYMAN"}},
+				
+			};
+
+			Dictionary<int,List<string>> funFiendNames = new()
+			{
+				{Enemy.Lich,	new List<string> {"SpeedBMP", "S.BUMP"}},
+				{Enemy.Lich2,	new List<string> {"SpeedBMP", "S.BUMP"}},
+				{Enemy.Kary,	new List<string> {"KELLY"}},
+				{Enemy.Kary2,	new List<string> {"KELLY"}}
+			};
+
+			Dictionary<int,List<string>> funEnemySpriteNames = new()
+			{
+				{Enemy.Imp,		new List<string> {"UMP"}},
+				{Enemy.GrImp,	new List<string> {"GrUMP"}},
+				{Enemy.Wolf,	new List<string> {"ONTERIER","OTTAWARG"}},
+				{Enemy.GrWolf,	new List<string> {"OSLOBO","HOWLIFAX"}},
+				{Enemy.WrWolf,	new List<string> {"CALGRURU","WINNIPUG"}},
+				{Enemy.FrWolf,	new List<string> {"FrCANIDA","BrCOLOBO"}},
+				{Enemy.Iguana,	new List<string> {"COWGUANA"}},
+				{Enemy.Agama,	new List<string> {"COWGAMA"}},
+				{Enemy.Sauria,	new List<string> {"BOVILISK"}},
+				{Enemy.Giant,	new List<string> {"DJENT"}},
+				{Enemy.FrGiant,	new List<string> {"UrDJENT"}},
+				{Enemy.RGiant,	new List<string> {"TanDJENT"}},
+				{Enemy.Sahag,	new List<string> {"S.WAGON"}},
+				{Enemy.RSahag,	new List<string> {"R.FLYER"}},
+				{Enemy.WzSahag, new List<string> {"WzWAGON","JckWAGON"}},
+				{Enemy.Pirate,	new List<string> {"PARROT"}},
+				{Enemy.Kyzoku,	new List<string> {"KOKATSU"}},
+				{Enemy.Shark,	new List<string> {"BbySHARK"}},
+				{Enemy.GrShark,	new List<string> {"GpaSHARK"}},
+				{Enemy.OddEye,	new List<string> {"PinatEYE"}},
+				{Enemy.BigEye,	new List<string> {"EXPinata"}},
+				{Enemy.Bone,	new List<string> {"SKELDNCE"}},
+				{Enemy.RBone,	new List<string> {"R.SKELTN"}},
+				{Enemy.Creep,	new List<string> {"CREPE"}},
+				{Enemy.Crawl,	new List<string> {"CRULLER"}},
+				{Enemy.Hyena,	new List<string> {"HYLITE"}},
+				{Enemy.Cerebus, new List<string> {"CERBALLR"}},
+				{Enemy.Ogre,	new List<string> {"PETE"}},
+				{Enemy.GrOgre,	new List<string> {"RePETE"}},
+				{Enemy.WzOgre,	new List<string> {"ArmPETE"}},
+				{Enemy.Asp,		new List<string> {"OROBOROS"}},
+				{Enemy.Cobra,	new List<string> {"COBROROS"}},
+				{Enemy.SeaSnake,new List<string> {"ETERNEEL"}},
+				{Enemy.Scorpion,new List<string> {"SCIMP"}},
+				{Enemy.Lobster,	new List<string> {"SHRIMP"}},
+				{Enemy.Bull,	new List<string> {"BLOL"}},
+				{Enemy.ZomBull,	new List<string> {"ZomBLOL"}},
+				{Enemy.Troll,	new List<string> {"TROLFACE"}},
+				{Enemy.SeaTroll,new List<string> {"SeeFOOD"}},
+				{Enemy.Shadow,	new List<string> {"BlndMAUS"}},
+				{Enemy.Image,	new List<string> {"MINIMAGE"}},
+				{Enemy.Wraith,	new List<string> {"HntdMAUS"}},
+				{Enemy.Ghost,	new List<string> {"MINREAPR"}},
+				{Enemy.Zombie,	new List<string> {"ZOMBILLY"}},
+				{Enemy.Ghoul,	new List<string> {"GHOAT"}},
+				{Enemy.Geist,	new List<string> {"PLTRGOAT"}},
+				{Enemy.Specter,	new List<string> {"REVENANY"}},
+				{Enemy.Worm,	new List<string> {"GRUB"}},
+				{Enemy.SandW,	new List<string> {"SANDWICH"}},
+				{Enemy.GreyW,	new List<string> {"MealWORM"}},
+				{Enemy.Eye,		new List<string> {"AWOOGA", "EYEWUV U"}},
+				{Enemy.Phantom,	new List<string> {"FANTOOGA", "FANDOM"}},
+				{Enemy.Medusa,	new List<string> {"MELISSA"}},
+				{Enemy.GrMedusa,new List<string> {"MORGAN"}},
+				{Enemy.Catman,	new List<string> {"WINKID"}},
+				{Enemy.Mancat,	new List<string> {"KIDWIN"}},
+				{Enemy.Pede,	new List<string> {"PdASTAIR"}},
+				{Enemy.GrPede,	new List<string> {"PdKELLY"}},
+				{Enemy.Tiger,	new List<string> {"KNITYCAT"}},
+				{Enemy.SaberT,	new List<string> {"YARNIVOR"}},
+				{Enemy.Vampire,	new List<string> {"KODAKULA"}},
+				{Enemy.WzVamp,	new List<string> {"NSFRAZZI"}},
+				{Enemy.Gargoyle,new List<string> {"GARGLE"}},
+				{Enemy.RGoyle,	new List<string> {"ARSENIC"}},
+				{Enemy.Earth,	new List<string> {"DARTH"}},
+				{Enemy.Fire,	new List<string> {"DIRE"}},
+				{Enemy.FrostD,	new List<string> {"Bander S"}},
+				{Enemy.RedD,	new List<string> {"Jabber W"}},
+				{Enemy.ZombieD,	new List<string> {"ManxomeF"}},
+				{Enemy.Scum,	new List<string> {"SCMPANZI"}},
+				{Enemy.Muck,	new List<string> {"MUCKAQUE"}},
+				{Enemy.Ooze,	new List<string> {"BABOOZE"}},
+				{Enemy.Slime,	new List<string> {"SLIMATE"}},
+				{Enemy.Spider,	new List<string> {"WhlsSPDR"}},
+				{Enemy.Arachnid,new List<string> {"DaniSPDR"}},
+				{Enemy.Manticor,new List<string> {"METALCOR","WENDYCAR"}},
+				{Enemy.Sphinx,	new List<string> {"SPHYNTH"}},
+				{Enemy.RAnkylo, new List<string> {"FnPOLICE"}},
+				{Enemy.Ankylo,	new List<string> {"AnkyLEO"}},
+				{Enemy.Mummy,	new List<string> {"MomeRATH"}},
+				{Enemy.WzMummy, new List<string> {"OUTGRABR"}},
+				{Enemy.Coctrice,new List<string> {"JUBJUB"}},
+				{Enemy.Perilisk,new List<string> {"BOROGOVE"}},
+				{Enemy.Wyvern,	new List<string> {"WYNGS"}},
+				{Enemy.Wyrm,	new List<string> {"HotWYNGS"}},
+				{Enemy.Tyro,	new List<string> {"STEAK"}},
+				{Enemy.TRex,	new List<string> {"BluSTEAK","T BONE"}},
+				{Enemy.Caribe,	new List<string> {"CARIBINR"}},
+				{Enemy.RCaribe,	new List<string> {"SNAPPER"}},
+				{Enemy.Gator,	new List<string> {"G8ER BOI"}},
+				{Enemy.FrGator,	new List<string> {"OLLIEG8R"}},
+				{Enemy.Ocho,	new List<string> {"GUAC"}},
+				{Enemy.Naocho,	new List<string> {"NACHO"}},
+				{Enemy.Hydra,	new List<string> {"HYDRANT"}},
+				{Enemy.RHydra,	new List<string> {"F.HYDRNT"}},
+				{Enemy.Guard,	new List<string> {"L.GUARD"}},
+				{Enemy.Sentry,	new List<string> {"CENTER"}},
+				{Enemy.Water,	new List<string> {"HURLPOOL"}},
+				{Enemy.Air,		new List<string> {"SWAIR"}},
+				{Enemy.Naga,	new List<string> {"SnekDRUM"}},
+				{Enemy.GrNaga,	new List<string> {"LadyNAGA"}},
+				{Enemy.Chimera,	new	List<string> {"CHICEPS"}},
+				{Enemy.Jimera,	new List<string> {"GYMERA"}},
+				{Enemy.Wizard,	new List<string> {"R.U.A.Wz"}},
+				{Enemy.Sorcerer,new List<string> {"MNDFAILR"}},
+				{Enemy.Garland,	new List<string> {"GARLIC"}},
+				{Enemy.GasD,	new List<string> {"GasDRIVN"}},
+				{Enemy.BlueD,	new	List<string> {"VlksDRGN"}},
+				{Enemy.MudGol,	new List<string> {"MudGOLIE"}},
+				{Enemy.RockGol,	new List<string> {"PtRckROY"}},
+				{Enemy.IronGol, new List<string> {"IRonHXTL"}},
+				{Enemy.Badman,	new	List<string> {"GADFLY"}},
+				{Enemy.Evilman, new List<string> {"GOTHMOTH","ARTHUR"}},
+				{Enemy.Astos,	new List<string> {"ZOSTOS"}},
+				{Enemy.Mage,	new List<string> {"PHAGE"}},
+				{Enemy.Fighter,	new List<string> {"FOMITE"}},
+				{Enemy.Madpony,	new List<string> {"SL.TOVE"}},
+				{Enemy.Nitemare,new List<string> {"GyreTOVE"}},
+				{Enemy.WarMech,	new List<string> {"RoboCHKN","WarBAWK"}},
+			};
+
+			Dictionary<int, List<string>> funFiendSpriteNames = new()
+			{
+				{Enemy.Lich,	new List<string> {"GLICH"}},
+				{Enemy.Lich2,	new List<string> {"GLICH"}},
+				{Enemy.Kary,	new List<string> {"KELLY"}},
+				{Enemy.Kary2,	new List<string> {"KELLY"}},
+				{Enemy.Kraken,	new List<string> {"BRAKEN"}},
+				{Enemy.Kraken2,	new List<string> {"BRAKEN"}},
+				{Enemy.Tiamat,	new List<string> {"TIACAT"}},
+				{Enemy.Tiamat2,	new List<string> {"TIACAT"}},
+				{Enemy.Chaos,	new List<string> {"CHAOS","MNDLBROT","LORENZ","ENTROPER"}}
+			};
 
 
-			EnemyText[Enemy.GrImp] = "GrUMP";    // +0  GrIMP
-			EnemyText[Enemy.Wolf] = "RURURU";   // +2  WOLF
-			EnemyText[Enemy.GrWolf] = "GrrrWOLF"; // +2  GrWOLF
-			EnemyText[Enemy.FrWolf] = "BrrrWOLF"; // +2  FrWOLF
-			if (teamSteak == SteakSprite.Pastries || teamSteak == SteakSprite.All)
-			{
-				EnemyText[Enemy.Creep] = "CREPE";
-				EnemyText[Enemy.Crawl] = "CRULLER";
-			}
-			EnemyText[Enemy.GrOgre] = "GeORGE";  // +0  GrOGRE
-
-			// "WzOGRE"
-			if (rng.Between(1, 10) >= 5) {
-			    EnemyText[Enemy.WzOgre] = "DIRGE";  // -1
-			} else {
-			    EnemyText[Enemy.WzOgre] = "GROVER"; // +0
-			}
-
-			EnemyText[Enemy.Asp] = "R.SNEK";     // +3  ASP
-			EnemyText[Enemy.Cobra] = "GrSNEK";     // +1  COBRA
-			EnemyText[Enemy.SeaSnake] = "SeaSNEK";    // -1  SeaSNAKE
-			EnemyText[Enemy.Image] = "iMAGE";      // +0  IMAGE
-			if (teamSteak == SteakSprite.Sandwiches || teamSteak == SteakSprite.All)
-			{
-				EnemyText[Enemy.Worm] = "GRUB";		// WORM
-				EnemyText[Enemy.GreyW] = "MealWORM";	// Grey W
-			}
-			EnemyText[Enemy.SandW] = "SANDWICH";   // +2  Sand W
-			EnemyText[Enemy.Phantom] = "WrongEYE";   //     Phantom
-			EnemyText[Enemy.GrMedusa] = "SNEKLADY";   // +0  GrMEDUSA
-			EnemyText[Enemy.Pede] = "EXPEDE";     // +2  PEDE
-			EnemyText[Enemy.WzVamp] = "EDWARD";     // +0  WzVAMP
-			EnemyText[Enemy.RGoyle] = "ARGYLE";     // -1  R.GOYLE
-			EnemyText[Enemy.FrostD] = "White D";    // +0  Frost D
-			EnemyText[Enemy.Slime] = "MtlSLIME";   // +3  SLIME
-			EnemyText[Enemy.RAnkylo] = "FnPOLICE";   // +0  R.ANKYLO
-			EnemyText[Enemy.WzMummy] = "MOMMY";      // -2  WzMUMMY
-			EnemyText[Enemy.Coctrice] = "BIRB";       // -4  COCTRICE
-			EnemyText[Enemy.Perilisk] = "R.BIRB";     // -2  PERILISK
-			if (teamSteak == SteakSprite.Steak || teamSteak == SteakSprite.All)
-			{
-				EnemyText[Enemy.Wyvern] = "WYNGS";	// WYVERN
-				EnemyText[Enemy.Wyrm] = "HotWYNGS";	// WYRM
-			}
-			else
-				EnemyText[Enemy.Wyvern] = "Y BURN";     // +0  WYVERN
-			if (teamSteak == SteakSprite.Steak || teamSteak == SteakSprite.Legacy || teamSteak == SteakSprite.All)
-			{
-				EnemyText[Enemy.Tyro] = "STEAK";  // +1  TYRO
-				EnemyText[Enemy.TRex] = "T.BONE"; // +1  T REX
-			}
-			if (teamSteak == SteakSprite.Nachos || teamSteak == SteakSprite.All)
-			{
-				EnemyText[Enemy.Ocho] = "GUAC";		// OCHO
-			}
-			EnemyText[Enemy.Naocho] = "NACHO";      // -1  NAOCHO
-			EnemyText[Enemy.Hydra] = "HYDRANT";    // +0  R.HYDRA
-			EnemyText[Enemy.GrNaga] = "LadySNEK";  // +2  GrNAGA
-			EnemyText[Enemy.GasD] = "Green D";   // +2  Gas D
-			EnemyText[Enemy.Badman] = "BATMAN";    // +0  BADMAN
-			EnemyText[Enemy.Evilman] = "OKAYMAN";   // +0  EVILMAN
-			if (!altFiends) {
-			    EnemyText[Enemy.Lich] = "S.BUMP";    // +2  LICH
-			    EnemyText[Enemy.Lich2] = "S.BUMP";    // +2  LICH
-			    EnemyText[Enemy.Kary] = "KELLY";     // +1  KARY
-			    EnemyText[Enemy.Kary2] = "KELLY";     // +1  KARY
-			}
-
-			if (robotChicken)
-			{
-				if (rng.Between(1, 10) >= 5)
+			List<int> enemies;
+			if (funNames == FunEnemyNames.All)
+			{	
+				enemies = funEnemyNames.Keys.ToList();
+				if (!altFiends)
 				{
-					EnemyText[Enemy.WarMech] = "RoboCHKN"; // WarMECH
+					enemies.AddRange(funFiendNames.Keys);
 				}
-				else
+				foreach (int enemy in enemies)
 				{
-					EnemyText[Enemy.WarMech] = "WarBAWK"; // WarMECH
+					EnemyText[enemy] = funEnemyNames[enemy].PickRandom(rng);
 				}
 			}
 
+
+			enemies = funEnemySpriteNames.Keys.ToList();
+
+			foreach (int enemy in enemies)
+			{
+				if (FunEnemySpritePool.Contains(EnemySpriteMap[enemy]))
+				{
+					EnemyText[enemy] = funEnemySpriteNames[enemy].PickRandom(rng);
+				}
+			}
+
+			if (preferences.FunEnemyTeam == FunEnemySpritesTeam.Legacy)
+			{
+				EnemyText[Enemy.Tyro] = funEnemySpriteNames[Enemy.Tyro].PickRandom(rng);
+				EnemyText[Enemy.TRex] = funEnemySpriteNames[Enemy.TRex].PickRandom(rng);
+			}
+
+			if (!altFiends && preferences.FunFiendSprites)
+			{
+				foreach (int fiend in funFiendSpriteNames.Keys)
+				{
+					EnemyText[fiend] = funFiendSpriteNames[fiend].PickRandom(rng);
+				}
+			}
+			
 		}
 
 		public void PaletteSwap(bool enable, MT19337 rng)
@@ -474,15 +907,35 @@ namespace FF1Lib
 				return;
 			}
 
-			var newInstruments = new List<string> {"BASS", "LYRE", "HARP", "VIOLA", "CELLO", "PIANO", "ORGAN", "FLUTE", "OBOE", "PICCOLO", "FLUTE", "WHISTLE", "HORN", "TRUMPET",
-				"BAGPIPE", "DRUM", "VIOLIN", "DBLBASS", "GUITAR", "BANJO", "FIDDLE", "MNDOLIN", "CLARNET", "BASSOON", "TROMBON", "TUBA", "BUGLE", "MARIMBA", "XYLOPHN","SNARE D",
-				"BASSDRM", "TMBRINE", "CYMBALS", "TRIANGL", "COWBELL", "GONG", "TRUMPET", "SAX", "TIMPANI", "B GRAND", "HRDYGRD", "FLUGEL", "SONG", "KAZOO", "FOGHORN", "AIRHORN",
-				"VUVUZLA", "OCARINA", "PANFLUT", "SITAR", "HRMNICA", "UKULELE", "THREMIN", "DITTY", "JINGLE", "LIMRICK", "POEM", "HAIKU", "OCTBASS", "HRPSCRD", "FLUBA", "AEOLUS",
-				"TESLA", "STLDRUM", "DGERIDO", "WNDCHIM" };
+
+			var woodwinds = new List<string> {"FLUTE","PICCOLO","OBOE","CLARNET","SAX","BASSOON","RECORDR","OCARINA","PANFLUT","BAGPIPE","WHISTLE","HRMNICA"};
+			var brass 	  = new List<string> {"HORN","TRUMPET","CORNET","FLUGEL","BUGLE","TROMBON","TUBA","FLUBA"};
+			var stringInst= new List<string> {"VIOLIN","VIOLA","CELLO","DBLBASS","OCTBASS","LYRE","HARP",
+											  "GUITAR","BASS","ELECGTR","BANJO","FIDDLE","MNDOLIN","UKULELE","SITAR","HRDYGRD","DULCIMR"};
+			var percussion= new List<string> {"DRUM","SNARE D","BASSDRM","TIMPANI","TMBRINE","CYMBALS","TRIANGL","COWBELL","GONG","FNGRCYM",
+											  "MARIMBA","XYLOPHN","GLCKSPL","STLDRUM","BOOMWHK"};
+			var keyboards = new List<string> {"PIANO","B GRAND","ORGAN","HRPSCRD","CLVCHRD","SYNTH"};
+			var voice     = new List<string> {"SOPRANO","SINGER","SONG","KAZOO","DITTY","JINGLE","LIMRICK","POEM","HAIKU"};
+			var noise     = new List<string> {"FOGHORN","AIRHORN","VUVUZELA","THREMIN","TESLA","DGERIDO","WINDCH","AEOLUS"};
+
+			
+			var newInstruments = new List<string>()
+					.Concat(woodwinds)
+					.Concat(brass)
+					.Concat(stringInst)
+					.Concat(percussion)
+					.Concat(keyboards)
+					.Concat(voice)
+					.Concat(noise)
+				.ToList();
+			
+			
+			
 
 			//var dialogs = ReadText(dialogsPointerOffset, dialogsPointerBase, dialogsPointerCount);
 
 			var newLute = newInstruments.PickRandom(rng);
+			//Console.WriteLine($"Instrument: {newLute}");
 			// handle extra dialogues that might contain the LUTE if the NPChints flag is enabled or if Astos Shuffle is enabled
 			var dialogsUpdate = SubstituteKeyItemInExtraNPCDialogues("LUTE", newLute, dialogues); ;
 			var princessDialogue = dialogues[0x06].Split(new string[] { "LUTE" }, System.StringSplitOptions.RemoveEmptyEntries);

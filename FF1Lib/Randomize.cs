@@ -127,8 +127,7 @@ public partial class FF1Rom : NesRom
 		// Expand ROM, move data around
 		GlobalHacks();
 		
-		// load resource pack data that requires the ROM expansion that just took place
-		await this.LoadResourcePackPostROM(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
+		
 
 		// Fun Stuff -- running early so that changes here don't overwrite more important flag stuff below
 		ChangeLute(preferences.ChangeLute, Dialogues, new MT19337(funRng.Next()));
@@ -138,9 +137,15 @@ public partial class FF1Rom : NesRom
 		PaletteSwap(preferences.PaletteSwap && !flags.EnemizerEnabled, new MT19337(funRng.Next()));
 		// TeamSteak() must run before FunEnemyNames() because if "Random" is chosen for preferences.TeamSteak,
 		// that choice is resolved in TeamSteak(), and FunEnemyNames() needs to know which funny name to swap in.
-		TeamSteak(flags, preferences, new MT19337(funRng.Next()));
-		SetRobotChickenGraphics(preferences);
-		FunEnemyNames(flags, preferences, new MT19337(funRng.Next()));
+		//TeamSteak(flags, preferences, new MT19337(funRng.Next()));
+		FunEnemySprites(flags, preferences, new MT19337(funRng.Next()));
+		await SetFunFiendSprites(flags, preferences, new MT19337(funRng.Next()));
+		//SetRobotChickenGraphics(preferences);
+		SetFunEnemyExtras(flags, preferences, Dialogues, new MT19337(funRng.Next()));
+		SetFunEnemyNames(flags, preferences, new MT19337(funRng.Next()));
+
+		// load resource pack data that requires the ROM expansion that just took place
+		await this.LoadResourcePackPostROM(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
 
 
 		TalkRoutines.TransferTalkRoutines(this, flags);
@@ -308,7 +313,7 @@ public partial class FF1Rom : NesRom
 
 		// After unrunnable shuffle and before formation shuffle
 		WarMechMode.Process(this, flags, NpcData, ZoneFormations, Dialogues, rng, Maps, warmMechFloor);
-		FightBahamut(flags, TalkRoutines, NpcData, ZoneFormations, Dialogues, Maps, EnemyScripts, rng);
+		FightBahamut(flags, preferences, TalkRoutines, NpcData, ZoneFormations, Dialogues, Maps, EnemyScripts, rng);
 		Astos(NpcData, Dialogues, TalkRoutines, EnemyScripts, flags, rng);
 		EnableSwolePirates((bool)flags.SwolePirates);
 		ExtAltFiends.ExtendedFiendsUpdate(NpcData, Dialogues, this, rng);

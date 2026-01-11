@@ -910,6 +910,11 @@ namespace FF1Lib
 				throw new Exception("Incorrect number of strings in enemy text array.");
 		}
 
+		override public string ToString()
+		{
+			return string.Join(", ",_enemyTexts);
+		}
+
 		public string this[int textid]
 		{
 			get => _enemyTexts[textid];

@@ -7,23 +7,37 @@
 
 <div id="fun" class="framed-content">
 	<p>Fun flags are not part of the standard flags string since they do not impact gameplay. Click on Save Preferences to store your settings.</p>
-	<CheckBox UpdateAction="@UpdateAction" Id="funEnemyNamesCheckBox" @bind-Value="Preferences.FunEnemyNames">Fun Enemy Names</CheckBox>
-	<EnumDropDown UpdateAction="@UpdateAction" Id="teamSteakDropDown" @bind-Value="Preferences.TeamSteak">Team STEAK</EnumDropDown>
-	<CheckBox UpdateAction="@UpdateAction" Id="robotChickenCheckBox" @bind-Value="Preferences.RobotChicken">Robot Chicken</CheckBox>	
+
+	<h4>Fun Enemies</h4>
+	<EnumDropDown UpdateAction="@UpdateAction" Id="funEnemySpritesDropDown" TItem="FunEnemySpritesTeam" @bind-Value="Preferences.FunEnemyTeam">Fun Enemy Sprites:</EnumDropDown>
+	<CheckBox Indent UpdateAction="@UpdateAction" Id="funEnemySpritesModeCheckBox" IsEnabled=@(Preferences.FunEnemyTeam != FunEnemySpritesTeam.None && Preferences.FunEnemyTeam != FunEnemySpritesTeam.Legacy) @bind-value="Preferences.FunEnemyMode">One Sprite per Team</CheckBox>
+	<CheckBox Indent UpdateAction="@UpdateAction" Id="funEnemySpritesExtrasCheckBox" IsEnabled=@(Preferences.FunEnemyTeam != FunEnemySpritesTeam.None && Preferences.FunEnemyTeam != FunEnemySpritesTeam.Legacy) @bind-value="Preferences.FunEnemyExtras">NPCs and Dialogues</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="funFiendSpritesCheckBox" @bind-Value="Preferences.FunFiendSprites">Fun Fiend Sprites</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="robotChickenCheckBox" @bind-Value="Preferences.RobotChicken">Robot Chicken</CheckBox>
+	<EnumDropDown UpdateAction="@UpdateAction" Id="funEnemyNamesDropDown" TItem="FunEnemyNames" @bind-Value="Preferences.FunEnemyNames">Fun Enemy Names:</EnumDropDown>
+	
+	<div class="checkbox-cell"></div>
+	<h4>Fun Text</h4>
 	<CheckBox UpdateAction="@UpdateAction" Id="changeLuteCheckBox" @bind-Value="Preferences.ChangeLute">Multi-instrumentalist Sara</CheckBox>
 	<EnumDropDown UpdateAction="@UpdateAction" Id="titanSnackDropDown" TItem="TitanSnack" @bind-Value="Preferences.TitanSnack">Titan's Favorite Snack:</EnumDropDown>
 	<EnumDropDown UpdateAction="@UpdateAction" Id="hurrayDwarfFateDropDown" TItem="Fate" @bind-Value="Preferences.HurrayDwarfFate">Hurray Dwarf's Fate:</EnumDropDown>
     <CheckBox UpdateAction="@UpdateAction" Id="funFountainsCheckBox" @bind-Value="Preferences.FunFountainText">Fun Fountain Text</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="randomShardNamesCheckBox" @bind-Value="Preferences.randomShardNames">Random Shard Names</CheckBox>
-	<CheckBox UpdateAction="@UpdateAction" Id="paletteSwapCheckBox" @bind-Value="Preferences.PaletteSwap">Palette Swap</CheckBox>
-	<CheckBox UpdateAction="@UpdateAction" Id="modernBattlefieldCheckBox" @bind-Value="Preferences.ModernBattlefield">Modern Battlefield</CheckBox>
-	<CheckBox UpdateAction="@UpdateAction" Id="thirdBattlePaletteCheckBox" @bind-Value="Preferences.ThirdBattlePalette">Three Battle Palettes</CheckBox>
-	<EnumDropDown UpdateAction="@UpdateAction" Id="partyMapmanSlotDropDown" TItem="MapmanSlot" @bind-Value="Preferences.MapmanSlot">Map Character Slot:</EnumDropDown>
+	
+	<div class="checkbox-cell"></div>
+	<h4>Fun Music</h4>
 	<EnumDropDown UpdateAction="@UpdateAction" Id="musicDropDown" TItem="MusicShuffle" @bind-Value="Preferences.Music">Music Shuffle:</EnumDropDown>
 	<CheckBox UpdateAction="@UpdateAction" Id="alternateAirshipThemeCheckBox" @bind-Value="Preferences.AlternateAirshipTheme">Alternate Airship Theme</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="chaosBattleMusicCheckBox" @bind-Value="Preferences.ChaosBattleMusic">Alternate Chaos Battle Theme</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="newMusicCheckBox" IsEnabled=@(!Preferences.ChaosBattleMusic && !Preferences.AlternateAirshipTheme && Preferences.Music == MusicShuffle.None) @bind-Value="Preferences.NewMusic">New Music</CheckBox>
 	<CheckBox Indent UpdateAction="@UpdateAction" Id="newMusicStreamSafeCheckBox" IsEnabled=@(Preferences.NewMusic) @bind-Value="Preferences.NewMusicStreamSafe">Stream Safe Music</CheckBox>
+	
+	<div class="checkbox-cell"></div>
+	<h4>Fun Appearance</h4>
+	<CheckBox UpdateAction="@UpdateAction" Id="paletteSwapCheckBox" @bind-Value="Preferences.PaletteSwap">Palette Swap</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="modernBattlefieldCheckBox" @bind-Value="Preferences.ModernBattlefield">Modern Battlefield</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="thirdBattlePaletteCheckBox" @bind-Value="Preferences.ThirdBattlePalette">Three Battle Palettes</CheckBox>
+	<EnumDropDown UpdateAction="@UpdateAction" Id="partyMapmanSlotDropDown" TItem="MapmanSlot" @bind-Value="Preferences.MapmanSlot">Map Character Slot:</EnumDropDown>
 	<EnumDropDown UpdateAction="@UpdateAction" Id="menuColorDropDown" TItem="MenuColor" @bind-Value="Preferences.MenuColor">Menu Color:</EnumDropDown>
 	<CheckBox UpdateAction="@UpdateAction" Id="mapDerpCheckBox" @bind-Value="Preferences.MapDerp">Map Derp</CheckBox>
 

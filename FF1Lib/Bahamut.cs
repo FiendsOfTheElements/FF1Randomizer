@@ -10,7 +10,7 @@ namespace FF1Lib
 {
 	public partial class FF1Rom
 	{
-		public void FightBahamut(Flags flags, TalkRoutines talkroutines, NpcObjectData npcdata, ZoneFormations zoneformations, DialogueData dialogues, StandardMaps maps, EnemyScripts enemyScripts, MT19337 rng)
+		public void FightBahamut(Flags flags, Preferences preferences, TalkRoutines talkroutines, NpcObjectData npcdata, ZoneFormations zoneformations, DialogueData dialogues, StandardMaps maps, EnemyScripts enemyScripts, MT19337 rng)
 		{
 			if (!(bool)flags.FightBahamut || flags.SpookyFlag || (bool)flags.RandomizeFormationEnemizer)
 			{
@@ -20,6 +20,9 @@ namespace FF1Lib
 			bool removeTail = (bool)flags.NoTail;
 			bool swoleBahamut = (bool)flags.SwoleBahamut;
 			bool deepDungeon = flags.GameMode == GameModes.DeepDungeon;
+			bool funSprites = FunEnemySpritePool.Contains(EnemySprite.GasD);
+			bool funNames = preferences.FunEnemyNames != FunEnemyNames.None;
+			bool funExtras = preferences.FunEnemyExtras;
 			EvadeCapValues evadeClampFlag = flags.EvadeCap;
 
 
@@ -122,7 +125,7 @@ namespace FF1Lib
 			Put(EnemyOffset + (idAnkylo * EnemySize), bahamutInfo.compressData());
 
 			// Update name
-			EnemyText[Enemy.Ankylo] = "BAHAMUT"; // +1 byte compared to ANKYLO, is this an issue?
+			EnemyText[Enemy.Ankylo] = (funSprites && funNames) ? "BAHONKIT" : "BAHAMUT";
 
 
 			// Remove Ankylo from the Overworld, with appropriate substitutions
@@ -137,12 +140,16 @@ namespace FF1Lib
 			if (removeTail)
 			{
 				asm = asmNoTailPromote;
-				bahamutDialogue = "To prove your worth..\nYou must show me your\nstrength..\n\nCome at me WARRIORS,\nor die by my claws!";
+				bahamutDialogue = (funSprites && funNames && funExtras) ? 
+					"To prove your worth..\nYou must confront\nmy true form..\n\nI, BAHONKIT, will run\nyou all down!!\nBEEP BEEP":
+					"To prove your worth..\nYou must show me your\nstrength..\n\nCome at me WARRIORS,\nor die by my claws!";
 			}
 			else
 			{
 				asm = asmTailRequiredPromote;
-				bahamutDialogue = "The TAIL! Impressive..\nNow show me your true\nstrength..\n\nCome at me WARRIORS,\nor die by my claws!";
+				bahamutDialogue = (funSprites && funNames && funExtras) ?
+					"The TAIL! Impressive..\nNow you must confront\nmy true form..\n\nI, BAHONKIT, will run\nyou all down!!\nBEEP BEEP":
+					"The TAIL! Impressive..\nNow show me your true\nstrength..\n\nCome at me WARRIORS,\nor die by my claws!";
 			}
 			var fightBahamut = talkroutines.Add(Blob.FromHex(asm));
 			npcdata[ObjectId.Bahamut].Battle = encAnkylo;

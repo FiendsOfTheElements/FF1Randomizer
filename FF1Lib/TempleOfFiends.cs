@@ -356,8 +356,14 @@ namespace FF1Lib
 			MenuText.MenuStrings[(int)FF1Text.MenuString.UseLuteSuccess] = FF1Text.TextToBytes("The tune plays,\nopening the pathway.", useDTE: true);
 
 			// make lute plate a single color
+			// The lute plate sprite uses two different palettes for some reason, as does the rod plate, despite looking the same
+			// top and bottom. The rod plate uses the color of the vampire's hair and skin, which are at different indices of the palettes for
+			// the vampire's top and bottom. In short ToFR, the lute plate and Garland need to share a palette, but Garland's skin is the same
+			// index in the top and bottom palettes. We could remap all of this, but in order to import NPCs, it's easier to just black out Garland's room
+			// in ToFR, map the dark blue color used for his outline and shadow at the end of the game to transparent, and then add the gold
+			// from Garland's head to the bottom palette, unused in Garland but used in the lute plate.
 			MakeGarlandsBorderTransparent(); // so lute plate change doesn't conflict with Garland, he'll look the same on a black background
-			Put(0x02B2D, Blob.FromHex("27")); // change bottom lute plate palette
+			Put(0x02B2D, Blob.FromHex("27")); // change bottom lute plate palette (and Garland's bottom palette)
 		}
 
 		private void AddLutePlateToFloor1F(StandardMaps maps)
@@ -376,10 +382,26 @@ namespace FF1Lib
 		{
 			// replaces the outline of Garland, stuff that normally displays in dark blue or black
 			// with transparency, for use with making a single color lute plate
-			Put(0x0B400, Blob.FromHex("0000000601050703"));
-			Put(0x0B410, Blob.FromHex("0000006080A0E0C0"));
-			Put(0x0B420, Blob.FromHex("0000006060000000"));
-			Put(0x0B430, Blob.FromHex("0006060000000000"));
+			// Garland's NPC tiles are at 0x0B400; we only need to replace one complete sprite (4 tiles) because
+			// he only ever faces down.
+			// Originally, this used the following hard-coding of part of the bit-planes of each tile
+			// Put(0x0B400, Blob.FromHex("0000000601050703"));
+			// Put(0x0B410, Blob.FromHex("0000006080A0E0C0"));
+			// Put(0x0B420, Blob.FromHex("0000006060000000"));
+			// Put(0x0B430, Blob.FromHex("0006060000000000"));
+			
+			// Instead of hard-coding the above, we need to be more flexible in case of NPC-import,
+			// so we simply map color 1 to color 0 in these tiles. Strictly speaking we probably
+			// only need to do this for the bottom two tiles, but there could be weird interactions.
+			for (int n = 0, offset = 0x0B400; n < 4; n++ )
+			{
+				int index = offset + n*0x10;
+				byte[] tile = DecodePPU(Get(index,0x10));
+				// map color 1 to color 0
+				tile = tile.Select(i => i == 1? (byte)0 : i).ToArray();
+				Put(index, EncodeForPPU(tile));
+
+			}
 		}
 		private void EnableChaosFloorEncounters(StandardMaps maps)
 		{
