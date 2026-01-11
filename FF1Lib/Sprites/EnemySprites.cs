@@ -84,7 +84,8 @@ namespace FF1Lib
 		// LATER decide how this should work with Enemizer / new formations.
 		// Also decide whether writing it out explicitly is worth the space,
 		// since this could also be imported from the rom.
-		Dictionary<int, EnemySprite> enemySpriteMap = new Dictionary<int, EnemySprite>
+		Dictionary<int, EnemySprite> EnemySpriteMap = new()
+
 		{
 			{Enemy.Imp, 	 EnemySprite.Imp},
 			{Enemy.GrImp, 	 EnemySprite.Imp},
@@ -329,7 +330,11 @@ namespace FF1Lib
 			}
 
 			// use EnemySprite enum as indexer
-			public byte[] this[EnemySprite index] => this[(int)index];
+			public byte[] this[EnemySprite index]
+			{
+				get => _enemySpriteData[(int)index];
+				set => this[(int)index] = value;	
+			}
 
 			// Get and Set methods using the interleaved image LUT values (see comments at the beginning of the class)
 			public byte[] GetLUT(int LUTindex) => this[LUTtoIndex(LUTindex)];
@@ -443,38 +448,38 @@ namespace FF1Lib
 		}
 
 
-		public void SetTeamSteakGraphics(SteakSprite teamSteak)
-		{
-			// NOTE: this is all going to change shortly, so there are some basic hacks here to let team steak play with the
-			// EnemyPatternData class.
-			// don't need to check team STEAK preferences because this is called in Fun.cs where that check has already been done
-			// arrays contain offset into rom, sprite size in pixels and x,y coords for location of sprite in spritesheet
+		// public void SetTeamSteakGraphics(SteakSprite teamSteak)
+		// {
+		// 	// NOTE: this is all going to change shortly, so there are some basic hacks here to let team steak play with the
+		// 	// EnemyPatternData class.
+		// 	// don't need to check team STEAK preferences because this is called in Fun.cs where that check has already been done
+		// 	// arrays contain offset into rom, sprite size in pixels and x,y coords for location of sprite in spritesheet
 
-			var SteakSpriteList = new List<EnemySprite> {};
+		// 	var SteakSpriteList = new List<EnemySprite> {};
 
-			if (teamSteak == SteakSprite.Steak || teamSteak == SteakSprite.All)
-			{
-				SteakSpriteList.Add(EnemySprite.Wyvern);
-				SteakSpriteList.Add(EnemySprite.Tyro);
-			}
-			if (teamSteak == SteakSprite.Sandwiches || teamSteak == SteakSprite.All)
-			{
-				SteakSpriteList.Add(EnemySprite.Worm);
-			}
-			if (teamSteak == SteakSprite.Nachos || teamSteak == SteakSprite.All)
-			{
-				SteakSpriteList.Add(EnemySprite.Ocho);
-			}
-			if (teamSteak == SteakSprite.Pastries || teamSteak == SteakSprite.All)
-			{
-				SteakSpriteList.Add(EnemySprite.Creep);
-			}
+		// 	if (teamSteak == SteakSprite.Steak || teamSteak == SteakSprite.All)
+		// 	{
+		// 		SteakSpriteList.Add(EnemySprite.Wyvern);
+		// 		SteakSpriteList.Add(EnemySprite.Tyro);
+		// 	}
+		// 	if (teamSteak == SteakSprite.Sandwiches || teamSteak == SteakSprite.All)
+		// 	{
+		// 		SteakSpriteList.Add(EnemySprite.Worm);
+		// 	}
+		// 	if (teamSteak == SteakSprite.Nachos || teamSteak == SteakSprite.All)
+		// 	{
+		// 		SteakSpriteList.Add(EnemySprite.Ocho);
+		// 	}
+		// 	if (teamSteak == SteakSprite.Pastries || teamSteak == SteakSprite.All)
+		// 	{
+		// 		SteakSpriteList.Add(EnemySprite.Creep);
+		// 	}
 
-			foreach (EnemySprite sprite in SteakSpriteList)
-			{
-				ImportFunEnemyImage(sprite);
-			}
-		}
+		// 	foreach (EnemySprite sprite in SteakSpriteList)
+		// 	{
+		// 		ImportFunEnemyImage(sprite);
+		// 	}
+		// }
 		
 		public void SetCustomEnemyGraphics(Stream stream) {
 			Image<Rgba32> image = Image.Load<Rgba32>(stream);
