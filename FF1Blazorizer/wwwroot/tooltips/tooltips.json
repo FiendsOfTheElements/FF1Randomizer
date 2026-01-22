@@ -2575,9 +2575,24 @@
 		"description": "Non incentive items are opened in order. \n\nWarning, if your inventory gets full it will block your equipment progress."
 	},
 	{
-		"Id": "EncounterPRNG",
-		"title": "Encounter Table Uses True RNG",
-		"description": "Instead of a 256-step encounter table that resets with a hard reset, the game uses a pseudo-random number generator with a period of 65,535 steps, which does not reset on hard reset."
+		"Id": "AdvancedEncounterRNGDropDown",
+		"title": "Advanced Encounter RNG Table",
+		"description": "Changes the behavior of the encounter RNG.\nTrue RNG:\nInstead of a 256-step encounter table that resets with a hard reset, the game uses a pseudo-random number generator with a period of 65,535 steps, which does not reset on hard reset.\nCurated:\nProduces an RNG table with somewhat predictable features, which could be useful for encounter manipulation training, overworld grinding, and challenge seeds.\nRandom:\nRandomly chooses among None, True RNG, and Curated.\n\nCurated Encounter RNG settings are detailed in the tooltips below.\nNOTE: under normal conditions, the second traversal of the battle table runs is the reverse of the first; with the Curated setting, all traversals are the same."
+	},
+	{
+		"Id": "EarlyEncounterCheckBox",
+		"title": "Forced Early Encounter",
+		"description": "Force at least one early encounter within \"Max Early Steps\" after a hard reset.\n"
+	},
+	{
+		"Id": "EarlyLongRunCheckBox",
+		"title": "Early Long Safe Run",
+		"description": "Guarantee an early long safe run starting no more than \"Max Early Steps\" after a hard reset. The length of the run is set by the \"Run Steps\" slider.\nThere may be one or more encounters before the long run.\n"
+	},
+	{
+		"Id": "EncounterSpacingDropDown",
+		"title": "Encounter Spacing",
+		"description": "Controls the distribution of encounters in the table, with the following settings:\nNone: the default FFR approach using a shuffled RNG table.\nEven(ish): favors an even distribution of encounters, with around the same number of steps between encounters.\nClustered: encounters appear close together, with longer runs between encounter clusters.\nRandom: chooses randomly from the above.\nEncounter spacing applies to the steps outside of any early long run, and respects the early encounter flag.\nThe two curated spacings maintain their spacing features across different areas of the game. For instance, in the vanilla game, the ocean has 3 encounters per 256 steps, the overworld has 10, dungeons 8, and the Bridge of Destiny 24. With the Even(ish) spacing, the 3 ocean encounters will be relatively evenly spaced, as will the overworld's, dungeons', and BoD's. Because all locations use the same encounter table, the spacing in each location cannot be perfectly even; the algorithm tries to space the overworld's and dungeons' encounters most evenly.\nWith the Clustered spacing, the 3 ocean encounters are likely to fall within 6-9 steps of each other; that cluster will appear in the overworld's 10 encounters, along with 2 or 3 other clusters distributed randomly within the table."
 	},
 	{
 		"Id": "SetRNG",

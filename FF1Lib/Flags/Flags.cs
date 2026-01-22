@@ -211,6 +211,17 @@ namespace FF1Lib
 
 		public bool? Rng { get; set; } = false;
 		public bool FixMissingBattleRngEntry { get; set; } = false;
+		public AdvancedEncounterRNG AdvancedEncounterRNG { get; set; } = AdvancedEncounterRNG.None;
+
+		public bool? EarlyEncounter { get; set; } = false;
+		public bool? EarlyLongRun { get; set; } = false;
+		public EncounterSpacing EncounterSpacing { get; set; } = EncounterSpacing.None;
+		[IntegerFlag(32,128,4)]
+		public int RunLengthLow { get; set; } = 32;
+		[IntegerFlag(32,128,4)]
+		public int RunLengthHigh { get; set; } = 64;
+		[IntegerFlag(4, 16,1)]
+		public int MaxEarlySteps { get; set; } = 8;
 
 		public bool? EncounterPrng { get; set; } = false;
 
