@@ -102,6 +102,8 @@ namespace FF1Lib
 
 			if (overworldMultiplier == 0)
 			{
+				overworldEncounterRate = 0;
+				oceanEncounterRate = 0;
 				rom.PutInBank(0x1F, 0xC50E, Blob.FromHex("EAEA"));
 			}
 			else
@@ -111,6 +113,13 @@ namespace FF1Lib
 			}
 
 			dungeonEncounterRate = dungeonEncounterRate.Select(x => (byte)Math.Ceiling(x * dungeonMultiplier)).ToArray();
+		}
+
+		public List<byte> Get()
+		{
+			List<byte> encounterRates = new() {overworldEncounterRate, oceanEncounterRate};
+			encounterRates.AddRange(dungeonEncounterRate);
+			return encounterRates;
 		}
 		public void Write()
 		{
