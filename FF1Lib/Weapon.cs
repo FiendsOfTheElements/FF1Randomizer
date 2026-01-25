@@ -366,6 +366,9 @@ namespace FF1Lib
 			{"LIT ", 0x28},
 			{"LIT2", 0x28},
 			{"LIT3", 0x28},
+			{"THUN", 0x28},
+			{"THN2", 0x28},
+			{"THN3", 0x28},
 			{"Dragon", 0x2A},
 		    };
 
