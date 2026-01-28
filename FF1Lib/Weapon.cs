@@ -343,6 +343,9 @@ namespace FF1Lib
 			{"Long  @S", WeaponSprite.LONGSWORD},
 			{"Katana ", WeaponSprite.SCIMITAR},
 		    };
+			/// IMPORTANT:
+			/// The following needs to include any spells whose names may have been changed
+			/// for accessibility. Look for an IMPORTANT comment in Magic.cs
 		    var preferredColors = new Dictionary<string, byte> {
 			{"Wooden", 0x28},
 			{"Copper", 0x27},
