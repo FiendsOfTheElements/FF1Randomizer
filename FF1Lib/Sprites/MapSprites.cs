@@ -10,13 +10,26 @@ namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
     {
+
+		const int OVERWORLDPALETTE_OFFSET = 0x380;
+		const int OVERWORLDPALETTE_ASSIGNMENT = 0x300;
+		const int OVERWORLDPATTERNTABLE_OFFSET = 0x8000;
+		const int OVERWORLDPATTERNTABLE_ASSIGNMENT = 0x100;
+		const int TILESETPATTERNTABLE_OFFSET = 0xC000;
+		const int TILESETPATTERNTABLE_ASSIGNMENT = 0x1000;
+		const int TILESETPALETTE_ASSIGNMENT = 0x400;
+		const int TILESET_TILEDATA = 0x800;
+		const int MAPPALETTE_OFFSET = 0x2000;
+
+		const int MAPTILESET_ASSIGNMENT = 0x2CC0;
         public async Task SetCustomMapGraphics(Stream readStream,
 						 int maxCHR,
 						 int maxPal,
 						 int[] PALETTE_OFFSET,
 						 int PALETTE_ASSIGNMENT,
 						 int PATTERNTABLE_OFFSET,
-						 int PATTERNTABLE_ASSIGNMENT)
+						 int PATTERNTABLE_ASSIGNMENT,
+						 bool towntiles = false)
 		{
 			//IImageFormat format;
 			Image<Rgba32> image = Image.Load<Rgba32>(readStream);
@@ -64,7 +77,7 @@ namespace FF1Lib
 				List<byte> pal;
 				if (!makeNTPalette(colors, NESpalette, out pal, toNEScolor))
 				{
-					await this.Progress($"WARNING: Failed importing overworld tile at {left}, {top}, too many unique colors (limit 4 unique colors):", 1 + pal.Count);
+					await this.Progress($"WARNING: Failed importing map tile at {left}, {top}, too many unique colors (limit 4 unique colors):", 1 + pal.Count);
 					for (int i = 0; i < pal.Count; i++)
 					{
 						await this.Progress($"WARNING: NES palette {i}: ${pal[i],2:X}");
@@ -84,6 +97,43 @@ namespace FF1Lib
 
 			}
 
+			if (towntiles && mapPals.Count >= 4)
+			{
+				// check for palettes compatible with dialogue palette: [0x0F, 0x00, 0x01, 0x30]
+				List<int> compatiblePals = new();
+				for (int i = 0; i < mapPals.Count; i++)
+				{
+					var thisPal = mapPals[i];
+					// see if the palette contains the following colors:
+					if (thisPal.Contains(0x0F) && thisPal.Contains(0x00) && thisPal.Contains(0x30))
+					{
+						compatiblePals.Add(i);	
+					}
+				}
+				// If there is one or more, swap the last one into position 3 (0 indexed)
+				// we won't use that palette in game because it's overwritten for dialogues and menus,
+				// possibly with a special color. More importantly, we care about moving the palette
+				// that was in position 3 to one of the first 3, assuming that the imported tileset had
+				// 4 palettes. If there's more than 4, we want to try to preserve the first 3 palettes if possible,
+				// so this will swap in a later compatible palette...
+				if (compatiblePals.Count != 0)
+				{
+					mapPals.Swap(compatiblePals.Last(),3);
+					// now make sure the palette is in the correct order
+					if (mapPals[3].Count < 4)
+					{
+						mapPals[3].Add(0x01);
+					}
+					byte extra = mapPals[3].First(i => i != 0x0F && i != 0x00 && i != 0x30);
+					mapPals[3] = new() {0x0f,0x00,extra,0x30};
+				}
+				else
+				{
+					await this.Progress($"WARNING: town tilesheet has at least 4 palettes, but none of them is compatible with dialogue palette (needs to have black, white, dark gray, and one other color)");
+				}
+			}
+			
+			
 			//int maxCHR = 245;
 			int excessCHR = 0;
 			Console.WriteLine($"mapPals {mapPals.Count}");

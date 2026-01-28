@@ -1025,6 +1025,9 @@ namespace FF1Lib
 				MagicSpell newSpell = magicSpells[i];
 				string spellName = magicSpells[i].Name;
 
+				// IMPORTANT:
+				// Anything that is changed here may need to be added to a list of weaponizer palettes.
+				// Look for an IMPORTANT comment in Weapon.cs
 				switch (spellName)
 				{
 					// Note that 3 letter spell names actually have a trailing space

@@ -12,25 +12,6 @@ namespace FF1Lib
 	{
 		
 
-		// nametables
-		
-
-		
-
-		const int OVERWORLDPALETTE_OFFSET = 0x380;
-		const int OVERWORLDPALETTE_ASSIGNMENT = 0x300;
-		const int OVERWORLDPATTERNTABLE_OFFSET = 0x8000;
-		const int OVERWORLDPATTERNTABLE_ASSIGNMENT = 0x100;
-
-		const int TILESETPATTERNTABLE_OFFSET = 0xC000;
-		const int TILESETPATTERNTABLE_ASSIGNMENT = 0x1000;
-		const int TILESETPALETTE_ASSIGNMENT = 0x400;
-		const int TILESET_TILEDATA = 0x800;
-		const int MAPPALETTE_OFFSET = 0x2000;
-
-		const int MAPTILESET_ASSIGNMENT = 0x2CC0;
-
-
 		/*
 			There's no such thing as a standard NES reference palette, because the NES PPU
 			didn't encode RGB. Instead, it generated the composite signal directly from a set

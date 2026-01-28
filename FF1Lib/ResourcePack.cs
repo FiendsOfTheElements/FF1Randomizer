@@ -73,18 +73,19 @@ namespace FF1Lib
 						int cur_tileset = 0;
 						await SetCustomMapGraphics(s, 128, 4,
 								 new int[] {
-						 MAPPALETTE_OFFSET + (0 * 0x30),
-						 MAPPALETTE_OFFSET + (1 * 0x30),
-						 MAPPALETTE_OFFSET + (2 * 0x30),
-						 MAPPALETTE_OFFSET + (3 * 0x30),
-						 MAPPALETTE_OFFSET + (4 * 0x30),
-						 MAPPALETTE_OFFSET + (5 * 0x30),
-						 MAPPALETTE_OFFSET + (6 * 0x30),
-						 MAPPALETTE_OFFSET + (7 * 0x30),
+									MAPPALETTE_OFFSET + (0 * 0x30),
+									MAPPALETTE_OFFSET + (1 * 0x30),
+									MAPPALETTE_OFFSET + (2 * 0x30),
+									MAPPALETTE_OFFSET + (3 * 0x30),
+									MAPPALETTE_OFFSET + (4 * 0x30),
+									MAPPALETTE_OFFSET + (5 * 0x30),
+									MAPPALETTE_OFFSET + (6 * 0x30),
+									MAPPALETTE_OFFSET + (7 * 0x30),
 								 },
 								 TILESETPALETTE_ASSIGNMENT + (cur_tileset << 7),
 								 TILESETPATTERNTABLE_OFFSET + (cur_tileset << 11),
-								 TILESETPATTERNTABLE_ASSIGNMENT + (cur_tileset << 9));
+								 TILESETPATTERNTABLE_ASSIGNMENT + (cur_tileset << 9),
+								 towntiles: true);
 					}
 				}
 
