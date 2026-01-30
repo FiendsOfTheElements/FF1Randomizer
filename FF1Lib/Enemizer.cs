@@ -3766,60 +3766,6 @@ namespace FF1Lib
 			return spell;
 		}
 
-		public void ObfuscateEnemies(MT19337 rng, Flags flags)
-		{
-			var flagsValue = EnemyObfuscation.None;
-
-			if (flagsValue == EnemyObfuscation.Imp || flagsValue == EnemyObfuscation.ImpAll)
-			{
-				List<FormationInfo> formations = LoadFormations();
-				var enemyNames = EnemyText;
-
-				List<string> alphabet = new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
-
-				var names = alphabet.Join(alphabet, x => true, x => true, (a, b) => a + b.ToLower() + "IMP").ToList();
-
-				List<(string name, byte pal)> variants = new List<(string, byte)>();
-				for (int i = 0; i < 256; i++)
-				{
-					var name = names.SpliceRandom(rng);
-					variants.Add((name, (byte)rng.Between(0, 128)));
-				}
-
-				int limit = flagsValue == EnemyObfuscation.ImpAll ? 128 : 119;
-
-				for (int i = 0; i < limit; i++) enemyNames[i] = variants[i].name;
-
-				for (int i = 0; i < FormationCount; ++i)
-				{
-					if (formations[i].id.Any(id => id >= limit)) continue;
-
-					formations[i].pics = 0;
-					formations[i].shape = 0;
-					formations[i].tileset = 0;
-					formations[i].pal1 = variants[formations[i].id[0]].pal;
-					formations[i].pal1 = variants[formations[i].id[1]].pal;
-
-					if(flagsValue == EnemyObfuscation.ImpAll && (flags.TrappedChaos ?? false) && formations[i].id.Any(id => id == 127))
-					{
-						formations[i].unrunnable_a = false;
-						formations[i].unrunnable_b = false;
-					}
-				}
-
-				StoreFormations(formations);
-			}
-		}
-
-
-		private void StoreFormations(List<FormationInfo> formations)
-		{
-			for (int i = 0; i < FormationCount; ++i)
-			{
-				Put(FormationDataOffset + i * FormationSize, formations[i].compressData());
-			}
-		}
-
 		private List<FormationInfo> LoadFormations()
 		{
 			List<FormationInfo> formations = new List<FormationInfo>();
@@ -3835,16 +3781,4 @@ namespace FF1Lib
 		}
 	}
 
-
-	public enum EnemyObfuscation
-	{
-		[Description("None")]
-		None,
-
-		[Description("Imp")]
-		Imp,
-
-		[Description("Imp (inc. Fiends and Chaos)")]
-		ImpAll
-	}
 }
