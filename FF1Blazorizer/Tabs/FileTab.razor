@@ -56,6 +56,17 @@
 		</p>
 	}
 
+	<p>
+		<ToolTipBox UpdateAction="@UpdateAction" Id="importResourcePack"><strong>Import Resource Pack</strong></ToolTipBox>
+		Resource Pack URL:
+		<br>
+		<input type="text" style="width: calc(100% - 80px);" class="nes-input" value="@ResourcePackUrl" @onchange="@OnResourcePackUrlChanged" />
+		<br><br>
+		Upload Resource Pack:
+		<br>
+		<input type="file" id="importResourcePackInput" accept=".zip" @onchange="@OnImportResourcePack" />
+	</p>
+
 	<p>@((MarkupString)StatusMessage)</p>
 	<div class="row">&nbsp;</div>
 	<a class="styled-button generate-button" hidden="@(!Flags.TriState)" disabled="@(!Flags.TriState)" style="font-size: small; margin-bottom: 10px;" @onclick="@CollapseTriStates">Reveal Randomized State Flags</a>
@@ -73,6 +84,7 @@
 	[Parameter] public bool IsOpen { get; set; } = true;
 	[Parameter] public bool showChaos { get; set; }
 	[Parameter] public string Flagstring { get; set; }
+	[Parameter] public string ResourcePackUrl { get; set; }
 	[Parameter] public Action<string> UpdateSeed { get; set; }
 	[CascadingParameter(Name="ShowModal")] public MainLayout.ShowModalT ShowModal { get; set; }
 	[CascadingParameter(Name="SetGenerating")] public MainLayout.ShowModalT SetGenerating { get; set; }
@@ -107,6 +119,11 @@
 		if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("f", out var flags))
 		{
 			TrySetFlags(flags.First());
+		}
+
+		if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("rp", out var resourcePackUrl))
+		{
+			await TrySetResourceUrl(Uri.UnescapeDataString(resourcePackUrl));
 		}
 
 		var romfile = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "file");
@@ -166,7 +183,7 @@
 
 	async Task SetQueryString()
 	{
-		string[] args = new string[2] { _seed, Flags.Encoded };
+		string[] args = new string[3] { _seed, Flags.Encoded, Uri.EscapeDataString(ResourcePackUrl)};
 
 		await JSRuntime.InvokeAsync<Task>("updateHistory", args);
 	}
@@ -242,6 +259,61 @@
 		Preferences.PlayerName = playername.Length > 16 ? playername.Substring(0, 16) : playername;
 
 		UpdateAction?.Invoke("UpdateFlagstring","");
+	}
+
+	async Task OnImportResourcePack(ChangeEventArgs e) {
+		try 
+		{
+			string content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importResourcePackInput");
+			if (content == null || content == "") { return; }
+			SetResourcePack(content);
+			ResourcePackUrl = "";
+		} 
+		catch (Exception x)
+		{
+			Console.WriteLine(x.ToString());
+			SetStatusMessage("Failed to Load Resource Pack");
+		}
+		StateHasChanged();
+	}
+
+	async Task OnResourcePackUrlChanged(ChangeEventArgs e)
+	{
+		await TrySetResourceUrl(e.Value as string);
+		
+	}
+
+	async Task TrySetResourceUrl(string resourcePackUrl)
+	{
+		byte[] bytes;
+		string content;
+		if (resourcePackUrl == null || resourcePackUrl == "") { return; }
+		try
+		{
+			bytes = await Http.GetByteArrayAsync(resourcePackUrl);
+			content = Convert.ToBase64String(bytes);
+			SetResourcePack(content);
+			ResourcePackUrl = resourcePackUrl;
+			await JSRuntime.InvokeAsync<string>("clearFileSelect","importResourcePackInput");
+			await SetQueryString();
+		}
+		catch (Exception x)
+		{
+			Console.WriteLine(x.ToString());
+			SetStatusMessage("Invalid Resource Pack URL");
+		}
+	}
+
+	void SetResourcePack(string content)
+	{
+		using (MemoryStream stream = new MemoryStream(Convert.FromBase64String(content)))
+		{
+			Flags.LoadResourcePackFlags(stream);
+		}
+		Flags.ResourcePack = content;
+		UpdateAction?.Invoke("UpdateFlagstring", "");
+		SetStatusMessage("Successfully imported Resource Pack");
+		StateHasChanged();
 	}
 
 	public void CollapseTriStates() {
@@ -429,4 +501,6 @@
 
 		StateHasChanged();
 	}
+
+
 }

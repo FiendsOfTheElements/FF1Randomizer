@@ -16,6 +16,11 @@
         });
 }
 
+function clearFileSelect(inputId) {
+    const input = document.getElementById(inputId);
+    input.value = null;
+}
+
 function handlePresetSelect(inputId) {
         const input = document.getElementById(inputId);
         const file = input.files[0];
@@ -92,13 +97,13 @@ async function downloadFile(filename, encoded) {
         anchor.dispatchEvent(new MouseEvent('click'));
 }
 
-function updateHistory(seedString, flagString) {
+function updateHistory(seedString, flagString, resourcePackUrlString) {
         let href = document.location.href;
         if (href.indexOf('?') > 0) {
                 href = href.substr(0, href.indexOf('?'));
         }
 
-        history.replaceState({}, '', href + '?' + 's=' + seedString + '&' + 'f=' + flagString);
+        history.replaceState({}, '', href + '?' + 's=' + seedString + '&' + 'f=' + flagString + '&' + 'rp=' + resourcePackUrlString);
 }
 
 function copyLocation() {
