@@ -7,6 +7,7 @@
 @using BlazorStrap
 @using Microsoft.AspNetCore.Components.Web
 @using FF1Lib.Procgen;
+@using System.IO.Compression
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
@@ -56,16 +57,19 @@
 		</p>
 	}
 
-	<p>
-		<ToolTipBox UpdateAction="@UpdateAction" Id="importResourcePack"><strong>Import Resource Pack</strong></ToolTipBox>
-		Resource Pack URL:
-		<br>
-		<input type="text" style="width: calc(100% - 80px);" class="nes-input" value="@ResourcePackUrl" @onchange="@OnResourcePackUrlChanged" />
-		<br><br>
-		Upload Resource Pack:
-		<br>
-		<input type="file" id="importResourcePackInput" accept=".zip" @onchange="@OnImportResourcePack" />
-	</p>
+	@if (!Flags.BlindSeed)
+	{
+		<p>
+			<ToolTipBox UpdateAction="@UpdateAction" Id="importResourcePack"><strong>Import Resource Pack</strong></ToolTipBox>
+			Resource Pack URL:
+			<br>
+			<input type="text" style="width: calc(100% - 80px);" class="nes-input" id="setResourcePackUrlInput" value="@ResourcePackUrl" @onchange="@OnResourcePackUrlChanged" />
+			<br><br>
+			Upload Resource Pack:
+			<br>
+			<input type="file" id="importResourcePackInput" accept=".zip" @onchange="@OnImportResourcePack" />
+		</p>
+	}
 
 	<p>@((MarkupString)StatusMessage)</p>
 	<div class="row">&nbsp;</div>
@@ -100,6 +104,8 @@
 
 	private string _seed;
 	private string _seedInputClass = "";
+	private string _resourcePackHost = "https://wiki.finalfantasyrandomizer.com/resource-packs/";
+	private string _encodedResourcePackUrl = "";
 
 	protected override async void OnInitialized()
 	{
@@ -121,9 +127,11 @@
 			TrySetFlags(flags.First());
 		}
 
-		if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("rp", out var resourcePackUrl))
+		if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("rp", out var encodedResourcePackUrl))
 		{
-			await TrySetResourceUrl(Uri.UnescapeDataString(resourcePackUrl));
+			string basename = Encoding.UTF8.GetString(Convert.FromBase64String(encodedResourcePackUrl.Single()));
+			UpdateAction?.Invoke("UpdateResourcePackUrl", encodedResourcePackUrl);
+			await TrySetResourcePackUrl(_resourcePackHost + basename);
 		}
 
 		var romfile = await JSRuntime.InvokeAsync<string>("getFFRPreferences", "file");
@@ -181,9 +189,9 @@
 		}
 	}
 
-	async Task SetQueryString()
+	public async Task SetQueryString()
 	{
-		string[] args = new string[3] { _seed, Flags.Encoded, Uri.EscapeDataString(ResourcePackUrl)};
+		string[] args = new string[3] { _seed, Flags.Encoded, _encodedResourcePackUrl };
 
 		await JSRuntime.InvokeAsync<Task>("updateHistory", args);
 	}
@@ -268,52 +276,101 @@
 			if (content == null || content == "") { return; }
 			SetResourcePack(content);
 			ResourcePackUrl = "";
+			_encodedResourcePackUrl = "";
 		} 
 		catch (Exception x)
 		{
 			Console.WriteLine(x.ToString());
 			SetStatusMessage("Failed to Load Resource Pack");
 		}
+		await SetQueryString();
 		StateHasChanged();
 	}
 
 	async Task OnResourcePackUrlChanged(ChangeEventArgs e)
 	{
-		await TrySetResourceUrl(e.Value as string);
+		await TrySetResourcePackUrl(e.Value as string);
 		
 	}
 
-	async Task TrySetResourceUrl(string resourcePackUrl)
+	async Task TrySetResourcePackUrl(string resourcePackUrl)
 	{
-		byte[] bytes;
-		string content;
-		if (resourcePackUrl == null || resourcePackUrl == "") { return; }
-		try
+		ResourcePackUrl = resourcePackUrl;
+		string content = null;
+		if (resourcePackUrl == null || resourcePackUrl == "")
 		{
-			bytes = await Http.GetByteArrayAsync(resourcePackUrl);
-			content = Convert.ToBase64String(bytes);
-			SetResourcePack(content);
-			ResourcePackUrl = resourcePackUrl;
-			await JSRuntime.InvokeAsync<string>("clearFileSelect","importResourcePackInput");
-			await SetQueryString();
+			_encodedResourcePackUrl = "";
 		}
-		catch (Exception x)
+		else if (!resourcePackUrl.StartsWith(_resourcePackHost))
 		{
-			Console.WriteLine(x.ToString());
-			SetStatusMessage("Invalid Resource Pack URL");
+			_encodedResourcePackUrl = "";
+			SetStatusMessage("Invalid Resource Pack URL.<br>Resource packs are hosted on the wiki site.");
 		}
+		else if (!resourcePackUrl.EndsWith(".zip"))
+		{
+			_encodedResourcePackUrl = "";
+			SetStatusMessage("Invalid Resource Pack URL.<br>Resource Pack must be a .zip file.");
+		}
+		else 
+		{
+			try
+			{
+				byte[] bytes = await Http.GetByteArrayAsync(resourcePackUrl);
+				content = Convert.ToBase64String(bytes);
+				
+				string basename = resourcePackUrl.Remove(0,_resourcePackHost.Length);
+				_encodedResourcePackUrl = Convert.ToBase64String(Encoding.UTF8.GetBytes(basename));
+				UpdateAction?.Invoke("UpdateResourcePackUrl",_encodedResourcePackUrl);
+				if (!Flags.BlindSeed)
+				{	
+					await JSRuntime.InvokeAsync<Task>("clearFileSelect","importResourcePackInput");
+				}
+				
+			}
+			catch (Exception x)
+			{
+				Console.WriteLine(x.ToString());
+				SetStatusMessage("Invalid Resource Pack URL");
+			}
+		}
+		SetResourcePack(content);
+		await SetQueryString();
+		
 	}
 
 	void SetResourcePack(string content)
 	{
+		if (content == null || content == "")
+		{
+			Flags.ResourcePack = null;
+			return;
+		}
 		using (MemoryStream stream = new MemoryStream(Convert.FromBase64String(content)))
 		{
+			try
+			{
+				var archive = new ZipArchive(stream);
+				var entries = archive.Entries;
+			}
+			catch (Exception x)
+			{
+				Console.WriteLine(x.ToString());
+				SetStatusMessage("Resource Pack not valid zip file.");
+				Flags.ResourcePack = "";
+				return;
+			}
 			Flags.LoadResourcePackFlags(stream);
 		}
 		Flags.ResourcePack = content;
 		UpdateAction?.Invoke("UpdateFlagstring", "");
 		SetStatusMessage("Successfully imported Resource Pack");
 		StateHasChanged();
+	}
+
+	public void ClearResourcePackUrlValues()
+	{
+		ResourcePackUrl = "";
+		_encodedResourcePackUrl = "";
 	}
 
 	public void CollapseTriStates() {

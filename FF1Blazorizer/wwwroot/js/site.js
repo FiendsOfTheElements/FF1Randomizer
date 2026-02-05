@@ -21,6 +21,11 @@ function clearFileSelect(inputId) {
     input.value = null;
 }
 
+function clearTextInput(inputId) {
+    const input = document.getElementById(inputId);
+    input.value = "";
+}
+
 function handlePresetSelect(inputId) {
         const input = document.getElementById(inputId);
         const file = input.files[0];
@@ -103,7 +108,13 @@ function updateHistory(seedString, flagString, resourcePackUrlString) {
                 href = href.substr(0, href.indexOf('?'));
         }
 
-        history.replaceState({}, '', href + '?' + 's=' + seedString + '&' + 'f=' + flagString + '&' + 'rp=' + resourcePackUrlString);
+        let rpString = '';
+        if (resourcePackUrlString != '' && resourcePackUrlString != null)
+        {
+            rpString = '&' + 'rp=' + resourcePackUrlString;
+        }
+
+        history.replaceState({}, '', href + '?' + 's=' + seedString + '&' + 'f=' + flagString + rpString);
 }
 
 function copyLocation() {

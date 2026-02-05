@@ -25,7 +25,10 @@
 		var json = await JSRuntime.InvokeAsync<string>("computePreset", name);
 		Flags.BlindSeed = false;
 		LoadFromJson(json);
-		UpdateAction?.Invoke("UpdateFlagstring", "");
+		Flags.ResourcePack = null;
+		await JSRuntime.InvokeAsync<Task>("clearTextInput","setResourcePackUrlInput");
+		UpdateAction?.Invoke("UpdateResourcePackUrl", "");
+		UpdateAction?.Invoke("UpdateFlagstring", "");	
 	}
 
 	public void LoadFromJson(string json)
