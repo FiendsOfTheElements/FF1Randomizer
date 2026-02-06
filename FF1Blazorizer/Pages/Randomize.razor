@@ -168,6 +168,7 @@
 	private string SpriteSheetMessage { get; set; } = "Load custom player sprites:";
 	private string flagstring = "";
 	private string seed = "";
+	private string resourcePackUrl = "";
 
 	protected override async void OnInitialized()
 	{
@@ -213,6 +214,11 @@
 		else if (action == "UpdateSeed")
 		{
 			UpdateSeed(id);
+			StateHasChanged();
+		}
+		else if (action == "UpdateResourcePackUrl")
+		{
+			UpdateResourcePackUrl(id);
 			StateHasChanged();
 		}
 		else if (action == "UpdateTooltip")
@@ -277,7 +283,7 @@
 	private async void UpdateFlagstring()
 	{
 		flagstring = Flags.Encoded;
-		string[] args = new string[2] { seed, Flags.Encoded };
+		string[] args = new string[3] { seed, Flags.Encoded, resourcePackUrl };
 		await JSRuntime.InvokeAsync<Task>("updateHistory", args);
 		StateHasChanged();
 	}
@@ -285,6 +291,12 @@
 	private void UpdateSeed(string value)
 	{
 		seed = value;
+		StateHasChanged();
+	}
+
+	private void UpdateResourcePackUrl(string value)
+	{
+		resourcePackUrl = value;
 		StateHasChanged();
 	}
 

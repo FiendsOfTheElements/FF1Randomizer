@@ -196,10 +196,7 @@
 			<input type="file" id="presetInput" accept=".json" @onchange="OnPresetChanged" /> 
 		</p>
 
-		<h3></h3>
-
-		<ToolTipBox UpdateAction="@UpdateAction" Id="importResourcePack"><h4>Import Resource Pack</h4></ToolTipBox>
-		<input type="file" id="importResourcePackInput" accept=".zip" @onchange="@OnImportResourcePack" />
+		
 
 		</div>
 
@@ -352,19 +349,6 @@
 		StateHasChanged();
 	}
 
-		async Task OnImportResourcePack(ChangeEventArgs e) {
-		  try {
-		    var content = await JSRuntime.InvokeAsync<string>("handleFileSelect", "importResourcePackInput");
-		    if (content == null || content == "") { return; }
-	            using (var stream = new MemoryStream(Convert.FromBase64String(content))) {
-		       Flags.LoadResourcePackFlags(stream);
-		    }
-		    Flags.ResourcePack = content;
-			UpdateAction?.Invoke("UpdateFlagstring", "");
-		  } catch (Exception x) {
-			   Console.WriteLine(x.ToString());
-		  }
-		  StateHasChanged();
-		}
+		
 
 }
