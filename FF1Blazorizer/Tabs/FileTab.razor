@@ -64,6 +64,7 @@
 			Resource Pack URL:
 			<br>
 			<input type="text" style="width: calc(100% - 80px);" class="nes-input" id="setResourcePackUrlInput" value="@ResourcePackUrl" @onchange="@OnResourcePackUrlChanged" />
+			<a class="styled-button" @onclick="@OnClearResourcePackUrl">Clear</a>
 			<br><br>
 			Upload Resource Pack:
 			<br>
@@ -129,8 +130,13 @@
 
 		if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("rp", out var encodedResourcePackUrl))
 		{
-			string basename = Encoding.UTF8.GetString(Convert.FromBase64String(encodedResourcePackUrl.Single()));
-			UpdateAction?.Invoke("UpdateResourcePackUrl", encodedResourcePackUrl);
+			// convert from Flagstring Base64 alphabet
+			string encoded = encodedResourcePackUrl.Single()
+				.Replace(".","+")
+				.Replace("-","/")
+				.Replace("_","=");
+			string basename = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
+			UpdateAction?.Invoke("UpdateResourcePackUrl", encoded);
 			await TrySetResourcePackUrl(_resourcePackHost + basename);
 		}
 
@@ -300,6 +306,7 @@
 		if (resourcePackUrl == null || resourcePackUrl == "")
 		{
 			_encodedResourcePackUrl = "";
+			SetStatusMessage("Cleared Resource Pack URL");
 		}
 		else if (!resourcePackUrl.StartsWith(_resourcePackHost))
 		{
@@ -318,8 +325,12 @@
 				byte[] bytes = await Http.GetByteArrayAsync(resourcePackUrl);
 				content = Convert.ToBase64String(bytes);
 				
-				string basename = resourcePackUrl.Remove(0,_resourcePackHost.Length);
-				_encodedResourcePackUrl = Convert.ToBase64String(Encoding.UTF8.GetBytes(basename));
+				string basename = resourcePackUrl.Replace(_resourcePackHost,"");
+				// match the Flagstring Base64 alphabet
+				_encodedResourcePackUrl = Convert.ToBase64String(Encoding.UTF8.GetBytes(basename))
+					.Replace("+",".")
+					.Replace("/","-")
+					.Replace("=","_");
 				UpdateAction?.Invoke("UpdateResourcePackUrl",_encodedResourcePackUrl);
 				if (!Flags.BlindSeed)
 				{	
@@ -363,14 +374,16 @@
 		}
 		Flags.ResourcePack = content;
 		UpdateAction?.Invoke("UpdateFlagstring", "");
-		SetStatusMessage("Successfully imported Resource Pack");
+		if (!Flags.BlindSeed)
+		{
+			SetStatusMessage("Successfully imported Resource Pack");
+		}
 		StateHasChanged();
 	}
 
-	public void ClearResourcePackUrlValues()
+	async Task OnClearResourcePackUrl()
 	{
-		ResourcePackUrl = "";
-		_encodedResourcePackUrl = "";
+		await TrySetResourcePackUrl(resourcePackUrl: "");
 	}
 
 	public void CollapseTriStates() {
