@@ -86,7 +86,7 @@
 		"Id": "importResourcePack",
 		"title": "Import Resource Pack",
 		"screenshot": "importResourcePack.png",
-		"description": "Imports into the game various custom assets like sprites, gamescript and worldmap grouped in a single zip package. See the Wiki for more info."
+		"description": "Imports into the game various custom assets like sprites, gamescript and worldmap grouped in a single zip package.\nResource packs that have been uploaded to https://wiki.finalfantasyrandomizer.com/resource-packs can be imported by entering the resource pack URL. Packs imported this way will be reflected in the flags/seed link, which you can share with others.\nOr, you can import a resource pack file from your filesystem; these will not be reflected in the flags/ssed link.\nNOTE: resource packs which only change incidental assets like tiles and sprites should act like Fun% preferences, and not affect the seed generation or validation hash.\nSee the Wiki at https://wiki.finalfantasyrandomizer.com/en/ResourcePacks/ResourcePacksFormat for more information about the resource pack format."
 	},
 	{
 		"Id": "disableMinimap",
