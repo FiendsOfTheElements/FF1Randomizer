@@ -66,11 +66,9 @@ namespace FF1Lib.Procgen
             _pool = new Graph(nodes);
 
             _roomNode = _pool.MostIsolatedNode(rng);
-            foreach (Node n in _footprint.RoomCenterToCenter(_roomNode).Intersect(_pool.Nodes))
-            {
-                _pool.RemoveNode(n);
-            }            
+            _pool.Remove(_footprint.RoomCenterToCenter(_roomNode).Intersect(_pool.Nodes));
         }
+        
 
         private void AddRoomBranch()
         {
@@ -82,7 +80,125 @@ namespace FF1Lib.Procgen
 
         
 
-        
+        public class Footprint
+        {
+            // tile patterns associated with waterfall design
+
+            // waterfall walkable path consists of overlapping 4x4 squares of tiles
+            // 
+            // public static readonly (int,int)[] Path =
+
+            private readonly HashSet<Node> _path;
+            private readonly HashSet<Node> _boundary;
+            private readonly HashSet<Node> _centerToCenter;
+            private readonly HashSet<Node> _room;
+            private readonly HashSet<Node> _roomBoundary;
+            private readonly HashSet<Node> _roomCenterToCenter;
+            private readonly HashSet<Node> _nextStepPool;
+
+            
+            private readonly (int,int)[] _pathKernel = 
+            {
+                (-1,-1),( 0,-1),( 1,-1),( 2,-1),
+                (-1, 0),( 0, 0),( 1, 0),( 2, 0),
+                (-1, 1),( 0, 1),( 1, 1),( 2, 1),
+                (-1, 2),( 0, 2),( 1, 2),( 2, 2)   
+            };
+
+            private readonly (int,int)[] _boundaryKernel = 
+            {
+                       (0,-3),
+                (-2,0),       ( 2,0),
+                       (0,-2)
+            };
+
+            private readonly (int,int)[] _centerToCenterKernel =
+            {
+                (-2,-2),( 1,-2),
+                (-2, 1),( 1, 1)
+            };
+
+            private readonly (int,int)[] _roomKernel =
+            {
+                (-2,-1),( 2,-1),
+                (-2, 0),( 2, 0)
+            };
+
+            private readonly (int,int)[] _nextStepPoolKernel =
+            {
+                        (-2,-3),( 1,-3),
+                (-3,-2),                ( 2,-2),
+                (-3, 1),                ( 2,-1),
+                        (-2, 2),( 1,-2)
+            };
+
+            public Footprint()
+            {
+                InitFootprint(new HashSet<Node> {new(0,0)}, _pathKernel, out _path);
+                InitFootprint(_path,_boundaryKernel,out _boundary);
+                InitFootprint(_boundary,_centerToCenterKernel,out _centerToCenter);
+                InitFootprint(_path,_roomKernel,out _room);
+                InitFootprint(_room,_boundaryKernel,out _roomBoundary);
+                InitFootprint(_roomBoundary,_centerToCenterKernel,out _roomCenterToCenter);
+                InitFootprint(_path,_nextStepPoolKernel,out _nextStepPool);
+                    _nextStepPool.UnionWith(new Node[] {new(-2,-5),new(2,-5),new(-2,5),new(2,5)});
+            }
+
+
+            private void InitFootprint(HashSet<Node> sourceFootprint, (int,int)[] kernel, out HashSet<Node> outFootprint)
+            {
+                outFootprint = new();
+                foreach ((int,int) p in kernel)
+                {
+                    outFootprint.UnionWith(CenteredFootprint(new Node(p),sourceFootprint));
+                }
+            }
+
+
+            private HashSet<Node> CenteredFootprint(Node node,HashSet<Node> footprint)
+            {
+                HashSet<Node> newFootprint = new();
+                foreach (Node n in footprint)
+                {
+                    newFootprint.Add(node + n);
+                }
+                return newFootprint;
+            }
+            public HashSet<Node> Path(Node node)
+            {
+                return CenteredFootprint(node,_path);
+            }
+
+            public HashSet<Node> Boundary(Node node)
+            {
+                return CenteredFootprint(node,_boundary);
+            }
+
+            public HashSet<Node> CenterToCenter(Node node)
+            {
+                return CenteredFootprint(node,_centerToCenter);
+            }
+
+            public HashSet<Node> Room(Node node)
+            {
+                return CenteredFootprint(node,_room);
+            }
+
+            public HashSet<Node> RoomBoundary(Node node)
+            {
+                return CenteredFootprint(node,_roomBoundary);
+            }
+
+            public HashSet<Node> RoomCenterToCenter(Node node)
+            {
+                return CenteredFootprint(node,_roomCenterToCenter);
+            }
+
+            public HashSet<Node> NextStepPool(Node node)
+            {
+                return CenteredFootprint(node,_nextStepPool);
+            }
+        }
 
 
 
@@ -133,6 +249,10 @@ namespace FF1Lib.Procgen
 
             public void Add(Edge edge)
             {
+                if (Edges.Contains(edge))
+                {
+                    return;
+                }
                 Node node1 = edge.Node1;
                 Node node2 = edge.Node2;
                 Edges.Add(edge);
@@ -173,7 +293,17 @@ namespace FF1Lib.Procgen
                 return Edges.Remove(edge);
             }
 
-            public bool RemoveNode(Node node)
+            public bool Remove(IEnumerable<Edge> edges)
+            {
+                bool found = true;
+                foreach (Edge e in edges)
+                {
+                    found = found && Remove(e);
+                }
+                return found;
+            }
+
+            public bool Remove(Node node)
             {
                 if (!Nodes.Contains(node))
                 {
@@ -187,6 +317,16 @@ namespace FF1Lib.Procgen
                     }
                     return true;
                 }
+            }
+
+            public bool Remove(IEnumerable<Node> nodes)
+            {
+                bool found = true;
+                foreach (Node n in nodes)
+                {
+                    found = found && Remove(n);
+                }
+                return found;
             }
 
             
@@ -206,7 +346,7 @@ namespace FF1Lib.Procgen
  
 
         
-        // Node has value semantics. We'll build the graph itself with GraphNode.
+        // Node has value semantics.
 		public readonly struct Node
 		{
             private readonly byte _x = 0;
@@ -454,156 +594,12 @@ namespace FF1Lib.Procgen
             {
                 return !(left == right);
             }
-            
         }
-
-        public class Footprint
-        {
-            // tile patterns associated with waterfall design
-
-            // waterfall walkable path consists of overlapping 4x4 squares of tiles
-            // 
-            // public static readonly (int,int)[] Path =
-
-
             
-
-            private HashSet<Node> _path;
-            private HashSet<Node> _boundary;
-            private HashSet<Node> _centerToCenter;
-            private HashSet<Node> _room;
-            private HashSet<Node> _roomBoundary;
-            private HashSet<Node> _roomCenterToCenter;
-
-            
-            private readonly (int,int)[] _pathKernel = 
-            {
-                (-1,-1),( 0,-1),( 1,-1),( 2,-1),
-                (-1, 0),( 0, 0),( 1, 0),( 2, 0),
-                (-1, 1),( 0, 1),( 1, 1),( 2, 1),
-                (-1, 2),( 0, 2),( 1, 2),( 2, 2)   
-            };
-
-            private readonly (int,int)[] _boundaryKernel = 
-            {
-                        (0,-3),
-                (-2,0),       (2,0),
-                        (0,-2)
-            };
-
-            private readonly (int,int)[] _centerToCenterKernel =
-            {
-                (-2,-2),( 1,-2),
-                (-2, 1),( 1, 1)
-            };
-
-            private readonly (int,int)[] _roomKernel =
-            {
-                (-2,-1),( 2,-1),
-                (-2, 0),( 2, 0)
-            };
-           
+        
+       
 
 
-            
-
-            public Footprint()
-            {
-                InitFootprint(new HashSet<Node> {new(0,0)}, _pathKernel, out _path);
-                InitFootprint(_path,_boundaryKernel,out _boundary);
-                InitFootprint(_boundary,_centerToCenterKernel,out _centerToCenter);
-                InitFootprint(_path,_roomKernel,out _room);
-                InitFootprint(_room,_boundaryKernel,out _roomBoundary);
-                InitFootprint(_roomBoundary,_centerToCenterKernel,out _roomCenterToCenter);
-            }
-
-
-            private void InitFootprint(HashSet<Node> sourceFootprint, (int,int)[] kernel, out HashSet<Node> outFootprint)
-            {
-                outFootprint = new();
-                foreach ((int,int) p in kernel)
-                {
-                    outFootprint.UnionWith(CenteredFootprint(new Node(p),sourceFootprint));
-                }
-            }
-
-
-            private HashSet<Node> CenteredFootprint(Node node,HashSet<Node> footprint)
-            {
-                HashSet<Node> newFootprint = new();
-                foreach (Node n in footprint)
-                {
-                    newFootprint.Add(node + n);
-                }
-                return newFootprint;
-            }
-            public HashSet<Node> Path(Node node)
-            {
-                return CenteredFootprint(node,_path);
-            }
-
-            public HashSet<Node> Boundary(Node node)
-            {
-                return CenteredFootprint(node,_boundary);
-            }
-
-            public HashSet<Node> CenterToCenter(Node node)
-            {
-                return CenteredFootprint(node,_centerToCenter);
-            }
-
-            public HashSet<Node> Room(Node node)
-            {
-                return CenteredFootprint(node,_room);
-            }
-
-            public HashSet<Node> RoomBoundary(Node node)
-            {
-                return CenteredFootprint(node,_roomBoundary);
-            }
-
-            public HashSet<Node> RoomCenterToCenter(Node node)
-            {
-                return CenteredFootprint(node,_roomCenterToCenter);
-            }
-
-            // this tile pattern includes the minimum set of walls that could surround one 4x4 path square,
-            // such that if a path from another branch encroached on these tiles, the walls could not be
-            // drawn correctly
-            // public static readonly (int,int)[] Boundary =
-            // {
-            //                     (-1,-4),( 0,-4),( 1,-4),( 2,-4),
-            //                     (-1,-3),( 0,-3),( 1,-3),( 2,-3),
-            //                     (-1,-2),( 0,-2),( 1,-2),( 2,-2),
-            //     (-3,-1),(-2,-1),(-1,-1),( 0,-1),( 1,-1),( 2,-1),( 3,-1),( 4,-1),
-            //     (-3, 0),(-2, 0),(-1, 0),( 0, 0),( 1, 0),( 2, 0),( 3, 0),( 4, 0),
-            //     (-3, 1),(-2, 1),(-1, 1),( 0, 1),( 1, 1),( 2, 1),( 3, 1),( 4, 1),
-            //     (-3, 2),(-2, 2),(-1, 2),( 0, 2),( 1, 2),( 2, 2),( 3, 2),( 4, 2),
-            //                     (-1, 3),( 0, 3),( 1, 3),( 2, 3),
-            //                     (-1, 4),( 0, 4),( 1, 4),( 2, 4)
-            // };
-
-            // this pattern is used for initializing the nodes of the graph. Given a center at (0,0),
-            // centering a Boundary kernel on any of these tiles would encroach on this kernel's path.
-            // We initialize by choosing random tiles to center a node on; if we didn't remove these
-            // surrounding tiles from the pool, then any new node that fell among them would be necessarily
-            // connected to this node in the graph.
-            // public static readonly (int,int)[] CenterToCenter =
-            // {
-            //                     (-3,-6),(-2,-6),(-1,-6),( 0,-6),( 1,-6),( 2,-6),( 3,-6),
-            //                     (-3,-5),(-2,-5),(-1,-5),( 0,-5),( 1,-5),( 2,-5),( 3,-5),
-            //                     (-3,-4),(-2,-4),(-1,-4),( 0,-4),( 1,-4),( 2,-4),( 3,-4),
-            //     (-5,-3),(-4,-3),(-3,-3),(-2,-3),(-1,-3),( 0,-3),( 1,-3),( 2,-3),( 3,-3),( 4,-3),( 5,-3),
-            //     (-5,-2),(-4,-2),(-3,-2),(-2,-2),(-1,-2),( 0,-2),( 1,-2),( 2,-2),( 3,-2),( 4,-2),( 5,-2),
-            //     (-5,-1),(-4,-1),(-3,-1),(-2,-1),(-1,-1),( 0,-1),( 1,-1),( 2,-1),( 3,-1),( 4,-1),( 5,-1),
-            //     (-5, 0),(-4, 0),(-3, 0),(-2, 0),(-1, 0),( 0, 0),( 1, 0),( 2, 0),( 3, 0),( 4, 0),( 5, 0),
-            //     (-5, 1),(-4, 1),(-3, 1),(-2, 1),(-1, 1),( 0, 1),( 1, 1),( 2, 1),( 3, 1),( 4, 1),( 5, 1),
-            //     (-5, 2),(-4, 2),(-3, 2),(-2, 2),(-1, 2),( 0, 2),( 1, 2),( 2, 2),( 3, 2),( 4, 2),( 5, 2),
-            //     (-5, 3),(-4, 3),(-3, 3),(-2, 3),(-1, 3),( 0, 3),( 1, 3),( 2, 3),( 3, 3),( 4, 3),( 5, 3),
-            //                     (-3, 4),(-2, 4),(-1, 4),( 0, 4),( 1, 4),( 2, 4),( 3, 4),
-            //                     (-3, 5),(-2, 5),(-1, 5),( 0, 5),( 1, 5),( 2, 5),( 3, 5)
-            // };
-        }
 
     }
 
