@@ -15,11 +15,16 @@ namespace FF1Lib
 		const int OVERWORLDPALETTE_ASSIGNMENT = 0x300;
 		const int OVERWORLDPATTERNTABLE_OFFSET = 0x8000;
 		const int OVERWORLDPATTERNTABLE_ASSIGNMENT = 0x100;
+		// overworld sprites are the airship shadow, the bridge,
+		// and the canal. All three must share the same palette.
+		const int OVERWORLDSPRITEGRAPHIC_OFFSET = 0x9C00;
+		const int OVERWORLDSPRITEPALETTE_OFFSET = 0x39C;
 		const int TILESETPATTERNTABLE_OFFSET = 0xC000;
 		const int TILESETPATTERNTABLE_ASSIGNMENT = 0x1000;
 		const int TILESETPALETTE_ASSIGNMENT = 0x400;
 		const int TILESET_TILEDATA = 0x800;
 		const int MAPPALETTE_OFFSET = 0x2000;
+		
 
 		const int MAPTILESET_ASSIGNMENT = 0x2CC0;
         public async Task SetCustomMapGraphics(Stream readStream,
@@ -56,6 +61,9 @@ namespace FF1Lib
 			List<List<byte>> candidateMapPals = new List<List<byte>>();
 			var toNEScolor = new Dictionary<Rgba32, byte>();
 
+			byte inferredCanalColor = 0x1A;
+			byte inferredBridgeColor = 0x30;
+
 			for (int imagecount = 0; imagecount < 128; imagecount += 1)
 			{
 				int top = (imagecount / 16) * 16;
@@ -63,16 +71,32 @@ namespace FF1Lib
 
 				var firstUnique = new Dictionary<Rgba32, int>();
 				var colors = new List<Rgba32>();
+				var inferredColorList = new List<Rgba32>();
 				for (int y = top; y < (top + 16); y++)
 				{
 					for (int x = left; x < (left + 16); x++)
 					{
+						inferredColorList.Add(image[x,y]);
 						if (!colors.Contains(image[x, y]))
 						{
 							firstUnique[image[x, y]] = (x << 16 | y);
 							colors.Add(image[x, y]);
 						}
 					}
+				}
+				if (!towntiles && imagecount == 0)
+				{
+					/// match Canal Color to most common color in the main grass tile.
+					Rgba32 color = inferredColorList.GroupBy(i => i).OrderBy(k => k.Key).Last().Key;
+					inferredCanalColor = selectColor(color,NESpalette);
+					Console.WriteLine($"Canal Color: {color} -- {inferredCanalColor,2:X}");
+				}
+				if (!towntiles && imagecount == 120)
+				{
+					/// match Bridge Color to the lightest color in one of the dock tiles
+					Rgba32 color = inferredColorList.OrderBy(i => i.R + i.G + i.B).Last();
+					inferredBridgeColor = selectColor(color,NESpalette);
+					Console.WriteLine($"Bridge Color: {color} -- {inferredBridgeColor,2:X}");
 				}
 				List<byte> pal;
 				if (!makeNTPalette(colors, NESpalette, out pal, toNEScolor))
@@ -190,6 +214,84 @@ namespace FF1Lib
 			{
 				Put(PATTERNTABLE_OFFSET + (i * 16), EncodeForPPU(chrEntries[i]));
 			}
+
+			if (!towntiles)
+			{
+				if (image.Height >=144)
+				{
+					await ImportOverworldSprites(image,128,0);
+				}
+				else
+				{
+					Put(OVERWORLDSPRITEPALETTE_OFFSET + 2, new byte[] {inferredBridgeColor,inferredCanalColor});
+				}
+			}
+		}
+
+		public async Task ImportOverworldSprites(Image<Rgba32> image, int top, int left)
+		{
+				
+			// overworld sprites are:
+			// airship shadow
+			// bridge
+			// canal block
+
+			// this imports those three tiles and writes the palette
+
+
+			var overworldSpriteColors = new List<Rgba32>();
+			var firstUnique = new Dictionary<Rgba32, int>();
+			
+			for (int y = top; y < (top + 16); y++)
+			{
+				for (int x = left; x < (left + 48); x++)
+				{
+					if (!overworldSpriteColors.Contains(image[x, y]))
+					{
+						firstUnique[image[x, y]] = (x << 16 | y);
+						overworldSpriteColors.Add(image[x, y]);
+					}
+				}
+			}
+			
+
+			List<byte> overworldSpritePal;
+			Dictionary<Rgba32, byte> overworldSpriteIndex;
+			if (!makeMapmanPalette(overworldSpriteColors, NESpalette, out overworldSpritePal, out overworldSpriteIndex))
+			{
+				await this.Progress($"WARNING: Failed importing overworld sprites, too many unique colors (limit 3 unique colors + magenta for transparent):",
+					  1 + overworldSpritePal.Count + overworldSpriteIndex.Count);
+				for (int i = 1; i < overworldSpritePal.Count; i++)
+				{
+					await this.Progress($"WARNING: NES palette {i}: ${overworldSpritePal[i],2:X}");
+				}
+				foreach (var i in overworldSpriteIndex)
+				{
+					int c = firstUnique[i.Key];
+					await this.Progress($"WARNING: RGB to index {i.Key}: {i.Value}  first appears at {c >> 16}, {c & 0xFFFF}");
+				}
+				return;
+			}
+
+			for (int overworldSpritePos = 0; overworldSpritePos < 3; overworldSpritePos++)
+			{
+				var newleft = left + (overworldSpritePos * 16);
+
+				var tileTopLeft = makeTile(image, top, newleft, (overworldSpriteIndex));
+				var tileTopRight = makeTile(image, top, newleft + 8, (overworldSpriteIndex));
+
+				var tileBottomLeft = makeTile(image, top + 8, newleft, (overworldSpriteIndex));
+				var tileBottomRight = makeTile(image, top + 8, newleft + 8, (overworldSpriteIndex));
+
+				
+
+				Put(OVERWORLDSPRITEGRAPHIC_OFFSET + (overworldSpritePos * 16 * 4) + (16 * 0), EncodeForPPU(tileTopLeft));
+				Put(OVERWORLDSPRITEGRAPHIC_OFFSET + (overworldSpritePos * 16 * 4) + (16 * 1), EncodeForPPU(tileTopRight));
+				Put(OVERWORLDSPRITEGRAPHIC_OFFSET + (overworldSpritePos * 16 * 4) + (16 * 2), EncodeForPPU(tileBottomLeft));
+				Put(OVERWORLDSPRITEGRAPHIC_OFFSET + (overworldSpritePos * 16 * 4) + (16 * 3), EncodeForPPU(tileBottomRight));
+			}
+			
+			Put(OVERWORLDSPRITEPALETTE_OFFSET, overworldSpritePal.ToArray());
 		}
 
 
