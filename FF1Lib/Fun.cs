@@ -631,22 +631,25 @@ namespace FF1Lib
 			};
 
 
-			List<int> enemies;
+			
 			if (funNames == FunEnemyNames.All)
 			{	
-				enemies = funEnemyNames.Keys.ToList();
-				if (!altFiends)
-				{
-					enemies.AddRange(funFiendNames.Keys);
-				}
-				foreach (int enemy in enemies)
+				foreach (int enemy in funEnemyNames.Keys)
 				{
 					EnemyText[enemy] = funEnemyNames[enemy].PickRandom(rng);
+				}
+
+				if (!altFiends)
+				{
+					foreach (int fiend in funFiendNames.Keys)
+					{
+						EnemyText[fiend] = funFiendNames[fiend].PickRandom(rng);
+					}
 				}
 			}
 
 
-			enemies = funEnemySpriteNames.Keys.ToList();
+			List<int> enemies = funEnemySpriteNames.Keys.ToList();
 
 			foreach (int enemy in enemies)
 			{
