@@ -91,6 +91,11 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress("Beginning Randomization", 15);
 
+		// move some CHR around to make pub sign -- this could get replaced in resource pack
+		// import, but we need to do this now because we won't know for sure how a resource
+		// pack will map tiles; we could also just change the pointers, but moving the CHR
+		// makes it more explicit and will be easier to change later
+		MakePubSign();
 		// load resource pack data that needs to go into initial ROM before
 		// data is read
 		// resource pack goes after map derp; Later could make this more efficient.
@@ -365,7 +370,7 @@ public partial class FF1Rom : NesRom
 
 		// Party
 		PartyGeneration(rng, flags, preferences);
-		PubReplaceClinic(rng, Maps.AttackedTown, flags);
+		PubReplaceClinic(rng, Maps, flags);
 
 		// Experience
 		ScaleAllAltExp(flags);
