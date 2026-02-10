@@ -281,16 +281,16 @@ namespace FF1Lib
 			// swap every clinic sign tile with the palm tree tile, which we have overwritten
 			// with the pub sign. 
 
-			for (int town = (int) MapIndex.ConeriaTown; town <= (int) MapIndex.Lefein; town++)
+			for (int town = (int)MapIndex.ConeriaTown; town <= (int)MapIndex.Lefein; town++)
 			{
 				var map = maps[(MapIndex)town].Map;
 				for (int y = 0; y < 64; y++)
 				{
 					for(int x = 0; x < 64; x++)
 					{
-						if (map[y,x] == 0x1A)
+						if (map[y,x] == (byte)Tile.TownSignClinic)
 						{
-							map[y,x] = 0x34;
+							map[y,x] = (byte)Tile.TownSignPub;
 						}
 					}
 				}
