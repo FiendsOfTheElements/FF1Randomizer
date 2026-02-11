@@ -89,6 +89,15 @@ namespace FF1Lib
 					}
 				}
 
+				var castletiles = resourcePackArchive.GetEntry("castletiles.png");
+				if (castletiles != null)
+				{
+					using (var s = castletiles.Open())
+					{
+						await ReplaceTileGraphics(TileSets.Castle, s);
+					}
+				}
+
 				var npcs = resourcePackArchive.GetEntry("npcs.png");
 				if (npcs != null)
 				{

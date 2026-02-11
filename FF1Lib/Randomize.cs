@@ -101,7 +101,7 @@ public partial class FF1Rom : NesRom
 		// resource pack goes after map derp; Later could make this more efficient.
 		await this.LoadFunTiles(preferences);
 		await this.LoadResourcePackPreROM(flags.ResourcePack, preferences);
-		
+
 
 		// Load Initial Data
 		RngTables = new(this);
@@ -409,7 +409,7 @@ public partial class FF1Rom : NesRom
 		EnableModernBattlefield(preferences.ModernBattlefield);
 		DynamicWindowColor(preferences.MenuColor);
 
-		
+
 
 
 		await this.Progress();
