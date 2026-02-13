@@ -193,12 +193,14 @@ namespace FF1Lib
 			PutInBank(0x0F, 0x8BF0, Blob.FromHex("ADCE6BAA6A6A6AA8B90061C9FFF0068A09808D8A6C60"));
 		}
 
-		public void PubReplaceClinic(MT19337 rng, MapIndex attackedTown, Flags flags)
+		public void PubReplaceClinic(MT19337 rng, StandardMaps maps, Flags flags)
 		{
 			if (!(bool)flags.RecruitmentMode)
 			{
 				return;
 			}
+
+			var attackedTown = maps.AttackedTown;
 
 			// Copy some CHR data to make the Tavern look more like one.
 			const int ShopTileDataOffet = 0x24000;
@@ -214,6 +216,8 @@ namespace FF1Lib
 			Put(ShopTileDataOffet + ClinicTileOffset + DecorationOffset, Get(ShopTileDataOffet + ItemTileOffset + DecorationOffset, TileSize * 4)); // Barrels of fine ale
 			Put(ShopTileDataOffet + ClinicTileOffset + VendorOffset, Get(ShopTileDataOffet + ArmorTileOffset + VendorOffset, TileSize * 6)); // Armorer tending bar
 			Put(0x03250, Get(0x03258, 4)); // Caravan palette
+
+			
 
 			List<byte> options = new List<byte> { };
 			if ((flags.TAVERN1 ?? false)) options.Add(0x0);
@@ -269,10 +273,33 @@ namespace FF1Lib
 			PutInBank(0x0E, 0x9D34, Blob.FromHex($"AD0D03F018A99D48A95048A9{levelUpTargetA:X2}48A9{levelUpTargetB:X2}488A182A2A2A8510A91B4C03FE4C0098"));
 			PutInBank(0x0E, 0x9800, Blob.FromHex($"A9008D24008D25008D012060"));
 
-			Data[0x101A] = 0x13;
-			Data[0x109A] = 0x13;
-			Data[0x111A] = 0x76;
-			Data[0x119A] = 0x77;
+			// Data[0x101A] = 0x13;
+			// Data[0x109A] = 0x13;
+			// Data[0x111A] = 0x76;
+			// Data[0x119A] = 0x77;
+
+			// swap every clinic sign tile with the palm tree tile, which we have overwritten
+			// with the pub sign. 
+
+			for (int town = (int)MapIndex.ConeriaTown; town <= (int)MapIndex.Lefein; town++)
+			{
+				var map = maps[(MapIndex)town].Map;
+				for (int y = 0; y < 64; y++)
+				{
+					for(int x = 0; x < 64; x++)
+					{
+						if (map[y,x] == (byte)Tile.TownSignClinic)
+						{
+							map[y,x] = (byte)Tile.TownSignPub;
+						}
+					}
+				}
+			}
+
+
+			
+
+
 
 			if (flags.RecruitmentModeHireOnly ?? false)
 			{

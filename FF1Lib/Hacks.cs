@@ -30,7 +30,23 @@ namespace FF1Lib
 		public const int MapSpriteCount = 16;
 
 		
+		/// <summary>
+		/// Uses the palm tree tile as a Pub tile. 
+		/// </summary>
+		private void MakePubSign()
+		{
+			// shingle tiles in CHR
+			byte[] top = Get(0xC450,32);
+			// Pub sign in CHR
+			byte[] bottom = Get(0xC760,32);
+			
+			// overwrite the palm tree in CHR
+			Put(0xC220,top);
+			Put(0xC320,bottom);
 
+			// use the black-white palette
+			PutInBank(0x00,0x8434,0xFF);
+		}
 		private void MiscHacks(Flags flags, MT19337 rng)
 		{
 			EnableCanalBridge((bool)flags.MapCanalBridge);
