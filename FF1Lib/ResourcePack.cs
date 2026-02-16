@@ -1,5 +1,8 @@
-using System.IO.Compression;
+using FF1Lib.Procgen;
 using Newtonsoft.Json;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using System.IO.Compression;
 
 namespace FF1Lib
 {
@@ -94,7 +97,18 @@ namespace FF1Lib
 				{
 					using (var s = castletiles.Open())
 					{
-						await ReplaceTileGraphics(TileSets.Castle, s);
+						Image<Rgba32> image = Image.Load<Rgba32>(s);
+						await ReplaceTileGraphics(TileSets.Castle, image);
+					}
+				}
+
+				var dungeontiles = resourcePackArchive.GetEntry("dungeontiles.png");
+				if (dungeontiles != null)
+				{
+					using (var s = dungeontiles.Open())
+					{
+						Image<Rgba32> image = Image.Load<Rgba32>(s);
+						await ReplaceDungeonTileGraphics(image);
 					}
 				}
 
