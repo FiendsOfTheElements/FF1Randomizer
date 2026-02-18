@@ -136,51 +136,6 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress();
 
-		var SetTiles = new Dictionary<byte, TileCount>();
-		for (byte i = 0; i < 128; i++)
-		{
-			SetTiles.Add(i, new TileCount());
-		}
-		foreach (var i in Enum.GetValues<MapIndex>())
-		{
-			var m = Maps[i];
-			if (m.MapTileSet == TileSets.Town)
-			{
-				Map map = m.Map;
-				for (int x = 0; x < 64; x++)
-				{
-					for (int y = 0; y < 64; y++)
-					{
-						TileCount tmp = SetTiles[map[x, y]];
-						tmp.count++;
-						tmp.maps.Add(i);
-
-						SetTiles[map[x, y]] = tmp;
-					}
-				}
-			}
-		}
-		foreach (byte b in SetTiles.Keys.Where(x => SetTiles[x].count > 0))
-		{
-			StringBuilder sb = new StringBuilder();
-			sb.Append($"Tile 0x{b:X2}: Count: {SetTiles[b].count}. Used in: ");
-			foreach (MapIndex mi in SetTiles[b].maps)
-			{
-				sb.Append(mi.ToString() + " ");
-			}
-			Console.WriteLine(sb.ToString());
-		}
-		foreach (byte b in SetTiles.Keys.Where(x => SetTiles[x].count == 0))
-		{
-			StringBuilder sb = new StringBuilder();
-			sb.Append($"Unused Tile 0x{b:X2}");
-			foreach (MapIndex mi in SetTiles[b].maps)
-			{
-				sb.Append(mi.ToString() + " ");
-			}
-			Console.WriteLine(sb.ToString());
-		}
-
 		// Expand ROM, move data around
 		GlobalHacks();
 		
