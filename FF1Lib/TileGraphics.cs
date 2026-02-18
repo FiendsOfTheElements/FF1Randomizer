@@ -125,7 +125,7 @@ namespace FF1Lib
 			//place open chest tiles in their correct positions
 			int openChestIdx = tileGraphicsRefData.OpenChestImageIndexForTileset(tileSet);
 			var openChestUL = makeTile(tiles[openChestIdx], 0, 0, tileReference[openChestIdx].palette);
-			var openChestUR = makeTile(tiles[openChestIdx], 8, 0, tileReference[openChestIdx].palette);
+			var openChestUR = makeTile(tiles[openChestIdx], 0, 8, tileReference[openChestIdx].palette);
 			Put(TILESETPATTERNTABLE_OFFSET + (TILESETPATTERNTABLE_SIZEPERSET * (int)tileSet) + (OPEN_CHEST_UL_CHR_IDX * 16), EncodeForPPU(openChestUL));
 			Put(TILESETPATTERNTABLE_OFFSET + (TILESETPATTERNTABLE_SIZEPERSET * (int)tileSet) + (OPEN_CHEST_UR_CHR_IDX * 16), EncodeForPPU(openChestUR));
 
