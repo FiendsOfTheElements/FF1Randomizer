@@ -101,6 +101,8 @@ public partial class FF1Rom : NesRom
 		// pack will map tiles; we could also just change the pointers, but moving the CHR
 		// makes it more explicit and will be easier to change later
 		MakePubSign();
+		// insert map tiles used for various features
+		AddNewChars();
 		// load resource pack data that needs to go into initial ROM before
 		// data is read
 		// resource pack goes after map derp; Later could make this more efficient.
