@@ -52,6 +52,7 @@
 	<CheckBox UpdateAction="@UpdateAction" Id="npcSwatterCheckBox" @bind-Value="Flags.NPCSwatter">NPC Guillotine</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="inventoryAutosortCheckBox" @bind-Value="Flags.InventoryAutosort">Autosort Inventory</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="autoRetargetingCheckBox" @bind-Value="Flags.AutoRetargeting">Auto Retargeting</CheckBox>
+    <CheckBox UpdateAction="@UpdateAction" Id="repeatedHealPotionUseCheckBox" @bind-Value="Flags.RepeatedHealPotionUse">Repeated Heal Potion Use</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="shopInfoCheckBox" @bind-Value="Flags.ShopInfo">Shop Information</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="chestInfoCheckBox" Indent IsEnabled="@(Flags.ShopInfo && Flags.IdentifyTreasures)" @bind-Value="Flags.ChestInfo">Chest Information</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="magicMenuSpellReorderingCheckBox" Indent IsEnabled="@(Flags.ShopInfo)" @bind-Value="Flags.MagicMenuSpellReordering">Magic Menu Spell Reordering</CheckBox>
