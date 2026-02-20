@@ -10,16 +10,19 @@ namespace Sandbox
 {
 	static class TestMapGen
 	{
-		public static void Run(FF1Rom rom, RandomNumberGenerator csharpRNG)
+		public static void Run(FF1Rom rom)
 		{
+			
+			var csharpRNG = RandomNumberGenerator.Create();
 			MapRequirements reqs = new MapRequirements
 			{
-				MapId = MapId.EarthCaveB1,
+				MapIndex = MapIndex.Waterfall,
 				Rom = rom,
+				MapObjects = new(rom, MapIndex.Waterfall)
 			};
 
 			MapGenerator generator = new MapGenerator();
-			MapGeneratorStrategy strategy = MapGeneratorStrategy.BSPTree;
+			MapGeneratorStrategy strategy = MapGeneratorStrategy.SpanningTree;
 
 
 			while (true)
@@ -30,7 +33,10 @@ namespace Sandbox
 				CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
 				Console.WriteLine("Press a key to generate another one (X to quit)...");
 				if (Console.ReadKey().Key == ConsoleKey.X)
+				{
+					Console.WriteLine("");
 					break;
+				}
 			}
 		}
 	}

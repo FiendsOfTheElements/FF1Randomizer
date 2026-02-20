@@ -61,7 +61,7 @@ namespace FF1Lib.Procgen
 			{ Tile.EarthCaveRandomEncounters, ' ' },
 			{ Tile.EarthCaveOOB, '0' },
 			{ Tile.WaterfallInside, '_' },
-			{ Tile.WaterfallRandomEncounters, ' ' },
+			{ Tile.WaterfallRandomEncounters, '.' },
 			{ (Tile)0xFE, 'X' },
 			{ (Tile)0xFF, ' ' },
 		};

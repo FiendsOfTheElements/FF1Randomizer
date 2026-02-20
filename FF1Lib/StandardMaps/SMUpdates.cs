@@ -574,7 +574,7 @@ namespace FF1Lib
 				Rom = rom,
 				MapObjects = waterfallObjects,
 			};
-			strategy = MapGeneratorStrategy.WaterfallClone;
+			strategy = MapGeneratorStrategy.SpanningTree;
 			CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
 
 			// Should add more into the reqs so that this can be done inside the generator.

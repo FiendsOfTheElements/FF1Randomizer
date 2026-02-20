@@ -8,9 +8,11 @@ global using RomUtilities;
 
 using Sandbox;
 
-//var filename = "ff1.nes";
-//var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+var filename = "FF1.NES";
+var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
 
-//rom = new FF1Rom(fs);
+var rom = new FF1Rom(fs);
 
-await Performance.Run();
+//await Performance.Run();
+
+TestMapGen.Run(rom);
