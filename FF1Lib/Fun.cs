@@ -1168,6 +1168,20 @@ namespace FF1Lib
 			return String.Format("{0}{1}", s.First().ToString().ToUpper(), s.Substring(1).ToLower());
 		}
 
+
+		public void InvertPitchFrequencies(Preferences preferences)
+		{
+			const int pitchLutOffset = 0xB2F9;
+			const int pitchLutBank = 0x0D;
+			if (preferences.NegativeHarmony)
+			{
+				List<ushort> pitches = GetFromBank(pitchLutBank, pitchLutOffset, 0x60).ToUShorts().ToList();
+				pitches.Reverse();
+				PutInBank(pitchLutBank,pitchLutOffset,Blob.FromUShorts(pitches.ToArray()));
+			}
+			
+		}
+
 	}
 
 }

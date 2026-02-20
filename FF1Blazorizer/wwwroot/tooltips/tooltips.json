@@ -251,6 +251,14 @@
 		"Id": "newMusicStreamSafeCheckBox",
 		"title": "Stream Safe Music",
 		"description": "Exclude new music that may not be safe for streaming. This is enabled automatically if 'Tournament Safe Rom' is on."
+
+		
+
+	},
+	{
+		"Id": "negativeHarmonyCheckBox",
+		"title": "Negative Harmony",
+		"description": "Inverts the pitches in the music tracks so that high becomes low, low becomes high, major becomes minor, minor becomes major, and everything sounds familiar but darker."
 	},
 	{
 		"Id": "disableDamageTileFlickerCheckBox",
