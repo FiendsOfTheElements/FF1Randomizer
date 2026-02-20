@@ -157,6 +157,7 @@ public partial class FF1Rom : NesRom
 		//SetRobotChickenGraphics(preferences);
 		SetFunEnemyExtras(flags, preferences, Dialogues, new MT19337(funRng.Next()));
 		SetFunEnemyNames(flags, preferences, new MT19337(funRng.Next()));
+		InvertPitchFrequencies(preferences);
 
 		// load resource pack data that requires the ROM expansion that just took place
 		await this.LoadResourcePackPostROM(flags.ResourcePack, Dialogues, EnemyScripts, preferences);

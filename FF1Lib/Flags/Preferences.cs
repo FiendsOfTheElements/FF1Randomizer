@@ -52,6 +52,7 @@ namespace FF1Lib
 		public bool BlandSite { get; set; } = false;
 		public bool NewMusic { get; set; } = false;
 		public bool NewMusicStreamSafe { get; set; } = false;
+		public bool NegativeHarmony { get; set; } = false;
 		public bool MapDerp { get; set; } = false;
 	}
 }

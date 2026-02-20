@@ -31,6 +31,7 @@
 	<CheckBox UpdateAction="@UpdateAction" Id="chaosBattleMusicCheckBox" @bind-Value="Preferences.ChaosBattleMusic">Alternate Chaos Battle Theme</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="newMusicCheckBox" IsEnabled=@(!Preferences.ChaosBattleMusic && !Preferences.AlternateAirshipTheme && Preferences.Music == MusicShuffle.None) @bind-Value="Preferences.NewMusic">New Music</CheckBox>
 	<CheckBox Indent UpdateAction="@UpdateAction" Id="newMusicStreamSafeCheckBox" IsEnabled=@(Preferences.NewMusic) @bind-Value="Preferences.NewMusicStreamSafe">Stream Safe Music</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="negativeHarmonyCheckBox" @bind-Value="Preferences.NegativeHarmony">Negative Harmony</CheckBox>
 	
 	<div class="checkbox-cell"></div>
 	<h4>Fun Appearance</h4>
