@@ -308,6 +308,8 @@ namespace FF1Lib
 		public bool? MapHighwayToOrdeals { get; set; } = false;
 		public bool? MapDragonsHoard { get; set; } = false;
 		public bool? MapHallOfDragons { get; set; } = false;
+		public bool? MapSardasForest { get; set; } = false;
+		public bool? MapAirshipHike { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
 		public bool? EntrancesMixedWithTowns { get; set; } = false;
 

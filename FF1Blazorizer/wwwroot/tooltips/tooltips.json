@@ -154,7 +154,7 @@
 		"title": "NPCs and Dialogues",
 		"description": "Companion NPC sprites and/or dialogues are added for the following fun enemy sprites:\nGARLAND: Garlic NPC sprite and ToF dialog.\nPIRATE: Steamboat Mikke NPC sprite replaces Bikke, a steamboat replaces the canoe, and Bikke's dialog mentions parrots.\nGas D: if Fight Bahamut and fun enemy names are on, his dialogue reflects his fun enemy name.\nVAMPIRE: The Vampire's dialogue reflects his sprite (even though no mirror can reflect the Vampire).\nSee the animated gif in the Fun Enemy Sprites tooltip for the NPC sprites."
 	},
-	
+
 	{
 		"Id": "funEnemyNamesDropDown",
 		"title": "Fun Enemy Names",
@@ -162,13 +162,14 @@
 		"description": "Changes enemy names in the generated seed. Most of the name changes in this setting are the result of various community memes over the years and may not make sense to newer players.\nThere are two settings.\nSprite Names Only: only replaces the names of enemies whose sprites are replaced in Fun Enemy Sprites.\nAll: uses all of the fun enemy names, plus the fun names of the enemies whose sprites are replaced."
 	},
 
-	{	"Id": "funFiendSpritesCheckBox",
+	{
+		"Id": "funFiendSpritesCheckBox",
 		"title": "Fun Fiend Sprites",
 		"screenshot": "funFiendSpritesCheckBox.gif",
 		"description": "Replaces the sprites for LICH, KARY, KRAKEN, TIAMAT, and CHAOS with fun versions, and also updates their names if Fun Enemy Names is on.\nNOTE: this setting is disabled when either the Tournament Safe ROM flag or the Alternate Fiends flag is set."
 
 	},
-	
+
 	{
 		"Id": "robotChickenCheckBox",
 		"title": "Robot Chicken",
@@ -252,7 +253,7 @@
 		"title": "Stream Safe Music",
 		"description": "Exclude new music that may not be safe for streaming. This is enabled automatically if 'Tournament Safe Rom' is on."
 
-		
+
 
 	},
 	{
@@ -900,6 +901,18 @@
 		"title": "River to Melmond Region from Dwarf Cave",
 		"screenshot": "RiverToMelmond.png",
 		"description": "Adds a new river connecting the Dwarf Cave area to Melmond, Earth Cave, and Titan's Tunnel. This allows access to the Melmond region without the CANAL, and also without the SHIP if \"Early Open Progression\" is enabled."
+	},
+	{
+		"Id": "sardasForestCheckBox",
+		"title": "Sarda's Forest",
+		"screenshot": "sardasForestCheckBox.png",
+		"description": "Adds a forest between Titan's West and Sarda's Cave. This prevents the airship from allowing access to Sarda without the RUBY."
+	},
+	{
+		"Id": "airshipHikeCheckBox",
+		"title": "Hiking Trail to Airship",
+		"screenshot": "airshipHikeCheckBox.png",
+		"description": "Removes a portion of the river east of Elfland, allowing you to hike across the Swamp of Sadness to acquire the AIRSHIP without the CANOE."
 	},
 	{
 		"Id": "highwayToOrdealsCheckBox",
