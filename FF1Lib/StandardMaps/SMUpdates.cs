@@ -2,12 +2,44 @@
 using FF1Lib.Procgen;
 using FF1Lib.Sanity;
 using RomUtilities;
+using System.ComponentModel;
 using System.IO.Compression;
 using System.Threading.Tasks;
 using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
+	public enum ProcgenWaterfallMode
+	{
+		[Description("Off")]
+		Off,
+		[Description("Normal")]
+		Uniform,
+		[Description("Hub and Spokes")]
+		Polar,
+		[Description("Even Spread")]
+		JitteredEven,
+		[Description("Long Hallway")]
+		Linear,
+		[Description("Random")]
+		Random
+	}
+
+	public enum ProcgenWaterfallDensity
+	{
+		Normal,
+		Sparse,
+		Dense
+	}
+
+	public enum ProcgenWaterfallHallwayLength
+	{
+		Short,
+		Mid,
+		Long,
+		Absurd
+	}
+
 	public partial class StandardMaps
 	{
 		public async Task ProcgenDungeons(FF1Rom rom, MT19337 rng)
@@ -566,7 +598,7 @@ namespace FF1Lib
 
 			MapRequirements reqs;
 			MapGeneratorStrategy strategy;
-			MapGenerator generator = new MapGenerator();
+			MapGenerator generator = new MapGenerator(flags);
 
 			reqs = new MapRequirements
 			{

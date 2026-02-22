@@ -42,7 +42,13 @@ namespace FF1Lib.Procgen
 
 	public class MapGenerator
 	{
+		public Flags _flags;
 		private const int MAX_MAP_ITERATIONS = 50;
+
+		public MapGenerator(Flags flags)
+		{
+			_flags = flags;
+		}
 
 		public CompleteMap Generate(MT19337 rng, MapGeneratorStrategy strategy, MapRequirements reqs)
 		{
@@ -156,7 +162,7 @@ namespace FF1Lib.Procgen
 				case MapGeneratorStrategy.BSPTree:
 					return new BSPTreeEngine();
 				case MapGeneratorStrategy.SpanningTree:
-					return new SpanningTree();
+					return new SpanningTree(_flags);
 				default:
 					return null;
 			}

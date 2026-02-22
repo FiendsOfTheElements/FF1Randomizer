@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 using SixLabors.ImageSharp.ColorSpaces;
 using SixLabors.ImageSharp.Processing.Processors.Convolution;
 using static System.Math;
+using System.Numerics;
 
 
 namespace FF1Lib.Procgen
@@ -20,7 +22,9 @@ namespace FF1Lib.Procgen
     {
         /// uses Prim's algorithm to create a minimum spanning tree over a set of randomly chosen nodes;
         /// This is really only ever going to be used for waterfall
+        /// 
 
+        private Flags _flags;
         private Graph _pool;
         //private Graph _tree;
 
@@ -35,13 +39,17 @@ namespace FF1Lib.Procgen
 
         private List<Node> _initNodes;
 
+        private NextStep _nextStep;
+
         
 
         
-        public SpanningTree()
+        public SpanningTree(Flags flags)
         {
+            _flags = flags;
             _footprint = new();
             _initNodes = new();
+            _nextStep = new();
         }
 
 
@@ -49,10 +57,15 @@ namespace FF1Lib.Procgen
         public CompleteMap Generate(MT19337 rng, MapRequirements reqs)
         {
             PriorityQueue<Edge,int> edgeQueue = new();
-            Node nearest = InitPoolGraph(rng);
+            (Node nearest, HashSet<Node> roomFootprint) = InitPoolGraph(rng);
 
-            HashSet<Node> roomFootprint = _footprint.Room(_roomNode);
+            // HashSet<Node> roomFootprint = _footprint.Room(_roomNode);
             // HashSet<Node> totalFootprint =
+            
+
+
+
+
 
             CompleteMap cm = new()
             {
@@ -89,15 +102,6 @@ namespace FF1Lib.Procgen
                 byte tile = n == nearest? (byte)Tile.Ladder : (byte)0xFE;
                 cm.Map.Put(n.XY,new byte[,] {{tile}});
             }
-            // foreach (Node n in _pool.Nodes)
-            // {
-            //     cm.Map.Put(n.XY,new byte[,] {{(byte)0xFE}});
-            // }
-            // foreach (Node n in roomFootprint)
-            // {
-            //     // byte tile = n == _firstNode? (byte)Tile.Door : (byte)Tile.LadderHole;
-            //     cm.Map.Put(n.XY,new byte[,] {{(byte)Tile.LadderHole}});
-            // }
             cm.Map.Put(_firstNode.XY,new byte[,] {{(byte)Tile.LadderHole}});
             if (_flipRoom)
             {
@@ -108,9 +112,39 @@ namespace FF1Lib.Procgen
             return cm;
         }
         
-        private Node InitPoolGraph(MT19337 rng)
+        private (Node,HashSet<Node>) InitPoolGraph(MT19337 rng)
         {
-            Func<MT19337,Graph> InitDistribution = new List<Func<MT19337,Graph>>() {UniformRandom, PolarRandom, JitteredEvenRandom, LinearRandom}.PickRandom(rng);
+
+            Func<MT19337,Graph> InitDistribution;
+            switch (_flags.ProcgenWaterfall)
+            {
+                case ProcgenWaterfallMode.Uniform :
+                    {
+                        InitDistribution = UniformRandom;
+                        break;
+                    }
+                case ProcgenWaterfallMode.Polar :
+                    {
+                        InitDistribution = PolarRandom;
+                        break;
+                    }
+                case ProcgenWaterfallMode.JitteredEven :
+                    {
+                        InitDistribution = JitteredEvenRandom;
+                        break;
+                    }
+                case ProcgenWaterfallMode.Linear :
+                    {
+                        InitDistribution = LinearRandom;
+                        break;
+                    }
+                default:
+                    {
+                        InitDistribution = new List<Func<MT19337,Graph>>() {UniformRandom, PolarRandom, JitteredEvenRandom, LinearRandom}.PickRandom(rng);
+                        break;
+                    }
+            }
+            
             _pool = InitDistribution(rng);
 
             // _pool = LinearRandom(rng);
@@ -141,7 +175,7 @@ namespace FF1Lib.Procgen
                 }
             }
             _pool.Remove(roomFootprint.Intersect(_pool.Nodes));
-            return nearestNeighbor;
+            return (nearestNeighbor,roomFootprint);
         }
 
         // Get a Graph of nodes chosen randomly from the 64x64, spaced so that a full wall can be
@@ -149,8 +183,32 @@ namespace FF1Lib.Procgen
         private Graph UniformRandom(MT19337 rng)
         {
 
-            
-            int numNodes = rng.Between(27,37);
+            int numNodes;
+            //int numNodes = rng.Between(27,37);
+            switch (_flags.ProcgenWaterfallDensity)
+            {
+                case ProcgenWaterfallDensity.Sparse:
+                {
+                    numNodes = rng.Between(13,23);
+                    break;
+                }
+                case ProcgenWaterfallDensity.Normal:
+                {
+                    numNodes = rng.Between(27,37);
+                    break;
+                }
+                case ProcgenWaterfallDensity.Dense:
+                {
+                    numNodes = rng.Between(45,55);
+                    break;
+                }
+                default:
+                {
+                    numNodes = 32;
+                    break;
+                }
+
+            }
             HashSet<Node> totalFootprint = new();
             int n = 0;
             while (_initNodes.Count < numNodes)
@@ -160,8 +218,9 @@ namespace FF1Lib.Procgen
                 {
                     _initNodes.Add(node);
                     totalFootprint.UnionWith(_footprint.LocusToLocus(node));
-                    n++;
+                    
                 }
+                n++;
             }
             Console.WriteLine($"Initialized {_initNodes.Count} Uniform Random nodes in {n} loops.");
             return new Graph(_initNodes);
@@ -172,14 +231,46 @@ namespace FF1Lib.Procgen
         private Graph PolarRandom(MT19337 rng)
         {
             //HashSet<Node> pool = GetAllNodes();
-            int numNodes = rng.Between(27,37);
+            int numNodes;
+            int expandBy;
+            int width = 0;
+            //int numNodes = rng.Between(27,37);
+            switch (_flags.ProcgenWaterfallDensity)
+            {
+                case ProcgenWaterfallDensity.Sparse:
+                {
+                    numNodes = rng.Between(13,23);
+                    expandBy = 200;
+                    break;
+                }
+                case ProcgenWaterfallDensity.Normal:
+                {
+                    numNodes = rng.Between(27,37);
+                    expandBy = 30;
+                    break;
+                }
+                case ProcgenWaterfallDensity.Dense:
+                {
+                    numNodes = rng.Between(45, 55);
+                    expandBy = 5;
+                    break;
+                }
+                default:
+                {
+                    expandBy = 30;
+                    numNodes = 32;
+                    break;
+                }
+
+            }
             HashSet<Node> totalFootprint = new();
 
-            int n = 0;
+  
             const double degToRad = PI/180.0;
-            int width = 1200;
+            // int width = 3200;
+            int n = 0;
 
-            while (_initNodes.Count < numNodes )
+            while (_initNodes.Count < numNodes && n < 1000)
             {
                 /// get random degrees
                 int theta = rng.Between(0,359);
@@ -198,7 +289,7 @@ namespace FF1Lib.Procgen
                 }
                 else
                 {
-                    width = Min(width + 50,3200);
+                    width = Min(width + expandBy,3200);
                 }
                 n++;
             }
@@ -209,57 +300,94 @@ namespace FF1Lib.Procgen
         // this produces an almost even distribution of nodes. 
         private Graph JitteredEvenRandom(MT19337 rng)
         {
-
-            //list of points around the center
-            List<(int,int)> kernel = new()
+            int kernelWidth;
+            int divisor;
+            switch (_flags.ProcgenWaterfallDensity)
             {
-                (-2,-2),(-1,-2),( 0,-2),( 1,-2),( 2,-2),
-                (-2,-1),(-1,-1),( 0,-1),( 1,-1),( 2,-1),
-                (-2, 0),(-1, 0),( 0, 0),( 1, 0),( 2, 0),
-                (-2, 1),(-1, 1),( 0, 1),( 1, 1),( 2, 1),
-                (-2, 2),(-1, 2),( 0, 2),( 1, 2),( 2, 2)  
-            };
-            // weights associated with a normal distribution about the center,
-            // by distance (trust me bro)
-            List<int> normalWeights = new()
-            {
-                 185, 148, 346, 148, 185,
-                 148, 473, 553, 473, 148,
-                 346, 553,2586, 553, 346,
-                 148, 473, 553, 473, 148,
-                 185, 148, 346, 148, 185
-            };
-            List<int> uniformWeights = new()
-            {
-                1, 1, 1, 1, 1,
-                1, 1, 1, 1, 1,
-                1, 1, 1, 1, 1,
-                1, 1, 1, 1, 1,
-                1, 1, 1, 1, 1
-            };
-            List<int> weights = new List<List<int>>() {normalWeights, uniformWeights}.PickRandom(rng);
-            for (int y = 0; y < 8; y++ )
-            {
-                for (int x = 0; x < 4; x++)
+                case ProcgenWaterfallDensity.Sparse :
                 {
-                    /// the distribution before jitter looks like this
-                    /// .   .   .   .
-                    ///   .   .   .   .
-                    /// .   .   .   .
-                    ///   .   .   .   .
-                    /// .   .   .   .
-                    ///   .   .   .   .
-                    /// .   .   .   .
-                    ///   .   .   .   .
-                    
-                    /// making 32 nodes total
-                    Node center = new(x*16 + y % 2 * 8, y*8);
-                    /// for each center, get a list of points about that center and select one based on the weights above. Clumps
-                    /// around the center
-                    _initNodes.Add(kernel.Select(i => center + i).Zip(weights).ToList().PickRandomItemWeighted(rng));
+                    divisor = 3;
+                    kernelWidth = 7;
+                    break;
+                }    
+                case ProcgenWaterfallDensity.Normal :
+                {
+                    divisor = 4;
+                    kernelWidth = 5;
+                    break;
+                }
+                case ProcgenWaterfallDensity.Dense :
+                {
+                    divisor = 5;
+                    kernelWidth = 3;
+                    break;
+                }
+                default:
+                {
+                    divisor = 4;
+                    kernelWidth = 5;
+                    break;
                 }
             }
-            Console.WriteLine($"Initialized {_initNodes.Count} Jittered Random nodes.");
+
+            bool normalWeighting = rng.Between(0,1) == 0;
+
+            List<Node> kernel = new();
+            int halfWidth = kernelWidth/2;
+            
+            for (int y = 0; y < kernelWidth; y++)
+            {
+                for (int x = 0; x < kernelWidth; x++)
+                {
+                    kernel.Add(new(x-halfWidth,y-halfWidth));
+                }
+            }
+
+            Node kernelCenter = new(0,0);
+            List<int> SqDists = kernel.Select(node => kernelCenter.SqDist(node)).ToList();
+            double rDoubleVariance = 1.0 /(2.0 * SqDists.Sum()/SqDists.Count);
+
+            List<int> normalWeights = new();
+            foreach (int sd in SqDists)
+            {
+                double weight = Exp(-sd*rDoubleVariance)/SqDists.Count(i => i == sd);
+                normalWeights.Add((int)Round(weight * 10000.0));
+            }
+
+            for (int i = 0; i < divisor*divisor; i++)
+            {
+                int x = (i*64 / divisor) % 64;
+                int x2 = x + 32/divisor;
+                int y = (i/divisor)*64/divisor;
+                int y2 = y + 32/divisor;
+
+                (int,int)[] centers = {(x,y),(x2,y2)};
+
+                foreach ((int,int) coord in centers)
+                {
+                    if (normalWeighting)
+                    {
+                        _initNodes.Add(kernel.Select(i => i + coord).Zip(normalWeights).ToList().PickRandomItemWeighted(rng));
+                    }
+                    else
+                    {
+                        _initNodes.Add(kernel.Select(i => i + coord).ToList().PickRandom(rng));
+                    }
+                }
+            }
+
+            /// the distribution before jitter looks like this
+            /// .   .   .   .
+            ///   .   .   .   .
+            /// .   .   .   .
+            ///   .   .   .   .
+            /// .   .   .   .
+            ///   .   .   .   .
+            /// .   .   .   .
+            ///   .   .   .   .
+            
+
+            Console.WriteLine($"Initialized {_initNodes.Count} Jittered Random nodes. {normalWeighting}");
             return new Graph(_initNodes);
         }
 
@@ -267,21 +395,152 @@ namespace FF1Lib.Procgen
         {
 
             HashSet<Node> totalFootprint = new();
-            int numNodes = rng.Between(22,32);
-            int theta = rng.Between(0,179);
+            int numNodes;
+            int theta;
+            int hallwayLength;
             double slope = 0.0;
-            double degToRad = PI/180.0;
+            /// more precision because why not
+            const double degToRad = PI/18000.0;
             List<Node> line = new();
-            Console.WriteLine($"Theta: {theta}");
+            // Console.WriteLine($"Theta: {theta}");
+            switch (_flags.ProcgenWaterfallDensity)
+            {
+                case ProcgenWaterfallDensity.Sparse:
+                {
+                    numNodes = rng.Between(8,18);
+                    break;
+                }
+                case ProcgenWaterfallDensity.Normal:
+                {
+                    numNodes = rng.Between(19,29);
+                    break;
+                }
+                case ProcgenWaterfallDensity.Dense:
+                {
+                    numNodes = rng.Between(30,40);   
+                    break;
+                }
+                default:
+                {
+                    numNodes = 30;
+                    break;
+                }
+            }
 
 
-            if (theta <= 45 || theta >= 135 )
+            
+            switch (_flags.ProcgenWaterfallHallwayLength)
+            {
+                // 0.75 to 1.5 maplengths
+                case ProcgenWaterfallHallwayLength.Short:
+                {
+
+                    hallwayLength = rng.Between(48,95);
+                    break;
+                }
+                // each next tier spans 64 steps
+                // can't go the full 320 steps or the whole
+                // space can be saturated by one long hallway
+                //  1.5 to ca. 2.5 maplengths
+                case ProcgenWaterfallHallwayLength.Mid:
+                {
+                    hallwayLength = rng.Between(96,159);
+                    break;
+                }
+                // ca. 2.5 to ca. 4.0 maplengths
+                case ProcgenWaterfallHallwayLength.Long:
+                {
+                    
+                    hallwayLength = rng.Between(160,223);
+                    break;
+                }
+                // ca 4.0-5.0 maplengths!!!
+                case ProcgenWaterfallHallwayLength.Absurd:
+                {
+                    
+                    hallwayLength = rng.Between(224,287);
+                    break;
+                }
+                default:
+                {
+                    hallwayLength = 64;
+                    break; 
+                }
+            }
+
+            // here we need to choose a theta that lets us wrap the requisite number of times.
+            // moreover, it's better if the hallway wraps aren't immediately visible from the hallway
+            // (though, they will be visible from the branches)
+            // These values are actually theta * 100 for more precision; the conversion
+            // to radians rescales them.
+
+            if (hallwayLength < 64)
+            {
+                theta = rng.Between(0,9000);
+            }
+            else if (hallwayLength < 128)
+            {
+                theta = new List<int>
+                {
+                    // angles ensure that the next stretch of hallway are at least 11 tiles away
+                    // vertically or 12 tiles away horizontally
+                    rng.Between(975,3962),
+                    rng.Between(5090,8024),
+                }
+                .PickRandom(rng);
+            }
+            else if (hallwayLength < 192)
+            {
+                theta = new List<int>
+                {
+                    // now we need to ensure we can fit up to 3 lengths; the breakpoints are thus
+                    // atan(1/3), atan(2/3), atan(3/2), atan(3)
+                    rng.Between(975,1843),
+                    rng.Between(3369,3962),
+                    rng.Between(5090,5630),
+                    rng.Between(7156,8024)
+                }
+                .PickRandom(rng);
+            }
+            else if (hallwayLength < 256)
+            {
+                // up to 4 lengths
+                // atan(1/4), atan(3/4), atan(4/3), atan(4)
+                theta = new List<int>
+                {
+                    rng.Between(975,1403),
+                    rng.Between(3686,3962),
+                    rng.Between(5090,5313),
+                    rng.Between(7596,8024)
+                }
+                .PickRandom(rng);
+            }
+            else
+                // up to 5 lengths
+                // atan(1/5), atan(4/5), atan(5/4), atan(5)
+            {
+                theta = new List<int>
+                {
+                    rng.Between(975,1130),
+                    rng.Between(3866,3962),
+                    rng.Between(5090,5134),
+                    rng.Between(7869,8024)
+                }
+                .PickRandom(rng); 
+            }
+
+            // use hallway length parity to make theta positive or negative, and renormalize to the 0-180.00 degree range
+            theta *= ((hallwayLength % 2) * 2 - 1);
+            theta += 18000;
+            theta %= 18000;
+
+
+            if (theta <= 4500 || theta >= 13500 )
             {
                 slope = Tan(theta * degToRad);
                 Console.WriteLine($"Slope: {slope}");
-                double y = 32.0 * slope + 32.0;
-                int limit = rng.Between(64,192);
-                for (int x = 0; x < limit; x++, y-=slope)
+                double y = slope < 0 ? 63 : 0;
+                for (int x = 0; x < hallwayLength; x++, y+=slope)
                 {
                     Node node = new(x,(int)Round(y));
                     if (!totalFootprint.Contains(node))
@@ -293,10 +552,10 @@ namespace FF1Lib.Procgen
             }
             else
             {
-                slope = theta == 90? 0 : 1.0/Tan(theta * degToRad);
-                double x = 32.0 * slope + 32.0;
+                slope = theta == 9000? 0 : 1.0/Tan(theta * degToRad);
+                double x = slope < 0 ? 63 : 0;
                 Console.WriteLine($"Slope: {slope}");
-                for (int y = 0; y < 64; y++, x-=slope)
+                for (int y = 0; y < hallwayLength; y++, x+=slope)
                 {
                     Node node = new((int)Round(x),y);
                     if (!totalFootprint.Contains(node))
@@ -309,15 +568,16 @@ namespace FF1Lib.Procgen
 
             int lineCount = _initNodes.Count;
             int n = 0;
-            while (_initNodes.Count - lineCount < numNodes)
+            while (_initNodes.Count - lineCount < numNodes && n < 1000)
             {
                 Node node = new(rng.Between(0,63),rng.Between(0,63));
                 if (!totalFootprint.Contains(node))
                 {
                     _initNodes.Add(node);
                     totalFootprint.UnionWith(_footprint.LocusToLocus(node));
-                    n++;
+                    
                 }
+                n++;
             }
             Console.WriteLine($"Initialized {_initNodes.Count} Linear Random nodes in {n} loops.");
             return new Graph(_initNodes);    
@@ -362,9 +622,87 @@ namespace FF1Lib.Procgen
             
         // }
 
-        private double DotProduct ((double X, double Y) left, (double X, double Y) right)
+        // private double DotProduct ((double X, double Y) left, (double X, double Y) right)
+        // {
+        //     return left.X*right.X + left.Y*right.Y;
+        // }
+
+        
+        public class NextStep
         {
-            return left.X*right.X + left.Y*right.Y;
+            private readonly Vector2[] _nextStepVectors;
+            private readonly Vector2[] _nextStepUnitVectors;
+            private readonly Vector<float> _weights;
+
+            public NextStep()
+            {
+                Vector2[] next1 = {new(-2,-5),new(2,-5)};
+                Vector2[] next2 = new Vector2[7];
+                Vector2[] next3 = new Vector2[63];
+                Vector2[] next4 = new Vector2[7];
+                Vector2[] next5 = {new(-2,5),new(2,5)};
+                for (int i = 0; i < 7; i++)
+                {
+                    next2[i] = new(i - 3, -4);
+                    next4[i] = new(i - 3, 4);
+                }
+                for (int i = 0; i < 63; i++)
+                {
+                    int x = i % 9 - 4;
+                    int y = i / 9 - 3;
+                    next3[i] = new(x,y);
+                }
+                _nextStepVectors = next1.Concat(next2).Concat(next3).Concat(next4).Concat(next5).ToArray();
+                _nextStepUnitVectors = _nextStepVectors.Select(v => v/v.Length()).ToArray();
+ 
+                _weights = new(_nextStepVectors
+                                .Select(v => (float)(-0.5*Cos(2*PI*Pow(v.LengthSquared()/32.0,0.75)) + 0.5))
+                                .ToArray());               
+            }
+
+            public Node? GetNextStep(Node thisNode, Node targetNode, HashSet<Node> except, MT19337 rng)
+            {
+                var (dX, dY) = thisNode.Delta(targetNode);
+                Vector2 target = new(dX,dY);
+                
+                Vector<float> floatWeights = FloatWeights(target);
+
+                List<(Node n,int weight)> weightedSteps = new();
+
+                for (int i = 0; i < 81; i++)
+                {
+                    Node candidate = thisNode + _nextStepVectors[i];
+                    if (!except.Contains(candidate) && floatWeights[i] != 0)
+                    {
+                        weightedSteps.Add((candidate,(int)Ceiling(floatWeights[i])));
+                    }
+                }
+
+                if (weightedSteps.Count != 0)
+                {
+                    return weightedSteps.PickRandomItemWeighted(rng);
+                }
+                else
+                {
+                    return null;
+                }                
+            }
+
+            private Vector<float> FloatWeights(Vector2 target)
+            {
+                target /= target.Length();
+                float[] dotProds = new float[_nextStepUnitVectors.Length];
+                for (int i = 0; i < dotProds.Length; i++)
+                {
+                    dotProds[i] = Max(0,Vector2.Dot(_nextStepUnitVectors[i],target));
+                }
+                return  new Vector<float>(dotProds) * _weights * 10000f;
+
+            }
+
+
+
+
         }
 
         
@@ -375,7 +713,7 @@ namespace FF1Lib.Procgen
 
             // waterfall walkable path consists of overlapping 4x4 squares of tiles
             // 
-            // public static readonly (int,int)[] Path =
+            
 
             private readonly HashSet<Node> _path;
             private readonly HashSet<Node> _boundary;
@@ -545,10 +883,10 @@ namespace FF1Lib.Procgen
                 }
             }
 
+            // Get the node that has the most distant closest neighbor.
             public Node MostIsolatedNode(MT19337 rng)
             {
-                return Nodes.GroupBy(i => Adjacencies[i].Sum(j => j.Weight))
-                    .OrderBy(k => k.Key).Last().ToList().PickRandom(rng);
+                return Nodes.MaxBy(i => Adjacencies[i].Min(j => j.Weight));
             }
 
             public void Add(Edge edge)
@@ -740,6 +1078,11 @@ namespace FF1Lib.Procgen
                 return new Node((byte)(left.X + right.Item1),(byte)(left.Y + right.Item2));
             }
 
+            public static Node operator +(Node left, Vector2 right)
+            {
+                return new Node((byte)(left.X + (int)right.X),(byte)(left.Y + (int)right.Y));
+            }
+
             public static Node operator -(Node left, Node right)
             {
                 return new Node((byte)(left.X - right.X),(byte)(left.Y - right.Y));
@@ -810,9 +1153,9 @@ namespace FF1Lib.Procgen
                 return dx*dx + dy*dy;
             }
 
-            public double Dist(Node other)
+            public float Dist(Node other)
             {
-                return Sqrt(SqDist(other));
+                return (float)Sqrt(SqDist(other));
             }
 
             
@@ -829,11 +1172,11 @@ namespace FF1Lib.Procgen
                 return (dx,dy);
             }
 
-            public (double X, double Y) UnitVector(Node other)
+            public Vector2 UnitVector(Node other)
             {
-                double dist = Dist(other);
+                float dist = Dist(other);
                 var (dX, dY) = Delta(other);
-                return (dX/dist, dY/dist);
+                return new Vector2(dX/dist, dY/dist);
             }
         }
 
