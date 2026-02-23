@@ -1,14 +1,16 @@
-﻿using FF1Lib.Procgen;
+﻿using FF1Lib.procgen;
+using FF1Lib.Procgen;
 using FF1Lib.Sanity;
 using RomUtilities;
 using System.IO.Compression;
+using System.Threading.Tasks;
 using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
 	public partial class StandardMaps
 	{
-		public void ProcgenDungeons(MT19337 rng)
+		public async Task ProcgenDungeons(FF1Rom rom, MT19337 rng)
 		{
 			if ((bool)flags.ProcgenEarth)
 			{
@@ -25,6 +27,11 @@ namespace FF1Lib
 
 			//ProcgenWaterfall((bool)flags.EFGWaterfall, teleporters, mapObjects[(int)MapIndex.Waterfall], rng);
 			FlipMaps(flags, rng);
+			if (flags.ProcgenSkyBridge != ProcgenSkyBridgeMode.Off)
+			{
+				await rom.Progress("Generating Bridge of Destiny", 1);
+				PgSkyBridge.Generate(maps[(int)MapIndex.SkyPalace5F], rng, flags.ProcgenSkyBridge);
+			}
 		}
 		public void Update(ZoneFormations formations, MT19337 rng)
 		{

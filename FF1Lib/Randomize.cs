@@ -4,6 +4,11 @@ using RomUtilities;
 namespace FF1Lib;
 
 // ReSharper disable once InconsistentNaming
+public class TileCount
+{
+	public int count { get; set; } = 0;
+	public SortedSet<MapIndex> maps { get; set; } = new SortedSet<MapIndex>();
+}
 public partial class FF1Rom : NesRom
 {
 	public const int LevelRequirementsOffset = 0x6CC81;
@@ -29,7 +34,9 @@ public partial class FF1Rom : NesRom
 	public TalkRoutines TalkRoutines;
 	public StartingItems StartingItems;
 	public EncounterRate EncounterRates;
+	public EnemyText EnemyText;
 	public EnemyScripts EnemyScripts;
+	public EnemyPatternData EnemySprites;
 	public ShopData ShopData;
 	public MusicTracks Music;
 	public NewMusic NewMusic;
@@ -89,10 +96,19 @@ public partial class FF1Rom : NesRom
 
 		await this.Progress("Beginning Randomization", 15);
 
+		// move some CHR around to make pub sign -- this could get replaced in resource pack
+		// import, but we need to do this now because we won't know for sure how a resource
+		// pack will map tiles; we could also just change the pointers, but moving the CHR
+		// makes it more explicit and will be easier to change later
+		MakePubSign();
+		// insert map tiles used for various features
+		AddNewChars();
 		// load resource pack data that needs to go into initial ROM before
 		// data is read
-		await this.LoadResourcePackPreROM(flags.ResourcePack, preferences);
+		// resource pack goes after map derp; Later could make this more efficient.
 		await this.LoadFunTiles(preferences);
+		await this.LoadResourcePackPreROM(flags.ResourcePack, preferences);
+
 
 		// Load Initial Data
 		RngTables = new(this);
@@ -114,6 +130,8 @@ public partial class FF1Rom : NesRom
 		ShopData = new ShopData(flags, this);
 		EncounterRates = new EncounterRate(this);
 		EnemyScripts = new EnemyScripts(this);
+		EnemyText = new EnemyText(this);
+		EnemySprites = new EnemyPatternData(this);
 		Music = new MusicTracks();
 		ExtAltFiends = new ExtAltFiends(flags);
 
@@ -123,6 +141,24 @@ public partial class FF1Rom : NesRom
 		// Expand ROM, move data around
 		GlobalHacks();
 		
+		
+
+		// Fun Stuff -- running early so that changes here don't overwrite more important flag stuff below
+		ChangeLute(preferences.ChangeLute, Dialogues, new MT19337(funRng.Next()));
+		ChangeFountainText(preferences.FunFountainText, Dialogues, new MT19337(funRng.Next()));
+		TitanSnack(preferences.TitanSnack, NpcData, Dialogues, new MT19337(funRng.Next()));
+		HurrayDwarfFate(preferences.HurrayDwarfFate, NpcData, Dialogues, new MT19337(funRng.Next()));
+		PaletteSwap(preferences.PaletteSwap && !flags.EnemizerEnabled, new MT19337(funRng.Next()));
+		// TeamSteak() must run before FunEnemyNames() because if "Random" is chosen for preferences.TeamSteak,
+		// that choice is resolved in TeamSteak(), and FunEnemyNames() needs to know which funny name to swap in.
+		//TeamSteak(flags, preferences, new MT19337(funRng.Next()));
+		FunEnemySprites(flags, preferences, new MT19337(funRng.Next()));
+		await SetFunFiendSprites(flags, preferences, new MT19337(funRng.Next()));
+		//SetRobotChickenGraphics(preferences);
+		SetFunEnemyExtras(flags, preferences, Dialogues, new MT19337(funRng.Next()));
+		SetFunEnemyNames(flags, preferences, new MT19337(funRng.Next()));
+		InvertPitchFrequencies(preferences);
+
 		// load resource pack data that requires the ROM expansion that just took place
 		await this.LoadResourcePackPostROM(flags.ResourcePack, Dialogues, EnemyScripts, preferences);
 
@@ -160,7 +196,7 @@ public partial class FF1Rom : NesRom
 		DesertOfDeath.ApplyDesertModifications((bool)flags.DesertOfDeath, this, ZoneFormations, Overworld, NpcData, Dialogues, Music);
 		Spooky(TalkRoutines, NpcData, Dialogues, ZoneFormations, Maps, rng, flags);
 		BlackOrbMode(TalkRoutines, Dialogues, flags, preferences, rng, new MT19337(funRng.Next()));
-		Maps.ProcgenDungeons(rng);
+		await Maps.ProcgenDungeons(this, rng);
 		DraculasCurse(Overworld, Teleporters, rng, flags);
 
 		await this.Progress();
@@ -196,12 +232,16 @@ public partial class FF1Rom : NesRom
 		SpellBalanceHacks(flags, rng);
 		TranceHasStatusElement(flags.TranceHasStatusElement);
 		ShuffleMagicLevels(EnemyScripts, rng, (bool)flags.MagicLevels, (bool)flags.MagicPermissions, (bool)flags.MagicLevelsTiered, (bool)flags.MagicLevelsMixed);
-		SpellNames(flags, preferences, rng);
+		
 		var extConsumables = new ExtConsumables(ShopData, this, flags, rng);
 		extConsumables.LoadSpells();
 
+		SpellNames(flags, preferences, rng);
+
 		// Create items
 		Etherizer(flags.Etherizer, ItemsText);
+
+		
 
 		Weaponizer(flags, rng);
 		ArmorCrafter(flags, rng);
@@ -292,7 +332,7 @@ public partial class FF1Rom : NesRom
 
 		// After unrunnable shuffle and before formation shuffle
 		WarMechMode.Process(this, flags, NpcData, ZoneFormations, Dialogues, rng, Maps, warmMechFloor);
-		FightBahamut(flags, TalkRoutines, NpcData, ZoneFormations, Dialogues, Maps, EnemyScripts, rng);
+		FightBahamut(flags, preferences, TalkRoutines, NpcData, ZoneFormations, Dialogues, Maps, EnemyScripts, rng);
 		Astos(NpcData, Dialogues, TalkRoutines, EnemyScripts, flags, rng);
 		EnableSwolePirates((bool)flags.SwolePirates);
 		ExtAltFiends.ExtendedFiendsUpdate(NpcData, Dialogues, this, rng);
@@ -338,7 +378,7 @@ public partial class FF1Rom : NesRom
 
 		// Party
 		PartyGeneration(rng, flags, preferences);
-		PubReplaceClinic(rng, Maps.AttackedTown, flags);
+		PubReplaceClinic(rng, Maps, flags);
 
 		// Experience
 		ScaleAllAltExp(flags);
@@ -377,17 +417,7 @@ public partial class FF1Rom : NesRom
 		EnableModernBattlefield(preferences.ModernBattlefield);
 		DynamicWindowColor(preferences.MenuColor);
 
-		// Fun Stuff
-		ChangeLute(preferences.ChangeLute, Dialogues, new MT19337(funRng.Next()));
-		ChangeFountainText(preferences.FunFountainText, Dialogues, new MT19337(funRng.Next()));
-		TitanSnack(preferences.TitanSnack, NpcData, Dialogues, new MT19337(funRng.Next()));
-		HurrayDwarfFate(preferences.HurrayDwarfFate, NpcData, Dialogues, new MT19337(funRng.Next()));
-		PaletteSwap(preferences.PaletteSwap && !flags.EnemizerEnabled, new MT19337(funRng.Next()));
-		// TeamSteak() must run before FunEnemyNames() because if "Random" is chosen for preferences.TeamSteak,
-		// that choice is resolved in TeamSteak(), and FunEnemyNames() needs to know which funny name to swap in.
-		TeamSteak(flags, preferences, new MT19337(funRng.Next()));
-		SetRobotChickenGraphics(preferences);
-		FunEnemyNames(flags, preferences, new MT19337(funRng.Next()));
+
 
 
 		await this.Progress();
@@ -416,9 +446,11 @@ public partial class FF1Rom : NesRom
 		TalkRoutines.Write(this);
 		NpcData.Write(TalkRoutines.ScriptPointers);
 		Dialogues.Write();
+		EnemyText.Write(this);
 		ShopData.StoreData();
 
 		EnemyScripts.Write(this);
+		EnemySprites.Write();
 		EncounterRates.Write();
 		itemPlacement.Write();
 

@@ -10,7 +10,12 @@
 		<p>Test out features from 2000 years in the future - at your own risk!</p>
 		<div class="col1">
 			<CheckBox UpdateAction="@UpdateAction" IsEnabled="@((Flags.Treasures != false) && !Flags.Archipelago)" Id="OpenChestsInOrder" @bind-Value="Flags.OpenChestsInOrder">Open Chests in Order</CheckBox>
-			<TriStateCheckBox UpdateAction="@UpdateAction" Id="EncounterPRNG" @bind-Value="Flags.EncounterPrng">Encounter Table Uses True RNG</TriStateCheckBox>
+			<EnumDropDown UpdateAction="@UpdateAction" Id="AdvancedEncounterRNGDropDown" TItem="AdvancedEncounterRNG" @bind-Value="Flags.AdvancedEncounterRNG">Advanced Encounter RNG</EnumDropDown>
+			<TriStateCheckBox UpdateAction="@UpdateAction" Indent Id="EarlyEncounterCheckBox" IsEnabled="@(Flags.AdvancedEncounterRNG == AdvancedEncounterRNG.Curated || Flags.AdvancedEncounterRNG == AdvancedEncounterRNG.Random)" @bind-Value="Flags.EarlyEncounter">Early Encounter</TriStateCheckBox>
+			<TriStateCheckBox UpdateAction="@UpdateAction" Indent Id="EarlyLongRunCheckBox" IsEnabled="@(Flags.AdvancedEncounterRNG == AdvancedEncounterRNG.Curated || Flags.AdvancedEncounterRNG == AdvancedEncounterRNG.Random)" @bind-Value="Flags.EarlyLongRun">Early Long Run</TriStateCheckBox>
+			<IntSlider UpdateAction="@UpdateAction" Indent DisableToolTip Id="MaxEarlyStepsSlider" IsEnabled="@(Flags.AdvancedEncounterRNG == AdvancedEncounterRNG.Curated || Flags.AdvancedEncounterRNG == AdvancedEncounterRNG.Random)" @bind-Value="Flags.MaxEarlySteps" Min="4" Max="16" Step="1">Max Early Steps:</IntSlider>
+			<DoubleSlider DontShowPercent DisableTooltip  UpdateAction="@UpdateAction" Indent Id="EarlyLongRunDoubleSlider" IsEnabled="@(Flags.AdvancedEncounterRNG == AdvancedEncounterRNG.Curated || Flags.AdvancedEncounterRNG == AdvancedEncounterRNG.Random)" @bind-ValuesRange="(Flags.RunLengthLow,Flags.RunLengthHigh)" MinValue="32" MaxValue="128" Step="4">Run Steps:</DoubleSlider>
+			<EnumDropDown UpdateAction="@UpdateAction" Indent Id="EncounterSpacingDropDown" IsEnabled="@(Flags.AdvancedEncounterRNG == AdvancedEncounterRNG.Curated || Flags.AdvancedEncounterRNG == AdvancedEncounterRNG.Random)" TItem="EncounterSpacing" @bind-Value="Flags.EncounterSpacing">Encounter Spacing:</EnumDropDown>
 			<TriStateCheckBox UpdateAction="@UpdateAction" Id="ArmorResistsDamageTileDamageCheckBox" @bind-Value="Flags.ArmorResistsDamageTileDamage" IsEnabled="!Flags.ArmorCrafter">Armor Resists Damage Tiles</TriStateCheckBox>
 			<TriStateCheckBox UpdateAction="@UpdateAction" Id="shuffleLavaTiles" @bind-Value="Flags.ShuffleLavaTiles">Shuffle Lava Tiles</TriStateCheckBox>
 			<TriStateCheckBox UpdateAction="@UpdateAction" Id="addDamageTiles" @bind-Value="Flags.AddDamageTiles">Add Damage Tiles</TriStateCheckBox>
@@ -25,8 +30,8 @@
 		</div>
 		<div class="col2">
 			<TriStateCheckBox UpdateAction="@UpdateAction" Id="procGenEarth" @bind-Value="Flags.ProcgenEarth">Generated Earth Cave</TriStateCheckBox>
+            <EnumDropDown UpdateAction="@UpdateAction" Id="procGenSkyBridge" TItem="ProcgenSkyBridgeMode" @bind-Value="Flags.ProcgenSkyBridge">Generated Sky 5F Mode</EnumDropDown>
 			<CheckBox UpdateAction="@UpdateAction" Id="intAffectsSpellsCheckBox" @bind-Value="Flags.IntAffectsSpells">INT Affects Spells</CheckBox>
-			<CheckBox UpdateAction="@UpdateAction" Id="repeatedHealPotionUseCheckBox" @bind-Value="Flags.RepeatedHealPotionUse">Repeated Heal Potion Use</CheckBox>
 			<div class="checkbox-cell"></div>
 		</div>
 

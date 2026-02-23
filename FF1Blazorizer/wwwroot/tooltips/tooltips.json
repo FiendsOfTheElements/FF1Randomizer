@@ -86,7 +86,7 @@
 		"Id": "importResourcePack",
 		"title": "Import Resource Pack",
 		"screenshot": "importResourcePack.png",
-		"description": "Imports into the game various custom assets like sprites, gamescript and worldmap grouped in a single zip package. See the Wiki for more info."
+		"description": "Imports into the game various custom assets like sprites, gamescript and worldmap grouped in a single zip package.\nResource packs that have been uploaded to https://wiki.finalfantasyrandomizer.com/resource-packs can be imported by entering the resource pack URL. Packs imported this way will be reflected in the flags/seed link, which you can share with others.\nOr, you can import a resource pack file from your filesystem; these will not be reflected in the flags/ssed link.\nNOTE: resource packs which only change incidental assets like tiles and sprites should act like Fun% preferences, and not affect the seed generation or validation hash.\nSee the Wiki at https://wiki.finalfantasyrandomizer.com/en/ResourcePacks/ResourcePacksFormat for more information about the resource pack format."
 	},
 	{
 		"Id": "disableMinimap",
@@ -136,19 +136,40 @@
 		"screenshot": "looseNpcBalanceCheckBox.png",
 		"description": "Makes it more likely for any loose items to land on NPCs.\nRequires that one (or both) of the \"Main NPCs\" or \"Fetch Quest NPCs\" flags above are not set."
 	},
+	{
+		"Id": "funEnemySpritesDropDown",
+		"title": "Fun Enemy Sprites",
+		"screenshot": "funEnemySpritesDropDown.gif",
+		"description": "Replaces enemy sprites with funny versions.\nThe regular enemy sprites (excepting WarMECH; see Robot Chicken) are split into teams. You can choose a team, have FFR choose a random one for you, or you can choose all of the teams. The original old-recipe Team STEAK sprite is included for purists.\nNOTE 1: if Tournament Safe ROM is selected and you have selected all sprite teams and all sprites, the randomizer will either select one team at random for you, or it will select one sprite from each team.\nNOTE 2: See the Fun Enemy Names tooltip for more information on fun enemy names associated with these sprites.\nTeam Steak: An FFR original; a selection of delicious, dangerous foods.\nTeam FFR: Final Fantasy Randomizer community memes, including Dani's radioactive spiders, Oslodo's Canadian wolves, and more.\nTeam Steamboat: Enemies turned into characters from the classic PUBLIC-DOMAIN toons Steamboat Willie and The Skeleton Dance (Minnie, Pete, the Cow, the Goat, the Parrot, and the Dancing Skeleton).\nTeam Dumpster Fire: FFR's resident metal band Dumpster Fire.\nTeam Glam: Beautified enemies with deadly charms.\nTeam Brillig: Creatures from Lewis Carroll's poem Jabberwocky, modeled on Sir John Tenniel's illustrations ca. 1870 (Slithy Toves, Mimsy Borogoves, Mome Raths, Jubjub Bird, Frumious Bandersnatch, and of course the Manxome Foe, the Jabberwock itself).\nTeam Meme: Final Fantasy enemies mashed up with various internet memes, including Trollface, LOLface, Are You a Wizard, Success Kid, and Baby Shark\nTeam Sports: These enemies give 110% and leave it all on the field.\nTeam Mystaque: Wait, is that \"mistake\" or \"mystique?\" \"My steak?\" Whatever it is, these enemies scream KILL ME!\n Team Toxic: Poison, disease, vice, and invective.\nIn addition, there are two bonus teams:\nTeam Party: Replaces sprites for the formations known in FFR as Steak and Wyngs, Seafood Party Platter, and Twilight Fan Club.\nTeam Grind: Sprites for enemies you're likely to grind on depending on your flag settings. If you're going to spend time with them, they may as well be fun!"
+	},
 
 	{
-		"Id": "funEnemyNamesCheckBox",
+		"Id": "funEnemySpritesModeCheckBox",
+		"title": "One Sprite per Selected Team",
+		"description": "Chooses 1 fun enemy sprite per team selected in the Fun Enemy Sprites Dropdown. If all teams were selected, the randomizer will replace one random sprite from each team."
+	},
+
+	{
+		"Id": "funEnemySpritesExtrasCheckBox",
+		"title": "NPCs and Dialogues",
+		"description": "Companion NPC sprites and/or dialogues are added for the following fun enemy sprites:\nGARLAND: Garlic NPC sprite and ToF dialog.\nPIRATE: Steamboat Mikke NPC sprite replaces Bikke, a steamboat replaces the canoe, and Bikke's dialog mentions parrots.\nGas D: if Fight Bahamut and fun enemy names are on, his dialogue reflects his fun enemy name.\nVAMPIRE: The Vampire's dialogue reflects his sprite (even though no mirror can reflect the Vampire).\nSee the animated gif in the Fun Enemy Sprites tooltip for the NPC sprites."
+	},
+
+	{
+		"Id": "funEnemyNamesDropDown",
 		"title": "Fun Enemy Names",
 		"screenshot": "funEnemyNamesCheckBox.png",
-		"description": "Changes enemy names in the generated seed. Most of the name changes in this setting are the result of various community memes over the years and may not make sense to newer players."
+		"description": "Changes enemy names in the generated seed. Most of the name changes in this setting are the result of various community memes over the years and may not make sense to newer players.\nThere are two settings.\nSprite Names Only: only replaces the names of enemies whose sprites are replaced in Fun Enemy Sprites.\nAll: uses all of the fun enemy names, plus the fun names of the enemies whose sprites are replaced."
 	},
+
 	{
-		"Id": "teamSteakDropDown",
-		"title": "Team STEAK",
-		"screenshot": "teamSteakDropDown.gif",
-		"description": "Replaces one or more enemy sprites with food, reflecting various community memes. Also replaces name(s) with fun food name(s).\nOptions:\nNone: no change.\nSTEAK and WYNGS: replaces TYRO and T REX with STEAK and T.BONE, and WYVERN and WYRM with WYNGS and HotWYNGS.\nSANDWICHes: replaces Sand W with SANDWICH, Grey W with MealWORM, and WORM with GRUB.\nNACHOs and GUAC: replaces NAOCHO with NACHO and OCHO with GUAC.\nPASTRIES: replaces CREEP with CREPE and CRAWL with CRULLER.\nRandom: chooses one of the above at random.\nAll: replaces all of the above sprites. In order to preserve game legibility for tournament spectators, if the Tournament Safe flag is on, choosing \"All\" will only replace one random sprite.\nOld Team STEAK: preserves the legacy Team STEAK sprite for STEAK and T.BONE.\n"
+		"Id": "funFiendSpritesCheckBox",
+		"title": "Fun Fiend Sprites",
+		"screenshot": "funFiendSpritesCheckBox.gif",
+		"description": "Replaces the sprites for LICH, KARY, KRAKEN, TIAMAT, and CHAOS with fun versions, and also updates their names if Fun Enemy Names is on.\nNOTE: this setting is disabled when either the Tournament Safe ROM flag or the Alternate Fiends flag is set."
+
 	},
+
 	{
 		"Id": "robotChickenCheckBox",
 		"title": "Robot Chicken",
@@ -231,6 +252,14 @@
 		"Id": "newMusicStreamSafeCheckBox",
 		"title": "Stream Safe Music",
 		"description": "Exclude new music that may not be safe for streaming. This is enabled automatically if 'Tournament Safe Rom' is on."
+
+
+
+	},
+	{
+		"Id": "negativeHarmonyCheckBox",
+		"title": "Negative Harmony",
+		"description": "Inverts the pitches in the music tracks so that high becomes low, low becomes high, major becomes minor, minor becomes major, and everything sounds familiar but darker."
 	},
 	{
 		"Id": "disableDamageTileFlickerCheckBox",
@@ -872,6 +901,18 @@
 		"title": "River to Melmond Region from Dwarf Cave",
 		"screenshot": "RiverToMelmond.png",
 		"description": "Adds a new river connecting the Dwarf Cave area to Melmond, Earth Cave, and Titan's Tunnel. This allows access to the Melmond region without the CANAL, and also without the SHIP if \"Early Open Progression\" is enabled."
+	},
+	{
+		"Id": "sardasForestCheckBox",
+		"title": "Sarda's Forest",
+		"screenshot": "sardasForestCheckBox.png",
+		"description": "Adds a forest between Titan's West and Sarda's Cave. This prevents the airship from allowing access to Sarda without the RUBY."
+	},
+	{
+		"Id": "airshipHikeCheckBox",
+		"title": "Hiking Trail to Airship",
+		"screenshot": "airshipHikeCheckBox.png",
+		"description": "Removes a portion of the river east of Elfland, allowing you to hike across the Swamp of Sadness to acquire the AIRSHIP without the CANOE."
 	},
 	{
 		"Id": "highwayToOrdealsCheckBox",
@@ -1945,7 +1986,7 @@
 		"Id": "enableExtConsumables",
 		"title": "New Consumables",
 		"screenshot": "newConsumables.png",
-		"description": "Enables new consumables:\n[grid][r]{i}Item|{i}Effect[r]FCURE|Full cure[r]PHNIX|Raise dead light warrior[r]SMOKE|Automatic run from battle[r]BLAST|Cast FIR3[r]RFRSH|Cast HEL3[r]FLARE|Cast NUCLEAR[r]BLACK|Cast BANE with lower accuracy[r]GUARD|Cast FOG2[r]QUICK|Cast FAST[r]HIGH|Restores 160 HP[r]WIZRD|Cast CONF[r]CLOAK|Cast RUSE\n\nPHNIX can be used during battle if the \"Enable Life in Battle\" flag is set.\nSMOKE will allow you to run from any fight, including bosses. However, you will be placed back one step and will still have to fight them.\nBLACK has 24 accuracy, the same as RUB. (BANE has 40 accuracy and ZAP! has 32, for comparison.) You can also use BLACK outside of battle if you wish to kill one of your light warriors.\nHIGH Potions will randomly restore between 96 and 192 HP when used during battle."
+		"description": "Enables new consumables:\n[grid][r]{i}Item|{i}Effect[r]FCURE|Full cure[r]PHNIX|Raise dead light warrior[r]SMOKE|Automatic run from battle[r]BLAST|Cast FIR3/ICE3/LIT3 (random per seed)[r]RFRSH|Cast HEL3[r]FLARE|Cast NUCLEAR[r]BLACK|Cast BANE with lower accuracy[r]GUARD|Cast FOG2[r]QUICK|Cast FAST[r]HIGH|Restores 160 HP[r]WIZRD|Cast CONF[r]CLOAK|Cast RUSE\n\nPHNIX can be used during battle if the \"Enable Life in Battle\" flag is set.\nSMOKE will allow you to run from any fight, including bosses. However, you will be placed back one step and will still have to fight them.\nBLACK has 24 accuracy, the same as RUB. (BANE has 40 accuracy and ZAP! has 32, for comparison.) You can also use BLACK outside of battle if you wish to kill one of your light warriors.\nHIGH Potions will randomly restore between 96 and 192 HP when used during battle."
 	},
 	{
 		"Id": "extStartingItemSet",
@@ -2555,9 +2596,24 @@
 		"description": "Non incentive items are opened in order. \n\nWarning, if your inventory gets full it will block your equipment progress."
 	},
 	{
-		"Id": "EncounterPRNG",
-		"title": "Encounter Table Uses True RNG",
-		"description": "Instead of a 256-step encounter table that resets with a hard reset, the game uses a pseudo-random number generator with a period of 65,535 steps, which does not reset on hard reset."
+		"Id": "AdvancedEncounterRNGDropDown",
+		"title": "Advanced Encounter RNG Table",
+		"description": "Changes the behavior of the encounter RNG.\nTrue RNG:\nInstead of a 256-step encounter table that resets with a hard reset, the game uses a pseudo-random number generator with a period of 65,535 steps, which does not reset on hard reset.\nCurated:\nProduces an RNG table with somewhat predictable features, which could be useful for encounter manipulation training, overworld grinding, and challenge seeds.\nRandom:\nRandomly chooses among None, True RNG, and Curated.\n\nCurated Encounter RNG settings are detailed in the tooltips below.\nNOTE: under normal conditions, the second traversal of the battle table runs is the reverse of the first; with the Curated setting, all traversals are the same."
+	},
+	{
+		"Id": "EarlyEncounterCheckBox",
+		"title": "Forced Early Encounter",
+		"description": "Force at least one early encounter within \"Max Early Steps\" after a hard reset.\n"
+	},
+	{
+		"Id": "EarlyLongRunCheckBox",
+		"title": "Early Long Safe Run",
+		"description": "Guarantee an early long safe run starting no more than \"Max Early Steps\" after a hard reset. The length of the run is set by the \"Run Steps\" slider.\nThere may be one or more encounters before the long run.\n"
+	},
+	{
+		"Id": "EncounterSpacingDropDown",
+		"title": "Encounter Spacing",
+		"description": "Controls the distribution of encounters in the table, with the following settings:\nNone: the default FFR approach using a shuffled RNG table.\nEven(ish): favors an even distribution of encounters, with around the same number of steps between encounters.\nClustered: encounters appear close together, with longer runs between encounter clusters.\nRandom: chooses randomly from the above.\nEncounter spacing applies to the steps outside of any early long run, and respects the early encounter flag.\nThe two curated spacings maintain their spacing features across different areas of the game. For instance, in the vanilla game, the ocean has 3 encounters per 256 steps, the overworld has 10, dungeons 8, and the Bridge of Destiny 24. With the Even(ish) spacing, the 3 ocean encounters will be relatively evenly spaced, as will the overworld's, dungeons', and BoD's. Because all locations use the same encounter table, the spacing in each location cannot be perfectly even; the algorithm tries to space the overworld's and dungeons' encounters most evenly.\nWith the Clustered spacing, the 3 ocean encounters are likely to fall within 6-9 steps of each other; that cluster will appear in the overworld's 10 encounters, along with 2 or 3 other clusters distributed randomly within the table."
 	},
 	{
 		"Id": "SetRNG",
@@ -2644,6 +2700,12 @@
 		"title": "Procedurally Generated Earth Cave",
 		"screenshot": "procgenEarth.png",
 		"description": "Randomly selects new Earth Cave maps from a set of procedurally generated maps."
+	},
+	{
+		"Id": "procGenSkyBridge",
+		"title": "Procedurally Generated Sky Fortress 5F",
+		"screenshot": "procgenSkyBridge.png",
+		"description": "Randomly generates a new 'Bridge of Destiny' for Sky Fortress 5F."
 	},
 	{
 		"Id": "mapDerpCheckBox",

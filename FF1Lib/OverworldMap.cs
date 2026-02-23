@@ -56,6 +56,8 @@ namespace FF1Lib
 				if ((bool)flags.MapGaiaMountainPass) MapEditsToApply.Add(GaiaMountainPass);
 				if ((bool)flags.MapHighwayToOrdeals) MapEditsToApply.Add(HighwayToOrdeals);
 				if ((bool)flags.MapRiverToMelmond) MapEditsToApply.Add(RiverToMelmond);
+				if ((bool)flags.MapSardasForest) MapEditsToApply.Add(SardasForest);
+				if ((bool)flags.MapAirshipHike) MapEditsToApply.Add(AirshipHike);
 			}
 		}
 		public static Dictionary<Palette, Blob> GeneratePalettes(List<Blob> vanillaPalettes)

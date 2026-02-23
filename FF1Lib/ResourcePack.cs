@@ -1,5 +1,8 @@
-using System.IO.Compression;
+using FF1Lib.Procgen;
 using Newtonsoft.Json;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using System.IO.Compression;
 
 namespace FF1Lib
 {
@@ -12,6 +15,8 @@ namespace FF1Lib
                 if (resourcePackArchive.GetEntry("overworld.json") != null) return true;
 		return false;
 	    }
+
+	
 
 		async Task LoadFunTiles(Preferences preferences)
 		{
@@ -71,18 +76,39 @@ namespace FF1Lib
 						int cur_tileset = 0;
 						await SetCustomMapGraphics(s, 128, 4,
 								 new int[] {
-						 MAPPALETTE_OFFSET + (0 * 0x30),
-						 MAPPALETTE_OFFSET + (1 * 0x30),
-						 MAPPALETTE_OFFSET + (2 * 0x30),
-						 MAPPALETTE_OFFSET + (3 * 0x30),
-						 MAPPALETTE_OFFSET + (4 * 0x30),
-						 MAPPALETTE_OFFSET + (5 * 0x30),
-						 MAPPALETTE_OFFSET + (6 * 0x30),
-						 MAPPALETTE_OFFSET + (7 * 0x30),
+									MAPPALETTE_OFFSET + (0 * 0x30),
+									MAPPALETTE_OFFSET + (1 * 0x30),
+									MAPPALETTE_OFFSET + (2 * 0x30),
+									MAPPALETTE_OFFSET + (3 * 0x30),
+									MAPPALETTE_OFFSET + (4 * 0x30),
+									MAPPALETTE_OFFSET + (5 * 0x30),
+									MAPPALETTE_OFFSET + (6 * 0x30),
+									MAPPALETTE_OFFSET + (7 * 0x30),
 								 },
 								 TILESETPALETTE_ASSIGNMENT + (cur_tileset << 7),
 								 TILESETPATTERNTABLE_OFFSET + (cur_tileset << 11),
-								 TILESETPATTERNTABLE_ASSIGNMENT + (cur_tileset << 9));
+								 TILESETPATTERNTABLE_ASSIGNMENT + (cur_tileset << 9),
+								 towntiles: true);
+					}
+				}
+
+				var castletiles = resourcePackArchive.GetEntry("castletiles.png");
+				if (castletiles != null)
+				{
+					using (var s = castletiles.Open())
+					{
+						Image<Rgba32> image = Image.Load<Rgba32>(s);
+						await ReplaceTileGraphics(TileSets.Castle, image);
+					}
+				}
+
+				var dungeontiles = resourcePackArchive.GetEntry("dungeontiles.png");
+				if (dungeontiles != null)
+				{
+					using (var s = dungeontiles.Open())
+					{
+						Image<Rgba32> image = Image.Load<Rgba32>(s);
+						await ReplaceDungeonTileGraphics(image);
 					}
 				}
 
@@ -390,7 +416,7 @@ namespace FF1Lib
 					await Progress($"WARNING: enemies.txt needs 128 enemy names, but it had {names.Count} names. Skipping Import.");
 					return;
 				}
-				WriteEnemyText(names.ToArray());
+				EnemyText.Set(names.ToArray());
 
 			}
 		}

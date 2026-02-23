@@ -391,12 +391,10 @@ namespace FF1Lib
 			}
 
 			//Update enemies names
-			var enemyText = rom.ReadEnemyText();
-			enemyText[0x10] = "SndMAN"; 
-			enemyText[0x11] = "SndSHARK";
-			enemyText[0x21] = "SCORP";
+			rom.EnemyText[FF1Rom.Enemy.Kyzoku] = "SndMAN"; 
+			rom.EnemyText[FF1Rom.Enemy.Shark] = "SndSHARK";
+			rom.EnemyText[FF1Rom.Enemy.Scorpion] = "SCORP";
 
-			rom.WriteEnemyText(enemyText);
 		}
 		public static void DoDUpdateDialogues(FF1Rom rom, NpcObjectData npcdata, DialogueData dialogues)
 		{

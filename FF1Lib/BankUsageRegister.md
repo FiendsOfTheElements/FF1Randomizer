@@ -1,4 +1,4 @@
-; Bank Usage - Last Update 2024-12-23
+; Bank Usage - Last Update 2026-02-09
 ; Whenever a feature adds code to the rom, this table must be updated.
 ; Doesn't include the new features placed at the freed space at 0B and 0E. This is already a mess and no feature should be written there if possible.
 ; NOTE This list was done retroactively, so some ranges might be missing.
@@ -9,10 +9,11 @@
 
 Bank Offset Range Description
 -----------------------------
+03   8220-8230    Palm tree tile used for pub sign (also 8320-8330)
 ; Freed  (write only after SM have been read)
-04   8000-FFFF    Unused
-05   8000-FFFF    Unused
-06   8000-FFFF    Unused
+04   8000-BFFF    Unused
+05   8000-BFFF    Unused
+06   8000-BFFF    Unused
 
 ; Freed  (write only after data has been moved to 1F)
 0F   8000-8B35    Stats Tracking code
@@ -23,7 +24,7 @@ Bank Offset Range Description
 0F   9100-91AC    Progressive Scaling
 0F   B000-B300    Expanded Teleporter tables
 
-10   8000-FFFF    Dialogues (whole bank is reserved)
+10   8000-BFFF    Dialogues (whole bank is reserved)
 
 11   8000-81A0    NPC Objects talk table
 11  ~8200-85C6    [NO MAX SET] Talk Routines
@@ -47,10 +48,10 @@ Bank Offset Range Description
 12   8E00-9000    Font Tileset
 12   9000-9038    New Icons routines
 
-14   8000-FFFF    Standard Maps (moved from 04, 05, 06 for extra space)
-15   8000-FFFF    Standard Maps
-16   8000-FFFF    Standard Maps
-17   8000-FFFF    Standard Maps
+14   8000-BFFF    Standard Maps (moved from 04, 05, 06 for extra space)
+15   8000-BFFF    Standard Maps
+16   8000-BFFF    Standard Maps
+17   8000-BFFF    Standard Maps
 
 19   8000-8F90    QuickMiniMap map
 
@@ -94,4 +95,4 @@ Bank Offset Range Description
 1E   BA00-BC0D    Screen Tracking code
 1E   BCC0-BCC4    Archipelago
 
-1F   8000-FFFF    Moving Bank 0F to 1F for MMC3 expansion
+1F   C000-FFFF    Moving Bank 0F to 1F for MMC3 expansion

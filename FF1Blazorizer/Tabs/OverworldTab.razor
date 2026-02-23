@@ -62,6 +62,14 @@
 					<TriStateCheckBox UpdateAction="@UpdateAction" Id="riverToMelmondCheckBox"
 							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
 							  @bind-Value="Flags.MapRiverToMelmond">River to Melmond</TriStateCheckBox>
+
+                    <TriStateCheckBox UpdateAction="@UpdateAction" Id="sardasForestCheckBox"
+                              IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+                              @bind-Value="Flags.MapSardasForest">Sarda's Forest</TriStateCheckBox>
+
+                    <TriStateCheckBox UpdateAction="@UpdateAction" Id="airshipHikeCheckBox"
+                              IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+                              @bind-Value="Flags.MapAirshipHike">Hiking Trail to Airship</TriStateCheckBox>
 					<div class="checkbox-cell"></div>
 				</div>
 			}

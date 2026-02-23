@@ -30,7 +30,23 @@ namespace FF1Lib
 		public const int MapSpriteCount = 16;
 
 		
+		/// <summary>
+		/// Uses the palm tree tile as a Pub tile. 
+		/// </summary>
+		private void MakePubSign()
+		{
+			// shingle tiles in CHR
+			byte[] top = Get(0xC450,32);
+			// Pub sign in CHR
+			byte[] bottom = Get(0xC760,32);
+			
+			// overwrite the palm tree in CHR
+			Put(0xC220,top);
+			Put(0xC320,bottom);
 
+			// use the black-white palette
+			PutInBank(0x00,0x8434,0xFF);
+		}
 		private void MiscHacks(Flags flags, MT19337 rng)
 		{
 			EnableCanalBridge((bool)flags.MapCanalBridge);
@@ -380,19 +396,16 @@ namespace FF1Lib
 				return;
 			}
 
-			var enemyText = ReadEnemyText();
-			enemyText[119] = "Twin D";  //  +2
-			enemyText[120] = "Twin D";  //  +2
-			enemyText[121] = "CARMILLA"; // +4
-			enemyText[122] = "CARMILLA"; // +4
-			enemyText[123] = "GrREAPER"; // +2
-			enemyText[124] = "GrREAPER"; // +2
-			enemyText[125] = "FRANKEN";  // +1
-			enemyText[126] = "FRANKEN";  // +1
-			enemyText[127] = "VLAD";     // -1
+			EnemyText[Enemy.Lich] = "Twin D";  //  +2
+			EnemyText[Enemy.Lich2] = "Twin D";  //  +2
+			EnemyText[Enemy.Kary] = "CARMILLA"; // +4
+			EnemyText[Enemy.Kary2] = "CARMILLA"; // +4
+			EnemyText[Enemy.Kraken] = "GrREAPER"; // +2
+			EnemyText[Enemy.Kraken2] = "GrREAPER"; // +2
+			EnemyText[Enemy.Tiamat] = "FRANKEN";  // +1
+			EnemyText[Enemy.Tiamat2] = "FRANKEN";  // +1
+			EnemyText[Enemy.Chaos] = "VLAD";     // -1
 
-
-			WriteEnemyText(enemyText);
 
 			// Change Orbs to Dracula's relics
 			PutInBank(0x0E, 0xAD78, Blob.FromHex("0F050130")); // Update Orbs palette

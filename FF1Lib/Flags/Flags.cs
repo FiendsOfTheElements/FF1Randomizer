@@ -1,10 +1,10 @@
-﻿using System.Numerics;
-using System.Reflection;
+﻿using FF1Lib.Sanity;
 using Newtonsoft.Json;
-using System.IO.Compression;
-using static FF1Lib.FF1Rom;
-using FF1Lib.Sanity;
 using System.ComponentModel;
+using System.IO.Compression;
+using System.Numerics;
+using System.Reflection;
+using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
@@ -211,6 +211,17 @@ namespace FF1Lib
 
 		public bool? Rng { get; set; } = false;
 		public bool FixMissingBattleRngEntry { get; set; } = false;
+		public AdvancedEncounterRNG AdvancedEncounterRNG { get; set; } = AdvancedEncounterRNG.None;
+
+		public bool? EarlyEncounter { get; set; } = false;
+		public bool? EarlyLongRun { get; set; } = false;
+		public EncounterSpacing EncounterSpacing { get; set; } = EncounterSpacing.None;
+		[IntegerFlag(32,128,4)]
+		public int RunLengthLow { get; set; } = 32;
+		[IntegerFlag(32,128,4)]
+		public int RunLengthHigh { get; set; } = 64;
+		[IntegerFlag(4, 16,1)]
+		public int MaxEarlySteps { get; set; } = 8;
 
 		public bool? EncounterPrng { get; set; } = false;
 
@@ -297,6 +308,8 @@ namespace FF1Lib
 		public bool? MapHighwayToOrdeals { get; set; } = false;
 		public bool? MapDragonsHoard { get; set; } = false;
 		public bool? MapHallOfDragons { get; set; } = false;
+		public bool? MapSardasForest { get; set; } = false;
+		public bool? MapAirshipHike { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
 		public bool? EntrancesMixedWithTowns { get; set; } = false;
 
@@ -403,10 +416,10 @@ namespace FF1Lib
 		public bool BlackBeltAbsorb { get; set; } = false;
 		public bool NPCSwatter { get; set; } = false;
 		public bool BattleMagicMenuWrapAround { get; set; } = false;
-		public bool MagicMenuSpellReordering { get; set; } = false;
-		public bool InventoryAutosort { get; set; } = false;
-		public bool RepeatedHealPotionUse { get; set; } = false;
-		public bool AutoRetargeting { get; set; } = false;
+		public bool MagicMenuSpellReordering { get; set; } = true;
+		public bool InventoryAutosort { get; set; } = true;
+		public bool RepeatedHealPotionUse { get; set; } = true;
+		public bool AutoRetargeting { get; set; } = true;
 		public bool EnemyStatusAttackBug { get; set; } = false;
 		public bool ImproveTurnOrderRandomization { get; set; } = false;
 		public bool FixHitChanceCap { get; set; } = false;
@@ -735,5 +748,6 @@ namespace FF1Lib
 		public bool WhiteMageHarmEveryone { get; set; } = false;
 
 		public bool? ProcgenEarth { get; set; } = false;
+		public ProcgenSkyBridgeMode ProcgenSkyBridge { get; set; } = ProcgenSkyBridgeMode.Off;
 	}
 }
