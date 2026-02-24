@@ -20,6 +20,8 @@ namespace FF1Lib.Procgen
 		public IEnumerable<byte> Traps;     // Trap tiles assumed to be in rooms.
 		public IEnumerable<int> FreeNPCs;   // Random extra NPCs outside of rooms. (Coords can be ignored)
 
+		public IEnumerable<int> OOBNPCs; // extra out-of-bounds NPCs
+
 		public FF1Rom Rom;
 		public MapObjects MapObjects;
 	}
@@ -58,7 +60,9 @@ namespace FF1Lib.Procgen
 			{
 				reqs.Floor = Tile.WaterfallRandomEncounters;
 				reqs.InRoomFloor = Tile.WaterfallInside;
-				reqs.FreeNPCs = Enumerable.Range(1, 10);
+				// OOB Bat
+				reqs.OOBNPCs = Enumerable.Range(1, 1);
+				reqs.FreeNPCs = Enumerable.Range(2, 9);
 				reqs.Rooms = new List<RoomSpec>
 				{
 					
@@ -68,8 +72,9 @@ namespace FF1Lib.Procgen
 							{ 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x02 },
 							{ 0x03, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x05 },
 							{ 0x03, 0x46, 0x46, 0x46, 0x46, 0x46, 0x46, 0x05 },
-							{ 0x06, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x08 },
-							{ 0x30, 0x30, 0x36, 0x30, 0x30, 0x30, 0x30, 0x30 }
+							{ 0x06, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x08 }
+							
+							// { 0x30, 0x30, 0x36, 0x30, 0x00, 0x01, 0x01, 0x01 }
 							//{ 0x49, 0x49, 0x3A, 0x49, 0x49, 0x49, 0x49, 0x49 }
 						},
 						NPCs = new List<NPC> { new NPC { ObjectId = ObjectId.CubeBot, Index = 0, Coord = (5, 2), InRoom = true, Stationary = false } },
@@ -136,12 +141,19 @@ namespace FF1Lib.Procgen
 			}
 
 			// Free NPC placement doesn't require the engine
-			// var locations = map.Map.Where(element => element.Tile == reqs.Floor).ToList();
-			// reqs.FreeNPCs.ToList().ForEach(npc =>
-			// {
-			// 	var location = locations.SpliceRandom(rng);
-			// 	reqs.MapObjects.MoveNpc(npc, location.X, location.Y, false, false);
-			// });
+			var locations = map.Map.Where(element => element.Tile == reqs.Floor).ToList();
+			reqs.FreeNPCs.ToList().ForEach(npc =>
+			{
+				var location = locations.SpliceRandom(rng);
+				reqs.MapObjects.MoveNpc(npc, location.X, location.Y, false, false);
+			});
+
+			locations = map.Map.Where(element => element.Tile == reqs.InRoomFloor || element.Tile == reqs.OutOfBounds).ToList();
+			reqs.OOBNPCs.ToList().ForEach(npc =>
+			{
+				var location = locations.SpliceRandom(rng);
+				reqs.MapObjects.MoveNpc(npc, location.X, location.Y, false, false);
+			});
 
 			if (Debugger.IsAttached)
 			{

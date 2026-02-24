@@ -5,6 +5,7 @@ using RomUtilities;
 using System.ComponentModel;
 using System.IO.Compression;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
@@ -40,6 +41,21 @@ namespace FF1Lib
 		Absurd
 	}
 
+	public enum ProcgenWaterfallEntrance
+	{
+		[Description("Anywhere")]
+		Anywhere,
+		[Description("Most Distant")]
+		Furthest,
+		[Description("Mid Distance")]
+		Mid,
+		[Description("Map Center")]
+		Center,
+		
+		[Description("At a Branch")]
+		Branch
+	}
+
 	public partial class StandardMaps
 	{
 		public async Task ProcgenDungeons(FF1Rom rom, MT19337 rng)
@@ -56,8 +72,14 @@ namespace FF1Lib
 				//   this.ImportCustomMap(maps, teleporters, overworldMap, npcdata, newmap);
 				//  }
 			}
-
-			//ProcgenWaterfall((bool)flags.EFGWaterfall, teleporters, mapObjects[(int)MapIndex.Waterfall], rng);
+			Stopwatch sw = new();
+			sw.Reset();
+			sw.Start();
+			ProcgenWaterfall(teleporters, mapObjects[(int)MapIndex.Waterfall], rng);
+			sw.Stop();
+			TimeSpan ts = sw.Elapsed;
+			Console.WriteLine($"Gen time: {ts.Minutes * 60 + (double)ts.Seconds + ts.Milliseconds/1000.0} seconds");
+			
 			FlipMaps(flags, rng);
 			if (flags.ProcgenSkyBridge != ProcgenSkyBridgeMode.Off)
 			{
@@ -589,12 +611,12 @@ namespace FF1Lib
 				rom.PutInBank(0x1F, 0xCEDE, new byte[] { 0x81 });
 			}
 		}
-		private void ProcgenWaterfall(bool procgenwaterfall, Teleporters teleporters, MapObjects waterfallObjects, MT19337 rng)
+		private void ProcgenWaterfall(Teleporters teleporters, MapObjects waterfallObjects, MT19337 rng)
 		{
-			if (!procgenwaterfall)
-			{
-				return;
-			}
+			// if (!procgenwaterfall)
+			// {
+			// 	return;
+			// }
 
 			MapRequirements reqs;
 			MapGeneratorStrategy strategy;

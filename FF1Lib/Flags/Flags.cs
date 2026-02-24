@@ -752,7 +752,10 @@ namespace FF1Lib
 
 		public ProcgenWaterfallMode ProcgenWaterfall { get; set; } = ProcgenWaterfallMode.Off;
 		public ProcgenWaterfallDensity ProcgenWaterfallDensity { get; set; } = ProcgenWaterfallDensity.Normal;
-		public ProcgenWaterfallHallwayLength ProcgenWaterfallHallwayLength { get; set; } = ProcgenWaterfallHallwayLength.Short;
+		public ProcgenWaterfallHallwayLength ProcgenWaterfallHallwayLength { get; set; } = ProcgenWaterfallHallwayLength.Mid;
+		public ProcgenWaterfallEntrance ProcgenWaterfallEntrance { get; set; } = ProcgenWaterfallEntrance.Anywhere;
+		public bool? ProcgenWaterfallNoLoops { get; set; } = true;
+		public bool ProcgenWaterfallSpoiler { get; set; } = false;
 
 
 	}

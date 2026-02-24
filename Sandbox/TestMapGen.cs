@@ -37,8 +37,10 @@ namespace Sandbox
 			flags.ProcgenWaterfall = ProcgenWaterfallMode.Uniform;
 			flags.ProcgenWaterfallDensity = ProcgenWaterfallDensity.Normal;
 			flags.ProcgenWaterfallHallwayLength = ProcgenWaterfallHallwayLength.Mid;
+			flags.ProcgenWaterfallNoLoops = true;
 			MapGenerator generator = new MapGenerator(flags);
 			MapGeneratorStrategy strategy = MapGeneratorStrategy.SpanningTree;
+			Stopwatch stopwatch = new();
 
 			Console.WriteLine("\n\nReady to generate\n");
 			while (true)
@@ -70,7 +72,7 @@ namespace Sandbox
 							Console.WriteLine("\rSet mode to Jittered Even.");
 							break;
 						}
-					case ConsoleKey.L:
+					case ConsoleKey.H:
 						{
 							generator._flags.ProcgenWaterfall = ProcgenWaterfallMode.Linear;
 							cont = true;
@@ -126,8 +128,53 @@ namespace Sandbox
 							Console.WriteLine("\rSet hallway length to Absurd.");
 							break;
 						}
+					case ConsoleKey.L:
+						{
+							generator._flags.ProcgenWaterfallNoLoops = !generator._flags.ProcgenWaterfallNoLoops;
+							cont = true;
+							Console.WriteLine("\rToggled loop avoidance " + ((bool)generator._flags.ProcgenWaterfallNoLoops? "On." : "Off."));
+							break;
+						}
+					case ConsoleKey.A:
+						{
+							generator._flags.ProcgenWaterfallEntrance = ProcgenWaterfallEntrance.Anywhere;
+							cont = true;
+							Console.WriteLine("\rSet entrance location to Anywhere");
+							break;
+						}
+					case ConsoleKey.F:
+						{
+							generator._flags.ProcgenWaterfallEntrance = ProcgenWaterfallEntrance.Furthest;
+							cont = true;
+							Console.WriteLine("\rSet entrance location to Furthest");
+							break;
+						}
+					case ConsoleKey.C:
+						{
+							generator._flags.ProcgenWaterfallEntrance = ProcgenWaterfallEntrance.Center;
+							cont = true;
+							Console.WriteLine("\rSet entrance location to Center");
+							break;
+						}
+					case ConsoleKey.M:
+						{
+							generator._flags.ProcgenWaterfallEntrance = ProcgenWaterfallEntrance.Mid;
+							cont = true;
+							Console.WriteLine("\rSet entrance location to Equidistant");
+							break;
+						}
+					case ConsoleKey.B:
+						{
+							generator._flags.ProcgenWaterfallEntrance = ProcgenWaterfallEntrance.Branch;
+							cont = true;
+							Console.WriteLine("\rSet entrance location to Branch");
+							break;
+						}
 					case ConsoleKey.Spacebar:
 						{
+							stopwatch.Reset();
+							stopwatch.Start();
+							
 							cont = false;
 							break;
 						}
@@ -145,7 +192,9 @@ namespace Sandbox
 				csharpRNG.GetBytes(seed);
 				MT19337 rng = new MT19337(BitConverter.ToUInt32(seed, 0));
 				CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
-				
+				stopwatch.Stop();
+				var time = stopwatch.Elapsed;
+				Console.WriteLine($"Gen time: {time.Minutes * 60 + (double)time.Seconds + time.Milliseconds/1000.0} seconds");
 			}
 		}
 	}

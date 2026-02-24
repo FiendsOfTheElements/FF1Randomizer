@@ -60,10 +60,12 @@ namespace FF1Lib.Procgen
 			{ Tile.EarthCaveRockB, 'X' },
 			{ Tile.EarthCaveRandomEncounters, ' ' },
 			{ Tile.EarthCaveOOB, '0' },
-			{ Tile.WaterfallInside, '_' },
-			{ Tile.WaterfallRandomEncounters, '.' },
+			{ Tile.WaterfallInside, '•' },
+			{ Tile.WaterfallRandomEncounters, ' ' },
 			{ (Tile)0xFE, 'X' },
 			{ (Tile)0xFF, ' ' },
+			{ Tile.WaterfallSpikeTile, '!'},
+			
 		};
 
 		public string AsText()
