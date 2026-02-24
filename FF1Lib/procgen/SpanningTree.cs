@@ -270,18 +270,6 @@ namespace FF1Lib.Procgen
             
 
 
-
-
-            
-            
-
-            
-            
-
-
-
-
-
             CompleteMap cm = new()
             {
                 Map = new((byte)Tile.WaterfallInside),
@@ -480,6 +468,10 @@ namespace FF1Lib.Procgen
 
 
             // Console.Write(cm.AsText());
+            if (_flags.ProcgenWaterfallSpoiler)
+            {
+                Utilities.ProcgenWaterfallCache = cm.AsText();
+            }
             return cm;
         }
         
@@ -835,6 +827,26 @@ namespace FF1Lib.Procgen
             Func<MT19337,Graph> InitDistribution;
             switch (_flags.ProcgenWaterfall)
             {
+                case ProcgenWaterfallMode.Random:
+                    {
+                        int roll = rng.Between(1,4);
+                        if (roll == 1)
+                        {
+                            goto case ProcgenWaterfallMode.Uniform;
+                        }
+                        else if (roll == 2)
+                        {
+                            goto case ProcgenWaterfallMode.Polar;
+                        }
+                        else if (roll == 3)
+                        {
+                            goto case ProcgenWaterfallMode.JitteredEven;
+                        }
+                        else
+                        {
+                            goto case ProcgenWaterfallMode.Linear;
+                        }
+                    }
                 case ProcgenWaterfallMode.Uniform :
                     {
                         InitDistribution = UniformRandom;

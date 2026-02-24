@@ -16,7 +16,7 @@ namespace FF1Lib
 		Off,
 		[Description("Normal")]
 		Uniform,
-		[Description("Hub and Spokes")]
+		[Description("Compact")]
 		Polar,
 		[Description("Even Spread")]
 		JitteredEven,
@@ -43,16 +43,11 @@ namespace FF1Lib
 
 	public enum ProcgenWaterfallEntrance
 	{
-		[Description("Anywhere")]
-		Anywhere,
-		[Description("Most Distant")]
-		Furthest,
-		[Description("Mid Distance")]
-		Mid,
-		[Description("Map Center")]
-		Center,
 		
-		[Description("At a Branch")]
+		Anywhere,
+		Furthest,
+		Mid,
+		Center,
 		Branch
 	}
 
