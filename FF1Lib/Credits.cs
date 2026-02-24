@@ -256,13 +256,6 @@ namespace FF1Lib
 			},
 			new []
 			{
-				" Contributors",
-				"",
-				"  Franklin RN",
-				"  Inferna"
-			},
-			new []
-			{
 				"  Playtesting",
 				"",
 				"jkoper, Kababesh",
