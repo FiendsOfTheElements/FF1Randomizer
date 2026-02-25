@@ -65,7 +65,7 @@ namespace FF1Lib
 			var goldItemsDic = goldItems.Select((g, i) => (shuffleindex: i, item: g.item, price: g.price, name: g.name)).ToDictionary(g => g.item);
 
 			var expItems = new HashSet<Item>(goldChests
-				.Where(g => goldItemsDic.ContainsKey(g) &&  !unusedGoldDic.Contains((byte)g))
+				.Where(g => goldItemsDic.ContainsKey(g) && !unusedGoldDic.Contains((byte)g))
 				.Select(g => (item: g, shuffleindex: goldItemsDic[g].shuffleindex))
 				.OrderBy(g => g.shuffleindex)
 				.Take(expChestCount)
