@@ -147,7 +147,7 @@ namespace FF1Lib
 		public void Load(Stream stream)
 		{
 			var buffer = new byte[4096];
-			stream.Read(buffer, 0, buffer.Length);
+			int readResult = stream.Read(buffer, 0, buffer.Length);
 			Buffer.BlockCopy(buffer, 0, _map, 0, buffer.Length);
 		}
 
