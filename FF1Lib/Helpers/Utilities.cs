@@ -8,6 +8,8 @@
 
 		public static string ArchipelagoCache { get; set; } = "";
 
+		public static string ProcgenWaterfallCache { get; set; } = "";
+
 		/// <summary>
 		/// Outputs the spoiler log entry to a text file or to the console
 		/// </summary>

@@ -31,6 +31,12 @@
 		<div class="col2">
 			<TriStateCheckBox UpdateAction="@UpdateAction" Id="procGenEarth" @bind-Value="Flags.ProcgenEarth">Generated Earth Cave</TriStateCheckBox>
             <EnumDropDown UpdateAction="@UpdateAction" Id="procGenSkyBridge" TItem="ProcgenSkyBridgeMode" @bind-Value="Flags.ProcgenSkyBridge">Generated Sky 5F Mode</EnumDropDown>
+			<EnumDropDown UpdateAction="@UpdateAction" Id="procGenWaterfall" TItem="ProcgenWaterfallMode" @bind-Value="Flags.ProcgenWaterfall">Generated Waterfall</EnumDropDown>
+			<EnumDropDown UpdateAction="@UpdateAction" Indent Id="procGenWaterfallDensity" IsEnabled="@(Flags.ProcgenWaterfall != ProcgenWaterfallMode.Off)" TItem="ProcgenWaterfallDensity" @bind-Value="Flags.ProcgenWaterfallDensity">Path Density</EnumDropDown>
+			<EnumDropDown UpdateAction="@UpdateAction" Indent Id="procGenWaterfallEntrance" IsEnabled="@(Flags.ProcgenWaterfall != ProcgenWaterfallMode.Off)" TItem="ProcgenWaterfallEntrance" @bind-Value="Flags.ProcgenWaterfallEntrance">Entrance Placement</EnumDropDown>
+			<EnumDropDown UpdateAction="@UpdateAction" Indent Id="procGenWaterfallHallway" IsEnabled="@(Flags.ProcgenWaterfall == ProcgenWaterfallMode.Linear)" TItem="ProcgenWaterfallHallwayLength" @bind-Value="Flags.ProcgenWaterfallHallwayLength">Long Hallway Length</EnumDropDown>
+			<TriStateCheckBox UpdateAction="@UpdateAction" Indent Id="procGenWaterfallNoLoops" IsEnabled="@(Flags.ProcgenWaterfall != ProcgenWaterfallMode.Off)" @bind-Value="Flags.ProcgenWaterfallNoLoops">Avoid Loops</TriStateCheckBox>
+			<CheckBox UpdateAction="@UpdateAction" Indent Id="procGenWaterfallSpoiler" IsEnabled="@(Flags.ProcgenWaterfall != ProcgenWaterfallMode.Off)" @bind-Value="Flags.ProcgenWaterfallSpoiler">Generate Spoiler</CheckBox>
 			<CheckBox UpdateAction="@UpdateAction" Id="intAffectsSpellsCheckBox" @bind-Value="Flags.IntAffectsSpells">INT Affects Spells</CheckBox>
 			<div class="checkbox-cell"></div>
 		</div>

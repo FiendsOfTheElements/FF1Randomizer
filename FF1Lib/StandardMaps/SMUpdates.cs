@@ -2,12 +2,55 @@
 using FF1Lib.Procgen;
 using FF1Lib.Sanity;
 using RomUtilities;
+using System.ComponentModel;
 using System.IO.Compression;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
+	public enum ProcgenWaterfallMode
+	{
+		[Description("Off")]
+		Off,
+		[Description("Normal")]
+		Uniform,
+		[Description("Compact")]
+		Polar,
+		[Description("Even Spread")]
+		JitteredEven,
+		[Description("Long Hallway")]
+		Linear,
+		[Description("Random")]
+		Random
+	}
+
+	public enum ProcgenWaterfallDensity
+	{
+		Normal,
+		Sparse,
+		Dense
+	}
+
+	public enum ProcgenWaterfallHallwayLength
+	{
+		Short,
+		Mid,
+		Long,
+		Absurd
+	}
+
+	public enum ProcgenWaterfallEntrance
+	{
+		
+		Anywhere,
+		Furthest,
+		Mid,
+		Center,
+		Branch
+	}
+
 	public partial class StandardMaps
 	{
 		public async Task ProcgenDungeons(FF1Rom rom, MT19337 rng)
@@ -24,8 +67,14 @@ namespace FF1Lib
 				//   this.ImportCustomMap(maps, teleporters, overworldMap, npcdata, newmap);
 				//  }
 			}
-
-			//ProcgenWaterfall((bool)flags.EFGWaterfall, teleporters, mapObjects[(int)MapIndex.Waterfall], rng);
+			Stopwatch sw = new();
+			sw.Reset();
+			sw.Start();
+			ProcgenWaterfall(teleporters, mapObjects[(int)MapIndex.Waterfall], rng);
+			sw.Stop();
+			TimeSpan ts = sw.Elapsed;
+			Console.WriteLine($"Gen time: {ts.Minutes * 60 + (double)ts.Seconds + ts.Milliseconds/1000.0} seconds");
+			
 			FlipMaps(flags, rng);
 			if (flags.ProcgenSkyBridge != ProcgenSkyBridgeMode.Off)
 			{
@@ -557,16 +606,16 @@ namespace FF1Lib
 				rom.PutInBank(0x1F, 0xCEDE, new byte[] { 0x81 });
 			}
 		}
-		private void ProcgenWaterfall(bool procgenwaterfall, Teleporters teleporters, MapObjects waterfallObjects, MT19337 rng)
+		private void ProcgenWaterfall(Teleporters teleporters, MapObjects waterfallObjects, MT19337 rng)
 		{
-			if (!procgenwaterfall)
-			{
-				return;
-			}
+			// if (!procgenwaterfall)
+			// {
+			// 	return;
+			// }
 
 			MapRequirements reqs;
 			MapGeneratorStrategy strategy;
-			MapGenerator generator = new MapGenerator();
+			MapGenerator generator = new MapGenerator(flags);
 
 			reqs = new MapRequirements
 			{
@@ -574,7 +623,7 @@ namespace FF1Lib
 				Rom = rom,
 				MapObjects = waterfallObjects,
 			};
-			strategy = MapGeneratorStrategy.WaterfallClone;
+			strategy = MapGeneratorStrategy.SpanningTree;
 			CompleteMap waterfall = generator.Generate(rng, strategy, reqs);
 
 			// Should add more into the reqs so that this can be done inside the generator.

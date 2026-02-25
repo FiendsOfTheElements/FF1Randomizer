@@ -2,7 +2,6 @@
 
 namespace FF1Lib.Sanity
 {
-	[Serializable]
 	internal class MadnessException : Exception
 	{
 		public MadnessException()
@@ -17,8 +16,5 @@ namespace FF1Lib.Sanity
 		{
 		}
 
-		protected MadnessException(SerializationInfo info, StreamingContext context) : base(info, context)
-		{
-		}
 	}
 }

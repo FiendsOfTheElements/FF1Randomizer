@@ -2,7 +2,6 @@
 
 namespace FF1Lib.Sanity
 {
-	[Serializable]
 	internal class NoYouDon_LowerCaseT_Exception : Exception
 	{
 		private MapIndex MapIndex;
@@ -20,8 +19,5 @@ namespace FF1Lib.Sanity
 		{
 		}
 
-		protected NoYouDon_LowerCaseT_Exception(SerializationInfo info, StreamingContext context) : base(info, context)
-		{
-		}
 	}
 }

@@ -57,7 +57,7 @@ namespace FF1Lib
 
 			LoadData();
 
-			var unusedGoldDic = new HashSet<int>(ItemLists.UnusedGoldItems.Select(x => (int)x));
+			var unusedGoldDic = new HashSet<byte>(ItemLists.UnusedGoldItems.Select(x => (byte)x));
 
 			// construct a dictionary and get a shuffled index into it.
 			var goldItems = ItemLists.AllGoldTreasure.Select(g => (item: g, price: itemPrices[g], name: itemNames[(int)g])).ToList();
@@ -65,7 +65,7 @@ namespace FF1Lib
 			var goldItemsDic = goldItems.Select((g, i) => (shuffleindex: i, item: g.item, price: g.price, name: g.name)).ToDictionary(g => g.item);
 
 			var expItems = new HashSet<Item>(goldChests
-				.Where(g => goldItemsDic.ContainsKey(g) &&  !unusedGoldDic.Contains((int)g))
+				.Where(g => goldItemsDic.ContainsKey(g) &&  !unusedGoldDic.Contains((byte)g))
 				.Select(g => (item: g, shuffleindex: goldItemsDic[g].shuffleindex))
 				.OrderBy(g => g.shuffleindex)
 				.Take(expChestCount)
@@ -74,7 +74,7 @@ namespace FF1Lib
 
 			var firstExpItem = RepackGoldExpItems(goldItemsDic, expItems, unusedGoldDic);
 
-			for (int i = (int)firstExpItem; i < 176; i++)
+			for (byte i = (byte)firstExpItem; i < 176; i++)
 			{
 				if (unusedGoldDic.Contains(i)) continue;
 
@@ -117,15 +117,15 @@ namespace FF1Lib
 
 			LoadData();
 
-			var unusedGoldDic = new HashSet<int>(ItemLists.UnusedGoldItems.Cast<int>());
+			var unusedGoldDic = new HashSet<byte>(ItemLists.UnusedGoldItems.Cast<byte>());
 
 			// construct a dictionary and get a shuffled index into it.
-			var goldItems = ItemLists.AllGoldTreasure.Select(g => (item: g, price: itemPrices[g], name: itemNames[(int)g])).ToList();
+			var goldItems = ItemLists.AllGoldTreasure.Select(g => (item: g, price: itemPrices[g], name: itemNames[(byte)g])).ToList();
 			goldItems.Shuffle(rng);
 			var goldItemsDic = goldItems.Select((g, i) => (shuffleindex: i, item: g.item, price: g.price, name: g.name)).ToDictionary(g => g.item);
 
 			var expItems = new HashSet<Item>(treasureData.Data
-				.Where(g => goldItemsDic.ContainsKey(g) && !unusedGoldDic.Contains((int)g))
+				.Where(g => goldItemsDic.ContainsKey(g) && !unusedGoldDic.Contains((byte)g))
 				.Select(g => (item: g, shuffleindex: goldItemsDic[g].shuffleindex))
 				.OrderBy(g => g.shuffleindex)
 				.Take(expChestCount)
@@ -136,7 +136,7 @@ namespace FF1Lib
 
 			List<(ushort, int)> expChests = new List<(ushort, int)>();
 			int currentChestIndex = 0;
-			for (int i = (int)firstExpItem; i < 176; i++)
+			for (byte i = (byte)firstExpItem; i < 176; i++)
 			{
 				if (unusedGoldDic.Contains(i)) continue;
 				var e = (Item)i;
@@ -218,15 +218,15 @@ namespace FF1Lib
 
 
 		//For simplicity only chests are corrected. Npc rewards will be collateral damage.
-		private Item RepackGoldExpItems(Dictionary<Item, (int shuffleindex, Item item, ushort price, string name)> goldItemsDic, HashSet<Item> expItems, HashSet<int> unusedGoldDic)
+		private Item RepackGoldExpItems(Dictionary<Item, (int shuffleindex, Item item, ushort price, string name)> goldItemsDic, HashSet<Item> expItems, HashSet<byte> unusedGoldDic)
 		{
 			var repackDic = new Dictionary<Item, Item>();
 
-			var goldItems = ItemLists.AllGoldTreasure.Where(g => !expItems.Contains(g) && !unusedGoldDic.Contains((int)g));
+			var goldItems = ItemLists.AllGoldTreasure.Where(g => !expItems.Contains(g) && !unusedGoldDic.Contains((byte)g));
 
 			var goldItemsEnumerator = goldItems.GetEnumerator();
 			var expItemsEnumerator = expItems.GetEnumerator();
-			for (int i = (int)Item.Gold10; i < 176; i++)
+			for (byte i = (byte)Item.Gold10; i < 176; i++)
 			{
 				if (!unusedGoldDic.Contains(i))
 				{
