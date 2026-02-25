@@ -141,13 +141,15 @@ namespace FF1Lib
 				if (unusedGoldDic.Contains(i)) continue;
 				var e = (Item)i;
 
-				if(progressiveChestXPType == ChestXPType.RandomProgressive)
+				if (progressiveChestXPType == ChestXPType.RandomProgressive)
 				{
 					var exp = (ushort)rng.Between(flags.ExpChestMinReward, flags.ExpChestMaxReward);
 					itemPrices[e] = exp;
 					itemNames[(int)e] = exp.ToString() + " EXP";
 					expChests.Add((exp, i));
-				} else if(progressiveChestXPType == ChestXPType.LinearProgressive) {
+				}
+				else if (progressiveChestXPType == ChestXPType.LinearProgressive)
+				{
 					int expChestsTotal = expItems.Count();
 					double maxXpIndex = Math.Max((expChestsTotal * 0.80), 1.0);
 					double chestMultiplier = (flags.ExpChestMaxReward - flags.ExpChestMinReward) / maxXpIndex;
@@ -155,7 +157,9 @@ namespace FF1Lib
 					itemPrices[e] = exp;
 					itemNames[(int)e] = exp.ToString() + " EXP";
 					expChests.Add((exp, i));
-				} else if(progressiveChestXPType == ChestXPType.ExponentialProgressive) {
+				}
+				else if (progressiveChestXPType == ChestXPType.ExponentialProgressive)
+				{
 					int expChestsTotal = expItems.Count();
 					double maxXpIndex = Math.Max((expChestsTotal * 0.80), 1.0);
 					double chestMultiplier = (flags.ExpChestMaxReward - flags.ExpChestMinReward) / (maxXpIndex * maxXpIndex);
