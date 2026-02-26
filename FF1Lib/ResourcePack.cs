@@ -64,7 +64,8 @@ namespace FF1Lib
 								 new int[] { OVERWORLDPALETTE_OFFSET },
 								 OVERWORLDPALETTE_ASSIGNMENT,
 								 OVERWORLDPATTERNTABLE_OFFSET,
-								 OVERWORLDPATTERNTABLE_ASSIGNMENT);
+								 OVERWORLDPATTERNTABLE_ASSIGNMENT,
+								 addMapDerp: true);
 					}
 				}
 
