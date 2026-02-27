@@ -1,17 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Diagnostics.CodeAnalysis;
-using System.Drawing;
 using System.Linq;
-using System.Reflection.Metadata;
-using System.Runtime.ExceptionServices;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks;
-using SixLabors.ImageSharp.ColorSpaces;
-using SixLabors.ImageSharp.Processing.Processors.Convolution;
 using static System.Math;
 using System.Numerics;
 
@@ -21,60 +12,104 @@ namespace FF1Lib.Procgen
     public class SpanningTree : IMapGeneratorEngine
     {
         /// uses Prim's algorithm to create a minimum spanning tree over a set of randomly chosen nodes;
-        /// This is really only ever going to be used for waterfall
+        /// graph cycles are permitted with an option, and then only under very specific circumstances.
+        /// The strategy is to use the randomly placed nodes as "control" nodes, and then to have the
+        /// algorithm carve edges between them to make a path.
+        /// While this could be generalized to other locations, the "footprint" mechanic is specialized
+        /// for the 4x4-tile path element of waterfall, and the entire logic of what next step in drawing
+        /// the path is legal is hardcoded for the waterfall path element.
         /// 
         /// 
 
+        
         private Flags _flags;
+        // The _pool graph contains all of the control Nodes, with weighted Edges between all pairs.
+        // The weights are the squared pythagorean distance between them (with wraparound). The algorithm
+        // uses weights determine which Edges to draw and which to discard (draw Edges between closer Nodes first.)
+        // The number of Edges E scales with the number of Nodes N as E = N*(N-1)/2 , or "N take 2"
         private Graph _pool;
+
+        // The _tree graph is the spanning tree among the control nodes. When cycles are allowed, it's
+        // not technically a tree anymore, but in spirit it is because cycles are only allowed by drawing
+        // an edge between two closely situated leaves.
         private Graph _tree;
 
+        // The _pathNodes are the collection of points representing a 4x4 path. For lots of reasons it made
+        // sense to use the Node struct for these even though they aren't connected in any graph. This could
+        // be refactored to use a struct with less overhead, but this runs reasonably fast in browser.
+        // Throughout the code, "Node" and "Coordinate" are used more or less interchangeably
         private List<Node> _pathNodes;
 
+        // The first node, which sits at the entrance to the room. _tree construction begins here. This
+        // node is selected as the one that has the largest minimum distance to another Node, in order
+        // to make more room for the room.
         private Node _firstNode;
 
+        // The room node, which is the coordinate of the robot room itself.
         private Node _roomNode;
 
+        // The Footprint class maintains a set of "footprint" templates i.e. specific tile geometries,
+        // and returns them to the algorithm.
+        // The most important is the LocusToLocus footprint, which contains the 4x4 path element
+        // and the padding around requried to ensure that no path elements from another branch of 
+        // the maze encroach on this path. This relationship is reflexive.
+        // A footprint is a HashSet<Node> with X,Y coordinates centered on the desired Node.
         private Footprint _footprint;
 
-        private bool _flipRoom = false;
-
-        private List<Node> _initNodes;
-
-        private NextStep _nextStep;
-
+        // The _roomFootprint is a set of Nodes around the room coordinate where no path element may be drawn.
+        // Any initialized control node in the _roomFootprint gets clobbered.
         private HashSet<Node> _roomFootprint;
 
+        // If the closest control node to _firstNode is to the right, we flip the room horizontally
+        // and put the door and spiketile on the right.
+        private bool _flipRoom = false;
+
+        // The NextStep class maintains the logic for drawing the path. Essentially, it takes a current location
+        // and a target, and returns a list of coordinates that can be the next step, weighted both by the vector
+        // direction from current to target, and by the overlap between this path element and the next. In general
+        // there are 80 tiles about the current one that could overlap in the right way.
+        // The aesthetics of the original waterfall favors a 3-4 tile overlap between path elements, so the weighting
+        // favors middle-distance steps. The direction vector weighting is specified as a tolerance in degrees,
+        // e.g. if the tolerance is 45 degrees, we're going to consider any tile that is within 45 degrees in either
+        // direction from the direction vector to the target.
+        private NextStep _nextStep;
+
+        // A list of the initial control nodes on which the _pool Graph is built.
+        private List<Node> _initNodes;
+
+        // VERY rarely, the next Node after _firstNode is in a weird place that the path drawing routine can't
+        // get to legally without stepping into the _roomFootprint. It's easier to return a null map and reroll
+        // at this point than to redo the geometry of the room and firstnode.
         private bool _insane = false;
 
-        private readonly byte[,] Path =
-        {
-            // (byte)Tile.WaterfallRandomEncounters == 0x49
-            {0x49,0x49,0x49,0x49},
-            {0x49,0x49,0x49,0x49},
-            {0x49,0x49,0x49,0x49},
-            {0x49,0x49,0x49,0x49}
-        };
-
-        // private Dictionary<Node,double> _distanceFromFirstNode;
-
-        // in degrees
+        // The step tolerance in degrees. This will be different for different settings. In general, the denser
+        // the map, the less tolerance. Sparser maps get to meander beautifully in all that empty space.
         private int _stepTolerance;
 
+        // The avoid loops flag
         private bool _avoidLoops;
 
-        
+        // How far away can two leaves on the tree be in order to join them into a loop?
+        private int _maxLoopDistance;
 
-        
+        // if we're using long hallway, we need to be able to draw the hallway
+        // independent of other Nodes; the _lineGraph is an independent Graph
+        // of all the hallway nodes.
+        private bool _hallway = false;
+        private Graph _lineGraph;
+
+        ////////////////////////////////////////////////////////////////////////////////////
+        // Constructor
         public SpanningTree(Flags flags)
         {
             _flags = flags;
             _avoidLoops = (bool)flags.ProcgenWaterfallNoLoops;
-
         }
 
 
-
+        //////////////////////////////////////////////////////////////////
+        /// Generate() runs all the steps, and contains the primary loop for Prim's algorithm.
+        /// Also does the tile continuity drawing.
         public CompleteMap Generate(MT19337 rng, MapRequirements reqs)
         {
             _footprint = new();
@@ -82,81 +117,126 @@ namespace FF1Lib.Procgen
             _nextStep = new();
             _tree = new();
             _pathNodes = new();
-            // _distanceFromFirstNode = new();
-            
-            // PriorityQueue<Edge,int> edgeQueue = new();
-            // HashSet<Node> totalFootprint;
-            // List<Edge> temp = new() {new(new Node(0,0),new Node(1,1))};
+            _lineGraph = new();
 
-            // if (temp.Contains(new Edge(new Node(1,1),new Node(0,0))))
-            // {
-            //     Console.WriteLine("Robot");
-            // }
-            // else
-            // {
-            //     Console.WriteLine("Booger");
-            // }
+            // This is the waterfall path element.
+            byte[,] Path =
+            {
+                // (byte)Tile.WaterfallRandomEncounters == 0x49
+                {0x49,0x49,0x49,0x49},
+                {0x49,0x49,0x49,0x49},
+                {0x49,0x49,0x49,0x49},
+                {0x49,0x49,0x49,0x49}
+            };
             
-
+            // Initialize the _pool graph of control Nodes. Most of what the end result looks like takes place here.
             InitPoolGraph(rng);
             // Console.WriteLine($"Pool graph has {_pool.Nodes.Count} Nodes and {_pool.Edges.Count} Edges.");
 
-            
+            // We could use a global priority queue for this, but it was running into performance issues.
+            // The algorithm works by dumping a Node's adjacent edges into the priority queue when it is attached
+            // to the tree, and then pulling the lowest-weight edge from the queue to attach the next node.
+            // Each time this happens, the queue has to heapify. This doesn't take TOO much time, but it was
+            // annoying enough.
+            // PriorityQueue<Edge,int> edgeQueue = new();
+
+            // Instead, here is a MinimumEdgeQueue class that maintains a separate PriorityQueue for each Node,
+            // initialized with all of its edges. It also contains a list of nodes it's allowed to dequeue edges for.
+            // Since we don't know the order that Nodes are attached to the tree, we will actually process every Edge
+            // twice, once from the POV of each Node at the end of the Edge. There's no good way to prune these ahead of time
+            // unless we are also pruning the _pool, but the latter has way more overhead than just discarding Edges that are
+            // already in the _tree.
             MinimumEdgeQueue edgeQueue = new(_pool.Adjacencies);
+            // we also have a separate queue for drawing the hallway. It will be empty if we're in another mode
+            MinimumEdgeQueue lineQueue = new(_lineGraph.Adjacencies);
+
+            // onLine is a flag which tells us whether or not we are building the hallway
+            bool onLine = false;
+
+            /////////////////////////////////////////////////////////////
+            /// Prim's algorithm begins here.
+            /// The basic steps are:
+            /// 1. Add the first two Nodes and the Edge between them to the _tree
+            /// 2. Store the coordinates of the path carved by that edge
+            /// 3. Construct a total footprint taken up by that path, where new paths elements can't be placed.
+            /// 4. Get the next edge from the edgeQueue
+            /// 5. Try to construct a path from the current node to the next one; if you can't do it without
+            ///    colliding with another path, move on to the next edge.
+            /// 6. If 5. succeeds, add the Edge to the tree, store this path's set of coordinates,
+            ///    add this path's footprint to the total footprint.
+            /// 7. Loop 4. 5. 6. until we've attached all the nodes, or until the edgeQueue is empty, or
+            ///    we've reached 10,000 total loops.
 
             Node thisNode;
             Edge firstEdge;
+            /// these are the resulting pathNodes in steps 2. 5. and 6.
             List<Node> resultingNodes;
+
+            /// the set of coordinates we can no longer draw a path element at.
             HashSet<Node> totalFootprint;
-            Dictionary<Node,double> resultingDistances;
+
+
+            /////////////////////////////////////////////////////////////////////
+            /// STEP 1.
+            /// Add the first two Nodes and the Edge between them to the _tree
 
             // first Node-to-Node path
-            (thisNode, firstEdge, resultingNodes, totalFootprint,resultingDistances) = FirstPath(rng);
-            if (_insane)
+            (thisNode, firstEdge, resultingNodes, totalFootprint) = FirstPath(rng);
+            /// bail if something went wrong.
+            /// This includes if the _firstNode is on the hallway line but not the second one
+            if (_insane || (_avoidLoops && _hallway && _lineGraph.Contains(_firstNode) && !_lineGraph.Contains(thisNode)))
             {
                 return null;
             }
-
-            // _tree.Add(resultingEdges);
+            // if the firstEdge happened to be between two Nodes in the long hallway,
+            // we'll continue to draw the long hallway.
+            if (_hallway && _lineGraph.Contains(firstEdge))
+            {
+                onLine = true;
+            }
 
             _tree.Add(firstEdge);
+
+            ///////////////////////////////////////////////////////////
+            /// STEP 2.
+            /// Store the coordinates of the path carved by that edge
             _pathNodes.AddRange(resultingNodes);
 
-            //we want the node by the room to only be at a leaf of the tree
-            // so we remove it from the pool
-            if (_avoidLoops)
-            {
-                _pool.Remove(_firstNode);
-            }
-            else
+            // If we aren't allowing loops, we want the room to be at a leaf, because there
+            // is only one path from the entrance to the room, and anything beyond the room
+            // would be wasted space. 
+            if (!_avoidLoops)
             {
                 edgeQueue.IncreaseScope(_firstNode);
+                if (onLine)
+                {   
+                    lineQueue.IncreaseScope(_firstNode);
+                }
             }
 
-            // foreach (Edge e in _pool.Adjacencies[thisNode])
-            // {
-            //     edgeQueue.Enqueue(e,e.Weight);
-            // }
-
+            //////////////////////////////////////////////////////////////////////////////////////////////////
+            /// STEP 3.
+            /// Construct a total footprint taken up by that path, where new path elements can't be placed.
             totalFootprint.UnionWith(_roomFootprint);
 
-            // edgeQueue.EnqueueRange(_pool.Adjacencies[thisNode].Select(edge => (edge,edge.Weight)));
+            /// edgeQueue can now return edges from thisNode
             edgeQueue.IncreaseScope(thisNode);
-            if (_avoidLoops)
-            {
-                _pool.Remove(thisNode);
+            if (onLine)
+            {  
+                    lineQueue.IncreaseScope(thisNode);   
             }
 
-            // foreach (Node node in resultingDistances.Keys)
-            // {
-            //     _distanceFromFirstNode[node] = resultingDistances[node];
-            // }
 
+            // loop counter
             int n = 0;
+            // number of Nodes placed so far
             int doneNodes = 2;
+            // total number of Nodes in the _pool
             int numNodes = _pool.Nodes.Count;
 
-            while (edgeQueue.Count() > 0 && n<10000)
+            ////////////////////////////////////////
+            /// MAIN LOOP FOR STEPS 4. 5. & 6.
+            while (edgeQueue.Count() > 0 && doneNodes != (_avoidLoops ? numNodes : numNodes + 10) && n<10000)
             {
                 // Console.Write($"Loop Number: {n}  Priority Queue Length: {edgeQueue.Count()}  \r");
                 n++;
@@ -164,12 +244,34 @@ namespace FF1Lib.Procgen
                 Node? nextNode;
                 HashSet<Node> thisFootprint;
                 HashSet<Node> resultingFootprint;
-                
-                Edge candidateEdge = edgeQueue.Dequeue();
+
+                // if we have been drawing the hallway, but the lineQueue is empty,
+                // we need to move on to the other Nodes
+                if (onLine && lineQueue.Count() == 0)
+                {
+                    onLine = false;
+                }
+
+                ///////////////////////////////////////////
+                /// STEP 4.
+                /// Get the next edge from the edgeQueue or lineQueue
+                Edge candidateEdge;
+                if (onLine)
+                {
+                    candidateEdge = lineQueue.Dequeue();
+                }
+                else
+                {
+                    candidateEdge = edgeQueue.Dequeue();
+                    _lineGraph.Remove(candidateEdge);
+                }
 
                 Node node1 = candidateEdge.Node1;
                 Node node2 = candidateEdge.Node2;
                 
+                /// If both nodes are already attached, then this edge would make
+                /// a loop. If we're avoiding loops, we can just continue to the next
+                /// iteration
                 if (_tree.Contains(node1) && _tree.Contains(node2))
                 {
                     if (_avoidLoops)
@@ -178,10 +280,16 @@ namespace FF1Lib.Procgen
                     }
                     else
                     {
+                        // otherwise, we might want to allow a loop.
+                        // The following are exclusion criteria.
+                        // discard if we have already drawn this edge
                         if(_tree.Contains(candidateEdge)
-                            || candidateEdge.Weight > 400
+                            //
+                            || candidateEdge.Weight > _maxLoopDistance * _maxLoopDistance
+                            // discard if either node is not currently a leaf of the tree
                             || _tree.Adjacencies[node1].Count > 1
                             || _tree.Adjacencies[node2].Count > 1 
+                            // flip a coin. This could also be tuned to respond to initial distribution
                             || rng.Between(0,1) == 0)
                         {
                             continue;
@@ -189,6 +297,8 @@ namespace FF1Lib.Procgen
                     }
                 }
 
+                // if we made it this far, it's time to try to draw the edge. First we need to know
+                // which of the Edge's nodes is already in the tree.
                 if (_tree.Contains(candidateEdge.Node1))
                 {
                     thisNode = candidateEdge.Node1;
@@ -200,119 +310,98 @@ namespace FF1Lib.Procgen
                     targetNode = candidateEdge.Node1;
                 }
 
+                /// if we're allowing loops, we don't care about path collisions, so we only look to see
+                /// if the targetNode is in the _roomFootprint. This might be extraneous...
+                /// Otherwise, if the targetNode is in the the total footprint, we just ignore this Node
                 if (_roomFootprint.Contains(targetNode) || (totalFootprint.Contains(targetNode) && _avoidLoops))
                 {
-                    
                     continue;
                 }
 
-                
+                // get a copy of the total footprint
                 thisFootprint = totalFootprint.ToHashSet();
+                // since we want to draw from this node, we need to remove its footprint
+                // from the forbidden coordinates...
                 thisFootprint.ExceptWith(_footprint.LocusToLocus(thisNode));
-                // thisFootprint.ExceptWith(_footprint.LocusToLocus(thisNode));
-                // foreach (Edge e in _tree.Adjacencies[thisNode])
-                // {
-                //     thisFootprint.ExceptWith(_footprint.LocusToLocus(e.NeighborOf(thisNode)));
-                // }
+                // ...but this might have removed some coordinates that were part of the _roomFootprint,
+                // which are always forbidden, so we need to add them in just in case.
                 thisFootprint.UnionWith(_roomFootprint);
-                
 
-                
+                /////////////////////////////////////////////////////////////////////////////////////////////
+                /// STEP 5.
+                /// Try to construct a path from the current node to the next one; if you can't do it without
+                /// colliding with another path, move on to the next edge.
+                (nextNode, resultingNodes,resultingFootprint) = NextPath(thisNode,targetNode,thisFootprint,rng);   
 
-                (nextNode, resultingNodes,resultingFootprint,resultingDistances) = NextPath(thisNode,targetNode,thisFootprint,rng);
-
-                
-
+                /// bail on this if the path couldn't complete
                 if (nextNode != targetNode)
                 {
                     continue;
                 }
 
-                // else
-                // {
-                //     Console.WriteLine($"Got a new Node: {targetNode}                    ");
-                // }
+                if (_hallway && _lineGraph.Contains((Node)nextNode))
+                {
+                    onLine = true;
+                }
 
                 doneNodes++;
 
-                // Console.WriteLine($"\r\nPlaced {doneNodes} Edges in map.");
+                // Console.WriteLine($"\r\nPlaced {doneNodes} Nodes in map.");
                 
 
-                
+                ////////////////////////////////////////////////////////////////////////////////////
+                /// STEP 6.
+                /// If 5. succeeds, add the Edge to the tree, store this path's set of coordinates,
+                /// add this path's footprint to the total footprint.
                 _tree.Add(candidateEdge);
                 _pathNodes.AddRange(resultingNodes);
                 
                 totalFootprint.UnionWith(resultingFootprint);
                 
-                
-                // foreach (Node k in resultingDistances.Keys)
-                // {
-                //     _distanceFromFirstNode[k] = resultingDistances[k];
-                // }
-                
                 // if (_pool.Adjacencies.ContainsKey(targetNode))
                 // {
-                //     foreach (Edge e in _pool.Adjacencies[targetNode])
-                //     {
-                //         edgeQueue.Enqueue(e,e.Weight);
-                //     }
+                
+                edgeQueue.IncreaseScope(targetNode);
+                if (onLine)
+                {   
+                    lineQueue.IncreaseScope(targetNode);
+                }
                 // }
 
-                if (_pool.Adjacencies.ContainsKey(targetNode))
-                {
-                    edgeQueue.IncreaseScope(targetNode);
-                }
-
-                // _pool.Remove(targetNode);
-                
-                
+                ////////////////////////////////
+                /// Step 7.
+                /// Loop!   
             }
             
 
-
+            ////////////////////////////////////
+            /// Now we have the info we need to draw the actual map
+            /// See MapGenerator.cs for the requirements detail.
             CompleteMap cm = new()
             {
+                // initially fill the map with nothing but wall.
+                // we'll excavate the path from there
                 Map = new((byte)Tile.WaterfallInside),
                 Requirements = reqs
             };
 
-            
-
-            
-
-
-            
-
-
-
-            //////////////////////////
-            /// //////////////////////
-            /// //////////////////////
-            // foreach (Node node in _pool.Nodes)
-            // {
-            //     // byte tile = n == nearest? (byte)Tile.Ladder : (byte)0xFE;
-            //     byte tile = 0xFE;
-            //     cm.Map.Put(node.XY,new byte[,] {{tile}});
-            // }
-            // cm.Map.Put(_firstNode.XY,new byte[,] {{(byte)Tile.LadderHole}});
+            /// Excavate the path!
             foreach (Node node in _pathNodes)
             {
                 cm.Map.Put(node.XY, Path);
-            }
-            // if (_flipRoom)
-            // {
-            //     Console.WriteLine("Flip Room");
-            // }
-
-            
+            }           
 
 
-            // Console.WriteLine("Smoothing");
-            bool unfilled = true;
+            /// This is a smoothing step. We're going to remove a set of tile formations that can't
+            /// legally be drawn. VERY rarely this can erode a loop between two paths.
+            /// We run this until we make it through cleanly without changing the map.
+            /// This just replaces wall with path if any horizontal stretch of wall is less than 2 tiles
+            /// between path tiles, or any vertical stretch is less than 3 tiles between path tiles.
+            bool unsmoothed = true;
 
-            while (unfilled)
+            while (unsmoothed)
             {
-                unfilled = false;
+                unsmoothed = false;
                 for (int y = 0; y < 64; y++)
                 {
                     for (int x = 0; x < 64; x++)
@@ -320,17 +409,19 @@ namespace FF1Lib.Procgen
                         // Tile.WaterfallRandomEncounters = 0x49
                         if (cm.Map[y,x] != (byte)Tile.WaterfallRandomEncounters)
                         {
+                            /// remove any single-tile span of wall between path tiles
                             if ((cm.Map[y-1,x] == 0x49 && cm.Map[y+1,x] == 0x49) 
                              || (cm.Map[y,x-1] == 0x49 && cm.Map[y,x+1] == 0x49))
                             {
                                 cm.Map[y,x] = 0x49;
-                                unfilled = true;
+                                unsmoothed = true;
                             }
+                            /// remove any double-tile of wall between path tiles in the y dimension
                             if (cm.Map[y-1,x] == 0x49 && cm.Map[y+1,x] != 0x49 && cm.Map[y+2,x] == 0x49)
                             {
                                 cm.Map[y,x] = 0x49;
                                 cm.Map[y+1,x] = 0x49;
-                                unfilled = true;
+                                unsmoothed = true;
                             }
                         }
                     }
@@ -338,20 +429,54 @@ namespace FF1Lib.Procgen
                 
             }
 
-            // Draw the visible wall tiles, spike tile, and door exit
+            // Draw the visible wall tiles at the top boundary of the path.
+            // We also need a wall tile in the event that two walls touch by just one tile edge in the y direction, like this:
+            // ==============\
+            //               |
+            // ______________/
+            // HHHHHHHHHHHHHHH <- this wall tile does not sit above a path tile
+            //               /=============
+            //               |
+            //               \_____________
+            //               HHHHHHHHHHHHHH
+            //
+            // However, if we leave it there, once in a while we'll get this:
+            //       /=======\
+            //       |       |
+            //   -> \________/
+            //      HHHHHHHHHH
+            // =====\        /=============
+            // _____/     -> H\____________  these tiles are discontinuous with the one above, so we delete both
+            // HHHHHH         HHHHHHHHHHHHH
             for (int y = 0; y < 64; y++)
             {
                 for (int x = 0; x < 64; x++)
                 {
                     // Tile.WaterfallInside == 0x46;
-                    if (cm.Map[y,x] == (byte)Tile.WaterfallInside && cm.Map[y+1,x] == (byte)Tile.WaterfallRandomEncounters)
+                    if (cm.Map[y,x] == (byte)Tile.WaterfallInside)
                     {
-                        cm.Map[y,x] = (byte)Tile.InsideWall; //0x30
+                        if (cm.Map[y+1,x] == (byte)Tile.WaterfallRandomEncounters
+                            || (cm.Map[y,x+1] == (byte)Tile.WaterfallRandomEncounters && cm.Map[y+1,x-1] == (byte)Tile.WaterfallRandomEncounters)
+                            || (cm.Map[y,x-1] == (byte)Tile.WaterfallRandomEncounters && cm.Map[y+1,x+1] == (byte)Tile.WaterfallRandomEncounters)
+                        )
+                        {
+                            cm.Map[y,x] = (byte)Tile.InsideWall; //0x30
+                            if (cm.Map[y+3,x] == (byte)Tile.WaterfallRandomEncounters)
+                            {
+                                cm.Map[y+1,x] = (byte)Tile.WaterfallRandomEncounters;
+                                cm.Map[y+2,x] = (byte)Tile.WaterfallRandomEncounters;
+                            }
+                            if (cm.Map[y-2,x] == (byte)Tile.WaterfallRandomEncounters)
+                            {
+                                cm.Map[y  ,x] = (byte)Tile.WaterfallRandomEncounters;
+                                cm.Map[y-1,x] = (byte)Tile.WaterfallRandomEncounters;
+                            }
+                        }
                     }
-                    
                 }
             }
 
+            /// Add all the front wall outlines
             for (int y = 0; y < 64; y++)
             {
                 for (int x = 0; x < 64; x++)
@@ -376,12 +501,15 @@ namespace FF1Lib.Procgen
                 }
             }
 
+            //// add all the back wall outlines
             for (int y = 0; y < 64; y++)
             {
                 for (int x = 0; x < 64; x++)
                 {
                     if (cm.Map[y,x] == (byte)Tile.WaterfallInside
-                     && cm.Map[y-1,x] == (byte)Tile.WaterfallRandomEncounters)
+                        && (cm.Map[y-1,x] == (byte)Tile.WaterfallRandomEncounters
+                            || cm.Map[y-1,x] == (byte)Tile.InsideWall)
+                    )
                     {
                         if (cm.Map[y,x-1] == (byte)Tile.WaterfallRandomEncounters)
                         {
@@ -399,6 +527,7 @@ namespace FF1Lib.Procgen
                 }
             }
 
+            /// add all the left and right wall outlines
             for (int y = 0; y < 64; y++)
             {
                 for (int x = 0; x < 64; x++)
@@ -419,30 +548,22 @@ namespace FF1Lib.Procgen
                 }
             }
 
+            /// these are in MapGenerator.cs
             var room = reqs.Rooms.Single();
             var robot = room.NPCs.Single();
 
+            /// place the robot room and the bottom row of tiles depending on whether we need to flip the room
             cm.Map.Put(_roomNode.XY,room.Tiledata);
             if (_flipRoom)
             {
                 robot.Coord.x = room.Width - robot.Coord.x;
                 cm.Map.Put((_roomNode.X, _roomNode.Y + room.Height), new byte[,] {{ 0x01, 0x01, 0x01, 0x02, 0x30, 0x36, 0x30, 0x30 }});
-                // cm.Map.FlipSectionHorizontal(_roomNode.X+1 ,_roomNode.Y+1 ,_roomNode.X+room.Width - 2, _roomNode.Y+room.Height - 2);
-                // cm.Map.FlipSectionHorizontal(_roomNode.X, _roomNode.Y+room.Height - 1, _roomNode.X+room.Width-1,_roomNode.Y+room.Height -1);
-                // cm.Map.Replace(0x00,0xFF);
-                // cm.Map.Replace(0x02,0x00);
-                // cm.Map.Replace(0xFF,0x02);
-                // cm.Map.Replace(0x03,0xFF);
-                // cm.Map.Replace(0x05,0x03);
-                // cm.Map.Replace(0xFF,0x05);
-                // cm.Map.Replace(0x06,0xFF);
-                // cm.Map.Replace(0x08,0x06);
-                // cm.Map.Replace(0xFF,0x08);
             }
             else
             {
                 cm.Map.Put((_roomNode.X, _roomNode.Y + room.Height), new byte[,] {{ 0x30, 0x30, 0x36, 0x30, 0x00, 0x01, 0x01, 0x01 }});
             }
+            // place the spike tile and the doorway exit tile above and below the door
             for (int x = _roomNode.X; x < _roomNode.X+room.Width; x++)
             {
                 int y = _roomNode.Y + room.Height;
@@ -453,19 +574,21 @@ namespace FF1Lib.Procgen
                     }
             }
 
+            // place the robot in the room
             robot.Coord.x += _roomNode.X;
             robot.Coord.y += _roomNode.Y;
             reqs.MapObjects.SetNpc(robot.Index, robot.ObjectId, robot.Coord.x, robot.Coord.y, robot.InRoom, robot.Stationary);
 
-            
+            // bats and out-of-bounds bat are placed randomly, in MapGenerator.cs
+
+            // get the entrance location
             Node entranceNode = GetEntranceNode(rng);
 
+            // place it in the map
             cm.Map[entranceNode.Y+2,entranceNode.X+2] = (byte)Tile.WarpUp;
 
+            // and update the entrance pointer so you spawn on the WarpUp stairway.
             cm.Entrance = new((byte)(entranceNode.X+2),(byte)(entranceNode.Y+2),CoordinateLocale.Standard);
-
-           
-
 
             // Console.Write(cm.AsText());
             if (_flags.ProcgenWaterfallSpoiler)
@@ -473,380 +596,18 @@ namespace FF1Lib.Procgen
                 Utilities.ProcgenWaterfallCache = cm.AsText();
             }
             return cm;
-        }
+        } /////////////////////////
+        //////END Generate()
         
-        
 
-        private (Node, Edge, List<Node>, HashSet<Node>,Dictionary<Node,double>) FirstPath(MT19337 rng)
-        {
-
-            
-            if (_avoidLoops)
-            {
-                _firstNode = _pool.MostIsolatedNode(rng);
-            }
-            else
-            {
-                _firstNode = _pool.Nodes.PickRandom(rng);
-            }
-            _pathNodes.Add(_firstNode);
-            Queue<Edge> nearest = new(_pool.Adjacencies[_firstNode].OrderBy(i=>i.Weight));
-            Node nearestNeighbor;
-            Edge nearestEdge;
-            // HashSet<Node> roomFootprint;
-            int dX;
-            int dY;
-            while (true)
-            {
-                nearestEdge = nearest.Dequeue();
-                nearestNeighbor = nearestEdge.NeighborOf(_firstNode);
-                (dX,dY) = _firstNode.Delta(nearestNeighbor);
-                if (dX <= 0)
-                {
-                    _roomNode = _firstNode + (0,-5);
-                    _flipRoom = false;
-                }
-                else
-                {
-                    _roomNode = _firstNode + (-4,-5);
-                    _flipRoom = true;
-                }
-                _roomFootprint = _footprint.RoomLocusToLocus(_roomNode);
-                //roomFootprint.UnionWith(_footprint.LocusToLocus(_firstNode));
-                if (!_roomFootprint.Contains(nearestNeighbor))
-                {
-                    break;
-                }
-            }
-            // Console.WriteLine("Room Locus To Locus Footprint: " + string.Join(", ",_roomFootprint.OrderBy(i => i.Y)));
-            Node thisNode = _firstNode;
-
-            // _distanceFromFirstNode[_firstNode] = 0.0;
-            if (dY < 0)
-            {
-                Node next;
-                if (_flipRoom)
-                {
-                    next = _firstNode + (4, rng.Between(1,2) * -1); 
-                }
-                else
-                {
-                    next = _firstNode + (-4, rng.Between(1,2) * -1);
-                }
-                _pathNodes.Add(next);
-                // _tree.Add(new Edge(_firstNode,next));
-                //roomFootprint.UnionWith(_footprint.LocusToLocus(next));
-                thisNode = next;
-                // _distanceFromFirstNode[thisNode] = _firstNode.Dist(thisNode);
-            }
-            (Node? resultNode, List<Node> branchNodes,HashSet<Node> branchFootprint, Dictionary<Node,double> branchDistances) = 
-                NextPath(thisNode,nearestNeighbor,_roomFootprint,rng);
-            if (resultNode != nearestNeighbor)
-            {
-                _insane = true;
-            }
-            // _pool.Remove(_firstNode);
-            return ((Node)resultNode,nearestEdge, branchNodes,branchFootprint,branchDistances);
-
-            
-        }
-
-        private (Node?, List<Node>, HashSet<Node>, Dictionary<Node,double>) NextPath(Node inputNode, Node targetNode, HashSet<Node> except, MT19337 rng)
-        {
-            Node? thisNode = inputNode;
-            List<Node> pathNodes = new();
-            // HashSet<Edge> pathEdges = new();
-            HashSet<Node> thisFootprint = new();
-            Dictionary<Node,double> distances = new();
-            // double currentDistance = _distanceFromFirstNode[inputNode];
-            int n = 0;
-            float stepTolerance = (float)Cos(_stepTolerance*PI/180.0);
-            while (thisNode != targetNode && n < 200)
-            {
-                
-                Node? nextNode = _nextStep.GetNextStep((Node)thisNode,targetNode,except,stepTolerance,rng);
-                n++;
-
-                if (nextNode == null)
-                {
-                    stepTolerance = Max(stepTolerance - .01f,0);
-                    
-                    continue;
-                }
-                // currentDistance += ((Node)thisNode).Dist((Node)nextNode);
-                pathNodes.Add((Node)nextNode);
-                // pathEdges.Add(new((Node)thisNode,(Node)nextNode));
-                // distances[(Node)nextNode] = currentDistance;
-                thisNode = nextNode;
-                stepTolerance = (float)Cos(_stepTolerance*PI/180.0);
-            } 
-            if (thisNode != targetNode)
-            {
-                return (null,null,null,null);
-            }
-            // foreach (Edge edge in pathEdges)
-            // {
-            //     _tree.Add(edge);
-            // }
-            
-            foreach (Node node in pathNodes)
-            {
-                if (_avoidLoops)
-                {
-                    thisFootprint.UnionWith(_footprint.LocusToLocus(node));
-                }
-                else
-                {
-                    thisFootprint.UnionWith(_footprint.LineLocusToLocus(node));
-                }
-            }
-            
-            // _pool.Remove(thisFootprint.Intersect(_pool.Nodes));
-            return (targetNode,pathNodes,thisFootprint,distances);
-
-        }
-
-
-        private class MinimumEdgeQueue
-        { 
-            private HashSet<Node> _scope;
-            private Dictionary<Node,PriorityQueue<Edge,int>> _queues;
-            
-            public MinimumEdgeQueue(Dictionary<Node,HashSet<Edge>> adjacencies)
-            {
-                _scope = new();
-                _queues = new();
-                foreach (Node node in adjacencies.Keys)
-                {
-                    _queues[node] = new(adjacencies[node].Select(edge => (edge,edge.Weight)));
-                }
-            }
-
-            public Edge Dequeue()
-            {
-                Node nextKey = _scope.MinBy(node => _queues[node].Peek().Weight);
-                Edge nextEdge = _queues[nextKey].Dequeue();
-                if (_queues[nextKey].Count == 0)
-                {
-                    _scope.Remove(nextKey);
-                }
-                return nextEdge;
-
-            }
-
-            public void IncreaseScope(Node newNode)
-            {
-                if (_queues.ContainsKey(newNode))
-                {
-                    _scope.Add(newNode);
-                }
-            }
-
-            public int Count()
-            {
-                return _scope.Sum(node => _queues[node].Count);
-            }
-        }
-
-
-
-        private Node GetEntranceNode(MT19337 rng)
-        {
-            Node outputNode = new();
-            switch (_flags.ProcgenWaterfallEntrance)
-            {
-                case ProcgenWaterfallEntrance.Anywhere:
-                    {
-                        outputNode = _pathNodes.PickRandom(rng);
-                        break;
-                    }
-                case ProcgenWaterfallEntrance.Branch:
-                    {
-                        outputNode = _tree.Nodes.GroupBy(node => _tree.Adjacencies[node].Count).MaxBy(group => group.Key).ToList().PickRandom(rng);
-                        break;
-                    }
-                case ProcgenWaterfallEntrance.Furthest:
-                    {
-                        (var distances, var predecessors) = AllDistances(_firstNode);
-                        outputNode = distances[distances.Keys.Max()].PickRandom(rng);
-                        break;
-                    }
-                case ProcgenWaterfallEntrance.Mid:
-                    {
-                        (var distances, var predecessors) = AllDistances(_firstNode);
-                        double max = distances.Keys.Max();
-                        List<double> midDists = distances.Keys.Where(d => d >= 0.4*max && d <= 0.6*max).ToList();
-                        if (midDists.Count == 0)
-                        {
-                            midDists.Add(distances.Keys.OrderBy(d => d).ToList()[distances.Count/2]);
-                        }
-                        outputNode = distances[midDists.PickRandom(rng)].PickRandom(rng);
-                        break;
-                    }
-                // case ProcgenWaterfallEntrance.Center:
-                //     {
-                //         Dictionary<double,List<Node>> distances;
-                //         Dictionary<Node,(Node,double)> predecessors;
-                //         if (_avoidLoops)
-                //         {
-                //             List<(Dictionary<double,List<Node>> dists,Dictionary<Node,(Node,double)> preds)> allLeafDistances = new();
-                //             IEnumerable<Node> leaves = _tree.Nodes.Where(node => _tree.Adjacencies[node].Count == 1);
-                //             foreach (Node leaf in leaves)
-                //             {
-                //                 allLeafDistances.Add(AllDistances(leaf));
-                //             }
-                //             (distances, predecessors) = allLeafDistances.MaxBy(k => k.dists.Keys.Max());
-                //         }
-                //         else
-                //         {
-                //             (distances, predecessors) = AllDistances(_firstNode);
-                //         }
-                //         double maxDist = distances.Keys.Max();
-                //         Node mostDistant = distances[maxDist].PickRandom(rng);
-                        
-                //         List<(Node node,double dist)> path = new() {(mostDistant,maxDist)};
-                        
-                //         Node pathNode = mostDistant;
-                //         Console.WriteLine($"First Node: {_firstNode}");
-                //         while (true)
-                //         {
-                //             if (predecessors.ContainsKey(pathNode))
-                //             {
-                //                 (pathNode, double dist) = predecessors[pathNode];
-                //                 path.Add((pathNode,dist));
-                //             }
-                //             else
-                //             {
-                //                 break;
-                //             }
-                //         }
-
-                //         double halfWay = distances.Keys.Max()/2;
-                        
-
-                //         outputNode = path.MinBy(k => Abs(k.dist - halfWay)).node;
-                //         break;
-                //     }
-                case ProcgenWaterfallEntrance.Center:
-                    {
-                        // Console.WriteLine("Finding Center...");
-                        // IEnumerable<Node> nodesToTest;
-                        // if (_avoidLoops)
-                        // {
-                        //     nodesToTest = _tree.Nodes.Where(node => _tree.Adjacencies[node].Count == 1);
-                        // }
-                        // else
-                        // {
-                        //     nodesToTest = _tree.Nodes;
-                        // }
-                        Dictionary<double,Node> pathSums = new();
-                        foreach (Node node in _tree.Nodes)
-                        {
-                            (var distances, var predecessors) = AllDistances(node);
-                            double sum = 0.0;
-                            foreach (double dist in distances.Keys)
-                            {
-                                sum += dist * distances[dist].Count;
-                            }
-                            pathSums[sum] = node;
-                        }
-                        outputNode = pathSums[pathSums.Keys.Min()];
-                        break;
-                    }
-                default:
-                    {
-                        break;
-                    }
-            }
-
-
-            return outputNode;
-
-        }
-
-        private (Dictionary<double,List<Node>>,Dictionary<Node,(Node,double)> predecessors)  AllDistances(Node inputNode)
-        {
-            Dictionary<double,List<Node>> distancesToNodes = new();
-            Dictionary<Node,double> nodesToDistances = new();
-            Dictionary<Node,(Node,double)> predecessors = new();
-            HashSet<Node> visitedNodes = new();
-            
-
-            foreach (Node node in _tree.Nodes)
-            {
-                nodesToDistances[node] = 1e6;
-            }
-            nodesToDistances[inputNode] = 0;
-            visitedNodes.Add(inputNode);
-            Queue<(Node,Edge)> edgeQueue = new();
-            foreach (Edge edge in _tree.Adjacencies[inputNode])
-            {
-                edgeQueue.Enqueue((inputNode,edge));
-            }
-            while (edgeQueue.Count != 0)
-            {
-                (Node thisNode,Edge thisEdge) = edgeQueue.Dequeue();
-                Node neighbor = thisEdge.NeighborOf(thisNode);
-                if (!visitedNodes.Contains(neighbor))
-                {
-                    visitedNodes.Add(neighbor);
-                    foreach (Edge edge in _tree.Adjacencies[neighbor])
-                    {
-                        edgeQueue.Enqueue((neighbor,edge));
-                    }
-                }
-                double thisDist = nodesToDistances[thisNode];
-                double neighborDist = nodesToDistances[neighbor];
-                double candidateDist = thisDist + thisNode.Dist(neighbor);
-                if (candidateDist < neighborDist)
-                {
-                    nodesToDistances[neighbor] = candidateDist;
-                    predecessors[neighbor] = (thisNode,candidateDist);
-                }
-                // nodesToDistances[neighbor] = Min(neighborDist,thisDist + thisNode.Dist(neighbor));
-            }
-
-            foreach (Node node in visitedNodes)
-            {
-                double dist = nodesToDistances[node];
-                if (!distancesToNodes.ContainsKey(dist))
-                {
-                    distancesToNodes[dist] = new();
-                }
-                distancesToNodes[dist].Add(node);
-            }
-            
-
-            return (distancesToNodes,predecessors);
-        }
-
-
+        /// Initialize the _pool graph according to the flag settings.
         private void InitPoolGraph(MT19337 rng)
         {
-
+            // this is to be able to choose a random function if desired. This could be
+            // done with goto case in the switch instead of a delegate, but I hate goto's, so..
             Func<MT19337,Graph> InitDistribution;
             switch (_flags.ProcgenWaterfall)
             {
-                case ProcgenWaterfallMode.Random:
-                    {
-                        int roll = rng.Between(1,4);
-                        if (roll == 1)
-                        {
-                            goto case ProcgenWaterfallMode.Uniform;
-                        }
-                        else if (roll == 2)
-                        {
-                            goto case ProcgenWaterfallMode.Polar;
-                        }
-                        else if (roll == 3)
-                        {
-                            goto case ProcgenWaterfallMode.JitteredEven;
-                        }
-                        else
-                        {
-                            goto case ProcgenWaterfallMode.Linear;
-                        }
-                    }
                 case ProcgenWaterfallMode.Uniform :
                     {
                         InitDistribution = UniformRandom;
@@ -867,61 +628,64 @@ namespace FF1Lib.Procgen
                         InitDistribution = LinearRandom;
                         break;
                     }
+                // case ProcgenWaterfallMode.Random:
                 default:
                     {
                         InitDistribution = new List<Func<MT19337,Graph>>() {UniformRandom, PolarRandom, JitteredEvenRandom, LinearRandom}.PickRandom(rng);
                         break;
                     }
-            }
-            
+            }            
             _pool = InitDistribution(rng);
         }
+
         // Get a Graph of nodes chosen randomly from the 64x64, spaced so that a full wall can be
         // drawn around each node. We hope the distribution ends up a little clumpy
         private Graph UniformRandom(MT19337 rng)
         {
-
             int numNodes;
             //int numNodes = rng.Between(27,37);
             switch (_flags.ProcgenWaterfallDensity)
             {
                 case ProcgenWaterfallDensity.Sparse:
                 {
-                    _stepTolerance = 75;
                     numNodes = rng.Between(13,23);
+                    _stepTolerance = 75;
+                    _maxLoopDistance = 20;
                     break;
                 }
                 case ProcgenWaterfallDensity.Normal:
                 {
-                    _stepTolerance = 45;
                     numNodes = rng.Between(27,37);
+                    _stepTolerance = 45;
+                    _maxLoopDistance = 18;
                     break;
                 }
                 case ProcgenWaterfallDensity.Dense:
                 {
-                    _stepTolerance = 15;
                     numNodes = rng.Between(45,55);
+                    _stepTolerance = 15;
+                    _maxLoopDistance = 16;
                     break;
                 }
                 default:
                 {
                     _stepTolerance = 45;
+                    _maxLoopDistance = 20;
                     numNodes = 32;
                     break;
                 }
-
             }
             HashSet<Node> totalFootprint = new();
             int n = 0;
+            // there could be lots of misses here, but in testing it usually only needs a few
+            // extra loops to get the target number of nodes
             while (_initNodes.Count < numNodes)
             {
                 Node node = new(rng.Between(0,63),rng.Between(0,63));
                 if (!totalFootprint.Contains(node))
                 {
                     _initNodes.Add(node);
-                    
                     totalFootprint.UnionWith(_footprint.LocusToLocus(node));
-                    
                 }
                 n++;
             }
@@ -929,72 +693,71 @@ namespace FF1Lib.Procgen
             return new Graph(_initNodes);
         }
 
-        // Get a graph of nodes chosen a random angle and distance from the center in polar coordinates.
-        // This should tend to distribute them more densely around the center.
+        // Get a graph of nodes chosen a random angle from the center, and a random distance
+        // weighted towards the center. This creates a more compact map, with most of the path
+        // near the center and branches on the periphery.
         private Graph PolarRandom(MT19337 rng)
         {
-            //HashSet<Node> pool = GetAllNodes();
             int numNodes;
+            // "pow" is a power used below to weight random distances to the center.
             double pow;
-            // int width = 0;
-            //int numNodes = rng.Between(27,37);
+            int width;
             switch (_flags.ProcgenWaterfallDensity)
             {
                 case ProcgenWaterfallDensity.Sparse:
                 {
                     numNodes = rng.Between(13,23);
-                    pow = _avoidLoops ? 1.0 : 0.7;
+                    width = 2800;
+                    pow = _avoidLoops ? 2.0 : 1.5;
                     _stepTolerance = 75;
+                    _maxLoopDistance = 20;
                     break;
                 }
                 case ProcgenWaterfallDensity.Normal:
                 {
                     numNodes = rng.Between(27,37);
-                    pow = _avoidLoops? 1.2 : 0.9;
+                    width = 3000;
+                    pow = _avoidLoops? 3.0 : 2.5;
                     _stepTolerance = 45;
+                    _maxLoopDistance = 18;
                     break;
                 }
                 case ProcgenWaterfallDensity.Dense:
                 {
                     numNodes = rng.Between(45, 55);
-                    pow = _avoidLoops? 1.5 : 1.2;
+                    width = 3200;
+                    pow = _avoidLoops? 4.0 : 3.5;
                     _stepTolerance = 15;
+                    _maxLoopDistance = 16;
                     break;
                 }
                 default:
                 {
+                    width = 3200;
                     pow = 2;
                     numNodes = 32;
+                    _stepTolerance = 75;
+                    _maxLoopDistance = 20;
                     break;
                 }
-
             }
             HashSet<Node> totalFootprint = new();
-
   
             const double degToRad = PI/180.0;
-            // int width = 3200;
             int n = 0;
 
             while (_initNodes.Count < numNodes && n < 1000)
             {
-                
                 /// get random degrees
                 int theta = rng.Between(0,359);
-                /// get random distance. (theta + 45) % 90 - 45 normalizes the angle to the range
-                /// -45 to +45, which lets us get the distance from the center to the edge of the
-                /// square perimeter.
-                int dist = rng.Between(0,(int)Round(3200.0*Sin((theta%90 + 45 ) * degToRad)));
-                // if (dist > 3200)
-                // {
-                //     Console.WriteLine($"oops {dist}");
-                // }
-                double normDist = 3200.0*Pow(dist/3200.0,pow);
-                
-                // int dist = rng.Between(0,(int)Round(width/Cos(((theta + 45)%90 - 45) * degToRad)));
-                // convert polar to rectangular
-                int X = (int)Round((3200.0  + normDist*Cos(theta * degToRad))/100.0);
-                int Y = (int)Round((3200.0 + normDist*Sin(theta * degToRad))/100.0);
+                /// get a random distance (actually 100*tile distance)
+                int dist = rng.Between(0,width);
+                // scale so that it's more concentrated towards the center
+                double scaledDist = width*Pow((double)dist/width,pow);
+                // convert polar to rectangular, translate to center of map, and scale back down
+                int X = (int)Round((3200.0 + scaledDist*Cos(theta * degToRad))/100.0);
+                int Y = (int)Round((3200.0 + scaledDist*Sin(theta * degToRad))/100.0);
+
                 Node node = new(X,Y);
                 if (!totalFootprint.Contains(node))
                 {
@@ -1004,61 +767,75 @@ namespace FF1Lib.Procgen
                         totalFootprint.UnionWith(_footprint.LocusToLocus(node));
                     }
                     else
+                    /// if we're allowing loops, we use the opportunity to force a few more
+                    /// Nodes towards the center
                     {
-                        totalFootprint.UnionWith(_footprint.LineLocusToLocus(node));
+                        totalFootprint.UnionWith(_footprint.SmallLocusToLocus(node));
                     }
                 }
-                // else
-                // {
-                //     width = Min(width + expandBy,3200);
-                // }
                 n++;
             }
             // Console.WriteLine($"Initialized {_initNodes.Count} Polar Random nodes in {n} loops.");       
             return new Graph(_initNodes);
         }
 
-        // this produces an almost even distribution of nodes. 
+        // this produces an even distribution of Nodes, and then moves them a short distance away
         private Graph JitteredEvenRandom(MT19337 rng)
         {
+            // size of the area over which we can move a Node
             int kernelWidth;
+            // How to divide the map to distribute the nodes evenly
             int divisor;
             switch (_flags.ProcgenWaterfallDensity)
             {
+                /// always produces 18 Nodes
                 case ProcgenWaterfallDensity.Sparse :
                 {
                     divisor = 3;
                     kernelWidth = 7;
                     _stepTolerance = 60;
+                    _maxLoopDistance = 20;
                     break;
-                }    
+                }
+                /// always produces 32 Nodes
                 case ProcgenWaterfallDensity.Normal :
                 {
                     divisor = 4;
                     kernelWidth = 5;
                     _stepTolerance = 45;
+                    _maxLoopDistance = 18;
                     break;
                 }
+                /// always produces 50 Nodes
                 case ProcgenWaterfallDensity.Dense :
                 {
                     divisor = 5;
                     kernelWidth = 3;
                     _stepTolerance = 30;
+                    _maxLoopDistance = 16;
                     break;
                 }
                 default:
                 {
                     divisor = 4;
                     kernelWidth = 5;
+                    _stepTolerance = 60;
+                    _maxLoopDistance = 20;
                     break;
                 }
             }
 
+            // flip a coin to determine whether we jitter over a uniform distribution about the center
+            // or a normal (Gaussian) distribution about the center. The normal distribution has the
+            // same range as uniform, but is weighted towards the center, making for less overall variance.
+            // The uniform distribution will produce a less evenly spaced map, while the normal distribution
+            // will be very even, and the small jitter just adjusts the weights between Nodes for drawing Edges
             bool normalWeighting = rng.Between(0,1) == 0;
 
             List<Node> kernel = new();
             int halfWidth = kernelWidth/2;
             
+            // build a set of Nodes centered on (0,0).
             for (int y = 0; y < kernelWidth; y++)
             {
                 for (int x = 0; x < kernelWidth; x++)
@@ -1067,17 +844,24 @@ namespace FF1Lib.Procgen
                 }
             }
 
-            Node kernelCenter = new(0,0);
-            List<int> SqDists = kernel.Select(node => kernelCenter.SqDist(node)).ToList();
-            double rDoubleVariance = 1.0 /(2.0 * SqDists.Sum()/SqDists.Count);
-
+            // build the normal weighting
             List<int> normalWeights = new();
-            foreach (int sd in SqDists)
+
+            if (normalWeighting)
             {
-                double weight = Exp(-sd*rDoubleVariance)/SqDists.Count(i => i == sd);
-                normalWeights.Add((int)Round(weight * 10000.0));
+                Console.WriteLine("Normal");
+                Node kernelCenter = new(0,0);
+                List<int> SqDists = kernel.Select(node => kernelCenter.SqDist(node)).ToList();
+                double rDoubleVariance = 1.0 /(2.0 * SqDists.Sum()/SqDists.Count);
+
+                foreach (int sd in SqDists)
+                {
+                    double weight = Exp(-sd*rDoubleVariance)/SqDists.Count(i => i == sd);
+                    normalWeights.Add((int)Round(weight * 10000.0));
+                }
             }
 
+            /// build the even distribution
             for (int i = 0; i < divisor*divisor; i++)
             {
                 int x = (i*64 / divisor) % 64;
@@ -1098,38 +882,38 @@ namespace FF1Lib.Procgen
                         _initNodes.Add(kernel.Select(i => i + coord).ToList().PickRandom(rng));
                     }
                 }
-            }
 
-            /// the distribution before jitter looks like this
-            /// .   .   .   .
-            ///   .   .   .   .
-            /// .   .   .   .
-            ///   .   .   .   .
-            /// .   .   .   .
-            ///   .   .   .   .
-            /// .   .   .   .
-            ///   .   .   .   .
-            
+                /// the distribution before jitter looks like this
+                /// .   .   .   .
+                ///   .   .   .   .
+                /// .   .   .   .
+                ///   .   .   .   .
+                /// .   .   .   .
+                ///   .   .   .   .
+                /// .   .   .   .
+                ///   .   .   .   .
+            }
 
             // Console.WriteLine($"Initialized {_initNodes.Count} Jittered Random nodes. {normalWeighting}");
             return new Graph(_initNodes);
         }
 
+        // builds the long hallway
         private Graph LinearRandom(MT19337 rng)
         {
-
+            _hallway = true;
             HashSet<Node> totalFootprint = new();
+            // number of Nodes to try to place after the hallway is drawn
             int numNodes;
             int theta;
             int hallwayLength;
-            double slope = 0.0;
-            /// more precision because why not
+            /// theta is in degrees * 100 -- gives us more angle precision
             const double degToRad = PI/18000.0;
+            // the hallway Nodes
             List<Node> line = new();
             bool sparse = false;
             bool normal = false;
             bool dense = false;
-            // Console.WriteLine($"Theta: {theta}");
             switch (_flags.ProcgenWaterfallDensity)
             {
                 case ProcgenWaterfallDensity.Sparse:
@@ -1158,8 +942,6 @@ namespace FF1Lib.Procgen
                 }
             }
 
-
-            
             switch (_flags.ProcgenWaterfallHallwayLength)
             {
                 // 0.75 to 1.5 maplengths
@@ -1169,14 +951,17 @@ namespace FF1Lib.Procgen
                     if (sparse)
                         {
                             _stepTolerance = 75;
+                            _maxLoopDistance = 20;
                         }
                     if (normal)
                         {
                             _stepTolerance = 60;
+                            _maxLoopDistance = 18;
                         }
                     if (dense)
                         {
                             _stepTolerance = 45;
+                            _maxLoopDistance = 16;
                         }
                     break;
                 }
@@ -1189,15 +974,18 @@ namespace FF1Lib.Procgen
                     hallwayLength = rng.Between(96,159);
                     if (sparse)
                         {
-                            _stepTolerance = 40;
+                            _stepTolerance = 50;
+                            _maxLoopDistance = 16;
                         }
                     if (normal)
                         {
-                            _stepTolerance = 30;
+                            _stepTolerance = 35;
+                            _maxLoopDistance = 14;
                         }
                     if (dense)
                         {
                             _stepTolerance = 20;
+                            _maxLoopDistance = 12;
                         }
                     break;
                 }
@@ -1205,6 +993,7 @@ namespace FF1Lib.Procgen
                 case ProcgenWaterfallHallwayLength.Long:
                 {
                     _stepTolerance = 20;
+                    _maxLoopDistance = 12;
                     hallwayLength = rng.Between(160,223);
                     break;
                 }
@@ -1212,20 +1001,21 @@ namespace FF1Lib.Procgen
                 case ProcgenWaterfallHallwayLength.Absurd:
                 {
                     _stepTolerance = 20;
+                    _maxLoopDistance = 12;
                     hallwayLength = rng.Between(224,287);
                     break;
                 }
                 default:
                 {
                     _stepTolerance = 60;
+                    _maxLoopDistance = 20;
                     hallwayLength = 64;
                     break; 
                 }
             }
 
             // here we need to choose a theta that lets us wrap the requisite number of times.
-            // moreover, it's better if the hallway wraps aren't immediately visible from the hallway
-            // (though, they will be visible from the branches)
+            // moreover, it's better if the hallway wraps aren't extremely visible from the hallways
             // These values are actually theta * 100 for more precision; the conversion
             // to radians rescales them.
 
@@ -1238,7 +1028,8 @@ namespace FF1Lib.Procgen
                 theta = new List<int>
                 {
                     // angles ensure that the next stretch of hallway are at least 11 tiles away
-                    // vertically or 12 tiles away horizontally
+                    // vertically or 12 tiles away horizontally -- this is the visible distance
+                    // from mapman + 4 (the width of the path element)
                     rng.Between(975,3962),
                     rng.Between(5090,8024),
                 }
@@ -1285,52 +1076,65 @@ namespace FF1Lib.Procgen
             }
 
             // use hallway length parity to make theta positive or negative, and renormalize to the 0-180.00 degree range
+            // we could just flip a coin but the overall hallway length is imperceptibly even or odd
             theta *= ((hallwayLength % 2) * 2 - 1);
             theta += 18000;
             theta %= 18000;
 
-
+            /// now we need to draw the line. If the absolute value of the slope is less than 1,
+            /// we iterate over x and draw the corresponding y value. If it is greater than 1,
+            /// we iterate over y and draw the corresponding x value. We also need to space them adequately
+            /// so that the Graph is not too large (remember that the number of Edges is n take 2).
+            /// We could done the one iteration and then swapped x,y for the other slope condition,
+            /// but this literal code portrays the line drawing more clearly.
             if (theta <= 4500 || theta >= 13500 )
             {
-                slope = Tan(theta * degToRad);
-                // Console.WriteLine($"Slope: {slope}");
+                double slope = Tan(theta * degToRad);
+                // this starts the hallway in a corner for easier visualization in the spoiler
                 double y = slope < 0 ? 63 : 0;
+                Node thisNode = new(0,(int)y);
+                _initNodes.Add(thisNode);
+                totalFootprint = _footprint.LocusToLocus(thisNode);
+
                 for (int x = 0; x < hallwayLength; x++, y+=slope)
                 {
-                    Node node = new(x,(int)Round(y));
-                    if (!totalFootprint.Contains(node))
+                    Node nextNode = new(x,(int)Round(y));
+                    if (!totalFootprint.Contains(nextNode))
                     {
-                        _initNodes.Add(node);
-
-                        totalFootprint.UnionWith(_footprint.LineLocusToLocus(node));
-                       
-                        
+                        _initNodes.Add(nextNode);
+                        totalFootprint.UnionWith(_footprint.LocusToLocus(nextNode));
+                        _lineGraph.Add(new Edge(thisNode,nextNode));
+                        thisNode = nextNode;
                     }
                 }
             }
             else
             {
-                slope = theta == 9000? 0 : 1.0/Tan(theta * degToRad);
-                double x = slope < 0 ? 63 : 0;
+                // if the absolute value of the actual slope is greater than 1.0, we iterate over y
+                // and use the reciprocal slope to get corresponding x values.
+                // Tan(90) is infinite/undefined, so we'll go ahead and just declare 1/Tan(90) to be 0;
+                double rSlope = theta == 9000? 0 : 1.0/Tan(theta * degToRad);
+                double x = rSlope < 0 ? 63 : 0;
                 // Console.WriteLine($"Slope: {slope}");
-                for (int y = 0; y < hallwayLength; y++, x+=slope)
+                Node thisNode = new((int)x,0);
+                _initNodes.Add(thisNode);
+                totalFootprint = _footprint.LocusToLocus(thisNode);
+                for (int y = 0; y < hallwayLength; y++, x+=rSlope)
                 {
-                    Node node = new((int)Round(x),y);
-                    if (!totalFootprint.Contains(node))
+                    Node nextNode = new((int)Round(x),y);
+                    if (!totalFootprint.Contains(nextNode))
                     {
-                        _initNodes.Add(node);
-                        if (_avoidLoops)
-                        {
-                            totalFootprint.UnionWith(_footprint.LocusToLocus(node));
-                        }
-                        else
-                        {
-                            totalFootprint.UnionWith(_footprint.LineLocusToLocus(node));
-                        }
+                        _initNodes.Add(nextNode);   
+                        totalFootprint.UnionWith(_footprint.LocusToLocus(nextNode));
+                        _lineGraph.Add(new Edge(thisNode,nextNode));
+                        thisNode = nextNode;
                     }
                 }
             }
 
+            // place some uniformly distributed Nodes around the line. The longer the line,
+            // the fewer places these Nodes can go, so we need to make sure we don't land
+            // in an infinite loop trying to place them. This tries 1000 times.
             int lineCount = _initNodes.Count;
             int n = 0;
             while (_initNodes.Count - lineCount < numNodes && n < 1000)
@@ -1339,65 +1143,207 @@ namespace FF1Lib.Procgen
                 if (!totalFootprint.Contains(node))
                 {
                     _initNodes.Add(node);
-                    totalFootprint.UnionWith(_footprint.LocusToLocus(node));
-                    
+                    totalFootprint.UnionWith(_footprint.LocusToLocus(node)); 
                 }
                 n++;
             }
             // Console.WriteLine($"Initialized {_initNodes.Count} Linear Random nodes in {n} loops.");
             return new Graph(_initNodes);    
         }
-
-        private HashSet<Node> GetAllNodes()
+        //////////////////////////////////////////////////
+        /// END Initial distribution methods
+        
+        /// This draws the first path between the _firstNode and its nearest neighbor.
+        /// The output is the nearest neighbor, the Edge between them,
+        /// the list of Nodes making up the drawn path, and the total footprint (with padding)
+        /// those take up.
+        private (Node, Edge, List<Node>, HashSet<Node>) FirstPath(MT19337 rng)
         {
-            HashSet<Node> nodes = new();
-            for (byte x = 0; x < 64; x++)
+            /// the most isolated Node is the one with the longest distance to its nearest neighbor.
+            /// If we aren't drawing loops, we want the room to be at a leaf of the Graph, because
+            /// there is only one path from the entrance to the room on a tree, and anything beyond
+            /// the room is wasted space. The room and its first path nodes take up space, so making
+            /// it isolated gives it room without clobbering other nodes.
+            /// However, if we are allowing loops, we want the room to be allowed to live anywhere,
+            /// including on a loop, which means we want to allow it to be close enough to other potential
+            /// leaf nodes that it will allow a loop Edge to be drawn between them.
+            if (_avoidLoops)
             {
-                for (byte y = 0; y < 64; y++)
+                _firstNode = _pool.MostIsolatedNode(rng);
+            }
+            else
+            {
+                _firstNode = _pool.Nodes.PickRandom(rng);
+            }
+            _pathNodes.Add(_firstNode);
+            /// get a queue of the _firstNode's adjacent Edges, ordered by weight.
+            /// this could have been a PriorityQueue to do the sort in its minheap, but that felt fussy
+            /// We need this because we need to make sure the nearest Node isn't accidentally in the
+            /// room's footprint. If it is, it will be clobbered, and since we're basing the logic
+            /// about whether to flip the room horizontally on the location of the nearest node, we
+            /// need to find a new nearest neighbor.
+            Queue<Edge> nearest = new(_pool.Adjacencies[_firstNode].OrderBy(i=>i.Weight));
+            Node nearestNeighbor;
+            Edge nearestEdge;
+            int dX;
+            int dY;
+            while (true)
+            {
+                nearestEdge = nearest.Dequeue();
+                nearestNeighbor = nearestEdge.NeighborOf(_firstNode);
+                (dX,dY) = _firstNode.Delta(nearestNeighbor);
+
+                // if the nearest node is to the left of the _firstNode as it is in vanilla,
+                // we can use the vanilla room. The room will always directly north of the path element
+                // leading to the door, and there will always be wall to the right of that path element.
+                // this constraint makes the wall tile logic much, much easier, and also conforms
+                // with the design aesthetic of having the room embedded in the rock wall.
+                if (dX <= 0)
                 {
-                    nodes.Add(new Node(x,y));
+                    _roomNode = _firstNode + (0,-5);
+                    _flipRoom = false;
+                }
+                else
+                // set the _fliproom flag, and draw the room above, and 4 tiles to the left, of the path
+                // element leading to the door.
+                {
+                    _roomNode = _firstNode + (-4,-5);
+                    _flipRoom = true;
+                }
+                /// make the _roomFootprint, which will be universally forbidden for path elements besides
+                /// _firstNode
+                _roomFootprint = _footprint.RoomLocusToLocus(_roomNode);
+                if (!_roomFootprint.Contains(nearestNeighbor))
+                {
+                    break;
                 }
             }
-            return nodes;
+
+            Node thisNode = _firstNode;
+            /// now, if the nearest neighbor to the _firstNode is above the room, the path drawing algorithm
+            /// will have a very hard time reaching it through the room. We can help it out by drawing a path
+            /// element to the side of the room that connects to the _firstNode's element.
+            if (dY < 0)
+            {
+                Node next;
+                if (_flipRoom)
+                {
+                    next = _firstNode + (4, rng.Between(1,2) * -1); 
+                }
+                else
+                {
+                    next = _firstNode + (-4, rng.Between(1,2) * -1);
+                }
+                _pathNodes.Add(next);
+                thisNode = next;
+            }
+            // now draw the path
+            (Node? resultNode, List<Node> branchNodes,HashSet<Node> branchFootprint) = 
+                NextPath(thisNode,nearestNeighbor,_roomFootprint,rng);
+            // if for some reason we couldn't reach the nearest neighbor, we need to bail and reroll.
+            // we could delete the first Node and try again from here, but overall it's easier to reroll.
+            // In that case we lose a tiny bit of time redrawing the initial distribution.
+            if (resultNode != nearestNeighbor)
+            {
+                _insane = true;
+            }
+            return ((Node)resultNode, nearestEdge, branchNodes, branchFootprint);            
         }
-        
 
-        // private (Node pathInit,bool flipRoom) RoomPath(MT19337 rng)
-        // {
-        //     Edge nearest = _pool.Adjacencies[_firstNode].OrderBy(i=>i.Weight).First();
-        //     Node nearestNeighbor = nearest.NeighborOf(_firstNode);
-        //     int dX = _firstNode.Delta(nearestNeighbor).dX;
-        //     Node pathNode;
-        //     Node leftPath = _firstNode + (-2,4);
-        //     Node rightPath = _firstNode + (2,4);
-        //     if (dX < 0)
-        //     {
-        //         pathNode = leftPath;
-        //     }
-        //     else if (dX > 0)
-        //     {
-        //         pathNode = rightPath;
-        //     }
-        //     else
-        //     {
-        //         pathNode = new List<Node>() {leftPath,rightPath}.PickRandom(rng);
-        //     }
-
-        //     return (pathNode,pathNode == rightPath);
+        // The NextPath method calls the NextStep logic in a loop and tries to find a set of legal path elements between
+        // the inputNode and the targetNode. If it can't, it returns null results and the caller in the Prim's algorithm
+        // loop will reject this Edge.
+        private (Node?, List<Node>, HashSet<Node>) NextPath(Node inputNode, Node targetNode, HashSet<Node> forbidden, MT19337 rng)
+        {
+            Node? thisNode = inputNode;
+            List<Node> pathNodes = new();
+            HashSet<Node> thisFootprint = new();
+            int n = 0;
+            // the step tolerance is converted to a value corresponding to the dot product between the direction
+            // of the target node and the direction of potential GetNextStep() tiles.
+            float stepTolerance = (float)Cos(_stepTolerance*PI/180.0);
+            // build the path to the targetNode. If an iteration fails to find the next step given the current
+            // stepTolerance and forbidden footprint, this tolerance is relaxed a bit at a time, all the way to
+            // 90 degrees (or 0 in dot product terms). We get 120 total iterations to build the path.
+            while (thisNode != targetNode && n < 120)
+            {
+                // try to get the next step.
+                Node? nextNode = _nextStep.GetNextStep((Node)thisNode,targetNode,forbidden,stepTolerance,rng);
+                n++;
+                if (nextNode == null)
+                {
+                    stepTolerance = Max(stepTolerance - .01f,0);
+                    continue;
+                }
+                pathNodes.Add((Node)nextNode);
+                thisNode = nextNode;
+                // reset the stepTolerance for the next step in case we have relaxed it to find this step
+                stepTolerance = (float)Cos(_stepTolerance*PI/180.0);
+            }
+            // if we couldn't reach the targetNode in 120 iterations, return null values.
+            if (thisNode != targetNode)
+            {
+                return (null,null,null);
+            }
             
-        // }
+            // get the footprints of all the path nodes. We can use a smaller footprint if 
+            // we don't care about loops -- this just occasionally lets paths erode holes into other paths
+            foreach (Node node in pathNodes)
+            {
+                if (_avoidLoops)
+                {
+                    thisFootprint.UnionWith(_footprint.LocusToLocus(node));
+                }
+                else
+                {
+                    thisFootprint.UnionWith(_footprint.SmallLocusToLocus(node));
+                }
+            }
+            return (targetNode,pathNodes,thisFootprint);
+        }
 
-        
-
-        
+        // this should probably be a static class, but I could foresee other procgen stuff with different
+        // weighting strategies where you'd want multiple instances for different situations
         public class NextStep
         {
+            /// this class maintains a set of 80 tiles about the center,* which form the legal potential
+            /// steps on a connected path where the path element is 4x4 tiles. Four of these tiles
+            /// actually produce a 2x1-tile wall, which is subsequently deleted in the tile-smoothing
+            /// algorithm when the actual map is constructed. This kind of connection only happens
+            /// a couple of times in the original waterfall map. It looks like this, where "o" is a path tile:
+            /// 
+            /// o o o o
+            /// o o o o
+            /// o o o o
+            /// o o o o
+            ///     o o      <- 2x1 connector
+            ///     o o o o
+            ///     o o o o
+            ///     o o o o
+            ///     o o o o
+            /// 
+            /// all the other next step tiles draw a path element that is either adjacent to or overlapping with
+            /// the current Node's path element.
+            /// 
+            /// *actually, it's going to be 81 tiles total, but the weight of the current tile will always be 0
+            
+            /// the set of vectors to the surrounding NextStep tiles
             private readonly Vector2[] _nextStepVectors;
+
+            /// unit vectors pointing at each of those tiles; this encodes
+            /// the direction but not the magnitude, and does not scale magnitudes
+            /// when used in dot products
             private readonly Vector2[] _nextStepUnitVectors;
+            
+            /// a set of weights based on distance from the center. The original waterfall map favors
+            /// either adjacent map elements or elements with only a bit of overlap, so we weight potential
+            /// steps correspondingly.
             private readonly float[] _weights;
 
             public NextStep()
             {
+                // the legal next steps do not form a rectangle, so it's easier to construct it
+                // in chunks and concatenate.
                 Vector2[] next1 = {new(-2,-5),new(2,-5)};
                 Vector2[] next2 = new Vector2[7];
                 Vector2[] next3 = new Vector2[63];
@@ -1415,26 +1361,37 @@ namespace FF1Lib.Procgen
                     next3[i] = new(x,y);
                 }
                 _nextStepVectors = next1.Concat(next2).Concat(next3).Concat(next4).Concat(next5).ToArray();
+
+                // the unit vectors are just the vectors divided by length; if that length is 0, we get a 0/0 NaN, so
+                // just substitute division by 1 there instead.
                 _nextStepUnitVectors = _nextStepVectors.Select(v => v/(v.Length() == 0 ? 1 : v.Length())).ToArray();
-                // Console.WriteLine("Next Step Unit Vectors: " + string.Join(", ",_nextStepUnitVectors));
  
+                // this function makes weights that are very small at the center, increase to a peak where squared distance
+                // from center is about 13, and then drop off very fast from there.
+                // Scaling by 100 here lets us use these values in PickRandomItem(rng) without having to scale up to usable integers
+                // every step
                 _weights = _nextStepVectors
                                 .Select(v => (float)(-100*Cos(2*PI*Pow(v.LengthSquared()/32.0,0.75)) + 100))
                                 .ToArray();
-
-                // Console.WriteLine("Next Step Weights: " + string.Join(", ",_weights));
+                _weights[40] = 0; // zero out the center
             }
 
-            public Node? GetNextStep(Node thisNode, Node targetNode, HashSet<Node> except, float stepTolerance, MT19337 rng)
+            public Node? GetNextStep(Node thisNode, Node targetNode, HashSet<Node> forbidden, float stepTolerance, MT19337 rng)
             {
-                var (dX, dY) = thisNode.Delta(targetNode);
-                Vector2 target = new(dX,dY);
+                // get a unit vector pointing from here to the targetNode.
+                Vector2 targetVector = thisNode.UnitVector(targetNode);
                 
-                float[] floatWeights = FloatWeights(target, stepTolerance);
+                // get tile weights for each surrounding next step tile
+                float[] floatWeights = FloatWeights(targetVector, stepTolerance);
                 
+                // this will be the list used by PickRandomItemWeighted(rng)
+                List<(Node node,int weight)> weightedSteps = new();
 
-                List<(Node n,int weight)> weightedSteps = new();
-
+                
+                // If the targetNode is within the nonzero-weighted next steps and is less than 5.0 in
+                // distance, go ahead and return the targetNode to signal to the path drawing loop that the
+                // path has found its target. We need the 5.0 limitation so that over time the paths do not favor
+                // long steps at the end
                 for (int i = 0; i < 81; i++)
                 {
                     float thisWeight = floatWeights[i];
@@ -1443,22 +1400,26 @@ namespace FF1Lib.Procgen
                     {
                         return targetNode;
                     }
-                    if (!except.Contains(candidate) && thisWeight > 0 && !float.IsNaN(thisWeight) && float.IsFinite(thisWeight))
+                    // otherwise, do some checks to filter out bad numbers that may have crept in via Vector2 length and dot product
+                    // also filter out forbidden tiles. Add the remainder and their weight to the weightedSteps list.
+                    if (!forbidden.Contains(candidate) && thisWeight > 0 && !float.IsNaN(thisWeight) && float.IsFinite(thisWeight))
                     {
+                        // we use Ceiling here to catch any positive weighting no matter how small
                         weightedSteps.Add((candidate,(int)Ceiling(floatWeights[i])));
                     }
                 }
 
-                // Console.WriteLine("Weighted Steps" + string.Join(", ",weightedSteps));
-
+                // sometimes PickRandomItemWeighted barfs if there is only one item, so in that case
+                // just return the single node
                 if (weightedSteps.Count > 1)
                 {
                     return weightedSteps.PickRandomItemWeighted(rng);
                 }
                 else if (weightedSteps.Count == 1)
                 {
-                    return weightedSteps.Single().n;
+                    return weightedSteps.Single().node;
                 }
+                // or if the list of legal moves is empty, return a null value.
                 else
                 {
                     return null;
@@ -1467,51 +1428,337 @@ namespace FF1Lib.Procgen
 
             private float[] FloatWeights(Vector2 target, float stepTolerance)
             {
-                target /= target.Length() == 0? 1 : target.Length();
                 float[] dotProds = new float[81];
                 float[] weights = new float[81];
                 
                 for (int i = 0; i < 81; i++)
                 {
+                    // dot products of the target Node's unit vector and those of the next step tiles.
+                    // zero them out if they are less than the stepTolerance. This provides a weighting
+                    // that allows tiles within the stepTolerance, and weights each one higher the closer
+                    // it is to the direction of the target Node.
+                    // 
                     float dP = Vector2.Dot(_nextStepUnitVectors[i],target);
                     dP = dP < stepTolerance ? 0 : dP;
-                    // weights[i] = _weights[i]*Max(0,Vector2.Dot(_nextStepUnitVectors[i],target));
+
+                    // scale the distance weights by the dot-product weights.
                     weights[i] = _weights[i] * dP;
                 }
                 return weights;
             }
-
-
-
-
         }
 
-        
-
-        public class Footprint
+        /// Strategies for placing the entrance.
+        private Node GetEntranceNode(MT19337 rng)
         {
-            // tile patterns associated with waterfall design
+            Node outputNode = new();
+            switch (_flags.ProcgenWaterfallEntrance)
+            {
+                // literally any node in the path nodes. 
+                case ProcgenWaterfallEntrance.Anywhere:
+                    {
+                        outputNode = _pathNodes.PickRandom(rng);
+                        break;
+                    }
+                // find the set of nodes in the _tree Graph with the most attached edges,
+                // and return the furthest of these from the room
+                case ProcgenWaterfallEntrance.Branch:
+                    {
+                        (var distances, var nodes) = AllDistances(_firstNode);
+                        IEnumerable<Node> branchyNodes = _tree.Nodes.GroupBy(node => _tree.Adjacencies[node].Count).MaxBy(group => group.Key);
+                        outputNode = branchyNodes.MaxBy(node => nodes[node]);
+                        break;
+                    }
+                // find the most distant node from the first node; pick a random one of these in case of a tie.
+                case ProcgenWaterfallEntrance.Furthest:
+                    {
+                        (var distances, var nodes) = AllDistances(_firstNode);
+                        outputNode = distances[distances.Keys.Max()].PickRandom(rng);
+                        break;
+                    }
+                // find a node that is within 40% to 60% of the longest distance from the first node.
+                // if for some insane reason there aren't any, return the median instead.
+                case ProcgenWaterfallEntrance.Mid:
+                    {
+                        (var distances, var nodes) = AllDistances(_firstNode);
+                        int max = distances.Keys.Max();
+                        List<int> midDists = distances.Keys.Where(d => d >= 0.4*max && d <= 0.6*max).ToList();
+                        if (midDists.Count == 0)
+                        {
+                            midDists.Add(distances.Keys.OrderBy(d => d).ToList()[distances.Count/2]);
+                        }
+                        outputNode = distances[midDists.PickRandom(rng)].PickRandom(rng);
+                        break;
+                    }
+                // find the centroid of the graph, i.e. the node with the minimum total distance from
+                // all the other nodes. Pick a random one of these in case of tie.
+                case ProcgenWaterfallEntrance.Center:
+                    {
+                        Dictionary<int,List<Node>> pathSums = new();
+                        foreach (Node node in _tree.Nodes)
+                        {
+                            (var distances, var nodes) = AllDistances(node);
+                            int sum = nodes.Values.Sum();
+                            if (!pathSums.ContainsKey(sum))
+                            {
+                                pathSums[sum] = new();
+                            }
+                            pathSums[sum].Add(node);
+                        }
+                        outputNode = pathSums[pathSums.Keys.Min()].PickRandom(rng);
+                        break;
+                    }
+                // try to spawn in visible distance of the room, but more than half the longest distance
+                // to the room
+                case ProcgenWaterfallEntrance.Maddening:
+                    {
+                        (var distances, var nodes) = AllDistances(_firstNode);
+                        HashSet<Node> allNodes = _tree.Nodes.ToHashSet();
+                        List<Node> nodesByWalkingDist = allNodes.OrderBy(n => nodes[n]).ToList();
+                        List<Node> nodesByRectDist = allNodes.OrderByDescending(n => _firstNode.RectDist(n)).ToList();
+                        List<Node> roomVisible = new();
+                        foreach (Node node in allNodes)
+                        {
+                            /// find all the nodes within visible distance of the room. We know it's the room if
+                            /// we can see a wall embedded in surrounding wall, or if we can see the door.
+                            /// These numbers take into account that the stairway is placed at the Node coordinate
+                            /// + 2 in both x and y
+                            (int dX, int dY) = _roomNode.Delta(node);
+                            if (_flipRoom)
+                            {
+                                if ((dX >= -10 && dX <= 10 && dY >= -9 && dY <= 8) || (dY == 9 && dX >= -5 && dX <= 10))
+                                {
+                                    roomVisible.Add(node);
+                                }
+                            }
+                            else if ((dX >= -8 && dX <= 12 && dY>= -9 && dY <= 8) || (dY == 9 && dX >= -8 && dX <= 7))
+                            {
+                                roomVisible.Add(node);
+                            }
+                        }
+                        // find any of them that are more than half the longest distance from the first node
+                        roomVisible = roomVisible.Where(n => nodes[n] >= nodes[nodesByWalkingDist.Last()]/2).ToList();
+                        // if there are any, return the furthest one
+                        if (roomVisible.Count > 0)
+                        {
+                            outputNode = roomVisible.MaxBy(n => nodes[n]);
+                        }
+                        /// if no such nodes exist, then we take turns removing the closest walking-distance Node
+                        /// and furthest RectDist Node to optimize the two criteria. Hopefully this means that we
+                        /// can see the room in early exploration but not be on the immediate branch that reaches it.
+                        else
+                        {
+                            while (allNodes.Count > 1)
+                            {
+                                allNodes.Remove(nodesByWalkingDist[0]);
+                                nodesByWalkingDist.RemoveAt(0);
+                                if (allNodes.Count == 1)
+                                {
+                                    break;
+                                }
+                                allNodes.Remove(nodesByRectDist[0]);
+                                nodesByRectDist.RemoveAt(0);
+                            }
+                            outputNode = allNodes.Single();
+                        }
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+            return outputNode;
+        }
 
-            // waterfall walkable path consists of overlapping 4x4 squares of tiles
-            // 
+        // Use Dijkstra's algorithm to get the walking distances of the inputNode to all other Nodes
+        // through the graph edges. This seems like only an estimate because we're not including every pathNode,
+        // only the control Nodes, but if two nodes are connected by an edge, the walking distance through
+        // the path Nodes is going to be very, very close to the rectilinear distance (to within random veering of the path)
+        // returns two dictionaries: the first uses distance as a key to look up corresponding Nodes, and the
+        // second uses nodes as a key to return its distance. Both are useful in the entrance placement routine.
+        private (Dictionary<int,List<Node>>,Dictionary<Node,int>)  AllDistances(Node inputNode)
+        {
+            Dictionary<int,List<Node>> distancesToNodes = new();
+            Dictionary<Node,int> nodesToDistances = new();
+            HashSet<Node> visitedNodes = new();
             
+            /// start by setting the distance to each Node to ONE MILLION steps
+            foreach (Node node in _tree.Nodes)
+            {
+                nodesToDistances[node] = 1000000;
+            }
+            /// but the inputNode's distance is 0 by definition.
+            nodesToDistances[inputNode] = 0;
+            visitedNodes.Add(inputNode);
+            //this could be a priority queue, but there's no good reason for it to be with
+            // such small Graphs.
+            Queue<(Node,Edge)> edgeQueue = new();
+            // enqueue all of the inputNode's edges
+            foreach (Edge edge in _tree.Adjacencies[inputNode])
+            {
+                edgeQueue.Enqueue((inputNode,edge));
+            }
+            // main loop
+            while (edgeQueue.Count != 0)
+            {
+                // dequeue an edge and get the neighbor
+                (Node thisNode,Edge thisEdge) = edgeQueue.Dequeue();
+                Node neighbor = thisEdge.NeighborOf(thisNode);
+                // if we haven't visited the neighbor yet, mark it visited
+                // and enqueue its edges.
+                if (!visitedNodes.Contains(neighbor))
+                {
+                    visitedNodes.Add(neighbor);
+                    foreach (Edge edge in _tree.Adjacencies[neighbor])
+                    {
+                        edgeQueue.Enqueue((neighbor,edge));
+                    }
+                }
+                // we know the current shortest distance from _firstNode to this Node.
+                int thisDist = nodesToDistances[thisNode];
+                // we may or may not know the shortest distance to its neighbor; if we don't know it
+                // it will be the default ONE MILLION steps.
+                int neighborDist = nodesToDistances[neighbor];
+                // add the rectilinear distance from thisNode to its neighber to the shortest known
+                // distance to thisNode
+                int candidateDist = thisDist + thisNode.RectDist(neighbor);
+                // if the candidateDistance is lower than the current known distance from _firstNode to
+                // thisNode's neighbor, then the best path to neighbor steps through thisNode and now
+                // we have a new shortest path.
+                if (candidateDist < neighborDist)
+                {
+                    nodesToDistances[neighbor] = candidateDist;
+                    // we could maintain a list of predecessors in that path; if so, we would add it here.
+                    // predecessors[neighbor] = (thisNode,candidateDist);
+                }
+            }
 
+            // construct the distancesToNodes Dictionary
+            foreach (Node node in visitedNodes)
+            {
+                int dist = nodesToDistances[node];
+                if (!distancesToNodes.ContainsKey(dist))
+                {
+                    distancesToNodes[dist] = new();
+                }
+                distancesToNodes[dist].Add(node);
+            }
+            return (distancesToNodes,nodesToDistances);
+        }
+        
+        
+        // this class maintains a set of "footprints," i.e. collection of nodes corresponding
+        // to patterns in waterfall design. 
+        public class Footprint
+        {            
+
+            // these fields are accessible only by accessor methods below. Some of them
+            // are never actually used in the algorithm, but are intermediate steps in constructing
+            // more complex footprints. The shapes are formed via convolution, i.e.
+            // for each point in set A, give me an entire copy of set B centered on that point
+            // and return the union
+            // each shape is drawn with the following tiles:
+            // o   the (0,0) origin
+            // x   a path tile
+            // w   a wall tile
+            // p   padding tiles
+
+            // the 4x4 path element
+            // o x x x
+            // x x x x
+            // x x x x
+            // x x x x
             private readonly HashSet<Node> _path;
-            private readonly HashSet<Node> _boundary;
-            private readonly HashSet<Node> _locusToLocus;
-            private readonly HashSet<Node> _room;
-            private readonly HashSet<Node> _roomLocusToLocus;
-            private readonly HashSet<Node> _nextStepPool;
-            private readonly HashSet<Node> _lineLocusToLocus;
 
+
+            // a path element with the smallest possible surrounding walls (any smaller will generate tile discontinuities)
+            //     w w w w
+            //     w w w w
+            //     w w w w
+            // w w o x x x w w
+            // w w x x x x w w
+            // w w x x x x w w
+            // w w x x x x w w
+            //     w w w w
+            //     w w w w
+            //     w w w w
+            private readonly HashSet<Node> _boundary;
+
+
+            // This is the most important one. It includes the padding such that any path element drawn at a coordinate
+            // inside the padding will either connect the paths or produce a tile discontinuity. This is used for keeping
+            // separate branches of the overall path from colliding in bad ways.
+
+            //     p p p p p p p
+            //     p p p p p p p
+            //     p p p p p p p
+            // p p p p p w w w w p p
+            // p p p p p w w w w p p
+            // p p p p p w w w w p p
+            // p p p w w o x x x w w
+            // p p p w w x x x x w w
+            // p p p w w x x x x w w
+            // p p p w w x x x x w w
+            //     p p p w w w w
+            //     p p p w w w w
+            //     p p p w w w w
+            private readonly HashSet<Node> _locusToLocus;
+
+
+            // The room itself
             
-            // private readonly (int,int)[] _pathKernel = 
-            // {
-            //     (-1,-1),( 0,-1),( 1,-1),( 2,-1),
-            //     (-1, 0),( 0, 0),( 1, 0),( 2, 0),
-            //     (-1, 1),( 0, 1),( 1, 1),( 2, 1),
-            //     (-1, 2),( 0, 2),( 1, 2),( 2, 2)   
-            // };
+            // o w w w w w w w
+            // w x x x x x x w
+            // w x x x x x x w
+            // w x x x x x x w
+            // w w w w w w w w
+            private readonly HashSet<Node> _room;
+
+
+            // padding around the room giving forbidden nodes
+
+            // p p p p p p p p p p p
+            // p p p p p p p p p p p
+            // p p p p p p p p p p p
+            // p p p o w w w w w w w
+            // p p p w x x x x x x w
+            // p p p w x x x x x x w
+            // p p p w x x x x x x w
+            // p p p w w w w w w w w
+            // p p p p p p p p p p p
+            // p p p p p p p p p p p
+            // p p p p p p p p p p p
+            private readonly HashSet<Node> _roomLocusToLocus;
+
+
+            // relaxed Locus-to-Locus footprint used when we don't care about loops
+
+            // p p p p p p p
+            // p p p p p p p
+            // p p p p p p p
+            // p p p o x x x
+            // p p p x x x x
+            // p p p x x x x
+            // p p p x x x x
+            private readonly HashSet<Node> _smallLocusToLocus;
+
+
+            // never used as an actual footprint, but kept around just in case
+            // this is the shape of the tiles surrounding the center in NextStep
+            
+            //     x       x
+            //   x x x x x x x 
+            // x x x x x x x x x
+            // x x x x x x x x x
+            // x x x x x x x x x
+            // x x x x o x x x x
+            // x x x x x x x x x
+            // x x x x x x x x x
+            // x x x x x x x x x
+            //   x x x x x x x
+            //     x       x
+            private readonly HashSet<Node> _nextStepPool;
 
             private readonly (int,int)[] _pathKernel =
             {
@@ -1528,23 +1775,12 @@ namespace FF1Lib.Procgen
                        (0, 3)
             };
 
-            // private readonly (int,int)[] _locusToLocusKernel =
-            // {
-            //     (-2,-2),( 1,-2),
-            //     (-2, 1),( 1, 1)
-            // };
-
             private readonly (int,int)[] _locusToLocusKernel =
             {
                 (-3,-3),( 0,-3),
                 (-3, 0),( 0, 0)
             };
 
-            // private readonly (int,int)[] _roomKernel =
-            // {
-            //     (-2,-1),( 2,-1),
-            //     (-2, 0),( 2, 0)
-            // };
 
             private readonly (int,int)[] _roomKernel =
             {
@@ -1558,8 +1794,6 @@ namespace FF1Lib.Procgen
                 (-3, 0),( 0, 0),
                 (-3, 3),( 0, 3)  
             };
-
-            
 
             private readonly (int,int)[] _nextStepPoolKernel =
             {
@@ -1578,10 +1812,11 @@ namespace FF1Lib.Procgen
                 InitFootprint(_room,_roomLocusToLocusKernel,out _roomLocusToLocus);
                 InitFootprint(_path,_nextStepPoolKernel,out _nextStepPool);
                     _nextStepPool.UnionWith(new Node[] {new(-2,-5),new(2,-5),new(-2,5),new(2,5)});
-                InitFootprint(_path,_locusToLocusKernel,out _lineLocusToLocus);
+                InitFootprint(_path,_locusToLocusKernel,out _smallLocusToLocus);
             }
 
 
+            /// convolution of footprint kernels.
             private void InitFootprint(HashSet<Node> sourceFootprint, (int,int)[] kernel, out HashSet<Node> outFootprint)
             {
                 outFootprint = new();
@@ -1591,7 +1826,7 @@ namespace FF1Lib.Procgen
                 }
             }
 
-
+            // return a footprint centered on the input Node
             private HashSet<Node> CenteredFootprint(Node node,HashSet<Node> footprint)
             {
                 HashSet<Node> newFootprint = new();
@@ -1631,476 +1866,10 @@ namespace FF1Lib.Procgen
                 return CenteredFootprint(node,_nextStepPool);
             }
 
-            public HashSet<Node> LineLocusToLocus(Node node)
+            public HashSet<Node> SmallLocusToLocus(Node node)
             {
-                return CenteredFootprint(node,_lineLocusToLocus);
+                return CenteredFootprint(node,_smallLocusToLocus);
             }
         }
-
-
-
-
-        public class Graph
-        {
-            public readonly HashSet<Node> Nodes;
-            public readonly HashSet<Edge> Edges;
-            public readonly Dictionary<Node,HashSet<Edge>> Adjacencies;
-
-            public Graph()
-            {
-                Nodes = new();
-                Edges = new();
-                Adjacencies = new();
-            }
-
-            public Graph(IEnumerable<Edge> edges) : this()
-            {
-                
-                foreach (Edge e in edges)
-                {
-                    Add(e);
-                }
-            }
-
-
-            public Graph(IEnumerable<Node> nodes) : this()
-            {
-                // get rid of duplicates
-                List<Node> listNodes = nodes.ToHashSet().ToList();
-                for (int i = 0; i < listNodes.Count - 1; i++)
-                {
-                    for (int j = i+1; j < listNodes.Count; j++)
-                    {
-                        var node1 = listNodes[i];
-                        var node2 = listNodes[j];
-                        Add(new Edge(node1,node2));
-                    }
-                }
-            }
-
-            // Get the node that has the most distant closest neighbor.
-            public Node MostIsolatedNode(MT19337 rng)
-            {
-                return Nodes.MaxBy(i => Adjacencies[i].Min(j => j.Weight));
-            }
-
-            public void Add(Edge edge)
-            {
-                if (Edges.Contains(edge))
-                {
-                    return;
-                }
-                Node node1 = edge.Node1;
-                Node node2 = edge.Node2;
-                Edges.Add(edge);
-                Nodes.Add(node1);
-                Nodes.Add(node2);
-                if (!Adjacencies.ContainsKey(node1))
-                {
-                    Adjacencies[node1] = new();
-                }
-                if (!Adjacencies.ContainsKey(node2))
-                {
-                    Adjacencies[node2] = new();
-                }
-                Adjacencies[node1].Add(edge);
-                Adjacencies[node2].Add(edge);
-            }
-
-            public void Add(IEnumerable<Edge> edges)
-            {
-                foreach (Edge e in edges)
-                {
-                    Add(e);
-                }
-            }
-
-            public void Add(Node node)
-            {
-                //to add a node, add an edge from this node to every other node in the graph
-                if (Nodes.Contains(node))
-                {
-                    return;
-                }
-                foreach (Node n in Nodes)
-                {
-                    Add(new Edge(n,node));
-                }
-            }
-
-            public bool Remove(Edge edge)
-            {
-                if (!Edges.Contains(edge))
-                {
-                    return false;
-                }
-                Node node1 = edge.Node1;
-                Node node2 = edge.Node2;
-                Adjacencies[node1].Remove(edge);
-                Adjacencies[node2].Remove(edge);
-                if (Adjacencies[node1].Count == 0)
-                {
-                    Adjacencies.Remove(node1);
-                    Nodes.Remove(node1);
-                }
-                if (Adjacencies[node2].Count == 0)
-                {
-                    Adjacencies.Remove(node2);
-                    Nodes.Remove(node2);
-                }
-                return Edges.Remove(edge);
-            }
-
-            public bool Remove(IEnumerable<Edge> edges)
-            {
-                bool found = true;
-                foreach (Edge e in edges)
-                {
-                    found = found && Remove(e);
-                }
-                return found;
-            }
-
-            public bool Remove(Node node)
-            {
-                if (!Nodes.Contains(node))
-                {
-                    return false;
-                }
-                else
-                {
-                    foreach (Edge e in Adjacencies[node].ToList())
-                    {
-                        Remove(e);
-                    }
-                    return true;
-                }
-            }
-
-            public bool Remove(IEnumerable<Node> nodes)
-            {
-                bool found = true;
-                foreach (Node n in nodes)
-                {
-                    found = found && Remove(n);
-                }
-                return found;
-            }
-
-            
-
-            public bool Contains(Edge edge)
-            {
-                return Edges.Contains(edge);
-            }
-
-            public bool Contains(Node node)
-            {
-                return Nodes.Contains(node);
-            }
-            
-        }
-
- 
-
-        
-        // Node has value semantics.
-		public readonly struct Node
-		{
-            private readonly byte _x = 0;
-            private readonly byte _y = 0;
-            public byte X
-            {
-                get => _x;
-                
-                init
-                {
-                    _x = value;
-                    _x &= 0x3F;
-                }
-            }
-            public byte Y
-            {
-                get => _y;
-
-                init
-                {
-                    _y = value;
-                    _y &= 0x3F;
-                }
-            }
-
-            public (byte,byte) XY
-            {
-                get => (_x,_y);
-
-                init
-                {
-                    X = value.Item1;
-                    Y = value.Item2;
-                }
-            }
-
-            public Node(byte x, byte y)
-            {
-                XY = (x,y);
-            }
-
-            public Node((byte,byte) coord)
-            {
-                XY = coord;
-            }
-
-            public Node(int x, int y)
-            {
-                XY = ((byte)x,(byte)y);
-            }
-
-            public Node((int,int) coord)
-            {
-                XY = ((byte,byte))coord;
-            }
-
-			public override string ToString()
-			{
-				return $"({X}, {Y})";
-			}
-
-            public static Node operator +(Node left, Node right)
-            {
-                return new Node((byte)(left.X + right.X),(byte)(left.Y + right.Y));
-            }
-
-            public static Node operator +(Node left, (byte,byte) right)
-            {
-                return new Node((byte)(left.X + right.Item1),(byte)(left.Y + right.Item2));
-            }
-
-            public static Node operator +(Node left, (int,int) right)
-            {
-                return new Node((byte)(left.X + right.Item1),(byte)(left.Y + right.Item2));
-            }
-
-            public static Node operator +(Node left, Vector2 right)
-            {
-                return new Node((byte)(left.X + (int)right.X),(byte)(left.Y + (int)right.Y));
-            }
-
-            public static Node operator -(Node left, Node right)
-            {
-                return new Node((byte)(left.X - right.X),(byte)(left.Y - right.Y));
-            }
-
-            public static Node operator -(Node left, (byte,byte) right)
-            {
-                return new Node((byte)(left.X - right.Item1),(byte)(left.Y - right.Item2));  
-            }
-
-            public static Node operator -(Node left, (int,int) right)
-            {
-                return new Node((byte)(left.X - right.Item1),(byte)(left.Y - right.Item2));
-            }
-
-			public override bool Equals([NotNullWhen(true)] object obj)
-			{
-				return base.Equals(obj);
-			}
-
-			public override int GetHashCode()
-			{
-				return base.GetHashCode();
-			}
-
-            public static bool operator ==(Node left, Node right)
-            {
-                return left.Equals(right);
-            }
-
-            public static bool operator !=(Node left, Node right)
-            {
-                return !left.Equals(right);
-            }
-
-            public static bool operator >(Node left, Node right)
-            {
-                if (left.X != right.X)
-                {
-                    return left.X > right.X;
-                }
-                else
-                {
-                    return left.Y > right.Y;
-                }
-                
-            }
-            public static bool operator <(Node left,Node right)
-            {
-                if (left.X != right.X)
-                {
-                    return left.X < right.X;
-                }
-                else
-                {
-                    return left.Y < right.Y;
-                } 
-            }
-
-            public int SqDist(Node other)
-            {
-                int dx = (X - other.X + 64) % 64;
-                dx = Min(dx,64-dx);
-                
-                int dy = (Y - other.Y + 64) % 64;
-                dy = Min(dy,64-dy);
-                
-                return dx*dx + dy*dy;
-            }
-
-            public float Dist(Node other)
-            {
-                return (float)Sqrt(SqDist(other));
-            }
-
-            
-            public (int dX,int dY) Delta(Node other)
-            {
-                // int dx1 = other.X - X;
-                // int dx2 = 64-dx1;
-                // int dy1 = other.Y - Y;
-                // int dy2 = 64-dy1;
-                // int dx = Abs(dx1) <= Abs(dx2) ? dx1 : dx2;
-                // int dy = Abs(dy1) <= Abs(dy2) ? dy1 : dy2 ;
-                int dx = other.X - X;
-                if (dx > 32)
-                {
-                    dx -= 64;
-                }
-                else if (dx < -32)
-                {
-                    dx += 64;
-                }
-                int dy = other.Y - Y;
-                if (dy > 32)
-                {
-                    dy -= 64;
-                }
-                else if (dy < -32)
-                {
-                    dy += 64;
-                }
-                
-
-                return (dx,dy);
-            }
-
-            public Vector2 UnitVector(Node other)
-            {
-                float dist = Dist(other);
-                var (dX, dY) = Delta(other);
-                return new Vector2(dX/dist, dY/dist);
-            }
-        }
-
-        public readonly struct Edge
-        {
-            private readonly (Node,Node) _nodes = (new(),new());
-            private readonly int _weight = 0;
-
-            public (Node,Node) Nodes
-            {
-                get => _nodes;
-                init
-                {
-                    _nodes = value;        
-                }
-            }
-
-            public Node Node1
-            {
-                get => _nodes.Item1;
-            }
-
-            public Node Node2
-            {
-                get => _nodes.Item2;
-            }
-
-            public int Weight
-            {
-                get => _weight;
-                init
-                {
-                    _weight = value;
-                }
-            }
-
-            // 
-            
-
-            public Edge(Node node1,Node node2)
-            {
-                if (node1!=node2)
-                {
-                    Nodes = node2 > node1 ? (node1,node2) : (node2,node1);
-                    Weight = node1.SqDist(node2);
-                }
-                else
-                {
-                    throw new ArgumentException("Error: Nodes in Edges must have different coordinates.");
-                }
-            }
-
-            public Node NeighborOf(Node node)
-            {
-                if (node == Node1)
-                {
-                    return Node2;
-                }
-                else if (node == Node2)
-                {
-                    return Node1;
-                }
-                else
-                {
-                    throw new ArgumentException($"Error: requested neighbor of Node {node} from an Edge that does not contain it.");
-                }
-            }
-
-			public readonly override bool Equals([NotNullWhen(true)] object obj)
-			{
-				if (obj is not Edge || this != (Edge)obj)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-			}
-
-			public readonly override int GetHashCode()
-			{
-				//return base.GetHashCode();
-                return Node1.GetHashCode() + Node2.GetHashCode();
-			}
-
-            public static bool operator ==(Edge left, Edge right)
-            {
-                return left.Nodes == right.Nodes || left.Nodes == (right.Node2,right.Node1);
-            }
-
-            public static bool operator !=(Edge left, Edge right)
-            {
-                return !(left == right);
-            }
-        }
-            
-        
-       
-
-
-
     }
-
-
 }

@@ -48,7 +48,8 @@ namespace FF1Lib
 		Furthest,
 		Mid,
 		Center,
-		Branch
+		Branch,
+		Maddening
 	}
 
 	public partial class StandardMaps

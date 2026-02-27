@@ -160,7 +160,7 @@ namespace Sandbox
 						{
 							generator._flags.ProcgenWaterfallEntrance = ProcgenWaterfallEntrance.Mid;
 							cont = true;
-							Console.WriteLine("\rSet entrance location to Equidistant");
+							Console.WriteLine("\rSet entrance location to Mid");
 							break;
 						}
 					case ConsoleKey.B:
@@ -168,6 +168,13 @@ namespace Sandbox
 							generator._flags.ProcgenWaterfallEntrance = ProcgenWaterfallEntrance.Branch;
 							cont = true;
 							Console.WriteLine("\rSet entrance location to Branch");
+							break;
+						}
+					case ConsoleKey.Q:
+						{
+							generator._flags.ProcgenWaterfallEntrance = ProcgenWaterfallEntrance.Maddening;
+							cont = true;
+							Console.WriteLine("\rSet entrance location to Maddening");
 							break;
 						}
 					case ConsoleKey.Spacebar:
