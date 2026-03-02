@@ -34,7 +34,7 @@ namespace Sandbox
 			};
 
 			var flags = new Flags();
-			flags.ProcgenWaterfall = ProcgenWaterfallMode.Uniform;
+			flags.ProcgenWaterfallMode = ProcgenWaterfallMode.Vanilla;
 			flags.ProcgenWaterfallDensity = ProcgenWaterfallDensity.Normal;
 			flags.ProcgenWaterfallHallwayLength = ProcgenWaterfallHallwayLength.Mid;
 			flags.ProcgenWaterfallNoLoops = true;
@@ -51,30 +51,51 @@ namespace Sandbox
 				bool cont = false;
 				switch (k.Key)
 				{
+					case ConsoleKey.R:
+						{
+							generator._flags.ProcgenWaterfall = ProcgenWaterfall.Random;
+							cont = true;
+							Console.WriteLine("\rSet mode to Random.");
+							break;
+						}
+					case ConsoleKey.O:
+						{
+							generator._flags.ProcgenWaterfall = ProcgenWaterfall.Pandemonium;
+							cont = true;
+							Console.WriteLine("\rSet mode to Pandemonium.");
+							break;
+						}
+					case ConsoleKey.V:
+						{
+							generator._flags.ProcgenWaterfallMode = ProcgenWaterfallMode.Vanilla;
+							cont = true;
+							Console.WriteLine("\rSet mode to Vanilla.");
+							break;
+						}
 					case ConsoleKey.U:
 						{
-							generator._flags.ProcgenWaterfall = ProcgenWaterfallMode.Uniform;
+							generator._flags.ProcgenWaterfallMode = ProcgenWaterfallMode.Chaotic;
 							cont = true;
 							Console.WriteLine("\rSet mode to Uniform.");
 							break;
 						}
 					case ConsoleKey.P:
 						{
-							generator._flags.ProcgenWaterfall = ProcgenWaterfallMode.Polar;
+							generator._flags.ProcgenWaterfallMode = ProcgenWaterfallMode.Compact;
 							cont = true;
 							Console.WriteLine("\rSet mode to Polar.");
 							break;
 						}
 					case ConsoleKey.J:
 						{
-							generator._flags.ProcgenWaterfall = ProcgenWaterfallMode.JitteredEven;
+							generator._flags.ProcgenWaterfallMode = ProcgenWaterfallMode.Lattice;
 							cont = true;
 							Console.WriteLine("\rSet mode to Jittered Even.");
 							break;
 						}
 					case ConsoleKey.H:
 						{
-							generator._flags.ProcgenWaterfall = ProcgenWaterfallMode.Linear;
+							generator._flags.ProcgenWaterfallMode = ProcgenWaterfallMode.Hallway;
 							cont = true;
 							Console.WriteLine("\rSet mode to Hallway.");
 							break;
@@ -165,9 +186,9 @@ namespace Sandbox
 						}
 					case ConsoleKey.B:
 						{
-							generator._flags.ProcgenWaterfallEntrance = ProcgenWaterfallEntrance.Branch;
+							generator._flags.ProcgenWaterfallEntrance = ProcgenWaterfallEntrance.Fork;
 							cont = true;
-							Console.WriteLine("\rSet entrance location to Branch");
+							Console.WriteLine("\rSet entrance location to Fork");
 							break;
 						}
 					case ConsoleKey.Q:

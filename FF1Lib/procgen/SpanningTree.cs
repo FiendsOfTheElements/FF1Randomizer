@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 using static System.Math;
 using System.Numerics;
 
@@ -19,10 +20,10 @@ namespace FF1Lib.Procgen
         /// for the 4x4-tile path element of waterfall, and the entire logic of what next step in drawing
         /// the path is legal is hardcoded for the waterfall path element.
         /// 
-        /// 
-
         
+        // local copy of the flags
         private Flags _flags;
+
         // The _pool graph contains all of the control Nodes, with weighted Edges between all pairs.
         // The weights are the squared pythagorean distance between them (with wraparound). The algorithm
         // uses weights determine which Edges to draw and which to discard (draw Edges between closer Nodes first.)
@@ -102,8 +103,9 @@ namespace FF1Lib.Procgen
         // Constructor
         public SpanningTree(Flags flags)
         {
-            _flags = flags;
-            _avoidLoops = (bool)flags.ProcgenWaterfallNoLoops;
+            // we need a local copy because we need to change some settings
+            // internally for any presets.
+            _flags = flags.ShallowCopy();           
         }
 
 
@@ -128,6 +130,9 @@ namespace FF1Lib.Procgen
                 {0x49,0x49,0x49,0x49},
                 {0x49,0x49,0x49,0x49}
             };
+
+            /// process the local copy of flags
+            ProcessFlags(rng);
             
             // Initialize the _pool graph of control Nodes. Most of what the end result looks like takes place here.
             InitPoolGraph(rng);
@@ -431,23 +436,23 @@ namespace FF1Lib.Procgen
 
             // Draw the visible wall tiles at the top boundary of the path.
             // We also need a wall tile in the event that two walls touch by just one tile edge in the y direction, like this:
-            // ==============\
-            //               |
-            // ______________/
-            // HHHHHHHHHHHHHHH <- this wall tile does not sit above a path tile
-            //               /=============
-            //               |
-            //               \_____________
-            //               HHHHHHHHHHHHHH
+            // = = = = = \
+            //           |
+            // _ _ _ _ _ /
+            // W W W W W W <- this wall tile does not sit above a path tile
+            //           / = = = = =
+            //           |
+            //           \ _ _ _ _ _
+            //           W W W W W W
             //
             // However, if we leave it there, once in a while we'll get this:
-            //       /=======\
-            //       |       |
-            //   -> \________/
-            //      HHHHHHHHHH
-            // =====\        /=============
-            // _____/     -> H\____________  these tiles are discontinuous with the one above, so we delete both
-            // HHHHHH         HHHHHHHHHHHHH
+            //         / = = = \
+            //         |       |
+            //    -> \ _ _ _ _ /
+            //       W W W W W W
+            // = = = \         / = = = =
+            // _ _ _ /    -> \ \ _ _ _ _  these tiles are discontinuous with the ones above, so we delete both
+            // W W W W       W W W W W W 
             for (int y = 0; y < 64; y++)
             {
                 for (int x = 0; x < 64; x++)
@@ -590,7 +595,7 @@ namespace FF1Lib.Procgen
             // and update the entrance pointer so you spawn on the WarpUp stairway.
             cm.Entrance = new((byte)(entranceNode.X+2),(byte)(entranceNode.Y+2),CoordinateLocale.Standard);
 
-            // Console.Write(cm.AsText());
+            Console.Write(cm.AsText());
             if (_flags.ProcgenWaterfallSpoiler)
             {
                 Utilities.ProcgenWaterfallCache = cm.AsText();
@@ -600,79 +605,458 @@ namespace FF1Lib.Procgen
         //////END Generate()
         
 
+        /// this processes the local copy of the flags.
+        private void ProcessFlags(MT19337 rng)
+        {
+            List<ProcgenWaterfallMode> modeFlags = Enum.GetValues<ProcgenWaterfallMode>().ToList();
+            List<ProcgenWaterfallDensity> densityFlags = Enum.GetValues<ProcgenWaterfallDensity>().ToList();
+            List<ProcgenWaterfallEntrance> entranceFlags = Enum.GetValues<ProcgenWaterfallEntrance>().ToList();
+            List<ProcgenWaterfallHallwayLength> hallwayLengthFlags = Enum.GetValues<ProcgenWaterfallHallwayLength>().ToList();
+            switch (_flags.ProcgenWaterfall)
+            {
+                case ProcgenWaterfall.Vanillish:
+                    {
+                        _flags.ProcgenWaterfallMode = ProcgenWaterfallMode.Vanilla;
+                        _flags.ProcgenWaterfallDensity = ProcgenWaterfallDensity.Normal;
+                        _flags.ProcgenWaterfallEntrance = new List<ProcgenWaterfallEntrance> 
+                        {
+                            ProcgenWaterfallEntrance.Anywhere,
+                            ProcgenWaterfallEntrance.Fork,
+                            ProcgenWaterfallEntrance.Furthest
+                        }.PickRandom(rng);
+                        _avoidLoops = true;
+                        break;
+                    }
+                case ProcgenWaterfall.Alt:
+                    {
+
+                        _flags.ProcgenWaterfallMode = new List<ProcgenWaterfallMode>
+                        {
+                            ProcgenWaterfallMode.Chaotic,
+                            ProcgenWaterfallMode.Compact,
+                            ProcgenWaterfallMode.Lattice
+                        }.PickRandom(rng);
+                        _flags.ProcgenWaterfallDensity = ProcgenWaterfallDensity.Normal;
+                        _flags.ProcgenWaterfallEntrance = new List<ProcgenWaterfallEntrance> 
+                        {
+                            ProcgenWaterfallEntrance.Anywhere,
+                            ProcgenWaterfallEntrance.Fork,
+                            ProcgenWaterfallEntrance.Furthest
+                        }.PickRandom(rng);
+                        _avoidLoops = true;
+                        break;
+                    }
+                case ProcgenWaterfall.Hallway:
+                    {
+                        _flags.ProcgenWaterfallMode = ProcgenWaterfallMode.Hallway;
+                        _flags.ProcgenWaterfallDensity = ProcgenWaterfallDensity.Normal;
+                        _flags.ProcgenWaterfallHallwayLength = ProcgenWaterfallHallwayLength.Mid;
+                        _flags.ProcgenWaterfallEntrance = new List<ProcgenWaterfallEntrance> 
+                        {
+                            ProcgenWaterfallEntrance.Anywhere,
+                            ProcgenWaterfallEntrance.Fork,
+                            ProcgenWaterfallEntrance.Mid
+                        }.PickRandom(rng);
+                        _avoidLoops = true;
+                        break;
+                    }
+                case ProcgenWaterfall.Random:
+                    {
+                        _flags.ProcgenWaterfallMode = modeFlags.PickRandom(rng);
+                        _flags.ProcgenWaterfallDensity = densityFlags.PickRandom(rng);
+                        _flags.ProcgenWaterfallHallwayLength = hallwayLengthFlags.PickRandom(rng);
+                        _flags.ProcgenWaterfallEntrance = entranceFlags.PickRandom(rng);
+                        _avoidLoops = rng.Between(0,1) == 1;
+                        break;
+                    }
+                case ProcgenWaterfall.Pandemonium:
+                    {
+                        _flags.ProcgenWaterfallMode = modeFlags.PickRandom(rng);
+                        _flags.ProcgenWaterfallDensity = ProcgenWaterfallDensity.Dense;
+                        _flags.ProcgenWaterfallHallwayLength = new List<ProcgenWaterfallHallwayLength>
+                        {
+                            ProcgenWaterfallHallwayLength.Long,
+                            ProcgenWaterfallHallwayLength.Absurd
+                        }.PickRandom(rng);
+                        if (_flags.ProcgenWaterfallMode == ProcgenWaterfallMode.Hallway)
+                        {
+                            _flags.ProcgenWaterfallEntrance = new List<ProcgenWaterfallEntrance>
+                            {
+                                ProcgenWaterfallEntrance.Mid,
+                                ProcgenWaterfallEntrance.Maddening
+                            }.PickRandom(rng);
+                        }
+                        else
+                        {
+                            _flags.ProcgenWaterfallEntrance = new List<ProcgenWaterfallEntrance>
+                            {
+                                ProcgenWaterfallEntrance.Furthest,
+                                ProcgenWaterfallEntrance.Maddening
+                            }.PickRandom(rng);
+                        }
+                        _avoidLoops = rng.Between(0,1) == 1;
+                        break;
+                    }
+                // case ProcgenWaterfall.Custom
+                default:
+                    {
+                        _avoidLoops = (bool)_flags.ProcgenWaterfallNoLoops;
+                        break;
+                    }
+            }
+            if (_flags.ProcgenWaterfallMode == ProcgenWaterfallMode.Random)
+            {
+                _flags.ProcgenWaterfallMode = modeFlags.PickRandom(rng);
+            }
+            if (_flags.ProcgenWaterfallDensity == ProcgenWaterfallDensity.Random)
+            {
+                _flags.ProcgenWaterfallDensity = densityFlags.PickRandom(rng);
+            }
+            if (_flags.ProcgenWaterfallEntrance == ProcgenWaterfallEntrance.Random)
+            {
+                _flags.ProcgenWaterfallEntrance = entranceFlags.PickRandom(rng);
+            }
+            if (_flags.ProcgenWaterfallHallwayLength == ProcgenWaterfallHallwayLength.Random)
+            {
+                _flags.ProcgenWaterfallHallwayLength = hallwayLengthFlags.PickRandom(rng);
+            }
+
+        }
+
         /// Initialize the _pool graph according to the flag settings.
         private void InitPoolGraph(MT19337 rng)
         {
             // this is to be able to choose a random function if desired. This could be
             // done with goto case in the switch instead of a delegate, but I hate goto's, so..
             Func<MT19337,Graph> InitDistribution;
-            switch (_flags.ProcgenWaterfall)
+            switch (_flags.ProcgenWaterfallMode)
             {
-                case ProcgenWaterfallMode.Uniform :
+                case ProcgenWaterfallMode.Vanilla :
+                    {
+                        InitDistribution = VanillaRandom;
+                        break;
+                    }
+                case ProcgenWaterfallMode.Chaotic :
                     {
                         InitDistribution = UniformRandom;
                         break;
                     }
-                case ProcgenWaterfallMode.Polar :
+                case ProcgenWaterfallMode.Compact :
                     {
                         InitDistribution = PolarRandom;
                         break;
                     }
-                case ProcgenWaterfallMode.JitteredEven :
+                case ProcgenWaterfallMode.Lattice :
                     {
                         InitDistribution = JitteredEvenRandom;
                         break;
                     }
-                case ProcgenWaterfallMode.Linear :
+                case ProcgenWaterfallMode.Hallway :
                     {
                         InitDistribution = LinearRandom;
                         break;
                     }
-                // case ProcgenWaterfallMode.Random:
                 default:
                     {
-                        InitDistribution = new List<Func<MT19337,Graph>>() {UniformRandom, PolarRandom, JitteredEvenRandom, LinearRandom}.PickRandom(rng);
-                        break;
+                        goto case ProcgenWaterfallMode.Vanilla;
                     }
             }            
             _pool = InitDistribution(rng);
         }
+
+        // Try to reproduce something like the Vanilla waterfall:
+        // Uniform random distribution with large contiguous non-path areas.
+        // In order to do this, we first create two Ellipses of different sizes,
+        // each with a random rotation such that they are within 60 degrees of perpendicular,
+        // and with random centers with the lowest amount of intersection we can find in
+        // 100 tries. Points within the borders of the two ellipses become the initial forbidden footprint,
+        // and the initialized _pool Nodes have to be placed around them.
+        private Graph VanillaRandom(MT19337 rng)
+        {
+            int numNodes;
+            
+            (double min, double max) fillRange;
+            switch (_flags.ProcgenWaterfallDensity)
+            {
+                case ProcgenWaterfallDensity.Sparse:
+                    {
+                        numNodes = rng.Between(24,28);
+                        fillRange = (0.3,0.35);
+                        _stepTolerance = 30;
+                        _maxLoopDistance = 20;
+                        break;
+                    }
+                case ProcgenWaterfallDensity.Normal:
+                    {
+                        numNodes = rng.Between(38,42);
+                        fillRange = (0.25, 0.3);
+                        _stepTolerance = 20;
+                        _maxLoopDistance = 18;
+                        break;
+                    }
+                case ProcgenWaterfallDensity.Dense:
+                    {
+                        numNodes = rng.Between(56,60);
+                        fillRange = (0.2,0.25);
+                        _stepTolerance = 15;
+                        _maxLoopDistance = 16;
+                        break;
+                    }
+                default:
+                    {
+                        goto case ProcgenWaterfallDensity.Normal;
+                    }
+            }
+
+            // the "frames" give the lengths of the major and minor axes of the ellipses.
+            (float major, float minor) largeFrame;
+            (float major, float minor) smallFrame;
+            // The ellipses are targeted to have major:minor ratios of about 7:4 and 5:3, respectively. These numbers
+            // also represent the proportional relationship between the two ellipses, so the smaller one will be a little
+            // less than half the area of the larger. Together, ellipses of that size have combined area of PI * 10.75
+            
+            /// We want to scale up the combined area to match the targets in fillRange above. Ellipse area varies with the
+            /// square of the axis lengths so we need Sqrt to get the scalar. Then we multiply by 1000 to get an integer
+            /// we can use with the rng.
+            int minScalar = (int)Round(Sqrt(4096 * fillRange.min / PI / 10.75) * 1000);
+            int maxScalar = (int)Round(Sqrt(4096 * fillRange.max / PI / 10.75) * 1000);
+
+            largeFrame = 
+                (
+                    rng.Between(7*minScalar, 7*maxScalar) / 1000f,
+                    rng.Between(4*minScalar, 4*maxScalar) / 1000f
+                );
+            smallFrame = 
+                (
+                    rng.Between(5*minScalar, 5*maxScalar) / 1000f,
+                    rng.Between(3*minScalar, 3*maxScalar) / 1000f
+                );
+
+            // because it's unlikely that all 8 of these values will all roll large or small, the actual area taken up by both
+            // will be a normal distribution about the mean of the fillRange, even though the ellipses will vary a bit in
+            // in shape and placement on each roll
+
+            // we want the two ellipses to be between 90 and 160 degrees of one another so they take up space in
+            // two directions. 
+            Ellipse small = new();
+            int largeTheta = rng.Between(0,179);
+            int smallTheta = rng.Between(30,150) + largeTheta;
+            
+            // since the .Contains method in the Ellipse does not consider map wraparound, we expand the map to 128x128,
+            // place the ellipse in the center 64x64, and then use % 64 after the contains test.
+            // Really, this could have been centered at 32,32, but placing a lot of empty space at the center of the map
+            // makes the spoiler much harder to read.
+            Ellipse large = 
+            new (
+                    center: new Point(rng.Between(32,95),rng.Between(32,95)),
+                    major: largeFrame.major,
+                    minor: largeFrame.minor,
+                    theta: largeTheta
+                );
+            
+            HashSet<Point> largePoints = new();
+            HashSet<Point> smallPoints = new();
+
+            // get bounding rectangle and check the points in it to see if they are within the
+            // ellipse. If so, store the mod 64 equivalent.
+            (Point largeMin, Point largeMax) = large.GetBounds();
+
+            for (int y = largeMin.Y; y < largeMax.Y; y++)
+            {
+                for (int x = largeMin.X; x < largeMax.X; x++)
+                {
+                    Point point = new(x,y);
+                    Point modPoint = new(x % 64, y % 64);
+                    if (large.Contains(point))
+                    {
+                        largePoints.Add(modPoint);
+                    }
+                }
+            }
+
+            // poke around and find somewhere to put the small ellipse so that it has
+            // the smallest intersection with the large one. Typically we'll be able to find one
+            // that doesn't intersect at all in the first few rounds, so 100 is overkill, but
+            // there's no reason not to give some insurance
+            int minIntersection = 1000000;
+            for (int i = 0; i < 100; i++)
+            {
+                int thisIntersection = 0;        
+                HashSet<Point> candidatePoints = new();
+                Ellipse candidate =
+                new (
+                        center: new Point(rng.Between(32,95),rng.Between(32,95)),
+                        major: smallFrame.major,
+                        minor: smallFrame.minor,
+                        theta: smallTheta
+                    );
+
+                // same process as above, but we also test for intersection with
+                // points in the large ellipse.
+                (Point min, Point max) = candidate.GetBounds();
+
+                for (int y = min.Y; y < max.Y; y++)
+                {
+                    for (int x = min.X; x < max.X; x++)
+                    {
+                        Point point = new(x,y);
+                        Point modPoint = new(x % 64, y % 64);
+                        if (candidate.Contains(point))
+                        {
+                            candidatePoints.Add(modPoint);
+                            thisIntersection += largePoints.Contains(modPoint)? 1 : 0;
+                        }
+                    }
+                }
+                // if we found one with a smaller intersection, store it and try again
+                if (thisIntersection < minIntersection)
+                {
+                    minIntersection = thisIntersection;
+                    smallPoints = candidatePoints;
+                    small = candidate;
+                }
+                // or bail if the intersection is 0 since we won't do better
+                if (thisIntersection == 0)
+                {
+                    break;
+                }
+            }
+
+            HashSet<Node> totalFootprint = largePoints.Union(smallPoints).Select(p => new Node(p)).ToHashSet();
+            // Console.WriteLine($"Ellipse Nodes: {totalFootprint.Count}\nSmall: {smallPoints.Count}\nLarge: {largePoints.Count}\nIntersection: {minIntersection}");
+
+            int n = 0;
+            while (_initNodes.Count < numNodes && n < 1000)
+            {
+                Node node = new(rng.Between(0,63),rng.Between(0,63));
+                if (!totalFootprint.Contains(node))
+                {
+                    _initNodes.Add(node);
+                    totalFootprint.UnionWith(_footprint.LocusToLocus(node));
+                }
+                n++;
+            }
+
+            return new Graph(_initNodes);
+        }
+
+        /// makeshift Ellipse class which does everything we need to above and no more
+        /// A real one would use accessors instead of fields, and would change all the values
+        /// whenever any of them is changed. For this, we can change Center with impunity
+        private class Ellipse
+        {
+            public Point Center;
+            public float Major;
+            public float Minor;
+            public int Theta;
+            private float sinTheta;
+            private float cosTheta;
+            private float semimajor;
+            private float semiminor;
+            private const double degToRad = PI / 180.0;
+
+    
+            public Ellipse(Point center = new(), float major = 2f, float minor = 1f, int theta = 0)
+            {
+                Center = center;
+                Major = major;
+                Minor = minor;
+                Theta = theta;
+                sinTheta = (float)Sin(theta * degToRad);
+                cosTheta = (float)Cos(theta * degToRad);
+                semimajor = major / 2f;
+                semiminor = minor / 2f;
+            }
+
+            // these aren't used, but they could be later.
+            public (PointF,PointF) GetMajor()
+            {
+                SizeF delta = new(cosTheta*semimajor,sinTheta*semimajor);
+                return (PointF.Add(Center,delta), PointF.Subtract(Center,delta));
+            }
+
+            public (PointF,PointF) GetMinor()
+            {
+                SizeF delta = new(sinTheta*semiminor,cosTheta*semiminor);
+                return (PointF.Add(Center,delta), PointF.Subtract(Center,delta));
+            }
+
+            // this is a test for whether the point is within the bounds of the
+            // Ellipse, based on the equation for a rotated ellipse.
+            public bool Contains(PointF point)
+            {
+                float dX = point.X - Center.X;
+                float dY = point.Y - Center.Y;
+
+                float A = (cosTheta*dX + sinTheta*dY)/ semimajor;
+                float B = (sinTheta*dX - cosTheta*dY)/ semiminor;
+                return A*A + B*B <= 1;
+            }
+
+            // this gets the width and height of the axis-aligned bounding rectangle
+            // of the Ellipse.
+            public SizeF GetSize()
+            {
+                float A = semimajor * cosTheta;
+                float B = semimajor * sinTheta;
+                float C = semiminor * cosTheta;
+                float D = semiminor * sinTheta;
+
+                float width  = 2 * (float)Sqrt(A*A + D*D);
+                float height = 2 * (float)Sqrt(B*B + C*C);
+
+                return new SizeF(width,height);
+            }
+
+            // and the points of the bounding rectangle. Since we'll be iterating over these
+            // we convert the points to integers and use Floor and Ceiling to get the values
+            // just inside the range given by Center +/- size/2
+            public (Point, Point) GetBounds()
+            {
+                SizeF size = GetSize()/2f;
+
+                int xMin = (int)Ceiling(Center.X - size.Width);
+                int yMin = (int)Ceiling(Center.Y - size.Height);
+                int xMax = (int)Floor(Center.X + size.Width);
+                int yMax = (int)Floor(Center.Y + size.Height);
+
+                return (new Point(xMin,yMin), new Point(xMax,yMax));
+            }
+        }
+        
+
 
         // Get a Graph of nodes chosen randomly from the 64x64, spaced so that a full wall can be
         // drawn around each node. We hope the distribution ends up a little clumpy
         private Graph UniformRandom(MT19337 rng)
         {
             int numNodes;
-            //int numNodes = rng.Between(27,37);
             switch (_flags.ProcgenWaterfallDensity)
             {
                 case ProcgenWaterfallDensity.Sparse:
                 {
-                    numNodes = rng.Between(13,23);
+                    numNodes = rng.Between(20,24);
                     _stepTolerance = 75;
                     _maxLoopDistance = 20;
                     break;
                 }
                 case ProcgenWaterfallDensity.Normal:
                 {
-                    numNodes = rng.Between(27,37);
+                    numNodes = rng.Between(34,38);
                     _stepTolerance = 45;
                     _maxLoopDistance = 18;
                     break;
                 }
                 case ProcgenWaterfallDensity.Dense:
                 {
-                    numNodes = rng.Between(45,55);
+                    numNodes = rng.Between(52,56);
                     _stepTolerance = 15;
                     _maxLoopDistance = 16;
                     break;
                 }
                 default:
                 {
-                    _stepTolerance = 45;
-                    _maxLoopDistance = 20;
-                    numNodes = 32;
-                    break;
+                    goto case ProcgenWaterfallDensity.Normal;
                 }
             }
             HashSet<Node> totalFootprint = new();
@@ -733,12 +1117,7 @@ namespace FF1Lib.Procgen
                 }
                 default:
                 {
-                    width = 3200;
-                    pow = 2;
-                    numNodes = 32;
-                    _stepTolerance = 75;
-                    _maxLoopDistance = 20;
-                    break;
+                    goto case ProcgenWaterfallDensity.Normal;
                 }
             }
             HashSet<Node> totalFootprint = new();
@@ -817,11 +1196,7 @@ namespace FF1Lib.Procgen
                 }
                 default:
                 {
-                    divisor = 4;
-                    kernelWidth = 5;
-                    _stepTolerance = 60;
-                    _maxLoopDistance = 20;
-                    break;
+                    goto case ProcgenWaterfallDensity.Normal;
                 }
             }
 
@@ -936,9 +1311,7 @@ namespace FF1Lib.Procgen
                 }
                 default:
                 {
-                    normal = true;
-                    numNodes = 30;
-                    break;
+                    goto case ProcgenWaterfallDensity.Normal;
                 }
             }
 
@@ -989,7 +1362,7 @@ namespace FF1Lib.Procgen
                         }
                     break;
                 }
-                // ca. 2.5 to ca. 4.0 maplengths
+                // ca. 2.5 to ca. 3.5 maplengths
                 case ProcgenWaterfallHallwayLength.Long:
                 {
                     _stepTolerance = 20;
@@ -997,20 +1370,17 @@ namespace FF1Lib.Procgen
                     hallwayLength = rng.Between(160,223);
                     break;
                 }
-                // ca 4.0-5.0 maplengths!!!
+                // ca 3.5-4.9 maplengths!!!
                 case ProcgenWaterfallHallwayLength.Absurd:
                 {
                     _stepTolerance = 20;
                     _maxLoopDistance = 12;
-                    hallwayLength = rng.Between(224,287);
+                    hallwayLength = rng.Between(224,308);
                     break;
                 }
                 default:
                 {
-                    _stepTolerance = 60;
-                    _maxLoopDistance = 20;
-                    hallwayLength = 64;
-                    break; 
+                    goto case ProcgenWaterfallHallwayLength.Mid;
                 }
             }
 
@@ -1454,7 +1824,7 @@ namespace FF1Lib.Procgen
             Node outputNode = new();
             switch (_flags.ProcgenWaterfallEntrance)
             {
-                // literally any node in the path nodes. 
+                // any node in the path nodes. 
                 case ProcgenWaterfallEntrance.Anywhere:
                     {
                         outputNode = _pathNodes.PickRandom(rng);
@@ -1462,7 +1832,7 @@ namespace FF1Lib.Procgen
                     }
                 // find the set of nodes in the _tree Graph with the most attached edges,
                 // and return the furthest of these from the room
-                case ProcgenWaterfallEntrance.Branch:
+                case ProcgenWaterfallEntrance.Fork:
                     {
                         (var distances, var nodes) = AllDistances(_firstNode);
                         IEnumerable<Node> branchyNodes = _tree.Nodes.GroupBy(node => _tree.Adjacencies[node].Count).MaxBy(group => group.Key);

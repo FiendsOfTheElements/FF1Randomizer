@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 using static System.Math;
 using System.Numerics;
 
@@ -64,6 +65,10 @@ namespace FF1Lib.Procgen
         public Node((int,int) coord)
         {
             XY = ((byte,byte))coord;
+        }
+        public Node(Point point)
+        {
+            XY = ((byte)point.X,(byte)point.Y);
         }
         public override string ToString()
         {

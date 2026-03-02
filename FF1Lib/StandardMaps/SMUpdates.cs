@@ -10,19 +10,32 @@ using static FF1Lib.FF1Rom;
 
 namespace FF1Lib
 {
+	public enum ProcgenWaterfall
+	{
+		Off,
+		[Description("Vanilla-Like")]
+		Vanillish,
+		[Description("Alt Layouts")]
+		Alt,
+		[Description("Long Hallway")]
+		Hallway,
+		Random,
+		Pandemonium,
+		Custom
+	}
+
+	
 	public enum ProcgenWaterfallMode
 	{
-		[Description("Off")]
-		Off,
-		[Description("Normal")]
-		Uniform,
-		[Description("Compact")]
-		Polar,
-		[Description("Even Spread")]
-		JitteredEven,
+		
+		[Description("Vanilla-Like")]
+		Vanilla,
+		Chaotic,
+		Compact,
+		[Description("Lattice-Like")]
+		Lattice,
 		[Description("Long Hallway")]
-		Linear,
-		[Description("Random")]
+		Hallway,
 		Random
 	}
 
@@ -30,7 +43,8 @@ namespace FF1Lib
 	{
 		Normal,
 		Sparse,
-		Dense
+		Dense,
+		Random
 	}
 
 	public enum ProcgenWaterfallHallwayLength
@@ -38,18 +52,19 @@ namespace FF1Lib
 		Short,
 		Mid,
 		Long,
-		Absurd
+		Absurd,
+		Random
 	}
 
 	public enum ProcgenWaterfallEntrance
 	{
-		
 		Anywhere,
 		Furthest,
 		Mid,
 		Center,
-		Branch,
-		Maddening
+		Fork,
+		Maddening,
+		Random
 	}
 
 	public partial class StandardMaps
@@ -68,13 +83,18 @@ namespace FF1Lib
 				//   this.ImportCustomMap(maps, teleporters, overworldMap, npcdata, newmap);
 				//  }
 			}
-			Stopwatch sw = new();
-			sw.Reset();
-			sw.Start();
-			ProcgenWaterfall(teleporters, mapObjects[(int)MapIndex.Waterfall], rng);
-			sw.Stop();
-			TimeSpan ts = sw.Elapsed;
-			Console.WriteLine($"Gen time: {ts.Minutes * 60 + (double)ts.Seconds + ts.Milliseconds/1000.0} seconds");
+
+			if (flags.ProcgenWaterfall != ProcgenWaterfall.Off)
+			{
+				await rom.Progress("Excavating Waterfall", 1);
+				Stopwatch sw = new();
+				sw.Reset();
+				sw.Start();
+				DoProcgenWaterfall(teleporters, mapObjects[(int)MapIndex.Waterfall], rng);
+				sw.Stop();
+				TimeSpan ts = sw.Elapsed;
+				Console.WriteLine($"Gen time: {ts.Minutes * 60 + (double)ts.Seconds + ts.Milliseconds/1000.0} seconds");
+			}
 			
 			FlipMaps(flags, rng);
 			if (flags.ProcgenSkyBridge != ProcgenSkyBridgeMode.Off)
@@ -607,12 +627,8 @@ namespace FF1Lib
 				rom.PutInBank(0x1F, 0xCEDE, new byte[] { 0x81 });
 			}
 		}
-		private void ProcgenWaterfall(Teleporters teleporters, MapObjects waterfallObjects, MT19337 rng)
+		private void DoProcgenWaterfall(Teleporters teleporters, MapObjects waterfallObjects, MT19337 rng)
 		{
-			// if (!procgenwaterfall)
-			// {
-			// 	return;
-			// }
 
 			MapRequirements reqs;
 			MapGeneratorStrategy strategy;

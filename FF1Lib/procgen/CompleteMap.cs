@@ -60,7 +60,7 @@ namespace FF1Lib.Procgen
 			{ Tile.EarthCaveRockB, 'X' },
 			{ Tile.EarthCaveRandomEncounters, ' ' },
 			{ Tile.EarthCaveOOB, '0' },
-			{ Tile.WaterfallInside, '•' },
+			{ Tile.WaterfallInside, '.' },
 			{ Tile.WaterfallRandomEncounters, ' ' },
 			{ (Tile)0xFE, 'X' },
 			{ (Tile)0xFF, ' ' },
@@ -102,7 +102,10 @@ namespace FF1Lib.Procgen
 					seenValues.Add(value);
 					if (value == (int) Tile.WarpUp)
 						seenEntrance = true;
+
+					sb.Append(' ');
 				}
+				
 
 				if (seenEntrance)
 					sb.Append("\t <-- Entrance this row");
