@@ -9,8 +9,8 @@ namespace FF1Lib
 	public enum ProcgenSkyBridgeMode
 	{
 		Off = 0,
-		Short = 2,
-		Medium = 5,
+		Short = 4,
+		Medium = 6,
 		Long = 9
 	}
 
@@ -115,28 +115,36 @@ namespace FF1Lib
 		}
 		public static void Generate(Map m, MT19337 rng, ProcgenSkyBridgeMode mode)
 		{
-			const int MAP_WIDTH = 64;
+			//const int MAP_WIDTH = 64;
 			const int VERTICAL_START = 16;
 			const int VERTICAL_END = 52;
 			const int HORIZONTAL_START = 7;
 
+			Dictionary<ProcgenSkyBridgeMode, int> HORIZONTAL_RANGES = new Dictionary<ProcgenSkyBridgeMode, int>()
+			{
+				{ProcgenSkyBridgeMode.Short, 24 },
+				{ProcgenSkyBridgeMode.Medium, 36 },
+				{ProcgenSkyBridgeMode.Long, 63 }
+			};
+
 			//replace map with template
 			int imax = SKYBRIDGE.GetLength(0);
 			int jmax = SKYBRIDGE.GetLength(1);
-			for (int i = 0; i < imax-1; i++)
+			for (int i = 0; i < imax - 1; i++)
 			{
-				for (int j = 0; j < jmax-1; j++)
+				for (int j = 0; j < jmax - 1; j++)
 				{
 					m[i, j] = SKYBRIDGE[i, j];
 				}
 			}
-			
+
 			//generate a number of points to draw between
 			List<int> vert_points = new List<int>();
 			List<int> horiz_points = new List<int>();
 
 			var heights_range = Enumerable.Range(VERTICAL_START + 1, (VERTICAL_END - VERTICAL_START) - 2).ToList();
-			var key_points_range = Enumerable.Range(0, MAP_WIDTH).ToList();
+			
+			var key_points_range = Enumerable.Range(0, HORIZONTAL_RANGES[mode]).ToList();
 
 			heights_range = heights_range.Where((item, index) => index % 2 == 0).ToList();
 			heights_range.Shuffle(rng);
