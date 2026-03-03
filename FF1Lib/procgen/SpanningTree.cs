@@ -595,7 +595,7 @@ namespace FF1Lib.Procgen
             // and update the entrance pointer so you spawn on the WarpUp stairway.
             cm.Entrance = new((byte)(entranceNode.X+2),(byte)(entranceNode.Y+2),CoordinateLocale.Standard);
 
-            Console.Write(cm.AsText());
+            // Console.Write(cm.AsText());
             if (_flags.ProcgenWaterfallSpoiler)
             {
                 Utilities.ProcgenWaterfallCache = cm.AsText();
