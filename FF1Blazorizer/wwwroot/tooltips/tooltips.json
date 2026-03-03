@@ -835,12 +835,7 @@
 		"screenshot": "hallOfDragons.png",
 		"description": "Adds encounters to Bahamut B1 hallway normally leading to Bahamut's room. All encounters will be various forms of dragons."
 	},
-	{
-		"Id": "procGenWaterfall",
-		"title": "Generated Waterfall Cave",
-		"screenshot": "procGenWaterfall.png",
-		"description": "Randomly generates the map for the Waterfall cave creating a new maze each seed."
-	},
+
 	{
 		"Id": "flipDungeonsCheckBox",
 		"title": "Flip Dungeons Horizontally",
@@ -2706,6 +2701,42 @@
 		"title": "Procedurally Generated Sky Fortress 5F",
 		"screenshot": "procgenSkyBridge.png",
 		"description": "Randomly generates a new 'Bridge of Destiny' for Sky Fortress 5F."
+	},
+	{
+		"Id": "procGenWaterfall",
+		"title": "Procedurally Generated Waterfall",
+		"screenshot": "procGenWaterfall.png",
+		"description": "Generates a new Waterfall cave.\nLoad one of several presets, or fully customize the generator with \"Custom\"\nPresets:\nVanilla-Like: generate a map that has the same feel as the vanilla waterfall. The path winds and branches, but large contiguous areas of the map are solid rock.\nAlt Layouts: Pick one of \"Chaotic,\" \"Compact,\" or \"Lattice-Like\" layouts (see tooltips in the \"Custom\" settings for more).\nLong Hallway: Generate a map that contains a long linear stretch of hallway with branch points on either side that lead further into the map.\nRandom: Generate a map using a fully randomized selection of the \"Custom\" settings.\nPandemonium: Like \"Random,\" but favoring more difficult and trollish settings.\nCustom: reveals the full set of buttons and levers to customize the generator.\nVanilla-Like, Alt Layouts, and Long Hallway use intermediate settings; in general you should expect to enter either far away from the room, at a fork in the path, or at a random point. While the generator attempts to draw a map with no loops, occasionally the tile placement constraints will erode a small hole in the wall that will open up a loop."
+	},
+	{
+		"Id": "procGenWaterfallSpoiler",
+		"title": "Generate a .txt spoiler for the current map.",
+		"description": "Produces a text-based rendering of the map. As with the main spoiler log, it results in a different randomization than if this setting wasn't selected.\nTo read the map, it will be necessary to use a monospace font.\nSee the main Spoiler Log tooltip for more information about browser settings."
+	},
+	{
+		"Id": "procGenWaterfallMode",
+		"title": "Choose the Waterfall's layout",
+		"description": "Sets the layout, or general shape, of the waterfall.\nVanilla-Like: generate a map that has the same feel as the vanilla waterfall. The path winds and branches, but large contiguous areas of the map are solid rock.\nChaotic: Generates a map where the path can go and branch anywhere. Similar to Vanilla-Like, but without the contiguous blank areas.\nCompact: Generates a map where the path is concentrated near the center, and less dense at the periphery.\nLattice-Like: Generates a map that is evenly spaced, where the path mostly stays on the edges of a diamond lattice. Everything looks similar, and it's easy to get lost. Try using the \"hand-on-wall rule.\"\nLong Hallway: Generates a map that contains a long, linear stretch of hallway with branch points on either side that lead further into the map.\nRandom: Choose one of the above layouts at random."
+	},
+	{
+		"Id": "procGenWaterfallDensity",
+		"title": "Choose the Waterfall's map density",
+		"description": "Sets the map density, or degree of complexity. More dense produces a map with more twists and turns, and more branches."
+	},
+	{
+		"Id": "procGenWaterfallHallway",
+		"title": "Sets the Long Hallway's length",
+		"description": "Because maps in FF1 wrap around from top to bottom and left to right (e.g. on Sky 4F), we can use this to make very long passagways that wrap the screen several times. Generating a spoiler map on the \"Absurd\" setting will help you understand the mechanic. The following settings and the resulting hallway lengths, where one maplength is how far you can walk before wrapping.\nShort: 0.75 to 1.5 maplengths\nMid: 1.5 to 2.5 maplengths\nLong: 2.5 to 3.5 maplengths\nAbsurd: 3.5 to almost 5.0 maplengths\n"
+	},
+	{
+		"Id": "procGenWaterfallEntrance",
+		"title": "Sets the entrance stairs location",
+		"description": "This setting analyzes the map and places the entrance in one of the following locations:\nAnywhere: Chooses a random spot in the path.\nFurthest: Chooses the spot most distant from the robot room (in steps through the path).\nMid: Chooses a random spot that is 40%-60% of the longest distance on the path from the robot room. In Long Hallway, this is likely to place it in the middle of the hallway.\nCenter: Chooses the map's \"centroid,\" i.e. the spot that is the shortest total distance from all other parts of the path.\nFork: Chooses the fork in the path with the greatest number of branches.\nMaddening: Tries to place the entrance at a spot where the robot room is immediately visible but is more than 50% of the longest distance on the path from the room. If it can't find such a spot, it will try to optimize for longest walking distance and shortest distance as-the-bat-flies."
+	},
+	{
+		"Id": "procGenWaterfallNoLoops",
+		"title": "Try to avoid generating loops",
+		"description": "When set, the generator tries to avoid drawing looping paths. If it succeeds, the maze can always be solved by following the \"hand-on-wall rule,\" where if you imagine placing a hand on the wall and following the wall's outline, you will traverse all of the branches and eventually end up at the robot room.\nWhen unset, the generator allows some loops to form.\nNOTE: very occasionally the tile-drawing algorithm will need to erode a small hole in a wall in order to preserve tile continuity, which may introduce a loop. A small one-or-two tile passage from one branch to another is a clue (but not a definitive one!) that this might have happened."
 	},
 	{
 		"Id": "mapDerpCheckBox",

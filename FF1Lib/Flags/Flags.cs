@@ -749,5 +749,15 @@ namespace FF1Lib
 
 		public bool? ProcgenEarth { get; set; } = false;
 		public ProcgenSkyBridgeMode ProcgenSkyBridge { get; set; } = ProcgenSkyBridgeMode.Off;
+
+		public ProcgenWaterfall ProcgenWaterfall { get; set; } = ProcgenWaterfall.Off;
+		public ProcgenWaterfallMode ProcgenWaterfallMode { get; set; } = ProcgenWaterfallMode.Vanilla;
+		public ProcgenWaterfallDensity ProcgenWaterfallDensity { get; set; } = ProcgenWaterfallDensity.Normal;
+		public ProcgenWaterfallHallwayLength ProcgenWaterfallHallwayLength { get; set; } = ProcgenWaterfallHallwayLength.Mid;
+		public ProcgenWaterfallEntrance ProcgenWaterfallEntrance { get; set; } = ProcgenWaterfallEntrance.Anywhere;
+		public bool? ProcgenWaterfallNoLoops { get; set; } = true;
+		public bool ProcgenWaterfallSpoiler { get; set; } = false;
+
+
 	}
 }
