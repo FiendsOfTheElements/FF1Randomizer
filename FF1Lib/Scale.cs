@@ -257,6 +257,39 @@ namespace FF1Lib
 			return evadeCap;
 
 		}
+		public void ScaleSleep(MT19337 rng, Flags flags)
+		{
+			// Fixes the index used for Enemy HP for Sleep
+			PutInBank(0x0C,0xB1D5,Blob.FromHex("02"));
+			// Fixes math buffer bank for subtraction
+			PutInBank(0x0C,0xB1EA,Blob.FromHex("00"));
+			// Fixes RandAX extra increment; otherwise using 256 results in an overflow of the high value making the range equal to the low value
+			PutInBank(0x0C,0xAE60,Blob.FromHex("EAEAEAEA"));
+			// fix the enemy sleep buffer
+			PutInBank(0x0C,0xB1EE,Blob.FromHex("F009A9DF2090B1A90FD002A9024C8EB2EAEAEA"));
+			// fix player sleep subroutine
+			PutInBank(0x0C,0xA451,Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+
+			if (flags.PlayerSleepScaleLow == 0 && flags.PlayerSleepScaleHigh == 80 && flags.EnemySleepScaleLow == 0 && flags.EnemySleepScaleHigh == 80)
+			// if (flags.PlayerSleepScaleLow == 0 && flags.PlayerSleepScaleHigh == 80)
+			{
+				return;
+			}
+
+			string minPlayerSleep = (bool)flags.ClampMinimumStatScale ? 0.ToString("X") : flags.PlayerSleepScaleLow.ToString("X");
+			Console.WriteLine(minPlayerSleep);
+			string highPlayerSleep = (bool)flags.ClampMinimumStatScale ? Math.Max(255, flags.PlayerSleepScaleHigh).ToString("X") : flags.PlayerSleepScaleHigh.ToString("X");
+			Console.WriteLine(highPlayerSleep);
+			string minEnemySleep = (bool)flags.ClampMinimumStatScale ? 0.ToString("X") : flags.EnemySleepScaleLow.ToString("X");
+			Console.WriteLine(minEnemySleep);
+			string highEnemySleep = (bool)flags.ClampMinimumStatScale ? Math.Max(255, flags.EnemySleepScaleHigh).ToString("X") : flags.EnemySleepScaleHigh.ToString("X");
+			Console.WriteLine(highEnemySleep);
+
+			PutInBank(0x0C,0xA445,Blob.FromHex(minPlayerSleep));
+			PutInBank(0x0C,0xA447,Blob.FromHex(highPlayerSleep));
+			PutInBank(0x0C,0xB1E2,Blob.FromHex(minEnemySleep));
+			PutInBank(0x0C,0xB1E4,Blob.FromHex(highEnemySleep));
+		}
 
 		public void ScaleEnemyStats(MT19337 rng, Flags flags)
 		{
