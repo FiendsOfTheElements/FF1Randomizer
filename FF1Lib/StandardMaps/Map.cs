@@ -115,6 +115,22 @@ namespace FF1Lib
 				}
 		}
 
+		public void FlipSectionHorizontal(int xs1, int ys1, int xs2, int ys2)
+		{
+			int midX = (xs2 - xs1)/2 + 1;
+			for (int y = ys1; y <= ys2; y++)
+			{
+				for (int x = 0; x < midX ; x++)
+				{
+					int xLeft = xs1 + x;
+					int xRight = xs2 - x;
+					(this[y,xLeft],this[y,xRight]) = (this[y,xRight],this[y,xLeft]);
+				}
+				
+			}
+		}
+
+
 		public Map Clone()
 		{
 			Map map = new Map(0);
@@ -147,7 +163,7 @@ namespace FF1Lib
 		public void Load(Stream stream)
 		{
 			var buffer = new byte[4096];
-			stream.Read(buffer, 0, buffer.Length);
+			int readResult = stream.Read(buffer, 0, buffer.Length);
 			Buffer.BlockCopy(buffer, 0, _map, 0, buffer.Length);
 		}
 

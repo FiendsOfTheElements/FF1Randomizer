@@ -358,10 +358,10 @@ public partial class FF1Rom : NesRom
 		SetPoisonMode(flags.PoisonMode, flags.PoisonSetDamageValue);
 		new QuickMiniMap(this, Overworld.DecompressedMap).EnableQuickMinimap(flags.SpeedHacks || Overworld.MapExchange != null, Music);
 		EnableAirBoat(flags);
-		OpenChestsInOrder(flags.OpenChestsInOrder && !flags.Archipelago);
 		SetRNG(flags);
 
 		new TreasureStacks(this, flags).SetTreasureStacks();
+		OpenChestsInOrder(flags.OpenChestsInOrder && !flags.Archipelago);
 
 		await this.Progress();
 

@@ -36,10 +36,29 @@ namespace FF1Lib
 						 int PALETTE_ASSIGNMENT,
 						 int PATTERNTABLE_OFFSET,
 						 int PATTERNTABLE_ASSIGNMENT,
-						 bool towntiles = false)
+						 bool towntiles = false,
+						 bool addMapDerp = false)
 		{
 			//IImageFormat format;
 			Image<Rgba32> image = Image.Load<Rgba32>(readStream);
+
+			try
+			{
+				if (addMapDerp)
+				{
+					var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+					var mapderpPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("mapderp_overlay.png"));
+					var mapderpStream = assembly.GetManifestResourceStream(mapderpPath);
+					var mapderpImage = Image.Load<Rgba32>(mapderpStream);
+
+					image.Mutate(x => x.DrawImage(mapderpImage, new Point(0, 0), 1.0f));
+				}
+			}
+			catch (Exception ex)
+			{
+				await this.Progress("WARNING: Error loading MapDerp: " + ex.Message);
+			}
+
 
 			// palette for each terrain tile stored 0-127, each value is 0-3
 			// starting from OVERWORLDPALETTE_ASSIGNMENT
@@ -107,6 +126,10 @@ namespace FF1Lib
 					for (int i = 0; i < pal.Count; i++)
 					{
 						await this.Progress($"WARNING: NES palette {i}: ${pal[i],2:X}");
+					}
+					if (addMapDerp)
+					{
+						await this.Progress("WARNING: Try disabling Map Derp or ensure ToF tiles contain white and black.");
 					}
 					/*foreach (var i in index) {
 						int c = firstUnique[i.Key];
