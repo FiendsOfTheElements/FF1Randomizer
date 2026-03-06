@@ -202,7 +202,7 @@ namespace FF1Lib
 		}
 		private void SetChestsOrder(List<Item> chestOrderPool, MT19337 rng)
 		{
-			if (!flags.OpenChestsInOrder)
+			if (!(bool)flags.OpenChestsInOrder)
 			{
 				return;
 			}
