@@ -328,10 +328,10 @@
 		"description": "Forgo the \"Autosort Inventory\" flag (found under the Conveniences tab) if it is enabled. This will revert the game to it's standard item menu behavior (Key Items up top, potions at the bottom) no matter what flags are selected."
 	},
 	{
-		"Id": "repeatedHealPotionUseCheckBox",
-		"title": "Repeated Heal Potion Use",
+		"Id": "repeatedPotionUseCheckBox",
+		"title": "Repeated Potion Use",
 		"screenshot": "repeatedHealPotionUse.gif",
-		"description": "If Enabled, allows multiple heal potions to be used in a row without having to re-select them."
+		"description": "If Enabled, allows multiple potions to be used in a row without having to re-select them."
 	},
 	{
 		"Id": "renounceChestInfoCheckBox",

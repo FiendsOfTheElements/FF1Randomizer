@@ -361,8 +361,9 @@ public partial class FF1Rom : NesRom
 		EnableAirBoat(flags);
 		SetRNG(flags);
 
+		// These two MUST go in this order, and MonsterInABox must run third.
 		new TreasureStacks(this, flags).SetTreasureStacks();
-		OpenChestsInOrder(flags.OpenChestsInOrder && !flags.Archipelago);
+		OpenChestsInOrder((bool)flags.OpenChestsInOrder && !flags.Archipelago);
 
 		await this.Progress();
 
