@@ -485,6 +485,12 @@ namespace FF1Lib
 
 		[IntegerFlag(0, 255, 1)]
 		public int PlayerSleepScaleHigh { get; set; } = 80;
+
+		public bool? StartOfHits { get; set; } = false;
+
+		public bool? AfterHits { get; set; } = false;
+
+		public SleepMode SleepModeDropDown { get; set; } = SleepMode.Fixed;
 		
 		[IntegerFlag(0, 500, 10)]
 		public int PriceScaleFactorLow { get; set; } = 50;
