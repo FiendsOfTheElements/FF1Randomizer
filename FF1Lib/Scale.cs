@@ -268,7 +268,7 @@ namespace FF1Lib
 			// fix the enemy sleep buffer
 			PutInBank(0x0C,0xB1EE,Blob.FromHex("F009A9DF2090B1A90FD002A9024C8EB2EAEAEA"));
 			// fix player sleep subroutine
-			PutInBank(0x0C,0xA451,Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAAD5668"));
+			PutInBank(0x0C,0xA451,Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 
 			if (flags.PlayerSleepScaleLow == 0 && flags.PlayerSleepScaleHigh == 80 && flags.EnemySleepScaleLow == 0 && flags.EnemySleepScaleHigh == 80)
 			// if (flags.PlayerSleepScaleLow == 0 && flags.PlayerSleepScaleHigh == 80)
