@@ -55,8 +55,8 @@ Bank Offset Range Description
 
 19   8000-8F90    QuickMiniMap map
 
-1A   84FB-84FE    Repeated Heal Potions
-1A   8600-8852    Repeated Heal Potions
+1A   84FB-84FE    Repeated Potions
+1A   8600-88C2    Repeated Potions
 
 1B   8000-8FF5    Moving routines from bank 0B to 1B (Xp, levelup)
 1B   8FF5-90E8    Save on Death

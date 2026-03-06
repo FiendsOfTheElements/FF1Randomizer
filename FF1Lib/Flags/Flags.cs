@@ -418,7 +418,7 @@ namespace FF1Lib
 		public bool BattleMagicMenuWrapAround { get; set; } = false;
 		public bool MagicMenuSpellReordering { get; set; } = true;
 		public bool InventoryAutosort { get; set; } = true;
-		public bool RepeatedHealPotionUse { get; set; } = true;
+		public bool RepeatedPotionUse { get; set; } = true;
 		public bool AutoRetargeting { get; set; } = true;
 		public bool EnemyStatusAttackBug { get; set; } = false;
 		public bool ImproveTurnOrderRandomization { get; set; } = false;
