@@ -733,7 +733,7 @@ namespace FF1Lib
 		public FormationShuffleMode FormationShuffleMode { get; set; } = FormationShuffleMode.None;
 
 		public RandomizeTreasureMode RandomizeTreasure { get; set; } = RandomizeTreasureMode.None;
-		public bool OpenChestsInOrder { get; set; } = false;
+		public bool? OpenChestsInOrder { get; set; } = false;
 		public bool SetRNG { get; set; } = false;
 		public WorldWealthMode WorldWealth { get; set; } = WorldWealthMode.Standard;
 		public DeepDungeonGeneratorMode DeepDungeonGenerator { get; set; } = DeepDungeonGeneratorMode.Progressive;
