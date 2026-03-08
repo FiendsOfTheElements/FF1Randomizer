@@ -595,7 +595,7 @@ namespace FF1Lib.Procgen
             // and update the entrance pointer so you spawn on the WarpUp stairway.
             cm.Entrance = new((byte)(entranceNode.X+2),(byte)(entranceNode.Y+2),CoordinateLocale.Standard);
 
-            // Console.Write(cm.AsText());
+            //Console.Write(cm.AsText());
             if (_flags.ProcgenWaterfallSpoiler)
             {
                 Utilities.ProcgenWaterfallCache = cm.AsText();
@@ -1738,12 +1738,44 @@ namespace FF1Lib.Procgen
  
                 // this function makes weights that are very small at the center, increase to a peak where squared distance
                 // from center is about 13, and then drop off very fast from there.
-                // Scaling by 100 here lets us use these values in PickRandomItem(rng) without having to scale up to usable integers
+                // Scaling by 10000 here lets us use these values in PickRandomItem(rng) without having to scale up to usable integers
                 // every step
-                _weights = _nextStepVectors
-                                .Select(v => (float)(-100*Cos(2*PI*Pow(v.LengthSquared()/32.0,0.75)) + 100))
-                                .ToArray();
+                // _weights = _nextStepVectors
+                //                 .Select(v => (float)(-10000*Cos(2*PI*Pow(v.LengthSquared()/32.0,0.75)) + 10000))
+                //                 .ToArray();
+
+
+                // or to better match the original waterfall, we can weight certain steps more. The following assigns
+                // a ranking for each possible step, then applies a normal-distribution weighting on them such that
+                // lowest rank (13) is the equivalent of 3 standard deviations from the mean. Still scaled up by 10000
+                _weights = new float[]
+                {
+                          11,         11,
+                        4, 0, 1,13, 1, 0, 4,
+                     4, 2, 3, 5,12, 5, 3, 2, 4,
+                     0, 3, 6, 8,10, 8, 6, 3, 0,
+                     1, 5, 8, 9, 7, 9, 8, 6, 1,
+                    13,12,10, 7, 0, 7,10,12,13,
+                     1, 5, 8, 9, 7, 9, 8, 6, 1,
+                     0, 3, 6, 8,10, 8, 6, 13,0,
+                     4, 2, 3, 5,12, 5, 3, 2, 4,
+                        4, 0, 1,13, 1, 0, 4,
+                          11,         11
+                };
+
+                float sigma = 3f/13;
+                /// using negative saves a step in a moment
+                float rDoubleVariance = -1f/(2f*sigma*sigma);
+
+                for (int i = 0; i < 81; i++)
+                {
+                    float thisWeight = _weights[i]/13f;
+                    thisWeight *= thisWeight;
+                    _weights[i] = 10000f*(float)Exp(thisWeight*rDoubleVariance);
+                }
                 _weights[40] = 0; // zero out the center
+                Console.WriteLine("Weights: " + string.Join(", ",_weights));
+
             }
 
             public Node? GetNextStep(Node thisNode, Node targetNode, HashSet<Node> forbidden, float stepTolerance, MT19337 rng)
