@@ -910,6 +910,12 @@
 		"description": "Removes a portion of the river east of Elfland, allowing you to hike across the Swamp of Sadness to acquire the AIRSHIP without the CANOE."
 	},
 	{
+		"Id": "cardiaLandBridgeCheckBox",
+		"title": "Cardia Land Bridge",
+		"screenshot": "cardiaLandBridgeCheckBox.png",
+		"description": "Builds a land bridge from the peninsula north of Castle of Ordeals, through the Cardia islands, and to a new inlet to the Waterfall river on Onrac. When used with other map edits, this will allow you to traverse the entire overworld without SHIP or AIRSHIP."
+	},
+	{
 		"Id": "highwayToOrdealsCheckBox",
 		"title": "Highway to Ordeals",
 		"screenshot": "MapHighwayToOrdeals.gif",
