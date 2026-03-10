@@ -66,7 +66,7 @@ namespace FF1Lib
 					keepers.Add(OverworldTeleportIndex.Cardia5);
 				}
 
-				if ((bool)flags.IsFloaterRemoved && !(bool)flags.IsAirshipFree)
+				if ((bool)flags.IsFloaterRemoved && !(bool)flags.IsAirshipFree && !(bool)flags.MapCardiaLandBridge)
 				{
 					if (!(bool)flags.MapBahamutCardiaDock)
 					{

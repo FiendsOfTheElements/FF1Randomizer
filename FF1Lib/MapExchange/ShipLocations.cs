@@ -51,6 +51,12 @@ namespace FF1Lib
 					changeDockLocation.Y = Dock.Coneria[1];
 				}
 			}
+			if ((bool)flags.ShipDrydock)
+			{
+				var changeDockLocation = GetShipLocation(255);
+				changeDockLocation.X = Dock.GaiaDrydock[0];
+				changeDockLocation.Y = Dock.GaiaDrydock[1];
+			}
 		}
 	}
 }

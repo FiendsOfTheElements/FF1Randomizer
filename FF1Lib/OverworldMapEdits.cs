@@ -46,7 +46,10 @@ namespace FF1Lib
 		ForestBottomMid = 0x24,
 		ForestBottomRight = 0x25,
 
+		DockBottomLeft = 0x77,
 		DockBottomMid = 0x78,
+		DockBottomRight = 0x79,
+		DockTopLeft = 0x7A,
 		DockRightMid = 0x1F,
 		DockLeftMid = 0x0F,
 
@@ -524,6 +527,22 @@ namespace FF1Lib
 				new MapEdit{X = 0xD7, Y = 0x30, Tile = (byte)OwTiles.MountainTopRight},
 				new MapEdit{X = 0xD8, Y = 0x30, Tile = (byte)OwTiles.ForestTopLeft},
 				new MapEdit{X = 0xD9, Y = 0x30, Tile = (byte)OwTiles.ForestTopRight},
+			};
+
+		public static List<MapEdit> GaiaDrydock =
+			new List<MapEdit>
+			{
+				new MapEdit{X = 0xD3, Y = 0x1E, Tile = (byte)OwTiles.DockBottomMid},
+				new MapEdit{X = 0xD4, Y = 0x1E, Tile = (byte)OwTiles.DockBottomRight},
+				new MapEdit{X = 0xD4, Y = 0x1F, Tile = (byte)OwTiles.DockLeftMid},
+				new MapEdit{X = 0xD5, Y = 0x1F, Tile = (byte)OwTiles.GrassTile},
+				new MapEdit{X = 0xD6, Y = 0x1F, Tile = (byte)OwTiles.GrassTile},
+				new MapEdit{X = 0xD7, Y = 0x1F, Tile = (byte)OwTiles.GrassTile},
+				new MapEdit{X = 0xD6, Y = 0x20, Tile = (byte)OwTiles.GrassTile},
+				new MapEdit{X = 0xD5, Y = 0x1E, Tile = (byte)OwTiles.MountainBottomLeft},
+				new MapEdit{X = 0xD6, Y = 0x1E, Tile = (byte)OwTiles.MountainBottomMid},
+				new MapEdit{X = 0xD7, Y = 0x1E, Tile = (byte)OwTiles.MountainBottomMid},
+				new MapEdit{X = 0xD5, Y = 0x20, Tile = (byte)OwTiles.MountainTopRight},
 			};
 
 

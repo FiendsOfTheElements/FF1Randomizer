@@ -643,6 +643,7 @@ public static class UnsramIndex
 		public static byte[] MatoyasCave = new byte[] { 0x9E, 0x8E }; //158, 142
 		public static byte[] Pravoka = new byte[] { 0xD2, 0x99 }; //210, 153
 		public static byte[] Elfland = new byte[] { 0x8D, 0xD3 }; //141, 211
+		public static byte[] GaiaDrydock = new byte[] { 0xD3, 0x1F }; //211, 31
 	};
 
 	public static class ItemExtensions

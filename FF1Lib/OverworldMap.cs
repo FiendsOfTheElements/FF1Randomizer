@@ -66,6 +66,7 @@ namespace FF1Lib
 					MapEditsToApply.Add(CardiaLandBridge);
 					if ((bool)flags.MapBahamutCardiaDock) MapEditsToApply.Add(CardiaLandBridgeBahamutDock);
 				}
+				if ((bool)flags.ShipDrydock) MapEditsToApply.Add(GaiaDrydock);
 			}
 		}
 		public static Dictionary<Palette, Blob> GeneratePalettes(List<Blob> vanillaPalettes)
