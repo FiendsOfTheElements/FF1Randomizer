@@ -19,7 +19,7 @@
   <Project Path="FF1Blazorizer/FF1Blazorizer.csproj" />
   <Project Path="FF1Lib/FF1Lib.csproj" />
   <Project Path="FF1R/FF1R.csproj" />
+  <Project Path="FFR.Common/FFR.Common.csproj" />
   <Project Path="FF1Randomizer/FF1Randomizer.csproj" />
   <Project Path="FFR.Common.Tests/FFR.Common.Tests.csproj" />
-  <Project Path="FFR.Common/FFR.Common.csproj" />
 </Solution>
