@@ -1,5 +1,4 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0
 SHELL ["/bin/bash", "--login", "-c"]
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
-RUN source "$HOME/.nvm/nvm.sh" && nvm install 22 && npm install -g netlify-cli
-RUN apt update && apt install -y jq curl
+RUN curl -sL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs jq curl
+RUN npm install -g netlify-cli
