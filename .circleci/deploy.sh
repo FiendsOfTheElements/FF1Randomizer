@@ -72,6 +72,7 @@ else
     id=$(echo "$createdSite" | jq -r ".site_id")
     echo "$id"
 
+    echo "24.13.0" > .nvmrc
     # Deploy the instanced site
     netlify deploy --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --prod --site="$id"
 
