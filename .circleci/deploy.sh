@@ -22,6 +22,7 @@ deployPreview=$(echo "$config" | jq -r ".deployPreview")
 #                      --data-binary '{"type":"A", "hostname": "wiki.finalfantasyrandomizer.com", "value": "207.246.91.234"}'
 
 echo "24.13.0" > .nvmrc
+NODE_VERSION=24.13.0
 if "$deployPreview"; then
     deploy_response=$(netlify deploy --json --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --site="$netlifyID")
     url=$(echo "$deploy_response" | jq -r ".deploy_url")
