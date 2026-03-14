@@ -128,7 +128,7 @@ namespace FF1Lib
 
 		public GameModes GameMode { get; set; } = GameModes.Standard;
 
-		[IntegerFlag(0, Int32.MaxValue-1)]
+		[IntegerFlag(0, Int32.MaxValue - 1)]
 		public int MapGenSeed { get; set; } = 0;
 
 		public OwMapExchangeData ReplacementMap { get; set; } = null;
@@ -216,11 +216,11 @@ namespace FF1Lib
 		public bool? EarlyEncounter { get; set; } = false;
 		public bool? EarlyLongRun { get; set; } = false;
 		public EncounterSpacing EncounterSpacing { get; set; } = EncounterSpacing.None;
-		[IntegerFlag(32,128,4)]
+		[IntegerFlag(32, 128, 4)]
 		public int RunLengthLow { get; set; } = 32;
-		[IntegerFlag(32,128,4)]
+		[IntegerFlag(32, 128, 4)]
 		public int RunLengthHigh { get; set; } = 64;
-		[IntegerFlag(4, 16,1)]
+		[IntegerFlag(4, 16, 1)]
 		public int MaxEarlySteps { get; set; } = 8;
 
 		public bool? EncounterPrng { get; set; } = false;
@@ -300,8 +300,8 @@ namespace FF1Lib
 		public bool? AllowDeepTowns { get; set; } = false;
 		public bool? MapOpenProgressionExtended { get; set; } = false;
 		public bool? MapAirshipDock { get; set; } = false;
-		public bool? MapBahamutCardiaDock  { get; set; } = false;
-		public bool? MapLefeinRiver  { get; set; } = false;
+		public bool? MapBahamutCardiaDock { get; set; } = false;
+		public bool? MapLefeinRiver { get; set; } = false;
 		public bool? MapBridgeLefein { get; set; } = false;
 		public bool? MapRiverToMelmond { get; set; } = false;
 		public bool? MapGaiaMountainPass { get; set; } = false;
@@ -310,6 +310,7 @@ namespace FF1Lib
 		public bool? MapHallOfDragons { get; set; } = false;
 		public bool? MapSardasForest { get; set; } = false;
 		public bool? MapAirshipHike { get; set; } = false;
+		public bool? MapCardiaLandBridge { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
 		public bool? EntrancesMixedWithTowns { get; set; } = false;
 
@@ -418,7 +419,7 @@ namespace FF1Lib
 		public bool BattleMagicMenuWrapAround { get; set; } = false;
 		public bool MagicMenuSpellReordering { get; set; } = true;
 		public bool InventoryAutosort { get; set; } = true;
-		public bool RepeatedHealPotionUse { get; set; } = true;
+		public bool RepeatedPotionUse { get; set; } = true;
 		public bool AutoRetargeting { get; set; } = true;
 		public bool EnemyStatusAttackBug { get; set; } = false;
 		public bool ImproveTurnOrderRandomization { get; set; } = false;
@@ -434,6 +435,7 @@ namespace FF1Lib
 		public bool NonesGainXP { get; set; } = false;
 		public bool? NoTail { get; set; } = false;
 		public bool? NoFloater { get; set; } = false;
+		public bool? ShipDrydock { get; set; } = false;
 		public bool? GuaranteedMasamune { get; set; } = false;
 		public bool? SendMasamuneHome { get; set; } = false;
 
@@ -473,6 +475,56 @@ namespace FF1Lib
 
 		[IntegerFlag(0, 500, 10)]
 		public int EnemyScaleHpHigh { get; set; } = 200;
+
+		[IntegerFlag(0, 255, 1)]
+		public int EnemySleepScaleLow { get; set; } = 0;
+
+		[IntegerFlag(0, 255, 1)]
+		public int EnemySleepScaleHigh { get; set; } = 80;
+
+		[IntegerFlag(0, 255, 1)]
+		public int PlayerSleepScaleLow { get; set; } = 0;
+
+		[IntegerFlag(0, 255, 1)]
+		public int PlayerSleepScaleHigh { get; set; } = 80;
+
+		private bool? startHit = true;
+		public bool? StartOfHits
+		{
+			get
+			{
+				return startHit;
+			}
+			set
+			{
+				startHit = value;
+
+    		    if (value is null)
+    		        afterHit = null;
+    		    else
+    		        afterHit = !value.Value;
+			}
+		}
+
+		private bool? afterHit = false;
+		public bool? AfterHits
+		{
+			get
+			{
+				return afterHit;
+			}
+			set
+			{
+				afterHit = value;
+
+    		    if (value is null)
+    		        startHit = null;
+    		    else
+    		        startHit = !value.Value;
+			}
+		}
+
+		public SleepMode SleepModeDropDown { get; set; } = SleepMode.Fixed;
 
 		[IntegerFlag(0, 500, 10)]
 		public int PriceScaleFactorLow { get; set; } = 50;
@@ -721,7 +773,7 @@ namespace FF1Lib
 		public FormationShuffleMode FormationShuffleMode { get; set; } = FormationShuffleMode.None;
 
 		public RandomizeTreasureMode RandomizeTreasure { get; set; } = RandomizeTreasureMode.None;
-		public bool OpenChestsInOrder { get; set; } = false;
+		public bool? OpenChestsInOrder { get; set; } = false;
 		public bool SetRNG { get; set; } = false;
 		public WorldWealthMode WorldWealth { get; set; } = WorldWealthMode.Standard;
 		public DeepDungeonGeneratorMode DeepDungeonGenerator { get; set; } = DeepDungeonGeneratorMode.Progressive;
@@ -732,7 +784,7 @@ namespace FF1Lib
 		public bool? IncreaseDarkPenalty { get; set; } = false;
 		public bool? IncreaseRegeneration { get; set; } = false;
 		public PoisonModeOptions PoisonMode { get; set; } = PoisonModeOptions.Constant;
-		[IntegerFlag(1,500)]
+		[IntegerFlag(1, 500)]
 
 		public int PoisonSetDamageValue { get; set; } = 3;
 

@@ -207,8 +207,9 @@ public partial class FF1Rom : NesRom
 		if (flags.NoOverworld) await this.Progress("Linking NoOverworld's Map", 1);
 		NoOverworld(Overworld.DecompressedMap, Maps, Teleporters, TileSetsData, TalkRoutines, Dialogues, NpcData, flags, rng);
 		UpdateToFR(Maps, Teleporters, TileSetsData, flags, rng);
-		Teleporters.ShuffleEntrancesAndFloors(Overworld.OverworldMap, rng, flags);
 		Overworld.Update(Teleporters);
+		Teleporters.ShuffleEntrancesAndFloors(Overworld.OverworldMap, rng, flags);
+		
 		EncounterRates.ScaleEncounterRate(flags);
 
 		// Tile Sets 
@@ -340,6 +341,7 @@ public partial class FF1Rom : NesRom
 		FiendShuffle((bool)flags.FiendShuffle, rng);
 		ScaleEnemyStats(rng, flags);
 		ScaleBossStats(rng, flags);
+		ScaleSleep(rng, flags);
 
 		// Encounters
 		ZoneFormations.ShuffleEnemyFormations(rng, flags.FormationShuffleMode, flags.EnemizerEnabled);
@@ -360,8 +362,9 @@ public partial class FF1Rom : NesRom
 		EnableAirBoat(flags);
 		SetRNG(flags);
 
+		// These two MUST go in this order, and MonsterInABox must run third.
 		new TreasureStacks(this, flags).SetTreasureStacks();
-		OpenChestsInOrder(flags.OpenChestsInOrder && !flags.Archipelago);
+		OpenChestsInOrder((bool)flags.OpenChestsInOrder && !flags.Archipelago);
 
 		await this.Progress();
 

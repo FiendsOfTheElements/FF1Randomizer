@@ -1,4 +1,4 @@
-; Code for repeated heal potion use
+; Code for repeated potion use
 BANK_THIS = $1A
 
 tmp             = $10
@@ -30,7 +30,10 @@ items           = unsram + $20
 item_orb_start  = items + $12
 item_qty_start  = item_orb_start + 4
 item_heal       = item_qty_start + 3
+item_pure       = item_qty_start + 4
+item_soft       = item_qty_start + 5
 ch_stats        = unsram + $0100
+ch_ailments     = ch_stats + $01
 ch_curhp        = ch_stats + $0A  ; 2 bytes
 ch_maxhp        = ch_stats + $0C  ; 2 bytes
 
@@ -39,6 +42,12 @@ Restore                     = $E04E ; the @Restore from DrawComplexString, jump 
 DrawBox                     = $E063
 UseItem_Heal                = $B301 ;bank 0E
 UseItem_Heal_LoopContinue   = $B30E
+UseItem_Pure                = $B338 ;bank 0E
+UseItem_Pure_LoopContinue   = $B345
+UseItem_Pure_CantUse        = $B35A
+UseItem_Soft                = $B360 ;bank 0E
+UseItem_Soft_LoopContinue   = $B36D
+UseItem_Soft_CantUse        = $B382
 UseItem_Exit                = $B32F ;bank 0E
 DrawComplexString           = $DE36
 CallMusicPlay               = $C689 ;load this bank into cur_bank before calling
@@ -64,6 +73,40 @@ DrawCursor                  = $EC95
         JMP SwapPRG
 ;assembled bytes
 ;A9 85 48 A9 FF 48 A9 1A 4C 03 FE
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; $B345 addr :: $3B355 rom (includes header)
+; Patch to UseItem_Pure in bank 0E to call the new routines in bank 1A
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ .org $B345 ;UseItem_Pure @Loop, $3B355
+     UseItem_Pure_LoopPatch:
+         LDA #>(UsePureNewCode-1)
+         PHA
+         LDA #<(UsePureNewCode-1)
+         PHA
+         LDA #$1A ;bank with new pure potion routine
+         JMP SwapPRG
+;assembled bytes
+;A9 86 48 A9 27 48 A9 1A 4C 03 FE
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; $B36D addr :: $3B37D rom (includes header)
+; Patch to UseItem_Soft in bank 0E to call the new routines in bank 1A
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ .org $B36D ;UseItem_Soft @Loop, $3B37D
+     UseItem_Soft_LoopPatch:
+         LDA #>(UseSoftNewCode-1)
+         PHA
+         LDA #<(UseSoftNewCode-1)
+         PHA
+         LDA #$1A ;bank with new soft potion routine
+         JMP SwapPRG
+
+;assembled bytes
+;A9 86 48 A9 53 48 A9 1A 4C 03 FE
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -93,12 +136,10 @@ DrawCursor                  = $EC95
 ;  is executed on subsequent loops (otherwise the cursor location would be reset)
 ; When we exit out to UseItem_Heal_LoopContinue, we're going back right after the
 ;   "BCS UseItem_Exit", so the original "can't use" message drawing remains there.
-; This code has a call to resume music track $51, so that will be patched if the
-;   "disable music" flag is enabled.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 .org $8600 ;bank 1A, $68610
-    UseHealNewCode:
+    UseHealNewCode:  ;enters right before LDA #30
         LDA #30
         JSR MenuRecoverHP_Abs ;heal 30hp to character indexed by X  --okay
         JSR DrawItemTargetMenu
@@ -109,7 +150,7 @@ DrawCursor                  = $EC95
         JSR ItemTargetMenuLoop
         BCS UseItem_ExitLocal ;carry set if B was pressed
 
-        LDA #>(UseItem_Heal_LoopContinue-1)
+        LDA #>(UseItem_Heal_LoopContinue-1) ;right before LDA cursor
         PHA
         LDA #<(UseItem_Heal_LoopContinue-1)
         PHA
@@ -121,6 +162,60 @@ DrawCursor                  = $EC95
         LDA #>(UseItem_Exit-1)
         PHA
         LDA #<(UseItem_Exit-1)
+        PHA
+        LDA #$0E
+        JMP SwapPRG 
+
+    
+    UsePureNewCode: ;right before LDA #$03
+        LDA #$03                   ; put "poison" OB ailment
+        STA tmp                    ;   in tmp as our ailment to cure
+        JSR CureOBAilment          ; then try to cure it
+        BCS PureCantUse               ; if we couldn't... can't use this item
+        JSR DrawItemTargetMenu     ; 
+        
+        DEC item_pure              ; consume a pure potion
+        BEQ MenuWaitForBtn_SFX     ; and leave if we're out
+        JSR ItemTargetMenuLoop
+        BCS UseItem_ExitLocal ;carry set if B was pressed
+
+        LDA #>(UseItem_Pure_LoopContinue-1)
+        PHA
+        LDA #<(UseItem_Pure_LoopContinue-1)
+        PHA
+        LDA #$0E
+        JMP SwapPRG 
+    PureCantUse:
+        LDA #>(UseItem_Pure_CantUse-1)
+        PHA
+        LDA #<(UseItem_Pure_CantUse-1)
+        PHA
+        LDA #$0E
+        JMP SwapPRG 
+
+
+    UseSoftNewCode: ;right before LDA #$02
+        LDA #$02                   ; put "stone" OB ailment
+        STA tmp                    ;   in tmp as our ailment to cure
+        JSR CureOBAilment          ; then try to cure it
+        BCS SoftCantUse               ; if we couldn't... can't use this item
+        JSR DrawItemTargetMenu     ; 
+        
+        DEC item_soft              ; consume a soft potion
+        BEQ MenuWaitForBtn_SFX     ; and leave if we're out
+        JSR ItemTargetMenuLoop
+        BCS UseItem_ExitLocal ;carry set if B was pressed
+
+        LDA #>(UseItem_Soft_LoopContinue-1)
+        PHA
+        LDA #<(UseItem_Soft_LoopContinue-1)
+        PHA
+        LDA #$0E
+        JMP SwapPRG 
+    SoftCantUse:
+        LDA #>(UseItem_Soft_CantUse-1)
+        PHA
+        LDA #<(UseItem_Soft_CantUse-1)
         PHA
         LDA #$0E
         JMP SwapPRG 
@@ -144,7 +239,26 @@ MenuWaitForBtn_SFX:
         LDA #<(UseItem_Exit-1)
         PHA
         LDA #$0E
-        JMP SwapPRG 
+        JMP SwapPRG
+
+CureOBAilment:
+    LDA cursor            ; get cursor (desired character)
+    ROR A                 ; shift to get usable character index ($00,$40,$80,$C0)
+    ROR A
+    ROR A
+    AND #$C0              ; and mask relevant bits
+    TAX                   ; then stuff in X
+    LDA ch_ailments, X    ; get OB ailments
+    CMP tmp               ; compare to given ailment
+    BEQ AilmentSuccess          ; if they match.. success!
+    SEC                   ;  otherwise... failure.  SEC to indicate failure
+    RTS                   ;   and exit
+
+AilmentSuccess:
+    LDA #$00              ; clear the character's OB Ailment (curing them)
+    STA ch_ailments, X
+    CLC                   ; CLC to indicate success
+    RTS                   ; and exit
     
 MenuRecoverHP_Abs:  ;copied from bank 0C
     STA tmp                     ; back up HP to recover by stuffing it in tmp
@@ -460,14 +574,16 @@ PlaySFX_MenuSel:
 
 
 ;assembled bytes
-;A91E20428620B886CE3960F01B20C687B00BA9B348A90D48A90E4C03FEA9B348A92E48A90E4C03FE209787A5240525F0F7A90085248525A9B348
-;A92E48A90E4C03FE8510187D0A619D0A61BD0B6169009D0B61DD0D61F01BB023A957854BA9308D0440A97F8D0540A9008D06408D0740A51060BD
-;0A61DD0C61B00290DDBD0C619D0A61BD0D619D0B614C5A86AD0220A9208D0620A9008D0620A00098A2038D0720C8D0FACAD0F78D0720C8C0C090
-;F8A9FF8D0720C8D0FA60A9008D01208537208C86A90B8539A9018538A91E853CA908853D2063E020DC864C658760A200A904853AA911853B20FD
-;86C63BA20220FD86C63BA20420FD86C63BC63BA206BD0A87853EBD0B87853F4C8E87128728873E8753877A1006FFFFFF7A1106FFFFFF7A1206FF
-;FFFF7A130600FF1005FFFFFFFF1105FFFFFFFF1205FFFFFFFF1305001002FFFFFFFF1102FFFFFFFF1202FFFFFFFF1302001000FFFFFF1100FFFF
-;FF1200FFFFFF130000203CC420A8FEA9028D14402050D8A90885FF8D0020A91E8D0120A9008D05208D0520A91A85574C89C6A91A855785584C36
-;DE20A8FEA9028D1440A5FF8D0020A9008D05208D0520A54B1004A951854BA91A85572089C6E6F0A900852485254CC2D7A90085248525203CC420
-;1088209787A524D02DA525D02EA5202903C561F0E18561C900F0DBC901D008A5621869014CFC87A56238E901290385622023884CC68720398818
-;602039883860A662BD1F888540A96885414C95EC60104880B8A97A8D0440A99B8D0540A9208D06404A8D0740857E60A9BA8D0440A9BA8D0540A9
-;408D0640A9008D0740A91F857E60
+;A91E20B286202887CE3960F073203688B00BA9B348A90D48A90E4C03FEA9B348A92E48A90E4C03FEA9038510209A86B018202887CE3A60F047203
+;688B0DFA9B348A94448A90E4C03FEA9B348A95948A90E4C03FEA9028510209A86B018202887CE3B60F01B203688B0B3A9B348A96C48A90E4C03FE
+;A9B348A98148A90E4C03FE200788A5240525F0F7A90085248525A9B348A92E48A90E4C03FEA5626A6A6A29C0AABD0161C510F0023860A9009D016
+;118608510187D0A619D0A61BD0B6169009D0B61DD0D61F01BB023A957854BA9308D0440A97F8D0540A9008D06408D0740A51060BD0A61DD0C61B0
+;0290DDBD0C619D0A61BD0D619D0B614CCA86AD0220A9208D0620A9008D0620A00098A2038D0720C8D0FACAD0F78D0720C8C0C090F8A9FF8D0720C
+;8D0FA60A9008D0120853720FC86A90B8539A9018538A91E853CA908853D2063E0204C874CD58760A200A904853AA911853B206D87C63BA202206D
+;87C63BA204206D87C63BC63BA206BD7A87853EBD7B87853F4CFE8782879887AE87C3877A1006FFFFFF7A1106FFFFFF7A1206FFFFFF7A130600FF1
+;005FFFFFFFF1105FFFFFFFF1205FFFFFFFF1305001002FFFFFFFF1102FFFFFFFF1202FFFFFFFF1302001000FFFFFF1100FFFFFF1200FFFFFF1300
+;00203CC420A8FEA9028D14402050D8A90885FF8D0020A91E8D0120A9008D05208D0520A91A85574C89C6A91A855785584C36DE20A8FEA9028D144
+;0A5FF8D0020A9008D05208D0520A54B1004A951854BA91A85572089C6E6F0A900852485254CC2D7A90085248525203CC4208088200788A524D02D
+;A525D02EA5202903C561F0E18561C900F0DBC901D008A5621869014C6C88A56238E901290385622093884C368820A988186020A9883860A662BD8
+;F888540A96885414C95EC60104880B8A97A8D0440A99B8D0540A9208D06404A8D0740857E60A9BA8D0440A9BA8D0540A9408D0640A9008D0740A9
+;1F857E60

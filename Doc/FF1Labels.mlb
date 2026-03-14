@@ -1,0 +1,180 @@
+﻿NesMemory:2000:PpuControl_2000:7  bit  0\n---- ----\nVPHB SINN\n|||| ||||\n|||| ||++- Base nametable address\n|||| ||    (0 = $2000; 1 = $2400; 2 = $2800; 3 = $2C00)\n|||| |+--- VRAM address increment per CPU read/write of PPUDATA\n|||| |     (0: add 1, going across; 1: add 32, going down)\n|||| +---- Sprite pattern table address for 8x8 sprites\n||||       (0: $0000; 1: $1000; ignored in 8x16 mode)\n|||+------ Background pattern table address (0: $0000; 1: $1000)\n||+------- Sprite size (0: 8x8; 1: 8x16)\n|+-------- PPU master/slave select\n|          (0: read backdrop from EXT pins; 1: output color on EXT pins)\n+--------- Generate an NMI at the start of the\n           vertical blanking interval (0: off; 1: on)
+NesMemory:2001:PpuMask_2001:7  bit  0\n---- ----\nBGRs bMmG\n|||| ||||\n|||| |||+- Display type: (0: color, 1: grayscale)\n|||| ||+-- 1: Show background in leftmost 8 pixels of screen, 0: Hide\n|||| |+--- 1: Show sprites in leftmost 8 pixels of screen, 0: Hide\n|||| +---- 1: Show background\n|||+------ 1: Show sprites\n||+------- Emphasize red\n|+-------- Emphasize green\n+--------- Emphasize blue
+NesMemory:2002:PpuStatus_2002:7  bit  0\n---- ----\nVSO. ....\n|||| ||||\n|||+-++++- Least significant bits previously written into a PPU register\n|||        (due to register not being updated for this address)\n||+------- Sprite overflow. The intent was for this flag to be set\n||         whenever more than eight sprites appear on a scanline, but a\n||         hardware bug causes the actual behavior to be more complicated\n||         and generate false positives as well as false negatives; see\n||         PPU sprite evaluation. This flag is set during sprite\n||         evaluation and cleared at dot 1 (the second dot) of the\n||         pre-render line.\n|+-------- Sprite 0 Hit.  Set when a nonzero pixel of sprite 0 overlaps\n|          a nonzero background pixel; cleared at dot 1 of the pre-render\n|          line.  Used for raster timing.\n+--------- Vertical blank has started (0: not in vblank; 1: in vblank).\n           Set at dot 1 of line 241 (the line *after* the post-render\n           line, false); cleared after reading $2002 and at dot 1 of the\n           pre-render line.
+NesMemory:2003:OamAddr_2003:Set OAM address - Write only
+NesMemory:2004:OamData_2004:Read/Write OAM data
+NesMemory:2005:PpuScroll_2005:Set PPU scroll, write twice - Write only
+NesMemory:2006:PpuAddr_2006:Set PPU address, write twice - Write only
+NesMemory:2007:PpuData_2007:Read/Write VRAM
+NesMemory:4000:Sq0Duty_4000:DDLC VVVV\nDuty (D), envelope loop / length counter halt (L), constant volume (C), volume/envelope (V)
+NesMemory:4001:Sq0Sweep_4001:EPPP NSSS\nSweep unit: enabled (E), period (P), negate (N), shift (S)
+NesMemory:4002:Sq0Timer_4002:TTTT TTTT\nTimer low (T)
+NesMemory:4003:Sq0Length_4003:LLLL LTTT\nLength counter load (L), timer high (T)
+NesMemory:4004:Sq1Duty_4004:DDLC VVVV\nDuty (D), envelope loop / length counter halt (L), constant volume (C), volume/envelope (V)
+NesMemory:4005:Sq1Sweep_4005:EPPP NSSS\nSweep unit: enabled (E), period (P), negate (N), shift (S)
+NesMemory:4006:Sq1Timer_4006:TTTT TTTT\nTimer low (T)
+NesMemory:4007:Sq1Length_4007:LLLL LTTT\nLength counter load (L), timer high (T)
+NesMemory:4008:TrgLinear_4008:CRRR RRRR\nLength counter halt / linear counter control (C), linear counter load (R)
+NesMemory:400A:TrgTimer_400A:TTTT TTTT\nTimer low (T)
+NesMemory:400B:TrgLength_400B:LLLL LTTT\nLength counter load (L), timer high (T)
+NesMemory:400C:NoiseVolume_400C:--LC VVVV\nEnvelope loop / length counter halt (L), constant volume (C), volume/envelope (V)
+NesMemory:400E:NoisePeriod_400E:L--- PPPP\nLoop noise (L), noise period (P)
+NesMemory:400F:NoiseLength_400F:LLLL L---\nLength counter load (L)
+NesMemory:4010:DmcFreq_4010:IL-- RRRR\nIRQ enable (I), loop (L), frequency (R)
+NesMemory:4011:DmcCounter_4011:-DDD DDDD\nLoad counter (D)
+NesMemory:4012:DmcAddress_4012:AAAA AAAA\nSample address (A)
+NesMemory:4013:DmcLength_4013:LLLL LLLL\nSample length (L)
+NesMemory:4014:SpriteDma_4014:Writing $XX will upload 256 bytes of data from CPU page $XX00-$XXFF to the internal PPU OAM.
+NesMemory:4015:ApuStatus_4015:Read:\nIF-D NT21\nDMC interrupt (I), frame interrupt (F), DMC active (D), length counter > 0 (N/T/2/1)\n\nWrite:\n---D NT21\nEnable DMC (D), noise (N), triangle (T), and pulse channels (2/1)
+NesMemory:4016:Ctrl1_4016:Read (NES - input):\n---4 3210\nRead data from controller port #1.\n\nWrite:\n---- ---A\nOutput data (strobe) to both controllers.
+NesMemory:4017:Ctrl2_FrameCtr_4017:Read (NES - input):\n---4 3210\nRead data from controller port #2.\n\nWrite (Frame counter): MI-- ----\nMode (M, 0 = 4-step, 1 = 5-step), IRQ inhibit flag (I)
+NesMemory:A232:ApplyRegenToAllEnemies
+NesMemory:AD06:LoadOneCharacterIBStats
+NesMemory:B6C8:BtlMag_LoadEnemyDefenderStats
+NesPrgRom:3207C:BattleUpdateAudio
+NesPrgRom:32092:DrawPlayerAttackerCombatBox
+NesPrgRom:3209D:DrawBattleMessageCombatBox
+NesPrgRom:320A2:PrepareAndDrawSimpleCombatBox
+NesPrgRom:320D7:RespondDelay_ClearCombatBoxes
+NesPrgRom:320E6:RespondDelay
+NesPrgRom:320FC:FlashCharacterSprite
+NesPrgRom:32145:PrepCharStatPointers
+NesPrgRom:32169:DoBattleRound
+NesPrgRom:321DB:BattleTurnEnd_CheckForBattleEnd
+NesPrgRom:32352:Battle_DoTurn
+NesPrgRom:323D8:Battle_PlayerTryRun
+NesPrgRom:3242F:Battle_PlayerTryWakeup
+NesPrgRom:32DEA:MathBuf_Compare
+NesPrgRom:32E09:MultiplyXA
+NesPrgRom:32E2B:DoDivision
+NesPrgRom:32E5D:RandAX
+NesPrgRom:32E7B:MathBuf_Add16
+NesPrgRom:32EAC:MathBuf_Sub16
+NesPrgRom:32EDD:MathBuf_Add
+NesPrgRom:32F0A:MathBuf_Sub
+NesPrgRom:32F3C:MathBuf_NZ
+NesPrgRom:32F64:LoadEnemyStats
+NesPrgRom:33190:ApplyEnemyAilmentMask
+NesPrgRom:33197:Do_EnemyTurn
+NesPrgRom:331D4:Enemy_Asleep
+NesPrgRom:331FE:@PrintAndEnd
+NesPrgRom:33201:@EnemyActive
+NesPrgRom:33257:@RunAway
+NesPrgRom:33288:ClearEnemyID
+NesPrgRom:3328E:ShowAltBattleMessage_ClearAllBoxes
+NesPrgRom:33294:EnemyAi_ShouldPerformAction
+NesPrgRom:332A2:Enemy_DoAi
+NesPrgRom:332C9:@DoMagicAttack
+NesPrgRom:332E7:@IncrementAiPos
+NesPrgRom:332EF:@CheckSpecialAttack
+NesPrgRom:332F8:@DoSpecialAttack
+NesPrgRom:33319:ChooseAndAttackPlayer
+NesPrgRom:33325:GetRandomPlayerTarget
+NesPrgRom:33328:@GetTargetLoop
+NesPrgRom:3335C:Battle_PrepareMagic
+NesPrgRom:338DB:BtlMag_ApplyDamage
+NesPrgRom:394E0:FinalizeOutput
+NesPrgRom:39E08:CheckForSpace
+NesPrgRom:39E17:IncreaseInventoryCount
+NesPrgRom:39E1B:ItemShop_QuantitySelect
+NesPrgRom:39E99:ItemShop_DrawShopBuyItemConfirm
+NesPrgRom:39EFF:ItemShop_CanAfford
+NesPrgRom:39F23:ItemShop_PayPrice
+NesPrgRom:3A33C:EnterShop
+NesPrgRom:3A357:MagicShop_Exit
+NesPrgRom:3A358:MagicShop_CancelPurchase
+NesPrgRom:3A360:EnterShop_Magic
+NesPrgRom:3A365:MagicShop_Loop
+NesPrgRom:3A39D:MagicShop_FinalizePurchase
+NesPrgRom:3A3AC:EquipShop_Cancel
+NesPrgRom:3A3B4:EnterShop_Equip
+NesPrgRom:3A3B9:EquipShop_Loop
+NesPrgRom:3A3C6:Exit
+NesPrgRom:3A3C7:Buy
+NesPrgRom:3A3ED:CanAfford
+NesPrgRom:3A404:EquipShop_FinalizePurchase
+NesPrgRom:3A40F:Loop
+NesPrgRom:3A412:Cancel
+NesPrgRom:3A415:Sell
+NesPrgRom:3A42C:ItemsForSale
+NesPrgRom:3A471:ItemShop_Exit
+NesPrgRom:3A472:ItemShop_CancelBuy
+NesPrgRom:3A47A:EnterShop_Caravan
+NesPrgRom:3A47C:Enter_ItemShop
+NesPrgRom:3A481:ItemShop_Loop
+NesPrgRom:3A4B2:ItemShop_CheckForSpace
+NesPrgRom:3A4BF:ItemShop_FinalizePurchase
+NesPrgRom:3A4CD:ShopPayPrice
+NesPrgRom:3A4EB:Shop_CanAfford
+NesPrgRom:3A4FC:Check_Low
+NesPrgRom:3A504:No
+NesPrgRom:3A506:Yes
+NesPrgRom:3A508:Enter_Inn
+NesPrgRom:3A564:LoopOne
+NesPrgRom:3A57A:Inn_Exit
+NesPrgRom:3A58D:LoopTwo
+NesPrgRom:3A5A1:ClinicShop_Exit
+NesPrgRom:3A5A2:EnterShop_Clinic
+NesPrgRom:3A5FC:ReviveLoop
+NesPrgRom:3A608:NobodyDead
+NesPrgRom:3A613:ExitLoop
+NesPrgRom:3A61D:EquipShop_GiveItemToChar
+NesPrgRom:3A62B:CheckWeapons
+NesPrgRom:3A649:CheckArmor
+NesPrgRom:3A667:FoundWeaponSlot
+NesPrgRom:3A678:FoundArmorSlot
+NesPrgRom:3A689:Inn_CanAfford
+NesPrgRom:3A69A:CheckLow
+NesPrgRom:3A6A2:CantAfford
+NesPrgRom:3A6AD:InnLoop
+NesPrgRom:3A6B9:InnCanAfford
+NesPrgRom:3A6D7:Clinic_SelectTarget
+NesPrgRom:3A6ED:ClinicBuildNameString
+NesPrgRom:3A6F3:ClinicCharLoop
+NesPrgRom:3A716:NotDead
+NesPrgRom:3A727:ShopFrame
+NesPrgRom:3A743:ShopFrameNoCursor
+NesPrgRom:3A758:ShopFrame_ChkBtns
+NesPrgRom:3A76A:CheckMovement
+NesPrgRom:3A778:DrawShop
+NesPrgRom:3A78D:AttribLoop
+NesPrgRom:3A7D1:LoadShopInventory
+NesPrgRom:3A7E1:ShopInvLoop
+NesPrgRom:3A7EF:DrawShopGoldBox
+NesPrgRom:3A806:EquipBuildSellBox
+NesPrgRom:3A814:Weapons
+NesPrgRom:3A81B:WeaponLoop
+NesPrgRom:3A82E:LoopBreak
+NesPrgRom:3A83B:Armor
+NesPrgRom:3A842:ArmorLoop
+NesPrgRom:3A857:ShopSelectBuyItem
+NesPrgRom:3A85D:ShopSelecetBuyLoop
+NesPrgRom:3A891:Done
+NesPrgRom:3A8B1:ShopLoop_BuyExit
+NesPrgRom:3A8C2:ShopLoop_YesNo
+NesPrgRom:3A8D3:ShopLoop_BuySellExit
+NesPrgRom:3A8E4:ShopLoop_CharNames
+NesPrgRom:3A907:CommonShopLoop_Cmd
+NesPrgRom:3A912:CommonShopLoop_List
+NesPrgRom:3A91A:CommonShopLoop_Main
+NesPrgRom:3A924:CommonShopLoop
+NesPrgRom:3A94E:Up
+NesPrgRom:3A95A:Down
+NesPrgRom:3A965:MoveDone
+NesPrgRom:3A96A:B_Pressed
+NesPrgRom:3A96B:ButtonDone
+NesPrgRom:3A974:A_Pressed
+NesPrgRom:3A989:ShopSelectBuyMagic
+NesPrgRom:3A9EF:DrawShopCursor
+NesPrgRom:3A9FA:DrawShopPartySprites
+NesPrgRom:3AA26:DrawShopString
+NesPrgRom:3AA32:DrawShopComplexString
+NesPrgRom:3AA3B:DrawShopBox
+NesPrgRom:3AA41:LoadShopBoxDims
+NesPrgRom:3AA5B:DrawShopDialogueBox
+NesPrgRom:3AA65:DrawShopBuyItemConfirm
+NesPrgRom:3AA9B:DrawInnClinicConfirm
+NesPrgRom:3AAB4:DrawShopSellItemConfirm
+NesPrgRom:3AADF:MagicShop_AssertLearn
+NesPrgRom:7D7C8:BtlMag_ApplyDamage3
+NesPrgRom:7D83A:BtlMag_ApplyDamage2

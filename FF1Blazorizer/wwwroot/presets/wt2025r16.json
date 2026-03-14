@@ -294,7 +294,7 @@
 		"BattleMagicMenuWrapAround": true,
 		"MagicMenuSpellReordering": true,
 		"InventoryAutosort": true,
-		"RepeatedHealPotionUse": false,
+		"RepeatedPotionUse": false,
 		"AutoRetargeting": true,
 		"EnemyStatusAttackBug": true,
 		"ImproveTurnOrderRandomization": true,

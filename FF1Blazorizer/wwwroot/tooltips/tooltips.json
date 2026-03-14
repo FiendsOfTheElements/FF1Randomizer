@@ -328,10 +328,10 @@
 		"description": "Forgo the \"Autosort Inventory\" flag (found under the Conveniences tab) if it is enabled. This will revert the game to it's standard item menu behavior (Key Items up top, potions at the bottom) no matter what flags are selected."
 	},
 	{
-		"Id": "repeatedHealPotionUseCheckBox",
-		"title": "Repeated Heal Potion Use",
+		"Id": "repeatedPotionUseCheckBox",
+		"title": "Repeated Potion Use",
 		"screenshot": "repeatedHealPotionUse.gif",
-		"description": "If Enabled, allows multiple heal potions to be used in a row without having to re-select them."
+		"description": "If Enabled, allows multiple potions to be used in a row without having to re-select them."
 	},
 	{
 		"Id": "renounceChestInfoCheckBox",
@@ -910,6 +910,12 @@
 		"description": "Removes a portion of the river east of Elfland, allowing you to hike across the Swamp of Sadness to acquire the AIRSHIP without the CANOE."
 	},
 	{
+		"Id": "cardiaLandBridgeCheckBox",
+		"title": "Cardia Land Bridge",
+		"screenshot": "cardiaLandBridgeCheckBox.png",
+		"description": "Builds a land bridge from the peninsula north of Castle of Ordeals, through the Cardia islands, and to a new inlet to the Waterfall river on Onrac. When used with other map edits, this will allow you to traverse the entire overworld without SHIP or AIRSHIP."
+	},
+	{
 		"Id": "highwayToOrdealsCheckBox",
 		"title": "Highway to Ordeals",
 		"screenshot": "MapHighwayToOrdeals.gif",
@@ -1188,9 +1194,14 @@
 		"Id": "noFloaterCheckBox",
 		"title": "Remove Floater",
 		"screenshot": "noFloater.png",
-		"description": "Removes the Floater from the game, making it impossible to get the Airship.\n\nCan only be enabled if Nothern Docks is enabled.\n\nEnable Bahamut Cardia dock, Lefein river dock, and Gaia mountain pass map edits to make those areas accessible by Ship."
+		"description": "Removes the FLOATER from the game, making it impossible to get the Airship.\n\nCan only be enabled if:\n1. Nothern Docks is on, OR\n2. Cardia Land Bridge, Bahamut Cardia Dock, and Highway to Ordeals are all on, OR\n3. Highway to Ordeals, Bridge to Lefein, and Cardia Land Bridge are all on.\n\nEnable Bahamut Cardia dock, Lefein river dock, and Gaia mountain pass map edits to make those areas accessible by Ship."
 	},
-
+	{
+		"Id": "shipDrydockCheckBox",
+		"title": "Ship in Drydock",
+		"screenshot": "shipDrydockCheckBox.png",
+		"description": "The SHIP spawns in drydock at the Gaia Fjord. It can be freed with AIRBOAT.\nWhen used with Remove Floater, it makes for an entirely walking+canoeing flagset.\nCan only be enabled if:\n1. Airboat, Bridge to Lefein, and Gaia Mountain Pass are all on, OR\n2. Airboat is off and either Remove Floater is off or Free Airship is on, OR\n3. Early Open Progression, River to Melmond, Highway to Ordeals, Bridge to Lefein, and Cardia Land Bridge are all on.\nNumber 3. is required for a flagset with no ship or airship."
+	},
 	{
 		"Id": "GuaranteedMasamuneCheckBox",
 		"title": "Guaranteed Endgame Masamune",
@@ -1707,12 +1718,16 @@
 		"screenshot": "MDefModeDropDown.gif",
 		"description": "Changes how much MDef is gained per level up:\n[grid][r]{i}MDef Growth|Vanilla|BB/Master +3/+4|Inverted[r]{l}Black Belt|4|3|1[r]{l}Master|1|4|4[r]{l}Fighter & Knight|3|3|2[r]{l}Thief & Ninja|2|2|3[r]{l}Red Mage & Wizard|2|2|3[r]{l}White Mage & Wizard|2|2|3[r]{l}Black Mage & Wizard|2|2|3\n\nNotably, in Vanilla the Black Belt gets worse when promoted; using \"BB/Master +3/+4\" fixes this behavior."
 	},
-
 	{
 		"Id": "randomizeClassDropDown",
 		"title": "Class Randomization",
 		"screenshot": "transmooglifier.gif",
 		"description": "Randomly modify classes. \nPress Select at the Party Selection screen (and A at Status Screen) to reveal the modifiers applied to a given class.\n\nNone: No random modifications.\n\nBlursings: Give bonuses and maluses at random to each of the selectable classes in the game.\n\nTransmooglifier: Procedurally generates six custom classes from a set of 26. Each class corresponds to heuristically randomized spell permissions, stats, equipment sets, abilities, and blursings - this means the classes will have unique properties every time.\nThis also disables most specific balance options. Character specific buffs will refer to character slot. For example, Fighter XP will now refer to 'Slot 0 character class XP Bonus'.\nIt is recommended to disable any custom sprites when using Transmooglifier, since Transmooglifier also uses custom sprites.\n\nChaos: Shuffles all the stats, spellcasting abilities, and equipment permissions between all the classes, making for classes with very different abilities from the vanilla game. Only for experienced players."
+	},
+	{
+		"Id": "sleepClassDropDown",
+		"title": "Sleep Mode",
+		"description": "Configures strength of the sleep spell."
 	},
 	{
 		"Id": "RandomizeClassCastingCheckBox",

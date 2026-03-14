@@ -68,15 +68,18 @@ namespace FF1Lib
 
 				if ((bool)flags.IsFloaterRemoved && !(bool)flags.IsAirshipFree)
 				{
-					if (!(bool)flags.MapBahamutCardiaDock)
+					if (!(bool)flags.MapCardiaLandBridge)
 					{
-						keepers.Add(OverworldTeleportIndex.Cardia1);
-						keepers.Add(OverworldTeleportIndex.BahamutCave1);
+						if (!(bool)flags.MapBahamutCardiaDock)
+						{
+							keepers.Add(OverworldTeleportIndex.Cardia1);
+							keepers.Add(OverworldTeleportIndex.BahamutCave1);
+						}
+						keepers.Add(OverworldTeleportIndex.Cardia2);
+						keepers.Add(OverworldTeleportIndex.Cardia4);
+						keepers.Add(OverworldTeleportIndex.Cardia5);
+						keepers.Add(OverworldTeleportIndex.Cardia6);
 					}
-					keepers.Add(OverworldTeleportIndex.Cardia2);
-					keepers.Add(OverworldTeleportIndex.Cardia4);
-					keepers.Add(OverworldTeleportIndex.Cardia5);
-					keepers.Add(OverworldTeleportIndex.Cardia6);
 					keepers.Add(OverworldTeleportIndex.TitansTunnelWest);
 				}
 
