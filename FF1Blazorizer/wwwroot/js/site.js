@@ -131,44 +131,65 @@ function getScreenRightEdge() {
 }
 
 let newWorker;
-Blazor.start({}).then(() => {
-        if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/service-worker.js').then(reg => {
-                        console.debug('service worker registered');
-                        reg.addEventListener('updatefound', () => {
-                                console.debug('New update found');
-                                newWorker = reg.installing;
-                                newWorker.addEventListener('statechange', () => {
-                                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                                console.debug('Showing update notification');
-                                            DotNet.invokeMethod('FF1Blazorizer', 'ShowUpdateNotification', 'reload');
-                                        }
-                                });
-                        });
-                });
-        }
+import("./decode.js").then((brotli) => {
+	Blazor.start({
+		loadBootResource: function (type, name, defaultUri, integrity) {
+			if (type !== 'dotnetjs' && location.hostname !== 'localhost' && type !== 'configuration') {
+				return (async function () {
+					const response = await fetch(defaultUri + '.br', { cache: 'no-cache' });
+					if (!response.ok) {
+						throw new Error(response.statusText);
+					}
+					const originalResponseBuffer = await response.arrayBuffer();
+					const originalResponseArray = new Int8Array(originalResponseBuffer);
+					const decompressedResponseArray = brotli.BrotliDecode(originalResponseArray);
+					const contentType = type ===
+						'dotnetwasm' ? 'application/wasm' : 'application/octet-stream';
+					return new Response(decompressedResponseArray,
+						{ headers: { 'content-type': contentType } });
+				})();
+			}
+		}
+	}).then(() => {
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('/service-worker.js').then(reg => {
+				console.debug('service worker registered');
+				reg.addEventListener('updatefound', () => {
+					console.debug('New update found');
+					newWorker = reg.installing;
+					newWorker.addEventListener('statechange', () => {
+						if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+							console.debug('Showing update notification');
+							DotNet.invokeMethod('FF1Blazorizer', 'ShowUpdateNotification', 'reload');
+						}
+					});
+				});
+			});
+		}
 
 
-    var oReq = new XMLHttpRequest();
-    oReq.responseType = 'text';
+		var oReq = new XMLHttpRequest();
+		oReq.responseType = 'text';
 
-    oReq.onload = function () {
-    if (oReq.readyState === oReq.DONE) {
-        if (oReq.status === 200) {
-            var version = oReq.responseText.trim();
-            if (!document.location.hostname.startsWith(version + ".") && document.location.hostname.endsWith("finalfantasyrandomizer.com")) {
-                DotNet.invokeMethod('FF1Blazorizer', 'ShowUpdateNotification', 'https://'+version+'.finalfantasyrandomizer.com');
-            }
-        }
-    }
-    };
-    if (document.location.hostname.match(/\d+-\d+-\d+\.finalfantasyrandomizer\.com/)) {
-        oReq.open("GET", "https://finalfantasyrandomizer.com/version");
-    } else {
-        oReq.open("GET", "https://beta.finalfantasyrandomizer.com/version");
-    }
-    oReq.send();
-})
+		oReq.onload = function () {
+			if (oReq.readyState === oReq.DONE) {
+				if (oReq.status === 200) {
+					var version = oReq.responseText.trim();
+					if (!document.location.hostname.startsWith(version + ".") && document.location.hostname.endsWith("finalfantasyrandomizer.com")) {
+						DotNet.invokeMethod('FF1Blazorizer', 'ShowUpdateNotification', 'https://' + version + '.finalfantasyrandomizer.com');
+					}
+				}
+			}
+		};
+		if (document.location.hostname.match(/\d+-\d+-\d+\.finalfantasyrandomizer\.com/)) {
+			oReq.open("GET", "https://finalfantasyrandomizer.com/version");
+		} else {
+			oReq.open("GET", "https://beta.finalfantasyrandomizer.com/version");
+		}
+		oReq.send();
+	})
+});
+
 
 
 /**
