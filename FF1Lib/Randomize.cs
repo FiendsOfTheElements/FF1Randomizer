@@ -207,8 +207,9 @@ public partial class FF1Rom : NesRom
 		if (flags.NoOverworld) await this.Progress("Linking NoOverworld's Map", 1);
 		NoOverworld(Overworld.DecompressedMap, Maps, Teleporters, TileSetsData, TalkRoutines, Dialogues, NpcData, flags, rng);
 		UpdateToFR(Maps, Teleporters, TileSetsData, flags, rng);
-		Teleporters.ShuffleEntrancesAndFloors(Overworld.OverworldMap, rng, flags);
 		Overworld.Update(Teleporters);
+		Teleporters.ShuffleEntrancesAndFloors(Overworld.OverworldMap, rng, flags);
+		
 		EncounterRates.ScaleEncounterRate(flags);
 
 		// Tile Sets 

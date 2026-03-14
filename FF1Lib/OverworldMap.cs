@@ -15,6 +15,7 @@ namespace FF1Lib
 	public partial class OverworldMap
 	{
 		private readonly FF1Rom _rom;
+		private readonly Flags _flags;
 		private readonly Dictionary<Palette, Blob> _palettes;
 
 		private List<List<byte>> _decompressedMap;
@@ -28,6 +29,7 @@ namespace FF1Lib
 		public OverworldMap(FF1Rom rom, Flags flags)
 		{
 			_rom = rom;
+			_flags = flags;
 			_palettes = GeneratePalettes(rom.Get(MapPaletteOffset, MapCount * MapPaletteSize).Chunk(MapPaletteSize));
 
 			_decompressedMap = DecompressMapRows(GetCompressedMapRows());
@@ -50,7 +52,7 @@ namespace FF1Lib
 				}
 
 				if ((bool)flags.MapAirshipDock) MapEditsToApply.Add(AirshipDock);
-				if ((bool)flags.MapBahamutCardiaDock) MapEditsToApply.Add(BahamutCardiaDock);
+				if ((bool)flags.MapBahamutCardiaDock && !(bool)flags.MapCardiaLandBridge) MapEditsToApply.Add(BahamutCardiaDock);
 				if ((bool)flags.MapLefeinRiver) MapEditsToApply.Add(LefeinRiverDock);
 				if ((bool)flags.MapBridgeLefein) MapEditsToApply.Add(BridgeToLefein);
 				if ((bool)flags.MapGaiaMountainPass) MapEditsToApply.Add(GaiaMountainPass);
@@ -58,6 +60,13 @@ namespace FF1Lib
 				if ((bool)flags.MapRiverToMelmond) MapEditsToApply.Add(RiverToMelmond);
 				if ((bool)flags.MapSardasForest) MapEditsToApply.Add(SardasForest);
 				if ((bool)flags.MapAirshipHike) MapEditsToApply.Add(AirshipHike);
+				
+				if ((bool)flags.MapCardiaLandBridge)
+				{
+					MapEditsToApply.Add(CardiaLandBridge);
+					if ((bool)flags.MapBahamutCardiaDock) MapEditsToApply.Add(CardiaLandBridgeBahamutDock);
+				}
+				if ((bool)flags.ShipDrydock) MapEditsToApply.Add(GaiaDrydock);
 			}
 		}
 		public static Dictionary<Palette, Blob> GeneratePalettes(List<Blob> vanillaPalettes)
@@ -380,6 +389,15 @@ namespace FF1Lib
 			}
 			var recompressedMap = CompressMapRows(editedMap);
 			PutCompressedMapRows(recompressedMap);
+			if ((bool)_flags.MapCardiaLandBridge)
+			{
+				_rom.Teleporters.OverworldCoordinates[OverworldTeleportIndex.Cardia1] 	   = new(0x50,0x1C, CoordinateLocale.Overworld);
+				_rom.Teleporters.OverworldCoordinates[OverworldTeleportIndex.Cardia2] 	   = new(0x4C,0x1D, CoordinateLocale.Overworld);
+				_rom.Teleporters.OverworldCoordinates[OverworldTeleportIndex.BahamutCave1] = new(0x54,0x1F, CoordinateLocale.Overworld);
+				_rom.Teleporters.OverworldCoordinates[OverworldTeleportIndex.Cardia4]	   = new(0x57,0x23, CoordinateLocale.Overworld);
+				_rom.Teleporters.OverworldCoordinates[OverworldTeleportIndex.Cardia5]	   = new(0x5B,0x24, CoordinateLocale.Overworld);
+				_rom.Teleporters.OverworldCoordinates[OverworldTeleportIndex.Cardia6]	   = new(0x64,0x28, CoordinateLocale.Overworld);
+			}
 		}
 
 		public List<List<byte>> ApplyMapEdits(List<List<byte>> decompressedRows, List<MapEdit> mapEdits)

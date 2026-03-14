@@ -47,8 +47,9 @@ namespace FF1Lib
 				if (addMapDerp)
 				{
 					var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-					var mapderpPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("mapderp_overlay.png"));
-					var mapderpStream = assembly.GetManifestResourceStream(mapderpPath);
+					var mapderpFiles = assembly.GetManifestResourceNames().Where(str => str.Contains("mapderp")).ToList();
+					var mapderpFile = mapderpFiles.PickRandom(funRng);
+					var mapderpStream = assembly.GetManifestResourceStream(mapderpFile);
 					var mapderpImage = Image.Load<Rgba32>(mapderpStream);
 
 					image.Mutate(x => x.DrawImage(mapderpImage, new Point(0, 0), 1.0f));

@@ -120,7 +120,7 @@
 			<div class="checkbox-cell"></div>
 			<h4>Key Items Placement</h4>
 			<CheckBox UpdateAction="@UpdateAction" Id="kiPlacementMode" @bind-Value="Flags.AllowUnsafePlacement">Unsafe Placement</CheckBox>
-            <CheckBox UpdateAction="@UpdateAction" Id="shipCanalBeforeFloater" @bind-Value="Flags.ShipCanalBeforeFloater">Ship & Canal Before Floater</CheckBox>
+            <CheckBox UpdateAction="@UpdateAction" Id="shipCanalBeforeFloater" IsEnabled="@(Flags.ShipDrydock == false)" @bind-Value="Flags.ShipCanalBeforeFloater">Ship & Canal Before Floater</CheckBox>
             <div class="checkbox-cell"></div>
 			<h4>Loose Placement</h4>
 			<EnumDropDown UpdateAction="@UpdateAction" Id="loosePlacementMode" IsEnabled="@(Flags.IsAnythingLoose)" TItem="LoosePlacementMode" @bind-Value="Flags.LoosePlacementMode"></EnumDropDown>

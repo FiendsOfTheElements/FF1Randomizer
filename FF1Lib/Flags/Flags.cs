@@ -310,6 +310,7 @@ namespace FF1Lib
 		public bool? MapHallOfDragons { get; set; } = false;
 		public bool? MapSardasForest { get; set; } = false;
 		public bool? MapAirshipHike { get; set; } = false;
+		public bool? MapCardiaLandBridge { get; set; } = false;
 		public bool? EntrancesIncludesDeadEnds { get; set; } = false;
 		public bool? EntrancesMixedWithTowns { get; set; } = false;
 
@@ -434,6 +435,7 @@ namespace FF1Lib
 		public bool NonesGainXP { get; set; } = false;
 		public bool? NoTail { get; set; } = false;
 		public bool? NoFloater { get; set; } = false;
+		public bool? ShipDrydock { get; set; } = false;
 		public bool? GuaranteedMasamune { get; set; } = false;
 		public bool? SendMasamuneHome { get; set; } = false;
 
