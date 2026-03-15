@@ -37,8 +37,8 @@
 					background: var(--track-background);
 				}}
 			</style>"))
-				<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" value="@ValuesRangeLow" @onchange="@onchangeLow" />
-				<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" value="@ValuesRangeHigh" @onchange="@onchangeHigh" />
+				<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" value="@ValuesLow" @onchange="@onchangeLow" />
+				<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" value="@ValuesHigh" @onchange="@onchangeHigh" />
 			</div>
 		</BSRow>
 	</BSContainer>
@@ -82,8 +82,8 @@ else
 					background: var(--track-background);
 				}}
 			</style>"))
-				<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" value="@ValuesRangeLow" @onchange="@onchangeLow" />
-				<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" value="@ValuesRangeHigh" @onchange="@onchangeHigh" />
+				<input name="low-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" value="@ValuesLow" @onchange="@onchangeLow" />
+				<input name="high-range" type="range" min="@MinValue" max="@MaxValue" step="@Step" value="@ValuesHigh" @onchange="@onchangeHigh" />
 			</div>
 		</BSRow>
 	</BSContainer>
@@ -118,11 +118,11 @@ else
 	private string BuildDisplayString()
 	{
 		string displayString = "";
-		if (_valueLow > 0 && ShowPositiveSign)
+		if (ValuesLow > 0 && ShowPositiveSign)
 		{
 			displayString += "+";
 		}
-		displayString += _valueLow;
+		displayString += ValuesLow;
 		if (ShowMedian && !DontShowPercent || ShowPercent)
 		{
 			displayString += "%";
@@ -130,11 +130,11 @@ else
 
 		displayString += " - ";
 
-		if (_valueHigh > 0 && ShowPositiveSign)
+		if (ValuesHigh > 0 && ShowPositiveSign)
 		{
 			displayString += "+";
 		}
-		displayString += _valueHigh;
+		displayString += ValuesHigh;
 		if (ShowMedian && !DontShowPercent)
 		{
 			displayString += "% (" + Median + "%)";
@@ -155,12 +155,12 @@ else
 	{
 		get
 		{
-			if (_valueLow == 0 && _valueHigh == 0) return 0;
+			if (ValuesLow == 0 && ValuesHigh == 0) return 0;
 
-			if (_valueLow == 0 && _valueHigh == 10) return 1;
-			if (_valueLow == 0) return (int)Math.Sqrt(10 * _valueHigh);
+			if (ValuesLow == 0 && ValuesHigh == 10) return 1;
+			if (ValuesLow == 0) return (int)Math.Sqrt(10 * ValuesHigh);
 
-			return (int)Math.Sqrt(_valueLow * _valueHigh);
+			return (int)Math.Sqrt(ValuesLow * ValuesHigh);
 		}
 	}
 
@@ -171,11 +171,11 @@ else
 	[Parameter] public int MinValue { get; set; }
 	[Parameter] public int MaxValue { get; set; }
 	[Parameter] public int Step { get; set; }
-	[Parameter]
-	public (int low, int high) ValuesRange
+	[Parameter] public (int low, int high) ValuesRange { get; set; }
+	private (int low, int high) Values
 	{
-
-		get => (_valueLow, _valueHigh);
+		//get => (_valueLow, _valueHigh);
+		get => ValuesRange;
 		set
 		{ 
 			if (_valueLow.Equals(value.low) && _valueHigh.Equals(value.high))
@@ -193,37 +193,38 @@ else
 				_valueLow = value.low;
 				_valueHigh = value.high;
 			}
+			ValuesRange = (_valueLow,_valueHigh);
 		}
 	}
 
-	private int ValuesRangeLow
+	private int ValuesLow
 	{
-		get => ValuesRange.low;
+		get => Values.low;
 		set
 		{
-			ValuesRange = (value, ValuesRange.high);
+			Values = (value, Values.high);
 		}
 	}
 
-	private int ValuesRangeHigh
+	private int ValuesHigh
 	{
-		get => ValuesRange.high;
+		get => Values.high;
 		set
 		{
-			ValuesRange = (ValuesRange.low, value);
+			Values = (Values.low, value);
 		}
 	}
 
 	void onchangeLow(ChangeEventArgs e)
 	{
-		ValuesRangeLow = int.Parse((string)e.Value);
+		ValuesLow = int.Parse((string)e.Value);
 		ValuesRangeChanged.InvokeAsync((_valueLow, _valueHigh));
 		UpdateAction?.Invoke("UpdateFlagstring", "");
 	}
 
 	void onchangeHigh(ChangeEventArgs e)
 	{
-		ValuesRangeHigh = int.Parse((string)e.Value);
+		ValuesHigh = int.Parse((string)e.Value);
 		ValuesRangeChanged.InvokeAsync((_valueLow, _valueHigh));
 		UpdateAction?.Invoke("UpdateFlagstring", "");
 	}

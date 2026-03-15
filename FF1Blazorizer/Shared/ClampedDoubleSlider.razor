@@ -104,7 +104,7 @@
 				[Parameter] public int MaxValue { get; set; } = 500;
 				[Parameter] public int Step { get; set; } = 10;
 				[Parameter] public int ClampValue { get; set; } = 100;
-				[Parameter]
+
 				public int ValueLow
 				{
 					get => _valueLow;
@@ -126,7 +126,7 @@
 						ValueLowChanged.InvokeAsync(_valueLow);
 					}
 				}
-				[Parameter]
+				
 				public int ValueHigh
 				{
 					get => _valueHigh;
