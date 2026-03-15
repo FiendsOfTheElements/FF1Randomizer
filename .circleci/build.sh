@@ -20,8 +20,7 @@ shortName=$(echo "$config" | jq -r ".shortName")
 cssFile=$(echo "$config" | jq -r ".cssFile")
 themeColor=$(echo "$config" | jq -r ".themeColor")
 siteIcon=$(echo "$config" | jq -r ".siteIcon")
-#releaseBuild=$(echo "$config" | jq -r ".releaseBuild")
-releaseBuild=true
+releaseBuild=$(echo "$config" | jq -r ".releaseBuild")
 
 sed -i "s/NAME_LONG/${longName} ${version}/g" wwwroot/manifest.published.json
 sed -i "s/NAME_SHORT/$shortName/g" wwwroot/manifest.published.json
