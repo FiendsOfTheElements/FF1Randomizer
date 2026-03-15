@@ -20,7 +20,8 @@ shortName=$(echo "$config" | jq -r ".shortName")
 cssFile=$(echo "$config" | jq -r ".cssFile")
 themeColor=$(echo "$config" | jq -r ".themeColor")
 siteIcon=$(echo "$config" | jq -r ".siteIcon")
-releaseBuild=$(echo "$config" | jq -r ".releaseBuild")
+#releaseBuild=$(echo "$config" | jq -r ".releaseBuild")
+releaseBuild=true
 
 sed -i "s/NAME_LONG/${longName} ${version}/g" wwwroot/manifest.published.json
 sed -i "s/NAME_SHORT/$shortName/g" wwwroot/manifest.published.json
@@ -31,7 +32,7 @@ sed -i "s/SITE_ICON_COLOR/$siteIcon/g" wwwroot/manifest.published.json
 sed -i "s/SITE_ICON_COLOR/$siteIcon/g" wwwroot/index.html
 mv -f wwwroot/manifest.published.json wwwroot/manifest.json
 if "$releaseBuild"; then
-    dotnet publish -c Release -o output
+    dotnet publish -c Release -o output -p:RunAOTCompilation=true
 else
     dotnet publish -c Debug -o output
 fi
