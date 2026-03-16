@@ -27,6 +27,7 @@
 			<EnumDropDown UpdateAction="@UpdateAction" Indent Id="damageTilesQuantity" IsEnabled=@Flags.AddDamageTiles TItem="DamageTilesQuantity" @bind-Value="Flags.DamageTilesQuantity">Quantity:</EnumDropDown>
 			<div class="checkbox-cell"></div>
 			<CheckBox UpdateAction="@UpdateAction" Id="intAffectsSpellsCheckBox" @bind-Value="Flags.IntAffectsSpells">INT Affects Spells</CheckBox>
+            <TriStateCheckBox UpdateAction="@UpdateAction" Id="dockAnywhereCheckBox" @bind-Value="Flags.DockAnywhere">Dock Anywhere</TriStateCheckBox>
 		</div>
 		<div class="col2">
 			<strong>Procedurally Generated Dungeons</strong>

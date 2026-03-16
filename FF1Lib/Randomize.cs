@@ -360,6 +360,7 @@ public partial class FF1Rom : NesRom
 		SetPoisonMode(flags.PoisonMode, flags.PoisonSetDamageValue);
 		new QuickMiniMap(this, Overworld.DecompressedMap).EnableQuickMinimap(flags.SpeedHacks || Overworld.MapExchange != null, Music);
 		EnableAirBoat(flags);
+		EnableDockAnywhere(flags);
 		SetRNG(flags);
 
 		// These two MUST go in this order, and MonsterInABox must run third.

@@ -123,6 +123,14 @@ namespace FF1Lib
 			ItemsText[(int)Item.Floater] = "AIRBOAT";
 			MenuText.MenuStrings[(int)FF1Text.MenuString.UseFloater] = FF1Text.TextToBytes("A mysterious boat", useDTE: true);
 		}
+		public void EnableDockAnywhere(Flags flags)
+		{
+			if (flags.DockAnywhere != true)
+			{
+				return;
+			}
+			PutInBank(0x1F, 0xC2EB, Blob.FromHex("2901EAEA"));
+		}
 
 		public void ImproveTurnOrderRandomization(bool enable, MT19337 rng)
 		{
