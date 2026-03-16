@@ -14,6 +14,7 @@ Address = offset - (bank * 0x4000) + 0x8000 - 0x10
 5000      Memory Mapper
 6000-63FF expansion RAM (copied to SRAM on save)
 6400-67FF SRAM
+6856-686A Math Buffer
 6800-7FFF Data/Rest of the SRAM chip
 8000-BFFF low bank (program banks loaded here)
 C000-FFFF always bank 1F
@@ -62,7 +63,6 @@ Bank Offset Range Description
 0B
 
 30000-33FFF
-0C   6856-686A    Math Buffer
 0C   92F4-92FF    Enable Auto Retargeting
 0C   93A5-93A8    Modify Undo Battle Command
 0C   93AE-93BA    Modify After Fade In
@@ -94,6 +94,7 @@ Bank Offset Range Description
 0C   B1E2-B1E3    Minimum Enemy Sleep Bound
 0C   B1E4-B1E5    Maximum Enemy Sleep Bound
 0C   B1D5-B1D6    Scale Sleep Fix Enemy Stat
+OC   B363-B378    Replaced MagicPtr Lookup With Call To GetPointerToMagicData Function
 0C   B3CD-B3D8    Enable Auto Retargeting
 0C   B43D-B440    Modify Battle PlMag Target One Player
 0C   B453-B45B    Skip None Spells
