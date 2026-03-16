@@ -31,6 +31,8 @@ NesMemory:4017:Ctrl2_FrameCtr_4017:Read (NES - input):\n---4 3210\nRead data fro
 NesMemory:A232:ApplyRegenToAllEnemies
 NesMemory:AD06:LoadOneCharacterIBStats
 NesMemory:B6C8:BtlMag_LoadEnemyDefenderStats
+NesPrgRom:301E0:lut_MagicData
+NesPrgRom:304C0:lut_MagicBattleMessages
 NesPrgRom:312E0:ExitBattle
 NesPrgRom:31306:FinishBattlePrepAndFadeIn
 NesPrgRom:3133B:CheckForEndOfBattle
@@ -105,6 +107,9 @@ NesPrgRom:32EDD:MathBuf_Add
 NesPrgRom:32F0A:MathBuf_Sub
 NesPrgRom:32F3C:MathBuf_NZ
 NesPrgRom:32F64:LoadEnemyStats
+NesPrgRom:3300C:ClearAltMessageBuffer
+NesPrgRom:3305E:DrawCombatBox_Attacker
+NesPrgRom:33074:DrawCombatBox_Attack
 NesPrgRom:33190:ApplyEnemyAilmentMask
 NesPrgRom:33197:Do_EnemyTurn
 NesPrgRom:331D4:Enemy_Asleep
@@ -123,7 +128,16 @@ NesPrgRom:33319:ChooseAndAttackPlayer
 NesPrgRom:33325:GetRandomPlayerTarget
 NesPrgRom:33328:@GetTargetLoop
 NesPrgRom:3335C:Battle_PrepareMagic
+NesPrgRom:3337F:@Ineffective
+NesPrgRom:333B5:Player_DoItem
+NesPrgRom:333BD:Player_DoDrink
+NesPrgRom:333C5:Player_DoMagic
+NesPrgRom:333CA:Player_DoMagicEffect
+NesPrgRom:3340A:Battle_PlayerMagic_CastOnTarget
+NesPrgRom:3350E:Battle_EndMagicTurn
+NesPrgRom:335EB:PrepEntityPtr_Player
 NesPrgRom:338DB:BtlMag_ApplyDamage
+NesPrgRom:339E4:BtlMag_Effect_AbsorbUp
 NesPrgRom:394E0:FinalizeOutput
 NesPrgRom:39E08:CheckForSpace
 NesPrgRom:39E17:IncreaseInventoryCount
@@ -237,3 +251,10 @@ NesPrgRom:7F799:@TopPage
 NesPrgRom:7F7EC:@BottomPage
 NesPrgRom:7F841:@Done_MagicBox
 NesPrgRom:7F844:BattleMenu_DrawMagicNames
+NesPrgRom:7FE03:SwapPRG
+NesInternalRam:0098:btl_magdataptr_low
+NesInternalRam:0099:btl_magdataptr_high
+NesSaveRam:086E:btlmag_effect
+NesSaveRam:0879:btl_defender_absorb
+NesSaveRam:087A:btl_defender_magdef
+NesSaveRam:0C8C:btl_attackid
