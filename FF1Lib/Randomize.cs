@@ -342,6 +342,7 @@ public partial class FF1Rom : NesRom
 		ScaleEnemyStats(rng, flags);
 		ScaleBossStats(rng, flags);
 		ScaleSleep(rng, flags);
+		FixMute(flags);
 
 		// Encounters
 		ZoneFormations.ShuffleEnemyFormations(rng, flags.FormationShuffleMode, flags.EnemizerEnabled);
