@@ -54,6 +54,9 @@
 			<EnumDropDown UpdateAction="@UpdateAction" Id="magicAutohitThresholdDropDown" TItem="AutohitThreshold" @bind-Value="Flags.MagicAutohitThreshold">Power Word Threshold:</EnumDropDown>
 			<CheckBox UpdateAction="@UpdateAction" Id="enableSoftInBattle" @bind-Value="Flags.EnableSoftInBattle">Enable Soft in Battle</CheckBox>
             <EnumDropDown UpdateAction="@UpdateAction" Id="lifeInBattleDropDown" TItem="LifeInBattleSetting" @bind-Value="Flags.EnableLifeInBattle">Life in Battle:</EnumDropDown>
+			<h5>Mute</h5>
+				<TriStateCheckBox UpdateAction="@UpdateAction" Id="DrinkWhileMute" @bind-Value="Flags.DrinkWhileMute">Allow Potions While Muted</TriStateCheckBox>
+				<TriStateCheckBox UpdateAction="@UpdateAction" Id="ItemWhileMute" @bind-Value="Flags.ItemWhileMute">Allow Items While Muted</TriStateCheckBox>
 			<h5>Sleep</h5>
 			<EnumDropDown UpdateAction="@UpdateAction" Id="sleepClassDropDown" TItem="SleepMode" @bind-Value="Flags.SleepModeDropDown">Mode:</EnumDropDown>
 			@if (Flags.SleepModeDropDown == SleepMode.Fixed)
