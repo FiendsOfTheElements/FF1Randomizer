@@ -342,7 +342,6 @@ public partial class FF1Rom : NesRom
 		ScaleEnemyStats(rng, flags);
 		ScaleBossStats(rng, flags);
 		ScaleSleep(rng, flags);
-		FixMute(flags);
 
 		// Encounters
 		ZoneFormations.ShuffleEnemyFormations(rng, flags.FormationShuffleMode, flags.EnemizerEnabled);
@@ -378,6 +377,7 @@ public partial class FF1Rom : NesRom
 		ExpGoldBoost(flags);
 		ScalePrices(ShopData, flags, rng, ((bool)flags.ClampMinimumPriceScale), ShopData.ItemShopSlot, flags.ImprovedClinic);
 		extConsumables.AddExtConsumables();
+		FixMute(flags);
 
 		await this.Progress();
 
