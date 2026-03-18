@@ -2764,5 +2764,11 @@
 		"title": "Fun Fountain Text",
 		"screenshot": "FountainText.png",
 		"description": "We all love being told to wash our face, but what if the fountain said other things?"
+	},
+	{
+		"Id": "dockAnywhereCheckBox",
+		"title": "Dock Anywhere",
+		"screenshot": "dockAnywhereCheckBox.gif",
+		"description": "Allow the ship to dock at any land tile instead of just at dock tiles."
 	}
 ]
