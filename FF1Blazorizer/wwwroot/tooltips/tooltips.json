@@ -1730,6 +1730,11 @@
 		"description": "Configures strength of the sleep spell."
 	},
 	{
+		"Id": "ItemsWhileMute",
+		"title": "Mute Fix",
+		"description": "Allows the light warriors to hold up weapons and drink without speaking."
+	},
+	{
 		"Id": "RandomizeClassCastingCheckBox",
 		"title": "Add Spellcasting Bonuses",
 		"screenshot": "RandomizeClassCasting.png",

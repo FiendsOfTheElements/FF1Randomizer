@@ -377,6 +377,7 @@ public partial class FF1Rom : NesRom
 		ExpGoldBoost(flags);
 		ScalePrices(ShopData, flags, rng, ((bool)flags.ClampMinimumPriceScale), ShopData.ItemShopSlot, flags.ImprovedClinic);
 		extConsumables.AddExtConsumables();
+		FixMute(flags);
 
 		await this.Progress();
 
