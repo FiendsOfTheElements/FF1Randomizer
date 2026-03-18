@@ -1,0 +1,4 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0
+RUN dotnet workload install wasm-tools
+RUN curl -sL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs jq curl
+RUN npm install -g netlify-cli

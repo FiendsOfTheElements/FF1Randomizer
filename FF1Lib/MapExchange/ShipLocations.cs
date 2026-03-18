@@ -53,9 +53,11 @@ namespace FF1Lib
 			}
 			if ((bool)flags.ShipDrydock)
 			{
-				var changeDockLocation = GetShipLocation(255);
-				changeDockLocation.X = Dock.GaiaDrydock[0];
-				changeDockLocation.Y = Dock.GaiaDrydock[1];
+				foreach (ShipLocation sl in data)
+				{
+					sl.X = Dock.GaiaDrydock[0];
+					sl.Y = Dock.GaiaDrydock[1];
+				}
 			}
 		}
 	}
