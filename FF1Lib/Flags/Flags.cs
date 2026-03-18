@@ -415,6 +415,7 @@ namespace FF1Lib
 		public ChanceToRunMode ChanceToRun { get; set; } = ChanceToRunMode.Vanilla;
 
 		public bool SpellBugs { get; set; } = false;
+		public bool? ItemsWhileMute { get; set; } = false;
 		public bool BlackBeltAbsorb { get; set; } = false;
 		public bool NPCSwatter { get; set; } = false;
 		public bool BattleMagicMenuWrapAround { get; set; } = false;
