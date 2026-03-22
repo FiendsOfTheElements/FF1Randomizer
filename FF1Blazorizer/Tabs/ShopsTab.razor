@@ -63,6 +63,11 @@
 				<DoubleSlider DoubleCol DisableTooltip Id="sleepDoubleSlider" UpdateAction="@UpdateAction" MinValue="0" MaxValue="255" Step="1" @bind-ValuesRange="(Flags.PlayerSleepScaleLow,Flags.PlayerSleepScaleHigh)">Player Wake HP RNG Range:</DoubleSlider>
 				<DoubleSlider DoubleCol DisableTooltip Id="sleepDoubleSlider" UpdateAction="@UpdateAction" MinValue="0" MaxValue="255" Step="1" @bind-ValuesRange="(Flags.EnemySleepScaleLow,Flags.EnemySleepScaleHigh)">Enemy Wake HP RNG Range:</DoubleSlider>
 			}
+			@* else if (Flags.SleepModeDropDown == SleepMode.Expanded)
+			{
+				<DoubleSlider DoubleCol DisableTooltip Id="sleepDoubleSlider" UpdateAction="@UpdateAction" MinValue="0" MaxValue="255" Step="1" @bind-ValuesRange="(Flags.PlayerSleepScaleLow,Flags.PlayerSleepScaleHigh)">Player Wake HP RNG Range:</DoubleSlider>
+				<DoubleSlider DoubleCol DisableTooltip Id="sleepDoubleSlider" UpdateAction="@UpdateAction" MinValue="0" MaxValue="255" Step="1" @bind-ValuesRange="(Flags.EnemySleepScaleLow,Flags.EnemySleepScaleHigh)">Enemy Wake HP RNG Range:</DoubleSlider>
+			} *@
 			else if (Flags.SleepModeDropDown == SleepMode.WakeOnHit)
 			{
 				<TriStateCheckBox DisableTooltip UpdateAction="@UpdateAction" Id="startOfHits" @bind-Value="Flags.StartOfHits">Sleep Removed Before Each Hit</TriStateCheckBox>
@@ -70,8 +75,23 @@
 			}
 			@* else if (Flags.SleepModeDropDown == SleepMode.HPRange)
 			{
+			}
+			else if (Flags.SleepModeDropDown == SleepMode.IncreasingHPDown)
+			{
 			} *@
-
+			<h5>Fog</h5>
+			<CheckBox UpdateAction="@UpdateAction" Id="FogAbsorb" @bind-Value="Flags.EnableFogBuff">Fog Absorb Buffs</CheckBox>
+			@if (Flags.EnableFogBuff)
+			{
+				<IntSlider DisableTooltip Id="FogAbsorbSlider" UpdateAction="@UpdateAction" Min="0" Max="255" Step="1" @bind-Value="(Flags.FogScaling)">Fog:</IntSlider>
+				<IntSlider DisableTooltip Id="Fog2AbsorbSlider" UpdateAction="@UpdateAction" Min="0" Max="255" Step="1" @bind-Value="(Flags.Fog2Scaling)">Fog2:</IntSlider>
+			}
+			<CheckBox UpdateAction="@UpdateAction" Id="FogMDef" @bind-Value="Flags.EnableFogMDefBuff">Fog MDef Buffs</CheckBox>
+			@if (Flags.EnableFogMDefBuff)
+			{
+				<IntSlider DisableTooltip Id="FogMDefSlider" UpdateAction="@UpdateAction" Min="0" Max="255" Step="1" @bind-Value="(Flags.FogMDefScaling)">Fog MDef:</IntSlider>
+				<IntSlider DisableTooltip Id="Fog2MDefSlider" UpdateAction="@UpdateAction" Min="0" Max="255" Step="1" @bind-Value="(Flags.Fog2MDefScaling)">Fog2 MDef:</IntSlider>
+			}
 			<div class="checkbox-cell"></div>
 			<h4>Spell Crafter</h4>
 			<TriStateCheckBox UpdateAction="@UpdateAction" Id="generateNewSpellbook" @bind-Value="Flags.GenerateNewSpellbook">Generate New Spellbooks</TriStateCheckBox>
