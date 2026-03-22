@@ -62,7 +62,7 @@ namespace FF1Lib
 		[Description("Fixed Value - 8 bit")]
 		Fixed = 0,
 		// [Description("Fixed Value - 16 bit")]
-		// Expanded,	
+		// Expanded,
 		[Description("Wake On Hit")]
 		WakeOnHit,
 		// [Description("Wake Chance Increases As HP Falls")]

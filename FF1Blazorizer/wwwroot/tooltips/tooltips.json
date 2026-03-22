@@ -1730,6 +1730,16 @@
 		"description": "Configures strength of the sleep spell."
 	},
 	{
+		"Id": "FogAbsorb",
+		"title": "Fog Absorb Buff",
+		"description": "Configures how much absorb is added by the fog and fog2 spells.\n\n(There's a hard cap at 255 regardless of how many casts are done.)"
+	},
+	{
+		"Id": "FogMDef",
+		"title": "Fog Magic Defense Buff",
+		"description": "Configures how much magic defense is added by the fog and fog2 spells.\n\n(There's a hard cap at 255 regardless of how many casts are done.)"
+	},
+	{
 		"Id": "ItemsWhileMute",
 		"title": "Mute Fix",
 		"description": "Allows the light warriors to hold up weapons and drink without speaking."
