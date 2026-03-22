@@ -88,6 +88,11 @@ namespace FF1Lib
 			{
 				EnableLifeInBattle(flags);
 			}
+
+			if (flags.EnableFogBuff || flags.EnableFogMDefBuff)
+			{
+				FogBuff(flags);
+			}
 		}
 
 		public void BuffTier1DamageSpells()
@@ -259,6 +264,15 @@ namespace FF1Lib
 					Put(MagicOffset + spl.Index * MagicSize, spell.compressData());
 				}
 			}
+		}
+		
+		public void FogBuff(Flags flags)
+		{
+			// replace absorb up funtion with swap bank
+			PutInBank(0x0C, 0xB9E4, Blob.FromHex("A9A748A9B748A91C4C03FE4C85B8EAEA"));
+			
+			// uses the effectivity to determine which spell then allows for absorb and mdef increases
+			PutInBank(0x1C, 0xA7B8, Blob.FromHex($"A908CD7468D01BAD7F6869{flags.FogScaling:X2}9002A9FF8D7F68AD726869{flags.FogMDefScaling:X2}9002A9FF8D72684CF2A7AD7F6869{flags.Fog2Scaling:X2}9002A9FF8D7F68AD726869{flags.Fog2MDefScaling:X2}9002A9FF8D7268A9B948A9EE48A90C4C03FE"));
 		}
 	}
 }
