@@ -105,6 +105,20 @@ namespace FF1Lib
 		public bool EnableSoftInBattle { get; set; } = false;
 		public LifeInBattleSetting EnableLifeInBattle { get; set; } = LifeInBattleSetting.LifeInBattleAll;
 
+		public bool EnableFogBuff { get; set; } = false;
+		public bool EnableFogMDefBuff { get; set; } = false;
+
+		[IntegerFlag(0, 255, 1)]
+		public int FogScaling { get; set; } = 8;
+
+		[IntegerFlag(0, 255, 1)]
+		public int Fog2Scaling { get; set; } = 12;
+		[IntegerFlag(0, 255, 1)]
+		public int FogMDefScaling { get; set; } = 0;
+
+		[IntegerFlag(0, 255, 1)]
+		public int Fog2MDefScaling { get; set; } = 0;
+
 		public bool? NormalShopsHaveExtConsumables { get; set; } = false;
 
 		public bool? LegendaryShopHasExtConsumables { get; set; } = false;
