@@ -1204,21 +1204,25 @@ namespace FF1Lib
 
 			if (flags.ItemsWhileMute == true)
 			{
-
+				// Shifts Player_DoMagic up and fixes jumps
 				PutInBank(0x0C, 0xA3A3, Blob.FromHex("4CBEB3"));
 				PutInBank(0x0C, 0xB3BA, Blob.FromHex("4CC3B3EA8D8C6CA9008D8F6C"));
 
 				if (flags.AutoRetargeting == true)
 				{
+					// Fixes auto retargeting
 					PutInBank(0x0C, 0xB3C6, Blob.FromHex("A9A148A9BF48A91C4C03FE"));
 					PutInBank(0x1C, 0xA1E7, Blob.FromHex("A9D0"));
 				}
 				else
 				{
+					// Fixes original code
 					PutInBank(0x0C, 0xB3C6, Blob.FromHex("98290309808D896C8DD16B"));
 				}
 
+				// Finishes Code Shift
 				PutInBank(0x0C, 0xB3D1, Blob.FromHex("8E8A6CA9008DA76D200CB0205EB02074B0AD896C20EBB5"));
+				// Skips Mute Check
 				PutInBank(0x0C, 0xB3E8, Blob.FromHex("AD8F6CC900D00D"));
 			}
 		}
