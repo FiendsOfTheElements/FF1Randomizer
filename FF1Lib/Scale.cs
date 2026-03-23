@@ -333,22 +333,18 @@ namespace FF1Lib
 					PutInBank(0x0C, 0xA3B1, Blob.FromHex("EAEAEAEAEAEAEAEAEA"));
 					// Remove random enemy wake up
 					PutInBank(0x0C, 0xB1BC, Blob.FromHex("EAEAEAEA"));
+					// Remove Excess 0 capping in defender mobile block
+					PutInBank(0x0C, 0xA73C, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+					// Replaced inefficent minimum base damage check
+					PutInBank(0x0C, 0xA821, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAAD6068"));
 					if (flags.StartOfHits == true)
 					{
-						// Remove Excess 0 capping in defender mobile block
-						PutInBank(0x0C, 0xA73C, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-						// Replaced inefficent minimum base damage check
-						PutInBank(0x0C, 0xA821, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAAD6068"));
 						// Added sleep removal at the start of hits
 						PutInBank(0x0C, 0xA85A, Blob.FromHex("A9DF2D89688D8968AD8768F065AD7368F060AD6A68F05BA9648D6468AD7B682D6E68F009A9008D6468A907AE7A68200AAFEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAAD6468"));
 
 					}
 					if (flags.AfterHits == true)
 					{
-						// Remove Excess 0 capping in defender mobile block
-						PutInBank(0x0C, 0xA73C, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
-						// Replaced inefficent minimum base damage check
-						PutInBank(0x0C, 0xA821, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAAD6068"));
 						// Removed unused store and load
 						PutInBank(0x0C, 0xA874, Blob.FromHex("EAEAEAEAEAEA"));
 						// Removed unneeded 0 clipping
