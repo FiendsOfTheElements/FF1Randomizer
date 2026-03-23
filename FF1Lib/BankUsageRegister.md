@@ -6,8 +6,14 @@
 ; ~ = No upper range is enforced in the code, data could potentially overlap other used ranges.
 ; ! = Potential bug, to correct
 
+
+Bank Address Math
+-----------------------------
 Address = offset - (bank * 0x4000) + 0x8000 - 0x10
 
+
+Memory Layout
+-----------------------------
 0000-07FF RAM
 0800-1FFF mirror of RAM
 2000      VRAM
@@ -19,50 +25,75 @@ Address = offset - (bank * 0x4000) + 0x8000 - 0x10
 8000-BFFF low bank (program banks loaded here)
 C000-FFFF always bank 1F
 
+
 Bank Offset Range Description
 -----------------------------
-00000-03FFF
+ROM: 00000-03FFF
+00   8434-8435    Pub Sign Black and White Palette
+00   A07C-A084    Make Lute Plate Single Color
+00   A2E8-A2F0    Ice Cave Palette Changes
 00   A618-A620    Alt fiend earth orb palette
 00   A6D8-A6E0    Alt fiend volcano orb palette
 00   A7F8-A800    Alt fiend sea shrine orb palette
 00   A9A8-A9B0    Alt fiend sky palace orb palette
+00   AB28-AB30    Lich's Revenge and MIAB Update Chaos Palette
+00   B00B-B00C    Clear false Initialization of Archipelago Counters
+00   B00F-B010    Clear false Initialization of Archipelago Counters
+00   B010-B011    No Overworld Spawn At Coneria Castle
+00   B380-B3A0    Load Stats For None
+00   B380-B3A6    Update Load Stats For Promo Classes
 00   BF90-BF9A    Add item lookup to Bank 00
 
-04000-07FFF
+ROM: 04000-07FFF
 01
 
-08000-0BFFF
-02
+ROM: 08000-0BFFF
+02   8F60-8F6F    Mapman for nones and Fun% Party Leader
 
-0C000-09FFF
+ROM: 0C000-09FFF
 03   8220-8230    Palm tree tile used for pub sign (also 8320-8330)
 
 ; Freed  (write only after SM have been read)
-10000-13FFF
+ROM: 10000-13FFF
 04   8000-FFFF    Unused
 
-14000-17FFF
+ROM: 14000-17FFF
 05   8000-FFFF    Unused
 
-18000-1BFFF
+ROM: 18000-1BFFF
 06   8000-FFFF    Unused
 
-1C000-1FFFF
+ROM: 1C000-1FFFF
 07
 
-20000-23FFF
+ROM: 20000-23FFF
 08
 
-24000-27FFF
-09
+ROM: 24000-27FFF
+09   8DE0-        SetCustomGearIcons
+09   B000-B3C0    Store Data
+09   B3C0-B400    Store Data
+09   B400-B481    Store Data
+09   B500-B520    Store Data
+09   B520-B530    Store Data
+09   BC00-BCB2    Store Routine
 
-28000-2BFFF
-0A
+ROM: 28000-2BFFF
+0A   8000-B600    Clear This Bank
 
-2C000-2FFFF
-0B
+ROM: 2C000-2FFFF
+0B   8C40-92E0    fill empty space with NOPs
+0B   9950-99A8    fill empty space with NOPs
+0B   99B8-99C8    patch bridge extension
+0B   99B8-99C3    Alt Chaos Battle Music
+0B   99C8-99CA    lock respond rate
+0B   9ADF-9AE2    ChaosDeath Breakout
+0B   9AE6-9AE8
+0B   9AF5-9B0C
+0B   9B0C-9EFB    fill empty space with NOPs
+0B   9B40-9B4D    ChaosDeath Breakout
 
-30000-33FFF
+ROM: 30000-33FFF
 0C   92F4-92FF    Enable Auto Retargeting
 0C   93A5-93A8    Modify Undo Battle Command
 0C   93AE-93BA    Modify After Fade In
@@ -74,6 +105,8 @@ Bank Offset Range Description
 0C   97C7-97CA    Set RNG
 0C   97CA-97D4    Controller Patch
 0C   9910-991C    Better Battle Sprite
+0C   9C9E-9CE6    Battle Magic Menu Wrapping
+0C   9CE6-9CF0    Zero Empty Space
 0C   9FE7-9FF7    ExtConsumables Write Cursor Position
 0C   A03C-????    Palette per class in battle (redundant, but needed)
 0C   A250-A275    Enable Auto Retargeting
@@ -81,20 +114,36 @@ Bank Offset Range Description
 0C   A2D7-A2E2    Poison Mode
 0C   A357-A364    Set RNG
 0C   A364-A3D3    Write Battle Do Turn
+0C   A3A3-A3A5    Update Player_DoMagic Jump If Mute Fix
+0C   A3B1-A3BA    Remove call to random player wake up; Wake on Hit
 0C   A3E0-A3F2    Prevent running if first strike on unrunnable
 0C   A445-A446    Minimum Player Sleep Bound
 0C   A447-A448    Maximum Player Sleep Bound
+0C   A451-A465    fix player sleep subroutine
 0C   A4C2-A4C8    Enable Auto Retargeting
+0C   A73C-A74B    Remove Excess 0 capping in defender mobile block
+0C   A821-A836    Replaced inefficent minimum base damage check
+0C   A85A-A89D    Added sleep removal; start of hits
+0C   A874-A87A    Removed unused store and load; after hits
+0C   A889-A89D    Removed unneeded 0 clipping; after hits
+0C   A7F2-A7F4    Update the NextHitIteration branch locations; after hits
+0C   A85D-A85E    Update the NextHitIteration branch locations; after hits
+0C   A862-A863    Update the NextHitIteration branch locations; after hits
+0C   A867-A868    Update the NextHitIteration branch locations; after hits
+0C   A892-A8D4    moves block up 6 bytes and adds sleep clear; after hits
 0C   A94B-A950    Enable Crit Number Display
-0C   9C9E-9CE6    Battle Magic Menu Wrapping
-0C   9CE6-9CF0    Zero Empty Space
 0C   AD21-AD57    Move Load Player IB Stats
 0C   ADBB-ADC7    Battle Hijack part of BB unarmed check
+0C   AE60-AE63	  Fixes RandAX extra increment
 0C   B197-B1B1    Set RNG
+0C   B1BC-B1C0    Remove call to random enemy wake up; Wake on Hit
+0C   B1D5-B1D6    Scale Sleep Fix Enemy Stat
 0C   B1E2-B1E3    Minimum Enemy Sleep Bound
 0C   B1E4-B1E5    Maximum Enemy Sleep Bound
-0C   B1D5-B1D6    Scale Sleep Fix Enemy Stat
+0C   B1EA-B1EB    Fixes math buffer bank for subtraction
+0C   B1EE-B201    fix the enemy sleep buffer
 OC   B363-B378    Replaced MagicPtr Lookup With Call To GetPointerToMagicData Function
+0C   B3BA-B3EF    Shift Player_DoMagic Up And Fix Mute
 0C   B3CD-B3D8    Enable Auto Retargeting
 0C   B43D-B440    Modify Battle PlMag Target One Player
 0C   B453-B45B    Skip None Spells
@@ -102,19 +151,33 @@ OC   B363-B378    Replaced MagicPtr Lookup With Call To GetPointerToMagicData Fu
 0C   B8ED-B8F3    Magic Damage
 0C   B905-B923    White Mage Harm All
 0C   B9CD-B9DC    Write Cure Ailments Breakout
+0C   B9E4-B9F4    Replaced Absorb Function With BankSwap
 0C   BA46-BA68    Lock Mode
 
-34000-37FFF
-0D   B89F-????
-0D   B85A-????
-0D   B819-????
-0D   BA64-????
-0D   BA69-????
-0D   A77B-????
-0D   A779-????
-0D   A77A-????
+ROM: 34000-37FFF
+0D   8000-????    music ptr table
+0D   A779-A77A    Bridge Last Page Count
+0D   A77A-A77B    Ending Last Page Count
+0D  ~A77B-AC4B    Story Text
+0D   8028-802E    Airboat stuff
+0D   80C0-80C9    Overwrite beginning of crystal theme
+0D   B099-B0A4    Code required to handle code in bank 0D that expects to call MusicPlay locally
+0D   B600-B6CC    Airboat stuff
+0D   B640-B680    Dracula's Curse Lit Orbs
+0D   B680-B6C0    Dracula's Curse Lit Orbs
+0D   B6C0-B700    Dracula's Curse Lit Orbs
+0D   B700-B740    Dracula's Curse Lit Orbs
+0D   B760-B7A0    Dracula's Curse Unlit Orbs
+0D   B803-B809    Fix Ending Story Load Bug
+0D   B809-B814    Fix Ending Story Load Bug
+0D   B819-B81A    Ending Last Page Address
+0D   B84D-B856    Track Bridge Scene
+0D   B85A-B85B    Bridge Last Page Address
+0D   B89F-B8A0    Bridge Story Count
+0D   BA64-BA65    Story Text Address
+0D   BA69-BA6A    Story Text Address + 1
 
-38000-3BFFF
+ROM: 38000-3BFFF
 0E   8DE4-8E10    Fix character stat rendering
 OE   9079-90D9    Restore npc manip routines
 0E   9273-92A3    Restore map object
@@ -124,7 +187,7 @@ OE   9079-90D9    Restore npc manip routines
 0E   B16F-B172    Exchange affected LDAs
 0E   B267-B268    Expand OWTP_SPEC_MASK
 
-3C000-3FFFF
+ROM: 3C000-3FFFF
 ; Freed  (write only after data has been moved to 1F)
 0F   8000-8B35    Stats Tracking code
 0F   9000-93CD    Stats Tracking code
@@ -136,10 +199,10 @@ OE   9079-90D9    Restore npc manip routines
 0F   F100-F200    Encounter RNG Table
 0F   FCF1-FDF1    Battle RNG Table
 
-40000-43FFF
+ROM: 40000-43FFF
 10   8000-BFFF    Dialogues (whole bank is reserved)
 
-44000-47FFF
+ROM: 44000-47FFF
 11   8000-81A0    NPC Objects talk table
 11  ~8200-85C6    [NO MAX SET] Talk Routines
 11   8EA0-9000    Monster In A Box
@@ -166,39 +229,39 @@ OE   9079-90D9    Restore npc manip routines
 11   B940-B9FF    Chests appear opened
 11   BA00-BEE0    NPC Objects data
 
-48000-4BFFF
+ROM: 48000-4BFFF
 12   8000-8800    Tileset copy
 12   8A00-8C40    New Icons
 12   8F61-8F81    Shard Icon
 12   8E00-9000    Font Tileset
 12   9000-9038    New Icons routines
 
-4C000-4FFFF
+ROM: 4C000-4FFFF
 13
 
-50000-53FFF
+ROM: 50000-53FFF
 14   8000-BFFF    Standard Maps (moved from 04, 05, 06 for extra space)
 
-54000-57FFF
+ROM: 54000-57FFF
 15   8000-BFFF    Standard Maps
 
-58000-5BFFF
+ROM: 58000-5BFFF
 16   8000-BFFF    Standard Maps
 
-5C000-5FFFF
+ROM: 5C000-5FFFF
 17   8000-BFFF    Standard Maps
 
-60000-63FFF
+ROM: 60000-63FFF
 18
 
-64000-67FFF
+ROM: 64000-67FFF
 19   8000-8F90    QuickMiniMap map
 
-68000-6BFFF
+ROM: 68000-6BFFF
 1A   84FB-84FE    Repeated Heal Potions
 1A   8600-8852    Repeated Heal Potions
 
-6C000-6FFFF
+ROM: 6C000-6FFFF
 1B   8000-8FF5    Moving routines from bank 0B to 1B (Xp, levelup)
 1B   874A-8759    Overwrite BB check with Unarmed LUT check
 1B   874F-879E    BB Absorb bugfix P1
@@ -214,7 +277,7 @@ OE   9079-90D9    Restore npc manip routines
 1B   AF80-AF94    BB Absorb bugfix
 1B   B800-B8C3    Start Game/Start Battle Blursings routines
 
-70000-73FFF
+ROM: 70000-73FFF
 1C   A010-A015    ExtConsumables LUT
 1C   A020-A165    ExtConsumables Drink box
 1C   A1C0-A1EF    AutoRetargeting
@@ -228,15 +291,15 @@ OE   9079-90D9    Restore npc manip routines
 1C   A670-A724    Poison Mode routines
 1C   A790-A7B7    Alt Chaos Battle Music
 1C   A7AC-A7B7    SetRNG
-72010<  >727B7
+1C   A7B8-A7FD    Absorb and MDef Up
 
-74000-77FFF
+ROM: 74000-77FFF
 1D  ~8000-B9A0    [NO MAX SET] Music Tracks
 1D   B9A0-B9F8    Moved Music Engine
 1D   BA00-BFC9    Moved Music Engine
 1D   C682-C691    Moved Music Engine
 
-78000-7BFFF
+ROM: 78000-7BFFF
 1E   8000-85B0    Moving routines from bank 0E to 1E (PartyGen and menu stuff)
 1E   806B-8070    Battlestep to SRAM Jump
 1E   85B0-85C1    Parry Permissions table
@@ -250,7 +313,7 @@ OE   9079-90D9    Restore npc manip routines
 1E   BA00-BC0D    Screen Tracking code
 1E   BCC0-BCC4    Archipelago
 
-7C000-7FFFF
+ROM: 7C000-7FFFF
 1F   C000-FFFF    Moving Bank 0F to 1F for MMC3 expansion
 1F   C112-C113    Remove wave sound
 1F   C1A9-C1AA    Disable Minimap
