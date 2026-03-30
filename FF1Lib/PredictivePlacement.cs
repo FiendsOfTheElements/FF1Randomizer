@@ -21,7 +21,7 @@ namespace FF1Lib
 		//This system explicitly allows the bridge to be placed after the floater, it just makes it less likely
 		Dictionary<Item, float> SafeExceptionWeights = new Dictionary<Item, float>
 		{
-			{ Item.Bridge, 2.0f },
+			{ Item.Bridge, 0.75f },
 			{ Item.Key, 0.25f },
 			{ Item.Canoe, 0.75f },
 			{ Item.Floater, 0.25f },
@@ -67,7 +67,7 @@ namespace FF1Lib
 		//Doesn't place as high restrictions on the Chime, Cube and Oxyale
 		Dictionary<Item, float> UnsafeExceptionWeights = new Dictionary<Item, float>
 		{
-			{ Item.Bridge, 2.0f },
+			{ Item.Bridge, 0.75f },
 			{ Item.Key, 0.25f },
 			{ Item.Canoe, 0.75f },
 			{ Item.Floater, 0.25f },
@@ -132,6 +132,12 @@ namespace FF1Lib
 			exceptionWeights = flags.AllowUnsafePlacement || (flags.Entrances ?? false) ? UnsafeExceptionWeights : SafeExceptionWeights;
 			exceptionMinCycles = flags.AllowUnsafePlacement || (flags.Entrances ?? false) ? UnsafeExceptioMinCycles : SafeExceptioMinCycles;
 			minAccessibility = flags.AllowUnsafePlacement || (flags.Entrances ?? false) ? UnsafeMinAccessibility : SafeMinAccessibility;
+
+			// Place bridge early with vanilla map and no bridge to lefein
+			if (flags.OwMapExchange == OwMapExchanges.None && !(bool)flags.MapBridgeLefein)
+			{
+				exceptionWeights[Item.Bridge] = 2.0f;
+			}
 
 			sanityCounter = 0;
 			var incentiveLocationPool = new HashSet<IRewardSource>(placementContext.IncentiveLocations, new RewardSourceEqualityComparer());

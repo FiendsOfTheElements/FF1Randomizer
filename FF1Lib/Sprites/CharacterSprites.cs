@@ -734,8 +734,8 @@ namespace FF1Lib
 			// Write the palettes into a new LUT in bank $0F
 			// Will be read using the code below.
 			//Console.WriteLine($"writing to {lut_MapmanPalettes + offsetIntoLut} {lut_MapmanPalettes + offsetIntoLut + 4}");
-			PutInBank(0x0F, MAPMANGRAPHIC_OFFSET + offsetIntoLut, headPal.ToArray());
-			PutInBank(0x0F, MAPMANGRAPHIC_OFFSET + offsetIntoLut + 4, bodyPal.ToArray());
+			PutInBank(0x0F, MAPMANPALETTE_OFFSET + offsetIntoLut, headPal.ToArray());
+			PutInBank(0x0F, MAPMANPALETTE_OFFSET + offsetIntoLut + 4, bodyPal.ToArray());
 		}
 
 		public void ImportBattleSpriteSync(Image<Rgba32> image, int cur_class, int top, int left, Rgba32[] NESpalette)

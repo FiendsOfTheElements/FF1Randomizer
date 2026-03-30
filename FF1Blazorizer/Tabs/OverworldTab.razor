@@ -70,6 +70,10 @@
                     <TriStateCheckBox UpdateAction="@UpdateAction" Id="airshipHikeCheckBox"
                               IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
                               @bind-Value="Flags.MapAirshipHike">Hiking Trail to Airship</TriStateCheckBox>
+							  
+					<TriStateCheckBox UpdateAction="@UpdateAction" Id="cardiaLandBridgeCheckBox"
+							  IsEnabled="@(Flags.OwMapExchange == OwMapExchanges.None)"
+							  @bind-Value="Flags.MapCardiaLandBridge">Cardia Land Bridge</TriStateCheckBox>
 					<div class="checkbox-cell"></div>
 				</div>
 			}

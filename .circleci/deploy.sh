@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 set -x
 
@@ -21,11 +21,12 @@ deployPreview=$(echo "$config" | jq -r ".deployPreview")
 #    		      --header 'Content-Type: application/json' \
 #                      --data-binary '{"type":"A", "hostname": "wiki.finalfantasyrandomizer.com", "value": "207.246.91.234"}'
 
+export NODE_VERSION=22.22.1
 if "$deployPreview"; then
     deploy_response=$(netlify deploy --json --dir=/root/ff1randomizer/FF1Blazorizer/output/wwwroot --site="$netlifyID")
     url=$(echo "$deploy_response" | jq -r ".deploy_url")
 
-    GH_USER=FFR_Build_And_Deploy
+    GH_USER=FFRDevops
     pr_response=$(curl --location --request GET "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?head=$CIRCLE_PROJECT_USERNAME:$CIRCLE_BRANCH&state=open" -u $GH_USER:"$GH_API")
 
     if [ "$(echo "$pr_response" | jq length)" -eq 0 ]; then

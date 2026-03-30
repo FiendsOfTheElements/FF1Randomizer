@@ -2,6 +2,8 @@ using System.ComponentModel;
 using static System.Math;
 using FF1Lib.Helpers;
 using RomUtilities;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace FF1Lib
 {
@@ -53,6 +55,20 @@ namespace FF1Lib
 		extreme,
 		[Description("Uncapped: 255")]
 		insane,
+	}
+
+	public enum SleepMode
+	{
+		[Description("Fixed Value - 8 bit")]
+		Fixed = 0,
+		// [Description("Fixed Value - 16 bit")]
+		// Expanded,
+		[Description("Wake On Hit")]
+		WakeOnHit,
+		// [Description("Wake Chance Increases As HP Falls")]
+		// IncreasingHPDown,
+		// [Description("HP Range")]
+		// HPRange,
 	}
 	public class EncounterRate
 	{
@@ -117,7 +133,7 @@ namespace FF1Lib
 
 		public List<byte> Get()
 		{
-			List<byte> encounterRates = new() {overworldEncounterRate, oceanEncounterRate};
+			List<byte> encounterRates = new() { overworldEncounterRate, oceanEncounterRate };
 			encounterRates.AddRange(dungeonEncounterRate);
 			return encounterRates;
 		}
@@ -150,7 +166,7 @@ namespace FF1Lib
 		// instead of enemies giving more gold, so we don't overflow.
 		public void ScalePrices(ShopData shopData, IScaleFlags flags, MT19337 rng, bool increaseOnly, ItemShopSlot shopItemLocation, bool FreeClinic = false)
 		{
-			IEnumerable<Item> tmpExcludedItems = Array.Empty<Item>() ;
+			IEnumerable<Item> tmpExcludedItems = Array.Empty<Item>();
 			if (flags.ExcludeGoldFromScaling ?? false) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllGoldTreasure);
 			if ((flags.ExcludeGoldFromScaling ?? false) && flags.CheapVendorItem) tmpExcludedItems = tmpExcludedItems.Concat(ItemLists.AllQuestItems);
 
@@ -257,6 +273,97 @@ namespace FF1Lib
 			return evadeCap;
 
 		}
+		public void ScaleSleep(MT19337 rng, Flags flags)
+		{
+			// ushort BattleStepSeed;
+			// string PRNGAlgorithm;
+			// List<string> PRNGAlgorithms = new List<string> {
+			// 	"ADF16F4AADF06F6A4DF16F85116A4DF06F8DF06F45118DF16FEAEA",
+			// 	"ADF06F0AADF16F2A4DF06F85112A4DF16F8DF16F45118DF06FEAEA",
+			// 	"ADF06F4DF16F85114AADF06F6A45118DF16F6A4DF06F8DF06FEAEA",
+			// 	"ADF16F4DF06F85110AADF16F2A45118DF06F2A4DF16F8DF16FEAEA"
+			// };
+
+			// BattleStepSeed = (ushort)rng.Between(0x0001, 0xFFFF);
+			// PRNGAlgorithm = PRNGAlgorithms.PickRandom(rng);
+
+			// // Write Seed
+			// PutInBank(0x1F, 0xDB09, BattleStepSeed);
+			// Fixes the index used for Enemy HP for Sleep
+			PutInBank(0x0C, 0xB1D5, Blob.FromHex("02"));
+			// Fixes math buffer bank for subtraction
+			PutInBank(0x0C, 0xB1EA, Blob.FromHex("00"));
+			// Fixes RandAX extra increment; otherwise using 256 results in an overflow of the high value making the range equal to the low value
+			PutInBank(0x0C, 0xAE60, Blob.FromHex("EAEAEAEA"));
+			// fix the enemy sleep buffer
+			PutInBank(0x0C, 0xB1EE, Blob.FromHex("F009A9DF2090B1A90FD002A9024C8EB2EAEAEA"));
+			// fix player sleep subroutine
+			PutInBank(0x0C, 0xA451, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAAD5668"));
+			// // just after partygen is confirmed, this executes the subroutine to
+			// // write the battlestep seed into sram
+			// PutInBank(0x1E, 0x806B, Blob.FromHex("EAEA20E086")); // Jump to 0x86E0
+			// PutInBank(0x1E, 0x86E0, Blob.FromHex("A9008D0120AD09DB8DF06FAD0ADB8DF16F60"));
+
+			switch (flags.SleepModeDropDown)
+			{
+				case SleepMode.Fixed:
+					if (flags.PlayerSleepScaleLow == 0 && flags.PlayerSleepScaleHigh == 80 && flags.EnemySleepScaleLow == 0 && flags.EnemySleepScaleHigh == 80)
+					{
+						return;
+					}
+
+					string minPlayerSleep = (bool)flags.ClampMinimumStatScale ? 0.ToString("X") : flags.PlayerSleepScaleLow.ToString("X");
+					Console.WriteLine(minPlayerSleep);
+					string highPlayerSleep = (bool)flags.ClampMinimumStatScale ? Math.Max(255, flags.PlayerSleepScaleHigh).ToString("X") : flags.PlayerSleepScaleHigh.ToString("X");
+					Console.WriteLine(highPlayerSleep);
+					string minEnemySleep = (bool)flags.ClampMinimumStatScale ? 0.ToString("X") : flags.EnemySleepScaleLow.ToString("X");
+					Console.WriteLine(minEnemySleep);
+					string highEnemySleep = (bool)flags.ClampMinimumStatScale ? Math.Max(255, flags.EnemySleepScaleHigh).ToString("X") : flags.EnemySleepScaleHigh.ToString("X");
+					Console.WriteLine(highEnemySleep);
+
+					PutInBank(0x0C, 0xA445, Blob.FromHex(minPlayerSleep));
+					PutInBank(0x0C, 0xA447, Blob.FromHex(highPlayerSleep));
+					PutInBank(0x0C, 0xB1E2, Blob.FromHex(minEnemySleep));
+					PutInBank(0x0C, 0xB1E4, Blob.FromHex(highEnemySleep));
+					break;
+				// case SleepMode.Expanded:
+				// break;
+				case SleepMode.WakeOnHit:
+					// Remove random player wake up
+					PutInBank(0x0C, 0xA3B1, Blob.FromHex("EAEAEAEAEAEAEAEAEA"));
+					// Remove random enemy wake up
+					PutInBank(0x0C, 0xB1BC, Blob.FromHex("EAEAEAEA"));
+					// Remove Excess 0 capping in defender mobile block
+					PutInBank(0x0C, 0xA73C, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+					// Replaced inefficent minimum base damage check
+					PutInBank(0x0C, 0xA821, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAAD6068"));
+					if (flags.StartOfHits == true)
+					{
+						// Added sleep removal at the start of hits
+						PutInBank(0x0C, 0xA85A, Blob.FromHex("A9DF2D89688D8968AD8768F065AD7368F060AD6A68F05BA9648D6468AD7B682D6E68F009A9008D6468A907AE7A68200AAFEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAAD6468"));
+
+					}
+					if (flags.AfterHits == true)
+					{
+						// Removed unused store and load
+						PutInBank(0x0C, 0xA874, Blob.FromHex("EAEAEAEAEAEA"));
+						// Removed unneeded 0 clipping
+						PutInBank(0x0C, 0xA889, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAAD6468"));
+						// Adds sleep clear after hits; moves block up 6 bytes
+						// Update the NextHitIteration branch locations
+						PutInBank(0x0C, 0xA7F2, Blob.FromHex("4CC4A8"));
+						PutInBank(0x0C, 0xA85D, Blob.FromHex("F065"));
+						PutInBank(0x0C, 0xA862, Blob.FromHex("F060"));
+						PutInBank(0x0C, 0xA867, Blob.FromHex("F05B"));
+						PutInBank(0x0C, 0xA892, Blob.FromHex("AD6468D003EE6468A900A2C8205DAE8D6668C9C8F01CAD6468CD66689014AD896849FF2D73682088A9AD89680D73688D8968CE5A68F0034CDDA7A9DF2D89688D8968"));
+					}
+					break;
+					// case SleepMode.HPRange:
+					// 	break;
+					// case SleepMode.IncreasingHPDown:
+					// 	break;
+			}
+		}
 
 		public void ScaleEnemyStats(MT19337 rng, Flags flags)
 		{
@@ -291,23 +398,24 @@ namespace FF1Lib
 			int highHp = (bool)flags.ClampBossHPScaling ? Math.Max(100, flags.BossScaleHpHigh) : flags.BossScaleHpHigh;
 			Bosses.ForEach(index => ScaleSingleEnemyStats(index, minStats, highStats, flags.IncludeMorale, rng,
 				(bool)flags.SeparateBossHPScaling, minHp, highHp, GetEvadeIntFromFlag(flags.EvadeCap)));
-			if ((bool)flags.FightBahamut) {
-			    ScaleSingleEnemyStats(Enemy.Ankylo, minStats, highStats, flags.IncludeMorale, rng,
+			if ((bool)flags.FightBahamut)
+			{
+				ScaleSingleEnemyStats(Enemy.Ankylo, minStats, highStats, flags.IncludeMorale, rng,
 						  (bool)flags.SeparateBossHPScaling, minHp, highHp, GetEvadeIntFromFlag(flags.EvadeCap));
 			}
 		}
 
 		public abstract class EnemyStat
 		{
-		    public const int HP = 4;
-		    public const int Morale = 6;
-		    public const int Scripts = 7;
-		    public const int Evade = 8;
-		    public const int Defense = 9;
-		    public const int Hits = 10;
-		    public const int HitPercent = 11;
-		    public const int Strength = 12;
-		    public const int CriticalPercent = 13;
+			public const int HP = 4;
+			public const int Morale = 6;
+			public const int Scripts = 7;
+			public const int Evade = 8;
+			public const int Defense = 9;
+			public const int Hits = 10;
+			public const int HitPercent = 11;
+			public const int Strength = 12;
+			public const int CriticalPercent = 13;
 		}
 
 		public void ScaleSingleEnemyStats(int index, int lowPercentStats, int highPercentStats, bool includeMorale, MT19337 rng,
@@ -321,10 +429,11 @@ namespace FF1Lib
 			var enemy = Get(EnemyOffset + index * EnemySize, EnemySize);
 
 			var hp = BitConverter.ToUInt16(enemy, EnemyStat.HP);
-			if(separateHPScale)
+			if (separateHPScale)
 			{
 				hp = (ushort)Min(RangeScale(hp, lowDecimalHp, highDecimalHp, 1.0, rng), 0x7FFF);
-			} else
+			}
+			else
 			{
 				hp = (ushort)Min(RangeScale(hp, lowDecimalStats, highDecimalStats, 1.0, rng), 0x7FFF);
 			}
@@ -424,7 +533,7 @@ namespace FF1Lib
 			byte Threshold = 0;     // Number of key items required for bonus.  Set this to 0 for progressive mode (every key item increases bonus)
 			byte ShardMultiplier = 1;  // Shards are worth 1/8 Orbs
 			ProgressiveScaleMode mode = flags.ProgressiveScaleMode;
-			if (flags.ShardHunt)  ShardMultiplier = 8;
+			if (flags.ShardHunt) ShardMultiplier = 8;
 			switch (mode)
 			{
 				case ProgressiveScaleMode.Disabled:
@@ -456,7 +565,7 @@ namespace FF1Lib
 					ScaleFactor = 5;
 					break;
 				case ProgressiveScaleMode.OrbProgressiveSlow:
-					ScaleFactor = (byte) (8 * ShardMultiplier); // +12.5 per orb
+					ScaleFactor = (byte)(8 * ShardMultiplier); // +12.5 per orb
 					break;
 				case ProgressiveScaleMode.OrbProgressiveMedium:
 					ScaleFactor = (byte)(4 * ShardMultiplier); // +25 per orb
@@ -555,7 +664,7 @@ namespace FF1Lib
 		{
 			int offset = LevelRequirementsOffset;
 
-			switch(characterClass)
+			switch (characterClass)
 			{
 				case FF1Class.Fighter:
 					offset = LevelRequirementsOffset;
@@ -617,8 +726,9 @@ namespace FF1Lib
 			Put(EnemyOffset + EnemySize * index, enemy.compressData());
 		}
 
-		public List<Blob> GetAllEnemyStats() {
-		    return Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
+		public List<Blob> GetAllEnemyStats()
+		{
+			return Get(EnemyOffset, EnemySize * EnemyCount).Chunk(EnemySize);
 		}
 	}
 }

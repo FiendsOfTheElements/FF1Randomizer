@@ -23,13 +23,14 @@ namespace FF1Lib
 			if (preferences.MapDerp)
 			{
 				var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-				var mapderpPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("mapderp.png"));
+				var mapderpPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("maptiles.png"));
 				var mapderpStream = assembly.GetManifestResourceStream(mapderpPath);
 				await SetCustomMapGraphics(mapderpStream, 245, 4,
 							new int[] { OVERWORLDPALETTE_OFFSET },
 							OVERWORLDPALETTE_ASSIGNMENT,
 							OVERWORLDPATTERNTABLE_OFFSET,
-							OVERWORLDPATTERNTABLE_ASSIGNMENT);
+							OVERWORLDPATTERNTABLE_ASSIGNMENT,
+							addMapDerp: true);
 			}
 		}
 
@@ -64,7 +65,8 @@ namespace FF1Lib
 								 new int[] { OVERWORLDPALETTE_OFFSET },
 								 OVERWORLDPALETTE_ASSIGNMENT,
 								 OVERWORLDPATTERNTABLE_OFFSET,
-								 OVERWORLDPATTERNTABLE_ASSIGNMENT);
+								 OVERWORLDPATTERNTABLE_ASSIGNMENT,
+								 addMapDerp: preferences.MapDerp);
 					}
 				}
 

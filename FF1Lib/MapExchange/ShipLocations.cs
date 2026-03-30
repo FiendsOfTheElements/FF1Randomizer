@@ -51,6 +51,14 @@ namespace FF1Lib
 					changeDockLocation.Y = Dock.Coneria[1];
 				}
 			}
+			if ((bool)flags.ShipDrydock)
+			{
+				foreach (ShipLocation sl in data)
+				{
+					sl.X = Dock.GaiaDrydock[0];
+					sl.Y = Dock.GaiaDrydock[1];
+				}
+			}
 		}
 	}
 }

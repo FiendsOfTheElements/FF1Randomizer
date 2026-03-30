@@ -41,7 +41,7 @@ namespace Sandbox
 
 			for (int i = 0; i < 1000; i++)
 			{
-				roms[i].Randomize(seeds[i], flags, preferences);
+				await roms[i].Randomize(seeds[i], flags, preferences);
 			}
 		}
 	}

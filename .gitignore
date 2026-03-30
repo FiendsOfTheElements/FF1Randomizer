@@ -248,6 +248,7 @@ _Pvt_Extensions
 
 # ROM files -- never check these in
 *.nes
+*.NES
 
 # Archives
 
@@ -262,5 +263,7 @@ _Pvt_Extensions
 FF1/Blazorizer/output/*
 
 FF1Blazorizer/output/
+
+output/
 
 FF1Lib/FF1Lib.sln

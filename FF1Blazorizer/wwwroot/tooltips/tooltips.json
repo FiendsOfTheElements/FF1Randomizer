@@ -328,10 +328,10 @@
 		"description": "Forgo the \"Autosort Inventory\" flag (found under the Conveniences tab) if it is enabled. This will revert the game to it's standard item menu behavior (Key Items up top, potions at the bottom) no matter what flags are selected."
 	},
 	{
-		"Id": "repeatedHealPotionUseCheckBox",
-		"title": "Repeated Heal Potion Use",
+		"Id": "repeatedPotionUseCheckBox",
+		"title": "Repeated Potion Use",
 		"screenshot": "repeatedHealPotionUse.gif",
-		"description": "If Enabled, allows multiple heal potions to be used in a row without having to re-select them."
+		"description": "If Enabled, allows multiple potions to be used in a row without having to re-select them."
 	},
 	{
 		"Id": "renounceChestInfoCheckBox",
@@ -835,12 +835,7 @@
 		"screenshot": "hallOfDragons.png",
 		"description": "Adds encounters to Bahamut B1 hallway normally leading to Bahamut's room. All encounters will be various forms of dragons."
 	},
-	{
-		"Id": "procGenWaterfall",
-		"title": "Generated Waterfall Cave",
-		"screenshot": "procGenWaterfall.png",
-		"description": "Randomly generates the map for the Waterfall cave creating a new maze each seed."
-	},
+
 	{
 		"Id": "flipDungeonsCheckBox",
 		"title": "Flip Dungeons Horizontally",
@@ -913,6 +908,12 @@
 		"title": "Hiking Trail to Airship",
 		"screenshot": "airshipHikeCheckBox.png",
 		"description": "Removes a portion of the river east of Elfland, allowing you to hike across the Swamp of Sadness to acquire the AIRSHIP without the CANOE."
+	},
+	{
+		"Id": "cardiaLandBridgeCheckBox",
+		"title": "Cardia Land Bridge",
+		"screenshot": "cardiaLandBridgeCheckBox.png",
+		"description": "Builds a land bridge from the peninsula north of Castle of Ordeals, through the Cardia islands, and to a new inlet to the Waterfall river on Onrac. When used with other map edits, this will allow you to traverse the entire overworld without SHIP or AIRSHIP."
 	},
 	{
 		"Id": "highwayToOrdealsCheckBox",
@@ -1193,9 +1194,14 @@
 		"Id": "noFloaterCheckBox",
 		"title": "Remove Floater",
 		"screenshot": "noFloater.png",
-		"description": "Removes the Floater from the game, making it impossible to get the Airship.\n\nCan only be enabled if Nothern Docks is enabled.\n\nEnable Bahamut Cardia dock, Lefein river dock, and Gaia mountain pass map edits to make those areas accessible by Ship."
+		"description": "Removes the FLOATER from the game, making it impossible to get the Airship.\n\nCan only be enabled if:\n1. Nothern Docks is on, OR\n2. Cardia Land Bridge, Bahamut Cardia Dock, and Highway to Ordeals are all on, OR\n3. Highway to Ordeals, Bridge to Lefein, and Cardia Land Bridge are all on.\n\nEnable Bahamut Cardia dock, Lefein river dock, and Gaia mountain pass map edits to make those areas accessible by Ship."
 	},
-
+	{
+		"Id": "shipDrydockCheckBox",
+		"title": "Ship in Drydock",
+		"screenshot": "shipDrydockCheckBox.png",
+		"description": "The SHIP spawns in drydock at the Gaia Fjord. It can be freed with AIRBOAT.\nWhen used with Remove Floater, it makes for an entirely walking+canoeing flagset.\nCan only be enabled if:\n1. Airboat, Bridge to Lefein, and Gaia Mountain Pass are all on, OR\n2. Airboat is off and either Remove Floater is off or Free Airship is on, OR\n3. Early Open Progression, River to Melmond, Highway to Ordeals, Bridge to Lefein, and Cardia Land Bridge are all on.\nNumber 3. is required for a flagset with no ship or airship."
+	},
 	{
 		"Id": "GuaranteedMasamuneCheckBox",
 		"title": "Guaranteed Endgame Masamune",
@@ -1712,12 +1718,31 @@
 		"screenshot": "MDefModeDropDown.gif",
 		"description": "Changes how much MDef is gained per level up:\n[grid][r]{i}MDef Growth|Vanilla|BB/Master +3/+4|Inverted[r]{l}Black Belt|4|3|1[r]{l}Master|1|4|4[r]{l}Fighter & Knight|3|3|2[r]{l}Thief & Ninja|2|2|3[r]{l}Red Mage & Wizard|2|2|3[r]{l}White Mage & Wizard|2|2|3[r]{l}Black Mage & Wizard|2|2|3\n\nNotably, in Vanilla the Black Belt gets worse when promoted; using \"BB/Master +3/+4\" fixes this behavior."
 	},
-
 	{
 		"Id": "randomizeClassDropDown",
 		"title": "Class Randomization",
 		"screenshot": "transmooglifier.gif",
 		"description": "Randomly modify classes. \nPress Select at the Party Selection screen (and A at Status Screen) to reveal the modifiers applied to a given class.\n\nNone: No random modifications.\n\nBlursings: Give bonuses and maluses at random to each of the selectable classes in the game.\n\nTransmooglifier: Procedurally generates six custom classes from a set of 26. Each class corresponds to heuristically randomized spell permissions, stats, equipment sets, abilities, and blursings - this means the classes will have unique properties every time.\nThis also disables most specific balance options. Character specific buffs will refer to character slot. For example, Fighter XP will now refer to 'Slot 0 character class XP Bonus'.\nIt is recommended to disable any custom sprites when using Transmooglifier, since Transmooglifier also uses custom sprites.\n\nChaos: Shuffles all the stats, spellcasting abilities, and equipment permissions between all the classes, making for classes with very different abilities from the vanilla game. Only for experienced players."
+	},
+	{
+		"Id": "sleepClassDropDown",
+		"title": "Sleep Mode",
+		"description": "Configures strength of the sleep spell."
+	},
+	{
+		"Id": "FogAbsorb",
+		"title": "Fog Absorb Buff",
+		"description": "Configures how much absorb is added by the fog and fog2 spells.\n\n(There's a hard cap at 255 regardless of how many casts are done.)"
+	},
+	{
+		"Id": "FogMDef",
+		"title": "Fog Magic Defense Buff",
+		"description": "Configures how much magic defense is added by the fog and fog2 spells.\n\n(There's a hard cap at 255 regardless of how many casts are done.)"
+	},
+	{
+		"Id": "ItemsWhileMute",
+		"title": "Mute Fix",
+		"description": "Allows the light warriors to hold up weapons and drink without speaking."
 	},
 	{
 		"Id": "RandomizeClassCastingCheckBox",
@@ -2708,6 +2733,42 @@
 		"description": "Randomly generates a new 'Bridge of Destiny' for Sky Fortress 5F."
 	},
 	{
+		"Id": "procGenWaterfall",
+		"title": "Procedurally Generated Waterfall",
+		"screenshot": "procGenWaterfall.png",
+		"description": "Generates a new Waterfall cave.\nLoad one of several presets, or fully customize the generator with \"Custom\"\nPresets:\nVanilla-Like: generate a map that has the same feel as the vanilla waterfall. The path winds and branches, but large contiguous areas of the map are solid rock.\nAlt Layouts: Pick one of \"Chaotic,\" \"Compact,\" or \"Lattice-Like\" layouts (see tooltips in the \"Custom\" settings for more).\nLong Hallway: Generate a map that contains a long linear stretch of hallway with branch points on either side that lead further into the map.\nRandom: Generate a map using a fully randomized selection of the \"Custom\" settings.\nPandemonium: Like \"Random,\" but favoring more difficult and trollish settings.\nCustom: reveals the full set of buttons and levers to customize the generator.\nVanilla-Like, Alt Layouts, and Long Hallway use intermediate settings; in general you should expect to enter either far away from the room, at a fork in the path, or at a random point. While the generator attempts to draw a map with no loops, occasionally the tile placement constraints will erode a small hole in the wall that will open up a loop."
+	},
+	{
+		"Id": "procGenWaterfallSpoiler",
+		"title": "Generate a .txt spoiler for the current map.",
+		"description": "Produces a text-based rendering of the map. As with the main spoiler log, it results in a different randomization than if this setting wasn't selected.\nTo read the map, it will be necessary to use a monospace font.\nSee the main Spoiler Log tooltip for more information about browser settings."
+	},
+	{
+		"Id": "procGenWaterfallMode",
+		"title": "Choose the Waterfall's layout",
+		"description": "Sets the layout, or general shape, of the waterfall.\nVanilla-Like: generate a map that has the same feel as the vanilla waterfall. The path winds and branches, but large contiguous areas of the map are solid rock.\nChaotic: Generates a map where the path can go and branch anywhere. Similar to Vanilla-Like, but without the contiguous blank areas.\nCompact: Generates a map where the path is concentrated near the center, and less dense at the periphery.\nLattice-Like: Generates a map that is evenly spaced, where the path mostly stays on the edges of a diamond lattice. Everything looks similar, and it's easy to get lost. Try using the \"hand-on-wall rule.\"\nLong Hallway: Generates a map that contains a long, linear stretch of hallway with branch points on either side that lead further into the map.\nRandom: Choose one of the above layouts at random."
+	},
+	{
+		"Id": "procGenWaterfallDensity",
+		"title": "Choose the Waterfall's map density",
+		"description": "Sets the map density, or degree of complexity. More dense produces a map with more twists and turns, and more branches."
+	},
+	{
+		"Id": "procGenWaterfallHallway",
+		"title": "Sets the Long Hallway's length",
+		"description": "Because maps in FF1 wrap around from top to bottom and left to right (e.g. on Sky 4F), we can use this to make very long passagways that wrap the screen several times. Generating a spoiler map on the \"Absurd\" setting will help you understand the mechanic. The following settings and the resulting hallway lengths, where one maplength is how far you can walk before wrapping.\nShort: 0.75 to 1.5 maplengths\nMid: 1.5 to 2.5 maplengths\nLong: 2.5 to 3.5 maplengths\nAbsurd: 3.5 to almost 5.0 maplengths\n"
+	},
+	{
+		"Id": "procGenWaterfallEntrance",
+		"title": "Sets the entrance stairs location",
+		"description": "This setting analyzes the map and places the entrance in one of the following locations:\nAnywhere: Chooses a random spot in the path.\nFurthest: Chooses the spot most distant from the robot room (in steps through the path).\nMid: Chooses a random spot that is 40%-60% of the longest distance on the path from the robot room. In Long Hallway, this is likely to place it in the middle of the hallway.\nCenter: Chooses the map's \"centroid,\" i.e. the spot that is the shortest total distance from all other parts of the path.\nFork: Chooses the fork in the path with the greatest number of branches.\nMaddening: Tries to place the entrance at a spot where the robot room is immediately visible but is more than 50% of the longest distance on the path from the room. If it can't find such a spot, it will try to optimize for longest walking distance and shortest distance as-the-bat-flies."
+	},
+	{
+		"Id": "procGenWaterfallNoLoops",
+		"title": "Try to avoid generating loops",
+		"description": "When set, the generator tries to avoid drawing looping paths. If it succeeds, the maze can always be solved by following the \"hand-on-wall rule,\" where if you imagine placing a hand on the wall and following the wall's outline, you will traverse all of the branches and eventually end up at the robot room.\nWhen unset, the generator allows some loops to form.\nNOTE: very occasionally the tile-drawing algorithm will need to erode a small hole in a wall in order to preserve tile continuity, which may introduce a loop. A small one-or-two tile passage from one branch to another is a clue (but not a definitive one!) that this might have happened."
+	},
+	{
 		"Id": "mapDerpCheckBox",
 		"title": "Map Derp",
 		"screenshot": "mapDerp.png",
@@ -2718,5 +2779,11 @@
 		"title": "Fun Fountain Text",
 		"screenshot": "FountainText.png",
 		"description": "We all love being told to wash our face, but what if the fountain said other things?"
+	},
+	{
+		"Id": "dockAnywhereCheckBox",
+		"title": "Dock Anywhere",
+		"screenshot": "dockAnywhereCheckBox.gif",
+		"description": "Allow the ship to dock at any land tile instead of just at dock tiles."
 	}
 ]

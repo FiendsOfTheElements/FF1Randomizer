@@ -123,6 +123,14 @@ namespace FF1Lib
 			ItemsText[(int)Item.Floater] = "AIRBOAT";
 			MenuText.MenuStrings[(int)FF1Text.MenuString.UseFloater] = FF1Text.TextToBytes("A mysterious boat", useDTE: true);
 		}
+		public void EnableDockAnywhere(Flags flags)
+		{
+			if (flags.DockAnywhere != true)
+			{
+				return;
+			}
+			PutInBank(0x1F, 0xC2EB, Blob.FromHex("2901EAEA"));
+		}
 
 		public void ImproveTurnOrderRandomization(bool enable, MT19337 rng)
 		{
@@ -478,7 +486,12 @@ namespace FF1Lib
 				return;
 			}
 
-			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9112003FEBD00B6D0062000B9BD00BF2010B42015B98A60EAEAEAEAEAEA"));
+			// PutInBank(0x1F, 0xDD78, Blob.FromHex("A9112003FEBD00B6D0062000B9BD00BF2010B42015B98A60EAEAEAEAEAEA"));
+
+			// truncated the write above to work seamlessly with Monster-in-a-box. See
+			// 1F_DD78_Generalized_OpenTreasureChest.asm for rationale
+			PutInBank(0x1F, 0xDD78, Blob.FromHex("A9112003FEBD00B6D0062000B9BD00BF"));
+
 
 			PutInBank(0x11, 0xB900, Blob.FromHex("A000A200B900622904F006B900B6D001E8C8D0F060"));
 

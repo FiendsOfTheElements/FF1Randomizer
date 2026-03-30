@@ -9,7 +9,7 @@
 	{
 		<p>Test out features from 2000 years in the future - at your own risk!</p>
 		<div class="col1">
-			<CheckBox UpdateAction="@UpdateAction" IsEnabled="@((Flags.Treasures != false) && !Flags.Archipelago)" Id="OpenChestsInOrder" @bind-Value="Flags.OpenChestsInOrder">Open Chests in Order</CheckBox>
+			<TriStateCheckBox UpdateAction="@UpdateAction" IsEnabled="@((Flags.Treasures != false) && !Flags.Archipelago)" Id="OpenChestsInOrder" @bind-Value="Flags.OpenChestsInOrder">Open Chests in Order</TriStateCheckBox>
 			<EnumDropDown UpdateAction="@UpdateAction" Id="AdvancedEncounterRNGDropDown" TItem="AdvancedEncounterRNG" @bind-Value="Flags.AdvancedEncounterRNG">Advanced Encounter RNG</EnumDropDown>
 			<TriStateCheckBox UpdateAction="@UpdateAction" Indent Id="EarlyEncounterCheckBox" IsEnabled="@(Flags.AdvancedEncounterRNG == AdvancedEncounterRNG.Curated || Flags.AdvancedEncounterRNG == AdvancedEncounterRNG.Random)" @bind-Value="Flags.EarlyEncounter">Early Encounter</TriStateCheckBox>
 			<TriStateCheckBox UpdateAction="@UpdateAction" Indent Id="EarlyLongRunCheckBox" IsEnabled="@(Flags.AdvancedEncounterRNG == AdvancedEncounterRNG.Curated || Flags.AdvancedEncounterRNG == AdvancedEncounterRNG.Random)" @bind-Value="Flags.EarlyLongRun">Early Long Run</TriStateCheckBox>
@@ -25,13 +25,26 @@
 			<TriStateCheckBox UpdateAction="@UpdateAction" Indent Id="damageTilesCaves" IsEnabled=@Flags.AddDamageTiles @bind-Value="Flags.DamageTilesCaves">Caves</TriStateCheckBox>
 			<TriStateCheckBox UpdateAction="@UpdateAction" Indent Id="damageTilesTof" IsEnabled=@Flags.AddDamageTiles @bind-Value="Flags.DamageTilesTof">Temple of Fiends</TriStateCheckBox>
 			<EnumDropDown UpdateAction="@UpdateAction" Indent Id="damageTilesQuantity" IsEnabled=@Flags.AddDamageTiles TItem="DamageTilesQuantity" @bind-Value="Flags.DamageTilesQuantity">Quantity:</EnumDropDown>
-
 			<div class="checkbox-cell"></div>
+			<CheckBox UpdateAction="@UpdateAction" Id="intAffectsSpellsCheckBox" @bind-Value="Flags.IntAffectsSpells">INT Affects Spells</CheckBox>
+            <TriStateCheckBox UpdateAction="@UpdateAction" Id="dockAnywhereCheckBox" @bind-Value="Flags.DockAnywhere">Dock Anywhere</TriStateCheckBox>
 		</div>
 		<div class="col2">
+			<strong>Procedurally Generated Dungeons</strong>
+			<div class="checkbox-cell"></div>
 			<TriStateCheckBox UpdateAction="@UpdateAction" Id="procGenEarth" @bind-Value="Flags.ProcgenEarth">Generated Earth Cave</TriStateCheckBox>
             <EnumDropDown UpdateAction="@UpdateAction" Id="procGenSkyBridge" TItem="ProcgenSkyBridgeMode" @bind-Value="Flags.ProcgenSkyBridge">Generated Sky 5F Mode</EnumDropDown>
-			<CheckBox UpdateAction="@UpdateAction" Id="intAffectsSpellsCheckBox" @bind-Value="Flags.IntAffectsSpells">INT Affects Spells</CheckBox>
+			<div class="checkbox-cell"></div>
+			<EnumDropDown UpdateAction="@UpdateAction" Id="procGenWaterfall" TItem="ProcgenWaterfall" @bind-Value="Flags.ProcgenWaterfall">Generated Waterfall</EnumDropDown>
+			<CheckBox UpdateAction="@UpdateAction" Indent Id="procGenWaterfallSpoiler" IsEnabled="@(Flags.ProcgenWaterfall != ProcgenWaterfall.Off)" @bind-Value="Flags.ProcgenWaterfallSpoiler">Generate Spoiler</CheckBox>
+			@if (Flags.ProcgenWaterfall == ProcgenWaterfall.Custom)
+			{
+				<EnumDropDown UpdateAction="@UpdateAction" Indent Id="procGenWaterfallMode" TItem="ProcgenWaterfallMode" @bind-Value="Flags.ProcgenWaterfallMode">Map Layout</EnumDropDown>
+				<EnumDropDown UpdateAction="@UpdateAction" Indent Id="procGenWaterfallDensity" TItem="ProcgenWaterfallDensity" @bind-Value="Flags.ProcgenWaterfallDensity">Path Density</EnumDropDown>
+				<EnumDropDown UpdateAction="@UpdateAction" Indent Id="procGenWaterfallEntrance" TItem="ProcgenWaterfallEntrance" @bind-Value="Flags.ProcgenWaterfallEntrance">Entrance Placement</EnumDropDown>
+				<EnumDropDown UpdateAction="@UpdateAction" Indent Id="procGenWaterfallHallway" TItem="ProcgenWaterfallHallwayLength" @bind-Value="Flags.ProcgenWaterfallHallwayLength">Long Hallway Length</EnumDropDown>
+				<TriStateCheckBox UpdateAction="@UpdateAction" Indent Id="procGenWaterfallNoLoops" @bind-Value="Flags.ProcgenWaterfallNoLoops">Avoid Loops</TriStateCheckBox>
+			}
 			<div class="checkbox-cell"></div>
 		</div>
 

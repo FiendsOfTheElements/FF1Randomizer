@@ -20,6 +20,8 @@ namespace FF1Lib.Procgen
 		public IEnumerable<byte> Traps;     // Trap tiles assumed to be in rooms.
 		public IEnumerable<int> FreeNPCs;   // Random extra NPCs outside of rooms. (Coords can be ignored)
 
+		public IEnumerable<int> OOBNPCs; // extra out-of-bounds NPCs
+
 		public FF1Rom Rom;
 		public MapObjects MapObjects;
 	}
@@ -27,7 +29,7 @@ namespace FF1Lib.Procgen
 	public enum MapGeneratorStrategy
 	{
 		Cellular,
-		WaterfallClone,
+		SpanningTree,
 		Square,
 		BSPTree
 	}
@@ -42,7 +44,13 @@ namespace FF1Lib.Procgen
 
 	public class MapGenerator
 	{
+		public Flags _flags;
 		private const int MAX_MAP_ITERATIONS = 50;
+
+		public MapGenerator(Flags flags)
+		{
+			_flags = flags;
+		}
 
 		public CompleteMap Generate(MT19337 rng, MapGeneratorStrategy strategy, MapRequirements reqs)
 		{
@@ -52,27 +60,23 @@ namespace FF1Lib.Procgen
 			{
 				reqs.Floor = Tile.WaterfallRandomEncounters;
 				reqs.InRoomFloor = Tile.WaterfallInside;
-				reqs.FreeNPCs = Enumerable.Range(1, 10);
+				// OOB Bat
+				reqs.OOBNPCs = Enumerable.Range(1, 1);
+				reqs.FreeNPCs = Enumerable.Range(2, 9);
 				reqs.Rooms = new List<RoomSpec>
 				{
-					/*new RoomSpec
-					{
-						Tiledata = new byte[,] {
-							{ 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x02 },
-							{ 0x03, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x05 },
-							{ 0x03, 0x46, 0x46, 0x46, 0x46, 0x46, 0x46, 0x05 },
-							{ 0x06, 0x07, 0x48, 0x07, 0x07, 0x07, 0x07, 0x08 },
-							{ 0x30, 0x30, 0x36, 0x30, 0x30, 0x30, 0x30, 0x30 },
-							{ 0x49, 0x49, 0x3A, 0x49, 0x49, 0x49, 0x49, 0x49 }},
-						NPCs = new List<NPC> { new NPC { Index = 0, Coord = (5, 2), InRoom = true, Stationary = false } },
-					}*/
+					
 					new RoomSpec
 					{
 						Tiledata = new byte[,] {
 							{ 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x02 },
 							{ 0x03, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x05 },
 							{ 0x03, 0x46, 0x46, 0x46, 0x46, 0x46, 0x46, 0x05 },
-							{ 0x06, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x08 }},
+							{ 0x06, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x08 }
+							
+							// { 0x30, 0x30, 0x36, 0x30, 0x00, 0x01, 0x01, 0x01 }
+							//{ 0x49, 0x49, 0x3A, 0x49, 0x49, 0x49, 0x49, 0x49 }
+						},
 						NPCs = new List<NPC> { new NPC { ObjectId = ObjectId.CubeBot, Index = 0, Coord = (5, 2), InRoom = true, Stationary = false } },
 					}
 				};
@@ -144,6 +148,13 @@ namespace FF1Lib.Procgen
 				reqs.MapObjects.MoveNpc(npc, location.X, location.Y, false, false);
 			});
 
+			locations = map.Map.Where(element => element.Tile == reqs.InRoomFloor || element.Tile == reqs.OutOfBounds).ToList();
+			reqs.OOBNPCs.ToList().ForEach(npc =>
+			{
+				var location = locations.SpliceRandom(rng);
+				reqs.MapObjects.MoveNpc(npc, location.X, location.Y, false, false);
+			});
+
 			if (Debugger.IsAttached)
 			{
 				Console.Write(map.AsText());
@@ -162,6 +173,8 @@ namespace FF1Lib.Procgen
 					return new RectilinearGenerator();
 				case MapGeneratorStrategy.BSPTree:
 					return new BSPTreeEngine();
+				case MapGeneratorStrategy.SpanningTree:
+					return new SpanningTree(_flags);
 				default:
 					return null;
 			}

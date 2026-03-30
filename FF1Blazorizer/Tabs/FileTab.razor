@@ -490,6 +490,7 @@
 		{
 			Utilities.SpoilerCache = string.Empty;
 			Utilities.FlagCache = string.Empty;
+			Utilities.ProcgenWaterfallCache = string.Empty;
 
 			_rom.ProgressCallback = this.Progress;
 
@@ -548,6 +549,12 @@
 			{
 				var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.SpoilerCache));
 				await JSRuntime.InvokeVoidAsync("downloadFile", $"Spoiler_{_seed}_{_rom.GetHash()}.txt", encodedSpoiler);
+			}
+
+			if(Flags.ProcgenWaterfallSpoiler && Utilities.ProcgenWaterfallCache.Length > 0)
+			{
+				var encodedSpoiler = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Utilities.ProcgenWaterfallCache));
+				await JSRuntime.InvokeVoidAsync("downloadFile", $"WaterfallSpoiler_{_seed}_{_rom.GetHash()}.txt", encodedSpoiler);
 			}
 
 			if (Flags.Archipelago)
