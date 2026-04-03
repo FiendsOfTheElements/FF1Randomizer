@@ -30,11 +30,11 @@ Basic Sleep can be from 0-256 now
   BNE @PrintAndEnd
 @EnemySleep
   LDA #ALTBTLMSG_SLEEPING
+  NOP
+  NOP
+  NOP
 @PrintAndEnd:
   JMP ShowAltBattleMessage_ClearAllBoxes
-  NOP
-  NOP
-  NOP
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
