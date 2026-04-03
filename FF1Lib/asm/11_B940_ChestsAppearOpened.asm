@@ -245,3 +245,18 @@ WrapOpenTreasureChest:
 ; F2 D5 85 0F 4C E1 B9 29 0F 0A 19 E2 D5 85 0E B9 F2 D5 09 04 85 0F 20 A8 FE AD 02 20 A5 0F 8D 06
 ; 20 A5 0E 8D 06 20 A9 7E 8D 07 20 A9 7F 8D 07 20 20 A1 CC 68 60
 
+StandardMapLoop = $C8B6
+;;; if trapped chests are on, we need an extra routine here to clear out the stack when we run from
+;;; a monster in a box.
+.ORG $B937
+SkipDialogueAfterRun:
+    PLA
+    PLA
+    PLA
+    PLA
+    PLA
+    PLA
+    JMP StandardMapLoop
+
+; 68 68 68 68 68 68 4C B6 C8
+
