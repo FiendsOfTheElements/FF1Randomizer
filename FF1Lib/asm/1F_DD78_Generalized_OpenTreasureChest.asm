@@ -131,6 +131,11 @@ DontGiveItem:
         JSR InTalkReenterMap  ; Skip giving the item
         PLA                   ; Clear an extra address in the stack
         PLA                   ;  since we're one routine deeper
+        ;;; If "chests appear open" is on, we're yet one routine deeper than this, and we'll need
+        ;;; to clear two more bytes from the stack or warping will be bugged. There's not enough room
+        ;;; to do that at SkipDialogueBox, so a routine at a different address is provided in the asm
+        ;;; for chests appear opened. Rando will replace this JMP address if needed with the other one
+        ;;; ($B934)
         JMP SkipDialogueBox   
 WonBattle:
 	  PLA					  ; restore dlg_itemid
