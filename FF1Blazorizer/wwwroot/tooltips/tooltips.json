@@ -2623,7 +2623,7 @@
 	{
 		"Id": "AdvancedEncounterRNGDropDown",
 		"title": "Advanced Encounter RNG Table",
-		"description": "Changes the behavior of the encounter RNG.\nTrue RNG:\nInstead of a 256-step encounter table that resets with a hard reset, the game uses a pseudo-random number generator with a period of 65,535 steps, which does not reset on hard reset.\nCurated:\nProduces an RNG table with somewhat predictable features, which could be useful for encounter manipulation training, overworld grinding, and challenge seeds.\nRandom:\nRandomly chooses among None, True RNG, and Curated.\n\nCurated Encounter RNG settings are detailed in the tooltips below.\nNOTE: under normal conditions, the second traversal of the battle table runs is the reverse of the first; with the Curated setting, all traversals are the same."
+		"description": "Changes the behavior of the encounter RNG.\nTrue RNG:\nInstead of a 256-step encounter table that resets with a hard reset, the game uses a pseudo-random number generator with a period of 65,535 steps, which does not reset on hard reset.\nCurated:\nProduces an RNG table with somewhat predictable features, which could be useful for encounter manipulation training, overworld grinding, and challenge seeds.\nRandom:\nRandomly chooses among None, True RNG, and Curated.\n\nCurated Encounter RNG settings are detailed in the tooltips below.\nNOTE: under normal conditions, the third traversal of the battle table runs is the reverse of the first; with the Curated setting, all traversals are the same."
 	},
 	{
 		"Id": "EarlyEncounterCheckBox",
