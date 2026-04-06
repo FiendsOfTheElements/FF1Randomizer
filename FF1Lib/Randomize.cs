@@ -106,7 +106,7 @@ public partial class FF1Rom : NesRom
 		// load resource pack data that needs to go into initial ROM before
 		// data is read
 		// resource pack goes after map derp; Later could make this more efficient.
-		await this.LoadFunTiles(preferences);
+		await this.LoadFunTiles(preferences, new MT19337(funRng.Next()));
 		await this.LoadResourcePackPreROM(flags.ResourcePack, preferences);
 
 
