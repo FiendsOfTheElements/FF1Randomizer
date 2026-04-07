@@ -8,6 +8,7 @@ namespace FF1Lib
 {
 	public partial class FF1Rom : NesRom
 	{
+		Image<Rgba32> mapTilesOverlayImage = null;
 
 	    bool ResourcePackHasGameplayChanges(Stream stream) {
 	        var resourcePackArchive = new ZipArchive(stream);
@@ -18,19 +19,23 @@ namespace FF1Lib
 
 	
 
-		async Task LoadFunTiles(Preferences preferences)
+		async Task LoadFunTiles(Preferences preferences, MT19337 rng)
 		{
 			if (preferences.MapDerp)
 			{
 				var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-				var mapderpPath = assembly.GetManifestResourceNames().First(str => str.EndsWith("maptiles.png"));
-				var mapderpStream = assembly.GetManifestResourceStream(mapderpPath);
-				await SetCustomMapGraphics(mapderpStream, 245, 4,
+				var mapderpFiles = assembly.GetManifestResourceNames().Where(str => str.Contains("mapderp")).ToList();
+				var mapderpFile = mapderpFiles.PickRandom(rng);
+				var mapderpStream = assembly.GetManifestResourceStream(mapderpFile);
+				mapTilesOverlayImage = Image.Load<Rgba32>(mapderpStream);
+
+				var maptileFile = assembly.GetManifestResourceNames().First(str => str.EndsWith("maptiles.png"));
+				var maptileStream = assembly.GetManifestResourceStream(maptileFile);
+				await SetCustomMapGraphics(maptileStream, 245, 4,
 							new int[] { OVERWORLDPALETTE_OFFSET },
 							OVERWORLDPALETTE_ASSIGNMENT,
 							OVERWORLDPATTERNTABLE_OFFSET,
-							OVERWORLDPATTERNTABLE_ASSIGNMENT,
-							addMapDerp: true);
+							OVERWORLDPATTERNTABLE_ASSIGNMENT);
 			}
 		}
 
@@ -65,8 +70,7 @@ namespace FF1Lib
 								 new int[] { OVERWORLDPALETTE_OFFSET },
 								 OVERWORLDPALETTE_ASSIGNMENT,
 								 OVERWORLDPATTERNTABLE_OFFSET,
-								 OVERWORLDPATTERNTABLE_ASSIGNMENT,
-								 addMapDerp: preferences.MapDerp);
+								 OVERWORLDPATTERNTABLE_ASSIGNMENT);
 					}
 				}
 
