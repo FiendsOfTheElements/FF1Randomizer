@@ -296,7 +296,7 @@ namespace FF1Lib
 			// Fixes RandAX extra increment; otherwise using 256 results in an overflow of the high value making the range equal to the low value
 			PutInBank(0x0C, 0xAE60, Blob.FromHex("EAEAEAEA"));
 			// fix the enemy sleep buffer
-			PutInBank(0x0C, 0xB1EE, Blob.FromHex("F009A9DF2090B1A90FD002A9024C8EB2EAEAEA"));
+			PutInBank(0x0C, 0xB1EE, Blob.FromHex("F009A9DF2090B1A90FD002A902EAEAEA4C8EB2"));
 			// fix player sleep subroutine
 			PutInBank(0x0C, 0xA451, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAAD5668"));
 			// // just after partygen is confirmed, this executes the subroutine to
