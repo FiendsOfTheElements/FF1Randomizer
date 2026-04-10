@@ -97,7 +97,7 @@ namespace FF1Lib
 				maps[MapIndex.TempleOfFiendsRevisitedWater].Map[0x1C, 0x18] = 0x5C;
 				maps[MapIndex.TempleOfFiendsRevisitedAir].Map[0x08, 0x10] = 0x5C;
 			}
-			else if(fiendsrefights == FiendsRefights.TwoPaths)
+			else if (fiendsrefights == FiendsRefights.TwoPaths)
 			{
 				CreateTwoPathsToFR(maps, mode, rng);
 			}
@@ -155,7 +155,7 @@ namespace FF1Lib
 			AddLutePlateToFloor1F(maps);
 
 			// Lich Floor
-			List<Blob> eraseLichStairs = new List<Blob> 
+			List<Blob> eraseLichStairs = new List<Blob>
 			{
 				Blob.FromHex("30303B30"),
 				Blob.FromHex("5C5C3A5C"),
@@ -167,7 +167,7 @@ namespace FF1Lib
 			maps[MapIndex.TempleOfFiendsRevisitedEarth].Map[0x11, 0x16] = 0x5E;
 
 			// Kary Floor
-			List<Blob> openKaryLowerFloors = new List<Blob> 
+			List<Blob> openKaryLowerFloors = new List<Blob>
 			{
 				Blob.FromHex("5C5C5C5C5C5C"),
 				Blob.FromHex("5C5C5C5C5C5C"),
@@ -274,31 +274,51 @@ namespace FF1Lib
 				 * 1 - Lich2
 				 * 2 - Kary2
 				 * 3 - Kraken2
-				 * 4 - Kraken2
-				 * 5 - Tiamat2
-				 * 6 - Tiamat2 **/
+				 * 4 - Tiamat2 
+				 * 5 - No encounter
+				 * 6 - Lich2
+				 * 7 - Kary2
+				 * 8 - Kraken2
+				 * 9 - Tiamat2
+				 * 10 - No encounter **/
 				String anythingGoesHex = "31";
 				for (int i = 0; i < 8; i++)
 				{
-					int encounter = Rng.Between(rng, 0, 6);
+					int encounter = Rng.Between(rng, 0, 10);
 					switch (encounter)
 					{
-						case 0: // no encounter, 14.3%
+						case 0: // no encounter, ~27%
 							anythingGoesHex += "31";
 							break;
-						case 1: // lich2, 14.3%
+						case 1: // lich2, ~18%
 							anythingGoesHex += $"{0x57:X2}";
 							break;
-						case 2: // kary2, 14.3%
+						case 2: // kary2, ~18%
 							anythingGoesHex += $"{0x58:X2}";
 							break;
-						case 3:
-						case 4: // kraken2, 28.6%
+						case 3: // kraken2, ~18%
 							anythingGoesHex += $"{0x59:X2}";
 							break;
-						case 5:
-						case 6: // tiamat2, 28.6%
+						case 4: // tiamat2, ~18%
 							anythingGoesHex += $"{0x5A:X2}";
+							break;
+						case 5: // no encounter, ~27%
+							anythingGoesHex += "31";
+							break;
+						case 6: // lich2, ~18%
+							anythingGoesHex += $"{0x57:X2}";
+							break;
+						case 7: // kary2, ~18%
+							anythingGoesHex += $"{0x58:X2}";
+							break;
+						case 8: // kraken2, ~18%
+							anythingGoesHex += $"{0x59:X2}";
+							break;
+						case 9: // tiamat2, ~18%
+							anythingGoesHex += $"{0x5A:X2}";
+							break;
+						case 10: // no encounter, ~27%
+							anythingGoesHex += "31";
 							break;
 					}
 					if (i == 3)
@@ -389,16 +409,16 @@ namespace FF1Lib
 			// Put(0x0B410, Blob.FromHex("0000006080A0E0C0"));
 			// Put(0x0B420, Blob.FromHex("0000006060000000"));
 			// Put(0x0B430, Blob.FromHex("0006060000000000"));
-			
+
 			// Instead of hard-coding the above, we need to be more flexible in case of NPC-import,
 			// so we simply map color 1 to color 0 in these tiles. Strictly speaking we probably
 			// only need to do this for the bottom two tiles, but there could be weird interactions.
-			for (int n = 0, offset = 0x0B400; n < 4; n++ )
+			for (int n = 0, offset = 0x0B400; n < 4; n++)
 			{
-				int index = offset + n*0x10;
-				byte[] tile = DecodePPU(Get(index,0x10));
+				int index = offset + n * 0x10;
+				byte[] tile = DecodePPU(Get(index, 0x10));
 				// map color 1 to color 0
-				tile = tile.Select(i => i == 1? (byte)0 : i).ToArray();
+				tile = tile.Select(i => i == 1 ? (byte)0 : i).ToArray();
 				Put(index, EncodeForPPU(tile));
 
 			}
