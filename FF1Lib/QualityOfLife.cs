@@ -72,50 +72,9 @@ namespace FF1Lib
 		public void MagicShopsMatchEquipShops()
 		{
 			// QoS to make magic shop function like weapon/armor shops
-	 		PutInBank(0x0E, 0xA360, Blob.FromHex("A90D205BAA2089A9B0EDA662BD00038D0C032065AA20C2A8B0DEA562D0DA20EBA49008A910205BAA4C65A34CE094A5626A6A6A29C08D0A0320DFAA20CDA4AE0A03AD0B039D00634C60A3"));
-
-			// assembly for QoS
-			// LDA #$0D                 
-			// JSR $AA5B                
-			// JSR $A989                
-			// BCS $A357               
-			// LDX $62                  
-			// LDA $0300,X             
-			// STA $030C                
-			// JSR $AA65                
-			// JSR $A8C2                
-			// BCS $A358                
-			// LDA $62                  
-			// BNE $A358                
-			// JSR $A4EB                
-			// BCC $A38B                
-			// LDA #$10                 
-			// JSR $AA5B                
-			// JMP $A365                
-			// JSR $94E0                
-			// LDA $62                  
-			// ROR A                    
-			// ROR A                    
-			// ROR A                    
-			// AND #$C0                 
-			// STA $030A                
-			// JSR $AADF                
-			// JSR $A4CD                
-			// LDX $030A                
-			// LDA $030B                
-			// STA $6300,X              
-			// JMP $A360                
+			PutInBank(0x0E, 0xA360, Blob.FromHex("A90D205BAA2089A9B0EDA662BD00038D0C032065AA20C2A8B0DEA562D0DA20EBA49008A910205BAA4C65A34CE094A5626A6A6A29C08D0A0320DFAA20CDA4AE0A03AD0B039D00634C60A3"));
 
 			PutInBank(0x0E, 0x94E0, Blob.FromHex("A917205BAA20E4A8B0034C8EA34C65A3"));
-
-			// assembly for QoS
-			// LDA #$17
-  			// JSR $AA5B
-			// JSR $A8E4
-			// BCS $94ED
-			// JMP $A38E
-			// JMP $A365
-
 		}
 		public void DisableDamageTileFlicker()
 		{
@@ -135,49 +94,49 @@ namespace FF1Lib
 			switch (poisonSFX)
 			{
 				case PoisonSFX.Silent:
-				{
-					SFXCommand = "EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
-					break;
-				}
+					{
+						SFXCommand = "EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
+						break;
+					}
 				case PoisonSFX.Ouch:
-				{
-					// one iteration of the vanilla poison sound
-					SFXCommand = "A93F8D0440A9818D0540A9608D0640A9008D0740A906857E";
-					break;
-				}
-				case PoisonSFX.Beep:
-				{
-					if (flags.TournamentSafe)
 					{
-						// Beep sound was deemed not tournament safe; might remind spectators of hospital sounds
-						// Set to "Ouch" instead.
+						// one iteration of the vanilla poison sound
 						SFXCommand = "A93F8D0440A9818D0540A9608D0640A9008D0740A906857E";
+						break;
 					}
-					else
+				case PoisonSFX.Beep:
 					{
-						// similar to the Zelda 1 low-health alarm
-						SFXCommand = "A9BA8D0440A9008D0540A95E8D0640A9008D0740A906857E";
+						if (flags.TournamentSafe)
+						{
+							// Beep sound was deemed not tournament safe; might remind spectators of hospital sounds
+							// Set to "Ouch" instead.
+							SFXCommand = "A93F8D0440A9818D0540A9608D0640A9008D0740A906857E";
+						}
+						else
+						{
+							// similar to the Zelda 1 low-health alarm
+							SFXCommand = "A9BA8D0440A9008D0540A95E8D0640A9008D0740A906857E";
+						}
+						break;
 					}
-					break;
-				}
 				case PoisonSFX.Bonk:
-				{
-					// similar to the Dragon Warrior "bonk into wall" sound
-					SFXCommand = "A9BF8D0440A9B48D0540A9F08D0640A9028D0740A909857E";
-					break;
-				}
+					{
+						// similar to the Dragon Warrior "bonk into wall" sound
+						SFXCommand = "A9BF8D0440A9B48D0540A9F08D0640A9028D0740A909857E";
+						break;
+					}
 				case PoisonSFX.Oops:
-				{
-					// similar to the Super Mario Bros. 1 stomp/swim sound
-					SFXCommand = "A9BA8D0440A98C8D0540A9FF8D0640A9008D0740A90A857E";
-					break;
-				}
+					{
+						// similar to the Super Mario Bros. 1 stomp/swim sound
+						SFXCommand = "A9BA8D0440A98C8D0540A9FF8D0640A9008D0740A90A857E";
+						break;
+					}
 				default:
-				{
-					/// not likely ever to end up here, but just in case...
-					SFXCommand = "EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
-					break;
-				}
+					{
+						/// not likely ever to end up here, but just in case...
+						SFXCommand = "EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEA";
+						break;
+					}
 
 			}
 
@@ -189,12 +148,12 @@ namespace FF1Lib
 		public void DisableAirshipSFX()
 		{
 			// this is very simple, so no .asm saved for this routine
-		
+
 			// NOP out the sfx during the airship transition animations
-			PutInBank(0x1F,0xE215,Blob.FromHex("60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
+			PutInBank(0x1F, 0xE215, Blob.FromHex("60EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 
 			// Here, we just don't check to see if we're in airship at all, bypassing the main airship sfx entirely
-			PutInBank(0x1F,0xC112, 0x04);
+			PutInBank(0x1F, 0xC112, 0x04);
 		}
 		public void DisableSpellCastScreenFlash()
 		{

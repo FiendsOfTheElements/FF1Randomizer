@@ -419,7 +419,7 @@
 		"Id": "shortToFRFiendsRefightsDropDown",
 		"title": "Fiends Refights",
 		"screenshot": "preserveAllFiendRefightsCheckBox.png",
-		"description": "Configure the Temple of Fiends Fiends Refights.\n\nAll: All Fiends must be fought to reach Chaos.\nTwo Paths: Only two fiends must be defeated. Going left or right will lead to two different Fiends tiles.\nLopsided: Two Paths but one side has one buffed fiend, the other has three normal scaled fiends.\nProgressive: Two Paths but guarantees one easy and one hard fiend will fall on each side.\nAnything Goes: Two Paths but the fiend tiles are random. Possibly 4 Kraken, possibly 4 free steps.\nRude: All plus one extra fifth fiend refight.\nNone: No Fiends will be encountered in the Temple of Fiends Revisited.\nRandom: One of the previous options at random."
+		"description": "Configure the Temple of Fiends Fiends Refights.\n\nAll: All Fiends must be fought to reach Chaos.\nTwo Paths: Only two fiends must be defeated. Going left or right will lead to two different Fiends tiles.\nLopsided: Two Paths but one side has one buffed fiend, the other has three normal scaled fiends.\nProgressive: Two Paths but guarantees one easy and one hard fiend will fall on each side.\nAnything Goes: Two Paths but the fiend tiles are random. Possibly 4 Kraken, possibly 4 free steps. Weighted 3/11 for empty tiles and 2/11 for each fiend.\nRude: All plus one extra fifth fiend refight.\nNone: No Fiends will be encountered in the Temple of Fiends Revisited.\nRandom: One of the previous options at random."
 	},
 	{
 		"Id": "exitToFRCheckBox",
