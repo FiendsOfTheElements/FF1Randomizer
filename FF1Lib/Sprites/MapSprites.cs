@@ -95,7 +95,7 @@ namespace FF1Lib
 				if (!towntiles && imagecount == 0)
 				{
 					/// match Canal Color to most common color in the main grass tile.
-					Rgba32 color = inferredColorList.GroupBy(i => i).OrderBy(k => k.Key).Last().Key;
+					Rgba32 color = inferredColorList.GroupBy(i => i).OrderBy(k => k.Count()).Last().Key;
 					inferredCanalColor = selectColor(color,NESpalette);
 					Console.WriteLine($"Canal Color: {color} -- {inferredCanalColor,2:X}");
 				}
