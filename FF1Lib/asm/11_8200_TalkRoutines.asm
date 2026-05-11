@@ -927,3 +927,37 @@ TalkAndBattle:
     JSR InTalkReenterMap    ; Then reenter the map
     JMP SkipDialogueBox     ; Skip showing a second dialogue box
     RTS
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Custom routine for when goal is 1-3 orbs
+
+orb_fire 			= $6031
+orb_water 			= $6032
+orb_air 			= $6033
+orb_earth 			= $6034
+ORBS_GOAL 			= $03 ; will be changed by the randomizer
+OBJID_BLACKORB 		= $CA
+HideThisMapObject 	= $9096
+dlgsfx 				= $7D
+tmp 				= $70
+
+Talk_BlackOrb:
+        CLC
+        LDA orb_fire
+        ADC orb_water
+        ADC orb_air
+        ADC orb_earth
+        CMP #ORBS_GOAL
+        BCC NotEnoughLit
+        LDY #OBJID_BLACKORB
+        JSR HideThisMapObject
+        INC dlgsfx
+        INC dlgsfx
+        LDA tmp+1
+        RTS
+
+    NotEnoughLit:
+        LDA tmp+2
+        RTS

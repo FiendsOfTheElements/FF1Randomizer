@@ -160,12 +160,12 @@ namespace FF1Lib
 			{
 				// Orb Requirement is Any 3, Any 2, Any 1, or 0
 
-				// Modify "shift earth orb down code" that normally assigns shard values 2 for earth / fire, and 4 for water / wind
-				// (now assigns shard value of 1 for all orbs; AKA modded 0F_CE12_OrbRewards.asm)
-				Put(0x7CE12, Blob.FromHex("A201A000F010A201A001D00AA201A002D004A201A003B93160D00FA901993160188A6D35608D3560E66C1860"));
+				// Adjust Black Orb talk routine to check for <GOAL> number of orbs.
+				// See 11_8200_TalkRoutines.asm
+				talkroutines.Replace(TalkScripts.Talk_BlackOrb, Blob.FromHex($"18AD31606D32606D33606D3460C9{goal:X2}900CA0CA209690E67DE67DA57160A57260"));
 
-				// Adjust Black Orb Behavior to check $6035 for goal "shards" (in this case, the orb count)
-				BlackOrbChecksShardsCountFor(goal, talkroutines);
+				// make portal under Black Orb walkable
+				Remove4OrbRequirementForToFRPortal();
 
 				if (spoilersEnabled && goal != 0)
 				{
