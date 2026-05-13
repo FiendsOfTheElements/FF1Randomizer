@@ -5,6 +5,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using Microsoft.VisualBasic;
 using System.Collections.ObjectModel;
 using SixLabors.ImageSharp.ColorSpaces;
+using SixLabors.ImageSharp.ColorSpaces.Conversion;
 
 namespace FF1Lib
 {
@@ -90,6 +91,7 @@ namespace FF1Lib
 			new Rgba32(0x00, 0x00, 0x00), //0x3E
 			new Rgba32(0x00, 0x00, 0x00)  //0x3F
 		};
+
 
 
 
@@ -531,6 +533,24 @@ namespace FF1Lib
 				return false;
 			}
 			return false;
+		}
+
+		List<byte> OrderByLightness(List<byte> palette, Rgba32[] NESpalette)
+		{
+			var converter = new ColorSpaceConverter();
+			List<byte> orderedPalette = palette.OrderBy(i => 
+				converter.ToCieLab(NESpalette[i]).L
+			).ToList();
+			return orderedPalette;
+		}
+
+		List<Rgba32> OrderByLightness(IEnumerable<Rgba32> palette)
+		{
+			var converter = new ColorSpaceConverter();
+			List<Rgba32> orderedPalette = palette.OrderBy(color =>
+				converter.ToCieLab(color).L
+			).ToList();
+			return orderedPalette;
 		}
 
 	}

@@ -6,9 +6,32 @@ using System.IO.Compression;
 
 namespace FF1Lib
 {
+	public enum MapDerpLocation
+	{
+		none,
+		coneriacastle,
+		elfcastle,
+		mirage,
+		nwcastle,
+		ordeals,
+		tof,
+		volcano
+	};
 	public partial class FF1Rom : NesRom
 	{
 		Image<Rgba32> mapTilesOverlayImage = null;
+		MapDerpLocation mapDerpLocation = MapDerpLocation.none;
+
+		Dictionary<MapDerpLocation,List<int>> mapDerpTiles = new()
+		{
+			{MapDerpLocation.coneriacastle, new([0x01,0x02,0x19,0x1A])},
+			{MapDerpLocation.elfcastle, new([0x1B,0x1C])},
+			{MapDerpLocation.mirage, new([0x1D])},
+			{MapDerpLocation.nwcastle, new([0x29,0x2A])},
+			{MapDerpLocation.ordeals, new([0x38,0x39])},
+			{MapDerpLocation.tof, new([0x47,0x48])},
+			{MapDerpLocation.volcano, new([0x64,0x65])}
+		};
 
 	    bool ResourcePackHasGameplayChanges(Stream stream) {
 	        var resourcePackArchive = new ZipArchive(stream);
@@ -23,15 +46,21 @@ namespace FF1Lib
 		{
 			if (preferences.MapDerp)
 			{
+				mapDerpLocation = Enum.GetValues<MapDerpLocation>().Where(md => md != MapDerpLocation.none).ToList().PickRandom(rng);
+
+				
 				var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-				var mapderpFiles = assembly.GetManifestResourceNames().Where(str => str.Contains("mapderp")).ToList();
-				var mapderpFile = mapderpFiles.PickRandom(rng);
+				//var mapderpFiles = assembly.GetManifestResourceNames().Where(str => str.Contains("mapderp")).ToList();
+				//var mapderpFile = mapderpFiles.PickRandom(rng);
+				Console.WriteLine(mapDerpLocation.ToString());
+				var mapderpFile = assembly.GetManifestResourceNames()
+					.Single(str => str.Contains("mapderp") && str.Contains(mapDerpLocation.ToString()));
 				var mapderpStream = assembly.GetManifestResourceStream(mapderpFile);
 				mapTilesOverlayImage = Image.Load<Rgba32>(mapderpStream);
 
 				var maptileFile = assembly.GetManifestResourceNames().First(str => str.EndsWith("maptiles.png"));
 				var maptileStream = assembly.GetManifestResourceStream(maptileFile);
-				await SetCustomMapGraphics(maptileStream, 245, 4,
+				await SetCustomMapGraphics(maptileStream, 255, 4,
 							new int[] { OVERWORLDPALETTE_OFFSET },
 							OVERWORLDPALETTE_ASSIGNMENT,
 							OVERWORLDPATTERNTABLE_OFFSET,
@@ -66,7 +95,7 @@ namespace FF1Lib
 				{
 					using (var s = maptiles.Open())
 					{
-						await SetCustomMapGraphics(s, 245, 4,
+						await SetCustomMapGraphics(s, 255, 4,
 								 new int[] { OVERWORLDPALETTE_OFFSET },
 								 OVERWORLDPALETTE_ASSIGNMENT,
 								 OVERWORLDPATTERNTABLE_OFFSET,

@@ -43,7 +43,47 @@ namespace FF1Lib
 
 			if (mapTilesOverlayImage != null)
 			{
-				image.Mutate(x => x.DrawImage(mapTilesOverlayImage, new Point(0, 0), 1.0f));
+
+				List<int> derpTiles = mapDerpTiles[mapDerpLocation]; // set in ResourcePack.cs
+				Dictionary<int,List<Rgba32>> mapTilesColors = [];
+				foreach (int tile in derpTiles)
+				{
+					HashSet<Rgba32> thisTileColors = new();
+					int top = tile / 16 * 16;
+					int left = tile % 16 * 16;
+					for (int y = 0; y < 16 ; y++)
+					{
+						for (int x = 0; x < 16; x++)
+						{
+							thisTileColors.Add(image[x+left,y+top]);
+						}
+					}
+					mapTilesColors[tile] = OrderByLightness(thisTileColors);					
+				}
+				foreach (int tile in derpTiles)
+				{
+					Rgba32 black = new(0x00,0x00,0x00,0xFF);
+					Rgba32 white = new(0xFF,0xFF,0xFF,0xFF);
+					Rgba32 darkest = mapTilesColors[tile].First();
+					Rgba32 lightest = mapTilesColors[tile].Last();
+					int top = tile / 16 * 16;
+					int left = tile % 16 * 16;
+					for (int y = 0; y < 16 ; y++)
+					{
+						for (int x = 0; x < 16; x++)
+						{
+							if (mapTilesOverlayImage[x+left,y+top] == black)
+							{
+								image[x+left,y+top] = darkest;
+							}
+							else if (mapTilesOverlayImage[x+left,y+top] == white)
+							{
+								image[x+left,y+top] = lightest;
+							}
+						}
+					}
+				}
+				// image.Mutate(x => x.DrawImage(mapTilesOverlayImage, new Point(0, 0), 1.0f));
 			}
 
 
@@ -104,7 +144,7 @@ namespace FF1Lib
 					/// match Bridge Color to the lightest color in one of the dock tiles
 					Rgba32 color = inferredColorList.OrderBy(i => i.R + i.G + i.B).Last();
 					inferredBridgeColor = selectColor(color,NESpalette);
-					Console.WriteLine($"Bridge Color: {color} -- {inferredBridgeColor,2:X}");
+					Console.WriteLine($"Bridge Color: {color} -- {inferredBridgeColor:X2}");
 				}
 				List<byte> pal;
 				if (!makeNTPalette(colors, NESpalette, out pal, toNEScolor))
@@ -112,7 +152,7 @@ namespace FF1Lib
 					await this.Progress($"WARNING: Failed importing map tile at {left}, {top}, too many unique colors (limit 4 unique colors):", 1 + pal.Count);
 					for (int i = 0; i < pal.Count; i++)
 					{
-						await this.Progress($"WARNING: NES palette {i}: ${pal[i],2:X}");
+						await this.Progress($"WARNING: NES palette {i}: ${pal[i]:X2}");
 					}
 					/*foreach (var i in index) {
 						int c = firstUnique[i.Key];
@@ -168,7 +208,15 @@ namespace FF1Lib
 			
 			//int maxCHR = 245;
 			int excessCHR = 0;
-			Console.WriteLine($"mapPals {mapPals.Count}");
+			// Console.WriteLine($"mapPals {mapPals.Count}");
+			// foreach (var l in mapPals)
+			// {
+			// 	Console.WriteLine($"Palette: {String.Join(", ", l.Select(b => b.ToString("X2")))}");
+			// }
+			// foreach (var entry in toNEScolor)
+			// {
+			// 	Console.WriteLine($"RGBA: {entry.Key}, NES: {entry.Value:X2}");
+			// }
 
 			for (int imagecount = 0; imagecount < 128; imagecount += 1)
 			{

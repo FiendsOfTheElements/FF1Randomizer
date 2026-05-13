@@ -180,8 +180,10 @@ namespace FF1Lib
 			// MapMan for Nones and Fun% Party Leader
 			byte leader = (byte)((byte)mapmanSlot << 6);
 			Data[0x7D8BC] = leader;
-			PutInBank(0x1F, 0xE92E, Blob.FromHex("20608FEAEAEAEA"));
-			PutInBank(0x02, 0x8F60, Blob.FromHex($"A9008510AD{leader:X2}61C9FFF00160A92560"));
+			PutInBank(0x1F, 0xE92E, Blob.FromHex("20F08FEAEAEAEA"));
+			// The following PutInBank() line was changed from 0x8F60 to 0x8FF0 in order to make room for tiles
+			// In the line above, 608F was changed to F08F to reflect the change
+			PutInBank(0x02, 0x8FF0, Blob.FromHex($"A9008510AD{leader:X2}61C9FFF00160A92560"));
 
 			// Draw Complex String extension for class FF
 			PutInBank(0x1F, 0xC27D, Blob.FromHex("C9FFF0041869F060203EE0A997853EA9C2853F2045DE4C4EE0EA973CA800"));
