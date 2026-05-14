@@ -48,7 +48,7 @@ ROM: 04000-07FFF
 01
 
 ROM: 08000-0BFFF
-02   8F60-8F6F    Mapman for nones and Fun% Party Leader
+02   8FF0-8FFF    Mapman for nones and Fun% Party Leader
 
 ROM: 0C000-09FFF
 03   8220-8230    Palm tree tile used for pub sign (also 8320-8330)
