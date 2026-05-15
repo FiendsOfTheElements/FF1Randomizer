@@ -41,7 +41,7 @@ namespace FF1Lib
 			//IImageFormat format;
 			Image<Rgba32> image = Image.Load<Rgba32>(readStream);
 
-			if (mapTilesOverlayImage != null)
+			if (mapTilesOverlayImage != null && !towntiles)
 			{
 
 				List<int> derpTiles = mapDerpTiles[mapDerpLocation]; // set in ResourcePack.cs
