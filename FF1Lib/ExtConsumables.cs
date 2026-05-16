@@ -110,11 +110,15 @@ namespace FF1Lib
 			var table = rom.GetFromBank(0x0E, 0xB177, 72).ToUShorts();
 
 			//I need the menu texts, so i cut them here
-			var useitem_bad = table[0];
-			table[(int)Item.Crystal] = useitem_bad;
-			table[(int)Item.Herb] = useitem_bad;
-			table[(int)Item.Key] = useitem_bad;
-			table[(int)Item.Tnt] = useitem_bad;
+			if (flags.ExtConsumablesEnabled == true)
+			{
+				var useitem_bad = table[0];
+				table[(int)Item.Crystal] = useitem_bad;
+				table[(int)Item.Herb] = useitem_bad;
+				table[(int)Item.Key] = useitem_bad;
+				table[(int)Item.Tnt] = useitem_bad;
+			}
+			
 
 			if (flags.ExtConsumableSet == ExtConsumableSet.SetB)
 			{

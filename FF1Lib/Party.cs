@@ -63,8 +63,8 @@ namespace FF1Lib
 			AnyClassGainMP();
 			EnableTwelveClasses();
 
-			if((bool)flags.EnablePoolParty)
-			{ 
+			if ((bool)flags.EnablePoolParty)
+			{
 				EnablePoolParty(flags, rng);
 			}
 		}
@@ -180,8 +180,10 @@ namespace FF1Lib
 			// MapMan for Nones and Fun% Party Leader
 			byte leader = (byte)((byte)mapmanSlot << 6);
 			Data[0x7D8BC] = leader;
-			PutInBank(0x1F, 0xE92E, Blob.FromHex("20608FEAEAEAEA"));
-			PutInBank(0x02, 0x8F60, Blob.FromHex($"A9008510AD{leader:X2}61C9FFF00160A92560"));
+			PutInBank(0x1F, 0xE92E, Blob.FromHex("20F08FEAEAEAEA"));
+			// The following PutInBank() line was changed from 0x8F60 to 0x8FF0 in order to make room for tiles
+			// In the line above, 608F was changed to F08F to reflect the change
+			PutInBank(0x02, 0x8FF0, Blob.FromHex($"A9008510AD{leader:X2}61C9FFF00160A92560"));
 
 			// Draw Complex String extension for class FF
 			PutInBank(0x1F, 0xC27D, Blob.FromHex("C9FFF0041869F060203EE0A997853EA9C2853F2045DE4C4EE0EA973CA800"));
@@ -217,7 +219,7 @@ namespace FF1Lib
 			Put(ShopTileDataOffet + ClinicTileOffset + VendorOffset, Get(ShopTileDataOffet + ArmorTileOffset + VendorOffset, TileSize * 6)); // Armorer tending bar
 			Put(0x03250, Get(0x03258, 4)); // Caravan palette
 
-			
+
 
 			List<byte> options = new List<byte> { };
 			if ((flags.TAVERN1 ?? false)) options.Add(0x0);
@@ -268,7 +270,7 @@ namespace FF1Lib
 
 			int levelUpTargetA = flags.RandomizeClassMode == ClassRandomizationMode.Blursings ? 0xB5 : 0x87;
 			int levelUpTargetB = flags.RandomizeClassMode == ClassRandomizationMode.Blursings ? 0xFF : 0xA9;
-			
+
 			// New routine to level up replaced character and zero some stuff, needs new level up stuff in bank 1B
 			PutInBank(0x0E, 0x9D34, Blob.FromHex($"AD0D03F018A99D48A95048A9{levelUpTargetA:X2}48A9{levelUpTargetB:X2}488A182A2A2A8510A91B4C03FE4C0098"));
 			PutInBank(0x0E, 0x9800, Blob.FromHex($"A9008D24008D25008D012060"));
@@ -286,18 +288,18 @@ namespace FF1Lib
 				var map = maps[(MapIndex)town].Map;
 				for (int y = 0; y < 64; y++)
 				{
-					for(int x = 0; x < 64; x++)
+					for (int x = 0; x < 64; x++)
 					{
-						if (map[y,x] == (byte)Tile.TownSignClinic)
+						if (map[y, x] == (byte)Tile.TownSignClinic)
 						{
-							map[y,x] = (byte)Tile.TownSignPub;
+							map[y, x] = (byte)Tile.TownSignPub;
 						}
 					}
 				}
 			}
 
 
-			
+
 
 
 
@@ -471,7 +473,7 @@ namespace FF1Lib
 
 			if (!allowedClasses.Any())
 			{
-				allowedClasses = new () { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt, FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
+				allowedClasses = new() { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt, FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
 			}
 
 			List<byte> selectedClasses = new();
@@ -479,17 +481,39 @@ namespace FF1Lib
 			if (flags.SafePoolParty)
 			{
 				var meleeList = allowedClasses.Where(c => c == FF1Class.Fighter || c == FF1Class.Thief || c == FF1Class.BlackBelt || c == FF1Class.Knight || c == FF1Class.Ninja || c == FF1Class.Master).ToList();
-				if (meleeList.Count < 2) meleeList = new List<FF1Class> { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt };
+				if (meleeList.Count < 1) meleeList = new List<FF1Class> { FF1Class.Fighter, FF1Class.Thief, FF1Class.BlackBelt };
 
 				selectedClasses.Add((byte)meleeList.SpliceRandom(rng));
 
 				var mageList = allowedClasses.Where(c => c == FF1Class.RedMage || c == FF1Class.WhiteMage || c == FF1Class.BlackMage || c == FF1Class.RedWiz || c == FF1Class.WhiteWiz || c == FF1Class.BlackWiz).ToList();
-				if (mageList.Count < 2) mageList = new List<FF1Class> { FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
+				switch (mageList.Count)
+				{
+					// randomly selects 2 distinct base mages
+					case 0:
+						mageList = new List<FF1Class> { FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
 
-				selectedClasses.Add((byte)mageList.SpliceRandom(rng));
-				selectedClasses.Add((byte)mageList.SpliceRandom(rng));
+						selectedClasses.Add((byte)mageList.SpliceRandom(rng));
+						selectedClasses.Add((byte)mageList.SpliceRandom(rng));
+						break;
+					// forces the selected mage and selects a random not already selected mage
+					case 1:
+						selectedClasses.Add((byte)mageList.SpliceRandom(rng));
+
+						mageList = new List<FF1Class> { FF1Class.RedMage, FF1Class.WhiteMage, FF1Class.BlackMage };
+
+						// remove the already selected class from the list
+						mageList.Remove((FF1Class)selectedClasses[^1]);
+						selectedClasses.Add((byte)mageList.SpliceRandom(rng));
+						break;
+					// randomly selects 2 distinct mages
+					default:
+						selectedClasses.Add((byte)mageList.SpliceRandom(rng));
+						selectedClasses.Add((byte)mageList.SpliceRandom(rng));
+						break;
+				}
 			}
 
+			// fills remaining pool with 
 			while (selectedClasses.Count < selectedParameters.size)
 			{
 				selectedClasses.Add((byte)allowedClasses.PickRandom(rng));
@@ -719,7 +743,7 @@ namespace FF1Lib
 
 				var earthY = earthB5vflipped ? 0x16 : 0x28;
 				var volcanoY = volcanoB5vflipped ? 0x0A : 0x35;
-				var seaY = seaB5vflipped ? 0x38  : 0x07;
+				var seaY = seaB5vflipped ? 0x38 : 0x07;
 
 				maps[MapIndex.EarthCaveB5].MapObjects.SetNpc(0x0C, ObjectId.MelmondMan6, earthX, earthY, true, true);
 				maps[MapIndex.GurguVolcanoB5].MapObjects.SetNpc(0x02, ObjectId.GaiaMan4, volcanoX, volcanoY, true, true);

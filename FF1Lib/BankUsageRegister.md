@@ -48,7 +48,7 @@ ROM: 04000-07FFF
 01
 
 ROM: 08000-0BFFF
-02   8F60-8F6F    Mapman for nones and Fun% Party Leader
+02   8FF0-8FFF    Mapman for nones and Fun% Party Leader
 
 ROM: 0C000-09FFF
 03   8220-8230    Palm tree tile used for pub sign (also 8320-8330)
@@ -181,8 +181,10 @@ ROM: 38000-3BFFF
 0E   8DE4-8E10    Fix character stat rendering
 OE   9079-90D9    Restore npc manip routines
 0E   9273-92A3    Restore map object
+0E   94E0-94F0    Moved Magic Menu Finalize Ouput
 0E   96B0-96F8    Item Jump Table
 0E   9C54-9C7D    Exit Boss
+0E   A360-A3AA    Magic Shop Menu QoS
 0E   B16A-B16D    Exchange affected LDAs
 0E   B16F-B172    Exchange affected LDAs
 0E   B267-B268    Expand OWTP_SPEC_MASK

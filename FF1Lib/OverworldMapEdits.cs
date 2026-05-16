@@ -347,20 +347,22 @@ namespace FF1Lib
 			new List<MapEdit>
 			{
 				new MapEdit{X = 27, Y = 173, Tile = (byte)OwTiles.CoastRight},
-				new MapEdit{X = 26, Y = 174, Tile = (byte)OwTiles.CoastRight},
+				new MapEdit{X = 26, Y = 174, Tile = (byte)OwTiles.OceanTile},
 				new MapEdit{X = 27, Y = 174, Tile = (byte)OwTiles.CoastRight},
 				new MapEdit{X = 28, Y = 174, Tile = (byte)OwTiles.MountainMidLeft},
+				new MapEdit{X = 25, Y = 175, Tile = (byte)OwTiles.OceanTile},
 				new MapEdit{X = 26, Y = 175, Tile = (byte)OwTiles.OceanTile},
 				new MapEdit{X = 27, Y = 175, Tile = (byte)OwTiles.CoastBottomRight},
 				new MapEdit{X = 28, Y = 175, Tile = (byte)OwTiles.MountainBottomLeft},
 				new MapEdit{X = 31, Y = 175, Tile = (byte)OwTiles.MountainMid},
-				new MapEdit{X = 25, Y = 176, Tile = (byte)OwTiles.CoastBottom},
+				new MapEdit{X = 25, Y = 176, Tile = (byte)OwTiles.OceanTile},
 				new MapEdit{X = 26, Y = 176, Tile = (byte)OwTiles.CoastBottomRight},
 				new MapEdit{X = 27, Y = 176, Tile = (byte)OwTiles.ForestTopLeft},
 				new MapEdit{X = 28, Y = 176, Tile = (byte)OwTiles.ForestMid},
 				new MapEdit{X = 29, Y = 176, Tile = (byte)OwTiles.ForestMid},
 				new MapEdit{X = 30, Y = 176, Tile = (byte)OwTiles.ForestTopRight},
 				new MapEdit{X = 31, Y = 176, Tile = (byte)OwTiles.MountainMidLeft},
+				new MapEdit{X = 24, Y = 177, Tile = (byte)OwTiles.OceanTile},
 				new MapEdit{X = 25, Y = 177, Tile = (byte)OwTiles.CoastBottomRight},
 				new MapEdit{X = 26, Y = 177, Tile = (byte)OwTiles.ForestTopLeft},
 				new MapEdit{X = 27, Y = 177, Tile = (byte)OwTiles.ForestMid},
@@ -448,6 +450,7 @@ namespace FF1Lib
 				new MapEdit{X = 32, Y = 190, Tile = (byte)OwTiles.ForestTopLeft},
 				new MapEdit{X = 33, Y = 190, Tile = (byte)OwTiles.ForestMid},
 				new MapEdit{X = 34, Y = 190, Tile = (byte)OwTiles.ForestBottomRight},
+				new MapEdit{X = 28, Y = 191, Tile = (byte)OwTiles.OceanTile},
 				new MapEdit{X = 29, Y = 191, Tile = (byte)OwTiles.CoastTopRight},
 				new MapEdit{X = 30, Y = 191, Tile = (byte)OwTiles.ForestTopLeft},
 				new MapEdit{X = 31, Y = 191, Tile = (byte)OwTiles.ForestTopMid},
@@ -459,7 +462,7 @@ namespace FF1Lib
 				new MapEdit{X = 31, Y = 192, Tile = (byte)OwTiles.ForestBottomRight},
 				new MapEdit{X = 32, Y = 192, Tile = (byte)OwTiles.CoastTopLeft},
 				new MapEdit{X = 30, Y = 193, Tile = (byte)OwTiles.CoastTopRight},
-				new MapEdit{X = 31, Y = 193, Tile = (byte)OwTiles.CoastTopLeft}
+				new MapEdit{X = 31, Y = 193, Tile = (byte)OwTiles.CoastTopLeft},
 			};
 		public static List<MapEdit> AirshipHike =
 			new List<MapEdit>
