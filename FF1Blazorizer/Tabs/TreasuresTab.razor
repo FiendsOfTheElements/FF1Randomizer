@@ -37,6 +37,8 @@
 	<CheckBox UpdateAction="@UpdateAction" Id="tcProtectIncentivesCheckBox" @bind-Value="Flags.TCProtectIncentives">Exclude Incentivized Items</CheckBox>
 	<TriStateCheckBox UpdateAction="@UpdateAction" Id="trappedMarkCheckBox" @bind-Value="Flags.TCIndicator">Trapped Chests are Marked</TriStateCheckBox>
 	<div class="checkbox-cell"></div>
+    <h4>Obfuscation</h4>
+    <TriStateCheckBox UpdateAction="@UpdateAction" Id="obfuscateItemNamesCheckBox" @bind-Value="Flags.ObfuscateItemNames">Obfuscate item names</TriStateCheckBox>
 </div>
 <div class="col2">
 	<h4>Freebies</h4>

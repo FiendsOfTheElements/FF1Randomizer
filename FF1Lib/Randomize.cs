@@ -350,6 +350,7 @@ public partial class FF1Rom : NesRom
 		await this.Progress();
 
 		// Misc
+		ApplyInconveniences(flags, rng, Dialogues, MenuText, ItemsText);
 		RngTables.Update(flags, rng);
 		DisableMinimap(flags.DisableMinimap);
 		ImproveTurnOrderRandomization(flags.ImproveTurnOrderRandomization, rng);
