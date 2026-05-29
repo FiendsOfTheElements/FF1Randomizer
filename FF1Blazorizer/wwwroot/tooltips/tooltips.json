@@ -2785,5 +2785,11 @@
 		"title": "Dock Anywhere",
 		"screenshot": "dockAnywhereCheckBox.gif",
 		"description": "Allow the ship to dock at any land tile instead of just at dock tiles."
+	},
+	{
+		"Id": "obfuscateItemNamesCheckBox",
+		"title": "Obfuscate Item Names",
+		"screenshot": "obfuscateItemNamesCheckBox.png",
+		"description": "Obfuscates the names and descriptions of key items."
 	}
 ]
