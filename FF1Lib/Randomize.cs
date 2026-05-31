@@ -411,7 +411,7 @@ public partial class FF1Rom : NesRom
 
 		RollCredits(rng);
 
-
+		InGameTracker(flags,unmodifiedFlags);
 		StatsTrackingHacks(flags, preferences);
 		if ((bool)flags.IsShipFree || flags.Archipelago) Overworld.SetShipLocation(255);
 		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();
