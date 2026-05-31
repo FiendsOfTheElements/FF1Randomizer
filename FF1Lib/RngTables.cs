@@ -174,7 +174,7 @@ namespace FF1Lib
 				// separate all the encounters in the game from the safe steps.
 				encounters = sourceSeg.Take(rateMax).ToList();
 				sourceSeg = sourceSeg.Skip(rateMax).ToList();
-				// sourceLength now == enounters.Count + sourceSeg.Count
+				// sourceLength now == encounters.Count + sourceSeg.Count
 				sourceSeg.Shuffle(rng);
 				
 			}
@@ -297,11 +297,11 @@ namespace FF1Lib
 						int newStep = (int)Round(sourceLength*sum / totalWeighting);
 						newStep = newStep == 0? 0 : newStep + jitter.PickRandom(rng);
 						int correction = newStep > sourceLength/2 ? -1 : 1;
-						// while (spacedEncounters.ContainsKey(newStep))
-						// {
-						// 	Console.WriteLine($"Correcting step {newStep}");
-						// 	newStep += correction;
-						// }
+						while (spacedEncounters.ContainsKey(newStep))
+						{
+							//Console.WriteLine($"Correcting step {newStep}");
+							newStep += correction;
+						}
 						spacedEncounters[newStep] = encounterQueue.Dequeue();
 					}
 				}

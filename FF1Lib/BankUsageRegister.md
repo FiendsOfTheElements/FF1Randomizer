@@ -147,7 +147,7 @@ OC   B363-B378    Replaced MagicPtr Lookup With Call To GetPointerToMagicData Fu
 0C   B3CD-B3D8    Enable Auto Retargeting
 0C   B43D-B440    Modify Battle PlMag Target One Player
 0C   B453-B45B    Skip None Spells
-0C   B7A2-B7A4    Prevent BtlMag_SavePlayerDefenderStats from saving mdef
+0C   B7A0-B7A3    Fix BtlMag_SavePlayerDefenderStats magdef offset and use IB stat bank
 0C   B8ED-B8F3    Magic Damage
 0C   B905-B923    White Mage Harm All
 0C   B9CD-B9DC    Write Cure Ailments Breakout

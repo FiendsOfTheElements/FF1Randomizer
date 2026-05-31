@@ -825,7 +825,7 @@ namespace FF1Lib
 		public ProcgenWaterfallEntrance ProcgenWaterfallEntrance { get; set; } = ProcgenWaterfallEntrance.Anywhere;
 		public bool? ProcgenWaterfallNoLoops { get; set; } = true;
 		public bool ProcgenWaterfallSpoiler { get; set; } = false;
-
+		public bool? ObfuscateItemNames { get; set; } = false;
 
 	}
 }

@@ -110,6 +110,11 @@ namespace FF1Lib
 				dungeonEncounterRate[(int)MapIndex.BahamutCaveB1] = 0x18;
 			}
 
+			if ((bool)flags.DesertOfDeath)
+			{
+				oceanEncounterRate = 0;
+			}
+
 			// threat level reference for comparison: 08 = most dungeon floors; 18 = sky bridge; 09 = ToFR earth; 0A = ToFR fire; 0B = ToFR water; 0C = ToFR air; 01 = ToFR chaos
 			if ((bool)flags.ChaosFloorEncounters)
 			{

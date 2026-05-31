@@ -949,7 +949,7 @@ namespace FF1Lib
 			//rom.PutInBank(0x1F, 0xC6F9, Blob.FromHex("4E")); // Ship Y
 
 			// OWCanMove
-			rom.PutInBank(0x1F, 0xC506, Blob.FromHex("00")); // No battle in Ship
+			//rom.PutInBank(0x1F, 0xC506, Blob.FromHex("00")); // No battle in Ship; moved to encouter rate container
 
 			//DrawPlayerMapmanSprite
 			rom.PutInBank(0x1F, 0xE289, Blob.FromHex("04")); // Don't animate ship
