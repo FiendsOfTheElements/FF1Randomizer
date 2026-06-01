@@ -78,7 +78,15 @@ namespace FF1Lib
 			{
 				MapIndex warmechMap = (flags.GameMode == GameModes.DeepDungeon) ? warmechDDmap : MapIndex.SkyPalace4F;
 
-				var tile = maps[warmechMap].Map.GetRandomElement(rng, 0x4B);
+				HashSet<byte> mapTilesSet = new HashSet<byte>();
+				mapTilesSet.UnionWith(maps[warmechMap].Map.MapBytes.Cast<byte>());
+
+				byte walkableTile = rom.TileSetsData[(int)maps[warmechMap].MapTileSet].Tiles.Where(
+						x => (x.PropertyType & (byte)TilePropFunc.TP_SPEC_MASK) == (byte)TilePropFunc.TP_SPEC_BATTLE
+						&& (x.PropertyValue & 0b10000000) == 0 //don't select spike tiles
+						&& mapTilesSet.Contains(x.Index)
+					).First().Index;
+				var tile = maps[warmechMap].Map.GetRandomElement(rng, walkableTile);
 				maps[warmechMap].MapObjects.SetNpc(0, ObjectId.WarMECH, tile.X, tile.Y, false, false);
 
 				// We can change all the colors here.
