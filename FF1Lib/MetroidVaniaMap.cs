@@ -55,7 +55,8 @@
 			var flippedmaps = maps.HorizontalFlippedMaps.Where(x => x != MapIndex.Waterfall).ToList();
 
 			LoadInTown(decompressedMap);
-			ApplyMapMods(maps, (bool)flags.LefeinSuperStore);
+
+			ApplyMapMods(maps, (bool)flags.LefeinSuperStore && (flags.ShopKillMode_White == ShopKillMode.None && flags.ShopKillMode_Black == ShopKillMode.None));
 			//UpdateInRoomTeleporters();
 			CreateTeleporters(maps, flippedmaps, tileSets, teleporters, rng);
 			PrepNPCs(maps, talkroutines, dialogues, npcdata, flippedmaps, flags, rng);
