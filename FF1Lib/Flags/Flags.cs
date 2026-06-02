@@ -504,42 +504,6 @@ namespace FF1Lib
 		[IntegerFlag(0, 255, 1)]
 		public int PlayerSleepScaleHigh { get; set; } = 80;
 
-		private bool? startHit = true;
-		public bool? StartOfHits
-		{
-			get
-			{
-				return startHit;
-			}
-			set
-			{
-				startHit = value;
-
-    		    if (value is null)
-    		        afterHit = null;
-    		    else
-    		        afterHit = !value.Value;
-			}
-		}
-
-		private bool? afterHit = false;
-		public bool? AfterHits
-		{
-			get
-			{
-				return afterHit;
-			}
-			set
-			{
-				afterHit = value;
-
-    		    if (value is null)
-    		        startHit = null;
-    		    else
-    		        startHit = !value.Value;
-			}
-		}
-
 		public SleepMode SleepModeDropDown { get; set; } = SleepMode.Fixed;
 
 		[IntegerFlag(0, 500, 10)]
