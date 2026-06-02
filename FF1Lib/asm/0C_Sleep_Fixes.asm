@@ -205,7 +205,7 @@ Sleep Removed At Start Of Hit
   STA math_ailmentchance                    ; load and store base ailment chance 
   LDA btl_defender_elemresist               ; load defender elemental resist
   AND btl_attacker_element                  ; compare resist to attacker element
-  BEQ $A887
+  BEQ $A883
   LDA #$00                                  ; if resisted set ailment chance to 0
   STA math_ailmentchance
   LDA #MATHBUF_AILMENTCHANCE
