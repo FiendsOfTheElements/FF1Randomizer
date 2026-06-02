@@ -342,25 +342,8 @@ namespace FF1Lib
 					PutInBank(0x0C, 0xA73C, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEA"));
 					// Replaced inefficent minimum base damage check
 					PutInBank(0x0C, 0xA821, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAAD6068"));
-					if (flags.StartOfHits == true)
-					{
-						// Added sleep removal at the start of hits
-						PutInBank(0x0C, 0xA85A, Blob.FromHex("A9DF2D89688D8968AD8768F065AD7368F060AD6A68F05BA9648D6468AD7B682D6E68F005A9008D6468A907AE7A68200AAFEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAAD6468"));
-					}
-					if (flags.AfterHits == true)
-					{
-						// Removed unused store and load
-						PutInBank(0x0C, 0xA874, Blob.FromHex("EAEAEAEAEAEA"));
-						// Removed unneeded 0 clipping
-						PutInBank(0x0C, 0xA889, Blob.FromHex("EAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAAD6468"));
-						// Adds sleep clear after hits; moves block up 6 bytes
-						// Update the NextHitIteration branch locations
-						PutInBank(0x0C, 0xA7F2, Blob.FromHex("4CC4A8"));
-						PutInBank(0x0C, 0xA85D, Blob.FromHex("F065"));
-						PutInBank(0x0C, 0xA862, Blob.FromHex("F060"));
-						PutInBank(0x0C, 0xA867, Blob.FromHex("F05B"));
-						PutInBank(0x0C, 0xA892, Blob.FromHex("AD6468D003EE6468A900A2C8205DAE8D6668C9C8F01CAD6468CD66689014AD896849FF2D73682088A9AD89680D73688D8968CE5A68F0034CDDA7A9DF2D89688D8968"));
-					}
+					// Added sleep removal at the start of hits
+					PutInBank(0x0C, 0xA85A, Blob.FromHex("A9DF2D89688D8968AD8768F065AD7368F060AD6A68F05BA9648D6468AD7B682D6E68F005A9008D6468A907AE7A68200AAFEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAAD6468"));
 					break;
 					// case SleepMode.HPRange:
 					// 	break;

@@ -68,11 +68,9 @@
 				<DoubleSlider DoubleCol DisableTooltip Id="sleepDoubleSlider" UpdateAction="@UpdateAction" MinValue="0" MaxValue="255" Step="1" @bind-ValuesRange="(Flags.PlayerSleepScaleLow,Flags.PlayerSleepScaleHigh)">Player Wake HP RNG Range:</DoubleSlider>
 				<DoubleSlider DoubleCol DisableTooltip Id="sleepDoubleSlider" UpdateAction="@UpdateAction" MinValue="0" MaxValue="255" Step="1" @bind-ValuesRange="(Flags.EnemySleepScaleLow,Flags.EnemySleepScaleHigh)">Enemy Wake HP RNG Range:</DoubleSlider>
 			} *@
-			else if (Flags.SleepModeDropDown == SleepMode.WakeOnHit)
-			{
-				<TriStateCheckBox DisableTooltip UpdateAction="@UpdateAction" Id="startOfHits" @bind-Value="Flags.StartOfHits">Sleep Removed Before Each Hit</TriStateCheckBox>
-				<TriStateCheckBox DisableTooltip UpdateAction="@UpdateAction" Id="afterAllHits" @bind-Value="Flags.AfterHits">Sleep Removed After All Hits</TriStateCheckBox>
-			}
+			@* else if (Flags.SleepModeDropDown == SleepMode.WakeOnHit)
+			 { 
+			 } *@
 			@* else if (Flags.SleepModeDropDown == SleepMode.HPRange)
 			{
 			}
