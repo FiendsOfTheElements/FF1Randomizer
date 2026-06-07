@@ -125,16 +125,21 @@ namespace FF1Lib
 			Put(0x39E00, Blob.FromHex("ad0a0385104c668eae0c03bd2060186d0a03c9649001609d206060a903203baaa9018d0a03a520290f856120909f2032aa2043a7a525d056a524d05aa520290fc561f0ed8561c900f0e7c904f02fc908f01ac901f00ace0a03d0d0ee0a03d0cbee0a03c964d0c4ce0a03d0bfad0a0318690a8d0a03c96490b2a96310f5ad0a0338e90af0021002a9018d0a03109d38a90085248525601890f6"));
 			Put(0x39E99, Blob.FromHex("a90e205baaa5620a0a0a186916aabd00038d0c0320b9ecae0a03a9008d0b038d0e038d0f0318ad0b0365108d0b03ad0e0365118d0e03ad0f0369008d0f03b005caf00dd0e1a9ff8d0b038d0e038d0f03ad0f038512ad0e038511ad0b03851020429f2032aa60"));
 			Put(0x39EFF, Blob.FromHex("ad1e60cd0f03f0049016b016ad1d60cd0e03f004900ab00aad1c60cd0b03b00238601860ad1c6038ed0b038d1c60ad1d60ed0e038d1d60ad1e60ed0f038d1e604cefa74c8e8e"));
-			Put(0x3A494, Blob.FromHex("201b9eb0e820999e20c2a8b0e0a562d0dc20ff9e9008a910205baa4c81a420089e9008a90c205baa4c81a420239fa913205baa4c81a4eaeaea"));
+			Put(0x3A494, Blob.FromHex("201b9eb0e820999e20c2a8b0e0a562d0dc20ff9e9008a910205baa4c81a420489f9008a90c205baa4c81a420239fa913205baa4c81a4eaeaea"));
 
 			PutInBank(0x0E, 0x9F90, Blob.FromHex("A5620A0A0A186916A8BE0003BC2060AD0A038CEF6A186DEF6AE963300EA963EDEF6AF0021002A9018D0A034C009E"));
+			
+			
 
-			if (archipelagoenabled)
-			{
-				//Replace NewCheckforSpace with patch in 0E_9F48_ItemShopCheckForSpace.asm
-				PutInBank(0x0E, 0xA4B2, Blob.FromHex("20489F"));
-				PutInBank(0x0E, 0x9F48, Blob.FromHex("AE0C03E016900CBD2060186D0A03C964900D60A2FFBD006209029D006218609D20601860"));
-			}
+			//Replace NewCheckforSpace with patch in 0E_9F48_ItemShopCheckForSpace.asm
+			/// in AP we want this asm routine to return before adding the item-shop key item to inventory, and let the client do that.
+			/// in normal seeds, we need to give the item instead, so we NOP out a return.
+			
+			byte APReturnByte = archipelagoenabled? (byte)0x60 : (byte)0xEA;
+			// This is no longer needed -- added to the Blob string above. Do a search for 20489f to find it
+			//PutInBank(0x0E, 0xA4B2, Blob.FromHex("20489F"));
+			//PutInBank(0x0E, 0x9F48, Blob.FromHex($"AE0C03E016900CBD2060186D0A03C964900D60A0FFB90062090299006218{APReturnByte:X2}9D20601860"));
+			PutInBank(0x0E,0x9F48,Blob.FromHex($"AE0C03E016B00CA0FFB90062090299006218{APReturnByte:X2}BD2060186D0A03C9649001609D20601860"));
 		}
 
 		public void ChangeUnrunnableRunToWait()

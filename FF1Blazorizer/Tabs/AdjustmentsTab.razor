@@ -39,6 +39,7 @@
 
 <div class="col2">
 	<h4>Conveniences</h4>
+	<CheckBox UpdateAction="@UpdateAction" Id="trackerCheckBox" @bind-Value="Flags.Tracker">In-Game Tracker</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="noPartyShuffleCheckBox" @bind-Value="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="speedHacksCheckBox" @bind-Value="Flags.SpeedHacks">Speed Hacks</CheckBox>
     <CheckBox UpdateAction="@UpdateAction" Id="dashCheckBox" @bind-Value="Flags.Dash">Faster Walking Speed</CheckBox>
