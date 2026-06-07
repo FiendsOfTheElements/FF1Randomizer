@@ -87,8 +87,9 @@ no_sram:
 	INC $64FB
 	LDA $64FB
 	STA $60FB
-	;; initialize SetRng variables
 	LDA #$00
+	STA $22  ;select button handler
+	;; initialize SetRng variables
 	STA $0340 ; btl_rngstateTurnStart
 	STA $0341 ; btl_SpikeTileFlag
 DoneExtraInit:
