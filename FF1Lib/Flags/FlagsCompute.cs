@@ -273,5 +273,8 @@ namespace FF1Lib
 
 		public bool IsAnythingLoose => (IncentivizedItemCountMax > IncentivizedLocationCountMin) || IncentivizeMainItems != true || IncentivizeFetchItems != true || (IncentivizeAirship != true && FreeAirship != true && NoFloater != true) || (IncentivizeCanoeItem != true && FreeCanoe != true) || (IncentivizeShipAndCanal != true && (FreeShip != true || FreeCanal != true)) || (IncentivizeBridgeItem != true && FreeBridge != true) || (IncentivizeTail != true && FreeTail != true && NoTail != true);
 
+
+		// changed in the randomizer, not in UI
+		public bool OrbGraphicsInResourcePack { get; set; } = false;
 	}
 }

@@ -66,6 +66,7 @@
     <EmbeddedResource Include="imagedata\icons\spell_icons.png" />
     <EmbeddedResource Include="imagedata\icons\elementstatus_icons.png" />
 	<EmbeddedResource Include="imagedata\icons\tracker_icons.png" />
+	<EmbeddedResource Include="imagedata\icons\orbs_shards.png" />
 
     <EmbeddedResource Include="imagedata\customclasses\*.png" />
 

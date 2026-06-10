@@ -25,6 +25,8 @@ namespace FF1Lib
 		const int MAPMANGRAPHIC_OFFSET = 0x9000;
 		const int VEHICLEGRAPHIC_OFFSET = 0x9D00;
 
+		const int ORBGRAPHIC_OFFSET = 0x37640; //0x37640 before rom expansion
+
 		const int NPCGRAPHIC_OFFSET = 0xA200;
 
 		const int MAPMAN_DOWN = 0;
@@ -62,6 +64,67 @@ namespace FF1Lib
 
 			// insert the transparent entry.
 			pal.Insert(0, 0x0F);
+
+			if (pal.Count > 4)
+			{
+				return false;
+			}
+			while (pal.Count < 4)
+			{
+				pal.Add(0x0F);
+			}
+
+			return true;
+		}
+
+		bool makeLitOrbPalette(List<Rgba32> colors, Rgba32[] NESpalette,
+				 out List<byte> pal,
+				 out Dictionary<Rgba32, byte> toIndex)
+		{
+			pal = new List<byte>();
+			toIndex = new Dictionary<Rgba32, byte>();
+			Rgba32 black = new Rgba32(0x00,0x00,0x00);
+
+			colors = OrderByLightness(colors);
+			
+
+			
+			colors.Reverse();
+			if (colors.Last() != black)
+			{
+				colors.Add(black);
+			}
+			for (int i = 0; i < colors.Count; i++)
+			{
+				if (colors[i].R <= 5 && colors[i].G <= 5 && colors[i].B >= 250)
+				{
+					// treat #0000FF as menu color.
+					toIndex[colors[i]] = 2;
+					continue;
+				}
+				else if (colors[i] == black)
+				{
+					toIndex[colors[i]] = 0;
+					continue;
+				}
+
+				byte selected = selectColor(colors[i], NESpalette);
+				int idx = pal.IndexOf(selected);
+				if (idx == -1)
+				{
+					// add 1 everything is going to get shifted
+					// when the tranparent entry is added
+					idx = pal.Count == 0? 1 : pal.Count+2;
+					pal.Add(selected);
+				}
+				toIndex[colors[i]] = (byte)idx;
+
+			}
+
+			pal.Insert(0, 0x0F); //black
+			pal.Insert(2, 0x01); //menu blue
+
+			
 
 			if (pal.Count > 4)
 			{
@@ -644,6 +707,98 @@ namespace FF1Lib
 				PutInBank(0x12, 0x8540 + (w * 16), EncodeForPPU(tile));
 			}
 	    }
+
+
+		public async Task SetCustomOrbGraphics(Stream stream, int bank, int address, bool sync = false)
+		{
+			Image<Rgba32> image = Image.Load<Rgba32>(stream);
+			// lit orbs share a single palette; unlit orbs must match the border palette
+
+			var litOrbColors = new List<Rgba32>();
+			var firstUnique = new Dictionary<Rgba32, int>();
+			for (int y = 0; y < 32; y++)
+			{
+				for (int x = 0; x < 32; x++)
+				{
+					if (!litOrbColors.Contains(image[x, y]))
+					{
+						firstUnique[image[x, y]] = (x << 16 | y);
+						litOrbColors.Add(image[x, y]);
+					}
+				}
+			}
+
+			List<byte> litOrbPal;
+			Dictionary<Rgba32, byte> litOrbIndex;
+			if (!makeLitOrbPalette(litOrbColors, NESpalette, out litOrbPal, out litOrbIndex))
+			{
+				if (!sync)
+				{
+					await this.Progress($"WARNING: Failed importing orb sprites, too many unique colors (limit 2 unique colors, plus black and menu blue):",
+						1 + litOrbPal.Count + litOrbIndex.Count);
+					for (int i = 1; i < litOrbPal.Count; i++)
+					{
+						await this.Progress($"WARNING: NES palette {i}: ${litOrbPal[i],2:X}");
+					}
+					foreach (var i in litOrbIndex)
+					{
+						int c = firstUnique[i.Key];
+						await this.Progress($"WARNING: RGB to index {i.Key}: {i.Value}  first appears at {c >> 16}, {c & 0xFFFF}");
+					}
+				}
+				return;
+			}
+
+			int top;
+			int left;
+			byte[] tileTopLeft;
+			byte[] tileTopRight;
+			byte[] tileBottomLeft;
+			byte[] tileBottomRight;
+			
+			for (int CurrentOrb = 0; CurrentOrb < 4; CurrentOrb++)
+			{
+
+				top =  (CurrentOrb / 2) * 16;
+				left = (CurrentOrb % 2) * 16;
+
+				tileTopLeft = makeTile(image, top, left, litOrbIndex);
+				tileTopRight = makeTile(image, top, left + 8, litOrbIndex);
+
+				tileBottomLeft = makeTile(image, top + 8, left, litOrbIndex);
+				tileBottomRight = makeTile(image, top + 8, left + 8, litOrbIndex);
+
+				// rom sprites are arranged ship, airship, canoe
+				//int[] litOrb_map = {2,0,1};
+
+				PutInBank(bank, address + (CurrentOrb * 64) 			, EncodeForPPU(tileTopLeft));
+				PutInBank(bank, address + (CurrentOrb * 64) + (16 * 1), EncodeForPPU(tileTopRight));
+				PutInBank(bank, address + (CurrentOrb * 64) + (16 * 2), EncodeForPPU(tileBottomLeft));
+				PutInBank(bank, address + (CurrentOrb * 64) + (16 * 3), EncodeForPPU(tileBottomRight));
+			}
+
+			top = 32;
+			left = 0;
+			var shardTile = makeTile(image,top,left, litOrbIndex);
+			// this address is hardcoded
+			PutInBank(bank, address - 0x10, EncodeForPPU(shardTile));
+
+			int LutMenuPalettes = 0xAD78;
+			PutInBank(0x0E, LutMenuPalettes, litOrbPal.ToArray());
+
+			// Unlit orb
+			top = 32;
+			left = 16;
+			tileTopLeft = makeTileQuantize(image,top,left, MenuIndex);
+			tileTopRight = makeTileQuantize(image,top,left+8, MenuIndex);
+			tileBottomLeft = makeTileQuantize(image,top+8,left, MenuIndex);
+			tileBottomRight = makeTileQuantize(image,top+8,left+8, MenuIndex);
+
+			PutInBank(bank, address + 0x120, EncodeForPPU(tileTopLeft));
+			PutInBank(bank, address + 0x120 + (16*1), EncodeForPPU(tileTopRight));
+			PutInBank(bank, address + 0x120 + (16*2), EncodeForPPU(tileBottomLeft));
+			PutInBank(bank, address + 0x120 + (16*3), EncodeForPPU(tileBottomRight));
+		}
 
 
 		// These are terrible, but I need non-async functions for some goddamn reason

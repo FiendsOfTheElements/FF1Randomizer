@@ -68,13 +68,14 @@ namespace FF1Lib
 			}
 		}
 
+
 		// split Resource Pack loading into two task sets: those which should be done pre ROM expansion
 		// and those which should be done after. This is a little slippery, but has mostly
 		// to do with the order in which things are done in the randomizer itself.
 		// In the future, there may need to be a third set, which applies changes after
 		// randomization. 
 
-		async Task LoadResourcePackPreROM(string resourcepack, Preferences preferences)
+		async Task LoadResourcePackPreROM(string resourcepack, Flags flags, Preferences preferences, ResourcePackSettings settings)
 		{
 			if (resourcepack == null)
 			{
@@ -154,6 +155,16 @@ namespace FF1Lib
 					{
 						SetCustomNPCGraphics(s);
 					}
+				}
+
+				var orbs = resourcePackArchive.GetEntry("orbs.png");
+				if (orbs != null)
+				{
+					using (var s = orbs.Open())
+					{
+						await SetCustomOrbGraphics(s, 0x0D, 0xB640);
+					}
+					settings.OrbGraphics = true;
 				}
 
 			}
@@ -243,6 +254,8 @@ namespace FF1Lib
 						SetCustomGearIcons(s);
 					}
 				}
+
+				
 
 				var enemysprites = resourcePackArchive.GetEntry("enemies.png");
 				if (enemysprites != null)

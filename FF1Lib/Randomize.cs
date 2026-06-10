@@ -53,6 +53,8 @@ public partial class FF1Rom : NesRom
 
 	private Blob SavedHash;
 
+	public ResourcePackSettings ResourcePackSettings;
+
 	public void LoadSharedDataTables()
 	{
 		ItemsText = new ItemNames(this);
@@ -107,7 +109,8 @@ public partial class FF1Rom : NesRom
 		// data is read
 		// resource pack goes after map derp; Later could make this more efficient.
 		await this.LoadFunTiles(preferences, new MT19337(funRng.Next()));
-		await this.LoadResourcePackPreROM(flags.ResourcePack, preferences);
+		ResourcePackSettings = new();
+		await this.LoadResourcePackPreROM(flags.ResourcePack, flags, preferences,ResourcePackSettings);
 
 
 		// Load Initial Data
@@ -167,7 +170,7 @@ public partial class FF1Rom : NesRom
 		Dialogues.TransferDialogues();
 
 		// Apply general fixes and hacks
-		FF1Text.AddNewIcons(this, flags);
+		await FF1Text.AddNewIcons(this, flags, preferences, ResourcePackSettings);
 		Music.ShuffleMusic(this, preferences, new MT19337(funRng.Next()));
 		NewMusic = new NewMusic(this);
 		Bugfixes(flags);
@@ -188,7 +191,7 @@ public partial class FF1Rom : NesRom
 			await this.Progress("Generating Deep Dungeon's Floors...", 2);
 
 			DeepDungeon.Generate(rng, Overworld, EncounterRates, ZoneFormations, Dialogues);
-			DeepDungeonFloorIndicator();
+			DeepDungeonFloorIndicator(flags,preferences);
 			warmMechFloor = (MapIndex)DeepDungeon.WarMechFloor;
 
 			await this.Progress("Generating Deep Dungeon's Floors... Done!");

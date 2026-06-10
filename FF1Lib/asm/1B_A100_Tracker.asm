@@ -144,7 +144,7 @@ ItemTrackerRedirect:
   JSR CoordToNTAddr ;; convert dest_x & dest_y to ppu address and store in ppu_dest (2 bytes)
   LDA #>(ItemTrackerInit-1)
   PHA
-  LDA #<(ItemTrackeInit-1)
+  LDA #<(ItemTrackerInit-1)
   PHA
   LDA #DEST_BANK
   JMP SwapPRG
