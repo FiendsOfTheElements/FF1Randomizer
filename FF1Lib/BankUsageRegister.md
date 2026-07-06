@@ -275,6 +275,8 @@ ROM: 6C000-6FFFF
 1B   9830-987B    Gain MP on MP Up
 1B   9900-9A11    SetRng
 1B   A000-A0DB    AirBoat
+1B   A100-A700    In-Game Tracker
+1B   AEC0-AF79    New Shard Display
 1B   AF80-AF94    BB Absorb bugfix
 1B   B800-B8C3    Start Game/Start Battle Blursings routines
 

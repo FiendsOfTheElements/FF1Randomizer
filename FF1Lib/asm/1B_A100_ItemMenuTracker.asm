@@ -5,12 +5,20 @@ icon_id2        = tmp+$0F
 dest_x          = $3A
 dest_y          = $3B
 ppu_dest        = $54
-icon_buf        = $6E00
+icon_buf        = $6E10
 unsram          = $6000  ; $400 bytes
 ship_vis        = unsram+$00
+ship_x          = unsram+$01
+ship_y          = unsram+$02
 airship_vis     = unsram+$04
+airship_x       = unsram+$05
+airship_y       = unsram+$06
 bridge_vis      = unsram+$08
+bridge_x        = unsram+$09
+bridge_y        = unsram+$0A
 canal_vis       = unsram+$0C
+canal_x         = unsram+$0D
+canal_y         = unsram+$0E
 has_canoe       = unsram+$12 ; (not to be confused with item_canoe)
 
 items           = unsram+$20
@@ -121,7 +129,16 @@ OBJID_PIRATETERR_1 = $3F   ; townspeople that were terrorized by the
 OBJID_PIRATETERR_2 = $40   ;   pirates... they don't become visible until after
 OBJID_PIRATETERR_3 = $41   ;   you beat Bikke and claim the ship
 
+OBJID_REVEALBRIDGE = $FA   ; set when free bridge first appears on screen
+OBJID_REVEALCANAL  = $FB   ; set when free canal first appears on screen
+OBJID_REVEALSHIP   = $FC   ; set when free ship first appears on screen
+OBJID_REVEALCANOE  = $FD   ; set when free canoe first appears on screen
+OBJID_REVEALAIRSHIP= $FE   ; set when free airhsihp first appears on screen
+
+
 OBJID_SHOPITEM     = $FF   ; a key item you buy from a shop
+
+BUF_OFFSET         = 30    ; offset from buffer containing top row to buffer containing bottom row
 
 
 .ORG $B12D ; bank $0E
@@ -156,8 +173,25 @@ ItemTrackerRedirect:
 
 .ORG $A100 ; bank $1B
 
+;; written by the randomizer.
+lut_Columns:
+  .BYTE 26
 
 ;; written by the randomizer.
+;; These signal the tracker when to show icons for the four NPCs that may or may not have game
+;; flag or item requirements for them to give their item (or promote the party).
+;; Affects:
+;;  Early King Item
+;;  Early Sage Item
+;;  Early Sarda Item
+;;  Fight Bahamut (Tail Removed)
+;;
+;; If any of the above flags are on, the NPC icon will appear immediately; otherwise it will appear
+;; once its respective requirement is met.
+;;
+;; If "No Tri-state Spoilers" is on, the tracker will assume that the requirement is needed for any
+;; tri-stated flags.
+;; 
 ;; check flag  = #OBJID
 ;; check item  = item id (offset from items)
 ;; noreq       = #0
@@ -166,7 +200,42 @@ lut_NPCReqs:
   .BYTE OBJID_PRINCESS_1 $11 OBJID_VAMPIRE $0D
   ; (4 bytes)
 
-.ORG $A104
+;; written by the randomizer.
+;; These signal the tracker to immediately show a darkened icon for any items that are removed from the game.
+;; Affects:
+;;  Ship In Drydock (no airboat)
+;;  Remove Floater (displays darkend airship)
+;;  Remove Tail
+;;
+;; If "No Tri-state Spoilers" is on, the tracker will not show an icon for any tri-stated flags.
+;;
+;; show  = #1
+;; don't = #0
+;; order: FLOATER TAIL
+lut_ShowRemoved:
+  .BYTE 0 0
+
+;; written by the randomizer.
+;;
+;; For free items that are not shown in inventory, display the icon in the tracker immediately. These are only
+;; unset for tri-stated flags when "No Tri-state Spoilers" is on. In that case, the tracker will display the
+;; icon only once the item is visible.
+;; show            = #1
+;; wait for reveal = #0
+;; order: BRIDGE CANAL SHIP CANOE AIRSHIP
+lut_ShowFree:
+  .BYTE 1 1 1 1 1
+
+;; reserve a few bytes for more lut settings
+
+
+
+lut_Columns = $A100
+lut_NPCReqs = $A101
+lut_ShowRemoved = $A105
+lut_ShowFree = $A107
+
+.ORG $A110
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; SUBROUTINES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -175,11 +244,9 @@ lut_NPCReqs:
 ;; Tracker Logic begins here
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-lut_NPCReqs = $A100
-
 ItemTrackerInit:
   LDA #BLANK
-  LDX #59
+  LDX #59          
   initloop:         ; fill 60 icon_buf values with blank menu tile
     STA icon_buf,X
     DEX
@@ -193,59 +260,111 @@ ProcessItems:
   LDX #$00        ; start at icon_buf[0]
   ; 2 bytes
 
-;;; first 4 OW items could be a subroutine but it only saves 3 bytes -- 40 vs 37
-; CheckBridge:
+
+CheckBridge:
+  LDA lut_ShowFree  ;
+  BNE :+
+    ; code reaches here if we have a free bridge but we don't want to spoil the tri-state
+    LDY #OBJID_REVEALBRIDGE
+    JSR CheckGameEventFlag ; has it been seen yet?
+    BCC NoBridge ; if not, exit
+  :
   LDA bridge_vis
   BEQ NoBridge
     LDA #BRIDGE
     STA icon_buf,X
-  NoBridge:  
-    INX
-  ; 11 bytes
+  NoBridge:
 
-
-; CheckCanal:
-  LDA canal_vis
-  BNE NoCanal    ; canal logic is flipped
-    LDA #CANAL
-    STA icon_buf,X
-  NoCanal:
-    INX
-  ; 11 bytes
-
-; CheckShip -- should work with AirBoat
+;;; randomizer sets up the lut's above according to the following:
+;;; ship can be "removed" -- still in the game, but parked in drydock by gaia. This can be tri-stated.
+;;;    N.B. if airboat is on, we can fly out of drydock, so it's not removed
+;;; ship can also be free (also possibly tri-stated)
+;;;
+;;; "Removed" is indicated by a darkened icon, but we don't need to worry about whether to show it on game start.
+;;; Instead, we'll use the logic computed by the other flags.
+;;; "No Tri-state Spoilers" might be on. This leads to a few possible flag combinations, which collapse down to a few behaviors in the asm.
+;;;
+;;; Some of the logic is computed in the randomizer, but the asm logic depends on the ship entry in lut_ShowFree                          
+CheckShip:
+  LDA lut_ShowFree+2 ; ship 
+  BNE :+
+    ; code reaches here if we have a free ship but we don't want to spoil the tri-state
+    LDY #OBJID_REVEALSHIP
+    JSR CheckGameEventFlag ; has it been seen yet?
+    BCC NoShip ; if not, exit
+  :
   LDA ship_vis
   BEQ NoShip
     LDA #SHIP
-    STA icon_buf,X
+    STA icon_buf+BUF_OFFSET,X
   NoShip:
     INX
-  ; 11 bytes
 
-; CheckCanoe:
+CheckCanal:
+  LDA lut_ShowFree+1 ; canal
+  BNE :+
+    ; code reaches here if we have a free canal but we don't want to spoil the tri-state
+    LDY #OBJID_REVEALCANAL
+    JSR CheckGameEventFlag ; has it been seen yet?
+    BCC NoCanal
+  :
+  LDA canal_vis
+  BNE NoCanal  ; canal logic is flipped from the other overworld items
+    LDA #CANAL
+    STA icon_buf,X
+  NoCanal:
+
+
+CheckCanoe:
+  LDA lut_ShowFree+3 ; canoe
+  BNE :+
+    ; code reaches here if we have a free canoe but we don't want to spoil the tri-state
+    LDY #OBJID_REVEALCANOE
+    JSR CheckGameEventFlag ; has it been seen yet?
+    BCC NoCanoe
+  :
   LDA has_canoe
   BEQ NoCanoe
     LDA #CANOE
-    STA icon_buf,X
-  NoCanoe:  
+    STA icon_buf+BUF_OFFSET,X
+  NoCanoe:
     INX
-  ; 11 bytes
 
-; CheckFloaterAirship
-; With AirBoat on, the FLOATER and AIRSHIP icons are identical
-  LDA airship_vis
-  BEQ NoAirship
-    LDA #AIRSHIP
-    BNE GotAirship
-  NoAirship:
-    LDA item_floater
-    BEQ NoFloater
-      LDA #FLOATER
-  GotAirship:
-    STA icon_buf,X
-  NoFloater:
-    INX
-  ; 20 bytes
+  
+;; With AirBoat on, the FLOATER and AIRSHIP icons are identical
+;; Free airship/airboat is already spoiled by inventory, so we don't need to worry about that tri-state
+;; Remove Floater can be tri-stated, and this shouldn't be spoiled if "No Tri-state Spoilers" is on.
+CheckFloaterAirship:
+  LDA lut_ShowRemoved ; if we're showing floater removed, we'll use a darkened airship icon,
+  BNE ShowAirship     ; so we can just jump to display the airship
+    LDA lut_ShowFree+4 ; airship
+    BNE :+
+      ; code reaches here if we have a free airship but we don't want to spoil the tri-state
+      LDY #OBJID_REVEALAIRSHIP
+      JSR CheckGameEventFlag ; has it been seen yet?
+      BCC NoAirship
+    :
+    LDA airship_vis
+    BEQ NoAirship
+
+    ShowAirship:
+      LDA #AIRSHIP
+      BNE GotAirship
+    NoAirship:
+      LDA item_floater
+      BEQ NoFloater
+        LDA #FLOATER
+    GotAirship:
+      STA icon_buf+BUF_OFFSET,X
+    NoFloater:
+      INX
+
+
+
+
+;; a column for spacing:
+INX
+
 
 ; CheckCrown:
   LDA item_crown
@@ -260,7 +379,7 @@ ProcessItems:
     NoAstos:
       LDA #EMPTYCH
     CrownCheckbox:
-      STA icon_buf+30,X
+      STA icon_buf+BUF_OFFSET,X
   NoCrown:
     INX
   ; 27 bytes
@@ -316,7 +435,7 @@ ProcessItems:
     BEQ NoRuby
       LDA #EMPTYCH
   RubyCheckbox:
-    STA icon_buf+30,X
+    STA icon_buf+BUF_OFFSET,X
     LDA #RUBY
     STA icon_buf,X
   NoRuby:
@@ -325,24 +444,31 @@ ProcessItems:
   ; 12 bytes
 
 ; CheckTail
-  LDY #OBJID_BAHAMUT
-  JSR CheckGameEventFlag
-  BCC NoTailTurnIn
-    LDA #FILLEDCH
-    BNE TailCheckbox
-  NoTailTurnIn:
-    LDY lut_NPCReqs+3
-    BEQ NoBahamutReq
-      LDA items,Y
-      BEQ NoTail
-    NoBahamutReq:
-      LDA #EMPTYCH
-  TailCheckbox:
-    STA icon_buf+30,X
-    LDA #TAIL
-    STA icon_buf,X
-  NoTail:
-    INX
+; Remove Tail can be tri-stated and we shouldn't spoil that if "No Tri-state Spoilers" is on.
+; If Fight Bahamut is on, the tail icon is replaced by a Bahamut icon.
+; Fight Bahamut can also be tri-stated.
+; The randomizer takes care of which icon to use, and populating the relevant lut's above to ensure no spoilers, if needed.
+  LDA lut_ShowRemoved+1    ; if we're showing removed tail, we'll go straight to drawing the icon
+  BNE TailOnly             ; and bypass the checkbox. 
+    LDY #OBJID_BAHAMUT
+    JSR CheckGameEventFlag
+    BCC NoTailTurnIn
+      LDA #FILLEDCH
+      BNE TailCheckbox
+    NoTailTurnIn:
+      LDY lut_NPCReqs+3
+      BEQ NoBahamutReq
+        LDA items,Y
+        BEQ NoTail
+      NoBahamutReq:
+        LDA #EMPTYCH
+    TailCheckbox:
+      STA icon_buf+BUF_OFFSET,X
+    TailOnly:
+      LDA #TAIL
+      STA icon_buf,X
+    NoTail:
+      INX
 
 ; CheckBottle:
    LDA #BOTTLE
@@ -389,7 +515,7 @@ ProcessItems:
     RodPlateNotCleared:
       LDA #EMPTYCH
     RodCheckbox:
-      STA icon_buf+30,X
+      STA icon_buf+BUF_OFFSET,X
   NoRod:
     INX
 
@@ -406,40 +532,50 @@ ProcessItems:
     LutePlateNotCleared:
       LDA #EMPTYCH
     LuteCheckbox:
-      STA icon_buf+30,X
+      STA icon_buf+BUF_OFFSET,X
   NoLute:
     INX
 
+; column to separate passive items
+INX
 
 ; CheckKey:
-  LDY #KEY
   LDA item_mystickey
-  JSR CheckPassiveItem
-  ; (8 bytes)
+  BEQ NoKey
+    LDA #KEY
+    STA icon_buf,X
+  NoKey:
 
-  LDY #OXYALE
-  LDA item_oxyale
-  JSR CheckPassiveItem
-  ; (8 bytes)
-
-  LDY #CHIME
+; CheckChime:
   LDA item_chime
-  JSR CheckPassiveItem
-  ; (8 bytes)
+  BEQ NoChime
+    LDA #CHIME
+    STA icon_buf+BUF_OFFSET,X
+  NoChime:
+    INX
 
-  LDY #CUBE
+; CheckOxyale:
+  LDA item_oxyale
+  BEQ NoOxyale
+    LDA #OXYALE
+    STA icon_buf,X
+  NoOxyale:
+
+; CheckCube:
   LDA item_cube
-  JSR CheckPassiveItem
-  ; (8 bytes)
+  BEQ NoCube
+    LDA #CUBE
+    STA icon_buf+BUF_OFFSET,X
+  NoCube:
+    INX
 
-; TODO: Check Sprint Shoes and Repel
-  INX
-  INX
-  ; (2 bytes for now)
+  ;; a column reserved for future speed shoes and repel icons (NOP if they aren't being included in game)
+NOP  ;; INX
 
-  INX ; space to offset NPCs from Items
+; column to separate NPCs
+INX 
 
-; Check Princess
+; Check Princess:
   LDA #SARA
   STA icon_id1
 
@@ -452,7 +588,7 @@ ProcessItems:
   ; (15 bytes)
   
 
-; Check King
+; Check King:
 
   LDA #KING
   STA icon_id1
@@ -469,7 +605,7 @@ ProcessItems:
   JSR CheckNPC
   ; (17 bytes)
 
-; Check Bikke
+; Check Bikke:
   LDA #BIKKE
   STA icon_id1
   LDY #OBJID_PIRATETERR_1 
@@ -481,7 +617,7 @@ ProcessItems:
   ; (17 bytes)
 
 
-; Check Canoe Sage
+; Check Canoe Sage:
   LDA #SAGE
   STA icon_id1
   LDY lut_NPCReqs+1
@@ -496,7 +632,7 @@ ProcessItems:
   ; (11 bytes)
 
 
-; Check Sarda
+; Check Sarda:
   LDA #SARDA
   STA icon_id1
   LDY lut_NPCReqs+2
@@ -513,7 +649,7 @@ ProcessItems:
   ; (19 bytes)
 
 
-; Check Robot
+; Check Robot:
   LDA #ROBOT
   STA icon_id1
   ;; requirement logic ;;;;;; 
@@ -523,7 +659,7 @@ ProcessItems:
   JSR CheckNPC
   ; (11 bytes)
 
-; Check ShopItem
+; Check ShopItem:
   LDA #SHOP
   STA icon_buf,X
   LDY #OBJID_SHOPITEM
@@ -534,26 +670,14 @@ ProcessItems:
   NoShopItem:
     LDA #EMPTYCH
   ShopItemCheckbox:
-  STA icon_buf+30,X
+  STA icon_buf+BUF_OFFSET,X
   
 
 
 
   JMP DrawIconsToItemMenu
 
-;;;;;; copied from bank $0E
-CheckGameEventFlag:
-    LDA game_flags,Y     ; Get the game flags using Y as index
-    LSR A                ;   and shift the event flag into C
-    LSR A
-    RTS
-  ; 6 bytes
 
-IsObjectVisible:
-    LDA game_flags,Y      ; get the game flags using object ID as index
-    LSR A                 ; shift object visibility flag into C
-    RTS                   ; and exit
-  ; 5 bytes
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CheckTurnInItem
@@ -595,7 +719,7 @@ CheckTurnInItem:
   ;   BCC NoTurnIn
   ;     LDA #FILLEDCH
   ;   TurnInCheckbox:
-  ;     STA icon_buf+30,X
+  ;     STA icon_buf+BUF_OFFSET,X
   ;     LDA icon_id1
   ;     STA icon_buf,X
   ; NoTurnin:
@@ -612,7 +736,7 @@ CheckTurnInItem:
     BEQ NoTurnInItem
       LDA #EMPTYCH
     TurnInCheckbox:
-      STA icon_buf+30,X
+      STA icon_buf+BUF_OFFSET,X
       LDA icon_id1
       STA icon_buf,X
   NoTurnInItem:
@@ -681,7 +805,7 @@ CheckTwoPartTurnInItem:
     TwoPartEmptyCheckbox:
       LDA #EMPTYCH
     TwoPartCheckbox:
-      STA icon_buf+30,X
+      STA icon_buf+BUF_OFFSET,X
   NoTwoPartItem:
     INX
   RTS
@@ -702,7 +826,7 @@ CheckTwoPartTurnInItem:
   ;     NoFinalTurnIn:
   ;       LDA #EMPTYCH
   ;   TwoPartCheckBox:
-  ;     STA icon_buf+30,X
+  ;     STA icon_buf+BUF_OFFSET,X
   ; NoTwoPartTurnIn:
   ;   INX
   ; RTS
@@ -727,14 +851,14 @@ CheckTwoPartTurnInItem:
 ;; out:
 ;;      X: incremented icon_buf pointer
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-CheckPassiveItem:
-  CMP #0
-  BEQ NoPassiveItem
-    TYA             ; STY with X index only works on zero page
-    STA icon_buf,X
-  NoPassiveItem:
-    INX
-  RTS
+; CheckPassiveItem:
+;   CMP #0
+;   BEQ NoPassiveItem
+;     TYA             ; get the item icon number
+;     STA icon_buf,X
+;   NoPassiveItem:
+;     INX
+;   RTS
   ; (10 bytes)
 
 
@@ -778,7 +902,7 @@ CheckNPC:
     NoTalkNPC:
       LDA #EMPTYCH
     NPCCheckbox:
-      STA icon_buf+30,x
+      STA icon_buf+BUF_OFFSET,x
   NoNPC:
     INX
   RTS
@@ -794,14 +918,14 @@ DrawIconsToItemMenu:
   LDA #0
   STA $2001
   LDX #$00
-  LDA #30
+  LDA lut_Columns
   STA tmp
   JSR DrawIcons
   INC dest_y
   JSR CoordToNTAddr
-  LDA #30
+  LDX #BUF_OFFSET
+  LDA lut_Columns
   STA tmp
-  TAX
   JSR DrawIcons
   LDA #SOURCE_BANK
   JMP SwapPRG   ;;; END ITEM MENU TRACKER
@@ -813,7 +937,6 @@ DrawIconsToItemMenu:
 ;;
 ;; in: tmp   = number of icons to draw
 ;;       X   = index in icon_buf
-;; out:  X   = index in icon_buf we ended at -- can be reused
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 DrawIcons: 
   LDA icon_buf,X
@@ -829,6 +952,108 @@ DrawIcons:
   BNE DrawIcons
   RTS
   ; 27 bytes
+
+.ORG $A3F5
+;;;;;; copied from bank $0E
+CheckGameEventFlag:
+    LDA game_flags,Y     ; Get the game flags using Y as index
+    LSR A                ;   and shift the event flag into C
+    LSR A
+    RTS
+  ; 6 bytes
+
+IsObjectVisible:
+    LDA game_flags,Y      ; get the game flags using object ID as index
+    LSR A                 ; shift object visibility flag into C
+    RTS                   ; and exit
+  ; 5 bytes
+
+
+
+.ORG $E225 ; bank $1F
+  LDA #DEST_BANK ; $1B
+  JSR SwapPRG
+  JMP SetOWSpriteGameFlags
+  NOP
+  NOP
+  NOP
+  NOP
+  NOP
+  NOP
+  ; 14 bytes
+
+vehicle   = $42
+OnFoot    = $E233
+InAirship = $E261
+InShipCanoe    = $E26A
+;InCanoe   = $E275
+ConvertOWToSprite = $E3DF
+
+GMFLG_EVENT = $02
+
+
+.ORG $A400 ; bank $1B
+SetOWSpriteGameFlags:
+
+  CheckBridge:
+    LDA bridge_vis
+    BEQ CheckCanal
+      LDX bridge_x
+      LDY bridge_y
+      JSR ConvertOWToSprite
+      BCS CheckCanal
+        LDA game_flags+OBJID_REVEALBRIDGE
+        ORA #GMFLG_EVENT
+        STA game_flags+OBJID_REVEALBRIDGE
+  CheckCanal:
+    LDA canal_vis
+    BNE CheckShip
+      LDX canal_x
+      LDY canal_y
+      JSR ConvertOWToSprite
+      BCS CheckShip
+        LDA game_flags+OBJID_REVEALCANAL
+        ORA #GMFLG_EVENT
+        STA game_flags+OBJID_REVEALCANAL
+  CheckShip:
+    LDA ship_vis
+    BEQ CheckAirship
+      LDX ship_x
+      LDY ship_y
+      JSR ConvertOWToSprite
+      BCS CheckAirship        ;; out of bounds
+        LDA game_flags+OBJID_REVEALSHIP
+        ORA #GMFLG_EVENT
+        STA game_flags+OBJID_REVEALSHIP
+  CheckAirship:
+    LDA airship_vis
+    BEQ CheckCanoe
+      LDX airship_x
+      LDY airship_y
+      JSR ConvertOWToSprite
+      BCS CheckCanoe
+        LDA game_flags+OBJID_REVEALAIRSHIP
+        ORA #GMFLG_EVENT
+        STA game_flags+OBJID_REVEALAIRSHIP
+  CheckCanoe:
+    LDY vehicle
+    CPY #$02    ; canoe
+    BNE CheckInShip
+      LDA game_flags+OBJID_REVEALCANOE
+      ORA #GMFLG_EVENT
+      STA game_flags+OBJID_REVEALCANOE
+      JMP InShipCanoe
+  CheckInShip:
+    CPY #$04
+    BNE CheckInAirship
+      JMP InShipCanoe
+  CheckInAirship
+    CPY #$08
+    BNE :+
+      JMP InAirship
+  :
+    JMP OnFoot
+
 
 
 

@@ -170,7 +170,7 @@ public partial class FF1Rom : NesRom
 		Dialogues.TransferDialogues();
 
 		// Apply general fixes and hacks
-		await FF1Text.AddNewIcons(this, flags, preferences, ResourcePackSettings);
+		await FF1Text.AddNewIcons(this, flags, unmodifiedFlags, preferences, ResourcePackSettings);
 		Music.ShuffleMusic(this, preferences, new MT19337(funRng.Next()));
 		NewMusic = new NewMusic(this);
 		Bugfixes(flags);
@@ -414,7 +414,7 @@ public partial class FF1Rom : NesRom
 
 		RollCredits(rng);
 
-		InGameTracker(flags,unmodifiedFlags);
+		InGameTracker(flags,unmodifiedFlags,preferences);
 		StatsTrackingHacks(flags, preferences);
 		if ((bool)flags.IsShipFree || flags.Archipelago) Overworld.SetShipLocation(255);
 		if (flags.TournamentSafe || preferences.CropScreen) ActivateCropScreen();

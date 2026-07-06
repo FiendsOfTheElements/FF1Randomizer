@@ -61,7 +61,7 @@ DEST_BANK   = $1B
 ;; Therefore, this needs to be called from within the DrawOrbBox routine itself.
 ;; Randomizer needs to handle the dimensions of the box and the location of Deep Dungeon's
 ;; floor
-DrawShardDisplay = $A403
+DrawShardDisplay = $ACE3
 
 
 ;; redirect from bank $0E to bank $1B
@@ -82,7 +82,8 @@ NOP
 
   ; (18 bytes)
 
-.ORG $A400 ; bank $1B
+SHARD = $63
+.ORG $AEC0 ; bank $1B
 
 ;written by randomizer
 ; the number of shards needed, and the two number tiles associated with them
@@ -90,7 +91,7 @@ NOP
 lut_ShardGoal:
 .BYTE 24 $82 $84
 
-.ORG $A403
+.ORG $AEC3
 ;; stuff from $0E overwritten by the redirect above
 LDA $2002    ; reset PPU toggle
 LDA #>$23C9
@@ -105,7 +106,7 @@ STA $2007    ;   and draw it
 ;; now we assemble the display tiles to the buffer. Could use game's string routines, but those are overkill for this little
 ;; bit. Printing 2-digit numbers is in bank $0E, but that's a minefield and it's easier to just do it here.
 LDX #0
-LDA #$63 ; the shard tile
+LDA #SHARD ; the shard tile
 STA display_buf,X
 INX
 LDY #0
@@ -186,5 +187,15 @@ GoalNotMet:
 ;; swap to bank $0E and return from JSR DrawOrbBox
 LDA #SOURCE_BANK
 JMP SwapPRG
+
+
+
+
+
+
+
+
+
+
 
 

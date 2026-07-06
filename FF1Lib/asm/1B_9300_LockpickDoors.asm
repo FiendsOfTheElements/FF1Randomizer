@@ -38,13 +38,101 @@ BCS SMMove_Norm_RTS ;save a byte by just branching to a nearby rts instead of ha
 
 ;; new version
 ;
+
+game_flags = $6200
+OBJID_REVEALUNLOCKEDDOOR = $F9
 ;bank 1b
+.ORG $9300
+CheckDoorLocked:
+  TXA
+  LSR A                                       ; downshift to get the door bits into the low 2 bits
+  AND #%00000011;  #(TP_SPEC_DOOR|TP_SPEC_LOCKED)>>1   ; mask out the door bits
+  STA door_bits
+  CMP #%00000010;  #TP_SPEC_LOCKED>>1    ; see if the door is locked
+  BNE DoorUnlocked          ; if not.. open the door
+    LDX #0                    ; otherwise (door is locked)
+    STX tileprop+1            ; erase the secondary attribute byte (prevent it from being a locked shop)
+    LDX item_mystickey        ; check to see if the player has the key
+    BNE DoorUnlocked             ; if they do, open the door
+      LDX #$00
+      STX lockpicking_status
+      JSR CheckLockPicking
+      LDX #$40
+      JSR CheckLockPicking
+      LDX #$80
+      JSR CheckLockPicking
+      LDX #$C0
+      JSR CheckLockPicking
+      
 
 
 
-;; 35 bytes
+      ; A has lockpicking_status 1 if lockpicking achieved, 0 otherwise
+      EOR #1 ; flip the bit
+      TAY
+      BNE Exit
+  DoorUnlocked:
+    LDY #$00
+    LDA game_flags+OBJID_REVEALUNLOCKEDDOOR
+    ORA #GAME_EVENT_FLAG
+    STA game_flags+OBJID_REVEALUNLOCKEDDOOR
+  Exit:
+    LDX door_bits
+    LDA #BANK_MENUS
+    JMP SwapPRG
+
+
+
+
+.ORG $934D
+; (set by randomizer)
+; level requirement - 1
+; base class
+; promoclass 
+lut_LockPicking:
+.BYTE #$0E #$01 #$07
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; CheckLockPicking
+;; 
+;; in:
+;;                      X: ch slot ($00, $40, $80, or $C0)
+;;     lockpicking_status: 1 for lockpicking achieved, 0 otherwise
 ;;
-;; BD 26 61 CD 3D 93 90 0D BD 00 61 CD 3E 93 F0 09 CD 3F 93 F0 04 A9 00 F0 02 A9 01 A8 0D 04 6E 8D 04 6E 60
+;; out:
+;;                      A: most recent lockpicking_status
+;;                      Y: 1 lockpicking achieved for this slot, 0 otherwise
+;;     lockpicking_status: updated lockpicking_status
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+.ORG $9350
+CheckLockPicking:
+ch_class = $6100
+ch_level = $6126
+
+LDA ch_level,X
+CMP lut_LockPicking ;; check level first
+BCC NoLockPicking
+  LDA ch_class,X
+  CMP lut_LockPicking+1
+  BEQ LockPickingAchieved
+    CMP lut_LockPicking+2
+    BEQ LockPickingAchieved
+NoLockPicking:
+  LDA #0
+  BEQ ExitCheckLockPicking
+LockPickingAchieved
+  LDA #1
+ExitCheckLockPicking
+  TAY
+  ORA lockpicking_status
+  STA lockpicking_status
+RTS
+
+
+
 
 
 ;; old version

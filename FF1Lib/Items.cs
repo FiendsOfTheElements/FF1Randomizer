@@ -386,241 +386,253 @@ public static class UnsramIndex
 
 	public enum ObjectId : byte
 	{
-		None = 0,
-		King = 1,
-		Garland = 2,
-		Princess1 = 3,
-		Bikke = 4,
-		ElfDoc = 5,
-		ElfPrince = 6,
-		Astos = 7,
-		Nerrick = 8,
-		Smith = 9,
-		Matoya = 10,
-		Unne = 11,
-		Vampire = 12,
-		Sarda = 13,
-		Bahamut = 14,
-		Lefein = 15, // Move Up Lefein Guy. Unused in the original (seems to be a copy of BlackOrb).
-		WarMECH = 187, // This is for WarMECH NPC. Take the place of Lefein.
+		None = 0,					//0x00
+		King = 1,					//0x01
+		Garland = 2,				//0x02
+		Princess1 = 3,				//0x03
+		Bikke = 4,					//0x04
+		ElfDoc = 5,					//0x05
+		ElfPrince = 6,				//0x06
+		Astos = 7,					//0x07
+		Nerrick = 8,				//0x08
+		Smith = 9,					//0x09
+		Matoya = 10,				//0x0A
+		Unne = 11,					//0x0B
+		Vampire = 12,				//0x0C
+		Sarda = 13,					//0x0D
+		Bahamut = 14,				//0x0E
+		Lefein = 15, 				//0x0F Move Up Lefein Guy. Unused in the original (seems to be a copy of BlackOrb).
+		WarMECH = 187, 				//0xBB This is for WarMECH NPC. Take the place of Lefein.
 
-		SubEngineer = 16,
-		CubeBot = 17,
-		Princess2 = 18,
-		Fairy = 19,
-		Titan = 20,
-		CanoeSage = 21,
-		RodPlate = 22,
-		LutePlate = 23,
+		SubEngineer = 16,			//0x10
+		CubeBot = 17,				//0x11
+		Princess2 = 18,				//0x12
+		Fairy = 19,					//0x13
+		Titan = 20,					//0x14
+		CanoeSage = 21,				//0x15
+		RodPlate = 22,				//0x16
+		LutePlate = 23,				//0x17
 
-		Chaos1 = 24,
-		Chaos2 = 25,
-		Chaos3 = 26,
-
-
-		LichOrb = 27,
-		KaryOrb = 28,
-		KrakenOrb = 29,
-		TiamatOrb = 30,
-
-		SkyWarrior1 = 58,
-		SkyWarrior2 = 59,
-		SkyWarrior3 = 60,
-		SkyWarrior4 = 61,
-		SkyWarrior5 = 62,
-		Pirate1 = 63,
-		Pirate2 = 64,
-		Pirate3 = 65,
-
-		Bat = 87,
-
-		AirshipPerson = 113,
-
-		EarthFirePerson = 128,
-
-		BlackOrb = 202,
+		Chaos1 = 24,				//0x18
+		Chaos2 = 25,				//0x19
+		Chaos3 = 26,				//0x1A
 
 
-		ConeriaCastle1FGuard1 = 32,
-		ConeriaCastle1FWoman1 = 34,
-		ConeriaCastle1FScholar = 35,
-		ConeriaCastle1FGuard2 = 37,
-		ConeriaCastle1FWoman2 = 38,
-		ConeriaCastle1FRoyal1 = 41,
-		ConeriaCastle1FRoyal2 = 42,
-		ConeriaCastle1FOldMan1 = 44,
-		ConeriaCastle1FOldMan2 = 46,
+		LichOrb = 27,				//0x1B
+		KaryOrb = 28,				//0x1C
+		KrakenOrb = 29,				//0x1D
+		TiamatOrb = 30,				//0x1E
 
-		ConeriaCastle2FGuard1 = 43,
-		ConeriaCastle2FGuard2 = 48,
+		SkyWarrior1 = 58,			//0x3A
+		SkyWarrior2 = 59,			//0x3B
+		SkyWarrior3 = 60,			//0x3C
+		SkyWarrior4 = 61,			//0x3D
+		SkyWarrior5 = 62,			//0x3E
+		Pirate1 = 63,				//0x3F
+		Pirate2 = 64,				//0x40
+		Pirate3 = 65,				//0x41
 
-		ConeriaGuard1 = 49,
-		ConeriaGuard2 = 50,
-		ConeriaOldMan = 52,
-		ConeriaDancer = 53,
-		ConeriaWoman1 = 54,
-		ConeriaOldWoman = 55,
-		ConeriaWoman2 = 56,
-		ConeriaMan = 57,
+		Bat = 87,					//0x57
+
+		AirshipPerson = 113,		//0x71
+
+		EarthFirePerson = 128,		//0x80
+
+		BlackOrb = 202,				//0xCA
+
+
+		ConeriaCastle1FGuard1 = 32,	//0x20
+		ConeriaCastle1FWoman1 = 34, //0x22
+		ConeriaCastle1FScholar = 35,//0x23
+		ConeriaCastle1FGuard2 = 37,	//0x25
+		ConeriaCastle1FWoman2 = 38,	//0x26
+		ConeriaCastle1FRoyal1 = 41,	//0x29
+		ConeriaCastle1FRoyal2 = 42,	//0x2A
+		ConeriaCastle1FOldMan1 = 44,//0x2C
+		ConeriaCastle1FOldMan2 = 46,//0x2E
+
+		ConeriaCastle2FGuard1 = 43, //0x2B
+		ConeriaCastle2FGuard2 = 48,	//0x30
+
+		ConeriaGuard1 = 49,			//0x31
+		ConeriaGuard2 = 50,			//0x32
+		ConeriaOldMan = 52,			//0x34
+		ConeriaDancer = 53,			//0x35
+		ConeriaWoman1 = 54,			//0x36
+		ConeriaOldWoman = 55,		//0x37
+		ConeriaWoman2 = 56,			//0x38
+		ConeriaMan = 57,			//0x39
 
 		// Sky Warriors
 
-		PravokaMan1 = 63,
-		PravokaOldMan = 64,
-		PravokaWoman = 65,
-		PravokaPunk = 66,
-		PravokaMan2 = 67,
+		PravokaMan1 = 63,			//0x3F
+		PravokaOldMan = 64,			//0x40
+		PravokaWoman = 65,			//0x41
+		PravokaPunk = 66,			//0x42
+		PravokaMan2 = 67,			//0x43
 
-		ElflandCastleElf1 = 69,
-		ElflandCastleElf2 = 70,
-		ElflandCastleElf3 = 71,
-		ElflandCastleScholar1 = 72,
-		ElflandCastleElf4 = 73,
-		ElflandCastleElf5 = 74,
+		ElflandCastleElf1 = 69,		//0x45
+		ElflandCastleElf2 = 70,		//0x46
+		ElflandCastleElf3 = 71,		//0x47
+		ElflandCastleScholar1 = 72,	//0x48
+		ElflandCastleElf4 = 73,		//0x49
+		ElflandCastleElf5 = 74,		//0x4A
 
-		ElflandElf1 = 77,
-		ElflandElf2 = 78,
-		ElflandElf3 = 79,
-		ElflandElf4 = 80,
-		ElflandElf5 = 81,
-		ElflandElf6 = 82,
-		ElflandScholar1 = 83,
-		ElflandScholar2 = 84,
+		ElflandElf1 = 77,			//0x4D
+		ElflandElf2 = 78,			//0x4E
+		ElflandElf3 = 79,			//0x4F
+		ElflandElf4 = 80,			//0x50
+		ElflandElf5 = 81,			//0x51
+		ElflandElf6 = 82,			//0x52
+		ElflandScholar1 = 83,		//0x53
+		ElflandScholar2 = 84,		//0x54
 
 		// More Elf
 		// Bat
 
-		DwarfcaveDwarf1 = 88,
-		DwarfcaveDwarf2 = 89,
-		DwarfcaveDwarf3 = 90,
-		DwarfcaveDwarf4 = 91,
-		DwarfcaveDwarf5 = 92,
-		DwarfcaveDwarf6 = 93,
-		DwarfcaveDwarf7 = 94,
-		DwarfcaveDwarf8 = 95,
-		DwarfcaveDwarf9 = 96,
-		DwarfcaveDwarf10 = 97,
-		DwarfcaveDwarfHurray = 99,
+		DwarfcaveDwarf1 = 88,		//0x58
+		DwarfcaveDwarf2 = 89,		//0x59
+		DwarfcaveDwarf3 = 90,		//0x5A
+		DwarfcaveDwarf4 = 91,		//0x5B
+		DwarfcaveDwarf5 = 92,		//0x5C
+		DwarfcaveDwarf6 = 93,		//0x5D
+		DwarfcaveDwarf7 = 94,		//0x5E
+		DwarfcaveDwarf8 = 95,		//0x5F
+		DwarfcaveDwarf9 = 96,		//0x60
+		DwarfcaveDwarf10 = 97,		//0x61
+		DwarfcaveDwarfHurray = 99,	//0x63
 
-		MatoyaBroom1 = 100,
-		MatoyaBroom2 = 101,
-		MatoyaBroom3 = 102,
-		MatoyaBroom4 = 103,
+		MatoyaBroom1 = 100,			//0x64
+		MatoyaBroom2 = 101,			//0x65
+		MatoyaBroom3 = 102,			//0x66
+		MatoyaBroom4 = 103,			//0x67
 
-		MelmondMan1 = 104,
-		MelmondMan2 = 105,
-		MelmondMan3 = 106,
-		MelmondOldMan1 = 107,
-		MelmondMan4 = 108,
-		MelmondMan5 = 109,
-		MelmondOldMan2 = 110,
-		MelmondMan6 = 111,
-		MelmondMan7 = 112,
-		MelmondMan8 = 113,
-		MelmondWoman1 = 114,
-		MelmondWoman2 = 115,
-		MelmondDwarf = 116,
+		MelmondMan1 = 104,			//0x68
+		MelmondMan2 = 105,			//0x69
+		MelmondMan3 = 106,			//0x6A
+		MelmondOldMan1 = 107,		//0x6B
+		MelmondMan4 = 108,			//0x6C
+		MelmondMan5 = 109,			//0x6D
+		MelmondOldMan2 = 110,		//0x6E
+		MelmondMan6 = 111,			//0x6F
+		MelmondMan7 = 112,			//0x70
+		MelmondMan8 = 113,			//0x71
+		MelmondWoman1 = 114,		//0x72
+		MelmondWoman2 = 115,		//0x73
+		MelmondDwarf = 116,			//0x74
 
-		Unused1 = 118,
+		Unused1 = 118,				//0x76
 		// 117,118 What?
 
-		CrescentSage1 = 119,
-		CrescentSage2 = 120,
-		CrescentSage3 = 121,
-		CrescentSage4 = 122,
-		CrescentSage5 = 123,
-		CrescentSage6 = 124,
-		CrescentSage7 = 125,
-		CrescentSage8 = 126,
-		CrescentSage9 = 127,
-		CrescentSage10 = 128,
-		CrescentMan = 129,
-		CrescentSage11 = 130,
-		CrescentWoman = 131,
+		CrescentSage1 = 119,		//0x77
+		CrescentSage2 = 120,		//0x78
+		CrescentSage3 = 121,		//0x79
+		CrescentSage4 = 122,		//0x7A
+		CrescentSage5 = 123,		//0x7B
+		CrescentSage6 = 124,		//0x7C
+		CrescentSage7 = 125,		//0x7D
+		CrescentSage8 = 126,		//0x7E
+		CrescentSage9 = 127,		//0x7F
+		CrescentSage10 = 128,		//0x80
+		CrescentMan = 129,			//0x81
+		CrescentSage11 = 130,		//0x82
+		CrescentWoman = 131,		//0x83
 
-		CastleOrdealsOldMan = 132,
+		CastleOrdealsOldMan = 132,	//0x84
 
-		CardiaDragon1 = 133,
-		CardiaDragon2 = 134,
-		CardiaDragon3 = 135,
-		CardiaDragon4 = 136,
-		CardiaDragon5 = 137,
-		CardiaDragon6 = 138,
-		CardiaDragon7 = 139,
-		CardiaDragon8 = 140,
-		CardiaDragon9 = 141,
-		CardiaDragon10 = 142,
-		CardiaDragon11 = 143,
-		CardiaDragon12 = 144,
+		CardiaDragon1 = 133,		//0x85
+		CardiaDragon2 = 134,		//0x86
+		CardiaDragon3 = 135,		//0x87
+		CardiaDragon4 = 136,		//0x88
+		CardiaDragon5 = 137,		//0x89
+		CardiaDragon6 = 138,		//0x8A
+		CardiaDragon7 = 139,		//0x8B
+		CardiaDragon8 = 140,		//0x8C
+		CardiaDragon9 = 141,		//0x8D
+		CardiaDragon10 = 142,		//0x8E
+		CardiaDragon11 = 143,		//0x8F
+		CardiaDragon12 = 144,		//0x90
 
-		Tomb = 145,
-		Well = 146,
+		Tomb = 145,					//0x91
+		Well = 146,					//0x92
 
-		OnracWoman1 = 147,
-		OnracScholar = 148,
-		OnracGuard = 149,
-		OnracWitch = 150,
-		OnracDancer = 151,
-		OnracPunk1 = 152,
-		OnracOldMan1 = 153,
-		OnracOldMan2 = 154,
-		OnracDragon = 155,
-		OnracPirate = 156,
-		OnracPunk2 = 157,
-		OnracWoman2 = 158,
-		OnracMan1 = 159,
-		OnracMan2 = 160,
+		OnracWoman1 = 147,			//0x93
+		OnracScholar = 148,			//0x94
+		OnracGuard = 149,			//0x95
+		OnracWitch = 150,			//0x96
+		OnracDancer = 151,			//0x97
+		OnracPunk1 = 152,			//0x98
+		OnracOldMan1 = 153,			//0x99
+		OnracOldMan2 = 154,			//0x9A
+		OnracDragon = 155,			//0x9B
+		OnracPirate = 156,			//0x9C
+		OnracPunk2 = 157,			//0x9D
+		OnracWoman2 = 158,			//0x9E
+		OnracMan1 = 159,			//0x9F
+		OnracMan2 = 160,			//0xA0
 
-		SwordSample = 161,
-		BadCubeBot = 162,
+		SwordSample = 161,			//0xA1
+		BadCubeBot = 162,			//0xA2
 
-		Mermaid1 = 163,
-		Mermaid2 = 164,
-		Mermaid3 = 165,
-		Mermaid4 = 166,
-		Mermaid5 = 167,
-		Mermaid6 = 168,
-		Mermaid7 = 169,
-		Mermaid8 = 170,
-		Mermaid9 = 171,
-		Mermaid10 = 172,
+		Mermaid1 = 163,				//0xA3
+		Mermaid2 = 164,				//0xA4
+		Mermaid3 = 165,				//0xA5
+		Mermaid4 = 166,				//0xA6
+		Mermaid5 = 167,				//0xA7
+		Mermaid6 = 168,				//0xA8
+		Mermaid7 = 169,				//0xA9
+		Mermaid8 = 170,				//0xAA
+		Mermaid9 = 171,				//0xAB
+		Mermaid10 = 172,			//0xAC
 
-		LockedDoor = 173,
+		LockedDoor = 173,			//0xAD
 
-		GaiaMan1 = 174,
-		GaiaScholar1 = 175,
-		GaiaScholar2 = 176,
-		GaiaWoman = 177,
-		GaiaDancer = 178,
-		GaiaScholar3 = 179,
-		GaiaMan2 = 180,
-		GaiaMan3 = 181,
-		GaiaPirate = 182,
-		GaiaMan4 = 183,
-		GaiaBroom = 184,
-		GaiaWitch = 185,
-		GaiaOldWoman = 186,
+		GaiaMan1 = 174,				//0xAE
+		GaiaScholar1 = 175,			//0xAF
+		GaiaScholar2 = 176,			//0xB0
+		GaiaWoman = 177,			//0xB1
+		GaiaDancer = 178,			//0xB2
+		GaiaScholar3 = 179,			//0xB3
+		GaiaMan2 = 180,				//0xB4
+		GaiaMan3 = 181,				//0xB5
+		GaiaPirate = 182,			//0xB6
+		GaiaMan4 = 183,				//0xB7
+		GaiaBroom = 184,			//0xB8
+		GaiaWitch = 185,			//0xB9
+		GaiaOldWoman = 186,			//0xBA
 
 		// LefeinChime
 
-		LefeinMan1 = 188,
-		LefeinMan2 = 189,
-		LefeinMan3 = 190,
-		LefeinMan4 = 191,
-		LefeinMan5 = 192,
-		LefeinMan6 = 193,
-		LefeinMan7 = 194,
-		LefeinMan8 = 195,
-		LefeinMan9 = 196,
-		LefeinMan10 = 197,
-		LefeinMan11 = 198,
-		LefeinMan12 = 200,
-		LefeinMan13 = 201,
+		LefeinMan1 = 188,			//0xBC
+		LefeinMan2 = 189,			//0xBD
+		LefeinMan3 = 190,			//0xBE
+		LefeinMan4 = 191,			//0xBF
+		LefeinMan5 = 192,			//0xC0
+		LefeinMan6 = 193,			//0xC1
+		LefeinMan7 = 194,			//0xC2
+		LefeinMan8 = 195,			//0xC3
+		LefeinMan9 = 196,			//0xC4
+		LefeinMan10 = 197,			//0xC5
+		LefeinMan11 = 198,			//0xC6
+		LefeinMan12 = 200,			//0xC8
+		LefeinMan13 = 201,			//0xC9
 
-		MirageRobot1 = 204,
-		MirageRobot2 = 205,
-		MirageRobot3 = 206,
-		SkyRobot = 207,
+		MirageRobot1 = 204,			//0xCC
+		MirageRobot2 = 205,			//0xCD
+		MirageRobot3 = 206,			//0xCE
+		SkyRobot = 207,				//0xCF
+
+		// these are set when these items are revealed on screen for the first time
+		// used in the tracker in order not to reveal tri-state flags
+		UnlockedDoorRevealed = 249, //0xF9
+		BridgeRevealed = 250,		//0xFA
+		CanalRevealed = 251,		//0xFB
+		ShipRevealed = 252,			//0xFC
+		AirshipRevealed = 253,		//0xFD
+		CanoeRevealed = 254,		//0xFE
+
+		// set when key item purchased from a shop
+		ShopItem = 255,				//0xFF
 	}
 	[Flags]
 	public enum MapChange

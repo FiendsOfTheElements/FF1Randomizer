@@ -40,6 +40,9 @@
 <div class="col2">
 	<h4>Conveniences</h4>
 	<CheckBox UpdateAction="@UpdateAction" Id="trackerCheckBox" @bind-Value="Flags.Tracker">In-Game Tracker</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="showRemindersCheckBox" Indent IsEnabled="Flags.Tracker == true" @bind-Value="Flags.ShowReminders">Show Reminders</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="showGoModeCheckBox" Indent IsEnabled="Flags.Tracker == true" @bind-Value="Flags.ShowGoMode">Show Go Mode</CheckBox>
+	<CheckBox UpdateAction="@UpdateAction" Id="noTristateSpoilersCheckBox" Indent IsEnabled="Flags.Tracker == true" @bind-Value="Flags.NoTristateSpoilers">No Tri-state Spoilers</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="noPartyShuffleCheckBox" @bind-Value="Flags.NoPartyShuffle">No Party Shuffle</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="speedHacksCheckBox" @bind-Value="Flags.SpeedHacks">Speed Hacks</CheckBox>
     <CheckBox UpdateAction="@UpdateAction" Id="dashCheckBox" @bind-Value="Flags.Dash">Faster Walking Speed</CheckBox>
@@ -53,7 +56,7 @@
 	<CheckBox UpdateAction="@UpdateAction" Id="npcSwatterCheckBox" @bind-Value="Flags.NPCSwatter">NPC Guillotine</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="inventoryAutosortCheckBox" @bind-Value="Flags.InventoryAutosort">Autosort Inventory</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="autoRetargetingCheckBox" @bind-Value="Flags.AutoRetargeting">Auto Retargeting</CheckBox>
-    <CheckBox UpdateAction="@UpdateAction" Id="repeatedHealPotionUseCheckBox" @bind-Value="Flags.RepeatedPotionUse">Repeated Heal Potion Use</CheckBox>
+    <CheckBox UpdateAction="@UpdateAction" Id="repeatedPotionUseCheckBox" @bind-Value="Flags.RepeatedPotionUse">Repeated Potion Use</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="shopInfoCheckBox" @bind-Value="Flags.ShopInfo">Shop Information</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="chestInfoCheckBox" Indent IsEnabled="@(Flags.ShopInfo && Flags.IdentifyTreasures)" @bind-Value="Flags.ChestInfo">Chest Information</CheckBox>
 	<CheckBox UpdateAction="@UpdateAction" Id="magicMenuSpellReorderingCheckBox" Indent IsEnabled="@(Flags.ShopInfo)" @bind-Value="Flags.MagicMenuSpellReordering">Magic Menu Spell Reordering</CheckBox>

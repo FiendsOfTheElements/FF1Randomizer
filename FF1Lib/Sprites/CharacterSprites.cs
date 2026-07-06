@@ -800,6 +800,76 @@ namespace FF1Lib
 			PutInBank(bank, address + 0x120 + (16*3), EncodeForPPU(tileBottomRight));
 		}
 
+		public void AddOrbLetterOverlays()
+		{
+			const int OrbBank = 0x12;
+			const int OrbOffset = 0x8E70;
+			byte[][] Overlays = 
+			[
+				//Fire
+				[
+					4,4,4,4,4,4,4,4,
+					4,4,4,0,0,0,0,0,
+					4,4,4,0,1,1,1,0,
+					4,4,4,0,1,0,0,0,
+					4,4,4,0,1,1,0,4,
+					4,4,4,0,1,0,4,4,
+					4,4,4,0,1,0,4,4,
+					4,4,4,0,0,0,4,4
+				],
+
+				//Water
+				[
+					4,4,4,4,4,4,4,4,
+					4,0,0,0,4,0,0,0,
+					4,0,1,0,4,0,1,0,
+					4,0,1,0,0,0,1,0,
+					4,0,1,0,1,0,1,0,
+					4,0,1,1,1,1,1,0,
+					4,0,0,1,0,1,0,0,
+					4,4,0,0,0,0,0,4	
+				],
+
+				//Air
+				[
+					4,4,4,4,4,4,4,4,
+					4,4,4,4,0,0,0,4,
+					4,4,4,0,0,1,0,0,
+					4,4,4,0,1,0,1,0,
+					4,4,4,0,1,1,1,0,
+					4,4,4,0,1,0,1,0,
+					4,4,4,0,1,0,1,0,
+					4,4,4,0,0,0,0,0	
+				],
+
+				//Earth
+				[
+					4,4,4,4,4,4,4,4,
+					4,4,4,0,0,0,0,0,
+					4,4,4,0,1,1,1,0,
+					4,4,4,0,1,0,0,0,
+					4,4,4,0,1,1,0,4,
+					4,4,4,0,1,0,0,0,
+					4,4,4,0,1,1,1,0,
+					4,4,4,0,0,0,0,0	
+				]
+			];
+
+			Console.WriteLine("Doing Orb Overlays");
+			for (int i = 0; i < 4; i++)
+			{
+				int ThisOffset = OrbOffset+i*0x40;
+				byte[] OrbTile = DecodePPU(GetFromBank(OrbBank, ThisOffset,0x10));
+				for (int j = 0; j < 64; j++)
+				{
+					byte OrbByte = OrbTile[j];
+					byte OverlayByte = Overlays[i][j];
+					OrbTile[j] = OverlayByte == 4 ? OrbByte : OverlayByte;
+				}
+				PutInBank(OrbBank, ThisOffset,EncodeForPPU(OrbTile));
+			}
+		}
+
 
 		// These are terrible, but I need non-async functions for some goddamn reason
 		public void ImportMapmanSync(Image<Rgba32> image, int cur_class, int top, int left, Rgba32[] NESpalette)

@@ -560,8 +560,10 @@ namespace FF1Lib
 			return TextToBytes(flagLeft + text + flagRight, false, Delimiter.Empty);
 		}
 
+		
+
 		// Loads custom icons
-		public static async Task AddNewIcons(FF1Rom rom, Flags flags, Preferences preferences, ResourcePackSettings resourcePackSettings)
+		public static async Task AddNewIcons(FF1Rom rom, Flags flags, Flags unmodifiedFlags, Preferences preferences, ResourcePackSettings resourcePackSettings)
 		{
 			// Icons have a 0x10 Control code indicating the next byte is pulled from the 0x00-0x7F tile reference instead of the 0x80-0xFF like regular fonts
 
@@ -582,7 +584,7 @@ namespace FF1Lib
 				await rom.AddShardGraphics(0x12, 0x8800, preferences.LegacyShardDisplay, resourcePackSettings.OrbGraphics); // If we're in shard hunt, add the shard graphics.
 
 			if (flags.Tracker)
-				rom.AddTrackerIcons(flags);
+				rom.AddTrackerIcons(flags,unmodifiedFlags);
 
 			if (preferences.OrbLetterOverlays)
 				rom.AddOrbLetterOverlays();
