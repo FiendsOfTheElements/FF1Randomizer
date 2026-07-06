@@ -142,6 +142,14 @@ namespace FF1Lib
 			{ new Rgba32(0xbd, 0xbd, 0xbd), 3 }  //0x10 light gray
 		};
 
+		public Dictionary<Rgba32, byte> MenuIndex = new Dictionary<Rgba32, byte>
+		{
+			{ new Rgba32(0x00, 0x00, 0x00), 0}, //0x0f black
+			{ new Rgba32(0x7b, 0x7b, 0x7b), 1}, //0x00 dark gray
+			{ new Rgba32(0x00, 0x00, 0xff), 2}, //0x01 menu blue
+			{ new Rgba32(0xff, 0xff, 0xff), 3}  //0x30 white 
+		};
+
 
 		public byte selectColor(Rgba32 px, Rgba32[] NESpalette)
 		{

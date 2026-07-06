@@ -181,7 +181,7 @@ ROM: 38000-3BFFF
 0E   8DE4-8E10    Fix character stat rendering
 OE   9079-90D9    Restore npc manip routines
 0E   9273-92A3    Restore map object
-0E   94E0-94F0    Moved Magic Menu Finalize Ouput
+0E   94E0-94F0    Moved Magic Menu Finalize Output
 0E   96B0-96F8    Item Jump Table
 0E   9C54-9C7D    Exit Boss
 0E   A360-A3AA    Magic Shop Menu QoS
@@ -198,8 +198,7 @@ ROM: 3C000-3FFFF
 0F   8D00-8D53    Autosort
 0F   9100-91AC    Progressive Scaling
 0F   B000-B300    Expanded Teleporter tables
-0F   F100-F200    Encounter RNG Table
-0F   FCF1-FDF1    Battle RNG Table
+
 
 ROM: 40000-43FFF
 10   8000-BFFF    Dialogues (whole bank is reserved)
@@ -276,6 +275,8 @@ ROM: 6C000-6FFFF
 1B   9830-987B    Gain MP on MP Up
 1B   9900-9A11    SetRng
 1B   A000-A0DB    AirBoat
+1B   A100-A700    In-Game Tracker
+1B   AEC0-AF79    New Shard Display
 1B   AF80-AF94    BB Absorb bugfix
 1B   B800-B8C3    Start Game/Start Battle Blursings routines
 
@@ -304,7 +305,7 @@ ROM: 74000-77FFF
 ROM: 78000-7BFFF
 1E   8000-85B0    Moving routines from bank 0E to 1E (PartyGen and menu stuff)
 1E   806B-8070    Battlestep to SRAM Jump
-1E   85B0-85C1    Parry Permissions table
+1E   85B0-85C1    Party Permissions table
 1E   8680-86A7    New Icons routine
 1E   86E0-B9F1    Encounter Table True PRNG
 1E   8800-8933    Class Info Window

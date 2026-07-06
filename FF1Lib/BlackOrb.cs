@@ -26,11 +26,21 @@ namespace FF1Lib
 
 	public partial class FF1Rom : NesRom
 	{
+		// the following global variables are used by the tracker to indicate Go Mode
+		// how many orbs or shards needed? 
+		int OrbShardGoal = 4;
+
+		// true only if "specific" orbs required below
+		bool EarthOrbRequired = false;
+		bool FireOrbRequired = false;
+		bool WaterOrbRequired = false;
+		bool AirOrbRequired = false;
+
 		private void BlackOrbMode(TalkRoutines talkRoutines, DialogueData dialogues, Flags flags, Preferences pref, MT19337 rng, MT19337 funRng)
 		{
 			if (((bool)flags.Treasures) && flags.ShardHunt)
 			{
-				EnableShardHunt(rng, TalkRoutines, Dialogues, flags.ShardCount, pref.randomShardNames, flags.SpookyFlag, funRng);
+				EnableShardHunt(rng, TalkRoutines, Dialogues, flags.ShardCount, pref.randomShardNames, flags.SpookyFlag, pref.LegacyShardDisplay, funRng);
 			}
 
 			if (!flags.ShardHunt && (flags.GameMode != GameModes.DeepDungeon))
@@ -46,14 +56,27 @@ namespace FF1Lib
 			"JEWEL", "PIECE", "CHUNK", "PRISM", "STONE", "SLICE", "WEDGE", "BIGGS", "SLIVR", "ORBLT", "ESPER", "FORCE",
 		};
 
-		public void addShardIcon(int bank, int address)
+		public async Task AddShardGraphics(int bank, int address, bool legacyShardDisplay, bool orbGraphicsInResourcePack)
 		{
-			// Replace the upper two tiles of the unlit orb with an empty and found shard.
-			// These are at tile address $76 and $77 respectively.
-			PutInBank(bank, address, Blob.FromHex("001C22414141221CFFE3DDBEBEBEDDE3001C3E7F7F7F3E1CFFFFE3CFDFDFFFFF"));
+			Console.WriteLine("Entering AddShardGraphics");
+			if (legacyShardDisplay)
+			{
+				// Replace the upper two tiles of the unlit orb with an empty and found shard.
+				// These are at tile address $76 and $77 respectively.
+				PutInBank(bank, address + 0x760, Blob.FromHex("001C22414141221CFFE3DDBEBEBEDDE3001C3E7F7F7F3E1CFFFFE3CFDFDFFFFF"));
+			}
+			else if (!orbGraphicsInResourcePack)
+			{
+				Console.WriteLine("AddShardGraphics Step 2");
+				var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+				var shardGraphicsFile = assembly.GetManifestResourceNames()
+					.Single(str => str.EndsWith("orbs_shards.png"));
+				var shardGraphicsStream = assembly.GetManifestResourceStream(shardGraphicsFile);
+				await SetCustomOrbGraphics(shardGraphicsStream, bank, address + 0x640);
+			}
 		}
 
-		public void EnableShardHunt(MT19337 rng, TalkRoutines talkroutines, DialogueData dialogues, ShardCount count, bool RandomShardNames, bool skipFlavorText, MT19337 funRngSeed)
+		public void EnableShardHunt(MT19337 rng, TalkRoutines talkroutines, DialogueData dialogues, ShardCount count, bool RandomShardNames, bool skipFlavorText, bool LegacyShardDisplay, MT19337 funRngSeed)
 		{
 			int goal = 16;
 			switch (count) {
@@ -67,6 +90,7 @@ namespace FF1Lib
 				case ShardCount.Range24_32: goal = rng.Between(24, 32); break;
 				case ShardCount.Range16_36: goal = rng.Between(16, 36); break;
 			}
+			OrbShardGoal = goal;
 
 			string shardName = "SHARD";
 			if (RandomShardNames)
@@ -76,12 +100,26 @@ namespace FF1Lib
 			ItemsText[(int)Item.Shard] = shardName;
 
 			//addShardIcon(0xD, 0xB760);
+			// change orb box dimensions
+			PutInBank(0x0E,0xBAA2,Blob.FromHex("01010A09"));
+			if (LegacyShardDisplay)
+			{
+				int ppu = 0x2043;
+				ppu = ppu + (goal <= 24 ? 0x20 : 0x00);
 
-			int ppu = 0x2043;
-			ppu = ppu + (goal <= 24 ? 0x20 : 0x00);
+				// Fancy shard drawing code, see 0E_B8D7_DrawShardBox.asm
+				Put(0x3B87D, Blob.FromHex($"A9{ppu & 0xFF:X2}8511A9{(ppu & 0xFF00) >> 8:X2}8512A977A00048AD0220A5128D0620A51118692085118D0620900DAD0220E612A5128D0620A5118D062068A200CC3560D002A976C0{goal:X2}D001608D0720C8E8E006D0EB1890C1"));
+			}
+			else
+			{
+				byte[] ShardGoal = [(byte)goal, (byte)(goal/10 + 0x80), (byte)(goal%10 + 0x80)];
+				// New shard display
+				
+				PutInBank(0x0E,0xB8A5,Blob.FromHex("A9AE48A9C248A91B4C03FEEAEAEAEAEAEAEA"));
+				PutInBank(0x1B,0xAEC0,ShardGoal);
+				PutInBank(0x1B,0xAEC3,Blob.FromHex("AD0220A9238D0620A9C98D0620A5178D0720A200A9639D106EE8A000AD3560C90AB00CA9FF9D106EE8AD35604C03AFC838E90AC90AB0F8489809809D106EE86809809D106EE8A97A9D106EE8ADC1AE9D106EE8ADC2AE9D106EA903853AA902853B20ABDCA200A9068510BD106EAC0220A4558C0620A4548C06208D0720E8E654C610D0E6A93FAC0220A0238C0620A0C08C06208D0720AD3560CDC0AE9012A9CFAC0220A0238C0620A0C18C06208D0720A90E4C03FE"));
 
-			// Fancy shard drawing code, see 0E_B8D7_DrawShardBox.asm
-			Put(0x3B87D, Blob.FromHex($"A9{ppu & 0xFF:X2}8511A9{(ppu & 0xFF00) >> 8:X2}8512A977A00048AD0220A5128D0620A51118692085118D0620900DAD0220E612A5128D0620A5118D062068A200CC3560D002A976C0{goal:X2}D001608D0720C8E8E006D0EB1890C1"));
+			}
 
 			// Black Orb Override to check for shards rather than ORBs.
 			BlackOrbChecksShardsCountFor(goal,talkroutines);
@@ -145,6 +183,9 @@ namespace FF1Lib
 				case 5: goal = rng.Between(1, 3); break;
 			}
 
+			OrbShardGoal = goal;
+
+
 			Dictionary<int, String> updatedBlackOrbDialogue = new Dictionary<int, String>();
 			String orbIntro = "The ORBS now cover";
 			if (goal == 1)
@@ -162,8 +203,12 @@ namespace FF1Lib
 
 				// Adjust Black Orb talk routine to check for <GOAL> number of orbs.
 				// See 11_8200_TalkRoutines.asm
-				talkroutines.Replace(TalkScripts.Talk_BlackOrb, Blob.FromHex($"18AD31606D32606D33606D3460C9{goal:X2}900CA0CA209690E67DE67DA57160A57260"));
+				// talkroutines.Replace(TalkScripts.Talk_BlackOrb, Blob.FromHex($"18AD31606D32606D33606D3460C9{goal:X2}900CA0CA209690E67DE67DA57160A57260"));
+				// this new talkroutine below sets the black orb game event flag when it's talked to without having achieved the orb goal. This lets us
+				// use it as a requirement for indicating Go Mode in the in-game tracker.
+				talkroutines.Replace(TalkScripts.Talk_BlackOrb, Blob.FromHex($"18AD31606D32606D33606D3460C9{goal:X2}900CA0CA209690E67DE67DA57160A0CA207F90A57260"));
 
+				
 				// make portal under Black Orb walkable
 				Remove4OrbRequirementForToFRPortal();
 
@@ -257,15 +302,19 @@ namespace FF1Lib
 				{
 					case "earth":
 						asm.Append("31602D"); // 6031 AND
+						EarthOrbRequired = true;
 						break;
 					case "fire":
 						asm.Append("32602D"); // 6032 AND
+						FireOrbRequired = true;
 						break;
 					case "water":
 						asm.Append("33602D"); // 6033 AND
+						WaterOrbRequired = true;
 						break;
 					case "wind":
 						asm.Append("34602D"); // 6034 AND
+						AirOrbRequired = true;
 						break;
 				}
 				if (requiredOrbs.Count > 1)
@@ -274,8 +323,11 @@ namespace FF1Lib
 				}
 			}
 			asm.Remove(24, 2); // removes unneeded trailing "2D" from appends above
-			asm.Append("F00CA0CA209690E67DE67DA57160A57260"); // trailing asm from original talkroutine
+			// asm.Append("F00CA0CA209690E67DE67DA57160A57260"); // trailing asm from original talkroutine
+			// adds a set game event flag when talking to black orb without required orbs, similar to above.
+			asm.Append("F00CA0CA209690E67DE67DA57160A0CA207F90A57260"); // trailing asm from original talkroutine
 			talkroutines.Replace(TalkScripts.Talk_BlackOrb, Blob.FromHex(asm.ToString()));
+			
 
 			// make portal under Black Orb walkable
 			Remove4OrbRequirementForToFRPortal();

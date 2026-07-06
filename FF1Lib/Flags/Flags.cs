@@ -434,6 +434,10 @@ namespace FF1Lib
 		public bool NPCSwatter { get; set; } = false;
 		public bool BattleMagicMenuWrapAround { get; set; } = false;
 		public bool MagicMenuSpellReordering { get; set; } = true;
+		public bool Tracker { get; set; } = true;
+		public bool NoTristateSpoilers { get; set; } = false;
+		public bool ShowReminders { get; set; } = true;
+		public bool ShowGoMode { get; set; } = true;
 		public bool InventoryAutosort { get; set; } = true;
 		public bool RepeatedPotionUse { get; set; } = true;
 		public bool AutoRetargeting { get; set; } = true;

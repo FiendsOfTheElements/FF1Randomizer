@@ -372,6 +372,8 @@ Talk_BlackOrb:
     LDA talkarray+1       ; and print [1]
     RTS
 NotAllLit:
+  LDY #OBJID_BLACKORB
+  JSR SetGameEventFlag
   LDA talkarray+2         ; otherwise, (not all orbs lit), print [2]
   RTS
 
@@ -959,5 +961,7 @@ Talk_BlackOrb:
         RTS
 
     NotEnoughLit:
+        LDY #OBJID_BLACKORB
+        JSR SetGameEventFlag
         LDA tmp+2
         RTS

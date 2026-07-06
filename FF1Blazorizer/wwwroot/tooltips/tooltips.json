@@ -252,9 +252,6 @@
 		"Id": "newMusicStreamSafeCheckBox",
 		"title": "Stream Safe Music",
 		"description": "Exclude new music that may not be safe for streaming. This is enabled automatically if 'Tournament Safe Rom' is on."
-
-
-
 	},
 	{
 		"Id": "negativeHarmonyCheckBox",
@@ -298,6 +295,12 @@
 		"description": "Changes your menu screen color from the default blue to a selection of other colors.\n This may also be changed in game by pressing Select at the New Game/Continue screen"
 	},
 	{
+		"Id": "orbLetterOverlaysCheckBox",
+		"title": "Overlay Orb Letters",
+		"screenshot": "orbLetterOverlaysCheckBox.png",
+		"description": "Writes letters over any lit orbs in the main main menu to indicate which one is which. The letters are (F)ire, (W)ater, (A)ir, and (E)arth."
+	},
+	{
 		"Id": "accessibleSpellNamesCheckBox",
 		"title": "Accessible Spell Names",
 		"screenshot": "accessibleSpellNamesCheckBox.png",
@@ -320,6 +323,12 @@
 		"title": "Magic Shop Menus Match Equipment Shops Menu",
 		"screenshot": "MagicShopMenuChangeCheckBox.png",
 		"description": "Changes the magic shop menu order to match the equipment shops.\nSelect Spell > Pay > Choose Character."
+	},
+	{
+		"Id": "legacyShardDisplayCheckBox",
+		"title": "Legacy Shard Display",
+		"screenshot": "legacyShardDisplayCheckBox.gif",
+		"description": "Replaces the new shard display, which provides a counter, with the original shard display, which uses orblets to show shards required and collected."
 	},
 	{
 		"Id": "renounceAutosortCheckBox",
@@ -444,7 +453,7 @@
 		"Id": "shardCountDropDown",
 		"title": "Shard Goal",
 		"screenshot": "shardCountDropDown.png",
-		"description": "Sets the number of SHARDs the player needs to collect in order to restore the Black Orb and travel into the past to the Temple of Fiends Revisited. Can be set to a fixed amount (i.e., exactly 16 Shards) or a range (i.e., 16-24 Shards).\nThere will always be exactly 32 Shards in the treasure pool regardless of this setting (so 44 total Shards available including fiend fight rewards)."
+		"description": "Sets the number of SHARDs the player needs to collect in order to restore the Black Orb and travel into the past to the Temple of Fiends Revisited. Can be set to a fixed amount (i.e., exactly 16 Shards) or a range (i.e., 16-24 Shards).\nThere will always be exactly 32 Shards in the treasure pool regardless of this setting (so 44 total Shards available including fiend fight rewards).\nNote: in the tooltip picture, the display shows 23 of 28 required Shards collected. This total includes 2 for the lit Fire orb and 4 for the lit Water orb."
 	},
 	{
 		"Id": "lichRevengeCheckBox",
@@ -1170,6 +1179,11 @@
 		"title": "Free Tail",
 		"screenshot": "FreeTail.png",
 		"description": "The rat's TAIL, required for promotion, is in your inventory when the game begins. You may want to wash the bag after use."
+	},
+	{
+		"Id": "FreeRod",
+		"title": "Free Rod",
+		"description": "Starts the game with the ROD already in the party's inventory."
 	},
 
 	{
@@ -2175,6 +2189,30 @@
 		"title": "Dragon Warrior Mode",
 		"screenshot": "saveGameDWModeCheckBox.png",
 		"description": "Always respawn at Coneria (the Ship and Airship will wait for you there if you have them). Gold is halved."
+	},
+
+	{
+		"Id": "trackerCheckBox",
+		"title": "In-Game Tracker",
+		"screenshot": "trackerCheckBox.gif",
+		"description": "The In-Game Tracker gives the player information about the current game state, including (but not limited to):\n• Possession of key items\n• Accomplishment of fetch-quest requirements\n• Talking to various item-giving NPCs.\n\nThe tracker takes the form of icons and checkboxes displayed at the top of the item screen, and a few icons in various places on the main menu screen.\nSee the following link at the Final Fantasy Randomizer wiki for a comprehensive guide to using the Tracker, including a full list of the icons and a detailed discussion of how the Tracker interacts with other flags.\nhttps://wiki.finalfantasyrandomizer.com/e/en/FFRGuide/Appendix_D/InGameTracker\nRead the tooltips below for extra settings."
+	},
+	{
+		"Id": "showRemindersCheckBox",
+		"title": "Show RemindersCheckBox",
+		"screenshot": "showRemindersCheckBox.png",
+		"description": "When enabled, display reminders for \"Hint Givers In Towns,\" \"Set RNG,\" and \"Save Game When Game Over\" in the main menu screen when any of those is enabled.\nThe reminders are displayed as HINT, SRNG, and SOGO (as in \"save on game over\"), respectively.\nThis is affected by the No Tri-state Spoilers flag, below."
+	},
+	{
+		"Id": "showGoModeCheckBox",
+		"title": "Show Go Mode",
+		"screenshot": "showGoModeCheckBox.png",
+		"description": "When enabled, display an icon in the Orb box when the player has achieved the Go Mode game state.\nIn general, \"Go Mode\" means the player has attained all the knowledge and requirements necessary to enter the Temple of Fiends and reach CHAOS\n• All required orbs lit / shards collected. Note: If a random number of orbs, or a specific subset of orbs are required, Go Mode will not be revealed unless the player has talked to the Black Orb to learn how many / which orbs are required.\n• KEY (or thief lockpicking) has been acquired in order to unlock doors in Temple of Fiends\n• LUTE is in the inventory.\nThere are many variations on these basic requirements. See the wiki URL in the main Tracker tooltip for a comprehensive guide.\nNote: display of Go Mode is affected by the No Tri-state Spoilers flag, below."
+	},
+	{
+		"Id": "noTristateSpoilersCheckBox",
+		"title": "No Tri-state Spoilers",
+		"description": "When enabled, the Tracker will not provide information that lets the player know how any given tri-stated flag rolled for the present seed.\n For instance, suppose \"Free Canal\" is in tri-state, and the free canal has been granted in the present seed. The CANAL icon will not appear in the tracker until the canal has actually appeared on screen in the overworld.\nSee the wiki URL in the main Tracker tooltip for a comprehensive guide."
 	},
 
 	{

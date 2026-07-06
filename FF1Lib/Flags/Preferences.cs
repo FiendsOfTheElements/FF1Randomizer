@@ -33,10 +33,12 @@ namespace FF1Lib
 		public bool randomShardNames { get; set; } = false;
 		public Fate HurrayDwarfFate { get; set; } = Fate.Spare;
 		public bool FunFountainText { get; set; } = false;
+		public bool LegacyShardDisplay { get; set; } = false;
 		public bool RenounceAutosort { get; set; } = false;
 		public bool RenounceChestInfo { get; set; } = false;
 		public bool RenounceCantHoldRed { get; set; } = false;
 		public bool AccessibleSpellNames { get; set; } = false;
+		public bool OrbLetterOverlays { get; set; } = false;
 		public bool CleanBlursedEquipmentNames { get; set; } = false;
 		public bool ShopInfoIcons { get; set; } = false;
 		public bool MagicShopMenuChange { get; set; } = false;
@@ -54,5 +56,11 @@ namespace FF1Lib
 		public bool NewMusicStreamSafe { get; set; } = false;
 		public bool NegativeHarmony { get; set; } = false;
 		public bool MapDerp { get; set; } = false;
+	}
+
+	public class ResourcePackSettings
+	{
+		
+		public bool OrbGraphics{ get; set; } = false;
 	}
 }
