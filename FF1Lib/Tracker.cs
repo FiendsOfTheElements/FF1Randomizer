@@ -288,7 +288,7 @@ namespace FF1Lib
 		public void AddTrackerIcons(Flags flags, Flags unmodifiedFlags)
 		{
 			
-			byte[] BlankTile = EncodeForPPU(
+			byte[] BlankTile =
 				[
 					2,2,2,2,2,2,2,2,
 					2,2,2,2,2,2,2,2,
@@ -299,7 +299,7 @@ namespace FF1Lib
 					2,2,2,2,2,2,2,2,
 					2,2,2,2,2,2,2,2
 				]
-			);
+			;
 			
 			
 
