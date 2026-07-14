@@ -52,10 +52,14 @@ DrawDialogueItemInfo:
 
 	PLA					;pull dialog id from stack
 	CMP #DLGID_CANTCARRY
-	BNE :+
-		LDA #$05
+	BNE LoadMenuColor		; 
+		LDA tileprop+1		; 
+		BNE :+				; 
+			INC tileprop+1  ; if tileprop+1 holds #0, increase to #1 so that the item stats will still appear for NPCs
+	  :	LDA #$05			; NOP this LDA and BNE out if renouncing red dialogue box color on "can't hold" (4 bytes at $B70F)
 		BNE InfoSetBgColor
-  : LDA MenuColor     
+LoadMenuColor:	
+    LDA MenuColor     
 InfoSetBgColor:
 	JSR SetDialogBgColor
 
@@ -63,7 +67,7 @@ InfoSetBgColor:
 	BNE :+
 		RTS	
   : LDA dlg_itemid
-	CMP #$1C
+	CMP #$1C			; or CMP #$20 if ext consumables (1 byte at $B721)
 	BCS :+
 		RTS
   : CMP #$6C	

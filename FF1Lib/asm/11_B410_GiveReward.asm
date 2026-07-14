@@ -86,10 +86,10 @@ GiveReward:                    ; (8 bytes)
   @OpenChest:                  ;
     INC dlgsfx                 ; set dlgsfx to play the TC jingle E67D
   @TooFull:                    ; jump here with C set to show "Can't Hold" text and no jingle
-    LDX #DLGID_TCGET           ; and select "In This chest you found..." text A2F0
+    LDX #DLGID_TCGET           ; and select "In This chest you found..." text (F0) A2F0
     BCC :+                     ; 9004
-      INC $60B9                ; EEB760
-      INX                      ; E8
+      INC $60B9                ; Increase the "Can't Hold" stat for credits, etc. EEB760  
+      INX                      ; Select the "Can't Hold" text (F1) E8
 :   TXA                        ; 8A
     RTS                        ; 60
 
