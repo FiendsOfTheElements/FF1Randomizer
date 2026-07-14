@@ -40,7 +40,7 @@ BCS SMMove_Norm_RTS ;save a byte by just branching to a nearby rts instead of ha
 ;
 
 game_flags = $6200
-OBJID_REVEALUNLOCKEDDOOR = $F9
+OBJID_REVEALUNLOCKEDDOOR = $FA
 ;bank 1b
 .ORG $9300
 CheckDoorLocked:
@@ -53,7 +53,7 @@ CheckDoorLocked:
     LDX #0                    ; otherwise (door is locked)
     STX tileprop+1            ; erase the secondary attribute byte (prevent it from being a locked shop)
     LDX item_mystickey        ; check to see if the player has the key
-    BNE DoorUnlocked             ; if they do, open the door
+    BNE SetDoorFlag             ; if they do, open the door
       LDX #$00
       STX lockpicking_status
       JSR CheckLockPicking
@@ -63,19 +63,16 @@ CheckDoorLocked:
       JSR CheckLockPicking
       LDX #$C0
       JSR CheckLockPicking
-      
-
-
-
       ; A has lockpicking_status 1 if lockpicking achieved, 0 otherwise
       EOR #1 ; flip the bit
       TAY
       BNE Exit
-  DoorUnlocked:
-    LDY #$00
+  SetDoorFlag:
     LDA game_flags+OBJID_REVEALUNLOCKEDDOOR
     ORA #GAME_EVENT_FLAG
     STA game_flags+OBJID_REVEALUNLOCKEDDOOR
+  DoorUnlocked:
+    LDY #$00
   Exit:
     LDX door_bits
     LDA #BANK_MENUS

@@ -6,6 +6,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace FF1Lib
 {
+	
 	public enum MusicShuffle
 	{
 		[Description("None")]
@@ -133,6 +134,8 @@ namespace FF1Lib
 	
 	public partial class FF1Rom
 	{
+		public string RubyString = "RUBY";
+		public string LuteString = "LUTE";
 		public const int TyroPaletteOffset = 0x30FC5;
 		public const int TyroSpriteOffset = 0x20560;
 
@@ -954,6 +957,7 @@ namespace FF1Lib
 				dialogues.InsertDialogues(dialogsUpdate);
 
 			ItemsText[(int)Item.Lute] = newLute;
+			LuteString = newLute;
 		}
 
 		public void ChangeFountainText(bool changeFountain, DialogueData dialogues, MT19337 rng)
@@ -1142,6 +1146,7 @@ namespace FF1Lib
 
 			// substitute key item
 			ItemsText[(int)Item.Ruby] = newRuby;
+			RubyString = newRuby;
 		}
 
 		private Dictionary <int,String> SubstituteKeyItemInExtraNPCDialogues(string original, string replacement, DialogueData dialogues)
