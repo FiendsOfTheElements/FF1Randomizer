@@ -1384,7 +1384,7 @@
 		"Id": "spellNameMadness",
 		"title": "Spell Name Obfuscation",
 		"screenshot": "spellNameMadness.png",
-		"description": "Hides the actual spell names for all spells:\n\nMixed Up: Shuffles spell names.\n\nMadness: Creates random codewords."
+		"description": "Hides the actual spell names for all spells:\n\nMixed Up: Shuffles spell names.\n\nMadness: Creates random codewords.\n\nFUCK ICE: Renames all spells to AICE."
 	},
 
 	{

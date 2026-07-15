@@ -1226,6 +1226,17 @@ namespace FF1Lib
 				PutInBank(0x0C, 0xB3E8, Blob.FromHex("AD8F6CC900D00D"));
 			}
 		}
+
+		public void FuckIce(Flags flags)
+		{
+			if (flags.SpellNameMadness == SpellNameMadness.FuckIce)
+			{
+				for (int i = 176; i < 176 + 64; i++)
+				{
+					ItemsText[i] = "AICE";
+				}
+			}
+		}
 	}
 
 	public enum SpellNameMadness
@@ -1237,7 +1248,10 @@ namespace FF1Lib
 		MixedUp,
 
 		[Description("Madness")]
-		Madness
+		Madness,
+
+		[Description("FUCK ICE")]
+		FuckIce,
 	}
 
 	public class SpellSlotInfo
