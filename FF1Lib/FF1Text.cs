@@ -583,8 +583,7 @@ namespace FF1Lib
 			if ((bool)flags.Treasures && flags.ShardHunt)
 				await rom.AddShardGraphics(0x12, 0x8800, preferences.LegacyShardDisplay, resourcePackSettings.OrbGraphics); // If we're in shard hunt, add the shard graphics.
 
-			if (flags.Tracker)
-				rom.AddTrackerIcons(flags,unmodifiedFlags);
+			
 
 			if (preferences.OrbLetterOverlays)
 				rom.AddOrbLetterOverlays();

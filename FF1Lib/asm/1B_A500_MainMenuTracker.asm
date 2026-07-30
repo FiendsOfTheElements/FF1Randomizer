@@ -54,7 +54,6 @@ DEST_BANK   = $1B
 ;; this requires a new lockpicking routine. See 1B_9300_LockpickDoors.asm for details. The main thing
 ;; is a new CheckLockpicking routine that produces a 1 (lockpicking achieved) or 0 (no) for a given character.
 CheckLockpicking = $9350  ; bank $1B
-OptionBoxAndGoMode = $A0C0 ; bank $0E
 
 
 DrawMainMenuGoldBox = $B86E ; bank $0E
@@ -142,7 +141,7 @@ text_ptr = $3E
 ch_maxmp = $6328
 LOCKPICKING_ICON = $44
 OBJID_REVEALUNLOCKEDDOOR = $FA
-GMFLG_EVENT = #$02
+GMFLG_EVENT = $02
 
 
 .ORG $A500 ; bank $1B
@@ -232,12 +231,13 @@ box_ht          = $3D
 cur_bank        = $57
 
 GOMODE_ICON     = $45
-HINT1_ICON      = $46
-HINT2_ICON      = $47
-SRNG1_ICON      = $48
-SRNG2_ICON      = $49
-SOGO1_ICON      = $4A
-SOGO2_ICON      = $4B
+BLACKORB_ICON   = $46
+HINT1_ICON      = $47
+HINT2_ICON      = $48
+SRNG1_ICON      = $49
+SRNG2_ICON      = $4A
+SOGO1_ICON      = $4B
+SOGO2_ICON      = $4C
 BLANK           = $FF
 
 OBJID_BLACKORB  = $CA
@@ -374,16 +374,28 @@ DrawReminders:
     BNE :-
   JMP CheckGoMode
 
-; put a JMP here because DrawOptionMenu is too far to branch to for much of this
-DrawOptionMenuJMP:
-  JMP DrawOptionMenu
+; put a JMP here because DrawBlackOrbOrGoMode is too far to branch to for much of this
+DrawBlackOrbOrGoModeJMP:
+  JMP DrawBlackOrbOrGoMode
 
 CheckGoMode:
   LDA lut_GoModeSettings      ; are we checking go mode?
-  BEQ DrawOptionMenuJMP
+  BNE :+                      ; if so, jump ahead
+    JMP DrawOptionMenu        ; if not, just go on to draw the option menu and exit
+  :
+    LDA #BLANK                ; init black orb / go mode icon with blank tile. 
+    STA display_buf           ; will also be used as flag to check whether we've talked to black orb much further down
+    LDY #OBJID_BLACKORB       ; load black orb objid here saves some bytes further down
+    LDX lut_GoModeSettings+8  ; do we need to talk to black orb?
+    BEQ CheckLute             ; if not, skip ahead
+      JSR CheckGameEventFlag  ; Have we talked to black orb? (Y has black orb objid)
+      BCC CheckLute           ; if we haven't, we might still be in go mode, so go check other stuff
+        LDA #BLACKORB_ICON    ; but if we have, we'll put the black orb icon in the display buffer.
+        STA display_buf       ; this might be overwritten by the GoMode icon, or if still blank, it indicates we haven't talked to black orb
 
+CheckLute:
   LDA item_lute               ; do we have LUTE?
-  BEQ DrawOptionMenuJMP
+  BEQ DrawBlackOrbOrGoModeJMP ; if not, jump ahead
 
 ;;;;;;;;;;;;;
 CheckOrbsOrShards:
@@ -394,8 +406,7 @@ CheckOrbsOrShards:
   LDA lut_GoModeSettings+2    ; shard hunt?
   BNE ShardHunt
   Orbs:
-    LDY #OBJID_BLACKORB
-    JSR IsObjectVisible
+    JSR IsObjectVisible     ; Is black orb visible? (Y still has black orb objid)
     BCS EarthOrb            ; if it is visible, go on to the rest of the orb checks
       JMP CheckKey          ; otherwise, we have already opened the portal, and can check Key requirements
     EarthOrb:
@@ -403,7 +414,7 @@ CheckOrbsOrShards:
       LDX lut_GoModeSettings+4  ; Earth Orb Required?
       BEQ EarthOrbNotRequired
         CMP #0
-        BEQ DrawOptionMenuJMP
+        BEQ DrawBlackOrbOrGoModeJMP
     EarthOrbNotRequired:
       STA tmp
     FireOrb:
@@ -411,7 +422,7 @@ CheckOrbsOrShards:
       LDX lut_GoModeSettings+5  ; Fire Orb Required?
       BEQ FireOrbNotRequired
         CMP #0
-        BEQ DrawOptionMenuJMP
+        BEQ DrawBlackOrbOrGoModeJMP
     FireOrbNotRequired:
       CLC
       ADC tmp
@@ -421,7 +432,7 @@ CheckOrbsOrShards:
       LDX lut_GoModeSettings+6  ; Water Orb Required?
       BEQ WaterOrbNotRequired
         CMP #0
-        BEQ DrawOptionMenuJMP
+        BEQ DrawBlackOrbOrGoModeJMP
     WaterOrbNotRequired:
       CLC
       ADC tmp
@@ -431,12 +442,12 @@ CheckOrbsOrShards:
       LDX lut_GoModeSettings+7  ; Air Orb Required?
       BEQ AirOrbNotRequired
         CMP #0
-        BEQ DrawOptionMenuJMP
+        BEQ DrawBlackOrbOrGoModeJMP
     AirOrbNotRequired:
       CLC
       ADC tmp                   ; A now has the count of orbs lit
       CMP lut_GoModeSettings+3  ; compare with required number of orbs
-      BCC DrawOptionMenuJMP        ; if we didn't meet the goal, exit
+      BCC DrawBlackOrbOrGoModeJMP        ; if we didn't meet the goal, exit
         ; code reaches here if we have lute and have met the orb requirements
         CMP #4                  ; if we have 4 orbs, then we can be sure we've made the Orb requirements,
         BEQ CheckKey            ; and we can go on to check the Key requirement.
@@ -444,16 +455,20 @@ CheckOrbsOrShards:
           LDX lut_GoModeSettings+8  ; do we need to talk to the black orb?
           BEQ CheckKey              ; if not, go on to check the Key requirement.
             ; if we do:
-            CMP #2                  ; does the black orb give us information?
-            BEQ DrawOptionMenuJMP
-              LDY #OBJID_BLACKORB
-              JSR CheckGameEventFlag
-              BCC DrawOptionMenu
-              BCS CheckKey
+            CPX #2                  ; does the black orb give us information?
+            BEQ DrawBlackOrbOrGoMode   ; if not, we can't know we're in go mode
+              ; LDY #OBJID_BLACKORB       ; here we could check the black orb again, but since we've done that above, we
+              ; JSR CheckGameEventFlag    ; can use the tile currently in display_buf as a proxy flag
+              ; BCC DrawBlackOrbOrGoMode
+              ; BCS CheckKey
+              LDA display_buf
+              CMP #BLANK                  ; if display_buf is blank, we haven't yet talked to black orb
+              BNE CheckKey                ; if it's not, go on to CheckKey
+                JMP DrawOptionMenu        ; if it is, there's nothing to draw, so we can just go draw option menu and exit
   ShardHunt:
     LDA shards
     CMP lut_GoModeSettings+3  ; goal
-    BCC DrawOptionMenu
+    BCC DrawBlackOrbOrGoMode
 
   CheckKey:
     LDA item_mystickey    ; if we have key, we can show go mode!
@@ -472,12 +487,15 @@ CheckOrbsOrShards:
       ; code reaches here if we have met lute and orb/shard requirements, but we either don't have the key, haven't achieved lockpicking
       ; or we have achieved lockpicking but we don't want to spoil it.
       LDA lut_GoModeSettings+11   ; is ToFR unlocked?
-      BEQ DrawOptionMenu          ; if not, move on
+      BEQ DrawBlackOrbOrGoMode          ; if not, move on
         LDA lut_GoModeSettings+12 ; otherwise, we are in go mode, but we need to check if we can spoil that.
-        BEQ DrawOptionMenu        ; if not, we have to move on. Otherwise, we can show go mode!
+        BEQ DrawBlackOrbOrGoMode        ; if not, we have to move on. Otherwise, we can show go mode!
 
   DrawGoMode:
     LDA #GOMODE_ICON
+    STA display_buf
+  DrawBlackOrbOrGoMode:
+    LDA display_buf   ; could be #BLANK, #BLACKORB_ICON, or #GOMODE_ICON
     LDY $2002         ; reset ppu
     LDY #$20            ; we'll draw in the first part of the nametable
     STY $2006         

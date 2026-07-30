@@ -946,6 +946,8 @@ dlgsfx 				= $7D
 tmp 				= $70
 
 Talk_BlackOrb:
+        LDY #OBJID_BLACKORB
+        JSR SetGameEventFlag
         CLC
         LDA orb_fire
         ADC orb_water
@@ -953,15 +955,12 @@ Talk_BlackOrb:
         ADC orb_earth
         CMP #ORBS_GOAL
         BCC NotEnoughLit
-        LDY #OBJID_BLACKORB
+        ;LDY #OBJID_BLACKORB  Y still has black orb objid
         JSR HideThisMapObject
         INC dlgsfx
         INC dlgsfx
         LDA tmp+1
         RTS
-
     NotEnoughLit:
-        LDY #OBJID_BLACKORB
-        JSR SetGameEventFlag
         LDA tmp+2
         RTS

@@ -2205,9 +2205,9 @@
 	},
 	{
 		"Id": "showGoModeCheckBox",
-		"title": "Show Go Mode",
-		"screenshot": "showGoModeCheckBox.png",
-		"description": "When enabled, display an icon in the Orb box when the player has achieved the Go Mode game state.\nIn general, \"Go Mode\" means the player has attained all the knowledge and requirements necessary to enter the Temple of Fiends and reach CHAOS\n• All required orbs lit / shards collected. Note: If a random number of orbs, or a specific subset of orbs are required, Go Mode will not be revealed unless the player has talked to the Black Orb to learn how many / which orbs are required.\n• KEY (or thief lockpicking) has been acquired in order to unlock doors in Temple of Fiends\n• LUTE is in the inventory.\nThere are many variations on these basic requirements. See the wiki URL in the main Tracker tooltip for a comprehensive guide.\nNote: display of Go Mode is affected by the No Tri-state Spoilers flag, below."
+		"title": "Show Go Mode and Black Orb Requirements",
+		"screenshot": "showGoModeCheckBox.gif",
+		"description": "When enabled, display an icon in the Orb box when the player has achieved the Go Mode game state.\nIn general, \"Go Mode\" means the player has attained all the knowledge and requirements necessary to enter the Temple of Fiends and reach CHAOS\n• All required orbs lit / shards collected. Note: If a random number of orbs or a specific subset of orbs is required, and Black Orb Spoilers is on, an icon displaying the Black Orb requirements is displayed after the player has talked to the Black Orb.\n• KEY (or thief lockpicking) has been acquired in order to unlock doors in Temple of Fiends\n• LUTE is in the inventory.\nThere are many variations on these basic requirements. See the wiki URL in the main Tracker tooltip for a comprehensive guide.\nNote: display of Go Mode is affected by the No Tri-state Spoilers flag, below."
 	},
 	{
 		"Id": "noTristateSpoilersCheckBox",
@@ -2534,7 +2534,7 @@
 		"Id": "OrbsRequiredModeDropDown",
 		"title": "Total Orbs Required",
 		"screenshot": "orbsRequiredDropDown.png",
-		"description": "Changes the total number of ORBS needed to enter the Temple of Fiends Revisited.\n[grid][r]{i}Option|{i}Explained[r]{l}4|{l}(Vanilla Behavior) All 4 ORBS are required[r]{l}Any 3|{l}Any combination of 3 ORBS are accepted[r]{l}Any 2|{l}Any combination of 2 ORBS are accepted[r]{l}Any 1|{l}Any single ORB is accepted[r]{l}Specific 3|{l}3 Randomly selected ORBS are required[r]{l}Specific 2|{l}2 Randomly selected ORBS are required[r]{l}Specific 1|{l}1 Randomly selected ORB is required[r]{l}0|{l}No ORBS are required\n\n\"Total Orbs Required: Random\" will pick a number 1 - 3.\n\nGoing above the minimum ORB requirement will still grant access to ToFR.\nThis option is ignored if Shard Hunt or Deep Dungeon is enabled."
+		"description": "Changes the total number of ORBS needed to enter the Temple of Fiends Revisited.\n[grid][r]{i}Option|{i}Explained[r]{l}4|{l}(Vanilla Behavior) All 4 ORBS are required[r]{l}Any 3|{l}Any combination of 3 ORBS are accepted[r]{l}Any 2|{l}Any combination of 2 ORBS are accepted[r]{l}Any 1|{l}Any single ORB is accepted[r]{l}Specific 3|{l}3 Randomly selected ORBS are required[r]{l}Specific 2|{l}2 Randomly selected ORBS are required[r]{l}Specific 1|{l}1 Randomly selected ORB is required[r]{l}0|{l}No ORBS are required\n\n\"Total Orbs Required: Random\" will pick a number 1-3 or 0-4 depending on the dropdown selection. If \"Any (0-4)\" or \"Specific (0-4)\" is selected, the randomizer weights the random orb requirement as follows:\n0 Orbs: 1/16 chance\n1 Orb:  4/16 chance\n2 Orbs: 6/16 chance\n3 Orbs: 4/16 chance\n4 Orbs: 1/16 chance\n\nGoing above the minimum ORB requirement will still grant access to ToFR.\nThis option is ignored if Shard Hunt or Deep Dungeon is enabled."
 	},
 	{
 		"Id": "orbsRequiredSpoilersCheckbox",
