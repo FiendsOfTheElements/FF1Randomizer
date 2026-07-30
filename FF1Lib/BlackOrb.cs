@@ -164,10 +164,14 @@ namespace FF1Lib
 		}
 		public enum OrbsRequiredMode
 		{
-			[Description("Any")]
+			[Description("Any (1-3)")]
 			Any,
-			[Description("Specific")]
+			[Description("Any (0-4)")]
+			AnyAll,
+			[Description("Specific (1-3)")]
 			Random,
+			[Description("Specific (0-4)")]
+			RandomAll,
 		}
 
 		public void SetOrbRequirement(MT19337 rng, TalkRoutines talkroutines, DialogueData dialogues, int orbsRequiredCount, OrbsRequiredMode mode, bool spoilersEnabled)
@@ -179,12 +183,25 @@ namespace FF1Lib
 				case 3: goal = 3; break;
 				case 2: goal = 2; break;
 				case 1: goal = 1; break;
-				case 0: { goal = 0; mode = OrbsRequiredMode.Any; }  break; // for 0 Orbs, force Any
-				case 5: goal = rng.Between(1, 3); break;
+				case 0: goal = 0;  break; 
+				case 5:
+					if (mode == OrbsRequiredMode.Any || mode == OrbsRequiredMode.Random)
+					{
+						goal = rng.Between(1, 3);
+					}
+					else
+					{
+						goal = new List<(int, int)>([(0,1),(1,4),(2,6),(3,4),(4,1)]).PickRandomItemWeighted(rng);
+					}
+					break;
 			}
 
 			OrbShardGoal = goal;
 
+			if (goal == 0)
+			{
+				mode = OrbsRequiredMode.Any;
+			}
 
 			Dictionary<int, String> updatedBlackOrbDialogue = new Dictionary<int, String>();
 			String orbIntro = "The ORBS now cover";
@@ -197,16 +214,16 @@ namespace FF1Lib
 			}
 			updatedBlackOrbDialogue.Add(0x21, $"{orbIntro}\nthe black ORB..\nTo take a step forward\nis to go back 2000 years\nin time.");
 
-			if (mode.Equals(OrbsRequiredMode.Any))
+			if (mode.Equals(OrbsRequiredMode.Any) || mode.Equals(OrbsRequiredMode.AnyAll))
 			{
-				// Orb Requirement is Any 3, Any 2, Any 1, or 0
+				// Orb Requirement is Any 3, Any 2, Any 1, or 0; or all 4
 
 				// Adjust Black Orb talk routine to check for <GOAL> number of orbs.
 				// See 11_8200_TalkRoutines.asm
 				// talkroutines.Replace(TalkScripts.Talk_BlackOrb, Blob.FromHex($"18AD31606D32606D33606D3460C9{goal:X2}900CA0CA209690E67DE67DA57160A57260"));
-				// this new talkroutine below sets the black orb game event flag when it's talked to without having achieved the orb goal. This lets us
+				// this new talkroutine below sets the black orb game event flag when it's talked to. This lets us
 				// use it as a requirement for indicating Go Mode in the in-game tracker.
-				talkroutines.Replace(TalkScripts.Talk_BlackOrb, Blob.FromHex($"18AD31606D32606D33606D3460C9{goal:X2}900CA0CA209690E67DE67DA57160A0CA207F90A57260"));
+				talkroutines.Replace(TalkScripts.Talk_BlackOrb, Blob.FromHex($"A0CA207F9018AD31606D32606D33606D3460C9{goal:X2}900A209690E67DE67DA57160A57260"));
 
 				
 				// make portal under Black Orb walkable
@@ -220,11 +237,12 @@ namespace FF1Lib
 						case 1: total = "ONE"; break;
 						case 2: total = "TWO"; break;
 						case 3: total = "THREE"; break;
+						case 4: total = "FOUR"; break;
 					}
 					updatedBlackOrbDialogue.Add(0x22, $"The black ORB\nwhispers ominously..\nBring me {total}.");
 				}
 			} else {
-				// Orb Requirement is Random 3, Random 2, or Random 1
+				// Orb Requirement is Random 3, Random 2, or Random 1, or all 4
 
 				List<String> orbsNeeded = BlackOrbRequiresSpecificOrbs(rng, goal, talkroutines);
 
@@ -241,7 +259,8 @@ namespace FF1Lib
 							if (i < orbsNeeded.Count - 1)
 							{
 								hintLine2 += orbsNeeded[i].ToUpper();
-								if (orbsNeeded.Count == 3) { hintLine2 += ", "; } else { hintLine2 += " "; };
+								if (orbsNeeded.Count >= 3) { hintLine2 += ", "; } else { hintLine2 += " "; };
+								if (orbsNeeded.Count == 4 && i == 1) hintLine2 += "\n";
 							} else
 							{
 								hintLine2 += "and " + orbsNeeded[i].ToUpper() + ".";
@@ -294,7 +313,7 @@ namespace FF1Lib
 			//                                      ^watr && watr && watr && watr^
 
 			StringBuilder asm = new StringBuilder();
-			asm.Append("AD");
+			asm.Append("A0CA207F90AD");
 			for (int i = 0; i < 4; i++) // substituting 4 comparisons
 			{
 				string orbName = requiredOrbs[0];
@@ -322,10 +341,10 @@ namespace FF1Lib
 					requiredOrbs.RemoveAt(0);
 				}
 			}
-			asm.Remove(24, 2); // removes unneeded trailing "2D" from appends above
+			asm.Remove(asm.Length - 2, 2); // removes unneeded trailing "2D" from appends above
 			// asm.Append("F00CA0CA209690E67DE67DA57160A57260"); // trailing asm from original talkroutine
 			// adds a set game event flag when talking to black orb without required orbs, similar to above.
-			asm.Append("F00CA0CA209690E67DE67DA57160A0CA207F90A57260"); // trailing asm from original talkroutine
+			asm.Append("F00A209690E67DE67DA57160A57260"); // trailing asm from original talkroutine
 			talkroutines.Replace(TalkScripts.Talk_BlackOrb, Blob.FromHex(asm.ToString()));
 			
 

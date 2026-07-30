@@ -55,19 +55,25 @@ namespace FF1Lib
 		FilledCheckbox = 39,
 		LockPicking = 40,
 		GoMode = 41,
-		HintsL = 42,
-		HintsR = 43,
-		SRNGL = 44,
-		SRNGR = 45,
-		SOGOL = 46,
-		SOGOR = 47,
+		BlackOrb = 42,
+		BlackOrb0 = 43,
+		BlackOrb1 = 44,
+		BlackOrb2 = 45,
+		BlackOrb3 = 46,
+		BlackOrb4 = 47,
+		HintsL = 48,
+		HintsR = 49,
+		SRNGL = 50,
+		SRNGR = 51,
+		SOGOL = 52,
+		SOGOR = 53,
 	}
 	public partial class FF1Rom
 	{
-		const int TRACKER_ICON_BANK = 0x12;
-		const int TRACKER_ICON_OFFSET = 0x8810;
-		const int TRACKER_CHECKBOX_OFFSET = 0x8F40;
-		const int TRACKER_MAINMENU_ICON_OFFSET = 0x8C40;
+		const int TrackerIconBank = 0x12;
+		const int TrackerIconOffset = 0x8810;
+		const int TrackerCheckboxOffset = 0x8F40;
+		const int TrackerMainMenuIconOffset = 0x8C40;
 
 		public void InGameTracker(Flags flags, Flags unmodifiedFlags, Preferences preferences)
 		{
@@ -76,6 +82,7 @@ namespace FF1Lib
 				return;
 			}
 			
+			AddTrackerIcons(flags,unmodifiedFlags);
 			// set the width of the "ITEM" box, which we'll use for the tracker:
 			//PutInBank(0x0E, 0xBABE, 0x00); // 0xBABE!!
 			// This value can be customized to conserve space. Note that the width here does not include the two border columns.
@@ -227,7 +234,9 @@ namespace FF1Lib
 			byte GoModeUnlockedToFR = (bool)flags.ChaosRush ? (byte)0x01 : (byte)0x00;
 			byte GoModeSpoilUnlockedToFR = (byte)0x01;
 
-			if (flags.OrbsRequiredCount == 5 || flags.OrbsRequiredMode == OrbsRequiredMode.Random)
+			if (flags.OrbsRequiredCount == 5 ||
+				flags.OrbsRequiredMode == OrbsRequiredMode.Random ||
+				flags.OrbsRequiredMode == OrbsRequiredMode.RandomAll)
 			{
 				// require talking to black orb? Will the black orb even give any information?
 				GoModeTalkToBlackOrb = (bool)flags.OrbsRequiredSpoilers ? (byte)0x01 : (byte)0x02;
@@ -263,7 +272,7 @@ namespace FF1Lib
 			PutInBank(0x1B,0xA560,Blob.FromHex(OptionBoxDims));
 			PutInBank(0x1B,0xA564,reminderSettings);
 			PutInBank(0x1B,0xA569,goModeSettings);
-			PutInBank(0x1B,0xA580,Blob.FromHex("AD60A58538AD61A58539AD62A5853CAD63A5853DA91B85572063E0C63B20ABDCE63BE63BAD60A5C902F002E63AAD64A5D0034C36A6A200AD65A5F01FA9469D106EE8A9479D106EE8A9FF9D106EE8AD64A52901D006A9FF9D106EE8AD66A5F01FA9489D106EE8A9499D106EE8A9FF9D106EE8AD64A52901D006A9FF9D106EE8AD67A5F00BA94A9D106EE8A94B9D106EAD68A58510A200BD106EAC0220A4558C0620A4548C06208D0720E654E8C610D0E64C36A64CE9A6AD69A5F0F8AD2160F0F3AD6BA5D064A0CA20FBA3B0034CB1A6AD3160AE6DA5F004C900F0D88510AD3260AE6EA5F004C900F0CA1865108510AD3360AE6FA5F004C900F0B91865108510AD3460AE70A5F004C900F0A8186510CD6CA590A0C904F01AAE71A5F015C902F093A0CA20F5A39042B008AD3560CD6CA59038AD2560D020AD72A5F011AD046EF00CAD73A5D011A0FA20F5A3B00AAD74A5F018AD75A5F013A945AC0220A0208C0620AC6AA58C06208D0720A204A9B948A93948A90E4C03FE"));
+			PutInBank(0x1B,0xA580,Blob.FromHex("AD60A58538AD61A58539AD62A5853CAD63A5853DA91B85572063E0C63B20ABDCE63BE63BAD60A5C902F002E63AAD64A5D0034C36A6A200AD65A5F01FA9479D106EE8A9489D106EE8A9FF9D106EE8AD64A52901D006A9FF9D106EE8AD66A5F01FA9499D106EE8A94A9D106EE8A9FF9D106EE8AD64A52901D006A9FF9D106EE8AD67A5F00BA94B9D106EE8A94C9D106EAD68A58510A200BD106EAC0220A4558C0620A4548C06208D0720E654E8C610D0E64C36A64CF3A6AD69A5D0034C07A7A9FF8D106EA0CAAE71A5F00A20F5A39005A9468D106EAD2160F0DAAD6BA5D06320FBA3B0034CC9A6AD3160AE6DA5F004C900F0C18510AD3260AE6EA5F004C900F0B31865108510AD3360AE6FA5F004C900F0A21865108510AD3460AE70A5F004C900F091186510CD6CA59089C904F01BAE71A5F016E002F03CAD106EC9FFD00B4C07A7AD3560CD6CA5902AAD2560D020AD72A5F011AD046EF00CAD73A5D011A0FA20F5A3B00AAD74A5F00AAD75A5F005A9458D106EAD106EAC0220A0208C0620AC6AA58C06208D0720A204A9B948A93948A90E4C03FE"));
 
 		}
 
@@ -298,6 +307,111 @@ namespace FF1Lib
 					2,2,2,2,2,2,2,2,
 					2,2,2,2,2,2,2,2,
 					2,2,2,2,2,2,2,2
+				]
+			;
+
+			byte[] BlackOrbSpecific =
+				[
+					2,0,0,0,0,0,0,2,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					2,0,0,0,0,0,0,2,
+				]
+			;
+
+			byte[] BlackOrbSpecificEarth =
+				// [
+				// 	0,0,0,0,0,0,0,0,
+				// 	0,0,0,0,0,0,0,0,
+				// 	0,0,0,0,0,0,0,0,
+				// 	0,0,0,0,0,0,0,0,
+				// 	0,0,0,0,1,1,1,0,
+				// 	0,0,0,0,1,1,0,0,
+				// 	0,0,0,0,1,0,0,0,
+				// 	0,0,0,0,1,1,1,0,
+				// ]
+				[
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,3,1,0,
+					0,0,0,0,1,1,0,1,
+					0,0,0,0,0,1,1,0,
+				]
+			;
+
+			byte[] BlackOrbSpecificFire =
+				// [
+				// 	1,1,1,0,0,0,0,0,
+				// 	1,1,0,0,0,0,0,0,
+				// 	1,0,0,0,0,0,0,0,
+				// 	1,0,0,0,0,0,0,0,
+				// 	0,0,0,0,0,0,0,0,
+				// 	0,0,0,0,0,0,0,0,
+				// 	0,0,0,0,0,0,0,0,
+				// 	0,0,0,0,0,0,0,0,
+				// ]
+				[
+					0,0,1,0,0,0,0,0,
+					0,1,1,0,0,0,0,0,
+					0,1,3,1,0,0,0,0,
+					0,0,3,1,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+				]
+			;
+
+			byte[] BlackOrbSpecificWater =
+				// [
+				// 	0,0,0,0,3,0,3,0,
+				// 	0,0,0,0,3,0,3,0,
+				// 	0,0,0,0,3,3,3,0,
+				// 	0,0,0,0,3,3,3,0,
+				// 	0,0,0,0,0,0,0,0,
+				// 	0,0,0,0,0,0,0,0,
+				// 	0,0,0,0,0,0,0,0,
+				// 	0,0,0,0,0,0,0,0,
+				// ]
+				[
+					0,0,0,0,0,0,3,0,
+					0,0,0,0,0,2,3,2,
+					0,0,0,0,0,3,3,3,
+					0,0,0,0,0,1,3,1,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+				]
+			;
+
+			byte[] BlackOrbSpecificAir =
+				// [
+				// 	0,0,0,0,0,0,0,0,
+				// 	0,0,0,0,0,0,0,0,
+				// 	0,0,0,0,0,0,0,0,
+				// 	0,0,0,0,0,0,0,0,
+				// 	0,3,0,0,0,0,0,0,
+				// 	3,0,3,0,0,0,0,0,
+				// 	3,3,3,0,0,0,0,0,
+				// 	3,0,3,0,0,0,0,0,
+				// ]
+				[
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,
+					1,0,0,0,0,0,0,0,
+					0,1,1,0,0,0,0,0,
+					3,0,0,0,0,0,0,0,
+					0,3,3,3,0,0,0,0,
 				]
 			;
 			
@@ -363,23 +477,60 @@ namespace FF1Lib
 			{
 				DarkenIconTile(TrackerIcons[TrackerIcon.Ship]);
 			}
+
+			if (!flags.ShardHunt && flags.OrbsRequiredCount != 4 && (bool)flags.OrbsRequiredSpoilers)
+			{
+				if (flags.OrbsRequiredMode == OrbsRequiredMode.Any || flags.OrbsRequiredMode == OrbsRequiredMode.AnyAll)
+				{
+					switch (OrbShardGoal)
+					{
+						case 0: TrackerIcons[TrackerIcon.BlackOrb] = TrackerIcons[TrackerIcon.BlackOrb0]; break;
+						case 1: TrackerIcons[TrackerIcon.BlackOrb] = TrackerIcons[TrackerIcon.BlackOrb1]; break;
+						case 2: TrackerIcons[TrackerIcon.BlackOrb] = TrackerIcons[TrackerIcon.BlackOrb2]; break;
+						case 3: TrackerIcons[TrackerIcon.BlackOrb] = TrackerIcons[TrackerIcon.BlackOrb3]; break;
+						case 4: TrackerIcons[TrackerIcon.BlackOrb] = TrackerIcons[TrackerIcon.BlackOrb4]; break;
+					}
+				}
+				else
+				{
+					List<byte[]> requiredOrbs = new();
+					if (EarthOrbRequired) requiredOrbs.Add(BlackOrbSpecificEarth);
+					if (FireOrbRequired) requiredOrbs.Add(BlackOrbSpecificFire);
+					if (WaterOrbRequired) requiredOrbs.Add(BlackOrbSpecificWater);
+					if (AirOrbRequired) requiredOrbs.Add(BlackOrbSpecificAir);
+					foreach (byte[] overlay in requiredOrbs)
+					{
+						for (int i = 0; i < 64; i++)
+						{
+							BlackOrbSpecific[i] |= overlay[i];
+						}
+					}
+					TrackerIcons[TrackerIcon.BlackOrb] = BlackOrbSpecific;
+				}
+			}
 			
 			for (int i = 0; i<31; i++)
 			{	
-				PutInBank(TRACKER_ICON_BANK, i*0x10 + TRACKER_ICON_OFFSET, EncodeForPPU(TrackerIcons[(TrackerIcon)i]));
+				PutInBank(TrackerIconBank, i*0x10 + TrackerIconOffset, EncodeForPPU(TrackerIcons[(TrackerIcon)i]));
 			}
 
-			//PutInBank(TRACKER_ICON_BANK, TRACKER_ICON_OFFSET + 0x200, TrackerIcons[TrackerIcon.Shard]);
+			//PutInBank(TrackerIconBank, TrackerIconOffset + 0x200, TrackerIcons[TrackerIcon.Shard]);
 
 			// TODO add icons for Sprint Shoes, Repel, probably over the old ghost at 0x8E00
 
-			PutInBank(TRACKER_ICON_BANK, TRACKER_CHECKBOX_OFFSET, EncodeForPPU(TrackerIcons[TrackerIcon.EmptyCheckbox]));
-			PutInBank(TRACKER_ICON_BANK, TRACKER_CHECKBOX_OFFSET + 0x10, EncodeForPPU(TrackerIcons[TrackerIcon.FilledCheckbox]));
+			PutInBank(TrackerIconBank, TrackerCheckboxOffset, EncodeForPPU(TrackerIcons[TrackerIcon.EmptyCheckbox]));
+			PutInBank(TrackerIconBank, TrackerCheckboxOffset + 0x10, EncodeForPPU(TrackerIcons[TrackerIcon.FilledCheckbox]));
 
-			// add 8 tiles for the main menu
-			for (int i = 0; i<8; i++)
+			// add tiles for main menu tracker
+			for (int i = 0; i<9; i++)
 			{
-				PutInBank(TRACKER_ICON_BANK, i*0x10 + TRACKER_MAINMENU_ICON_OFFSET, EncodeForPPU(TrackerIcons[(TrackerIcon)(i+40)]));
+				// Lockpicking, GoMode, BlackOrb
+				PutInBank(
+					TrackerIconBank, 
+					i*0x10 + TrackerMainMenuIconOffset,
+					EncodeForPPU(TrackerIcons[(TrackerIcon)(i + (i > 2 ? 45 : 40))]) // 40, 41, 42, 48-53
+				);
+				
 			}
 		}
 	}
