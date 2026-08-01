@@ -516,6 +516,8 @@ namespace FF1Lib
 		}
 
 
+
+
 		// LATER: the fiend/chaos sprite stuff should probably also work with a container class, but it's not pressing.
 		// right now alt fiends probably doesn't play well with resource packs, and there could be problems with
 		// planned fun fiend sprites as well. More important to take care with flag interactions and to be sure
@@ -536,7 +538,7 @@ namespace FF1Lib
 
 					//Console.WriteLine($"area {areaX} {areaY}    pixel {left} {top}   candpal {candidatePals.Count}");
 
-					var firstUnique = new Dictionary<Rgba32, int>();
+					var firstUnique = new Dictionary<Rgba32, (int X, int Y)>();
 					var colors = new List<Rgba32>();
 					for (int y = top; y < (top+16); y++)
 					{
@@ -544,7 +546,7 @@ namespace FF1Lib
 						{
 							if (!colors.Contains(image[x,y]))
 							{
-								firstUnique[image[x,y]] = (x<<16 | y);
+								firstUnique[image[x,y]] = (x,y);//(x<<16 | y);
 								colors.Add(image[x,y]);
 							}
 						}
@@ -553,6 +555,10 @@ namespace FF1Lib
 					if (!makeNTPalette(colors, NESpalette, out pal, toNEScolor)) {
 						//await this.Progress($"WARNING: Failed importing fiend at {left}, {top}, too many unique colors (limit 4 unique colors):", 1+pal.Count);
 						Console.WriteLine($"WARNING: Failed importing fiend at {left}, {top}, too many unique colors (limit 4 unique colors):", 1 + pal.Count);
+						for (int i = 0; i < colors.Count; i++)
+						{
+							Console.WriteLine($"First occurrence of {colors[i]} at X: {firstUnique[colors[i]].X} , Y: {firstUnique[colors[i]].Y}");
+						}
 						for (int i = 0; i < pal.Count; i++)
 						{
 							//await this.Progress($"WARNING: NES palette {i}: ${pal[i],2:X}");
@@ -663,7 +669,7 @@ namespace FF1Lib
 							}
 							else 
 							{
-								idx = (byte)(chrIndex(tile, chrEntries, 110) + 18);
+								idx = (byte)(chrIndex(tile, chrEntries, 106) + 18);
 							}
 							if (idx == 0xff)
 							{
@@ -707,7 +713,7 @@ namespace FF1Lib
 			// Strictly speaking, the max CHR count should be 106,
 			// so that it doesn't clobber the "+" tile we use in weapon and armor names.
 			// We could rotate the locations of these tiles to provide a little more room if needed...
-			if (CHR.Count < 110)
+			if (CHR.Count < 106)
 			{
 				int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (18 * 16);
 				for (int i = 0; i < CHR.Count; i++)
@@ -735,7 +741,7 @@ namespace FF1Lib
 			*/
 			FiendImport(krakenImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal2 * 4));
 			FiendImport(tiamatImage, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal2 * 4));
-			if (CHR.Count < 110)
+			if (CHR.Count < 106)
 			{
 				int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (18 * 16);
 				for (int i = 0; i < CHR.Count; i++)
@@ -774,7 +780,7 @@ namespace FF1Lib
 					*/
 				FiendImport(image, 8, 8, 0, 0, CHR, FIENDDRAW_TABLE + (0x50 * 1), BATTLEPALETTE_OFFSET + (formations[LICH1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[LICH1].pal2 * 4));
 				FiendImport(image, 8, 8, 64, 0, CHR, FIENDDRAW_TABLE + (0x50 * 0), BATTLEPALETTE_OFFSET + (formations[KARY1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[KARY1].pal2 * 4));
-				if (CHR.Count < 110)
+				if (CHR.Count < 106)
 				{
 					int offset = BATTLEPATTERNTABLE_OFFSET + (formations[LICH1].tileset * 2048) + (18 * 16);
 					for (int i = 0; i < CHR.Count; i++)
@@ -784,7 +790,7 @@ namespace FF1Lib
 				}
 				else
 				{
-					await this.Progress($"WARNING: Error importing Lich and Kary, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles between both fiends");
+					await this.Progress($"WARNING: Error importing Lich and Kary, too many unique CHR ({CHR.Count}), must be less than 106 unique 8x8 tiles between both fiends");
 				}
 			}
 			{
@@ -795,7 +801,7 @@ namespace FF1Lib
 				*/
 				FiendImport(image, 8, 8, 0, 64, CHR, FIENDDRAW_TABLE + (0x50 * 2), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[KRAKEN1].pal2 * 4));
 				FiendImport(image, 8, 8, 64, 64, CHR, FIENDDRAW_TABLE + (0x50 * 3), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal1 * 4), BATTLEPALETTE_OFFSET + (formations[TIAMAT1].pal2 * 4));
-				if (CHR.Count < 110)
+				if (CHR.Count < 106)
 				{
 					int offset = BATTLEPATTERNTABLE_OFFSET + (formations[KRAKEN1].tileset * 2048) + (18 * 16);
 					for (int i = 0; i < CHR.Count; i++)
@@ -805,7 +811,7 @@ namespace FF1Lib
 				}
 				else
 				{
-					await this.Progress($"WARNING: Error importing Kraken and Tiamat, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles between both fiends");
+					await this.Progress($"WARNING: Error importing Kraken and Tiamat, too many unique CHR ({CHR.Count}), must be less than 106 unique 8x8 tiles between both fiends");
 				}
 			}
 	    }
@@ -818,7 +824,7 @@ namespace FF1Lib
 			List<byte[]> CHR = new List<byte[]>();
 			//await FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
 			FiendImport(image, 14, 12,  0, 0, CHR, CHAOSDRAW_TABLE, BATTLEPALETTE_OFFSET+(formations[CHAOS].pal1 * 4), BATTLEPALETTE_OFFSET+(formations[CHAOS].pal2 * 4));
-			if (CHR.Count < 110)
+			if (CHR.Count < 106)
 			{
 				int offset = BATTLEPATTERNTABLE_OFFSET + (formations[CHAOS].tileset * 2048) + (18 * 16);
 				for (int i = 0; i < CHR.Count; i++)
@@ -828,7 +834,7 @@ namespace FF1Lib
 			}
 			else
 			{
-				await this.Progress($"WARNING: Error importing Chaos, too many unique CHR ({CHR.Count}), must be less than 110 unique 8x8 tiles");
+				await this.Progress($"WARNING: Error importing Chaos, too many unique CHR ({CHR.Count}), must be less than 106 unique 8x8 tiles");
 			}
 	    }
 
