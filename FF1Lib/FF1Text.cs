@@ -18,70 +18,70 @@ namespace FF1Lib
 		}
 		public enum MenuString
 		{
-			None = 0,
-			CurrentGold,
-			ItemMagicWeaponArmorStatus,
-			MenuItemTitle,
-			EmptyInventory,
-			UseLuteSuccess,
-			UseLute,
-			UseCrown,
-			UseCrystal,
-			UseHerb,
-			UseKey,
-			UseTNT,
-			UseAdamant,
-			UseSlab,
-			UseRuby,
-			UseRodSuccess,
-			UseRod,
-			UseFloaterSuccess,
-			UseFloater,
-			UseChime,
-			UseTail,
-			UseCube,
-			UseBottleSuccess,
-			UseBottle,
-			UseOxyale,
-			UseCanoe,
-			UseTentSuccess,
-			UseTent,
-			UseCabinSuccess,
-			UseCabin,
-			UseHouseSuccess,
-			UseHouse,
-			PotionHeal,
-			PotionPure,
-			PotionSoft,
-			StatusName,
-			StatusClass,
-			StatusLevel,
-			StatusExp,
-			StatusLeftPanel,
-			StatusRightPanel,
-			MenuMagicName,
-			MenuMagicLevels,
-			MagicCure,
-			MagicHeal,
-			MagicPure,
-			MagicLife,
-			MagicWarp,
-			MagicSoft,
-			MagicExit,
-			MagicOutOfMP,
-			MagicCantUseHere,
-			MenuWeaponTitle,
-			MenuEquipTradeDrop,
-			MenuEquipmentName1,
-			Unknown55,
-			MenuEquipmentName2,
-			Unknown57,
-			MenuEquipmentName3,
-			Unknown59,
-			MenuEquipmentName4,
-			Unknown61,
-			MenuArmorTitle,
-			UseLodgingSave
+			None = 0,						// 0x00
+			CurrentGold = 1,				// 0x01
+			ItemMagicWeaponArmorStatus = 2,	// 0x02
+			MenuItemTitle = 3,				// 0x03
+			EmptyInventory = 4,				// 0x04
+			UseLuteSuccess = 5,				// 0x05
+			UseLute = 6,					// 0x06
+			UseCrown = 7,					// 0x07
+			UseCrystal = 8,					// 0x08
+			UseHerb = 9,					// 0x09
+			UseKey = 10,					// 0x0A
+			UseTNT = 11,					// 0x0B
+			UseAdamant = 12,				// 0x0C
+			UseSlab = 13,					// 0x0D
+			UseRuby = 14,					// 0x0E
+			UseRodSuccess = 15,				// 0x0F
+			UseRod = 16,					// 0x10
+			UseFloaterSuccess = 17,			// 0x11
+			UseFloater = 18,				// 0x12
+			UseChime = 19,					// 0x13
+			UseTail = 20,					// 0x14
+			UseCube = 21,					// 0x15
+			UseBottleSuccess = 22,			// 0x16
+			UseBottle = 23,					// 0x17
+			UseOxyale = 24,					// 0x18
+			UseCanoe = 25,					// 0x19
+			UseTentSuccess = 26,			// 0x1A
+			UseTent = 27,					// 0x1B
+			UseCabinSuccess = 28,			// 0x1C
+			UseCabin = 29,					// 0x1D
+			UseHouseSuccess = 30,			// 0x1E
+			UseHouse = 31,					// 0x1F
+			PotionHeal = 32,				// 0x20
+			PotionPure = 33,				// 0x21
+			PotionSoft = 34,				// 0x22
+			StatusName = 35,				// 0x23
+			StatusClass = 36,				// 0x24
+			StatusLevel = 37,				// 0x25
+			StatusExp = 38,					// 0x26
+			StatusLeftPanel = 39,			// 0x27
+			StatusRightPanel = 40,			// 0x28
+			MenuMagicName = 41,				// 0x29
+			MenuMagicLevels = 42,			// 0x2A
+			MagicCure = 43,					// 0x2B
+			MagicHeal = 44,					// 0x2C
+			MagicPure = 45,					// 0x2D
+			MagicLife = 46,					// 0x2E
+			MagicWarp = 47,					// 0x2F
+			MagicSoft = 48,					// 0x30
+			MagicExit = 49,					// 0x31
+			MagicOutOfMP = 50,				// 0x32
+			MagicCantUseHere = 51,			// 0x33
+			MenuWeaponTitle = 52,			// 0x34
+			MenuEquipTradeDrop = 53,		// 0x35
+			MenuEquipmentName1 = 54,		// 0x36
+			Unknown55 = 55,					// 0x37
+			MenuEquipmentName2 = 56,		// 0x38
+			Unknown57 = 57,					// 0x39
+			MenuEquipmentName3 = 58, 		// 0x3A	
+			Unknown59 = 59,					// 0x3B
+			MenuEquipmentName4 = 60,		// 0x3C
+			Unknown61 = 61,					// 0x3D
+			MenuArmorTitle = 62,			// 0x3E
+			UseLodgingSave = 63				// 0x3F
 		}
 
 		private static readonly string[] TextByBytes;
@@ -692,37 +692,100 @@ namespace FF1Lib
 
 	public class MenuText
 	{
-		public Blob[] MenuStrings { get; set; }
-		private int stringCount = 0x40;
-		private int pointerOffset = 0x38500;
-		private int textOffset = 0x38580;
-		private int pointerBase = 0x30000;
+		//public Blob[] MenuStrings { get; set; }
+		public List<Blob> MenuStrings { get; set; }
+		private const int _menuTextSourceBank = 0x0E;
+		private const int _menuTextDestBank = 0x12;
+		private const int _initCount = 0x40;
+		private const int _pointerOffset = 0x8500;
+		// private const int _textSourceOffset = 0x8580;
+		private const int _textDestOffset = 0x9100;
+		private const int _charTextDestOffset = 0x8620;
+
+		// OLD CONSTANTS and CONSTRUCTOR; KEEP COMMENTED UNTIL NEW ONE FULLY TESTED
+		// private int stringCount = 0x40;
+		// private int pointerOffset = 0x38500;
+		// private int textOffset = 0x38580;
+		// private int pointerBase = 0x30000;
+		// public MenuText(FF1Rom rom)
+		// {
+		// 	MenuStrings = new Blob[stringCount];
+		// 	List<ushort> pointers = rom.Get(pointerOffset, 2 * stringCount).ToUShorts().ToList();
+
+		// 	for (int i = 0; i < pointers.Count - 1; i++)
+		// 	{
+		// 		//Use next pointer to determine length, strange bugs occur if we just look for null terminators for all strings
+		// 		MenuStrings[i] = rom.Get(pointerBase + pointers[i], pointers[i + 1] - pointers[i]);
+		// 	}
+		// 	//No next pointer, so look for null terminator for length of final string
+		// 	MenuStrings[stringCount-1] = rom.ReadUntil(pointerBase + pointers[stringCount-1], 0x00);
+
+		// 	rom.AllMenuStrings = from m in MenuStrings select FF1Text.BytesToText(m);
+		// }
+
 		public MenuText(FF1Rom rom)
 		{
-			MenuStrings = new Blob[stringCount];
-			List<ushort> pointers = rom.Get(pointerOffset, 2 * stringCount).ToUShorts().ToList();
-
-			for (int i = 0; i < pointers.Count - 1; i++)
+			MenuStrings = [];
+			List<ushort> pointers = [..rom.GetFromBank(_menuTextSourceBank,_pointerOffset,2 * _initCount).ToUShorts()];
+			
+			for (int i = 0; i < _initCount - 1; i++)
 			{
-				//Use next pointer to determine length, strange bugs occur if we just look for null terminators for all strings
-				MenuStrings[i] = rom.Get(pointerBase + pointers[i], pointers[i + 1] - pointers[i]);
+				//Use next pointer to determine length; strange bugs occur if we just look for null terminators for all strings.
+				MenuStrings.Add(rom.GetFromBank(_menuTextSourceBank,pointers[i], pointers[i+1] - pointers[i]));
 			}
-			//No next pointer, so look for null terminator for length of final string
-			MenuStrings[stringCount-1] = rom.ReadUntil(pointerBase + pointers[stringCount-1], 0x00);
+			// No next pointer, so look for null terminator for length of final string
+			MenuStrings.Add(rom.ReadFromBankUntil(_menuTextSourceBank,pointers[_initCount-1], 0x00));
+			// rom.AllMenuStrings = from m in MenuStrings select FF1Text.BytesToText(m);			
 		}
+
+		// OLD WRITE() METHOD; KEEP COMMENTED UNTIL NEW ONE FULLY TESTED
+		// public void Write(FF1Rom rom)
+		// {
+		// 	int offset = textOffset;
+		// 	var plainstrings = from m in MenuStrings select FF1Text.BytesToText(m);
+			
+		// 	ushort[] pointers = new ushort[stringCount];
+		// 	for (int i = 0; i < stringCount; i++)
+		// 	{
+		// 		rom.Put(offset, MenuStrings[i]);
+
+		// 		pointers[i] = (ushort)(offset - pointerBase);
+		// 		offset += MenuStrings[i].Length;
+		// 	}
+		// 	rom.Put(pointerOffset, Blob.FromUShorts(pointers.ToArray()));
+		// }
+
 		public void Write(FF1Rom rom)
 		{
-			int offset = textOffset;
-			var plainstrings = from m in MenuStrings select FF1Text.BytesToText(m);
-			ushort[] pointers = new ushort[stringCount];
-			for (int i = 0; i < stringCount; i++)
-			{
-				rom.Put(offset, MenuStrings[i]);
+			int offset = _textDestOffset;
+			int charoffset = _charTextDestOffset;
+			int count = MenuStrings.Count;
 
-				pointers[i] = (ushort)(offset - pointerBase);
-				offset += MenuStrings[i].Length;
+			Console.WriteLine($"Writing {count} menu strings.");
+
+			List<ushort> pointers = [];
+			for (int i = 0; i < count; i++)
+			{
+				if (i >= (int)FF1Text.MenuString.StatusName && i <= (int)FF1Text.MenuString.MenuMagicLevels)
+				{
+					rom.PutInBank(_menuTextSourceBank,charoffset,MenuStrings[i]);
+					pointers.Add((ushort)charoffset);
+					charoffset += MenuStrings[i].Length;
+				}
+				else
+				{
+					rom.PutInBank(_menuTextDestBank,offset,MenuStrings[i]);
+					pointers.Add((ushort)offset);
+					offset += MenuStrings[i].Length;
+				}
 			}
-			rom.Put(pointerOffset, Blob.FromUShorts(pointers.ToArray()));
+			//Console.WriteLine($"Character String Space: {charoffset - _charTextDestOffset :X4}");
+			rom.PutInBank(_menuTextSourceBank,_pointerOffset,Blob.FromUShorts([.. pointers]));
+
+			// move DrawMenuString from B938 to 8600 to accommodate swapping the text to bank 0x12
+			rom.PutInBank(0x0E,0x8600,Blob.FromHex("0AAABD0085853EBD0185853FA9128557A90E85584C36DE"));
+			rom.PutInBank(0x0E,0xB938,Blob.FromHex("4C0086"));
+
 		}
 	}
 
@@ -733,8 +796,8 @@ namespace FF1Lib
 		public const int ItemTextPointerBase = 0x20000;
 		public const int ItemTextOffset = 0x2B900;
 
-		private List<string> _itemsTexts = new();
-		private List<ushort> _itemsPointers = new();
+		private List<string> _itemsTexts = [];
+		private List<ushort> _itemsPointers = [];
 
 		private Blob ReadUntil(FF1Rom rom, int offset, byte delimiter)
 		{

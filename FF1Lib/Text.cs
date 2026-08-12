@@ -2,6 +2,7 @@
 {
 	public partial class FF1Rom
     {
+		//public IEnumerable<string> AllMenuStrings;
 	    public const int ItemTextPointerOffset = 0x2B700;
 	    public const int ItemTextPointerCount = 256;
 	    public const int ItemTextPointerBase = 0x20000;
@@ -29,6 +30,19 @@
 
 		    return texts;
 	    }
+
+		public string[] ReadTextFromBank(int bank, int pointerOffset, int count)
+		{
+			var pointers = GetFromBank(bank,pointerOffset,2*count).ToUShorts().ToList();
+
+			var texts = new string[count];
+			for (int i = 0; i < pointers.Count; i++)
+			{
+				texts[i] = FF1Text.BytesToText(ReadFromBankUntil(bank,pointers[i],0x00));
+			}
+
+			return texts;
+		}
 
 	    public void WriteText(string[] texts, int pointerOffset, int pointerBase, int textOffset)
 	    {
@@ -69,5 +83,19 @@
 
 			return bytes.ToArray();
 	    }
+
+		public Blob ReadFromBankUntil(int bank, int offset, byte delimiter, bool extended = true)
+		{
+			int lastbank = extended ? 0x1F : 0x0F;
+			int bankAddress = bank*0x4000;
+			offset += bankAddress - (bank == lastbank? 0xC000 : 0x8000);
+			List<byte> bytes = [];
+			while (Data[offset] != delimiter && offset < bankAddress+0x4000)
+			{
+				bytes.Add(Data[offset++]);
+			}
+			bytes.Add(delimiter);
+			return bytes.ToArray();
+		}
 	}
 }
