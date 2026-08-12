@@ -366,6 +366,12 @@ public partial class FF1Rom : NesRom
 		// Write Flagstring + Version for reference
 		var urlpart = (FFRVersion.Branch == "master") ? FFRVersion.Version.Replace('.','-') : "beta-" + FFRVersion.Sha.PadRight(7).Substring(0, 7);
 		PutInBank(0x1E, 0xBE00, Encoding.ASCII.GetBytes($"FFRInfo|Seed: {seed}|OW Seed: {owseed}|Res. Pack Hash: {((resourcepackhash == "00") ? "none" : resourcepackhash)}|Flags: {Flags.EncodeFlagsText(umodifiedflags)}|Version: {urlpart}"));
+
+		// Write mode identifier byte
+		if (flags.ShardHunt == true)
+		{
+			PutInBank(0x0E, 0xBDFE, 0x53); // S for Shard Hunt
+		}
 	}
 
 	public string SpoilBlursings()
