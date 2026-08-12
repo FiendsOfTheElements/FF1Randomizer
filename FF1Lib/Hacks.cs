@@ -95,7 +95,7 @@ namespace FF1Lib
 		}
 		public void EnableAirBoat(Flags flags)
 		{
-			if (!(bool)flags.AirBoat)
+			if (!(bool)flags.AirBoat || (bool)flags.NoOverworld)
 			{
 				return;
 			}

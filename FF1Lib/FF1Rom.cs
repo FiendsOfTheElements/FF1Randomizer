@@ -167,6 +167,30 @@ public partial class FF1Rom : NesRom
 		}
 	}
 
+	public byte GetByteFromBank(int bank, int address, bool extended = true)
+	{
+		int lastbank = extended ? 0x1F : 0x0F;
+
+		if (bank == lastbank)
+		{
+			if ((address - 0xC000) >= 0x4000)
+			{
+				throw new Exception("Data is too large to fit within one bank.");
+			}
+			int offset = (bank * 0x4000) + (address - 0xC000);
+			return this.Data[offset];
+		}
+		else
+		{
+			if ((address - 0x8000) >= 0x4000)
+			{
+				throw new Exception("Data is too large to fit within one bank.");
+			}
+			int offset = (bank * 0x4000) + (address - 0x8000);
+			return this.Data[offset];
+		}
+	}
+
 	public Blob CreateLongJumpTableEntry(byte bank, ushort addr)
 	{
 		List<byte> tmp = new List<byte> { 0x20, 0xC8, 0xD7 }; // JSR $D7C8, beginning of each table entry

@@ -1,8 +1,8 @@
 
 
 unsram 		        = $6000
-items		        = unsram + $20
-game_flags          = unsram + $0200 
+items		        = unsram+$20
+game_flags          = unsram+$0200 
 
 tmp		            = $10
 tileprop            = $44 ; 2 bytes
@@ -23,7 +23,7 @@ GMFLG_TCOPEN		= $04
 lut_TrappedChest	= $8F00
 lut_Treasure		= $B100   ; BANK_TREASURE
 
-InTalkBattleNoRun   = $9600 
+;InTalkBattleNoRun   = $9600 
 InTalkReenterMap 	= $9618
 CheckCanTake        = $B180
 InTalkDialogueBox	= $963D
@@ -71,20 +71,21 @@ OpenTreasureChest:
 ;; and exits with the dialogue ID in X
 
 ;; Monster-in-a-box's CheckTrap routine also enters with
-;; item ID in accumulator and exits with dialogue ID in X
+;; item ID in accumulator, but we need to JMP to it rather than JSR to it,
+;; so it needs to exit with the dialogue ID in A instead of X
 
 ; .ORG $DD88
 CheckTrapOrGiveReward:
 
     ; Normal or Chests in Order                                             MIAB 
-    JSR GiveReward          ; 2010B4                                        JSR CheckTrap           ; 3 bytes
+    JSR GiveReward          ; 2010B4                                        JMP CheckTrap           ; 3 bytes
                                           
-;; Save Chest as Open                                                       TXA                     ; 1 byte
-    BCS :+                  ; B00A                                          RTS                     ; 1 byte
+;; Save Chest as Open                                                       
+    BCS :+                  ; B00A                                         
       LDY tileprop+1        ; A445                                                                  
-      LDA game_flags, Y     ; B90062                                                                ; 5 bytes
+      LDA game_flags,Y      ; B90062                                                                
       ORA #GMFLG_TCOPEN     ; 0904
-      STA game_flags, Y     ; 990062
+      STA game_flags,Y      ; 990062
 
     TXA                     ; 8A      X <- Dialogue ID
     RTS                     ; 60
@@ -98,27 +99,26 @@ CheckTrapOrGiveReward:
 
 
 
-.ORG $8EA0
+.ORG $8E9B ;;; must not go into $8F00, where lut_TrappedChest goes.
   
 CheckTrap:
-  ;; this was LDA dgl_itmid, because the original MIAB prelude stored the
-  ;; item ID at dgl_itemid instead in Y before doing the bank swap.
-  
+  ;; this was LDA dlg_itemid, because the original MIAB prelude stored the
+  ;; item ID at dlg_itemid instead in Y before doing the bank swap.
   ;; but because it's now entering with the item ID in A
-  ;; we can do the store in dgl_itemid here instead --
+  ;; we can do the store in dlg_itemid here instead --
   ;; only changes one byte!
 
-  STA dgl_itemid              ; 85 61
+  STA dlg_itemid              ; 85 61
   JSR CheckCanTake            ; check the inventory space
   BCS CantTake                ; If not branch
     LDX tileprop+1            ; Get tile property (chest ID)
-    LDA lut_TrappedChest, X   ; Check if that chest is trapped
+    LDA lut_TrappedChest,X    ; Check if that chest is trapped
     BEQ NoTrap                ; If $00, no trap, branch and gve the item		
       STA btlformation        ; If it is, store the battle formation
-	  LDA dlg_itemid		  ; save dlg_itemid
-	  PHA					  ; save dlg_itemid
+	  LDA dlg_itemid		  
+	  PHA					              ; push dlg_itemid
 	  LDA #$0
-	  STA dlg_itemid		  ; clear dlg_itemid
+	  STA dlg_itemid		        ; clear dlg_itemid
       LDA #$C0                ; Show "Monster-in-a-box!"
       JSR InTalkDialogueBox   
       LDA btlformation        ; Get back battle formation
@@ -127,34 +127,43 @@ CheckTrap:
       CMP btl_result          ; Check if we ran from battle
       BNE WonBattle           ; If we did
 DontGiveItem:    
-		PLA					  ; remove dlg_itemid from stack
+		    PLA					          ; remove dlg_itemid from stack
         JSR InTalkReenterMap  ; Skip giving the item
-        PLA                   ; Clear an extra address in the stack
-        PLA                   ;  since we're one routine deeper
-        ;;; If "chests appear open" is on, we're yet one routine deeper than this, and we'll need
-        ;;; to clear two more bytes from the stack or warping will be bugged. There's not enough room
-        ;;; to do that at SkipDialogueBox, so a routine at a different address is provided in the asm
-        ;;; for chests appear opened. Rando will replace this JMP address if needed with the other one
-        ;;; ($B934)
-        JMP SkipDialogueBox   
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;; If "chests appear open" is on, we're one routine deeper, since OpenTreasureChest is wrapped in another routine.
+        ;;; We'll need to clear the return address from the stack or warping will be bugged.
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;; Rando takes care of these two bytes
+        ;;;                         Chests Appear Opened:
+        NOP                         ; PLA
+        NOP                         ; PLA
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        JMP SkipDialogueBox   ; We don't need to worry about exiting with dlg_itemid in A, since we're skipping the dialogue
 WonBattle:
-	  PLA					  ; restore dlg_itemid
-	  STA dlg_itemid 	      ; restore dlg_itemid
+	    PLA					            ; restore dlg_itemid
+	    STA dlg_itemid 	        ; restore dlg_itemid
       LDA #$7B
-      CMP btlformation          ; Check if we killed Chaos
+      CMP btlformation        ; Check if we killed Chaos
       BEQ KilledChaos                 
       JSR GiveItem            ; Give the item
       JSR InTalkReenterMap    ; And reenter the map
-      LDX #$F0                ; Load "In this chest you've found..."
-	  STX tileprop+1		  ; Fake a TileProp(must be non zero)
-      RTS
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      ;;; Same as above for Chests Appear Open
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      ;;;                           Chests Appear Opened:
+      NOP                           ; PLA
+      NOP                           ; PLA
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      LDA #$F0                ; Load "In this chest you've found..."
+	    STA tileprop+1		      ; Fake a TileProp(must be non zero)
+      RTS                     ; Return with dialog ID in A
 KilledChaos:
   JMP VictoryLoop
 NoTrap:
   JSR GiveItem                ; GiveItem only
-  RTS
+  TXA                         ; Transfer dialog ID
+  RTS                         ; Return from OpenTreasureChest
 CantTake:
-  TAX                         ; Transfer dialog ID
   RTS
 
 GiveItem:
@@ -162,14 +171,15 @@ GiveItem:
   LDA dlg_itemid           ; Get item
   JSR GiveReward           ; Give item as normal
   LDY tileprop+1           ; get the ID of this chest A445
-  LDA game_flags, Y        ; flip on the TCOPEN flag to mark this TC as open
+  LDA game_flags,Y         ; flip on the TCOPEN flag to mark this TC as open
   ORA #GMFLG_TCOPEN  
-  STA game_flags, Y  
+  STA game_flags,Y  
   RTS
 
  .ORG $8E80
 ; Trigger a battle inside the talk routine
-InTalkBattleNoRun:
+;; note, this is different from the routine stored at $9600, which is for NPCs only
+InTalkBattleNoRun:         
   STA btlformation         ; store battle formation
   STA btl_SpikeTileFlag    ; treat chest fight like spike Tile for SetRNG
   JSR BattleTransition     ; Do transition

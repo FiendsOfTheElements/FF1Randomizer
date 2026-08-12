@@ -5,6 +5,7 @@
 ;
 ; ~ = No upper range is enforced in the code, data could potentially overlap other used ranges.
 ; ! = Potential bug, to correct
+; (range) Important data moved, leaving this range free.
 
 
 Bank Address Math
@@ -25,6 +26,7 @@ Memory Layout
 6E00-6E03 Tmp GP value in stats tracker
 6E04      Lockpicking Status
 6E10-6E4F Tracker Icon Buffer
+6FF0-6FF1 PRNG battlestep state
 8000-BFFF low bank (program banks loaded here)
 C000-FFFF always bank 1F
 
@@ -181,6 +183,10 @@ ROM: 34000-37FFF
 0D   BA69-BA6A    Story Text Address + 1
 
 ROM: 38000-3BFFF
+0E   (8580-8D69)  Menu text data, moved to bank 12
+0E   8500-85FF    DrawMenuString Pointers (includes room for new ones)
+0E   8600-8616    New DrawMenuString routine
+0E   8620-8789    Character stat menu strings (not moved to bank 12)
 0E   8DE4-8E10    Fix character stat rendering
 OE   9079-90D9    Restore npc manip routines
 0E   9273-92A3    Restore map object
@@ -209,7 +215,7 @@ ROM: 40000-43FFF
 ROM: 44000-47FFF
 11   8000-81A0    NPC Objects talk table
 11  ~8200-85C6    [NO MAX SET] Talk Routines
-11   8EA0-9000    Monster In A Box
+11   8E80-9000    Monster In A Box
 11   901B-906D    Talk to object upgraded
 11   902B-9915    Moving NPC talk routines
 11   95C8-95D4    Random promotions [modify DoClassChanges, which was moved with NPC Talk Routines]
@@ -230,7 +236,7 @@ ROM: 44000-47FFF
 11   B600-B700    Incentive Chests Item Fanfare LUT
 11   B700-B831    Shop Upgrade routines
 11   B900-B922    Open chests in order
-11   B937-B9FF    Chests appear opened
+11   B940-B9FF    Chests appear opened
 11   BA00-BEE0    NPC Objects data
 
 ROM: 48000-4BFFF
@@ -239,6 +245,7 @@ ROM: 48000-4BFFF
 12   8F61-8F81    Shard Icon
 12   8E00-9000    Font Tileset
 12   9000-9038    New Icons routines
+12   ~9100-98F0   [NO MAX SET] Moved menu text from bank 0E 8580
 
 ROM: 4C000-4FFFF
 13

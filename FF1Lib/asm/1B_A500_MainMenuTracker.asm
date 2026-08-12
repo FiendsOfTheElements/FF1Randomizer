@@ -510,7 +510,10 @@ DrawOptionMenu:
 ; ASL
 ; TAX
 ; so if we load X with the string ID * 2, we can jump two bytes into that routine.
-  DrawMenuString2  = $B93A ; bank 0E, skipping first two bytes of that routine
+;  DrawMenuString2  = $B93A ; bank 0E, skipping first two bytes of that routine
+;; DrawMenuString is now at $8600 in order to move the menu texts to bank $12.
+
+DrawMenuString2 = $8602 ; bank 0E, skipping first two bytes of that routine
   LDX #$04    ; string ID is $02, so we LDX 2*2
   LDA #>(DrawMenuString2-1)
   PHA

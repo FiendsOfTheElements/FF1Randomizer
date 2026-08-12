@@ -278,7 +278,7 @@ namespace FF1Lib
 
 		private void BlackOrbChecksShardsCountFor(int goal, TalkRoutines talkroutines)
 		{
-			// black orb typically checks for earth($6031) fire($6032) water ($6033) wind ($6034)
+			// black orb typically checks for earth($6031) fire($6032) water ($6033) air ($6034)
 			// ShiftEarthOrbDown() creates a count at $6035, and this NPC talkroutine compares the $6035 value to goal
 			talkroutines.Replace(TalkScripts.Talk_BlackOrb, Blob.FromHex($"AD3560C9{goal:X2}300CA0CA209690E67DE67DA57160A57260"));
 
@@ -288,7 +288,7 @@ namespace FF1Lib
 
 		private List<String> BlackOrbRequiresSpecificOrbs(MT19337 rng, int goal, TalkRoutines talkroutines)
 		{
-			List<String> availableOrbs = new List<String> {	"earth", "fire", "water", "wind" };
+			List<String> availableOrbs = new List<String> {	"earth", "fire", "water", "air" };
 			List<String> requiredOrbs = new List<String>();
 
 			// choose X random orbs for goal
@@ -307,7 +307,7 @@ namespace FF1Lib
 			// change Black Orb requirement for specific orbs
 
 			// Talk_BlackOrb:                     AD 3260 2D 3360 2D 3460 2D 3160 F00CA0CA209690E67DE67DA57160A57260
-			//                                      ^fire && watr && wind && erth^
+			//                                      ^fire && watr && air && erth^
 			//
 			// Example that needs just water orb: AD 3360 2D 3360 2D 3360 2D 3360 F00CA0CA209690E67DE67DA57160A57260
 			//                                      ^watr && watr && watr && watr^
@@ -331,7 +331,7 @@ namespace FF1Lib
 						asm.Append("33602D"); // 6033 AND
 						WaterOrbRequired = true;
 						break;
-					case "wind":
+					case "air":
 						asm.Append("34602D"); // 6034 AND
 						AirOrbRequired = true;
 						break;

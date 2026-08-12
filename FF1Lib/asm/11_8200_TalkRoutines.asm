@@ -883,13 +883,13 @@ End_As6:
 has_canoe            = unsram + $12 ; 
 
 Talk_Canoe:
-  LDA has_canoe              ; see if the player has the Oxyale
+  LDA has_canoe              ; see if the player has the Mark
   BNE HaveCanoe              ; if they don't...
     LDA talkarray+1           ; ...print [1]
     RTS
 HaveCanoe:      
   LDY talkarray+6             ; otherwise (they do)
-  JSR HideMapObject           ; hide the sub engineer object (this object)
+  JSR HideMapObject           ; hide this map object
   LDA talkarray+2             ; and print [2]
   RTS
 
@@ -897,13 +897,13 @@ HaveCanoe:
   NOP
   
 Talk_Floater:
-  LDA item_floater            ; see if the player has the Oxyale
+  LDA item_floater            ; see if the player has the Sigil
   BNE HaveFloater             ; if they don't...
     LDA talkarray+1           ; ...print [1]
     RTS
 HaveFloater:      
   LDY talkarray+6             ; otherwise (they do)
-  JSR HideMapObject           ; hide the sub engineer object (this object)
+  JSR HideMapObject           ; hide this map object
   LDA talkarray+2             ; and print [2]
   RTS
 

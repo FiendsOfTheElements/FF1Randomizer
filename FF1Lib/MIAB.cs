@@ -64,21 +64,18 @@ namespace FF1Lib
 
 			// In order to get MIAB to work with Open Chests In Order, we need a different routine
 			// before running the CheckTrap routine here, so this removes the first 16 bytes of the
-			// write to DD78 above, and writes the remainder 0x10 bytes later
+			// write to DD78 above, and writes the remainder 0x10 bytes later.
 			// See 1F_DD78_Generalized_OpenTreasureChest.asm for the rationale.
-			PutInBank(0x1F, 0xDD88, Blob.FromHex("20A08E8A60"));
 
+			PutInBank(0x1F,0xDD88, Blob.FromHex("4C9B8E"));
 			// Check for trapped monster routine, see 11_8EC0_CheckTrap.asm
-			// PutInBank(0x11,0x8EA0,Blob.FromHex("A5612080B1B045A645BD008FF03A856AA56148A9008561A9C0203D96A56A20808EA903CD866BD0096820189668684C4396688561A97BC56AF00B20EE8E201896A2F08645604C38C920EE8E60AA6018A5612010B4A445B90062090499006260"));
-			
+
 			// changed the first byte of the write above. See 1F_DD78_Generalized_OpenTreasureChest.asm for rationale
 			// also need to select address for a different routine for running from a monster in a box if "chests appear open" is on;
 			// this fixes a bug where trying to warp encountered two extra bytes on the stack and caused a problem
 
-			string SkipDialogAddress = flags.ChestsAppearOpened ? "37B9": "4396"; 
-
-			PutInBank(0x11,0x8EA0,Blob.FromHex("85612080B1B045A645BD008FF03A856AA56148A9008561A9C0203D96A56A20808EA903CD866BD0096820189668684C" + SkipDialogAddress + "688561A97BC56AF00B20EE8E201896A2F08645604C38C920EE8E60AA6018A5612010B4A445B90062090499006260"));
-
+			string RemoveAddressFromStack = flags.ChestsAppearOpened ? "6868" : "EAEA";		
+			PutInBank(0x11,0x8E9B,Blob.FromHex("85612080B1B048A645BD008FF03C856AA56148A9008561A9C0203D96A56A20808EA903CD866BD00968201896" + RemoveAddressFromStack + "4C4396688561A97BC56AF00D20EB8E201896" + RemoveAddressFromStack + "A9F08545604C38C920EB8E8A606018A5612010B4A445B90062090499006260"));
 			// InTalkBattleNoRun to trigger fight
 			PutInBank(0x11, 0x8E80, Blob.FromHex("856A8D410320CDD8A9008D01208D1540A002204A96A001204A9660"));
 
