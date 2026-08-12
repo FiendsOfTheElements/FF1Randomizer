@@ -394,7 +394,7 @@ public partial class FF1Rom : NesRom
 		// Write mode identifier byte
 		if (flags.ShardHunt == true)
 		{
-			PutInBank(0x0E, 0xBDFE, 0x53); // S for Shard Hunt
+			PutInBank(0x1E, 0xBDFE, 0x53); // S for Shard Hunt
 		}
 	}
 
