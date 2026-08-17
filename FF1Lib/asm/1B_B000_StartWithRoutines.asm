@@ -435,8 +435,13 @@ LR_NoResist:
 ; Autocast AFir, AIce, ALit and ARub
 ASpellAutoCast:
   LDY #$00
-  STY tmp
-  LDA (btl_ob_charstat_ptr), Y
+  LDA (btl_ib_charstat_ptr), Y  ; Check if first character to reinit cumulative resist value to $00
+  BNE NotFirstCharacter
+    STA tmp+3
+NotFirstCharacter:
+  LDA tmp+3                     ; Load cumulative resist value
+  STA tmp                       ; And put it in current resist value
+  LDA (btl_ob_charstat_ptr), Y  ; Check if class has blursing
   TAX
   LDA lut_ASpellAutoCast, X 
   BEQ AS_NoASpell
@@ -475,7 +480,10 @@ AS_NoARub:
       ORA #$01 ;  Status Element
       STA tmp
 AS_NoAMut:
-    LDA btlch_elemresist
+    LDA tmp ; Store new cumulative resist value
+	STA tmp+3
+AS_NoASpell:
+    LDA btlch_elemresist  ; Apply, a bit wasteful, but good enough
     ORA tmp
     STA btlch_elemresist
     LDA btlch_elemresist+$12
