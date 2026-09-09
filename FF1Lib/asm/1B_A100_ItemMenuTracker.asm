@@ -114,6 +114,7 @@ OBJID_VAMPIRE      = $0C   ; Earth Cave's Vampire
 OBJID_SARDA        = $0D
 OBJID_BAHAMUT      = $0E   ; Bahamut
 OBJID_LEFEIN       = $0F   ; Lefein chime guy
+OBJID_SUBENGINEER  = $10   ; submarine block in Onrac
 OBJID_CUBEBOT      = $11   ; waterfall robot
 OBJID_PRINCESS_2   = $12   ; rescued princess (in Coneria Castle)
 OBJID_FAIRY        = $13   ; fairy that appears from the bottle
@@ -519,22 +520,39 @@ INX
   NoRod:
     INX
 
-; CheckLute:
-  LDA item_lute
-  BEQ NoLute
-    LDA #LUTE
+; ; CheckLute:
+;   LDA item_lute
+;   BEQ NoLute
+;     LDA #LUTE
+;     STA icon_buf,X
+;     LDY #OBJID_LUTEPLATE
+;     JSR IsObjectVisible
+;     BCS LutePlateNotCleared
+;       LDA #FILLEDCH
+;       BNE LuteCheckbox
+;     LutePlateNotCleared:
+;       LDA #EMPTYCH
+;     LuteCheckbox:
+;       STA icon_buf+BUF_OFFSET,X
+;   NoLute:
+;     INX
+CheckOxyale:
+  LDA item_oxyale
+  BEQ NoOxyale
+    LDA #OXYALE
     STA icon_buf,X
-    LDY #OBJID_LUTEPLATE
+    LDY #OBJID_SUBENGINEER
     JSR IsObjectVisible
-    BCS LutePlateNotCleared
+    BCS SubEngineerNotCleared
       LDA #FILLEDCH
-      BNE LuteCheckbox
-    LutePlateNotCleared:
+      BNE OxyaleCheckbox
+    SubEngineerNotCleared:
       LDA #EMPTYCH
-    LuteCheckbox:
+    OxyaleCheckbox:
       STA icon_buf+BUF_OFFSET,X
-  NoLute:
-    INX
+    NoOxyale:
+      INX
+
 
 ; column to separate passive items
 INX
@@ -554,12 +572,18 @@ INX
   NoChime:
     INX
 
-; CheckOxyale:
-  LDA item_oxyale
-  BEQ NoOxyale
-    LDA #OXYALE
+; ; CheckOxyale:
+;   LDA item_oxyale
+;   BEQ NoOxyale
+;     LDA #OXYALE
+;     STA icon_buf,X
+;   NoOxyale:
+; CheckLute:
+  LDA item_lute
+  BEQ NoLute
+    LDA #LUTE
     STA icon_buf,X
-  NoOxyale:
+  NoLute:
 
 ; CheckCube:
   LDA item_cube
