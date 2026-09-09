@@ -279,7 +279,7 @@ namespace FF1Lib
 			{
 				teams = new() {team};
 			}
-			if (team != FunEnemySpritesTeam.None)
+			if (team != FunEnemySpritesTeam.None && team != FunEnemySpritesTeam.Legacy)
 			{
 				foreach (FunEnemySpritesTeam t in teams)
 				{
