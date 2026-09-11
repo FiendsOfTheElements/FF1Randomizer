@@ -382,6 +382,7 @@ public partial class FF1Rom : NesRom
 		ScalePrices(ShopData, flags, rng, ((bool)flags.ClampMinimumPriceScale), ShopData.ItemShopSlot, flags.ImprovedClinic);
 		extConsumables.AddExtConsumables();
 		FixMute(flags);
+		FuckIce(flags);
 
 		await this.Progress();
 
