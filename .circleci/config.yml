@@ -22,6 +22,13 @@ jobs:
           root: ~/ff1randomizer/FF1Blazorizer/output
           paths:
             - wwwroot
+  netlifyinfo:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+        name: netlifyinfo
+        command: .circleci/netlifyinfo.sh
 
   deploy:
     <<: *defaults
@@ -41,6 +48,9 @@ workflows:
       - build:
           requires:
             - shellcheck/check
+      - netlifyinfo:
+          requires:
+            -shellcheck/check
       - hold:
           type: approval
       - deploy:
