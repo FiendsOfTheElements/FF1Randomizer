@@ -10,4 +10,5 @@ deployPreview=$(echo "$config" | jq -r ".deployPreview")
 
 
 curl --location --request GET 'https://api.netlify.com/api/v1/sites/${netlifyID}/deploys' \
-    		       --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" 
+    		       --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}"
+
