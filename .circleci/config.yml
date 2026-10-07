@@ -50,7 +50,7 @@ workflows:
             - shellcheck/check
       - netlifyinfo:
           requires:
-            -shellcheck/check
+            - shellcheck/check
       - hold:
           type: approval
       - deploy:
