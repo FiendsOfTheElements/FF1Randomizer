@@ -268,6 +268,7 @@ CheckBridge:
     ; code reaches here if we have a free bridge but we don't want to spoil the tri-state
     LDY #OBJID_REVEALBRIDGE
     JSR CheckGameEventFlag ; has it been seen yet?
+    LSR ;; OW items store their game flag in bit 3 instead of bit 2 to avoid interference with archipelago
     BCC NoBridge ; if not, exit
   :
   LDA bridge_vis
@@ -292,6 +293,7 @@ CheckShip:
     ; code reaches here if we have a free ship but we don't want to spoil the tri-state
     LDY #OBJID_REVEALSHIP
     JSR CheckGameEventFlag ; has it been seen yet?
+    LSR ;; OW items store their game flag in bit 3 instead of bit 2 to avoid interference with archipelago
     BCC NoShip ; if not, exit
   :
   LDA ship_vis
@@ -307,6 +309,7 @@ CheckCanal:
     ; code reaches here if we have a free canal but we don't want to spoil the tri-state
     LDY #OBJID_REVEALCANAL
     JSR CheckGameEventFlag ; has it been seen yet?
+    LSR ;; OW items store their game flag in bit 3 instead of bit 2 to avoid interference with archipelago
     BCC NoCanal
   :
   LDA canal_vis
@@ -322,6 +325,7 @@ CheckCanoe:
     ; code reaches here if we have a free canoe but we don't want to spoil the tri-state
     LDY #OBJID_REVEALCANOE
     JSR CheckGameEventFlag ; has it been seen yet?
+    LSR ;; OW items store their game flag in bit 3 instead of bit 2 to avoid interference with archipelago
     BCC NoCanoe
   :
   LDA has_canoe
@@ -343,6 +347,7 @@ CheckFloaterAirship:
       ; code reaches here if we have a free airship but we don't want to spoil the tri-state
       LDY #OBJID_REVEALAIRSHIP
       JSR CheckGameEventFlag ; has it been seen yet?
+      LSR ;; OW items store their game flag in bit 3 instead of bit 2 to avoid interference with archipelago
       BCC NoAirship
     :
     LDA airship_vis
@@ -1013,7 +1018,7 @@ InShipCanoe    = $E26A
 ;InCanoe   = $E275
 ConvertOWToSprite = $E3DF
 
-GMFLG_EVENT = $02
+OW_GMFLG_EVENT = $04
 
 
 .ORG $A400 ; bank $1B
@@ -1027,7 +1032,7 @@ SetOWSpriteGameFlags:
       JSR ConvertOWToSprite
       BCS CheckCanal
         LDA game_flags+OBJID_REVEALBRIDGE
-        ORA #GMFLG_EVENT
+        ORA #OW_GMFLG_EVENT
         STA game_flags+OBJID_REVEALBRIDGE
   CheckCanal:
     LDA canal_vis
@@ -1037,7 +1042,7 @@ SetOWSpriteGameFlags:
       JSR ConvertOWToSprite
       BCS CheckShip
         LDA game_flags+OBJID_REVEALCANAL
-        ORA #GMFLG_EVENT
+        ORA #OW_GMFLG_EVENT
         STA game_flags+OBJID_REVEALCANAL
   CheckShip:
     LDA ship_vis
@@ -1047,7 +1052,7 @@ SetOWSpriteGameFlags:
       JSR ConvertOWToSprite
       BCS CheckAirship        ;; out of bounds
         LDA game_flags+OBJID_REVEALSHIP
-        ORA #GMFLG_EVENT
+        ORA #OW_GMFLG_EVENT
         STA game_flags+OBJID_REVEALSHIP
   CheckAirship:
     LDA airship_vis
@@ -1057,14 +1062,14 @@ SetOWSpriteGameFlags:
       JSR ConvertOWToSprite
       BCS CheckCanoe
         LDA game_flags+OBJID_REVEALAIRSHIP
-        ORA #GMFLG_EVENT
+        ORA #OW_GMFLG_EVENT
         STA game_flags+OBJID_REVEALAIRSHIP
   CheckCanoe:
     LDY vehicle
     CPY #$02    ; canoe
     BNE CheckInShip
       LDA game_flags+OBJID_REVEALCANOE
-      ORA #GMFLG_EVENT
+      ORA #OW_GMFLG_EVENT
       STA game_flags+OBJID_REVEALCANOE
       JMP InShipCanoe
   CheckInShip:
