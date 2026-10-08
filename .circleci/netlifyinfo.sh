@@ -13,7 +13,7 @@ allsites=""
 
 while true; do
 
-    response=$(curl --location --request GET 'https://api.netlify.com/api/v1/sites?page=${thispage}' \
+    response=$(curl --location --request GET "https://api.netlify.com/api/v1/sites?page=${thispage}" \
     		       --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}")
     
     if [ "$(echo "$response" | jq length)" -eq 0 ]; then
@@ -25,7 +25,7 @@ while true; do
 
 done
 
-echo $allsites
+echo "$allsites"
     
 
 
