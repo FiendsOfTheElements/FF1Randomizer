@@ -10,5 +10,5 @@ set -x
 
 
 curl --location --request GET 'https://api.netlify.com/api/v1/sites' \
-    		       --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}"
+    		       --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" | jq .
 
