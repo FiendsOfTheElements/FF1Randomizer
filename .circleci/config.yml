@@ -27,8 +27,8 @@ jobs:
     steps:
       - checkout
       - run:
-        name: netlifyinfo
-        command: .circleci/netlifyinfo.sh
+          name: netlifyinfo
+          command: .circleci/netlifyinfo.sh
 
   deploy:
     <<: *defaults
