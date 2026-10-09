@@ -1,12 +1,9 @@
 #!/bin/bash
 set -e
-set -x
 
 
-#config=$(jq -r ".branchConfig | map(select(if .branch == \"default\" then true elif .branch == \"${CIRCLE_BRANCH}\" then true else false end)) | .[0]" .circleci/configs/config.json)
-#branch=$(echo "$config" | jq -r ".branch")
-#netlifyID=$(echo "$config" | jq -r ".netlifyID")
-#deployPreview=$(echo "$config" | jq -r ".deployPreview")
+days=365
+
 
 thispage=1
 allsites=""
@@ -25,7 +22,19 @@ while true; do
 
 done
 
-echo "$allsites"
+site_ids=( $(echo "$allsites" | \
+             jq -s 'add' | \
+             jq --argjson days "${days}" '[.[] | select(.custom_domain | startswith("beta-")) |'\
+                'select((.created_at | sub("\\.[0-9]+"; "")) | fromdateiso8601 < (now - ($days * 86400))) ] |'\
+                'sort_by(.created_at) | reverse' | \
+             jq -r '.[] | .id' ) )
+
+
+for id in "${site_ids[@]}"; do
+    echo ""
+    echo "Deleting site ID ${id}"
+    
+done
     
 
 
