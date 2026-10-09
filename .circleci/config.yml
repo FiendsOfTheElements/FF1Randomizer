@@ -16,12 +16,15 @@ jobs:
     steps:
       - checkout
       - run:
+          name: netlifyinfo
+          command: .circleci/netlifyinfo.sh
+      - run:
           name: publish
           command: .circleci/build.sh
       - persist_to_workspace:
           root: ~/ff1randomizer/FF1Blazorizer/output
           paths:
-            - wwwroot
+            - wwwroot      
 
   deploy:
     <<: *defaults
