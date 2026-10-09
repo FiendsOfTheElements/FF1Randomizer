@@ -24,9 +24,9 @@ done
 
 mapfile -t site_ids < <(echo "$allsites" | \
              jq -s 'add' | \
-             jq --argjson days "${days}" '[.[] | select(.custom_domain | startswith("beta-")) |' \
-                'select((.created_at | sub("\\.[0-9]+"; "")) | fromdateiso8601 < (now - ($days * 86400))) ] |' \
-                'sort_by(.created_at) | reverse' | \
+             jq --argjson days "${days}" '[.[] | select(.custom_domain | startswith("beta-")) | 
+                select((.created_at | sub("\\.[0-9]+"; "")) | fromdateiso8601 < (now - ($days * 86400))) ] |
+                sort_by(.created_at) | reverse' | \
              jq -r '.[] | .id' )
 
 
