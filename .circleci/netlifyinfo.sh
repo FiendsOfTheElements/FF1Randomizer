@@ -11,9 +11,9 @@ allsites=""
 while true; do
 
     response=$(curl --location --request GET "https://api.netlify.com/api/v1/sites?page=${thispage}" \
-    		       --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}")
+    		        --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}")
     
-    if [ "$(echo "$response" | jq length)" -eq 0 ]; then
+    if [ "$(echo "$response" | jq 'length')" -eq 0 ]; then
         break
     fi
 
@@ -31,8 +31,16 @@ mapfile -t site_ids < <(echo "$allsites" | \
 
 
 for id in "${site_ids[@]}"; do
+    response=$(curl --location --request GET "https://api.netlify.com/api/v1/sites/${id})" \
+                    --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}")
+    datetime=$(echo "$response" | jq '.created_at')
+    url=$(echo "$response" | jq '.url')
     echo ""
-    echo "Deleting site ID ${id}"
+    echo "URL: ${url}"
+    echo "Site ID: ${id}"
+    echo "Date Created: ${datetime}"
+
+
     
 done
     
