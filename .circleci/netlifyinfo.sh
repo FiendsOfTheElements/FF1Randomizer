@@ -46,7 +46,9 @@ for id in "${site_ids[@]}"; do
 
     
 done
-    
+
+echo ""
+echo "Now Requesting Deletion of 280a3df1-209a-46f7-b013-3472f1f11abf"
 curl --location --request DELETE "https://api.netlify.com/api/v1/sites/280a3df1-209a-46f7-b013-3472f1f11abf" \
         --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}"
 
