@@ -39,6 +39,8 @@ for id in "${site_ids[@]}"; do
     echo "URL: ${url}"
     echo "Site ID: ${id}"
     echo "Date Created: ${datetime}"
+    # curl --location --request DELETE GET "https://api.netlify.com/api/v1/sites/${id}" \
+    #      --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}"
 
 
     
