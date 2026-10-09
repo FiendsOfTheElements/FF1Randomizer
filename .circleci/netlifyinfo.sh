@@ -31,7 +31,7 @@ mapfile -t site_ids < <(echo "$allsites" | \
 
 
 for id in "${site_ids[@]}"; do
-    response=$(curl --location --request GET "https://api.netlify.com/api/v1/sites/${id})" \
+    response=$(curl --location --request GET "https://api.netlify.com/api/v1/sites/${id}" \
                     --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}")
     datetime=$(echo "$response" | jq '.created_at')
     url=$(echo "$response" | jq '.url')
