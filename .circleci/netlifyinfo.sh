@@ -30,6 +30,7 @@ mapfile -t site_ids < <(echo "$allsites" | \
              jq -r '.[] | .id' )
 
 
+
 for id in "${site_ids[@]}"; do
     response=$(curl --location --request GET "https://api.netlify.com/api/v1/sites/${id}" \
                     --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}")
@@ -46,7 +47,8 @@ for id in "${site_ids[@]}"; do
     
 done
     
-
+curl --location --request DELETE "https://api.netlify.com/api/v1/sites/280a3df1-209a-46f7-b013-3472f1f11abf" \
+        --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}"
 
 
 
