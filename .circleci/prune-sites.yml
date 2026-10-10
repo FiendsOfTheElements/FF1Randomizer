@@ -42,7 +42,7 @@ workflows:
       - dry-run:
           when: pipeline.parameters.action == "dry-run"
           requires:
-            -shellcheck/check
+            - shellcheck/check
       - prune-sites:
           when: pipeline.parameters.action == "prune-sites"
           requires:
