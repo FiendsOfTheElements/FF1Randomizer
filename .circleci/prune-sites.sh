@@ -9,13 +9,13 @@ MAXSITES=10
 while getopts "dp" opt; do
     case "${opt}" in
         d)
-            DRYRUN=true
+            DRYRUN="true"
             echo "Executing dry run of max ${MAXSITES} sites older than ${DAYS}."
             echo ""
             break
             ;;
         p)
-            DRYRUN=false
+            DRYRUN="false"
             echo "Pruning max ${MAXSITES} sites older than ${DAYS}."
             echo ""
             ;;
@@ -63,7 +63,7 @@ for id in "${site_ids[@]}"; do
     echo "URL: ${url}"
     echo "Site ID: ${id}"
     echo "Date Created: ${datetime}"
-    if [[ "${DRYRUN}" == "false" ]]; then
+    if [[ "${DRYRUN}" = "false" ]]; then
         echo "Deleting..."
         # curl --location --request DELETE "https://api.netlify.com/api/v1/sites/${id}" \
         #      --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}"
