@@ -8,17 +8,17 @@ MAXSITES=10
 
 while getopts "dp" opt; do
     case "${opt}" in
-        (d)
+        d)
             DRYRUN=true
             echo "Executing dry run of max ${MAXSITES} sites older than ${DAYS}."
             echo ""
             break
             ;;
-        (p)
+        p)
             DRYRUN=false
             echo "Pruning max ${MAXSITES} sites older than ${DAYS}."
             echo ""
-        (*)
+        *)
             echo "Requires either -d (dry run) or -p (pruning mode).">&2
             exit 1
             ;;
