@@ -2,22 +2,14 @@
 set -e
 
 
-DAYS=365
-MAXSITES=10
-
-
 while getopts "dp" opt; do
     case "${opt}" in
         d)
             DRYRUN="true"
-            echo "Executing dry run of max ${MAXSITES} sites older than ${DAYS}."
-            echo ""
             break
             ;;
         p)
             DRYRUN="false"
-            echo "Pruning max ${MAXSITES} sites older than ${DAYS}."
-            echo ""
             ;;
         *)
             echo "Requires either -d (dry run) or -p (pruning mode).">&2
@@ -26,7 +18,16 @@ while getopts "dp" opt; do
     esac
 done
 
+shift $((OPTIND - 1))
+DAYS=$1
+MAXSITES=$2
 
+if [ $DRYRUN == "true" ]; then
+	echo "Executing dry run of max ${MAXSITES} sites older than ${DAYS}."
+else
+	echo "Pruning max ${MAXSITES} sites older than ${DAYS}."
+fi
+echo ""
 
 thispage=1
 allsites=""
@@ -40,7 +41,7 @@ while true; do
 
     response=$(curl --location --request GET "https://api.netlify.com/api/v1/sites?page=${thispage}" \
     		        --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}")
-    
+
     if [ "$(echo "$response" | jq 'length')" -eq 0 ]; then
         break
     fi
@@ -62,7 +63,7 @@ echo ""
 
 mapfile -t site_ids < <(echo "$allsites" | \
              jq -s 'add' | \
-             jq --argjson days "${DAYS}" --argjson maxprune "${MAXSITES}" '[.[] | select(.custom_domain | startswith("beta-")) | 
+             jq --argjson days "${DAYS}" --argjson maxprune "${MAXSITES}" '[.[] | select(.custom_domain | startswith("beta-")) |
                 select((.created_at | sub("\\.[0-9]+"; "")) | fromdateiso8601 < (now - ($days * 86400))) ] |
                 sort_by(.created_at) | .[:$maxprune] | reverse' | \
              jq -r '.[] | .id' )
@@ -87,7 +88,7 @@ for id in "${site_ids[@]}"; do
     fi
     echo ""
     sleep 2
-    
+
 done
 
 
