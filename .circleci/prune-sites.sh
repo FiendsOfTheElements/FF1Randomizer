@@ -22,17 +22,18 @@ shift $((OPTIND - 1))
 DAYS=$1
 MAXSITES=$2
 
-if [ $DRYRUN == "true" ]; then
-	echo "Executing dry run of max ${MAXSITES} sites older than ${DAYS}."
+if [[ "$DRYRUN" == "true" ]]; then
+	tput bold; echo "Executing dry run of max ${MAXSITES} sites older than ${DAYS} days." ; tput sgr0
 else
-	echo "Pruning max ${MAXSITES} sites older than ${DAYS}."
+	tput bold; echo "Pruning max ${MAXSITES} sites older than ${DAYS} days." ; tput sgr0
 fi
 echo ""
 
 thispage=1
 allsites=""
 
-echo "Getting list of all sites..."
+echo ""
+tput bold; echo "Getting list of all sites..." ; tput sgr0
 echo ""
 echo ""
 
@@ -51,7 +52,8 @@ while true; do
 
 done
 
-echo "... done."
+echo ""
+tput bold; echo "... done."; tput sgr0
 echo ""
 echo ""
 echo ""
@@ -76,17 +78,21 @@ for id in "${site_ids[@]}"; do
                     --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}")
     datetime=$(echo "$response" | jq '.created_at')
     url=$(echo "$response" | jq '.url')
+    tput bold
     echo "URL: ${url}"
     echo "Site ID: ${id}"
     echo "Date Created: ${datetime}"
     if [[ "${DRYRUN}" == "false" ]]; then
         echo "Deleting..."
+        tput sgr0
         curl --location --request DELETE "https://api.netlify.com/api/v1/sites/${id}" \
              --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}"
     else
         echo "(Dry-run)..."
+        tput sgr0
     fi
     echo ""
+    
     sleep 2
 
 done
