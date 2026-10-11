@@ -38,7 +38,7 @@ jobs:
       - checkout
       - run:
           name: prune-sitesmaxprune
-          command: .circleci/prune-sites.sh -p
+          command: .circleci/prune-sites.sh -p << pipeline.parameters.min_safe_age_days >> << pipeline.parameters.max_sites >>
 
 workflows:
   dry-run:
