@@ -51,7 +51,12 @@ while true; do
 done
 
 echo "... done."
-echo "\n\n\n\n\n\n"
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
 
 
 
