@@ -31,6 +31,11 @@ done
 thispage=1
 allsites=""
 
+echo "Getting list of all sites..."
+echo ""
+echo ""
+
+
 while true; do
 
     response=$(curl --location --request GET "https://api.netlify.com/api/v1/sites?page=${thispage}" \
@@ -45,6 +50,11 @@ while true; do
 
 done
 
+echo "... done."
+echo "\n\n\n\n\n\n"
+
+
+
 mapfile -t site_ids < <(echo "$allsites" | \
              jq -s 'add' | \
              jq --argjson days "${DAYS}" --argjson maxprune "${MAXSITES}" '[.[] | select(.custom_domain | startswith("beta-")) | 
@@ -54,22 +64,24 @@ mapfile -t site_ids < <(echo "$allsites" | \
 
 
 
+
 for id in "${site_ids[@]}"; do
     response=$(curl --location --request GET "https://api.netlify.com/api/v1/sites/${id}" \
                     --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}")
     datetime=$(echo "$response" | jq '.created_at')
     url=$(echo "$response" | jq '.url')
-    echo ""
     echo "URL: ${url}"
     echo "Site ID: ${id}"
     echo "Date Created: ${datetime}"
-    if [[ "${DRYRUN}" = "false" ]]; then
+    if [[ "${DRYRUN}" == "false" ]]; then
         echo "Deleting..."
-        # curl --location --request DELETE "https://api.netlify.com/api/v1/sites/${id}" \
-        #      --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}"
+        curl --location --request DELETE "https://api.netlify.com/api/v1/sites/${id}" \
+             --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}"
     else
         echo "(Dry-run)..."
     fi
+    echo ""
+    sleep 2
     
 done
 
