@@ -2,7 +2,7 @@
 set -e
 set -x
 
-export TERM=${TERM:-xterm-256color}
+export TERM="xterm-256color"
 
 while getopts "dp" opt; do
     case "${opt}" in
