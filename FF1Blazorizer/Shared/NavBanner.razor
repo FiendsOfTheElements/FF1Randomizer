@@ -5,20 +5,29 @@
 	</div>
 
 	<aside id="version">@VersionString</aside>
+    @if (FF1Lib.FFRVersion.Branch != "master")
+    {
+        <aside id="version">@BuildString</aside>
+    }
+    
 
-	@code {
-		string VersionString = "";
-		protected override void OnInitialized()
+@code {
+    string VersionString = "";
+    string BuildString = "";
+    protected override void OnInitialized()
+    {
+
+        VersionString = "v" + FF1Lib.FFRVersion.Version;
+        BuildString = "Built " + FF1Lib.FFRVersion.GetLinkerTime().ToString("yyyy-MM-dd HH:mm:ss");
+        
+		if (FF1Lib.FFRVersion.Branch == "dev")
 		{
-			VersionString = "v" + FF1Lib.FFRVersion.Version;
-			if (FF1Lib.FFRVersion.Branch == "dev")
-			{
-				VersionString += " Beta";
-			}
-			else if (FF1Lib.FFRVersion.Branch != "master")
-			{
-				VersionString = FF1Lib.FFRVersion.Branch;
-			}
-			StateHasChanged();
+			VersionString += " Beta";
 		}
+		else if (FF1Lib.FFRVersion.Branch != "master")
+		{
+			VersionString = FF1Lib.FFRVersion.Branch;
+		}
+		StateHasChanged();
 	}
+}

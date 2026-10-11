@@ -20,6 +20,10 @@
    <ServerGarbageCollection>false</ServerGarbageCollection>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyy-MM-ddTHH:mm:ss:fffZ"))</SourceRevisionId>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="archipelago\locations.json" />
     <None Remove="maps\crescent_start.ffm" />
