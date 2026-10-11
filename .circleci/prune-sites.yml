@@ -5,6 +5,12 @@ parameters:
     type: enum
     enum: [dry-run, prune-sites]
     default: dry-run
+  min_safe_age_days:
+    type: integer
+    default: 365
+  max_sites:
+    type: integer
+    default: 10
 
 defaults: &defaults
 
@@ -24,7 +30,7 @@ jobs:
       - checkout
       - run:
           name: dry-run
-          command: .circleci/prune-sites.sh -d
+          command: .circleci/prune-sites.sh -d << pipeline.parameters.min_safe_age_days >> << pipeline.parameters.max_sites >>
 
   prune-sites:
     <<: *defaults

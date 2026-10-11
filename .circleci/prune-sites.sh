@@ -2,8 +2,8 @@
 set -e
 
 
-DAYS=365
-MAXSITES=10
+DAYS=$1
+MAXSITES=$2
 
 
 while getopts "dp" opt; do
@@ -40,7 +40,7 @@ while true; do
 
     response=$(curl --location --request GET "https://api.netlify.com/api/v1/sites?page=${thispage}" \
     		        --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}")
-    
+
     if [ "$(echo "$response" | jq 'length')" -eq 0 ]; then
         break
     fi
@@ -62,7 +62,7 @@ echo ""
 
 mapfile -t site_ids < <(echo "$allsites" | \
              jq -s 'add' | \
-             jq --argjson days "${DAYS}" --argjson maxprune "${MAXSITES}" '[.[] | select(.custom_domain | startswith("beta-")) | 
+             jq --argjson days "${DAYS}" --argjson maxprune "${MAXSITES}" '[.[] | select(.custom_domain | startswith("beta-")) |
                 select((.created_at | sub("\\.[0-9]+"; "")) | fromdateiso8601 < (now - ($days * 86400))) ] |
                 sort_by(.created_at) | .[:$maxprune] | reverse' | \
              jq -r '.[] | .id' )
@@ -87,7 +87,7 @@ for id in "${site_ids[@]}"; do
     fi
     echo ""
     sleep 2
-    
+
 done
 
 
