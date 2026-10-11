@@ -2,22 +2,14 @@
 set -e
 
 
-DAYS=$1
-MAXSITES=$2
-
-
 while getopts "dp" opt; do
     case "${opt}" in
         d)
             DRYRUN="true"
-            echo "Executing dry run of max ${MAXSITES} sites older than ${DAYS}."
-            echo ""
             break
             ;;
         p)
             DRYRUN="false"
-            echo "Pruning max ${MAXSITES} sites older than ${DAYS}."
-            echo ""
             ;;
         *)
             echo "Requires either -d (dry run) or -p (pruning mode).">&2
@@ -27,6 +19,15 @@ while getopts "dp" opt; do
 done
 
 shift $((OPTIND - 1))
+DAYS=$1
+MAXSITES=$2
+
+if [ $DRYRUN == "true" ]; then
+	echo "Executing dry run of max ${MAXSITES} sites older than ${DAYS}."
+else
+	echo "Pruning max ${MAXSITES} sites older than ${DAYS}."
+fi
+echo ""
 
 thispage=1
 allsites=""
