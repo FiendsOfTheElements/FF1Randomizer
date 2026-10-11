@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+export TERM=${TERM:-xterm-256color}
 
 while getopts "dp" opt; do
     case "${opt}" in
@@ -22,10 +23,14 @@ shift $((OPTIND - 1))
 DAYS=$1
 MAXSITES=$2
 
-if [[ "$DRYRUN" == "true" ]]; then
-	tput bold; echo "Executing dry run of max ${MAXSITES} sites older than ${DAYS} days." ; tput sgr0
+if [[ "${DRYRUN}" == "true" ]]; then
+	tput bold
+    echo "Executing dry run of max ${MAXSITES} sites older than ${DAYS} days."
+    tput sgr0
 else
-	tput bold; echo "Pruning max ${MAXSITES} sites older than ${DAYS} days." ; tput sgr0
+	tput bold
+    echo "Pruning max ${MAXSITES} sites older than ${DAYS} days."
+    tput sgr0
 fi
 echo ""
 
@@ -33,7 +38,9 @@ thispage=1
 allsites=""
 
 echo ""
-tput bold; echo "Getting list of all sites..." ; tput sgr0
+tput bold
+echo "Getting list of all sites..."
+tput sgr0
 echo ""
 echo ""
 
@@ -53,7 +60,9 @@ while true; do
 done
 
 echo ""
-tput bold; echo "... done."; tput sgr0
+tput bold
+echo "... done."
+tput sgr0
 echo ""
 echo ""
 echo ""
