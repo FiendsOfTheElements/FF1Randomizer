@@ -1,6 +1,6 @@
 #!/usr/bin/dotnet
 
-var token = Environment.GetEnvironmentVariable("NETLIFY_TOKEN");
+var token = Environment.GetEnvironmentVariable("NETLIFY_AUTH_TOKEN");
 var client = new HttpClient
 {
 	BaseAddress = new Uri("https://api.netlify.com/api/v1/")
