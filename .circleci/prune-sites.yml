@@ -35,16 +35,20 @@ jobs:
           command: .circleci/prune-sites.sh -p
 
 workflows:
-  main:
+  dry-run:
+    when: pipeline.parameters.action == "dry-run"
     jobs:
       - shellcheck/check:
           path: ".circleci/"
       - dry-run:
-          when: pipeline.parameters.action == "dry-run"
           requires:
             - shellcheck/check
+  prune-sites:
+    when: pipeline.parameters.action == "prune-sites"
+    jobs:
+      - shellcheck/check:
+          path: ".circleci/"
       - prune-sites:
-          when: pipeline.parameters.action == "prune-sites"
           requires:
             - shellcheck/check
 
