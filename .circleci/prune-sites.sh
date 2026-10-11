@@ -26,7 +26,7 @@ while getopts "dp" opt; do
     esac
 done
 
-
+shift $((OPTIND - 1))
 
 thispage=1
 allsites=""
