@@ -3,6 +3,9 @@ set -e
 
 export TERM="xterm-256color"
 
+MINDAYS=90
+KEEPSITES=30
+
 while getopts "dp" opt; do
     case "${opt}" in
         d)
@@ -23,7 +26,14 @@ shift $((OPTIND - 1))
 DAYS=$1
 MAXSITES=$2
 
-if [[ "${DRYRUN}" == "true" ]]; then
+if (( "${DAYS}" < "${MINDAYS}" )) ; then
+    tput bold
+    echo "min_safe_age_days parameter must be greater than or equal to ${MINDAYS}. Exiting.">&2
+    tput sgr0
+    exit 1
+fi
+
+if [[ "${DRYRUN}" == "true" ]] ; then
 	tput bold
     echo "Executing dry run of max ${MAXSITES} sites older than ${DAYS} days."
     tput sgr0
@@ -74,12 +84,12 @@ echo ""
 
 mapfile -t site_ids < <(echo "$allsites" | \
              jq -s 'add' | \
-             jq --argjson days "${DAYS}" --argjson maxprune "${MAXSITES}" '[.[] | select(.custom_domain | startswith("beta-")) |
+             jq --argjson days "${DAYS}" --argjson maxprune "${MAXSITES}" --argjson keep "${KEEPSITES}" \
+                '[.[] |
+                select(.custom_domain | startswith("beta-")) |
                 select((.created_at | sub("\\.[0-9]+"; "")) | fromdateiso8601 < (now - ($days * 86400))) ] |
-                sort_by(.created_at) | .[:$maxprune] | reverse' | \
+                sort_by(.created_at) | .[:-$keep] | .[:$maxprune] | reverse' | \
              jq -r '.[] | .id' )
-
-
 
 
 for id in "${site_ids[@]}"; do
