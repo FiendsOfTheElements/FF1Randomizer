@@ -71,7 +71,7 @@ done
 
 echo ""
 tput bold
-echo "... done."
+echo "Found $(echo "$allsites" | jq -s 'add' | jq 'length') sites."
 tput sgr0
 echo ""
 echo ""
