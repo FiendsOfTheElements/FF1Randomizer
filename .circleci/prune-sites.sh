@@ -4,7 +4,7 @@ set -e
 export TERM="xterm-256color"
 
 MINDAYS=90
-KEEPSITES=30
+KEEPSITES=200
 
 while getopts "dp" opt; do
     case "${opt}" in
@@ -28,7 +28,7 @@ MAXSITES=$2
 
 if (( "${DAYS}" < "${MINDAYS}" )) ; then
     tput bold
-    echo "min_safe_age_days parameter must be greater than or equal to ${MINDAYS}. Exiting.">&2
+    echo "Error: min_safe_age_days parameter must be greater than or equal to ${MINDAYS}. Exiting.">&2
     tput sgr0
     exit 1
 fi
@@ -69,9 +69,11 @@ while true; do
 
 done
 
+sitecount=$(echo "$allsites" | jq -s 'add' | jq 'length')
+
 echo ""
 tput bold
-echo "Found $(echo "$allsites" | jq -s 'add' | jq 'length') sites."
+echo "Found ${sitecount} beta sites."
 tput sgr0
 echo ""
 echo ""
@@ -84,13 +86,32 @@ echo ""
 
 mapfile -t site_ids < <(echo "$allsites" | \
              jq -s 'add' | \
-             jq --argjson days "${DAYS}" --argjson maxprune "${MAXSITES}" --argjson keep "${KEEPSITES}" \
+             jq --argjson days "${DAYS}" --argjson maxprune "${MAXSITES}" \
                 '[.[] |
                 select(.custom_domain | startswith("beta-")) |
                 select((.created_at | sub("\\.[0-9]+"; "")) | fromdateiso8601 < (now - ($days * 86400))) ] |
-                sort_by(.created_at) | .[:-$keep] | .[:$maxprune] | reverse' | \
+                sort_by(.created_at) | .[:$maxprune] | reverse' | \
              jq -r '.[] | .id' )
 
+sitestoprocess=${#site_ids[@]}
+if (( sitecount - sitestoprocess < KEEPSITES )); then
+    echo ""
+    tput bold
+    echo "Error: input parameters must leave at least ${KEEPSITES} active beta sites. Exiting.">&2
+    echo "Total sites found: ${sitecount}">&2
+    echo "Sites matching parameters: ${sitestoprocess}">&2
+    echo "Difference: $(( sitecount - sitestoprocess ))">&2
+    tput sgr0
+    exit 1
+else
+    echo ""
+    tput bold
+    echo "Processing ${sitestoprocess} sites:"
+    tput sgr0
+    echo ""
+fi
+
+sitenumber=1
 
 for id in "${site_ids[@]}"; do
     response=$(curl --location --request GET "https://api.netlify.com/api/v1/sites/${id}" \
@@ -98,6 +119,7 @@ for id in "${site_ids[@]}"; do
     datetime=$(echo "$response" | jq '.created_at')
     url=$(echo "$response" | jq '.url')
     tput bold
+    echo "${sitenumber}"
     echo "URL: ${url}"
     echo "Site ID: ${id}"
     echo "Date Created: ${datetime}"
@@ -111,6 +133,8 @@ for id in "${site_ids[@]}"; do
         tput sgr0
     fi
     echo ""
+
+    (( sitenumber++ ))
     
     sleep 2
 
