@@ -4,7 +4,7 @@ set -e
 export TERM="xterm-256color"
 
 MINDAYS=90
-KEEPSITES=200
+KEEPSITES=30
 
 while getopts "dp" opt; do
     case "${opt}" in
@@ -97,10 +97,10 @@ sitestoprocess=${#site_ids[@]}
 if (( sitecount - sitestoprocess < KEEPSITES )); then
     echo ""
     tput bold
-    echo "Error: input parameters must leave at least ${KEEPSITES} active beta sites. Exiting.">&2
+    echo "Error: input parameters must leave at least ${KEEPSITES} active beta sites after processing. Exiting.">&2
     echo "Total sites found: ${sitecount}">&2
     echo "Sites matching parameters: ${sitestoprocess}">&2
-    echo "Difference: $(( sitecount - sitestoprocess ))">&2
+    echo "Sites remaining: $(( sitecount - sitestoprocess ))">&2
     tput sgr0
     exit 1
 else
