@@ -1,0 +1,61 @@
+version: 2.1
+
+parameters:
+  action:
+    type: enum
+    enum: [dry-run, prune-sites]
+    default: dry-run
+  min_safe_age_days:
+    type: integer
+    default: 365
+  max_sites:
+    type: integer
+    default: 10
+
+defaults: &defaults
+
+  working_directory: ~/ff1randomizer
+  # docker:
+  #   - image: fiendsoftheelements/netlify-build:dotnet10
+  docker:
+    - image: cimg/base:current
+
+orbs:
+  shellcheck: circleci/shellcheck@1.3.16
+
+jobs:
+  dry-run:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: dry-run
+          command: .circleci/prune-sites.sh -d << pipeline.parameters.min_safe_age_days >> << pipeline.parameters.max_sites >>
+
+  prune-sites:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: prune-sitesmaxprune
+          command: .circleci/prune-sites.sh -p << pipeline.parameters.min_safe_age_days >> << pipeline.parameters.max_sites >>
+
+workflows:
+  dry-run:
+    when: pipeline.parameters.action == "dry-run"
+    jobs:
+      - shellcheck/check:
+          path: ".circleci/"
+      - dry-run:
+          requires:
+            - shellcheck/check
+  prune-sites:
+    when: pipeline.parameters.action == "prune-sites"
+    jobs:
+      - shellcheck/check:
+          path: ".circleci/"
+      - prune-sites:
+          requires:
+            - shellcheck/check
+
+

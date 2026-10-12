@@ -1,6 +1,7 @@
 namespace FFR.Common
 {
 	using System;
+	
 
 	/// <summary>
 	/// Represents versioning information for a module or program.
