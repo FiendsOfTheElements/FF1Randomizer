@@ -794,6 +794,6 @@ namespace FF1Lib
 		public bool? ProcgenWaterfallNoLoops { get; set; } = true;
 		public bool ProcgenWaterfallSpoiler { get; set; } = false;
 		public bool? ObfuscateItemNames { get; set; } = false;
-
+		public ThrowMode Throw { get; set; } = ThrowMode.Off;
 	}
 }

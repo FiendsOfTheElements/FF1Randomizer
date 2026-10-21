@@ -448,6 +448,10 @@ namespace FF1Lib
 							_classes[i].RibbonCurse = (byte)bonusmalus.StatMod;
 							_classes[i + 6].RibbonCurse = (byte)bonusmalus.StatMod;
 							break;
+						case BonusMalusAction.Throw:
+							_classes[i].ToggleBlursings.Add(BonusMalusAction.Throw);
+							_classes[i + 6].ToggleBlursings.Add(BonusMalusAction.Throw);
+							break;
 					}
 				}
 			}

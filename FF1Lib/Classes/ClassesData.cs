@@ -129,6 +129,7 @@ namespace FF1Lib
 		MasaCurse,
 		RibbonCurse,
 		DualWieldKnife,
+		Throw,
 	}
 
 	public partial class GameClasses

@@ -1,4 +1,4 @@
-; Bank Usage - Last Update 2024-12-23
+; Bank Usage - Last Update 2026-10-23
 ; Whenever a feature adds code to the rom, this table must be updated.
 ; Doesn't include the new features placed at the freed space at 0B and 0E. This is already a mess and no feature should be written there if possible.
 ; NOTE This list was done retroactively, so some ranges might be missing.
@@ -26,6 +26,8 @@ Memory Layout
 6E00-6E03 Tmp GP value in stats tracker
 6E04      Lockpicking Status
 6E10-6E4F Tracker Icon Buffer
+6DC0-6DDF Throw scratch
+6E50-6E64 Throw menu and far-call RAM copy
 6FF0-6FF1 PRNG battlestep state
 8000-BFFF low bank (program banks loaded here)
 C000-FFFF always bank 1F
@@ -60,7 +62,16 @@ ROM: 0C000-09FFF
 
 ; Freed  (write only after SM have been read)
 ROM: 10000-13FFF
-04   8000-FFFF    Unused
+04   8000-8641    Throw combat code
+04   8642-88FF    Unused
+04   8900-8913    Throw menu dispatcher
+04   8914-897F    Unused
+04   8980-898B    Throw class permission
+04   898C-8997    Throw unarmed classes
+04   8998-89AA    Throw cursor, label position, and autoretarget flag
+04   89AB-89FF    Unused
+04   8A00-8B3F    Throw weapon stats
+04   8B40-BFFF    Unused
 
 ROM: 14000-17FFF
 05   8000-FFFF    Unused
@@ -105,13 +116,18 @@ ROM: 30000-33FFF
 0C   93D4-93D6    Allow strike first and surprise
 0C   942C-9439    Set RNG
 0C   9455-9458    Modify Battle Logic Loop
+0C   94B8-94C1    Throw command menu trampoline
+0C   94F0-94F4    Throw fight command clears X and jumps to ADC1
 0C   95EC-9660    Write Drink Box Menu
 0C   96E7-96F0    Castable Item Targeting
 0C   97C7-97CA    Set RNG
 0C   97CA-97D4    Controller Patch
 0C   9910-991C    Better Battle Sprite
-0C   9C9E-9CE6    Battle Magic Menu Wrapping
-0C   9CE6-9CF0    Zero Empty Space
+0C   9A2C-9A35    Throw command cursor trampoline
+0C   9A37-9A39    Throw enters the command menu
+0C   9C9E-9CE5    Battle Magic Menu Wrapping
+0C   9CE6-9CEF    Throw appends its label before the command box flush
+0C   9E70-9E7B    Throw walk trampoline
 0C   9FE7-9FF7    ExtConsumables Write Cursor Position
 0C   A03C-????    Palette per class in battle (redundant, but needed)
 0C   A250-A275    Enable Auto Retargeting
@@ -126,19 +142,24 @@ ROM: 30000-33FFF
 0C   A447-A448    Maximum Player Sleep Bound
 0C   A451-A465    fix player sleep subroutine
 0C   A4C2-A4C8    Enable Auto Retargeting
+0C   A4BA-A4C5    Throw attack trampoline
 0C   A73C-A74B    Remove Excess 0 capping in defender mobile block
 0C   A821-A836    Replaced inefficent minimum base damage check
 0C   A85A-A89D    Added sleep removal; start of hits
 0C   A874-A87A    Removed unused store and load; after hits
 0C   A889-A89D    Removed unneeded 0 clipping; after hits
+0C   A7EE-A7F1    Throw miss gate for a roll of 200
 0C   A7F2-A7F4    Update the NextHitIteration branch locations; after hits
+0C   A857-A859    Throw damage injector
+0C   AD2C-AD56    Throw miss gate and damage inject
 0C   A85D-A85E    Update the NextHitIteration branch locations; after hits
 0C   A862-A863    Update the NextHitIteration branch locations; after hits
 0C   A867-A868    Update the NextHitIteration branch locations; after hits
 0C   A892-A8D4    moves block up 6 bytes and adds sleep clear; after hits
 0C   A94B-A950    Enable Crit Number Display
-0C   AD21-AD57    Move Load Player IB Stats
-0C   ADBB-ADC7    Battle Hijack part of BB unarmed check
+0C   AD21-AD2B    Move Load Player IB Stats
+0C   ADBB-ADC0    Battle Hijack part of BB unarmed check
+0C   ADC1-ADC5    Throw fight command stub
 0C   AE60-AE63	  Fixes RandAX extra increment
 0C   B197-B1B1    Set RNG
 0C   B1BC-B1C0    Remove call to random enemy wake up; Wake on Hit
@@ -279,7 +300,10 @@ ROM: 6C000-6FFFF
 1B   8FF5-90E8    Save on Death
 1B   9100-91AC    Random Promotion
 1B   9300-9369    Thief Lockpicking
-1B   9400-9470    LoadPlayerIBStats moved
+1B   9400-9464    LoadPlayerIBStats moved
+1B   9465-9467    Throw redirects the stat-loader return
+1B   9468-946F    Unused
+1B   9470-9485    Throw clears its hit flag and damage total, then resumes bank 0C
 1B   9500-9535    AltClass XP
 1B   9535-9814    Class Level Requirement tables
 1B   9830-987B    Gain MP on MP Up
@@ -360,3 +384,6 @@ ROM: 7C000-7FFFF
 1F   EEDD-EEE7    Overwrite UnadjustBBEquipStats
 1F   F100-F200    Encounter RNG Table
 1F   FCF1-FDF1    Battle RNG Table
+1F   F710-F712    Throw command-box flush when RUN is WAIT
+1F   F718-F71A    Throw command-box flush otherwise
+1F   FDF7-FDFF    Throw bank-switch tail

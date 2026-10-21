@@ -426,6 +426,7 @@ public partial class FF1Rom : NesRom
 		UseVariablePaletteForCursorAndStone(preferences.ThirdBattlePalette || flags.ResourcePack != null);
 		EnableModernBattlefield(preferences.ModernBattlefield);
 		DynamicWindowColor(preferences.MenuColor);
+		EnableThrow(flags);
 
 
 
