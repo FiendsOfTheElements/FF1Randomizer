@@ -237,7 +237,6 @@ namespace FF1Lib
 				"",
 				"  artea",
 				"  drcatdoctor",
-				" xxxxxxxxxxxxxxx",
 				"  nic0lette",
 				"  splitpunched",
 				"  onefineday",
