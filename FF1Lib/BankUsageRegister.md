@@ -23,10 +23,10 @@ Memory Layout
 6400-67FF SRAM
 6856-686A Math Buffer
 6800-7FFF Data/Rest of the SRAM chip
+6DC0-6DDF Throw scratch
 6E00-6E03 Tmp GP value in stats tracker
 6E04      Lockpicking Status
 6E10-6E4F Tracker Icon Buffer
-6DC0-6DDF Throw scratch
 6E50-6E64 Throw menu and far-call RAM copy
 6FF0-6FF1 PRNG battlestep state
 8000-BFFF low bank (program banks loaded here)
