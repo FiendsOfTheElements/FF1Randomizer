@@ -1,4 +1,4 @@
-; Bank Usage - Last Update 2026-10-23
+; Bank Usage - Last Update 2026-10-24
 ; Whenever a feature adds code to the rom, this table must be updated.
 ; Doesn't include the new features placed at the freed space at 0B and 0E. This is already a mess and no feature should be written there if possible.
 ; NOTE This list was done retroactively, so some ranges might be missing.

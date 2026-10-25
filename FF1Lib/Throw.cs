@@ -39,7 +39,7 @@ namespace FF1Lib
 				.Replace("MENU_LEN", menu.Length.ToString())
 				.Replace("TYPE_BONUS", Data[0x326F5].ToString());
 			byte[] main = Assembler.Assemble(new BA(0x04, 0x8000), "Throw", mainSource);
-			if (main.Length > 0x800)
+			if (main.Length > 0x900)
 			{
 				throw new Exception($"Throw code is {main.Length} bytes and overlaps its data.");
 			}
@@ -87,7 +87,7 @@ namespace FF1Lib
 			PutInBank(0x04, 0x89A8, Data[0x7FA35]);
 			// Tile row for that label, the same row as MAGIC.
 			PutInBank(0x04, 0x89A9, Data[0x7FA27]);
-			
+
 			PutInBank(0x04, 0x89AA, (byte)(flags.AutoRetargeting ? 1 : 0));
 
 			for (int i = 0; i < WeaponCount * WeaponSize; i++)
@@ -108,7 +108,7 @@ namespace FF1Lib
 			PutInBank(0x0C, 0x94B8, Blob.FromHex(Convert.ToHexString(PhaTrampoline(0x8003, false))));
 			// Start of a player's physical attack. A is the attacker. Throw_AttackEntry applies the thrown weapon, then the attack continues at $A4C8.
 			PutInBank(0x0C, 0xA4BA, Blob.FromHex(Convert.ToHexString(PhaTrampoline(0x8006, true))));
-			// Start of the walk-forward swing. A is the character. A throw uses the cast pose, and every other walk continues at $9E7E.
+			// Start of the walk-forward swing. A is the character. A throw shows the weapon, slides it to the enemy, then every other walk continues at $9E7E.
 			PutInBank(0x0C, 0x9E70, Blob.FromHex(Convert.ToHexString(PhaTrampoline(0x8009, true))));
 
 			// Choosing FIGHT. X is cleared so the effect byte is not a throw, then the stub at $ADC1 records a normal attack command.
@@ -404,14 +404,60 @@ namespace FF1Lib
 				LDA $6DD0
 				STA $6DC6
 				JSR Throw_CallRestorePal
-				JSR Throw_AutoCrit
-				; Cast pose
-				LDA #$01
+				LDA #$00
 				STA btlattackspr_wepmag
 				STA btlattackspr_nodraw
-				LDA #$00
 				STA btlattackspr_hidell
-				JMP Throw_WalkNormal
+				JSR Throw_CallWalk
+				LDA btl_drawflagsA
+				ORA #$20
+				STA btl_drawflagsA
+				JSR Throw_CallPose
+				LDA #6
+				STA $6DCE
+			Throw_HandLoop:
+				LDA btl_drawflagsA
+				ORA #$20
+				STA btl_drawflagsA
+				JSR Throw_CallSprites
+				DEC $6DCE
+				BNE Throw_HandLoop
+				JSR Throw_SetupDest
+				JSR Throw_FlyInit
+				LDA #24
+				STA $6DD1
+			Throw_FlyLoop:
+				LDY #8
+			Throw_FlyInner:
+				JSR Throw_FlyPixel
+				BCS Throw_FlyDone
+				DEY
+				BNE Throw_FlyInner
+				LDA btl_drawflagsA
+				ORA #$20
+				STA btl_drawflagsA
+				JSR Throw_CallSprites
+				DEC $6DD1
+				BNE Throw_FlyLoop
+			Throw_FlyDone:
+				LDA $6DCB
+				STA btlattackspr_x
+				LDA $6DCC
+				STA btlattackspr_y
+				LDA btl_drawflagsA
+				ORA #$20
+				STA btl_drawflagsA
+				JSR Throw_CallSprites
+				JSR Throw_CallClear
+				LDA #2
+				STA $68AB
+				JSR Throw_CallWalk
+				LDA btl_animatingchar
+				JSR Throw_CallNatural
+				JSR Throw_AutoCrit
+				LDA #$00
+				STA $6DC1
+				JMP $FDF7
 
 			Throw_Adjust:
 				LDA #$00
@@ -934,6 +980,32 @@ namespace FF1Lib
 				LDA #>BattleClearVariableSprite
 				STA $6DDF
 				JMP Throw_Far0C
+			Throw_CallWalk:
+				LDA #<CharacterWalkAnimation
+				STA $6DDE
+				LDA #>CharacterWalkAnimation
+				STA $6DDF
+				JMP Throw_Far0C
+			Throw_CallSprites:
+				LDA #<UpdateSprites_TwoFrames
+				STA $6DDE
+				LDA #>UpdateSprites_TwoFrames
+				STA $6DDF
+				JMP Throw_Far0C
+			Throw_CallPose:
+				LDA #<PrepAttackSprite_AFrame
+				STA $6DDE
+				LDA #>PrepAttackSprite_AFrame
+				STA $6DDF
+				JMP Throw_Far0C
+			Throw_CallNatural:
+				PHA
+				LDA #<SetNaturalPose
+				STA $6DDE
+				LDA #>SetNaturalPose
+				STA $6DDF
+				PLA
+				JMP Throw_Far0C
 			Throw_CallPrep:
 				PHA
 				LDA #<PrepCharStatPointers
@@ -942,6 +1014,180 @@ namespace FF1Lib
 				STA $6DDF
 				PLA
 				JMP Throw_Far0C
+			Throw_SetupDest:
+				LDA btl_battletype
+				CMP #$03
+				BCS Throw_DestFiend
+				LDA battle_defender_index
+				CMP #$09
+				BCC Throw_DestIndex
+				LDA #$00
+			Throw_DestIndex:
+				STA $6DCE
+				LDA btl_battletype
+				BEQ Throw_Dest9
+				CMP #$01
+				BEQ Throw_Dest4
+				LDA $6DCE
+				CMP #$02
+				BCC Throw_Dest4
+				SEC
+				SBC #$02
+				CMP #$06
+				BCC Throw_Dest6Ok
+				LDA #$00
+			Throw_Dest6Ok:
+				ASL
+				TAY
+				LDA Throw_Coords6, Y
+				STA $6DCB
+				INY
+				LDA Throw_Coords6, Y
+				STA $6DCC
+				RTS
+			Throw_Dest9:
+				LDA $6DCE
+				ASL
+				TAY
+				LDA Throw_Coords9, Y
+				STA $6DCB
+				INY
+				LDA Throw_Coords9, Y
+				STA $6DCC
+				RTS
+			Throw_Dest4:
+				LDA $6DCE
+				CMP #$04
+				BCC Throw_Dest4Ok
+				LDA #$00
+			Throw_Dest4Ok:
+				ASL
+				TAY
+				LDA Throw_Coords4, Y
+				STA $6DCB
+				INY
+				LDA Throw_Coords4, Y
+				STA $6DCC
+				RTS
+			Throw_DestFiend:
+				LDA #$20
+				STA $6DCB
+				LDA #$40
+				STA $6DCC
+				RTS
+
+			Throw_FlyInit:
+				LDA $6DCB
+				SEC
+				SBC btlattackspr_x
+				BCS Throw_FlyDxP
+				EOR #$FF
+				CLC
+				ADC #$01
+				LDX #$FF
+				BNE Throw_FlyDxS
+			Throw_FlyDxP:
+				LDX #$01
+			Throw_FlyDxS:
+				STA $6DC9
+				STX $6DC7
+				LDA $6DCC
+				SEC
+				SBC btlattackspr_y
+				BCS Throw_FlyDyP
+				EOR #$FF
+				CLC
+				ADC #$01
+				LDX #$FF
+				BNE Throw_FlyDyS
+			Throw_FlyDyP:
+				LDX #$01
+			Throw_FlyDyS:
+				STA $6DCA
+				STX $6DC8
+				LDA #$00
+				STA $6DCE
+				LDA $6DC9
+				CMP $6DCA
+				BCC Throw_FlyYMaj
+				STA $6DCD
+				LSR $6DCD
+				LDA #$00
+				STA $6DCF
+				RTS
+			Throw_FlyYMaj:
+				LDA $6DCA
+				LSR A
+				STA $6DCD
+				LDA #$01
+				STA $6DCF
+				RTS
+
+			Throw_FlyPixel:
+				LDA btlattackspr_x
+				CMP $6DCB
+				BNE Throw_FlyNeed
+				LDA btlattackspr_y
+				CMP $6DCC
+				BNE Throw_FlyNeed
+				SEC
+				RTS
+			Throw_FlyNeed:
+				LDA $6DCF
+				BNE Throw_FlyStepY
+				LDA btlattackspr_x
+				CLC
+				ADC $6DC7
+				STA btlattackspr_x
+				LDA $6DCD
+				SEC
+				SBC $6DCA
+				STA $6DCD
+				LDA $6DCE
+				SBC #$00
+				STA $6DCE
+				BPL Throw_FlyMoved
+				LDA btlattackspr_y
+				CLC
+				ADC $6DC8
+				STA btlattackspr_y
+				LDA $6DCD
+				CLC
+				ADC $6DC9
+				STA $6DCD
+				LDA $6DCE
+				ADC #$00
+				STA $6DCE
+				CLC
+				RTS
+			Throw_FlyStepY:
+				LDA btlattackspr_y
+				CLC
+				ADC $6DC8
+				STA btlattackspr_y
+				LDA $6DCD
+				SEC
+				SBC $6DC9
+				STA $6DCD
+				LDA $6DCE
+				SBC #$00
+				STA $6DCE
+				BPL Throw_FlyMoved
+				LDA btlattackspr_x
+				CLC
+				ADC $6DC7
+				STA btlattackspr_x
+				LDA $6DCD
+				CLC
+				ADC $6DCA
+				STA $6DCD
+				LDA $6DCE
+				ADC #$00
+				STA $6DCE
+			Throw_FlyMoved:
+				CLC
+				RTS
+
 			Throw_CallRestorePal:
 				LDA #<ResetUsePalette
 				STA $6DDE
@@ -984,6 +1230,13 @@ namespace FF1Lib
 				PLA
 				RTS
 				JMP ($6DDE)
+
+			Throw_Coords9:
+				.byte $18, $58, $18, $38, $18, $78, $38, $58, $38, $38, $38, $78, $58, $58, $58, $38, $58, $78
+			Throw_Coords4:
+				.byte $18, $38, $18, $68, $58, $38, $58, $68
+			Throw_Coords6:
+				.byte $48, $58, $48, $38, $48, $78, $68, $58, $68, $38, $68, $78
 
 			Throw_StrThrow:
 				.byte $9D, $91, $9B, $98, $A0, $00
