@@ -44,9 +44,11 @@ namespace FF1Lib
 				throw new Exception($"Throw code is {main.Length} bytes and overlaps its data.");
 			}
 
+			/* Combat routines at $8000 and the menu dispatcher copied to $6E50. */
 			PutInBank(0x04, 0x8000, Blob.FromHex(Convert.ToHexString(main)));
 			PutInBank(0x04, 0x8900, Blob.FromHex(Convert.ToHexString(menu)));
 
+			/* Which classes can THROW, and which are unarmed (cannot throw armor). */
 			for (int i = 0; i < 12; i++)
 			{
 				ClassData cls = ClassData[(Classes)i];
@@ -80,53 +82,58 @@ namespace FF1Lib
 				PutInBank(0x04, 0x8998 + i, curs);
 			}
 
-			// Right column, second row. Its Y is MAGIC's, so the cursor lands on THROW.
-			// DrawLabel copies this table into btlcurs_positions.
+			/* Right-column second-row Y is MAGIC's, so the cursor lands on THROW.
+			 * DrawLabel copies this table into btlcurs_positions. Label X/Y are
+			 * RUN's column after the shift and MAGIC's row. Autoretarget flag last. */
 			PutInBank(0x04, 0x8998 + 11, Data[0x31F75 + 3]);
-			// Tile column where Throw_AddCommand draws THROW: RUN's X after the shift above.
 			PutInBank(0x04, 0x89A8, Data[0x7FA35]);
-			// Tile row for that label, the same row as MAGIC.
 			PutInBank(0x04, 0x89A9, Data[0x7FA27]);
-
 			PutInBank(0x04, 0x89AA, (byte)(flags.AutoRetargeting ? 1 : 0));
 
+			/* Bank 04 copy of weapon stats for Throw_AttackEntry. */
 			for (int i = 0; i < WeaponCount * WeaponSize; i++)
 			{
 				PutInBank(0x04, 0x8A00 + i, Data[WeaponOffset + i]);
 			}
 
+			/* Command-cursor path: DrawLabel, then enter the command menu at $9D0E. */
 			PutInBank(0x0C, 0x9A2C, Blob.FromHex(Convert.ToHexString(PhaTrampoline(0x8000, false))));
 			PutInBank(0x0C, 0x9A37, Blob.FromHex("4C0E9D"));
 
-			// DrawCommandBox the menu. Send it through Throw_AddCommand first so THROW is in that same flush.
-			// $F710 is the flush when RUN has been replaced with WAIT; otherwise $F718.
+			/* DrawCommandBox flush goes through Throw_AddCommand so THROW is in that same flush.
+			 * $F710 is the flush when RUN has been replaced with WAIT; otherwise $F718. */
 			PutInBank(0x0C, 0x9CE6, Blob.FromHex(Convert.ToHexString(PhaTrampoline(0x800F, false))));
 			int commandFlush = Data[0x7F710] == 0x4C ? 0xF710 : 0xF718;
 			PutInBank(0x1F, commandFlush, Blob.FromHex("4CE69C"));
 
-			// A on the command menu. Throw_MenuA accepts THROW; the other commands stay vanilla.
+			/* A on the command menu, the physical-attack entry, and the walk-forward swing.
+			 * Throw_MenuA accepts THROW; Throw_AttackEntry applies the thrown weapon then
+			 * continues at $A4C8; a throw shows the weapon, slides it to the enemy, then
+			 * every other walk continues at $9E7E. */
 			PutInBank(0x0C, 0x94B8, Blob.FromHex(Convert.ToHexString(PhaTrampoline(0x8003, false))));
-			// Start of a player's physical attack. A is the attacker. Throw_AttackEntry applies the thrown weapon, then the attack continues at $A4C8.
 			PutInBank(0x0C, 0xA4BA, Blob.FromHex(Convert.ToHexString(PhaTrampoline(0x8006, true))));
-			// Start of the walk-forward swing. A is the character. A throw shows the weapon, slides it to the enemy, then every other walk continues at $9E7E.
 			PutInBank(0x0C, 0x9E70, Blob.FromHex(Convert.ToHexString(PhaTrampoline(0x8009, true))));
 
-			// Choosing FIGHT. X is cleared so the effect byte is not a throw, then the stub at $ADC1 records a normal attack command.
+			/* Choosing FIGHT. X is cleared so the effect byte is not a throw, then the
+			 * stub at $ADC1 records a normal attack command. */
 			PutInBank(0x0C, 0x94F0, Blob.FromHex("A2004CC1AD"));
 			PutInBank(0x0C, 0xADC1, Blob.FromHex("A9044C5D93"));
 
-			// A roll of 200 is a guaranteed miss. That check goes through the gate at $AD2E, which lets a throw hit anyway.
+			/* A roll of 200 is a guaranteed miss. That check goes through the gate at
+			 * $AD2E, which lets a throw hit anyway. The injector at $AD3D replaces this
+			 * hit's damage with the throw total when $6DC3 is 1. The stat loader returns
+			 * at $AD2C with A=0, and the leading branch skips both so loading stats does
+			 * not apply a throw. */
 			PutInBank(0x0C, 0xA7EE, Blob.FromHex("202EADEA"));
-			// Where this hit's damage is added. The injector at $AD3D replaces it with the throw total when $6DC3 is 1.
 			PutInBank(0x0C, 0xA857, Blob.FromHex("203DAD"));
-			// The gate and the injector. The stat loader returns here with A=0, and the leading branch skips both so loading stats does not apply a throw.
 			PutInBank(0x0C, 0xAD2C, Blob.FromHex("1029C9C8D006ADC36DD0016068684CF5A7ADC36DC901D00FADDE6D8D6068ADDF6D8D6168CEC36D8A4C7BAE"));
 
-			// The stat loader's return begins with LDA #$AD at $9465, so the jump replaces that instruction and lands on the clear below.
+			/* The stat loader's return begins with LDA #$AD at $9465, so the jump
+			 * replaces that instruction and lands on the clear below. Zero the throw
+			 * flag and damage total, then return to bank 0C at $AD2C. $FDF7 swaps back
+			 * to bank 0C and returns A from $6DC1. Callers push the address they resume at. */
 			PutInBank(0x1B, 0x9465, Blob.FromHex("4C7094"));
-			// Zero the throw flag and damage total, then return to bank 0C at $AD2C.
 			PutInBank(0x1B, 0x9470, Blob.FromHex("A9008DC36D8DDE6D8DDF6DA9AD48A92B48A90C4C03FE"));
-			// Swap back to bank 0C and return A from $6DC1. Callers push the address they resume at.
 			PutInBank(0x1F, 0xFDF7, Blob.FromHex("A90C2003FEADC16D60"));
 		}
 
