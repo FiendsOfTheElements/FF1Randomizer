@@ -2829,5 +2829,10 @@
 		"title": "Obfuscate Item Names",
 		"screenshot": "obfuscateItemNamesCheckBox.png",
 		"description": "Obfuscates the names and descriptions of key items."
+	},
+	{
+		"Id": "throwDropDown",
+		"title": "Throw",
+		"description": "Off: Vanilla behavior\nBlursing: Adds a Throw blursing.\nNinja only: Always add the Throw command to the Ninja."
 	}
 ]

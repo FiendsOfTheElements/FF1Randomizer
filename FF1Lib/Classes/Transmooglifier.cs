@@ -1416,6 +1416,8 @@ namespace FF1Lib
 				description += "Steel Lord\n";
 			if (rom.ClassData[(Classes)classIndex].ToggleBlursings.Contains(BonusMalusAction.WoodAdept))
 				description += "Wood Adept\n";
+			if (rom.ClassData[(Classes)classIndex].ToggleBlursings.Contains(BonusMalusAction.Throw))
+				description += "Can Throw\n";
 
 			if (Lockpicker)
 				description += "Lockpicking\n";

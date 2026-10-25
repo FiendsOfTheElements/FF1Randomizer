@@ -384,6 +384,11 @@ namespace FF1Lib
 				baseTier.Add(new BonusMalus(BonusMalusAction.MpGainOnMaxMpGain, "Max+Mp+", Classes: new List<Classes> { Classes.Fighter, Classes.Thief, Classes.RedMage, Classes.WhiteMage, Classes.BlackMage }));
 			}
 
+			if (flags.Throw == ThrowMode.Blursing)
+			{
+				baseTier.Add(new BonusMalus(BonusMalusAction.Throw, "Throw"));
+			}
+
 			// Distribute the class high tier blessings, we control probabilites (should be 5% per blessing in this list)
 			highTier.Shuffle(rng);
 

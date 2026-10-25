@@ -22,6 +22,7 @@
 			<div class="checkbox-cell"></div>
 			<CheckBox UpdateAction="@UpdateAction" Id="intAffectsSpellsCheckBox" @bind-Value="Flags.IntAffectsSpells">INT Affects Spells</CheckBox>
             <TriStateCheckBox UpdateAction="@UpdateAction" Id="dockAnywhereCheckBox" @bind-Value="Flags.DockAnywhere">Dock Anywhere</TriStateCheckBox>
+			<EnumDropDown UpdateAction="@UpdateAction" Id="throwDropDown" TItem="ThrowMode" @bind-Value="Flags.Throw">Throw</EnumDropDown>
 		</div>
 		<div class="col2">
 			<strong>Procedurally Generated Dungeons</strong>
